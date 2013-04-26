@@ -1,0 +1,22 @@
+#define PACKAGE "@PACKAGE@"
+#define PACKAGE_NAME PACKAGE
+#define VERSION "@PACKAGE_VERSION@"
+#define VERMAJ @VERMAJ@
+#define VERMIN @VERMIN@
+#define VERMIC @VERMIC@
+
+#cmakedefine HAVE___ATTRIBUTE__
+#ifdef HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
+#cmakedefine HAVE_PATH_MAX
+#ifndef HAVE_PATH_MAX
+#define PATH_MAX 4096
+#endif
+
+#cmakedefine HAVE_ECORE_X
+
+#cmakedefine ENABLE_NLS
