@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <Eina.h>
 #include "ui_main_window.h"
+#include <ui.h>
 
 EAPI_MAIN int
 elm_main()
 {
-	Evas_Object *win;
+	UI_Data *ud =  NULL;
 
-	win = ui_main_window_add();
+	ud = ui_create();
+	ui_main_window_add(ud);
 
 	elm_run();
 	elm_shutdown();

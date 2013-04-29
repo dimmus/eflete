@@ -19,6 +19,7 @@ set(TET_CC_FILES
    ui/ui_menu.c
    ui/ui_main_window.c
    ui/ui_settings.c
+   ui/ui.c
 )
 
 add_executable(${PROJECT_NAME} ${TET_CC_FILES})
