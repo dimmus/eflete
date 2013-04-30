@@ -5,6 +5,12 @@
 static FILE *log_file;
 static char *log_file_name;
 
+static int _tet_log_dom_crit = -1;
+static int _tet_log_dom_err  = -1;
+static int _tet_log_dom_warn = -1;
+static int _tet_log_dom_info = -1;
+static int _tet_log_dom_dbg  = -1;
+
 char *
 log_file_name_get(void)
 {
@@ -14,7 +20,7 @@ log_file_name_get(void)
 
 	time(&timer);
 	log_file_name = calloc(1, sizeof(prefix) + 16);
-	sprintf(log_file_name, "%s%lld", prefix, (long long)timer);
+	sprintf(log_file_name, "%s%lld.log", prefix, (long long)timer);
 
 	return log_file_name;
 }
@@ -147,4 +153,34 @@ logger_shutdown(void)
 		eina_log_domain_unregister(_tet_log_dom_dbg);
 		_tet_log_dom_dbg = -1;
 	}
+}
+
+int
+dom_crit_get(void)
+{
+	return _tet_log_dom_crit;
+}
+
+int
+dom_err_get(void)
+{
+	return _tet_log_dom_err;
+}
+
+int
+dom_warn_get(void)
+{
+	return _tet_log_dom_warn;
+}
+
+int
+dom_info_get(void)
+{
+	return _tet_log_dom_info;
+}
+
+int
+dom_dbg_get(void)
+{
+	return _tet_log_dom_dbg;
 }
