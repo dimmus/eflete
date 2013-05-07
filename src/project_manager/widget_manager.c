@@ -1,37 +1,29 @@
 #include "widget_manager.h"
 
+char **arr;
+static char *empty = "\0";
+static unsigned int arr_index;
+
+#define FREE(arr) \
+	for(arr_index = 0; arr_index < sizeof(arr)/sizeof(char *); arr_index++) \
+		free(arr[arr_index]); \
+	free(arr); \
+	arr = NULL;
+
 #define WM_WIDGET_NAME_GET(widget, group) \
-	char **arr; \
 	arr = eina_str_split(group, "/", 3); \
 	widget = strdup(arr[1]); \
-	free(arr);
-
-#define WM_CLASS_NAME_GET(class, group) \
-	char **arr; \
-	arr = eina_str_split(group, "/", 4); \
-	class = strdup(arr[2]); \
-	free(arr);
+	FREE(arr);
 
 #define WM_STYLE_NAME_GET(style, group) \
-	char **arr; \
-	arr = eina_str_split(group, "/", 5); \
-	style = strdup(arr[3]);\
-	free(arr);
+	arr = eina_str_split(group, "/", 4); \
+	style = strdup(arr[3]); \
+	FREE(arr);
 
-const char empty[] = "\0";
-
-Eina_List *
-wm_styles_list_free(Eina_List *list)
-{
-	char *data;
-
-	EINA_LIST_FREE(list, data)
-		free(data);
-
-	list = NULL;
-
-	return list;
-}
+#define WM_GROUP_NAME_GET(group_name, group) \
+	arr = eina_str_split(group, "/", 4); \
+	group_name = strdup(arr[2]);\
+	FREE(arr);
 
 Part *
 wm_part_add(const Evas_Object *obj, const char *part)
@@ -85,7 +77,7 @@ wm_group_add(const char *group, const char *full_name_group)
 Eina_Bool
 wm_group_free(Group *group)
 {
-	Part *part;
+	Part *part = NULL;
 	Eina_Inlist *list;
 
 	if(!group)
@@ -113,41 +105,42 @@ wm_group_free(Group *group)
 
 }
 
-WClass *
-wm_wclass_add(const char *wclass, Eina_List *groups)
+Style *
+wm_style_add(const char *style, Eina_List *groups)
 {
-	WClass *class_edje;
+	Style *style_edje;
 	Eina_List *l;
 	Group *group_edje;
-	char *style_name, *group_name_full;
+	char *group_name, *group_name_full;
 
-	if(!wclass || !groups)
+	if(!style || !groups)
 		return NULL;
 
-	class_edje = calloc(1, sizeof(*class_edje));
-	class_edje->class_name = strdup(wclass);
-	class_edje->groups = NULL;
+	style_edje = calloc(1, sizeof(*style_edje));
+	style_edje->style_name = strdup(style);
+	style_edje->groups = NULL;
 
 	EINA_LIST_FOREACH(groups, l, group_name_full)
 	{
-		WM_STYLE_NAME_GET(style_name, group_name_full);
-		group_edje = wm_group_add(style_name, group_name_full);
-		class_edje->groups = eina_inlist_append(class_edje->groups,
+		WM_GROUP_NAME_GET(group_name, group_name_full);
+		group_edje = wm_group_add(group_name, group_name_full);
+		style_edje->groups = eina_inlist_append(style_edje->groups,
 							EINA_INLIST_GET(group_edje));
 	}
-	return class_edje;
+
+	return style_edje;
 }
 
 Eina_Bool
-wm_wclass_free(WClass *wclass)
+wm_style_free(Style *style)
 {
 	Group *group_edje;
 	Eina_Inlist *list;
 
-	if(!wclass)
+	if(!style)
 		return EINA_FALSE;
 
-	list = wclass->groups;
+	list = style->groups;
 
 	if(list)
 	{
@@ -159,20 +152,39 @@ wm_wclass_free(WClass *wclass)
 		}
 	}
 
-	free(wclass->class_name);
-	free(wclass);
+	free(style->style_name);
+	free(style);
 
 	return EINA_TRUE;
 }
 
+int
+sort_style_cb(const void *data1, const void *data2)
+{
+	const char *str1 = data1;
+	const char *str2 = data2;
+	char *data1_style;
+	char *data2_style = NULL;
+
+	if(!str1)
+		return 1;
+	if(!str2)
+		return -1;
+
+	WM_STYLE_NAME_GET(data1_style, str1);
+	WM_STYLE_NAME_GET(data2_style, str2);
+
+	return (strcmp(data1_style, data2_style));
+}
+
 Widget *
-wm_widget_add(const char *widget, Eina_List *widget_styles)
+wm_widget_add(const char *widget, Eina_List *groups)
 {
 	Widget *_widget = NULL;
 	Eina_List *l, *l_next;
-	Eina_List *groups = NULL;
-	WClass *wclass;
-	char *wclass_name, *wclass_name_next;
+	Eina_List *widget_groups = NULL;
+	Style *style;
+	char *style_name, *style_name_next;
 	char *group, *group_next;
 
 	if(!widget)
@@ -180,27 +192,32 @@ wm_widget_add(const char *widget, Eina_List *widget_styles)
 
 	_widget = calloc(1, sizeof(*_widget));
 	_widget->widget_name = strdup(widget);
-	_widget->classes = NULL;
+	_widget->styles = NULL;
 
-	EINA_LIST_FOREACH_SAFE(widget_styles, l, l_next, group)
+	groups = eina_list_sort(groups,
+							eina_list_count(groups),
+							sort_style_cb);
+
+	EINA_LIST_FOREACH_SAFE(groups, l, l_next, group)
 	{
-		WM_CLASS_NAME_GET(wclass_name, group);
+		WM_STYLE_NAME_GET(style_name, group);
 		if(l_next)
 		{
 			group_next = eina_list_data_get(l_next);
-			WM_CLASS_NAME_GET(wclass_name_next, group_next);
+			WM_STYLE_NAME_GET(style_name_next, group_next);
 		}
 		else
-			wclass_name_next = &empty;
+			style_name_next = empty;
 
-		groups = eina_list_append(groups, strdup(group));
+		widget_groups = eina_list_append(widget_groups, group);
 
-		if(strcmp(wclass_name, wclass_name_next) != 0)
+		if(strcmp(style_name, style_name_next) != 0)
 		{
-			wclass = wm_wclass_add(wclass_name, groups);
-			_widget->classes = eina_inlist_append(_widget->classes,
-							EINA_INLIST_GET(wclass));
-			groups = wm_styles_list_free(groups);
+			style = wm_style_add(style_name, widget_groups);
+			_widget->styles = eina_inlist_append(_widget->styles,
+							EINA_INLIST_GET(style));
+			widget_groups = eina_list_free(widget_groups);
+			widget_groups = NULL;
 		}
 	}
 	return _widget;
@@ -209,21 +226,21 @@ wm_widget_add(const char *widget, Eina_List *widget_styles)
 Eina_Bool
 wm_widget_free(Widget *widget)
 {
-	WClass *wclass;
+	Style *style;
 	Eina_Inlist  *list;
 
 	if(!widget)
 		return EINA_FALSE;
 
-	list = widget->classes;
+	list = widget->styles;
 
 	if(list)
 	{
 		while(list)
 		{
-			wclass = EINA_INLIST_CONTAINER_GET(list, WClass);
+			style = EINA_INLIST_CONTAINER_GET(list, Style);
 			list = eina_inlist_remove(list, list);
-			wm_wclass_free(wclass);
+			wm_style_free(style);
 		}
 	}
 	free(widget->widget_name);
@@ -264,7 +281,7 @@ wm_widget_list_new(const char *file)
 	if(!collection)
 	{
 		error = eina_error_get();
-		ERR(eina_error_msg_get(error));
+		ERR("%s", eina_error_msg_get(error));
 	}
 
 	collection = eina_list_sort(collection,
@@ -284,16 +301,17 @@ wm_widget_list_new(const char *file)
 				WM_WIDGET_NAME_GET(widget_name_next, group_next);
 			}
 			else
-				widget_name_next = &empty;
+				widget_name_next = empty;
 
-			widget_styles = eina_list_append(widget_styles, strdup(group));
+			widget_styles = eina_list_append(widget_styles, group);
 
 			if(strcmp(widget_name, widget_name_next) != 0)
 			{
 				widget = wm_widget_add(widget_name, widget_styles);
 				widget_list = eina_inlist_append(widget_list,
 								EINA_INLIST_GET(widget));
-				widget_styles = wm_styles_list_free(widget_styles);
+				widget_styles = eina_list_free(widget_styles);
+				widget_styles = NULL;
 			}
 		}
 	}
@@ -320,5 +338,5 @@ wm_widget_list_free(Eina_Inlist *widget_list)
 }
 
 #undef WM_WIDGET_NAME_GET
-#undef WM_CLASS_NAME_GET
 #undef WM_STYLE_NAME_GET
+#undef WM_GROUP_NAME_GET

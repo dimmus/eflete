@@ -1,3 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
 #define PACKAGE "EFL Edje Edit Tool"
 #define PACKAGE_NAME PACKAGE
 #define VERSION "0.0.1"
@@ -20,3 +23,4 @@
 /* #undef HAVE_ECORE_X */
 
 /* #undef ENABLE_NLS */
+#endif /* CONFIG_H */

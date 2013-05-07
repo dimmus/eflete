@@ -1,11 +1,7 @@
 #ifndef __UI_MAIN_WINDOW_HEADER__
 #define __UI_MAIN_WINDOW_HEADER__
 
-#include <Elementary.h>
-#include <Eet.h>
-#include <Ecore.h>
-#include <Ecore_Evas.h>
-#include <ui.h>
+#include "efl_tet.h"
 
 /**
  * Adds main window object for Edje tool development.
@@ -13,7 +9,7 @@
  * in
  */
 Eina_Bool
-ui_main_window_add (UI_Data *ud);
+ui_main_window_add (App_Data *ap);
 
 /**
  * Delete main window object for Edje tool development.
@@ -23,11 +19,11 @@ ui_main_window_del (void);
 
 /**
  * Adds marked panes to the given Elementary layout.
- * in: 
+ * in:
  * out: EINA_TRUE if panes created normal, EINA_FALSE on failrue.
  */
 Eina_Bool
-ui_panes_add (UI_Data *ud);
+ui_panes_add (App_Data *ap);
 
 /**
  * Start process load settings for panes.
@@ -54,7 +50,7 @@ ui_panes_del (void);
  * out: EINA_TRUE if menu created normal, EINA_FALSE on failrue.
  */
 Eina_Bool
-ui_menu_add (UI_Data *ud);
+ui_menu_add (App_Data *ap);
 
 /**
  * Delete toolbar and menu objects.

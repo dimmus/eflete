@@ -64,6 +64,8 @@ logger_init(void)
 	if(!eina_init())
 		return EINA_FALSE;
 
+	eina_log_level_set(TET_LOG_DEFAULT_LEVEL);
+
 	if(_tet_log_dom_crit < 0)
 	{
 		_tet_log_dom_crit = eina_log_domain_register("TET CRIT", EINA_COLOR_RED);
@@ -115,7 +117,6 @@ logger_init(void)
 	if(!log_file)
 		EINA_LOG_CRIT("Could not create log file %s", log_file_name);
 
-	eina_log_level_set(TET_LOG_DEFAULT_LEVEL);
 	eina_log_print_cb_set(tet_log_cb, log_file);
 
 	return EINA_TRUE;
