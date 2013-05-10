@@ -1,3 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
 #define PACKAGE "@PACKAGE@"
 #define PACKAGE_NAME PACKAGE
 #define VERSION "@PACKAGE_VERSION@"
@@ -20,3 +23,4 @@
 #cmakedefine HAVE_ECORE_X
 
 #cmakedefine ENABLE_NLS
+#endif /* CONFIG_H */

@@ -2,6 +2,7 @@
 #define PROJECT_MANAGER_H
 
 #include "edje_compile.h"
+#include "logger.h"
 #include <Edje.h>
 #include <Ecore.h>
 #include <string.h>

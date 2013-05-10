@@ -25,24 +25,25 @@ struct _Group
 	Evas_Object *obj;
 	Eina_Bool show;
 	Eina_Inlist *parts;
+	/*TODO: add programs info */
 };
 
 typedef struct _Group Group;
 
-struct _WClass
+struct _Style
 {
 	EINA_INLIST;
-	char *class_name;
+	char *style_name;
 	Eina_Inlist *groups;
 };
 
-typedef struct _WClass WClass;
+typedef struct _Style Style;
 
 struct _Widget
 {
 	EINA_INLIST;
 	char *widget_name;
-	Eina_Inlist *classes;
+	Eina_Inlist *styles;
 };
 
 typedef struct _Widget Widget;
@@ -80,20 +81,20 @@ wm_group_free(Group *group);
 /**
  *
  */
-WClass *
-wm_wclass_add(const char *wclass, Eina_List *groups);
+Style *
+wm_style_add(const char *style, Eina_List *groups);
 
 /**
  *
  */
 Eina_Bool
-wm_wclass_free(WClass *wclass);
+wm_style_free(Style *style);
 
 /**
  *
  */
 Widget *
-wm_widget_add(const char *widget, Eina_List *widget_styles);
+wm_widget_add(const char *widget, Eina_List *groups);
 
 /**
  *
