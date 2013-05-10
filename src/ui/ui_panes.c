@@ -185,7 +185,7 @@ ui_panes_settings_load (Evas_Object *win)
 Eina_Bool
 ui_panes_add (App_Data *ap)
 {
-	Evas_Object *scroller;
+	Evas_Object *layout;
 	Evas_Object *panes_left, *panes_left_hor, *panes_right;
 	Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
 
@@ -204,8 +204,6 @@ ui_panes_add (App_Data *ap)
 	evas_object_size_hint_align_set(panes_left,
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_panes_content_left_size_set(panes_left, 0.2);
-	elm_panes_fixed_set (panes_left, EINA_FALSE);
-//	evas_object_show(panes_left);
 
 	elm_object_part_content_set (ap->win_layout, "swallow/panes", panes_left);
 
@@ -220,7 +218,6 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_left, "left", panes_left_hor);
 	elm_panes_content_left_size_set(panes_left_hor, 0.45);
-	evas_object_show(panes_left_hor);
 
 	panes_right = elm_panes_add(ap->win_layout);
 	if (panes_right == NULL)
@@ -231,7 +228,6 @@ ui_panes_add (App_Data *ap)
 	evas_object_size_hint_align_set(panes_right,
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_left, "right", panes_right);
-	evas_object_show(panes_right);
 	elm_panes_content_left_size_set(panes_right, 0.75);
 
 	panes_right_hor = elm_panes_add(ap->win_layout);
@@ -245,7 +241,6 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_right, "right", panes_right_hor);
 	elm_panes_content_left_size_set(panes_right_hor, 0.45);
-	evas_object_show(panes_right_hor);
 
 	panes_center = elm_panes_add(ap->win_layout);
 	if (panes_center == NULL)
@@ -258,7 +253,6 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_right, "left", panes_center);
 	elm_panes_content_left_size_set(panes_center, 0.65);
-	evas_object_show(panes_center);
 
 	panes_center_down = elm_panes_add(ap->win_layout);
 	if (panes_center_down == NULL)
@@ -269,7 +263,6 @@ ui_panes_add (App_Data *ap)
 	evas_object_size_hint_align_set(panes_center_down,
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_center, "right", panes_center_down);
-	evas_object_show(panes_center_down);
 
 	us->panes_left = panes_left;
 	us->panes_right = panes_right;
@@ -287,44 +280,54 @@ ui_panes_add (App_Data *ap)
 	evas_object_smart_callback_add(panes_center, "unpress", _unpress, NULL);
 	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress, NULL);
 
-	scroller = elm_genlist_add(ap->win_layout);
-	elm_object_part_content_set(panes_center_down, "left", scroller);
-	evas_object_show(scroller);
-	ap->block_bottom_left = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_center_down, "left", layout);
+	evas_object_show(layout);
+	ap->block_bottom_left = layout;
 
-	scroller = elm_scroller_add(ap->win_layout);
-	elm_object_part_content_set(panes_center_down, "right", scroller);
-	evas_object_show(scroller);
-	ap->block_bottom_right = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_center_down, "right", layout);
+//	evas_object_show(layout);
+	ap->block_bottom_right = layout;
 
-	scroller = elm_layout_add(ap->win_layout);
-	elm_object_part_content_set(panes_center, "left", scroller);
-	evas_object_show(scroller);
-	ap->block_canvas = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_center, "left", layout);
+	evas_object_show(layout);
+	ap->block_canvas = layout;
 
-	scroller = elm_genlist_add(ap->win_layout);
-	elm_object_part_content_set(panes_left_hor, "left", scroller);
-	evas_object_show(scroller);
-	ap->block_left_top = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_left_hor, "left", layout);
+//	evas_object_show(layout);
+	ap->block_left_top = layout;
 
-	scroller = elm_genlist_add(ap->win_layout);
-	elm_object_part_content_set(panes_left_hor, "right", scroller);
-	evas_object_show(scroller);
-	ap->block_left_bottom = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_left_hor, "right", layout);
+//	evas_object_show(layout);
+	ap->block_left_bottom = layout;
 
-	scroller = elm_scroller_add(ap->win_layout);
-	elm_object_part_content_set(panes_right_hor, "left", scroller);
-	evas_object_show(scroller);
-	ap->block_right_top = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_right_hor, "left", layout);
+//	evas_object_show(layout);
+	ap->block_right_top = layout;
 
-	scroller = elm_genlist_add(ap->win_layout);
-	elm_object_part_content_set(panes_right_hor, "right", scroller);
-	evas_object_show(scroller);
-	ap->block_right_bottom = scroller;
+	layout = elm_layout_add(ap->win_layout);
+	elm_object_part_content_set(panes_right_hor, "right", layout);
+//	evas_object_show(layout);
+	ap->block_right_bottom = layout;
 
 	ui_csp =_ui_panes_current_state_struct_init ();
 	return EINA_TRUE;
 }
+
+
+void
+ui_block_content_set (Evas_Object *block, Evas_Object *content)
+{
+	if (!block || !content)
+		return;
+	elm_object_part_content_set (block, NULL, content);
+}
+
 
 Eina_Bool
 ui_panes_del ()
@@ -338,6 +341,18 @@ ui_panes_del ()
 	eina_list_free(ui_list_panes);
 	eina_list_free(l);
 	return EINA_TRUE;
+}
+
+void
+ui_panes_show (App_Data *ap)
+{
+	elm_object_signal_emit (ap->win_layout, "window,panes,show", "");
+}
+
+void
+ui_panes_hide (App_Data *ap)
+{
+	elm_object_signal_emit (ap->win_layout, "window,panes,hide", "");
 }
 
 

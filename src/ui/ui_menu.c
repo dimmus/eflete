@@ -19,14 +19,19 @@ _on_fileselector_done (void *data, Evas_Object *obj, void *event_info)
 		//data = selected;
 		list = wm_widget_list_new(selected);
 		wd_list = ui_widget_list_add(ap, list);
-		elm_object_content_set(ap->block_left_top, wd_list);
+		ui_block_content_set(ap->block_left_top, wd_list);
+		//elm_object_content_set(ap->block_left_top, wd_list);
 		evas_object_show(wd_list);
 		//block_left_top
+		ui_panes_show (ap);
 
 		evas_object_del(elm_object_top_widget_get(obj));
 	}
 	else
+	{
+		ui_panes_hide (ap);
 		evas_object_del(elm_object_top_widget_get(obj));
+	}
 }
 
 static void
