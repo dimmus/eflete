@@ -13,11 +13,10 @@ ui_menu_add (UI_Data *ud)
 {
 	Evas_Object *tb, *menu;
 	Elm_Object_Item *tb_it;
-    Eina_Bool state_errors = EINA_FALSE;
 
 	tb = elm_toolbar_add(ud->win_layout);
 	if (tb == NULL)
-		state_errors = EINA_TRUE;
+		return EINA_FALSE;
 	else
 		ui_list_menu = eina_list_append(ui_list_menu, tb);
 
@@ -32,11 +31,11 @@ ui_menu_add (UI_Data *ud)
 	elm_toolbar_icon_order_lookup_set (tb, ELM_ICON_LOOKUP_FDO_THEME);
 	tb_it = elm_toolbar_item_append(tb, "menu/arrow_down", "File", NULL, NULL);
 	if (tb_it == NULL)
-		state_errors = EINA_TRUE;
+		return EINA_FALSE;
 	elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
 	menu = elm_toolbar_item_menu_get(tb_it);
 	if (menu == NULL)
-		state_errors = EINA_TRUE;
+		return EINA_FALSE;
 	else
 		ui_list_menu = eina_list_append(ui_list_menu, menu);
 
@@ -61,23 +60,21 @@ ui_menu_add (UI_Data *ud)
 	elm_toolbar_item_append(tb, "refresh", "Refresh", NULL, NULL);
 
 	ud->main_menu = tb;
-	return ~state_errors;
+	return EINA_TRUE;
 }
 
 Eina_Bool
 ui_menu_del (void)
 {
 	Evas_Object *deleting_element;
-	Eina_Bool state_errors = EINA_FALSE;
 	Eina_List *l;
 
     EINA_LIST_FOREACH(ui_list_menu, l, deleting_element){
 		evas_object_del (deleting_element);
-		if (deleting_element!=NULL)
-			state_errors = EINA_TRUE;
+		if (!deleting_element)	return EINA_FALSE;
 	}
 	eina_list_free(ui_list_menu);
 	eina_list_free(l);
-	return ~state_errors;
+	return EINA_TRUE;
 }
 

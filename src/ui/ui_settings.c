@@ -1,254 +1,260 @@
 #include <ui_main_window.h>
 #include <ui_settings.h>
 
+typedef struct _UI_Settings UI_Settings;
+typedef struct _Panes_Settings Panes_Settings;
+typedef struct _Window_Settings Window_Settings;
 
-struct _UI_Panes_Settings
+struct _Window_Settings
 {
-	double left_panes_left_size;
-	double left_panes_right_size;
-	short int left_panes_fixed;
-
-	double left_hor_panes_left_size;
-	double left_hor_panes_right_size;
-	short int left_hor_panes_fixed;
-
-	double right_panes_left_size;
-	double right_panes_right_size;
-	short int right_panes_fixed;
-
-	double right_hor_panes_left_size;
-	double right_hor_panes_right_size;
-	short int right_hor_panes_fixed;
-
-	double center_panes_left_size;
-	double center_panes_right_size;
-	short int center_panes_fixed;
-
-	double center_down_panes_left_size;
-	double center_down_panes_right_size;
-	short int center_down_panes_fixed;
+	int x;
+	int y;
+	int width;
+	int height;
 };
 
-typedef struct _UI_Panes_Settings UI_Panes_Settings;
-static Eet_Data_Descriptor *_panes_settings_descriptor;
+struct _Panes_Settings
+{
+	double left;
+	double right;
+};
+
+
+struct _UI_Settings
+{
+	Eina_List *panes;
+	Eina_List *window;
+};
+
+static Eet_Data_Descriptor *_ui_settings_descriptor;
+static Eet_Data_Descriptor *_panes_descriptor;
+static Eet_Data_Descriptor *_window_descriptor;
+extern UI_Elements_Settings *us;
 
 static void
-_panes_settings_descriptor_init (void)
+_ui_settings_descriptors_init (void)
 {
 	Eet_Data_Descriptor_Class eddc;
 
-	EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET (&eddc, UI_Panes_Settings);
-	_panes_settings_descriptor = eet_data_descriptor_stream_new (&eddc);
+	EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET (&eddc, UI_Settings);
+	_ui_settings_descriptor = eet_data_descriptor_file_new (&eddc);
 
-	#define MY_CONF_ADD_BASIC(member, eet_type) 	\
+	EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET (&eddc, Panes_Settings);
+	_panes_descriptor = eet_data_descriptor_file_new (&eddc);
+
+	EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET (&eddc, Window_Settings);
+	_window_descriptor = eet_data_descriptor_file_new (&eddc);
+
+
+	#define TET_CONF_ADD_BASIC(member)				\
   		EET_DATA_DESCRIPTOR_ADD_BASIC				\
-    		(_panes_settings_descriptor,			\
-			UI_Panes_Settings,# member, member, eet_type)
+    		(_panes_descriptor,						\
+			Panes_Settings,# member, member,EET_T_DOUBLE)
+		TET_CONF_ADD_BASIC(left);
+		TET_CONF_ADD_BASIC(right);
+	#undef TET_CONF_ADD_BASIC
 
-		MY_CONF_ADD_BASIC(left_panes_left_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(left_panes_right_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(left_panes_fixed, EET_T_SHORT);
-
-		MY_CONF_ADD_BASIC(left_hor_panes_left_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(left_hor_panes_right_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(left_hor_panes_fixed, EET_T_SHORT);
-
-		MY_CONF_ADD_BASIC(right_panes_left_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(right_panes_right_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(right_panes_fixed, EET_T_SHORT);
-
-		MY_CONF_ADD_BASIC(right_hor_panes_left_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(right_hor_panes_right_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(right_hor_panes_fixed, EET_T_SHORT);
-
-		MY_CONF_ADD_BASIC(center_panes_left_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(center_panes_right_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(center_panes_fixed, EET_T_SHORT);
-
-		MY_CONF_ADD_BASIC(center_down_panes_left_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(center_down_panes_right_size, EET_T_DOUBLE);
-		MY_CONF_ADD_BASIC(center_down_panes_fixed, EET_T_SHORT);
+	#define TET_CONF_ADD_BASIC(member)				\
+  		EET_DATA_DESCRIPTOR_ADD_BASIC				\
+    		(_window_descriptor,					\
+			Window_Settings,# member, member,EET_T_INT)
+		TET_CONF_ADD_BASIC(x);
+		TET_CONF_ADD_BASIC(y);
+		TET_CONF_ADD_BASIC(width);
+		TET_CONF_ADD_BASIC(height);
+	#undef TET_CONF_ADD_BASIC
 
 
-	#undef MY_CONF_ADD_BASIC
-
+	EET_DATA_DESCRIPTOR_ADD_LIST(
+		_ui_settings_descriptor, UI_Settings,"panes_list",
+			panes, _panes_descriptor);
+	EET_DATA_DESCRIPTOR_ADD_LIST (
+		_ui_settings_descriptor, UI_Settings, "window_list",
+			window, _window_descriptor);
 }
 
 static void
-_panes_settings_descriptor_shutdown (void)
+_ui_settings_descriptors_shutdown (void)
 {
-	eet_data_descriptor_free (_panes_settings_descriptor);
+	eet_data_descriptor_free (_panes_descriptor);
+	eet_data_descriptor_free (_window_descriptor);
+	eet_data_descriptor_free (_ui_settings_descriptor);
 }
 
-static UI_Panes_Settings *
-_from_list_to_ui_settings (Eina_List *ui_list_panes)
+Panes_Settings *
+_ui_settings_panes_add (Evas_Object *panes)
 {
-	Eina_List *l = ui_list_panes;
-	UI_Panes_Settings *panes_settings=
-		(UI_Panes_Settings*)calloc (1, sizeof(UI_Panes_Settings));
-
-	panes_settings->left_panes_left_size =
-		elm_panes_content_left_size_get ((Evas_Object *)l->data);
-	panes_settings->left_panes_right_size =
-		elm_panes_content_right_size_get ((Evas_Object *)l->data);
-	panes_settings->left_panes_fixed =
-		(short) elm_panes_fixed_get ((Evas_Object *)l->data);
-
-	l = eina_list_next (l);
-	panes_settings->left_hor_panes_left_size =
-		elm_panes_content_left_size_get ((Evas_Object *)l->data);
-	panes_settings->left_hor_panes_right_size =
-		elm_panes_content_right_size_get ((Evas_Object *)l->data);
-	panes_settings->left_hor_panes_fixed =
-		(short) elm_panes_fixed_get ((Evas_Object *)l->data);
-
-	l = eina_list_next (l);
-	panes_settings->right_panes_left_size =
-		elm_panes_content_left_size_get ((Evas_Object *)l->data);
-	panes_settings->right_panes_right_size =
-		elm_panes_content_right_size_get ((Evas_Object *)l->data);
-	panes_settings->right_panes_fixed =
-	(short) elm_panes_fixed_get ((Evas_Object *)l->data);
-	
-	l = eina_list_next (l);
-	panes_settings->right_hor_panes_left_size =
-		elm_panes_content_left_size_get ((Evas_Object *)l->data);
-	panes_settings->right_hor_panes_right_size =
-		elm_panes_content_right_size_get ((Evas_Object *)l->data);
-	panes_settings->right_hor_panes_fixed =
-		(short) elm_panes_fixed_get ((Evas_Object *)l->data);
-
-	l = eina_list_next (l);
-	panes_settings->center_panes_left_size =
-		elm_panes_content_left_size_get ((Evas_Object *)l->data);
-	panes_settings->center_panes_right_size =
-		elm_panes_content_right_size_get ((Evas_Object *)l->data);
-	panes_settings->center_panes_fixed =
-		(short) elm_panes_fixed_get ((Evas_Object *)l->data);
-
-	l = eina_list_next (l);
-	panes_settings->center_down_panes_left_size =
-		elm_panes_content_left_size_get ((Evas_Object *)l->data);
-	panes_settings->center_down_panes_right_size =
-		elm_panes_content_right_size_get ((Evas_Object *)l->data);
-	panes_settings->center_down_panes_fixed =
-		(short) elm_panes_fixed_get ((Evas_Object *)l->data);
-
-	return panes_settings;
+	Panes_Settings *_panes_sett = calloc (1,sizeof (Panes_Settings));
+	_panes_sett->left = elm_panes_content_left_size_get (panes);
+	_panes_sett->right = elm_panes_content_right_size_get (panes);
+	return _panes_sett;
 }
 
-void
-_from_ui_settings_to_list (UI_Panes_Settings *panes_settings,
-							Eina_List *ui_list_panes)
+/**
+ * Prepare data from elements for save.
+ */
+static UI_Settings *
+_ui_settings_prepare ()
 {
-	Eina_List *l = ui_list_panes;
+	UI_Settings *_ui_settings = calloc (1,sizeof (UI_Settings));
+	Panes_Settings *_panes_set;
+	Eina_List *_settings_to_save;
+	Eina_List *_window_list;
+	Window_Settings *_window_sett = calloc (1, sizeof (Window_Settings));
 
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,
-		panes_settings->left_panes_left_size);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,
-		panes_settings->left_panes_right_size);
-	elm_panes_fixed_set ((Evas_Object *)l->data,
-		(Eina_Bool)	panes_settings->left_panes_fixed);
 
-	l = eina_list_next (l);
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,
-		panes_settings->left_hor_panes_left_size);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,
-		panes_settings->left_hor_panes_right_size);
-	elm_panes_fixed_set ((Evas_Object *)l->data,
-		(Eina_Bool)panes_settings->left_hor_panes_fixed);
+	_panes_set = _ui_settings_panes_add (us->panes_left);
+	_settings_to_save = eina_list_append(_settings_to_save, _panes_set);
 
-	l = eina_list_next (l);
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,
-		panes_settings->right_panes_left_size);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,
-		panes_settings->right_panes_right_size);
-	elm_panes_fixed_set ((Evas_Object *)l->data,
-		(Eina_Bool)	panes_settings->right_panes_fixed);
+	_panes_set = _ui_settings_panes_add (us->panes_left_hor);
+	_settings_to_save = eina_list_append(_settings_to_save, _panes_set);
 
-	l = eina_list_next (l);
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,
-		panes_settings->right_hor_panes_left_size);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,
-		panes_settings->right_hor_panes_right_size);
-	elm_panes_fixed_set ((Evas_Object*)l->data,
-		(Eina_Bool)panes_settings->right_hor_panes_fixed);
+	_panes_set = _ui_settings_panes_add (us->panes_right);
+	_settings_to_save = eina_list_append(_settings_to_save, _panes_set);
 
-	l = eina_list_next (l);
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,
-		panes_settings->center_panes_left_size);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,
-		panes_settings->center_panes_right_size);
-	elm_panes_fixed_set ((Evas_Object *)l->data,
-		(Eina_Bool)panes_settings->center_panes_fixed);
+	_panes_set = _ui_settings_panes_add (us->panes_right_hor);
+	_settings_to_save = eina_list_append(_settings_to_save, _panes_set);
 
-	l = eina_list_next (l);
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,
-		panes_settings->center_down_panes_left_size);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,
-		panes_settings->center_down_panes_right_size);
-	elm_panes_fixed_set ((Evas_Object*)l->data,
-		(Eina_Bool)panes_settings->center_down_panes_fixed);
+	_panes_set = _ui_settings_panes_add (us->panes_center);
+	_settings_to_save = eina_list_append(_settings_to_save,
+	_panes_set);
+
+	_panes_set = _ui_settings_panes_add (us->panes_center_down);
+	_settings_to_save = eina_list_append(_settings_to_save, _panes_set);
+
+	_ui_settings->panes = _settings_to_save;
+
+	evas_object_geometry_get (us->window, NULL, NULL,
+		&_window_sett->width,
+		&_window_sett->height);
+	elm_win_screen_position_get (us->window,
+		&_window_sett->x, &_window_sett->y);
+	_window_list = eina_list_append (_window_list, _window_sett);
+	_ui_settings->window = _window_list;
+
+	return _ui_settings;
+}
+
+/**
+ * Apply loaded settings to elements.
+ */
+static void
+_ui_settings_apply (UI_Settings *ui_set)
+{
+	Eina_List *_panes_list = ui_set->panes;
+	Eina_List *_window_list = ui_set->window;
+	Panes_Settings *_panes_sett = calloc (1, sizeof(Panes_Settings));
+	Window_Settings *_window_sett = calloc (1, sizeof (Window_Settings));
+
+	_window_sett = (Window_Settings*) _window_list->data;
+	evas_object_resize (us->window, _window_sett->width,
+		_window_sett->height);
+	evas_object_move (us->window, _window_sett->x,
+		_window_sett->y);
+
+	_panes_sett =(Panes_Settings *) _panes_list->data;
+	elm_panes_content_left_size_set(us->panes_left, _panes_sett->left);
+
+	_panes_list = eina_list_next (_panes_list);
+	_panes_sett =(Panes_Settings *) _panes_list->data;
+	elm_panes_content_left_size_set(us->panes_left_hor, _panes_sett->left);
+
+	_panes_list = eina_list_next (_panes_list);
+	_panes_sett =(Panes_Settings *) _panes_list->data;
+	elm_panes_content_left_size_set(us->panes_right, _panes_sett->left);
+
+	_panes_list = eina_list_next (_panes_list);
+	_panes_sett =(Panes_Settings *) _panes_list->data;
+	elm_panes_content_left_size_set(us->panes_right_hor, _panes_sett->left);
+
+	_panes_list = eina_list_next (_panes_list);
+	_panes_sett =(Panes_Settings *) _panes_list->data;
+	elm_panes_content_left_size_set(us->panes_center, _panes_sett->left);
+
+	_panes_list = eina_list_next (_panes_list);
+	_panes_sett =(Panes_Settings *) _panes_list->data;
+	elm_panes_content_left_size_set(us->panes_center_down, _panes_sett->left);
+}
+
+Eina_Bool
+ui_settings_save ()
+{
+	Eet_File *file_settings;
+	int state_write;
+	UI_Settings *_ui_settings =
+		(UI_Settings*)calloc (1, sizeof(UI_Settings));
+
+	if (!_ui_settings){
+		fprintf (stdout, "ERROR: could not calloc UI_Settings\n");
+		return EINA_FALSE;
+	}
+	_ui_settings_descriptors_init ();
+
+	_ui_settings = _ui_settings_prepare ();
+
+	file_settings = eet_open (UISETTINGSFILE, EET_FILE_MODE_WRITE);
+	if (!file_settings) {
+		fprintf (stdout, "WARNING: unable to open configs file for write");
+		return EINA_FALSE;
+	}
+
+	state_write =eet_data_write (file_settings, _ui_settings_descriptor,
+		"settings",_ui_settings, EINA_FALSE);
+
+	if (!state_write)
+		fprintf (stdout, "WARNING: unable to save data into file \n");
+	eet_close (file_settings);
+
+	_ui_settings_descriptors_shutdown ();
+
+	return EINA_FALSE;
 
 }
 
 Eina_Bool
-_panes_settings_save (Eina_List *ui_list_panes)
+ui_settings_load ( )
 {
-	Eina_Bool state_errors = EINA_FALSE;
-	Eet_File *file_settings;
-	UI_Panes_Settings *panes_settings =
-		(UI_Panes_Settings*)calloc (1, sizeof(UI_Panes_Settings));
-	if (!panes_settings){
-		fprintf (stdout, "ERROR: could not calloc UI_Panes_Settings\n");
-		return EINA_FALSE;
-	}
-	_panes_settings_descriptor_init ();
-
-	panes_settings = _from_list_to_ui_settings (ui_list_panes);
-
-	file_settings = eet_open (SETTINGSFILE, EET_FILE_MODE_WRITE);
-	if (!file_settings) {
-		fprintf (stdout, "Failrue open configs file for write panes settings");
-		state_errors = EINA_TRUE;
-	}
-
-	eet_data_write (file_settings, _panes_settings_descriptor, "panes_settings",
-		panes_settings, EINA_TRUE);
-	eet_close (file_settings);
-
-	_panes_settings_descriptor_shutdown ();
-
-	return ~state_errors;
-}
-
-Eina_Bool
-_panes_settings_load (Eina_List *ui_list_panes)
-{
-	Eina_Bool state_errors = EINA_FALSE;
-	UI_Panes_Settings *panes_settings = 
-		(UI_Panes_Settings*)calloc (1, sizeof(UI_Panes_Settings));
+	UI_Settings *_ui_settings =
+		(UI_Settings*)calloc (1, sizeof(UI_Settings));
 	Eet_File *file_settings;
 
+	_ui_settings_descriptors_init ();
 
-	_panes_settings_descriptor_init ();
-
-	file_settings = eet_open (SETTINGSFILE, EET_FILE_MODE_READ);
+	file_settings = eet_open (UISETTINGSFILE, EET_FILE_MODE_READ);
 	if (!file_settings) {
-		fprintf (stdout, "Fail open configs file for load panes settings \n");
+		fprintf (stdout, "WARNING: unable open configs file for load.\n");
 		return EINA_FALSE;
 	}
 
-	panes_settings = eet_data_read (file_settings,
-		_panes_settings_descriptor, "panes_settings");
-	if (!panes_settings) {
-		fprintf (stdout, "Failrue load panes setings.");
-		state_errors = EINA_TRUE;
+	_ui_settings = eet_data_read (file_settings,
+		_ui_settings_descriptor, "settings");
+	if (!_ui_settings) {
+		fprintf (stdout, "ERROR: unable to load ui setings.\n");
+		return EINA_FALSE;
 	}
-	_from_ui_settings_to_list (panes_settings, ui_list_panes);
 
-	_panes_settings_descriptor_shutdown ();
+	_ui_settings_apply (_ui_settings);
+	_ui_settings_descriptors_shutdown ();
 	eet_close (file_settings);
 
-	return ~state_errors;
+	return EINA_TRUE;
 }
+
+
+UI_Elements_Settings *
+ui_element_settings_init (void)
+{
+	UI_Elements_Settings *_ui_set = calloc (1, sizeof (UI_Elements_Settings));
+	if (!_ui_set) return NULL;
+	_ui_set->panes_left = NULL;
+	_ui_set->panes_right = NULL;
+	_ui_set->panes_left_hor = NULL;
+	_ui_set->panes_right_hor = NULL;
+	_ui_set->panes_center = NULL;
+	_ui_set->panes_center_down = NULL;
+	_ui_set->window = NULL;
+
+	return _ui_set;
+}
+
+

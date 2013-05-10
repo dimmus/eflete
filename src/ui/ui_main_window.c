@@ -1,4 +1,5 @@
 #include <ui_main_window.h>
+#include <ui_settings.h>
 
 Eina_List *ui_list_main_window;
 
@@ -12,12 +13,13 @@ void
 ui_main_window_del ()
 {
 	Evas_Object *deleting_element;
-	Eina_List *l;
+	Eina_List *l = ui_list_main_window;
 
+	ui_panes_settings_save();
 	if (!ui_menu_del())
-		fprintf (stdout, "Failrue on deleting menu elements.");
+		fprintf (stdout, "WARNING: something wrong on delete menu elements.\n");
 	if (!ui_panes_del())
-		fprintf (stdout, "Failrue on deleting panes.");
+		fprintf (stdout, "WARNING: something wrong on delete panes.\n");
 	EINA_LIST_FOREACH(ui_list_main_window, l, deleting_element){
 		evas_object_del (deleting_element);
 	}
@@ -25,6 +27,14 @@ ui_main_window_del ()
 	eina_list_free(l);
 
 	elm_exit();
+}
+
+static void
+_on_window_resize (void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	int w, h;
+	evas_object_geometry_get (obj, NULL, NULL, &w, &h);
+	ui_resize_pans(w,h);
 }
 
 Eina_Bool
@@ -36,15 +46,18 @@ ui_main_window_add (UI_Data *ud)
 
 	win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
     if (win == NULL) {
-		fprintf (stdout,"Failrue create main window.");
+		fprintf (stdout,"ERROR: unable to create main window.");
 		return EINA_FALSE;
 	}
 	ui_list_main_window = eina_list_append(ui_list_main_window, win);
 
 	ud->win = win;
-
 	elm_win_title_set(win, PACKAGE);
-	evas_object_smart_callback_add(win, "delete,request", _on_done, NULL);
+	evas_object_smart_callback_add (win, "delete,request", _on_done, NULL);
+	evas_object_event_callback_add (win,
+		EVAS_CALLBACK_RESIZE,
+		_on_window_resize,
+		NULL);
 
 	bg = elm_bg_add(win);
 	ui_list_main_window = eina_list_append(ui_list_main_window, bg);
@@ -64,13 +77,14 @@ ui_main_window_add (UI_Data *ud)
 	ud->win_layout = layout;
 
 	if(!ui_menu_add(ud))
-		fprintf(stdout,"Failrue add menu on main window.");
+		fprintf(stdout,"ERROR: unable to add menu on main window.\n");
 
 	if(!ui_panes_add(ud))
-		fprintf(stdout,"Failrue add panes on main window.");
+		fprintf(stdout,"ERROR: unable add panes on main window.\n");
 
-	evas_object_resize(win, 1200, 800);
+	ui_panes_settings_load(win);
 	evas_object_show(win);
+
 
 	return EINA_TRUE;
 }

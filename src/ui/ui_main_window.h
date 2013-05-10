@@ -9,8 +9,8 @@
 
 /**
  * Adds main window object for Edje tool development.
- * out:
- * in
+ * out: 
+ * in 
  */
 Eina_Bool
 ui_main_window_add (UI_Data *ud);
@@ -33,13 +33,13 @@ ui_panes_add (UI_Data *ud);
  * Start process load settings for panes.
  */
 void
-ui_panes_settings_load (void);
+ui_panes_settings_load (Evas_Object *win);
 
 /**
  * Start process save settings for panes.
  */
 void
-ui_panes_settings_save (void);
+ui_panes_settings_save ();
 
 /**
  * Delete pannes and contain object.
@@ -63,5 +63,10 @@ ui_menu_add (UI_Data *ud);
 Eina_Bool
 ui_menu_del (void);
 
+/**
+ * 
+ */
+void
+ui_resize_pans(int w, int h);
 #endif	// __UI_MAIN_WINDOW_HEADER__
 
