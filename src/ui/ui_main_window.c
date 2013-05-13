@@ -6,14 +6,20 @@ Eina_List *ui_list_main_window;
 static void
 _on_done(void *data, Evas_Object *obj, void *event_info)
 {
-	ui_main_window_del();
+	App_Data *ap;
+
+	ap = (App_Data *)data;
+
+	ui_main_window_del(ap);
 }
 
 void
-ui_main_window_del ()
+ui_main_window_del (App_Data *ap)
 {
 	Evas_Object *deleting_element;
 	Eina_List *l = ui_list_main_window;
+
+	pm_free(ap->project);
 
 	ui_panes_settings_save();
 	if (!ui_menu_del())
@@ -54,7 +60,7 @@ ui_main_window_add (App_Data *ap)
 	ap->win = win;
 
 	elm_win_title_set(win, PACKAGE);
-	evas_object_smart_callback_add (win, "delete,request", _on_done, NULL);
+	evas_object_smart_callback_add (win, "delete,request", _on_done, ap);
 	evas_object_event_callback_add (win,
 		EVAS_CALLBACK_RESIZE,
 		_on_window_resize,

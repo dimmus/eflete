@@ -147,6 +147,7 @@ ui_widget_list_add(App_Data *ap, Eina_Inlist *widget_list)
 	Evas_Object *ui_widget_list = NULL;
 	Widget *_widget;
 	Elm_Object_Item *eoi;
+	Elm_Object_Item *it;
 
 	if(!_itc_widget)
 	{
@@ -201,7 +202,8 @@ ui_widget_list_add(App_Data *ap, Eina_Inlist *widget_list)
 	evas_object_smart_callback_add(ui_widget_list, "contracted",
 									ui_wl_con, ui_widget_list);
 
-	elm_naviframe_item_push(nf, NULL, NULL, NULL, ui_widget_list, NULL);
+	it = elm_naviframe_item_push(nf, ap->project->name, NULL, NULL, ui_widget_list, NULL);
+	elm_object_item_part_text_set(it, "subtitle", "Widget list");
 
 	return nf;
 }

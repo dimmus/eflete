@@ -24,8 +24,10 @@ elm_main()
 {
 	eina_init();
 	efreet_init();
-	if(!logger_init())
-		EINA_LOG_CRIT("Could not start logger!");
+	ecore_init();
+	edje_init();
+	logger_init();
+
 	#ifdef HAVE_CONFIG_H
 		INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
 	#else

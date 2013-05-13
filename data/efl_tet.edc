@@ -127,5 +127,20 @@ collections {
          }
       }
 	}
+   group {
+      name: "base/layout";
+
+      parts {
+         part {
+            name: "base/layout/swallow";
+            type: SWALLOW;
+
+            description {
+               state: "default" 0.0;
+               fixed: 1 1;
+            }
+         }
+      }
+   }
 }
 

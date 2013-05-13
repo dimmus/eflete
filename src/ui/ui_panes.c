@@ -281,38 +281,45 @@ ui_panes_add (App_Data *ap)
 	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress, NULL);
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_center_down, "left", layout);
 	evas_object_show(layout);
 	ap->block_bottom_left = layout;
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_center_down, "right", layout);
-//	evas_object_show(layout);
+	evas_object_show(layout);
 	ap->block_bottom_right = layout;
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_center, "left", layout);
 	evas_object_show(layout);
 	ap->block_canvas = layout;
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_left_hor, "left", layout);
-//	evas_object_show(layout);
+	evas_object_show(layout);
 	ap->block_left_top = layout;
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_left_hor, "right", layout);
-//	evas_object_show(layout);
+	evas_object_show(layout);
 	ap->block_left_bottom = layout;
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_right_hor, "left", layout);
-//	evas_object_show(layout);
+	evas_object_show(layout);
 	ap->block_right_top = layout;
 
 	layout = elm_layout_add(ap->win_layout);
+	elm_layout_file_set(layout, TET_EDJ, "base/layout");
 	elm_object_part_content_set(panes_right_hor, "right", layout);
-//	evas_object_show(layout);
+	evas_object_show(layout);
 	ap->block_right_bottom = layout;
 
 	ui_csp =_ui_panes_current_state_struct_init ();
@@ -325,7 +332,7 @@ ui_block_content_set (Evas_Object *block, Evas_Object *content)
 {
 	if (!block || !content)
 		return;
-	elm_object_part_content_set (block, NULL, content);
+	elm_object_part_content_set (block, "base/layout/swallow", content);
 }
 
 

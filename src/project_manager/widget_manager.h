@@ -10,7 +10,6 @@ struct _Part
 {
 	EINA_INLIST;
 	char *part_name;
-	Evas_Object *obj;
 	Eina_Bool show;
 	/*TODO: add part details */
 };

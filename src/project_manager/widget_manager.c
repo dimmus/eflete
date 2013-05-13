@@ -46,10 +46,6 @@ wm_part_free(Part *part)
 	if(!part)
 		return EINA_FALSE;
 
-	if(	evas_object_ref_get(part->obj) != 0)
-		evas_object_unref(part->obj);
-	evas_object_del(part->obj);
-
 	free(part->part_name);
 	free(part);
 
@@ -277,6 +273,7 @@ wm_widget_list_new(const char *file)
 	if(!file)
 		return NULL;
 
+	DBG("Start to parse the edje group collection.");
 	collection = edje_file_collection_list(file);
 	if(!collection)
 	{
@@ -316,6 +313,10 @@ wm_widget_list_new(const char *file)
 		}
 	}
 	edje_file_collection_list_free(collection);
+	DBG("Parse the edje group collection id finished! The list of widget - created.");
+	INFO("The theme consist a styles for %i widgets.",
+			eina_inlist_count(widget_list));
+
 	return widget_list;
 }
 

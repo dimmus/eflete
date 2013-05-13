@@ -52,7 +52,7 @@ tet_log_cb(const Eina_Log_Domain *domain,
 		output = stderr;
 
 	fprintf(output, "%s:%s:%s (%d): ",
-			domain->domain_str, file, fnc, line);
+			domain->domain_str, basename(file), fnc, line);
 	vfprintf(output, fmt, args);
 	putc('\n', output);
 }
@@ -77,7 +77,7 @@ logger_init(void)
 	}
 	if(_tet_log_dom_err < 0)
 	{
-		_tet_log_dom_err = eina_log_domain_register("TET ERR", EINA_COLOR_LIGHTRED);
+		_tet_log_dom_err = eina_log_domain_register("TET ERR ", EINA_COLOR_LIGHTRED);
 		if(_tet_log_dom_err < 0)
 		{
 			EINA_LOG_CRIT("Could not register log domain 'TET ERR'");
@@ -104,7 +104,7 @@ logger_init(void)
 	}
 	if(_tet_log_dom_dbg < 0)
 	{
-		_tet_log_dom_dbg = eina_log_domain_register("TET DBG", EINA_COLOR_LIGHTBLUE);
+		_tet_log_dom_dbg = eina_log_domain_register("TET DBG ", EINA_COLOR_LIGHTBLUE);
 		if(_tet_log_dom_dbg < 0)
 		{
 			EINA_LOG_CRIT("Could not register log domain 'TET DBG'");

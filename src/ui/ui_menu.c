@@ -4,7 +4,7 @@
 Eina_List *ui_list_menu;
 
 static void
-_on_fileselector_done (void *data, Evas_Object *obj, void *event_info)
+_on_fs_edj_done (void *data, Evas_Object *obj, void *event_info)
 {
 	Evas_Object *wd_list;
 	Eina_Inlist *list;
@@ -15,58 +15,77 @@ _on_fileselector_done (void *data, Evas_Object *obj, void *event_info)
 
 	if(selected)
 	{
-		INFO("Select file: %s", selected);
-		//data = selected;
-		list = wm_widget_list_new(selected);
-		wd_list = ui_widget_list_add(ap, list);
-		ui_block_content_set(ap->block_left_top, wd_list);
-		//elm_object_content_set(ap->block_left_top, wd_list);
-		evas_object_show(wd_list);
-		//block_left_top
-		ui_panes_show (ap);
+		if(eina_str_has_suffix(selected, ".edj"))
+		{
+			INFO("Select file: %s", selected);
+			ap->project = pm_open_project_edj(selected);
+			list = wm_widget_list_new(ap->project->swapfile);
+			wd_list = ui_widget_list_add(ap, list);
+			ui_block_content_set(ap->block_left_top, wd_list);
+			evas_object_show(wd_list);
+			ui_panes_show(ap);
 
-		evas_object_del(elm_object_top_widget_get(obj));
+			evas_object_hide(elm_object_parent_widget_get(obj));
+		}
+		else
+		{
+			/*TODO: add notify about a wrong file extension */
+			ERR("The file must have a extension '.edj'");
+		}
 	}
 	else
 	{
-		ui_panes_hide (ap);
-		evas_object_del(elm_object_top_widget_get(obj));
+		ui_panes_hide(ap);
+		evas_object_del(elm_object_parent_widget_get(obj));
 	}
 }
 
-static void
-_on_edj_open_menu (void *data, Evas_Object *obj, void *event_info)
+void
+_open_dialog_show(void *data, Evas_Smart_Cb func)
 {
-	Evas_Object *win, *vbox, *fs;
+	Evas_Object *inwin, *fs;
+	App_Data *ap;
 
-	win = elm_win_util_standard_add("fileselector", "Select EDJ file");
-	elm_win_autodel_set(win, EINA_TRUE);
+	ap = (App_Data *)data;
 
-	vbox = elm_box_add(win);
-	evas_object_size_hint_weight_set(vbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	elm_win_resize_object_add(win, vbox);
-	evas_object_show(vbox);
+	inwin = elm_win_inwin_add(ap->win);
 
-	fs = elm_fileselector_add(win);
+	fs = elm_fileselector_add(inwin);
 	evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_box_pack_end(vbox, fs);
+	elm_win_inwin_content_set(inwin, fs);
 	elm_fileselector_path_set(fs, getenv("HOME"));
 	elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
 	elm_fileselector_expandable_set(fs, EINA_FALSE);
 	elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
 	evas_object_show(fs);
 
-	evas_object_smart_callback_add(fs, "done", _on_fileselector_done, data);
+	evas_object_smart_callback_add(fs, "done", func, ap);
 
-	evas_object_resize(win, 240, 350);
-	evas_object_show(win);
+	evas_object_show(inwin);
+}
+
+
+static void
+_on_edj_open_menu (void *data, Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
+{
+	App_Data *ap;
+
+	ap = (App_Data *)data;
+
+	_open_dialog_show(ap, _on_fs_edj_done);
 }
 
 static void
-_on_exit_menu (void *data, Evas_Object *obj, void *event_info)
+_on_exit_menu (void *data, Evas_Object *obj __UNUSED__,
+				void *event_info __UNUSED__)
 {
-	ui_main_window_del();
+	App_Data *ap;
+
+	ap = (App_Data *)data;
+
+	ui_main_window_del(ap);
 }
 
 Eina_Bool
@@ -103,7 +122,7 @@ ui_menu_add (App_Data *ap)
 	//elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file", _on_edc_open_menu, ud);
 	elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file", _on_edj_open_menu, ap);
 	elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
-	elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, NULL);
+	elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
 	tb_it=elm_toolbar_item_append(tb,"menu/arrow_down", "Options", NULL, NULL);
 	elm_toolbar_item_menu_set(tb_it, EINA_TRUE);

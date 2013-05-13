@@ -26,9 +26,17 @@ struct _App_Data
 	Evas_Object *block_right_bottom;
 	Evas_Object *main_menu;
 	Evas_Object *block_canvas;
+
+	Project *project;
 };
 
 typedef struct _App_Data App_Data;
+
+void
+efl_tet_init (void);
+
+void
+efl_tet_shutdown (void);
 
 App_Data *
 app_create (void);
