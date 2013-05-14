@@ -85,5 +85,8 @@ ui_panes_show (App_Data *ap);
 void
 ui_panes_hide (App_Data *ap);
 
+void
+ui_workspace_add (App_Data *ap);
+
 #endif	// __UI_MAIN_WINDOW_HEADER__
 

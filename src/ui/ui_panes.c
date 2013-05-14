@@ -1,4 +1,3 @@
-#include <ui_main_window.h>
 #include <ui_settings.h>
 
 void _print_current_state(char *);
@@ -362,4 +361,8 @@ ui_panes_hide (App_Data *ap)
 	elm_object_signal_emit (ap->win_layout, "window,panes,hide", "");
 }
 
-
+void
+ui_workspace_add (App_Data *ap)
+{
+	ap->ws = ws_add(ap->block_canvas);
+}
