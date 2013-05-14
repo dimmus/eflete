@@ -1,6 +1,8 @@
 #ifndef __UI_SETTINGS_HEADER__
 #define __UI_SETTINGS_HEADER__
 
+#include "ui_main_window.h"
+
 #define UISETTINGSFILE "ui.set"
 
 struct _UI_Elements_Settings

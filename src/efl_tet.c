@@ -15,7 +15,7 @@ app_create (void)
 	_ap->block_right_bottom = NULL;
 	_ap->main_menu = NULL;
 	_ap->block_canvas = NULL;
-
+	_ap->ws = NULL;
 	return _ap;
 }
 
@@ -27,6 +27,7 @@ elm_main()
 	ecore_init();
 	edje_init();
 	logger_init();
+	ecore_evas_init ();
 
 	#ifdef HAVE_CONFIG_H
 		INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
