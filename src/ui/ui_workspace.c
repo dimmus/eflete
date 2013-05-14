@@ -79,7 +79,7 @@ ws_add (Evas_Object *layout)
 	_bg = evas_object_image_filled_add (canvas);
 	evas_object_image_filled_set (_bg, EINA_FALSE);
 	evas_object_resize (_bg, 400, 400);
-	evas_object_image_file_set (_bg, DEFAULTBACKGROUND, NULL);
+	evas_object_image_file_set (_bg, TET_IMG_PATH"bg_workspace.png", NULL);
 	evas_object_image_fill_set (_bg, 0, 0, 32, 32);
 	elm_object_part_content_set (layout, "base/workspace/background", _bg);
 	evas_object_show (_bg);
@@ -93,7 +93,7 @@ ws_add (Evas_Object *layout)
 	elm_object_content_unset (_button);
 
 	_icon = elm_icon_add (_button);
-	elm_icon_file_set(_icon, ZOOMOUTICONFILE, NULL);
+	elm_icon_file_set(_icon, TET_IMG_PATH"zoom_out.png", NULL);
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
@@ -104,7 +104,7 @@ ws_add (Evas_Object *layout)
 	ws->button_zoom_in = _button;
 
 	_icon = elm_icon_add (_button);
-	elm_icon_file_set(_icon, ZOOMINICONFILE, NULL);
+	elm_icon_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
@@ -114,7 +114,7 @@ ws_add (Evas_Object *layout)
 	evas_object_smart_callback_add (_button, "clicked", _separate_on_click, ws);
 	ws->button_separate = _button;
 	_icon = elm_icon_add (_button);
-	elm_icon_file_set(_icon, LAYERSHOWICONFILE, NULL);
+	elm_icon_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 

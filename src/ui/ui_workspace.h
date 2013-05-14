@@ -4,12 +4,6 @@
 #include <Evas.h>
 #include <Elementary.h>
 
-#define DEFAULTBACKGROUND "../data/image/bg_workspace.png"
-#define ZOOMINICONFILE "../data/image/zoom_in.png"
-#define ZOOMOUTICONFILE "../data/image/zoom_out.png"
-#define LAYERSHOWICONFILE "../data/image/layer_show.png"
-
-
 struct _Workspace
 {
 	Evas *canvas;
