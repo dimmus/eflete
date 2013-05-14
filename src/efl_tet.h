@@ -13,6 +13,7 @@
 #include <Elementary.h>
 #include "logger.h"
 #include "pm.h"
+#include "ui_workspace.h"
 
 struct _App_Data
 {
@@ -27,6 +28,7 @@ struct _App_Data
 	Evas_Object *main_menu;
 	Evas_Object *block_canvas;
 
+	Workspace *ws;
 	Project *project;
 };
 

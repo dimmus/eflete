@@ -1,4 +1,3 @@
-#include <ui_main_window.h>
 #include <ui_settings.h>
 
 typedef struct _UI_Settings UI_Settings;

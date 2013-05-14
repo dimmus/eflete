@@ -90,6 +90,7 @@ ui_main_window_add (App_Data *ap)
 		ERR("Failrue add panes on main window.");
 
 	ui_panes_settings_load(win);
+	ui_workspace_add (ap);
 	evas_object_show(win);
 
 
