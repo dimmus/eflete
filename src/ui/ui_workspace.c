@@ -69,7 +69,7 @@ ws_add (Evas_Object *layout)
 	Evas_Object *_bg, *_button;
 	Evas_Object *_icon;
 	Eina_Bool _img_load;
-	Evas *canvas;
+	Ecore_Evas *canvas;
 
 	ws = ws_init();
 	ws_zoom_step_set (2, ws);

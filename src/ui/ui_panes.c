@@ -334,6 +334,13 @@ ui_block_content_set (Evas_Object *block, Evas_Object *content)
 	elm_object_part_content_set (block, "base/layout/swallow", content);
 }
 
+Evas_Object *
+ui_block_content_get (Evas_Object *block)
+{
+	if (!block)
+		return NULL;
+	return elm_object_part_content_get (block, "base/layout/swallow");
+}
 
 Eina_Bool
 ui_panes_del ()

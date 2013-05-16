@@ -9,6 +9,17 @@
 #include <string.h>
 #include "logger.h"
 
+
+enum _type
+{
+	WIDGET = 0,
+	STYLE,
+	GROUP,
+	PART
+};
+
+typedef enum _type type;
+
 struct _Part_State_Image
 {
 	const char *normal_image;
@@ -115,6 +126,7 @@ struct _Part
 	const char *drag_confine;
 	const char *drag_event;
 	Eina_Inlist *states;
+	type __type;
 };
 
 typedef struct _Part Part;
@@ -152,6 +164,7 @@ struct _Group
 	Eina_Bool show;
 	Eina_Inlist *parts;
 	Eina_Inlist *programs;
+	type __type;
 };
 
 typedef struct _Group Group;
@@ -161,6 +174,7 @@ struct _Style
 	EINA_INLIST;
 	char *style_name;
 	Eina_Inlist *groups;
+	type __type;
 };
 
 typedef struct _Style Style;
@@ -170,6 +184,7 @@ struct _Widget
 	EINA_INLIST;
 	char *widget_name;
 	Eina_Inlist *styles;
+	type __type;
 };
 
 typedef struct _Widget Widget;
@@ -249,7 +264,7 @@ wm_group_add(const char *group_name, const char *full_group_name);
  *
  */
 void
-wm_group_data_load(Group *group, Ecore_Evas *ee, const char *edj);
+wm_group_data_load(Group *group, Evas *e, const char *edj);
 
 /**
  *

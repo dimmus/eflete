@@ -1,6 +1,7 @@
 #include "widget_manager.h"
 
 static char **arr;
+static char tmp[PATH_MAX];
 static int size;
 static char empty = '\0';
 
@@ -18,9 +19,18 @@ static char empty = '\0';
 	free(arr[0]); \
 	free(arr);
 
-#define WM_GROUP_NAME_GET(group_name, group) \
-	arr = eina_str_split(group, "/", 4); \
-	group_name = strdup(arr[2]); \
+#define WM_GROUP_NAME_GET(group_name, style, group) \
+	arr = eina_str_split(group, "/", 0); \
+	strcpy(tmp, arr[2]); \
+	for (size = 3; arr[size]; size++) \
+	{ \
+		if (strcmp(arr[size],style)) \
+		{ \
+			strcat(tmp, "/"); \
+			strcat(tmp, arr[size]); \
+		} \
+	} \
+	group_name = strdup(tmp); \
 	free(arr[0]); \
 	free(arr);
 
@@ -220,6 +230,7 @@ wm_part_add(Evas_Object *obj, const char *part_name)
 		return NULL;
 
 	result = calloc(1, sizeof(Part));
+	result->__type = PART;
 
 	result->name = eina_stringshare_add(part_name);
 	result->api_name = edje_edit_part_api_name_get(obj, part_name);
@@ -368,12 +379,13 @@ wm_group_add(const char *group_name, const char *full_group_name)
 	group_edje->obj = NULL;
 	group_edje->parts = NULL;
 	group_edje->programs = NULL;
+	group_edje->__type = GROUP;
 
 	return group_edje;
 }
 
 void
-wm_group_data_load(Group *group, Ecore_Evas *ee, const char *edj)
+wm_group_data_load(Group *group, Evas *e, const char *edj)
 {
 	Evas_Object *edje_edit_obj;
 	Eina_List *parts_list, *programs_list, *l;
@@ -381,10 +393,10 @@ wm_group_data_load(Group *group, Ecore_Evas *ee, const char *edj)
 	Part *part;
 	Program *program;
 
-	if (!group || !ee)
+	if (!group || !e)
 		return;
 
-	edje_edit_obj = edje_edit_object_add(ecore_evas_get(ee));
+	edje_edit_obj = edje_edit_object_add(e);
 
 	if (!edje_object_file_set(edje_edit_obj, edj, group->full_group_name))
 	{
@@ -470,10 +482,11 @@ wm_style_add(const char *style, Eina_List *groups)
 	style_edje = calloc(1, sizeof(*style_edje));
 	style_edje->style_name = strdup(style);
 	style_edje->groups = NULL;
+	style_edje->__type = STYLE;
 
 	EINA_LIST_FOREACH(groups, l, group_name_full)
 	{
-		WM_GROUP_NAME_GET(group_name, group_name_full);
+		WM_GROUP_NAME_GET(group_name, style_edje->style_name, group_name_full);
 		group_edje = wm_group_add(group_name, group_name_full);
 		style_edje->groups = eina_inlist_append(style_edje->groups,
 							EINA_INLIST_GET(group_edje));
@@ -544,6 +557,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 	_widget = calloc(1, sizeof(*_widget));
 	_widget->widget_name = strdup(widget);
 	_widget->styles = NULL;
+	_widget->__type = WIDGET;
 
 	groups = eina_list_sort(groups,
 							eina_list_count(groups),
