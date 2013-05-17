@@ -3,6 +3,7 @@
 
 #include "efl_tet.h"
 #include <Elementary.h>
+#include "config.h"
 
 /**
  *

@@ -2,7 +2,10 @@
 #define __UI_MAIN_WINDOW_HEADER__
 
 #include "efl_tet.h"
-#include "project_manager.h"
+#include "pm.h"
+#include "ui_widget_list.h"
+#include "ui_signal_list.h"
+#include "ui_workspace.h"
 
 /**
  * Adds main window object for Edje tool development.

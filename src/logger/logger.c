@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 #include "logger.h"
+/*
+#include <libgen.h>
+*/
 
 static FILE *log_file;
 static char *log_file_name;
@@ -51,8 +54,9 @@ tet_log_cb(const Eina_Log_Domain *domain,
 	else
 		output = stderr;
 
+	/* Maybe need to use basename() fuction  */
 	fprintf(output, "%s:%s:%s (%d): ",
-			domain->domain_str, basename(file), fnc, line);
+			domain->domain_str, file, fnc, line);
 	vfprintf(output, fmt, args);
 	putc('\n', output);
 }

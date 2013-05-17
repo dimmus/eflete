@@ -4,7 +4,9 @@
 Eina_List *ui_list_main_window;
 
 static void
-_on_done(void *data, Evas_Object *obj, void *event_info)
+_on_done(void *data,
+		Evas_Object *obj __UNUSED__,
+		void *event_info __UNUSED__)
 {
 	App_Data *ap;
 
@@ -36,7 +38,10 @@ ui_main_window_del (App_Data *ap)
 }
 
 static void
-_on_window_resize (void *data, Evas *e, Evas_Object *obj, void *event_info)
+_on_window_resize (void *data __UNUSED__,
+					Evas *e __UNUSED__,
+					Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
 {
 	int w, h;
 	evas_object_geometry_get (obj, NULL, NULL, &w, &h);

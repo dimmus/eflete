@@ -162,7 +162,9 @@ ui_resize_pans (int w, int h)
 }
 
 static void
-_unpress(void *data, Evas_Object *obj, void *event_info)
+_unpress(void *data __UNUSED__,
+		Evas_Object *obj __UNUSED__,
+		void *event_info __UNUSED__)
 {
 	ui_panes_current_state_get ();
 }
@@ -175,7 +177,7 @@ ui_panes_settings_save ()
 }
 
 void
-ui_panes_settings_load (Evas_Object *win)
+ui_panes_settings_load (Evas_Object *win __UNUSED__)
 {
 	ui_settings_load();
 	ui_panes_current_state_get ();
