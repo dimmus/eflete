@@ -1,5 +1,5 @@
-#ifndef __UI_MAIN_WINDOW_HEADER__
-#define __UI_MAIN_WINDOW_HEADER__
+#ifndef UI_MAIN_WINDOW_HEADER_H
+#define UI_MAIN_WINDOW_HEADER_H
 
 #include "efl_tet.h"
 #include "pm.h"
@@ -91,5 +91,5 @@ ui_panes_hide (App_Data *ap);
 void
 ui_workspace_add (App_Data *ap);
 
-#endif	// __UI_MAIN_WINDOW_HEADER__
+#endif	/* UI_MAIN_WINDOW_HEADER_H */
 

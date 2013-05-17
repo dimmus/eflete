@@ -1,5 +1,5 @@
-#ifndef _EDJE_COMPILE
-#define _EDJE_COMPILE
+#ifndef EDJE_COMPILE_H
+#define EDJE_COMPILE_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -66,4 +66,4 @@ compiler_free(Edje_CC *compiler);
 void
 decompiler_free(Edje_DeCC *decompiler);
 
-#endif /* _EDJE_COMPILE */
+#endif /* EDJE_COMPILE_H */

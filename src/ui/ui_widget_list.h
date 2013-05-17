@@ -1,5 +1,5 @@
-#ifndef UI_WIDGET_LIST
-#define UI_WIDGET_LIST
+#ifndef UI_WIDGET_LIST_H
+#define UI_WIDGET_LIST_H
 
 #include "efl_tet.h"
 #include "pm.h"
@@ -12,4 +12,4 @@
 Evas_Object *
 ui_widget_list_add(App_Data *ap, Eina_Inlist *widget_list);
 
-#endif /* UI_WIDGET_LIST */
+#endif /* UI_WIDGET_LIST_H */

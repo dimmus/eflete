@@ -1,5 +1,5 @@
-#ifndef __UI_SETTINGS_HEADER__
-#define __UI_SETTINGS_HEADER__
+#ifndef UI_SETTINGS_HEADER_H
+#define UI_SETTINGS_HEADER_H
 
 #include "ui_main_window.h"
 
@@ -42,5 +42,4 @@ ui_settings_save ();
 Eina_Bool
 ui_settings_load ();
 
-#endif // __UI_SETTINGS_HEADER__
-
+#endif /* UI_SETTINGS_HEADER_H */
