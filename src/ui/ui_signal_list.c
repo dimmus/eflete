@@ -37,7 +37,6 @@ ui_signal_list_add(App_Data *ap, Eina_List *signals)
 
 	EINA_LIST_FOREACH(signals, l, signal)
 	{
-		DBG("%s", signal);
 		elm_genlist_item_append(gl_signals, _itc_signal,
 								signal,
 								NULL, ELM_GENLIST_ITEM_NONE,
