@@ -1,5 +1,6 @@
 #include <ui_main_window.h>
 #include "ui_widget_list.h"
+#include "ui_style_viewer_window.h"
 
 Eina_List *ui_list_menu;
 
@@ -65,7 +66,6 @@ _open_dialog_show(void *data, Evas_Smart_Cb func)
 	evas_object_show(inwin);
 }
 
-
 static void
 _on_edj_open_menu (void *data, Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
@@ -86,6 +86,17 @@ _on_exit_menu (void *data, Evas_Object *obj __UNUSED__,
 	ap = (App_Data *)data;
 
 	ui_main_window_del(ap);
+}
+
+static void
+_on_style_window_menu (void *data, Evas_Object *obj __UNUSED__,
+						void *event_info __UNUSED__)
+{
+	App_Data *ap;
+
+	ap = (App_Data *)data;
+
+	style_viewer_init(ap);
 }
 
 Eina_Bool
@@ -139,6 +150,11 @@ ui_menu_add (App_Data *ap)
 	elm_toolbar_item_append(tb, "folder", "Folder", NULL, NULL);
 	elm_toolbar_item_append(tb, "edit", "Edit", NULL, NULL);
 	elm_toolbar_item_append(tb, "refresh", "Refresh", NULL, NULL);
+
+	tb_it = elm_toolbar_item_append (tb, NULL, "Separator", NULL, NULL);
+	elm_toolbar_item_separator_set (tb_it, EINA_TRUE);
+
+	elm_toolbar_item_append(tb, "item", "Style Viewer", _on_style_window_menu, ap);
 
 	ap->main_menu = tb;
 	return EINA_TRUE;
