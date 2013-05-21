@@ -14,7 +14,7 @@ _ws_zoom_in (Workspace *ws)
 }
 
 Eina_Bool
-_ws_zoom_out (Workspace __UNUSED__ *ws )
+_ws_zoom_out (Workspace *ws )
 {
 	int x, y, w, h;
 	evas_object_image_fill_get (ws->bg, &x, &y, &w, &h);
@@ -44,7 +44,7 @@ _separate_on_click (void *data, Evas_Object *obj, void *event_info)
 }
 
 Eina_Bool
-ws_bf_set (Evas_Object *bg)
+ws_bg_set (Evas_Object *bg)
 {
 	return EINA_TRUE;
 }
@@ -61,29 +61,46 @@ ws_zoom_step_get (Workspace *ws)
 	return ws->zoom_step;
 }
 
+static void
+_ws_mouse_move_cb (void *data, Evas *e,Evas_Object *obj, void *event_info)
+{
+	int x, y;
+		evas_pointer_output_xy_get (e, &x, &y);
+//		fprintf (stdout, "DEBAG [CB MOUSE_MOVE]: x[%d] y[%d]\n",x, y);
+	ui_ruler_pointer_pos_set ((Evas_Object*)data);
+}
+
 
 Workspace *
 ws_add (Evas_Object *layout)
 {
-	Workspace *ws = NULL;
-	Evas_Object *_bg, *_button;
+	Workspace *ws;
+	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver;
 	Evas_Object *_icon;
-	Eina_Bool _img_load;
-	Ecore_Evas *canvas;
+	Evas *canvas;
+	Eina_Bool *_mouse_in_move =(Eina_Bool*) calloc(1,sizeof(Eina_Bool));
 
 	ws = ws_init();
+	if (!ws)
+	{
+		ERR ("Unable to crerate Workspace structure");
+		return NULL;
+	}
 	ws_zoom_step_set (2, ws);
 	canvas = evas_object_evas_get (layout);
 	ws->canvas = canvas;
 	elm_layout_file_set (layout, TET_EDJ, "base/workspace" );
 	_bg = evas_object_image_filled_add (canvas);
 	evas_object_image_filled_set (_bg, EINA_FALSE);
-	evas_object_resize (_bg, 400, 400);
 	evas_object_image_file_set (_bg, TET_IMG_PATH"bg_workspace.png", NULL);
 	evas_object_image_fill_set (_bg, 0, 0, 32, 32);
 	elm_object_part_content_set (layout, "base/workspace/background", _bg);
 	evas_object_show (_bg);
 	ws->bg = _bg;
+
+	_scroller  = elm_scroller_add (layout);
+	elm_object_part_content_set (layout, "base/workspace/scroller",	_scroller);
+	evas_object_show (_scroller);
 
 	_button = elm_button_add (layout);
 	elm_object_part_content_set (layout, "base/workspace/button_zoom_out",
@@ -118,7 +135,16 @@ ws_add (Evas_Object *layout)
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
-	return ws;
+	_ruler_hor = ui_ruler_add (layout);
+	elm_object_part_content_set (layout, "base/workspace/ruler_hor",_ruler_hor);
+	_ruler_ver = ui_ruler_add (layout);
+	ui_ruler_orient_set (_ruler_ver, VERTICAL);
+	elm_object_part_content_set (layout, "base/workspace/ruler_ver",_ruler_ver);
+
+	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
+		_ws_mouse_move_cb,_ruler_ver);
+
+return ws;
 
 
 }

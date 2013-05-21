@@ -1,0 +1,138 @@
+collections {
+group {
+   name: "ui/ruler/horizontal/default";
+   images {
+      image: "ruler_hor_pointer.png" COMP;
+   }
+   parts {
+      part {
+         name: "background";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            max: 99999 25;
+            min: 25 25;
+            color: 255 255 255 128; //219 219 219 255;
+            align: 0.0 0.0;
+            rel1.relative: 0.0 0.0;
+         }
+      }
+      part {
+         name: "pointer_hor";
+         type: IMAGE;
+//         pointer_mode: AUTOGRAB;
+         description {
+            state: "default" 0.0;
+            image.normal: "ruler_hor_pointer.png";
+            aspect_preference: SOURCE;
+            min: 10 15;
+            max: 15 15;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: -40 0;
+               to: "background";
+            }
+         }
+         description {
+            state: "displayed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         dragable {
+            x: 1 1 0;
+            y: 0 0 0;
+            confine: "background";
+         }
+      }
+   }
+   programs {
+      program {
+         name: "ruler_pointer_hide";
+         signal: "ruler,pointer,hide";
+         source: "";
+         action: STATE_SET "hidden" 0.0;
+         target: "pointer_hor";
+      }
+      program {
+         name: "ruler_pointer_show";
+         signal: "ruler,pointer,show";
+         source: "";
+         action: STATE_SET "displayed" 0.0;
+         target: "pointer_hor";
+      }
+	}
+
+}
+group {
+   name: "ui/ruler/vertical/default";
+   images {
+      image: "ruler_ver_pointer.png" COMP;
+   }
+   parts {
+      part {
+         name: "background";
+         type: RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            max: 25 99999;
+            min: 25 25;
+            color: 255 255 255 128;// 219 219 219 255;
+            rel1.relative: 0.0 0.0;
+         }
+      }
+      part {
+         name: "pointer";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            image.normal: "ruler_ver_pointer.png";
+            aspect_preference: SOURCE;
+            min: 15 10;
+            max: 15 15;
+            align: 1.0 0.0;
+            rel1 {
+               to: "background";
+               offset: -20 0;
+            }
+         }
+         description {
+            state: "displayed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+        dragable {
+            x: 0 0 0;
+            y: 1 1 0;
+            confine: "background";
+         }
+      }
+   }
+   programs {
+      program {
+         name: "ruler_pointer_hide";
+         signal: "ruler,pointer,hide";
+         source: "";
+         action: STATE_SET "hidden" 0.0;
+         target: "pointer";
+      }
+      program {
+         name: "ruler_pointer_show";
+         signal: "ruler,pointer,show";
+         source: "";
+         action: STATE_SET "displayed" 0.0;
+         target: "pointer";
+      }
+	}
+}
+}

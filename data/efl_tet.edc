@@ -150,34 +150,65 @@ collections {
             type: SWALLOW;
             description {
                state: "default" 0.0;
-               min:   300 300;
+//               min:   100 100;
             }
          }
          part {
-            name: "base/workspace/rules_hor";
-            type: RECT;
+            name: "base/workspace/scroller";
+            type: SWALLOW;
             description {
                state: "default" 0.0;
-               color: 64 64 64 255;
+ //              min:   100 100;
+            }
+        }
+         part {
+            name: "base/workspace/rulers_cross";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 64 0 64 0;
                align: 0.0 0.0;
-               max:   9999 20;
-               rel1.relative: 0.0 0.0;
+               max:   25 25;
+               min:   25 25;
+               rel1{
+                 // relative: 0.0 0.0;
+                  to: "base/workspace/background";
+               }
+            }
+         }
+
+       part {
+            name: "base/workspace/ruler_hor";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.0;
+               max:  99999 25;
+               min:  0 0;
+               rel1{
+                  relative: 1.0 0.0;
+                  to: "base/workspace/rulers_cross";
+               }
                rel2.relative: 1.0 0.1;
             }
          }
          part {
-            name: "base/workspace/rules_ver";
-            type: RECT;
+            name: "base/workspace/ruler_ver";
+            type: SWALLOW;
             description {
                state: "default" 0.0;
-               color: 64 64 64 255;
                align: 0.0 0.0;
-               max:   20 9999;
-               rel1.relative: 0.0 0.0;
+               max:  25 99999;
+               min:  0 0;
+               rel1{
+                  relative: 0.0 1.0;
+                  to: "base/workspace/rulers_cross";
+               }
                rel2.relative: 0.1 1.0;
             }
          }
-         part {
+          part {
             name: "base/workspace/button_zoom_in";
             type: SWALLOW;
             description {
@@ -186,7 +217,7 @@ collections {
                max: 40 40;
                rel1 {
                   relative: 0.0 1.0;
-                  to: "base/workspace/rules_hor";
+                  to: "base/workspace/ruler_hor";
                }
             }
          }

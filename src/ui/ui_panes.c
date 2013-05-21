@@ -190,7 +190,7 @@ ui_panes_add (App_Data *ap)
 
 	us = ui_element_settings_init();
 	if (!us){
-		fprintf (stdout, "ERROR: unable initialize settings module");
+		ERR ("ERROR: unable initialize settings module");
 		return EINA_FALSE;
 	}
 

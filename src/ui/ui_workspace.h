@@ -3,6 +3,8 @@
 
 #include <Evas.h>
 #include <Elementary.h>
+#include "ui_ruler.h"
+
 
 struct _Workspace
 {
@@ -18,7 +20,7 @@ struct _Workspace
 typedef struct _Workspace Workspace;
 
 Eina_Bool
-ws_bf_set (Evas_Object *bg);
+ws_bg_set (Evas_Object *bg);
 
 void
 ws_zoom_step_set (unsigned int step, Workspace *ws);
@@ -33,4 +35,4 @@ ws_add (Evas_Object *layout);
 Workspace *
 ws_init (void);
 
-#endif // __UI_WORKSPACE_HEADER__
+#endif // HEADER__
