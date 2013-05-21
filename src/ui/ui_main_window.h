@@ -1,8 +1,11 @@
-#ifndef __UI_MAIN_WINDOW_HEADER__
-#define __UI_MAIN_WINDOW_HEADER__
+#ifndef UI_MAIN_WINDOW_HEADER_H
+#define UI_MAIN_WINDOW_HEADER_H
 
 #include "efl_tet.h"
-#include "project_manager.h"
+#include "pm.h"
+#include "ui_widget_list.h"
+#include "ui_signal_list.h"
+#include "ui_workspace.h"
 
 /**
  * Adds main window object for Edje tool development.
@@ -88,5 +91,5 @@ ui_panes_hide (App_Data *ap);
 void
 ui_workspace_add (App_Data *ap);
 
-#endif	// __UI_MAIN_WINDOW_HEADER__
+#endif	/* UI_MAIN_WINDOW_HEADER_H */
 

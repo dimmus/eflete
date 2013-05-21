@@ -38,7 +38,6 @@ _item_group_label_get(void *data,
 					Evas_Object *obj __UNUSED__,
 					const char *part __UNUSED__)
 {
-	char tmp[64];
 	Group *g = (Group *)data;
 	if(!g->group_name)
 	{
@@ -100,7 +99,9 @@ _navi_gl_parts_pop(void *data,
 }
 
 static void
-_on_group_clicked_double(void *data, Evas_Object *obj, void *event_info)
+_on_group_clicked_double(void *data,
+						Evas_Object *obj __UNUSED__,
+						void *event_info)
 {
 	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 	Elm_Object_Item *eoi;
@@ -172,7 +173,9 @@ _on_group_clicked_double(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_on_widget_clicked_double(void *data, Evas_Object *obj, void *event_info)
+_on_widget_clicked_double(void *data,
+							Evas_Object *obj __UNUSED__,
+							void *event_info)
 {
 	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 	Elm_Object_Item *glit_style, *glit_group;

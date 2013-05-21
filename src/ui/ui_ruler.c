@@ -1,4 +1,5 @@
 #include "ui_ruler.h"
+#include "efl_tet.h"
 
 struct _UI_Ruler_Data
 {
@@ -109,7 +110,7 @@ _add_dashes (Evas_Object *obj, int count, int from)
 						iDash_from - iDash_size-7);
 				}
 				else
-					evas_object_move (_text, iDash_from - iDash_size-13,
+					evas_object_move (_text, iDash_from - iDash_size-12,
 						y+i*_ruler_data->step-13);
 				_ruler_data->marks = eina_list_append(_ruler_data->marks,
 					_text);
@@ -184,18 +185,24 @@ _display_scale (Evas_Object *obj)
 }
 
 void
-_pointer_show (Evas_Object *obj )
+_pointer_show (Evas_Object *obj __UNUSED__)
 {
 }
 
 static void
-_ruler_resize_cb (void *data, Evas *e,Evas_Object *obj, void *event_info)
+_ruler_resize_cb (void *data __UNUSED__,
+				Evas *e __UNUSED__,
+				Evas_Object *obj,
+				void *event_info __UNUSED__)
 {
 	_display_scale (obj);
 }
 
 static void
-_ruler_move_cb (void *data, Evas *e,Evas_Object *obj, void *event_info)
+_ruler_move_cb (void *data __UNUSED__,
+				Evas *e __UNUSED__,
+				Evas_Object *obj,
+				void *event_info __UNUSED__)
 {
 	_display_scale (obj);
 }

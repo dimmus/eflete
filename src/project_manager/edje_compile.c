@@ -20,7 +20,9 @@ compiler_message_clear(Eina_Inlist *list)
  *
  */
 static Eina_Bool
-exe_data(void *data, int type, void *event)
+exe_data(void *data __UNUSED__,
+			int type __UNUSED__,
+			void *event)
 {
 	Ecore_Exe_Event_Data *ev;
 	Eina_Inlist *messages = NULL;

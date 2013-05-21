@@ -22,7 +22,16 @@ find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
+
+
+IF("${CMAKE_GENERATOR}" MATCHES "Make")
+   ADD_CUSTOM_TARGET(fsm_clean
+      COMMAND ${CMAKE_MAKE_PROGRAM} clean
+      WORKING_DIRECTORY ${CMAKE_CURRENT_DIR}
+      )
+   ADD_DEPENDENCIES(fsm_clean FsmCompilerClean)
+ENDIF("${CMAKE_GENERATOR}" MATCHES "Make")
 
 include_directories(
    ${EINA_INCLUDE_DIRS}

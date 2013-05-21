@@ -26,25 +26,31 @@ _ws_zoom_out (Workspace *ws )
 }
 
 static void
-_zoom_out_on_click (void *data, Evas_Object *obj __UNUSED__, void *event_info)
+_zoom_out_on_click (void *data,
+					Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
 {
 	_ws_zoom_out ((Workspace *)data);
 }
 
 static void
-_zoom_in_on_click (void *data, Evas_Object *obj, void *event_info)
+_zoom_in_on_click (void *data,
+					Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
 {
 	_ws_zoom_in ((Workspace *)data);
 }
 
 static void
-_separate_on_click (void *data, Evas_Object *obj, void *event_info)
+_separate_on_click (void *data __UNUSED__,
+					Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
 {
 	//NULL = NULL;
 }
 
 Eina_Bool
-ws_bg_set (Evas_Object *bg)
+ws_bf_set (Evas_Object *bg __UNUSED__)
 {
 	return EINA_TRUE;
 }
@@ -62,10 +68,12 @@ ws_zoom_step_get (Workspace *ws)
 }
 
 static void
-_ws_mouse_move_cb (void *data, Evas *e,Evas_Object *obj, void *event_info)
+_ws_mouse_move_cb (void *data, Evas *e,
+					Evas_Object *obj __UNUSED__,
+					void *event_info __UNUSED__)
 {
 	int x, y;
-		evas_pointer_output_xy_get (e, &x, &y);
+	evas_pointer_output_xy_get (e, &x, &y);
 //		fprintf (stdout, "DEBAG [CB MOUSE_MOVE]: x[%d] y[%d]\n",x, y);
 	ui_ruler_pointer_pos_set ((Evas_Object*)data);
 }
@@ -78,7 +86,6 @@ ws_add (Evas_Object *layout)
 	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver;
 	Evas_Object *_icon;
 	Evas *canvas;
-	Eina_Bool *_mouse_in_move =(Eina_Bool*) calloc(1,sizeof(Eina_Bool));
 
 	ws = ws_init();
 	if (!ws)
@@ -110,7 +117,7 @@ ws_add (Evas_Object *layout)
 	elm_object_content_unset (_button);
 
 	_icon = elm_icon_add (_button);
-	elm_icon_file_set(_icon, TET_IMG_PATH"zoom_out.png", NULL);
+	elm_image_file_set(_icon, TET_IMG_PATH"zoom_out.png", NULL);
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
@@ -121,7 +128,7 @@ ws_add (Evas_Object *layout)
 	ws->button_zoom_in = _button;
 
 	_icon = elm_icon_add (_button);
-	elm_icon_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
+	elm_image_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
@@ -131,7 +138,7 @@ ws_add (Evas_Object *layout)
 	evas_object_smart_callback_add (_button, "clicked", _separate_on_click, ws);
 	ws->button_separate = _button;
 	_icon = elm_icon_add (_button);
-	elm_icon_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
+	elm_image_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 

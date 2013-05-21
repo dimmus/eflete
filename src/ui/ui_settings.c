@@ -97,8 +97,8 @@ _ui_settings_prepare ()
 {
 	UI_Settings *_ui_settings = calloc (1,sizeof (UI_Settings));
 	Panes_Settings *_panes_set;
-	Eina_List *_settings_to_save;
-	Eina_List *_window_list;
+	Eina_List *_settings_to_save = NULL;
+	Eina_List *_window_list = NULL;
 	Window_Settings *_window_sett = calloc (1, sizeof (Window_Settings));
 
 

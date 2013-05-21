@@ -1,5 +1,5 @@
-#ifndef __UI_WORKSPACE_HEADER__
-#define __UI_WORKSPACE_HEADER__
+#ifndef UI_WORKSPACE_HEADER_H
+#define UI_WORKSPACE_HEADER_H
 
 #include <Evas.h>
 #include <Elementary.h>
@@ -35,4 +35,4 @@ ws_add (Evas_Object *layout);
 Workspace *
 ws_init (void);
 
-#endif // HEADER__
+#endif /* UI_WORKSPACE_HEADER_H */
