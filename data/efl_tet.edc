@@ -167,7 +167,7 @@ collections {
             mouse_events: 1;
             description {
                state: "default" 0.0;
-               color: 64 0 64 0;
+               color: 64 64 64 250;
                align: 0.0 0.0;
                max:   25 25;
                min:   25 25;

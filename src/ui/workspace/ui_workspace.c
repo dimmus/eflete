@@ -73,9 +73,12 @@ _ws_mouse_move_cb (void *data, Evas *e,
 					void *event_info __UNUSED__)
 {
 	int x, y;
+	Workspace *ws = (Workspace*)data;
+
 	evas_pointer_output_xy_get (e, &x, &y);
 //		fprintf (stdout, "DEBAG [CB MOUSE_MOVE]: x[%d] y[%d]\n",x, y);
-	ui_ruler_pointer_pos_set ((Evas_Object*)data);
+	ui_ruler_pointer_pos_set (ws->ruler_hor);
+	ui_ruler_pointer_pos_set (ws->ruler_ver);
 }
 
 
@@ -144,12 +147,14 @@ ws_add (Evas_Object *layout)
 
 	_ruler_hor = ui_ruler_add (layout);
 	elm_object_part_content_set (layout, "base/workspace/ruler_hor",_ruler_hor);
+	ws->ruler_hor = _ruler_hor;
 	_ruler_ver = ui_ruler_add (layout);
 	ui_ruler_orient_set (_ruler_ver, VERTICAL);
 	elm_object_part_content_set (layout, "base/workspace/ruler_ver",_ruler_ver);
+	ws->ruler_ver = _ruler_ver;
 
 	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
-		_ws_mouse_move_cb,_ruler_ver);
+		_ws_mouse_move_cb,ws);
 
 return ws;
 
@@ -166,8 +171,8 @@ ws_init (void)
 	ws->canvas = NULL;
 	ws->bg = NULL;
 	ws->zoom_step = 1;
-	ws->ruller_hor = NULL;
-	ws->ruller_ver = NULL;
+	ws->ruler_hor = NULL;
+	ws->ruler_ver = NULL;
 	ws->button_zoom_out = NULL;
 	ws->button_zoom_in = NULL;
 	ws->button_separate = NULL;

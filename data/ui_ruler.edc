@@ -11,25 +11,31 @@ group {
          description {
             state: "default" 0.0;
             max: 99999 25;
-            min: 25 25;
+            min: 125 25;
             color: 255 255 255 128; //219 219 219 255;
             align: 0.0 0.0;
             rel1.relative: 0.0 0.0;
          }
       }
       part {
-         name: "pointer_hor";
+         name: "pointer";
          type: IMAGE;
 //         pointer_mode: AUTOGRAB;
+  //       scale: 1;
          description {
             state: "default" 0.0;
+            color: 64 64 64 255;
             image.normal: "ruler_hor_pointer.png";
             aspect_preference: SOURCE;
-            min: 10 15;
+            min: 10 10;
             max: 15 15;
             rel1 {
-               relative: 0.0 1.0;
-               offset: -40 0;
+         //      relative: 0.0 0.0;
+//               offset: -40 0;
+               to: "background";
+            }
+            rel2 {
+   //            relative: 0.0 1.0;
                to: "background";
             }
          }
@@ -56,14 +62,14 @@ group {
          signal: "ruler,pointer,hide";
          source: "";
          action: STATE_SET "hidden" 0.0;
-         target: "pointer_hor";
+         target: "pointer";
       }
       program {
          name: "ruler_pointer_show";
          signal: "ruler,pointer,show";
          source: "";
          action: STATE_SET "displayed" 0.0;
-         target: "pointer_hor";
+         target: "pointer";
       }
 	}
 
