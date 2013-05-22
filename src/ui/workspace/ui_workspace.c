@@ -81,6 +81,14 @@ _ws_mouse_move_cb (void *data, Evas *e,
 	ui_ruler_pointer_pos_set (ws->ruler_ver);
 }
 
+char *itoa(long n)
+{
+    int len = n==0 ? 1 : floor(log10l(abs(n)))+1;
+    if (n<0) len++;
+    char    *buf = (char*) calloc(sizeof(char), len+1);
+	snprintf(buf, len, "%ld", n);
+    return   buf;
+}
 
 Workspace *
 ws_add (Evas_Object *layout)
@@ -156,9 +164,7 @@ ws_add (Evas_Object *layout)
 	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
 		_ws_mouse_move_cb,ws);
 
-return ws;
-
-
+	return ws;
 }
 
 Workspace *
