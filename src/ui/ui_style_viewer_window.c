@@ -70,7 +70,7 @@ _form_left_side(Evas_Object* win) {
 
 Evas_Object*
 _form_right_side(Evas_Object* win) {
-	Evas_Object *layout, *entry_tag, *entry_prop, *entry_style, *btn;
+	Evas_Object *layout, *entry_tag, *entry_prop, *btn;
 
 	layout = elm_layout_add(win);
 	evas_object_size_hint_weight_set(layout,
@@ -79,18 +79,16 @@ _form_right_side(Evas_Object* win) {
 	evas_object_show(layout);
 
 	/* TODO: checkout the entry. Is it correct code? */
-	entry_style = elm_entry_add(win);
-	elm_object_part_content_set (layout, "swallow/style_view", entry_style);
-	evas_object_show(entry_style);
-
 	entry_tag = elm_entry_add(win);
 	elm_entry_single_line_set(entry_tag, EINA_TRUE);
 	elm_object_part_content_set (layout, "swallow/tag_entry", entry_tag);
+	elm_entry_scrollable_set(entry_tag, EINA_TRUE);
 	evas_object_show(entry_tag);
 
 	entry_prop = elm_entry_add(win);
 	elm_entry_single_line_set(entry_prop, EINA_TRUE);
 	elm_object_part_content_set (layout, "swallow/prop_entry", entry_prop);
+	elm_entry_scrollable_set(entry_prop, EINA_TRUE);
 	evas_object_show(entry_prop);
 
 	btn = elm_button_add(win);
@@ -105,7 +103,10 @@ _form_right_side(Evas_Object* win) {
 
 void
 style_viewer_init (App_Data *ap) {
-	Evas_Object *inwin, *panes, *layout_left, *layout_right;
+	Evas_Object *inwin;
+	Evas_Object *panes, *panes_h, *entry_style;
+	Evas_Object *layout_left, *layout_right;
+
 
 	/* TODO: should I check loaded project like that? */
 	if (ap->project != NULL) {
@@ -119,13 +120,27 @@ style_viewer_init (App_Data *ap) {
 		elm_win_inwin_content_set(inwin, panes);
 		evas_object_show(panes);
 
-		/* TODO: Think about the third pane, for Style View Entry. */
 		layout_left = _form_left_side(inwin);
 	    elm_object_part_content_set(panes, "left", layout_left);
 		evas_object_show(layout_left);
 
+		panes_h = elm_panes_add(inwin);
+		evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+		evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
+		elm_panes_horizontal_set(panes_h, EINA_TRUE);
+	    elm_object_part_content_set(panes, "right", panes_h);
+		evas_object_show(panes_h);
+
+		entry_style = elm_entry_add(inwin);
+		evas_object_size_hint_weight_set(entry_style, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+		evas_object_size_hint_align_set(entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
+		elm_entry_scrollable_set(entry_style, EINA_TRUE);
+		elm_object_text_set(entry_style, "The quick brown fox jumps over the lazy dog");
+	    elm_object_part_content_set(panes_h, "left", entry_style);
+		evas_object_show(entry_style);
+
 		layout_right = _form_right_side(inwin);
-	    elm_object_part_content_set(panes, "right", layout_right);
+	    elm_object_part_content_set(panes_h, "right", layout_right);
 		evas_object_show(layout_right);
 
 		evas_object_show(inwin);

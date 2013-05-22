@@ -258,6 +258,7 @@ collections {
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
                align: 0.0 1.0;
+               color: 0 0 0 0;
             }
          }
          part {
@@ -273,6 +274,7 @@ collections {
                   to_y: "swallow/button_add_style";
                }
                align: 1.0 1.0;
+               color: 0 0 0 0;
             }
          }
          part {
@@ -383,6 +385,7 @@ collections {
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
                align: 1.0 1.0;
+               color: 0 0 0 0;
             }
          }
          part {
@@ -395,6 +398,7 @@ collections {
                rel1.relative: 0.0 0.0;
                rel2.relative: 1.0 1.0;
                align: 0.0 0.0;
+               color: 0 0 0 0;
             }
          }
          part {
@@ -412,7 +416,7 @@ collections {
                }
                rel2.relative: 1.0 1.0;
                align: 0.0 0.0;
-               color: 255 255 255 255;
+               color: 0 0 0 255;
             }
          }
          part {
@@ -462,7 +466,7 @@ collections {
                }
                rel2.relative: 1.0 1.0;
                align: 0.0 0.0;
-               color: 255 255 255 255;
+               color: 0 0 0 255;
             }
          }
          part {
@@ -478,7 +482,8 @@ collections {
                }
                rel2 {
                   relative: 0.0 1.0;
-                  to_x: "offset_end";
+                  to_x: "swallow/button_close";
+                  offset: -20 0;
                }
                align: 0.0 0.0;
             }
