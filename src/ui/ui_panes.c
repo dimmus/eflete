@@ -1,4 +1,5 @@
-#include <ui_settings.h>
+#include "ui_settings.h"
+#include "ui_block.h"
 
 void _print_current_state(char *);
 
@@ -186,7 +187,7 @@ ui_panes_settings_load (Evas_Object *win __UNUSED__)
 Eina_Bool
 ui_panes_add (App_Data *ap)
 {
-	Evas_Object *layout;
+	Evas_Object *block;
 	Evas_Object *panes_left, *panes_left_hor, *panes_right;
 	Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
 
@@ -281,67 +282,46 @@ ui_panes_add (App_Data *ap)
 	evas_object_smart_callback_add(panes_center, "unpress", _unpress, NULL);
 	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress, NULL);
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_center_down, "left", layout);
-	evas_object_show(layout);
-	ap->block_bottom_left = layout;
+	block = ui_block_add(ap->win_layout);
+	ui_block_title_text_set(block, "Part States");
+	elm_object_part_content_set(panes_center_down, "left", block);
+	evas_object_show(block);
+	ap->block_bottom_left = block;
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_center_down, "right", layout);
-	evas_object_show(layout);
-	ap->block_bottom_right = layout;
+	block = ui_block_add(ap->win_layout);
+	elm_object_part_content_set(panes_center_down, "right", block);
+	evas_object_show(block);
+	ap->block_bottom_right = block;
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_center, "left", layout);
-	evas_object_show(layout);
-	ap->block_canvas = layout;
+	block = ui_block_add(ap->win_layout);
+	elm_object_part_content_set(panes_center, "left", block);
+	evas_object_show(block);
+	ap->block_canvas = block;
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_left_hor, "left", layout);
-	evas_object_show(layout);
-	ap->block_left_top = layout;
+	block = ui_block_add(ap->win_layout);
+	elm_object_part_content_set(panes_left_hor, "left", block);
+	evas_object_show(block);
+	ap->block_left_top = block;
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_left_hor, "right", layout);
-	evas_object_show(layout);
-	ap->block_left_bottom = layout;
+	block = ui_block_add(ap->win_layout);
+	ui_block_title_text_set(block, "Using Signals");
+	elm_object_part_content_set(panes_left_hor, "right", block);
+	evas_object_show(block);
+	ap->block_left_bottom = block;
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_right_hor, "left", layout);
-	evas_object_show(layout);
-	ap->block_right_top = layout;
+	block = ui_block_add(ap->win_layout);
+	elm_object_part_content_set(panes_right_hor, "left", block);
+	evas_object_show(block);
+	ap->block_right_top = block;
 
-	layout = elm_layout_add(ap->win_layout);
-	elm_layout_file_set(layout, TET_EDJ, "base/layout");
-	elm_object_part_content_set(panes_right_hor, "right", layout);
-	evas_object_show(layout);
-	ap->block_right_bottom = layout;
+	block = ui_block_add(ap->win_layout);
+	ui_block_title_text_set(block, "Property");
+	elm_object_part_content_set(panes_right_hor, "right", block);
+	evas_object_show(block);
+	ap->block_right_bottom = block;
 
 	ui_csp =_ui_panes_current_state_struct_init ();
 	return EINA_TRUE;
-}
-
-
-void
-ui_block_content_set (Evas_Object *block, Evas_Object *content)
-{
-	if (!block || !content)
-		return;
-	elm_object_part_content_set (block, "base/layout/swallow", content);
-}
-
-Evas_Object *
-ui_block_content_get (Evas_Object *block)
-{
-	if (!block)
-		return NULL;
-	return elm_object_part_content_get (block, "base/layout/swallow");
 }
 
 Eina_Bool

@@ -2,5 +2,7 @@ images {
    image: "ruler_hor_pointer.png" COMP;
    image: "ruler_ver_pointer.png" COMP;
    image: "logo.png" COMP;
+   image: "layout_header.jpg" COMP;
+   image: "shelf_inside.png" COMP;
 }
 
