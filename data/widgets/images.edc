@@ -1,0 +1,6 @@
+images {
+   image: "ruler_hor_pointer.png" COMP;
+   image: "ruler_ver_pointer.png" COMP;
+   image: "logo.png" COMP;
+}
+

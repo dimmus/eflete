@@ -46,7 +46,7 @@ include_directories(
 add_definitions("-DPACKAGE=\"${PACKAGE}\"")
 #FIXME: bad define
 add_definitions("-DTET_EDJ=\"${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.edj\"")
-add_definitions("-DTET_IMG_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/image/\"")
+add_definitions("-DTET_IMG_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/images/\"")
 add_definitions("-DTET_EDJ_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/\"")
 
 #add_subdirectory(po)

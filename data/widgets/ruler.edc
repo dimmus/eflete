@@ -1,18 +1,16 @@
-collections {
 group {
    name: "ui/ruler/horizontal/default";
-   images {
-      image: "ruler_hor_pointer.png" COMP;
-   }
    parts {
       part {
          name: "background";
          type: RECT;
+         scale: 1;
+         mouse_events: 1;
          description {
             state: "default" 0.0;
             max: 99999 25;
             min: 125 25;
-            color: 255 255 255 128; //219 219 219 255;
+            color: 255 255 255 128;
             align: 0.0 0.0;
             rel1.relative: 0.0 0.0;
          }
@@ -20,9 +18,9 @@ group {
       part {
          name: "pointer";
          type: IMAGE;
-//         pointer_mode: AUTOGRAB;
-  //       scale: 1;
-         description {
+         scale: 1;
+         mouse_events: 1;
+        description {
             state: "default" 0.0;
             color: 64 64 64 255;
             image.normal: "ruler_hor_pointer.png";
@@ -30,12 +28,9 @@ group {
             min: 10 10;
             max: 15 15;
             rel1 {
-         //      relative: 0.0 0.0;
-//               offset: -40 0;
                to: "background";
             }
             rel2 {
-   //            relative: 0.0 1.0;
                to: "background";
             }
          }
@@ -72,30 +67,31 @@ group {
          target: "pointer";
       }
 	}
-
 }
+
 group {
    name: "ui/ruler/vertical/default";
-   images {
-      image: "ruler_ver_pointer.png" COMP;
-   }
    parts {
       part {
          name: "background";
          type: RECT;
          repeat_events: 1;
-         description {
+         scale: 1;
+         mouse_events: 1;
+        description {
             state: "default" 0.0;
             max: 25 99999;
             min: 25 25;
-            color: 255 255 255 128;// 219 219 219 255;
+            color: 255 255 255 128;
             rel1.relative: 0.0 0.0;
          }
       }
       part {
          name: "pointer";
          type: IMAGE;
-         description {
+         scale: 1;
+         mouse_events: 1;
+        description {
             state: "default" 0.0;
             image.normal: "ruler_ver_pointer.png";
             aspect_preference: SOURCE;
@@ -140,5 +136,4 @@ group {
          target: "pointer";
       }
 	}
-}
 }

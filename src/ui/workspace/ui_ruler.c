@@ -228,11 +228,11 @@ ui_ruler_orient_set (Evas_Object *obj, Orient orient)
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	_ruler_data->orient = orient;
 	if (_ruler_data->orient == HORIZONTAL)
-		elm_layout_file_set (obj, TET_EDJ_PATH"ui_ruler.edj",
+		elm_layout_file_set (obj, TET_EDJ,
 			"ui/ruler/horizontal/default");
 	else
 	{
-		elm_layout_file_set (obj, TET_EDJ_PATH"ui_ruler.edj",
+		elm_layout_file_set (obj, TET_EDJ,
 			"ui/ruler/vertical/default");
 		evas_object_event_callback_add  (obj, EVAS_CALLBACK_MOVE,
 			_ruler_move_cb, _ruler_data);
