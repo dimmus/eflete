@@ -1,8 +1,6 @@
 #include <ui_main_window.h>
 #include "ui_style_viewer_window.h"
 
-/* TODO: collect all controls (buttons, list, entries) for further FREEing */
-Eina_List *ui_list_controls;
 static Elm_Genlist_Item_Class *_itc = NULL;
 
 static void
@@ -13,8 +11,7 @@ _on_viewer_exit(void *data, Evas_Object *obj __UNUSED__,
 
 	inwin = (Evas_Object *) data;
 
-	evas_object_hide(inwin);
-	/*TODO: add some FREE function for controls or so. */
+	evas_object_del(inwin);
 }
 
 Evas_Object*
@@ -106,7 +103,6 @@ style_viewer_init (App_Data *ap) {
 	Evas_Object *inwin;
 	Evas_Object *panes, *panes_h, *entry_style;
 	Evas_Object *layout_left, *layout_right;
-
 
 	/* TODO: should I check loaded project like that? */
 	if (ap->project != NULL) {
