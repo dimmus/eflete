@@ -18,6 +18,7 @@ set(TET_CC_FILES
    project_manager/widget_manager.c
    project_manager/project_manager.c
    logger/logger.c
+   ui/ui_block.c
    ui/ui_panes.c
    ui/ui_menu.c
    ui/ui_main_window.c

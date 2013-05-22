@@ -6,6 +6,7 @@
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
+#include "ui_block.h"
 
 /**
  * Adds main window object for Edje tool development.
@@ -63,18 +64,6 @@ ui_menu_add (App_Data *ap);
  */
 Eina_Bool
 ui_menu_del (void);
-
-/**
- * 
- */
-void
-ui_block_content_set (Evas_Object *block, Evas_Object *content);
-
-Evas_Object *
-ui_block_content_get (Evas_Object *block);
-
-Evas_Object *
-ui_block_content_unset (Evas_Object *block);
 
 /**
  * 
