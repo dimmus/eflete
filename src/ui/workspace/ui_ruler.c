@@ -152,7 +152,7 @@ _display_scale (Evas_Object *obj)
 	if (_ruler_data->orient == HORIZONTAL)
 	{
 		iDash_counter = (int)(w/_ruler_data->step);
-		iDash_from = y+h/2+3;
+		iDash_from = y+h;
 	}
 	else
 	{
@@ -209,12 +209,17 @@ _ruler_move_cb (void *data __UNUSED__,
 
 
 void
-ui_ruler_pointer_pos_set (Evas_Object *obj)
+ui_ruler_pointer_pos_set (Evas_Object *obj __UNUSED__)
 {
-	double x,y, w, h;
-	edje_object_part_drag_value_get (obj,"pointer_hor",&x,&y );
-	edje_object_part_drag_size_get(obj,"pointer_hor",&w, &h);
-//	fprintf (stdout, "x[%f], y[%f], w[%f] h[%f]   ", x,y,w,h);
+/*	double x,y, w, h, z;
+	char *return_state = "FAIL";
+	Eina_Bool ret;
+	ret = edje_object_part_drag_value_get (obj,"pointer", &x, &y);
+	return_state = edje_object_part_state_get (obj, "pointer", &z);
+	edje_object_part_drag_value_set (obj,"pointer", 0.5, 0.5);
+	edje_object_part_drag_value_get (obj,"pointer", &w, &h);
+	fprintf (stdout, "obj[%x] x[%f], y[%f], w[%f] h[%f] return[%d] state[%s]\n",
+			obj,x,y,w,h,ret, return_state);*/
 }
 
 void

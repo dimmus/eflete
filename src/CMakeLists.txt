@@ -9,6 +9,7 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/project_manager
    ${CMAKE_CURRENT_SOURCE_DIR}/logger
    ${CMAKE_CURRENT_SOURCE_DIR}/ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/ui/workspace
 )
 
 set(TET_CC_FILES
@@ -22,9 +23,9 @@ set(TET_CC_FILES
    ui/ui_main_window.c
    ui/ui_settings.c
    ui/ui_widget_list.c
-   ui/ui_workspace.c
    ui/ui_signal_list.c
-   ui/ui_ruler.c
+   ui/workspace/ui_ruler.c
+   ui/workspace/ui_workspace.c
 )
 
 add_executable(${PROJECT_NAME} ${TET_CC_FILES})

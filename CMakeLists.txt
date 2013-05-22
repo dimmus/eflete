@@ -23,6 +23,7 @@ find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
 
 
 IF("${CMAKE_GENERATOR}" MATCHES "Make")

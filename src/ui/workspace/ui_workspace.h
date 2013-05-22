@@ -11,8 +11,8 @@ struct _Workspace
 	Evas *canvas;
 	Evas_Object *bg;
 	int zoom_step;
-	Evas_Object *ruller_hor;
-	Evas_Object *ruller_ver;
+	Evas_Object *ruler_hor;
+	Evas_Object *ruler_ver;
 	Evas_Object *button_zoom_out;
 	Evas_Object *button_zoom_in;
 	Evas_Object *button_separate;
