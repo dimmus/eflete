@@ -46,7 +46,7 @@ _separate_on_click (void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-	//NULL = NULL;
+	//NULL;
 }
 
 Eina_Bool
@@ -74,11 +74,9 @@ _ws_mouse_move_cb (void *data, Evas *e,
 {
 	int x, y;
 	Workspace *ws = (Workspace*)data;
-
 	evas_pointer_output_xy_get (e, &x, &y);
-//		fprintf (stdout, "DEBAG [CB MOUSE_MOVE]: x[%d] y[%d]\n",x, y);
-	ui_ruler_pointer_pos_set (ws->ruler_hor);
-	ui_ruler_pointer_pos_set (ws->ruler_ver);
+	ui_ruler_pointer_pos_set (ws->ruler_hor, x);
+	ui_ruler_pointer_pos_set (ws->ruler_ver, y);
 }
 
 char *itoa(long n)
@@ -156,6 +154,7 @@ ws_add (Evas_Object *layout)
 	_ruler_hor = ui_ruler_add (layout);
 	elm_object_part_content_set (layout, "base/workspace/ruler_hor",_ruler_hor);
 	ws->ruler_hor = _ruler_hor;
+
 	_ruler_ver = ui_ruler_add (layout);
 	ui_ruler_orient_set (_ruler_ver, VERTICAL);
 	elm_object_part_content_set (layout, "base/workspace/ruler_ver",_ruler_ver);

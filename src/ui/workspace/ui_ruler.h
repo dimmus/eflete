@@ -45,6 +45,6 @@ void
 ui_ruler_type_absolute_set (Evas_Object *obj, Eina_Bool enable);
 
 void
-ui_ruler_pointer_pos_set (Evas_Object *obj);
+ui_ruler_pointer_pos_set (Evas_Object *obj, int pos);
 
 #endif /* UI_RULER_HEADER_H */
