@@ -13,7 +13,7 @@
 /* #undef HAVE_PATH_MAX */
 #ifndef HAVE_PATH_MAX
 #define PATH_MAX 4096
-#define BUFF_MAX 126
+#define BUFF_MAX 128
 #endif
 
 /* #undef HAVE_ECORE_X */
