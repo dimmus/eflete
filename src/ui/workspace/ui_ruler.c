@@ -12,6 +12,7 @@ struct _UI_Ruler_Data
 
 	Eina_List		*dashes;
 	Eina_List		*marks;
+	Eina_List		*marks_relative;
 	int				dash_counter;
 
 	double			pointer_pos;
@@ -86,7 +87,7 @@ _add_dashes (Evas_Object *obj, int count, int from)
 	int x, y, w, h, k;
 	int iDash_size = 3;
 	int iDash_from = from;
-	int iPos_text_shift=20;
+	int iPos_text_shift=10;
 	Evas_Object *_line, *_text;
 
 	Evas *_canvas = evas_object_evas_get (obj);
@@ -105,10 +106,10 @@ _add_dashes (Evas_Object *obj, int count, int from)
 				evas_object_text_text_set (_text, _itoa(i*100));
 				if (_ruler_data->orient == HORIZONTAL)
 				{
-					if (i>=100) iPos_text_shift=25;
-					else iPos_text_shift=20;
+					if (i>=100) iPos_text_shift=13;
+					else iPos_text_shift=9;
 					evas_object_move(_text,x+i*_ruler_data->step-iPos_text_shift,
-						iDash_from - iDash_size-7);
+						iDash_from - iDash_size-15);
 				}
 				else
 					evas_object_move (_text, iDash_from - iDash_size-12,
@@ -327,6 +328,7 @@ _ruler_data_init (void)
 	_ruler_data->dash_counter = 0;
 	_ruler_data->dashes = NULL;
 	_ruler_data->marks = NULL;
+	_ruler_data->marks_relative = NULL;
 	_ruler_data->pointer = NULL;
 	_ruler_data->pointer_pos = 0.0;
 	_ruler_data->pointer_visible = EINA_TRUE;

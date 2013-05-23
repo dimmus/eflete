@@ -26,8 +26,6 @@ ui_main_window_del (App_Data *ap)
 	ui_panes_settings_save();
 	if (!ui_menu_del())
 		WARN ( "Menu elements doesn't delete correct.\n");
-	if (!ui_panes_del())
-		WARN ("Panes elemenets doesn't delete correct.\n");
 	EINA_LIST_FOREACH(ui_list_main_window, l, deleting_element){
 		evas_object_del (deleting_element);
 	}

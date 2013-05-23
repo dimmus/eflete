@@ -26,19 +26,19 @@ _ws_zoom_out (Workspace *ws )
 }
 
 static void
-_zoom_out_on_click (void *data,
+_zoom_out_on_click (void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-	_ws_zoom_out ((Workspace *)data);
+	//_ws_zoom_out ((Workspace *)data);
 }
 
 static void
-_zoom_in_on_click (void *data,
+_zoom_in_on_click (void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-	_ws_zoom_in ((Workspace *)data);
+//	_ws_zoom_in ((Workspace *)data);
 }
 
 static void
