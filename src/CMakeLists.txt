@@ -26,6 +26,7 @@ set(TET_CC_FILES
    ui/ui_settings.c
    ui/ui_widget_list.c
    ui/ui_signal_list.c
+   ui/ui_states_list.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
 )

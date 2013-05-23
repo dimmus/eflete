@@ -98,6 +98,7 @@ _navi_gl_parts_pop(void *data,
 	elm_genlist_clear(gl_signals);
 
 	evas_object_hide(ui_block_content_get(ap->block_right_bottom));
+	evas_object_hide(ui_block_content_get(ap->block_bottom_left));
 }
 
 static void
@@ -106,7 +107,7 @@ _on_part_clicked_double(void *data,
 						void *event_info)
 {
 	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-	Evas_Object *prop, *part_prop;
+	Evas_Object *prop, *part_prop, *gl_states;
 	App_Data *ap;
 	Part *_part;
 
@@ -122,6 +123,10 @@ _on_part_clicked_double(void *data,
 	part_prop = ui_prop_part_info_view_add(prop, _part);
 	ui_property_part_view_set(prop, part_prop);
 	evas_object_show(part_prop);
+
+	gl_states = ui_states_list_add(ap, _part);
+	ui_block_content_set(ap->block_bottom_left, gl_states);
+	evas_object_show(gl_states);
 }
 
 static void
