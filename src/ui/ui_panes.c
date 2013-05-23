@@ -29,9 +29,9 @@ struct _UI_Current_State_Panes
 };
 typedef struct _UI_Current_State_Panes UI_Current_State_Panes;
 
-Eina_List *ui_list_panes;
 UI_Current_State_Panes *ui_csp;
 UI_Elements_Settings *us;
+Evas_Object *panes;
 
 UI_Current_State_Panes *
 _ui_panes_current_state_struct_init (void)
@@ -65,76 +65,77 @@ void
 ui_panes_current_state_get (void)
 {
 	double size_get=0.0;
-	Eina_List *l = ui_list_panes;
 
-	size_get = elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	Evas_Object *_panes;
+	Evas_Object *_panes_temp;
+
+	_panes = panes;
+	_panes_temp = NULL;
+
+	size_get = elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_left.left_size = (int)(ui_csp->window.width * size_get);
-
-	size_get = elm_panes_content_right_size_get ((Evas_Object *)l->data);
+	size_get = elm_panes_content_right_size_get (_panes);
 	ui_csp->panes_left.right_size = (int)(ui_csp->window.width * size_get);
 
-	l = eina_list_next (l);
-	size_get = elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	_panes = elm_object_part_content_get (panes, "left");
+	size_get = elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_left_hor.left_size =
 		(int)((ui_csp->window.height-20) * size_get);
-	size_get = elm_panes_content_right_size_get ((Evas_Object *)l->data);
+	size_get = elm_panes_content_right_size_get (_panes);
 	ui_csp->panes_left_hor.right_size =
 		(int)((ui_csp->window.height-20) * size_get);
 
-	l = eina_list_next (l);
-	size_get = elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	_panes = elm_object_part_content_get (panes, "right");
+	size_get = elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_right.left_size =
 		(int)((ui_csp->window.width - ui_csp->panes_left.left_size)* size_get);
-	size_get = 1 - elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	size_get = 1 - elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_right.right_size =
 		(int)((ui_csp->window.width-ui_csp->panes_left.left_size)* size_get);
 
-	l = eina_list_next (l);
-	size_get = elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	_panes_temp = elm_object_part_content_get (_panes, "right");
+	size_get = elm_panes_content_left_size_get (_panes_temp);
 	ui_csp->panes_right_hor.left_size =
 		(int)((ui_csp->window.height-20)*size_get);
-	size_get = elm_panes_content_right_size_get ((Evas_Object *)l->data);
+	size_get = elm_panes_content_right_size_get (_panes_temp);
 	ui_csp->panes_right_hor.right_size =
 		(int)((ui_csp->window.height-20) * size_get);
 
-	l = eina_list_next (l);
-	size_get = elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	_panes_temp = elm_object_part_content_get(_panes, "left");
+	size_get = elm_panes_content_left_size_get (_panes_temp);
 	ui_csp->panes_center.left_size =
 		(int)((ui_csp->window.height-20)* size_get);
-	size_get = elm_panes_content_right_size_get ((Evas_Object *)l->data);
+	size_get = elm_panes_content_right_size_get (_panes_temp);
 	ui_csp->panes_center.right_size =
 		(int)((ui_csp->window.height -20)* size_get);
 
-	l = eina_list_next (l);
-	size_get = elm_panes_content_left_size_get ((Evas_Object *)l->data);
+	_panes = elm_object_part_content_get (_panes_temp, "right");
+	size_get = elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_center_down.left_size=
 		(int)(ui_csp->panes_right.left_size*size_get);
-	size_get =elm_panes_content_right_size_get ((Evas_Object *)l->data);
+	size_get =elm_panes_content_right_size_get (_panes);
 	ui_csp->panes_center_down.right_size=
 		(int)(ui_csp->panes_right.left_size*size_get);
-
 }
 
 void
 ui_panes_current_state_set (void)
 {
-	Eina_List *l = ui_list_panes;
 	double size_set = 0.0;
+	Evas_Object *_panes;
+	_panes = panes;
 	size_set = (double)	(ui_csp->panes_left.left_size) / (ui_csp->window.width);
-	elm_panes_content_left_size_set ((Evas_Object *)l->data,size_set);
-	l = eina_list_next (l);
-	l = eina_list_next (l);
+	elm_panes_content_left_size_set (_panes, size_set);
 
+	_panes = elm_object_part_content_get (panes, "right");
 	size_set = (double) (ui_csp->panes_right.right_size)/
 		(ui_csp->window.width-ui_csp->panes_left.left_size);
+	elm_panes_content_right_size_set (_panes, size_set);
 
-	elm_panes_content_right_size_set ((Evas_Object*)l->data,size_set);
-	l = eina_list_next (l);
-	l = eina_list_next (l);
+	_panes = elm_object_part_content_get(_panes, "left");
 	size_set = (double)(ui_csp->panes_center.right_size)/
 		(ui_csp->window.height-20);
-	elm_panes_content_right_size_set ((Evas_Object *)l->data,size_set);
-	l = eina_list_next (l);
+	elm_panes_content_right_size_set (_panes, size_set);
 }
 
 void
@@ -163,11 +164,55 @@ ui_resize_pans (int w, int h)
 }
 
 static void
-_unpress(void *data __UNUSED__,
+_unpress_cb(void *data __UNUSED__,
 		Evas_Object *obj __UNUSED__,
 		void *event_info __UNUSED__)
 {
 	ui_panes_current_state_get ();
+}
+
+static void
+_double_click_up_cb (void * data __UNUSED__,
+				Evas_Object *obj,
+				void *event_info __UNUSED__)
+{
+	static double _size = 0.0;
+	if (elm_panes_content_left_size_get(obj) > 0)
+	{
+		_size=elm_panes_content_left_size_get(obj);
+		elm_panes_content_left_size_set(obj, 0.0);
+	}
+	else
+	{
+		if (!_size) _size = 0.3;
+		elm_panes_content_left_size_set(obj, _size);
+	}
+
+}
+
+static void
+_double_click_down_cb (void * data,
+				Evas_Object *obj,
+				void *event_info __UNUSED__)
+{
+	static double _size[2] = {0.0 , 0.0};
+	int *_number =  (int*)data;
+	if (elm_panes_content_right_size_get(obj) > 0)
+	{
+		_size[*_number]=elm_panes_content_right_size_get(obj);
+		elm_panes_content_right_size_set(obj, 0.0);
+	}
+	else
+	{
+		if (!_size[*_number])
+		{
+			if (!*_number)
+				_size[*_number] = 0.2;
+			else
+				_size[*_number] = 0.4;
+		}
+		elm_panes_content_right_size_set(obj, _size[*_number]);
+	}
 }
 
 void
@@ -191,6 +236,14 @@ ui_panes_add (App_Data *ap)
 	Evas_Object *panes_left, *panes_left_hor, *panes_right;
 	Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
 
+	/* _panes_id_center and panes_id_left needs for identify pans in callback
+		for double click mouse button. For center panes id == 0, and for left
+		panes id == 1.*/
+	int *_panes_id_center = calloc(1,sizeof(int));
+	int *_panes_id_left = calloc(1,sizeof(int));
+	*_panes_id_center=0;
+	*_panes_id_left=1;
+
 	us = ui_element_settings_init();
 	if (!us){
 		ERR ("ERROR: unable initialize settings module");
@@ -200,19 +253,18 @@ ui_panes_add (App_Data *ap)
 	panes_left = elm_panes_add(ap->win_layout);
     if (panes_left == NULL)
 		return EINA_FALSE;
-	ui_list_panes = eina_list_append(ui_list_panes, panes_left);
 	evas_object_size_hint_weight_set(panes_left,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(panes_left,
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_panes_content_left_size_set(panes_left, 0.2);
+	panes = panes_left;
 
 	elm_object_part_content_set (ap->win_layout, "swallow/panes", panes_left);
 
 	panes_left_hor = elm_panes_add(ap->win_layout);
 	if (panes_left_hor == NULL)
 		return EINA_FALSE;
-	ui_list_panes = eina_list_append(ui_list_panes, panes_left_hor);
 	elm_panes_horizontal_set (panes_left_hor, EINA_TRUE);
 	evas_object_size_hint_weight_set(panes_left_hor,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -224,7 +276,6 @@ ui_panes_add (App_Data *ap)
 	panes_right = elm_panes_add(ap->win_layout);
 	if (panes_right == NULL)
 			return EINA_FALSE;
-	ui_list_panes = eina_list_append(ui_list_panes, panes_right);
 	evas_object_size_hint_weight_set(panes_right,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(panes_right,
@@ -235,7 +286,6 @@ ui_panes_add (App_Data *ap)
 	panes_right_hor = elm_panes_add(ap->win_layout);
 	if (panes_right_hor == NULL)
 		return EINA_FALSE;
-	ui_list_panes = eina_list_append(ui_list_panes, panes_right_hor);
 	elm_panes_horizontal_set (panes_right_hor, EINA_TRUE);
 	evas_object_size_hint_weight_set(panes_right_hor,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -247,7 +297,6 @@ ui_panes_add (App_Data *ap)
 	panes_center = elm_panes_add(ap->win_layout);
 	if (panes_center == NULL)
 		return EINA_FALSE;
-	ui_list_panes = eina_list_append(ui_list_panes, panes_center);
 	elm_panes_horizontal_set(panes_center, EINA_TRUE);
 	evas_object_size_hint_weight_set(panes_center,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -259,7 +308,6 @@ ui_panes_add (App_Data *ap)
 	panes_center_down = elm_panes_add(ap->win_layout);
 	if (panes_center_down == NULL)
 		return EINA_FALSE;
-	ui_list_panes = eina_list_append(ui_list_panes, panes_center_down);
 	evas_object_size_hint_weight_set(panes_center_down,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(panes_center_down,
@@ -275,12 +323,19 @@ ui_panes_add (App_Data *ap)
 	us->window = ap->win;
 
 
-	evas_object_smart_callback_add(panes_left, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_left_hor, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_right, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_right_hor, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_center, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress, NULL);
+	evas_object_smart_callback_add(panes_left, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_left_hor, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right_hor, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_center, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right_hor, "clicked,double",
+		_double_click_up_cb, NULL);
+	evas_object_smart_callback_add(panes_left_hor, "clicked,double",
+		_double_click_down_cb, _panes_id_left);
+	evas_object_smart_callback_add(panes_center, "clicked,double",
+		_double_click_down_cb, _panes_id_center);
+
 
 	block = ui_block_add(ap->win_layout);
 	ui_block_title_text_set(block, "Part States");
@@ -321,20 +376,6 @@ ui_panes_add (App_Data *ap)
 	ap->block_right_bottom = block;
 
 	ui_csp =_ui_panes_current_state_struct_init ();
-	return EINA_TRUE;
-}
-
-Eina_Bool
-ui_panes_del ()
-{
-	Evas_Object *deleting_element;
-	Eina_List *l;
-    EINA_LIST_FOREACH(ui_list_panes, l, deleting_element){
-		evas_object_del (deleting_element);
-		if (!deleting_element) return EINA_FALSE;
-	}
-	eina_list_free(ui_list_panes);
-	eina_list_free(l);
 	return EINA_TRUE;
 }
 

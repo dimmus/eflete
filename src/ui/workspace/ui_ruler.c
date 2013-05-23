@@ -3,6 +3,7 @@
 
 struct _UI_Ruler_Data
 {
+	Evas_Object		*pointer;
 	Orient			orient;
 	Eina_Bool		relative : 1;
 	Eina_Bool		absolute : 1;
@@ -11,9 +12,10 @@ struct _UI_Ruler_Data
 
 	Eina_List		*dashes;
 	Eina_List		*marks;
+	Eina_List		*marks_relative;
 	int				dash_counter;
 
-	int				pointer_pos;
+	double			pointer_pos;
 	Eina_Bool		pointer_visible;
 };
 typedef struct _UI_Ruler_Data UI_Ruler_Data;
@@ -85,7 +87,7 @@ _add_dashes (Evas_Object *obj, int count, int from)
 	int x, y, w, h, k;
 	int iDash_size = 3;
 	int iDash_from = from;
-	int iPos_text_shift=20;
+	int iPos_text_shift=10;
 	Evas_Object *_line, *_text;
 
 	Evas *_canvas = evas_object_evas_get (obj);
@@ -104,10 +106,10 @@ _add_dashes (Evas_Object *obj, int count, int from)
 				evas_object_text_text_set (_text, _itoa(i*100));
 				if (_ruler_data->orient == HORIZONTAL)
 				{
-					if (i>=100) iPos_text_shift=25;
-					else iPos_text_shift=20;
+					if (i>=100) iPos_text_shift=13;
+					else iPos_text_shift=9;
 					evas_object_move(_text,x+i*_ruler_data->step-iPos_text_shift,
-						iDash_from - iDash_size-7);
+						iDash_from - iDash_size-15);
 				}
 				else
 					evas_object_move (_text, iDash_from - iDash_size-12,
@@ -209,17 +211,25 @@ _ruler_move_cb (void *data __UNUSED__,
 
 
 void
-ui_ruler_pointer_pos_set (Evas_Object *obj __UNUSED__)
+ui_ruler_pointer_pos_set (Evas_Object *obj, int pos)
 {
-/*	double x,y, w, h, z;
-	char *return_state = "FAIL";
-	Eina_Bool ret;
-	ret = edje_object_part_drag_value_get (obj,"pointer", &x, &y);
-	return_state = edje_object_part_state_get (obj, "pointer", &z);
-	edje_object_part_drag_value_set (obj,"pointer", 0.5, 0.5);
-	edje_object_part_drag_value_get (obj,"pointer", &w, &h);
-	fprintf (stdout, "obj[%x] x[%f], y[%f], w[%f] h[%f] return[%d] state[%s]\n",
-			obj,x,y,w,h,ret, return_state);*/
+	int x,y,w,h;
+	double dx,dy;
+	dx=dy=0.0;
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	evas_object_geometry_get (obj, &x, &y, &w, &h);
+
+	if (_ruler_data->orient == HORIZONTAL)
+	{
+		dx =(double) (pos - x)/w;
+		_ruler_data->pointer_pos=dx;
+	}
+	else
+	{
+		dy = (double) (pos - y)/h;
+		_ruler_data->pointer_pos=dy;
+	}
+	edje_object_part_drag_value_set (elm_layout_edje_get(obj),"pointer", dx, dy);
 }
 
 void
@@ -228,11 +238,14 @@ ui_ruler_orient_set (Evas_Object *obj, Orient orient)
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	_ruler_data->orient = orient;
 	if (_ruler_data->orient == HORIZONTAL)
-		elm_layout_file_set (obj, TET_EDJ,
-			"ui/ruler/horizontal/default");
-	else
 	{
 		elm_layout_file_set (obj, TET_EDJ,
+			"ui/ruler/horizontal/default");
+			edje_object_file_set (obj, TET_EDJ, "ui/ruler/horizontal/default");
+	}
+	else
+	{
+	elm_layout_file_set (obj, TET_EDJ,
 			"ui/ruler/vertical/default");
 		evas_object_event_callback_add  (obj, EVAS_CALLBACK_MOVE,
 			_ruler_move_cb, _ruler_data);
@@ -245,7 +258,6 @@ ui_ruler_orient_get (Evas_Object *obj)
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	return	_ruler_data->orient;
 }
-
 int
 ui_ruler_pointer_pos_get (Evas_Object *obj)
 {
@@ -316,9 +328,10 @@ _ruler_data_init (void)
 	_ruler_data->dash_counter = 0;
 	_ruler_data->dashes = NULL;
 	_ruler_data->marks = NULL;
-	_ruler_data->pointer_pos = 0;
+	_ruler_data->marks_relative = NULL;
+	_ruler_data->pointer = NULL;
+	_ruler_data->pointer_pos = 0.0;
 	_ruler_data->pointer_visible = EINA_TRUE;
-
 	return _ruler_data;
 }
 
