@@ -49,6 +49,22 @@ _separate_on_click (void *data __UNUSED__,
 	//NULL;
 }
 
+static void
+_ws_mouse_click_cb (void *data ,
+					Evas *e __UNUSED__,
+					Evas_Object *obj __UNUSED__,
+					void *event_info)
+{
+	Evas_Event_Mouse_Down *ev = event_info;
+	Workspace *ws = (Workspace*)data;
+
+	if (ev->button ==3 )
+		ui_popup_show (ws->bg, ws->popup);
+	else
+		ui_popup_hide (ws->popup);
+}
+
+
 Eina_Bool
 ws_bf_set (Evas_Object *bg __UNUSED__)
 {
@@ -92,7 +108,7 @@ Workspace *
 ws_add (Evas_Object *layout)
 {
 	Workspace *ws;
-	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver;
+	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver, *_popup;
 	Evas_Object *_icon;
 	Evas *canvas;
 
@@ -160,8 +176,14 @@ ws_add (Evas_Object *layout)
 	elm_object_part_content_set (layout, "base/workspace/ruler_ver",_ruler_ver);
 	ws->ruler_ver = _ruler_ver;
 
+	_popup = ui_popup_add (layout, ws);
+	ws->popup = _popup;
+
 	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
-		_ws_mouse_move_cb,ws);
+		_ws_mouse_move_cb, ws);
+
+	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
+		_ws_mouse_click_cb, ws);
 
 	return ws;
 }

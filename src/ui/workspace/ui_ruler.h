@@ -4,6 +4,7 @@
 #include <Elementary.h>
 #include "logger.h"
 
+
 #define RULERDATAKEY "ruler_data_key"
 
 enum _Orient
@@ -46,5 +47,11 @@ ui_ruler_type_absolute_set (Evas_Object *obj, Eina_Bool enable);
 
 void
 ui_ruler_pointer_pos_set (Evas_Object *obj, int pos);
+
+void
+ui_ruler_show (Evas_Object *obj);
+
+void
+ui_ruler_hide (Evas_Object *obj);
 
 #endif /* UI_RULER_HEADER_H */

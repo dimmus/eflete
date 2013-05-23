@@ -27,6 +27,7 @@ set(TET_CC_FILES
    ui/ui_signal_list.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
+   ui/workspace/ui_popup.c
 )
 
 add_executable(${PROJECT_NAME} ${TET_CC_FILES})

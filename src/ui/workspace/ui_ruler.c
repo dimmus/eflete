@@ -79,41 +79,90 @@ _clear_all_dashes_and_marks (Evas_Object *obj)
 	_ruler_data->dashes=NULL;
 }
 
+void
+_add_relative_marks (Evas_Object *obj)
+{
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	Evas_Object *_text;
+	double value = 0.0;
+	double step = 0.5;
+	int step_px=0;
+	char buf[4];
+	int x, y, w, h, k;
+	k=0;
+
+	Evas *_canvas = evas_object_evas_get (obj);
+	evas_object_geometry_get (obj, &x, &y, &w, &h);
+	if (_ruler_data->orient == HORIZONTAL)
+		step_px = (int)w/step;
+	else
+		step_px = (int)h/step;
+
+	while (value<=(1+step))
+	{
+		sprintf (buf, "%2.1f", value);
+		_text = evas_object_text_add (_canvas);
+		evas_object_text_font_set (_text, "Calibri",10);
+		evas_object_color_set (_text, 120, 120, 0, 255);
+		evas_object_text_text_set (_text, buf);
+		if (_ruler_data->orient == HORIZONTAL)
+			evas_object_move(_text,x+step_px*k, y);
+		else
+			evas_object_move(_text,x+w-20,y+step_px*k);
+		evas_object_show (_text);
+		value+=step;
+		k++;
+	}
+}
+
 int
 _add_dashes (Evas_Object *obj, int count, int from)
 {
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	int i = _ruler_data->dash_counter;
 	int x, y, w, h, k;
-	int iDash_size = 3;
-	int iDash_from = from;
-	int iPos_text_shift=10;
+	int _dash_size = 3;
+	int _dash_from = from;
+	int _pos_text_shift=10;
 	Evas_Object *_line, *_text;
 
 	Evas *_canvas = evas_object_evas_get (obj);
 	evas_object_geometry_get (obj, &x, &y, &w, &h);
+
 	for (k=0; k<=count; i++, k++)
 	{
-		if (!(i%5) && (i%10))
-			iDash_size=7;
+		if (!(i%5) && (i%10) && i)
+			_dash_size=7;
 		else
 			if (!(i%10) || !i)
 			{
-				iDash_size=12;
+				_dash_size=12;
 				_text = evas_object_text_add (_canvas);
 				evas_object_text_font_set (_text, "Calibri",10);
 				evas_object_color_set (_text, 64, 64, 64, 255);
 				evas_object_text_text_set (_text, _itoa(i*100));
 				if (_ruler_data->orient == HORIZONTAL)
 				{
-					if (i>=100) iPos_text_shift=13;
-					else iPos_text_shift=9;
-					evas_object_move(_text,x+i*_ruler_data->step-iPos_text_shift,
-						iDash_from - iDash_size-15);
+					if (i>=100) _pos_text_shift=26;
+					else _pos_text_shift=20;
+					evas_object_move(_text,
+						x+i*_ruler_data->step-_pos_text_shift,
+						_dash_from - _dash_size-5);
+					if (i==0)
+					{
+						evas_object_text_text_set (_text, "0");
+						evas_object_move(_text,x+2,_dash_from - _dash_size-5);
+					}
 				}
 				else
-					evas_object_move (_text, iDash_from - iDash_size-12,
-						y+i*_ruler_data->step-13);
+					if (i==0)
+					{
+						evas_object_text_text_set (_text, "0");
+						evas_object_move(_text,_dash_from - _dash_size,y-2);
+					}
+					else
+						evas_object_move (_text, _dash_from - _dash_size-12,
+							y+i*_ruler_data->step-13);
 				_ruler_data->marks = eina_list_append(_ruler_data->marks,
 					_text);
 
@@ -122,14 +171,14 @@ _add_dashes (Evas_Object *obj, int count, int from)
 		_line = evas_object_line_add (_canvas);
 		if (_ruler_data->orient == HORIZONTAL)
 			evas_object_line_xy_set (_line,x+i*_ruler_data->step,
-				iDash_from, x+i*_ruler_data->step, iDash_from - iDash_size);
+				_dash_from, x+i*_ruler_data->step, _dash_from - _dash_size);
 		else
-			evas_object_line_xy_set (_line, iDash_from, y+i*_ruler_data->step,
-				iDash_from-iDash_size, y+i*_ruler_data->step);
+			evas_object_line_xy_set (_line, _dash_from, y+i*_ruler_data->step,
+				_dash_from-_dash_size, y+i*_ruler_data->step);
 		evas_object_color_set (_line, 64, 64, 64, 255);
 		evas_object_show (_line);
 		_ruler_data->dashes = eina_list_append(_ruler_data->dashes, _line);
-		iDash_size=3;
+		_dash_size=3;
 	}
 	return k;
 }
@@ -176,6 +225,7 @@ _display_scale (Evas_Object *obj)
 	{
 		iDash_counter =iDash_counter-_ruler_data->dash_counter;
 		_ruler_data->dash_counter+=_add_dashes(obj,iDash_counter,iDash_from);
+//		_add_relative_marks(obj);
 	}
 	else
 	{
@@ -310,6 +360,20 @@ ui_ruler_type_absolute_set (Evas_Object *obj, Eina_Bool enable)
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	_ruler_data->absolute = enable;
 	_display_scale (obj) ;
+}
+
+void
+ui_ruler_hide (Evas_Object *obj)
+{
+	_clear_all_dashes_and_marks(obj);
+	evas_object_hide (obj);
+}
+
+void
+ui_ruler_show (Evas_Object *obj)
+{
+	_display_scale(obj);
+	evas_object_show (obj);
 }
 
 UI_Ruler_Data *
