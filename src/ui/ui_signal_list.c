@@ -17,6 +17,9 @@ ui_signal_list_add(App_Data *ap, Eina_List *signals)
 	Eina_List *l;
 	char *signal;
 
+	if(!ap || !signals)
+		return NULL;
+
 	if(!_itc_signal)
 	{
 		_itc_signal = elm_genlist_item_class_new();

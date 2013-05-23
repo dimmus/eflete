@@ -19,12 +19,14 @@ set(TET_CC_FILES
    project_manager/project_manager.c
    logger/logger.c
    ui/ui_block.c
+   ui/ui_property.c
    ui/ui_panes.c
    ui/ui_menu.c
    ui/ui_main_window.c
    ui/ui_settings.c
    ui/ui_widget_list.c
    ui/ui_signal_list.c
+   ui/ui_states_list.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c

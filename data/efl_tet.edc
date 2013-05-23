@@ -1,8 +1,10 @@
 collections {
+   #include "widgets/styles.edc"
    #include "widgets/images.edc"
    #include "widgets/main_window.edc"
    #include "widgets/block.edc"
    #include "widgets/workspace.edc"
    #include "widgets/ruler.edc"
+   #include "widgets/prop_item.edc"
 }
 
