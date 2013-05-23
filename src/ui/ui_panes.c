@@ -164,11 +164,55 @@ ui_resize_pans (int w, int h)
 }
 
 static void
-_unpress(void *data __UNUSED__,
+_unpress_cb(void *data __UNUSED__,
 		Evas_Object *obj __UNUSED__,
 		void *event_info __UNUSED__)
 {
 	ui_panes_current_state_get ();
+}
+
+static void
+_double_click_up_cb (void * data __UNUSED__,
+				Evas_Object *obj,
+				void *event_info __UNUSED__)
+{
+	static double _size = 0.0;
+	if (elm_panes_content_left_size_get(obj) > 0)
+	{
+		_size=elm_panes_content_left_size_get(obj);
+		elm_panes_content_left_size_set(obj, 0.0);
+	}
+	else
+	{
+		if (!_size) _size = 0.3;
+		elm_panes_content_left_size_set(obj, _size);
+	}
+
+}
+
+static void
+_double_click_down_cb (void * data,
+				Evas_Object *obj,
+				void *event_info __UNUSED__)
+{
+	static double _size[2] = {0.0 , 0.0};
+	int *_number =  (int*)data;
+	if (elm_panes_content_right_size_get(obj) > 0)
+	{
+		_size[*_number]=elm_panes_content_right_size_get(obj);
+		elm_panes_content_right_size_set(obj, 0.0);
+	}
+	else
+	{
+		if (!_size[*_number])
+		{
+			if (!*_number)
+				_size[*_number] = 0.2;
+			else
+				_size[*_number] = 0.4;
+		}
+		elm_panes_content_right_size_set(obj, _size[*_number]);
+	}
 }
 
 void
@@ -191,6 +235,14 @@ ui_panes_add (App_Data *ap)
 	Evas_Object *block;
 	Evas_Object *panes_left, *panes_left_hor, *panes_right;
 	Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
+
+	/* _panes_id_center and panes_id_left needs for identify pans in callback
+		for double click mouse button. For center panes id == 0, and for left
+		panes id == 1.*/
+	int *_panes_id_center = calloc(1,sizeof(int));
+	int *_panes_id_left = calloc(1,sizeof(int));
+	*_panes_id_center=0;
+	*_panes_id_left=1;
 
 	us = ui_element_settings_init();
 	if (!us){
@@ -271,12 +323,19 @@ ui_panes_add (App_Data *ap)
 	us->window = ap->win;
 
 
-	evas_object_smart_callback_add(panes_left, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_left_hor, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_right, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_right_hor, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_center, "unpress", _unpress, NULL);
-	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress, NULL);
+	evas_object_smart_callback_add(panes_left, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_left_hor, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right_hor, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_center, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right_hor, "clicked,double",
+		_double_click_up_cb, NULL);
+	evas_object_smart_callback_add(panes_left_hor, "clicked,double",
+		_double_click_down_cb, _panes_id_left);
+	evas_object_smart_callback_add(panes_center, "clicked,double",
+		_double_click_down_cb, _panes_id_center);
+
 
 	block = ui_block_add(ap->win_layout);
 	ui_block_title_text_set(block, "Part States");
