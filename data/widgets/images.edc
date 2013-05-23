@@ -4,5 +4,6 @@ images {
    image: "logo.png" COMP;
    image: "layout_header.jpg" COMP;
    image: "shelf_inside.png" COMP;
+   image: "separator_v.png" COMP;
 }
 

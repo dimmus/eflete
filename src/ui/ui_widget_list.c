@@ -96,6 +96,32 @@ _navi_gl_parts_pop(void *data,
 
 	elm_naviframe_item_pop(nf);
 	elm_genlist_clear(gl_signals);
+
+	evas_object_hide(ui_block_content_get(ap->block_right_bottom));
+}
+
+static void
+_on_part_clicked_double(void *data,
+						Evas_Object *obj __UNUSED__,
+						void *event_info)
+{
+	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+	Evas_Object *prop, *part_prop;
+	App_Data *ap;
+	Part *_part;
+
+	ap = (App_Data *)data;
+	_part = elm_object_item_data_get(glit);
+	prop = ui_block_content_get(ap->block_right_bottom);
+	if(!prop)
+	{
+		ERR("Property view is missing!");
+		return;
+	}
+
+	part_prop = ui_prop_part_info_view_add(prop, _part);
+	ui_property_part_view_set(prop, part_prop);
+	evas_object_show(part_prop);
 }
 
 static void
@@ -107,6 +133,7 @@ _on_group_clicked_double(void *data,
 	Elm_Object_Item *eoi;
 	App_Data *ap;
 	Evas_Object *nf, *gl_parts, *bt, *ic, *gl_signals;
+	Evas_Object *prop, *group_prop;
 	Eina_Inlist *parts;
 	Eina_List *signals;
 	Group *_group;
@@ -153,12 +180,33 @@ _on_group_clicked_double(void *data,
 										NULL, NULL);
 		elm_object_item_data_set(eoi, _part);
 	}
+	evas_object_smart_callback_add(gl_parts, "selected",
+									_on_part_clicked_double, ap);
+
 
 	/* Get signals list of a group and show them */
 	signals = wm_program_signals_list_get(_group->programs);
 	gl_signals = ui_signal_list_add(ap, signals);
 	wm_program_signals_list_free(signals);
 	ui_block_content_set(ap->block_left_bottom, gl_signals);
+
+	/* group properties */
+	prop = ui_block_content_get(ap->block_right_bottom);
+	if(prop)
+	{
+		ui_prop_group_info_view_update(prop, _group);
+		evas_object_show(prop);
+	}
+	else
+	{
+		prop = ui_property_view_new(ap->block_right_bottom);
+		ui_block_content_set(ap->block_right_bottom, prop);
+		evas_object_show(prop);
+
+		group_prop = ui_prop_group_info_view_add(prop, _group);
+		ui_property_group_view_set(prop, group_prop);
+		evas_object_show(group_prop);
+	}
 
 	ic = elm_icon_add(nf);
 	elm_icon_standard_set(ic, "arrow_left");

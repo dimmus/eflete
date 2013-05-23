@@ -162,6 +162,9 @@ struct _Group
 	char *full_group_name;
 	Evas_Object *obj;
 	Eina_Bool show;
+	int min_w, min_h;
+	int max_w, max_h;
+	int current_w, current_h;
 	Eina_Inlist *parts;
 	Eina_Inlist *programs;
 	type __type;
