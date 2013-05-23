@@ -256,7 +256,6 @@ wm_program_signals_list_get(const Eina_Inlist *programs);
 Eina_Bool
 wm_program_signals_list_free(Eina_List *signals);
 
-
 /**
  *
  */
