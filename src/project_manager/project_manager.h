@@ -22,7 +22,7 @@ struct _Project
 	char *font_directory;	// path to font directory, for compile
 	char *sound_directory;	// path to sound direcory, for compile
 
-	Eina_List widgets;	// list of widgets and they styles in that theme
+	Eina_Inlist *widgets;	// list of widgets and they styles in that theme
 };
 
 typedef struct _Project Project;
