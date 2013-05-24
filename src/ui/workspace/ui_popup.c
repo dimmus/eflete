@@ -42,6 +42,12 @@ _ctxpopup_item_zoom_in_cb(void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
+	Evas_Object *ruler = (Evas_Object*)data;
+	int x, y;
+
+	evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+	ui_ruler_scale_relative_position_set (ruler, x, x+200);
+
 
 }
 static void
@@ -49,7 +55,8 @@ _ctxpopup_item_zoom_out_cb(void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-
+	Evas_Object *ruler = (Evas_Object*)data;
+	ui_ruler_scale_relative_position_set (ruler, 0, 0);
 }
 
 static void
@@ -57,6 +64,11 @@ _ctxpopup_item_separate_cb(void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
+	Evas_Object *ruler = (Evas_Object*)data;
+	int x, y;
+
+	evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+	ui_ruler_scale_relative_position_set (ruler, y, y+250);
 
 }
 
@@ -65,7 +77,8 @@ _ctxpopup_item_legend_cb(void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-
+	Evas_Object *ruler = (Evas_Object*)data;
+	ui_ruler_scale_relative_position_set (ruler, 0, 0);
 }
 
 void
@@ -87,30 +100,20 @@ Evas_Object *
 ui_popup_add (Evas_Object *obj, Workspace *ws)
 {
 	Evas_Object *ctxpopup;
-//	Workspace *ws = ws_init();
 
 	ctxpopup = elm_ctxpopup_add(obj);
 	elm_ctxpopup_item_append(ctxpopup, "zoom +", NULL,
-		_ctxpopup_item_zoom_out_cb, NULL);
+		_ctxpopup_item_zoom_out_cb, ws->ruler_hor);
 	elm_ctxpopup_item_append(ctxpopup, "zoom -", NULL,
-		_ctxpopup_item_zoom_in_cb, NULL);
+		_ctxpopup_item_zoom_in_cb, ws->ruler_hor);
 	elm_ctxpopup_item_append(ctxpopup, "separate", NULL,
-		_ctxpopup_item_separate_cb, NULL);
+		_ctxpopup_item_separate_cb, ws->ruler_ver);
 	elm_ctxpopup_item_append(ctxpopup, "legend", NULL,
-		_ctxpopup_item_legend_cb, NULL);
+		_ctxpopup_item_legend_cb, ws->ruler_ver);
 	elm_ctxpopup_item_append(ctxpopup, "ruler hor.", NULL,
 		_ctxpopup_item_ruler_hor_cb, ws->ruler_ver);
 	elm_ctxpopup_item_append(ctxpopup, "ruler ver.", NULL,
 		_ctxpopup_item_ruler_ver_cb, ws->ruler_hor);
-/*
-	item_new(ctxpopup, "zoom +", "home");
-	item_new(ctxpopup, "zoom -", "file");
-	item_new(ctxpopup, "separate", "delete");
-	it = item_new(ctxpopup, "legend", "folder");
-	elm_object_item_disabled_set(it, EINA_TRUE);
-	item_new(ctxpopup, "ruler hor.", "edit");
-	it = item_new(ctxpopup, "ruler ver", "clock");
-	elm_object_item_disabled_set(it, EINA_TRUE);
-*/
+
 	return ctxpopup;
 }

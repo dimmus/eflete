@@ -30,7 +30,14 @@ _zoom_out_on_click (void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-	//_ws_zoom_out ((Workspace *)data);
+	Workspace *ws = (Workspace *)data;
+
+	ui_ruler_scale_relative_visible_set (ws->ruler_hor,
+		!ui_ruler_scale_relative_visible_get (ws->ruler_hor));
+
+	ui_ruler_scale_relative_visible_set (ws->ruler_ver,
+		!ui_ruler_scale_relative_visible_get (ws->ruler_ver));
+
 }
 
 static void
@@ -38,7 +45,14 @@ _zoom_in_on_click (void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-//	_ws_zoom_in ((Workspace *)data);
+	Workspace *ws = (Workspace *)data;
+
+	ui_ruler_scale_absolute_visible_set (ws->ruler_hor,
+		!ui_ruler_scale_absolute_visible_get (ws->ruler_hor));
+
+	ui_ruler_scale_absolute_visible_set (ws->ruler_ver,
+		!ui_ruler_scale_absolute_visible_get (ws->ruler_ver));
+
 }
 
 static void
@@ -46,7 +60,18 @@ _separate_on_click (void *data __UNUSED__,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-	//NULL;
+	Workspace *ws = (Workspace *)data;
+	if (ui_ruler_step_relative_get (ws->ruler_hor)>=0.5)
+	{
+		ui_ruler_step_relative_set (ws->ruler_hor ,0.1);
+		ui_ruler_step_relative_set (ws->ruler_ver ,0.1);
+	}
+	else
+	{
+		ui_ruler_step_relative_set (ws->ruler_hor ,0.5);
+		ui_ruler_step_relative_set (ws->ruler_ver ,0.5);
+	}
+
 }
 
 static void
