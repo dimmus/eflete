@@ -6,5 +6,6 @@ collections {
    #include "widgets/workspace.edc"
    #include "widgets/ruler.edc"
    #include "widgets/prop_item.edc"
+   #include "widgets/groupspace.edc"
 }
 

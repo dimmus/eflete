@@ -18,8 +18,10 @@ struct _Workspace
 	Evas_Object *button_zoom_out;
 	Evas_Object *button_zoom_in;
 	Evas_Object *button_separate;
+	Evas_Object *group_space;
 };
 typedef struct _Workspace Workspace;
+
 
 Eina_Bool
 ws_bg_set (Evas_Object *bg);
