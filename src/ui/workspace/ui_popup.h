@@ -3,8 +3,6 @@
 
 #include "logger.h"
 #include "Elementary.h"
-//#include "ui_ruler.h"
-//#include "ui_workspace.h"
 
 /*Evas_Object *
 ui_popup_add (Evas_Object *parent, Workspace *ws);
