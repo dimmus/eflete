@@ -1,7 +1,11 @@
 #include "ui_settings.h"
 #include "ui_block.h"
 
-void _print_current_state(char *);
+void
+_print_current_state(char *);
+
+void
+_ui_panes_current_state_set (void);
 
 struct _Panes_Attributes
 {
@@ -31,6 +35,10 @@ typedef struct _UI_Current_State_Panes UI_Current_State_Panes;
 
 UI_Current_State_Panes *ui_csp;
 UI_Elements_Settings *us;
+
+/*
+	Store main panes in global pointer. This need for have access to all panes.
+*/
 Evas_Object *panes;
 
 UI_Current_State_Panes *
@@ -62,7 +70,7 @@ _ui_panes_current_state_struct_init (void)
 }
 
 void
-ui_panes_current_state_get (void)
+_ui_panes_current_state_get (void)
 {
 	double size_get=0.0;
 
@@ -71,6 +79,9 @@ ui_panes_current_state_get (void)
 
 	_panes = panes;
 	_panes_temp = NULL;
+
+	Eina_Bool _need_resize = EINA_FALSE;
+	int _shift_size=0;
 
 	size_get = elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_left.left_size = (int)(ui_csp->window.width * size_get);
@@ -109,6 +120,16 @@ ui_panes_current_state_get (void)
 	ui_csp->panes_center.right_size =
 		(int)((ui_csp->window.height -20)* size_get);
 
+	/*	Check for minimal size to workspace. 300x300px. */
+	if (ui_csp->panes_center.left_size<300)
+	{
+		_shift_size = 300 - ui_csp->panes_center.left_size;
+		ui_csp->panes_center.left_size = 300;
+		ui_csp->panes_center.right_size -= _shift_size;
+		_need_resize = EINA_TRUE;
+		_shift_size = 0;
+	}
+
 	_panes = elm_object_part_content_get (_panes_temp, "right");
 	size_get = elm_panes_content_left_size_get (_panes);
 	ui_csp->panes_center_down.left_size=
@@ -116,13 +137,17 @@ ui_panes_current_state_get (void)
 	size_get =elm_panes_content_right_size_get (_panes);
 	ui_csp->panes_center_down.right_size=
 		(int)(ui_csp->panes_right.left_size*size_get);
+
+	if (_need_resize)
+		_ui_panes_current_state_set();
 }
 
 void
-ui_panes_current_state_set (void)
+_ui_panes_current_state_set (void)
 {
 	double size_set = 0.0;
 	Evas_Object *_panes;
+
 	_panes = panes;
 	size_set = (double)	(ui_csp->panes_left.left_size) / (ui_csp->window.width);
 	elm_panes_content_left_size_set (_panes, size_set);
@@ -155,12 +180,21 @@ Window      w[%4d] h[%4d]\n\n",
 		ui_csp->window.width, ui_csp->window.height);
 }
 
+
+void
+_ui_panes_fixed_size_set ()
+{
+	ui_csp->panes_left.left_size = 300;
+	ui_csp->panes_right.right_size = 300;
+	_ui_panes_current_state_set ();
+}
+
 void
 ui_resize_pans (int w, int h)
 {
 	ui_csp->window.height = h;
 	ui_csp->window.width = w;
-	ui_panes_current_state_set();
+	_ui_panes_current_state_set();
 }
 
 static void
@@ -168,7 +202,7 @@ _unpress_cb(void *data __UNUSED__,
 		Evas_Object *obj __UNUSED__,
 		void *event_info __UNUSED__)
 {
-	ui_panes_current_state_get ();
+	_ui_panes_current_state_get ();
 }
 
 static void
@@ -218,7 +252,7 @@ _double_click_down_cb (void * data,
 void
 ui_panes_settings_save ()
 {
-	ui_panes_current_state_set();
+	_ui_panes_current_state_set();
 	ui_settings_save();
 }
 
@@ -226,7 +260,8 @@ void
 ui_panes_settings_load (Evas_Object *win __UNUSED__)
 {
 	ui_settings_load();
-	ui_panes_current_state_get ();
+	_ui_panes_current_state_get ();
+	_ui_panes_fixed_size_set ();
 }
 
 Eina_Bool
@@ -236,9 +271,12 @@ ui_panes_add (App_Data *ap)
 	Evas_Object *panes_left, *panes_left_hor, *panes_right;
 	Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
 
-	/* _panes_id_center and panes_id_left needs for identify pans in callback
+	/*
+		_panes_id_center and panes_id_left needs for identify pans in callback
 		for double click mouse button. For center panes id == 0, and for left
-		panes id == 1.*/
+		panes id == 1.
+	*/
+
 	int *_panes_id_center = calloc(1,sizeof(int));
 	int *_panes_id_left = calloc(1,sizeof(int));
 	*_panes_id_center=0;
@@ -249,6 +287,7 @@ ui_panes_add (App_Data *ap)
 		ERR ("ERROR: unable initialize settings module");
 		return EINA_FALSE;
 	}
+	ui_csp =_ui_panes_current_state_struct_init ();
 
 	panes_left = elm_panes_add(ap->win_layout);
     if (panes_left == NULL)
@@ -259,7 +298,7 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_panes_content_left_size_set(panes_left, 0.2);
 	panes = panes_left;
-
+	elm_panes_fixed_set (panes_left, EINA_TRUE);
 	elm_object_part_content_set (ap->win_layout, "swallow/panes", panes_left);
 
 	panes_left_hor = elm_panes_add(ap->win_layout);
@@ -282,6 +321,7 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_left, "right", panes_right);
 	elm_panes_content_left_size_set(panes_right, 0.75);
+	elm_panes_fixed_set (panes_right, EINA_TRUE);
 
 	panes_right_hor = elm_panes_add(ap->win_layout);
 	if (panes_right_hor == NULL)
@@ -322,13 +362,13 @@ ui_panes_add (App_Data *ap)
 	us->panes_center_down = panes_center_down;
 	us->window = ap->win;
 
-
-	evas_object_smart_callback_add(panes_left, "unpress", _unpress_cb, NULL);
-	evas_object_smart_callback_add(panes_left_hor, "unpress", _unpress_cb, NULL);
-	evas_object_smart_callback_add(panes_right, "unpress", _unpress_cb, NULL);
-	evas_object_smart_callback_add(panes_right_hor, "unpress", _unpress_cb, NULL);
-	evas_object_smart_callback_add(panes_center, "unpress", _unpress_cb, NULL);
-	evas_object_smart_callback_add(panes_center_down, "unpress", _unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_left,"unpress",_unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_left_hor,"unpress",_unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right,"unpress",_unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_right_hor,"unpress",_unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_center,"unpress",_unpress_cb, NULL);
+	evas_object_smart_callback_add(panes_center_down,"unpress",
+		_unpress_cb, NULL);
 	evas_object_smart_callback_add(panes_right_hor, "clicked,double",
 		_double_click_up_cb, NULL);
 	evas_object_smart_callback_add(panes_left_hor, "clicked,double",
@@ -375,7 +415,6 @@ ui_panes_add (App_Data *ap)
 	evas_object_show(block);
 	ap->block_right_bottom = block;
 
-	ui_csp =_ui_panes_current_state_struct_init ();
 	return EINA_TRUE;
 }
 

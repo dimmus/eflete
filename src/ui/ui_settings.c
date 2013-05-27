@@ -184,7 +184,7 @@ ui_settings_save ()
 		(UI_Settings*)calloc (1, sizeof(UI_Settings));
 
 	if (!_ui_settings){
-		fprintf (stdout, "ERROR: could not calloc UI_Settings\n");
+		ERR (" could not calloc UI_Settings");
 		return EINA_FALSE;
 	}
 	_ui_settings_descriptors_init ();
@@ -193,7 +193,7 @@ ui_settings_save ()
 
 	file_settings = eet_open (UISETTINGSFILE, EET_FILE_MODE_WRITE);
 	if (!file_settings) {
-		fprintf (stdout, "WARNING: unable to open configs file for write");
+		WARN (" unable to open configs file for write");
 		return EINA_FALSE;
 	}
 
@@ -201,7 +201,7 @@ ui_settings_save ()
 		"settings",_ui_settings, EINA_FALSE);
 
 	if (!state_write)
-		fprintf (stdout, "WARNING: unable to save data into file \n");
+		WARN ("unable to save data into file");
 	eet_close (file_settings);
 
 	_ui_settings_descriptors_shutdown ();
@@ -221,14 +221,14 @@ ui_settings_load ( )
 
 	file_settings = eet_open (UISETTINGSFILE, EET_FILE_MODE_READ);
 	if (!file_settings) {
-		fprintf (stdout, "WARNING: unable open configs file for load.\n");
+		WARN ("unable open configs file for load. Try load defaults settings");
 		return EINA_FALSE;
 	}
 
 	_ui_settings = eet_data_read (file_settings,
 		_ui_settings_descriptor, "settings");
 	if (!_ui_settings) {
-		fprintf (stdout, "ERROR: unable to load ui setings.\n");
+		ERR ("unable to load ui setings. Try load defaults settings");
 		return EINA_FALSE;
 	}
 
