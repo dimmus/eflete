@@ -2,6 +2,8 @@
 #define UI_STATES_LIST_H
 
 #include "efl_tet.h"
+#include "ui_block.h"
+#include "ui_property.h"
 #include <Elementary.h>
 
 /**

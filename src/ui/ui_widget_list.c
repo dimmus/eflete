@@ -102,9 +102,9 @@ _navi_gl_parts_pop(void *data,
 }
 
 static void
-_on_part_clicked_double(void *data,
-						Evas_Object *obj __UNUSED__,
-						void *event_info)
+_on_part_selected(void *data,
+					Evas_Object *obj __UNUSED__,
+					void *event_info)
 {
 	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 	Evas_Object *prop, *part_prop, *gl_states;
@@ -127,6 +127,9 @@ _on_part_clicked_double(void *data,
 	gl_states = ui_states_list_add(ap, _part);
 	ui_block_content_set(ap->block_bottom_left, gl_states);
 	evas_object_show(gl_states);
+
+	/* FIXME: it bad  */
+	elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
 }
 
 static void
@@ -186,7 +189,7 @@ _on_group_clicked_double(void *data,
 		elm_object_item_data_set(eoi, _part);
 	}
 	evas_object_smart_callback_add(gl_parts, "selected",
-									_on_part_clicked_double, ap);
+									_on_part_selected, ap);
 
 
 	/* Get signals list of a group and show them */

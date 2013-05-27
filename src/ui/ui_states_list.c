@@ -15,12 +15,32 @@ _item_state_label_get(void *data,
 	return strdup(state_name);
 }
 
+static void
+_on_state_selected(void *data,
+					Evas_Object *obj __UNUSED__,
+					void *event_info)
+{
+	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+	App_Data *ap = (App_Data *)data;
+	Part_State *state;
+	Evas_Object *prop_view, *part_view, *state_view;
+
+	state = elm_object_item_data_get(glit);
+
+	prop_view = ui_block_content_get(ap->block_right_bottom);
+	part_view = ui_property_part_view_get(prop_view);
+	state_view = ui_prop_part_info_state_view_add(part_view, state);
+	ui_prop_part_info_state_set(part_view, state_view);
+	evas_object_show(state_view);
+}
+
 Evas_Object *
 ui_states_list_add(App_Data *ap, Part *part)
 {
 	Evas_Object *gl_states;
 	Part_State  *state;
 	Eina_Inlist *states;
+	Elm_Object_Item *eoi;
 
 	if(!ap || !part)
 		return NULL;
@@ -47,11 +67,15 @@ ui_states_list_add(App_Data *ap, Part *part)
 
 	EINA_INLIST_FOREACH(states, state)
 	{
-		elm_genlist_item_append(gl_states, _itc_state,
-								state,
-								NULL, ELM_GENLIST_ITEM_NONE,
-								NULL, NULL);
+		eoi = elm_genlist_item_append(gl_states, _itc_state,
+										state,
+										NULL, ELM_GENLIST_ITEM_NONE,
+										NULL, NULL);
+		elm_object_item_data_set(eoi, state);
 	}
+
+	evas_object_smart_callback_add(gl_states, "selected",
+									_on_state_selected, ap);
 
 	return gl_states;
 }

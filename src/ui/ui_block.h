@@ -39,16 +39,4 @@ ui_block_content_set (Evas_Object *block, Evas_Object *content);
 Evas_Object *
 ui_block_content_get (Evas_Object *block);
 
-/**
- *
- */
-void
-ui_block_content_set (Evas_Object *block, Evas_Object *content);
-
-/**
- *
- */
-Evas_Object *
-ui_block_content_get (Evas_Object *block);
-
 #endif /* UI_BLOCK_HEADER_H */
