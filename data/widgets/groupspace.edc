@@ -39,9 +39,13 @@ group {
          }
       }
 
-      part { name: "base";
+      part {
+         name: "base";
          scale: 1;
-         description { state: "default" 0.0;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
             rel1 {
                relative: 0.66 0.66;
                to: "base/groupspace/top_pad";
@@ -53,7 +57,7 @@ group {
                offset: 3 3;
             }
             image {
-               normal: "bt_base2.png";
+               normal: "shelf_inside.png";
                border: 7 7 7 7;
             }
          }
@@ -62,6 +66,7 @@ group {
       part {
          name: "base/groupspace/groupspace";
          type: SWALLOW;
+         mouse_events:1;
          description {
             state: "default" 0.0;
             rel1 {

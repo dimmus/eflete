@@ -22,25 +22,35 @@ struct _Workspace
 };
 typedef struct _Workspace Workspace;
 
-
-Eina_Bool
-ws_bg_set (Evas_Object *bg);
-
+/**
+ * Set zoom step for workspace.
+ * in: step Step size.
+ * in: ws Workspace structure.
+ */
 void
 ws_zoom_step_set (unsigned int step, Workspace *ws);
 
+/**
+ * Get zoom step for workspace.
+ * in: ws Workspace structure.
+ * out: integer value of step size.
+ */
 int
 ws_zoom_step_get (Workspace *ws);
 
-void
-ws_ruler_visible (Orient orient, Eina_Bool visible);
-
+/**
+ * Add new workspace object to the given parent Elemntary (container) object
+ * in: parent The parent object.
+ * out: pointer to an Workspace structure in wich store workspace elements.
+ */
 Workspace *
-ws_add (Evas_Object *layout);
+ws_add (Evas_Object *parent);
 
-Workspace *
-ws_init (void);
-
+/**
+ * Add new context popup to the given parent Elemntary (container) object.
+ * in: parent The parent object.
+ * in: ws Pointer to an Workspace structure. (need for use in callbacks)
+ */
 Evas_Object *
 ui_popup_add (Evas_Object *parent, Workspace *ws);
 #endif /* UI_WORKSPACE_HEADER_H */

@@ -2,6 +2,9 @@
 #include <efl_tet.h>
 
 
+Workspace *
+_ws_init (void);
+
 Eina_Bool
 _ws_zoom_in (Workspace *ws)
 {
@@ -130,37 +133,37 @@ char *itoa(long n)
 }
 
 Workspace *
-ws_add (Evas_Object *layout)
+ws_add (Evas_Object *parent)
 {
 	Workspace *ws;
 	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver, *_popup;
 	Evas_Object *_icon, *_group_space, *_group_space_2;
 	Evas *canvas;
 
-	ws = ws_init();
+	ws = _ws_init();
 	if (!ws)
 	{
 		ERR ("Unable to crerate Workspace structure");
 		return NULL;
 	}
 	ws_zoom_step_set (2, ws);
-	canvas = evas_object_evas_get (layout);
+	canvas = evas_object_evas_get (parent);
 	ws->canvas = canvas;
-	elm_layout_file_set (layout, TET_EDJ, "base/workspace" );
+	elm_layout_file_set (parent, TET_EDJ, "base/workspace" );
 	_bg = evas_object_image_filled_add (canvas);
 	evas_object_image_filled_set (_bg, EINA_FALSE);
 	evas_object_image_file_set (_bg, TET_IMG_PATH"bg_workspace.png", NULL);
 	evas_object_image_fill_set (_bg, 0, 0, 32, 32);
-	elm_object_part_content_set (layout, "base/workspace/background", _bg);
+	elm_object_part_content_set (parent, "base/workspace/background", _bg);
 	evas_object_show (_bg);
 	ws->bg = _bg;
 
-	_scroller  = elm_scroller_add (layout);
-	elm_object_part_content_set (layout, "base/workspace/scroller",	_scroller);
+	_scroller  = elm_scroller_add (parent);
+	elm_object_part_content_set (parent, "base/workspace/scroller",	_scroller);
 	evas_object_show (_scroller);
 
-	_button = elm_button_add (layout);
-	elm_object_part_content_set (layout, "base/workspace/button_zoom_out",
+	_button = elm_button_add (parent);
+	elm_object_part_content_set (parent, "base/workspace/button_zoom_out",
 		_button);
 	evas_object_smart_callback_add (_button, "clicked", _zoom_out_on_click, ws);
 	ws->button_zoom_out = _button;
@@ -171,8 +174,8 @@ ws_add (Evas_Object *layout)
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
-	_button = elm_button_add (layout);
-	elm_object_part_content_set (layout, "base/workspace/button_zoom_in",
+	_button = elm_button_add (parent);
+	elm_object_part_content_set (parent, "base/workspace/button_zoom_in",
 		_button);
 	evas_object_smart_callback_add (_button, "clicked", _zoom_in_on_click, ws);
 	ws->button_zoom_in = _button;
@@ -182,8 +185,8 @@ ws_add (Evas_Object *layout)
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
-	_button = elm_button_add (layout);
-	elm_object_part_content_set (layout, "base/workspace/button_separate",
+	_button = elm_button_add (parent);
+	elm_object_part_content_set (parent, "base/workspace/button_separate",
 		_button);
 	evas_object_smart_callback_add (_button, "clicked", _separate_on_click, ws);
 	ws->button_separate = _button;
@@ -192,16 +195,16 @@ ws_add (Evas_Object *layout)
 	elm_image_no_scale_set (_icon, EINA_TRUE);
 	elm_object_part_content_set(_button, NULL, _icon);
 
-	_ruler_hor = ui_ruler_add (layout);
-	elm_object_part_content_set (layout, "base/workspace/ruler_hor",_ruler_hor);
+	_ruler_hor = ui_ruler_add (parent);
+	elm_object_part_content_set (parent, "base/workspace/ruler_hor",_ruler_hor);
 	ws->ruler_hor = _ruler_hor;
 
-	_ruler_ver = ui_ruler_add (layout);
+	_ruler_ver = ui_ruler_add (parent);
 	ui_ruler_orient_set (_ruler_ver, VERTICAL);
-	elm_object_part_content_set (layout, "base/workspace/ruler_ver",_ruler_ver);
+	elm_object_part_content_set (parent, "base/workspace/ruler_ver",_ruler_ver);
 	ws->ruler_ver = _ruler_ver;
 
-	_popup = ui_popup_add (layout, ws);
+	_popup = ui_popup_add (parent, ws);
 	ws->popup = _popup;
 
 	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
@@ -212,20 +215,20 @@ ws_add (Evas_Object *layout)
 
 	//we need to put this code into ui_groupspace_add();
 	//and how and where should we call that thingy?
-	_group_space = elm_layout_add(layout);
-	elm_object_part_content_set (layout, "base/workspace/groupspace",_group_space);
+	_group_space = elm_layout_add(parent);
+	elm_object_part_content_set (parent,
+		"base/workspace/groupspace",_group_space);
 	elm_layout_file_set(_group_space, TET_EDJ, "base/groupspace");
-	evas_object_show(layout);
 
 	_group_space_2 = elm_layout_add(_group_space);
-	elm_object_part_content_set (_group_space, "base/groupspace/groupspace",_group_space_2);
-	evas_object_show(layout);
+	elm_object_part_content_set (_group_space,
+		"base/groupspace/groupspace",_group_space_2);
 
 	return ws;
 }
 
 Workspace *
-ws_init (void)
+_ws_init (void)
 {
 	Workspace *ws = (Workspace *) calloc (1, sizeof (Workspace));
 	if (!ws)

@@ -34,7 +34,7 @@ struct _App_Data
 
 typedef struct _App_Data App_Data;
 
-void
+Eina_Bool
 efl_tet_init (void);
 
 void

@@ -16,7 +16,7 @@ typedef struct _Scale Scale;
 struct _UI_Ruler_Data
 {
 	Orient			orient;
-	Eina_Bool		visible : 1;
+	Eina_Bool		visible;
 
 	Scale			*abs_scale;
 	Scale			*rel_scale;
@@ -115,7 +115,8 @@ _add_relative_marks (Evas_Object *obj)
 	int x, y, w, h, k;
 
 	_del_marks_relative (obj);
-	if (!_ruler_data->rel_scale->visible) return 0;
+	if ((!_ruler_data->rel_scale->visible) || (!_ruler_data->visible))
+		return 0;
 	Evas *_canvas = evas_object_evas_get (obj);
 	evas_object_geometry_get (obj, &x, &y, &w, &h);
 
@@ -298,7 +299,7 @@ _display_scale (Evas_Object *obj)
 	if (dash_from < 0)
 		return;
 	_add_relative_marks(obj);
-	if (!_ruler_data->abs_scale->visible)
+	if ((!_ruler_data->abs_scale->visible) || (!_ruler_data->visible))
 	{
 		_clear_all_dashes_and_marks(obj);
 		return;
@@ -330,10 +331,53 @@ _display_scale (Evas_Object *obj)
 	}
 }
 
+UI_Ruler_Data *
+_ruler_data_init (void)
+{
+	UI_Ruler_Data *_ruler_data =
+		(UI_Ruler_Data *)calloc (1,sizeof(UI_Ruler_Data));
+
+	if (!_ruler_data)
+		return NULL;
+	_ruler_data->orient = HORIZONTAL;
+	_ruler_data->visible = EINA_TRUE;
+
+	_ruler_data->abs_scale = (Scale*)calloc (1,sizeof(Scale));
+	_ruler_data->abs_scale->step = 10.0;
+	_ruler_data->abs_scale->dash_counter = 0;
+	_ruler_data->abs_scale->dashes = NULL;
+	_ruler_data->abs_scale->marks = NULL;
+	_ruler_data->abs_scale->visible = EINA_TRUE;
+	_ruler_data->abs_scale->start = 0;
+	_ruler_data->abs_scale->end = 0;
+
+	_ruler_data->rel_scale = (Scale*)calloc (1,sizeof(Scale));
+	_ruler_data->rel_scale->step = 0.5;
+	_ruler_data->rel_scale->dash_counter = 0;
+	_ruler_data->rel_scale->dashes = NULL;
+	_ruler_data->rel_scale->marks = NULL;
+	_ruler_data->rel_scale->visible = EINA_FALSE;
+	_ruler_data->rel_scale->start = 0;
+	_ruler_data->rel_scale->end = 0;
+
+	_ruler_data->pointer = NULL;
+	_ruler_data->pointer_pos = 0.0;
+	_ruler_data->pointer_visible = EINA_TRUE;
+	return _ruler_data;
+}
+
+/* TODO: make show method for pointer*/
 void
 _pointer_show (Evas_Object *obj __UNUSED__)
 {
 }
+
+/* TODO: make hide method for pointer*/
+void
+_pointer_hide (Evas_Object *obj __UNUSED__)
+{
+}
+
 
 static void
 _ruler_resize_cb (void *data __UNUSED__,
@@ -341,7 +385,9 @@ _ruler_resize_cb (void *data __UNUSED__,
 				Evas_Object *obj,
 				void *event_info __UNUSED__)
 {
-	_display_scale (obj);
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	if (_ruler_data->visible)
+		_display_scale (obj);
 }
 
 static void
@@ -350,9 +396,12 @@ _ruler_move_cb (void *data __UNUSED__,
 				Evas_Object *obj,
 				void *event_info __UNUSED__)
 {
-	_display_scale (obj);
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	if (_ruler_data->visible)
+		_display_scale (obj);
 }
 
+/* TODO: make correct return value at absolute coordinates*/
 int
 ui_ruler_pointer_pos_get (Evas_Object *obj)
 {
@@ -402,8 +451,7 @@ ui_ruler_orient_set (Evas_Object *obj, Orient orient)
 	}
 	else
 	{
-	elm_layout_file_set (obj, TET_EDJ,
-			"ui/ruler/vertical/default");
+		elm_layout_file_set (obj, TET_EDJ,	"ui/ruler/vertical/default");
 		evas_object_event_callback_add  (obj, EVAS_CALLBACK_MOVE,
 			_ruler_move_cb, _ruler_data);
 	}
@@ -414,7 +462,10 @@ ui_ruler_pointer_visible_set (Evas_Object *obj, Eina_Bool visible)
 {
 	UI_Ruler_Data *_ruler_data=evas_object_data_get(obj, RULERDATAKEY);
 	_ruler_data->pointer_visible = visible;
-	_pointer_show (obj);
+	if (visible)
+		_pointer_show (obj);
+	else
+		_pointer_hide (obj);
 }
 
 Eina_Bool
@@ -504,51 +555,19 @@ ui_ruler_scale_relative_position_get (Evas_Object *obj, int *start, int *end)
 void
 ui_ruler_hide (Evas_Object *obj)
 {
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	_ruler_data->visible = EINA_FALSE;
 	_clear_all_dashes_and_marks(obj);
-
 	evas_object_hide (obj);
 }
 
 void
 ui_ruler_show (Evas_Object *obj)
 {
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	_ruler_data->visible = EINA_TRUE;
 	_display_scale(obj);
 	evas_object_show (obj);
-}
-
-UI_Ruler_Data *
-_ruler_data_init (void)
-{
-	UI_Ruler_Data *_ruler_data =
-		(UI_Ruler_Data *)calloc (1,sizeof(UI_Ruler_Data));
-
-	if (!_ruler_data)
-		return NULL;
-	_ruler_data->orient = HORIZONTAL;
-	_ruler_data->visible = EINA_TRUE;
-
-	_ruler_data->abs_scale = (Scale*)calloc (1,sizeof(Scale));
-	_ruler_data->abs_scale->step = 10.0;
-	_ruler_data->abs_scale->dash_counter = 0;
-	_ruler_data->abs_scale->dashes = NULL;
-	_ruler_data->abs_scale->marks = NULL;
-	_ruler_data->abs_scale->visible = EINA_TRUE;
-	_ruler_data->abs_scale->start = 0;
-	_ruler_data->abs_scale->end = 0;
-
-	_ruler_data->rel_scale = (Scale*)calloc (1,sizeof(Scale));
-	_ruler_data->rel_scale->step = 0.5;
-	_ruler_data->rel_scale->dash_counter = 0;
-	_ruler_data->rel_scale->dashes = NULL;
-	_ruler_data->rel_scale->marks = NULL;
-	_ruler_data->rel_scale->visible = EINA_FALSE;
-	_ruler_data->rel_scale->start = 0;
-	_ruler_data->rel_scale->end = 0;
-
-	_ruler_data->pointer = NULL;
-	_ruler_data->pointer_pos = 0.0;
-	_ruler_data->pointer_visible = EINA_TRUE;
-	return _ruler_data;
 }
 
 Evas_Object *

@@ -409,7 +409,7 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
 	group->max_w = edje_edit_group_max_w_get(group->obj);
 	group->max_h = edje_edit_group_max_h_get(group->obj);
 	group->current_w = -1;
-	group->current_w = -1;
+	group->current_h = -1;
 
 	parts_list = edje_edit_parts_list_get(group->obj);
 	EINA_LIST_FOREACH(parts_list, l, name)

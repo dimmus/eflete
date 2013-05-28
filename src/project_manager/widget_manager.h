@@ -86,6 +86,7 @@ struct _Part_State
 	int min_h;
 	int max_w;
 	int max_h;
+	/* 'fixed' not implemented in edje_edit */
 	double aspect_min;
 	double aspect_max;
 	unsigned char aspect_pref;
