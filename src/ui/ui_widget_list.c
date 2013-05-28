@@ -226,6 +226,8 @@ _on_group_clicked_double(void *data,
 	evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, ap);
 
 	elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+
+	ui_groupspace_add (ap, _group);
 }
 
 static void

@@ -137,7 +137,7 @@ ws_add (Evas_Object *parent)
 {
 	Workspace *ws;
 	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver, *_popup;
-	Evas_Object *_icon, *_group_space, *_group_space_2;
+	Evas_Object *_icon;/*, *_group_space, *_group_space_2;*/
 	Evas *canvas;
 
 	ws = _ws_init();
@@ -213,17 +213,6 @@ ws_add (Evas_Object *parent)
 	evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
 		_ws_mouse_click_cb, ws);
 
-	//we need to put this code into ui_groupspace_add();
-	//and how and where should we call that thingy?
-	_group_space = elm_layout_add(parent);
-	elm_object_part_content_set (parent,
-		"base/workspace/groupspace",_group_space);
-	elm_layout_file_set(_group_space, TET_EDJ, "base/groupspace");
-
-	_group_space_2 = elm_layout_add(_group_space);
-	elm_object_part_content_set (_group_space,
-		"base/groupspace/groupspace",_group_space_2);
-
 	return ws;
 }
 
@@ -242,7 +231,7 @@ _ws_init (void)
 	ws->button_zoom_out = NULL;
 	ws->button_zoom_in = NULL;
 	ws->button_separate = NULL;
-	ws->group_space = NULL;
+	ws->groupspace = NULL;
 
 	return ws;
 }

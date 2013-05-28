@@ -18,7 +18,7 @@ struct _Workspace
 	Evas_Object *button_zoom_out;
 	Evas_Object *button_zoom_in;
 	Evas_Object *button_separate;
-	Evas_Object *group_space;
+	Evas_Object *groupspace;
 };
 typedef struct _Workspace Workspace;
 

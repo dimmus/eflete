@@ -30,6 +30,8 @@ set(TET_CC_FILES
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c
+   ui/workspace/ui_groupspace.c
+   ui/workspace/ui_groupspace.h
 )
 
 add_executable(${PROJECT_NAME} ${TET_CC_FILES})

@@ -6,6 +6,7 @@
 #include "ui_main_window.h"
 #include "ui_property.h"
 #include "ui_states_list.h"
+#include "ui_groupspace.h"
 #include <Elementary.h>
 
 /**
