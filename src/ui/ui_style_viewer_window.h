@@ -4,13 +4,6 @@
 #include <Eina.h>
 #include "efl_tet.h"
 
-/*
-   I think that I should move this structs and
-   some functions from C part to 
-   the widget_manager.
-   So: TODO is - ask for move and move it.
-*/
-
 enum _type_style
 {
 	TAG,
@@ -39,8 +32,6 @@ struct _TextStyles
 
 typedef struct _TextStyles TextStyles;
 
-
-/* Can I have global variables like that? */
 struct _Style_Window
 {
 	Evas_Object *entry_style;
@@ -52,8 +43,6 @@ typedef struct _Style_Window Style_Window;
 
 void
 style_viewer_init (App_Data *ap);
-
-/* What functions should I add here? */
 
 #endif	/* UI_STYLE_VIEWER_WINDOW_HEADER_H */
 

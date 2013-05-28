@@ -4,12 +4,8 @@
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
-/* is it correct to having something like that? */
 static Style_Window *window;
 
-///////////////////////////////////////////////////////////////////////////
-/* Functions for making the TextStyle structs. */
-/* TODO: detail comments. */
 Tag*
 sv_get_tag(Evas_Object *obj, const char *style_name,
 			const char *tag_name)
@@ -27,7 +23,6 @@ sv_get_tag(Evas_Object *obj, const char *style_name,
 	return tag;
 }
 
-/* TODO: detail comments. */
 Eina_Inlist*
 sv_get_tags_list(Evas_Object *obj, const char *style_name)
 {
@@ -47,8 +42,6 @@ sv_get_tags_list(Evas_Object *obj, const char *style_name)
 	return tags;
 }
 
-/* TODO: detail comments and maybe rename the TextStyles struct into
-	something more nice. */
 TextStyles*
 sv_get_text_style(Evas_Object *obj, const char *style_name)
 {
@@ -64,12 +57,9 @@ sv_get_text_style(Evas_Object *obj, const char *style_name)
 	return style;
 }
 
-/* by using this function we parse the edj Document into struct.
-	TODO: more comments! fun fun writing comment!*/
 Eina_Inlist*
 _style_list_get(App_Data *ap)
 {
-	/* TODO: look through the variable names. They are disguisting!!! */
 	Eina_Inlist *styles, *groups, *widgets, *text_styles = NULL;
 	Eina_List *f, *text_styles_name;
 	char *text_style;
@@ -98,8 +88,6 @@ _style_list_get(App_Data *ap)
 		return NULL;
 	}
 
-	/* FIXME: it receives all styles from all groups
-	just by using only one group. Whut? */
 	_group = EINA_INLIST_CONTAINER_GET(groups, Group);
 	if(!_group->obj)
 	{
@@ -112,11 +100,10 @@ _style_list_get(App_Data *ap)
 		tstyles = sv_get_text_style(edje_object, text_style);
 		text_styles = eina_inlist_append(text_styles,
 												EINA_INLIST_GET(tstyles));
-		printf("Styles: %s\n", text_style);
 	}
 	return text_styles;
 }
-/////////////////////////////////////////////////////////////////
+
 /* For GenList, getting the content for showing. Tag Names. */
 static char *
 _item_tags_label_get(void *data,
@@ -154,16 +141,43 @@ _on_tag_clicked_double(void *data __UNUSED__,
 				void *event_info)
 {
 	Tag *_tag;
+	TextStyles *_style;
+	void *event_obj;
+	Eina_Inlist *tags_list;
+
+	char style[256] = "DEFAULT='";
 
 	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
-	_tag = elm_object_item_data_get(glit);
+	event_obj = elm_object_item_data_get(glit);
+	_tag = (Tag*)event_obj;
+	_style = (TextStyles*)event_obj;
 
+	if(_style->__type == TEXTSTYLE)
+	{
+		char style_tags[256] = "";
+		tags_list = _style->tags;
 
-	if(_tag->__type != TAG)
-		return;
-	elm_object_text_set(window->entry_tag, strdup(_tag->tag_name));
-	elm_object_text_set(window->entry_prop, strdup(_tag->tag_value));
+		EINA_INLIST_FOREACH(tags_list, _tag)
+		{
+			strcat(style, strdup(_tag->tag_value));
+			strcat(style_tags, strdup(_tag->tag_value));
+			strcat(style, " ");
+			strcat(style_tags, " ");
+		}
+		strcat(style, "'");
+		elm_entry_text_style_user_push(window->entry_style, style);
+		elm_object_text_set(window->entry_prop, strdup(style_tags));
+		elm_object_text_set(window->entry_tag, "");
+	}
+	else if (_tag->__type == TAG)
+	{
+		elm_object_text_set(window->entry_tag, strdup(_tag->tag_name));
+		elm_object_text_set(window->entry_prop, strdup(_tag->tag_value));
+		strcat(style, strdup(_tag->tag_value));
+		strcat(style, "'");
+		elm_entry_text_style_user_push(window->entry_style, style);
+	}
 }
 
 
@@ -194,9 +208,8 @@ _form_left_side(Evas_Object* win, App_Data *ap __UNUSED__) {
 	evas_object_show(layout);
 
 	style_list = _style_list_get(ap);
-	/* TODO: look through exist list in ui_widget_list
-			 and do this list correctly */
-    if (!_itc_style)
+
+	if (!_itc_style)
     {
        _itc_style = elm_genlist_item_class_new();
        _itc_style->item_style = "tree_effect";
@@ -244,7 +257,7 @@ _form_left_side(Evas_Object* win, App_Data *ap __UNUSED__) {
 		}
 	}
 
-	evas_object_smart_callback_add(list, "clicked,double",
+	evas_object_smart_callback_add(list, "selected",
 									_on_tag_clicked_double, NULL);
 
 	btn = elm_button_add(win);
@@ -338,6 +351,7 @@ style_viewer_init (App_Data *ap) {
 		elm_entry_scrollable_set(window->entry_style, EINA_TRUE);
 		elm_object_text_set(window->entry_style, "The quick brown fox jumps over the lazy dog");
 	    elm_object_part_content_set(panes_h, "left", window->entry_style);
+		elm_entry_text_style_user_push(window->entry_style, "DEFAULT='align=center'");
 		evas_object_show(window->entry_style);
 
 		layout_right = _form_right_side(inwin);
