@@ -22,13 +22,9 @@ app_create (void)
 EAPI_MAIN int
 elm_main()
 {
-	eina_init();
-	efreet_init();
-	ecore_init();
-	edje_init();
-	logger_init();
-	ecore_evas_init ();
 
+	if (!efl_tet_init())
+		return -1;
 	#ifdef HAVE_CONFIG_H
 		INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
 	#else
@@ -42,7 +38,60 @@ elm_main()
 
 	elm_run();
 	elm_shutdown();
-
+	efl_tet_shutdown();
 	return 0;
 }
+
+Eina_Bool
+efl_tet_init ()
+{
+	if (!eina_init())
+	{
+		CRIT("Cannot initialize the Eina library");
+		return EINA_FALSE;
+	}
+
+	if (!efreet_init())
+	{
+		CRIT("Cannot initialize the Efreet system");
+		return EINA_FALSE;
+	}
+
+	if (!ecore_init())
+	{
+		CRIT("Cannot initialize the Ecore library");
+		return EINA_FALSE;
+	}
+
+	if (!edje_init())
+	{
+		CRIT("Cannot initialize the Edje Library");
+		return EINA_FALSE;
+	}
+
+	if (!logger_init())
+	{
+		CRIT("Cannot initialize the logger library");
+		return EINA_FALSE;
+	}
+
+	if (!ecore_evas_init())
+	{
+		CRIT("Cannot initialize the Ecore_Evas system");
+		return EINA_FALSE;
+	}
+	return EINA_TRUE;
+}
+
+void
+efl_tet_shutdown ()
+{
+	eina_shutdown();
+	efreet_shutdown();
+	ecore_shutdown();
+	edje_shutdown();
+	logger_shutdown();
+	ecore_evas_shutdown();
+}
+
 ELM_MAIN();
