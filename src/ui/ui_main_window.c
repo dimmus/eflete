@@ -96,6 +96,5 @@ ui_main_window_add (App_Data *ap)
 	ui_workspace_add (ap);
 	evas_object_show(win);
 
-
 	return EINA_TRUE;
 }

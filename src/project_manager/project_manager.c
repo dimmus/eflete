@@ -1,4 +1,5 @@
 #include "project_manager.h"
+#include "widget_manager.h"
 
 Eina_Bool
 pm_free(Project *project)
@@ -118,6 +119,11 @@ pm_project_add(const char *path,
 		strcat(pro->sound_directory, "sounds/");
 	}
 	DBG("Path to sound direcotory: '%s'", pro->sound_directory);
+
+	/* without this like widgets link is set into NULL.
+	Maybe this code (or something that looks like this one)
+	is existing somewhere else, but I didn't find it */
+	pro->widgets = wm_widget_list_new(pro->edj);
 
 	return pro;
 }
