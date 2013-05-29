@@ -9,6 +9,7 @@ group {
          description {
             state: "default" 0.0;
             min: 0 0;
+            max: 300 9999;
             color: 255 255 255 255;
          }
       }
@@ -116,6 +117,7 @@ group {
          description {
             state: "default" 0.0;
             min: 1 1;
+            max: 200 9999;
             rel1 {
                to: "padding_after_separator";
                relative: 1.0 1.0;

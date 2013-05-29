@@ -99,6 +99,7 @@ _navi_gl_parts_pop(void *data,
 
 	evas_object_hide(ui_block_content_get(ap->block_right_bottom));
 	evas_object_hide(ui_block_content_get(ap->block_bottom_left));
+	evas_object_hide(ui_property_part_view_get(ui_block_content_get(ap->block_right_bottom)));
 }
 
 static void

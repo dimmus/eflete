@@ -81,9 +81,24 @@ ui_prop_view_item_label_add(Evas_Object *prop, const char *name, char *label);
  *
  */
 Evas_Object *
+ui_prop_view_item_one_edit_int_add(Evas_Object *prop, const char *name,
+							int *data, const char *tooltip);
+
+/**
+ *
+ */
+Evas_Object *
 ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
 							int *data1, const char *tooltip1,
 							int *data2, const char *tooltip2);
+
+/**
+ *
+ */
+Evas_Object *
+ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
+							int *data1, int *data2, int *data3, int *data4,
+							const char *tooltip);
 
 /**
  * data is Stringshare
@@ -104,8 +119,23 @@ ui_prop_view_item_two_edit_string_add(Evas_Object *prop, const char *name,
  *
  */
 Evas_Object *
-ui_prop_view_item_toggle_add(Evas_Object *prop, const char *name,
+ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
 							Eina_Bool check, const char *tooltip);
+
+/**
+ *
+ */
+Evas_Object *
+ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
+							Eina_Bool check1, const char *tooltip1,
+							Eina_Bool check2, const char *tooltip2);
+
+/**
+ *
+ */
+Evas_Object *
+ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
+							double *data, const char *tooltip);
 
 /**
  *

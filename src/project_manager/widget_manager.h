@@ -92,11 +92,8 @@ struct _Part_State
 	unsigned char aspect_pref;
 	Eina_Bool visible;
 	const char *color_class;
-	union // Can be used only one
-	{
-		Part_State_Text *text;
-		Part_State_Image *image;
-	};
+	Part_State_Text *text;
+	Part_State_Image *image;
 };
 
 typedef struct _Part_State Part_State;

@@ -178,9 +178,13 @@ wm_part_states_add(Evas_Object *obj, Part *part)
 
 		if (part->type == EDJE_PART_TYPE_TEXT || part->type == EDJE_PART_TYPE_TEXTBLOCK)
 			wm_part_state_text_add(obj, part->name, new_state);
+		else
+			new_state->text = NULL;
 
 		if (part->type == EDJE_PART_TYPE_IMAGE)
 			wm_part_state_image_add(obj, part->name, new_state);
+		else
+			new_state->image = NULL;
 
 		free(state_copy[0]);
 		free(state_copy);
