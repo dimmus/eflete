@@ -82,3 +82,38 @@ group {
       }
    }
 }
+
+group {
+   name: "base/groupspace/part/hightlight";
+   parts {
+      part {
+         name: "eye";
+         type: RECT;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 50;
+         }
+      }
+      part {
+         name: "border";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            rel1 {
+               to: "eye";
+               offset: -3 -3;
+            }
+            rel2 {
+               to: "eye";
+               offset: 3 3;
+            }
+            image.normal: "part_highlight.png";
+            image.border: 3 3 3 3;
+         }
+      }
+   }
+}
