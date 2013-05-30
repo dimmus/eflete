@@ -391,15 +391,15 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
 
 	/*TODO: update name */
 	item = ui_prop_view_item_two_edit_int_add(rel2_box, "offset",
-				&state->rel1_offset_x,
+				&state->rel2_offset_x,
 				"Right offset from relative position in pixels",
-				&state->rel1_offset_y,
+				&state->rel2_offset_y,
 				"Bottom offset from relative position in pixels");
 	evas_object_show(item);
 
 	item = ui_prop_view_item_two_edit_string_add(rel2_box, "to",
-				state->rel1_to_x_name, "Right reference part.",
-				state->rel1_to_y_name, "Bottom reference part.");
+				state->rel2_to_x_name, "Right reference part.",
+				state->rel2_to_y_name, "Bottom reference part.");
 	evas_object_show(item);
 
 	elm_box_pack_end(box_state, rel2_frame);
