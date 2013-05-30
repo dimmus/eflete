@@ -120,7 +120,8 @@ ui_menu_add (App_Data *ap)
 		ui_list_menu = eina_list_append(ui_list_menu, menu);
 
 	//elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file", _on_edc_open_menu, ud);
-	elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file", _on_edj_open_menu, ap);
+	elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
+		_on_edj_open_menu, ap);
 	elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
 	elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 

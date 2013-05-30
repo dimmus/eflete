@@ -233,6 +233,7 @@ wm_part_add(Evas_Object *obj, const char *part_name)
 	result->__type = PART;
 
 	result->name = eina_stringshare_add(part_name);
+	result->obj = NULL;
 	result->api_name = edje_edit_part_api_name_get(obj, part_name);
 	result->description = edje_edit_part_api_description_get(obj, part_name);
 	result->type = edje_edit_part_type_get(obj, part_name);

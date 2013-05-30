@@ -4,6 +4,7 @@
 #include "efl_tet.h"
 #include <Evas.h>
 #include <Elementary.h>
+#include <Eina.h>
 #include "widget_manager.h"
 /**
  * Add new groupspace object into workspace.

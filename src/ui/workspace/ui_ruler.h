@@ -107,6 +107,22 @@ void
 ui_ruler_scale_relative_position_get (Evas_Object *obj, int *start, int *end);
 
 /**
+ * Set absolute scale zero position in canvas coordinate.
+ * in: obj The ruler object.
+ * in: pos Coordinate from canvas.
+ */
+void
+ui_ruler_scale_absolute_position_zero_set (Evas_Object *obj, int pos);
+
+/**
+ * Get absolute scale zero position in canvas coordinate.
+ * in: obj The ruler object.
+ * out: Coordinate in canvas.
+ */
+int
+ui_ruler_scale_absolute_position_zero_get (Evas_Object *obj);
+
+/**
  * Set relative scale step.
  * in: obj Ruler object.
  * in: step Step size for marks on relative scale. Value must be in range
