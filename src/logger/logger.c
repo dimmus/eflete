@@ -44,9 +44,13 @@ tet_log_cb(const Eina_Log_Domain *domain,
 	}
 
 	if(level > EINA_LOG_LEVEL_ERR)
+	{
 		output = stdout;
+	}
 	else
+	{
 		output = stderr;
+	}
 
 	/* Maybe need to use basename() fuction  */
 	fprintf(output, "%s:%s:%s (%d): ",
@@ -60,7 +64,9 @@ logger_init(void)
 {
 
 	if(!eina_init())
+	{
 		return EINA_FALSE;
+	}
 
 	eina_log_level_set(TET_LOG_DEFAULT_LEVEL);
 
@@ -113,7 +119,9 @@ logger_init(void)
 	log_file_name = log_file_name_get();
 	log_file = fopen(log_file_name, "a+");
 	if(!log_file)
+	{
 		EINA_LOG_CRIT("Could not create log file %s", log_file_name);
+	}
 
 	eina_log_print_cb_set(tet_log_cb, log_file);
 

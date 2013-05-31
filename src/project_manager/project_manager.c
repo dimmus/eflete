@@ -5,7 +5,9 @@ Eina_Bool
 pm_free(Project *project)
 {
 	if(!project)
+	{
 		return EINA_FALSE;
+	}
 
 	free(project->name);
 	free(project->edc);
@@ -15,9 +17,13 @@ pm_free(Project *project)
 	free(project->font_directory);
 	free(project->sound_directory);
 	if(project->compiler)
+	{
 		compiler_free(project->compiler);
+	}
 	if(project->decompiler)
+	{
 		decompiler_free(project->decompiler);
+	}
 
 	free(project);
 
@@ -61,7 +67,9 @@ pm_project_add(const char *path,
 	/* FIXME: A substirng '.edj' can meet in the middle of the path */
 	tmp = strstr(pro->edc, ".edj");
 	if(tmp != NULL)
+	{
 		strncpy(tmp, ".edc", 4);
+	}
 	tmp = NULL;
 
 	/* set path to edj */
@@ -70,7 +78,9 @@ pm_project_add(const char *path,
 	/* FIXME: A substring '.edc' can meet in the middle of the path */
 	tmp = strstr(pro->edj, ".edc");
 	if(tmp != NULL)
+	{
 		strncpy(tmp, ".edj", 4);
+	}
 	tmp = NULL;
 	DBG("Path to edc-file: '%s'", pro->edc);
 	DBG("Path to edj-file: '%s'", pro->edj);
@@ -85,7 +95,9 @@ pm_project_add(const char *path,
 
 	/* set path to image directory */
 	if(id)
+	{
 		pro->image_directory = strdup(id);
+	}
 	/* set default path to image directory */
 	else
 	{
@@ -98,7 +110,9 @@ pm_project_add(const char *path,
 
 	/* set path to font directory */
 	if(fd)
+	{
 		pro->font_directory = strdup(fd);
+	}
 	/* set default path to font direcotry */
 	else
 	{
@@ -111,7 +125,9 @@ pm_project_add(const char *path,
 
 	/* set default path to sound directory */
 	if(sd)
+	{
 		pro->sound_directory = strdup(sd);
+	}
 	else
 	{
 		siz = siz_tmp_path + strlen("sounds/") + 1;
@@ -155,7 +171,9 @@ pm_open_project_edc(const char *path,
 								project->font_directory,
 								project->sound_directory);
 	if(project->compiler)
+	{
 		ecore_file_cp(project->edj, project->swapfile);
+	}
 
 	return project;
 }
@@ -183,7 +201,9 @@ Eina_Bool
 pm_save_project_edj(Project *pm)
 {
 	if(!pm)
+	{
 		return EINA_FALSE;
+	}
 
 	ecore_file_cp(pm->swapfile, pm->edj);
 	return EINA_TRUE;

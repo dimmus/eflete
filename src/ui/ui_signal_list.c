@@ -18,7 +18,9 @@ ui_signal_list_add(App_Data *ap, Eina_List *signals)
 	char *signal;
 
 	if(!ap || !signals)
+	{
 		return NULL;
+	}
 
 	if(!_itc_signal)
 	{

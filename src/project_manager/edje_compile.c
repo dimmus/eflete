@@ -94,10 +94,14 @@ decompile(char *edj, char *edc)
 
 	edjedecc = calloc(1, sizeof(*edjedecc));
 	if(!edc)
+	{
 		sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh -current-dir", edj);
+	}
 	else
+	{
 		sprintf(edjedecc->cmd, "edje_decc %s -main-out %s -no-build-sh -current-dir",
 				edj, edc);
+	}
 	cmes = calloc(1, sizeof(*cmes));
 	cmes->time = time(NULL);
 	cmes->text = malloc(strlen(decompile_mess) + strlen(edj) + 32);
@@ -116,7 +120,9 @@ void
 compiler_free(Edje_CC *compiler)
 {
 	if(!compiler)
+	{
 		return;
+	}
 
 	ecore_exe_free(compiler->exe);
 	free(compiler->cmd);
@@ -128,7 +134,9 @@ void
 decompiler_free(Edje_DeCC *decompiler)
 {
 	if(!decompiler)
+	{
 		return;
+	}
 
 	ecore_exe_free(decompiler->exe);
 	free(decompiler->cmd);

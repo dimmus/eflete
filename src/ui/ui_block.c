@@ -27,9 +27,13 @@ ui_block_title_visible(Evas_Object *block, Eina_Bool vis)
 	}
 
 	if(vis)
+	{
 		elm_object_signal_emit(block, "title,show", "");
+	}
 	else
+	{
 		elm_object_signal_emit(block, "title,hide", "");
+	}
 }
 
 void
@@ -61,7 +65,9 @@ void
 ui_block_content_set (Evas_Object *block, Evas_Object *content)
 {
 	if (!block || !content)
+	{
 		return;
+	}
 	elm_object_part_content_set (block, "elm.block.swallow", content);
 }
 
@@ -69,6 +75,8 @@ Evas_Object *
 ui_block_content_get (Evas_Object *block)
 {
 	if (!block)
+	{
 		return NULL;
+	}
 	return elm_object_part_content_get (block, "elm.block.swallow");
 }

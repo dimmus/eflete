@@ -69,11 +69,15 @@ ui_property_view_new(Evas_Object *parent)
 	Prop_View_Data *pvd;
 
 	if(!parent)
+	{
 		return NULL;
+	}
 
 	pvd = malloc(sizeof(Prop_View_Data));
 	if(!pvd)
+	{
 		return NULL;
+	}
 
 	pvd->group_prop = NULL;
 	pvd->part_prop = NULL;
@@ -102,11 +106,15 @@ ui_property_group_view_set(Evas_Object *prop_view, Evas_Object *group_view)
 	Prop_View_Data *pvd;
 
 	if(!prop_view || !group_view)
+	{
 		return;
+	}
 
 	pvd = evas_object_data_get(prop_view, PROP_VIEW_DATA);
 	if(pvd->group_prop)
+	{
 		evas_object_del(pvd->group_prop);
+	}
 	pvd->group_prop = group_view;
 	elm_box_pack_start(elm_object_content_get(prop_view), group_view);
 }
@@ -117,11 +125,15 @@ ui_property_part_view_set(Evas_Object *prop_view, Evas_Object *part_view)
 	Prop_View_Data *pvd;
 
 	if(!prop_view || !part_view)
+	{
 		return;
+	}
 
 	pvd = evas_object_data_get(prop_view, PROP_VIEW_DATA);
 	if(pvd->part_prop)
+	{
 		evas_object_del(pvd->part_prop);
+	}
 	pvd->part_prop = part_view;
 	elm_box_pack_end(elm_object_content_get(prop_view), part_view);
 }
@@ -132,7 +144,9 @@ ui_property_group_view_get(Evas_Object *prop_view)
 	Prop_View_Data *pvd;
 
 	if(!prop_view)
+	{
 		return NULL;
+	}
 
 	pvd = evas_object_data_get(elm_object_content_get(prop_view), PROP_VIEW_DATA);
 	return pvd->group_prop;
@@ -144,7 +158,9 @@ ui_property_part_view_get(Evas_Object *prop_view)
 	Prop_View_Data *pvd;
 
 	if(!prop_view)
+	{
 		return NULL;
+	}
 
 	pvd = evas_object_data_get(prop_view, PROP_VIEW_DATA);
 	return pvd->part_prop;
@@ -156,7 +172,9 @@ ui_prop_group_info_view_update(Evas_Object *prop_view, Group *group)
 	Evas_Object *group_view;
 
 	if(!prop_view || !group)
+	{
 		return;
+	}
 
 	group_view = ui_prop_group_info_view_add(prop_view, group);
 	evas_object_show(group_view);
@@ -169,7 +187,9 @@ ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group)
 	Evas_Object *group_view, *box, *item;
 
 	if(!prop_view)
+	{
 		return NULL;
+	}
 
 	group_view = elm_frame_add(prop_view);
 	elm_frame_autocollapse_set(group_view, EINA_TRUE);
@@ -214,7 +234,9 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
 	Prop_Part_View_Data *ppvd;
 
 	if(!prop_view)
+	{
 		return NULL;
+	}
 
 	part_view = elm_frame_add(prop_view);
 	elm_frame_autocollapse_set(part_view, EINA_TRUE);
@@ -293,11 +315,15 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
 	char buffer[BUFF_MAX];
 
 	if(!part_view || !state)
+	{
 		return NULL;
+	}
 
 	ppvd = evas_object_data_get(part_view, PROP_PART_VIEW_DATA);
 	if(!ppvd)
+	{
 		return NULL;
+	}
 
 	part_view_state = elm_frame_add(ppvd->box);
 	elm_frame_autocollapse_set(part_view_state, EINA_TRUE);
@@ -512,15 +538,21 @@ ui_prop_part_info_state_set(Evas_Object *part_view, Evas_Object *state_view)
 	Evas_Object *box_part;
 
 	if(!part_view || !state_view)
+	{
 		return;
+	}
 
 	ppvd = evas_object_data_get(part_view, PROP_PART_VIEW_DATA);
 	if(!ppvd)
+	{
 		return;
+	}
 
 	box_part = elm_object_content_get(part_view);
 	if(ppvd->state.state)
+	{
 		evas_object_del(ppvd->state.state);
+	}
 
 	elm_box_pack_end(box_part, state_view);
 	ppvd->state.state = state_view;
@@ -532,11 +564,15 @@ ui_prop_part_info_state_view_get(Evas_Object *part_view)
 	Prop_Part_View_Data *ppvd;
 
 	if(!part_view)
+	{
 		return NULL;
+	}
 
 	ppvd = evas_object_data_get(part_view, PROP_PART_VIEW_DATA);
 	if(!ppvd)
+	{
 		return NULL;
+	}
 
 	return ppvd->state.state;
 }
@@ -554,7 +590,9 @@ ui_prop_view_item_label_add(Evas_Object *prop, const char *name, char *label)
 	Evas_Object *item, *_label;
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -576,7 +614,9 @@ ui_prop_view_item_one_edit_int_add(Evas_Object *prop, const char *name,
 	char buffer [BUFF_MAX];
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -604,7 +644,9 @@ ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
 	char buffer [BUFF_MAX];
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -649,7 +691,9 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
 	char buffer [BUFF_MAX];
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -720,7 +764,9 @@ ui_prop_view_item_one_edit_string_add(Evas_Object *prop, const char *name,
 	Evas_Object *item, *edit;
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -747,7 +793,9 @@ ui_prop_view_item_two_edit_string_add(Evas_Object *prop, const char *name,
 	Evas_Object *item, *content, *edit1, *edit2;
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -787,7 +835,9 @@ ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
 	Evas_Object *item, *toggle;
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -811,7 +861,9 @@ ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
 	Evas_Object *item, *toggle1, *toggle2, *content;
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -850,7 +902,9 @@ ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
 	char buffer [BUFF_MAX];
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -879,7 +933,9 @@ ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
 	char buffer [BUFF_MAX];
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 
@@ -924,7 +980,9 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
 	char buffer [BUFF_MAX];
 
 	if(!prop || !name)
+	{
 		return NULL;
+	}
 
 	ITEM_BASE_CREATE(prop, item, name)
 

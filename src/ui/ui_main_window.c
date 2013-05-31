@@ -25,7 +25,9 @@ ui_main_window_del (App_Data *ap)
 
 	ui_panes_settings_save();
 	if (!ui_menu_del())
+	{
 		WARN ( "Menu elements doesn't delete correct.\n");
+	}
 	EINA_LIST_FOREACH(ui_list_main_window, l, deleting_element){
 		evas_object_del (deleting_element);
 	}
@@ -87,10 +89,14 @@ ui_main_window_add (App_Data *ap)
 	ap->win_layout = layout;
 
 	if(!ui_menu_add(ap))
+	{
 		ERR("Failrue add menu on main window.");
+	}
 
 	if(!ui_panes_add(ap))
+	{
 		ERR("Failrue add panes on main window.");
+	}
 
 	ui_panes_settings_load(win);
 	ui_workspace_add (ap);

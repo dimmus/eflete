@@ -139,7 +139,9 @@ _ui_panes_current_state_get (void)
 		(int)(ui_csp->panes_right.left_size*size_get);
 
 	if (_need_resize)
+	{
 		_ui_panes_current_state_set();
+	}
 }
 
 void
@@ -291,7 +293,9 @@ ui_panes_add (App_Data *ap)
 
 	panes_left = elm_panes_add(ap->win_layout);
     if (panes_left == NULL)
+	{
 		return EINA_FALSE;
+	}
 	evas_object_size_hint_weight_set(panes_left,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(panes_left,
@@ -303,7 +307,9 @@ ui_panes_add (App_Data *ap)
 
 	panes_left_hor = elm_panes_add(ap->win_layout);
 	if (panes_left_hor == NULL)
+	{
 		return EINA_FALSE;
+	}
 	elm_panes_horizontal_set (panes_left_hor, EINA_TRUE);
 	evas_object_size_hint_weight_set(panes_left_hor,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -314,7 +320,9 @@ ui_panes_add (App_Data *ap)
 
 	panes_right = elm_panes_add(ap->win_layout);
 	if (panes_right == NULL)
+	{
 			return EINA_FALSE;
+	}
 	evas_object_size_hint_weight_set(panes_right,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(panes_right,
@@ -325,7 +333,9 @@ ui_panes_add (App_Data *ap)
 
 	panes_right_hor = elm_panes_add(ap->win_layout);
 	if (panes_right_hor == NULL)
+	{
 		return EINA_FALSE;
+	}
 	elm_panes_horizontal_set (panes_right_hor, EINA_TRUE);
 	evas_object_size_hint_weight_set(panes_right_hor,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -336,7 +346,9 @@ ui_panes_add (App_Data *ap)
 
 	panes_center = elm_panes_add(ap->win_layout);
 	if (panes_center == NULL)
+	{
 		return EINA_FALSE;
+	}
 	elm_panes_horizontal_set(panes_center, EINA_TRUE);
 	evas_object_size_hint_weight_set(panes_center,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -347,7 +359,9 @@ ui_panes_add (App_Data *ap)
 
 	panes_center_down = elm_panes_add(ap->win_layout);
 	if (panes_center_down == NULL)
+	{
 		return EINA_FALSE;
+	}
 	evas_object_size_hint_weight_set(panes_center_down,
 		EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(panes_center_down,

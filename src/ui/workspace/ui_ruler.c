@@ -30,7 +30,10 @@ typedef struct _UI_Ruler_Data UI_Ruler_Data;
 char *_itoa(int n)
 {
     int len = n==0 ? 1 : floor(log10l(abs(n)))+1;
-    if (n<0) len++;
+    if (n<0)
+	{
+		len++;
+	}
     char    *buf = (char*) calloc(sizeof(char), len+1);
 	snprintf(buf, len, "%d", n);
     return   buf;
@@ -47,7 +50,10 @@ _del_dashes_absolute (Evas_Object *obj, int count)
 	for (_line = eina_list_data_get(l); i<count; i++)
 	{
 		_line = (Evas_Object*) eina_list_data_get(l);
-		if (!_line) break;
+		if (!_line)
+		{
+			return 0;
+		}
 		l = eina_list_remove (l, _line);
 		l = eina_list_prev(l);
 		evas_object_del (_line);
@@ -66,7 +72,10 @@ _del_marks_absolute (Evas_Object *obj, int count)
 	for (_text = eina_list_data_get(l); i<count; i++)
 	{
 		_text = (Evas_Object*) eina_list_data_get(l);
-		if (!_text) break;
+		if (!_text)
+		{
+			return;
+		}
 		l = eina_list_remove (l, _text);
 		l = eina_list_prev(l);
 		evas_object_del (_text);
@@ -77,16 +86,23 @@ void
 _del_marks_relative (Evas_Object *obj)
 {
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
-	if (!_ruler_data->rel_scale->marks) return;
+	if (!_ruler_data->rel_scale->marks)
+	{
+		return;
+	}
 	Eina_List *l= NULL;
 	Evas_Object *_mark;
 
 	EINA_LIST_FOREACH (_ruler_data->rel_scale->dashes, l, _mark)
+	{
 		evas_object_del (_mark);
+	}
 	_ruler_data->rel_scale->dashes = NULL;
 	l=NULL;
 	EINA_LIST_FOREACH (_ruler_data->rel_scale->marks, l, _mark)
+	{
 		evas_object_del (_mark);
+	}
 	_ruler_data->rel_scale->marks = NULL;
 }
 
@@ -95,8 +111,8 @@ _clear_all_dashes_and_marks (Evas_Object *obj)
 {
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 
-	_del_marks_absolute (obj,eina_list_count   (_ruler_data->abs_scale->marks));
-	_del_dashes_absolute (obj, eina_list_count (_ruler_data->abs_scale->dashes));
+	_del_marks_absolute (obj,eina_list_count  (_ruler_data->abs_scale->marks));
+	_del_dashes_absolute (obj, eina_list_count(_ruler_data->abs_scale->dashes));
 	_ruler_data->abs_scale->dash_counter=0;
 	_ruler_data->abs_scale->marks=NULL;
 	_ruler_data->abs_scale->dashes=NULL;
@@ -116,12 +132,15 @@ _add_relative_marks (Evas_Object *obj)
 
 	_del_marks_relative (obj);
 	if ((!_ruler_data->rel_scale->visible) || (!_ruler_data->visible))
+	{
 		return 0;
+	}
 	Evas *_canvas = evas_object_evas_get (obj);
 	evas_object_geometry_get (obj, &x, &y, &w, &h);
 
 	if ((_ruler_data->rel_scale->start!=_ruler_data->rel_scale->end) &&
 		(_ruler_data->rel_scale->start<_ruler_data->rel_scale->end))
+	{
 		if (_ruler_data->orient == HORIZONTAL)
 		{
 			x = _ruler_data->rel_scale->start;
@@ -134,11 +153,18 @@ _add_relative_marks (Evas_Object *obj)
 			h = _ruler_data->rel_scale->end -_ruler_data->rel_scale->start;
 			step_px = (int)(h*step);
 		}
+	}
 	else
+	{
 		if (_ruler_data->orient == HORIZONTAL)
+		{
 			step_px = (int)(w*step);
+		}
 		else
+		{
 			step_px = (int)(h*step);
+		}
+	}
 
 	for (k=0; value<=1-step; value+=step, k++)
 	{
@@ -149,9 +175,9 @@ _add_relative_marks (Evas_Object *obj)
 		evas_object_text_text_set (_text, buf);
 
 		if (_ruler_data->orient == HORIZONTAL)
-			evas_object_move(_text,x+step_px*k-7, y-4);
+			evas_object_move(_text, x + step_px * k - 7, y - 4);
 		else
-			evas_object_move(_text,x+w-25,y+step_px*k-15);
+			evas_object_move(_text, x + w - 25, y + step_px * k - 15);
 
 		_ruler_data->rel_scale->marks=
 			eina_list_append(_ruler_data->rel_scale->marks,_text);
@@ -159,9 +185,15 @@ _add_relative_marks (Evas_Object *obj)
 
 		_line = evas_object_line_add (_canvas);
 		if (_ruler_data->orient == HORIZONTAL)
-			evas_object_line_xy_set (_line,x+k*step_px,y+h,x+k*step_px,y+h-15);
+		{
+			evas_object_line_xy_set (_line, x + k * step_px, y + h,
+					x + k * step_px, y + h - 15);
+		}
 		else
-			evas_object_line_xy_set (_line,x+w,y+k*step_px,x+w-15,y+k*step_px);
+		{
+			evas_object_line_xy_set (_line, x + w, y + k * step_px,
+					x + w - 15, y + k * step_px);
+		}
 		evas_object_color_set (_line, 53, 136, 32, 255);
 		evas_object_show (_line);
 		_ruler_data->rel_scale->dashes =
@@ -175,9 +207,13 @@ _add_relative_marks (Evas_Object *obj)
 	evas_object_text_text_set (_text, "1.0");
 
 	if (_ruler_data->orient == HORIZONTAL)
-		evas_object_move(_text,x+step_px*k-15, y-3);
+	{
+		evas_object_move(_text, x + step_px * k - 15, y - 3);
+	}
 	else
-		evas_object_move(_text,x+w-25,y+step_px*k-15);
+	{
+		evas_object_move(_text, x + w - 25, y + step_px * k - 15);
+	}
 
 	_ruler_data->rel_scale->marks=
 		eina_list_append(_ruler_data->rel_scale->marks,_text);
@@ -185,9 +221,15 @@ _add_relative_marks (Evas_Object *obj)
 
 	_line = evas_object_line_add (_canvas);
 	if (_ruler_data->orient == HORIZONTAL)
-		evas_object_line_xy_set (_line,x+k*step_px,y+h,x+k*step_px,y+h-15);
+	{
+		evas_object_line_xy_set (_line, x + k * step_px, y + h,
+				x + k * step_px, y + h - 15);
+	}
 	else
-		evas_object_line_xy_set (_line,x+w,y+k*step_px,x+w-15,y+k*step_px);
+	{
+		evas_object_line_xy_set (_line, x + w, y + k * step_px,
+				x + w - 15, y + k *step_px);
+	}
 	evas_object_color_set (_line, 53, 136, 32, 255);
 	evas_object_show (_line);
 	_ruler_data->rel_scale->dashes =
@@ -214,8 +256,11 @@ _add_dashes (Evas_Object *obj, int count, int from)
 	for (k=0; k<=count; i++, k++)
 	{
 		if (!(i%5) && (i%10) && i)
+		{
 			_dash_size=7;
+		}
 		else
+		{
 			if (!(i%10) || !i)
 			{
 				_dash_size=12;
@@ -225,46 +270,58 @@ _add_dashes (Evas_Object *obj, int count, int from)
 				evas_object_text_text_set (_text, _itoa(i*100));
 				if (_ruler_data->orient == HORIZONTAL)
 				{
-					if (i>=100) _pos_text_shift=26;
-					else _pos_text_shift=20;
+					if (i >= 100)
+					{
+						_pos_text_shift = 26;
+					}
+					else
+					{
+						_pos_text_shift = 20;
+					}
 					evas_object_move(_text,
-						x+i*(int)_ruler_data->abs_scale->step-_pos_text_shift,
-						_dash_from - _dash_size-5);
-					if (i==0)
+						x + i * (int)_ruler_data->abs_scale->step-_pos_text_shift,
+						_dash_from - _dash_size - 5);
+					if (i == 0)
 					{
 						evas_object_text_text_set (_text, "0");
-						evas_object_move(_text,x+2,_dash_from - _dash_size-5);
+						evas_object_move(_text, x + 2,
+								_dash_from - _dash_size - 5);
 					}
 				}
 				else
-					if (i==0)
+					if (i == 0)
 					{
 						evas_object_text_text_set (_text, "0");
-						evas_object_move(_text,_dash_from - _dash_size,y-2);
+						evas_object_move(_text, _dash_from - _dash_size, y - 2);
 					}
 					else
-						evas_object_move (_text, _dash_from - _dash_size-12,
-							y+i*(int)_ruler_data->abs_scale->step-13);
+						evas_object_move (_text, _dash_from - _dash_size - 12,
+							y + i * (int)_ruler_data->abs_scale->step - 13);
 
 				_ruler_data->abs_scale->marks =
 					eina_list_append(_ruler_data->abs_scale->marks,_text);
 
 				evas_object_show (_text);
 			}
+		}
 		_line = evas_object_line_add (_canvas);
 		if (_ruler_data->orient == HORIZONTAL)
+		{
 			evas_object_line_xy_set (_line,
-				x+i*(int)_ruler_data->abs_scale->step,	_dash_from,
-				x+i*(int)_ruler_data->abs_scale->step,	_dash_from-_dash_size);
+				x + i * (int)_ruler_data->abs_scale->step, _dash_from,
+				x + i * (int)_ruler_data->abs_scale->step, _dash_from-_dash_size);
+		}
 		else
+		{
 			evas_object_line_xy_set (_line,
-				_dash_from,	y+i*(int)_ruler_data->abs_scale->step,
-				_dash_from-_dash_size, y+i*(int)_ruler_data->abs_scale->step);
+				_dash_from,	y + i * (int)_ruler_data->abs_scale->step,
+				_dash_from - _dash_size, y + i * (int)_ruler_data->abs_scale->step);
+		}
 		evas_object_color_set (_line, 64, 64, 64, 255);
 		evas_object_show (_line);
 		_ruler_data->abs_scale->dashes =
 			eina_list_append(_ruler_data->abs_scale->dashes, _line);
-		_dash_size=3;
+		_dash_size = 3;
 	}
 	return k;
 }
@@ -338,7 +395,9 @@ _ruler_data_init (void)
 		(UI_Ruler_Data *)calloc (1,sizeof(UI_Ruler_Data));
 
 	if (!_ruler_data)
+	{
 		return NULL;
+	}
 	_ruler_data->orient = HORIZONTAL;
 	_ruler_data->visible = EINA_TRUE;
 
@@ -387,7 +446,9 @@ _ruler_resize_cb (void *data __UNUSED__,
 {
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	if (_ruler_data->visible)
+	{
 		_display_scale (obj);
+	}
 }
 
 static void
@@ -398,7 +459,9 @@ _ruler_move_cb (void *data __UNUSED__,
 {
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	if (_ruler_data->visible)
+	{
 		_display_scale (obj);
+	}
 }
 
 /* TODO: make correct return value at absolute coordinates*/
@@ -463,9 +526,13 @@ ui_ruler_pointer_visible_set (Evas_Object *obj, Eina_Bool visible)
 	UI_Ruler_Data *_ruler_data=evas_object_data_get(obj, RULERDATAKEY);
 	_ruler_data->pointer_visible = visible;
 	if (visible)
+	{
 		_pointer_show (obj);
+	}
 	else
+	{
 		_pointer_hide (obj);
+	}
 }
 
 Eina_Bool
@@ -596,4 +663,3 @@ ui_ruler_add (Evas_Object *parent)
 
 	return ruler;
 }
-

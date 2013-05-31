@@ -24,7 +24,9 @@ elm_main()
 {
 
 	if (!efl_tet_init())
+	{
 		return -1;
+	}
 	#ifdef HAVE_CONFIG_H
 		INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
 	#else

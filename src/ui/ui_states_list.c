@@ -43,7 +43,9 @@ ui_states_list_add(App_Data *ap, Part *part)
 	Elm_Object_Item *eoi;
 
 	if(!ap || !part)
+	{
 		return NULL;
+	}
 
 	states = part->states;
 

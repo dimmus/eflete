@@ -107,9 +107,13 @@ ui_menu_add (App_Data *ap)
 
 	tb = elm_toolbar_add(ap->win_layout);
 	if (tb == NULL)
+	{
 		return EINA_FALSE;
+	}
 	else
+	{
 		ui_list_menu = eina_list_append(ui_list_menu, tb);
+	}
 
 	evas_object_size_hint_weight_set(tb, 0.0, 0.0);
 	elm_toolbar_shrink_mode_set (tb, ELM_TOOLBAR_SHRINK_NONE);
@@ -122,13 +126,19 @@ ui_menu_add (App_Data *ap)
 	elm_toolbar_icon_order_lookup_set (tb, ELM_ICON_LOOKUP_FDO_THEME);
 	tb_it = elm_toolbar_item_append(tb, "menu/arrow_down", "File", NULL, NULL);
 	if (tb_it == NULL)
+	{
 		return EINA_FALSE;
+	}
 	elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
 	menu = elm_toolbar_item_menu_get(tb_it);
 	if (menu == NULL)
+	{
 		return EINA_FALSE;
+	}
 	else
+	{
 		ui_list_menu = eina_list_append(ui_list_menu, menu);
+	}
 
 	//elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file", _on_edc_open_menu, ud);
 	elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file", _on_edj_open_menu, ap);
@@ -168,10 +178,12 @@ ui_menu_del (void)
 
     EINA_LIST_FOREACH(ui_list_menu, l, deleting_element){
 		evas_object_del (deleting_element);
-		if (!deleting_element)	return EINA_FALSE;
+		if (!deleting_element)
+		{
+			return EINA_FALSE;
+		}
 	}
 	eina_list_free(ui_list_menu);
 	eina_list_free(l);
 	return EINA_TRUE;
 }
-
