@@ -199,25 +199,13 @@ wm_part_add(Evas_Object *obj, const char *part);
 /**
  *
  */
-//Part *
-//wm_part_empty_add(Evas_Object *obj, const char *part, Edje_Part_Type type);
+/*TODO: Add 'wm_part_new', for new part which will be add user */
 
 /**
  *
  */
 Eina_Bool
 wm_part_free(Part *part);
-
-/**
- *
- */
-/*
-Eina_Bool
-wm_part_update(Evas_Object *obj,
-				const Part *part,
-				const char *part_name,
-				const Part_Update *part_update);
-*/
 
 /**
  *
@@ -230,17 +218,6 @@ wm_program_add(Evas_Object* obj, const char* program_name);
  */
 Eina_Bool
 wm_program_free(Program *program);
-
-/**
- *
- */
-/*
-Eina_Bool
-wm_program_update(Evas_Object *obj,
-				const Program *program,
-				const char *program_name,
-				const Program_Update *program_update);
-*/
 
 /**
  *

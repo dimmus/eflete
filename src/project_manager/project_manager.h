@@ -45,8 +45,7 @@ pm_open_project_edj(const char *path);
 /**
  *
  */
-//Eira_Bool
-//pm_save_project_edc(Project *pm);
+/*TODO: Add save project pm_save_project_edc(Project *pm) */
 
 /**
  *
@@ -57,8 +56,7 @@ pm_save_project_edj(Project *pm);
 /**
  *
  */
-//Project *
-//pm_project_new(void);
+/*TODO: Add new project, template project. pm_project_new(void) */
 
 /**
  *

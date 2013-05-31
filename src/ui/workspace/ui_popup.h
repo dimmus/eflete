@@ -4,9 +4,6 @@
 #include "logger.h"
 #include "Elementary.h"
 
-/*Evas_Object *
-ui_popup_add (Evas_Object *parent, Workspace *ws);
-*/
 void
 ui_popup_show (Evas_Object *parent, Evas_Object *popup);
 

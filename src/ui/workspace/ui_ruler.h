@@ -35,7 +35,7 @@ ui_ruler_orient_set (Evas_Object *obj, Orient orient);
 
 /**
  * Get value of current ruler object orientation
- * in: obj Ruler object;
+ * in: obj Ruler object.
  * out: HORIZONTAL or VERTICAL.
  */
 Orient
@@ -43,7 +43,7 @@ ui_ruler_orient_get (Evas_Object *obj);
 
 /**
  * Set position value the pointer.
- * in: obj Ruler object;
+ * in: obj Ruler object.
  * in: pos New position of pointer in absolute coordinates.
  */
 void
@@ -82,7 +82,7 @@ ui_ruler_show (Evas_Object *obj);
 
 /**
  * Hide ruler.
- * in: obj Ruler object;
+ * in: obj Ruler object.
  */
 void
 ui_ruler_hide (Evas_Object *obj);
