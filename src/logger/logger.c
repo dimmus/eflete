@@ -17,7 +17,6 @@ static int _tet_log_dom_dbg  = -1;
 char *
 log_file_name_get(void)
 {
-	char *log_file_name;
 	char prefix[] = "tet_log_";
 	time_t timer;
 
