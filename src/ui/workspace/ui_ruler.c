@@ -175,9 +175,13 @@ _add_relative_marks (Evas_Object *obj)
 		evas_object_text_text_set (_text, buf);
 
 		if (_ruler_data->orient == HORIZONTAL)
+		{
 			evas_object_move(_text, x + step_px * k - 7, y - 4);
+		}
 		else
+		{
 			evas_object_move(_text, x + w - 25, y + step_px * k - 15);
+		}
 
 		_ruler_data->rel_scale->marks=
 			eina_list_append(_ruler_data->rel_scale->marks,_text);
@@ -295,8 +299,10 @@ _add_dashes (Evas_Object *obj, int count, int from)
 						evas_object_move(_text, _dash_from - _dash_size, y - 2);
 					}
 					else
+					{
 						evas_object_move (_text, _dash_from - _dash_size - 12,
 							y + i * (int)_ruler_data->abs_scale->step - 13);
+					}
 
 				_ruler_data->abs_scale->marks =
 					eina_list_append(_ruler_data->abs_scale->marks,_text);
@@ -354,7 +360,9 @@ _display_scale (Evas_Object *obj)
 		dash_from = x+w;
 	}
 	if (dash_from < 0)
+	{
 		return;
+	}
 	_add_relative_marks(obj);
 	if ((!_ruler_data->abs_scale->visible) || (!_ruler_data->visible))
 	{

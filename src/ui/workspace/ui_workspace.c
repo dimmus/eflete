@@ -126,7 +126,10 @@ _ws_mouse_move_cb (void *data, Evas *e,
 char *itoa(long n)
 {
     int len = n==0 ? 1 : floor(log10l(abs(n)))+1;
-    if (n<0) len++;
+    if (n < 0)
+	{
+		len++;
+	}
     char    *buf = (char*) calloc(sizeof(char), len+1);
 	snprintf(buf, len, "%ld", n);
     return   buf;
@@ -221,7 +224,9 @@ _ws_init (void)
 {
 	Workspace *ws = (Workspace *) calloc (1, sizeof (Workspace));
 	if (!ws)
+	{
 		return NULL;
+	}
 
 	ws->canvas = NULL;
 	ws->bg = NULL;

@@ -201,7 +201,9 @@ ui_settings_save ()
 		"settings",_ui_settings, EINA_FALSE);
 
 	if (!state_write)
+	{
 		WARN ("unable to save data into file");
+	}
 	eet_close (file_settings);
 
 	_ui_settings_descriptors_shutdown ();
@@ -244,7 +246,10 @@ UI_Elements_Settings *
 ui_element_settings_init (void)
 {
 	UI_Elements_Settings *_ui_set = calloc (1, sizeof (UI_Elements_Settings));
-	if (!_ui_set) return NULL;
+	if (!_ui_set)
+	{
+		return NULL;
+	}
 	_ui_set->panes_left = NULL;
 	_ui_set->panes_right = NULL;
 	_ui_set->panes_left_hor = NULL;
@@ -255,5 +260,3 @@ ui_element_settings_init (void)
 
 	return _ui_set;
 }
-
-

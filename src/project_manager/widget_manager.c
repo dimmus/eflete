@@ -292,10 +292,14 @@ wm_part_states_free(Part* part)
 
 		if (part->type == EDJE_PART_TYPE_TEXT ||
 			part->type == EDJE_PART_TYPE_TEXT)
+		{
 			wm_part_state_text_free(aux);
+		}
 
 		if (part->type == EDJE_PART_TYPE_IMAGE)
+		{
 			wm_part_state_image_free(aux);
+		}
 
 		part->states = eina_inlist_remove(part->states, part->states);
 		free(aux);
@@ -441,7 +445,9 @@ wm_program_signals_list_get(const Eina_Inlist *programs)
 	EINA_INLIST_FOREACH(programs, program)
 	{
 		if (program->signal != NULL)
+		{
 			result = eina_list_append(result, program->signal);
+		}
 	}
 
 	return result;
@@ -567,7 +573,9 @@ wm_group_free(Group *group)
 	}
 
 	if (!group->group_name)
+	{
 		eina_stringshare_del(group->group_name);
+	}
 	eina_stringshare_del(group->full_group_name);
 
 	free(group);
@@ -690,7 +698,9 @@ wm_widget_add(const char *widget, Eina_List *groups)
 			WM_STYLE_NAME_GET(style_name_next, group_next);
 		}
 		else
+		{
 			style_name_next = &empty;
+		}
 
 		widget_groups = eina_list_append(widget_groups, group);
 
@@ -784,7 +794,9 @@ wm_widget_list_new(const char *file)
 	EINA_LIST_FOREACH_SAFE(collection, l, l_next, group)
 	{
 		if(!eina_str_has_prefix(group, prefix))
+		{
 			ERR("Invalid style name in group: %s", group);
+		}
 		else
 		{
 			WM_WIDGET_NAME_GET(widget_name, group);
@@ -794,7 +806,9 @@ wm_widget_list_new(const char *file)
 				WM_WIDGET_NAME_GET(widget_name_next, group_next);
 			}
 			else
+			{
 				widget_name_next = &empty;
+			}
 
 			widget_styles = eina_list_append(widget_styles, group);
 
@@ -822,7 +836,9 @@ wm_widget_list_free(Eina_Inlist *widget_list)
 	Widget *widget;
 
 	if(!widget_list)
+	{
 		return EINA_FALSE;
+	}
 
 	while(widget_list)
 	{
