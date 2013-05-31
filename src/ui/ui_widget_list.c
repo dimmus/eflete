@@ -97,6 +97,7 @@ _navi_gl_parts_pop(void *data,
 	elm_naviframe_item_pop(nf);
 	elm_genlist_clear(gl_signals);
 
+	ui_object_highlight_hide(ap->ws);
 	evas_object_hide(ui_block_content_get(ap->block_right_bottom));
 	evas_object_hide(ui_block_content_get(ap->block_bottom_left));
 }
@@ -130,6 +131,8 @@ _on_part_selected(void *data,
 
 	/* FIXME: it bad  */
 	elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+
+	ui_object_highlight_set(ap->ws, _part->obj);
 }
 
 static void
