@@ -26,8 +26,8 @@ static char empty = '\0';
 	{ \
 		if (strcmp(arr[size],style)) \
 		{ \
-			strcat(tmp, "/"); \
-			strcat(tmp, arr[size]); \
+			eina_strlcat(tmp, "/", PATH_MAX); \
+			eina_strlcat(tmp, arr[size], PATH_MAX); \
 		} \
 	} \
 	group_name = strdup(tmp); \

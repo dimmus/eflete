@@ -41,12 +41,13 @@ pm_project_add(const char *path,
 
 	array = eina_file_split(strdup(path));
 	i = eina_array_count(array);
-	strcpy(tmp_path, "/");
+	eina_strlcpy(tmp_path, "/", sizeof("/"));
 	for(j = 0; j < i - 1; j++)
 	{
-		strcat(tmp_path, eina_array_data_get(array, j));
-		strcat(tmp_path, "/");
+		eina_strlcat(tmp_path, eina_array_data_get(array, j), PATH_MAX);
+		eina_strlcat(tmp_path, "/", PATH_MAX);
 	}
+	DBG("%s", tmp_path);
 	siz_tmp_path = strlen(tmp_path);
 
 	/* set project name */
@@ -77,9 +78,9 @@ pm_project_add(const char *path,
 	/* set path to swap file */
 	siz = siz_tmp_path + strlen(".swapfile_") + strlen(pro->name);
 	pro->swapfile = calloc(siz, sizeof(char));
-	strcat(pro->swapfile, tmp_path);
-	strcat(pro->swapfile, ".swapfile_");
-	strcat(pro->swapfile, pro->name);
+	eina_strlcat(pro->swapfile, tmp_path, PATH_MAX);
+	eina_strlcat(pro->swapfile, ".swapfile_", PATH_MAX);
+	eina_strlcat(pro->swapfile, pro->name, PATH_MAX);
 	DBG("Path to swap file: '%s'", pro->swapfile);
 
 	/* set path to image directory */
@@ -90,8 +91,8 @@ pm_project_add(const char *path,
 	{
 		siz = siz_tmp_path + strlen("images/") + 1;
 		pro->image_directory = calloc(siz, sizeof(char));
-		strcat(pro->image_directory, tmp_path);
-		strcat(pro->image_directory, "images/");
+		eina_strlcat(pro->image_directory, tmp_path, PATH_MAX);
+		eina_strlcat(pro->image_directory, "images/", PATH_MAX);
 	}
 	DBG("Path to image direcotory: '%s'", pro->image_directory);
 
@@ -103,8 +104,8 @@ pm_project_add(const char *path,
 	{
 		siz = siz_tmp_path + strlen("fonts/") + 1;
 		pro->font_directory = calloc(siz, sizeof(char));
-		strcat(pro->font_directory, tmp_path);
-		strcat(pro->font_directory, "fonts/");
+		eina_strlcat(pro->font_directory, tmp_path, PATH_MAX);
+		eina_strlcat(pro->font_directory, "fonts/", PATH_MAX);
 	}
 	DBG("Path to font direcotory: '%s'", pro->font_directory);
 
@@ -115,8 +116,8 @@ pm_project_add(const char *path,
 	{
 		siz = siz_tmp_path + strlen("sounds/") + 1;
 		pro->sound_directory = calloc(siz, sizeof(char));
-		strcat(pro->sound_directory, tmp_path);
-		strcat(pro->sound_directory, "sounds/");
+		eina_strlcat(pro->sound_directory, tmp_path, PATH_MAX);
+		eina_strlcat(pro->sound_directory, "sounds/", PATH_MAX);
 	}
 	DBG("Path to sound direcotory: '%s'", pro->sound_directory);
 
