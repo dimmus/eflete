@@ -7,7 +7,6 @@
 
 #include <Eina.h>
 #include <Ecore.h>
-#include <time.h>
 
 struct _Compiler_Message
 {

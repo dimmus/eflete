@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <time.h>
 #include "logger.h"
-/*
-#include <libgen.h>
-*/
 
 static FILE *log_file;
 static char *log_file_name;
