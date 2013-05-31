@@ -39,6 +39,7 @@ _gs_resize_cb (void *data, Evas *e __UNUSED__,
 	ui_ruler_scale_relative_position_set (ws->ruler_hor, x, x+w);
 	ui_ruler_scale_relative_position_set (ws->ruler_ver, y, y+h);
 
+	ui_object_highlight_move(ws);
 }
 
 static void

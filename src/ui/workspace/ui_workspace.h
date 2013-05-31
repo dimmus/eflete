@@ -19,6 +19,10 @@ struct _Workspace
 	Evas_Object *button_zoom_in;
 	Evas_Object *button_separate;
 	Evas_Object *groupspace;
+	struct {
+		Evas_Object *highlight;
+		Evas_Object *obj; /* highlighting object */
+	} highlight;
 };
 typedef struct _Workspace Workspace;
 
@@ -53,4 +57,23 @@ ws_add (Evas_Object *parent);
  */
 Evas_Object *
 ui_popup_add (Evas_Object *parent, Workspace *ws);
+
+/**
+ *
+ */
+void
+ui_object_highlight_set(Workspace *ws, Evas_Object *part);
+
+/**
+ *
+ */
+void
+ui_object_highlight_move(Workspace *ws);
+
+/**
+ *
+ */
+void
+ui_object_highlight_hide(Workspace *ws);
+
 #endif /* UI_WORKSPACE_HEADER_H */
