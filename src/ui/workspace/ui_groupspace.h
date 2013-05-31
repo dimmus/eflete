@@ -19,5 +19,5 @@ ui_groupspace_add (App_Data *ap, Group *group);
  * in: obj Groupspace object.
  */
 void
-ui_groupspace_del (Evas_Object *obj);
+ui_groupspace_del (Evas_Object *obj, Group *group);
 #endif /* UI_GROUPSPACE_HEADER_H */

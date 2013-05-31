@@ -69,39 +69,77 @@ _gs_rect_draw (Evas_Object * _view_part, Group *group, Part *part)
 						_current_state->color[1],_current_state->color[2],
 						_current_state->color[3]);
 
-/*	if (!(_part->show) || (!_current_state->visible))
-		evas_object_hide (_rectangle);
-	else*/
-		evas_object_show (_rectangle);
+	evas_object_show (_rectangle);
 
 	return _rectangle;
+}
+
+void
+_gs_part_object_coord_get (const char* name, Group *group,
+							int *x, int *y, int *x2, int *y2)
+{
+	int _x, _y, _w, _h;
+	Eina_Bool _find_part = EINA_FALSE;
+	Part *_part = NULL;
+	_x=_y=_w=_h=0;
+
+	EINA_INLIST_FOREACH (group->parts, _part)
+	{
+		if (!strcmp(_part->name, name))
+		{
+			evas_object_geometry_get (_part->obj, &_x, &_y, &_w, &_h);
+			_find_part = EINA_TRUE;
+			break;
+		}
+	}
+	if (_find_part)
+	{
+		if (x) {*x = _x;}
+		if (y) {*y = _y;}
+		if (x2) {*x2 = _w+_x;}
+		if (y2) {*y2 = _h+_y;}
+	}
 }
 
 void
 _gs_part_geometry_calc (Evas_Object *view_part, Group *group, Part *part,
 						int *x, int *y, int *w, int*h)
 {
+	/*Parametrs for group size*/
 	int _x, _y, _w, _h;
-	int _coord_x, _coord_y;
-	int _rect_w, _rect_h;
+	/*Variables for take rel_to parts coordinats corners*/
+	int _x1_rel_to, _y1_rel_to, _x2_rel_to, _y2_rel_to;
+	/*Results parametr for current part*/
+	int _coord_x, _coord_y, _rect_w, _rect_h;
+	/*temprory size for situation: size of group less or equal than size of part*/
 	int _size_w, _size_h;
-	Part *_part = NULL;
+	/*Parametrs for virtual group size wich cut with rel1 and rel2 parameters*/
+	int _group_x, _group_y, _group_x2, _group_y2;
+	/*Current part state structure*/
 	Part_State *_current_state = NULL;
 
-//	fprintf (stdout, "\nDEBAG: name part [%s]\n", part->name);
-	_part = part;
-	_coord_x =0; _coord_y=0; _rect_w=0; _rect_h=0;
-	_current_state = EINA_INLIST_CONTAINER_GET (_part->states, Part_State);
+	/*initialize local variables*/
+	_x = _y = _w = _h = 0;
+	_coord_x = _coord_y = _rect_w = _rect_h = -1;
+	_x1_rel_to = _y1_rel_to = _x2_rel_to = _y2_rel_to = 0;
+	_group_x = _group_y = _group_x2 = _group_y2 = -1;
+
+	_current_state = EINA_INLIST_CONTAINER_GET (part->states, Part_State);
 
 	evas_object_geometry_get (view_part, &_x, &_y, &_w, &_h);
-	if (!_w || !_h) return;
-/*	fprintf (stdout, "DEBAG: _view_part[%p] x[%d] y[%d] w[%d] h[%d]\n",
-		view_part, _x, _y, _w, _h);
-*/
+	/*If group size less then 1 its fail*/
+	if (!_w || !_h)
+	{
+		return;
+	}
+
 	group->current_w = _w;
 	group->current_h = _h;
 
-	if ((_current_state->max_w==-1) || (_current_state->max_h<0))
+	/*if "max" parametr not present in EDC file, then max size part will be
+	 * equal size of group. 
+	*/
+	if ((_current_state->max_w == -1) || (_current_state->max_h == -1))
 	{
 		_size_w = group->current_w;
 		_size_h = group->current_h;
@@ -111,57 +149,92 @@ _gs_part_geometry_calc (Evas_Object *view_part, Group *group, Part *part,
 		_size_w = _current_state->max_w;
 		_size_h = _current_state->max_h;
 	}
-/*	fprintf (stdout, "DEBAG: max_w[%d] max_h[%d]\n",
-		_current_state->max_w,_current_state->max_h);
-	fprintf (stdout, "DEBAG: _size_w[%d] _size_h[%d]\n",_size_w, _size_h);
-*/
-	if (_current_state->align_x<=0.5)
+
+	if(_current_state->rel1_to_x_name)
 	{
-	  	if (group->current_w>_size_w)
-		{
-			 _coord_x = (_x+_w*_current_state->rel1_relative_x) +
-				(_w*_current_state->align_x -_size_w*_current_state->align_x)+
-				_current_state->rel1_offset_x;
-			 _coord_y = (_y+_h*_current_state->rel1_relative_y)+
-				(_h*_current_state->align_y-_size_h*_current_state->align_y) +
-				_current_state->rel1_offset_y;
+		_gs_part_object_coord_get (_current_state->rel1_to_x_name, group,
+			&_x1_rel_to, &_y1_rel_to, &_x2_rel_to, &_y2_rel_to);		
 
-			_rect_w=(_coord_x+_size_w+_current_state->rel2_offset_x)-_coord_x;
-			_rect_h=(_coord_y+_size_h+_current_state->rel2_offset_y)-_coord_y;
-//				DBG ("group_w>size_w");
-		}
-		if (group->current_w<=_size_w)
-		{
-			 _coord_x = (_x+(_w*_current_state->rel1_relative_x)) +
-				_current_state->rel1_offset_x;
-			 _coord_y = (_y+(_h*_current_state->rel1_relative_y)) +
-				_current_state->rel1_offset_y;
-
-			_rect_w=(_x+(_w*_current_state->rel2_relative_x)) - _coord_x +
-				_current_state->rel2_offset_x;
-			_rect_h=(_y+(_h*_current_state->rel2_relative_y))-_coord_y +
-				_current_state->rel2_offset_y;
-//			DBG ("group_w<=size_w");
-		}
-/*fprintf (stdout, "DEBAG: align[%3.2f]<=0.5 _coord_x[%d] _coord_y[%d] _rect_w[%d] rect_h[%d]\n",
-			_current_state->align_x,_coord_x, _coord_y, _rect_w, _rect_h);
-*/	}
+		_group_x = _x1_rel_to + (_x2_rel_to - _x1_rel_to) *
+			_current_state->rel1_relative_x;
+	}
 	else
 	{
-	 if (group->current_w>_size_w)
+		_group_x = _x + _w * _current_state->rel1_relative_x;
+	}
+
+	if(_current_state->rel1_to_y_name)
+	{
+		_gs_part_object_coord_get (_current_state->rel1_to_y_name, group,
+			&_x1_rel_to, &_y1_rel_to, &_x2_rel_to, &_y2_rel_to);
+
+		_group_y = _y1_rel_to + (_y2_rel_to - _y1_rel_to) *
+			_current_state->rel1_relative_y;
+	}
+	else
+	{
+		_group_y = _y + _h * _current_state->rel1_relative_y;
+	}
+
+	if(_current_state->rel2_to_x_name)
+	{
+		_gs_part_object_coord_get (_current_state->rel2_to_x_name, group,
+			&_x1_rel_to, &_y1_rel_to, &_x2_rel_to, &_y2_rel_to);
+
+		_group_x2 = _x1_rel_to + (_x2_rel_to - _x1_rel_to) *
+			_current_state->rel2_relative_x;
+	}
+	else
+	{
+		_group_x2 = _x + _w * _current_state->rel2_relative_x;
+	}
+
+	if(_current_state->rel2_to_y_name)
+	{
+		_gs_part_object_coord_get (_current_state->rel2_to_y_name, group,
+			&_x1_rel_to, &_y1_rel_to, &_x2_rel_to, &_y2_rel_to);
+
+		_group_y2 = _y1_rel_to + (_y2_rel_to - _y1_rel_to) *
+			_current_state->rel2_relative_y;
+	}
+	else
+	{
+		_group_y2 = _y + _h * _current_state->rel2_relative_y;
+	}
+
+	if ((_size_w >= group->current_w) || (_size_h >= group->current_h))
+	{
+		_coord_x = _group_x;
+		_coord_y = _group_y;
+		_rect_w =  _w * _current_state->rel2_relative_x - 
+					_w * _current_state->rel1_relative_x;
+		_rect_h = _h *_current_state->rel2_relative_y - 
+					_h * _current_state->rel1_relative_y;
+
+	}
+	else
+	{
+		if(_current_state->align_x <= 0.5)
 		{
-			 _coord_x = (_x+_w*_current_state->rel1_relative_x) +
-				(_w*_current_state->align_x-_size_w) +
-				_current_state->rel1_offset_x;
-			 _coord_y = (_y+_h*_current_state->rel1_relative_y) +
-				(_h*_current_state->align_y-_size_h) +
-				_current_state->rel1_offset_y;
-			_rect_w=(_coord_x+_size_w+_current_state->rel2_offset_x)-_coord_x;
-			_rect_h=(_coord_y+_size_h+_current_state->rel2_offset_y)-_coord_y;
-/*fprintf (stdout, "DEBAG: align[%3.2f]<=0.5 _coord_x[%d] _coord_y[%d] _rect_w[%d] rect_h[%d]\n",
-			_current_state->align_x,_coord_x, _coord_y, _rect_w, _rect_h);
-*/
+			_coord_x = _group_x + (_group_x2 - _group_x) * _current_state->align_x -
+				_size_w * _current_state->align_x;
 		}
+		else
+		{
+			_coord_x = _group_x2 - _size_w;
+		}
+		
+		if(_current_state->align_y <= 0.5)
+		{
+			_coord_y = _group_y + (_group_y2 - _group_y) * _current_state->align_y -
+				_size_h * _current_state->align_y;
+		}
+		else
+		{
+			_coord_y = _group_y2 - _size_h;
+		}
+		_rect_w = _size_w; 
+		_rect_h = _size_h;
 	}
 
 	*x=_coord_x; *y=_coord_y; *w=_rect_w; *h = _rect_h;
@@ -189,15 +262,6 @@ _gs_group_draw (Evas_Object *view_part , Group *group, Workspace *ws)
 
 	EINA_INLIST_FOREACH (group->parts, _part)
 	{
-/*		switch (_part->type)
-		{
-			case EDJE_PART_TYPE_RECTANGLE:
-				_part_object=_gs_rect_draw(view_part, group, _part);
-			break;
-			defalut:
-				DBG ("Cannot recognize part type");
-			break;
-		}*/
 		if (_part->type == EDJE_PART_TYPE_RECTANGLE)
 			_part_object=_gs_rect_draw(view_part, group, _part);
 		else
@@ -215,7 +279,7 @@ ui_groupspace_add (App_Data *ap, Group *group)
 	Evas_Object *_groupspace;
 	Evas_Object *_part_view;
 
-	ui_groupspace_del (ap->ws->groupspace);
+	ui_groupspace_del (ap->ws->groupspace, group);
 
 	_groupspace = elm_layout_add (parent);
 
@@ -240,8 +304,13 @@ ui_groupspace_add (App_Data *ap, Group *group)
 }
 
 void
-ui_groupspace_del (Evas_Object *obj)
+ui_groupspace_del (Evas_Object *obj, Group *group)
 {
+	Part *_part = NULL;
+
+	EINA_INLIST_FOREACH (group->parts, _part)
+		evas_object_del (_part->obj);
+
 	if (obj)
 		evas_object_del (obj);
 
