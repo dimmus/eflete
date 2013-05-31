@@ -5,5 +5,9 @@ images {
    image: "layout_header.jpg" COMP;
    image: "shelf_inside.png" COMP;
    image: "separator_v.png" COMP;
+   image: "groupspace_border.png" COMP;
+   image: "desktop_resize_handler_up.png" COMP;
+   image: "desktop_resize_handler_down.png" COMP;
+   image: "part_highlight.png" COMP;
 }
 

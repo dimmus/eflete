@@ -140,7 +140,7 @@ ws_add (Evas_Object *parent)
 {
 	Workspace *ws;
 	Evas_Object *_bg, *_button, *_ruler_hor, *_scroller, *_ruler_ver, *_popup;
-	Evas_Object *_icon;
+	Evas_Object *_icon;/*, *_group_space, *_group_space_2;*/
 	Evas *canvas;
 
 	ws = _ws_init();
@@ -236,6 +236,52 @@ _ws_init (void)
 	ws->button_zoom_out = NULL;
 	ws->button_zoom_in = NULL;
 	ws->button_separate = NULL;
+	ws->groupspace = NULL;
+	ws->highlight.highlight = NULL;
 
 	return ws;
+}
+
+void
+ui_object_highlight_set(Workspace *ws, Evas_Object *part)
+{
+
+	if(!ws || !part)
+		return;
+
+	if(!ws->highlight.highlight)
+	{
+		ws->highlight.highlight = elm_label_add(ws->groupspace);
+		elm_layout_file_set(ws->highlight.highlight, TET_EDJ,
+							"base/groupspace/part/hightlight");
+	}
+	ws->highlight.obj = part;
+	evas_object_raise(ws->highlight.highlight);
+	ui_object_highlight_move(ws);
+
+	DBG("Show highlight.highlight");
+	evas_object_show(ws->highlight.highlight);
+}
+
+void
+ui_object_highlight_move(Workspace *ws)
+{
+	int x, y, w, h;
+
+	if(!ws)
+		return;
+
+	evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
+	evas_object_move(ws->highlight.highlight, x, y);
+	evas_object_resize(ws->highlight.highlight, w, h);
+}
+
+void
+ui_object_highlight_hide(Workspace *ws)
+{
+	if(!ws)
+		return;
+
+	ws->highlight.obj = NULL;
+	evas_object_hide(ws->highlight.highlight);
 }

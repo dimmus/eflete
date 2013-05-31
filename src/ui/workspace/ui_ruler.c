@@ -256,7 +256,20 @@ _add_dashes (Evas_Object *obj, int count, int from)
 	Evas *_canvas = evas_object_evas_get (obj);
 	evas_object_geometry_get (obj, &x, &y, &w, &h);
 
-
+/*	if (_ruler_data->abs_scale->start!=0)
+		if (_ruler_data->orient == HORIZONTAL)
+		{
+			x = _ruler_data->rel_scale->start;
+			w = _ruler_data->rel_scale->end -_ruler_data->rel_scale->start;
+			step_px =(int)(w*step);
+		}
+		else
+		{
+			y = _ruler_data->rel_scale->start;
+			h = _ruler_data->rel_scale->end -_ruler_data->rel_scale->start;
+			step_px = (int)(h*step);
+		}
+*/
 	for (k=0; k<=count; i++, k++)
 	{
 		if (!(i%5) && (i%10) && i)
@@ -616,6 +629,7 @@ ui_ruler_scale_relative_position_set (Evas_Object *obj, int start, int end)
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	_ruler_data->rel_scale->start = start;
 	_ruler_data->rel_scale->end = end;
+//	fprintf (stdout, "DEBAG: position start [%d] end[%d]\n", start, end);
 	_display_scale(obj);
 }
 
@@ -625,6 +639,22 @@ ui_ruler_scale_relative_position_get (Evas_Object *obj, int *start, int *end)
 	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
 	*start = _ruler_data->rel_scale->start;
 	*end = _ruler_data->rel_scale->end;
+}
+
+void
+ui_ruler_scale_absolute_position_zero_set (Evas_Object *obj, int pos)
+{
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	_ruler_data->abs_scale->start = pos;
+	//fprintf (stdout, "DEBAG: position zero [%d]\n", pos);
+	_display_scale(obj);
+}
+
+int
+ui_ruler_scale_absolute_position_zero_get (Evas_Object *obj)
+{
+	UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
+	return (int)_ruler_data->abs_scale->start;
 }
 
 void

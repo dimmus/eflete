@@ -97,6 +97,7 @@ _navi_gl_parts_pop(void *data,
 	elm_naviframe_item_pop(nf);
 	elm_genlist_clear(gl_signals);
 
+	ui_object_highlight_hide(ap->ws);
 	evas_object_hide(ui_block_content_get(ap->block_right_bottom));
 	evas_object_hide(ui_block_content_get(ap->block_bottom_left));
 	evas_object_hide(ui_property_part_view_get(ui_block_content_get(ap->block_right_bottom)));
@@ -131,6 +132,8 @@ _on_part_selected(void *data,
 
 	/* FIXME: it bad  */
 	elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+
+	ui_object_highlight_set(ap->ws, _part->obj);
 }
 
 static void
@@ -227,6 +230,8 @@ _on_group_clicked_double(void *data,
 	evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, ap);
 
 	elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+
+	ui_groupspace_add (ap, _group);
 }
 
 static void

@@ -7,4 +7,5 @@ collections {
    #include "widgets/ruler.edc"
    #include "widgets/prop_item.edc"
    #include "widgets/textstyle.edc"
+   #include "widgets/groupspace.edc"
 }
