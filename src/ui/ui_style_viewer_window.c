@@ -160,21 +160,21 @@ _on_tag_clicked_double(void *data __UNUSED__,
 
 		EINA_INLIST_FOREACH(tags_list, _tag)
 		{
-			strcat(style, strdup(_tag->tag_value));
-			strcat(style_tags, strdup(_tag->tag_value));
+			strcat(style, _tag->tag_value);
+			strcat(style_tags, _tag->tag_value);
 			strcat(style, " ");
 			strcat(style_tags, " ");
 		}
 		strcat(style, "'");
 		elm_entry_text_style_user_push(window->entry_style, style);
-		elm_object_text_set(window->entry_prop, strdup(style_tags));
+		elm_object_text_set(window->entry_prop, style_tags);
 		elm_object_text_set(window->entry_tag, "");
 	}
 	else if (_tag->__type == TAG)
 	{
-		elm_object_text_set(window->entry_tag, strdup(_tag->tag_name));
-		elm_object_text_set(window->entry_prop, strdup(_tag->tag_value));
-		strcat(style, strdup(_tag->tag_value));
+		elm_object_text_set(window->entry_tag, _tag->tag_name);
+		elm_object_text_set(window->entry_prop, _tag->tag_value);
+		strcat(style, _tag->tag_value);
 		strcat(style, "'");
 		elm_entry_text_style_user_push(window->entry_style, style);
 	}

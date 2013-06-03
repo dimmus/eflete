@@ -27,13 +27,13 @@ exe_data(void *data __UNUSED__,
 	Ecore_Exe_Event_Data *ev;
 	Eina_Inlist *messages = NULL;
 	Compiler_Message *message = NULL;
-	int i = 0;
 
 	ev = event;
 	messages = (Eina_Inlist *)data;
 
 	if(ev->lines)
 	{
+		int i = 0;
 		for(i = 0; ev->lines[i].line; i++)
 		{
 			message = calloc(1, sizeof(*message));

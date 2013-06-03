@@ -357,7 +357,6 @@ _display_scale (Evas_Object *obj)
 	int dash_counter;
 	int dash_from;
 	int temp_dash=0;
-	int marks_count;
 
 	evas_object_geometry_get (obj, &x, &y, &w, &h);
 	evas_object_line_xy_get (_line, &lx1, &ly1, &lx2, &ly2);
@@ -400,6 +399,7 @@ _display_scale (Evas_Object *obj)
 	}
 	else
 	{
+		int marks_count;
 		dash_counter =	_ruler_data->abs_scale->dash_counter-dash_counter;
 		_ruler_data->abs_scale->dash_counter-=
 			_del_dashes_absolute (obj,dash_counter);
@@ -692,6 +692,7 @@ ui_ruler_add (Evas_Object *parent)
 	if (!ruler)
 	{
 		ERR ("Unable to create ruler");
+		free(ruler_data);
 		return NULL;
 	}
 	evas_object_data_set (ruler, RULERDATAKEY, ruler_data);

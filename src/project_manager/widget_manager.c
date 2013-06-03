@@ -290,8 +290,7 @@ wm_part_states_free(Part* part)
 		edje_edit_string_free(aux->rel2_to_x_name);
 		edje_edit_string_free(aux->rel2_to_y_name);
 
-		if (part->type == EDJE_PART_TYPE_TEXT ||
-			part->type == EDJE_PART_TYPE_TEXT)
+		if (part->type == EDJE_PART_TYPE_TEXT)
 		{
 			wm_part_state_text_free(aux);
 		}
@@ -610,6 +609,8 @@ wm_style_add(const char *style, Eina_List *groups)
 		style_edje->groups = eina_inlist_append(style_edje->groups,
 							EINA_INLIST_GET(group_edje));
 	}
+	free(group_name_full);
+	free(group_name);
 
 	return style_edje;
 }
@@ -663,7 +664,10 @@ sort_style_cb(const void *data1, const void *data2)
 	WM_STYLE_NAME_GET(data1_style, str1);
 	WM_STYLE_NAME_GET(data2_style, str2);
 
-	return (strcmp(data1_style, data2_style));
+	int cmp = (strcmp(data1_style, data2_style));
+	free(data1_style);
+	free(data2_style);
+	return cmp;
 }
 
 Widget *
@@ -673,7 +677,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 	Eina_List *l, *l_next;
 	Eina_List *widget_groups = NULL;
 	Style *style;
-	char *style_name, *style_name_next;
+	char *style_name = NULL, *style_name_next = NULL;
 	char *group, *group_next;
 
 	if(!widget)
@@ -692,6 +696,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 
 	EINA_LIST_FOREACH_SAFE(groups, l, l_next, group)
 	{
+		free(style_name_next);
 		WM_STYLE_NAME_GET(style_name, group);
 		if(l_next)
 		{
@@ -713,6 +718,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 			widget_groups = eina_list_free(widget_groups);
 			widget_groups = NULL;
 		}
+		free(style_name);
 	}
 
 	return _widget;
@@ -770,7 +776,7 @@ wm_widget_list_new(const char *file)
 	Eina_List *collection, *l, *l_next;
 	Eina_List *widget_styles = NULL;
 	Eina_Inlist *widget_list = NULL;
-	char *widget_name, *widget_name_next;
+	char *widget_name = NULL, *widget_name_next = NULL;
 	char *group, *group_next;
 	const char prefix[] = "elm/";
 	Eina_Error error;
@@ -800,6 +806,7 @@ wm_widget_list_new(const char *file)
 		}
 		else
 		{
+			free(widget_name_next);
 			WM_WIDGET_NAME_GET(widget_name, group);
 			if(l_next)
 			{
@@ -821,6 +828,7 @@ wm_widget_list_new(const char *file)
 				widget_styles = eina_list_free(widget_styles);
 				widget_styles = NULL;
 			}
+			free(widget_name);
 		}
 	}
 	edje_file_collection_list_free(collection);

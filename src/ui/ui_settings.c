@@ -142,8 +142,8 @@ _ui_settings_apply (UI_Settings *ui_set)
 {
 	Eina_List *_panes_list = ui_set->panes;
 	Eina_List *_window_list = ui_set->window;
-	Panes_Settings *_panes_sett = calloc (1, sizeof(Panes_Settings));
-	Window_Settings *_window_sett = calloc (1, sizeof (Window_Settings));
+	Panes_Settings *_panes_sett;
+	Window_Settings *_window_sett;
 
 	_window_sett = (Window_Settings*) _window_list->data;
 	evas_object_resize (us->window, _window_sett->width,
@@ -180,20 +180,20 @@ ui_settings_save ()
 {
 	Eet_File *file_settings;
 	int state_write;
-	UI_Settings *_ui_settings =
-		(UI_Settings*)calloc (1, sizeof(UI_Settings));
+	UI_Settings *_ui_settings;
 
-	if (!_ui_settings){
-		ERR (" could not calloc UI_Settings");
-		return EINA_FALSE;
-	}
 	_ui_settings_descriptors_init ();
 
 	_ui_settings = _ui_settings_prepare ();
+	if (!_ui_settings){
+		ERR (" could not prepare UI_Settings");
+		return EINA_FALSE;
+	}
 
 	file_settings = eet_open (UISETTINGSFILE, EET_FILE_MODE_WRITE);
 	if (!file_settings) {
 		WARN (" unable to open configs file for write");
+		free(_ui_settings);
 		return EINA_FALSE;
 	}
 
@@ -215,8 +215,7 @@ ui_settings_save ()
 Eina_Bool
 ui_settings_load ( )
 {
-	UI_Settings *_ui_settings =
-		(UI_Settings*)calloc (1, sizeof(UI_Settings));
+	UI_Settings *_ui_settings;
 	Eet_File *file_settings;
 
 	_ui_settings_descriptors_init ();
