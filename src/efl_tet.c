@@ -7,14 +7,14 @@ app_create (void)
 	App_Data *_ap = calloc (1, sizeof (App_Data));
 	_ap->win = NULL;
 	_ap->win_layout = NULL;
-	_ap->block_left_top = NULL;
-	_ap->block_left_bottom = NULL;
-	_ap->block_bottom_left = NULL;
-	_ap->block_bottom_right = NULL;
-	_ap->block_right_top = NULL;
-	_ap->block_right_bottom = NULL;
 	_ap->main_menu = NULL;
-	_ap->block_canvas = NULL;
+	_ap->block.left_top = NULL;
+	_ap->block.left_bottom = NULL;
+	_ap->block.bottom_left = NULL;
+	_ap->block.bottom_right = NULL;
+	_ap->block.right_top = NULL;
+	_ap->block.right_bottom = NULL;
+	_ap->block.canvas = NULL;
 	_ap->ws = NULL;
 	return _ap;
 }

@@ -276,7 +276,7 @@ _gs_group_draw (Evas_Object *view_part , Group *group, Workspace *ws)
 void
 ui_groupspace_add (App_Data *ap, Group *group)
 {
-	Evas_Object *parent = ap->block_canvas;
+	Evas_Object *parent = ap->block.canvas;
 	Evas_Object *_groupspace;
 	Evas_Object *_part_view;
 

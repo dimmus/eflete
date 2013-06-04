@@ -80,8 +80,7 @@ _navi_gl_styles_pop(void *data,
 					Evas_Object *obj __UNUSED__,
 					void *event_info __UNUSED__)
 {
-	App_Data *ap = (App_Data *)data;
-	Evas_Object *nf = ui_block_content_get(ap->block_left_top);
+	Evas_Object *nf = (Evas_Object *)data;
 	elm_naviframe_item_pop(nf);
 }
 
@@ -91,16 +90,16 @@ _navi_gl_parts_pop(void *data,
 					void *event_info __UNUSED__)
 {
 	App_Data *ap = (App_Data *)data;
-	Evas_Object *nf = ui_block_content_get(ap->block_left_top);
-	Evas_Object *gl_signals = ui_block_content_get(ap->block_left_bottom);
+	Evas_Object *nf = ui_block_widget_list_get(ap);
+	Evas_Object *gl_signals = ui_block_signal_list_get(ap);
 
 	elm_naviframe_item_pop(nf);
 	elm_genlist_clear(gl_signals);
 
 	ui_object_highlight_hide(ap->ws);
-	evas_object_hide(ui_block_content_get(ap->block_right_bottom));
-	evas_object_hide(ui_block_content_get(ap->block_bottom_left));
-	evas_object_hide(ui_property_part_view_get(ui_block_content_get(ap->block_right_bottom)));
+	evas_object_hide(ui_block_signal_list_get(ap));
+	evas_object_hide(ui_block_state_list_get(ap));
+	evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
 }
 
 static void
@@ -115,7 +114,7 @@ _on_part_selected(void *data,
 
 	ap = (App_Data *)data;
 	_part = elm_object_item_data_get(glit);
-	prop = ui_block_content_get(ap->block_right_bottom);
+	prop = ui_block_property_get(ap);
 	if(!prop)
 	{
 		ERR("Property view is missing!");
@@ -127,7 +126,7 @@ _on_part_selected(void *data,
 	evas_object_show(part_prop);
 
 	gl_states = ui_states_list_add(ap, _part);
-	ui_block_content_set(ap->block_bottom_left, gl_states);
+	ui_block_state_list_set(ap, gl_states);
 	evas_object_show(gl_states);
 
 	/* FIXME: it bad  */
@@ -152,7 +151,7 @@ _on_group_clicked_double(void *data,
 	Part *_part;
 
 	ap = (App_Data *)data;
-	nf = ui_block_content_get(ap->block_left_top);
+	nf = ui_block_widget_list_get(ap);
 	if(!nf)
 	{
 		ERR("Naviframe is missing!");
@@ -200,10 +199,10 @@ _on_group_clicked_double(void *data,
 	signals = wm_program_signals_list_get(_group->programs);
 	gl_signals = ui_signal_list_add(ap, signals);
 	wm_program_signals_list_free(signals);
-	ui_block_content_set(ap->block_left_bottom, gl_signals);
+	ui_block_signal_list_set(ap, gl_signals);
 
 	/* group properties */
-	prop = ui_block_content_get(ap->block_right_bottom);
+	prop = ui_block_property_get(ap);
 	if(prop)
 	{
 		ui_prop_group_info_view_update(prop, _group);
@@ -211,8 +210,8 @@ _on_group_clicked_double(void *data,
 	}
 	else
 	{
-		prop = ui_property_view_new(ap->block_right_bottom);
-		ui_block_content_set(ap->block_right_bottom, prop);
+		prop = ui_property_view_new(ap->win);
+		ui_block_property_set(ap, prop);
 		evas_object_show(prop);
 
 		group_prop = ui_prop_group_info_view_add(prop, _group);
@@ -249,7 +248,7 @@ _on_widget_clicked_double(void *data,
 	Group *_group;
 
 	ap = (App_Data *)data;
-	nf = ui_block_content_get(ap->block_left_top);
+	nf = ui_block_widget_list_get(ap);
 	if(!nf)
 	{
 		ERR("Naviframe is missing!");
@@ -261,7 +260,7 @@ _on_widget_clicked_double(void *data,
 	if(!_itc_style)
 	{
 		_itc_style = elm_genlist_item_class_new();
-		_itc_style->item_style = "default";//"tree_effect";
+		_itc_style->item_style = "default";
 		_itc_style->func.text_get = _item_style_label_get;
 		_itc_style->func.content_get = NULL;
 		_itc_style->func.state_get = NULL;
@@ -314,7 +313,7 @@ _on_widget_clicked_double(void *data,
 	bt = elm_button_add(nf);
 	evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_layout_content_set(bt, "icon", ic);
-	evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, ap);
+	evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
 
 	elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
 }
@@ -338,7 +337,7 @@ ui_widget_list_add(App_Data *ap, Eina_Inlist *widget_list)
 		_itc_widget->func.del = NULL;
 	}
 
-	nf = elm_naviframe_add(ap->block_left_top);
+	nf = elm_naviframe_add(ap->win);
 	evas_object_size_hint_align_set(nf, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 

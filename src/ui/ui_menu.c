@@ -22,7 +22,7 @@ _on_fs_edj_done (void *data, Evas_Object *obj, void *event_info)
 			ap->project = pm_open_project_edj(selected);
 			list = wm_widget_list_new(ap->project->swapfile);
 			wd_list = ui_widget_list_add(ap, list);
-			ui_block_content_set(ap->block_left_top, wd_list);
+			ui_block_widget_list_set(ap, wd_list);
 			evas_object_show(wd_list);
 			ui_panes_show(ap);
 

@@ -19,14 +19,16 @@ struct _App_Data
 {
 	Evas_Object *win;
 	Evas_Object *win_layout;
-	Evas_Object *block_left_top;
-	Evas_Object *block_left_bottom;
-	Evas_Object *block_bottom_left;
-	Evas_Object *block_bottom_right;
-	Evas_Object *block_right_top;
-	Evas_Object *block_right_bottom;
 	Evas_Object *main_menu;
-	Evas_Object *block_canvas;
+	struct {
+		Evas_Object *left_top;
+		Evas_Object *left_bottom;
+		Evas_Object *bottom_left;
+		Evas_Object *bottom_right;
+		Evas_Object *right_top;
+		Evas_Object *right_bottom;
+		Evas_Object *canvas;
+	} block;
 
 	Workspace *ws;
 	Project *project;

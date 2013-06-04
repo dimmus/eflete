@@ -27,7 +27,7 @@ _on_state_selected(void *data,
 
 	state = elm_object_item_data_get(glit);
 
-	prop_view = ui_block_content_get(ap->block_right_bottom);
+	prop_view = ui_block_property_get(ap);
 	part_view = ui_property_part_view_get(prop_view);
 	state_view = ui_prop_part_info_state_view_add(part_view, state);
 	ui_prop_part_info_state_set(part_view, state_view);
@@ -59,7 +59,7 @@ ui_states_list_add(App_Data *ap, Part *part)
 		_itc_state->func.del = NULL;
 	}
 
-	gl_states = elm_genlist_add(ap->block_bottom_left);
+	gl_states = elm_genlist_add(ap->win);
 	evas_object_size_hint_align_set(gl_states,
 									EVAS_HINT_FILL,
 									EVAS_HINT_FILL);

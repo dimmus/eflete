@@ -32,7 +32,7 @@ ui_signal_list_add(App_Data *ap, Eina_List *signals)
 		_itc_signal->func.del = NULL;
 	}
 
-	gl_signals = elm_genlist_add(ap->block_left_bottom);
+	gl_signals = elm_genlist_add(ap->win);
 	evas_object_size_hint_align_set(gl_signals,
 									EVAS_HINT_FILL,
 									EVAS_HINT_FILL);
