@@ -356,6 +356,7 @@ style_viewer_init (App_Data *ap) {
 		elm_object_text_set(window->entry_style, "The quick brown fox jumps over the lazy dog");
 	    elm_object_part_content_set(panes_h, "left", window->entry_style);
 		elm_entry_text_style_user_push(window->entry_style, "DEFAULT='align=center'");
+		elm_entry_editable_set(window->entry_style, EINA_FALSE);
 		evas_object_size_hint_max_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 		evas_object_show(window->entry_style);
 
