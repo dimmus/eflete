@@ -1,6 +1,14 @@
 #ifndef UI_STYLE_VIEWER_WINDOW_HEADER_H
 #define UI_STYLE_VIEWER_WINDOW_HEADER_H
 
+/**
+ * @defgroup TextStyle TextStyle
+ *
+ * TextStyle is a Inwin that contain information
+ * of the widgets text styles.
+ */
+
+
 #include <Eina.h>
 #include "efl_tet.h"
 
@@ -41,6 +49,15 @@ struct _Style_Window
 
 typedef struct _Style_Window Style_Window;
 
+/**
+ * Show the whole inwin window by using some data
+ * about loaded project (edj file)
+ *
+ * @param ap the application data, that contain some information
+ * about loaded project
+ *
+ * @ingroup TextStyle
+ */
 void
 style_viewer_init (App_Data *ap);
 
