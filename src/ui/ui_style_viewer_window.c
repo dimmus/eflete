@@ -7,7 +7,7 @@ static Elm_Genlist_Item_Class *_itc_tags = NULL;
 static Style_Window *window;
 
 Tag*
-sv_get_tag(Evas_Object *obj, const char *style_name,
+_sv_get_tag(Evas_Object *obj, const char *style_name,
 			const char *tag_name)
 {
 	Tag *tag;
@@ -24,7 +24,7 @@ sv_get_tag(Evas_Object *obj, const char *style_name,
 }
 
 Eina_Inlist*
-sv_get_tags_list(Evas_Object *obj, const char *style_name)
+_sv_get_tags_list(Evas_Object *obj, const char *style_name)
 {
 	Eina_Inlist *tags = NULL;
 	Eina_List *tag_names, *l;
@@ -35,7 +35,7 @@ sv_get_tags_list(Evas_Object *obj, const char *style_name)
 
 	EINA_LIST_FOREACH(tag_names, l, tag_name_text)
 	{
-		tag = sv_get_tag(obj, style_name, tag_name_text);
+		tag = _sv_get_tag(obj, style_name, tag_name_text);
 		tags = eina_inlist_append(tags, EINA_INLIST_GET(tag));
 	}
 
@@ -43,12 +43,12 @@ sv_get_tags_list(Evas_Object *obj, const char *style_name)
 }
 
 TextStyles*
-sv_get_text_style(Evas_Object *obj, const char *style_name)
+_sv_get_text_style(Evas_Object *obj, const char *style_name)
 {
 	Eina_Inlist *tags;
 	TextStyles *style;
 
-	tags = sv_get_tags_list(obj, style_name);
+	tags = _sv_get_tags_list(obj, style_name);
 	style = calloc(1, sizeof(TextStyles));
 	style->style_name = strdup(style_name);
 	style->tags = tags;
@@ -97,7 +97,7 @@ _style_list_get(App_Data *ap)
 	text_styles_name = edje_edit_styles_list_get(edje_object);
 	EINA_LIST_FOREACH(text_styles_name, f, text_style)
 	{
-		tstyles = sv_get_text_style(edje_object, text_style);
+		tstyles = _sv_get_text_style(edje_object, text_style);
 		text_styles = eina_inlist_append(text_styles,
 												EINA_INLIST_GET(tstyles));
 	}
@@ -178,6 +178,7 @@ _on_tag_clicked_double(void *data __UNUSED__,
 		strcat(style, "'");
 		elm_entry_text_style_user_push(window->entry_style, style);
 	}
+	evas_object_size_hint_max_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 }
 
 
@@ -345,13 +346,18 @@ style_viewer_init (App_Data *ap) {
 	    elm_object_part_content_set(panes, "right", panes_h);
 		evas_object_show(panes_h);
 
+        elm_theme_extension_add(NULL, TET_EDJ);
+
 		window->entry_style = elm_entry_add(inwin);
 		evas_object_size_hint_weight_set(window->entry_style, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		evas_object_size_hint_align_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 		elm_entry_scrollable_set(window->entry_style, EINA_TRUE);
+		elm_entry_single_line_set(window->entry_style, EINA_TRUE);
 		elm_object_text_set(window->entry_style, "The quick brown fox jumps over the lazy dog");
 	    elm_object_part_content_set(panes_h, "left", window->entry_style);
 		elm_entry_text_style_user_push(window->entry_style, "DEFAULT='align=center'");
+		elm_entry_editable_set(window->entry_style, EINA_FALSE);
+		evas_object_size_hint_max_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 		evas_object_show(window->entry_style);
 
 		layout_right = _form_right_side(inwin);
