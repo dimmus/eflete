@@ -1,41 +1,79 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+/**
+ * @defgroup Logger Logger
+ *
+ * The application logger
+ */
+
 #include <Eina.h>
 
-#define CRIT(fmt, ...) EINA_LOG_DOM_CRIT(dom_crit_get(), fmt, ## __VA_ARGS__)
-#define ERR(fmt, ...) EINA_LOG_DOM_ERR(dom_err_get(), fmt, ## __VA_ARGS__)
-#define WARN(fmt, ...) EINA_LOG_DOM_WARN(dom_warn_get(), fmt, ## __VA_ARGS__)
-#define INFO(fmt, ...) EINA_LOG_DOM_INFO(dom_info_get(), fmt, ## __VA_ARGS__)
-#define DBG(fmt, ...) EINA_LOG_DOM_DBG(dom_dbg_get(), fmt, ## __VA_ARGS__)
-
-#define TET_LOG_DEFAULT_LEVEL EINA_LOG_LEVEL_DBG
+extern int _tet_log_dom;
 
 /**
+ * @def TET_LOG(DOM, LEVEL, fmt, ...))
  *
+ * Logs a message on the specified domain, level and format.
+ *
+ * @ingroup Logger
+ */
+#define TET_LOG(DOM, LEVEL, fmt, ...) EINA_LOG(DOM, LEVEL, fmt, ## __VA_ARGS__)
+
+/**
+ * @def Logs a message with level CRITICAL.
+ *
+ * @ingroup Logger
+ */
+#define CRIT(fmt, ...) \
+   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
+
+/**
+ * @def Logs a message with level ERROR.
+ *
+ * @ingroup Logger
+ */
+#define ERR(fmt, ...) \
+   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
+
+/**
+ * Logs a message with level WARNING.
+ *
+ * @ingroup Logger
+ */
+#define WARN(fmt, ...) \
+   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
+
+/**
+ * Logs a message with level INFO.
+ *
+ * @ingroup Logger
+ */
+#define INFO(fmt, ...) \
+   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
+
+/**
+ * Logs a message with level DEBUG.
+ *
+ * @ingroup Logger
+ */
+#define DBG(fmt, ...) \
+   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
+
+/**
+ * Init logger
+ *
+ * @ingroup Logger
  */
 Eina_Bool
 logger_init(void);
 
 /**
+ * Shutdown logger
  *
+ * @ingroup Logger
  */
 void
 logger_shutdown(void);
-
-int
-dom_crit_get(void);
-
-int
-dom_err_get(void);
-
-int
-dom_warn_get(void);
-
-int
-dom_info_get(void);
-
-int
-dom_dbg_get(void);
 
 #endif /* LOGGER_H */

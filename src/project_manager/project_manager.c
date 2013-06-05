@@ -20,7 +20,7 @@ pm_free(Project *project)
    if(project->decompiler)
         decompiler_free(project->decompiler);
 
-   wm_widget_list_free(project->widgets);
+   //wm_widget_list_free(project->widgets);
 
    free(project);
    DBG ("Project data is released.");
