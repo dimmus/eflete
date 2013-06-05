@@ -7,363 +7,363 @@ static Elm_Genlist_Item_Class *_itc_part = NULL;
 
 static char *
 _item_part_label_get(void *data,
-					Evas_Object *obj __UNUSED__,
-					const char *part __UNUSED__)
+                     Evas_Object *obj __UNUSED__,
+                     const char *part __UNUSED__)
 {
-	Part *p = (Part *)data;
-	if(!p->name)
-	{
-		ERR("It impossible, but it is occurred, part name is missing!");
-		return NULL;
-	}
-	return strdup(p->name);
+   Part *p = (Part *)data;
+   if (!p->name)
+     {
+        ERR("It impossible, but it is occurred, part name is missing!");
+        return NULL;
+     }
+   return strdup(p->name);
 }
 
 static Evas_Object *
 _item_part_content_get(void *data __UNUSED__,
-					Evas_Object *obj,
-					const char *part)
+                       Evas_Object *obj,
+                       const char *part)
 {
-	Evas_Object *icon = elm_icon_add(obj);
-	if (!strcmp(part, "elm.swallow.icon"))
-		elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
+   Evas_Object *icon = elm_icon_add(obj);
+   if (!strcmp(part, "elm.swallow.icon"))
+     elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
 
-	evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
-	return icon;
+   return icon;
 }
 
 static char *
 _item_group_label_get(void *data,
-					Evas_Object *obj __UNUSED__,
-					const char *part __UNUSED__)
+                      Evas_Object *obj __UNUSED__,
+                      const char *part __UNUSED__)
 {
-	Group *g = (Group *)data;
-	if(!g->group_name)
-	{
-		ERR("It impossible, but it is occurred, group name is missing!");
-		return NULL;
-	}
-	return strdup(g->group_name);
+   Group *g = (Group *)data;
+   if (!g->group_name)
+     {
+        ERR("It impossible, but it is occurred, group name is missing!");
+        return NULL;
+     }
+   return strdup(g->group_name);
 }
 
 static char *
 _item_widget_label_get(void *data,
-						Evas_Object *obj __UNUSED__,
-						const char *part __UNUSED__)
+                       Evas_Object *obj __UNUSED__,
+                       const char *part __UNUSED__)
 {
-	Widget *w = (Widget *)data;
-	if(!w->widget_name)
-	{
-		ERR("It impossible, but it is occurred, widget name is missing!");
-		return NULL;
-	}
-	return strdup(w->widget_name);
+   Widget *w = (Widget *)data;
+   if (!w->widget_name)
+     {
+        ERR("It impossible, but it is occurred, widget name is missing!");
+        return NULL;
+     }
+   return strdup(w->widget_name);
 }
 
 static char *
 _item_style_label_get(void *data,
-						Evas_Object *obj __UNUSED__,
-						const char *part __UNUSED__)
+                      Evas_Object *obj __UNUSED__,
+                      const char *part __UNUSED__)
 {
-	Style *st = (Style *)data;
-	if(!st->style_name)
-	{
-		ERR("It impossible, but it is occurred, style name is missing!");
-		return NULL;
-	}
-	return strdup(st->style_name);
+   Style *st = (Style *)data;
+   if (!st->style_name)
+     {
+        ERR("It impossible, but it is occurred, style name is missing!");
+        return NULL;
+     }
+   return strdup(st->style_name);
 }
 
 static void
 _navi_gl_styles_pop(void *data,
-					Evas_Object *obj __UNUSED__,
-					void *event_info __UNUSED__)
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
 {
-	Evas_Object *nf = (Evas_Object *)data;
-	elm_naviframe_item_pop(nf);
+   Evas_Object *nf = (Evas_Object *)data;
+   elm_naviframe_item_pop(nf);
 }
 
 static void
 _navi_gl_parts_pop(void *data,
-					Evas_Object *obj __UNUSED__,
-					void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
-	App_Data *ap = (App_Data *)data;
-	Evas_Object *nf = ui_block_widget_list_get(ap);
-	Evas_Object *gl_signals = ui_block_signal_list_get(ap);
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *nf = ui_block_widget_list_get(ap);
+   Evas_Object *gl_signals = ui_block_signal_list_get(ap);
 
-	elm_naviframe_item_pop(nf);
-	elm_genlist_clear(gl_signals);
+   elm_naviframe_item_pop(nf);
+   elm_genlist_clear(gl_signals);
 
-	ui_object_highlight_hide(ap->ws);
-	evas_object_hide(ui_block_signal_list_get(ap));
-	evas_object_hide(ui_block_state_list_get(ap));
-	evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
+   ui_object_highlight_hide(ap->ws);
+   evas_object_hide(ui_block_signal_list_get(ap));
+   evas_object_hide(ui_block_state_list_get(ap));
+   evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
 }
 
 static void
 _on_part_selected(void *data,
-					Evas_Object *obj __UNUSED__,
-					void *event_info)
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
 {
-	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-	Evas_Object *prop, *part_prop, *gl_states;
-	App_Data *ap;
-	Part *_part;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Evas_Object *prop, *part_prop, *gl_states;
+   App_Data *ap;
+   Part *_part;
 
-	ap = (App_Data *)data;
-	_part = elm_object_item_data_get(glit);
-	prop = ui_block_property_get(ap);
-	if(!prop)
-	{
-		ERR("Property view is missing!");
-		return;
-	}
+   ap = (App_Data *)data;
+   _part = elm_object_item_data_get(glit);
+   prop = ui_block_property_get(ap);
+   if (!prop)
+     {
+        ERR("Property view is missing!");
+        return;
+     }
 
-	part_prop = ui_prop_part_info_view_add(prop, _part);
-	ui_property_part_view_set(prop, part_prop);
-	evas_object_show(part_prop);
+   part_prop = ui_prop_part_info_view_add(prop, _part);
+   ui_property_part_view_set(prop, part_prop);
+   evas_object_show(part_prop);
 
-	gl_states = ui_states_list_add(ap, _part);
-	ui_block_state_list_set(ap, gl_states);
-	evas_object_show(gl_states);
+   gl_states = ui_states_list_add(ap, _part);
+   ui_block_state_list_set(ap, gl_states);
+   evas_object_show(gl_states);
 
-	/* FIXME: it bad  */
-	elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+   /* FIXME: it bad  */
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
 
-	ui_object_highlight_set(ap->ws, _part->obj);
+   ui_object_highlight_set(ap->ws, _part->obj);
 }
 
 static void
 _on_group_clicked_double(void *data,
-						Evas_Object *obj __UNUSED__,
-						void *event_info)
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
 {
-	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-	Elm_Object_Item *eoi;
-	App_Data *ap;
-	Evas_Object *nf, *gl_parts, *bt, *ic, *gl_signals;
-	Evas_Object *prop, *group_prop;
-	Eina_Inlist *parts;
-	Eina_List *signals;
-	Group *_group;
-	Part *_part;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Elm_Object_Item *eoi;
+   App_Data *ap;
+   Evas_Object *nf, *gl_parts, *bt, *ic, *gl_signals;
+   Evas_Object *prop, *group_prop;
+   Eina_Inlist *parts;
+   Eina_List *signals;
+   Group *_group;
+   Part *_part;
 
-	ap = (App_Data *)data;
-	nf = ui_block_widget_list_get(ap);
-	if(!nf)
-	{
-		ERR("Naviframe is missing!");
-		return;
-	}
-	_group = elm_object_item_data_get(glit);
-	if(_group->__type != GROUP)
-		return;
-	if(!_group->obj)
-		wm_group_data_load(_group, ap->ws->canvas, ap->project->swapfile);
+   ap = (App_Data *)data;
+   nf = ui_block_widget_list_get(ap);
+   if (!nf)
+     {
+        ERR("Naviframe is missing!");
+        return;
+     }
+   _group = elm_object_item_data_get(glit);
+   if(_group->__type != GROUP)
+     return;
+   if(!_group->obj)
+     wm_group_data_load(_group, ap->ws->canvas, ap->project->swapfile);
 
-	parts = _group->parts;
+   parts = _group->parts;
 
-	if(!_itc_part)
-	{
-		_itc_part = elm_genlist_item_class_new();
-		_itc_part->item_style = "default";
-		_itc_part->func.text_get = _item_part_label_get;
-		_itc_part->func.content_get = _item_part_content_get;
-		_itc_part->func.state_get = NULL;
-		_itc_part->func.del = NULL;
-	}
+   if (!_itc_part)
+     {
+        _itc_part = elm_genlist_item_class_new();
+        _itc_part->item_style = "default";
+        _itc_part->func.text_get = _item_part_label_get;
+        _itc_part->func.content_get = _item_part_content_get;
+        _itc_part->func.state_get = NULL;
+        _itc_part->func.del = NULL;
+     }
 
-	gl_parts = elm_genlist_add(nf);
-	evas_object_size_hint_align_set(gl_parts,
-									EVAS_HINT_FILL,
-									EVAS_HINT_FILL);
-	evas_object_size_hint_weight_set(gl_parts,
-									EVAS_HINT_EXPAND,
-									EVAS_HINT_EXPAND);
+   gl_parts = elm_genlist_add(nf);
+   evas_object_size_hint_align_set(gl_parts,
+                                   EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(gl_parts,
+                                    EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
 
-	EINA_INLIST_FOREACH(parts, _part)
-	{
-		eoi = elm_genlist_item_append(gl_parts, _itc_part,
-										_part,
-										NULL, ELM_GENLIST_ITEM_NONE,
-										NULL, NULL);
-		elm_object_item_data_set(eoi, _part);
-	}
-	evas_object_smart_callback_add(gl_parts, "selected",
-									_on_part_selected, ap);
+   EINA_INLIST_FOREACH(parts, _part)
+     {
+        eoi = elm_genlist_item_append(gl_parts, _itc_part,
+                                      _part,
+                                      NULL, ELM_GENLIST_ITEM_NONE,
+                                      NULL, NULL);
+        elm_object_item_data_set(eoi, _part);
+     }
+   evas_object_smart_callback_add(gl_parts, "selected",
+                                  _on_part_selected, ap);
 
 
-	/* Get signals list of a group and show them */
-	signals = wm_program_signals_list_get(_group->programs);
-	gl_signals = ui_signal_list_add(ap, signals);
-	wm_program_signals_list_free(signals);
-	ui_block_signal_list_set(ap, gl_signals);
+   /* Get signals list of a group and show them */
+   signals = wm_program_signals_list_get(_group->programs);
+   gl_signals = ui_signal_list_add(ap, signals);
+   wm_program_signals_list_free(signals);
+   ui_block_signal_list_set(ap, gl_signals);
 
-	/* group properties */
-	prop = ui_block_property_get(ap);
-	if(prop)
-	{
-		ui_prop_group_info_view_update(prop, _group);
-		evas_object_show(prop);
-	}
-	else
-	{
-		prop = ui_property_view_new(ap->win);
-		ui_block_property_set(ap, prop);
-		evas_object_show(prop);
+   /* group properties */
+   prop = ui_block_property_get(ap);
+   if (prop)
+     {
+        ui_prop_group_info_view_update(prop, _group);
+        evas_object_show(prop);
+     }
+   else
+     {
+        prop = ui_property_view_new(ap->win);
+        ui_block_property_set(ap, prop);
+        evas_object_show(prop);
 
-		group_prop = ui_prop_group_info_view_add(prop, _group);
-		ui_property_group_view_set(prop, group_prop);
-		evas_object_show(group_prop);
-	}
+        group_prop = ui_prop_group_info_view_add(prop, _group);
+        ui_property_group_view_set(prop, group_prop);
+        evas_object_show(group_prop);
+     }
 
-	ic = elm_icon_add(nf);
-	elm_icon_standard_set(ic, "arrow_left");
-	evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   ic = elm_icon_add(nf);
+   elm_icon_standard_set(ic, "arrow_left");
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
-	bt = elm_button_add(nf);
-	evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_layout_content_set(bt, "icon", ic);
-	evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, ap);
+   bt = elm_button_add(nf);
+   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_layout_content_set(bt, "icon", ic);
+   evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, ap);
 
-	elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+   elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
 
-	ui_groupspace_add (ap, _group);
+   ui_groupspace_add (ap, _group);
 }
 
 static void
 _on_widget_clicked_double(void *data,
-							Evas_Object *obj __UNUSED__,
-							void *event_info)
+                          Evas_Object *obj __UNUSED__,
+                          void *event_info)
 {
-	Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-	Elm_Object_Item *glit_style, *glit_group;
-	App_Data *ap;
-	Evas_Object *nf, *gl_styles, *bt, *ic;
-	Eina_Inlist *styles, *groups;
-	Widget *_widget;
-	Style *_style;
-	Group *_group;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Elm_Object_Item *glit_style, *glit_group;
+   App_Data *ap;
+   Evas_Object *nf, *gl_styles, *bt, *ic;
+   Eina_Inlist *styles, *groups;
+   Widget *_widget;
+   Style *_style;
+   Group *_group;
 
-	ap = (App_Data *)data;
-	nf = ui_block_widget_list_get(ap);
-	if(!nf)
-	{
-		ERR("Naviframe is missing!");
-		return;
-	}
-	_widget = elm_object_item_data_get(glit);
-	styles = _widget->styles;
+   ap = (App_Data *)data;
+   nf = ui_block_widget_list_get(ap);
+   if (!nf)
+     {
+        ERR("Naviframe is missing!");
+        return;
+     }
+   _widget = elm_object_item_data_get(glit);
+   styles = _widget->styles;
 
-	if(!_itc_style)
-	{
-		_itc_style = elm_genlist_item_class_new();
-		_itc_style->item_style = "default";
-		_itc_style->func.text_get = _item_style_label_get;
-		_itc_style->func.content_get = NULL;
-		_itc_style->func.state_get = NULL;
-		_itc_style->func.del = NULL;
-	}
+   if(!_itc_style)
+     {
+        _itc_style = elm_genlist_item_class_new();
+        _itc_style->item_style = "default";
+        _itc_style->func.text_get = _item_style_label_get;
+        _itc_style->func.content_get = NULL;
+        _itc_style->func.state_get = NULL;
+        _itc_style->func.del = NULL;
+     }
 
-	if(!_itc_group)
-	{
-		_itc_group = elm_genlist_item_class_new();
-		_itc_group->item_style = "default";
-		_itc_group->func.text_get = _item_group_label_get;
-		_itc_group->func.content_get = NULL;
-		_itc_group->func.state_get = NULL;
-		_itc_group->func.del = NULL;
-	}
+   if (!_itc_group)
+     {
+        _itc_group = elm_genlist_item_class_new();
+        _itc_group->item_style = "default";
+        _itc_group->func.text_get = _item_group_label_get;
+        _itc_group->func.content_get = NULL;
+        _itc_group->func.state_get = NULL;
+        _itc_group->func.del = NULL;
+     }
 
-	gl_styles = elm_genlist_add(nf);
-	evas_object_size_hint_align_set(gl_styles,
-									EVAS_HINT_FILL,
-									EVAS_HINT_FILL);
-	evas_object_size_hint_weight_set(gl_styles,
-									EVAS_HINT_EXPAND,
-									EVAS_HINT_EXPAND);
+   gl_styles = elm_genlist_add(nf);
+   evas_object_size_hint_align_set(gl_styles,
+                                   EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(gl_styles,
+                                    EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
 
-	EINA_INLIST_FOREACH(styles, _style)
-	{
-		glit_style = elm_genlist_item_append(gl_styles, _itc_style,
-											_style,
-											NULL, ELM_GENLIST_ITEM_NONE,
-											NULL, NULL);
-		groups = _style->groups;
+   EINA_INLIST_FOREACH(styles, _style)
+     {
+        glit_style = elm_genlist_item_append(gl_styles, _itc_style,
+                                             _style,
+                                             NULL, ELM_GENLIST_ITEM_NONE,
+                                             NULL, NULL);
+        groups = _style->groups;
 
-		EINA_INLIST_FOREACH(groups, _group)
-		{
-			glit_group = elm_genlist_item_append(gl_styles, _itc_group,
-												_group,
-												glit_style, ELM_GENLIST_ITEM_NONE,
-												NULL, NULL);
-			elm_object_item_data_set(glit_group, _group);
-		}
-	}
+        EINA_INLIST_FOREACH(groups, _group)
+          {
+             glit_group = elm_genlist_item_append(gl_styles, _itc_group,
+                                                  _group,
+                                                  glit_style, ELM_GENLIST_ITEM_NONE,
+                                                  NULL, NULL);
+             elm_object_item_data_set(glit_group, _group);
+          }
+     }
 
-	evas_object_smart_callback_add(gl_styles, "clicked,double",
-									_on_group_clicked_double, ap);
+   evas_object_smart_callback_add(gl_styles, "clicked,double",
+                                  _on_group_clicked_double, ap);
 
-	ic = elm_icon_add(nf);
-	elm_icon_standard_set(ic, "arrow_left");
-	evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   ic = elm_icon_add(nf);
+   elm_icon_standard_set(ic, "arrow_left");
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
-	bt = elm_button_add(nf);
-	evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_layout_content_set(bt, "icon", ic);
-	evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
+   bt = elm_button_add(nf);
+   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_layout_content_set(bt, "icon", ic);
+   evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
 
-	elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
+   elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
 }
 
 Evas_Object *
 ui_widget_list_add(App_Data *ap, Eina_Inlist *widget_list)
 {
-	Evas_Object *nf;
-	Evas_Object *ui_widget_list = NULL;
-	Widget *_widget;
-	Elm_Object_Item *eoi;
-	Elm_Object_Item *it;
+   Evas_Object *nf;
+   Evas_Object *ui_widget_list = NULL;
+   Widget *_widget;
+   Elm_Object_Item *eoi;
+   Elm_Object_Item *it;
 
-	if(!_itc_widget)
-	{
-		_itc_widget = elm_genlist_item_class_new();
-		_itc_widget->item_style = "default";
-		_itc_widget->func.text_get = _item_widget_label_get;
-		_itc_widget->func.content_get = NULL;
-		_itc_widget->func.state_get = NULL;
-		_itc_widget->func.del = NULL;
-	}
+   if (!_itc_widget)
+     {
+        _itc_widget = elm_genlist_item_class_new();
+        _itc_widget->item_style = "default";
+        _itc_widget->func.text_get = _item_widget_label_get;
+        _itc_widget->func.content_get = NULL;
+        _itc_widget->func.state_get = NULL;
+        _itc_widget->func.del = NULL;
+     }
 
-	nf = elm_naviframe_add(ap->win);
-	evas_object_size_hint_align_set(nf, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_size_hint_weight_set(nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   nf = elm_naviframe_add(ap->win);
+   evas_object_size_hint_align_set(nf, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-	ui_widget_list = elm_genlist_add(nf);
-	evas_object_size_hint_align_set(ui_widget_list,
-									EVAS_HINT_FILL,
-									EVAS_HINT_FILL);
-	evas_object_size_hint_weight_set(ui_widget_list,
-									EVAS_HINT_EXPAND,
-									EVAS_HINT_EXPAND);
+   ui_widget_list = elm_genlist_add(nf);
+   evas_object_size_hint_align_set(ui_widget_list,
+                                   EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(ui_widget_list,
+                                    EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
 
-	EINA_INLIST_FOREACH(widget_list, _widget)
-	{
-		eoi = elm_genlist_item_append(ui_widget_list, _itc_widget,
-										_widget,
-										NULL, ELM_GENLIST_ITEM_NONE,
-										NULL, NULL);
-		/* maybe add a ref to _widget */
-		elm_object_item_data_set(eoi, _widget);
-	}
+   EINA_INLIST_FOREACH(widget_list, _widget)
+     {
+        eoi = elm_genlist_item_append(ui_widget_list, _itc_widget,
+                                      _widget,
+                                      NULL, ELM_GENLIST_ITEM_NONE,
+                                      NULL, NULL);
+        /* maybe add a ref to _widget */
+        elm_object_item_data_set(eoi, _widget);
+     }
 
-	evas_object_smart_callback_add(ui_widget_list, "clicked,double",
-									_on_widget_clicked_double, ap);
+   evas_object_smart_callback_add(ui_widget_list, "clicked,double",
+                                  _on_widget_clicked_double, ap);
 
-	it = elm_naviframe_item_push(nf, ap->project->name, NULL, NULL, ui_widget_list, NULL);
-	elm_object_item_part_text_set(it, "subtitle", "Widget list");
+   it = elm_naviframe_item_push(nf, ap->project->name, NULL, NULL, ui_widget_list, NULL);
+   elm_object_item_part_text_set(it, "subtitle", "Widget list");
 
-	return nf;
+   return nf;
 }
