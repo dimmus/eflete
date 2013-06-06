@@ -13,7 +13,7 @@
 #include "config.h"
 #endif /* include config.h */
 
-#include <Ecore_File.h>
+#include <Eio.h>
 #include "edje_compile.h"
 #include "logger.h"
 #include <string.h>
