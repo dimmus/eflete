@@ -10,6 +10,7 @@ group {
             state: "default" 0.0;
             min: 0 0;
             max: 300 9999;
+            visible: 0;
             color: 255 255 255 255;
          }
       }
