@@ -17,6 +17,7 @@ ui_groupspace_add (App_Data *ap, Group *group);
 /**
  * Delete groupspace object.
  * in: obj Groupspace object.
+ * in: group Group object, need to know what part objects must deleted.
  */
 void
 ui_groupspace_del (Evas_Object *obj, Group *group);
