@@ -9,5 +9,13 @@ images {
    image: "desktop_resize_handler_up.png" COMP;
    image: "desktop_resize_handler_down.png" COMP;
    image: "part_highlight.png" COMP;
+   image: "shelf_inset.png" COMP;
+   image: "bt_basew.png" COMP;
+   image: "bt_bases.png" COMP;
+   image: "bt_hilightw.png" COMP;
+   image: "tog_base_on.png" COMP;
+   image: "tog_base_off.png" COMP;
+   image: "tog_dis_base_on.png" COMP;
+   image: "tog_dis_base_off.png" COMP;
 }
 
