@@ -6,6 +6,9 @@
 #include <Elementary.h>
 #include <Eina.h>
 #include "widget_manager.h"
+
+#define _ELLIP_STR "\xE2\x80\xA6"
+
 /**
  * Add new groupspace object into workspace.
  * in: ap pointer to App_Data structure.
