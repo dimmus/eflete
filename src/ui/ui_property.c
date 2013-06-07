@@ -852,12 +852,9 @@ ui_prop_view_item_two_edit_string_add(Evas_Object *prop, const char *name,
 	return item;
 }
 
-/**
-  * TODO: make custom style of the toggle check.
-  */
 Evas_Object *
 ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
-									Eina_Bool check, const char *tooltip)
+			Eina_Bool check, const char *tooltip)
 {
 	Evas_Object *item, *toggle;
 
@@ -868,7 +865,11 @@ ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
 
 	ITEM_BASE_CREATE(prop, item, name)
 
+        elm_theme_extension_add(NULL, TET_EDJ);
 	toggle = elm_check_add(item);
+        elm_object_style_set(toggle, "prop_toggle");
+	evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_object_tooltip_text_set(toggle, tooltip);
 	elm_check_state_set(toggle, check);
 
@@ -879,9 +880,6 @@ ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
 	return item;
 }
 
-/**
-  * TODO: make custom style of the toggle check.
-  */
 Evas_Object *
 ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
 							Eina_Bool check1, const char *tooltip1,
@@ -903,13 +901,19 @@ ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
 	evas_object_show(content);
 
 	toggle1 = elm_check_add(item);
+        elm_object_style_set(toggle1, "prop_toggle");
 	elm_object_tooltip_text_set(toggle1, tooltip1);
+	evas_object_size_hint_align_set(toggle1, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(toggle1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_check_state_set(toggle1, check1);
 	elm_object_part_content_set(content, "field1.swallow", toggle1);
 	evas_object_show(toggle1);
 
 	toggle2 = elm_check_add(item);
+        elm_object_style_set(toggle2, "prop_toggle");
 	elm_object_tooltip_text_set(toggle2, tooltip2);
+	evas_object_size_hint_align_set(toggle2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(toggle2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_check_state_set(toggle2, check2);
 	elm_object_part_content_set(content, "field2.swallow", toggle2);
 	evas_object_show(toggle2);
