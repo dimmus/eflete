@@ -16,8 +16,9 @@ find_package(Eet REQUIRED)
 find_package(Evas REQUIRED)
 find_package(Ecore REQUIRED)
 find_package(Ecore COMPONENTS Ecore-x)
-find_package(Ecore COMPONENTS Ecore-File)
+#find_package(Ecore COMPONENTS Ecore-File)
 find_package(Ecore COMPONENTS Ecore-Evas)
+find_package(Eio REQUIRED)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
@@ -39,6 +40,7 @@ include_directories(
    ${ECORE_INCLUDE_DIRS}
    ${EVAS_INCLUDE_DIRS}
    ${EET_INCLUDE_DIRS}
+   ${EIO_INCLUDE_DIRS}
    ${EDJE_INCLUDE_DIRS}
    ${ELEMENTARY_INCLUDE_DIRS}
    )

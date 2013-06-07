@@ -1,6 +1,26 @@
 #include "project_manager.h"
 #include "widget_manager.h"
 
+static void
+_on_copy_done_cb(void *data,
+                 Eio_File *handler __UNUSED__)
+{
+   char *file_name = (char *)data;
+   DBG("Copy file '%s' is finished!", file_name);
+   ecore_main_loop_quit();
+}
+
+static void
+_on_copy_error_cb(void *data,
+                  Eio_File *handler __UNUSED__,
+                  int error)
+{
+   char *file_name = (char *)data;
+   ERR("Copy file '%s' is failed. Something wrong has happend:%s\n",
+       file_name, strerror(error));
+   ecore_main_loop_quit();
+}
+
 Eina_Bool
 pm_free(Project *project)
 {
@@ -20,7 +40,7 @@ pm_free(Project *project)
    if(project->decompiler)
         decompiler_free(project->decompiler);
 
-   //wm_widget_list_free(project->widgets);
+   wm_widget_list_free(project->widgets);
 
    free(project);
    DBG ("Project data is released.");
@@ -135,9 +155,6 @@ pm_project_add(const char *path,
      }
    DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
-   /* without this like widgets link is set into NULL.
-      Maybe this code (or something that looks like this one)
-      is existing somewhere else, but I didn't find it */
    pro->widgets = wm_widget_list_new(pro->edj);
 
    return pro;
@@ -170,7 +187,9 @@ pm_open_project_edc(const char *path,
                                project->sound_directory);
    if (project->compiler)
      {
-        ecore_file_cp(project->edj, project->swapfile);
+        eio_file_copy(project->edj, project->swapfile, NULL,
+                      _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+        ecore_main_loop_begin();
      }
 
    return project;
@@ -189,17 +208,21 @@ pm_open_project_edj(const char *path)
 
    INFO("Open project! Path to project: '%s'.", path);
    project = pm_project_add(path, NULL, NULL, NULL);
-   ecore_file_cp(project->edj, project->swapfile);
+   eio_file_copy(project->edj, project->swapfile, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   ecore_main_loop_begin();
    INFO("Project '%s' is open!", project->name);
 
    return project;
 }
 
 Eina_Bool
-pm_save_project_edj(Project *pm)
+pm_save_project_edj(Project *project)
 {
-   if (!pm) return EINA_FALSE;
+   if (!project) return EINA_FALSE;
 
-   ecore_file_cp(pm->swapfile, pm->edj);
+   eio_file_copy(project->swapfile, project->edj, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   ecore_main_loop_begin();
    return EINA_TRUE;
 }

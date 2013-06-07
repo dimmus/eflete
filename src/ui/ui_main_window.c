@@ -1,7 +1,6 @@
 #include <ui_main_window.h>
 #include <ui_settings.h>
 
-Eina_List *ui_list_main_window;
 
 static void
 _on_done(void *data,
@@ -18,19 +17,7 @@ _on_done(void *data,
 void
 ui_main_window_del (App_Data *ap)
 {
-   Evas_Object *deleting_element;
-   Eina_List *l = ui_list_main_window;
-
    ui_panes_settings_save();
-   if (!ui_menu_del())
-     {
-        WARN("Menu elements doesn't delete correct.\n");
-     }
-   EINA_LIST_FOREACH(ui_list_main_window, l, deleting_element){
-        evas_object_del (deleting_element);
-   }
-   eina_list_free(ui_list_main_window);
-   eina_list_free(l);
 
    pm_free(ap->project);
 
@@ -61,8 +48,6 @@ ui_main_window_add (App_Data *ap)
         ERR("Failrue create main window.");
         return EINA_FALSE;
    }
-   ui_list_main_window = eina_list_append(ui_list_main_window, win);
-
    ap->win = win;
 
    elm_win_title_set(win, PACKAGE);
@@ -73,7 +58,6 @@ ui_main_window_add (App_Data *ap)
                                    NULL);
 
    bg = elm_bg_add(win);
-   ui_list_main_window = eina_list_append(ui_list_main_window, bg);
    elm_win_resize_object_add(win, bg);
    evas_object_size_hint_weight_set(bg,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -81,7 +65,6 @@ ui_main_window_add (App_Data *ap)
    evas_object_show(bg);
 
    layout = elm_layout_add(win);
-   ui_list_main_window = eina_list_append(ui_list_main_window, layout);
    evas_object_size_hint_weight_set(layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, layout);

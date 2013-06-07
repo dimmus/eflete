@@ -306,7 +306,6 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_panes_content_left_size_set(panes_left, 0.2);
 	panes = panes_left;
-	elm_panes_fixed_set (panes_left, EINA_TRUE);
 	elm_object_part_content_set (ap->win_layout, "swallow/panes", panes_left);
 
 	panes_left_hor = elm_panes_add(ap->win_layout);
@@ -337,7 +336,6 @@ ui_panes_add (App_Data *ap)
 		EVAS_HINT_FILL, EVAS_HINT_FILL);
 	elm_object_part_content_set(panes_left, "right", panes_right);
 	elm_panes_content_left_size_set(panes_right, 0.75);
-	elm_panes_fixed_set (panes_right, EINA_TRUE);
 
 	panes_right_hor = elm_panes_add(ap->win_layout);
 	if (panes_right_hor == NULL)

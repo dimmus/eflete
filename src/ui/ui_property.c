@@ -231,6 +231,7 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
 {
 	Evas_Object *part_view, *box;
 	Evas_Object *part_view_base, *box_base, *item;
+        Evas_Object *event_frame, *event_box;
 	Prop_Part_View_Data *ppvd;
 
 	if(!prop_view)
@@ -287,20 +288,37 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
 				part->source, "Source group selection.");
 	evas_object_show(item);
 
-	item = ui_prop_view_item_bool_add(box_base, "mouse events",
-				part->mouse_events, "Enable mouse events in this part.");
-	evas_object_show(item);
+        event_frame = elm_frame_add(box_base);
+        elm_frame_autocollapse_set(event_frame, EINA_FALSE);
+        evas_object_size_hint_fill_set(event_frame, EVAS_HINT_FILL, 0.0);
+        elm_object_text_set(event_frame, "part events");
+        evas_object_show(event_frame);
 
-	item = ui_prop_view_item_bool_add(box_base, "repeat events",
-				part->repeat_events, "Enable repeat mouse events to the parts below.");
-	evas_object_show(item);
+        event_box = elm_box_add(event_frame);
+        evas_object_size_hint_weight_set(event_box, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(event_box, EVAS_HINT_FILL, 0.0);
+        elm_box_align_set(event_box, 0.5, 0.0);
+        elm_object_content_set(event_frame, event_box);
+        evas_object_show(event_box);
+
+        item = ui_prop_view_item_bool_add(event_box, "mouse",
+                                          part->mouse_events, "Enable mouse events in this part.");
+        evas_object_show(item);
+
+        item = ui_prop_view_item_bool_add(event_box, "repeat",
+                                          part->repeat_events, "Enable repeat mouse events to the parts below.");
+        evas_object_show(item);
+
+        elm_box_pack_end(box_base, event_frame);
+
+        elm_object_content_set(event_frame, event_box);
 
 	evas_object_show(box);
 	elm_object_content_set(part_view, box);
 
 	evas_object_data_set(part_view, PROP_PART_VIEW_DATA, ppvd);
 	evas_object_event_callback_add(box, EVAS_CALLBACK_DEL,
-									_on_part_view_del, NULL);
+            				_on_part_view_del, NULL);
 
 	return part_view;
 }
@@ -389,10 +407,14 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
 				"Top offset from relative position in pixels");
 	evas_object_show(item);
 
-	item = ui_prop_view_item_two_edit_string_add(rel1_box, "to",
-				state->rel1_to_x_name, "Left reference part.",
-				state->rel1_to_y_name, "Top reference part.");
-	evas_object_show(item);
+
+        item = ui_prop_view_item_one_edit_string_add(rel1_box, "to_x",
+                                                state->rel1_to_x_name, "Left reference part.");
+        evas_object_show(item);
+
+        item = ui_prop_view_item_one_edit_string_add(rel1_box, "to_y",
+                                                      state->rel1_to_y_name, "Top reference part.");
+        evas_object_show(item);
 
 	elm_box_pack_end(box_state, rel1_frame);
 
@@ -423,10 +445,12 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
 				"Bottom offset from relative position in pixels");
 	evas_object_show(item);
 
-	item = ui_prop_view_item_two_edit_string_add(rel2_box, "to",
-				state->rel2_to_x_name, "Right reference part.",
-				state->rel2_to_y_name, "Bottom reference part.");
-	evas_object_show(item);
+        item = ui_prop_view_item_one_edit_string_add(rel2_box, "to_x",
+                                                   state->rel2_to_x_name, "Right reference part.");
+        evas_object_show(item);
+        item = ui_prop_view_item_one_edit_string_add(rel2_box, "to_y",
+                                                   state->rel2_to_y_name, "Bottom reference part.");
+        evas_object_show(item);
 
 	elm_box_pack_end(box_state, rel2_frame);
 
@@ -519,7 +543,7 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
 				state->image->normal_image, "Set the text of part.");
 		evas_object_show(item);
 
-		item = ui_prop_view_item_four_edit_int_add(image_box, "image border",
+		item = ui_prop_view_item_four_edit_int_add(image_box, "border",
 				&state->image->left, &state->image->right,
 				&state->image->top, &state->image->bottom,
 				"Lenght of left border in pixels");
@@ -830,7 +854,7 @@ ui_prop_view_item_two_edit_string_add(Evas_Object *prop, const char *name,
 
 Evas_Object *
 ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
-									Eina_Bool check, const char *tooltip)
+			Eina_Bool check, const char *tooltip)
 {
 	Evas_Object *item, *toggle;
 
@@ -841,8 +865,11 @@ ui_prop_view_item_bool_add(Evas_Object *prop, const char *name,
 
 	ITEM_BASE_CREATE(prop, item, name)
 
+        elm_theme_extension_add(NULL, TET_EDJ);
 	toggle = elm_check_add(item);
-	elm_object_style_set(toggle, "toggle");
+        elm_object_style_set(toggle, "prop_toggle");
+	evas_object_size_hint_align_set(toggle, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(toggle, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_object_tooltip_text_set(toggle, tooltip);
 	elm_check_state_set(toggle, check);
 
@@ -874,15 +901,19 @@ ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
 	evas_object_show(content);
 
 	toggle1 = elm_check_add(item);
-	elm_object_style_set(toggle1, "toggle");
+        elm_object_style_set(toggle1, "prop_toggle");
 	elm_object_tooltip_text_set(toggle1, tooltip1);
+	evas_object_size_hint_align_set(toggle1, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(toggle1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_check_state_set(toggle1, check1);
 	elm_object_part_content_set(content, "field1.swallow", toggle1);
 	evas_object_show(toggle1);
 
 	toggle2 = elm_check_add(item);
-	elm_object_style_set(toggle2, "toggle");
+        elm_object_style_set(toggle2, "prop_toggle");
 	elm_object_tooltip_text_set(toggle2, tooltip2);
+	evas_object_size_hint_align_set(toggle2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(toggle2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_check_state_set(toggle2, check2);
 	elm_object_part_content_set(content, "field2.swallow", toggle2);
 	evas_object_show(toggle2);
