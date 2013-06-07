@@ -28,11 +28,14 @@ _ws_zoom_out (Workspace *ws )
 }
 
 static void
-_zoom_out_on_click (void *data __UNUSED__,
+_zoom_out_on_click (void *data,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
+
+   ui_ruler_pointer_visible_set(ws->ruler_hor, EINA_FALSE);
+   ui_ruler_pointer_visible_set(ws->ruler_ver, EINA_FALSE);
 
    ui_ruler_scale_relative_visible_set (ws->ruler_hor,
      !ui_ruler_scale_relative_visible_get (ws->ruler_hor));
@@ -42,11 +45,13 @@ _zoom_out_on_click (void *data __UNUSED__,
 }
 
 static void
-_zoom_in_on_click (void *data __UNUSED__,
+_zoom_in_on_click (void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
+   ui_ruler_pointer_visible_set(ws->ruler_hor, EINA_TRUE);
+   ui_ruler_pointer_visible_set(ws->ruler_ver, EINA_TRUE);
 
    ui_ruler_scale_absolute_visible_set (ws->ruler_hor,
      !ui_ruler_scale_absolute_visible_get (ws->ruler_hor));

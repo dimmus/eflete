@@ -420,19 +420,6 @@ _ruler_data_init(void)
    return _ruler_data;
 }
 
-/* TODO: make show method for pointer*/
-static void
-_pointer_show(Evas_Object *obj __UNUSED__)
-{
-}
-
-/* TODO: make hide method for pointer*/
-static void
-_pointer_hide(Evas_Object *obj __UNUSED__)
-{
-}
-
-
 static void
 _ruler_resize_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj,
                   void *event_info __UNUSED__)
@@ -512,9 +499,9 @@ ui_ruler_pointer_visible_set(Evas_Object *obj, Eina_Bool visible)
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
    _ruler_data->pointer_visible = visible;
    if (visible)
-     _pointer_show(obj);
+     elm_layout_signal_emit (obj, "ruler,pointer,show", "");
    else
-     _pointer_hide(obj);
+     elm_layout_signal_emit (obj, "ruler,pointer,hide", "");
 }
 
 Eina_Bool
