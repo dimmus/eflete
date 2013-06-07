@@ -1,23 +1,18 @@
 #include "ui_groupspace.h"
 
 /*Prototypes functions for internal use*/
-Evas_Object *
+static Evas_Object *
 _gs_rect_draw (Evas_Object * _view_part,Group *group, Part *part);
 
-void
+static void
 _gs_group_draw (Evas_Object *view_part , Group *group, App_Data *ap);
 
-void
+static void
 _gs_move_parts (Evas_Object *view_part , Group *group);
 
-void
-_gs_part_geometry_calc (Evas_Object *view_part, Group *group, Part *part,
-						int *x, int *y, int *w, int *h);
-
 static void
-_gs_mouse_move_cb (void *data, Evas *e,
-					Evas_Object *obj __UNUSED__,
-					void *event_info __UNUSED__)
+_gs_mouse_move_cb (void *data, Evas *e,	Evas_Object *obj __UNUSED__,
+		   void *event_info __UNUSED__)
 {
    int x, y;
    Workspace *ws = (Workspace*)data;
@@ -27,9 +22,8 @@ _gs_mouse_move_cb (void *data, Evas *e,
 }
 
 static void
-_gs_resize_cb (void *data, Evas *e __UNUSED__,
-					Evas_Object *obj ,
-					void *event_info __UNUSED__)
+_gs_resize_cb (void *data, Evas *e __UNUSED__,	Evas_Object *obj,
+	       void *event_info __UNUSED__)
 {
    int x, y, w, h;
    Workspace *ws = (Workspace*)data;
@@ -49,7 +43,7 @@ _gs_resize_parts_cb (void *data, Evas *e __UNUSED__,
    _gs_move_parts (obj, (Group*)(data));
 }
 
-Evas_Object *
+static Evas_Object *
 _gs_image_draw (Evas_Object *view_part, Group *group , Part *part,
 		Project *project)
 {
@@ -92,7 +86,7 @@ _gs_image_draw (Evas_Object *view_part, Group *group , Part *part,
    return _image;
 }
 
-Evas_Object *
+static Evas_Object *
 _gs_rect_draw (Evas_Object * view_part, Group *group, Part *part)
 {
    Evas_Object *_rectangle;
@@ -113,8 +107,182 @@ _gs_rect_draw (Evas_Object * view_part, Group *group, Part *part)
    evas_object_show (_rectangle);
    return _rectangle;
 }
+/*
+static char *
+_text_fit (Part *part, Evas_Object *text_obj, int _width)
+{
+   Evas_Coord _w = 0, _h = 0;
+   int uc1 = -1, uc2 = -1, c1 = -1, c2 = -1;
+   size_t length;
+   int l = 0, r = 0;
+   int pntr_pos = -1;
+   char *buf = NULL;
+   char *text;
+   int i=0, loop=0;
+   int extra = 6; *//*1 [terminator] + 2*3 [elipsis]*/
+ /*  Part_State *current_state = NULL;
+   current_state = EINA_INLIST_CONTAINER_GET (part->states, Part_State);
 
-Evas_Object *
+   length = strlen (current_state->text->text);
+   text = malloc (length);
+   strcpy (text, current_state->text->text);
+
+   evas_object_text_style_pad_get (text_obj, &l, &r, NULL, NULL);
+
+   _w = evas_object_text_horiz_advance_get (text_obj);
+   _h = evas_object_text_vert_advance_get (text_obj);
+
+   pntr_pos = ((_width - _w) * current_state->text->elipsis);
+   DBG ("l-pntr_pos [%d] _w [%d] h[%d] _width[%d]",(l- pntr_pos), _w, _h, _width);
+   if (_w > _width)
+     {
+        if (current_state->text->elipsis != 0.0)
+          uc1 = evas_object_text_last_up_to_pos (text_obj, l - pntr_pos, _h/2);
+
+        if (current_state->text->elipsis != 1.0)
+          {
+            if ((_width - pntr_pos - r) < 0)
+              uc1 = evas_object_text_last_up_to_pos (text_obj, 0, _h/2);
+            else
+              uc2 = evas_object_text_last_up_to_pos (text_obj, _width -
+                    pntr_pos - r, _h/2);
+          }
+
+        if ((uc1 < 0) && (uc2 < 0))
+          {
+             uc1 = 0;
+             uc2 = 0;
+          }
+     }
+   fprintf (stdout, "INFO: uc1[%d] uc2[%d]\n",uc1, uc2);
+   if (!(((uc1 >= 0) || (uc2 >= 0)) && (_w > _width)))
+     return text;
+
+   if ((uc1 == 0) && (uc2 == 0)) return text;
+
+   length = (length < ((size_t)8192 - extra)) ? length : ((size_t)8192 - extra);
+   if (!(buf = malloc (length + extra))) return text;
+    DBG ("length [%d]", (int)length);
+   i = 0;
+   if (uc1 >= 0)
+     {
+        c1 = 0;
+        for ( ; i < uc1 ; i++)
+          c1 = evas_string_char_next_get(text, c1, NULL);
+     }
+   if (uc2 >= 0)
+     {
+        if (c1 >= 0)
+          {
+             c2 = c1;
+          }
+        else c2 = 0;
+
+        for ( ; i < uc2 ; i++)
+          c2 = evas_string_char_next_get(text, c2, NULL);
+     }
+
+   buf[0] = '\0';
+
+
+   while (((c1 >= 0) || (c2 >= 0)) && (_w > _width))
+     {
+        loop++;
+        if (_width <= 0.0)
+          {
+             buf[0] = 0;
+             break;
+          }
+
+        if ((c1 >= 0) && (c2 >= 0))
+          {
+             if ((loop & 0x1))
+               {
+                  if (c1 >= 0)
+                    c1 = evas_string_char_next_get(text, c1, NULL);
+               }
+             else
+               {
+                  if (c2 >= 0)
+                    {
+                       c2 = evas_string_char_prev_get(text, c2, NULL);
+                       if (c2 < 0)
+                         {
+                            buf[0] = 0;
+                            break;
+                         }
+                    }
+               }
+          }
+        else
+          {
+             if (c1 >= 0)
+               c1 = evas_string_char_next_get(text, c1, NULL);
+             else if (c2 >= 0)
+               {
+                  c2 = evas_string_char_prev_get(text, c2, NULL);
+                  if (c2 < 0)
+                    {
+                       buf[0] = 0;
+                       break;
+                    }
+               }
+          }
+        if ((c1 >= 0) && (c2 >= 0))
+          {
+             if (c1 >= c2)
+               {
+                  buf[0] = 0;
+                  break;
+               }
+          }
+        else if ((c1 > 0 && (size_t) c1 >= length) || c2 == 0)
+          {
+             buf[0] = 0;
+             break;
+          }
+
+        buf[0] = 0;
+     }
+
+   fprintf (stdout, "INFO: uc1[%d] uc2[%d] c1[%d] c2[%d] \n",uc1, uc2, c1, c2);
+
+   if (c1 >= 0)
+     {
+        strcpy(buf, _ELLIP_STR);
+
+        if (c2 >= 0)
+          {
+             strncat(buf, text + c1, c2 - c1);
+             strcat(buf, _ELLIP_STR);
+          }
+        else
+          strcat(buf, text + c1);
+     }
+   else
+     {
+        if (c2 >= 0)
+          {
+             strncpy(buf, text, c2);
+             buf[c2] = 0;
+             strcat(buf, _ELLIP_STR);
+          }
+        else
+          strcpy(buf, text);
+     }
+   fprintf (stdout, "DEBUG:\nBuf: [%s]\n",buf);
+
+   fprintf (stdout, "Text: [%s]\n",text);
+   return buf;
+}*/
+/*
+static Evas_Object *
+_text_align (Part *part __UNUSED__)
+{
+ return NULL;
+}
+*/
+static Evas_Object *
 _gs_text_draw (Evas_Object * view_part, Group *group, Part *part)
 {
    Evas_Object *_text;
@@ -123,7 +291,6 @@ _gs_text_draw (Evas_Object * view_part, Group *group, Part *part)
    Part_State *_current_state = NULL;
    _current_state = EINA_INLIST_CONTAINER_GET (part->states, Part_State);
 
-
    canvas = evas_object_evas_get (view_part);
    edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
    _text = evas_object_text_add (canvas);
@@ -131,14 +298,22 @@ _gs_text_draw (Evas_Object * view_part, Group *group, Part *part)
                               _current_state->text->size);
    evas_object_text_text_set (_text, _current_state->text->text);
 
+   evas_object_color_set (_text, _current_state->color[0],
+                          _current_state->color[1],_current_state->color[2],
+                          _current_state->color[3]);
    evas_object_move (_text, x, y);
    evas_object_resize (_text, w, h);
-
    evas_object_show (_text);
+/**
+ * Ellipsis parametr of text will be relised when EVAS library 1.8 came.
+ * With method
+ * void evas_object_text_ellipsis_set 	(Evas_Object *obj, double ellipsis )
+ * http://docs.enlightenment.org/auto/efl/group__Evas__Object__Text.html#ga06da1d81bf84cfb6247791b4696125f9/
+ */
    return _text;
 }
 
-Evas_Object *
+static Evas_Object *
 _gs_spacer_draw (Evas_Object * view_part __UNUSED__,
                  Group *group __UNUSED__, Part *part __UNUSED__)
 {
@@ -166,7 +341,7 @@ _gs_spacer_draw (Evas_Object * view_part __UNUSED__,
    return _spacer;
 }
 
-Evas_Object *
+static Evas_Object *
 _gs_swallow_draw (Evas_Object * view_part __UNUSED__,
                  Group *group __UNUSED__, Part *part __UNUSED__)
 {
@@ -192,14 +367,14 @@ _gs_swallow_draw (Evas_Object * view_part __UNUSED__,
    return _swallow;
 }
 
-Evas_Object *
+static Evas_Object *
 _gs_textblock_draw (Evas_Object * view_part __UNUSED__,
                  Group *group __UNUSED__, Part *part __UNUSED__)
 {
    return NULL;
 }
 
-Evas_Object *
+static Evas_Object *
 _gs_group_part_draw (Evas_Object * view_part __UNUSED__,
                  Group *group __UNUSED__, Part *part __UNUSED__)
 {
@@ -207,34 +382,7 @@ _gs_group_part_draw (Evas_Object * view_part __UNUSED__,
 }
 
 
-void
-_gs_part_object_coord_get (const char* name, Group *group,
-			   int *x, int *y, int *x2, int *y2)
-{
-   int _x, _y, _w, _h;
-   Eina_Bool _find_part = EINA_FALSE;
-   Part *_part = NULL;
-   _x=_y=_w=_h=0;
-
-   EINA_INLIST_FOREACH (group->parts, _part)
-     {
-        if (!strcmp(_part->name, name))
-          {
-             evas_object_geometry_get (_part->obj, &_x, &_y, &_w, &_h);
-             _find_part = EINA_TRUE;
-             break;
-          }
-     }
-   if (_find_part)
-     {
-        if (x) {*x = _x;}
-        if (y) {*y = _y;}
-        if (x2) {*x2 = _w+_x;}
-        if (y2) {*y2 = _h+_y;}
-     }
-}
-
-void
+static void
 _gs_move_parts (Evas_Object *view_part , Group *group)
 {
    int x, y, w, h, x1, y1, w1, h1;
@@ -245,13 +393,13 @@ _gs_move_parts (Evas_Object *view_part , Group *group)
    evas_object_move (group->obj, x1, y1);
    EINA_INLIST_FOREACH (group->parts, _part)
      {
-        edje_object_part_geometry_get (group->obj, _part->name, &x, &y, &w, &h);
-        evas_object_move (_part->obj, x+x1, y+y1);
-        evas_object_resize (_part->obj, w, h);
+       edje_object_part_geometry_get (group->obj, _part->name, &x, &y, &w, &h);
+       evas_object_move (_part->obj, x+x1, y+y1);
+       evas_object_resize (_part->obj, w, h);
      }
 }
 
-void
+static void
 _gs_group_draw (Evas_Object *view_part , Group *group, App_Data *ap)
 {
    Part *_part = NULL;
