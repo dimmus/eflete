@@ -286,4 +286,18 @@ wm_widget_list_new(const char *file);
 Eina_Bool
 wm_widget_list_free(Eina_Inlist *widget_list);
 
+/**
+ * Find group object in widget list. Use full name of group.
+ *
+ * @param widget_list the Eina_Inlist list that contain wdgets structures.
+ * @param group_full_name the string full name of group.(with widget/class/style)
+ * @param e the Evas object.
+ * @param edj_file The string path edj sawp file.
+ * @return the group object.
+ *
+ */
+Evas_Object *
+wm_group_object_find (Eina_Inlist *widget_list, const char *group_full_name,
+		Evas *e, char *edj_file);
+
 #endif /* WIDGET_MANAGER_H */
