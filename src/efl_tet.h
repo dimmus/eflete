@@ -14,6 +14,7 @@
 #include "logger.h"
 #include "pm.h"
 #include "ui_workspace.h"
+#include "notify.h"
 
 struct _App_Data
 {

@@ -10,6 +10,7 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/logger
    ${CMAKE_CURRENT_SOURCE_DIR}/ui
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/workspace
+   ${CMAKE_CURRENT_SOURCE_DIR}/ui/notification
 )
 
 set(TET_CC_FILES
@@ -32,6 +33,7 @@ set(TET_CC_FILES
    ui/workspace/ui_popup.c
    ui/ui_style_viewer_window.c
    ui/workspace/ui_groupspace.c
+   ui/notification/notify.c
 )
 
 add_executable(${PROJECT_NAME} ${TET_CC_FILES})
