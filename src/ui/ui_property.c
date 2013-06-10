@@ -646,6 +646,9 @@ ui_prop_view_item_one_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit = elm_entry_add(item);
 	elm_entry_single_line_set(edit, EINA_TRUE);
+	elm_entry_single_line_set(edit, EINA_TRUE);
+        elm_entry_scrollable_set(edit, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data);
 	elm_object_text_set(edit, buffer);
 	elm_object_tooltip_text_set(edit, tooltip);
@@ -682,6 +685,9 @@ ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit1 = elm_entry_add(item);
 	elm_entry_single_line_set(edit1, EINA_TRUE);
+	elm_entry_single_line_set(edit1, EINA_TRUE);
+        elm_entry_scrollable_set(edit1, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data1);
 	elm_object_text_set(edit1, buffer);
 	elm_object_tooltip_text_set(edit1, tooltip1);
@@ -690,6 +696,9 @@ ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit2 = elm_entry_add(item);
 	elm_entry_single_line_set(edit2, EINA_TRUE);
+	elm_entry_single_line_set(edit2, EINA_TRUE);
+        elm_entry_scrollable_set(edit2, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data2);
 	elm_object_text_set(edit2, buffer);
 	elm_object_tooltip_text_set(edit2, tooltip2);
@@ -743,6 +752,9 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit1 = elm_entry_add(item);
 	elm_entry_single_line_set(edit1, EINA_TRUE);
+	elm_entry_single_line_set(edit1, EINA_TRUE);
+        elm_entry_scrollable_set(edit1, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data1);
 	elm_object_text_set(edit1, buffer);
 	elm_object_tooltip_text_set(edit1, tooltip);
@@ -751,6 +763,9 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit2 = elm_entry_add(item);
 	elm_entry_single_line_set(edit2, EINA_TRUE);
+	elm_entry_single_line_set(edit2, EINA_TRUE);
+        elm_entry_scrollable_set(edit2, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data2);
 	elm_object_text_set(edit2, buffer);
 	elm_object_tooltip_text_set(edit2, tooltip);
@@ -759,6 +774,9 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit3 = elm_entry_add(item);
 	elm_entry_single_line_set(edit3, EINA_TRUE);
+	elm_entry_single_line_set(edit3, EINA_TRUE);
+        elm_entry_scrollable_set(edit3, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit3, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data3);
 	elm_object_text_set(edit3, buffer);
 	elm_object_tooltip_text_set(edit3, tooltip);
@@ -767,6 +785,9 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
 
 	edit4 = elm_entry_add(item);
 	elm_entry_single_line_set(edit4, EINA_TRUE);
+	elm_entry_single_line_set(edit4, EINA_TRUE);
+        elm_entry_scrollable_set(edit4, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit4, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *data4);
 	elm_object_text_set(edit4, buffer);
 	elm_object_tooltip_text_set(edit4, tooltip);
@@ -796,6 +817,8 @@ ui_prop_view_item_one_edit_string_add(Evas_Object *prop, const char *name,
 
 	edit = elm_entry_add(item);
 	elm_entry_single_line_set(edit, EINA_TRUE);
+        elm_entry_scrollable_set(edit, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	elm_object_text_set(edit, data);
 	elm_object_tooltip_text_set(edit, tooltip);
 	evas_object_show(edit);
@@ -831,6 +854,9 @@ ui_prop_view_item_two_edit_string_add(Evas_Object *prop, const char *name,
 
 	edit1 = elm_entry_add(item);
 	elm_entry_single_line_set(edit1, EINA_TRUE);
+	elm_entry_single_line_set(edit1, EINA_TRUE);
+        elm_entry_scrollable_set(edit1, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	elm_object_text_set(edit1, data1);
 	elm_object_tooltip_text_set(edit1, tooltip1);
 	elm_object_part_content_set(content, "field1.swallow", edit1);
@@ -838,6 +864,9 @@ ui_prop_view_item_two_edit_string_add(Evas_Object *prop, const char *name,
 
 	edit2 = elm_entry_add(item);
 	elm_entry_single_line_set(edit2, EINA_TRUE);
+	elm_entry_single_line_set(edit2, EINA_TRUE);
+        elm_entry_scrollable_set(edit2, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	elm_object_text_set(edit2, data2);
 	elm_object_tooltip_text_set(edit2, tooltip2);
 	elm_object_part_content_set(content, "field2.swallow", edit2);
@@ -941,6 +970,9 @@ ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
 
 	edit = elm_entry_add(item);
 	elm_entry_single_line_set(edit, EINA_TRUE);
+	elm_entry_single_line_set(edit, EINA_TRUE);
+        elm_entry_scrollable_set(edit, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%f", *data);
 	elm_object_text_set(edit, buffer);
 	elm_object_tooltip_text_set(edit, tooltip);
@@ -978,6 +1010,9 @@ ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
 
 	edit1 = elm_entry_add(item);
 	elm_entry_single_line_set(edit1, EINA_TRUE);
+	elm_entry_single_line_set(edit1, EINA_TRUE);
+        elm_entry_scrollable_set(edit1, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%f", *data1);
 	elm_object_text_set(edit1, buffer);
 	elm_object_tooltip_text_set(edit1, tooltip1);
@@ -986,6 +1021,9 @@ ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
 
 	edit2 = elm_entry_add(item);
 	elm_entry_single_line_set(edit2, EINA_TRUE);
+	elm_entry_single_line_set(edit2, EINA_TRUE);
+        elm_entry_scrollable_set(edit2, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%f", *data2);
 	elm_object_text_set(edit2, buffer);
 	elm_object_tooltip_text_set(edit2, tooltip2);
@@ -1039,6 +1077,9 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
 
 	edit1 = elm_entry_add(item);
 	elm_entry_single_line_set(edit1, EINA_TRUE);
+	elm_entry_single_line_set(edit1, EINA_TRUE);
+        elm_entry_scrollable_set(edit1, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *r);
 	elm_object_text_set(edit1, buffer);
 	elm_object_tooltip_text_set(edit1, tooltip);
@@ -1047,6 +1088,9 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
 
 	edit2 = elm_entry_add(item);
 	elm_entry_single_line_set(edit2, EINA_TRUE);
+	elm_entry_single_line_set(edit2, EINA_TRUE);
+        elm_entry_scrollable_set(edit2, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *g);
 	elm_object_text_set(edit2, buffer);
 	elm_object_tooltip_text_set(edit2, tooltip);
@@ -1055,6 +1099,9 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
 
 	edit3 = elm_entry_add(item);
 	elm_entry_single_line_set(edit3, EINA_TRUE);
+	elm_entry_single_line_set(edit3, EINA_TRUE);
+        elm_entry_scrollable_set(edit3, EINA_TRUE);
+        elm_entry_scrollbar_policy_set(edit3, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	sprintf(buffer, "%d", *b);
 	elm_object_text_set(edit3, buffer);
 	elm_object_tooltip_text_set(edit3, tooltip);
