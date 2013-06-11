@@ -10,6 +10,54 @@
 
 #include "efl_tet.h"
 
+
+#define BUFFSIZE 1024
+
+/**
+ * @def NOTIFY_ERROR(obj, fmt, args ...)
+ *
+ * Show Error Notification with formated message
+ *
+ * @ingroup Notify
+ */
+#define NOTIFY_ERROR(obj, fmt, ...) \
+{ \
+	char *msg = calloc(BUFFSIZE, sizeof(char)); \
+	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
+	noti_error_show(obj, msg); \
+	free(msg); \
+}
+
+/**
+ * @def NOTIFY_WARNING(obj, fmt, args ...)
+ *
+ * Show Warning Notification with formated message
+ *
+ * @ingroup Notify
+ */
+#define NOTIFY_WARNING(obj, fmt, ...) \
+{ \
+	char *msg = calloc(BUFFSIZE, sizeof(char)); \
+	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
+	noti_warning_show(obj, msg); \
+	free(msg); \
+}
+
+/**
+ * @def NOTIFY_INFO(obj, fmt, args ...)
+ *
+ * Show Information Notification with formated message
+ *
+ * @ingroup Notify
+ */
+#define NOTIFY_INFO(obj, fmt, time, ...) \
+{ \
+	char *msg = calloc(BUFFSIZE, sizeof(char)); \
+	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
+	noti_info_show(obj, msg, time); \
+	free(msg); \
+}
+
 /**
  * Show notification with some 'error' related message.
  *

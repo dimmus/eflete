@@ -381,5 +381,5 @@ style_viewer_init (App_Data *ap)
         evas_object_show(inwin);
      }
    else
-     noti_error_show (ap->win, "EDJ/EDC file is not loaded");
+     NOTIFY_ERROR(ap->win, "EDJ/EDC file is not loaded");
 }
