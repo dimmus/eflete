@@ -38,7 +38,7 @@ noti_error_show (Evas_Object *obj, const char *message)
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set (layout, "information", entry);
-   elm_object_text_set(entry, format);
+   elm_object_text_set(entry, message);
    evas_object_show(entry);
 
    //2.3. add button for closing the error message

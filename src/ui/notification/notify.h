@@ -10,7 +10,6 @@
 
 #include "efl_tet.h"
 
-
 #define BUFFSIZE 1024
 
 /**
@@ -44,13 +43,13 @@
 }
 
 /**
- * @def NOTIFY_INFO(obj, fmt, args ...)
+ * @def NOTIFY_INFO(obj, time, fmt, args ...)
  *
  * Show Information Notification with formated message
  *
  * @ingroup Notify
  */
-#define NOTIFY_INFO(obj, fmt, time, ...) \
+#define NOTIFY_INFO(obj, time, fmt, ...) \
 { \
 	char *msg = calloc(BUFFSIZE, sizeof(char)); \
 	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \

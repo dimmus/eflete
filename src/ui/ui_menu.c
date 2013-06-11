@@ -18,7 +18,7 @@ _on_fs_edj_done (void *data, Evas_Object *obj, void *event_info)
      {
         if (eina_str_has_suffix(selected, ".edj"))
           {
-             INFO("Select file: %s", selected);
+             NOTIFY_INFO(ap->win, 3, "Select file: %s", selected);
              ap->project = pm_open_project_edj(selected);
              list = wm_widget_list_new(ap->project->swapfile);
              wd_list = ui_widget_list_add(ap, list);
@@ -29,8 +29,7 @@ _on_fs_edj_done (void *data, Evas_Object *obj, void *event_info)
              evas_object_hide(elm_object_parent_widget_get(obj));
           }
         else
-          /*TODO: add notify about a wrong file extension */
-          ERR("The file must have a extension '.edj'");
+          NOTIFY_ERROR(ap->win, "The file must have a extension '.edj'");
      }
    else
      {
