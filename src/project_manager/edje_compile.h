@@ -7,6 +7,7 @@
 
 #include <Eina.h>
 #include <Ecore.h>
+#include "logger.h"
 
 struct _Compiler_Message
 {

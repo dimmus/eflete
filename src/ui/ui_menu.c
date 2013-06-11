@@ -1,88 +1,30 @@
 #include "ui_main_window.h"
-#include "ui_widget_list.h"
+#include "choose_file_dialog.h"
 #include "ui_style_viewer_window.h"
 
 Eina_List *ui_list_menu;
 
 static void
-_on_fs_edj_done (void *data, Evas_Object *obj, void *event_info)
+_on_edc_open_menu(void *data, Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
-   Evas_Object *wd_list;
-   Eina_Inlist *list;
-   App_Data *ap;
-   const char *selected = event_info;
-
-   ap = (App_Data *)data;
-
-   if (selected)
-     {
-        if (eina_str_has_suffix(selected, ".edj"))
-          {
-             INFO("Select file: %s", selected);
-             ap->project = pm_open_project_edj(selected);
-             list = wm_widget_list_new(ap->project->swapfile);
-             wd_list = ui_widget_list_add(ap, list);
-             ui_block_widget_list_set(ap, wd_list);
-             evas_object_show(wd_list);
-             ui_panes_show(ap);
-
-             evas_object_hide(elm_object_parent_widget_get(obj));
-          }
-        else
-          /*TODO: add notify about a wrong file extension */
-          ERR("The file must have a extension '.edj'");
-     }
-   else
-     {
-        ui_panes_hide(ap);
-        evas_object_del(elm_object_parent_widget_get(obj));
-     }
-}
-
-void
-_open_dialog_show(void *data, Evas_Smart_Cb func)
-{
-   Evas_Object *inwin, *fs;
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-
-   inwin = elm_win_inwin_add(ap->win);
-
-   fs = elm_fileselector_add(inwin);
-   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_inwin_content_set(inwin, fs);
-   elm_fileselector_path_set(fs, getenv("HOME"));
-   elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
-   elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
-   evas_object_show(fs);
-
-   evas_object_smart_callback_add(fs, "done", func, ap);
-
-   evas_object_show(inwin);
+   App_Data *ap = (App_Data *)data;
+   open_edc_file(ap);
 }
 
 static void
 _on_edj_open_menu (void *data, Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-
-   _open_dialog_show(ap, _on_fs_edj_done);
+   App_Data *ap = (App_Data *)data;
+   open_edj_file(ap);
 }
 
 static void
 _on_exit_menu (void *data, Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-
+   App_Data *ap = (App_Data *)data;
    ui_main_window_del(ap);
 }
 
@@ -90,10 +32,7 @@ static void
 _on_style_window_menu (void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-
+   App_Data *ap = (App_Data *)data;
    style_viewer_init(ap);
 }
 
@@ -126,7 +65,8 @@ ui_menu_add (App_Data *ap)
    else
       ui_list_menu = eina_list_append(ui_list_menu, menu);
 
-   //elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file", _on_edc_open_menu, ud);
+   elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file",
+                     _on_edc_open_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
                      _on_edj_open_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
