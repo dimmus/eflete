@@ -66,7 +66,7 @@ _gs_image_draw (Evas_Object *view_part, Group *group , Part *part,
 
    err = evas_object_image_load_error_get(_image);
    if (err != EVAS_LOAD_ERROR_NONE)
-     WARN ("Could not load image. Error string is \"%s\"\n",
+     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
            evas_load_error_str(err));
 
    evas_object_move (_image, x, y);
@@ -322,19 +322,19 @@ _gs_spacer_draw (Evas_Object * view_part __UNUSED__,
    int x, y, w, h;
    Evas_Load_Error err;
 
-
    canvas = evas_object_evas_get (view_part);
-   _spacer = evas_object_image_filled_add (canvas);
+   _spacer = evas_object_image_add(canvas);
    evas_object_image_file_set (_spacer, TET_IMG_PATH"spacer.png", NULL);
-   evas_object_image_fill_set (_spacer, 0, 0, 30, 30);
+   evas_object_image_fill_set (_spacer, 2, 2, 10, 10);
    edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   err = evas_object_image_load_error_get(_spacer);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     WARN ("Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
-
    evas_object_move (_spacer, x, y);
    evas_object_resize (_spacer, w, h);
+   evas_object_image_fill_spread_set (_spacer, EVAS_TEXTURE_REPEAT);
+   err = evas_object_image_load_error_get(_spacer);
+   if (err != EVAS_LOAD_ERROR_NONE)
+     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
+           evas_load_error_str(err));
+
 
 
    evas_object_show (_spacer);
@@ -351,17 +351,18 @@ _gs_swallow_draw (Evas_Object * view_part __UNUSED__,
    Evas_Load_Error err;
 
    canvas = evas_object_evas_get (view_part);
-   _swallow = evas_object_image_filled_add (canvas);
+   _swallow = evas_object_image_add (canvas);
    evas_object_image_file_set (_swallow, TET_IMG_PATH"swallow.png", NULL);
-   evas_object_image_fill_set (_swallow, 5, 15, 10, 10);
+   evas_object_image_fill_set (_swallow, 2, 2, 10, 10);
    edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   err = evas_object_image_load_error_get(_swallow);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     WARN ("Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
-
    evas_object_move (_swallow, x, y);
    evas_object_resize (_swallow, w, h);
+   evas_object_image_fill_spread_set (_swallow, EVAS_TEXTURE_REPEAT);
+   err = evas_object_image_load_error_get(_swallow);
+   if (err != EVAS_LOAD_ERROR_NONE)
+     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
+           evas_load_error_str(err));
+
 
    evas_object_show (_swallow);
    return _swallow;

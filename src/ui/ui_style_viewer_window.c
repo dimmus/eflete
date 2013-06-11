@@ -72,21 +72,24 @@ _style_list_get(App_Data *ap)
    widgets = ap->project->widgets;
    if (!widgets)
      {
-        ERR("It seems that there is no widgets in project. \n");
+        NOTIFY_ERROR (ap->win,
+                         "It seems that there is no widgets in project. \n");
         return NULL;
      }
    _widget = EINA_INLIST_CONTAINER_GET(widgets, Widget);
    styles = _widget->styles;
    if (!styles)
      {
-        ERR("It seems that there is no styles in widget. \n");
+        NOTIFY_ERROR (ap->win,
+                         "It seems that there is no styles in project. \n");
         return NULL;
      }
    _style = EINA_INLIST_CONTAINER_GET(styles, Style);
    groups = _style->groups;
    if (!groups)
      {
-        ERR("It seems that there is no groups in style. \n");
+        NOTIFY_ERROR (ap->win,
+                         "It seems that there is no groups in project. \n");
         return NULL;
      }
 
@@ -377,4 +380,6 @@ style_viewer_init (App_Data *ap)
 
         evas_object_show(inwin);
      }
+   else
+     NOTIFY_ERROR (ap->win, "EDJ/EDC file is not loaded");
 }
