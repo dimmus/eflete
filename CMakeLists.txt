@@ -3,7 +3,7 @@ project(efl_tet C)
 
 set(VERMAJ 0)
 set(VERMIN 0)
-set(VERMIC 1)
+set(VERMIC 5)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "EFL Edje Edit Tool")
 

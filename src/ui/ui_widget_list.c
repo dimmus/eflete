@@ -74,6 +74,26 @@ _item_style_label_get(void *data,
      }
    return strdup(st->style_name);
 }
+static void
+_navi_group_clear(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Group *group = (Group *)data;
+   ui_groupspace_clear (group);
+}
+
+static void
+_navi_groupspace_del(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ap->ws->groupspace)
+     ui_groupspace_del(ap->ws->groupspace);
+   else
+     WARN ("Groupspace object always delete");
+}
 
 static void
 _navi_gl_styles_pop(void *data,
@@ -227,6 +247,8 @@ _on_group_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, ap);
+   evas_object_smart_callback_add(bt, "clicked", _navi_groupspace_del, ap);
+   evas_object_smart_callback_add(bt, "clicked", _navi_group_clear, _group);
 
    elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
 

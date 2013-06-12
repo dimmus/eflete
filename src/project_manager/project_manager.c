@@ -16,7 +16,7 @@ _on_copy_error_cb(void *data,
                   int error)
 {
    char *file_name = (char *)data;
-   ERR("Copy file '%s' is failed. Something wrong has happend:%s\n",
+   ERR("Copy file '%s' is failed. Something wrong has happend: %s\n",
        file_name, strerror(error));
    ecore_main_loop_quit();
 }
@@ -35,10 +35,8 @@ pm_free(Project *project)
    free(project->image_directory);
    free(project->font_directory);
    free(project->sound_directory);
-   if(project->compiler)
-        compiler_free(project->compiler);
-   if(project->decompiler)
-        decompiler_free(project->decompiler);
+   if (project->compiler) compiler_free(project->compiler);
+   if (project->decompiler) decompiler_free(project->decompiler);
 
    wm_widget_list_free(project->widgets);
 
@@ -48,35 +46,18 @@ pm_free(Project *project)
    return EINA_TRUE;
 }
 
-Project *
-pm_project_add(const char *path,
+static Project *
+pm_project_add(const char *name,
+               const char *path,
                const char *id, /* image directory */
                const char *fd, /* font directory */
                const char *sd  /* sound directory */)
 {
    Project *pro;
    char *tmp = NULL;
-   char tmp_path[PATH_MAX];
-   Eina_Array *array;
-   size_t siz, siz_tmp_path;
-   int i, j;
 
    pro = calloc(1, sizeof(*pro));
-
-   array = eina_file_split(strdup(path));
-   i = eina_array_count(array);
-   eina_strlcpy(tmp_path, "/", sizeof("/"));
-   for (j = 0; j < i - 1; j++)
-     {
-        eina_strlcat(tmp_path, eina_array_data_get(array, j), PATH_MAX);
-        eina_strlcat(tmp_path, "/", PATH_MAX);
-     }
-   DBG("%s", tmp_path);
-   siz_tmp_path = strlen(tmp_path);
-
-   /* set project name */
-   pro->name = strdup(eina_array_data_get(array, i - 1));
-   eina_array_free(array);
+   pro->name = strdup(name);
    DBG ("Project name: '%s'", pro->name);
 
    /* set path to edc */
@@ -85,9 +66,7 @@ pm_project_add(const char *path,
    /* FIXME: A substirng '.edj' can meet in the middle of the path */
    tmp = strstr(pro->edc, ".edj");
    if (tmp != NULL)
-     {
-        strncpy(tmp, ".edc", 4);
-     }
+     strncpy(tmp, ".edc", 4);
    tmp = NULL;
 
    /* set path to edj */
@@ -96,85 +75,49 @@ pm_project_add(const char *path,
    /* FIXME: A substring '.edc' can meet in the middle of the path */
    tmp = strstr(pro->edj, ".edc");
    if (tmp != NULL)
-     {
-        strncpy(tmp, ".edj", 4);
-     }
+     strncpy(tmp, ".edj", 4);
+
    tmp = NULL;
    DBG ("Path to edc-file: '%s'", pro->edc);
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
-   siz = siz_tmp_path + strlen(".swapfile_") + strlen(pro->name);
-   pro->swapfile = calloc(siz, sizeof(char));
-   eina_strlcat(pro->swapfile, tmp_path, PATH_MAX);
-   eina_strlcat(pro->swapfile, ".swapfile_", PATH_MAX);
-   eina_strlcat(pro->swapfile, pro->name, PATH_MAX);
+   pro->swapfile = calloc(strlen(pro->edj) + 6, sizeof(char));
+   strcpy(pro->swapfile, pro->edj);
+   strncat(pro->swapfile, ".swap", 5);
    DBG ("Path to swap file: '%s'", pro->swapfile);
 
    /* set path to image directory */
-   if (id)
-     {
-        pro->image_directory = strdup(id);
-     }
-   /* set default path to image directory */
-   else
-     {
-        siz = siz_tmp_path + strlen("images/") + 1;
-        pro->image_directory = calloc(siz, sizeof(char));
-        eina_strlcat(pro->image_directory, tmp_path, PATH_MAX);
-        eina_strlcat(pro->image_directory, "images/", PATH_MAX);
-     }
+   pro->image_directory = id ? strdup(id) : NULL;
    DBG ("Path to image direcotory: '%s'", pro->image_directory);
 
    /* set path to font directory */
-   if (fd)
-     {
-        pro->font_directory = strdup(fd);
-     }
-   /* set default path to font direcotry */
-   else
-     {
-        siz = siz_tmp_path + strlen("fonts/") + 1;
-        pro->font_directory = calloc(siz, sizeof(char));
-        eina_strlcat(pro->font_directory, tmp_path, PATH_MAX);
-        eina_strlcat(pro->font_directory, "fonts/", PATH_MAX);
-     }
+   pro->font_directory = fd ? strdup(fd) : NULL;
    DBG("Path to font direcotory: '%s'", pro->font_directory);
 
    /* set default path to sound directory */
-   if (sd)
-     {
-        pro->sound_directory = strdup(sd);
-     }
-   else
-     {
-        siz = siz_tmp_path + strlen("sounds/") + 1;
-        pro->sound_directory = calloc(siz, sizeof(char));
-        eina_strlcat(pro->sound_directory, tmp_path, PATH_MAX);
-        eina_strlcat(pro->sound_directory, "sounds/", PATH_MAX);
-     }
+   pro->sound_directory = sd ? strdup(sd) : NULL;
    DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
-   pro->widgets = wm_widget_list_new(pro->edj);
+   pro->compiler = NULL;
+   pro->decompiler = NULL;
 
    return pro;
 }
 
 Project *
-pm_open_project_edc(const char *path,
+pm_open_project_edc(const char *name,
+                    const char *path,
                     const char *image_directory,
                     const char *font_directory,
                     const char *sound_directory)
 {
    Project *project;
 
-   if(!path)
-     {
-        ERR("Can not open project path is NULL!");
-        return NULL;
-     }
+   if (!path) return NULL;
 
-   project = pm_project_add(path,
+   project = pm_project_add(name,
+                            path,
                             image_directory,
                             font_directory,
                             sound_directory);
@@ -192,11 +135,14 @@ pm_open_project_edc(const char *path,
         ecore_main_loop_begin();
      }
 
+   project->widgets = wm_widget_list_new(project->swapfile);
+
    return project;
 }
 
 Project *
-pm_open_project_edj(const char *path)
+pm_open_project_edj(const char *name,
+                    const char *path)
 {
    Project *project;
 
@@ -207,10 +153,11 @@ pm_open_project_edj(const char *path)
      }
 
    INFO("Open project! Path to project: '%s'.", path);
-   project = pm_project_add(path, NULL, NULL, NULL);
+   project = pm_project_add(name, path, NULL, NULL, NULL);
    eio_file_copy(project->edj, project->swapfile, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
+   project->widgets = wm_widget_list_new(project->swapfile);
    INFO("Project '%s' is open!", project->name);
 
    return project;

@@ -18,10 +18,17 @@ void
 ui_groupspace_add (App_Data *ap, Group *group);
 
 /**
- * Delete groupspace object.
- * in: obj Groupspace object.
- * in: group Group object, need to know what part objects must deleted.
+ * Delete groupspace object. Before call this method need clear all part objects.
+ * @param obj Groupspace object.
  */
 void
-ui_groupspace_del (Evas_Object *obj, Group *group);
+ui_groupspace_del (Evas_Object *obj);
+
+/**
+ * Clear groupspace object. Its method delete all Evas_Objects for painted part's
+ * @param group Group object, need to know what part objects must deleted.
+ */
+void
+ui_groupspace_clear(Group *group);
+
 #endif /* UI_GROUPSPACE_HEADER_H */

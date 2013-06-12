@@ -14,12 +14,14 @@
 #include "logger.h"
 #include "pm.h"
 #include "ui_workspace.h"
+#include "notify.h"
 
 struct _App_Data
 {
 	Evas_Object *win;
 	Evas_Object *win_layout;
 	Evas_Object *main_menu;
+   Evas_Object *inwin;
 	struct {
 		Evas_Object *left_top;
 		Evas_Object *left_bottom;

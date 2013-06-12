@@ -48,7 +48,8 @@ typedef struct _Project Project;
  *
  */
 Project *
-pm_open_project_edc(const char *path,
+pm_open_project_edc(const char *name,
+                    const char *path,
                     const char *image_directory,
                     const char *font_directory,
                     const char *sound_direcotory);
@@ -62,7 +63,8 @@ pm_open_project_edc(const char *path,
  * @ingroup ProjectManager
  */
 Project *
-pm_open_project_edj(const char *path);
+pm_open_project_edj(const char *name,
+                    const char *path);
 
 /**
  *

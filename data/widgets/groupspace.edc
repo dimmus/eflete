@@ -7,8 +7,8 @@ group {
             state: "default" 0.0;
             min: 20 20;
             max: 20 20;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
+            rel1.relative: 0.1 0.1;
+            rel2.relative: 0.9 0.9;
             align: 0 0;
             image {
                normal: "desktop_resize_handler_up.png";
@@ -26,8 +26,8 @@ group {
             state: "default" 0.0;
             min: 20 20;
             max: 20 20;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
+            rel1.relative: 0.1 0.1;
+            rel2.relative: 0.9 0.9;
             align: 1 1;
             image {
                normal: "desktop_resize_handler_down.png";
