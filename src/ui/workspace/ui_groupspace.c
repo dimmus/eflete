@@ -166,13 +166,14 @@ _gs_text_draw(Evas_Object *view_part, Group *group, Part *part)
    canvas = evas_object_evas_get(view_part);
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
    _text = evas_object_text_add(canvas);
-   evas_object_text_font_set(_text, _current_state->text->font,
-      _current_state->text->size);
 
    if (!_current_state->text->text)
      evas_object_text_text_set(_text, part->name);
    else
      evas_object_text_text_set(_text, _current_state->text->text);
+
+   evas_object_text_font_set(_text, _current_state->text->font,
+      _current_state->text->size);
 
    evas_object_color_set(_text, _current_state->color[0],
       _current_state->color[1], _current_state->color[2],
@@ -262,13 +263,37 @@ _gs_group_part_draw(App_Data *ap, Group *group, Part *part)
    return _group;
 }
 
+static void
+_gs_text_part_geometry_recalc(Part *part, int *x, int *y, int *w, int *h)
+{
+   int _text_size = 0;
+   Part_State *_current_state =
+      EINA_INLIST_CONTAINER_GET(part->states, Part_State);
+   if (_current_state->text->align_x == 0.5)
+     {
+        if (!_current_state->text->text) _text_size = strlen(part->name);
+        else _text_size =  strlen(_current_state->text->text);
+     }
+   *x += *w * _current_state->text->align_x +
+      _current_state->rel1_offset_x -
+      (_text_size * _current_state->text->size) / 4;
+   *y += *h * _current_state->text->align_y +
+      _current_state->rel1_offset_y - _current_state->text->size;
+   *w = *w - _current_state->rel2_offset_x -
+      *w * _current_state->text->align_x;
+   *h = *h - _current_state->rel2_offset_y -
+      *h * _current_state->text->align_y +
+      _current_state->text->size;
+   if (*x < 0) *x *= (-1);
+   if (*h < _current_state->text->size)
+     *h = _current_state->text->size + 5;
+}
 
 static void
 _gs_move_parts(Evas_Object *view_part , Group *group)
 {
    int x, y, w, h, x1, y1, w1, h1;
    Part *_part = NULL;
-   Part_State *_current_state = NULL;
 
    evas_object_geometry_get(view_part, &x1, &y1, &w1, &h1);
    evas_object_resize(group->obj, w1, h1);
@@ -277,24 +302,11 @@ _gs_move_parts(Evas_Object *view_part , Group *group)
      {
         if (_part->obj)
           {
-             edje_object_part_geometry_get(group->obj, _part->name, &x, &y, &w, &h);
+             edje_object_part_geometry_get(group->obj, _part->name,
+                &x, &y, &w, &h);
              if (_part->type == EDJE_PART_TYPE_TEXT)
-               {
-                  _current_state = EINA_INLIST_CONTAINER_GET(_part->states,
-                                                        Part_State);
-                  x += w * _current_state->text->align_x +
-                      _current_state->rel1_offset_x;
-                  y += h * _current_state->text->align_y +
-                     _current_state->rel1_offset_y - _current_state->text->size;
-                  w = w - _current_state->rel2_offset_x -
-                               w * _current_state->text->align_x;
-                  h = h - _current_state->rel2_offset_y -
-                               h * _current_state->text->align_y;
-                  if (x < 0) x *= (-1);
-                  if (h < _current_state->text->size)
-                       h = _current_state->text->size + 5;
-               }
-             evas_object_move(_part->obj, x+x1, y+y1);
+               _gs_text_part_geometry_recalc(_part, &x, &y, &w, &h);
+             evas_object_move(_part->obj, x + x1, y + y1);
              evas_object_resize(_part->obj, w, h);
           }
      }
