@@ -2,7 +2,6 @@
 #define UI_MAIN_WINDOW_HEADER_H
 
 #include "efl_tet.h"
-#include "pm.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"

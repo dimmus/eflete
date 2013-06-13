@@ -14,6 +14,15 @@ typedef struct _fs_entries fs_entries;
 static fs_entries *fs_ent = NULL;
 
 static void
+_on_group_clicked(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         const char *emission __UNUSED__,
+                         const char *source __UNUSED__)
+{
+   ERR("sdfgsdfklhgjdfg!!!!!GBVKHSBGVJKSD");
+}
+
+static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *wd_list;
@@ -28,7 +37,10 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
           {
              INFO("Select file: %s", selected);
              ap->project = pm_open_project_edj(selected, selected);
-             wd_list = ui_widget_list_add(ap, ap->project->widgets);
+             wd_list = ui_widget_list_add(ap->win);
+             ui_widget_list_title_set(wd_list, ap->project->name);
+             ui_widget_list_data_set(wd_list, ap->project);
+      elm_object_signal_callback_add(wd_list, "select", "", _on_group_clicked, NULL);
              ui_block_widget_list_set(ap, wd_list);
              evas_object_show(wd_list);
              ui_panes_show(ap);
@@ -94,7 +106,9 @@ _on_ok_cb(void *data,
                                           path_id,
                                           path_sd,
                                           path_fd);
-        wd_list = ui_widget_list_add(ap, ap->project->widgets);
+        wd_list = ui_widget_list_add(ap->win);
+        ui_widget_list_title_set(wd_list, ap->project->name);
+        ui_widget_list_data_set(wd_list, ap->project);
         ui_block_widget_list_set(ap, wd_list);
         evas_object_show(wd_list);
         ui_panes_show(ap);

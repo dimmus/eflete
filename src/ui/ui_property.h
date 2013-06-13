@@ -2,8 +2,8 @@
 #define UI_PROPERTY_H
 
 #include "efl_tet.h"
-#include "pm.h"
 #include <Elementary.h>
+#include "widget_manager.h"
 
 /**
  *

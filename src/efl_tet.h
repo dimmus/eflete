@@ -12,7 +12,7 @@
 #include <Efreet.h>
 #include <Elementary.h>
 #include "logger.h"
-#include "pm.h"
+#include "project_manager.h"
 #include "ui_workspace.h"
 #include "notify.h"
 
@@ -33,7 +33,7 @@ struct _App_Data
 	} block;
 
 	Workspace *ws;
-	Project *project;
+   Project *project;
 };
 
 typedef struct _App_Data App_Data;
