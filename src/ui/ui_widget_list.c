@@ -5,6 +5,20 @@ static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_group = NULL;
 static Elm_Genlist_Item_Class *_itc_part = NULL;
 
+static inline Elm_Object_Item *
+_widget_list_get(Evas_Object *naviframe)
+{
+   Eina_List *items;
+   Elm_Object_Item *item_gl_widgets;
+
+   items = elm_naviframe_items_get(naviframe);
+   item_gl_widgets = eina_list_data_get(eina_list_last(items));
+
+   eina_list_free(items);
+   return item_gl_widgets;
+}
+
+
 static char *
 _item_part_label_get(void *data,
                      Evas_Object *obj __UNUSED__,
@@ -113,7 +127,6 @@ _navi_gl_parts_pop(void *data,
                    void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
-
    elm_naviframe_item_pop(nf);
 }
 
@@ -131,9 +144,11 @@ _on_group_clicked_double(void *data,
    Part *_part;
 
    nf = elm_object_parent_widget_get(obj);
-   elm_object_signal_emit(nf, "select", "");
-
    _group = elm_object_item_data_get(glit);
+
+   elm_object_signal_emit(nf, "group,select", "group");
+
+
    if (_group->__type != GROUP)
      return;
    if (!_group->obj)
@@ -177,6 +192,12 @@ _on_group_clicked_double(void *data,
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
 
    elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+
+ /*  <<<<<<< Updated upstream
+=======
+
+   ui_groupspace_add (ap->project, ap->ws, _group);
+>>>>>>> Stashed changes*/
 }
 
 static void
@@ -236,15 +257,12 @@ _on_widget_clicked_double(void *data,
         EINA_INLIST_FOREACH(groups, _group)
           {
              glit_group = elm_genlist_item_append(gl_styles, _itc_group,
-                                                  _group,
-                                                  glit_style, ELM_GENLIST_ITEM_NONE,
-                                                  NULL, NULL);
+                             _group, glit_style, ELM_GENLIST_ITEM_NONE,
+                             NULL, NULL);
              elm_object_item_data_set(glit_group, _group);
           }
      }
 
-   evas_object_smart_callback_add(gl_styles, "clicked,double",
-                                  _on_group_clicked_double, project);
 
    ic = elm_icon_add(nf);
    elm_icon_standard_set(ic, "arrow_left");
@@ -254,21 +272,10 @@ _on_widget_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
-
+   evas_object_smart_callback_add(gl_styles, "clicked,double",
+                                  _on_group_clicked_double, project);
    elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
-}
 
-static inline Elm_Object_Item *
-_widget_list_get(Evas_Object *naviframe)
-{
-   Eina_List *items;
-   Elm_Object_Item *item_gl_widgets;
-
-   items = elm_naviframe_items_get(naviframe);
-   item_gl_widgets = eina_list_data_get(eina_list_last(items));
-
-   eina_list_free(items);
-   return item_gl_widgets;
 }
 
 Evas_Object *

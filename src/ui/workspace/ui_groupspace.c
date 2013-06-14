@@ -1,15 +1,6 @@
 #include "ui_groupspace.h"
 
 /*Prototypes functions for internal use*/
-static Evas_Object *
-_gs_rect_draw(Evas_Object * _view_part, Group *group, Part *part);
-
-static void
-_gs_group_draw(Evas_Object *view_part, Group *group, App_Data *ap);
-
-static Evas_Object *
-_gs_group_part_draw(App_Data *ap, Group *group, Part *part);
-
 static void
 _gs_move_parts(Evas_Object *view_part, Group *group);
 
@@ -109,8 +100,7 @@ _gs_rect_draw(Evas_Object *view_part, Group *group, Part *part)
 }
 
 static Evas_Object *
-_gs_textblock_draw(Evas_Object * view_part, Group *group, Part *part,
-                   Project *project __UNUSED__)
+_gs_textblock_draw(Evas_Object * view_part, Group *group, Part *part)
 {
    Evas_Object *_textblock = NULL;
    Evas *_canvas = NULL;
@@ -248,14 +238,14 @@ _gs_swallow_draw(Evas_Object * view_part, Group *group, Part *part )
 }
 
 static Evas_Object *
-_gs_group_part_draw(App_Data *ap, Group *group, Part *part)
+_gs_group_part_draw(Project *project, Workspace *ws, Group *group, Part *part)
 {
    int x, y, w, h;
    Evas_Object *_group = NULL;
 
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   _group = wm_group_object_find(ap->project->widgets, part->source,
-               ap->ws->canvas, ap->project->swapfile);
+   _group = wm_group_object_find(project->widgets, part->source,
+               ws->canvas, project->swapfile);
    evas_object_move(_group, x, y);
    evas_object_resize(_group, w, h);
    evas_object_show(_group);
@@ -280,10 +270,11 @@ _gs_text_part_geometry_recalc(Part *part, int *x, int *y, int *w, int *h)
    *y += *h * _current_state->text->align_y +
       _current_state->rel1_offset_y - _current_state->text->size;
    *w = *w - _current_state->rel2_offset_x -
-      *w * _current_state->text->align_x;
-   *h = *h - _current_state->rel2_offset_y -
-      *h * _current_state->text->align_y +
-      _current_state->text->size;
+      *w * _current_state->text->align_x
+      /*_text_size * _current_state->text->size*/;
+   *h = /**h - _current_state->rel2_offset_y -
+      *h * _current_state->text->align_y +*/
+      _current_state->text->size + 5;
    if (*x < 0) *x *= (-1);
    if (*h < _current_state->text->size)
      *h = _current_state->text->size + 5;
@@ -313,7 +304,8 @@ _gs_move_parts(Evas_Object *view_part , Group *group)
 }
 
 static void
-_gs_group_draw(Evas_Object *view_part , Group *group, App_Data *ap)
+_gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
+               Project *project)
 {
    Part *_part = NULL;
    Evas_Object *_part_object = NULL;
@@ -322,7 +314,7 @@ _gs_group_draw(Evas_Object *view_part , Group *group, App_Data *ap)
         if (_part->type == EDJE_PART_TYPE_RECTANGLE)
           _part_object=_gs_rect_draw(view_part, group, _part);
         if (_part->type == EDJE_PART_TYPE_IMAGE)
-          _part_object = _gs_image_draw(view_part, group, _part, ap->project);
+          _part_object = _gs_image_draw(view_part, group, _part, project);
         if (_part->type == EDJE_PART_TYPE_TEXT)
           _part_object = _gs_text_draw(view_part, group, _part);
         if (_part->type == EDJE_PART_TYPE_SPACER)
@@ -330,21 +322,21 @@ _gs_group_draw(Evas_Object *view_part , Group *group, App_Data *ap)
         if (_part->type == EDJE_PART_TYPE_SWALLOW)
           _part_object = _gs_swallow_draw(view_part, group, _part);
         if (_part->type == EDJE_PART_TYPE_GROUP)
-          _part_object = _gs_group_part_draw(ap, group, _part);
+          _part_object = _gs_group_part_draw(project, ws, group, _part);
         if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          _part_object = _gs_textblock_draw(view_part, group, _part, ap->project);
+          _part_object = _gs_textblock_draw(view_part, group, _part);
 
         evas_object_event_callback_add(_part_object, EVAS_CALLBACK_MOUSE_MOVE,
-                                       _gs_mouse_move_cb, ap->ws);
+                                       _gs_mouse_move_cb, ws);
         _part->obj = _part_object;
      }
 }
 
 void
-ui_groupspace_add(App_Data *ap, Group *group)
+ui_groupspace_add(Project *project, Workspace *ws, Group *group)
 {
-   Evas_Object *parent = ap->block.canvas;
-   Evas_Object *_groupspace = NULL;;
+   Evas_Object *parent = elm_object_parent_widget_get(ws->bg);
+   Evas_Object *_groupspace = NULL;
    Evas_Object *_part_view = NULL;
 
    _groupspace = elm_layout_add(parent);
@@ -359,14 +351,14 @@ ui_groupspace_add(App_Data *ap, Group *group)
    evas_object_show(_part_view);
 
    evas_object_event_callback_add(_groupspace, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _gs_mouse_move_cb, ap->ws);
+                                  _gs_mouse_move_cb, ws);
 
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
-                                    _gs_resize_cb, ap->ws);
+                                    _gs_resize_cb, ws);
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
                                     _gs_resize_parts_cb, group );
-   ap->ws->groupspace = _groupspace;
-   _gs_group_draw(_part_view, group, ap);
+   ws->groupspace = _groupspace;
+   _gs_group_draw(_part_view, group, ws, project);
 }
 
 void

@@ -15,12 +15,22 @@ static fs_entries *fs_ent = NULL;
 
 static void
 _on_group_clicked(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+                         Evas_Object *obj,
                          const char *emission __UNUSED__,
-                         const char *source __UNUSED__)
+                         const char *source)
 {
-   ERR("sdfgsdfklhgjdfg!!!!!GBVKHSBGVJKSD");
+   ERR("\n\n_on_group_clicked. Source [%s]. Pointer [%p].\n\n", source, obj);
 }
+
+static void
+_on_widget_clicked(void *data __UNUSED__,
+                         Evas_Object *obj,
+                         const char *emission __UNUSED__,
+                         const char *source)
+{
+   ERR("\n\n_on_widjet_clicked. Source [%s]. Pointer [%p].\n\n", source, obj);
+ }
+
 
 static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
@@ -28,7 +38,6 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
    Evas_Object *wd_list;
    App_Data *ap;
    const char *selected = event_info;
-
    ap = (App_Data *)data;
 
    if (selected)
@@ -40,8 +49,15 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
              ui_widget_list_data_set(wd_list, ap->project);
-      elm_object_signal_callback_add(wd_list, "select", "", _on_group_clicked, NULL);
              ui_block_widget_list_set(ap, wd_list);
+
+
+             elm_object_signal_callback_add(wd_list, "group,select", "group",
+                                            _on_group_clicked, ap);
+             elm_object_signal_callback_add(wd_list, "group,select", "styles",
+                                            _on_widget_clicked, ap);
+
+             DBG ("\nNaviframe pointer [%p]", wd_list);
              evas_object_show(wd_list);
              ui_panes_show(ap);
           }
