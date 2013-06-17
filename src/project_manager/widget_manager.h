@@ -6,7 +6,6 @@
 #include <Eina.h>
 #include <Ecore_Evas.h>
 #include <Edje_Edit.h>
-#include <string.h>
 #include "logger.h"
 
 

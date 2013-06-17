@@ -2,7 +2,6 @@
 #define UI_MAIN_WINDOW_HEADER_H
 
 #include "efl_tet.h"
-#include "pm.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
@@ -18,10 +17,10 @@ ui_main_window_add (App_Data *ap);
 
 /**
  * Delete main window object for Edje tool development.
- * in: 
+ *
  */
 void
-ui_main_window_del (App_Data *ap);
+ui_main_window_del();
 
 /**
  * Adds marked panes to the given Elementary layout.

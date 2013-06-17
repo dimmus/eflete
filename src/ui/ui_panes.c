@@ -44,7 +44,7 @@ Evas_Object *panes;
 UI_Current_State_Panes *
 _ui_panes_current_state_struct_init (void)
 {
-	UI_Current_State_Panes *csp = calloc (1,sizeof(UI_Current_State_Panes));
+	UI_Current_State_Panes *csp = mem_malloc (sizeof(UI_Current_State_Panes));
 	csp->panes_left.left_size = 0;
 	csp->panes_left.right_size = 0;
 
@@ -279,8 +279,8 @@ ui_panes_add (App_Data *ap)
 		panes id == 1.
 	*/
 
-	int *_panes_id_center = calloc(1,sizeof(int));
-	int *_panes_id_left = calloc(1,sizeof(int));
+	int *_panes_id_center = mem_malloc(sizeof(int));
+	int *_panes_id_left = mem_malloc(sizeof(int));
 	*_panes_id_center=0;
 	*_panes_id_left=1;
 

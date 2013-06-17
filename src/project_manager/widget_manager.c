@@ -1,4 +1,5 @@
 #include "widget_manager.h"
+#include "alloc.h"
 
 static char **arr;
 static char tmp[PATH_MAX];
@@ -41,7 +42,7 @@ wm_part_state_text_add(Evas_Object *obj,
 {
    if (!obj || !part_name || !state) return;
 
-   state->text = calloc(1, sizeof(Part_State_Text));
+   state->text = mem_malloc(sizeof(Part_State_Text));
 
    state->text->text =
       edje_edit_state_text_get(obj, part_name, state->name, state->value);
@@ -84,7 +85,7 @@ wm_part_state_image_add(Evas_Object *obj,
 
    if (!obj || !part_name || !state) return;
 
-   image = calloc(1, sizeof(Part_State_Image));
+   image = mem_malloc(sizeof(Part_State_Image));
 
    image->normal_image =
       edje_edit_state_image_get(obj, part_name, state->name, state->value);
@@ -149,7 +150,7 @@ wm_part_states_add(Evas_Object *obj, Part *part)
 
    EINA_LIST_FOREACH(states, l, state)
      {
-        new_state = calloc(1, sizeof(Part_State));
+        new_state = mem_malloc(sizeof(Part_State));
 
         /* State has format "NAME X.X" we need to extract NAME and double value separately */
         /* Split source name on 2 strings */
@@ -278,7 +279,7 @@ wm_part_add(Evas_Object *obj, const char *part_name)
 
    if (!part_name || !obj) return NULL;
 
-   result = calloc(1, sizeof(Part));
+   result = mem_calloc(1, sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part_name);
@@ -340,7 +341,7 @@ wm_program_add(Evas_Object* obj, const char* program_name)
 
    if (!obj || !program_name) return NULL;
 
-   program = calloc(1, sizeof(Program));
+   program = mem_malloc(sizeof(Program));
 
    program->name = eina_stringshare_add(program_name);
    program->source = edje_edit_program_source_get(obj, program_name);
@@ -422,7 +423,7 @@ wm_group_add(const char *group_name, const char *full_group_name)
 
    if (!full_group_name || !group_name) return NULL;
 
-   group_edje = calloc(1, sizeof(Group));
+   group_edje = mem_calloc(1, sizeof(Group));
    group_edje->group_name = strdup(group_name);
    group_edje->full_group_name = strdup(full_group_name);
    group_edje->obj = NULL;
@@ -523,7 +524,7 @@ wm_style_add(const char *style, Eina_List *groups)
 
    if (!style || !groups) return NULL;
 
-   style_edje = calloc(1, sizeof(*style_edje));
+   style_edje = mem_calloc(1, sizeof(*style_edje));
    style_edje->style_name = strdup(style);
    style_edje->groups = NULL;
    style_edje->__type = STYLE;
@@ -599,7 +600,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 
    if (!widget) return NULL;
 
-   _widget = calloc(1, sizeof(*_widget));
+   _widget = mem_calloc(1, sizeof(*_widget));
    _widget->widget_name = strdup(widget);
    _widget->styles = NULL;
    _widget->__type = WIDGET;

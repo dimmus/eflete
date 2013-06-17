@@ -1,4 +1,5 @@
 #include "edje_compile.h"
+#include "alloc.h"
 
 static void
 compiler_message_clear(Eina_Inlist *list)
@@ -31,12 +32,12 @@ exe_data(void *data __UNUSED__,
    ev = event;
    messages = (Eina_Inlist *)data;
 
-   if(ev->lines)
+   if (ev->lines)
      {
-        int i = 0;
+        int i;
         for (i = 0; ev->lines[i].line; i++)
           {
-             message = calloc(1, sizeof(*message));
+             message = mem_malloc(sizeof(*message));
              message->time = time(NULL);
              message->text = strdup(ev->lines[i].line);
              messages = eina_inlist_append(messages, EINA_INLIST_GET(message));
@@ -74,7 +75,7 @@ compile(const char *edc,
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
    INFO("Start compile project: %s.", edc);
 
-   edjecc = calloc(1, sizeof(*edjecc));
+   edjecc = mem_malloc(sizeof(*edjecc));
    edjecc->messages = NULL;
    size = strlen(edc) + strlen(edj) +
       strlen(image_directory) + strlen(font_directory) +
@@ -106,7 +107,7 @@ decompile(char *edj, char *edc)
       ECORE_EXE_PIPE_ERROR |
       ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
 
-   edjedecc = calloc(1, sizeof(*edjedecc));
+   edjedecc = mem_malloc(sizeof(*edjedecc));
    edjedecc->messages = NULL;
    if (!edc)
      {
