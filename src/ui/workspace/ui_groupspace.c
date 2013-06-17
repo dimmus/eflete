@@ -1,5 +1,10 @@
 #include "ui_groupspace.h"
 
+#define GS_VIEWPART_KEY "gs_viewpart_key"
+#define GS_GROUP_KEY "gs_group_key"
+#define GS_WS_KEY "gs_workspace_key"
+#define GS_PROJECT_KEY "gs_project_key"
+
 /*Prototypes functions for internal use*/
 static void
 _gs_move_parts(Evas_Object *view_part, Group *group);
@@ -332,8 +337,8 @@ _gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
      }
 }
 
-void
-ui_groupspace_add(Project *project, Workspace *ws, Group *group)
+Evas_Object *
+ui_groupspace_add(Workspace *ws, Project *project, Group *group)
 {
    Evas_Object *parent = elm_object_parent_widget_get(ws->bg);
    Evas_Object *_groupspace = NULL;
@@ -357,25 +362,42 @@ ui_groupspace_add(Project *project, Workspace *ws, Group *group)
                                     _gs_resize_cb, ws);
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
                                     _gs_resize_parts_cb, group );
-   ws->groupspace = _groupspace;
-   _gs_group_draw(_part_view, group, ws, project);
+   evas_object_data_set(_groupspace, GS_VIEWPART_KEY, _part_view);
+   evas_object_data_set(_groupspace, GS_GROUP_KEY, group);
+   evas_object_data_set(_groupspace, GS_WS_KEY, ws);
+   evas_object_data_set(_groupspace, GS_PROJECT_KEY, project);
+
+   return _groupspace;
+}
+
+void
+ui_groupspace_update (Evas_Object *obj)
+{
+   Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
+   Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
+   Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
+   Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
+
+   _gs_group_draw(view_part, group, ws, project);
 }
 
 void
 ui_groupspace_del(Evas_Object *obj)
 {
-    if (obj) evas_object_del(obj);
-   obj=NULL;
-}
-
-void
-ui_groupspace_clear(Group *group)
-{
    Part *_part = NULL;
+   Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
 
    EINA_INLIST_FOREACH(group->parts, _part)
      {
         if (_part->obj) evas_object_del(_part->obj);
-        _part->obj=NULL;
+   //     _part->obj=NULL;
      }
+   evas_object_data_del(obj, GS_WS_KEY);
+   evas_object_data_del(obj, GS_GROUP_KEY);
+   evas_object_data_del(obj, GS_VIEWPART_KEY);
+   evas_object_data_del(obj, GS_PROJECT_KEY);
+
+   if (obj) evas_object_del(obj);
+   obj=NULL;
 }
+

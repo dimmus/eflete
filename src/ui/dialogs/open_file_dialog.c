@@ -14,23 +14,86 @@ typedef struct _fs_entries fs_entries;
 static fs_entries *fs_ent = NULL;
 
 static void
-_on_group_clicked(void *data __UNUSED__,
-                         Evas_Object *obj,
-                         const char *emission __UNUSED__,
-                         const char *source)
+_on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED__)
 {
-   ERR("\n\n_on_group_clicked. Source [%s]. Pointer [%p].\n\n", source, obj);
+   App_Data *ap = (App_Data *)data;
+
+   if (ap->ws->groupspace)
+     ui_groupspace_del(ap->ws->groupspace);
+  else
+     WARN ("Groupspace object always delete");
+
 }
 
 static void
-_on_widget_clicked(void *data __UNUSED__,
-                         Evas_Object *obj,
-                         const char *emission __UNUSED__,
-                         const char *source)
+_on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
 {
-   ERR("\n\n_on_widjet_clicked. Source [%s]. Pointer [%p].\n\n", source, obj);
- }
 
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_data;
+   Evas_Object *prop, *part_prop, *gl_states;
+   App_Data *ap = (App_Data *)data;
+   Part *_part;
+
+   ap = (App_Data *)data;
+   _part = elm_object_item_data_get(glit);
+   prop = ui_block_property_get(ap);
+   if (!prop)
+     {
+        ERR("Property view is missing!");
+        return;
+     }
+
+   part_prop = ui_prop_part_info_view_add(prop, _part);
+   ui_property_part_view_set(prop, part_prop);
+   evas_object_show(part_prop);
+
+   gl_states = ui_states_list_add(ap, _part);
+   ui_block_state_list_set(ap, gl_states);
+   evas_object_show(gl_states);
+
+   /* FIXME: it bad */
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+
+   ui_object_highlight_set(ap->ws, _part->obj);
+}
+static void
+_on_group_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_data)
+{
+   App_Data *ap = (App_Data *)data;
+   Group *_group = (Group *)event_data;
+   Evas_Object *gl_signals = NULL;
+   Evas_Object *prop = NULL;
+   Evas_Object *group_prop = NULL;
+   Eina_List *signals = NULL;
+
+   /* Get signals list of a group and show them */
+   signals = wm_program_signals_list_get(_group->programs);
+   gl_signals = ui_signal_list_add(ap, signals);
+   wm_program_signals_list_free(signals);
+   ui_block_signal_list_set(ap, gl_signals);
+
+   /* group properties */
+   prop = ui_block_property_get(ap);
+   if (prop)
+     {
+        ui_prop_group_info_view_update(prop, _group);
+        evas_object_show(prop);
+     }
+   else
+     {
+        prop = ui_property_view_new(ap->win);
+        ui_block_property_set(ap, prop);
+        evas_object_show(prop);
+
+        group_prop = ui_prop_group_info_view_add(prop, _group);
+        ui_property_group_view_set(prop, group_prop);
+        evas_object_show(group_prop);
+     }
+   ap->ws->groupspace = ui_groupspace_add (ap->ws, ap->project, _group);
+   ui_groupspace_update (ap->ws->groupspace);
+}
 
 static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
@@ -51,13 +114,15 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
              ui_widget_list_data_set(wd_list, ap->project);
              ui_block_widget_list_set(ap, wd_list);
 
-
-             elm_object_signal_callback_add(wd_list, "group,select", "group",
+             evas_object_smart_callback_add(wd_list, "group,select",
                                             _on_group_clicked, ap);
-             elm_object_signal_callback_add(wd_list, "group,select", "styles",
-                                            _on_widget_clicked, ap);
 
-             DBG ("\nNaviframe pointer [%p]", wd_list);
+             evas_object_smart_callback_add(wd_list, "part,select",
+                                            _on_part_selected, ap);
+
+             evas_object_smart_callback_add(wd_list, "part,back",
+                                            _on_part_back, ap);
+
              evas_object_show(wd_list);
              ui_panes_show(ap);
           }

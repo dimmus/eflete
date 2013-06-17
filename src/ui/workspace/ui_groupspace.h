@@ -17,39 +17,42 @@
 #include <Eina.h>
 #include "widget_manager.h"
 
+/**
+   FIXME add comment!
+  */
 #define _ELLIP_STR "\xE2\x80\xA6"
 
 /**
  * Add new groupspace object into workspace.
  *
- * @param project pointer to Project structure.
  * @param ws pointer to Workspace structure.
+ * @param project pointer to Project structure.
  * @param group Group structure wich contain group. This group will be painted.
+ * @return Pointer to groupspace Evas_Object.
  *
  * @ingroup Groupspace
  */
-void
-ui_groupspace_add(Project *project, Workspace *ws, Group *group);
+Evas_Object *
+ui_groupspace_add(Workspace *ws, Project *project, Group *group);
 
 /**
  * Delete groupspace object. Before call this method need clear all part objects.
  *
  * @param obj Groupspace object.
  *
- * @ingroup Groupsp
- ace
+ * @ingroup Groupspace
  */
 void
 ui_groupspace_del (Evas_Object *obj);
 
 /**
- * Clear groupspace object. Its method delete all Evas_Objects for painted part's
+ * Update view parts on groupspace. Need to draw/redraw states of parts.
  *
- * @param group Group object, need to know what part objects must deleted.
+ * @param obj Groupspace object.
  *
  * @ingroup Groupspace
  */
 void
-ui_groupspace_clear(Group *group);
+ui_groupspace_update (Evas_Object *obj);
 
 #endif /* UI_GROUPSPACE_HEADER_H */

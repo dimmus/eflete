@@ -76,7 +76,6 @@ _separate_on_click (void *data __UNUSED__,
         ui_ruler_step_relative_set (ws->ruler_hor ,0.5);
         ui_ruler_step_relative_set (ws->ruler_ver ,0.5);
      }
-   elm_object_signal_emit (ws->ruler_hor, "test", "ws");
 }
 
 static void
@@ -121,13 +120,6 @@ _ws_mouse_move_cb (void *data, Evas *e,
    evas_pointer_output_xy_get (e, &x, &y);
    ui_ruler_pointer_pos_set (ws->ruler_hor, x);
    ui_ruler_pointer_pos_set (ws->ruler_ver, y);
-}
-
-static void
-_test_cb(void *data __UNUSED__, Evas_Object *obj,
-          const char *emission __UNUSED__, const char *source)
-{
-   ERR("\nTest callback.\nObject pointer[%p] source [%s]", obj, source);
 }
 
 Workspace *
@@ -207,8 +199,6 @@ ws_add (Evas_Object *parent)
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
                                   _ws_mouse_click_cb, ws);
 
-   elm_object_signal_callback_add (_ruler_hor, "test", "ws", _test_cb, NULL);
-
    return ws;
 }
 
@@ -235,7 +225,6 @@ _ws_init (void)
 void
 ui_object_highlight_set(Workspace *ws, Evas_Object *part)
 {
-   DBG ("\nstart SET highlight");
    if ((!ws) || (!part) ) return;
 
    if (ws->highlight.highlight)
@@ -253,7 +242,6 @@ ui_object_highlight_set(Workspace *ws, Evas_Object *part)
                                   _ws_mouse_move_cb, ws);
 
    evas_object_show(ws->highlight.highlight);
-   DBG ("\nend SET highlight\n");
 
 }
 
@@ -261,7 +249,6 @@ void
 ui_object_highlight_move(Workspace *ws)
 {
    int x, y, w, h;
-   DBG ("\nstart MOVE highlight");
 
    if (!ws) return;
    if ((!ws->highlight.obj) || (!ws->highlight.highlight)) return;
@@ -269,18 +256,13 @@ ui_object_highlight_move(Workspace *ws)
    evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_resize(ws->highlight.highlight, w, h);
-   DBG ("\nend MOVE highlight");
-
 }
 
 void
 ui_object_highlight_hide(Workspace *ws)
 {
-   DBG ("\n\nstart HIDE highlight");
    if(!ws) return;
 
    ws->highlight.obj = NULL;
    evas_object_del(ws->highlight.highlight);
-   DBG ("\nend HIDE highlight");
-
 }

@@ -108,15 +108,5 @@ ui_panes_show(App_Data *ap);
 void
 ui_panes_hide(App_Data *ap);
 
-/**
- * Adds Workspace object to main window.
- *
- * @param ap The App_Data structure pointer.
- *
- * @ingroup Window
- */
-void
-ui_workspace_add(App_Data *ap);
-
 #endif	/* UI_MAIN_WINDOW_HEADER_H */
 

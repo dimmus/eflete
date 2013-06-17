@@ -7,7 +7,6 @@
  * This widget inherits from the Naviframe and Genlist.
  *
  * This widget emits the following signals:
- * @li "wl,widget,select": the user double clicked on the widget name
  * @li "wl,group,select": the user double clicked on the group name
  * @li "wl,group,back"
  * @li "wl,part,select"

@@ -130,6 +130,17 @@ _ui_panes_current_state_get(void)
         _shift_size = 0;
      }
 
+   /*	Check for minimal size to workspace. 300x300px. */
+   if (ui_csp->panes_right.left_size < 300)
+     {
+        int _shift_size = 0;
+        _shift_size = 300 - ui_csp->panes_right.left_size;
+        ui_csp->panes_right.left_size = 300;
+        ui_csp->panes_right.right_size -= _shift_size;
+        _need_resize = EINA_TRUE;
+        _shift_size = 0;
+     }
+
    _panes = elm_object_part_content_get(_panes_temp, "right");
    size_get = elm_panes_content_left_size_get(_panes);
    ui_csp->panes_center_down.left_size=
@@ -437,10 +448,4 @@ void
 ui_panes_hide(App_Data *ap)
 {
    elm_object_signal_emit(ap->win_layout, "window,panes,hide", "");
-}
-
-void
-ui_workspace_add(App_Data *ap)
-{
-   ap->ws = ws_add(ap->block.canvas);
 }
