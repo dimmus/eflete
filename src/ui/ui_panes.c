@@ -259,7 +259,6 @@ ui_panes_settings_load()
    ui_settings_load();
    _ui_panes_current_state_get ();
 }
-
 Eina_Bool
 ui_panes_add(App_Data *ap)
 {
@@ -401,7 +400,7 @@ void
 ui_panes_show(App_Data *ap)
 {
    elm_object_signal_emit(ap->win_layout, "window,panes,show", "");
-}
+ }
 
 void
 ui_panes_hide(App_Data *ap)
