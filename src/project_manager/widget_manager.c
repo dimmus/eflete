@@ -279,7 +279,7 @@ wm_part_add(Evas_Object *obj, const char *part_name)
 
    if (!part_name || !obj) return NULL;
 
-   result = mem_calloc(1, sizeof(Part));
+   result = mem_malloc(sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part_name);
@@ -304,6 +304,7 @@ wm_part_add(Evas_Object *obj, const char *part_name)
    result->drag_count_y = edje_edit_part_drag_count_y_get(obj, part_name);
    result->drag_confine = edje_edit_part_drag_confine_get(obj, part_name);
    result->drag_event = edje_edit_part_drag_event_get(obj, part_name);
+   result->states = NULL;
 
    wm_part_states_add(obj, result);
 
@@ -423,7 +424,7 @@ wm_group_add(const char *group_name, const char *full_group_name)
 
    if (!full_group_name || !group_name) return NULL;
 
-   group_edje = mem_calloc(1, sizeof(Group));
+   group_edje = mem_malloc(sizeof(Group));
    group_edje->group_name = strdup(group_name);
    group_edje->full_group_name = strdup(full_group_name);
    group_edje->obj = NULL;
@@ -524,7 +525,7 @@ wm_style_add(const char *style, Eina_List *groups)
 
    if (!style || !groups) return NULL;
 
-   style_edje = mem_calloc(1, sizeof(*style_edje));
+   style_edje = mem_malloc(sizeof(*style_edje));
    style_edje->style_name = strdup(style);
    style_edje->groups = NULL;
    style_edje->__type = STYLE;
@@ -600,7 +601,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 
    if (!widget) return NULL;
 
-   _widget = mem_calloc(1, sizeof(*_widget));
+   _widget = mem_malloc(sizeof(*_widget));
    _widget->widget_name = strdup(widget);
    _widget->styles = NULL;
    _widget->__type = WIDGET;
