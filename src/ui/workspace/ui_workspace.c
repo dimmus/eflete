@@ -1,6 +1,9 @@
 #include <ui_workspace.h>
 #include <efl_tet.h>
 
+Evas_Object *
+ui_groupspace_add(Evas_Object *parent);
+
 Workspace *
 _ws_init (void);
 
@@ -193,6 +196,8 @@ ws_add (Evas_Object *parent)
    _popup = ui_popup_add (parent, ws);
    ws->popup = _popup;
 
+   ws->groupspace = ui_groupspace_add(parent);
+
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
 
@@ -218,6 +223,7 @@ _ws_init (void)
    ws->button_separate = NULL;
    ws->groupspace = NULL;
    ws->highlight.highlight = NULL;
+   ws->highlight.obj = NULL;
 
    return ws;
 }
@@ -233,7 +239,6 @@ ui_object_highlight_set(Workspace *ws, Evas_Object *part)
    ws->highlight.highlight = elm_label_add(ws->groupspace);
    elm_layout_file_set(ws->highlight.highlight, TET_EDJ,
                             "base/groupspace/part/hightlight");
-
    ws->highlight.obj = part;
    evas_object_raise(ws->highlight.highlight);
    ui_object_highlight_move(ws);
@@ -243,6 +248,7 @@ ui_object_highlight_set(Workspace *ws, Evas_Object *part)
 
    evas_object_show(ws->highlight.highlight);
 
+
 }
 
 void
@@ -250,8 +256,7 @@ ui_object_highlight_move(Workspace *ws)
 {
    int x, y, w, h;
 
-   if (!ws) return;
-   if ((!ws->highlight.obj) || (!ws->highlight.highlight)) return;
+   if ((!ws)) return;
 
    evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
    evas_object_move(ws->highlight.highlight, x, y);
@@ -263,6 +268,5 @@ ui_object_highlight_hide(Workspace *ws)
 {
    if(!ws) return;
 
-   ws->highlight.obj = NULL;
-   evas_object_del(ws->highlight.highlight);
+   evas_object_hide(ws->highlight.highlight);
 }

@@ -19,7 +19,10 @@ _on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED
    App_Data *ap = (App_Data *)data;
 
    if (ap->ws->groupspace)
-     ui_groupspace_del(ap->ws->groupspace);
+     {
+        ui_groupspace_unset(ap->ws->groupspace);
+        ui_object_highlight_hide (ap->ws);
+     }
   else
      WARN ("Groupspace object always delete");
 
@@ -36,6 +39,11 @@ _on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
 
    ap = (App_Data *)data;
    _part = elm_object_item_data_get(glit);
+   if (!_part)
+     {
+        ERR("Coud not get acess to part object");
+        return;
+     }
    prop = ui_block_property_get(ap);
    if (!prop)
      {
@@ -91,8 +99,9 @@ _on_group_clicked(void *data,
         ui_property_group_view_set(prop, group_prop);
         evas_object_show(group_prop);
      }
-   ap->ws->groupspace = ui_groupspace_add (ap->ws, ap->project, _group);
-   ui_groupspace_update (ap->ws->groupspace);
+
+   ui_groupspace_set (ap->ws, ap->project, _group);
+//   ui_groupspace_update (ap->ws->groupspace);
 }
 
 static void

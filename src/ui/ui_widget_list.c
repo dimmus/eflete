@@ -117,7 +117,6 @@ _on_part_select(void *data __UNUSED__,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Evas_Object *nf = elm_object_parent_widget_get(obj);
    evas_object_smart_callback_call (nf, "part,select", glit);
-   elm_object_signal_emit(nf, "part,select", "part");
 }
 
 static void

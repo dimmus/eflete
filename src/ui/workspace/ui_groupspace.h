@@ -25,25 +25,35 @@
 /**
  * Add new groupspace object into workspace.
  *
- * @param ws pointer to Workspace structure.
- * @param project pointer to Project structure.
- * @param group Group structure wich contain group. This group will be painted.
+ * @param parent The parent Evas_Object .
  * @return Pointer to groupspace Evas_Object.
  *
  * @ingroup Groupspace
  */
 Evas_Object *
-ui_groupspace_add(Workspace *ws, Project *project, Group *group);
+ui_groupspace_add(Evas_Object *parent);
 
 /**
- * Delete groupspace object. Before call this method need clear all part objects.
+ * Set group data to groupspace object.
+ *
+ * @param ws pointer to Workspace structure.
+ * @param project pointer to Project structure.
+ * @param group Group structure wich contain group. This group will be painted.
+ *
+ * @ingroup Groupspace
+ */
+void
+ui_groupspace_set(Workspace *ws, Project *project, Group *group);
+
+/**
+ * Unset group data from groupspace object.
  *
  * @param obj Groupspace object.
  *
  * @ingroup Groupspace
  */
 void
-ui_groupspace_del (Evas_Object *obj);
+ui_groupspace_unset (Evas_Object *obj);
 
 /**
  * Update view parts on groupspace. Need to draw/redraw states of parts.

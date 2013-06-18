@@ -46,7 +46,7 @@ _gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
 		Project *project)
 {
    Evas_Load_Error err;
-   Evas_Object *_image = NULL;
+   Evas_Object *_image;
    Evas *canvas = NULL;
    char buf[4096];
    int x, y, w, h;
@@ -85,12 +85,14 @@ _gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
 static Evas_Object *
 _gs_rect_draw(Evas_Object *view_part, Group *group, Part *part)
 {
-   Evas_Object *_rectangle = NULL;
+   Evas_Object *_rectangle;
    Evas *canvas = NULL;
    int x, y, w, h;
-   Part_State *_current_state = NULL;
-   _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
+   Part_State *_current_state =
+                        EINA_INLIST_CONTAINER_GET(part->states, Part_State);
    canvas = evas_object_evas_get(view_part);
+   if (!canvas)
+     ERR ("Coud not to take canvas");
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
 
    _rectangle = evas_object_rectangle_add(canvas);
@@ -275,11 +277,8 @@ _gs_text_part_geometry_recalc(Part *part, int *x, int *y, int *w, int *h)
    *y += *h * _current_state->text->align_y +
       _current_state->rel1_offset_y - _current_state->text->size;
    *w = *w - _current_state->rel2_offset_x -
-      *w * _current_state->text->align_x
-      /*_text_size * _current_state->text->size*/;
-   *h = /**h - _current_state->rel2_offset_y -
-      *h * _current_state->text->align_y +*/
-      _current_state->text->size + 5;
+      *w * _current_state->text->align_x;
+   *h = _current_state->text->size + 5;
    if (*x < 0) *x *= (-1);
    if (*h < _current_state->text->size)
      *h = _current_state->text->size + 5;
@@ -304,7 +303,9 @@ _gs_move_parts(Evas_Object *view_part , Group *group)
                _gs_text_part_geometry_recalc(_part, &x, &y, &w, &h);
              evas_object_move(_part->obj, x + x1, y + y1);
              evas_object_resize(_part->obj, w, h);
-          }
+         }
+        else
+          ERR ("Part does not exist.");
      }
 }
 
@@ -317,7 +318,7 @@ _gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
    EINA_INLIST_FOREACH(group->parts, _part)
      {
         if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-          _part_object=_gs_rect_draw(view_part, group, _part);
+          _part_object = _gs_rect_draw(view_part, group, _part);
         if (_part->type == EDJE_PART_TYPE_IMAGE)
           _part_object = _gs_image_draw(view_part, group, _part, project);
         if (_part->type == EDJE_PART_TYPE_TEXT)
@@ -331,43 +332,51 @@ _gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
         if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
           _part_object = _gs_textblock_draw(view_part, group, _part);
 
-        evas_object_event_callback_add(_part_object, EVAS_CALLBACK_MOUSE_MOVE,
-                                       _gs_mouse_move_cb, ws);
-        _part->obj = _part_object;
+        if (_part_object)
+          {
+             evas_object_event_callback_add(_part_object,
+                                            EVAS_CALLBACK_MOUSE_MOVE,
+                                            _gs_mouse_move_cb, ws);
+             _part->obj = _part_object;
+          }
+        else
+          ERR ("Part object did'n create");
      }
 }
 
 Evas_Object *
-ui_groupspace_add(Workspace *ws, Project *project, Group *group)
+ui_groupspace_add(Evas_Object *parent)
 {
-   Evas_Object *parent = elm_object_parent_widget_get(ws->bg);
    Evas_Object *_groupspace = NULL;
-   Evas_Object *_part_view = NULL;
 
    _groupspace = elm_layout_add(parent);
 
-   elm_object_part_content_set(parent, "base/workspace/groupspace"
-      ,_groupspace);
+   elm_object_part_content_set(parent, "base/workspace/groupspace", _groupspace);
    elm_layout_file_set(_groupspace, TET_EDJ, "base/groupspace");
 
-   _part_view = elm_layout_add(_groupspace);
-   elm_object_part_content_set(_groupspace,"base/groupspace/groupspace",
-      _part_view);
-   evas_object_show(_part_view);
+   return _groupspace;
+}
 
-   evas_object_event_callback_add(_groupspace, EVAS_CALLBACK_MOUSE_MOVE,
+void
+ui_groupspace_set(Workspace *ws, Project *project, Group *group)
+{
+   Evas_Object *_part_view = elm_layout_add(ws->groupspace);
+   evas_object_data_set(ws->groupspace, GS_VIEWPART_KEY, _part_view);
+   elm_object_part_content_set(ws->groupspace, "base/groupspace/groupspace",
+                               _part_view);
+
+
+   evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
 
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
                                     _gs_resize_cb, ws);
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
-                                    _gs_resize_parts_cb, group );
-   evas_object_data_set(_groupspace, GS_VIEWPART_KEY, _part_view);
-   evas_object_data_set(_groupspace, GS_GROUP_KEY, group);
-   evas_object_data_set(_groupspace, GS_WS_KEY, ws);
-   evas_object_data_set(_groupspace, GS_PROJECT_KEY, project);
-
-   return _groupspace;
+                                    _gs_resize_parts_cb, group);
+   evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
+   evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
+   evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
+   ui_groupspace_update (ws->groupspace);
 }
 
 void
@@ -377,27 +386,26 @@ ui_groupspace_update (Evas_Object *obj)
    Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
    Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
    Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
-
    _gs_group_draw(view_part, group, ws, project);
+   evas_object_show(obj);
 }
 
 void
-ui_groupspace_del(Evas_Object *obj)
+ui_groupspace_unset(Evas_Object *obj)
 {
    Part *_part = NULL;
-   Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
+   Group *group = evas_object_data_get(obj, GS_GROUP_KEY);
+   Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
+   Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
+   elm_object_part_content_unset(ws->groupspace, "base/groupspace/groupsace");
 
    EINA_INLIST_FOREACH(group->parts, _part)
      {
-        if (_part->obj) evas_object_del(_part->obj);
-   //     _part->obj=NULL;
+       // if (_part->obj)
+          evas_object_hide(_part->obj);
      }
-   evas_object_data_del(obj, GS_WS_KEY);
-   evas_object_data_del(obj, GS_GROUP_KEY);
-   evas_object_data_del(obj, GS_VIEWPART_KEY);
-   evas_object_data_del(obj, GS_PROJECT_KEY);
 
-   if (obj) evas_object_del(obj);
-   obj=NULL;
+   evas_object_hide (view_part);
+   evas_object_hide (ws->groupspace);
 }
 
