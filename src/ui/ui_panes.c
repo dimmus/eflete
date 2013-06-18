@@ -196,7 +196,7 @@ _double_click_up_cb(void * data __UNUSED__,
                      Evas_Object *obj,
                      void *event_info __UNUSED__)
 {
-   static double _size = 0.0;
+   static volatile double _size = 0.0;
    if (elm_panes_content_left_size_get(obj) > 0)
      {
         _size = elm_panes_content_left_size_get(obj);
@@ -211,27 +211,38 @@ _double_click_up_cb(void * data __UNUSED__,
 }
 
 static void
-_double_click_down_cb(void * data,
+_double_click_left_panes_down_cb(void * data __UNUSED__,
                        Evas_Object *obj,
                        void *event_info __UNUSED__)
 {
-   static double _size[2] = {0.0 , 0.0};
-   int *_number = (int*)data;
+   static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
      {
-        _size[*_number]=elm_panes_content_right_size_get(obj);
+        _size = elm_panes_content_right_size_get(obj);
         elm_panes_content_right_size_set(obj, 0.0);
      }
    else
      {
-        if (!_size[*_number])
-          {
-             if (!*_number)
-               _size[*_number] = 0.2;
-             else
-               _size[*_number] = 0.4;
-          }
-        elm_panes_content_right_size_set(obj, _size[*_number]);
+        if (!_size) _size = 0.4;
+        elm_panes_content_right_size_set(obj, _size);
+     }
+}
+
+static void
+_double_click_center_panes_down_cb(void * data __UNUSED__,
+                       Evas_Object *obj,
+                       void *event_info __UNUSED__)
+{
+   static volatile double _size = 0.0;
+   if (elm_panes_content_right_size_get(obj) > 0)
+     {
+        _size=elm_panes_content_right_size_get(obj);
+        elm_panes_content_right_size_set(obj, 0.0);
+     }
+   else
+     {
+        if (!_size) _size = 0.2;
+        elm_panes_content_right_size_set(obj, _size);
      }
 }
 
@@ -256,33 +267,16 @@ ui_panes_add(App_Data *ap)
    Evas_Object *panes_left, *panes_left_hor, *panes_right;
    Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
 
-   /*
-      _panes_id_center and panes_id_left needs for identify pans in callback
-      for double click mouse button. For center panes id == 0, and for left
-      panes id == 1.
-    */
-
-   int *_panes_id_center = calloc(1, sizeof(int));
-   int *_panes_id_left = calloc(1, sizeof(int));
-   *_panes_id_center = 0;
-   *_panes_id_left = 1;
-
    us = ui_element_settings_init();
-   if (!us){
+   if (!us)
+     {
         NOTIFY_ERROR (ap->win, "ERROR: unable initialize settings module");
-        free(_panes_id_center);
-        free(_panes_id_left);
         return EINA_FALSE;
-   }
+     }
    ui_csp =_ui_panes_current_state_struct_init();
 
    panes_left = elm_panes_add(ap->win_layout);
-   if (panes_left == NULL)
-     {
-        free(_panes_id_center);
-        free(_panes_id_left);
-        return EINA_FALSE;
-     }
+   if (panes_left == NULL) return EINA_FALSE;
    evas_object_size_hint_weight_set(panes_left,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left,
@@ -292,12 +286,7 @@ ui_panes_add(App_Data *ap)
    elm_object_part_content_set(ap->win_layout, "swallow/panes", panes_left);
 
    panes_left_hor = elm_panes_add(ap->win_layout);
-   if (panes_left_hor == NULL)
-     {
-        free(_panes_id_center);
-        free(_panes_id_left);
-        return EINA_FALSE;
-     }
+   if (panes_left_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_left_hor, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_left_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -307,12 +296,7 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_left_hor, 0.45);
 
    panes_right = elm_panes_add(ap->win_layout);
-   if (panes_right == NULL)
-     {
-        free(_panes_id_center);
-        free(_panes_id_left);
-        return EINA_FALSE;
-     }
+   if (panes_right == NULL) return EINA_FALSE;
    evas_object_size_hint_weight_set(panes_right,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right,
@@ -321,12 +305,7 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_right, 0.75);
 
    panes_right_hor = elm_panes_add(ap->win_layout);
-   if (panes_right_hor == NULL)
-     {
-        free(_panes_id_center);
-        free(_panes_id_left);
-        return EINA_FALSE;
-     }
+   if (panes_right_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_right_hor, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_right_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -336,12 +315,7 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_right_hor, 0.45);
 
    panes_center = elm_panes_add(ap->win_layout);
-   if (panes_center == NULL)
-     {
-        free(_panes_id_center);
-        free(_panes_id_left);
-        return EINA_FALSE;
-     }
+   if (panes_center == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_center, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_center,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -351,12 +325,7 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_center, 0.65);
 
    panes_center_down = elm_panes_add(ap->win_layout);
-   if (panes_center_down == NULL)
-     {
-        free(_panes_id_center);
-        free(_panes_id_left);
-        return EINA_FALSE;
-     }
+   if (panes_center_down == NULL) return EINA_FALSE;
    evas_object_size_hint_weight_set(panes_center_down,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center_down,
@@ -378,12 +347,13 @@ ui_panes_add(App_Data *ap)
    evas_object_smart_callback_add(panes_center,"unpress",_unpress_cb, NULL);
    evas_object_smart_callback_add(panes_center_down,"unpress",
                                   _unpress_cb, NULL);
-   evas_object_smart_callback_add(panes_right_hor, "clicked,double",
+
+   evas_object_smart_callback_add(us->panes_right_hor, "clicked,double",
                                   _double_click_up_cb, NULL);
    evas_object_smart_callback_add(panes_left_hor, "clicked,double",
-                                  _double_click_down_cb, _panes_id_left);
+                                 _double_click_left_panes_down_cb, NULL);
    evas_object_smart_callback_add(panes_center, "clicked,double",
-                                  _double_click_down_cb, _panes_id_center);
+                                _double_click_center_panes_down_cb, NULL);
 
 
    block = ui_block_add(ap->win_layout);
@@ -423,9 +393,6 @@ ui_panes_add(App_Data *ap)
    elm_object_part_content_set(panes_right_hor, "right", block);
    evas_object_show(block);
    ap->block.right_bottom = block;
-
-   free(_panes_id_center);
-   free(_panes_id_left);
 
    return EINA_TRUE;
 }
