@@ -182,15 +182,6 @@ Window      w[%4d] h[%4d]\n\n",
 		ui_csp->window.width, ui_csp->window.height);
 }
 
-
-void
-_ui_panes_fixed_size_set ()
-{
-	ui_csp->panes_left.left_size = 300;
-	ui_csp->panes_right.right_size = 300;
-	_ui_panes_current_state_set ();
-}
-
 void
 ui_resize_pans (int w, int h)
 {
@@ -263,7 +254,6 @@ ui_panes_settings_load (Evas_Object *win __UNUSED__)
 {
 	ui_settings_load();
 	_ui_panes_current_state_get ();
-	_ui_panes_fixed_size_set ();
 }
 
 Eina_Bool

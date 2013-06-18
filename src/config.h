@@ -3,10 +3,10 @@
 
 #define PACKAGE "EFL Edje Edit Tool"
 #define PACKAGE_NAME PACKAGE
-#define VERSION "0.0.1"
+#define VERSION "0.0.5"
 #define VERMAJ 0
 #define VERMIN 0
-#define VERMIC 1
+#define VERMIC 5
 
 #define __UNUSED__ __attribute__((unused))
 
