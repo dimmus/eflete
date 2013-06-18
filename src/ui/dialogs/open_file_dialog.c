@@ -145,7 +145,7 @@ _on_fs_edc_done(void *data __UNUSED__,
 
 #define _create_path(target, prefix, prefix_size, suffix, suffix_size) \
    size_t size_##target = prefix_size + prefix_size + 1; \
-   target = calloc(size_##target, sizeof(char)); \
+   target = mem_malloc(size_##target * sizeof(char)); \
    eina_strlcat(target, prefix, size_##target); \
    eina_strlcat(target, suffix, size_##target);
 
@@ -173,7 +173,7 @@ open_edc_file(App_Data *ap)
      ap->inwin = elm_win_inwin_add(ap->win);
 
    if (!fs_ent)
-     fs_ent = calloc(1, sizeof(fs_entries));
+     fs_ent = mem_malloc(sizeof(fs_entries));
 
    box = elm_box_add(ap->inwin);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

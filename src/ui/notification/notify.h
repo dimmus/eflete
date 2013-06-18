@@ -10,8 +10,6 @@
 
 #include "efl_tet.h"
 
-#define BUFFSIZE 1024
-
 /**
  * @def NOTIFY_ERROR(obj, fmt, args ...)
  *
@@ -21,8 +19,8 @@
  */
 #define NOTIFY_ERROR(obj, fmt, ...) \
 { \
-	char *msg = calloc(BUFFSIZE, sizeof(char)); \
-	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
+	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
 	noti_error_show(obj, msg); \
 	free(msg); \
 }
@@ -36,8 +34,8 @@
  */
 #define NOTIFY_WARNING(obj, fmt, ...) \
 { \
-	char *msg = calloc(BUFFSIZE, sizeof(char)); \
-	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
+	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
 	noti_warning_show(obj, msg); \
 	free(msg); \
 }
@@ -51,8 +49,8 @@
  */
 #define NOTIFY_INFO(obj, time, fmt, ...) \
 { \
-	char *msg = calloc(BUFFSIZE, sizeof(char)); \
-	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
+	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
 	noti_info_show(obj, msg, time); \
 	free(msg); \
 }

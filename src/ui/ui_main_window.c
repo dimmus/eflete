@@ -3,24 +3,17 @@
 
 
 static void
-_on_done(void *data,
+_on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-
-   ui_main_window_del(ap);
+   ui_main_window_del();
 }
 
 void
-ui_main_window_del (App_Data *ap)
+ui_main_window_del()
 {
    ui_panes_settings_save();
-
-   pm_free(ap->project);
-
    INFO("%s: %s - Finished...", PACKAGE_NAME, VERSION);
    elm_exit();
 }

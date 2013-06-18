@@ -49,7 +49,7 @@ _edj_text_style_get(Evas_Object *obj, const char *style_name)
    Text_Styles *style;
 
    tags = _edj_tags_list_get(obj, style_name);
-   style = calloc(1, sizeof(Text_Styles));
+   style = mem_malloc(sizeof(Text_Styles));
    style->style_name = strdup(style_name);
    style->tags = tags;
    style->__type = TEXTSTYLE;
@@ -340,7 +340,7 @@ style_viewer_init (App_Data *ap)
      {
         inwin = elm_win_inwin_add(ap->win);
 
-        window = calloc(1, sizeof(Style_Window));
+        window = mem_malloc(sizeof(Style_Window));
 
         panes = elm_panes_add(inwin);
         evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

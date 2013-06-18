@@ -32,7 +32,7 @@ _itoa(int n)
 {
    int len = n == 0 ? 1 : floor(log10l(abs(n))) + 1;
    if (n < 0) len++;
-   char *buf = (char*)calloc(sizeof(char), len + 1);
+   char *buf = mem_malloc((len + 1) * sizeof(char));
    snprintf(buf, len, "%d", n);
    return buf;
 }
@@ -371,15 +371,12 @@ _scales_repaint(Evas_Object *obj)
 static UI_Ruler_Data *
 _ruler_data_init(void)
 {
-   UI_Ruler_Data *_ruler_data =
-      (UI_Ruler_Data *)calloc(1, sizeof(UI_Ruler_Data));
-
-   if (!_ruler_data) return NULL;
+   UI_Ruler_Data *_ruler_data = mem_malloc(sizeof(UI_Ruler_Data));
 
    _ruler_data->orient = HORIZONTAL;
    _ruler_data->visible = EINA_TRUE;
 
-   _ruler_data->abs_scale = (Scale*)calloc(1, sizeof(Scale));
+   _ruler_data->abs_scale = mem_malloc(sizeof(Scale));
    _ruler_data->abs_scale->step = 10.0;
    _ruler_data->abs_scale->dash_counter = 0;
    _ruler_data->abs_scale->dashes = NULL;
@@ -388,7 +385,7 @@ _ruler_data_init(void)
    _ruler_data->abs_scale->start = 0;
    _ruler_data->abs_scale->end = 0;
 
-   _ruler_data->rel_scale = (Scale*)calloc(1, sizeof(Scale));
+   _ruler_data->rel_scale = mem_malloc(sizeof(Scale));
    _ruler_data->rel_scale->step = 0.5;
    _ruler_data->rel_scale->dash_counter = 0;
    _ruler_data->rel_scale->dashes = NULL;
