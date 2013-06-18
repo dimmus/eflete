@@ -754,6 +754,67 @@ wm_widget_list_free(Eina_Inlist *widget_list)
    return EINA_TRUE;
 }
 
+Evas_Object *
+wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name,
+                      Evas *e, char *edj_file)
+{
+   char *widget_name = NULL;
+   char *style_name = NULL;
+   char *group_name = NULL;
+   Group *_group = NULL;
+   Widget *_widget = NULL;
+   Style *_style = NULL;
+
+   WM_WIDGET_NAME_GET(widget_name, group_full_name);
+   if (widget_name [0] <= 'm')
+     EINA_INLIST_FOREACH(widget_list, _widget)
+       {
+          if (!strcmp(_widget->widget_name, widget_name))
+            break;
+       }
+   else
+     EINA_INLIST_REVERSE_FOREACH(widget_list, _widget)
+       {
+          if (!strcmp(_widget->widget_name, widget_name))
+            break;
+       }
+   if (!_widget) return NULL;
+
+   WM_STYLE_NAME_GET(style_name, group_full_name);
+
+   if (style_name [0] <= 'm')
+     EINA_INLIST_FOREACH(_widget->styles, _style)
+       {
+          if (!strcmp(_style->style_name, style_name))
+            break;
+       }
+   else
+     EINA_INLIST_REVERSE_FOREACH(_widget->styles, _style)
+       {
+          if (!strcmp(_style->style_name, style_name))
+            break;
+       }
+   if (!_style) return NULL;
+
+   WM_GROUP_NAME_GET(group_name, style_name, group_full_name)
+   if (group_name [0] <= 'm')
+     EINA_INLIST_FOREACH(_style->groups, _group)
+       {
+          if (!strcmp(_group->group_name, group_name))
+            break;
+       }
+   else
+     EINA_INLIST_REVERSE_FOREACH(_style->groups, _group)
+       {
+          if (!strcmp(_group->group_name, group_name))
+            break;
+       }
+   if (!_group->obj)
+      wm_group_data_load(_group, e, edj_file);
+
+   return _group->obj;
+}
+
 #undef WM_WIDGET_NAME_GET
 #undef WM_STYLE_NAME_GET
 #undef WM_GROUP_NAME_GET

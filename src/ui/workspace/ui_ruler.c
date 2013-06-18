@@ -220,6 +220,7 @@ _absolute_scale_marks_add(Evas_Object *obj, int count, int from)
    int _dash_size = 3;
    int _dash_from = from;
    int _pos_text_shift = 10;
+   int _pos_diff = 0;
    Evas_Object *_line, *_text;
    Evas *_canvas = evas_object_evas_get(obj);
    evas_object_geometry_get(obj, &x, &y, &w, &h);
@@ -232,7 +233,18 @@ _absolute_scale_marks_add(Evas_Object *obj, int count, int from)
            z = (int)((_ruler_data->rel_scale->start - y) /
                   _ruler_data->abs_scale->step) * (-1);
      }
-   if (z > 0) z = 0 ;
+   else z = i;
+
+   if ((z > 0) && (i == 0)) z = 0;
+   if (z < 0)
+     {
+        if (_ruler_data->orient == HORIZONTAL)
+          _pos_diff = z * (-1) * (int)_ruler_data->abs_scale->step -
+             (_ruler_data->abs_scale->start - x);
+        else
+          _pos_diff = z * (-1) * (int)_ruler_data->abs_scale->step -
+             (_ruler_data->abs_scale->start - y);
+     }
    for (k = 0; k <= count; i++, k++, z++)
      {
         if (!(z % 5) && (z % 10) && i) _dash_size = 7;
@@ -251,31 +263,34 @@ _absolute_scale_marks_add(Evas_Object *obj, int count, int from)
 
                     if (z < 0) _pos_text_shift = -2;
                     evas_object_move(_text, x + i *
-                      (int)_ruler_data->abs_scale->step - _pos_text_shift,
-                       _dash_from - _dash_size - 5);
+                      (int)_ruler_data->abs_scale->step - _pos_text_shift
+                      - _pos_diff, _dash_from - _dash_size - 5);
                     if (z == 0)
                       {
                          evas_object_text_text_set(_text, "0");
                          evas_object_color_set(_text, 255, 0, 0, 255);
                          evas_object_move(_text, x + i *
-                           (int)_ruler_data->abs_scale->step - 7,
+                           (int)_ruler_data->abs_scale->step - 7 - _pos_diff,
                            _dash_from - _dash_size - 5);
                       }
                  }
                else
                  {
                    evas_object_move(_text, _dash_from - _dash_size - 14,
-                     y + i * (int)_ruler_data->abs_scale->step - 3);
+                     y + i * (int)_ruler_data->abs_scale->step - 3 -
+                     _pos_diff);
                    if (z == 0)
                       {
                          evas_object_move(_text, _dash_from - _dash_size,
-                           y + i * (int)_ruler_data->abs_scale->step + 1);
+                           y + i * (int)_ruler_data->abs_scale->step + 1 -
+                           _pos_diff);
                          evas_object_color_set(_text, 255, 0, 0, 255);
                          evas_object_text_text_set(_text, "0");
                       }
                    if (z > 0)
                       evas_object_move(_text, _dash_from - _dash_size - 12,
-                        y + i * (int)_ruler_data->abs_scale->step - 13);
+                        y + i * (int)_ruler_data->abs_scale->step - 13 -
+                        _pos_diff);
                  }
                _ruler_data->abs_scale->marks =
                   eina_list_append(_ruler_data->abs_scale->marks, _text);
@@ -284,13 +299,15 @@ _absolute_scale_marks_add(Evas_Object *obj, int count, int from)
         _line = evas_object_line_add(_canvas);
         if (_ruler_data->orient == HORIZONTAL)
           evas_object_line_xy_set(_line,
-             x + i * (int)_ruler_data->abs_scale->step, _dash_from,
-             x + i * (int)_ruler_data->abs_scale->step,
-             _dash_from - _dash_size);
+            x + i * (int)_ruler_data->abs_scale->step - _pos_diff ,
+            _dash_from,
+            x + i * (int)_ruler_data->abs_scale->step - _pos_diff,
+            _dash_from - _dash_size);
         else
           evas_object_line_xy_set(_line, _dash_from,
-            y + i * (int)_ruler_data->abs_scale->step, _dash_from - _dash_size,
-            y + i * (int)_ruler_data->abs_scale->step);
+            y + i * (int)_ruler_data->abs_scale->step - _pos_diff,
+            _dash_from - _dash_size,
+            y + i * (int)_ruler_data->abs_scale->step - _pos_diff);
 
         if (z == 0)
           {
@@ -400,19 +417,6 @@ _ruler_data_init(void)
    return _ruler_data;
 }
 
-/* TODO: make show method for pointer*/
-static void
-_pointer_show(Evas_Object *obj __UNUSED__)
-{
-}
-
-/* TODO: make hide method for pointer*/
-static void
-_pointer_hide(Evas_Object *obj __UNUSED__)
-{
-}
-
-
 static void
 _ruler_resize_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj,
                   void *event_info __UNUSED__)
@@ -492,9 +496,9 @@ ui_ruler_pointer_visible_set(Evas_Object *obj, Eina_Bool visible)
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
    _ruler_data->pointer_visible = visible;
    if (visible)
-     _pointer_show(obj);
+     elm_layout_signal_emit (obj, "ruler,pointer,show", "");
    else
-     _pointer_hide(obj);
+     elm_layout_signal_emit (obj, "ruler,pointer,hide", "");
 }
 
 Eina_Bool

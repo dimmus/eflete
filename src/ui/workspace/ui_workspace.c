@@ -1,6 +1,9 @@
 #include <ui_workspace.h>
 #include <efl_tet.h>
 
+Evas_Object *
+ui_groupspace_add(Evas_Object *parent);
+
 Workspace *
 _ws_init(void);
 
@@ -44,11 +47,11 @@ _zoom_in_on_click(void *data __UNUSED__,
                   void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
+   ui_ruler_pointer_visible_set(ws->ruler_hor, EINA_TRUE);
+   ui_ruler_pointer_visible_set(ws->ruler_ver, EINA_TRUE);
 
    ui_ruler_scale_absolute_visible_set (ws->ruler_hor, !ws->ruler_hor);
-
-   ui_ruler_scale_absolute_visible_set (ws->ruler_ver,
-     !ui_ruler_scale_absolute_visible_get (ws->ruler_ver));
+   ui_ruler_scale_absolute_visible_set (ws->ruler_ver, !ws->ruler_ver);
 }
 
 static void
@@ -67,7 +70,6 @@ _separate_on_click(void *data __UNUSED__,
         ui_ruler_step_relative_set (ws->ruler_hor ,0.5);
         ui_ruler_step_relative_set (ws->ruler_ver ,0.5);
      }
-
 }
 
 static void
@@ -78,9 +80,9 @@ _ws_mouse_click_cb(void *data ,
 {
    Evas_Event_Mouse_Down *ev = event_info;
    Workspace *ws = (Workspace*)data;
-
-   if (ev->button ==3) ui_popup_show(ws->bg, ws->popup);
-   else ui_popup_hide(ws->popup);
+   elm_object_signal_emit (ws->ruler_hor, "test", "ws");
+   if (ev->button ==3) ui_popup_show (ws->bg, ws->popup);
+   else ui_popup_hide (ws->popup);
 }
 
 
@@ -180,6 +182,8 @@ ws_add (Evas_Object *parent)
    _popup = ui_popup_add (parent, ws);
    ws->popup = _popup;
 
+   ws->groupspace = ui_groupspace_add(parent);
+
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
 
@@ -204,15 +208,14 @@ _ws_init (void)
 void
 ui_object_highlight_set(Workspace *ws, Evas_Object *part)
 {
+   if ((!ws) || (!part) ) return;
 
-   if (!ws || !part) return;
+   if (ws->highlight.highlight)
+     evas_object_del (ws->highlight.highlight);
 
-   if (!ws->highlight.highlight)
-     {
-        ws->highlight.highlight = elm_label_add(ws->groupspace);
-        elm_layout_file_set(ws->highlight.highlight, TET_EDJ,
+   ws->highlight.highlight = elm_label_add(ws->groupspace);
+   elm_layout_file_set(ws->highlight.highlight, TET_EDJ,
                             "base/groupspace/part/hightlight");
-     }
    ws->highlight.obj = part;
    evas_object_raise(ws->highlight.highlight);
    ui_object_highlight_move(ws);
@@ -221,6 +224,8 @@ ui_object_highlight_set(Workspace *ws, Evas_Object *part)
                                   _ws_mouse_move_cb, ws);
 
    evas_object_show(ws->highlight.highlight);
+
+
 }
 
 void
@@ -240,6 +245,5 @@ ui_object_highlight_hide(Workspace *ws)
 {
    if (!ws) return;
 
-   ws->highlight.obj = NULL;
    evas_object_hide(ws->highlight.highlight);
 }

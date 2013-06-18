@@ -14,12 +14,102 @@ typedef struct _fs_entries fs_entries;
 static fs_entries *fs_ent = NULL;
 
 static void
+_on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+
+   if (ap->ws->groupspace)
+     {
+        ui_groupspace_unset(ap->ws->groupspace);
+        ui_object_highlight_hide (ap->ws);
+     }
+  else
+     WARN ("Groupspace object always delete");
+
+}
+
+static void
+_on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
+{
+
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_data;
+   Evas_Object *prop, *part_prop, *gl_states;
+   App_Data *ap = (App_Data *)data;
+   Part *_part;
+
+   ap = (App_Data *)data;
+   _part = elm_object_item_data_get(glit);
+   if (!_part)
+     {
+        ERR("Coud not get acess to part object");
+        return;
+     }
+   prop = ui_block_property_get(ap);
+   if (!prop)
+     {
+        ERR("Property view is missing!");
+        return;
+     }
+
+   part_prop = ui_prop_part_info_view_add(prop, _part);
+   ui_property_part_view_set(prop, part_prop);
+   evas_object_show(part_prop);
+
+   gl_states = ui_states_list_add(ap, _part);
+   ui_block_state_list_set(ap, gl_states);
+   evas_object_show(gl_states);
+
+   /* FIXME: it bad */
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+
+   ui_object_highlight_set(ap->ws, _part->obj);
+}
+static void
+_on_group_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_data)
+{
+   App_Data *ap = (App_Data *)data;
+   Group *_group = (Group *)event_data;
+   Evas_Object *gl_signals = NULL;
+   Evas_Object *prop = NULL;
+   Evas_Object *group_prop = NULL;
+   Eina_List *signals = NULL;
+
+   /* Get signals list of a group and show them */
+   signals = wm_program_signals_list_get(_group->programs);
+   gl_signals = ui_signal_list_add(ap, signals);
+   wm_program_signals_list_free(signals);
+   ui_block_signal_list_set(ap, gl_signals);
+
+   /* group properties */
+   prop = ui_block_property_get(ap);
+   if (prop)
+     {
+        ui_prop_group_info_view_update(prop, _group);
+        evas_object_show(prop);
+     }
+   else
+     {
+        prop = ui_property_view_new(ap->win);
+        ui_block_property_set(ap, prop);
+        evas_object_show(prop);
+
+        group_prop = ui_prop_group_info_view_add(prop, _group);
+        ui_property_group_view_set(prop, group_prop);
+        evas_object_show(group_prop);
+     }
+
+   ui_groupspace_set (ap->ws, ap->project, _group);
+//   ui_groupspace_update (ap->ws->groupspace);
+}
+
+static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *wd_list;
    App_Data *ap;
    const char *selected = event_info;
-
    ap = (App_Data *)data;
 
    if (selected)
@@ -28,8 +118,20 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
           {
              INFO("Select file: %s", selected);
              ap->project = pm_open_project_edj(selected, selected);
-             wd_list = ui_widget_list_add(ap, ap->project->widgets);
+             wd_list = ui_widget_list_add(ap->win);
+             ui_widget_list_title_set(wd_list, ap->project->name);
+             ui_widget_list_data_set(wd_list, ap->project);
              ui_block_widget_list_set(ap, wd_list);
+
+             evas_object_smart_callback_add(wd_list, "group,select",
+                                            _on_group_clicked, ap);
+
+             evas_object_smart_callback_add(wd_list, "part,select",
+                                            _on_part_selected, ap);
+
+             evas_object_smart_callback_add(wd_list, "part,back",
+                                            _on_part_back, ap);
+
              evas_object_show(wd_list);
              ui_panes_show(ap);
           }
@@ -94,7 +196,9 @@ _on_ok_cb(void *data,
                                           path_id,
                                           path_sd,
                                           path_fd);
-        wd_list = ui_widget_list_add(ap, ap->project->widgets);
+        wd_list = ui_widget_list_add(ap->win);
+        ui_widget_list_title_set(wd_list, ap->project->name);
+        ui_widget_list_data_set(wd_list, ap->project);
         ui_block_widget_list_set(ap, wd_list);
         evas_object_show(wd_list);
         ui_panes_show(ap);

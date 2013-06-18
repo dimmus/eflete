@@ -4,6 +4,7 @@
 #include "efl_tet.h"
 #include "widget_manager.h"
 #include <Elementary.h>
+#include "widget_manager.h"
 
 /**
  *
