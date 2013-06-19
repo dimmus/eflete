@@ -245,14 +245,13 @@ _gs_swallow_draw(Evas_Object * view_part, Group *group, Part *part )
 }
 
 static Evas_Object *
-_gs_group_part_draw(Project *project, Workspace *ws, Group *group, Part *part)
+_gs_group_part_draw(Project *project, Group *group, Part *part)
 {
    int x, y, w, h;
    Evas_Object *_group = NULL;
 
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   _group = wm_group_object_find(project->widgets, part->source,
-               ws->canvas, project->swapfile);
+   _group = wm_group_object_find(project->widgets, part->source);
    evas_object_move(_group, x, y);
    evas_object_resize(_group, w, h);
    evas_object_show(_group);
@@ -328,7 +327,7 @@ _gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
         if (_part->type == EDJE_PART_TYPE_SWALLOW)
           _part_object = _gs_swallow_draw(view_part, group, _part);
         if (_part->type == EDJE_PART_TYPE_GROUP)
-          _part_object = _gs_group_part_draw(project, ws, group, _part);
+          _part_object = _gs_group_part_draw(project, group, _part);
         if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
           _part_object = _gs_textblock_draw(view_part, group, _part);
 

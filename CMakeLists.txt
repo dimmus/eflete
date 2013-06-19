@@ -16,16 +16,13 @@ find_package(Eet REQUIRED)
 find_package(Evas REQUIRED)
 find_package(Ecore REQUIRED)
 find_package(Ecore COMPONENTS Ecore-x)
-#find_package(Ecore COMPONENTS Ecore-File)
 find_package(Ecore COMPONENTS Ecore-Evas)
 find_package(Eio REQUIRED)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
-
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Werror -Wextra -O2")
 
 IF("${CMAKE_GENERATOR}" MATCHES "Make")
    ADD_CUSTOM_TARGET(fsm_clean

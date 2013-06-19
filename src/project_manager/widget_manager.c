@@ -36,6 +36,51 @@ static char empty = '\0';
    free(arr);
 
 static void
+wm_group_data_load(Group *group, Evas *e, const char *edj)
+{
+   Evas_Object *edje_edit_obj;
+   Eina_List *parts_list, *programs_list, *l;
+   char *name;
+   Part *part;
+   Program *program;
+
+   if (!group || !e) return;
+
+   edje_edit_obj = edje_edit_object_add(e);
+
+   if (!edje_object_file_set(edje_edit_obj, edj, group->full_group_name))
+     {
+        evas_object_del(edje_edit_obj);
+        return;
+     }
+   group->obj = edje_edit_obj;
+   group->min_w = edje_edit_group_min_w_get(group->obj);
+   group->min_h = edje_edit_group_min_h_get(group->obj);
+   group->max_w = edje_edit_group_max_w_get(group->obj);
+   group->max_h = edje_edit_group_max_h_get(group->obj);
+   group->current_w = -1;
+   group->current_h = -1;
+
+   parts_list = edje_edit_parts_list_get(group->obj);
+   EINA_LIST_FOREACH(parts_list, l, name)
+     {
+        part = wm_part_add(group->obj, name);
+        group->parts = eina_inlist_append(group->parts,
+                                          EINA_INLIST_GET(part));
+     }
+   edje_edit_string_list_free(parts_list);
+
+   programs_list = edje_edit_programs_list_get(group->obj);
+   EINA_LIST_FOREACH(programs_list, l, name)
+     {
+        program = wm_program_add(group->obj, name);
+        group->programs = eina_inlist_append(group->programs,
+                                             EINA_INLIST_GET(program));
+     }
+   edje_edit_string_list_free(programs_list);
+}
+
+static void
 wm_part_state_text_add(Evas_Object *obj,
                        const char *part_name,
                        Part_State *state)
@@ -156,7 +201,10 @@ wm_part_states_add(Evas_Object *obj, Part *part)
         /* Split source name on 2 strings */
         state_copy = eina_str_split(state, " ", 2);
         /* Get state NAME */
-        new_state->name = state_name = eina_stringshare_add(state_copy[0]);
+        if (strcmp(state_copy[0], "(null)") != 0)
+          new_state->name = state_name = eina_stringshare_add(state_copy[0]);
+        else /* it hack, need create a patch  */
+          new_state->name = state_name = eina_stringshare_add("default");
         /* Get state X.X value */
         new_state->value = state_value = atof(state_copy[1]);
 
@@ -224,12 +272,16 @@ wm_part_states_add(Evas_Object *obj, Part *part)
                                                                  state_name, state_value);
 
         if ((part->type == EDJE_PART_TYPE_TEXT) || (part->type == EDJE_PART_TYPE_TEXTBLOCK))
-          wm_part_state_text_add(obj, part->name, new_state);
+          {
+             wm_part_state_text_add(obj, part->name, new_state);
+          }
         else
           new_state->text = NULL;
 
         if (part->type == EDJE_PART_TYPE_IMAGE)
-          wm_part_state_image_add(obj, part->name, new_state);
+          {
+             wm_part_state_image_add(obj, part->name, new_state);
+          }
         else
           new_state->image = NULL;
 
@@ -433,51 +485,6 @@ wm_group_add(const char *group_name, const char *full_group_name)
    group_edje->__type = GROUP;
 
    return group_edje;
-}
-
-void
-wm_group_data_load(Group *group, Evas *e, const char *edj)
-{
-   Evas_Object *edje_edit_obj;
-   Eina_List *parts_list, *programs_list, *l;
-   char *name;
-   Part *part;
-   Program *program;
-
-   if (!group || !e) return;
-
-   edje_edit_obj = edje_edit_object_add(e);
-
-   if (!edje_object_file_set(edje_edit_obj, edj, group->full_group_name))
-     {
-        evas_object_del(edje_edit_obj);
-        return;
-     }
-   group->obj = edje_edit_obj;
-   group->min_w = edje_edit_group_min_w_get(group->obj);
-   group->min_h = edje_edit_group_min_h_get(group->obj);
-   group->max_w = edje_edit_group_max_w_get(group->obj);
-   group->max_h = edje_edit_group_max_h_get(group->obj);
-   group->current_w = -1;
-   group->current_h = -1;
-
-   parts_list = edje_edit_parts_list_get(group->obj);
-   EINA_LIST_FOREACH(parts_list, l, name)
-     {
-        part = wm_part_add(group->obj, name);
-        group->parts = eina_inlist_append(group->parts,
-                                          EINA_INLIST_GET(part));
-     }
-   edje_edit_string_list_free(parts_list);
-
-   programs_list = edje_edit_programs_list_get(group->obj);
-   EINA_LIST_FOREACH(programs_list, l, name)
-     {
-        program = wm_program_add(group->obj, name);
-        group->programs = eina_inlist_append(group->programs,
-                                             EINA_INLIST_GET(program));
-     }
-   edje_edit_string_list_free(programs_list);
 }
 
 Eina_Bool
@@ -755,8 +762,7 @@ wm_widget_list_free(Eina_Inlist *widget_list)
 }
 
 Evas_Object *
-wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name,
-                      Evas *e, char *edj_file)
+wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
 {
    char *widget_name = NULL;
    char *style_name = NULL;
@@ -809,10 +815,31 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name,
           if (!strcmp(_group->group_name, group_name))
             break;
        }
-   if (!_group->obj)
-      wm_group_data_load(_group, e, edj_file);
 
    return _group->obj;
+}
+
+void
+wm_widget_list_objects_load(Eina_Inlist *widget_list,
+                            Evas *e,
+                            const char *path)
+{
+   Widget *widget;
+   Style *style;
+   Group *group;
+
+   if ((!widget_list) || (!e) || (!path)) return;
+
+   EINA_INLIST_FOREACH(widget_list, widget)
+     {
+        EINA_INLIST_FOREACH(widget->styles, style)
+          {
+             EINA_INLIST_FOREACH(style->groups, group)
+               {
+                  wm_group_data_load(group, e, path);
+               }
+          }
+     }
 }
 
 #undef WM_WIDGET_NAME_GET

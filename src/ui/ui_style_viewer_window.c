@@ -94,9 +94,6 @@ _style_list_get(App_Data *ap)
      }
 
    _group = EINA_INLIST_CONTAINER_GET(groups, Group);
-   if (!_group->obj)
-     wm_group_data_load(_group, ap->ws->canvas, ap->project->swapfile);
-
    edje_object = _group->obj;
    text_styles_name = edje_edit_styles_list_get(edje_object);
    EINA_LIST_FOREACH (text_styles_name, f, text_style)
