@@ -3,7 +3,7 @@ project(efl_tet C)
 
 set(VERMAJ 0)
 set(VERMIN 0)
-set(VERMIC 5)
+set(VERMIC 7)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "EFL Edje Edit Tool")
 
@@ -16,17 +16,16 @@ find_package(Eet REQUIRED)
 find_package(Evas REQUIRED)
 find_package(Ecore REQUIRED)
 find_package(Ecore COMPONENTS Ecore-x)
-#find_package(Ecore COMPONENTS Ecore-File)
 find_package(Ecore COMPONENTS Ecore-Evas)
 find_package(Eio REQUIRED)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
 find_package(Elementary REQUIRED)
+find_package(Doxygen)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Werror -Wextra -O2")
 
-
+# target 'clear'
 IF("${CMAKE_GENERATOR}" MATCHES "Make")
    ADD_CUSTOM_TARGET(fsm_clean
       COMMAND ${CMAKE_MAKE_PROGRAM} clean
@@ -54,3 +53,4 @@ add_definitions("-DTET_EDJ_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/\"")
 #add_subdirectory(po)
 add_subdirectory(src)
 add_subdirectory(data)
+add_subdirectory(doc)
