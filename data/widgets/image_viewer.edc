@@ -1,0 +1,156 @@
+group {
+   name: "base/image_viewer";
+   parts {
+      part {
+         name: "swallow/images_grid";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.9;
+         }
+      }
+     part {
+         name: "spacer_one";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.5;
+            rel1 {
+               to: "swallow/images_grid";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+
+      part {
+         name: "button_add_image";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_one";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_two";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "button_add_image";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "button_del_image";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_two";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part {
+         name: "spacer_three";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "button_del_image";
+               relative: 1.0 0.0;
+           }
+         }
+      }
+
+      part {
+         name: "button_ok";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_three";
+               relative: 1.0 0.0;
+           }
+         }
+      }
+
+      part {
+         name: "spacer_fouth";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "button_ok";
+               relative: 1.0 0.0;
+           }
+         }
+      }
+
+      part {
+         name: "button_cancel";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_fouth";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+
+   }
+}
+
+
+

@@ -1,11 +1,11 @@
 #include "efl_tet.h"
 #include "image_viewer_dialog.h"
 
-typedef struct _Example_Item
+typedef struct _Item
 {
    int id;
    char *prj;
-} Example_Item;
+} Item;
 
 static Elm_Gengrid_Item_Class *gic = NULL;
 
@@ -23,7 +23,7 @@ _grid_content_get(void *data,
                Evas_Object *obj,
                const char  *part __UNUSED__)
 {
-   const Example_Item *it = data;
+   const Item *it = data;
    Evas_Object *grid = (Evas_Object *)obj;
 
    if (!strcmp(part, "elm.swallow.icon"))
@@ -54,7 +54,7 @@ static void
 _grid_del(void        *data,
           Evas_Object *obj __UNUSED__)
 {
-   Example_Item *it = data;
+   Item *it = data;
    free(it);
 }
 static void
@@ -175,7 +175,8 @@ image_viewer_init (Evas_Object *img_view, Project *project)
    int i = 0, count_images = 0;
    if (!project)
      {
-        ERR("Project not loaded");
+        NOTIFY_ERROR (elm_object_parent_widget_get(img_view),
+                      "EDJ/EDC file is not loaded");
         evas_object_del(img_view);
         return;
      }
@@ -184,8 +185,8 @@ image_viewer_init (Evas_Object *img_view, Project *project)
    count_images = _project_images_count_get(project);
    for (i = 0; i < count_images; i++)
      {
-        Example_Item *it;
-        it = malloc(sizeof(*it));
+        Item *it;
+        it = (Item *)calloc(1, sizeof(*it));
         it->prj =  project->swapfile;
         it->id = i;
         elm_gengrid_item_append(gengrid, gic, it, NULL, NULL);
