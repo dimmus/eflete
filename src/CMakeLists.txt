@@ -21,6 +21,7 @@ set(TET_CC_FILES
    project_manager/project_manager.c
    logger/logger.c
    ui/dialogs/open_file_dialog.c
+   ui/dialogs/image_viewer_dialog.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c

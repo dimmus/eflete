@@ -36,6 +36,15 @@ _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
    style_viewer_init(ap);
 }
 
+static void
+_on_image_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   image_viewer_init(image_viewer_add(ap->win), ap->project);
+
+}
+
 Eina_Bool
 ui_menu_add(App_Data *ap)
 {
@@ -83,16 +92,19 @@ ui_menu_add(App_Data *ap)
 
    elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_THEME);
 
-   elm_toolbar_item_append(tb, "file", "File", NULL, NULL);
+/*   elm_toolbar_item_append(tb, "file", "File", NULL, NULL);
    elm_toolbar_item_append(tb, "folder", "Folder", NULL, NULL);
    elm_toolbar_item_append(tb, "edit", "Edit", NULL, NULL);
    elm_toolbar_item_append(tb, "refresh", "Refresh", NULL, NULL);
 
    tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
-
+*/
    elm_toolbar_item_append(tb, "item", "Style Viewer",
                            _on_style_window_menu, ap);
+
+   elm_toolbar_item_append(tb, "edit", "Images",
+                           _on_image_viewer_menu, ap);
 
    ap->main_menu = tb;
    return EINA_TRUE;

@@ -15,6 +15,7 @@
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
 #include "ui_block.h"
+#include "image_viewer_dialog.h"
 
 /**
  * Adds main window object for Edje tool development.
