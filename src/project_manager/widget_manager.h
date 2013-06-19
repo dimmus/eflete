@@ -6,9 +6,7 @@
 #include <Eina.h>
 #include <Ecore_Evas.h>
 #include <Edje_Edit.h>
-#include <string.h>
 #include "logger.h"
-
 
 enum _type
 {
@@ -241,12 +239,6 @@ wm_group_add(const char *group_name, const char *full_group_name);
 /**
  *
  */
-void
-wm_group_data_load(Group *group, Evas *e, const char *edj);
-
-/**
- *
- */
 Eina_Bool
 wm_group_free(Group *group);
 
@@ -285,5 +277,24 @@ wm_widget_list_new(const char *file);
  */
 Eina_Bool
 wm_widget_list_free(Eina_Inlist *widget_list);
+
+/**
+ *
+ */
+void
+wm_widget_list_objects_load(Eina_Inlist *widget_list,
+                            Evas *e,
+                            const char *path);
+
+/**
+ * Find group object in widget list. Use full name of group.
+ *
+ * @param widget_list the Eina_Inlist list that contain wdgets structures.
+ * @param group_full_name the string full name of group.(with widget/class/style)
+ * @return the group object.
+ *
+ */
+Evas_Object *
+wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
 
 #endif /* WIDGET_MANAGER_H */

@@ -1,49 +1,46 @@
 #include "efl_tet.h"
 #include "ui_main_window.h"
 
+App_Data *ap = NULL;
+
 App_Data *
 app_create (void)
 {
-   App_Data *_ap = calloc (1, sizeof (App_Data));
-   _ap->win = NULL;
-   _ap->win_layout = NULL;
-   _ap->main_menu = NULL;
-   _ap->block.left_top = NULL;
-   _ap->block.left_bottom = NULL;
-   _ap->block.bottom_left = NULL;
-   _ap->block.bottom_right = NULL;
-   _ap->block.right_top = NULL;
-   _ap->block.right_bottom = NULL;
-   _ap->block.canvas = NULL;
-   _ap->ws = NULL;
-   return _ap;
+   return mem_calloc(1, sizeof (App_Data));
+}
+
+void
+app_free(App_Data *ap)
+{
+   evas_object_del(ap->win);
+   pm_free(ap->project);
+   ws_free(ap->ws);
+   free(ap);
 }
 
 EAPI_MAIN int
 elm_main()
 {
 
-   if (!efl_tet_init()) return -1;
+   if (!app_init()) return -1;
 
-#ifdef HAVE_CONFIG_H
-   INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
-#else
-   CRIT("Could not find 'config.h'");
-#endif
-
-   App_Data *ap =  NULL;
+   #ifdef HAVE_CONFIG_H
+      INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
+   #else
+      CRIT("Could not find 'config.h'");
+   #endif
 
    ap = app_create();
    ui_main_window_add(ap);
 
    elm_run();
    elm_shutdown();
-   efl_tet_shutdown();
+   app_shutdown();
    return 0;
 }
 
 Eina_Bool
-efl_tet_init ()
+app_init ()
 {
    if (!eina_init())
      {
@@ -84,8 +81,9 @@ efl_tet_init ()
 }
 
 void
-efl_tet_shutdown ()
+app_shutdown ()
 {
+   app_free(ap);
    eina_shutdown();
    efreet_shutdown();
    ecore_shutdown();

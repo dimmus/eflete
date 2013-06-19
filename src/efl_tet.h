@@ -1,5 +1,5 @@
-#ifndef _EFL_TET_
-#define _EFL_TET_
+#ifndef EFL_TET_H
+#define EFL_TET_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -11,8 +11,9 @@
 #include <Eet.h>
 #include <Efreet.h>
 #include <Elementary.h>
+#include "alloc.h"
 #include "logger.h"
-#include "pm.h"
+#include "project_manager.h"
 #include "ui_workspace.h"
 #include "notify.h"
 
@@ -21,7 +22,7 @@ struct _App_Data
 	Evas_Object *win;
 	Evas_Object *win_layout;
 	Evas_Object *main_menu;
-   Evas_Object *inwin;
+    Evas_Object *inwin;
 	struct {
 		Evas_Object *left_top;
 		Evas_Object *left_bottom;
@@ -33,18 +34,36 @@ struct _App_Data
 	} block;
 
 	Workspace *ws;
-	Project *project;
+   Project *project;
 };
 
+/**
+ *
+ */
 typedef struct _App_Data App_Data;
 
+/**
+ *
+ */
 Eina_Bool
-efl_tet_init (void);
+app_init(void);
 
+/**
+ *
+ */
 void
-efl_tet_shutdown (void);
+app_shutdown(void);
 
+/**
+ *
+ */
 App_Data *
-app_create (void);
+app_create(void);
 
-#endif /* _EFL_TET_ */
+/**
+ *
+ */
+void
+app_free(App_Data *ap);
+
+#endif /* EFL_TET_H */

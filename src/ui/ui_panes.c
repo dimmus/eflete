@@ -5,7 +5,7 @@ void
 _print_current_state(char *);
 
 void
-_ui_panes_current_state_set (void);
+_ui_panes_current_state_set(void);
 
 struct _Panes_Attributes
 {
@@ -42,9 +42,9 @@ UI_Elements_Settings *us;
 Evas_Object *panes;
 
 UI_Current_State_Panes *
-_ui_panes_current_state_struct_init (void)
+_ui_panes_current_state_struct_init(void)
 {
-   UI_Current_State_Panes *csp = calloc (1,sizeof(UI_Current_State_Panes));
+   UI_Current_State_Panes *csp = mem_malloc (sizeof(UI_Current_State_Panes));
    csp->panes_left.left_size = 0;
    csp->panes_left.right_size = 0;
 
@@ -70,9 +70,9 @@ _ui_panes_current_state_struct_init (void)
 }
 
 void
-_ui_panes_current_state_get (void)
+_ui_panes_current_state_get(void)
 {
-   double size_get=0.0;
+   double size_get = 0.0;
 
    Evas_Object *_panes;
    Evas_Object *_panes_temp;
@@ -82,45 +82,45 @@ _ui_panes_current_state_get (void)
 
    Eina_Bool _need_resize = EINA_FALSE;
 
-   size_get = elm_panes_content_left_size_get (_panes);
+   size_get = elm_panes_content_left_size_get(_panes);
    ui_csp->panes_left.left_size = (int)(ui_csp->window.width * size_get);
-   size_get = elm_panes_content_right_size_get (_panes);
+   size_get = elm_panes_content_right_size_get(_panes);
    ui_csp->panes_left.right_size = (int)(ui_csp->window.width * size_get);
 
-   _panes = elm_object_part_content_get (panes, "left");
-   size_get = elm_panes_content_left_size_get (_panes);
+   _panes = elm_object_part_content_get(panes, "left");
+   size_get = elm_panes_content_left_size_get(_panes);
    ui_csp->panes_left_hor.left_size =
-      (int)((ui_csp->window.height-20) * size_get);
-   size_get = elm_panes_content_right_size_get (_panes);
+      (int)((ui_csp->window.height - 20) * size_get);
+   size_get = elm_panes_content_right_size_get(_panes);
    ui_csp->panes_left_hor.right_size =
-      (int)((ui_csp->window.height-20) * size_get);
+      (int)((ui_csp->window.height - 20) * size_get);
 
-   _panes = elm_object_part_content_get (panes, "right");
-   size_get = elm_panes_content_left_size_get (_panes);
+   _panes = elm_object_part_content_get(panes, "right");
+   size_get = elm_panes_content_left_size_get(_panes);
    ui_csp->panes_right.left_size =
       (int)((ui_csp->window.width - ui_csp->panes_left.left_size)* size_get);
-   size_get = 1 - elm_panes_content_left_size_get (_panes);
+   size_get = 1 - elm_panes_content_left_size_get(_panes);
    ui_csp->panes_right.right_size =
       (int)((ui_csp->window.width-ui_csp->panes_left.left_size)* size_get);
 
-   _panes_temp = elm_object_part_content_get (_panes, "right");
-   size_get = elm_panes_content_left_size_get (_panes_temp);
+   _panes_temp = elm_object_part_content_get(_panes, "right");
+   size_get = elm_panes_content_left_size_get(_panes_temp);
    ui_csp->panes_right_hor.left_size =
-      (int)((ui_csp->window.height-20)*size_get);
-   size_get = elm_panes_content_right_size_get (_panes_temp);
+      (int)((ui_csp->window.height - 20)*size_get);
+   size_get = elm_panes_content_right_size_get(_panes_temp);
    ui_csp->panes_right_hor.right_size =
-      (int)((ui_csp->window.height-20) * size_get);
+      (int)((ui_csp->window.height - 20) * size_get);
 
    _panes_temp = elm_object_part_content_get(_panes, "left");
-   size_get = elm_panes_content_left_size_get (_panes_temp);
+   size_get = elm_panes_content_left_size_get(_panes_temp);
    ui_csp->panes_center.left_size =
-      (int)((ui_csp->window.height-20)* size_get);
-   size_get = elm_panes_content_right_size_get (_panes_temp);
+      (int)((ui_csp->window.height - 20)* size_get);
+   size_get = elm_panes_content_right_size_get(_panes_temp);
    ui_csp->panes_center.right_size =
-      (int)((ui_csp->window.height -20)* size_get);
+      (int)((ui_csp->window.height - 20)* size_get);
 
    /*	Check for minimal size to workspace. 300x300px. */
-   if (ui_csp->panes_center.left_size<300)
+   if (ui_csp->panes_center.left_size < 300)
      {
         int _shift_size = 0;
         _shift_size = 300 - ui_csp->panes_center.left_size;
@@ -130,60 +130,52 @@ _ui_panes_current_state_get (void)
         _shift_size = 0;
      }
 
-   _panes = elm_object_part_content_get (_panes_temp, "right");
-   size_get = elm_panes_content_left_size_get (_panes);
+   /*	Check for minimal size to workspace. 300x300px. */
+   if (ui_csp->panes_right.left_size < 300)
+     {
+        int _shift_size = 0;
+        _shift_size = 300 - ui_csp->panes_right.left_size;
+        ui_csp->panes_right.left_size = 300;
+        ui_csp->panes_right.right_size -= _shift_size;
+        _need_resize = EINA_TRUE;
+        _shift_size = 0;
+     }
+
+   _panes = elm_object_part_content_get(_panes_temp, "right");
+   size_get = elm_panes_content_left_size_get(_panes);
    ui_csp->panes_center_down.left_size=
       (int)(ui_csp->panes_right.left_size*size_get);
-   size_get =elm_panes_content_right_size_get (_panes);
+   size_get =elm_panes_content_right_size_get(_panes);
    ui_csp->panes_center_down.right_size=
       (int)(ui_csp->panes_right.left_size*size_get);
 
-   if (_need_resize)
-     {
-        _ui_panes_current_state_set();
-     }
+   if (_need_resize) _ui_panes_current_state_set();
 }
 
 void
-_ui_panes_current_state_set (void)
+_ui_panes_current_state_set(void)
 {
    double size_set = 0.0;
    Evas_Object *_panes;
 
    _panes = panes;
-   size_set = (double)	(ui_csp->panes_left.left_size) / (ui_csp->window.width);
-   elm_panes_content_left_size_set (_panes, size_set);
+   size_set = (double)(ui_csp->panes_left.left_size) / (ui_csp->window.width);
+   elm_panes_content_left_size_set(_panes, size_set);
 
-   _panes = elm_object_part_content_get (panes, "right");
-   size_set = (double) (ui_csp->panes_right.right_size)/
-      (ui_csp->window.width-ui_csp->panes_left.left_size);
-   elm_panes_content_right_size_set (_panes, size_set);
+   _panes = elm_object_part_content_get(panes, "right");
+   size_set = (double)(ui_csp->panes_right.right_size) /
+      (ui_csp->window.width - ui_csp->panes_left.left_size);
+   elm_panes_content_right_size_set(_panes, size_set);
 
    _panes = elm_object_part_content_get(_panes, "left");
-   size_set = (double)(ui_csp->panes_center.right_size)/
-      (ui_csp->window.height-20);
-   elm_panes_content_right_size_set (_panes, size_set);
+   size_set = (double)(ui_csp->panes_center.right_size) /
+      (ui_csp->window.height - 20);
+   elm_panes_content_right_size_set(_panes, size_set);
 }
 
-void
-_print_current_state (char *source)
-{
-   fprintf (stdout,"INFO: %s\n", source);
-   fprintf (stdout, "Left        l[%4d] r[%4d]\n\
-            Left_hor    l[%4d] r[%4d]\nCenter      l[%4d] r[%4d]\nCenter_down l[%4d] r[%4d]\n\
-            Right       l[%4d] r[%4d]\nRight_hor   l[%4d] r[%4d]\n\
-            Window      w[%4d] h[%4d]\n\n",
-            ui_csp->panes_left.left_size, ui_csp->panes_left.right_size,
-            ui_csp->panes_left_hor.left_size, ui_csp->panes_left_hor.right_size,
-            ui_csp->panes_center.left_size,ui_csp->panes_center.right_size,
-            ui_csp->panes_center_down.left_size,ui_csp->panes_center_down.right_size,
-            ui_csp->panes_right.left_size, ui_csp->panes_right.right_size,
-            ui_csp->panes_right_hor.left_size, ui_csp->panes_right_hor.right_size,
-            ui_csp->window.width, ui_csp->window.height);
-}
 
 void
-ui_resize_pans (int w, int h)
+ui_resize_pans(int w, int h)
 {
    ui_csp->window.height = h;
    ui_csp->window.width = w;
@@ -195,18 +187,18 @@ _unpress_cb(void *data __UNUSED__,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   _ui_panes_current_state_get ();
+   _ui_panes_current_state_get();
 }
 
 static void
-_double_click_up_cb (void * data __UNUSED__,
+_double_click_up_cb(void * data __UNUSED__,
                      Evas_Object *obj,
                      void *event_info __UNUSED__)
 {
-   static double _size = 0.0;
+   static volatile double _size = 0.0;
    if (elm_panes_content_left_size_get(obj) > 0)
      {
-        _size=elm_panes_content_left_size_get(obj);
+        _size = elm_panes_content_left_size_get(obj);
         elm_panes_content_left_size_set(obj, 0.0);
      }
    else
@@ -219,8 +211,8 @@ _double_click_up_cb (void * data __UNUSED__,
 
 static void
 _double_click_left_panes_down_cb(void * data __UNUSED__,
-                                 Evas_Object *obj,
-                                 void *event_info __UNUSED__)
+                       Evas_Object *obj,
+                       void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
@@ -237,8 +229,8 @@ _double_click_left_panes_down_cb(void * data __UNUSED__,
 
 static void
 _double_click_center_panes_down_cb(void * data __UNUSED__,
-                                   Evas_Object *obj,
-                                   void *event_info __UNUSED__)
+                       Evas_Object *obj,
+                       void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
@@ -254,27 +246,24 @@ _double_click_center_panes_down_cb(void * data __UNUSED__,
 }
 
 void
-ui_panes_settings_save ()
+ui_panes_settings_save()
 {
    _ui_panes_current_state_set();
    ui_settings_save();
 }
 
 void
-ui_panes_settings_load (Evas_Object *win __UNUSED__)
+ui_panes_settings_load()
 {
    ui_settings_load();
    _ui_panes_current_state_get ();
 }
-
 Eina_Bool
-ui_panes_add (App_Data *ap)
+ui_panes_add(App_Data *ap)
 {
    Evas_Object *block;
    Evas_Object *panes_left, *panes_left_hor, *panes_right;
    Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
-
-
 
    us = ui_element_settings_init();
    if (!us)
@@ -282,23 +271,21 @@ ui_panes_add (App_Data *ap)
         NOTIFY_ERROR (ap->win, "ERROR: unable initialize settings module");
         return EINA_FALSE;
      }
-   ui_csp =_ui_panes_current_state_struct_init ();
+   ui_csp =_ui_panes_current_state_struct_init();
 
    panes_left = elm_panes_add(ap->win_layout);
-   if (panes_left == NULL)
-     return EINA_FALSE;
+   if (panes_left == NULL) return EINA_FALSE;
    evas_object_size_hint_weight_set(panes_left,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left,
                                    EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_left, 0.2);
    panes = panes_left;
-   elm_object_part_content_set (ap->win_layout, "swallow/panes", panes_left);
+   elm_object_part_content_set(ap->win_layout, "swallow/panes", panes_left);
 
    panes_left_hor = elm_panes_add(ap->win_layout);
-   if (panes_left_hor == NULL)
-     return EINA_FALSE;
-   elm_panes_horizontal_set (panes_left_hor, EINA_TRUE);
+   if (panes_left_hor == NULL) return EINA_FALSE;
+   elm_panes_horizontal_set(panes_left_hor, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_left_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left_hor,
@@ -307,8 +294,7 @@ ui_panes_add (App_Data *ap)
    elm_panes_content_left_size_set(panes_left_hor, 0.45);
 
    panes_right = elm_panes_add(ap->win_layout);
-   if (panes_right == NULL)
-     return EINA_FALSE;
+   if (panes_right == NULL) return EINA_FALSE;
    evas_object_size_hint_weight_set(panes_right,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right,
@@ -317,9 +303,8 @@ ui_panes_add (App_Data *ap)
    elm_panes_content_left_size_set(panes_right, 0.75);
 
    panes_right_hor = elm_panes_add(ap->win_layout);
-   if (panes_right_hor == NULL)
-     return EINA_FALSE;
-   elm_panes_horizontal_set (panes_right_hor, EINA_TRUE);
+   if (panes_right_hor == NULL) return EINA_FALSE;
+   elm_panes_horizontal_set(panes_right_hor, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_right_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right_hor,
@@ -328,8 +313,7 @@ ui_panes_add (App_Data *ap)
    elm_panes_content_left_size_set(panes_right_hor, 0.45);
 
    panes_center = elm_panes_add(ap->win_layout);
-   if (panes_center == NULL)
-     return EINA_FALSE;
+   if (panes_center == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_center, EINA_TRUE);
    evas_object_size_hint_weight_set(panes_center,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -339,8 +323,7 @@ ui_panes_add (App_Data *ap)
    elm_panes_content_left_size_set(panes_center, 0.65);
 
    panes_center_down = elm_panes_add(ap->win_layout);
-   if (panes_center_down == NULL)
-     return EINA_FALSE;
+   if (panes_center_down == NULL) return EINA_FALSE;
    evas_object_size_hint_weight_set(panes_center_down,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center_down,
@@ -362,12 +345,14 @@ ui_panes_add (App_Data *ap)
    evas_object_smart_callback_add(panes_center,"unpress",_unpress_cb, NULL);
    evas_object_smart_callback_add(panes_center_down,"unpress",
                                   _unpress_cb, NULL);
-   evas_object_smart_callback_add(panes_right_hor, "clicked,double",
+
+   evas_object_smart_callback_add(us->panes_right_hor, "clicked,double",
                                   _double_click_up_cb, NULL);
    evas_object_smart_callback_add(panes_left_hor, "clicked,double",
-                                  _double_click_left_panes_down_cb, NULL);
+                                 _double_click_left_panes_down_cb, NULL);
    evas_object_smart_callback_add(panes_center, "clicked,double",
-                                  _double_click_center_panes_down_cb, NULL);
+                                _double_click_center_panes_down_cb, NULL);
+
 
    block = ui_block_add(ap->win_layout);
    ui_block_title_text_set(block, "Part States");
@@ -407,24 +392,17 @@ ui_panes_add (App_Data *ap)
    evas_object_show(block);
    ap->block.right_bottom = block;
 
-
    return EINA_TRUE;
 }
 
 void
-ui_panes_show (App_Data *ap)
+ui_panes_show(App_Data *ap)
 {
-   elm_object_signal_emit (ap->win_layout, "window,panes,show", "");
-}
+   elm_object_signal_emit(ap->win_layout, "window,panes,show", "");
+ }
 
 void
-ui_panes_hide (App_Data *ap)
+ui_panes_hide(App_Data *ap)
 {
-   elm_object_signal_emit (ap->win_layout, "window,panes,hide", "");
-}
-
-void
-ui_workspace_add (App_Data *ap)
-{
-   ap->ws = ws_add(ap->block.canvas);
+   elm_object_signal_emit(ap->win_layout, "window,panes,hide", "");
 }

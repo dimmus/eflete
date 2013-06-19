@@ -5,7 +5,8 @@
 Eina_List *ui_list_menu;
 
 static void
-_on_edc_open_menu(void *data, Evas_Object *obj __UNUSED__,
+_on_edc_open_menu(void *data,
+                  Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
@@ -13,23 +14,24 @@ _on_edc_open_menu(void *data, Evas_Object *obj __UNUSED__,
 }
 
 static void
-_on_edj_open_menu (void *data, Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_on_edj_open_menu(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    open_edj_file(ap);
 }
 
 static void
-_on_exit_menu (void *data, Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_on_exit_menu(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   ui_main_window_del(ap);
+   ui_main_window_del();
 }
 
 static void
-_on_style_window_menu (void *data, Evas_Object *obj __UNUSED__,
+_on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
@@ -37,7 +39,7 @@ _on_style_window_menu (void *data, Evas_Object *obj __UNUSED__,
 }
 
 Eina_Bool
-ui_menu_add (App_Data *ap)
+ui_menu_add(App_Data *ap)
 {
    Evas_Object *tb, *menu;
    Elm_Object_Item *tb_it;
@@ -48,14 +50,14 @@ ui_menu_add (App_Data *ap)
      ui_list_menu = eina_list_append(ui_list_menu, tb);
 
    evas_object_size_hint_weight_set(tb, 0.0, 0.0);
-   elm_toolbar_shrink_mode_set (tb, ELM_TOOLBAR_SHRINK_NONE);
-   elm_toolbar_align_set (tb, 0.0);
-   elm_toolbar_homogeneous_set (tb, EINA_TRUE);
-   elm_object_part_content_set (ap->win_layout, "swallow/toolbar", tb);
+   elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_NONE);
+   elm_toolbar_align_set(tb, 0.0);
+   elm_toolbar_homogeneous_set(tb, EINA_TRUE);
+   elm_object_part_content_set(ap->win_layout, "swallow/toolbar", tb);
    evas_object_show(tb);
-   elm_toolbar_icon_size_set (tb,16);
+   elm_toolbar_icon_size_set(tb,16);
 
-   elm_toolbar_icon_order_lookup_set (tb, ELM_ICON_LOOKUP_FDO_THEME);
+   elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_FDO_THEME);
    tb_it = elm_toolbar_item_append(tb, "menu/arrow_down", "File", NULL, NULL);
    if (tb_it == NULL) return EINA_FALSE;
 
@@ -78,20 +80,21 @@ ui_menu_add (App_Data *ap)
    elm_menu_item_add(menu, NULL, "menu/apps", "Settings", NULL, NULL);
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 
-   tb_it = elm_toolbar_item_append (tb, NULL, "Separator", NULL, NULL);
-   elm_toolbar_item_separator_set (tb_it, EINA_TRUE);
+   tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
 
-   elm_toolbar_icon_order_lookup_set (tb, ELM_ICON_LOOKUP_THEME);
+   elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_THEME);
 
    elm_toolbar_item_append(tb, "file", "File", NULL, NULL);
    elm_toolbar_item_append(tb, "folder", "Folder", NULL, NULL);
    elm_toolbar_item_append(tb, "edit", "Edit", NULL, NULL);
    elm_toolbar_item_append(tb, "refresh", "Refresh", NULL, NULL);
 
-   tb_it = elm_toolbar_item_append (tb, NULL, "Separator", NULL, NULL);
-   elm_toolbar_item_separator_set (tb_it, EINA_TRUE);
+   tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
+   elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
 
-   elm_toolbar_item_append(tb, "item", "Style Viewer", _on_style_window_menu, ap);
+   elm_toolbar_item_append(tb, "item", "Style Viewer",
+                           _on_style_window_menu, ap);
 
    ap->main_menu = tb;
    return EINA_TRUE;

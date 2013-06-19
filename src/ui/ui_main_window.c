@@ -3,41 +3,34 @@
 
 
 static void
-_on_done(void *data,
+_on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-
-   ui_main_window_del(ap);
+   ui_main_window_del();
 }
 
 void
-ui_main_window_del (App_Data *ap)
+ui_main_window_del(void)
 {
    ui_panes_settings_save();
-
-   pm_free(ap->project);
-
    INFO("%s: %s - Finished...", PACKAGE_NAME, VERSION);
    elm_exit();
 }
 
 static void
-_on_window_resize (void *data __UNUSED__,
+_on_window_resize(void *data __UNUSED__,
                    Evas *e __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
    int w, h;
-   evas_object_geometry_get (obj, NULL, NULL, &w, &h);
+   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    ui_resize_pans(w,h);
 }
 
 Eina_Bool
-ui_main_window_add (App_Data *ap)
+ui_main_window_add(App_Data *ap)
 {
    Evas_Object *win, *bg, *layout;
 
@@ -51,8 +44,8 @@ ui_main_window_add (App_Data *ap)
    ap->win = win;
 
    elm_win_title_set(win, PACKAGE);
-   evas_object_smart_callback_add (win, "delete,request", _on_done, ap);
-   evas_object_event_callback_add (win,
+   evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
+   evas_object_event_callback_add(win,
                                    EVAS_CALLBACK_RESIZE,
                                    _on_window_resize,
                                    NULL);
@@ -79,7 +72,7 @@ ui_main_window_add (App_Data *ap)
      ERR("Failrue add panes on main window.");
 
    ui_panes_settings_load(win);
-   ui_workspace_add (ap);
+   ap->ws = ws_add(ap->block.canvas);
    evas_object_show(win);
 
    return EINA_TRUE;

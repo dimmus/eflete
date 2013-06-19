@@ -1,5 +1,5 @@
 #include "project_manager.h"
-#include "widget_manager.h"
+#include "alloc.h"
 
 static void
 _on_copy_done_cb(void *data,
@@ -82,7 +82,7 @@ pm_project_add(const char *name,
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
-   pro->swapfile = calloc(strlen(pro->edj) + 6, sizeof(char));
+   pro->swapfile = mem_malloc((strlen(pro->edj) + 6) * sizeof(char));
    strcpy(pro->swapfile, pro->edj);
    strncat(pro->swapfile, ".swap", 5);
    DBG ("Path to swap file: '%s'", pro->swapfile);
