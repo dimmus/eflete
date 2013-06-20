@@ -5,7 +5,8 @@
 Eina_List *ui_list_menu;
 
 static void
-_on_edc_open_menu(void *data, Evas_Object *obj __UNUSED__,
+_on_edc_open_menu(void *data,
+                  Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
@@ -13,19 +14,20 @@ _on_edc_open_menu(void *data, Evas_Object *obj __UNUSED__,
 }
 
 static void
-_on_edj_open_menu(void *data, Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_on_edj_open_menu(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    open_edj_file(ap);
 }
 
 static void
-_on_exit_menu (void *data, Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_on_exit_menu(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   ui_main_window_del(ap);
+   ui_main_window_del();
 }
 
 static void

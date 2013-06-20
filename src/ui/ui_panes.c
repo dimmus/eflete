@@ -44,7 +44,7 @@ Evas_Object *panes;
 UI_Current_State_Panes *
 _ui_panes_current_state_struct_init(void)
 {
-   UI_Current_State_Panes *csp = calloc(1, sizeof(UI_Current_State_Panes));
+   UI_Current_State_Panes *csp = mem_malloc (sizeof(UI_Current_State_Panes));
    csp->panes_left.left_size = 0;
    csp->panes_left.right_size = 0;
 
@@ -149,8 +149,7 @@ _ui_panes_current_state_get(void)
    ui_csp->panes_center_down.right_size=
       (int)(ui_csp->panes_right.left_size*size_get);
 
-   if (_need_resize)
-     _ui_panes_current_state_set();
+   if (_need_resize) _ui_panes_current_state_set();
 }
 
 void

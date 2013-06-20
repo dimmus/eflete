@@ -83,7 +83,7 @@ _ui_settings_descriptors_shutdown(void)
 static Panes_Settings *
 _ui_settings_panes_add(Evas_Object *panes)
 {
-   Panes_Settings *_panes_sett = calloc(1, sizeof(Panes_Settings));
+   Panes_Settings *_panes_sett = mem_malloc(sizeof(Panes_Settings));
    _panes_sett->left = elm_panes_content_left_size_get(panes);
    _panes_sett->right = elm_panes_content_right_size_get(panes);
    return _panes_sett;
@@ -95,12 +95,11 @@ _ui_settings_panes_add(Evas_Object *panes)
 static UI_Settings *
 _ui_settings_prepare()
 {
-   UI_Settings *_ui_settings = calloc(1, sizeof(UI_Settings));
+   UI_Settings *_ui_settings = mem_malloc(sizeof(UI_Settings));
    Panes_Settings *_panes_set;
    Eina_List *_settings_to_save = NULL;
    Eina_List *_window_list = NULL;
    Window_Settings *_window_sett = calloc(1, sizeof(Window_Settings));
-
 
    _panes_set = _ui_settings_panes_add(us->panes_left);
    _settings_to_save = eina_list_append(_settings_to_save, _panes_set);
@@ -245,16 +244,5 @@ ui_settings_load()
 UI_Elements_Settings *
 ui_element_settings_init(void)
 {
-   UI_Elements_Settings *_ui_set = calloc(1, sizeof(UI_Elements_Settings));
-   if (!_ui_set) return NULL;
-
-   _ui_set->panes_left = NULL;
-   _ui_set->panes_right = NULL;
-   _ui_set->panes_left_hor = NULL;
-   _ui_set->panes_right_hor = NULL;
-   _ui_set->panes_center = NULL;
-   _ui_set->panes_center_down = NULL;
-   _ui_set->window = NULL;
-
-   return _ui_set;
+   return mem_calloc (1, sizeof (UI_Elements_Settings));
 }

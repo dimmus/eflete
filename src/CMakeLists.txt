@@ -6,6 +6,7 @@ add_definitions(-DHAVE_CONFIG_H)
 
 include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}
+   ${CMAKE_CURRENT_SOURCE_DIR}/alloc
    ${CMAKE_CURRENT_SOURCE_DIR}/project_manager
    ${CMAKE_CURRENT_SOURCE_DIR}/logger
    ${CMAKE_CURRENT_SOURCE_DIR}/ui
@@ -16,6 +17,7 @@ include_directories(
 
 set(TET_CC_FILES
    efl_tet.c
+   alloc/alloc.c
    project_manager/edje_compile.c
    project_manager/widget_manager.c
    project_manager/project_manager.c

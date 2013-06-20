@@ -49,7 +49,7 @@ _edj_text_style_get(Evas_Object *obj, const char *style_name)
    Text_Styles *style;
 
    tags = _edj_tags_list_get(obj, style_name);
-   style = calloc(1, sizeof(Text_Styles));
+   style = mem_malloc(sizeof(Text_Styles));
    style->style_name = strdup(style_name);
    style->tags = tags;
    style->__type = TEXTSTYLE;
@@ -94,9 +94,6 @@ _style_list_get(App_Data *ap)
      }
 
    _group = EINA_INLIST_CONTAINER_GET(groups, Group);
-   if (!_group->obj)
-     wm_group_data_load(_group, ap->ws->canvas, ap->project->swapfile);
-
    edje_object = _group->obj;
    text_styles_name = edje_edit_styles_list_get(edje_object);
    EINA_LIST_FOREACH (text_styles_name, f, text_style)
@@ -340,7 +337,7 @@ style_viewer_init (App_Data *ap)
      {
         inwin = elm_win_inwin_add(ap->win);
 
-        window = calloc(1, sizeof(Style_Window));
+        window = mem_malloc(sizeof(Style_Window));
 
         panes = elm_panes_add(inwin);
         evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

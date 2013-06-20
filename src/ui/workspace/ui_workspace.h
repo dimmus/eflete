@@ -77,6 +77,12 @@ Workspace *
 ws_add (Evas_Object *parent);
 
 /**
+ *
+ */
+void
+ws_free(Workspace *ws);
+
+/**
  * Add new context popup to the given parent Elemntary (container) object.
  *
  * @param parent The parent object.

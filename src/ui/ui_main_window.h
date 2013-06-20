@@ -38,7 +38,7 @@ ui_main_window_add(App_Data *ap);
  * @ingroup Window
  */
 void
-ui_main_window_del(App_Data *ap);
+ui_main_window_del(void);
 
 /**
  * Adds marked panes to the given Elementary layout.
