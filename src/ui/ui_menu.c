@@ -45,6 +45,14 @@ _on_image_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
 
 }
 
+static void
+_on_ccl_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   colorclass_viewer_init(colorclass_viewer_add(ap->win), ap->project);
+}
+
 Eina_Bool
 ui_menu_add(App_Data *ap)
 {
@@ -105,6 +113,9 @@ ui_menu_add(App_Data *ap)
 
    elm_toolbar_item_append(tb, "edit", "Images",
                            _on_image_viewer_menu, ap);
+
+   elm_toolbar_item_append(tb, "edit", "Colorclasses",
+                           _on_ccl_viewer_menu, ap);
 
    ap->main_menu = tb;
    return EINA_TRUE;
