@@ -3,7 +3,7 @@
 
 /**
  * @defgroup Colorclass_Viewer Colorclass_Viewer
- * @ingrup Dialogs
+ * @ingroup Dialogs
  *
  * Show color classes, which uses in project.
  */

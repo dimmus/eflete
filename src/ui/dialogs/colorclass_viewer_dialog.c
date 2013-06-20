@@ -240,7 +240,6 @@ colorclass_viewer_add(Evas_Object *parent)
 #undef COLOR_RECT_ADD
 
    evas_object_show(layout);
-   evas_object_show(inwin);
    return inwin;
 }
 
@@ -270,6 +269,7 @@ colorclass_viewer_init(Evas_Object *ccl_view, Project *project)
         evas_object_del(ccl_view);
         return;
      }
+   evas_object_show(ccl_view);
 
    edje = edje_object_add(e);
 
