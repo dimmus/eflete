@@ -135,12 +135,18 @@ font_viewer_init(Evas_Object *font_view, Project *project)
    Evas_Object *genlist = elm_object_part_content_get(
       elm_object_part_content_get(elm_win_inwin_content_get(font_view),
          "swallow/panes"), "left");
+
+   Eina_Compare_Cb cmp_func = (Eina_Compare_Cb)strcmp;
    Widget *_widget = NULL;
    Style *_style = NULL;
    Group *_group = NULL;
    Part *_part = NULL;
    Part_State *_state = NULL;
 
+   Eina_List *_fonts = NULL;
+   Eina_List *_temp_fonts =NULL;
+   Eina_List *l = NULL;
+   char *_data = NULL;
    if (!project)
      {
         NOTIFY_ERROR (elm_object_parent_widget_get(font_view),
@@ -162,11 +168,8 @@ font_viewer_init(Evas_Object *font_view, Project *project)
                              EINA_INLIST_FOREACH(_part->states, _state)
                                {
                                 if (_state->text->font)
-                                  {
-                                     elm_genlist_item_append(genlist,
-                                          _itc_font, _state->text->font, NULL,
-                                          ELM_GENLIST_ITEM_NONE, NULL, NULL);
-                                   }
+                                  _fonts = eina_list_append(_fonts,
+                                              strdup(_state->text->font));
                               }
                          }
                     }
@@ -174,5 +177,18 @@ font_viewer_init(Evas_Object *font_view, Project *project)
           }
      }
 
+   _fonts = eina_list_sort(_fonts, 0, cmp_func);
+
+   EINA_LIST_FOREACH(_fonts, l, _data)
+     {
+        if(!eina_list_search_sorted(_temp_fonts, cmp_func, _data))
+          {
+             elm_genlist_item_append(genlist,_itc_font, _data, NULL,
+                                          ELM_GENLIST_ITEM_NONE, NULL, NULL);
+             _temp_fonts = eina_list_append(_temp_fonts, _data);
+          }
+     }
+   eina_list_free(_fonts);
+   eina_list_free(_temp_fonts);
 }
 
