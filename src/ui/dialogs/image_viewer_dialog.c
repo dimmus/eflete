@@ -186,7 +186,7 @@ image_viewer_init (Evas_Object *img_view, Project *project)
    for (i = 0; i < count_images; i++)
      {
         Item *it;
-        it = (Item *)calloc(1, sizeof(*it));
+        it = (Item *)mem_calloc(1, sizeof(*it));
         it->prj =  project->swapfile;
         it->id = i;
         elm_gengrid_item_append(gengrid, gic, it, NULL, NULL);

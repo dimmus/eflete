@@ -124,7 +124,8 @@ _ccl_set(Colorclass_Item *ccl_it, Evas_Object *ccl_view)
 Colorclass_Item *
 _ccl_it_new ()
 {
-   Colorclass_Item *ccl_it = (Colorclass_Item *)calloc(1,sizeof(Colorclass_Item));
+   Colorclass_Item *ccl_it =
+      (Colorclass_Item *)mem_calloc(1,sizeof(Colorclass_Item));
    ccl_it->name = NULL;
    ccl_it->r1 = ccl_it->g1 = ccl_it->b1 = ccl_it->a1 = 0;
    ccl_it->r2 = ccl_it->g2 =  ccl_it->b2 =  ccl_it->a2 = 0;

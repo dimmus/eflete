@@ -36,9 +36,10 @@ _zoom_out_on_click(void *data __UNUSED__,
                    void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
-
-   ui_ruler_scale_relative_visible_set(ws->ruler_hor, !ws->ruler_hor);
-   ui_ruler_scale_relative_visible_set(ws->ruler_ver, !ws->ruler_ver);
+   Eina_Bool visible = ui_ruler_scale_relative_visible_get(ws->ruler_hor);
+   ui_ruler_scale_relative_visible_set(ws->ruler_hor, !visible);
+   visible = ui_ruler_scale_relative_visible_get(ws->ruler_ver);
+   ui_ruler_scale_relative_visible_set(ws->ruler_ver, !visible);
 }
 
 static void
