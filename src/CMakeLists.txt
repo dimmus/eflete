@@ -23,11 +23,11 @@ set(TET_CC_FILES
    project_manager/project_manager.c
    logger/logger.c
    ui/dialogs/open_file_dialog.c
+   ui/dialogs/style_viewer_dialog.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c
    ui/workspace/ui_groupspace.c
-   ui/ui_style_viewer_window.c
    ui/ui_block.c
    ui/ui_property.c
    ui/ui_panes.c
@@ -40,7 +40,6 @@ set(TET_CC_FILES
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c
-   ui/ui_style_viewer_window.c
    ui/workspace/ui_groupspace.c
    ui/notification/notify.c
 )
