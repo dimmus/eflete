@@ -26,10 +26,32 @@ _on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED
   else
      WARN ("Groupspace object always delete");
 
+  elm_genlist_clear(ui_block_state_list_get(ap));
 }
 
 static void
-_on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
+_on_state_selected(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   App_Data *ap = (App_Data *)data;
+   Part_State *state;
+   Evas_Object *prop_view, *part_view, *state_view;
+
+   state = elm_object_item_data_get(glit);
+
+   prop_view = ui_block_property_get(ap);
+   part_view = ui_property_part_view_get(prop_view);
+   state_view = ui_prop_part_info_state_view_add(part_view, state);
+   ui_prop_part_info_state_set(part_view, state_view);
+   evas_object_show(state_view);
+}
+
+static void
+_on_part_selected(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_data)
 {
 
    Elm_Object_Item *glit = (Elm_Object_Item *)event_data;
@@ -55,9 +77,12 @@ _on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
    ui_property_part_view_set(prop, part_prop);
    evas_object_show(part_prop);
 
-   gl_states = ui_states_list_add(ap, _part);
+   gl_states = ui_states_list_add(ap->win);
+   ui_states_list_data_set(gl_states, _part);
    ui_block_state_list_set(ap, gl_states);
    evas_object_show(gl_states);
+   evas_object_smart_callback_add(gl_states, "st,state,select",
+                                  _on_state_selected, ap);
 
    /* FIXME: it bad */
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
