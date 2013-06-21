@@ -96,6 +96,8 @@ _navi_gl_styles_pop(void *data,
 {
    Evas_Object *nf = (Evas_Object *)data;
    elm_naviframe_item_pop(nf);
+
+   evas_object_smart_callback_call (nf, "wl,group,back", NULL);
 }
 
 static void
@@ -106,7 +108,7 @@ _navi_gl_parts_pop(void *data,
    Evas_Object *nf = (Evas_Object *)data;
    elm_naviframe_item_pop(nf);
 
-   evas_object_smart_callback_call (nf, "part,back", NULL);
+   evas_object_smart_callback_call (nf, "wl,part,back", NULL);
 }
 
 static void
@@ -116,7 +118,7 @@ _on_part_select(void *data __UNUSED__,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Evas_Object *nf = elm_object_parent_widget_get(obj);
-   evas_object_smart_callback_call (nf, "part,select", glit);
+   evas_object_smart_callback_call (nf, "wl,part,select", glit);
 }
 
 static void
@@ -137,7 +139,7 @@ _on_group_clicked_double(void *data __UNUSED__,
    if (_group->__type != GROUP) return;
    parts = _group->parts;
 
-   evas_object_smart_callback_call (nf, "group,select", _group);
+   evas_object_smart_callback_call (nf, "wl,group,select", _group);
 
    if (!_itc_part)
      {

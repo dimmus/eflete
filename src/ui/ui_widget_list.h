@@ -4,13 +4,13 @@
 /**
  * @defgroup WidgetList WidgetList
  *
- * This widget inherits from the Naviframe and Genlist.
+ * This widget inherit from the Naviframe and Genlist.
  *
  * This widget emits the following signals:
  * @li "wl,group,select": the user double clicked on the group name
- * @li "wl,group,back"
- * @li "wl,part,select"
- * @li "wl,part,back"
+ * @li "wl,group,back": the user clicked on the "back" button
+ * @li "wl,part,select": the user selected on the part name
+ * @li "wl,part,back": the user clicked on the "back" button
  *
  * A Widget List used for view a list of widgets styles
  */
@@ -26,7 +26,7 @@
  * Add a new Widget List object.
  *
  * @param parent The parent object
- * @return the widget list object
+ * @return The widget list object
  *
  * @ingroup WidgetList
  */
@@ -38,7 +38,7 @@ ui_widget_list_add(Evas_Object *parent);
  * of widgets (consist widgets names).
  *
  * @param object A widget list object
- * @param title - The title string
+ * @param title The title string
  *
  * @ingroup WidgetList
  */
@@ -60,10 +60,10 @@ ui_widget_list_data_set(Evas_Object *object, Project *project);
 /**
  * Add (register) a callback function to a given Widget List object event.
  *
- * @param object a Widget List object
- * @param event the event's name string
- * @param func the callback function
- * @param data user data to be passed to the callback function
+ * @param object A Widget List object
+ * @param event The event's name string
+ * @param func The callback function
+ * @param data User data to be passed to the callback function
  *
  * @ingroup WidgetList
  */

@@ -78,7 +78,8 @@ _on_group_clicked(void *data,
 
    /* Get signals list of a group and show them */
    signals = wm_program_signals_list_get(_group->programs);
-   gl_signals = ui_signal_list_add(ap, signals);
+   gl_signals = ui_signal_list_add(ap->win);
+   ui_signal_list_data_set(gl_signals, signals);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
@@ -123,13 +124,13 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
              ui_widget_list_data_set(wd_list, ap->project);
              ui_block_widget_list_set(ap, wd_list);
 
-             evas_object_smart_callback_add(wd_list, "group,select",
+             evas_object_smart_callback_add(wd_list, "wl,group,select",
                                             _on_group_clicked, ap);
 
-             evas_object_smart_callback_add(wd_list, "part,select",
+             evas_object_smart_callback_add(wd_list, "wl,part,select",
                                             _on_part_selected, ap);
 
-             evas_object_smart_callback_add(wd_list, "part,back",
+             evas_object_smart_callback_add(wd_list, "wl,part,back",
                                             _on_part_back, ap);
 
              evas_object_show(wd_list);
