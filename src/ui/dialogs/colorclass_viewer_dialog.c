@@ -141,6 +141,7 @@ colorclass_viewer_add(Evas_Object *parent)
    Evas_Object *rect, *label;
 
    inwin = elm_win_inwin_add(parent);
+   elm_object_style_set(inwin,"tet");
 
    layout = elm_layout_add(inwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

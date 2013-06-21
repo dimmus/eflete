@@ -55,6 +55,8 @@ font_viewer_add(Evas_Object *parent)
 
    inwin = elm_win_inwin_add(parent);
 
+   elm_object_style_set(inwin,"tet");
+
    layout = elm_layout_add(inwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "base/colorclass_viewer/default");
@@ -126,6 +128,7 @@ font_viewer_add(Evas_Object *parent)
                                    inwin);
    evas_object_resize(button, 40, 20);
    evas_object_show(button);
+
    return inwin;
 }
 
