@@ -72,31 +72,4 @@ typedef struct _Style_Window Style_Window;
 Evas_Object *
 style_viewer_add (Evas_Object *parent, Workspace *ws, Project *project);
 
-/**
- * Set a title for style list
- *
- * @param object A style list object
- * @param title - The title string
- *
- * @ingroup TextStyle
- */
-void
-style_viewer_list_title_set(Evas_Object *object, const char *title);
-
-/**
- * Add (register) a callback function to a given Style List object event.
- *
- * @param object a Style List object
- * @param event the event's name string
- * @param func the callback function
- * @param data user data to be passed to the callback function
- *
- * @ingroup TextStyle
- */
-void
-style_viewer_list_callback_add(Evas_Object *object,
-                            const char *event,
-                            Edje_Signal_Cb func,
-                            void *data);
-
 #endif  /* STYLE_VIEWER_DIALOG_HEADER_H */

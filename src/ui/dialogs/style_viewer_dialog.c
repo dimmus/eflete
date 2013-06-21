@@ -390,14 +390,3 @@ style_viewer_list_callback_add(Evas_Object *object,
    if (!object) return;
    elm_object_signal_callback_add(object, event, "", func, data);
 }
-
-void
-style_viewer_list_title_set(Evas_Object *object, const char *title)
-{
-   Elm_Object_Item *item_gl_widgets;
-
-   if (!object) return;
-
-   item_gl_widgets = _widget_list_get(object);
-   elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
-}
