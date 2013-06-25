@@ -378,7 +378,6 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
-//   ui_groupspace_update (ws->groupspace);
 }
 
 void

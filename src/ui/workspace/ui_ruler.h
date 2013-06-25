@@ -143,6 +143,17 @@ void
 ui_ruler_hide(Evas_Object *obj);
 
 /**
+ * Get visible status ruler object.
+ *
+ * @param obj Ruler object.
+ * @return EINA_TRUE if ruler visible, EINA_FALSE, if ruler hided.
+ *
+ * @ingroup Ruler
+ */
+Eina_Bool
+ui_ruler_visible_get(Evas_Object *obj);
+
+/**
  * Set relative scale position on ruler. It's need to link relative coordinates
  * to another object.
  *
