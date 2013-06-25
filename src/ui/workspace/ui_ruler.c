@@ -592,6 +592,7 @@ ui_ruler_scale_absolute_position_zero_set(Evas_Object *obj, int pos)
    _absolute_scale_clear(obj);
    _ruler_data->abs_scale->start = pos;
    _scales_repaint(obj);
+
 }
 
 int
@@ -607,7 +608,18 @@ ui_ruler_hide(Evas_Object *obj)
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
    _ruler_data->visible = EINA_FALSE;
    _absolute_scale_clear(obj);
+   _relative_scale_marks_del(obj);
+   ui_ruler_pointer_visible_set(obj, EINA_FALSE);
+
+   elm_layout_signal_emit (obj, "ruler,bg,hide", "");
    evas_object_hide(obj);
+}
+
+Eina_Bool
+ui_ruler_visible_get(Evas_Object *obj)
+{
+   UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
+   return  _ruler_data->visible;
 }
 
 void
@@ -616,7 +628,17 @@ ui_ruler_show(Evas_Object *obj)
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
    _ruler_data->visible = EINA_TRUE;
    _scales_repaint(obj);
-   evas_object_show(obj);
+   ui_ruler_pointer_visible_set(obj, EINA_TRUE);
+   elm_layout_signal_emit (obj, "ruler,bg,show", "");
+  evas_object_show(obj);
+}
+
+void
+ui_ruler_update(Evas_Object *obj)
+{
+   _absolute_scale_clear(obj);
+   _relative_scale_marks_del(obj);
+   _scales_repaint(obj);
 }
 
 Evas_Object *

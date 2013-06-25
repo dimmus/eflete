@@ -55,6 +55,14 @@ _on_ccl_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
    colorclass_viewer_init(colorclass_viewer_add(ap->win), ap->project);
 }
 
+static void
+_on_font_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   font_viewer_init(font_viewer_add(ap->win), ap->project);
+}
+
 Eina_Bool
 ui_menu_add(App_Data *ap)
 {
@@ -110,14 +118,18 @@ ui_menu_add(App_Data *ap)
    tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
 */
-   elm_toolbar_item_append(tb, "item", "Style Viewer",
+   elm_toolbar_item_append(tb, "menu/arrow_up", "Styles",
                            _on_style_window_menu, ap);
 
-   elm_toolbar_item_append(tb, "edit", "Images",
+   elm_toolbar_item_append(tb, "menu/arrow_up", "Images",
                            _on_image_viewer_menu, ap);
 
-   elm_toolbar_item_append(tb, "edit", "Colorclasses",
+   elm_toolbar_item_append(tb, "menu/arrow_up", "Colorclasses",
                            _on_ccl_viewer_menu, ap);
+
+   elm_toolbar_item_append(tb, "menu/arrow_up", "Fonts",
+                           _on_font_viewer_menu, ap);
+
 
    ap->main_menu = tb;
    return EINA_TRUE;

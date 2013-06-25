@@ -47,6 +47,16 @@ Evas_Object *
 ui_ruler_add(Evas_Object *parent);
 
 /**
+ * Update ruler object scales.
+ *
+ * @param parent The ruler object.
+ *
+ * @ingroup Ruler
+ */
+void
+ui_ruler_update(Evas_Object *parent);
+
+/**
  * Change the ruler orientation to horizontal or vertical.
  *
  * @param obj Ruler object.
@@ -131,6 +141,17 @@ ui_ruler_show(Evas_Object *obj);
  */
 void
 ui_ruler_hide(Evas_Object *obj);
+
+/**
+ * Get visible status ruler object.
+ *
+ * @param obj Ruler object.
+ * @return EINA_TRUE if ruler visible, EINA_FALSE, if ruler hided.
+ *
+ * @ingroup Ruler
+ */
+Eina_Bool
+ui_ruler_visible_get(Evas_Object *obj);
 
 /**
  * Set relative scale position on ruler. It's need to link relative coordinates

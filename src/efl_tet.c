@@ -77,6 +77,8 @@ app_init ()
         CRIT("Cannot initialize the Ecore_Evas system");
         return EINA_FALSE;
      }
+
+   elm_theme_extension_add(NULL, TET_EDJ);
    return EINA_TRUE;
 }
 
@@ -84,6 +86,7 @@ void
 app_shutdown ()
 {
    app_free(ap);
+   elm_theme_extension_del(NULL, TET_EDJ);
    eina_shutdown();
    efreet_shutdown();
    ecore_shutdown();

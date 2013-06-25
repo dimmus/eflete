@@ -11,4 +11,5 @@ collections {
    #include "widgets/notify.edc"
    #include "widgets/image_viewer.edc"
    #include "widgets/colorclass_viewer.edc"
+   #include "widgets/inwin.edc"
 }

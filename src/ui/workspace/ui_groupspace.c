@@ -31,6 +31,9 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y);
    ui_ruler_scale_relative_position_set(ws->ruler_hor, x, x + w);
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y, y + h);
+   ui_ruler_update(ws->ruler_hor);
+   ui_ruler_update(ws->ruler_ver);
+
    ui_object_highlight_move(ws);
 }
 
@@ -161,13 +164,15 @@ _gs_text_draw(Evas_Object *view_part, Group *group, Part *part)
    _current_state = EINA_INLIST_CONTAINER_GET (part->states, Part_State);
 
    canvas = evas_object_evas_get(view_part);
+
+   edje_edit_state_text_set(group->obj, part->name, _current_state->name,
+                            _current_state->value, part->name);
+   edje_object_calc_force(group->obj);
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
    _text = evas_object_text_add(canvas);
-
-   if (!_current_state->text->text)
-     evas_object_text_text_set(_text, part->name);
-   else
-     evas_object_text_text_set(_text, _current_state->text->text);
+   evas_object_text_text_set(_text,
+                             edje_edit_state_text_get(group->obj, part->name,
+                                _current_state->name, _current_state->value));
 
    evas_object_text_font_set(_text, _current_state->text->font,
       _current_state->text->size);
@@ -349,10 +354,10 @@ ui_groupspace_add(Evas_Object *parent)
    Evas_Object *_groupspace = NULL;
 
    _groupspace = elm_layout_add(parent);
-
    elm_object_part_content_set(parent, "base/workspace/groupspace", _groupspace);
    elm_layout_file_set(_groupspace, TET_EDJ, "base/groupspace");
-
+   evas_object_hide(parent);
+   evas_object_hide(_groupspace);
    return _groupspace;
 }
 
@@ -361,9 +366,16 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 {
    Evas_Object *_part_view = elm_layout_add(ws->groupspace);
    evas_object_data_set(ws->groupspace, GS_VIEWPART_KEY, _part_view);
+
+//   elm_layout_file_set(ws->groupspace, TET_EDJ, "base/groupspace");
    elm_object_part_content_set(ws->groupspace, "base/groupspace/groupspace",
                                _part_view);
+   elm_layout_signal_emit (ws->groupspace, "groupspace,show", "");
 
+   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
+                                   "base/groupspace/top_pad", 0.1, 0.1);
+   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
+                                   "base/groupspace/bottom_pad", 0.1, 0.1);
 
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
@@ -375,7 +387,6 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
-   ui_groupspace_update (ws->groupspace);
 }
 
 void
@@ -396,15 +407,15 @@ ui_groupspace_unset(Evas_Object *obj)
    Group *group = evas_object_data_get(obj, GS_GROUP_KEY);
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
    Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
-   elm_object_part_content_unset(ws->groupspace, "base/groupspace/groupsace");
+   elm_object_part_content_unset(ws->groupspace, "base/groupspace/groupspace");
+   elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
 
    EINA_INLIST_FOREACH(group->parts, _part)
      {
-       // if (_part->obj)
           evas_object_hide(_part->obj);
      }
 
-   evas_object_hide (view_part);
-   evas_object_hide (ws->groupspace);
+   evas_object_hide(view_part);
+   evas_object_hide(ws->groupspace);
 }
 

@@ -124,7 +124,8 @@ _ccl_set(Colorclass_Item *ccl_it, Evas_Object *ccl_view)
 Colorclass_Item *
 _ccl_it_new ()
 {
-   Colorclass_Item *ccl_it = (Colorclass_Item *)calloc(1,sizeof(Colorclass_Item));
+   Colorclass_Item *ccl_it =
+      (Colorclass_Item *)mem_calloc(1,sizeof(Colorclass_Item));
    ccl_it->name = NULL;
    ccl_it->r1 = ccl_it->g1 = ccl_it->b1 = ccl_it->a1 = 0;
    ccl_it->r2 = ccl_it->g2 =  ccl_it->b2 =  ccl_it->a2 = 0;
@@ -140,6 +141,7 @@ colorclass_viewer_add(Evas_Object *parent)
    Evas_Object *rect, *label;
 
    inwin = elm_win_inwin_add(parent);
+   elm_object_style_set(inwin,"tet");
 
    layout = elm_layout_add(inwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -240,7 +242,6 @@ colorclass_viewer_add(Evas_Object *parent)
 #undef COLOR_RECT_ADD
 
    evas_object_show(layout);
-   evas_object_show(inwin);
    return inwin;
 }
 
@@ -270,6 +271,7 @@ colorclass_viewer_init(Evas_Object *ccl_view, Project *project)
         evas_object_del(ccl_view);
         return;
      }
+   evas_object_show(ccl_view);
 
    edje = edje_object_add(e);
 

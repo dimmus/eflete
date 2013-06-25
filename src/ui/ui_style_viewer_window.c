@@ -336,6 +336,7 @@ style_viewer_init (App_Data *ap)
    if (ap->project != NULL)
      {
         inwin = elm_win_inwin_add(ap->win);
+        elm_object_style_set(inwin,"tet");
 
         window = mem_malloc(sizeof(Style_Window));
 

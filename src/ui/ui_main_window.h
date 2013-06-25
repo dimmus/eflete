@@ -17,7 +17,7 @@
 #include "ui_block.h"
 #include "image_viewer_dialog.h"
 #include "colorclass_viewer_dialog.h"
-
+#include "font_viewer_dialog.h"
 /**
  * Adds main window object for Edje tool development.
  *
