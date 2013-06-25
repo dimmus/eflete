@@ -31,6 +31,9 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y);
    ui_ruler_scale_relative_position_set(ws->ruler_hor, x, x + w);
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y, y + h);
+   ui_ruler_update(ws->ruler_hor);
+   ui_ruler_update(ws->ruler_ver);
+
    ui_object_highlight_move(ws);
 }
 
@@ -351,8 +354,7 @@ ui_groupspace_add(Evas_Object *parent)
    _groupspace = elm_layout_add(parent);
 
    elm_object_part_content_set(parent, "base/workspace/groupspace", _groupspace);
-   elm_layout_file_set(_groupspace, TET_EDJ, "base/groupspace");
-
+   evas_object_hide(_groupspace);
    return _groupspace;
 }
 
@@ -361,6 +363,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 {
    Evas_Object *_part_view = elm_layout_add(ws->groupspace);
    evas_object_data_set(ws->groupspace, GS_VIEWPART_KEY, _part_view);
+   elm_layout_file_set(ws->groupspace, TET_EDJ, "base/groupspace");
    elm_object_part_content_set(ws->groupspace, "base/groupspace/groupspace",
                                _part_view);
 
@@ -375,7 +378,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
-   ui_groupspace_update (ws->groupspace);
+//   ui_groupspace_update (ws->groupspace);
 }
 
 void
@@ -400,7 +403,6 @@ ui_groupspace_unset(Evas_Object *obj)
 
    EINA_INLIST_FOREACH(group->parts, _part)
      {
-       // if (_part->obj)
           evas_object_hide(_part->obj);
      }
 

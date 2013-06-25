@@ -592,6 +592,7 @@ ui_ruler_scale_absolute_position_zero_set(Evas_Object *obj, int pos)
    _absolute_scale_clear(obj);
    _ruler_data->abs_scale->start = pos;
    _scales_repaint(obj);
+
 }
 
 int
@@ -617,6 +618,14 @@ ui_ruler_show(Evas_Object *obj)
    _ruler_data->visible = EINA_TRUE;
    _scales_repaint(obj);
    evas_object_show(obj);
+}
+
+void
+ui_ruler_update(Evas_Object *obj)
+{
+   _absolute_scale_clear(obj);
+   _relative_scale_marks_del(obj);
+   _scales_repaint(obj);
 }
 
 Evas_Object *

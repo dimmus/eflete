@@ -47,6 +47,16 @@ Evas_Object *
 ui_ruler_add(Evas_Object *parent);
 
 /**
+ * Update ruler object scales.
+ *
+ * @param parent The ruler object.
+ *
+ * @ingroup Ruler
+ */
+void
+ui_ruler_update(Evas_Object *parent);
+
+/**
  * Change the ruler orientation to horizontal or vertical.
  *
  * @param obj Ruler object.

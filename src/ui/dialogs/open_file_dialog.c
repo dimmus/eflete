@@ -101,7 +101,7 @@ _on_group_clicked(void *data,
      }
 
    ui_groupspace_set (ap->ws, ap->project, _group);
-//   ui_groupspace_update (ap->ws->groupspace);
+   ui_groupspace_update (ap->ws->groupspace);
 }
 
 static void
