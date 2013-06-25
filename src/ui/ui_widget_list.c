@@ -280,6 +280,7 @@ ui_widget_list_add(Evas_Object *parent)
    nf = elm_naviframe_add(parent);
    evas_object_size_hint_align_set(nf, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_style_set(nf, "custom");
 
    gl_widgets = elm_genlist_add(nf);
    evas_object_size_hint_align_set(gl_widgets,

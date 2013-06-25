@@ -375,7 +375,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
                                    "base/groupspace/top_pad", 0.1, 0.1);
    edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
-                                   "base/groupspace/bottom_pad", 0.1, 0.1);
+                                   "base/groupspace/bottom_pad", 0.9, 0.9);
 
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);

@@ -17,5 +17,6 @@ images {
    image: "tog_base_off.png" COMP;
    image: "tog_dis_base_on.png" COMP;
    image: "tog_dis_base_off.png" COMP;
+   image: "naviframe-base.jpg" COMP;
 }
 
