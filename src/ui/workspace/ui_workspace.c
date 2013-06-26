@@ -59,8 +59,7 @@ _ws_mouse_click_cb(void *data ,
 {
    Evas_Event_Mouse_Down *ev = event_info;
    Workspace *ws = (Workspace*)data;
-   elm_object_signal_emit (ws->ruler_hor, "test", "ws");
-   if (ev->button ==3) ui_popup_show (ws->bg, ws->popup);
+   if (ev->button == 3) ui_popup_show (ws->bg, ws->popup);
    else ui_popup_hide (ws->popup);
 }
 
@@ -170,6 +169,8 @@ ws_add (Evas_Object *parent)
                                   _ws_mouse_move_cb, ws);
 
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _ws_mouse_click_cb, ws);
+   evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_DOWN,
                                   _ws_mouse_click_cb, ws);
 
    return ws;
