@@ -67,8 +67,6 @@ _gs_image_update(Project *project, Group *group, Part *part, Part_State *state)
    evas_object_image_border_set(part->obj, state->image->left,
       state->image->right, state->image->top, state->image->bottom);
 
-   evas_object_color_set(part->obj, state->color[0], state->color[1],
-                         state->color[2], state->color[3]);
 
    evas_object_image_fill_set(part->obj,
       state->image->fill_origin_relative_x,
@@ -76,6 +74,12 @@ _gs_image_update(Project *project, Group *group, Part *part, Part_State *state)
 
    evas_object_move (part->obj, x, y);
    evas_object_resize (part->obj, w, h);
+
+   if(state->color[3])
+     evas_object_color_set(part->obj, state->color[0], state->color[1],
+                           state->color[2], state->color[3]);
+   else
+     evas_object_color_set(part->obj, 0, 0, 0, 0);
 
    if (state->visible)
      {
@@ -129,6 +133,13 @@ _gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
       _current_state->image->fill_origin_relative_x,
       _current_state->image->fill_origin_relative_y, w, h);
 
+   if(_current_state->color[3])
+     evas_object_color_set(_image, _current_state->color[0],
+        _current_state->color[1],_current_state->color[2],
+        _current_state->color[3]);
+   else
+     evas_object_color_set(_image, 0, 0, 0, 0);
+
    if (_current_state->visible)
      {
         evas_object_show(_image);
@@ -154,8 +165,11 @@ _gs_rect_update(Group *group, Part *part, Part_State *state)
    evas_object_move (part->obj, x, y);
    evas_object_resize (part->obj, w, h);
 
-   evas_object_color_set(part->obj, state->color[0], state->color[1],
-                         state->color[2], state->color[3]);
+   if(state->color[3])
+     evas_object_color_set(part->obj, state->color[0], state->color[1],
+                           state->color[2], state->color[3]);
+   else
+     evas_object_color_set(part->obj, 0, 0, 0, 0);
 
    if (state->visible)
      {
@@ -189,11 +203,16 @@ _gs_rect_draw(Evas_Object *view_part, Group *group, Part *part,
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
 
    _rectangle = evas_object_rectangle_add(canvas);
+
    evas_object_move(_rectangle, x, y);
    evas_object_resize(_rectangle, w, h);
-   evas_object_color_set(_rectangle, _current_state->color[0],
-      _current_state->color[1],_current_state->color[2],
-      _current_state->color[3]);
+
+   if(_current_state->color[3])
+     evas_object_color_set(_rectangle, _current_state->color[0],
+        _current_state->color[1],_current_state->color[2],
+        _current_state->color[3]);
+   else
+     evas_object_color_set(_rectangle, 0, 0, 0, 0);
 
    if (_current_state->visible)
      {
@@ -323,12 +342,16 @@ _gs_text_update(Group *group, Part *part, Part_State *state)
    evas_object_text_font_set(part->obj, state->text->font,
       state->text->size);
 
-   evas_object_color_set(part->obj, state->color[0], state->color[1],
-                         state->color[2], state->color[3]);
    evas_object_move(part->obj,(int)( x + w * state->text->align_x),
                    (int)(y + h * state->text->align_y));
    if (w && h) evas_object_resize(part->obj, w, h);
-   if (state->visible)
+
+   if(state->color[3])
+     evas_object_color_set(part->obj, state->color[0], state->color[1],
+                           state->color[2], state->color[3]);
+   else
+     evas_object_color_set(part->obj, 0, 0, 0, 0);
+  if (state->visible)
      {
         evas_object_show(part->obj);
         part->show = EINA_TRUE;
@@ -368,12 +391,17 @@ _gs_text_draw(Evas_Object *view_part, Group *group, Part *part,
    evas_object_text_font_set(_text, _current_state->text->font,
       _current_state->text->size);
 
-   evas_object_color_set(_text, _current_state->color[0],
-      _current_state->color[1], _current_state->color[2],
-      _current_state->color[3]);
    evas_object_move(_text,(int)( x + w * _current_state->text->align_x),
                    (int)(y + h * _current_state->text->align_y));
    if (w && h) evas_object_resize(_text, w, h);
+
+   if(_current_state->color[3])
+     evas_object_color_set(_text, _current_state->color[0],
+        _current_state->color[1],_current_state->color[2],
+        _current_state->color[3]);
+   else
+     evas_object_color_set(_text, 0, 0, 0, 0);
+
    if (_current_state->visible)
      {
         evas_object_show(_text);
