@@ -14,7 +14,9 @@ typedef struct _fs_entries fs_entries;
 static fs_entries *fs_ent = NULL;
 
 static void
-_on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED__)
+_on_part_back(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_data __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
 
@@ -27,6 +29,17 @@ _on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED
      WARN ("Groupspace object always delete");
 
   elm_genlist_clear(ui_block_state_list_get(ap));
+  evas_object_del(ui_property_part_view_get(ui_block_property_get(ap)));
+}
+
+static void
+_on_group_back(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_data __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   elm_genlist_clear(ui_block_signal_list_get(ap));
+   evas_object_del(ui_property_group_view_get(ui_block_property_get(ap)));
 }
 
 static void
@@ -153,12 +166,12 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 
              evas_object_smart_callback_add(wd_list, "wl,group,select",
                                             _on_group_clicked, ap);
-
              evas_object_smart_callback_add(wd_list, "wl,part,select",
                                             _on_part_selected, ap);
-
              evas_object_smart_callback_add(wd_list, "wl,part,back",
                                             _on_part_back, ap);
+             evas_object_smart_callback_add(wd_list, "wl,group,back",
+                                            _on_group_back, ap);
 
              evas_object_show(wd_list);
              ui_panes_show(ap);
