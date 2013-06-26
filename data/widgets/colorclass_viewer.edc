@@ -1,0 +1,762 @@
+group {
+   name: "base/colorclass_viewer/default";
+   parts {
+      part {
+         name: "swallow/panes";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.9;
+         }
+      }
+     part {
+         name: "spacer_one";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.5;
+            rel1 {
+               to: "swallow/panes";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+
+      part {
+         name: "button_add";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_one";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_two";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "button_add";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "button_del";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_two";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part {
+         name: "spacer_three";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "button_del";
+               relative: 1.0 0.0;
+           }
+         }
+      }
+
+      part {
+         name: "button_ok";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_three";
+               relative: 1.0 0.0;
+           }
+         }
+      }
+
+      part {
+         name: "spacer_fouth";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "button_ok";
+               relative: 1.0 0.0;
+           }
+         }
+      }
+
+      part {
+         name: "button_cancel";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 100 20;
+            max: 100 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_fouth";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+
+   }
+}
+
+group {
+   name: "base/colorclass_viewer/property";
+   parts {
+     part {
+         name: "spacer_1";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 40;
+            max: 20 40;
+            align: 0.0 0.0;
+            rel1.relative: 0.0 0.1;
+         }
+      }
+
+      part {
+         name: "text_object";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            align: 0.0 0.0;
+            text {
+               text: "Object color: ";
+               font: "Sans,Edje-Vera";
+               size: 20;
+               max: 1 1;
+               min: 1 1;
+            }
+            rel1 {
+               to: "spacer_1";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+     part {
+         name: "spacer_2";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "text_object";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "obj_color";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 50 30;
+            max: 50 30;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_2";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "obj_r";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 50 20;
+            max: 50 20;
+            align: 0.0 0.0;
+           rel1 {
+               to: "spacer_1";
+               relative: 1.0 1.0;
+               offset: 0 10;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_3";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "obj_r";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part {
+         name: "obj_g";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_3";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_4";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "obj_g";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "obj_b";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_4";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_5";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            fixed: 1 1;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "obj_b";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "obj_a";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_5";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+
+     part {
+         name: "spacer_6";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 40;
+            max: 20 40;
+            align: 0.0 0.0;
+            rel1.relative: 0.0 0.4;
+         }
+      }
+
+      part {
+         name: "text_outline";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            align: 0.0 0.0;
+            text {
+               text: "Outline color: ";
+               font: "Sans,Edje-Vera";
+               size: 20;
+               min: 1 1;
+               max: 1 1;
+            }
+            rel1 {
+               to: "spacer_6";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+     part {
+         name: "spacer_7";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "text_outline";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "out_color";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 50 30;
+            max: 50 30;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_7";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "out_r";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 50 20;
+            max: 50 20;
+            align: 0.0 0.0;
+           rel1 {
+               to: "spacer_6";
+               relative: 1.0 1.0;
+               offset: 0 10;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_8";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "out_r";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part {
+         name: "out_g";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_8";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_9";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "out_g";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "out_b";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_9";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_10";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            fixed: 1 1;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "out_b";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "out_a";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_10";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+     part {
+         name: "spacer_11";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 40;
+            max: 20 40;
+            align: 0.0 0.0;
+            rel1.relative: 0.0 0.7;
+         }
+      }
+
+      part {
+         name: "text_shadow";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            align: 0.0 0.0;
+            text {
+               text: "Shadow color: ";
+               font: "Sans,Edje-Vera";
+               size: 20;
+               min: 1 1;
+               max: 1 1;
+            }
+            rel1 {
+               to: "spacer_11";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+
+     part {
+         name: "spacer_12";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "text_shadow";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "shdw_color";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 50 30;
+            max: 50 30;
+            align: 0.0 0.0;
+            rel1 {
+               to: "spacer_12";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "shdw_r";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 50 20;
+            max: 50 20;
+            align: 0.0 0.0;
+           rel1 {
+               to: "spacer_11";
+               relative: 1.0 1.0;
+               offset: 0 10;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_13";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "shdw_r";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part {
+         name: "shdw_g";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_13";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_14";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "shdw_g";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "shdw_b";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_14";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "spacer_15";
+         type: SPACER;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            min: 20 20;
+            fixed: 1 1;
+            max: 20 20;
+            align: 0.0 0.0;
+            rel1 {
+               to: "shdw_b";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part {
+         name: "shdw_a";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            min: 50 20;
+            max: 50 20;
+            rel1 {
+               to: "spacer_15";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+   }
+
+}

@@ -10,16 +10,23 @@ _item_signal_label_get(void *data,
    return strdup(data);
 }
 
+static void
+_on_signal_selected(void *data __UNUSED__,
+                    Evas_Object *obj,
+                    void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   evas_object_smart_callback_call(obj, "sl,signal,select", glit);
+}
+
 Evas_Object *
-ui_signal_list_add(App_Data *ap, Eina_List *signals)
+ui_signal_list_add(Evas_Object *parent)
 {
    Evas_Object *gl_signals;
-   Eina_List *l;
-   char *signal;
 
-   if(!ap || !signals) return NULL;
+   if (!parent) return NULL;
 
-   if(!_itc_signal)
+   if (!_itc_signal)
      {
         _itc_signal = elm_genlist_item_class_new();
         _itc_signal->item_style = "default";
@@ -29,7 +36,7 @@ ui_signal_list_add(App_Data *ap, Eina_List *signals)
         _itc_signal->func.del = NULL;
      }
 
-   gl_signals = elm_genlist_add(ap->win);
+   gl_signals = elm_genlist_add(parent);
    evas_object_size_hint_align_set(gl_signals,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
@@ -37,13 +44,36 @@ ui_signal_list_add(App_Data *ap, Eina_List *signals)
                                     EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
 
+   evas_object_smart_callback_add(gl_signals, "selected",
+                                 _on_signal_selected, NULL);
+
+   return gl_signals;
+}
+
+Eina_Bool
+ui_signal_list_data_set(Evas_Object *object, Eina_List *signals)
+{
+   Eina_List *l;
+   char *signal;
+
+   if ((!object) || (!signals)) return EINA_FALSE;
+
    EINA_LIST_FOREACH(signals, l, signal)
      {
-        elm_genlist_item_append(gl_signals, _itc_signal,
+        elm_genlist_item_append(object, _itc_signal,
                                 signal,
                                 NULL, ELM_GENLIST_ITEM_NONE,
                                 NULL, NULL);
      }
+   return EINA_TRUE;
+}
 
-   return gl_signals;
+void
+ui_signal_list_callback_add(Evas_Object *object,
+                            const char *event,
+                            Edje_Signal_Cb func,
+                            void *data)
+{
+   if (!object) return;
+   elm_object_signal_callback_add(object, event, "", func, data);
 }

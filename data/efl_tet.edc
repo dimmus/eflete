@@ -9,4 +9,8 @@ collections {
    #include "widgets/textstyle.edc"
    #include "widgets/groupspace.edc"
    #include "widgets/notify.edc"
+   #include "widgets/image_viewer.edc"
+   #include "widgets/colorclass_viewer.edc"
+   #include "widgets/inwin.edc"
+   #include "widgets/naviframe.edc"
 }

@@ -15,13 +15,35 @@
 /**
  * Add a new State List
  *
- * @param ap the application data
- * @param part the part whose state must be show
- * @return the state list object
+ * @param parent The parent object
+ * @return A new 'state list' widget handler or NULL, on errors
  *
  * @ingroup StateList
  */
 Evas_Object *
-ui_states_list_add(App_Data *ap, Part *part);
+ui_states_list_add(Evas_Object *parent);
+
+/**
+ * Set to a 'states list' widget a data of a part states.
+ *
+ * @param object A 'states list' object
+ * @param part A Part object
+ * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
+ *
+ * @ingroup StateList
+ */
+Eina_Bool
+ui_states_list_data_set(Evas_Object *object, Part *part);
+
+/**
+ * Get Part object, wich states currently showed.
+ *
+ * @param object A 'states list' object
+ * @return A Part object
+ *
+ * @ingroup StateList
+ */
+Part *
+ui_state_list_part_get(Evas_Object *obj);
 
 #endif /* UI_STATES_LIST_H */

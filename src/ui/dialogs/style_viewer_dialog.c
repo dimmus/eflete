@@ -94,9 +94,6 @@ _style_list_get(Evas_Object* obj, Workspace *ws, Project *project)
      }
 
    _group = EINA_INLIST_CONTAINER_GET(groups, Group);
-   if (!_group->obj)
-     wm_group_data_load(_group, ws->canvas, project->swapfile);
-
    edje_object = _group->obj;
    text_styles_name = edje_edit_styles_list_get(edje_object);
    EINA_LIST_FOREACH (text_styles_name, f, text_style)

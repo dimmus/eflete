@@ -14,7 +14,9 @@ typedef struct _fs_entries fs_entries;
 static fs_entries *fs_ent = NULL;
 
 static void
-_on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED__)
+_on_part_back(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_data __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
 
@@ -26,19 +28,54 @@ _on_part_back(void *data, Evas_Object *obj __UNUSED__, void *event_data __UNUSED
   else
      WARN ("Groupspace object always delete");
 
+  elm_genlist_clear(ui_block_state_list_get(ap));
+  evas_object_del(ui_property_part_view_get(ui_block_property_get(ap)));
 }
 
 static void
-_on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
+_on_group_back(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_data __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   elm_genlist_clear(ui_block_signal_list_get(ap));
+   evas_object_del(ui_property_group_view_get(ui_block_property_get(ap)));
+}
+
+static void
+_on_state_selected(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   App_Data *ap = (App_Data *)data;
+   Part_State *state;
+   Part *part = NULL;
+   Evas_Object *prop_view, *part_view, *state_view;
+
+   state = elm_object_item_data_get(glit);
+
+   prop_view = ui_block_property_get(ap);
+   part_view = ui_property_part_view_get(prop_view);
+   state_view = ui_prop_part_info_state_view_add(part_view, state);
+   ui_prop_part_info_state_set(part_view, state_view);
+   part = ui_state_list_part_get(obj);
+   ui_groupspace_part_state_update(part, state, ap->ws->groupspace);
+   ui_object_highlight_set(ap->ws, part->obj);
+   evas_object_show(state_view);
+}
+
+static void
+_on_part_selected(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_data)
 {
 
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_data;
    Evas_Object *prop, *part_prop, *gl_states;
    App_Data *ap = (App_Data *)data;
-   Part *_part;
+   Part *_part = (Part *) event_data;
 
    ap = (App_Data *)data;
-   _part = elm_object_item_data_get(glit);
    if (!_part)
      {
         ERR("Coud not get acess to part object");
@@ -55,9 +92,12 @@ _on_part_selected(void *data, Evas_Object *obj __UNUSED__, void *event_data)
    ui_property_part_view_set(prop, part_prop);
    evas_object_show(part_prop);
 
-   gl_states = ui_states_list_add(ap, _part);
+   gl_states = ui_states_list_add(ap->win);
+   ui_states_list_data_set(gl_states, _part);
    ui_block_state_list_set(ap, gl_states);
    evas_object_show(gl_states);
+   evas_object_smart_callback_add(gl_states, "st,state,select",
+                                  _on_state_selected, ap);
 
    /* FIXME: it bad */
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
@@ -78,7 +118,8 @@ _on_group_clicked(void *data,
 
    /* Get signals list of a group and show them */
    signals = wm_program_signals_list_get(_group->programs);
-   gl_signals = ui_signal_list_add(ap, signals);
+   gl_signals = ui_signal_list_add(ap->win);
+   ui_signal_list_data_set(gl_signals, signals);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
@@ -101,7 +142,7 @@ _on_group_clicked(void *data,
      }
 
    ui_groupspace_set (ap->ws, ap->project, _group);
-//   ui_groupspace_update (ap->ws->groupspace);
+   ui_groupspace_update (ap->ws->groupspace);
 }
 
 static void
@@ -124,14 +165,14 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
              ui_widget_list_data_set(wd_list, ap->project);
              ui_block_widget_list_set(ap, wd_list);
 
-             evas_object_smart_callback_add(wd_list, "group,select",
+             evas_object_smart_callback_add(wd_list, "wl,group,select",
                                             _on_group_clicked, ap);
-
-             evas_object_smart_callback_add(wd_list, "part,select",
+             evas_object_smart_callback_add(wd_list, "wl,part,select",
                                             _on_part_selected, ap);
-
-             evas_object_smart_callback_add(wd_list, "part,back",
+             evas_object_smart_callback_add(wd_list, "wl,part,back",
                                             _on_part_back, ap);
+             evas_object_smart_callback_add(wd_list, "wl,group,back",
+                                            _on_group_back, ap);
 
              evas_object_show(wd_list);
              ui_panes_show(ap);

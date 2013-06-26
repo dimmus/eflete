@@ -65,4 +65,17 @@ ui_groupspace_unset (Evas_Object *obj);
 void
 ui_groupspace_update (Evas_Object *obj);
 
+/**
+ * Update view parts on groupspace with new state.
+ *
+ * @param part A Part object, wich selected in widgetlist.
+ * @param state A Part_State object, wich contain selected state for part.
+ * @param groupspace Groupspace object.
+ *
+ * @ingroup Groupspace
+ */
+void
+ui_groupspace_part_state_update(Part *part, Part_State *state,
+                                Evas_Object *groupspace);
+
 #endif /* UI_GROUPSPACE_HEADER_H */
