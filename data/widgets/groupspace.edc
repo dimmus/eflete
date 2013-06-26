@@ -166,7 +166,7 @@ group {
          mouse_events: 1;
          description {
             state: "default" 0.0;
-            color: 255 255 255 50;
+            color: 255 255 255 0;
          }
       }
       part {
@@ -178,14 +178,12 @@ group {
             visible: 1;
             rel1 {
                to: "eye";
-               offset: -3 -3;
             }
             rel2 {
                to: "eye";
-               offset: 3 3;
             }
             image.normal: "part_highlight.png";
-            image.border: 3 3 3 3;
+            image.border: 2 2 2 2;
          }
       }
    }
