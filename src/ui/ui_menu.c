@@ -63,6 +63,13 @@ _on_font_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
    font_viewer_init(font_viewer_add(ap->win), ap->project);
 }
 
+static void
+_on_about_window_menu(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+//   App_Data *ap = (App_Data *)data;
+}
+
 Eina_Bool
 ui_menu_add(App_Data *ap)
 {
@@ -99,37 +106,30 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
-   tb_it=elm_toolbar_item_append(tb,"menu/arrow_down", "Options", NULL, NULL);
+   tb_it=elm_toolbar_item_append(tb,"menu/arrow_down", "Viewers", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
-   elm_menu_item_add(menu, NULL, "menu/apps", "Settings", NULL, NULL);
+
+   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Styles",
+                    _on_style_window_menu, ap);
+   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Images",
+                     _on_image_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Colorclasses",
+                     _on_ccl_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Fonts",
+                     _on_font_viewer_menu, ap);
+
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 
+   tb_it=elm_toolbar_item_append(tb,"menu/arrow_down", "Help", NULL, NULL);
+   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
+   menu = elm_toolbar_item_menu_get(tb_it);
+   elm_menu_item_add(menu, NULL, "menu/arrow_right", "About",
+                     _on_about_window_menu, ap);
+
    tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
    elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
-
    elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_THEME);
-
-/*   elm_toolbar_item_append(tb, "file", "File", NULL, NULL);
-   elm_toolbar_item_append(tb, "folder", "Folder", NULL, NULL);
-   elm_toolbar_item_append(tb, "edit", "Edit", NULL, NULL);
-   elm_toolbar_item_append(tb, "refresh", "Refresh", NULL, NULL);
-
-   tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
-   elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
-*/
-   elm_toolbar_item_append(tb, "menu/arrow_up", "Styles",
-                           _on_style_window_menu, ap);
-
-   elm_toolbar_item_append(tb, "menu/arrow_up", "Images",
-                           _on_image_viewer_menu, ap);
-
-   elm_toolbar_item_append(tb, "menu/arrow_up", "Colorclasses",
-                           _on_ccl_viewer_menu, ap);
-
-   elm_toolbar_item_append(tb, "menu/arrow_up", "Fonts",
-                           _on_font_viewer_menu, ap);
-
 
    ap->main_menu = tb;
    return EINA_TRUE;
