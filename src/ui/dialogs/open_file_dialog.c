@@ -54,13 +54,11 @@ _on_part_selected(void *data,
                   void *event_data)
 {
 
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_data;
    Evas_Object *prop, *part_prop, *gl_states;
    App_Data *ap = (App_Data *)data;
-   Part *_part;
+   Part *_part = (Part *) event_data;
 
    ap = (App_Data *)data;
-   _part = elm_object_item_data_get(glit);
    if (!_part)
      {
         ERR("Coud not get acess to part object");

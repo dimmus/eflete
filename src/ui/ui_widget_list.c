@@ -33,16 +33,42 @@ _item_part_label_get(void *data,
    return strdup(p->name);
 }
 
+static void
+_on_icon_click(void *data,
+               Evas_Object *obj,
+               void *event_data __UNUSED__)
+{
+   Part *_part = (Part *) data;
+   _part->show = !_part->show;
+   if (_part->show)
+     {
+        evas_object_show(_part->obj);
+        elm_image_file_set(obj, TET_IMG_PATH"eye_open.png", NULL);
+     }
+   else
+     {
+        evas_object_hide(_part->obj);
+        elm_image_file_set(obj, TET_IMG_PATH"eye_close.png", NULL);
+     }
+}
+
 static Evas_Object *
-_item_part_content_get(void *data __UNUSED__,
+_item_part_content_get(void *data,
                        Evas_Object *obj,
                        const char *part)
 {
+   Part *_part = (Part *) data;
    Evas_Object *icon = elm_icon_add(obj);
    if (!strcmp(part, "elm.swallow.icon"))
-     elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
+     {
+        if (_part->show)
+          elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
+        else
+          elm_image_file_set(icon, TET_IMG_PATH"eye_close.png", NULL);
+     }
 
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
 
    return icon;
 }
@@ -118,7 +144,8 @@ _on_part_select(void *data __UNUSED__,
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Evas_Object *nf = elm_object_parent_widget_get(obj);
-   evas_object_smart_callback_call (nf, "wl,part,select", glit);
+   Part *_part = elm_object_item_data_get(glit);
+   evas_object_smart_callback_call (nf, "wl,part,select", _part);
 }
 
 static void

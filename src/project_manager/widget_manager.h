@@ -101,7 +101,7 @@ struct _Part
 	EINA_INLIST;
 	const char *name;
 	Evas_Object *obj;
-	Eina_Bool show : 1;
+	Eina_Bool show;
 	const char *api_name;
 	const char *description;
 	Edje_Part_Type type;
