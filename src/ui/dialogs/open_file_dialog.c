@@ -37,6 +37,7 @@ _on_state_selected(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    App_Data *ap = (App_Data *)data;
    Part_State *state;
+   Part *part = NULL;
    Evas_Object *prop_view, *part_view, *state_view;
 
    state = elm_object_item_data_get(glit);
@@ -45,6 +46,9 @@ _on_state_selected(void *data,
    part_view = ui_property_part_view_get(prop_view);
    state_view = ui_prop_part_info_state_view_add(part_view, state);
    ui_prop_part_info_state_set(part_view, state_view);
+   part = ui_state_list_part_get(obj);
+   ui_groupspace_part_state_update(part, state, ap->ws->groupspace);
+   ui_object_highlight_set(ap->ws, part->obj);
    evas_object_show(state_view);
 }
 

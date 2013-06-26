@@ -35,4 +35,15 @@ ui_states_list_add(Evas_Object *parent);
 Eina_Bool
 ui_states_list_data_set(Evas_Object *object, Part *part);
 
+/**
+ * Get Part object, wich states currently showed.
+ *
+ * @param object A 'states list' object
+ * @return A Part object
+ *
+ * @ingroup StateList
+ */
+Part *
+ui_state_list_part_get(Evas_Object *obj);
+
 #endif /* UI_STATES_LIST_H */

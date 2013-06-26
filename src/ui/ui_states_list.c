@@ -1,5 +1,7 @@
 #include "ui_states_list.h"
 
+#define STLIST_PART_KEY "stlist_part_key"
+
 static Elm_Genlist_Item_Class *_itc_state = NULL;
 
 static char *
@@ -79,7 +81,7 @@ ui_states_list_data_set(Evas_Object *object, Part *part)
    if ((!object) || (!part)) return EINA_FALSE;
 
    states = part->states;
-
+   evas_object_data_set(object, STLIST_PART_KEY, part);
    EINA_INLIST_FOREACH(states, state)
      {
         eoi = elm_genlist_item_append(object, _itc_state,
@@ -90,4 +92,13 @@ ui_states_list_data_set(Evas_Object *object, Part *part)
      }
 
    return EINA_TRUE;
+}
+
+Part *
+ui_state_list_part_get(Evas_Object *obj)
+{
+   Part *_part = NULL;
+   if (!obj) return NULL;
+   _part = evas_object_data_get(obj, STLIST_PART_KEY);
+   return _part;
 }
