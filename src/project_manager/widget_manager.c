@@ -418,15 +418,15 @@ wm_program_signals_list_free(Eina_List *signals)
 }
 
 Group *
-wm_group_add(const char *group_name, const char *full_group_name)
+wm_group_add(const char* group_name, const char* full_group_name)
 {
    Group *group_edje;
 
    if (!full_group_name || !group_name) return NULL;
 
    group_edje = mem_malloc(sizeof(Group));
-   group_edje->group_name = strdup(group_name);
-   group_edje->full_group_name = strdup(full_group_name);
+   group_edje->group_name = eina_stringshare_add(group_name);
+   group_edje->full_group_name = eina_stringshare_add(full_group_name);
    group_edje->obj = NULL;
    group_edje->parts = NULL;
    group_edje->programs = NULL;
@@ -507,7 +507,7 @@ wm_group_free(Group *group)
    if (!group->group_name)
      eina_stringshare_del(group->group_name);
 
-   free(group->full_group_name);
+   eina_stringshare_del(group->full_group_name);
 
    free(group);
    group = NULL;
@@ -526,7 +526,7 @@ wm_style_add(const char *style, Eina_List *groups)
    if (!style || !groups) return NULL;
 
    style_edje = mem_malloc(sizeof(*style_edje));
-   style_edje->style_name = strdup(style);
+   style_edje->style_name = eina_stringshare_add(style);
    style_edje->groups = NULL;
    style_edje->__type = STYLE;
 
@@ -563,7 +563,7 @@ wm_style_free(Style *style)
           }
      }
 
-   free(style->style_name);
+   eina_stringshare_del(style->style_name);
    free(style);
 
    return EINA_TRUE;
@@ -572,8 +572,8 @@ wm_style_free(Style *style)
 int
 sort_style_cb(const void *data1, const void *data2)
 {
-   const char *str1 = data1;
-   const char *str2 = data2;
+   const char *str1 = eina_stringshare_add(data1);
+   const char *str2 = eina_stringshare_add(data2);
    char *data1_style;
    char *data2_style = NULL;
 
@@ -586,6 +586,8 @@ sort_style_cb(const void *data1, const void *data2)
    int cmp = (strcmp(data1_style, data2_style));
    free(data1_style);
    free(data2_style);
+   eina_stringshare_del(str1);
+   eina_stringshare_del(str2);
    return cmp;
 }
 
@@ -602,7 +604,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
    if (!widget) return NULL;
 
    _widget = mem_malloc(sizeof(*_widget));
-   _widget->widget_name = strdup(widget);
+   _widget->widget_name = eina_stringshare_add(widget);
    _widget->styles = NULL;
    _widget->__type = WIDGET;
 
@@ -657,7 +659,7 @@ wm_widget_free(Widget *widget)
              wm_style_free(style);
           }
      }
-   free(widget->widget_name);
+   eina_stringshare_del(widget->widget_name);
    free(widget);
 
    return EINA_TRUE;
@@ -665,13 +667,16 @@ wm_widget_free(Widget *widget)
 
 int sort_collection_cb(const void *data1, const void *data2)
 {
-   const char *str1 = data1;
-   const char *str2 = data2;
+   const char *str1 = eina_stringshare_add(data1);
+   const char *str2 = eina_stringshare_add(data2);
 
    if (!str1) return 1;
    if (!str2) return -1;
 
-   return (strcmp(str1, str2));
+   int cmp = (strcmp(str1, str2));
+   eina_stringshare_del(str1);
+   eina_stringshare_del(str2);
+   return cmp;
 }
 
 Eina_Inlist *

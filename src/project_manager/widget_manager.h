@@ -155,8 +155,8 @@ typedef struct _Program Program;
 struct _Group
 {
 	EINA_INLIST;
-	char *group_name;
-	char *full_group_name;
+    const char *group_name;
+	const char *full_group_name;
 	Evas_Object *obj;
 	Eina_Bool show;
 	int min_w, min_h;
@@ -172,7 +172,7 @@ typedef struct _Group Group;
 struct _Style
 {
 	EINA_INLIST;
-	char *style_name;
+	const char *style_name;
 	Eina_Inlist *groups;
 	type __type;
 };
@@ -182,7 +182,7 @@ typedef struct _Style Style;
 struct _Widget
 {
 	EINA_INLIST;
-	char *widget_name;
+	const char *widget_name;
 	Eina_Inlist *styles;
 	type __type;
 };

@@ -31,8 +31,8 @@ typedef enum _Type_Style Type_Style;
 struct _Tag
 {
    EINA_INLIST;
-   char *tag_name;
-   char *tag_value;
+   const char *tag_name;
+   const char *tag_value;
    Type_Style __type;
 };
 
@@ -41,7 +41,7 @@ typedef struct _Tag Tag;
 struct _Text_Styles
 {
    EINA_INLIST;
-   char *style_name;
+   const char *style_name;
    Eina_Inlist *tags;
    Type_Style __type;
 };

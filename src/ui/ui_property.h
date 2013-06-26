@@ -76,7 +76,7 @@ ui_prop_part_info_state_view_get(Evas_Object *part_view);
  *
  */
 Evas_Object *
-ui_prop_view_item_label_add(Evas_Object *prop, const char *name, char *label);
+ui_prop_view_item_label_add(Evas_Object *prop, const char *name, const char *label);
 
 /**
  *

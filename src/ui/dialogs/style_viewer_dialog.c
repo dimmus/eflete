@@ -14,10 +14,10 @@ _edj_tag_get(Evas_Object *obj, const char *style_name,
    const char* value;
 
    tag = calloc(1, sizeof(Tag));
-   tag->tag_name = strdup(tag_name);
-   value = edje_edit_style_tag_value_get(obj, strdup(style_name),
-                                         strdup(tag_name));
-   tag->tag_value = strdup(value);
+   tag->tag_name = eina_stringshare_add(tag_name);
+   value = edje_edit_style_tag_value_get(obj, style_name,
+                                         tag_name);
+   tag->tag_value = eina_stringshare_add(value);
    tag->__type = TAG;
 
    return tag;
@@ -50,7 +50,7 @@ _edj_text_style_get(Evas_Object *obj, const char *style_name)
 
    tags = _edj_tags_list_get(obj, style_name);
    style = mem_malloc(sizeof(Text_Styles));
-   style->style_name = strdup(style_name);
+   style->style_name = eina_stringshare_add(style_name);
    style->tags = tags;
    style->__type = TEXTSTYLE;
 
@@ -155,7 +155,7 @@ _on_tag_clicked_double(void *data __UNUSED__,
    void *event_obj;
    Eina_Inlist *tags_list;
 
-   char style[256] = "DEFAULT='";
+   char style[BUFF_MAX] = "DEFAULT='";
 
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
@@ -165,7 +165,7 @@ _on_tag_clicked_double(void *data __UNUSED__,
 
    if (_style->__type == TEXTSTYLE)
      {
-        char style_tags[256] = "";
+        char style_tags[BUFF_MAX] = "";
         tags_list = _style->tags;
 
         EINA_INLIST_FOREACH (tags_list, _tag)
@@ -191,21 +191,39 @@ _on_tag_clicked_double(void *data __UNUSED__,
    evas_object_size_hint_max_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 }
 
-
-/**
- * Creating the view of the inwin!!!
- */
 static void
 _on_viewer_exit(void *data, Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Evas_Object *inwin;
-
-   inwin = (Evas_Object *) data;
+   Evas_Object *inwin = (Evas_Object *) data;
 
    evas_object_del(inwin);
 }
 
+/**
+ * On hide we need to free everything!!!
+ */
+static void
+_item_style_del(void *data, Evas_Object *obj __UNUSED__)
+{
+   Text_Styles *_style = (Text_Styles *) data;
+   eina_stringshare_del(_style->style_name);
+}
+
+/**
+ * On hide we need to free everything!!!
+ */
+static void
+_item_tags_del(void *data, Evas_Object *obj __UNUSED__)
+{
+   Tag *_tag = (Tag *) data;
+   eina_stringshare_del(_tag->tag_name);
+   eina_stringshare_del(_tag->tag_value);
+}
+
+/**
+ * Creating the view of the inwin!!!
+ */
 Evas_Object*
 _form_left_side(Evas_Object *obj, Workspace *ws, Project *project) {
      Elm_Object_Item *glit_style, *glit_tag;
@@ -229,7 +247,7 @@ _form_left_side(Evas_Object *obj, Workspace *ws, Project *project) {
           _itc_style->func.text_get = _item_style_label_get;
           _itc_style->func.content_get = NULL;
           _itc_style->func.state_get = NULL;
-          _itc_style->func.del = NULL;
+          _itc_style->func.del = _item_style_del;
        }
      if (!_itc_tags)
        {
@@ -238,7 +256,7 @@ _form_left_side(Evas_Object *obj, Workspace *ws, Project *project) {
           _itc_tags->func.text_get = _item_tags_label_get;
           _itc_tags->func.content_get = NULL;
           _itc_tags->func.state_get = NULL;
-          _itc_tags->func.del = NULL;
+          _itc_tags->func.del = _item_tags_del;
        }
 
      list = elm_genlist_add(obj);
