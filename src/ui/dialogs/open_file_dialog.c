@@ -29,7 +29,7 @@ _on_part_back(void *data,
      WARN ("Groupspace object always delete");
 
   elm_genlist_clear(ui_block_state_list_get(ap));
-  evas_object_del(ui_property_part_view_get(ui_block_property_get(ap)));
+  evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
 }
 
 static void
@@ -39,7 +39,7 @@ _on_group_back(void *data,
 {
    App_Data *ap = (App_Data *)data;
    elm_genlist_clear(ui_block_signal_list_get(ap));
-   evas_object_del(ui_property_group_view_get(ui_block_property_get(ap)));
+   evas_object_hide(ui_property_group_view_get(ui_block_property_get(ap)));
 }
 
 static void
