@@ -822,6 +822,10 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
             break;
        }
 
+   free(widget_name);
+   free(style_name);
+   free(group_name);
+
    return _group->obj;
 }
 
