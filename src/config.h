@@ -3,10 +3,10 @@
 
 #define PACKAGE "Theme Editor Tool"
 #define PACKAGE_NAME PACKAGE
-#define VERSION "0.0.7"
+#define VERSION "0.0.8"
 #define VERMAJ 0
 #define VERMIN 0
-#define VERMIC 7
+#define VERMIC 8
 
 #define __UNUSED__ __attribute__((unused))
 

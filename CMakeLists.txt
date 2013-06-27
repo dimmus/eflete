@@ -3,7 +3,7 @@ project(efl_tet C)
 
 set(VERMAJ 0)
 set(VERMIN 0)
-set(VERMIC 7)
+set(VERMIC 8)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
@@ -78,8 +78,8 @@ find_package(Doxygen)
       set(build_doc "no")
    endif(DOXYGEN_FOUND)
 
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
 
 # target 'clear'
 IF("${CMAKE_GENERATOR}" MATCHES "Make")

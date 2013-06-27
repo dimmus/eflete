@@ -167,6 +167,9 @@ ws_add (Evas_Object *parent)
 
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
+   evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
+                                  _ws_mouse_move_cb, ws);
+
 
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
                                   _ws_mouse_click_cb, ws);

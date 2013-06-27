@@ -278,10 +278,10 @@ ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group)
                                              &group->max_h, "Maximum group height in pixels.");
    evas_object_show(item);
 
-   item = ui_prop_view_item_two_edit_int_add(box, "current",
+/*   item = ui_prop_view_item_two_edit_int_add(box, "current",
                                              &group->current_w, "Current group width in pixels.",
                                              &group->current_h, "Current group height in pixels.");
-   evas_object_show(item);
+   evas_object_show(item);*/
 
    evas_object_show(box);
    elm_object_content_set(group_view, box);
@@ -1103,7 +1103,8 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
    evas_object_show(edit3);
 
    color_rect = evas_object_rectangle_add(evas_object_evas_get(item));
-   evas_object_color_set(color_rect, *r, *g, *b, *a);
+   if (*a <= 0) evas_object_color_set(color_rect, 0, 0, 0, 0);
+   else evas_object_color_set(color_rect, *r, *g, *b, *a);
    elm_object_part_content_set(content3, "field2.swallow", color_rect);
    elm_object_tooltip_text_set(color_rect, tooltip);
    evas_object_show(color_rect);
