@@ -278,10 +278,10 @@ ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group)
                                              &group->max_h, "Maximum group height in pixels.");
    evas_object_show(item);
 
-   item = ui_prop_view_item_two_edit_int_add(box, "current",
+/*   item = ui_prop_view_item_two_edit_int_add(box, "current",
                                              &group->current_w, "Current group width in pixels.",
                                              &group->current_h, "Current group height in pixels.");
-   evas_object_show(item);
+   evas_object_show(item);*/
 
    evas_object_show(box);
    elm_object_content_set(group_view, box);
