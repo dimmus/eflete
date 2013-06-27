@@ -3,7 +3,7 @@ project(efl_tet C)
 
 set(VERMAJ 0)
 set(VERMIN 0)
-set(VERMIC 7)
+set(VERMIC 8)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
