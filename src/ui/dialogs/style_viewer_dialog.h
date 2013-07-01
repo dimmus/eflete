@@ -62,7 +62,6 @@ typedef struct _Style_Window Style_Window;
  * about loaded project (edj file)
  *
  * @param parent - the object that will be the parent of this dialog.
- * @param ws - working workspace
  * @param project -currently opened project
  *
  * @return the inwin object that contain style viewer
@@ -70,6 +69,6 @@ typedef struct _Style_Window Style_Window;
  * @ingroup TextStyle
  */
 Evas_Object *
-style_viewer_add (Evas_Object *parent, Workspace *ws, Project *project);
+style_viewer_add (Evas_Object *parent, Project *project);
 
 #endif  /* STYLE_VIEWER_DIALOG_HEADER_H */

@@ -58,7 +58,7 @@ _edj_text_style_get(Evas_Object *obj, const char *style_name)
 }
 
 Eina_Inlist*
-_style_list_get(Evas_Object* obj, Workspace *ws, Project *project)
+_style_list_get(Evas_Object* obj, Project *project)
 {
    Eina_Inlist *styles, *groups, *widgets, *text_styles = NULL;
    Eina_List *f, *text_styles_name;
@@ -222,7 +222,7 @@ _item_tags_del(void *data, Evas_Object *obj __UNUSED__)
  * Creating the view of the inwin!!!
  */
 Evas_Object*
-_form_left_side(Evas_Object *obj, Workspace *ws, Project *project) {
+_form_left_side(Evas_Object *obj, Project *project) {
      Elm_Object_Item *glit_style, *glit_tag;
      Evas_Object *layout, *list, *btn;
      Eina_Inlist *style_list, *tags_list;
@@ -235,7 +235,7 @@ _form_left_side(Evas_Object *obj, Workspace *ws, Project *project) {
      elm_layout_file_set(layout, TET_EDJ, "ui/style_viewer_window/list");
      evas_object_show(layout);
 
-     style_list = _style_list_get(obj, ws, project);
+     style_list = _style_list_get(obj, project);
 
      if (!_itc_style)
        {
@@ -345,7 +345,7 @@ _form_right_side(Evas_Object *obj)
 }
 
 Evas_Object *
-style_viewer_add (Evas_Object *parent, Workspace *ws, Project *project)
+style_viewer_add (Evas_Object *parent, Project *project)
 {
    Evas_Object *inwin = NULL;
    Evas_Object *panes, *panes_h;
@@ -362,7 +362,7 @@ style_viewer_add (Evas_Object *parent, Workspace *ws, Project *project)
    elm_win_inwin_content_set(inwin, panes);
    evas_object_show(panes);
 
-   layout_left = _form_left_side(inwin, ws, project);
+   layout_left = _form_left_side(inwin, project);
    elm_object_part_content_set(panes, "left", layout_left);
    evas_object_show(layout_left);
 
