@@ -103,9 +103,9 @@ include_directories(
 
 add_definitions("-DPACKAGE=\"${PACKAGE}\"")
 #FIXME: bad define
-add_definitions("-DTET_EDJ=\"${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.edj\"")
+add_definitions("-DTET_EDJ=\"${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj\"")
 add_definitions("-DTET_IMG_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/images/\"")
-add_definitions("-DTET_EDJ_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/\"")
+add_definitions("-DTET_EDJ_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/\"")
 
 #add_subdirectory(po)
 add_subdirectory(src)
