@@ -1,5 +1,5 @@
-#ifndef UI_SETTINGS_HEADER_H
-#define UI_SETTINGS_HEADER_H
+#ifndef SETTINGS_HEADER_H
+#define SETTINGS_HEADER_H
 
 /**
  * @defgroup Settings Settings
@@ -11,7 +11,7 @@
 
 #include "ui_main_window.h"
 
-#define UISETTINGSFILE "ui.set"
+#define SETTINGSFILE "ui.set"
 
 struct _UI_Elements_Settings
 {
@@ -59,4 +59,4 @@ ui_settings_save(void);
 Eina_Bool
 ui_settings_load(void);
 
-#endif /* UI_SETTINGS_HEADER_H */
+#endif /* SETTINGS_HEADER_H */

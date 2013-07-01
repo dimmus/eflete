@@ -1,4 +1,4 @@
-#include <ui_settings.h>
+#include <settings.h>
 
 typedef struct _UI_Settings UI_Settings;
 typedef struct _Panes_Settings Panes_Settings;
@@ -190,7 +190,7 @@ ui_settings_save()
         return EINA_FALSE;
      }
 
-   file_settings = eet_open(UISETTINGSFILE, EET_FILE_MODE_WRITE);
+   file_settings = eet_open(SETTINGSFILE, EET_FILE_MODE_WRITE);
    if (!file_settings)
      {
         WARN("Unable to open configs file for write");
@@ -218,7 +218,7 @@ ui_settings_load()
 
    _ui_settings_descriptors_init();
 
-   file_settings = eet_open(UISETTINGSFILE, EET_FILE_MODE_READ);
+   file_settings = eet_open(SETTINGSFILE, EET_FILE_MODE_READ);
    if (!file_settings)
      {
         WARN("Unable open configs file for load. Try load defaults settings");

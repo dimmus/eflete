@@ -110,5 +110,83 @@ ui_panes_show(App_Data *ap);
 void
 ui_panes_hide(App_Data *ap);
 
+/**
+ * Clear groupspace with highlight. Clear items from states and parts genlists.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ *
+ * @ingroup Window
+ */
+void
+ui_part_back(App_Data *ap);
+
+/**
+ * Clear items from signal and groups genlists.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ *
+ * @ingroup Window
+ */
+void
+ui_group_back(App_Data *ap);
+
+/**
+ * Update displayed information about current part state. Update part object
+ * on workspace with new state parameters.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param glit The Elm_Object_Item pointer.
+ * @param obj The Evas_Object pointer, wich pointed on states genlist.
+ *
+ * @ingroup Window
+ */
+void
+ui_state_select(App_Data *ap, Elm_Object_Item *glit, Evas_Object *obj);
+
+/**
+ * Show information about properties of part. Highlight part object
+ * on workspace.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param part The Part pointer.
+ *
+ * @return Evas_object pointer. States gen list object.
+ * @ingroup Window
+ */
+Evas_Object *
+ui_part_select(App_Data *ap, Part* part);
+
+/**
+ * View group objects on workspace, load signals in list. Show, or update
+ * information about group parameters.1
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param group The Group pointer.
+ *
+ * @ingroup Window
+ */
+void
+ui_group_clicked(App_Data *ap, Group *group);
+
+/**
+ * Load project data to App_Data structure. Turn to work state for application.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param obj The Evas_Object pointer, wich pointed to fileselector widget.
+ * @param selected String with opened project file name.
+ *
+ * @return The Evas_Object pointer. Widget list object.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
+
 #endif	/* UI_MAIN_WINDOW_HEADER_H */
 
