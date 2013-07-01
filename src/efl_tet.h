@@ -34,7 +34,7 @@ struct _App_Data
 	} block;
 
 	Workspace *ws;
-   Project *project;
+	Project *project;
 };
 
 /**

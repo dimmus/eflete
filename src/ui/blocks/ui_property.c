@@ -4,7 +4,7 @@
  *
  */
 static Evas_Object *
-ui_prop_view_item_label_add(Evas_Object *prop, const char *name, char *label);
+ui_prop_view_item_label_add(Evas_Object *prop, const char *name, const char *label);
 
 /**
  *
@@ -656,7 +656,7 @@ evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
 elm_object_part_text_set(item, "elm.text", name);
 
 static Evas_Object *
-ui_prop_view_item_label_add(Evas_Object *prop, const char *name, char *label)
+ui_prop_view_item_label_add(Evas_Object *prop, const char *name, const char *label)
 {
    Evas_Object *item, *_label;
 

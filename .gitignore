@@ -1,0 +1,21 @@
+#swap and compiled files
+*.swp
+*.edj
+
+#build generated files
+src/efl_tet
+src/config.h
+ui.set
+
+#CMake generated objects
+*CMakeCache.txt
+*CMakeFiles*
+*Makefile
+*cmake_install*
+*.cmake
+!cmake/*.cmake
+
+#documentation
+doc/*
+!doc/Doxyfile.in
+!doc/CMakeLists.txt

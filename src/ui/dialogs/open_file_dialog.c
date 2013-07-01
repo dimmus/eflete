@@ -82,7 +82,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
                                             _on_part_back, ap);
         evas_object_smart_callback_add(wd_list, "wl,group,back",
                                             _on_group_back, ap);
-     }
+    }
 }
 
 Eina_Bool
@@ -143,8 +143,10 @@ _on_ok_cb(void *data,
         ui_panes_show(ap);
      }
    else
-     /*TODO: add notify about a wrong file extension */
-     ERR("The file must have a extension '.edc'");
+     {
+        ERR("The file must have a extension '.edc'");
+        NOTIFY_ERROR(ap->win, "The file must have a extension '.edc'");
+     }
 
    evas_object_del(elm_object_content_get(ap->inwin));
    evas_object_hide(ap->inwin);

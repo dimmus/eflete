@@ -26,7 +26,7 @@ noti_error_show (Evas_Object *obj, const char *message)
    elm_layout_file_set(layout, TET_EDJ, "notify/content/default");
 
    //2.1. add an image to the layout
-   image = elm_image_add(obj);
+   image = elm_image_add(notify);
    elm_image_file_set(image, TET_IMG_PATH"error.png", NULL);
    elm_object_part_content_set (layout, "image", image);
    evas_object_show(image);
@@ -114,7 +114,7 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
    elm_notify_timeout_set(notify, time);
 
    //2. start forming layout
-   layout = elm_layout_add(obj);
+   layout = elm_layout_add(notify);
    evas_object_size_hint_weight_set(layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "notify/content/info");

@@ -1,6 +1,6 @@
 #include "ui_main_window.h"
 #include "choose_file_dialog.h"
-#include "style_viewer_window.h"
+#include "style_viewer_dialog.h"
 
 Eina_List *ui_list_menu;
 
@@ -35,7 +35,12 @@ _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   style_viewer_init(ap);
+   if(ap->project != NULL)
+     {
+        style_viewer_add(ap->win, ap->project);
+     }
+   else
+     NOTIFY_ERROR(ap->win, "EDC/EDJ file is not loaded. \n");
 }
 
 static void
