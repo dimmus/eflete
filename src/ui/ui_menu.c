@@ -49,7 +49,6 @@ _on_image_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
 {
    App_Data *ap = (App_Data *)data;
    image_viewer_init(image_viewer_add(ap->win), ap->project);
-
 }
 
 static void

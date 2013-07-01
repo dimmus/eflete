@@ -12,7 +12,6 @@ app_create (void)
 void
 app_free(App_Data *ap)
 {
-   evas_object_del(ap->win);
    pm_free(ap->project);
    ws_free(ap->ws);
    free(ap);
