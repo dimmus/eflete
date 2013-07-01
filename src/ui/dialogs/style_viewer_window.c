@@ -1,5 +1,5 @@
 #include <ui_main_window.h>
-#include "ui_style_viewer_window.h"
+#include "style_viewer_window.h"
 
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;

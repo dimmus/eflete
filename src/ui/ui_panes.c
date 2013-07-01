@@ -1,4 +1,4 @@
-#include "ui_settings.h"
+#include "settings.h"
 #include "ui_block.h"
 
 void
