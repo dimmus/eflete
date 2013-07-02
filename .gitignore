@@ -13,7 +13,7 @@ ui.set
 *Makefile
 *cmake_install*
 *.cmake
-!cmake/*.cmake
+!cmake/Modules/*.cmake
 
 #documentation
 doc/*
