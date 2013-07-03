@@ -1,187 +1,303 @@
-group {
-   name: "ui/ruler/horizontal/default";
-   parts {
-      part {
-         name: "background";
-         type: RECT;
-         scale: 1;
-         mouse_events: 1;
-         description {
-            state: "default" 0.0;
-            max: 99999 25;
-            min: 125 25;
-            color: 255 255 255 128;
-            align: 0.0 0.0;
-            rel1.relative: 0.0 0.0;
-         }
-        description {
-            state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-         description {
-            state: "displayed" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part {
-         name: "pointer";
-         type: IMAGE;
-         scale: 1;
-         mouse_events: 1;
-         dragable {
-            x: 1 1 0;
-            y: 0 0 0;
-            confine: "background";
-         }
-         description {
-            state: "default" 0.0;
-            image.normal: "ruler_hor_pointer.png";
-            aspect_preference: SOURCE;
-            min: 10 15;
-            max: 15 15;
-            rel1 {
-               to: "background";
+   group {
+      name:"ui/ruler/default";
+      parts {
+         part {
+            name: "background";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 50 50 50 55;
             }
-            rel2 {
-               to: "background";
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description {
+               state: "displayed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
             }
          }
-         description {
-            state: "displayed" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
+         part {
+         name: "cliper";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1.to: "background";
+               rel2.to: "background";
+            }
          }
-         description {
-            state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
+         part {
+            name: "lua";
+            type: GROUP;
+            source: "ruler/lua";
+            clip_to: "cliper";
+            description{
+               state: "default" 0.0;
+            }
          }
-        }
-   }
-   programs {
-      program {
-         name: "ruler_pointer_hide";
-         signal: "ruler,pointer,hide";
-         source: "";
-         action: STATE_SET "hidden" 0.0;
-         target: "pointer";
+         part {
+            name: "pointer";
+            type: IMAGE;
+            scale: 1;
+            mouse_events: 1;
+            dragable {
+               x: 1 1 0;
+               y: 1 1 0;
+               confine: "background";
+            }
+            description {
+               state: "default" 0.0;
+               image.normal: "ruler_hor_pointer.png";
+               aspect_preference: SOURCE;
+               min: 10 15;
+               max: 15 15;
+               rel1 {
+                  to: "background";
+               }
+               rel2 {
+                  to: "background";
+               }
+            }
+            description {
+               state: "displayed" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+      }//parts
+      programs {
+         program {
+            name: "ruler_pointer_hide";
+            signal: "ruler,pointer,hide";
+            source: "";
+            action: STATE_SET "hidden" 0.0;
+            target: "pointer";
+         }
+         program {
+            name: "ruler_pointer_show";
+            signal: "ruler,pointer,show";
+            source: "";
+            action: STATE_SET "displayed" 0.0;
+            target: "pointer";
+         }
+         program {
+            name: "ruler_background_hide";
+            signal: "ruler,bg,hide";
+            source: "";
+            action: STATE_SET "hidden" 0.0;
+            target: "background";
+         }
+         program {
+            name: "ruler_background_show";
+            signal: "ruler,bg,show";
+            source: "";
+            action: STATE_SET "displayed" 0.0;
+            target: "background";
+         }
       }
-      program {
-         name: "ruler_pointer_show";
-         signal: "ruler,pointer,show";
-         source: "";
-         action: STATE_SET "displayed" 0.0;
-         target: "pointer";
-      }
-	   program {
-         name: "ruler_background_hide";
-         signal: "ruler,bg,hide";
-         source: "";
-         action: STATE_SET "hidden" 0.0;
-         target: "background";
-      }
-      program {
-         name: "ruler_background_show";
-         signal: "ruler,bg,show";
-         source: "";
-         action: STATE_SET "displayed" 0.0;
-         target: "background";
-      }
-   }
-}
+   }//group
 
-group {
-   name: "ui/ruler/vertical/default";
-   parts {
-      part {
-         name: "background";
-         type: RECT;
-         repeat_events: 1;
-         scale: 1;
-         mouse_events: 1;
-        description {
-            state: "default" 0.0;
-            max: 25 99999;
-            min: 25 25;
-            color: 255 255 255 128;
-            rel1.relative: 0.0 0.0;
-         }
-        description {
-            state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-         description {
-            state: "displayed" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-     }
-     part {
-         name: "pointer";
-         type: IMAGE;
-         scale: 1;
-         mouse_events: 1;
-         description {
-            state: "default" 0.0;
-            image.normal: "ruler_ver_pointer.png";
-            aspect_preference: SOURCE;
-            min: 15 10;
-            max: 15 15;
-            rel1 {
-               to: "background";
-            }
-            rel2 {
-               to: "background";
-            }
-         }
-         description {
-            state: "displayed" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-         description {
-            state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-        dragable {
-            x: 0 0 0;
-            y: 1 1 0;
-            confine: "background";
-         }
-      }
-   }
-   programs {
-      program {
-         name: "ruler_pointer_hide";
-         signal: "ruler,pointer,hide";
-         source: "";
-         action: STATE_SET "hidden" 0.0;
-         target: "pointer";
-      }
-      program {
-         name: "ruler_pointer_show";
-         signal: "ruler,pointer,show";
-         source: "";
-         action: STATE_SET "displayed" 0.0;
-         target: "pointer";
-      }
-	   program {
-         name: "ruler_background_hide";
-         signal: "ruler,bg,hide";
-         source: "";
-         action: STATE_SET "hidden" 0.0;
-         target: "background";
-      }
-      program {
-         name: "ruler_background_show";
-         signal: "ruler,bg,show";
-         source: "";
-         action: STATE_SET "displayed" 0.0;
-         target: "background";
-      }
-   }
-}
+   group {
+      name: "ruler/lua";
+      lua_script_only: 1;
+      lua_script {
+         --//options
+         local calcStep = false;
+         local horizontal = true;
+         local absVisible = true;
+         local relVisible = true;
+         --//vars for edje objects
+         local dashes={};
+         local labels={};
+         local line;
+         local label;
+         --//dashes and labels count used to display ruler. can be less than array size
+         local dashesNeeded;
+         local labelsNeeded;
+         --//min and max marks on ruler
+         local minValue = 10;
+         local maxValue = 20;
+         --//value step (if min&max values are calculated) and position of zero mark(in pixels)
+         local valueStep = 1;
+         local zeroPos = 100;
+         --//step between dashes(in pixels)
+         local step = 5;
+         --//small dashes at begining
+         local startDashes=0;
+         --//widget size
+         local height;
+         local width;
+         --//debug funcs
+         function print_table_start(table, space, name)
+            print(space .. name .. ": ");
+            print(space .. "{");
+            print_table(table, space .. "  ");
+            print(space .. "}");
+         end
+
+         function print_table(table, space)
+            for k, v in pairs(table) do 
+               if type(v) == "table" then
+                  print_table_start(v, space, k);
+               elseif type(v) == "string" then
+                  print(space .. k .. ': "' .. v .. '";')
+               else
+                  print(space .. k .. ": " .. v .. ";")
+               end
+            end
+         end
+         --//end debug funcs
+         --//creating or hiding marks and dashes if needed
+         function prepare()
+            if(calcStep) then
+               startDashes=0;
+            else
+               startDashes=(zeroPos-zeroPos%step)/step;
+            end
+            --print(startDashes);
+            if(horizontal) then
+               dashesNeeded=(width-width%step)/step;
+            else
+               dashesNeeded=(height-height%step)/step;
+            end
+            labelsNeeded=(dashesNeeded-startDashes%10-(dashesNeeded-startDashes%10)%10)/10+1;
+            print("d:" .. dashesNeeded);
+            print("l:" .. labelsNeeded);
+            --if((dashesNeeded-startDashes%10)%10>0) then
+            --   labelsNeeded=labelsNeeded+1;
+            --end
+            while #dashes<dashesNeeded do
+               line=edje.line();
+               line:color(255,255,255,255);
+               line:show();
+               table.insert(dashes,line);
+            end
+            while #labels<labelsNeeded+1 do
+               label=edje.text();
+               label:color(255,255,255,255);
+               label:font("Sans",10);
+               label:show();
+               table.insert(labels,label);
+            end
+            for i=1,dashesNeeded do
+               dashes[i]:show();
+            end
+            for i=1,labelsNeeded do
+               labels[i]:show();
+               --print("_I=" .. i);
+            end
+            for i=dashesNeeded+1,#dashes do
+               dashes[i]:hide();
+            end
+            for i=labelsNeeded+1,#labels do
+               labels[i]:hide();
+               --print("_i- =" .. i);
+            end
+         end
+         --//placing dashes and marks (if widget size or step changed)
+         function positionChange()
+           local j=1;
+            if(horizontal) then
+                --//y coords for major/minor dashes
+               local dash10y1 = height/10;
+               local dashy2 = height - dash10y1;
+               local dash5y1 = height/2;
+               local dash1y1 = 3*height/4;
+               local xShift = zeroPos%step;
+               for i=0, dashesNeeded-1 do
+                  if((i-startDashes)%10==0) then
+                     print_table_start(dashes[i+1]:xy(xShift + step*i,dash10y1,xShift+step*i,dashy2)," ", "dashes");
+                     print_table_start(dashes[i+1]:move(xShift + step*i,dash10y1)," ", "dashes_moved");
+                     print_table_start(labels[j]:geom(xShift + step*i+2, dash10y1-2,xShift+step*(i+5),dash5y1)," ", "label");
+                     j=j+1;
+                  elseif((i-startDashes)%5==0) then
+                     dashes[i+1]:xy(xShift + step*i,dash5y1,xShift+step*i,dashy2);
+                     dashes[i+1]:move(xShift + step*i,dash5y1);   --//FIXME: we need to move line to its start position because xy() places it relative to canvas coord (not widget coords). This is probably a bug
+                  else
+                     dashes[i+1]:xy(xShift + step*i,dash1y1,xShift+step*i,dashy2);
+                     dashes[i+1]:move(xShift + step*i,dash1y1);
+                  end
+                  labels[j]:geom(xShift+step*dashesNeeded+2,dash10y1-2,xShift+step*(dashesNeeded+5),dash5y1);
+               end
+            else
+               --//x coords for major/minor dashes
+               local dash10x1 = width/10;
+               local dashx2 = width - dash10x1;
+               local dash5x1 = width/2;
+               local dash1x1 = 3*width/4;
+               local yShift = zeroPos%step;
+
+               for i=0, dashesNeeded-1 do
+                  if((i-startDashes)%10==0) then
+                     dashes[i+1]:xy(dash10x1,yShift+step*i,dashx2,yShift+step*i);
+                     labels[j]:geom(dash10x1,yShift+step*(i+0.5), dash1x1,yShift+ step*(i+5));
+                     j=j+1;
+                  elseif((i-startDashes)%5==0) then
+                     dashes[i+1]:xy(dash5x1,yShift+step*i,dashx2,yShift+step*i);
+                  else
+                     dashes[i+1]:xy(dash1x1,yShift+step*i,dashx2,yShift+step*i);
+                  end
+               end
+               labels[j]:geom(dash10x1,yShift+step*(dashesNeeded+0.5), dash1x1,yShift+ step*(dashesNeeded+5));
+            end
+         end
+         --//redraw dashes and labels
+         function draw()
+            print "prepare";
+            prepare();
+            print "pos";
+            positionChange();
+            print "valset";
+            valuesChange();
+         end
+         --//changing values near marks (if range or dashes count changed)
+         function valuesChange()
+            if(calcStep) then
+               valueStep=(maxValue-minValue)/(dashesNeeded/10);
+            else
+               local smallDashes=(zeroPos-zeroPos%step)/step;
+               local bigDashes=(smallDashes-smallDashes%10)/10;
+               minValue = -bigDashes * valueStep;
+            end
+            for i=1,labelsNeeded do
+               labels[i]:text(string.format("%.2f",minValue+(i-1)*valueStep));
+            end
+         end
+         --//onresize
+         function resize(w,h)
+            width=w;
+            height=h;
+            print("resized (" .. w .. "x" .. h ..")");
+            draw();
+         end
+         --//interaction with C part
+         function message (id, type, ...)
+            print("lua::message id=" .. id .. " type=" .. type);
+            if("float" == type) then
+               if(id == 1) then
+                  minValue=...;
+                  valuesChange();
+               elseif(id==2) then
+                  maxValue=...;
+                  valuesChange();
+               end
+            elseif("none"==type) then
+               if(id==1) then
+                  --print(#labels);
+                  --clear();
+                  --print(#labels);
+                  draw();
+               end
+            end
+         end
+         --//on init
+         -- draw();
+      }//lua_script
+   }//group
