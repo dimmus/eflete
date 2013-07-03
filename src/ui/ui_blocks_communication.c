@@ -122,6 +122,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
         if (eina_str_has_suffix(selected, ".edj"))
           {
              INFO("Select file: %s", selected);
+             NOTIFY_INFO(ap->win, 3, "Select file: %s", selected);
              ap->project = pm_open_project_edj(selected, selected);
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
@@ -131,13 +132,50 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              ui_panes_show(ap);
           }
         else
-          /*TODO: add notify about a wrong file extension */
-          ERR("The file must have a extension '.edj'");
+          {
+             NOTIFY_ERROR(ap->win, "The file must have a extension '.edj'");
+          }
      }
    else
      ui_panes_hide(ap);
 
    evas_object_hide(elm_object_parent_widget_get(obj));
    evas_object_del(obj);
+   return wd_list;
+}
+
+Evas_Object *
+ui_edc_load_done(App_Data* ap, const char *project_name,
+                               const char *path_edc,
+                               const char *path_id,
+                               const char *path_sd,
+                               const char *path_fd)
+{
+   Evas_Object *wd_list = NULL;
+
+   if (eina_str_has_suffix(path_edc, ".edc"))
+     {
+        INFO("Select file: %s", path_edc);
+        ap->project = pm_open_project_edc(project_name,
+                                          path_edc,
+                                          path_id,
+                                          path_sd,
+                                          path_fd);
+        wd_list = ui_widget_list_add(ap->win);
+        ui_widget_list_title_set(wd_list, ap->project->name);
+        ui_widget_list_data_set(wd_list, ap->project);
+        ui_block_widget_list_set(ap, wd_list);
+        evas_object_show(wd_list);
+        ui_panes_show(ap);
+     }
+   else
+     {
+        ERR("The file must have a extension '.edc'");
+        NOTIFY_ERROR(ap->win, "The file must have a extension '.edc'");
+     }
+
+   evas_object_del(elm_object_content_get(ap->inwin));
+   evas_object_hide(ap->inwin);
+
    return wd_list;
 }

@@ -118,38 +118,32 @@ _on_ok_cb(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   Evas_Object *wd_list;
-   App_Data *ap;
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *wd_list = NULL;
+
    const char *path_edc = elm_fileselector_entry_selected_get(fs_ent->edc);
    const char *path_id = elm_fileselector_entry_selected_get(fs_ent->id);
    const char *path_sd = elm_fileselector_entry_selected_get(fs_ent->sd);
    const char *path_fd = elm_fileselector_entry_selected_get(fs_ent->fd);
 
-   ap = (App_Data *)data;
+   wd_list = ui_edc_load_done(ap,
+                    fs_ent->project_name,
+                    path_edc,
+                    path_id,
+                    path_sd,
+                    path_fd);
 
-   if (eina_str_has_suffix(path_edc, ".edc"))
+   if(wd_list)
      {
-        INFO("Select file: %s", path_edc);
-        ap->project = pm_open_project_edc(fs_ent->project_name,
-                                          path_edc,
-                                          path_id,
-                                          path_sd,
-                                          path_fd);
-        wd_list = ui_widget_list_add(ap->win);
-        ui_widget_list_title_set(wd_list, ap->project->name);
-        ui_widget_list_data_set(wd_list, ap->project);
-        ui_block_widget_list_set(ap, wd_list);
-        evas_object_show(wd_list);
-        ui_panes_show(ap);
-     }
-   else
-     {
-        ERR("The file must have a extension '.edc'");
-        NOTIFY_ERROR(ap->win, "The file must have a extension '.edc'");
-     }
-
-   evas_object_del(elm_object_content_get(ap->inwin));
-   evas_object_hide(ap->inwin);
+        evas_object_smart_callback_add(wd_list, "wl,group,select",
+                                          _on_group_clicked, ap);
+        evas_object_smart_callback_add(wd_list, "wl,part,select",
+                                            _on_part_selected, ap);
+        evas_object_smart_callback_add(wd_list, "wl,part,back",
+                                            _on_part_back, ap);
+        evas_object_smart_callback_add(wd_list, "wl,group,back",
+                                            _on_group_back, ap);
+    }
 
    free(fs_ent->project_name);
    free(fs_ent);
