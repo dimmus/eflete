@@ -25,14 +25,15 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
 	       void *event_info __UNUSED__)
 {
    int x, y, w, h;
+   int x1,y1,w1,h1;//FIXME: change var names
    Workspace *ws = (Workspace*)data;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   ui_ruler_scale_absolute_position_zero_set(ws->ruler_hor, x);
-   ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y);
-   ui_ruler_scale_relative_position_set(ws->ruler_hor, x, x + w);
-   ui_ruler_scale_relative_position_set(ws->ruler_ver, y, y + h);
-   ui_ruler_update(ws->ruler_hor);
-   ui_ruler_update(ws->ruler_ver);
+   evas_object_geometry_get(ws->bg, &x1, &y1, &w1, &h1);
+	//FIXME:avoid hardcode val(25)
+   ui_ruler_scale_absolute_position_zero_set(ws->ruler_hor, x-x1-25);
+   ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y-y1-25);
+   ui_ruler_scale_relative_position_set(ws->ruler_hor, x-x1-25, x + w-x1-25);
+   ui_ruler_scale_relative_position_set(ws->ruler_ver, y-y1-25, y + h-y1-25);
 
    ui_object_highlight_move(ws);
 }
