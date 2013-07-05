@@ -11,7 +11,7 @@
 
 #include "ui_main_window.h"
 
-#define SETTINGSFILE "ui.set"
+#define SETTINGSFILE TET_SETT_PATH".efltet"
 
 struct _UI_Elements_Settings
 {

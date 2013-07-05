@@ -217,7 +217,7 @@ ui_settings_load()
    Eet_File *file_settings;
 
    _ui_settings_descriptors_init();
-
+   fprintf(stdout, "%s", SETTINGSFILE);
    file_settings = eet_open(SETTINGSFILE, EET_FILE_MODE_READ);
    if (!file_settings)
      {
