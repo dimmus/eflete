@@ -20,6 +20,19 @@
 /* Key for take data from ruler object */
 #define RULERDATAKEY "ruler_data_key"
 
+/* message id for communication between edj and c */
+
+#define MSG_ORIENT_HOR 1
+#define MSG_ORIENT_VER 2
+#define MSG_ZERO_POS 3
+#define MSG_ABS_STEP 4
+#define MSG_ABS_VISIBLE 5
+#define MSG_ABS_DASHES_STEP 6
+#define MSG_REL_VISIBLE 7
+#define MSG_REL_START 8
+#define MSG_REL_END 9
+#define MSG_REL_DASHES 10
+
 /**
  * @enum _Orient
  * @typedef Orient
@@ -45,16 +58,6 @@ typedef enum _Orient Orient;
  */
 Evas_Object *
 ui_ruler_add(Evas_Object *parent);
-
-/**
- * Update ruler object scales.
- *
- * @param parent The ruler object.
- *
- * @ingroup Ruler
- */
-void
-ui_ruler_update(Evas_Object *parent);
 
 /**
  * Change the ruler orientation to horizontal or vertical.
@@ -99,28 +102,6 @@ ui_ruler_pointer_pos_set(Evas_Object *obj, int pos);
  */
 int
 ui_ruler_pointer_pos_get(Evas_Object *obj);
-
-/**
- * Set ruler pointer visible.
- *
- * @param obj Ruler object.
- * @param visible EINA_TRUE for show pointer, EINA_FALSE for hide pointer.
- *
- * @ingroup Ruler
- */
-void
-ui_ruler_pointer_visible_set(Evas_Object *obj, Eina_Bool visible);
-
-/**
- * Get visible status of pointer.
- *
- * @param obj Ruler object.
- * @return EINA_TRUE, if pointer visible, EINA_FALSE, if pointer invisible.
- *
- * @ingroup Ruler
- */
-Eina_Bool
-ui_ruler_pointer_visible_get(Evas_Object *obj);
 
 /**
  * Show ruler.
@@ -201,26 +182,47 @@ int
 ui_ruler_scale_absolute_position_zero_get(Evas_Object *obj);
 
 /**
- * Set relative scale step.
+ * Set step between dashes in absolute scale.
  *
- * @param obj Ruler object.
- * @param step Step size for marks on relative scale. Value must be in range
- * from 0.1 to 1.0.
+ * @param obj The ruler object.
+ * @param step Step in pixels between dashes.
  *
  * @ingroup Ruler
  */
 void
-ui_ruler_step_relative_set(Evas_Object *obj, double step);
+ui_ruler_scale_absolute_dashes_step_set(Evas_Object *obj, int step);
+
+/**
+ * Get step between dahses in absolute scale.
+ *
+ * @param obj The ruler object.
+ * @return Coordinate in canvas.
+ *
+ * @ingroup Ruler
+ */
+int
+ui_ruler_scale_absolute_dashes_step_get(Evas_Object *obj);
+
+/**
+ * Set relative scale step.
+ *
+ * @param obj Ruler object.
+ * @param step Step size for marks on relative scale.
+ *
+ * @ingroup Ruler
+ */
+void
+ui_ruler_step_relative_set(Evas_Object *obj, int step);
 
 /**
  * Get relative scale step size.
  *
  * @param obj Ruler object.
- * @return Step sizef value in range from 0.1 to 1.0.
+ * @return Step sizef value.
  *
  * @ingroup Ruler
  */
-double
+int
 ui_ruler_step_relative_get(Evas_Object *obj);
 
 /**
