@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(efl_tet C)
+project(efltet C)
 
 set(VERMAJ 0)
 set(VERMIN 0)
@@ -7,8 +7,10 @@ set(VERMIC 8)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+option(debug "debug build" 0)
+#set(prefix ${CMAKE_INSTALL_PREFIX})
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 find_package(Eina REQUIRED)
@@ -78,7 +80,7 @@ find_package(Doxygen)
       set(build_doc "no")
    endif(DOXYGEN_FOUND)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -O2")
 
 # target 'clear'
@@ -101,16 +103,61 @@ include_directories(
    ${ELEMENTARY_INCLUDE_DIRS}
    )
 
+
+if (prefix)
+   set(CMAKE_INSTALL_PREFIX ${prefix})
+else()
+   set(prefix ${CMAKE_INSTALL_PREFIX})
+endif()
+
+if (NOT ${debug})
+   set(BIN_PATH ${CMAKE_INSTALL_PREFIX}/bin)
+   set(DATA_PATH ${CMAKE_INSTALL_PREFIX}/share/efltet)
+   set(DOC_PATH ${CMAKE_INSTALL_PREFIX}/man)
+   set(BUILD_TYPE "Release Build")
+   set(BUILD_PATH ${CMAKE_INSTALL_PREFIX})
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -O2")
+else()
+   set(BIN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build)
+   set(DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/data)
+   set(DOC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/doc)
+   set(BUILD_TYPE "Debug Build")
+   set(BUILD_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build)
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
+endif()
+
 add_definitions("-DPACKAGE=\"${PACKAGE}\"")
+file(MAKE_DIRECTORY $ENV{HOME}/.${PROJECT_NAME})
 #FIXME: bad define
-add_definitions("-DTET_EDJ=\"${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj\"")
-add_definitions("-DTET_IMG_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/images/\"")
-add_definitions("-DTET_EDJ_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/\"")
+add_definitions("-DTET_EDJ=\"${DATA_PATH}/themes/default/${PROJECT_NAME}.edj\"")
+add_definitions("-DTET_IMG_PATH=\"${DATA_PATH}/images/\"")
+add_definitions("-DTET_EDJ_PATH=\"${DATA_PATH}/themes/default/\"")
+add_definitions("-DTET_SETT_PATH=\"$ENV{HOME}/.efltet/\"")
 
 #add_subdirectory(po)
 add_subdirectory(src)
 add_subdirectory(data)
 add_subdirectory(doc)
+
+#install
+
+   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/images DESTINATION ${DATA_PATH} FILES_MATCHING PATTERN "*.jpg" PATTERN "*.png")
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj DESTINATION ${DATA_PATH}/themes/default)
+   install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/${PROJECT_NAME} DESTINATION ${BIN_PATH})
+
+if (NOT ${debug})
+   # Install desctop file
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/efltet.desktop DESTINATION /usr/local/share/applications)
+   # Install icons
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/images/efltet.svg DESTINATION /usr/local/share/icons)
+endif()
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 #OUTPUT
 message("")
@@ -135,9 +182,15 @@ message("")
 message("  Documentation..: " ${build_doc})
 message("")
 message("Compilation......: make")
-message("CPPFLAGS.........: " ${CMAKE_CXX__FLAGS})
-message("CFLAGS...........: " ${CMAKE_C_FLAGS})
-message("LDFLAGS..........: " )
+message("  CPPFLAGS.......: " ${CMAKE_CXX__FLAGS})
+message("  CFLAGS.........: " ${CMAKE_C_FLAGS})
+message("  LDFLAGS........: " )
 message("")
-message("Installation.....: no target (TBD)")
+message("Installation.....: make install (as root if needed, with 'su' or 'sudo')")
+message("  type...........: " ${BUILD_TYPE})
+if (NOT ${debug})
+   message("  prefix.........: " ${prefix})
+else()
+   message("  path...........: " ${BUILD_PATH})
+endif()
 message("")
