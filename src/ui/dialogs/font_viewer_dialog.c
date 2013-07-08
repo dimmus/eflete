@@ -152,8 +152,7 @@ font_viewer_init(Evas_Object *font_view, Project *project)
    char *_data = NULL;
    if (!project)
      {
-        NOTIFY_ERROR (elm_object_parent_widget_get(font_view),
-                      "EDJ/EDC file is not loaded");
+        NOTIFY_ERROR ("EDJ/EDC file is not loaded");
         evas_object_del(font_view);
         return;
      }

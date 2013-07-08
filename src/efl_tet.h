@@ -57,6 +57,12 @@ app_shutdown(void);
 /**
  *
  */
+Evas_Object *
+win_layout_get(void);
+
+/**
+ *
+ */
 App_Data *
 app_create(void);
 

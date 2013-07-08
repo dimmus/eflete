@@ -11,17 +11,17 @@
 #include "efl_tet.h"
 
 /**
- * @def NOTIFY_ERROR(obj, fmt, args ...)
+ * @def NOTIFY_ERROR(fmt, args ...)
  *
  * Show Error Notification with formated message
  *
  * @ingroup Notify
  */
-#define NOTIFY_ERROR(obj, fmt, ...) \
+#define NOTIFY_ERROR(fmt, ...) \
 { \
 	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
 	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-	noti_error_show(obj, msg); \
+	noti_error_show(win_layout_get(), msg); \
 	free(msg); \
 }
 

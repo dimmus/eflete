@@ -51,9 +51,12 @@ _on_part_selected(void *data,
    Evas_Object *gl_states = ui_part_select(ap, part);
 
    if(gl_states)
-     evas_object_smart_callback_add(gl_states, "st,state,select",
-                                  _on_state_selected, ap);
-
+     {
+        evas_object_smart_callback_add(gl_states, "st,state,select",
+                                       _on_state_selected, ap);
+        evas_object_smart_callback_call(gl_states, "st,state,select",
+                                        elm_genlist_first_item_get(gl_states));
+     }
 }
 static void
 _on_group_clicked(void *data,

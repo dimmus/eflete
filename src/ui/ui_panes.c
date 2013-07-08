@@ -268,7 +268,7 @@ ui_panes_add(App_Data *ap)
    us = ui_element_settings_init();
    if (!us)
      {
-        NOTIFY_ERROR (ap->win, "ERROR: unable initialize settings module");
+        NOTIFY_ERROR ("ERROR: unable initialize settings module");
         return EINA_FALSE;
      }
    ui_csp =_ui_panes_current_state_struct_init();

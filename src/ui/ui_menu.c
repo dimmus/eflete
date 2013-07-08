@@ -40,7 +40,7 @@ _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
         style_viewer_add(ap->win, ap->project);
      }
    else
-     NOTIFY_ERROR(ap->win, "EDC/EDJ file is not loaded. \n");
+     NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
 }
 
 static void

@@ -176,8 +176,7 @@ image_viewer_init (Evas_Object *img_view, Project *project)
    int i = 0, count_images = 0;
    if (!project)
      {
-        NOTIFY_ERROR (elm_object_parent_widget_get(img_view),
-                      "EDJ/EDC file is not loaded");
+        NOTIFY_ERROR ("EDJ/EDC file is not loaded");
         evas_object_del(img_view);
         return;
      }

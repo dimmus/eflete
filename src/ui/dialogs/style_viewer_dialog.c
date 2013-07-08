@@ -59,7 +59,7 @@ _edj_text_style_get(Evas_Object *obj, const char *style_name)
 }
 
 Eina_Inlist*
-_style_list_get(Evas_Object* obj, Project *project)
+_style_list_get(Project *project)
 {
    Eina_Inlist *styles, *groups, *widgets, *text_styles = NULL;
    Eina_List *f, *text_styles_name;
@@ -73,24 +73,21 @@ _style_list_get(Evas_Object* obj, Project *project)
    widgets = project->widgets;
    if (!widgets)
      {
-        NOTIFY_ERROR (obj,
-                         "It seems that there is no widgets in project. \n");
+        NOTIFY_ERROR ("It seems that there is no widgets in project. \n");
         return NULL;
      }
    _widget = EINA_INLIST_CONTAINER_GET(widgets, Widget);
    styles = _widget->styles;
    if (!styles)
      {
-        NOTIFY_ERROR (obj,
-                         "It seems that there is no styles in project. \n");
+        NOTIFY_ERROR ("It seems that there is no styles in project. \n");
         return NULL;
      }
    _style = EINA_INLIST_CONTAINER_GET(styles, Style);
    groups = _style->groups;
    if (!groups)
      {
-        NOTIFY_ERROR (obj,
-                         "It seems that there is no groups in project. \n");
+        NOTIFY_ERROR("It seems that there is no groups in project. \n");
         return NULL;
      }
 
@@ -236,7 +233,7 @@ _form_left_side(Evas_Object *obj, Project *project) {
      elm_layout_file_set(layout, TET_EDJ, "ui/style_viewer_window/list");
      evas_object_show(layout);
 
-     style_list = _style_list_get(obj, project);
+     style_list = _style_list_get(project);
 
      if (!_itc_style)
        {

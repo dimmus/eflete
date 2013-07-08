@@ -112,7 +112,8 @@ void
 ui_panes_hide(App_Data *ap);
 
 /**
- * Clear groupspace with highlight. Clear items from states and parts genlists.
+ * Clear groupspace with highlight. Clear items from states, signals
+ * groups and parts genlists.
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
@@ -123,8 +124,8 @@ void
 ui_part_back(App_Data *ap);
 
 /**
- * Clear items from signal and groups genlists.
- * Moved to own method for the separation of the interaction between the blocks.
+ * Can be used in future API!!!!
+ * This function will be called when back from group list button is clicked.
  *
  * @param ap The App_Data structure pointer.
  *

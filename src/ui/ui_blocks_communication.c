@@ -8,18 +8,21 @@ ui_part_back(App_Data *ap)
         ui_groupspace_unset(ap->ws->groupspace);
         ui_object_highlight_hide (ap->ws);
      }
-  else
+   else
      WARN ("Groupspace object always delete");
 
-  elm_genlist_clear(ui_block_state_list_get(ap));
-  evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
+   elm_genlist_clear(ui_block_state_list_get(ap));
+   elm_genlist_clear(ui_block_signal_list_get(ap));
+   evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
+   evas_object_hide(ui_property_group_view_get(ui_block_property_get(ap)));
 }
 
+/**
+  * may be usable for future API.
+  */
 void
-ui_group_back(App_Data *ap)
+ui_group_back(App_Data *ap __UNUSED__)
 {
-   elm_genlist_clear(ui_block_signal_list_get(ap));
-   evas_object_hide(ui_property_group_view_get(ui_block_property_get(ap)));
 }
 
 void
@@ -133,7 +136,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
           }
         else
           {
-             NOTIFY_ERROR(ap->win, "The file must have a extension '.edj'");
+             NOTIFY_ERROR("The file must have a extension '.edj'");
           }
      }
    else
@@ -171,7 +174,7 @@ ui_edc_load_done(App_Data* ap, const char *project_name,
    else
      {
         ERR("The file must have a extension '.edc'");
-        NOTIFY_ERROR(ap->win, "The file must have a extension '.edc'");
+        NOTIFY_ERROR("The file must have a extension '.edc'");
      }
 
    evas_object_del(elm_object_content_get(ap->inwin));

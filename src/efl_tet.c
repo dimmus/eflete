@@ -1,7 +1,18 @@
 #include "efl_tet.h"
 #include "ui_main_window.h"
 
+
+
 App_Data *ap = NULL;
+
+Evas_Object *
+win_layout_get(void)
+{
+   if (ap && ap->win_layout)
+     return ap->win_layout;
+   else
+     return NULL;
+}
 
 App_Data *
 app_create (void)

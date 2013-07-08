@@ -266,8 +266,7 @@ colorclass_viewer_init(Evas_Object *ccl_view, Project *project)
 
    if (!project)
      {
-        NOTIFY_ERROR (elm_object_parent_widget_get(ccl_view),
-                      "EDJ/EDC file is not loaded");
+        NOTIFY_ERROR ("EDJ/EDC file is not loaded");
         evas_object_del(ccl_view);
         return;
      }
