@@ -1,5 +1,5 @@
 #include "ui_main_window.h"
-#include "choose_file_dialog.h"
+#include "open_file_dialog.h"
 #include "style_viewer_dialog.h"
 
 Eina_List *ui_list_menu;

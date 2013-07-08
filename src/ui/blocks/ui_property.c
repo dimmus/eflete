@@ -310,7 +310,7 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, 0.0);
    elm_box_align_set(box, 0.5, 0.0);
 
-   ppvd = malloc(sizeof(Prop_Part_View_Data));
+   ppvd = mem_malloc(sizeof(Prop_Part_View_Data));
 
    part_view_base = elm_frame_add(box);
    elm_frame_autocollapse_set(part_view_base, EINA_TRUE);

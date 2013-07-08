@@ -13,7 +13,8 @@ _edj_tag_get(Evas_Object *obj, const char *style_name,
    Tag *tag;
    const char* value;
 
-   tag = calloc(1, sizeof(Tag));
+   tag = mem_malloc(sizeof(Tag));
+
    tag->tag_name = eina_stringshare_add(tag_name);
    value = edje_edit_style_tag_value_get(obj, style_name,
                                          tag_name);

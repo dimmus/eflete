@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(efl_tet C)
+project(efltet C)
 
 set(VERMAJ 0)
 set(VERMIN 0)
@@ -7,8 +7,10 @@ set(VERMIC 8)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+option(ReleaseBuild "ReleaseBuild" 0)
+#set(PREFIX "NULL")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 find_package(Eina REQUIRED)
@@ -107,16 +109,57 @@ include_directories(
    ${ELEMENTARY_INCLUDE_DIRS}
    )
 
+
+if (PREFIX)
+   set (CMAKE_INSTALL_PREFIX ${PREFIX})
+endif()
+
+if (${ReleaseBuild})
+   set(BIN_PATH ${CMAKE_INSTALL_PREFIX}/bin)
+   set(DATA_PATH ${CMAKE_INSTALL_PREFIX}/share/efltet)
+   set(DOC_PATH ${CMAKE_INSTALL_PREFIX}/man)
+   set(BUILD_TYPE "Release Build")
+   set(BUILD_PATH ${CMAKE_INSTALL_PREFIX})
+else()
+   set(BIN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src)
+   set(DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/data)
+   set(DOC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+   set(BUILD_TYPE "Develop Build")
+   set(BUILD_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
 add_definitions("-DPACKAGE=\"${PACKAGE}\"")
+
 #FIXME: bad define
-add_definitions("-DTET_EDJ=\"${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj\"")
-add_definitions("-DTET_IMG_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/images/\"")
-add_definitions("-DTET_EDJ_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/\"")
+add_definitions("-DTET_EDJ=\"${DATA_PATH}/themes/default/${PROJECT_NAME}.edj\"")
+add_definitions("-DTET_IMG_PATH=\"${DATA_PATH}/images/\"")
+add_definitions("-DTET_EDJ_PATH=\"${DATA_PATH}/themes/default/\"")
+add_definitions("-DTET_SETT_PATH=\"$ENV{HOME}/\"")
 
 #add_subdirectory(po)
 add_subdirectory(src)
 add_subdirectory(data)
 add_subdirectory(doc)
+
+#install
+
+if (${ReleaseBuild})
+   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/images DESTINATION ${DATA_PATH} FILES_MATCHING PATTERN "*.jpg" PATTERN "*.png")
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj DESTINATION ${DATA_PATH}/themes/default)
+   install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/${PROJECT_NAME} DESTINATION ${BIN_PATH})
+
+   # Install desctop file
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/efltet.desktop DESTINATION share/applications)
+   # Install icons
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/images/efltet.svg DESTINATION /share/icons)
+endif()
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 #OUTPUT
 message("")
@@ -140,11 +183,16 @@ message("  elementary.....: " ${have_elementary})
 message("")
 message("  Documentation..: " ${build_doc})
 message("    Graphviz.....: " ${have_graphviz})
+message("    Build doc....: make doc")
 message("")
 message("Compilation......: make")
-message("CPPFLAGS.........: " ${CMAKE_CXX__FLAGS})
-message("CFLAGS...........: " ${CMAKE_C_FLAGS})
-message("LDFLAGS..........: " )
+message("  CPPFLAGS.......: " ${CMAKE_CXX__FLAGS})
+message("  CFLAGS.........: " ${CMAKE_C_FLAGS})
+message("  LDFLAGS........: " )
 message("")
-message("Installation.....: no target (TBD)")
+message("Installation.....: " ${BUILD_TYPE})
+message("  bin..........: " ${BIN_PATH})
+message("  data.........: " ${DATA_PATH})
+message("  doc..........: " ${DOC_PATH})
+message("  settings.....: " $ENV{HOME})
 message("")

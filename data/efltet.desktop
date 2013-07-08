@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=EFL Theme Editor Tool
+Comment=EFL Theme Editor Tool
+Keywords=efltet
+Exec=efltet
+Icon=efltet
+Terminal=false
+Type=Application
+Categories=Application;
