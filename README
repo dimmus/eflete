@@ -13,37 +13,6 @@ Currently the build depends on EFL only.
 Building in the command line on Linux (tested on Ubuntu 12.04)
 --------------------------------------------------------------
 
-<<<<<<< HEAD
-Development build:
-
-By defaul create development build.
-
-1) Install EFL libraries (http://www.enlightenment.org/p.php?p=download).
-2) Install CMake.
-3) Go to the main directory and run:
-
-$ cmake . -DReleaseBuild=0
-
-If everything went ok, run:
-
-$ make
-
-This will build the editor binaries.
-
-Run the editor:
-
-$ ./src/efltet
-
-Release build:
-In release build by default install application to /usr/local directory.
-If you need to change destination directories ya can use -DPREFIX=<user_dir>,
-for return to default path you must use "-DPREFIX=" argument.
-
-$ cmake . -DReleaseBuild=1
-This runs CMake with key for release build.
-=======
-
-
 1) Install EFL libraries (http://www.enlightenment.org/p.php?p=download).
 2) Install CMake.
 3) Go to the main directory and follow steps, which describes needed type of build.
@@ -69,6 +38,14 @@ Run the editor:
 
 $ ./build/efltet
 
+Also you can only build project:
+
+$ make
+
+For run the editor:
+
+$ ./src/efltet
+
 RELEASE BUILD:
 In release build by default install application to /usr/local directory.
 If you need to change destination directories ya can use '-Dprefix=<user_dir>',
@@ -81,7 +58,6 @@ If everything ok, and given output like:
 Installation.....: make install (as root if needed, with 'su' or 'sudo')
   type...........: Release Build
   prefix.........: /usr/local
->>>>>>> b5f2447a8cd0a24d79074bfeb61b7967cecf1529
 
 Install the binaries and data files:
 
