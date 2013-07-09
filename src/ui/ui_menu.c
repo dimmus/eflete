@@ -94,7 +94,7 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_icon_size_set(tb,16);
 
    elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_FDO_THEME);
-   tb_it = elm_toolbar_item_append(tb, "menu/arrow_down", "File", NULL, NULL);
+   tb_it = elm_toolbar_item_append(tb, NULL, "File", NULL, NULL);
    if (tb_it == NULL) return EINA_FALSE;
 
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
@@ -110,25 +110,25 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
-   tb_it=elm_toolbar_item_append(tb,"menu/arrow_down", "Viewers", NULL, NULL);
+   tb_it=elm_toolbar_item_append(tb, NULL, "Viewers", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
-   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Styles",
+   elm_menu_item_add(menu, NULL, NULL, "Styles",
                     _on_style_window_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Images",
+   elm_menu_item_add(menu, NULL, NULL, "Images",
                      _on_image_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Colorclasses",
+   elm_menu_item_add(menu, NULL, NULL, "Colorclasses",
                      _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/arrow_right", "Fonts",
+   elm_menu_item_add(menu, NULL, NULL, "Fonts",
                      _on_font_viewer_menu, ap);
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 
-   tb_it=elm_toolbar_item_append(tb,"menu/arrow_down", "Help", NULL, NULL);
+   tb_it=elm_toolbar_item_append(tb, NULL, "Help", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
-   elm_menu_item_add(menu, NULL, "menu/arrow_right", "About",
+   elm_menu_item_add(menu, NULL, NULL, "About",
                      _on_about_window_menu, ap);
 
    tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
