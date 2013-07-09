@@ -3,6 +3,7 @@
 
 /**
  * @defgroup SignalList SignalList
+ * @ingroup Block
  *
  * This widget inherit form the Genlist
  *

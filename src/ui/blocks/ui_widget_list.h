@@ -3,6 +3,7 @@
 
 /**
  * @defgroup WidgetList WidgetList
+ * @ingroup Block
  *
  * This widget inherit from the Naviframe and Genlist.
  *

@@ -11,8 +11,6 @@
 #include "efl_tet.h"
 
 /**
- * @def NOTIFY_ERROR(fmt, args ...)
- *
  * Show Error Notification with formated message
  *
  * @ingroup Notify
@@ -26,8 +24,6 @@
 }
 
 /**
- * @def NOTIFY_WARNING(obj, fmt, args ...)
- *
  * Show Warning Notification with formated message
  *
  * @ingroup Notify
@@ -41,8 +37,6 @@
 }
 
 /**
- * @def NOTIFY_INFO(obj, time, fmt, args ...)
- *
  * Show Information Notification with formated message
  *
  * @ingroup Notify

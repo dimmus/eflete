@@ -12,8 +12,6 @@
 extern int _tet_log_dom;
 
 /**
- * @def TET_LOG(DOM, LEVEL, fmt, ...))
- *
  * Logs a message on the specified domain, level and format.
  *
  * @ingroup Logger
@@ -21,7 +19,7 @@ extern int _tet_log_dom;
 #define TET_LOG(DOM, LEVEL, fmt, ...) EINA_LOG(DOM, LEVEL, fmt, ## __VA_ARGS__)
 
 /**
- * @def Logs a message with level CRITICAL.
+ * Logs a message with level CRITICAL.
  *
  * @ingroup Logger
  */
@@ -29,7 +27,7 @@ extern int _tet_log_dom;
    TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
 
 /**
- * @def Logs a message with level ERROR.
+ * Logs a message with level ERROR.
  *
  * @ingroup Logger
  */

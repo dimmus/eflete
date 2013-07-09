@@ -2,11 +2,11 @@
 #define PROJECT_MANAGER_H
 
 /**
- * @defgroup ProjectManager ProjectManager
+ * @defgroup ProjectManager Project Manager
  *
  * It is a basic object. Project manager object consist a information
  * about opened project. Project manager object consist the list of widgets
- * styles @ref widget_manger.h
+ * styles.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -18,34 +18,52 @@
 #include <Eio.h>
 #include "logger.h"
 
+/**
+ * @struct _Project
+ * Main struct of $project. It struct consist a data of a opened project.
+ *
+ * @ingroup ProjectManager
+ */
 struct _Project
 {
-   /**< name of project */
+   /** name of project */
    char *name;
-   /**< path to edc file(open/save) */
+   /** path to edc file(open/save) */
    char *edc;
-   /**< path to edj file(open/save) */
+   /** path to edj file(open/save) */
    char *edj;
-   /**< path to swap(work) file */
+   /** path to swap(work) file */
    char *swapfile;
-   /**<  */
+   /**  */
    Edje_CC *compiler;
-   /**<  */
+   /**  */
    Edje_DeCC *decompiler;
-   /**< path to image directory, for compile */
+   /** path to image directory, for compile */
    char *image_directory;
-   /**< path to font directory, for compile */
+   /** path to font directory, for compile */
    char *font_directory;
-   /**< path to sound direcory, for compile */
+   /** path to sound direcory, for compile */
    char *sound_directory;
-   /**< list of widgets and they styles in that theme */
+   /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
 };
 
+/**
+ * @typedef Project
+ * @ingroup ProjectManager
+ */
 typedef struct _Project Project;
 
 /**
+ * Open project from edc-file.
  *
+ * @param name The name of a project.
+ * @param path Path to a edc-file.
+ * @param image_directory Path to a image directory of a project.
+ * @param font_directory Path to a font directory of a project.
+ * @param sound_direcotory Path to a sound directory of a project.
+ *
+ * @ingroup ProjectManager
  */
 Project *
 pm_open_project_edc(const char *name,
@@ -55,10 +73,11 @@ pm_open_project_edc(const char *name,
                     const char *sound_direcotory);
 
 /**
- * Open project from edj-file
+ * Open project from edj-file.
  *
- * @param path path to edj-file
- * @return the Project object
+ * @param name The name of a project.
+ * @param path Path to edj-file.
+ * @return The Project object.
  *
  * @ingroup ProjectManager
  */

@@ -23,7 +23,6 @@
  * Adds main window object for Edje tool development.
  *
  * @param ap The App_Data structure pointer.
- *
  * @return EINA_TRUE if window and subblocks created correct, EINA_FALSE if fail.
  *
  * @ingroup Window

@@ -3,6 +3,7 @@
 
 /**
  * @defgroup StateList StateList
+ * @ingroup Block
  *
  * A State List used for view list of part states
  */
