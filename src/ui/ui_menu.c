@@ -114,13 +114,13 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
-   elm_menu_item_add(menu, NULL, NULL, "Styles",
+   elm_menu_item_add(menu, NULL, "window-new", "Styles",
                     _on_style_window_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Images",
+   elm_menu_item_add(menu, NULL, "window-new", "Images",
                      _on_image_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Colorclasses",
+   elm_menu_item_add(menu, NULL, "window-new", "Colorclasses",
                      _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Fonts",
+   elm_menu_item_add(menu, NULL, "window-new", "Fonts",
                      _on_font_viewer_menu, ap);
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
@@ -128,7 +128,7 @@ ui_menu_add(App_Data *ap)
    tb_it=elm_toolbar_item_append(tb, NULL, "Help", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
-   elm_menu_item_add(menu, NULL, NULL, "About",
+   elm_menu_item_add(menu, NULL, "help-about", "About",
                      _on_about_window_menu, ap);
 
    tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
