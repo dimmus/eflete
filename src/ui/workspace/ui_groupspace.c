@@ -750,6 +750,11 @@ ui_groupspace_add(Evas_Object *parent)
 void
 ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 {
+   const Evas_Object *part_bottom = edje_object_part_object_get(
+      elm_layout_edje_get(ws->groupspace), "base/groupspace/bottom_pad");
+   const Evas_Object *part_top = edje_object_part_object_get(
+      elm_layout_edje_get(ws->groupspace), "base/groupspace/top_pad");
+
    Evas_Object *_part_view = elm_layout_add(ws->groupspace);
    evas_object_data_set(ws->groupspace, GS_VIEWPART_KEY, _part_view);
 
@@ -762,13 +767,16 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
                                    "base/groupspace/bottom_pad", 0.9, 0.9);
 
+   elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
+   elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
+
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
 
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
-                                    _gs_resize_cb, ws);
+                                  _gs_resize_cb, ws);
    evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
-                                    _gs_resize_parts_cb, group);
+                                  _gs_resize_parts_cb, group);
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
