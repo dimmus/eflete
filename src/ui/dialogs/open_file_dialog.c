@@ -188,7 +188,7 @@ _on_fs_edc_done(void *data __UNUSED__,
 #define _create_path(target, prefix, prefix_size, suffix, suffix_size) \
    size_t size_##target = prefix_size + prefix_size + 1; \
    target = mem_malloc(size_##target * sizeof(char)); \
-   eina_strlcat(target, prefix, size_##target); \
+   eina_strlcpy(target, prefix, size_##target); \
    eina_strlcat(target, suffix, size_##target);
 
    _create_path(images, tmp_path, strlen(tmp_path), "images/", strlen("images/"));
@@ -199,6 +199,10 @@ _on_fs_edc_done(void *data __UNUSED__,
 
    _create_path(fonts, tmp_path, strlen(tmp_path), "fonts/", strlen("fonts/"));
    elm_fileselector_entry_path_set(fs_ent->fd, fonts);
+
+   free(images);
+   free(sounds);
+   free(fonts);
 #undef _create_path
 }
 
