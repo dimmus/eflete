@@ -11,6 +11,7 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/logger
    ${CMAKE_CURRENT_SOURCE_DIR}/settings
    ${CMAKE_CURRENT_SOURCE_DIR}/ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/ui/modal_window
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/dialogs
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/blocks
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/workspace
@@ -38,6 +39,7 @@ set(TET_CC_FILES
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c
    ui/workspace/ui_groupspace.c
+   ui/modal_window/modal_window.c
    ui/blocks/ui_block.c
    ui/blocks/ui_property.c
    ui/blocks/ui_widget_list.c
