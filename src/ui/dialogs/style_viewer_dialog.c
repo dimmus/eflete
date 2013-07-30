@@ -1,6 +1,8 @@
 #include <ui_main_window.h>
 #include "style_viewer_dialog.h"
 
+#define FONT_SIZE "24"
+
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
@@ -129,12 +131,16 @@ _item_style_label_get(void *data,
                       const char *part __UNUSED__)
 {
    Text_Styles *s = (Text_Styles *)data;
+   char *formated_style_name;
    if (!s->style_name)
      {
         ERR("It impossible, but it is occurred, style's name is missing!");
         return NULL;
      }
-   return strdup(s->style_name);
+   /* 6 - <bold> */
+   formated_style_name = mem_malloc(7 + strlen(s->style_name));
+   sprintf(formated_style_name, "%s%s", "<bold>", s->style_name);
+   return formated_style_name;
 }
 
 /**
@@ -150,7 +156,7 @@ _on_tag_clicked_double(void *data __UNUSED__,
    void *event_obj;
    Eina_Inlist *tags_list;
 
-   char style[BUFF_MAX] = "DEFAULT='";
+   char style[BUFF_MAX] = "DEFAULT=' font_size="FONT_SIZE;
 
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
 
@@ -171,7 +177,6 @@ _on_tag_clicked_double(void *data __UNUSED__,
              strcat(style_tags, " ");
           }
         strcat(style, "'");
-        elm_entry_text_style_user_push(window->entry_style, style);
         elm_object_text_set(window->entry_prop, style_tags);
         elm_object_text_set(window->entry_tag, "");
      }
@@ -181,8 +186,8 @@ _on_tag_clicked_double(void *data __UNUSED__,
         elm_object_text_set(window->entry_prop, _tag->tag_value);
         strcat(style, _tag->tag_value);
         strcat(style, "'");
-        elm_entry_text_style_user_push(window->entry_style, style);
      }
+   elm_entry_text_style_user_push(window->entry_style, style);
    evas_object_size_hint_max_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 }
 
@@ -190,9 +195,9 @@ static void
 _on_viewer_exit(void *data, Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Evas_Object *inwin = (Evas_Object *) data;
+   Evas_Object *mwin = (Evas_Object *) data;
 
-   evas_object_del(inwin);
+   evas_object_del(mwin);
 }
 
 /**
@@ -217,7 +222,7 @@ _item_tags_del(void *data, Evas_Object *obj __UNUSED__)
 }
 
 /**
- * Creating the view of the inwin!!!
+ * Creating the view of the mwin!!!
  */
 Evas_Object*
 _form_left_side(Evas_Object *obj, Project *project) {
@@ -238,7 +243,7 @@ _form_left_side(Evas_Object *obj, Project *project) {
      if (!_itc_style)
        {
           _itc_style = elm_genlist_item_class_new();
-          _itc_style->item_style = "tree_effect";
+          _itc_style->item_style = "custom";
           _itc_style->func.text_get = _item_style_label_get;
           _itc_style->func.content_get = NULL;
           _itc_style->func.state_get = NULL;
@@ -247,7 +252,7 @@ _form_left_side(Evas_Object *obj, Project *project) {
      if (!_itc_tags)
        {
           _itc_tags= elm_genlist_item_class_new();
-          _itc_tags->item_style = "tree_effect";
+          _itc_tags->item_style = "custom";
           _itc_tags->func.text_get = _item_tags_label_get;
           _itc_tags->func.content_get = NULL;
           _itc_tags->func.state_get = NULL;
@@ -321,7 +326,6 @@ _form_right_side(Evas_Object *obj)
    evas_object_show(layout);
 
    window->entry_tag = elm_entry_add(obj);
-   elm_entry_single_line_set(window->entry_tag, EINA_TRUE);
    elm_object_part_content_set (layout, "swallow/tag_entry", window->entry_tag);
    elm_entry_scrollable_set(window->entry_tag, EINA_TRUE);
    evas_object_show(window->entry_tag);
@@ -345,26 +349,28 @@ _form_right_side(Evas_Object *obj)
 Evas_Object *
 style_viewer_add (Evas_Object *parent, Project *project)
 {
-   Evas_Object *inwin = NULL;
+   Evas_Object *mwin = NULL;
    Evas_Object *panes, *panes_h;
    Evas_Object *layout_left, *layout_right;
 
-   inwin = elm_win_inwin_add(parent);
+   //mwin = elm_win_inwin_add(parent);
+   mwin = mw_add(parent);
+   mw_title_set(mwin, "Textblock style editor");
 
    window = mem_malloc(sizeof(Style_Window));
 
-   panes = elm_panes_add(inwin);
+   panes = elm_panes_add(mwin);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
-   elm_win_inwin_content_set(inwin, panes);
+   elm_win_inwin_content_set(mwin, panes);
    evas_object_show(panes);
 
-   layout_left = _form_left_side(inwin, project);
+   layout_left = _form_left_side(mwin, project);
    elm_object_part_content_set(panes, "left", layout_left);
    evas_object_show(layout_left);
 
-   panes_h = elm_panes_add(inwin);
+   panes_h = elm_panes_add(mwin);
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes_h, EINA_TRUE);
@@ -373,25 +379,27 @@ style_viewer_add (Evas_Object *parent, Project *project)
 
    elm_theme_extension_add(NULL, TET_EDJ);
 
-   window->entry_style = elm_entry_add(inwin);
+   window->entry_style = elm_entry_add(mwin);
    evas_object_size_hint_weight_set(window->entry_style, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_scrollable_set(window->entry_style, EINA_TRUE);
    elm_entry_single_line_set(window->entry_style, EINA_TRUE);
+   elm_entry_editable_set(window->entry_style, EINA_FALSE);
+   elm_object_style_set(window->entry_style, "style_editor");
    elm_object_text_set(window->entry_style, "The quick brown fox jumps over the lazy dog");
    elm_object_part_content_set(panes_h, "left", window->entry_style);
-   elm_entry_editable_set(window->entry_style, EINA_FALSE);
-   elm_entry_text_style_user_push(window->entry_style, "DEFAULT='align=center'");
+   elm_entry_text_style_user_push(window->entry_style, "DEFAULT='align=center "
+                                  "font_size="FONT_SIZE"'");
    evas_object_size_hint_max_set(window->entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(window->entry_style);
 
-   layout_right = _form_right_side(inwin);
+   layout_right = _form_right_side(mwin);
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
 
-   evas_object_show(inwin);
+   evas_object_show(mwin);
 
-   return inwin;
+   return mwin;
 }
 
 void
@@ -403,3 +411,4 @@ style_viewer_list_callback_add(Evas_Object *object,
    if (!object) return;
    elm_object_signal_callback_add(object, event, "", func, data);
 }
+#undef FONT_SIZE

@@ -11,6 +11,7 @@
 #include "efl_tet.h"
 #include "Evas.h"
 #include "widget_manager.h"
+
 /**
  * Add new colorclass viewer inwin object.
  *
@@ -34,4 +35,4 @@ colorclass_viewer_add(Evas_Object *parent);
 void
 colorclass_viewer_init(Evas_Object *ccl_view, Project *project);
 
-#endif /*COLORCLASS_VIEWER_DIALOG_H*/
+#endif /* COLORCLASS_VIEWER_DIALOG_H */

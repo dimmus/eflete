@@ -5,6 +5,8 @@ collections {
    #include "widgets/prop_item.edc"
    #include "widgets/inwin.edc"
    #include "widgets/naviframe.edc"
+   #include "widgets/genlist.edc"
+   #include "widgets/entry.edc"
 
    #include "layouts/workspace.edc"
    #include "layouts/ruler.edc"

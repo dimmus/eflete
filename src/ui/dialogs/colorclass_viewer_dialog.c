@@ -1,6 +1,6 @@
 #include "efl_tet.h"
 #include "colorclass_viewer_dialog.h"
-
+#include "modal_window.h"
 
 struct _Colorclass_Item
 {
@@ -20,16 +20,16 @@ static void
 _on_button_ok_clicked_cb(void *data, Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Evas_Object *inwin = (Evas_Object *)data;
-   evas_object_del(inwin);
+   Evas_Object *mwin = (Evas_Object *)data;
+   evas_object_del(mwin);
 }
 
 static void
 _on_button_cancel_clicked_cb(void *data, Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Evas_Object *inwin = (Evas_Object *)data;
-   evas_object_del(inwin);
+   Evas_Object *mwin = (Evas_Object *)data;
+   evas_object_del(mwin);
 }
 
 static char *
@@ -136,31 +136,35 @@ _ccl_it_new ()
 Evas_Object *
 colorclass_viewer_add(Evas_Object *parent)
 {
-   Evas_Object *inwin;
+   Evas_Object *mwin;
    Evas_Object *button, *genlist, *layout, *panes;
    Evas_Object *rect, *label;
 
-   inwin = elm_win_inwin_add(parent);
-   elm_object_style_set(inwin,"tet");
+   //inwin = elm_win_inwin_add(parent);
+   //elm_object_style_set(inwin,"tet");
 
-   layout = elm_layout_add(inwin);
+   mwin = mw_add(parent);
+   mw_title_set(mwin, "Color class editor");
+   mw_info_text_set(mwin, "<align=center>Test Content</align>");
+
+   layout = elm_layout_add(mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "base/colorclass_viewer/default");
-   elm_win_inwin_content_set(inwin, layout);
+   elm_win_inwin_content_set(mwin, layout);
    evas_object_show(layout);
 
-   panes = elm_panes_add(inwin);
+   panes = elm_panes_add(mwin);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.6);
    elm_object_part_content_set(layout, "swallow/panes", panes);
    evas_object_show(panes);
 
-   genlist = elm_genlist_add(inwin);
+   genlist = elm_genlist_add(mwin);
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_object_part_content_set(panes, "left", genlist);
    evas_object_show(genlist);
-   evas_object_smart_callback_add(genlist, "selected", _on_ccl_selected, inwin);
+   evas_object_smart_callback_add(genlist, "selected", _on_ccl_selected, mwin);
 
    if (!_itc_ccl)
      {
@@ -172,42 +176,42 @@ colorclass_viewer_add(Evas_Object *parent)
         _itc_ccl->func.del = NULL;
      }
 
-   button = elm_button_add(inwin);
+   button = elm_button_add(mwin);
    elm_object_text_set(button, "Add");
    elm_object_part_content_set(layout, "button_add", button);
    evas_object_resize(button, 40, 20);
    evas_object_show(button);
 
-   button = elm_button_add(inwin);
+   button = elm_button_add(mwin);
    elm_object_text_set(button, "Delete");
    elm_object_part_content_set(layout, "button_del", button);
    evas_object_resize(button, 40, 20);
    evas_object_show(button);
 
-   button = elm_button_add(inwin);
+   button = elm_button_add(mwin);
    elm_object_text_set(button, "Ok");
    elm_object_part_content_set(layout, "button_ok", button);
    evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
-                                   inwin);
+                                   mwin);
    evas_object_resize(button, 40, 20);
    evas_object_show(button);
 
-   button = elm_button_add(inwin);
+   button = elm_button_add(mwin);
    elm_object_text_set(button, "Cancel");
    elm_object_part_content_set(layout, "button_cancel", button);
    evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked_cb,
-                                   inwin);
+                                   mwin);
    evas_object_resize(button, 40, 20);
    evas_object_show(button);
 
-   layout = elm_layout_add(inwin);
+   layout = elm_layout_add(mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "base/colorclass_viewer/property");
    elm_object_part_content_set(panes, "right", layout);
    evas_object_show(layout);
 
 #define LABEL_ADD(part)\
-   label = elm_entry_add(inwin);\
+   label = elm_entry_add(mwin);\
    elm_entry_single_line_set(label, EINA_TRUE);\
    elm_entry_single_line_set(label, EINA_TRUE);\
    elm_entry_scrollable_set(label, EINA_TRUE);\
@@ -217,7 +221,7 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_show(label);
 
 #define COLOR_RECT_ADD(part)\
-   rect = elm_bg_add (inwin);\
+   rect = elm_bg_add (mwin);\
    evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);\
    elm_bg_color_set(rect, 255, 255, 255);\
    elm_object_part_content_set(layout, part, rect);\
@@ -242,7 +246,7 @@ colorclass_viewer_add(Evas_Object *parent)
 #undef COLOR_RECT_ADD
 
    evas_object_show(layout);
-   return inwin;
+   return mwin;
 }
 
 void

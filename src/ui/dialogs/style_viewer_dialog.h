@@ -19,6 +19,7 @@
 
 #include <Eina.h>
 #include "efl_tet.h"
+#include "modal_window.h"
 
 enum _Type_Style
 {
