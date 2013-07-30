@@ -275,3 +275,9 @@ ui_ruler_add(Evas_Object *parent)
    evas_object_show(ruler);
    return ruler;
 }
+
+void
+ui_ruler_redraw(Evas_Object *obj)
+{
+   edje_object_message_send(obj,EDJE_MESSAGE_NONE,MSG_REDRAW,0);
+}

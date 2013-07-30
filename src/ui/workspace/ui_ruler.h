@@ -32,6 +32,7 @@
 #define MSG_REL_START 8
 #define MSG_REL_END 9
 #define MSG_REL_DASHES 10
+#define MSG_REDRAW 11
 
 /**
  * @enum _Orient
@@ -270,5 +271,15 @@ ui_ruler_scale_absolute_visible_set(Evas_Object *obj, Eina_Bool enable);
  */
 Eina_Bool
 ui_ruler_scale_absolute_visible_get(Evas_Object *obj);
+
+/**
+ * Forces ruler redraw.
+ *
+ * @param obj Ruler object.
+ *
+ * @ingroup Ruler
+ */
+void
+ui_ruler_redraw(Evas_Object *obj);
 
 #endif /* UI_RULER_HEADER_H */
