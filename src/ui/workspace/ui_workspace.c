@@ -4,6 +4,9 @@
 Evas_Object *
 ui_groupspace_add(Evas_Object *parent);
 
+void
+ui_groupspace_separate(Evas_Object *groupspace, Eina_Bool separate);
+
 Workspace *
 _ws_init(void);
 
@@ -45,10 +48,13 @@ _zoom_in_on_click(void *data __UNUSED__,
 }
 
 static void
-_separate_on_click(void *data __UNUSED__,
+_separate_on_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
+   Workspace *ws = (Workspace *)data;
+   ui_groupspace_separate(ws->groupspace, ws->separated);
+   ws->separated = !ws->separated;
 }
 
 static void
@@ -100,9 +106,11 @@ ws_add (Evas_Object *parent)
    Workspace *ws;
    Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver, *_popup;
    Evas_Object *_icon;
+   Evas_Object *_scroller;
    Evas *canvas;
 
    ws = _ws_init();
+   ws->separated = EINA_TRUE;
    ws_zoom_step_set(2, ws);
    canvas = evas_object_evas_get(parent);
    ws->canvas = canvas;
@@ -149,7 +157,7 @@ ws_add (Evas_Object *parent)
    elm_image_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
    elm_image_no_scale_set (_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
-   elm_object_disabled_set(_button, EINA_TRUE);
+//   elm_object_disabled_set(_button, EINA_TRUE);
 
    _ruler_hor = ui_ruler_add (parent);
    elm_object_part_content_set (parent, "base/workspace/ruler_hor",_ruler_hor);
@@ -163,8 +171,15 @@ ws_add (Evas_Object *parent)
    _popup = ui_popup_add (parent, ws);
    ws->popup = _popup;
 
+   _scroller = elm_scroller_add(parent);
+   ws->scroller = _scroller;
+   elm_scroller_policy_set(_scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
+   elm_scroller_content_min_limit(_scroller, EINA_FALSE, EINA_FALSE);
+   elm_object_part_content_set(parent, "base/workspace/groupspace", _scroller);
    ws->groupspace = ui_groupspace_add(parent);
-
+   elm_object_content_set(_scroller, ws->groupspace);
+   evas_object_show(ws->groupspace);
+   evas_object_show(_scroller);
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,

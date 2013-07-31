@@ -1,17 +1,64 @@
 #include "ui_groupspace.h"
 
-#define GS_VIEWPART_KEY "gs_viewpart_key"
 #define GS_GROUP_KEY "gs_group_key"
 #define GS_WS_KEY "gs_workspace_key"
 #define GS_PROJECT_KEY "gs_project_key"
+#define GS_BOX_KEY "gs_box_key"
+#define GS_PART_DATA_KEY "gs_part_key"
 
-/*Prototypes functions for internal use*/
 static void
-_gs_move_parts(Evas_Object *view_part, Group *group);
+_main_box_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
+{
+   int x, y, w, h;
+   int xx, yy;
+   Evas_Object *edje_part;
+   Evas_Object *edje_group = (Evas_Object *)data;
+   Eina_List *l;
+   Evas_Object_Box_Option *opt;
+
+   evas_object_geometry_get(o, &xx, &yy, &w, &h);
+   evas_object_resize(edje_group, w, h);
+   evas_object_move(edje_group, xx, yy);
+   evas_object_geometry_get(edje_group, &xx, &yy, &w, &h);
+   EINA_LIST_FOREACH(p->children, l, opt)
+     {
+        edje_part = evas_object_data_get(opt->obj, GS_PART_DATA_KEY);
+        evas_object_geometry_get(edje_part, &x, &y, &w, &h);
+        evas_object_move(opt->obj, x, y);
+        evas_object_resize(opt->obj, w, h);
+        evas_object_geometry_get(opt->obj, &x, &y, &w, &h);
+    }
+}
+
+static void
+_separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
+{
+   int x, y, w, h;
+   int xx, yy;
+   Evas_Object *edje_part;
+   Evas_Object *edje_group = (Evas_Object *)data;
+   Eina_List *l;
+   Evas_Object_Box_Option *opt;
+   int count = 0;
+
+   evas_object_geometry_get(o, &xx, &yy, &w, &h);
+   evas_object_resize(edje_group, w, h);
+   evas_object_move(edje_group, xx, yy);
+   evas_object_geometry_get(edje_group, &xx, &yy, &w, &h);
+   EINA_LIST_FOREACH(p->children, l, opt)
+     {
+        edje_part = evas_object_data_get(opt->obj, GS_PART_DATA_KEY);
+        evas_object_geometry_get(edje_part, &x, &y, &w, &h);
+        evas_object_move(opt->obj, xx + count * 50, yy + count * 20);
+        evas_object_resize(opt->obj, w, h);
+        evas_object_geometry_get(opt->obj, &x, &y, &w, &h);
+        count++;
+    }
+}
 
 static void
 _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
-		   void *event_info __UNUSED__)
+                  void *event_info __UNUSED__)
 {
    int x, y;
    Workspace *ws = (Workspace*)data;
@@ -22,27 +69,20 @@ _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
 
 static void
 _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
-	       void *event_info __UNUSED__)
+              void *event_info __UNUSED__)
 {
    int x, y, w, h;
    int x1,y1,w1,h1;//FIXME: change var names
    Workspace *ws = (Workspace*)data;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    evas_object_geometry_get(ws->bg, &x1, &y1, &w1, &h1);
-	//FIXME:avoid hardcode val(25)
+   //FIXME:avoid hardcode val(25)
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_hor, x-x1-25);
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y-y1-25);
    ui_ruler_scale_relative_position_set(ws->ruler_hor, x-x1-25, x + w-x1-25);
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y-y1-25, y + h-y1-25);
 
    ui_object_highlight_move(ws);
-}
-
-static void
-_gs_resize_parts_cb(void *data, Evas *e __UNUSED__,
-			Evas_Object *obj, void *event_info __UNUSED__)
-{
-   _gs_move_parts(obj, (Group*)(data));
 }
 
 static void
@@ -95,13 +135,11 @@ _gs_image_update(Project *project, Group *group, Part *part, Part_State *state)
 }
 
 static Evas_Object *
-_gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
-		Project *project, Part_State *state)
+_gs_image_draw(Evas *canvas, Group *group , Part *part,	Project *project,
+               Part_State *state)
 {
-   Evas_Load_Error err;
    Evas_Object *_image;
-   Evas *canvas = NULL;
-   char buf[4096];
+   char buf[BUFF_MAX];
    int x, y, w, h;
 
    Part_State *_current_state = NULL;
@@ -110,18 +148,12 @@ _gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
    else
      _current_state = state;
 
-   canvas = evas_object_evas_get(view_part);
    _image = evas_object_image_filled_add(canvas);
 
    snprintf(buf, sizeof(buf), "edje/images/%i", _current_state->image->id);
    evas_object_image_file_set(_image, project->swapfile, buf);
 
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-
-   err = evas_object_image_load_error_get(_image);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
 
    evas_object_move(_image, x, y);
    evas_object_resize(_image, w, h);
@@ -185,11 +217,9 @@ _gs_rect_update(Group *group, Part *part, Part_State *state)
 }
 
 static Evas_Object *
-_gs_rect_draw(Evas_Object *view_part, Group *group, Part *part,
-              Part_State *state)
+_gs_rect_draw(Evas *canvas, Group *group, Part *part, Part_State *state)
 {
    Evas_Object *_rectangle;
-   Evas *canvas = NULL;
    int x, y, w, h;
    Part_State *_current_state = NULL;
 
@@ -198,7 +228,6 @@ _gs_rect_draw(Evas_Object *view_part, Group *group, Part *part,
    else
      _current_state = state;
 
-   canvas = evas_object_evas_get(view_part);
    if (!canvas)
      ERR ("Coud not to take canvas");
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
@@ -270,11 +299,10 @@ _gs_textblock_update(Group *group, Part *part, Part_State *state)
 }
 
 static Evas_Object *
-_gs_textblock_draw(Evas_Object * view_part, Group *group, Part *part,
+_gs_textblock_draw(Evas *canvas, Group *group, Part *part,
                    Part_State *state)
 {
    Evas_Object *_textblock = NULL;
-   Evas *_canvas = NULL;
    int x, y, w, h;
    Evas_Textblock_Style *ts = NULL;
 
@@ -287,9 +315,8 @@ _gs_textblock_draw(Evas_Object * view_part, Group *group, Part *part,
    edje_edit_state_text_set(group->obj, part->name, _current_state->name,
                             _current_state->value, part->name);
    edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   _canvas = evas_object_evas_get(view_part);
 
-   _textblock = evas_object_textblock_add(_canvas);
+   _textblock = evas_object_textblock_add(canvas);
 
    ts = evas_textblock_style_new();
 
@@ -366,19 +393,15 @@ _gs_text_update(Group *group, Part *part, Part_State *state)
 
 
 static Evas_Object *
-_gs_text_draw(Evas_Object *view_part, Group *group, Part *part,
-              Part_State *state)
+_gs_text_draw(Evas *canvas, Group *group, Part *part, Part_State *state)
 {
    Evas_Object *_text = NULL;
-   Evas *canvas = NULL;
    int x, y, w, h;
    Part_State *_current_state = NULL;
    if (!state)
      _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
    else
      _current_state = state;
-
-   canvas = evas_object_evas_get(view_part);
 
    edje_edit_state_text_set(group->obj, part->name, _current_state->name,
                             _current_state->value, part->name);
@@ -444,31 +467,25 @@ _gs_spacer_update(Group *group, Part *part, Part_State *state)
 
 
 static Evas_Object *
-_gs_spacer_draw(Evas_Object * view_part, Group *group, Part *part,
+_gs_spacer_draw(Evas *canvas, Group *group, Part *part,
                 Part_State *state)
 {
    Evas_Object *_spacer = NULL;
-   Evas *canvas = NULL;
    int x, y, w, h;
-   Evas_Load_Error err;
    Part_State *_current_state = NULL;
    if (!state)
      _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
    else
      _current_state = state;
 
-   canvas = evas_object_evas_get (view_part);
    _spacer = evas_object_image_add(canvas);
-   evas_object_image_file_set (_spacer, TET_IMG_PATH"spacer.png", NULL);
+   evas_object_image_file_set (_spacer, TET_IMG_PATH"swallow_spacer_mask.png", NULL);
    evas_object_image_fill_set (_spacer, 2, 2, 10, 10);
    edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
+   evas_object_color_set(_spacer, 15, 60, 162, 180);
    evas_object_move (_spacer, x, y);
    evas_object_resize (_spacer, w, h);
    evas_object_image_fill_spread_set (_spacer, EVAS_TEXTURE_REPEAT);
-   err = evas_object_image_load_error_get(_spacer);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
 
    evas_object_move(_spacer, x, y);
    evas_object_resize(_spacer, w, h);
@@ -511,31 +528,25 @@ _gs_swallow_update(Group *group, Part *part, Part_State *state)
 
 
 static Evas_Object *
-_gs_swallow_draw(Evas_Object * view_part, Group *group, Part *part,
-                Part_State *state)
+_gs_swallow_draw(Evas *canvas, Group *group, Part *part, Part_State *state)
 {
    Evas_Object *_swallow = NULL;
-   Evas *canvas = NULL;
    int x, y, w, h;
-   Evas_Load_Error err;
    Part_State *_current_state = NULL;
    if (!state)
      _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
    else
      _current_state = state;
 
-   canvas = evas_object_evas_get (view_part);
    _swallow = evas_object_image_add (canvas);
-   evas_object_image_file_set (_swallow, TET_IMG_PATH"swallow.png", NULL);
+   evas_object_image_file_set (_swallow, TET_IMG_PATH"swallow_spacer_mask.png",
+                               NULL);
    evas_object_image_fill_set (_swallow, 2, 2, 10, 10);
    edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
+   evas_object_color_set(_swallow, 219, 108, 0, 180);
    evas_object_move (_swallow, x, y);
    evas_object_resize (_swallow, w, h);
    evas_object_image_fill_spread_set (_swallow, EVAS_TEXTURE_REPEAT);
-   err = evas_object_image_load_error_get(_swallow);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
 
    evas_object_move(_swallow, x, y);
    evas_object_resize(_swallow, w, h);
@@ -629,63 +640,44 @@ _gs_text_part_geometry_recalc(Part *part, Part_State *state, int *x, int *y,
 }
 
 static void
-_gs_move_parts(Evas_Object *view_part , Group *group)
-{
-   int x, y, w, h, x1, y1, w1, h1;
-   Part *_part = NULL;
-
-   evas_object_geometry_get(view_part, &x1, &y1, &w1, &h1);
-   evas_object_resize(group->obj, w1, h1);
-   evas_object_move(group->obj, x1, y1);
-   EINA_INLIST_FOREACH(group->parts, _part)
-     {
-        if (_part->obj)
-          {
-             edje_object_part_geometry_get(group->obj, _part->name,
-                &x, &y, &w, &h);
-             if (_part->type == EDJE_PART_TYPE_TEXT)
-               _gs_text_part_geometry_recalc(_part, NULL, &x, &y, &w, &h);
-             evas_object_move(_part->obj, x + x1, y + y1);
-             evas_object_resize(_part->obj, w, h);
-         }
-        else
-          ERR ("Part does not exist.");
-     }
-}
-
-static void
-_gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
-               Project *project)
+_gs_group_draw(Group *group, Workspace *ws, Project *project)
 {
    Part *_part = NULL;
+   Evas_Object *edje_part;
    Evas_Object *_part_object = NULL;
+   Evas_Object *box =  evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    EINA_INLIST_FOREACH(group->parts, _part)
      {
         if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-          _part_object = _gs_rect_draw(view_part, group, _part, NULL);
+          _part_object = _gs_rect_draw(ws->canvas, group, _part, NULL);
         if (_part->type == EDJE_PART_TYPE_IMAGE)
-          _part_object = _gs_image_draw(view_part, group, _part, project, NULL);
+          _part_object = _gs_image_draw(ws->canvas, group, _part, project, NULL);
         if (_part->type == EDJE_PART_TYPE_TEXT)
-          _part_object = _gs_text_draw(view_part, group, _part, NULL);
+          _part_object = _gs_text_draw(ws->canvas, group, _part, NULL);
         if (_part->type == EDJE_PART_TYPE_SPACER)
-          _part_object = _gs_spacer_draw(view_part, group, _part, NULL);
+          _part_object = _gs_spacer_draw(ws->canvas, group, _part, NULL);
         if (_part->type == EDJE_PART_TYPE_SWALLOW)
-          _part_object = _gs_swallow_draw(view_part, group, _part, NULL);
+          _part_object = _gs_swallow_draw(ws->canvas, group, _part, NULL);
         if (_part->type == EDJE_PART_TYPE_GROUP)
           _part_object = _gs_group_part_draw(project, group, _part, NULL);
         if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          _part_object = _gs_textblock_draw(view_part, group, _part, NULL);
+          _part_object = _gs_textblock_draw(ws->canvas, group, _part, NULL);
 
         if (_part_object)
           {
              evas_object_event_callback_add(_part_object,
                                             EVAS_CALLBACK_MOUSE_MOVE,
                                             _gs_mouse_move_cb, ws);
+             edje_part = (Evas_Object *) edje_object_part_object_get(group->obj,
+                                                                _part->name);
              _part->obj = _part_object;
+             evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
+             evas_object_box_append(box, _part->obj);
           }
         else
           ERR ("Part object did'n create");
      }
+   evas_object_show(box);
 }
 
 void
@@ -693,15 +685,11 @@ ui_groupspace_part_state_update(Part *part, Part_State *state,
                                 Evas_Object *groupspace)
 {
    Group *group =  evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Evas_Object *view_part =  evas_object_data_get(groupspace, GS_VIEWPART_KEY);
    Project *project = evas_object_data_get(groupspace, GS_PROJECT_KEY);
    Part *_part = NULL;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
 
-   int x, y, w, h, x1, y1, w1, h1;
-
-   evas_object_geometry_get(view_part, &x1, &y1, &w1, &h1);
-   evas_object_resize(group->obj, w1, h1);
-   evas_object_move(group->obj, x1, y1);
+   int x, y, w, h;
 
    EINA_INLIST_FOREACH(group->parts, _part)
      {
@@ -727,9 +715,8 @@ ui_groupspace_part_state_update(Part *part, Part_State *state,
                                     &x, &y, &w, &h);
              if (_part->type == EDJE_PART_TYPE_TEXT)
                _gs_text_part_geometry_recalc(_part, state, &x, &y, &w, &h);
-             evas_object_move(_part->obj, x + x1, y + y1);
-             evas_object_resize(_part->obj, w, h);
-             break;
+             evas_object_resize(box, w-1, h-1);
+           break;
           }
      }
 }
@@ -740,7 +727,6 @@ ui_groupspace_add(Evas_Object *parent)
    Evas_Object *_groupspace = NULL;
 
    _groupspace = elm_layout_add(parent);
-   elm_object_part_content_set(parent, "base/workspace/groupspace", _groupspace);
    elm_layout_file_set(_groupspace, TET_EDJ, "base/groupspace");
    evas_object_hide(parent);
    evas_object_hide(_groupspace);
@@ -751,32 +737,48 @@ void
 ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 {
    const Evas_Object *part_bottom = edje_object_part_object_get(
-      elm_layout_edje_get(ws->groupspace), "base/groupspace/bottom_pad");
+      elm_layout_edje_get(ws->groupspace), "bottom_pad");
    const Evas_Object *part_top = edje_object_part_object_get(
-      elm_layout_edje_get(ws->groupspace), "base/groupspace/top_pad");
+      elm_layout_edje_get(ws->groupspace), "top_pad");
+   Evas_Object *_box;
+   int x, y, gw, gh, w, h;
+   double dx, dy;
 
-   Evas_Object *_part_view = elm_layout_add(ws->groupspace);
-   evas_object_data_set(ws->groupspace, GS_VIEWPART_KEY, _part_view);
-
-   elm_object_part_content_set(ws->groupspace, "base/groupspace/groupspace",
-                               _part_view);
+   _box = evas_object_box_add(ws->canvas);
+   elm_object_part_content_set(ws->groupspace, "groupspace", _box);
+   elm_object_part_content_set(ws->groupspace, "edje_group", group->obj);
+   evas_object_box_layout_set(_box, _main_box_layout, group->obj, NULL);
+   evas_object_show(group->obj);
    elm_layout_signal_emit (ws->groupspace, "groupspace,show", "");
-
-   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
-                                   "base/groupspace/top_pad", 0.1, 0.1);
-   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
-                                   "base/groupspace/bottom_pad", 0.9, 0.9);
 
    elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
    elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
 
+   evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
+   elm_scroller_region_get(ws->scroller, NULL, NULL, &gw, &gh);
+   x = (int)((w - gw) / 2);
+   y = (int)((h - gh) / 2);
+   elm_scroller_region_bring_in(ws->scroller, x, y, gw, gh);
+
+   /*
+    *  value 0.01 needed for groupspace offset from top left and bottom right
+    *  corners workspace area
+    */
+   dx = (double)x / w + 0.01;
+   dy = (double)y / h + 0.01;
+   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
+                                   "top_pad", dx, dy);
+   dx = (double)(x + gw) / w - 0.01;
+   dy = (double)(y + gh) / h - 0.01;
+   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
+                                   "bottom_pad", dx, dy);
+
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
 
-   evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
+   evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
                                   _gs_resize_cb, ws);
-   evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
-                                  _gs_resize_parts_cb, group);
+   evas_object_data_set(ws->groupspace, GS_BOX_KEY, _box);
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
@@ -787,28 +789,31 @@ ui_groupspace_update (Evas_Object *obj)
 {
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
    Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
-   Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
    Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
-   _gs_group_draw(view_part, group, ws, project);
+   _gs_group_draw(group, ws, project);
    evas_object_show(obj);
 }
 
 void
 ui_groupspace_unset(Evas_Object *obj)
 {
-   Part *_part = NULL;
-   Group *group = evas_object_data_get(obj, GS_GROUP_KEY);
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
-   Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
-   elm_object_part_content_unset(ws->groupspace, "base/groupspace/groupspace");
+   elm_object_part_content_unset(ws->groupspace, "groupspace");
    elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
 
-   EINA_INLIST_FOREACH(group->parts, _part)
-     {
-          evas_object_hide(_part->obj);
-     }
-
-   evas_object_hide(view_part);
+   evas_object_box_remove_all(box, EINA_TRUE);
    evas_object_hide(ws->groupspace);
 }
 
+void
+ui_groupspace_separate(Evas_Object *groupspace, Eina_Bool separate)
+{
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+
+   if (separate)
+     evas_object_box_layout_set(box, _separate_layout, group->obj, NULL);
+   else
+     evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
+}
