@@ -81,6 +81,8 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y-y1-25);
    ui_ruler_scale_relative_position_set(ws->ruler_hor, x-x1-25, x + w-x1-25);
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y-y1-25, y + h-y1-25);
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
 
    ui_object_highlight_move(ws);
 }

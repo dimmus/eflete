@@ -8,6 +8,7 @@
 #define MSG_REL_START 8
 #define MSG_REL_END 9
 #define MSG_REL_DASHES 10
+#define MSG_REDRAW 11
 
 #define RULER(typeName,imageName,xDragOn,yDragOn,xSliderSize,ySliderSize) \
 group { \
@@ -306,6 +307,7 @@ group {
 
       --//redraw dashes and labels
       function draw()
+         --//print "redraw";
          prepareRel();
          prepareAbs();
          positionChange();
@@ -358,18 +360,19 @@ group {
          elseif("none"==type) then
             if(id==MSG_ORIENT_HOR) then
                horizontal=true;
-               draw();
+               --//draw(); //commented out due performance issues
             elseif(id==MSG_ORIENT_VER) then
                horizontal=false;
+            elseif(id==MSG_REDRAW) then
                draw();
             end
          elseif("int" == type) then
             if(id==MSG_ZERO_POS) then
                zeroPos= ...;
-               draw();
+               --//draw();
             elseif(id==MSG_ABS_STEP) then
                valueStep = ...;
-               draw();
+               --//draw();
             elseif(id==MSG_ABS_VISIBLE) then
                if(... == 1) then
                   absVisible=true;
@@ -379,7 +382,7 @@ group {
                draw();
             elseif(id==MSG_ABS_DASHES_STEP) then
                absStep=...;
-               draw();
+               --//draw();
             elseif(id==MSG_REL_VISIBLE) then
                if( ... == 1) then
                   relVisible=true;
@@ -389,14 +392,14 @@ group {
                draw();
             elseif(id==MSG_REL_START) then
                relStart=...;
-               draw();
+               --//draw();
             elseif(id==MSG_REL_END) then
                relEnd= ...;
-               draw();
+               --//draw();
             elseif(id== MSG_REL_DASHES) then
                relDashesNeeded= ... +1;
                relLabelsNeeded= ... +1;
-               draw();
+               --//draw();
             end
          end
       end
