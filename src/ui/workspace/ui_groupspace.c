@@ -120,8 +120,8 @@ _gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
 
    err = evas_object_image_load_error_get(_image);
    if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
+     NOTIFY_WARNING("Could not load image. Error string is \"%s\"\n",
+                    evas_load_error_str(err));
 
    evas_object_move(_image, x, y);
    evas_object_resize(_image, w, h);
@@ -467,8 +467,8 @@ _gs_spacer_draw(Evas_Object * view_part, Group *group, Part *part,
    evas_object_image_fill_spread_set (_spacer, EVAS_TEXTURE_REPEAT);
    err = evas_object_image_load_error_get(_spacer);
    if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
+     NOTIFY_WARNING("Could not load image. Error string is \"%s\"\n",
+                    evas_load_error_str(err));
 
    evas_object_move(_spacer, x, y);
    evas_object_resize(_spacer, w, h);
@@ -534,8 +534,8 @@ _gs_swallow_draw(Evas_Object * view_part, Group *group, Part *part,
    evas_object_image_fill_spread_set (_swallow, EVAS_TEXTURE_REPEAT);
    err = evas_object_image_load_error_get(_swallow);
    if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
+     NOTIFY_WARNING("Could not load image. Error string is \"%s\"\n",
+                    evas_load_error_str(err));
 
    evas_object_move(_swallow, x, y);
    evas_object_resize(_swallow, w, h);

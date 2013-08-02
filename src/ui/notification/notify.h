@@ -28,11 +28,11 @@
  *
  * @ingroup Notify
  */
-#define NOTIFY_WARNING(obj, fmt, ...) \
+#define NOTIFY_WARNING(fmt, ...) \
 { \
 	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
 	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-	noti_warning_show(obj, msg); \
+	noti_warning_show(win_layout_get(), msg); \
 	free(msg); \
 }
 
@@ -41,11 +41,11 @@
  *
  * @ingroup Notify
  */
-#define NOTIFY_INFO(obj, time, fmt, ...) \
+#define NOTIFY_INFO(time, fmt, ...) \
 { \
 	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
 	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-	noti_info_show(obj, msg, time); \
+	noti_info_show(win_layout_get(), msg, time); \
 	free(msg); \
 }
 

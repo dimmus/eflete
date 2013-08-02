@@ -125,7 +125,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
         if (eina_str_has_suffix(selected, ".edj"))
           {
              INFO("Select file: %s", selected);
-             NOTIFY_INFO(ap->win, 3, "Select file: %s", selected);
+             NOTIFY_INFO(3, "Select file: %s", selected);
              ap->project = pm_open_project_edj(selected, selected);
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
