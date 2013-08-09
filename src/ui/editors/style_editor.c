@@ -498,6 +498,7 @@ _form_left_side(Evas_Object *obj) {
                                        NULL, NULL);
             }
        }
+     eina_list_free(styles);
      evas_object_smart_callback_add(window.glist, "selected",
                                     _on_glit_selected, NULL);
 
