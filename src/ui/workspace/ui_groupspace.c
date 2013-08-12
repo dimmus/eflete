@@ -33,23 +33,22 @@ static void
 _separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
 {
    int x, y, w, h;
-   int xx, yy;
    Evas_Object *edje_part;
    Evas_Object *edje_group = (Evas_Object *)data;
    Eina_List *l;
    Evas_Object_Box_Option *opt;
    int count = 0;
 
-   evas_object_geometry_get(o, &xx, &yy, &w, &h);
+   evas_object_geometry_get(o, &x, &y, &w, &h);
    evas_object_resize(edje_group, w, h);
-   evas_object_move(edje_group, xx, yy);
-   evas_object_geometry_get(edje_group, &xx, &yy, &w, &h);
+   evas_object_move(edje_group, x, y);
    EINA_LIST_FOREACH(p->children, l, opt)
      {
         edje_part = evas_object_data_get(opt->obj, GS_PART_DATA_KEY);
         evas_object_geometry_get(edje_part, &x, &y, &w, &h);
-        evas_object_move(opt->obj, xx + count * 50, yy + count * 20);
+        evas_object_move(opt->obj, x + count * 50, y + count * 20);
         evas_object_resize(opt->obj, w, h);
+        evas_object_geometry_get(opt->obj, &x, &y, &w, &h);
         count++;
     }
 }
@@ -381,9 +380,9 @@ ui_groupspace_unset(Evas_Object *obj)
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
    elm_object_part_content_unset(ws->groupspace, "groupspace");
    elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
-   //Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
 
-   //evas_object_box_remove_all(box, EINA_TRUE);
+   evas_object_box_remove_all(box, EINA_TRUE);
    evas_object_hide(ws->groupspace);
 }
 
