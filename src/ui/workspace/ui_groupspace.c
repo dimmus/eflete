@@ -110,7 +110,7 @@ _gs_image_update(Group *group,
      WARN("Could not update image. Error string is \"%s\"\n", evas_load_error_str(err));
 
    edje_edit_state_color_get(group->obj, part->name, state, value, &r, &g, &b, &a);
-   evas_object_color_set(part->obj, r, g, b, a);
+   evas_object_color_set(part->obj, r * a / 255, g * a / 255, b * a / 255, a);
 
    edje_edit_state_image_border_get(group->obj, part->name, state, value,
                                     &bl, &br, &bt, &bb);
@@ -135,7 +135,7 @@ _gs_rect_update(Group *group,
 
    edje_edit_state_color_get(group->obj, part->name, state, value,
                              &r, &g, &b, &a);
-   evas_object_color_set(part->obj, r, g, b, a);
+   evas_object_color_set(part->obj, r * a / 255, g * a / 255, b *a / 255, a);
 }
 
 static void
@@ -232,7 +232,7 @@ _gs_group_draw(Group *group,
              _part->obj = evas_object_image_add(ws->canvas);
              evas_object_image_file_set(_part->obj, TET_IMG_PATH"swallow_spacer_mask.png", NULL);
              evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
-             evas_object_color_set(_part->obj, 15, 60, 162, 180);
+             evas_object_color_set(_part->obj, 15, 60, 162, 255);
              _gs_spaser_swallow_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_SWALLOW)
@@ -240,7 +240,7 @@ _gs_group_draw(Group *group,
              _part->obj = evas_object_image_add(ws->canvas);
              evas_object_image_file_set(_part->obj, TET_IMG_PATH"swallow_spacer_mask.png", NULL);
              evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
-             evas_object_color_set(_part->obj, 219, 108, 0, 180);
+             evas_object_color_set(_part->obj, 180, 108, 0, 255);
              _gs_spaser_swallow_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_TEXT)
