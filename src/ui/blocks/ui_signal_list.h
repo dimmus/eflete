@@ -30,13 +30,13 @@ ui_signal_list_add(Evas_Object *parent);
 /**
  * Set to a 'signal list' widget a data of signal with using in a part.
  *
- * @param object A 'signal list' object
- * @param signals A list of using signals
+ * @param object The 'signal list' object
+ * @param group The Group object
  * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
  *
  * @ingroup SignalList
  */
 Eina_Bool
-ui_signal_list_data_set(Evas_Object *object, Eina_List *signals);
+ui_signal_list_data_set(Evas_Object *object, Group *group);
 
 #endif /* UI_SIGNAL_LIST_H */

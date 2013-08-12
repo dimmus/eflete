@@ -11,22 +11,22 @@ ui_prop_view_item_label_add(Evas_Object *prop, const char *name, const char *lab
  */
 static Evas_Object *
 ui_prop_view_item_one_edit_int_add(Evas_Object *prop, const char *name,
-                                   int *data, const char *tooltip);
+                                   int data, const char *tooltip);
 
 /**
  *
  */
 static Evas_Object *
 ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
-                                   int *data1, const char *tooltip1,
-                                   int *data2, const char *tooltip2);
+                                   int data1, const char *tooltip1,
+                                   int data2, const char *tooltip2);
 
 /**
  *
  */
 static Evas_Object *
 ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
-                                    int *data1, int *data2, int *data3, int *data4,
+                                    int data1, int data2, int data3, int data4,
                                     const char *tooltip);
 
 /**
@@ -66,24 +66,23 @@ ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
  */
 static Evas_Object *
 ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
-                                      double *data, const char *tooltip);
+                                      double data, const char *tooltip);
 
 /**
  *
  */
 static Evas_Object *
 ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
-                                      double *data1, const char *tooltip1,
-                                      double *data2, const char *tooltip2);
+                                      double data1, const char *tooltip1,
+                                      double data2, const char *tooltip2);
 
 /**
  *
  */
 static Evas_Object *
 ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
-                            int *r, int *g, int *b, int *a,
+                            int r, int g, int b, int a,
                             const char *tooltip);
-
 
 
 struct _Prop_View_Data
@@ -113,7 +112,6 @@ typedef struct _Prop_Part_View_Data Prop_Part_View_Data;
 /**
  * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
  */
-
 static char *part_types[] = {
      "NONE",
      "RECTANGLE",
@@ -269,13 +267,17 @@ ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group)
    elm_box_pack_end(box, item);
 
    item = ui_prop_view_item_two_edit_int_add(box, "min",
-                                             &group->min_w, "Minimum group width in pixels.",
-                                             &group->min_h, "Minimum group height in pixels.");
+                                             edje_edit_group_min_w_get(group->obj),
+                                             "Minimum group width in pixels.",
+                                             edje_edit_group_min_h_get(group->obj),
+                                             "Minimum group height in pixels.");
    evas_object_show(item);
 
    item = ui_prop_view_item_two_edit_int_add(box, "max",
-                                             &group->max_w, "Maximum group width in pixels.",
-                                             &group->max_h, "Maximum group height in pixels.");
+                                             edje_edit_group_max_w_get(group->obj),
+                                             "Maximum group width in pixels.",
+                                             edje_edit_group_max_h_get(group->obj),
+                                             "Maximum group height in pixels.");
    evas_object_show(item);
 
 /*   item = ui_prop_view_item_two_edit_int_add(box, "current",
@@ -290,7 +292,9 @@ ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group)
 }
 
 Evas_Object *
-ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
+ui_prop_part_info_view_add(Evas_Object *prop_view,
+                           Group *group,
+                           Part *part)
 {
    Evas_Object *part_view, *box;
    Evas_Object *part_view_base, *box_base, *item;
@@ -333,20 +337,25 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
    ppvd->state.image = NULL;
    ppvd->dragable = NULL;
 
+   #define EDJE_EDIT_FUNC_PARAM group->obj, part->name
+
    item = ui_prop_view_item_one_edit_string_add(box_base, "name",
                                                 part->name, "Unique name of part.");
    evas_object_show(item);
 
-   item = ui_prop_view_item_label_add(box_base, "type", part_types[part->type]);
+   item = ui_prop_view_item_label_add(box_base, "type",
+                                      part_types[edje_edit_part_type_get(EDJE_EDIT_FUNC_PARAM)]);
    evas_object_show(item);
 
    item = ui_prop_view_item_one_edit_string_add(box_base, "clip to",
-                                                part->clip_to, "Reference clipper part.");
+                                                edje_edit_part_clip_to_get(EDJE_EDIT_FUNC_PARAM),
+                                                "Reference clipper part.");
    evas_object_show(item);
 
    /*TODO: create a button, with provide a selecting another group */
    item = ui_prop_view_item_one_edit_string_add(box_base, "source",
-                                                part->source, "Source group selection.");
+                                                edje_edit_part_source_get(EDJE_EDIT_FUNC_PARAM),
+                                                "Source group selection.");
    evas_object_show(item);
 
    event_frame = elm_frame_add(box_base);
@@ -363,11 +372,13 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
    evas_object_show(event_box);
 
    item = ui_prop_view_item_bool_add(event_box, "mouse",
-                                     part->mouse_events, "Enable mouse events in this part.");
+                                     edje_edit_part_mouse_events_get(EDJE_EDIT_FUNC_PARAM),
+                                     "Enable mouse events in this part.");
    evas_object_show(item);
 
    item = ui_prop_view_item_bool_add(event_box, "repeat",
-                                     part->repeat_events, "Enable repeat mouse events to the parts below.");
+                                     edje_edit_part_repeat_events_get(EDJE_EDIT_FUNC_PARAM),
+                                     "Enable repeat mouse events to the parts below.");
    evas_object_show(item);
 
    elm_box_pack_end(box_base, event_frame);
@@ -381,20 +392,27 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part)
    evas_object_event_callback_add(box, EVAS_CALLBACK_DEL,
                                   _on_part_view_del, NULL);
 
+   #undef EDJE_EDIT_FUNC_PARAM
    return part_view;
 }
 
+
 Evas_Object *
-ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
+ui_prop_part_info_state_view_add(Evas_Object *part_view,
+                                 Group *group,
+                                 Part *part,
+                                 const char *state,
+                                 double value)
 {
    Evas_Object *part_view_state, *box_state, *item;
    Evas_Object *rel1_frame, *rel1_box, *rel2_frame, *rel2_box;
    Evas_Object *text_frame, *text_box, *image_frame, *image_box;
+   int r, g, b, a;
+   int bl, br, bt, bb;
    Prop_Part_View_Data *ppvd;
    char buffer[BUFF_MAX];
 
-   if ((!part_view) || (!state))
-     return NULL;
+   if ((!part_view) || (!group) || (!state)) return NULL;
 
    ppvd = evas_object_data_get(part_view, PROP_PART_VIEW_DATA);
    if (!ppvd)
@@ -412,28 +430,35 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
    elm_object_content_set(part_view_state, box_state);
    evas_object_show(box_state);
 
-   sprintf(buffer, "%s %f", state->name, state->value);
+   sprintf(buffer, "%s %f", state, value);
    item = ui_prop_view_item_one_edit_string_add(box_state, "state",
                                                 buffer, "Unique state name for part.");
    evas_object_show(item);
 
+   #define EDJE_EDIT_FUNC_PARAMS group->obj, part->name, state, value
+
    item = ui_prop_view_item_bool_add(box_state, "visible",
-                                     state->visible, "Change part's visibility.'");
+                                     edje_edit_state_visible_get(EDJE_EDIT_FUNC_PARAMS),
+                                     "Change part's visibility.'");
    evas_object_show(item);
 
    item = ui_prop_view_item_two_edit_int_add(box_state, "min",
-                                             &state->min_w, "Minimum part width in pixels.",
-                                             &state->min_h, "Minimum part height in pixels.");
+                                             edje_edit_state_min_w_get(EDJE_EDIT_FUNC_PARAMS),
+                                             "Minimum part width in pixels.",
+                                             edje_edit_state_min_h_get(EDJE_EDIT_FUNC_PARAMS),
+                                             "Minimum part height in pixels.");
    evas_object_show(item);
 
    item = ui_prop_view_item_two_edit_int_add(box_state, "max",
-                                             &state->max_w, "Maximum part width in pixels.",
-                                             &state->max_h, "Maximum part height in pixels.");
+                                             edje_edit_state_max_w_get(EDJE_EDIT_FUNC_PARAMS),
+                                             "Maximum part width in pixels.",
+                                             edje_edit_state_max_h_get(EDJE_EDIT_FUNC_PARAMS),
+                                             "Maximum part height in pixels.");
    evas_object_show(item);
 
+   edje_edit_state_color_get(EDJE_EDIT_FUNC_PARAMS, &r, &g, &b, &a);
    item = ui_prop_view_item_color_add(box_state, "color",
-                                      &state->color[0], &state->color[1],
-                                      &state->color[2], &state->color[3],
+                                      r, g, b, a,
                                       "Part main color.");
    evas_object_show(item);
 
@@ -450,27 +475,29 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
    elm_object_content_set(rel1_frame, rel1_box);
    evas_object_show(rel1_box);
 
-   /*TODO: update tooltip */
    item = ui_prop_view_item_two_edit_double_add(rel1_box, "rel1",
-                                                &state->rel1_relative_x, "Relative 1 x",
-                                                &state->rel1_relative_y, "Relative 1 y");
+                                           edje_edit_state_rel1_relative_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                           "Relative 1 x",
+                                           edje_edit_state_rel1_relative_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                           "Relative 1 y");
    evas_object_show(item);
 
-   /*TODO: update name */
    item = ui_prop_view_item_two_edit_int_add(rel1_box, "offset",
-                                             &state->rel1_offset_x,
+                                             edje_edit_state_rel1_offset_x_get(EDJE_EDIT_FUNC_PARAMS),
                                              "Left offset from relative position in pixels",
-                                             &state->rel1_offset_y,
+                                             edje_edit_state_rel1_offset_y_get(EDJE_EDIT_FUNC_PARAMS),
                                              "Top offset from relative position in pixels");
    evas_object_show(item);
 
 
    item = ui_prop_view_item_one_edit_string_add(rel1_box, "to_x",
-                                                state->rel1_to_x_name, "Left reference part.");
+                                                edje_edit_state_rel1_to_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Left reference part.");
    evas_object_show(item);
 
    item = ui_prop_view_item_one_edit_string_add(rel1_box, "to_y",
-                                                state->rel1_to_y_name, "Top reference part.");
+                                                edje_edit_state_rel1_to_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Top reference part.");
    evas_object_show(item);
 
    elm_box_pack_end(box_state, rel1_frame);
@@ -488,42 +515,53 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
    elm_object_content_set(rel2_frame, rel2_box);
    evas_object_show(rel2_box);
 
-   /*TODO: update tooltip */
    item = ui_prop_view_item_two_edit_double_add(rel2_box, "rel2",
-                                                &state->rel2_relative_x, "Relative 2 x",
-                                                &state->rel2_relative_y, "Relative 2 y");
+                                           edje_edit_state_rel2_relative_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                           "Relative 2 x",
+                                           edje_edit_state_rel2_relative_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                           "Relative 2 y");
    evas_object_show(item);
 
-   /*TODO: update name */
    item = ui_prop_view_item_two_edit_int_add(rel2_box, "offset",
-                                             &state->rel2_offset_x,
-                                             "Right offset from relative position in pixels",
-                                             &state->rel2_offset_y,
-                                             "Bottom offset from relative position in pixels");
+                                             edje_edit_state_rel2_offset_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                             "Left offset from relative position in pixels",
+                                             edje_edit_state_rel2_offset_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                             "Top offset from relative position in pixels");
    evas_object_show(item);
+
 
    item = ui_prop_view_item_one_edit_string_add(rel2_box, "to_x",
-                                                state->rel2_to_x_name, "Right reference part.");
+                                                edje_edit_state_rel2_to_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Left reference part.");
    evas_object_show(item);
+
    item = ui_prop_view_item_one_edit_string_add(rel2_box, "to_y",
-                                                state->rel2_to_y_name, "Bottom reference part.");
+                                                edje_edit_state_rel2_to_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Top reference part.");
    evas_object_show(item);
 
    elm_box_pack_end(box_state, rel2_frame);
 
    item = ui_prop_view_item_two_edit_double_add(box_state, "align",
-                                                &state->align_x, "Part horizontal align: 0.0 = left  1.0 = right",
-                                                &state->align_y, "Part vertical align: 0.0 = left  1.0 = right");
+                                                edje_edit_state_align_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Part horizontal align: 0.0 = left  1.0 = right",
+                                                edje_edit_state_align_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Part vertical align: 0.0 = left  1.0 = right");
    evas_object_show(item);
 
    item = ui_prop_view_item_two_edit_double_add(box_state, "aspect",
-                                                &state->aspect_min, "Normally width and height can be"
+                                                edje_edit_state_aspect_min_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Normally width and height can be"
                                                 " resized to any values independently",
-                                                &state->aspect_max, "Normally width and height can be"
+                                                edje_edit_state_aspect_max_get(EDJE_EDIT_FUNC_PARAMS),
+                                                "Normally width and height can be"
                                                 " resized to any values independently");
    evas_object_show(item);
 
+   if (edje_edit_part_type_get(group->obj, part->name) == EDJE_PART_TYPE_TEXT)
+/*
    if (state->text)
+*/
      {
         text_frame = elm_frame_add(box_state);
         elm_frame_autocollapse_set(text_frame, EINA_FALSE);
@@ -539,49 +577,60 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
         evas_object_show(box_state);
 
         item = ui_prop_view_item_one_edit_string_add(text_box, "text",
-                                                     state->text->text, "Set the text of part.");
+                                                     edje_edit_state_text_get(EDJE_EDIT_FUNC_PARAMS),
+                                                     "Set the text of part.");
         evas_object_show(item);
 
         item = ui_prop_view_item_one_edit_string_add(text_box, "font",
-                                                     state->text->font, "Change the text's font.");
+                                                     edje_edit_state_font_get(EDJE_EDIT_FUNC_PARAMS),
+                                                     "Change the text's font.");
         evas_object_show(item);
 
         item = ui_prop_view_item_one_edit_int_add(text_box, "size",
-                                                  &state->text->size, "Change text font's size.");
+                                                  edje_edit_state_text_size_get(EDJE_EDIT_FUNC_PARAMS),
+                                                  "Change text font's size.");
         evas_object_show(item);
 
         item = ui_prop_view_item_two_edit_double_add(text_box, "align",
-                                                     &state->text->align_x, "Text horizontal align."
-                                                     " 0.0 = left  1.0 = right",
-                                                     &state->text->align_y, "Text vertical align."
-                                                     " 0.0 = top  1.0 = bottom");
+                                            edje_edit_state_text_align_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                            "Text horizontal align."
+                                            " 0.0 = left  1.0 = right",
+                                            edje_edit_state_text_align_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                            "Text vertical align."
+                                            " 0.0 = top  1.0 = bottom");
         evas_object_show(item);
 
         item = ui_prop_view_item_one_edit_double_add(text_box, "elipsis",
-                                                     &state->text->elipsis, "Cut text if biggest then part's area"
-                                                     "0.0 = fix the left side  1.0 = right side");
+                                            edje_edit_state_text_elipsis_get(EDJE_EDIT_FUNC_PARAMS),
+                                           "Cut text if biggest then part's area"
+                                           "0.0 = fix the left side  1.0 = right side");
         evas_object_show(item);
 
         item = ui_prop_view_item_two_bool_add(text_box, "fit",
-                                              state->text->fit_x, "",
-                                              state->text->fit_y, "");
+                                              edje_edit_state_text_fit_x_get(EDJE_EDIT_FUNC_PARAMS),
+                                              "",
+                                              edje_edit_state_text_fit_y_get(EDJE_EDIT_FUNC_PARAMS),
+                                              "");
         evas_object_show(item);
 
+        edje_edit_state_color2_get(EDJE_EDIT_FUNC_PARAMS, &r, &g, &b, &a);
         item = ui_prop_view_item_color_add(text_box, "color2",
-                                           &state->color2[0], &state->color2[1],
-                                           &state->color2[2], &state->color2[3],
+                                           r, g, b, a,
                                            "Text shadow color.");
         evas_object_show(item);
 
+        edje_edit_state_color3_get(EDJE_EDIT_FUNC_PARAMS, &r, &g, &b, &a);
         item = ui_prop_view_item_color_add(text_box, "color3",
-                                           &state->color3[0], &state->color3[1],
-                                           &state->color3[2], &state->color3[3],
+                                           r, g, b, a,
                                            "Text outline color.");
         evas_object_show(item);
 
         elm_box_pack_end(box_state, text_frame);
      }
+/*
    if (state->image)
+*/
+   if (edje_edit_part_type_get(group->obj, part->name) == EDJE_PART_TYPE_IMAGE)
      {
         image_frame = elm_frame_add(box_state);
         elm_frame_autocollapse_set(image_frame, EINA_FALSE);
@@ -597,18 +646,19 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state)
         evas_object_show(image_box);
 
         item = ui_prop_view_item_one_edit_string_add(image_box, "image",
-                                                     state->image->normal_image, "Set the text of part.");
+                                                     edje_edit_state_image_get(EDJE_EDIT_FUNC_PARAMS),
+                                                     "Set the text of part.");
         evas_object_show(item);
 
+        edje_edit_state_image_border_get(EDJE_EDIT_FUNC_PARAMS, &bl, &br, &bt, &bb);
         item = ui_prop_view_item_four_edit_int_add(image_box, "border",
-                                                   &state->image->left, &state->image->right,
-                                                   &state->image->top, &state->image->bottom,
+                                                   bl, br, bt, bb,
                                                    "Lenght of left border in pixels");
         evas_object_show(item);
 
         elm_box_pack_end(box_state, image_frame);
      }
-
+   #undef EDJE_EDIT_FUNC_PARAM
    return part_view_state;
 }
 
@@ -674,7 +724,7 @@ ui_prop_view_item_label_add(Evas_Object *prop, const char *name, const char *lab
 
 static Evas_Object *
 ui_prop_view_item_one_edit_int_add(Evas_Object *prop, const char *name,
-                                   int *data, const char *tooltip)
+                                   int data, const char *tooltip)
 {
    Evas_Object *item, *edit;
    char buffer [BUFF_MAX];
@@ -686,23 +736,20 @@ ui_prop_view_item_one_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit, EINA_TRUE);
    elm_entry_scrollable_set(edit, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data);
+   sprintf(buffer, "%d", data);
    elm_object_text_set(edit, buffer);
    elm_object_tooltip_text_set(edit, tooltip);
    elm_object_part_content_set(item, "elm.swallow.content", edit);
    evas_object_show(edit);
 
    elm_box_pack_end(prop, item);
-
-   /*TODO: add callback for modify int data */
-
    return item;
 }
 
 static Evas_Object *
 ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
-                                   int *data1, const char *tooltip1,
-                                   int *data2, const char *tooltip2)
+                                   int data1, const char *tooltip1,
+                                   int data2, const char *tooltip2)
 {
    Evas_Object *item, *content, *edit1, *edit2;
    char buffer [BUFF_MAX];
@@ -720,7 +767,7 @@ ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit1, EINA_TRUE);
    elm_entry_scrollable_set(edit1, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data1);
+   sprintf(buffer, "%d", data1);
    elm_object_text_set(edit1, buffer);
    elm_object_tooltip_text_set(edit1, tooltip1);
    elm_object_part_content_set(content, "field1.swallow", edit1);
@@ -731,7 +778,7 @@ ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit2, EINA_TRUE);
    elm_entry_scrollable_set(edit2, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data2);
+   sprintf(buffer, "%d", data2);
    elm_object_text_set(edit2, buffer);
    elm_object_tooltip_text_set(edit2, tooltip2);
    elm_object_part_content_set(content, "field2.swallow", edit2);
@@ -741,14 +788,12 @@ ui_prop_view_item_two_edit_int_add(Evas_Object *prop, const char *name,
 
    elm_box_pack_end(prop, item);
 
-   /*TODO: add callback for modify int data */
-
    return item;
 }
 
 static Evas_Object *
 ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
-                                    int *data1, int *data2, int *data3, int *data4,
+                                    int data1, int data2, int data3, int data4,
                                     const char *tooltip)
 {
    Evas_Object *item, *content, *content2, *content3;
@@ -782,7 +827,7 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit1, EINA_TRUE);
    elm_entry_scrollable_set(edit1, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data1);
+   sprintf(buffer, "%d", data1);
    elm_object_text_set(edit1, buffer);
    elm_object_tooltip_text_set(edit1, tooltip);
    elm_object_part_content_set(content2, "field1.swallow", edit1);
@@ -793,7 +838,7 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit2, EINA_TRUE);
    elm_entry_scrollable_set(edit2, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data2);
+   sprintf(buffer, "%d", data2);
    elm_object_text_set(edit2, buffer);
    elm_object_tooltip_text_set(edit2, tooltip);
    elm_object_part_content_set(content2, "field2.swallow", edit2);
@@ -804,7 +849,7 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit3, EINA_TRUE);
    elm_entry_scrollable_set(edit3, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit3, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data3);
+   sprintf(buffer, "%d", data3);
    elm_object_text_set(edit3, buffer);
    elm_object_tooltip_text_set(edit3, tooltip);
    elm_object_part_content_set(content3, "field1.swallow", edit3);
@@ -815,7 +860,7 @@ ui_prop_view_item_four_edit_int_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit4, EINA_TRUE);
    elm_entry_scrollable_set(edit4, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit4, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *data4);
+   sprintf(buffer, "%d", data4);
    elm_object_text_set(edit4, buffer);
    elm_object_tooltip_text_set(edit4, tooltip);
    elm_object_part_content_set(content3, "field2.swallow", edit4);
@@ -848,8 +893,6 @@ ui_prop_view_item_one_edit_string_add(Evas_Object *prop, const char *name,
    elm_object_part_content_set(item, "elm.swallow.content", edit);
 
    elm_box_pack_end(prop, item);
-
-   /*TODO: add callback for modify data */
 
    return item;
 }
@@ -965,7 +1008,7 @@ ui_prop_view_item_two_bool_add(Evas_Object *prop, const char *name,
 
 static Evas_Object *
 ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
-                                      double *data, const char *tooltip)
+                                      double data, const char *tooltip)
 {
    Evas_Object *item, *edit;
    char buffer [BUFF_MAX];
@@ -977,7 +1020,7 @@ ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit, EINA_TRUE);
    elm_entry_scrollable_set(edit, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%f", *data);
+   sprintf(buffer, "%f", data);
    elm_object_text_set(edit, buffer);
    elm_object_tooltip_text_set(edit, tooltip);
    evas_object_show(edit);
@@ -986,15 +1029,13 @@ ui_prop_view_item_one_edit_double_add(Evas_Object *prop, const char *name,
 
    elm_box_pack_end(prop, item);
 
-   /*TODO: add callback for modify double data */
-
    return item;
 }
 
 static Evas_Object *
 ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
-                                      double *data1, const char *tooltip1,
-                                      double *data2, const char *tooltip2)
+                                      double data1, const char *tooltip1,
+                                      double data2, const char *tooltip2)
 {
    Evas_Object *item, *content, *edit1, *edit2;
    char buffer [BUFF_MAX];
@@ -1012,7 +1053,7 @@ ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit1, EINA_TRUE);
    elm_entry_scrollable_set(edit1, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%f", *data1);
+   sprintf(buffer, "%f", data1);
    elm_object_text_set(edit1, buffer);
    elm_object_tooltip_text_set(edit1, tooltip1);
    elm_object_part_content_set(content, "field1.swallow", edit1);
@@ -1023,7 +1064,7 @@ ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit2, EINA_TRUE);
    elm_entry_scrollable_set(edit2, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%f", *data2);
+   sprintf(buffer, "%f", data2);
    elm_object_text_set(edit2, buffer);
    elm_object_tooltip_text_set(edit2, tooltip2);
    elm_object_part_content_set(content, "field2.swallow", edit2);
@@ -1033,14 +1074,12 @@ ui_prop_view_item_two_edit_double_add(Evas_Object *prop, const char *name,
 
    elm_box_pack_end(prop, item);
 
-   /*TODO: add callback for modify double data */
-
    return item;
 }
 
 Evas_Object *
 ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
-                            int *r, int *g, int *b, int *a,
+                            int r, int g, int b, int a,
                             const char *tooltip)
 {
    Evas_Object *item, *content, *content2, *content3;
@@ -1074,7 +1113,7 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit1, EINA_TRUE);
    elm_entry_scrollable_set(edit1, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit1, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *r);
+   sprintf(buffer, "%d", r);
    elm_object_text_set(edit1, buffer);
    elm_object_tooltip_text_set(edit1, tooltip);
    elm_object_part_content_set(content2, "field1.swallow", edit1);
@@ -1085,7 +1124,7 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit2, EINA_TRUE);
    elm_entry_scrollable_set(edit2, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit2, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *g);
+   sprintf(buffer, "%d", g);
    elm_object_text_set(edit2, buffer);
    elm_object_tooltip_text_set(edit2, tooltip);
    elm_object_part_content_set(content2, "field2.swallow", edit2);
@@ -1096,15 +1135,15 @@ ui_prop_view_item_color_add(Evas_Object *prop, const char *name,
    elm_entry_single_line_set(edit3, EINA_TRUE);
    elm_entry_scrollable_set(edit3, EINA_TRUE);
    elm_entry_scrollbar_policy_set(edit3, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   sprintf(buffer, "%d", *b);
+   sprintf(buffer, "%d", b);
    elm_object_text_set(edit3, buffer);
    elm_object_tooltip_text_set(edit3, tooltip);
    elm_object_part_content_set(content3, "field1.swallow", edit3);
    evas_object_show(edit3);
 
    color_rect = evas_object_rectangle_add(evas_object_evas_get(item));
-   if (*a <= 0) evas_object_color_set(color_rect, 0, 0, 0, 0);
-   else evas_object_color_set(color_rect, *r, *g, *b, *a);
+   if (a <= 0) evas_object_color_set(color_rect, 0, 0, 0, 0);
+   else evas_object_color_set(color_rect, r, g, b, a);
    elm_object_part_content_set(content3, "field2.swallow", color_rect);
    elm_object_tooltip_text_set(color_rect, tooltip);
    evas_object_show(color_rect);

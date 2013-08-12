@@ -1,5 +1,7 @@
 #include "ui_signal_list.h"
 
+#define SIGNALS_LIST "signals_list"
+
 static Elm_Genlist_Item_Class *_itc_signal = NULL;
 
 static char *
@@ -51,13 +53,22 @@ ui_signal_list_add(Evas_Object *parent)
 }
 
 Eina_Bool
-ui_signal_list_data_set(Evas_Object *object, Eina_List *signals)
+ui_signal_list_data_set(Evas_Object *object, Group *group)
 {
-   Eina_List *l;
+   Eina_List *signals, *l;
    char *signal;
+   Evas_Object *gl_signals = (Evas_Object *)object;
 
-   if ((!object) || (!signals)) return EINA_FALSE;
+   if ((!object) || (!group)) return EINA_FALSE;
 
+   signals = evas_object_data_get(gl_signals, SIGNALS_LIST);
+   if (signals)
+     {
+        wm_program_signals_list_free(signals);
+        evas_object_data_del(gl_signals, SIGNALS_LIST);
+     }
+
+   signals = wm_program_signals_list_get(group);
    EINA_LIST_FOREACH(signals, l, signal)
      {
         elm_genlist_item_append(object, _itc_signal,
@@ -65,6 +76,8 @@ ui_signal_list_data_set(Evas_Object *object, Eina_List *signals)
                                 NULL, ELM_GENLIST_ITEM_NONE,
                                 NULL, NULL);
      }
+   evas_object_data_set(gl_signals, SIGNALS_LIST, signals);
+
    return EINA_TRUE;
 }
 

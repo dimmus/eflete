@@ -75,8 +75,10 @@ ui_groupspace_update (Evas_Object *obj);
  * @ingroup Groupspace
  */
 void
-ui_groupspace_part_state_update(Part *part, Part_State *state,
-                                Evas_Object *groupspace);
+ui_groupspace_part_state_update(Evas_Object *groupspace,
+                                Part *part,
+                                const char *state,
+                                double value);
 
 /**
  * Separate view parts on groupspace.

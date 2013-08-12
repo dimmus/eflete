@@ -134,7 +134,7 @@ _navi_gl_parts_pop(void *data,
    Evas_Object *nf = (Evas_Object *)data;
    elm_naviframe_item_pop(nf);
 
-   evas_object_smart_callback_call (nf, "wl,part,back", NULL);
+   evas_object_smart_callback_call(nf, "wl,part,back", NULL);
 }
 
 static void
@@ -147,12 +147,21 @@ _on_part_select(void *data __UNUSED__,
    Part *_part = elm_object_item_data_get(glit);
    evas_object_smart_callback_call (nf, "wl,part,select", _part);
 }
+static void
+_unset_cur_group(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *ei __UNUSED__)
+{
+   Project *pr = (Project *)data;
+   pr->current_group = NULL;
+}
 
 static void
-_on_group_clicked_double(void *data __UNUSED__,
+_on_group_clicked_double(void *data,
                          Evas_Object *obj,
                          void *event_info)
 {
+   Project *pr = (Project *)data;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    Elm_Object_Item *eoi;
    Evas_Object *nf, *gl_parts, *bt, *ic;
@@ -179,6 +188,9 @@ _on_group_clicked_double(void *data __UNUSED__,
      }
 
    gl_parts = elm_genlist_add(nf);
+   pr->current_group = _group;
+   evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_group, pr);
+//   evas_object_data_set(nf, GROUP, _group);
    evas_object_size_hint_align_set(gl_parts,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
@@ -211,7 +223,7 @@ _on_group_clicked_double(void *data __UNUSED__,
 }
 
 static void
-_on_widget_clicked_double(void *data __UNUSED__,
+_on_widget_clicked_double(void *data,
                           Evas_Object *obj,
                           void *event_info)
 {
@@ -283,7 +295,7 @@ _on_widget_clicked_double(void *data __UNUSED__,
    elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
    evas_object_smart_callback_add(gl_styles, "clicked,double",
-                                  _on_group_clicked_double, NULL);
+                                  _on_group_clicked_double, data);
 
 }
 
@@ -361,7 +373,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
      }
 
    evas_object_smart_callback_add(gl_widgets, "clicked,double",
-                                  _on_widget_clicked_double, NULL);
+                                  _on_widget_clicked_double, project);
 
    return EINA_TRUE;
 }

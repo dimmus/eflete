@@ -39,10 +39,9 @@ static void
 wm_group_data_load(Group *group, Evas *e, const char *edj)
 {
    Evas_Object *edje_edit_obj;
-   Eina_List *parts_list, *programs_list, *l;
+   Eina_List *parts_list, *l;
    char *name;
    Part *part;
-   Program *program;
 
    if (!group || !e) return;
 
@@ -54,10 +53,6 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
         return;
      }
    group->obj = edje_edit_obj;
-   group->min_w = edje_edit_group_min_w_get(group->obj);
-   group->min_h = edje_edit_group_min_h_get(group->obj);
-   group->max_w = edje_edit_group_max_w_get(group->obj);
-   group->max_h = edje_edit_group_max_h_get(group->obj);
    group->current_w = -1;
    group->current_h = -1;
 
@@ -69,259 +64,6 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
                                           EINA_INLIST_GET(part));
      }
    edje_edit_string_list_free(parts_list);
-
-   programs_list = edje_edit_programs_list_get(group->obj);
-   EINA_LIST_FOREACH(programs_list, l, name)
-     {
-        program = wm_program_add(group->obj, name);
-        group->programs = eina_inlist_append(group->programs,
-                                             EINA_INLIST_GET(program));
-     }
-   edje_edit_string_list_free(programs_list);
-}
-
-static void
-wm_part_state_text_add(Evas_Object *obj,
-                       const char *part_name,
-                       Part_State *state)
-{
-   if (!obj || !part_name || !state) return;
-
-   state->text = mem_malloc(sizeof(Part_State_Text));
-
-   state->text->text =
-      edje_edit_state_text_get(obj, part_name, state->name, state->value);
-   state->text->font =
-      edje_edit_state_font_get(obj, part_name, state->name, state->value);
-   state->text->size =
-      edje_edit_state_text_size_get(obj, part_name, state->name, state->value);
-   state->text->align_x =
-      edje_edit_state_text_align_x_get(obj, part_name, state->name, state->value);
-   state->text->align_y =
-      edje_edit_state_text_align_y_get(obj, part_name, state->name, state->value);
-   state->text->elipsis =
-      edje_edit_state_text_elipsis_get(obj, part_name, state->name, state->value);
-   state->text->fit_x =
-      edje_edit_state_text_fit_x_get(obj, part_name, state->name, state->value);
-   state->text->fit_y =
-      edje_edit_state_text_fit_y_get(obj, part_name, state->name, state->value);
-   state->text->fonts_list = edje_edit_fonts_list_get(obj);
-}
-
-static void
-wm_part_state_text_free(Part_State *state)
-{
-   if (!state || !state->text) return;
-
-   edje_edit_string_free(state->text->text);
-   edje_edit_string_free(state->text->font);
-   edje_edit_string_list_free(state->text->fonts_list);
-
-   free(state->text);
-   state->text = NULL;
-}
-
-static void
-wm_part_state_image_add(Evas_Object *obj,
-                        const char *part_name,
-                        Part_State *state)
-{
-   Part_State_Image *image;
-
-   if (!obj || !part_name || !state) return;
-
-   image = mem_malloc(sizeof(Part_State_Image));
-
-   image->normal_image =
-      edje_edit_state_image_get(obj, part_name, state->name, state->value);
-   image->id =
-      edje_edit_image_id_get(obj, image->normal_image);
-   image->compression_type =
-      edje_edit_image_compression_type_get(obj, image->normal_image);
-   image->compression_rate =
-      edje_edit_image_compression_rate_get(obj, image->normal_image);
-   edje_edit_state_image_border_get(obj, part_name, state->name, state->value,
-                                    &image->left, &image->right,
-                                    &image->top, &image->bottom);
-   image->border_fill =
-      edje_edit_state_image_border_fill_get(obj, part_name, state->name, state->value);
-
-   image->fill_origin_relative_x =
-      edje_edit_state_fill_origin_relative_x_get(obj, part_name, state->name, state->value);
-   image->fill_origin_relative_y =
-      edje_edit_state_fill_origin_relative_y_get(obj, part_name, state->name, state->value);
-   image->fill_origin_offset_x =
-      edje_edit_state_fill_origin_offset_x_get(obj, part_name, state->name, state->value);
-   image->fill_origin_offset_y =
-      edje_edit_state_fill_origin_offset_y_get(obj, part_name, state->name, state->value);
-
-   image->fill_size_relative_x =
-      edje_edit_state_fill_size_relative_x_get(obj, part_name, state->name, state->value);
-   image->fill_size_relative_y =
-      edje_edit_state_fill_size_relative_y_get(obj, part_name, state->name, state->value);
-   image->fill_size_offset_x =
-      edje_edit_state_fill_size_offset_x_get(obj, part_name, state->name, state->value);
-   image->fill_size_offset_y =
-      edje_edit_state_fill_size_offset_y_get(obj, part_name, state->name, state->value);
-
-   image->tweens_images =
-      edje_edit_state_tweens_list_get(obj, part_name, state->name, state->value);
-
-   state->image = image;
-}
-
-static void
-wm_part_state_image_free(Part_State *state)
-{
-   if (!state || !state->image ) return;
-
-   edje_edit_string_free(state->image->normal_image);
-   free(state->image);
-   state->image = NULL;
-}
-
-static void
-wm_part_states_add(Evas_Object *obj, Part *part)
-{
-   Eina_List *states, *l;
-   const char *state, *state_name;
-   char **state_copy;
-   double state_value;
-   Part_State *new_state;
-
-   if (!obj || !part ) return;
-
-   states = edje_edit_part_states_list_get(obj, part->name);
-
-   EINA_LIST_FOREACH(states, l, state)
-     {
-        new_state = mem_malloc(sizeof(Part_State));
-
-        /* State has format "NAME X.X" we need to extract NAME and double value separately */
-        /* Split source name on 2 strings */
-        state_copy = eina_str_split(state, " ", 2);
-        /* Get state NAME */
-        if (strcmp(state_copy[0], "(null)") != 0)
-          new_state->name = state_name = eina_stringshare_add(state_copy[0]);
-        else /* it hack, need create a patch  */
-          new_state->name = state_name = eina_stringshare_add("default");
-        /* Get state X.X value */
-        new_state->value = state_value = atof(state_copy[1]);
-
-        new_state->rel1_relative_x = edje_edit_state_rel1_relative_x_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel1_relative_y = edje_edit_state_rel1_relative_y_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel2_relative_x = edje_edit_state_rel2_relative_x_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel2_relative_y = edje_edit_state_rel2_relative_y_get(
-           obj, part->name, state_name, state_value);
-
-        new_state->rel1_offset_x = edje_edit_state_rel1_offset_x_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel1_offset_y = edje_edit_state_rel1_offset_y_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel2_offset_x = edje_edit_state_rel2_offset_x_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel2_offset_y = edje_edit_state_rel2_offset_y_get(
-           obj, part->name, state_name, state_value);
-
-        new_state->rel1_to_x_name = edje_edit_state_rel1_to_x_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel1_to_y_name = edje_edit_state_rel1_to_y_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel2_to_x_name = edje_edit_state_rel2_to_x_get(
-           obj, part->name, state_name, state_value);
-        new_state->rel2_to_y_name = edje_edit_state_rel2_to_y_get(
-           obj, part->name, state_name, state_value);
-
-        edje_edit_state_color_get(obj, part->name, state_name, state_value,
-                                  &new_state->color[0], &new_state->color[1],
-                                  &new_state->color[2], &new_state->color[3]);
-        edje_edit_state_color2_get(obj, part->name, state_name, state_value,
-                                   &new_state->color2[0], &new_state->color2[1],
-                                   &new_state->color2[2], &new_state->color2[3]);
-        edje_edit_state_color3_get(obj, part->name, state_name, state_value,
-                                   &new_state->color3[0], &new_state->color3[1],
-                                   &new_state->color3[2], &new_state->color3[3]);
-
-        new_state->align_x = edje_edit_state_align_x_get(obj, part->name,
-                                                         state_name, state_value);
-        new_state->align_y = edje_edit_state_align_y_get(obj, part->name,
-                                                         state_name, state_value);
-
-        new_state->min_w = edje_edit_state_min_w_get(obj, part->name,
-                                                     state_name, state_value);
-        new_state->min_h = edje_edit_state_min_h_get(obj, part->name,
-                                                     state_name, state_value);
-        new_state->max_w = edje_edit_state_max_w_get(obj, part->name,
-                                                     state_name, state_value);
-        new_state->max_h = edje_edit_state_max_h_get(obj, part->name,
-                                                     state_name, state_value);
-
-        new_state->aspect_min = edje_edit_state_aspect_min_get(obj, part->name,
-                                                               state_name, state_value);
-        new_state->aspect_max = edje_edit_state_aspect_max_get(obj, part->name,
-                                                               state_name, state_value);
-        new_state->aspect_pref = edje_edit_state_aspect_pref_get(obj, part->name,
-                                                                 state_name, state_value);
-
-        new_state->visible = edje_edit_state_visible_get(obj, part->name,
-                                                         state_name, state_value);
-        new_state->color_class = edje_edit_state_color_class_get(obj, part->name,
-                                                                 state_name, state_value);
-
-        if ((part->type == EDJE_PART_TYPE_TEXT) || (part->type == EDJE_PART_TYPE_TEXTBLOCK))
-          {
-             wm_part_state_text_add(obj, part->name, new_state);
-          }
-        else
-          new_state->text = NULL;
-
-        if (part->type == EDJE_PART_TYPE_IMAGE)
-          {
-             wm_part_state_image_add(obj, part->name, new_state);
-          }
-        else
-          new_state->image = NULL;
-
-        free(state_copy[0]);
-        free(state_copy);
-
-        part->states = eina_inlist_append(part->states,
-                                          EINA_INLIST_GET(new_state));
-     }
-
-   edje_edit_string_list_free(states);
-}
-
-static void
-wm_part_states_free(Part* part)
-{
-   Part_State *aux;
-
-   if (!part) return;
-
-   while (part->states)
-     {
-        aux = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-
-        eina_stringshare_del(aux->name);
-        edje_edit_string_free(aux->color_class);
-        edje_edit_string_free(aux->rel1_to_x_name);
-        edje_edit_string_free(aux->rel1_to_y_name);
-        edje_edit_string_free(aux->rel2_to_x_name);
-        edje_edit_string_free(aux->rel2_to_y_name);
-
-        if (part->type == EDJE_PART_TYPE_TEXT)
-          wm_part_state_text_free(aux);
-
-        if (part->type == EDJE_PART_TYPE_IMAGE)
-          wm_part_state_image_free(aux);
-
-        part->states = eina_inlist_remove(part->states, part->states);
-        free(aux);
-     }
 }
 
 Part *
@@ -337,29 +79,6 @@ wm_part_add(Evas_Object *obj, const char *part_name)
    result->name = eina_stringshare_add(part_name);
    result->obj = NULL;
    result->show = EINA_TRUE;
-   result->api_name = edje_edit_part_api_name_get(obj, part_name);
-   result->description = edje_edit_part_api_description_get(obj, part_name);
-   result->type = edje_edit_part_type_get(obj, part_name);
-   result->clip_to = edje_edit_part_clip_to_get(obj, part_name);
-   result->source = edje_edit_part_source_get(obj, part_name);
-   result->effect = edje_edit_part_effect_get(obj, part_name);
-   result->selected_state_name = edje_edit_part_selected_state_get(obj,
-      part_name, &result->selected_state);
-   result->mouse_events = edje_edit_part_mouse_events_get(obj, part_name);
-   result->repeat_events = edje_edit_part_repeat_events_get(obj, part_name);
-   result->ignore_flags = edje_edit_part_ignore_flags_get(obj, part_name);
-   result->scale = edje_edit_part_scale_get(obj, part_name);
-   result->drag_state_x = edje_edit_part_drag_x_get(obj, part_name);
-   result->drag_state_y = edje_edit_part_drag_y_get(obj, part_name);
-   result->drag_step_x = edje_edit_part_drag_step_x_get(obj, part_name);
-   result->drag_step_y = edje_edit_part_drag_step_y_get(obj, part_name);
-   result->drag_count_x = edje_edit_part_drag_count_x_get(obj, part_name);
-   result->drag_count_y = edje_edit_part_drag_count_y_get(obj, part_name);
-   result->drag_confine = edje_edit_part_drag_confine_get(obj, part_name);
-   result->drag_event = edje_edit_part_drag_event_get(obj, part_name);
-   result->states = NULL;
-
-   wm_part_states_add(obj, result);
 
    return result;
 }
@@ -370,17 +89,7 @@ wm_part_free(Part *part)
    if (!part) return EINA_FALSE;
 
    eina_stringshare_del(part->name);
-   edje_edit_string_free(part->api_name);
-   edje_edit_string_free(part->description);
-   edje_edit_string_free(part->clip_to);
-   edje_edit_string_free(part->source);
-   edje_edit_string_free(part->selected_state_name);
-   edje_edit_string_free(part->drag_confine);
-   edje_edit_string_free(part->drag_event);
-
    if (part->obj) evas_object_del(part->obj);
-
-   wm_part_states_free(part);
 
    free(part);
    part = NULL;
@@ -388,81 +97,33 @@ wm_part_free(Part *part)
    return EINA_TRUE;
 }
 
-Program *
-wm_program_add(Evas_Object* obj, const char* program_name)
-{
-   Program *program;
-
-   if (!obj || !program_name) return NULL;
-
-   program = mem_malloc(sizeof(Program));
-
-   program->name = eina_stringshare_add(program_name);
-   program->source = edje_edit_program_source_get(obj, program_name);
-   program->signal = edje_edit_program_signal_get(obj, program_name);
-   program->in_form = edje_edit_program_in_from_get(obj, program_name);
-   program->in_range = edje_edit_program_in_range_get(obj, program_name);
-   program->action = edje_edit_program_action_get(obj, program_name);
-   program->targets = edje_edit_program_targets_get(obj, program_name);
-   program->afters = edje_edit_program_afters_get(obj, program_name);
-   program->state = edje_edit_program_state_get(obj, program_name);
-   program->state2 = edje_edit_program_state2_get(obj, program_name);
-   program->api_name = edje_edit_program_api_name_get(obj, program_name);
-   program->api_description = edje_edit_program_api_description_get(obj,
-                                                                    program_name);
-   program->value = edje_edit_program_value_get(obj, program_name);
-   program->value2 = edje_edit_program_value2_get(obj, program_name);
-   program->transition = edje_edit_program_transition_get(obj, program_name);
-   program->transition_time = edje_edit_program_transition_time_get(obj,
-                                                                    program_name);
-   program->filter_part = edje_edit_program_filter_part_get(obj, program_name);
-
-   return program;
-}
-
-Eina_Bool
-wm_program_free(Program *program)
-{
-   if (!program) return EINA_FALSE;
-
-   eina_stringshare_del(program->name);
-   edje_edit_string_free(program->source);
-   edje_edit_string_free(program->signal);
-   edje_edit_string_free(program->state);
-   edje_edit_string_free(program->state2);
-   edje_edit_string_free(program->api_name);
-   edje_edit_string_free(program->api_description);
-   edje_edit_string_free(program->filter_part);
-   edje_edit_string_list_free(program->afters);
-   edje_edit_string_list_free(program->targets);
-
-   free(program);
-   program = NULL;
-
-   return EINA_TRUE;
-}
-
 Eina_List *
-wm_program_signals_list_get(const Eina_Inlist *programs)
+wm_program_signals_list_get(Group *group)
 {
-   Program *program;
    Eina_List *result = NULL;
+   Eina_List *progs, *l;
+   Eina_Stringshare *prog_name, *sig_name;
 
-   if (!programs) return NULL;
-
-   EINA_INLIST_FOREACH(programs, program)
+   progs = edje_edit_programs_list_get(group->obj);
+   EINA_LIST_FOREACH(progs, l, prog_name)
      {
-        if (program->signal != NULL)
-          result = eina_list_append(result, program->signal);
+        sig_name = edje_edit_program_signal_get(group->obj, prog_name);
+        if (sig_name)
+          result = eina_list_append(result, sig_name);
      }
+   edje_edit_string_list_free(progs);
 
-   return result;
+  return result;
 }
 
 Eina_Bool
 wm_program_signals_list_free(Eina_List *signals)
 {
+   Eina_Stringshare *sig;
    if (!signals) return EINA_FALSE;
+
+   EINA_LIST_FREE(signals, sig)
+      edje_edit_string_free(sig);
 
    eina_list_free(signals);
    signals = NULL;
@@ -482,7 +143,6 @@ wm_group_add(const char* group_name, const char* full_group_name)
    group_edje->full_group_name = eina_stringshare_add(full_group_name);
    group_edje->obj = NULL;
    group_edje->parts = NULL;
-   group_edje->programs = NULL;
    group_edje->__type = GROUP;
 
    return group_edje;
@@ -492,7 +152,6 @@ Eina_Bool
 wm_group_free(Group *group)
 {
    Part *part;
-   Program *program;
 
    if (!group) return EINA_FALSE;
 
@@ -503,13 +162,6 @@ wm_group_free(Group *group)
         part = EINA_INLIST_CONTAINER_GET(group->parts, Part);
         group->parts = eina_inlist_remove(group->parts, group->parts);
         wm_part_free(part);
-     }
-
-   while (group->programs)
-     {
-        program = EINA_INLIST_CONTAINER_GET(group->programs, Program);
-        group->programs = eina_inlist_remove(group->programs, group->programs);
-        wm_program_free(program);
      }
 
    if (!group->group_name)
@@ -578,7 +230,7 @@ wm_style_free(Style *style)
 }
 
 int
-sort_style_cb(const void *data1, const void *data2)
+_sort_style_cb(const void *data1, const void *data2)
 {
    const char *str1 = eina_stringshare_add(data1);
    const char *str2 = eina_stringshare_add(data2);
@@ -618,7 +270,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
 
    groups = eina_list_sort(groups,
                            eina_list_count(groups),
-                           sort_style_cb);
+                           _sort_style_cb);
 
    EINA_LIST_FOREACH_SAFE(groups, l, l_next, group)
      {

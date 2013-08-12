@@ -36,8 +36,8 @@ _on_state_selected(void *data,
                    Evas_Object *obj,
                    void *event_info)
 {
-   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
    App_Data *ap = (App_Data *)data;
+   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
    ui_state_select(ap, eoit, obj);
 }
 

@@ -26,22 +26,37 @@ ui_group_back(App_Data *ap __UNUSED__)
 }
 
 void
-ui_state_select(App_Data *ap, Elm_Object_Item *glit, Evas_Object *obj)
+ui_state_select(App_Data *ap,
+                Elm_Object_Item *glit,
+                Evas_Object *obj)
 {
-   Part_State *state = NULL;
    Part *part = NULL;
    Evas_Object *prop_view, *part_view, *state_view;
+   const char *state;
+   char **split;
 
+   //state = elm_object_item_part_text_get(glit, "elm.text");
    state = elm_object_item_data_get(glit);
+   /*
+      State has format "NAME X.X" we need to extract NAME
+      and double value separately
+    */
+   split =  eina_str_split(state, " ", 2);
 
    prop_view = ui_block_property_get(ap);
    part_view = ui_property_part_view_get(prop_view);
-   state_view = ui_prop_part_info_state_view_add(part_view, state);
-   ui_prop_part_info_state_set(part_view, state_view);
    part = ui_state_list_part_get(obj);
-   ui_groupspace_part_state_update(part, state, ap->ws->groupspace);
-   ui_object_highlight_set(ap->ws, part->obj);
+   state_view = ui_prop_part_info_state_view_add(part_view,
+                                                 ap->project->current_group,
+                                                 part,
+                                                 split[0],
+                                                 atof(split[1]));
+   ui_prop_part_info_state_set(part_view, state_view);
+   ui_groupspace_part_state_update(ap->ws->groupspace, part, split[0], atof(split[1]));
+   //ui_object_highlight_set(ap->ws, part->obj);
    evas_object_show(state_view);
+   free(split[0]);
+   free(split);
 }
 
 Evas_Object *
@@ -63,18 +78,19 @@ ui_part_select(App_Data *ap, Part* part)
         return NULL;
      }
 
-   part_prop = ui_prop_part_info_view_add(prop, part);
+   part_prop = ui_prop_part_info_view_add(prop, ap->project->current_group, part);
    ui_property_part_view_set(prop, part_prop);
    evas_object_show(part_prop);
 
+   /*TODO: add check is state list present */
    gl_states = ui_states_list_add(ap->win);
-   ui_states_list_data_set(gl_states, part);
+   ui_states_list_data_set(gl_states, ap->project->current_group, part);
    ui_block_state_list_set(ap, gl_states);
    evas_object_show(gl_states);
 
    /* FIXME: it bad */
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
-   ui_object_highlight_set(ap->ws, part->obj);
+   //ui_object_highlight_set(ap->ws, part->obj);
 
    return gl_states;
 }
@@ -88,9 +104,8 @@ ui_group_clicked(App_Data *ap, Group *group)
    Eina_List *signals = NULL;
 
    /* Get signals list of a group and show them */
-   signals = wm_program_signals_list_get(group->programs);
    gl_signals = ui_signal_list_add(ap->win);
-   ui_signal_list_data_set(gl_signals, signals);
+   ui_signal_list_data_set(gl_signals, group);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
@@ -112,8 +127,8 @@ ui_group_clicked(App_Data *ap, Group *group)
         evas_object_show(group_prop);
      }
 
-   ui_groupspace_set (ap->ws, ap->project, group);
-   ui_groupspace_update (ap->ws->groupspace);
+   ui_groupspace_set(ap->ws, ap->project, group);
+   ui_groupspace_update(ap->ws->groupspace);
 }
 
 Evas_Object *
