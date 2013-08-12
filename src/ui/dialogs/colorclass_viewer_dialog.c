@@ -250,8 +250,10 @@ colorclass_viewer_add(Evas_Object *parent)
 }
 
 void
-colorclass_viewer_init(Evas_Object *ccl_view, Project *project)
+colorclass_viewer_init(Evas_Object *ccl_view __UNUSED__,
+                       Project *project __UNUSED__)
 {
+   /*
    int r1, r2, r3, g1, g2, g3, b1, b2, b3, a1, a2, a3;
 
    Evas_Object *genlist = elm_object_part_content_get(
@@ -318,6 +320,7 @@ colorclass_viewer_init(Evas_Object *ccl_view, Project *project)
           }
      }
    evas_object_del(edje);
+   */
 }
 
 

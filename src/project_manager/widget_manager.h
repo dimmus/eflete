@@ -50,117 +50,6 @@ enum _type
 typedef enum _type type;
 
 /**
- * @struct _Part_State_Image
- * This struct designed to storage a image data of part
- * In a theme file (.edc) this data presented as block 'image'
- *
- * @ingroup WidgetManager
- */
-struct _Part_State_Image
-{
-	Eina_Stringshare *normal_image;
-	int id;
-	Edje_Edit_Image_Comp compression_type;
-	int compression_rate;
-	int left;
-	int right;
-	int top;
-	int bottom;
-	unsigned int border_fill;
-	double fill_origin_relative_x;
-	double fill_origin_relative_y;
-	double fill_origin_offset_x;
-	double fill_origin_offset_y;
-	double fill_size_relative_x;
-	double fill_size_relative_y;
-	double fill_size_offset_x;
-	double fill_size_offset_y;
-	Eina_List *tweens_images;
-
-};
-
-/**
- * @typedef Part_State_Image
- * @ingroup WidgetManager
- */
-typedef struct _Part_State_Image Part_State_Image;
-
-/**
- * @struct _Part_State_Text
- * This struct designed to storage a text data of part
- * In a theme file (.edc) this data presented as block 'text'
- *
- * @ingroup WidgetManager
- */
-struct _Part_State_Text
-{
-	Eina_Stringshare *text;
-	Eina_Stringshare *font;
-	int size;
-	double align_x;
-	double align_y;
-	double elipsis;
-	Eina_Bool fit_x;
-	Eina_Bool fit_y;
-	Eina_List *fonts_list;
-};
-
-/**
- * @typedef Part_State_Text
- * @ingroup WidgetManager
- */
-typedef struct _Part_State_Text Part_State_Text;
-
-/**
- * @struct _Part_State
- * This struct designed to storage a data of part
- * In a theme file (.edc) this data presented as block 'description'
- *
- * @ingroup WidgetManager
- */
-struct _Part_State
-{
-	EINA_INLIST;
-	Eina_Stringshare *name;
-	double value;
-	double rel1_relative_x;
-	double rel1_relative_y;
-	double rel2_relative_x;
-	double rel2_relative_y;
-	int rel1_offset_x;
-	int rel1_offset_y;
-	int rel2_offset_x;
-	int rel2_offset_y;
-	Eina_Stringshare *rel1_to_x_name;
-	Eina_Stringshare *rel1_to_y_name;
-	Eina_Stringshare *rel2_to_x_name;
-	Eina_Stringshare *rel2_to_y_name;
-	int color[4]; // array of r,g,b,a
-	int color2[4];
-	int color3[4];
-	double align_x;
-	double align_y;
-	int min_w;
-	int min_h;
-	int max_w;
-	int max_h;
-	/* 'fixed' not implemented in edje_edit */
-	double aspect_min;
-	double aspect_max;
-	unsigned char aspect_pref;
-	Eina_Bool visible;
-	Eina_Stringshare *color_class;
-	Part_State_Text *text;
-	Part_State_Image *image;
-};
-
-/**
- * @typedef Part_State
- * @ingroup WidgetManager
- */
-typedef struct _Part_State Part_State;
-
-/**
  * @struct _Part
  * This struct designed to storage a data of part of group.
  * In a theme file (.edc) this data presented as block 'part'
@@ -173,27 +62,6 @@ struct _Part
 	Eina_Stringshare *name;
 	Evas_Object *obj;
 	Eina_Bool show;
-	Eina_Stringshare *api_name;
-	Eina_Stringshare *description;
-	Edje_Part_Type type;
-	Eina_Stringshare *clip_to;
-	Eina_Stringshare *source;
-	Edje_Text_Effect effect;
-	Eina_Stringshare *selected_state_name;
-	double selected_state;
-	Eina_Bool mouse_events;
-	Eina_Bool repeat_events;
-	Evas_Event_Flags ignore_flags;
-	Eina_Bool scale;
-	int drag_state_x;
-	int drag_state_y;
-	int drag_step_x;
-	int drag_step_y;
-	int drag_count_x;
-	int drag_count_y;
-	Eina_Stringshare *drag_confine;
-	Eina_Stringshare *drag_event;
-	Eina_Inlist *states;
 	type __type;
 };
 
@@ -202,41 +70,6 @@ struct _Part
  * @ingroup WidgetManager
  */
 typedef struct _Part Part;
-
-/**
- * @struct _Program
- * This struct designed to storage a data of group program.
- * In a theme file (.edc) this data presented as block 'program'
- *
- * @ingroup WidgetManager
- */
-struct _Program
-{
-	EINA_INLIST;
-	Eina_Stringshare *name;
-	Eina_Stringshare *source;
-	Eina_Stringshare *signal;
-	double in_form;
-	double in_range;
-	Edje_Action_Type action;
-	Eina_List *targets;
-	Eina_List *afters;
-	Eina_Stringshare *state;
-	Eina_Stringshare *state2;
-	Eina_Stringshare *api_name;
-	Eina_Stringshare *api_description;
-	double value;
-	double value2;
-	Edje_Tween_Mode transition;
-	double transition_time;
-	Eina_Stringshare *filter_part;
-};
-
-/**
- * @typedef Program
- * @ingroup WidgetManager
- */
-typedef struct _Program Program;
 
 /**
  * @struct _Group
@@ -256,13 +89,9 @@ struct _Group
 	Evas_Object *obj;
    /** Show/Hide a object on a workspace. **/
 	Eina_Bool show;
-	int min_w, min_h;
-	int max_w, max_h;
 	int current_w, current_h;
    /** Member 'parts' saved a list of a group parts data. **/
 	Eina_Inlist *parts;
-   /** Member 'programs' saves a list of group programs. **/
-	Eina_Inlist *programs;
 	type __type;
 };
 
@@ -345,29 +174,6 @@ Eina_Bool
 wm_part_free(Part *part);
 
 /**
- * Create a new Program object.
- *
- * @param obj The edje edit object with a 'group' data.
- * @param program_name The name of a program.
- * @return A new Program object.
- *
- * @ingroup WidgetManager
- */
-Program *
-wm_program_add(Evas_Object* obj, const char* program_name);
-
-/**
- * Free a Program object
- *
- * @param program A Program object to free.
- * @return EINA_TRUE if a object deleted, else EINA_FALSE.
- *
- * @ingroup WidgetManager
- */
-Eina_Bool
-wm_program_free(Program *program);
-
-/**
  * Get a list of signals which using in a 'group' programs
  *
  * @param programs A list of programs.
@@ -376,7 +182,7 @@ wm_program_free(Program *program);
  * @ingroup WidgetManager
  */
 Eina_List *
-wm_program_signals_list_get(const Eina_Inlist *programs);
+wm_program_signals_list_get(Group *group);
 
 /**
  * Free a signal list.

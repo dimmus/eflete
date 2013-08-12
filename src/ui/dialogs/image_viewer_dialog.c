@@ -137,10 +137,10 @@ image_viewer_add(Evas_Object *parent)
 }
 
 int
-_project_images_count_get(Project *project)
+_project_images_count_get(Project *project __UNUSED__)
 {
    int max_value = 0;
-   Widget *_widget = NULL;
+/*   Widget *_widget = NULL;
    Style *_style = NULL;
    Group *_group = NULL;
    Part *_part = NULL;
@@ -166,6 +166,7 @@ _project_images_count_get(Project *project)
                }
           }
      }
+     */
    return max_value;
 }
 

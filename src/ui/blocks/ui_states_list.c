@@ -1,6 +1,7 @@
 #include "ui_states_list.h"
 
 #define STLIST_PART_KEY "stlist_part_key"
+#define STATES_LIST "states_list"
 
 static Elm_Genlist_Item_Class *_itc_state = NULL;
 
@@ -9,12 +10,7 @@ _item_state_label_get(void *data,
                       Evas_Object *obj __UNUSED__,
                       const char *part __UNUSED__)
 {
-   char state_name[BUFF_MAX];
-   Part_State *state = (Part_State *)data;
-
-   sprintf(state_name, "%s %f", state->name, state->value);
-
-   return strdup(state_name);
+   return strdup(data);
 }
 
 static void
@@ -47,6 +43,14 @@ ui_states_list_add(Evas_Object *parent)
 
    if (!parent) return NULL;
 
+   gl_states = elm_genlist_add(parent);
+   evas_object_size_hint_align_set(gl_states,
+                                   EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(gl_states,
+                                    EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+
    if (!_itc_state)
      {
         _itc_state = elm_genlist_item_class_new();
@@ -57,38 +61,43 @@ ui_states_list_add(Evas_Object *parent)
         _itc_state->func.del = NULL;
      }
 
-   gl_states = elm_genlist_add(parent);
-   evas_object_size_hint_align_set(gl_states,
-                                   EVAS_HINT_FILL,
-                                   EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl_states,
-                                    EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-
    evas_object_smart_callback_add(gl_states, "selected",
                                   _on_state_selected, NULL);
+   /*TODO: add delete data on EVAS_OBJECT_DEL event */
    return gl_states;
 }
 
 Eina_Bool
-ui_states_list_data_set(Evas_Object *object, Part *part)
+ui_states_list_data_set(Evas_Object *object,
+                        Group *group,
+                        Part *part)
 {
-   Part_State  *state;
-   Eina_Inlist *states;
-   Elm_Object_Item *eoi;
+   Eina_List *states, *l;
+   const char *state_name;
+   Elm_Object_Item *stit;
+   Evas_Object *gl_states = (Evas_Object *)object;
 
-   if ((!object) || (!part)) return EINA_FALSE;
+   if ((!gl_states) || (!group) || (!part)) return EINA_FALSE;
 
-   states = part->states;
-   evas_object_data_set(object, STLIST_PART_KEY, part);
-   EINA_INLIST_FOREACH(states, state)
+   states = evas_object_data_get(gl_states, STATES_LIST);
+   if (states)
      {
-        eoi = elm_genlist_item_append(object, _itc_state,
-                                      state,
-                                      NULL, ELM_GENLIST_ITEM_NONE,
-                                      NULL, NULL);
-        elm_object_item_data_set(eoi, state);
+        edje_edit_string_list_free(states);
+        evas_object_data_del(gl_states, STATES_LIST);
      }
+   elm_genlist_clear(gl_states);
+
+   states = edje_edit_part_states_list_get(group->obj, part->name);
+   evas_object_data_set(gl_states, STLIST_PART_KEY, part);
+   EINA_LIST_FOREACH(states, l, state_name)
+     {
+        stit = elm_genlist_item_append(gl_states, _itc_state,
+                                       state_name,
+                                       NULL, ELM_GENLIST_ITEM_NONE,
+                                       NULL, NULL);
+        elm_object_item_data_set(stit, (void *)state_name);
+     }
+   evas_object_data_set(gl_states, STATES_LIST, states);
 
    return EINA_TRUE;
 }
