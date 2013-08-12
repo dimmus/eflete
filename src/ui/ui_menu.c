@@ -1,6 +1,7 @@
 #include "ui_main_window.h"
 #include "open_file_dialog.h"
 #include "style_editor.h"
+#include "image_editor.h"
 
 Eina_List *ui_list_menu;
 
@@ -44,11 +45,11 @@ _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
 }
 
 static void
-_on_image_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
+_on_image_editor_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   image_viewer_init(image_viewer_add(ap->win), ap->project);
+   image_editor_init(image_editor_window_add(ap->win), ap->project);
 }
 
 static void
@@ -117,7 +118,7 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, "window-new", "Styles",
                     _on_style_window_menu, ap);
    elm_menu_item_add(menu, NULL, "window-new", "Images",
-                     _on_image_viewer_menu, ap);
+                     _on_image_editor_menu, ap);
    elm_menu_item_add(menu, NULL, "window-new", "Colorclasses",
                      _on_ccl_viewer_menu, ap);
    elm_menu_item_add(menu, NULL, "window-new", "Fonts",
