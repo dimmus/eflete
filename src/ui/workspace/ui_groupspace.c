@@ -1,10 +1,10 @@
 #include "ui_groupspace.h"
 
-#define GS_GROUP_KEY "gs_group_key"
 #define GS_WS_KEY "gs_workspace_key"
 #define GS_PROJECT_KEY "gs_project_key"
 #define GS_BOX_KEY "gs_box_key"
 #define GS_PART_DATA_KEY "gs_part_key"
+#define GS_GROUP_KEY "gs_group_key"
 
 static void
 _main_box_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
@@ -270,6 +270,12 @@ _gs_group_draw(Group *group,
         evas_object_show(_part->obj);
      }
    evas_object_show(box);
+}
+
+Group *
+ui_groupspace_group_get(Evas_Object *groupspace)
+{
+   return evas_object_data_get(groupspace, GS_GROUP_KEY);
 }
 
 void

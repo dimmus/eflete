@@ -4,6 +4,9 @@
 Evas_Object *
 ui_groupspace_add(Evas_Object *parent);
 
+Group *
+ui_groupspace_group_get(Evas_Object *groupspace);
+
 void
 ui_groupspace_separate(Evas_Object *groupspace, Eina_Bool separate);
 
@@ -19,6 +22,27 @@ _ws_zoom_in(Workspace *ws)
                                w*ws->zoom_step,
                                h*ws->zoom_step);
    return EINA_TRUE;
+}
+
+void
+_sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Workspace *ws = (Workspace *)data;
+   if (!ws->groupspace) return;
+   Group *group = ui_groupspace_group_get(ws->groupspace);
+   if (!group) return;
+   int bg_x, bg_y, obj_x, obj_y, obj_w, obj_h;
+   evas_object_geometry_get(ws->bg, &bg_x, &bg_y, NULL, NULL);
+   evas_object_geometry_get(group->obj, &obj_x, &obj_y, &obj_w, &obj_h);
+   ui_ruler_scale_absolute_position_zero_set(ws->ruler_hor, obj_x - bg_x - 25);
+   ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, obj_y - bg_y - 25);
+   ui_ruler_scale_relative_position_set(ws->ruler_hor, obj_x - bg_x - 25,
+                                        obj_x + obj_w - bg_x - 25);
+   ui_ruler_scale_relative_position_set(ws->ruler_ver, obj_y - bg_y - 25,
+                                        obj_y + obj_h - bg_y - 25);
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
 }
 
 Eina_Bool
@@ -180,6 +204,11 @@ ws_add (Evas_Object *parent)
    elm_object_content_set(_scroller, ws->groupspace);
    evas_object_show(ws->groupspace);
    evas_object_show(_scroller);
+
+   evas_object_smart_callback_add(_scroller, "scroll", _sc_move_cb, ws);
+   evas_object_smart_callback_add(_scroller, "scroll,drag,stop", _sc_move_cb, ws);
+
+
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,

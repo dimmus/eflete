@@ -17,7 +17,6 @@
 #include <Elementary.h>
 #include "ui_ruler.h"
 #include "ui_popup.h"
-
 /**
  * @typedef  Workspace
  *
