@@ -214,6 +214,7 @@ _gs_group_draw(Group *group,
    const char *source;
    Edje_Part_Type type;
    if (!ws->canvas) return;
+   edje_object_scale_set(group->obj, ws->zoom_step);
    EINA_INLIST_FOREACH(group->parts, _part)
      {
         type = edje_edit_part_type_get(group->obj, _part->name);
@@ -276,6 +277,12 @@ Group *
 ui_groupspace_group_get(Evas_Object *groupspace)
 {
    return evas_object_data_get(groupspace, GS_GROUP_KEY);
+}
+
+Evas_Object *
+ui_groupspace_box_get(Evas_Object *groupspace)
+{
+   return evas_object_data_get(groupspace, GS_BOX_KEY);
 }
 
 void
@@ -368,6 +375,11 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
+
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor, 5);
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver, 5);
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
 }
 
 void

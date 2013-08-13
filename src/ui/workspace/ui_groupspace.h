@@ -103,4 +103,15 @@ ui_groupspace_separate(Workspace *ws);
 Group *
 ui_groupspace_group_get(Evas_Object *groupspace);
 
+/**
+ * Get box object into groupspace.
+ *
+ * @param groupspace A Evas_Object pointer to groupspace layout.
+ * @return Evas_Object pointer, if box currently created, else NULL.
+ *
+ * @ingroup Groupspace
+ */
+Evas_Object *
+ui_groupspace_box_get(Evas_Object *groupspace);
+
 #endif /* UI_GROUPSPACE_HEADER_H */

@@ -7,6 +7,9 @@ ui_groupspace_add(Evas_Object *parent);
 Group *
 ui_groupspace_group_get(Evas_Object *groupspace);
 
+Evas_Object *
+ui_groupspace_box_get(Evas_Object *groupspace);
+
 void
 ui_groupspace_separate(Workspace *ws);
 
@@ -16,14 +19,85 @@ ui_popup_show (Workspace *ws);
 Workspace *
 _ws_init(void);
 
-Eina_Bool
-_ws_zoom_in(Workspace *ws)
+void
+ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible)
 {
-   int x, y, w, h;
-   evas_object_image_fill_get (ws->bg, &x, &y, &w, &h);
-   evas_object_image_fill_set (ws->bg, 0, 0,
-                               w*ws->zoom_step,
-                               h*ws->zoom_step);
+  Evas_Object *parent = elm_object_parent_widget_get(ws->scroller);
+  char label_text[BUFF_MAX];
+  if (!visible)
+     elm_layout_signal_emit(parent, "legend,hide", "");
+  else
+     elm_layout_signal_emit(parent, "legend,show", "");
+
+  snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
+            (int)(ws->zoom_step * 100));
+  elm_object_text_set(ws->legend.legend, label_text);
+  ws->legend.visible = visible;
+}
+
+Eina_Bool
+ui_ws_zoom_in(Workspace *ws)
+{
+   Group *group = ui_groupspace_group_get(ws->groupspace);
+   Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
+   int w, h;
+   char label_text[BUFF_MAX];
+
+   if ((!group) || (!box))
+     return EINA_FALSE;
+   ws->zoom_step += 0.1;
+   if (ws->zoom_step > 10)
+     {
+        ws->zoom_step = 10;
+        return EINA_FALSE;
+     }
+   edje_object_scale_set(group->obj, ws->zoom_step);
+   evas_object_smart_calculate(box);
+   evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
+   edje_object_scale_set(ws->groupspace, ws->zoom_step);
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
+                                          (int)(ws->zoom_step * 5));
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
+                                           (int)(ws->zoom_step * 5));
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
+   snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
+            (int)(ws->zoom_step * 100));
+   elm_object_text_set(ws->legend.legend, label_text);
+   return EINA_TRUE;
+}
+
+Eina_Bool
+ui_ws_zoom_out(Workspace *ws)
+{
+   Group *group = ui_groupspace_group_get(ws->groupspace);
+   Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
+   int w, h;
+   char label_text[BUFF_MAX];
+   if ((!group) || (!box))
+     return EINA_FALSE;
+   ws->zoom_step -= 0.1;
+   if (ws->zoom_step < 0)
+     {
+        ws->zoom_step = 0;
+        return EINA_FALSE;
+     }
+   edje_object_scale_set(group->obj, ws->zoom_step);
+   edje_object_scale_set(ws->groupspace, ws->zoom_step);
+   evas_object_geometry_get(group->obj, NULL, NULL, &w, &h);
+   evas_object_resize(group->obj, (int)(w + w * ws->zoom_step),
+                      (int)(h + h * ws->zoom_step));
+   evas_object_smart_calculate(box);
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
+                                          (int)(ws->zoom_step * 5));
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
+                                           (int)(ws->zoom_step * 5));
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
+
+   snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
+            (int)(ws->zoom_step * 100));
+   elm_object_text_set(ws->legend.legend, label_text);
    return EINA_TRUE;
 }
 
@@ -48,23 +122,14 @@ _sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
    ui_ruler_redraw(ws->ruler_ver);
 }
 
-Eina_Bool
-_ws_zoom_out(Workspace *ws )
-{
-   int x, y, w, h;
-   evas_object_image_fill_get(ws->bg, &x, &y, &w, &h);
-
-   evas_object_image_fill_set(ws->bg, 0, 0,
-                               w/ws->zoom_step,
-                               h/ws->zoom_step);
-   return EINA_TRUE;
-}
-
 static void
 _zoom_out_on_click(void *data __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
+   Workspace *ws = (Workspace *)data;
+   if(!ui_ws_zoom_out(ws))
+     WARN("Failed zoom out workspace");
 }
 
 static void
@@ -72,6 +137,9 @@ _zoom_in_on_click(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
+   Workspace *ws = (Workspace *)data;
+   if(!ui_ws_zoom_in(ws))
+     WARN("Failed zoom in workspace");
 }
 
 static void
@@ -132,34 +200,33 @@ ws_add (Evas_Object *parent)
    Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver;
    Evas_Object *_icon;
    Evas_Object *_scroller;
+   Evas_Object *_legend;
    Evas *canvas;
 
    ws = _ws_init();
    ws->separated = EINA_TRUE;
-   ws_zoom_step_set(2, ws);
+   ws_zoom_step_set(1, ws);
    canvas = evas_object_evas_get(parent);
    ws->canvas = canvas;
    elm_layout_file_set(parent, TET_EDJ, "base/workspace" );
    _bg = evas_object_image_filled_add(canvas);
    evas_object_image_filled_set(_bg, EINA_FALSE);
    evas_object_image_file_set(_bg, TET_IMG_PATH"bg_workspace.png", NULL);
-   evas_object_image_fill_set(_bg, 0, 0, 32, 32);
+   evas_object_image_fill_set(_bg, -5, -5, 32, 32);
    elm_object_part_content_set(parent, "base/workspace/background", _bg);
    evas_object_show(_bg);
    ws->bg = _bg;
-
+   DBG("Parent workspace pointer [%p]", parent);
    _button = elm_button_add(parent);
    elm_object_part_content_set(parent, "base/workspace/button_zoom_out",
                                _button);
    evas_object_smart_callback_add(_button, "clicked", _zoom_out_on_click, ws);
-   elm_object_disabled_set(_button, EINA_TRUE);
    elm_object_content_unset(_button);
 
    _icon = elm_icon_add(_button);
    elm_image_file_set(_icon, TET_IMG_PATH"zoom_out.png", NULL);
    elm_image_no_scale_set(_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
-   elm_object_disabled_set(_button, EINA_TRUE);
 
    _button = elm_button_add(parent);
    elm_object_part_content_set(parent, "base/workspace/button_zoom_in",
@@ -171,7 +238,6 @@ ws_add (Evas_Object *parent)
    elm_image_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
    elm_image_no_scale_set (_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
-   elm_object_disabled_set(_button, EINA_TRUE);
 
    _button = elm_button_add (parent);
    elm_object_part_content_set (parent, "base/workspace/button_separate",
@@ -202,15 +268,20 @@ ws_add (Evas_Object *parent)
    evas_object_show(ws->groupspace);
    evas_object_show(_scroller);
 
+   _legend = elm_label_add(parent);
+   ws->legend.legend = _legend;
+   ws->legend.visible = EINA_FALSE;
+   elm_object_part_content_set(parent, "legend", _legend);
+//   elm_object_text_set(_legend, "Current scale is: UNKNOWN.");
+   evas_object_show(_legend);
+
    evas_object_smart_callback_add(_scroller, "scroll", _sc_move_cb, ws);
    evas_object_smart_callback_add(_scroller, "scroll,drag,stop", _sc_move_cb, ws);
-
 
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
-
 
    evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
                                   _ws_mouse_click_cb, ws);

@@ -12,9 +12,7 @@ _dismissed(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 }
 
 static void
-_ctxpopup_item_ruler_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info)
+_ctxpopup_item_ruler_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *check = elm_object_item_part_content_get(event_info, "icon");
    Evas_Object *ruler = (Evas_Object*)data;
@@ -33,22 +31,25 @@ _ctxpopup_item_ruler_cb(void *data,
 }
 
 static void
-_ctxpopup_item_zoom_in_cb(void *data __UNUSED__,
-                          Evas_Object *obj __UNUSED__,
+_ctxpopup_item_zoom_in_cb(void *data, Evas_Object *obj,
                           void *event_info __UNUSED__)
 {
+   Workspace *ws = (Workspace *)data;
+   ui_ws_zoom_in(ws);
+   elm_ctxpopup_dismiss(obj);
 }
 
 static void
-_ctxpopup_item_zoom_out_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
+_ctxpopup_item_zoom_out_cb(void *data, Evas_Object *obj,
                            void *event_info __UNUSED__)
 {
+   Workspace *ws = (Workspace *)data;
+   ui_ws_zoom_out(ws);
+   elm_ctxpopup_dismiss(obj);
 }
 
 static void
-_ctxpopup_item_separate_cb(void *data __UNUSED__,
-                           Evas_Object *obj __UNUSED__,
+_ctxpopup_item_separate_cb(void *data, Evas_Object *obj,
                            void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
@@ -57,10 +58,12 @@ _ctxpopup_item_separate_cb(void *data __UNUSED__,
 }
 
 static void
-_ctxpopup_item_legend_cb(void *data __UNUSED__,
-                         Evas_Object *obj __UNUSED__,
+_ctxpopup_item_legend_cb(void *data, Evas_Object *obj,
                          void *event_info __UNUSED__)
 {
+  Workspace *ws = (Workspace *)data;
+  ui_ws_legend_visible_set(ws, !ws->legend.visible);
+  elm_ctxpopup_dismiss(obj);
 }
 
 static void
@@ -181,18 +184,15 @@ _popup_add (Evas_Object *obj __UNUSED__, Workspace *ws)
    evas_object_smart_callback_add(ctxpopup, "dismissed", _dismissed, NULL);
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "zoom +", NULL,
-                            _ctxpopup_item_zoom_out_cb, ws->ruler_hor);
-   elm_object_item_disabled_set(eoi, EINA_TRUE);
+                            _ctxpopup_item_zoom_out_cb, ws);
    eoi = elm_ctxpopup_item_append(ctxpopup, "zoom -", NULL,
-                            _ctxpopup_item_zoom_in_cb, ws->ruler_hor);
-   elm_object_item_disabled_set(eoi, EINA_TRUE);
+                            _ctxpopup_item_zoom_in_cb, ws);
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "separate", NULL,
                             _ctxpopup_item_separate_cb, ws);
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "legend", NULL,
-                            _ctxpopup_item_legend_cb, ws->ruler_ver);
-   elm_object_item_disabled_set(eoi, EINA_TRUE);
+                            _ctxpopup_item_legend_cb, ws);
 
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "ruler hor.", NULL,

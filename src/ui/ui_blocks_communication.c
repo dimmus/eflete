@@ -10,7 +10,7 @@ ui_part_back(App_Data *ap)
      }
    else
      WARN ("Groupspace object always delete");
-
+   ap->ws->zoom_step = 1.0;
    elm_genlist_clear(ui_block_state_list_get(ap));
    elm_genlist_clear(ui_block_signal_list_get(ap));
    evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));

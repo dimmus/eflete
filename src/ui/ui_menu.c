@@ -41,6 +41,25 @@ _on_view_separate(void *data,
 }
 
 static void
+_on_view_zoom_in(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_ws_zoom_in(ap->ws);
+}
+
+static void
+_on_view_zoom_out(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_ws_zoom_in(ap->ws);
+}
+
+
+static void
 _on_view_ruler_hor(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
@@ -63,6 +82,16 @@ _on_view_ruler_ver(void *data,
    else
      ui_ruler_show (ap->ws->ruler_ver);
 }
+
+static void
+_on_view_legend(void *data, Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_ws_legend_visible_set(ap->ws, !ap->ws->legend.visible);
+}
+
+
 
 static void
 _on_view_ruler_rel(void *data,
@@ -150,7 +179,6 @@ ui_menu_add(App_Data *ap)
 {
    Evas_Object *tb, *menu;
    Elm_Object_Item *tb_it;
-   Elm_Object_Item *eoi = NULL;
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
@@ -186,14 +214,10 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
-   eoi = elm_menu_item_add(menu, NULL, "window-new", "Zoom in", NULL, NULL);
-   elm_object_item_disabled_set(eoi, EINA_TRUE);
-   eoi = elm_menu_item_add(menu, NULL, "window-new", "Zoom out", NULL, NULL);
-   elm_object_item_disabled_set(eoi, EINA_TRUE);
-   elm_menu_item_add(menu, NULL, "window-new", "Separate", _on_view_separate,
-                     ap);
-   eoi = elm_menu_item_add(menu, NULL, "window-new", "Legend", NULL, NULL);
-   elm_object_item_disabled_set(eoi, EINA_TRUE);
+   elm_menu_item_add(menu, NULL, "window-new", "Zoom in", _on_view_zoom_in, ap);
+   elm_menu_item_add(menu, NULL, "window-new", "Zoom out", _on_view_zoom_out, ap);
+   elm_menu_item_add(menu, NULL, "window-new", "Separate", _on_view_separate, ap);
+   elm_menu_item_add(menu, NULL, "window-new", "Legend", _on_view_legend, ap);
    elm_menu_item_add(menu, NULL, "window-new", "Ruler hor.", _on_view_ruler_hor,
                     ap);
    elm_menu_item_add(menu, NULL, "window-new", "Ruler ver.", _on_view_ruler_ver,
