@@ -8,7 +8,10 @@ Group *
 ui_groupspace_group_get(Evas_Object *groupspace);
 
 void
-ui_groupspace_separate(Evas_Object *groupspace, Eina_Bool separate);
+ui_groupspace_separate(Workspace *ws);
+
+void
+ui_popup_show (Workspace *ws);
 
 Workspace *
 _ws_init(void);
@@ -77,8 +80,7 @@ _separate_on_click(void *data,
                    void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
-   ui_groupspace_separate(ws->groupspace, ws->separated);
-   ws->separated = !ws->separated;
+   ui_groupspace_separate(ws);
 }
 
 static void
@@ -89,8 +91,7 @@ _ws_mouse_click_cb(void *data ,
 {
    Evas_Event_Mouse_Down *ev = event_info;
    Workspace *ws = (Workspace*)data;
-   if (ev->button == 3) ui_popup_show (ws->bg, ws->popup);
-   else ui_popup_hide (ws->popup);
+   if (ev->button == 3) ui_popup_show (ws);
 }
 
 
@@ -128,7 +129,7 @@ Workspace *
 ws_add (Evas_Object *parent)
 {
    Workspace *ws;
-   Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver, *_popup;
+   Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver;
    Evas_Object *_icon;
    Evas_Object *_scroller;
    Evas *canvas;
@@ -181,7 +182,6 @@ ws_add (Evas_Object *parent)
    elm_image_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
    elm_image_no_scale_set (_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
-//   elm_object_disabled_set(_button, EINA_TRUE);
 
    _ruler_hor = ui_ruler_add (parent);
    elm_object_part_content_set (parent, "base/workspace/ruler_hor",_ruler_hor);
@@ -191,9 +191,6 @@ ws_add (Evas_Object *parent)
    ui_ruler_orient_set (_ruler_ver, VERTICAL);
    elm_object_part_content_set (parent, "base/workspace/ruler_ver",_ruler_ver);
    ws->ruler_ver = _ruler_ver;
-
-   _popup = ui_popup_add (parent, ws);
-   ws->popup = _popup;
 
    _scroller = elm_scroller_add(parent);
    ws->scroller = _scroller;

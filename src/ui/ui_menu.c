@@ -32,6 +32,76 @@ _on_exit_menu(void *data __UNUSED__,
 }
 
 static void
+_on_view_separate(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_groupspace_separate(ap->ws);
+}
+
+static void
+_on_view_ruler_hor(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_visible_get(ap->ws->ruler_hor))
+     ui_ruler_hide (ap->ws->ruler_hor);
+   else
+     ui_ruler_show (ap->ws->ruler_hor);
+}
+
+static void
+_on_view_ruler_ver(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_visible_get(ap->ws->ruler_ver))
+     ui_ruler_hide (ap->ws->ruler_ver);
+   else
+     ui_ruler_show (ap->ws->ruler_ver);
+}
+
+static void
+_on_view_ruler_rel(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_scale_relative_visible_get(ap->ws->ruler_hor))
+     {
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_FALSE);
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_FALSE);
+     }
+   else
+     {
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_TRUE);
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_TRUE);
+     }
+}
+
+static void
+_on_view_ruler_abs(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_scale_absolute_visible_get(ap->ws->ruler_hor))
+     {
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_FALSE);
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_FALSE);
+     }
+   else
+     {
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_TRUE);
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_TRUE);
+     }
+}
+
+
+static void
 _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
@@ -80,6 +150,7 @@ ui_menu_add(App_Data *ap)
 {
    Evas_Object *tb, *menu;
    Elm_Object_Item *tb_it;
+   Elm_Object_Item *eoi = NULL;
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
@@ -111,7 +182,28 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
-   tb_it=elm_toolbar_item_append(tb, NULL, "Viewers", NULL, NULL);
+   tb_it=elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
+   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
+   menu = elm_toolbar_item_menu_get(tb_it);
+
+   eoi = elm_menu_item_add(menu, NULL, "window-new", "Zoom in", NULL, NULL);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
+   eoi = elm_menu_item_add(menu, NULL, "window-new", "Zoom out", NULL, NULL);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
+   elm_menu_item_add(menu, NULL, "window-new", "Separate", _on_view_separate,
+                     ap);
+   eoi = elm_menu_item_add(menu, NULL, "window-new", "Legend", NULL, NULL);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
+   elm_menu_item_add(menu, NULL, "window-new", "Ruler hor.", _on_view_ruler_hor,
+                    ap);
+   elm_menu_item_add(menu, NULL, "window-new", "Ruler ver.", _on_view_ruler_ver,
+                     ap);
+   elm_menu_item_add(menu, NULL, "window-new", "Absolute scale",
+                     _on_view_ruler_abs, ap);
+   elm_menu_item_add(menu, NULL, "window-new", "Relative scale",
+                     _on_view_ruler_rel, ap);
+
+   tb_it=elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 

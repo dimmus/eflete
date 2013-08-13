@@ -16,7 +16,7 @@
 #include <Evas.h>
 #include <Elementary.h>
 #include "ui_ruler.h"
-#include "ui_popup.h"
+
 /**
  * @typedef  Workspace
  *
@@ -25,22 +25,21 @@
  */
 struct _Workspace
 {
-	Evas *canvas;
-	Evas_Object *bg;
-	int zoom_step;
-	Evas_Object *ruler_hor;
-	Evas_Object *ruler_ver;
-	Evas_Object *popup;
-	Evas_Object *button_zoom_out;
-	Evas_Object *button_zoom_in;
-	Evas_Object *button_separate;
-	Evas_Object *scroller;
-	Evas_Object *groupspace;
-	Eina_Bool separated;
-	struct {
-		Evas_Object *highlight;
-		Evas_Object *obj; /* highlighting object */
-	} highlight;
+    Evas *canvas;
+    Evas_Object *bg;
+    int zoom_step;
+    Evas_Object *ruler_hor;
+    Evas_Object *ruler_ver;
+    Evas_Object *button_zoom_out;
+    Evas_Object *button_zoom_in;
+    Evas_Object *button_separate;
+    Evas_Object *scroller;
+    Evas_Object *groupspace;
+    Eina_Bool separated;
+    struct {
+        Evas_Object *highlight;
+        Evas_Object *obj; /* highlighting object */
+    } highlight;
 };
 typedef struct _Workspace Workspace;
 
@@ -82,17 +81,6 @@ ws_add (Evas_Object *parent);
  */
 void
 ws_free(Workspace *ws);
-
-/**
- * Add new context popup to the given parent Elemntary (container) object.
- *
- * @param parent The parent object.
- * @param ws Pointer to an Workspace structure. (need for use in callbacks)
- *
- * @ingroup Workspace
- */
-Evas_Object *
-ui_popup_add (Evas_Object *parent, Workspace *ws);
 
 /**
  * Set highlight to selected part.

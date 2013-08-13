@@ -84,14 +84,12 @@ ui_groupspace_part_state_update(Evas_Object *groupspace,
 /**
  * Separate view parts on groupspace.
  *
- * @param groupspace A Evas_Object pointer to groupspace layout.
- * @param separate If it's param EINA_TRUE parts in groupspace will be
- * show in separated view, else parts displayed normaly.
+ * @param ws A workspace pointer to struct.
  *
  * @ingroup Groupspace
  */
 void
-ui_groupspace_separate(Evas_Object *groupspace, Eina_Bool separate);
+ui_groupspace_separate(Workspace *ws);
 
 /**
  * Get current group, that loaded into groupspace.

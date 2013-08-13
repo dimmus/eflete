@@ -393,13 +393,15 @@ ui_groupspace_unset(Evas_Object *obj)
 }
 
 void
-ui_groupspace_separate(Evas_Object *groupspace, Eina_Bool separate)
+ui_groupspace_separate(Workspace *ws)
 {
-   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
-   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-
-   if (separate)
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+   if ((!group) || (!box)) return;
+   if (ws->separated)
      evas_object_box_layout_set(box, _separate_layout, group->obj, NULL);
    else
      evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
+   ws->separated = !ws->separated;
+
 }
