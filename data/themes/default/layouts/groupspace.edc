@@ -170,16 +170,16 @@ group {
 }
 
 group {
-   name: "base/groupspace/part/hightlight";
+   name: "base/groupspace/part/highlight";
    parts {
       part {
-         name: "eye";
+         name: "base";
          type: RECT;
          scale: 1;
          mouse_events: 1;
          description {
             state: "default" 0.0;
-            color: 255 255 255 0;
+            color: 0 0 0 0;
          }
       }
       part {
@@ -189,14 +189,12 @@ group {
          description {
             state: "default" 0.0;
             visible: 1;
-            rel1 {
-               to: "eye";
+            rel1.to: "base";
+            rel2.to: "base";
+            image {
+               normal: "highlight.png";
+               border: 1 1 1 1;
             }
-            rel2 {
-               to: "eye";
-            }
-            image.normal: "part_highlight.png";
-            image.border: 2 2 2 2;
          }
       }
    }

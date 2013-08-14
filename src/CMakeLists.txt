@@ -49,6 +49,7 @@ set(TET_CC_FILES
    ui/blocks/ui_widget_list.c
    ui/blocks/ui_signal_list.c
    ui/blocks/ui_states_list.c
+   ui/workspace/ui_highlight.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c

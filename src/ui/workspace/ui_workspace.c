@@ -1,5 +1,8 @@
 #include <ui_workspace.h>
 #include <efl_tet.h>
+#include "ui_highlight.h"
+
+#define GS_BOX_KEY "gs_box_key"
 
 Evas_Object *
 ui_groupspace_add(Evas_Object *parent);
@@ -306,24 +309,27 @@ _ws_init (void)
 void
 ui_object_highlight_set(Workspace *ws, Evas_Object *part)
 {
-   if ((!ws) || (!part) ) return;
+   if ((!ws) || (!part)) return;
 
-   if (ws->highlight.highlight)
-     evas_object_del (ws->highlight.highlight);
+   if (!ws->highlight.highlight)
+     ws->highlight.highlight = hl_highlight_add(ws->groupspace);
 
-   ws->highlight.highlight = elm_label_add(ws->groupspace);
-   elm_layout_file_set(ws->highlight.highlight, TET_EDJ,
-                            "base/groupspace/part/hightlight");
+   int x, y, w, h;
+   part = evas_object_data_get(part, "gs_part_key");
+   evas_object_geometry_get(part, &x, &y, &w, &h);
+
+   Evas_Object *box =  evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   evas_object_box_append(box, ws->highlight.highlight);
+   evas_object_resize(ws->highlight.highlight, w, h);
+   evas_object_move(ws->highlight.highlight, x, y);
+   evas_object_show(ws->highlight.highlight);
+
    ws->highlight.obj = part;
-   evas_object_raise(ws->highlight.highlight);
-   ui_object_highlight_move(ws);
    evas_object_event_callback_add(ws->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
-
-   evas_object_show(ws->highlight.highlight);
-
-
+   hl_highlight_handler_color_set(ws->highlight.highlight, 255, 0, 0, 255);
+   hl_highlight_border_color_set(ws->highlight.highlight, 0, 255, 0, 255);
 }
 
 void
@@ -341,7 +347,7 @@ ui_object_highlight_move(Workspace *ws)
 void
 ui_object_highlight_hide(Workspace *ws)
 {
-   if (!ws) return;
+   if (!ws || !ws->highlight.highlight) return;
 
    evas_object_hide(ws->highlight.highlight);
 }

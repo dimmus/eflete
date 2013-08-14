@@ -90,7 +90,7 @@ ui_part_select(App_Data *ap, Part* part)
 
    /* FIXME: it bad */
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
-   //ui_object_highlight_set(ap->ws, part->obj);
+   ui_object_highlight_set(ap->ws, part->obj);
 
    return gl_states;
 }

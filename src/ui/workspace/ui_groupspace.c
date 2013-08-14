@@ -1,4 +1,5 @@
 #include "ui_groupspace.h"
+#include "ui_highlight.h"
 
 #define GS_WS_KEY "gs_workspace_key"
 #define GS_PROJECT_KEY "gs_project_key"
@@ -23,9 +24,14 @@ _main_box_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
    EINA_LIST_FOREACH(p->children, l, opt)
      {
         edje_part = evas_object_data_get(opt->obj, GS_PART_DATA_KEY);
-        evas_object_geometry_get(edje_part, &x, &y, &w, &h);
-        evas_object_move(opt->obj, x, y);
-        evas_object_resize(opt->obj, w, h);
+        /* if there is a child that is highlight, then edje_part will be NULL */
+        if (edje_part)
+          {
+            evas_object_geometry_get(edje_part, &x, &y, &w, &h);
+            evas_object_move(opt->obj, x, y);
+            evas_object_resize(opt->obj, w, h);
+            evas_object_geometry_get(opt->obj, &x, &y, &w, &h);
+          }
     }
 }
 
@@ -80,8 +86,6 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y-y1-25, y + h-y1-25);
    ui_ruler_redraw(ws->ruler_hor);
    ui_ruler_redraw(ws->ruler_ver);
-
-   ui_object_highlight_move(ws);
 }
 
 static void
@@ -402,6 +406,8 @@ ui_groupspace_unset(Evas_Object *obj)
 
    evas_object_box_remove_all(box, EINA_TRUE);
    evas_object_hide(ws->groupspace);
+
+   ws->highlight.highlight = NULL;
 }
 
 void
