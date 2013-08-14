@@ -150,6 +150,7 @@ _gs_textblock_update(Group *group, Part *part, const char *state, double value)
    const Evas_Object *get_style;
    const char *text;
 
+   edje_edit_part_selected_state_set(group->obj, part->name, state, value);
    get_style = edje_object_part_object_get(group->obj, part->name);
    obj_style = evas_object_textblock_style_get(get_style);
    text = evas_textblock_style_get(obj_style);
@@ -158,7 +159,12 @@ _gs_textblock_update(Group *group, Part *part, const char *state, double value)
    evas_object_textblock_style_set(part->obj, ts);
 
    text = edje_edit_state_text_get(group->obj, part->name, state, value);
-   evas_object_textblock_text_markup_set(part->obj, text);
+   if (text) evas_object_textblock_text_markup_set(part->obj, text);
+   else
+     {
+        evas_object_textblock_text_markup_set(part->obj, part->name);
+        edje_object_part_text_set(group->obj, part->name, part->name);
+     }
 
    edje_edit_string_free(text);
 }
@@ -213,7 +219,7 @@ _gs_group_draw(Group *group,
                Project *project __UNUSED__)
 {
    Part *_part;
-   const Evas_Object *edje_part;
+   const Evas_Object *edje_part = NULL;
    Evas_Object *box =  evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    const char *source;
    Edje_Part_Type type;
@@ -224,44 +230,46 @@ _gs_group_draw(Group *group,
         type = edje_edit_part_type_get(group->obj, _part->name);
         if (type == EDJE_PART_TYPE_RECTANGLE)
           {
-             _part->obj = evas_object_rectangle_add(ws->canvas);
+             if (!_part->obj) _part->obj = evas_object_rectangle_add(ws->canvas);
              _gs_rect_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_IMAGE)
           {
-             _part->obj = evas_object_image_filled_add(ws->canvas);
+             if (!_part->obj) _part->obj = evas_object_image_filled_add(ws->canvas);
              _gs_image_update(group, _part, "default", 0.0, project);
           }
         if (type == EDJE_PART_TYPE_SPACER)
           {
-             _part->obj = evas_object_image_add(ws->canvas);
-             evas_object_image_file_set(_part->obj, TET_IMG_PATH"swallow_spacer_mask.png", NULL);
+            if (!_part->obj)  _part->obj = evas_object_image_add(ws->canvas);
+             evas_object_image_file_set(_part->obj,
+               TET_IMG_PATH"swallow_spacer_mask.png", NULL);
              evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
              evas_object_color_set(_part->obj, 15, 60, 162, 255);
              _gs_spaser_swallow_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_SWALLOW)
           {
-             _part->obj = evas_object_image_add(ws->canvas);
-             evas_object_image_file_set(_part->obj, TET_IMG_PATH"swallow_spacer_mask.png", NULL);
+             if (!_part->obj) _part->obj = evas_object_image_add(ws->canvas);
+             evas_object_image_file_set(_part->obj,
+               TET_IMG_PATH"swallow_spacer_mask.png", NULL);
              evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
              evas_object_color_set(_part->obj, 180, 108, 0, 255);
              _gs_spaser_swallow_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_TEXT)
           {
-             _part->obj = evas_object_text_add(ws->canvas);
+             if (!_part->obj) _part->obj = evas_object_text_add(ws->canvas);
              _gs_text_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_TEXTBLOCK)
           {
-             _part->obj = evas_object_textblock_add(ws->canvas);
+             if (!_part->obj) _part->obj = evas_object_textblock_add(ws->canvas);
              _gs_textblock_update(group, _part, "default", 0.0);
           }
         if (type == EDJE_PART_TYPE_GROUP)
           {
              source = edje_edit_part_source_get(group->obj, _part->name);
-             _part->obj = wm_group_object_find(project->widgets, source);
+             if (!_part->obj) _part->obj = wm_group_object_find(project->widgets, source);
              _gs_group_part_update(group, _part, "default", 0.0);
              edje_edit_string_free(source);
           }
@@ -269,8 +277,13 @@ _gs_group_draw(Group *group,
         _part->show = EINA_TRUE;
         evas_object_event_callback_add(_part->obj, EVAS_CALLBACK_MOUSE_MOVE,
                                        _gs_mouse_move_cb, ws);
-        edje_part = edje_object_part_object_get(group->obj, _part->name);
-        evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
+        edje_part = evas_object_data_get(_part->obj, GS_PART_DATA_KEY);
+        if (!edje_part)
+          {
+             edje_part = edje_object_part_object_get(group->obj, _part->name);
+             evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
+          }
+
         evas_object_box_append(box, _part->obj);
         evas_object_show(_part->obj);
      }
@@ -322,10 +335,15 @@ Evas_Object *
 ui_groupspace_add(Evas_Object *parent)
 {
    Evas_Object *_groupspace = NULL;
-
+   Evas_Object *_box = NULL;
    _groupspace = elm_layout_add(parent);
    elm_layout_file_set(_groupspace, TET_EDJ, "base/groupspace");
+
+   _box = evas_object_box_add(evas_object_evas_get(parent));
+   elm_object_part_content_set(_groupspace, "groupspace", _box);
+
    evas_object_hide(parent);
+   evas_object_data_set(_groupspace, GS_BOX_KEY, _box);
    evas_object_hide(_groupspace);
    return _groupspace;
 }
@@ -337,15 +355,18 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
       elm_layout_edje_get(ws->groupspace), "bottom_pad");
    const Evas_Object *part_top = edje_object_part_object_get(
       elm_layout_edje_get(ws->groupspace), "top_pad");
-   Evas_Object *_box;
    int x, y, gw, gh, w, h;
    double dx, dy;
+   Evas_Object *_box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
 
-   _box = evas_object_box_add(ws->canvas);
-   elm_object_part_content_set(ws->groupspace, "groupspace", _box);
-   elm_object_part_content_set(ws->groupspace, "edje_group", group->obj);
-   evas_object_box_layout_set(_box, _main_box_layout, group->obj, NULL);
-   evas_object_show(group->obj);
+   if (group)
+     {
+        elm_object_part_content_set(ws->groupspace, "edje_group", group->obj);
+        evas_object_box_layout_set(_box, _main_box_layout, group->obj, NULL);
+        evas_object_show(group->obj);
+     }
+   else
+     WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
    elm_layout_signal_emit (ws->groupspace, "groupspace,show", "");
 
    elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
@@ -375,7 +396,6 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 
    evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
                                   _gs_resize_cb, ws);
-   evas_object_data_set(ws->groupspace, GS_BOX_KEY, _box);
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
@@ -399,15 +419,23 @@ ui_groupspace_update(Evas_Object *obj)
 void
 ui_groupspace_unset(Evas_Object *obj)
 {
+   Eina_List *list = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *data = NULL;
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
-   elm_object_part_content_unset(ws->groupspace, "groupspace");
-   elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
 
-   evas_object_box_remove_all(box, EINA_TRUE);
-   evas_object_hide(ws->groupspace);
-
+   list = evas_object_box_children_get(box);
+   EINA_LIST_FOREACH(list, l, data)
+        evas_object_hide(data);
+   eina_list_free(list);
+   evas_object_box_remove_all(box, EINA_FALSE);
+   evas_object_hide(box);
+   evas_object_del(ws->highlight.highlight);
    ws->highlight.highlight = NULL;
+   elm_object_part_content_unset(ws->groupspace, "edje_group");
+   elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
 }
 
 void

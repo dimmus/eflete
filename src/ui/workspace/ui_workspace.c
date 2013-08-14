@@ -219,7 +219,6 @@ ws_add (Evas_Object *parent)
    elm_object_part_content_set(parent, "base/workspace/background", _bg);
    evas_object_show(_bg);
    ws->bg = _bg;
-   DBG("Parent workspace pointer [%p]", parent);
    _button = elm_button_add(parent);
    elm_object_part_content_set(parent, "base/workspace/button_zoom_out",
                                _button);
@@ -275,7 +274,6 @@ ws_add (Evas_Object *parent)
    ws->legend.legend = _legend;
    ws->legend.visible = EINA_FALSE;
    elm_object_part_content_set(parent, "legend", _legend);
-//   elm_object_text_set(_legend, "Current scale is: UNKNOWN.");
    evas_object_show(_legend);
 
    evas_object_smart_callback_add(_scroller, "scroll", _sc_move_cb, ws);
