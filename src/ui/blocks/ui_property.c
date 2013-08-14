@@ -1,4 +1,5 @@
 #include "ui_property.h"
+#include "widget_manager.h"
 
 /**
  *
@@ -108,25 +109,6 @@ struct _Prop_Part_View_Data
 
 typedef struct _Prop_Part_View_Data Prop_Part_View_Data;
 #define PROP_PART_VIEW_DATA "prop_part_view_data"
-
-/**
- * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
- */
-static char *part_types[] = {
-     "NONE",
-     "RECTANGLE",
-     "TEXT",
-     "IMAGE",
-     "SWALLOW",
-     "TEXTBLOCK",
-     "GRADIENT",
-     "GROUP",
-     "BOX",
-     "TABLE",
-     "EXTERNAL",
-     "PROXY",
-     "SPACER"
-};
 
 void
 _on_group_view_del(void *data __UNUSED__,
@@ -344,7 +326,7 @@ ui_prop_part_info_view_add(Evas_Object *prop_view,
    evas_object_show(item);
 
    item = ui_prop_view_item_label_add(box_base, "type",
-                                      part_types[edje_edit_part_type_get(EDJE_EDIT_FUNC_PARAM)]);
+                                      wm_part_type_get(edje_edit_part_type_get(EDJE_EDIT_FUNC_PARAM)));
    evas_object_show(item);
 
    item = ui_prop_view_item_one_edit_string_add(box_base, "clip to",

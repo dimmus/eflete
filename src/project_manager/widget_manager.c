@@ -5,6 +5,24 @@ static char **arr;
 static char tmp[PATH_MAX];
 static int size;
 static char empty = '\0';
+/**
+ * ref http://docs.enlightenment.org/auto/edje/group__Edje__Object__Part.html
+ */
+static char *part_types[] = {
+     "NONE",
+     "RECTANGLE",
+     "TEXT",
+     "IMAGE",
+     "SWALLOW",
+     "TEXTBLOCK",
+     "GRADIENT",
+     "GROUP",
+     "BOX",
+     "TABLE",
+     "EXTERNAL",
+     "PROXY",
+     "SPACER"
+};
 
 #define WM_WIDGET_NAME_GET(widget, group) \
    arr = eina_str_split(group, "/", 3); \
@@ -76,6 +94,7 @@ wm_part_add(Evas_Object *obj, const char *part_name)
    result = mem_malloc(sizeof(Part));
    result->__type = PART;
 
+   result->type = edje_edit_part_type_get(obj, part_name);
    result->name = eina_stringshare_add(part_name);
    result->obj = NULL;
    result->show = EINA_TRUE;
@@ -502,6 +521,12 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
                }
           }
      }
+}
+
+const char *
+wm_part_type_get(Edje_Part_Type type)
+{
+   return part_types[type];
 }
 
 #undef WM_WIDGET_NAME_GET

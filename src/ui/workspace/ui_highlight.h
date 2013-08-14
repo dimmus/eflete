@@ -106,6 +106,7 @@ hl_highlight_add(Evas_Object *parent);
 
 /**
  * Set the object that created highlight object will highlight.
+ * @note for future API!
  *
  * This function will set an object, so that highlight can resize and change
  * this object.
@@ -116,23 +117,48 @@ hl_highlight_add(Evas_Object *parent);
  * @ingroup Highlight
  */
 void
-hl_highlight_object_set(Evas_Object *highlight, Evas_Object *object);
+hl_highlight_object_set(Evas_Object *hl, Evas_Object *obj);
 
-void
-hl_highlight_del(Evas_Object *obj);
-
+/**
+ * Set the color of handlers of the highlight.
+ *
+ * This function will set given color to the border, that is used for showing
+ * handlers.
+ *
+ * @param obj The smart object that is represent a highlight.
+ * @param r Red color.
+ * @param g Green color.
+ * @param b Blur color.
+ * @param a Alpha channel.
+ *
+ * @ingroup Highlight
+ */
 void
 hl_highlight_handler_color_set(Evas_Object *hl,
-								Evas_Coord r,
-								Evas_Coord g,
-								Evas_Coord b,
-								Evas_Coord a);
+                              Evas_Coord r,
+                              Evas_Coord g,
+                              Evas_Coord b,
+                              Evas_Coord a);
 
+/**
+ * Set the color of border of the whole highlight.
+ *
+ * This function will set given color to the border, that is used for showing
+ * highlight size.
+ *
+ * @param obj The smart object that is represent a highlight.
+ * @param r Red color.
+ * @param g Green color.
+ * @param b Blur color.
+ * @param a Alpha channel.
+ *
+ * @ingroup Highlight
+ */
 void
 hl_highlight_border_color_set(Evas_Object *hl,
-								Evas_Coord r,
-								Evas_Coord g,
-								Evas_Coord b,
-								Evas_Coord a);
+                              Evas_Coord r,
+                              Evas_Coord g,
+                              Evas_Coord b,
+                              Evas_Coord a);
 
 #endif /* HIGHLIGHT_H */

@@ -1,4 +1,5 @@
 #include "ui_widget_list.h"
+#include "widget_manager.h"
 
 static Elm_Genlist_Item_Class *_itc_widget = NULL;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
@@ -18,7 +19,6 @@ _widget_list_get(Evas_Object *naviframe)
    return item_gl_widgets;
 }
 
-
 static char *
 _item_part_label_get(void *data,
                      Evas_Object *obj __UNUSED__,
@@ -30,7 +30,16 @@ _item_part_label_get(void *data,
         ERR("It impossible, but it is occurred, part name is missing!");
         return NULL;
      }
-   return strdup(p->name);
+
+   if (!strcmp(part, "elm.text"))
+     {
+        return strdup(p->name);
+     }
+   else if (!strcmp(part, "elm.text.sub"))
+     {
+        return strdup(wm_part_type_get(p->type));
+     }
+   return "";
 }
 
 static void
@@ -180,7 +189,7 @@ _on_group_clicked_double(void *data,
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "default";
+        _itc_part->item_style = "double_label";
         _itc_part->func.text_get = _item_part_label_get;
         _itc_part->func.content_get = _item_part_content_get;
         _itc_part->func.state_get = NULL;

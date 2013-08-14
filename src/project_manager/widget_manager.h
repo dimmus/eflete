@@ -62,6 +62,7 @@ struct _Part
 	Eina_Stringshare *name;
 	Evas_Object *obj;
 	Eina_Bool show;
+	int type;
 	type __type;
 };
 
@@ -311,5 +312,17 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
  */
 Evas_Object *
 wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
+
+/**
+ * Return the string with the name of the part type by the giving id (int).
+ * @note the returned string should not be deleted!
+ *
+ * @param type part type id.
+ * @return string with the name of part type.
+ *
+ * @ingroup WidgetManager
+ */
+const char *
+wm_part_type_get(Edje_Part_Type type);
 
 #endif /* WIDGET_MANAGER_H */

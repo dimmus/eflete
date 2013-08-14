@@ -86,6 +86,10 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y-y1-25, y + h-y1-25);
    ui_ruler_redraw(ws->ruler_hor);
    ui_ruler_redraw(ws->ruler_ver);
+
+   evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
+   evas_object_move(ws->highlight.highlight, x, y);
+   evas_object_resize(ws->highlight.highlight, w, h);
 }
 
 static void
@@ -450,4 +454,9 @@ ui_groupspace_separate(Workspace *ws)
      evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
    ws->separated = !ws->separated;
 
+   if (ws->highlight.highlight)
+     {
+        evas_object_del(ws->highlight.highlight);
+        ws->highlight.highlight = NULL;
+     }
 }

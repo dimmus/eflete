@@ -307,17 +307,16 @@ _ws_init (void)
 void
 ui_object_highlight_set(Workspace *ws, Evas_Object *part)
 {
-   if ((!ws) || (!part)) return;
+   if ((!ws) || (!part) || (!ws->separated)) return;
 
    if (!ws->highlight.highlight)
      ws->highlight.highlight = hl_highlight_add(ws->groupspace);
 
-   int x, y, w, h;
-   part = evas_object_data_get(part, "gs_part_key");
-   evas_object_geometry_get(part, &x, &y, &w, &h);
-
-   Evas_Object *box =  evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    evas_object_box_append(box, ws->highlight.highlight);
+
+   int x, y, w, h;
+   evas_object_geometry_get(part, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.highlight, w, h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_show(ws->highlight.highlight);

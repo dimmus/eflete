@@ -489,8 +489,6 @@ _smart_add(Evas_Object *parent)
         evas_object_smart_data_set(parent, _highlight);
    }
 
-
-
    _highlight_parent_sc->add(parent);
 }
 
@@ -525,9 +523,9 @@ _smart_del(Evas_Object *obj)
 }
 
 static void
-_smart_show(Evas_Object *parent)
+_smart_show(Evas_Object *obj)
 {
-   Highlight *highlight = evas_object_smart_data_get(parent);
+   Highlight *highlight = evas_object_smart_data_get(obj);
 
    evas_object_show(highlight->border);
    evas_object_show(highlight->handler_RB->border);
@@ -535,13 +533,13 @@ _smart_show(Evas_Object *parent)
    evas_object_show(highlight->handler_LB->border);
    evas_object_show(highlight->handler_LT->border);
 
-   _highlight_parent_sc->show(parent);
+   _highlight_parent_sc->show(obj);
 }
 
 static void
-_smart_hide(Evas_Object *parent)
+_smart_hide(Evas_Object *obj)
 {
-   Highlight *highlight = evas_object_smart_data_get(parent);
+   Highlight *highlight = evas_object_smart_data_get(obj);
 
    evas_object_hide(highlight->border);
    evas_object_hide(highlight->handler_RB->border);
@@ -549,33 +547,33 @@ _smart_hide(Evas_Object *parent)
    evas_object_hide(highlight->handler_LB->border);
    evas_object_hide(highlight->handler_LT->border);
 
-   _highlight_parent_sc->hide(parent);
+   _highlight_parent_sc->hide(obj);
 }
 
 static void
-_smart_move(Evas_Object *parent,
+_smart_move(Evas_Object *obj,
             Evas_Coord x,
             Evas_Coord y)
 {
-   Highlight *highlight = evas_object_smart_data_get(parent);
+   Highlight *highlight = evas_object_smart_data_get(obj);
    evas_object_move(highlight->border, x, y);
-   evas_object_smart_changed(parent);
+   evas_object_smart_changed(obj);
 }
 
 static void
-_smart_resize(Evas_Object *parent,
+_smart_resize(Evas_Object *obj,
               Evas_Coord w,
               Evas_Coord h)
 {
-   Highlight *highlight = evas_object_smart_data_get(parent);
+   Highlight *highlight = evas_object_smart_data_get(obj);
    evas_object_resize(highlight->border, w, h);
-   evas_object_smart_changed(parent);
+   evas_object_smart_changed(obj);
 }
 
 static void
-_smart_calculate(Evas_Object *parent)
+_smart_calculate(Evas_Object *obj)
 {
-   Highlight *highlight = evas_object_smart_data_get(parent);
+   Highlight *highlight = evas_object_smart_data_get(obj);
 
    _handler_size_recalc(highlight);
    _handler_pos_recalc(highlight);
@@ -652,3 +650,8 @@ hl_highlight_border_color_set(Evas_Object *hl,
    evas_object_color_set(highlight->border,
                          r * a / 255, g * a / 255, b * a / 255, a);
 }
+
+#undef SIZE
+#undef MINSIZE
+#undef MAXSIZE
+#undef COEFF
