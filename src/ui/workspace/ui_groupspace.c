@@ -59,6 +59,98 @@ _separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
     }
 }
 
+
+static void
+_layer_up_change(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace *ws = (Workspace *)data;
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+
+   Eina_List *childs = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *child = NULL;
+   Evas_Object *prev_child = NULL;
+   Evas_Object *edje_part = NULL;
+   Part *part = (Part *)event_info;
+
+   childs = evas_object_box_children_get(box);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        if ((edje_part) && (part->obj == child)) break;
+     }
+   prev_child = eina_list_data_get(eina_list_prev(l));
+   if (!prev_child)  return;
+   evas_object_box_remove(box, child);
+   evas_object_box_insert_before(box, child, prev_child);
+
+/**
+ * FIXME:
+ * For correct restack elements in box container we are need to remove all childs
+ * from box. Change order of childs in Eina_list and after this push back elements
+ * into box container. Otherwise elements in box container does'nt restack
+ * correctly.
+ */
+   childs = evas_object_box_children_get(box);
+   evas_object_box_remove_all(box, EINA_FALSE);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        evas_object_box_append(box, child);
+     }
+   evas_object_smart_calculate(box);
+   edje_edit_part_restack_above(group->obj, part->name);
+   edje_object_calc_force(group->obj);
+}
+
+static void
+_layer_down_change(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace *ws = (Workspace *)data;
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+   Eina_List *childs = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *child = NULL;
+   Evas_Object *next_child = NULL;
+   Evas_Object *edje_part = NULL;
+   Part *part = (Part *)event_info;
+
+   childs = evas_object_box_children_get(box);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        if ((edje_part) && (part->obj == child))  break;
+     }
+   next_child = eina_list_data_get(eina_list_next(l));
+   if (!next_child)  return;
+   evas_object_box_remove(box, child);
+   evas_object_box_insert_after(box, child, next_child);
+
+/**
+ * FIXME:
+ * For correct restack elements in box container we are need to remove all childs
+ * from box. Change order of childs in Eina_list and after this push back elements
+ * into box container. Otherwise elements in box container does'nt restack
+ * correctly.
+ */
+   childs = evas_object_box_children_get(box);
+   evas_object_box_remove_all(box, EINA_FALSE);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        evas_object_box_append(box, child);
+     }
+   evas_object_smart_calculate(box);
+   edje_edit_part_restack_below(group->obj, part->name);
+   edje_object_calc_force(group->obj);
+}
+
 static void
 _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -397,6 +489,8 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
+   evas_object_smart_callback_add(group->obj, "gs,layer,up", _layer_up_change, ws);
+   evas_object_smart_callback_add(group->obj, "gs,layer,down", _layer_down_change, ws);
 
    evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
                                   _gs_resize_cb, ws);

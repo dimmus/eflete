@@ -152,8 +152,9 @@ _on_part_select(void *data __UNUSED__,
                 void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Evas_Object *nf = elm_object_parent_widget_get(obj);
+   Evas_Object *nf = elm_object_parent_widget_get(elm_object_parent_widget_get(obj));
    Part *_part = elm_object_item_data_get(glit);
+
    evas_object_smart_callback_call (nf, "wl,part,select", _part);
 }
 static void
@@ -163,6 +164,81 @@ _unset_cur_group(void *data __UNUSED__,
 {
    Project *pr = (Project *)data;
    pr->current_group = NULL;
+}
+static void
+_above_part_unpress(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Group *group = (Group *)data;
+   evas_object_smart_callback_call(obj, "clicked,up", group);
+}
+
+static void
+_past_part_unpress(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Group *group = (Group *)data;
+   evas_object_smart_callback_call(obj, "clicked,down", group);
+}
+
+static void
+_above_part_click(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Group *group = (Group *)event_info;
+   Evas_Object *gl_parts = (Evas_Object *)data;
+   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
+   if (!eoi)
+     {
+        WARN("None one part does'nt selected");
+        return;
+     }
+   Elm_Object_Item *new_eoi = NULL;
+   Elm_Object_Item *prev_eoi = elm_genlist_item_prev_get(eoi);
+   if (!prev_eoi)
+     {
+        WARN("Selected part currently on top in list");
+        return;
+     }
+   Part *part = elm_object_item_data_get(eoi);
+   new_eoi = elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
+                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   elm_object_item_del(eoi);
+   elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+   evas_object_smart_callback_call(group->obj, "gs,layer,up", part);
+}
+
+static void
+_past_part_click(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Group *group = (Group *)event_info;
+   Evas_Object *gl_parts = (Evas_Object *)data;
+   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
+   if (!eoi)
+     {
+        WARN("None one part does'nt selected");
+        return;
+     }
+   Elm_Object_Item *new_eoi = NULL;
+   Elm_Object_Item *prev_eoi = elm_genlist_item_next_get(eoi);
+   if (!prev_eoi)
+     {
+        WARN("Selected part currently on bottom in list");
+        return;
+     }
+   Part *part = elm_object_item_data_get(eoi);
+   new_eoi = elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
+                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   elm_object_item_del(eoi);
+   elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+   evas_object_smart_callback_call(group->obj, "gs,layer,down", part);
 }
 
 static void
@@ -177,6 +253,10 @@ _on_group_clicked_double(void *data,
    Eina_Inlist *parts;
    Group *_group;
    Part *_part;
+   Evas_Object *box = NULL;
+   Evas_Object *panel = NULL;
+   Evas_Object *button = NULL;
+   Evas_Object *_icon = NULL;
 
    nf = elm_object_parent_widget_get(obj);
    _group = elm_object_item_data_get(glit);
@@ -199,7 +279,6 @@ _on_group_clicked_double(void *data,
    gl_parts = elm_genlist_add(nf);
    pr->current_group = _group;
    evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_group, pr);
-//   evas_object_data_set(nf, GROUP, _group);
    evas_object_size_hint_align_set(gl_parts,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
@@ -226,9 +305,55 @@ _on_group_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
+   evas_object_show(gl_parts);
+   box = elm_box_add(nf);
+   panel = elm_box_add(box);
+   elm_box_horizontal_set(panel, EINA_TRUE);
 
-   elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+   button = elm_button_add (panel);
+   _icon = elm_icon_add (button);
+   elm_icon_standard_set(_icon, "apps");
+   elm_image_no_scale_set (_icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, _icon);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
 
+   button = elm_button_add (panel);
+   _icon = elm_icon_add (button);
+   elm_icon_standard_set(_icon, "delete");
+   elm_image_no_scale_set (_icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, _icon);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+
+   button = elm_button_add (panel);
+   _icon = elm_icon_add (button);
+   elm_icon_standard_set(_icon, "arrow_up");
+   elm_image_no_scale_set (_icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, _icon);
+   evas_object_smart_callback_add (button, "clicked,up", _above_part_click, gl_parts);
+   evas_object_smart_callback_add (button, "unpressed", _above_part_unpress, _group);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+
+   button = elm_button_add (panel);
+   _icon = elm_icon_add (button);
+   elm_icon_standard_set(_icon, "arrow_down");
+   elm_image_no_scale_set (_icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, _icon);
+   evas_object_smart_callback_add (button, "clicked,down", _past_part_click, gl_parts);
+   evas_object_smart_callback_add (button, "unpressed", _past_part_unpress, _group);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+
+
+   elm_box_pack_end(box, panel);
+   elm_box_pack_end(box, gl_parts);
+
+   evas_object_show(box);
+   evas_object_show(panel);
+
+   elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, box, NULL);
 }
 
 static void

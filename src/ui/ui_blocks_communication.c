@@ -77,7 +77,6 @@ ui_part_select(App_Data *ap, Part* part)
         ERR("Property view is missing!");
         return NULL;
      }
-
    part_prop = ui_prop_part_info_view_add(prop, ap->project->current_group, part);
    ui_property_part_view_set(prop, part_prop);
    evas_object_show(part_prop);

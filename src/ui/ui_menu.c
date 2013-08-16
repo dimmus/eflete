@@ -214,31 +214,23 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
-   elm_menu_item_add(menu, NULL, "window-new", "Zoom in", _on_view_zoom_in, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Zoom out", _on_view_zoom_out, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Separate", _on_view_separate, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Legend", _on_view_legend, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Ruler hor.", _on_view_ruler_hor,
-                    ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Ruler ver.", _on_view_ruler_ver,
-                     ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Absolute scale",
-                     _on_view_ruler_abs, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Relative scale",
-                     _on_view_ruler_rel, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Zoom in", _on_view_zoom_in, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Zoom out", _on_view_zoom_out, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Separate", _on_view_separate, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Legend", _on_view_legend, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Ruler hor.", _on_view_ruler_hor, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Ruler ver.", _on_view_ruler_ver, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Absolute scale", _on_view_ruler_abs, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Relative scale", _on_view_ruler_rel, ap);
 
    tb_it=elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
-   elm_menu_item_add(menu, NULL, "window-new", "Styles",
-                    _on_style_window_menu, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Images",
-                     _on_image_editor_menu, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Colorclasses",
-                     _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Fonts",
-                     _on_font_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Styles", _on_style_window_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Images", _on_image_editor_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Colorclasses", _on_ccl_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 
