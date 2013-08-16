@@ -137,6 +137,7 @@ add_subdirectory(src)
 add_subdirectory(data)
 add_subdirectory(doc)
 add_subdirectory(check_utc/edje_compile)
+add_subdirectory(check_utc/project_manager)
 
 #install
 if (NOT ${debug})
