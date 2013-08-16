@@ -18,6 +18,7 @@ include_directories(
 )
 
 set(TET_CC_FILES
+   main.c
    efl_tet.c
    alloc/alloc.c
    project_manager/edje_compile.c
@@ -43,10 +44,6 @@ set(TET_CC_FILES
    ui/blocks/ui_widget_list.c
    ui/blocks/ui_signal_list.c
    ui/blocks/ui_states_list.c
-   ui/workspace/ui_ruler.c
-   ui/workspace/ui_workspace.c
-   ui/workspace/ui_popup.c
-   ui/workspace/ui_groupspace.c
    ui/notification/notify.c
 )
 
@@ -63,3 +60,45 @@ target_link_libraries(${PROJECT_NAME}
    ${EFREET_LIBRARIES}
    ${ELEMENTARY_LIBRARIES}
 )
+
+add_library(compile_clib project_manager/edje_compile.c)
+add_library(prmanager_clib project_manager/project_manager.c)
+add_library(logger_clib logger/logger.c)
+add_library(alloc_clib alloc/alloc.c)
+add_library(efltet_clib efl_tet.c)
+add_library(uiworkspace_clib ui/workspace/ui_workspace.c)
+add_library(notify_clib ui/notification/notify.c)
+add_library(uipopup_clib ui/workspace/ui_popup.c)
+add_library(uigrspace_clib ui/workspace/ui_groupspace.c)
+add_library(uiruler_clib ui/workspace/ui_ruler.c)
+add_library(widgetmanager_clib project_manager/widget_manager.c)
+add_library(uimain_clib ui/ui_main_window.c)
+add_library(uimenu_clib ui/ui_menu.c)
+add_library(uipanes_clib ui/ui_panes.c)
+add_library(uiblock_clib ui/blocks/ui_block.c)
+add_library(fontviewer_clib ui/dialogs/font_viewer_dialog.c)
+add_library(setting_clib settings/settings.c)
+add_library(colorviewer_clib ui/dialogs/colorclass_viewer_dialog.c)
+add_library(imgviewer_clib ui/dialogs/image_viewer_dialog.c)
+add_library(openfile_clib ui/dialogs/open_file_dialog.c)
+add_library(uiwidgetlist_clib ui/blocks/ui_widget_list.c)
+add_library(uiblockcommun_clib ui/ui_blocks_communication.c)
+add_library(uistyledialog_clib ui/dialogs/style_viewer_dialog.c)
+add_library(uiproperty_clib ui/blocks/ui_property.c)
+add_library(uisignallist_clib ui/blocks/ui_signal_list.c)
+add_library(uistatelist_clib ui/blocks/ui_states_list.c)
+
+INCLUDE(FindPkgConfig)
+PKG_CHECK_MODULES (EDJE REQUIRED edje>=1.0.0)
+PKG_CHECK_MODULES (ECORE REQUIRED ecore>=1.0.0)
+PKG_CHECK_MODULES (ECORE_EVAS REQUIRED ecore-evas>=1.0.0)
+PKG_CHECK_MODULES (EFLDEPS REQUIRED
+  eina>=1.0.999.63568
+  evas>=1.0.0
+  ecore>=1.0.999.59763
+  ecore-file>=1.0.0
+  ecore-evas>=1.0.999.59763
+  edje>=1.0.0)
+PKG_CHECK_MODULES (EINA REQUIRED eina>=1.0.0)
+PKG_CHECK_MODULES (ECORE_X ecore-x>=1.0.0)
+PKG_CHECK_MODULES (EVAS REQUIRED evas>=1.0.0)
