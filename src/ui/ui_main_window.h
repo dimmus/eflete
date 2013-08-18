@@ -15,7 +15,7 @@
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
 #include "ui_block.h"
-#include "colorclass_viewer_dialog.h"
+#include "colorclass_editor.h"
 #include "font_viewer_dialog.h"
 #include "notify.h"
 /**
