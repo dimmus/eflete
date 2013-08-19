@@ -28,6 +28,7 @@ set(TET_CC_FILES
    project_manager/project_manager.c
    project_manager/edit/style_edit.c
    project_manager/edit/image_edit_api.c
+   project_manager/edit/colorclasses_edit_api.c
    logger/logger.c
    settings/settings.c
    ui/ui_panes.c
@@ -36,8 +37,8 @@ set(TET_CC_FILES
    ui/ui_blocks_communication.c
    ui/editors/style_editor.c
    ui/editors/image_editor.c
+   ui/editors/colorclass_editor.c
    ui/dialogs/open_file_dialog.c
-   ui/dialogs/colorclass_viewer_dialog.c
    ui/dialogs/font_viewer_dialog.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c

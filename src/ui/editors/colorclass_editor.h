@@ -11,6 +11,8 @@
 #include "efl_tet.h"
 #include "Evas.h"
 #include "widget_manager.h"
+#include "modal_window.h"
+#include "colorclasses_edit_api.h"
 
 /**
  * Add new colorclass viewer inwin object.

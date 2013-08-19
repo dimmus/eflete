@@ -15,5 +15,5 @@ collections {
    #include "layouts/textstyle.edc"
    #include "layouts/groupspace.edc"
    #include "layouts/notify.edc"
-   #include "layouts/colorclass_viewer.edc"
+   #include "layouts/colorclass_editor.edc"
 }
