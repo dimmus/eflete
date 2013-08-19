@@ -140,6 +140,9 @@ add_subdirectory(data)
 add_subdirectory(doc)
 add_subdirectory(tests/edje_compile)
 add_subdirectory(tests/project_manager)
+add_subdirectory(tests/settings)
+add_subdirectory(tests/alloc)
+add_subdirectory(tests/widget_manager)
 
 #install
 if (NOT ${debug})

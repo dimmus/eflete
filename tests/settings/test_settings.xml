@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<testsuites xmlns="http://check.sourceforge.net/ns">
+  <datetime>2013-08-19 19:59:09</datetime>
+  <suite>
+    <title>setings_test</title>
+    <test result="success">
+      <path>/home/sergey/Work/eet_utc/efl-edje-editor-tool/tests/settings</path>
+      <fn>test_settings.c:15</fn>
+      <id>ui_element_settings_init_test</id>
+      <iteration>0</iteration>
+      <description>TCase</description>
+      <message>Passed</message>
+    </test>
+    <test result="success">
+      <path>/home/sergey/Work/eet_utc/efl-edje-editor-tool/tests/settings</path>
+      <fn>test_settings.c:34</fn>
+      <id>ui_settings_save_test</id>
+      <iteration>0</iteration>
+      <description>TCase</description>
+      <message>Passed</message>
+    </test>
+    <test result="error">
+      <path>/home/sergey/Work/eet_utc/efl-edje-editor-tool/tests/settings</path>
+      <fn>test_settings.c:53</fn>
+      <id>ui_settings_load_test</id>
+      <iteration>0</iteration>
+      <description>TCase</description>
+      <message>Received signal 11 (Segmentation fault)</message>
+    </test>
+  </suite>
+  <duration>0.000000</duration>
+</testsuites>
