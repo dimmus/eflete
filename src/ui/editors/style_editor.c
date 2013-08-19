@@ -61,7 +61,11 @@ _on_st_add_bt_ok(void *data,
         NOTIFY_WARNING("Style name can not be empty!");
         return;
      }
-   style_edit_style_add(window.pr, style_name);
+   if(!style_edit_style_add(window.pr, style_name))
+     {
+        NOTIFY_WARNING("Style name must be unique!");
+        return;
+     }
    style_edit_style_tag_add(window.pr, style_name, "DEFAULT", default_tags);
 
    glit_style = elm_genlist_item_append(window.glist, _itc_style,
@@ -94,7 +98,11 @@ _on_tag_add_bt_ok(void *data,
         NOTIFY_WARNING("Tag name can not be empty!");
         return;
      }
-   style_edit_style_tag_add(window.pr, style_name, tag_name, tag_value);
+   if(!style_edit_style_tag_add(window.pr, style_name, tag_name, tag_value))
+     {
+        NOTIFY_WARNING("Tag name must be unique!");
+        return;
+     }
    glit_tag = elm_genlist_item_append(window.glist, _itc_tags,
                                       tag_name,
                                       st_tag_entries.style_name, ELM_GENLIST_ITEM_NONE,
