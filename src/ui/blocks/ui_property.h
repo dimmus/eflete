@@ -10,8 +10,7 @@
 
 #include "efl_tet.h"
 #include "widget_manager.h"
-#include <Elementary.h>
-#include "widget_manager.h"
+#include "widget_define.h"
 
 /**
  * Add a new Property widget.
@@ -96,13 +95,14 @@ ui_prop_group_info_view_update(Evas_Object *prop_view, Group *group);
 /**
  * Add to parent property view a new part details view.
  *
- * @param prop_view A parent object.
- * @param part A Part object data to set a view.
+ * @param prop_view The parent object.
+ * @param group The Group object
+ * @param part The Part object data to set a view.
  *
  * @ingroup Property
  */
 Evas_Object *
-ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part);
+ui_prop_part_info_view_add(Evas_Object *prop_view, Group *group, Part *part);
 
 /**
  * Add to part view a new state view.
@@ -114,7 +114,10 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part);
  * @ingroup Property
  */
 Evas_Object *
-ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state);
+ui_prop_part_info_state_view_add(Evas_Object *part_view,
+                                 Group *group,
+                                 Part *part);
+                                 //const char *state);
 
 /**
  * Set to part view a state view.

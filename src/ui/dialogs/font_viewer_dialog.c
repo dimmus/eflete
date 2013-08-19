@@ -133,8 +133,10 @@ font_viewer_add(Evas_Object *parent)
 }
 
 void
-font_viewer_init(Evas_Object *font_view, Project *project)
+font_viewer_init(Evas_Object *font_view __UNUSED__,
+                 Project *project __UNUSED__)
 {
+   /*
    Evas_Object *genlist = elm_object_part_content_get(
       elm_object_part_content_get(elm_win_inwin_content_get(font_view),
          "swallow/panes"), "left");
@@ -192,5 +194,6 @@ font_viewer_init(Evas_Object *font_view, Project *project)
      }
    eina_list_free(_fonts);
    eina_list_free(_temp_fonts);
+   */
 }
 

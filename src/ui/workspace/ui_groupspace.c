@@ -1,17 +1,159 @@
 #include "ui_groupspace.h"
+#include "ui_highlight.h"
 
-#define GS_VIEWPART_KEY "gs_viewpart_key"
-#define GS_GROUP_KEY "gs_group_key"
 #define GS_WS_KEY "gs_workspace_key"
 #define GS_PROJECT_KEY "gs_project_key"
+#define GS_BOX_KEY "gs_box_key"
+#define GS_PART_DATA_KEY "gs_part_key"
+#define GS_GROUP_KEY "gs_group_key"
 
-/*Prototypes functions for internal use*/
 static void
-_gs_move_parts(Evas_Object *view_part, Group *group);
+_main_box_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
+{
+   int x, y, w, h;
+   int xx, yy;
+   Evas_Object *edje_part;
+   Evas_Object *edje_group = (Evas_Object *)data;
+   Eina_List *l;
+   Evas_Object_Box_Option *opt;
+
+   evas_object_geometry_get(o, &xx, &yy, &w, &h);
+   evas_object_resize(edje_group, w, h);
+   evas_object_move(edje_group, xx, yy);
+   evas_object_geometry_get(edje_group, &xx, &yy, &w, &h);
+   EINA_LIST_FOREACH(p->children, l, opt)
+     {
+        edje_part = evas_object_data_get(opt->obj, GS_PART_DATA_KEY);
+        /* if there is a child that is highlight, then edje_part will be NULL */
+        if (edje_part)
+          {
+            evas_object_geometry_get(edje_part, &x, &y, &w, &h);
+            evas_object_move(opt->obj, x, y);
+            evas_object_resize(opt->obj, w, h);
+            evas_object_geometry_get(opt->obj, &x, &y, &w, &h);
+          }
+    }
+}
+
+static void
+_separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
+{
+   int x, y, w, h;
+   Evas_Object *edje_part;
+   Evas_Object *edje_group = (Evas_Object *)data;
+   Eina_List *l;
+   Evas_Object_Box_Option *opt;
+   int count = 0;
+
+   evas_object_geometry_get(o, &x, &y, &w, &h);
+   evas_object_resize(edje_group, w, h);
+   evas_object_move(edje_group, x, y);
+   EINA_LIST_FOREACH(p->children, l, opt)
+     {
+        edje_part = evas_object_data_get(opt->obj, GS_PART_DATA_KEY);
+        evas_object_geometry_get(edje_part, &x, &y, &w, &h);
+        evas_object_move(opt->obj, x + count * 50, y + count * 20);
+        evas_object_resize(opt->obj, w, h);
+        evas_object_geometry_get(opt->obj, &x, &y, &w, &h);
+        count++;
+    }
+}
+
+
+static void
+_layer_up_change(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace *ws = (Workspace *)data;
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+
+   Eina_List *childs = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *child = NULL;
+   Evas_Object *prev_child = NULL;
+   Evas_Object *edje_part = NULL;
+   Part *part = (Part *)event_info;
+
+   childs = evas_object_box_children_get(box);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        if ((edje_part) && (part->obj == child)) break;
+     }
+   prev_child = eina_list_data_get(eina_list_prev(l));
+   if (!prev_child)  return;
+   evas_object_box_remove(box, child);
+   evas_object_box_insert_before(box, child, prev_child);
+
+/**
+ * FIXME:
+ * For correct restack elements in box container we are need to remove all childs
+ * from box. Change order of childs in Eina_list and after this push back elements
+ * into box container. Otherwise elements in box container does'nt restack
+ * correctly.
+ */
+   childs = evas_object_box_children_get(box);
+   evas_object_box_remove_all(box, EINA_FALSE);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        evas_object_box_append(box, child);
+     }
+   evas_object_smart_calculate(box);
+   edje_edit_part_restack_above(group->obj, part->name);
+   edje_object_calc_force(group->obj);
+}
+
+static void
+_layer_down_change(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace *ws = (Workspace *)data;
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+   Eina_List *childs = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *child = NULL;
+   Evas_Object *next_child = NULL;
+   Evas_Object *edje_part = NULL;
+   Part *part = (Part *)event_info;
+
+   childs = evas_object_box_children_get(box);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        if ((edje_part) && (part->obj == child))  break;
+     }
+   next_child = eina_list_data_get(eina_list_next(l));
+   if (!next_child)  return;
+   evas_object_box_remove(box, child);
+   evas_object_box_insert_after(box, child, next_child);
+
+/**
+ * FIXME:
+ * For correct restack elements in box container we are need to remove all childs
+ * from box. Change order of childs in Eina_list and after this push back elements
+ * into box container. Otherwise elements in box container does'nt restack
+ * correctly.
+ */
+   childs = evas_object_box_children_get(box);
+   evas_object_box_remove_all(box, EINA_FALSE);
+   EINA_LIST_FOREACH(childs, l, child)
+     {
+        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
+        evas_object_box_append(box, child);
+     }
+   evas_object_smart_calculate(box);
+   edje_edit_part_restack_below(group->obj, part->name);
+   edje_object_calc_force(group->obj);
+}
 
 static void
 _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
-		   void *event_info __UNUSED__)
+                  void *event_info __UNUSED__)
 {
    int x, y;
    Workspace *ws = (Workspace*)data;
@@ -22,727 +164,349 @@ _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
 
 static void
 _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
-	       void *event_info __UNUSED__)
+              void *event_info __UNUSED__)
 {
    int x, y, w, h;
    int x1,y1,w1,h1;//FIXME: change var names
    Workspace *ws = (Workspace*)data;
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    evas_object_geometry_get(ws->bg, &x1, &y1, &w1, &h1);
-	//FIXME:avoid hardcode val(25)
+   //FIXME:avoid hardcode val(25)
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_hor, x-x1-25);
    ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, y-y1-25);
    ui_ruler_scale_relative_position_set(ws->ruler_hor, x-x1-25, x + w-x1-25);
    ui_ruler_scale_relative_position_set(ws->ruler_ver, y-y1-25, y + h-y1-25);
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
 
-   ui_object_highlight_move(ws);
+   evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
+   evas_object_move(ws->highlight.highlight, x, y);
+   evas_object_resize(ws->highlight.highlight, w, h);
 }
 
 static void
-_gs_resize_parts_cb(void *data, Evas *e __UNUSED__,
-			Evas_Object *obj, void *event_info __UNUSED__)
-{
-   _gs_move_parts(obj, (Group*)(data));
-}
-
-static void
-_gs_image_update(Project *project, Group *group, Part *part, Part_State *state)
+_gs_image_update(Group *group,
+                 Part *part,
+                 //const char *state,
+                 //double value,
+                 Project *project)
 {
    Evas_Load_Error err;
-   char buf[4096];
-   int x, y, w, h;
+   char buf[BUFF_MAX];
+   const char *image_normal;
+   double fill_rel_x, fill_rel_y;
+   int id;
+   int bl, br, bt, bb;
+   int r, g, b, a;
 
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
+   edje_edit_part_selected_state_set(group->obj,
+                                     part->name,
+                                     part->curr_state,
+                                     part->curr_state_value);
 
-   snprintf(buf, sizeof(buf), "edje/images/%i", state->image->id);
+   image_normal = edje_edit_state_image_get(group->obj,
+                                            part->name,
+                                            part->curr_state,
+                                            part->curr_state_value);
+   id = edje_edit_image_id_get(group->obj, image_normal);
+   snprintf(buf, sizeof(buf), "edje/images/%i", id);
    evas_object_image_file_set(part->obj, project->swapfile, buf);
 
    err = evas_object_image_load_error_get(part->obj);
    if (err != EVAS_LOAD_ERROR_NONE)
-     WARN("Could not update image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
+     WARN("Could not update image. Error string is \"%s\"\n", evas_load_error_str(err));
 
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
+   edje_edit_state_color_get(group->obj, part->name,
+                             part->curr_state, part->curr_state_value,
+                             &r, &g, &b, &a);
+   evas_object_color_set(part->obj, r * a / 255, g * a / 255, b * a / 255, a);
 
-   evas_object_image_border_set(part->obj, state->image->left,
-      state->image->right, state->image->top, state->image->bottom);
+   edje_edit_state_image_border_get(group->obj, part->name,
+                                    part->curr_state, part->curr_state_value,
+                                    &bl, &br, &bt, &bb);
+   evas_object_image_border_set(part->obj, bl, br, bt, bb);
 
+   fill_rel_x = edje_edit_state_fill_origin_relative_x_get(group->obj,
+                                                           part->name,
+                                                           part->curr_state,
+                                                           part->curr_state_value);
+   fill_rel_y = edje_edit_state_fill_origin_relative_y_get(group->obj,
+                                                           part->name,
+                                                           part->curr_state,
+                                                           part->curr_state_value);
 
-   evas_object_image_fill_set(part->obj,
-      state->image->fill_origin_relative_x,
-      state->image->fill_origin_relative_y, w, h);
+   evas_object_image_fill_set(part->obj, fill_rel_x, fill_rel_y, 0, 0);
 
-   evas_object_move (part->obj, x, y);
-   evas_object_resize (part->obj, w, h);
-
-   if(state->color[3])
-     evas_object_color_set(part->obj, state->color[0], state->color[1],
-                           state->color[2], state->color[3]);
-   else
-     evas_object_color_set(part->obj, 0, 0, 0, 0);
-
-   if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
-   else
-     {
-        evas_object_hide(part->obj);
-        part->show = EINA_FALSE;
-     }
-}
-
-static Evas_Object *
-_gs_image_draw(Evas_Object *view_part, Group *group , Part *part,
-		Project *project, Part_State *state)
-{
-   Evas_Load_Error err;
-   Evas_Object *_image;
-   Evas *canvas = NULL;
-   char buf[4096];
-   int x, y, w, h;
-
-   Part_State *_current_state = NULL;
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
-
-   canvas = evas_object_evas_get(view_part);
-   _image = evas_object_image_filled_add(canvas);
-
-   snprintf(buf, sizeof(buf), "edje/images/%i", _current_state->image->id);
-   evas_object_image_file_set(_image, project->swapfile, buf);
-
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-
-   err = evas_object_image_load_error_get(_image);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
-
-   evas_object_move(_image, x, y);
-   evas_object_resize(_image, w, h);
-
-   evas_object_image_border_set(_image, _current_state->image->left,
-      _current_state->image->right, _current_state->image->top,
-      _current_state->image->bottom);
-
-   evas_object_image_fill_set(_image,
-      _current_state->image->fill_origin_relative_x,
-      _current_state->image->fill_origin_relative_y, w, h);
-
-   if(_current_state->color[3])
-     evas_object_color_set(_image, _current_state->color[0],
-        _current_state->color[1],_current_state->color[2],
-        _current_state->color[3]);
-   else
-     evas_object_color_set(_image, 0, 0, 0, 0);
-
-   if (_current_state->visible)
-     {
-        evas_object_show(_image);
-        part->show = EINA_TRUE;
-     }
-   else
-     {
-        evas_object_hide(part->obj);
-        part->show = EINA_FALSE;
-     }
-  return _image;
+   edje_edit_string_free(image_normal);
 }
 
 static void
-_gs_rect_update(Group *group, Part *part, Part_State *state)
+_gs_rect_update(Group *group,
+                Part *part)
+                //const char *state,
+                //double value)
 {
-   int x, y, w, h;
+   int r, g, b, a;
+   edje_edit_part_selected_state_set(group->obj,
+                                     part->name,
+                                     part->curr_state,
+                                     part->curr_state_value);
 
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
-
-   edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   evas_object_move (part->obj, x, y);
-   evas_object_resize (part->obj, w, h);
-
-   if(state->color[3])
-     evas_object_color_set(part->obj, state->color[0], state->color[1],
-                           state->color[2], state->color[3]);
-   else
-     evas_object_color_set(part->obj, 0, 0, 0, 0);
-
-   if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
-   else
-     {
-        evas_object_hide(part->obj);
-        part->show = EINA_FALSE;
-     }
-}
-
-static Evas_Object *
-_gs_rect_draw(Evas_Object *view_part, Group *group, Part *part,
-              Part_State *state)
-{
-   Evas_Object *_rectangle;
-   Evas *canvas = NULL;
-   int x, y, w, h;
-   Part_State *_current_state = NULL;
-
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
-
-   canvas = evas_object_evas_get(view_part);
-   if (!canvas)
-     ERR ("Coud not to take canvas");
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-
-   _rectangle = evas_object_rectangle_add(canvas);
-
-   evas_object_move(_rectangle, x, y);
-   evas_object_resize(_rectangle, w, h);
-
-   if(_current_state->color[3])
-     evas_object_color_set(_rectangle, _current_state->color[0],
-        _current_state->color[1],_current_state->color[2],
-        _current_state->color[3]);
-   else
-     evas_object_color_set(_rectangle, 0, 0, 0, 0);
-
-   if (_current_state->visible)
-     {
-        evas_object_show(_rectangle);
-        part->show = EINA_TRUE;
-     }
-   else
-     part->show = EINA_FALSE;
-   return _rectangle;
+   edje_edit_state_color_get(group->obj, part->name,
+                             part->curr_state, part->curr_state_value,
+                             &r, &g, &b, &a);
+   evas_object_color_set(part->obj, r * a / 255, g * a / 255, b *a / 255, a);
 }
 
 static void
-_gs_textblock_update(Group *group, Part *part, Part_State *state)
+_gs_textblock_update(Group *group,
+                     Part *part)
+                     //const char *state,
+                     //double value)
 {
    Evas_Textblock_Style *ts = NULL;
-   int x, y, w, h;
+   const Evas_Textblock_Style *obj_style;
+   const Evas_Object *get_style;
+   const char *text;
 
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
+   edje_edit_part_selected_state_set(group->obj,
+                                     part->name,
+                                     part->curr_state,
+                                     part->curr_state_value);
 
-   edje_edit_state_text_set(group->obj, part->name, state->name,
-                            state->value, part->name);
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-
+   get_style = edje_object_part_object_get(group->obj, part->name);
+   obj_style = evas_object_textblock_style_get(get_style);
+   text = evas_textblock_style_get(obj_style);
    ts = evas_textblock_style_new();
-
-   evas_textblock_style_set(ts,
-      evas_textblock_style_get(
-         evas_object_textblock_style_get(
-            edje_object_part_object_get(group->obj, part->name))));
-
+   evas_textblock_style_set(ts, text);
    evas_object_textblock_style_set(part->obj, ts);
 
-   evas_object_textblock_text_markup_set(part->obj,
-      edje_edit_state_text_get(group->obj, part->name, state->name,
-                               state->value));
-
-   evas_object_textblock_valign_set(part->obj, state->align_y);
-
-   evas_object_move (part->obj, x, y);
-   evas_object_resize (part->obj, w, h);
-
-   if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
+   text = edje_edit_state_text_get(group->obj,
+                                   part->name,
+                                   part->curr_state,
+                                   part->curr_state_value);
+   if (text) evas_object_textblock_text_markup_set(part->obj, text);
    else
      {
-        evas_object_hide(part->obj);
-        part->show = EINA_FALSE;
+        evas_object_textblock_text_markup_set(part->obj, part->name);
+        edje_object_part_text_set(group->obj, part->name, part->name);
      }
-
-}
-
-static Evas_Object *
-_gs_textblock_draw(Evas_Object * view_part, Group *group, Part *part,
-                   Part_State *state)
-{
-   Evas_Object *_textblock = NULL;
-   Evas *_canvas = NULL;
-   int x, y, w, h;
-   Evas_Textblock_Style *ts = NULL;
-
-   Part_State *_current_state = NULL;
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
-
-   edje_edit_state_text_set(group->obj, part->name, _current_state->name,
-                            _current_state->value, part->name);
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   _canvas = evas_object_evas_get(view_part);
-
-   _textblock = evas_object_textblock_add(_canvas);
-
-   ts = evas_textblock_style_new();
-
-/**
- * I know that its non readable code. Later i fix it.
- * It's take style from edje object and implement this style
- * to non constant style'
- */
-   evas_textblock_style_set(ts,
-      evas_textblock_style_get(
-         evas_object_textblock_style_get(
-            edje_object_part_object_get(group->obj, part->name))));
-
-   evas_object_textblock_style_set(_textblock, ts);
-
-   evas_object_textblock_text_markup_set(_textblock,
-      edje_edit_state_text_get(group->obj, part->name, _current_state->name,
-                               _current_state->value));
-
-   evas_object_textblock_valign_set(_textblock, _current_state->align_y);
-
-   evas_object_move(_textblock, x, y);
-   evas_object_resize(_textblock, w, h);
-   if (_current_state->visible)
-     {
-        evas_object_show(_textblock);
-        part->show = EINA_TRUE;
-     }
-   else
-     part->show = EINA_FALSE;
-
-   return _textblock;
+   edje_edit_string_free(text);
 }
 
 static void
-_gs_text_update(Group *group, Part *part, Part_State *state)
+_gs_text_update(Group *group, Part *part)
 {
-   int x, y, w, h;
+   const char *text, *font;
+   int text_size;
+   int r, g, b, a;
 
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
+   edje_edit_part_selected_state_set(group->obj,
+                                     part->name,
+                                     part->curr_state,
+                                     part->curr_state_value);
 
-   edje_edit_state_text_set(group->obj, part->name, state->name,
-                            state->value, part->name);
-   edje_object_calc_force(group->obj);
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   evas_object_text_text_set(part->obj,
-                             edje_edit_state_text_get(group->obj, part->name,
-                                 state->name, state->value));
-
-   evas_object_text_font_set(part->obj, state->text->font,
-      state->text->size);
-
-   evas_object_move(part->obj,(int)( x + w * state->text->align_x),
-                   (int)(y + h * state->text->align_y));
-   if (w && h) evas_object_resize(part->obj, w, h);
-
-   if(state->color[3])
-     evas_object_color_set(part->obj, state->color[0], state->color[1],
-                           state->color[2], state->color[3]);
-   else
-     evas_object_color_set(part->obj, 0, 0, 0, 0);
-  if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
+   text = edje_edit_state_text_get(group->obj,
+                                   part->name,
+                                   part->curr_state,
+                                   part->curr_state_value);
+   if (text) evas_object_text_text_set(part->obj, text);
    else
      {
-        part->show = EINA_FALSE;
-        evas_object_hide(part->obj);
+        evas_object_text_text_set(part->obj, part->name);
+        edje_object_part_text_set(group->obj, part->name, part->name);
      }
-}
 
+   font = edje_edit_state_font_get(group->obj, part->name,
+                                   part->curr_state, part->curr_state_value);
+   text_size = edje_edit_state_text_size_get(group->obj, part->name,
+                                             part->curr_state, part->curr_state_value);
+   evas_object_text_font_set(part->obj, font, text_size);
 
-static Evas_Object *
-_gs_text_draw(Evas_Object *view_part, Group *group, Part *part,
-              Part_State *state)
-{
-   Evas_Object *_text = NULL;
-   Evas *canvas = NULL;
-   int x, y, w, h;
-   Part_State *_current_state = NULL;
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
+   edje_edit_state_color_get(group->obj, part->name,
+                             part->curr_state, part->curr_state_value,
+                             &r, &g, &b, &a);
+   evas_object_color_set(part->obj, r, g, b, a);
 
-   canvas = evas_object_evas_get(view_part);
-
-   edje_edit_state_text_set(group->obj, part->name, _current_state->name,
-                            _current_state->value, part->name);
-   edje_object_calc_force(group->obj);
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   _text = evas_object_text_add(canvas);
-   evas_object_text_text_set(_text,
-                             edje_edit_state_text_get(group->obj, part->name,
-                                _current_state->name, _current_state->value));
-
-   evas_object_text_font_set(_text, _current_state->text->font,
-      _current_state->text->size);
-
-   evas_object_move(_text,(int)( x + w * _current_state->text->align_x),
-                   (int)(y + h * _current_state->text->align_y));
-   if (w && h) evas_object_resize(_text, w, h);
-
-   if(_current_state->color[3])
-     evas_object_color_set(_text, _current_state->color[0],
-        _current_state->color[1],_current_state->color[2],
-        _current_state->color[3]);
-   else
-     evas_object_color_set(_text, 0, 0, 0, 0);
-
-   if (_current_state->visible)
-     {
-        evas_object_show(_text);
-        part->show = EINA_TRUE;
-     }
-   else
-     part->show = EINA_FALSE;
-/**
- * Ellipsis parametr of text will be relised when EVAS library 1.8 came.
- * With method
- * void evas_object_text_ellipsis_set 	(Evas_Object *obj, double ellipsis )
- * http://docs.enlightenment.org/auto/efl/group__Evas__Object__Text.html#ga06da1d81bf84cfb6247791b4696125f9/
- */
-   return _text;
+   edje_edit_string_free(text);
+   edje_edit_string_free(font);
 }
 
 static void
-_gs_spacer_update(Group *group, Part *part, Part_State *state)
+_gs_spaser_swallow_group_update(Group *group,
+                          Part *part)
+                          //const char *state,
+                          //double value)
 {
-   int x, y, w, h;
-
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
-
-   edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   evas_object_move (part->obj, x, y);
-   evas_object_resize (part->obj, w, h);
-   if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
-   else
-     {
-        part->show = EINA_FALSE;
-        evas_object_hide(part->obj);
-     }
+   edje_edit_part_selected_state_set(group->obj,
+                                     part->name,
+                                     part->curr_state,
+                                     part->curr_state_value);
 }
 
-
-static Evas_Object *
-_gs_spacer_draw(Evas_Object * view_part, Group *group, Part *part,
-                Part_State *state)
+/*
+static void
+_gs_group_part_update(Group *group,
+                      Part *part)
+                      //const char *state,
+                      //double value)
 {
-   Evas_Object *_spacer = NULL;
-   Evas *canvas = NULL;
-   int x, y, w, h;
-   Evas_Load_Error err;
-   Part_State *_current_state = NULL;
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
+   edje_edit_part_selected_state_set(group->obj, part->name, state, value);
+}
+*/
 
-   canvas = evas_object_evas_get (view_part);
-   _spacer = evas_object_image_add(canvas);
-   evas_object_image_file_set (_spacer, TET_IMG_PATH"spacer.png", NULL);
-   evas_object_image_fill_set (_spacer, 2, 2, 10, 10);
-   edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   evas_object_move (_spacer, x, y);
-   evas_object_resize (_spacer, w, h);
-   evas_object_image_fill_spread_set (_spacer, EVAS_TEXTURE_REPEAT);
-   err = evas_object_image_load_error_get(_spacer);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
-
-   evas_object_move(_spacer, x, y);
-   evas_object_resize(_spacer, w, h);
-
-   if (_current_state->visible)
-     {
-        evas_object_show(_spacer);
-        part->show = EINA_TRUE;
-     }
-   else
-     part->show = EINA_FALSE;
- return _spacer;
+static void
+__box_recalc(void *data,
+           Evas *e __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *ei __UNUSED__)
+{
+   Evas_Object *box = (Evas_Object *)data;
+   evas_object_smart_calculate(box);
 }
 
 static void
-_gs_swallow_update(Group *group, Part *part, Part_State *state)
-{
-   int x, y, w, h;
-
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
-
-   edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   evas_object_move (part->obj, x, y);
-   evas_object_resize (part->obj, w, h);
-
-
-  if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
-   else
-     {
-        part->show = EINA_FALSE;
-        evas_object_hide(part->obj);
-
-     }
-}
-
-
-static Evas_Object *
-_gs_swallow_draw(Evas_Object * view_part, Group *group, Part *part,
-                Part_State *state)
-{
-   Evas_Object *_swallow = NULL;
-   Evas *canvas = NULL;
-   int x, y, w, h;
-   Evas_Load_Error err;
-   Part_State *_current_state = NULL;
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
-
-   canvas = evas_object_evas_get (view_part);
-   _swallow = evas_object_image_add (canvas);
-   evas_object_image_file_set (_swallow, TET_IMG_PATH"swallow.png", NULL);
-   evas_object_image_fill_set (_swallow, 2, 2, 10, 10);
-   edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   evas_object_move (_swallow, x, y);
-   evas_object_resize (_swallow, w, h);
-   evas_object_image_fill_spread_set (_swallow, EVAS_TEXTURE_REPEAT);
-   err = evas_object_image_load_error_get(_swallow);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     NOTIFY_WARNING (view_part, "Could not load image. Error string is \"%s\"\n",
-           evas_load_error_str(err));
-
-   evas_object_move(_swallow, x, y);
-   evas_object_resize(_swallow, w, h);
-   if (_current_state->visible)
-     {
-        evas_object_show(_swallow);
-        part->show = EINA_TRUE;
-     }
-   else
-     part->show = EINA_FALSE;
-   return _swallow;
-}
-
-static void
-_gs_group_part_update(Group *group, Part *part, Part_State * state)
-{
-   int x, y, w, h;
-
-   edje_edit_part_selected_state_set(group->obj, part->name, state->name,
-                                     state->value);
-
-   edje_object_part_geometry_get (group->obj, part->name, &x, &y, &w, &h);
-   evas_object_move (part->obj, x, y);
-   evas_object_resize (part->obj, w, h);
-   if (state->visible)
-     {
-        evas_object_show(part->obj);
-        part->show = EINA_TRUE;
-     }
-   else
-     {
-        evas_object_hide(part->obj);
-        part->show = EINA_FALSE;
-     }
-}
-
-
-static Evas_Object *
-_gs_group_part_draw(Project *project, Group *group, Part *part,
-                    Part_State * state)
-{
-   int x, y, w, h;
-   Evas_Object *_group = NULL;
-   Part_State *_current_state = NULL;
-   if (!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
-
-   edje_object_part_geometry_get(group->obj, part->name, &x, &y, &w, &h);
-   _group = wm_group_object_find(project->widgets, part->source);
-   evas_object_move(_group, x, y);
-   evas_object_resize(_group, w, h);
-   if (_current_state->visible)
-     {
-        evas_object_show(_group);
-        part->show = EINA_TRUE;
-     }
-   else
-     part->show = EINA_FALSE;
-
-   return _group;
-}
-
-static void
-_gs_text_part_geometry_recalc(Part *part, Part_State *state, int *x, int *y,
-                              int *w, int *h)
-{
-   int _text_size = 0;
-   Part_State *_current_state = NULL;
-   if(!state)
-     _current_state = EINA_INLIST_CONTAINER_GET(part->states, Part_State);
-   else
-     _current_state = state;
-   if (_current_state->text->align_x == 0.5)
-     {
-        if (!_current_state->text->text) _text_size = strlen(part->name);
-        else _text_size =  strlen(_current_state->text->text);
-     }
-   *x += *w * _current_state->text->align_x +
-      _current_state->rel1_offset_x -
-      (_text_size * _current_state->text->size) / 4;
-   *y += *h * _current_state->text->align_y +
-      _current_state->rel1_offset_y - _current_state->text->size;
-   *w = *w - _current_state->rel2_offset_x -
-      *w * _current_state->text->align_x;
-   *h = _current_state->text->size + 5;
-   if (*x < 0) *x *= (-1);
-   if (*h < _current_state->text->size)
-     *h = _current_state->text->size + 5;
-}
-
-static void
-_gs_move_parts(Evas_Object *view_part , Group *group)
-{
-   int x, y, w, h, x1, y1, w1, h1;
-   Part *_part = NULL;
-
-   evas_object_geometry_get(view_part, &x1, &y1, &w1, &h1);
-   evas_object_resize(group->obj, w1, h1);
-   evas_object_move(group->obj, x1, y1);
-   EINA_INLIST_FOREACH(group->parts, _part)
-     {
-        if (_part->obj)
-          {
-             edje_object_part_geometry_get(group->obj, _part->name,
-                &x, &y, &w, &h);
-             if (_part->type == EDJE_PART_TYPE_TEXT)
-               _gs_text_part_geometry_recalc(_part, NULL, &x, &y, &w, &h);
-             evas_object_move(_part->obj, x + x1, y + y1);
-             evas_object_resize(_part->obj, w, h);
-         }
-        else
-          ERR ("Part does not exist.");
-     }
-}
-
-static void
-_gs_group_draw(Evas_Object *view_part, Group *group, Workspace *ws,
+_gs_group_draw(Group *group,
+               Workspace *ws,
                Project *project)
 {
-   Part *_part = NULL;
-   Evas_Object *_part_object = NULL;
+   Part *_part;
+   const Evas_Object *edje_part = NULL;
+   Evas_Object *box =  evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   const char *source;
+   Edje_Part_Type type;
+   if (!ws->canvas) return;
+   edje_object_scale_set(group->obj, ws->zoom_step);
    EINA_INLIST_FOREACH(group->parts, _part)
      {
-        if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-          _part_object = _gs_rect_draw(view_part, group, _part, NULL);
-        if (_part->type == EDJE_PART_TYPE_IMAGE)
-          _part_object = _gs_image_draw(view_part, group, _part, project, NULL);
-        if (_part->type == EDJE_PART_TYPE_TEXT)
-          _part_object = _gs_text_draw(view_part, group, _part, NULL);
-        if (_part->type == EDJE_PART_TYPE_SPACER)
-          _part_object = _gs_spacer_draw(view_part, group, _part, NULL);
-        if (_part->type == EDJE_PART_TYPE_SWALLOW)
-          _part_object = _gs_swallow_draw(view_part, group, _part, NULL);
-        if (_part->type == EDJE_PART_TYPE_GROUP)
-          _part_object = _gs_group_part_draw(project, group, _part, NULL);
-        if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          _part_object = _gs_textblock_draw(view_part, group, _part, NULL);
-
-        if (_part_object)
+        type = edje_edit_part_type_get(group->obj, _part->name);
+        if (type == EDJE_PART_TYPE_RECTANGLE)
           {
-             evas_object_event_callback_add(_part_object,
-                                            EVAS_CALLBACK_MOUSE_MOVE,
-                                            _gs_mouse_move_cb, ws);
-             _part->obj = _part_object;
+             if (!_part->obj) _part->obj = evas_object_rectangle_add(ws->canvas);
+             _gs_rect_update(group, _part);
           }
-        else
-          ERR ("Part object did'n create");
+        if (type == EDJE_PART_TYPE_IMAGE)
+          {
+             if (!_part->obj) _part->obj = evas_object_image_filled_add(ws->canvas);
+             _gs_image_update(group, _part, project);
+          }
+        if (type == EDJE_PART_TYPE_SPACER)
+          {
+            if (!_part->obj)  _part->obj = evas_object_image_add(ws->canvas);
+             evas_object_image_file_set(_part->obj,
+               TET_IMG_PATH"swallow_spacer_mask.png", NULL);
+             evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
+             evas_object_color_set(_part->obj, 15, 60, 162, 255);
+             _gs_spaser_swallow_group_update(group, _part);
+          }
+        if (type == EDJE_PART_TYPE_SWALLOW)
+          {
+             if (!_part->obj) _part->obj = evas_object_image_add(ws->canvas);
+             evas_object_image_file_set(_part->obj,
+               TET_IMG_PATH"swallow_spacer_mask.png", NULL);
+             evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
+             evas_object_color_set(_part->obj, 180, 108, 0, 255);
+             _gs_spaser_swallow_group_update(group, _part);
+          }
+        if (type == EDJE_PART_TYPE_TEXT)
+          {
+             if (!_part->obj) _part->obj = evas_object_text_add(ws->canvas);
+             _gs_text_update(group, _part);
+          }
+        if (type == EDJE_PART_TYPE_TEXTBLOCK)
+          {
+             if (!_part->obj) _part->obj = evas_object_textblock_add(ws->canvas);
+             _gs_textblock_update(group, _part);
+          }
+        if (type == EDJE_PART_TYPE_GROUP)
+          {
+             source = edje_edit_part_source_get(group->obj, _part->name);
+             if (!_part->obj) _part->obj = wm_group_object_find(project->widgets, source);
+             _gs_spaser_swallow_group_update(group, _part);
+             edje_edit_string_free(source);
+          }
+
+        _part->show = EINA_TRUE;
+        evas_object_event_callback_add(_part->obj, EVAS_CALLBACK_MOUSE_MOVE,
+                                       _gs_mouse_move_cb, ws);
+        edje_part = evas_object_data_get(_part->obj, GS_PART_DATA_KEY);
+        if (!edje_part)
+          {
+             edje_part = edje_object_part_object_get(group->obj, _part->name);
+             evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
+          }
+        evas_object_event_callback_add((Evas_Object *)edje_part,
+                                       EVAS_CALLBACK_MOVE,
+                                       __box_recalc, box);
+        evas_object_event_callback_add((Evas_Object *)edje_part,
+                                       EVAS_CALLBACK_RESIZE,
+                                       __box_recalc, box);
+
+        evas_object_box_append(box, _part->obj);
+        evas_object_show(_part->obj);
      }
+   evas_object_show(box);
+}
+
+Group *
+ui_groupspace_group_get(Evas_Object *groupspace)
+{
+   return evas_object_data_get(groupspace, GS_GROUP_KEY);
+}
+
+Evas_Object *
+ui_groupspace_box_get(Evas_Object *groupspace)
+{
+   return evas_object_data_get(groupspace, GS_BOX_KEY);
 }
 
 void
-ui_groupspace_part_state_update(Part *part, Part_State *state,
-                                Evas_Object *groupspace)
+ui_groupspace_part_state_update(Evas_Object *groupspace,
+                                Part *part)
+                                //const char *state)
+                                //double value)
 {
    Group *group =  evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Evas_Object *view_part =  evas_object_data_get(groupspace, GS_VIEWPART_KEY);
    Project *project = evas_object_data_get(groupspace, GS_PROJECT_KEY);
-   Part *_part = NULL;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Edje_Part_Type type = edje_edit_part_type_get(group->obj, part->name);
+   //char **split = eina_str_split(state, " ", 2);
 
-   int x, y, w, h, x1, y1, w1, h1;
+   if (type == EDJE_PART_TYPE_IMAGE)
+     _gs_image_update(group, part, project);
+   if (type == EDJE_PART_TYPE_RECTANGLE)
+     _gs_rect_update(group, part);
+   if (type == EDJE_PART_TYPE_TEXT)
+     _gs_text_update(group, part);
+   if (type == EDJE_PART_TYPE_SPACER)
+     _gs_spaser_swallow_group_update(group, part);
+   if (type == EDJE_PART_TYPE_SWALLOW)
+     _gs_spaser_swallow_group_update(group, part);
+   if (type == EDJE_PART_TYPE_GROUP)
+     _gs_spaser_swallow_group_update(group, part);
+   if (type == EDJE_PART_TYPE_TEXTBLOCK)
+     _gs_textblock_update(group, part);
 
-   evas_object_geometry_get(view_part, &x1, &y1, &w1, &h1);
-   evas_object_resize(group->obj, w1, h1);
-   evas_object_move(group->obj, x1, y1);
-
-   EINA_INLIST_FOREACH(group->parts, _part)
-     {
-        if (!strcmp(part->name, _part->name))
-          {
-             if (_part->type == EDJE_PART_TYPE_IMAGE)
-               _gs_image_update(project, group, _part, state);
-             if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-               _gs_rect_update(group, _part, state);
-              if (_part->type == EDJE_PART_TYPE_TEXT)
-                _gs_text_update(group, _part, state);
-              if (_part->type == EDJE_PART_TYPE_SPACER)
-                _gs_spacer_update(group, _part, state);
-              if (_part->type == EDJE_PART_TYPE_SWALLOW)
-                _gs_swallow_update(group, _part, state);
-              if (_part->type == EDJE_PART_TYPE_GROUP)
-                _gs_group_part_update(group, _part, state);
-              if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-                _gs_textblock_update(group, _part, state);
-
-
-             edje_object_part_geometry_get(group->obj, _part->name,
-                                    &x, &y, &w, &h);
-             if (_part->type == EDJE_PART_TYPE_TEXT)
-               _gs_text_part_geometry_recalc(_part, state, &x, &y, &w, &h);
-             evas_object_move(_part->obj, x + x1, y + y1);
-             evas_object_resize(_part->obj, w, h);
-             break;
-          }
-     }
+   /* FIXME:  */
+   evas_object_smart_calculate(box);
+   //edje_object_calc_force(box);
+   //free(split[0]);
+   //free(split);
 }
 
 Evas_Object *
 ui_groupspace_add(Evas_Object *parent)
 {
    Evas_Object *_groupspace = NULL;
-
+   Evas_Object *_box = NULL;
    _groupspace = elm_layout_add(parent);
-   elm_object_part_content_set(parent, "base/workspace/groupspace", _groupspace);
    elm_layout_file_set(_groupspace, TET_EDJ, "base/groupspace");
+
+   _box = evas_object_box_add(evas_object_evas_get(parent));
+   elm_object_part_content_set(_groupspace, "groupspace", _box);
+
    evas_object_hide(parent);
+   evas_object_data_set(_groupspace, GS_BOX_KEY, _box);
    evas_object_hide(_groupspace);
    return _groupspace;
 }
@@ -751,64 +515,111 @@ void
 ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 {
    const Evas_Object *part_bottom = edje_object_part_object_get(
-      elm_layout_edje_get(ws->groupspace), "base/groupspace/bottom_pad");
+      elm_layout_edje_get(ws->groupspace), "bottom_pad");
    const Evas_Object *part_top = edje_object_part_object_get(
-      elm_layout_edje_get(ws->groupspace), "base/groupspace/top_pad");
+      elm_layout_edje_get(ws->groupspace), "top_pad");
+   int x, y, gw, gh, w, h;
+   double dx, dy;
+   Evas_Object *_box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
 
-   Evas_Object *_part_view = elm_layout_add(ws->groupspace);
-   evas_object_data_set(ws->groupspace, GS_VIEWPART_KEY, _part_view);
-
-   elm_object_part_content_set(ws->groupspace, "base/groupspace/groupspace",
-                               _part_view);
+   if (group)
+     {
+        elm_object_part_content_set(ws->groupspace, "edje_group", group->obj);
+        evas_object_box_layout_set(_box, _main_box_layout, group->obj, NULL);
+        evas_object_show(group->obj);
+     }
+   else
+     WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
    elm_layout_signal_emit (ws->groupspace, "groupspace,show", "");
 
-   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
-                                   "base/groupspace/top_pad", 0.1, 0.1);
-   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
-                                   "base/groupspace/bottom_pad", 0.9, 0.9);
+   //evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESTACK, __box_calc, _box);
 
    elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
    elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
 
+   evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
+   elm_scroller_region_get(ws->scroller, NULL, NULL, &gw, &gh);
+   x = (int)((w - gw) / 2);
+   y = (int)((h - gh) / 2);
+   elm_scroller_region_bring_in(ws->scroller, x, y, gw, gh);
+
+   /*
+    *  value 0.01 needed for groupspace offset from top left and bottom right
+    *  corners workspace area
+    */
+   dx = (double)x / w + 0.01;
+   dy = (double)y / h + 0.01;
+   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
+                                   "top_pad", dx, dy);
+   dx = (double)(x + gw) / w - 0.01;
+   dy = (double)(y + gh) / h - 0.01;
+   edje_object_part_drag_value_set(elm_layout_edje_get(ws->groupspace),
+                                   "bottom_pad", dx, dy);
+
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
+   evas_object_smart_callback_add(group->obj, "gs,layer,up", _layer_up_change, ws);
+   evas_object_smart_callback_add(group->obj, "gs,layer,down", _layer_down_change, ws);
 
-   evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
+   evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
                                   _gs_resize_cb, ws);
-   evas_object_event_callback_add(_part_view, EVAS_CALLBACK_RESIZE,
-                                  _gs_resize_parts_cb, group);
    evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
+
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor, 5);
+   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver, 5);
+   ui_ruler_redraw(ws->ruler_hor);
+   ui_ruler_redraw(ws->ruler_ver);
 }
 
 void
-ui_groupspace_update (Evas_Object *obj)
+ui_groupspace_update(Evas_Object *obj)
 {
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
    Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
-   Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
    Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
-   _gs_group_draw(view_part, group, ws, project);
+   _gs_group_draw(group, ws, project);
    evas_object_show(obj);
 }
 
 void
 ui_groupspace_unset(Evas_Object *obj)
 {
-   Part *_part = NULL;
-   Group *group = evas_object_data_get(obj, GS_GROUP_KEY);
+   Eina_List *list = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *data = NULL;
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
-   Evas_Object *view_part =  evas_object_data_get(obj, GS_VIEWPART_KEY);
-   elm_object_part_content_unset(ws->groupspace, "base/groupspace/groupspace");
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
+
+   list = evas_object_box_children_get(box);
+   EINA_LIST_FOREACH(list, l, data)
+        evas_object_hide(data);
+   eina_list_free(list);
+   evas_object_box_remove_all(box, EINA_FALSE);
+   evas_object_hide(box);
+   evas_object_del(ws->highlight.highlight);
+   ws->highlight.highlight = NULL;
+   elm_object_part_content_unset(ws->groupspace, "edje_group");
    elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
-
-   EINA_INLIST_FOREACH(group->parts, _part)
-     {
-          evas_object_hide(_part->obj);
-     }
-
-   evas_object_hide(view_part);
-   evas_object_hide(ws->groupspace);
 }
 
+void
+ui_groupspace_separate(Workspace *ws)
+{
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+   if ((!group) || (!box)) return;
+   if (ws->separated)
+     evas_object_box_layout_set(box, _separate_layout, group->obj, NULL);
+   else
+     evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
+   ws->separated = !ws->separated;
+
+   if (ws->highlight.highlight)
+     {
+        evas_object_del(ws->highlight.highlight);
+        ws->highlight.highlight = NULL;
+     }
+}

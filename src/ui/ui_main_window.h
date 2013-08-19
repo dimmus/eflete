@@ -15,8 +15,7 @@
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
 #include "ui_block.h"
-#include "image_viewer_dialog.h"
-#include "colorclass_viewer_dialog.h"
+#include "colorclass_editor.h"
 #include "font_viewer_dialog.h"
 #include "notify.h"
 /**
@@ -139,13 +138,13 @@ ui_group_back(App_Data *ap);
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param glit The Elm_Object_Item pointer.
  * @param obj The Evas_Object pointer, wich pointed on states genlist.
+ * @param state Name of the state to be set.
  *
  * @ingroup Window
  */
 void
-ui_state_select(App_Data *ap, Elm_Object_Item *glit, Evas_Object *obj);
+ui_state_select(App_Data *ap, Evas_Object *obj, Eina_Stringshare *state);
 
 /**
  * Show information about properties of part. Highlight part object

@@ -3,4 +3,41 @@ styles {
       name: "prop_item_label";
       base: "font=Sans font_size=10 color=#000 align=left";
    }
+   style {
+      name: "list_item_normal";
+      base: "font=Sans font_size=10 text_class=list_item color=#000 wrap=word";
+      tag: "bold" "+ font_weight=bold";
+      tag: "italic" "+ font_style=Italic";
+      tag: "underline" "+ style=underline underline_color=#000A underline2_color=#0005 ";
+      tag: "br" "+ \n";
+   }
+   style {
+      name: "list_item_seleted";
+      base: "font=Sans font_size=10 text_class=list_item color=#FFF shadow_color=#000A wrap=word";
+      tag: "bold" "+ font_weight=bold";
+      tag: "italic" "+ font_style=Italic";
+      tag: "underline" "+ style=underline underline_color=#FFFA underline2_color=#0005 ";
+      tag: "br" "+ \n";
+   }
+   style { name: "entry_textblock_style_editor";
+      base: "font=Sans font_size=10 color=#000 wrap=word text_class=entry left_margin=2 right_margin=2";
+      tag: "em" "+ font_style=Oblique";
+      tag: "link" "+ color=#800 underline=on underline_color=#8008";
+      tag: "hilight" "+ font_weight=Bold";
+      tag: "preedit" "+ underline=on underline_color=#000";
+      tag: "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
+   }
+   style { name: "entry_textblock_disabled_style_editor";
+      base: "font=Sans font_size=10 color=#00000080 wrap=word text_class=entry left_margin=2 right_margin=2";
+      tag: "em" "+ font_style=Oblique";
+      tag: "link" "+ color=#00000080 underline=on underline_color=#00000080";
+      tag: "hilight" "+ font_weight=Bold";
+      tag: "preedit" "+ underline=on underline_color=#000";
+      tag: "preedit_sel" "+ backing=on backing_color=#000 color=#FFFFFF";
+   }
+   style { name: "entry_textblock_guide_style_editor";
+      base: "font=Sans font_size=10 color=#00000040 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      tag: "em" "+ font_style=Oblique";
+      tag: "hilight" "+ font_weight=Bold";
+   }
 }

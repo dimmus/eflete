@@ -17,6 +17,7 @@
 #include <Eina.h>
 #include "widget_manager.h"
 
+
 /**
    FIXME add comment!
   */
@@ -75,7 +76,42 @@ ui_groupspace_update (Evas_Object *obj);
  * @ingroup Groupspace
  */
 void
-ui_groupspace_part_state_update(Part *part, Part_State *state,
-                                Evas_Object *groupspace);
+ui_groupspace_part_state_update(Evas_Object *groupspace,
+                                Part *part);
+                                //const char *state);
+                                //double value);
+
+/**
+ * Separate view parts on groupspace.
+ *
+ * @param ws A workspace pointer to struct.
+ *
+ * @ingroup Groupspace
+ */
+void
+ui_groupspace_separate(Workspace *ws);
+
+/**
+ * Get current group, that loaded into groupspace.
+ *
+ * @param groupspace A Evas_Object pointer to groupspace layout.
+ * @return Group struct pointer, if group currently loaded and NULL if no one
+ * group loaded.
+ *
+ * @ingroup Groupspace
+ */
+Group *
+ui_groupspace_group_get(Evas_Object *groupspace);
+
+/**
+ * Get box object into groupspace.
+ *
+ * @param groupspace A Evas_Object pointer to groupspace layout.
+ * @return Evas_Object pointer, if box currently created, else NULL.
+ *
+ * @ingroup Groupspace
+ */
+Evas_Object *
+ui_groupspace_box_get(Evas_Object *groupspace);
 
 #endif /* UI_GROUPSPACE_HEADER_H */

@@ -8,9 +8,13 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${CMAKE_CURRENT_SOURCE_DIR}/alloc
    ${CMAKE_CURRENT_SOURCE_DIR}/project_manager
+   ${CMAKE_CURRENT_SOURCE_DIR}/project_manager/edit
    ${CMAKE_CURRENT_SOURCE_DIR}/logger
    ${CMAKE_CURRENT_SOURCE_DIR}/settings
+   ${CMAKE_CURRENT_SOURCE_DIR}/common
    ${CMAKE_CURRENT_SOURCE_DIR}/ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/ui/modal_window
+   ${CMAKE_CURRENT_SOURCE_DIR}/ui/editors
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/dialogs
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/blocks
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/workspace
@@ -24,26 +28,35 @@ set(TET_CC_FILES
    project_manager/edje_compile.c
    project_manager/widget_manager.c
    project_manager/project_manager.c
+   project_manager/edit/style_edit.c
+   project_manager/edit/image_edit_api.c
+   project_manager/edit/colorclasses_edit_api.c
    logger/logger.c
    settings/settings.c
    ui/ui_panes.c
    ui/ui_menu.c
    ui/ui_main_window.c
    ui/ui_blocks_communication.c
+   ui/editors/style_editor.c
+   ui/editors/image_editor.c
+   ui/editors/colorclass_editor.c
    ui/dialogs/open_file_dialog.c
-   ui/dialogs/style_viewer_dialog.c
-   ui/dialogs/image_viewer_dialog.c
-   ui/dialogs/colorclass_viewer_dialog.c
    ui/dialogs/font_viewer_dialog.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c
    ui/workspace/ui_groupspace.c
+   ui/modal_window/modal_window.c
    ui/blocks/ui_block.c
    ui/blocks/ui_property.c
    ui/blocks/ui_widget_list.c
    ui/blocks/ui_signal_list.c
    ui/blocks/ui_states_list.c
+   ui/workspace/ui_highlight.c
+   ui/workspace/ui_ruler.c
+   ui/workspace/ui_workspace.c
+   ui/workspace/ui_popup.c
+   ui/workspace/ui_groupspace.c
    ui/notification/notify.c
 )
 

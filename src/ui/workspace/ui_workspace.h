@@ -16,7 +16,6 @@
 #include <Evas.h>
 #include <Elementary.h>
 #include "ui_ruler.h"
-#include "ui_popup.h"
 
 /**
  * @typedef  Workspace
@@ -26,20 +25,25 @@
  */
 struct _Workspace
 {
-	Evas *canvas;
-	Evas_Object *bg;
-	int zoom_step;
-	Evas_Object *ruler_hor;
-	Evas_Object *ruler_ver;
-	Evas_Object *popup;
-	Evas_Object *button_zoom_out;
-	Evas_Object *button_zoom_in;
-	Evas_Object *button_separate;
-	Evas_Object *groupspace;
-	struct {
-		Evas_Object *highlight;
-		Evas_Object *obj; /* highlighting object */
-	} highlight;
+    Evas *canvas;
+    Evas_Object *bg;
+    double zoom_step;
+    Evas_Object *ruler_hor;
+    Evas_Object *ruler_ver;
+    Evas_Object *button_zoom_out;
+    Evas_Object *button_zoom_in;
+    Evas_Object *button_separate;
+    Evas_Object *scroller;
+    Evas_Object *groupspace;
+    struct {
+        Evas_Object *legend;
+        Eina_Bool visible;
+    } legend;
+    Eina_Bool separated;
+    struct {
+        Evas_Object *highlight;
+        Evas_Object *obj; /* highlighting object */
+    } highlight;
 };
 typedef struct _Workspace Workspace;
 
@@ -83,17 +87,6 @@ void
 ws_free(Workspace *ws);
 
 /**
- * Add new context popup to the given parent Elemntary (container) object.
- *
- * @param parent The parent object.
- * @param ws Pointer to an Workspace structure. (need for use in callbacks)
- *
- * @ingroup Workspace
- */
-Evas_Object *
-ui_popup_add (Evas_Object *parent, Workspace *ws);
-
-/**
  * Set highlight to selected part.
  *
  * @param ws Workspace structure.
@@ -123,4 +116,40 @@ ui_object_highlight_move(Workspace *ws);
  */
 void
 ui_object_highlight_hide(Workspace *ws);
+
+/**
+ * Zoom in loaded objects on workspace. With step 0.1.
+ *
+ * @param ws Workspace structure.
+ * @return EINA_TRUE if zoom finished normal, or EINA_FALSE if zoom coefficient
+ * more than 10 (1000%).
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+ui_ws_zoom_in(Workspace *ws);
+
+/**
+ * Zoom out loaded objects on workspace. With step 0.1.
+ *
+ * @param ws Workspace structure.
+ * @return EINA_TRUE if zoom finished normal, or EINA_FALSE if zoom coefficient
+ * less than 0.1 (10%).
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+ui_ws_zoom_out(Workspace *ws);
+
+/**
+ * Show or hide legend element on workspace.
+ *
+ * @param ws Workspace structure.
+ * @param visible EINA_TRUE if need show legend, or EINA_FALSE need to hide
+ * legend.
+ *
+ * @ingroup Workspace
+ */
+void
+ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible);
 #endif /* UI_WORKSPACE_HEADER_H */

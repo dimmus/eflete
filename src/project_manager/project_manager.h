@@ -46,6 +46,8 @@ struct _Project
    char *sound_directory;
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
+   /** opened group */
+   Group *current_group;
 };
 
 /**

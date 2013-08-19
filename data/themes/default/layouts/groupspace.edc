@@ -6,13 +6,14 @@ group {
          scale: 1;
          description {
             state: "default" 0.0;
+            min: 4000 4000;
             color: 0 0 0 0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
          }
       }
       part {
-         name: "base/groupspace/top_pad";
+         name: "top_pad";
          type: IMAGE;
          description {
             state: "default" 0.0;
@@ -46,7 +47,7 @@ group {
       }
 
       part {
-         name: "base/groupspace/bottom_pad";
+         name: "bottom_pad";
          type: IMAGE;
          description {
             state: "default" 0.0;
@@ -91,12 +92,12 @@ group {
             fixed: 1 1;
             rel1 {
                relative: 1.0 1.0;
-               to: "base/groupspace/top_pad";
+               to: "top_pad";
                offset: -3 -3;
             }
             rel2 {
                relative: 0.0 0.0;
-               to: "base/groupspace/bottom_pad";
+               to: "bottom_pad";
                offset: 3 3;
             }
             image {
@@ -117,20 +118,32 @@ group {
      }
 
       part {
-         name: "base/groupspace/groupspace";
+         name: "edje_group";
          type: SWALLOW;
          mouse_events:1;
          description {
             state: "default" 0.0;
             fixed: 1 1;
+            visible: 0;
             rel1 {
                relative: 1.0 1.0;
-               to: "base/groupspace/top_pad";
+               to: "top_pad";
             }
             rel2 {
                relative: 0.0 0.0;
-               to: "base/groupspace/bottom_pad";
+               to: "bottom_pad";
             }
+         }
+      }
+      part {
+         name: "groupspace";
+         type: SWALLOW;
+         mouse_events:1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "edje_group";
+            rel2.to: "edje_group";
          }
       }
    }
@@ -141,8 +154,8 @@ group {
          source: "";
          action: STATE_SET "hidden" 0.0;
          target: "border";
-         target: "base/groupspace/top_pad";
-         target: "base/groupspace/bottom_pad";
+         target: "top_pad";
+         target: "bottom_pad";
     }
       program {
          name: "groupspace_show";
@@ -150,23 +163,23 @@ group {
          source: "";
          action: STATE_SET "displayed" 0.0;
          target: "border";
-         target: "base/groupspace/top_pad";
-         target: "base/groupspace/bottom_pad";
+         target: "top_pad";
+         target: "bottom_pad";
      }
    }
 }
 
 group {
-   name: "base/groupspace/part/hightlight";
+   name: "base/groupspace/part/highlight";
    parts {
       part {
-         name: "eye";
+         name: "base";
          type: RECT;
          scale: 1;
          mouse_events: 1;
          description {
             state: "default" 0.0;
-            color: 255 255 255 0;
+            color: 0 0 0 0;
          }
       }
       part {
@@ -176,14 +189,12 @@ group {
          description {
             state: "default" 0.0;
             visible: 1;
-            rel1 {
-               to: "eye";
+            rel1.to: "base";
+            rel2.to: "base";
+            image {
+               normal: "highlight.png";
+               border: 1 1 1 1;
             }
-            rel2 {
-               to: "eye";
-            }
-            image.normal: "part_highlight.png";
-            image.border: 2 2 2 2;
          }
       }
    }

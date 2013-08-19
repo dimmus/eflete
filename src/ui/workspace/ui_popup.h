@@ -9,27 +9,16 @@
  */
 #include "logger.h"
 #include "Elementary.h"
+#include "ui_workspace.h"
 
 
 /**
  * Show popup object on workspace.
  *
- * @param parent An Evas_Object that pointed to workspace object.
- * @param popup A popup object, which must be showed.
+ * @param ws  An workspace structure pointer. Needed to create popup menu on it
  *
  * @ingroup Popup
  */
 void
-ui_popup_show (Evas_Object *parent, Evas_Object *popup);
-
-/**
- * Hide popup object.
- *
- * @param obj A popup object, which must be hided.
- *
- * @ingroup Popup
- */
-void
-ui_popup_hide (Evas_Object *obj);
-
+ui_popup_show (Workspace *ws);
 #endif /* UI_POPUP_HEADER_H */

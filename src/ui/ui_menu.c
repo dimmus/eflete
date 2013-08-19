@@ -1,6 +1,7 @@
 #include "ui_main_window.h"
 #include "open_file_dialog.h"
-#include "style_viewer_dialog.h"
+#include "style_editor.h"
+#include "image_editor.h"
 
 Eina_List *ui_list_menu;
 
@@ -31,24 +32,123 @@ _on_exit_menu(void *data __UNUSED__,
 }
 
 static void
+_on_view_separate(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_groupspace_separate(ap->ws);
+}
+
+static void
+_on_view_zoom_in(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_ws_zoom_in(ap->ws);
+}
+
+static void
+_on_view_zoom_out(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_ws_zoom_in(ap->ws);
+}
+
+
+static void
+_on_view_ruler_hor(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_visible_get(ap->ws->ruler_hor))
+     ui_ruler_hide (ap->ws->ruler_hor);
+   else
+     ui_ruler_show (ap->ws->ruler_hor);
+}
+
+static void
+_on_view_ruler_ver(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_visible_get(ap->ws->ruler_ver))
+     ui_ruler_hide (ap->ws->ruler_ver);
+   else
+     ui_ruler_show (ap->ws->ruler_ver);
+}
+
+static void
+_on_view_legend(void *data, Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_ws_legend_visible_set(ap->ws, !ap->ws->legend.visible);
+}
+
+
+
+static void
+_on_view_ruler_rel(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_scale_relative_visible_get(ap->ws->ruler_hor))
+     {
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_FALSE);
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_FALSE);
+     }
+   else
+     {
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_TRUE);
+        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_TRUE);
+     }
+}
+
+static void
+_on_view_ruler_abs(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ui_ruler_scale_absolute_visible_get(ap->ws->ruler_hor))
+     {
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_FALSE);
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_FALSE);
+     }
+   else
+     {
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_TRUE);
+        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_TRUE);
+     }
+}
+
+
+static void
 _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    if(ap->project != NULL)
      {
-        style_viewer_add(ap->win, ap->project);
+        style_editor_window_add(ap->win, ap->project);
      }
    else
      NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
 }
 
 static void
-_on_image_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
+_on_image_editor_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   image_viewer_init(image_viewer_add(ap->win), ap->project);
+   image_editor_init(image_editor_window_add(ap->win), ap->project);
 }
 
 static void
@@ -110,18 +210,27 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
-   tb_it=elm_toolbar_item_append(tb, NULL, "Viewers", NULL, NULL);
+   tb_it=elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
-   elm_menu_item_add(menu, NULL, "window-new", "Styles",
-                    _on_style_window_menu, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Images",
-                     _on_image_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Colorclasses",
-                     _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, "window-new", "Fonts",
-                     _on_font_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Zoom in", _on_view_zoom_in, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Zoom out", _on_view_zoom_out, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Separate", _on_view_separate, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Legend", _on_view_legend, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Ruler hor.", _on_view_ruler_hor, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Ruler ver.", _on_view_ruler_ver, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Absolute scale", _on_view_ruler_abs, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Relative scale", _on_view_ruler_rel, ap);
+
+   tb_it=elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
+   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
+   menu = elm_toolbar_item_menu_get(tb_it);
+
+   elm_menu_item_add(menu, NULL, NULL, "Styles", _on_style_window_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Images", _on_image_editor_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Colorclasses", _on_ccl_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 
