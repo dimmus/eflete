@@ -8,6 +8,18 @@
 #define GS_GROUP_KEY "gs_group_key"
 
 static void
+_gs_rect_update(Group *group, Part *part);
+static void
+_gs_image_update(Group *group, Part *part, Project *project);
+static void
+_gs_text_update(Group *group, Part *part);
+static void
+_gs_spaser_swallow_group_update(Group *group, Part *part);
+static void
+_gs_textblock_update(Group *group, Part *part);
+
+
+static void
 _main_box_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
 {
    int x, y, w, h;
@@ -58,6 +70,283 @@ _separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
         count++;
     }
 }
+static void
+_new_rect_add(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *groupspace = (Evas_Object *)obj;
+
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)mem_calloc(1, sizeof(Part));
+   Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
+   const Evas_Object *edje_part = NULL;
+   char *name = (char *)event_info;
+   if (edje_edit_part_exist(group->obj, name))
+     {
+        WARN("Part with name [%s] alredy exist.", name);
+        return;
+     }
+
+   part->name = eina_stringshare_add(name);
+
+
+   edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_RECTANGLE);
+   edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   edje_edit_state_color_set(group->obj, part->name, "default", 0.0, 64, 64, 64, 200);
+   part->obj = evas_object_rectangle_add(ws->canvas);
+   part->type = EDJE_PART_TYPE_RECTANGLE;
+   _gs_rect_update(group, part);
+
+   edje_part = edje_object_part_object_get(group->obj, part->name);
+   evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_append(box, part->obj);
+   evas_object_show(part->obj);
+   evas_object_smart_calculate(box);
+   evas_object_smart_callback_call(group->obj, "wl,part,added", part);
+
+}
+
+static void
+_new_img_add(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *groupspace = (Evas_Object *)obj;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)mem_calloc(1, sizeof(Part));
+   Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
+   Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
+
+   const Evas_Object *edje_part = NULL;
+   char *name = (char *)event_info;
+
+   if (edje_edit_part_exist(group->obj, name))
+     {
+        WARN("Part with name [%s] alredy exist.", name);
+        return;
+     }
+
+   part->name = eina_stringshare_add(name);
+   part->obj = evas_object_image_filled_add(ws->canvas);
+   part->type = EDJE_PART_TYPE_IMAGE;
+
+   edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_IMAGE);
+   edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   _gs_image_update(group, part, project);
+   edje_part = edje_object_part_object_get(group->obj, part->name);
+
+   evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_append(box, part->obj);
+   evas_object_show(part->obj);
+   evas_object_smart_calculate(box);
+   evas_object_smart_callback_call(group->obj, "wl,part,added", part);
+
+}
+
+static void
+_new_txt_add(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *groupspace = (Evas_Object *)obj;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)mem_calloc(1, sizeof(Part));
+   Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
+
+   const Evas_Object *edje_part = NULL;
+   char *name = (char *)event_info;
+
+   if (edje_edit_part_exist(group->obj, name))
+     {
+        WARN("Part with name [%s] alredy exist.", name);
+        return;
+     }
+
+   part->name = eina_stringshare_add(name);
+
+   edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_TEXT);
+   edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   edje_edit_state_text_size_set(group->obj, part->name, "default", 0.0, 10);
+   edje_edit_state_color_set(group->obj, part->name, "default", 0.0, 0, 0, 0, 255);
+   edje_edit_state_font_set(group->obj, part->name, "default", 0.0,
+                            "Sans");
+   part->obj = evas_object_text_add(ws->canvas);
+   part->type = EDJE_PART_TYPE_TEXT;
+   _gs_text_update(group, part);
+
+   edje_part = edje_object_part_object_get(group->obj, part->name);
+   evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_append(box, part->obj);
+   evas_object_show(part->obj);
+   evas_object_smart_calculate(box);
+   evas_object_smart_callback_call(group->obj, "wl,part,added", part);
+
+}
+
+static void
+_new_txtblock_add(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *groupspace = (Evas_Object *)obj;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)mem_calloc(1, sizeof(Part));
+   Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
+
+   const Evas_Object *edje_part = NULL;
+   char *name = (char *)event_info;
+   Evas_Textblock_Style *ts = NULL;
+
+   if (edje_edit_part_exist(group->obj, name))
+     {
+        WARN("Part with name [%s] alredy exist.", name);
+        return;
+     }
+
+   part->name = eina_stringshare_add(name);
+   edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_TEXTBLOCK);
+   edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   edje_edit_state_text_size_set(group->obj, part->name, "default", 0.0, 10);
+
+   ts = evas_textblock_style_new();
+   evas_textblock_style_set(ts, "font=Sans font_size=10 color=#000000");
+
+   part->obj = evas_object_textblock_add(ws->canvas);
+   part->type = EDJE_PART_TYPE_TEXTBLOCK;
+   _gs_textblock_update(group, part);
+   evas_object_textblock_style_set(part->obj, ts);
+
+   edje_part = edje_object_part_object_get(group->obj, part->name);
+   evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_append(box, part->obj);
+   evas_object_show(part->obj);
+   evas_object_smart_calculate(box);
+   evas_object_smart_callback_call(group->obj, "wl,part,added", part);
+}
+
+static void
+_new_swallow_add(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *groupspace = (Evas_Object *)obj;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)mem_calloc(1, sizeof(Part));
+   Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
+   const Evas_Object *edje_part = NULL;
+   char *name = (char *)event_info;
+
+   if (edje_edit_part_exist(group->obj, name))
+     {
+        WARN("Part with name [%s] alredy exist.", name);
+        return;
+     }
+
+   part->name = eina_stringshare_add(name);
+   part->type = EDJE_PART_TYPE_SWALLOW;
+   part->obj = evas_object_image_add(ws->canvas);
+   evas_object_image_file_set(part->obj,
+               TET_IMG_PATH"swallow_spacer_mask.png", NULL);
+   evas_object_image_fill_set(part->obj, 2, 2, 10, 10);
+   evas_object_color_set(part->obj, 180, 108, 0, 255);
+
+   edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_SWALLOW);
+   edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   _gs_spaser_swallow_group_update(group, part);
+   edje_part = edje_object_part_object_get(group->obj, part->name);
+   evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
+
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_append(box, part->obj);
+   evas_object_show(part->obj);
+   evas_object_smart_calculate(box);
+   evas_object_smart_callback_call(group->obj, "wl,part,added", part);
+
+}
+
+static void
+_new_spacer_add(void *data __UNUSED__,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *groupspace = (Evas_Object *)obj;
+   Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)mem_calloc(1, sizeof(Part));
+   Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
+
+   const Evas_Object *edje_part = NULL;
+   char *name = (char *)event_info;
+
+   if (edje_edit_part_exist(group->obj, name))
+     {
+        WARN("Part with name [%s] alredy exist.", name);
+        return;
+     }
+
+   part->name = eina_stringshare_add(name);
+   part->type = EDJE_PART_TYPE_SPACER;
+   part->obj = evas_object_image_add(ws->canvas);
+   evas_object_image_file_set(part->obj,
+               TET_IMG_PATH"swallow_spacer_mask.png", NULL);
+   evas_object_image_fill_set(part->obj, 2, 2, 10, 10);
+   evas_object_color_set(part->obj, 15, 60, 162, 255);
+
+   edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_SPACER);
+   edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   _gs_spaser_swallow_group_update(group, part);
+
+   edje_part = edje_object_part_object_get(group->obj, part->name);
+   evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_append(box, part->obj);
+   evas_object_show(part->obj);
+   evas_object_smart_calculate(box);
+   evas_object_smart_callback_call(group->obj, "wl,part,added", part);
+
+}
+
+static void
+_part_add(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Workspace *ws = (Workspace *)data;
+   evas_object_smart_callback_call(ws->groupspace, "gs,dialog,add", NULL);
+}
+
+
+static void
+_part_delete(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace *ws = (Workspace *)data;
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
+   Part *part = (Part *)event_info;
+
+   group->parts = eina_inlist_remove(group->parts, EINA_INLIST_GET(part));
+   evas_object_box_remove(box, part->obj);
+   evas_object_box_remove(box, ws->highlight.highlight);
+   evas_object_data_del(part->obj, GS_PART_DATA_KEY);
+   edje_edit_part_del(group->obj, part->name);
+   evas_object_del(part->obj);
+   evas_object_del(ws->highlight.obj);
+   free(part);
+
+   edje_object_calc_force(group->obj);
+}
 
 
 static void
@@ -98,12 +387,30 @@ _layer_up_change(void *data,
    evas_object_box_remove_all(box, EINA_FALSE);
    EINA_LIST_FOREACH(childs, l, child)
      {
-        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
         evas_object_box_append(box, child);
      }
    evas_object_smart_calculate(box);
    edje_edit_part_restack_above(group->obj, part->name);
    edje_object_calc_force(group->obj);
+   eina_list_free(l);
+
+   Eina_Inlist *prev_elm =  NULL;
+   Eina_Inlist *itr = NULL;
+   Part *_part = NULL;
+
+   for(itr = group->parts; itr != NULL; itr = itr->next)
+     {
+         _part = EINA_INLIST_CONTAINER_GET(itr, Part);
+         if (_part == part)
+           {
+              prev_elm = itr->prev;
+              group->parts = eina_inlist_remove(group->parts, itr);
+              group->parts = eina_inlist_prepend_relative(group->parts,
+                                                   itr, prev_elm);
+              break;
+           }
+     }
+
 }
 
 static void
@@ -143,12 +450,27 @@ _layer_down_change(void *data,
    evas_object_box_remove_all(box, EINA_FALSE);
    EINA_LIST_FOREACH(childs, l, child)
      {
-        edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
         evas_object_box_append(box, child);
      }
    evas_object_smart_calculate(box);
    edje_edit_part_restack_below(group->obj, part->name);
    edje_object_calc_force(group->obj);
+
+   Eina_Inlist *next_elm =  NULL;
+   Eina_Inlist *itr = NULL;
+   Part *_part = NULL;
+   for (itr = group->parts; itr != NULL; itr = itr->next)
+     {
+        _part = EINA_INLIST_CONTAINER_GET(itr, Part);
+        if (_part == part)
+          {
+             next_elm = itr->next;
+             group->parts = eina_inlist_remove(group->parts, itr);
+             group->parts = eina_inlist_append_relative(group->parts,
+                                                         itr, next_elm);
+             break;
+          }
+     }
 }
 
 static void
@@ -208,13 +530,16 @@ _gs_image_update(Group *group,
                                             part->name,
                                             part->curr_state,
                                             part->curr_state_value);
-   id = edje_edit_image_id_get(group->obj, image_normal);
-   snprintf(buf, sizeof(buf), "edje/images/%i", id);
-   evas_object_image_file_set(part->obj, project->swapfile, buf);
+   if (image_normal)
+     {
+         id = edje_edit_image_id_get(group->obj, image_normal);
+         snprintf(buf, sizeof(buf), "edje/images/%i", id);
+         evas_object_image_file_set(part->obj, project->swapfile, buf);
 
-   err = evas_object_image_load_error_get(part->obj);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     WARN("Could not update image. Error string is \"%s\"\n", evas_load_error_str(err));
+         err = evas_object_image_load_error_get(part->obj);
+         if (err != EVAS_LOAD_ERROR_NONE)
+           WARN("Could not update image. Error string is \"%s\"\n", evas_load_error_str(err));
+     }
 
    edje_edit_state_color_get(group->obj, part->name,
                              part->curr_state, part->curr_state_value,
@@ -560,6 +885,16 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
                                   _gs_mouse_move_cb, ws);
    evas_object_smart_callback_add(group->obj, "gs,layer,up", _layer_up_change, ws);
    evas_object_smart_callback_add(group->obj, "gs,layer,down", _layer_down_change, ws);
+   evas_object_smart_callback_add(group->obj, "gs,part,delete", _part_delete, ws);
+   evas_object_smart_callback_add(group->obj, "gs,part,add", _part_add, ws);
+
+   evas_object_smart_callback_add(ws->groupspace, "gs,rect,add", _new_rect_add, ws);
+   evas_object_smart_callback_add(ws->groupspace, "gs,img,add", _new_img_add, ws);
+   evas_object_smart_callback_add(ws->groupspace, "gs,txt,add", _new_txt_add, ws);
+   evas_object_smart_callback_add(ws->groupspace, "gs,swallow,add", _new_swallow_add, ws);
+   evas_object_smart_callback_add(ws->groupspace, "gs,txtblock,add", _new_txtblock_add, ws);
+   evas_object_smart_callback_add(ws->groupspace, "gs,spacer,add", _new_spacer_add, ws);
+//   evas_object_smart_callback_add(ws->groupspace, "gs,group,add", _new_group_add, ws);
 
    evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
                                   _gs_resize_cb, ws);
@@ -591,7 +926,20 @@ ui_groupspace_unset(Evas_Object *obj)
    Evas_Object *data = NULL;
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
-   evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
+   Group *group = evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
+
+   evas_object_smart_callback_del(group->obj, "gs,layer,up", _layer_up_change);
+   evas_object_smart_callback_del(group->obj, "gs,layer,down", _layer_down_change);
+   evas_object_smart_callback_del(group->obj, "gs,part,delete", _part_delete);
+   evas_object_smart_callback_del(group->obj, "gs,part,add", _part_add);
+   evas_object_smart_callback_del(group->obj, "gs,part,add", _part_add);
+
+   evas_object_smart_callback_del(ws->groupspace, "gs,rect,add", _new_rect_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,img,add", _new_img_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,txt,add", _new_txt_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,swallow,add", _new_swallow_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,txtblock,add", _new_txtblock_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,spacer,add", _new_spacer_add);
 
    list = evas_object_box_children_get(box);
    EINA_LIST_FOREACH(list, l, data)
