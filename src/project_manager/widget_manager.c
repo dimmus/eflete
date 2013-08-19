@@ -85,18 +85,21 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
 }
 
 Part *
-wm_part_add(Evas_Object *obj, const char *part_name)
+wm_part_add(Evas_Object *obj, const char *part)
 {
    Part *result;
+   double value;
 
-   if (!part_name || !obj) return NULL;
+   if (!part || !obj) return NULL;
 
    result = mem_malloc(sizeof(Part));
    result->__type = PART;
 
-   result->type = edje_edit_part_type_get(obj, part_name);
-   result->name = eina_stringshare_add(part_name);
+   result->name = eina_stringshare_add(part);
+   result->type = edje_edit_part_type_get(obj, part);
    result->obj = NULL;
+   result->curr_state = edje_edit_part_selected_state_get(obj, part, &value);
+   result->curr_state_value = value;
    result->show = EINA_TRUE;
 
    return result;
@@ -108,10 +111,28 @@ wm_part_free(Part *part)
    if (!part) return EINA_FALSE;
 
    eina_stringshare_del(part->name);
+   eina_stringshare_del(part->curr_state);
    if (part->obj) evas_object_del(part->obj);
 
    free(part);
    part = NULL;
+
+   return EINA_TRUE;
+}
+
+Eina_Bool
+wm_part_current_state_set(Part *part, const char *state)
+{
+   char **split;
+
+   if ((!part) || (!state)) return EINA_FALSE;
+
+   split = eina_str_split(state, " ", 2);
+   eina_stringshare_del(part->curr_state);
+   part->curr_state = eina_stringshare_add(split[0]);
+   part->curr_state_value = atof(split[1]);
+   free(split[0]);
+   free(split);
 
    return EINA_TRUE;
 }

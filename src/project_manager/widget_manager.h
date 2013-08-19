@@ -61,6 +61,8 @@ struct _Part
 	EINA_INLIST;
 	Eina_Stringshare *name;
 	Evas_Object *obj;
+   Eina_Stringshare *curr_state;
+   double curr_state_value;
 	Eina_Bool show;
 	int type;
 	type __type;
@@ -157,6 +159,21 @@ typedef struct _Widget Widget;
  */
 Part *
 wm_part_add(Evas_Object *obj, const char *part);
+
+/**
+ * Set a current state in Part object.
+ *
+ * @param part The part to set the state of.
+ * @param state Name of the state to set.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @note State has format "NAME X.X" we need to extract NAME\
+ * and double value separately
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_part_current_state_set(Part *part, const char *state);
 
 /**
  *

@@ -138,13 +138,13 @@ ui_group_back(App_Data *ap);
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param glit The Elm_Object_Item pointer.
  * @param obj The Evas_Object pointer, wich pointed on states genlist.
+ * @param state Name of the state to be set.
  *
  * @ingroup Window
  */
 void
-ui_state_select(App_Data *ap, Elm_Object_Item *glit, Evas_Object *obj);
+ui_state_select(App_Data *ap, Evas_Object *obj, Eina_Stringshare *state);
 
 /**
  * Show information about properties of part. Highlight part object

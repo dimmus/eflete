@@ -27,36 +27,39 @@ ui_group_back(App_Data *ap __UNUSED__)
 
 void
 ui_state_select(App_Data *ap,
-                Elm_Object_Item *glit,
-                Evas_Object *obj)
+                Evas_Object *obj,
+                Eina_Stringshare *state)
 {
    Part *part = NULL;
    Evas_Object *prop_view, *part_view, *state_view;
-   const char *state;
-   char **split;
+   //const char *state;
+   //char **split;
 
    //state = elm_object_item_part_text_get(glit, "elm.text");
-   state = elm_object_item_data_get(glit);
+   //state = elm_object_item_data_get(glit);
    /*
       State has format "NAME X.X" we need to extract NAME
       and double value separately
     */
-   split =  eina_str_split(state, " ", 2);
+   //split =  eina_str_split(state, " ", 2);
 
    prop_view = ui_block_property_get(ap);
    part_view = ui_property_part_view_get(prop_view);
    part = ui_state_list_part_get(obj);
+   wm_part_current_state_set(part, state);
    state_view = ui_prop_part_info_state_view_add(part_view,
                                                  ap->project->current_group,
-                                                 part,
-                                                 split[0],
-                                                 atof(split[1]));
+                                                 part);
+                                                 //state,
+                                                 //split[0],
+                                                 //atof(split[1]));
    ui_prop_part_info_state_set(part_view, state_view);
-   ui_groupspace_part_state_update(ap->ws->groupspace, part, split[0], atof(split[1]));
+   ui_groupspace_part_state_update(ap->ws->groupspace, part);
+   //ui_groupspace_part_state_update(ap->ws->groupspace, part, split[0], atof(split[1]));
    //ui_object_highlight_set(ap->ws, part->obj);
    evas_object_show(state_view);
-   free(split[0]);
-   free(split);
+   //free(split[0]);
+   //free(split);
 }
 
 Evas_Object *

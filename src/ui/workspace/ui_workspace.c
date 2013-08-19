@@ -214,7 +214,7 @@ ws_add (Evas_Object *parent)
    elm_layout_file_set(parent, TET_EDJ, "base/workspace" );
    _bg = evas_object_image_filled_add(canvas);
    evas_object_image_filled_set(_bg, EINA_FALSE);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"bg_workspace.png", NULL);
+   evas_object_image_file_set(_bg, TET_IMG_PATH"bg.png", NULL);
    evas_object_image_fill_set(_bg, -5, -5, 32, 32);
    elm_object_part_content_set(parent, "base/workspace/background", _bg);
    evas_object_show(_bg);

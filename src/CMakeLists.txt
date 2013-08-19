@@ -11,6 +11,7 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/project_manager/edit
    ${CMAKE_CURRENT_SOURCE_DIR}/logger
    ${CMAKE_CURRENT_SOURCE_DIR}/settings
+   ${CMAKE_CURRENT_SOURCE_DIR}/common
    ${CMAKE_CURRENT_SOURCE_DIR}/ui
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/modal_window
    ${CMAKE_CURRENT_SOURCE_DIR}/ui/editors

@@ -38,7 +38,8 @@ _on_state_selected(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
-   ui_state_select(ap, eoit, obj);
+   Eina_Stringshare *state = elm_object_item_data_get(eoit);
+   ui_state_select(ap, obj, state);
 }
 
 static void

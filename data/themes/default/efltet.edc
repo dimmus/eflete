@@ -2,7 +2,6 @@ collections {
    #include "widgets/styles.edc"
    #include "widgets/images.edc"
    #include "widgets/block.edc"
-   #include "widgets/prop_item.edc"
    #include "widgets/inwin.edc"
    #include "widgets/naviframe.edc"
    #include "widgets/genlist.edc"
@@ -16,4 +15,5 @@ collections {
    #include "layouts/groupspace.edc"
    #include "layouts/notify.edc"
    #include "layouts/colorclass_editor.edc"
+   #include "layouts/prop_item.edc"
 }

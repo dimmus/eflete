@@ -10,8 +10,7 @@
 
 #include "efl_tet.h"
 #include "widget_manager.h"
-#include <Elementary.h>
-#include "widget_manager.h"
+#include "widget_define.h"
 
 /**
  * Add a new Property widget.
@@ -117,9 +116,8 @@ ui_prop_part_info_view_add(Evas_Object *prop_view, Group *group, Part *part);
 Evas_Object *
 ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                  Group *group,
-                                 Part *part,
-                                 const char *state,
-                                 double value);
+                                 Part *part);
+                                 //const char *state);
 
 /**
  * Set to part view a state view.
