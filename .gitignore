@@ -3,12 +3,11 @@
 *.edj
 
 #build generated files
-src/efl_tet
 src/config.h
 ui.set
 build/*
 install_manifest.txt
-src/efltet
+Testing/*
 
 #CMake generated objects
 *CMakeCache.txt

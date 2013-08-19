@@ -9,6 +9,7 @@ set(PACKAGE "Theme Editor Tool")
 
 option(debug "debug build" 0)
 
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -117,6 +118,7 @@ if (NOT ${debug})
    set(BUILD_PATH ${CMAKE_INSTALL_PREFIX})
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -O2")
 else()
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build)
    set(BIN_PATH ${CMAKE_CURRENT_SOURCE_DIR})
    set(DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/data)
    set(DOC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/doc)
@@ -136,18 +138,17 @@ add_definitions("-DTET_SETT_PATH=\"$ENV{HOME}/.efltet/\"")
 add_subdirectory(src)
 add_subdirectory(data)
 add_subdirectory(doc)
-add_subdirectory(check_utc/edje_compile)
-add_subdirectory(check_utc/project_manager)
+add_subdirectory(tests/edje_compile)
+add_subdirectory(tests/project_manager)
 
 #install
 if (NOT ${debug})
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/images DESTINATION ${DATA_PATH} FILES_MATCHING PATTERN "*.jpg" PATTERN "*.png")
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj DESTINATION ${DATA_PATH}/themes/default)
-   install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/${PROJECT_NAME} DESTINATION ${BIN_PATH})
+   install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build/${PROJECT_NAME} DESTINATION ${BIN_PATH})
 else()
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/images DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/data FILES_MATCHING PATTERN "*.jpg" PATTERN "*.png")
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/data/themes/default)
-   install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/src/${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build)
 endif()
 
 if (NOT ${debug})

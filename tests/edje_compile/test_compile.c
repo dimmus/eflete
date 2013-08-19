@@ -59,13 +59,11 @@ END_TEST
  */
 START_TEST (decompile_test)
 {
+   printf("test decc\n!!!!!!!\n");
    char *edc, *edj;
-   edc = "./new_edc_check.edc";
-   edj = "./check.edj";
-   if(decompile(edj,edc) == EINA_FALSE)
-   {
-      ck_abort_msg("error in function 'decompile': cannot creating Edje_DeCC object");
-   }
+   edc = "../check_utc/edje_compile/data/new_edc_check.edc";
+   edj = "../check_utc/edje_compile/data/check.edj";
+   decompile(edj,edc);
 }
 END_TEST
 
@@ -89,11 +87,11 @@ END_TEST
 START_TEST (compile_test)
 {
    const char *edc, *edj, *img, *font, *sound;
-   edc = "./check.edc";
-   edj = "./new_edj_check.edj";
-   img = "./";
-   sound = "./sound.mp3";
-   font = "./font.ttf";
+   edc = "../check_utc/edje_compile/data";
+   edj = "../check_utc/edje_compile/data/new_edj_check.edj";
+   img = "../check_utc/edje_compile/data";
+   sound = "../check_utc/edje_compile/data";
+   font = "../check_utc/edje_compile/data";
    if(compile(edc, edj, img, font, sound) == EINA_FALSE)
    {
       ck_abort_msg("error in function 'compile': cannot creating Edje_CC object");
