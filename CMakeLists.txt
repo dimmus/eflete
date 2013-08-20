@@ -144,6 +144,7 @@ add_subdirectory(tests/settings)
 add_subdirectory(tests/alloc)
 add_subdirectory(tests/widget_manager)
 add_subdirectory(tests/logger)
+add_subdirectory(tests/efl_tet)
 
 #install
 if (NOT ${debug})

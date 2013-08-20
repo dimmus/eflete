@@ -680,6 +680,7 @@ Suite* test_suite (void) {
  * @}
  */
 int main(void) {
+   elm_init(0, 0);
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
@@ -687,5 +688,6 @@ int main(void) {
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
+   elm_shutdown();
    return number_failed;
 }

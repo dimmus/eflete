@@ -33,7 +33,7 @@ END_TEST
  */
 START_TEST (ui_settings_save_test)
 {
-   if(ui_settings_save() == EINA_TRUE)  //or false
+   if(ui_settings_save() == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot save ui elements setings");
    }
