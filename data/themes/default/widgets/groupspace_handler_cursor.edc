@@ -11,7 +11,6 @@
    }
    group {
       name: "elm/cursor/top_left_corner/default";
-      alias: "elm/cursor/bottom_right_corner/default";
       SET_SIZE(30, 38);
       parts {
          part { name: "cursor_image";
@@ -44,14 +43,15 @@
             description { state: "default" 0.0;
                color: 255 0 0 180;
                rel1.to: "rect_area";
-               rel2{ to: "rect_area";
+               rel1{ to: "rect_area";
                   relative: 0.5 0.5;
                }
+               rel2.to: "rect_area";
             }
             description { state: "full" 0.0;
                inherit: "default" 0.0;
-               rel2{ to: "rect_area";
-                  relative: 1.0 1.0;
+               rel1{ to: "rect_area";
+                  relative: 0.0 0.0;
                }
             }
          }
@@ -72,14 +72,38 @@
          program { name: "animation.step1";
             action: STATE_SET "full" 0.0;
             target: "cursor_rect";
-            transition : LINEAR 1.5;
+            transition : LINEAR 1.0;
             after: "animation.step2";
          }
          program { name: "animation.step2";
             action: STATE_SET "default" 0.0;
             target: "cursor_rect";
-            transition : LINEAR 1.5;
+            transition : LINEAR 1.0;
             after: "animation.step1";
+         }
+      }
+   }
+   group {
+      name: "elm/cursor/bottom_right_corner/default";
+      inherit: "elm/cursor/top_left_corner/default";
+      parts {
+         part { name: "cursor_rect";
+            type:RECT;
+            description { state: "default" 0.0;
+               color: 255 0 0 180;
+               rel1{ to: "rect_area";
+                  relative: 0.0 0.0;
+               }
+               rel2{ to: "rect_area";
+                  relative: 0.5 0.5;
+               }
+            }
+            description { state: "full" 0.0;
+               inherit: "default" 0.0;
+               rel2{ to: "rect_area";
+                  relative: 1.0 1.0;
+               }
+            }
          }
       }
    }
