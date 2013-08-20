@@ -90,6 +90,8 @@ struct _Group
 	Eina_Stringshare *full_group_name;
    /** Member 'obj' - edje edit object.**/
 	Evas_Object *obj;
+   /** is it Group modificated **/
+   Eina_Bool isModify;
    /** Show/Hide a object on a workspace. **/
 	Eina_Bool show;
 	int current_w, current_h;

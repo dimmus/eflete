@@ -53,18 +53,17 @@
    evas_object_show(entry);
 
 #define CHECK_ADD(parent, check, style) \
-   check = elm_check_add(item); \
+   check = elm_check_add(parent); \
    elm_object_style_set(check, style); \
    evas_object_size_hint_align_set(check, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(check, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(check);
 
 #define IMAGE_ADD(parent, image, path) \
-   image = elm_image_add(item); \
+   image = elm_image_add(parent); \
    elm_image_file_set(image, path, NULL); \
    evas_object_size_hint_align_set(image, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(image);
-
 
 #endif /* WIDGET_DEFINE_H */

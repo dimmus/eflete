@@ -218,6 +218,30 @@ _add_part_unpress(void *data __UNUSED__,
    evas_object_smart_callback_call(group->obj, "gs,part,add", NULL);
 }
 
+static void
+_delete_part_click(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Group *group = (Group *)event_info;
+   Evas_Object *gl_parts = (Evas_Object *)data;
+   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
+   Part *part = elm_object_item_data_get(eoi);
+
+   if (!eoi)
+     {
+        WARN("None one part does'nt selected");
+        return;
+     }
+
+   Elm_Object_Item *new_eoi = elm_genlist_item_next_get(eoi);
+   if (!new_eoi) new_eoi = elm_genlist_item_prev_get(eoi);
+
+   elm_object_item_del(eoi);
+   evas_object_smart_callback_call(group->obj, "gs,part,delete", part);
+   if (new_eoi)
+      elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+}
 
 static void
 _above_part_click(void *data,
@@ -262,44 +286,19 @@ _past_part_click(void *data __UNUSED__,
         return;
      }
    Elm_Object_Item *new_eoi = NULL;
-   Elm_Object_Item *next_eoi = elm_genlist_item_next_get(eoi);
-   if (!next_eoi)
+   Elm_Object_Item *prev_eoi = elm_genlist_item_next_get(eoi);
+   if (!prev_eoi)
      {
         WARN("Selected part currently on bottom in list");
         return;
      }
    Part *part = elm_object_item_data_get(eoi);
    new_eoi = elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
-                         next_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
    eoi = elm_genlist_selected_item_get(gl_parts);
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
    evas_object_smart_callback_call(group->obj, "gs,layer,down", part);
-}
-
-static void
-_delete_part_click(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Group *group = (Group *)event_info;
-   Evas_Object *gl_parts = (Evas_Object *)data;
-   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
-   Part *part = elm_object_item_data_get(eoi);
-
-   if (!eoi)
-     {
-        WARN("None one part does'nt selected");
-        return;
-     }
-
-   Elm_Object_Item *new_eoi = elm_genlist_item_next_get(eoi);
-   if (!new_eoi) new_eoi = elm_genlist_item_prev_get(eoi);
-
-   elm_object_item_del(eoi);
-   evas_object_smart_callback_call(group->obj, "gs,part,delete", part);
-   if (new_eoi)
-      elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
 }
 
 static void

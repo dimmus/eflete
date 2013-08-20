@@ -535,7 +535,6 @@ _gs_image_update(Group *group,
          id = edje_edit_image_id_get(group->obj, image_normal);
          snprintf(buf, sizeof(buf), "edje/images/%i", id);
          evas_object_image_file_set(part->obj, project->swapfile, buf);
-
          err = evas_object_image_load_error_get(part->obj);
          if (err != EVAS_LOAD_ERROR_NONE)
            WARN("Could not update image. Error string is \"%s\"\n", evas_load_error_str(err));
