@@ -143,6 +143,7 @@ add_subdirectory(tests/project_manager)
 add_subdirectory(tests/settings)
 add_subdirectory(tests/alloc)
 add_subdirectory(tests/widget_manager)
+add_subdirectory(tests/logger)
 
 #install
 if (NOT ${debug})

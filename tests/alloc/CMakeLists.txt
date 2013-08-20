@@ -72,7 +72,7 @@ set(TET_CC_FILES
 )
 
 add_executable(test_alloc ${TET_CC_FILES} test_alloc.c)
-target_link_libraries(test_alloc 
+target_link_libraries(test_alloc
    check
    ${LIBS}
    ${EINA_LIBRARIES}

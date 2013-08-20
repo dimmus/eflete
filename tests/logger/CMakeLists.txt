@@ -71,9 +71,8 @@ set(TET_CC_FILES
    ../../src/ui/notification/notify.c
 )
 
-
-add_executable(test_settings ${TET_CC_FILES} test_settings.c)
-target_link_libraries(test_settings
+add_executable(test_logger ${TET_CC_FILES} test_logger.c)
+target_link_libraries(test_logger
    check
    ${LIBS}
    ${EINA_LIBRARIES}
@@ -87,4 +86,4 @@ target_link_libraries(test_settings
    ${EFREET_LIBRARIES}
    ${ELEMENTARY_LIBRARIES}
 )
-add_test(test_settings ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_settings)
+add_test(test_logger ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test_logger)
