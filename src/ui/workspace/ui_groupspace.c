@@ -859,8 +859,10 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 
    //evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESTACK, __box_calc, _box);
 
+   elm_config_cursor_engine_only_set(EINA_FALSE);
    elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
    elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
+   elm_config_cursor_engine_only_set(EINA_TRUE);
 
    evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
    elm_scroller_region_get(ws->scroller, NULL, NULL, &gw, &gh);
