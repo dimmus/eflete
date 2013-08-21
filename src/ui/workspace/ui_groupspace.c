@@ -361,7 +361,7 @@ _part_delete(void *data,
    group->parts = eina_inlist_remove(group->parts, EINA_INLIST_GET(part));
    evas_object_box_remove(box, part->obj);
    evas_object_box_remove(box, ws->highlight.highlight);
-   ws->highlight.obj = NULL;
+   ws->highlight.part = NULL;
    evas_object_data_del(part->obj, GS_PART_DATA_KEY);
    edje_edit_part_del(group->obj, part->name);
    evas_object_del(part->obj);
@@ -516,14 +516,17 @@ _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
 static void
 _gs_hilight_move_resize(void *data,
                         Evas *e __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
+                        Evas_Object *obj,
                         void *ei __UNUSED__)
 {
    int x, y, w, h;
    Workspace *ws = (Workspace*)data;
-   evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
-   evas_object_move(ws->highlight.highlight, x, y);
-   evas_object_resize(ws->highlight.highlight, w, h);
+   if (ws->highlight.part)
+     {
+        evas_object_geometry_get(obj, &x, &y, &w, &h);
+        evas_object_move(ws->highlight.highlight, x, y);
+        evas_object_resize(ws->highlight.highlight, w, h);
+     }
 }
 
 static void
@@ -545,12 +548,12 @@ _gs_resize_cb(void *data,
    ui_ruler_redraw(ws->ruler_hor);
    ui_ruler_redraw(ws->ruler_ver);
 
-   /*
-   evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
-   evas_object_move(ws->highlight.highlight, x, y);
-   evas_object_resize(ws->highlight.highlight, w, h);
-   */
-   _gs_hilight_move_resize((void*)ws, NULL, NULL, NULL);
+   if (ws->highlight.part)
+     {
+        evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
+        evas_object_move(ws->highlight.highlight, x, y);
+        evas_object_resize(ws->highlight.highlight, w, h);
+     }
 }
 
 static void
@@ -807,7 +810,6 @@ _gs_group_draw(Group *group,
              evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
           }
 
-// _gs_hilight_move_resize
         evas_object_event_callback_add((Evas_Object *)edje_part,
                                        EVAS_CALLBACK_MOVE,
                                        __box_recalc, box);
@@ -826,12 +828,6 @@ _gs_group_draw(Group *group,
         evas_object_show(_part->obj);
      }
    evas_object_show(box);
-}
-
-const Evas_Object *
-ui_groupspace_part_edje_get(Part *part)
-{
-   return evas_object_data_get(part->obj, GS_PART_DATA_KEY);
 }
 
 Group *

@@ -15,6 +15,7 @@
 
 #include <Evas.h>
 #include <Elementary.h>
+#include "widget_manager.h"
 #include "ui_ruler.h"
 
 /**
@@ -42,7 +43,7 @@ struct _Workspace
     Eina_Bool separated;
     struct {
         Evas_Object *highlight;
-        const Evas_Object *obj; /* highlighting object */
+        Part *part; /* highlighting object */
     } highlight;
 };
 typedef struct _Workspace Workspace;
@@ -95,7 +96,7 @@ ws_free(Workspace *ws);
  * @ingroup Workspace
  */
 void
-ui_object_highlight_set(Workspace *ws, const Evas_Object *part);
+ui_object_highlight_set(Workspace *ws, Part *part);
 
 /**
  * Move highlight object on workspace.
