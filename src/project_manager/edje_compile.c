@@ -124,6 +124,8 @@ decompile(char *edj, char *edc)
                 edj, edc);
      }
 
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
+   
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjedecc->messages);
 

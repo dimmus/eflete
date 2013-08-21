@@ -1,6 +1,6 @@
 #include <check.h>
 #include "project_manager.h"
-
+#include "efl_tet.h"
 /**
  * @addtogroup pm_open_project_edc_test
  * @{
@@ -20,16 +20,18 @@
  */
 START_TEST (pm_open_project_edc_test_n1)
 {
+   elm_init(0,0);
    const char *name, *path, *img, *font, *sound;
-   name = "./pm_edc_output.edj";
-   path = "./check.edc";
-   img = "./";
-   font = "./";
-   sound = "./";
+   name = "./data";
+   path = "./data/check.edc";
+   img = "./data";
+   font = "./data";
+   sound = "./data";
    if(pm_open_project_edc(name, path, img, font, sound) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot open project from edc-file");
    }
+   elm_shutdown();
 }
 END_TEST
 
@@ -82,9 +84,17 @@ END_TEST
  */
 START_TEST (pm_free_test_n1)
 {
-  Project *pro;
-  pro = calloc(1, sizeof(pro));
-  fail_unless(pm_free(pro) == EINA_TRUE, "failure: uncorrect work function");
+   elm_init(0,0);
+   Project *pro;
+   const char *name, *path, *img, *font, *sound;
+   name = "./data";
+   path = "../tests/edje_compile/data/check.edc";
+   img = "./data";
+   font = "./data";
+   sound = "./data";
+   pro = pm_open_project_edc(name, path, img, font, sound);
+   fail_unless(pm_free(pro) == EINA_TRUE, "failure: uncorrect work function");
+   elm_shutdown();
 }
 END_TEST
 
@@ -104,13 +114,15 @@ END_TEST
  */
 START_TEST (pm_open_project_edj_test_n1)
 {
+   elm_init(0,0);
    char *name, *path;
-   name = "./pm_edj_output.edc";
-   path = "./";
+   name = "./data";
+   path = "./data/check.edj";
    if(pm_open_project_edj(name, path) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot open project from edj-file");
    }
+   elm_shutdown();
 }
 END_TEST
 

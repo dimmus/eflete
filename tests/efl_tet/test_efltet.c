@@ -1,6 +1,6 @@
 #include <check.h>
 #include "efl_tet.h"
-
+#include "ui_main_window.h"
 /**
  * @addtogroup app_init_test
  * @{
@@ -14,10 +14,12 @@
  */
 START_TEST (app_init_test)
 {
+   elm_init(0,0);
    if (app_init() == EINA_FALSE)
    {
       ck_abort_msg("failure: libraries was failed to init");
    }
+   elm_shutdown();
 }
 END_TEST
 
@@ -35,9 +37,14 @@ END_TEST
  */
 START_TEST (win_layout_get_test)
 {
-   App_Data *ap = NULL;
+   elm_init(0,0);
+   elm_main();
    Evas_Object *obj = win_layout_get();
-   fail_unless(obj == ap->win_layout, "failure: win_layout not exist");
+   if (!obj)
+   {
+      ck_abort_msg("failure: win_layout not exist");
+   }
+   elm_shutdown();
 }
 END_TEST
 
@@ -54,7 +61,10 @@ END_TEST
  */
 START_TEST (app_shutdown_test)
 {
+   elm_init(0,0);
+   elm_main();
    app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
@@ -91,33 +101,16 @@ END_TEST
  * @passcondition: EINA_TRUE returned from function
  * @}
  */
-START_TEST (app_free_test1)
+START_TEST (app_free_test)
 {
-   App_Data *ap = calloc(1, sizeof(ap));
+   elm_init(0,0);
+   App_Data *ap = app_create();
    app_free(ap);
    if (ap == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot remove App_Data");
    }
-}
-END_TEST
-
-/**
- * @addtogroup app_free_test
- * @{
- * @objective Negative test case:
- *
- * @procedure
- * @step 1 Calling NULL parameters to function
- *
- * @passcondition: EINA_FALSE returned from function
- * @}
- */
-START_TEST (app_free_test2)
-{
-   App_Data *ap = NULL;
-   app_free(ap);
-   fail_unless(ap == EINA_FALSE, "failure: cannot delete NULL App_Data");
+   elm_shutdown();
 }
 END_TEST
 
@@ -142,8 +135,7 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, app_shutdown_test);
    tcase_add_test(tcase, win_layout_get_test);
    tcase_add_test(tcase, app_create_test);
-   tcase_add_test(tcase, app_free_test1);
-   tcase_add_test(tcase, app_free_test2);
+   tcase_add_test(tcase, app_free_test);
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -165,13 +157,11 @@ Suite* test_suite (void) {
  */
 int main(void) {
    int number_failed;
-   elm_init(0, 0);
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
    srunner_set_xml (runner, "test_prmanager.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
-   elm_shutdown();
    return number_failed;
 }

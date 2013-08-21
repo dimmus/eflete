@@ -147,6 +147,7 @@ add_subdirectory(tests/logger)
 add_subdirectory(tests/efl_tet)
 add_subdirectory(tests/ui_block)
 add_subdirectory(tests/ui_ruler)
+add_subdirectory(tests/colorclasses_edit_api)
 
 #install
 if (NOT ${debug})

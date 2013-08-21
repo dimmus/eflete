@@ -1,6 +1,6 @@
 #include <check.h>
 #include "edje_compile.h"
-
+#include <Elementary.h>
 /**
  * @addtogroup edje_cc_free
  * @{
@@ -59,11 +59,16 @@ END_TEST
  */
 START_TEST (decompile_test)
 {
-   printf("test decc\n!!!!!!!\n");
+   elm_init(0,0);
    char *edc, *edj;
-   edc = "../check_utc/edje_compile/data/new_edc_check.edc";
-   edj = "../check_utc/edje_compile/data/check.edj";
-   decompile(edj,edc);
+   edc = "./data/";
+   edj = "./data/radio.edj";
+   if(decompile(edj, edc) == EINA_FALSE)
+   {
+      ck_abort_msg("error in function 'decompile': cannot creating Edje_DeCC object");
+   }
+
+   elm_shutdown();
 }
 END_TEST
 
@@ -86,16 +91,18 @@ END_TEST
  */
 START_TEST (compile_test)
 {
+   elm_init(0,0);
    const char *edc, *edj, *img, *font, *sound;
-   edc = "../check_utc/edje_compile/data";
-   edj = "../check_utc/edje_compile/data/new_edj_check.edj";
-   img = "../check_utc/edje_compile/data";
-   sound = "../check_utc/edje_compile/data";
-   font = "../check_utc/edje_compile/data";
+   edc = "./data/radio.edc";
+   edj = "./data/";
+   img = "./data/";
+   sound = "./data/";
+   font = "./data/";
    if(compile(edc, edj, img, font, sound) == EINA_FALSE)
    {
       ck_abort_msg("error in function 'compile': cannot creating Edje_CC object");
    }
+   elm_shutdown();
 }
 END_TEST
 
@@ -118,8 +125,8 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, edje_cc_free_test_n1);
    tcase_add_test(tcase, edje_cc_free_test_n2);
-   tcase_add_test(tcase, decompile_test);
    tcase_add_test(tcase, compile_test);
+   tcase_add_test(tcase, decompile_test);
    suite_add_tcase(suite, tcase);
    return suite;
 }
