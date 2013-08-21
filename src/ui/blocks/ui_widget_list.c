@@ -67,19 +67,18 @@ _item_part_content_get(void *data,
                        const char *part)
 {
    Part *_part = (Part *) data;
-   Evas_Object *icon = elm_icon_add(obj);
    if (!strcmp(part, "elm.swallow.icon"))
      {
+        Evas_Object *icon = elm_icon_add(obj);
         if (_part->show)
           elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
         else
           elm_image_file_set(icon, TET_IMG_PATH"eye_close.png", NULL);
+        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
+        return icon;
      }
-
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
-
-   return icon;
+   else return NULL;
 }
 
 static char *
