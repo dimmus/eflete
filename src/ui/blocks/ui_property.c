@@ -912,14 +912,14 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                              "Change text font's size.");
         elm_box_pack_end(text_box, item);
         item = prop_item_state_text_align_x_text_align_y_add(text_box, group, part,
-                                                             0.0, 1.0, 0.1, "%1.11f",
+                                                             0.0, 1.0, 0.1, "%1.2f",
                                                              "Text horizontal align. "
                                                              "0.0 = left  1.0 = right",
                                                              "Text vertical align. "
                                                              "0.0 = top  1.0 = bottom");
         elm_box_pack_end(text_box, item);
         item = prop_item_state_text_elipsis_add(text_box, group, part,
-                                                0.0, 1.0, 0.1, "%1.11f",
+                                                0.0, 1.0, 0.1, "%1.2f",
                                                 "Cut text if biggest then part's area"
                                                 "0.0 = fix the left side  1.0 = right side");
         elm_box_pack_end(text_box, item);
