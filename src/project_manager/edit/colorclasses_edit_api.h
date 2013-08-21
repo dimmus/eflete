@@ -8,7 +8,7 @@
  */
 
 #include "efl_tet.h"
-#include "edit_private.h"
+#include "edit_common.h"
 
 /**
  * Get the list of all the images in the given project.

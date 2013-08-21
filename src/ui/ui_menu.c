@@ -24,6 +24,21 @@ _on_edj_open_menu(void *data,
 }
 
 static void
+_on_save_menu(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (pm_save_project_to_swap(ap->project))
+     {
+        if (pm_save_project_edj(ap->project))
+          NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
+        else
+          NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
+     }
+}
+
+static void
 _on_exit_menu(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
@@ -207,7 +222,7 @@ ui_menu_add(App_Data *ap)
                      _on_edc_open_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
                      _on_edj_open_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save", NULL, NULL);
+   elm_menu_item_add(menu, NULL, "menu/file", "Save", _on_save_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
    tb_it=elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);

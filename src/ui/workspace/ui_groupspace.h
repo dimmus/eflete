@@ -16,6 +16,7 @@
 #include <Elementary.h>
 #include <Eina.h>
 #include "widget_manager.h"
+#include "add_part_dialog.h"
 
 
 /**

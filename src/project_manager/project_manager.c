@@ -21,6 +21,27 @@ _on_copy_error_cb(void *data,
    ecore_main_loop_quit();
 }
 
+static void
+_on_unlick_done_cb(void *data,
+                   Eio_File *handler __UNUSED__)
+{
+   char *file_name = (char *)data;
+   DBG("Unlink file '%s' is finished!", file_name);
+   ecore_main_loop_quit();
+}
+
+static void
+_on_unlink_error_cb(void *data,
+                    Eio_File *handler __UNUSED__,
+                    int error)
+{
+   char *file_name = (char *)data;
+   ERR("Unlink file '%s' is failed. Something wrong has happend: %s\n",
+       file_name, strerror(error));
+   ecore_main_loop_quit();
+}
+
+
 Eina_Bool
 pm_free(Project *project)
 {
@@ -28,6 +49,8 @@ pm_free(Project *project)
 
    INFO ("Closed project: %s", project->name);
 
+   eio_file_unlink(project->swapfile, _on_unlick_done_cb, _on_unlink_error_cb,
+                   project->swapfile);
    free(project->name);
    free(project->edc);
    free(project->edj);
@@ -171,5 +194,15 @@ pm_save_project_edj(Project *project)
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
+   return EINA_TRUE;
+}
+
+Eina_Bool
+pm_save_project_to_swap(Project *project)
+{
+   Evas_Object *edje_object;
+   GET_OBJ(project, edje_object)
+   if (!edje_object) return EINA_FALSE;
+   else edje_edit_save_all(edje_object);
    return EINA_TRUE;
 }

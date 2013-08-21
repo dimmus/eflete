@@ -64,11 +64,9 @@ set(TET_CC_FILES
    ../../src/ui/blocks/ui_signal_list.c
    ../../src/ui/blocks/ui_states_list.c
    ../../src/ui/workspace/ui_highlight.c
-   ../../src/ui/workspace/ui_ruler.c
-   ../../src/ui/workspace/ui_workspace.c
-   ../../src/ui/workspace/ui_popup.c
    ../../src/ui/workspace/ui_groupspace.c
    ../../src/ui/notification/notify.c
+   ../../src/ui/dialogs/add_part_dialog.c
 )
 add_executable(test_prmanager ${TET_CC_FILES} test_prmanager.c)
 target_link_libraries(test_prmanager

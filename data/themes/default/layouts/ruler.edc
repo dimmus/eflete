@@ -19,8 +19,8 @@ group { \
          type: RECT; \
          description { \
             state: "default" 0.0; \
-            color: 255 255 255 155; \
-         } \
+            color: 255 255 255 255; \
+       } \
          description { \
             state: "hidden" 0.0; \
             inherit: "default" 0.0; \

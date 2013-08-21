@@ -17,6 +17,7 @@
 #include "widget_manager.h"
 #include <Eio.h>
 #include "logger.h"
+#include "edit_common.h"
 
 /**
  * @struct _Project
@@ -91,6 +92,23 @@ pm_open_project_edj(const char *name,
  *
  */
 /*TODO: Add save project pm_save_project_edc(Project *pm) */
+
+/**
+ *
+ */
+Eina_Bool
+pm_save_project_edj(Project *project);
+
+/**
+ *
+ */
+Eina_Bool
+pm_save_project_to_swap(Project *project);
+
+/**
+ *
+ */
+/* Eina_Bool pm_save_group_to_swap(Group *group); */
 
 /**
  *
