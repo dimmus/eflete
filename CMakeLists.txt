@@ -148,6 +148,7 @@ add_subdirectory(tests/efl_tet)
 add_subdirectory(tests/ui_block)
 add_subdirectory(tests/ui_ruler)
 add_subdirectory(tests/colorclasses_edit_api)
+add_subdirectory(tests/modal_window)
 
 #install
 if (NOT ${debug})
