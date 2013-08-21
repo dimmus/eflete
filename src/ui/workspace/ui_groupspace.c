@@ -361,10 +361,11 @@ _part_delete(void *data,
    group->parts = eina_inlist_remove(group->parts, EINA_INLIST_GET(part));
    evas_object_box_remove(box, part->obj);
    evas_object_box_remove(box, ws->highlight.highlight);
+   ws->highlight.obj = NULL;
    evas_object_data_del(part->obj, GS_PART_DATA_KEY);
    edje_edit_part_del(group->obj, part->name);
    evas_object_del(part->obj);
-   evas_object_del(ws->highlight.obj);
+//   evas_object_del(ws->highlight.obj);
    free(part);
 
    edje_object_calc_force(group->obj);
@@ -798,6 +799,12 @@ _gs_group_draw(Group *group,
         evas_object_show(_part->obj);
      }
    evas_object_show(box);
+}
+
+const Evas_Object *
+ui_groupspace_part_edje_get(Part *part)
+{
+   return evas_object_data_get(part->obj, GS_PART_DATA_KEY);
 }
 
 Group *

@@ -88,6 +88,18 @@ void
 ui_groupspace_separate(Workspace *ws);
 
 /**
+ * Get edje object for part.
+ *
+ * @param part A Part struct, .
+ * @return const Evas_Object that pointed to edje object part (IMPORTANT: not
+ * edje edit).
+ *
+ * @ingroup Groupspace
+ */
+const Evas_Object *
+ui_groupspace_part_edje_get(Part *part);
+
+/**
  * Get current group, that loaded into groupspace.
  *
  * @param groupspace A Evas_Object pointer to groupspace layout.

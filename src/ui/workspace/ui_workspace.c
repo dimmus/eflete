@@ -305,7 +305,7 @@ _ws_init (void)
 }
 
 void
-ui_object_highlight_set(Workspace *ws, Evas_Object *part)
+ui_object_highlight_set(Workspace *ws, const Evas_Object *part)
 {
    if ((!ws) || (!part) || (!ws->separated)) return;
 

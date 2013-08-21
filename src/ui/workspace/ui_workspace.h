@@ -42,7 +42,7 @@ struct _Workspace
     Eina_Bool separated;
     struct {
         Evas_Object *highlight;
-        Evas_Object *obj; /* highlighting object */
+        const Evas_Object *obj; /* highlighting object */
     } highlight;
 };
 typedef struct _Workspace Workspace;
@@ -95,7 +95,7 @@ ws_free(Workspace *ws);
  * @ingroup Workspace
  */
 void
-ui_object_highlight_set(Workspace *ws, Evas_Object *part);
+ui_object_highlight_set(Workspace *ws, const Evas_Object *part);
 
 /**
  * Move highlight object on workspace.
