@@ -16,6 +16,7 @@ configure_file(
    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/config.h
 )
 add_definitions(-DHAVE_CONFIG_H)
+add_definitions(-D__TESTING__)
 include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}. ../../src
    ${CMAKE_CURRENT_SOURCE_DIR}. ../../src/alloc

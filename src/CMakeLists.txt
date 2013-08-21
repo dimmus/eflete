@@ -22,7 +22,6 @@ include_directories(
 )
 
 set(TET_CC_FILES
-   main.c
    efl_tet.c
    alloc/alloc.c
    project_manager/edje_compile.c
