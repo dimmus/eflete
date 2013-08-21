@@ -514,7 +514,22 @@ _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
 }
 
 static void
-_gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
+_gs_hilight_move_resize(void *data,
+                        Evas *e __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__)
+{
+   int x, y, w, h;
+   Workspace *ws = (Workspace*)data;
+   evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
+   evas_object_move(ws->highlight.highlight, x, y);
+   evas_object_resize(ws->highlight.highlight, w, h);
+}
+
+static void
+_gs_resize_cb(void *data,
+              Evas *e __UNUSED__,
+              Evas_Object *obj,
               void *event_info __UNUSED__)
 {
    int x, y, w, h;
@@ -530,9 +545,12 @@ _gs_resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj,
    ui_ruler_redraw(ws->ruler_hor);
    ui_ruler_redraw(ws->ruler_ver);
 
+   /*
    evas_object_geometry_get(ws->highlight.obj, &x, &y, &w, &h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_resize(ws->highlight.highlight, w, h);
+   */
+   _gs_hilight_move_resize((void*)ws, NULL, NULL, NULL);
 }
 
 static void
@@ -788,12 +806,21 @@ _gs_group_draw(Group *group,
              edje_part = edje_object_part_object_get(group->obj, _part->name);
              evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
           }
+
+// _gs_hilight_move_resize
         evas_object_event_callback_add((Evas_Object *)edje_part,
                                        EVAS_CALLBACK_MOVE,
                                        __box_recalc, box);
         evas_object_event_callback_add((Evas_Object *)edje_part,
+                                       EVAS_CALLBACK_MOVE,
+                                       _gs_hilight_move_resize, ws);
+
+        evas_object_event_callback_add((Evas_Object *)edje_part,
                                        EVAS_CALLBACK_RESIZE,
                                        __box_recalc, box);
+        evas_object_event_callback_add((Evas_Object *)edje_part,
+                                       EVAS_CALLBACK_RESIZE,
+                                       _gs_hilight_move_resize, ws);
 
         evas_object_box_append(box, _part->obj);
         evas_object_show(_part->obj);
