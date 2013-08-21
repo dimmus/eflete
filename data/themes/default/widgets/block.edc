@@ -51,14 +51,16 @@ group {
          effect: SOFT_SHADOW;
          description {
             state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.5 0.5;
             visible: 0;
             rel1 {
                to: "left_top_padding";
                relative: 1.0 1.0;
             }
             rel2 {
-               to: "right_bottom_padding";
-               relative: 0.0 0.0;
+               to: "elm_block_subpanel";
+               relative: 0.0 1.0;
             }
             text {
                font: "Sans,Edje-Vera";
@@ -77,7 +79,26 @@ group {
             visible: 1;
          }
       }
-      part { name: "conf_over";
+      part {
+         name: "elm_block_subpanel";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            min: 0 0;
+            max:   50 50;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            rel1 {
+               to: "left_top_padding";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "right_bottom_padding";
+               relative: 0.0 1.0;
+            }
+        }
+      }
+     part { name: "conf_over";
          mouse_events:  0;
          description { state: "default" 0.0;
             rel1 {

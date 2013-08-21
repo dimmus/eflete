@@ -149,6 +149,19 @@ _new_img_add(void *data __UNUSED__,
 }
 
 static void
+_new_state_add(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   char *state_data = (char *)event_info;
+   char name[BUFF_MAX];
+   char value[BUFF_MAX];
+   snprintf(name, sizeof(name), "%s", strtok(state_data, "|"));
+   snprintf(value, sizeof(value), "%s", strtok(NULL, "|"));
+   DBG("STATE: received [%s]; name [%s], value[%s]", state_data, name, value);
+}
+
+static void
 _new_txt_add(void *data __UNUSED__,
                    Evas_Object *obj,
                    void *event_info)
@@ -325,6 +338,15 @@ _part_add(void *data __UNUSED__,
    evas_object_smart_callback_call(ws->groupspace, "gs,dialog,add", NULL);
 }
 
+static void
+_state_add(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Workspace *ws = (Workspace *)data;
+   evas_object_smart_callback_call(ws->groupspace, "gs,state,add", NULL);
+}
+
 
 static void
 _part_delete(void *data,
@@ -365,6 +387,13 @@ _layer_up_change(void *data,
    Evas_Object *edje_part = NULL;
    Part *part = (Part *)event_info;
 
+   if(!edje_edit_part_restack_above(group->obj, part->name))
+     {
+        NOTIFY_WARNING("Failed part[%s] restack above", part->name);
+        return;
+     }
+   edje_object_calc_force(group->obj);
+
    childs = evas_object_box_children_get(box);
    EINA_LIST_FOREACH(childs, l, child)
      {
@@ -390,8 +419,6 @@ _layer_up_change(void *data,
         evas_object_box_append(box, child);
      }
    evas_object_smart_calculate(box);
-   edje_edit_part_restack_above(group->obj, part->name);
-   edje_object_calc_force(group->obj);
    eina_list_free(l);
 
    Eina_Inlist *prev_elm =  NULL;
@@ -453,7 +480,8 @@ _layer_down_change(void *data,
         evas_object_box_append(box, child);
      }
    evas_object_smart_calculate(box);
-   edje_edit_part_restack_below(group->obj, part->name);
+   if (!edje_edit_part_restack_below(group->obj, part->name))
+     NOTIFY_INFO(3, "Failed part restack below");
    edje_object_calc_force(group->obj);
 
    Eina_Inlist *next_elm =  NULL;
@@ -784,6 +812,25 @@ ui_groupspace_box_get(Evas_Object *groupspace)
    return evas_object_data_get(groupspace, GS_BOX_KEY);
 }
 
+Eina_Bool
+ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
+                             char *state_name, double state_value)
+{
+   Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
+   if (!edje_edit_state_add(group->obj, part->name, state_name, state_value))
+     {
+        if (edje_edit_state_exist(group->obj, part->name, state_name, state_value))
+          {
+             NOTIFY_WARNING("State alredy exist, try another name or value");
+          }
+        else
+          NOTIFY_ERROR("Coud'nt add new state to part [%s]", part->name);
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
 void
 ui_groupspace_part_state_update(Evas_Object *groupspace,
                                 Part *part)
@@ -888,6 +935,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_smart_callback_add(group->obj, "gs,layer,down", _layer_down_change, ws);
    evas_object_smart_callback_add(group->obj, "gs,part,delete", _part_delete, ws);
    evas_object_smart_callback_add(group->obj, "gs,part,add", _part_add, ws);
+   evas_object_smart_callback_add(group->obj, "gs,state,add", _state_add, ws);
 
    evas_object_smart_callback_add(ws->groupspace, "gs,rect,add", _new_rect_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,img,add", _new_img_add, ws);
@@ -895,7 +943,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_smart_callback_add(ws->groupspace, "gs,swallow,add", _new_swallow_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,txtblock,add", _new_txtblock_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,spacer,add", _new_spacer_add, ws);
-//   evas_object_smart_callback_add(ws->groupspace, "gs,group,add", _new_group_add, ws);
+   evas_object_smart_callback_add(ws->groupspace, "gs,new_state,add", _new_state_add, ws);
 
    evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
                                   _gs_resize_cb, ws);
@@ -932,7 +980,6 @@ ui_groupspace_unset(Evas_Object *obj)
    evas_object_smart_callback_del(group->obj, "gs,layer,up", _layer_up_change);
    evas_object_smart_callback_del(group->obj, "gs,layer,down", _layer_down_change);
    evas_object_smart_callback_del(group->obj, "gs,part,delete", _part_delete);
-   evas_object_smart_callback_del(group->obj, "gs,part,add", _part_add);
    evas_object_smart_callback_del(group->obj, "gs,part,add", _part_add);
 
    evas_object_smart_callback_del(ws->groupspace, "gs,rect,add", _new_rect_add);

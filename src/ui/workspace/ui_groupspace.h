@@ -20,11 +20,6 @@
 
 
 /**
-   FIXME add comment!
-  */
-#define _ELLIP_STR "\xE2\x80\xA6"
-
-/**
  * Add new groupspace object into workspace.
  *
  * @param parent The parent Evas_Object .
@@ -115,4 +110,20 @@ ui_groupspace_group_get(Evas_Object *groupspace);
 Evas_Object *
 ui_groupspace_box_get(Evas_Object *groupspace);
 
+/* FIXME: add comment */
+/**
+ *	Add state for current selected part.
+ *
+ * @param groupspace A Evas_Object pointer to groupspace layout.
+ * @param part A Part object, wich selected in widgetlist.
+ * @param state_name Name of the new state.
+ * @param state_value Value of the new state.
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Groupspace
+ */
+Eina_Bool
+ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
+                             char *state_name, double state_value);
 #endif /* UI_GROUPSPACE_HEADER_H */

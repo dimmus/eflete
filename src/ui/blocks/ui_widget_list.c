@@ -252,14 +252,14 @@ _above_part_click(void *data,
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
-        WARN("None one part does'nt selected");
+        NOTIFY_INFO(3, "None one part does'nt selected");
         return;
      }
    Elm_Object_Item *new_eoi = NULL;
    Elm_Object_Item *prev_eoi = elm_genlist_item_prev_get(eoi);
    if (!prev_eoi)
      {
-        WARN("Selected part currently on top in list");
+        NOTIFY_INFO(3, "Selected part currently on top in list");
         return;
      }
    Part *part = elm_object_item_data_get(eoi);
@@ -281,14 +281,14 @@ _past_part_click(void *data __UNUSED__,
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
-        WARN("None one part does'nt selected");
+        NOTIFY_INFO(3, "None one part does'nt selected");
         return;
      }
    Elm_Object_Item *new_eoi = NULL;
    Elm_Object_Item *prev_eoi = elm_genlist_item_next_get(eoi);
    if (!prev_eoi)
      {
-        WARN("Selected part currently on bottom in list");
+        NOTIFY_INFO(3, "Selected part currently on bottom in list");
         return;
      }
    Part *part = elm_object_item_data_get(eoi);

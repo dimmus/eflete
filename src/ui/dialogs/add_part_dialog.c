@@ -1,5 +1,3 @@
-#include "efl_tet.h"
-#include "modal_window.h"
 #include "add_part_dialog.h"
 
 #define APD_GS_KEY "entry_gs"
