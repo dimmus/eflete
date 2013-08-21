@@ -146,6 +146,7 @@ add_subdirectory(tests/widget_manager)
 add_subdirectory(tests/logger)
 add_subdirectory(tests/efl_tet)
 add_subdirectory(tests/ui_block)
+add_subdirectory(tests/ui_ruler)
 
 #install
 if (NOT ${debug})
