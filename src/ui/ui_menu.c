@@ -32,9 +32,9 @@ _on_save_menu(void *data,
    if (pm_save_project_to_swap(ap->project))
      {
         if (pm_save_project_edj(ap->project))
-          NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj);
+          NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
         else
-          NOTIFY_ERROR(3, "Theme can not be saved: %s", ap->project->edj);
+          NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
      }
 }
 
