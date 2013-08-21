@@ -2,8 +2,7 @@
 #define STYLE_EDIT_H
 
 #include "efl_tet.h"
-#include "edit_private.h"
-
+#include "edit_common.h"
 
 /**
  * Get the list of all the text styles in the given project.
