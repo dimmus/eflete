@@ -455,14 +455,16 @@ __on_state_##Value##_change(void *data, \
                             Evas_Object *obj, \
                             void *ei __UNUSED__) \
 { \
+   int r, g, b, a; \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
    char **c = eina_str_split(value, " ", 4); \
+   r = atoi(c[0]); g = atoi(c[1]); b = atoi(c[2]); a = atoi(c[3]); \
    edje_edit_state_##Value##_set(group->obj, part->name, \
                                 part->curr_state, part->curr_state_value, \
-                                atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
-   evas_object_color_set(part->obj, atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
+                                r, g, b, a); \
+   evas_object_color_set(part->obj, r*a/255, g*a/255, b*a/255, a); \
    free(c[0]); \
    free(c); \
    group->isModify = EINA_TRUE; \
@@ -552,11 +554,13 @@ prop_item_state_##value##_add(Evas_Object *parent, \
                               double min, \
                               double max, \
                               double step, \
+                              const char *fmt, \
                               const char *tooltip) \
 { \
    Evas_Object *item, *spinner; \
    ITEM_ADD(parent, item, text) \
    SPINNER_ADD(item, spinner, min, max, step, EINA_TRUE, "default") \
+   elm_spinner_label_format_set(spinner, fmt); \
    elm_spinner_value_set(spinner, edje_edit_state_##value##_get(group->obj, \
                                                             part->name, \
                                                             part->curr_state, \
@@ -577,6 +581,7 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
                                           double min, \
                                           double max, \
                                           double step, \
+                                          const char *fmt, \
                                           const char *tooltip1, \
                                           const char *tooltip2) \
 { \
@@ -584,6 +589,7 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(parent, box, EINA_TRUE, EINA_TRUE) \
    SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "default") \
+   elm_spinner_label_format_set(spinner1, fmt); \
    elm_spinner_value_set(spinner1, edje_edit_state_##value1##_get(group->obj, \
                                                             part->name, \
                                                             part->curr_state, \
@@ -594,6 +600,7 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(spinner1, "changed", \
                                   __on_state_##value1##_change, part); \
    SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "default") \
+   elm_spinner_label_format_set(spinner2, fmt); \
    elm_spinner_value_set(spinner2, edje_edit_state_##value2##_get(group->obj, \
                                                             part->name, \
                                                             part->curr_state, \
@@ -792,19 +799,23 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    item = prop_item_state_visible_add(box_state, group, part,
                                       "Change part's visibility.");
    elm_box_pack_end(box_state, item);
-   item = prop_item_state_min_w_min_h_add(box_state, group, part, 0.0, 9999.0, 1.0,
+   item = prop_item_state_min_w_min_h_add(box_state, group, part,
+                                          0.0, 9999.0, 1.0, "%.0f",
                                           "Minimum part width in pixels.",
                                           "Minimum part height in pixels.");
    elm_box_pack_end(box_state, item);
-   item = prop_item_state_max_w_max_h_add(box_state, group, part, -1.0, 9999.0, 1.0,
+   item = prop_item_state_max_w_max_h_add(box_state, group, part,
+                                          -1.0, 9999.0, 1.0, "%.0f",
                                           "Maximum part width in pixels.",
                                           "Maximum part height in pixels.");
    elm_box_pack_end(box_state, item);
-   item = prop_item_state_align_x_align_y_add(box_state, group, part, 0.0, 1.0, 0.1,
+   item = prop_item_state_align_x_align_y_add(box_state, group, part,
+                                              0.0, 1.0, 0.1, "%1.2f",
                                               "Part horizontal align: 0.0 = left  1.0 = right",
                                               "Part vertical align: 0.0 = top  1.0 = bottom");
    elm_box_pack_end(box_state, item);
-   item = prop_item_state_aspect_min_aspect_max_add(box_state, group, part, 0.0, 1.0, 0.1,
+   item = prop_item_state_aspect_min_aspect_max_add(box_state, group, part,
+                                                    0.0, 1.0, 0.1, "%1.2f",
                                                     "Normally width and height can be "
                                                     "resized to any values independently",
                                                     "Normally width and height can be "
@@ -838,13 +849,13 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    evas_object_show(rel1_box);
 
    elm_box_pack_end(box_state, rel1_frame);
-   item = prop_item_state_rel1_relative_x_rel1_relative_y_add(rel1_box, group,
-                                                              part, 0.0, 1.0, 0.1,
+   item = prop_item_state_rel1_relative_x_rel1_relative_y_add(rel1_box, group, part,
+                                                              -5.0, 5.0, 0.1, "%1.2f",
                                                               "Relative 1 x",
                                                               "Relative 1 y");
    elm_box_pack_end(rel1_box, item);
-   item = prop_item_state_rel1_offset_x_rel1_offset_y_add(rel1_box, group,
-                                                        part, -9999.0, 9999.0, 1.0,
+   item = prop_item_state_rel1_offset_x_rel1_offset_y_add(rel1_box, group, part,
+                                                        -9999.0, 9999.0, 1.0, "%.0f",
                                                         "Left offset from relative position in pixels",
                                                         "Top offset from relative position in pixels");
    elm_box_pack_end(rel1_box, item);
@@ -863,13 +874,13 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    evas_object_show(rel2_box);
    elm_box_pack_end(box_state, rel2_frame);
 
-   item = prop_item_state_rel2_relative_x_rel2_relative_y_add(rel2_box, group,
-                                                              part, 0.0, 1.0, 0.1,
+   item = prop_item_state_rel2_relative_x_rel2_relative_y_add(rel2_box, group, part,
+                                                              -5.0, 5.0, 0.1, "%1.2f",
                                                               "Relative 2 x",
                                                               "Relative 2 y");
    elm_box_pack_end(rel2_box, item);
-   item = prop_item_state_rel2_offset_x_rel2_offset_y_add(rel2_box, group,
-                                                     part, -9999.0, 9999.0, 1.0,
+   item = prop_item_state_rel2_offset_x_rel2_offset_y_add(rel2_box, group, part,
+                                                     -9999.0, 9999.0, 1.0, "%.0f",
                                                      "Right offset from relative position in pixels",
                                                      "Bottom offset from relative position in pixels");
    elm_box_pack_end(rel2_box, item);
@@ -896,17 +907,19 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
         item = prop_item_state_font_add(text_box, group, part,
                                         "Change the text's font.");
         elm_box_pack_end(text_box, item);
-        item = prop_item_state_text_size_add(text_box, group, part, 0.0, 128.0, 1.0,
+        item = prop_item_state_text_size_add(text_box, group, part,
+                                             0.0, 128.0, 1.0, "%.0f",
                                              "Change text font's size.");
         elm_box_pack_end(text_box, item);
         item = prop_item_state_text_align_x_text_align_y_add(text_box, group, part,
-                                                             0.0, 1.0, 0.1,
+                                                             0.0, 1.0, 0.1, "%1.11f",
                                                              "Text horizontal align. "
                                                              "0.0 = left  1.0 = right",
                                                              "Text vertical align. "
                                                              "0.0 = top  1.0 = bottom");
         elm_box_pack_end(text_box, item);
-        item = prop_item_state_text_elipsis_add(text_box, group, part, 0.0, 1.0, 0.1,
+        item = prop_item_state_text_elipsis_add(text_box, group, part,
+                                                0.0, 1.0, 0.1, "%1.11f",
                                                 "Cut text if biggest then part's area"
                                                 "0.0 = fix the left side  1.0 = right side");
         elm_box_pack_end(text_box, item);
