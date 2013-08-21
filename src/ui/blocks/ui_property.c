@@ -275,7 +275,7 @@ prop_item_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *check; \
    ITEM_ADD(parent, item, text) \
-   CHECK_ADD(parent, check, "toggle") \
+   CHECK_ADD(parent, check, "simplified_toggle") \
    elm_check_state_set(check, edje_edit_##value##_get(group->obj, \
                                                       part->name)); \
    evas_object_data_set(check, OBJ_DATA, group); \
@@ -497,7 +497,7 @@ prop_item_state_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *check; \
    ITEM_ADD(parent, item, text) \
-   CHECK_ADD(parent, check, "toggle") \
+   CHECK_ADD(parent, check, "simplified_toggle") \
    elm_check_state_set(check, edje_edit_state_##value##_get(group->obj, \
                                                       part->name, \
                                                       part->curr_state, \
@@ -521,7 +521,7 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *check1, *check2; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   CHECK_ADD(box, check1, "toggle") \
+   CHECK_ADD(box, check1, "simplified_toggle") \
    elm_check_state_set(check1, edje_edit_state_##value1##_get(group->obj, \
                                                       part->name, \
                                                       part->curr_state, \
@@ -531,7 +531,7 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    elm_box_pack_end(box, check1); \
    evas_object_smart_callback_add(check1, "changed", \
                                   __on_state_##value1##_change, part); \
-   CHECK_ADD(box, check2, "toggle") \
+   CHECK_ADD(box, check2, "simplified_toggle") \
    elm_check_state_set(check2, edje_edit_state_##value2##_get(group->obj, \
                                                       part->name, \
                                                       part->curr_state, \
