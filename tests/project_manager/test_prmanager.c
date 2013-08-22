@@ -88,7 +88,7 @@ START_TEST (pm_free_test_n1)
    Project *pro;
    const char *name, *path, *img, *font, *sound;
    name = "./data";
-   path = "../tests/edje_compile/data/check.edc";
+   path = "./data/check.edc";
    img = "./data";
    font = "./data";
    sound = "./data";

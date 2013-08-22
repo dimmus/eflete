@@ -28,7 +28,7 @@ START_TEST (mw_add_test1)
 END_TEST
 
 /**
- * @addto group mw_add
+ * @addtogroup mw_add
  * @{
  * @objective Negative test case:
  *
@@ -74,7 +74,7 @@ START_TEST (mw_title_set_test1)
 END_TEST
 
 /**
- * @addto group mw_title_set
+ * @addtogroup mw_title_set
  * @{
  * @objective Negative test case:
  *
@@ -117,7 +117,7 @@ START_TEST (mw_info_text_set_test1)
 END_TEST
 
 /**
- * @addto group mw_info_text_set
+ * @addtogroup mw_info_text_set
  * @{
  * @objective Negative test case:
  *
@@ -156,14 +156,14 @@ START_TEST (mw_icon_set_test1)
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    res = mw_add(par);
    Evas_Object *ic = elm_icon_add(win);
-   elm_image_file_set(ic, ".data/1.jpg", NULL);
+   elm_image_file_set(ic, "./data/1.jpg", NULL);
    mw_icon_set(res, ic);
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addto group mw_icon_set
+ * @addtogroup mw_icon_set
  * @{
  * @objective Negative test case:
  *

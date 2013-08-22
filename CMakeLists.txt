@@ -151,6 +151,9 @@ add_subdirectory(tests/colorclasses_edit_api)
 add_subdirectory(tests/modal_window)
 add_subdirectory(tests/ui_main_window)
 add_subdirectory(tests/ui_signal_list)
+add_subdirectory(tests/ui_state_list)
+add_subdirectory(tests/ui_widget_list)
+add_subdirectory(tests/font_viewer_dialog)
 
 #install
 if (NOT ${debug})

@@ -18,7 +18,7 @@ START_TEST (wm_part_free_test1)
 {
    elm_init(0,0);
    Evas_Object *obj, *win;
-   elm_theme_extension_add(NULL, "./data/check.edj");
+   elm_theme_extension_add(NULL, "./tests/widget_manager/data/check.edj");
    win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
    obj = elm_check_add(win);
    const char *name = "defaul";
@@ -65,7 +65,7 @@ START_TEST (wm_part_add_test1)
 {
    elm_init(0,0);
    Evas_Object *obj, *win;
-   elm_theme_extension_add(NULL, "./data/check.edj");
+   elm_theme_extension_add(NULL, "./tests/widget_manager/data/check.edj");
    win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
    obj = elm_check_add(win);
    const char *part = "defaul";
@@ -202,7 +202,7 @@ START_TEST (wm_program_signals_list_get_test1)
    elm_init(0,0);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./tests/widget_manager/data/check.edj", "elm/check/base/defaul");
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
@@ -302,7 +302,7 @@ START_TEST (wm_style_add_test1)
    
    Evas *e = evas_new();
    Evas_Object *object = edje_edit_object_add(e);
-   if (!edje_object_file_set(object, "./data/check.edj", "elm/check/base/defaul"))
+   if (!edje_object_file_set(object, "./tests/widget_manager/data/check.edj", "elm/check/base/defaul"))
       fprintf(stdout, "Failed set file to object %p\n", object);
    
    const char *grname = "defaul";
@@ -499,7 +499,7 @@ END_TEST
 START_TEST (wm_widget_list_new_test1)
 {
    elm_init(0,0);
-   const char *file = "./data/check.edj";
+   const char *file = "./tests/widget_manager/data/check.edj";
    if(wm_widget_list_new(file) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot create list of Widget object");
@@ -542,7 +542,7 @@ END_TEST
 START_TEST (wm_widget_list_free_test1)
 {
    elm_init(0,0);
-   const char *file = "./data/check.edj";
+   const char *file = "./tests/widget_manager/data/check.edj";
    Eina_Inlist *wl = wm_widget_list_new(file);
    if(wm_widget_list_free(wl) == EINA_FALSE)
    {
@@ -588,7 +588,7 @@ END_TEST
 START_TEST (wm_group_object_find_test1)
 {
    elm_init(0,0);
-   const char *file = "./data/check.edj";
+   const char *file = "./tests/widget_manager/data/check.edj";
    Eina_Inlist *w_list =  wm_widget_list_new(file);
    const char *gr_name = "elm/check/base/defaul";
    if(wm_group_object_find(w_list, gr_name) == EINA_FALSE)
