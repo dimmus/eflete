@@ -112,6 +112,9 @@ _sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
    if (!ws->groupspace) return;
    Group *group = ui_groupspace_group_get(ws->groupspace);
    if (!group) return;
+
+   Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
+   if (!box) return;
    int bg_x, bg_y, obj_x, obj_y, obj_w, obj_h;
    evas_object_geometry_get(ws->bg, &bg_x, &bg_y, NULL, NULL);
    evas_object_geometry_get(group->obj, &obj_x, &obj_y, &obj_w, &obj_h);
@@ -123,6 +126,11 @@ _sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
                                         obj_y + obj_h - bg_y - 25);
    ui_ruler_redraw(ws->ruler_hor);
    ui_ruler_redraw(ws->ruler_ver);
+   evas_object_smart_calculate(box);
+
+   if (ws->highlight.part)
+     ui_object_highlight_move(ws);
+
 }
 
 static void
