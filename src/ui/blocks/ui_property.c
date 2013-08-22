@@ -277,6 +277,19 @@ prop_item_label_add(Evas_Object *parent,
 
 #define OBJ_DATA "group_data"
 
+#define ITEM_STRING_PART_CALLBACK(Value) \
+static void \
+__on_state_##Value##_change(void *data, \
+                            Evas_Object *obj, \
+                            void *ei __UNUSED__) \
+{ \
+   Part *part = (Part *)data; \
+   Group *group = evas_object_data_get(obj, OBJ_DATA); \
+   const char *value = elm_entry_entry_get(obj); \
+   edje_edit_part_##Value##_set(group->obj, part->name, value); \
+   group->isModify = EINA_TRUE; \
+}
+
 #define ITEM_BOOL_PART_CALLBACK(Value) \
 static void \
 __on_##Value##_change(void *data, \
@@ -288,6 +301,25 @@ __on_##Value##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    edje_edit_##Value##_set(group->obj, part->name, value); \
    group->isModify = EINA_TRUE; \
+}
+
+#define ITEM_1ENTRY_PART(text, value) \
+Evas_Object * \
+prop_item_part_##value##_add(Evas_Object *parent, \
+                              Group *group, \
+                              Part *part, \
+                              const char *tooltip) \
+{ \
+   Evas_Object *item, *entry; \
+   ITEM_ADD(parent, item, text) \
+   ENTRY_ADD(parent, entry, EINA_TRUE) \
+   elm_entry_entry_set(entry, edje_edit_part_##value##_get(group->obj, part->name)); \
+   evas_object_data_set(entry, OBJ_DATA, group); \
+   elm_object_tooltip_text_set(entry, tooltip); \
+   evas_object_smart_callback_add(entry, "activated", \
+                                  __on_state_##value##_change, part); \
+   elm_object_part_content_set(item, "elm.swallow.content", entry); \
+   return item; \
 }
 
 #define ITEM_1CHEACK_PART(text, value) \
@@ -318,9 +350,16 @@ prop_item_##value##_add(Evas_Object *parent, \
    ITEM_SEL_PART_CALLBACK(value) \
    ITEM_1SEL_PART(text, value)
 
+#define ITEM_1STRING_PART_CREATE(text, value) \
+   ITEM_STRING_PART_CALLBACK(value) \
+   ITEM_1ENTRY_PART(text, value)
+
+
 ITEM_1BOOL_PART_CREATE("scale:", part_scale)
 ITEM_1BOOL_PART_CREATE("mouse:", part_mouse_events)
 ITEM_1BOOL_PART_CREATE("repeat:", part_repeat_events)
+ITEM_1STRING_PART_CREATE("clip to:", clip_to)
+ITEM_1STRING_PART_CREATE("source", source)
 
 Evas_Object *
 ui_prop_part_info_view_add(Evas_Object *prop_view,
@@ -330,9 +369,9 @@ ui_prop_part_info_view_add(Evas_Object *prop_view,
    Evas_Object *part_view, *box, *item;
    Evas_Object *part_view_base, *box_base;
    Prop_Part_View_Data *ppvd;
+   Edje_Part_Type type;
 
-   if (!prop_view)
-     return NULL;
+   if (!prop_view) return NULL;
 
    part_view = elm_frame_add(prop_view);
    elm_frame_autocollapse_set(part_view, EINA_TRUE);
@@ -374,9 +413,9 @@ ui_prop_part_info_view_add(Evas_Object *prop_view,
 
    elm_object_content_set(part_view, box);
 
+   type = edje_edit_part_type_get(group->obj, part->name);
    item = prop_item_label_add(box_base, "name:", part->name);
    elm_box_pack_end(box_base, item);
-   Edje_Part_Type type = edje_edit_part_type_get(group->obj, part->name);
    item = prop_item_label_add(box_base, "type:", wm_part_type_get(type));
    elm_box_pack_end(box_base, item);
    item = prop_item_part_scale_add(box_base, group, part,
@@ -389,26 +428,18 @@ ui_prop_part_info_view_add(Evas_Object *prop_view,
    item = prop_item_part_repeat_events_add(box_base, group, part,
                                            "Enable repeat mouse events to the parts below.");
    elm_box_pack_end(box_base, item);
-
+   item = prop_item_part_clip_to_add(box_base, group, part,
+                                     "Reference clipper part.");
+   elm_box_pack_end(box_base, item);
+   if (type == EDJE_PART_TYPE_GROUP)
+     {
+        item = prop_item_part_source_add(box_base, group, part,
+                                         "Source group selection.");
+        elm_box_pack_end(box_base, item);
+     }
 /*
-   #define EDJE_EDIT_FUNC_PARAM group->obj, part->name
    item = ui_prop_view_item_one_edit_string_add(box_base, "name",
                                                 part->name, "Unique name of part.");
-   evas_object_show(item);
-
-   item = ui_prop_view_item_one_edit_string_add(box_base, "clip to",
-                                                edje_edit_part_clip_to_get(EDJE_EDIT_FUNC_PARAM),
-                                                "Reference clipper part.");
-   evas_object_show(item);
-
-   item = ui_prop_view_item_one_edit_string_add(box_base, "source",
-                                                edje_edit_part_source_get(EDJE_EDIT_FUNC_PARAM),
-                                                "Source group selection.");
-   evas_object_show(item);
-
-   evas_object_data_set(part_view, PROP_PART_VIEW_DATA, ppvd);
-
-   #undef EDJE_EDIT_FUNC_PARAM
    */
    return part_view;
 }
@@ -667,6 +698,41 @@ prop_item_state_##value##_add(Evas_Object *parent, \
    return item; \
 }
 
+#define ITEM_2ENTRY_STATE(text, value1, value2) \
+Evas_Object * \
+prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
+                                          Group *group, \
+                                          Part *part, \
+                                          const char *tooltip1, \
+                                          const char *tooltip2) \
+{ \
+   Evas_Object *item, *box, *entry1, *entry2; \
+   ITEM_ADD(parent, item, text) \
+   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
+   ENTRY_ADD(box, entry1, EINA_TRUE) \
+   ENTRY_ADD(box, entry2, EINA_TRUE) \
+   elm_entry_entry_set(entry1, edje_edit_state_##value1##_get(group->obj, \
+                                                              part->name, \
+                                                              part->curr_state, \
+                                                              part->curr_state_value)); \
+   evas_object_data_set(entry1, OBJ_DATA, group); \
+   elm_object_tooltip_text_set(entry1, tooltip1); \
+   evas_object_smart_callback_add(entry1, "activated", \
+                                  __on_state_##value1##_change, part); \
+   elm_box_pack_end(box, entry1); \
+   elm_entry_entry_set(entry2, edje_edit_state_##value2##_get(group->obj, \
+                                                              part->name, \
+                                                              part->curr_state, \
+                                                              part->curr_state_value)); \
+   evas_object_data_set(entry2, OBJ_DATA, group); \
+   elm_object_tooltip_text_set(entry2, tooltip2); \
+   evas_object_smart_callback_add(entry2, "activated", \
+                                  __on_state_##value2##_change, part); \
+   elm_box_pack_end(box, entry2); \
+   elm_object_part_content_set(item, "elm.swallow.content", box); \
+   return item; \
+}
+
 static Elm_Entry_Filter_Accept_Set accept_color = {
      .accepted = "0123456789 ",
      .rejected = NULL
@@ -769,6 +835,11 @@ prop_item_state_##value##_add(Evas_Object *parent, \
    ITEM_STRING_STATE_CALLBACK(value) \
    ITEM_1ENTRY_STATE(text, value)
 
+#define ITEM_2STRING_STATE_CREATE(text, value1, value2) \
+   ITEM_STRING_STATE_CALLBACK(value1) \
+   ITEM_STRING_STATE_CALLBACK(value2) \
+   ITEM_2ENTRY_STATE(text, value1, value2)
+
 #define ITEM_IM_BORDER_STATE_CREATE(text, value) \
    ITEM_IM_BORDER_STATE_CALLBACK(value) \
    ITEM_IM_BORDER_STATE(text, value)
@@ -783,8 +854,10 @@ ITEM_COLOR_STATE_CREATE("color2:", color2)
 ITEM_COLOR_STATE_CREATE("color3:", color3)
 ITEM_2DOUBLE_STATE_CREATE("relative:", rel1_relative_x, rel1_relative_y)
 ITEM_2INT_STATE_CREATE("offset:", rel1_offset_x, rel1_offset_y)
+ITEM_2STRING_STATE_CREATE("to:", rel1_to_x, rel1_to_y)
 ITEM_2DOUBLE_STATE_CREATE("relative:", rel2_relative_x, rel2_relative_y)
 ITEM_2INT_STATE_CREATE("offset:", rel2_offset_x, rel2_offset_y)
+ITEM_2STRING_STATE_CREATE("to:", rel2_to_x, rel2_to_y)
 ITEM_1STRING_STATE_CREATE("image:", image)
 ITEM_IM_BORDER_STATE_CREATE("border:", image_border)
 ITEM_1STRING_STATE_CREATE("text: ", text)
@@ -890,6 +963,10 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                                         "Left offset from relative position in pixels",
                                                         "Top offset from relative position in pixels");
    elm_box_pack_end(rel1_box, item);
+   item = prop_item_state_rel1_to_x_rel1_to_y_add(rel1_box, group, part,
+                                                  "Left reference part.",
+                                                  "Top reference part.");
+   elm_box_pack_end(rel1_box, item);
 
    rel2_frame = elm_frame_add(box_state);
    elm_frame_autocollapse_set(rel2_frame, EINA_FALSE);
@@ -915,6 +992,11 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                                      "Right offset from relative position in pixels",
                                                      "Bottom offset from relative position in pixels");
    elm_box_pack_end(rel2_box, item);
+   item = prop_item_state_rel2_to_x_rel2_to_y_add(rel2_box, group, part,
+                                                  "Right reference part.",
+                                                  "Bottom reference part.");
+   elm_box_pack_end(rel2_box, item);
+
 
    if (type == EDJE_PART_TYPE_TEXT)
      {
@@ -982,27 +1064,6 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
         elm_box_pack_end(image_box, item);
 
      }
- /*
-   item = ui_prop_view_item_one_edit_string_add(box_state, "state",
-                                                buffer, "Unique state name for part.");
-   item = ui_prop_view_item_two_edit_int_add(rel1_box, "offset",
-                                             edje_edit_state_rel1_offset_x_get(EDJE_EDIT_FUNC_PARAMS),
-                                             "Left offset from relative position in pixels",
-                                             edje_edit_state_rel1_offset_y_get(EDJE_EDIT_FUNC_PARAMS),
-                                             "Top offset from relative position in pixels");
-   item = ui_prop_view_item_one_edit_string_add(rel1_box, "to_x",
-                                                edje_edit_state_rel1_to_x_get(EDJE_EDIT_FUNC_PARAMS),
-                                                "Left reference part.");
-   item = ui_prop_view_item_one_edit_string_add(rel1_box, "to_y",
-                                                edje_edit_state_rel1_to_y_get(EDJE_EDIT_FUNC_PARAMS),
-                                                "Top reference part.");
-   item = ui_prop_view_item_one_edit_string_add(rel2_box, "to_x",
-                                                edje_edit_state_rel2_to_x_get(EDJE_EDIT_FUNC_PARAMS),
-                                                "Left reference part.");
-   item = ui_prop_view_item_one_edit_string_add(rel2_box, "to_y",
-                                                edje_edit_state_rel2_to_y_get(EDJE_EDIT_FUNC_PARAMS),
-                                                "Top reference part.");
-   */
    return part_view_state;
 }
 
