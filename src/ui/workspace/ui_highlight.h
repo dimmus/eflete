@@ -84,6 +84,16 @@
  * By using handlers user can resize and move selected part.
  */
 
+struct _Highlight_Events
+{
+   Evas_Coord x;
+   Evas_Coord y;
+   Evas_Coord w;
+   Evas_Coord h;
+};
+
+typedef struct _Highlight_Events Highlight_Events;
+
 /**
  * Adds highlight.
  *

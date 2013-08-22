@@ -34,6 +34,7 @@ struct _Highlight
                          outside of the highlighted part) */
    Evas_Object *smart_object; /* smart object that contain all information
                                  mentioned above. */
+   Highlight_Events *events;
 };
 
 /* here we create and define some functions for creating our highlight smart
@@ -176,6 +177,7 @@ _handler_move_cb(void *data,
 {
    Handler *handler = (Handler *)data;
    Highlight *highlight = handler->highlight;
+   Highlight_Events *events = handler->highlight->events;
 
    if (highlight->clicked)
      {
@@ -377,7 +379,12 @@ _handler_move_cb(void *data,
           }
         evas_object_resize(highlight->border, width, height);
         evas_object_move(highlight->border, xpos, ypos);
-
+        events->x = xpos;
+        events->y = ypos;
+        events->w = width;
+        events->h = height;
+        evas_object_smart_callback_call(handler->highlight->smart_object,
+                                        "hl,resize", events);
 
         /*
            We apply changes only to handler that is being moved.
@@ -402,6 +409,7 @@ _handler_up_cb(void *data,
    evas_object_geometry_get(handler->highlight->border, &x, &y, &w, &h);
    evas_object_resize(handler->highlight->smart_object, w, h);
    evas_object_move(handler->highlight->smart_object, x, y);
+
 
    handler->highlight->clicked = EINA_FALSE;
 }
@@ -610,13 +618,14 @@ hl_highlight_add(Evas_Object *parent)
    _highlight->border = border;
    evas_object_smart_member_add(border, parent);
 
+   _highlight->smart_object = obj;
    _highlight->handler_RB = _handler_object_add(parent, _highlight, RB);
    _highlight->handler_RT = _handler_object_add(parent, _highlight, RT);
    _highlight->handler_LB = _handler_object_add(parent, _highlight, LB);
    _highlight->handler_LT = _handler_object_add(parent, _highlight, LT);
    _highlight->outside = EINA_FALSE;
    _highlight->clicked = EINA_FALSE;
-   _highlight->smart_object = obj;
+   _highlight->events = (Highlight_Events *)mem_calloc(1, sizeof(Highlight_Events));
 
    return obj;
 }
