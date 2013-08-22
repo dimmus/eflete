@@ -110,7 +110,6 @@ ui_groupspace_group_get(Evas_Object *groupspace);
 Evas_Object *
 ui_groupspace_box_get(Evas_Object *groupspace);
 
-/* FIXME: add comment */
 /**
  *	Add state for current selected part.
  *
@@ -126,4 +125,21 @@ ui_groupspace_box_get(Evas_Object *groupspace);
 Eina_Bool
 ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
                              char *state_name, double state_value);
+
+/**
+ *	Get part relative geometry. Needed for highlight relative space.
+ *
+ * @param group A Group struct pointer.
+ * @param part A Part object, wich selected in widgetlist.
+ * @param x Pointer to an integer in which to store the X coordinate of the space.
+ * @param y Pointer to an integer in which to store the Y coordinate of the space.
+ * @param w Pointer to an integer in which to store the width of the space.
+ * @param h Pointer to an integer in which to store the height of the space.
+ *
+ * @ingroup Groupspace
+ */
+void
+ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
+                               int *x, int *y, int *w, int *h);
+
 #endif /* UI_GROUPSPACE_HEADER_H */

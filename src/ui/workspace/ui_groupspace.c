@@ -360,6 +360,7 @@ _part_delete(void *data,
 
    group->parts = eina_inlist_remove(group->parts, EINA_INLIST_GET(part));
    evas_object_box_remove(box, part->obj);
+   evas_object_box_remove(box, ws->highlight.space_hl);
    evas_object_box_remove(box, ws->highlight.highlight);
    ws->highlight.part = NULL;
    evas_object_data_del(part->obj, GS_PART_DATA_KEY);
@@ -516,17 +517,13 @@ _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
 static void
 _gs_hilight_move_resize(void *data,
                         Evas *e __UNUSED__,
-                        Evas_Object *obj,
+                        Evas_Object *obj __UNUSED__,
                         void *ei __UNUSED__)
 {
-   int x, y, w, h;
    Workspace *ws = (Workspace*)data;
+
    if (ws->highlight.part)
-     {
-        evas_object_geometry_get(obj, &x, &y, &w, &h);
-        evas_object_move(ws->highlight.highlight, x, y);
-        evas_object_resize(ws->highlight.highlight, w, h);
-     }
+     ui_object_highlight_move(ws);
 }
 
 static void
@@ -549,11 +546,7 @@ _gs_resize_cb(void *data,
    ui_ruler_redraw(ws->ruler_ver);
 
    if (ws->highlight.part)
-     {
-        evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
-        evas_object_move(ws->highlight.highlight, x, y);
-        evas_object_resize(ws->highlight.highlight, w, h);
-     }
+     ui_object_highlight_move(ws);
 }
 
 static void
@@ -830,6 +823,141 @@ _gs_group_draw(Group *group,
    evas_object_show(box);
 }
 
+const Evas_Object *
+_gs_group_part_get(Group *group, const char *name)
+{
+   Part *part = NULL;
+
+   EINA_INLIST_FOREACH(group->parts, part)
+     {
+        if (!strcmp(part->name, name))
+          return evas_object_data_get(part->obj, GS_PART_DATA_KEY);
+     }
+   return NULL;
+}
+
+void
+ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
+                                      int *x, int *y, int *w, int *h)
+{
+   Evas_Object *edje_part = NULL;
+   const char *state_name = NULL;
+   double state_val = 0.0;
+
+   const char *rel_to = NULL;
+   const Evas_Object *rel_to_object = NULL;
+   int r_x, r_y, r_h, r_w;
+   int g_x, g_y, g_h, g_w;
+
+   double relative_val = 0;
+
+   if ((!group) || (!part))
+     {
+        ERR("Coud'nt take relative space geometry");
+        return;
+     }
+
+   edje_part = evas_object_data_get(part->obj, GS_PART_DATA_KEY);
+   if (!edje_part)
+     {
+        ERR("Coud'nt take edje object from part");
+        return;
+     }
+   state_name = edje_object_part_state_get(group->obj, part->name, &state_val);
+
+   rel_to = edje_edit_state_rel1_to_x_get(group->obj, part->name, state_name,
+                                          state_val);
+   relative_val = edje_edit_state_rel1_relative_x_get(group->obj, part->name,
+                                                      state_name, state_val);
+   evas_object_geometry_get(group->obj, &g_x, &g_y, &g_w, &g_h);
+   if (rel_to)
+     {
+         rel_to_object = _gs_group_part_get(group, rel_to);
+         if (!rel_to_object)
+           {
+              ERR("Failed get rel 1 to x object");
+              return;
+           }
+         else
+           {
+              evas_object_geometry_get(rel_to_object, &r_x, NULL, &r_w, NULL);
+              *x = r_x + r_w * relative_val;
+           }
+     }
+   else
+     *x = g_x + g_w * relative_val;
+
+   rel_to = edje_edit_state_rel1_to_y_get(group->obj, part->name, state_name,
+                                          state_val);
+   relative_val = edje_edit_state_rel1_relative_y_get(group->obj, part->name,
+                                                      state_name, state_val);
+   if (rel_to)
+     {
+         rel_to_object = _gs_group_part_get(group, rel_to);
+         if (!rel_to_object)
+           {
+              ERR("Failed get rel 1 to y object");
+              return;
+           }
+         else
+           {
+              evas_object_geometry_get(rel_to_object, NULL, &r_y, NULL, &r_h);
+              *y = r_y + r_h * relative_val;
+           }
+     }
+   else
+        *y = g_y + g_h * relative_val;
+
+   rel_to = edje_edit_state_rel2_to_x_get(group->obj, part->name, state_name,
+                                          state_val);
+   relative_val = edje_edit_state_rel2_relative_x_get(group->obj, part->name,
+                                                      state_name, state_val);
+   if (rel_to)
+     {
+         rel_to_object = _gs_group_part_get(group, rel_to);
+         if (!rel_to_object)
+           {
+              ERR("Failed get rel 2 to x object");
+              return;
+           }
+         else
+           {
+              evas_object_geometry_get(rel_to_object, &r_x, NULL, &r_w, NULL);
+              *w = (r_x + r_w * relative_val) - *x;
+           }
+     }
+   else
+     *w = g_w * relative_val - (*x - g_x);
+
+   rel_to = edje_edit_state_rel2_to_y_get(group->obj, part->name, state_name,
+                                          state_val);
+   relative_val = edje_edit_state_rel2_relative_y_get(group->obj, part->name,
+                                                      state_name, state_val);
+   if (rel_to)
+     {
+         rel_to_object = _gs_group_part_get(group, rel_to);
+         if (!rel_to_object)
+           {
+              ERR("Failed get rel 2 to y object");
+              return;
+           }
+         else
+           {
+              evas_object_geometry_get(rel_to_object, NULL, &r_y, NULL, &r_h);
+              *h = (r_y + r_h * relative_val) - *y;
+           }
+     }
+   else
+     *h = g_h * relative_val - (*y - g_y);
+
+}
+
+const Evas_Object *
+ui_groupspace_part_edje_get(Part *part)
+{
+   return evas_object_data_get(part->obj, GS_PART_DATA_KEY);
+}
+
 Group *
 ui_groupspace_group_get(Evas_Object *groupspace)
 {
@@ -1025,8 +1153,10 @@ ui_groupspace_unset(Evas_Object *obj)
    eina_list_free(list);
    evas_object_box_remove_all(box, EINA_FALSE);
    evas_object_hide(box);
+   evas_object_del(ws->highlight.space_hl);
    evas_object_del(ws->highlight.highlight);
    ws->highlight.highlight = NULL;
+   ws->highlight.space_hl = NULL;
    elm_object_part_content_unset(ws->groupspace, "edje_group");
    elm_layout_signal_emit (ws->groupspace, "groupspace,hide", "");
 }
@@ -1046,6 +1176,8 @@ ui_groupspace_separate(Workspace *ws)
    if (ws->highlight.highlight)
      {
         evas_object_del(ws->highlight.highlight);
+        evas_object_del(ws->highlight.space_hl);
         ws->highlight.highlight = NULL;
+        ws->highlight.space_hl = NULL;
      }
 }

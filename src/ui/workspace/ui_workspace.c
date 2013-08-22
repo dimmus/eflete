@@ -327,27 +327,45 @@ ui_object_highlight_set(Workspace *ws, Part *part)
 {
    if ((!ws) || (!part) || (!ws->separated)) return;
 
-   DBG("I am here!");
+
+   if (!ws->highlight.space_hl)
+        ws->highlight.space_hl= hl_highlight_add(ws->groupspace);
+
    if (!ws->highlight.highlight)
      ws->highlight.highlight = hl_highlight_add(ws->groupspace);
 
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
-   evas_object_box_append(box, ws->highlight.highlight);
+   Group *group = ui_groupspace_group_get(ws->groupspace);
 
    int x, y, w, h;
+   ws->highlight.part = part;
+   ui_groupsapce_part_space_geometry_get(group, part, &x, &y, &w, &h);
+   evas_object_resize(ws->highlight.space_hl, w, h);
+   evas_object_move(ws->highlight.space_hl, x, y);
+   evas_object_show(ws->highlight.space_hl);
+   evas_object_box_append(box, ws->highlight.space_hl);
+   hl_highlight_handler_disabled_set(ws->highlight.space_hl, EINA_TRUE);
+
    evas_object_geometry_get(part->obj, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.highlight, w, h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_show(ws->highlight.highlight);
+   evas_object_box_append(box, ws->highlight.highlight);
 
-   ws->highlight.part = part;
    evas_object_event_callback_add(ws->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb, ws);
    evas_object_smart_callback_add(ws->highlight.highlight, "hl,resize",
                                   __on_resize, ws);
+
+   hl_highlight_bg_color_set(ws->highlight.space_hl, 64, 64, 64, 64);
+   hl_highlight_handler_color_set(ws->highlight.space_hl, 0, 0, 255, 255);
+   hl_highlight_border_color_set(ws->highlight.space_hl, 0, 0, 0, 255);
+
+   hl_highlight_bg_color_set(ws->highlight.highlight , 0, 0, 0 , 0);
    hl_highlight_handler_color_set(ws->highlight.highlight, 255, 0, 0, 255);
    hl_highlight_border_color_set(ws->highlight.highlight, 0, 255, 0, 255);
+
 }
 
 void
@@ -360,6 +378,11 @@ ui_object_highlight_move(Workspace *ws)
    evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_resize(ws->highlight.highlight, w, h);
+
+   Group *group = ui_groupspace_group_get(ws->groupspace);
+   ui_groupsapce_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
+   evas_object_resize(ws->highlight.space_hl, w, h);
+   evas_object_move(ws->highlight.space_hl, x, y);
 }
 
 void
@@ -368,4 +391,6 @@ ui_object_highlight_hide(Workspace *ws)
    if (!ws || !ws->highlight.highlight) return;
 
    evas_object_hide(ws->highlight.highlight);
+   evas_object_hide(ws->highlight.space_hl);
+
 }

@@ -44,6 +44,7 @@ struct _Workspace
     struct {
         Evas_Object *highlight;
         Part *part; /* highlighting object */
+        Evas_Object *space_hl;
     } highlight;
 };
 typedef struct _Workspace Workspace;

@@ -151,6 +151,27 @@ hl_highlight_handler_color_set(Evas_Object *hl,
                               Evas_Coord a);
 
 /**
+ * Set the color of background of the highlight.
+ *
+ * This function will set given color to the background, that is used for showing
+ * highlight space.
+ *
+ * @param obj The smart object that is represent a highlight.
+ * @param r Red color.
+ * @param g Green color.
+ * @param b Blur color.
+ * @param a Alpha channel.
+ *
+ * @ingroup Highlight
+ */
+void
+hl_highlight_bg_color_set(Evas_Object *hl,
+                              Evas_Coord r,
+                              Evas_Coord g,
+                              Evas_Coord b,
+                              Evas_Coord a);
+
+/**
  * Set the color of border of the whole highlight.
  *
  * This function will set given color to the border, that is used for showing
@@ -170,5 +191,19 @@ hl_highlight_border_color_set(Evas_Object *hl,
                               Evas_Coord g,
                               Evas_Coord b,
                               Evas_Coord a);
+
+/**
+ * Disabled handlers of the highlight.
+ *
+ * This function will disable or enable showing handlers of the highlight.
+ *
+ * @param obj The smart object that is represent a highlight.
+ * @param disabled EINA_TRUE will disable handlers, EINA_FALSE will enable handlers.
+ *
+ * @ingroup Highlight
+ */
+
+void
+hl_highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
 
 #endif /* HIGHLIGHT_H */
