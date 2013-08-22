@@ -67,19 +67,18 @@ _item_part_content_get(void *data,
                        const char *part)
 {
    Part *_part = (Part *) data;
-   Evas_Object *icon = elm_icon_add(obj);
    if (!strcmp(part, "elm.swallow.icon"))
      {
+        Evas_Object *icon = elm_icon_add(obj);
         if (_part->show)
           elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
         else
           elm_image_file_set(icon, TET_IMG_PATH"eye_close.png", NULL);
+        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
+        return icon;
      }
-
-   evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-   evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
-
-   return icon;
+   else return NULL;
 }
 
 static char *
@@ -253,14 +252,14 @@ _above_part_click(void *data,
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
-        WARN("None one part does'nt selected");
+        NOTIFY_INFO(3, "None one part does'nt selected");
         return;
      }
    Elm_Object_Item *new_eoi = NULL;
    Elm_Object_Item *prev_eoi = elm_genlist_item_prev_get(eoi);
    if (!prev_eoi)
      {
-        WARN("Selected part currently on top in list");
+        NOTIFY_INFO(3, "Selected part currently on top in list");
         return;
      }
    Part *part = elm_object_item_data_get(eoi);
@@ -282,14 +281,14 @@ _past_part_click(void *data __UNUSED__,
    Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
-        WARN("None one part does'nt selected");
+        NOTIFY_INFO(3, "None one part does'nt selected");
         return;
      }
    Elm_Object_Item *new_eoi = NULL;
    Elm_Object_Item *prev_eoi = elm_genlist_item_next_get(eoi);
    if (!prev_eoi)
      {
-        WARN("Selected part currently on bottom in list");
+        NOTIFY_INFO(3, "Selected part currently on bottom in list");
         return;
      }
    Part *part = elm_object_item_data_get(eoi);

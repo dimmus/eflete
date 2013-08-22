@@ -67,6 +67,8 @@ set(TET_CC_FILES
    ../../src/ui/blocks/ui_signal_list.c
    ../../src/ui/blocks/ui_states_list.c
    ../../src/ui/notification/notify.c
+   ../../src/ui/dialogs/add_part_dialog.c
+   ../../src/ui/dialogs/add_state_dialog.c
 )
 
 add_executable(${TEST_MODULE_NAME} ${TET_CC_FILES} ${TEST_MODULE_NAME}.c)

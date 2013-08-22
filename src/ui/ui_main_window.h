@@ -18,6 +18,7 @@
 #include "colorclass_editor.h"
 #include "font_viewer_dialog.h"
 #include "notify.h"
+#include "add_state_dialog.h"
 /**
  * Adds main window object for Edje tool development.
  *
@@ -200,6 +201,20 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
  */
 Evas_Object *
 ui_edc_load_done(App_Data* ap, const char *project_name, const char *path_edc, const char *path_id, const char *path_sd, const char *path_fd);
+
+
+/**
+ * Delete selected state from current part.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+/* FIXME: add comment */
+Eina_Bool
+ui_part_state_delete(App_Data *ap);
 
 #endif	/* UI_MAIN_WINDOW_HEADER_H */
 

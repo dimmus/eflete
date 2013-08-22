@@ -42,6 +42,7 @@ set(TET_CC_FILES
    ui/dialogs/open_file_dialog.c
    ui/dialogs/font_viewer_dialog.c
    ui/dialogs/add_part_dialog.c
+   ui/dialogs/add_state_dialog.c
    ui/workspace/ui_ruler.c
    ui/workspace/ui_workspace.c
    ui/workspace/ui_popup.c

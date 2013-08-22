@@ -92,7 +92,7 @@ ui_part_select(App_Data *ap, Part* part)
 
    /* FIXME: it bad */
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
-   ui_object_highlight_set(ap->ws, part->obj);
+   ui_object_highlight_set(ap->ws, part);
 
    return gl_states;
 }
@@ -198,4 +198,56 @@ ui_edc_load_done(App_Data* ap, const char *project_name,
    evas_object_hide(ap->inwin);
 
    return wd_list;
+}
+
+
+Eina_Bool
+ui_part_state_delete(App_Data *ap)
+{
+   Evas_Object *state_list = NULL;
+   Part *part = NULL;
+   Group *group = NULL;
+   Elm_Object_Item *eoi = NULL;
+   char *full_state_name = NULL;
+   char *state_name = NULL;
+   char *state_value = NULL;
+   double value = 0;
+
+   if (!ap) return EINA_FALSE;
+
+   state_list = ui_block_state_list_get(ap);
+   part = ui_state_list_part_get(state_list);
+   group = ui_groupspace_group_get(ap->ws->groupspace);
+
+   eoi = elm_genlist_selected_item_get(state_list);
+   if (!eoi)
+     {
+        NOTIFY_INFO(3, "Please select part state");
+        return EINA_FALSE;
+     }
+
+   full_state_name = elm_object_item_data_get(eoi);
+   if (!full_state_name) return EINA_FALSE;
+
+   state_name = strdup(strtok(full_state_name, " "));
+   state_value = strdup(strtok(NULL, " "));
+   value = atof(state_value);
+
+   if (!edje_edit_state_del(group->obj, part->name, state_name, value))
+     {
+        if (!strcmp(state_name, "default"))
+          {
+             NOTIFY_WARNING("Coud'nt delete default state");
+          }
+        else
+          NOTIFY_WARNING("Failed delete state \n[%s %3.2f]", state_name, value);
+        free(state_name);
+        free(state_value);
+        return EINA_FALSE;
+     }
+  elm_object_item_del(eoi);
+  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), EINA_TRUE);
+  free(state_name);
+  free(state_value);
+  return EINA_TRUE;
 }

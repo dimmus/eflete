@@ -8,6 +8,7 @@ collections {
    #include "widgets/gengrid.edc"
    #include "widgets/entry.edc"
    #include "widgets/groupspace_handler_cursor.edc"
+   #include "widgets/simplified_toggle_check.edc"
 
    #include "layouts/workspace.edc"
    #include "layouts/ruler.edc"

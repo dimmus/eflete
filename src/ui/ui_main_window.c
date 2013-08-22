@@ -39,6 +39,16 @@ _add_part_dailog(void *data __UNUSED__,
    new_part_dialog_add(ap->win, ap->ws->groupspace);
 }
 
+static void
+_add_state_dailog(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+
+{
+   App_Data *ap = (App_Data *)data;
+   new_state_dialog_add(ap);
+}
+
 Eina_Bool
 ui_main_window_add(App_Data *ap)
 {
@@ -85,6 +95,7 @@ ui_main_window_add(App_Data *ap)
    ap->ws = ws_add(ap->block.canvas);
 
    evas_object_smart_callback_add(ap->ws->groupspace, "gs,dialog,add", _add_part_dailog, ap);
+   evas_object_smart_callback_add(ap->ws->groupspace, "gs,state,add", _add_state_dailog, ap);
    evas_object_show(win);
 
    return EINA_TRUE;
