@@ -141,6 +141,30 @@ ui_prop_group_info_view_update(Evas_Object *prop_view, Group *group)
    ui_property_group_view_set(prop_view, group_view);
 }
 
+static void
+_obj_x_change_feedback(void *data,
+                           Evas *e __UNUSED__,
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
+{
+   int value;
+   Evas_Object *spinner = (Evas_Object *)data;
+   evas_object_geometry_get(obj, NULL, NULL, &value, NULL);
+   elm_spinner_value_set(spinner, value);
+}
+
+static void
+_obj_y_change_feedback(void *data,
+                           Evas *e __UNUSED__,
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
+{
+   int value;
+   Evas_Object *spinner = (Evas_Object *)data;
+   evas_object_geometry_get(obj, NULL, NULL, NULL, &value);
+   elm_spinner_value_set(spinner, value);
+}
+
 #define ITEM_ADD(parent, item, text) \
    item = elm_layout_add(parent); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
@@ -582,6 +606,7 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
                                           double max, \
                                           double step, \
                                           const char *fmt, \
+                                          Eina_Bool feedback, \
                                           const char *tooltip1, \
                                           const char *tooltip2) \
 { \
@@ -599,6 +624,9 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    evas_object_smart_callback_add(spinner1, "changed", \
                                   __on_state_##value1##_change, part); \
+   if (feedback) \
+      evas_object_event_callback_add(part->obj, EVAS_CALLBACK_RESIZE, \
+                                     _obj_x_change_feedback, (void*)spinner1); \
    SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "default") \
    elm_spinner_label_format_set(spinner2, fmt); \
    elm_spinner_value_set(spinner2, edje_edit_state_##value2##_get(group->obj, \
@@ -610,6 +638,9 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    evas_object_smart_callback_add(spinner2, "changed", \
                                   __on_state_##value2##_change, part); \
+   if (feedback) \
+      evas_object_event_callback_add(part->obj, EVAS_CALLBACK_RESIZE, \
+                                     _obj_y_change_feedback, (void*)spinner2); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item;\
 }
@@ -800,22 +831,22 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                       "Change part's visibility.");
    elm_box_pack_end(box_state, item);
    item = prop_item_state_min_w_min_h_add(box_state, group, part,
-                                          0.0, 9999.0, 1.0, "%.0f",
+                                          0.0, 9999.0, 1.0, "%.0f", EINA_FALSE,
                                           "Minimum part width in pixels.",
                                           "Minimum part height in pixels.");
    elm_box_pack_end(box_state, item);
    item = prop_item_state_max_w_max_h_add(box_state, group, part,
-                                          -1.0, 9999.0, 1.0, "%.0f",
+                                          -1.0, 9999.0, 1.0, "%.0f", EINA_TRUE,
                                           "Maximum part width in pixels.",
                                           "Maximum part height in pixels.");
    elm_box_pack_end(box_state, item);
    item = prop_item_state_align_x_align_y_add(box_state, group, part,
-                                              0.0, 1.0, 0.1, "%1.2f",
+                                              0.0, 1.0, 0.1, "%1.2f", EINA_FALSE,
                                               "Part horizontal align: 0.0 = left  1.0 = right",
                                               "Part vertical align: 0.0 = top  1.0 = bottom");
    elm_box_pack_end(box_state, item);
    item = prop_item_state_aspect_min_aspect_max_add(box_state, group, part,
-                                                    0.0, 1.0, 0.1, "%1.2f",
+                                                    0.0, 1.0, 0.1, "%1.2f", EINA_FALSE,
                                                     "Normally width and height can be "
                                                     "resized to any values independently",
                                                     "Normally width and height can be "
@@ -850,12 +881,12 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
 
    elm_box_pack_end(box_state, rel1_frame);
    item = prop_item_state_rel1_relative_x_rel1_relative_y_add(rel1_box, group, part,
-                                                              -5.0, 5.0, 0.1, "%1.2f",
+                                                              -5.0, 5.0, 0.1, "%1.2f", EINA_FALSE,
                                                               "Relative 1 x",
                                                               "Relative 1 y");
    elm_box_pack_end(rel1_box, item);
    item = prop_item_state_rel1_offset_x_rel1_offset_y_add(rel1_box, group, part,
-                                                        -9999.0, 9999.0, 1.0, "%.0f",
+                                                        -9999.0, 9999.0, 1.0, "%.0f", EINA_FALSE,
                                                         "Left offset from relative position in pixels",
                                                         "Top offset from relative position in pixels");
    elm_box_pack_end(rel1_box, item);
@@ -875,12 +906,12 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    elm_box_pack_end(box_state, rel2_frame);
 
    item = prop_item_state_rel2_relative_x_rel2_relative_y_add(rel2_box, group, part,
-                                                              -5.0, 5.0, 0.1, "%1.2f",
+                                                              -5.0, 5.0, 0.1, "%1.2f", EINA_FALSE,
                                                               "Relative 2 x",
                                                               "Relative 2 y");
    elm_box_pack_end(rel2_box, item);
    item = prop_item_state_rel2_offset_x_rel2_offset_y_add(rel2_box, group, part,
-                                                     -9999.0, 9999.0, 1.0, "%.0f",
+                                                     -9999.0, 9999.0, 1.0, "%.0f", EINA_FALSE,
                                                      "Right offset from relative position in pixels",
                                                      "Bottom offset from relative position in pixels");
    elm_box_pack_end(rel2_box, item);
@@ -912,7 +943,7 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                              "Change text font's size.");
         elm_box_pack_end(text_box, item);
         item = prop_item_state_text_align_x_text_align_y_add(text_box, group, part,
-                                                             0.0, 1.0, 0.1, "%1.2f",
+                                                             0.0, 1.0, 0.1, "%1.2f", EINA_FALSE,
                                                              "Text horizontal align. "
                                                              "0.0 = left  1.0 = right",
                                                              "Text vertical align. "
