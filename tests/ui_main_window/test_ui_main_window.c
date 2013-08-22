@@ -67,7 +67,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Delete main window using ui_main_window_del()
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition:  test passed
  * @}
  */
 START_TEST (ui_main_window_del_test)
@@ -145,7 +145,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Load settings using ui_panes_settings_load()
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition:  test passed
  * @}
  */
 START_TEST (ui_panes_settings_load_test_n1)
@@ -172,7 +172,7 @@ END_TEST
  * @procedure
  * @step 1 Call function.
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_settings_load_test_n2)
@@ -182,7 +182,7 @@ START_TEST (ui_panes_settings_load_test_n2)
 END_TEST
 
 /**
- * @addtogroup ui_panes_settings_load
+ * @addtogroup ui_panes_settings_save
  * @{
  * @objective Positive test case:
  *
@@ -192,7 +192,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Load settings using ui_panes_settings_load()
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_settings_save_test_n1)
@@ -219,7 +219,7 @@ END_TEST
  * @procedure
  * @step 1 Call function.
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_settings_save_test_n2)
@@ -287,7 +287,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Resize panes using ui_resize_pans(100, 100);
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_resize_pans_test_n1)
@@ -314,7 +314,7 @@ END_TEST
  * @procedure
  * @step 1 Call function with values -100 -100.
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_resize_pans_test_n2)
@@ -334,7 +334,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Show panes using ui_panes_show
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_show_test_n1)
@@ -361,7 +361,7 @@ END_TEST
  * @procedure
  * @step 1 Call function with NULL parameter.
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_show_test_n2)
@@ -381,7 +381,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Hide panes using ui_panes_hide(app);
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_hide_test_n1)
@@ -408,7 +408,7 @@ END_TEST
  * @procedure
  * @step 1 Call function with NULL parameter.
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_panes_hide_test_n2)
@@ -429,7 +429,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Calling  ui_part_back(app);
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_part_back_test_n1)
@@ -460,7 +460,7 @@ END_TEST
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Open edc file using  ui_edc_load_done
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edc_load_done_test_n1)
@@ -486,7 +486,7 @@ END_TEST
  *
  * @procedure
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edc_load_done_test_n2)
@@ -504,7 +504,7 @@ END_TEST
  *
  * @procedure
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edc_load_done_test_n3)
@@ -536,7 +536,7 @@ END_TEST
  * @step 4 Create fileselector using elm_fileselector_add
  * @step 5 Load edj file using ui_edj_load_done 
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edj_load_done_test_n1)
@@ -559,7 +559,7 @@ END_TEST
  *
  * @procedure: Calling function with NULL argument App_Data * ap
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edj_load_done_test_n2)
@@ -582,7 +582,7 @@ END_TEST
  *
  * @procedure: Calling function with NULL argument Evas_Object* obj
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edj_load_done_test_n3)
@@ -603,7 +603,7 @@ END_TEST
  *
  * @procedure: Calling function with addres of bad file.
  *
- * @passcondition: EINA_TRUE should returned of a function
+ * @passcondition: test passed
  * @}
  */
 START_TEST (ui_edj_load_done_test_n4)
@@ -634,7 +634,7 @@ END_TEST
  * @}
  */
 Suite* test_suite (void) {
-   Suite *suite = suite_create("alloc_test");
+   Suite *suite = suite_create("ui_main_window_test");
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, ui_main_window_add_test_n1);
    tcase_add_test(tcase, ui_main_window_add_test_n2);
