@@ -155,6 +155,7 @@ add_subdirectory(tests/ui_state_list)
 add_subdirectory(tests/ui_widget_list)
 add_subdirectory(tests/font_viewer_dialog)
 add_subdirectory(tests/add_part)
+add_subdirectory(tests/notify)
 
 #install
 if (NOT ${debug})
