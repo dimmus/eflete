@@ -33,6 +33,21 @@ Evas_Object *
 mw_add(Evas_Object *parent);
 
 /**
+ * Adds an "About" modal window to the window.
+ *
+ * The obj used as parent MUST be an Elementary Window. Never call this function
+ * with anything other than the top-most window as its parameter, unless you are
+ * fond of undefined behavior.
+ *
+ * @param parent The parent object.
+ * @return The new modal window or NULL if it cannot be created.
+ *
+ * @ingroup ModalWindow
+ */
+Evas_Object *
+mw_about_add(Evas_Object *parent);
+
+/**
  * Set the title of the modal window.
  *
  * @param object The modal window object.

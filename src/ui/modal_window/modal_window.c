@@ -51,12 +51,12 @@ _on_key_down(void *data __UNUSED__,
 }
 
 Evas_Object *
-mw_add(Evas_Object *parent)
+_mw_create(Evas_Object *parent, const char *style_name)
 {
    Evas_Object *mw, *bt_close, *ic_close;//, *bt_info, *ic_info;
 
    mw = elm_win_inwin_add(parent);
-   elm_object_style_set(mw, "custom");
+   elm_object_style_set(mw, style_name);
 
    evas_object_focus_set(mw, EINA_TRUE);
    evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
@@ -72,6 +72,18 @@ mw_add(Evas_Object *parent)
    evas_object_show(bt_close);
 
    return mw;
+}
+
+Evas_Object *
+mw_add(Evas_Object *parent)
+{
+   return _mw_create(parent, "custom");;
+}
+
+Evas_Object *
+mw_about_add(Evas_Object *parent)
+{
+   return _mw_create(parent, "about_window");
 }
 
 void

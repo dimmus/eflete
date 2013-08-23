@@ -4,6 +4,8 @@
 #include "image_editor.h"
 #include "program_editor.h"
 #include "ui_highlight.h"
+#include "about_window.h"
+
 static void
 _on_edc_open_menu(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -210,7 +212,8 @@ _on_about_window_menu(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
-//   App_Data *ap = (App_Data *)data;
+   App_Data *ap = (App_Data *)data;
+   about_window_add(ap->win);
 }
 
 Eina_Bool
