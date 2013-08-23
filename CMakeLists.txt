@@ -156,6 +156,7 @@ add_subdirectory(tests/add_part)
 add_subdirectory(tests/notify)
 add_subdirectory(tests/ui_highlight)
 add_subdirectory(tests/ui_workspace)
+add_subdirectory(tests/image_editor)
 
 #install
 if (NOT ${debug})
