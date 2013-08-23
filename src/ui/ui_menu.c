@@ -3,7 +3,7 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "program_editor.h"
-
+#include "ui_highlight.h"
 static void
 _on_edc_open_menu(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -103,6 +103,17 @@ _on_view_legend(void *data,
 {
    App_Data *ap = (App_Data *)data;
    ui_ws_legend_visible_set(ap->ws, !ap->ws->legend.visible);
+}
+
+static void
+_on_view_highlight(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (!ap->ws->highlight.part) return;
+   hl_highlight_visible_set(ap->ws->highlight.space_hl,
+                !hl_highlight_visible_get(ap->ws->highlight.space_hl));
 }
 
 static void
@@ -206,7 +217,7 @@ Eina_Bool
 ui_menu_add(App_Data *ap)
 {
    Evas_Object *tb, *menu;
-   Elm_Object_Item *tb_it;
+   Elm_Object_Item *tb_it, *menu_sub;;
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
@@ -237,15 +248,17 @@ ui_menu_add(App_Data *ap)
    tb_it=elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
-
-   elm_menu_item_add(menu, NULL, NULL, "Zoom in", _on_view_zoom_in, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Zoom out", _on_view_zoom_out, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Separate", _on_view_separate, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Legend", _on_view_legend, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Ruler hor.", _on_view_ruler_hor, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Ruler ver.", _on_view_ruler_ver, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Absolute scale", _on_view_ruler_abs, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Relative scale", _on_view_ruler_rel, ap);
+   menu_sub = elm_menu_item_add(menu, NULL, NULL, "Workspace", NULL, NULL);
+   elm_menu_item_add(menu, menu_sub, NULL, "Zoom in", _on_view_zoom_in, ap);
+   elm_menu_item_add(menu, menu_sub, NULL, "Zoom out", _on_view_zoom_out, ap);
+   elm_menu_item_add(menu, menu_sub, NULL, "Separate", _on_view_separate, ap);
+   elm_menu_item_add(menu, menu_sub, NULL, "Legend", _on_view_legend, ap);
+   menu_sub = elm_menu_item_add(menu, NULL, NULL, "Rulers", NULL, NULL);
+   elm_menu_item_add(menu, menu_sub, NULL, "Show/hide hor.", _on_view_ruler_hor, ap);
+   elm_menu_item_add(menu, menu_sub, NULL, "Show/hide ver.", _on_view_ruler_ver, ap);
+   elm_menu_item_add(menu, menu_sub, NULL, "Absolute scale", _on_view_ruler_abs, ap);
+   elm_menu_item_add(menu, menu_sub, NULL, "Relative scale", _on_view_ruler_rel, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Highlight space", _on_view_highlight, ap);
 
    tb_it=elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);

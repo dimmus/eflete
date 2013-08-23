@@ -34,6 +34,7 @@ struct _Highlight
    Eina_Bool outside; /* its TRUE, when highlight in small mode (handlers are
                          outside of the highlighted part) */
    Eina_Bool handlers_disabled; /* its TRUE, when handlers for highlight are disabled*/
+   Eina_Bool visible; /* its TRUE, when highlight visible*/
    Evas_Object *smart_object; /* smart object that contain all information
                                  mentioned above. */
    Highlight_Events *events;
@@ -657,6 +658,7 @@ hl_highlight_add(Evas_Object *parent)
    _highlight->clicked = EINA_FALSE;
    _highlight->events = (Highlight_Events *)mem_calloc(1, sizeof(Highlight_Events));
    _highlight->handlers_disabled = EINA_FALSE;
+   _highlight->visible = EINA_TRUE;
    _highlight->smart_object = obj;
 
    return obj;
@@ -704,6 +706,23 @@ hl_highlight_bg_color_set(Evas_Object *hl,
                          r * a / 255, g * a / 255, b * a / 255, a);
 }
 
+Eina_Bool
+hl_highlight_visible_get(Evas_Object *hl)
+{
+   Highlight *highlight = evas_object_smart_data_get(hl);
+   return highlight->visible;
+}
+
+void
+hl_highlight_visible_set(Evas_Object *hl, Eina_Bool visible)
+{
+   Highlight *highlight = evas_object_smart_data_get(hl);
+   highlight->visible = visible;
+   if (!highlight->visible)
+      edje_object_signal_emit(highlight->border, "bg,hide", "");
+   else
+      edje_object_signal_emit(highlight->border, "bg,show", "");
+}
 void
 hl_highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 {

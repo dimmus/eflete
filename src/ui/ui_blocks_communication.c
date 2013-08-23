@@ -139,9 +139,6 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              NOTIFY_ERROR("The file must have a extension '.edj'");
           }
      }
-   else
-     ui_panes_hide(ap);
-
    evas_object_hide(elm_object_parent_widget_get(obj));
    evas_object_del(obj);
    return wd_list;

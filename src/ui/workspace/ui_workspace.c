@@ -370,7 +370,6 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    hl_highlight_bg_color_set(ws->highlight.highlight , 0, 0, 0 , 0);
    hl_highlight_handler_color_set(ws->highlight.highlight, 255, 0, 0, 255);
    hl_highlight_border_color_set(ws->highlight.highlight, 0, 255, 0, 255);
-
 }
 
 void
