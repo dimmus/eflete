@@ -94,7 +94,6 @@ new_state_dialog_add(App_Data *ap)
 
    evas_object_show(mwin);
 
-
    return mwin;
 }
 

@@ -20,7 +20,7 @@ static Image_Editor window;
 static Elm_Gengrid_Item_Class *gic = NULL;
 
 static char *
-_grid_label_get(void        *data ,
+_grid_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
                 const char  *part __UNUSED__)
 {
@@ -31,8 +31,8 @@ _grid_label_get(void        *data ,
 /* icon fetching callback */
 static Evas_Object *
 _grid_content_get(void *data,
-               Evas_Object *obj,
-               const char  *part __UNUSED__)
+                  Evas_Object *obj,
+                  const char  *part __UNUSED__)
 {
    Item *it = data;
    Evas_Object *grid = (Evas_Object *)obj;
@@ -51,23 +51,25 @@ _grid_content_get(void *data,
 
 /* deletion callback */
 static void
-_grid_del(void        *data,
+_grid_del(void *data,
           Evas_Object *obj __UNUSED__)
 {
    Item *it = data;
    free(it);
 }
 static void
-_on_button_ok_clicked_cb(void *data, Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_on_button_ok_clicked_cb(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
 {
    Evas_Object *inwin = (Evas_Object *)data;
    evas_object_del(inwin);
 }
 
 static void
-_on_button_cancel_clicked_cb(void *data, Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_on_button_cancel_clicked_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
 {
    Evas_Object *inwin = (Evas_Object *)data;
    evas_object_del(inwin);
@@ -75,17 +77,17 @@ _on_button_cancel_clicked_cb(void *data, Evas_Object *obj __UNUSED__,
 
 /* item selection change callback */
 static void
-_grid_sel(void        *data __UNUSED__,
+_grid_sel(void *data __UNUSED__,
           Evas_Object *obj __UNUSED__,
-          void        *event_info)
+          void *event_info)
 {
    char buf[BUFF_MAX];
    Evas_Object *image;
    const Item* it = elm_object_item_data_get(event_info);
    const Eina_List* sel_list = elm_gengrid_selected_items_get(window.gengrid);
    int selected_images_count = eina_list_count(sel_list);
-   switch(selected_images_count)
-   {
+   switch (selected_images_count)
+     {
       case 0:
          elm_object_text_set(window.legend,"No images selected<br><br>");
          break;
@@ -102,7 +104,7 @@ _grid_sel(void        *data __UNUSED__,
          const char* comp_str;
          int comp_rate=-2;
          switch(comp)
-         {
+           {
             case EDJE_EDIT_IMAGE_COMP_RAW:
                comp_str = "RAW";
                break;
@@ -115,22 +117,22 @@ _grid_sel(void        *data __UNUSED__,
             case EDJE_EDIT_IMAGE_COMP_LOSSY:
                comp_str = "LOSSY";
                comp_rate = image_edit_image_compression_rate_get(window.pr,
-                                                                it->image_name);
+                                                                 it->image_name);
                break;
-         }
+           }
          //output into label
-         if(comp_rate > 0)
-         {
-            snprintf(buf, BUFF_MAX,
-                "Selected image: %s<br>size: %dx%d<br>Compression type:%s rate:%d",
-                it->image_name, w, h, comp_str, comp_rate);
-         }
+         if (comp_rate > 0)
+           {
+              snprintf(buf, BUFF_MAX,
+                       "Selected image: %s<br>size: %dx%d<br>Compression type:%s rate:%d",
+                       it->image_name, w, h, comp_str, comp_rate);
+           }
          else
-         {
-            snprintf(buf, BUFF_MAX,
-                "Selected image: %s<br>size: %dx%d<br>Compression type:%s",
-                it->image_name, w, h, comp_str);
-         }
+           {
+              snprintf(buf, BUFF_MAX,
+                       "Selected image: %s<br>size: %dx%d<br>Compression type:%s",
+                       it->image_name, w, h, comp_str);
+           }
          elm_object_text_set(window.legend,buf);
 
          evas_object_del(image);
@@ -138,7 +140,7 @@ _grid_sel(void        *data __UNUSED__,
       default:
          snprintf(buf,BUFF_MAX,"%d images selected<br><br>",selected_images_count);
          elm_object_text_set(window.legend,buf);
-   }
+     }
 }
 
 Evas_Object *
@@ -226,32 +228,32 @@ void
 image_editor_init (Evas_Object *img_edit, Project *project)
 {
    if (!project)
-   {
-      NOTIFY_ERROR ("EDJ/EDC file is not loaded");
-      evas_object_del(img_edit);
-      return;
-   }
+     {
+        NOTIFY_ERROR ("EDJ/EDC file is not loaded");
+        evas_object_del(img_edit);
+        return;
+     }
    window.pr=project;
    Eina_List *l;
    const char* image_name;
    Eina_List *images = image_edit_images_list_get(window.pr);
    int counter=0;
    EINA_LIST_FOREACH(images,l,image_name)
-   {
-      counter++;
-      if(!image_name)
-      {
-         //FIXME: edje_edit_images_list_get returns list with some image names
-         //missing. image is still accesable via id, but it's not enough
-         //for manipulations
-         ERR("name not found for image #%d",counter);
-         continue;
-      }
-      Item *it;
-      it = (Item *) malloc(sizeof(*it));
-      it->image_name = strdup(image_name);
-      it->id=image_edit_image_id_get (window.pr, it->image_name);
-      elm_gengrid_item_append(window.gengrid, gic, it, _grid_sel, NULL);
-   }
+     {
+        counter++;
+        if (!image_name)
+          {
+             //FIXME: edje_edit_images_list_get returns list with some image names
+             //missing. image is still accesable via id, but it's not enough
+             //for manipulations
+             ERR("name not found for image #%d",counter);
+             continue;
+          }
+        Item *it;
+        it = (Item *)malloc(sizeof(*it));
+        it->image_name = strdup(image_name);
+        it->id=image_edit_image_id_get (window.pr, it->image_name);
+        elm_gengrid_item_append(window.gengrid, gic, it, _grid_sel, NULL);
+     }
    eina_list_free(images);
 }

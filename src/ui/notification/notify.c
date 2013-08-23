@@ -1,7 +1,9 @@
 #include "notify.h"
 
 static void
-_notify_close (void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_notify_close (void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
 {
    Evas_Object *notify = (Evas_Object *)data;
    evas_object_hide(notify);

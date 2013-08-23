@@ -6,8 +6,8 @@ static Elm_Genlist_Item_Class *_itc_part = NULL;
 
 static char *
 _item_part_label_get(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      const char *part __UNUSED__)
+                     Evas_Object *obj __UNUSED__,
+                     const char *part __UNUSED__)
 {
    char *style_label = (char *)data;
    if (!style_label)
@@ -20,13 +20,13 @@ _item_part_label_get(void *data,
 
 static void
 _item_part_del(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__)
+               Evas_Object *obj __UNUSED__)
 {
 }
 static void
 _swallow_add_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    Evas_Object *entry = (Evas_Object *)data;
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
@@ -38,8 +38,8 @@ _swallow_add_on_click(void *data __UNUSED__,
 
 static void
 _txtblock_add_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
 {
    Evas_Object *entry = (Evas_Object *)data;
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
@@ -51,8 +51,8 @@ _txtblock_add_on_click(void *data __UNUSED__,
 
 static void
 _group_add_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
 {
    Evas_Object *entry = (Evas_Object *)data;
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
@@ -64,8 +64,8 @@ _group_add_on_click(void *data __UNUSED__,
 
 static void
 _spacer_add_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
    Evas_Object *entry = (Evas_Object *)data;
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
@@ -93,8 +93,8 @@ _txt_add_on_click(void *data __UNUSED__,
 
 static void
 _rect_add_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    Evas_Object *entry = (Evas_Object *)data;
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);

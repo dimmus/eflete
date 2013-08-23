@@ -32,16 +32,6 @@ ui_state_select(App_Data *ap,
 {
    Part *part = NULL;
    Evas_Object *prop_view, *part_view, *state_view;
-   //const char *state;
-   //char **split;
-
-   //state = elm_object_item_part_text_get(glit, "elm.text");
-   //state = elm_object_item_data_get(glit);
-   /*
-      State has format "NAME X.X" we need to extract NAME
-      and double value separately
-    */
-   //split =  eina_str_split(state, " ", 2);
 
    prop_view = ui_block_property_get(ap);
    part_view = ui_property_part_view_get(prop_view);
@@ -50,16 +40,9 @@ ui_state_select(App_Data *ap,
    state_view = ui_prop_part_info_state_view_add(part_view,
                                                  ap->project->current_group,
                                                  part);
-                                                 //state,
-                                                 //split[0],
-                                                 //atof(split[1]));
    ui_prop_part_info_state_set(part_view, state_view);
    ui_groupspace_part_state_update(ap->ws->groupspace, part);
-   //ui_groupspace_part_state_update(ap->ws->groupspace, part, split[0], atof(split[1]));
-   //ui_object_highlight_set(ap->ws, part->obj);
    evas_object_show(state_view);
-   //free(split[0]);
-   //free(split);
 }
 
 Evas_Object *
@@ -165,11 +148,12 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 }
 
 Evas_Object *
-ui_edc_load_done(App_Data* ap, const char *project_name,
-                               const char *path_edc,
-                               const char *path_id,
-                               const char *path_sd,
-                               const char *path_fd)
+ui_edc_load_done(App_Data* ap,
+                 const char *project_name,
+                 const char *path_edc,
+                 const char *path_id,
+                 const char *path_sd,
+                 const char *path_fd)
 {
    Evas_Object *wd_list = NULL;
 

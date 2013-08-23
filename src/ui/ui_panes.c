@@ -43,8 +43,8 @@ Evas_Object *panes;
 
 static void
 _add_state_button_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
@@ -52,8 +52,8 @@ _add_state_button_cb(void *data __UNUSED__,
 
 static void
 _del_state_button_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_part_state_delete(ap);
@@ -211,8 +211,8 @@ _unpress_cb(void *data __UNUSED__,
 
 static void
 _double_click_up_cb(void * data __UNUSED__,
-                     Evas_Object *obj,
-                     void *event_info __UNUSED__)
+                    Evas_Object *obj,
+                    void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_left_size_get(obj) > 0)
@@ -230,8 +230,8 @@ _double_click_up_cb(void * data __UNUSED__,
 
 static void
 _double_click_left_panes_down_cb(void * data __UNUSED__,
-                       Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                                 Evas_Object *obj,
+                                 void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
@@ -248,8 +248,8 @@ _double_click_left_panes_down_cb(void * data __UNUSED__,
 
 static void
 _double_click_center_panes_down_cb(void * data __UNUSED__,
-                       Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                                   Evas_Object *obj,
+                                   void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
@@ -441,7 +441,7 @@ void
 ui_panes_show(App_Data *ap)
 {
    elm_object_signal_emit(ap->win_layout, "window,panes,show", "");
- }
+}
 
 void
 ui_panes_hide(App_Data *ap)

@@ -83,7 +83,7 @@ mw_title_set(Evas_Object *object, const char *title)
 void
 mw_icon_set(Evas_Object *object, Evas_Object *icon)
 {
-   if (!object || !icon) return;
+   if ((!object) || (!icon)) return;
    elm_layout_content_set(object, "elm.swallow.icon", icon);
 }
 
@@ -92,7 +92,7 @@ mw_info_text_set(Evas_Object *object, const char *text)
 {
    Evas_Object *ic_info, *bt_info;
 
-   if (!object || !text) return;
+   if ((!object) || (!text)) return;
 
    bt_info = elm_button_add(object);
    evas_object_size_hint_align_set(bt_info, EVAS_HINT_FILL, EVAS_HINT_FILL);

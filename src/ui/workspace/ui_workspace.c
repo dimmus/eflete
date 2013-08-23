@@ -28,7 +28,7 @@ ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible)
   Evas_Object *parent = elm_object_parent_widget_get(ws->scroller);
   char label_text[BUFF_MAX];
   if (!visible)
-     elm_layout_signal_emit(parent, "legend,hide", "");
+    elm_layout_signal_emit(parent, "legend,hide", "");
   else
      elm_layout_signal_emit(parent, "legend,show", "");
 
@@ -59,7 +59,7 @@ ui_ws_zoom_in(Workspace *ws)
    evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
    edje_object_scale_set(ws->groupspace, ws->zoom_step);
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
-                                          (int)(ws->zoom_step * 5));
+                                           (int)(ws->zoom_step * 5));
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
                                            (int)(ws->zoom_step * 5));
    ui_ruler_redraw(ws->ruler_hor);
@@ -77,8 +77,7 @@ ui_ws_zoom_out(Workspace *ws)
    Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
    int w, h;
    char label_text[BUFF_MAX];
-   if ((!group) || (!box))
-     return EINA_FALSE;
+   if ((!group) || (!box)) return EINA_FALSE;
    ws->zoom_step -= 0.1;
    if (ws->zoom_step < 0)
      {
@@ -92,7 +91,7 @@ ui_ws_zoom_out(Workspace *ws)
                       (int)(h + h * ws->zoom_step));
    evas_object_smart_calculate(box);
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
-                                          (int)(ws->zoom_step * 5));
+                                           (int)(ws->zoom_step * 5));
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
                                            (int)(ws->zoom_step * 5));
    ui_ruler_redraw(ws->ruler_hor);
@@ -130,7 +129,6 @@ _sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
 
    if (ws->highlight.part)
      ui_object_highlight_move(ws);
-
 }
 
 static void
@@ -139,7 +137,7 @@ _zoom_out_on_click(void *data __UNUSED__,
                    void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
-   if(!ui_ws_zoom_out(ws))
+   if (!ui_ws_zoom_out(ws))
      WARN("Failed zoom out workspace");
 }
 
@@ -149,7 +147,7 @@ _zoom_in_on_click(void *data __UNUSED__,
                   void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
-   if(!ui_ws_zoom_in(ws))
+   if (!ui_ws_zoom_in(ws))
      WARN("Failed zoom in workspace");
 }
 
@@ -175,7 +173,7 @@ _ws_mouse_click_cb(void *data ,
 
 
 Eina_Bool
-ws_bf_set (Evas_Object *bg __UNUSED__)
+ws_bf_set(Evas_Object *bg __UNUSED__)
 {
    return EINA_TRUE;
 }
@@ -193,9 +191,9 @@ ws_zoom_step_get (Workspace *ws)
 }
 
 static void
-_ws_mouse_move_cb (void *data, Evas *e,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_ws_mouse_move_cb(void *data, Evas *e,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    int x, y;
    Workspace *ws = (Workspace*)data;
@@ -205,7 +203,7 @@ _ws_mouse_move_cb (void *data, Evas *e,
 }
 
 Workspace *
-ws_add (Evas_Object *parent)
+ws_add(Evas_Object *parent)
 {
    Workspace *ws;
    Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver;
@@ -244,28 +242,28 @@ ws_add (Evas_Object *parent)
    evas_object_smart_callback_add(_button, "clicked", _zoom_in_on_click, ws);
    ws->button_zoom_in = _button;
 
-   _icon = elm_icon_add (_button);
+   _icon = elm_icon_add(_button);
    elm_image_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
-   elm_image_no_scale_set (_icon, EINA_TRUE);
+   elm_image_no_scale_set(_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
 
-   _button = elm_button_add (parent);
-   elm_object_part_content_set (parent, "base/workspace/button_separate",
-                                _button);
-   evas_object_smart_callback_add (_button, "clicked", _separate_on_click, ws);
+   _button = elm_button_add(parent);
+   elm_object_part_content_set(parent, "base/workspace/button_separate",
+                               _button);
+   evas_object_smart_callback_add(_button, "clicked", _separate_on_click, ws);
    ws->button_separate = _button;
-   _icon = elm_icon_add (_button);
+   _icon = elm_icon_add(_button);
    elm_image_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
-   elm_image_no_scale_set (_icon, EINA_TRUE);
+   elm_image_no_scale_set(_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
 
-   _ruler_hor = ui_ruler_add (parent);
-   elm_object_part_content_set (parent, "base/workspace/ruler_hor",_ruler_hor);
+   _ruler_hor = ui_ruler_add(parent);
+   elm_object_part_content_set(parent, "base/workspace/ruler_hor",_ruler_hor);
    ws->ruler_hor = _ruler_hor;
 
-   _ruler_ver = ui_ruler_add (parent);
-   ui_ruler_orient_set (_ruler_ver, VERTICAL);
-   elm_object_part_content_set (parent, "base/workspace/ruler_ver",_ruler_ver);
+   _ruler_ver = ui_ruler_add(parent);
+   ui_ruler_orient_set(_ruler_ver, VERTICAL);
+   elm_object_part_content_set(parent, "base/workspace/ruler_ver",_ruler_ver);
    ws->ruler_ver = _ruler_ver;
 
    _scroller = elm_scroller_add(parent);
@@ -335,9 +333,8 @@ ui_object_highlight_set(Workspace *ws, Part *part)
 {
    if ((!ws) || (!part) || (!ws->separated)) return;
 
-
    if (!ws->highlight.space_hl)
-        ws->highlight.space_hl= hl_highlight_add(ws->groupspace);
+        ws->highlight.space_hl = hl_highlight_add(ws->groupspace);
 
    if (!ws->highlight.highlight)
      ws->highlight.highlight = hl_highlight_add(ws->groupspace);
@@ -396,7 +393,7 @@ ui_object_highlight_move(Workspace *ws)
 void
 ui_object_highlight_hide(Workspace *ws)
 {
-   if (!ws || !ws->highlight.highlight) return;
+   if ((!ws) || (!ws->highlight.highlight)) return;
 
    evas_object_hide(ws->highlight.highlight);
    evas_object_hide(ws->highlight.space_hl);

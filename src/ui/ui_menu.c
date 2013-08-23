@@ -4,8 +4,6 @@
 #include "image_editor.h"
 #include "program_editor.h"
 
-Eina_List *ui_list_menu;
-
 static void
 _on_edc_open_menu(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -26,8 +24,8 @@ _on_edj_open_menu(void *data,
 
 static void
 _on_save_menu(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    if (pm_save_project_to_swap(ap->project))
@@ -49,8 +47,8 @@ _on_exit_menu(void *data __UNUSED__,
 
 static void
 _on_view_separate(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_groupspace_separate(ap->ws);
@@ -58,8 +56,8 @@ _on_view_separate(void *data,
 
 static void
 _on_view_zoom_in(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_ws_zoom_in(ap->ws);
@@ -67,18 +65,17 @@ _on_view_zoom_in(void *data,
 
 static void
 _on_view_zoom_out(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_ws_zoom_in(ap->ws);
 }
 
-
 static void
 _on_view_ruler_hor(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    if (ui_ruler_visible_get(ap->ws->ruler_hor))
@@ -89,8 +86,8 @@ _on_view_ruler_hor(void *data,
 
 static void
 _on_view_ruler_ver(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    if (ui_ruler_visible_get(ap->ws->ruler_ver))
@@ -100,14 +97,13 @@ _on_view_ruler_ver(void *data,
 }
 
 static void
-_on_view_legend(void *data, Evas_Object *obj __UNUSED__,
+_on_view_legend(void *data,
+                Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_ws_legend_visible_set(ap->ws, !ap->ws->legend.visible);
 }
-
-
 
 static void
 _on_view_ruler_rel(void *data,
@@ -145,10 +141,10 @@ _on_view_ruler_abs(void *data,
      }
 }
 
-
 static void
-_on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_on_style_window_menu(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    if(ap->project != NULL) style_editor_window_add(ap->win, ap->project);
@@ -156,23 +152,26 @@ _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
 }
 
 static void
-_on_image_editor_menu(void *data, Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_on_image_editor_menu(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    image_editor_init(image_editor_window_add(ap->win), ap->project);
 }
 
 static void
-_on_ccl_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_on_ccl_viewer_menu(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    colorclass_viewer_init(colorclass_viewer_add(ap->win), ap->project);
 }
 
 static void
-_on_prog_editor_menu(void *data, Evas_Object *obj __UNUSED__,
+_on_prog_editor_menu(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
    /*
@@ -196,8 +195,9 @@ _on_font_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
 */
 
 static void
-_on_about_window_menu(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_on_about_window_menu(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
 //   App_Data *ap = (App_Data *)data;
 }
@@ -210,8 +210,6 @@ ui_menu_add(App_Data *ap)
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
-   else
-     ui_list_menu = eina_list_append(ui_list_menu, tb);
 
    evas_object_size_hint_weight_set(tb, 0.0, 0.0);
    elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_NONE);
@@ -228,8 +226,6 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
    if (menu == NULL) return EINA_FALSE;
-   else
-      ui_list_menu = eina_list_append(ui_list_menu, menu);
 
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file",
                      _on_edc_open_menu, ap);

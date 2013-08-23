@@ -1,7 +1,6 @@
 #include <ui_main_window.h>
 #include <settings.h>
 
-
 static void
 _on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
@@ -20,9 +19,9 @@ ui_main_window_del(void)
 
 static void
 _on_window_resize(void *data __UNUSED__,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                  Evas *e __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    int w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
@@ -31,9 +30,8 @@ _on_window_resize(void *data __UNUSED__,
 
 static void
 _add_part_dailog(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    new_part_dialog_add(ap->win, ap->ws->groupspace);
@@ -41,9 +39,8 @@ _add_part_dailog(void *data __UNUSED__,
 
 static void
 _add_state_dailog(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    new_state_dialog_add(ap);
@@ -66,14 +63,13 @@ ui_main_window_add(App_Data *ap)
    elm_win_title_set(win, PACKAGE);
    evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
    evas_object_event_callback_add(win,
-                                   EVAS_CALLBACK_RESIZE,
-                                   _on_window_resize,
-                                   NULL);
+                                  EVAS_CALLBACK_RESIZE,
+                                  _on_window_resize,
+                                  NULL);
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
-   evas_object_size_hint_weight_set(bg,
-                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_focus_highlight_enabled_set(win, EINA_FALSE);
    evas_object_show(bg);
 
@@ -85,17 +81,16 @@ ui_main_window_add(App_Data *ap)
    evas_object_show(layout);
    ap->win_layout = layout;
 
-   if (!ui_menu_add(ap))
-     ERR("Failrue add menu on main window.");
-
-   if (!ui_panes_add(ap))
-     ERR("Failrue add panes on main window.");
+   if (!ui_menu_add(ap)) ERR("Failrue add menu on main window.");
+   if (!ui_panes_add(ap)) ERR("Failrue add panes on main window.");
 
    ui_panes_settings_load(win);
    ap->ws = ws_add(ap->block.canvas);
 
-   evas_object_smart_callback_add(ap->ws->groupspace, "gs,dialog,add", _add_part_dailog, ap);
-   evas_object_smart_callback_add(ap->ws->groupspace, "gs,state,add", _add_state_dailog, ap);
+   evas_object_smart_callback_add(ap->ws->groupspace, "gs,dialog,add",
+                                  _add_part_dailog, ap);
+   evas_object_smart_callback_add(ap->ws->groupspace, "gs,state,add",
+                                  _add_state_dailog, ap);
    evas_object_show(win);
 
    return EINA_TRUE;

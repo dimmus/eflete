@@ -24,8 +24,8 @@ _on_part_back(void *data,
 
 static void
 _on_group_back(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_data __UNUSED__)
+               Evas_Object *obj __UNUSED__,
+               void *event_data __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_group_back(ap);
@@ -76,7 +76,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
    const char *selected = event_info;
    Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
 
-   if(wd_list)
+   if (wd_list)
      {
         evas_object_smart_callback_add(wd_list, "wl,group,select",
                                           _on_group_clicked, ap);
@@ -130,12 +130,8 @@ _on_ok_cb(void *data,
    const char *path_sd = elm_fileselector_entry_selected_get(fs_ent->sd);
    const char *path_fd = elm_fileselector_entry_selected_get(fs_ent->fd);
 
-   wd_list = ui_edc_load_done(ap,
-                    fs_ent->project_name,
-                    path_edc,
-                    path_id,
-                    path_sd,
-                    path_fd);
+   wd_list = ui_edc_load_done(ap, fs_ent->project_name, path_edc,
+                              path_id, path_sd, path_fd);
 
    if(wd_list)
      {
@@ -166,8 +162,8 @@ _on_cancel_cb(void *data,
 
 static void
 _on_fs_edc_done(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
 {
    char *path = (char *)event_info;
    char *images, *sounds, *fonts;

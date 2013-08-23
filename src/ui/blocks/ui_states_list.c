@@ -18,20 +18,6 @@ _on_state_selected(void *data __UNUSED__,
                    Evas_Object *obj,
                    void *event_info)
 {
-/*
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   App_Data *ap = (App_Data *)data;
-   Part_State *state;
-   Evas_Object *prop_view, *part_view, *state_view;
-
-   state = elm_object_item_data_get(glit);
-
-   prop_view = ui_block_property_get(ap);
-   part_view = ui_property_part_view_get(prop_view);
-   state_view = ui_prop_part_info_state_view_add(part_view, state);
-   ui_prop_part_info_state_set(part_view, state_view);
-   evas_object_show(state_view);
-*/
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
    evas_object_smart_callback_call(obj, "st,state,select", glit);
 }

@@ -27,12 +27,12 @@ _ruler_data_init(void)
    _ruler_data->visible = EINA_TRUE;
    _ruler_data->abs_scale_visible = EINA_TRUE;
    _ruler_data->rel_scale_visible = EINA_FALSE;
-   _ruler_data->abs_scale_step=50;
-   _ruler_data->abs_scale_dashes_step=5;
-   _ruler_data->abs_scale_zero_pos=0;
-   _ruler_data->rel_start=0;
-   _ruler_data->rel_end=600;
-   _ruler_data->rel_step=2;
+   _ruler_data->abs_scale_step = 50;
+   _ruler_data->abs_scale_dashes_step = 5;
+   _ruler_data->abs_scale_zero_pos = 0;
+   _ruler_data->rel_start = 0;
+   _ruler_data->rel_end = 600;
+   _ruler_data->rel_step = 2;
    _ruler_data->pointer_pos = 0;
    return _ruler_data;
 }
@@ -41,11 +41,11 @@ int
 ui_ruler_pointer_pos_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get pointer position, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get pointer position, because a ruler is NULL.");
+        return 0;
+     }
    return _ruler_data->pointer_pos;
 }
 
@@ -56,11 +56,11 @@ ui_ruler_pointer_pos_set(Evas_Object *obj, int pos)
    double dx, dy;
    dx = dy = 0.0;
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set pointer position, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set pointer position, because a ruler is NULL.");
+        return;
+     }
    evas_object_geometry_get(obj, &x, &y, &w, &h);
 
    if (_ruler_data->orient == HORIZONTAL)
@@ -80,11 +80,11 @@ Orient
 ui_ruler_orient_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get orientation, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get orientation, because a ruler is NULL.");
+        return 0;
+     }
    return _ruler_data->orient;
 }
 
@@ -92,11 +92,11 @@ void
 ui_ruler_orient_set(Evas_Object *obj, Orient orient)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set orientation, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set orientation, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->orient = orient;
    if (_ruler_data->orient == HORIZONTAL)
      {
@@ -114,11 +114,11 @@ void
 ui_ruler_scale_absolute_dashes_step_set(Evas_Object *obj, int step)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set abs dashes step, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set abs dashes step, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->abs_scale_dashes_step = step;
    Edje_Message_Int msg;
    msg.val=step;
@@ -129,11 +129,11 @@ int
 ui_ruler_scale_absolute_dashes_step_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get abs dashes step, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get abs dashes step, because a ruler is NULL.");
+        return 0;
+     }
    return (int)_ruler_data->abs_scale_dashes_step;
 }
 
@@ -141,11 +141,11 @@ void
 ui_ruler_step_scale_absolute_set(Evas_Object *obj, int step)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set abs step, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set abs step, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->abs_scale_step = step;
    Edje_Message_Int msg;
    msg.val=step;
@@ -156,11 +156,11 @@ unsigned int
 ui_ruler_step_absolute_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get abs step, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get abs step, because a ruler is NULL.");
+        return 0;
+     }
    return (int)_ruler_data->abs_scale_step;
 }
 
@@ -168,11 +168,11 @@ void
 ui_ruler_step_relative_set(Evas_Object *obj, int step)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set relative step, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set relative step, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->rel_step=step;
    Edje_Message_Int msg;
    msg.val=step;
@@ -183,11 +183,11 @@ int
 ui_ruler_step_relative_get (Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj,RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get relative step, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get relative step, because a ruler is NULL.");
+        return 0;
+     }
    return _ruler_data->rel_step;
 }
 
@@ -195,11 +195,11 @@ void
 ui_ruler_scale_relative_visible_set(Evas_Object *obj, Eina_Bool enable)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set relative scale visibilility, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set relative scale visibilility, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->rel_scale_visible = enable;
    Edje_Message_Int msg;
    msg.val=enable;
@@ -210,11 +210,11 @@ Eina_Bool
 ui_ruler_scale_relative_visible_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get relative scale visibilility, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get relative scale visibilility, because a ruler is NULL.");
+        return 0;
+     }
    return _ruler_data->rel_scale_visible;
 }
 
@@ -222,11 +222,11 @@ void
 ui_ruler_scale_absolute_visible_set(Evas_Object *obj, Eina_Bool enable)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set abs scale visibilility, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set abs scale visibilility, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->abs_scale_visible = enable;
    Edje_Message_Int msg;
    msg.val=enable;
@@ -237,11 +237,11 @@ Eina_Bool
 ui_ruler_scale_absolute_visible_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get abs scale visibilility, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get abs scale visibilility, because a ruler is NULL.");
+        return 0;
+     }
    return _ruler_data->abs_scale_visible;
 }
 
@@ -249,11 +249,11 @@ void
 ui_ruler_scale_relative_position_set(Evas_Object *obj, int start, int end)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set scale relative position, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set scale relative position, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->rel_start = start;
    Edje_Message_Int msg;
    msg.val=start;
@@ -267,16 +267,16 @@ void
 ui_ruler_scale_relative_position_get(Evas_Object *obj, int *start, int *end)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get scale relative position, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get scale relative position, because a ruler is NULL.");
+        return;
+     }
    if(!start || !end)
-   {
-      ERR("Could not get scale relative position, because start or end is NULL.");
-     return;
-   }
+     {
+        ERR("Could not get scale relative position, because start or end is NULL.");
+        return;
+     }
    *start = _ruler_data->rel_start;
    *end = _ruler_data->rel_end;
 }
@@ -285,11 +285,11 @@ void
 ui_ruler_scale_absolute_position_zero_set(Evas_Object *obj, int pos)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not set abs zero position, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not set abs zero position, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->abs_scale_zero_pos=pos;
    Edje_Message_Int msg;
    msg.val=pos;
@@ -300,11 +300,11 @@ int
 ui_ruler_scale_absolute_position_zero_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get abs zero position, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get abs zero position, because a ruler is NULL.");
+        return 0;
+     }
    return (int)_ruler_data->abs_scale_zero_pos;
 }
 
@@ -312,11 +312,11 @@ void
 ui_ruler_hide(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not hide ruler, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not hide ruler, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->visible = EINA_FALSE;
    Edje_Message_Int msg;
    msg.val=0;
@@ -331,11 +331,11 @@ Eina_Bool
 ui_ruler_visible_get(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not get ruler visibility, because a ruler is NULL.");
-     return 0;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not get ruler visibility, because a ruler is NULL.");
+        return 0;
+     }
    return  _ruler_data->visible;
 }
 
@@ -343,11 +343,11 @@ void
 ui_ruler_show(Evas_Object *obj)
 {
    UI_Ruler_Data *_ruler_data = evas_object_data_get(obj, RULERDATAKEY);
-   if(!_ruler_data)
-   {
-      ERR("Could not show ruler, because a ruler is NULL.");
-     return;
-   }
+   if (!_ruler_data)
+     {
+        ERR("Could not show ruler, because a ruler is NULL.");
+        return;
+     }
    _ruler_data->visible = EINA_TRUE;
    Edje_Message_Int msg;
    msg.val=_ruler_data->abs_scale_visible;
@@ -389,10 +389,10 @@ ui_ruler_add(Evas_Object *parent)
 void
 ui_ruler_redraw(Evas_Object *obj)
 {
-   if(!obj)
-   {
-      ERR("Could not redraw, because a ruler is NULL.");
-     return;
-   }
+   if (!obj)
+     {
+        ERR("Could not redraw, because a ruler is NULL.");
+        return;
+     }
    edje_object_message_send(obj,EDJE_MESSAGE_NONE,MSG_REDRAW,0);
 }

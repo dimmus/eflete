@@ -196,4 +196,3 @@ font_viewer_init(Evas_Object *font_view __UNUSED__,
    eina_list_free(_temp_fonts);
    */
 }
-

@@ -72,8 +72,8 @@ _separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
 }
 static void
 _new_rect_add(void *data __UNUSED__,
-                   Evas_Object *obj,
-                   void *event_info)
+              Evas_Object *obj,
+              void *event_info)
 {
    Evas_Object *groupspace = (Evas_Object *)obj;
 
@@ -90,7 +90,6 @@ _new_rect_add(void *data __UNUSED__,
      }
 
    part->name = eina_stringshare_add(name);
-
 
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_RECTANGLE);
    edje_edit_state_add(group->obj, part->name, "default", 0.0);
@@ -111,8 +110,8 @@ _new_rect_add(void *data __UNUSED__,
 
 static void
 _new_img_add(void *data __UNUSED__,
-                   Evas_Object *obj,
-                   void *event_info)
+             Evas_Object *obj,
+             void *event_info)
 {
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
@@ -150,8 +149,8 @@ _new_img_add(void *data __UNUSED__,
 
 static void
 _new_state_add(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
+               Evas_Object *obj __UNUSED__,
+               void *event_info)
 {
    char *state_data = (char *)event_info;
    char name[BUFF_MAX];
@@ -163,8 +162,8 @@ _new_state_add(void *data __UNUSED__,
 
 static void
 _new_txt_add(void *data __UNUSED__,
-                   Evas_Object *obj,
-                   void *event_info)
+             Evas_Object *obj,
+             void *event_info)
 {
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
@@ -248,8 +247,8 @@ _new_txtblock_add(void *data __UNUSED__,
 
 static void
 _new_swallow_add(void *data __UNUSED__,
-                   Evas_Object *obj,
-                   void *event_info)
+                 Evas_Object *obj,
+                 void *event_info)
 {
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
@@ -289,8 +288,8 @@ _new_swallow_add(void *data __UNUSED__,
 
 static void
 _new_spacer_add(void *data __UNUSED__,
-                   Evas_Object *obj,
-                   void *event_info)
+                Evas_Object *obj,
+                void *event_info)
 {
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
@@ -331,8 +330,8 @@ _new_spacer_add(void *data __UNUSED__,
 
 static void
 _part_add(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
 {
    Workspace *ws = (Workspace *)data;
    evas_object_smart_callback_call(ws->groupspace, "gs,dialog,add", NULL);
@@ -350,8 +349,8 @@ _state_add(void *data __UNUSED__,
 
 static void
 _part_delete(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
+             Evas_Object *obj __UNUSED__,
+             void *event_info)
 {
    Workspace *ws = (Workspace *)data;
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
@@ -375,8 +374,8 @@ _part_delete(void *data,
 
 static void
 _layer_up_change(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info)
 {
    Workspace *ws = (Workspace *)data;
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
@@ -552,8 +551,6 @@ _gs_resize_cb(void *data,
 static void
 _gs_image_update(Group *group,
                  Part *part,
-                 //const char *state,
-                 //double value,
                  Project *project)
 {
    Evas_Load_Error err;
@@ -610,8 +607,6 @@ _gs_image_update(Group *group,
 static void
 _gs_rect_update(Group *group,
                 Part *part)
-                //const char *state,
-                //double value)
 {
    int r, g, b, a;
    edje_edit_part_selected_state_set(group->obj,
@@ -628,8 +623,6 @@ _gs_rect_update(Group *group,
 static void
 _gs_textblock_update(Group *group,
                      Part *part)
-                     //const char *state,
-                     //double value)
 {
    Evas_Textblock_Style *ts = NULL;
    const Evas_Textblock_Style *obj_style;
@@ -702,8 +695,6 @@ _gs_text_update(Group *group, Part *part)
 static void
 _gs_spaser_swallow_group_update(Group *group,
                           Part *part)
-                          //const char *state,
-                          //double value)
 {
    edje_edit_part_selected_state_set(group->obj,
                                      part->name,
@@ -724,9 +715,9 @@ _gs_group_part_update(Group *group,
 
 static void
 __box_recalc(void *data,
-           Evas *e __UNUSED__,
-           Evas_Object *obj __UNUSED__,
-           void *ei __UNUSED__)
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
 {
    Evas_Object *box = (Evas_Object *)data;
    evas_object_smart_calculate(box);
@@ -992,14 +983,11 @@ ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
 void
 ui_groupspace_part_state_update(Evas_Object *groupspace,
                                 Part *part)
-                                //const char *state)
-                                //double value)
 {
    Group *group =  evas_object_data_get(groupspace, GS_GROUP_KEY);
    Project *project = evas_object_data_get(groupspace, GS_PROJECT_KEY);
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Edje_Part_Type type = edje_edit_part_type_get(group->obj, part->name);
-   //char **split = eina_str_split(state, " ", 2);
 
    if (type == EDJE_PART_TYPE_IMAGE)
      _gs_image_update(group, part, project);
@@ -1018,9 +1006,6 @@ ui_groupspace_part_state_update(Evas_Object *groupspace,
 
    /* FIXME:  */
    evas_object_smart_calculate(box);
-   //edje_object_calc_force(box);
-   //free(split[0]);
-   //free(split);
 }
 
 Evas_Object *
@@ -1060,8 +1045,6 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    else
      WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
    elm_layout_signal_emit (ws->groupspace, "groupspace,show", "");
-
-   //evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESTACK, __box_calc, _box);
 
    elm_config_cursor_engine_only_set(EINA_FALSE);
    elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
