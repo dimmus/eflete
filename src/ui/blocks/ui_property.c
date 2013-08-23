@@ -1,5 +1,4 @@
 #include "ui_property.h"
-#include "widget_manager.h"
 #include "ui_property_define.h"
 
 struct _Prop_View_Data
@@ -170,7 +169,7 @@ ITEM_2INT_GROUP_CREATE("min:", group_min_w, group_min_h)
 ITEM_2INT_GROUP_CREATE("max:", group_max_w, group_max_h)
 
 Evas_Object *
-ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group __UNUSED__)
+ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group)
 {
    Evas_Object *group_view, *box, *item;
 
@@ -230,8 +229,8 @@ ITEM_1STRING_PART_CREATE("source", source)
 
 Evas_Object *
 ui_prop_part_info_view_add(Evas_Object *prop_view,
-                           Group *group __UNUSED__,
-                           Part *part __UNUSED__)
+                           Group *group,
+                           Part *part)
 {
    Evas_Object *part_view, *box, *item;
    Evas_Object *part_view_base, *box_base;
@@ -360,6 +359,12 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    ppvd = evas_object_data_get(part_view, PROP_PART_VIEW_DATA);
    if (!ppvd)
      return NULL;
+
+   /* delete callbacks*/
+   evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE,
+                                  _obj_x_change_feedback);
+   evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE,
+                                  _obj_y_change_feedback);
 
    part_view_state = elm_frame_add(ppvd->box);
    elm_frame_autocollapse_set(part_view_state, EINA_TRUE);
