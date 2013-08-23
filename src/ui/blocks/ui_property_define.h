@@ -343,12 +343,8 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(spinner1, "changed", \
                                   __on_state_##value1##_change, part); \
    if (feedback) \
-     { \
-       evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE, \
-                                      _obj_x_change_feedback); \
-       evas_object_event_callback_add(part->obj, EVAS_CALLBACK_RESIZE, \
-                                      _obj_x_change_feedback, spinner1); \
-     } \
+     evas_object_event_callback_add(part->obj, EVAS_CALLBACK_RESIZE, \
+                                    _obj_x_change_feedback, spinner1); \
    SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "default") \
    elm_spinner_label_format_set(spinner2, fmt); \
    elm_spinner_value_set(spinner2, edje_edit_state_##value2##_get(group->obj, \
@@ -361,12 +357,8 @@ prop_item_state_##value1##_##value2##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(spinner2, "changed", \
                                   __on_state_##value2##_change, part); \
    if (feedback) \
-     { \
-        evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE, \
-                                       _obj_y_change_feedback); \
-        evas_object_event_callback_add(part->obj, EVAS_CALLBACK_RESIZE, \
-                                       _obj_y_change_feedback, spinner2); \
-     } \
+     evas_object_event_callback_add(part->obj, EVAS_CALLBACK_RESIZE, \
+                                    _obj_y_change_feedback, spinner2); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item;\
 }
