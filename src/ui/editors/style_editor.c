@@ -574,6 +574,7 @@ __on_style_editor_close(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info __UNUSED__)
 {
+   evas_object_del(window.mwin);
    style_edit_save(window.pr);
    /* clear stringshare */
 }

@@ -2,6 +2,7 @@
 #include "open_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
+#include "program_editor.h"
 
 Eina_List *ui_list_menu;
 
@@ -150,12 +151,8 @@ _on_style_window_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if(ap->project != NULL)
-     {
-        style_editor_window_add(ap->win, ap->project);
-     }
-   else
-     NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
+   if(ap->project != NULL) style_editor_window_add(ap->win, ap->project);
+   else NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
 }
 
 static void
@@ -175,12 +172,28 @@ _on_ccl_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
 }
 
 static void
+_on_prog_editor_menu(void *data, Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   /*
+   App_Data *ap = (App_Data *)data;
+   if (!ap->project->current_group)
+     NOTIFY_WARNING("Please open the widget style for editing style programs!")
+   else
+     program_editor_window_add(ap->win, ap->project->current_group);
+   */
+   NOTIFY_INFO(5, "Not Implemented Yet.")
+}
+
+/*
+static void
 _on_font_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    font_viewer_init(font_viewer_add(ap->win), ap->project);
 }
+*/
 
 static void
 _on_about_window_menu(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
@@ -245,7 +258,8 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, NULL, "Styles", _on_style_window_menu, ap);
    elm_menu_item_add(menu, NULL, NULL, "Images", _on_image_editor_menu, ap);
    elm_menu_item_add(menu, NULL, NULL, "Colorclasses", _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
+   elm_menu_item_add(menu, NULL, NULL, "Programs", _on_prog_editor_menu, ap);
+   //elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 

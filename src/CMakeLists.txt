@@ -39,6 +39,7 @@ set(TET_CC_FILES
    ui/editors/style_editor.c
    ui/editors/image_editor.c
    ui/editors/colorclass_editor.c
+   ui/editors/program_editor.c
    ui/dialogs/open_file_dialog.c
    ui/dialogs/font_viewer_dialog.c
    ui/dialogs/add_part_dialog.c
