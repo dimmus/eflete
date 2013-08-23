@@ -10,6 +10,9 @@
 #include "logger.h"
 #include "Elementary.h"
 #include "ui_workspace.h"
+#include "ui_groupspace.h"
+#include "efl_tet.h"
+#include "ui_highlight.h"
 
 
 /**

@@ -206,4 +206,28 @@ hl_highlight_border_color_set(Evas_Object *hl,
 void
 hl_highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
 
+/**
+ * Get highlight visible state.
+ *
+ * @param hl Highlight object.
+ * @return EINA_TRUE if highlight visible, EINA_FALE if hided.
+ *
+ * @ingroup Highlight
+ */
+Eina_Bool
+hl_highlight_visible_get(Evas_Object *hl);
+
+/**
+ * Set highlight visible. If visible disabled with this method,
+ * evas_object_show can't show highlight. For enable visible use this method
+ * with EINA_TRUE parametr.
+ *
+ * @param hl Highlight object.
+ * @param enable EINA_TRUE for set visible highlight, EINA_FALE for
+ * invisible mode.
+ *
+ * @ingroup Highlight
+ */
+void
+hl_highlight_visible_set(Evas_Object *hl, Eina_Bool visible);
 #endif /* HIGHLIGHT_H */
