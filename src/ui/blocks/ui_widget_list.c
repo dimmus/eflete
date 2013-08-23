@@ -152,6 +152,7 @@ _part_added(void *data, Evas_Object *obj __UNUSED__,  void *event_info)
    Evas_Object *glist = (Evas_Object *)data;
    Part *part = (Part *)event_info;
 
+   part->show = EINA_TRUE;
    eoi = elm_genlist_item_append(glist, _itc_part, part, NULL,
                                  ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_object_item_data_set(eoi, part);

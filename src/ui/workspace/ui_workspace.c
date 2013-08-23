@@ -363,6 +363,7 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    evas_object_smart_callback_add(ws->highlight.highlight, "hl,resize",
                                   __on_resize, ws);
 
+   hl_highlight_visible_set(ws->highlight.space_hl, EINA_TRUE);
    hl_highlight_bg_color_set(ws->highlight.space_hl, 64, 64, 64, 64);
    hl_highlight_handler_color_set(ws->highlight.space_hl, 0, 0, 255, 255);
    hl_highlight_border_color_set(ws->highlight.space_hl, 0, 0, 0, 255);
@@ -392,7 +393,7 @@ ui_object_highlight_move(Workspace *ws)
 void
 ui_object_highlight_hide(Workspace *ws)
 {
-   if ((!ws) || (!ws->highlight.highlight)) return;
+   if ((!ws) || (!ws->highlight.part)) return;
 
    evas_object_hide(ws->highlight.highlight);
    evas_object_hide(ws->highlight.space_hl);

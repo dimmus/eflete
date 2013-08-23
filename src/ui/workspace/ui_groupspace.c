@@ -85,7 +85,7 @@ _new_rect_add(void *data __UNUSED__,
    char *name = (char *)event_info;
    if (edje_edit_part_exist(group->obj, name))
      {
-        WARN("Part with name [%s] alredy exist.", name);
+        NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
@@ -93,7 +93,8 @@ _new_rect_add(void *data __UNUSED__,
 
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_RECTANGLE);
    edje_edit_state_add(group->obj, part->name, "default", 0.0);
-   edje_edit_state_color_set(group->obj, part->name, "default", 0.0, 64, 64, 64, 200);
+   edje_edit_state_color_set(group->obj, part->name, "default", 0.0,
+                             255, 255, 255, 255);
    part->obj = evas_object_rectangle_add(ws->canvas);
    part->type = EDJE_PART_TYPE_RECTANGLE;
    _gs_rect_update(group, part);
@@ -125,7 +126,7 @@ _new_img_add(void *data __UNUSED__,
 
    if (edje_edit_part_exist(group->obj, name))
      {
-        WARN("Part with name [%s] alredy exist.", name);
+        NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
@@ -176,7 +177,7 @@ _new_txt_add(void *data __UNUSED__,
 
    if (edje_edit_part_exist(group->obj, name))
      {
-        WARN("Part with name [%s] alredy exist.", name);
+        NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
@@ -219,7 +220,7 @@ _new_txtblock_add(void *data __UNUSED__,
 
    if (edje_edit_part_exist(group->obj, name))
      {
-        WARN("Part with name [%s] alredy exist.", name);
+        NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
@@ -260,7 +261,7 @@ _new_swallow_add(void *data __UNUSED__,
 
    if (edje_edit_part_exist(group->obj, name))
      {
-        WARN("Part with name [%s] alredy exist.", name);
+        NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
@@ -302,7 +303,7 @@ _new_spacer_add(void *data __UNUSED__,
 
    if (edje_edit_part_exist(group->obj, name))
      {
-        WARN("Part with name [%s] alredy exist.", name);
+        NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
@@ -1115,6 +1116,7 @@ ui_groupspace_unset(Evas_Object *obj)
    Eina_List *l = NULL;
    Evas_Object *data = NULL;
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
+   if (!ws) return;
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
 

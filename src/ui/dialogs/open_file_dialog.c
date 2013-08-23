@@ -86,7 +86,9 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
                                             _on_part_back, ap);
         evas_object_smart_callback_add(wd_list, "wl,group,back",
                                             _on_group_back, ap);
+        if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
     }
+
 }
 
 Eina_Bool
@@ -143,6 +145,7 @@ _on_ok_cb(void *data,
                                             _on_part_back, ap);
         evas_object_smart_callback_add(wd_list, "wl,group,back",
                                             _on_group_back, ap);
+        if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
     }
 
    free(fs_ent->project_name);
