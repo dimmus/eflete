@@ -6,6 +6,7 @@
  * @ingroup Block
  *
  * This widget designed for show group and part details.
+ * @note In soon module can be remake.
  */
 
 #include "efl_tet.h"
@@ -117,7 +118,6 @@ Evas_Object *
 ui_prop_part_info_state_view_add(Evas_Object *part_view,
                                  Group *group,
                                  Part *part);
-                                 //const char *state);
 
 /**
  * Set to part view a state view.
