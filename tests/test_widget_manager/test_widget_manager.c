@@ -306,10 +306,7 @@ START_TEST (wm_style_add_test1)
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
-   if (!edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul"))
-      fprintf(stdout, "Failed set file to object %p\n", obj);
    Eina_List *list = wm_program_signals_list_get(group);
-   fprintf(stdout, "List [%p]\n", list);
    const char *style = "defaul";
    if (!wm_style_add(style, list))
    {
@@ -662,7 +659,7 @@ START_TEST (wm_part_type_get_test2)
    elm_init(0,0);
    Edje_Part_Type type = EINA_FALSE;
    const char *res = "NONE";
-   if(strcmp(wm_part_type_get(type), res) == 0)
+   if(wm_part_type_get(type) != res)
    {
       ck_abort_msg("failure: cannot return name type of part with NULL parameter");
    }

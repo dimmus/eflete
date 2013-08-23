@@ -7,7 +7,7 @@ set(VERMIC 8)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
-option(debug "debug build" 0)
+option(debug "debug build" 1)
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
