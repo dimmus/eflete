@@ -87,7 +87,7 @@ compile(const char *edc,
  * Decompile a edj file.
  *
  * @param edj Path to input edj file.
- * @param edc Path to output edc file.
+ * @param edc Path to output edc file.(TODO:NOT IMPLEMENTED)
  *
  * @ingroup EdjeCompile
  */
