@@ -12,6 +12,7 @@ typedef struct _Prop_View_Data Prop_View_Data;
 
 struct _Prop_Part_View_Data
 {
+   Part *part;
    Evas_Object *box;
    Evas_Object *base;
    struct {
@@ -24,6 +25,46 @@ struct _Prop_Part_View_Data
 
 typedef struct _Prop_Part_View_Data Prop_Part_View_Data;
 #define PROP_PART_VIEW_DATA "prop_part_view_data"
+
+static void
+_obj_x_change_feedback(void *data,
+                       Evas *e __UNUSED__,
+                       Evas_Object *obj,
+                       void *ei __UNUSED__)
+{
+   int value;
+   Evas_Object *spinner = (Evas_Object *)data;
+   evas_object_geometry_get(obj, NULL, NULL, &value, NULL);
+   elm_spinner_value_set(spinner, (double)value);
+}
+
+static void
+_obj_y_change_feedback(void *data,
+                       Evas *e __UNUSED__,
+                       Evas_Object *obj,
+                       void *ei __UNUSED__)
+{
+   int value;
+   Evas_Object *spinner = (Evas_Object *)data;
+   evas_object_geometry_get(obj, NULL, NULL, NULL, &value);
+   elm_spinner_value_set(spinner, (double)value);
+}
+
+static void
+_part_callback_del(void *data,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Part *part = (Part *)data;
+   if (!part) return;
+
+   /* delete callbacks*/
+   evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE,
+                                  _obj_x_change_feedback);
+   evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE,
+                                  _obj_y_change_feedback);
+}
 
 void
 _on_group_view_del(void *data __UNUSED__,
@@ -141,30 +182,6 @@ ui_prop_group_info_view_update(Evas_Object *prop_view, Group *group)
    ui_property_group_view_set(prop_view, group_view);
 }
 
-static void
-_obj_x_change_feedback(void *data,
-                       Evas *e __UNUSED__,
-                       Evas_Object *obj,
-                       void *ei __UNUSED__)
-{
-   int value;
-   Evas_Object *spinner = (Evas_Object *)data;
-   evas_object_geometry_get(obj, NULL, NULL, &value, NULL);
-   elm_spinner_value_set(spinner, (double)value);
-}
-
-static void
-_obj_y_change_feedback(void *data,
-                       Evas *e __UNUSED__,
-                       Evas_Object *obj,
-                       void *ei __UNUSED__)
-{
-   int value;
-   Evas_Object *spinner = (Evas_Object *)data;
-   evas_object_geometry_get(obj, NULL, NULL, NULL, &value);
-   elm_spinner_value_set(spinner, (double)value);
-}
-
 ITEM_2INT_GROUP_CREATE("min:", group_min_w, group_min_h)
 ITEM_2INT_GROUP_CREATE("max:", group_max_w, group_max_h)
 
@@ -266,6 +283,7 @@ ui_prop_part_info_view_add(Evas_Object *prop_view,
    elm_object_content_set(part_view_base, box_base);
    evas_object_show(box_base);
 
+   ppvd->part = part;
    ppvd->box = box;
    ppvd->base = part_view_base;
    ppvd->state.state = NULL;
@@ -360,12 +378,6 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    if (!ppvd)
      return NULL;
 
-   /* delete callbacks*/
-   evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE,
-                                  _obj_x_change_feedback);
-   evas_object_event_callback_del(part->obj, EVAS_CALLBACK_RESIZE,
-                                  _obj_y_change_feedback);
-
    part_view_state = elm_frame_add(ppvd->box);
    elm_frame_autocollapse_set(part_view_state, EINA_TRUE);
    evas_object_size_hint_fill_set(part_view_state, EVAS_HINT_FILL, 0.0);
@@ -378,6 +390,9 @@ ui_prop_part_info_state_view_add(Evas_Object *part_view,
    elm_box_align_set(box_state, 0.5, 0.0);
    elm_object_content_set(part_view_state, box_state);
    evas_object_show(box_state);
+
+   evas_object_event_callback_add(box_state, EVAS_CALLBACK_DEL,
+                                  _part_callback_del, part);
 
    type = edje_edit_part_type_get(group->obj, part->name);
 
