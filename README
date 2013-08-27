@@ -70,3 +70,6 @@ Run the editor:
 
 $ efltet
 
+Run tests:
+
+$ ctest

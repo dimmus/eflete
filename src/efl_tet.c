@@ -1,8 +1,6 @@
 #include "efl_tet.h"
 #include "ui_main_window.h"
 
-
-
 App_Data *ap = NULL;
 
 Evas_Object *
@@ -42,10 +40,11 @@ elm_main()
 
    ap = app_create();
    ui_main_window_add(ap);
-
+#ifndef __TESTING__
    elm_run();
    elm_shutdown();
    app_shutdown();
+#endif
    return 0;
 }
 
@@ -104,5 +103,6 @@ app_shutdown ()
    logger_shutdown();
    ecore_evas_shutdown();
 }
-
+#ifndef __TESTING__ 
 ELM_MAIN();
+#endif

@@ -50,6 +50,7 @@ struct _App_Data
  *
  */
 typedef struct _App_Data App_Data;
+EAPI_MAIN int elm_main();
 
 /**
  * This function inits all libraries required by this programm.

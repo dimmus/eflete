@@ -73,7 +73,7 @@ compile(const char *edc,
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   INFO("Start compile project: %s.", edc);
+   //INFO("Start compile project: %s.", edc);
 
    edjecc = mem_malloc(sizeof(*edjecc));
    edjecc->messages = NULL;
@@ -84,7 +84,7 @@ compile(const char *edc,
    sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
            image_directory, font_directory, sound_directory,
            edc, edj);
-   INFO("Run command: %s", edjecc->cmd);
+   //INFO("Run command: %s", edjecc->cmd);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
 
@@ -124,6 +124,8 @@ decompile(char *edj, char *edc)
                 edj, edc);
      }
 
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
+   
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjedecc->messages);
 
