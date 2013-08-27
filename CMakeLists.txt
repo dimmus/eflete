@@ -8,7 +8,66 @@ set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
 option(debug "debug build" 0)
+option(test "build tests" 0)
 
+include_directories(
+   ${CMAKE_CURRENT_SOURCE_DIR}/src
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/edit
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/logger
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/settings
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/modal_window
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/blocks
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/notification
+)
+
+set(TET_CC_FILES
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/efl_tet.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc/alloc.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/edje_compile.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/widget_manager.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/project_manager.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/edit/style_edit.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/edit/image_edit_api.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/project_manager/edit/colorclasses_edit_api.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/logger/logger.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/settings/settings.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_panes.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_menu.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_main_window.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/ui_blocks_communication.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors/style_editor.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors/image_editor.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors/colorclass_editor.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors/program_editor.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/open_file_dialog.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/font_viewer_dialog.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_part_dialog.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_state_dialog.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/about_window.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_ruler.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_workspace.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_popup.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_groupspace.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/modal_window/modal_window.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/blocks/ui_block.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/blocks/ui_property.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/blocks/ui_widget_list.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/blocks/ui_signal_list.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/blocks/ui_states_list.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_highlight.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_ruler.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_workspace.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_popup.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_groupspace.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/notification/notify.c
+)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -80,11 +139,11 @@ find_package(Doxygen)
       set(build_doc "no")
    endif(DOXYGEN_FOUND)
 find_package(Check)
-   if(CHECK_FOUND)
+   if(${test} AND CHECK_FOUND)
       set(build_test "yes")
-   else(CHECK_FOUND)
+   else()
       set(build_test "no")
-   endif(CHECK_FOUND)
+   endif()
 
 set(CMAKE_C_FLAGS "-g -Wall -Wextra -Werror -O2")
 
@@ -130,7 +189,7 @@ else()
    set(DOC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/doc)
    set(BUILD_TYPE "Debug Build")
    set(BUILD_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build)
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -Werror -O2")
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 add_definitions("-DPACKAGE=\"${PACKAGE}\"")
