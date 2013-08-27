@@ -100,7 +100,7 @@ _ui_settings_prepare()
    Eina_List *_settings_to_save = NULL;
    Eina_List *_window_list = NULL;
    Window_Settings *_window_sett = calloc(1, sizeof(Window_Settings));
-
+   if (!us) return NULL;
    _panes_set = _ui_settings_panes_add(us->panes_left);
    _settings_to_save = eina_list_append(_settings_to_save, _panes_set);
 
@@ -207,7 +207,7 @@ ui_settings_save()
 
    _ui_settings_descriptors_shutdown();
 
-   return EINA_FALSE;
+   return EINA_TRUE;
 }
 
 Eina_Bool
