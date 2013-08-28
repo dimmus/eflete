@@ -117,6 +117,9 @@ decompile(char *edj, char *edc)
      }
    else
      {
+     /*
+      * TODO:this stub! changes to edje_decc must be done to specify dest folder
+      */
         size = strlen(edj) + strlen(edc) + BUFF_MAX;
         edjedecc->cmd = (char *)malloc(size);
         sprintf(edjedecc->cmd,
@@ -125,7 +128,6 @@ decompile(char *edj, char *edc)
      }
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
-   
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjedecc->messages);
 
