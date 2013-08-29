@@ -21,6 +21,7 @@ START_TEST (ws_add_test_p)
    Workspace* ws = ws_add(layout);
    ck_assert_msg(ws != NULL, "Workspace object not returned");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -45,6 +46,7 @@ START_TEST (ws_add_test_n1)
    Workspace* ws = ws_add(parent);
    ck_assert_msg(ws == NULL, "NULL expected but not-NULL returned");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -69,6 +71,7 @@ START_TEST (ws_add_test_n2)
    Workspace *ws = ws_add(parent);
    ck_assert_msg(ws == NULL,"Not NULL returned\n");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -100,8 +103,8 @@ START_TEST (ws_zoom_step_p)
    diff=4.2-ws_zoom_step_get(ws);
    if(diff<0) diff=-diff;
    ck_assert_msg(diff<10e-6, "Value missmatch");
-
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -121,8 +124,7 @@ END_TEST
 START_TEST (ws_zoom_step_set_n)
 {
    elm_init(0, 0);
-   Workspace *ws = NULL;
-   ws_zoom_step_set(10,ws);
+   ws_zoom_step_set(10, NULL);
    elm_shutdown();
 }
 END_TEST
@@ -143,8 +145,7 @@ END_TEST
 START_TEST (ws_zoom_step_get_n)
 {
    elm_init(0, 0);
-   Workspace *ws = NULL;
-   ws_zoom_step_get(ws);
+   ws_zoom_step_get(NULL);
    elm_shutdown();
 }
 END_TEST
@@ -212,9 +213,10 @@ START_TEST (ui_object_highlight_set_n)
    parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout=elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ui_object_highlight_set(ws,NULL);
-   ui_object_highlight_set(NULL,NULL);
+   ui_object_highlight_set(ws, NULL);
+   ui_object_highlight_set(NULL, NULL);
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -278,12 +280,13 @@ START_TEST (ui_ws_zoom_in_p1)
    parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout=elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(5,ws);
-   ck_assert_msg(ui_ws_zoom_in(ws)==EINA_TRUE, "EINA_FALSE returned");
-   double diff=ws_zoom_step_get(ws)-5.1;
-   if(diff<0) diff=-diff;
-   ck_assert_msg(diff<10e-6,"wrong value after zooming in");
+   ws_zoom_step_set(5, ws);
+   ck_assert_msg(ui_ws_zoom_in(ws) == EINA_TRUE, "EINA_FALSE returned");
+   double diff = ws_zoom_step_get(ws) - 5.1;
+   if(diff < 0) diff = -diff;
+   ck_assert_msg(diff < 10e-6, "wrong value after zooming in");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -307,12 +310,13 @@ START_TEST (ui_ws_zoom_in_p2)
    parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout=elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(10.0,ws);
-   ck_assert_msg(ui_ws_zoom_in(ws)==EINA_FALSE, "EINA_TRUE returned(EINA_FALSE expected)");
-   double diff=10.0-ws_zoom_step_get(ws);
-   if(diff<0) diff=-diff;
-   ck_assert_msg(diff<10e-6,"Value out of range");
+   ws_zoom_step_set(10.0, ws);
+   ck_assert_msg(ui_ws_zoom_in(ws) == EINA_FALSE, "EINA_TRUE returned(EINA_FALSE expected)");
+   double diff = 10.0 - ws_zoom_step_get(ws);
+   if(diff < 0) diff = -diff;
+   ck_assert_msg(diff < 10e-6,"Value out of range");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -362,6 +366,7 @@ START_TEST (ui_ws_zoom_out_p1)
    if(diff<0) diff=-diff;
    ck_assert_msg(diff<10e-6,"wrong value after zooming in");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 
@@ -391,6 +396,7 @@ START_TEST (ui_ws_zoom_out_p2)
    if(diff<0) diff=-diff;
    ck_assert_msg(diff<10e-6,"Value out of range");
    elm_shutdown();
+   ws_free(ws);
 }
 END_TEST
 

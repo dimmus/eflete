@@ -22,6 +22,7 @@ START_TEST (mem_malloc_test)
    {
       ck_abort_msg("failure: cannot return pointer to the memory block allocated");
    }
+   free(mm);
 }
 END_TEST
 
@@ -47,6 +48,7 @@ START_TEST (mem_calloc_test)
    {
       ck_abort_msg("failure: cannot return pointer to the memory block allocated");
    }
+   free(mc);
 }
 END_TEST
 

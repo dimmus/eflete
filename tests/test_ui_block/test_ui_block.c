@@ -119,9 +119,11 @@ START_TEST (ui_block_title_text_p)
    parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
    block = ui_block_add(parent);
    ui_block_title_text_set(block,"test1");
-   ck_assert_msg(!strcmp(ui_block_title_text_get(block),"test1"),"title mismatch");
+   const char * str = ui_block_title_text_get(block);
+   ck_assert_msg(!strcmp(str,"test1"),"title mismatch");
    ui_block_title_text_set(block,"some say");
-   ck_assert_msg(!strcmp(ui_block_title_text_get(block),"some say"),"title mismatch");
+   str = ui_block_title_text_get(block);
+   ck_assert_msg(!strcmp(str,"some say"),"title mismatch");
    elm_shutdown();
 }
 END_TEST

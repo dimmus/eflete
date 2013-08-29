@@ -27,11 +27,13 @@ START_TEST (pm_open_project_edc_test_n1)
    img = "./data";
    font = "./data";
    sound = "./data";
-   if(pm_open_project_edc(name, path, img, font, sound) == EINA_FALSE)
+   Project* pro = pm_open_project_edc(name, path, img, font, sound);
+   if(!pro)
    {
       ck_abort_msg("failure: cannot open project from edc-file");
    }
    elm_shutdown();
+   pm_free(pro);
 }
 END_TEST
 
@@ -118,11 +120,13 @@ START_TEST (pm_open_project_edj_test_n1)
    char *name, *path;
    name = "./data";
    path = "./data/check.edj";
-   if(pm_open_project_edj(name, path) == EINA_FALSE)
+   Project* pro = pm_open_project_edj(name, path);
+   if(!pro)
    {
       ck_abort_msg("failure: cannot open project from edj-file");
    }
    elm_shutdown();
+   pm_free(pro);
 }
 END_TEST
 

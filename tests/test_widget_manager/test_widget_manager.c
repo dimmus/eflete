@@ -69,11 +69,13 @@ START_TEST (wm_part_add_test1)
    win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
    obj = elm_check_add(win);
    const char *part = "defaul";
-   if(wm_part_add(obj, part) == EINA_FALSE)
+   Part* pr = wm_part_add(obj, part);
+   if(!pr)
    {
       ck_abort_msg("failure: cannot add new Part object");
    }
    elm_shutdown();
+   wm_part_free(pr);
 }
 END_TEST
 
@@ -115,11 +117,13 @@ START_TEST (wm_group_add_test1)
    elm_init(0,0);
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
-   if(wm_group_add(grname, full_grname) == EINA_FALSE)
+   Group* group = wm_group_add(grname, full_grname);
+   if(!group)
    {
       ck_abort_msg("failure: cannot creating new Group object");
    }
    elm_shutdown();
+   wm_group_free(group);
 }
 END_TEST
 
@@ -213,6 +217,7 @@ START_TEST (wm_program_signals_list_get_test1)
    }
    evas_object_del(obj);
    elm_shutdown();
+   wm_group_free(group);
 }
 END_TEST
 
@@ -234,6 +239,7 @@ START_TEST (wm_program_signals_list_get_test2)
    const char *full_grname = "";
    Group *group = wm_group_add(grname, full_grname);
    fail_unless(wm_program_signals_list_get(group) == EINA_FALSE, "failure: return list of signals of NULL Group object");
+   wm_group_free(group);
 }
 END_TEST
 
@@ -252,7 +258,7 @@ END_TEST
 START_TEST (wm_program_signals_list_free_test1)
 {
    elm_init(0,0);
-   Eina_List *list = calloc(1, sizeof(list));
+   Eina_List *list = calloc(1, sizeof(Eina_List));
    if(wm_program_signals_list_free(list) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot delete list of signals");
@@ -311,11 +317,14 @@ START_TEST (wm_style_add_test1)
    Eina_List *list = wm_program_signals_list_get(group);
    fprintf(stdout, "List [%p]\n", list);
    const char *style = "defaul";
-   if (!wm_style_add(style, list))
+   Style* st = wm_style_add(style, list);
+   if (!st)
    {
       ck_abort_msg("failure: cannot create new style");
    }
    elm_shutdown();
+   wm_group_free(group);
+   wm_style_free(st);
 }
 END_TEST
 
@@ -353,7 +362,7 @@ END_TEST
 START_TEST (wm_style_free_test1)
 {
    elm_init(0,0);
-   Style *style = calloc(1,sizeof(style));
+   Style *style = calloc(1,sizeof(Style));
    if(wm_style_free(style) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot delete Style object");
@@ -405,11 +414,14 @@ START_TEST (wm_widget_add_test1)
    const char *full_grname = "elm/check/base/defaul";
    Group *gr = wm_group_add(grname, full_grname);
    Eina_List *groups = wm_program_signals_list_get(gr);
-   if(wm_widget_add(widget, groups) == EINA_FALSE)
+   Widget* wd = wm_widget_add(widget, groups);
+   if(!wd)
    {
       ck_abort_msg("failure: cannot create new Widget object");
    }
    elm_shutdown();
+   wm_group_free(gr);
+   wm_widget_free(wd);
 }
 END_TEST
 
@@ -458,6 +470,7 @@ START_TEST (wm_widget_free_test1)
       ck_abort_msg("failure: cannot delete Widget object");
    }
    elm_shutdown();
+   wm_group_free(gr);
 }
 END_TEST
 
@@ -599,6 +612,7 @@ START_TEST (wm_group_object_find_test1)
       ck_abort_msg("failure: cannot return Group object");
    }
    elm_shutdown();
+   wm_group_free(group);
 }
 END_TEST
 
@@ -679,15 +693,14 @@ END_TEST
  * @step 1 Create uncorect Edje_Part_Type object
  * @step 2 Add object to function
  *
- * @passcondition: EINA_FALSE should returned from function
+ * @passcondition: NULL should returned from function
  * @}
  */
 START_TEST (wm_part_type_get_test3)
 {
    elm_init(0,0);
    Edje_Part_Type type = 55;
-   const char *res = (char *)NULL;
-   ck_assert_str_eq(wm_part_type_get(type), res);
+   ck_assert_msg(!wm_part_type_get(type),"Not NULL returned");
    elm_shutdown();
 }
 END_TEST
