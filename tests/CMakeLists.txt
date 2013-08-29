@@ -6,6 +6,7 @@ find_package(Evas REQUIRED)
 find_package(Ecore REQUIRED)
 find_package(Ecore COMPONENTS Ecore-x)
 find_package(Ecore COMPONENTS Ecore-Evas)
+find_package(Ecore COMPONENTS Ecore-File)
 find_package(Eio REQUIRED)
 find_package(Edje REQUIRED)
 find_package(Efreet REQUIRED)
@@ -28,6 +29,7 @@ set(TEST_LIBS
    ${ECORE_LIBRARIES}
    ${ECORE_X_LIBRARIES}
    ${ECORE_EVAS_LIBRARIES}
+   ${ECORE_FILE_LIBRARIES}
    ${EVAS_LIBRARIES}
    ${EET_LIBRARIES}
    ${EIO_LIBRARIES}

@@ -1,5 +1,6 @@
 #include "ui_main_window.h"
 #include "open_file_dialog.h"
+#include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
 #include "program_editor.h"
@@ -30,6 +31,8 @@ _on_save_menu(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   if ((!ap) || (!ap->project)) return;
+
    if (pm_save_project_to_swap(ap->project))
      {
         if (pm_save_project_edj(ap->project))
@@ -37,6 +40,23 @@ _on_save_menu(void *data,
         else
           NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
      }
+}
+
+static void
+_on_save_as_menu(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   save_as_edj_file(ap);
+}
+
+static void
+_on_edc_save_menu(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   NOTIFY_INFO(3, "Not implemented yet");
 }
 
 static void
@@ -220,7 +240,7 @@ Eina_Bool
 ui_menu_add(App_Data *ap)
 {
    Evas_Object *tb, *menu;
-   Elm_Object_Item *tb_it, *menu_sub;;
+   Elm_Object_Item *tb_it, *menu_sub;
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
@@ -246,9 +266,11 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
                      _on_edj_open_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/file", "Save", _on_save_menu, ap);
+   elm_menu_item_add(menu, NULL, "menu/file", "Save as...", _on_save_as_menu, ap);
+   elm_menu_item_add(menu, NULL, "menu/file", "Save as EDC", _on_edc_save_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
-   tb_it=elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
+   tb_it = elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
    menu_sub = elm_menu_item_add(menu, NULL, NULL, "Workspace", NULL, NULL);
@@ -263,7 +285,7 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, menu_sub, NULL, "Relative scale", _on_view_ruler_rel, ap);
    elm_menu_item_add(menu, NULL, NULL, "Highlight space", _on_view_highlight, ap);
 
-   tb_it=elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
+   tb_it = elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
@@ -275,7 +297,7 @@ ui_menu_add(App_Data *ap)
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
 
-   tb_it=elm_toolbar_item_append(tb, NULL, "Help", NULL, NULL);
+   tb_it = elm_toolbar_item_append(tb, NULL, "Help", NULL, NULL);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
    elm_menu_item_add(menu, NULL, "help-about", "About",

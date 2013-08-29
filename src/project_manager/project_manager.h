@@ -100,6 +100,18 @@ Eina_Bool
 pm_save_project_edj(Project *project);
 
 /**
+ * Save project into specific edj-file that is in another location.
+ *
+ * @param project A Project structure.
+ * @param path Path to edj-file.
+ * @return TRUE if saved successfully.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_save_as_project_edj(Project *project, const char *path);
+
+/**
  *
  */
 Eina_Bool

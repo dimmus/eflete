@@ -198,6 +198,18 @@ pm_save_project_edj(Project *project)
 }
 
 Eina_Bool
+pm_save_as_project_edj(Project *project, const char *path)
+{
+   if (!project) return EINA_FALSE;
+   if (!path) return EINA_FALSE;
+
+   eio_file_copy(project->swapfile, path, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   ecore_main_loop_begin();
+   return EINA_TRUE;
+}
+
+Eina_Bool
 pm_save_project_to_swap(Project *project)
 {
    Evas_Object *edje_object;

@@ -87,7 +87,6 @@ compile(const char *edc,
    //INFO("Run command: %s", edjecc->cmd);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
-
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjecc->messages);
 

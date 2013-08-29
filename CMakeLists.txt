@@ -47,6 +47,7 @@ set(TET_CC_FILES
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors/colorclass_editor.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/editors/program_editor.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/open_file_dialog.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/save_file_dialog.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/font_viewer_dialog.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_part_dialog.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_state_dialog.c
@@ -108,6 +109,12 @@ find_package(Ecore COMPONENTS Ecore-Evas)
    else(ECORE_EVAS_FOUND)
       message(FATAL_ERROR "Can not find a Ecore library component - Ecore_Evas.")
    endif(ECORE_EVAS_FOUND)
+find_package(Ecore COMPONENTS Ecore-File)
+   if(ECORE_FILE_FOUND)
+      set(have_ecore_file "yes")
+   else(ECORE_FILE_FOUND)
+      message(FATAL_ERROR "Can not find a Ecore library component - Ecore_File.")
+   endif(ECORE_FILE_FOUND)
 find_package(Eio REQUIRED)
    if(EIO_FOUND)
       set(have_eio "yes")
@@ -166,7 +173,6 @@ include_directories(
    ${EFREET_INCLUDE_DIRS}
    ${ELEMENTARY_INCLUDE_DIRS}
    )
-
 
 if (prefix)
    set(CMAKE_INSTALL_PREFIX ${prefix})
@@ -246,6 +252,7 @@ message("  evas...........: " ${have_evas})
 message("  ecore..........: " ${have_ecore})
 message("    ecore-x......: " ${have_ecore_x})
 message("    ecore-evas...: " ${have_ecore_evas})
+message("    ecore-file...: " ${have_ecore_file})
 message("  eio............: " ${have_eio})
 message("  edje...........: " ${have_edje})
 message("  efreet.........: " ${have_efreet})
