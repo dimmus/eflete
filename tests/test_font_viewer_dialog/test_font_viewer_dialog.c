@@ -33,6 +33,7 @@ START_TEST (font_dialog_test1)
    font_viewer_init(font, pro);
 
    elm_shutdown();
+   pm_free(pro);
 }
 END_TEST
 
@@ -66,6 +67,7 @@ START_TEST (font_dialog_test2)
    font_viewer_init(font, pro);
 
    elm_shutdown();
+   pm_free(pro);
 }
 END_TEST
 

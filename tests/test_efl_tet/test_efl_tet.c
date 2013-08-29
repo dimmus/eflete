@@ -86,6 +86,7 @@ START_TEST (app_create_test)
    {
       ck_abort_msg("failure: cannot link to create empty App_Data");
    }
+   app_free(data);
 }
 END_TEST
 
@@ -105,7 +106,11 @@ START_TEST (app_free_test)
 {
    elm_init(0,0);
    App_Data *ap = app_create();
-   app_free(ap);
+   if(ap)
+      app_free(ap);
+   /*
+    * TODO: fix strange check
+    */
    if (ap == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot remove App_Data");

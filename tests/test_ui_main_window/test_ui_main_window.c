@@ -4,9 +4,9 @@
 
 
 /*  Notify! The methods  ui_part_back(), ui_group_back(), ui_state_select(), ui_part_select(),
- ui_group_clicked(), ui_edc_load_done() can not be checked out working project. 
- There are some bugs when ui_edj_load_done() and ui_edc_load_done() calling without first calling elm_main(). 
-*/ 
+ ui_group_clicked(), ui_edc_load_done() can not be checked out working project.
+ There are some bugs when ui_edj_load_done() and ui_edc_load_done() calling without first calling elm_main().
+*/
 
 /**
  * @addtogroup ui_main_window_add
@@ -32,7 +32,8 @@ START_TEST (ui_main_window_add_test_n1)
       ck_abort_msg("uncorrect work function 'app_create'");
    }
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -50,8 +51,7 @@ END_TEST
 START_TEST (ui_main_window_add_test_n2)
 {
    elm_init(0,0);
-   App_Data *app = NULL;
-   fail_unless(ui_main_window_add(app) == EINA_FALSE, "error: 'ui_main_window_add(NULL)' = EINA_TRUE");
+   fail_unless(ui_main_window_add(NULL) == EINA_FALSE, "error: 'ui_main_window_add(NULL)' = EINA_TRUE");
    elm_shutdown();
 }
 END_TEST
@@ -80,9 +80,10 @@ START_TEST (ui_main_window_del_test)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_main_window_del();
-   elm_shutdown(); 
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -110,9 +111,10 @@ START_TEST (ui_panes_add_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    fail_unless(ui_panes_add(app) == EINA_TRUE, "failure: cannot create panes");
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -129,8 +131,7 @@ END_TEST
  */
 START_TEST (ui_panes_add_test_n2)
 {
-   App_Data *app = NULL;
-   fail_unless(ui_panes_add(app) == EINA_FALSE, "error: 'ui_panes_add(NULL)' = EINA_TRUE");
+   fail_unless(ui_panes_add(NULL) == EINA_FALSE, "error: 'ui_panes_add(NULL)' = EINA_TRUE");
 }
 END_TEST
 
@@ -158,9 +159,10 @@ START_TEST (ui_panes_settings_load_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_panes_settings_load();
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -190,7 +192,7 @@ END_TEST
  * @step 1 Create App_Data structure app
  * @step 2 Call app_create() function to initialize app
  * @step 3 Create main window using ui_main_window_add()
- * @step 4 Load settings using ui_panes_settings_load()
+ * @step 4 Save settings using ui_panes_settings_save()
  *
  * @passcondition: test passed
  * @}
@@ -205,9 +207,10 @@ START_TEST (ui_panes_settings_save_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_panes_settings_save();
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -252,9 +255,10 @@ START_TEST (ui_menu_add_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    fail_unless(ui_menu_add(app) == EINA_TRUE, "failure: cannot create menu");
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -271,8 +275,7 @@ END_TEST
  */
 START_TEST (ui_menu_add_test_n2)
 {
-   App_Data *app = NULL;
-   fail_unless(ui_menu_add(app) == EINA_FALSE, "error: 'ui_panes_add(NULL)' = EINA_TRUE");
+   fail_unless(ui_menu_add(NULL) == EINA_FALSE, "error: 'ui_panes_add(NULL)' = EINA_TRUE");
 }
 END_TEST
 
@@ -300,9 +303,10 @@ START_TEST (ui_resize_pans_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_resize_pans(100, 100);
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -347,9 +351,10 @@ START_TEST (ui_panes_show_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_panes_show(app);
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -394,9 +399,10 @@ START_TEST (ui_panes_hide_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_panes_hide(app);
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -443,9 +449,9 @@ START_TEST (ui_part_back_test_n1)
       ck_abort_msg("uncorrect work function 'app_create'");
    }
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
-
    ui_part_back(app);
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -473,9 +479,10 @@ START_TEST (ui_edc_load_done_test_n1)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_edc_load_done(app, "first", "./tests/ui_main_window/data/naviframe.edc","","","");
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -493,7 +500,7 @@ START_TEST (ui_edc_load_done_test_n2)
 {
    elm_init(0,0);
    ui_edc_load_done(NULL, "first", "./tests/ui_main_window/data/naviframe.edc","","","");
-   elm_shutdown();  
+   elm_shutdown();
 }
 END_TEST
 
@@ -517,9 +524,10 @@ START_TEST (ui_edc_load_done_test_n3)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window"); 
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    ui_edc_load_done(app, "first", "./tests/ui_main_window/data/bad.edc","","","");
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -534,7 +542,7 @@ END_TEST
  * @step 2 Call app_create() function to initialize app
  * @step 3 Create main window using ui_main_window_add()
  * @step 4 Create fileselector using elm_fileselector_add
- * @step 5 Load edj file using ui_edj_load_done 
+ * @step 5 Load edj file using ui_edj_load_done
  *
  * @passcondition: test passed
  * @}
@@ -548,7 +556,8 @@ START_TEST (ui_edj_load_done_test_n1)
    ap->inwin = elm_win_inwin_add(ap->win);
    Evas_Object * fs = elm_fileselector_add(ap->inwin);
    ui_edj_load_done(ap, fs, "./tests/ui_main_window/data/naviframe.edj");
-   elm_shutdown();  
+   elm_shutdown();
+   app_free(ap);
 }
 END_TEST
 
@@ -571,7 +580,8 @@ START_TEST (ui_edj_load_done_test_n2)
    ap->inwin = elm_win_inwin_add(ap->win);
    Evas_Object * fs = elm_fileselector_add(ap->inwin);
    ui_edj_load_done(NULL, fs, "./tests/ui_main_window/data/navifram.edj");
-   elm_shutdown();   
+   elm_shutdown();
+   app_free(ap);
 }
 END_TEST
 
@@ -592,7 +602,8 @@ START_TEST (ui_edj_load_done_test_n3)
    App_Data * ap = app_create();
    ui_main_window_add(ap);
    ui_edj_load_done(ap, NULL, "./tests/ui_main_window/data/naviframe.edj");
-   elm_shutdown();   
+   elm_shutdown();
+   app_free(ap);
 }
 END_TEST
 
@@ -615,7 +626,8 @@ START_TEST (ui_edj_load_done_test_n4)
    ap->inwin = elm_win_inwin_add(ap->win);
    Evas_Object * fs = elm_fileselector_add(ap->inwin);
    ui_edj_load_done(ap, fs, "./tests/ui_main_window/data/bad.edj");
-   elm_shutdown();   
+   elm_shutdown();
+   app_free(ap);
 }
 END_TEST
 
@@ -661,7 +673,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_edj_load_done_test_n2);
    tcase_add_test(tcase, ui_edj_load_done_test_n3);
    tcase_add_test(tcase, ui_edj_load_done_test_n4);
-
 
    suite_add_tcase(suite, tcase);
    return suite;

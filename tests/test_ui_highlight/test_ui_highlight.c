@@ -38,8 +38,11 @@ START_TEST (hl_highlight_add_test_n2)
    App_Data *app = NULL;
    app_init();
    app = app_create();
+   ck_assert_msg(app != NULL,"App_Data is NULL");
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    fail_unless(hl_highlight_add(app->ws->groupspace) != NULL, "failure: cannot add highlight");
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -81,9 +84,12 @@ START_TEST ( hl_highlight_object_set_test_n2)
    App_Data *app = NULL;
    app_init();
    app = app_create();
+   ck_assert_msg(app != NULL,"App_Data is NULL");
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    fail_unless(hl_highlight_add(app->ws->groupspace) != NULL, "failure: cannot add highlight");
    /* TODO: add a hl_highlight_object_set() function call, after it appears in the API*/
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -123,10 +129,13 @@ START_TEST (hl_highlight_handler_color_set_test_n2)
    App_Data *app = NULL;
    app_init();
    app = app_create();
+   ck_assert_msg(app != NULL,"App_Data is NULL");
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    app->ws->highlight.highlight = hl_highlight_add(app->ws->groupspace);
    fail_unless(app->ws->highlight.highlight != NULL, "failure: cannot add highlight");
    hl_highlight_handler_color_set(app->ws->highlight.highlight, 255, 255, 255, 255);
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -165,10 +174,13 @@ START_TEST (hl_highlight_border_color_set_test_n2)
    App_Data *app = NULL;
    app_init();
    app = app_create();
+   ck_assert_msg(app != NULL,"App_Data is NULL");
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
    app->ws->highlight.highlight = hl_highlight_add(app->ws->groupspace);
    fail_unless(app->ws->highlight.highlight != NULL, "failure: cannot add highlight");
    hl_highlight_border_color_set(app->ws->highlight.highlight, 255, 255, 255, 255);
+   elm_shutdown();
+   app_free(app);
 }
 END_TEST
 

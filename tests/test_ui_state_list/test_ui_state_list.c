@@ -42,12 +42,14 @@ START_TEST (ui_states_test1)
    {
       ck_abort_msg("failure(list_data_set): cannot set data of part states to state list");
    }
+   wm_part_free(part);
    part = ui_state_list_part_get(list);
    if (!part)
    {
       ck_abort_msg("failure(list_part_get): cannot create Part object");
    }
    elm_shutdown();
+   wm_group_free(group);
 }
 END_TEST
 
@@ -86,6 +88,7 @@ START_TEST (ui_states_test2)
       ck_abort_msg("failure(list_data_set): cannot set data of part states to NULL state list");
    }
    elm_shutdown();
+   wm_part_free(part);
 }
 END_TEST
 

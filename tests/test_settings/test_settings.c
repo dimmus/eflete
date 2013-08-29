@@ -10,13 +10,14 @@
  * @procedure
  * @step 1 Call function for test
  *
- * @passcondition: should returned a pointer of UI_Elements_Settings 
+ * @passcondition: should returned a pointer of UI_Elements_Settings
  * @}
  */
 START_TEST (ui_element_settings_init_test)
 {
    elm_init(0,0);
-   if(ui_element_settings_init() == NULL)
+   UI_Elements_Settings *set = ui_element_settings_init();
+   if(!set)
    {
       ck_abort_msg("failure: cannot return pointer of the UI_Elements_Settings");
    }
@@ -45,6 +46,7 @@ START_TEST (ui_settings_save_test)
       ck_abort_msg("failure: cannot save ui elements setings");
    }
    elm_shutdown();
+   app_free(app);
 }
 END_TEST
 
@@ -69,6 +71,7 @@ START_TEST (ui_settings_load_test)
       ck_abort_msg("failure: cannot load setings from 'ui.set'");
    }
    elm_shutdown();
+   app_free(app);
 }
 END_TEST
 

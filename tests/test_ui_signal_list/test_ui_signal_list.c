@@ -38,6 +38,7 @@ START_TEST (ui_signal_test1)
       ck_abort_msg("failure: cannot set data of signal to signal list");
    }
    elm_shutdown();
+   wm_group_free(group);
 }
 END_TEST
 

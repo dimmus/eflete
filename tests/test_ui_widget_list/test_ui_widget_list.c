@@ -41,6 +41,7 @@ START_TEST (ui_widget_test1)
       ck_abort_msg("failure(list_data_set): cannot set data of widget to widget list");
    }
    elm_shutdown();
+   pm_free(pro);
 }
 END_TEST
 
@@ -79,6 +80,7 @@ START_TEST (ui_widget_test2)
       ck_abort_msg("failure(list_data_set): cannot set data of widget to NULL widget list");
    }
    elm_shutdown();
+   pm_free(pro);
 }
 END_TEST
 
