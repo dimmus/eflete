@@ -214,3 +214,12 @@ add_test(${TEST_NAME} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_NAME})
 add_custom_target( style_editor_edj
    command edje_cc -v -id ${TEST_NAME}/data/ ${TEST_NAME}/data/naviframe.edc ${TEST_NAME}/data/naviframe.edj)
 add_dependencies(${PROJECT_NAME} style_editor_edj)
+
+set(TEST_NAME test_image_editor)
+add_executable(${TEST_NAME} ${TEST_NAME}/${TEST_NAME}.c)
+target_link_libraries(${TEST_NAME} ${TEST_LIBS})
+add_test(${TEST_NAME} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_NAME})
+
+add_custom_target( image_editor_edj
+   command edje_cc -v -id ${TEST_NAME}/data/ ${TEST_NAME}/data/naviframe.edc ${TEST_NAME}/data/naviframe.edj)
+add_dependencies(${PROJECT_NAME} image_editor_edj)
