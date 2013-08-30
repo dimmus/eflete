@@ -37,8 +37,8 @@ START_TEST (ui_signal_test1)
    {
       ck_abort_msg("failure: cannot set data of signal to signal list");
    }
-   elm_shutdown();
    wm_group_free(group);
+   elm_shutdown();
 }
 END_TEST
 
@@ -63,8 +63,7 @@ START_TEST (ui_signal_test2)
    {
       ck_abort_msg("failure: cannot create signal list from NULL parent");
    }
-   Group *group = NULL;
-   if (ui_signal_list_data_set(list, group))
+   if (ui_signal_list_data_set(list, NULL))
    {
       ck_abort_msg("failure: cannot set data signal to NULL signal list");
    }

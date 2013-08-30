@@ -25,8 +25,8 @@ START_TEST (edit_list_get_test)
    {
       ck_abort_msg("failure: cannot return list of strings, each being the name for an image");
    }
-   elm_shutdown();
    pm_free(pro);
+   elm_shutdown();
 }
 END_TEST
 
@@ -94,8 +94,8 @@ START_TEST (edit_colors_test)
    {
       ck_abort_msg("failure: error in colorclasses_edit_colors_get() function");
    }
-   elm_shutdown();
    pm_free(pro);
+   elm_shutdown();
 }
 END_TEST
 

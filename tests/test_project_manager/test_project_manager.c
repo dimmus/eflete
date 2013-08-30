@@ -32,8 +32,8 @@ START_TEST (pm_open_project_edc_test_n1)
    {
       ck_abort_msg("failure: cannot open project from edc-file");
    }
-   elm_shutdown();
    pm_free(pro);
+   elm_shutdown();
 }
 END_TEST
 
@@ -125,8 +125,8 @@ START_TEST (pm_open_project_edj_test_n1)
    {
       ck_abort_msg("failure: cannot open project from edj-file");
    }
-   elm_shutdown();
    pm_free(pro);
+   elm_shutdown();
 }
 END_TEST
 
