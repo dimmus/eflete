@@ -29,7 +29,7 @@ _on_window_resize(void *data __UNUSED__,
 }
 
 static void
-_add_part_dailog(void *data __UNUSED__,
+_add_part_dailog(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
@@ -38,12 +38,21 @@ _add_part_dailog(void *data __UNUSED__,
 }
 
 static void
-_add_state_dailog(void *data __UNUSED__,
+_add_state_dailog(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    new_state_dialog_add(ap);
+}
+
+static void
+_add_style_dailog(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   new_style_dialog_add(ap);
 }
 
 Eina_Bool
@@ -54,17 +63,16 @@ ui_main_window_add(App_Data *ap)
    eina_init();
 
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
-   if (win == NULL) {
+   if (win == NULL)
+     {
         ERR("Failrue create main window.");
         return EINA_FALSE;
-   }
+     }
    ap->win = win;
 
    elm_win_title_set(win, PACKAGE);
    evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
-   evas_object_event_callback_add(win,
-                                  EVAS_CALLBACK_RESIZE,
-                                  _on_window_resize,
+   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, _on_window_resize,
                                   NULL);
 
    bg = elm_bg_add(win);
@@ -91,6 +99,8 @@ ui_main_window_add(App_Data *ap)
                                   _add_part_dailog, ap);
    evas_object_smart_callback_add(ap->ws->groupspace, "gs,state,add",
                                   _add_state_dailog, ap);
+   evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
+                                  _add_style_dailog, ap);
    evas_object_show(win);
 
    return EINA_TRUE;

@@ -51,6 +51,7 @@ set(TET_CC_FILES
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/font_viewer_dialog.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_part_dialog.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_state_dialog.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/add_style_dialog.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/about_window.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_ruler.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_workspace.c
@@ -217,10 +218,12 @@ endif()
 if (NOT ${debug})
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/images DESTINATION ${DATA_PATH} FILES_MATCHING PATTERN "*.jpg" PATTERN "*.png")
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj DESTINATION ${DATA_PATH}/themes/default)
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/template.edj DESTINATION ${DATA_PATH}/themes/default)
    install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build/${PROJECT_NAME} DESTINATION ${BIN_PATH})
 else()
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/images DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/data FILES_MATCHING PATTERN "*.jpg" PATTERN "*.png")
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/${PROJECT_NAME}.edj DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/data/themes/default)
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/themes/default/template.edj DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/data/themes/default)
 endif()
 
 if (NOT ${debug})

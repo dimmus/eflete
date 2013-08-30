@@ -113,7 +113,6 @@ _on_add_popup_btn_cancel(void *data,
    evas_object_del(popup);
 }
 
-
 /*Colorclass editor buttons callbacks*/
 static void
 _on_btn_cancel(void *data,

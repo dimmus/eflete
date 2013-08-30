@@ -66,4 +66,10 @@
    evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(image);
 
+#define ICON_STANDARD_ADD(parent, icon, noscale, icon_name) \
+   icon = elm_icon_add (parent);\
+   elm_icon_standard_set(icon, icon_name);\
+   elm_image_no_scale_set(icon, noscale);\
+   evas_object_show(icon);
+
 #endif /* WIDGET_DEFINE_H */

@@ -53,7 +53,7 @@ static char *part_types[] = {
    free(arr[0]); \
    free(arr);
 
-static void
+void
 wm_group_data_load(Group *group, Evas *e, const char *edj)
 {
    Evas_Object *edje_edit_obj;
@@ -229,7 +229,6 @@ wm_style_add(const char *style, Eina_List *groups)
    style_edje->style_name = eina_stringshare_add(style);
    style_edje->groups = NULL;
    style_edje->__type = STYLE;
-
    EINA_LIST_FOREACH(groups, l, group_name_full)
      {
         WM_GROUP_NAME_GET(group_name, style_edje->style_name, group_name_full);
@@ -237,6 +236,7 @@ wm_style_add(const char *style, Eina_List *groups)
         style_edje->groups = eina_inlist_append(style_edje->groups,
                                                 EINA_INLIST_GET(group_edje));
      }
+
    free(group_name_full);
    free(group_name);
 

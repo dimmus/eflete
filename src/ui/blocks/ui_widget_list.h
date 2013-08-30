@@ -58,4 +58,15 @@ ui_widget_list_title_set(Evas_Object *object, const char *title);
 Eina_Bool
 ui_widget_list_data_set(Evas_Object *object, Project *project);
 
+/**
+ * Reolad content style genlist.
+ *
+ * @param gl_styles A 'style list' object. (genlist container)
+ * @param styles A Eina_Inlist pointer for loaded styles in project
+ *
+ * @ingroup WidgetList
+ */
+void
+ui_widget_list_style_data_reload(Evas_Object *gl_styles, Eina_Inlist *styles);
+
 #endif /* UI_WIDGET_LIST_H */

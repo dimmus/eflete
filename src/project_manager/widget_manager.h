@@ -37,10 +37,10 @@
  */
 enum _type
 {
-	WIDGET = 0,
-	STYLE,
-	GROUP,
-	PART
+    WIDGET = 0,
+    STYLE,
+    GROUP,
+    PART
 };
 
 /**
@@ -58,14 +58,14 @@ typedef enum _type type;
  */
 struct _Part
 {
-	EINA_INLIST;
-	Eina_Stringshare *name;
-	Evas_Object *obj;
-   Eina_Stringshare *curr_state;
-   double curr_state_value;
-	Eina_Bool show;
-	int type;
-	type __type;
+    EINA_INLIST;
+    Eina_Stringshare *name;
+    Evas_Object *obj;
+    Eina_Stringshare *curr_state;
+    double curr_state_value;
+    Eina_Bool show;
+    int type;
+    type __type;
 };
 
 /**
@@ -83,21 +83,21 @@ typedef struct _Part Part;
  */
 struct _Group
 {
-	EINA_INLIST;
+    EINA_INLIST;
    /** Member 'group_name' consist a name of a group. **/
-   Eina_Stringshare *group_name;
+    Eina_Stringshare *group_name;
    /** Member 'full_group_name' consist a name of a block 'group'. **/
-	Eina_Stringshare *full_group_name;
+    Eina_Stringshare *full_group_name;
    /** Member 'obj' - edje edit object.**/
-	Evas_Object *obj;
+    Evas_Object *obj;
    /** is it Group modificated **/
-   Eina_Bool isModify;
+    Eina_Bool isModify;
    /** Show/Hide a object on a workspace. **/
-	Eina_Bool show;
-	int current_w, current_h;
+    Eina_Bool show;
+    int current_w, current_h;
    /** Member 'parts' saved a list of a group parts data. **/
-	Eina_Inlist *parts;
-	type __type;
+    Eina_Inlist *parts;
+    type __type;
 };
 
 /**
@@ -114,12 +114,12 @@ typedef struct _Group Group;
  */
 struct _Style
 {
-	EINA_INLIST;
+    EINA_INLIST;
    /** Member 'style_name' consist a name of a style. **/
-	Eina_Stringshare *style_name;
+    Eina_Stringshare *style_name;
    /** Member 'groups' saved a list of groups that make up the style. **/
-	Eina_Inlist *groups;
-	type __type;
+    Eina_Inlist *groups;
+    type __type;
 };
 
 /**
@@ -136,12 +136,12 @@ typedef struct _Style Style;
  */
 struct _Widget
 {
-	EINA_INLIST;
+    EINA_INLIST;
    /** Member 'widget_name' consist a name of a widget. **/
-	Eina_Stringshare *widget_name;
+    Eina_Stringshare *widget_name;
    /** Member 'styles' consist a list of a widget styles. **/
-	Eina_Inlist *styles;
-	type __type;
+    Eina_Inlist *styles;
+    type __type;
 };
 
 /**
@@ -343,5 +343,18 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
  */
 const char *
 wm_part_type_get(Edje_Part_Type type);
+
+/**
+ * Load part data to Group object, also load base group parametrs and create
+ * edje-edit object.
+ *
+ * @param group A Group object pointer, in wich must be loaded data.
+ * @param e A Evas, parent object.
+ * @param path Path to theme file (.edj).
+ *
+ * @ingroup WidgetManager
+ */
+void
+wm_group_data_load(Group *group, Evas *e, const char *edj);
 
 #endif /* WIDGET_MANAGER_H */

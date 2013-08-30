@@ -37,63 +37,64 @@ _cancel_clicked(void *data,
 Evas_Object *
 new_state_dialog_add(App_Data *ap)
 {
-   Evas_Object *mwin;
-   Evas_Object *label, *button;
-   Evas_Object *main_box = NULL;
-   Evas_Object *box_label, *box_entry, *box_button;
+   Evas_Object *popup, *box, *bt_yes, *bt_no;
+   Evas_Object *style_box, *class_box, *label;
+   Evas_Object *glist = ui_block_state_list_get(ap);
    Evas_Object *groupspace = ap->ws->groupspace;
-   Evas_Object *glist = NULL;
 
-   glist = ui_block_state_list_get(ap);
+   if (!ap)
+     {
+        ERR("Failed create state dialog.");
+        return NULL;
+     }
+
    if (!ui_state_list_part_get(glist))
      {
         NOTIFY_INFO(3, "Please select part");
         return NULL;
      }
 
-   mwin = mw_add(ap->win);
-   mw_title_set(mwin, "Add new state.");
 
-   BOX_ADD(mwin, main_box, EINA_FALSE, EINA_TRUE);
-   BOX_ADD(main_box, box_label, EINA_TRUE, EINA_FALSE);
-   BOX_ADD(main_box, box_entry, EINA_TRUE, EINA_FALSE);
-   BOX_ADD(main_box, box_button, EINA_TRUE, EINA_TRUE);
-   elm_win_inwin_content_set(mwin, main_box);
+   popup = elm_popup_add(ap->win_layout);
+   elm_object_part_text_set(popup, "title,text", "Add new state:");
+   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 
-   LABEL_ADD(box_label, label, "State name");
-   elm_box_pack_end(box_label, label);
-   LABEL_ADD(box_label, label, "State value");
-   elm_box_pack_end(box_label, label);
-   elm_box_pack_end(main_box, box_label);
+   BOX_ADD(popup, box, EINA_FALSE, EINA_FALSE);
 
-   ENTRY_ADD(box_entry, entry_name, EINA_TRUE);
+   BOX_ADD(box, style_box, EINA_TRUE, EINA_FALSE);
+   LABEL_ADD(style_box, label, "Name: ");
+   elm_box_pack_end(style_box, label);
+   ENTRY_ADD(style_box, entry_name, EINA_TRUE);
    elm_entry_entry_set(entry_name, "new_state");
-   elm_box_pack_end(box_entry, entry_name);
-   ENTRY_ADD(box_entry, entry_value, EINA_TRUE);
+   elm_box_pack_end(style_box, entry_name);
+
+   BOX_ADD(box, class_box, EINA_TRUE, EINA_FALSE);
+   LABEL_ADD(class_box, label, "Value: ");
+   elm_box_pack_end(class_box, label);
+   ENTRY_ADD(class_box, entry_value, EINA_TRUE);
    elm_entry_entry_set(entry_value, "0.0");
-   elm_box_pack_end(box_entry, entry_value);
-   elm_box_pack_end(main_box, box_entry);
+   elm_box_pack_end(class_box, entry_value);
 
+   elm_box_pack_end(box, style_box);
+   elm_box_pack_end(box, class_box);
+   elm_object_content_set(popup, box);
 
-   button = elm_button_add(box_button);
-   elm_object_text_set(button, "Ok");
-   evas_object_data_set(button, STADD_LIST_KEY, glist);
+   bt_yes = elm_button_add(popup);
+   elm_object_text_set(bt_yes, "Add");
+   evas_object_data_set(bt_yes, STADD_LIST_KEY, glist);
 
-   evas_object_smart_callback_add (button, "pressed", _ok_clicked, groupspace);
-   evas_object_smart_callback_add (button, "unpressed", _cancel_clicked, mwin);
-   elm_box_pack_end(box_button, button);
-   evas_object_show(button);
-   button = elm_button_add(box_button);
-   elm_object_text_set(button, "Cancel");
-   elm_box_pack_end(box_button, button);
-   evas_object_smart_callback_add (button, "clicked", _cancel_clicked, mwin);
-   evas_object_show(button);
-   elm_box_pack_end(main_box, box_button);
+   evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, groupspace);
+   evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, popup);
+   elm_object_part_content_set(popup, "button1", bt_yes);
+   evas_object_show(bt_yes);
 
-   evas_object_show(main_box);
+   bt_no = elm_button_add(popup);
+   elm_object_text_set(bt_no, "Cancel");
+   evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
+   elm_object_part_content_set(popup, "button2", bt_no);
+   evas_object_show(bt_no);
 
-   evas_object_show(mwin);
-
-   return mwin;
+   evas_object_show(popup);
+   return popup;
 }
 
