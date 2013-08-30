@@ -8,7 +8,7 @@ set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
 set(PACKAGE "Theme Editor Tool")
 
 option(debug "debug build" 0)
-option(test "build tests" 0)
+option(test "build tests" 1) #default value for Jenkins
 
 include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/src
