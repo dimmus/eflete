@@ -1,4 +1,27 @@
 /**
+ * Edje Editor Tool
+ * Copyright (C) 2013 Samsung Electronics.
+ *
+ * This file is part of Edje Editor Tool.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef EFL_TET_H
+#define EFL_TET_H
+
+/**
  * @defgroup ELM_MAIN ELM_MAIN
  * @ingroup EFL_TET
  *
@@ -6,9 +29,6 @@
  * (contain starting function like main and
  *some functions that free/init base required components)
  */
-
-#ifndef EFL_TET_H
-#define EFL_TET_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
