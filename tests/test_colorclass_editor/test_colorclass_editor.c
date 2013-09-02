@@ -1,11 +1,11 @@
 #include <check.h>
-#include "image_editor.h"
+#include "colorclass_editor.h"
 #include "ui_main_window.h"
 
 /**
- * @addtogroup image_editor_window_add
+ * @addtogroup colorclass_viewer_add
  * @{
- * @objective Positive test case:
+ * @objective Negative test case:
  *
  * @procedure
  * @step 1 Call function for with NULL argument
@@ -13,14 +13,14 @@
  * @passcondition: test passed
  * @}
  */
-START_TEST (image_editor_window_add_test_n1)
+START_TEST (colorclass_viewer_add_test_n1)
 {
-  image_editor_window_add(NULL);
+   colorclass_viewer_add(NULL);
 }
 END_TEST
 
 /**
- * @addto group image_editor_window_add
+ * @addto group colorclass_viewer_add
  * @{
  * @objective Positive test case:
  *
@@ -28,11 +28,11 @@ END_TEST
  * @step 1 Create App_Data structure app
  * @step 2 Call app_create() function to initialize app
  * @step 3 Create main window using ui_main_window_add()
- * @step 4 Add image editor window  using image_editor_window_add()
+ * @step 4 Add colorclass viewer  using colorclass_viewer_add
  *
  * @passcondition: return Evas_Object
  */
-START_TEST (image_editor_window_add_test_n2)
+START_TEST (colorclass_viewer_add_test_n2)
 {
    elm_init(0,0);
    App_Data *app = NULL;
@@ -42,13 +42,18 @@ START_TEST (image_editor_window_add_test_n2)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
-   fail_unless(image_editor_window_add(app->win) != NULL, "failure: cannot create image editor window");
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create "
+      "window");
+   fail_unless(colorclass_viewer_add(app->win) != NULL, "failure: cannot"
+      " create image editor window");
+   app_free(app);
+   app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup image_editor_init
+ * @addtogroup colorclass_viewer_init
  * @{
  * @objective Positive test case:
  *
@@ -58,14 +63,14 @@ END_TEST
  * @passcondition: test passed
  * @}
  */
-START_TEST (image_editor_init_test_n1)
+START_TEST (colorclass_viewer_init_test_n1)
 {
-  image_editor_init(NULL, NULL);
+   colorclass_viewer_init(NULL, NULL);
 }
 END_TEST
 
 /**
- * @addto group image_editor_init
+ * @addto group colorclass_viewer_init
  * @{
  * @objective Positive test case:
  *
@@ -73,13 +78,13 @@ END_TEST
  * @step 1 Create App_Data structure app
  * @step 2 Call app_create() function to initialize app
  * @step 3 Create main window using ui_main_window_add()
- * @step 4 Add image editor window  using image_editor_window_add()
+ * @step 4 Add colorclass viewer  using colorclass_viewer_add
  * @step 5 Load edc
- * @step 6 Call image_editor_init
+ * @step 6 Call colorclass_viewer_init
  *
  * @passcondition: test passed
  */
-START_TEST (image_editor_init_test_n2)
+START_TEST (colorclass_viewer_init_test_n2)
 {
    elm_init(0,0);
    App_Data *app = NULL;
@@ -89,9 +94,14 @@ START_TEST (image_editor_init_test_n2)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create window");
-   ui_edc_load_done(app, "first", "./tests/image_editor/data/naviframe.edc","","","");
-   image_editor_init(image_editor_window_add(app->win), app->project);
+   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create"
+      "window");
+   ui_edc_load_done(app, "first", "./tests/test_colorclass_editor/data/"
+      "naviframe.edc","","","");
+   colorclass_viewer_init(colorclass_viewer_add(app->win), app->project);
+   app_free(app);
+   app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
@@ -110,12 +120,12 @@ END_TEST
  * @}
  */
 Suite* test_suite (void) {
-   Suite *suite = suite_create("image_editor_test");
+   Suite *suite = suite_create("test_colorclass_editor");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, image_editor_window_add_test_n1);
-   tcase_add_test(tcase, image_editor_window_add_test_n2);
-   tcase_add_test(tcase, image_editor_init_test_n1);
-   tcase_add_test(tcase, image_editor_init_test_n2);
+   tcase_add_test(tcase, colorclass_viewer_add_test_n1);
+   tcase_add_test(tcase, colorclass_viewer_add_test_n2);
+   tcase_add_test(tcase, colorclass_viewer_init_test_n1);
+   tcase_add_test(tcase, colorclass_viewer_init_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -139,7 +149,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_image_editor.xml");
+   srunner_set_xml(runner, "test_colorclass_editor.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

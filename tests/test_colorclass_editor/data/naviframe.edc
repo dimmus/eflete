@@ -160,11 +160,11 @@ collections {
                   to_y: "title_clip";
                   to_x: "elm.swallow.prev_btn";
                   relative: 1.0 0.0;
-		  offset: 5 1;
+                  offset: 5 1;
                }
                rel2 {
                   to_y: "title_clip";
-		  to_x: "elm.swallow.next_btn";
+                  to_x: "elm.swallow.next_btn";
                   relative: 0.0 1.0;
                   offset: -5 -1;
                }
