@@ -7,22 +7,19 @@
 
 #include <Elementary.h>
 
-#define ITEM_ADD(parent, item, text) \
-   item = elm_layout_add(parent); \
-   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(item, TET_EDJ, "property/item/default"); \
-   elm_object_text_set(item, text); \
-   evas_object_show(item);
-
 #define BOX_ADD(parent, box, isHorizontal, isHomogeneos) \
    box = elm_box_add(parent); \
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, 0.0); \
-   elm_box_align_set(box, 0.0, 0.5); \
    elm_box_horizontal_set(box, isHorizontal); \
    elm_box_homogeneous_set(box, isHomogeneos); \
    evas_object_show(box);
+
+#define SCROLLER_ADD(parent, scroller) \
+   scroller = elm_scroller_add(parent); \
+   evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_show(scroller);
 
 #define LABEL_ADD(parent, label, text) \
    label = elm_label_add(parent); \
@@ -30,6 +27,13 @@
    evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_object_text_set(label, text); \
    evas_object_show(label);
+
+#define FRAME_ADD(parent, frame, autocollapse, title) \
+   frame = elm_frame_add(parent); \
+   elm_frame_autocollapse_set(frame, autocollapse); \
+   evas_object_size_hint_fill_set(frame, EVAS_HINT_FILL, 0.0); \
+   elm_object_text_set(frame, title); \
+   evas_object_show(frame);
 
 #define SPINNER_ADD(parent, spinner, min, max, step, isEdit, style) \
    spinner = elm_spinner_add(parent); \

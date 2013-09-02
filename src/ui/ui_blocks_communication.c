@@ -3,6 +3,7 @@
 void
 ui_part_back(App_Data *ap)
 {
+   Evas_Object *prop;
    if (ap->ws->groupspace)
      {
         ui_groupspace_unset(ap->ws->groupspace);
@@ -13,8 +14,8 @@ ui_part_back(App_Data *ap)
    ap->ws->zoom_step = 1.0;
    elm_genlist_clear(ui_block_state_list_get(ap));
    elm_genlist_clear(ui_block_signal_list_get(ap));
-   evas_object_hide(ui_property_part_view_get(ui_block_property_get(ap)));
-   evas_object_hide(ui_property_group_view_get(ui_block_property_get(ap)));
+   prop = ui_block_property_get(ap);
+   ui_property_group_unset(prop);
 }
 
 /**
@@ -31,26 +32,20 @@ ui_state_select(App_Data *ap,
                 Eina_Stringshare *state)
 {
    Part *part = NULL;
-   Evas_Object *prop_view, *part_view, *state_view;
+   Evas_Object *prop_view;
 
    prop_view = ui_block_property_get(ap);
-   part_view = ui_property_part_view_get(prop_view);
    part = ui_state_list_part_get(obj);
    wm_part_current_state_set(part, state);
-   state_view = ui_prop_part_info_state_view_add(part_view,
-                                                 ap->project->current_group,
-                                                 part);
-   ui_prop_part_info_state_set(part_view, state_view);
-   ui_groupspace_part_state_update(ap->ws->groupspace, part);
-   evas_object_show(state_view);
+   ui_property_state_set(prop_view, part);
 }
 
 Evas_Object *
-ui_part_select(App_Data *ap, Part* part)
+ui_part_select(App_Data *ap,
+               Part* part)
 {
-   Evas_Object *prop = NULL;
-   Evas_Object *part_prop = NULL;
-   Evas_Object *gl_states = NULL;
+   Evas_Object *prop;
+   Evas_Object *gl_states;
 
    if (!part)
      {
@@ -63,17 +58,14 @@ ui_part_select(App_Data *ap, Part* part)
         ERR("Property view is missing!");
         return NULL;
      }
-   part_prop = ui_prop_part_info_view_add(prop, ap->project->current_group, part);
-   ui_property_part_view_set(prop, part_prop);
-   evas_object_show(part_prop);
 
-   /*TODO: add check is state list present */
+   ui_property_part_set(prop, part);
+
    gl_states = ui_states_list_add(ap->win);
    ui_states_list_data_set(gl_states, ap->project->current_group, part);
    ui_block_state_list_set(ap, gl_states);
    evas_object_show(gl_states);
 
-   /* FIXME: it bad */
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
    ui_object_highlight_set(ap->ws, part);
 
@@ -85,7 +77,6 @@ ui_group_clicked(App_Data *ap, Group *group)
 {
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
-   Evas_Object *group_prop = NULL;
    Eina_List *signals = NULL;
 
    /* Get signals list of a group and show them */
@@ -98,18 +89,15 @@ ui_group_clicked(App_Data *ap, Group *group)
    prop = ui_block_property_get(ap);
    if (prop)
      {
-        ui_prop_group_info_view_update(prop, group);
+        ui_property_group_set(prop, group);
         evas_object_show(prop);
      }
    else
      {
-        prop = ui_property_view_new(ap->win);
+        prop = ui_property_add(ap->win);
+        ui_property_group_set(prop, group);
         ui_block_property_set(ap, prop);
         evas_object_show(prop);
-
-        group_prop = ui_prop_group_info_view_add(prop, group);
-        ui_property_group_view_set(prop, group_prop);
-        evas_object_show(group_prop);
      }
 
    ui_groupspace_set(ap->ws, ap->project, group);
