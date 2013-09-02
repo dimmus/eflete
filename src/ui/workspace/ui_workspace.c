@@ -61,6 +61,11 @@ ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible)
 Eina_Bool
 ui_ws_zoom_in(Workspace *ws)
 {
+   if (!ws)
+   {
+      ERR("Workspace is NULL");
+      return EINA_FALSE;
+   }
    Group *group = ui_groupspace_group_get(ws->groupspace);
    Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
    int w, h;
@@ -93,6 +98,11 @@ ui_ws_zoom_in(Workspace *ws)
 Eina_Bool
 ui_ws_zoom_out(Workspace *ws)
 {
+   if (!ws)
+   {
+      ERR("Workspace is NULL");
+      return EINA_FALSE;
+   }
    Group *group = ui_groupspace_group_get(ws->groupspace);
    Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
    int w, h;
@@ -199,14 +209,24 @@ ws_bf_set(Evas_Object *bg __UNUSED__)
 }
 
 void
-ws_zoom_step_set (unsigned int step, Workspace *ws)
+ws_zoom_step_set (Workspace *ws, double step)
 {
+   if (!ws)
+   {
+      ERR("Cannot set zoom step: workspace is NULL");
+      return;
+   }
    ws->zoom_step = step;
 }
 
-int
+double
 ws_zoom_step_get (Workspace *ws)
 {
+   if (!ws)
+   {
+      ERR("Cannot get zoom step: workspace is NULL");
+      return 0;
+   }
    return ws->zoom_step;
 }
 
@@ -225,6 +245,17 @@ _ws_mouse_move_cb(void *data, Evas *e,
 Workspace *
 ws_add(Evas_Object *parent)
 {
+   if (!parent)
+   {
+      ERR("Parent for workspace is NULL");
+      return NULL;
+   }
+   const char* parent_type = evas_object_type_get(parent);
+   if (strcmp(parent_type,"elm_layout"))
+   {
+      ERR("Workspace parent must be layout");
+      return NULL;
+   }
    Workspace *ws;
    Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver;
    Evas_Object *_icon;
@@ -234,7 +265,7 @@ ws_add(Evas_Object *parent)
 
    ws = _ws_init();
    ws->separated = EINA_TRUE;
-   ws_zoom_step_set(1, ws);
+   ws_zoom_step_set(ws, 1);
    canvas = evas_object_evas_get(parent);
    ws->canvas = canvas;
    elm_layout_file_set(parent, TET_EDJ, "base/workspace" );

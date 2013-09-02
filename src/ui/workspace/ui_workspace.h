@@ -78,7 +78,7 @@ typedef struct _Workspace Workspace;
  * @ingroup Workspace
  */
 void
-ws_zoom_step_set (unsigned int step, Workspace *ws);
+ws_zoom_step_set (Workspace *ws, double step);
 
 /**
  * Get zoom step for workspace.
@@ -88,7 +88,7 @@ ws_zoom_step_set (unsigned int step, Workspace *ws);
  *
  * @ingroup Workspace
  */
-int
+double
 ws_zoom_step_get (Workspace *ws);
 
 /**

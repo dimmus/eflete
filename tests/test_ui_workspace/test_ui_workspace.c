@@ -16,8 +16,8 @@ START_TEST (ws_add_test_p)
 {
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
    ck_assert_msg(ws != NULL, "Workspace object not returned");
    elm_shutdown();
@@ -42,7 +42,7 @@ START_TEST (ws_add_test_n1)
 {
    elm_init(0, 0);
    Evas_Object *parent;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    Workspace* ws = ws_add(parent);
    ck_assert_msg(ws == NULL, "NULL expected but not-NULL returned");
    elm_shutdown();
@@ -66,10 +66,8 @@ END_TEST
 START_TEST (ws_add_test_n2)
 {
    elm_init(0, 0);
-   Evas_Object *parent;
-   parent=NULL;
-   Workspace *ws = ws_add(parent);
-   ck_assert_msg(ws == NULL,"Not NULL returned\n");
+   Workspace *ws = ws_add(NULL);
+   ck_assert_msg(ws == NULL, "Not NULL returned\n");
    elm_shutdown();
    ws_free(ws);
 }
@@ -92,17 +90,17 @@ START_TEST (ws_zoom_step_p)
 {
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(50.4,ws);
-   double diff=50.4-ws_zoom_step_get(ws);
-   if(diff<0) diff=-diff;
-   ck_assert_msg(diff<10e-6, "Value missmatch");
-   ws_zoom_step_set(4.2,ws);
-   diff=4.2-ws_zoom_step_get(ws);
-   if(diff<0) diff=-diff;
-   ck_assert_msg(diff<10e-6, "Value missmatch");
+   ws_zoom_step_set(ws, 50.4);
+   double diff = 50.4 - ws_zoom_step_get(ws);
+   if(diff < 0) diff = -diff;
+   ck_assert_msg(diff < 10e-6, "Value missmatch");
+   ws_zoom_step_set(ws, 4.2);
+   diff = 4.2 - ws_zoom_step_get(ws);
+   if(diff < 0) diff = -diff;
+   ck_assert_msg(diff < 10e-6, "Value missmatch");
    elm_shutdown();
    ws_free(ws);
 }
@@ -124,7 +122,7 @@ END_TEST
 START_TEST (ws_zoom_step_set_n)
 {
    elm_init(0, 0);
-   ws_zoom_step_set(10, NULL);
+   ws_zoom_step_set(NULL, 10);
    elm_shutdown();
 }
 END_TEST
@@ -166,8 +164,8 @@ START_TEST (ws_free_test_p)
 {
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
    ws_free(ws);
    elm_shutdown();
@@ -210,8 +208,8 @@ START_TEST (ui_object_highlight_set_n)
 {
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
    ui_object_highlight_set(ws, NULL);
    ui_object_highlight_set(NULL, NULL);
@@ -275,12 +273,13 @@ END_TEST
  */
 START_TEST (ui_ws_zoom_in_p1)
 {
+/*TODO: add correct groupspace loading*/
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(5, ws);
+   ws_zoom_step_set(ws, 5);
    ck_assert_msg(ui_ws_zoom_in(ws) == EINA_TRUE, "EINA_FALSE returned");
    double diff = ws_zoom_step_get(ws) - 5.1;
    if(diff < 0) diff = -diff;
@@ -305,16 +304,17 @@ END_TEST
  */
 START_TEST (ui_ws_zoom_in_p2)
 {
+/*TODO: add correct groupspace loading*/
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(10.0, ws);
+   ws_zoom_step_set(ws, 10);
    ck_assert_msg(ui_ws_zoom_in(ws) == EINA_FALSE, "EINA_TRUE returned(EINA_FALSE expected)");
    double diff = 10.0 - ws_zoom_step_get(ws);
    if(diff < 0) diff = -diff;
-   ck_assert_msg(diff < 10e-6,"Value out of range");
+   ck_assert_msg(diff < 10e-6, "Value out of range");
    elm_shutdown();
    ws_free(ws);
 }
@@ -355,16 +355,17 @@ END_TEST
  */
 START_TEST (ui_ws_zoom_out_p1)
 {
+/*TODO: add correct groupspace loading*/
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(5,ws);
-   ck_assert_msg(ui_ws_zoom_out(ws)==EINA_TRUE, "EINA_FALSE returned");
-   double diff=4.9-ws_zoom_step_get(ws);
-   if(diff<0) diff=-diff;
-   ck_assert_msg(diff<10e-6,"wrong value after zooming in");
+   ws_zoom_step_set(ws, 5);
+   ck_assert_msg(ui_ws_zoom_out(ws) == EINA_TRUE, "EINA_FALSE returned");
+   double diff = 4.9 - ws_zoom_step_get(ws);
+   if(diff < 0) diff = -diff;
+   ck_assert_msg(diff < 10e-6, "wrong value after zooming in");
    elm_shutdown();
    ws_free(ws);
 }
@@ -385,16 +386,17 @@ END_TEST
  */
 START_TEST (ui_ws_zoom_out_p2)
 {
+/*TODO: add correct groupspace loading*/
    elm_init(0, 0);
    Evas_Object *parent, *layout;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   layout=elm_layout_add(parent);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(parent);
    Workspace* ws = ws_add(layout);
-   ws_zoom_step_set(0.1,ws);
-   ck_assert_msg(ui_ws_zoom_out(ws)==EINA_FALSE, "EINA_TRUE returned(EINA_FALSE expected)");
-   double diff=ws_zoom_step_get(ws)-0.1;
-   if(diff<0) diff=-diff;
-   ck_assert_msg(diff<10e-6,"Value out of range");
+   ws_zoom_step_set(ws, 0.1);
+   ck_assert_msg(ui_ws_zoom_out(ws) == EINA_FALSE, "EINA_TRUE returned(EINA_FALSE expected)");
+   double diff = ws_zoom_step_get(ws) - 0.1;
+   if(diff < 0) diff = -diff;
+   ck_assert_msg(diff < 10e-6, "Value out of range");
    elm_shutdown();
    ws_free(ws);
 }
