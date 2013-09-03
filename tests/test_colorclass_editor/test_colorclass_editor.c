@@ -10,12 +10,12 @@
  * @procedure
  * @step 1 Call function for with NULL argument
  *
- * @passcondition: test passed
+ * @passcondition: NULL returned
  * @}
  */
 START_TEST (colorclass_viewer_add_test_n1)
 {
-   colorclass_viewer_add(NULL);
+   ck_assert_msg(colorclass_viewer_add(NULL) == NULL, "Not NULL returned");
 }
 END_TEST
 
@@ -46,7 +46,6 @@ START_TEST (colorclass_viewer_add_test_n2)
       "window");
    fail_unless(colorclass_viewer_add(app->win) != NULL, "failure: cannot"
       " create image editor window");
-   app_free(app);
    app_shutdown();
    elm_shutdown();
 }
@@ -99,7 +98,6 @@ START_TEST (colorclass_viewer_init_test_n2)
    ui_edc_load_done(app, "first", "./tests/test_colorclass_editor/data/"
       "naviframe.edc","","","");
    colorclass_viewer_init(colorclass_viewer_add(app->win), app->project);
-   app_free(app);
    app_shutdown();
    elm_shutdown();
 }

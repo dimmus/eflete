@@ -86,7 +86,7 @@ START_TEST (app_create_test)
    {
       ck_abort_msg("failure: cannot link to create empty App_Data");
    }
-   app_free(data);
+   app_shutdown();
 }
 END_TEST
 

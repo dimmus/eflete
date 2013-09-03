@@ -652,6 +652,11 @@ _highlight_smart_set_user(Evas_Smart_Class *sc)
 Evas_Object *
 hl_highlight_add(Evas_Object *parent)
 {
+   if(!parent)
+   {
+      ERR("parent is NULL");
+      return NULL;
+   }
    Evas *e;
    Evas_Object *obj, *border;
    Highlight *_highlight;
@@ -691,6 +696,11 @@ hl_highlight_handler_color_set(Evas_Object *hl,
                               Evas_Coord b,
                               Evas_Coord a)
 {
+   if(!hl)
+   {
+      ERR("Highlight object is NULL");
+      return;
+   }
    Highlight *highlight = evas_object_smart_data_get(hl);
    evas_object_color_set(highlight->handler_LT->border,
                          r * a / 255, g * a / 255, b * a / 255, a);
@@ -709,6 +719,11 @@ hl_highlight_border_color_set(Evas_Object *hl,
                               Evas_Coord b,
                               Evas_Coord a)
 {
+   if(!hl)
+   {
+      ERR("Highlight object is NULL");
+      return;
+   }
    Highlight *highlight = evas_object_smart_data_get(hl);
    evas_object_color_set(highlight->border,
                          r * a / 255, g * a / 255, b * a / 255, a);

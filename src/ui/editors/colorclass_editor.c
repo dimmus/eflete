@@ -358,6 +358,11 @@ _ccl_set(Colorclass_Item *ccl_it)
 Evas_Object *
 colorclass_viewer_add(Evas_Object *parent)
 {
+   if(!parent)
+   {
+      ERR("parent is NULL");
+      return NULL;
+   }
    Evas_Object *mwin;
    Evas_Object *button,  *panes;
    Evas_Object *label, *color;

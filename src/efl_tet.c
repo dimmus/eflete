@@ -35,7 +35,9 @@ win_layout_get(void)
 App_Data *
 app_create (void)
 {
-   return mem_calloc(1, sizeof (App_Data));
+   if(!ap)
+      ap = mem_calloc(1, sizeof (App_Data));
+   return ap;
 }
 
 void
@@ -58,7 +60,7 @@ elm_main()
       CRIT("Could not find 'config.h'");
    #endif
 
-   ap = app_create();
+   app_create();
    ui_main_window_add(ap);
 #ifndef __TESTING__
    elm_run();
@@ -123,6 +125,6 @@ app_shutdown ()
    logger_shutdown();
    ecore_evas_shutdown();
 }
-#ifndef __TESTING__ 
+#ifndef __TESTING__
 ELM_MAIN();
 #endif

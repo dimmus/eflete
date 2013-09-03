@@ -47,7 +47,6 @@ START_TEST (style_editor_window_add_test_n2)
    ui_edc_load_done(app, "first", "./tests/test_style_editor/data/"
       "naviframe.edc","","","");
    style_editor_window_add(app->win, app->project);
-   app_free(app);
    app_shutdown();
    elm_shutdown();
 }

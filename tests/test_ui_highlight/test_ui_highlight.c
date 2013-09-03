@@ -10,12 +10,12 @@
  * @procedure
  * @step 1 Call function with NULL arguments
  *
- * @passcondition: test passed
+ * @passcondition: NULL returned
  * @}
  */
 START_TEST (hl_highlight_add_test_n1)
 {
-  hl_highlight_add(NULL);
+   ck_assert_msg(hl_highlight_add(NULL) == NULL, "Not NULL returned");
 }
 END_TEST
 

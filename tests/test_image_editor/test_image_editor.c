@@ -46,7 +46,6 @@ START_TEST (image_editor_window_add_test_n2)
       " window");
    fail_unless(image_editor_window_add(app->win) != NULL, "failure: cannot"
       " create image editor window");
-   app_free(app);
    app_shutdown();
    elm_shutdown();
 }
@@ -99,7 +98,6 @@ START_TEST (image_editor_init_test_n2)
    ui_edc_load_done(app, "first", "./tests/test_image_editor/data/"
       "naviframe.edc","","","");
    image_editor_init(image_editor_window_add(app->win), app->project);
-   app_free(app);
    app_shutdown();
    elm_shutdown();
 }
