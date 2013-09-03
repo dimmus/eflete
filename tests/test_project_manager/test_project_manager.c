@@ -22,13 +22,13 @@ START_TEST (pm_open_project_edc_test_n1)
 {
    elm_init(0,0);
    const char *name, *path, *img, *font, *sound;
-   name = "./data";
-   path = "./data/check.edc";
-   img = "./data";
-   font = "./data";
-   sound = "./data";
+   name = "./test_project_manager/data";
+   path = "./test_project_manager/data/check.edc";
+   img = "./test_project_manager/data";
+   font = "./test_project_manager/data";
+   sound = "./test_project_manager/data";
    Project* pro = pm_open_project_edc(name, path, img, font, sound);
-   if(!pro)
+   if (!pro)
    {
       ck_abort_msg("failure: cannot open project from edc-file");
    }
@@ -89,11 +89,11 @@ START_TEST (pm_free_test_n1)
    elm_init(0,0);
    Project *pro;
    const char *name, *path, *img, *font, *sound;
-   name = "./data";
-   path = "./data/check.edc";
-   img = "./data";
-   font = "./data";
-   sound = "./data";
+   name = "./test_project_manager/data";
+   path = "./test_project_manager/data/check.edc";
+   img = "./test_project_manager/data";
+   font = "./test_project_manager/data";
+   sound = "./test_project_manager/data";
    pro = pm_open_project_edc(name, path, img, font, sound);
    fail_unless(pm_free(pro) == EINA_TRUE, "failure: uncorrect work function");
    elm_shutdown();
@@ -118,10 +118,10 @@ START_TEST (pm_open_project_edj_test_n1)
 {
    elm_init(0,0);
    char *name, *path;
-   name = "./data";
-   path = "./data/check.edj";
+   name = "./test_project_manager/data";
+   path = "./test_project_manager/data/check.edj";
    Project* pro = pm_open_project_edj(name, path);
-   if(!pro)
+   if (!pro)
    {
       ck_abort_msg("failure: cannot open project from edj-file");
    }

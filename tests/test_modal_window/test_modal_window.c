@@ -156,7 +156,7 @@ START_TEST (mw_icon_set_test1)
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    res = mw_add(par);
    Evas_Object *ic = elm_icon_add(win);
-   elm_image_file_set(ic, "./data/1.jpg", NULL);
+   elm_image_file_set(ic, "./test_modal_window/data/1.jpg", NULL);
    mw_icon_set(res, ic);
    elm_shutdown();
 }

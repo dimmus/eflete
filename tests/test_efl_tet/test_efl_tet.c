@@ -106,15 +106,10 @@ START_TEST (app_free_test)
 {
    elm_init(0,0);
    App_Data *ap = app_create();
-   if(ap)
+   if (ap)
       app_free(ap);
-   /*
-    * TODO: fix strange check
-    */
-   if (ap == EINA_FALSE)
-   {
-      ck_abort_msg("failure: cannot remove App_Data");
-   }
+   else
+      ck_abort_msg("failure: cannot delete NULL App_Data");
    elm_shutdown();
 }
 END_TEST

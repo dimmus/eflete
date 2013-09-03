@@ -20,18 +20,15 @@ START_TEST (font_dialog_test1)
    Evas_Object *par, *font;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    font = font_viewer_add(par);
-   if(!font)
+   if (!font)
    {
       ck_abort_msg("failure: cannot create pointer to inwin object");
    }
    char *name, *path;
-   name = "./data";
-   path = "./data/default.edj";
+   name = "./test_font_viewer_dialog/data";
+   path = "./test_font_viewer_dialog/data/check.edj";
    Project *pro = pm_open_project_edj(name, path);
-   if(!pro) printf("--------no project--------\n");
-
    font_viewer_init(font, pro);
-
    pm_free(pro);
    elm_shutdown();
 }
@@ -54,7 +51,7 @@ START_TEST (font_dialog_test2)
    Evas_Object *par, *font;
    par = NULL;
    font = font_viewer_add(par);
-   if(font)
+   if (font)
    {
       ck_abort_msg("failure: cannot create pointer to inwin object");
    }
@@ -62,10 +59,7 @@ START_TEST (font_dialog_test2)
    name = "";
    path = "";
    Project *pro = pm_open_project_edj(name, path);
-   if(pro) printf("--------I open empty project--------\n");
-
    font_viewer_init(font, pro);
-
    pm_free(pro);
    elm_shutdown();
 }

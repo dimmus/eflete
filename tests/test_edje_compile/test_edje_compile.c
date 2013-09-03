@@ -17,7 +17,7 @@ START_TEST (edje_cc_free_test_n1)
 {
    struct _Edje_CC *cc = calloc(1, sizeof(struct _Edje_CC));
    edje_cc_free(cc);
-   if(cc == EINA_FALSE)
+   if (cc == EINA_FALSE)
    {
       ck_abort_msg("uncorrect work function 'edje_cc_free'");
    }
@@ -61,9 +61,9 @@ START_TEST (decompile_test)
 {
    elm_init(0,0);
    char *edc, *edj;
-   edc = "./data/";
-   edj = "./data/radio.edj";
-   if(decompile(edj, edc) == EINA_FALSE)
+   edc = "./test_edje_compile/data/";
+   edj = "./test_edje_compile/data/radio.edj";
+   if (decompile(edj, edc) == EINA_FALSE)
    {
       ck_abort_msg("error in function 'decompile': cannot creating Edje_DeCC object");
    }
@@ -93,12 +93,12 @@ START_TEST (compile_test)
 {
    elm_init(0,0);
    const char *edc, *edj, *img, *font, *sound;
-   edc = "./data/radio.edc";
-   edj = "./data/";
-   img = "./data/";
-   sound = "./data/";
-   font = "./data/";
-   if(compile(edc, edj, img, font, sound) == EINA_FALSE)
+   edc = "./test_edje_compile/data/radio.edc";
+   edj = "./test_edje_compile/data";
+   img = "./test_edje_compile/data";
+   sound = "./test_edje_compile/data";
+   font = "./test_edje_compile/data";
+   if (compile(edc, edj, img, font, sound) == EINA_FALSE)
    {
       ck_abort_msg("error in function 'compile': cannot creating Edje_CC object");
    }

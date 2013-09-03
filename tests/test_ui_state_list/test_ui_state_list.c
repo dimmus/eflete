@@ -24,20 +24,19 @@ START_TEST (ui_states_test1)
    Evas_Object *par, *list;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    list = ui_states_list_add(par);
-   if(!list)
+   if (!list)
    {
       ck_abort_msg("failure(list_add): cannot create widget list");
    }
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_ui_state_list/data/check.edj", "elm/check/base/defaul");
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
    const char *pname = "bg";
    Part *part = wm_part_add(obj, pname);
-   if (!part) printf("----------no part----------\n");
    if (!ui_states_list_data_set(list, group, part))
    {
       ck_abort_msg("failure(list_data_set): cannot set data of part states to state list");
@@ -70,7 +69,7 @@ START_TEST (ui_states_test2)
    Evas_Object *par, *list;
    par = NULL;
    list = ui_states_list_add(par);
-   if(list)
+   if (list)
    {
       ck_abort_msg("failure(list_add): cannot create state list with NULL object");
    }

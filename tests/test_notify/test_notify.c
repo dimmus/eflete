@@ -19,7 +19,7 @@ START_TEST (error_test1)
    elm_init(0,0);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_notify/data/check.edj", "elm/check/base/defaul");
    const char *error;
    error = "error show";
    noti_error_show(obj, error);
@@ -67,7 +67,7 @@ START_TEST (warning_test1)
    elm_init(0,0);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_notify/data/check.edj", "elm/check/base/defaul");
    const char *warning;
    warning = "warning show";
    noti_warning_show(obj, warning);
@@ -116,7 +116,7 @@ START_TEST (info_test1)
    elm_init(0,0);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_notify/data/check.edj", "elm/check/base/defaul");
    const char *info;
    double time = 2.5;
    info = "info show";

@@ -22,13 +22,13 @@ START_TEST (ui_signal_test1)
    Evas_Object *par, *list;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    list = ui_signal_list_add(par);
-   if(!list)
+   if (!list)
    {
       ck_abort_msg("failure: cannot create signal list");
    }
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_ui_signal_list/data/check.edj", "elm/check/base/defaul");
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
@@ -59,7 +59,7 @@ START_TEST (ui_signal_test2)
    Evas_Object *par, *list;
    par = NULL;
    list = ui_signal_list_add(par);
-   if(list)
+   if (list)
    {
       ck_abort_msg("failure: cannot create signal list from NULL parent");
    }

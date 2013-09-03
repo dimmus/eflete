@@ -33,15 +33,15 @@ START_TEST (ui_widget_test1)
    ui_widget_list_title_set(list, title);
    char *name, *path;
    name = "./test_ui_widget_list/data/";
-   path = "./test_ui_widget_list/data/default.edj";
+   path = "./test_ui_widget_list/data/radio.edj";
    Project *pro = pm_open_project_edj(name, path);
    pro->widgets = wm_widget_list_new(pro->swapfile);
    if (!ui_widget_list_data_set(list, pro))
    {
       ck_abort_msg("failure(list_data_set): cannot set data of widget to widget list");
    }
-   elm_shutdown();
    pm_free(pro);
+   elm_shutdown();
 }
 END_TEST
 
@@ -79,8 +79,8 @@ START_TEST (ui_widget_test2)
    {
       ck_abort_msg("failure(list_data_set): cannot set data of widget to NULL widget list");
    }
-   elm_shutdown();
    pm_free(pro);
+   elm_shutdown();
 }
 END_TEST
 

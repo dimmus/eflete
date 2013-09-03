@@ -18,7 +18,7 @@ START_TEST (wm_part_free_test1)
 {
    elm_init(0,0);
    Evas_Object *obj, *win;
-   elm_theme_extension_add(NULL, "./data/check.edj");
+   elm_theme_extension_add(NULL, "./test_widget_manager/data/check.edj");
    win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
    obj = elm_check_add(win);
    const char *name = "defaul";
@@ -65,17 +65,17 @@ START_TEST (wm_part_add_test1)
 {
    elm_init(0,0);
    Evas_Object *obj, *win;
-   elm_theme_extension_add(NULL, "./data/check.edj");
+   elm_theme_extension_add(NULL, "./test_widget_manager/data/check.edj");
    win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
    obj = elm_check_add(win);
    const char *part = "defaul";
    Part* pr = wm_part_add(obj, part);
-   if(!pr)
+   if (!pr)
    {
       ck_abort_msg("failure: cannot add new Part object");
    }
-   elm_shutdown();
    wm_part_free(pr);
+   elm_shutdown();
 }
 END_TEST
 
@@ -118,12 +118,12 @@ START_TEST (wm_group_add_test1)
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group* group = wm_group_add(grname, full_grname);
-   if(!group)
+   if (!group)
    {
       ck_abort_msg("failure: cannot creating new Group object");
    }
-   elm_shutdown();
    wm_group_free(group);
+   elm_shutdown();
 }
 END_TEST
 
@@ -206,18 +206,18 @@ START_TEST (wm_program_signals_list_get_test1)
    elm_init(0,0);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_widget_manager/data/check.edj", "elm/check/base/defaul");
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
-   if(!wm_program_signals_list_get(group))
+   if (!wm_program_signals_list_get(group))
    {
       ck_abort_msg("failure: cannot create list of signals");
    }
    evas_object_del(obj);
-   elm_shutdown();
    wm_group_free(group);
+   elm_shutdown();
 }
 END_TEST
 
@@ -240,6 +240,7 @@ START_TEST (wm_program_signals_list_get_test2)
    Group *group = wm_group_add(grname, full_grname);
    fail_unless(wm_program_signals_list_get(group) == EINA_FALSE, "failure: return list of signals of NULL Group object");
    wm_group_free(group);
+   elm_shutdown();
 }
 END_TEST
 
@@ -259,7 +260,7 @@ START_TEST (wm_program_signals_list_free_test1)
 {
    elm_init(0,0);
    Eina_List *list = calloc(1, sizeof(Eina_List));
-   if(wm_program_signals_list_free(list) == EINA_FALSE)
+   if (wm_program_signals_list_free(list) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot delete list of signals");
    }
@@ -307,7 +308,7 @@ START_TEST (wm_style_add_test1)
    elm_init(0, 0);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_widget_manager/data/check.edj", "elm/check/base/defaul");
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
@@ -319,9 +320,9 @@ START_TEST (wm_style_add_test1)
    {
       ck_abort_msg("failure: cannot create new style");
    }
-   elm_shutdown();
    wm_group_free(group);
    wm_style_free(st);
+   elm_shutdown();
 }
 END_TEST
 
@@ -360,7 +361,7 @@ START_TEST (wm_style_free_test1)
 {
    elm_init(0,0);
    Style *style = calloc(1,sizeof(Style));
-   if(wm_style_free(style) == EINA_FALSE)
+   if (wm_style_free(style) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot delete Style object");
    }
@@ -412,13 +413,13 @@ START_TEST (wm_widget_add_test1)
    Group *gr = wm_group_add(grname, full_grname);
    Eina_List *groups = wm_program_signals_list_get(gr);
    Widget* wd = wm_widget_add(widget, groups);
-   if(!wd)
+   if (!wd)
    {
       ck_abort_msg("failure: cannot create new Widget object");
    }
-   elm_shutdown();
    wm_group_free(gr);
    wm_widget_free(wd);
+   elm_shutdown();
 }
 END_TEST
 
@@ -462,12 +463,12 @@ START_TEST (wm_widget_free_test1)
    Group *gr = wm_group_add(grname, full_grname);
    Eina_List *groups = wm_program_signals_list_get(gr);
    Widget *widget = wm_widget_add(wid, groups);
-   if(wm_widget_free(widget) == EINA_FALSE)
+   if (wm_widget_free(widget) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot delete Widget object");
    }
-   elm_shutdown();
    wm_group_free(gr);
+   elm_shutdown();
 }
 END_TEST
 
@@ -506,8 +507,8 @@ END_TEST
 START_TEST (wm_widget_list_new_test1)
 {
    elm_init(0,0);
-   const char *file = "./data/check.edj";
-   if(wm_widget_list_new(file) == EINA_FALSE)
+   const char *file = "./test_widget_manager/data/check.edj";
+   if (wm_widget_list_new(file) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot create list of Widget object");
    }
@@ -549,9 +550,9 @@ END_TEST
 START_TEST (wm_widget_list_free_test1)
 {
    elm_init(0,0);
-   const char *file = "./data/check.edj";
+   const char *file = "./test_widget_manager/data/check.edj";
    Eina_Inlist *wl = wm_widget_list_new(file);
-   if(wm_widget_list_free(wl) == EINA_FALSE)
+   if (wm_widget_list_free(wl) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot delete list of widgets");
    }
@@ -595,21 +596,21 @@ END_TEST
 START_TEST (wm_group_object_find_test1)
 {
    elm_init(0,0);
-   const char *file = "./data/check.edj";
+   const char *file = "./test_widget_manager/data/check.edj";
    Eina_Inlist *w_list =  wm_widget_list_new(file);
    Evas *e = evas_new();
    Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./data/check.edj", "elm/check/base/defaul");
+   edje_object_file_set(obj, "./test_widget_manager/data/check.edj", "elm/check/base/defaul");
    const char *grname = "defaul";
    const char *full_grname = "elm/check/base/defaul";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
-   if(wm_group_object_find(w_list, full_grname) == EINA_FALSE)
+   if (wm_group_object_find(w_list, full_grname) == EINA_FALSE)
    {
       ck_abort_msg("failure: cannot return Group object");
    }
-   elm_shutdown();
    wm_group_free(group);
+   elm_shutdown();
 }
 END_TEST
 
@@ -627,7 +628,7 @@ END_TEST
 START_TEST (wm_group_object_find_test2)
 {
    elm_init(0,0);
-   if(wm_group_object_find(NULL, NULL))
+   if (wm_group_object_find(NULL, NULL))
    {
       ck_abort_msg("failure: cannot return Group object with NULL parameter");
    }
@@ -673,7 +674,7 @@ START_TEST (wm_part_type_get_test2)
    elm_init(0,0);
    Edje_Part_Type type = EINA_FALSE;
    const char *res = "NONE";
-   if(wm_part_type_get(type) != res)
+   if (wm_part_type_get(type) != res)
    {
       ck_abort_msg("failure: cannot return name type of part with NULL parameter");
    }

@@ -18,8 +18,8 @@
 START_TEST (edit_list_get_test)
 {
    elm_init(0, 0);
-   const char *edc = "./data";
-   const char *edj = "./data/radio.edj";
+   const char *edc = "./test_colorclasses_edit_api/data";
+   const char *edj = "./test_colorclasses_edit_api/data/radio.edj";
    Project *pro = pm_open_project_edj(edc, edj);
    if (!colorclasses_edit_list_get(pro))
    {
@@ -61,8 +61,8 @@ START_TEST (edit_colors_test)
    elm_init(0, 0);
 
    const char *edc, *edj;
-   edc = "./data/radio.edc";
-   edj = "./data/new_edj_radio.edj";
+   edc = "./test_colorclasses_edit_api/data";
+   edj = "./test_colorclasses_edit_api/data/radio.edj";
    Project *pro = pm_open_project_edj(edc, edj);
    const char *class_name = "border_top";
 
