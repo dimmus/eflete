@@ -79,10 +79,9 @@ ui_ws_zoom_in(Workspace *ws)
         ws->zoom_step = 10;
         return EINA_FALSE;
      }
-   edje_object_scale_set(group->obj, ws->zoom_step);
    evas_object_smart_calculate(box);
    evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
-   edje_object_scale_set(ws->groupspace, ws->zoom_step);
+   ui_groupspace_scale_set(ws->groupspace, ws->zoom_step);
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
                                            (int)(ws->zoom_step * 5));
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
@@ -114,11 +113,10 @@ ui_ws_zoom_out(Workspace *ws)
         ws->zoom_step = 0;
         return EINA_FALSE;
      }
-   edje_object_scale_set(group->obj, ws->zoom_step);
-   edje_object_scale_set(ws->groupspace, ws->zoom_step);
    evas_object_geometry_get(group->obj, NULL, NULL, &w, &h);
    evas_object_resize(group->obj, (int)(w + w * ws->zoom_step),
                       (int)(h + h * ws->zoom_step));
+   ui_groupspace_scale_set(ws->groupspace, ws->zoom_step);
    evas_object_smart_calculate(box);
    ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
                                            (int)(ws->zoom_step * 5));

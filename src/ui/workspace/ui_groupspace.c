@@ -849,6 +849,19 @@ _gs_group_part_get(Group *group, const char *name)
 }
 
 void
+ui_groupspace_scale_set(Evas_Object *groupspace, double scale)
+{
+   if (!groupspace) return;
+   Group *group =  evas_object_data_get(groupspace, GS_GROUP_KEY);
+   Part *_part = NULL;
+   edje_object_scale_set(group->obj, scale);
+   EINA_INLIST_FOREACH(group->parts, _part)
+     {
+        evas_object_scale_set(_part->obj, scale);
+     }
+}
+
+void
 ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
                                       int *x, int *y, int *w, int *h)
 {

@@ -161,5 +161,16 @@ ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
 void
 ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
                                int *x, int *y, int *w, int *h);
+/**
+ * Set zoom scale for object loaded into groupspace.
+ *
+ * @param groupspace A Evas_Object pointer to groupspace layout.
+ * @param scale Scale value that will be set to all evas primitives
+ * in groupspace.
+ *
+ * @ingroup Groupspace
+ */
+void
+ui_groupspace_scale_set(Evas_Object *groupspace, double scale);
 
 #endif /* UI_GROUPSPACE_HEADER_H */
