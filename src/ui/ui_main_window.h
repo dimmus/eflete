@@ -40,6 +40,7 @@
 #include "notify.h"
 #include "add_state_dialog.h"
 #include "add_style_dialog.h"
+#include "open_file_dialog.h"
 /**
  * Adds main window object for Edje tool development.
  *
@@ -235,6 +236,28 @@ ui_edc_load_done(App_Data* ap, const char *project_name, const char *path_edc, c
  */
 Eina_Bool
 ui_part_state_delete(App_Data *ap);
+
+/**
+ * Delete selected style/class from current widget
+ *
+ * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+ui_style_delete(App_Data *ap);
+
+/**
+ * Open new theme from template file.
+ *
+ * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+new_theme_create(App_Data *ap);
 
 #endif /* UI_MAIN_WINDOW_HEADER_H */
 

@@ -28,6 +28,15 @@
 #include "about_window.h"
 
 static void
+_on_new_theme_menu(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   new_theme_create(ap);
+}
+
+static void
 _on_edc_open_menu(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -51,14 +60,25 @@ _on_save_menu(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if ((!ap) || (!ap->project)) return;
+   if ((!ap) || (!ap->project))
+     {
+        ERR("Project coud'nt be save");
+        return;
+     }
 
    if (pm_save_project_to_swap(ap->project))
      {
-        if (pm_save_project_edj(ap->project))
-          NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
+        if (!ap->project->edj)
+          {
+             save_as_edj_file(ap);
+          }
         else
-          NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
+          {
+             if (pm_save_project_edj(ap->project))
+               NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
+             else
+               NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
+          }
      }
 }
 
@@ -280,6 +300,9 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
    if (menu == NULL) return EINA_FALSE;
+
+   elm_menu_item_add(menu, NULL, "menu/file", "New theme",
+                     _on_new_theme_menu, ap);
 
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file",
                      _on_edc_open_menu, ap);

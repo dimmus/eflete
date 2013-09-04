@@ -67,6 +67,15 @@ _add_state_dailog(void *data,
 }
 
 static void
+_del_style(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_style_delete(ap);
+}
+
+static void
 _add_style_dailog(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -121,6 +130,8 @@ ui_main_window_add(App_Data *ap)
                                   _add_state_dailog, ap);
    evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
                                   _add_style_dailog, ap);
+   evas_object_smart_callback_add(ap->block.left_top, "gs,style,del",
+                                  _del_style, ap);
    evas_object_show(win);
 
    return EINA_TRUE;

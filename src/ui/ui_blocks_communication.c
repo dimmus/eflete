@@ -189,6 +189,134 @@ ui_edc_load_done(App_Data* ap,
    return wd_list;
 }
 
+Eina_Bool
+new_theme_create(App_Data *ap __UNUSED__)
+{
+   Eina_Stringshare *path = NULL;
+   Eina_Stringshare *file_full_path = NULL;
+   Eina_Bool errors = EINA_FALSE;
+   Evas_Object *wd_list = NULL;
+
+   path = eina_stringshare_add(TET_SETT_PATH"cache/");
+   file_full_path = eina_stringshare_add( TET_SETT_PATH"cache/new_theme.edj");
+
+   if (!ecore_file_exists(path))
+     {
+        if (!ecore_file_mkdir(path))
+          {
+             NOTIFY_ERROR("Coud'nt create cache directory");
+             errors = EINA_TRUE;
+          }
+     }
+   if ((!errors) && (ecore_file_exists(file_full_path)))
+     {
+        if (!ecore_file_remove(file_full_path))
+          {
+             ERR("Coud'nt clean cache directory");
+             errors = EINA_TRUE;
+          }
+     }
+
+   if ((!errors) && (!ecore_file_cp(TET_EDJ_PATH"template.edj", file_full_path)))
+     {
+        ERR("Coud'nt copy theme template to cache");
+        errors = EINA_TRUE;
+     }
+
+   if(!errors)
+     {
+        ap->project = pm_open_project_edj(file_full_path, file_full_path);
+        wd_list = ui_widget_list_add(ap->win);
+        ui_widget_list_title_set(wd_list, ap->project->name);
+        ui_widget_list_data_set(wd_list, ap->project);
+        ui_block_widget_list_set(ap, wd_list);
+        add_callbacks_wd(wd_list, ap);
+        evas_object_show(wd_list);
+        ui_panes_show(ap);
+        ap->project->edj = NULL;
+     }
+
+   eina_stringshare_del(path);
+   eina_stringshare_del(file_full_path);
+   return !errors;
+}
+
+Eina_Bool
+ui_style_delete(App_Data *ap __UNUSED__)
+{
+/*   Widget *widget = NULL;
+   Style *style = NULL;
+   Group *group = NULL;
+   Group *group_work = NULL;
+
+   Evas_Object *gl_style = NULL;
+   Evas_Object *gl_widget = NULL;
+   Evas_Object *nf = NULL;
+   Elm_Object_Item *eoi = NULL;
+   Elm_Object_Item *eoi_work = NULL;
+   Evas_Object *box = NULL;
+   Eina_List *box_childs = NULL;
+   Eina_Inlist *l = NULL;
+
+   nf = ui_block_widget_list_get(ap);
+   eoi = elm_naviframe_top_item_get(nf);
+   box = elm_object_item_part_content_get(eoi, NULL);
+   box_childs = elm_box_children_get(box);
+   gl_style = eina_list_data_get(eina_list_last(box_childs));
+   eoi = elm_genlist_selected_item_get(gl_style);
+   if (!eoi)
+     {
+        NOTIFY_INFO(3, "Not one style is selected");
+        return EINA_FALSE;
+     }
+
+   if(elm_genlist_item_parent_get(eoi))
+     {
+        group = elm_object_item_data_get(eoi);
+        if (!edje_edit_group_exist(group->obj, group->full_group_name))
+          {
+             NOTIFY_INFO(3, "Class[%s] did'nt exist", group->group_name);
+             return EINA_FALSE;
+          }
+        group_work = group;
+        eoi_work = elm_genlist_item_next_get(eoi);
+        if (!eoi_work)
+          {
+             eoi_work = elm_genlist_item_next_get(eoi);
+             group = elm_object_item_data_get(eoi_work);
+          }
+        group = elm_object_item_data_get(eoi_work);
+        evas_object_del(group_work->obj);
+
+
+        if (!edje_edit_group_del(group->obj, group->full_group_name))
+          {
+             NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
+             return EINA_FALSE;
+          }
+        DBG("Group name[%s] object[%p]", group->full_group_name, group->obj);
+     }
+   else
+     {
+        style = elm_object_item_data_get(eoi);
+        EINA_INLIST_FOREACH_SAFE(style->groups, l, group)
+          {
+             DBG("Group name[%s] object[%p]", group->full_group_name, group->obj);
+             if (!edje_edit_group_del(group->obj, group->full_group_name))
+               {
+                  NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
+               }
+          }
+     }
+
+   eoi = elm_naviframe_bottom_item_get(nf);
+   gl_widget = elm_object_item_part_content_get(eoi, NULL);
+   eoi = elm_genlist_selected_item_get(gl_widget);
+   widget = elm_object_item_data_get(eoi);
+   ui_widget_list_style_data_reload(gl_style, widget->styles);*/
+   NOTIFY_INFO(3, "Not implemented yet.");
+   return EINA_TRUE;
+}
 
 Eina_Bool
 ui_part_state_delete(App_Data *ap)
