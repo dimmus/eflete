@@ -1135,23 +1135,43 @@ ui_groupspace_unset(Evas_Object *obj)
    Eina_List *list = NULL;
    Eina_List *l = NULL;
    Evas_Object *data = NULL;
-   Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
-   if (!ws) return;
-   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
-   Group *group = evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
+   Workspace *ws = NULL;
+   Evas_Object *box = NULL;
+   Group *group = NULL;
 
-   evas_object_smart_callback_del(group->obj, "gs,layer,up", _layer_up_change);
-   evas_object_smart_callback_del(group->obj, "gs,layer,down", _layer_down_change);
-   evas_object_smart_callback_del(group->obj, "gs,part,delete", _part_delete);
-   evas_object_smart_callback_del(group->obj, "gs,part,add", _part_add);
-   evas_object_smart_callback_del(group->obj, "gs,state,add", _state_add);
+   if (!obj)
+     {
+        ERR("Groupspace does'nt exist.");
+        return;
+     }
+   ws = evas_object_data_get(obj, GS_WS_KEY);
+   if (!ws) return;
+   box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   group = evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
+
+   if (group)
+     {
+        evas_object_smart_callback_del(group->obj, "gs,layer,up",
+                                       _layer_up_change);
+        evas_object_smart_callback_del(group->obj, "gs,layer,down",
+                                       _layer_down_change);
+        evas_object_smart_callback_del(group->obj, "gs,part,delete",
+                                       _part_delete);
+        evas_object_smart_callback_del(group->obj, "gs,part,add",
+                                       _part_add);
+        evas_object_smart_callback_del(group->obj, "gs,state,add",
+                                       _state_add);
+     }
 
    evas_object_smart_callback_del(ws->groupspace, "gs,rect,add", _new_rect_add);
    evas_object_smart_callback_del(ws->groupspace, "gs,img,add", _new_img_add);
    evas_object_smart_callback_del(ws->groupspace, "gs,txt,add", _new_txt_add);
-   evas_object_smart_callback_del(ws->groupspace, "gs,swallow,add", _new_swallow_add);
-   evas_object_smart_callback_del(ws->groupspace, "gs,txtblock,add", _new_txtblock_add);
-   evas_object_smart_callback_del(ws->groupspace, "gs,spacer,add", _new_spacer_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,swallow,add",
+                                  _new_swallow_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,txtblock,add",
+                                  _new_txtblock_add);
+   evas_object_smart_callback_del(ws->groupspace, "gs,spacer,add",
+                                  _new_spacer_add);
 
    list = evas_object_box_children_get(box);
    EINA_LIST_FOREACH(list, l, data)

@@ -58,6 +58,7 @@ ui_state_select(App_Data *ap,
    part = ui_state_list_part_get(obj);
    wm_part_current_state_set(part, state);
    ui_property_state_set(prop_view, part);
+   ui_groupspace_part_state_update(ap->ws->groupspace, part);
 }
 
 Evas_Object *
