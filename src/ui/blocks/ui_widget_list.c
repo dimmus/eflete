@@ -214,6 +214,15 @@ _add_style_unpress(void *data,
 }
 
 static void
+_del_style_unpress(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *block =  elm_object_parent_widget_get(data);
+   evas_object_smart_callback_call(block, "gs,style,del", NULL);
+}
+
+static void
 _above_part_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
@@ -536,6 +545,7 @@ _on_widget_clicked_double(void *data,
    button = elm_button_add (panel);
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "delete");
    elm_object_part_content_set(button, NULL, _icon);
+   evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    evas_object_show(button);
    elm_box_pack_end(panel, button);
 

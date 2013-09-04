@@ -210,7 +210,6 @@ Eina_Bool
 pm_save_project_edj(Project *project)
 {
    if (!project) return EINA_FALSE;
-
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();

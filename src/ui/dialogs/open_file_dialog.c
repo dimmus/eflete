@@ -96,19 +96,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
    const char *selected = event_info;
    Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
 
-   if (wd_list)
-     {
-        evas_object_smart_callback_add(wd_list, "wl,group,select",
-                                          _on_group_clicked, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,select",
-                                            _on_part_selected, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,back",
-                                            _on_part_back, ap);
-        evas_object_smart_callback_add(wd_list, "wl,group,back",
-                                            _on_group_back, ap);
-        if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
-    }
-
+   add_callbacks_wd(wd_list, ap);
 }
 
 Eina_Bool
@@ -155,21 +143,30 @@ _on_ok_cb(void *data,
    wd_list = ui_edc_load_done(ap, fs_ent->project_name, path_edc,
                               path_id, path_sd, path_fd);
 
-   if(wd_list)
-     {
-        evas_object_smart_callback_add(wd_list, "wl,group,select",
-                                          _on_group_clicked, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,select",
-                                            _on_part_selected, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,back",
-                                            _on_part_back, ap);
-        evas_object_smart_callback_add(wd_list, "wl,group,back",
-                                            _on_group_back, ap);
-        if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
-    }
-
+   add_callbacks_wd(wd_list, ap);
    free(fs_ent->project_name);
    free(fs_ent);
+}
+
+void
+add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
+{
+   if(!wd_list)
+     {
+        CRIT("Widget list does'nt created");
+        return;
+     }
+
+   evas_object_smart_callback_add(wd_list, "wl,group,select",
+                                     _on_group_clicked, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,select",
+                                       _on_part_selected, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,back",
+                                       _on_part_back, ap);
+   evas_object_smart_callback_add(wd_list, "wl,group,back",
+                                       _on_group_back, ap);
+  if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
+
 }
 
 static void
