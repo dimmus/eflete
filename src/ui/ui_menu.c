@@ -75,7 +75,10 @@ _on_save_menu(void *data,
         else
           {
              if (pm_save_project_edj(ap->project))
-               NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
+               {
+                  NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
+                  ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+               }
              else
                NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
           }

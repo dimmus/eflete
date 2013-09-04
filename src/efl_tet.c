@@ -45,6 +45,7 @@ app_free(App_Data *ap)
 {
    pm_free(ap->project);
    ws_free(ap->ws);
+   free(ap->demo);
    free(ap);
 }
 

@@ -75,7 +75,7 @@ _on_edj_done(void *data,
              cb_data *d_data = mem_malloc(sizeof(cb_data));
 
              Evas_Object *popup, *btn1, *btn2;
-             popup = elm_popup_add(ap->win);
+             popup = elm_popup_add(ap->win_layout);
 
              d_data->obj = obj;
              d_data->popup = popup;
@@ -97,17 +97,11 @@ _on_edj_done(void *data,
              evas_object_show(popup);
           }
         else
-          {
-             NOTIFY_ERROR("The file must have a extension '.edj'");
-          }
+          NOTIFY_ERROR("The file must have a extension '.edj'");
      }
    else
      {
-        if (!eina_str_has_suffix(selected, ".edj"))
-          {
-             NOTIFY_ERROR("The file must have a extension '.edj'");
-          }
-        else
+        if (eina_str_has_suffix(selected, ".edj"))
           {
              if (pm_save_project_to_swap(ap->project))
                {
@@ -116,7 +110,15 @@ _on_edj_done(void *data,
                   else
                     NOTIFY_ERROR("Theme can not be saved: %s", selected);
                }
-
+             evas_object_hide(elm_object_parent_widget_get(obj));
+             evas_object_del(obj);
+          }
+        else if (selected)
+          {
+             NOTIFY_ERROR("The file must have a extension '.edj'");
+          }
+        else if (!selected)
+          {
              evas_object_hide(elm_object_parent_widget_get(obj));
              evas_object_del(obj);
           }
