@@ -149,12 +149,11 @@ ui_block_property_set(App_Data *ap, Evas_Object *content)
 void
 ui_block_graph_vision_set(App_Data *ap, Evas_Object *content)
 {
-   return ui_block_content_set(ap->block.bottom_right, content);
+   return ui_block_content_set(ap->block.right_top, content);
 }
 
 void
 ui_block_demo_view_set(App_Data *ap, Evas_Object *content)
 {
-   return ui_block_content_set(ap->block.right_top, content);
+   return ui_block_content_set(ap->block.bottom_right, content);
 }
-

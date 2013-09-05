@@ -423,6 +423,7 @@ ui_panes_add(App_Data *ap)
    ap->block.bottom_left = block;
 
    block = ui_block_add(ap->win_layout);
+   ui_block_title_text_set(block, "Live View");
    elm_object_part_content_set(panes_center_down, "right", block);
    evas_object_show(block);
    ap->block.bottom_right = block;

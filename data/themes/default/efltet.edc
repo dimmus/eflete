@@ -11,6 +11,7 @@ collections {
    #include "widgets/simplified_toggle_check.edc"
 
    #include "layouts/workspace.edc"
+   #include "layouts/demospace.edc"
    #include "layouts/ruler.edc"
    #include "layouts/main_window.edc"
    #include "layouts/textstyle.edc"

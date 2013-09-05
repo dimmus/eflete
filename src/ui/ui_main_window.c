@@ -123,6 +123,8 @@ ui_main_window_add(App_Data *ap)
 
    ui_panes_settings_load(win);
    ap->ws = ws_add(ap->block.canvas);
+   ap->demo = ui_demospace_add(ap->block.bottom_right);
+   ui_block_demo_view_set(ap, ap->demo->layout);
 
    evas_object_smart_callback_add(ap->ws->groupspace, "gs,dialog,add",
                                   _add_part_dailog, ap);

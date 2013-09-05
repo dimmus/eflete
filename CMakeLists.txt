@@ -55,6 +55,7 @@ set(TET_CC_FILES
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/dialogs/about_window.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_ruler.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_workspace.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_demospace.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_popup.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/workspace/ui_groupspace.c
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ui/modal_window/modal_window.c

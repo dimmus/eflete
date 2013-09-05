@@ -36,6 +36,7 @@ ui_part_back(App_Data *ap)
    elm_genlist_clear(ui_block_signal_list_get(ap));
    prop = ui_block_property_get(ap);
    ui_property_group_unset(prop);
+   ui_demospace_unset(ap->demo, ap->project);
 }
 
 /**
@@ -123,6 +124,8 @@ ui_group_clicked(App_Data *ap, Group *group)
 
    ui_groupspace_set(ap->ws, ap->project, group);
    ui_groupspace_update(ap->ws->groupspace);
+   ui_demospace_set(ap->demo, ap->project, group);
+   ui_demospace_update(ap->demo);
 }
 
 Evas_Object *
@@ -135,6 +138,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
           {
              INFO("Select file: %s", selected);
              NOTIFY_INFO(3, "Select file: %s", selected);
+
              ap->project = pm_open_project_edj(selected, selected);
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
@@ -166,6 +170,7 @@ ui_edc_load_done(App_Data* ap,
    if (eina_str_has_suffix(path_edc, ".edc"))
      {
         INFO("Select file: %s", path_edc);
+
         ap->project = pm_open_project_edc(project_name,
                                           path_edc,
                                           path_id,

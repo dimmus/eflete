@@ -45,26 +45,28 @@
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"
+#include "ui_demospace.h"
 #include "notify.h"
 
 struct _App_Data
 {
-	Evas_Object *win;
-	Evas_Object *win_layout;
-	Evas_Object *main_menu;
+    Evas_Object *win;
+    Evas_Object *win_layout;
+    Evas_Object *main_menu;
     Evas_Object *inwin;
-	struct {
-		Evas_Object *left_top;
-		Evas_Object *left_bottom;
-		Evas_Object *bottom_left;
-		Evas_Object *bottom_right;
-		Evas_Object *right_top;
-		Evas_Object *right_bottom;
-		Evas_Object *canvas;
-	} block;
+    struct {
+       Evas_Object *left_top;
+       Evas_Object *left_bottom;
+       Evas_Object *bottom_left;
+       Evas_Object *bottom_right;
+       Evas_Object *right_top;
+       Evas_Object *right_bottom;
+       Evas_Object *canvas;
+    } block;
 
-	Workspace *ws;
-	Project *project;
+    Workspace *ws;
+    Demospace *demo;
+    Project *project;
 };
 
 /**
