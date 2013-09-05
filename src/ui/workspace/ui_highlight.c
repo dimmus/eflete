@@ -744,6 +744,7 @@ hl_highlight_bg_color_set(Evas_Object *hl,
 Eina_Bool
 hl_highlight_visible_get(Evas_Object *hl)
 {
+   if (!hl) return EINA_FALSE;
    Highlight *highlight = evas_object_smart_data_get(hl);
    return highlight->visible;
 }
