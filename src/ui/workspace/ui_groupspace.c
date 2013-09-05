@@ -351,7 +351,19 @@ _new_spacer_add(void *data __UNUSED__,
 }
 
 static void
-_part_add(void *data __UNUSED__,
+_group_update(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Workspace *ws = (Workspace *)data;
+   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
+   Part *part = (Part *) event_info;
+   ui_groupspace_part_state_update(ws->groupspace, part);
+   evas_object_smart_calculate(box);
+}
+
+static void
+_part_add(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
@@ -360,7 +372,7 @@ _part_add(void *data __UNUSED__,
 }
 
 static void
-_state_add(void *data __UNUSED__,
+_state_add(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
@@ -1111,6 +1123,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_smart_callback_add(group->obj, "gs,part,delete", _part_delete, ws);
    evas_object_smart_callback_add(group->obj, "gs,part,add", _part_add, ws);
    evas_object_smart_callback_add(group->obj, "gs,state,add", _state_add, ws);
+   evas_object_smart_callback_add(group->obj, "group,update", _group_update, ws);
 
    evas_object_smart_callback_add(ws->groupspace, "gs,rect,add", _new_rect_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,img,add", _new_img_add, ws);
@@ -1174,6 +1187,8 @@ ui_groupspace_unset(Evas_Object *obj)
                                        _part_add);
         evas_object_smart_callback_del(group->obj, "gs,state,add",
                                        _state_add);
+        evas_object_smart_callback_del(group->obj, "group,update",
+                                       _group_update);
      }
 
    evas_object_smart_callback_del(ws->groupspace, "gs,rect,add", _new_rect_add);

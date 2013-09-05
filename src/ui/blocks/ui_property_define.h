@@ -107,6 +107,7 @@ __on_##sub##_##value##_change(void *data, \
         return; \
      } \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_CHECK_PART_CALLBACK(sub, value) \
@@ -120,6 +121,7 @@ __on_##sub##_##value##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_1ENTRY_PART_ADD(text, sub, value) \
@@ -206,6 +208,7 @@ __on_##sub##_##value##_change(void *data, \
                                    part->curr_state, part->curr_state_value, \
                                    value); \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_SPINNER_STATE_CALLBACK(sub, value, type) \
@@ -221,6 +224,7 @@ __on_##sub##_##value##_change(void *data, \
                                    part->curr_state, part->curr_state_value, \
                                    value); \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_COLOR_STATE_CALLBACK(sub, value) \
@@ -242,6 +246,7 @@ __on_##sub##_##value##_change(void *data, \
    free(c[0]); \
    free(c); \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
 #define ITEM_CHECK_STATE_CALLBACK(sub, value) \
@@ -257,6 +262,7 @@ __on_##sub##_##value##_change(void *data, \
                                    part->curr_state, part->curr_state_value, \
                                    value); \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_IM_BORDER_STATE_CALLBACK(sub, value) \
@@ -275,6 +281,7 @@ __on_##sub##_##value##_change(void *data, \
    free(c[0]); \
    free(c); \
    group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_2SPINNER_STATE_ADD(text, sub, value1, value2) \
@@ -338,18 +345,22 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
                                             part->curr_state, \
                                             part->curr_state_value); \
    elm_spinner_value_set(spinner1, value); \
+   evas_object_data_del(spinner1, OBJ_DATA); \
+   evas_object_data_set(spinner1, OBJ_DATA, group); \
    evas_object_smart_callback_del(spinner1, "changed", __on_##sub##_##value1##_change); \
    evas_object_smart_callback_add(spinner1, "changed", \
-                                  __on_##sub##_##value1##_change, group); \
+                                  __on_##sub##_##value1##_change, part); \
    spinner2 = eina_list_nth(nodes, 1); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                             part->name, \
                                             part->curr_state, \
                                             part->curr_state_value); \
    elm_spinner_value_set(spinner2, value); \
+   evas_object_data_del(spinner2, OBJ_DATA); \
+   evas_object_data_set(spinner2, OBJ_DATA, group); \
    evas_object_smart_callback_del(spinner2, "changed", __on_##sub##_##value2##_change); \
    evas_object_smart_callback_add(spinner2, "changed", \
-                                  __on_##sub##_##value2##_change, group); \
+                                  __on_##sub##_##value2##_change, part); \
    eina_list_free(nodes); \
 }
 

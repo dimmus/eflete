@@ -146,14 +146,12 @@ wm_part_current_state_set(Part *part, const char *state)
    char **split;
 
    if ((!part) || (!state)) return EINA_FALSE;
-
    split = eina_str_split(state, " ", 2);
    eina_stringshare_del(part->curr_state);
    part->curr_state = eina_stringshare_add(split[0]);
    part->curr_state_value = atof(split[1]);
    free(split[0]);
    free(split);
-
    return EINA_TRUE;
 }
 
