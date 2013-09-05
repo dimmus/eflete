@@ -448,3 +448,15 @@ ui_object_highlight_hide(Workspace *ws)
    evas_object_hide(ws->highlight.space_hl);
 
 }
+
+void
+ui_object_highlight_del(Workspace *ws)
+{
+   if ((!ws) || (!ws->highlight.part)) return;
+
+   evas_object_del(ws->highlight.highlight);
+   evas_object_del(ws->highlight.space_hl);
+   ws->highlight.highlight = NULL;
+   ws->highlight.space_hl = NULL;
+   ws->highlight.part = NULL;
+}

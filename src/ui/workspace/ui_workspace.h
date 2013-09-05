@@ -140,6 +140,16 @@ void
 ui_object_highlight_hide(Workspace *ws);
 
 /**
+ * Delete highlight object's'.
+ *
+ * @param ws Workspace structure.
+ *
+ * @ingroup Workspace
+ */
+void
+ui_object_highlight_del(Workspace *ws);
+
+/**
  * Zoom in loaded objects on workspace. With step 0.1.
  *
  * @param ws Workspace structure.

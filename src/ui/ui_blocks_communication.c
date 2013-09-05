@@ -27,7 +27,7 @@ ui_part_back(App_Data *ap)
    if (ap->ws->groupspace)
      {
         ui_groupspace_unset(ap->ws->groupspace);
-        ui_object_highlight_hide (ap->ws);
+        ui_object_highlight_del(ap->ws);
      }
    else
      WARN ("Groupspace object always delete");

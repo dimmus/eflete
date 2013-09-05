@@ -1206,13 +1206,21 @@ ui_groupspace_separate(Workspace *ws)
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
    if ((!group) || (!box)) return;
+
    if (ws->separated)
      evas_object_box_layout_set(box, _separate_layout, group->obj, NULL);
    else
      evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
    ws->separated = !ws->separated;
 
-   if (ws->highlight.highlight)
+   if (!ws->highlight.part) return;
+   if (ws->separated)
+     {
+        ui_object_highlight_set(ws, ws->highlight.part);
+        evas_object_smart_calculate(box);
+        ui_object_highlight_move(ws);
+     }
+   else
      {
         evas_object_del(ws->highlight.highlight);
         evas_object_del(ws->highlight.space_hl);
