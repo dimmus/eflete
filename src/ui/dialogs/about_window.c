@@ -24,12 +24,13 @@ about_window_add(Evas_Object *parent)
 {
    Evas_Object *mwin = mw_about_add(parent);
    mw_title_set(mwin, "About");
-   const char* labels_text[7] = { "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com)",
+   const char* labels_text[] = { "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com)",
                                "Mykyta Biliavskyi (m.biliavskyi@samsung.com)",
                                "Vitalii Vorobiov (vi.vorobiov@samsung.com)",
-                               "Dmytro Dadyka (d.dadyka@samsung.com)",
-                               "Sergey Osadchy (se.osadchy@samsung.com)",
                                "Andrii Kroitor (an.kroitor@samsung.com)",
+                               "",
+                               "Special thanks for the help:",
+                               "Sergey Osadchy (se.osadchy@samsung.com)",
                                "Kateryna Fesyna (k.fesyna@samsung.com)"};
    Evas_Object *label, *box;
    int i;

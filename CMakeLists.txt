@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
-project(efltet C)
+project(eflete C)
 
 set(VERMAJ 0)
-set(VERMIN 0)
+set(VERMIN 1)
 set(VERMIC 8)
 set(PACKAGE_VERSION ${VERMAJ}.${VERMIN}.${VERMIC})
-set(PACKAGE "Theme Editor Tool")
+set(PACKAGE "Edje Theme Editor")
 
 option(debug "debug build" 0)
 option(test "build tests" 1) #default value for Jenkins
