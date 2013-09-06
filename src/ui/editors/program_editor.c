@@ -32,6 +32,7 @@ struct _Program_Editor
      Evas_Object *signal;
      Evas_Object *source;
      Evas_Object *action;
+     Evas_Object *targets;
      Edje_Action_Type act_type;
    } prop_view;
 };
@@ -74,6 +75,9 @@ prop_progs_update(void);
 
 static void
 gl_progs_update_sel_item(const char *str);
+
+static void
+_target_item_add(Evas_Object *parent, char *name);
 
 #define ITEM_STRING_CALLBACK(sub, value) \
 static void \
@@ -146,6 +150,22 @@ __on_program_name_change(void *data __UNUSED__,
 }
 
 static void
+__on_target_name_change(void *data __UNUSED__,
+                         Evas_Object *obj,
+                         void *ei __UNUSED__)
+{
+   const char *value = elm_entry_entry_get(obj);
+   Eina_Bool res = edje_edit_program_target_add(prop.group->obj, prop.program,
+                                                value);
+   DBG("Group[%s] program[%s] target[%s]", prop.group->group_name, prop.program, value);
+   if (!res)
+     {
+        NOTIFY_WARNING("The entered data is not valid!")
+        return;
+     }
+}
+
+static void
 _on_hoversel_sel(void *data __UNUSED__,
                  Evas_Object *obj,
                  void *ei)
@@ -183,6 +203,36 @@ _on_value_active(void *data __UNUSED__,
         if (!edje_edit_program_state2_set(prop.group->obj, prop.program, value))
           NOTIFY_WARNING("The entered data is not valid!");
      }
+}
+
+static void
+_target_remove_button_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *entry = NULL;
+   Eina_List *childs = NULL;
+
+   Evas_Object *element_box = (Evas_Object *)data;
+   Evas_Object *entrys_box = elm_object_parent_widget_get(element_box);
+
+   childs = elm_box_children_get(element_box);
+   entry = eina_list_nth(childs, 0);
+   elm_box_unpack(entrys_box, element_box);
+   edje_edit_program_target_del(prop.group->obj, prop.program,
+                                elm_entry_entry_get(entry));
+   evas_object_smart_callback_del(entry, "activated", __on_target_name_change);
+   eina_list_free(childs);
+   evas_object_del(element_box);
+}
+
+static void
+_target_add_button_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *entrys_box = (Evas_Object *)data;
+   _target_item_add(entrys_box, "");
 }
 
 #define INDEX_APPEND(value) \
@@ -276,6 +326,82 @@ prop_item_program_action_update(Evas_Object *item)
      }
 }
 
+static void
+_target_item_add(Evas_Object *parent, char *name)
+{
+   Evas_Object *element_box = NULL;
+   Evas_Object *button = NULL;
+   Evas_Object *entry = NULL;
+
+   BOX_ADD(parent, element_box, EINA_TRUE, EINA_FALSE);
+   button = elm_button_add(element_box);
+   elm_object_text_set(button, "-");
+   evas_object_show(button);
+   ENTRY_ADD(element_box, entry, EINA_TRUE);
+   elm_entry_entry_set(entry, name);
+   evas_object_smart_callback_add(entry, "activated",
+                                  __on_target_name_change, NULL);
+   evas_object_smart_callback_add(button, "clicked", _target_remove_button_cb,
+                                  element_box);
+   elm_box_pack_end(element_box, entry);
+   elm_box_pack_end(element_box, button);
+   elm_box_pack_end(parent, element_box);
+}
+
+Evas_Object *
+prop_item_program_target_add(Evas_Object *parent,
+                     const char *tooltip __UNUSED__)
+{
+   Evas_Object *item = NULL;
+   Evas_Object *box = NULL;
+   Evas_Object *entrys_box = NULL;
+   Evas_Object *button = NULL;
+
+   if (!parent) return NULL;
+
+   ITEM_ADD(parent, item, "targets");
+   BOX_ADD(item, box, EINA_TRUE, EINA_FALSE);
+   BOX_ADD(box, entrys_box, EINA_FALSE, EINA_FALSE);
+
+   button = elm_button_add(box);
+   elm_object_text_set(button, "Add");
+   evas_object_smart_callback_add(button, "clicked", _target_add_button_cb,
+                                  entrys_box);
+   evas_object_show(button);
+
+   elm_box_pack_end(box, entrys_box);
+   elm_box_pack_end(box, button);
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   return item;
+}
+
+void
+prop_item_program_targets_update(Evas_Object *item)
+{
+   Eina_List *targets_list = NULL;
+   Eina_List *childs = NULL;
+   int count_targets = 0;
+   int i = 0;
+
+   Evas_Object *box = NULL;
+   Evas_Object *entrys_box = NULL;
+
+   if (!item) return;
+
+   targets_list = edje_edit_program_targets_get(prop.group->obj, prop.program);
+   count_targets = eina_list_count(targets_list);
+
+   box = elm_object_part_content_get(item, "elm.swallow.content");
+   childs = elm_box_children_get(box);
+   entrys_box = eina_list_nth(childs, 0);
+   elm_box_clear(entrys_box);
+
+   if (!count_targets) return;
+
+   for (i = 0; i < count_targets; i++)
+     _target_item_add(entrys_box, eina_list_nth(targets_list, i));
+}
+
 Evas_Object *
 prop_item_program_transition_add(Evas_Object *parent,
                                  const char *tooltip)
@@ -317,11 +443,13 @@ prop_progs_add(Evas_Object *parent)
    prop.signal = prop_item_program_signal_add(box, "signal");
    prop.source = prop_item_program_source_add(box, "source");
    prop.action = prop_item_program_action_add(box, "action");
+   prop.targets= prop_item_program_target_add(box, "targets");
 
    elm_box_pack_end(box, prop.name);
    elm_box_pack_end(box, prop.signal);
    elm_box_pack_end(box, prop.source);
    elm_box_pack_end(box, prop.action);
+   elm_box_pack_end(box, prop.targets);
 
    return box;
 }
@@ -333,6 +461,7 @@ prop_progs_update(void)
    prop_item_program_signal_update(prop.signal, prop.group);
    prop_item_program_signal_update(prop.source, prop.group);
    prop_item_program_action_update(prop.action);
+   prop_item_program_targets_update(prop.targets);
 }
 
 static void
