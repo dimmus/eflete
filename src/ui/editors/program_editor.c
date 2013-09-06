@@ -142,6 +142,7 @@ __on_program_name_change(void *data __UNUSED__,
         return;
      }
    gl_progs_update_sel_item(value);
+   prop.program = value;
 }
 
 static void
@@ -154,6 +155,28 @@ _on_hoversel_sel(void *data __UNUSED__,
    edje_edit_program_action_set(prop.group->obj, prop.program, (Edje_Action_Type)index->i);
 }
 
+static void
+_on_state_active(void *data __UNUSED__,
+                 Evas_Object *obj,
+                 void *ei __UNUSED__)
+{
+   const char *state;
+   state = elm_entry_entry_get(obj);
+   if (!edje_edit_program_state_set(prop.group->obj, prop.program, state))
+     NOTIFY_WARNING("The entered data is not valid!");
+}
+
+static void
+_on_value_active(void *data __UNUSED__,
+                 Evas_Object *obj,
+                 void *ei __UNUSED__)
+{
+   const char *value;
+   value = elm_entry_entry_get(obj);
+   if (!edje_edit_program_value_set(prop.group->obj, prop.program, atof(value)))
+     NOTIFY_WARNING("The entered data is not valid!");
+}
+
 #define INDEX_APPEND(value) \
    index = mem_malloc(sizeof(Index)); \
    index->i = value; \
@@ -163,14 +186,15 @@ Evas_Object *
 prop_item_program_action_add(Evas_Object *parent,
                              const char *tooltip)
 {
-   Evas_Object *item, *box, *hoversel, *entry;
+   Evas_Object *item, *box, *hoversel, *entry1, *entry2;
    Elm_Object_Item *hovit;
    Index *index;
 
    ITEM_ADD(parent, item, "action")
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE)
    HOVERSEL_ADD(item, hoversel, EINA_FALSE)
-   ENTRY_ADD(item, entry, EINA_TRUE)
+   ENTRY_ADD(item, entry1, EINA_TRUE)
+   ENTRY_ADD(item, entry2, EINA_TRUE)
 
    elm_hoversel_hover_parent_set(hoversel, window.mwin);
    elm_object_text_set(hoversel, action_type[0]);
@@ -181,26 +205,54 @@ prop_item_program_action_add(Evas_Object *parent,
    INDEX_APPEND(1)
    hovit = elm_hoversel_item_add(hoversel, action_type[3], NULL, ELM_ICON_NONE, NULL, NULL);
    INDEX_APPEND(3)
-   evas_object_smart_callback_add(hoversel, "selected", _on_hoversel_sel, entry);
+   evas_object_smart_callback_add(hoversel, "selected", _on_hoversel_sel, NULL);
 
-   elm_object_tooltip_text_set(entry, tooltip);
+   elm_object_tooltip_text_set(item, tooltip);
    elm_box_pack_end(box, hoversel);
-   elm_box_pack_end(box, entry);
+   elm_box_pack_end(box, entry1);
+   elm_box_pack_end(box, entry2);
 
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
 }
+#undef INDEX_APPEND
 
 void
 prop_item_program_action_update(Evas_Object *item)
 {
-   Evas_Object *box, *hoversel;
+   Evas_Object *box, *hoversel, *entry1, *entry2;
    Eina_List *nodes;
+   Eina_Stringshare *str;
+   char buff[BUFF_MAX];
+   double value;
    prop.act_type = edje_edit_program_action_get(prop.group->obj, prop.program);
    box = elm_object_part_content_get(item, "elm.swallow.content");
    nodes = elm_box_children_get(box);
    hoversel = eina_list_nth(nodes, 0);
+   entry1 = eina_list_nth(nodes, 1);
+   entry2 = eina_list_nth(nodes, 2);
+
    elm_object_text_set(hoversel, action_type[(int)prop.act_type]);
+   if (prop.act_type == EDJE_ACTION_TYPE_STATE_SET)
+     {
+        str = edje_edit_program_state_get(prop.group->obj, prop.program);
+        elm_entry_entry_set(entry1, str);
+        edje_edit_string_free(str);
+        evas_object_smart_callback_del(entry1, "activated", _on_state_active);
+        evas_object_smart_callback_add(entry1, "activated", _on_state_active, NULL);
+        value = edje_edit_program_value_get(prop.group->obj, prop.program);
+        sprintf(buff, "%1.2f", value);
+        elm_entry_entry_set(entry2, buff);
+        evas_object_smart_callback_del(entry2, "activated", _on_value_active);
+        evas_object_smart_callback_add(entry2, "activated", _on_value_active, NULL);
+     }
+   else
+     {
+         elm_entry_entry_set(entry1, "Not implemented yet!");
+         elm_entry_entry_set(entry2, "Not implemented yet!");
+         evas_object_smart_callback_del(entry1, "activated", _on_state_active);
+         evas_object_smart_callback_del(entry2, "activated", _on_value_active);
+     }
 }
 
 Evas_Object *
