@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "edje_compile.h"
 #include "alloc.h"
 
@@ -73,7 +92,7 @@ compile(const char *edc,
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   INFO("Start compile project: %s.", edc);
+   //INFO("Start compile project: %s.", edc);
 
    edjecc = mem_malloc(sizeof(*edjecc));
    edjecc->messages = NULL;
@@ -84,10 +103,9 @@ compile(const char *edc,
    sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
            image_directory, font_directory, sound_directory,
            edc, edj);
-   INFO("Run command: %s", edjecc->cmd);
+   //INFO("Run command: %s", edjecc->cmd);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
-
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjecc->messages);
 
@@ -117,6 +135,9 @@ decompile(char *edj, char *edc)
      }
    else
      {
+     /*
+      * TODO:this stub! changes to edje_decc must be done to specify dest folder
+      */
         size = strlen(edj) + strlen(edc) + BUFF_MAX;
         edjedecc->cmd = (char *)malloc(size);
         sprintf(edjedecc->cmd,
@@ -124,6 +145,7 @@ decompile(char *edj, char *edc)
                 edj, edc);
      }
 
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjedecc->messages);
 

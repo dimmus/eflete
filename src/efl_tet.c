@@ -1,7 +1,24 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "efl_tet.h"
 #include "ui_main_window.h"
-
-
 
 App_Data *ap = NULL;
 
@@ -17,7 +34,9 @@ win_layout_get(void)
 App_Data *
 app_create (void)
 {
-   return mem_calloc(1, sizeof (App_Data));
+   if(!ap)
+      ap = mem_calloc(1, sizeof (App_Data));
+   return ap;
 }
 
 void
@@ -25,6 +44,7 @@ app_free(App_Data *ap)
 {
    pm_free(ap->project);
    ws_free(ap->ws);
+   free(ap->demo);
    free(ap);
 }
 
@@ -40,12 +60,13 @@ elm_main()
       CRIT("Could not find 'config.h'");
    #endif
 
-   ap = app_create();
+   app_create();
    ui_main_window_add(ap);
-
+#ifndef __TESTING__
    elm_run();
    elm_shutdown();
    app_shutdown();
+#endif
    return 0;
 }
 
@@ -104,5 +125,6 @@ app_shutdown ()
    logger_shutdown();
    ecore_evas_shutdown();
 }
-
+#ifndef __TESTING__
 ELM_MAIN();
+#endif

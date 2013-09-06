@@ -4,58 +4,13 @@ configure_file(
 )
 add_definitions(-DHAVE_CONFIG_H)
 
-include_directories(
-   ${CMAKE_CURRENT_SOURCE_DIR}
-   ${CMAKE_CURRENT_SOURCE_DIR}/alloc
-   ${CMAKE_CURRENT_SOURCE_DIR}/project_manager
-   ${CMAKE_CURRENT_SOURCE_DIR}/logger
-   ${CMAKE_CURRENT_SOURCE_DIR}/settings
-   ${CMAKE_CURRENT_SOURCE_DIR}/ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/ui/dialogs
-   ${CMAKE_CURRENT_SOURCE_DIR}/ui/blocks
-   ${CMAKE_CURRENT_SOURCE_DIR}/ui/workspace
-   ${CMAKE_CURRENT_SOURCE_DIR}/ui/notification
-)
-
-set(TET_CC_FILES
-   efl_tet.c
-   alloc/alloc.c
-   project_manager/edje_compile.c
-   project_manager/widget_manager.c
-   project_manager/project_manager.c
-   logger/logger.c
-   settings/settings.c
-   ui/ui_panes.c
-   ui/ui_menu.c
-   ui/ui_main_window.c
-   ui/ui_blocks_communication.c
-   ui/dialogs/open_file_dialog.c
-   ui/dialogs/style_viewer_dialog.c
-   ui/dialogs/image_viewer_dialog.c
-   ui/dialogs/colorclass_viewer_dialog.c
-   ui/dialogs/font_viewer_dialog.c
-   ui/workspace/ui_ruler.c
-   ui/workspace/ui_workspace.c
-   ui/workspace/ui_popup.c
-   ui/workspace/ui_groupspace.c
-   ui/blocks/ui_block.c
-   ui/blocks/ui_property.c
-   ui/blocks/ui_widget_list.c
-   ui/blocks/ui_signal_list.c
-   ui/blocks/ui_states_list.c
-   ui/workspace/ui_ruler.c
-   ui/workspace/ui_workspace.c
-   ui/workspace/ui_popup.c
-   ui/workspace/ui_groupspace.c
-   ui/notification/notify.c
-)
-
 add_executable(${PROJECT_NAME} ${TET_CC_FILES})
 target_link_libraries(${PROJECT_NAME}
    ${EINA_LIBRARIES}
    ${ECORE_LIBRARIES}
    ${ECORE_X_LIBRARIES}
    ${ECORE_EVAS_LIBRARIES}
+   ${ECORE_FILE_LIBRARIES}
    ${EVAS_LIBRARIES}
    ${EET_LIBRARIES}
    ${EIO_LIBRARIES}
@@ -63,3 +18,18 @@ target_link_libraries(${PROJECT_NAME}
    ${EFREET_LIBRARIES}
    ${ELEMENTARY_LIBRARIES}
 )
+
+INCLUDE(FindPkgConfig)
+PKG_CHECK_MODULES (EDJE REQUIRED edje>=1.7.7)
+PKG_CHECK_MODULES (ECORE REQUIRED ecore>=1.7.7)
+PKG_CHECK_MODULES (ECORE_EVAS REQUIRED ecore-evas>=1.7.7)
+PKG_CHECK_MODULES (EFLDEPS REQUIRED
+  eina>=1.7.7
+  evas>=1.7.7
+  ecore>=1.7.7
+  ecore-file>=1.7.7
+  ecore-evas>=1.7.7
+  edje>=1.7.7)
+PKG_CHECK_MODULES (EINA REQUIRED eina>=1.7.7)
+PKG_CHECK_MODULES (ECORE_X ecore-x>=1.7.7)
+PKG_CHECK_MODULES (EVAS REQUIRED evas>=1.7.7)

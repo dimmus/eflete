@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #ifndef WIDGET_MANAGER_H
 #define WIDGET_MANAGER_H
 
@@ -37,10 +56,10 @@
  */
 enum _type
 {
-	WIDGET = 0,
-	STYLE,
-	GROUP,
-	PART
+    WIDGET = 0,
+    STYLE,
+    GROUP,
+    PART
 };
 
 /**
@@ -48,117 +67,6 @@ enum _type
  * @ingroup WidgetManager
  */
 typedef enum _type type;
-
-/**
- * @struct _Part_State_Image
- * This struct designed to storage a image data of part
- * In a theme file (.edc) this data presented as block 'image'
- *
- * @ingroup WidgetManager
- */
-struct _Part_State_Image
-{
-	Eina_Stringshare *normal_image;
-	int id;
-	Edje_Edit_Image_Comp compression_type;
-	int compression_rate;
-	int left;
-	int right;
-	int top;
-	int bottom;
-	unsigned int border_fill;
-	double fill_origin_relative_x;
-	double fill_origin_relative_y;
-	double fill_origin_offset_x;
-	double fill_origin_offset_y;
-	double fill_size_relative_x;
-	double fill_size_relative_y;
-	double fill_size_offset_x;
-	double fill_size_offset_y;
-	Eina_List *tweens_images;
-
-};
-
-/**
- * @typedef Part_State_Image
- * @ingroup WidgetManager
- */
-typedef struct _Part_State_Image Part_State_Image;
-
-/**
- * @struct _Part_State_Text
- * This struct designed to storage a text data of part
- * In a theme file (.edc) this data presented as block 'text'
- *
- * @ingroup WidgetManager
- */
-struct _Part_State_Text
-{
-	Eina_Stringshare *text;
-	Eina_Stringshare *font;
-	int size;
-	double align_x;
-	double align_y;
-	double elipsis;
-	Eina_Bool fit_x;
-	Eina_Bool fit_y;
-	Eina_List *fonts_list;
-};
-
-/**
- * @typedef Part_State_Text
- * @ingroup WidgetManager
- */
-typedef struct _Part_State_Text Part_State_Text;
-
-/**
- * @struct _Part_State
- * This struct designed to storage a data of part
- * In a theme file (.edc) this data presented as block 'description'
- *
- * @ingroup WidgetManager
- */
-struct _Part_State
-{
-	EINA_INLIST;
-	Eina_Stringshare *name;
-	double value;
-	double rel1_relative_x;
-	double rel1_relative_y;
-	double rel2_relative_x;
-	double rel2_relative_y;
-	int rel1_offset_x;
-	int rel1_offset_y;
-	int rel2_offset_x;
-	int rel2_offset_y;
-	Eina_Stringshare *rel1_to_x_name;
-	Eina_Stringshare *rel1_to_y_name;
-	Eina_Stringshare *rel2_to_x_name;
-	Eina_Stringshare *rel2_to_y_name;
-	int color[4]; // array of r,g,b,a
-	int color2[4];
-	int color3[4];
-	double align_x;
-	double align_y;
-	int min_w;
-	int min_h;
-	int max_w;
-	int max_h;
-	/* 'fixed' not implemented in edje_edit */
-	double aspect_min;
-	double aspect_max;
-	unsigned char aspect_pref;
-	Eina_Bool visible;
-	Eina_Stringshare *color_class;
-	Part_State_Text *text;
-	Part_State_Image *image;
-};
-
-/**
- * @typedef Part_State
- * @ingroup WidgetManager
- */
-typedef struct _Part_State Part_State;
 
 /**
  * @struct _Part
@@ -169,32 +77,14 @@ typedef struct _Part_State Part_State;
  */
 struct _Part
 {
-	EINA_INLIST;
-	Eina_Stringshare *name;
-	Evas_Object *obj;
-	Eina_Bool show;
-	Eina_Stringshare *api_name;
-	Eina_Stringshare *description;
-	Edje_Part_Type type;
-	Eina_Stringshare *clip_to;
-	Eina_Stringshare *source;
-	Edje_Text_Effect effect;
-	Eina_Stringshare *selected_state_name;
-	double selected_state;
-	Eina_Bool mouse_events;
-	Eina_Bool repeat_events;
-	Evas_Event_Flags ignore_flags;
-	Eina_Bool scale;
-	int drag_state_x;
-	int drag_state_y;
-	int drag_step_x;
-	int drag_step_y;
-	int drag_count_x;
-	int drag_count_y;
-	Eina_Stringshare *drag_confine;
-	Eina_Stringshare *drag_event;
-	Eina_Inlist *states;
-	type __type;
+    EINA_INLIST;
+    Eina_Stringshare *name;
+    Evas_Object *obj;
+    Eina_Stringshare *curr_state;
+    double curr_state_value;
+    Eina_Bool show;
+    int type;
+    type __type;
 };
 
 /**
@@ -202,41 +92,6 @@ struct _Part
  * @ingroup WidgetManager
  */
 typedef struct _Part Part;
-
-/**
- * @struct _Program
- * This struct designed to storage a data of group program.
- * In a theme file (.edc) this data presented as block 'program'
- *
- * @ingroup WidgetManager
- */
-struct _Program
-{
-	EINA_INLIST;
-	Eina_Stringshare *name;
-	Eina_Stringshare *source;
-	Eina_Stringshare *signal;
-	double in_form;
-	double in_range;
-	Edje_Action_Type action;
-	Eina_List *targets;
-	Eina_List *afters;
-	Eina_Stringshare *state;
-	Eina_Stringshare *state2;
-	Eina_Stringshare *api_name;
-	Eina_Stringshare *api_description;
-	double value;
-	double value2;
-	Edje_Tween_Mode transition;
-	double transition_time;
-	Eina_Stringshare *filter_part;
-};
-
-/**
- * @typedef Program
- * @ingroup WidgetManager
- */
-typedef struct _Program Program;
 
 /**
  * @struct _Group
@@ -247,23 +102,21 @@ typedef struct _Program Program;
  */
 struct _Group
 {
-	EINA_INLIST;
+    EINA_INLIST;
    /** Member 'group_name' consist a name of a group. **/
-   Eina_Stringshare *group_name;
+    Eina_Stringshare *group_name;
    /** Member 'full_group_name' consist a name of a block 'group'. **/
-	Eina_Stringshare *full_group_name;
+    Eina_Stringshare *full_group_name;
    /** Member 'obj' - edje edit object.**/
-	Evas_Object *obj;
+    Evas_Object *obj;
+   /** is it Group modificated **/
+    Eina_Bool isModify;
    /** Show/Hide a object on a workspace. **/
-	Eina_Bool show;
-	int min_w, min_h;
-	int max_w, max_h;
-	int current_w, current_h;
+    Eina_Bool show;
+    int current_w, current_h;
    /** Member 'parts' saved a list of a group parts data. **/
-	Eina_Inlist *parts;
-   /** Member 'programs' saves a list of group programs. **/
-	Eina_Inlist *programs;
-	type __type;
+    Eina_Inlist *parts;
+    type __type;
 };
 
 /**
@@ -280,12 +133,12 @@ typedef struct _Group Group;
  */
 struct _Style
 {
-	EINA_INLIST;
+    EINA_INLIST;
    /** Member 'style_name' consist a name of a style. **/
-	Eina_Stringshare *style_name;
+    Eina_Stringshare *style_name;
    /** Member 'groups' saved a list of groups that make up the style. **/
-	Eina_Inlist *groups;
-	type __type;
+    Eina_Inlist *groups;
+    type __type;
 };
 
 /**
@@ -302,12 +155,12 @@ typedef struct _Style Style;
  */
 struct _Widget
 {
-	EINA_INLIST;
+    EINA_INLIST;
    /** Member 'widget_name' consist a name of a widget. **/
-	Eina_Stringshare *widget_name;
+    Eina_Stringshare *widget_name;
    /** Member 'styles' consist a list of a widget styles. **/
-	Eina_Inlist *styles;
-	type __type;
+    Eina_Inlist *styles;
+    type __type;
 };
 
 /**
@@ -329,6 +182,21 @@ Part *
 wm_part_add(Evas_Object *obj, const char *part);
 
 /**
+ * Set a current state in Part object.
+ *
+ * @param part The part to set the state of.
+ * @param state Name of the state to set.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @note State has format "NAME X.X" we need to extract NAME\
+ * and double value separately
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_part_current_state_set(Part *part, const char *state);
+
+/**
  *
  */
 /*TODO: Add 'wm_part_new', for new part which will be add user */
@@ -345,29 +213,6 @@ Eina_Bool
 wm_part_free(Part *part);
 
 /**
- * Create a new Program object.
- *
- * @param obj The edje edit object with a 'group' data.
- * @param program_name The name of a program.
- * @return A new Program object.
- *
- * @ingroup WidgetManager
- */
-Program *
-wm_program_add(Evas_Object* obj, const char* program_name);
-
-/**
- * Free a Program object
- *
- * @param program A Program object to free.
- * @return EINA_TRUE if a object deleted, else EINA_FALSE.
- *
- * @ingroup WidgetManager
- */
-Eina_Bool
-wm_program_free(Program *program);
-
-/**
  * Get a list of signals which using in a 'group' programs
  *
  * @param programs A list of programs.
@@ -376,7 +221,7 @@ wm_program_free(Program *program);
  * @ingroup WidgetManager
  */
 Eina_List *
-wm_program_signals_list_get(const Eina_Inlist *programs);
+wm_program_signals_list_get(Group *group);
 
 /**
  * Free a signal list.
@@ -505,5 +350,30 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
  */
 Evas_Object *
 wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
+
+/**
+ * Return the string with the name of the part type by the giving id (int).
+ * @note the returned string should not be deleted!
+ *
+ * @param type part type id.
+ * @return string with the name of part type.
+ *
+ * @ingroup WidgetManager
+ */
+const char *
+wm_part_type_get(Edje_Part_Type type);
+
+/**
+ * Load part data to Group object, also load base group parametrs and create
+ * edje-edit object.
+ *
+ * @param group A Group object pointer, in wich must be loaded data.
+ * @param e A Evas, parent object.
+ * @param path Path to theme file (.edj).
+ *
+ * @ingroup WidgetManager
+ */
+void
+wm_group_data_load(Group *group, Evas *e, const char *edj);
 
 #endif /* WIDGET_MANAGER_H */

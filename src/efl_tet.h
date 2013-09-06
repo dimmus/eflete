@@ -1,3 +1,25 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
+#ifndef EFL_TET_H
+#define EFL_TET_H
+
 /**
  * @defgroup ELM_MAIN ELM_MAIN
  * @ingroup EFL_TET
@@ -7,9 +29,6 @@
  *some functions that free/init base required components)
  */
 
-#ifndef EFL_TET_H
-#define EFL_TET_H
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* include config.h */
@@ -17,6 +36,7 @@
 #include <Eina.h>
 #include <Ecore.h>
 #include <Evas.h>
+#include <Ecore_File.h>
 #include <Eet.h>
 #include <Efreet.h>
 #include <Elementary.h>
@@ -24,32 +44,35 @@
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"
+#include "ui_demospace.h"
 #include "notify.h"
 
 struct _App_Data
 {
-	Evas_Object *win;
-	Evas_Object *win_layout;
-	Evas_Object *main_menu;
+    Evas_Object *win;
+    Evas_Object *win_layout;
+    Evas_Object *main_menu;
     Evas_Object *inwin;
-	struct {
-		Evas_Object *left_top;
-		Evas_Object *left_bottom;
-		Evas_Object *bottom_left;
-		Evas_Object *bottom_right;
-		Evas_Object *right_top;
-		Evas_Object *right_bottom;
-		Evas_Object *canvas;
-	} block;
+    struct {
+       Evas_Object *left_top;
+       Evas_Object *left_bottom;
+       Evas_Object *bottom_left;
+       Evas_Object *bottom_right;
+       Evas_Object *right_top;
+       Evas_Object *right_bottom;
+       Evas_Object *canvas;
+    } block;
 
-	Workspace *ws;
-	Project *project;
+    Workspace *ws;
+    Demospace *demo;
+    Project *project;
 };
 
 /**
  *
  */
 typedef struct _App_Data App_Data;
+EAPI_MAIN int elm_main();
 
 /**
  * This function inits all libraries required by this programm.

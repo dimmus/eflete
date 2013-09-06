@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "efl_tet.h"
 #include "font_viewer_dialog.h"
 
@@ -133,8 +152,10 @@ font_viewer_add(Evas_Object *parent)
 }
 
 void
-font_viewer_init(Evas_Object *font_view, Project *project)
+font_viewer_init(Evas_Object *font_view __UNUSED__,
+                 Project *project __UNUSED__)
 {
+   /*
    Evas_Object *genlist = elm_object_part_content_get(
       elm_object_part_content_get(elm_win_inwin_content_get(font_view),
          "swallow/panes"), "left");
@@ -192,5 +213,5 @@ font_viewer_init(Evas_Object *font_view, Project *project)
      }
    eina_list_free(_fonts);
    eina_list_free(_temp_fonts);
+   */
 }
-

@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "settings.h"
 #include "ui_block.h"
 
@@ -40,6 +59,25 @@ UI_Elements_Settings *us;
    Store main panes in global pointer. This need for have access to all panes.
  */
 Evas_Object *panes;
+
+static void
+_add_state_button_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
+}
+
+static void
+_del_state_button_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_part_state_delete(ap);
+//   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
+}
 
 UI_Current_State_Panes *
 _ui_panes_current_state_struct_init(void)
@@ -192,8 +230,8 @@ _unpress_cb(void *data __UNUSED__,
 
 static void
 _double_click_up_cb(void * data __UNUSED__,
-                     Evas_Object *obj,
-                     void *event_info __UNUSED__)
+                    Evas_Object *obj,
+                    void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_left_size_get(obj) > 0)
@@ -211,8 +249,8 @@ _double_click_up_cb(void * data __UNUSED__,
 
 static void
 _double_click_left_panes_down_cb(void * data __UNUSED__,
-                       Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                                 Evas_Object *obj,
+                                 void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
@@ -229,8 +267,8 @@ _double_click_left_panes_down_cb(void * data __UNUSED__,
 
 static void
 _double_click_center_panes_down_cb(void * data __UNUSED__,
-                       Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                                   Evas_Object *obj,
+                                   void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
    if (elm_panes_content_right_size_get(obj) > 0)
@@ -264,6 +302,7 @@ ui_panes_add(App_Data *ap)
    Evas_Object *block;
    Evas_Object *panes_left, *panes_left_hor, *panes_right;
    Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
+   Evas_Object *panel, *button, *icon;
 
    us = ui_element_settings_init();
    if (!us)
@@ -357,10 +396,33 @@ ui_panes_add(App_Data *ap)
    block = ui_block_add(ap->win_layout);
    ui_block_title_text_set(block, "Part States");
    elm_object_part_content_set(panes_center_down, "left", block);
+
+   panel = elm_box_add(block);
+   elm_box_horizontal_set(panel, EINA_TRUE);
+   button = elm_button_add (panel);
+   icon = elm_icon_add (button);
+   elm_icon_standard_set(icon, "apps");
+   elm_image_no_scale_set (icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add (button, "clicked", _add_state_button_cb, ap);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+
+   button = elm_button_add (panel);
+   icon = elm_icon_add (button);
+   elm_icon_standard_set(icon, "delete");
+   elm_image_no_scale_set (icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add (button, "clicked", _del_state_button_cb, ap);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+   evas_object_show(panel);
+   elm_object_part_content_set(block, "elm_block_subpanel", panel);
    evas_object_show(block);
    ap->block.bottom_left = block;
 
    block = ui_block_add(ap->win_layout);
+   ui_block_title_text_set(block, "Live View");
    elm_object_part_content_set(panes_center_down, "right", block);
    evas_object_show(block);
    ap->block.bottom_right = block;
@@ -399,7 +461,7 @@ void
 ui_panes_show(App_Data *ap)
 {
    elm_object_signal_emit(ap->win_layout, "window,panes,show", "");
- }
+}
 
 void
 ui_panes_hide(App_Data *ap)

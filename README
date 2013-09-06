@@ -28,6 +28,10 @@ Installation.....: make install (as root if needed, with 'su' or 'sudo')
   type...........: Debug Build
   path...........: <Path to sources of projects>/build
 
+BUILD WITH TESTS:
+
+$ cmake -Dtest=1
+
 Build & installation:
 
 $ make install
@@ -70,3 +74,6 @@ Run the editor:
 
 $ efltet
 
+Run tests:
+
+$ ctest

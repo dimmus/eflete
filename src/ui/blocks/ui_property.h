@@ -1,5 +1,24 @@
-#ifndef UI_PROPERTY_H
-#define UI_PROPERTY_H
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
+#ifndef UI_PROPERTY_1_H
+#define UI_PROPERTY_1_H
 
 /**
  * @defgroup Property Property
@@ -9,8 +28,6 @@
  */
 
 #include "efl_tet.h"
-#include "widget_manager.h"
-#include <Elementary.h>
 #include "widget_manager.h"
 
 /**
@@ -22,120 +39,77 @@
  * @ingroup Property
  */
 Evas_Object *
-ui_property_view_new(Evas_Object *parent);
+ui_property_add(Evas_Object *parent);
 
 /**
  * Set to current 'property' widget a group view which group details.
  * If current property has a group view, then old view will be removed.
  *
- * @param prop_view A 'property' widget.
- * @param group_view A group view.
+ * @param property The 'property' widget.
+ * @param group The Group data which will be displayed.
  *
  * @ingroup Property
  */
+Eina_Bool
+ui_property_group_set(Evas_Object *property, Group *group);
+
+/**
+ * Unset the group view content on a given property.
+ * This method cascade unset all prop view:
+ * group -> part -> state
+ *
+ * @param property the 'property' widget.
+ *
+ * @ingroup property
+ */
 void
-ui_property_group_view_set(Evas_Object *prop_view, Evas_Object *group_view);
+ui_property_group_unset(Evas_Object *property);
 
 /**
  * Set to current 'property' widget a part view which part details.
  * If current property has a part view, then old view will be removed.
  *
- * @param prop_view A 'property' widget.
- * @param part_view A part view.
+ * @param property The 'property' widget.
+ * @param part The Part data which will be displayed.
  *
  * @ingroup Property
+ */
+
+Eina_Bool
+ui_property_part_set(Evas_Object *property, Part *part);
+
+/**
+ * Unset the part view content on a given property.
+ * This method cascade unset all prop view:
+ * part -> state
+ *
+ * @param property the 'property' widget.
+ *
+ * @ingroup property
  */
 void
-ui_property_part_view_set(Evas_Object *prop_view, Evas_Object *part_view);
+ui_property_part_unset(Evas_Object *property);
 
 /**
- * Get from current 'property' widget a group view.
+ * Set to current 'property' widget a part state view which state details.
+ * If current property has a part view, then old view will be removed.
  *
- * @param prop_view A 'property' widget.
- * @return A group view.
+ * @param property The 'property' widget.
+ * @param part The Part data which will be displayed.
  *
  * @ingroup Property
  */
-Evas_Object *
-ui_property_group_view_get(Evas_Object *prop_view);
+Eina_Bool
+ui_property_state_set(Evas_Object *property, Part *part);
 
 /**
- * Get from current 'property' widget a part view.
+ * Unset the part state view content on a given property.
  *
- * @param prop_view A 'property' widget.
- * @return A group view.
+ * @param property the 'property' widget.
  *
- * @ingroup Property
- */
-Evas_Object *
-ui_property_part_view_get(Evas_Object *prop_view);
-
-/**
- * Add to parent property view a new group details view.
- *
- * @param prop_view A parent object.
- * @param group A Group object data to set a view.
- * @return A new group details view.
- *
- * @ingroup Property
- */
-Evas_Object *
-ui_prop_group_info_view_add(Evas_Object *prop_view, Group *group);
-
-/**
- * Update a group view data.
- *
- * @param prop_view A property widget.
- * @param group A Group object to set a data.
- *
- * @ingroup Property
+ * @ingroup property
  */
 void
-ui_prop_group_info_view_update(Evas_Object *prop_view, Group *group);
+ui_property_state_unset(Evas_Object *property);
 
-/**
- * Add to parent property view a new part details view.
- *
- * @param prop_view A parent object.
- * @param part A Part object data to set a view.
- *
- * @ingroup Property
- */
-Evas_Object *
-ui_prop_part_info_view_add(Evas_Object *prop_view, Part *part);
-
-/**
- * Add to part view a new state view.
- *
- * @param part_view A parent object
- * @param state A Part_State object to add to a part view.
- * @return A new part state view.
- *
- * @ingroup Property
- */
-Evas_Object *
-ui_prop_part_info_state_view_add(Evas_Object *part_view, Part_State *state);
-
-/**
- * Set to part view a state view.
- *
- * @param part_view A part view to set a state view.
- * @param state_view A state view.
- *
- * @ingroup Property
- */
-void
-ui_prop_part_info_state_set(Evas_Object *part_view, Evas_Object *state_view);
-
-/**
- * Get a state view.
- *
- * @param part_view A part view.
- * @return A state view.
- *
- * @ingroup Property
- */
-Evas_Object *
-ui_prop_part_info_state_view_get(Evas_Object *part_view);
-
-#endif /* UI_PROPERTY_H */
+#endif /* UI_PROPERTY_1_H */

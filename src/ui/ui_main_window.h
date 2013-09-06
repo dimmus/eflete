@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #ifndef UI_MAIN_WINDOW_HEADER_H
 #define UI_MAIN_WINDOW_HEADER_H
 
@@ -14,11 +33,14 @@
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
+#include "ui_demospace.h"
 #include "ui_block.h"
-#include "image_viewer_dialog.h"
-#include "colorclass_viewer_dialog.h"
+#include "colorclass_editor.h"
 #include "font_viewer_dialog.h"
 #include "notify.h"
+#include "add_state_dialog.h"
+#include "add_style_dialog.h"
+#include "open_file_dialog.h"
 /**
  * Adds main window object for Edje tool development.
  *
@@ -139,13 +161,13 @@ ui_group_back(App_Data *ap);
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param glit The Elm_Object_Item pointer.
  * @param obj The Evas_Object pointer, wich pointed on states genlist.
+ * @param state Name of the state to be set.
  *
  * @ingroup Window
  */
 void
-ui_state_select(App_Data *ap, Elm_Object_Item *glit, Evas_Object *obj);
+ui_state_select(App_Data *ap, Evas_Object *obj, Eina_Stringshare *state);
 
 /**
  * Show information about properties of part. Highlight part object
@@ -202,5 +224,40 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
 Evas_Object *
 ui_edc_load_done(App_Data* ap, const char *project_name, const char *path_edc, const char *path_id, const char *path_sd, const char *path_fd);
 
-#endif	/* UI_MAIN_WINDOW_HEADER_H */
+
+/**
+ * Delete selected state from current part.
+ * Moved to own method for the separation of the interaction between the blocks.
+ *
+ * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+ui_part_state_delete(App_Data *ap);
+
+/**
+ * Delete selected style/class from current widget
+ *
+ * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+ui_style_delete(App_Data *ap);
+
+/**
+ * Open new theme from template file.
+ *
+ * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+new_theme_create(App_Data *ap);
+
+#endif /* UI_MAIN_WINDOW_HEADER_H */
 

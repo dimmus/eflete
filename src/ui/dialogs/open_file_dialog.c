@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "open_file_dialog.h"
 
 struct _fs_entries
@@ -24,8 +43,8 @@ _on_part_back(void *data,
 
 static void
 _on_group_back(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_data __UNUSED__)
+               Evas_Object *obj __UNUSED__,
+               void *event_data __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    ui_group_back(ap);
@@ -36,9 +55,10 @@ _on_state_selected(void *data,
                    Evas_Object *obj,
                    void *event_info)
 {
-   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
    App_Data *ap = (App_Data *)data;
-   ui_state_select(ap, eoit, obj);
+   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
+   Eina_Stringshare *state = elm_object_item_data_get(eoit);
+   ui_state_select(ap, obj, state);
 }
 
 static void
@@ -72,20 +92,11 @@ static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
    App_Data *ap = (App_Data *)data;
+   ui_demospace_unset(ap->demo, ap->project);
    const char *selected = event_info;
    Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
 
-   if(wd_list)
-     {
-        evas_object_smart_callback_add(wd_list, "wl,group,select",
-                                          _on_group_clicked, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,select",
-                                            _on_part_selected, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,back",
-                                            _on_part_back, ap);
-        evas_object_smart_callback_add(wd_list, "wl,group,back",
-                                            _on_group_back, ap);
-    }
+   add_callbacks_wd(wd_list, ap);
 }
 
 Eina_Bool
@@ -129,27 +140,33 @@ _on_ok_cb(void *data,
    const char *path_sd = elm_fileselector_entry_selected_get(fs_ent->sd);
    const char *path_fd = elm_fileselector_entry_selected_get(fs_ent->fd);
 
-   wd_list = ui_edc_load_done(ap,
-                    fs_ent->project_name,
-                    path_edc,
-                    path_id,
-                    path_sd,
-                    path_fd);
+   wd_list = ui_edc_load_done(ap, fs_ent->project_name, path_edc,
+                              path_id, path_sd, path_fd);
 
-   if(wd_list)
-     {
-        evas_object_smart_callback_add(wd_list, "wl,group,select",
-                                          _on_group_clicked, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,select",
-                                            _on_part_selected, ap);
-        evas_object_smart_callback_add(wd_list, "wl,part,back",
-                                            _on_part_back, ap);
-        evas_object_smart_callback_add(wd_list, "wl,group,back",
-                                            _on_group_back, ap);
-    }
-
+   add_callbacks_wd(wd_list, ap);
    free(fs_ent->project_name);
    free(fs_ent);
+}
+
+void
+add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
+{
+   if(!wd_list)
+     {
+        CRIT("Widget list does'nt created");
+        return;
+     }
+
+   evas_object_smart_callback_add(wd_list, "wl,group,select",
+                                     _on_group_clicked, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,select",
+                                       _on_part_selected, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,back",
+                                       _on_part_back, ap);
+   evas_object_smart_callback_add(wd_list, "wl,group,back",
+                                       _on_group_back, ap);
+  if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
+
 }
 
 static void
@@ -165,8 +182,8 @@ _on_cancel_cb(void *data,
 
 static void
 _on_fs_edc_done(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
 {
    char *path = (char *)event_info;
    char *images, *sounds, *fonts;
