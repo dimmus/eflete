@@ -18,39 +18,288 @@
 */
 
 #include "program_editor.h"
+#include "widget_define.h"
 
 struct _Program_Editor
 {
-   Group *group;
    Evas_Object *mwin;
    Evas_Object *gl_progs;
+   Elm_Object_Item *sel;
+   struct {
+     Group *group;
+     const char *program;
+     Evas_Object *name;
+     Evas_Object *signal;
+     Evas_Object *source;
+     Evas_Object *action;
+     Edje_Action_Type act_type;
+   } prop_view;
 };
+
+struct _Index
+{
+   int i;
+};
+typedef struct _Index Index;
+
+static const char *action_type[] = {"NONE",
+                                    "STATE_SET",
+                                    "ACTION_STOP",
+                                    "SIGNAL_EMIT",
+                                    "DRAG_VAL_SET",
+                                    "DRAG_VAL_STEP",
+                                    "DRAG_VAL_PAGE",
+                                    "SCRIPT",
+                                    "FOCUS_SET",
+                                    "RESERVED00",
+                                    "FOCUS_OBJECT",
+                                    "PARAM_COPY",
+                                    "PARAM_SET",
+                                    "SOUND_SAMPLE",
+                                    "SOUND_TONE"};
 
 typedef struct _Program_Editor Program_Editor;
 static Program_Editor window;
+#define prop window.prop_view
 static Elm_Genlist_Item_Class *_itc_prog;
+
+static Evas_Object *
+gl_progs_add(Evas_Object *parent, Group *group);
+
+static Evas_Object *
+prop_progs_add(Evas_Object *parent);
+
+static void
+prop_progs_update(void);
+
+static void
+gl_progs_update_sel_item(const char *str);
+
+#define ITEM_STRING_CALLBACK(sub, value) \
+static void \
+__on_##sub##_##value##_change(void *data __UNUSED__, \
+                              Evas_Object *obj, \
+                              void *ei __UNUSED__) \
+{ \
+   const char *value = elm_entry_entry_get(obj); \
+   Eina_Bool res = edje_edit_##sub##_##value##_set(prop.group->obj, prop.program, value); \
+   if (!res) \
+     { \
+        NOTIFY_WARNING("The entered data is not valid!") \
+        return; \
+     } \
+}
+
+#define ITEM_1ENTRY_ADD(text, sub, value) \
+Evas_Object * \
+prop_item_##sub##_##value##_add(Evas_Object *parent, \
+                                const char *tooltip) \
+{ \
+   Evas_Object *item, *entry; \
+   ITEM_ADD(parent, item, text) \
+   ENTRY_ADD(parent, entry, EINA_TRUE) \
+   elm_object_tooltip_text_set(entry, tooltip); \
+   elm_object_part_content_set(item, "elm.swallow.content", entry); \
+   return item; \
+}
+
+#define ITEM_1ENTRY_UPDATE(sub, value) \
+void \
+prop_item_##sub##_##value##_update(Evas_Object *item, \
+                                   Group *group) \
+{ \
+   Evas_Object *entry; \
+   const char *value; \
+   entry = elm_object_part_content_get(item, "elm.swallow.content"); \
+   value = edje_edit_##sub##_##value##_get(group->obj, prop.program); \
+   elm_entry_entry_set(entry, value); \
+   evas_object_smart_callback_del(entry, "activated", __on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "activated", \
+                                  __on_##sub##_##value##_change, NULL); \
+}
+
+#define ITEM_1ENTRY_PROG_CREATE(text, sub, value) \
+   ITEM_STRING_CALLBACK(sub, value) \
+   ITEM_1ENTRY_ADD(text, sub, value) \
+   ITEM_1ENTRY_UPDATE(sub, value) \
+
+
+ITEM_1ENTRY_PROG_CREATE("signal", program, signal)
+ITEM_1ENTRY_PROG_CREATE("source", program, source)
+
+ITEM_1ENTRY_ADD("name", program, name)
+
+static void
+__on_program_name_change(void *data __UNUSED__,
+                         Evas_Object *obj,
+                         void *ei __UNUSED__)
+{
+   const char *value = elm_entry_entry_get(obj);
+   Eina_Bool res = edje_edit_program_name_set(prop.group->obj, prop.program, value);
+   if (!res)
+     {
+        NOTIFY_WARNING("The entered data is not valid!")
+        return;
+     }
+   gl_progs_update_sel_item(value);
+}
+
+static void
+_on_hoversel_sel(void *data __UNUSED__,
+                 Evas_Object *obj,
+                 void *ei)
+{
+   Index *index = elm_object_item_data_get(ei);
+   elm_object_text_set(obj, action_type[index->i]);
+   edje_edit_program_action_set(prop.group->obj, prop.program, (Edje_Action_Type)index->i);
+}
+
+#define INDEX_APPEND(value) \
+   index = mem_malloc(sizeof(Index)); \
+   index->i = value; \
+   elm_object_item_data_set(hovit, index);
+
+Evas_Object *
+prop_item_program_action_add(Evas_Object *parent,
+                             const char *tooltip)
+{
+   Evas_Object *item, *box, *hoversel, *entry;
+   Elm_Object_Item *hovit;
+   Index *index;
+
+   ITEM_ADD(parent, item, "action")
+   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE)
+   HOVERSEL_ADD(item, hoversel, EINA_FALSE)
+   ENTRY_ADD(item, entry, EINA_TRUE)
+
+   elm_hoversel_hover_parent_set(hoversel, window.mwin);
+   elm_object_text_set(hoversel, action_type[0]);
+
+   hovit = elm_hoversel_item_add(hoversel, action_type[0], NULL, ELM_ICON_NONE, NULL, NULL);
+   INDEX_APPEND(0)
+   hovit = elm_hoversel_item_add(hoversel, action_type[1], NULL, ELM_ICON_NONE, NULL, NULL);
+   INDEX_APPEND(1)
+   hovit = elm_hoversel_item_add(hoversel, action_type[3], NULL, ELM_ICON_NONE, NULL, NULL);
+   INDEX_APPEND(3)
+   evas_object_smart_callback_add(hoversel, "selected", _on_hoversel_sel, entry);
+
+   elm_object_tooltip_text_set(entry, tooltip);
+   elm_box_pack_end(box, hoversel);
+   elm_box_pack_end(box, entry);
+
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   return item;
+}
+
+void
+prop_item_program_action_update(Evas_Object *item)
+{
+   Evas_Object *box, *hoversel;
+   Eina_List *nodes;
+   prop.act_type = edje_edit_program_action_get(prop.group->obj, prop.program);
+   box = elm_object_part_content_get(item, "elm.swallow.content");
+   nodes = elm_box_children_get(box);
+   hoversel = eina_list_nth(nodes, 0);
+   elm_object_text_set(hoversel, action_type[(int)prop.act_type]);
+}
+
+Evas_Object *
+prop_item_program_transition_add(Evas_Object *parent,
+                                 const char *tooltip)
+{
+   Evas_Object *item, *box, *hoversel, *entry;
+
+   ITEM_ADD(parent, item, "transition")
+   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE)
+   HOVERSEL_ADD(item, hoversel, EINA_FALSE)
+   ENTRY_ADD(item, entry, EINA_TRUE);
+
+   elm_object_tooltip_text_set(entry, tooltip);
+   elm_box_pack_end(box, hoversel);
+   elm_box_pack_end(box, entry);
+
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   return item;
+}
+
+static void
+prop_item_program_name_update(Evas_Object *item)
+{
+   Evas_Object *entry = elm_object_part_content_get(item, "elm.swallow.content");
+   elm_entry_entry_set(entry, prop.program);
+   evas_object_smart_callback_del(entry, "activated", __on_program_name_change);
+   evas_object_smart_callback_add(entry, "activated",
+                                  __on_program_name_change, NULL);
+}
+
+static Evas_Object *
+prop_progs_add(Evas_Object *parent)
+{
+   Evas_Object *box;
+
+   BOX_ADD(parent, box, EINA_FALSE, EINA_FALSE)
+   elm_box_align_set(box, 0.5, 0.0);
+
+   prop.name = prop_item_program_name_add(box, "Unique name of program ");
+   prop.signal = prop_item_program_signal_add(box, "signal");
+   prop.source = prop_item_program_source_add(box, "source");
+   prop.action = prop_item_program_action_add(box, "action");
+
+   elm_box_pack_end(box, prop.name);
+   elm_box_pack_end(box, prop.signal);
+   elm_box_pack_end(box, prop.source);
+   elm_box_pack_end(box, prop.action);
+
+   return box;
+}
+
+static void
+prop_progs_update(void)
+{
+   prop_item_program_name_update(prop.name);
+   prop_item_program_signal_update(prop.signal, prop.group);
+   prop_item_program_signal_update(prop.source, prop.group);
+   prop_item_program_action_update(prop.action);
+}
+
+static void
+_on_gen_prog_sel(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *ei)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)ei;
+   window.sel = glit;
+   Eina_Stringshare *program = elm_object_item_data_get(glit);
+   prop.program = program;
+   prop_progs_update();
+}
 
 static char *
 _item_prog_label_get(void *data,
                      Evas_Object *obj __UNUSED__,
                      const char *part __UNUSED__)
 {
-   char *prog_label = (char *)data;
-   /* char *formated_style_name; */
-   if (!prog_label)
-     {
-        ERR("It impossible, but it is occurred, style's name is missing!");
-        return NULL;
-     }
-
+   Eina_Stringshare *prog_label = (Eina_Stringshare *)data;
    return strdup(prog_label);
 }
+
+static void
+gl_progs_update_sel_item(const char *str)
+{
+   Eina_Stringshare *item_data = elm_object_item_data_get(window.sel);
+   eina_stringshare_replace(&item_data, str);
+   elm_object_item_data_set(window.sel, (void *)item_data);
+   elm_genlist_item_update(window.sel);
+}
+
 static Evas_Object *
-_gl_progs_add(Evas_Object *parent, Group *group)
+gl_progs_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *gl_progs;
    Eina_List *progs_list, *l;
    const char *prog_name;
+   Eina_Stringshare *item_data;
+   Elm_Object_Item *glit;
 
    if (!_itc_prog)
      {
@@ -73,10 +322,17 @@ _gl_progs_add(Evas_Object *parent, Group *group)
    progs_list = edje_edit_programs_list_get(group->obj);
    EINA_LIST_FOREACH(progs_list, l, prog_name)
      {
-        elm_genlist_item_append(gl_progs, _itc_prog, prog_name,
-                                NULL, ELM_GENLIST_ITEM_NONE,
-                                NULL, NULL);
+        if (!prog_name) continue; /* if the list have NULL item */
+        item_data = eina_stringshare_add(prog_name);
+        glit = elm_genlist_item_append(gl_progs, _itc_prog, item_data,
+                                       NULL, ELM_GENLIST_ITEM_NONE,
+                                       NULL, NULL);
+        elm_object_item_data_set(glit, (void *)item_data);
      }
+
+   evas_object_smart_callback_add(gl_progs, "selected",
+                                  _on_gen_prog_sel, NULL);
+   edje_edit_string_list_free(progs_list);
    return gl_progs;
 }
 
@@ -93,10 +349,10 @@ Evas_Object *
 program_editor_window_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *mw_box, *pans;
-   Evas_Object *glist;
+   Evas_Object *glist, *prog_prop;
    Evas_Object *bt_box, *bt;
 
-   window.group = group;
+   prop.group = group;
    window.mwin = mw_add(parent);
    mw_title_set(window.mwin, "Program editor");
    evas_object_event_callback_add(window.mwin, EVAS_CALLBACK_FREE,
@@ -113,8 +369,11 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    elm_panes_content_left_size_set(pans, 0.2);
    evas_object_show(pans);
 
-   glist = _gl_progs_add(window.mwin, group);
+   glist = gl_progs_add(window.mwin, group);
    elm_object_part_content_set(pans, "left", glist);
+
+   prog_prop = prop_progs_add(window.mwin);
+   elm_object_part_content_set(pans, "right", prog_prop);
 
    bt_box = elm_box_add(mw_box);
    evas_object_size_hint_weight_set(bt_box, EVAS_HINT_EXPAND, 0.0);
@@ -141,3 +400,5 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    evas_object_show(window.mwin);
    return window.mwin;
 }
+
+#undef prog
