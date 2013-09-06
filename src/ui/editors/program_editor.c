@@ -43,6 +43,8 @@ struct _Index
 };
 typedef struct _Index Index;
 
+static Evas_Object *prog_entry;
+
 static const char *action_type[] = {"NONE",
                                     "STATE_SET",
                                     "ACTION_STOP",
@@ -459,7 +461,7 @@ prop_progs_update(void)
 {
    prop_item_program_name_update(prop.name);
    prop_item_program_signal_update(prop.signal, prop.group);
-   prop_item_program_signal_update(prop.source, prop.group);
+   prop_item_program_source_update(prop.source, prop.group);
    prop_item_program_action_update(prop.action);
    prop_item_program_targets_update(prop.targets);
 }
@@ -547,6 +549,9 @@ __on_program_editor_close(void *data __UNUSED__,
    /* clear stringshare */
 }
 
+
+
+
 static void
 _on_editor_save(void *data,
                 Evas_Object* obj __UNUSED__,
@@ -564,12 +569,120 @@ _on_editor_cansel(void *data __UNUSED__,
    evas_object_del(window.mwin);
 }
 
+static void
+_on_add_popup_bt_add(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   Evas_Object *popup = (Evas_Object *)data;
+   Eina_Stringshare *name = elm_entry_entry_get(prog_entry);
+   Elm_Object_Item *glit_prog;
+
+   if (!name)
+     {
+        NOTIFY_WARNING("Program's 'name can not be empty!");
+        return;
+     }
+   if(!edje_edit_program_add(prop.group->obj, name))
+     {
+        NOTIFY_WARNING("Program's name must be unique!");
+        return;
+     }
+
+   glit_prog = elm_genlist_item_append(window.gl_progs, _itc_prog, name,
+                                       NULL, ELM_GENLIST_ITEM_NONE,
+                                       NULL, NULL);
+   elm_genlist_item_selected_set(glit_prog, EINA_TRUE);
+   evas_object_del(popup);
+}
+
+static void
+_on_add_popup_bt_cancel(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+   Evas_Object *popup = (Evas_Object *)data;
+   evas_object_del(popup);
+}
+
+
+static void
+_on_bt_prog_del(void *data __UNUSED__,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Elm_Object_Item *glit = elm_genlist_selected_item_get(window.gl_progs);
+   const char *program_name;
+
+   program_name = elm_object_item_part_text_get(glit, "elm.text");
+   edje_edit_program_del(prop.group->obj, program_name);
+
+   elm_object_item_del(glit);
+}
+
+static void
+_on_bt_prog_add(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *popup, *box, *bt_yes, *bt_no;
+   Evas_Object *prog_box, *prog_label;
+   popup = elm_popup_add(window.mwin);
+   elm_object_part_text_set(popup, "title,text", "Add new program:");
+
+   box = elm_box_add(popup);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   prog_box = elm_box_add(box);
+   elm_box_horizontal_set(prog_box, EINA_TRUE);
+   evas_object_size_hint_weight_set(prog_box, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(prog_box, EVAS_HINT_FILL, 0.0);
+   evas_object_show(prog_box);
+
+   prog_label = elm_label_add(prog_box);
+   elm_object_text_set(prog_label, "Program name: ");
+   evas_object_show(prog_label);
+   elm_box_pack_end(prog_box, prog_label);
+
+   prog_entry = elm_entry_add(prog_box);
+   elm_entry_single_line_set(prog_entry, EINA_TRUE);
+   elm_entry_scrollable_set(prog_entry, EINA_TRUE);
+   elm_entry_scrollbar_policy_set(prog_entry, ELM_SCROLLER_POLICY_OFF,
+                                  ELM_SCROLLER_POLICY_OFF);
+   evas_object_size_hint_weight_set(prog_entry, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(prog_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(prog_entry);
+   elm_box_pack_end(prog_box, prog_entry);
+
+   elm_box_pack_end(box, prog_box);
+   elm_object_content_set(popup, box);
+   evas_object_show(box);
+
+   bt_yes = elm_button_add(popup);
+   elm_object_text_set(bt_yes, "Add");
+   evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_bt_add,
+                                  popup);
+   elm_object_part_content_set(popup, "button1", bt_yes);
+   evas_object_show(bt_yes);
+
+   bt_no = elm_button_add(popup);
+   elm_object_text_set(bt_no, "Cancel");
+   evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_bt_cancel,
+                                  popup);
+   elm_object_part_content_set(popup, "button2", bt_no);
+   evas_object_show(bt_no);
+
+   evas_object_show(popup);
+}
+
 Evas_Object *
 program_editor_window_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *mw_box, *pans;
    Evas_Object *glist, *prog_prop;
-   Evas_Object *bt_box, *bt;
+   Evas_Object *bt_box, *bt, *box;
 
    prop.group = group;
    window.mwin = mw_add(parent);
@@ -588,8 +701,38 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    elm_panes_content_left_size_set(pans, 0.2);
    evas_object_show(pans);
 
+   box = elm_box_add(parent);
+   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(box);
+
    glist = gl_progs_add(window.mwin, group);
-   elm_object_part_content_set(pans, "left", glist);
+   window.gl_progs = glist;
+   elm_box_pack_end(box, glist);
+   evas_object_show(glist);
+
+   evas_object_size_hint_align_set(glist,
+                                   EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(glist,
+                                    EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+
+   bt = elm_button_add(parent);
+   elm_object_text_set(bt, "New Program");
+   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_add, NULL);
+   elm_box_pack_end(box, bt);
+   evas_object_show(bt);
+
+   bt = elm_button_add(parent);
+   elm_object_text_set(bt, "Delete");
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_del, NULL);
+   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   elm_box_pack_end(box, bt);
+   evas_object_show(bt);
+   elm_object_part_content_set(pans, "left", box);
 
    prog_prop = prop_progs_add(window.mwin);
    elm_object_part_content_set(pans, "right", prog_prop);
@@ -602,13 +745,13 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    evas_object_show(bt_box);
 
    bt = elm_button_add(bt_box);
-   elm_object_text_set(bt, "Save");
+   elm_object_text_set(bt, "Ok");
    evas_object_smart_callback_add(bt, "clicked", _on_editor_save, group);
    evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
 
    bt = elm_button_add(bt_box);
-   elm_object_text_set(bt, "Cansel");
+   elm_object_text_set(bt, "Cancel");
    evas_object_smart_callback_add(bt, "clicked", _on_editor_cansel, NULL);
    evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
@@ -622,4 +765,4 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    return window.mwin;
 }
 
-#undef prog
+#undef prop
