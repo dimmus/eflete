@@ -173,8 +173,16 @@ _on_value_active(void *data __UNUSED__,
 {
    const char *value;
    value = elm_entry_entry_get(obj);
-   if (!edje_edit_program_value_set(prop.group->obj, prop.program, atof(value)))
-     NOTIFY_WARNING("The entered data is not valid!");
+   if (prop.act_type == EDJE_ACTION_TYPE_STATE_SET)
+     {
+        if (!edje_edit_program_value_set(prop.group->obj, prop.program, atof(value)))
+          NOTIFY_WARNING("The entered data is not valid!");
+     }
+   if (prop.act_type == EDJE_ACTION_TYPE_SIGNAL_EMIT)
+     {
+        if (!edje_edit_program_state2_set(prop.group->obj, prop.program, value))
+          NOTIFY_WARNING("The entered data is not valid!");
+     }
 }
 
 #define INDEX_APPEND(value) \
@@ -243,6 +251,19 @@ prop_item_program_action_update(Evas_Object *item)
         value = edje_edit_program_value_get(prop.group->obj, prop.program);
         sprintf(buff, "%1.2f", value);
         elm_entry_entry_set(entry2, buff);
+        evas_object_smart_callback_del(entry2, "activated", _on_value_active);
+        evas_object_smart_callback_add(entry2, "activated", _on_value_active, NULL);
+     }
+   if (prop.act_type == EDJE_ACTION_TYPE_SIGNAL_EMIT)
+     {
+        str = edje_edit_program_state_get(prop.group->obj, prop.program);
+        elm_entry_entry_set(entry1, str);
+        edje_edit_string_free(str);
+        evas_object_smart_callback_del(entry1, "activated", _on_state_active);
+        evas_object_smart_callback_add(entry1, "activated", _on_state_active, NULL);
+        str = edje_edit_program_state2_get(prop.group->obj, prop.program);
+        elm_entry_entry_set(entry2, str);
+        edje_edit_string_free(str);
         evas_object_smart_callback_del(entry2, "activated", _on_value_active);
         evas_object_smart_callback_add(entry2, "activated", _on_value_active, NULL);
      }
