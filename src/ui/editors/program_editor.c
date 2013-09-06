@@ -418,6 +418,23 @@ __on_program_editor_close(void *data __UNUSED__,
    /* clear stringshare */
 }
 
+static void
+_on_editor_save(void *data,
+                Evas_Object* obj __UNUSED__,
+                void *ei __UNUSED__)
+{
+   Group *group = (Group *)data;
+   edje_edit_save(group->obj);
+}
+
+static void
+_on_editor_cansel(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei __UNUSED__)
+{
+   evas_object_del(window.mwin);
+}
+
 Evas_Object *
 program_editor_window_add(Evas_Object *parent, Group *group)
 {
@@ -456,12 +473,14 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    evas_object_show(bt_box);
 
    bt = elm_button_add(bt_box);
-   elm_object_text_set(bt, "Ok");
+   elm_object_text_set(bt, "Save");
+   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, group);
    evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
 
    bt = elm_button_add(bt_box);
    elm_object_text_set(bt, "Cansel");
+   evas_object_smart_callback_add(bt, "clicked", _on_editor_cansel, NULL);
    evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
 
