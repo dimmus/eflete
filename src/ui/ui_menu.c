@@ -249,14 +249,12 @@ _on_prog_editor_menu(void *data __UNUSED__,
                      Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
-   /*
    App_Data *ap = (App_Data *)data;
    if (!ap->project->current_group)
      NOTIFY_WARNING("Please open the widget style for editing style programs!")
    else
      program_editor_window_add(ap->win, ap->project->current_group);
-   */
-   NOTIFY_INFO(5, "Not Implemented Yet.")
+   //NOTIFY_INFO(5, "Not Implemented Yet.")
 }
 
 /*

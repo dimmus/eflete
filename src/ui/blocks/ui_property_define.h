@@ -19,14 +19,6 @@
 
 #define OBJ_DATA "group_data"
 
-#define ITEM_ADD(parent, item, text) \
-   item = elm_layout_add(parent); \
-   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(item, TET_EDJ, "property/item/default"); \
-   elm_object_text_set(item, text); \
-   evas_object_show(item);
-
 /* part */
 #define ITEM_SPINNER_CALLBACK(sub, value, type) \
 static void \

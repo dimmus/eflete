@@ -200,7 +200,7 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_show(bt_ok);
 
    bt_cansel = elm_button_add(popup);
-   elm_object_text_set(bt_cansel, "Cansel");
+   elm_object_text_set(bt_cansel, "Cancel");
    evas_object_smart_callback_add(bt_cansel, "clicked", _on_popup_bt_cansel, popup);
    elm_object_part_content_set(popup, "button2", bt_cansel);
    evas_object_show(bt_cansel);
@@ -310,7 +310,7 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_show(bt_ok);
 
    bt_cansel = elm_button_add(popup);
-   elm_object_text_set(bt_cansel, "Cansel");
+   elm_object_text_set(bt_cansel, "Cancel");
    evas_object_smart_callback_add(bt_cansel, "clicked", _on_popup_bt_cansel, popup);
    elm_object_part_content_set(popup, "button2", bt_cansel);
    evas_object_show(bt_cansel);

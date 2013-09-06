@@ -29,7 +29,6 @@
 
 #include "efl_tet.h"
 #include "widget_manager.h"
-#include "widget_define.h"
 
 /**
  * Add a new Property widget.
