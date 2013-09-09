@@ -424,9 +424,7 @@ wm_widget_list_new(const char *file)
 
    EINA_LIST_FOREACH_SAFE(collection, l, l_next, group)
      {
-        if (!eina_str_has_prefix(group, prefix))
-          ERR("Invalid style name in group: %s", group);
-        else
+        if (eina_str_has_prefix(group, prefix))
           {
              free(widget_name_next);
              WM_WIDGET_NAME_GET(widget_name, group);
@@ -437,8 +435,8 @@ wm_widget_list_new(const char *file)
                }
              else
                widget_name_next = &empty;
-
              widget_styles = eina_list_append(widget_styles, group);
+
 
              if (strcmp(widget_name, widget_name_next) != 0)
                {
@@ -450,6 +448,8 @@ wm_widget_list_new(const char *file)
                }
              free(widget_name);
           }
+        else
+          ERR("Invalid style name in group: %s", group);
      }
    edje_file_collection_list_free(collection);
    DBG("Parse the edje group collection id finished! The list of widget - created.");

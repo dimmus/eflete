@@ -59,6 +59,8 @@ ui_state_select(App_Data *ap,
    wm_part_current_state_set(part, state);
    ui_property_state_set(prop_view, part);
    ui_groupspace_part_state_update(ap->ws->groupspace, part);
+   if (ap->ws->highlight.part)
+     ui_object_highlight_move(ap->ws);
 }
 
 Evas_Object *

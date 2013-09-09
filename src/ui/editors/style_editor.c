@@ -580,7 +580,7 @@ _form_right_side(Evas_Object *obj)
    btn = elm_button_add(obj);
    elm_object_text_set(btn, "Close Viewer");
    elm_object_part_content_set (layout, "swallow/button_close", btn);
-   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, obj);
+   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, window.mwin);
 
    evas_object_show(btn);
 
@@ -593,7 +593,6 @@ __on_style_editor_close(void *data __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info __UNUSED__)
 {
-   evas_object_del(window.mwin);
    style_edit_save(window.pr);
    /* clear stringshare */
 }
@@ -609,7 +608,6 @@ style_editor_window_add(Evas_Object *parent, Project *project)
    mw_title_set(window.mwin, "Textblock style editor");
    evas_object_event_callback_add(window.mwin, EVAS_CALLBACK_FREE,
                                   __on_style_editor_close, NULL);
-
    panes = elm_panes_add(window.mwin);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
