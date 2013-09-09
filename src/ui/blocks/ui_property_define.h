@@ -229,13 +229,20 @@ __on_##sub##_##value##_change(void *data, \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
    char **c = eina_str_split(value, " ", 4); \
+   Evas_Object *box, *image; \
+   Eina_List *nodes = NULL; \
    r = atoi(c[0]); g = atoi(c[1]); b = atoi(c[2]); a = atoi(c[3]); \
    edje_edit_##sub##_##value##_set(group->obj, part->name, \
                                    part->curr_state, part->curr_state_value, \
                                    r, g, b, a); \
    evas_object_color_set(part->obj, r*a/255, g*a/255, b*a/255, a); \
+   box = elm_object_parent_widget_get(obj); \
+   nodes = elm_box_children_get(box); \
+   image = eina_list_nth(nodes, 1); \
+   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a); \
    free(c[0]); \
    free(c); \
+   eina_list_free(nodes); \
    group->isModify = EINA_TRUE; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
@@ -586,9 +593,12 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
                                            part->curr_state, \
                                            part->curr_state_value); \
    elm_spinner_value_set(spinner, value); \
-   evas_object_smart_callback_del(spinner, "changed", __on_##sub##_##value##_change); \
+   evas_object_data_del(spinner, OBJ_DATA); \
+   evas_object_data_set(spinner, OBJ_DATA, group); \
+   evas_object_smart_callback_del(spinner, "changed", \
+                                  __on_##sub##_##value##_change); \
    evas_object_smart_callback_add(spinner, "changed", \
-                                  __on_##sub##_##value##_change, group); \
+                                  __on_##sub##_##value##_change, part); \
 }
 
 #define ITEM_1CHEACK_STATE_ADD(text, sub, value) \

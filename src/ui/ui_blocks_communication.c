@@ -133,12 +133,19 @@ Evas_Object *
 ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 {
   Evas_Object *wd_list = NULL;
+  Evas_Object *prop = NULL;
+
+  prop = ui_block_property_get(ap);
+
   if (selected)
      {
         if (eina_str_has_suffix(selected, ".edj"))
           {
              INFO("Select file: %s", selected);
              NOTIFY_INFO(3, "Select file: %s", selected);
+             if (prop) ui_property_group_unset(prop);
+             elm_genlist_clear(ui_block_state_list_get(ap));
+             elm_genlist_clear(ui_block_signal_list_get(ap));
 
              ap->project = pm_open_project_edj(selected, selected);
              wd_list = ui_widget_list_add(ap->win);
@@ -167,10 +174,16 @@ ui_edc_load_done(App_Data* ap,
                  const char *path_fd)
 {
    Evas_Object *wd_list = NULL;
+   Evas_Object *prop = NULL;
+
+   prop = ui_block_property_get(ap);
 
    if (eina_str_has_suffix(path_edc, ".edc"))
      {
         INFO("Select file: %s", path_edc);
+        if (prop) ui_property_group_unset(prop);
+        elm_genlist_clear(ui_block_state_list_get(ap));
+        elm_genlist_clear(ui_block_signal_list_get(ap));
 
         ap->project = pm_open_project_edc(project_name,
                                           path_edc,
