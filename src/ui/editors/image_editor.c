@@ -138,6 +138,9 @@ _grid_sel(void *data __UNUSED__,
                comp_rate = image_edit_image_compression_rate_get(window.pr,
                                                                  it->image_name);
                break;
+            default:
+               comp_str = "Unknown compression type";
+               ERR("Unknown compression type");
            }
          //output into label
          if (comp_rate > 0)
