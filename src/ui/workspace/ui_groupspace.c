@@ -33,9 +33,19 @@ _gs_image_update(Group *group, Part *part, Project *project);
 static void
 _gs_text_update(Group *group, Part *part);
 static void
-_gs_spaser_swallow_group_update(Group *group, Part *part);
+_gs_spacer_swallow_group_update(Group *group, Part *part);
 static void
 _gs_textblock_update(Group *group, Part *part);
+static void
+__box_recalc(void *data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__);
+static void
+_gs_highlight_move_resize(void *data,
+                        Evas *e __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__);
 
 
 static void
@@ -91,6 +101,20 @@ _separate_layout(Evas_Object *o, Evas_Object_Box_Data *p, void *data)
 }
 
 static void
+_resize_move_callbacks_add(Workspace *ws, Evas_Object *box, Evas_Object *edje_part)
+{
+   evas_object_event_callback_add(edje_part, EVAS_CALLBACK_MOVE,
+                                  _gs_highlight_move_resize, ws);
+   evas_object_event_callback_add(edje_part, EVAS_CALLBACK_RESIZE,
+                                  _gs_highlight_move_resize, ws);
+
+   evas_object_event_callback_add(edje_part, EVAS_CALLBACK_MOVE,
+                                  __box_recalc, box);
+   evas_object_event_callback_add(edje_part, EVAS_CALLBACK_RESIZE,
+                                  __box_recalc, box);
+}
+
+static void
 _new_state_add(void *data __UNUSED__,
                Evas_Object *obj __UNUSED__,
                void *event_info)
@@ -137,9 +161,11 @@ _new_rect_add(void *data __UNUSED__,
    group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
    evas_object_box_append(box, part->obj);
    evas_object_show(part->obj);
+
+   _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
+
    evas_object_smart_calculate(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
-
 }
 
 static void
@@ -176,6 +202,9 @@ _new_img_add(void *data __UNUSED__,
    group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
    evas_object_box_append(box, part->obj);
    evas_object_show(part->obj);
+
+   _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
+
    evas_object_smart_calculate(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
 
@@ -218,6 +247,9 @@ _new_txt_add(void *data __UNUSED__,
    group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
    evas_object_box_append(box, part->obj);
    evas_object_show(part->obj);
+
+   _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
+
    evas_object_smart_calculate(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
 
@@ -262,6 +294,9 @@ _new_txtblock_add(void *data __UNUSED__,
    group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
    evas_object_box_append(box, part->obj);
    evas_object_show(part->obj);
+
+   _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
+
    evas_object_smart_calculate(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
 }
@@ -295,13 +330,16 @@ _new_swallow_add(void *data __UNUSED__,
 
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_SWALLOW);
    edje_edit_state_add(group->obj, part->name, "default", 0.0);
-   _gs_spaser_swallow_group_update(group, part);
+   _gs_spacer_swallow_group_update(group, part);
    edje_part = edje_object_part_object_get(group->obj, part->name);
    evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
 
    group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
    evas_object_box_append(box, part->obj);
    evas_object_show(part->obj);
+
+   _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
+
    evas_object_smart_calculate(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
 
@@ -337,16 +375,18 @@ _new_spacer_add(void *data __UNUSED__,
 
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_SPACER);
    edje_edit_state_add(group->obj, part->name, "default", 0.0);
-   _gs_spaser_swallow_group_update(group, part);
+   _gs_spacer_swallow_group_update(group, part);
 
    edje_part = edje_object_part_object_get(group->obj, part->name);
    evas_object_data_set(part->obj, GS_PART_DATA_KEY, edje_part);
    group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(part));
    evas_object_box_append(box, part->obj);
    evas_object_show(part->obj);
+
+   _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
+
    evas_object_smart_calculate(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
-
 }
 
 static void
@@ -546,7 +586,7 @@ _gs_mouse_move_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__,
 }
 
 static void
-_gs_hilight_move_resize(void *data,
+_gs_highlight_move_resize(void *data,
                         Evas *e __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *ei __UNUSED__)
@@ -554,7 +594,7 @@ _gs_hilight_move_resize(void *data,
    Workspace *ws = (Workspace*)data;
 
    if (ws->highlight.part)
-     ui_object_highlight_move(ws);
+     ui_object_highlight_handler_move(ws);
 }
 
 static void
@@ -725,7 +765,7 @@ _gs_text_update(Group *group, Part *part)
 }
 
 static void
-_gs_spaser_swallow_group_update(Group *group,
+_gs_spacer_swallow_group_update(Group *group,
                           Part *part)
 {
    edje_edit_part_selected_state_set(group->obj,
@@ -787,7 +827,7 @@ _gs_group_draw(Group *group,
                TET_IMG_PATH"swallow_spacer_mask.png", NULL);
              evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
              evas_object_color_set(_part->obj, 15, 60, 162, 255);
-             _gs_spaser_swallow_group_update(group, _part);
+             _gs_spacer_swallow_group_update(group, _part);
           }
         if (type == EDJE_PART_TYPE_SWALLOW)
           {
@@ -796,7 +836,7 @@ _gs_group_draw(Group *group,
                TET_IMG_PATH"swallow_spacer_mask.png", NULL);
              evas_object_image_fill_set(_part->obj, 2, 2, 10, 10);
              evas_object_color_set(_part->obj, 180, 108, 0, 255);
-             _gs_spaser_swallow_group_update(group, _part);
+             _gs_spacer_swallow_group_update(group, _part);
           }
         if (type == EDJE_PART_TYPE_TEXT)
           {
@@ -812,7 +852,7 @@ _gs_group_draw(Group *group,
           {
              source = edje_edit_part_source_get(group->obj, _part->name);
              if (!_part->obj) _part->obj = wm_group_object_find(project->widgets, source);
-             _gs_spaser_swallow_group_update(group, _part);
+             _gs_spacer_swallow_group_update(group, _part);
              edje_edit_string_free(source);
           }
 
@@ -824,22 +864,8 @@ _gs_group_draw(Group *group,
           {
              edje_part = edje_object_part_object_get(group->obj, _part->name);
              evas_object_data_set(_part->obj, GS_PART_DATA_KEY, edje_part);
+             _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
           }
-
-        evas_object_event_callback_add((Evas_Object *)edje_part,
-                                       EVAS_CALLBACK_MOVE,
-                                       __box_recalc, box);
-        evas_object_event_callback_add((Evas_Object *)edje_part,
-                                       EVAS_CALLBACK_MOVE,
-                                       _gs_hilight_move_resize, ws);
-
-        evas_object_event_callback_add((Evas_Object *)edje_part,
-                                       EVAS_CALLBACK_RESIZE,
-                                       __box_recalc, box);
-        evas_object_event_callback_add((Evas_Object *)edje_part,
-                                       EVAS_CALLBACK_RESIZE,
-                                       _gs_hilight_move_resize, ws);
-
         evas_object_box_append(box, _part->obj);
         evas_object_show(_part->obj);
      }
@@ -873,7 +899,7 @@ ui_groupspace_scale_set(Evas_Object *groupspace, double scale)
 }
 
 void
-ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
+ui_groupspace_part_space_geometry_get(Group *group, Part *part,
                                       int *x, int *y, int *w, int *h)
 {
    Evas_Object *edje_part = NULL;
@@ -1041,11 +1067,11 @@ ui_groupspace_part_state_update(Evas_Object *groupspace,
    if (type == EDJE_PART_TYPE_TEXT)
      _gs_text_update(group, part);
    if (type == EDJE_PART_TYPE_SPACER)
-     _gs_spaser_swallow_group_update(group, part);
+     _gs_spacer_swallow_group_update(group, part);
    if (type == EDJE_PART_TYPE_SWALLOW)
-     _gs_spaser_swallow_group_update(group, part);
+     _gs_spacer_swallow_group_update(group, part);
    if (type == EDJE_PART_TYPE_GROUP)
-     _gs_spaser_swallow_group_update(group, part);
+     _gs_spacer_swallow_group_update(group, part);
    if (type == EDJE_PART_TYPE_TEXTBLOCK)
      _gs_textblock_update(group, part);
 

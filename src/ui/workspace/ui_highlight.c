@@ -139,9 +139,6 @@ _handler_pos_recalc(Highlight *highlight)
 
    evas_object_geometry_get(highlight->border, &x, &y, &w, &h);
 
-   if((w < MINSIZE) || (h < MINSIZE)) highlight->outside = EINA_TRUE;
-   else highlight->outside = EINA_FALSE;
-
    if (highlight->outside)
      {
         highlight->handler_RB->x = w + x;
@@ -437,7 +434,6 @@ _handler_up_cb(void *data,
    evas_object_resize(handler->highlight->smart_object, w, h);
    evas_object_move(handler->highlight->smart_object, x, y);
 
-
    handler->highlight->clicked = EINA_FALSE;
 }
 
@@ -458,7 +454,6 @@ _handler_mouse_in_cb(void *data,
    evas_object_hide(highlight->handler_LB->border);
    evas_object_hide(highlight->handler_LT->border);
    evas_object_show(obj);
-
 }
 
 /*
@@ -477,7 +472,6 @@ _handler_mouse_out_cb(void *data,
    evas_object_show(highlight->handler_RT->border);
    evas_object_show(highlight->handler_LB->border);
    evas_object_show(highlight->handler_LT->border);
-
 }
 
 Handler *
@@ -586,7 +580,6 @@ _smart_show(Evas_Object *obj)
    evas_object_show(highlight->handler_RT->border);
    evas_object_show(highlight->handler_LB->border);
    evas_object_show(highlight->handler_LT->border);
-
 
    _highlight_parent_sc->show(obj);
 }
@@ -779,6 +772,39 @@ hl_highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
          evas_object_show(highlight->handler_LT->border);
          edje_object_signal_emit(highlight->border, "bg,hide", "");
    }
+}
+
+void
+hl_highlight_move(Evas_Object *hl,
+            Evas_Coord x,
+            Evas_Coord y)
+{
+   if (!hl) return;
+
+   Highlight *highlight = evas_object_smart_data_get(hl);
+   evas_object_move(highlight->border, x, y);
+   _handler_pos_recalc(highlight);
+}
+
+void
+hl_highlight_resize(Evas_Object *hl,
+                    Evas_Coord w,
+                    Evas_Coord h)
+{
+   if (!hl) return;
+
+   Highlight *highlight = evas_object_smart_data_get(hl);
+   evas_object_resize(highlight->border, w, h);
+   _handler_pos_recalc(highlight);
+}
+
+void
+hl_highlight_clicked_unset(Evas_Object *hl)
+{
+   if (!hl) return;
+
+   Highlight *highlight = evas_object_smart_data_get(hl);
+   highlight->clicked = EINA_FALSE;
 }
 
 #undef SIZE

@@ -92,7 +92,6 @@ static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
    App_Data *ap = (App_Data *)data;
-   ui_demospace_unset(ap->demo, ap->project);
    const char *selected = event_info;
    Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
 
@@ -166,7 +165,7 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
    evas_object_smart_callback_add(wd_list, "wl,group,back",
                                        _on_group_back, ap);
   if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
-
+  if (ap->demo) ui_demospace_unset(ap->demo, ap->project);
 }
 
 static void

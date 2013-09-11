@@ -121,12 +121,30 @@ ui_object_highlight_set(Workspace *ws, Part *part);
 /**
  * Move highlight object on workspace.
  *
+ * This function will resize the whole smart object that is highlight.
+ * That means that all handlers will be both resized and moved.
+ * (There will be calculations of size and position of every handler)
+ *
  * @param ws Workspace structure.
  *
  * @ingroup Workspace
  */
 void
 ui_object_highlight_move(Workspace *ws);
+
+/**
+ * Move highlight object on workspace.
+ *
+ * This function will resize the highlight particulary.
+ * That means that all handlers will be moved only.
+ * (There will be calculations of position of every handler)
+ *
+ * @param ws Workspace structure.
+ *
+ * @ingroup Workspace
+ */
+void
+ui_object_highlight_handler_move(Workspace *ws);
 
 /**
  * Hide highlight object.
@@ -183,4 +201,5 @@ ui_ws_zoom_out(Workspace *ws);
  */
 void
 ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible);
+
 #endif /* UI_WORKSPACE_HEADER_H */

@@ -392,7 +392,7 @@ ui_object_highlight_set(Workspace *ws, Part *part)
 
    int x, y, w, h;
    ws->highlight.part = part;
-   ui_groupsapce_part_space_geometry_get(group, part, &x, &y, &w, &h);
+   ui_groupspace_part_space_geometry_get(group, part, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.space_hl, w, h);
    evas_object_move(ws->highlight.space_hl, x, y);
    evas_object_show(ws->highlight.space_hl);
@@ -433,7 +433,36 @@ ui_object_highlight_move(Workspace *ws)
    evas_object_resize(ws->highlight.highlight, w, h);
 
    Group *group = ui_groupspace_group_get(ws->groupspace);
-   ui_groupsapce_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
+   ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
+   evas_object_resize(ws->highlight.space_hl, w, h);
+   evas_object_move(ws->highlight.space_hl, x, y);
+
+   /*
+      TODO: change logic here.
+      Currently, if you move scroller or do something that will change highlight
+      size or position it cause handler to appear.
+      So we set "clicked" state into false and so you cant resize anymore.
+
+      Expected logic: when you move scroller, it will be still "clicked" state
+      (only one handler). And it should not move highlight (when "clicked") same
+      with groupspace after scrolling.
+    */
+   hl_highlight_clicked_unset(ws->highlight.highlight);
+}
+
+void
+ui_object_highlight_handler_move(Workspace *ws)
+{
+   int x, y, w, h;
+
+   if (!ws) return;
+
+   evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
+   hl_highlight_move(ws->highlight.highlight, x, y);
+   hl_highlight_resize(ws->highlight.highlight, w, h);
+
+   Group *group = ui_groupspace_group_get(ws->groupspace);
+   ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.space_hl, w, h);
    evas_object_move(ws->highlight.space_hl, x, y);
 }

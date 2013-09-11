@@ -158,7 +158,7 @@ ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
  * @ingroup Groupspace
  */
 void
-ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
+ui_groupspace_part_space_geometry_get(Group *group, Part *part,
                                int *x, int *y, int *w, int *h);
 /**
  * Set zoom scale for object loaded into groupspace.
