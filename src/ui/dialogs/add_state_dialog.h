@@ -27,7 +27,7 @@
  * Show dialog window for choise part type.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "Evas.h"
 #include "widget_manager.h"
 #include "ui_groupspace.h"

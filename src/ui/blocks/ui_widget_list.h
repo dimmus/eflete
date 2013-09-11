@@ -35,7 +35,7 @@
  * A Widget List used for view a list of widgets styles
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "ui_main_window.h"
 #include "ui_property.h"
 #include "ui_states_list.h"

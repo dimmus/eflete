@@ -26,7 +26,7 @@
  * Funcitons for colorclasses manipulations in the project.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "edit_common.h"
 
 /**

@@ -17,25 +17,26 @@
 * along with this program; If not, see .
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#include "efl_ete.h"
+#include "ui_main_window.h"
 
-#define PACKAGE "@PACKAGE@"
-#define PACKAGE_NAME PACKAGE
-#define VERSION "@PACKAGE_VERSION@"
-#define VERMAJ @VERMAJ@
-#define VERMIN @VERMIN@
-#define VERMIC @VERMIC@
+EAPI_MAIN int
+elm_main()
+{
 
-#define __UNUSED__ __attribute__((unused))
+   if (!app_init()) return -1;
 
-#cmakedefine HAVE_PATH_MAX
-#ifndef HAVE_PATH_MAX
-#define PATH_MAX 4096
-#define BUFF_MAX 512
-#endif
+   #ifdef HAVE_CONFIG_H
+      INFO("%s: %s - Started...", ETE_PACKAGE_NAME, VERSION);
+   #else
+      CRIT("Could not find 'config.h'");
+   #endif
 
-#cmakedefine HAVE_ECORE_X
-
-#cmakedefine ENABLE_NLS
-#endif /* CONFIG_H */
+   App_Data *ap = app_create();
+   ui_main_window_add(ap);
+   elm_run();
+   elm_shutdown();
+   app_shutdown();
+   return 0;
+}
+ELM_MAIN();

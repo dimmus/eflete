@@ -1,27 +1,59 @@
 #swap and compiled files
 *.swp
 *.edj
+*~
 
 #build generated files
 src/config.h
-ui.set
 build/*
-install_manifest.txt
 *.a
+*.o
+src/.deps/
+src/eflete
+tests/.deps/
+tests/addpart_test
+tests/alloc_test
+tests/colorclass_editor_test
+tests/colorclasses_edit_api_test
+tests/edje_compile_test
+tests/font_viewer_dialog_test
+tests/image_editor_test
+tests/logger_test
+tests/modal_window_test
+tests/notify_test
+tests/project_manager_test
+tests/settings_test
+tests/style_editor_test
+tests/ui_block_test
+tests/ui_groupspace_test
+tests/ui_highlight_test
+tests/ui_main_window_test
+tests/ui_ruler_test
+tests/ui_signal_list_test
+tests/ui_state_list_test
+tests/ui_widget_list_test
+tests/ui_workspace_test
+tests/widget_manager_test
 
 #tests
 tests/*xml
 Testing/*
 
-#CMake generated objects
-*CMakeCache.txt
-*CMakeFiles*
+#Autotools generated objects
 *Makefile
-*cmake_install*
-*.cmake
-!cmake/Modules/*.cmake
+!*.am
+*.in
+!src/config.h.in
+aclocal.m4
+autom4te.cache/*
+compile
+configure
+depcomp
+install-sh
+missing
+config.log
+config.status
 
 #documentation
 doc/*
 !doc/Doxyfile.in
-!doc/CMakeLists.txt

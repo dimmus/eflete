@@ -17,32 +17,21 @@
 * along with this program; If not, see .
 */
 
-#ifndef ABOUT_DIALOG_HEADER_H
-#define ABOUT_DIALOG_HEADER_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
-/**
- * @defgroup TextStyle Text Style
- *
- * This widget emits the following signals:
- *
- * TextStyle is a Inwin that contain information
- * of the widgets text styles.
- */
+#define ETE_PACKAGE "@P_NAME@"
+#define ETE_PACKAGE_NAME ETE_PACKAGE
+#define VERSION "@P_VERSION@"
+#define VERMAJ @V_MAJ@
+#define VERMIN @V_MIN@
+#define VERMIC @V_MIC@
 
-#include "efl_ete.h"
-#include "modal_window.h"
+#define __UNUSED__ __attribute__((unused))
 
-/**
- * Show the whole inwin window by using some data
- * about loaded project (edj file)
- *
- * @param parent - the object that will be the parent of this dialog.
- *
- * @return the inwin object that contain style viewer
- *
- * @ingroup TextStyle
- */
-Evas_Object *
-about_window_add(Evas_Object *parent);
+#ifndef HAVE_PATH_MAX
+#define PATH_MAX 4096
+#define BUFF_MAX 512
+#endif
 
-#endif  /* ABOUT_DIALOG_HEADER_H */
+#endif /* CONFIG_H */

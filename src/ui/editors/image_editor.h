@@ -27,7 +27,7 @@
  * all the images used by the project.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "Evas.h"
 #include "modal_window.h"
 #include "widget_manager.h"

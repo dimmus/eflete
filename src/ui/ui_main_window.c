@@ -32,7 +32,7 @@ void
 ui_main_window_del(void)
 {
    ui_panes_settings_save();
-   INFO("%s: %s - Finished...", PACKAGE_NAME, VERSION);
+   INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    elm_exit();
 }
 
@@ -98,7 +98,7 @@ ui_main_window_add(App_Data *ap)
      }
    ap->win = win;
 
-   elm_win_title_set(win, PACKAGE);
+   elm_win_title_set(win, ETE_PACKAGE);
    evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
    evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, _on_window_resize,
                                   NULL);

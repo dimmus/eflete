@@ -17,7 +17,6 @@
 * along with this program; If not, see .
 */
 
-#include "efl_tet.h"
 #include "font_viewer_dialog.h"
 
 static Elm_Gengrid_Item_Class *_itc_font = NULL;

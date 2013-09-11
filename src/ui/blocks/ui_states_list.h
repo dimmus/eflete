@@ -27,7 +27,7 @@
  * A State List used for view list of part states
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "ui_block.h"
 #include "ui_property.h"
 #include <Elementary.h>

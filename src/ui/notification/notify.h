@@ -27,7 +27,7 @@
  * like warning or error's.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 
 /**
  * Show Error Notification with formated message

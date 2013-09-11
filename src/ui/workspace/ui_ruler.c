@@ -18,7 +18,7 @@
 */
 
 #include "ui_ruler.h"
-#include "efl_tet.h"
+#include "efl_ete.h"
 
 struct _UI_Ruler_Data
 {

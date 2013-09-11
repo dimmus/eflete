@@ -30,7 +30,7 @@
  * for futher manipulations with part objects.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include <Evas.h>
 #include <Elementary.h>
 #include <Eina.h>

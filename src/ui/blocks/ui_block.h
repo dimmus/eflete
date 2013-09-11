@@ -27,7 +27,7 @@
  * It item has a title.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 
 /**
  * Add a new block to the parent

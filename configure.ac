@@ -1,0 +1,73 @@
+m4_define([v_maj], [0])
+m4_define([v_min], [1])
+m4_define([v_mic], [8])
+m4_define([p_name], "Edje\ Theme\ Editor")
+m4_define([project_version], [v_maj.v_min.v_mic])
+
+AC_INIT([eflete], [project_version])
+AM_INIT_AUTOMAKE([1.6 dist-bzip2])
+AC_CONFIG_MACRO_DIR([m4])
+AC_PROG_CC
+AM_PATH_CHECK
+AC_PROG_RANLIB
+AM_SILENT_RULES([yes])
+
+AC_SUBST(P_NAME,"p_name")
+AC_SUBST(P_VERSION,"project_version")
+AC_SUBST(V_MAJ,"v_maj")
+AC_SUBST(V_MIN,"v_min")
+AC_SUBST(V_MIC,"v_mic")
+
+
+PKG_PROG_PKG_CONFIG
+
+PKG_CHECK_MODULES([EINA], [eina >= 1.7.8], [have_eina="yes"], [have_eina="no"])
+PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.7.8], [have_elementary="yes"], [have_elementary="no"])
+PKG_CHECK_MODULES([EET], [eet >= 1.7.8], [have_eet="yes"], [have_eet="no"])
+PKG_CHECK_MODULES([EVAS], [evas >= 1.7.8], [have_evas="yes"], [have_evas="no"])
+PKG_CHECK_MODULES([ECORE], [ecore >= 1.7.8], [have_ecore="yes"], [have_ecore="no"])
+PKG_CHECK_MODULES([EIO], [eio >= 1.7.8], [have_eio="yes"], [have_eio="no"])
+PKG_CHECK_MODULES([EDJE], [edje >= 1.7.8], [have_edje="yes"], [have_edje="no"])
+PKG_CHECK_MODULES([EFREET], [efreet >= 1.7.8], [have_efreet="yes"], [have_efreet="no"])
+
+
+
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+
+
+TET_DEFINE=" -DTET_EDJ=\\\"${datadir}/eflete/themes/default/eflete.edj\\\" "
+TET_DEFINE+=" -DTET_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
+TET_DEFINE+=" -DTET_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
+TET_DEFINE+=" -DTET_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
+AC_SUBST([TET_DEFINE])
+
+AC_DEFINE(HAVE_CONFIG_H)
+
+AM_PROG_CC_C_O
+
+AC_CONFIG_FILES([
+Makefile
+src/Makefile
+src/config.h
+data/Makefile
+tests/Makefile
+tests/edj_build/Makefile
+])
+
+echo ""
+echo "Configuration Options Summary:"
+echo ""
+echo "  eina...........: ${have_eina}"
+echo "  eet............: ${have_eet}"
+echo "  evas...........: ${have_evas}"
+echo "  ecore..........: ${have_ecore}"
+echo "  eio............: ${have_eio}"
+echo "  edje...........: ${have_edje}"
+echo "  efreet.........: ${have_efreet}"
+echo "  elementary.....: ${have_elementary}"
+echo ""
+echo "Installation.....: make install (as root if needed, with 'su' or 'sudo')"
+echo "  type...........: ${BUILD_TYPE}"
+echo "  prefix.........: ${prefix}"
+echo ""
+AC_OUTPUT

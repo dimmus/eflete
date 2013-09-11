@@ -29,7 +29,7 @@
  * state list, etc...
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"

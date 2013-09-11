@@ -17,7 +17,7 @@
 * along with this program; If not, see .
 */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "ui_main_window.h"
 
 App_Data *ap = NULL;
@@ -46,28 +46,6 @@ app_free(App_Data *ap)
    ws_free(ap->ws);
    free(ap->demo);
    free(ap);
-}
-
-EAPI_MAIN int
-elm_main()
-{
-
-   if (!app_init()) return -1;
-
-   #ifdef HAVE_CONFIG_H
-      INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
-   #else
-      CRIT("Could not find 'config.h'");
-   #endif
-
-   app_create();
-   ui_main_window_add(ap);
-#ifndef __TESTING__
-   elm_run();
-   elm_shutdown();
-   app_shutdown();
-#endif
-   return 0;
 }
 
 Eina_Bool
@@ -125,6 +103,3 @@ app_shutdown ()
    logger_shutdown();
    ecore_evas_shutdown();
 }
-#ifndef __TESTING__
-ELM_MAIN();
-#endif

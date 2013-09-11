@@ -19,7 +19,7 @@
 
 #include <check.h>
 #include "ui_main_window.h"
-#include "efl_tet.h"
+#include "efl_ete.h"
 
 
 /*  Notify! The methods  ui_part_back(), ui_group_back(), ui_state_select(), ui_part_select(),

@@ -20,7 +20,7 @@
 #ifndef PROGRAM_EDITOR_H
 #define PROGRAM_EDITOR_H
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "modal_window.h"
 
 Evas_Object *

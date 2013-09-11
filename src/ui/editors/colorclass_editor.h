@@ -27,7 +27,7 @@
  * Show color classes, which uses in project.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "Evas.h"
 #include "widget_manager.h"
 #include "modal_window.h"

@@ -18,7 +18,7 @@
 */
 
 #include <ui_workspace.h>
-#include <efl_tet.h>
+#include "efl_ete.h"
 #include "ui_highlight.h"
 
 #define GS_BOX_KEY "gs_box_key"

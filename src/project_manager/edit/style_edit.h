@@ -20,7 +20,7 @@
 #ifndef STYLE_EDIT_H
 #define STYLE_EDIT_H
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "edit_common.h"
 
 /**
