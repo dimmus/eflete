@@ -8,7 +8,7 @@ AC_INIT([eflete], [project_version])
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
-AM_PATH_CHECK
+PKG_CHECK_MODULES([CHECK], [check],[have_check="yes"], [have_check="no"])
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
 
@@ -17,7 +17,6 @@ AC_SUBST(P_VERSION,"project_version")
 AC_SUBST(V_MAJ,"v_maj")
 AC_SUBST(V_MIN,"v_min")
 AC_SUBST(V_MIC,"v_mic")
-
 
 PKG_PROG_PKG_CONFIG
 
@@ -30,10 +29,7 @@ PKG_CHECK_MODULES([EIO], [eio >= 1.7.8], [have_eio="yes"], [have_eio="no"])
 PKG_CHECK_MODULES([EDJE], [edje >= 1.7.8], [have_edje="yes"], [have_edje="no"])
 PKG_CHECK_MODULES([EFREET], [efreet >= 1.7.8], [have_efreet="yes"], [have_efreet="no"])
 
-
-
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
-
 
 TET_DEFINE=" -DTET_EDJ=\\\"${datadir}/eflete/themes/default/eflete.edj\\\" "
 TET_DEFINE+=" -DTET_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
@@ -54,6 +50,8 @@ tests/Makefile
 tests/edj_build/Makefile
 ])
 
+AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "xyes"])
+AC_SUBST([CHECK_FOUND])
 echo ""
 echo "Configuration Options Summary:"
 echo ""
@@ -66,8 +64,19 @@ echo "  edje...........: ${have_edje}"
 echo "  efreet.........: ${have_efreet}"
 echo "  elementary.....: ${have_elementary}"
 echo ""
+echo "Testing:"
+echo "  check..........: ${have_check}"
+AM_COND_IF([CHECK_FOUND],
+[
+echo "  run tests......: make check"
+],
+[
+echo "  run tests......: to run tests you should install check:"
+echo "                   sudo apt-get install check"
+])
+echo ""
 echo "Installation.....: make install (as root if needed, with 'su' or 'sudo')"
-echo "  type...........: ${BUILD_TYPE}"
+echo "  CFLAGS.........: ${CFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""
 AC_OUTPUT

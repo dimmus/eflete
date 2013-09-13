@@ -60,13 +60,12 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
 @EINA_CFLAGS@ \
-@ECORE_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \
 @ECORE_CFLAGS@ \
 @EIO_CFLAGS@ \
-@EDJE_CFLAGS@ \
 @EFREET_CFLAGS@ \
+@EDJE_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @TET_DEFINE@
 
@@ -75,11 +74,10 @@ libete_a_CPPFLAGS = ${eflete_CPPFLAGS}
 eflete_LDADD = \
 libete.a \
 @EINA_LIBS@ \
-@ECORE_LIBS@ \
 @EET_LIBS@ \
 @EVAS_LIBS@ \
 @ECORE_LIBS@ \
 @EIO_LIBS@ \
+@EFREET_LIBS@ \
 @EDJE_LIBS@ \
-@ELEMENTARY_LIBS@ \
-@EFREET_LIBS@
+@ELEMENTARY_LIBS@
