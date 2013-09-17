@@ -6,7 +6,7 @@ EDJE_FLAGS = -v -id $(srcdir) -fd $(srcdir)
 
 check: Makefile
 	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(srcdir)/check.edc \
-	$(builddir)/check.edj
+	$(srcdir)/radio.edc \
+	$(builddir)/radio.edj
 clean-local:
 	rm -f *.edj

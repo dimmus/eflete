@@ -34,7 +34,9 @@
  */
 START_TEST (style_editor_window_add_test_n1)
 {
+   elm_init(0,0);
    style_editor_window_add(NULL, NULL);
+   elm_shutdown();
 }
 END_TEST
 
@@ -63,11 +65,12 @@ START_TEST (style_editor_window_add_test_n2)
    }
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create"
       " window");
-   ui_edc_load_done(app, "first", "./tests/test_style_editor/data/"
+   ui_edc_load_done(app, "first", EDC_PATH
       "naviframe.edc","","","");
-   style_editor_window_add(app->win, app->project);
-   app_shutdown();
+   ck_assert_msg(style_editor_window_add(app->win, app->project) != NULL,
+                                   "Window not added");
    elm_shutdown();
+   app_shutdown();
 }
 END_TEST
 

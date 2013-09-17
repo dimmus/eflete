@@ -600,6 +600,11 @@ __on_style_editor_close(void *data __UNUSED__,
 Evas_Object *
 style_editor_window_add(Evas_Object *parent, Project *project)
 {
+   if ((!parent) || (!project))
+     {
+        ERR("NULL param passed to style_editor_window_add");
+        return NULL;
+     }
    Evas_Object *panes, *panes_h;
    Evas_Object *layout_left, *layout_right;
 

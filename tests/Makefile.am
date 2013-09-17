@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = addpart_test \
-widget_manager_test \
 alloc_test \
 colorclass_editor_test \
 colorclasses_edit_api_test \
@@ -120,7 +119,7 @@ settings_test_CFLAGS = ${FLAGS}
 settings_test_LDADD = ${LD}
 
 style_editor_test_SOURCES = ${srcdir}/test_style_editor/test_style_editor.c
-style_editor_test_CFLAGS = ${FLAGS}
+style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 
 ui_block_test_SOURCES = ${srcdir}/test_ui_block/test_ui_block.c

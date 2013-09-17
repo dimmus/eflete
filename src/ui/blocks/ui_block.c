@@ -112,13 +112,13 @@ ui_block_property_get(App_Data *ap)
 Evas_Object *
 ui_block_graph_vision_get(App_Data *ap)
 {
-   return ui_block_content_get(ap->block.bottom_right);
+   return ui_block_content_get(ap->block.right_top);
 }
 
 Evas_Object *
 ui_block_demo_view_get(App_Data *ap)
 {
-   return ui_block_content_get(ap->block.right_top);
+   return ui_block_content_get(ap->block.bottom_right);
 }
 
 void
