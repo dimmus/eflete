@@ -72,7 +72,7 @@ _on_key_down(void *data __UNUSED__,
 Evas_Object *
 _mw_create(Evas_Object *parent, const char *style_name)
 {
-   Evas_Object *mw, *bt_close, *ic_close;//, *bt_info, *ic_info;
+   Evas_Object *mw, *bt_close, *ic_close;
 
    mw = elm_win_inwin_add(parent);
    elm_object_style_set(mw, style_name);
@@ -96,25 +96,48 @@ _mw_create(Evas_Object *parent, const char *style_name)
 Evas_Object *
 mw_add(Evas_Object *parent)
 {
-   return _mw_create(parent, "custom");;
+   if (!parent)
+     {
+        ERR("Parent evas_object is NULL.");
+        return NULL;
+     }
+
+   return _mw_create(parent, "custom");
 }
 
 Evas_Object *
 mw_about_add(Evas_Object *parent)
 {
+   if (!parent)
+     {
+        ERR("Parent evas_object is NULL.");
+        return NULL;
+     }
+
    return _mw_create(parent, "about_window");
 }
 
 void
 mw_title_set(Evas_Object *object, const char *title)
 {
+   if ((!object) || (!title))
+     {
+        ERR("Object or title is NULL.");
+        return;
+     }
+
    elm_object_part_text_set(object, "elm.text.title", title);
 }
 
 void
 mw_icon_set(Evas_Object *object, Evas_Object *icon)
 {
-   if ((!object) || (!icon)) return;
+   if ((!object) || (!icon))
+     {
+        ERR("Evas_object or icon is NULL.");
+        return;
+     }
+
    elm_layout_content_set(object, "elm.swallow.icon", icon);
 }
 
@@ -123,7 +146,11 @@ mw_info_text_set(Evas_Object *object, const char *text)
 {
    Evas_Object *ic_info, *bt_info;
 
-   if ((!object) || (!text)) return;
+   if ((!object) || (!text))
+     {
+        ERR("Evas_object or text is NULL.");
+        return;
+     }
 
    bt_info = elm_button_add(object);
    evas_object_size_hint_align_set(bt_info, EVAS_HINT_FILL, EVAS_HINT_FILL);

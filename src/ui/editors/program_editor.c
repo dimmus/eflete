@@ -562,7 +562,7 @@ _on_editor_save(void *data,
 }
 
 static void
-_on_editor_cansel(void *data __UNUSED__,
+_on_editor_cancel(void *data __UNUSED__,
                   Evas_Object *obj __UNUSED__,
                   void *ei __UNUSED__)
 {
@@ -752,7 +752,7 @@ program_editor_window_add(Evas_Object *parent, Group *group)
 
    bt = elm_button_add(bt_box);
    elm_object_text_set(bt, "Cancel");
-   evas_object_smart_callback_add(bt, "clicked", _on_editor_cansel, NULL);
+   evas_object_smart_callback_add(bt, "clicked", _on_editor_cancel, NULL);
    evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
 

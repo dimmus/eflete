@@ -58,7 +58,7 @@ static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
 
 static void
-_on_popup_bt_cansel(void *data,
+_on_popup_bt_cancel(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei __UNUSED__)
 {
@@ -136,7 +136,7 @@ _on_bt_style_add(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *popup, *box, *bt_ok, *bt_cansel;
+   Evas_Object *popup, *box, *bt_ok, *bt_cancel;
    Evas_Object *st_box, *st_label, *st_entry;
    Evas_Object *tag_box, *tag_label, *tag_entry;
 
@@ -199,11 +199,11 @@ _on_bt_style_add(void *data __UNUSED__,
    elm_object_part_content_set(popup, "button1", bt_ok);
    evas_object_show(bt_ok);
 
-   bt_cansel = elm_button_add(popup);
-   elm_object_text_set(bt_cansel, "Cancel");
-   evas_object_smart_callback_add(bt_cansel, "clicked", _on_popup_bt_cansel, popup);
-   elm_object_part_content_set(popup, "button2", bt_cansel);
-   evas_object_show(bt_cansel);
+   bt_cancel = elm_button_add(popup);
+   elm_object_text_set(bt_cancel, "Cancel");
+   evas_object_smart_callback_add(bt_cancel, "clicked", _on_popup_bt_cancel, popup);
+   elm_object_part_content_set(popup, "button2", bt_cancel);
+   evas_object_show(bt_cancel);
 
    st_entries.style_name = st_entry;
    st_entries.default_tags = tag_entry;
@@ -216,7 +216,7 @@ _on_bt_tag_add(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *popup, *box, *bt_ok, *bt_cansel, *style_label;
+   Evas_Object *popup, *box, *bt_ok, *bt_cancel, *style_label;
    Evas_Object *tag_box, *tag_label, *tag_entry;
    Evas_Object *value_box, *value_label, *value_entry;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(window.glist);
@@ -309,11 +309,11 @@ _on_bt_tag_add(void *data __UNUSED__,
    elm_object_part_content_set(popup, "button1", bt_ok);
    evas_object_show(bt_ok);
 
-   bt_cansel = elm_button_add(popup);
-   elm_object_text_set(bt_cansel, "Cancel");
-   evas_object_smart_callback_add(bt_cansel, "clicked", _on_popup_bt_cansel, popup);
-   elm_object_part_content_set(popup, "button2", bt_cansel);
-   evas_object_show(bt_cansel);
+   bt_cancel = elm_button_add(popup);
+   elm_object_text_set(bt_cancel, "Cancel");
+   evas_object_smart_callback_add(bt_cancel, "clicked", _on_popup_bt_cancel, popup);
+   elm_object_part_content_set(popup, "button2", bt_cancel);
+   evas_object_show(bt_cancel);
 
    st_tag_entries.tag_name = tag_entry;
    st_tag_entries.tag_value = value_entry;

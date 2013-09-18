@@ -18,6 +18,7 @@
 */
 
 #include "save_file_dialog.h"
+#include "modal_window.h"
 
 struct _cb_data
 {
@@ -124,6 +125,17 @@ _on_edj_done(void *data,
      }
 }
 
+static void
+__on_mw_fileselector_close(void *data,
+                       Evas *e __UNUSED__,
+                       Evas_Object *obj,
+                       void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ap->inwin = NULL;
+   evas_object_smart_callback_call(obj, "done", NULL);
+}
+
 Eina_Bool
 save_as_edj_file(App_Data *ap)
 {
@@ -132,7 +144,11 @@ save_as_edj_file(App_Data *ap)
    if ((!ap) || (!ap->win) || (!ap->project)) return EINA_FALSE;
 
    if (!ap->inwin)
-     ap->inwin = elm_win_inwin_add(ap->win);
+     ap->inwin = mw_add(ap->win);
+   mw_title_set(ap->inwin, "Save as EDJ file dialog");
+   evas_object_event_callback_add(ap->inwin, EVAS_CALLBACK_FREE,
+                                  __on_mw_fileselector_close, ap);
+   evas_object_focus_set(ap->inwin, EINA_TRUE);
 
    fs = elm_fileselector_add(ap->inwin);
 
@@ -158,8 +174,6 @@ Eina_Bool
 save_as_edc_file(App_Data *ap)
 {
    if ((!ap) || (!ap->win)) return EINA_FALSE;
-
-
 
    return EINA_TRUE;
 }
