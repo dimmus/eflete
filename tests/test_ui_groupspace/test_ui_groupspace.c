@@ -28,21 +28,19 @@
  *
  * @procedure
  * @step 1 Create Parent object
- * @step 2 Add object to tests functions.
+ * @step 2 Add groupspace.
  *
- * @passcondition: EINA_TRUE should returned from function
+ * @passcondition: not NULL returned
  * @}
  */
-START_TEST (groupspace_add_test1)
+START_TEST (groupspace_add_test_p)
 {
    elm_init(0,0);
    Evas_Object *par, *gs;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    gs = ui_groupspace_add(par);
    if (!gs)
-   {
       ck_abort_msg("failure(groupspace_add): cannot return pointer to groupspace Evas_Object");
-   }
    elm_shutdown();
 }
 END_TEST
@@ -55,24 +53,21 @@ END_TEST
  * @procedure
  * @step 1 Call function with NULL parameter.
  *
- * @passcondition: EINA_FALSE should returned from function
+ * @passcondition: NULL should be returned
  * @}
  */
-START_TEST (groupspace_add_test2)
+START_TEST (groupspace_add_test_n)
 {
    elm_init(0,0);
-   Evas_Object *res, *par = NULL;
-   res = ui_groupspace_add(par);
+   Evas_Object *res = ui_groupspace_add(NULL);
    if (res)
-   {
-      ck_abort_msg("failure: return NULL pointer to groupspace");
-   }
+      ck_abort_msg("failure: not NULL pointer returned");
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup groupspase_set_test
+ * @addtogroup groupspace_set_test
  * @{
  * @objective Positive test case:
  *
@@ -80,36 +75,73 @@ END_TEST
  * @step 1 Create pointer to workspace
  * @step 2 Add Project object
  * @step 3 Create Group object
- * @step 4 Add parameters to set() function
- * @step 5 Add parameters to update() function
- * @step 6 Add parameters to unset() function
+ * @step 4 Call set() function
+ * @step 5 Call update() function
+ * @step 6 Call unset() function
  * @param part The name of a part.
  *
- * @passcondition: not NULL object should returned from function
+ * @passcondition: No crash occurs
  * @}
  */
-START_TEST (groupspace_set_up_unset_test)
+START_TEST (groupspace_set_up_unset_test_p)
 {
    elm_init(0,0);
    Evas_Object *par, *layout;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout = elm_layout_add(par);
    Workspace *ws = ws_add(layout);
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_ui_groupspace/data/check.edj", "elm/check/base/defaul");
-   const char *grname = "defaul";
-   const char *full_grname = "elm/check/base/defaul";
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
    char *name, *path;
-   name = "./test_ui_groupspace/data";
-   path = "./test_ui_groupspace/data/check.edj";
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
    Project *pro = pm_open_project_edj(name, path);
-   Evas_Object *gs = ui_groupspace_add(par);
+   ws->groupspace = ui_groupspace_add(par);
    ui_groupspace_set(ws, pro, group);
-   ui_groupspace_update(gs);
-   ui_groupspace_unset(gs);
+   ui_groupspace_update(ws->groupspace);
+   ui_groupspace_unset(ws->groupspace);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupspace_set_up_unset_test
+ * @{
+ * @objective Negative test case:
+ *
+ * @procedure
+ * @step 1 Call functions with NULL parameter.
+ *
+ * @passcondition: No crash occurs
+ * @}
+ */
+START_TEST (groupspace_set_up_unset_test_n)
+{
+   elm_init(0,0);
+   Evas_Object *par, *layout;
+   par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(par);
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
+   Group *group = wm_group_add(grname, full_grname);
+   group->obj = obj;
+   char *name, *path;
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
+   Project *pro = pm_open_project_edj(name, path);
+   ws->groupspace = ui_groupspace_add(par);
+   ui_groupspace_set(NULL, pro, group);
+   ui_groupspace_set(ws, NULL, group);
+   ui_groupspace_set(ws, pro, NULL);
+   ui_groupspace_update(NULL);
+   ui_groupspace_unset(NULL);
    elm_shutdown();
 }
 END_TEST
@@ -122,47 +154,88 @@ END_TEST
  * @procedure
  * @step 1 Create Parent object
  * @step 2 Create Part object
- * @step 3 Add object to function
+ * @step 3 Call function
  *
- * @passcondition: EINA_TRUE should returned from function
+ * @passcondition: No crash occurs
  * @}
  */
-START_TEST (part_update_test)
+START_TEST (part_state_update_test_p)
 {
    elm_init(0,0);
-   Evas_Object *par, *gs;
+   Evas_Object *par, *layout;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   gs = ui_groupspace_add(par);
-   Evas_Object *obj, *win;
-   elm_theme_extension_add(NULL, "./test_ui_groupspace/data/check.edj");
-   win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
-   obj = elm_check_add(win);
-   const char *name, *path, *pname = "defaul";
-   Part *part = wm_part_add(obj, pname);
-   name = "./test_ui_groupspace/data/";
-   path = "./test_ui_groupspace/data/default.edj";
+   layout = elm_layout_add(par);
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
+   Group *group = wm_group_add(grname, full_grname);
+   group->obj = obj;
+   char *name, *path;
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
    Project *pro = pm_open_project_edj(name, path);
-   Evas_Object *list = ui_widget_list_add(par);
-   pro->widgets = wm_widget_list_new(pro->swapfile);
-   ui_widget_list_data_set(list, pro);
-   ui_groupspace_part_state_update(gs, part);
+   ws->groupspace = ui_groupspace_add(par);
+   ui_groupspace_set(ws, pro, group);
+   Part *part = wm_part_add(obj, "bg");
+   ui_groupspace_part_state_update(ws->groupspace, part);
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup groupspase_separate_test
+ * @addtogroup groupspace_part_update_test
+ * @{
+ * @objective Negative test case:
+ *
+ * @procedure
+ * @step 1 Create Parent object
+ * @step 2 Create Part object
+ * @step 3 Call function with NULL params
+ *
+ * @passcondition: No crash occurs
+ * @}
+ */
+START_TEST (part_state_update_test_n)
+{
+   elm_init(0,0);
+   Evas_Object *par, *layout;
+   par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(par);
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
+   Group *group = wm_group_add(grname, full_grname);
+   group->obj = obj;
+   char *name, *path;
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
+   Project *pro = pm_open_project_edj(name, path);
+   ws->groupspace = ui_groupspace_add(par);
+   ui_groupspace_set(ws, pro, group);
+   Part *part = wm_part_add(obj, "bg");
+   ui_groupspace_part_state_update(ws->groupspace, NULL);
+   ui_groupspace_part_state_update(NULL, part);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupspace_separate_test
  * @{
  * @objective Positive test case:
  *
  * @procedure
  * @step 1 Create pointer to workspace
- * @step 2 Add ws to function.
+ * @step 2 Call function.
  *
- * @passcondition: not NULL object should returned from function
+ * @passcondition: No crash occurs
  * @}
  */
-START_TEST (separate_test)
+START_TEST (separate_test_p)
 {
    elm_init(0,0);
    Evas_Object *par, *layout;
@@ -175,42 +248,58 @@ START_TEST (separate_test)
 END_TEST
 
 /**
- * @addtogroup groupspase_separate_test
+ * @addtogroup groupspace_separate_test
+ * @{
+ * @objective Negative test case:
+ *
+ * @procedure
+ * @step 1 Call function with NULL
+ *
+ * @passcondition: No crash occurs
+ * @}
+ */
+START_TEST (separate_test_n)
+{
+   elm_init(0,0);
+   ui_groupspace_separate(NULL);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupspace_group_get_test
  * @{
  * @objective Positive test case:
  *
  * @procedure
- * @step 1 Create pointer to workspace
- * @step 2 Add ws to function.
+ * @step 1 Prepare groupspace
+ * @step 2 Call function.
  *
- * @passcondition: not NULL object should returned from function
+ * @passcondition: not NULL object should be returned from function
  * @}
  */
-START_TEST (group_get_test1)
+START_TEST (group_get_test_p)
 {
    elm_init(0,0);
-   Evas_Object *par, *layout, *gs;
+   Evas_Object *par, *layout;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout = elm_layout_add(par);
-   gs = ui_groupspace_add(layout);
-   Workspace *ws = ws_add(gs);
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_ui_groupspace/data/check.edj", "elm/check/base/defaul");
-   const char *grname = "defaul";
-   const char *full_grname = "elm/check/base/defaul";
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
    char *name, *path;
-   name = "./test_ui_groupspace/data";
-   path = "./test_ui_groupspace/data/check.edj";
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
    Project *pro = pm_open_project_edj(name, path);
+   ws->groupspace = ui_groupspace_add(par);
    ui_groupspace_set(ws, pro, group);
-   Group *gr = ui_groupspace_group_get(gs);
+   Group *gr = ui_groupspace_group_get(ws->groupspace);
    if (!gr)
-   {
       ck_abort_msg("failure: cannot return group structure pointer");
-   }
    elm_shutdown();
 }
 END_TEST
@@ -221,20 +310,17 @@ END_TEST
  * @objective negative test case:
  *
  * @procedure
- * @step 1 call function with null parameter.
+ * @step 1 call function with NULL parameter.
  *
- * @passcondition: eina_false should returned from function
+ * @passcondition: NULL should be returned from function
  * @}
  */
-START_TEST (group_get_test2)
+START_TEST (group_get_test_n)
 {
    elm_init(0,0);
-   Evas_Object *gs =  NULL;
-   Group *group = ui_groupspace_group_get(gs);
+   Group *group = ui_groupspace_group_get(NULL);
    if (group)
-   {
-      ck_abort_msg("failure: return null pointer to groupspace");
-   }
+      ck_abort_msg("failure: not NULL pointer returned");
    elm_shutdown();
 }
 END_TEST
@@ -247,30 +333,37 @@ END_TEST
  * @procedure
  * @step 1 Create pointer to groupspace layout
  * @step 2 Create Part Object
- * @step 2 Add parameters to function.
+ * @step 2 Call function.
  *
- * @passcondition: not NULL object should returned from function
+ * @passcondition: EINA_TRUE returned from function
  * @}
  */
-START_TEST (part_state_test1)
+START_TEST (part_state_test_p)
 {
    elm_init(0,0);
-   Evas_Object *obj, *win;
-   elm_theme_extension_add(NULL, "./test_ui_groupspace/data/check.edj");
-   win = elm_win_add(NULL, "check", ELM_WIN_BASIC);
-   obj = elm_check_add(win);
-   const char *pname = "defaul";
-   Part *part = wm_part_add(obj, pname);
-   Evas_Object *par, *layout, *gs;
+   Evas_Object *par, *layout;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout = elm_layout_add(par);
-   gs = ui_groupspace_add(layout);
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
+   Group *group = wm_group_add(grname, full_grname);
+   group->obj = obj;
+   char *name, *path;
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
+   Project *pro = pm_open_project_edj(name, path);
+   ws->groupspace = ui_groupspace_add(par);
+   ui_groupspace_set(ws, pro, group);
+
+   Part *part = wm_part_add(obj, "bg");
+
    char *stname = "new_state";
-   double stvalue = 3.6;
-   if(!ui_groupspace_part_state_add(gs, part, stname, stvalue))
-   {
+   double stvalue = 0.0;
+   if (!ui_groupspace_part_state_add(ws->groupspace, part, stname, stvalue))
       ck_abort_msg("failure: cannot add state for part");
-   }
    elm_shutdown();
 }
 END_TEST
@@ -281,20 +374,37 @@ END_TEST
  * @objective negative test case:
  *
  * @procedure
- * @step 1 call function with null parameter.
+ * @step 1 call function with NULL parameter.
  *
- * @passcondition: eina_false should returned from function
+ * @passcondition: EINA_FALSE should returned from function
  * @}
  */
-START_TEST (part_state_test2)
+START_TEST (part_state_test_n)
 {
    elm_init(0,0);
-   Evas_Object *gs =  NULL;
-   Part *part = NULL;
-   double value = 0;
-   if (ui_groupspace_part_state_add(gs, part, NULL, value))
+   Evas_Object *par, *layout;
+   par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   layout = elm_layout_add(par);
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
+   Group *group = wm_group_add(grname, full_grname);
+   group->obj = obj;
+   char *name, *path;
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
+   Project *pro = pm_open_project_edj(name, path);
+   ws->groupspace = ui_groupspace_add(par);
+   ui_groupspace_set(ws, pro, group);
+
+   Part *part = wm_part_add(obj, "bg");
+   if ((ui_groupspace_part_state_add(ws->groupspace, part, NULL, 0)) ||
+       (ui_groupspace_part_state_add(ws->groupspace, NULL, "", 0)) ||
+       (ui_groupspace_part_state_add(NULL, part, "", 0)))
    {
-      ck_abort_msg("failure: return state for NULL part");
+      ck_abort_msg("failure: returned EINA_TRUE for incorrect params set");
    }
    elm_shutdown();
 }
@@ -308,35 +418,55 @@ END_TEST
  * @procedure
  * @step 1 Create pointer to groupspace layout
  * @step 2 Create Part Object
- * @step 2 Add parameters to function.
+ * @step 3 Call function.
  *
  * @passcondition: not NULL object should returned from function
  * @}
  */
-START_TEST (box_get_test)
+START_TEST (box_get_test_p)
 {
    elm_init(0,0);
-   Evas_Object *par, *layout, *gs;
+   Evas_Object *par, *layout;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    layout = elm_layout_add(par);
-   gs = ui_groupspace_add(layout);
-   Workspace *ws = ws_add(gs);
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_ui_groupspace/data/check.edj", "elm/check/base/defaul");
-   const char *grname = "defaul";
-   const char *full_grname = "elm/check/base/defaul";
+   Workspace *ws = ws_add(layout);
+   Evas_Object *obj = edje_edit_object_add(evas_object_evas_get(layout));
+   edje_object_file_set(obj, "./edje_build/radio.edj", "elm/radio/base/def");
+   const char *grname = "def";
+   const char *full_grname = "elm/radio/base/def";
    Group *group = wm_group_add(grname, full_grname);
    group->obj = obj;
    char *name, *path;
-   name = "./test_ui_groupspace/data";
-   path = "./test_ui_groupspace/data/check.edj";
+   name = "./ebje_build/radio.edj";
+   path = "./ebje_build";
    Project *pro = pm_open_project_edj(name, path);
+   ws->groupspace = ui_groupspace_add(par);
    ui_groupspace_set(ws, pro, group);
-   ui_groupspace_box_get(gs);
+
+   ck_assert_msg(ui_groupspace_box_get(ws->groupspace), "NULL returned");
    elm_shutdown();
 }
 END_TEST
+
+/**
+ * @addtogroup box_get_test
+ * @{
+ * @objective Negaitive test case:
+ *
+ * @procedure
+ * @step 1 Call function with NULL parameter
+ *
+ * @passcondition: NULL object should returned from function
+ * @}
+ */
+START_TEST (box_get_test_n)
+{
+   elm_init(0,0);
+   ck_assert_msg(!ui_groupspace_box_get(NULL),"Not NULL returned");
+   elm_shutdown();
+}
+END_TEST
+
 
 /* @addtogroup test_suite
  * @{
@@ -354,16 +484,20 @@ END_TEST
 Suite* test_suite (void) {
    Suite *suite = suite_create("ui_groupspace_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, groupspace_add_test1);
-   tcase_add_test(tcase, groupspace_add_test2);
-   tcase_add_test(tcase, groupspace_set_up_unset_test);
-   tcase_add_test(tcase, part_update_test);
-   tcase_add_test(tcase, separate_test);
-   tcase_add_test(tcase, group_get_test1);
-   tcase_add_test(tcase, group_get_test2);
-   tcase_add_test(tcase, part_state_test1);
-   tcase_add_test(tcase, part_state_test2);
-   tcase_add_test(tcase, box_get_test);
+   tcase_add_test(tcase, groupspace_add_test_p);
+   tcase_add_test(tcase, groupspace_add_test_n);
+   tcase_add_test(tcase, groupspace_set_up_unset_test_p);
+   tcase_add_test(tcase, groupspace_set_up_unset_test_n);
+   tcase_add_test(tcase, part_state_update_test_p);
+   tcase_add_test(tcase, part_state_update_test_n);
+   tcase_add_test(tcase, separate_test_p);
+   tcase_add_test(tcase, separate_test_n);
+   tcase_add_test(tcase, group_get_test_p);
+   tcase_add_test(tcase, group_get_test_n);
+   tcase_add_test(tcase, part_state_test_p);
+   tcase_add_test(tcase, part_state_test_n);
+   tcase_add_test(tcase, box_get_test_p);
+   tcase_add_test(tcase, box_get_test_n);
    suite_add_tcase(suite, tcase);
    return suite;
 }
