@@ -460,7 +460,7 @@ _layer_up_change(void *data,
    Evas_Object *edje_part = NULL;
    Part *part = (Part *)event_info;
 
-   if(!edje_edit_part_restack_below(group->obj, part->name))
+   if (!edje_edit_part_restack_below(group->obj, part->name))
      {
         NOTIFY_INFO(3, "Failed part[%s] restack above", part->name);
         return;
@@ -1036,6 +1036,12 @@ Eina_Bool
 ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
                              char *state_name, double state_value)
 {
+   if ((!groupspace) || (!part) || (!state_name))
+     {
+        ERR("NULL pointer passed to function");
+        return EINA_FALSE;
+      }
+
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
    if (!edje_edit_state_add(group->obj, part->name, state_name, state_value))
      {
@@ -1055,6 +1061,12 @@ void
 ui_groupspace_part_state_update(Evas_Object *groupspace,
                                 Part *part)
 {
+   if ((!groupspace) || (!part))
+     {
+        ERR("NULL pointer passed to function");
+        return;
+      }
+
    Group *group =  evas_object_data_get(groupspace, GS_GROUP_KEY);
    Project *project = evas_object_data_get(groupspace, GS_PROJECT_KEY);
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
@@ -1082,6 +1094,11 @@ ui_groupspace_part_state_update(Evas_Object *groupspace,
 Evas_Object *
 ui_groupspace_add(Evas_Object *parent)
 {
+   if (!parent)
+     {
+        ERR("Parent is NULL");
+        return NULL;
+      }
    Evas_Object *_groupspace = NULL;
    Evas_Object *_box = NULL;
    _groupspace = elm_layout_add(parent);
@@ -1099,6 +1116,11 @@ ui_groupspace_add(Evas_Object *parent)
 void
 ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 {
+    if ((!ws) || (!project) || (!group))
+     {
+        ERR("NULL pointer passed to function");
+        return;
+      }
    const Evas_Object *part_bottom = edje_object_part_object_get(
       elm_layout_edje_get(ws->groupspace), "bottom_pad");
    const Evas_Object *part_top = edje_object_part_object_get(
@@ -1107,11 +1129,20 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    double dx, dy;
    Evas_Object *_box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
 
-   if (group)
+   if (group->obj)
      {
         elm_object_part_content_set(ws->groupspace, "edje_group", group->obj);
         evas_object_box_layout_set(_box, _main_box_layout, group->obj, NULL);
         evas_object_show(group->obj);
+        evas_object_smart_callback_add(group->obj, "gs,layer,up", _layer_up_change, ws);
+        evas_object_smart_callback_add(group->obj, "gs,layer,down", _layer_down_change, ws);
+        evas_object_smart_callback_add(group->obj, "gs,part,delete", _part_delete, ws);
+        evas_object_smart_callback_add(group->obj, "gs,part,add", _part_add, ws);
+        evas_object_smart_callback_add(group->obj, "gs,state,add", _state_add, ws);
+        evas_object_smart_callback_add(group->obj, "group,update", _group_update, ws);
+
+        evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
+                                  _gs_resize_cb, ws);
      }
    else
      WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
@@ -1143,13 +1174,6 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 
    evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
                                   _gs_mouse_move_cb, ws);
-   evas_object_smart_callback_add(group->obj, "gs,layer,up", _layer_up_change, ws);
-   evas_object_smart_callback_add(group->obj, "gs,layer,down", _layer_down_change, ws);
-   evas_object_smart_callback_add(group->obj, "gs,part,delete", _part_delete, ws);
-   evas_object_smart_callback_add(group->obj, "gs,part,add", _part_add, ws);
-   evas_object_smart_callback_add(group->obj, "gs,state,add", _state_add, ws);
-   evas_object_smart_callback_add(group->obj, "group,update", _group_update, ws);
-
    evas_object_smart_callback_add(ws->groupspace, "gs,rect,add", _new_rect_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,img,add", _new_img_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,txt,add", _new_txt_add, ws);
@@ -1158,9 +1182,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
    evas_object_smart_callback_add(ws->groupspace, "gs,spacer,add", _new_spacer_add, ws);
    evas_object_smart_callback_add(ws->groupspace, "gs,new_state,add", _new_state_add, ws);
 
-   evas_object_event_callback_add(group->obj, EVAS_CALLBACK_RESIZE,
-                                  _gs_resize_cb, ws);
-   evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
+  evas_object_data_set(ws->groupspace, GS_GROUP_KEY, group);
    evas_object_data_set(ws->groupspace, GS_WS_KEY, ws);
    evas_object_data_set(ws->groupspace, GS_PROJECT_KEY, project);
 
@@ -1173,6 +1195,12 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group)
 void
 ui_groupspace_update(Evas_Object *obj)
 {
+   if (!obj)
+     {
+        ERR("NULL pointer passed to function");
+        return;
+     }
+
    Workspace *ws = evas_object_data_get(obj, GS_WS_KEY);
    Group *group =  evas_object_data_get(obj, GS_GROUP_KEY);
    Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
@@ -1200,7 +1228,7 @@ ui_groupspace_unset(Evas_Object *obj)
    box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    group = evas_object_data_del(ws->groupspace, GS_GROUP_KEY);
 
-   if (group)
+   if ((group) && (group->obj))
      {
         evas_object_smart_callback_del(group->obj, "gs,layer,up",
                                        _layer_up_change);
@@ -1243,6 +1271,12 @@ ui_groupspace_unset(Evas_Object *obj)
 void
 ui_groupspace_separate(Workspace *ws)
 {
+    if (!ws)
+     {
+        ERR("NULL pointer passed to function");
+        return;
+     }
+
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
    if ((!group) || (!box)) return;
