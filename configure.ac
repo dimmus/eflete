@@ -5,10 +5,10 @@ m4_define([p_name], "Edje\ Theme\ Editor")
 m4_define([project_version], [v_maj.v_min.v_mic])
 
 AC_INIT([eflete], [project_version])
-AM_INIT_AUTOMAKE([1.6 dist-bzip2])
+AM_INIT_AUTOMAKE([1.11 dist-bzip2 subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
-PKG_CHECK_MODULES([CHECK], [check],[have_check="yes"], [have_check="no"])
+PKG_CHECK_MODULES([CHECK], [check], [have_check="yes"], [have_check="no"])
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
 
@@ -29,6 +29,8 @@ PKG_CHECK_MODULES([EIO], [eio >= 1.7.8], [have_eio="yes"], [have_eio="no"])
 PKG_CHECK_MODULES([EDJE], [edje >= 1.7.8], [have_edje="yes"], [have_edje="no"])
 PKG_CHECK_MODULES([EFREET], [efreet >= 1.7.8], [have_efreet="yes"], [have_efreet="no"])
 
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 TET_DEFINE=" -DTET_EDJ=\\\"${datadir}/eflete/themes/default/eflete.edj\\\" "
@@ -41,17 +43,26 @@ AC_DEFINE(HAVE_CONFIG_H)
 
 AM_PROG_CC_C_O
 
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile]) ])
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/config.h
 data/Makefile
+data/eflete.desktop
 tests/Makefile
 tests/edj_build/Makefile
+doc/Makefile
 ])
 
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "xyes"])
 AC_SUBST([CHECK_FOUND])
+AM_CONDITIONAL([PREFIX], [test "x$prefix" = "xNONE"])
+AM_COND_IF([PREFIX], [], [
+AC_SUBST([PREFIX],"${prefix}/bin/")
+])
+
 echo ""
 echo "Configuration Options Summary:"
 echo ""
@@ -75,7 +86,7 @@ echo "  run tests......: to run tests you should install check:"
 echo "                   sudo apt-get install check"
 ])
 echo ""
-echo "Installation.....: make install (as root if needed, with 'su' or 'sudo')"
+echo "Installation.....: sudo make install"
 echo "  CFLAGS.........: ${CFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""

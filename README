@@ -23,8 +23,7 @@ Build
    cd build
    autoreconf -f -i ..
    ../configure
-(as root unless you are installing in your users directories):
-   make install
+   sudo make install
 
 To install program to specified directory use --prefix option on configure step:
 

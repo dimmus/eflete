@@ -10,8 +10,13 @@ files_DATA = eflete.edj template.edj
 
 imagesdir = $(datadir)/eflete/images
 images_DATA = \
-   ${srcdir}/images/*.png \
-   ${srcdir}/images/*.svg
+   ${srcdir}/images/*.png
+
+shortcutdir = /usr/local/share/applications
+shortcut_DATA = eflete.desktop
+
+icondir = /usr/local/share/icons
+icon_DATA = ${srcdir}/images/eflete.svg
 
 eflete.edj: Makefile
 	$(EDJE_CC) $(EDJE_FLAGS) \

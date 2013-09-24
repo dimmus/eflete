@@ -120,6 +120,12 @@ ui_main_window_add(App_Data *ap)
    if (!ui_menu_add(ap)) ERR("Failrue add menu on main window.");
    if (!ui_panes_add(ap)) ERR("Failrue add panes on main window.");
 
+   if (!ecore_file_mkpath(TET_SETT_PATH))
+     {
+        ERR("Couldn't create settings directory");
+        NOTIFY_ERROR("Couldn't create settings directory");
+     }
+
    ui_panes_settings_load(win);
    ap->ws = ws_add(ap->block.canvas);
    ap->demo = ui_demospace_add(ap->block.bottom_right);
