@@ -148,6 +148,7 @@ _on_btn_apply(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
 {
+   if (!window.current_ccl) return;
    colorclasses_edit_colors_set(window.pr,window.current_ccl->name,
                                 window.current_ccl->r1,window.current_ccl->b1,
                                 window.current_ccl->b1,window.current_ccl->a1,
