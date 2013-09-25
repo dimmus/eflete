@@ -224,11 +224,18 @@ __on_##sub##_##value##_change(void *data, \
                               Evas_Object *obj, \
                               void *ei __UNUSED__) \
 { \
-   int r, g, b, a; \
+   int r, g, b, a, tok_elm; \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
-   char **c = eina_str_split(value, " ", 4); \
+   char **c = eina_str_split_full (value, " ", 4, &tok_elm); \
+   if (tok_elm < 4) \
+    { \
+       free(c[0]); \
+       free(c); \
+       NOTIFY_ERROR ("Please input correct color data:\n r g b a") \
+       return; \
+    } \
    Evas_Object *box, *image; \
    Eina_List *nodes = NULL; \
    r = atoi(c[0]); g = atoi(c[1]); b = atoi(c[2]); a = atoi(c[3]); \
