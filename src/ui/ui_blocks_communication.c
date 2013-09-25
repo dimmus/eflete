@@ -388,10 +388,18 @@ ui_part_state_delete(App_Data *ap)
    Part *part = NULL;
    Group *group = NULL;
    Elm_Object_Item *eoi = NULL;
-   char *full_state_name = NULL;
-   char *state_name = NULL;
-   char *state_value = NULL;
+   char **arr = NULL;
+   Eina_Stringshare *full_state_name = NULL;
+   Eina_Stringshare *state_name = NULL;
+   Eina_Stringshare *state_value = NULL;
    double value = 0;
+
+#define CLEAR_STRINGS \
+        eina_stringshare_del(state_name); \
+        eina_stringshare_del(state_value); \
+        eina_stringshare_del(full_state_name); \
+        free(arr[0]); \
+        free(arr);
 
    if (!ap) return EINA_FALSE;
 
@@ -406,11 +414,12 @@ ui_part_state_delete(App_Data *ap)
         return EINA_FALSE;
      }
 
-   full_state_name = elm_object_item_data_get(eoi);
+   full_state_name = eina_stringshare_add(elm_object_item_data_get(eoi));
    if (!full_state_name) return EINA_FALSE;
 
-   state_name = strdup(strtok(full_state_name, " "));
-   state_value = strdup(strtok(NULL, " "));
+   arr = eina_str_split(full_state_name, " ", 3);
+   state_name = eina_stringshare_add(arr[0]);
+   state_value = eina_stringshare_add(arr[1]);
    value = atof(state_value);
 
    if (!edje_edit_state_del(group->obj, part->name, state_name, value))
@@ -421,14 +430,13 @@ ui_part_state_delete(App_Data *ap)
           }
         else
           NOTIFY_WARNING("Failed delete state \n[%s %3.2f]", state_name, value);
-        free(state_name);
-        free(state_value);
+        CLEAR_STRINGS;
         return EINA_FALSE;
      }
   elm_object_item_del(eoi);
   elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), EINA_TRUE);
-  free(state_name);
-  free(state_value);
+  CLEAR_STRINGS;
+#undef CLEAR_STRINGS
   return EINA_TRUE;
 }
 
