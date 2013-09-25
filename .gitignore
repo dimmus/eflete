@@ -44,6 +44,7 @@ Testing/*
 !*.am
 *.in
 !src/config.h.in
+!data/eflete.desktop.in
 aclocal.m4
 autom4te.cache/*
 compile
@@ -53,7 +54,9 @@ install-sh
 missing
 config.log
 config.status
+test-driver
 
 #documentation
 doc/*
 !doc/Doxyfile.in
+!doc/Makefile.am
