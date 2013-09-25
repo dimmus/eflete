@@ -36,6 +36,8 @@ ui_part_back(App_Data *ap)
    prop = ui_block_property_get(ap);
    ui_property_group_unset(prop);
    ui_demospace_unset(ap->demo, ap->project);
+
+   ui_menu_disable_set(ap, "Programs", EINA_TRUE);
 }
 
 /**
@@ -54,6 +56,17 @@ ui_state_select(App_Data *ap,
    Part *part = NULL;
    Evas_Object *prop_view;
 
+   if (!ap)
+     {
+        ERR("App Data is missing!");
+        return;
+     }
+   if (!obj)
+     {
+        ERR("Evas Object is missing");
+        return;
+     }
+
    prop_view = ui_block_property_get(ap);
    part = ui_state_list_part_get(obj);
    wm_part_current_state_set(part, state);
@@ -70,6 +83,11 @@ ui_part_select(App_Data *ap,
    Evas_Object *prop;
    Evas_Object *gl_states;
 
+   if (!ap)
+     {
+        ERR("App Data is missing!");
+        return;
+     }
    if (!part)
      {
         ERR("Coud not get acess to part object");
@@ -102,6 +120,17 @@ ui_group_clicked(App_Data *ap, Group *group)
    Evas_Object *prop = NULL;
    Eina_List *signals = NULL;
 
+   if (!ap)
+     {
+        ERR("App Data is missing!");
+        return;
+     }
+   if (!group)
+     {
+        ERR("Group is missing!");
+        return;
+     }
+
    /* Get signals list of a group and show them */
    gl_signals = ui_signal_list_add(ap->win);
    ui_signal_list_data_set(gl_signals, group);
@@ -127,6 +156,7 @@ ui_group_clicked(App_Data *ap, Group *group)
    ui_groupspace_update(ap->ws->groupspace);
    ui_demospace_set(ap->demo, ap->project, group);
    ui_demospace_update(ap->demo);
+   ui_menu_disable_set(ap, "Programs", EINA_FALSE);
 }
 
 Evas_Object *
@@ -148,12 +178,19 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
              ap->project = pm_open_project_edj(selected, selected);
+
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
              ui_widget_list_data_set(wd_list, ap->project);
              ui_block_widget_list_set(ap, wd_list);
              evas_object_show(wd_list);
              ui_panes_show(ap);
+
+             ui_menu_disable_set(ap, "Save", EINA_FALSE);
+             ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
+             ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
+             ui_menu_disable_set(ap, "View", EINA_FALSE);
+             ui_menu_disable_set(ap, "Editors", EINA_FALSE);
           }
         else
           {
@@ -254,6 +291,12 @@ new_theme_create(App_Data *ap __UNUSED__)
         evas_object_show(wd_list);
         ui_panes_show(ap);
         ap->project->edj = NULL;
+
+        ui_menu_disable_set(ap, "Save", EINA_FALSE);
+        ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
+        ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
+        ui_menu_disable_set(ap, "View", EINA_FALSE);
+        ui_menu_disable_set(ap, "Editors", EINA_FALSE);
      }
 
    eina_stringshare_del(path);
@@ -387,4 +430,42 @@ ui_part_state_delete(App_Data *ap)
   free(state_name);
   free(state_value);
   return EINA_TRUE;
+}
+
+/**
+ * FIXME? I hope I will search faster next time, when someone will refactor me.
+ */
+void
+ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag)
+{
+   const Eina_List *menu_list, *l;
+   Elm_Object_Item *item = NULL;
+   Elm_Object_Item *menu_item = NULL;
+
+   if ((!ap) || (!name))
+     {
+        ERR("App_Data or given name is NULL");
+        return;
+     }
+
+   menu_item = elm_toolbar_first_item_get(ap->main_menu);
+   while(menu_item)
+     {
+        if (strcmp(elm_object_item_part_text_get(menu_item, NULL), name) == 0)
+          {
+             elm_object_item_disabled_set(menu_item, flag);
+             return;
+          }
+
+        menu_list = elm_menu_items_get(elm_toolbar_item_menu_get(menu_item));
+        EINA_LIST_FOREACH(menu_list, l, item)
+          {
+             if (strcmp(elm_object_item_part_text_get(item, NULL), name) == 0)
+               {
+                  elm_object_item_disabled_set(item, flag);
+                  return;
+               }
+          }
+        menu_item = elm_toolbar_item_next_get(menu_item);
+     }
 }

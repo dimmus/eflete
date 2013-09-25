@@ -303,17 +303,20 @@ ui_menu_add(App_Data *ap)
 
    elm_menu_item_add(menu, NULL, "menu/file", "New theme",
                      _on_new_theme_menu, ap);
-
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file",
                      _on_edc_open_menu, ap);
    elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
                      _on_edj_open_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save", _on_save_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save as...", _on_save_as_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save as EDC", _on_edc_save_menu, ap);
+   tb_it = elm_menu_item_add(menu, NULL, "menu/file", "Save", _on_save_menu, ap);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
+   tb_it = elm_menu_item_add(menu, NULL, "menu/file", "Save as...", _on_save_as_menu, ap);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
+   tb_it = elm_menu_item_add(menu, NULL, "menu/file", "Save as EDC", _on_edc_save_menu, ap);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
    elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
 
    tb_it = elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
    menu_sub = elm_menu_item_add(menu, NULL, NULL, "Workspace", NULL, NULL);
@@ -329,13 +332,15 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_add(menu, NULL, NULL, "Highlight space", _on_view_highlight, ap);
 
    tb_it = elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
 
    elm_menu_item_add(menu, NULL, NULL, "Styles", _on_style_window_menu, ap);
    elm_menu_item_add(menu, NULL, NULL, "Images", _on_image_editor_menu, ap);
    elm_menu_item_add(menu, NULL, NULL, "Colorclasses", _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Programs", _on_prog_editor_menu, ap);
+   tb_it = elm_menu_item_add(menu, NULL, NULL, "Programs", _on_prog_editor_menu, ap);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
    //elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
 
    elm_toolbar_menu_parent_set(tb, ap->win_layout);
@@ -351,5 +356,6 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_THEME);
 
    ap->main_menu = tb;
+
    return EINA_TRUE;
 }
