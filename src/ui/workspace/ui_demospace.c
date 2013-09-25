@@ -240,7 +240,7 @@ ui_demospace_unset(Demospace *demo, Project *project)
    Eina_Stringshare *file_path = eina_stringshare_add(TET_SETT_PATH"cache/demo.edj");
    if (!ecore_file_exists(file_path))
      {
-        ERR("Demo file is not exist directory");
+        WARN("Demo directory is not exist");
         return;
      }
    elm_theme_extension_del(NULL, file_path);

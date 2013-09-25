@@ -259,5 +259,18 @@ ui_style_delete(App_Data *ap);
 Eina_Bool
 new_theme_create(App_Data *ap);
 
+/**
+ * Disable or enable menu item by it's name.'
+ *
+ * If flag is EINA_TRUE - an item will be disabled, othervise - enabled, so it
+ * can be used, clicked or anything like that.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param name Menu item's title.
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ */
+void
+ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag);
+
 #endif /* UI_MAIN_WINDOW_HEADER_H */
 
