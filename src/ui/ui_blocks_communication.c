@@ -233,6 +233,12 @@ ui_edc_load_done(App_Data* ap,
         ui_block_widget_list_set(ap, wd_list);
         evas_object_show(wd_list);
         ui_panes_show(ap);
+
+        ui_menu_disable_set(ap, "Save", EINA_FALSE);
+        ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
+        ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
+        ui_menu_disable_set(ap, "View", EINA_FALSE);
+        ui_menu_disable_set(ap, "Editors", EINA_FALSE);
      }
    else
      {
@@ -294,7 +300,7 @@ new_theme_create(App_Data *ap __UNUSED__)
 
         ui_menu_disable_set(ap, "Save", EINA_FALSE);
         ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
+        ui_menu_disable_set(ap, "Save as EDC", EINA_TRUE);
         ui_menu_disable_set(ap, "View", EINA_FALSE);
         ui_menu_disable_set(ap, "Editors", EINA_FALSE);
      }

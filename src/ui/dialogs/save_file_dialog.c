@@ -173,7 +173,18 @@ save_as_edj_file(App_Data *ap)
 Eina_Bool
 save_as_edc_file(App_Data *ap)
 {
-   if ((!ap) || (!ap->win)) return EINA_FALSE;
+   if (!ap)
+     {
+        ERR("App Data missing!");
+        return EINA_FALSE;
+     }
+   if (!ap->project)
+     {
+        ERR("Project missing!");
+        return EINA_FALSE;
+     }
+
+   pm_save_project_edc(ap->project);
 
    return EINA_TRUE;
 }
