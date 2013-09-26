@@ -32,10 +32,12 @@
 #include "widget_manager.h"
 #include "ui_groupspace.h"
 #include "modal_window.h"
+#include "widget_define.h"
 /**
  * Add new dialog for choise part type add inwin object.
  *
- * @param parent The parent object. Its must be main window object.
+ * @param parent The parent object. Its must be layout of main window
+ * object.
  * @param groupspace The groupspace layout pointer.
  * @return Pointer to inwin object.
  *

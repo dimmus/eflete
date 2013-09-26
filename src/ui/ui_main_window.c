@@ -53,7 +53,7 @@ _add_part_dailog(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   new_part_dialog_add(ap->win, ap->ws->groupspace);
+   new_part_dialog_add(ap->win_layout, ap->ws->groupspace);
 }
 
 static void
