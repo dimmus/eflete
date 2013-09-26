@@ -154,6 +154,51 @@ pm_project_add(const char *name,
    return pro;
 }
 
+void
+pm_save_project_edc(Project *project)
+{
+   char **split;
+   const char *save_path;
+   int size;
+   char *save_dir;
+
+   if (!project)
+     {
+        WARN("Project is missing. Please open one.");
+        return;
+     }
+
+   /* compile project and create swapfile */
+   project->decompiler = decompile(project->edj, NULL);
+
+   if (project->decompiler)
+     {
+        split = eina_str_split(ecore_file_file_get(project->edj), ".", 2);
+
+        save_path = ecore_file_dir_get(project->edj);
+        size = strlen(save_path) + BUFF_MAX;
+        save_dir = mem_malloc(size * sizeof(char));
+        sprintf(save_dir, "%s/DECOMPILED", save_path);
+
+
+        if (!ecore_file_mkpath(save_dir))
+          {
+             NOTIFY_WARNING("Could not create dir with decompiled project. <br>"
+                          "Please check directory permissions or move edj file into another directory.");
+             free(split[0]);
+             free(split);
+             return;
+          }
+
+        eio_dir_move(split[0], save_dir, NULL, NULL,
+                     _on_copy_done_cb, _on_copy_error_cb, NULL);
+        ecore_main_loop_begin();
+
+        free(split[0]);
+        free(split);
+     }
+}
+
 Project *
 pm_open_project_edc(const char *name,
                     const char *path,

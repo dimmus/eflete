@@ -115,8 +115,13 @@ compile(const char *edc,
    return edjecc;
 }
 
+/*
+   TODO: Saving decompiled EDC into another folder.
+   edje_decc dont have ability to save EDC into another directory.
+   Waiting for edje patch.
+ */
 Edje_DeCC *
-decompile(char *edj, char *edc)
+decompile(const char *edj, const char *edc __UNUSED__)
 {
    Edje_DeCC *edjedecc = NULL;
    int size;
@@ -127,23 +132,10 @@ decompile(char *edj, char *edc)
 
    edjedecc = mem_malloc(sizeof(*edjedecc));
    edjedecc->messages = NULL;
-   if (!edc)
-     {
-        size = strlen(edj) + BUFF_MAX;
-        edjedecc->cmd = (char *)malloc(size);
-        sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh -current-dir", edj);
-     }
-   else
-     {
-     /*
-      * TODO:this stub! changes to edje_decc must be done to specify dest folder
-      */
-        size = strlen(edj) + strlen(edc) + BUFF_MAX;
-        edjedecc->cmd = (char *)malloc(size);
-        sprintf(edjedecc->cmd,
-                "edje_decc %s -main-out %s -no-build-sh -current-dir",
-                edj, edc);
-     }
+
+   size = strlen(edj) + BUFF_MAX;
+   edjedecc->cmd = (char *)malloc(size);
+   sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh", edj);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);

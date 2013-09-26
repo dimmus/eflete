@@ -98,7 +98,8 @@ _on_edc_save_menu(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   NOTIFY_INFO(3, "Not implemented yet");
+   App_Data *ap = (App_Data *)data;
+   save_as_edc_file(ap);
 }
 
 static void
