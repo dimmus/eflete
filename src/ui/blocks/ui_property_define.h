@@ -276,10 +276,19 @@ __on_##sub##_##value##_change(void *data, \
                               Evas_Object *obj, \
                               void *ei __UNUSED__) \
 { \
+   int tok_elm; \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
-   char **c = eina_str_split(value, " ", 4); \
+   char **c = eina_str_split_full (value, " ", 4, &tok_elm); \
+   if (tok_elm < 4) \
+    { \
+       free(c[0]); \
+       free(c); \
+       NOTIFY_ERROR ("Please input correct border data: l r t b, \
+       where l - left, r - right, t - top, b - bottom borders") \
+       return; \
+    } \
    edje_edit_##sub##_##value##_set(group->obj, part->name, \
                                 part->curr_state, part->curr_state_value, \
                                 atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
