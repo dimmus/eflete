@@ -86,7 +86,7 @@ ui_part_select(App_Data *ap,
    if (!ap)
      {
         ERR("App Data is missing!");
-        return;
+        return NULL;
      }
    if (!part)
      {

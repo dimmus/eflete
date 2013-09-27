@@ -224,7 +224,8 @@ __on_##sub##_##value##_change(void *data, \
                               Evas_Object *obj, \
                               void *ei __UNUSED__) \
 { \
-   int r, g, b, a, tok_elm; \
+   int r, g, b, a; \
+   unsigned int tok_elm; \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
@@ -276,7 +277,7 @@ __on_##sub##_##value##_change(void *data, \
                               Evas_Object *obj, \
                               void *ei __UNUSED__) \
 { \
-   int tok_elm; \
+   unsigned int tok_elm; \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \

@@ -20,12 +20,27 @@
 #include "project_manager.h"
 #include "alloc.h"
 
+static const char *dst_path;
+
 static void
 _on_copy_done_cb(void *data,
                  Eio_File *handler __UNUSED__)
 {
    char *file_name = (char *)data;
    DBG("Copy file '%s' is finished!", file_name);
+   ecore_main_loop_quit();
+}
+
+static void
+_on_copy_done_save_as_cb(void *data,
+                 Eio_File *handler __UNUSED__)
+{
+   Project *project = (Project *)data;
+   if (project->edj)
+     free(project->edj);
+   project->edj = strdup(dst_path);
+   DBG("Copy file '%s' is finished!", dst_path);
+   dst_path = NULL;
    ecore_main_loop_quit();
 }
 
@@ -273,8 +288,9 @@ pm_save_as_project_edj(Project *project, const char *path)
    if (!project) return EINA_FALSE;
    if (!path) return EINA_FALSE;
 
+   dst_path = path;
    eio_file_copy(project->swapfile, path, NULL,
-                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+                 _on_copy_done_save_as_cb, _on_copy_error_cb, project);
    ecore_main_loop_begin();
    return EINA_TRUE;
 }

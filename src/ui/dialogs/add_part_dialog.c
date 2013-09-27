@@ -32,20 +32,6 @@ _cancel_clicked(void *data,
    evas_object_del(popup);
 }
 
-static char *
-_item_part_label_get(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     const char *part __UNUSED__)
-{
-   char *style_label = (char *)data;
-   if (!style_label)
-     {
-        ERR("It impossible, but it is occurred, part name is missing!");
-        return NULL;
-     }
-   return strdup(style_label);
-}
-
 static void
 _swallow_add_on_click(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
