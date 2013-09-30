@@ -20,14 +20,39 @@ AC_SUBST(V_MIC,"v_mic")
 
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES([EINA], [eina >= 1.7.8], [have_eina="yes"], [have_eina="no"])
-PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.7.8], [have_elementary="yes"], [have_elementary="no"])
-PKG_CHECK_MODULES([EET], [eet >= 1.7.8], [have_eet="yes"], [have_eet="no"])
-PKG_CHECK_MODULES([EVAS], [evas >= 1.7.8], [have_evas="yes"], [have_evas="no"])
-PKG_CHECK_MODULES([ECORE], [ecore >= 1.7.8], [have_ecore="yes"], [have_ecore="no"])
-PKG_CHECK_MODULES([EIO], [eio >= 1.7.8], [have_eio="yes"], [have_eio="no"])
-PKG_CHECK_MODULES([EDJE], [edje >= 1.7.8], [have_edje="yes"], [have_edje="no"])
-PKG_CHECK_MODULES([EFREET], [efreet >= 1.7.8], [have_efreet="yes"], [have_efreet="no"])
+PKG_CHECK_MODULES([_EINA], [eina], [have_eina="yes"], [have_eina="no"])
+if test "x${have_eina}" = "xyes"; then
+   PKG_CHECK_MODULES([EINA], [eina >= 1.7.8], [have_ver_eina=""], [have_ver_eina=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_ELEMENTARY], [elementary], [have_elementary="yes"], [have_elementary="no"])
+if test "x${have_elementary}" = "xyes"; then
+   PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.7.8], [have_ver_elementary=""], [have_ver_elementary=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_EET], [eet], [have_eet="yes"], [have_eet="no"])
+if test "x${have_eet}" = "xyes"; then
+   PKG_CHECK_MODULES([EET], [eet >= 1.7.8], [have_ver_eet=""], [have_ver_eet=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_EVAS], [evas], [have_evas="yes"], [have_evas="no"])
+if test "x${have_evas}" = "xyes"; then
+   PKG_CHECK_MODULES([EVAS], [evas >= 1.7.8], [have_ver_evas=""], [have_ver_evas=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_ECORE], [ecore], [have_ecore="yes"], [have_ecore="no"])
+if test "x${have_ecore}" = "xyes"; then
+   PKG_CHECK_MODULES([ECORE], [ecore >= 1.7.8], [have_ver_ecore=""], [have_ver_ecore=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_EIO], [eio], [have_eio="yes"], [have_eio="no"])
+if test "x${have_eio}" = "xyes"; then
+   PKG_CHECK_MODULES([EIO], [eio >= 1.7.8], [have_ver_eio=""], [have_ver_eio=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_EDJE], [edje], [have_edje="yes"], [have_edje="no"])
+if test "x${have_edje}" = "xyes"; then
+   PKG_CHECK_MODULES([EDJE], [edje >= 1.7.8], [have_ver_edje=""], [have_ver_edje=" (version < 1.7.8)"])
+fi
+PKG_CHECK_MODULES([_EFREET], [efreet], [have_efreet="yes"], [have_efreet="no"])
+if test "x${have_efreet}" = "xyes"; then
+   PKG_CHECK_MODULES([EFREET], [efreet >= 1.7.8], [have_ver_efreet=""], [have_ver_efreet=" (version < 1.7.8)"])
+fi
+
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 
@@ -66,14 +91,14 @@ AC_SUBST([PREFIX],"${prefix}/bin/")
 echo ""
 echo "Configuration Options Summary:"
 echo ""
-echo "  eina...........: ${have_eina}"
-echo "  eet............: ${have_eet}"
-echo "  evas...........: ${have_evas}"
-echo "  ecore..........: ${have_ecore}"
-echo "  eio............: ${have_eio}"
-echo "  edje...........: ${have_edje}"
-echo "  efreet.........: ${have_efreet}"
-echo "  elementary.....: ${have_elementary}"
+echo "  eina...........: ${have_eina} ${have_ver_eina}"
+echo "  eet............: ${have_eet} ${have_ver_eet}"
+echo "  evas...........: ${have_evas} ${have_ver_evas}"
+echo "  ecore..........: ${have_ecore} ${have_ver_ecore}"
+echo "  eio............: ${have_eio} ${have_ver_eio}"
+echo "  edje...........: ${have_edje} ${have_ver_edje}"
+echo "  efreet.........: ${have_efreet} ${have_ver_efreet}"
+echo "  elementary.....: ${have_elementary} ${have_ver_elementary}"
 echo ""
 echo "Testing:"
 echo "  check..........: ${have_check}"
@@ -90,4 +115,27 @@ echo "Installation.....: sudo make install"
 echo "  CFLAGS.........: ${CFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""
+
+if test "x$have_eina" = "xno" ||
+   test "x$have_elementary" = "xno" ||
+   test "x$have_eet" = "xno" ||
+   test "x$have_evas" = "xno" ||
+   test "x$have_ecore" = "xno" ||
+   test "x$have_eio" = "xno" ||
+   test "x$have_edje" = "xno" ||
+   test "x$have_efreet" = "xno"; then
+AC_MSG_ERROR("Needed EFL packages not found")
+fi
+
+if test  "x$have_ver_eina" != "x" ||
+   test  "x$have_ver_elementary" != "x" ||
+   test  "x$have_ver_eet" != "x" ||
+   test  "x$have_ver_evas" != "x" ||
+   test  "x$have_ver_ecore" != "x" ||
+   test  "x$have_ver_eio" != "x" ||
+   test  "x$have_ver_edje" != "x" ||
+   test  "x$have_ver_efreet" != "x"; then
+AC_MSG_ERROR("EFL version must be >= 1.7.8")
+fi
+
 AC_OUTPUT
