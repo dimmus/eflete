@@ -20,6 +20,8 @@
 #ifndef PROGRAM_EDITOR_H
 #define PROGRAM_EDITOR_H
 
+#define TRANSITIONS_COUNT 14
+
 #include "efl_ete.h"
 #include "modal_window.h"
 
