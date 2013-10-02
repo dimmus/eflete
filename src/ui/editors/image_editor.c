@@ -18,6 +18,7 @@
 */
 
 #include "image_editor.h"
+#include "alloc.h"
 
 typedef struct _Item
 {
@@ -37,6 +38,9 @@ typedef struct _Image_Editor Image_Editor;
 
 static Image_Editor window;
 static Elm_Gengrid_Item_Class *gic = NULL;
+
+static void
+_grid_sel(void *data, Evas_Object *obj, void *event_info);
 
 static char *
 _grid_label_get(void *data,
@@ -74,8 +78,106 @@ _grid_del(void *data,
           Evas_Object *obj __UNUSED__)
 {
    Item *it = data;
+   eina_stringshare_del(it->image_name);
    free(it);
 }
+
+static void
+_on_image_done(void *data __UNUSED__,
+             Evas_Object *obj,
+             void *event_info)
+{
+   const char *selected = event_info;
+   Item *it;
+
+   if (selected)
+     {
+        if (ecore_file_exists(selected))
+          {
+             if (!image_edit_image_add(window.pr, selected))
+               {
+                  NOTIFY_ERROR("Error while loading file.<br>"
+                               "Please check if file is image"
+                               "or/and file is accessible.");
+               }
+             else
+               {
+                  it = (Item *)mem_malloc(sizeof(Item));
+                  it->image_name = eina_stringshare_add(ecore_file_file_get(selected));
+                  it->id = image_edit_image_id_get(window.pr, it->image_name);
+                  elm_gengrid_item_append(window.gengrid, gic, it, _grid_sel, NULL);
+               }
+          }
+        else
+          {
+             NOTIFY_ERROR("Error while loading file.<br>"
+                          "File is not exist");
+          }
+     }
+   evas_object_hide(elm_object_parent_widget_get(obj));
+   evas_object_del(obj);
+}
+
+static void
+__on_mw_fileselector_close(void *data __UNUSED__,
+                       Evas *e __UNUSED__,
+                       Evas_Object *obj,
+                       void *event_info __UNUSED__)
+{
+   evas_object_smart_callback_call(obj, "done", NULL);
+}
+
+static void
+_on_button_add_clicked_cb(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
+{
+   Evas_Object *fs, *inwin;
+
+   inwin = mw_add(data);
+   mw_title_set(inwin, "Open EDJ file dialog");
+   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
+                                  __on_mw_fileselector_close, NULL);
+   evas_object_focus_set(inwin, EINA_TRUE);
+
+   fs = elm_fileselector_add(inwin);
+
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_fileselector_path_set(fs, getenv("HOME"));
+   elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
+   elm_fileselector_expandable_set(fs, EINA_FALSE);
+   elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
+   evas_object_smart_callback_add(fs, "done", _on_image_done, NULL);
+
+   elm_win_inwin_content_set(inwin, fs);
+
+   evas_object_show(fs);
+   elm_win_inwin_activate(inwin);
+
+   return;
+}
+
+static void
+_on_button_delete_clicked_cb(void *data __UNUSED__,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   if (!window.gengrid) return;
+
+   Eina_List *l;
+   Elm_Object_Item *grid_item = NULL;
+   const Item *it;
+   Eina_List *grid_list = (Eina_List *)elm_gengrid_selected_items_get(window.gengrid);
+   EINA_LIST_FOREACH(grid_list, l, grid_item)
+     {
+        elm_object_item_del(grid_item);
+        it = elm_object_item_data_get(grid_item);
+        image_edit_image_del(window.pr, it->image_name);
+     }
+   eina_list_free(grid_list);
+}
+
 static void
 _on_button_ok_clicked_cb(void *data,
                          Evas_Object *obj __UNUSED__,
@@ -111,13 +213,11 @@ _grid_sel(void *data __UNUSED__,
          elm_object_text_set(window.legend,"No images selected<br><br>");
          break;
       case 1:
-         //img_size
-         image = elm_image_add(window.legend);//parent is set to pass safety check
+         image = elm_image_add(window.legend);
          snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
          elm_image_file_set(image, window.pr->swapfile, buf);
          int w=0, h=0;
          elm_image_object_size_get(image, &w, &h);
-         //compression
          Edje_Edit_Image_Comp comp =
             image_edit_image_compression_type_get(window.pr, it->image_name);
          const char* comp_str;
@@ -142,7 +242,6 @@ _grid_sel(void *data __UNUSED__,
                comp_str = "Unknown compression type";
                ERR("Unknown compression type");
            }
-         //output into label
          if (comp_rate > 0)
            {
               snprintf(buf, BUFF_MAX,
@@ -201,11 +300,15 @@ image_editor_window_add(Evas_Object *parent)
 
    button = elm_button_add(bottom_box);
    elm_object_text_set(button, "Add image");
+   evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb,
+                                   parent);
    elm_box_pack_end(bottom_box,button);
    evas_object_show(button);
 
    button = elm_button_add(bottom_box);
    elm_object_text_set(button, "Delete image");
+   evas_object_smart_callback_add(button, "clicked", _on_button_delete_clicked_cb,
+                                   NULL);
    elm_box_pack_end(bottom_box,button);
    evas_object_show(button);
 
@@ -240,7 +343,7 @@ image_editor_window_add(Evas_Object *parent)
       gic->func.text_get = _grid_label_get;
       gic->func.content_get = _grid_content_get;
       gic->func.del = _grid_del;
-   } // we only create the first time its needed. we dont unref/free
+   } /* we only create the first time its needed. we dont unref/free */
    evas_object_show(mwin);
 
    return mwin;
@@ -257,6 +360,7 @@ image_editor_init (Evas_Object *img_edit, Project *project)
      }
    window.pr=project;
    Eina_List *l;
+   Item *it;
    const char* image_name;
    Eina_List *images = image_edit_images_list_get(window.pr);
    int counter=0;
@@ -265,15 +369,16 @@ image_editor_init (Evas_Object *img_edit, Project *project)
         counter++;
         if (!image_name)
           {
-             //FIXME: edje_edit_images_list_get returns list with some image names
-             //missing. image is still accesable via id, but it's not enough
-             //for manipulations
+             /*
+               FIXME: edje_edit_images_list_get returns list with some image names
+               missing. image is still accesable via id, but it's not enough
+               for manipulations.
+              */
              ERR("name not found for image #%d",counter);
              continue;
           }
-        Item *it;
-        it = (Item *)malloc(sizeof(*it));
-        it->image_name = strdup(image_name);
+        it = (Item *)mem_malloc(sizeof(Item));
+        it->image_name = eina_stringshare_add(image_name);
         it->id=image_edit_image_id_get (window.pr, it->image_name);
         elm_gengrid_item_append(window.gengrid, gic, it, _grid_sel, NULL);
      }

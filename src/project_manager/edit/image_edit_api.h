@@ -50,7 +50,7 @@ image_edit_images_list_get(Project *project);
  * @ingroup ImageEditApi
  */
 EAPI int
-image_edit_image_id_get (Project *project, const char *image_name);
+image_edit_image_id_get(Project *project, const char *image_name);
 
 /**
  * Get the commpression type of the image.
@@ -62,7 +62,7 @@ image_edit_image_id_get (Project *project, const char *image_name);
  * @ingroup ImageEditApi
  */
 EAPI Edje_Edit_Image_Comp
-image_edit_image_compression_type_get (Project *project, const char *image);
+image_edit_image_compression_type_get(Project *project, const char *image);
 
 /**
  * Get the image compression rate
@@ -75,5 +75,29 @@ image_edit_image_compression_type_get (Project *project, const char *image);
  */
 EAPI int
 image_edit_image_compression_rate_get(Project *project, const char *image);
+
+/**
+ * Delete the image from image collection.
+ *
+ * @param project Project being editing.
+ * @param image_name Filename of the image.
+ * @return EINA_TRUE - Successfull, EINA_FALSE - failed.
+ *
+ * @ingroup ImageEditApi
+ */
+EAPI Eina_Bool
+image_edit_image_del(Project *project, const char *image);
+
+/**
+ * Add an image into image collection.
+ *
+ * @param project Project being editing.
+ * @param path Path to the image file.
+ * @return EINA_TRUE - Successfull, EINA_FALSE - failed.
+ *
+ * @ingroup ImageEditApi
+ */
+EAPI Eina_Bool
+image_edit_image_add(Project *project, const char *path);
 
 #endif /* IMAGE_EDIT_API_H */
