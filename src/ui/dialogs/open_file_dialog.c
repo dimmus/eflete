@@ -362,7 +362,7 @@ open_edc_file(App_Data *ap)
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(box);
 
-   #define BUTTON_ADD(box, text, func, data) \
+   #define _BUTTON_ADD(box, text, func, data) \
       bt = elm_button_add(box); \
       elm_object_text_set(bt, text); \
       evas_object_smart_callback_add(bt, "clicked", func, data); \
@@ -383,7 +383,7 @@ open_edc_file(App_Data *ap)
       _fs = fs_entry; \
       evas_object_show(fs_entry); \
       elm_box_pack_end(box_item, fs_entry); \
-      BUTTON_ADD(box_item, button_text, func, data); \
+      _BUTTON_ADD(box_item, button_text, func, data); \
       elm_box_pack_end(box, box_item);
 
    _ITEM_ADD(box, "Path to EDC:", "[Select]", fs_ent->edc, __edc_select,
@@ -402,9 +402,9 @@ open_edc_file(App_Data *ap)
    elm_box_horizontal_set(box_item, EINA_TRUE);
    evas_object_show(box_item);
 
-   BUTTON_ADD(box_item, "Ok", _on_ok_cb, ap);
-   BUTTON_ADD(box_item, "Cancel", _on_cancel_cb, ap->inwin);
-   #undef BUTTON_ADD
+   _BUTTON_ADD(box_item, "Ok", _on_ok_cb, ap);
+   _BUTTON_ADD(box_item, "Cancel", _on_cancel_cb, ap->inwin);
+   #undef _BUTTON_ADD
    elm_box_pack_end(box, box_item);
 
    elm_win_inwin_content_set(ap->inwin, box);

@@ -22,9 +22,26 @@
 
 #define TRANSITIONS_COUNT 14
 
+/**
+ * @defgroup ProgramEditor Program Editor
+ *
+ * Program editor is subwindow that contain information about
+ * all the programs used by the project.
+ */
+
 #include "efl_ete.h"
 #include "modal_window.h"
 
+/**
+ * Add new program editor inwin object.
+ *
+ * @param parent The parent object. It must be main window object.
+ * @param group Current style and group already loaded into groupspace.
+ * @return Pointer to inwin object, which contain some program properties and
+ * list of programs.
+ *
+ * @ingroup ProgramEditor
+ */
 Evas_Object *
 program_editor_window_add(Evas_Object *parent, Group *group);
 

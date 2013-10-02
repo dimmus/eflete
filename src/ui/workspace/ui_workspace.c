@@ -474,7 +474,6 @@ ui_object_highlight_hide(Workspace *ws)
 
    evas_object_hide(ws->highlight.highlight);
    evas_object_hide(ws->highlight.space_hl);
-
 }
 
 void

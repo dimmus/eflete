@@ -233,7 +233,8 @@ _on_image_editor_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   image_editor_init(image_editor_window_add(ap->win), ap->project);
+   Evas_Object *imed = image_editor_window_add(ap->win, MULTIPLE);
+   image_editor_init(imed, ap->project);
 }
 
 static void
@@ -242,7 +243,8 @@ _on_ccl_viewer_menu(void *data,
                     void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   colorclass_viewer_init(colorclass_viewer_add(ap->win), ap->project);
+   Evas_Object *cced = colorclass_viewer_add(ap->win);
+   colorclass_viewer_init(cced, ap->project);
 }
 
 static void
@@ -255,7 +257,6 @@ _on_prog_editor_menu(void *data __UNUSED__,
      NOTIFY_WARNING("Please open the widget style for editing style programs!")
    else
      program_editor_window_add(ap->win, ap->project->current_group);
-   //NOTIFY_INFO(5, "Not Implemented Yet.")
 }
 
 /*

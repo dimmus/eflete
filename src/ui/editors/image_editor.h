@@ -33,22 +33,29 @@
 #include "widget_manager.h"
 #include "image_edit_api.h"
 
+typedef enum {
+   SINGLE,
+   MULTIPLE
+} Image_Editor_Mode;
+
 /**
  * Add new image editor inwin object.
  *
- * @param parent The parent object. Its must be main window object.
+ * @param parent The parent object. It must be main window object.
+ * @param mode its enumerate: SINGLE if single-selection mode,
+ *             MULTIPLE if multi-selection mode.
  * @return Pointer to inwin object, which contain image grid and buttons.
  *
  * @ingroup ImageEditor
  */
 Evas_Object *
-image_editor_window_add(Evas_Object *parent);
+image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode);
 
 /**
  * Initialize image editor. It's method show images of the project on image
  * editor dialog window.
  *
- * @param img_view Pointer to inwin object, which was created with
+ * @param img_edit Pointer to inwin object, which was created with
  * image_editor_add method.
  * @param project A project that was earlier loaded.
  *
@@ -56,5 +63,32 @@ image_editor_window_add(Evas_Object *parent);
  */
 void
 image_editor_init(Evas_Object *img_edit, Project *project);
+
+/**
+ * This function will select the image by it's name. This function is very useful
+ * with image property (setting another image).
+ *
+ * @param img_edit Pointer to inwin object, which was created with
+ * image_editor_add function.
+ * @param selected Name of selected image. If selected param is NULL, this
+ * function do nothing.
+ *
+ * @ingroup ImageEditor
+ */
+void
+image_editor_file_choose(Evas_Object *img_edit, const char *selected);
+
+/**
+ * Callback function. Registering function for sending the result back.
+ *
+ * @param img_edit Pointer to inwin object, which was created with
+ * image_editor_add function.
+ * @param func Function that will be called after clicking on "ok" button.
+ * @param data Data that will be passed into given function.
+ *
+ * @ingroup ImageEditor
+ */
+void
+image_editor_callback_add(Evas_Object *img_edit, Evas_Smart_Cb func, void *data);
 
 #endif /*IMAGE_EDITOR_H*/

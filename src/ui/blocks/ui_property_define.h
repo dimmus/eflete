@@ -379,25 +379,34 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    eina_list_free(nodes); \
 }
 
-#define ITEM_1ENTRY_STATE_ADD(text, sub, value) \
+#define ITEM_1ENTRY_STATE_ADD(text, sub, value, func) \
 Evas_Object * \
 prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                 Group *group, \
                                 Part *part, \
-                                const char *tooltip) \
+                                const char *tooltip, \
+                                const char *btn_tooltip) \
 { \
-   Evas_Object *item, *entry; \
-   const char *value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
-                                                       part->curr_state, \
-                                                       part->curr_state_value); \
+   Evas_Object *item, *entry, *box, *btn; \
+const char *value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
+                                                    part->curr_state, \
+                                                    part->curr_state_value); \
    ITEM_ADD(parent, item, text) \
+   BOX_ADD(parent, box, EINA_TRUE, EINA_FALSE) \
    ENTRY_ADD(parent, entry, EINA_TRUE) \
+   elm_box_pack_end(box, entry); \
+   btn = elm_button_add(parent); \
+   elm_object_text_set(btn, "..."); \
+   evas_object_show(btn); \
+   elm_box_pack_end(box, btn); \
+   evas_object_smart_callback_add(btn, "clicked", func, entry); \
    elm_entry_entry_set(entry, value); \
    evas_object_data_set(entry, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry, tooltip); \
+   elm_object_tooltip_text_set(btn, btn_tooltip); \
    evas_object_smart_callback_add(entry, "activated", \
                                   __on_##sub##_##value##_change, part); \
-   elm_object_part_content_set(item, "elm.swallow.content", entry); \
+   elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item; \
 }
 
@@ -407,17 +416,21 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
                                    Group *group, \
                                    Part *part) \
 { \
-   Evas_Object *entry; \
+   Evas_Object *entry, *box; \
+   Eina_List *nodes; \
+   box = elm_object_part_content_get(item, "elm.swallow.content"); \
+   nodes = elm_box_children_get(box); \
+   entry = eina_list_nth(nodes, 0); \
    const char *value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
                                                        part->curr_state, \
                                                        part->curr_state_value); \
-   entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    elm_entry_entry_set(entry, value); \
    evas_object_data_del(entry, OBJ_DATA); \
    evas_object_data_set(entry, OBJ_DATA, group); \
    evas_object_smart_callback_del(entry, "activated", __on_##sub##_##value##_change); \
    evas_object_smart_callback_add(entry, "activated", \
                                   __on_##sub##_##value##_change, part); \
+   eina_list_free(nodes); \
 }
 
 static Elm_Entry_Filter_Accept_Set accept_color = {

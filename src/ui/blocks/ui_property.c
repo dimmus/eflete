@@ -20,6 +20,7 @@
 #include "ui_property.h"
 #include "ui_property_define.h"
 #include "widget_define.h"
+#include "image_editor.h"
 
 #define PROP_DATA "prop_data"
 
@@ -332,9 +333,9 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2SPINNER_STATE_ADD(text, sub, value1, value2) \
    ITEM_2SPINNER_STATE_UPDATE(sub, value1, value2)
 
-#define ITEM_1ENTRY_STATE_CREATE(text, sub, value) \
+#define ITEM_1ENTRY_STATE_CREATE(text, sub, value, func) \
    ITEM_STRING_STATE_CALLBACK(sub, value) \
-   ITEM_1ENTRY_STATE_ADD(text, sub, value) \
+   ITEM_1ENTRY_STATE_ADD(text, sub, value, func) \
    ITEM_1ENTRY_STATE_UPDATE(sub, value)
 
 #define ITEM_COLOR_STATE_CREATE(text, sub, value) \
@@ -352,7 +353,7 @@ ITEM_2SPINNER_STATE_CREATE("min", state_min, w, h, int)
 ITEM_2SPINNER_STATE_CREATE("max", state_max, w, h, int)
 ITEM_2SPINNER_STATE_CREATE("align", state_align, x, y, double)
 ITEM_2SPINNER_STATE_CREATE("acpect", state_aspect, min, max, double)
-ITEM_1ENTRY_STATE_CREATE("color class", state, color_class)
+ITEM_1ENTRY_STATE_CREATE("color class", state, color_class, NULL)
 ITEM_COLOR_STATE_CREATE("color", state, color)
 
 Eina_Bool
@@ -401,7 +402,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
                                                              "resized to any values independently");
         /* pd_state.aspect_pref = */
         pd_state.color_class = prop_item_state_color_class_add(box, pd->group, part,
-                                                               "");
+                                                               "Current color class",
+                                                               "Choose another color class");
         pd_state.color = prop_item_state_color_add(box, pd->group, part,
                                                    "Part main color.");
 
@@ -601,8 +603,8 @@ ui_property_state_rel2_unset(Evas_Object *property)
    ITEM_2CHEACK_STATE_ADD(text, sub, value1, value2) \
    ITEM_2CHEACK_STATE_UPDATE(sub, value1, value2)
 
-ITEM_1ENTRY_STATE_CREATE("text", state, text)
-ITEM_1ENTRY_STATE_CREATE("font", state, font)
+ITEM_1ENTRY_STATE_CREATE("text", state, text, NULL)
+ITEM_1ENTRY_STATE_CREATE("font", state, font, NULL)
 ITEM_1SPINNER_STATE_CREATE("size", state_text, size, int)
 ITEM_2SPINNER_STATE_CREATE("align", state_text_align, x, y, double)
 ITEM_1SPINNER_STATE_CREATE("elipsis", state_text, elipsis, double)
@@ -628,9 +630,9 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
          elm_object_content_set(text_frame, box);
 
          pd_text.text = prop_item_state_text_add(box, pd->group, part,
-                                                 "Set the text of part.");
+                                                 "Set the text of part.", "Choose different text");
          pd_text.font = prop_item_state_font_add(box, pd->group, part,
-                                                 "Change the text's font");
+                                                 "Change the text's font", "Choose different font");
          pd_text.size = prop_item_state_text_size_add(box, pd->group, part,
                                                       0.0, 128.0, 1.0, "%.0f pt",
                                                       "Change text font's size.'");
@@ -697,10 +699,42 @@ ui_property_state_text_unset(Evas_Object *property)
    ITEM_IM_BORDER_STATE_ADD(text, sub, value) \
    ITEM_IM_BORDER_STATE_UPDATE(sub, value)
 
-ITEM_1ENTRY_STATE_CREATE("image", state, image)
+#define pd_image pd->prop_state_image
+
+static void
+_on_image_editor_done(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *ei)
+{
+   Evas_Object *entry = (Evas_Object *)data;
+   const char *value = elm_entry_entry_get(entry);
+   const char *selected = (const char *)ei;
+   if (!selected) return;
+   if (strcmp(value, selected) == 0) return;
+   elm_entry_entry_set(entry, selected);
+   evas_object_smart_callback_call(entry, "activated", NULL);
+}
+
+static void
+_on_state_image_choose(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__)
+{
+   Evas_Object *img_edit;
+   Evas_Object *entry = (Evas_Object *)data;
+   const char *selected = elm_entry_entry_get(entry);
+
+   App_Data *ap = app_create();
+
+   img_edit = image_editor_window_add(ap->win, SINGLE);
+   image_editor_init(img_edit, ap->project);
+   image_editor_file_choose(img_edit, selected);
+   image_editor_callback_add(img_edit, _on_image_editor_done, entry);
+}
+
+ITEM_1ENTRY_STATE_CREATE("image", state, image, _on_state_image_choose)
 ITEM_IM_BORDER_STATE_CREATE("border", state_image, border)
 
-#define pd_image pd->prop_state_image
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property, Part *part)
 {
@@ -712,21 +746,22 @@ ui_property_state_image_set(Evas_Object *property, Part *part)
    prop_box = elm_object_content_get(property);
    if (!pd_image.frame)
      {
-         FRAME_ADD(property, image_frame, EINA_TRUE, "image")
-         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
-         elm_box_align_set(box, 0.5, 0.0);
-         elm_object_content_set(image_frame, box);
+        FRAME_ADD(property, image_frame, EINA_TRUE, "image")
+        BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(image_frame, box);
 
-         pd_image.normal = prop_item_state_image_add(box, pd->group, part,
-                                                     "");
-         pd_image.border = prop_item_state_image_border_add(box, pd->group, part,
-                                                            "");
+        pd_image.normal = prop_item_state_image_add(box, pd->group, part,
+                                                     "Current image name",
+                                                     "Change image");
+        pd_image.border = prop_item_state_image_border_add(box, pd->group, part,
+                                                           "Image's' border value");
 
-         elm_box_pack_end(box, pd_image.normal);
-         elm_box_pack_end(box, pd_image.border);
+        elm_box_pack_end(box, pd_image.normal);
+        elm_box_pack_end(box, pd_image.border);
 
-         elm_box_pack_end(prop_box, image_frame);
-         pd_image.frame = image_frame;
+        elm_box_pack_end(prop_box, image_frame);
+        pd_image.frame = image_frame;
      }
    else
      {

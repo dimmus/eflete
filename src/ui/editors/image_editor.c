@@ -32,6 +32,10 @@ struct _Image_Editor
    Evas_Object *mwin;
    Evas_Object *gengrid;
    Evas_Object *legend;
+   struct {
+      Evas_Smart_Cb choose_func;
+      void *data;
+   } func_data;
 };
 
 typedef struct _Image_Editor Image_Editor;
@@ -184,6 +188,32 @@ _on_button_ok_clicked_cb(void *data,
                          void *event_info __UNUSED__)
 {
    Evas_Object *inwin = (Evas_Object *)data;
+   if (!window.gengrid)
+     {
+        evas_object_del(inwin);
+        return;
+     }
+
+   Elm_Object_Item *it = elm_gengrid_selected_item_get(window.gengrid);
+   if (!it)
+     {
+        evas_object_del(inwin);
+        return;
+     }
+   const Item* item = elm_object_item_data_get(it);
+   if (!item)
+     {
+        evas_object_del(inwin);
+        return;
+     }
+
+   if (window.func_data.choose_func)
+     {
+        window.func_data.choose_func(window.func_data.data, inwin, (char *)item->image_name);
+        window.func_data.choose_func = NULL;
+        window.func_data.data = NULL;
+     }
+
    evas_object_del(inwin);
 }
 
@@ -216,12 +246,12 @@ _grid_sel(void *data __UNUSED__,
          image = elm_image_add(window.legend);
          snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
          elm_image_file_set(image, window.pr->swapfile, buf);
-         int w=0, h=0;
+         int w = 0, h = 0;
          elm_image_object_size_get(image, &w, &h);
          Edje_Edit_Image_Comp comp =
             image_edit_image_compression_type_get(window.pr, it->image_name);
          const char* comp_str;
-         int comp_rate=-2;
+         int comp_rate = -2;
          switch(comp)
            {
             case EDJE_EDIT_IMAGE_COMP_RAW:
@@ -265,11 +295,17 @@ _grid_sel(void *data __UNUSED__,
 }
 
 Evas_Object *
-image_editor_window_add(Evas_Object *parent)
+image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode)
 {
    Evas_Object *mwin;
    Evas_Object *button;
    Evas_Object *box, *bottom_box;
+
+   if (!parent)
+     {
+        ERR("Parent object is NULL!");
+        return NULL;
+     }
 
    mwin = mw_add(parent);
    mw_title_set(mwin, "Image editor");
@@ -282,7 +318,12 @@ image_editor_window_add(Evas_Object *parent)
    window.gengrid = elm_gengrid_add(box);
    elm_box_pack_end(box, window.gengrid);
    elm_gengrid_item_size_set(window.gengrid, 100, 100);
-   elm_gengrid_multi_select_set(window.gengrid, EINA_TRUE);
+
+   if (mode == SINGLE)
+     elm_gengrid_multi_select_set(window.gengrid, EINA_FALSE);
+   else
+     elm_gengrid_multi_select_set(window.gengrid, EINA_TRUE);
+
    elm_gengrid_select_mode_set(window.gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(window.gengrid, EVAS_HINT_EXPAND,
                                                             EVAS_HINT_EXPAND);
@@ -344,13 +385,15 @@ image_editor_window_add(Evas_Object *parent)
       gic->func.content_get = _grid_content_get;
       gic->func.del = _grid_del;
    } /* we only create the first time its needed. we dont unref/free */
+
+   window.mwin = mwin;
    evas_object_show(mwin);
 
    return mwin;
 }
 
 void
-image_editor_init (Evas_Object *img_edit, Project *project)
+image_editor_init(Evas_Object *img_edit, Project *project)
 {
    if (!project)
      {
@@ -358,13 +401,20 @@ image_editor_init (Evas_Object *img_edit, Project *project)
         evas_object_del(img_edit);
         return;
      }
-   window.pr=project;
+
+   if (!img_edit)
+     {
+        ERR("Expecting Image editor window");
+        return;
+     }
+
+   window.pr = project;
    Eina_List *l;
    Item *it;
    const char* image_name;
    Eina_List *images = image_edit_images_list_get(window.pr);
-   int counter=0;
-   EINA_LIST_FOREACH(images,l,image_name)
+   int counter = 0;
+   EINA_LIST_FOREACH(images, l, image_name)
      {
         counter++;
         if (!image_name)
@@ -379,8 +429,68 @@ image_editor_init (Evas_Object *img_edit, Project *project)
           }
         it = (Item *)mem_malloc(sizeof(Item));
         it->image_name = eina_stringshare_add(image_name);
-        it->id=image_edit_image_id_get (window.pr, it->image_name);
+        it->id = image_edit_image_id_get(window.pr, it->image_name);
         elm_gengrid_item_append(window.gengrid, gic, it, _grid_sel, NULL);
      }
    eina_list_free(images);
+}
+
+void
+image_editor_file_choose(Evas_Object *img_edit, const char *selected)
+{
+   Elm_Object_Item *item = NULL;
+   Elm_Object_Item *grid_item = NULL;
+   const Item* it;
+
+   if (!selected) return;
+   if (!img_edit)
+     {
+        ERR("Expecting Image editor window.");
+        return;
+     }
+
+   grid_item = elm_gengrid_first_item_get(window.gengrid);
+   while(grid_item)
+     {
+        it = elm_object_item_data_get(grid_item);
+        if (strcmp(it->image_name, selected) == 0)
+          {
+             elm_gengrid_item_selected_set(grid_item, EINA_TRUE);
+             elm_gengrid_item_bring_in(grid_item, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE);
+             return;
+          }
+        grid_item = elm_gengrid_item_next_get(grid_item);
+     }
+}
+
+void
+image_editor_callback_add(Evas_Object *img_edit, Evas_Smart_Cb func, void *data)
+{
+   if (!img_edit)
+     {
+        ERR("Expecting image editor window.");
+        return;
+     }
+
+   if (img_edit != window.mwin)
+     {
+        ERR("Expecting image editor window. <br>"
+            "Its not last registered window.");
+        return;
+     }
+
+   if (!func)
+     {
+        ERR("Expecting function.");
+        return;
+     }
+
+   if (!data)
+     {
+        ERR("Function's data is missing.");
+        return;
+     }
+
+   window.func_data.choose_func = func;
+   window.func_data.data = data;
 }

@@ -97,6 +97,13 @@
    evas_object_size_hint_weight_set(image, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(image);
 
+#define BUTTON_ADD(parent, btn, text) \
+   btn = elm_button_add(parent); \
+   evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   elm_object_text_set(btn, text); \
+   evas_object_show(btn);
+
 #define ICON_STANDARD_ADD(parent, icon, noscale, icon_name) \
    icon = elm_icon_add (parent);\
    elm_icon_standard_set(icon, icon_name);\
