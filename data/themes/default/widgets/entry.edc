@@ -177,6 +177,13 @@ group { name: "elm/entry/base-single-noedit/style_editor";
 }
 
 group { name: "elm/entry/cursor/style_editor";
+   images {
+      image: "cur_box.png" COMP;
+      image: "cur_hi.png" COMP;
+      image: "cur_shine.png" COMP;
+      image: "cur_glow.png" COMP;
+      image: "cur_shad.png" COMP;
+   }
    parts {
       part { name: "clip2";
          type: RECT;

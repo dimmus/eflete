@@ -1,4 +1,9 @@
 group {
+   images {
+      image: "layout_header.jpg" COMP;
+      image: "shelf_inside.png" COMP;
+   }
+
    name: "tet/block/layout";
    parts {
       part {

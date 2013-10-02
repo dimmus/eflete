@@ -90,7 +90,7 @@ app_init ()
         return EINA_FALSE;
      }
 
-   elm_theme_extension_add(NULL, TET_EDJ);
+   elm_theme_extension_add(NULL, TET_THEME);
    return EINA_TRUE;
 }
 
@@ -98,7 +98,7 @@ void
 app_shutdown ()
 {
    app_free(ap);
-   elm_theme_extension_del(NULL, TET_EDJ);
+   elm_theme_extension_del(NULL, TET_THEME);
    eina_shutdown();
    efreet_shutdown();
    ecore_shutdown();

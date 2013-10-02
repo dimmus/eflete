@@ -1,0 +1,11 @@
+collections {
+   #include "widgets/styles.edc"
+   #include "widgets/block.edc"
+   #include "widgets/inwin.edc"
+   #include "widgets/naviframe.edc"
+   #include "widgets/genlist.edc"
+   #include "widgets/gengrid.edc"
+   #include "widgets/entry.edc"
+   #include "widgets/groupspace_handler_cursor.edc"
+   #include "widgets/simplified_toggle_check.edc"
+}

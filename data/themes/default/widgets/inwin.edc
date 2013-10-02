@@ -1,6 +1,5 @@
 group { name: "elm/win/inwin/custom";
    images {
-      image: "shad_circ.png" COMP;
       image: "bt_dis_base.png" COMP;
       image: "bt_dis_base.png" COMP;
    }

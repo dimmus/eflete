@@ -58,7 +58,8 @@ AC_CHECK_PROGS([DOXYGEN], [doxygen])
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
-TET_DEFINE=" -DTET_EDJ=\\\"${datadir}/eflete/themes/default/eflete.edj\\\" "
+TET_DEFINE=" -DTET_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
+TET_DEFINE+=" -DTET_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
 TET_DEFINE+=" -DTET_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 TET_DEFINE+=" -DTET_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
 TET_DEFINE+=" -DTET_SETT_PATH=\\\"${HOME}/.eflete/\\\" "

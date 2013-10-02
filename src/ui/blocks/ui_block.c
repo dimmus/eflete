@@ -44,7 +44,7 @@ ui_block_add(Evas_Object *parent)
         return NULL;
      }
    block = elm_layout_add(parent);
-   elm_layout_file_set(block, TET_EDJ, "tet/block/layout");
+   elm_layout_file_set(block, TET_THEME, "tet/block/layout");
 
    return block;
 }

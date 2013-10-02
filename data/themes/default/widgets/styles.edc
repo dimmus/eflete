@@ -1,9 +1,5 @@
 styles {
    style {
-      name: "prop_item_label";
-      base: "font=Sans font_size=10 color=#000 align=left";
-   }
-   style {
       name: "list_item_normal";
       base: "font=Sans font_size=10 text_class=list_item color=#000 wrap=word";
       tag: "bold" "+ font_weight=bold";

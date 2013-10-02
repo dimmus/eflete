@@ -4,6 +4,14 @@ group { name: "elm/genlist/item/custom/default";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    data.item: "treesize" "20";
    data.item: "flips" "elm.text.flip";
+   images {
+      image: "bt_sm_base1.png" COMP;
+      image: "bt_sm_shine.png" COMP;
+      image: "bt_sm_hilight.png" COMP;
+      image: "ilist_1.png" COMP;
+      image: "ilist_2.png" COMP;
+      image: "ilist_item_shadow.png" COMP;
+   }
    parts {
       part {
          name: "event";
