@@ -29,7 +29,7 @@ image_edit_images_list_get(Project *project)
 }
 
 EAPI int
-image_edit_image_id_get (Project *project, const char *image_name)
+image_edit_image_id_get(Project *project, const char *image_name)
 {
    Evas_Object *edje_obj;
    GET_OBJ(project, edje_obj);
@@ -38,19 +38,37 @@ image_edit_image_id_get (Project *project, const char *image_name)
 }
 
 EAPI Edje_Edit_Image_Comp
-image_edit_image_compression_type_get (Project *project, const char *image)
+image_edit_image_compression_type_get(Project *project, const char *image)
 {
    Evas_Object *edje_obj;
-   GET_OBJ(project,edje_obj);
+   GET_OBJ(project, edje_obj);
 
-   return edje_edit_image_compression_type_get (edje_obj, image);
+   return edje_edit_image_compression_type_get(edje_obj, image);
 }
 
 EAPI int
-image_edit_image_compression_rate_get  (  Project *project, const char *   image )
+image_edit_image_compression_rate_get(Project *project, const char *image)
 {
    Evas_Object *edje_obj;
-   GET_OBJ(project,edje_obj);
+   GET_OBJ(project, edje_obj);
 
-   return edje_edit_image_compression_rate_get(edje_obj,image);
+   return edje_edit_image_compression_rate_get(edje_obj, image);
+}
+
+EAPI Eina_Bool
+image_edit_image_del(Project *project, const char *image)
+{
+   Evas_Object *edje_obj;
+   GET_OBJ(project, edje_obj);
+
+   return edje_edit_image_del(edje_obj, image);
+}
+
+EAPI Eina_Bool
+image_edit_image_add(Project *project, const char *path)
+{
+   Evas_Object *edje_obj;
+   GET_OBJ(project, edje_obj);
+
+   return edje_edit_image_add(edje_obj, path);
 }
