@@ -283,15 +283,17 @@ ui_menu_add(App_Data *ap)
 {
    Evas_Object *tb, *menu;
    Elm_Object_Item *tb_it, *menu_sub;
+   Evas_Object *box = NULL;
+   Evas_Object *button = NULL;
+   Evas_Object *icon = NULL;
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
-
    evas_object_size_hint_weight_set(tb, 0.0, 0.0);
    elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_NONE);
    elm_toolbar_align_set(tb, 0.0);
    elm_toolbar_homogeneous_set(tb, EINA_TRUE);
-   elm_object_part_content_set(ap->win_layout, "swallow/toolbar", tb);
+   elm_object_part_content_set(ap->win_layout, "swallow/menu_toolbar", tb);
    evas_object_show(tb);
    elm_toolbar_icon_size_set(tb,16);
 
@@ -359,5 +361,57 @@ ui_menu_add(App_Data *ap)
 
    ap->main_menu = tb;
 
+   tb = elm_toolbar_add(ap->win_layout);
+   if (tb == NULL) return EINA_FALSE;
+   elm_object_style_set(tb, "eflete/default");
+
+   evas_object_size_hint_weight_set(tb, EVAS_HINT_FILL, 1.0);
+   elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_EXPAND);
+   elm_toolbar_homogeneous_set(tb, EINA_FALSE);
+   elm_object_part_content_set(ap->win_layout, "swallow/button_toolbar", tb);
+   evas_object_show(tb);
+
+   Evas_Object *box_buttons = NULL;
+   BOX_ADD(tb, box_buttons, EINA_TRUE, EINA_FALSE);
+   elm_box_align_set(box_buttons, 0.0, 0.5);
+   tb_it = elm_toolbar_item_append(tb, NULL, NULL, NULL, NULL);
+
+#define ITEM_TB_ADD(icon_name, text, callback) \
+   button = elm_button_add(box); \
+   elm_object_text_set(button, text); \
+   elm_object_style_set(button, "eflete/default"); \
+   evas_object_show(button); \
+   elm_box_pack_end(box, button); \
+   icon = elm_icon_add(button); \
+   elm_image_file_set(icon, icon_name, NULL); \
+   elm_image_no_scale_set(icon, EINA_TRUE); \
+   elm_object_part_content_set(button, NULL, icon); \
+   evas_object_color_set(icon, 55, 155, 255, 255); \
+   evas_object_smart_callback_add(button, "clicked", callback, ap);
+
+
+   BOX_ADD(box_buttons, box, EINA_TRUE, EINA_FALSE)
+   elm_box_align_set(box, 0.0, 0.5);
+   elm_box_padding_set(box, 0, 0);
+   elm_box_pack_end(box_buttons, box);
+
+   ITEM_TB_ADD(TET_IMG_PATH"icon-new_project.png", "New project", _on_new_theme_menu)
+   ITEM_TB_ADD(TET_IMG_PATH"icon-open_project.png", "Open project",_on_edj_open_menu)
+   ITEM_TB_ADD(TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu)
+
+   BOX_ADD(box_buttons, box, EINA_TRUE, EINA_FALSE)
+   elm_box_align_set(box, 1.0, 0.5);
+   elm_box_padding_set(box, 0, 0);
+
+   ITEM_TB_ADD(TET_IMG_PATH"icon-layout.png", "Layout", NULL)
+   ITEM_TB_ADD(TET_IMG_PATH"icon-settings.png", "Settings", NULL)
+
+   evas_object_show(box);
+   elm_box_pack_end(box_buttons, box);
+
+   evas_object_show(box_buttons);
+   elm_object_item_part_content_set(tb_it, "object", box_buttons);
+
+#undef ITEM_TB_ADD
    return EINA_TRUE;
 }

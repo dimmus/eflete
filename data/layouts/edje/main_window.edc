@@ -2,22 +2,32 @@ group {
    images {
       image: "logo.png" COMP;
    }
-	name: "ui/main_window";
-	parts {
-		part {
-			name: "swallow/panes";
-			type: SWALLOW;
+   name: "ui/main_window";
+   parts {
+      part {
+         name: "bg";
+         type: RECT;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            color: 48 48 48 255;
+            fixed: 1 1;
+         }
+      }
+      part {
+         name: "swallow/panes";
+         type: SWALLOW;
          scale: 1;
          mouse_events: 1;
-			description {
-				state:   "default" 0.0;
+         description {
+            state:   "default" 0.0;
               min:     800 600;
               visible: 0;
-				rel1 {
-					relative: 0.0 1.0;
-					to: "swallow/toolbar";
-				}
-			}
+            rel1 {
+               relative: 0.0 1.0;
+               to: "swallow/button_toolbar";
+            }
+         }
          description {
             state:   "hidden" 0.0;
             inherit: "default" 0.0;
@@ -28,7 +38,7 @@ group {
             inherit: "default" 0.0;
             visible: 1;
          }
-	   }
+      }
 
       part {
          name: "rect/background";
@@ -41,7 +51,7 @@ group {
             color: 64 64 64 255;
             rel1 {
                relative: 0.0 1.0;
-               to: "swallow/toolbar";
+               to: "swallow/button_toolbar";
             }
          }
          description {
@@ -88,17 +98,33 @@ group {
       }
 
       part {
-			name: "swallow/toolbar";
-			type: SWALLOW;
+         name: "swallow/menu_toolbar";
+         type: SWALLOW;
          scale: 1;
          mouse_events: 1;
-			description {
-				state: "default" 0.0;
-				max: 9999 20;
-				align: 0.0 0.0;
-			}
-		}
-	}
+         description {
+            state: "default" 0.0;
+            min: 300 20;
+            max: 9999 20;
+            align: 0.0 0.0;
+         }
+      }
+       part {
+         name: "swallow/button_toolbar";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            max: 9999 20;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "swallow/menu_toolbar";
+            }
+         }
+      }
+   }
 
    programs {
       program {

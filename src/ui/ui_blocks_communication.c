@@ -311,10 +311,11 @@ new_theme_create(App_Data *ap __UNUSED__)
 }
 
 Eina_Bool
-ui_style_delete(App_Data *ap __UNUSED__)
+ui_style_delete(App_Data *ap)
 {
-/*   Widget *widget = NULL;
+   Widget *widget = NULL;
    Style *style = NULL;
+   Style *style_work = NULL;
    Group *group = NULL;
    Group *group_work = NULL;
 
@@ -326,64 +327,98 @@ ui_style_delete(App_Data *ap __UNUSED__)
    Evas_Object *box = NULL;
    Eina_List *box_childs = NULL;
    Eina_Inlist *l = NULL;
+   int inlist_count = 0;
 
    nf = ui_block_widget_list_get(ap);
+   eoi = elm_naviframe_bottom_item_get(nf);
+   gl_widget = elm_object_item_part_content_get(eoi, NULL);
+   eoi = elm_genlist_selected_item_get(gl_widget);
+   widget = elm_object_item_data_get(eoi);
+
    eoi = elm_naviframe_top_item_get(nf);
    box = elm_object_item_part_content_get(eoi, NULL);
    box_childs = elm_box_children_get(box);
    gl_style = eina_list_data_get(eina_list_last(box_childs));
    eoi = elm_genlist_selected_item_get(gl_style);
+
    if (!eoi)
      {
-        NOTIFY_INFO(3, "Not one style is selected");
+        NOTIFY_INFO(3, "No one style is selected");
+        return EINA_FALSE;
+     }
+   eoi_work = elm_genlist_item_parent_get(eoi);
+   if (eoi_work)
+      style = elm_object_item_data_get(eoi_work);
+   else
+      style = elm_object_item_data_get(eoi);
+
+   if (!strcmp(style->style_name, "default"))
+     {
+        NOTIFY_INFO(3, "Coud'nt delete anything from default style");
         return EINA_FALSE;
      }
 
-   if(elm_genlist_item_parent_get(eoi))
+   if(eoi_work)
      {
+
+        inlist_count = eina_inlist_count(style->groups);
+        if (inlist_count <= 1)
+          {
+             NOTIFY_INFO(3, "Coud'nt delete last class in style. Try to delete style");
+             return EINA_FALSE;
+          }
+
         group = elm_object_item_data_get(eoi);
         if (!edje_edit_group_exist(group->obj, group->full_group_name))
           {
              NOTIFY_INFO(3, "Class[%s] did'nt exist", group->group_name);
              return EINA_FALSE;
           }
-        group_work = group;
-        eoi_work = elm_genlist_item_next_get(eoi);
-        if (!eoi_work)
+
+        EINA_INLIST_FOREACH_SAFE(style->groups, l, group_work)
           {
-             eoi_work = elm_genlist_item_next_get(eoi);
-             group = elm_object_item_data_get(eoi_work);
+             if (strcmp(group->full_group_name, group_work->full_group_name))
+               break;
           }
-        group = elm_object_item_data_get(eoi_work);
-        evas_object_del(group_work->obj);
 
-
-        if (!edje_edit_group_del(group->obj, group->full_group_name))
+        evas_object_del(group->obj);
+        if (!edje_edit_group_del(group_work->obj, group->full_group_name))
           {
              NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
              return EINA_FALSE;
           }
-        DBG("Group name[%s] object[%p]", group->full_group_name, group->obj);
+        wm_group_free(group);
+        style->groups = eina_inlist_remove(style->groups, EINA_INLIST_GET(group));
      }
    else
      {
-        style = elm_object_item_data_get(eoi);
+        inlist_count = eina_inlist_count(widget->styles);
+        if (inlist_count <= 1)
+          {
+             NOTIFY_INFO(3, "Coud'nt delete last style in widget.");
+             return EINA_FALSE;
+          }
+
+        EINA_INLIST_FOREACH_SAFE(widget->styles, l, style_work)
+          {
+             if (strcmp(style->style_name, style_work->style_name))
+               break;
+          }
+
+        group_work = EINA_INLIST_CONTAINER_GET(style_work->groups, Group);
         EINA_INLIST_FOREACH_SAFE(style->groups, l, group)
           {
-             DBG("Group name[%s] object[%p]", group->full_group_name, group->obj);
-             if (!edje_edit_group_del(group->obj, group->full_group_name))
+             evas_object_del(group->obj);
+             if (!edje_edit_group_del(group_work->obj, group->full_group_name))
                {
-                  NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
+                  NOTIFY_INFO(3, "Failed to delete class[%s] in style [%s]",
+                              group->group_name, style->style_name);
                }
           }
+        widget->styles = eina_inlist_remove(widget->styles, EINA_INLIST_GET(style));
+        wm_style_free(style);
      }
-
-   eoi = elm_naviframe_bottom_item_get(nf);
-   gl_widget = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_widget);
-   widget = elm_object_item_data_get(eoi);
-   ui_widget_list_style_data_reload(gl_style, widget->styles);*/
-   NOTIFY_INFO(3, "Not implemented yet.");
+   ui_widget_list_style_data_reload(gl_style, widget->styles);
    return EINA_TRUE;
 }
 

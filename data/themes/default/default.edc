@@ -8,4 +8,6 @@ collections {
    #include "widgets/entry.edc"
    #include "widgets/groupspace_handler_cursor.edc"
    #include "widgets/simplified_toggle_check.edc"
+   #include "widgets/toolbar.edc"
+   #include "widgets/button.edc"
 }

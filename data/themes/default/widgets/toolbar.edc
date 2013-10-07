@@ -1,0 +1,232 @@
+group { name: "elm/toolbar/base/eflete/default";
+    images {
+       image: "arrow_up.png" COMP;
+       image: "arrow_down.png" COMP;
+       image: "arrow_right.png" COMP;
+       image: "arrow_left.png" COMP;
+    }
+      parts {
+         part { name: "base";
+            type: RECT;
+            description { state: "default" 0;
+               color: 48 48 48 0;
+               rel1 {
+                  offset: 2 2;
+               }
+               rel2 {
+                  offset: -3 -3;
+               }
+            }
+         }
+         part { name: "clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0;
+               rel1 {
+                  offset: 2 2;
+               }
+               rel2 {
+                  offset: -3 -3;
+               }
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            clip_to: "clipper";
+            description { state: "default" 0;
+               rel1 {
+                  to: "clipper";
+               }
+               rel2 {
+                  to: "clipper";
+               }
+            }
+         }
+         part { name: "event";
+            type: RECT;
+            repeat_events: 1;
+            description { state: "default" 0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "left_arrow";
+            type: IMAGE;
+            scale: 1;
+            description { state: "default" 0;
+               visible: 0;
+               align: 0 0.5;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_left.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+            description { state: "visible" 0;
+               align: 0 0.5;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_left.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+         }
+         part { name: "right_arrow";
+            type: IMAGE;
+            scale: 1;
+            description { state: "default" 0;
+               visible: 0;
+               align: 1 0.5;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_right.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+            description { state: "visible" 0;
+               align: 1 0.5;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_right.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+         }
+         part { name: "up_arrow";
+            type: IMAGE;
+            scale: 1;
+            description { state: "default" 0;
+               visible: 0;
+               align: 0.5 0;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_up.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+            description { state: "visible" 0;
+               align: 0.5 0;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_up.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+         }
+         part { name: "down_arrow";
+            type: IMAGE;
+            scale: 1;
+            description { state: "default" 0;
+               visible: 0;
+               align: 0.5 1;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_down.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+            description { state: "visible" 0;
+               align: 0.5 1;
+               min: 22 22;
+               max: 22 22;
+               image {
+                  normal: "arrow_down.png";
+                  middle: DEFAULT;
+               }
+               fill {
+               }
+            }
+         }
+      }
+    programs {
+       program { name: "left_show";
+          signal: "elm,action,show,left";
+          source: "elm";
+          action: STATE_SET "visible" 0.00;
+          target: "left_arrow";
+       }
+       program { name: "left_hide";
+          signal: "elm,action,hide,left";
+          source: "elm";
+          action: STATE_SET "default" 0.00;
+          target: "left_arrow";
+       }
+       program { name: "right_show";
+          signal: "elm,action,show,right";
+          source: "elm";
+          action: STATE_SET "visible" 0.00;
+          target: "right_arrow";
+       }
+       program { name: "right_hide";
+          signal: "elm,action,hide,right";
+          source: "elm";
+          action: STATE_SET "default" 0.00;
+          target: "right_arrow";
+       }
+       program { name: "up_show";
+          signal: "elm,action,show,up";
+          source: "elm";
+          action: STATE_SET "visible" 0.00;
+          target: "up_arrow";
+       }
+       program { name: "up_hide";
+          signal: "elm,action,hide,up";
+          source: "elm";
+          action: STATE_SET "default" 0.00;
+          target: "up_arrow";
+       }
+       program { name: "down_show";
+          signal: "elm,action,show,down";
+          source: "elm";
+          action: STATE_SET "visible" 0.00;
+          target: "down_arrow";
+       }
+       program { name: "down_hide";
+          signal: "elm,action,hide,down";
+          source: "elm";
+          action: STATE_SET "default" 0.00;
+          target: "down_arrow";
+       }
+       program { name: "left_go";
+          signal: "mouse,up,1";
+          source: "left_arrow";
+          action: SIGNAL_EMIT "elm,action,left" "elm";
+       }
+       program { name: "right_go";
+          signal: "mouse,up,1";
+          source: "right_arrow";
+          action: SIGNAL_EMIT "elm,action,right" "elm";
+       }
+       program { name: "up_go";
+          signal: "mouse,up,1";
+          source: "up_arrow";
+          action: SIGNAL_EMIT "elm,action,up" "elm";
+       }
+       program { name: "down_go";
+          signal: "mouse,up,1";
+          source: "down_arrow";
+          action: SIGNAL_EMIT "elm,action,down" "elm";
+       }
+    }
+ }
+

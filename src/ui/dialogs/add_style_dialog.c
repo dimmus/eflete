@@ -47,6 +47,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
    Eina_Stringshare *pr_after_name = NULL;
    Eina_Stringshare *state_full = NULL;
    Eina_Stringshare *state_name = NULL;
+   char *script_source = NULL;
    char **state_tok = NULL;
    double state_val = 0;
    int r, g, b, a;
@@ -266,7 +267,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
         PROGRAM_COPY(api_description);
         PROGRAM_COPY(api_name);
 
-        list_pr_targets = edje_edit_program_targets_get(edje_edit_group,
+        list_pr_targets = edje_edit_program_targets_get(template_edje_edit,
                               program_name);
         EINA_LIST_FOREACH(list_pr_targets, l_pr_targets, pr_target_name)
           {
@@ -276,7 +277,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
                    pr_target_name, program_name, full_name);
           }
 
-        list_pr_afters = edje_edit_program_afters_get(edje_edit_group,
+        list_pr_afters = edje_edit_program_afters_get(template_edje_edit,
                               program_name);
         EINA_LIST_FOREACH(list_pr_afters, l_pr_afters, pr_after_name)
           {
@@ -285,7 +286,19 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
                ERR("Failed add after[%s] program[%s] to group[%s]",
                    pr_after_name, program_name, full_name);
           }
+        script_source = edje_edit_script_program_get(template_edje_edit,
+                              program_name);
+        DBG("Program [%s] script[%s]", program_name, script_source);
+        if (!script_source) continue;
+        edje_edit_script_program_set(template_edje_edit,
+                              program_name, script_source);
+
+
      }
+     script_source = edje_edit_script_get(template_edje_edit);
+     if (script_source)
+       edje_edit_script_program_set(template_edje_edit, program_name, script_source);
+
   return EINA_TRUE;
 #undef PROGRAM_COPY
 #undef STATE_COPY
@@ -497,9 +510,18 @@ _on_popup_btn_yes(void *data,
                                    EINA_INLIST_GET(style), _sort_style_add_cb);
      }
 
+   EINA_INLIST_FOREACH_SAFE(template_wdg->styles, l, template_style)
+     {
+        if (!strcmp(template_style->style_name, "default")) break;
+     }
 
-   template_style = EINA_INLIST_CONTAINER_GET(template_wdg->styles, Style);
-   template_group = EINA_INLIST_CONTAINER_GET(template_style->groups, Group);
+   EINA_INLIST_FOREACH_SAFE(template_style->groups, l, template_group)
+     {
+        if (!strcmp(template_group->group_name, "base")) break;
+     }
+
+   if (!template_group)
+      template_group = EINA_INLIST_CONTAINER_GET(template_style->groups, Group);
    wm_group_data_load(template_group, ap->ws->canvas, template_file);
 
    if (_group_template_copy(temporary_group, template_group->obj, full_name,

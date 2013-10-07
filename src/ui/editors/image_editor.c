@@ -438,7 +438,6 @@ image_editor_init(Evas_Object *img_edit, Project *project)
 void
 image_editor_file_choose(Evas_Object *img_edit, const char *selected)
 {
-   Elm_Object_Item *item = NULL;
    Elm_Object_Item *grid_item = NULL;
    const Item* it;
 
