@@ -1,21 +1,21 @@
 /* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
-*/
+ * Copyright (C) 2013 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see .
+ */
 
 #include "ui_property.h"
 #include "ui_property_define.h"
@@ -51,6 +51,13 @@ struct _Prop_Data
       Evas_Object *repeat;
       Evas_Object *clip_to;
    } prop_part;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *drag_x;
+      Evas_Object *drag_y;
+      Evas_Object *confine;
+      Evas_Object *event;
+   } prop_part_drag;
    struct {
       Evas_Object *frame;
       Evas_Object *state;
@@ -205,13 +212,13 @@ ui_property_group_set(Evas_Object *property, Group *group)
         elm_object_content_set(group_frame, box);
 
         pd_group.min = prop_item_group_min_w_h_add(box, group,
-                                                   0.0, 9999.0, 1.0,
-                                                   "Minimum group width in pixels.",
-                                                   "Minimum group height in pixels.");
+                          0.0, 9999.0, 1.0,
+                          "Minimum group width in pixels.",
+                          "Minimum group height in pixels.");
         pd_group.max = prop_item_group_max_w_h_add(box, group,
-                                                   -1.0, 9999.0, 1.0,
-                                                   "Maximum group width in pixels.",
-                                                   "Maximum group height in pixels.");
+                          -1.0, 9999.0, 1.0,
+                          "Maximum group width in pixels.",
+                          "Maximum group height in pixels.");
         elm_box_pack_end(box, pd_group.min);
         elm_box_pack_end(box, pd_group.max);
 
@@ -248,17 +255,30 @@ ui_property_group_unset(Evas_Object *property)
    ITEM_1ENTRY_PART_ADD(text, sub, value) \
    ITEM_1ENTRY_PART_UPDATE(sub, value)
 
+#define ITEM_DRAG_PART_CREATE(text, sub, value1, value2) \
+   ITEM_CHECK_PART_CALLBACK(sub, value1) \
+   ITEM_INT_PART_CALLBACK(sub, value2) \
+   ITEM_DRAG_PART_ADD(text, sub, value1, value2) \
+   ITEM_DRAG_PART_UPDATE(sub, value1, value2)
+
 /* part property */
 ITEM_1CHECK_PART_CREATE("scale", part, scale)
 ITEM_1CHECK_PART_CREATE("mouse", part, mouse_events)
 ITEM_1CHECK_PART_CREATE("repeat", part, repeat_events)
 ITEM_1ENTRY_PART_CREATE("clip to", part, clip_to)
 
+/* part drag property */
+ITEM_DRAG_PART_CREATE("x", part_drag, x, step_x)
+ITEM_DRAG_PART_CREATE("y", part_drag, y, step_y)
+ITEM_1ENTRY_PART_CREATE("confine", part_drag, confine)
+ITEM_1ENTRY_PART_CREATE("event", part_drag, event)
+
 #define pd_part pd->prop_part
+#define pd_part_drag pd->prop_part_drag
 Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
-   Evas_Object *part_frame, *box, *prop_box;
+   Evas_Object *part_frame, *part_drag_frame, *box, *prop_box;
    Edje_Part_Type type;
 
    if ((!property) || (!part)) return EINA_FALSE;
@@ -267,6 +287,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
    pd->part = part;
 
    type = edje_edit_part_type_get(pd->group->obj, part->name);
+   prop_box = elm_object_content_get(property);
 
    if (!pd_part.frame)
      {
@@ -278,14 +299,15 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd_part.name = prop_item_label_add(box, "name", part->name);
         pd_part.type = prop_item_label_add(box, "type", wm_part_type_get(type));
         pd_part.scale = prop_item_part_scale_add(box, pd->group, part,
-                                                 "Specifies whether the part will scale "
-                                                 "its size with an edje scaling factor.");
+                           "Specifies whether the part will scale "
+                           "its size with an edje scaling factor.");
         pd_part.mouse = prop_item_part_mouse_events_add(box, pd->group, part,
-                                                        "Enable mouse events in this part.");
+                           "Enable mouse events in this part.");
         pd_part.repeat = prop_item_part_repeat_events_add(box, pd->group, part,
-                                                      "Enable repeat mouse events to the parts below.");
+                            "Enable repeat mouse events to the parts below.");
         pd_part.clip_to = prop_item_part_clip_to_add(box, pd->group, part,
-                                                     "");
+                             "Show only the area of part that coincides with "
+                             "another part's container");
         elm_box_pack_end(box, pd_part.name);
         elm_box_pack_end(box, pd_part.type);
         elm_box_pack_end(box, pd_part.scale);
@@ -293,7 +315,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_part.repeat);
         elm_box_pack_end(box, pd_part.clip_to);
 
-        prop_box = elm_object_content_get(property);
         elm_box_pack_after(prop_box, part_frame, pd->prop_group.frame);
         pd_part.frame = part_frame;
      }
@@ -307,6 +328,44 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_clip_to_update(pd_part.clip_to, pd->group, part);
          evas_object_show(pd_part.frame);
      }
+   if (!pd_part_drag.frame)
+     {
+        FRAME_ADD(property, part_drag_frame, EINA_TRUE, "Part dragable property")
+        BOX_ADD(part_drag_frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(part_drag_frame, box);
+
+        pd_part_drag.drag_x = prop_item_part_drag_x_step_x_add(box, pd->group, part,
+                                 0.0, 9999.0, 1.0, "%.0f",
+                                 "Enable/Disable draggin along X axis",
+                                 "Set a drag step value");
+        pd_part_drag.drag_y = prop_item_part_drag_y_step_y_add(box, pd->group, part,
+                                 0.0, 9999.0, 1.0, "%.0f",
+                                 "Enable/Disable draggin along Y axis",
+                                 "Set a drag step value");
+        pd_part_drag.confine = prop_item_part_drag_confine_add(box, pd->group, part,
+                                  "Limits the movement of the dragged part to "
+                                  "another part's container'");
+        pd_part_drag.event = prop_item_part_drag_event_add(box, pd->group, part,
+                                "It causes the part to forward the drag events "
+                                "to another part, thus ignoring them for itself.");
+
+        elm_box_pack_end(box, pd_part_drag.drag_x);
+        elm_box_pack_end(box, pd_part_drag.drag_y);
+        elm_box_pack_end(box, pd_part_drag.confine);
+        elm_box_pack_end(box, pd_part_drag.event);
+
+        elm_box_pack_after(prop_box, part_drag_frame, pd_part.frame);
+        pd_part_drag.frame = part_drag_frame;
+     }
+   else
+     {
+        prop_item_part_drag_x_step_x_update(pd_part_drag.drag_x, pd->group, part);
+        prop_item_part_drag_y_step_y_update(pd_part_drag.drag_y, pd->group, part);
+        prop_item_part_drag_confine_update(pd_part_drag.confine, pd->group, part);
+        prop_item_part_drag_event_update(pd_part_drag.confine, pd->group, part);
+        evas_object_show(pd_part_drag.frame);
+     }
 
    return EINA_TRUE;
 }
@@ -318,15 +377,16 @@ ui_property_part_unset(Evas_Object *property)
    PROP_DATA_GET()
 
    evas_object_hide(pd->prop_part.frame);
+   evas_object_hide(pd->prop_part_drag.frame);
 
    ui_property_state_unset(property);
 }
 #undef pd_part
+#undef pd_part_drag
 
 /*   miss:
      Evas_Object *aspect_pref;
  */
-
 #define ITEM_2SPINNER_STATE_CREATE(text, sub, value1, value2, type) \
    ITEM_SPINNER_STATE_CALLBACK(sub, value1, type) \
    ITEM_SPINNER_STATE_CALLBACK(sub, value2, type) \
@@ -383,29 +443,29 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.visible = prop_item_state_visible_add(box, pd->group, part,
                                                        "");
         pd_state.min = prop_item_state_min_w_h_add(box, pd->group, part,
-                                                   0.0, 9999.0, 1.0, "%.0f",
-                                                   "Minimum part width in pixels.",
-                                                   "Minimum part height in pixels.");
+                          0.0, 9999.0, 1.0, "%.0f",
+                          "Minimum part width in pixels.",
+                          "Minimum part height in pixels.");
         pd_state.max = prop_item_state_max_w_h_add(box, pd->group, part,
-                                                   -1.0, 9999.0, 1.0, "%.0f",
-                                                   "Maximum part width in pixels.",
-                                                   "Maximum part height in pixels.");
+                          -1.0, 9999.0, 1.0, "%.0f",
+                          "Maximum part width in pixels.",
+                          "Maximum part height in pixels.");
         pd_state.align = prop_item_state_align_x_y_add(box, pd->group, part,
-                                                       0.0, 1.0, 0.1, "%1.2f",
-                                                       "Part horizontal align: 0.0 = left  1.0 = right",
-                                                       "Part vertical align: 0.0 = top  1.0 = bottom");
+                            0.0, 1.0, 0.1, "%1.2f",
+                            "Part horizontal align: 0.0 = left  1.0 = right",
+                            "Part vertical align: 0.0 = top  1.0 = bottom");
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd->group, part,
-                                                             0.0, 1.0, 0.1, "%1.2f",
-                                                             "Normally width and height can be "
-                                                             "resized to any values independently",
-                                                             "Normally width and height can be "
-                                                             "resized to any values independently");
+                             0.0, 1.0, 0.1, "%1.2f",
+                             "Normally width and height can be "
+                             "resized to any values independently",
+                             "Normally width and height can be "
+                             "resized to any values independently");
         /* pd_state.aspect_pref = */
         pd_state.color_class = prop_item_state_color_class_add(box, pd->group, part,
-                                                               "Current color class",
-                                                               "Choose another color class");
+                                  "Current color class",
+                                  "Choose another color class");
         pd_state.color = prop_item_state_color_add(box, pd->group, part,
-                                                   "Part main color.");
+                            "Part main color.");
 
         elm_box_pack_end(box, pd_state.state);
         elm_box_pack_end(box, pd_state.visible);
@@ -422,7 +482,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
           }
         else elm_box_pack_end(box, pd_state.color);
         prop_box = elm_object_content_get(property);
-        elm_box_pack_after(prop_box, state_frame, pd->prop_part.frame);
+        elm_box_pack_after(prop_box, state_frame, pd->prop_part_drag.frame);
         pd_state.frame = state_frame;
      }
    else
@@ -497,16 +557,16 @@ ui_property_state_rel1_set(Evas_Object *property, Part *part)
         elm_object_content_set(rel1_frame, box);
 
         pd_rel1.relative = prop_item_state_rel1_relative_x_y_add(box, pd->group, part,
-                                                                 -5.0, 5.0, 0.1, "%1.2f",
-                                                                 "Relative 1 x",
-                                                                 "Relative 1 y");
+                              -5.0, 5.0, 0.1, "%1.2f",
+                              "Relative 1 x",
+                              "Relative 1 y");
         pd_rel1.offset = prop_item_state_rel1_offset_x_y_add(box, pd->group, part,
-                                                        -9999.0, 9999.0, 1.0, "%.0f",
-                                                        "Left offset from relative position in pixels",
-                                                        "Top offset from relative position in pixels");
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "Left offset from relative position in pixels",
+                            "Top offset from relative position in pixels");
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd->group, part,
-                                                     "Left reference part.",
-                                                     "Top reference part.");
+                        "Left reference part.",
+                        "Top reference part.");
 
         elm_box_pack_end(box, pd_rel1.relative);
         elm_box_pack_end(box, pd_rel1.offset);
@@ -554,16 +614,16 @@ ui_property_state_rel2_set(Evas_Object *property, Part *part)
         elm_object_content_set(rel2_frame, box);
 
         pd_rel2.relative = prop_item_state_rel2_relative_x_y_add(box, pd->group, part,
-                                                                 -5.0, 5.0, 0.1, "%1.2f",
-                                                                 "Relative 2 x",
-                                                                 "Relative 2 y");
+                              -5.0, 5.0, 0.1, "%1.2f",
+                              "Relative 2 x",
+                              "Relative 2 y");
         pd_rel2.offset = prop_item_state_rel2_offset_x_y_add(box, pd->group, part,
-                                                        -9999.0, 9999.0, 1.0, "%.0f",
-                                                        "Left offset from relative position in pixels",
-                                                        "Top offset from relative position in pixels");
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "Left offset from relative position in pixels",
+                            "Top offset from relative position in pixels");
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd->group, part,
-                                                     "Right reference part.",
-                                                     "Bottom reference part.");
+                        "Right reference part.",
+                        "Bottom reference part.");
 
         elm_box_pack_end(box, pd_rel2.relative);
         elm_box_pack_end(box, pd_rel2.offset);
@@ -624,34 +684,35 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
    prop_box = elm_object_content_get(property);
    if (!pd_text.frame)
      {
-         FRAME_ADD(property, text_frame, EINA_TRUE, "text")
+         FRAME_ADD(property, text_frame, EINA_TRUE, "Text")
          BOX_ADD(text_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
 
          pd_text.text = prop_item_state_text_add(box, pd->group, part,
-                                                 "Set the text of part.", "Choose different text");
+                           "Set the text of part.", "Choose different text");
          pd_text.font = prop_item_state_font_add(box, pd->group, part,
-                                                 "Change the text's font", "Choose different font");
+                           "Change the text's font", "Choose different font");
          pd_text.size = prop_item_state_text_size_add(box, pd->group, part,
-                                                      0.0, 128.0, 1.0, "%.0f pt",
-                                                      "Change text font's size.'");
+                           0.0, 128.0, 1.0, "%.0f pt",
+                           "Change text font's size.'");
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd->group, part,
-                                                            0.0, 1.0, 0.1, "%1.2f",
-                                                            "Text horizontal align. "
-                                                            "0.0 = left  1.0 = right",
-                                                            "Text vertical align. "
-                                                            "0.0 = top  1.0 = bottom");
+                            0.0, 1.0, 0.1, "%1.2f",
+                            "Text horizontal align. "
+                            "0.0 = left  1.0 = right",
+                            "Text vertical align. "
+                            "0.0 = top  1.0 = bottom");
          pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd->group, part,
-                                                           0.0, 1.0, 0.1, "%1.2f",
-                                                           "Cut text if biggest then part's area"
-                                                           "0.0 = fix the left side  1.0 = right side");
+                              0.0, 1.0, 0.1, "%1.2f",
+                              "Cut text if biggest then part's area"
+                              "0.0 = fix the left side  1.0 = right side");
          pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd->group, part,
-                                                        "", "");
+                          "Resize the text for it to fit in it's container by X axis",
+                          "Resize the text for it to fit in it's container by Y axis");
          pd_text.color2 = prop_item_state_color2_add(box, pd->group, part,
-                                                     "Text shadow color.");
+                             "Text shadow color.");
          pd_text.color3 = prop_item_state_color3_add(box, pd->group, part,
-                                                     "Text outline color.");
+                             "Text outline color.");
 
          elm_box_pack_end(box, pd_text.text);
          elm_box_pack_end(box, pd_text.font);
@@ -746,16 +807,16 @@ ui_property_state_image_set(Evas_Object *property, Part *part)
    prop_box = elm_object_content_get(property);
    if (!pd_image.frame)
      {
-        FRAME_ADD(property, image_frame, EINA_TRUE, "image")
+        FRAME_ADD(property, image_frame, EINA_TRUE, "Image")
         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
 
         pd_image.normal = prop_item_state_image_add(box, pd->group, part,
-                                                     "Current image name",
-                                                     "Change image");
+                             "Current image name",
+                             "Change image");
         pd_image.border = prop_item_state_image_border_add(box, pd->group, part,
-                                                           "Image's' border value");
+                             "Image's border value");
 
         elm_box_pack_end(box, pd_image.normal);
         elm_box_pack_end(box, pd_image.border);
