@@ -19,7 +19,7 @@
 
 #define OBJ_DATA "group_data"
 
-/* part */
+/* group */
 #define ITEM_SPINNER_CALLBACK(sub, value, type) \
 static void \
 __on_##sub##_##value##_change(void *data, \
@@ -82,6 +82,8 @@ void prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, Group *gr
 }
 
 /* part */
+/* TODO: need to update a edje_edit api, returned value should be Eina_Bool,
+   because it is impossible to check the parameter set */
 #define ITEM_STRING_PART_CALLBACK(sub, value) \
 static void \
 __on_##sub##_##value##_change(void *data, \
@@ -91,14 +93,9 @@ __on_##sub##_##value##_change(void *data, \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
-   Eina_Bool res = edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
-   if (!res) \
-     { \
-        NOTIFY_WARNING("The entered data is not valid!") \
-        return; \
-     } \
+   edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
    group->isModify = EINA_TRUE; \
-   evas_object_smart_callback_call(group->obj, "group,update", part);\
+   evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
 #define ITEM_CHECK_PART_CALLBACK(sub, value) \
@@ -112,7 +109,21 @@ __on_##sub##_##value##_change(void *data, \
    Eina_Bool value = elm_check_state_get(obj); \
    edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
    group->isModify = EINA_TRUE; \
-   evas_object_smart_callback_call(group->obj, "group,update", part);\
+   evas_object_smart_callback_call(group->obj, "group,update", part); \
+}
+
+#define ITEM_INT_PART_CALLBACK(sub, value) \
+static void \
+__on_##sub##_##value##_change(void *data, \
+                              Evas_Object *obj, \
+                              void *ei __UNUSED__) \
+{ \
+   Part *part = (Part *)data; \
+   Group *group = evas_object_data_get(obj, OBJ_DATA); \
+   int drag = elm_spinner_value_get(obj); \
+   edje_edit_##sub##_##value##_set(group->obj, part->name, drag); \
+   group->isModify = EINA_TRUE; \
+   evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
 #define ITEM_1ENTRY_PART_ADD(text, sub, value) \
@@ -183,6 +194,73 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    evas_object_smart_callback_del(check, "changed", __on_##sub##_##value##_change); \
    evas_object_smart_callback_add(check, "changed", \
                                   __on_##sub##_##value##_change, part); \
+}
+
+#define ITEM_DRAG_PART_ADD(text, sub, value1, value2) \
+Evas_Object * \
+prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
+                                            Group *group, \
+                                            Part *part, \
+                                            double min, \
+                                            double max, \
+                                            double step, \
+                                            const char *fmt, \
+                                            const char *tooltip1, \
+                                            const char *tooltip2 ) \
+{ \
+   Evas_Object *item, *box, *check, *spinner; \
+   int ch_value, st_value; \
+   ITEM_ADD(parent, item, text) \
+   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
+   CHECK_ADD(box, check, "simplified_toggle") \
+   ch_value = edje_edit_##sub##_##value1##_get(group->obj, part->name); \
+   elm_check_state_set(check, ch_value); \
+   evas_object_data_set(check, OBJ_DATA, group); \
+   elm_object_tooltip_text_set(check, tooltip1); \
+   evas_object_smart_callback_add(check, "changed", \
+                                  __on_##sub##_##value1##_change, part); \
+   elm_box_pack_end(box, check); \
+   SPINNER_ADD(box, spinner, min, max, step, EINA_TRUE, "default") \
+   elm_spinner_label_format_set(spinner, fmt); \
+   st_value = edje_edit_##sub##_##value2##_get(group->obj, part->name); \
+   elm_spinner_value_set(spinner, st_value); \
+   evas_object_data_set(spinner, OBJ_DATA, group); \
+   elm_object_tooltip_text_set(spinner, tooltip2); \
+   evas_object_smart_callback_add(spinner, "changed", \
+                                  __on_##sub##_##value2##_change, part); \
+   elm_box_pack_end(box, spinner); \
+   elm_object_part_content_set(item, "elm.swallow.content", box); \
+   return item; \
+}
+
+#define ITEM_DRAG_PART_UPDATE(sub, value1, value2) \
+void \
+prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
+                                               Group *group, \
+                                               Part *part) \
+{ \
+   Evas_Object *box, *check, *spinner; \
+   int ch_value, st_value; \
+   Eina_List *nodes; \
+   box = elm_object_part_content_get(item, "elm.swallow.content"); \
+   nodes = elm_box_children_get(box); \
+   check = eina_list_nth(nodes, 0); \
+   ch_value = edje_edit_##sub##_##value1##_get(group->obj, part->name); \
+   elm_check_state_set(check, ch_value); \
+   evas_object_data_del(check, OBJ_DATA); \
+   evas_object_data_set(check, OBJ_DATA, group); \
+   evas_object_smart_callback_del(check, "changed", __on_##sub##_##value1##_change); \
+   evas_object_smart_callback_add(check, "changed", \
+                                  __on_##sub##_##value1##_change, part); \
+   spinner = eina_list_nth(nodes, 1); \
+   st_value = edje_edit_##sub##_##value2##_get(group->obj, part->name); \
+   elm_spinner_value_set(spinner, st_value); \
+   evas_object_data_del(spinner, OBJ_DATA); \
+   evas_object_data_set(spinner, OBJ_DATA, group); \
+   evas_object_smart_callback_del(spinner, "changed", __on_##sub##_##value2##_change); \
+   evas_object_smart_callback_add(spinner, "changed", \
+                                  __on_##sub##_##value2##_change, part); \
+   eina_list_free(nodes); \
 }
 
 /* state */
