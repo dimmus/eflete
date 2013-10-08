@@ -2,9 +2,9 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/themes
-EDJE_FLAGS_DEFAULT = -v -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/themes
-EDJE_FLAGS_TEMPLATE = -v -id $(top_srcdir)/data/template/images -fd $(top_srcdir)/data/themes
+EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/themes
+EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/themes
+EDJE_FLAGS_TEMPLATE = -id $(top_srcdir)/data/template/images -fd $(top_srcdir)/data/themes
 
 
 filesdir = $(datadir)/eflete/themes/default
