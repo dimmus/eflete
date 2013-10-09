@@ -19,6 +19,7 @@
 
 #include "image_editor.h"
 #include "alloc.h"
+#include "widget_define.h"
 
 typedef struct _Item
 {
@@ -87,11 +88,12 @@ _grid_del(void *data,
 }
 
 static void
-_on_image_done(void *data __UNUSED__,
+_on_image_done(void *data,
              Evas_Object *obj,
              void *event_info)
 {
    const char *selected = event_info;
+   Evas_Object *inwin = (Evas_Object *)data;
    Item *it;
 
    if (selected)
@@ -120,10 +122,11 @@ _on_image_done(void *data __UNUSED__,
      }
    evas_object_hide(elm_object_parent_widget_get(obj));
    evas_object_del(obj);
+   evas_object_del(inwin);
 }
 
 static void
-__on_mw_fileselector_close(void *data __UNUSED__,
+_on_mw_fileselector_close(void *data __UNUSED__,
                        Evas *e __UNUSED__,
                        Evas_Object *obj,
                        void *event_info __UNUSED__)
@@ -136,27 +139,16 @@ _on_button_add_clicked_cb(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
 {
-   Evas_Object *fs, *inwin;
+   Evas_Object *fs, *inwin, *box;
 
    inwin = mw_add(data);
-   mw_title_set(inwin, "Open EDJ file dialog");
+
+   OPEN_DIALOG_ADD(inwin, box, fs, "Add image to library");
+
    evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                  __on_mw_fileselector_close, NULL);
-   evas_object_focus_set(inwin, EINA_TRUE);
+                                  _on_mw_fileselector_close, NULL);
+   evas_object_smart_callback_add(fs, "done", _on_image_done, inwin);
 
-   fs = elm_fileselector_add(inwin);
-
-   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_fileselector_path_set(fs, getenv("HOME"));
-   elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
-   elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
-   evas_object_smart_callback_add(fs, "done", _on_image_done, NULL);
-
-   elm_win_inwin_content_set(inwin, fs);
-
-   evas_object_show(fs);
    elm_win_inwin_activate(inwin);
 
    return;
