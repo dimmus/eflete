@@ -396,14 +396,14 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    evas_object_resize(ws->highlight.space_hl, w, h);
    evas_object_move(ws->highlight.space_hl, x, y);
    evas_object_show(ws->highlight.space_hl);
-   evas_object_box_append(box, ws->highlight.space_hl);
+   evas_object_box_insert_at(box, ws->highlight.space_hl, 0);
    hl_highlight_handler_disabled_set(ws->highlight.space_hl, EINA_TRUE);
 
    evas_object_geometry_get(part->obj, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.highlight, w, h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_show(ws->highlight.highlight);
-   evas_object_box_append(box, ws->highlight.highlight);
+   evas_object_box_insert_at(box, ws->highlight.highlight, 0);
 
    evas_object_event_callback_add(ws->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,

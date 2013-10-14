@@ -93,6 +93,7 @@ __on_##sub##_##value##_change(void *data, \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
+   if (strcmp(value, "") == 0) value = NULL; \
    edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
    group->isModify = EINA_TRUE; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
@@ -273,6 +274,7 @@ __on_##sub##_##value##_change(void *data, \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
+   if (strcmp(value, "") == 0) value = NULL; \
    edje_edit_##sub##_##value##_set(group->obj, part->name, \
                                    part->curr_state, part->curr_state_value, \
                                    value); \
