@@ -78,7 +78,7 @@ ui_block_title_text_get(Evas_Object *block)
 {
    if(!block)
      {
-        ERR("Could not nget title text, becouse a block is NULL");
+        ERR("Could not get title text, becouse a block is NULL");
         return NULL;
      }
 
