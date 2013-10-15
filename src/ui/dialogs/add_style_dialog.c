@@ -593,12 +593,14 @@ new_style_dialog_add(App_Data *ap)
    evas_object_smart_callback_add(button, "close,popup", _popup_close, popup);
    evas_object_smart_callback_add(button, "pressed", _on_popup_btn_yes, ap);
    elm_object_part_content_set(popup, "button1", button);
+   elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
 
    button = elm_button_add(popup);
    elm_object_text_set(button, "Cancel");
    evas_object_smart_callback_add(button, "clicked", _popup_close, popup);
    elm_object_part_content_set(popup, "button2", button);
+   elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
 
    evas_object_show(popup);

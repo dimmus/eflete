@@ -134,26 +134,30 @@ ui_demospace_add(Evas_Object *parent)
    elm_layout_file_set(_layout, TET_EDJ, "base/demospace");
 
    _bg = evas_object_image_filled_add(canvas);
-   evas_object_image_filled_set(_bg, EINA_FALSE);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"bg_demo.png", NULL);
-   evas_object_image_fill_set(_bg, -5, -5, 32, 32);
+   evas_object_image_filled_set(_bg, EINA_TRUE);
+   evas_object_image_file_set(_bg, TET_IMG_PATH"styles-preview-bg-current.png",
+                              NULL);
+   evas_object_image_border_set(_bg, 4, 4, 4, 4);
    elm_object_part_content_set(_layout, "base/demospace/background", _bg);
    evas_object_show(_bg);
 
    _button = elm_button_add(parent);
    elm_object_text_set(_button, "0.5");
+   elm_object_style_set(_button, "eflete/default");
    elm_object_part_content_set(_layout, "base/demospace/button_zoom_half",
                                _button);
    evas_object_smart_callback_add(_button, "clicked", _zoom_half_on_click, demo);
 
    _button = elm_button_add(parent);
    elm_object_text_set(_button, "1.0");
+   elm_object_style_set(_button, "eflete/default");
    elm_object_part_content_set(_layout, "base/demospace/button_zoom_one",
                                _button);
    evas_object_smart_callback_add(_button, "clicked", _zoom_one_on_click, demo);
 
    _button = elm_button_add(parent);
    elm_object_text_set(_button, "2.0");
+   elm_object_style_set(_button, "eflete/default");
    elm_object_part_content_set(_layout, "base/demospace/button_zoom_two",
                                _button);
    evas_object_smart_callback_add(_button, "clicked", _zoom_two_on_click, demo);

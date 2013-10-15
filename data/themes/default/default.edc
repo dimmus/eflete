@@ -1,5 +1,6 @@
 collections {
    #include "widgets/styles.edc"
+   #include "widgets/panes.edc"
    #include "widgets/block.edc"
    #include "widgets/inwin.edc"
    #include "widgets/naviframe.edc"

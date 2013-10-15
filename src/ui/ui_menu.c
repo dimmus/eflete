@@ -376,16 +376,17 @@ ui_menu_add(App_Data *ap)
    elm_box_align_set(box_buttons, 0.0, 0.5);
    tb_it = elm_toolbar_item_append(tb, NULL, NULL, NULL, NULL);
 
-#define ITEM_TB_ADD(icon_name, text, callback) \
+#define ITEM_TB_ADD(icon_name, text, callback, disabled) \
    button = elm_button_add(box); \
    elm_object_text_set(button, text); \
    elm_object_style_set(button, "eflete/default"); \
-   evas_object_show(button); \
    elm_box_pack_end(box, button); \
    icon = elm_icon_add(button); \
    elm_image_file_set(icon, icon_name, NULL); \
    elm_image_no_scale_set(icon, EINA_TRUE); \
    elm_object_part_content_set(button, NULL, icon); \
+   evas_object_show(button); \
+   elm_object_disabled_set(button, disabled); \
    evas_object_color_set(icon, 55, 155, 255, 255); \
    evas_object_smart_callback_add(button, "clicked", callback, ap);
 
@@ -395,16 +396,19 @@ ui_menu_add(App_Data *ap)
    elm_box_padding_set(box, 0, 0);
    elm_box_pack_end(box_buttons, box);
 
-   ITEM_TB_ADD(TET_IMG_PATH"icon-new_project.png", "New project", _on_new_theme_menu)
-   ITEM_TB_ADD(TET_IMG_PATH"icon-open_project.png", "Open project",_on_edj_open_menu)
-   ITEM_TB_ADD(TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu)
+   ITEM_TB_ADD(TET_IMG_PATH"icon-new_project.png", "New project",
+               _on_new_theme_menu, EINA_FALSE)
+   ITEM_TB_ADD(TET_IMG_PATH"icon-open_project.png", "Open project",
+               _on_edj_open_menu, EINA_FALSE)
+   ITEM_TB_ADD(TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu,
+               EINA_FALSE)
 
    BOX_ADD(box_buttons, box, EINA_TRUE, EINA_FALSE)
    elm_box_align_set(box, 1.0, 0.5);
    elm_box_padding_set(box, 0, 0);
 
-   ITEM_TB_ADD(TET_IMG_PATH"icon-layout.png", "Layout", NULL)
-   ITEM_TB_ADD(TET_IMG_PATH"icon-settings.png", "Settings", NULL)
+   ITEM_TB_ADD(TET_IMG_PATH"icon-layout.png", "Layout", NULL, EINA_FALSE)
+   ITEM_TB_ADD(TET_IMG_PATH"icon-settings.png", "Settings", NULL, EINA_FALSE)
 
    evas_object_show(box);
    elm_box_pack_end(box_buttons, box);

@@ -105,12 +105,14 @@ new_state_dialog_add(App_Data *ap)
    evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, groupspace);
    evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
+   elm_object_style_set(bt_yes, "eflete/default");
    evas_object_show(bt_yes);
 
    bt_no = elm_button_add(popup);
    elm_object_text_set(bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button2", bt_no);
+   elm_object_style_set(bt_no, "eflete/default");
    evas_object_show(bt_no);
 
    evas_object_show(popup);

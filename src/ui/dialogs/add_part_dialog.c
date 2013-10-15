@@ -131,6 +131,7 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
 
 #define ADD_BUTTON(text, callback) \
    button = elm_button_add(box); \
+   elm_object_style_set(button, "eflete/default"); \
    evas_object_smart_callback_add (button, "clicked",_##callback##_add_on_click, popup); \
    evas_object_size_hint_weight_set(button, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(button, EVAS_HINT_FILL, 0.0); \
@@ -152,6 +153,7 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    elm_object_text_set(bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button2", bt_no);
+   elm_object_style_set(bt_no, "eflete/default");
    evas_object_show(bt_no);
 
    evas_object_show(popup);

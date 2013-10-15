@@ -538,7 +538,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(parent, box, EINA_TRUE, EINA_FALSE) \
    ENTRY_ADD(box, entry, EINA_TRUE) \
-   IMAGE_ADD(box, image, TET_IMG_PATH"bg.png"); \
+   IMAGE_ADD(box, image, TET_IMG_PATH"bg_demo.png"); \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
    elm_entry_markup_filter_append(entry, elm_entry_filter_limit_size, &limit_color); \
    snprintf(buff, sizeof(buff), "%i %i %i %i", r, g, b, a); \

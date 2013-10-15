@@ -97,7 +97,28 @@ _item_part_content_get(void *data,
         evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
         return icon;
      }
-   else return NULL;
+    if (!strcmp(part, "elm.swallow.end"))
+     {
+        Evas_Object *icon = elm_icon_add(obj);
+        if (_part->type == EDJE_PART_TYPE_RECTANGLE)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-rectangle.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_IMAGE)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-image.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_SPACER)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-spacer.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_SWALLOW)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-swallow.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_TEXT)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-text.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-textblock.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_GROUP)
+          elm_image_file_set(icon, TET_IMG_PATH"icon-group.png", NULL);
+        elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
+        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        return icon;
+     }
+  else return NULL;
 }
 
 static char *
@@ -376,6 +397,7 @@ _on_group_clicked_double(void *data,
      }
 
    gl_parts = elm_genlist_add(nf);
+   elm_object_style_set(gl_parts, "eflete/default");
    pr->current_group = _group;
    evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_group, pr);
    evas_object_size_hint_align_set(gl_parts,
@@ -404,6 +426,7 @@ _on_group_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
+   elm_object_style_set(bt, "eflete/default");
    evas_object_show(gl_parts);
    box = elm_box_add(nf);
    panel = elm_box_add(box);
@@ -413,6 +436,7 @@ _on_group_clicked_double(void *data,
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "apps");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _add_part_unpress, _group);
+   elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
    elm_box_pack_end(panel, button);
 
@@ -421,6 +445,7 @@ _on_group_clicked_double(void *data,
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "delete,part", _delete_part_click, gl_parts);
    evas_object_smart_callback_add (button, "unpressed", _delete_part_unpress, _group);
+   elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
    elm_box_pack_end(panel, button);
 
@@ -430,6 +455,7 @@ _on_group_clicked_double(void *data,
    evas_object_smart_callback_add (button, "move,part,up", _above_part_click, gl_parts);
    evas_object_smart_callback_add (button, "unpressed", _above_part_unpress, _group);
    evas_object_show(button);
+   elm_object_style_set(button, "eflete/default");
    elm_box_pack_end(panel, button);
 
    button = elm_button_add (panel);
@@ -438,6 +464,7 @@ _on_group_clicked_double(void *data,
    evas_object_smart_callback_add (button, "move,part,down", _past_part_click, gl_parts);
    evas_object_smart_callback_add (button, "unpressed", _past_part_unpress, _group);
    evas_object_show(button);
+   elm_object_style_set(button, "eflete/default");
    elm_box_pack_end(panel, button);
 
 
@@ -476,7 +503,7 @@ _on_widget_clicked_double(void *data,
    if(!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "default";
+        _itc_style->item_style = "eflete/default";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -486,7 +513,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_group)
      {
         _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "default";
+        _itc_group->item_style = "eflete/default";
         _itc_group->func.text_get = _item_group_label_get;
         _itc_group->func.content_get = NULL;
         _itc_group->func.state_get = NULL;
@@ -494,6 +521,7 @@ _on_widget_clicked_double(void *data,
      }
 
    gl_styles = elm_genlist_add(nf);
+   elm_object_style_set(gl_styles, "eflete/default");
    evas_object_size_hint_align_set(gl_styles,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
@@ -525,6 +553,7 @@ _on_widget_clicked_double(void *data,
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
+   elm_object_style_set(bt, "eflete/default");
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
    evas_object_smart_callback_add(gl_styles, "clicked,double",
                                   _on_group_clicked_double, data);
@@ -539,6 +568,7 @@ _on_widget_clicked_double(void *data,
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);
    evas_object_show(button);
+   elm_object_style_set(button, "eflete/default");
    elm_box_pack_end(panel, button);
 
    button = elm_button_add (panel);
@@ -546,6 +576,7 @@ _on_widget_clicked_double(void *data,
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    evas_object_show(button);
+   elm_object_style_set(button, "eflete/default");
    elm_box_pack_end(panel, button);
 
    elm_box_pack_end(box, panel);
@@ -573,7 +604,7 @@ ui_widget_list_style_data_reload(Evas_Object *gl_styles, Eina_Inlist *styles)
    if(!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "default";
+        _itc_style->item_style = "eflete/default";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -583,7 +614,7 @@ ui_widget_list_style_data_reload(Evas_Object *gl_styles, Eina_Inlist *styles)
    if (!_itc_group)
      {
         _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "default";
+        _itc_group->item_style = "eflete/default";
         _itc_group->func.text_get = _item_group_label_get;
         _itc_group->func.content_get = NULL;
         _itc_group->func.state_get = NULL;
@@ -618,7 +649,7 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_widget)
      {
         _itc_widget = elm_genlist_item_class_new();
-        _itc_widget->item_style = "default";
+        _itc_widget->item_style = "eflete/default";
         _itc_widget->func.text_get = _item_widget_label_get;
         _itc_widget->func.content_get = NULL;
         _itc_widget->func.state_get = NULL;
@@ -631,6 +662,7 @@ ui_widget_list_add(Evas_Object *parent)
    elm_object_style_set(nf, "custom");
 
    gl_widgets = elm_genlist_add(nf);
+   elm_object_style_set(gl_widgets, "eflete/default");
    evas_object_size_hint_align_set(gl_widgets,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);

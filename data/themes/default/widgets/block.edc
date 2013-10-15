@@ -1,7 +1,7 @@
 group {
    images {
-      image: "layout_header.jpg" COMP;
       image: "shelf_inside.png" COMP;
+      image: "section-header-bg.png" COMP;
    }
 
    name: "tet/block/layout";
@@ -14,7 +14,8 @@ group {
             max: 9999 1;
             align: 0.5 0;
             visible: 0;
-            image.normal : "layout_header.jpg";
+            image.normal: "section-header-bg.png";
+            image.border: 0 0 0 2;
          }
          description {
             state: "hide" 0.0;
@@ -24,7 +25,7 @@ group {
          description {
             state: "show" 0.0;
             inherit: "default" 0.0;
-            max: 9999 32;
+            max: 9999 48;
             visible: 1;
          }
       }
@@ -57,8 +58,9 @@ group {
          description {
             state: "default" 0.0;
             fixed: 1 1;
-            align: 0.5 0.5;
+            align: 0.0 0.5;
             visible: 0;
+            color: 223 219 210 255;
             rel1 {
                to: "left_top_padding";
                relative: 1.0 1.0;
@@ -68,9 +70,10 @@ group {
                relative: 0.0 1.0;
             }
             text {
-               font: "Sans,Edje-Vera";
+               font: "Sans:style=Bold,Edje-Vera-Bold";
                size: 12;
                text_class: "title";
+               align: 0.0 0.5;
             }
          }
          description {
@@ -94,16 +97,20 @@ group {
             fixed: 1 1;
             align: 1.0 0.5;
             rel1 {
-               to: "left_top_padding";
+               to_x: "left_top_padding";
+               to_y: "header_bg";
                relative: 1.0 0.0;
+               offset: 0 10;
             }
             rel2 {
-               to: "right_bottom_padding";
+               to_x: "right_bottom_padding";
+               to_y: "header_bg";
                relative: 0.0 1.0;
+               offset: 0 -5;
             }
         }
       }
-     part { name: "conf_over";
+       part { name: "conf_over";
          mouse_events:  0;
          description { state: "default" 0.0;
             rel1 {
@@ -116,6 +123,7 @@ group {
                middle: 0;
             }
                fill.smooth : 0;
+            visible: 0;
          }
       }
       part {

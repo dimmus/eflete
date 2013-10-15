@@ -22,7 +22,7 @@ group { \
          type: RECT; \
          description { \
             state: "default" 0.0; \
-            color: 255 255 255 255; \
+            color: 48 48 48 255; \
        } \
          description { \
             state: "hidden" 0.0; \
@@ -176,13 +176,13 @@ group {
 
          while #absDashes<absDashesNeeded do
             line=edje.line();
-            line:color(0,0,0,255);
+            line:color(139,139,139,255);
             line:show();
             table.insert(absDashes,line);
          end
          while #absLabels<absLabelsNeeded+1 do
             label=edje.text();
-            label:color(0,0,0,255);
+            label:color(139,139,139,255);
             label:font("Sans",8);
             label:show();
             table.insert(absLabels,label);

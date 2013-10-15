@@ -11,7 +11,7 @@ group { name: "elm/naviframe/base/custom";
 group { name: "elm/naviframe/item/basic/custom";
 
    images {
-      image: "naviframe-base.jpg" COMP;
+      image: "section-header-bg.png" COMP;
    }
 
    script {
@@ -141,7 +141,7 @@ group { name: "elm/naviframe/item/basic/custom";
             rel1.to: "elements_clip";
             rel2.to: "elements_clip";
             image {
-               normal: "naviframe-base.jpg";
+               normal: "section-header-bg.png";
                border: 0 0 0 2;
                middle: SOLID;
             }
@@ -262,7 +262,8 @@ group { name: "elm/naviframe/item/basic/custom";
          repeat_events: 1;
          clip_to: "elements_clip";
          description { state: "default" 0.0;
-            text { font: "Sans:style=Bold";
+               color: 223 219 210 255;
+               text { font: "Sans:style=Bold";
                size: 12;
                size_range: 9 14;
                fit: 1 1;
@@ -271,7 +272,6 @@ group { name: "elm/naviframe/item/basic/custom";
                align: 0.5 0.2;
                ellipsis: 0.0;
             }
-            color: 0 0 0 255;
             align: 0.5 0.5;
             rel1.to: "elements_area";
             rel2.to: "elements_area";
@@ -299,7 +299,7 @@ group { name: "elm/naviframe/item/basic/custom";
                to: "elements_area";
                offset: -1 -4;
             }
-            color: 50 50 50 255;
+            color: 223 219 210 255;
             align: 0.5 1;
          }
       }

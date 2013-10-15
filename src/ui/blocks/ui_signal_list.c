@@ -50,7 +50,7 @@ ui_signal_list_add(Evas_Object *parent)
    if (!_itc_signal)
      {
         _itc_signal = elm_genlist_item_class_new();
-        _itc_signal->item_style = "default";
+        _itc_signal->item_style = "eflete/default";
         _itc_signal->func.text_get = _item_signal_label_get;
         _itc_signal->func.content_get = NULL;
         _itc_signal->func.state_get = NULL;
@@ -58,6 +58,7 @@ ui_signal_list_add(Evas_Object *parent)
      }
 
    gl_signals = elm_genlist_add(parent);
+   elm_object_style_set(gl_signals, "eflete/default");
    evas_object_size_hint_align_set(gl_signals, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_signals, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_smart_callback_add(gl_signals, "selected",
