@@ -45,13 +45,13 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *spinner1, *spinner2; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(parent, box, EINA_TRUE, EINA_TRUE); \
-   SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "default") \
+   SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "eflete/default") \
    elm_spinner_value_set(spinner1, edje_edit_##sub##_##value1##_get(group->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    elm_box_pack_end(box, spinner1); \
    evas_object_smart_callback_add(spinner1, "changed", \
                                   __on_##sub##_##value1##_change, group); \
-   SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "default") \
+   SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "eflete/default") \
    elm_spinner_value_set(spinner2, edje_edit_##sub##_##value2##_get(group->obj)); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    elm_box_pack_end(box, spinner2); \
@@ -221,7 +221,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(check, "changed", \
                                   __on_##sub##_##value1##_change, part); \
    elm_box_pack_end(box, check); \
-   SPINNER_ADD(box, spinner, min, max, step, EINA_TRUE, "default") \
+   SPINNER_ADD(box, spinner, min, max, step, EINA_TRUE, "eflete/default") \
    elm_spinner_label_format_set(spinner, fmt); \
    st_value = edje_edit_##sub##_##value2##_get(group->obj, part->name); \
    elm_spinner_value_set(spinner, st_value); \
@@ -395,7 +395,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    double value; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "default") \
+   SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "eflete/default") \
    elm_spinner_label_format_set(spinner1, fmt); \
    value = edje_edit_##sub##_##value1##_get(group->obj, \
                                             part->name, \
@@ -407,7 +407,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    evas_object_smart_callback_add(spinner1, "changed", \
                                   __on_##sub##_##value1##_change, part); \
-   SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "default") \
+   SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "eflete/default") \
    elm_spinner_label_format_set(spinner2, fmt); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                             part->name, \
@@ -674,7 +674,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    Evas_Object *item, *spinner; \
    double value; \
    ITEM_ADD(parent, item, text) \
-   SPINNER_ADD(item, spinner, min, max, step, EINA_TRUE, "default") \
+   SPINNER_ADD(item, spinner, min, max, step, EINA_TRUE, "eflete/default") \
    elm_spinner_label_format_set(spinner, fmt); \
    value = edje_edit_##sub##_##value##_get(group->obj, \
                                            part->name, \

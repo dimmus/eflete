@@ -449,6 +449,7 @@ colorclass_viewer_add(Evas_Object *parent)
 
 #define SPINNER_ADD(spinner,format)\
    spinner = elm_spinner_add(mwin);\
+   elm_object_style_set(spinner, "eflete/default"); \
    elm_spinner_min_max_set(spinner, 0,255);\
    elm_spinner_interval_set(spinner,0.4);\
    elm_spinner_label_format_set(spinner,format);\
