@@ -171,7 +171,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *check; \
    ITEM_ADD(parent, item, text) \
-   CHECK_ADD(parent, check, "simplified_toggle") \
+   CHECK_ADD(parent, check, "eflete/default") \
    elm_check_state_set(check, edje_edit_##sub##_##value##_get(group->obj, part->name)); \
    evas_object_data_set(check, OBJ_DATA, group); \
    elm_object_tooltip_text_set(check, tooltip); \
@@ -213,7 +213,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    int ch_value, st_value; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   CHECK_ADD(box, check, "simplified_toggle") \
+   CHECK_ADD(box, check, "eflete/default") \
    ch_value = edje_edit_##sub##_##value1##_get(group->obj, part->name); \
    elm_check_state_set(check, ch_value); \
    evas_object_data_set(check, OBJ_DATA, group); \
@@ -721,7 +721,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    Evas_Object *item, *check; \
    Eina_Bool value; \
    ITEM_ADD(parent, item, text) \
-   CHECK_ADD(item, check, "simplified_toggle") \
+   CHECK_ADD(item, check, "eflete/default") \
    value = edje_edit_##sub##_##value##_get(group->obj, \
                                            part->name, \
                                            part->curr_state, \
@@ -768,8 +768,8 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Eina_Bool value; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   CHECK_ADD(box, check1, "simplified_toggle") \
-   CHECK_ADD(box, check2, "simplified_toggle") \
+   CHECK_ADD(box, check1, "eflete/default") \
+   CHECK_ADD(box, check2, "eflete/default") \
    value = edje_edit_##sub##_##value1##_get(group->obj, \
                                             part->name, \
                                             part->curr_state, \

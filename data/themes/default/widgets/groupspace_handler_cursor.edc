@@ -1,113 +1,108 @@
-#define SET_SIZE(_x, _y) \
-               min: _x _y; \
-               max: _x _y;
-
 #define POINTER_IMAGE  "pointer.png"
 #define BORDER_IMAGE   "shelf_inset.png"
 
+group {
    images {
       image: POINTER_IMAGE COMP;
       image: BORDER_IMAGE COMP;
    }
-   group {
-      name: "elm/cursor/top_left_corner/default";
-      SET_SIZE(30, 38);
-      parts {
-         part { name: "cursor_image";
-            description { state: "default" 0.0;
-               SET_SIZE(23, 32);
-               image.normal: POINTER_IMAGE;
-               rel2.relative: 0.5 0.5;
-            }
+   name: "elm/cursor/top_left_corner/default";
+   SET_SIZE(30, 38);
+   parts {
+      part { name: "cursor_image";
+         description { state: "default" 0.0;
+            SET_SIZE(23, 32);
+            image.normal: POINTER_IMAGE;
+            rel2.relative: 0.5 0.5;
          }
-         part { name: "rect_offset";
-            type: SPACER;
-            description { state: "default" 0.0;
-               SET_SIZE(14, 22);
-               align: 0.0 0.0;
-               rel1.to: "cursor_image";
-               rel2.to: "cursor_image";
-            }
+      }
+      part { name: "rect_offset";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(14, 22);
+            align: 0.0 0.0;
+            rel1.to: "cursor_image";
+            rel2.to: "cursor_image";
          }
-         part { name: "rect_area";
-            type: SPACER;
-            description { state: "default" 0.0;
-               SET_SIZE(16, 16);
-               rel1{ to: "rect_offset";
-                  relative: 1.0 1.0;
-               }
-            }
-         }
-         part { name: "cursor_rect";
-            type:RECT;
-            description { state: "default" 0.0;
-               color: 255 0 0 180;
-               rel1.to: "rect_area";
-               rel1{ to: "rect_area";
-                  relative: 0.5 0.5;
-               }
-               rel2.to: "rect_area";
-            }
-            description { state: "full" 0.0;
-               inherit: "default" 0.0;
-               rel1{ to: "rect_area";
-                  relative: 0.0 0.0;
-               }
-            }
-         }
-         part { name: "cursor_rect_over";
-            description { state: "default" 0.0;
-               image.normal: BORDER_IMAGE;
-               rel1.to: "cursor_rect";
-               rel2.to: "cursor_rect";
+      }
+      part { name: "rect_area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(16, 16);
+            rel1{ to: "rect_offset";
+               relative: 1.0 1.0;
             }
          }
       }
-      programs {
-         program { name: "start.animation";
-            signal: "load";
-            source: "";
-            after: "animation.step1";
+      part { name: "cursor_rect";
+         type:RECT;
+         description { state: "default" 0.0;
+            color: 255 0 0 180;
+            rel1.to: "rect_area";
+            rel1{ to: "rect_area";
+               relative: 0.5 0.5;
+            }
+            rel2.to: "rect_area";
          }
-         program { name: "animation.step1";
-            action: STATE_SET "full" 0.0;
-            target: "cursor_rect";
-            transition : LINEAR 1.0;
-            after: "animation.step2";
+         description { state: "full" 0.0;
+            inherit: "default" 0.0;
+            rel1{ to: "rect_area";
+               relative: 0.0 0.0;
+            }
          }
-         program { name: "animation.step2";
-            action: STATE_SET "default" 0.0;
-            target: "cursor_rect";
-            transition : LINEAR 1.0;
-            after: "animation.step1";
+      }
+      part { name: "cursor_rect_over";
+         description { state: "default" 0.0;
+            image.normal: BORDER_IMAGE;
+            rel1.to: "cursor_rect";
+            rel2.to: "cursor_rect";
          }
       }
    }
-   group {
-      name: "elm/cursor/bottom_right_corner/default";
-      inherit: "elm/cursor/top_left_corner/default";
-      parts {
-         part { name: "cursor_rect";
-            type:RECT;
-            description { state: "default" 0.0;
-               color: 255 0 0 180;
-               rel1{ to: "rect_area";
-                  relative: 0.0 0.0;
-               }
-               rel2{ to: "rect_area";
-                  relative: 0.5 0.5;
-               }
+   programs {
+      program { name: "start.animation";
+         signal: "load";
+         source: "";
+         after: "animation.step1";
+      }
+      program { name: "animation.step1";
+         action: STATE_SET "full" 0.0;
+         target: "cursor_rect";
+         transition : LINEAR 1.0;
+         after: "animation.step2";
+      }
+      program { name: "animation.step2";
+         action: STATE_SET "default" 0.0;
+         target: "cursor_rect";
+         transition : LINEAR 1.0;
+         after: "animation.step1";
+      }
+   }
+}
+group {
+   name: "elm/cursor/bottom_right_corner/default";
+   inherit: "elm/cursor/top_left_corner/default";
+   parts {
+      part { name: "cursor_rect";
+         type:RECT;
+         description { state: "default" 0.0;
+            color: 255 0 0 180;
+            rel1{ to: "rect_area";
+               relative: 0.0 0.0;
             }
-            description { state: "full" 0.0;
-               inherit: "default" 0.0;
-               rel2{ to: "rect_area";
-                  relative: 1.0 1.0;
-               }
+            rel2{ to: "rect_area";
+               relative: 0.5 0.5;
+            }
+         }
+         description { state: "full" 0.0;
+            inherit: "default" 0.0;
+            rel2{ to: "rect_area";
+               relative: 1.0 1.0;
             }
          }
       }
    }
+}
 
-#undef SET_SIZE
 #undef POINTER_IMAGE
 #undef BORDER_IMAGE

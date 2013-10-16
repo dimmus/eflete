@@ -46,6 +46,7 @@
    scroller = elm_scroller_add(parent); \
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_style_set(scroller, "eflete/default"); \
    evas_object_show(scroller);
 
 #define LABEL_ADD(parent, label, text) \
@@ -60,6 +61,7 @@
    elm_frame_autocollapse_set(frame, autocollapse); \
    evas_object_size_hint_fill_set(frame, EVAS_HINT_FILL, 0.0); \
    elm_object_text_set(frame, title); \
+   elm_object_style_set(frame, "eflete/default"); \
    evas_object_show(frame);
 
 #define SPINNER_ADD(parent, spinner, min, max, step, isEdit, style) \

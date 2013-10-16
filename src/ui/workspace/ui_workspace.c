@@ -318,6 +318,7 @@ ws_add(Evas_Object *parent)
    ws->ruler_ver = _ruler_ver;
 
    _scroller = elm_scroller_add(parent);
+   elm_object_style_set(_scroller, "eflete/default");
    ws->scroller = _scroller;
    elm_scroller_policy_set(_scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
    elm_scroller_content_min_limit(_scroller, EINA_FALSE, EINA_FALSE);

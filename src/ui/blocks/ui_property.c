@@ -166,16 +166,22 @@ prop_item_label_update(Evas_Object *item,
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
-   Evas_Object *box, *scroller;
+   Evas_Object *box, *scroller, *_bg;
    Prop_Data *pd;
 
    if (!parent) return NULL;
    pd = mem_calloc(1, sizeof(Prop_Data));
-
    SCROLLER_ADD(parent, scroller);
    BOX_ADD(scroller, box, EINA_FALSE, EINA_FALSE);
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
+
+   _bg = evas_object_image_add(evas_object_evas_get(parent));
+   evas_object_image_filled_set(_bg, EINA_TRUE);
+   evas_object_image_file_set(_bg, TET_IMG_PATH"section-item-bg.png", NULL);
+   evas_object_image_border_set(_bg, 0, 0, 0, 2);
+   elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
+   evas_object_show(_bg);
 
    evas_object_data_set(scroller, PROP_DATA, pd);
    evas_object_event_callback_add(scroller, EVAS_CALLBACK_DEL, _del_prop_data, pd);

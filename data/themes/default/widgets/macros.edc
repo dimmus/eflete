@@ -1,0 +1,21 @@
+/*
+ *  [ macros ]
+ */
+#define TILED_HORIZ(_WIDTH) \
+   fill { size { relative: 0.0 1.0; offset: _WIDTH 0; } }
+
+#define FIXED_SIZE(_WIDTH, _HEIGHT) \
+   min: _WIDTH _HEIGHT; max: _WIDTH _HEIGHT; fixed: 1 1;
+
+#define SET_SIZE(_X, _Y) \
+   min: _X _Y; max: _X _Y;
+
+/*
+ *  [ colors ]
+ */
+#define DARK_GREY_BG_COLOR 48 48 48 255
+#define DARK_GREY_BG_DISABLED_COLOR 64 64 64 255
+#define HIGHLIGHT_BLUE 51 153 255 255;
+#define FN_COL_DEFAULT 223 219 210 255; color3: 255 255 255 25
+#define FN_COL_HIGHLIGHT 51 53 255 255; color2: 51 153 255 24; color3: 51 153 255 18
+#define FN_COL_DISABLE 21 21 21 255; color3: 255 255 255 25;
