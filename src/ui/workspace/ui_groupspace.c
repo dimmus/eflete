@@ -1376,12 +1376,21 @@ ui_groupspace_separate(Workspace *ws)
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(ws->groupspace, GS_GROUP_KEY);
    if ((!group) || (!box)) return;
+   Evas_Object *icon = elm_object_part_content_get(ws->button_separate, NULL);
 
    if (ws->separated)
-     evas_object_box_layout_set(box, _separate_layout, group->obj, NULL);
+     {
+        evas_object_box_layout_set(box, _separate_layout, group->obj, NULL);
+        evas_object_color_set(icon, 51, 153, 255, 255);
+     }
    else
-     evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
-   ws->separated = !ws->separated;
+     {
+        evas_object_box_layout_set(box, _main_box_layout, group->obj, NULL);
+        evas_object_color_set(icon, 255, 255, 255, 255);
+     }
+  elm_object_part_content_set(ws->button_separate, NULL, icon);
+
+  ws->separated = !ws->separated;
 
    if (!ws->highlight.part) return;
    if (ws->separated)

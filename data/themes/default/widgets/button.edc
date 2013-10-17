@@ -49,7 +49,7 @@
             rel1 {
                to: "button_image";
                relative: 0.0 0.0;
-               offset: 0 0;
+               offset: -2 -1;
             }
             rel2 {
                to: "button_image";
