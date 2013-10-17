@@ -104,6 +104,7 @@
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    elm_object_text_set(btn, text); \
+   elm_object_style_set(btn, "eflete/default"); \
    evas_object_show(btn);
 
 #define ICON_STANDARD_ADD(parent, icon, noscale, icon_name) \

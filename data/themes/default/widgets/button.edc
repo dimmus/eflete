@@ -34,34 +34,6 @@
                }
             }
          }
-      part { name: "glow";
-         type: IMAGE;
-         mouse_events: 0;
-         repeat_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            image {
-               normal: "focus-outer-glow.png";
-               border: 3 3 4 3;
-            }
-            visible: 0;
-            color: 51 153 255 255;
-            rel1 {
-               to: "button_image";
-               relative: 0.0 0.0;
-               offset: -2 -1;
-            }
-            rel2 {
-               to: "button_image";
-               relative: 1.0 1.0;
-               offset: 0 0;
-            }
-         }
-         description { state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -206,18 +178,6 @@
       // end sizer
    }
        programs {
-         program {
-            name: "focused";
-            signal: "elm,action,focus"; source: "elm";
-            action: STATE_SET "active" 0.0;
-            target: "glow";
-         }
-         program {
-            name: "unfocused";
-            signal: "elm,action,unfocus"; source: "elm";
-            action: STATE_SET "default" 0.0;
-            target: "glow";
-         }
          program { name: "button_click";
             signal: "mouse,down,1";
             source: "over2";

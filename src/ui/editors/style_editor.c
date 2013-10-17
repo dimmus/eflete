@@ -95,10 +95,8 @@ _on_st_add_bt_ok(void *data,
                            "DEFAULT",
                            glit_style, ELM_GENLIST_ITEM_NONE,
                            NULL, NULL);
-   elm_genlist_item_selected_set(glit_style, EINA_TRUE);
-   elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_TOP);
-
    evas_object_del(popup);
+   elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_TOP);
 }
 
 static void
@@ -108,7 +106,7 @@ _on_tag_add_bt_ok(void *data,
 {
    Evas_Object *popup = (Evas_Object *)data;
    Elm_Object_Item *glit_tag;
-   const char *style_name = elm_object_item_part_text_get(st_tag_entries.style_name, "elm.text");
+   const char *style_name = elm_object_item_data_get(st_tag_entries.style_name);
    const char *tag_name = elm_entry_entry_get(st_tag_entries.tag_name);
    const char *tag_value = elm_entry_entry_get(st_tag_entries.tag_value);
 
@@ -126,9 +124,9 @@ _on_tag_add_bt_ok(void *data,
                                       tag_name,
                                       st_tag_entries.style_name, ELM_GENLIST_ITEM_NONE,
                                       NULL, NULL);
-   elm_genlist_item_selected_set(glit_tag, EINA_TRUE);
-   elm_genlist_item_show(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_TOP);
    evas_object_del(popup);
+   elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_TOP);
+   elm_genlist_item_selected_set(glit_tag, EINA_FALSE);
 }
 
 static void
@@ -193,7 +191,6 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_show(box);
 
    bt_ok = elm_button_add(popup);
-   DBG("%s\n", elm_object_widget_type_get(elm_object_parent_widget_get(bt_ok)));
    elm_object_text_set(bt_ok, "Ok");
    evas_object_smart_callback_add(bt_ok, "clicked", _on_st_add_bt_ok, popup);
    elm_object_part_content_set(popup, "button1", bt_ok);
@@ -231,12 +228,12 @@ _on_bt_tag_add(void *data __UNUSED__,
 
    if (!glit_parent)
      {
-         style_name = elm_object_item_part_text_get(glit, "elm.text");
+         style_name = elm_object_item_data_get(glit);
          st_tag_entries.style_name = glit;
      }
    else
      {
-         style_name = elm_object_item_part_text_get(glit_parent, "elm.text");
+         style_name = elm_object_item_data_get(glit_parent);
          st_tag_entries.style_name = glit_parent;
      }
 
@@ -303,7 +300,6 @@ _on_bt_tag_add(void *data __UNUSED__,
 
 
    bt_ok = elm_button_add(popup);
-   DBG("%s\n", elm_object_widget_type_get(elm_object_parent_widget_get(bt_ok)));
    elm_object_text_set(bt_ok, "Ok");
    evas_object_smart_callback_add(bt_ok, "clicked", _on_tag_add_bt_ok, popup);
    elm_object_part_content_set(popup, "button1", bt_ok);
@@ -403,7 +399,7 @@ _on_glit_selected(void *data __UNUSED__,
 
    if (!glit_parent)
      {
-        style_name = elm_object_item_part_text_get(glit, "elm.text");
+        style_name = elm_object_item_data_get(glit);
         tags = style_edit_style_tags_list_get(window.pr, style_name);
 
         EINA_LIST_FOREACH(tags, l, tag)
@@ -416,8 +412,8 @@ _on_glit_selected(void *data __UNUSED__,
      }
    else
      {
-        style_name = elm_object_item_part_text_get(glit_parent, "elm.text");
-        tag = elm_object_item_part_text_get(glit, "elm.text");
+        style_name = elm_object_item_data_get(glit_parent);
+        tag = elm_object_item_data_get(glit);
         value = style_edit_style_tag_value_get(window.pr, style_name, tag);
         elm_object_text_set(window.entry_tag, tag);
         elm_object_text_set(window.entry_prop, value);
@@ -429,11 +425,11 @@ _on_glit_selected(void *data __UNUSED__,
 }
 
 static void
-_on_viewer_exit(void *data, Evas_Object *obj __UNUSED__,
+_on_viewer_exit(void *data,
+                Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
    Evas_Object *mwin = (Evas_Object *) data;
-
    evas_object_del(mwin);
 }
 
@@ -468,8 +464,9 @@ _item_tags_del(void *data __UNUSED__,
  * Creating the view of the mwin!!!
  */
 Evas_Object*
-_form_left_side(Evas_Object *obj) {
-     Elm_Object_Item *glit_style;
+_form_left_side(Evas_Object *obj)
+{
+     Elm_Object_Item *glit_style, *glit_tag;
      Evas_Object *box, *btn;
      Eina_List *styles, *tags, *l_st, *l_tg;
      char *style, *tag;
@@ -477,7 +474,7 @@ _form_left_side(Evas_Object *obj) {
      if (!_itc_style)
        {
           _itc_style = elm_genlist_item_class_new();
-          _itc_style->item_style = "custom";
+          _itc_style->item_style = "eflete/default";
           _itc_style->func.text_get = _item_style_label_get;
           _itc_style->func.content_get = NULL;
           _itc_style->func.state_get = NULL;
@@ -486,7 +483,7 @@ _form_left_side(Evas_Object *obj) {
      if (!_itc_tags)
        {
           _itc_tags= elm_genlist_item_class_new();
-          _itc_tags->item_style = "custom";
+          _itc_tags->item_style = "eflete/default";
           _itc_tags->func.text_get = _item_tags_label_get;
           _itc_tags->func.content_get = NULL;
           _itc_tags->func.state_get = NULL;
@@ -498,6 +495,7 @@ _form_left_side(Evas_Object *obj) {
      evas_object_show(box);
 
      window.glist = elm_genlist_add(box);
+     elm_object_style_set(window.glist, "eflete/default");
      elm_box_pack_end(box, window.glist);
      evas_object_show(window.glist);
 
@@ -516,42 +514,35 @@ _form_left_side(Evas_Object *obj) {
                                                style,
                                                NULL, ELM_GENLIST_ITEM_NONE,
                                                NULL, NULL);
+          elm_object_item_data_set(glit_style, style);
           tags = style_edit_style_tags_list_get(window.pr, style);
           EINA_LIST_FOREACH(tags, l_tg, tag)
             {
-               elm_genlist_item_append(window.glist, _itc_tags,
+               glit_tag = elm_genlist_item_append(window.glist, _itc_tags,
                                        tag,
                                        glit_style, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
+                elm_object_item_data_set(glit_tag, tag);
             }
        }
      eina_list_free(styles);
      evas_object_smart_callback_add(window.glist, "selected",
                                     _on_glit_selected, NULL);
 
-     btn = elm_button_add(obj);
-     elm_object_text_set(btn, "New Style");
-     evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+     BUTTON_ADD(obj, btn, "New style");
      evas_object_size_hint_weight_set(btn, 0.0, 0.0);
      evas_object_smart_callback_add(btn, "clicked", _on_bt_style_add, NULL);
      elm_box_pack_end(box, btn);
-     evas_object_show(btn);
 
-     btn = elm_button_add(obj);
-     elm_object_text_set(btn, "New Tag");
-     evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+     BUTTON_ADD(obj, btn, "New tag");
      evas_object_size_hint_weight_set(btn, 0.0, 0.0);
      evas_object_smart_callback_add(btn, "clicked", _on_bt_tag_add, NULL);
      elm_box_pack_end(box, btn);
-     evas_object_show(btn);
 
-     btn = elm_button_add(obj);
-     elm_object_text_set(btn, "Delete");
-     evas_object_smart_callback_add(btn, "clicked", _on_bt_del, NULL);
-     evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
+     BUTTON_ADD(obj, btn, "Delete");
      evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+     evas_object_smart_callback_add(btn, "clicked", _on_bt_del, NULL);
      elm_box_pack_end(box, btn);
-     evas_object_show(btn);
 
      return box;
 }
@@ -577,10 +568,9 @@ _form_right_side(Evas_Object *obj)
    elm_entry_scrollable_set(window.entry_prop, EINA_TRUE);
    evas_object_show(window.entry_prop);
 
-   btn = elm_button_add(obj);
-   elm_object_text_set(btn, "Close Viewer");
-   elm_object_part_content_set (layout, "swallow/button_close", btn);
+   BUTTON_ADD(obj, btn, "Close viewer");
    evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, window.mwin);
+   elm_object_part_content_set (layout, "swallow/button_close", btn);
 
    evas_object_show(btn);
 
@@ -614,6 +604,7 @@ style_editor_window_add(Evas_Object *parent, Project *project)
    evas_object_event_callback_add(window.mwin, EVAS_CALLBACK_FREE,
                                   __on_style_editor_close, NULL);
    panes = elm_panes_add(window.mwin);
+   elm_object_style_set(panes, "eflete/default");
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
@@ -625,6 +616,7 @@ style_editor_window_add(Evas_Object *parent, Project *project)
    evas_object_show(layout_left);
 
    panes_h = elm_panes_add(window.mwin);
+   elm_object_style_set(panes_h, "eflete/default");
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes_h, EINA_TRUE);

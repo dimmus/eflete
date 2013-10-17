@@ -32,7 +32,7 @@
 #include "efl_ete.h"
 #include "modal_window.h"
 #include "style_edit.h"
-
+#include "widget_define.h"
 /**
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
