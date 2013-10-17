@@ -159,26 +159,6 @@ _sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
 }
 
 static void
-_zoom_out_on_click(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   Workspace *ws = (Workspace *)data;
-   if (!ui_ws_zoom_out(ws))
-     WARN("Failed zoom out workspace");
-}
-
-static void
-_zoom_in_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   Workspace *ws = (Workspace *)data;
-   if (!ui_ws_zoom_in(ws))
-     WARN("Failed zoom in workspace");
-}
-
-static void
 _separate_on_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
@@ -273,29 +253,6 @@ ws_add(Evas_Object *parent)
    elm_object_part_content_set(parent, "base/workspace/background", _bg);
    evas_object_show(_bg);
    ws->bg = _bg;
-   _button = elm_button_add(parent);
-   elm_object_style_set(_button, "eflete/default");
-   elm_object_part_content_set(parent, "base/workspace/button_zoom_out",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_out_on_click, ws);
-   elm_object_content_unset(_button);
-
-   _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"zoom_out.png", NULL);
-   elm_image_no_scale_set(_icon, EINA_TRUE);
-   elm_object_part_content_set(_button, NULL, _icon);
-
-   _button = elm_button_add(parent);
-   elm_object_style_set(_button, "eflete/default");
-   elm_object_part_content_set(parent, "base/workspace/button_zoom_in",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_in_on_click, ws);
-   ws->button_zoom_in = _button;
-
-   _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
-   elm_image_no_scale_set(_icon, EINA_TRUE);
-   elm_object_part_content_set(_button, NULL, _icon);
 
    _button = elm_button_add(parent);
    elm_object_style_set(_button, "eflete/default");
@@ -304,7 +261,7 @@ ws_add(Evas_Object *parent)
    evas_object_smart_callback_add(_button, "clicked", _separate_on_click, ws);
    ws->button_separate = _button;
    _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
+   elm_image_file_set(_icon, TET_IMG_PATH"icon-separate.png", NULL);
    elm_image_no_scale_set(_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
 

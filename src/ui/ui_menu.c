@@ -387,7 +387,7 @@ ui_menu_add(App_Data *ap)
    elm_object_part_content_set(button, NULL, icon); \
    evas_object_show(button); \
    elm_object_disabled_set(button, disabled); \
-   evas_object_color_set(icon, 55, 155, 255, 255); \
+   evas_object_color_set(icon, 51, 153, 255, 255); \
    evas_object_smart_callback_add(button, "clicked", callback, ap);
 
 
@@ -402,16 +402,6 @@ ui_menu_add(App_Data *ap)
                _on_edj_open_menu, EINA_FALSE)
    ITEM_TB_ADD(TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu,
                EINA_FALSE)
-
-   BOX_ADD(box_buttons, box, EINA_TRUE, EINA_FALSE)
-   elm_box_align_set(box, 1.0, 0.5);
-   elm_box_padding_set(box, 0, 0);
-
-   ITEM_TB_ADD(TET_IMG_PATH"icon-layout.png", "Layout", NULL, EINA_FALSE)
-   ITEM_TB_ADD(TET_IMG_PATH"icon-settings.png", "Settings", NULL, EINA_FALSE)
-
-   evas_object_show(box);
-   elm_box_pack_end(box_buttons, box);
 
    evas_object_show(box_buttons);
    elm_object_item_part_content_set(tb_it, "object", box_buttons);
