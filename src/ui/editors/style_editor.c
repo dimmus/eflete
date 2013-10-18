@@ -139,6 +139,7 @@ _on_bt_style_add(void *data __UNUSED__,
    Evas_Object *tag_box, *tag_label, *tag_entry;
 
    popup = elm_popup_add(window.mwin);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Add textblock style");
 
    box = elm_box_add(popup);
@@ -190,17 +191,13 @@ _on_bt_style_add(void *data __UNUSED__,
    elm_object_content_set(popup, box);
    evas_object_show(box);
 
-   bt_ok = elm_button_add(popup);
-   elm_object_text_set(bt_ok, "Ok");
+   BUTTON_ADD(popup, bt_ok, "Ok");
    evas_object_smart_callback_add(bt_ok, "clicked", _on_st_add_bt_ok, popup);
    elm_object_part_content_set(popup, "button1", bt_ok);
-   evas_object_show(bt_ok);
 
-   bt_cancel = elm_button_add(popup);
-   elm_object_text_set(bt_cancel, "Cancel");
+   BUTTON_ADD(popup, bt_cancel, "Cancel");
    evas_object_smart_callback_add(bt_cancel, "clicked", _on_popup_bt_cancel, popup);
    elm_object_part_content_set(popup, "button2", bt_cancel);
-   evas_object_show(bt_cancel);
 
    st_entries.style_name = st_entry;
    st_entries.default_tags = tag_entry;
@@ -238,6 +235,7 @@ _on_bt_tag_add(void *data __UNUSED__,
      }
 
    popup = elm_popup_add(window.mwin);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Add tag to style");
 
    box = elm_box_add(popup);
@@ -298,18 +296,13 @@ _on_bt_tag_add(void *data __UNUSED__,
    elm_object_content_set(popup, box);
    evas_object_show(box);
 
-
-   bt_ok = elm_button_add(popup);
-   elm_object_text_set(bt_ok, "Ok");
+   BUTTON_ADD(popup, bt_ok, "Ok");
    evas_object_smart_callback_add(bt_ok, "clicked", _on_tag_add_bt_ok, popup);
    elm_object_part_content_set(popup, "button1", bt_ok);
-   evas_object_show(bt_ok);
 
-   bt_cancel = elm_button_add(popup);
-   elm_object_text_set(bt_cancel, "Cancel");
+   BUTTON_ADD(popup, bt_cancel, "Cancel");
    evas_object_smart_callback_add(bt_cancel, "clicked", _on_popup_bt_cancel, popup);
    elm_object_part_content_set(popup, "button2", bt_cancel);
-   evas_object_show(bt_cancel);
 
    st_tag_entries.tag_name = tag_entry;
    st_tag_entries.tag_value = value_entry;

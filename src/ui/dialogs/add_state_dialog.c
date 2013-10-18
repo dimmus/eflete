@@ -75,6 +75,7 @@ new_state_dialog_add(App_Data *ap)
 
 
    popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Add new state:");
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 
@@ -98,22 +99,15 @@ new_state_dialog_add(App_Data *ap)
    elm_box_pack_end(box, class_box);
    elm_object_content_set(popup, box);
 
-   bt_yes = elm_button_add(popup);
-   elm_object_text_set(bt_yes, "Add");
+   BUTTON_ADD(popup, bt_yes, "Add");
    evas_object_data_set(bt_yes, STADD_LIST_KEY, glist);
-
    evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, groupspace);
    evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
-   elm_object_style_set(bt_yes, "eflete/default");
-   evas_object_show(bt_yes);
 
-   bt_no = elm_button_add(popup);
-   elm_object_text_set(bt_no, "Cancel");
+   BUTTON_ADD(popup, bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button2", bt_no);
-   elm_object_style_set(bt_no, "eflete/default");
-   evas_object_show(bt_no);
 
    evas_object_show(popup);
    return popup;

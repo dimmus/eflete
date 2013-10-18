@@ -15,4 +15,5 @@ collections {
    #include "widgets/toolbar.edc"
    #include "widgets/button.edc"
    #include "widgets/spinner.edc"
+   #include "widgets/popup.edc"
 }

@@ -18,7 +18,6 @@
 */
 
 #include "open_file_dialog.h"
-#include "widget_define.h"
 
 struct _fs_entries
 {

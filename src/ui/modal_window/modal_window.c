@@ -46,13 +46,13 @@ _mw_info(void *data,
    Evas_Object *mwin = elm_object_parent_widget_get(obj);
 
    popup = elm_popup_add(mwin);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Title will be deleted");
    content = elm_label_add(popup);
    elm_object_text_set(content, info);
    elm_object_content_set(popup, content);
 
-   bt = elm_button_add(popup);
-   elm_object_text_set(bt, "OK");
+   BUTTON_ADD(popup, bt, "OK");
    elm_object_part_content_set(popup, "button1", bt);
    evas_object_smart_callback_add(bt, "clicked", _response_cb, popup);
    evas_object_show(popup);

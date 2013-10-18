@@ -1214,6 +1214,7 @@ _on_bt_prog_add(void *data __UNUSED__,
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *prog_box, *prog_label;
    popup = elm_popup_add(window.mwin);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Add new program:");
 
    box = elm_box_add(popup);
@@ -1246,19 +1247,15 @@ _on_bt_prog_add(void *data __UNUSED__,
    elm_object_content_set(popup, box);
    evas_object_show(box);
 
-   bt_yes = elm_button_add(popup);
-   elm_object_text_set(bt_yes, "Add");
+   BUTTON_ADD(popup, bt_yes, "Add");
    evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_bt_add,
                                   popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
-   evas_object_show(bt_yes);
 
-   bt_no = elm_button_add(popup);
-   elm_object_text_set(bt_no, "Cancel");
+   BUTTON_ADD(popup, bt_no, "Cancel");
    evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_bt_cancel,
                                   popup);
    elm_object_part_content_set(popup, "button2", bt_no);
-   evas_object_show(bt_no);
 
    evas_object_show(popup);
 }

@@ -23,7 +23,8 @@
 
 #include "efl_ete.h"
 #include "alloc.h"
-
+#include "modal_window.h"
+#include "widget_define.h"
 /**
  * @defgroup SaveFileDialog Save file dialog
  * The widget provide a save project functionality.

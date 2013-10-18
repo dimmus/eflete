@@ -18,6 +18,7 @@
 */
 
 #include "add_style_dialog.h"
+
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;
 
@@ -561,6 +562,7 @@ new_style_dialog_add(App_Data *ap)
    title = eina_stringshare_printf("Add style/class for %s widget",
                                    widget->widget_name);
    popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 
@@ -588,20 +590,14 @@ new_style_dialog_add(App_Data *ap)
    elm_box_pack_end(box, class_box);
    elm_object_content_set(popup, box);
 
-   button = elm_button_add(popup);
-   elm_object_text_set(button, "Add");
+   BUTTON_ADD(popup, button, "Add");
    evas_object_smart_callback_add(button, "close,popup", _popup_close, popup);
    evas_object_smart_callback_add(button, "pressed", _on_popup_btn_yes, ap);
    elm_object_part_content_set(popup, "button1", button);
-   elm_object_style_set(button, "eflete/default");
-   evas_object_show(button);
 
-   button = elm_button_add(popup);
-   elm_object_text_set(button, "Cancel");
+   BUTTON_ADD(popup, button, "Cancel");
    evas_object_smart_callback_add(button, "clicked", _popup_close, popup);
    elm_object_part_content_set(popup, "button2", button);
-   elm_object_style_set(button, "eflete/default");
-   evas_object_show(button);
 
    evas_object_show(popup);
    eina_stringshare_del(title);
