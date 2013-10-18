@@ -1,7 +1,7 @@
 m4_define([v_maj], [0])
 m4_define([v_min], [1])
 m4_define([v_mic], [8])
-m4_define([p_name], "Edje\ Theme\ Editor")
+m4_define([p_name], "EFL\ Edje\ Theme\ Editor")
 m4_define([project_version], [v_maj.v_min.v_mic])
 
 AC_INIT([eflete], [project_version])
