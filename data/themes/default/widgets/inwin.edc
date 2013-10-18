@@ -248,14 +248,14 @@ group { name: "elm/win/inwin/about_window";
             align: 0.0 1.0;
             rel1.to: "header";
             rel2 { to_y: "content_clipper";
-               relative: 1.0 1.5;
+               relative: 1.0 2.5;
             }
          }
          description { state: "full" 0.0;
             inherit: "default" 0.0;
             align: 0.0 0.0;
             rel1 { to_y: "content_clipper";
-               relative: 0.0 -1.5;
+               relative: 0.0 -2.5;
             }
          }
       }

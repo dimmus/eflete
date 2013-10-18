@@ -24,15 +24,6 @@ about_window_add(Evas_Object *parent)
 {
    Evas_Object *mwin = mw_about_add(parent);
    mw_title_set(mwin, "About");
-   const char* labels_text[] = {"authors:",
-                                "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com)",
-                                "Mykyta Biliavskyi (m.biliavskyi@samsung.com)",
-                                "Vitalii Vorobiov (vi.vorobiov@samsung.com)",
-                                "Andrii Kroitor (an.kroitor@samsung.com)",
-                                "",
-                                "Special thanks for the help:",
-                                "Sergey Osadchy (se.osadchy@samsung.com)",
-                                "Kateryna Fesyna (k.fesyna@samsung.com)"};
    Evas_Object *label, *box;
    int i;
 
@@ -43,13 +34,34 @@ about_window_add(Evas_Object *parent)
    evas_object_show(box);
 
    label = elm_label_add(mwin);
-   elm_object_text_set(label, "Theme-Editor-Tool v."VERSION);
-   elm_object_style_set(label, "marker");
-   evas_object_color_set(label, 0, 0, 0, 255);
+   elm_object_text_set(label,
+     "<color=#b6b6b6>"
+     "<b><align=center>"ETE_PACKAGE" (Eflete) v."VERSION"</align></b><br>"
+     "This application was written for Enlightenment, to use EFL<br>"
+     "and design to a create and modify a Elementary widgets style.<br>"
+     "<br>"
+     "Copyright (C) 2013 Samsung Electronics.<br>"
+     "<br>"
+     "<align=center><b>Authors:</b><br>"
+     "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com))<br>"
+     "Artem Popov (artem.popov@samsung.com)<br>"
+     "Mykyta Biliavskyi (m.biliavskyi@samsung.com)<br>"
+     "Vitalii Vorobiov (vi.vorobiov@samsung.com)<br>"
+     "Andrii Kroitor (an.kroitor@samsung.com)<br>"
+     "Ievgen Bugai (i.bugai@samsung.com)<br>"
+     "<br>"
+     "Oleg Dotsenko (o.dotsenko@samsung.com)<br>"
+     "Dmitriy Samoylov (dm.samoylov@samsung.com)<br>"
+     "<br>"
+     "<b>Special thanks for the help:</b><br>"
+     "Sergey Osadchy (se.osadchy@samsung.com)<br>"
+     "Kateryna Fesyna (k.fesyna@samsung.com)<br>"
+     "Maksym Volodin (m.volodin@samsung.com)<br>"
+     "</align>");
    elm_box_pack_end(box, label);
    evas_object_show(label);
 
-   Evas_Object * separator = elm_separator_add (mwin);
+/*   Evas_Object * separator = elm_separator_add (mwin);
    elm_separator_horizontal_set(separator, EINA_TRUE);
    elm_box_pack_end(box, separator);
    evas_object_show(separator);
@@ -61,7 +73,7 @@ about_window_add(Evas_Object *parent)
        elm_box_pack_end(box, label);
        evas_object_show(label);
    }
-
+*/
    elm_win_inwin_content_set(mwin, box);
 
    evas_object_show(mwin);
