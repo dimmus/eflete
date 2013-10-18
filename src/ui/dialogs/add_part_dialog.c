@@ -119,44 +119,44 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    Evas_Object *popup, *bt_no;
 
    popup = elm_popup_add(parent);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Add new part:");
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(popup, box, EINA_FALSE, EINA_FALSE);
+   BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);
    ENTRY_ADD(popup, entry, EINA_TRUE);
    elm_entry_entry_set(entry, "New_part_name");
    evas_object_show(entry);
    elm_box_pack_end(box, entry);
    evas_object_data_set(entry, APD_GS_KEY, groupspace);
 
-#define ADD_BUTTON(text, callback) \
-   button = elm_button_add(box); \
-   elm_object_style_set(button, "eflete/default"); \
-   evas_object_smart_callback_add (button, "clicked",_##callback##_add_on_click, popup); \
-   evas_object_size_hint_weight_set(button, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(button, EVAS_HINT_FILL, 0.0); \
-   elm_object_text_set(button, text); \
-   evas_object_show(button); \
+   BUTTON_ADD(box, button, "Rectangle");
+   evas_object_smart_callback_add (button, "clicked",_rect_add_on_click, popup);
    elm_box_pack_end(box, button);
-
-   ADD_BUTTON("Rectangle", rect);
-   ADD_BUTTON("Text", txt);
-   ADD_BUTTON("Image", img);
-   ADD_BUTTON("Swallow", swallow);
-   ADD_BUTTON("Textblock", txtblock);
-   ADD_BUTTON("Group", group);
-   ADD_BUTTON("Spacer", spacer);
+   BUTTON_ADD(box, button, "Text");
+   evas_object_smart_callback_add (button, "clicked",_txt_add_on_click, popup);
+   elm_box_pack_end(box, button);
+   BUTTON_ADD(box, button, "Image");
+   evas_object_smart_callback_add (button, "clicked",_img_add_on_click, popup);
+   elm_box_pack_end(box, button);
+   BUTTON_ADD(box, button, "Swallow");
+   evas_object_smart_callback_add (button, "clicked",_swallow_add_on_click, popup);
+   elm_box_pack_end(box, button);
+   BUTTON_ADD(box, button, "Textblock");
+   evas_object_smart_callback_add (button, "clicked",_txtblock_add_on_click, popup);
+   elm_box_pack_end(box, button);
+   BUTTON_ADD(box, button, "Group");
+   evas_object_smart_callback_add (button, "clicked",_group_add_on_click, popup);
+   elm_box_pack_end(box, button);
+   BUTTON_ADD(box, button, "Spacer");
+   evas_object_smart_callback_add (button, "clicked",_spacer_add_on_click, popup);
+   elm_box_pack_end(box, button);
 
    elm_object_content_set(popup, box);
 
-   bt_no = elm_button_add(popup);
-   elm_object_text_set(bt_no, "Cancel");
+   BUTTON_ADD(box, bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
-   elm_object_part_content_set(popup, "button2", bt_no);
-   elm_object_style_set(bt_no, "eflete/default");
-   evas_object_show(bt_no);
+   elm_object_part_content_set(popup, "button1", bt_no);
 
    evas_object_show(popup);
-#undef ADD_BUTTON
    return popup;
 }

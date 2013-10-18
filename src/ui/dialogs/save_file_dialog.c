@@ -18,7 +18,6 @@
 */
 
 #include "save_file_dialog.h"
-#include "modal_window.h"
 
 struct _cb_data
 {
@@ -76,6 +75,7 @@ _on_edj_done(void *data,
 
              Evas_Object *popup, *btn1, *btn2;
              popup = elm_popup_add(ap->win_layout);
+             elm_object_style_set(popup, "eflete/popup");
 
              d_data->obj = obj;
              d_data->popup = popup;
@@ -84,13 +84,11 @@ _on_edj_done(void *data,
 
              elm_object_text_set(popup, "File is already exist. Would"
                                  "you like to replace it?");
-             btn1 = elm_button_add(popup);
-             elm_object_text_set(btn1, "OK");
+             BUTTON_ADD(popup, btn1, "OK");
              elm_object_part_content_set(popup, "button1", btn1);
              evas_object_smart_callback_add(btn1, "clicked", _ok_cb, d_data);
 
-             btn2 = elm_button_add(popup);
-             elm_object_text_set(btn2, "Cancel");
+             BUTTON_ADD(popup, btn2, "Cancel");
              elm_object_part_content_set(popup, "button2", btn2);
              evas_object_smart_callback_add(btn2, "clicked", _cancel_cb, d_data);
 

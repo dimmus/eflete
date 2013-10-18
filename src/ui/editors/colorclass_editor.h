@@ -32,6 +32,7 @@
 #include "widget_manager.h"
 #include "modal_window.h"
 #include "colorclasses_edit_api.h"
+#include "widget_define.h"
 
 /**
  * Add new colorclass viewer inwin object.

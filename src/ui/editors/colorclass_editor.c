@@ -18,6 +18,7 @@
 */
 
 #include "colorclass_editor.h"
+
 struct _Colorclass_Item
 {
    const char *name;
@@ -167,6 +168,7 @@ _on_btn_add(void *data __UNUSED__,
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *ccl_box, *ccl_label;
    popup = elm_popup_add(window.mwin);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Add color class:");
 
    box = elm_box_add(popup);
@@ -199,19 +201,15 @@ _on_btn_add(void *data __UNUSED__,
    elm_object_content_set(popup, box);
    evas_object_show(box);
 
-   bt_yes = elm_button_add(popup);
-   elm_object_text_set(bt_yes, "Add");
+   BUTTON_ADD(popup, bt_yes, "Add");
    evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_btn_add,
                                                                          popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
-   evas_object_show(bt_yes);
 
-   bt_no = elm_button_add(popup);
-   elm_object_text_set(bt_no, "Cancel");
+   BUTTON_ADD(popup, bt_no, "Cancel");
    evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_btn_cancel,
                                                                         popup);
    elm_object_part_content_set(popup, "button2", bt_no);
-   evas_object_show(bt_no);
 
    evas_object_show(popup);
 }
@@ -250,21 +248,20 @@ _on_ccl_selected(void *data __UNUSED__,
    }
    Evas_Object *popup, *bt_yes, *bt_no;
    popup = elm_popup_add(window.mwin);
+   elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Apply changes?");
 
+   BUTTON_ADD(popup, bt_yes, "Yes");
    bt_yes = elm_button_add(popup);
-   elm_object_text_set(bt_yes, "Yes");
    evas_object_smart_callback_add(bt_yes, "clicked", _on_apply_popup_btn_yes,
                                                                          popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
-   evas_object_show(bt_yes);
 
+   BUTTON_ADD(popup, bt_no, "No");
    bt_no = elm_button_add(popup);
-   elm_object_text_set(bt_no, "No");
    evas_object_smart_callback_add(bt_no, "clicked", _on_apply_popup_btn_no,
                                                                         popup);
    elm_object_part_content_set(popup, "button2", bt_no);
-   evas_object_show(bt_no);
 
    window.next_ccl=ccl_it;
    evas_object_show(popup);
@@ -447,12 +444,12 @@ colorclass_viewer_add(Evas_Object *parent)
    elm_box_homogeneous_set(right_box,EINA_TRUE);
    evas_object_show(right_box);
 
-#define SPINNER_ADD(spinner,format)\
+#define _SPINNER_ADD(spinner, format)\
    spinner = elm_spinner_add(mwin);\
    elm_object_style_set(spinner, "eflete/default"); \
    elm_spinner_min_max_set(spinner, 0,255);\
-   elm_spinner_interval_set(spinner,0.4);\
-   elm_spinner_label_format_set(spinner,format);\
+   elm_spinner_interval_set(spinner, 0.4);\
+   elm_spinner_label_format_set(spinner, format);\
    elm_spinner_editable_set(spinner, EINA_FALSE);\
    evas_object_size_hint_min_set(spinner, 150, 35);\
    evas_object_size_hint_max_set(spinner, 150, 35);\
@@ -462,15 +459,15 @@ colorclass_viewer_add(Evas_Object *parent)
    elm_box_pack_end(right_box, spinner);\
    evas_object_show(spinner);
 
-#define COLOR_ADD(rect,title)\
+#define _COLOR_ADD(rect, title)\
    label = elm_label_add(mwin);\
-   elm_object_text_set(label,title);\
+   elm_object_text_set(label, title);\
    elm_box_pack_end(right_box, label);\
    evas_object_show(label);\
-   color = edje_object_add (evas_object_evas_get(mwin));\
+   color = edje_object_add(evas_object_evas_get(mwin));\
    rect = evas_object_rectangle_add(evas_object_evas_get(mwin));\
-   edje_object_file_set(color,TET_EDJ,"base/colorclass_editor/color_example");\
-   edje_object_part_swallow(color,"color_example",rect);\
+   edje_object_file_set(color,TET_EDJ, "base/colorclass_editor/color_example");\
+   edje_object_part_swallow(color, "color_example", rect);\
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);\
    evas_object_size_hint_min_set(color, 150, 35);\
    evas_object_size_hint_max_set(color, 150, 35);\
@@ -479,26 +476,26 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_show(rect);\
    evas_object_show(color);
 
-   COLOR_ADD(window.rect_color1,"Object color")
-   SPINNER_ADD(window.obj_r,"R: %4.0f")
-   SPINNER_ADD(window.obj_g,"G: %4.0f")
-   SPINNER_ADD(window.obj_b,"B: %4.0f")
-   SPINNER_ADD(window.obj_a,"A: %4.0f")
-   COLOR_ADD(window.rect_color2,"Outline color")
-   SPINNER_ADD(window.out_r,"R: %4.0f")
-   SPINNER_ADD(window.out_g,"G: %4.0f")
-   SPINNER_ADD(window.out_b,"B: %4.0f")
-   SPINNER_ADD(window.out_a,"A: %4.0f")
-   COLOR_ADD(window.rect_color3,"Shadow color")
-   SPINNER_ADD(window.sdw_r,"R: %4.0f")
-   SPINNER_ADD(window.sdw_g,"G: %4.0f")
-   SPINNER_ADD(window.sdw_b,"B: %4.0f")
-   SPINNER_ADD(window.sdw_a,"A: %4.0f")
+   _COLOR_ADD(window.rect_color1,"Object color")
+   _SPINNER_ADD(window.obj_r,"R: %4.0f")
+   _SPINNER_ADD(window.obj_g,"G: %4.0f")
+   _SPINNER_ADD(window.obj_b,"B: %4.0f")
+   _SPINNER_ADD(window.obj_a,"A: %4.0f")
+   _COLOR_ADD(window.rect_color2,"Outline color")
+   _SPINNER_ADD(window.out_r,"R: %4.0f")
+   _SPINNER_ADD(window.out_g,"G: %4.0f")
+   _SPINNER_ADD(window.out_b,"B: %4.0f")
+   _SPINNER_ADD(window.out_a,"A: %4.0f")
+   _COLOR_ADD(window.rect_color3,"Shadow color")
+   _SPINNER_ADD(window.sdw_r,"R: %4.0f")
+   _SPINNER_ADD(window.sdw_g,"G: %4.0f")
+   _SPINNER_ADD(window.sdw_b,"B: %4.0f")
+   _SPINNER_ADD(window.sdw_a,"A: %4.0f")
 
-#undef SPINNER_ADD
-#undef COLOR_ADD
+#undef _SPINNER_ADD
+#undef _COLOR_ADD
    window.label = edje_object_add(evas_object_evas_get(mwin));
-   edje_object_file_set(window.label,TET_EDJ,
+   edje_object_file_set(window.label, TET_EDJ,
                                         "base/colorclass_editor/text_example");
    edje_object_part_text_set(window.label, "text_example", "EXAMPLE");
    elm_box_pack_start(right_box,window.label);

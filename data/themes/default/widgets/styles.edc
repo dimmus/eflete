@@ -36,4 +36,16 @@ styles {
       tag: "em" "+ font_style=Oblique";
       tag: "hilight" "+ font_weight=Bold";
    }
+   style { name: "popup_desc_style";
+      base: "font=Sans font_size=10 align=center color=#000000 text_class=label";
+      tag:  "br" "\n";
+      tag:  "ps" "ps";
+      tag:  "whitecolor" "+ color=#ffffff";
+      tag:  "tab" "\t";
+   }
+   style { name: "popup_title_style";
+      base: "font=Sans font_size=15 align=center color=#d6d6d6 wrap=mixed ellipsis=1.0";
+      tag:  "br" "\n";
+      tag:  "tab" "\t";
+   }
 }
