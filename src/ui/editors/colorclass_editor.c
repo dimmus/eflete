@@ -407,33 +407,25 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_size_hint_align_set(bottom_box, 0,0);
    evas_object_show(bottom_box);
 
-   button = elm_button_add(mwin);
-   elm_object_text_set(button, "Add");
+   BUTTON_ADD(mwin, button, "Add");
    evas_object_smart_callback_add(button, "clicked", _on_btn_add,
                                    mwin);
    elm_box_pack_end(bottom_box,button);
-   evas_object_show(button);
 
-   button = elm_button_add(mwin);
-   elm_object_text_set(button, "Delete");
+   BUTTON_ADD(mwin, button, "Delete");
    evas_object_smart_callback_add(button, "clicked", _on_btn_del,
                                    mwin);
    elm_box_pack_end(bottom_box,button);
-   evas_object_show(button);
 
-   button = elm_button_add(mwin);
-   elm_object_text_set(button, "Apply");
+   BUTTON_ADD(mwin, button, "Apply");
    evas_object_smart_callback_add(button, "clicked", _on_btn_apply,
                                    mwin);
    elm_box_pack_end(bottom_box,button);
-   evas_object_show(button);
 
-   button = elm_button_add(mwin);
-   elm_object_text_set(button, "Close");
+   BUTTON_ADD(mwin, button, "Close");
    evas_object_smart_callback_add(button, "clicked",
                      _on_btn_cancel, mwin);
    elm_box_pack_end(bottom_box,button);
-   evas_object_show(button);
 
    right_box = elm_box_add(box);
    elm_object_part_content_set(panes, "right", right_box);
@@ -444,36 +436,36 @@ colorclass_viewer_add(Evas_Object *parent)
    elm_box_homogeneous_set(right_box,EINA_TRUE);
    evas_object_show(right_box);
 
-#define _SPINNER_ADD(spinner, format)\
-   spinner = elm_spinner_add(mwin);\
+#define _SPINNER_ADD(spinner, format) \
+   spinner = elm_spinner_add(mwin); \
    elm_object_style_set(spinner, "eflete/default"); \
-   elm_spinner_min_max_set(spinner, 0,255);\
-   elm_spinner_interval_set(spinner, 0.4);\
-   elm_spinner_label_format_set(spinner, format);\
-   elm_spinner_editable_set(spinner, EINA_FALSE);\
-   evas_object_size_hint_min_set(spinner, 150, 35);\
-   evas_object_size_hint_max_set(spinner, 150, 35);\
-   evas_object_size_hint_align_set(spinner, -1.0, -1.0);\
-   evas_object_smart_callback_add(spinner, "changed",\
-                           _on_spinner_value_changed, spinner);\
-   elm_box_pack_end(right_box, spinner);\
+   elm_spinner_min_max_set(spinner, 0,255); \
+   elm_spinner_interval_set(spinner, 0.4); \
+   elm_spinner_label_format_set(spinner, format); \
+   elm_spinner_editable_set(spinner, EINA_FALSE); \
+   evas_object_size_hint_min_set(spinner, 150, 35); \
+   evas_object_size_hint_max_set(spinner, 150, 35); \
+   evas_object_size_hint_align_set(spinner, -1.0, -1.0); \
+   evas_object_smart_callback_add(spinner, "changed", \
+                           _on_spinner_value_changed, spinner); \
+   elm_box_pack_end(right_box, spinner); \
    evas_object_show(spinner);
 
-#define _COLOR_ADD(rect, title)\
-   label = elm_label_add(mwin);\
-   elm_object_text_set(label, title);\
-   elm_box_pack_end(right_box, label);\
-   evas_object_show(label);\
-   color = edje_object_add(evas_object_evas_get(mwin));\
-   rect = evas_object_rectangle_add(evas_object_evas_get(mwin));\
-   edje_object_file_set(color,TET_EDJ, "base/colorclass_editor/color_example");\
-   edje_object_part_swallow(color, "color_example", rect);\
-   evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);\
-   evas_object_size_hint_min_set(color, 150, 35);\
-   evas_object_size_hint_max_set(color, 150, 35);\
-   evas_object_size_hint_align_set(color, -1.0, -1.0);\
-   elm_box_pack_end(right_box, color);\
-   evas_object_show(rect);\
+#define _COLOR_ADD(rect, title) \
+   label = elm_label_add(mwin); \
+   elm_object_text_set(label, title); \
+   elm_box_pack_end(right_box, label); \
+   evas_object_show(label); \
+   color = edje_object_add(evas_object_evas_get(mwin)); \
+   rect = evas_object_rectangle_add(evas_object_evas_get(mwin)); \
+   edje_object_file_set(color,TET_EDJ, "base/colorclass_editor/color_example"); \
+   edje_object_part_swallow(color, "color_example", rect); \
+   evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_min_set(color, 150, 35); \
+   evas_object_size_hint_max_set(color, 150, 35); \
+   evas_object_size_hint_align_set(color, -1.0, -1.0); \
+   elm_box_pack_end(right_box, color); \
+   evas_object_show(rect); \
    evas_object_show(color);
 
    _COLOR_ADD(window.rect_color1,"Object color")

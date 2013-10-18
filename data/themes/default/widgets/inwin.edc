@@ -1,12 +1,11 @@
-group { name: "elm/win/inwin/custom";
+group { name: "elm/win/inwin/eflete/default";
    images {
-      image: "bt_dis_base.png" COMP;
-      image: "bt_dis_base.png" COMP;
+      image: "popup-bg.png" COMP;
+      image: "popup-header-bg.png" COMP;
    }
    parts {
       part { name: "base";
          type: RECT;
-         mouse_events: 1;
          description { state: "default" 0.0;
             color: 64 64 64 100;
          }
@@ -17,26 +16,33 @@ group { name: "elm/win/inwin/custom";
       }
       part { name: "pop";
          type: IMAGE;
-         mouse_events: 1;
          description { state: "default" 0.0;
+            image {
+               normal: "popup-bg.png";
+               border: 34 34 34 34;
+            }
             rel1.relative: 0.1 0.1;
             rel2.relative: 0.9 0.9;
-            image {
-               normal: "bt_dis_base.png";
-               border: 4 4 4 4;
-            }
-            image.middle: SOLID;
          }
       }
       part { name: "header";
-         type: RECT;
+         type: IMAGE;
          description { state: "default" 0.0;
-            min: 0 24;
-            max: 9999 24;
-            rel1.to: "pop";
-            rel2.to: "pop";
+            min: 0 39;
+            max: 9999 39;
             align: 0.5 0.0;
-            color: 0 0 0 0;
+            image {
+               normal: "popup-header-bg.png";
+               border: 11 11 0 0;
+            }
+            rel1 {
+               to: "pop";
+               offset: 21 21;
+            }
+            rel2
+               to: "pop";
+               offset: -21 -21;
+            }
          }
       }
       part { name: "header_space_rel1_padding";
@@ -44,9 +50,9 @@ group { name: "elm/win/inwin/custom";
          description { state: "default" 0.0;
             min: 4 4;
             max: 4 4;
+            align: 0.0 0.0;
             rel1.to: "header";
             rel2.to: "header";
-            align: 0.0 0.0;
          }
       }
       part { name: "header_space_rel2_padding";
@@ -54,40 +60,44 @@ group { name: "elm/win/inwin/custom";
          description { state: "default" 0.0;
             min: 4 4;
             max: 4 4;
+            align: 1.0 1.0;
             rel1.to: "header";
             rel2.to: "header";
-            align: 1.0 1.0;
          }
       }
       part { name: "header_space";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.to: "header_space_rel1_padding";
-            rel1.relative: 1.0 1.0;
-            rel2.to: "header_space_rel2_padding";
-            rel2.relative: 0.0 0.0;
             color: 0 0 0 0;
+            rel1 {
+               to: "header_space_rel1_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "header_space_rel2_padding";
+               relative: 0.0 0.0;
+            }
          }
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          description { state: "deafult" 0.0;
-            rel1.to: "header_space";
-            rel2.to: "header_space";
             align: 0.0 0.5;
             aspect: 1 1;
             aspect_preference: VERTICAL;
+            rel1.to: "header_space";
+            rel2.to: "header_space";
          }
       }
       part { name: "elm.swallow.close";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to: "header_space";
-            rel2.to: "header_space";
             align: 1.0 0.5;
             aspect: 1 1;
             aspect_preference: VERTICAL;
+            rel1.to: "header_space";
+            rel2.to: "header_space";
          }
       }
       part { name: "button_padding";
@@ -95,36 +105,44 @@ group { name: "elm/win/inwin/custom";
          description { state: "default" 0.0;
             min: 8 0;
             max: 8 9999;
-            rel1.to: "header_space";
-            rel2.to: "elm.swallow.close";
-            rel2.relative: 0.0 1.0;
             align: 1.0 0.5;
+            rel1.to: "header_space";
+            rel2 {
+               to: "elm.swallow.close";
+               relative: 0.0 1.0;
+            }
          }
       }
       part { name: "elm.swallow.info";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to: "header_space";
-            rel2.to: "button_padding";
-            rel2.relative: 0.0 1.0;
             align: 1.0 0.5;
             aspect: 1 1;
             aspect_preference: VERTICAL;
+            rel1.to: "header_space";
+            rel2 {
+               to: "button_padding";
+               relative: 0.0 1.0;
+            }
          }
       }
       part { name: "elm.text.title";
          type: TEXT;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.icon";
-            rel1.relative: 1.0 0.0;
-            rel2.to: "elm.swallow.info";
-            rel2.relative: 0.0 1.0;
-            color: 0 0 0 255;
+            color: FN_COL_DEFAULT;
             text {
                font: "Sans";
-               size: 10;
+               size: 15;
                ellipsis: 1.0;
+            }
+            rel1 {
+               to: "elm.swallow.icon";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "elm.swallow.info";
+               relative: 0.0 1.0;
             }
          }
       }
@@ -133,10 +151,15 @@ group { name: "elm/win/inwin/custom";
          description { state: "default" 0.0;
             min: 4 0;
             max: 4 0;
-            rel1.to: "header";
-            rel1.relative: 0.0 1.0;
-            rel2.to: "pop";
             align: 0.0 0.0;
+            rel1 {
+               to: "header";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to: "pop";
+               offset: -34 -34;
+            }
          }
       }
       part { name: "content_rel2_padding";
@@ -144,19 +167,28 @@ group { name: "elm/win/inwin/custom";
          description { state: "default" 0.0;
             min: 4 4;
             max: 4 4;
-            rel1.to: "header";
-            rel1.relative: 0.0 1.0;
-            rel2.to: "pop";
             align: 1.0 1.0;
+            rel1 {
+               to: "header";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to: "pop";
+               offset: -34 -34;
+            }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            rel1.to: "content_rel1_padding";
-            rel1.relative: 1.0 1.0;
-            rel2.to: "content_rel2_padding";
-            rel2.relative: 0.0 0.0;
+            rel1 {
+               to: "content_rel1_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "content_rel2_padding";
+               relative: 0.0 0.0;
+            }
          }
       }
    }
@@ -181,7 +213,7 @@ group { name: "elm/win/inwin/custom";
 #define SCROLL_TIME 8.0
 
 group { name: "elm/win/inwin/about_window";
-   inherit: "elm/win/inwin/custom";
+   inherit: "elm/win/inwin/eflete/default";
    parts {
       part { name: "pop";
          description { state: "default" 0.0;
@@ -192,7 +224,7 @@ group { name: "elm/win/inwin/about_window";
       part { name: "content_clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1 { relative: 0.1 0.1;
+            rel1 { relative: 0.1 0.22;
                to: "pop";
             }
             rel2 { relative: 0.9 0.9;
@@ -213,18 +245,18 @@ group { name: "elm/win/inwin/about_window";
          description { state: "default" 0.0;
             min: 4 0;
             max: 4 0;
+            align: 0.0 1.0;
             rel1.to: "header";
             rel2 { to_y: "content_clipper";
                relative: 1.0 1.5;
             }
-            align: 0.0 1.0;
          }
          description { state: "full" 0.0;
             inherit: "default" 0.0;
+            align: 0.0 0.0;
             rel1 { to_y: "content_clipper";
                relative: 0.0 -1.5;
             }
-            align: 0.0 0.0;
          }
       }
    }
