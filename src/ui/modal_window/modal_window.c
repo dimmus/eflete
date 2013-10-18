@@ -81,14 +81,12 @@ _mw_create(Evas_Object *parent, const char *style_name)
    evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
                                   _on_key_down, NULL);
 
-   bt_close = elm_button_add(mw);
-   evas_object_size_hint_align_set(bt_close, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   BUTTON_ADD(mw, bt_close, "");
    evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
    ic_close = elm_icon_add(bt_close);
    elm_image_file_set(ic_close, TET_IMG_PATH"mw_button_close.png", NULL);
    elm_layout_content_set(bt_close, "icon", ic_close);
    elm_layout_content_set(mw, "elm.swallow.close", bt_close);
-   evas_object_show(bt_close);
 
    return mw;
 }
@@ -102,7 +100,7 @@ mw_add(Evas_Object *parent)
         return NULL;
      }
 
-   return _mw_create(parent, "custom");
+   return _mw_create(parent, "eflete/default");
 }
 
 Evas_Object *
