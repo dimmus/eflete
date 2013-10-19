@@ -12,7 +12,7 @@
       demo->current_scale = scale; \
       elm_object_scale_set(demo->object, demo->current_scale); \
    }
-
+#define ELEMENTS_COUNT 16
 
 ZOOM_ON_CLICK(half, 0.5)
 ZOOM_ON_CLICK(one, 1.0)
@@ -105,6 +105,36 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
      {
         object = elm_panel_add(parent);
         elm_panel_orient_set(object, _panel_orient_get(class));
+     }
+   else if (strcmp(widget, "scroller") == 0)
+     {
+        if (strcmp(class, "entry") == 0)
+          {
+             object = elm_entry_add(parent);
+             elm_entry_scrollable_set(object, EINA_TRUE);
+             elm_entry_scrollbar_policy_set(object, ELM_SCROLLER_POLICY_ON,
+                                            ELM_SCROLLER_POLICY_ON);
+          }
+        else
+          {
+             Evas_Object *tb = elm_table_add(parent);
+             Evas_Object *bt;
+             object = elm_scroller_add(parent);
+             int i, j;
+
+             for (j = 0; j < ELEMENTS_COUNT; j++)
+               {
+                  for (i = 0; i < ELEMENTS_COUNT; i++)
+                    {
+                       bt = elm_button_add(parent);
+                       elm_object_text_set(bt, "Both");
+                       elm_table_pack(tb, bt, i, j, 1, 1);
+                       evas_object_show(bt);
+                    }
+               }
+             elm_object_content_set(object, tb);
+             evas_object_show(tb);
+          }
      }
 
    return object;
