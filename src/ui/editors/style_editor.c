@@ -56,6 +56,8 @@ static Style_tag_entries st_tag_entries;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
+static void
+_on_glit_selected(void *data, Evas_Object *obj, void *event_info);
 
 static void
 _on_popup_bt_cancel(void *data,
@@ -80,6 +82,13 @@ _on_st_add_bt_ok(void *data,
         NOTIFY_WARNING("Style name can not be empty!");
         return;
      }
+   if (!((isalpha(default_tags[0])) ||
+         (default_tags[0] == '+') ||
+         (!strcmp(default_tags, ""))))
+    {
+        NOTIFY_WARNING("The default tag must begin from + or alphabetic symbol");
+        return;
+    }
    if(!style_edit_style_add(window.pr, style_name))
      {
         NOTIFY_WARNING("Style name must be unique!");
@@ -90,13 +99,15 @@ _on_st_add_bt_ok(void *data,
    glit_style = elm_genlist_item_append(window.glist, _itc_style,
                                         style_name,
                                         NULL, ELM_GENLIST_ITEM_NONE,
-                                        NULL, NULL);
+                                        _on_glit_selected, style_name);
    elm_genlist_item_append(window.glist, _itc_tags,
                            "DEFAULT",
                            glit_style, ELM_GENLIST_ITEM_NONE,
-                           NULL, NULL);
+                           _on_glit_selected, "DEFAULT");
    evas_object_del(popup);
-   elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_TOP);
+   elm_genlist_item_selected_set(glit_style, EINA_TRUE);
+   elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
 }
 
 static void
@@ -115,6 +126,17 @@ _on_tag_add_bt_ok(void *data,
         NOTIFY_WARNING("Tag name can not be empty!");
         return;
      }
+   if (!tag_value)
+     {
+        NOTIFY_WARNING("Tag value can not be empty!");
+        return;
+     }
+   if (!((isalpha(tag_value[0])) ||
+        (tag_value[0] == '+')))
+    {
+        NOTIFY_WARNING("Tag value must begin from + or alphabetic symbol");
+        return;
+    }
    if(!style_edit_style_tag_add(window.pr, style_name, tag_name, tag_value))
      {
         NOTIFY_WARNING("Tag name must be unique!");
@@ -123,10 +145,11 @@ _on_tag_add_bt_ok(void *data,
    glit_tag = elm_genlist_item_append(window.glist, _itc_tags,
                                       tag_name,
                                       st_tag_entries.style_name, ELM_GENLIST_ITEM_NONE,
-                                      NULL, NULL);
+                                      _on_glit_selected, tag_name);
    evas_object_del(popup);
-   elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_TOP);
-   elm_genlist_item_selected_set(glit_tag, EINA_FALSE);
+   elm_genlist_item_selected_set(glit_tag, EINA_TRUE);
+   elm_genlist_item_show(st_tag_entries.style_name, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 }
 
 static void
@@ -392,7 +415,7 @@ _on_glit_selected(void *data __UNUSED__,
 
    if (!glit_parent)
      {
-        style_name = elm_object_item_data_get(glit);
+        style_name = (char *)(data);
         tags = style_edit_style_tags_list_get(window.pr, style_name);
 
         EINA_LIST_FOREACH(tags, l, tag)
@@ -400,16 +423,16 @@ _on_glit_selected(void *data __UNUSED__,
              value = style_edit_style_tag_value_get(window.pr, style_name, tag);
              eina_strlcat(style, value, BUFF_MAX);
           }
-        elm_object_text_set(window.entry_tag, "");
-        elm_object_text_set(window.entry_prop, "");
+        elm_entry_entry_set(window.entry_tag, "");
+        elm_entry_entry_set(window.entry_prop, "");
      }
    else
      {
         style_name = elm_object_item_data_get(glit_parent);
-        tag = elm_object_item_data_get(glit);
+        tag = (char *)(data);
         value = style_edit_style_tag_value_get(window.pr, style_name, tag);
-        elm_object_text_set(window.entry_tag, tag);
-        elm_object_text_set(window.entry_prop, value);
+        elm_entry_entry_set(window.entry_tag, tag);
+        elm_entry_entry_set(window.entry_prop, value);
         eina_strlcat(style, value, BUFF_MAX);
      }
    eina_strlcat(style, "'", BUFF_MAX);
@@ -506,7 +529,7 @@ _form_left_side(Evas_Object *obj)
           glit_style = elm_genlist_item_append(window.glist, _itc_style,
                                                style,
                                                NULL, ELM_GENLIST_ITEM_NONE,
-                                               NULL, NULL);
+                                               _on_glit_selected, style);
           elm_object_item_data_set(glit_style, style);
           tags = style_edit_style_tags_list_get(window.pr, style);
           EINA_LIST_FOREACH(tags, l_tg, tag)
@@ -514,13 +537,11 @@ _form_left_side(Evas_Object *obj)
                glit_tag = elm_genlist_item_append(window.glist, _itc_tags,
                                        tag,
                                        glit_style, ELM_GENLIST_ITEM_NONE,
-                                       NULL, NULL);
+                                      _on_glit_selected, tag);
                 elm_object_item_data_set(glit_tag, tag);
             }
        }
      eina_list_free(styles);
-     evas_object_smart_callback_add(window.glist, "selected",
-                                    _on_glit_selected, NULL);
 
      BUTTON_ADD(obj, btn, "New style");
      evas_object_size_hint_weight_set(btn, 0.0, 0.0);
