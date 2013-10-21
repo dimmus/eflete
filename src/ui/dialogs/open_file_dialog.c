@@ -146,6 +146,12 @@ _on_ok_cb(void *data,
    const char *path_sd = elm_object_text_get(fs_ent->sd);
    const char *path_fd = elm_object_text_get(fs_ent->fd);
 
+   if (!eina_str_has_suffix(path_edc, ".edc"))
+     {
+        NOTIFY_ERROR("The file must have an extension '.edc'");
+        return;
+     }
+
    wd_list = ui_edc_load_done(ap, fs_ent->project_name, path_edc,
                               path_id, path_sd, path_fd);
 
