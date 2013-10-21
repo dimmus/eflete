@@ -30,6 +30,7 @@
 #include "efl_ete.h"
 #include "Evas.h"
 #include "widget_manager.h"
+#include "widget_define.h"
 /**
  * Add new font viewer inwin object.
  *

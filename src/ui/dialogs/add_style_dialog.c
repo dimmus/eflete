@@ -576,14 +576,14 @@ new_style_dialog_add(App_Data *ap)
    if (!style) return;
    entry_text = eina_stringshare_add(style->style_name);
 
-   ENTRY_ADD(style_box, entry_style, EINA_TRUE);
+   ENTRY_ADD(style_box, entry_style, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry_style, entry_text);
    elm_box_pack_end(style_box, entry_style);
 
    BOX_ADD(box, class_box, EINA_TRUE, EINA_FALSE);
    LABEL_ADD(class_box, label, "Class name: ");
    elm_box_pack_end(class_box, label);
-   ENTRY_ADD(class_box, entry_class, EINA_TRUE);
+   ENTRY_ADD(class_box, entry_class, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(class_box, entry_class);
 
    elm_box_pack_end(box, style_box);

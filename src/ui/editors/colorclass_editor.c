@@ -186,15 +186,7 @@ _on_btn_add(void *data __UNUSED__,
    evas_object_show(ccl_label);
    elm_box_pack_end(ccl_box, ccl_label);
 
-   ccl_entry = elm_entry_add(ccl_box);
-   elm_entry_single_line_set(ccl_entry, EINA_TRUE);
-   elm_entry_scrollable_set(ccl_entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(ccl_entry, ELM_SCROLLER_POLICY_OFF,
-                                                    ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(ccl_entry, EVAS_HINT_EXPAND,
-                                                            EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(ccl_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(ccl_entry);
+   ENTRY_ADD(ccl_box, ccl_entry, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(ccl_box, ccl_entry);
 
    elm_box_pack_end(box, ccl_box);
@@ -438,7 +430,7 @@ colorclass_viewer_add(Evas_Object *parent)
 
 #define _SPINNER_ADD(spinner, format) \
    spinner = elm_spinner_add(mwin); \
-   elm_object_style_set(spinner, "eflete/default"); \
+   elm_object_style_set(spinner, DEFAULT_STYLE); \
    elm_spinner_min_max_set(spinner, 0,255); \
    elm_spinner_interval_set(spinner, 0.4); \
    elm_spinner_label_format_set(spinner, format); \
@@ -510,28 +502,28 @@ colorclass_viewer_init(Evas_Object *ccl_view __UNUSED__,
         evas_object_del(ccl_view);
         return;
      }
-   window.pr=project;
+   window.pr = project;
    evas_object_show(ccl_view);
-   const char* ccname;
+   const char *ccname;
    Eina_List *cclist, *l;
    cclist = colorclasses_edit_list_get(window.pr);
 
    EINA_LIST_FOREACH(cclist,l,ccname)
-   {
-      Item *it = (Item *) calloc(1,sizeof(Item));
-      colorclasses_edit_colors_get(window.pr, ccname,
-                                   &r1, &g1, &b1, &a1,
-                                   &r2, &g2, &b2, &a2,
-                                   &r3, &g3, &b3, &a3);
-     it->r1 = r1; it->g1 = g1;
-     it->b1 = b1; it->a1 = a1;
-     it->r2 = r2; it->g2 = g2;
-     it->b2 = b2; it->a2 = a2;
-     it->r3 = r3; it->g3 = g3;
-     it->b3 = b3; it->a3 = a3;
+     {
+        Item *it = (Item *) calloc(1,sizeof(Item));
+        colorclasses_edit_colors_get(window.pr, ccname,
+                                     &r1, &g1, &b1, &a1,
+                                     &r2, &g2, &b2, &a2,
+                                     &r3, &g3, &b3, &a3);
+        it->r1 = r1; it->g1 = g1;
+        it->b1 = b1; it->a1 = a1;
+        it->r2 = r2; it->g2 = g2;
+        it->b2 = b2; it->a2 = a2;
+        it->r3 = r3; it->g3 = g3;
+        it->b3 = b3; it->a3 = a3;
 
-     it->name = strdup(ccname);
-     elm_genlist_item_append(window.genlist, _itc_ccl, it, NULL,
-                             ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        it->name = strdup(ccname);
+        elm_genlist_item_append(window.genlist, _itc_ccl, it, NULL,
+                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
 }

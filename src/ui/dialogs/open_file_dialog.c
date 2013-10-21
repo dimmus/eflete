@@ -359,6 +359,7 @@ open_edc_file(App_Data *ap)
    #define _BUTTON_ADD(box, text, func, data) \
       bt = elm_button_add(box); \
       elm_object_text_set(bt, text); \
+      elm_object_style_set(bt, DEFAULT_STYLE); \
       evas_object_smart_callback_add(bt, "clicked", func, data); \
       evas_object_show(bt); \
       elm_box_pack_end(box, bt);
@@ -370,6 +371,7 @@ open_edc_file(App_Data *ap)
       evas_object_show(label); \
       elm_box_pack_end(box_item, label); \
       fs_entry = elm_entry_add(box_item); \
+      elm_object_style_set(fs_entry, DEFAULT_STYLE); \
       elm_object_text_set(fs_entry, getenv("HOME")); \
       evas_object_size_hint_weight_set(fs_entry, EVAS_HINT_EXPAND, 0.0); \
       evas_object_size_hint_align_set(fs_entry, EVAS_HINT_FILL, EVAS_HINT_FILL); \

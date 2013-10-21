@@ -100,7 +100,7 @@ mw_add(Evas_Object *parent)
         return NULL;
      }
 
-   return _mw_create(parent, "eflete/default");
+   return _mw_create(parent, DEFAULT_STYLE);
 }
 
 Evas_Object *

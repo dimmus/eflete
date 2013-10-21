@@ -332,7 +332,7 @@ image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode)
    evas_object_show(bottom_box);
 
    button = elm_button_add(bottom_box);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, DEFAULT_STYLE);
    elm_object_text_set(button, "Add image");
    evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb,
                                    parent);
@@ -340,7 +340,7 @@ image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode)
    evas_object_show(button);
 
    button = elm_button_add(bottom_box);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, DEFAULT_STYLE);
    elm_object_text_set(button, "Delete image");
    evas_object_smart_callback_add(button, "clicked", _on_button_delete_clicked_cb,
                                    NULL);
@@ -348,7 +348,7 @@ image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode)
    evas_object_show(button);
 
    button = elm_button_add(bottom_box);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, DEFAULT_STYLE);
    elm_object_text_set(button, "Ok");
    evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
                                    mwin);
@@ -356,7 +356,7 @@ image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode)
    evas_object_show(button);
 
    button = elm_button_add(bottom_box);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, DEFAULT_STYLE);
    elm_object_text_set(button, "Cancel");
    evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked_cb,
                                    mwin);

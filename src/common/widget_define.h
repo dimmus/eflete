@@ -26,6 +26,9 @@
 
 #include <Elementary.h>
 
+/* TODO: (refactoring) Style param in every widget define is needed. */
+#define DEFAULT_STYLE "eflete/default"
+
 #define ITEM_ADD(parent, item, text) \
    item = elm_layout_add(parent); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
@@ -46,7 +49,7 @@
    scroller = elm_scroller_add(parent); \
    evas_object_size_hint_weight_set(scroller, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(scroller, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_style_set(scroller, "eflete/default"); \
+   elm_object_style_set(scroller, DEFAULT_STYLE); \
    evas_object_show(scroller);
 
 #define LABEL_ADD(parent, label, text) \
@@ -61,7 +64,7 @@
    elm_frame_autocollapse_set(frame, autocollapse); \
    evas_object_size_hint_fill_set(frame, EVAS_HINT_FILL, 0.0); \
    elm_object_text_set(frame, title); \
-   elm_object_style_set(frame, "eflete/default"); \
+   elm_object_style_set(frame, DEFAULT_STYLE); \
    evas_object_show(frame);
 
 #define SPINNER_ADD(parent, spinner, min, max, step, isEdit, style) \
@@ -74,8 +77,9 @@
    elm_object_style_set(spinner, style); \
    evas_object_show(spinner);
 
-#define ENTRY_ADD(parent, entry, isSingleLine) \
+#define ENTRY_ADD(parent, entry, isSingleLine, style) \
    entry = elm_entry_add(parent); \
+   elm_object_style_set(entry, style); \
    elm_entry_single_line_set(entry, EINA_TRUE); \
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -104,7 +108,7 @@
    evas_object_size_hint_align_set(btn, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    elm_object_text_set(btn, text); \
-   elm_object_style_set(btn, "eflete/default"); \
+   elm_object_style_set(btn, DEFAULT_STYLE); \
    evas_object_show(btn);
 
 #define ICON_STANDARD_ADD(parent, icon, noscale, icon_name) \

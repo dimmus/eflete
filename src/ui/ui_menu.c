@@ -363,7 +363,7 @@ ui_menu_add(App_Data *ap)
 
    tb = elm_toolbar_add(ap->win_layout);
    if (tb == NULL) return EINA_FALSE;
-   elm_object_style_set(tb, "eflete/default");
+   elm_object_style_set(tb, DEFAULT_STYLE);
 
    evas_object_size_hint_weight_set(tb, EVAS_HINT_FILL, 1.0);
    elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_EXPAND);
@@ -379,7 +379,7 @@ ui_menu_add(App_Data *ap)
 #define ITEM_TB_ADD(icon_name, text, callback, disabled) \
    button = elm_button_add(box); \
    elm_object_text_set(button, text); \
-   elm_object_style_set(button, "eflete/default"); \
+   elm_object_style_set(button, DEFAULT_STYLE); \
    elm_box_pack_end(box, button); \
    icon = elm_icon_add(button); \
    elm_image_file_set(icon, icon_name, NULL); \

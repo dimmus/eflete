@@ -127,7 +127,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text) \
-   ENTRY_ADD(parent, entry, EINA_TRUE) \
+   ENTRY_ADD(parent, entry, EINA_TRUE, DEFAULT_STYLE) \
    elm_object_tooltip_text_set(entry, tooltip); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
@@ -642,9 +642,9 @@ prop_item_program_transition_add(Evas_Object *parent,
    ITEM_ADD(parent, item, "transition")
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE)
    HOVERSEL_ADD(item, hoversel, EINA_FALSE)
-   ENTRY_ADD(item, entry1, EINA_TRUE)
-   ENTRY_ADD(item, entry2, EINA_TRUE)
-   ENTRY_ADD(item, entry3, EINA_TRUE)
+   ENTRY_ADD(item, entry1, EINA_TRUE, DEFAULT_STYLE)
+   ENTRY_ADD(item, entry2, EINA_TRUE, DEFAULT_STYLE)
+   ENTRY_ADD(item, entry3, EINA_TRUE, DEFAULT_STYLE)
 /*   CHECK_ADD(item, check, "default");
    elm_check_state_set(check, EINA_FALSE);
    elm_object_part_text_set(check, NULL, "CURRENT");*/
@@ -682,8 +682,8 @@ prop_item_program_action_add(Evas_Object *parent,
    ITEM_ADD(parent, item, "action")
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE)
    HOVERSEL_ADD(item, hoversel, EINA_FALSE)
-   ENTRY_ADD(item, entry1, EINA_TRUE)
-   ENTRY_ADD(item, entry2, EINA_TRUE)
+   ENTRY_ADD(item, entry1, EINA_TRUE, DEFAULT_STYLE)
+   ENTRY_ADD(item, entry2, EINA_TRUE, DEFAULT_STYLE)
    evas_object_hide(entry1);
    evas_object_hide(entry2);
 
@@ -813,7 +813,7 @@ _after_item_add(Evas_Object *parent, char *name)
    button = elm_button_add(element_box);
    elm_object_text_set(button, "Del");
    evas_object_show(button);
-   ENTRY_ADD(element_box, entry, EINA_TRUE);
+   ENTRY_ADD(element_box, entry, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",
                                   __on_after_name_change, NULL);
@@ -890,7 +890,7 @@ _target_item_add(Evas_Object *parent, char *name)
    button = elm_button_add(element_box);
    elm_object_text_set(button, "Del");
    evas_object_show(button);
-   ENTRY_ADD(element_box, entry, EINA_TRUE);
+   ENTRY_ADD(element_box, entry, EINA_TRUE, DEFAULT_STYLE)
    elm_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",
                                   __on_target_name_change, NULL);
@@ -992,9 +992,9 @@ prop_item_program_in_add(Evas_Object *parent,
 
    ITEM_ADD(parent, item, "in");
    BOX_ADD(item, box, EINA_TRUE, EINA_FALSE);
-   ENTRY_ADD(item, entry, EINA_TRUE);
+   ENTRY_ADD(item, entry, EINA_TRUE, DEFAULT_STYLE)
    elm_box_pack_end(box, entry);
-   ENTRY_ADD(item, entry, EINA_TRUE);
+   ENTRY_ADD(item, entry, EINA_TRUE, DEFAULT_STYLE)
    elm_box_pack_end(box, entry);
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
@@ -1232,15 +1232,7 @@ _on_bt_prog_add(void *data __UNUSED__,
    evas_object_show(prog_label);
    elm_box_pack_end(prog_box, prog_label);
 
-   prog_entry = elm_entry_add(prog_box);
-   elm_entry_single_line_set(prog_entry, EINA_TRUE);
-   elm_entry_scrollable_set(prog_entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(prog_entry, ELM_SCROLLER_POLICY_OFF,
-                                  ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(prog_entry, EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(prog_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(prog_entry);
+   ENTRY_ADD(prog_box, prog_entry, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(prog_box, prog_entry);
 
    elm_box_pack_end(box, prog_box);

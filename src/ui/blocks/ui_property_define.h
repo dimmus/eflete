@@ -136,7 +136,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text) \
-   ENTRY_ADD(parent, entry, EINA_TRUE) \
+   ENTRY_ADD(parent, entry, EINA_TRUE, "eflete/default") \
    elm_entry_entry_set(entry, edje_edit_##sub##_##value##_get(group->obj, part->name)); \
    evas_object_data_set(entry, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry, tooltip); \
@@ -473,10 +473,11 @@ const char *value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
                                                     part->curr_state_value); \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(parent, box, EINA_TRUE, EINA_FALSE) \
-   ENTRY_ADD(parent, entry, EINA_TRUE) \
+   ENTRY_ADD(parent, entry, EINA_TRUE, "eflete/default") \
    elm_box_pack_end(box, entry); \
    btn = elm_button_add(parent); \
    elm_object_text_set(btn, "..."); \
+   elm_object_style_set(btn, "eflete/default"); \
    evas_object_show(btn); \
    elm_box_pack_end(box, btn); \
    evas_object_smart_callback_add(btn, "clicked", func, entry); \
@@ -537,7 +538,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                    &r, &g, &b, &a); \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(parent, box, EINA_TRUE, EINA_FALSE) \
-   ENTRY_ADD(box, entry, EINA_TRUE) \
+   ENTRY_ADD(box, entry, EINA_TRUE, "eflete/default") \
    IMAGE_ADD(box, image, TET_IMG_PATH"bg_demo.png"); \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
    elm_entry_markup_filter_append(entry, elm_entry_filter_limit_size, &limit_color); \
@@ -594,8 +595,8 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Eina_Stringshare *value; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   ENTRY_ADD(box, entry1, EINA_TRUE) \
-   ENTRY_ADD(box, entry2, EINA_TRUE) \
+   ENTRY_ADD(box, entry1, EINA_TRUE, "eflete/default") \
+   ENTRY_ADD(box, entry2, EINA_TRUE, "eflete/default") \
    value = edje_edit_##sub##_##value1##_get(group->obj, \
                                           part->name, \
                                           part->curr_state, \
@@ -844,7 +845,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                    part->curr_state, part->curr_state_value, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, text) \
-   ENTRY_ADD(item, entry, EINA_TRUE) \
+   ENTRY_ADD(item, entry, EINA_TRUE, "eflete/default") \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
    snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
    elm_entry_entry_set(entry, buff); \

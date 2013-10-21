@@ -314,7 +314,7 @@ ui_panes_add(App_Data *ap)
 
    panes_left = elm_panes_add(ap->win_layout);
    if (panes_left == NULL) return EINA_FALSE;
-   elm_object_style_set(panes_left, "eflete/default");
+   elm_object_style_set(panes_left, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left,
@@ -327,7 +327,7 @@ ui_panes_add(App_Data *ap)
    panes_left_hor = elm_panes_add(ap->win_layout);
    if (panes_left_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_left_hor, EINA_TRUE);
-   elm_object_style_set(panes_left_hor, "eflete/default");
+   elm_object_style_set(panes_left_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left_hor,
@@ -337,7 +337,7 @@ ui_panes_add(App_Data *ap)
 
    panes_right = elm_panes_add(ap->win_layout);
    if (panes_right == NULL) return EINA_FALSE;
-   elm_object_style_set(panes_right, "eflete/default");
+   elm_object_style_set(panes_right, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right,
@@ -348,7 +348,7 @@ ui_panes_add(App_Data *ap)
    panes_right_hor = elm_panes_add(ap->win_layout);
    if (panes_right_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_right_hor, EINA_TRUE);
-   elm_object_style_set(panes_right_hor, "eflete/default");
+   elm_object_style_set(panes_right_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right_hor,
@@ -359,7 +359,7 @@ ui_panes_add(App_Data *ap)
    panes_center = elm_panes_add(ap->win_layout);
    if (panes_center == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_center, EINA_TRUE);
-   elm_object_style_set(panes_center, "eflete/default");
+   elm_object_style_set(panes_center, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center,
@@ -369,7 +369,7 @@ ui_panes_add(App_Data *ap)
 
    panes_center_down = elm_panes_add(ap->win_layout);
    if (panes_center_down == NULL) return EINA_FALSE;
-   elm_object_style_set(panes_center_down, "eflete/default");
+   elm_object_style_set(panes_center_down, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center_down,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center_down,
@@ -412,7 +412,7 @@ ui_panes_add(App_Data *ap)
    elm_image_no_scale_set (icon, EINA_TRUE);
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add (button, "clicked", _add_state_button_cb, ap);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(button);
    elm_box_pack_end(panel, button);
 
@@ -426,7 +426,7 @@ ui_panes_add(App_Data *ap)
    elm_box_pack_end(panel, button);
    evas_object_show(panel);
    elm_object_part_content_set(block, "elm_block_subpanel", panel);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(block);
    ap->block.bottom_left = block;
 

@@ -123,7 +123,7 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    elm_object_part_text_set(popup, "title,text", "Add new part:");
 
    BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);
-   ENTRY_ADD(popup, entry, EINA_TRUE);
+   ENTRY_ADD(popup, entry, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry, "New_part_name");
    evas_object_show(entry);
    elm_box_pack_end(box, entry);

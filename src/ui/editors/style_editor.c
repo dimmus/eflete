@@ -180,13 +180,7 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_show(st_label);
    elm_box_pack_end(st_box, st_label);
 
-   st_entry = elm_entry_add(st_box);
-   elm_entry_single_line_set(st_entry, EINA_TRUE);
-   elm_entry_scrollable_set(st_entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(st_entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(st_entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(st_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(st_entry);
+   ENTRY_ADD(st_box, st_entry, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(st_box, st_entry);
 
    tag_box = elm_box_add(box);
@@ -199,13 +193,7 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_show(tag_label);
    elm_box_pack_end(tag_box, tag_label);
 
-   tag_entry = elm_entry_add(tag_box);
-   elm_entry_single_line_set(tag_entry, EINA_TRUE);
-   elm_entry_scrollable_set(tag_entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(tag_entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(tag_entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(tag_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(tag_entry);
+   ENTRY_ADD(tag_box, tag_entry, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(tag_box, tag_entry);
    evas_object_show(tag_box);
 
@@ -280,15 +268,7 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_show(tag_label);
    elm_box_pack_end(tag_box, tag_label);
 
-   tag_entry = elm_entry_add(tag_box);
-   elm_entry_single_line_set(tag_entry, EINA_TRUE);
-   elm_entry_scrollable_set(tag_entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(tag_entry,
-                                  ELM_SCROLLER_POLICY_OFF,
-                                  ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(tag_entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(tag_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(tag_entry);
+   ENTRY_ADD(tag_box, tag_entry, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(tag_box, tag_entry);
    evas_object_show(tag_box);
 
@@ -303,15 +283,7 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_show(value_label);
    elm_box_pack_end(value_box, value_label);
 
-   value_entry = elm_entry_add(value_box);
-   elm_entry_single_line_set(value_entry, EINA_TRUE);
-   elm_entry_scrollable_set(value_entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(value_entry,
-                                  ELM_SCROLLER_POLICY_OFF,
-                                  ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(value_entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(value_entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(value_entry);
+   ENTRY_ADD(value_box, value_entry, EINA_TRUE, DEFAULT_STYLE);
    elm_box_pack_end(value_box, value_entry);
 
    elm_box_pack_end(box, tag_box);
@@ -490,7 +462,7 @@ _form_left_side(Evas_Object *obj)
      if (!_itc_style)
        {
           _itc_style = elm_genlist_item_class_new();
-          _itc_style->item_style = "eflete/default";
+          _itc_style->item_style = DEFAULT_STYLE;
           _itc_style->func.text_get = _item_style_label_get;
           _itc_style->func.content_get = NULL;
           _itc_style->func.state_get = NULL;
@@ -499,7 +471,7 @@ _form_left_side(Evas_Object *obj)
      if (!_itc_tags)
        {
           _itc_tags= elm_genlist_item_class_new();
-          _itc_tags->item_style = "eflete/default";
+          _itc_tags->item_style = DEFAULT_STYLE;
           _itc_tags->func.text_get = _item_tags_label_get;
           _itc_tags->func.content_get = NULL;
           _itc_tags->func.state_get = NULL;
@@ -511,7 +483,7 @@ _form_left_side(Evas_Object *obj)
      evas_object_show(box);
 
      window.glist = elm_genlist_add(box);
-     elm_object_style_set(window.glist, "eflete/default");
+     elm_object_style_set(window.glist, DEFAULT_STYLE);
      elm_box_pack_end(box, window.glist);
      evas_object_show(window.glist);
 
@@ -571,16 +543,11 @@ _form_right_side(Evas_Object *obj)
    elm_layout_file_set(layout, TET_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
 
-   window.entry_tag = elm_entry_add(obj);
+   ENTRY_ADD(obj, window.entry_tag, EINA_TRUE, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/tag_entry", window.entry_tag);
-   elm_entry_scrollable_set(window.entry_tag, EINA_TRUE);
-   evas_object_show(window.entry_tag);
 
-   window.entry_prop = elm_entry_add(obj);
-   elm_entry_single_line_set(window.entry_prop, EINA_TRUE);
+   ENTRY_ADD(obj, window.entry_prop, EINA_TRUE, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/prop_entry", window.entry_prop);
-   elm_entry_scrollable_set(window.entry_prop, EINA_TRUE);
-   evas_object_show(window.entry_prop);
 
    BUTTON_ADD(obj, btn, "Close viewer");
    evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, window.mwin);
@@ -618,7 +585,7 @@ style_editor_window_add(Evas_Object *parent, Project *project)
    evas_object_event_callback_add(window.mwin, EVAS_CALLBACK_FREE,
                                   __on_style_editor_close, NULL);
    panes = elm_panes_add(window.mwin);
-   elm_object_style_set(panes, "eflete/default");
+   elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
@@ -630,26 +597,19 @@ style_editor_window_add(Evas_Object *parent, Project *project)
    evas_object_show(layout_left);
 
    panes_h = elm_panes_add(window.mwin);
-   elm_object_style_set(panes_h, "eflete/default");
+   elm_object_style_set(panes_h, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes_h, EINA_TRUE);
    elm_object_part_content_set(panes, "right", panes_h);
    evas_object_show(panes_h);
 
-   window.entry_style = elm_entry_add(window.mwin);
-   evas_object_size_hint_weight_set(window.entry_style, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(window.entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_entry_scrollable_set(window.entry_style, EINA_TRUE);
-   elm_entry_single_line_set(window.entry_style, EINA_TRUE);
+   ENTRY_ADD(window.mwin, window.entry_style, EINA_TRUE, "style_editor");
    elm_entry_editable_set(window.entry_style, EINA_FALSE);
-   elm_object_style_set(window.entry_style, "style_editor");
    elm_object_text_set(window.entry_style, "The quick brown fox jumps over the lazy dog");
    elm_object_part_content_set(panes_h, "left", window.entry_style);
    elm_entry_text_style_user_push(window.entry_style, "DEFAULT='align=center "
                                   "font_size="FONT_SIZE"'");
-   evas_object_size_hint_max_set(window.entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(window.entry_style);
 
    layout_right = _form_right_side(window.mwin);
    elm_object_part_content_set(panes_h, "right", layout_right);
