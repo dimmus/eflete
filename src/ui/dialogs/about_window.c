@@ -25,7 +25,6 @@ about_window_add(Evas_Object *parent)
    Evas_Object *mwin = mw_about_add(parent);
    mw_title_set(mwin, "About");
    Evas_Object *label, *box;
-   int i;
 
    box = elm_box_add(mwin);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, 0.0);
@@ -61,19 +60,6 @@ about_window_add(Evas_Object *parent)
    elm_box_pack_end(box, label);
    evas_object_show(label);
 
-/*   Evas_Object * separator = elm_separator_add (mwin);
-   elm_separator_horizontal_set(separator, EINA_TRUE);
-   elm_box_pack_end(box, separator);
-   evas_object_show(separator);
-
-   for (i = 0; i < 7; i++)
-   {
-       label = elm_label_add(mwin);
-       elm_object_text_set(label, labels_text[i]);
-       elm_box_pack_end(box, label);
-       evas_object_show(label);
-   }
-*/
    elm_win_inwin_content_set(mwin, box);
 
    evas_object_show(mwin);

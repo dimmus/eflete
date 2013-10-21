@@ -369,7 +369,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         prop_item_part_drag_x_step_x_update(pd_part_drag.drag_x, pd->group, part);
         prop_item_part_drag_y_step_y_update(pd_part_drag.drag_y, pd->group, part);
         prop_item_part_drag_confine_update(pd_part_drag.confine, pd->group, part);
-        prop_item_part_drag_event_update(pd_part_drag.confine, pd->group, part);
+        prop_item_part_drag_event_update(pd_part_drag.event, pd->group, part);
         evas_object_show(pd_part_drag.frame);
      }
 

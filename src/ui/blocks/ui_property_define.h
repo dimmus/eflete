@@ -94,6 +94,13 @@ __on_##sub##_##value##_change(void *data, \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
    if (strcmp(value, "") == 0) value = NULL; \
+    /* Wait review for commit D274 at https://phab.enlightenment.org/D274 \
+     * if (!edje_edit_##sub##_##value##_set(group->obj, part->name, value)) \
+     * { \
+     *   NOTIFY_INFO(5, "Wrong input value for"# value" field"); \
+     *   return; \
+     * } \
+     */ \
    edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
    group->isModify = EINA_TRUE; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
