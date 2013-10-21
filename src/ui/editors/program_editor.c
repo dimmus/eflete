@@ -810,9 +810,8 @@ _after_item_add(Evas_Object *parent, char *name)
    Evas_Object *entry = NULL;
 
    BOX_ADD(parent, element_box, EINA_TRUE, EINA_FALSE);
-   button = elm_button_add(element_box);
-   elm_object_text_set(button, "Del");
-   evas_object_show(button);
+   BUTTON_ADD(element_box, button, "Del");
+   evas_object_size_hint_weight_set(button, 0.0, 0.0);
    ENTRY_ADD(element_box, entry, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",
@@ -839,11 +838,10 @@ prop_item_program_after_add(Evas_Object *parent,
    BOX_ADD(item, box, EINA_TRUE, EINA_FALSE);
    BOX_ADD(box, entrys_box, EINA_FALSE, EINA_FALSE);
 
-   button = elm_button_add(box);
-   elm_object_text_set(button, "Add");
+   BUTTON_ADD(box, button, "Add");
+   evas_object_size_hint_weight_set(button, 0.0, 0.0);
    evas_object_smart_callback_add(button, "clicked", _after_add_button_cb,
                                   entrys_box);
-   evas_object_show(button);
 
    elm_box_pack_end(box, entrys_box);
    elm_box_pack_end(box, button);
@@ -887,10 +885,9 @@ _target_item_add(Evas_Object *parent, char *name)
    Evas_Object *entry = NULL;
 
    BOX_ADD(parent, element_box, EINA_TRUE, EINA_FALSE);
-   button = elm_button_add(element_box);
-   elm_object_text_set(button, "Del");
-   evas_object_show(button);
-   ENTRY_ADD(element_box, entry, EINA_TRUE, DEFAULT_STYLE)
+   BUTTON_ADD(element_box, button, "Del");
+   evas_object_size_hint_weight_set(button, 0.0, 0.0);
+   ENTRY_ADD(element_box, entry, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",
                                   __on_target_name_change, NULL);
@@ -916,11 +913,10 @@ prop_item_program_target_add(Evas_Object *parent,
    BOX_ADD(item, box, EINA_TRUE, EINA_FALSE);
    BOX_ADD(box, entrys_box, EINA_FALSE, EINA_FALSE);
 
-   button = elm_button_add(box);
-   elm_object_text_set(button, "Add");
+   BUTTON_ADD(box, button, "Add");
+   evas_object_size_hint_weight_set(button, 0.0, 0.0);
    evas_object_smart_callback_add(button, "clicked", _target_add_button_cb,
                                   entrys_box);
-   evas_object_show(button);
 
    elm_box_pack_end(box, entrys_box);
    elm_box_pack_end(box, button);
@@ -1254,7 +1250,7 @@ Evas_Object *
 program_editor_window_add(Evas_Object *parent, Group *group)
 {
    Evas_Object *mw_box, *pans;
-   Evas_Object *glist, *prog_prop;
+   Evas_Object *glist, *prog_prop, *scroller;
    Evas_Object *bt_box, *bt, *box;
 
    prop.group = group;
@@ -1290,25 +1286,23 @@ program_editor_window_add(Evas_Object *parent, Group *group)
                                     EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
 
-   bt = elm_button_add(parent);
-   elm_object_text_set(bt, "New Program");
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   BUTTON_ADD(parent, bt, "New program");
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_add, NULL);
    elm_box_pack_end(box, bt);
-   evas_object_show(bt);
 
-   bt = elm_button_add(parent);
-   elm_object_text_set(bt, "Delete");
-   evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_del, NULL);
-   evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   BUTTON_ADD(parent, bt, "Delete");
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_del, NULL);
    elm_box_pack_end(box, bt);
-   evas_object_show(bt);
    elm_object_part_content_set(pans, "left", box);
 
-   prog_prop = prop_progs_add(window.mwin);
-   elm_object_part_content_set(pans, "right", prog_prop);
+   SCROLLER_ADD(window.mwin, scroller);
+   prog_prop = prop_progs_add(scroller);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
+   elm_object_content_set(scroller, prog_prop);
+   elm_object_part_content_set(pans, "right", scroller);
 
    bt_box = elm_box_add(mw_box);
    evas_object_size_hint_weight_set(bt_box, EVAS_HINT_EXPAND, 0.0);
@@ -1316,16 +1310,12 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    elm_box_align_set(bt_box, 1.0, 1.0);
    evas_object_show(bt_box);
 
-   bt = elm_button_add(bt_box);
-   elm_object_text_set(bt, "Apply");
+   BUTTON_ADD(parent, bt, "Apply");
    evas_object_smart_callback_add(bt, "clicked", _on_editor_save, group);
-   evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
 
-   bt = elm_button_add(bt_box);
-   elm_object_text_set(bt, "Close");
+   BUTTON_ADD(parent, bt, "Close");
    evas_object_smart_callback_add(bt, "clicked", _on_editor_cancel, NULL);
-   evas_object_show(bt);
    elm_box_pack_end(bt_box, bt);
 
    elm_box_pack_end(mw_box, pans);
