@@ -182,8 +182,7 @@ _on_btn_add(void *data __UNUSED__,
    evas_object_show(ccl_box);
 
    ccl_label = elm_label_add(ccl_box);
-   elm_object_text_set(ccl_label, "Color class name: ");
-   evas_object_show(ccl_label);
+   LABEL_ADD(ccl_box, ccl_label, "Color class name: ")
    elm_box_pack_end(ccl_box, ccl_label);
 
    ENTRY_ADD(ccl_box, ccl_entry, EINA_TRUE, DEFAULT_STYLE);
@@ -444,10 +443,8 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_show(spinner);
 
 #define _COLOR_ADD(rect, title) \
-   label = elm_label_add(mwin); \
-   elm_object_text_set(label, title); \
+   LABEL_ADD(mwin, label, title) \
    elm_box_pack_end(right_box, label); \
-   evas_object_show(label); \
    color = edje_object_add(evas_object_evas_get(mwin)); \
    rect = evas_object_rectangle_add(evas_object_evas_get(mwin)); \
    edje_object_file_set(color,TET_EDJ, "base/colorclass_editor/color_example"); \

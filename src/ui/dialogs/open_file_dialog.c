@@ -366,9 +366,7 @@ open_edc_file(App_Data *ap)
 
    #define _ITEM_ADD(box, label_text, button_text, _fs, func, data) \
       BOX_ADD(box, box_item, EINA_TRUE, EINA_FALSE) \
-      label = elm_label_add(box_item); \
-      elm_object_text_set(label, label_text); \
-      evas_object_show(label); \
+      LABEL_ADD(box_item, label, label_text) \
       elm_box_pack_end(box_item, label); \
       fs_entry = elm_entry_add(box_item); \
       elm_object_style_set(fs_entry, DEFAULT_STYLE); \

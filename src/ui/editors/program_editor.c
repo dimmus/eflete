@@ -1227,9 +1227,7 @@ _on_bt_prog_add(void *data __UNUSED__,
    evas_object_size_hint_align_set(prog_box, EVAS_HINT_FILL, 0.0);
    evas_object_show(prog_box);
 
-   prog_label = elm_label_add(prog_box);
-   elm_object_text_set(prog_label, "Program name: ");
-   evas_object_show(prog_label);
+   LABEL_ADD(prog_box, prog_label, "Program name: ")
    elm_box_pack_end(prog_box, prog_label);
 
    ENTRY_ADD(prog_box, prog_entry, EINA_TRUE, DEFAULT_STYLE);
@@ -1314,7 +1312,6 @@ program_editor_window_add(Evas_Object *parent, Group *group)
 
    bt_box = elm_box_add(mw_box);
    evas_object_size_hint_weight_set(bt_box, EVAS_HINT_EXPAND, 0.0);
-   //evas_object_size_hint_align_set(bt_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_horizontal_set(bt_box, EINA_TRUE);
    elm_box_align_set(bt_box, 1.0, 1.0);
    evas_object_show(bt_box);
@@ -1335,7 +1332,6 @@ program_editor_window_add(Evas_Object *parent, Group *group)
    elm_box_pack_end(mw_box, bt_box);
 
    elm_win_inwin_content_set(window.mwin, mw_box);
-   //
    evas_object_show(window.mwin);
    return window.mwin;
 }

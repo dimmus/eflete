@@ -83,6 +83,8 @@ new_state_dialog_add(App_Data *ap)
 
    BOX_ADD(box, style_box, EINA_TRUE, EINA_FALSE);
    LABEL_ADD(style_box, label, "Name: ");
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(style_box, label);
    ENTRY_ADD(style_box, entry_name, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry_name, "new_state");
@@ -90,6 +92,8 @@ new_state_dialog_add(App_Data *ap)
 
    BOX_ADD(box, class_box, EINA_TRUE, EINA_FALSE);
    LABEL_ADD(class_box, label, "Value: ");
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(class_box, label);
    ENTRY_ADD(class_box, entry_value, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_entry_set(entry_value, "0.0");

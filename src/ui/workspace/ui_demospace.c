@@ -106,6 +106,13 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         object = elm_panel_add(parent);
         elm_panel_orient_set(object, _panel_orient_get(class));
      }
+   else if (strcmp(widget, "label") == 0)
+     {
+        LABEL_ADD(parent, object, "Some long text for our label, that is long but"
+                            "not too long.");
+        elm_label_slide_duration_set(object, 0.5);
+        elm_label_slide_set(object, EINA_TRUE);
+     }
    else if (strcmp(widget, "scroller") == 0)
      {
         if (strcmp(class, "entry") == 0)

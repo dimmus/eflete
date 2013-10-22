@@ -150,6 +150,8 @@ prop_item_label_add(Evas_Object *parent,
    Evas_Object *item, *label;
    ITEM_ADD(parent, item, lab_text)
    LABEL_ADD(parent, label, text)
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(item, "elm.swallow.content", label);
    return item;
 }

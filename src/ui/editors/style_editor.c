@@ -175,9 +175,7 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_size_hint_align_set(st_box, EVAS_HINT_FILL, 0.0);
    evas_object_show(st_box);
 
-   st_label = elm_label_add(st_box);
-   elm_object_text_set(st_label, "Style name: ");
-   evas_object_show(st_label);
+   LABEL_ADD(st_box, st_label, "Style name: ")
    elm_box_pack_end(st_box, st_label);
 
    ENTRY_ADD(st_box, st_entry, EINA_TRUE, DEFAULT_STYLE);
@@ -188,9 +186,7 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_size_hint_weight_set(tag_box, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(tag_box, EVAS_HINT_FILL, 0.0);
 
-   tag_label = elm_label_add(tag_box);
-   elm_object_text_set(tag_label, "Default tags: ");
-   evas_object_show(tag_label);
+   LABEL_ADD(tag_box, tag_label, "Default tags: ")
    elm_box_pack_end(tag_box, tag_label);
 
    ENTRY_ADD(tag_box, tag_entry, EINA_TRUE, DEFAULT_STYLE);
@@ -253,9 +249,7 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   style_label = elm_label_add(box);
-   elm_object_text_set(style_label, style_name);
-   evas_object_show(style_label);
+   LABEL_ADD(box, style_label, style_name)
    elm_box_pack_end(box, style_label);
 
    tag_box = elm_box_add(box);
@@ -263,9 +257,7 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_size_hint_weight_set(tag_box, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(tag_box, EVAS_HINT_FILL, 0.0);
 
-   tag_label = elm_label_add(tag_box);
-   elm_object_text_set(tag_label, "Tag name: ");
-   evas_object_show(tag_label);
+   LABEL_ADD(tag_box, tag_label, "Tag name: ")
    elm_box_pack_end(tag_box, tag_label);
 
    ENTRY_ADD(tag_box, tag_entry, EINA_TRUE, DEFAULT_STYLE);
@@ -278,9 +270,7 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_size_hint_align_set(value_box, EVAS_HINT_FILL, 0.0);
    evas_object_show(value_box);
 
-   value_label = elm_label_add(value_box);
-   elm_object_text_set(value_label, "Tag value: ");
-   evas_object_show(value_label);
+   LABEL_ADD(value_box, value_label, "Tag value: ")
    elm_box_pack_end(value_box, value_label);
 
    ENTRY_ADD(value_box, value_entry, EINA_TRUE, DEFAULT_STYLE);

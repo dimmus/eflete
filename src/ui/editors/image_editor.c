@@ -366,15 +366,13 @@ image_editor_window_add(Evas_Object *parent, Image_Editor_Mode mode)
    elm_box_pack_end(bottom_box,button);
    evas_object_show(button);
 
-   window.legend = elm_label_add(bottom_box);
-   elm_object_text_set(window.legend, "No images selected<br><br>");
+   LABEL_ADD(bottom_box, window.legend, "No images selected<br><br>")
    elm_box_pack_end(bottom_box,window.legend);
    evas_object_size_hint_weight_set(window.legend, EVAS_HINT_EXPAND,
                                                             EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(window.legend, -1.0,-1.0);
    elm_label_line_wrap_set(window.legend, ELM_WRAP_CHAR);
    elm_label_ellipsis_set(window.legend, EINA_TRUE);
-   evas_object_show(window.legend);
 
    if (!gic)
    {

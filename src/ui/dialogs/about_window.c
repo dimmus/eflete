@@ -29,11 +29,10 @@ about_window_add(Evas_Object *parent)
    box = elm_box_add(mwin);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, 0.0);
-   elm_box_align_set( box, 1.0, 0.4);
+   elm_box_align_set(box, 1.0, 0.4);
    evas_object_show(box);
 
-   label = elm_label_add(mwin);
-   elm_object_text_set(label,
+   LABEL_ADD(mwin, label,
      "<color=#b6b6b6>"
      "<b><align=center>"ETE_PACKAGE" (Eflete) v."VERSION"</align></b><br>"
      "This application was written for Enlightenment, to use EFL<br>"
@@ -58,8 +57,6 @@ about_window_add(Evas_Object *parent)
      "Maksym Volodin (m.volodin@samsung.com)<br>"
      "</align>");
    elm_box_pack_end(box, label);
-   evas_object_show(label);
-
    elm_win_inwin_content_set(mwin, box);
 
    evas_object_show(mwin);

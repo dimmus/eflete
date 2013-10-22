@@ -48,8 +48,9 @@ _mw_info(void *data,
    popup = elm_popup_add(mwin);
    elm_object_style_set(popup, "eflete/popup");
    elm_object_part_text_set(popup, "title,text", "Title will be deleted");
-   content = elm_label_add(popup);
-   elm_object_text_set(content, info);
+   LABEL_ADD(popup, content, info);
+   evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(content, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_content_set(popup, content);
 
    BUTTON_ADD(popup, bt, "OK");

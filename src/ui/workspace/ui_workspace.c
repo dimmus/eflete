@@ -49,7 +49,7 @@ ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible)
   if (!visible)
     elm_layout_signal_emit(parent, "legend,hide", "");
   else
-     elm_layout_signal_emit(parent, "legend,show", "");
+    elm_layout_signal_emit(parent, "legend,show", "");
 
   snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
             (int)(ws->zoom_step * 100));
@@ -285,11 +285,10 @@ ws_add(Evas_Object *parent)
    evas_object_show(ws->groupspace);
    evas_object_show(_scroller);
 
-   _legend = elm_label_add(parent);
+   LABEL_ADD(parent, _legend, "")
    ws->legend.legend = _legend;
    ws->legend.visible = EINA_FALSE;
    elm_object_part_content_set(parent, "legend", _legend);
-   evas_object_show(_legend);
 
    evas_object_smart_callback_add(_scroller, "scroll", _sc_move_cb, ws);
    evas_object_smart_callback_add(_scroller, "scroll,drag,stop", _sc_move_cb, ws);

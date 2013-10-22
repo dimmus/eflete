@@ -54,8 +54,7 @@
 
 #define LABEL_ADD(parent, label, text) \
    label = elm_label_add(parent); \
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_style_set(label, DEFAULT_STYLE); \
    elm_object_text_set(label, text); \
    evas_object_show(label);
 
