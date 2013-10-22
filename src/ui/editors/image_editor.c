@@ -159,17 +159,20 @@ _on_button_delete_clicked_cb(void *data __UNUSED__,
                              Evas_Object *obj __UNUSED__,
                              void *event_info __UNUSED__)
 {
+   Elm_Object_Item *grid_item;
+   Item *it;
+   Eina_List *grid_list, *l, *l2;
+
    if (!window.gengrid) return;
 
-   Eina_List *l;
-   Elm_Object_Item *grid_item = NULL;
-   const Item *it;
-   Eina_List *grid_list = (Eina_List *)elm_gengrid_selected_items_get(window.gengrid);
-   EINA_LIST_FOREACH(grid_list, l, grid_item)
+   grid_list = (Eina_List *)elm_gengrid_selected_items_get(window.gengrid);
+   if (!grid_list) return;
+
+   EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
-        elm_object_item_del(grid_item);
         it = elm_object_item_data_get(grid_item);
         image_edit_image_del(window.pr, it->image_name);
+        elm_object_item_del(grid_item);
      }
    eina_list_free(grid_list);
 }
