@@ -433,7 +433,6 @@ colorclass_viewer_add(Evas_Object *parent)
    elm_spinner_min_max_set(spinner, 0,255); \
    elm_spinner_interval_set(spinner, 0.4); \
    elm_spinner_label_format_set(spinner, format); \
-   elm_spinner_editable_set(spinner, EINA_FALSE); \
    evas_object_size_hint_min_set(spinner, 150, 35); \
    evas_object_size_hint_max_set(spinner, 150, 35); \
    evas_object_size_hint_align_set(spinner, -1.0, -1.0); \
