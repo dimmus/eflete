@@ -176,7 +176,7 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (!ap->ws->highlight.part) return;
+   if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
    hl_highlight_visible_set(ap->ws->highlight.space_hl,
                 !hl_highlight_visible_get(ap->ws->highlight.space_hl));
 }
