@@ -253,12 +253,14 @@ ui_edc_load_done(App_Data* ap,
 }
 
 Eina_Bool
-new_theme_create(App_Data *ap __UNUSED__)
+new_theme_create(App_Data *ap)
 {
    Eina_Stringshare *path = NULL;
    Eina_Stringshare *file_full_path = NULL;
    Eina_Bool errors = EINA_FALSE;
    Evas_Object *wd_list = NULL;
+
+   if (!ap) return EINA_FALSE;
 
    path = eina_stringshare_add(TET_SETT_PATH"cache/");
    file_full_path = eina_stringshare_add( TET_SETT_PATH"cache/new_theme.edj");
@@ -288,6 +290,21 @@ new_theme_create(App_Data *ap __UNUSED__)
 
    if(!errors)
      {
+        if (ap->ws->groupspace)
+          {
+             Evas_Object *prop;
+             ui_groupspace_unset(ap->ws->groupspace);
+             ui_object_highlight_del(ap->ws);
+             elm_genlist_clear(ui_block_state_list_get(ap));
+             elm_genlist_clear(ui_block_signal_list_get(ap));
+             prop = ui_block_property_get(ap);
+             if (prop)
+               ui_property_group_unset(prop);
+             if ((ap->demo) || (ap->project))
+               ui_demospace_unset(ap->demo, ap->project);
+             ui_menu_disable_set(ap, "Programs", EINA_TRUE);
+          }
+
         ap->project = pm_open_project_edj(file_full_path, file_full_path);
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
