@@ -408,11 +408,11 @@ group { name: "elm/entry/base/eflete/default";
          mouse_events: 1;
          scale: 1;
          entry_mode: EDITABLE;
-         select_mode: EXPLICIT;
+         cursor_mode: BEFORE;
          multiline: 1;
          source: "elm/entry/selection/eflete/default";
          source4: "elm/entry/cursor/eflete/default";
-         source5: "elm/entry/anchor/eflete/default";
+         source6: "elm/entry/anchor/eflete/default";
          description { state: "default" 0.0;
             text {
                style: "eflete_text_style";
