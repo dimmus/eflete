@@ -267,7 +267,7 @@ _edc_select(void *data __UNUSED__,
 
    Evas_Object *inwin = mw_add(fs_ent->parent);
    OPEN_DIALOG_ADD(inwin, box, fs, evas_object_data_get(fs_ent->edc, FS_TITLE));
-   elm_fileselector_path_set(fs, path);
+   elm_fileselector_selected_set(fs, path);
    evas_object_smart_callback_add(fs, "done", _on_edc_done, inwin);
 
    elm_win_inwin_activate(inwin);
