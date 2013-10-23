@@ -212,8 +212,10 @@ _popup_add (Workspace *ws)
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "zoom +", NULL,
                                   _ctxpopup_item_zoom_in_cb, ws);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
    eoi = elm_ctxpopup_item_append(ctxpopup, "zoom -", NULL,
                                   _ctxpopup_item_zoom_out_cb, ws);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
    eoi = elm_ctxpopup_item_append(ctxpopup, "separate", NULL,
                                   _ctxpopup_item_separate_cb, ws);
    eoi = elm_ctxpopup_item_append(ctxpopup, "legend", NULL,
