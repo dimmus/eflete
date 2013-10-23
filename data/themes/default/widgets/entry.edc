@@ -489,6 +489,7 @@ group { name: "elm/scroller/entry/eflete/default";
          description { state: "default" 0;
             align: 1 0;
             min: 15 15;
+            fixed: 1 1;
             rel1 {
                relative: 1 0;
                offset: -1 0;
@@ -498,6 +499,7 @@ group { name: "elm/scroller/entry/eflete/default";
          description { state: "hidden" 0;
             align: 1 0;
             max: 0 99999;
+            fixed: 1 1;
             rel1 {
                relative: 1 0;
                offset: -1 0;
@@ -581,6 +583,7 @@ group { name: "elm/scroller/entry/eflete/default";
          description { state: "default" 0;
             align: 0 1;
             min: 15 15;
+            fixed: 1 1;
             rel1 {
                relative: 0 1;
                offset: 0 -1;
@@ -593,6 +596,7 @@ group { name: "elm/scroller/entry/eflete/default";
          description { state: "hidden" 0;
             align: 0 1;
             max: 99999 0;
+            fixed: 1 1;
             rel1 {
                relative: 0 1;
                offset: 0 -1;
