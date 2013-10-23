@@ -160,6 +160,7 @@ _on_bt_style_add(void *data __UNUSED__,
    Evas_Object *popup, *box, *bt_ok, *bt_cancel;
    Evas_Object *st_box, *st_label, *st_entry;
    Evas_Object *tag_box, *tag_label, *tag_entry;
+   static Elm_Entry_Filter_Accept_Set accept_name;
 
    popup = elm_popup_add(window.mwin);
    elm_object_style_set(popup, "eflete/popup");
@@ -179,6 +180,9 @@ _on_bt_style_add(void *data __UNUSED__,
    elm_box_pack_end(st_box, st_label);
 
    ENTRY_ADD(st_box, st_entry, EINA_TRUE, DEFAULT_STYLE);
+   accept_name.accepted = NULL;
+   accept_name.rejected = ":;'\"!?&^%$#@()[]=+*{} ";
+   elm_entry_markup_filter_append(st_entry, elm_entry_filter_accept_set, &accept_name);
    elm_box_pack_end(st_box, st_entry);
 
    tag_box = elm_box_add(box);
