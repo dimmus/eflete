@@ -2,6 +2,7 @@
 *.swp
 *.edj
 *~
+.directory
 
 #build generated files
 src/config.h
