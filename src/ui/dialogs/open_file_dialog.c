@@ -192,17 +192,23 @@ _on_cancel_cb(void *data,
 }
 
 static void
-_on_edc_done(void *data __UNUSED__,
+_on_edc_done(void *data,
              Evas_Object *obj,
              void *event_info)
 {
    const char *selected = event_info;
+   Evas_Object *inwin = (Evas_Object *)data;
    char *images, *sounds, *fonts;
    char tmp_path[PATH_MAX];
    Eina_Array *array;
    int i, j;
 
-   if (!selected) return;
+   if (!selected)
+     {
+        evas_object_del(inwin);
+        evas_object_del(obj);
+        return;
+     }
 
    if (eina_str_has_suffix(selected, ".edc"))
      {
@@ -239,11 +245,11 @@ _on_edc_done(void *data __UNUSED__,
         free(fonts);
         #undef CREATE_PATH
 
-        evas_object_hide(elm_object_parent_widget_get(obj));
+        evas_object_del(inwin);
         evas_object_del(obj);
      }
    else
-     NOTIFY_ERROR("The file must have an extension '.edj'");
+     NOTIFY_ERROR("The file must have an extension '.edc'");
 }
 
 static void
@@ -251,7 +257,7 @@ _edc_select(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *box;
    const char *path = elm_object_text_get(fs_ent->edc);
 
    if (!ecore_file_exists(path))
@@ -260,22 +266,10 @@ _edc_select(void *data __UNUSED__,
    if (!fs_ent->parent) return;
 
    Evas_Object *inwin = mw_add(fs_ent->parent);
-   mw_title_set(inwin, "Open EDC file dialog");
-   evas_object_focus_set(inwin, EINA_TRUE);
-
-   fs = elm_fileselector_add(inwin);
-
-   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   OPEN_DIALOG_ADD(inwin, box, fs, evas_object_data_get(fs_ent->edc, FS_TITLE));
    elm_fileselector_path_set(fs, path);
-   elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
-   elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
-   evas_object_smart_callback_add(fs, "done", _on_edc_done, NULL);
+   evas_object_smart_callback_add(fs, "done", _on_edc_done, inwin);
 
-   elm_win_inwin_content_set(inwin, fs);
-
-   evas_object_show(fs);
    elm_win_inwin_activate(inwin);
 }
 
@@ -289,7 +283,7 @@ _on_path_done(void *data,
    if (selected)
      elm_object_text_set(entry, selected);
 
-   evas_object_hide(elm_object_parent_widget_get(obj));
+   evas_object_hide(evas_object_data_get(obj, FS_INWIN));
    evas_object_del(obj);
 }
 
@@ -298,7 +292,7 @@ _path_select(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *fs, *box;
    Evas_Object *entry = (Evas_Object *)data;
    const char *path = elm_object_text_get(entry);
 
@@ -308,23 +302,11 @@ _path_select(void *data,
    if (!fs_ent->parent) return;
 
    Evas_Object *inwin = mw_add(fs_ent->parent);
-   mw_title_set(inwin, "Choose path dialog");
-   evas_object_focus_set(inwin, EINA_TRUE);
-
-   fs = elm_fileselector_add(inwin);
-
-   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   OPEN_DIALOG_ADD(inwin, box, fs, evas_object_data_get(entry, FS_TITLE));
    elm_fileselector_path_set(fs, path);
-   elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
-   elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
    elm_fileselector_folder_only_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", _on_path_done, entry);
 
-   elm_win_inwin_content_set(inwin, fs);
-
-   evas_object_show(fs);
    elm_win_inwin_activate(inwin);
 }
 
@@ -343,7 +325,7 @@ open_edc_file(App_Data *ap)
 
    if (!ap->inwin)
      ap->inwin = mw_add(ap->win);
-   mw_title_set(ap->inwin, "Open EDC file dialog");
+   mw_title_set(ap->inwin, "Open EDC file");
    evas_object_event_callback_add(ap->inwin, EVAS_CALLBACK_FREE,
                                   _on_mw_fileselector_close, ap);
    evas_object_focus_set(ap->inwin, EINA_TRUE);
@@ -364,12 +346,13 @@ open_edc_file(App_Data *ap)
       evas_object_show(bt); \
       elm_box_pack_end(box, bt);
 
-   #define _ITEM_ADD(box, label_text, button_text, _fs, func, data) \
+   #define _ITEM_ADD(box, label_text, button_text, title, _fs, func, data) \
       BOX_ADD(box, box_item, EINA_TRUE, EINA_FALSE) \
       LABEL_ADD(box_item, label, label_text) \
       elm_box_pack_end(box_item, label); \
       fs_entry = elm_entry_add(box_item); \
       elm_object_style_set(fs_entry, DEFAULT_STYLE); \
+      evas_object_data_set(fs_entry, FS_TITLE, title); \
       elm_object_text_set(fs_entry, getenv("HOME")); \
       evas_object_size_hint_weight_set(fs_entry, EVAS_HINT_EXPAND, 0.0); \
       evas_object_size_hint_align_set(fs_entry, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -380,14 +363,14 @@ open_edc_file(App_Data *ap)
       _BUTTON_ADD(box_item, button_text, func, data); \
       elm_box_pack_end(box, box_item);
 
-   _ITEM_ADD(box, "Path to EDC:", "[Select]", fs_ent->edc, _edc_select,
-             NULL);
-   _ITEM_ADD(box, "Image directory:", "[Select]", fs_ent->id, _path_select,
-             fs_ent->id);
-   _ITEM_ADD(box, "Sound directory:", "[Select]", fs_ent->sd, _path_select,
-             fs_ent->sd);
-   _ITEM_ADD(box, "Font directory:", "[Select]", fs_ent->fd, _path_select,
-             fs_ent->fd);
+   _ITEM_ADD(box, "Path to EDC:", "[Select]", "Select EDC file",
+         fs_ent->edc, _edc_select, NULL);
+   _ITEM_ADD(box, "Image directory:", "[Select]", "Select images directory",
+         fs_ent->id, _path_select, fs_ent->id);
+   _ITEM_ADD(box, "Sound directory:", "[Select]", "Select sounds directory",
+         fs_ent->sd, _path_select, fs_ent->sd);
+   _ITEM_ADD(box, "Font directory:", "[Select]", "Select fonts directory",
+         fs_ent->fd, _path_select, fs_ent->fd);
    #undef _ITEM_ADD
 
    box_item = elm_box_add(box);

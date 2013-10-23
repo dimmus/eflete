@@ -29,6 +29,9 @@
 /* TODO: (refactoring) Style param in every widget define is needed. */
 #define DEFAULT_STYLE "eflete/default"
 
+#define FS_INWIN "fs_inwin"
+#define FS_TITLE "fs_title"
+
 #define ITEM_ADD(parent, item, text) \
    item = elm_layout_add(parent); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
@@ -131,6 +134,7 @@
    mw_title_set(inwin, dialogTitle); \
    evas_object_focus_set(inwin, EINA_TRUE); \
    fs = elm_fileselector_add(box); \
+   evas_object_data_set(fs, FS_INWIN, inwin); \
    elm_box_pack_end(box, fs); \
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL); \
