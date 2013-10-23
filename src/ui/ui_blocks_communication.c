@@ -179,6 +179,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
+             pm_free(ap->project);
              GET_NAME_FROM_PATH(name, selected)
              ap->project = pm_open_project_edj(name, selected);
              free(name);
@@ -226,6 +227,7 @@ ui_edc_load_done(App_Data* ap,
         elm_genlist_clear(ui_block_state_list_get(ap));
         elm_genlist_clear(ui_block_signal_list_get(ap));
 
+        pm_free(ap->project);
         ap->project = pm_open_project_edc(project_name,
                                           path_edc,
                                           path_id,
@@ -309,7 +311,7 @@ new_theme_create(App_Data *ap)
                ui_demospace_unset(ap->demo, ap->project);
              ui_menu_disable_set(ap, "Programs", EINA_TRUE);
           }
-
+        pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
         free(name);

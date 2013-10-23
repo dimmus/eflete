@@ -56,12 +56,11 @@ _on_copy_error_cb(void *data,
 }
 
 static void
-_on_unlick_done_cb(void *data,
+_on_unlink_done_cb(void *data,
                    Eio_File *handler __UNUSED__)
 {
    char *file_name = (char *)data;
    DBG("Unlink file '%s' is finished!", file_name);
-   ecore_main_loop_quit();
 }
 
 static void
@@ -75,32 +74,42 @@ _on_unlink_error_cb(void *data,
    ecore_main_loop_quit();
 }
 
+void
+_swap_file_deleted(void *data,
+                   int type __UNUSED__,
+                   void *event __UNUSED__)
+{
+   Project *project = (Project *)data;
+   if (project->edc) free(project->edc);
+   if (project->edj) free(project->edj);
+   if (project->demofile) free(project->demofile);
+   if (project->image_directory) free(project->image_directory);
+   if (project->font_directory) free(project->font_directory);
+   if (project->sound_directory) free(project->sound_directory);
+   if (project->compiler) compiler_free(project->compiler);
+   if (project->decompiler) decompiler_free(project->decompiler);
+   INFO ("Closed project: %s", project->name);
+   free(project->name);
+   wm_widget_list_free(project->widgets);
+   free(project);
+   DBG ("Project data is released.");
+   ecore_main_loop_quit();
+}
 
 Eina_Bool
 pm_free(Project *project)
 {
    if(!project) return EINA_FALSE;
+   Eio_Monitor *del_mon = NULL;
+   del_mon = eio_monitor_add(project->swapfile);
 
-   INFO ("Closed project: %s", project->name);
+   eio_file_unlink(project->swapfile, _on_unlink_done_cb,
+                   _on_unlink_error_cb, project->swapfile);
 
-   eio_file_unlink(project->swapfile, _on_unlick_done_cb, _on_unlink_error_cb,
-                   project->swapfile);
-   free(project->name);
-   free(project->edc);
-   free(project->edj);
-   free(project->swapfile);
-   free(project->demofile);
-   free(project->image_directory);
-   free(project->font_directory);
-   free(project->sound_directory);
-   if (project->compiler) compiler_free(project->compiler);
-   if (project->decompiler) decompiler_free(project->decompiler);
-
-   wm_widget_list_free(project->widgets);
-
-   free(project);
-   DBG ("Project data is released.");
-
+   ecore_event_handler_add(EIO_MONITOR_FILE_DELETED,
+                           (Ecore_Event_Handler_Cb)_swap_file_deleted, project);
+   eio_monitor_del(del_mon);
+   if (project->swapfile) free(project->swapfile);
    return EINA_TRUE;
 }
 
