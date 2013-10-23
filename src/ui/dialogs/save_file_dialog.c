@@ -65,6 +65,7 @@ _on_edj_done(void *data,
              Evas_Object *obj,
              void *event_info)
 {
+   /*TODO: change a project name and set to ui widget list */
    App_Data *ap = (App_Data *)data;
    const char *selected = event_info;
    if (ecore_file_exists(selected))
@@ -143,7 +144,7 @@ save_as_edj_file(App_Data *ap)
 
    if (!ap->inwin)
      ap->inwin = mw_add(ap->win);
-   mw_title_set(ap->inwin, "Save as EDJ file dialog");
+   mw_title_set(ap->inwin, "Save as EDJ file");
    evas_object_event_callback_add(ap->inwin, EVAS_CALLBACK_FREE,
                                   __on_mw_fileselector_close, ap);
    evas_object_focus_set(ap->inwin, EINA_TRUE);

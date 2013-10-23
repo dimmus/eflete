@@ -18,6 +18,7 @@
 */
 
 #include "ui_main_window.h"
+#include "string_define.h"
 
 void
 ui_part_back(App_Data *ap)
@@ -164,6 +165,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 {
   Evas_Object *wd_list = NULL;
   Evas_Object *prop = NULL;
+  char *name;
 
   prop = ui_block_property_get(ap);
 
@@ -177,7 +179,9 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
-             ap->project = pm_open_project_edj(selected, selected);
+             GET_NAME_FROM_PATH(name, selected)
+             ap->project = pm_open_project_edj(name, selected);
+             free(name);
 
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
@@ -259,6 +263,7 @@ new_theme_create(App_Data *ap)
    Eina_Stringshare *file_full_path = NULL;
    Eina_Bool errors = EINA_FALSE;
    Evas_Object *wd_list = NULL;
+   char *name;
 
    if (!ap) return EINA_FALSE;
 
@@ -305,7 +310,9 @@ new_theme_create(App_Data *ap)
              ui_menu_disable_set(ap, "Programs", EINA_TRUE);
           }
 
-        ap->project = pm_open_project_edj(file_full_path, file_full_path);
+        GET_NAME_FROM_PATH(name, file_full_path)
+        ap->project = pm_open_project_edj(name, file_full_path);
+        free(name);
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
         ui_widget_list_data_set(wd_list, ap->project);
