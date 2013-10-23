@@ -157,7 +157,7 @@ Demospace *
 ui_demospace_add(Evas_Object *parent)
 {
    Demospace *demo;
-   Evas_Object *_bg, *_button, *_layout;
+   Evas_Object *_button, *_layout;
    Evas *canvas;
 
    demo = _demo_init();
@@ -169,14 +169,6 @@ ui_demospace_add(Evas_Object *parent)
    _layout = elm_layout_add(parent);
    demo->layout = _layout;
    elm_layout_file_set(_layout, TET_EDJ, "base/demospace");
-
-   _bg = evas_object_image_filled_add(canvas);
-   evas_object_image_filled_set(_bg, EINA_TRUE);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"styles-preview-bg-current.png",
-                              NULL);
-   evas_object_image_border_set(_bg, 4, 4, 4, 4);
-   elm_object_part_content_set(_layout, "base/demospace/background", _bg);
-   evas_object_show(_bg);
 
    _button = elm_button_add(parent);
    elm_object_text_set(_button, "0.5");
