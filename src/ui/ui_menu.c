@@ -134,7 +134,7 @@ _on_view_zoom_out(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_zoom_in(ap->ws);
+   ui_ws_zoom_out(ap->ws);
 }
 
 static void
@@ -324,8 +324,10 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
    menu = elm_toolbar_item_menu_get(tb_it);
    menu_sub = elm_menu_item_add(menu, NULL, NULL, "Workspace", NULL, NULL);
-   elm_menu_item_add(menu, menu_sub, NULL, "Zoom in", _on_view_zoom_in, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Zoom out", _on_view_zoom_out, ap);
+   tb_it = elm_menu_item_add(menu, menu_sub, NULL, "Zoom in", _on_view_zoom_in, ap);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
+   tb_it = elm_menu_item_add(menu, menu_sub, NULL, "Zoom out", _on_view_zoom_out, ap);
+   elm_object_item_disabled_set(tb_it, EINA_TRUE);
    elm_menu_item_add(menu, menu_sub, NULL, "Separate", _on_view_separate, ap);
    elm_menu_item_add(menu, menu_sub, NULL, "Legend", _on_view_legend, ap);
    menu_sub = elm_menu_item_add(menu, NULL, NULL, "Rulers", NULL, NULL);
