@@ -12,7 +12,7 @@ group { name: "elm/notify/block_events/"_NAME_; \
             color: 0 0 0 0; \
          } \
          description { state: "clicked" 0.0; \
-            color: 0 0 0 50; \
+            color: 255 0 0 50; \
          } \
       } \
    } \
