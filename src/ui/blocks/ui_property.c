@@ -66,7 +66,7 @@ struct _Prop_Data
       Evas_Object *max;
       Evas_Object *align;
       Evas_Object *aspect;
-      Evas_Object *aspect_pref; /* not implemented yet in the edje*/
+      Evas_Object *aspect_pref; /* missing correct widget for view this param */
       Evas_Object *color_class;
       Evas_Object *color;
    } prop_state;
@@ -92,11 +92,17 @@ struct _Prop_Data
       Evas_Object *min; /* not implemented in yet the edje*/
       Evas_Object *max; /* not implemented in yet the edje*/
       Evas_Object *fit;
-      Evas_Object *style; /* not implemented in yet the edje*/
       Evas_Object *source; /* not implemented in yet the edje*/
       Evas_Object *color2;
       Evas_Object *color3;
    } prop_state_text;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *text;
+      Evas_Object *style; /* not implemented in yet the edje*/
+      Evas_Object *min; /* not implemented in yet the edje*/
+      Evas_Object *max; /* not implemented in yet the edje*/
+   } prop_state_textblock;
    struct {
       Evas_Object *frame;
       Evas_Object *normal;
@@ -125,6 +131,12 @@ ui_property_state_text_set(Evas_Object *property, Part *part);
 
 static void
 ui_property_state_text_unset(Evas_Object *property);
+
+static Eina_Bool
+ui_property_state_textblock_set(Evas_Object *property, Part *part);
+
+static void
+ui_property_state_textblock_unset(Evas_Object *property);
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property, Part *part);
@@ -518,8 +530,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    ui_property_state_rel1_set(property, part);
    ui_property_state_rel2_set(property, part);
-   if (type == EDJE_PART_TYPE_TEXT) ui_property_state_text_set(property, part);
+   if (type == EDJE_PART_TYPE_TEXT)
+     ui_property_state_text_set(property, part);
    else ui_property_state_text_unset(property);
+   if (type == EDJE_PART_TYPE_TEXTBLOCK)
+     ui_property_state_textblock_set(property, part);
+   else ui_property_state_textblock_unset(property);
    if (type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property, part);
    else ui_property_state_image_unset(property);
 
@@ -762,6 +778,53 @@ ui_property_state_text_unset(Evas_Object *property)
    evas_object_hide(pd_text.frame);
 }
 #undef pd_text
+
+#define pd_textblock pd->prop_state_textblock
+static Eina_Bool
+ui_property_state_textblock_set(Evas_Object *property, Part *part)
+{
+   Evas_Object *textblock_frame, *box, *prop_box;
+   PROP_DATA_GET(EINA_FALSE)
+
+   /* if previos selected part is TEXTBLOCK too, unpack it */
+   ui_property_state_textblock_unset(property);
+   prop_box = elm_object_content_get(property);
+   if (!pd_textblock.frame)
+     {
+         FRAME_ADD(property, textblock_frame, EINA_TRUE, "TextBlock")
+         BOX_ADD(textblock_frame, box, EINA_FALSE, EINA_FALSE)
+         elm_box_align_set(box, 0.5, 0.0);
+         elm_object_content_set(textblock_frame, box);
+
+         pd_textblock.text = prop_item_state_text_add(box, pd->group, part,
+                           "Set the text of part.", "Choose different text");
+
+         elm_box_pack_end(box, pd_textblock.text);
+
+         elm_box_pack_end(prop_box, textblock_frame);
+         pd_textblock.frame = textblock_frame;
+     }
+   else
+     {
+        prop_item_state_text_update(pd_textblock.text, pd->group, part);
+        elm_box_pack_end(prop_box, pd_textblock.frame);
+        evas_object_show(pd_textblock.frame);
+     }
+   return EINA_TRUE;
+}
+
+static void
+ui_property_state_textblock_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+   PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(property);
+   elm_box_unpack(prop_box, pd_textblock.frame);
+   evas_object_hide(pd_textblock.frame);
+}
+#undef pd_textblock
+
 
 #define ITEM_IM_BORDER_STATE_CREATE(text, sub, value) \
    ITEM_IM_BORDER_STATE_CALLBACK(sub, value) \
