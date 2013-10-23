@@ -25,8 +25,12 @@ _notify_close (void *data,
                void *event_info __UNUSED__)
 {
    Evas_Object *notify = (Evas_Object *)data;
-   evas_object_hide(notify);
+   evas_object_del(notify);
 }
+
+
+/*TODO: it all need to remake, use widget macro. notify style make as popup,
+ with a blink block area*/
 
 void
 noti_error_show (Evas_Object *obj, const char *message)
@@ -72,6 +76,7 @@ noti_error_show (Evas_Object *obj, const char *message)
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
+   elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
 }
 
@@ -119,6 +124,7 @@ noti_warning_show (Evas_Object *obj, const char *message)
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
+   elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
 }
 
