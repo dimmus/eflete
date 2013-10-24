@@ -1160,7 +1160,7 @@ _on_add_popup_bt_add(void *data,
    Eina_Stringshare *name = elm_entry_entry_get(prog_entry);
    Elm_Object_Item *glit_prog;
 
-   if (!name)
+   if ((!name) || (strcmp(name, "") == 0))
      {
         NOTIFY_WARNING("Program's 'name can not be empty!");
         return;
