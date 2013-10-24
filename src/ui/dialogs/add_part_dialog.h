@@ -33,6 +33,8 @@
 #include "ui_groupspace.h"
 #include "modal_window.h"
 #include "widget_define.h"
+#include "image_editor.h"
+
 /**
  * Add new dialog for choise part type add inwin object.
  *

@@ -41,6 +41,8 @@
 #include "add_state_dialog.h"
 #include "add_style_dialog.h"
 #include "open_file_dialog.h"
+#include "string_define.h"
+
 /**
  * Adds main window object for Edje tool development.
  *

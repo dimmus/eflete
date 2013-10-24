@@ -254,7 +254,8 @@ _new_img_add(void *data __UNUSED__,
    Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
 
    const Evas_Object *edje_part = NULL;
-   char *name = (char *)event_info;
+   char **arr = (char **)event_info;
+   char *name = arr[1];
 
    if (edje_edit_part_exist(group->obj, name))
      {
@@ -268,6 +269,7 @@ _new_img_add(void *data __UNUSED__,
 
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_IMAGE);
    edje_edit_state_add(group->obj, part->name, "default", 0.0);
+   edje_edit_state_image_set(group->obj, part->name, "default", 0.0, arr[0]);
    _gs_image_update(group, part, project);
    edje_part = edje_object_part_object_get(group->obj, part->name);
 
@@ -279,9 +281,9 @@ _new_img_add(void *data __UNUSED__,
 
    _resize_move_callbacks_add(ws, box, (Evas_Object *)edje_part);
 
-   evas_object_smart_calculate(box);
+   evas_object_smart_need_recalculate_set(box, EINA_TRUE);
+   evas_object_smart_changed(box);
    evas_object_smart_callback_call(group->obj, "wl,part,added", part);
-
 }
 
 static void
@@ -743,7 +745,8 @@ _gs_image_update(Group *group,
          evas_object_image_file_set(part->obj, project->swapfile, buf);
          err = evas_object_image_load_error_get(part->obj);
          if (err != EVAS_LOAD_ERROR_NONE)
-           WARN("Could not update image. Error string is \"%s\"\n", evas_load_error_str(err));
+           WARN("Could not update image. Error string is \"%s\"\n",
+                evas_load_error_str(err));
      }
 
    edje_edit_state_color_get(group->obj, part->name,

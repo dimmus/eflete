@@ -18,7 +18,7 @@
 */
 
 #include "ui_main_window.h"
-#include "string_define.h"
+
 
 void
 ui_part_back(App_Data *ap)
@@ -28,6 +28,8 @@ ui_part_back(App_Data *ap)
      {
         ui_groupspace_unset(ap->ws->groupspace);
         ui_object_highlight_del(ap->ws);
+        /* FIXME:  find way to does'nt make immidietly render */
+        evas_render_updates_free(evas_render_updates(ap->ws->canvas));
      }
    else
      WARN ("Groupspace object always delete");

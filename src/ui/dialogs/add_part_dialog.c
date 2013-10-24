@@ -20,7 +20,6 @@
 #include "add_part_dialog.h"
 
 #define APD_GS_KEY "entry_gs"
-
 static Evas_Object *entry;
 
 static void
@@ -102,15 +101,57 @@ _rect_add_on_click(void *data __UNUSED__,
 }
 
 static void
-_img_add_on_click(void *data __UNUSED__,
+_img_add_on_click(void *data,
                   Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                  void *event_info)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
-   const char *name = elm_entry_entry_get(entry);
-   evas_object_smart_callback_call(gs, "gs,img,add", strdup(name));
+   evas_object_smart_callback_del(gs, "gs,image,choosed", _img_add_on_click);
+   char *char_arr[2];
+   char_arr[0] = (char *)event_info;
+   char_arr[1] = (char *)elm_entry_entry_get(entry);
+   evas_object_smart_callback_call(gs, "gs,img,add", char_arr);
    evas_object_del((Evas_Object *)data);
 }
+
+static void
+_on_image_editor_done(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *ei)
+{
+   Evas_Object *gs = (Evas_Object *)data;
+   char *selected = (char *)ei;
+   if (!selected)
+     {
+        evas_object_smart_callback_del(gs, "gs,image,choosed", _img_add_on_click);
+        return;
+     }
+   evas_object_smart_callback_call(gs, "gs,image,choosed", selected);
+}
+
+static void
+_on_state_image_choose(void *data __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *ei __UNUSED__)
+{
+   Evas_Object *img_edit;
+   App_Data *ap = app_create();
+   Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   img_edit = image_editor_window_add(ap->win, SINGLE);
+   image_editor_init(img_edit, ap->project);
+   image_editor_callback_add(img_edit, _on_image_editor_done, gs);
+}
+
+static void
+_on_delete_popup(void *data,
+                 Evas *evas __UNUSED__,
+                 Evas_Object *o __UNUSED__,
+                 void *einfo __UNUSED__)
+{
+   Evas_Object *gs = (Evas_Object *)data;
+   evas_object_smart_callback_del(gs, "gs,image,choosed", _img_add_on_click);
+}
+
 
 Evas_Object *
 new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
@@ -136,7 +177,7 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    evas_object_smart_callback_add (button, "clicked",_txt_add_on_click, popup);
    elm_box_pack_end(box, button);
    BUTTON_ADD(box, button, "Image");
-   evas_object_smart_callback_add (button, "clicked",_img_add_on_click, popup);
+   evas_object_smart_callback_add (button, "clicked", _on_state_image_choose, popup);
    elm_box_pack_end(box, button);
    BUTTON_ADD(box, button, "Swallow");
    evas_object_smart_callback_add (button, "clicked",_swallow_add_on_click, popup);
@@ -152,11 +193,14 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    elm_box_pack_end(box, button);
 
    elm_object_content_set(popup, box);
+   evas_object_smart_callback_add(groupspace, "gs,image,choosed",
+                                  _img_add_on_click, popup);
 
    BUTTON_ADD(box, bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_no);
-
+   evas_object_event_callback_add(popup, EVAS_CALLBACK_DEL, _on_delete_popup,
+                                  groupspace);
    evas_object_show(popup);
    return popup;
 }

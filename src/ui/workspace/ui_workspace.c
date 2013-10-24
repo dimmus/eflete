@@ -18,8 +18,8 @@
 */
 
 #include <ui_workspace.h>
-#include "efl_ete.h"
 #include "ui_highlight.h"
+#include "efl_ete.h"
 
 #define GS_BOX_KEY "gs_box_key"
 
@@ -176,13 +176,6 @@ _ws_mouse_click_cb(void *data ,
    Evas_Event_Mouse_Down *ev = event_info;
    Workspace *ws = (Workspace*)data;
    if (ev->button == 3) ui_popup_show (ws);
-}
-
-
-Eina_Bool
-ws_bf_set(Evas_Object *bg __UNUSED__)
-{
-   return EINA_TRUE;
 }
 
 void
