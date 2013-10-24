@@ -63,7 +63,7 @@ __on_ccl_editor_close(void *data __UNUSED__,
    evas_object_del(window.rect_color1);
    evas_object_del(window.rect_color2);
    evas_object_del(window.rect_color3);
-   window.current_ccl=NULL;
+   window.current_ccl = NULL;
 }
 
 /*colorclass popup buttons callbacks*/
@@ -74,13 +74,13 @@ _on_apply_popup_btn_yes(void *data,
 {
    Evas_Object *popup = (Evas_Object *)data;
 
-   colorclasses_edit_colors_set(window.pr,window.current_ccl->name,
-                                window.current_ccl->r1,window.current_ccl->b1,
-                                window.current_ccl->b1,window.current_ccl->a1,
-                                window.current_ccl->r2,window.current_ccl->g2,
-                                window.current_ccl->b2,window.current_ccl->a2,
-                                window.current_ccl->r3,window.current_ccl->g3,
-                                window.current_ccl->b3,window.current_ccl->a3);
+   colorclasses_edit_colors_set(window.pr, window.current_ccl->name,
+                                window.current_ccl->r1, window.current_ccl->b1,
+                                window.current_ccl->b1, window.current_ccl->a1,
+                                window.current_ccl->r2, window.current_ccl->g2,
+                                window.current_ccl->b2, window.current_ccl->a2,
+                                window.current_ccl->r3, window.current_ccl->g3,
+                                window.current_ccl->b3, window.current_ccl->a3);
 
    _ccl_set(window.next_ccl);
 
@@ -94,7 +94,7 @@ _on_apply_popup_btn_no(void *data,
                        void *ei __UNUSED__)
 {
    Evas_Object *popup = (Evas_Object *)data;
-   (*window.current_ccl)=window.old_ccl;
+   *window.current_ccl = window.old_ccl;
    _ccl_set(window.next_ccl);
 
    evas_object_del(popup);
@@ -110,18 +110,18 @@ _on_add_popup_btn_add(void *data,
    it->name = elm_entry_entry_get(ccl_entry);
    Elm_Object_Item *glit_ccl;
 
-   if (!it->name)
+   if ((!it->name) || (!strcmp(it->name, "")))
      {
         NOTIFY_WARNING("Color class name can not be empty!");
         return;
      }
-   if(!colorclass_edit_add(window.pr, it->name))
+   if (!colorclass_edit_add(window.pr, it->name))
      {
         NOTIFY_WARNING("Color class name must be unique!");
         return;
      }
 
-   glit_ccl=elm_genlist_item_append(window.genlist, _itc_ccl, it, NULL,
+   glit_ccl = elm_genlist_item_append(window.genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
    evas_object_del(popup);
@@ -147,21 +147,20 @@ _on_btn_cancel(void *data,
    evas_object_del(mwin);
 }
 
-
 static void
 _on_btn_apply(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
 {
    if (!window.current_ccl) return;
-   colorclasses_edit_colors_set(window.pr,window.current_ccl->name,
-                                window.current_ccl->r1,window.current_ccl->b1,
-                                window.current_ccl->b1,window.current_ccl->a1,
-                                window.current_ccl->r2,window.current_ccl->g2,
-                                window.current_ccl->b2,window.current_ccl->a2,
-                                window.current_ccl->r3,window.current_ccl->g3,
-                                window.current_ccl->b3,window.current_ccl->a3);
-   window.old_ccl=*window.current_ccl;
+   colorclasses_edit_colors_set(window.pr, window.current_ccl->name,
+                                window.current_ccl->r1, window.current_ccl->b1,
+                                window.current_ccl->b1, window.current_ccl->a1,
+                                window.current_ccl->r2, window.current_ccl->g2,
+                                window.current_ccl->b2, window.current_ccl->a2,
+                                window.current_ccl->r3, window.current_ccl->g3,
+                                window.current_ccl->b3, window.current_ccl->a3);
+   window.old_ccl = *window.current_ccl;
 }
 
 static void
@@ -258,10 +257,9 @@ _on_ccl_selected(void *data __UNUSED__,
                                                                         popup);
    elm_object_part_content_set(popup, "button2", bt_no);
 
-   window.next_ccl=ccl_it;
+   window.next_ccl = ccl_it;
    evas_object_show(popup);
 }
-
 
 static void
 _on_btn_del(void *data __UNUSED__,
@@ -270,12 +268,12 @@ _on_btn_del(void *data __UNUSED__,
 {
    if (!window.current_ccl)
       return;
-   colorclass_edit_del(window.pr,window.current_ccl->name);
-   Elm_Object_Item *it=elm_genlist_selected_item_get(window.genlist);
-   Elm_Object_Item *next=elm_genlist_item_next_get(it);
+   colorclass_edit_del(window.pr, window.current_ccl->name);
+   Elm_Object_Item *it = elm_genlist_selected_item_get(window.genlist);
+   Elm_Object_Item *next = elm_genlist_item_next_get(it);
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
-      elm_genlist_item_selected_set(next,EINA_TRUE);
+      elm_genlist_item_selected_set(next, EINA_TRUE);
    else
       {
          window.current_ccl = NULL;
@@ -307,59 +305,62 @@ _on_spinner_value_changed(void *data __UNUSED__,
    window.current_ccl->a3 = elm_spinner_value_get(window.sdw_a);
 
    evas_object_color_set(window.rect_color1,
-                         window.current_ccl->r1*window.current_ccl->a1/255,
-                         window.current_ccl->g1*window.current_ccl->a1/255,
-                         window.current_ccl->b1*window.current_ccl->a1/255,
+                         window.current_ccl->r1 * window.current_ccl->a1 / 255,
+                         window.current_ccl->g1 * window.current_ccl->a1 / 255,
+                         window.current_ccl->b1 * window.current_ccl->a1 / 255,
                          window.current_ccl->a1);
    evas_object_color_set(window.rect_color2,
-                         window.current_ccl->r2*window.current_ccl->a2/255,
-                         window.current_ccl->g2*window.current_ccl->a2/255,
-                         window.current_ccl->b2*window.current_ccl->a2/255,
+                         window.current_ccl->r2 * window.current_ccl->a2 / 255,
+                         window.current_ccl->g2 * window.current_ccl->a2 / 255,
+                         window.current_ccl->b2 * window.current_ccl->a2 / 255,
                          window.current_ccl->a2);
    evas_object_color_set(window.rect_color3,
-                         window.current_ccl->r3*window.current_ccl->a3/255,
-                         window.current_ccl->g3*window.current_ccl->a3/255,
-                         window.current_ccl->b3*window.current_ccl->a3/255,
+                         window.current_ccl->r3 * window.current_ccl->a3 / 255,
+                         window.current_ccl->g3 * window.current_ccl->a3 / 255,
+                         window.current_ccl->b3 * window.current_ccl->a3 / 255,
                          window.current_ccl->a3);
-   edje_object_color_class_set(window.label, "colorclass_editor/text_example_colorclass",
-                               window.current_ccl->r1,window.current_ccl->g1,window.current_ccl->b1,
-                               window.current_ccl->a1,window.current_ccl->r2,window.current_ccl->g2,
-                               window.current_ccl->b2,window.current_ccl->a2,window.current_ccl->r3,
-                               window.current_ccl->g3,window.current_ccl->b3,window.current_ccl->a3);
+   edje_object_color_class_set(window.label,
+                               "colorclass_editor/text_example_colorclass",
+                               window.current_ccl->r1, window.current_ccl->g1,
+                               window.current_ccl->b1, window.current_ccl->a1,
+                               window.current_ccl->r2, window.current_ccl->g2,
+                               window.current_ccl->b2, window.current_ccl->a2,
+                               window.current_ccl->r3, window.current_ccl->g3,
+                               window.current_ccl->b3, window.current_ccl->a3);
 }
 
 void
 _ccl_set(Colorclass_Item *ccl_it)
 {
-   window.old_ccl=*ccl_it;
-   window.current_ccl=ccl_it;
+   window.old_ccl = *ccl_it;
+   window.current_ccl = ccl_it;
 
-   elm_spinner_value_set(window.obj_r,ccl_it->r1);
-   elm_spinner_value_set(window.obj_g,ccl_it->g1);
-   elm_spinner_value_set(window.obj_b,ccl_it->b1);
-   elm_spinner_value_set(window.obj_a,ccl_it->a1);
+   elm_spinner_value_set(window.obj_r, ccl_it->r1);
+   elm_spinner_value_set(window.obj_g, ccl_it->g1);
+   elm_spinner_value_set(window.obj_b, ccl_it->b1);
+   elm_spinner_value_set(window.obj_a, ccl_it->a1);
 
-   elm_spinner_value_set(window.out_r,ccl_it->r2);
-   elm_spinner_value_set(window.out_g,ccl_it->g2);
-   elm_spinner_value_set(window.out_b,ccl_it->b2);
-   elm_spinner_value_set(window.out_a,ccl_it->a2);
+   elm_spinner_value_set(window.out_r, ccl_it->r2);
+   elm_spinner_value_set(window.out_g, ccl_it->g2);
+   elm_spinner_value_set(window.out_b, ccl_it->b2);
+   elm_spinner_value_set(window.out_a, ccl_it->a2);
 
-   elm_spinner_value_set(window.sdw_r,ccl_it->r3);
-   elm_spinner_value_set(window.sdw_g,ccl_it->g3);
-   elm_spinner_value_set(window.sdw_b,ccl_it->b3);
-   elm_spinner_value_set(window.sdw_a,ccl_it->a3);
+   elm_spinner_value_set(window.sdw_r, ccl_it->r3);
+   elm_spinner_value_set(window.sdw_g, ccl_it->g3);
+   elm_spinner_value_set(window.sdw_b, ccl_it->b3);
+   elm_spinner_value_set(window.sdw_a, ccl_it->a3);
 
-   _on_spinner_value_changed(NULL,NULL,NULL);
+   _on_spinner_value_changed(NULL, NULL, NULL);
 }
 
 Evas_Object *
 colorclass_viewer_add(Evas_Object *parent)
 {
-   if(!parent)
-   {
-      ERR("parent is NULL");
-      return NULL;
-   }
+   if (!parent)
+      {
+         ERR("parent is NULL");
+         return NULL;
+      }
    Evas_Object *mwin;
    Evas_Object *button,  *panes;
    Evas_Object *label, *color;
@@ -376,7 +377,7 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_show(box);
 
    panes = elm_panes_add(box);
-   elm_box_pack_end(box,panes);
+   elm_box_pack_end(box, panes);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.6);
@@ -401,45 +402,41 @@ colorclass_viewer_add(Evas_Object *parent)
      }
 
    bottom_box = elm_box_add(box);
-   elm_box_pack_end(box,bottom_box);
-   elm_box_horizontal_set(bottom_box,EINA_TRUE);
+   elm_box_pack_end(box, bottom_box);
+   elm_box_horizontal_set(bottom_box, EINA_TRUE);
    evas_object_size_hint_weight_set(bottom_box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(bottom_box, 0,0);
+   evas_object_size_hint_align_set(bottom_box, 0, 0);
    evas_object_show(bottom_box);
 
    BUTTON_ADD(mwin, button, "Add");
-   evas_object_smart_callback_add(button, "clicked", _on_btn_add,
-                                   mwin);
-   elm_box_pack_end(bottom_box,button);
+   evas_object_smart_callback_add(button, "clicked", _on_btn_add, mwin);
+   elm_box_pack_end(bottom_box, button);
 
    BUTTON_ADD(mwin, button, "Delete");
-   evas_object_smart_callback_add(button, "clicked", _on_btn_del,
-                                   mwin);
-   elm_box_pack_end(bottom_box,button);
+   evas_object_smart_callback_add(button, "clicked", _on_btn_del, mwin);
+   elm_box_pack_end(bottom_box, button);
 
    BUTTON_ADD(mwin, button, "Apply");
-   evas_object_smart_callback_add(button, "clicked", _on_btn_apply,
-                                   mwin);
-   elm_box_pack_end(bottom_box,button);
+   evas_object_smart_callback_add(button, "clicked", _on_btn_apply, mwin);
+   elm_box_pack_end(bottom_box, button);
 
    BUTTON_ADD(mwin, button, "Close");
-   evas_object_smart_callback_add(button, "clicked",
-                     _on_btn_cancel, mwin);
-   elm_box_pack_end(bottom_box,button);
+   evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, mwin);
+   elm_box_pack_end(bottom_box, button);
 
    right_box = elm_box_add(box);
    elm_object_part_content_set(panes, "right", right_box);
    evas_object_size_hint_weight_set(right_box, EVAS_HINT_EXPAND,
                                                             EVAS_HINT_EXPAND);
-   evas_object_size_hint_min_set(right_box, 200,100);
-   evas_object_size_hint_align_set(right_box, -1.0,0);
-   elm_box_homogeneous_set(right_box,EINA_TRUE);
+   evas_object_size_hint_min_set(right_box, 200, 100);
+   evas_object_size_hint_align_set(right_box, -1.0, 0);
+   elm_box_homogeneous_set(right_box, EINA_TRUE);
    evas_object_show(right_box);
 
 #define _SPINNER_ADD(spinner, format) \
    spinner = elm_spinner_add(right_box); \
    elm_object_style_set(spinner, DEFAULT_STYLE); \
-   elm_spinner_min_max_set(spinner, 0,255); \
+   elm_spinner_min_max_set(spinner, 0, 255); \
    elm_spinner_interval_set(spinner, 0.4); \
    elm_spinner_label_format_set(spinner, format); \
    evas_object_size_hint_min_set(spinner, 150, 35); \
@@ -487,12 +484,12 @@ colorclass_viewer_add(Evas_Object *parent)
    edje_object_file_set(window.label, TET_EDJ,
                                         "base/colorclass_editor/text_example");
    edje_object_part_text_set(window.label, "text_example", "EXAMPLE");
-   elm_box_pack_start(right_box,window.label);
+   elm_box_pack_start(right_box, window.label);
    evas_object_size_hint_weight_set(window.label, EVAS_HINT_EXPAND,
                                                             EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(window.label, -1.0, -1.0);
    evas_object_show(window.label);
-   window.mwin=mwin;
+   window.mwin = mwin;
    return mwin;
 }
 
@@ -503,7 +500,7 @@ colorclass_viewer_init(Evas_Object *ccl_view __UNUSED__,
    int r1, r2, r3, g1, g2, g3, b1, b2, b3, a1, a2, a3;
    if (!project)
      {
-        NOTIFY_ERROR ("EDJ/EDC file is not loaded");
+        NOTIFY_ERROR("EDJ/EDC file is not loaded");
         evas_object_del(ccl_view);
         return;
      }
@@ -513,9 +510,9 @@ colorclass_viewer_init(Evas_Object *ccl_view __UNUSED__,
    Eina_List *cclist, *l;
    cclist = colorclasses_edit_list_get(window.pr);
 
-   EINA_LIST_FOREACH(cclist,l,ccname)
+   EINA_LIST_FOREACH(cclist, l, ccname)
      {
-        Item *it = (Item *) calloc(1,sizeof(Item));
+        Item *it = (Item *) calloc(1, sizeof(Item));
         colorclasses_edit_colors_get(window.pr, ccname,
                                      &r1, &g1, &b1, &a1,
                                      &r2, &g2, &b2, &a2,
