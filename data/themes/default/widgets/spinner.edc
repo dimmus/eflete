@@ -203,17 +203,6 @@
                visible: 0;
             }
          }
-         part { name: "disabler";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
          part { name: "access.text";
             type: RECT;
             repeat_events: 1;
@@ -230,6 +219,17 @@
          }
          BUTTON("down","spinner-vertical-down.png","spinner-vertical-down-selected.png",0.0 0.0,"vspacer", 11 8);
          BUTTON("up","spinner-vertical-up.png","spinner-vertical-up-selected.png",1.0 0.0,"down", 11 8);
+         part { name: "disabler";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
       }
       programs {
          CLICK("mouse,down,1*","down","new");
@@ -488,17 +488,6 @@
                visible: 0;
             }
          }
-         part { name: "disabler";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 0 0 0 0;
-               visible: 0;
-            }
-            description { state: "disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-         }
          part { name: "access.text";
             type: RECT;
             repeat_events: 1;
@@ -515,6 +504,17 @@
          }
          BUTTON("downh","spinner-horizontal-down.png","spinner-horizontal-down-clicked.png",1.0 1.0,"spacerl", 11 16);
          BUTTON("uph","spinner-horizontal-up.png","spinner-horizontal-up-clicked.png",0.0 0.0,"spacerr", 11 16);
+         part { name: "disabler";
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
       }
       programs {
          CLICK("mouse,down,1*","downh","new");

@@ -49,6 +49,9 @@ static Evas_Object *ccl_entry;
 void
 _ccl_set(Colorclass_Item *ccl_it);
 
+void
+_disable(Eina_Bool disable);
+
 static Elm_Genlist_Item_Class *_itc_ccl = NULL;
 
 static void
@@ -122,6 +125,7 @@ _on_add_popup_btn_add(void *data,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
    evas_object_del(popup);
+   _disable(EINA_FALSE);
 }
 
 static void
@@ -270,8 +274,13 @@ _on_btn_del(void *data __UNUSED__,
    Elm_Object_Item *it=elm_genlist_selected_item_get(window.genlist);
    Elm_Object_Item *next=elm_genlist_item_next_get(it);
    if (!next) next = elm_genlist_item_prev_get(it);
-   if (next) elm_genlist_item_selected_set(next,EINA_TRUE);
-   else window.current_ccl = NULL;
+   if (next)
+      elm_genlist_item_selected_set(next,EINA_TRUE);
+   else
+      {
+         window.current_ccl = NULL;
+         _disable(EINA_TRUE);
+      }
    elm_object_item_del(it);
 }
 /*button callbacks end*/
@@ -428,7 +437,7 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_show(right_box);
 
 #define _SPINNER_ADD(spinner, format) \
-   spinner = elm_spinner_add(mwin); \
+   spinner = elm_spinner_add(right_box); \
    elm_object_style_set(spinner, DEFAULT_STYLE); \
    elm_spinner_min_max_set(spinner, 0,255); \
    elm_spinner_interval_set(spinner, 0.4); \
@@ -442,7 +451,7 @@ colorclass_viewer_add(Evas_Object *parent)
    evas_object_show(spinner);
 
 #define _COLOR_ADD(rect, title) \
-   LABEL_ADD(mwin, label, title) \
+   LABEL_ADD(right_box, label, title) \
    elm_box_pack_end(right_box, label); \
    color = edje_object_add(evas_object_evas_get(mwin)); \
    rect = evas_object_rectangle_add(evas_object_evas_get(mwin)); \
@@ -522,4 +531,25 @@ colorclass_viewer_init(Evas_Object *ccl_view __UNUSED__,
         elm_genlist_item_append(window.genlist, _itc_ccl, it, NULL,
                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
+   if (elm_genlist_items_count(window.genlist) == 0)
+      _disable(EINA_TRUE);
+   else
+      elm_genlist_item_selected_set(elm_genlist_first_item_get(window.genlist),
+                                      EINA_TRUE);
+}
+
+void _disable(Eina_Bool disabled)
+{
+   elm_object_disabled_set(window.obj_r, disabled);
+   elm_object_disabled_set(window.obj_g, disabled);
+   elm_object_disabled_set(window.obj_b, disabled);
+   elm_object_disabled_set(window.obj_a, disabled);
+   elm_object_disabled_set(window.out_r, disabled);
+   elm_object_disabled_set(window.out_g, disabled);
+   elm_object_disabled_set(window.out_b, disabled);
+   elm_object_disabled_set(window.out_a, disabled);
+   elm_object_disabled_set(window.sdw_r, disabled);
+   elm_object_disabled_set(window.sdw_g, disabled);
+   elm_object_disabled_set(window.sdw_b, disabled);
+   elm_object_disabled_set(window.sdw_a, disabled);
 }
