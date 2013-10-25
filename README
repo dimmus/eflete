@@ -23,7 +23,7 @@ Build
    cd build
    autoreconf -f -i ..
    ../configure
-   sudo make install
+   make && sudo make install
 
 To install program to specified directory use --prefix option on configure step:
 
@@ -38,3 +38,8 @@ Run editor
 ==========
 
    eflete
+
+External resources used
+=======================
+
+FreeFont Mono from http://www.gnu.org/software/freefont/ (GNU GPL v.3)

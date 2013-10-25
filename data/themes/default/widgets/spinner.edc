@@ -77,6 +77,9 @@
          image: "focus-outer-glow.png" COMP;
          image: "input-text-bg.png" COMP;
       }
+      fonts {
+         font: "FreeMono.ttf" "Mono";
+      }
       parts {
          part {
             name: "bg";
@@ -110,7 +113,7 @@
             description { state: "default" 0.0;
                color: 213 213 213 84;
                text {
-                  font: "Sans";
+                  font: "Mono";
                   size: 12;
                }
                rel1.to: "back";
@@ -375,7 +378,7 @@
             description { state: "default" 0.0;
                color: 213 213 213 84;
                text {
-                  font: "Sans";
+                  font: "Mono";
                   size: 12;
                }
                rel1 {
