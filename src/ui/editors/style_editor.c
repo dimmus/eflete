@@ -77,7 +77,7 @@ _on_st_add_bt_ok(void *data,
    const char *default_tags = elm_entry_entry_get(st_entries.default_tags);
    Elm_Object_Item *glit_style;
 
-   if (!style_name)
+   if ((!style_name) || (strcmp(style_name, "") == 0))
      {
         NOTIFY_WARNING("Style name can not be empty!");
         return;
@@ -85,10 +85,10 @@ _on_st_add_bt_ok(void *data,
    if (!((isalpha(default_tags[0])) ||
          (default_tags[0] == '+') ||
          (!strcmp(default_tags, ""))))
-    {
+     {
         NOTIFY_WARNING("The default tag must begin from + or alphabetic symbol");
         return;
-    }
+     }
    if(!style_edit_style_add(window.pr, style_name))
      {
         NOTIFY_WARNING("Style name must be unique!");
@@ -121,12 +121,12 @@ _on_tag_add_bt_ok(void *data,
    const char *tag_name = elm_entry_entry_get(st_tag_entries.tag_name);
    const char *tag_value = elm_entry_entry_get(st_tag_entries.tag_value);
 
-   if (!tag_name)
+   if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
         NOTIFY_WARNING("Tag name can not be empty!");
         return;
      }
-   if (!tag_value)
+   if ((!tag_value) || (strcmp(tag_value, "") == 0))
      {
         NOTIFY_WARNING("Tag value can not be empty!");
         return;
