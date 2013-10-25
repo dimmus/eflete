@@ -1,4 +1,28 @@
 group {
+   name: "ui/style_viewer_window/preview";
+   parts {
+      part {
+         name: "background";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part {
+         name: "entry";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.to: "background";
+            rel2.to: "background";
+         }
+      }
+   }
+}
+
+group {
    name: "ui/style_viewer_window/list";
    parts {
       part {
@@ -129,6 +153,32 @@ group {
    name: "ui/style_viewer_window/property";
    parts {
       part {
+         name: "bg_menu";
+         type: RECT;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            align: 0.0 0.0;
+            max: -1 40;
+         }
+      }
+      part {
+         name: "menu_container";
+         type: SWALLOW;
+         scale: 1;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            max: 100 -1;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1.to: "bg_menu";
+            rel2.to: "bg_menu";
+         }
+      }
+      part {
          name: "offset_end";
          type: RECT;
          description {
@@ -148,7 +198,8 @@ group {
             state: "default" 0.0;
             min: 0 0;
             max: 20 20;
-            rel1.relative: 0.0 0.0;
+            rel1.relative: 0.0 1.0;
+            rel1.to: "bg_menu";
             rel2.relative: 1.0 1.0;
             align: 0.0 0.0;
             color: 0 0 0 0;
@@ -158,6 +209,7 @@ group {
          name: "tag_name_label";
          type: TEXT;
          description {
+            state: "default" 0.0;
             text {
                text: "Tag Name:";
                size: 12;
@@ -176,6 +228,7 @@ group {
          name: "tag_name_label_pad";
          type: RECT;
          description {
+            state: "default" 0.0;
             min: 150 30;
             max: 150 30;
             rel1 {
@@ -191,6 +244,7 @@ group {
          name: "swallow/tag_entry";
          type: SWALLOW;
          description {
+            state: "default" 0.0;
             min: 150 30;
             max: 150 30;
             rel1 {
@@ -206,6 +260,7 @@ group {
          name: "tag_prop_label";
          type: TEXT;
          description {
+            state: "default" 0.0;
             text {
                text: "Tag Properties:";
                size: 12;
@@ -226,6 +281,7 @@ group {
          name: "swallow/prop_entry";
          type: SWALLOW;
          description {
+            state: "default" 0.0;
             min: 100 30;
             max: 999999 30;
             rel1 {
@@ -245,6 +301,7 @@ group {
          name: "swallow/button_close";
          type: SWALLOW;
          description {
+            state: "default" 0.0;
             min: 100 30;
             max: 100 30;
             rel1.relative: 0.0 0.0;
