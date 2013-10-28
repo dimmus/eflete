@@ -17,4 +17,5 @@ collections {
    #include "widgets/spinner.edc"
    #include "widgets/popup.edc"
    #include "widgets/label.edc"
+   #include "widgets/radio.edc"
 }

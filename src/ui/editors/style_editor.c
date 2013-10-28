@@ -29,6 +29,7 @@ struct _Style_Editor
    Evas_Object *entry_style;
    Evas_Object *entry_tag;
    Evas_Object *entry_prop;
+   Evas_Object *entry_prev;
 };
 
 typedef struct _Style_Editor Style_Editor;
@@ -402,6 +403,7 @@ _on_glit_selected(void *data __UNUSED__,
         eina_strlcat(style, value, BUFF_MAX);
      }
    eina_strlcat(style, "'", BUFF_MAX);
+   evas_object_show(window.entry_style);
    elm_entry_text_style_user_push(window.entry_style, style);
    evas_object_size_hint_max_set(window.entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
 }
@@ -526,11 +528,46 @@ _form_left_side(Evas_Object *obj)
 
      return box;
 }
+static void
+_change_bg_cb(void *data __UNUSED__,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   int state = elm_radio_state_value_get(obj);
+   Evas_Object *bg = NULL;
+   Evas *canvas = evas_object_evas_get(obj);
+   switch (state)
+     {
+      case 0:
+         bg = evas_object_image_filled_add(canvas);
+         evas_object_image_filled_set(bg, EINA_FALSE);
+         evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
+         evas_object_image_fill_set(bg, 0, 0, 16, 16);
+      break;
+      case 1:
+         bg = evas_object_rectangle_add(canvas);
+         evas_object_color_set(bg, 0, 0, 0, 255);
+         evas_object_show(bg);
+      break;
+      case 2:
+         bg = evas_object_rectangle_add(canvas);
+         evas_object_color_set(bg, 255, 255, 255, 255);
+         evas_object_show(bg);
+      break;
+      default:
+      break;
+     }
+   elm_object_part_content_set(window.entry_prev, "background", bg);
+}
 
 Evas_Object*
 _form_right_side(Evas_Object *obj)
 {
    Evas_Object *layout, *btn;
+   Evas_Object *box_bg = NULL;
+   Evas_Object *image_bg = NULL;
+   Evas_Object *radio_group = NULL;
+   Evas_Object *radio = NULL;
 
    layout = elm_layout_add(obj);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -546,12 +583,31 @@ _form_right_side(Evas_Object *obj)
    BUTTON_ADD(obj, btn, "Close viewer");
    evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, window.mwin);
    elm_object_part_content_set (layout, "swallow/button_close", btn);
-
    evas_object_show(btn);
 
+   BOX_ADD(obj, box_bg, EINA_TRUE, EINA_FALSE);
+   elm_box_padding_set(box_bg, 10, 0);
+
+#define _RADIO_ADD(radio, value, image) \
+   radio = elm_radio_add(obj); \
+   elm_object_style_set(radio, "eflete/style_editor"); \
+   elm_radio_state_value_set(radio, value); \
+   evas_object_show(radio); \
+   IMAGE_ADD(box_bg, image_bg, image); \
+   elm_image_resizable_set(image_bg, EINA_FALSE, EINA_FALSE); \
+   elm_object_part_content_set(radio, "bg", image_bg); \
+   evas_object_smart_callback_add(radio, "changed", _change_bg_cb, NULL); \
+   elm_box_pack_end(box_bg, radio);
+
+   _RADIO_ADD(radio_group, 0, TET_IMG_PATH"styles-preview-bg-transparent.png");
+   _RADIO_ADD(radio, 1, TET_IMG_PATH"styles-preview-bg-black.png");
+   elm_radio_group_add(radio, radio_group);
+   _RADIO_ADD(radio, 2, TET_IMG_PATH"styles-preview-bg-white.png");
+   elm_radio_group_add(radio, radio_group);
+#undef _RADIO_ADD
+   elm_object_part_content_set(layout, "menu_container", box_bg);
    return layout;
 }
-
 static void
 __on_style_editor_close(void *data __UNUSED__,
                         Evas *e __UNUSED__,
@@ -572,6 +628,8 @@ style_editor_window_add(Evas_Object *parent, Project *project)
      }
    Evas_Object *panes, *panes_h;
    Evas_Object *layout_left, *layout_right;
+   Evas_Object *bg = NULL;
+   Evas *canvas = evas_object_evas_get(parent);
 
    window.pr = project;
    window.mwin = mw_add(parent);
@@ -598,13 +656,30 @@ style_editor_window_add(Evas_Object *parent, Project *project)
    elm_object_part_content_set(panes, "right", panes_h);
    evas_object_show(panes_h);
 
+   Evas_Object *layout_preview = NULL;
+   layout_preview = elm_layout_add(window.mwin);
+   evas_object_size_hint_weight_set(layout_preview, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(layout_preview, TET_EDJ, "ui/style_viewer_window/preview");
+   evas_object_show(layout_preview);
+   elm_object_part_content_set(panes_h, "left", layout_preview);
+   window.entry_prev = layout_preview;
+
+   bg = evas_object_image_filled_add(canvas);
+   evas_object_image_filled_set(bg, EINA_FALSE);
+   evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
+   evas_object_image_fill_set(bg, 0, 0, 16, 16);
+   elm_object_part_content_set(layout_preview, "background", bg);
+   evas_object_show(bg);
+
    ENTRY_ADD(window.mwin, window.entry_style, EINA_TRUE, "style_editor");
    elm_entry_editable_set(window.entry_style, EINA_FALSE);
+   evas_object_size_hint_weight_set(window.entry_style, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(layout_preview, "entry", window.entry_style);
    elm_object_text_set(window.entry_style, "The quick brown fox jumps over the lazy dog");
-   elm_object_part_content_set(panes_h, "left", window.entry_style);
    elm_entry_text_style_user_push(window.entry_style, "DEFAULT='align=center "
-                                  "font_size="FONT_SIZE"'");
+                                  "font_size="FONT_SIZE" font_weight=Bold'");
 
+   evas_object_hide(window.entry_style);
    layout_right = _form_right_side(window.mwin);
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
