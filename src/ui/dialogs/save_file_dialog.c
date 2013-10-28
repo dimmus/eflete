@@ -159,6 +159,7 @@ save_as_edj_file(App_Data *ap)
    elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
+   /* evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap); */
 
    elm_win_inwin_content_set(ap->inwin, fs);
 

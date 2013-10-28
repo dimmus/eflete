@@ -127,6 +127,7 @@ open_edj_file(App_Data *ap)
    evas_object_event_callback_add(ap->inwin, EVAS_CALLBACK_FREE,
                                   _on_mw_fileselector_close, ap);
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
+   /* evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap); */
 
    elm_win_inwin_activate(ap->inwin);
 
@@ -269,6 +270,7 @@ _edc_select(void *data __UNUSED__,
    OPEN_DIALOG_ADD(inwin, box, fs, evas_object_data_get(fs_ent->edc, FS_TITLE));
    elm_fileselector_selected_set(fs, path);
    evas_object_smart_callback_add(fs, "done", _on_edc_done, inwin);
+   /* evas_object_smart_callback_add(fs, "activated", _on_edc_done, inwin); */
 
    elm_win_inwin_activate(inwin);
 }
@@ -306,6 +308,7 @@ _path_select(void *data,
    elm_fileselector_path_set(fs, path);
    elm_fileselector_folder_only_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", _on_path_done, entry);
+   /* evas_object_smart_callback_add(fs, "activated", _on_edc_done, inwin); */
 
    elm_win_inwin_activate(inwin);
 }

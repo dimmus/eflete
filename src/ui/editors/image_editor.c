@@ -148,6 +148,7 @@ _on_button_add_clicked_cb(void *data,
    evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
                                   _on_mw_fileselector_close, NULL);
    evas_object_smart_callback_add(fs, "done", _on_image_done, inwin);
+   /* evas_object_smart_callback_add(fs, "activated", _on_image_done, inwin); */
 
    elm_win_inwin_activate(inwin);
 
