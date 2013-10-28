@@ -1233,7 +1233,7 @@ _on_bt_prog_add(void *data __UNUSED__,
    elm_object_content_set(popup, box);
    evas_object_show(box);
 
-   BUTTON_ADD(popup, bt_yes, "Add");
+   BUTTON_ADD(popup, bt_yes, "Ok");
    evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_bt_add,
                                   popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
