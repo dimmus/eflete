@@ -378,7 +378,8 @@ _on_group_clicked_double(void *data,
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
-   nf = elm_object_parent_widget_get(elm_object_parent_widget_get(obj));
+   //nf = elm_object_parent_widget_get(elm_object_parent_widget_get(obj));
+   nf = evas_object_data_get(obj, "naviframe");
    _group = elm_object_item_data_get(glit);
 
    if (_group->__type != GROUP) return;
@@ -415,8 +416,7 @@ _on_group_clicked_double(void *data,
                                       NULL, NULL);
         elm_object_item_data_set(eoi, _part);
      }
-   evas_object_smart_callback_add(gl_parts, "selected",
-                                  _on_part_select, NULL);
+   evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, NULL);
 
    ic = elm_icon_add(nf);
    elm_icon_standard_set(ic, "arrow_left");
@@ -495,7 +495,8 @@ _on_widget_clicked_double(void *data,
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
-   nf = elm_object_parent_widget_get(obj);
+   //nf = elm_object_parent_widget_get(obj);
+   nf = evas_object_data_get(obj, "naviframe");
    _widget = elm_object_item_data_get(glit);
    styles = _widget->styles;
 
@@ -521,6 +522,7 @@ _on_widget_clicked_double(void *data,
      }
 
    gl_styles = elm_genlist_add(nf);
+   evas_object_data_set(gl_styles, "naviframe", nf);
    elm_object_style_set(gl_styles, "eflete/default");
    evas_object_size_hint_align_set(gl_styles,
                                    EVAS_HINT_FILL,
@@ -586,7 +588,6 @@ _on_widget_clicked_double(void *data,
    evas_object_show(panel);
    evas_object_show(gl_styles);
    elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, box, NULL);
-
 }
 
 void
@@ -669,6 +670,7 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_size_hint_weight_set(gl_widgets,
                                     EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
+   evas_object_data_set(gl_widgets, "naviframe", nf);
 
    it = elm_naviframe_item_push(nf, NULL, NULL, NULL, gl_widgets, NULL);
    elm_object_item_part_text_set(it, "subtitle", "Widget list");
