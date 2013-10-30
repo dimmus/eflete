@@ -17,16 +17,11 @@
 * along with this program; If not, see .
 */
 
-#ifndef STRING_DEFINE_H
-#define STRING_DEFINE_H
+#ifndef COMMON_DEFINE_H
+#define COMMON_DEFINE_H
 
-#define GET_NAME_FROM_PATH(name, path) \
-   char **arr; \
-   int i; \
-   arr = eina_str_split(path, "/", 0); \
-   for (i = 0; arr[i]; i++) ; \
-   name = strdup(arr[i-1]); \
-   free(arr[0]); \
-   free(arr);
+#define null NULL
+#define true EINA_TRUE
+#define false EINA_FALSE
 
-#endif /* STRING_DEFINE_H */
+#endif /* COMMON_DEFINE_H */

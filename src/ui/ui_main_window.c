@@ -88,8 +88,7 @@ ui_main_window_add(App_Data *ap)
 {
    Evas_Object *win, *bg, *layout;
 
-   eina_init();
-
+   elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
    if (win == NULL)
      {

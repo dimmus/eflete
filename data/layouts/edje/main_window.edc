@@ -39,7 +39,6 @@ group {
             visible: 1;
          }
       }
-
       part {
          name: "rect/background";
          type: RECT;
@@ -65,7 +64,6 @@ group {
             visible: 1;
          }
       }
-
       part {
          name: "image/logo";
          type: IMAGE;
@@ -96,36 +94,18 @@ group {
             visible: 1;
          }
       }
-
       part {
-         name: "swallow/menu_toolbar";
-         type: SWALLOW;
-         scale: 1;
-         mouse_events: 1;
-         description {
-            state: "default" 0.0;
-            min: 300 20;
-            max: 9999 20;
-            align: 0.0 0.0;
-         }
-      }
-       part {
          name: "swallow/button_toolbar";
          type: SWALLOW;
          scale: 1;
          mouse_events: 1;
          description {
             state: "default" 0.0;
-            max: 9999 20;
+            max: 9999 30;
             align: 0.0 0.0;
-            rel1 {
-               relative: 0.0 1.0;
-               to: "swallow/menu_toolbar";
-            }
          }
       }
    }
-
    programs {
       program {
          name: "window_panes_hide";
@@ -154,7 +134,7 @@ group {
          action: STATE_SET "displayed" 0.0;
          target: "rect/background";
          target: "image/logo";
-     }
+      }
    }
 }
 

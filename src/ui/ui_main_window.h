@@ -30,6 +30,7 @@
  */
 
 #include "efl_ete.h"
+#include "common_define.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"

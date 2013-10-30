@@ -223,7 +223,7 @@ _on_style_window_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if(ap->project != NULL) style_editor_window_add(ap->win, ap->project);
+   if(ap->project != null) style_editor_window_add(ap->win, ap->project);
    else NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
 }
 
@@ -281,133 +281,66 @@ _on_about_window_menu(void *data __UNUSED__,
 Eina_Bool
 ui_menu_add(App_Data *ap)
 {
-   Evas_Object *tb, *menu;
-   Elm_Object_Item *tb_it, *menu_sub;
-   Evas_Object *box = NULL;
-   Evas_Object *button = NULL;
-   Evas_Object *icon = NULL;
+   Evas_Object *menu, *toolbar;
+   Elm_Object_Item *it, *menu_it, *sub_menu;
 
-   tb = elm_toolbar_add(ap->win_layout);
-   if (tb == NULL) return EINA_FALSE;
-   evas_object_size_hint_weight_set(tb, 0.0, 0.0);
-   elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_NONE);
-   elm_toolbar_align_set(tb, 0.0);
-   elm_toolbar_homogeneous_set(tb, EINA_TRUE);
-   elm_object_part_content_set(ap->win_layout, "swallow/menu_toolbar", tb);
-   evas_object_show(tb);
-   elm_toolbar_icon_size_set(tb,16);
+   menu = elm_win_main_menu_get(ap->win);
 
-   elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_FDO_THEME);
-   tb_it = elm_toolbar_item_append(tb, NULL, "File", NULL, NULL);
-   if (tb_it == NULL) return EINA_FALSE;
+   menu_it = elm_menu_item_add(menu, null, null, "File", null, null);
+   elm_menu_item_add(menu, menu_it, null, "New theme", _on_new_theme_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Open edc-file", _on_edc_open_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Open edj-file", _on_edj_open_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Save", _on_save_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Save as...", _on_save_as_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Save to edc", _on_edc_save_menu, ap);
+   elm_menu_item_separator_add(menu, menu_it);
+   elm_menu_item_add(menu, menu_it, null, "Exit", _on_exit_menu, ap);
 
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
-   if (menu == NULL) return EINA_FALSE;
+   menu_it = elm_menu_item_add(menu, null, null, "View", null, null);
+   sub_menu = elm_menu_item_add(menu, menu_it, null, "Workspace", null, null);
+   it = elm_menu_item_add(menu, sub_menu, null, "Zoom in", _on_view_zoom_in, ap);
+   elm_object_item_disabled_set(it, false); /* FIXME: */
+   it = elm_menu_item_add(menu, sub_menu, null, "Zoom out", _on_view_zoom_out, ap);
+   elm_object_item_disabled_set(it, false); /* FIXME:  */
+   elm_menu_item_add(menu, menu_it, null, "Separete", _on_view_separate, ap);
+   elm_menu_item_add(menu, menu_it, null, "Legend", _on_view_legend, ap);
+   sub_menu = elm_menu_item_add(menu, menu_it, null, "Rulers", null, null);
+   elm_menu_item_add(menu, sub_menu, null, "Show/hide hor.", _on_view_ruler_hor, ap);
+   elm_menu_item_add(menu, sub_menu, null, "Show/hide ver.", _on_view_ruler_ver, ap);
+   elm_menu_item_add(menu, sub_menu, null, "Absolute scale", _on_view_ruler_abs, ap);
+   elm_menu_item_add(menu, sub_menu, null, "Relative scale", _on_view_ruler_rel, ap);
+   elm_menu_item_add(menu, menu_it, null, "Highlight space", _on_view_highlight, ap);
 
-   elm_menu_item_add(menu, NULL, "menu/file", "New theme",
-                     _on_new_theme_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file",
-                     _on_edc_open_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
-                     _on_edj_open_menu, ap);
-   tb_it = elm_menu_item_add(menu, NULL, "menu/file", "Save", _on_save_menu, ap);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   tb_it = elm_menu_item_add(menu, NULL, "menu/file", "Save as...", _on_save_as_menu, ap);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   tb_it = elm_menu_item_add(menu, NULL, "menu/file", "Save as EDC", _on_edc_save_menu, ap);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
+   menu_it = elm_menu_item_add(menu, null, null, "Editors", null, null);
+   elm_menu_item_add(menu, menu_it, null, "Styles", _on_style_window_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Images", _on_image_editor_menu, ap);
+   elm_menu_item_add(menu, menu_it, null, "Colorclasses", _on_ccl_viewer_menu, ap);
+   it = elm_menu_item_add(menu, menu_it, null, "Programs", _on_prog_editor_menu, ap);
+   elm_object_item_disabled_set(it, false);
+   //elm_menu_item_add(menu, null, null, "Fonts", _on_font_viewer_menu, ap);
 
-   tb_it = elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
-   menu_sub = elm_menu_item_add(menu, NULL, NULL, "Workspace", NULL, NULL);
-   tb_it = elm_menu_item_add(menu, menu_sub, NULL, "Zoom in", _on_view_zoom_in, ap);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   tb_it = elm_menu_item_add(menu, menu_sub, NULL, "Zoom out", _on_view_zoom_out, ap);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   elm_menu_item_add(menu, menu_sub, NULL, "Separate", _on_view_separate, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Legend", _on_view_legend, ap);
-   menu_sub = elm_menu_item_add(menu, NULL, NULL, "Rulers", NULL, NULL);
-   elm_menu_item_add(menu, menu_sub, NULL, "Show/hide hor.", _on_view_ruler_hor, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Show/hide ver.", _on_view_ruler_ver, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Absolute scale", _on_view_ruler_abs, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Relative scale", _on_view_ruler_rel, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Highlight space", _on_view_highlight, ap);
+   menu_it = elm_menu_item_add(menu, null, null, "Help", null, null);
+   elm_menu_item_add(menu, menu_it, null, "About", _on_about_window_menu, ap);
 
-   tb_it = elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
+   toolbar = elm_toolbar_add(ap->win);
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_MENU);
+   /*TODO: for this select mode need new style */
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_NONE);
+   elm_object_style_set(toolbar, DEFAULT_STYLE);
+   elm_toolbar_align_set(toolbar, 0.0);
+   evas_object_size_hint_weight_set(toolbar, 0.0, 0.0);
+   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.0);
+   elm_object_part_content_set(ap->win_layout, "swallow/button_toolbar", toolbar);
+   evas_object_show(toolbar);
 
-   elm_menu_item_add(menu, NULL, NULL, "Styles", _on_style_window_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Images", _on_image_editor_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Colorclasses", _on_ccl_viewer_menu, ap);
-   tb_it = elm_menu_item_add(menu, NULL, NULL, "Programs", _on_prog_editor_menu, ap);
-   elm_object_item_disabled_set(tb_it, EINA_TRUE);
-   //elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
+   elm_toolbar_item_append(toolbar, null, "New project", _on_new_theme_menu, ap);
+   elm_toolbar_item_append(toolbar, null, "Open project", _on_edj_open_menu, ap);
+   elm_toolbar_item_append(toolbar, null, "Save project", _on_save_menu, ap);
 
-   elm_toolbar_menu_parent_set(tb, ap->win_layout);
-
-   tb_it = elm_toolbar_item_append(tb, NULL, "Help", NULL, NULL);
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
-   elm_menu_item_add(menu, NULL, "help-about", "About",
-                     _on_about_window_menu, ap);
-
-   tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
-   elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
-   elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_THEME);
-
-   ap->main_menu = tb;
-
-   tb = elm_toolbar_add(ap->win_layout);
-   if (tb == NULL) return EINA_FALSE;
-   elm_object_style_set(tb, DEFAULT_STYLE);
-
-   evas_object_size_hint_weight_set(tb, EVAS_HINT_FILL, 1.0);
-   elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_EXPAND);
-   elm_toolbar_homogeneous_set(tb, EINA_FALSE);
-   elm_object_part_content_set(ap->win_layout, "swallow/button_toolbar", tb);
-   evas_object_show(tb);
-
-   Evas_Object *box_buttons = NULL;
-   BOX_ADD(tb, box_buttons, EINA_TRUE, EINA_FALSE);
-   elm_box_align_set(box_buttons, 0.0, 0.5);
-   tb_it = elm_toolbar_item_append(tb, NULL, NULL, NULL, NULL);
-
-#define ITEM_TB_ADD(icon_name, text, callback, disabled) \
-   button = elm_button_add(box); \
-   elm_object_text_set(button, text); \
-   elm_object_style_set(button, DEFAULT_STYLE); \
-   elm_box_pack_end(box, button); \
-   icon = elm_icon_add(button); \
-   elm_image_file_set(icon, icon_name, NULL); \
-   elm_image_no_scale_set(icon, EINA_TRUE); \
-   elm_object_part_content_set(button, NULL, icon); \
-   evas_object_show(button); \
-   elm_object_disabled_set(button, disabled); \
-   evas_object_color_set(icon, 51, 153, 255, 255); \
-   evas_object_smart_callback_add(button, "clicked", callback, ap);
-
-
-   BOX_ADD(box_buttons, box, EINA_TRUE, EINA_FALSE)
-   elm_box_align_set(box, 0.0, 0.5);
-   elm_box_padding_set(box, 0, 0);
-   elm_box_pack_end(box_buttons, box);
-
-   ITEM_TB_ADD(TET_IMG_PATH"icon-new_project.png", "New project",
-               _on_new_theme_menu, EINA_FALSE)
-   ITEM_TB_ADD(TET_IMG_PATH"icon-open_project.png", "Open project",
-               _on_edj_open_menu, EINA_FALSE)
-   ITEM_TB_ADD(TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu,
-               EINA_FALSE)
-
-   evas_object_show(box_buttons);
-   elm_object_item_part_content_set(tb_it, "object", box_buttons);
-
-#undef ITEM_TB_ADD
-   return EINA_TRUE;
+/*
+   (TET_IMG_PATH"icon-new_project.png", "New project")
+   (TET_IMG_PATH"icon-open_project.png", "Open project")
+   (TET_IMG_PATH"icon_save.png", "Save project")
+*/
+   return true;
 }
