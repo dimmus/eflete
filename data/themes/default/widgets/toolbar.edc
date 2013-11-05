@@ -1,4 +1,5 @@
 group { name: "elm/toolbar/base/eflete/default";
+    data.item: "icon_size" "14";
     images {
        image: "arrow_up.png" COMP;
        image: "arrow_down.png" COMP;
@@ -9,7 +10,7 @@ group { name: "elm/toolbar/base/eflete/default";
          part { name: "base";
             type: RECT;
             description { state: "default" 0;
-               color: 48 48 48 0;
+               color: LIGHT_GREY_BG_COLOR;
                rel1 {
                   offset: 2 2;
                }
@@ -230,3 +231,331 @@ group { name: "elm/toolbar/base/eflete/default";
     }
  }
 
+// === default item
+group { name: "elm/toolbar/item/eflete/default";
+   #define ICON     1
+   #define LABEL    2
+   #define MASK     3
+   #define DISABLE  4
+   script {
+      public btmode;
+      public eval_mode(m) {
+         new m1 = m & MASK;
+         new d = m & DISABLE;
+         if (m1 == (ICON | LABEL)) {
+            if (!d) {
+               set_state(PART:"elm.swallow.icon", "default", 0.0);
+               set_state(PART:"icon_clip", "default", 0.0);
+               set_state(PART:"elm.text", "default", 0.0);
+            } else {
+               set_state(PART:"elm.swallow.icon", "default", 0.0);
+               set_state(PART:"icon_clip", "disabled", 0.0);
+               set_state(PART:"elm.text", "disabled", 0.0);
+            }
+         } else if (m1 == (ICON)) {
+            if (!d) {
+               set_state(PART:"elm.swallow.icon", "icononly", 0.0);
+               set_state(PART:"icon_clip", "default", 0.0);
+               set_state(PART:"elm.text", "icononly", 0.0);
+            } else {
+               set_state(PART:"elm.swallow.icon", "icononly", 0.0);
+               set_state(PART:"icon_clip", "disabled", 0.0);
+               set_state(PART:"elm.text", "icononly", 0.0);
+            }
+         } else if (m1 == (LABEL)) {
+            if (!d) {
+               set_state(PART:"elm.swallow.icon", "noicon", 0.0);
+               set_state(PART:"icon_clip", "default", 0.0);
+               set_state(PART:"elm.text", "noicon", 0.0);
+            } else {
+               set_state(PART:"elm.swallow.icon", "noicon", 0.0);
+               set_state(PART:"icon_clip", "disabled", 0.0);
+               set_state(PART:"elm.text", "noicon_disabled", 0.0);
+            }
+         } else {
+            set_state(PART:"elm.swallow.icon", "default", 0.0);
+            set_state(PART:"icon_clip", "default", 0.0);
+            set_state(PART:"elm.text", "default", 0.0);
+         }
+      }
+   }
+   parts {
+      part { name: "base"; type: RECT;
+         description { state: "default" 0.0;
+            color: LIGHT_GREY_BG_COLOR;
+            rel1.offset: 1 0;
+         }
+         description {
+            state: "blink" 0.0;
+            inherit: "default";
+            color: HIGHLIGHT_TOOLBAR_BLUE;
+         }
+      }
+      part { name: "base_inner"; type: RECT;
+         description { state: "default" 0.0;
+            color: LIGHT_GREY_BG_COLOR;
+            rel1 {
+               to: "base";
+               offset: 2 2;
+            }
+            rel2 {
+               to: "base";
+               offset: -3 -3;
+            }
+         }
+         description { state: "blink" 0.0;
+            inherit: "default";
+            color: HIGHLIGHT_TOOLBAR_BLUE;
+         }
+      }
+      part { name: "top_pad"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            FIXED_SIZE(10,10)
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "bot_pad"; type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            FIXED_SIZE(10,10)
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "line"; type: RECT;
+         description { state: "default" 0.0;
+            color: TOOLBAR_GREY_SEPARATOR;
+            rel1 {
+               to: "base";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "base";
+               offset: 1 -1;
+            }
+         }
+      }
+      part { name: "icon_clip"; type: RECT;
+         description { state: "default" 0.0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 64;
+         }
+      }
+      part { name: "elm.swallow.icon"; type: SWALLOW;
+         clip_to: "icon_clip";
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(14, 14) //must be equal to icon_size
+            align: 0.0 0.5;
+            rel1 {
+               to: "top_pad";
+               relative: 1.0 1.0;
+               offset: 2 1;
+            }
+            rel2 {
+               to: "bot_pad";
+               relative: 0.0 0.0;
+               offset: -1 -2;
+            }
+         }
+         description { state: "noicon" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            rel1.offset: 2 0;
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -3 -4;
+            }
+         }
+         description { state: "icononly" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -3 -3;
+               to_y: "icon_clip";
+            }
+         }
+      }
+      part { name: "text_clip"; type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+            visible: 1;
+         }
+      }
+      part { name: "elm.text"; type: TEXT; mouse_events: 0;
+         effect: SHADOW BOTTOM;
+         scale: 1;
+         clip_to: "text_clip";
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            text { font: FN; size: 10;
+               min: 1 1;
+               align: 0.5 0.5;
+            }
+            fixed: 0 1;
+            rel1 {
+               relative: 1.5 0.0;
+               to: "elm.swallow.icon";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "bot_pad";
+               to_y: "elm.swallow.icon";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: FN_COL_DISABLE
+         }
+         description { state: "noicon" 0.0;
+            inherit: "default" 0.0;
+            align: 0.5 0.5;
+            rel1 {
+               offset: 4 2;
+               relative: 0.0 0.0;
+            }
+         }
+         description { state: "noicon_disabled" 0.0;
+            inherit: "noicon" 0.0;
+            color: FN_COL_DISABLE
+         }
+         description { state: "icononly" 0.0;
+            inherit: "default" 0.0;
+            text.min: 0 0;
+            visible: 0;
+            fixed: 1 1;
+         }
+      }
+      part { name: "event"; type: RECT;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "mouse_down";
+         signal: "mouse,down,1"; source: "event";
+         action: STATE_SET "blink" 0.0;
+         target: "base";
+         target: "base_inner";
+      }
+      program { name: "mouse_up";
+         signal: "mouse,up,1"; source: "event";
+         action: STATE_SET "default" 0.0;
+         in: 0.1 0;
+         target: "base";
+         target: "base_inner";
+      }
+      program { name: "mouse_in";
+         signal: "mouse,in"; source: "event";
+         action: STATE_SET "blink" 0.0;
+         target: "base";
+      }
+      program { name: "mouse_out";
+         signal: "mouse,out"; source: "event";
+         action: STATE_SET "default" 0.0;
+         in: 0.1 0;
+         target: "base";
+      }
+      program { name: "orient_horiz";
+         signal: "elm,orient,horizontal"; source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "base";
+      }
+      program { name: "orient_vert";
+         signal: "elm,orient,vertical"; source: "elm";
+         action: STATE_SET "vert" 0.0;
+         target: "base";
+      }
+      program { name: "st0";
+         signal: "load"; source: "";
+         script {
+            set_int(btmode, LABEL | ICON);
+         }
+      }
+      program { name: "selected";
+         signal: "elm,state,selected"; source: "elm";
+         action: STATE_SET "selected" 0.0;
+         target: "elm.text";
+         after: "unselect";
+      }
+      program { name: "unselect";
+         in: 0.3 0;
+         action: STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "mouse_up_c";
+         signal: "mouse,up,1"; source: "event";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "mouse_in_c";
+         signal:  "mouse,in"; source:  "event";
+         action:  SIGNAL_EMIT "elm,mouse,in" "elm";
+      }
+      program { name: "mouse,out";
+         signal:  "mouse,out"; source:  "event";
+         action:  SIGNAL_EMIT "elm,mouse,out" "elm";
+      }
+      program { name: "st1";
+         signal: "elm,text,hidden"; source: "elm";
+         action: STATE_SET "notext" 0.0;
+         script {
+            new m = get_int(btmode);
+            m &= ~LABEL; set_int(btmode, m);
+            eval_mode(m);
+         }
+      }
+      program { name: "st2";
+         signal: "elm,text,visible"; source: "elm";
+         script {
+            new m = get_int(btmode);
+            m |= LABEL; set_int(btmode, m);
+            eval_mode(m);
+         }
+      }
+      program { name: "st3";
+         signal: "elm,icon,hidden"; source: "elm";
+         script {
+            new m = get_int(btmode);
+            m |= ICON; set_int(btmode, m);
+            eval_mode(m);
+         }
+      }
+      program { name: "st4";
+         signal: "elm,icon,visible"; source: "elm";
+         script {
+            new m = get_int(btmode);
+            m &= ~ICON; set_int(btmode, m);
+            eval_mode(m);
+         }
+      }
+      program { name: "st5";
+         signal: "elm,state,disabled"; source: "elm";
+         script {
+            new m = get_int(btmode);
+            m |= DISABLE; set_int(btmode, m);
+            eval_mode(m);
+         }
+      }
+      program { name: "st6";
+         signal: "elm,state,enabled"; source: "elm";
+         script {
+            new m = get_int(btmode);
+            m &= ~DISABLE; set_int(btmode, m);
+            eval_mode(m);
+         }
+      }
+   }
+   #undef ICON
+   #undef LABEL
+   #undef MASK
+   #undef DISABLE
+}

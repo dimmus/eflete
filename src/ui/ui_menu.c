@@ -333,14 +333,9 @@ ui_menu_add(App_Data *ap)
    elm_object_part_content_set(ap->win_layout, "swallow/button_toolbar", toolbar);
    evas_object_show(toolbar);
 
-   elm_toolbar_item_append(toolbar, null, "New project", _on_new_theme_menu, ap);
-   elm_toolbar_item_append(toolbar, null, "Open project", _on_edj_open_menu, ap);
-   elm_toolbar_item_append(toolbar, null, "Save project", _on_save_menu, ap);
+   elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon-new_project.png", "New project", _on_new_theme_menu, ap);
+   elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon-open_project.png", "Open project", _on_edj_open_menu, ap);
+   elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu, ap);
 
-/*
-   (TET_IMG_PATH"icon-new_project.png", "New project")
-   (TET_IMG_PATH"icon-open_project.png", "Open project")
-   (TET_IMG_PATH"icon_save.png", "Save project")
-*/
    return true;
 }
