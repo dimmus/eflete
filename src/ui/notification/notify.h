@@ -28,6 +28,7 @@
  */
 
 #include "efl_ete.h"
+#include "widget_define.h"
 
 /**
  * Show Error Notification with formated message

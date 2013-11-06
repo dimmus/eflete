@@ -111,7 +111,7 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         LABEL_ADD(parent, object, "Some long text for our label, that is long but"
                             "not too long.");
         elm_label_slide_duration_set(object, 0.5);
-        elm_label_slide_set(object, EINA_TRUE);
+        elm_label_slide_mode_set(object, ELM_LABEL_SLIDE_MODE_ALWAYS);
      }
    else if (strcmp(widget, "scroller") == 0)
      {
@@ -119,7 +119,7 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
           {
              object = elm_entry_add(parent);
              elm_entry_scrollable_set(object, EINA_TRUE);
-             elm_entry_scrollbar_policy_set(object, ELM_SCROLLER_POLICY_ON,
+             elm_scroller_policy_set(object, ELM_SCROLLER_POLICY_ON,
                                             ELM_SCROLLER_POLICY_ON);
           }
         else
