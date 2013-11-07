@@ -52,6 +52,7 @@ struct _App_Data
     Evas_Object *win;
     Evas_Object *win_layout;
     Evas_Object *main_menu;
+    Eina_Hash *menu_hash;
     Evas_Object *inwin;
     struct {
        Evas_Object *left_top;

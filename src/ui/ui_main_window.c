@@ -21,16 +21,18 @@
 #include <settings.h>
 
 static void
-_on_done(void *data __UNUSED__,
+_on_done(void *data,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   ui_main_window_del();
+   App_Data *ap = (App_Data *)data;
+   ui_main_window_del(ap);
 }
 
 void
-ui_main_window_del(void)
+ui_main_window_del(App_Data *ap)
 {
+   eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    elm_exit();
@@ -115,8 +117,8 @@ ui_main_window_add(App_Data *ap)
    elm_layout_file_set(layout, TET_EDJ, "ui/main_window");
    evas_object_show(layout);
    ap->win_layout = layout;
-
-   if (!ui_menu_add(ap)) ERR("Failrue add menu on main window.");
+   ap->main_menu = ui_menu_add(ap);
+   if (!ap->main_menu) ERR("Failrue add menu on main window.");
    if (!ui_panes_add(ap)) ERR("Failrue add panes on main window.");
 
    if (!ecore_file_mkpath(TET_SETT_PATH))
