@@ -1,3 +1,28 @@
+group { name: "elm/scroller/entry_single/style_editor";
+   parts {
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0;
+         }
+      }
+   }
+   programs {
+      program { name: "reload_on_load";
+         signal: "load";
+         source: "";
+         script {
+            emit("reload", "elm");
+         }
+      }
+   }
+}
+
 group { name: "elm/entry/base/style_editor";
    parts {
        part { name: "elm.guide";
@@ -461,7 +486,7 @@ group { name: "elm/entry/base/eflete/default";
    }
 }
 
-group { name: "elm/scroller/entry/eflete/default";
+group { name: "elm/scroller/entry_single/eflete/default";
    images {
       image: "input-text-bg-error.png" COMP;
       image: "input-text-bg-focus.png" COMP;
