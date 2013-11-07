@@ -1,85 +1,105 @@
-#define PANEMIN  10
-#define PANEMIN2 16
-#define PANEWID  32
+#define PANEMIN  4
+#define PANEGLOW  4
 
 group { name: "elm/panes/vertical/eflete/default";
-   images.image: "downlight_glow_left.png" COMP;
-   images.image: "downlight_glow_right.png" COMP;
+   images {
+      image: "downlight_glow_left.png" COMP;
+      image: "downlight_glow_right.png" COMP;
+      image: "panes_bg_v.png" COMP;
+   }
    parts {
-      part { name: "whole"; type: SPACER;
+      part { name: "whole";
+         type: SPACER;
          description { state: "default" 0.0;
          }
       }
-      part { name: "whole_left"; type: RECT;
+      part { name: "whole_left";
+         type: RECT;
          description { state: "default" 0.0;
             rel2.to_x: "elm.bar";
-            rel2.relative: 1.0 1.0;
          }
       }
-      part { name: "whole_right"; type: RECT;
+      part { name: "whole_right";
+         type: RECT;
          description { state: "default" 0.0;
-            rel1.to_x: "elm.bar";
-            rel1.relative: 0.0 0.0;
+            rel1 {
+               to_x: "elm.bar";
+               relative: 0.0 0.0;
+            }
          }
       }
-      part { name: "elm.swallow.left"; type: SWALLOW;
+      part { name: "elm.swallow.left";
+         type: SWALLOW;
          clip_to: "whole_left";
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel2.to_x: "elm.bar";
-            rel2.relative: 1.0 1.0;
-            rel2.offset: -6 0;
+            rel2 {
+               to_x: "elm.bar";
+               relative: 0.0 1.0;
+               offset: -1 0;
+            }
          }
       }
-      part { name: "elm.swallow.right"; type: SWALLOW;
+      part { name: "elm.swallow.right";
+         type: SWALLOW;
          clip_to: "whole_right";
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to_x: "elm.bar";
-            rel1.relative: 0.0 0.0;
-            rel1.offset: 6 0;
+            rel1 {
+               to_x: "elm.bar";
+               relative: 1.0 0.0;
+               offset: 1 0;
+            }
          }
       }
-      part { name: "elm.bar"; type: SPACER;
+      part { name: "elm.bar";
+         type: SPACER;
          dragable { confine: "whole";
-            x: 1 1 1;
+            x: 1 1 0;
             y: 0 0 0;
          }
          description { state: "default" 0.0;
-            max: 0 99999;
-            min: 0 14;
+            max: 0 -1;
+            min: 0 PANEMIN;
             fixed: 1 1;
             rel1.relative: 0.0 0.5;
             rel2.relative: 1.0 0.5;
          }
       }
-      part { name: "elm.swallow.event"; type: SWALLOW;
+      part { name: "elm.swallow.event";
+         type: SWALLOW;
          description { state: "default" 0.0;
             visible: 0;
-            min: PANEMIN PANEMIN2;
+            min: PANEMIN PANEMIN;
             fixed: 1 1;
             rel1.to: "elm.bar";
             rel2.to: "elm.bar";
          }
       }
-      part { name: "bar"; type: RECT;
+      part { name: "bar";
+         type: IMAGE;
          dragable.events: "elm.bar";
          description { state: "default" 0.0;
-            min: PANEMIN PANEWID;
-            max: 99999 99999;
+            min: PANEMIN PANEMIN;
+            max: PANEMIN -1;
             fixed: 1 1;
             rel1.to_x: "elm.swallow.event";
-            rel1.relative: 0.0 0.0;
             rel2.to_x: "elm.swallow.event";
-            rel2.relative: 1.0 1.0;
-            color: 53 55 56 255;
+            image {
+               normal: "panes_bg_v.png";
+               border: 1 1 0 0;
+            }
          }
       }
-      part { name: "glow1a"; mouse_events: 0;
+      part { name: "glow1a";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
-            image.normal: "downlight_glow_left.png";
-            image.border: 0 3 0 0;
-            max: PANEMIN 99999;
+            image {
+               normal: "downlight_glow_left.png";
+               border: 0 3 0 0;
+            }
+            max: PANEGLOW -1;
             rel2.to_x: "elm.bar";
             color: 255 255 255 0;
             align: 1.0 0.5;
@@ -89,10 +109,12 @@ group { name: "elm/panes/vertical/eflete/default";
            color: 255 255 255 255;
          }
       }
-      part { name: "glow1b"; mouse_events: 0;
+      part { name: "glow1b";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
             image.normal: "downlight_glow_right.png";
-            max: 4 99999;
+            max: PANEGLOW -1;
             rel1.to_x: "elm.bar";
             color: 255 255 255 0;
             align: 0.0 0.5;
@@ -102,10 +124,12 @@ group { name: "elm/panes/vertical/eflete/default";
            color: 255 255 255 255;
          }
       }
-      part { name: "glow2a"; mouse_events: 0;
+      part { name: "glow2a";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
             image.normal: "downlight_glow_left.png";
-            max: 4 99999;
+            max: PANEGLOW -1;
             rel2.to_x: "elm.bar";
             color: 255 255 255 0;
             align: 1.0 0.5;
@@ -115,39 +139,53 @@ group { name: "elm/panes/vertical/eflete/default";
            color: 255 255 255 255;
          }
       }
-      part { name: "glow2b"; mouse_events: 0;
+      part { name: "glow2b";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
-            image.normal: "downlight_glow_right.png";
-            image.border: 3 0 0 0;
-            max: PANEMIN 99999;
+            max: PANEGLOW -1;
             rel1.to_x: "elm.bar";
             color: 255 255 255 0;
             align: 0.0 0.5;
+            image {
+               normal: "downlight_glow_right.png";
+               border: 3 0 0 0;
+            }
          }
          description { state: "active" 0.0;
            inherit: "default" 0.0;
            color: 255 255 255 255;
          }
       }
-      part { name: "bar_1"; type: RECT; repeat_events: 1;
+      part { name: "bar_1";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1.to: "bar";
-            rel2.to: "bar";
-            rel2.relative: 0.5 1.0;
+            rel2 {
+               to: "bar";
+               relative: 0.5 1.0;
+            }
             color: 0 0 0 0;
          }
       }
-      part { name: "bar_2"; type: RECT; repeat_events: 1;
+      part { name: "bar_2";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to: "bar";
-            rel1.relative: 0.5 0.0;
+            rel1 {
+               to: "bar";
+               relative: 0.5 0.0;
+            }
             rel2.to: "bar";
             color: 0 0 0 0;
          }
       }
-     part { name: "clipper"; type: RECT; repeat_events: 1;
+     part { name: "clipper";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1.to: "bar";
@@ -218,81 +256,102 @@ group { name: "elm/panes/vertical/eflete/default";
 }
 
 group { name: "elm/panes/horizontal/eflete/default";
-   images.image: "downlight_glow.png" COMP;
-   images.image: "downlight_glow_up.png" COMP;
+   images {
+      image: "downlight_glow.png" COMP;
+      image: "downlight_glow_up.png" COMP;
+      image: "panes_bg_h.png" COMP;
+   }
    parts {
-      part { name: "whole"; type: SPACER;
+      part { name: "whole";
+         type: SPACER;
          description { state: "default" 0.0;
          }
       }
-      part { name: "whole_left"; type: RECT;
+      part { name: "whole_left";
+         type: RECT;
          description { state: "default" 0.0;
-            rel2.to_y: "elm.bar";
-            rel2.relative: 1.0 1.0;
+            rel2 {
+               to_y: "elm.bar";
+               relative: 1.0 1.0;
+            }
          }
       }
-      part { name: "whole_right"; type: RECT;
+      part { name: "whole_right";
+         type: RECT;
          description { state: "default" 0.0;
             rel1.to_y: "elm.bar";
-            rel1.relative: 0.0 0.0;
          }
       }
-      part { name: "elm.swallow.left"; type: SWALLOW;
+      part { name: "elm.swallow.left";
+         type: SWALLOW;
          clip_to: "whole_left";
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel2.to_y: "elm.bar";
-            rel2.relative: 1.0 1.0;
+            rel2 {
+               to_y: "elm.bar";
+               relative: 1.0 1.0;
+            }
          }
       }
-      part { name: "elm.swallow.right"; type: SWALLOW;
+      part { name: "elm.swallow.right";
+         type: SWALLOW;
          clip_to: "whole_right";
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to_y: "elm.bar";
-            rel1.relative: 0.0 0.0;
+            rel1 {
+               to_y: "elm.bar";
+               relative: 0.0 0.0;
+            }
          }
       }
-      part { name: "elm.bar"; type: SPACER;
+      part { name: "elm.bar";
+         type: SPACER;
          dragable { confine: "whole";
             x: 0 0 0;
-            y: 1 1 1;
+            y: 1 1 0;
          }
          description { state: "default" 0.0;
-            max: 99999 0;
-            min: 14 0;
+            max: -1 0;
+            min: PANEMIN 0;
             fixed: 1 1;
             rel1.relative: 0.5 0.0;
             rel2.relative: 0.5 1.0;
          }
       }
-      part { name: "elm.swallow.event"; type: SWALLOW;
+      part { name: "elm.swallow.event";
+         type: SWALLOW;
          description { state: "default" 0.0;
             visible: 0;
-            min: PANEMIN2 PANEMIN;
+            min: PANEMIN PANEMIN;
             fixed: 1 1;
             rel1.to: "elm.bar";
             rel2.to: "elm.bar";
          }
       }
-      part { name: "bar"; type: RECT;
+      part { name: "bar";
+         type: IMAGE;
          dragable.events: "elm.bar";
          description { state: "default" 0.0;
-            min: PANEWID PANEMIN;
-            max: 99999 99999;
+            min: PANEMIN PANEMIN;
+            max: -1 PANEMIN;
             fixed: 1 1;
             rel1.to_y: "elm.swallow.event";
-            rel1.relative: 0 0.0;
             rel2.to_y: "elm.swallow.event";
-            rel2.relative: 1.0 1.0;
-            color: 53 55 56 255;
+            image {
+               normal: "panes_bg_h.png";
+               border: 0 0 1 1;
+            }
          }
       }
-      part { name: "glow1a"; mouse_events: 0;
+      part { name: "glow1a";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
-            image.normal: "downlight_glow_up.png";
-            image.border: 0 0 0 3;
-            max: 99999 32;
+            image {
+               normal: "downlight_glow_up.png";
+               border: 0 0 0 3;
+            }
+            max: -1 PANEGLOW;
             rel2.to_y: "elm.bar";
             color: 255 255 255 0;
             align: 0.5 1.0;
@@ -305,7 +364,7 @@ group { name: "elm/panes/horizontal/eflete/default";
       part { name: "glow1b"; mouse_events: 0;
          description { state: "default" 0.0;
             image.normal: "downlight_glow.png";
-            max: 99999 4;
+            max: -1 PANEGLOW;
             rel1.to_y: "elm.bar";
             color: 255 255 255 0;
             align: 0.5 0.0;
@@ -315,10 +374,12 @@ group { name: "elm/panes/horizontal/eflete/default";
            color: 255 255 255 255;
          }
       }
-      part { name: "glow2a"; mouse_events: 0;
+      part { name: "glow2a";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
             image.normal: "downlight_glow_up.png";
-            max: 99999 4;
+            max: -1 PANEGLOW;
             rel2.to_y: "elm.bar";
             color: 255 255 255 0;
             align: 0.5 1.0;
@@ -328,11 +389,15 @@ group { name: "elm/panes/horizontal/eflete/default";
            color: 255 255 255 255;
          }
       }
-      part { name: "glow2b"; mouse_events: 0;
+      part { name: "glow2b";
+         type: IMAGE;
+         mouse_events: 0;
          description { state: "default" 0.0;
-            image.normal: "downlight_glow.png";
-            image.border: 0 0 3 0;
-            max: 99999 32;
+            image {
+               normal: "downlight_glow.png";
+               border: 0 0 3 0;
+            }
+            max: -1 PANEGLOW;
             rel1.to_y: "elm.bar";
             color: 255 255 255 0;
             align: 0.5 0.0;
@@ -342,25 +407,35 @@ group { name: "elm/panes/horizontal/eflete/default";
            color: 255 255 255 255;
          }
       }
-      part { name: "bar_1"; type: RECT; repeat_events: 1;
+      part { name: "bar_1";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1.to: "bar";
-            rel2.to: "bar";
-            rel2.relative: 1.0 0.5;
+            rel2 {
+               to: "bar";
+               relative: 1.0 0.5;
+            }
             color: 0 0 0 0;
          }
       }
-      part { name: "bar_2"; type: RECT; repeat_events: 1;
+      part { name: "bar_2";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.to: "bar";
-            rel1.relative: 0.0 0.5;
+            rel1 {
+               to: "bar";
+               relative: 0.0 0.5;
+            }
             rel2.to: "bar";
             color: 0 0 0 0;
          }
       }
-     part { name: "clipper"; type: RECT; repeat_events: 1;
+     part { name: "clipper";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1.to: "bar";
