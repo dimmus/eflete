@@ -562,7 +562,7 @@ new_style_dialog_add(App_Data *ap)
    title = eina_stringshare_printf("Add style/class for %s widget",
                                    widget->widget_name);
    popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 

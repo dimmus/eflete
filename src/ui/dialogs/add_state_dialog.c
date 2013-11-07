@@ -40,7 +40,7 @@ _ok_clicked(void *data,
    const char *str_value = elm_entry_entry_get(entry_value);
 
    value = atof(str_value);
-   if(ui_groupspace_part_state_add(groupspace, part, state_name, value))
+   if (ui_groupspace_part_state_add(groupspace, part, state_name, value))
      ui_states_list_data_set(glist, group, part);
 }
 
@@ -75,7 +75,7 @@ new_state_dialog_add(App_Data *ap)
 
 
    popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Add new state:");
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 

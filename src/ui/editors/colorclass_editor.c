@@ -171,7 +171,7 @@ _on_btn_add(void *data __UNUSED__,
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *ccl_box, *ccl_label;
    popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Add color class:");
 
    box = elm_box_add(popup);
@@ -242,7 +242,7 @@ _on_ccl_selected(void *data __UNUSED__,
    }
    Evas_Object *popup, *bt_yes, *bt_no;
    popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Apply changes?");
 
    BUTTON_ADD(popup, bt_yes, "Yes");

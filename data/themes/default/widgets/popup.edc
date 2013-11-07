@@ -3,94 +3,89 @@
 
 /*popup widget specific notify style style*/
 
-#define NOTIFY_STYLE(_NAME_) \
-group { name: "elm/notify/block_events/"_NAME_; \
-   parts { \
-      part { name: "block_events"; \
-         type: RECT; \
-         description { state: "default" 0.0; \
-            color: 0 0 0 0; \
-         } \
-         description { state: "clicked" 0.0; \
-            color: 255 0 0 50; \
-         } \
-      } \
-   } \
-   programs { \
-      program { name: "block_clicked"; \
-         signal: "mouse,clicked,*"; \
-         source: "block_events"; \
-         action: SIGNAL_EMIT "elm,action,click" "elm"; \
-         after: "deeper_block_color"; \
-      } \
-      program { \
-         name: "deeper_block_color"; \
-         action: STATE_SET "clicked" 0.0; \
-         target: "block_events"; \
-         transition: LINEAR 0.2; \
-         after: "default_block_color"; \
-      } \
-      program { \
-         name: "default_block_color"; \
-         action: STATE_SET "default" 0.0; \
-         target: "block_events"; \
-         transition: LINEAR 0.2; \
-      } \
-   } \
-} \
-group { name: "elm/notify/center/"_NAME_; \
-   images { \
-      image: "popup-bg.png" COMP; \
-   } \
-   parts { \
-      part { name: "base"; \
-         type: RECT; \
-         mouse_events: 0; \
-         repeat_events: 1; \
-         description { state: "default" 0.0; \
-            color: 0 0 0 0; \
-            rel1.relative: 0.0 0.0; \
-            rel2.relative: 1.0 1.0; \
-         } \
-      } \
-      part { name: "pop"; \
-         mouse_events: 1; \
-         description { state: "default" 0.0; \
-            image { \
-               normal: "popup-bg.png"; \
-               border: 34 34 34 34; \
-            } \
-            rel1 { \
-               to: "base"; \
-               offset: -5 -5; \
-            } \
-            rel2 { \
-               to: "base"; \
-               offset: 4 4; \
-            } \
-         } \
-      } \
-      part { name: "elm.swallow.content"; \
-         type: SWALLOW; \
-         description { state: "default" 0.0; \
-            rel1 { \
-               to: "pop"; \
-               offset: 21 21; \
-            } \
-            rel2 { \
-               to: "pop"; \
-               offset: -21 -21; \
-            } \
-         } \
-      } \
-   } \
+group { name: "elm/notify/block_events/popup/eflete";
+   parts {
+      part { name: "block_events";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "clicked" 0.0;
+            color: 255 0 0 50;
+         }
+      }
+   }
+   programs {
+      program { name: "block_clicked";
+         signal: "mouse,clicked,*";
+         source: "block_events";
+         action: SIGNAL_EMIT "elm,action,click" "elm";
+         after: "deeper_block_color";
+      }
+      program {
+         name: "deeper_block_color";
+         action: STATE_SET "clicked" 0.0;
+         target: "block_events";
+         transition: LINEAR 0.2;
+         after: "default_block_color";
+      }
+      program {
+         name: "default_block_color";
+         action: STATE_SET "default" 0.0;
+         target: "block_events";
+         transition: LINEAR 0.2;
+      }
+   }
+}
+group { name: "elm/notify/center/popup/eflete";
+   images {
+      image: "popup-bg.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: RECT;
+         mouse_events: 0;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+      part { name: "pop";
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            image {
+               normal: "popup-bg.png";
+               border: 34 34 34 34;
+            }
+            rel1 {
+               to: "base";
+               offset: -5 -5;
+            }
+            rel2 {
+               to: "base";
+               offset: 4 4;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "pop";
+               offset: 21 21;
+            }
+            rel2 {
+               to: "pop";
+               offset: -21 -21;
+            }
+         }
+      }
+   }
 }
 
-NOTIFY_STYLE("popup"); //This style is hardcoded in popup.c in elm_popup_add().
-                       //It is set regardless to popups style.
-NOTIFY_STYLE("eflete/popup"); //But in theme change hook notify gets the same style as popup itself
-
-group { name: "elm/label/base/popup/eflete/popup";
+group { name: "elm/label/base/popup/eflete";
    parts {
       part { name: "left_top_padding";
          type: SPACER;
@@ -136,7 +131,7 @@ group { name: "elm/label/base/popup/eflete/popup";
    }
 }
 
-group { name: "elm/popup/base/eflete/popup";
+group { name: "elm/popup/base/eflete";
    images{
          image:"popup-header-bg.png" COMP;
          image:"separator-horizontal.png" COMP;
@@ -430,7 +425,7 @@ group { name: "elm/popup/base/eflete/popup";
    } /* end of programs */
 }
 
-group { name: "elm/popup/content/eflete/popup";
+group { name: "elm/popup/content/popup/eflete";
    parts{
       part { name: "pad_t";
          type: SPACER;
@@ -504,7 +499,7 @@ group { name: "elm/popup/content/eflete/popup";
    }
 }
 
-group { name: "elm/popup/item/eflete/popup";
+group { name: "elm/popup/item/popup/eflete";
    script {
       public item_state = POPUP_ITEM_STATE_ENABLED;
    }
@@ -780,7 +775,7 @@ group { name: "elm/popup/item/eflete/popup";
                set_state(PART:"elm.swallow.content", "visible", 0.0);
                set_state(PART:"padding_icon_text", "visible", 0.0);
             }
-            if(get_int(item_state) != POPUP_ITEM_STATE_DISABLED)
+            if (get_int(item_state) != POPUP_ITEM_STATE_DISABLED)
               set_state(PART:"elm.text", "visible", 0.0);
             else
               set_state(PART:"elm.text", "disabled_visible", 0.0);
@@ -826,10 +821,10 @@ group { name: "elm/popup/item/eflete/popup";
    }
 }
 
-group { name: "elm/popup/buttons1/eflete/popup";
+group { name: "elm/popup/buttons1/popup/eflete";
    data.item: "action_area_height" "140";
    parts{
-      part{ name:"actionbtn1";
+      part{ name:"elm.swallow.content.button1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -843,10 +838,10 @@ group { name: "elm/popup/buttons1/eflete/popup";
    }
 }
 
-group { name: "elm/popup/buttons2/eflete/popup";
+group { name: "elm/popup/buttons2/popup/eflete";
    data.item: "action_area_height" "140";
    parts{
-      part{ name:"actionbtn1";
+      part{ name:"elm.swallow.content.button1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -872,7 +867,7 @@ group { name: "elm/popup/buttons2/eflete/popup";
             rel2.relative: 0.5 1.0;
          }
       }
-      part{ name:"actionbtn2";
+      part{ name:"elm.swallow.content.button2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -890,10 +885,10 @@ group { name: "elm/popup/buttons2/eflete/popup";
    }
 }
 
-group { name: "elm/popup/buttons3/eflete/popup";
+group { name: "elm/popup/buttons3/popup/eflete";
    data.item: "action_area_height" "140";
    parts{
-      part{ name:"actionbtn1";
+      part{ name:"elm.swallow.content.button1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -915,14 +910,14 @@ group { name: "elm/popup/buttons3/eflete/popup";
             min: 6 30;
             max: 6 30;
             fixed: 1 1;
-            rel1.to: "actionbtn2";
+            rel1.to: "elm.swallow.content.button2";
             rel2 {
                relative: 0.0 1.0;
-               to: "actionbtn2";
+               to: "elm.swallow.content.button2";
             }
          }
       }
-      part{ name:"actionbtn2";
+      part{ name:"elm.swallow.content.button2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -942,12 +937,12 @@ group { name: "elm/popup/buttons3/eflete/popup";
             fixed: 1 1;
             rel1 {
                relative: 1.0 0.0;
-               to: "actionbtn2";
+               to: "elm.swallow.content.button2";
             }
-            rel2.to: "actionbtn2";
+            rel2.to: "elm.swallow.content.button2";
          }
       }
-      part{ name:"actionbtn3";
+      part{ name:"elm.swallow.content.button3";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
