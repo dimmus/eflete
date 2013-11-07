@@ -301,14 +301,15 @@ new_theme_create(App_Data *ap)
      {
         if (ap->ws->groupspace)
           {
-             Evas_Object *prop;
+             Evas_Object *prop, *state, *signal;
              ui_groupspace_unset(ap->ws->groupspace);
              ui_object_highlight_del(ap->ws);
-             elm_genlist_clear(ui_block_state_list_get(ap));
-             elm_genlist_clear(ui_block_signal_list_get(ap));
+             state = ui_block_state_list_get(ap);
+             if (state) elm_genlist_clear(state);
+             signal = ui_block_signal_list_get(ap);
+             if (signal) elm_genlist_clear(signal);
              prop = ui_block_property_get(ap);
-             if (prop)
-               ui_property_group_unset(prop);
+             if (prop) ui_property_group_unset(prop);
              if ((ap->demo) || (ap->project))
                ui_demospace_unset(ap->demo, ap->project);
              ui_menu_disable_set(ap, "Programs", EINA_TRUE);

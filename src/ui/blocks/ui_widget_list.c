@@ -202,12 +202,12 @@ _part_added(void *data,
 }
 
 static void
-_on_part_select(void *data __UNUSED__,
-                Evas_Object *obj,
+_on_part_select(void *data,
+                Evas_Object *obj __UNUSED__,
                 void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Evas_Object *nf = elm_object_parent_widget_get(elm_object_parent_widget_get(obj));
+   Evas_Object *nf = (Evas_Object *)data;
    Part *_part = elm_object_item_data_get(glit);
 
    evas_object_smart_callback_call (nf, "wl,part,select", _part);
@@ -378,10 +378,8 @@ _on_group_clicked_double(void *data,
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
-   //nf = elm_object_parent_widget_get(elm_object_parent_widget_get(obj));
    nf = evas_object_data_get(obj, "naviframe");
    _group = elm_object_item_data_get(glit);
-
    if (_group->__type != GROUP) return;
    parts = _group->parts;
 
@@ -416,7 +414,7 @@ _on_group_clicked_double(void *data,
                                       NULL, NULL);
         elm_object_item_data_set(eoi, _part);
      }
-   evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, NULL);
+   evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, nf);
 
    ic = elm_icon_add(nf);
    elm_icon_standard_set(ic, "arrow_left");
@@ -495,7 +493,6 @@ _on_widget_clicked_double(void *data,
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
-   //nf = elm_object_parent_widget_get(obj);
    nf = evas_object_data_get(obj, "naviframe");
    _widget = elm_object_item_data_get(glit);
    styles = _widget->styles;
