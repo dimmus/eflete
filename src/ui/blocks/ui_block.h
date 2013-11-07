@@ -145,9 +145,11 @@ ui_block_demo_view_get(App_Data *ap);
  * @param ap the application data
  * @param content the content object
  *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_widget_list_set(App_Data *ap, Evas_Object *content);
 
 /**
@@ -156,9 +158,11 @@ ui_block_widget_list_set(App_Data *ap, Evas_Object *content);
  * @param ap the application data
  * @param content the content object
  *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_signal_list_set(App_Data *ap, Evas_Object *content);
 
 /**
@@ -167,9 +171,11 @@ ui_block_signal_list_set(App_Data *ap, Evas_Object *content);
  * @param ap the application data
  * @param content the content object
  *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_state_list_set(App_Data *ap, Evas_Object *content);
 
 /**
@@ -178,9 +184,11 @@ ui_block_state_list_set(App_Data *ap, Evas_Object *content);
  * @param ap the application data
  * @param content the content object
  *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_property_set(App_Data *ap, Evas_Object *content);
 
 /**
@@ -189,9 +197,11 @@ ui_block_property_set(App_Data *ap, Evas_Object *content);
  * @param ap the application data
  * @param content the content object
  *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_graph_vision_set(App_Data *ap, Evas_Object *content);
 
 /**
@@ -200,9 +210,11 @@ ui_block_graph_vision_set(App_Data *ap, Evas_Object *content);
  * @param ap the application data
  * @param content the content object
  *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_demo_view_set(App_Data *ap, Evas_Object *content);
 
 #endif /* UI_BLOCK_HEADER_H */
