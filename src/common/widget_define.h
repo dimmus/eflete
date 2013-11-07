@@ -126,22 +126,18 @@
    elm_hoversel_horizontal_set(hoversel, isHorizontal); \
    evas_object_show(hoversel);
 
-#define OPEN_DIALOG_ADD(inwin, box, fs, dialogTitle) \
-   box = elm_box_add(inwin); \
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   elm_win_inwin_content_set(inwin, box); \
-   evas_object_show(box); \
+#define OPEN_DIALOG_ADD(inwin, fs, dialogTitle) \
    mw_title_set(inwin, dialogTitle); \
    evas_object_focus_set(inwin, EINA_TRUE); \
-   fs = elm_fileselector_add(box); \
+   fs = elm_fileselector_add(inwin); \
    evas_object_data_set(fs, FS_INWIN, inwin); \
-   elm_box_pack_end(box, fs); \
    evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_fileselector_path_set(fs, getenv("HOME")); \
    elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE); \
    elm_fileselector_expandable_set(fs, EINA_FALSE); \
    elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST); \
+   elm_win_inwin_content_set(inwin, fs); \
    evas_object_show(fs);
 
 

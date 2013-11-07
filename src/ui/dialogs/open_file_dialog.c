@@ -115,14 +115,14 @@ _on_mw_fileselector_close(void *data,
 Eina_Bool
 open_edj_file(App_Data *ap)
 {
-   Evas_Object *fs, *box;
+   Evas_Object *fs;
 
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
    if (!ap->inwin)
      ap->inwin = mw_add(ap->win);
 
-   OPEN_DIALOG_ADD(ap->inwin, box, fs, "Open EDJ file dialog");
+   OPEN_DIALOG_ADD(ap->inwin, fs, "Open EDJ file dialog");
 
    evas_object_event_callback_add(ap->inwin, EVAS_CALLBACK_FREE,
                                   _on_mw_fileselector_close, ap);
@@ -254,7 +254,7 @@ _edc_select(void *data __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
-   Evas_Object *fs, *box;
+   Evas_Object *fs;
    const char *path = elm_object_text_get(fs_ent->edc);
 
    if (!ecore_file_exists(path))
@@ -263,7 +263,7 @@ _edc_select(void *data __UNUSED__,
    if (!fs_ent->parent) return;
 
    Evas_Object *inwin = mw_add(fs_ent->parent);
-   OPEN_DIALOG_ADD(inwin, box, fs, evas_object_data_get(fs_ent->edc, FS_TITLE));
+   OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(fs_ent->edc, FS_TITLE));
    elm_fileselector_selected_set(fs, path);
    evas_object_smart_callback_add(fs, "done", _on_edc_done, inwin);
    /* evas_object_smart_callback_add(fs, "activated", _on_edc_done, inwin); */
@@ -290,7 +290,7 @@ _path_select(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *fs, *box;
+   Evas_Object *fs;
    Evas_Object *entry = (Evas_Object *)data;
    const char *path = elm_object_text_get(entry);
 
@@ -300,7 +300,7 @@ _path_select(void *data,
    if (!fs_ent->parent) return;
 
    Evas_Object *inwin = mw_add(fs_ent->parent);
-   OPEN_DIALOG_ADD(inwin, box, fs, evas_object_data_get(entry, FS_TITLE));
+   OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
    elm_fileselector_path_set(fs, path);
    elm_fileselector_folder_only_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", _on_path_done, entry);

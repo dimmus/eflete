@@ -139,11 +139,11 @@ _on_button_add_clicked_cb(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
 {
-   Evas_Object *fs, *inwin, *box;
+   Evas_Object *fs, *inwin;
 
    inwin = mw_add(data);
 
-   OPEN_DIALOG_ADD(inwin, box, fs, "Add image to library");
+   OPEN_DIALOG_ADD(inwin, fs, "Add image to library");
 
    evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
                                   _on_mw_fileselector_close, NULL);
