@@ -63,7 +63,7 @@ ui_main_window_add(App_Data *ap);
  * @ingroup Window
  */
 void
-ui_main_window_del(void);
+ui_main_window_del(App_Data *ap);
 
 /**
  * Adds marked panes to the given Elementary layout.
@@ -97,11 +97,12 @@ ui_panes_settings_save();
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
  * @param ap The App_Data structure pointer.
- * @returnEINA_TRUE if menu created normal, EINA_FALSE on failrue.
+ *
+ * @return menu Evas_Object if successful, or NULL elthewhere.
  *
  * @ingroup Window
  */
-Eina_Bool
+Evas_Object *
 ui_menu_add(App_Data *ap);
 
 /**

@@ -195,7 +195,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 
              ui_menu_disable_set(ap, "Save", EINA_FALSE);
              ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-             ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
+             ui_menu_disable_set(ap, "Save to edc", EINA_FALSE);
              ui_menu_disable_set(ap, "View", EINA_FALSE);
              ui_menu_disable_set(ap, "Editors", EINA_FALSE);
           }
@@ -329,7 +329,7 @@ new_theme_create(App_Data *ap)
 
         ui_menu_disable_set(ap, "Save", EINA_FALSE);
         ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as EDC", EINA_TRUE);
+        ui_menu_disable_set(ap, "Save to edc", EINA_TRUE);
         ui_menu_disable_set(ap, "View", EINA_FALSE);
         ui_menu_disable_set(ap, "Editors", EINA_FALSE);
      }
@@ -510,40 +510,21 @@ ui_part_state_delete(App_Data *ap)
   return EINA_TRUE;
 }
 
-/**
- * FIXME? I hope I will search faster next time, when someone will refactor me.
- */
 void
 ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag)
 {
-   const Eina_List *menu_list, *l;
    Elm_Object_Item *item = NULL;
-   Elm_Object_Item *menu_item = NULL;
 
-   if ((!ap) || (!name))
+   if ((!ap) || (!name) || (!ap->main_menu))
      {
         ERR("App_Data or given name is NULL");
         return;
      }
-
-   menu_item = elm_toolbar_first_item_get(ap->main_menu);
-   while(menu_item)
+   item = eina_hash_find(ap->menu_hash, name);
+   if (!item)
      {
-        if (strcmp(elm_object_item_part_text_get(menu_item, NULL), name) == 0)
-          {
-             elm_object_item_disabled_set(menu_item, flag);
-             return;
-          }
-
-        menu_list = elm_menu_items_get(elm_toolbar_item_menu_get(menu_item));
-        EINA_LIST_FOREACH(menu_list, l, item)
-          {
-             if (strcmp(elm_object_item_part_text_get(item, NULL), name) == 0)
-               {
-                  elm_object_item_disabled_set(item, flag);
-                  return;
-               }
-          }
-        menu_item = elm_toolbar_item_next_get(menu_item);
+        WARN("Coud'nt find menu item [%s] in hash", name);
+        return;
      }
+   elm_object_item_disabled_set(item, flag);
 }
