@@ -138,7 +138,7 @@ _on_tag_add_bt_ok(void *data,
         NOTIFY_WARNING("Tag value must begin from + or alphabetic symbol");
         return;
     }
-   if(!style_edit_style_tag_add(window.pr, style_name, tag_name, tag_value))
+   if (!style_edit_style_tag_add(window.pr, style_name, tag_name, tag_value))
      {
         NOTIFY_WARNING("Tag name must be unique!");
         return;
@@ -164,7 +164,7 @@ _on_bt_style_add(void *data __UNUSED__,
    static Elm_Entry_Filter_Accept_Set accept_name;
 
    popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Add textblock style");
 
    box = elm_box_add(popup);
@@ -247,7 +247,7 @@ _on_bt_tag_add(void *data __UNUSED__,
      }
 
    popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Add tag to style");
 
    box = elm_box_add(popup);

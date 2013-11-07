@@ -160,7 +160,7 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    Evas_Object *popup, *bt_no;
 
    popup = elm_popup_add(parent);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Add new part:");
 
    BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);

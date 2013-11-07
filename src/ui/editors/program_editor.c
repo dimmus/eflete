@@ -1210,7 +1210,7 @@ _on_bt_prog_add(void *data __UNUSED__,
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *prog_box, *prog_label;
    popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete/popup");
+   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", "Add new program:");
 
    box = elm_box_add(popup);
