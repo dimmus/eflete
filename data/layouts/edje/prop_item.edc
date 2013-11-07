@@ -53,77 +53,22 @@ group {
          description {
             state: "default" 0.0;
             min: 50 25;
-            max: 75 24;
-            align: 0.0 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
             rel1 {
                to: "padding_left_top";
                relative: 1.0 1.0;
             }
             rel2 {
-               to: "padding_right_bottom";
-               relative: 0.0 0.0;
+               to_y: "padding_right_bottom";
+               relative: 0.3 0.0;
             }
             text {
                style: "prop_item_label";
-               min: 0 1;
-               max: 0 0;
                ellipsis: 1.0;
             }
          }
       }
-      part {
-         name: "padding_before_separator";
-         type: SPACER;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 5 5;
-            max: 5 5;
-            align: 0.0 1.0;
-            rel1 {
-               to: "elm.text";
-               relative: 1.0 1.0;
-            }
-         }
-      }
-      part {
-         name: "separator";
-         type: IMAGE;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 2 16;
-            max: 2 9999;
-            align: 0.0 0.0;
-            image.normal: "separator-vertical.png";
-            rel1 {
-               to_x: "padding_before_separator";
-               to_y: "elm.text";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to: "padding_right_bottom";
-               relative: 0.0 0.0;
-            }
-         }
-      }
-      part {
-         name: "padding_after_separator";
-         type: SPACER;
-         scale: 1;
-         description {
-            state: "default" 0.0;
-            min: 5 5;
-            max: 5 5;
-            align: 0.0 0.0;
-            rel1 {
-               to_x: "separator";
-               relative: 1.0 0.0;
-            }
-         }
-      }
-
       part {
          name: "elm.swallow.content";
          type: SWALLOW;
@@ -131,9 +76,10 @@ group {
          description {
             state: "default" 0.0;
             min: 1 1;
-            //max: 200 9999;
+            fixed: 1 1;
             rel1 {
-               to: "padding_after_separator";
+               to_x: "elm.text";
+               to_y: "padding_left_top";
                relative: 1.0 1.0;
             }
             rel2 {

@@ -142,18 +142,13 @@ ui_group_clicked(App_Data *ap, Group *group)
 
    /* group properties */
    prop = ui_block_property_get(ap);
-   if (prop)
-     {
-        ui_property_group_set(prop, group);
-        evas_object_show(prop);
-     }
-   else
+   if (!prop)
      {
         prop = ui_property_add(ap->win);
-        ui_property_group_set(prop, group);
         ui_block_property_set(ap, prop);
-        evas_object_show(prop);
      }
+   ui_property_group_set(prop, group);
+   evas_object_show(prop);
 
    ui_groupspace_set(ap->ws, ap->project, group);
    ui_groupspace_update(ap->ws->groupspace);
