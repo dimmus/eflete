@@ -4,7 +4,6 @@ collections {
    #include "widgets/panes.edc"
    #include "widgets/frame.edc"
    #include "widgets/scroller.edc"
-   #include "widgets/block.edc"
    #include "widgets/inwin.edc"
    #include "widgets/naviframe.edc"
    #include "widgets/genlist.edc"

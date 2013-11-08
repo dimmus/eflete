@@ -1,4 +1,5 @@
 collections {
+   #include "edje/block.edc"
    #include "edje/workspace.edc"
    #include "edje/demospace.edc"
    #include "edje/ruler.edc"

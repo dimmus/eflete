@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "settings.h"
@@ -406,6 +406,7 @@ ui_panes_add(App_Data *ap)
 
    panel = elm_box_add(block);
    elm_box_horizontal_set(panel, EINA_TRUE);
+   elm_box_align_set(panel, 1.0, 1.0);
    button = elm_button_add (panel);
    icon = elm_icon_add (button);
    elm_icon_standard_set(icon, "apps");
@@ -425,7 +426,7 @@ ui_panes_add(App_Data *ap)
    evas_object_show(button);
    elm_box_pack_end(panel, button);
    evas_object_show(panel);
-   elm_object_part_content_set(block, "elm_block_subpanel", panel);
+   elm_object_part_content_set(block, "elm.swallow.title", panel);
    elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(block);
    ap->block.bottom_left = block;
