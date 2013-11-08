@@ -1152,7 +1152,6 @@ group { name: "elm/genlist/base/eflete/default";
    images {
       image: "scroll-indicator.png" COMP;
       image: "scroll-area-dark.png" COMP;
-      image: "count.png" COMP;
       image: "section-item-bg.png" COMP;
 
    }
@@ -1184,7 +1183,7 @@ group { name: "elm/genlist/base/eflete/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 0;
-            min: 15 15;
+            min: 8 8;
             align: 1.0 0.0;
             rel1 {
                relative: 1.0 0.0;
@@ -1198,7 +1197,7 @@ group { name: "elm/genlist/base/eflete/default";
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
             min: 0 0;
-            max: 0 99999;
+            max: 0 -1;
          }
       }
       part { name: "sb_vbar_base";
@@ -1253,7 +1252,7 @@ group { name: "elm/genlist/base/eflete/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 15 15;
+            min: 8 8;
             rel1 {
                relative: 0.5  0.5;
                to: "sb_vbar_base";
@@ -1320,7 +1319,7 @@ group { name: "elm/genlist/base/eflete/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 0 1;
-            min: 15 15;
+            min: 8 8;
             align: 0.0 1.0;
             rel1 {
                relative: 0.0 1.0;
@@ -1334,7 +1333,7 @@ group { name: "elm/genlist/base/eflete/default";
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
             min: 0 0;
-            max: 99999 0;
+            max: -1 0;
          }
       }
       part { name: "sb_hbar_base";
@@ -1388,7 +1387,7 @@ group { name: "elm/genlist/base/eflete/default";
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
-            min: 15 15;
+            min: 8 8;
             color: 0 0 0 0;
             rel1 {
                relative: 0.5  0.5;
@@ -1497,11 +1496,11 @@ group { name: "elm/genlist/base/eflete/default";
             fixed: 1 1;
             image {
                normal: "scroll-area-dark.png";
-               border: 0 0 4 4;
+               border: 2 2 2 2;
             }
             fill.smooth: 0;
-            min: 3 4;
-            max: 15 99999;
+            min: 8 8;
+            max: 8 -1;
             rel1.to: "sb_vbar_base";
             rel2.to: "sb_vbar_base";
         }
@@ -1513,11 +1512,11 @@ group { name: "elm/genlist/base/eflete/default";
             fixed: 1 1;
             image {
                normal: "scroll-area-dark.png";
-               border: 4 4 0 0;
+               border: 2 2 2 2;
             }
             fill.smooth: 0;
-            min: 4 3;
-            max: 99999 15;
+            min: 8 8;
+            max: -1 8;
             rel1.to: "sb_hbar_base";
             rel2.to: "sb_hbar_base";
         }
@@ -1526,14 +1525,13 @@ group { name: "elm/genlist/base/eflete/default";
          mouse_events: 0;
          clip_to: "sb_vbar_show";
          description { state: "default" 0.0;
-            fixed: 1 1;
-            min: 6 15;
+            fixed: 1 0;
+            min: 7 7;
             image {
                normal: "scroll-indicator.png";
-               border: 2 2 3 3;
+               border: 2 2 2 2;
             }
             fill.smooth: 0;
-            TILED_HORIZ(120)
             rel1 {
                offset: 2 0;
                to: "elm.dragable.vbar";
@@ -1544,45 +1542,17 @@ group { name: "elm/genlist/base/eflete/default";
             }
          }
       }
-      part { name: "shadow_vbar";
-         mouse_events: 0;
-         clip_to: "sb_vbar_show";
-         description { state: "default" 0.0;
-            image {
-               normal: "count.png";
-               border: 4 4 4 4;
-            }
-            fill.smooth: 0;
-            visible: 0;
-            rel1 {
-               offset: -3 -2;
-               to: "base_vbar";
-            }
-            rel2 {
-               offset: 2 4;
-               to: "base_vbar";
-            }
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            rel1.offset: -1 -2;
-            rel2.offset: 0 0;
-            color: 55 255 255 255;
-            visible: 1;
-         }
-      }
       part { name: "base_hbar";
          mouse_events: 0;
          clip_to: "sb_hbar_show";
          description { state: "default" 0.0;
-            fixed: 1 1;
+            fixed: 0 1;
             image {
                normal: "scroll-indicator.png";
-               border: 2 2 3 3;
+               border: 2 2 2 2;
             }
             fill.smooth: 0;
-            min: 13 3;
-            TILED_HORIZ(120)
+            min: 7 7;
             rel1 {
                offset: 0 2;
                to: "elm.dragable.hbar";
@@ -1593,58 +1563,27 @@ group { name: "elm/genlist/base/eflete/default";
             }
          }
       }
-      part { name: "shadow_hbar";
-         mouse_events: 0;
-         clip_to: "sb_hbar_show";
-         description { state: "default" 0.0;
-            visible: 0;
-            image {
-               normal: "count.png";
-               border: 4 4 4 4;
-            }
-            fill.smooth: 0;
-            visible: 0;
-            rel1 {
-               offset: -3 -2;
-               to: "base_hbar";
-            }
-            rel2 {
-               offset: 2 4;
-               to: "base_hbar";
-            }
-         }
-         description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
-            rel1.offset: -2 -1;
-            rel2.offset: 0 0;
-            color: 55 255 255 255;
-         }
-      }
    }
    programs {
       program {
          signal: "mouse,down,1*"; source: "elm.dragable.vbar";
          action: STATE_SET "clicked" 0.0;
          target: "elm.dragable.vbar";
-         target: "shadow_vbar";
       }
       program {
          signal: "mouse,up,1"; source: "elm.dragable.vbar";
          action: STATE_SET "default" 0.0;
          target: "elm.dragable.vbar";
-         target: "shadow_vbar";
       }
       program {
          signal: "mouse,down,1*"; source: "elm.dragable.hbar";
          action: STATE_SET "clicked" 0.0;
          target: "elm.dragable.hbar";
-         target: "shadow_hbar";
       }
       program {
          signal: "mouse,up,1"; source: "elm.dragable.hbar";
          action: STATE_SET "default" 0.0;
          target: "elm.dragable.hbar";
-         target: "shadow_hbar";
       }
    }
 }

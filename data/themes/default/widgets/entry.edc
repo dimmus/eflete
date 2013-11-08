@@ -833,45 +833,6 @@ group { name: "elm/scroller/entry_single/eflete/default";
             }
          }
       }
-      part { name: "shadow_vbar";
-         type: IMAGE;
-         mouse_events: 0;
-         clip_to: "sb_vbar_show";
-         description { state: "default" 0;
-            visible: 0;
-            rel1 {
-               offset: -3 -2;
-               to: "base_vbar";
-            }
-            rel2 {
-               offset: 2 4;
-               to: "base_vbar";
-            }
-            image {
-               normal: "count.png";
-               border: 4 4 4 4;
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-         description { state: "clicked" 0;
-            color: 55 255 255 255;
-            rel1 {
-               offset: -1 -2;
-               to: "base_vbar";
-            }
-            rel2 {
-               offset: 0 0;
-               to: "base_vbar";
-            }
-            image {
-               normal: "count.png";
-               border: 4 4 4 4;
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-      }
       part { name: "base_hbar";
          type: IMAGE;
          mouse_events: 0;
@@ -898,46 +859,6 @@ group { name: "elm/scroller/entry_single/eflete/default";
                   offset: 120 0;
                }
             }
-         }
-      }
-      part { name: "shadow_hbar";
-         type: IMAGE;
-         mouse_events: 0;
-         clip_to: "sb_hbar_show";
-         description { state: "default" 0;
-            visible: 0;
-            rel1 {
-               offset: -3 -2;
-               to: "base_hbar";
-            }
-            rel2 {
-               offset: 2 4;
-               to: "base_hbar";
-            }
-            image {
-               normal: "count.png";
-               border: 4 4 4 4;
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
-         }
-         description { state: "clicked" 0;
-            visible: 0;
-            color: 55 255 255 255;
-            rel1 {
-               offset: -2 -1;
-               to: "base_hbar";
-            }
-            rel2 {
-               offset: 0 0;
-               to: "base_hbar";
-            }
-            image {
-               normal: "count.png";
-               border: 4 4 4 4;
-               middle: DEFAULT;
-            }
-            fill.smooth: 0;
          }
       }
       part { name: "elm.swallow.icon";

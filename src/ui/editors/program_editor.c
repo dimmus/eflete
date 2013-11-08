@@ -1299,8 +1299,6 @@ program_editor_window_add(Evas_Object *parent, Group *group)
 
    SCROLLER_ADD(window.mwin, scroller);
    prog_prop = prop_progs_add(scroller);
-   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO);
    elm_object_content_set(scroller, prog_prop);
    elm_object_part_content_set(pans, "right", scroller);
 
