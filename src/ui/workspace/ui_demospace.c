@@ -133,7 +133,7 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
                {
                   for (i = 0; i < ELEMENTS_COUNT; i++)
                     {
-                       bt = elm_button_add(parent);
+                       bt = elm_button_add(tb);
                        elm_object_text_set(bt, "Both");
                        elm_table_pack(tb, bt, i, j, 1, 1);
                        evas_object_show(bt);
@@ -204,22 +204,32 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
 {
    if (group)
      {
+        Evas_Object *demo_edit_obj;
+        Eina_Stringshare *path = eina_stringshare_add(TET_SETT_PATH"cache/");
+        Eina_Stringshare *file_path = eina_stringshare_add(TET_SETT_PATH"cache/demo.edj");
+
         /* FIXME: that is really terrible decision :C */
         char **c = eina_str_split(group->full_group_name, "/", 4);
         const char *widget = c[1], *type = c[2], *style = c[3];
 
-        Evas_Object *object = _elm_widget_create(widget, type, demo->groupspace);
-        if (!object)
+        if (!demo->object)
+          {
+             demo->object = _elm_widget_create(widget, type, demo->groupspace);
+             elm_object_part_content_set(demo->groupspace, "groupspace", demo->object);
+             evas_object_show(demo->groupspace);
+          }
+        else
+          {
+             elm_theme_extension_del(NULL, file_path);
+          }
+
+        if (!demo->object)
           {
              NOTIFY_INFO(3, "Widget isn't implemented yet or isn't exist");
              return;
           }
 
-        Evas_Object *demo_edit_obj;
-
         demo_edit_obj = edje_edit_object_add(demo->canvas);
-        Eina_Stringshare *path = eina_stringshare_add(TET_SETT_PATH"cache/");
-        Eina_Stringshare *file_path = eina_stringshare_add(TET_SETT_PATH"cache/demo.edj");
         if (!ecore_file_exists(path))
           {
              if (!ecore_file_mkdir(path))
@@ -232,7 +242,10 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
         ecore_file_cp(project->swapfile, file_path);
         if (!edje_object_file_set(demo_edit_obj, file_path,
                                   group->full_group_name))
-          return;
+          {
+             ERR("Could'nt set edje edit file");
+             return;
+          }
 
         char *demo_group_name = mem_malloc((strlen(group->full_group_name) + 6)
                                            * sizeof(char));
@@ -246,15 +259,13 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
         edje_edit_save_all(demo_edit_obj);
 
         elm_theme_extension_add(NULL, file_path);
-        elm_object_style_set(object, demo_style_name);
-        elm_object_part_content_set(demo->groupspace, "groupspace", object);
-        demo->object = object;
+        elm_object_style_set(demo->object, demo_style_name);
         elm_object_scale_set(demo->object, demo->current_scale);
-        evas_object_show(object);
-        evas_object_show(demo->groupspace);
+        evas_object_show(demo->object);
 
         eina_stringshare_del(path);
         eina_stringshare_del(file_path);
+
         free(demo_group_name);
         free(demo_style_name);
         free(c[0]);
@@ -280,6 +291,7 @@ ui_demospace_unset(Demospace *demo, Project *project)
    elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
    elm_object_part_content_unset(demo->groupspace, "groupspace");
    evas_object_del(demo->object);
+   demo->object = NULL;
    eina_stringshare_del(file_path);
 }
 
