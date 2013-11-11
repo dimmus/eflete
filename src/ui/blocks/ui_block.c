@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "ui_block.h"
@@ -23,7 +23,7 @@ static Eina_Bool
 ui_block_content_set(Evas_Object *block, Evas_Object *content)
 {
    if ((!block) || (!content)) return EINA_FALSE;
-   elm_object_part_content_set(block, "elm.block.swallow", content);
+   elm_object_part_content_set(block, "elm.swallow.content", content);
    return EINA_TRUE;
 
 }
@@ -32,7 +32,7 @@ static Evas_Object *
 ui_block_content_get(Evas_Object *block)
 {
    if (!block) return NULL;
-   return elm_object_part_content_get(block, "elm.block.swallow");
+   return elm_object_part_content_get(block, "elm.swallow.content");
 }
 
 Evas_Object *
@@ -46,7 +46,7 @@ ui_block_add(Evas_Object *parent)
         return NULL;
      }
    block = elm_layout_add(parent);
-   elm_layout_file_set(block, TET_THEME, "tet/block/layout");
+   elm_layout_file_set(block, TET_EDJ, "eflete/block/layout");
 
    return block;
 }
@@ -59,8 +59,8 @@ ui_block_title_visible(Evas_Object *block, Eina_Bool vis)
         ERR("Could not show/hide a title, because a block is NULL.");
         return;
      }
-   if (vis) elm_object_signal_emit(block, "title,show", "");
-   else elm_object_signal_emit(block, "title,hide", "");
+   if (vis) elm_object_signal_emit(block, "title,show", "eflete");
+   else elm_object_signal_emit(block, "title,hide", "eflete");
 }
 
 void
@@ -71,7 +71,7 @@ ui_block_title_text_set(Evas_Object *block, const char *title)
         ERR("Could not set title text, because a block is NULL.");
         return;
      }
-   elm_object_part_text_set(block, "text.header", title);
+   elm_object_part_text_set(block, "elm.text.title", title);
    ui_block_title_visible(block, EINA_TRUE);
 }
 
@@ -84,7 +84,7 @@ ui_block_title_text_get(Evas_Object *block)
         return NULL;
      }
 
-   return elm_object_part_text_get(block, "text.header");
+   return elm_object_part_text_get(block, "elm.text.title");
 }
 
 Evas_Object *
