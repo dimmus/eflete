@@ -55,6 +55,7 @@ group {
       part { name: "elm.swallow.title";
          type: SWALLOW;
          description { state: "default" 0.0;
+            fixed: 1 1;
             rel1 {
                to: "elm.text.title";
                relative: 1.0 0.0;

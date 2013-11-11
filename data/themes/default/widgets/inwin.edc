@@ -10,7 +10,7 @@ group { name: "elm/win/inwin/eflete/default";
             color: 255 0 0 0;
          }
          description { state: "clicked" 0.0;
-            inherit: "default" 1.0;
+            inherit: "default" 0.0;
             color: 255 0 0 50;
          }
       }
