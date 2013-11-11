@@ -3,7 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/themes
-EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/themes
+EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/themes/default/fonts
 EDJE_FLAGS_TEMPLATE = -id $(top_srcdir)/data/template/images -fd $(top_srcdir)/data/themes
 
 
