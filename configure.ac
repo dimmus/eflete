@@ -1,6 +1,6 @@
 m4_define([v_maj], [0])
-m4_define([v_min], [1])
-m4_define([v_mic], [8])
+m4_define([v_min], [0])
+m4_define([v_mic], [28])
 m4_define([p_name], "EFL\ Edje\ Theme\ Editor")
 m4_define([project_version], [v_maj.v_min.v_mic])
 
@@ -22,35 +22,35 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([_EINA], [eina], [have_eina="yes"], [have_eina="no"])
 if test "x${have_eina}" = "xyes"; then
-   PKG_CHECK_MODULES([EINA], [eina >= 1.7.8], [have_ver_eina=""], [have_ver_eina=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([EINA], [eina >= 1.8.0], [have_ver_eina=""], [have_ver_eina=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_ELEMENTARY], [elementary], [have_elementary="yes"], [have_elementary="no"])
 if test "x${have_elementary}" = "xyes"; then
-   PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.7.8], [have_ver_elementary=""], [have_ver_elementary=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.8.0], [have_ver_elementary=""], [have_ver_elementary=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_EET], [eet], [have_eet="yes"], [have_eet="no"])
 if test "x${have_eet}" = "xyes"; then
-   PKG_CHECK_MODULES([EET], [eet >= 1.7.8], [have_ver_eet=""], [have_ver_eet=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([EET], [eet >= 1.8.0], [have_ver_eet=""], [have_ver_eet=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_EVAS], [evas], [have_evas="yes"], [have_evas="no"])
 if test "x${have_evas}" = "xyes"; then
-   PKG_CHECK_MODULES([EVAS], [evas >= 1.7.8], [have_ver_evas=""], [have_ver_evas=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([EVAS], [evas >= 1.8.0], [have_ver_evas=""], [have_ver_evas=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_ECORE], [ecore], [have_ecore="yes"], [have_ecore="no"])
 if test "x${have_ecore}" = "xyes"; then
-   PKG_CHECK_MODULES([ECORE], [ecore >= 1.7.8], [have_ver_ecore=""], [have_ver_ecore=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([ECORE], [ecore >= 1.8.0], [have_ver_ecore=""], [have_ver_ecore=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_EIO], [eio], [have_eio="yes"], [have_eio="no"])
 if test "x${have_eio}" = "xyes"; then
-   PKG_CHECK_MODULES([EIO], [eio >= 1.7.8], [have_ver_eio=""], [have_ver_eio=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([EIO], [eio >= 1.8.0], [have_ver_eio=""], [have_ver_eio=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_EDJE], [edje], [have_edje="yes"], [have_edje="no"])
 if test "x${have_edje}" = "xyes"; then
-   PKG_CHECK_MODULES([EDJE], [edje >= 1.7.8], [have_ver_edje=""], [have_ver_edje=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([EDJE], [edje >= 1.8.0], [have_ver_edje=""], [have_ver_edje=" (version < 1.8.0)"])
 fi
 PKG_CHECK_MODULES([_EFREET], [efreet], [have_efreet="yes"], [have_efreet="no"])
 if test "x${have_efreet}" = "xyes"; then
-   PKG_CHECK_MODULES([EFREET], [efreet >= 1.7.8], [have_ver_efreet=""], [have_ver_efreet=" (version < 1.7.8)"])
+   PKG_CHECK_MODULES([EFREET], [efreet >= 1.8.0], [have_ver_efreet=""], [have_ver_efreet=" (version < 1.8.0)"])
 fi
 
 
@@ -136,7 +136,7 @@ if test  "x$have_ver_eina" != "x" ||
    test  "x$have_ver_eio" != "x" ||
    test  "x$have_ver_edje" != "x" ||
    test  "x$have_ver_efreet" != "x"; then
-AC_MSG_ERROR("EFL version must be >= 1.7.8")
+AC_MSG_ERROR("EFL version must be >= 1.8.0")
 fi
 
 AC_OUTPUT
