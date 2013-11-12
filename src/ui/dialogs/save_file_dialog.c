@@ -76,7 +76,7 @@ _on_edj_done(void *data,
 
              Evas_Object *popup, *btn1, *btn2;
              popup = elm_popup_add(ap->win_layout);
-             elm_object_style_set(popup, "eflete/popup");
+             elm_object_style_set(popup, "eflete");
 
              d_data->obj = obj;
              d_data->popup = popup;
@@ -122,6 +122,7 @@ _on_edj_done(void *data,
              evas_object_del(obj);
           }
      }
+   if (ap->is_new) new_theme_create(ap);
 }
 
 static void

@@ -25,6 +25,7 @@
 #include "alloc.h"
 #include "modal_window.h"
 #include "widget_define.h"
+#include "ui_main_window.h"
 /**
  * @defgroup SaveFileDialog Save file dialog
  * The widget provide a save project functionality.

@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "ui_main_window.h"
@@ -266,8 +266,9 @@ new_theme_create(App_Data *ap)
 
    if (!ap) return EINA_FALSE;
 
+   ap->is_new = false;
    path = eina_stringshare_add(TET_SETT_PATH"cache/");
-   file_full_path = eina_stringshare_add( TET_SETT_PATH"cache/new_theme.edj");
+   file_full_path = eina_stringshare_add( TET_SETT_PATH"cache/Untitled.edj");
 
    if (!ecore_file_exists(path))
      {

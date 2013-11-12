@@ -7,6 +7,7 @@ group { name: "elm/label/base/eflete/default";
          base: "font=Sans font_size=10 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
          tag:  "hilight" "+ font_weight=Bold";
          tag:  "b" "+ font_weight=Bold";
+         tag:  "br" "\n";
       }
    }
    parts {

@@ -54,6 +54,8 @@ struct _App_Data
     Evas_Object *main_menu;
     Eina_Hash *menu_hash;
     Evas_Object *inwin;
+    Evas_Object *popup;
+    Eina_Bool is_new;
     struct {
        Evas_Object *left_top;
        Evas_Object *left_bottom;

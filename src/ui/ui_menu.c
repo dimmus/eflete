@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "ui_main_window.h"
@@ -27,12 +27,107 @@
 #include "about_window.h"
 
 static void
+_on_close_project_cancel(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+}
+
+static void
+_on_close_project_save(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+
+   evas_object_del(ap->popup);
+   if (pm_save_project_to_swap(ap->project))
+     {
+        if (!ap->project->edj)
+          {
+             ap->is_new = true;
+             save_as_edj_file(ap);
+          }
+        else
+          {
+             if (pm_save_project_edj(ap->project))
+               ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+             else
+               NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
+          }
+     }
+}
+
+static void
+_project_not_save_new(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   new_theme_create(ap);
+}
+
+
+static void
+_project_not_save_edc(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   open_edc_file(ap);
+}
+
+static void
+_project_not_save_edj(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   open_edj_file(ap);
+}
+
+
+#define POPUP_CLOSE_PROJECT(MESSAGE, func_pro_not_save) \
+   Evas_Object *popup, *btn, *label; \
+   Eina_Stringshare *title; \
+   title = eina_stringshare_printf("Close project %s", ap->project->name); \
+   popup = elm_popup_add(ap->win_layout); \
+   ap->popup = popup; \
+   elm_object_style_set(popup, "eflete"); \
+   elm_object_part_text_set(popup, "title,text", title); \
+   LABEL_ADD(popup, label, MESSAGE) \
+   elm_object_content_set(popup, label); \
+   BUTTON_ADD(popup, btn, "Save") \
+   evas_object_smart_callback_add(btn, "clicked", _on_close_project_save, ap); \
+   elm_object_part_content_set(popup, "button1", btn); \
+   BUTTON_ADD(popup, btn, "Don't save") \
+   evas_object_smart_callback_add(btn, "clicked", func_pro_not_save, ap); \
+   elm_object_part_content_set(popup, "button2", btn); \
+   BUTTON_ADD(popup, btn, "Cancel") \
+   evas_object_smart_callback_add(btn, "clicked", _on_close_project_cancel, ap); \
+   elm_object_part_content_set(popup, "button3", btn); \
+   evas_object_show(popup);  \
+   eina_stringshare_del(title);
+
+static void
 _on_new_theme_menu(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   new_theme_create(ap);
+   if (ap->project)
+     {
+        POPUP_CLOSE_PROJECT("You want to create a new theme, but now you have<br/>"
+                            "open project. If you dont save the open project<br/>"
+                            "all your changes will be lost!",
+                            _project_not_save_new);
+     }
+   else new_theme_create(ap);
 }
 
 static void
@@ -41,7 +136,14 @@ _on_edc_open_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   open_edc_file(ap);
+   if (ap->project)
+     {
+        POPUP_CLOSE_PROJECT("You want to open new theme, but now you have<br/>"
+                            "open project. If you dont save the open project<br/>"
+                            "all your changes will be lost!",
+                            _project_not_save_edc);
+     }
+   else open_edc_file(ap);
 }
 
 static void
@@ -50,7 +152,14 @@ _on_edj_open_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   open_edj_file(ap);
+   if (ap->project)
+     {
+        POPUP_CLOSE_PROJECT("You want to open new theme, but now you have<br/>"
+                            "open project. If you dont save the open project<br/>"
+                            "all your changes will be lost!",
+                            _project_not_save_edj);
+     }
+   else open_edj_file(ap);
 }
 
 static void
