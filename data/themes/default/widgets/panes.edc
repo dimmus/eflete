@@ -36,7 +36,7 @@ group { name: "elm/panes/vertical/eflete/default";
             rel2 {
                to_x: "elm.bar";
                relative: 0.0 1.0;
-               offset: -1 0;
+               offset: -3 0;
             }
          }
       }
