@@ -91,7 +91,6 @@ _swap_file_deleted(void *data,
    INFO ("Closed project: %s", project->name);
    free(project->name);
    wm_widget_list_free(project->widgets);
-   free(project);
    DBG ("Project data is released.");
    ecore_main_loop_quit();
 }
@@ -101,15 +100,19 @@ pm_free(Project *project)
 {
    if(!project) return EINA_FALSE;
    Eio_Monitor *del_mon = NULL;
+   Ecore_Event_Handler* file_del = NULL;
    del_mon = eio_monitor_add(project->swapfile);
 
    eio_file_unlink(project->swapfile, _on_unlink_done_cb,
                    _on_unlink_error_cb, project->swapfile);
 
-   ecore_event_handler_add(EIO_MONITOR_FILE_DELETED,
-                           (Ecore_Event_Handler_Cb)_swap_file_deleted, project);
+   file_del = ecore_event_handler_add(EIO_MONITOR_FILE_DELETED,
+                                      (Ecore_Event_Handler_Cb)_swap_file_deleted,
+                                      project);
+   ecore_event_handler_del(file_del);
    eio_monitor_del(del_mon);
    if (project->swapfile) free(project->swapfile);
+   free(project);
    return EINA_TRUE;
 }
 

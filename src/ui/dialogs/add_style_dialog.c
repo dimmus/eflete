@@ -140,7 +140,6 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
         PART_COPY(drag_count_x);
         PART_COPY(drag_count_y);
         PART_COPY(drag_confine);
-
      }
    /*
     *  Copying all states for parts.
