@@ -1,4 +1,4 @@
-#define BUTTON_BORDER 4 4 13 13
+#define BUTTON_BORDER 8 8 13 13
 group { name: "elm/button/base/eflete/default";
    images{
       image: "button-bg.png" COMP;
