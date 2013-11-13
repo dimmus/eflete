@@ -17,8 +17,8 @@
 * along with this program; If not, see .
 */
 
-#ifndef STYLE_VIEWER_DIALOG_HEADER_H
-#define STYLE_VIEWER_DIALOG_HEADER_H
+#ifndef STYLE_VIEWER_DIALOG_H
+#define STYLE_VIEWER_DIALOG_H
 
 /**
  * @defgroup TextStyle Text Style
@@ -32,7 +32,7 @@
 #include "efl_ete.h"
 #include "modal_window.h"
 #include "style_edit.h"
-#include "widget_define.h"
+#include "widget_macro.h"
 /**
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
@@ -48,4 +48,4 @@ Evas_Object *
 style_editor_window_add(Evas_Object *parent, Project *project);
 
 
-#endif  /* STYLE_VIEWER_DIALOG_HEADER_H */
+#endif  /* STYLE_VIEWER_DIALOG_H */

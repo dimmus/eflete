@@ -34,7 +34,7 @@
 
 #include "efl_ete.h"
 #include "widget_manager.h"
-#include "widget_define.h"
+#include "widget_macro.h"
 #include <Elementary.h>
 
 /**

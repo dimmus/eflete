@@ -17,8 +17,8 @@
 * along with this program; If not, see .
 */
 
-#ifndef WIDGET_DEFINE_H
-#define WIDGET_DEFINE_H
+#ifndef WIDGET_MACRO_H
+#define WIDGET_MACRO_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -143,4 +143,4 @@
    evas_object_show(fs);
 
 
-#endif /* WIDGET_DEFINE_H */
+#endif /* WIDGET_MACRO_H */

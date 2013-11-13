@@ -18,8 +18,7 @@
  */
 
 #include "ui_property.h"
-#include "ui_property_define.h"
-#include "widget_define.h"
+#include "ui_property_macro.h"
 #include "image_editor.h"
 
 #define PROP_DATA "prop_data"

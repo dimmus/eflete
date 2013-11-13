@@ -17,11 +17,10 @@
 * along with this program; If not, see .
 */
 
-#ifndef COMMON_DEFINE_H
-#define COMMON_DEFINE_H
+#ifndef COMMON_MACRO_H
+#define COMMON_MACRO_H
 
-#define null NULL
 #define true EINA_TRUE
 #define false EINA_FALSE
 
-#endif /* COMMON_DEFINE_H */
+#endif /* COMMON_MACRO_H */

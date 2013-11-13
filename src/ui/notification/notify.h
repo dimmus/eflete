@@ -28,7 +28,7 @@
  */
 
 #include "efl_ete.h"
-#include "widget_define.h"
+#include "widget_macro.h"
 
 /**
  * Show Error Notification with formated message

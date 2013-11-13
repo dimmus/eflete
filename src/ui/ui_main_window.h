@@ -30,7 +30,7 @@
  */
 
 #include "efl_ete.h"
-#include "common_define.h"
+#include "common_macro.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
@@ -42,7 +42,7 @@
 #include "add_state_dialog.h"
 #include "add_style_dialog.h"
 #include "open_file_dialog.h"
-#include "string_define.h"
+#include "string_macro.h"
 
 /**
  * Adds main window object for Edje tool development.

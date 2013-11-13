@@ -32,7 +32,7 @@
 #include "widget_manager.h"
 #include "ui_groupspace.h"
 #include "modal_window.h"
-#include "widget_define.h"
+#include "widget_macro.h"
 #include "image_editor.h"
 
 /**

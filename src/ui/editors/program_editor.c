@@ -18,7 +18,7 @@
 */
 
 #include "program_editor.h"
-#include "widget_define.h"
+#include "widget_macro.h"
 
 struct _Program_Editor
 {

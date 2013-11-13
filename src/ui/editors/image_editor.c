@@ -19,7 +19,7 @@
 
 #include "image_editor.h"
 #include "alloc.h"
-#include "widget_define.h"
+#include "widget_macro.h"
 
 typedef struct _Item
 {

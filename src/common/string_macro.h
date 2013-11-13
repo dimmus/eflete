@@ -17,8 +17,8 @@
 * along with this program; If not, see .
 */
 
-#ifndef STRING_DEFINE_H
-#define STRING_DEFINE_H
+#ifndef STRING_MACRO_H
+#define STRING_MACRO_H
 
 #define GET_NAME_FROM_PATH(name, path) \
    char **arr; \
@@ -29,4 +29,4 @@
    free(arr[0]); \
    free(arr);
 
-#endif /* STRING_DEFINE_H */
+#endif /* STRING_MACRO_H */
