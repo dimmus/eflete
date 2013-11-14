@@ -14,10 +14,10 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include "add_style_dialog.h"
+#include "style_dialog.h"
 
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;
@@ -546,7 +546,7 @@ _popup_close(void *data, Evas_Object *obj __UNUSED__, void *ei __UNUSED__)
 
 
 void
-new_style_dialog_add(App_Data *ap)
+style_dialog_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *button;
    Evas_Object *style_box, *class_box, *label;

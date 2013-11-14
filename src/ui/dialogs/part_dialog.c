@@ -14,13 +14,28 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include "add_part_dialog.h"
+#include "part_dialog.h"
+#include "string_macro.h"
 
 #define APD_GS_KEY "entry_gs"
+
+#define ENTRY_IS_EMPTY \
+   if (elm_entry_is_empty(entry)) \
+   { \
+       NOTIFY_WARNING("Part name can not be empty") \
+      return; \
+   } \
+
 static Evas_Object *entry;
+
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = BANNED_SYMBOLS
+};
+
 
 static void
 _cancel_clicked(void *data,
@@ -37,6 +52,7 @@ _swallow_add_on_click(void *data __UNUSED__,
                       void *event_info __UNUSED__)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    const char *name = elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,swallow,add", strdup(name));
    evas_object_del((Evas_Object *)data);
@@ -48,6 +64,7 @@ _txtblock_add_on_click(void *data __UNUSED__,
                        void *event_info __UNUSED__)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    const char *name = elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,txtblock,add", strdup(name));
    evas_object_del((Evas_Object *)data);
@@ -59,6 +76,7 @@ _group_add_on_click(void *data __UNUSED__,
                     void *event_info __UNUSED__)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    const char *name = elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,group,add", strdup(name));
    evas_object_del((Evas_Object *)data);
@@ -70,6 +88,7 @@ _spacer_add_on_click(void *data __UNUSED__,
                      void *event_info __UNUSED__)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    const char *name = elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,spacer,add", strdup(name));
    evas_object_del((Evas_Object *)data);
@@ -82,12 +101,11 @@ _txt_add_on_click(void *data __UNUSED__,
                   void *event_info __UNUSED__)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    const char *name = elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,txt,add", strdup(name));
    evas_object_del((Evas_Object *)data);
 }
-
-
 
 static void
 _rect_add_on_click(void *data __UNUSED__,
@@ -95,6 +113,7 @@ _rect_add_on_click(void *data __UNUSED__,
                    void *event_info __UNUSED__)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    const char *name = elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,rect,add", strdup(name));
    evas_object_del((Evas_Object *)data);
@@ -106,6 +125,7 @@ _img_add_on_click(void *data,
                   void *event_info)
 {
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
+   ENTRY_IS_EMPTY
    evas_object_smart_callback_del(gs, "gs,image,choosed", _img_add_on_click);
    char *char_arr[2];
    char_arr[0] = (char *)event_info;
@@ -154,18 +174,23 @@ _on_delete_popup(void *data,
 
 
 Evas_Object *
-new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
+part_dialog_add(Evas_Object *parent, Evas_Object *groupspace)
 {
    Evas_Object *box, *button;
    Evas_Object *popup, *bt_no;
+   Eina_Stringshare *title;
+   Group *group;
 
+   group = ui_groupspace_group_get(groupspace);
    popup = elm_popup_add(parent);
    elm_object_style_set(popup, "eflete");
-   elm_object_part_text_set(popup, "title,text", "Add new part:");
+   title = eina_stringshare_printf("Add new part to group %s", group->group_name);
+   elm_object_part_text_set(popup, "title,text", title);
 
    BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);
    ENTRY_ADD(popup, entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_entry_entry_set(entry, "New_part_name");
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_name);
+   elm_object_part_text_set(entry, "guide", "Type the new part new.");
    evas_object_show(entry);
    elm_box_pack_end(box, entry);
    evas_object_data_set(entry, APD_GS_KEY, groupspace);
@@ -195,7 +220,6 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    elm_object_content_set(popup, box);
    evas_object_smart_callback_add(groupspace, "gs,image,choosed",
                                   _img_add_on_click, popup);
-
    BUTTON_ADD(box, bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_no);
@@ -204,3 +228,4 @@ new_part_dialog_add(Evas_Object *parent, Evas_Object  *groupspace)
    evas_object_show(popup);
    return popup;
 }
+#undef ENTRY_IS_EMPTY

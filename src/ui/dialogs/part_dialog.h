@@ -14,11 +14,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef ADD_PART_DIALOG_H
-#define ADD_PART_DIALOG_H
+#ifndef PART_DIALOG_H
+#define PART_DIALOG_H
 
 /**
  * @defgroup New_Part_Dialog New_Part_Dialog
@@ -46,6 +46,6 @@
  * @ingroup New_Part_Dialog
  */
 Evas_Object *
-new_part_dialog_add(Evas_Object *parent, Evas_Object *groupspace);
+part_dialog_add(Evas_Object *parent, Evas_Object *groupspace);
 
-#endif /* ADD_PART_DIALOG_H */
+#endif /* PART_DIALOG_H */

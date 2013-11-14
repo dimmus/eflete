@@ -14,11 +14,14 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include <ui_main_window.h>
-#include <settings.h>
+#include "ui_main_window.h"
+#include "settings.h"
+#include "part_dialog.h"
+#include "state_dialog.h"
+#include "style_dialog.h"
 
 static void
 _on_done(void *data,
@@ -55,7 +58,7 @@ _add_part_dailog(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   new_part_dialog_add(ap->win_layout, ap->ws->groupspace);
+   part_dialog_add(ap->win_layout, ap->ws->groupspace);
 }
 
 static void
@@ -64,7 +67,7 @@ _add_state_dailog(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   new_state_dialog_add(ap);
+   state_dialog_add(ap);
 }
 
 static void
@@ -82,7 +85,7 @@ _add_style_dailog(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   new_style_dialog_add(ap);
+   style_dialog_add(ap);
 }
 
 Eina_Bool

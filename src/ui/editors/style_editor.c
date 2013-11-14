@@ -14,10 +14,12 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "style_editor.h"
+#include "widget_macro.h"
+#include "string_macro.h"
 
 #define FONT_SIZE "24"
 
@@ -39,7 +41,6 @@ struct _Style_entries
    Evas_Object *style_name;
    Evas_Object *default_tags;
 };
-
 typedef struct _Style_entries Style_entries;
 
 struct _Style_tag_entries
@@ -48,7 +49,6 @@ struct _Style_tag_entries
    Evas_Object *tag_name;
    Evas_Object *tag_value;
 };
-
 typedef struct _Style_tag_entries Style_tag_entries;
 
 static Style_Editor window;
@@ -56,6 +56,11 @@ static Style_entries st_entries;
 static Style_tag_entries st_tag_entries;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
+
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = BANNED_SYMBOLS
+};
 
 static void
 _on_glit_selected(void *data, Evas_Object *obj, void *event_info);
@@ -159,9 +164,8 @@ _on_bt_style_add(void *data __UNUSED__,
                  void *event_info __UNUSED__)
 {
    Evas_Object *popup, *box, *bt_ok, *bt_cancel;
-   Evas_Object *st_box, *st_label, *st_entry;
-   Evas_Object *tag_box, *tag_label, *tag_entry;
-   static Elm_Entry_Filter_Accept_Set accept_name;
+   Evas_Object *item_st, *st_entry;
+   Evas_Object *item_tag, *tag_entry;
 
    popup = elm_popup_add(window.mwin);
    elm_object_style_set(popup, "eflete");
@@ -171,35 +175,19 @@ _on_bt_style_add(void *data __UNUSED__,
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-   st_box = elm_box_add(box);
-   elm_box_horizontal_set(st_box, EINA_TRUE);
-   evas_object_size_hint_weight_set(st_box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(st_box, EVAS_HINT_FILL, 0.0);
-   evas_object_show(st_box);
-
-   LABEL_ADD(st_box, st_label, "Style name: ")
-   elm_box_pack_end(st_box, st_label);
-
-   ENTRY_ADD(st_box, st_entry, EINA_TRUE, DEFAULT_STYLE);
-   accept_name.accepted = NULL;
-   accept_name.rejected = ":;'\"!?&^%$#@()[]=+*{} ";
+   ITEM_ADD(box, item_st, "Style name:")
+   ENTRY_ADD(item_st, st_entry, EINA_TRUE, DEFAULT_STYLE);
+   elm_object_part_text_set(st_entry, "guide", "Type a new style name.");
    elm_entry_markup_filter_append(st_entry, elm_entry_filter_accept_set, &accept_name);
-   elm_box_pack_end(st_box, st_entry);
+   elm_object_part_content_set(item_st, "elm.swallow.content", st_entry);
 
-   tag_box = elm_box_add(box);
-   elm_box_horizontal_set(tag_box, EINA_TRUE);
-   evas_object_size_hint_weight_set(tag_box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(tag_box, EVAS_HINT_FILL, 0.0);
+   ITEM_ADD(box, item_tag, "Default tags:")
+   ENTRY_ADD(item_tag, tag_entry, EINA_TRUE, DEFAULT_STYLE);
+   elm_object_part_text_set(tag_entry, "guide", "Type tag with be using as default.");
+   elm_object_part_content_set(item_tag, "elm.swallow.content", tag_entry);
 
-   LABEL_ADD(tag_box, tag_label, "Default tags: ")
-   elm_box_pack_end(tag_box, tag_label);
-
-   ENTRY_ADD(tag_box, tag_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_box_pack_end(tag_box, tag_entry);
-   evas_object_show(tag_box);
-
-   elm_box_pack_end(box, st_box);
-   elm_box_pack_end(box, tag_box);
+   elm_box_pack_end(box, item_st);
+   elm_box_pack_end(box, item_tag);
    elm_object_content_set(popup, box);
    evas_object_show(box);
 
@@ -223,8 +211,8 @@ _on_bt_tag_add(void *data __UNUSED__,
               void *event_info __UNUSED__)
 {
    Evas_Object *popup, *box, *bt_ok, *bt_cancel, *style_label;
-   Evas_Object *tag_box, *tag_label, *tag_entry;
-   Evas_Object *value_box, *value_label, *value_entry;
+   Evas_Object *item_tag, *tag_entry;
+   Evas_Object *item_value, *value_entry;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(window.glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
@@ -255,34 +243,21 @@ _on_bt_tag_add(void *data __UNUSED__,
    evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    LABEL_ADD(box, style_label, style_name)
+
+   ITEM_ADD(box, item_tag, "Tag name:")
+   ENTRY_ADD(item_tag, tag_entry, EINA_TRUE, DEFAULT_STYLE);
+   elm_object_part_text_set(tag_entry, "guide", "Type a new tag name.");
+   elm_entry_markup_filter_append(tag_entry, elm_entry_filter_accept_set, &accept_name);
+   elm_object_part_content_set(item_tag, "elm.swallow.content", tag_entry);
+
+   ITEM_ADD(box, item_value, "Tag value:")
+   ENTRY_ADD(item_value, value_entry, EINA_TRUE, DEFAULT_STYLE);
+   elm_object_part_text_set(value_entry, "guide", "Type tag with be using as default.");
+   elm_object_part_content_set(item_value, "elm.swallow.content", value_entry);
+
    elm_box_pack_end(box, style_label);
-
-   tag_box = elm_box_add(box);
-   elm_box_horizontal_set(tag_box, EINA_TRUE);
-   evas_object_size_hint_weight_set(tag_box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(tag_box, EVAS_HINT_FILL, 0.0);
-
-   LABEL_ADD(tag_box, tag_label, "Tag name: ")
-   elm_box_pack_end(tag_box, tag_label);
-
-   ENTRY_ADD(tag_box, tag_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_box_pack_end(tag_box, tag_entry);
-   evas_object_show(tag_box);
-
-   value_box = elm_box_add(box);
-   elm_box_horizontal_set(value_box, EINA_TRUE);
-   evas_object_size_hint_weight_set(value_box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(value_box, EVAS_HINT_FILL, 0.0);
-   evas_object_show(value_box);
-
-   LABEL_ADD(value_box, value_label, "Tag value: ")
-   elm_box_pack_end(value_box, value_label);
-
-   ENTRY_ADD(value_box, value_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_box_pack_end(value_box, value_entry);
-
-   elm_box_pack_end(box, tag_box);
-   elm_box_pack_end(box, value_box);
+   elm_box_pack_end(box, item_tag);
+   elm_box_pack_end(box, item_value);
    elm_object_content_set(popup, box);
    evas_object_show(box);
 

@@ -14,11 +14,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef UI_MAIN_WINDOW_HEADER_H
-#define UI_MAIN_WINDOW_HEADER_H
+#ifndef UI_MAIN_WINDOW_H
+#define UI_MAIN_WINDOW_H
 
 /**
  * @defgroup Window Window
@@ -39,8 +39,6 @@
 #include "colorclass_editor.h"
 #include "font_viewer_dialog.h"
 #include "notify.h"
-#include "add_state_dialog.h"
-#include "add_style_dialog.h"
 #include "open_file_dialog.h"
 #include "string_macro.h"
 
@@ -276,5 +274,4 @@ new_theme_create(App_Data *ap);
 void
 ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag);
 
-#endif /* UI_MAIN_WINDOW_HEADER_H */
-
+#endif /* UI_MAIN_WINDOW_H */

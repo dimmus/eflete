@@ -29,4 +29,6 @@
    free(arr[0]); \
    free(arr);
 
+#define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\"
+
 #endif /* STRING_MACRO_H */

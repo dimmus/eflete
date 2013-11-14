@@ -39,7 +39,7 @@ START_TEST (add_part_test1)
    Evas_Object *par, *grspace, *res;
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    grspace = ui_groupspace_add(par);
-   res = new_part_dialog_add(par, grspace);
+   res = part_dialog_add(par, grspace);
    if(!res)
    {
       ck_abort_msg("failure: cannot return pointer to inwin window");
@@ -65,7 +65,7 @@ START_TEST (add_part_test2)
    Evas_Object *par, *grspace, *res;
    par = NULL;
    grspace = ui_groupspace_add(par);
-   res = new_part_dialog_add(par, grspace);
+   res = part_dialog_add(par, grspace);
    if(res)
    {
       ck_abort_msg("failure: cannot return pointer to NULL inwin window");
