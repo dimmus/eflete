@@ -287,6 +287,7 @@ group { name: "elm/panes/horizontal/eflete/default";
          clip_to: "whole_left";
          description { state: "default" 0.0;
             fixed: 1 1;
+            rel1.offset: 2 0;
             rel2 {
                to_y: "elm.bar";
                relative: 1.0 1.0;
