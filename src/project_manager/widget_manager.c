@@ -89,6 +89,7 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
         evas_object_del(edje_edit_obj);
         return;
      }
+   edje_object_freeze(edje_edit_obj);
    group->obj = edje_edit_obj;
    group->current_w = -1;
    group->current_h = -1;
