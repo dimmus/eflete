@@ -133,37 +133,6 @@ group { name: "elm/scroller/base/eflete/default";
             confine: "sb_vbar_base";
          }
       }
-      program {
-         name: "show_vertical_scroll";
-         signal: "elm,action,show,vbar";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "sb_vbar";
-         target: "sb_vbar_show";
-      }
-      program {
-         name: "hide_vertical_scroll";
-         signal: "elm,action,hide,vbar";
-         source: "elm";
-         action: STATE_SET "hidden" 0.0;
-         target: "sb_vbar";
-         target: "sb_vbar_show";
-      }
-      program {
-         name: "vertical_scroll_down";
-         signal: "mouse,down,1*";
-         source: "sb_vbar_p1";
-         action: DRAG_VAL_PAGE 0.0 -1.0;
-         target: "elm.dragable.vbar";
-      }
-      program {
-         name: "vertical_scroll_up";
-         signal: "mouse,down,1*";
-         source: "sb_vbar_p2";
-         action: DRAG_VAL_PAGE  0.0 1.0;
-         target: "elm.dragable.vbar";
-      }
-
 // horiz bar /////////////////////////////////////////////////////////////
       part { name: "sb_hbar_show";
          type: RECT;
@@ -198,6 +167,7 @@ group { name: "elm/scroller/base/eflete/default";
             inherit: "default" 0.0;
             min: 0 0;
             max: -1 0;
+            rel2.offset: 0 8;
          }
       }
       part { name: "sb_hbar_base";
@@ -268,38 +238,6 @@ group { name: "elm/scroller/base/eflete/default";
             confine: "sb_hbar_base";
          }
       }
-
-      program {
-         name: "show_horizontal_scroll";
-         signal: "elm,action,show,hbar";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "sb_hbar";
-         target: "sb_hbar_show";
-      }
-      program {
-         name: "hide_horizontal_scroll";
-         signal: "elm,action,hide,hbar";
-         source: "elm";
-         action: STATE_SET "hidden" 0.0;
-         target: "sb_hbar";
-         target: "sb_hbar_show";
-      }
-      program {
-         name: "horizontal_scroll_down";
-         signal: "mouse,down,1*";
-         source: "sb_hbar_p1";
-         action: DRAG_VAL_PAGE -1.0 0.0;
-         target: "elm.dragable.hbar";
-      }
-      program {
-         name: "horizontal_scroll_up";
-         signal: "mouse,down,1*";
-         source: "sb_hbar_p2";
-         action: DRAG_VAL_PAGE  1.0 0.0;
-         target: "elm.dragable.hbar";
-      }
-
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
@@ -449,6 +387,66 @@ group { name: "elm/scroller/base/eflete/default";
          signal: "mouse,up,1"; source: "elm.dragable.hbar";
          action: STATE_SET "default" 0.0;
          target: "elm.dragable.hbar";
+      }
+      program {
+         name: "show_horizontal_scroll";
+         signal: "elm,action,show,hbar";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "sb_hbar";
+         target: "sb_hbar_show";
+      }
+      program {
+         name: "hide_horizontal_scroll";
+         signal: "elm,action,hide,hbar";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "sb_hbar";
+         target: "sb_hbar_show";
+      }
+      program {
+         name: "horizontal_scroll_down";
+         signal: "mouse,down,1*";
+         source: "sb_hbar_p1";
+         action: DRAG_VAL_PAGE -1.0 0.0;
+         target: "elm.dragable.hbar";
+      }
+      program {
+         name: "horizontal_scroll_up";
+         signal: "mouse,down,1*";
+         source: "sb_hbar_p2";
+         action: DRAG_VAL_PAGE  1.0 0.0;
+         target: "elm.dragable.hbar";
+      }
+      program {
+         name: "show_vertical_scroll";
+         signal: "elm,action,show,vbar";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "sb_vbar";
+         target: "sb_vbar_show";
+      }
+      program {
+         name: "hide_vertical_scroll";
+         signal: "elm,action,hide,vbar";
+         source: "elm";
+         action: STATE_SET "hidden" 0.0;
+         target: "sb_vbar";
+         target: "sb_vbar_show";
+      }
+      program {
+         name: "vertical_scroll_down";
+         signal: "mouse,down,1*";
+         source: "sb_vbar_p1";
+         action: DRAG_VAL_PAGE 0.0 -1.0;
+         target: "elm.dragable.vbar";
+      }
+      program {
+         name: "vertical_scroll_up";
+         signal: "mouse,down,1*";
+         source: "sb_vbar_p2";
+         action: DRAG_VAL_PAGE  0.0 1.0;
+         target: "elm.dragable.vbar";
       }
    }
 }
