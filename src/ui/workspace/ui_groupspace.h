@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef UI_GROUPSPACE_HEADER_H
@@ -35,7 +35,6 @@
 #include <Elementary.h>
 #include <Eina.h>
 #include "widget_manager.h"
-#include "add_part_dialog.h"
 #include "ui_block.h"
 
 

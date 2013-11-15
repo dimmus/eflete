@@ -14,11 +14,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef ADD_STYLE_DIALOG_H
-#define ADD_STYLE_DIALOG_H
+#ifndef STYLE_DIALOG_H
+#define STYLE_DIALOG_H
 
 /**
  * @defgroup New_Style_Dialog New_Style_Dialog
@@ -47,6 +47,6 @@
  * @ingroup New_Style_Dialog
  */
 void
-new_style_dialog_add(App_Data *ap);
+style_dialog_add(App_Data *ap);
 
-#endif /* ADD_STYLE_DIALOG_H */
+#endif /* STYLE_DIALOG_H */

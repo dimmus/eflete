@@ -17,8 +17,8 @@
 * along with this program; If not, see .
 */
 
-#ifndef ABOUT_DIALOG_HEADER_H
-#define ABOUT_DIALOG_HEADER_H
+#ifndef ABOUT_DIALOG_H
+#define ABOUT_DIALOG_H
 
 /**
  * @defgroup TextStyle Text Style
@@ -45,4 +45,4 @@
 Evas_Object *
 about_window_add(Evas_Object *parent);
 
-#endif  /* ABOUT_DIALOG_HEADER_H */
+#endif  /* ABOUT_DIALOG_H */

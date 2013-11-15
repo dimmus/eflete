@@ -14,11 +14,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef ADD_STATE_DIALOG_H
-#define ADD_STATE_DIALOG_H
+#ifndef STATE_DIALOG_H
+#define STATE_DIALOG_H
 
 /**
  * @defgroup New_State_Dialog New_State_Dialog
@@ -46,6 +46,6 @@
  * @ingroup New_Part_Dialog
  */
 Evas_Object *
-new_state_dialog_add(App_Data *ap);
+state_dialog_add(App_Data *ap);
 
-#endif /* ADD_STATE_DIALOG_H */
+#endif /* STATE_DIALOG_H */

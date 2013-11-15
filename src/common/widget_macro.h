@@ -84,7 +84,6 @@
 #define ENTRY_ADD(parent, entry, isSingleLine, style) \
    entry = elm_entry_add(parent); \
    elm_object_style_set(entry, style); \
-   elm_entry_single_line_set(entry, EINA_TRUE); \
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_entry_single_line_set(entry, isSingleLine); \

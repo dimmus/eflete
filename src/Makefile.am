@@ -25,9 +25,9 @@ ui/editors/program_editor.c \
 ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
 ui/dialogs/font_viewer_dialog.c \
-ui/dialogs/add_part_dialog.c \
-ui/dialogs/add_state_dialog.c \
-ui/dialogs/add_style_dialog.c \
+ui/dialogs/part_dialog.c \
+ui/dialogs/state_dialog.c \
+ui/dialogs/style_dialog.c \
 ui/dialogs/about_window.c \
 ui/modal_window/modal_window.c \
 ui/blocks/ui_block.c \
