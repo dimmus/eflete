@@ -244,7 +244,7 @@ pm_open_project_edc(const char *name,
                                project->sound_directory);
    if (project->compiler)
      {
-        eio_file_copy(project->edj, project->swapfile, NULL,
+        eio_file_move(project->edj, project->swapfile, NULL,
                       _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
         ecore_main_loop_begin();
      }
