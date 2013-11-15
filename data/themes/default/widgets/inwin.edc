@@ -132,7 +132,7 @@ group { name: "elm/win/inwin/eflete/default";
          description { state: "default" 0.0;
             color: FN_COL_DEFAULT;
             text {
-               font: "Sans";
+               font: FN_B;
                size: 15;
                ellipsis: 1.0;
             }

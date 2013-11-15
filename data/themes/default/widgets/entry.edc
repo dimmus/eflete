@@ -524,7 +524,7 @@ group { name: "elm/scroller/entry_single/eflete/default";
          }
          description { state: "hidden" 0;
             align: 1 0;
-            max: 0 99999;
+            max: 0 -1;
             fixed: 1 1;
             rel1 {
                relative: 1 0;
@@ -692,6 +692,9 @@ group { name: "elm/scroller/entry_single/eflete/default";
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0;
+            min: 36 19;
+            max: -1 19;
+            fixed: 1 1;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
             image {

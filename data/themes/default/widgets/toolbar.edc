@@ -11,36 +11,24 @@ group { name: "elm/toolbar/base/eflete/default";
             type: RECT;
             description { state: "default" 0;
                color: LIGHT_GREY_BG_COLOR;
-               rel1 {
-                  offset: 2 2;
-               }
-               rel2 {
-                  offset: -3 -3;
-               }
+               rel1.offset: 2 2;
+               rel2.offset: -3 -3;
             }
          }
          part { name: "clipper";
             type: RECT;
             mouse_events: 0;
             description { state: "default" 0;
-               rel1 {
-                  offset: 2 2;
-               }
-               rel2 {
-                  offset: -3 -3;
-               }
+               rel1.offset: 2 2;
+               rel2.offset: -3 -3;
             }
          }
          part { name: "elm.swallow.content";
             type: SWALLOW;
             clip_to: "clipper";
             description { state: "default" 0;
-               rel1 {
-                  to: "clipper";
-               }
-               rel2 {
-                  to: "clipper";
-               }
+               rel1.to: "clipper";
+               rel2.to: "clipper";
             }
          }
          part { name: "event";
@@ -62,8 +50,6 @@ group { name: "elm/toolbar/base/eflete/default";
                   normal: "arrow_left.png";
                   middle: DEFAULT;
                }
-               fill {
-               }
             }
             description { state: "visible" 0;
                align: 0 0.5;
@@ -72,8 +58,6 @@ group { name: "elm/toolbar/base/eflete/default";
                image {
                   normal: "arrow_left.png";
                   middle: DEFAULT;
-               }
-               fill {
                }
             }
          }
@@ -89,8 +73,6 @@ group { name: "elm/toolbar/base/eflete/default";
                   normal: "arrow_right.png";
                   middle: DEFAULT;
                }
-               fill {
-               }
             }
             description { state: "visible" 0;
                align: 1 0.5;
@@ -99,8 +81,6 @@ group { name: "elm/toolbar/base/eflete/default";
                image {
                   normal: "arrow_right.png";
                   middle: DEFAULT;
-               }
-               fill {
                }
             }
          }
@@ -116,8 +96,6 @@ group { name: "elm/toolbar/base/eflete/default";
                   normal: "arrow_up.png";
                   middle: DEFAULT;
                }
-               fill {
-               }
             }
             description { state: "visible" 0;
                align: 0.5 0;
@@ -126,8 +104,6 @@ group { name: "elm/toolbar/base/eflete/default";
                image {
                   normal: "arrow_up.png";
                   middle: DEFAULT;
-               }
-               fill {
                }
             }
          }
@@ -391,7 +367,9 @@ group { name: "elm/toolbar/item/eflete/default";
          clip_to: "text_clip";
          description { state: "default" 0.0;
             color: FN_COL_DEFAULT;
-            text { font: FN; size: 10;
+            text {
+               font: FN;
+               size: 12;
                min: 1 1;
                align: 0.5 0.5;
             }

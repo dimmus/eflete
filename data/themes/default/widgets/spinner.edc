@@ -77,9 +77,6 @@
          image: "focus-outer-glow.png" COMP;
          image: "input-text-bg.png" COMP;
       }
-      fonts {
-         font: "FreeMono.ttf" "Mono";
-      }
       parts {
          part {
             name: "bg";
@@ -91,8 +88,10 @@
          part {
             name: "back";
             type: IMAGE;
-            description {
-               state: "default" 0.0;
+            description { state: "default" 0.0;
+               min: 36 19;
+               max: -1 19;
+               fixed: 1 1;
                image {
                   normal: "input-text-bg.png";
                   border: 5 5 5 5;
@@ -113,8 +112,8 @@
             description { state: "default" 0.0;
                color: 213 213 213 84;
                text {
-                  font: "Mono";
-                  size: 12;
+                  font: FN;
+                  size: 11;
                }
                rel1.to: "back";
                rel2.to: "back";
@@ -356,10 +355,12 @@
          part {
             name: "back";
             type: IMAGE;
-            description {
-               state: "default" 0.0;
-               image {
-                  normal: "input-text-bg.png";
+            description {state: "default" 0.0;
+               min: 45 19;
+               max: -1 19;
+               fixed: 1 1;
+                image {
+                   normal: "input-text-bg.png";
                   border: 5 5 5 5;
                }
                min: 0 20;
@@ -378,8 +379,8 @@
             description { state: "default" 0.0;
                color: 213 213 213 84;
                text {
-                  font: "Mono";
-                  size: 12;
+                  font: FN;
+                  size: 11;
                }
                rel1 {
                   relative: 1.0 0.0;
@@ -410,8 +411,8 @@
             type: SPACER;
             description {
                state: "default" 0.0;
-               min: 13 18;
-               max: 13 18;
+               min: 11 18;
+               max: 11 18;
                align: 0.0 0.0;
                rel1 {
                   relative: 0.0 0.0;
@@ -505,8 +506,8 @@
                rel2.to: "disabler";
             }
          }
-         BUTTON("downh","spinner-horizontal-down.png","spinner-horizontal-down-clicked.png",1.0 1.0,"spacerl", 11 16);
-         BUTTON("uph","spinner-horizontal-up.png","spinner-horizontal-up-clicked.png",0.0 0.0,"spacerr", 11 16);
+         BUTTON("downh","spinner-horizontal-down.png","spinner-horizontal-down-clicked.png",1.0 1.0,"spacerl", 9 16);
+         BUTTON("uph","spinner-horizontal-up.png","spinner-horizontal-up-clicked.png",0.0 0.0,"spacerr", 9 16);
          part { name: "disabler";
             type: RECT;
             description { state: "default" 0.0;

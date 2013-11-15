@@ -79,7 +79,7 @@ group { name: "elm/radio/base/eflete/style_editor";
             rel2.offset: -2 -2;
             color: 0 0 0 255;
             text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                align: -1.0 0.5;

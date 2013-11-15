@@ -9,7 +9,7 @@ collections {
    #include "widgets/genlist.edc"
    #include "widgets/gengrid.edc"
    #include "widgets/entry.edc"
-   #include "widgets/groupspace_handler_cursor.edc"
+   #include "widgets/cursor.edc"
    #include "widgets/check.edc"
    #include "widgets/toolbar.edc"
    #include "widgets/button.edc"

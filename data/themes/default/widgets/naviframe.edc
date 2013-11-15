@@ -260,8 +260,9 @@ group { name: "elm/naviframe/item/basic/custom";
          repeat_events: 1;
          clip_to: "elements_clip";
          description { state: "default" 0.0;
-               color: 223 219 210 255;
-               text { font: "Sans:style=Bold";
+            color: 223 219 210 255;
+            text {
+               font: FN;
                size: 12;
                size_range: 9 14;
                fit: 1 1;
@@ -281,8 +282,9 @@ group { name: "elm/naviframe/item/basic/custom";
          repeat_events: 1;
          clip_to: "elements_clip";
          description { state: "default" 0.0;
-            text { font: "Sans,Edje-Vera";
-               size: 10;
+            text {
+               font: FN;
+               size: 9;
                min: 0 0;
                max: 1 0;
                align: 0.5 1;

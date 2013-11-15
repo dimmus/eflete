@@ -101,7 +101,7 @@ group {
          mouse_events: 1;
          description {
             state: "default" 0.0;
-            max: 9999 30;
+            max: -1 30;
             align: 0.0 0.0;
          }
       }

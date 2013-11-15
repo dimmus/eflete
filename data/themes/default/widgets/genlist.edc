@@ -2,7 +2,7 @@ group { name: "elm/genlist/item/custom/default";
    data.item: "selectraise" "on";
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
-   data.item: "treesize" "20";
+   data.item: "treesize" TREEPAD;
    data.item: "flips" "elm.text.flip";
    images {
       image: "bt_sm_base1.png" COMP;
@@ -68,8 +68,7 @@ group { name: "elm/genlist/item/custom/default";
             }
             fill.smooth: 0;
          }
-         description {
-            state: "default" 1.0;
+         description { state: "default" 1.0;
             inherit: "default" 0.0;
             visible: 0;
          }
@@ -77,16 +76,14 @@ group { name: "elm/genlist/item/custom/default";
       part {
          name: "base";
          mouse_events: 0;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             image {
                normal: "ilist_1.png";
                border: 2 2 2 2;
             }
             fill.smooth: 0;
          }
-         description {
-            state: "default" 1.0;
+         description { state: "default" 1.0;
             inherit: "default" 0.0;
             image.normal: "ilist_2.png";
          }
@@ -127,8 +124,7 @@ group { name: "elm/genlist/item/custom/default";
                offset: 1 1;
             }
          }
-         description {
-            state: "selected" 1.0;
+         description { state: "selected" 1.0;
             inherit: "selected" 0.0;
          }
       }
@@ -192,18 +188,18 @@ group { name: "elm/genlist/item/custom/default";
          }
       }
       part { name: "elm.text";
+         type: TEXTBLOCK;
          clip_to: "disclip";
-         type:           TEXTBLOCK;
-         mouse_events:   0;
+         mouse_events: 0;
          scale: 1;
-         description {
+         description { state: "default" 0.0;
             min: 0 25;
             state: "default" 0.0;
             rel1 {
                to_x:     "elm.swallow.icon";
                relative: 1.0  0.0;
                offset:   0 4;
-            }
+               }
             rel2 {
                to_x:     "elm.swallow.end";
                relative: 0.0  1.0;
@@ -225,8 +221,8 @@ group { name: "elm/genlist/item/custom/default";
          }
       }
       part { name: "elm.text.flip";
-         clip_to: "disclip";
          type: SWALLOW;
+         clip_to: "disclip";
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
@@ -239,6 +235,7 @@ group { name: "elm/genlist/item/custom/default";
          }
       }
       part { name: "fg1";
+         type: IMAGE;
          clip_to: "disclip";
          mouse_events: 0;
          description { state: "default" 0.0;
@@ -257,8 +254,7 @@ group { name: "elm/genlist/item/custom/default";
             visible: 1;
             color: 255 255 255 255;
          }
-         description {
-            state: "selected" 1.0;
+         description { state: "selected" 1.0;
             inherit: "default" 0.0;
             visible: 1;
             color: 255 255 255 255;
@@ -282,8 +278,7 @@ group { name: "elm/genlist/item/custom/default";
             visible: 1;
             color: 255 255 255 255;
          }
-         description {
-            state: "selected" 1.0;
+         description { state: "selected" 1.0;
             inherit: "default" 0.0;
             visible: 1;
             color: 255 255 255 255;
@@ -402,13 +397,13 @@ group { name: "elm/genlist/item/custom/default";
    }
 }
 
-#define ITEM_HEIGHT 28
+#define ITEM_HEIGHT 26
 group { name: "elm/genlist/item/small/double_label/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
    data.item: "texts" "elm.text elm.text.sub";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
-   data.item: "treesize" "20";
+   data.item: "treesize" TREEPAD;
    images {
       image: "section-item-current-bg.png" COMP;
       image: "section-item-bg.png" COMP;
@@ -421,6 +416,7 @@ group { name: "elm/genlist/item/small/double_label/default";
          }
       }
       part { name: "base";
+         type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
             image.normal: "section-item-bg.png";
@@ -428,6 +424,7 @@ group { name: "elm/genlist/item/small/double_label/default";
          }
       }
       part { name: "bg";
+         type: IMAGE;
          clip_to: "disclip";
          mouse_events: 0;
          description { state: "default" 0.0;
@@ -477,8 +474,8 @@ group { name: "elm/genlist/item/small/double_label/default";
          }
       }
       part { name: "elm.swallow.end";
-         clip_to: "disclip";
          type: SWALLOW;
+         clip_to: "disclip";
          description { state: "default" 0.0;
             fixed: 1 0;
             align: 1.0 0.5;
@@ -499,10 +496,12 @@ group { name: "elm/genlist/item/small/double_label/default";
          scale: 1;
          description{ state:"default" 0.0;
             align: 0.0 0.0;
-            rel1 { to: "elm.swallow.icon";
+            rel1 {
+               to: "elm.swallow.icon";
                relative: 1.0 0.0;
             }
-            rel2 { to: "elm.swallow.end";
+            rel2 {
+               to: "elm.swallow.end";
                relative: 0.0 1.0;
             }
          }
@@ -528,14 +527,15 @@ group { name: "elm/genlist/item/small/double_label/default";
          }
       }
       part { name: "elm.text";
-         clip_to: "disclip";
          type: TEXT;
+         clip_to: "disclip";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             color: 246 246 246 255;
-            text { font: "Sans";
+            text {
+               font: FN;
                size: 12;
                min: 1 1;
                align: 0.0 0.5;
@@ -554,15 +554,16 @@ group { name: "elm/genlist/item/small/double_label/default";
          }
       }
       part { name: "elm.text.sub";
-         clip_to: "disclip";
          type: TEXT;
+         clip_to: "disclip";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
             fixed: 1 1;
             color: 0 0 0 128;
             color3: 0 0 0 0;
-            text { font: "Sans";
+            text {
+               font: FN;
                size: 8;
                min: 1 1;
                align: 0.0 0.5;
@@ -635,7 +636,7 @@ group { name: "elm/genlist/item/eflete/default/default";
    data.item: "selectraise" "on";
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
-   data.item: "treesize" "20";
+   data.item: "treesize" TREEPAD;
    images {
       image: "section-item-current-bg.png" COMP;
       image: "section-item-bg.png" COMP;
@@ -764,7 +765,8 @@ group { name: "elm/genlist/item/eflete/default/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             color: 246 246 246 255;
-            text { font: "Sans";
+            text {
+               font: FN;
                size: 12;
                min: 1 1;
                align: 0.0 0.5;
@@ -887,6 +889,7 @@ group { name: "elm/genlist/item/eflete/default_null/default";
       }
 
       part { name: "bevel";
+         type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
             image {
@@ -899,6 +902,7 @@ group { name: "elm/genlist/item/eflete/default_null/default";
       }
 
       part { name: "sel_base";
+         type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
             image.normal: "section-item-current-bg.png";
@@ -1023,7 +1027,8 @@ group { name: "elm/genlist/item/eflete/default_null/default";
             visible: 0;
          }
       }
-      part { name: "elm.text.flip"; type: SWALLOW;
+      part { name: "elm.text.flip";
+         type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             visible: 0;
@@ -1153,7 +1158,6 @@ group { name: "elm/genlist/base/eflete/default";
       image: "scroll-indicator.png" COMP;
       image: "scroll-area-dark.png" COMP;
       image: "section-item-bg.png" COMP;
-
    }
    data.item: "focus_highlight" "on";
 

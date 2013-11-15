@@ -215,8 +215,8 @@ group { name: "elm/gengrid/item/custom/default";
             color: 0 0 0 255;
             color3: 0 0 0 0;
             text {
-               font: "Sans";
-               size: 10;
+               font: FN;
+               size: 11;
                min: 0 1;
                align: 0.5 1.0;
                text_class: "grid_item";
