@@ -188,7 +188,7 @@ part_dialog_add(Evas_Object *parent, Evas_Object *groupspace)
    group = ui_groupspace_group_get(groupspace);
    popup = elm_popup_add(parent);
    elm_object_style_set(popup, "eflete");
-   title = eina_stringshare_printf("Add new part to group %s", group->group_name);
+   title = eina_stringshare_printf("Add new part to group \"%s\"", group->group_name);
    elm_object_part_text_set(popup, "title,text", title);
 
    BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);

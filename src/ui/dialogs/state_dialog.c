@@ -109,7 +109,7 @@ state_dialog_add(App_Data *ap)
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
-   title = eina_stringshare_printf("Add new state to part %s", part->name);
+   title = eina_stringshare_printf("Add new state to part \"%s\"", part->name);
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 

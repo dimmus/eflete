@@ -18,9 +18,16 @@
 */
 
 #include "style_dialog.h"
+#include "common_macro.h"
+#include "string_macro.h"
 
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;
+
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = BANNED_SYMBOLS
+};
 
 static Eina_Bool
 _group_template_copy(Group *group, Evas_Object *template_edje_edit,
@@ -73,33 +80,33 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
    if ((!edje_edit) || (!e))
      {
         CRIT("Invalid group object. group->obj[%p] evas[%p]", edje_edit, e);
-        return EINA_FALSE;
+        return false;
      }
 
    if (edje_edit_group_exist(edje_edit, full_name))
      {
         NOTIFY_ERROR("Group [%s] exist", full_name);
-        return EINA_FALSE;
+        return false;
      }
 
    if (!edje_edit_group_add(edje_edit, full_name))
      {
         NOTIFY_ERROR("Failed create group [%s]", full_name);
-        return EINA_FALSE;
+        return false;
      }
 
    edje_edit_group = edje_edit_object_add(e);
    if (!edje_edit_group)
      {
         ERR("Failed created edje_edit object");
-        return EINA_FALSE;
+        return false;
      }
 
    if (!edje_object_file_set(edje_edit_group, project->swapfile, full_name))
      {
         NOTIFY_ERROR("Failed load created group to memory");
         evas_object_del(edje_edit_group);
-        return EINA_FALSE;
+        return false;
      }
    new_group->obj = edje_edit_group;
    /*
@@ -239,7 +246,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
         part->curr_state = edje_edit_part_selected_state_get(
                               edje_edit_group, part->name, &state_val);
         part->curr_state_value = state_val;
-        part->show = EINA_TRUE;
+        part->show = true;
         new_group->parts = eina_inlist_append(new_group->parts,
                                           EINA_INLIST_GET(part));
    }
@@ -299,7 +306,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
      if (script_source)
        edje_edit_script_program_set(template_edje_edit, program_name, script_source);
 
-  return EINA_TRUE;
+  return true;
 #undef PROGRAM_COPY
 #undef STATE_COPY
 #undef PART_COPY
@@ -412,8 +419,8 @@ _on_popup_btn_yes(void *data,
    Group *class_in_style = NULL;
    Group *template_group = NULL;
 
-   Eina_Bool style_exist = EINA_FALSE;
-   Eina_Bool template_exist = EINA_FALSE;
+   Eina_Bool style_exist = false;
+   Eina_Bool template_exist = false;
    Eina_Inlist *l =NULL;
    Eina_Inlist *template_widgets = NULL;
    Eina_List *groups = NULL;
@@ -448,7 +455,7 @@ _on_popup_btn_yes(void *data,
      {
         if (!strcmp(template_wdg->widget_name, widget->widget_name))
           {
-             template_exist = EINA_TRUE;
+             template_exist = true;
              break;
           }
      }
@@ -465,7 +472,7 @@ _on_popup_btn_yes(void *data,
      {
          if (!strcmp(style_in_widget->style_name, style_name))
            {
-               style_exist = EINA_TRUE;
+               style_exist = true;
                break;
            }
      }
@@ -549,7 +556,7 @@ void
 style_dialog_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *button;
-   Evas_Object *style_box, *class_box, *label;
+   Evas_Object *item_style, *item_class;
    Widget *widget = NULL;
    Style *style = NULL;
    Eina_Stringshare *title = NULL;
@@ -558,35 +565,34 @@ style_dialog_add(App_Data *ap)
    if (!ap) return;
    widget = _widget_from_ap_get(ap);
    if (!widget) return;
-   title = eina_stringshare_printf("Add style/class for %s widget",
+   title = eina_stringshare_printf("Add style/class for \"%s\" widget",
                                    widget->widget_name);
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(popup, box, EINA_FALSE, EINA_FALSE);
+   BOX_ADD(popup, box, false, false);
 
-   BOX_ADD(box, style_box, EINA_TRUE, EINA_FALSE);
-   LABEL_ADD(style_box, label, "Style name: ");
-   elm_box_pack_end(style_box, label);
-
+   ITEM_ADD(box, item_style, "Style name:")
    style = _style_from_ap_get(ap);
    if (!style) return;
    entry_text = eina_stringshare_add(style->style_name);
 
-   ENTRY_ADD(style_box, entry_style, EINA_TRUE, DEFAULT_STYLE);
+   ENTRY_ADD(item_style, entry_style, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
+   elm_object_part_text_set(entry_style, "guide", "Type a new style name.");
    elm_entry_entry_set(entry_style, entry_text);
-   elm_box_pack_end(style_box, entry_style);
+   elm_object_part_content_set(item_style, "elm.swallow.content", entry_style);
 
-   BOX_ADD(box, class_box, EINA_TRUE, EINA_FALSE);
-   LABEL_ADD(class_box, label, "Class name: ");
-   elm_box_pack_end(class_box, label);
-   ENTRY_ADD(class_box, entry_class, EINA_TRUE, DEFAULT_STYLE);
-   elm_box_pack_end(class_box, entry_class);
+   ITEM_ADD(box, item_class, "Class name:")
+   ENTRY_ADD(item_class, entry_class, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
+   elm_object_part_text_set(entry_class, "guide", "Type a new class name.");
+   elm_object_part_content_set(item_class, "elm.swallow.content", entry_class);
 
-   elm_box_pack_end(box, style_box);
-   elm_box_pack_end(box, class_box);
+   elm_box_pack_end(box, item_style);
+   elm_box_pack_end(box, item_class);
    elm_object_content_set(popup, box);
 
    BUTTON_ADD(popup, button, "Add");
