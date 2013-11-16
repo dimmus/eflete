@@ -354,8 +354,7 @@ _on_ccl_viewer_menu(void *data,
                     void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *cced = colorclass_viewer_add(ap->win);
-   colorclass_viewer_init(cced, ap->project);
+   colorclass_viewer_add(ap->project);
 }
 
 static void

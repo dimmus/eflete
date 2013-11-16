@@ -11,7 +11,6 @@ project_manager/widget_manager.c \
 project_manager/project_manager.c \
 project_manager/edit/style_edit.c \
 project_manager/edit/image_edit_api.c \
-project_manager/edit/colorclasses_edit_api.c \
 logger/logger.c \
 settings/settings.c \
 ui/ui_panes.c \

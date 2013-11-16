@@ -396,7 +396,7 @@ _on_group_clicked_double(void *data,
      }
 
    gl_parts = elm_genlist_add(nf);
-   elm_object_style_set(gl_parts, "eflete/default");
+   elm_object_style_set(gl_parts, DEFAULT_STYLE);
    pr->current_group = _group;
    evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_group, pr);
    evas_object_size_hint_align_set(gl_parts,

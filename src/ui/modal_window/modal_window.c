@@ -93,15 +93,18 @@ _mw_create(Evas_Object *parent, const char *style_name)
 }
 
 Evas_Object *
-mw_add(Evas_Object *parent)
+mw_add(Evas_Object *parent __UNUSED__)
 {
-   if (!parent)
+   Evas_Object *win = NULL;
+   win = main_window_get();
+
+   if (!win)
      {
         ERR("Parent evas_object is NULL.");
         return NULL;
      }
 
-   return _mw_create(parent, DEFAULT_STYLE);
+   return _mw_create(win, DEFAULT_STYLE);
 }
 
 Evas_Object *

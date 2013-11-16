@@ -25,7 +25,7 @@ App_Data *ap = NULL;
 Evas_Object *
 win_layout_get(void)
 {
-   if (ap && ap->win_layout)
+   if ((ap) && (ap->win_layout))
      return ap->win_layout;
    else
      return NULL;
@@ -34,9 +34,21 @@ win_layout_get(void)
 App_Data *
 app_create (void)
 {
-   if(!ap)
+   if (!ap)
       ap = mem_calloc(1, sizeof (App_Data));
    return ap;
+}
+
+Evas_Object *
+main_window_get (void)
+{
+   if (!ap)
+     {
+        ERR("Application data structure does'nt exist");
+        return NULL;
+     }
+
+   return ap->win;
 }
 
 void
