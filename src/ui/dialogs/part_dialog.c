@@ -25,7 +25,7 @@
 #define ENTRY_IS_EMPTY \
    if (elm_entry_is_empty(entry)) \
    { \
-       NOTIFY_WARNING("Part name can not be empty") \
+      NOTIFY_WARNING("Part name can not be empty") \
       return; \
    } \
 
@@ -124,14 +124,14 @@ _img_add_on_click(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info)
 {
+   Evas_Object *popup = (Evas_Object *)data;
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
-   ENTRY_IS_EMPTY
    evas_object_smart_callback_del(gs, "gs,image,choosed", _img_add_on_click);
    char *char_arr[2];
    char_arr[0] = (char *)event_info;
    char_arr[1] = (char *)elm_entry_entry_get(entry);
    evas_object_smart_callback_call(gs, "gs,img,add", char_arr);
-   evas_object_del((Evas_Object *)data);
+   evas_object_del(popup);
 }
 
 static void
@@ -150,11 +150,15 @@ _on_image_editor_done(void *data,
 }
 
 static void
-_on_state_image_choose(void *data __UNUSED__,
+_on_state_image_choose(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *ei __UNUSED__)
 {
    Evas_Object *img_edit;
+   Evas_Object *popup = (Evas_Object *)data;
+   ENTRY_IS_EMPTY
+   /* popup remove in _img_add_on_click */
+   evas_object_hide(popup);
    App_Data *ap = app_create();
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
    img_edit = image_editor_window_add(ap->win, SINGLE);
