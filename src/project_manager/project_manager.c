@@ -82,7 +82,6 @@ _swap_file_deleted(void *data,
    Project *project = (Project *)data;
    if (project->edc) free(project->edc);
    if (project->edj) free(project->edj);
-   if (project->demofile) free(project->demofile);
    if (project->image_directory) free(project->image_directory);
    if (project->font_directory) free(project->font_directory);
    if (project->sound_directory) free(project->sound_directory);
@@ -156,12 +155,6 @@ pm_project_add(const char *name,
    strcpy(pro->swapfile, pro->edj);
    strncat(pro->swapfile, ".swap", 5);
    DBG ("Path to swap file: '%s'", pro->swapfile);
-
-   /* set path to swap file */
-   pro->demofile = mem_malloc((strlen(pro->edj) + 6) * sizeof(char));
-   strcpy(pro->demofile, pro->edj);
-   strncat(pro->demofile, ".demo", 5);
-   DBG ("Path to demo file: '%s'", pro->demofile);
 
    /* set path to image directory */
    pro->image_directory = id ? strdup(id) : NULL;
@@ -251,7 +244,7 @@ pm_open_project_edc(const char *name,
                                project->sound_directory);
    if (project->compiler)
      {
-        eio_file_copy(project->edj, project->swapfile, NULL,
+        eio_file_move(project->edj, project->swapfile, NULL,
                       _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
         ecore_main_loop_begin();
      }

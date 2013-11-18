@@ -54,8 +54,6 @@ struct _Project
    char *edj;
    /** path to swap(work) file */
    char *swapfile;
-   /** path to demo(for live view) file */
-   char *demofile;
    /**  */
    Edje_CC *compiler;
    /**  */
