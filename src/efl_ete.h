@@ -131,4 +131,13 @@ app_create(void);
 void
 app_free(App_Data *ap);
 
+/**
+ * This function get pointer to main window of application.
+ *
+ * @return pointer to main window Evas_Object.
+ * @ingroup EFL_TET
+ */
+Evas_Object *
+main_window_get(void);
+
 #endif /* EFL_TET_H */
