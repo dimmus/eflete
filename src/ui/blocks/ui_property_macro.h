@@ -14,22 +14,38 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
+#include "string_macro.h"
+
 #define OBJ_DATA "group_data"
+
+static Elm_Entry_Filter_Accept_Set accept_color = {
+     .accepted = "0123456789 ",
+     .rejected = NULL
+};
+static Elm_Entry_Filter_Limit_Size limit_color = {
+     .max_char_count = 15,
+     .max_byte_count = 0
+};
+
+static Elm_Entry_Filter_Accept_Set accept_prop = {
+   .accepted = NULL,
+   .rejected = PROP_BANNED_SYMBOLS
+};
 
 /* group */
 #define ITEM_SPINNER_CALLBACK(sub, value, type) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Group *group = (Group *)data; \
    type value = (type)elm_spinner_value_get(obj); \
    edje_edit_##sub##_##value##_set(group->obj, value); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
 }
 
 #define ITEM_2SPINNER_GROUP_ADD(text, sub, value1, value2) \
@@ -44,22 +60,20 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *box, *spinner1, *spinner2; \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE); \
+   BOX_ADD(item, box, true, true); \
    elm_box_padding_set(box, 5, 0); \
-   SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "eflete/default") \
+   SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner1, "%.0f"); \
    elm_spinner_value_set(spinner1, edje_edit_##sub##_##value1##_get(group->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    elm_box_pack_end(box, spinner1); \
-   evas_object_smart_callback_add(spinner1, "changed", \
-                                  __on_##sub##_##value1##_change, group); \
-   SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "eflete/default") \
+   evas_object_smart_callback_add(spinner1, "changed", _on_##sub##_##value1##_change, group); \
+   SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##sub##_##value2##_get(group->obj)); \
    elm_spinner_label_format_set(spinner2, "%.0f"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    elm_box_pack_end(box, spinner2); \
-   evas_object_smart_callback_add(spinner2, "changed", \
-                                  __on_##sub##_##value2##_change, group); \
+   evas_object_smart_callback_add(spinner2, "changed", _on_##sub##_##value2##_change, group); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item; \
 }
@@ -73,67 +87,61 @@ void prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, Group *gr
    nodes = elm_box_children_get(box); \
    spinner1 = eina_list_nth(nodes, 0); \
    elm_spinner_value_set(spinner1, edje_edit_##sub##_##value1##_get(group->obj)); \
-   evas_object_smart_callback_del(spinner1, "changed", __on_##sub##_##value1##_change); \
-   evas_object_smart_callback_add(spinner1, "changed", \
-                                  __on_##sub##_##value1##_change, group); \
+   evas_object_smart_callback_del(spinner1, "changed", _on_##sub##_##value1##_change); \
+   evas_object_smart_callback_add(spinner1, "changed", _on_##sub##_##value1##_change, group); \
    spinner2 = eina_list_nth(nodes, 1); \
    elm_spinner_value_set(spinner2, edje_edit_##sub##_##value2##_get(group->obj)); \
-   evas_object_smart_callback_del(spinner2, "changed", __on_##sub##_##value2##_change); \
-   evas_object_smart_callback_add(spinner2, "changed", \
-                                  __on_##sub##_##value2##_change, group); \
+   evas_object_smart_callback_del(spinner2, "changed", _on_##sub##_##value2##_change); \
+   evas_object_smart_callback_add(spinner2, "changed", _on_##sub##_##value2##_change, group); \
    eina_list_free(nodes); \
 }
 
 /* part */
-/* TODO: need to update a edje_edit api, returned value should be Eina_Bool,
-   because it is impossible to check the parameter set */
 #define ITEM_STRING_PART_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
    if (strcmp(value, "") == 0) value = NULL; \
-    /* Wait review for commit D274 at https://phab.enlightenment.org/D274 \
-     * if (!edje_edit_##sub##_##value##_set(group->obj, part->name, value)) \
-     * { \
-     *   NOTIFY_INFO(5, "Wrong input value for"# value" field"); \
-     *   return; \
-     * } \
-     */ \
+     if (!edje_edit_##sub##_##value##_set(group->obj, part->name, value)) \
+       { \
+         NOTIFY_INFO(5, "Wrong input value for"# value" field"); \
+         return; \
+       } \
    edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
 #define ITEM_CHECK_PART_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    Eina_Bool value = elm_check_state_get(obj); \
    edje_edit_##sub##_##value##_set(group->obj, part->name, value); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
 #define ITEM_INT_PART_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    int drag = elm_spinner_value_get(obj); \
    edje_edit_##sub##_##value##_set(group->obj, part->name, drag); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
@@ -146,12 +154,12 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text) \
-   ENTRY_ADD(parent, entry, EINA_TRUE, "eflete/default") \
+   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    elm_entry_entry_set(entry, edje_edit_##sub##_##value##_get(group->obj, part->name)); \
    evas_object_data_set(entry, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -167,9 +175,8 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_entry_entry_set(entry, edje_edit_##sub##_##value##_get(group->obj, part->name)); \
    evas_object_data_del(entry, OBJ_DATA); \
    evas_object_data_set(entry, OBJ_DATA, group); \
-   evas_object_smart_callback_del(entry, "activated", __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
 }
 
 #define ITEM_1CHEACK_PART_ADD(text, sub, value) \
@@ -181,12 +188,11 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *check; \
    ITEM_ADD(parent, item, text) \
-   CHECK_ADD(parent, check, "eflete/default") \
+   CHECK_ADD(parent, check, DEFAULT_STYLE) \
    elm_check_state_set(check, edje_edit_##sub##_##value##_get(group->obj, part->name)); \
    evas_object_data_set(check, OBJ_DATA, group); \
    elm_object_tooltip_text_set(check, tooltip); \
-   evas_object_smart_callback_add(check, "changed", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(check, "changed", _on_##sub##_##value##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", check); \
    return item; \
 }
@@ -202,9 +208,8 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_check_state_set(check, edje_edit_##sub##_##value##_get(group->obj, part->name)); \
    evas_object_data_del(check, OBJ_DATA); \
    evas_object_data_set(check, OBJ_DATA, group); \
-   evas_object_smart_callback_del(check, "changed", __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(check, "changed", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(check, "changed", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(check, "changed", _on_##sub##_##value##_change, part); \
 }
 
 #define ITEM_DRAG_PART_ADD(text, sub, value1, value2) \
@@ -222,23 +227,21 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *check, *spinner; \
    int ch_value, st_value; \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   CHECK_ADD(box, check, "eflete/default") \
+   BOX_ADD(item, box, true, true) \
+   CHECK_ADD(box, check, DEFAULT_STYLE) \
    ch_value = edje_edit_##sub##_##value1##_get(group->obj, part->name); \
    elm_check_state_set(check, ch_value); \
    evas_object_data_set(check, OBJ_DATA, group); \
    elm_object_tooltip_text_set(check, tooltip1); \
-   evas_object_smart_callback_add(check, "changed", \
-                                  __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_add(check, "changed", _on_##sub##_##value1##_change, part); \
    elm_box_pack_end(box, check); \
-   SPINNER_ADD(box, spinner, min, max, step, EINA_TRUE, "eflete/default") \
+   SPINNER_ADD(box, spinner, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner, fmt); \
    st_value = edje_edit_##sub##_##value2##_get(group->obj, part->name); \
    elm_spinner_value_set(spinner, st_value); \
    evas_object_data_set(spinner, OBJ_DATA, group); \
    elm_object_tooltip_text_set(spinner, tooltip2); \
-   evas_object_smart_callback_add(spinner, "changed", \
-                                  __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##sub##_##value2##_change, part); \
    elm_box_pack_end(box, spinner); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item; \
@@ -260,43 +263,47 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_check_state_set(check, ch_value); \
    evas_object_data_del(check, OBJ_DATA); \
    evas_object_data_set(check, OBJ_DATA, group); \
-   evas_object_smart_callback_del(check, "changed", __on_##sub##_##value1##_change); \
-   evas_object_smart_callback_add(check, "changed", \
-                                  __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_del(check, "changed", _on_##sub##_##value1##_change); \
+   evas_object_smart_callback_add(check, "changed", _on_##sub##_##value1##_change, part); \
    spinner = eina_list_nth(nodes, 1); \
    st_value = edje_edit_##sub##_##value2##_get(group->obj, part->name); \
    elm_spinner_value_set(spinner, st_value); \
    evas_object_data_del(spinner, OBJ_DATA); \
    evas_object_data_set(spinner, OBJ_DATA, group); \
-   evas_object_smart_callback_del(spinner, "changed", __on_##sub##_##value2##_change); \
-   evas_object_smart_callback_add(spinner, "changed", \
-                                  __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_del(spinner, "changed", _on_##sub##_##value2##_change); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##sub##_##value2##_change, part); \
    eina_list_free(nodes); \
 }
 
 /* state */
 #define ITEM_STRING_STATE_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
    const char *value = elm_entry_entry_get(obj); \
+   Eina_Bool res; \
    if (strcmp(value, "") == 0) value = NULL; \
-   edje_edit_##sub##_##value##_set(group->obj, part->name, \
-                                   part->curr_state, part->curr_state_value, \
-                                   value); \
-   group->isModify = EINA_TRUE; \
+   res = edje_edit_##sub##_##value##_set(group->obj, part->name, \
+                                         part->curr_state, part->curr_state_value, \
+                                         value); \
+   if (!res) \
+     { \
+        NOTIFY_INFO(5, "Wrong input value for"# value" field"); \
+           return; \
+     } \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_SPINNER_STATE_CALLBACK(sub, value, type) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
@@ -304,13 +311,13 @@ __on_##sub##_##value##_change(void *data, \
    edje_edit_##sub##_##value##_set(group->obj, part->name,\
                                    part->curr_state, part->curr_state_value, \
                                    value); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_COLOR_STATE_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
+_on_##sub##_##value##_change(void *data, \
                               Evas_Object *obj, \
                               void *ei __UNUSED__) \
 { \
@@ -321,12 +328,12 @@ __on_##sub##_##value##_change(void *data, \
    const char *value = elm_entry_entry_get(obj); \
    char **c = eina_str_split_full (value, " ", 4, &tok_elm); \
    if (tok_elm < 4) \
-    { \
-       free(c[0]); \
-       free(c); \
-       NOTIFY_ERROR ("Please input correct color data:\n r g b a") \
-       return; \
-    } \
+     { \
+        free(c[0]); \
+        free(c); \
+        NOTIFY_ERROR ("Please input correct color data:\n r g b a") \
+        return; \
+     } \
    Evas_Object *box, *image; \
    Eina_List *nodes = NULL; \
    r = atoi(c[0]); g = atoi(c[1]); b = atoi(c[2]); a = atoi(c[3]); \
@@ -341,15 +348,15 @@ __on_##sub##_##value##_change(void *data, \
    free(c[0]); \
    free(c); \
    eina_list_free(nodes); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part); \
 }
 
 #define ITEM_CHECK_STATE_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Part *part = (Part *)data; \
    Group *group = evas_object_data_get(obj, OBJ_DATA); \
@@ -357,15 +364,15 @@ __on_##sub##_##value##_change(void *data, \
    edje_edit_##sub##_##value##_set(group->obj, part->name, \
                                    part->curr_state, part->curr_state_value, \
                                    value); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
 #define ITEM_IM_BORDER_STATE_CALLBACK(sub, value) \
 static void \
-__on_##sub##_##value##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+_on_##sub##_##value##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    unsigned int tok_elm; \
    Part *part = (Part *)data; \
@@ -385,7 +392,7 @@ __on_##sub##_##value##_change(void *data, \
                                 atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
    free(c[0]); \
    free(c); \
-   group->isModify = EINA_TRUE; \
+   group->isModify = true; \
    evas_object_smart_callback_call(group->obj, "group,update", part);\
 }
 
@@ -404,9 +411,9 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *spinner1, *spinner2; \
    double value; \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
+   BOX_ADD(item, box, true, true) \
    elm_box_padding_set(box, 5, 0); \
-   SPINNER_ADD(box, spinner1, min, max, step, EINA_TRUE, "eflete/default") \
+   SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner1, fmt); \
    value = edje_edit_##sub##_##value1##_get(group->obj, \
                                             part->name, \
@@ -416,9 +423,8 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    elm_box_pack_end(box, spinner1); \
    evas_object_data_set(spinner1, OBJ_DATA, group); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
-   evas_object_smart_callback_add(spinner1, "changed", \
-                                  __on_##sub##_##value1##_change, part); \
-   SPINNER_ADD(box, spinner2, min, max, step, EINA_TRUE, "eflete/default") \
+   evas_object_smart_callback_add(spinner1, "changed", _on_##sub##_##value1##_change, part); \
+   SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner2, fmt); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                             part->name, \
@@ -429,7 +435,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    evas_object_data_set(spinner2, OBJ_DATA, group); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    evas_object_smart_callback_add(spinner2, "changed", \
-                                  __on_##sub##_##value2##_change, part); \
+                                  _on_##sub##_##value2##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item;\
 }
@@ -453,9 +459,8 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_spinner_value_set(spinner1, value); \
    evas_object_data_del(spinner1, OBJ_DATA); \
    evas_object_data_set(spinner1, OBJ_DATA, group); \
-   evas_object_smart_callback_del(spinner1, "changed", __on_##sub##_##value1##_change); \
-   evas_object_smart_callback_add(spinner1, "changed", \
-                                  __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_del(spinner1, "changed", _on_##sub##_##value1##_change); \
+   evas_object_smart_callback_add(spinner1, "changed", _on_##sub##_##value1##_change, part); \
    spinner2 = eina_list_nth(nodes, 1); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                             part->name, \
@@ -464,9 +469,8 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_spinner_value_set(spinner2, value); \
    evas_object_data_del(spinner2, OBJ_DATA); \
    evas_object_data_set(spinner2, OBJ_DATA, group); \
-   evas_object_smart_callback_del(spinner2, "changed", __on_##sub##_##value2##_change); \
-   evas_object_smart_callback_add(spinner2, "changed", \
-                                  __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_del(spinner2, "changed", _on_##sub##_##value2##_change); \
+   evas_object_smart_callback_add(spinner2, "changed", _on_##sub##_##value2##_change, part); \
    eina_list_free(nodes); \
 }
 
@@ -479,16 +483,18 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                 const char *btn_tooltip) \
 { \
    Evas_Object *item, *entry, *box, *btn; \
-const char *value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
-                                                    part->curr_state, \
-                                                    part->curr_state_value); \
+   const char *value; \
+   value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
+                                           part->curr_state, \
+                                           part->curr_state_value); \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(parent, box, EINA_TRUE, EINA_FALSE) \
-   ENTRY_ADD(parent, entry, EINA_TRUE, "eflete/default") \
+   BOX_ADD(parent, box, true, false) \
+   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    elm_box_pack_end(box, entry); \
    btn = elm_button_add(parent); \
    elm_object_text_set(btn, "..."); \
-   elm_object_style_set(btn, "eflete/default"); \
+   elm_object_style_set(btn, DEFAULT_STYLE); \
    evas_object_show(btn); \
    elm_box_pack_end(box, btn); \
    evas_object_smart_callback_add(btn, "clicked", func, entry); \
@@ -496,8 +502,7 @@ const char *value = edje_edit_##sub##_##value##_get(group->obj, part->name, \
    evas_object_data_set(entry, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry, tooltip); \
    elm_object_tooltip_text_set(btn, btn_tooltip); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item; \
 }
@@ -519,20 +524,10 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_entry_entry_set(entry, value); \
    evas_object_data_del(entry, OBJ_DATA); \
    evas_object_data_set(entry, OBJ_DATA, group); \
-   evas_object_smart_callback_del(entry, "activated", __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    eina_list_free(nodes); \
 }
-
-static Elm_Entry_Filter_Accept_Set accept_color = {
-     .accepted = "0123456789 ",
-     .rejected = NULL
-};
-static Elm_Entry_Filter_Limit_Size limit_color = {
-     .max_char_count = 15,
-     .max_byte_count = 0
-};
 
 #define ITEM_COLOR_STATE_ADD(text, sub, value) \
 Evas_Object * \
@@ -548,8 +543,8 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                    part->curr_state, part->curr_state_value, \
                                    &r, &g, &b, &a); \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(parent, box, EINA_TRUE, EINA_FALSE) \
-   ENTRY_ADD(box, entry, EINA_TRUE, "eflete/default") \
+   BOX_ADD(parent, box, true, false) \
+   ENTRY_ADD(box, entry, true, DEFAULT_STYLE) \
    IMAGE_ADD(box, image, TET_IMG_PATH"bg_demo.png"); \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
    elm_entry_markup_filter_append(entry, elm_entry_filter_limit_size, &limit_color); \
@@ -557,8 +552,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    elm_entry_entry_set(entry, buff); \
    evas_object_data_set(entry, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a); \
    elm_box_pack_end(box, entry); \
    elm_box_pack_end(box, image); \
@@ -569,8 +563,8 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
 #define ITEM_COLOR_STATE_UPDATE(sub, value) \
 void \
 prop_item_##sub##_##value##_update(Evas_Object *item, \
-                                Group *group, \
-                                Part *part) \
+                                   Group *group, \
+                                   Part *part) \
 { \
    Evas_Object *box, *entry, *image; \
    char buff[BUFF_MAX]; \
@@ -586,9 +580,8 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_entry_entry_set(entry, buff); \
    evas_object_data_del(entry, OBJ_DATA); \
    evas_object_data_set(entry, OBJ_DATA, group); \
-   evas_object_smart_callback_del(entry, "activated", __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    image = eina_list_nth(nodes, 1); \
    evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a); \
    eina_list_free(nodes); \
@@ -605,10 +598,12 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *entry1, *entry2; \
    Eina_Stringshare *value; \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
+   BOX_ADD(item, box, true, true) \
    elm_box_padding_set(box, 5, 0); \
-   ENTRY_ADD(box, entry1, EINA_TRUE, "eflete/default") \
-   ENTRY_ADD(box, entry2, EINA_TRUE, "eflete/default") \
+   ENTRY_ADD(box, entry1, true, DEFAULT_STYLE) \
+   elm_entry_markup_filter_append(entry1, elm_entry_filter_accept_set, &accept_prop); \
+   ENTRY_ADD(box, entry2, true, DEFAULT_STYLE) \
+   elm_entry_markup_filter_append(entry2, elm_entry_filter_accept_set, &accept_prop); \
    value = edje_edit_##sub##_##value1##_get(group->obj, \
                                           part->name, \
                                           part->curr_state, \
@@ -616,8 +611,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    elm_entry_entry_set(entry1, value); \
    evas_object_data_set(entry1, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry1, tooltip1); \
-   evas_object_smart_callback_add(entry1, "activated", \
-                                  __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_add(entry1, "activated", _on_##sub##_##value1##_change, part); \
    elm_box_pack_end(box, entry1); \
    edje_edit_string_free(value); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
@@ -627,8 +621,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    elm_entry_entry_set(entry2, value); \
    evas_object_data_set(entry2, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry2, tooltip2); \
-   evas_object_smart_callback_add(entry2, "activated", \
-                                  __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_add(entry2, "activated", _on_##sub##_##value2##_change, part); \
    elm_box_pack_end(box, entry2); \
    edje_edit_string_free(value); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
@@ -654,9 +647,8 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_entry_entry_set(entry1, value); \
    evas_object_data_del(entry1, OBJ_DATA); \
    evas_object_data_set(entry1, OBJ_DATA, group); \
-   evas_object_smart_callback_del(entry1, "activated", __on_##sub##_##value1##_change); \
-   evas_object_smart_callback_add(entry1, "activated", \
-                                  __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_del(entry1, "activated", _on_##sub##_##value1##_change); \
+   evas_object_smart_callback_add(entry1, "activated", _on_##sub##_##value1##_change, part); \
    edje_edit_string_free(value); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                           part->name, \
@@ -666,9 +658,8 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_entry_entry_set(entry2, value); \
    evas_object_data_del(entry2, OBJ_DATA); \
    evas_object_data_set(entry2, OBJ_DATA, group); \
-   evas_object_smart_callback_del(entry2, "activated", __on_##sub##_##value2##_change); \
-   evas_object_smart_callback_add(entry2, "activated", \
-                                  __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_del(entry2, "activated", _on_##sub##_##value2##_change); \
+   evas_object_smart_callback_add(entry2, "activated", _on_##sub##_##value2##_change, part); \
    edje_edit_string_free(value); \
    eina_list_free(nodes); \
 }
@@ -687,7 +678,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    Evas_Object *item, *spinner; \
    double value; \
    ITEM_ADD(parent, item, text) \
-   SPINNER_ADD(item, spinner, min, max, step, EINA_TRUE, "eflete/default") \
+   SPINNER_ADD(item, spinner, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner, fmt); \
    value = edje_edit_##sub##_##value##_get(group->obj, \
                                            part->name, \
@@ -696,8 +687,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    elm_spinner_value_set(spinner, value); \
    evas_object_data_set(spinner, OBJ_DATA, group); \
    elm_object_tooltip_text_set(spinner, tooltip); \
-   evas_object_smart_callback_add(spinner, "changed", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##sub##_##value##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", spinner); \
    return item;\
 }
@@ -718,10 +708,8 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_spinner_value_set(spinner, value); \
    evas_object_data_del(spinner, OBJ_DATA); \
    evas_object_data_set(spinner, OBJ_DATA, group); \
-   evas_object_smart_callback_del(spinner, "changed", \
-                                  __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(spinner, "changed", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(spinner, "changed", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##sub##_##value##_change, part); \
 }
 
 #define ITEM_1CHEACK_STATE_ADD(text, sub, value) \
@@ -734,7 +722,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    Evas_Object *item, *check; \
    Eina_Bool value; \
    ITEM_ADD(parent, item, text) \
-   CHECK_ADD(item, check, "eflete/default") \
+   CHECK_ADD(item, check, DEFAULT_STYLE) \
    value = edje_edit_##sub##_##value##_get(group->obj, \
                                            part->name, \
                                            part->curr_state, \
@@ -742,8 +730,7 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
    elm_check_state_set(check, value); \
    evas_object_data_set(check, OBJ_DATA, group); \
    elm_object_tooltip_text_set(check, tooltip); \
-   evas_object_smart_callback_add(check, "changed", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(check, "changed", _on_##sub##_##value##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", check); \
    return item; \
 }
@@ -764,9 +751,8 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_check_state_set(check, value); \
    evas_object_data_del(check, OBJ_DATA); \
    evas_object_data_set(check, OBJ_DATA, group); \
-   evas_object_smart_callback_del(check, "changed", __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(check, "changed", \
-                                 __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(check, "changed", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(check, "changed", _on_##sub##_##value##_change, part); \
 }
 
 #define ITEM_2CHEACK_STATE_ADD(text, sub, value1, value2) \
@@ -780,9 +766,9 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *check1, *check2; \
    Eina_Bool value; \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(item, box, EINA_TRUE, EINA_TRUE) \
-   CHECK_ADD(box, check1, "eflete/default") \
-   CHECK_ADD(box, check2, "eflete/default") \
+   BOX_ADD(item, box, true, true) \
+   CHECK_ADD(box, check1, DEFAULT_STYLE) \
+   CHECK_ADD(box, check2, DEFAULT_STYLE) \
    value = edje_edit_##sub##_##value1##_get(group->obj, \
                                             part->name, \
                                             part->curr_state, \
@@ -790,8 +776,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    elm_check_state_set(check1, value); \
    evas_object_data_set(check1, OBJ_DATA, group); \
    elm_object_tooltip_text_set(check1, tooltip1); \
-   evas_object_smart_callback_add(check1, "changed", \
-                                  __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_add(check1, "changed", _on_##sub##_##value1##_change, part); \
    elm_box_pack_end(box, check1); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                             part->name, \
@@ -800,8 +785,7 @@ prop_item_##sub##_##value1##_##value2##_add(Evas_Object *parent, \
    elm_check_state_set(check2, value); \
    evas_object_data_set(check2, OBJ_DATA, group); \
    elm_object_tooltip_text_set(check2, tooltip2); \
-   evas_object_smart_callback_add(check2, "changed", \
-                                  __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_add(check2, "changed", _on_##sub##_##value2##_change, part); \
    elm_box_pack_end(box, check2); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    return item; \
@@ -826,9 +810,8 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_check_state_set(check1, value); \
    evas_object_data_del(check1, OBJ_DATA); \
    evas_object_data_set(check1, OBJ_DATA, group); \
-   evas_object_smart_callback_del(check1, "changed", __on_##sub##_##value1##_change); \
-   evas_object_smart_callback_add(check1, "changed", \
-                                 __on_##sub##_##value1##_change, part); \
+   evas_object_smart_callback_del(check1, "changed", _on_##sub##_##value1##_change); \
+   evas_object_smart_callback_add(check1, "changed", _on_##sub##_##value1##_change, part); \
    check2 = eina_list_nth(nodes, 1); \
    value = edje_edit_##sub##_##value2##_get(group->obj, \
                                             part->name, \
@@ -837,9 +820,8 @@ prop_item_##sub##_##value1##_##value2##_update(Evas_Object *item, \
    elm_check_state_set(check2, value); \
    evas_object_data_del(check2, OBJ_DATA); \
    evas_object_data_set(check2, OBJ_DATA, group); \
-   evas_object_smart_callback_del(check2, "changed", __on_##sub##_##value2##_change); \
-   evas_object_smart_callback_add(check2, "changed", \
-                                 __on_##sub##_##value2##_change, part); \
+   evas_object_smart_callback_del(check2, "changed", _on_##sub##_##value2##_change); \
+   evas_object_smart_callback_add(check2, "changed", _on_##sub##_##value2##_change, part); \
    eina_list_free(nodes); \
 }
 
@@ -857,14 +839,13 @@ prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                    part->curr_state, part->curr_state_value, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, text) \
-   ENTRY_ADD(item, entry, EINA_TRUE, "eflete/default") \
+   ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
    snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
    elm_entry_entry_set(entry, buff); \
    evas_object_data_set(entry, OBJ_DATA, group); \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -886,8 +867,7 @@ prop_item_##sub##_##value##_update(Evas_Object *item, \
    elm_entry_entry_set(entry, buff); \
    evas_object_data_del(entry, OBJ_DATA); \
    evas_object_data_set(entry, OBJ_DATA, group); \
-   evas_object_smart_callback_del(entry, "activated", __on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "activated", \
-                                  __on_##sub##_##value##_change, part); \
+   evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "activated", _on_##sub##_##value##_change, part); \
    return item; \
 }

@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; If not, see .
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
 #include "ui_property.h"
@@ -63,6 +63,7 @@ struct _Prop_Data
       Evas_Object *visible;
       Evas_Object *min;
       Evas_Object *max;
+      Evas_Object *fixed;
       Evas_Object *align;
       Evas_Object *aspect;
       Evas_Object *aspect_pref; /* missing correct widget for view this param */
