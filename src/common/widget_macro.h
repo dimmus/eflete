@@ -141,5 +141,4 @@
    elm_win_inwin_content_set(inwin, fs); \
    evas_object_show(fs);
 
-
 #endif /* WIDGET_MACRO_H */

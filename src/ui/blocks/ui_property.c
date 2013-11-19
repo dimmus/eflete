@@ -19,6 +19,7 @@
 
 #include "ui_property.h"
 #include "ui_property_macro.h"
+#include "common_macro.h"
 #include "image_editor.h"
 
 #define PROP_DATA "prop_data"
@@ -63,10 +64,10 @@ struct _Prop_Data
       Evas_Object *visible;
       Evas_Object *min;
       Evas_Object *max;
-      Evas_Object *fixed;
+      Evas_Object *fixed; /* not implemented in yet the edje */
       Evas_Object *align;
       Evas_Object *aspect;
-      Evas_Object *aspect_pref; /* missing correct widget for view this param */
+      Evas_Object *aspect_pref;
       Evas_Object *color_class;
       Evas_Object *color;
    } prop_state;
@@ -89,19 +90,19 @@ struct _Prop_Data
       Evas_Object *size;
       Evas_Object *align;
       Evas_Object *elipsis;
-      Evas_Object *min; /* not implemented in yet the edje*/
-      Evas_Object *max; /* not implemented in yet the edje*/
+      Evas_Object *min;
+      Evas_Object *max;
       Evas_Object *fit;
-      Evas_Object *source; /* not implemented in yet the edje*/
+      Evas_Object *text_source; /* not implemented in yet the edje */
       Evas_Object *color2;
       Evas_Object *color3;
    } prop_state_text;
    struct {
       Evas_Object *frame;
       Evas_Object *text;
-      Evas_Object *style; /* not implemented in yet the edje*/
-      Evas_Object *min; /* not implemented in yet the edje*/
-      Evas_Object *max; /* not implemented in yet the edje*/
+      Evas_Object *style; /* not implemented in yet the edje  */
+      Evas_Object *min;
+      Evas_Object *max;
    } prop_state_textblock;
    struct {
       Evas_Object *frame;
@@ -111,8 +112,20 @@ struct _Prop_Data
       Evas_Object *tween;
    } prop_state_image;
 };
-
 typedef struct _Prop_Data Prop_Data;
+
+struct _Index
+{
+   int i;
+};
+typedef struct _Index Index;
+
+static const char *edje_aspect_pref[] = { "None",
+                                          "Vertical",
+                                          "Horizontal",
+                                          "Both",
+                                          "Source" };
+#define ASPECT_PREF_TYPE_COUNT 5
 
 static Eina_Bool
 ui_property_state_rel1_set(Evas_Object *property, Part *part);
@@ -154,7 +167,7 @@ _del_prop_data(void *data,
    free(pd);
 }
 
-Evas_Object *
+static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
                     const char *lab_text,
                     const char *text)
@@ -168,7 +181,7 @@ prop_item_label_add(Evas_Object *parent,
    return item;
 }
 
-void
+static void
 prop_item_label_update(Evas_Object *item,
                        const char *text)
 {
@@ -176,6 +189,77 @@ prop_item_label_update(Evas_Object *item,
    label = elm_object_part_content_get(item, "elm.swallow.content");
    elm_object_text_set(label, text);
 }
+
+static void
+_on_state_pref_pref_change(void *data,
+                           Evas_Object *obj,
+                           void *ei)
+{
+   Part *part = (Part *)data;
+   Group *group = evas_object_data_get(obj, OBJ_DATA);
+   Index *index = elm_object_item_data_get((Elm_Object_Item *)ei);
+   elm_object_text_set(obj, edje_aspect_pref[index->i]);
+   edje_edit_state_aspect_pref_set(group->obj, part->name,
+                                   part->curr_state, part->curr_state_value,
+                                   index->i);
+}
+
+#define INDEX_APPEND(value) \
+   index = mem_malloc(sizeof(Index)); \
+   index->i = value; \
+   elm_object_item_data_set(hovit, index);
+
+static Evas_Object *
+prop_item_state_aspect_pref_add(Evas_Object *parent,
+                                Evas_Object *hoversel_parent,
+                                Group *group,
+                                Part *part,
+                                const char *tooltip)
+{
+   Evas_Object *item, *hoversel;
+   Elm_Object_Item *hovit;
+   unsigned char asp_pref;
+   Index *index;
+   int i = 0;
+   ITEM_ADD(parent, item, "aspect pref")
+   HOVERSEL_ADD(item, hoversel, false)
+   elm_hoversel_hover_parent_set(hoversel, hoversel_parent);
+   evas_object_data_set(hoversel, OBJ_DATA, group);
+   elm_object_tooltip_text_set(hoversel, tooltip);
+   asp_pref = edje_edit_state_aspect_pref_get(group->obj,
+                                              part->name,
+                                              part->curr_state,
+                                              part->curr_state_value);
+   for (i = 0; i < ASPECT_PREF_TYPE_COUNT; i++)
+     {
+        hovit = elm_hoversel_item_add(hoversel, edje_aspect_pref[i], NULL,
+                  ELM_ICON_NONE, NULL, NULL);
+        INDEX_APPEND(i)
+     }
+   elm_object_text_set(hoversel, edje_aspect_pref[asp_pref]);
+   evas_object_smart_callback_add(hoversel, "selected", _on_state_pref_pref_change, part);
+   elm_object_part_content_set(item, "elm.swallow.content", hoversel);
+   return item;
+}
+#undef INDEX_APPEND
+
+static void
+prop_item_state_aspect_pref_update(Evas_Object *item,
+                                   Group *group,
+                                   Part *part)
+{
+   Evas_Object *hoversel;
+   unsigned char asp_pref;
+   hoversel = elm_object_part_content_get(item, "elm.swallow.content");
+   asp_pref = edje_edit_state_aspect_pref_get(group->obj,
+                                              part->name,
+                                              part->curr_state,
+                                              part->curr_state_value);
+   elm_object_text_set(hoversel, edje_aspect_pref[asp_pref]);
+   evas_object_data_del(hoversel, OBJ_DATA);
+   evas_object_data_set(hoversel, OBJ_DATA, group);
+}
+#undef HOVERSEL_LABEL_SET
 
 Evas_Object *
 ui_property_add(Evas_Object *parent)
@@ -191,7 +275,7 @@ ui_property_add(Evas_Object *parent)
    elm_object_content_set(scroller, box);
 
    _bg = evas_object_image_add(evas_object_evas_get(parent));
-   evas_object_image_filled_set(_bg, EINA_TRUE);
+   evas_object_image_filled_set(_bg, true);
    evas_object_image_file_set(_bg, TET_IMG_PATH"section-item-bg.png", NULL);
    evas_object_image_border_set(_bg, 0, 0, 0, 2);
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
@@ -226,7 +310,7 @@ ui_property_group_set(Evas_Object *property, Group *group)
 
    if (!pd_group.frame)
      {
-        FRAME_ADD(property, group_frame, EINA_TRUE, "Group property")
+        FRAME_ADD(property, group_frame, true, "Group property")
         BOX_ADD(group_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
@@ -253,7 +337,7 @@ ui_property_group_set(Evas_Object *property, Group *group)
         evas_object_show(pd_group.frame);
      }
 
-   return EINA_TRUE;
+   return true;
 }
 
 void
@@ -311,7 +395,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if (!pd_part.frame)
      {
-        FRAME_ADD(property, part_frame, EINA_TRUE, "Part property")
+        FRAME_ADD(property, part_frame, true, "Part property")
         BOX_ADD(part_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_frame, box);
@@ -350,7 +434,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    if (!pd_part_drag.frame)
      {
-        FRAME_ADD(property, part_drag_frame, EINA_TRUE, "Part dragable property")
+        FRAME_ADD(property, part_drag_frame, true, "Part dragable property")
         BOX_ADD(part_drag_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_drag_frame, box);
@@ -387,7 +471,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         evas_object_show(pd_part_drag.frame);
      }
 
-   return EINA_TRUE;
+   return true;
 }
 
 void
@@ -462,7 +546,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    if (!pd_state.frame)
      {
-        FRAME_ADD(property, state_frame, EINA_TRUE, "State")
+        FRAME_ADD(property, state_frame, true, "State")
         BOX_ADD(state_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(state_frame, box);
@@ -494,7 +578,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "resized to any values independently",
                              "Normally width and height can be "
                              "resized to any values independently");
-        /* pd_state.aspect_pref = */
+        pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, property,
+                                   pd->group, part,
+                                   "");
         pd_state.color_class = prop_item_state_color_class_add(box, pd->group, part,
                                   "Current color class",
                                   "Choose another color class");
@@ -505,10 +591,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.visible);
         elm_box_pack_end(box, pd_state.min);
         elm_box_pack_end(box, pd_state.max);
-        elm_box_pack_end(box, pd_state.fixed);
+        /* elm_box_pack_end(box, pd_state.fixed); */
         elm_box_pack_end(box, pd_state.align);
         elm_box_pack_end(box, pd_state.aspect);
-        /* elm_box_pack_end(box, pd_state.aspect_pref); */
+        elm_box_pack_end(box, pd_state.aspect_pref);
         elm_box_pack_end(box, pd_state.color_class);
         if (type == EDJE_PART_TYPE_SPACER)
           {
@@ -533,7 +619,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         /* prop_item_state_fixed_w_h_update(pd_state.fixed, pd->group, part); */
         prop_item_state_align_x_y_update(pd_state.align, pd->group, part);
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd->group, part);
-        /* prop_item_state_aspect_pref_update */
+        prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd->group, part);
         prop_item_state_color_class_update(pd_state.color_class, pd->group, part);
         if (type != EDJE_PART_TYPE_SPACER)
           {
@@ -557,7 +643,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else ui_property_state_image_unset(property);
 
    #undef pd_state
-   return EINA_TRUE;
+   return true;
 }
 
 void
@@ -592,7 +678,7 @@ ui_property_state_rel1_set(Evas_Object *property, Part *part)
 
    if (!pd_rel1.frame)
      {
-        FRAME_ADD(property, rel1_frame, EINA_TRUE, "rel1: top-left")
+        FRAME_ADD(property, rel1_frame, true, "rel1: top-left")
         BOX_ADD(rel1_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(rel1_frame, box);
@@ -625,7 +711,7 @@ ui_property_state_rel1_set(Evas_Object *property, Part *part)
         evas_object_show(pd_rel1.frame);
      }
 
-   return EINA_TRUE;
+   return true;
 }
 
 static void
@@ -649,7 +735,7 @@ ui_property_state_rel2_set(Evas_Object *property, Part *part)
 
    if (!pd_rel2.frame)
      {
-        FRAME_ADD(property, rel2_frame, EINA_TRUE, "rel2: bottom-right")
+        FRAME_ADD(property, rel2_frame, true, "rel2: bottom-right")
         BOX_ADD(rel2_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(rel2_frame, box);
@@ -682,7 +768,7 @@ ui_property_state_rel2_set(Evas_Object *property, Part *part)
         evas_object_show(pd_rel2.frame);
      }
 
-   return EINA_TRUE;
+   return true;
 }
 
 static void
@@ -702,6 +788,8 @@ ITEM_1ENTRY_STATE_CREATE("text", state, text, NULL)
 ITEM_1ENTRY_STATE_CREATE("font", state, font, NULL)
 ITEM_1SPINNER_STATE_CREATE("size", state_text, size, int)
 ITEM_2SPINNER_STATE_CREATE("align", state_text_align, x, y, double)
+ITEM_2CHECK_STATE_CREATE("max", state_text_max, x, y)
+ITEM_2CHECK_STATE_CREATE("min", state_text_min, x, y)
 ITEM_1SPINNER_STATE_CREATE("elipsis", state_text, elipsis, double)
 ITEM_2CHECK_STATE_CREATE("fit", state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE("shadow color", state, color2)
@@ -719,7 +807,7 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
    prop_box = elm_object_content_get(property);
    if (!pd_text.frame)
      {
-         FRAME_ADD(property, text_frame, EINA_TRUE, "Text")
+         FRAME_ADD(property, text_frame, true, "Text")
          BOX_ADD(text_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
@@ -737,6 +825,20 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
                             "0.0 = left  1.0 = right",
                             "Text vertical align. "
                             "0.0 = top  1.0 = bottom");
+         pd_text.min = prop_item_state_text_min_x_y_add(box, pd->group, part,
+                           "When any of the parameters is enabled it forces \t"
+                           "the minimum size of the container to be equal to\t"
+                           "the minimum size of the text.",
+                           "When any of the parameters is enabled it forces \t"
+                           "the minimum size of the container to be equal to\t"
+                           "the minimum size of the text.");
+         pd_text.max = prop_item_state_text_max_x_y_add(box, pd->group, part,
+                           "When any of the parameters is enabled it forces \t"
+                           "the maximum size of the container to be equal to\t"
+                           "the maximum size of the text.",
+                           "When any of the parameters is enabled it forces \t"
+                           "the maximum size of the container to be equal to\t"
+                           "the maximum size of the text.");
          pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd->group, part,
                               0.0, 1.0, 0.1, "%1.2f",
                               "Cut text if biggest then part's area"
@@ -753,6 +855,8 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
          elm_box_pack_end(box, pd_text.font);
          elm_box_pack_end(box, pd_text.size);
          elm_box_pack_end(box, pd_text.align);
+         elm_box_pack_end(box, pd_text.min);
+         elm_box_pack_end(box, pd_text.max);
          elm_box_pack_end(box, pd_text.elipsis);
          elm_box_pack_end(box, pd_text.fit);
          elm_box_pack_end(box, pd_text.color2);
@@ -767,6 +871,8 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
         prop_item_state_font_update(pd_text.font, pd->group, part);
         prop_item_state_text_size_update(pd_text.size, pd->group, part);
         prop_item_state_text_align_x_y_update(pd_text.align, pd->group, part);
+        prop_item_state_text_min_x_y_update(pd_text.min, pd->group, part);
+        prop_item_state_text_max_x_y_update(pd_text.max, pd->group, part);
         prop_item_state_text_elipsis_update(pd_text.elipsis, pd->group, part);
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd->group, part);
         prop_item_state_color2_update(pd_text.color2, pd->group, part);
@@ -775,7 +881,7 @@ ui_property_state_text_set(Evas_Object *property, Part *part)
         evas_object_show(pd_text.frame);
      }
 
-   return EINA_TRUE;
+   return true;
 }
 
 static void
@@ -802,15 +908,31 @@ ui_property_state_textblock_set(Evas_Object *property, Part *part)
    prop_box = elm_object_content_get(property);
    if (!pd_textblock.frame)
      {
-         FRAME_ADD(property, textblock_frame, EINA_TRUE, "TextBlock")
+         FRAME_ADD(property, textblock_frame, true, "TextBlock")
          BOX_ADD(textblock_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(textblock_frame, box);
 
          pd_textblock.text = prop_item_state_text_add(box, pd->group, part,
                            "Set the text of part.", "Choose different text");
+         pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd->group, part,
+                           "When any of the parameters is enabled it forces \t"
+                           "the minimum size of the container to be equal to\t"
+                           "the minimum size of the text.",
+                           "When any of the parameters is enabled it forces \t"
+                           "the minimum size of the container to be equal to\t"
+                           "the minimum size of the text.");
+         pd_textblock.max = prop_item_state_text_max_x_y_add(box, pd->group, part,
+                           "When any of the parameters is enabled it forces \t"
+                           "the maximum size of the container to be equal to\t"
+                           "the maximum size of the text.",
+                           "When any of the parameters is enabled it forces \t"
+                           "the maximum size of the container to be equal to\t"
+                           "the maximum size of the text.");
 
          elm_box_pack_end(box, pd_textblock.text);
+         elm_box_pack_end(box, pd_textblock.min);
+         elm_box_pack_end(box, pd_textblock.max);
 
          elm_box_pack_end(prop_box, textblock_frame);
          pd_textblock.frame = textblock_frame;
@@ -818,10 +940,12 @@ ui_property_state_textblock_set(Evas_Object *property, Part *part)
    else
      {
         prop_item_state_text_update(pd_textblock.text, pd->group, part);
+        prop_item_state_text_min_x_y_update(pd_textblock.min, pd->group, part);
+        prop_item_state_text_max_x_y_update(pd_textblock.max, pd->group, part);
         elm_box_pack_end(prop_box, pd_textblock.frame);
         evas_object_show(pd_textblock.frame);
      }
-   return EINA_TRUE;
+   return true;
 }
 
 static void
@@ -889,7 +1013,7 @@ ui_property_state_image_set(Evas_Object *property, Part *part)
    prop_box = elm_object_content_get(property);
    if (!pd_image.frame)
      {
-        FRAME_ADD(property, image_frame, EINA_TRUE, "Image")
+        FRAME_ADD(property, image_frame, true, "Image")
         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
@@ -914,7 +1038,7 @@ ui_property_state_image_set(Evas_Object *property, Part *part)
         evas_object_show(pd_image.frame);
      }
 
-   return EINA_TRUE;
+   return true;
 }
 
 static void
