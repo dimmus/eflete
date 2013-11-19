@@ -240,15 +240,13 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
 }
 
 Eina_Bool
-ui_demospace_unset(Demospace *demo, Project *project)
+ui_demospace_unset(Demospace *demo)
 {
-   if ((!project) || (!project->edj) || (!demo)) return false;
-   elm_theme_free(demo->th);
+   if (!demo) return false;
    elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
    elm_object_part_content_unset(demo->groupspace, "groupspace");
    evas_object_del(demo->object);
    demo->object = NULL;
-   demo->th = NULL;
    return true;
 }
 
@@ -286,4 +284,13 @@ ui_demospace_update(Demospace *demo)
    edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
                                    "bottom_pad", dx, dy);
    return true;
+}
+
+void
+demo_free(Demospace *demo)
+{
+   if (demo) ui_demospace_unset(demo);
+   if (demo->th)
+     elm_theme_free(demo->th);
+   free(demo);
 }

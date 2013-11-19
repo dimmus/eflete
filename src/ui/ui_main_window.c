@@ -38,6 +38,9 @@ ui_main_window_del(App_Data *ap)
    eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
+   pm_free(ap->project);
+   ws_free(ap->ws);
+   demo_free(ap->demo);
    elm_exit();
 }
 

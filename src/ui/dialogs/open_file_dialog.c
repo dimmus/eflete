@@ -174,8 +174,6 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
    evas_object_smart_callback_add(wd_list, "wl,group,back", _on_group_back, ap);
-   if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
-   if (ap->demo) ui_demospace_unset(ap->demo, ap->project);
 }
 
 static void

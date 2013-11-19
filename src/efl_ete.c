@@ -34,8 +34,8 @@ win_layout_get(void)
 App_Data *
 app_create (void)
 {
-   if (!ap)
-      ap = mem_calloc(1, sizeof (App_Data));
+   if(!ap)
+     ap = mem_calloc(1, sizeof (App_Data));
    return ap;
 }
 
@@ -54,13 +54,7 @@ main_window_get (void)
 void
 app_free(App_Data *ap)
 {
-   if (ap)
-     {
-        pm_free(ap->project);
-        ws_free(ap->ws);
-        free(ap->demo);
-        free(ap);
-     }
+   if (ap) free(ap);
 }
 
 Eina_Bool

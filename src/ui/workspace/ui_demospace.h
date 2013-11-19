@@ -84,7 +84,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group);
  * @ingroup Demospace
  */
 Eina_Bool
-ui_demospace_unset(Demospace *demo, Project *project);
+ui_demospace_unset(Demospace *demo);
 
 /**
  * Set and show selected group and apply style to it.
@@ -99,5 +99,18 @@ ui_demospace_unset(Demospace *demo, Project *project);
  */
 Eina_Bool
 ui_demospace_update(Demospace *demo);
+
+/**
+ * Freeing the demospace structure.
+ *
+ * This function will free and delete the structure that contain all
+ * information about live view.
+ *
+ * @param demo demospace structure.
+ *
+ * @ingroup Demospace
+ */
+void
+demo_free(Demospace *demo);
 
 #endif /* UI_DEMOSPACE_HEADER_H */

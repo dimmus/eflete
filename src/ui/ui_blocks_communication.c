@@ -38,7 +38,7 @@ ui_part_back(App_Data *ap)
    elm_genlist_clear(ui_block_signal_list_get(ap));
    prop = ui_block_property_get(ap);
    ui_property_group_unset(prop);
-   ui_demospace_unset(ap->demo, ap->project);
+   ui_demospace_unset(ap->demo);
 
    ui_menu_disable_set(ap, "Programs", EINA_TRUE);
 }
@@ -176,6 +176,8 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
+             if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
+             if (ap->demo) ui_demospace_unset(ap->demo);
              pm_free(ap->project);
              GET_NAME_FROM_PATH(name, selected)
              ap->project = pm_open_project_edj(name, selected);
@@ -224,6 +226,8 @@ ui_edc_load_done(App_Data* ap,
         elm_genlist_clear(ui_block_state_list_get(ap));
         elm_genlist_clear(ui_block_signal_list_get(ap));
 
+        if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
+        if (ap->demo) ui_demospace_unset(ap->demo);
         pm_free(ap->project);
         ap->project = pm_open_project_edc(project_name,
                                           path_edc,
@@ -307,7 +311,7 @@ new_theme_create(App_Data *ap)
              prop = ui_block_property_get(ap);
              if (prop) ui_property_group_unset(prop);
              if ((ap->demo) || (ap->project))
-               ui_demospace_unset(ap->demo, ap->project);
+               ui_demospace_unset(ap->demo);
              ui_menu_disable_set(ap, "Programs", EINA_TRUE);
           }
         pm_free(ap->project);
