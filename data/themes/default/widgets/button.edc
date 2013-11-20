@@ -25,7 +25,7 @@ group { name: "elm/button/base/eflete/default";
             }
             description { state: "disabled" 0;
                inherit: "default" 0.0;
-               image.normal: "button-click-bg.png";
+               image.normal: "button-disabled-bg.png";
             }
          }
       part { name: "elm.swallow.content";
