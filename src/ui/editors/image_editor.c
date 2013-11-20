@@ -38,7 +38,6 @@ struct _Image_Editor
    Evas_Object *win;
    Evas_Object *gengrid;
    Evas_Object *legend;
-   Evas_Object *fs_win;
    struct {
       Evas_Smart_Cb choose_func;
       void *data;
@@ -127,7 +126,6 @@ _grid_sel(void *data,
    int selected_images_count = eina_list_count(sel_list);
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
-   if (img_edit->fs_win) evas_object_del(img_edit->fs_win);
 
    switch (selected_images_count)
      {
@@ -192,13 +190,19 @@ _on_image_done(void *data,
 {
    Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
-
    const char *selected = event_info;
+
+   if ((!selected) || (!strcmp(selected, "")))
+     {
+        ecore_main_loop_quit();
+        return;
+     }
+
    Image_Editor *img_edit = (Image_Editor *)data;
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
 
-   if ((selected) && (ecore_file_exists(selected)))
+   if (ecore_file_exists(selected))
      {
         if (!edje_edit_image_add(edje_edit_obj, selected))
           {
@@ -217,16 +221,18 @@ _on_image_done(void *data,
    else
      NOTIFY_ERROR("Error while loading file.<br> File is not exist");
 
-   evas_object_hide(img_edit->fs_win);
+   ecore_main_loop_quit();
 }
 
 static void
-_on_mw_fileselector_close(void *data __UNUSED__,
+_on_inwin_delete(void *data,
                        Evas *e __UNUSED__,
-                       Evas_Object *obj,
+                       Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   evas_object_smart_callback_call(obj, "done", NULL);
+   Eina_Bool *dialog_deleted = (Eina_Bool *)data;
+   if (!*dialog_deleted) ecore_main_loop_quit();
+   *dialog_deleted = true;
 }
 
 static void
@@ -234,16 +240,27 @@ _on_button_add_clicked_cb(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
 {
-   Evas_Object *fs = NULL;
-   Image_Editor *img_edit = (Image_Editor *)data;
+   Evas_Object *fs;
+   Eina_Bool dialog_deleted = false;
 
-   img_edit->fs_win = mw_add(NULL);
-   OPEN_DIALOG_ADD(img_edit->fs_win, fs, "Add image to library");
-   evas_object_event_callback_add(img_edit->fs_win, EVAS_CALLBACK_FREE,
-                                  _on_mw_fileselector_close, NULL);
-   evas_object_smart_callback_add(fs, "done", _on_image_done, img_edit);
-   evas_object_smart_callback_add(fs, "activated", _on_image_done, img_edit);
-   elm_win_inwin_activate(img_edit->fs_win);
+   Evas_Object *inwin = mw_add(NULL);
+   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
+                                  _on_inwin_delete, &dialog_deleted);
+   OPEN_DIALOG_ADD(inwin, fs, "Add image to library");
+   evas_object_smart_callback_add(fs, "done", _on_image_done, data);
+   evas_object_smart_callback_add(fs, "activated", _on_image_done, data);
+
+   elm_win_inwin_activate(inwin);
+
+   ecore_main_loop_begin();
+
+   if (!dialog_deleted)
+     {
+        dialog_deleted = true;
+        evas_object_del(fs);
+        evas_object_del(inwin);
+     }
+
    return;
 }
 

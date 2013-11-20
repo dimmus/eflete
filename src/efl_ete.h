@@ -53,7 +53,6 @@ struct _App_Data
     Evas_Object *win_layout;
     Evas_Object *main_menu;
     Eina_Hash *menu_hash;
-    Evas_Object *inwin;
     Evas_Object *popup;
     Eina_Bool is_new;
     struct {

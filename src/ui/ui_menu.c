@@ -43,19 +43,19 @@ _on_close_project_save(void *data,
    App_Data *ap = (App_Data *)data;
 
    evas_object_del(ap->popup);
-   if (pm_save_project_to_swap(ap->project))
+   if (!ap->project->edj)
      {
-        if (!ap->project->edj)
-          {
-             ap->is_new = true;
-             save_as_edj_file(ap);
-          }
-        else
+        ap->is_new = true;
+        save_as_edj_file(ap);
+     }
+   else
+     {
+        if (pm_save_project_to_swap(ap->project))
           {
              if (pm_save_project_edj(ap->project))
-               ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+                ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
              else
-               NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
+                NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
           }
      }
 }
@@ -174,18 +174,18 @@ _on_save_menu(void *data,
         return;
      }
 
-   if (pm_save_project_to_swap(ap->project))
+   if (!ap->project->edj)
      {
-        if (!ap->project->edj)
-          {
-             save_as_edj_file(ap);
-          }
-        else
+        save_as_edj_file(ap);
+     }
+   else
+     {
+        if (pm_save_project_to_swap(ap->project))
           {
              if (pm_save_project_edj(ap->project))
                {
                   NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
-                  ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+                     ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
                }
              else
                NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);

@@ -202,7 +202,6 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
           }
      }
    evas_object_hide(elm_object_parent_widget_get(obj));
-   evas_object_del(obj);
    return wd_list;
 }
 
@@ -252,9 +251,6 @@ ui_edc_load_done(App_Data* ap,
         ERR("The file must have a extension '.edc'");
         NOTIFY_ERROR("The file must have a extension '.edc'");
      }
-
-   evas_object_del(elm_object_content_get(ap->inwin));
-   evas_object_hide(ap->inwin);
 
    return wd_list;
 }
