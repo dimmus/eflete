@@ -26,6 +26,41 @@
 #include "ui_highlight.h"
 #include "about_window.h"
 
+static int _menu_delayed_event = 0;
+
+struct _menu_event
+{
+   App_Data *ap;
+   enum {
+      OPEN_EDC = 0,
+      OPEN_EDJ,
+      SAVE_EDJ
+   } type;
+};
+
+typedef struct _menu_event Menu_Event;
+
+static Eina_Bool
+_menu_event_handler_cb(void *data __UNUSED__,
+                       int type __UNUSED__,
+                       void *event)
+{
+   Menu_Event *menu_event = (Menu_Event *)event;
+   switch (menu_event->type)
+      {
+      case OPEN_EDC:
+         open_edc_file(menu_event->ap);
+      break;
+      case OPEN_EDJ:
+         open_edj_file(menu_event->ap);
+      break;
+      case SAVE_EDJ:
+         save_as_edj_file(menu_event->ap);
+      break;
+      }
+   return ECORE_CALLBACK_DONE;
+}
+
 static void
 _on_close_project_cancel(void *data,
                          Evas_Object *obj __UNUSED__,
@@ -136,6 +171,7 @@ _on_edc_open_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   Menu_Event *menu_event;
    if (ap->project)
      {
         POPUP_CLOSE_PROJECT("You want to open new theme, but now you have<br/>"
@@ -143,7 +179,13 @@ _on_edc_open_menu(void *data,
                             "all your changes will be lost!",
                             _project_not_save_edc);
      }
-   else open_edc_file(ap);
+   else
+     {
+        menu_event = mem_malloc(sizeof(Menu_Event));
+        menu_event->ap = ap;
+        menu_event->type = OPEN_EDC;
+        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
+     }
 }
 
 static void
@@ -152,6 +194,7 @@ _on_edj_open_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   Menu_Event *menu_event;
    if (ap->project)
      {
         POPUP_CLOSE_PROJECT("You want to open new theme, but now you have<br/>"
@@ -159,7 +202,13 @@ _on_edj_open_menu(void *data,
                             "all your changes will be lost!",
                             _project_not_save_edj);
      }
-   else open_edj_file(ap);
+   else
+     {
+        menu_event = mem_malloc(sizeof(Menu_Event));
+        menu_event->ap = ap;
+        menu_event->type = OPEN_EDJ;
+        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
+     }
 }
 
 static void
@@ -198,8 +247,10 @@ _on_save_as_menu(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   save_as_edj_file(ap);
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = (App_Data *)data;
+   menu_event->type = SAVE_EDJ;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -334,7 +385,7 @@ _on_style_window_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if(ap->project != NULL) style_editor_window_add(ap->win, ap->project);
+   if (ap->project != NULL) style_editor_window_add(ap->win, ap->project);
    else NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
 }
 
@@ -384,6 +435,9 @@ ui_menu_add(App_Data *ap)
    Elm_Object_Item *it, *menu_it, *sub_menu;
    Eina_Hash *menu_elms_hash = NULL;
 
+   _menu_delayed_event = ecore_event_type_new();
+
+   ecore_event_handler_add(_menu_delayed_event, _menu_event_handler_cb, NULL);
    menu = elm_win_main_menu_get(ap->win);
    menu_elms_hash = eina_hash_string_small_new(NULL);
 
