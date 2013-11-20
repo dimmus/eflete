@@ -858,6 +858,7 @@ group { name: "elm/genlist/base/eflete/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 8 8;
+            max: 8 -1;
             rel1 {
                relative: 0.5  0.5;
                to: "sb_vbar_base";
@@ -993,6 +994,7 @@ group { name: "elm/genlist/base/eflete/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             min: 8 8;
+            max: -1 8;
             color: 0 0 0 0;
             rel1 {
                relative: 0.5  0.5;
@@ -1063,10 +1065,9 @@ group { name: "elm/genlist/base/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 1 1;
+            rel1.offset: 0 1;
             rel2 {
                relative: 0.0 0.0;
-               offset: -2 -2;
                to_x: "sb_vbar";
                to_y: "sb_hbar";
             }
@@ -1076,10 +1077,9 @@ group { name: "elm/genlist/base/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 1 1;
+            rel1.offset: 0 1;
             rel2 {
                relative: 0.0 0.0;
-               offset: -2 -2;
                to_x: "sb_vbar";
                to_y: "sb_hbar";
             }
@@ -1131,7 +1131,8 @@ group { name: "elm/genlist/base/eflete/default";
          clip_to: "sb_vbar_show";
          description { state: "default" 0.0;
             fixed: 1 0;
-            min: 7 7;
+            min: 8 8;
+            max: 8 -1;
             image {
                normal: "scroll-indicator.png";
                border: 2 2 2 2;
@@ -1157,7 +1158,8 @@ group { name: "elm/genlist/base/eflete/default";
                border: 2 2 2 2;
             }
             fill.smooth: 0;
-            min: 7 7;
+            min: 8 8;
+            max: -1 8;
             rel1 {
                offset: 0 2;
                to: "elm.dragable.hbar";
