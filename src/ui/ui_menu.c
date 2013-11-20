@@ -344,8 +344,7 @@ _on_image_editor_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *imed = image_editor_window_add(ap->win, MULTIPLE);
-   image_editor_init(imed, ap->project);
+   image_editor_window_add(ap->project, MULTIPLE);
 }
 
 static void

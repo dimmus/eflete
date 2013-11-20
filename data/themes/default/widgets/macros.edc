@@ -22,6 +22,7 @@
 #define FN "Sans"
 #define FN_B "Sans:style=Bold"
 #define FN_COL_DEFAULT 223 219 210 255; color3: 255 255 255 25
+#define FN_COL_LIGHT_GREY 200 190 185 255; color3: 255 255 255 25
 #define FN_COL_HIGHLIGHT 51 53 255 255; color2: 51 153 255 24; color3: 51 153 255 18
 #define FN_COL_DISABLE 21 21 21 255; color3: 255 255 255 25;
 

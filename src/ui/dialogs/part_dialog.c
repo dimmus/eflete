@@ -161,8 +161,7 @@ _on_state_image_choose(void *data,
    evas_object_hide(popup);
    App_Data *ap = app_create();
    Evas_Object *gs = evas_object_data_get(entry, APD_GS_KEY);
-   img_edit = image_editor_window_add(ap->win, SINGLE);
-   image_editor_init(img_edit, ap->project);
+   img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_callback_add(img_edit, _on_image_editor_done, gs);
 }
 

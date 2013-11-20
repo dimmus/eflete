@@ -993,8 +993,7 @@ _on_state_image_choose(void *data,
 
    App_Data *ap = app_create();
 
-   img_edit = image_editor_window_add(ap->win, SINGLE);
-   image_editor_init(img_edit, ap->project);
+   img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_file_choose(img_edit, selected);
    image_editor_callback_add(img_edit, _on_image_editor_done, entry);
 }

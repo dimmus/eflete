@@ -11,6 +11,7 @@ group { name: "elm/genlist/item/custom/default";
       image: "ilist_1.png" COMP;
       image: "ilist_2.png" COMP;
       image: "ilist_item_shadow.png" COMP;
+      image: "bt_bases.png" COMP;
    }
    parts {
       part {
