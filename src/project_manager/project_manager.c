@@ -59,26 +59,6 @@ static void
 _on_unlink_done_cb(void *data,
                    Eio_File *handler __UNUSED__)
 {
-   char *file_name = (char *)data;
-   DBG("Unlink file '%s' is finished!", file_name);
-}
-
-static void
-_on_unlink_error_cb(void *data,
-                    Eio_File *handler __UNUSED__,
-                    int error)
-{
-   char *file_name = (char *)data;
-   ERR("Unlink file '%s' is failed. Something wrong has happend: %s\n",
-       file_name, strerror(error));
-   ecore_main_loop_quit();
-}
-
-void
-_swap_file_deleted(void *data,
-                   int type __UNUSED__,
-                   void *event __UNUSED__)
-{
    Project *project = (Project *)data;
    if (project->edc) free(project->edc);
    if (project->edj) free(project->edj);
@@ -94,22 +74,26 @@ _swap_file_deleted(void *data,
    ecore_main_loop_quit();
 }
 
+static void
+_on_unlink_error_cb(void *data,
+                    Eio_File *handler __UNUSED__,
+                    int error)
+{
+   char *file_name = (char *)data;
+   ERR("Unlink file '%s' is failed. Something wrong has happend: %s\n",
+       file_name, strerror(error));
+   ecore_main_loop_quit();
+}
+
 Eina_Bool
 pm_free(Project *project)
 {
-   if(!project) return EINA_FALSE;
-   Eio_Monitor *del_mon = NULL;
-   Ecore_Event_Handler* file_del = NULL;
-   del_mon = eio_monitor_add(project->swapfile);
+   if (!project) return EINA_FALSE;
 
    eio_file_unlink(project->swapfile, _on_unlink_done_cb,
-                   _on_unlink_error_cb, project->swapfile);
+                   _on_unlink_error_cb, project);
+   ecore_main_loop_begin();
 
-   file_del = ecore_event_handler_add(EIO_MONITOR_FILE_DELETED,
-                                      (Ecore_Event_Handler_Cb)_swap_file_deleted,
-                                      project);
-   ecore_event_handler_del(file_del);
-   eio_monitor_del(del_mon);
    if (project->swapfile) free(project->swapfile);
    free(project);
    return EINA_TRUE;
@@ -125,7 +109,7 @@ pm_project_add(const char *name,
    Project *pro;
    char *tmp = NULL;
 
-   pro = calloc(1, sizeof(*pro));
+   pro = mem_calloc(1, sizeof(Project));
    pro->name = strdup(name);
    DBG ("Project name: '%s'", pro->name);
 

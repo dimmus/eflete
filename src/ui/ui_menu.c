@@ -32,7 +32,7 @@ _on_close_project_cancel(void *data,
                          void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
+   evas_object_hide(ap->popup);
 }
 
 static void
@@ -66,7 +66,7 @@ _project_not_save_new(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
+   evas_object_hide(ap->popup);
    new_theme_create(ap);
 }
 
@@ -77,7 +77,7 @@ _project_not_save_edc(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
+   evas_object_hide(ap->popup);
    open_edc_file(ap);
 }
 
@@ -87,31 +87,31 @@ _project_not_save_edj(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
+   evas_object_hide(ap->popup);
    open_edj_file(ap);
 }
 
 
 #define POPUP_CLOSE_PROJECT(MESSAGE, func_pro_not_save) \
-   Evas_Object *popup, *btn, *label; \
+   Evas_Object *btn, *label; \
    Eina_Stringshare *title; \
    title = eina_stringshare_printf("Close project %s", ap->project->name); \
-   popup = elm_popup_add(ap->win_layout); \
-   ap->popup = popup; \
-   elm_object_style_set(popup, "eflete"); \
-   elm_object_part_text_set(popup, "title,text", title); \
-   LABEL_ADD(popup, label, MESSAGE) \
-   elm_object_content_set(popup, label); \
-   BUTTON_ADD(popup, btn, "Save") \
+   if (!ap->popup) \
+     ap->popup = elm_popup_add(ap->win_layout); \
+   elm_object_style_set(ap->popup, "eflete"); \
+   elm_object_part_text_set(ap->popup, "title,text", title); \
+   LABEL_ADD(ap->popup, label, MESSAGE) \
+   elm_object_content_set(ap->popup, label); \
+   BUTTON_ADD(ap->popup, btn, "Save") \
    evas_object_smart_callback_add(btn, "clicked", _on_close_project_save, ap); \
-   elm_object_part_content_set(popup, "button1", btn); \
-   BUTTON_ADD(popup, btn, "Don't save") \
+   elm_object_part_content_set(ap->popup, "button1", btn); \
+   BUTTON_ADD(ap->popup, btn, "Don't save") \
    evas_object_smart_callback_add(btn, "clicked", func_pro_not_save, ap); \
-   elm_object_part_content_set(popup, "button2", btn); \
-   BUTTON_ADD(popup, btn, "Cancel") \
+   elm_object_part_content_set(ap->popup, "button2", btn); \
+   BUTTON_ADD(ap->popup, btn, "Cancel") \
    evas_object_smart_callback_add(btn, "clicked", _on_close_project_cancel, ap); \
-   elm_object_part_content_set(popup, "button3", btn); \
-   evas_object_show(popup);  \
+   elm_object_part_content_set(ap->popup, "button3", btn); \
+   evas_object_show(ap->popup);  \
    eina_stringshare_del(title);
 
 static void

@@ -302,6 +302,7 @@ ws_add(Evas_Object *parent)
 void
 ws_free(Workspace *ws)
 {
+   if (ws->groupspace) ui_groupspace_unset(ws->groupspace);
    free(ws);
 }
 
