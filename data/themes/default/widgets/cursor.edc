@@ -1,5 +1,5 @@
 #define POINTER_IMAGE  "pointer.png"
-#define BORDER_IMAGE   "shelf_inset.png"
+#define BORDER_IMAGE   "cursor_rect.png"
 
 group {
    images {
@@ -29,7 +29,8 @@ group {
          type: SPACER;
          description { state: "default" 0.0;
             SET_SIZE(16, 16);
-            rel1{ to: "rect_offset";
+            rel1 {
+               to: "rect_offset";
                relative: 1.0 1.0;
             }
          }
@@ -37,16 +38,20 @@ group {
       part { name: "cursor_rect";
          type:RECT;
          description { state: "default" 0.0;
-            color: 255 0 0 180;
-            rel1.to: "rect_area";
-            rel1{ to: "rect_area";
+            color: 0 0 0 0;
+            rel1 {
+               to: "rect_area";
                relative: 0.5 0.5;
             }
-            rel2.to: "rect_area";
+            rel2 {
+               to: "rect_area";
+               offset: 0 0;
+            }
          }
          description { state: "full" 0.0;
             inherit: "default" 0.0;
-            rel1{ to: "rect_area";
+            rel1 {
+               to: "rect_area";
                relative: 0.0 0.0;
             }
          }
@@ -54,6 +59,7 @@ group {
       part { name: "cursor_rect_over";
          description { state: "default" 0.0;
             image.normal: BORDER_IMAGE;
+            color: HIGHLIGHT_BLUE;
             rel1.to: "cursor_rect";
             rel2.to: "cursor_rect";
          }
@@ -86,17 +92,20 @@ group {
       part { name: "cursor_rect";
          type:RECT;
          description { state: "default" 0.0;
-            color: 255 0 0 180;
-            rel1{ to: "rect_area";
+            color: 0 0 0 0;
+            rel1 {
+               to: "rect_area";
                relative: 0.0 0.0;
             }
-            rel2{ to: "rect_area";
+            rel2 {
+               to: "rect_area";
                relative: 0.5 0.5;
             }
          }
          description { state: "full" 0.0;
             inherit: "default" 0.0;
-            rel2{ to: "rect_area";
+            rel2 {
+               to: "rect_area";
                relative: 1.0 1.0;
             }
          }
