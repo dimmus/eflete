@@ -19,7 +19,7 @@
 
 #include <check.h>
 #include "project_manager.h"
-#include "efl_tet.h"
+#include "efl_ete.h"
 /**
  * @addtogroup pm_open_project_edc_test
  * @{

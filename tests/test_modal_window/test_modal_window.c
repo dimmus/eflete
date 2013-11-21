@@ -194,6 +194,7 @@ END_TEST
  */
 START_TEST (mw_icon_set_test2)
 {
+   elm_init(0,0);
    Evas_Object *par, *res, *win;
    win = elm_win_add(NULL, "win", ELM_WIN_BASIC);
    par = NULL;
@@ -201,6 +202,7 @@ START_TEST (mw_icon_set_test2)
    Evas_Object *ic = elm_icon_add(win);
    elm_image_file_set(ic, NULL, NULL);
    mw_icon_set(res, ic);
+   elm_shutdown();
 }
 END_TEST
 

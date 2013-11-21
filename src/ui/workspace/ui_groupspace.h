@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef UI_GROUPSPACE_HEADER_H
@@ -30,12 +30,12 @@
  * for futher manipulations with part objects.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include <Evas.h>
 #include <Elementary.h>
 #include <Eina.h>
 #include "widget_manager.h"
-#include "add_part_dialog.h"
+#include "ui_block.h"
 
 
 /**
@@ -158,7 +158,7 @@ ui_groupspace_part_state_add(Evas_Object *groupspace, Part *part,
  * @ingroup Groupspace
  */
 void
-ui_groupsapce_part_space_geometry_get(Group *group, Part *part,
+ui_groupspace_part_space_geometry_get(Group *group, Part *part,
                                int *x, int *y, int *w, int *h);
 /**
  * Set zoom scale for object loaded into groupspace.

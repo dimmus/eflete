@@ -1,79 +1,40 @@
-Build & install instructions
-============================
+EFL Edje Theme Editor
+*********************
 
-These are build & install instructions for EFL Theme Editor Tool.
+Requirements
+============
 
-Build dependencies
-------------------
+Must have:
+ Elementary (1.8.0) with deps
+ Autotools
+ check (optional)
 
-EFL Theme Editor Tool currently uses CMake as the build system.
-
-Currently the build depends on EFL only.
-
-Building in the command line on Linux (tested on Ubuntu 12.04)
---------------------------------------------------------------
+Compiling and installing
+========================
 
 1) Install EFL libraries (http://www.enlightenment.org/p.php?p=download).
-2) Install CMake.
-3) Go to the main directory and follow steps, which describes needed type of build.
-*Note: by defaul create release build.
+2) Install Autotools.
+3) Build eflete from top source directory.
 
-DEBUG BUILD:
+Build and Install
+=================
 
-$ cmake . -Ddebug=1
+   ./autogen.sh
+   cd build
+   make
+   sudo make install
 
-*Note: -Dprefix ignored for debug build.
-If everything ok, and given output like:
-Installation.....: make install (as root if needed, with 'su' or 'sudo')
-  type...........: Debug Build
-  path...........: <Path to sources of projects>/build
+To install program to specified directory use --prefix option on configure step:
 
-BUILD WITH TESTS:
+   ./autogen.sh --prefix=/full/path/to/some/dir
 
-$ cmake -Dtest=1
+Run tests
+=========
 
-Build & installation:
+   make check
 
-$ make install
+Run editor
+==========
 
-*Note: if you need root use 'sudo' before make.
+   eflete
 
-Run the editor:
-
-$ ./build/efltet
-
-Also you can only build project:
-
-$ make
-
-For run the editor:
-
-$ ./src/efltet
-
-RELEASE BUILD:
-In release build by default install application to /usr/local directory.
-If you need to change destination directories ya can use '-Dprefix=<user_dir>',
-for return to default path you must use "-Dprefix=" argument.
-
-$ cmake . -Ddebug=0 [-Dprefix=<user_dir>]
-
-This runs CMake with key for release build.
-If everything ok, and given output like:
-Installation.....: make install (as root if needed, with 'su' or 'sudo')
-  type...........: Release Build
-  prefix.........: /usr/local
-
-Install the binaries and data files:
-
-$ sudo make install
-
-This install also the desktop files so EFL Theme Editor Tool
-should appear in your application menu.
-
-Run the editor:
-
-$ efltet
-
-Run tests:
-
-$ ctest

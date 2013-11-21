@@ -51,8 +51,8 @@ START_TEST (ui_widget_test1)
 
    ui_widget_list_title_set(list, title);
    char *name, *path;
-   name = "./test_ui_widget_list/data/";
-   path = "./test_ui_widget_list/data/radio.edj";
+   name = "./edj_build/radio.edj";
+   path = "./edj_build/radio.edj";
    Project *pro = pm_open_project_edj(name, path);
    pro->widgets = wm_widget_list_new(pro->swapfile);
    if (!ui_widget_list_data_set(list, pro))

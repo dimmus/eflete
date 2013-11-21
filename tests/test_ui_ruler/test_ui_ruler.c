@@ -377,7 +377,7 @@ END_TEST
  * @}
  */
 Suite* test_suite (void) {
-   Suite *suite = suite_create("ui_block_test");
+   Suite *suite = suite_create("ui_ruler_test");
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, ui_ruler_add_test_p);
    tcase_add_test(tcase, ui_ruler_add_test_n);

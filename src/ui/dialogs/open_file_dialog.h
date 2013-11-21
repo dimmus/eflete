@@ -20,7 +20,7 @@
 #ifndef OPEN_FILE_DIALOG_H
 #define OPEN_FILE_DIALOG_H
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "alloc.h"
 #include "ui_block.h"
 #include "ui_widget_list.h"

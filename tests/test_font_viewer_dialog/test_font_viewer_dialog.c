@@ -43,9 +43,8 @@ START_TEST (font_dialog_test1)
    {
       ck_abort_msg("failure: cannot create pointer to inwin object");
    }
-   char *name, *path;
-   name = "./test_font_viewer_dialog/data";
-   path = "./test_font_viewer_dialog/data/check.edj";
+   const char *path = "./edj_build";
+   const char *name = "./edj_build/radio.edj";
    Project *pro = pm_open_project_edj(name, path);
    font_viewer_init(font, pro);
    pm_free(pro);

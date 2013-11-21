@@ -18,6 +18,7 @@
 #include <Elementary.h>
 #include "widget_manager.h"
 #include "project_manager.h"
+#include "common_macro.h"
 
 /**
  * @typedef Demospace
@@ -30,11 +31,11 @@
  */
 struct _Demospace
 {
-   Evas *canvas;
    Evas_Object *groupspace;
    Evas_Object *layout;
    Evas_Object *object;
    double current_scale;
+   Elm_Theme *th;
 };
 typedef struct _Demospace Demospace;
 
@@ -64,10 +65,11 @@ ui_demospace_add(Evas_Object *parent);
  * @param demo demospace structure.
  * @param project project structure that contain path to swap, demo and edj files.
  * @param group group that contain current group name is being showed.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Demospace
  */
-void
+Eina_Bool
 ui_demospace_set(Demospace *demo, Project *project, Group *group);
 
 /**
@@ -77,11 +79,12 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group);
  * properly.
  *
  * @param demo demospace structure.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Demospace
  */
-void
-ui_demospace_unset(Demospace *demo, Project *project);
+Eina_Bool
+ui_demospace_unset(Demospace *demo);
 
 /**
  * Set and show selected group and apply style to it.
@@ -90,10 +93,24 @@ ui_demospace_unset(Demospace *demo, Project *project);
  * properly.
  *
  * @param demo demospace structure.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
+ * @ingroup Demospace
+ */
+Eina_Bool
+ui_demospace_update(Demospace *demo);
+
+/**
+ * Freeing the demospace structure.
+ *
+ * This function will free and delete the structure that contain all
+ * information about live view.
+ *
+ * @param demo demospace structure.
  *
  * @ingroup Demospace
  */
 void
-ui_demospace_update(Demospace *demo);
+demo_free(Demospace *demo);
 
 #endif /* UI_DEMOSPACE_HEADER_H */

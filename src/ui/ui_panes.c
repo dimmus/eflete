@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "settings.h"
@@ -234,7 +234,7 @@ _double_click_up_cb(void * data __UNUSED__,
                     void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
-   if (elm_panes_content_left_size_get(obj) > 0)
+   if (elm_panes_content_left_size_get(obj) > 0.0)
      {
         _size = elm_panes_content_left_size_get(obj);
         elm_panes_content_left_size_set(obj, 0.0);
@@ -253,7 +253,7 @@ _double_click_left_panes_down_cb(void * data __UNUSED__,
                                  void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
-   if (elm_panes_content_right_size_get(obj) > 0)
+   if (elm_panes_content_right_size_get(obj) > 0.0)
      {
         _size = elm_panes_content_right_size_get(obj);
         elm_panes_content_right_size_set(obj, 0.0);
@@ -271,7 +271,7 @@ _double_click_center_panes_down_cb(void * data __UNUSED__,
                                    void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
-   if (elm_panes_content_right_size_get(obj) > 0)
+   if (elm_panes_content_right_size_get(obj) > 0.0)
      {
         _size=elm_panes_content_right_size_get(obj);
         elm_panes_content_right_size_set(obj, 0.0);
@@ -314,6 +314,7 @@ ui_panes_add(App_Data *ap)
 
    panes_left = elm_panes_add(ap->win_layout);
    if (panes_left == NULL) return EINA_FALSE;
+   elm_object_style_set(panes_left, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left,
@@ -322,9 +323,11 @@ ui_panes_add(App_Data *ap)
    panes = panes_left;
    elm_object_part_content_set(ap->win_layout, "swallow/panes", panes_left);
 
+
    panes_left_hor = elm_panes_add(ap->win_layout);
    if (panes_left_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_left_hor, EINA_TRUE);
+   elm_object_style_set(panes_left_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left_hor,
@@ -334,6 +337,7 @@ ui_panes_add(App_Data *ap)
 
    panes_right = elm_panes_add(ap->win_layout);
    if (panes_right == NULL) return EINA_FALSE;
+   elm_object_style_set(panes_right, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right,
@@ -344,6 +348,7 @@ ui_panes_add(App_Data *ap)
    panes_right_hor = elm_panes_add(ap->win_layout);
    if (panes_right_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_right_hor, EINA_TRUE);
+   elm_object_style_set(panes_right_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right_hor,
@@ -354,6 +359,7 @@ ui_panes_add(App_Data *ap)
    panes_center = elm_panes_add(ap->win_layout);
    if (panes_center == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_center, EINA_TRUE);
+   elm_object_style_set(panes_center, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center,
@@ -363,6 +369,7 @@ ui_panes_add(App_Data *ap)
 
    panes_center_down = elm_panes_add(ap->win_layout);
    if (panes_center_down == NULL) return EINA_FALSE;
+   elm_object_style_set(panes_center_down, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center_down,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center_down,
@@ -399,12 +406,14 @@ ui_panes_add(App_Data *ap)
 
    panel = elm_box_add(block);
    elm_box_horizontal_set(panel, EINA_TRUE);
+   elm_box_align_set(panel, 1.0, 1.0);
    button = elm_button_add (panel);
    icon = elm_icon_add (button);
    elm_icon_standard_set(icon, "apps");
    elm_image_no_scale_set (icon, EINA_TRUE);
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add (button, "clicked", _add_state_button_cb, ap);
+   elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(button);
    elm_box_pack_end(panel, button);
 
@@ -416,8 +425,11 @@ ui_panes_add(App_Data *ap)
    evas_object_smart_callback_add (button, "clicked", _del_state_button_cb, ap);
    evas_object_show(button);
    elm_box_pack_end(panel, button);
+   elm_object_part_content_set(block, "elm.swallow.title", panel);
    evas_object_show(panel);
-   elm_object_part_content_set(block, "elm_block_subpanel", panel);
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(block, "title,content,hide", "eflete");
+   elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(block);
    ap->block.bottom_left = block;
 

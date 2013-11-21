@@ -21,9 +21,11 @@
 #define SAVE_FILE_DIALOG_H
 
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "alloc.h"
-
+#include "modal_window.h"
+#include "widget_macro.h"
+#include "ui_main_window.h"
 /**
  * @defgroup SaveFileDialog Save file dialog
  * The widget provide a save project functionality.

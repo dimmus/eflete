@@ -27,9 +27,10 @@
  * Font viewer its subwindow displays all the fonts used by the project.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "Evas.h"
 #include "widget_manager.h"
+#include "widget_macro.h"
 /**
  * Add new font viewer inwin object.
  *

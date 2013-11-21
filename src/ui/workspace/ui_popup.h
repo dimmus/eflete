@@ -30,7 +30,7 @@
 #include "Elementary.h"
 #include "ui_workspace.h"
 #include "ui_groupspace.h"
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "ui_highlight.h"
 
 

@@ -54,8 +54,6 @@ struct _Project
    char *edj;
    /** path to swap(work) file */
    char *swapfile;
-   /** path to demo(for live view) file */
-   char *demofile;
    /**  */
    Edje_CC *compiler;
    /**  */
@@ -110,12 +108,24 @@ pm_open_project_edj(const char *name,
                     const char *path);
 
 /**
+ * Save project into edc.
  *
+ * This function actually decompile the resulted and changed by user EDC file.
+ *
+ * @param project A Project structure.
+ *
+ * @ingroup ProjectManager
  */
-/*TODO: Add save project pm_save_project_edc(Project *pm) */
+void
+pm_save_project_edc(Project *project);
 
 /**
+ * Save opened EDJ-project.
  *
+ * @param project A Project structure.
+ * @return TRUE if saved successfully.
+ *
+ * @ingroup ProjectManager
  */
 Eina_Bool
 pm_save_project_edj(Project *project);

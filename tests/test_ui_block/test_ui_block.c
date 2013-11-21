@@ -135,9 +135,12 @@ START_TEST (ui_block_title_text_p)
 {
    elm_init(0, 0);
    Evas_Object *parent, *block;
-   parent=elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mark_point();
    block = ui_block_add(parent);
+   mark_point();
    ui_block_title_text_set(block,"test1");
+   mark_point();
    const char * str = ui_block_title_text_get(block);
    ck_assert_msg(!strcmp(str,"test1"),"title mismatch");
    ui_block_title_text_set(block,"some say");
@@ -199,8 +202,8 @@ TEST_UI_BLOCK_CONTENT(ui_block_widget_list,left_top)
 TEST_UI_BLOCK_CONTENT(ui_block_signal_list,left_bottom)
 TEST_UI_BLOCK_CONTENT(ui_block_state_list,bottom_left)
 TEST_UI_BLOCK_CONTENT(ui_block_property,right_bottom)
-TEST_UI_BLOCK_CONTENT(ui_block_graph_vision,bottom_right)
-TEST_UI_BLOCK_CONTENT(ui_block_demo_view,right_top)
+TEST_UI_BLOCK_CONTENT(ui_block_graph_vision,right_top)
+TEST_UI_BLOCK_CONTENT(ui_block_demo_view,bottom_right)
 
 /**
  * @addtogroup test_suite

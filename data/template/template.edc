@@ -1,0 +1,54 @@
+// LICENSE NOTE:
+// This file (and only this one) is licenses under public-domain. The reason
+// is that this is meant to serve as a template for making your own themes and
+// Elementary's LGPL license is not intended to follow. The images used do come
+// under LGPL, but this file specifically for the structure of your theme is
+// public-domain. This means you can take, use, re-license and otherwise
+// have zero restrictions on using this file as a base for your theme.
+
+externals.external: "elm";
+
+collections {
+#include "widgets/bg.edc"
+#include "widgets/border.edc"
+#include "widgets/scroller.edc"
+#include "widgets/label.edc"
+#include "widgets/button.edc"
+#include "widgets/clock.edc"
+#include "widgets/datetime.edc"
+#include "widgets/dayselector.edc"
+#include "widgets/menu.edc"
+#include "widgets/frame.edc"
+#include "widgets/tooltip.edc"
+#include "widgets/hover.edc"
+#include "widgets/ctxpopup.edc"
+#include "widgets/entry.edc"
+#include "widgets/bubble.edc"
+#include "widgets/icon.edc"
+#include "widgets/toolbar.edc"
+#include "widgets/notify.edc"
+#include "widgets/win.edc"
+#include "widgets/list.edc"
+#include "widgets/slider.edc"
+#include "widgets/actionslider.edc"
+#include "widgets/genlist.edc"
+#include "widgets/check.edc"
+#include "widgets/radio.edc"
+#include "widgets/progressbar.edc"
+#include "widgets/separator.edc"
+#include "widgets/spinner.edc"
+#include "widgets/index.edc"
+#include "widgets/gengrid.edc"
+#include "widgets/panes.edc"
+#include "widgets/panel.edc"
+#include "widgets/calendar.edc"
+#include "widgets/colorselector.edc"
+#include "widgets/flipselector.edc"
+#include "widgets/diskselector.edc"
+#include "widgets/fileselector.edc"
+#include "widgets/segment_control.edc"
+#include "widgets/naviframe.edc"
+#include "widgets/multibuttonentry.edc"
+#include "widgets/popup.edc"
+#include "widgets/pointer.edc"
+}

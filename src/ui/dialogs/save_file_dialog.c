@@ -24,7 +24,6 @@ struct _cb_data
    Project *project;
    char *path;
    void *popup;
-   void *obj;
 };
 
 typedef struct _cb_data cb_data;
@@ -54,19 +53,24 @@ _ok_cb(void *data,
         else
           NOTIFY_ERROR("Theme can not be saved: %s", selected);
      }
-   evas_object_hide(elm_object_parent_widget_get(cbdata->obj));
-   evas_object_del(cbdata->obj);
    evas_object_del(cbdata->popup);
    free(cbdata);
+   ecore_main_loop_quit();
 }
 
 static void
 _on_edj_done(void *data,
-             Evas_Object *obj,
+             Evas_Object *obj __UNUSED__,
              void *event_info)
 {
+   /*TODO: change a project name and set to ui widget list */
    App_Data *ap = (App_Data *)data;
    const char *selected = event_info;
+   if ((!selected) || (!strcmp(selected, "")))
+     {
+        ecore_main_loop_quit();
+        return;
+     }
    if (ecore_file_exists(selected))
      {
         if (eina_str_has_suffix(selected, ".edj"))
@@ -75,21 +79,19 @@ _on_edj_done(void *data,
 
              Evas_Object *popup, *btn1, *btn2;
              popup = elm_popup_add(ap->win_layout);
+             elm_object_style_set(popup, "eflete");
 
-             d_data->obj = obj;
              d_data->popup = popup;
              d_data->path = event_info;
              d_data->project = ap->project;
 
              elm_object_text_set(popup, "File is already exist. Would"
                                  "you like to replace it?");
-             btn1 = elm_button_add(popup);
-             elm_object_text_set(btn1, "OK");
+             BUTTON_ADD(popup, btn1, "OK");
              elm_object_part_content_set(popup, "button1", btn1);
              evas_object_smart_callback_add(btn1, "clicked", _ok_cb, d_data);
 
-             btn2 = elm_button_add(popup);
-             elm_object_text_set(btn2, "Cancel");
+             BUTTON_ADD(popup, btn2, "Cancel");
              elm_object_part_content_set(popup, "button2", btn2);
              evas_object_smart_callback_add(btn2, "clicked", _cancel_cb, d_data);
 
@@ -109,46 +111,51 @@ _on_edj_done(void *data,
                   else
                     NOTIFY_ERROR("Theme can not be saved: %s", selected);
                }
-             evas_object_hide(elm_object_parent_widget_get(obj));
-             evas_object_del(obj);
+             ecore_main_loop_quit();
           }
-        else if (selected)
-          {
-             NOTIFY_ERROR("The file must have a extension '.edj'");
-          }
-        else if (!selected)
-          {
-             evas_object_hide(elm_object_parent_widget_get(obj));
-             evas_object_del(obj);
-          }
+        else
+           NOTIFY_ERROR("The file must have a extension '.edj'");
      }
+   if (ap->is_new) new_theme_create(ap);
+}
+
+static void
+_on_inwin_delete(void *data,
+                       Evas *e __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info __UNUSED__)
+{
+   Eina_Bool *dialog_deleted = (Eina_Bool *)data;
+   if (!*dialog_deleted) ecore_main_loop_quit();
+   *dialog_deleted = true;
 }
 
 Eina_Bool
 save_as_edj_file(App_Data *ap)
 {
    Evas_Object *fs;
+   Eina_Bool dialog_deleted = false;
 
    if ((!ap) || (!ap->win) || (!ap->project)) return EINA_FALSE;
 
-   if (!ap->inwin)
-     ap->inwin = elm_win_inwin_add(ap->win);
-
-   fs = elm_fileselector_add(ap->inwin);
-
-   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_fileselector_path_set(fs, getenv("HOME"));
-   elm_fileselector_buttons_ok_cancel_set(fs, EINA_TRUE);
-   elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_mode_set(fs, ELM_FILESELECTOR_LIST);
+   Evas_Object *inwin = mw_add(ap->win);
+   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
+                                  _on_inwin_delete, &dialog_deleted);
+   OPEN_DIALOG_ADD(inwin, fs, "Save as EDJ file");
    elm_fileselector_is_save_set(fs, EINA_TRUE);
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
+   evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
 
-   elm_win_inwin_content_set(ap->inwin, fs);
+   elm_win_inwin_activate(inwin);
 
-   evas_object_show(fs);
-   elm_win_inwin_activate(ap->inwin);
+   ecore_main_loop_begin();
+
+   if (!dialog_deleted)
+     {
+        dialog_deleted = true;
+        evas_object_del(fs);
+        evas_object_del(inwin);
+     }
 
    return EINA_TRUE;
 }
@@ -157,9 +164,18 @@ save_as_edj_file(App_Data *ap)
 Eina_Bool
 save_as_edc_file(App_Data *ap)
 {
-   if ((!ap) || (!ap->win)) return EINA_FALSE;
+   if (!ap)
+     {
+        ERR("App Data missing!");
+        return EINA_FALSE;
+     }
+   if (!ap->project)
+     {
+        ERR("Project missing!");
+        return EINA_FALSE;
+     }
 
-
+   pm_save_project_edc(ap->project);
 
    return EINA_TRUE;
 }

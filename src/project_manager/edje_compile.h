@@ -111,7 +111,7 @@ compile(const char *edc,
  * @ingroup EdjeCompile
  */
 Edje_DeCC *
-decompile(char *edj, char *edc);
+decompile(const char *edj, const char *edc);
 
 /**
  * Delete a Edje_CC object.

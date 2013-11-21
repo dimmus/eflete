@@ -27,7 +27,8 @@
  * like warning or error's.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
+#include "widget_macro.h"
 
 /**
  * Show Error Notification with formated message

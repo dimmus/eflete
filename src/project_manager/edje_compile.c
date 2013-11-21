@@ -92,7 +92,6 @@ compile(const char *edc,
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   //INFO("Start compile project: %s.", edc);
 
    edjecc = mem_malloc(sizeof(*edjecc));
    edjecc->messages = NULL;
@@ -103,7 +102,7 @@ compile(const char *edc,
    sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
            image_directory, font_directory, sound_directory,
            edc, edj);
-   //INFO("Run command: %s", edjecc->cmd);
+   INFO("Run command: %s", edjecc->cmd);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjecc->messages);
@@ -115,8 +114,13 @@ compile(const char *edc,
    return edjecc;
 }
 
+/*
+   TODO: Saving decompiled EDC into another folder.
+   edje_decc dont have ability to save EDC into another directory.
+   Waiting for edje patch.
+ */
 Edje_DeCC *
-decompile(char *edj, char *edc)
+decompile(const char *edj, const char *edc __UNUSED__)
 {
    Edje_DeCC *edjedecc = NULL;
    int size;
@@ -127,23 +131,10 @@ decompile(char *edj, char *edc)
 
    edjedecc = mem_malloc(sizeof(*edjedecc));
    edjedecc->messages = NULL;
-   if (!edc)
-     {
-        size = strlen(edj) + BUFF_MAX;
-        edjedecc->cmd = (char *)malloc(size);
-        sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh -current-dir", edj);
-     }
-   else
-     {
-     /*
-      * TODO:this stub! changes to edje_decc must be done to specify dest folder
-      */
-        size = strlen(edj) + strlen(edc) + BUFF_MAX;
-        edjedecc->cmd = (char *)malloc(size);
-        sprintf(edjedecc->cmd,
-                "edje_decc %s -main-out %s -no-build-sh -current-dir",
-                edj, edc);
-     }
+
+   size = strlen(edj) + BUFF_MAX;
+   edjedecc->cmd = (char *)malloc(size);
+   sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh", edj);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
@@ -160,7 +151,6 @@ edje_cc_free(struct _Edje_CC *edje_cc)
 {
    if (!edje_cc) return;
 
-   //if (edje_cc->exe) ecore_exe_free(edje_cc->exe);
    free(edje_cc->cmd);
    compiler_message_clear(edje_cc->messages);
    free(edje_cc);

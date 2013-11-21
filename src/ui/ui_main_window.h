@@ -14,11 +14,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef UI_MAIN_WINDOW_HEADER_H
-#define UI_MAIN_WINDOW_HEADER_H
+#ifndef UI_MAIN_WINDOW_H
+#define UI_MAIN_WINDOW_H
 
 /**
  * @defgroup Window Window
@@ -29,7 +29,8 @@
  * state list, etc...
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
+#include "common_macro.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
@@ -38,9 +39,9 @@
 #include "colorclass_editor.h"
 #include "font_viewer_dialog.h"
 #include "notify.h"
-#include "add_state_dialog.h"
-#include "add_style_dialog.h"
 #include "open_file_dialog.h"
+#include "string_macro.h"
+
 /**
  * Adds main window object for Edje tool development.
  *
@@ -60,7 +61,7 @@ ui_main_window_add(App_Data *ap);
  * @ingroup Window
  */
 void
-ui_main_window_del(void);
+ui_main_window_del(App_Data *ap);
 
 /**
  * Adds marked panes to the given Elementary layout.
@@ -94,11 +95,12 @@ ui_panes_settings_save();
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
  * @param ap The App_Data structure pointer.
- * @returnEINA_TRUE if menu created normal, EINA_FALSE on failrue.
+ *
+ * @return menu Evas_Object if successful, or NULL elthewhere.
  *
  * @ingroup Window
  */
-Eina_Bool
+Evas_Object *
 ui_menu_add(App_Data *ap);
 
 /**
@@ -259,5 +261,17 @@ ui_style_delete(App_Data *ap);
 Eina_Bool
 new_theme_create(App_Data *ap);
 
-#endif /* UI_MAIN_WINDOW_HEADER_H */
+/**
+ * Disable or enable menu item by it's name.'
+ *
+ * If flag is EINA_TRUE - an item will be disabled, othervise - enabled, so it
+ * can be used, clicked or anything like that.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param name Menu item's title.
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ */
+void
+ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag);
 
+#endif /* UI_MAIN_WINDOW_H */

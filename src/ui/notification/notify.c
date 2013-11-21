@@ -25,8 +25,12 @@ _notify_close (void *data,
                void *event_info __UNUSED__)
 {
    Evas_Object *notify = (Evas_Object *)data;
-   evas_object_hide(notify);
+   evas_object_del(notify);
 }
+
+
+/*TODO: it all need to remake, use widget macro. notify style make as popup,
+ with a blink block area*/
 
 void
 noti_error_show (Evas_Object *obj, const char *message)
@@ -38,7 +42,7 @@ noti_error_show (Evas_Object *obj, const char *message)
    elm_notify_allow_events_set(notify, EINA_FALSE);
    evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(notify, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_CENTER);
+   elm_notify_align_set(notify, 0.5, 0.5);
 
    //2. start forming layout
    layout = elm_layout_add(obj);
@@ -55,7 +59,7 @@ noti_error_show (Evas_Object *obj, const char *message)
    //2.2 add not editable entry for information viewable
    entry = elm_entry_add(obj);
    elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_scrollbar_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set (layout, "information", entry);
@@ -63,15 +67,14 @@ noti_error_show (Evas_Object *obj, const char *message)
    evas_object_show(entry);
 
    //2.3. add button for closing the error message
-   btn = elm_button_add(obj);
-   elm_object_text_set(btn, "Close");
+   BUTTON_ADD(obj, btn, "Close");
    evas_object_smart_callback_add(btn, "clicked", _notify_close, notify);
    elm_object_part_content_set (layout, "close_button", btn);
-   evas_object_show(btn);
 
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
+   elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
 }
 
@@ -85,7 +88,7 @@ noti_warning_show (Evas_Object *obj, const char *message)
    elm_notify_allow_events_set(notify, EINA_FALSE);
    evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(notify, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_CENTER);
+   elm_notify_align_set(notify, 0.5, 0.5);
 
    //2. start forming layout
    layout = elm_layout_add(obj);
@@ -102,7 +105,7 @@ noti_warning_show (Evas_Object *obj, const char *message)
    //2.2 add not editable entry for information viewable
    entry = elm_entry_add(obj);
    elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_scrollbar_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set (layout, "information", entry);
@@ -119,6 +122,7 @@ noti_warning_show (Evas_Object *obj, const char *message)
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
+   elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
 }
 
@@ -131,7 +135,7 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
    notify = elm_notify_add(obj);
    evas_object_size_hint_weight_set(notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(notify, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_BOTTOM);
+   elm_notify_align_set(notify, 0.5, 1.0);
    elm_notify_timeout_set(notify, time);
 
    //2. start forming layout
@@ -149,7 +153,7 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
    //2.2 add not editable entry for information viewable
    entry = elm_entry_add(obj);
    elm_entry_editable_set(entry, EINA_FALSE);
-   elm_entry_scrollbar_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set (layout, "information", entry);

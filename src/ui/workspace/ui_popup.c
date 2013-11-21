@@ -151,13 +151,14 @@ _ctxpopup_item_legend_cb(void *data,
 }
 
 static void
-_ctxpopup_item_space_hl_cb(void *data, Evas_Object *obj,
-                         void *event_info __UNUSED__)
+_ctxpopup_item_space_hl_cb(void *data,
+                           Evas_Object *obj,
+                           void *event_info)
 {
    Workspace *ws = (Workspace *)data;
    Evas_Object *check = elm_object_item_part_content_get(event_info, "icon");
    Eina_Bool visible;
-   if (ws->highlight.part)
+   if ((ws->highlight.part) && (ws->highlight.space_hl))
     {
         visible = hl_highlight_visible_get(ws->highlight.space_hl);
         hl_highlight_visible_set(ws->highlight.space_hl, !visible);
@@ -211,8 +212,10 @@ _popup_add (Workspace *ws)
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "zoom +", NULL,
                                   _ctxpopup_item_zoom_in_cb, ws);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
    eoi = elm_ctxpopup_item_append(ctxpopup, "zoom -", NULL,
                                   _ctxpopup_item_zoom_out_cb, ws);
+   elm_object_item_disabled_set(eoi, EINA_TRUE);
    eoi = elm_ctxpopup_item_append(ctxpopup, "separate", NULL,
                                   _ctxpopup_item_separate_cb, ws);
    eoi = elm_ctxpopup_item_append(ctxpopup, "legend", NULL,
@@ -220,15 +223,26 @@ _popup_add (Workspace *ws)
    eoi = elm_ctxpopup_item_append(ctxpopup, "Highlight", NULL,
                           _ctxpopup_item_space_hl_cb, ws);
    check = elm_check_add(ctxpopup);
+   elm_object_item_part_content_set(eoi, "icon", check);
+   evas_object_smart_callback_add(check, "changed", _hl_check_cb, ws);
+   evas_object_show(check);
    if (ws->highlight.part)
      {
         visible = hl_highlight_visible_get(ws->highlight.space_hl);
         elm_check_state_set(check, visible);
      }
-   elm_object_item_part_content_set(eoi, "icon", check);
-   evas_object_smart_callback_add(check, "changed", _hl_check_cb, ws);
-   evas_object_show(check);
-
+   if ((!ws->separated) && (!ws->highlight.highlight))
+     {
+        elm_object_item_disabled_set(eoi, EINA_TRUE);
+        /*TODO: need check it, because all swallowed items must be disabled too */
+        elm_object_disabled_set(check, EINA_TRUE);
+     }
+   else
+     {
+        elm_object_item_disabled_set(eoi, EINA_FALSE);
+        /*TODO: need check it, because all swallowed items must be disabled too */
+        elm_object_disabled_set(check, EINA_FALSE);
+     }
 
    eoi = elm_ctxpopup_item_append(ctxpopup, "ruler hor.", NULL,
                             _ctxpopup_item_ruler_cb, ws->ruler_hor);

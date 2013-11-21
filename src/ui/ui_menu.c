@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "ui_main_window.h"
@@ -26,13 +26,143 @@
 #include "ui_highlight.h"
 #include "about_window.h"
 
+static int _menu_delayed_event = 0;
+
+struct _menu_event
+{
+   App_Data *ap;
+   enum {
+      OPEN_EDC = 0,
+      OPEN_EDJ,
+      SAVE_EDJ
+   } type;
+};
+
+typedef struct _menu_event Menu_Event;
+
+static Eina_Bool
+_menu_event_handler_cb(void *data __UNUSED__,
+                       int type __UNUSED__,
+                       void *event)
+{
+   Menu_Event *menu_event = (Menu_Event *)event;
+   switch (menu_event->type)
+      {
+      case OPEN_EDC:
+         open_edc_file(menu_event->ap);
+      break;
+      case OPEN_EDJ:
+         open_edj_file(menu_event->ap);
+      break;
+      case SAVE_EDJ:
+         save_as_edj_file(menu_event->ap);
+      break;
+      }
+   return ECORE_CALLBACK_DONE;
+}
+
+static void
+_on_close_project_cancel(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_hide(ap->popup);
+}
+
+static void
+_on_close_project_save(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+
+   evas_object_hide(ap->popup);
+   if (!ap->project->edj)
+     {
+        ap->is_new = true;
+        save_as_edj_file(ap);
+     }
+   else
+     {
+        if (pm_save_project_to_swap(ap->project))
+          {
+             if (pm_save_project_edj(ap->project))
+                ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+             else
+                NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
+          }
+     }
+}
+
+static void
+_project_not_save_new(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_hide(ap->popup);
+   new_theme_create(ap);
+}
+
+
+static void
+_project_not_save_edc(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_hide(ap->popup);
+   open_edc_file(ap);
+}
+
+static void
+_project_not_save_edj(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *ei __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_hide(ap->popup);
+   open_edj_file(ap);
+}
+
+
+#define POPUP_CLOSE_PROJECT(MESSAGE, func_pro_not_save) \
+   Evas_Object *btn, *label; \
+   Eina_Stringshare *title; \
+   title = eina_stringshare_printf("Close project %s", ap->project->name); \
+   if (!ap->popup) \
+     ap->popup = elm_popup_add(ap->win_layout); \
+   elm_object_style_set(ap->popup, "eflete"); \
+   elm_object_part_text_set(ap->popup, "title,text", title); \
+   LABEL_ADD(ap->popup, label, MESSAGE) \
+   elm_object_content_set(ap->popup, label); \
+   BUTTON_ADD(ap->popup, btn, "Save") \
+   evas_object_smart_callback_add(btn, "clicked", _on_close_project_save, ap); \
+   elm_object_part_content_set(ap->popup, "button1", btn); \
+   BUTTON_ADD(ap->popup, btn, "Don't save") \
+   evas_object_smart_callback_add(btn, "clicked", func_pro_not_save, ap); \
+   elm_object_part_content_set(ap->popup, "button2", btn); \
+   BUTTON_ADD(ap->popup, btn, "Cancel") \
+   evas_object_smart_callback_add(btn, "clicked", _on_close_project_cancel, ap); \
+   elm_object_part_content_set(ap->popup, "button3", btn); \
+   evas_object_show(ap->popup);  \
+   eina_stringshare_del(title);
+
 static void
 _on_new_theme_menu(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   new_theme_create(ap);
+   if (ap->project)
+     {
+        POPUP_CLOSE_PROJECT("You want to create a new theme, but now you have<br/>"
+                            "open project. If you dont save the open project<br/>"
+                            "all your changes will be lost!",
+                            _project_not_save_new);
+     }
+   else new_theme_create(ap);
 }
 
 static void
@@ -41,7 +171,21 @@ _on_edc_open_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   open_edc_file(ap);
+   Menu_Event *menu_event;
+   if (ap->project)
+     {
+        POPUP_CLOSE_PROJECT("You want to open new theme, but now you have<br/>"
+                            "open project. If you dont save the open project<br/>"
+                            "all your changes will be lost!",
+                            _project_not_save_edc);
+     }
+   else
+     {
+        menu_event = mem_malloc(sizeof(Menu_Event));
+        menu_event->ap = ap;
+        menu_event->type = OPEN_EDC;
+        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
+     }
 }
 
 static void
@@ -50,7 +194,21 @@ _on_edj_open_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   open_edj_file(ap);
+   Menu_Event *menu_event;
+   if (ap->project)
+     {
+        POPUP_CLOSE_PROJECT("You want to open new theme, but now you have<br/>"
+                            "open project. If you dont save the open project<br/>"
+                            "all your changes will be lost!",
+                            _project_not_save_edj);
+     }
+   else
+     {
+        menu_event = mem_malloc(sizeof(Menu_Event));
+        menu_event->ap = ap;
+        menu_event->type = OPEN_EDJ;
+        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
+     }
 }
 
 static void
@@ -65,18 +223,18 @@ _on_save_menu(void *data,
         return;
      }
 
-   if (pm_save_project_to_swap(ap->project))
+   if (!ap->project->edj)
      {
-        if (!ap->project->edj)
-          {
-             save_as_edj_file(ap);
-          }
-        else
+        save_as_edj_file(ap);
+     }
+   else
+     {
+        if (pm_save_project_to_swap(ap->project))
           {
              if (pm_save_project_edj(ap->project))
                {
                   NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
-                  ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+                     ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
                }
              else
                NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
@@ -89,8 +247,10 @@ _on_save_as_menu(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   save_as_edj_file(ap);
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = (App_Data *)data;
+   menu_event->type = SAVE_EDJ;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -98,15 +258,17 @@ _on_edc_save_menu(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   NOTIFY_INFO(3, "Not implemented yet");
+   App_Data *ap = (App_Data *)data;
+   save_as_edc_file(ap);
 }
 
 static void
-_on_exit_menu(void *data __UNUSED__,
+_on_exit_menu(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   ui_main_window_del();
+   App_Data *ap = (App_Data *)data;
+   ui_main_window_del(ap);
 }
 
 static void
@@ -116,6 +278,7 @@ _on_view_separate(void *data,
 {
    App_Data *ap = (App_Data *)data;
    ui_groupspace_separate(ap->ws);
+   ui_menu_disable_set(ap, "Highlight space", !ap->ws->separated);
 }
 
 static void
@@ -133,7 +296,7 @@ _on_view_zoom_out(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_zoom_in(ap->ws);
+   ui_ws_zoom_out(ap->ws);
 }
 
 static void
@@ -175,7 +338,7 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (!ap->ws->highlight.part) return;
+   if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
    hl_highlight_visible_set(ap->ws->highlight.space_hl,
                 !hl_highlight_visible_get(ap->ws->highlight.space_hl));
 }
@@ -222,7 +385,7 @@ _on_style_window_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if(ap->project != NULL) style_editor_window_add(ap->win, ap->project);
+   if (ap->project != NULL) style_editor_window_add(ap->win, ap->project);
    else NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
 }
 
@@ -232,7 +395,7 @@ _on_image_editor_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   image_editor_init(image_editor_window_add(ap->win), ap->project);
+   image_editor_window_add(ap->project, MULTIPLE);
 }
 
 static void
@@ -241,7 +404,7 @@ _on_ccl_viewer_menu(void *data,
                     void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   colorclass_viewer_init(colorclass_viewer_add(ap->win), ap->project);
+   colorclass_viewer_add(ap->project);
 }
 
 static void
@@ -253,19 +416,8 @@ _on_prog_editor_menu(void *data __UNUSED__,
    if (!ap->project->current_group)
      NOTIFY_WARNING("Please open the widget style for editing style programs!")
    else
-     program_editor_window_add(ap->win, ap->project->current_group);
-   //NOTIFY_INFO(5, "Not Implemented Yet.")
+     program_editor_window_add(ap->project->current_group);
 }
-
-/*
-static void
-_on_font_viewer_menu(void *data, Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   font_viewer_init(font_viewer_add(ap->win), ap->project);
-}
-*/
 
 static void
 _on_about_window_menu(void *data __UNUSED__,
@@ -276,80 +428,75 @@ _on_about_window_menu(void *data __UNUSED__,
    about_window_add(ap->win);
 }
 
-Eina_Bool
+Evas_Object *
 ui_menu_add(App_Data *ap)
 {
-   Evas_Object *tb, *menu;
-   Elm_Object_Item *tb_it, *menu_sub;
+   Evas_Object *menu, *toolbar;
+   Elm_Object_Item *it, *menu_it, *sub_menu;
+   Eina_Hash *menu_elms_hash = NULL;
 
-   tb = elm_toolbar_add(ap->win_layout);
-   if (tb == NULL) return EINA_FALSE;
+   _menu_delayed_event = ecore_event_type_new();
 
-   evas_object_size_hint_weight_set(tb, 0.0, 0.0);
-   elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_NONE);
-   elm_toolbar_align_set(tb, 0.0);
-   elm_toolbar_homogeneous_set(tb, EINA_TRUE);
-   elm_object_part_content_set(ap->win_layout, "swallow/toolbar", tb);
-   evas_object_show(tb);
-   elm_toolbar_icon_size_set(tb,16);
+   ecore_event_handler_add(_menu_delayed_event, _menu_event_handler_cb, NULL);
+   menu = elm_win_main_menu_get(ap->win);
+   menu_elms_hash = eina_hash_string_small_new(NULL);
 
-   elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_FDO_THEME);
-   tb_it = elm_toolbar_item_append(tb, NULL, "File", NULL, NULL);
-   if (tb_it == NULL) return EINA_FALSE;
+#define ITEM_MENU_ADD(menu_obj, parent_menu, icon, label, callback, data, ret) \
+   ret = elm_menu_item_add(menu_obj, parent_menu, icon, label, callback, data); \
+   eina_hash_add(menu_elms_hash, label, ret);
 
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
-   if (menu == NULL) return EINA_FALSE;
+   ITEM_MENU_ADD(menu, NULL, NULL, "File", NULL, NULL, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "New theme", _on_new_theme_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Open edc-file", _on_edc_open_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Open edj-file", _on_edj_open_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Save", _on_save_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Save as...", _on_save_as_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Save to edc", _on_edc_save_menu, ap, it);
+   elm_menu_item_separator_add(menu, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Exit", _on_exit_menu, ap, it);
 
-   elm_menu_item_add(menu, NULL, "menu/file", "New theme",
-                     _on_new_theme_menu, ap);
+   ITEM_MENU_ADD(menu, NULL, NULL, "View", NULL, NULL, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Workspace", NULL, NULL, sub_menu);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, "Zoom in", _on_view_zoom_in, ap, it);
+   elm_object_item_disabled_set(it, true);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, "Zoom out", _on_view_zoom_out, ap, it);
+   elm_object_item_disabled_set(it, true);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Separate", _on_view_separate, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Legend", _on_view_legend, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Rulers", NULL, NULL, sub_menu);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, "Show/hide hor.", _on_view_ruler_hor, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, "Show/hide ver.", _on_view_ruler_ver, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, "Absolute scale", _on_view_ruler_abs, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, "Relative scale", _on_view_ruler_rel, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Highlight space", _on_view_highlight, ap, it);
 
-   elm_menu_item_add(menu, NULL, "menu/folder", "Open edc-file",
-                     _on_edc_open_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/folder", "Open edj-file",
-                     _on_edj_open_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save", _on_save_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save as...", _on_save_as_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/file", "Save as EDC", _on_edc_save_menu, ap);
-   elm_menu_item_add(menu, NULL, "menu/close", "Exit", _on_exit_menu, ap);
+   ITEM_MENU_ADD(menu, NULL, NULL, "Editors", NULL, NULL, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Styles", _on_style_window_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Images", _on_image_editor_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Colorclasses", _on_ccl_viewer_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Programs", _on_prog_editor_menu, ap, it);
+   elm_object_item_disabled_set(it, true);
 
-   tb_it = elm_toolbar_item_append(tb, NULL, "View", NULL, NULL);
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
-   menu_sub = elm_menu_item_add(menu, NULL, NULL, "Workspace", NULL, NULL);
-   elm_menu_item_add(menu, menu_sub, NULL, "Zoom in", _on_view_zoom_in, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Zoom out", _on_view_zoom_out, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Separate", _on_view_separate, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Legend", _on_view_legend, ap);
-   menu_sub = elm_menu_item_add(menu, NULL, NULL, "Rulers", NULL, NULL);
-   elm_menu_item_add(menu, menu_sub, NULL, "Show/hide hor.", _on_view_ruler_hor, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Show/hide ver.", _on_view_ruler_ver, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Absolute scale", _on_view_ruler_abs, ap);
-   elm_menu_item_add(menu, menu_sub, NULL, "Relative scale", _on_view_ruler_rel, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Highlight space", _on_view_highlight, ap);
+   ITEM_MENU_ADD(menu, NULL, NULL, "Help", NULL, NULL, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "About", _on_about_window_menu , ap, it);
 
-   tb_it = elm_toolbar_item_append(tb, NULL, "Editors", NULL, NULL);
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
+#undef ITEM_MENU_ADD
 
-   elm_menu_item_add(menu, NULL, NULL, "Styles", _on_style_window_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Images", _on_image_editor_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Colorclasses", _on_ccl_viewer_menu, ap);
-   elm_menu_item_add(menu, NULL, NULL, "Programs", _on_prog_editor_menu, ap);
-   //elm_menu_item_add(menu, NULL, NULL, "Fonts", _on_font_viewer_menu, ap);
+   toolbar = elm_toolbar_add(ap->win);
+   elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_MENU);
+   /*TODO: for this select mode need new style */
+   elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_NONE);
+   elm_object_style_set(toolbar, DEFAULT_STYLE);
+   elm_toolbar_align_set(toolbar, 0.0);
+   evas_object_size_hint_weight_set(toolbar, 0.0, 0.0);
+   evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.0);
+   elm_object_part_content_set(ap->win_layout, "swallow/button_toolbar", toolbar);
+   evas_object_show(toolbar);
 
-   elm_toolbar_menu_parent_set(tb, ap->win_layout);
+   elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon-new_project.png", "New project", _on_new_theme_menu, ap);
+   elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon-open_project.png", "Open project", _on_edj_open_menu, ap);
+   elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu, ap);
 
-   tb_it = elm_toolbar_item_append(tb, NULL, "Help", NULL, NULL);
-   elm_toolbar_item_menu_set(tb_it, EINA_TRUE);
-   menu = elm_toolbar_item_menu_get(tb_it);
-   elm_menu_item_add(menu, NULL, "help-about", "About",
-                     _on_about_window_menu, ap);
-
-   tb_it = elm_toolbar_item_append(tb, NULL, "Separator", NULL, NULL);
-   elm_toolbar_item_separator_set(tb_it, EINA_TRUE);
-   elm_toolbar_icon_order_lookup_set(tb, ELM_ICON_LOOKUP_THEME);
-
-   ap->main_menu = tb;
-   return EINA_TRUE;
+   ap->menu_hash = menu_elms_hash;
+   return menu;
 }

@@ -17,7 +17,6 @@
 * along with this program; If not, see .
 */
 
-#include "efl_tet.h"
 #include "font_viewer_dialog.h"
 
 static Elm_Gengrid_Item_Class *_itc_font = NULL;
@@ -89,20 +88,12 @@ font_viewer_add(Evas_Object *parent)
    elm_object_part_content_set(layout, "swallow/panes", panes);
    evas_object_show(panes);
 
-   entry = elm_entry_add(inwin);
-   elm_entry_single_line_set(entry, EINA_TRUE);
-   elm_entry_scrollable_set(entry, EINA_TRUE);
-   elm_entry_scrollbar_policy_set(entry, ELM_SCROLLER_POLICY_OFF,
-                                  ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   ENTRY_ADD(inwin, entry, EINA_TRUE, DEFAULT_STYLE)
    elm_object_text_set(entry,
       "Verbatim reports were quickly given by Jim Fox to his amazed audience");
    elm_object_part_content_set(panes, "right", entry);
    elm_entry_editable_set(entry, EINA_FALSE);
    elm_entry_text_style_user_push(entry, "DEFAULT='align=center'");
-   evas_object_size_hint_max_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(entry);
 
    genlist = elm_genlist_add(inwin);
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

@@ -19,7 +19,7 @@
 
 #include <check.h>
 #include "ui_main_window.h"
-#include "efl_tet.h"
+#include "efl_ete.h"
 
 
 /*  Notify! The methods  ui_part_back(), ui_group_back(), ui_state_select(), ui_part_select(),
@@ -574,7 +574,7 @@ START_TEST (ui_edj_load_done_test_n1)
    ui_main_window_add(ap);
    ap->inwin = elm_win_inwin_add(ap->win);
    Evas_Object * fs = elm_fileselector_add(ap->inwin);
-   ui_edj_load_done(ap, fs, "./tests/ui_main_window/data/naviframe.edj");
+   ui_edj_load_done(ap, fs, "./edj_build/radio.edj");
    elm_shutdown();
    app_free(ap);
 }
@@ -598,7 +598,7 @@ START_TEST (ui_edj_load_done_test_n2)
    ui_main_window_add(ap);
    ap->inwin = elm_win_inwin_add(ap->win);
    Evas_Object * fs = elm_fileselector_add(ap->inwin);
-   ui_edj_load_done(NULL, fs, "./tests/ui_main_window/data/navifram.edj");
+   ui_edj_load_done(NULL, fs, "./edj_build/radio.edj");
    elm_shutdown();
    app_free(ap);
 }
@@ -620,7 +620,7 @@ START_TEST (ui_edj_load_done_test_n3)
    app_init();
    App_Data * ap = app_create();
    ui_main_window_add(ap);
-   ui_edj_load_done(ap, NULL, "./tests/ui_main_window/data/naviframe.edj");
+   ui_edj_load_done(ap, NULL, "./edj_build/radio.edj");
    elm_shutdown();
    app_free(ap);
 }

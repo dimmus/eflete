@@ -18,8 +18,8 @@
 */
 
 #include <ui_workspace.h>
-#include <efl_tet.h>
 #include "ui_highlight.h"
+#include "efl_ete.h"
 
 #define GS_BOX_KEY "gs_box_key"
 
@@ -49,7 +49,7 @@ ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible)
   if (!visible)
     elm_layout_signal_emit(parent, "legend,hide", "");
   else
-     elm_layout_signal_emit(parent, "legend,show", "");
+    elm_layout_signal_emit(parent, "legend,show", "");
 
   snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
             (int)(ws->zoom_step * 100));
@@ -159,26 +159,6 @@ _sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
 }
 
 static void
-_zoom_out_on_click(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   Workspace *ws = (Workspace *)data;
-   if (!ui_ws_zoom_out(ws))
-     WARN("Failed zoom out workspace");
-}
-
-static void
-_zoom_in_on_click(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   Workspace *ws = (Workspace *)data;
-   if (!ui_ws_zoom_in(ws))
-     WARN("Failed zoom in workspace");
-}
-
-static void
 _separate_on_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
@@ -196,13 +176,6 @@ _ws_mouse_click_cb(void *data ,
    Evas_Event_Mouse_Down *ev = event_info;
    Workspace *ws = (Workspace*)data;
    if (ev->button == 3) ui_popup_show (ws);
-}
-
-
-Eina_Bool
-ws_bf_set(Evas_Object *bg __UNUSED__)
-{
-   return EINA_TRUE;
 }
 
 void
@@ -268,40 +241,20 @@ ws_add(Evas_Object *parent)
    elm_layout_file_set(parent, TET_EDJ, "base/workspace" );
    _bg = evas_object_image_filled_add(canvas);
    evas_object_image_filled_set(_bg, EINA_FALSE);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"bg.png", NULL);
-   evas_object_image_fill_set(_bg, -5, -5, 32, 32);
+   evas_object_image_file_set(_bg, TET_IMG_PATH"bg_demo.png", NULL);
+   evas_object_image_fill_set(_bg, 0, 0, 16, 16);
    elm_object_part_content_set(parent, "base/workspace/background", _bg);
    evas_object_show(_bg);
    ws->bg = _bg;
-   _button = elm_button_add(parent);
-   elm_object_part_content_set(parent, "base/workspace/button_zoom_out",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_out_on_click, ws);
-   elm_object_content_unset(_button);
-
-   _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"zoom_out.png", NULL);
-   elm_image_no_scale_set(_icon, EINA_TRUE);
-   elm_object_part_content_set(_button, NULL, _icon);
 
    _button = elm_button_add(parent);
-   elm_object_part_content_set(parent, "base/workspace/button_zoom_in",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_in_on_click, ws);
-   ws->button_zoom_in = _button;
-
-   _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"zoom_in.png", NULL);
-   elm_image_no_scale_set(_icon, EINA_TRUE);
-   elm_object_part_content_set(_button, NULL, _icon);
-
-   _button = elm_button_add(parent);
+   elm_object_style_set(_button, "eflete/default");
    elm_object_part_content_set(parent, "base/workspace/button_separate",
                                _button);
    evas_object_smart_callback_add(_button, "clicked", _separate_on_click, ws);
    ws->button_separate = _button;
    _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"layer_show.png", NULL);
+   elm_image_file_set(_icon, TET_IMG_PATH"icon-separate.png", NULL);
    elm_image_no_scale_set(_icon, EINA_TRUE);
    elm_object_part_content_set(_button, NULL, _icon);
 
@@ -315,6 +268,7 @@ ws_add(Evas_Object *parent)
    ws->ruler_ver = _ruler_ver;
 
    _scroller = elm_scroller_add(parent);
+   elm_object_style_set(_scroller, "eflete/default");
    ws->scroller = _scroller;
    elm_scroller_policy_set(_scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
    elm_scroller_content_min_limit(_scroller, EINA_FALSE, EINA_FALSE);
@@ -324,11 +278,10 @@ ws_add(Evas_Object *parent)
    evas_object_show(ws->groupspace);
    evas_object_show(_scroller);
 
-   _legend = elm_label_add(parent);
+   LABEL_ADD(parent, _legend, "")
    ws->legend.legend = _legend;
    ws->legend.visible = EINA_FALSE;
    elm_object_part_content_set(parent, "legend", _legend);
-   evas_object_show(_legend);
 
    evas_object_smart_callback_add(_scroller, "scroll", _sc_move_cb, ws);
    evas_object_smart_callback_add(_scroller, "scroll,drag,stop", _sc_move_cb, ws);
@@ -349,6 +302,7 @@ ws_add(Evas_Object *parent)
 void
 ws_free(Workspace *ws)
 {
+   if (ws->groupspace) ui_groupspace_unset(ws->groupspace);
    free(ws);
 }
 
@@ -392,18 +346,18 @@ ui_object_highlight_set(Workspace *ws, Part *part)
 
    int x, y, w, h;
    ws->highlight.part = part;
-   ui_groupsapce_part_space_geometry_get(group, part, &x, &y, &w, &h);
+   ui_groupspace_part_space_geometry_get(group, part, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.space_hl, w, h);
    evas_object_move(ws->highlight.space_hl, x, y);
    evas_object_show(ws->highlight.space_hl);
-   evas_object_box_append(box, ws->highlight.space_hl);
+   evas_object_box_insert_at(box, ws->highlight.space_hl, 0);
    hl_highlight_handler_disabled_set(ws->highlight.space_hl, EINA_TRUE);
 
    evas_object_geometry_get(part->obj, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.highlight, w, h);
    evas_object_move(ws->highlight.highlight, x, y);
    evas_object_show(ws->highlight.highlight);
-   evas_object_box_append(box, ws->highlight.highlight);
+   evas_object_box_insert_at(box, ws->highlight.highlight, 0);
 
    evas_object_event_callback_add(ws->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
@@ -411,7 +365,7 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    evas_object_smart_callback_add(ws->highlight.highlight, "hl,resize",
                                   __on_resize, ws);
 
-   hl_highlight_visible_set(ws->highlight.space_hl, EINA_TRUE);
+   hl_highlight_visible_set(ws->highlight.space_hl, EINA_FALSE);
    hl_highlight_bg_color_set(ws->highlight.space_hl, 64, 64, 64, 64);
    hl_highlight_handler_color_set(ws->highlight.space_hl, 0, 0, 255, 255);
    hl_highlight_border_color_set(ws->highlight.space_hl, 0, 0, 0, 255);
@@ -433,7 +387,36 @@ ui_object_highlight_move(Workspace *ws)
    evas_object_resize(ws->highlight.highlight, w, h);
 
    Group *group = ui_groupspace_group_get(ws->groupspace);
-   ui_groupsapce_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
+   ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
+   evas_object_resize(ws->highlight.space_hl, w, h);
+   evas_object_move(ws->highlight.space_hl, x, y);
+
+   /*
+      TODO: change logic here.
+      Currently, if you move scroller or do something that will change highlight
+      size or position it cause handler to appear.
+      So we set "clicked" state into false and so you cant resize anymore.
+
+      Expected logic: when you move scroller, it will be still "clicked" state
+      (only one handler). And it should not move highlight (when "clicked") same
+      with groupspace after scrolling.
+    */
+   hl_highlight_clicked_unset(ws->highlight.highlight);
+}
+
+void
+ui_object_highlight_handler_move(Workspace *ws)
+{
+   int x, y, w, h;
+
+   if (!ws) return;
+
+   evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
+   hl_highlight_move(ws->highlight.highlight, x, y);
+   hl_highlight_resize(ws->highlight.highlight, w, h);
+
+   Group *group = ui_groupspace_group_get(ws->groupspace);
+   ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.space_hl, w, h);
    evas_object_move(ws->highlight.space_hl, x, y);
 }
@@ -445,7 +428,6 @@ ui_object_highlight_hide(Workspace *ws)
 
    evas_object_hide(ws->highlight.highlight);
    evas_object_hide(ws->highlight.space_hl);
-
 }
 
 void

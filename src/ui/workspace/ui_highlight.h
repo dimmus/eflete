@@ -20,7 +20,7 @@
 #ifndef HIGHLIGHT_H
 #define HIGHLIGHT_H
 
-#include <efl_tet.h>
+#include <efl_ete.h>
 #include "ui_groupspace.h"
 
 /**
@@ -249,4 +249,54 @@ hl_highlight_visible_get(Evas_Object *hl);
  */
 void
 hl_highlight_visible_set(Evas_Object *hl, Eina_Bool visible);
+
+/**
+ * This function will move the whole highlight and will calculate
+ * only position of every visible handler.
+ *
+ * If there is some need into changing both
+ * position and size of handlers please use evas_object_move
+ * function with highlight object. This function will change both size
+ * and position of the handlers.
+ *
+ * @param hl Highlight object.
+ * @param x - x coord of the highlight position.
+ * @param y - y coord of the highlight position.
+ *
+ * @ingroup Highlight
+ */
+void
+hl_highlight_move(Evas_Object *hl, Evas_Coord x, Evas_Coord y);
+
+/**
+ * This function will resize the whole highlight and will calculate
+ * only position of every visible handler.
+ *
+ * If there is some need into changing both
+ * position and size of handlers please use evas_object_resize
+ * function with highlight object. This function will change both size
+ * and position of the handlers.
+ *
+ * @param hl Highlight object.
+ * @param x - x coord of the highlight position.
+ * @param y - y coord of the highlight position.
+ *
+ * @ingroup Highlight
+ */
+void
+hl_highlight_resize(Evas_Object *hl, Evas_Coord w, Evas_Coord h);
+
+/**
+ * This function will unset the "clicked" state of highlight.
+ *
+ * Use this function when highlight is being moved or resize by something
+ * that is not users mouse.
+ *
+ * @param hl Highlight object.
+ *
+ * @ingroup Highlight
+ */
+void
+hl_highlight_clicked_unset(Evas_Object *hl);
+
 #endif /* HIGHLIGHT_H */

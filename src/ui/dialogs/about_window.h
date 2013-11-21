@@ -17,8 +17,8 @@
 * along with this program; If not, see .
 */
 
-#ifndef ABOUT_DIALOG_HEADER_H
-#define ABOUT_DIALOG_HEADER_H
+#ifndef ABOUT_DIALOG_H
+#define ABOUT_DIALOG_H
 
 /**
  * @defgroup TextStyle Text Style
@@ -29,7 +29,7 @@
  * of the widgets text styles.
  */
 
-#include "efl_tet.h"
+#include "efl_ete.h"
 #include "modal_window.h"
 
 /**
@@ -45,4 +45,4 @@
 Evas_Object *
 about_window_add(Evas_Object *parent);
 
-#endif  /* ABOUT_DIALOG_HEADER_H */
+#endif  /* ABOUT_DIALOG_H */
