@@ -5,16 +5,16 @@ group { name: "elm/toolbar/base/eflete/default";
          type: RECT;
          description { state: "default" 0;
             color: LIGHT_GREY_BG_COLOR;
-            rel1.offset: 2 2;
-            rel2.offset: -3 -3;
+            rel1.offset: 1 0;
+            rel2.offset: -2 -2;
          }
       }
       part { name: "clipper";
          type: RECT;
          mouse_events: 0;
          description { state: "default" 0;
-            rel1.offset: 2 2;
-            rel2.offset: -3 -3;
+            rel1.offset: 1 0;
+            rel2.offset: -2 -2;
          }
       }
       part { name: "elm.swallow.content";
