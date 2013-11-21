@@ -77,7 +77,7 @@ _on_close_project_save(void *data,
 {
    App_Data *ap = (App_Data *)data;
 
-   evas_object_del(ap->popup);
+   evas_object_hide(ap->popup);
    if (!ap->project->edj)
      {
         ap->is_new = true;
