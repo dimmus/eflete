@@ -65,6 +65,14 @@ group {
                relative: 1.0 1.0;
             }
          }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "hide" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
@@ -93,6 +101,21 @@ group {
             target: "header_bg";
             target: "elm.text.title";
          }
+         program {
+            name: "block_title_content_show";
+            signal: "title,content,show";
+            source: "eflete";
+            action: STATE_SET "show" 0.0;
+            target: "elm.swallow.title";
+         }
+         program {
+            name: "block_title_content_hide";
+            signal: "title,content,hide";
+            source: "eflete";
+            action: STATE_SET "hide" 0.0;
+            target: "elm.swallow.title";
+         }
+
       }
    }
 }

@@ -39,8 +39,8 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 
 static void
 _ok_clicked(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+            Evas_Object *obj,
+            void *event_info __UNUSED__)
 {
    Evas_Object *groupspace = (Evas_Object *)data;
    Evas_Object *glist = evas_object_data_del(obj, STADD_LIST_KEY);

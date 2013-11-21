@@ -425,8 +425,10 @@ ui_panes_add(App_Data *ap)
    evas_object_smart_callback_add (button, "clicked", _del_state_button_cb, ap);
    evas_object_show(button);
    elm_box_pack_end(panel, button);
-   evas_object_show(panel);
    elm_object_part_content_set(block, "elm.swallow.title", panel);
+   evas_object_show(panel);
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(block, "title,content,hide", "eflete");
    elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(block);
    ap->block.bottom_left = block;

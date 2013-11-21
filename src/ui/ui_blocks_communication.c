@@ -36,6 +36,8 @@ ui_part_back(App_Data *ap)
    ap->ws->zoom_step = 1.0;
    elm_genlist_clear(ui_block_state_list_get(ap));
    elm_genlist_clear(ui_block_signal_list_get(ap));
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    prop = ui_block_property_get(ap);
    ui_property_group_unset(prop);
    ui_demospace_unset(ap->demo);
@@ -108,6 +110,9 @@ ui_part_select(App_Data *ap,
    gl_states = ui_states_list_add(ap->win);
    ui_states_list_data_set(gl_states, ap->project->current_group, part);
    ui_block_state_list_set(ap, gl_states);
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(ap->block.bottom_left, "title,content,show", "eflete");
+
    evas_object_show(gl_states);
 
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
