@@ -416,7 +416,7 @@ _on_prog_editor_menu(void *data __UNUSED__,
    if (!ap->project->current_group)
      NOTIFY_WARNING("Please open the widget style for editing style programs!")
    else
-     program_editor_window_add(ap->win, ap->project->current_group);
+     program_editor_window_add(ap->project->current_group);
 }
 
 static void

@@ -59,7 +59,7 @@ static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
+   .rejected = EDITORS_BANNED_SYMBOLS
 };
 
 static void

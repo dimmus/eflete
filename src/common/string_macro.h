@@ -30,6 +30,7 @@
    free(arr);
 
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\"
+#define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{} |\\"
 #define PROP_BANNED_SYMBOLS ":;,'\"~!?&^%$#@()[]=+*{} |/\\"
 
 #endif /* STRING_MACRO_H */
