@@ -89,6 +89,30 @@ AM_COND_IF([PREFIX], [], [
 AC_SUBST([PREFIX],"${prefix}/bin/")
 ])
 
+if test "x$have_eina" = "xno" ||
+   test "x$have_elementary" = "xno" ||
+   test "x$have_eet" = "xno" ||
+   test "x$have_evas" = "xno" ||
+   test "x$have_ecore" = "xno" ||
+   test "x$have_eio" = "xno" ||
+   test "x$have_edje" = "xno" ||
+   test "x$have_efreet" = "xno"; then
+AC_MSG_ERROR("Needed EFL packages not found")
+fi
+
+if test  "x$have_ver_eina" != "x" ||
+   test  "x$have_ver_elementary" != "x" ||
+   test  "x$have_ver_eet" != "x" ||
+   test  "x$have_ver_evas" != "x" ||
+   test  "x$have_ver_ecore" != "x" ||
+   test  "x$have_ver_eio" != "x" ||
+   test  "x$have_ver_edje" != "x" ||
+   test  "x$have_ver_efreet" != "x"; then
+AC_MSG_ERROR("EFL version must be >= 1.8.0")
+fi
+
+AC_OUTPUT
+
 echo ""
 echo "Configuration Options Summary:"
 echo ""
@@ -116,27 +140,3 @@ echo "Installation.....: sudo make install"
 echo "  CFLAGS.........: ${CFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""
-
-if test "x$have_eina" = "xno" ||
-   test "x$have_elementary" = "xno" ||
-   test "x$have_eet" = "xno" ||
-   test "x$have_evas" = "xno" ||
-   test "x$have_ecore" = "xno" ||
-   test "x$have_eio" = "xno" ||
-   test "x$have_edje" = "xno" ||
-   test "x$have_efreet" = "xno"; then
-AC_MSG_ERROR("Needed EFL packages not found")
-fi
-
-if test  "x$have_ver_eina" != "x" ||
-   test  "x$have_ver_elementary" != "x" ||
-   test  "x$have_ver_eet" != "x" ||
-   test  "x$have_ver_evas" != "x" ||
-   test  "x$have_ver_ecore" != "x" ||
-   test  "x$have_ver_eio" != "x" ||
-   test  "x$have_ver_edje" != "x" ||
-   test  "x$have_ver_efreet" != "x"; then
-AC_MSG_ERROR("EFL version must be >= 1.8.0")
-fi
-
-AC_OUTPUT

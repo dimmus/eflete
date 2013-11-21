@@ -5,7 +5,7 @@ Requirements
 ============
 
 Must have:
- Elementary (1.7.8) with deps
+ Elementary (1.8.0) with deps
  Autotools
  check (optional)
 
@@ -16,18 +16,17 @@ Compiling and installing
 2) Install Autotools.
 3) Build eflete from top source directory.
 
-Build
-=====
+Build and Install
+=================
 
-   mkdir build
+   ./autogen.sh
    cd build
-   autoreconf -f -i ..
-   ../configure
-   make && sudo make install
+   make
+   sudo make install
 
 To install program to specified directory use --prefix option on configure step:
 
-   ../configure --prefix=/full/path/to/some/dir
+   ./autogen.sh --prefix=/full/path/to/some/dir
 
 Run tests
 =========
@@ -39,7 +38,3 @@ Run editor
 
    eflete
 
-External resources used
-=======================
-
-FreeFont Mono from http://www.gnu.org/software/freefont/ (GNU GPL v.3)
