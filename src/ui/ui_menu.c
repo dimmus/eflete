@@ -278,7 +278,7 @@ _on_view_separate(void *data,
 {
    App_Data *ap = (App_Data *)data;
    ui_groupspace_separate(ap->ws);
-   ui_menu_disable_set(ap, "Highlight space", !ap->ws->separated);
+   ui_menu_disable_set(ap->menu_hash, "Highlight space", !ap->ws->separated);
 }
 
 static void
@@ -498,5 +498,45 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_item_append(toolbar, TET_IMG_PATH"icon_save.png", "Save project", _on_save_menu, ap);
 
    ap->menu_hash = menu_elms_hash;
+   ui_menu_base_disabled_set(ap->menu_hash, true);
+
    return menu;
+}
+
+Eina_Bool
+ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag)
+{
+   Elm_Object_Item *item = NULL;
+
+   if (!name)
+     {
+        ERR("Name is NULL");
+        return false;
+     }
+   item = eina_hash_find(menu_hash, name);
+   if (!item)
+     {
+        WARN("Coud'nt find menu item [%s] in hash", name);
+        return false;
+     }
+   elm_object_item_disabled_set(item, flag);
+   return  elm_object_item_disabled_get(item) == flag;
+}
+
+Eina_Bool
+ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
+{
+   Eina_Bool result = true;
+   result = ui_menu_disable_set(menu_hash, "Save", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Save as...", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Save to edc", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Workspace", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Separate", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Legend", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Rulers", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Highlight space", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Styles", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Images", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Colorclasses", flag) && result;
+   return result;
 }

@@ -42,7 +42,7 @@ ui_part_back(App_Data *ap)
    ui_property_group_unset(prop);
    ui_demospace_unset(ap->demo);
 
-   ui_menu_disable_set(ap, "Programs", EINA_TRUE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
 }
 
 /**
@@ -159,7 +159,7 @@ ui_group_clicked(App_Data *ap, Group *group)
    ui_groupspace_update(ap->ws->groupspace);
    ui_demospace_set(ap->demo, ap->project, group);
    ui_demospace_update(ap->demo);
-   ui_menu_disable_set(ap, "Programs", EINA_FALSE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_FALSE);
 }
 
 Evas_Object *
@@ -195,11 +195,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              evas_object_show(wd_list);
              ui_panes_show(ap);
 
-             ui_menu_disable_set(ap, "Save", EINA_FALSE);
-             ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-             ui_menu_disable_set(ap, "Save to edc", EINA_FALSE);
-             ui_menu_disable_set(ap, "View", EINA_FALSE);
-             ui_menu_disable_set(ap, "Editors", EINA_FALSE);
+             ui_menu_base_disabled_set(ap->menu_hash, false);
           }
         else
           {
@@ -245,11 +241,7 @@ ui_edc_load_done(App_Data* ap,
         evas_object_show(wd_list);
         ui_panes_show(ap);
 
-        ui_menu_disable_set(ap, "Save", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
-        ui_menu_disable_set(ap, "View", EINA_FALSE);
-        ui_menu_disable_set(ap, "Editors", EINA_FALSE);
+        ui_menu_base_disabled_set(ap->menu_hash, false);
      }
    else
      {
@@ -298,7 +290,7 @@ new_theme_create(App_Data *ap)
         errors = EINA_TRUE;
      }
 
-   if(!errors)
+   if (!errors)
      {
         if (ap->ws->groupspace)
           {
@@ -313,7 +305,7 @@ new_theme_create(App_Data *ap)
              if (prop) ui_property_group_unset(prop);
              if ((ap->demo) || (ap->project))
                ui_demospace_unset(ap->demo);
-             ui_menu_disable_set(ap, "Programs", EINA_TRUE);
+             ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
           }
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)
@@ -328,11 +320,7 @@ new_theme_create(App_Data *ap)
         ui_panes_show(ap);
         ap->project->edj = NULL;
 
-        ui_menu_disable_set(ap, "Save", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save to edc", EINA_TRUE);
-        ui_menu_disable_set(ap, "View", EINA_FALSE);
-        ui_menu_disable_set(ap, "Editors", EINA_FALSE);
+        ui_menu_base_disabled_set(ap->menu_hash, false);
      }
 
    eina_stringshare_del(path);
@@ -509,23 +497,4 @@ ui_part_state_delete(App_Data *ap)
   CLEAR_STRINGS;
 #undef CLEAR_STRINGS
   return EINA_TRUE;
-}
-
-void
-ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag)
-{
-   Elm_Object_Item *item = NULL;
-
-   if ((!ap) || (!name) || (!ap->main_menu))
-     {
-        ERR("App_Data or given name is NULL");
-        return;
-     }
-   item = eina_hash_find(ap->menu_hash, name);
-   if (!item)
-     {
-        WARN("Coud'nt find menu item [%s] in hash", name);
-        return;
-     }
-   elm_object_item_disabled_set(item, flag);
 }
