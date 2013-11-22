@@ -46,6 +46,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
                        void *event)
 {
    Menu_Event *menu_event = (Menu_Event *)event;
+   ui_menu_locked_set(menu_event->ap->menu_hash, true);
    switch (menu_event->type)
       {
       case OPEN_EDC:
@@ -58,6 +59,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
          save_as_edj_file(menu_event->ap);
       break;
       }
+   ui_menu_locked_set(menu_event->ap->menu_hash, false);
    return ECORE_CALLBACK_DONE;
 }
 
@@ -68,6 +70,7 @@ _on_close_project_cancel(void *data,
 {
    App_Data *ap = (App_Data *)data;
    evas_object_hide(ap->popup);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 static void
@@ -103,6 +106,7 @@ _project_not_save_new(void *data,
    App_Data *ap = (App_Data *)data;
    evas_object_hide(ap->popup);
    new_theme_create(ap);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 
@@ -114,6 +118,7 @@ _project_not_save_edc(void *data,
    App_Data *ap = (App_Data *)data;
    evas_object_hide(ap->popup);
    open_edc_file(ap);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 static void
@@ -124,12 +129,14 @@ _project_not_save_edj(void *data,
    App_Data *ap = (App_Data *)data;
    evas_object_hide(ap->popup);
    open_edj_file(ap);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 
 #define POPUP_CLOSE_PROJECT(MESSAGE, func_pro_not_save) \
    Evas_Object *btn, *label; \
    Eina_Stringshare *title; \
+   ui_menu_locked_set(ap->menu_hash, true); \
    title = eina_stringshare_printf("Close project %s", ap->project->name); \
    if (!ap->popup) \
      ap->popup = elm_popup_add(ap->win_layout); \
@@ -542,5 +549,16 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result = ui_menu_disable_set(menu_hash, "Styles", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Images", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Colorclasses", flag) && result;
+   return result;
+}
+
+Eina_Bool
+ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag)
+{
+   Eina_Bool result = true;
+   result = ui_menu_disable_set(menu_hash, "File", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "View", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Editors", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Help", flag) && result;
    return result;
 }
