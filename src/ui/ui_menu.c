@@ -217,6 +217,7 @@ _on_save_menu(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   Menu_Event *menu_event;
    if ((!ap) || (!ap->project))
      {
         ERR("Project coud'nt be save");
@@ -225,7 +226,10 @@ _on_save_menu(void *data,
 
    if (!ap->project->edj)
      {
-        save_as_edj_file(ap);
+        menu_event = mem_malloc(sizeof(Menu_Event));
+        menu_event->ap = ap;
+        menu_event->type = SAVE_EDJ;
+        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
      }
    else
      {
