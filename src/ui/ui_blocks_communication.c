@@ -378,7 +378,6 @@ ui_style_delete(App_Data *ap)
 
    if(eoi_work)
      {
-
         inlist_count = eina_inlist_count(style->groups);
         if (inlist_count <= 1)
           {
@@ -405,8 +404,8 @@ ui_style_delete(App_Data *ap)
              NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
              return EINA_FALSE;
           }
-        wm_group_free(group);
         style->groups = eina_inlist_remove(style->groups, EINA_INLIST_GET(group));
+        wm_group_free(group);
      }
    else
      {
