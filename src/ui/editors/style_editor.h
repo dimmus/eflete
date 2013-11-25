@@ -31,13 +31,14 @@
 
 #include "efl_ete.h"
 #include "modal_window.h"
-#include "style_edit.h"
 #include "widget_macro.h"
+#include "widget_macro.h"
+#include "string_macro.h"
+
 /**
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
- * @param parent - the object that will be the parent of this dialog.
  * @param project -currently opened project
  *
  * @return the inwin object that contain style viewer
@@ -45,7 +46,6 @@
  * @ingroup TextStyle
  */
 Evas_Object *
-style_editor_window_add(Evas_Object *parent, Project *project);
-
+style_editor_window_add(Project *project);
 
 #endif  /* STYLE_VIEWER_DIALOG_H */

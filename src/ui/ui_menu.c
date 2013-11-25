@@ -396,8 +396,7 @@ _on_style_window_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ap->project != NULL) style_editor_window_add(ap->win, ap->project);
-   else NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
+   style_editor_window_add(ap->project);
 }
 
 static void

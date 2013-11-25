@@ -23,4 +23,29 @@
 #define true EINA_TRUE
 #define false EINA_FALSE
 
+/* Getting first object from project. Needed to access top-level blocks */
+#define GET_OBJ(PROJECT, EDJE_OBJECT) \
+   Eina_Inlist *__styles, *__groups, *__widgets = NULL; \
+   Widget *__widget; \
+   Style *__style; \
+   Group *__group; \
+   __widgets = PROJECT->widgets; \
+   if (!__widgets) EDJE_OBJECT = NULL; \
+   else\
+     { \
+         __widget = EINA_INLIST_CONTAINER_GET(__widgets, Widget); \
+         __styles = __widget->styles; \
+         if (!__styles) EDJE_OBJECT = NULL; \
+         else \
+           { \
+               __style = EINA_INLIST_CONTAINER_GET(__styles, Style); \
+               __groups = __style->groups; \
+               if (!__groups) EDJE_OBJECT = NULL; \
+               else\
+                 { \
+                     __group = EINA_INLIST_CONTAINER_GET(__groups, Group); \
+                     EDJE_OBJECT = __group->obj; \
+                 } \
+           } \
+     }
 #endif /* COMMON_MACRO_H */
