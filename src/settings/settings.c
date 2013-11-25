@@ -17,7 +17,7 @@
 * along with this program; If not, see .
 */
 
-#include <settings.h>
+#include "settings.h"
 
 typedef struct _UI_Settings UI_Settings;
 typedef struct _Panes_Settings Panes_Settings;

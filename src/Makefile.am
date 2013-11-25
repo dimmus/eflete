@@ -4,7 +4,7 @@ bin_PROGRAMS = eflete
 
 noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
-efl_ete.c \
+eflete.c \
 alloc/alloc.c \
 project_manager/edje_compile.c \
 project_manager/widget_manager.c \
@@ -21,7 +21,6 @@ ui/editors/colorclass_editor.c \
 ui/editors/program_editor.c \
 ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
-ui/dialogs/font_viewer_dialog.c \
 ui/dialogs/part_dialog.c \
 ui/dialogs/state_dialog.c \
 ui/dialogs/style_dialog.c \
@@ -35,9 +34,9 @@ ui/blocks/ui_states_list.c \
 ui/workspace/ui_highlight.c \
 ui/workspace/ui_ruler.c \
 ui/workspace/ui_workspace.c \
-ui/workspace/ui_popup.c \
+ui/workspace/ui_ctxpopup.c \
 ui/workspace/ui_groupspace.c \
-ui/workspace/ui_demospace.c \
+ui/demo/ui_demospace.c \
 ui/notification/notify.c
 
 eflete_SOURCES  = main.c
@@ -55,6 +54,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
+-I${top_srcdir}/src/ui/demo \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \

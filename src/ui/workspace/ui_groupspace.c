@@ -19,6 +19,7 @@
 
 #include "ui_groupspace.h"
 #include "ui_highlight.h"
+#include "ui_block.h"
 
 #define GS_WS_KEY "gs_workspace_key"
 #define GS_PROJECT_KEY "gs_project_key"
@@ -26,12 +27,13 @@
 #define GS_PART_DATA_KEY "gs_part_key"
 #define GS_GROUP_KEY "gs_group_key"
 #define GS_BORDER_KEY "gs_border_key"
-#define GS_SEPARATE_BORDER_ADD(part) \
+
+#define GS_SEPARATE_BORDER_ADD(PART) \
    Evas_Object *layout = edje_object_add(ws->canvas); \
    edje_object_file_set(layout, TET_EDJ, "base/groupspace/part/separate_border"); \
-   edje_object_part_text_set(layout, "part_text", part->name); \
+   edje_object_part_text_set(layout, "part_text", PART->name); \
    evas_object_box_append(box, layout); \
-   evas_object_data_set(part->obj, GS_BORDER_KEY, layout); \
+   evas_object_data_set(PART->obj, GS_BORDER_KEY, layout); \
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN, _on_part_click, ws);
 
 static void

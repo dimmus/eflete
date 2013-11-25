@@ -17,7 +17,10 @@
 * along with this program; If not, see .
 */
 
-#include "ui_popup.h"
+#include "ui_ctxpopup.h"
+#include "ui_groupspace.h"
+#include "ui_highlight.h"
+#include "logger.h"
 
 static void
 _dismissed(void *data __UNUSED__,
@@ -284,12 +287,21 @@ _popup_add (Workspace *ws)
    return ctxpopup;
 }
 
+static void
+_on_popup_hide(void *data __UNUSED__,
+               Evas_Object *obj,
+               void *ei __UNUSED__)
+{
+   evas_object_del(obj);
+}
+
 void
 ui_popup_show (Workspace *ws)
 {
    Evas_Coord x,y;
    Evas_Object *popup = NULL;
    popup = _popup_add(ws);
+   evas_object_smart_callback_add(popup, "dismissed", _on_popup_hide, NULL);
    evas_pointer_canvas_xy_get(evas_object_evas_get(ws->bg), &x, &y);
    evas_object_move(popup, x, y);
    evas_object_show(popup);

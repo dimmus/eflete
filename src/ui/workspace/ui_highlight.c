@@ -18,6 +18,7 @@
 */
 
 #include "ui_highlight.h"
+#include "alloc.h"
 
 #define SIZE 30
 #define MINSIZE 120 /* 120 * 0.25 = 30 */

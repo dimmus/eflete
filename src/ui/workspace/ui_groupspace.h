@@ -30,13 +30,8 @@
  * for futher manipulations with part objects.
  */
 
-#include "efl_ete.h"
-#include <Evas.h>
-#include <Elementary.h>
-#include <Eina.h>
-#include "widget_manager.h"
-#include "ui_block.h"
-
+#include "ui_workspace.h"
+#include "project_manager.h"
 
 /**
  * Add new groupspace object into workspace.

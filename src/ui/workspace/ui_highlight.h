@@ -20,7 +20,6 @@
 #ifndef HIGHLIGHT_H
 #define HIGHLIGHT_H
 
-#include <efl_ete.h>
 #include "ui_groupspace.h"
 
 /**

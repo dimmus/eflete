@@ -29,7 +29,7 @@
  * of the widgets text styles.
  */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "modal_window.h"
 #include "widget_macro.h"
 #include "widget_macro.h"

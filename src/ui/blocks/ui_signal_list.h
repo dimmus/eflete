@@ -32,8 +32,7 @@
  * A 'signal list' used for view list of part signal.
  */
 
-#include "efl_ete.h"
-#include <Elementary.h>
+#include "eflete.h"
 
 /**
  * Add a new Signal List.

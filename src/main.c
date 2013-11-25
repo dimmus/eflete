@@ -17,7 +17,7 @@
 * along with this program; If not, see .
 */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "ui_main_window.h"
 
 EAPI_MAIN int

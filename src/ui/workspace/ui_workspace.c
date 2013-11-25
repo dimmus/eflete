@@ -19,7 +19,7 @@
 
 #include <ui_workspace.h>
 #include "ui_highlight.h"
-#include "efl_ete.h"
+#include "eflete.h"
 
 #define GS_BOX_KEY "gs_box_key"
 
