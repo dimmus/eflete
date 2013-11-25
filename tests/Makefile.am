@@ -5,7 +5,6 @@ ACLOCAL_AMFLAGS = -I m4
 TESTS = addpart_test \
 alloc_test \
 colorclass_editor_test \
-colorclasses_edit_api_test \
 edje_compile_test \
 font_viewer_dialog_test \
 image_editor_test \
@@ -77,10 +76,6 @@ alloc_test_LDADD = ${LD}
 colorclass_editor_test_SOURCES = test_colorclass_editor/test_colorclass_editor.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
-
-colorclasses_edit_api_test_SOURCES = test_colorclasses_edit_api/test_colorclasses_edit_api.c
-colorclasses_edit_api_test_CFLAGS = ${FLAGS}
-colorclasses_edit_api_test_LDADD = ${LD}
 
 edje_compile_test_SOURCES = test_edje_compile/test_edje_compile.c
 edje_compile_test_CFLAGS = ${FLAGS}

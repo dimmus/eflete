@@ -57,66 +57,14 @@ START_TEST (colorclass_viewer_add_test_n2)
    App_Data *app = NULL;
    app_init();
    app = app_create();
-   if(app == NULL)
+   if (app == NULL)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
    fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create "
       "window");
-   fail_unless(colorclass_viewer_add(app->win) != NULL, "failure: cannot"
+   fail_unless(colorclass_viewer_add(app->project) != NULL, "failure: cannot"
       " create image editor window");
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup colorclass_viewer_init
- * @{
- * @objective Positive test case:
- *
- * @procedure
- * @step 1 Call function for with NULL argument
- *
- * @passcondition: test passed
- * @}
- */
-START_TEST (colorclass_viewer_init_test_n1)
-{
-   colorclass_viewer_init(NULL, NULL);
-}
-END_TEST
-
-/**
- * @addto group colorclass_viewer_init
- * @{
- * @objective Positive test case:
- *
- * @procedure
- * @step 1 Create App_Data structure app
- * @step 2 Call app_create() function to initialize app
- * @step 3 Create main window using ui_main_window_add()
- * @step 4 Add colorclass viewer  using colorclass_viewer_add
- * @step 5 Load edc
- * @step 6 Call colorclass_viewer_init
- *
- * @passcondition: test passed
- */
-START_TEST (colorclass_viewer_init_test_n2)
-{
-   elm_init(0,0);
-   App_Data *app = NULL;
-   app_init();
-   app = app_create();
-   if(app == NULL)
-   {
-      ck_abort_msg("uncorrect work function 'app_create'");
-   }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create"
-      "window");
-   ui_edc_load_done(app, "first", "./tests/test_colorclass_editor/data/"
-      "naviframe.edc","","","");
-   colorclass_viewer_init(colorclass_viewer_add(app->win), app->project);
    app_shutdown();
    elm_shutdown();
 }
@@ -141,8 +89,6 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, colorclass_viewer_add_test_n1);
    tcase_add_test(tcase, colorclass_viewer_add_test_n2);
-   tcase_add_test(tcase, colorclass_viewer_init_test_n1);
-   tcase_add_test(tcase, colorclass_viewer_init_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }

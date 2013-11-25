@@ -18,7 +18,7 @@
 */
 
 #include <check.h>
-#include "add_part_dialog.h"
+#include "part_dialog.h"
 
 /**
  * @addtogroup add_part
@@ -40,7 +40,7 @@ START_TEST (add_part_test1)
    par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    grspace = ui_groupspace_add(par);
    res = part_dialog_add(par, grspace);
-   if(!res)
+   if (!res)
    {
       ck_abort_msg("failure: cannot return pointer to inwin window");
    }
@@ -66,7 +66,7 @@ START_TEST (add_part_test2)
    par = NULL;
    grspace = ui_groupspace_add(par);
    res = part_dialog_add(par, grspace);
-   if(res)
+   if (res)
    {
       ck_abort_msg("failure: cannot return pointer to NULL inwin window");
    }
