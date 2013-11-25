@@ -61,8 +61,6 @@ _image_editor_del(Image_Editor *img_edit)
    img_edit->pr = NULL;
    evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
-   free(img_edit->func_data.choose_func);
-   free(img_edit->func_data.data);
    evas_object_del(img_edit->legend);
    evas_object_del(img_edit->gengrid);
    evas_object_del(img_edit->win);
