@@ -183,8 +183,27 @@ part_dialog_add(Evas_Object *parent, Evas_Object *groupspace)
    Evas_Object *popup, *bt_no;
    Eina_Stringshare *title;
    Group *group;
-
+   if (!parent)
+     {
+        ERR("Parent is NULL");
+        return NULL;
+     }
+   if (!groupspace)
+     {
+        ERR("Groupspace is NULL");
+        return NULL;
+     }
    group = ui_groupspace_group_get(groupspace);
+   if (!group)
+     {
+        ERR("group is NULL");
+        return NULL;
+     }
+   if (!group->group_name)
+     {
+        ERR("group_name is NULL");
+        return NULL;
+     }
    popup = elm_popup_add(parent);
    elm_object_style_set(popup, "eflete");
    title = eina_stringshare_printf("Add new part to group \"%s\"", group->group_name);
