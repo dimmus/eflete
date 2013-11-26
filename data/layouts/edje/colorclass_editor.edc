@@ -1,0 +1,79 @@
+group {
+   name: "base/colorclass_editor/text_example";
+   parts {
+       part {
+         name: "border";
+         type: RECT;
+         description{
+            state: "default" 0.0;
+            color: 155 155 155 255;
+         }
+      }
+      part {
+         name: "bg";
+         type: RECT;
+         description{
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {
+               to: "border";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "border";
+               offset: -2 -2;
+            }
+         }
+      }
+      part {
+         name: "text_example";
+         type: TEXT;
+         effect: OUTLINE_SHADOW;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            color2: 255 255 255 255;
+            color3: 255 255 255 255;
+            color_class: "colorclass_editor/text_example_colorclass";
+            text {
+               size: 28;
+               min: 1 1;
+               font: "arial";
+            }
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+   }
+}
+
+group {
+   name: "base/colorclass_editor/color_example";
+   parts {
+       part {
+         name: "border";
+         type: RECT;
+         description{
+            state: "default" 0.0;
+            color: 155 155 155 255;
+         }
+      }
+      part {
+         name: "color_example";
+         type: SWALLOW;
+         description{
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {
+               to: "border";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "border";
+               offset: -2 -2;
+            }
+         }
+      }
+   }
+}
