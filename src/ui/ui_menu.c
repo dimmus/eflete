@@ -23,7 +23,7 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "program_editor.h"
-#include "ui_highlight.h"
+#include "highlight.h" /*TODO: it need ro remove from here */
 #include "about_window.h"
 
 static int _menu_delayed_event = 0;
@@ -350,8 +350,8 @@ _on_view_highlight(void *data,
 {
    App_Data *ap = (App_Data *)data;
    if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
-   hl_highlight_visible_set(ap->ws->highlight.space_hl,
-                !hl_highlight_visible_get(ap->ws->highlight.space_hl));
+   highlight_visible_set(ap->ws->highlight.space_hl,
+                !highlight_visible_get(ap->ws->highlight.space_hl));
 }
 
 static void
