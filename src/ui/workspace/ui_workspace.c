@@ -18,6 +18,7 @@
 */
 
 #include <ui_workspace.h>
+#include "ctxpopup.h"
 #include "highlight.h"
 #include "eflete.h"
 
@@ -175,7 +176,7 @@ _ws_mouse_click_cb(void *data ,
 {
    Evas_Event_Mouse_Down *ev = event_info;
    Workspace *ws = (Workspace*)data;
-   if (ev->button == 3) ui_popup_show (ws);
+   if (ev->button == 3) ws_ctxpopup_show(ws);
 }
 
 void

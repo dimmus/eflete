@@ -34,7 +34,7 @@ ui/blocks/ui_states_list.c \
 ui/workspace/highlight.c \
 ui/workspace/ui_ruler.c \
 ui/workspace/ui_workspace.c \
-ui/workspace/ui_ctxpopup.c \
+ui/workspace/ctxpopup.c \
 ui/workspace/ui_groupspace.c \
 ui/demo/ui_demospace.c \
 ui/notification/notify.c

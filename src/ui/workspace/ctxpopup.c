@@ -14,10 +14,10 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include "ui_ctxpopup.h"
+#include "ctxpopup.h"
 #include "ui_groupspace.h"
 #include "highlight.h"
 #include "logger.h"
@@ -205,7 +205,7 @@ _ctxpopup_item_rel_cb(void *data,
 
 
 Evas_Object *
-_popup_add (Workspace *ws)
+_popup_add(Workspace *ws)
 {
    Evas_Object *ctxpopup, *check;
    Elm_Object_Item *eoi = NULL;
@@ -296,7 +296,7 @@ _on_popup_hide(void *data __UNUSED__,
 }
 
 void
-ui_popup_show (Workspace *ws)
+ws_ctxpopup_show(Workspace *ws)
 {
    Evas_Coord x,y;
    Evas_Object *popup = NULL;

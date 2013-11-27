@@ -24,6 +24,7 @@
 
 /**
  * @defgroup Highlight Highlight
+ * @ingroup Workspace
  *
  * TODO: THIS PART IS STILL BEING DEVELOPED.
  * TODO: "MAKE t, l, r, b and cc parts please!"
