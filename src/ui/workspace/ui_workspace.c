@@ -18,7 +18,7 @@
 */
 
 #include <ui_workspace.h>
-#include "ui_highlight.h"
+#include "highlight.h"
 #include "eflete.h"
 
 #define GS_BOX_KEY "gs_box_key"
@@ -336,10 +336,10 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    if ((!ws) || (!part) || (!ws->separated)) return;
 
    if (!ws->highlight.space_hl)
-        ws->highlight.space_hl = hl_highlight_add(ws->groupspace);
+        ws->highlight.space_hl = highlight_add(ws->groupspace);
 
    if (!ws->highlight.highlight)
-     ws->highlight.highlight = hl_highlight_add(ws->groupspace);
+     ws->highlight.highlight = highlight_add(ws->groupspace);
 
    Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
    Group *group = ui_groupspace_group_get(ws->groupspace);
@@ -351,7 +351,7 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    evas_object_move(ws->highlight.space_hl, x, y);
    evas_object_show(ws->highlight.space_hl);
    evas_object_box_insert_at(box, ws->highlight.space_hl, 0);
-   hl_highlight_handler_disabled_set(ws->highlight.space_hl, EINA_TRUE);
+   highlight_handler_disabled_set(ws->highlight.space_hl, EINA_TRUE);
 
    evas_object_geometry_get(part->obj, &x, &y, &w, &h);
    evas_object_resize(ws->highlight.highlight, w, h);
@@ -365,14 +365,14 @@ ui_object_highlight_set(Workspace *ws, Part *part)
    evas_object_smart_callback_add(ws->highlight.highlight, "hl,resize",
                                   __on_resize, ws);
 
-   hl_highlight_visible_set(ws->highlight.space_hl, EINA_FALSE);
-   hl_highlight_bg_color_set(ws->highlight.space_hl, 64, 64, 64, 64);
-   hl_highlight_handler_color_set(ws->highlight.space_hl, 0, 0, 255, 255);
-   hl_highlight_border_color_set(ws->highlight.space_hl, 0, 0, 0, 255);
+   highlight_visible_set(ws->highlight.space_hl, EINA_FALSE);
+   highlight_bg_color_set(ws->highlight.space_hl, 64, 64, 64, 64);
+   highlight_handler_color_set(ws->highlight.space_hl, 0, 0, 255, 255);
+   highlight_border_color_set(ws->highlight.space_hl, 0, 0, 0, 255);
 
-   hl_highlight_bg_color_set(ws->highlight.highlight , 0, 0, 0 , 0);
-   hl_highlight_handler_color_set(ws->highlight.highlight, 255, 0, 0, 255);
-   hl_highlight_border_color_set(ws->highlight.highlight, 0, 255, 0, 255);
+   highlight_bg_color_set(ws->highlight.highlight , 0, 0, 0 , 0);
+   highlight_handler_color_set(ws->highlight.highlight, 255, 0, 0, 255);
+   highlight_border_color_set(ws->highlight.highlight, 0, 255, 0, 255);
 }
 
 void
@@ -401,7 +401,7 @@ ui_object_highlight_move(Workspace *ws)
       (only one handler). And it should not move highlight (when "clicked") same
       with groupspace after scrolling.
     */
-   hl_highlight_clicked_unset(ws->highlight.highlight);
+   highlight_clicked_unset(ws->highlight.highlight);
 }
 
 void
@@ -412,8 +412,9 @@ ui_object_highlight_handler_move(Workspace *ws)
    if (!ws) return;
 
    evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
-   hl_highlight_move(ws->highlight.highlight, x, y);
-   hl_highlight_resize(ws->highlight.highlight, w, h);
+   evas_object_move(ws->highlight.highlight, x, y);
+   evas_object_resize(ws->highlight.highlight, w, h);
+
 
    Group *group = ui_groupspace_group_get(ws->groupspace);
    ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);

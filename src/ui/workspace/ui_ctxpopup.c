@@ -19,7 +19,7 @@
 
 #include "ui_ctxpopup.h"
 #include "ui_groupspace.h"
-#include "ui_highlight.h"
+#include "highlight.h"
 #include "logger.h"
 
 static void
@@ -57,7 +57,7 @@ _hl_check_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
    if (ws->highlight.part)
     {
       visible = elm_check_state_get(check);
-      hl_highlight_visible_set(ws->highlight.space_hl, !visible);
+      highlight_visible_set(ws->highlight.space_hl, !visible);
       elm_check_state_set(check, !visible);
     }
    elm_ctxpopup_dismiss(elm_object_parent_widget_get(obj));
@@ -163,8 +163,8 @@ _ctxpopup_item_space_hl_cb(void *data,
    Eina_Bool visible;
    if ((ws->highlight.part) && (ws->highlight.space_hl))
     {
-        visible = hl_highlight_visible_get(ws->highlight.space_hl);
-        hl_highlight_visible_set(ws->highlight.space_hl, !visible);
+        visible = highlight_visible_get(ws->highlight.space_hl);
+        highlight_visible_set(ws->highlight.space_hl, !visible);
         elm_check_state_set(check, !visible);
     }
   elm_ctxpopup_dismiss(obj);
@@ -231,7 +231,7 @@ _popup_add (Workspace *ws)
    evas_object_show(check);
    if (ws->highlight.part)
      {
-        visible = hl_highlight_visible_get(ws->highlight.space_hl);
+        visible = highlight_visible_get(ws->highlight.space_hl);
         elm_check_state_set(check, visible);
      }
    if ((!ws->separated) && (!ws->highlight.highlight))

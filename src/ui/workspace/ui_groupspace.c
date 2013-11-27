@@ -18,7 +18,6 @@
 */
 
 #include "ui_groupspace.h"
-#include "ui_highlight.h"
 #include "ui_block.h"
 
 #define GS_WS_KEY "gs_workspace_key"
