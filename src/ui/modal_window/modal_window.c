@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "modal_window.h"
@@ -108,42 +108,47 @@ mw_add(Evas_Object *parent __UNUSED__)
 }
 
 Evas_Object *
-mw_about_add(Evas_Object *parent)
+mw_about_add(Evas_Object *parent __UNUSED__)
 {
-   if (!parent)
+   Evas_Object *win = NULL;
+   win = main_window_get();
+
+   if (!win)
      {
         ERR("Parent evas_object is NULL.");
         return NULL;
      }
 
-   return _mw_create(parent, "about_window");
+   return _mw_create(win, "about_window");
 }
 
-void
+Eina_Bool
 mw_title_set(Evas_Object *object, const char *title)
 {
    if ((!object) || (!title))
      {
         ERR("Object or title is NULL.");
-        return;
+        return false;
      }
 
    elm_object_part_text_set(object, "elm.text.title", title);
+   return true;
 }
 
-void
+Eina_Bool
 mw_icon_set(Evas_Object *object, Evas_Object *icon)
 {
    if ((!object) || (!icon))
      {
         ERR("Evas_object or icon is NULL.");
-        return;
+        return false;
      }
 
    elm_layout_content_set(object, "elm.swallow.icon", icon);
+   return true;
 }
 
-void
+Eina_Bool
 mw_info_text_set(Evas_Object *object, const char *text)
 {
    Evas_Object *ic_info, *bt_info;
@@ -151,7 +156,7 @@ mw_info_text_set(Evas_Object *object, const char *text)
    if ((!object) || (!text))
      {
         ERR("Evas_object or text is NULL.");
-        return;
+        return false;
      }
 
    bt_info = elm_button_add(object);
@@ -162,4 +167,5 @@ mw_info_text_set(Evas_Object *object, const char *text)
    elm_layout_content_set(bt_info, "icon", ic_info);
    elm_layout_content_set(object, "elm.swallow.info", bt_info);
    evas_object_show(bt_info);
+   return true;
 }

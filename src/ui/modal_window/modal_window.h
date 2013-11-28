@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef MODAL_WINDOW_H
@@ -72,10 +72,11 @@ mw_about_add(Evas_Object *parent);
  *
  * @param object The modal window object.
  * @param title The title to set.
+ * @return EINA_FALSE on error, EINA_TRUE otherwise
  *
  * @ingroup ModalWindow
  */
-void
+Eina_Bool
 mw_title_set(Evas_Object *object, const char *title);
 
 /**
@@ -89,10 +90,11 @@ mw_title_set(Evas_Object *object, const char *title);
  *
  * @param object The modal window object to set an icon.
  * @param icon The image object to use for an icon.
+ * @return EINA_FALSE on error, EINA_TRUE otherwise
  *
  * @ingroup ModalWindow
  */
-void
+Eina_Bool
 mw_icon_set(Evas_Object *object, Evas_Object *icon);
 
 /**
@@ -102,10 +104,11 @@ mw_icon_set(Evas_Object *object, Evas_Object *icon);
  *
  * @param object The modal window object to set an info.
  * @param text The text to use for an info.
+ * @return EINA_FALSE on error, EINA_TRUE otherwise
  *
  * @ingroup ModalWindow
  */
-void
+Eina_Bool
 mw_info_text_set(Evas_Object *object, const char *text);
 
 #endif /* MODAL_WINDOW_H */
