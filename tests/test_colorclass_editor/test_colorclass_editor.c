@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include <check.h>
@@ -26,44 +26,50 @@
  * @{
  * @objective Negative test case:
  *
+ * @precondition
+ * @1. initialized efl
+ *
  * @procedure
- * @step 1 Call function for with NULL argument
+ * @step 1 Call colorclass_viewer_add(NULL)
+ * @step 2 Check returned pointer
  *
  * @passcondition: NULL returned
  * @}
  */
-START_TEST (colorclass_viewer_add_test_n1)
+START_TEST (colorclass_viewer_add_test_n)
 {
+   elm_init(0,0);
    ck_assert_msg(colorclass_viewer_add(NULL) == NULL, "Not NULL returned");
+   elm_shutdown();
 }
 END_TEST
 
 /**
- * @addto group colorclass_viewer_add
+ * @addtogroup colorclass_viewer_add
  * @{
  * @objective Positive test case:
  *
- * @procedure
- * @step 1 Create App_Data structure app
- * @step 2 Call app_create() function to initialize app
- * @step 3 Create main window using ui_main_window_add()
- * @step 4 Add colorclass viewer  using colorclass_viewer_add
+ * @precondition
+ * @1. initialized efl and app
+ * @2. app->project is set to any valid pointer (colorclass_viewer itself do not
+ * @uses project fields. it only makes a copy of pointer)
  *
- * @passcondition: return Evas_Object
+ * @procedure
+ * @step 1 Call colorclass_viewer_add(app)
+ * @step 2 Check returned pointer
+ *
+ * @passcondition: Not NULL returned
+ * @}
  */
-START_TEST (colorclass_viewer_add_test_n2)
+START_TEST (colorclass_viewer_add_test_p)
 {
    elm_init(0,0);
-   App_Data *app = NULL;
+   App_Data *app;
    app_init();
    app = app_create();
-   if (app == NULL)
-   {
-      ck_abort_msg("uncorrect work function 'app_create'");
-   }
-   fail_unless(ui_main_window_add(app) == EINA_TRUE, "failure: cannot create "
-      "window");
-   fail_unless(colorclass_viewer_add(app->project) != NULL, "failure: cannot"
+   app->project = calloc(1, sizeof(Project));
+   ui_main_window_add(app);
+   ck_assert_msg(colorclass_viewer_add(app->project) != NULL, "failure: cannot"
       " create image editor window");
    app_shutdown();
    elm_shutdown();
@@ -87,8 +93,8 @@ END_TEST
 Suite* test_suite (void) {
    Suite *suite = suite_create("test_colorclass_editor");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, colorclass_viewer_add_test_n1);
-   tcase_add_test(tcase, colorclass_viewer_add_test_n2);
+   tcase_add_test(tcase, colorclass_viewer_add_test_n);
+   tcase_add_test(tcase, colorclass_viewer_add_test_p);
    suite_add_tcase(suite, tcase);
    return suite;
 }
