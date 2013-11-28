@@ -98,7 +98,7 @@ compile(const char *edc,
    size = strlen(edc) + strlen(edj) +
       strlen(image_directory) + strlen(font_directory) +
       strlen(sound_directory) + BUFF_MAX;
-   edjecc->cmd = (char *)malloc(size);
+   edjecc->cmd = (char *)mem_malloc(size);
    sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
            image_directory, font_directory, sound_directory,
            edc, edj);
@@ -133,7 +133,7 @@ decompile(const char *edj, const char *edc __UNUSED__)
    edjedecc->messages = NULL;
 
    size = strlen(edj) + BUFF_MAX;
-   edjedecc->cmd = (char *)malloc(size);
+   edjedecc->cmd = (char *)mem_malloc(size);
    sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh", edj);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);

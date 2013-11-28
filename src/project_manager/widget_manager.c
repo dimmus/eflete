@@ -500,10 +500,13 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
           if (!strcmp(_widget->widget_name, widget_name))
             break;
        }
-   if (!_widget) return NULL;
+   if (!_widget)
+     {
+        free(widget_name);
+        return NULL;
+     }
 
    WM_STYLE_NAME_GET(style_name, group_full_name);
-
    if (style_name [0] <= 'm')
      EINA_INLIST_FOREACH(_widget->styles, _style)
        {
@@ -516,7 +519,12 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
           if (!strcmp(_style->style_name, style_name))
             break;
        }
-   if (!_style) return NULL;
+   if (!_style)
+     {
+        free(widget_name);
+        free(style_name);
+        return NULL;
+     }
 
    WM_GROUP_NAME_GET(group_name, style_name, group_full_name)
    if (group_name [0] <= 'm')
