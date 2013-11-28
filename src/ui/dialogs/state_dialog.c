@@ -89,23 +89,26 @@ state_dialog_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *item_name, *item_value, *item_dup;
-   Evas_Object *glist = ui_block_state_list_get(ap);
-   Evas_Object *groupspace = ap->ws->groupspace;
-   Part *part;
-   Eina_Stringshare *title;
+   Evas_Object *glist = NULL;
+   Evas_Object *groupspace = NULL;
+   Part *part = NULL;
+   Eina_Stringshare *title = NULL;
 
-   if (!ap)
+   if ((!ap) && (!ap->ws))
      {
         ERR("Failed create state dialog.");
         return NULL;
      }
 
+   glist = ui_block_state_list_get(ap);
    part = ui_state_list_part_get(glist);
    if (!part)
      {
         NOTIFY_INFO(3, "Please select part");
         return NULL;
      }
+
+   groupspace = ap->ws->groupspace;
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");

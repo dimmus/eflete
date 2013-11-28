@@ -295,7 +295,6 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
           }
         script_source = edje_edit_script_program_get(template_edje_edit,
                               program_name);
-        DBG("Program [%s] script[%s]", program_name, script_source);
         if (!script_source) continue;
         edje_edit_script_program_set(template_edje_edit,
                               program_name, script_source);
@@ -432,9 +431,10 @@ _on_popup_btn_yes(void *data,
         eina_stringshare_del(class_name);\
 
 
-   template_file = eina_stringshare_add(TET_EDJ_PATH"template.edj");
    widget = _widget_from_ap_get(ap);
+   if (!widget) return;
 
+   template_file = eina_stringshare_add(TET_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
    if (eina_stringshare_strlen(style_name) <= 0)
@@ -512,6 +512,13 @@ _on_popup_btn_yes(void *data,
                                                     Group);
         groups = eina_list_append(groups, full_name);
         style = wm_style_add(style_name, groups);
+        if (!style)
+          {
+             ERR("Failed create style");
+             STRING_CLEAR
+             return;
+          }
+
         group = EINA_INLIST_CONTAINER_GET(style->groups, Group);
         temporary_wdg->styles = eina_inlist_sorted_insert(temporary_wdg->styles,
                                    EINA_INLIST_GET(style), _sort_style_add_cb);
