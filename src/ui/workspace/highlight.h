@@ -220,46 +220,7 @@ highlight_border_color_set(Evas_Object *hl,
  *
  * @ingroup Highlight
  */
-
-void
-highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
-
-/**
- * Get highlight visible state.
- *
- * @param hl Highlight object.
- * @return EINA_TRUE if highlight visible, EINA_FALE if hided.
- *
- * @ingroup Highlight
- */
 Eina_Bool
-highlight_visible_get(Evas_Object *hl);
-
-/**
- * Set highlight visible. If visible disabled with this method,
- * evas_object_show can't show highlight. For enable visible use this method
- * with EINA_TRUE parametr.
- *
- * @param hl Highlight object.
- * @param enable EINA_TRUE for set visible highlight, EINA_FALE for
- * invisible mode.
- *
- * @ingroup Highlight
- */
-void
-highlight_visible_set(Evas_Object *hl, Eina_Bool visible);
-
-/**
- * This function will unset the "clicked" state of highlight.
- *
- * Use this function when highlight is being moved or resize by something
- * that is not users mouse.
- *
- * @param hl Highlight object.
- *
- * @ingroup Highlight
- */
-void
-highlight_clicked_unset(Evas_Object *hl);
+highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
 
 #endif /* HIGHLIGHT_H */
