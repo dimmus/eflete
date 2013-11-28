@@ -410,6 +410,8 @@ ui_style_delete(App_Data *ap)
                break;
           }
 
+        if (!group_work) return false;
+
         evas_object_del(group->obj);
         if (!edje_edit_group_del(group_work->obj, group->full_group_name))
           {
@@ -435,7 +437,11 @@ ui_style_delete(App_Data *ap)
                break;
           }
 
+        if (!style_work) return false;
+
         group_work = EINA_INLIST_CONTAINER_GET(style_work->groups, Group);
+        if (!group_work) return false;
+
         EINA_INLIST_FOREACH_SAFE(style->groups, l, group)
           {
              if (!group)

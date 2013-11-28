@@ -544,6 +544,8 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
    free(style_name);
    free(group_name);
 
+   if (!_group) return NULL;
+
    return _group->obj;
 }
 

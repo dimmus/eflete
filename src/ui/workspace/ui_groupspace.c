@@ -561,7 +561,7 @@ _layer_up_change(void *data,
         edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
         if ((edje_part) && (part->obj == child)) break;
      }
-   if (!eina_list_data_get(l->prev)) return;
+   if ((!l) && (!eina_list_data_get(l->prev))) return;
    next_child = eina_list_data_get(l->next);
    if (!next_child) return;
    prev_prev_child = eina_list_data_get(l->prev->prev);
@@ -629,6 +629,8 @@ _layer_down_change(void *data,
         edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
         if ((edje_part) && (part->obj == child))  break;
      }
+   if (!l) return;
+
    next_child = eina_list_data_get(l->next);
    if (!next_child) return;
 

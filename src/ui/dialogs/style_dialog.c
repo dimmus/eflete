@@ -75,6 +75,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
   edje_edit_program_##param##_set(edje_edit_group, program_name,\
     edje_edit_program_##param##_get(template_edje_edit, program_name));
 
+   if (!group) return false;
    edje_edit = group->obj;
 
    if ((!edje_edit) || (!e))
@@ -437,12 +438,14 @@ _on_popup_btn_yes(void *data,
    template_file = eina_stringshare_add(TET_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
+
    if (eina_stringshare_strlen(style_name) <= 0)
      {
         NOTIFY_WARNING("Please type style name");
         STRING_CLEAR;
         return;
      }
+
    if (eina_stringshare_strlen(class_name) <= 0)
      {
         NOTIFY_WARNING("Please type class name");
@@ -465,6 +468,7 @@ _on_popup_btn_yes(void *data,
         NOTIFY_ERROR("Sorry, there are no templates for [%s]",
                      widget->widget_name);
         evas_object_smart_callback_call(obj, "close,popup", NULL);
+        STRING_CLEAR;
         return;
      }
 
@@ -480,6 +484,12 @@ _on_popup_btn_yes(void *data,
    EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, temporary_wdg)
      {
         if (!strcmp(temporary_wdg->widget_name, widget->widget_name)) break;
+     }
+
+   if (!temporary_wdg)
+     {
+        STRING_CLEAR;
+        return;
      }
 
    if (style_exist)
@@ -527,6 +537,12 @@ _on_popup_btn_yes(void *data,
    EINA_INLIST_FOREACH_SAFE(template_wdg->styles, l, template_style)
      {
         if (!strcmp(template_style->style_name, "default")) break;
+     }
+
+   if (!template_style)
+     {
+        STRING_CLEAR;
+        return;
      }
 
    EINA_INLIST_FOREACH_SAFE(template_style->groups, l, template_group)
