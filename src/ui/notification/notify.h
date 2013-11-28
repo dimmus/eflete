@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef UI_NOTIFY_HEADER_H
@@ -22,6 +22,7 @@
 
 /**
  * @defgroup Notify Notify
+ * @ingroup Window
  *
  * Notify API for showing some user-oriented information
  * like warning or error's.
@@ -37,10 +38,10 @@
  */
 #define NOTIFY_ERROR(fmt, ...) \
 { \
-	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
-	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-	noti_error_show(win_layout_get(), msg); \
-	free(msg); \
+   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+   noti_error_show(win_layout_get(), msg); \
+   free(msg); \
 }
 
 /**
@@ -50,10 +51,10 @@
  */
 #define NOTIFY_WARNING(fmt, ...) \
 { \
-	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
-	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-	noti_warning_show(win_layout_get(), msg); \
-	free(msg); \
+   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+   noti_warning_show(win_layout_get(), msg); \
+   free(msg); \
 }
 
 /**
@@ -63,10 +64,10 @@
  */
 #define NOTIFY_INFO(time, fmt, ...) \
 { \
-	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
-	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-	noti_info_show(win_layout_get(), msg, time); \
-	free(msg); \
+   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+   noti_info_show(win_layout_get(), msg, time); \
+   free(msg); \
 }
 
 /**
@@ -74,10 +75,11 @@
  *
  * @param obj object, on which notify will be appeared.
  * @param message error message.
+ * @return EINA_FALSE on error, EINA_TRUE otherwise
  *
  * @ingroup Notify
  */
-void
+Eina_Bool
 noti_error_show(Evas_Object *obj, const char *message);
 
 /**
@@ -85,10 +87,11 @@ noti_error_show(Evas_Object *obj, const char *message);
  *
  * @param obj object, on which notify will be appeared.
  * @param message warning message.
+ * @return EINA_FALSE on error, EINA_TRUE otherwise
  *
  * @ingroup Notify
  */
-void
+Eina_Bool
 noti_warning_show(Evas_Object *obj, const char *message);
 
 /**
@@ -98,10 +101,11 @@ noti_warning_show(Evas_Object *obj, const char *message);
  * @param message information message.
  * @param time the information message will be shown until given time,
  * and after that time it will disappear.
+ * @return EINA_FALSE on error, EINA_TRUE otherwise
  *
  * @ingroup Notify
  */
-void
+Eina_Bool
 noti_info_show(Evas_Object *obj, const char *message, double time);
 
 #endif /* UI_NOTIFY_HEADER_H */

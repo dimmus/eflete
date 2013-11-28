@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "notify.h"
@@ -32,10 +32,11 @@ _notify_close (void *data,
 /*TODO: it all need to remake, use widget macro. notify style make as popup,
  with a blink block area*/
 
-void
-noti_error_show (Evas_Object *obj, const char *message)
+Eina_Bool
+noti_error_show(Evas_Object *obj, const char *message)
 {
    Evas_Object *notify, *layout, *image, *entry, *btn;
+   if (!obj) return false;
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -76,12 +77,14 @@ noti_error_show (Evas_Object *obj, const char *message)
    elm_object_content_set(notify, layout);
    elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
+   return true;
 }
 
-void
-noti_warning_show (Evas_Object *obj, const char *message)
+Eina_Bool
+noti_warning_show(Evas_Object *obj, const char *message)
 {
    Evas_Object *notify, *layout, *image, *entry, *btn;
+   if (!obj) return false;
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -124,12 +127,15 @@ noti_warning_show (Evas_Object *obj, const char *message)
    elm_object_content_set(notify, layout);
    elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
+   return true;
 }
 
-void
-noti_info_show (Evas_Object *obj, const char *message, double time)
+Eina_Bool
+noti_info_show(Evas_Object *obj, const char *message, double time)
 {
    Evas_Object *notify, *layout, *image, *entry;
+   if (!obj) return false;
+   if (time < 0) return false;
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -137,6 +143,7 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
    evas_object_size_hint_align_set(notify, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_notify_align_set(notify, 0.5, 1.0);
    elm_notify_timeout_set(notify, time);
+   evas_object_smart_callback_add(notify, "timeout", _notify_close, notify);
 
    //2. start forming layout
    layout = elm_layout_add(notify);
@@ -164,4 +171,5 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
    evas_object_show (notify);
+   return true;
 }

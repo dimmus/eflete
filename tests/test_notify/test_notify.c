@@ -14,158 +14,260 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include <check.h>
 #include "notify.h"
+#include "ui_main_window.h"
 
 /**
- * @addtogroup noti_error
+ * @addtogroup notify
  * @{
- * @objective Positive test case:
- *
- * @procedure
- * @step 1 Create Evas_Object
- * @param error A error massage
- * @step 7 Add object and parameters to functions
- *
- * @passcondition: EINA_TRUE should return from function
- * @}
  */
-START_TEST (error_test1)
-{
-   elm_init(0,0);
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_notify/data/check.edj", "elm/check/base/defaul");
-   const char *error;
-   error = "error show";
-   noti_error_show(obj, error);
-   elm_shutdown(); 
-}
-END_TEST
 
 /**
- * @addtogroup noti_error
+ * @addtogroup noti_error_show
  * @{
- * @objective Negative test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1. initialized efl and app
+ * @step 2. main window created
  *
  * @procedure
- * @step 1 Call to functions NULL objects
+ * @step 1 Call noti_error_show(win_layout_get(), "text")
+ * @step 2 Check returned value
+ * @step 3 Call noti_error_show(win_layout_get(), NULL)
+ * @step 4 Check returned value
  *
- * @passcondition: error should return from functions
+ * @passcondition true returned
  * @}
  */
-START_TEST (error_test2)
+START_TEST (noti_error_show_test_p)
 {
    elm_init(0,0);
-   Evas_Object *obj = NULL;
-   const char *error;
-   error = NULL;
-   noti_error_show(obj, error);
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_error_show(win_layout_get(), "text"),
+                 "can't show notify with text");
+   ck_assert_msg(noti_error_show(win_layout_get(), NULL),
+                 "can't show notify with NULL text");
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup noti_warning
+ * @addtogroup noti_error_show
  * @{
- * @objective Positive test case:
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
+ * @step 2 main window created
  *
  * @procedure
- * @step 1 Create Evas_Object
- * @param warning A warning massage
- * @step 7 Add object and parameters to functions
+ * @step 1 Call noti_error_show(NULL, "text")
+ * @step 2 Check returned value
+ * @step 3 Call noti_error_show(NULL, NULL)
+ * @step 4 Check returned value
  *
- * @passcondition: EINA_TRUE should return from function
+ * @passcondition false returned
  * @}
  */
-START_TEST (warning_test1)
+START_TEST (noti_error_show_test_n)
 {
    elm_init(0,0);
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_notify/data/check.edj", "elm/check/base/defaul");
-   const char *warning;
-   warning = "warning show";
-   noti_warning_show(obj, warning);
-   elm_shutdown(); 
-}
-END_TEST
-
-/**
- * @addtogroup noti_warning
- * @{
- * @objective Negative test case:
- *
- * @procedure
- * @step 1 Call to functions NULL objects
- *
- * @passcondition: error should return from functions
- * @}
- */
-START_TEST (warning_test2)
-{
-   elm_init(0,0);
-   Evas_Object *obj = NULL;
-   const char *warning;
-   warning = NULL;
-   noti_warning_show(obj, warning);
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_error_show(NULL, "text") == false,
+                 "can't show notify with text");
+   ck_assert_msg(noti_error_show(NULL, NULL) == false,
+                 "can't show notify with NULL text");
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup noti_info
+ * @addtogroup noti_warning_show
  * @{
- * @objective Positive test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1. initialized efl and app
+ * @step 2. main window created
  *
  * @procedure
- * @step 1 Create Evas_Object
- * @param info A information massage
- * @param time The time for show information
- * @step 7 Add object and parameters to functions
+ * @step 1 Call noti_warning_show(win_layout_get(), "text")
+ * @step 2 Check returned value
+ * @step 3 Call noti_warning_show(win_layout_get(), NULL)
+ * @step 4 Check returned value
  *
- * @passcondition: EINA_TRUE should return from function
+ * @passcondition true returned
  * @}
  */
-START_TEST (info_test1)
+START_TEST (noti_warning_show_test_p)
 {
    elm_init(0,0);
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_notify/data/check.edj", "elm/check/base/defaul");
-   const char *info;
-   double time = 2.5;
-   info = "info show";
-   noti_info_show(obj, info, time);
-   elm_shutdown(); 
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_warning_show(win_layout_get(), "text"),
+                 "can't show notify with text");
+   ck_assert_msg(noti_warning_show(win_layout_get(), NULL),
+                 "can't show notify with NULL text");
+   app_shutdown();
+   elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup noti_info
+ * @addtogroup noti_warning_show
  * @{
- * @objective Negative test case:
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
+ * @step 2 main window created
  *
  * @procedure
- * @step 1 Call to functions NULL objects
+ * @step 1 Call noti_warning_show(NULL, "text")
+ * @step 2 Check returned value
+ * @step 3 Call noti_warning_show(NULL, NULL)
+ * @step 4 Check returned value
  *
- * @passcondition: error should return from functions
+ * @passcondition false returned
  * @}
  */
-START_TEST (info_test2)
+START_TEST (noti_warning_show_test_n)
 {
    elm_init(0,0);
-   Evas_Object *obj = NULL;
-   const char *info;
-   info = NULL;
-   double time = 0;
-   noti_info_show(obj, info, time);
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_warning_show(NULL, "text") == false,
+                 "can't show notify with text");
+   ck_assert_msg(noti_warning_show(NULL, NULL) == false,
+                 "can't show notify with NULL text");
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
+
+/**
+ * @addtogroup noti_info_show
+ * @{
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1. initialized efl and app
+ * @step 2. main window created
+ *
+ * @procedure
+ * @step 1 Call noti_info_show(win_layout_get(), "text", 1)
+ * @step 2 Check returned value
+ * @step 3 Call noti_info_show(win_layout_get(), NULL, 1)
+ * @step 4 Check returned value
+ *
+ * @passcondition true returned
+ * @}
+ */
+START_TEST (noti_info_show_test_p)
+{
+   elm_init(0,0);
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_info_show(win_layout_get(), "text", 1),
+                 "can't show notify with text");
+   ck_assert_msg(noti_info_show(win_layout_get(), NULL, 1),
+                 "can't show notify with NULL text");
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup noti_info_show
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
+ * @step 2 main window created
+ *
+ * @procedure
+ * @step 1 Call noti_info_show(NULL, "text", 1)
+ * @step 2 Check returned value
+ * @step 3 Call noti_info_show(NULL, NULL, 1)
+ * @step 4 Check returned value
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (noti_info_show_test_n1)
+{
+   elm_init(0,0);
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_info_show(NULL, "text", 1) == false,
+                 "can't show notify with text");
+   ck_assert_msg(noti_info_show(NULL, NULL, 1) == false,
+                 "can't show notify with NULL text");
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup noti_info_show
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1. initialized efl and app
+ * @step 2. main window created
+ *
+ * @procedure
+ * @step 1 Call noti_info_show(win_layout_get(), "text", -1)
+ * @step 2 Check returned value
+ * @step 3 Call noti_info_show(win_layout_get(), NULL, -1)
+ * @step 4 Check returned value
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (noti_info_show_test_n2)
+{
+   elm_init(0,0);
+   App_Data *app;
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   ck_assert_msg(noti_info_show(win_layout_get(), "text", -1) == false,
+                 "can't show notify with text");
+   ck_assert_msg(noti_info_show(win_layout_get(), NULL, -1) == false,
+                 "can't show notify with NULL text");
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+
+/**
+ * @}
+ */
 
 /**
  * @addtogroup test_suite
@@ -184,12 +286,13 @@ END_TEST
 Suite* test_suite (void) {
    Suite *suite = suite_create("notify_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, error_test1);
-   tcase_add_test(tcase, error_test2);
-   tcase_add_test(tcase, warning_test1);
-   tcase_add_test(tcase, warning_test2);
-   tcase_add_test(tcase, info_test1);
-   tcase_add_test(tcase, info_test2);
+   tcase_add_test(tcase, noti_error_show_test_p);
+   tcase_add_test(tcase, noti_error_show_test_n);
+   tcase_add_test(tcase, noti_warning_show_test_p);
+   tcase_add_test(tcase, noti_warning_show_test_n);
+   tcase_add_test(tcase, noti_info_show_test_p);
+   tcase_add_test(tcase, noti_info_show_test_n1);
+   tcase_add_test(tcase, noti_info_show_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -197,7 +300,7 @@ Suite* test_suite (void) {
 /**
  * @addtogroup main
  * @{
- * @objective : Run a Check Unit Test
+ * @objective Run a Check Unit Test
  *
  * @procedure
  * @step 1 Create a suite
@@ -206,7 +309,7 @@ Suite* test_suite (void) {
  * @step 4 Run the suite, using the CK_VERBOSE flag
  * @step 5 Create int object for list of the failures
  *
- * @passcondition: Print a summary of the run unit tests.
+ * @passcondition Print a summary of the run unit tests.
  * @}
  */
 int main(void) {
