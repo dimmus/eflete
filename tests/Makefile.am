@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 ACLOCAL_AMFLAGS = -I m4
 
-TESTS = addpart_test \
+TESTS = part_dialog_test \
 alloc_test \
 colorclass_editor_test \
 edje_compile_test \
@@ -65,9 +65,9 @@ LD = $(top_builddir)/src/libete.a \
 @EDJE_LIBS@ \
 @ELEMENTARY_LIBS@
 
-addpart_test_SOURCES = test_addpart/test_addpart.c
-addpart_test_CFLAGS = ${FLAGS}
-addpart_test_LDADD = ${LD}
+part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c
+part_dialog_test_CFLAGS = ${FLAGS}
+part_dialog_test_LDADD = ${LD}
 
 alloc_test_SOURCES = test_alloc/test_alloc.c
 alloc_test_CFLAGS = ${FLAGS}
