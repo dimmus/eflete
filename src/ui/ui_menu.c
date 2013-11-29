@@ -349,9 +349,11 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   Eina_Bool visible;
    if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
-   highlight_visible_set(ap->ws->highlight.space_hl,
-                !highlight_visible_get(ap->ws->highlight.space_hl));
+   visible = evas_object_visible_get(ap->ws->highlight.space_hl);
+   if (visible) evas_object_hide(ap->ws->highlight.space_hl);
+   else evas_object_show(ap->ws->highlight.space_hl);
 }
 
 static void

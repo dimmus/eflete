@@ -32,15 +32,18 @@
 enum _Handler_Corner {
      RB, RT, LB, LT
 };
+
 typedef enum _Handler_Corner Handler_Corner;
 typedef struct _Highlight Highlight;
+
 struct _Handler {
-     Evas_Object *border; /* border layout for showing handler's border image. */
-     Handler_Corner descr; /* type of the handler (which corner). */
-     Highlight *highlight;
-     int x, y, w, h, dx, dy;
+   Evas_Object *border; /* border layout for showing handler's border image. */
+   Handler_Corner descr; /* type of the handler (which corner). */
+   Highlight *highlight;
+   int x, y, w, h, dx, dy;
 };
 typedef struct _Handler Handler;
+
 struct _Highlight
 {
    Evas_Object_Smart_Clipped_Data data;
@@ -422,9 +425,9 @@ _handler_move_cb(void *data,
 
 static void
 _handler_up_cb(void *data,
-                    Evas *evas __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+               Evas *evas __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
 {
    Handler *handler = (Handler *)data;
    _handler_size_recalc(handler->highlight);
@@ -463,9 +466,9 @@ _handler_mouse_in_cb(void *data,
  */
 static void
 _handler_mouse_out_cb(void *data,
-                    Evas *evas __UNUSED__,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+                      Evas *evas __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
    Highlight *highlight = (Highlight *)data;
    if (highlight->handlers_disabled) return;
@@ -569,13 +572,14 @@ _smart_show(Evas_Object *obj)
 {
    Highlight *highlight = evas_object_smart_data_get(obj);
 
-   evas_object_show(highlight->border);
+   edje_object_signal_emit(highlight->border, "bg,show", "eflete");
+   highlight->visible = true;
    if (highlight->handlers_disabled) return;
 
-   evas_object_show(highlight->handler_RB->border);
-   evas_object_show(highlight->handler_RT->border);
-   evas_object_show(highlight->handler_LB->border);
-   evas_object_show(highlight->handler_LT->border);
+   edje_object_signal_emit(highlight->handler_RB->border, "bg,show", "eflete");
+   edje_object_signal_emit(highlight->handler_RT->border, "bg,show", "eflete");
+   edje_object_signal_emit(highlight->handler_LB->border, "bg,show", "eflete");
+   edje_object_signal_emit(highlight->handler_LT->border, "bg,show", "eflete");
 
    _highlight_parent_sc->show(obj);
 }
@@ -585,13 +589,14 @@ _smart_hide(Evas_Object *obj)
 {
    Highlight *highlight = evas_object_smart_data_get(obj);
 
-   evas_object_hide(highlight->border);
+   edje_object_signal_emit(highlight->border, "bg,hide", "eflete");
+   highlight->visible = false;
    if (highlight->handlers_disabled) return;
 
-   evas_object_hide(highlight->handler_RB->border);
-   evas_object_hide(highlight->handler_RT->border);
-   evas_object_hide(highlight->handler_LB->border);
-   evas_object_hide(highlight->handler_LT->border);
+   edje_object_signal_emit(highlight->handler_RB->border, "bg,hide", "eflete");
+   edje_object_signal_emit(highlight->handler_RT->border, "bg,hide", "eflete");
+   edje_object_signal_emit(highlight->handler_LB->border, "bg,hide", "eflete");
+   edje_object_signal_emit(highlight->handler_LT->border, "bg,hide", "eflete");
 
    _highlight_parent_sc->hide(obj);
 }
@@ -602,6 +607,7 @@ _smart_move(Evas_Object *obj,
             Evas_Coord y)
 {
    Highlight *highlight = evas_object_smart_data_get(obj);
+   if (!highlight->visible) return;
    evas_object_move(highlight->border, x, y);
    _handler_pos_recalc(highlight);
    if (!highlight->clicked) _handler_size_recalc(highlight);
@@ -613,6 +619,7 @@ _smart_resize(Evas_Object *obj,
               Evas_Coord h)
 {
    Highlight *highlight = evas_object_smart_data_get(obj);
+   if (!highlight->visible) return;
    evas_object_resize(highlight->border, w, h);
    _handler_pos_recalc(highlight);
    if (!highlight->clicked) _handler_size_recalc(highlight);
@@ -722,54 +729,29 @@ highlight_bg_color_set(Evas_Object *hl,
 }
 
 Eina_Bool
-highlight_visible_get(Evas_Object *hl)
-{
-   if (!hl) return false;
-   Highlight *highlight = evas_object_smart_data_get(hl);
-   return highlight->visible;
-}
-
-void
-highlight_visible_set(Evas_Object *hl, Eina_Bool visible)
-{
-   Highlight *highlight = evas_object_smart_data_get(hl);
-   highlight->visible = visible;
-   if (!highlight->visible)
-      edje_object_signal_emit(highlight->border, "bg,hide", "eflete");
-   else
-      edje_object_signal_emit(highlight->border, "bg,show", "eflete");
-}
-
-void
 highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 {
-   Highlight *highlight = evas_object_smart_data_get(hl);
+   Highlight * highlight;
+
+   if (!hl) return false;
+   highlight = evas_object_smart_data_get(hl);
+   if (highlight->handlers_disabled == disabled) return false;
    highlight->handlers_disabled = disabled;
    if (disabled)
      {
-         evas_object_hide(highlight->handler_RB->border);
-         evas_object_hide(highlight->handler_RT->border);
-         evas_object_hide(highlight->handler_LB->border);
-         evas_object_hide(highlight->handler_LT->border);
-         edje_object_signal_emit(highlight->border, "bg,show", "eflete");
-    }
+        edje_object_signal_emit(highlight->handler_RB->border, "bg,hide", "eflete");
+        edje_object_signal_emit(highlight->handler_RT->border, "bg,hide", "eflete");
+        edje_object_signal_emit(highlight->handler_LB->border, "bg,hide", "eflete");
+        edje_object_signal_emit(highlight->handler_LT->border, "bg,hide", "eflete");
+     }
    else
      {
-         evas_object_show(highlight->handler_RB->border);
-         evas_object_show(highlight->handler_RT->border);
-         evas_object_show(highlight->handler_LB->border);
-         evas_object_show(highlight->handler_LT->border);
-         edje_object_signal_emit(highlight->border, "bg,hide", "eflete");
-   }
-}
-
-void
-highlight_clicked_unset(Evas_Object *hl)
-{
-   if (!hl) return;
-
-   Highlight *highlight = evas_object_smart_data_get(hl);
-   highlight->clicked = false;
+        edje_object_signal_emit(highlight->handler_RB->border, "bg,show", "eflete");
+        edje_object_signal_emit(highlight->handler_RT->border, "bg,show", "eflete");
+        edje_object_signal_emit(highlight->handler_LB->border, "bg,show", "eflete");
+        edje_object_signal_emit(highlight->handler_LT->border, "bg,show", "eflete");
+     }
+   return true;
 }
 
 #undef SIZE
