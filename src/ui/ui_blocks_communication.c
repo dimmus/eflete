@@ -217,6 +217,8 @@ ui_edc_load_done(App_Data* ap,
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
 
+   if (!ap) return NULL;
+
    prop = ui_block_property_get(ap);
 
    if (eina_str_has_suffix(path_edc, ".edc"))
@@ -234,6 +236,8 @@ ui_edc_load_done(App_Data* ap,
                                           path_id,
                                           path_sd,
                                           path_fd);
+        if  (!ap->project) return NULL;
+
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
         ui_widget_list_data_set(wd_list, ap->project);
@@ -311,6 +315,12 @@ new_theme_create(App_Data *ap)
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
         free(name);
+        if  (!ap->project)
+          {
+             eina_stringshare_del(path);
+             eina_stringshare_del(file_full_path);
+             return false;
+          }
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
         ui_widget_list_data_set(wd_list, ap->project);
@@ -346,6 +356,8 @@ ui_style_delete(App_Data *ap)
    Eina_List *box_childs = NULL;
    Eina_Inlist *l = NULL;
    int inlist_count = 0;
+
+   if (!ap) return false;
 
    nf = ui_block_widget_list_get(ap);
    eoi = elm_naviframe_bottom_item_get(nf);
@@ -398,6 +410,8 @@ ui_style_delete(App_Data *ap)
                break;
           }
 
+        if (!group_work) return false;
+
         evas_object_del(group->obj);
         if (!edje_edit_group_del(group_work->obj, group->full_group_name))
           {
@@ -418,13 +432,24 @@ ui_style_delete(App_Data *ap)
 
         EINA_INLIST_FOREACH_SAFE(widget->styles, l, style_work)
           {
+             if (!style_work) continue;
              if (strcmp(style->style_name, style_work->style_name))
                break;
           }
 
+        if (!style_work) return false;
+
         group_work = EINA_INLIST_CONTAINER_GET(style_work->groups, Group);
+        if (!group_work) return false;
+
         EINA_INLIST_FOREACH_SAFE(style->groups, l, group)
           {
+             if (!group)
+               {
+                  ERR("NULL group pointer.");
+                  continue;
+               }
+
              evas_object_del(group->obj);
              if (!edje_edit_group_del(group_work->obj, group->full_group_name))
                {
@@ -459,11 +484,13 @@ ui_part_state_delete(App_Data *ap)
         free(arr[0]); \
         free(arr);
 
-   if (!ap) return EINA_FALSE;
+   if ((!ap) && (!ap->ws)) return false;
 
    state_list = ui_block_state_list_get(ap);
    part = ui_state_list_part_get(state_list);
+   if (!part) return false;
    group = ui_groupspace_group_get(ap->ws->groupspace);
+   if (!group) return false;
 
    eoi = elm_genlist_selected_item_get(state_list);
    if (!eoi)

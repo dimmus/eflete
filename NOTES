@@ -24,4 +24,4 @@ Edje:
 [ ] edje_edit_state_add/_del: To fix this  we need to add function similar to edje_edit_state_exist that will check exact state match (name + value)
 
 Eina:
-[ ] eina_file_map_all: use mmap tools for edj files(like RAM disk). Increase up speed of saving changes in theme. 
+[ ] eina_file_map_all: use mmap tools for edj files(like RAM disk). Increase up speed of saving changes in theme.

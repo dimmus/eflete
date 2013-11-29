@@ -18,7 +18,6 @@
 */
 
 #include "ui_groupspace.h"
-#include "ui_highlight.h"
 #include "ui_block.h"
 
 #define GS_WS_KEY "gs_workspace_key"
@@ -205,20 +204,22 @@ _new_rect_add(void *data __UNUSED__,
               Evas_Object *obj,
               void *event_info)
 {
-   Evas_Object *groupspace = (Evas_Object *)obj;
+   Part *part = NULL;
+   const Evas_Object *edje_part = NULL;
 
+   Evas_Object *groupspace = (Evas_Object *)obj;
+   char *name = (char *)event_info;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Part *part = (Part *)mem_calloc(1, sizeof(Part));
    Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
-   const Evas_Object *edje_part = NULL;
-   char *name = (char *)event_info;
+
    if (edje_edit_part_exist(group->obj, name))
      {
         NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
 
+   part = (Part *)mem_calloc(1, sizeof(Part));
    part->name = eina_stringshare_add(name);
 
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_RECTANGLE);
@@ -248,14 +249,14 @@ _new_img_add(void *data __UNUSED__,
              Evas_Object *obj,
              void *event_info)
 {
+   Part *part = NULL;
+   const Evas_Object *edje_part = NULL;
+
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Part *part = (Part *)mem_calloc(1, sizeof(Part));
    Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
    Project *project = evas_object_data_get(obj, GS_PROJECT_KEY);
-
-   const Evas_Object *edje_part = NULL;
    char **arr = (char **)event_info;
    char *name = arr[1];
 
@@ -264,6 +265,7 @@ _new_img_add(void *data __UNUSED__,
         NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
+   part = (Part *)mem_calloc(1, sizeof(Part));
 
    part->name = eina_stringshare_add(name);
    part->obj = evas_object_image_filled_add(ws->canvas);
@@ -293,13 +295,12 @@ _new_txt_add(void *data __UNUSED__,
              Evas_Object *obj,
              void *event_info)
 {
+   Part *part = NULL;
+   const Evas_Object *edje_part = NULL;
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Part *part = (Part *)mem_calloc(1, sizeof(Part));
    Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
-
-   const Evas_Object *edje_part = NULL;
    char *name = (char *)event_info;
 
    if (edje_edit_part_exist(group->obj, name))
@@ -307,6 +308,7 @@ _new_txt_add(void *data __UNUSED__,
         NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
+   part = (Part *)mem_calloc(1, sizeof(Part));
 
    part->name = eina_stringshare_add(name);
 
@@ -339,21 +341,22 @@ _new_txtblock_add(void *data __UNUSED__,
                    Evas_Object *obj,
                    void *event_info)
 {
+   Part *part = NULL;
+   const Evas_Object *edje_part = NULL;
+   Evas_Textblock_Style *ts = NULL;
+
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Part *part = (Part *)mem_calloc(1, sizeof(Part));
    Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
-
-   const Evas_Object *edje_part = NULL;
    char *name = (char *)event_info;
-   Evas_Textblock_Style *ts = NULL;
 
    if (edje_edit_part_exist(group->obj, name))
      {
         NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
+   part = (Part *)mem_calloc(1, sizeof(Part));
 
    part->name = eina_stringshare_add(name);
    edje_edit_part_add(group->obj, part->name, EDJE_PART_TYPE_TEXTBLOCK);
@@ -386,12 +389,13 @@ _new_swallow_add(void *data __UNUSED__,
                  Evas_Object *obj,
                  void *event_info)
 {
+   Part *part = NULL;
+   const Evas_Object *edje_part = NULL;
+
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Part *part = (Part *)mem_calloc(1, sizeof(Part));
    Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
-   const Evas_Object *edje_part = NULL;
    char *name = (char *)event_info;
 
    if (edje_edit_part_exist(group->obj, name))
@@ -400,6 +404,7 @@ _new_swallow_add(void *data __UNUSED__,
         return;
      }
 
+   part = (Part *)mem_calloc(1, sizeof(Part));
    part->name = eina_stringshare_add(name);
    part->type = EDJE_PART_TYPE_SWALLOW;
    part->obj = evas_object_image_add(ws->canvas);
@@ -430,20 +435,21 @@ _new_spacer_add(void *data __UNUSED__,
                 Evas_Object *obj,
                 void *event_info)
 {
+   const Evas_Object *edje_part = NULL;
+   Part *part = NULL;
+
+   char *name = (char *)event_info;
    Evas_Object *groupspace = (Evas_Object *)obj;
    Evas_Object *box = evas_object_data_get(groupspace, GS_BOX_KEY);
    Group *group = evas_object_data_get(groupspace, GS_GROUP_KEY);
-   Part *part = (Part *)mem_calloc(1, sizeof(Part));
    Workspace *ws = evas_object_data_get(groupspace, GS_WS_KEY);
-
-   const Evas_Object *edje_part = NULL;
-   char *name = (char *)event_info;
 
    if (edje_edit_part_exist(group->obj, name))
      {
         NOTIFY_INFO(3, "Part with name [%s] alredy exist.", name);
         return;
      }
+   part = (Part *)mem_calloc(1, sizeof(Part));
 
    part->name = eina_stringshare_add(name);
    part->type = EDJE_PART_TYPE_SPACER;
@@ -555,7 +561,7 @@ _layer_up_change(void *data,
         edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
         if ((edje_part) && (part->obj == child)) break;
      }
-   if (!eina_list_data_get(l->prev)) return;
+   if ((!l) && (!eina_list_data_get(l->prev))) return;
    next_child = eina_list_data_get(l->next);
    if (!next_child) return;
    prev_prev_child = eina_list_data_get(l->prev->prev);
@@ -623,6 +629,8 @@ _layer_down_change(void *data,
         edje_part = evas_object_data_get(child, GS_PART_DATA_KEY);
         if ((edje_part) && (part->obj == child))  break;
      }
+   if (!l) return;
+
    next_child = eina_list_data_get(l->next);
    if (!next_child) return;
 

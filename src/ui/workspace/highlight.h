@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef HIGHLIGHT_H
@@ -24,6 +24,7 @@
 
 /**
  * @defgroup Highlight Highlight
+ * @ingroup Workspace
  *
  * TODO: THIS PART IS STILL BEING DEVELOPED.
  * TODO: "MAKE t, l, r, b and cc parts please!"
@@ -109,7 +110,6 @@ struct _Highlight_Events
    Evas_Coord w;
    Evas_Coord h;
 };
-
 typedef struct _Highlight_Events Highlight_Events;
 
 /**
@@ -130,7 +130,7 @@ typedef struct _Highlight_Events Highlight_Events;
  * @ingroup Highlight
  */
 Evas_Object *
-hl_highlight_add(Evas_Object *parent);
+highlight_add(Evas_Object *parent);
 
 /**
  * Set the object that created highlight object will highlight.
@@ -145,7 +145,7 @@ hl_highlight_add(Evas_Object *parent);
  * @ingroup Highlight
  */
 void
-hl_highlight_object_set(Evas_Object *hl, Evas_Object *obj);
+highlight_object_set(Evas_Object *hl, Evas_Object *obj);
 
 /**
  * Set the color of handlers of the highlight.
@@ -162,11 +162,11 @@ hl_highlight_object_set(Evas_Object *hl, Evas_Object *obj);
  * @ingroup Highlight
  */
 void
-hl_highlight_handler_color_set(Evas_Object *hl,
-                              Evas_Coord r,
-                              Evas_Coord g,
-                              Evas_Coord b,
-                              Evas_Coord a);
+highlight_handler_color_set(Evas_Object *hl,
+                            Evas_Coord r,
+                            Evas_Coord g,
+                            Evas_Coord b,
+                            Evas_Coord a);
 
 /**
  * Set the color of background of the highlight.
@@ -183,11 +183,11 @@ hl_highlight_handler_color_set(Evas_Object *hl,
  * @ingroup Highlight
  */
 void
-hl_highlight_bg_color_set(Evas_Object *hl,
-                              Evas_Coord r,
-                              Evas_Coord g,
-                              Evas_Coord b,
-                              Evas_Coord a);
+highlight_bg_color_set(Evas_Object *hl,
+                       Evas_Coord r,
+                       Evas_Coord g,
+                       Evas_Coord b,
+                       Evas_Coord a);
 
 /**
  * Set the color of border of the whole highlight.
@@ -204,11 +204,11 @@ hl_highlight_bg_color_set(Evas_Object *hl,
  * @ingroup Highlight
  */
 void
-hl_highlight_border_color_set(Evas_Object *hl,
-                              Evas_Coord r,
-                              Evas_Coord g,
-                              Evas_Coord b,
-                              Evas_Coord a);
+highlight_border_color_set(Evas_Object *hl,
+                           Evas_Coord r,
+                           Evas_Coord g,
+                           Evas_Coord b,
+                           Evas_Coord a);
 
 /**
  * Disabled handlers of the highlight.
@@ -220,82 +220,7 @@ hl_highlight_border_color_set(Evas_Object *hl,
  *
  * @ingroup Highlight
  */
-
-void
-hl_highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
-
-/**
- * Get highlight visible state.
- *
- * @param hl Highlight object.
- * @return EINA_TRUE if highlight visible, EINA_FALE if hided.
- *
- * @ingroup Highlight
- */
 Eina_Bool
-hl_highlight_visible_get(Evas_Object *hl);
-
-/**
- * Set highlight visible. If visible disabled with this method,
- * evas_object_show can't show highlight. For enable visible use this method
- * with EINA_TRUE parametr.
- *
- * @param hl Highlight object.
- * @param enable EINA_TRUE for set visible highlight, EINA_FALE for
- * invisible mode.
- *
- * @ingroup Highlight
- */
-void
-hl_highlight_visible_set(Evas_Object *hl, Eina_Bool visible);
-
-/**
- * This function will move the whole highlight and will calculate
- * only position of every visible handler.
- *
- * If there is some need into changing both
- * position and size of handlers please use evas_object_move
- * function with highlight object. This function will change both size
- * and position of the handlers.
- *
- * @param hl Highlight object.
- * @param x - x coord of the highlight position.
- * @param y - y coord of the highlight position.
- *
- * @ingroup Highlight
- */
-void
-hl_highlight_move(Evas_Object *hl, Evas_Coord x, Evas_Coord y);
-
-/**
- * This function will resize the whole highlight and will calculate
- * only position of every visible handler.
- *
- * If there is some need into changing both
- * position and size of handlers please use evas_object_resize
- * function with highlight object. This function will change both size
- * and position of the handlers.
- *
- * @param hl Highlight object.
- * @param x - x coord of the highlight position.
- * @param y - y coord of the highlight position.
- *
- * @ingroup Highlight
- */
-void
-hl_highlight_resize(Evas_Object *hl, Evas_Coord w, Evas_Coord h);
-
-/**
- * This function will unset the "clicked" state of highlight.
- *
- * Use this function when highlight is being moved or resize by something
- * that is not users mouse.
- *
- * @param hl Highlight object.
- *
- * @ingroup Highlight
- */
-void
-hl_highlight_clicked_unset(Evas_Object *hl);
+highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
 
 #endif /* HIGHLIGHT_H */

@@ -17,8 +17,8 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef UI_POPUP_HEADER_H
-#define UI_POPUP_HEADER_H
+#ifndef CTXPOPUP_H
+#define CTXPOPUP_H
 
 /**
  * @defgroup UI_Ctxpopup UI Ctxpopup
@@ -38,5 +38,5 @@
  * @ingroup UI_Ctxpopup
  */
 void
-ui_popup_show(Workspace *ws);
-#endif /* UI_POPUP_HEADER_H */
+ws_ctxpopup_show(Workspace *ws);
+#endif /* CTXPOPUP_H */
