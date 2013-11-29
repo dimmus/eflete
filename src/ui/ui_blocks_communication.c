@@ -42,7 +42,7 @@ ui_part_back(App_Data *ap)
    ui_property_group_unset(prop);
    ui_demospace_unset(ap->demo);
 
-   ui_menu_disable_set(ap, "Programs", EINA_TRUE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
 }
 
 /**
@@ -159,7 +159,7 @@ ui_group_clicked(App_Data *ap, Group *group)
    ui_groupspace_update(ap->ws->groupspace);
    ui_demospace_set(ap->demo, ap->project, group);
    ui_demospace_update(ap->demo);
-   ui_menu_disable_set(ap, "Programs", EINA_FALSE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_FALSE);
 }
 
 Evas_Object *
@@ -195,11 +195,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              evas_object_show(wd_list);
              ui_panes_show(ap);
 
-             ui_menu_disable_set(ap, "Save", EINA_FALSE);
-             ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-             ui_menu_disable_set(ap, "Save to edc", EINA_FALSE);
-             ui_menu_disable_set(ap, "View", EINA_FALSE);
-             ui_menu_disable_set(ap, "Editors", EINA_FALSE);
+             ui_menu_base_disabled_set(ap->menu_hash, false);
           }
         else
           {
@@ -221,6 +217,8 @@ ui_edc_load_done(App_Data* ap,
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
 
+   if (!ap) return NULL;
+
    prop = ui_block_property_get(ap);
 
    if (eina_str_has_suffix(path_edc, ".edc"))
@@ -238,6 +236,8 @@ ui_edc_load_done(App_Data* ap,
                                           path_id,
                                           path_sd,
                                           path_fd);
+        if  (!ap->project) return NULL;
+
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
         ui_widget_list_data_set(wd_list, ap->project);
@@ -245,11 +245,7 @@ ui_edc_load_done(App_Data* ap,
         evas_object_show(wd_list);
         ui_panes_show(ap);
 
-        ui_menu_disable_set(ap, "Save", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as EDC", EINA_FALSE);
-        ui_menu_disable_set(ap, "View", EINA_FALSE);
-        ui_menu_disable_set(ap, "Editors", EINA_FALSE);
+        ui_menu_base_disabled_set(ap->menu_hash, false);
      }
    else
      {
@@ -298,7 +294,7 @@ new_theme_create(App_Data *ap)
         errors = EINA_TRUE;
      }
 
-   if(!errors)
+   if (!errors)
      {
         if (ap->ws->groupspace)
           {
@@ -313,12 +309,18 @@ new_theme_create(App_Data *ap)
              if (prop) ui_property_group_unset(prop);
              if ((ap->demo) || (ap->project))
                ui_demospace_unset(ap->demo);
-             ui_menu_disable_set(ap, "Programs", EINA_TRUE);
+             ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
           }
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
         free(name);
+        if  (!ap->project)
+          {
+             eina_stringshare_del(path);
+             eina_stringshare_del(file_full_path);
+             return false;
+          }
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
         ui_widget_list_data_set(wd_list, ap->project);
@@ -328,11 +330,7 @@ new_theme_create(App_Data *ap)
         ui_panes_show(ap);
         ap->project->edj = NULL;
 
-        ui_menu_disable_set(ap, "Save", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save as...", EINA_FALSE);
-        ui_menu_disable_set(ap, "Save to edc", EINA_TRUE);
-        ui_menu_disable_set(ap, "View", EINA_FALSE);
-        ui_menu_disable_set(ap, "Editors", EINA_FALSE);
+        ui_menu_base_disabled_set(ap->menu_hash, false);
      }
 
    eina_stringshare_del(path);
@@ -358,6 +356,8 @@ ui_style_delete(App_Data *ap)
    Eina_List *box_childs = NULL;
    Eina_Inlist *l = NULL;
    int inlist_count = 0;
+
+   if (!ap) return false;
 
    nf = ui_block_widget_list_get(ap);
    eoi = elm_naviframe_bottom_item_get(nf);
@@ -390,7 +390,6 @@ ui_style_delete(App_Data *ap)
 
    if(eoi_work)
      {
-
         inlist_count = eina_inlist_count(style->groups);
         if (inlist_count <= 1)
           {
@@ -411,14 +410,16 @@ ui_style_delete(App_Data *ap)
                break;
           }
 
+        if (!group_work) return false;
+
         evas_object_del(group->obj);
         if (!edje_edit_group_del(group_work->obj, group->full_group_name))
           {
              NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
              return EINA_FALSE;
           }
-        wm_group_free(group);
         style->groups = eina_inlist_remove(style->groups, EINA_INLIST_GET(group));
+        wm_group_free(group);
      }
    else
      {
@@ -431,13 +432,24 @@ ui_style_delete(App_Data *ap)
 
         EINA_INLIST_FOREACH_SAFE(widget->styles, l, style_work)
           {
+             if (!style_work) continue;
              if (strcmp(style->style_name, style_work->style_name))
                break;
           }
 
+        if (!style_work) return false;
+
         group_work = EINA_INLIST_CONTAINER_GET(style_work->groups, Group);
+        if (!group_work) return false;
+
         EINA_INLIST_FOREACH_SAFE(style->groups, l, group)
           {
+             if (!group)
+               {
+                  ERR("NULL group pointer.");
+                  continue;
+               }
+
              evas_object_del(group->obj);
              if (!edje_edit_group_del(group_work->obj, group->full_group_name))
                {
@@ -472,11 +484,13 @@ ui_part_state_delete(App_Data *ap)
         free(arr[0]); \
         free(arr);
 
-   if (!ap) return EINA_FALSE;
+   if ((!ap) && (!ap->ws)) return false;
 
    state_list = ui_block_state_list_get(ap);
    part = ui_state_list_part_get(state_list);
+   if (!part) return false;
    group = ui_groupspace_group_get(ap->ws->groupspace);
+   if (!group) return false;
 
    eoi = elm_genlist_selected_item_get(state_list);
    if (!eoi)
@@ -509,23 +523,4 @@ ui_part_state_delete(App_Data *ap)
   CLEAR_STRINGS;
 #undef CLEAR_STRINGS
   return EINA_TRUE;
-}
-
-void
-ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag)
-{
-   Elm_Object_Item *item = NULL;
-
-   if ((!ap) || (!name) || (!ap->main_menu))
-     {
-        ERR("App_Data or given name is NULL");
-        return;
-     }
-   item = eina_hash_find(ap->menu_hash, name);
-   if (!item)
-     {
-        WARN("Coud'nt find menu item [%s] in hash", name);
-        return;
-     }
-   elm_object_item_disabled_set(item, flag);
 }

@@ -29,7 +29,7 @@
  * state list, etc...
  */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "common_macro.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
@@ -37,7 +37,6 @@
 #include "ui_demospace.h"
 #include "ui_block.h"
 #include "colorclass_editor.h"
-#include "font_viewer_dialog.h"
 #include "notify.h"
 #include "open_file_dialog.h"
 #include "string_macro.h"
@@ -270,8 +269,29 @@ new_theme_create(App_Data *ap);
  * @param ap The App_Data structure pointer.
  * @param name Menu item's title.
  * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  */
-void
-ui_menu_disable_set(App_Data *ap, const char *name, Eina_Bool flag);
+Eina_Bool
+ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag);
+
+/**
+ * Disable or enable base menus (Editors, Saves, Separate..)
+ *
+ * @param ap The App_Data structure pointer.
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ */
+Eina_Bool
+ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
+
+/**
+ * Disable or enable all menus.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ */
+Eina_Bool
+ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag);
 
 #endif /* UI_MAIN_WINDOW_H */

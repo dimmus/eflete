@@ -17,7 +17,7 @@
 * along with this program; If not, see .
 */
 
-#include <settings.h>
+#include "settings.h"
 
 typedef struct _UI_Settings UI_Settings;
 typedef struct _Panes_Settings Panes_Settings;
@@ -114,12 +114,16 @@ _ui_settings_panes_add(Evas_Object *panes)
 static UI_Settings *
 _ui_settings_prepare()
 {
-   UI_Settings *_ui_settings = mem_malloc(sizeof(UI_Settings));
-   Panes_Settings *_panes_set;
+   UI_Settings *_ui_settings =  NULL;
+   Panes_Settings *_panes_set = NULL;
    Eina_List *_settings_to_save = NULL;
    Eina_List *_window_list = NULL;
-   Window_Settings *_window_sett = calloc(1, sizeof(Window_Settings));
+   Window_Settings *_window_sett = NULL;
    if (!us) return NULL;
+
+   _ui_settings = mem_malloc(sizeof(UI_Settings));
+   _window_sett = mem_calloc(1, sizeof(Window_Settings));
+
    _panes_set = _ui_settings_panes_add(us->panes_left);
    _settings_to_save = eina_list_append(_settings_to_save, _panes_set);
 
@@ -193,12 +197,21 @@ _ui_settings_apply(UI_Settings *ui_set)
    elm_panes_content_left_size_set(us->panes_center_down, _panes_sett->left);
 }
 
+#define FREE_SETTINGS \
+   EINA_LIST_FREE(_ui_settings->panes, _panes_sett) \
+      free(_panes_sett); \
+   EINA_LIST_FREE(_ui_settings->window, _window_sett) \
+      free(_window_sett); \
+   free(_ui_settings);
+
 Eina_Bool
 ui_settings_save()
 {
    Eet_File *file_settings;
    int state_write;
    UI_Settings *_ui_settings;
+   Panes_Settings *_panes_sett;
+   Window_Settings *_window_sett;
 
    _ui_settings_descriptors_init();
 
@@ -213,7 +226,7 @@ ui_settings_save()
    if (!file_settings)
      {
         WARN("Unable to open configs file for write");
-        free(_ui_settings);
+        FREE_SETTINGS;
         return EINA_FALSE;
     }
 
@@ -225,7 +238,7 @@ ui_settings_save()
    eet_close(file_settings);
 
    _ui_settings_descriptors_shutdown();
-
+   FREE_SETTINGS;
    return EINA_TRUE;
 }
 
@@ -234,12 +247,14 @@ ui_settings_load()
 {
    UI_Settings *_ui_settings;
    Eet_File *file_settings;
+   Panes_Settings *_panes_sett;
+   Window_Settings *_window_sett;
 
    _ui_settings_descriptors_init();
    file_settings = eet_open(SETTINGSFILE, EET_FILE_MODE_READ);
    if (!file_settings)
      {
-        WARN("Unable open configs file for load. Try load defaults settings");
+        WARN("Unable open configs file for load. Trying load defaults settings");
         return EINA_FALSE;
      }
 
@@ -247,17 +262,18 @@ ui_settings_load()
                                  _ui_settings_descriptor, "settings");
    if (!_ui_settings)
      {
-        ERR("Unable to load ui setings. Try load defaults settings");
+        ERR("Unable to load ui setings. Trying load defaults settings");
         return EINA_FALSE;
-    }
+     }
 
    _ui_settings_apply(_ui_settings);
    _ui_settings_descriptors_shutdown();
    eet_close(file_settings);
 
+   FREE_SETTINGS;
    return EINA_TRUE;
 }
-
+#undef FREE_SETTINGS
 
 UI_Elements_Settings *
 ui_element_settings_init(void)

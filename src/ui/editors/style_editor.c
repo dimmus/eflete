@@ -18,10 +18,11 @@
 */
 
 #include "style_editor.h"
-#include "widget_macro.h"
-#include "string_macro.h"
-
 #define FONT_SIZE "24"
+
+typedef struct _Style_Tag_Entries Style_Tag_Entries;
+typedef struct _Style_entries Style_Entries;
+typedef struct _Style_Editor Style_Editor;
 
 struct _Style_Editor
 {
@@ -32,45 +33,104 @@ struct _Style_Editor
    Evas_Object *entry_tag;
    Evas_Object *entry_prop;
    Evas_Object *entry_prev;
+   struct {
+        Evas_Object *name;
+        Evas_Object *value;
+        Evas_Object *dialog;
+   } popup;
+   Elm_Object_Item *tag;
 };
 
-typedef struct _Style_Editor Style_Editor;
 
-struct _Style_entries
+struct _Style_Entries
 {
    Evas_Object *style_name;
    Evas_Object *default_tags;
 };
-typedef struct _Style_entries Style_entries;
 
-struct _Style_tag_entries
+struct _Style_Tag_Entries
 {
    Elm_Object_Item *style_name;
    Evas_Object *tag_name;
    Evas_Object *tag_value;
 };
-typedef struct _Style_tag_entries Style_tag_entries;
 
-static Style_Editor window;
-static Style_entries st_entries;
-static Style_tag_entries st_tag_entries;
+#define POPUP style_edit->popup
+
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_tags = NULL;
 
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
-   .rejected = EDITORS_BANNED_SYMBOLS
+   .rejected = BANNED_SYMBOLS
 };
 
-static void
-_on_glit_selected(void *data, Evas_Object *obj, void *event_info);
+static Elm_Entry_Filter_Accept_Set accept_value = {
+   .accepted = NULL,
+   .rejected = EDITORS_BANNED_SYMBOLS
+};
 
 static void
 _on_popup_bt_cancel(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei __UNUSED__)
 {
-   evas_object_del(data);
+   Style_Editor *style_edit = (Style_Editor *)data;
+
+   evas_object_del(POPUP.dialog);
+   POPUP.dialog = NULL;
+}
+
+/* For showing tags value and name in appropriate entry. */
+static void
+_on_glit_selected(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
+{
+   Eina_List *tags = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *edje_edit_obj = NULL;
+
+   const char *style_name = NULL;
+   const char *tag, *value;
+   char style[BUFF_MAX] = "DEFAULT=' font_size="FONT_SIZE;
+
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
+
+   GET_OBJ(style_edit->pr, edje_edit_obj);
+
+   if (!glit_parent)
+     {
+        style_name = (char *)elm_object_item_data_get(glit);
+        tags = edje_edit_style_tags_list_get(edje_edit_obj, style_name);
+
+        EINA_LIST_FOREACH(tags, l, tag)
+          {
+             value = edje_edit_style_tag_value_get(edje_edit_obj, style_name,
+                                                   tag);
+             eina_strlcat(style, value, BUFF_MAX);
+          }
+        elm_entry_entry_set(style_edit->entry_tag, "");
+        elm_entry_entry_set(style_edit->entry_prop, "");
+        eina_list_free(tags);
+     }
+   else
+     {
+        style_name = elm_object_item_data_get(glit_parent);
+        tag = (char *)elm_object_item_data_get(glit);
+        value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
+        elm_entry_entry_set(style_edit->entry_tag, tag);
+        elm_entry_entry_set(style_edit->entry_prop, value);
+        eina_strlcat(style, value, BUFF_MAX);
+     }
+   elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
+   eina_strlcat(style, "'", BUFF_MAX);
+   evas_object_show(style_edit->entry_style);
+   elm_entry_text_style_user_push(style_edit->entry_style, style);
+   evas_object_size_hint_max_set(style_edit->entry_style, EVAS_HINT_FILL,
+                                 EVAS_HINT_FILL);
 }
 
 static void
@@ -78,40 +138,57 @@ _on_st_add_bt_ok(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
 {
-   Evas_Object *popup = (Evas_Object *)data;
-   const char *style_name = elm_entry_entry_get(st_entries.style_name);
-   const char *default_tags = elm_entry_entry_get(st_entries.default_tags);
-   Elm_Object_Item *glit_style;
+   Elm_Object_Item *glit_style = NULL;
+   Evas_Object *edje_edit_obj = NULL;
+   Style_Editor *style_edit = (Style_Editor *)data;
+   const char *style_name = elm_entry_entry_get(POPUP.name);
+   const char *default_tags = elm_entry_entry_get(POPUP.value);
+
+   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if ((!style_name) || (strcmp(style_name, "") == 0))
      {
         NOTIFY_WARNING("Style name can not be empty!");
         return;
      }
-   if (!((isalpha(default_tags[0])) ||
-         (default_tags[0] == '+') ||
-         (!strcmp(default_tags, ""))))
+   if (!((isalpha(default_tags[0])) || (default_tags[0] == '+')
+         || (!strcmp(default_tags, ""))))
      {
         NOTIFY_WARNING("The default tag must begin from + or alphabetic symbol");
         return;
      }
-   if(!style_edit_style_add(window.pr, style_name))
+   if(!edje_edit_style_add(edje_edit_obj, style_name))
      {
         NOTIFY_WARNING("Style name must be unique!");
         return;
      }
-   style_edit_style_tag_add(window.pr, style_name, "DEFAULT", default_tags);
+   if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
+     {
+        if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, "DEFAULT",
+                                        default_tags))
+          {
+             NOTIFY_WARNING("Failed add tag value. Tag will bw deleted");
+             edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
+             return;
+          }
+     }
+   else
+     {
+        NOTIFY_WARNING("Failed add tag.");
+        return;
+     }
 
-   glit_style = elm_genlist_item_append(window.glist, _itc_style,
-                                        style_name,
-                                        NULL, ELM_GENLIST_ITEM_NONE,
-                                        _on_glit_selected, style_name);
-   elm_genlist_item_append(window.glist, _itc_tags,
-                           "DEFAULT",
-                           glit_style, ELM_GENLIST_ITEM_NONE,
-                           _on_glit_selected, "DEFAULT");
-   evas_object_del(popup);
-   elm_genlist_item_selected_set(glit_style, EINA_TRUE);
+   glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
+                                        style_name, NULL, ELM_GENLIST_ITEM_NONE,
+                                        _on_glit_selected, style_edit);
+   elm_object_item_data_set(glit_style, (char *)style_name);
+
+   elm_genlist_item_append(style_edit->glist, _itc_tags,
+                           "DEFAULT", glit_style, ELM_GENLIST_ITEM_NONE,
+                           _on_glit_selected, style_edit);
+   evas_object_del(POPUP.dialog);
+   POPUP.dialog = NULL;
+   elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
 }
@@ -121,11 +198,13 @@ _on_tag_add_bt_ok(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *ei __UNUSED__)
 {
-   Evas_Object *popup = (Evas_Object *)data;
-   Elm_Object_Item *glit_tag;
-   const char *style_name = elm_object_item_data_get(st_tag_entries.style_name);
-   const char *tag_name = elm_entry_entry_get(st_tag_entries.tag_name);
-   const char *tag_value = elm_entry_entry_get(st_tag_entries.tag_value);
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Elm_Object_Item *glit_tag = NULL;
+   Evas_Object *edje_edit_obj = NULL;
+   const char *style_name = elm_object_item_data_get(style_edit->tag);
+   const char *tag_name = elm_entry_entry_get(POPUP.name);
+   const char *tag_value = elm_entry_entry_get(POPUP.value);
+   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
@@ -137,83 +216,97 @@ _on_tag_add_bt_ok(void *data,
         NOTIFY_WARNING("Tag value can not be empty!");
         return;
      }
-   if (!((isalpha(tag_value[0])) ||
-        (tag_value[0] == '+')))
-    {
+   if (!((isalpha(tag_value[0])) || (tag_value[0] == '+')))
+     {
         NOTIFY_WARNING("Tag value must begin from + or alphabetic symbol");
         return;
-    }
-   if (!style_edit_style_tag_add(window.pr, style_name, tag_name, tag_value))
+     }
+   if (!edje_edit_style_tag_add(edje_edit_obj, style_name, tag_name))
      {
         NOTIFY_WARNING("Tag name must be unique!");
         return;
      }
-   glit_tag = elm_genlist_item_append(window.glist, _itc_tags,
-                                      tag_name,
-                                      st_tag_entries.style_name, ELM_GENLIST_ITEM_NONE,
-                                      _on_glit_selected, tag_name);
-   evas_object_del(popup);
-   elm_genlist_item_selected_set(glit_tag, EINA_TRUE);
-   elm_genlist_item_show(st_tag_entries.style_name, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   else
+     if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, tag_name,
+                                        tag_value))
+       {
+          NOTIFY_WARNING("Failed to add tag value. Tag will be deleted");
+          edje_edit_style_tag_del(edje_edit_obj, style_name, tag_name);
+          return;
+       }
+   glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
+                                      tag_name, style_edit->tag,
+                                      ELM_GENLIST_ITEM_NONE,
+                                      _on_glit_selected, style_edit);
+   elm_object_item_data_set(glit_tag,(char *)tag_name);
+   evas_object_del(POPUP.dialog);
+   POPUP.dialog = NULL;
+   elm_genlist_item_selected_set(glit_tag, true);
+   elm_genlist_item_show(style_edit->tag, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_bring_in(glit_tag, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 }
 
 static void
-_on_bt_style_add(void *data __UNUSED__,
+_on_bt_style_add(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *popup, *box, *bt_ok, *bt_cancel;
-   Evas_Object *item_st, *st_entry;
-   Evas_Object *item_tag, *tag_entry;
+   Evas_Object *box;
+   Evas_Object *button = NULL;
+   Evas_Object *item_st;
+   Evas_Object *item_tag;
+   Style_Editor *style_edit = (Style_Editor *)data;
 
-   popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete");
-   elm_object_part_text_set(popup, "title,text", "Add textblock style");
+   POPUP.dialog = elm_popup_add(style_edit->mwin);
+   elm_object_style_set(POPUP.dialog, "eflete");
+   elm_object_part_text_set(POPUP.dialog, "title,text", "Add textblock style");
 
-   box = elm_box_add(popup);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   BOX_ADD(POPUP.dialog, box, false, false);
 
    ITEM_ADD(box, item_st, "Style name:")
-   ENTRY_ADD(item_st, st_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_object_part_text_set(st_entry, "guide", "Type a new style name.");
-   elm_entry_markup_filter_append(st_entry, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_content_set(item_st, "elm.swallow.content", st_entry);
+   ENTRY_ADD(item_st, POPUP.name, true, DEFAULT_STYLE);
+   elm_object_part_text_set(POPUP.name, "guide", "Type a new style name.");
+   elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
+                                  &accept_name);
+   elm_object_part_content_set(item_st, "elm.swallow.content", POPUP.name);
 
    ITEM_ADD(box, item_tag, "Default tags:")
-   ENTRY_ADD(item_tag, tag_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_object_part_text_set(tag_entry, "guide", "Type tag with be using as default.");
-   elm_object_part_content_set(item_tag, "elm.swallow.content", tag_entry);
+   ENTRY_ADD(item_tag, POPUP.value, true, DEFAULT_STYLE);
+   elm_object_part_text_set(POPUP.value, "guide",
+                            "Type tag which will be used as default.");
+   elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
+                                  &accept_value);
+   elm_object_part_content_set(item_tag, "elm.swallow.content", POPUP.value);
 
    elm_box_pack_end(box, item_st);
    elm_box_pack_end(box, item_tag);
-   elm_object_content_set(popup, box);
+   elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
-   BUTTON_ADD(popup, bt_ok, "Ok");
-   evas_object_smart_callback_add(bt_ok, "clicked", _on_st_add_bt_ok, popup);
-   elm_object_part_content_set(popup, "button1", bt_ok);
+   BUTTON_ADD(POPUP.dialog, button, "Ok");
+   evas_object_smart_callback_add(button, "clicked", _on_st_add_bt_ok,
+                                  style_edit);
+   elm_object_part_content_set(POPUP.dialog, "button1", button);
 
-   BUTTON_ADD(popup, bt_cancel, "Cancel");
-   evas_object_smart_callback_add(bt_cancel, "clicked", _on_popup_bt_cancel, popup);
-   elm_object_part_content_set(popup, "button2", bt_cancel);
+   BUTTON_ADD(POPUP.dialog, button, "Cancel");
+   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel,
+                                  style_edit);
+   elm_object_part_content_set(POPUP.dialog, "button2", button);
 
-   st_entries.style_name = st_entry;
-   st_entries.default_tags = tag_entry;
-
-   evas_object_show(popup);
+   evas_object_show(POPUP.dialog);
 }
 
 static void
-_on_bt_tag_add(void *data __UNUSED__,
+_on_bt_tag_add(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *popup, *box, *bt_ok, *bt_cancel, *style_label;
-   Evas_Object *item_tag, *tag_entry;
-   Evas_Object *item_value, *value_entry;
-   Elm_Object_Item *glit = elm_genlist_selected_item_get(window.glist);
+   Evas_Object *box, *button, *style_label;
+   Evas_Object *item_tag = NULL;
+   Evas_Object *item_value = NULL;
+
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
 
@@ -226,82 +319,83 @@ _on_bt_tag_add(void *data __UNUSED__,
    if (!glit_parent)
      {
          style_name = elm_object_item_data_get(glit);
-         st_tag_entries.style_name = glit;
+         style_edit->tag = glit;
      }
    else
      {
          style_name = elm_object_item_data_get(glit_parent);
-         st_tag_entries.style_name = glit_parent;
+         style_edit->tag = glit_parent;
      }
 
-   popup = elm_popup_add(window.mwin);
-   elm_object_style_set(popup, "eflete");
-   elm_object_part_text_set(popup, "title,text", "Add tag to style");
+   POPUP.dialog = elm_popup_add(style_edit->mwin);
+   elm_object_style_set(POPUP.dialog, "eflete");
+   elm_object_part_text_set(POPUP.dialog, "title,text", "Add tag to style");
 
-   box = elm_box_add(popup);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
+   BOX_ADD(POPUP.dialog, box, false, false);
    LABEL_ADD(box, style_label, style_name)
 
    ITEM_ADD(box, item_tag, "Tag name:")
-   ENTRY_ADD(item_tag, tag_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_object_part_text_set(tag_entry, "guide", "Type a new tag name.");
-   elm_entry_markup_filter_append(tag_entry, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_content_set(item_tag, "elm.swallow.content", tag_entry);
+   ENTRY_ADD(item_tag, POPUP.name, true, DEFAULT_STYLE);
+   elm_object_part_text_set(POPUP.name, "guide", "Type a new tag name.");
+   elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
+                                  &accept_name);
+   elm_object_part_content_set(item_tag, "elm.swallow.content", POPUP.name);
 
    ITEM_ADD(box, item_value, "Tag value:")
-   ENTRY_ADD(item_value, value_entry, EINA_TRUE, DEFAULT_STYLE);
-   elm_object_part_text_set(value_entry, "guide", "Type tag with be using as default.");
-   elm_object_part_content_set(item_value, "elm.swallow.content", value_entry);
+   ENTRY_ADD(item_value, POPUP.value, true, DEFAULT_STYLE);
+   elm_object_part_text_set(POPUP.value, "guide",
+                            "Type tag with be using as default.");
+   elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
+                                  &accept_value);
+   elm_object_part_content_set(item_value, "elm.swallow.content", POPUP.value);
 
    elm_box_pack_end(box, style_label);
    elm_box_pack_end(box, item_tag);
    elm_box_pack_end(box, item_value);
-   elm_object_content_set(popup, box);
+   elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
-   BUTTON_ADD(popup, bt_ok, "Ok");
-   evas_object_smart_callback_add(bt_ok, "clicked", _on_tag_add_bt_ok, popup);
-   elm_object_part_content_set(popup, "button1", bt_ok);
+   BUTTON_ADD(POPUP.dialog, button, "Ok");
+   evas_object_smart_callback_add(button, "clicked", _on_tag_add_bt_ok,
+                                  style_edit);
+   elm_object_part_content_set(POPUP.dialog, "button1", button);
 
-   BUTTON_ADD(popup, bt_cancel, "Cancel");
-   evas_object_smart_callback_add(bt_cancel, "clicked", _on_popup_bt_cancel, popup);
-   elm_object_part_content_set(popup, "button2", bt_cancel);
+   BUTTON_ADD(POPUP.dialog, button, "Cancel");
+   evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel,
+                                  style_edit);
+   elm_object_part_content_set(POPUP.dialog, "button2", button);
 
-   st_tag_entries.tag_name = tag_entry;
-   st_tag_entries.tag_value = value_entry;
-
-   evas_object_show(popup);
+   evas_object_show(POPUP.dialog);
 }
 
-
 static void
-_on_bt_del(void *data __UNUSED__,
+_on_bt_del(void *data,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
 {
-   Elm_Object_Item *glit = elm_genlist_selected_item_get(window.glist);
-   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
+   Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
+
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
+   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
+   GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if (!glit_parent)
      {
         style_name = elm_object_item_part_text_get(glit, "elm.text");
-        style_edit_style_del(window.pr, style_name);
+        edje_edit_style_del(edje_edit_obj, style_name);
      }
    else
      {
         style_name = elm_object_item_part_text_get(glit_parent, "elm.text");
         tag = elm_object_item_part_text_get(glit, "elm.text");
-        style_edit_style_tag_del(window.pr, style_name, tag);
+        edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
    elm_object_item_del(glit);
 }
 
-/**
- * For GenList, getting the content for showing. Tag Names.
- */
+/* For GenList, getting the content for showing. Tag Names. */
 static char *
 _item_tags_label_get(void *data,
                      Evas_Object *obj __UNUSED__,
@@ -316,9 +410,7 @@ _item_tags_label_get(void *data,
    return strdup(tag_label);
 }
 
-/**
- * For Style names.
- */
+/* For Style names. */
 static char *
 _item_style_label_get(void *data,
                       Evas_Object *obj __UNUSED__,
@@ -340,203 +432,139 @@ _item_style_label_get(void *data,
    return strdup(style_label);
 }
 
-/**
- * For showing tags value and name in appropriate entry.
- */
-static void
-_on_glit_selected(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
-{
-   Eina_List *tags, *l;
-   const char *style_name;
-   const char *tag, *value;
-   char style[BUFF_MAX] = "DEFAULT=' font_size="FONT_SIZE;
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
-
-   if (!glit_parent)
-     {
-        style_name = (char *)(data);
-        tags = style_edit_style_tags_list_get(window.pr, style_name);
-
-        EINA_LIST_FOREACH(tags, l, tag)
-          {
-             value = style_edit_style_tag_value_get(window.pr, style_name, tag);
-             eina_strlcat(style, value, BUFF_MAX);
-          }
-        elm_entry_entry_set(window.entry_tag, "");
-        elm_entry_entry_set(window.entry_prop, "");
-     }
-   else
-     {
-        style_name = elm_object_item_data_get(glit_parent);
-        tag = (char *)(data);
-        value = style_edit_style_tag_value_get(window.pr, style_name, tag);
-        elm_entry_entry_set(window.entry_tag, tag);
-        elm_entry_entry_set(window.entry_prop, value);
-        eina_strlcat(style, value, BUFF_MAX);
-     }
-   eina_strlcat(style, "'", BUFF_MAX);
-   evas_object_show(window.entry_style);
-   elm_entry_text_style_user_push(window.entry_style, style);
-   evas_object_size_hint_max_set(window.entry_style, EVAS_HINT_FILL, EVAS_HINT_FILL);
-}
-
 static void
 _on_viewer_exit(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Evas_Object *mwin = (Evas_Object *) data;
-   evas_object_del(mwin);
+   Style_Editor *style_edit = (Style_Editor *)data;
+
+   evas_object_del(style_edit->mwin);
 }
 
-/**
- * On hide we need to free everything!!!
- */
-static void
-_item_style_del(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__)
+/* Creating the view of the mwin!!! */
+Evas_Object *
+_form_left_side(Style_Editor *style_edit)
 {
-   /*
-   Text_Styles *_style = (Text_Styles *) data;
-   eina_stringshare_del(_style->style_name);
-   */
+   Elm_Object_Item *glit_style, *glit_tag;
+   Evas_Object *box, *btn;
+   Eina_List *styles, *tags, *l_st, *l_tg;
+   char *style, *tag;
+   Evas_Object *edje_edit_obj = NULL;
+
+
+   if (!_itc_style)
+     {
+        _itc_style = elm_genlist_item_class_new();
+        _itc_style->item_style = DEFAULT_STYLE;
+        _itc_style->func.text_get = _item_style_label_get;
+        _itc_style->func.content_get = NULL;
+        _itc_style->func.state_get = NULL;
+        _itc_style->func.del = NULL;
+     }
+   if (!_itc_tags)
+     {
+        _itc_tags= elm_genlist_item_class_new();
+        _itc_tags->item_style = DEFAULT_STYLE;
+        _itc_tags->func.text_get = _item_tags_label_get;
+        _itc_tags->func.content_get = NULL;
+        _itc_tags->func.state_get = NULL;
+        _itc_tags->func.del = NULL;
+     }
+
+   BOX_ADD(style_edit->mwin, box, false, false);
+
+   style_edit->glist = elm_genlist_add(box);
+   elm_object_style_set(style_edit->glist, DEFAULT_STYLE);
+   elm_box_pack_end(box, style_edit->glist);
+   evas_object_show(style_edit->glist);
+
+   evas_object_size_hint_align_set(style_edit->glist, EVAS_HINT_FILL,
+                                   EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(style_edit->glist, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   GET_OBJ(style_edit->pr, edje_edit_obj);
+
+   styles = edje_edit_styles_list_get(edje_edit_obj);
+
+   EINA_LIST_FOREACH(styles, l_st, style)
+     {
+        glit_style = elm_genlist_item_append(style_edit->glist, _itc_style,
+                                             style, NULL, ELM_GENLIST_ITEM_NONE,
+                                             _on_glit_selected, style_edit);
+        elm_object_item_data_set(glit_style, style);
+
+        tags = edje_edit_style_tags_list_get(edje_edit_obj, style);
+        EINA_LIST_FOREACH(tags, l_tg, tag)
+          {
+             glit_tag = elm_genlist_item_append(style_edit->glist, _itc_tags,
+                                     tag, glit_style, ELM_GENLIST_ITEM_NONE,
+                                    _on_glit_selected, style_edit);
+             elm_object_item_data_set(glit_tag, tag);
+          }
+        eina_list_free(tags);
+     }
+   eina_list_free(styles);
+
+   BUTTON_ADD(style_edit->mwin, btn, "New style");
+   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+   evas_object_smart_callback_add(btn, "clicked", _on_bt_style_add, style_edit);
+   elm_box_pack_end(box, btn);
+
+   BUTTON_ADD(style_edit->mwin, btn, "New tag");
+   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+   evas_object_smart_callback_add(btn, "clicked", _on_bt_tag_add, style_edit);
+   elm_box_pack_end(box, btn);
+
+   BUTTON_ADD(style_edit->mwin, btn, "Delete");
+   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+   evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
+   elm_box_pack_end(box, btn);
+
+   return box;
 }
 
-/**
- * On hide we need to free everything!!!
- */
 static void
-_item_tags_del(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__)
-{
-   /*
-   Tag *_tag = (Tag *) data;
-   eina_stringshare_del(_tag->tag_name);
-   eina_stringshare_del(_tag->tag_value);
-   */
-}
-
-/**
- * Creating the view of the mwin!!!
- */
-Evas_Object*
-_form_left_side(Evas_Object *obj)
-{
-     Elm_Object_Item *glit_style, *glit_tag;
-     Evas_Object *box, *btn;
-     Eina_List *styles, *tags, *l_st, *l_tg;
-     char *style, *tag;
-
-     if (!_itc_style)
-       {
-          _itc_style = elm_genlist_item_class_new();
-          _itc_style->item_style = DEFAULT_STYLE;
-          _itc_style->func.text_get = _item_style_label_get;
-          _itc_style->func.content_get = NULL;
-          _itc_style->func.state_get = NULL;
-          _itc_style->func.del = _item_style_del;
-       }
-     if (!_itc_tags)
-       {
-          _itc_tags= elm_genlist_item_class_new();
-          _itc_tags->item_style = DEFAULT_STYLE;
-          _itc_tags->func.text_get = _item_tags_label_get;
-          _itc_tags->func.content_get = NULL;
-          _itc_tags->func.state_get = NULL;
-          _itc_tags->func.del = _item_tags_del;
-       }
-
-     box = elm_box_add(obj);
-     evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-     evas_object_show(box);
-
-     window.glist = elm_genlist_add(box);
-     elm_object_style_set(window.glist, DEFAULT_STYLE);
-     elm_box_pack_end(box, window.glist);
-     evas_object_show(window.glist);
-
-     evas_object_size_hint_align_set(window.glist,
-                                     EVAS_HINT_FILL,
-                                     EVAS_HINT_FILL);
-     evas_object_size_hint_weight_set(window.glist,
-                                      EVAS_HINT_EXPAND,
-                                      EVAS_HINT_EXPAND);
-
-     styles = style_edit_styles_list_get(window.pr);
-
-     EINA_LIST_FOREACH(styles, l_st, style)
-       {
-          glit_style = elm_genlist_item_append(window.glist, _itc_style,
-                                               style,
-                                               NULL, ELM_GENLIST_ITEM_NONE,
-                                               _on_glit_selected, style);
-          elm_object_item_data_set(glit_style, style);
-          tags = style_edit_style_tags_list_get(window.pr, style);
-          EINA_LIST_FOREACH(tags, l_tg, tag)
-            {
-               glit_tag = elm_genlist_item_append(window.glist, _itc_tags,
-                                       tag,
-                                       glit_style, ELM_GENLIST_ITEM_NONE,
-                                      _on_glit_selected, tag);
-                elm_object_item_data_set(glit_tag, tag);
-            }
-       }
-     eina_list_free(styles);
-
-     BUTTON_ADD(obj, btn, "New style");
-     evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-     evas_object_smart_callback_add(btn, "clicked", _on_bt_style_add, NULL);
-     elm_box_pack_end(box, btn);
-
-     BUTTON_ADD(obj, btn, "New tag");
-     evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-     evas_object_smart_callback_add(btn, "clicked", _on_bt_tag_add, NULL);
-     elm_box_pack_end(box, btn);
-
-     BUTTON_ADD(obj, btn, "Delete");
-     evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-     evas_object_smart_callback_add(btn, "clicked", _on_bt_del, NULL);
-     elm_box_pack_end(box, btn);
-
-     return box;
-}
-static void
-_change_bg_cb(void *data __UNUSED__,
+_change_bg_cb(void *data,
               Evas_Object *obj,
               void *event_info __UNUSED__)
 {
+   Style_Editor *style_edit = (Style_Editor *)data;
    int state = elm_radio_state_value_get(obj);
    Evas_Object *bg = NULL;
    Evas *canvas = evas_object_evas_get(obj);
    switch (state)
      {
       case 0:
-         bg = evas_object_image_filled_add(canvas);
-         evas_object_image_filled_set(bg, EINA_FALSE);
-         evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
-         evas_object_image_fill_set(bg, 0, 0, 16, 16);
+        {
+           bg = evas_object_image_filled_add(canvas);
+           evas_object_image_filled_set(bg, false);
+           evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
+           evas_object_image_fill_set(bg, 0, 0, 16, 16);
+        }
       break;
       case 1:
-         bg = evas_object_rectangle_add(canvas);
-         evas_object_color_set(bg, 0, 0, 0, 255);
-         evas_object_show(bg);
+        {
+           bg = evas_object_rectangle_add(canvas);
+           evas_object_color_set(bg, 0, 0, 0, 255);
+           evas_object_show(bg);
+        }
       break;
       case 2:
-         bg = evas_object_rectangle_add(canvas);
-         evas_object_color_set(bg, 255, 255, 255, 255);
-         evas_object_show(bg);
+        {
+           bg = evas_object_rectangle_add(canvas);
+           evas_object_color_set(bg, 255, 255, 255, 255);
+           evas_object_show(bg);
+        }
       break;
       default:
       break;
      }
-   elm_object_part_content_set(window.entry_prev, "background", bg);
+   elm_object_part_content_set(style_edit->entry_prev, "background", bg);
 }
 
 Evas_Object*
-_form_right_side(Evas_Object *obj)
+_form_right_side(Style_Editor *style_edit)
 {
    Evas_Object *layout, *btn;
    Evas_Object *box_bg = NULL;
@@ -544,35 +572,38 @@ _form_right_side(Evas_Object *obj)
    Evas_Object *radio_group = NULL;
    Evas_Object *radio = NULL;
 
-   layout = elm_layout_add(obj);
+   layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
 
-   ENTRY_ADD(obj, window.entry_tag, EINA_TRUE, DEFAULT_STYLE);
-   elm_object_part_content_set (layout, "swallow/tag_entry", window.entry_tag);
+   ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
+   elm_object_part_content_set (layout, "swallow/tag_entry",
+                                style_edit->entry_tag);
 
-   ENTRY_ADD(obj, window.entry_prop, EINA_TRUE, DEFAULT_STYLE);
-   elm_object_part_content_set (layout, "swallow/prop_entry", window.entry_prop);
+   ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
+   elm_object_part_content_set (layout, "swallow/prop_entry",
+                                style_edit->entry_prop);
 
-   BUTTON_ADD(obj, btn, "Close viewer");
-   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, window.mwin);
+   BUTTON_ADD(style_edit->mwin, btn, "Close viewer");
+   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit,
+                                  style_edit);
    elm_object_part_content_set (layout, "swallow/button_close", btn);
    evas_object_show(btn);
 
-   BOX_ADD(obj, box_bg, EINA_TRUE, EINA_FALSE);
+   BOX_ADD(style_edit->mwin, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
 
-#define _RADIO_ADD(radio, value, image) \
-   radio = elm_radio_add(obj); \
-   elm_object_style_set(radio, "eflete/style_editor"); \
-   elm_radio_state_value_set(radio, value); \
-   evas_object_show(radio); \
-   IMAGE_ADD(box_bg, image_bg, image); \
-   elm_image_resizable_set(image_bg, EINA_FALSE, EINA_FALSE); \
-   elm_object_part_content_set(radio, "bg", image_bg); \
-   evas_object_smart_callback_add(radio, "changed", _change_bg_cb, NULL); \
-   elm_box_pack_end(box_bg, radio);
+#define _RADIO_ADD(RADIO, VALUE, IMAGE) \
+   RADIO = elm_radio_add(style_edit->mwin); \
+   elm_object_style_set(RADIO, "eflete/style_editor"); \
+   elm_radio_state_value_set(RADIO, VALUE); \
+   evas_object_show(RADIO); \
+   IMAGE_ADD(box_bg, image_bg, IMAGE); \
+   elm_image_resizable_set(image_bg, false, false); \
+   elm_object_part_content_set(RADIO, "bg", image_bg); \
+   evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
+   elm_box_pack_end(box_bg, RADIO);
 
    _RADIO_ADD(radio_group, 0, TET_IMG_PATH"styles-preview-bg-transparent.png");
    _RADIO_ADD(radio, 1, TET_IMG_PATH"styles-preview-bg-black.png");
@@ -583,85 +614,98 @@ _form_right_side(Evas_Object *obj)
    elm_object_part_content_set(layout, "menu_container", box_bg);
    return layout;
 }
+
 static void
-__on_style_editor_close(void *data __UNUSED__,
+_on_style_editor_close(void *data,
                         Evas *e __UNUSED__,
                         Evas_Object *obj __UNUSED__,
                         void *event_info __UNUSED__)
 {
-   style_edit_save(window.pr);
-   /* clear stringshare */
+   Style_Editor *style_edit = (Style_Editor *)data;
+
+   free(style_edit);
 }
 
 Evas_Object *
-style_editor_window_add(Evas_Object *parent, Project *project)
+style_editor_window_add(Project *project)
 {
-   if ((!parent) || (!project))
-     {
-        ERR("NULL param passed to style_editor_window_add");
-        return NULL;
-     }
    Evas_Object *panes, *panes_h;
    Evas_Object *layout_left, *layout_right;
    Evas_Object *bg = NULL;
-   Evas *canvas = evas_object_evas_get(parent);
+   Evas *canvas = NULL;
+   Style_Editor *style_edit = NULL;
 
-   window.pr = project;
-   window.mwin = mw_add(parent);
-   mw_title_set(window.mwin, "Textblock style editor");
-   evas_object_event_callback_add(window.mwin, EVAS_CALLBACK_FREE,
-                                  __on_style_editor_close, NULL);
-   panes = elm_panes_add(window.mwin);
+   if (!project)
+     {
+        ERR("Failed create style editor for non opened project");
+        return NULL;
+     }
+
+   style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
+
+   style_edit->pr = project;
+   style_edit->mwin = mw_add(NULL);
+   mw_title_set(style_edit->mwin, "Textblock style editor");
+   evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
+                                        _on_style_editor_close, style_edit);
+
+   panes = elm_panes_add(style_edit->mwin);
    elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
-   elm_win_inwin_content_set(window.mwin, panes);
+   elm_win_inwin_content_set(style_edit->mwin, panes);
    evas_object_show(panes);
 
-   layout_left = _form_left_side(window.mwin);
+   layout_left = _form_left_side(style_edit);
    elm_object_part_content_set(panes, "left", layout_left);
    evas_object_show(layout_left);
 
-   panes_h = elm_panes_add(window.mwin);
+   panes_h = elm_panes_add(style_edit->mwin);
    elm_object_style_set(panes_h, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_panes_horizontal_set(panes_h, EINA_TRUE);
+   elm_panes_horizontal_set(panes_h, true);
    elm_object_part_content_set(panes, "right", panes_h);
    evas_object_show(panes_h);
 
-   Evas_Object *layout_preview = NULL;
-   layout_preview = elm_layout_add(window.mwin);
-   evas_object_size_hint_weight_set(layout_preview, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout_preview, TET_EDJ, "ui/style_viewer_window/preview");
-   evas_object_show(layout_preview);
-   elm_object_part_content_set(panes_h, "left", layout_preview);
-   window.entry_prev = layout_preview;
+   style_edit->entry_prev = elm_layout_add(style_edit->mwin);
+   evas_object_size_hint_weight_set(style_edit->entry_prev, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
+   elm_layout_file_set(style_edit->entry_prev, TET_EDJ,
+                       "ui/style_viewer_window/preview");
+   evas_object_show(style_edit->entry_prev);
+   elm_object_part_content_set(panes_h, "left", style_edit->entry_prev);
+   elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
+   canvas = evas_object_evas_get(style_edit->mwin);
    bg = evas_object_image_filled_add(canvas);
-   evas_object_image_filled_set(bg, EINA_FALSE);
+   evas_object_image_filled_set(bg, false);
    evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
    evas_object_image_fill_set(bg, 0, 0, 16, 16);
-   elm_object_part_content_set(layout_preview, "background", bg);
+   elm_object_part_content_set(style_edit->entry_prev, "background", bg);
    evas_object_show(bg);
 
-   ENTRY_ADD(window.mwin, window.entry_style, EINA_TRUE, "style_editor");
-   elm_entry_editable_set(window.entry_style, EINA_FALSE);
-   evas_object_size_hint_weight_set(window.entry_style, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_part_content_set(layout_preview, "entry", window.entry_style);
-   elm_object_text_set(window.entry_style, "The quick brown fox jumps over the lazy dog");
-   elm_entry_text_style_user_push(window.entry_style, "DEFAULT='align=center "
+   ENTRY_ADD(style_edit->mwin, style_edit->entry_style, true, "style_editor");
+   elm_entry_editable_set(style_edit->entry_style, false);
+   evas_object_size_hint_weight_set(style_edit->entry_style,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(style_edit->entry_prev, "entry",
+                               style_edit->entry_style);
+   elm_object_text_set(style_edit->entry_style,
+                       "The quick brown fox jumps over the lazy dog");
+   elm_entry_text_style_user_push(style_edit->entry_style,
+                                  "DEFAULT='align=center "
                                   "font_size="FONT_SIZE" font_weight=Bold'");
 
-   evas_object_hide(window.entry_style);
-   layout_right = _form_right_side(window.mwin);
+
+   layout_right = _form_right_side(style_edit);
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
 
-   evas_object_show(window.mwin);
-
-   return window.mwin;
+   evas_object_show(style_edit->mwin);
+   return style_edit->mwin;
 }
 
 #undef FONT_SIZE
+#undef POPUP

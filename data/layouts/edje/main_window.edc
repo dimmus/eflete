@@ -76,11 +76,11 @@ group {
             aspect_preference: SOURCE;
             rel1 {
                to: "rect/background";
-               relative: 0.3 0.3;
+               relative: 0.2 0.2;
             }
             rel2 {
                to:  "rect/background";
-               relative: 0.7 0.7;
+               relative: 0.8 0.8;
             }
          }
          description {

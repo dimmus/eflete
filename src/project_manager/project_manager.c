@@ -189,6 +189,7 @@ pm_save_project_edc(Project *project)
           {
              NOTIFY_WARNING("Could not create dir with decompiled project. <br>"
                           "Please check directory permissions or move edj file into another directory.");
+             free(save_dir);
              free(split[0]);
              free(split);
              return;
@@ -198,6 +199,7 @@ pm_save_project_edc(Project *project)
                      _on_copy_done_cb, _on_copy_error_cb, NULL);
         ecore_main_loop_begin();
 
+        free(save_dir);
         free(split[0]);
         free(split);
      }
@@ -210,7 +212,7 @@ pm_open_project_edc(const char *name,
                     const char *font_directory,
                     const char *sound_directory)
 {
-   Project *project;
+   Project *project = NULL;
 
    if (!path) return NULL;
 

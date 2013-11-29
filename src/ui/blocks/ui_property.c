@@ -204,9 +204,9 @@ _on_state_pref_pref_change(void *data,
                                    index->i);
 }
 
-#define INDEX_APPEND(value) \
+#define INDEX_APPEND(VALUE) \
    index = mem_malloc(sizeof(Index)); \
-   index->i = value; \
+   index->i = VALUE; \
    elm_object_item_data_set(hovit, index);
 
 static Evas_Object *
@@ -287,11 +287,11 @@ ui_property_add(Evas_Object *parent)
    return scroller;
 }
 
-#define ITEM_2SPINNER_GROUP_CREATE(text, sub, value1, value2) \
-   ITEM_SPINNER_CALLBACK(sub, value1, int) \
-   ITEM_SPINNER_CALLBACK(sub, value2, int) \
-   ITEM_2SPINNER_GROUP_ADD(text, sub, value1, value2) \
-   ITEM_2SPINNER_GROUP_UPDATE(sub, value1, value2)
+#define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_SPINNER_CALLBACK(SUB, VALUE1, int) \
+   ITEM_SPINNER_CALLBACK(SUB, VALUE2, int) \
+   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2)
 
 /* group property */
 ITEM_2SPINNER_GROUP_CREATE("min", group_min, w, h)
@@ -349,21 +349,21 @@ ui_property_group_unset(Evas_Object *property)
 }
 #undef pd_group
 
-#define ITEM_1CHECK_PART_CREATE(text, sub, value) \
-   ITEM_CHECK_PART_CALLBACK(sub, value) \
-   ITEM_1CHEACK_PART_ADD(text, sub, value) \
-   ITEM_1CHEACK_PART_UPDATE(sub, value)
+#define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
+   ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
+   ITEM_1CHEACK_PART_ADD(TEXT, SUB, VALUE) \
+   ITEM_1CHEACK_PART_UPDATE(SUB, VALUE)
 
-#define ITEM_1ENTRY_PART_CREATE(text, sub, value) \
-   ITEM_STRING_PART_CALLBACK(sub, value) \
-   ITEM_1ENTRY_PART_ADD(text, sub, value) \
-   ITEM_1ENTRY_PART_UPDATE(sub, value)
+#define ITEM_1ENTRY_PART_CREATE(TEXT, SUB, VALUE) \
+   ITEM_STRING_PART_CALLBACK(SUB, VALUE) \
+   ITEM_1ENTRY_PART_ADD(TEXT, SUB, VALUE) \
+   ITEM_1ENTRY_PART_UPDATE(SUB, VALUE)
 
-#define ITEM_DRAG_PART_CREATE(text, sub, value1, value2) \
-   ITEM_CHECK_PART_CALLBACK(sub, value1) \
-   ITEM_INT_PART_CALLBACK(sub, value2) \
-   ITEM_DRAG_PART_ADD(text, sub, value1, value2) \
-   ITEM_DRAG_PART_UPDATE(sub, value1, value2)
+#define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
+   ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
+   ITEM_DRAG_PART_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
 
 /* part property */
 ITEM_1CHECK_PART_CREATE("scale", part, scale)
@@ -491,32 +491,32 @@ ui_property_part_unset(Evas_Object *property)
 /*   miss:
      Evas_Object *aspect_pref;
  */
-#define ITEM_2SPINNER_STATE_CREATE(text, sub, value1, value2, type) \
-   ITEM_SPINNER_STATE_CALLBACK(sub, value1, type) \
-   ITEM_SPINNER_STATE_CALLBACK(sub, value2, type) \
-   ITEM_2SPINNER_STATE_ADD(text, sub, value1, value2) \
-   ITEM_2SPINNER_STATE_UPDATE(sub, value1, value2)
+#define ITEM_2SPINNER_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2, type) \
+   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE1, type) \
+   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE2, type) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
-#define ITEM_1ENTRY_STATE_CREATE(text, sub, value, func) \
-   ITEM_STRING_STATE_CALLBACK(sub, value) \
-   ITEM_1ENTRY_STATE_ADD(text, sub, value, func) \
-   ITEM_1ENTRY_STATE_UPDATE(sub, value)
+#define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE, FUNC) \
+   ITEM_STRING_STATE_CALLBACK(SUB, VALUE) \
+   ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FUNC) \
+   ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_COLOR_STATE_CREATE(text, sub, value) \
-   ITEM_COLOR_STATE_CALLBACK(sub, value) \
-   ITEM_COLOR_STATE_ADD(text, sub, value) \
-   ITEM_COLOR_STATE_UPDATE(sub, value)
+#define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
+   ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
+   ITEM_COLOR_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_COLOR_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_1CHECK_STATE_CREATE(text, sub, value) \
-   ITEM_CHECK_STATE_CALLBACK(sub, value) \
-   ITEM_1CHEACK_STATE_ADD(text, sub, value) \
-   ITEM_1CHEACK_STATE_UPDATE(sub, value)
+#define ITEM_1CHECK_STATE_CREATE(TEXT, SUB, VALUE) \
+   ITEM_CHECK_STATE_CALLBACK(SUB, VALUE) \
+   ITEM_1CHEACK_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1CHEACK_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_2CHECK_STATE_CREATE(text, sub, value1, value2) \
-   ITEM_CHECK_STATE_CALLBACK(sub, value1) \
-   ITEM_CHECK_STATE_CALLBACK(sub, value2) \
-   ITEM_2CHEACK_STATE_ADD(text, sub, value1, value2) \
-   ITEM_2CHEACK_STATE_UPDATE(sub, value1, value2)
+#define ITEM_2CHECK_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_CHECK_STATE_CALLBACK(SUB, VALUE1) \
+   ITEM_CHECK_STATE_CALLBACK(SUB, VALUE2) \
+   ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 ITEM_1CHECK_STATE_CREATE("visible", state, visible)
 ITEM_2SPINNER_STATE_CREATE("min", state_min, w, h, int)
@@ -659,11 +659,11 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_image_unset(property);
 }
 
-#define ITEM_2ENTRY_STATE_CREATE(text, sub, value1, value2) \
-   ITEM_STRING_STATE_CALLBACK(sub, value1) \
-   ITEM_STRING_STATE_CALLBACK(sub, value2) \
-   ITEM_2ENTRY_STATE_ADD(text, sub, value1, value2) \
-   ITEM_2ENTRY_STATE_UPDATE(sub, value1, value2)
+#define ITEM_2ENTRY_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_STRING_STATE_CALLBACK(SUB, VALUE1) \
+   ITEM_STRING_STATE_CALLBACK(SUB, VALUE2) \
+   ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2ENTRY_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 ITEM_2SPINNER_STATE_CREATE("relative", state_rel1_relative, x, y, double)
 ITEM_2SPINNER_STATE_CREATE("offset", state_rel1_offset, x, y, int)
@@ -779,10 +779,10 @@ ui_property_state_rel2_unset(Evas_Object *property)
 }
 #undef pd_rel2
 
-#define ITEM_1SPINNER_STATE_CREATE(text, sub, value, type) \
-   ITEM_SPINNER_STATE_CALLBACK(sub, value, type) \
-   ITEM_1SPINNER_STATE_ADD(text, sub, value) \
-   ITEM_1SPINNER_STATE_UPDATE(sub, value)
+#define ITEM_1SPINNER_STATE_CREATE(TEXT, SUB, VALUE, type) \
+   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE, type) \
+   ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
 ITEM_1ENTRY_STATE_CREATE("text", state, text, NULL)
 ITEM_1ENTRY_STATE_CREATE("font", state, font, NULL)
@@ -961,10 +961,10 @@ ui_property_state_textblock_unset(Evas_Object *property)
 #undef pd_textblock
 
 
-#define ITEM_IM_BORDER_STATE_CREATE(text, sub, value) \
-   ITEM_IM_BORDER_STATE_CALLBACK(sub, value) \
-   ITEM_IM_BORDER_STATE_ADD(text, sub, value) \
-   ITEM_IM_BORDER_STATE_UPDATE(sub, value)
+#define ITEM_IM_BORDER_STATE_CREATE(TEXT, SUB, VALUE) \
+   ITEM_IM_BORDER_STATE_CALLBACK(SUB, VALUE) \
+   ITEM_IM_BORDER_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_IM_BORDER_STATE_UPDATE(SUB, VALUE)
 
 #define pd_image pd->prop_state_image
 

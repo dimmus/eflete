@@ -27,11 +27,9 @@
  * all the images used by the project.
  */
 
-#include "efl_ete.h"
-#include "Evas.h"
+#include "eflete.h"
 #include "modal_window.h"
 #include "widget_manager.h"
-#include "alloc.h"
 #include "widget_macro.h"
 
 typedef enum {

@@ -18,7 +18,7 @@
 */
 
 #include "ui_ruler.h"
-#include "efl_ete.h"
+#include "alloc.h"
 
 struct _UI_Ruler_Data
 {
@@ -377,7 +377,15 @@ ui_ruler_show(Evas_Object *obj)
    edje_object_signal_emit (obj, "ruler,bg,show", "");
    evas_object_show(obj);
 }
-
+static void
+_on_ruler_free(void *data __UNUSED__,
+                      Evas *e __UNUSED__,
+                      Evas_Object *obj,
+                      void *event_info __UNUSED__)
+{
+   UI_Ruler_Data *_ruler_data = evas_object_data_del(obj, RULERDATAKEY);
+   free(_ruler_data);
+}
 Evas_Object *
 ui_ruler_add(Evas_Object *parent)
 {
@@ -402,6 +410,8 @@ ui_ruler_add(Evas_Object *parent)
    ui_ruler_orient_set(ruler, HORIZONTAL);
    evas_object_resize(ruler, 100, 40);
    evas_object_show(ruler);
+   evas_object_event_callback_add(ruler, EVAS_CALLBACK_FREE,
+                                  _on_ruler_free, NULL);
    return ruler;
 }
 

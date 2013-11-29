@@ -199,15 +199,17 @@ _on_add_popup_btn_add(void *data,
                       void *ei __UNUSED__)
 {
    Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   Colorclass_Item *it = (Colorclass_Item *) calloc(1,sizeof(Colorclass_Item));
-   it->name = elm_entry_entry_get(ccl_edit->entry);
+   Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Evas_Object *edje_edit_obj = NULL;
 
+   it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
+   it->name = elm_entry_entry_get(ccl_edit->entry);
 
    if ((!it->name) || (!strcmp(it->name, "")))
      {
         NOTIFY_WARNING("Color class name can not be empty!");
+        free(it);
         return;
      }
 
@@ -215,6 +217,7 @@ _on_add_popup_btn_add(void *data,
    if (!edje_edit_color_class_add(edje_edit_obj, it->name))
      {
         NOTIFY_WARNING("Color class name must be unique!");
+        free(it);
         return;
      }
 
@@ -420,7 +423,7 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
 
    EINA_LIST_FOREACH(cclist, l, ccname)
      {
-        it = (Colorclass_Item *)calloc(1, sizeof(Colorclass_Item));
+        it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
         if (!edje_edit_color_class_colors_get(edje_edit_obj, ccname,
                                      &r1, &g1, &b1, &a1,
                                      &r2, &g2, &b2, &a2,

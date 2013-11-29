@@ -20,17 +20,17 @@
 #ifndef STRING_MACRO_H
 #define STRING_MACRO_H
 
-#define GET_NAME_FROM_PATH(name, path) \
+#define GET_NAME_FROM_PATH(NAME, PATH) \
    char **arr; \
    int i; \
-   arr = eina_str_split(path, "/", 0); \
+   arr = eina_str_split(PATH, "/", 0); \
    for (i = 0; arr[i]; i++) ; \
-   name = strdup(arr[i-1]); \
+   NAME = strdup(arr[i-1]); \
    free(arr[0]); \
    free(arr);
 
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\"
-#define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{} |\\"
+#define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{}|\\"
 #define PROP_BANNED_SYMBOLS ":;,'\"~!?&^%$#@()[]=+*{} |/\\"
 
 #endif /* STRING_MACRO_H */

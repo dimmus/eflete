@@ -27,7 +27,7 @@
  * PACKAGE
  */
 
-#include "efl_ete.h"
+#include "eflete.h"
 
 /**
  * Allocates a block of size bytes of memory, returning a pointer to the

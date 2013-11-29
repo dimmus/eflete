@@ -17,7 +17,7 @@
 * along with this program; If not, see .
 */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "ui_main_window.h"
 
 EAPI_MAIN int
@@ -33,7 +33,11 @@ elm_main()
    #endif
 
    App_Data *ap = app_create();
-   ui_main_window_add(ap);
+   if (!ui_main_window_add(ap))
+     {
+        app_shutdown();
+        return -1;
+     }
    elm_run();
    elm_shutdown();
    app_shutdown();

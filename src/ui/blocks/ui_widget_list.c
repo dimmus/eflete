@@ -557,7 +557,6 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add(gl_styles, "clicked,double",
                                   _on_group_clicked_double, data);
 
-
    box = elm_box_add(nf);
    panel = elm_box_add(box);
    elm_box_horizontal_set(panel, EINA_TRUE);
@@ -576,6 +575,9 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    evas_object_show(button);
    elm_object_style_set(button, "eflete/default");
+   /* temporary solution, while deleting aliases is not working. */
+   elm_object_disabled_set(button, true);
+   /*************************************************************/
    elm_box_pack_end(panel, button);
 
    elm_box_pack_end(box, panel);
