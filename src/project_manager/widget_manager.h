@@ -370,10 +370,11 @@ wm_part_type_get(Edje_Part_Type type);
  * @param group A Group object pointer, in wich must be loaded data.
  * @param e A Evas, parent object.
  * @param path Path to theme file (.edj).
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
  *
  * @ingroup WidgetManager
  */
-void
+Eina_Bool
 wm_group_data_load(Group *group, Evas *e, const char *edj);
 
 #endif /* WIDGET_MANAGER_H */

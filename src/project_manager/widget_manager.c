@@ -42,6 +42,7 @@ static char *part_types[] = {
      "PROXY",
      "SPACER"
 };
+static unsigned int part_types_count = 12;
 
 #define WM_WIDGET_NAME_GET(widget, group) \
    arr = eina_str_split(group, "/", 3); \
@@ -72,7 +73,7 @@ static char *part_types[] = {
    free(arr[0]); \
    free(arr);
 
-void
+Eina_Bool
 wm_group_data_load(Group *group, Evas *e, const char *edj)
 {
    Evas_Object *edje_edit_obj;
@@ -80,14 +81,14 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
    char *name;
    Part *part;
 
-   if (!group || !e) return;
+   if ((!group) || (!e)) return false;
 
    edje_edit_obj = edje_edit_object_add(e);
 
    if (!edje_object_file_set(edje_edit_obj, edj, group->full_group_name))
      {
         evas_object_del(edje_edit_obj);
-        return;
+        return false;
      }
    edje_object_freeze(edje_edit_obj);
    group->obj = edje_edit_obj;
@@ -102,6 +103,8 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
                                           EINA_INLIST_GET(part));
      }
    edje_edit_string_list_free(parts_list);
+
+   return true;
 }
 
 Part *
@@ -110,7 +113,8 @@ wm_part_add(Evas_Object *obj, const char *part)
    Part *result;
    double value;
 
-   if (!part || !obj) return NULL;
+   if ((!part) || (!obj)) return NULL;
+   if (!edje_edit_part_exist(obj, part)) return NULL;
 
    result = mem_malloc(sizeof(Part));
    result->__type = PART;
@@ -162,6 +166,8 @@ wm_program_signals_list_get(Group *group)
    Eina_List *progs, *l;
    Eina_Stringshare *prog_name, *sig_name;
 
+   if ((!group) || (!group->obj)) return NULL;
+
    progs = edje_edit_programs_list_get(group->obj);
    EINA_LIST_FOREACH(progs, l, prog_name)
      {
@@ -181,7 +187,7 @@ wm_program_signals_list_free(Eina_List *signals)
    if (!signals) return EINA_FALSE;
 
    EINA_LIST_FREE(signals, sig)
-      edje_edit_string_free(sig);
+     edje_edit_string_free(sig);
 
    eina_list_free(signals);
    signals = NULL;
@@ -213,7 +219,7 @@ wm_group_free(Group *group)
 
    if (!group) return EINA_FALSE;
 
-   if (!group->obj) evas_object_del(group->obj);
+   if (group->obj) evas_object_del(group->obj);
 
    while (group->parts)
      {
@@ -319,7 +325,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
    char *style_name = NULL, *style_name_next = NULL;
    char *group, *group_next;
 
-   if (!widget) return NULL;
+   if ((!widget) || (!groups)) return NULL;
 
    _widget = mem_malloc(sizeof(*_widget));
    _widget->widget_name = eina_stringshare_add(widget);
@@ -438,7 +444,6 @@ wm_widget_list_new(const char *file)
                widget_name_next = &empty;
              widget_styles = eina_list_append(widget_styles, group);
 
-
              if (strcmp(widget_name, widget_name_next) != 0)
                {
                   widget = wm_widget_add(widget_name, widget_styles);
@@ -487,6 +492,8 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
    Widget *_widget = NULL;
    Style *_style = NULL;
 
+   if ((!widget_list) || (!group_full_name)) return NULL;
+
    WM_WIDGET_NAME_GET(widget_name, group_full_name);
    if (widget_name [0] <= 'm')
      EINA_INLIST_FOREACH(widget_list, _widget)
@@ -500,10 +507,13 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
           if (!strcmp(_widget->widget_name, widget_name))
             break;
        }
-   if (!_widget) return NULL;
+   if (!_widget)
+     {
+        free(widget_name);
+        return NULL;
+     }
 
    WM_STYLE_NAME_GET(style_name, group_full_name);
-
    if (style_name [0] <= 'm')
      EINA_INLIST_FOREACH(_widget->styles, _style)
        {
@@ -516,7 +526,12 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
           if (!strcmp(_style->style_name, style_name))
             break;
        }
-   if (!_style) return NULL;
+   if (!_style)
+     {
+        free(widget_name);
+        free(style_name);
+        return NULL;
+     }
 
    WM_GROUP_NAME_GET(group_name, style_name, group_full_name)
    if (group_name [0] <= 'm')
@@ -535,6 +550,8 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
    free(widget_name);
    free(style_name);
    free(group_name);
+
+   if (!_group) return NULL;
 
    return _group->obj;
 }
@@ -565,6 +582,7 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
 const char *
 wm_part_type_get(Edje_Part_Type type)
 {
+   if (type > part_types_count) return NULL;
    return part_types[type];
 }
 
