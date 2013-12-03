@@ -79,6 +79,7 @@ data/Makefile
 data/eflete.desktop
 tests/Makefile
 tests/edj_build/Makefile
+tests/edj_build/radio.edc
 doc/Makefile
 ])
 
