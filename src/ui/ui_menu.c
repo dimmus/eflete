@@ -34,11 +34,16 @@ struct _menu_event
    enum {
       OPEN_EDC = 0,
       OPEN_EDJ,
-      SAVE_EDJ
+      SAVE_EDJ,
+      SAVE_AS_EDJ
    } type;
 };
 
 typedef struct _menu_event Menu_Event;
+
+/* TODO: Make delayed events from all menu callbacks. Otherwise menu will be
+ * blocked after any long operation on week machines
+ */
 
 static Eina_Bool
 _menu_event_handler_cb(void *data __UNUSED__,
@@ -56,6 +61,19 @@ _menu_event_handler_cb(void *data __UNUSED__,
          open_edj_file(menu_event->ap);
       break;
       case SAVE_EDJ:
+         if (pm_save_project_to_swap(menu_event->ap->project))
+           {
+              if (pm_save_project_edj(menu_event->ap->project))
+                {
+                   NOTIFY_INFO(3, "Theme saved: %s", menu_event->ap->project->edj)
+                   ui_demospace_set(menu_event->ap->demo, menu_event->ap->project,
+                                    menu_event->ap->project->current_group);
+                }
+              else
+                 NOTIFY_ERROR("Theme can not be saved: %s", menu_event->ap->project->edj);
+           }
+      break;
+      case SAVE_AS_EDJ:
          save_as_edj_file(menu_event->ap);
       break;
       }
@@ -230,27 +248,13 @@ _on_save_menu(void *data,
         ERR("Project coud'nt be save");
         return;
      }
-
+   menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = ap;
    if (!ap->project->edj)
-     {
-        menu_event = mem_malloc(sizeof(Menu_Event));
-        menu_event->ap = ap;
-        menu_event->type = SAVE_EDJ;
-        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-     }
+      menu_event->type = SAVE_AS_EDJ;
    else
-     {
-        if (pm_save_project_to_swap(ap->project))
-          {
-             if (pm_save_project_edj(ap->project))
-               {
-                  NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
-                     ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
-               }
-             else
-               NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
-          }
-     }
+      menu_event->type = SAVE_EDJ;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -260,7 +264,7 @@ _on_save_as_menu(void *data,
 {
    Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
    menu_event->ap = (App_Data *)data;
-   menu_event->type = SAVE_EDJ;
+   menu_event->type = SAVE_AS_EDJ;
    ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
