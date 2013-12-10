@@ -14,12 +14,13 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include <check.h>
 #include <Elementary.h>
 #include "widget_manager.h"
+#include "common_macro.h"
 
 /**
  * @addtogroup wm_part_free_test
@@ -53,7 +54,7 @@ START_TEST (wm_part_free_test_p1)
    edje_object_file_set(obj, "./edj_build/radio.edj", "elm/radio/base/def");
    part = wm_part_add(obj, name);
    part->obj = evas_object_rectangle_add(e);
-   ck_assert_msg(wm_part_free(part) == EINA_TRUE, "cannot delete Part object");
+   ck_assert_msg(wm_part_free(part) == true, "cannot delete Part object");
 
    elm_shutdown();
 }
@@ -90,7 +91,7 @@ START_TEST (wm_part_free_test_p2)
    obj = edje_edit_object_add(e);
    edje_object_file_set(obj, "./edj_build/radio.edj", "elm/radio/base/def");
    part = wm_part_add(obj, name);
-   ck_assert_msg(wm_part_free(part) == EINA_TRUE, "cannot delete Part object");
+   ck_assert_msg(wm_part_free(part) == true, "cannot delete Part object");
 
    elm_shutdown();
 }
@@ -114,7 +115,7 @@ END_TEST
 START_TEST (wm_part_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_part_free(NULL) == EINA_FALSE, "NULL Part object was deleted");
+   ck_assert_msg(wm_part_free(NULL) == false, "NULL Part object was deleted");
    elm_shutdown();
 }
 END_TEST
@@ -400,7 +401,7 @@ START_TEST (wm_group_free_test_p)
    const char *group_name = "defaul";
    const char *full_group_name = "elm/check/base/defaul";
    group = wm_group_add(group_name, full_group_name);
-   ck_assert_msg(wm_group_free(group) == EINA_TRUE, "cannot delete Group object");
+   ck_assert_msg(wm_group_free(group) == true, "cannot delete Group object");
    elm_shutdown();
 }
 END_TEST
@@ -423,7 +424,7 @@ END_TEST
 START_TEST (wm_group_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_group_free(NULL) == EINA_FALSE, "Deleting NULL as Group object.");
+   ck_assert_msg(wm_group_free(NULL) == false, "Deleting NULL as Group object.");
    elm_shutdown();
 }
 END_TEST
@@ -498,7 +499,7 @@ START_TEST (wm_program_signals_list_get_test_p2)
    Group *group = NULL;
    const char *edj = "./edj_build/radio.edj";
    const char *group_name = "def";
-   const char *full_group_name = "elm/radio/base/test";
+   const char *full_group_name = "elm/radio/notbase/test";
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
@@ -600,7 +601,7 @@ START_TEST (wm_program_signals_list_free_test_p)
    group = wm_group_add(group_name, full_group_name);
    wm_group_data_load(group, e, edj);
    sig_list = wm_program_signals_list_get(group);
-   ck_assert_msg(wm_program_signals_list_free(sig_list) == EINA_TRUE, "Cannot free signal list.");
+   ck_assert_msg(wm_program_signals_list_free(sig_list) == true, "Cannot free signal list.");
 
    wm_group_free(group);
    elm_shutdown();
@@ -625,7 +626,7 @@ END_TEST
 START_TEST (wm_program_signals_list_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_program_signals_list_free(NULL) == EINA_FALSE, "NULL signal list was deleted.");
+   ck_assert_msg(wm_program_signals_list_free(NULL) == false, "NULL signal list was deleted.");
    elm_shutdown();
 }
 END_TEST
@@ -769,7 +770,7 @@ START_TEST (wm_style_free_test_p)
    groups = eina_list_append(groups, "elm/radio/notbase/test");
    style = wm_style_add(style_name, groups);
 
-   ck_assert_msg(wm_style_free(style) == EINA_TRUE, "cannot delete Style structure.");
+   ck_assert_msg(wm_style_free(style) == true, "cannot delete Style structure.");
    elm_shutdown();
 }
 END_TEST
@@ -792,7 +793,7 @@ END_TEST
 START_TEST (wm_style_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_style_free(NULL) == EINA_FALSE, "NULL Style structure was deleted.");
+   ck_assert_msg(wm_style_free(NULL) == false, "NULL Style structure was deleted.");
    elm_shutdown();
 }
 END_TEST
@@ -937,7 +938,7 @@ START_TEST (wm_widget_free_test_p)
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
    widget = wm_widget_add(widget_name, groups);
-   ck_assert_msg(wm_widget_free(widget) == EINA_TRUE, "cannot delete Widget.");
+   ck_assert_msg(wm_widget_free(widget) == true, "cannot delete Widget.");
    elm_shutdown();
 }
 END_TEST
@@ -961,7 +962,7 @@ END_TEST
 START_TEST (wm_widget_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_free(NULL) == EINA_FALSE, "NULL parameter was deleted as Widget.");
+   ck_assert_msg(wm_widget_free(NULL) == false, "NULL parameter was deleted as Widget.");
    elm_shutdown();
 }
 END_TEST
@@ -1047,7 +1048,7 @@ START_TEST (wm_widget_list_free_test_p)
    Eina_Inlist *widget_list = NULL;
 
    widget_list = wm_widget_list_new(file);
-   ck_assert_msg(wm_widget_list_free(widget_list) == EINA_TRUE, "widget list wasn't deleted.");
+   ck_assert_msg(wm_widget_list_free(widget_list) == true, "widget list wasn't deleted.");
    elm_shutdown();
 }
 END_TEST
@@ -1070,7 +1071,7 @@ END_TEST
 START_TEST (wm_widget_list_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_list_free(NULL) == EINA_FALSE, "NULL parameter was deleted as widget list.");
+   ck_assert_msg(wm_widget_list_free(NULL) == false, "NULL parameter was deleted as widget list.");
    elm_shutdown();
 }
 END_TEST

@@ -271,6 +271,19 @@ group { name: "elm/radio/base/test";
          }
       }
    }
+   programs {
+      program { name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,radio,toggle" "";
+      }
+      program { name: "radio_on";
+         signal: "elm,state,radio,on";
+         source: "elm";
+         action:  STATE_SET "visible" 0.0;
+         target: "bg";
+      }
+   }
 }
 group { name: "elm/radio/notbase/test";
    images {
