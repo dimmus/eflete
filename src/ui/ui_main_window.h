@@ -56,10 +56,11 @@ ui_main_window_add(App_Data *ap);
  * Delete main window object for Edje tool development.
  *
  * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
-void
+Eina_Bool
 ui_main_window_del(App_Data *ap);
 
 /**
@@ -78,16 +79,18 @@ ui_panes_add(App_Data *ap);
  * Start process load settings for panes.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_settings_load();
 
 /**
  * Start process save settings for panes.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_settings_save();
 
 /**
@@ -109,9 +112,10 @@ ui_menu_add(App_Data *ap);
  * @param h A main window new height value
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
-ui_resize_pans(int w, int h);
+Eina_Bool
+ui_resize_panes(int w, int h);
 
 /**
  * Show panes element on main window
@@ -119,8 +123,9 @@ ui_resize_pans(int w, int h);
  * @param ap The App_Data structure pointer.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_show(App_Data *ap);
 
 /**
@@ -129,8 +134,9 @@ ui_panes_show(App_Data *ap);
  * @param ap The App_Data structure pointer.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_hide(App_Data *ap);
 
 /**

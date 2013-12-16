@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <check.h>
@@ -26,21 +26,20 @@
  * @objective Positive test case:
  *
  * @procedure
- * @step 1 Create parameter
- * @step 2 Add parameter to function
- * @param size Size of the memory block, in bites.
+ * @step 1 Allocate memory block for 1024 ints using mem_malloc
+ * @step 2 Check returned pointer for NULL
+ * @step 3 Check if last element is accessible
+ * @param size Size of the memory block in bytes.
  *
- * @passcondition: should returned a pointer to the memory block allocated
+ * @passcondition: returned pointer to allocated memory block
  * @}
  */
-START_TEST (mem_malloc_test)
+START_TEST (mem_malloc_test_p)
 {
-   size_t size = 1024;
-   int *mm = mem_malloc(size);
-   if(mm == NULL)
-   {
+   int *mm = mem_malloc(sizeof(int)*1024);
+   if (mm == NULL)
       ck_abort_msg("failure: cannot return pointer to the memory block allocated");
-   }
+   mm[1023] = 42;
    free(mm);
 }
 END_TEST
@@ -51,22 +50,23 @@ END_TEST
  * @objective Positive test case:
  *
  * @procedure
- * @step 1 Create parameters
- * @step 2 Add parameters to function
+ * @step 1 Allocate memory block for 1024 ints using mem_calloc
+ * @step 2 Check returned pointer for NULL
+ * @step 3 Check if all elements are initialized with 0
  * @param num Number of a elements to allocate
  * @param size Size of each element.
  *
- * @passcondition: should return a pointer to the memory block allocated
+ * @passcondition: returned pointer to allocated memory block. All elements == 0
  */
-START_TEST (mem_calloc_test)
+START_TEST (mem_calloc_test_p)
 {
-   size_t num = 1;
-   size_t size = sizeof(1025);
-   int *mc = mem_calloc(num, size);
-   if(mc == NULL)
-   {
+   int *mc = mem_calloc(1024, sizeof(int));
+   int i;
+   if (mc == NULL)
       ck_abort_msg("failure: cannot return pointer to the memory block allocated");
-   }
+   for (i = 0; i < 1024; i++)
+      if (mc[i] != 0)
+         ck_abort_msg("failure: not all elements == 0");
    free(mc);
 }
 END_TEST
@@ -89,8 +89,8 @@ END_TEST
 Suite* test_suite (void) {
    Suite *suite = suite_create("alloc_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, mem_malloc_test);
-   tcase_add_test(tcase, mem_calloc_test);
+   tcase_add_test(tcase, mem_malloc_test_p);
+   tcase_add_test(tcase, mem_calloc_test_p);
    suite_add_tcase(suite, tcase);
    return suite;
 }

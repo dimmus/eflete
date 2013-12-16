@@ -165,13 +165,23 @@ ui_group_clicked(App_Data *ap, Group *group)
 Evas_Object *
 ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 {
-  Evas_Object *wd_list = NULL;
-  Evas_Object *prop = NULL;
-  char *name;
+   Evas_Object *wd_list = NULL;
+   Evas_Object *prop = NULL;
+   char *name;
+   if (!ap)
+     {
+        ERR("ap is NULL");
+        return NULL;
+     }
+   if (!ap->ws)
+     {
+        ERR("ap->ws is NULL");
+        return NULL;
+     }
 
-  prop = ui_block_property_get(ap);
+   prop = ui_block_property_get(ap);
 
-  if (selected)
+   if (selected)
      {
         if (eina_str_has_suffix(selected, ".edj"))
           {
@@ -217,8 +227,26 @@ ui_edc_load_done(App_Data* ap,
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
 
-   if (!ap) return NULL;
-
+   if (!ap)
+     {
+        ERR("ap is NULL");
+        return NULL;
+     }
+   if (!ap->ws)
+     {
+        ERR("ap->ws is NULL");
+        return NULL;
+     }
+   if (!project_name)
+     {
+        ERR("project_name is NULL");
+        return NULL;
+     }
+   if (!path_edc)
+     {
+        ERR("path_edc is NULL");
+        return NULL;
+     }
    prop = ui_block_property_get(ap);
 
    if (eina_str_has_suffix(path_edc, ".edc"))

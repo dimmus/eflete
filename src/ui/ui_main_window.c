@@ -32,9 +32,14 @@ _on_done(void *data,
    ui_main_window_del(ap);
 }
 
-void
+Eina_Bool
 ui_main_window_del(App_Data *ap)
 {
+   if (!ap)
+     {
+        ERR("ap is NULL");
+        return false;
+     }
    eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
@@ -42,6 +47,7 @@ ui_main_window_del(App_Data *ap)
    ws_free(ap->ws);
    demo_free(ap->demo);
    elm_exit();
+   return true;
 }
 
 static void
@@ -52,7 +58,7 @@ _on_window_resize(void *data __UNUSED__,
 {
    int w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-   ui_resize_pans(w,h);
+   ui_resize_panes(w,h);
 }
 
 static void
@@ -96,8 +102,11 @@ ui_main_window_add(App_Data *ap)
 {
    Evas_Object *win, *bg, *layout;
 
-   if (!ap) return false;
-
+   if (!ap)
+     {
+        ERR("ap is NULL");
+        return EINA_FALSE;
+     }
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
 

@@ -14,78 +14,404 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include <check.h>
 #include "ui_signal_list.h"
+#include "common_macro.h"
 
 /**
- * @addtogroup ui_signal_list
+ * @addtogroup ui_signal_list_add_test
  * @{
- * @objective Positive test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 created widget Window
  *
  * @procedure
- * @step 1 Create Evas_Object parent
- * @step 2 Add object to _add() function
- * @step 3 Create Evas_Object as signal list
- * @step 4 Create Group object
- * @step 5 Add list and group to _data_set() function
+ * @step 1 Call function ui_signal_list_add(window).
+ * @step 2 Check returned value.
  *
- * @passcondition: new 'signal list' widget handle should return _list_add() and EINA_TRUE from _data_set() function
+ * @passcondition not NULL pointer returned
  * @}
  */
-START_TEST (ui_signal_test1)
+START_TEST (ui_signal_list_add_test_p)
 {
    elm_init(0,0);
-   Evas_Object *par, *list;
-   par = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   list = ui_signal_list_add(par);
-   if (!list)
-   {
-      ck_abort_msg("failure: cannot create signal list");
-   }
-   Evas *e = evas_new();
-   Evas_Object *obj = edje_edit_object_add(e);
-   edje_object_file_set(obj, "./test_ui_signal_list/data/check.edj", "elm/check/base/defaul");
-   const char *grname = "defaul";
-   const char *full_grname = "elm/check/base/defaul";
-   Group *group = wm_group_add(grname, full_grname);
-   group->obj = obj;
-   if (!ui_signal_list_data_set(list, group))
-   {
-      ck_abort_msg("failure: cannot set data of signal to signal list");
-   }
+   Evas_Object *win;
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   ck_assert_msg(ui_signal_list_add(win) != NULL, "Signal List can't be created.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_add_test
+ * @{
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_add(NULL).
+ * @step 2 Check returned value.
+ *
+ * @passcondition NULL pointer returned
+ * @}
+ */
+START_TEST (ui_signal_list_add_test_n)
+{
+   elm_init(0,0);
+   ck_assert_msg(ui_signal_list_add(NULL) == NULL, "Signal List created with parent NULL.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 Group filled with data. (group contain programs and signals)
+ * @step 4 created Signal List
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, group).
+ * @step 2 Check returned value.
+ *
+ * @passcondition true returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_p1)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL, *gl_signals = NULL;
+   Evas *e = NULL;
+   Group *group = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/base/def";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   wm_group_data_load(group, e, edj);
+   gl_signals = ui_signal_list_add(win);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, group) == true, "Signal List couldn't set data.");
+
    wm_group_free(group);
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_signal_list
+ * @addtogroup ui_signal_list_data_set_test
  * @{
- * @objective Negative test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 Group filled with data. (group doesn't contain any programs and signals)
+ * @step 4 created Signal List
  *
  * @procedure
- * @step 1 Call to functions NULL objects
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, group).
+ * @step 2 Check returned value.
  *
- * @passcondition:  EINA_FALSE should return from functions
+ * @passcondition true returned
  * @}
  */
-START_TEST (ui_signal_test2)
+START_TEST (ui_signal_list_data_set_test_p2)
 {
    elm_init(0,0);
-   Evas_Object *par, *list;
-   par = NULL;
-   list = ui_signal_list_add(par);
-   if (list)
-   {
-      ck_abort_msg("failure: cannot create signal list from NULL parent");
-   }
-   if (ui_signal_list_data_set(list, NULL))
-   {
-      ck_abort_msg("failure: cannot set data signal to NULL signal list");
-   }
+   Evas_Object *win = NULL, *gl_signals = NULL;
+   Evas *e = NULL;
+   Group *group = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/notbase/test";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   wm_group_data_load(group, e, edj);
+   gl_signals = ui_signal_list_add(win);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, group) == true, "Signal List couldn't set data.");
+
+   wm_group_free(group);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 Group filled with data.
+ * @step 4 created Signal List.
+ * @step 5 Signal List filled with data already.
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, group) with same group.
+ * @step 2 Check returned value.
+ *
+ * @passcondition true returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_p3)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL, *gl_signals = NULL;
+   Evas *e = NULL;
+   Group *group = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/base/def";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   wm_group_data_load(group, e, edj);
+   gl_signals = ui_signal_list_add(win);
+   ui_signal_list_data_set(gl_signals, group);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, group) == true, "Signal List couldn't set data.");
+
+   wm_group_free(group);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 Group filled with data.
+ * @step 4 another Group. (group doesn't contain any programs or signals)
+ * @step 5 created Signal List.
+ * @step 6 Signal List filled with data already.
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, another_group) with another group (that is without any programs or signals).
+ * @step 2 Check returned value.
+ *
+ * @passcondition true returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_p4)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL, *gl_signals = NULL;
+   Evas *e = NULL;
+   Group *group = NULL, *another_group = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/base/def";
+   const char *another_group_name = "default";
+   const char *another_full_group_name = "elm/radio/base/test";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   wm_group_data_load(group, e, edj);
+   another_group = wm_group_add(another_group_name, another_full_group_name);
+   wm_group_data_load(another_group, e, edj);
+   gl_signals = ui_signal_list_add(win);
+   ui_signal_list_data_set(gl_signals, group);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, another_group) == true, "Signal List couldn't set data.");
+
+   wm_group_free(group);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 Group filled with data. (group contain programs and signals)
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(NULL, group).
+ * @step 2 Check returned value.
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_n1)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL;
+   Evas *e = NULL;
+   Group *group = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/base/def";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   wm_group_data_load(group, e, edj);
+
+   ck_assert_msg(ui_signal_list_data_set(NULL, group) == false, "Signal List set data successfull.");
+
+   wm_group_free(group);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 created Signal List
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, NULL).
+ * @step 2 Check returned value.
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_n2)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL, *gl_signals = NULL;
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   gl_signals = ui_signal_list_add(win);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, NULL) == false, "Signal List set data successfull.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(NULL, NULL).
+ * @step 2 Check returned value.
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_n3)
+{
+   elm_init(0,0);
+   ck_assert_msg(ui_signal_list_data_set(NULL, NULL) == false, "Signal List set data successfull.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 empty Group
+ * @step 4 created Signal List
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, group).
+ * @step 2 Check returned value.
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_n4)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL;
+   Evas *e = NULL;
+   Group *group = NULL;
+   Evas_Object *gl_signals = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/base/def";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   gl_signals = ui_signal_list_add(win);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, group) == false, "Signal List set data successfull.");
+
+   wm_group_free(group);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_signal_list_data_set_test
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized elm.
+ * @step 2 created Window.
+ * @step 3 Group filled with data.
+ * @step 4 another empty Group.
+ * @step 5 created Signal List.
+ * @step 6 Signal List filled with data already.
+ *
+ * @procedure
+ * @step 1 Call function ui_signal_list_data_set(gl_signals, another_group) with another empty group.
+ * @step 2 Check returned value.
+ *
+ * @passcondition false returned
+ * @}
+ */
+START_TEST (ui_signal_list_data_set_test_n5)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL;
+   Evas *e = NULL;
+   Group *group = NULL, *another_group = NULL;
+   Evas_Object *gl_signals = NULL;
+   const char *edj = "./edj_build/radio.edj";
+   const char *group_name = "def";
+   const char *full_group_name = "elm/radio/base/def";
+   const char *another_group_name = "default";
+   const char *another_full_group_name = "elm/radio/base/test";
+
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   group = wm_group_add(group_name, full_group_name);
+   wm_group_data_load(group, e, edj);
+   another_group = wm_group_add(another_group_name, another_full_group_name);
+   gl_signals = ui_signal_list_add(win);
+   ui_signal_list_data_set(gl_signals, group);
+   ck_assert_msg(ui_signal_list_data_set(gl_signals, another_group) == false, "Signal List set data successfull.");
+
+   wm_group_free(group);
    elm_shutdown();
 }
 END_TEST
@@ -93,7 +419,7 @@ END_TEST
 /**
  * @addtogroup test_suite
  * @{
- * @objective Creating above to the test case:
+ * @objective Creating above to the test case
  *
  * @procedure
  * @step 1 Create suite
@@ -105,10 +431,19 @@ END_TEST
  * @}
  */
 Suite* test_suite (void) {
-   Suite *suite = suite_create("uisignal_list_test");
+   Suite *suite = suite_create("ui_signal_list_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, ui_signal_test1);
-   tcase_add_test(tcase, ui_signal_test2);
+   tcase_add_test(tcase, ui_signal_list_add_test_p);
+   tcase_add_test(tcase, ui_signal_list_add_test_n);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_p1);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_p2);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_p3);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_p4);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_n1);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_n2);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_n3);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_n4);
+   tcase_add_test(tcase, ui_signal_list_data_set_test_n5);
    suite_add_tcase(suite, tcase);
    return suite;
 }
