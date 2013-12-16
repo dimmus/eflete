@@ -76,6 +76,14 @@ group { \
                to: "background"; \
             } \
          } \
+         description { state: "hidden" 0.0;\
+            inherit: "default" 0.0; \
+            visible: 0; \
+         } \
+         description { state: "displayed" 0.0;\
+            inherit: "default" 0.0; \
+            visible: 1; \
+         } \
       } \
    } /*parts*/ \
    programs { \
@@ -85,6 +93,7 @@ group { \
          source: ""; \
          action: STATE_SET "hidden" 0.0; \
          target: "background"; \
+         target: "pointer"; \
       } \
       program { \
          name: "ruler_background_show"; \
@@ -92,6 +101,7 @@ group { \
          source: ""; \
          action: STATE_SET "displayed" 0.0; \
          target: "background"; \
+         target: "pointer"; \
       } \
    } \
 }/*group*/
