@@ -1,5 +1,26 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "project_manager.h"
-#include "widget_manager.h"
+#include "alloc.h"
+
+static const char *dst_path;
 
 static void
 _on_copy_done_cb(void *data,
@@ -7,6 +28,19 @@ _on_copy_done_cb(void *data,
 {
    char *file_name = (char *)data;
    DBG("Copy file '%s' is finished!", file_name);
+   ecore_main_loop_quit();
+}
+
+static void
+_on_copy_done_save_as_cb(void *data,
+                 Eio_File *handler __UNUSED__)
+{
+   Project *project = (Project *)data;
+   if (project->edj)
+     free(project->edj);
+   project->edj = strdup(dst_path);
+   DBG("Copy file '%s' is finished!", dst_path);
+   dst_path = NULL;
    ecore_main_loop_quit();
 }
 
@@ -21,28 +55,47 @@ _on_copy_error_cb(void *data,
    ecore_main_loop_quit();
 }
 
+static void
+_on_unlink_done_cb(void *data,
+                   Eio_File *handler __UNUSED__)
+{
+   Project *project = (Project *)data;
+   if (project->edc) free(project->edc);
+   if (project->edj) free(project->edj);
+   if (project->image_directory) free(project->image_directory);
+   if (project->font_directory) free(project->font_directory);
+   if (project->sound_directory) free(project->sound_directory);
+   if (project->compiler) compiler_free(project->compiler);
+   if (project->decompiler) decompiler_free(project->decompiler);
+   INFO ("Closed project: %s", project->name);
+   free(project->name);
+   wm_widget_list_free(project->widgets);
+   DBG ("Project data is released.");
+   ecore_main_loop_quit();
+}
+
+static void
+_on_unlink_error_cb(void *data,
+                    Eio_File *handler __UNUSED__,
+                    int error)
+{
+   char *file_name = (char *)data;
+   ERR("Unlink file '%s' is failed. Something wrong has happend: %s\n",
+       file_name, strerror(error));
+   ecore_main_loop_quit();
+}
+
 Eina_Bool
 pm_free(Project *project)
 {
-   if(!project) return EINA_FALSE;
+   if (!project) return EINA_FALSE;
 
-   INFO ("Closed project: %s", project->name);
+   eio_file_unlink(project->swapfile, _on_unlink_done_cb,
+                   _on_unlink_error_cb, project);
+   ecore_main_loop_begin();
 
-   free(project->name);
-   free(project->edc);
-   free(project->edj);
-   free(project->swapfile);
-   free(project->image_directory);
-   free(project->font_directory);
-   free(project->sound_directory);
-   if (project->compiler) compiler_free(project->compiler);
-   if (project->decompiler) decompiler_free(project->decompiler);
-
-   wm_widget_list_free(project->widgets);
-
+   if (project->swapfile) free(project->swapfile);
    free(project);
-   DBG ("Project data is released.");
-
    return EINA_TRUE;
 }
 
@@ -56,7 +109,7 @@ pm_project_add(const char *name,
    Project *pro;
    char *tmp = NULL;
 
-   pro = calloc(1, sizeof(*pro));
+   pro = mem_calloc(1, sizeof(Project));
    pro->name = strdup(name);
    DBG ("Project name: '%s'", pro->name);
 
@@ -82,7 +135,7 @@ pm_project_add(const char *name,
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
-   pro->swapfile = calloc(strlen(pro->edj) + 6, sizeof(char));
+   pro->swapfile = mem_malloc((strlen(pro->edj) + 6) * sizeof(char));
    strcpy(pro->swapfile, pro->edj);
    strncat(pro->swapfile, ".swap", 5);
    DBG ("Path to swap file: '%s'", pro->swapfile);
@@ -105,6 +158,53 @@ pm_project_add(const char *name,
    return pro;
 }
 
+void
+pm_save_project_edc(Project *project)
+{
+   char **split;
+   const char *save_path;
+   int size;
+   char *save_dir;
+
+   if (!project)
+     {
+        WARN("Project is missing. Please open one.");
+        return;
+     }
+
+   /* compile project and create swapfile */
+   project->decompiler = decompile(project->edj, NULL);
+
+   if (project->decompiler)
+     {
+        split = eina_str_split(ecore_file_file_get(project->edj), ".", 2);
+
+        save_path = ecore_file_dir_get(project->edj);
+        size = strlen(save_path) + BUFF_MAX;
+        save_dir = mem_malloc(size * sizeof(char));
+        sprintf(save_dir, "%s/DECOMPILED", save_path);
+
+
+        if (!ecore_file_mkpath(save_dir))
+          {
+             NOTIFY_WARNING("Could not create dir with decompiled project. <br>"
+                          "Please check directory permissions or move edj file into another directory.");
+             free(save_dir);
+             free(split[0]);
+             free(split);
+             return;
+          }
+
+        eio_dir_move(split[0], save_dir, NULL, NULL,
+                     _on_copy_done_cb, _on_copy_error_cb, NULL);
+        ecore_main_loop_begin();
+
+        free(save_dir);
+        free(split[0]);
+        free(split);
+     }
+}
+
 Project *
 pm_open_project_edc(const char *name,
                     const char *path,
@@ -112,7 +212,7 @@ pm_open_project_edc(const char *name,
                     const char *font_directory,
                     const char *sound_directory)
 {
-   Project *project;
+   Project *project = NULL;
 
    if (!path) return NULL;
 
@@ -130,7 +230,7 @@ pm_open_project_edc(const char *name,
                                project->sound_directory);
    if (project->compiler)
      {
-        eio_file_copy(project->edj, project->swapfile, NULL,
+        eio_file_move(project->edj, project->swapfile, NULL,
                       _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
         ecore_main_loop_begin();
      }
@@ -167,9 +267,31 @@ Eina_Bool
 pm_save_project_edj(Project *project)
 {
    if (!project) return EINA_FALSE;
-
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
+   return EINA_TRUE;
+}
+
+Eina_Bool
+pm_save_as_project_edj(Project *project, const char *path)
+{
+   if (!project) return EINA_FALSE;
+   if (!path) return EINA_FALSE;
+
+   dst_path = path;
+   eio_file_copy(project->swapfile, path, NULL,
+                 _on_copy_done_save_as_cb, _on_copy_error_cb, project);
+   ecore_main_loop_begin();
+   return EINA_TRUE;
+}
+
+Eina_Bool
+pm_save_project_to_swap(Project *project)
+{
+   Evas_Object *edje_object;
+   GET_OBJ(project, edje_object)
+   if (!edje_object) return EINA_FALSE;
+   else edje_edit_save_all(edje_object);
    return EINA_TRUE;
 }

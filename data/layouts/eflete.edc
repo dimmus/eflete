@@ -1,0 +1,12 @@
+collections {
+   #include "edje/block.edc"
+   #include "edje/workspace.edc"
+   #include "edje/demospace.edc"
+   #include "edje/ruler.edc"
+   #include "edje/main_window.edc"
+   #include "edje/textstyle.edc"
+   #include "edje/groupspace.edc"
+   #include "edje/notify.edc"
+   #include "edje/colorclass_editor.edc"
+   #include "edje/prop_item.edc"
+}

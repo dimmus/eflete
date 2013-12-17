@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #ifndef UI_NOTIFY_HEADER_H
 #define UI_NOTIFY_HEADER_H
 
@@ -8,52 +27,45 @@
  * like warning or error's.
  */
 
-#include "efl_tet.h"
-
-#define BUFFSIZE 1024
+#include "eflete.h"
+#include "widget_macro.h"
 
 /**
- * @def NOTIFY_ERROR(obj, fmt, args ...)
- *
  * Show Error Notification with formated message
  *
  * @ingroup Notify
  */
-#define NOTIFY_ERROR(obj, fmt, ...) \
+#define NOTIFY_ERROR(fmt, ...) \
 { \
-	char *msg = calloc(BUFFSIZE, sizeof(char)); \
-	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
-	noti_error_show(obj, msg); \
+	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+	noti_error_show(win_layout_get(), msg); \
 	free(msg); \
 }
 
 /**
- * @def NOTIFY_WARNING(obj, fmt, args ...)
- *
  * Show Warning Notification with formated message
  *
  * @ingroup Notify
  */
-#define NOTIFY_WARNING(obj, fmt, ...) \
+#define NOTIFY_WARNING(fmt, ...) \
 { \
-	char *msg = calloc(BUFFSIZE, sizeof(char)); \
-	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
-	noti_warning_show(obj, msg); \
+	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+	noti_warning_show(win_layout_get(), msg); \
 	free(msg); \
 }
 
 /**
- * @def NOTIFY_INFO(obj, time, fmt, args ...)
- *
  * Show Information Notification with formated message
  *
  * @ingroup Notify
  */
-#define NOTIFY_INFO(obj, time, fmt, ...) \
+#define NOTIFY_INFO(time, fmt, ...) \
 { \
-	char *msg = calloc(BUFFSIZE, sizeof(char)); \
-	snprintf(msg, BUFFSIZE, fmt, ##__VA_ARGS__); \
-	noti_info_show(obj, msg, time); \
+	char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+	snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+	noti_info_show(win_layout_get(), msg, time); \
 	free(msg); \
 }
 

@@ -1,4 +1,24 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #include "edje_compile.h"
+#include "alloc.h"
 
 static void
 compiler_message_clear(Eina_Inlist *list)
@@ -31,12 +51,12 @@ exe_data(void *data __UNUSED__,
    ev = event;
    messages = (Eina_Inlist *)data;
 
-   if(ev->lines)
+   if (ev->lines)
      {
-        int i = 0;
+        int i;
         for (i = 0; ev->lines[i].line; i++)
           {
-             message = calloc(1, sizeof(*message));
+             message = mem_malloc(sizeof(*message));
              message->time = time(NULL);
              message->text = strdup(ev->lines[i].line);
              messages = eina_inlist_append(messages, EINA_INLIST_GET(message));
@@ -72,21 +92,19 @@ compile(const char *edc,
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   INFO("Start compile project: %s.", edc);
 
-   edjecc = calloc(1, sizeof(*edjecc));
+   edjecc = mem_malloc(sizeof(*edjecc));
    edjecc->messages = NULL;
    size = strlen(edc) + strlen(edj) +
       strlen(image_directory) + strlen(font_directory) +
       strlen(sound_directory) + BUFF_MAX;
-   edjecc->cmd = (char *)malloc(size);
+   edjecc->cmd = (char *)mem_malloc(size);
    sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
            image_directory, font_directory, sound_directory,
            edc, edj);
    INFO("Run command: %s", edjecc->cmd);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
-
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjecc->messages);
 
@@ -96,8 +114,13 @@ compile(const char *edc,
    return edjecc;
 }
 
+/*
+   TODO: Saving decompiled EDC into another folder.
+   edje_decc dont have ability to save EDC into another directory.
+   Waiting for edje patch.
+ */
 Edje_DeCC *
-decompile(char *edj, char *edc)
+decompile(const char *edj, const char *edc __UNUSED__)
 {
    Edje_DeCC *edjedecc = NULL;
    int size;
@@ -106,23 +129,14 @@ decompile(char *edj, char *edc)
       ECORE_EXE_PIPE_ERROR |
       ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
 
-   edjedecc = calloc(1, sizeof(*edjedecc));
+   edjedecc = mem_malloc(sizeof(*edjedecc));
    edjedecc->messages = NULL;
-   if (!edc)
-     {
-        size = strlen(edj) + BUFF_MAX;
-        edjedecc->cmd = (char *)malloc(size);
-        sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh -current-dir", edj);
-     }
-   else
-     {
-        size = strlen(edj) + strlen(edc) + BUFF_MAX;
-        edjedecc->cmd = (char *)malloc(size);
-        sprintf(edjedecc->cmd,
-                "edje_decc %s -main-out %s -no-build-sh -current-dir",
-                edj, edc);
-     }
 
+   size = strlen(edj) + BUFF_MAX;
+   edjedecc->cmd = (char *)mem_malloc(size);
+   sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh", edj);
+
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjedecc->messages);
 
@@ -137,7 +151,6 @@ edje_cc_free(struct _Edje_CC *edje_cc)
 {
    if (!edje_cc) return;
 
-   //if (edje_cc->exe) ecore_exe_free(edje_cc->exe);
    free(edje_cc->cmd);
    compiler_message_clear(edje_cc->messages);
    free(edje_cc);

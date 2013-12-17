@@ -1,3 +1,22 @@
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see .
+*/
+
 #ifndef UI_RULER_HEADER_H
 #define UI_RULER_HEADER_H
 
@@ -19,6 +38,20 @@
 
 /* Key for take data from ruler object */
 #define RULERDATAKEY "ruler_data_key"
+
+/* message id for communication between edj and c */
+
+#define MSG_ORIENT_HOR 1
+#define MSG_ORIENT_VER 2
+#define MSG_ZERO_POS 3
+#define MSG_ABS_STEP 4
+#define MSG_ABS_VISIBLE 5
+#define MSG_ABS_DASHES_STEP 6
+#define MSG_REL_VISIBLE 7
+#define MSG_REL_START 8
+#define MSG_REL_END 9
+#define MSG_REL_DASHES 10
+#define MSG_REDRAW 11
 
 /**
  * @enum _Orient
@@ -91,28 +124,6 @@ int
 ui_ruler_pointer_pos_get(Evas_Object *obj);
 
 /**
- * Set ruler pointer visible.
- *
- * @param obj Ruler object.
- * @param visible EINA_TRUE for show pointer, EINA_FALSE for hide pointer.
- *
- * @ingroup Ruler
- */
-void
-ui_ruler_pointer_visible_set(Evas_Object *obj, Eina_Bool visible);
-
-/**
- * Get visible status of pointer.
- *
- * @param obj Ruler object.
- * @return EINA_TRUE, if pointer visible, EINA_FALSE, if pointer invisible.
- *
- * @ingroup Ruler
- */
-Eina_Bool
-ui_ruler_pointer_visible_get(Evas_Object *obj);
-
-/**
  * Show ruler.
  *
  * @param obj Ruler object.
@@ -131,6 +142,17 @@ ui_ruler_show(Evas_Object *obj);
  */
 void
 ui_ruler_hide(Evas_Object *obj);
+
+/**
+ * Get visible status ruler object.
+ *
+ * @param obj Ruler object.
+ * @return EINA_TRUE if ruler visible, EINA_FALSE, if ruler hided.
+ *
+ * @ingroup Ruler
+ */
+Eina_Bool
+ui_ruler_visible_get(Evas_Object *obj);
 
 /**
  * Set relative scale position on ruler. It's need to link relative coordinates
@@ -180,26 +202,47 @@ int
 ui_ruler_scale_absolute_position_zero_get(Evas_Object *obj);
 
 /**
- * Set relative scale step.
+ * Set step between dashes in absolute scale.
  *
- * @param obj Ruler object.
- * @param step Step size for marks on relative scale. Value must be in range
- * from 0.1 to 1.0.
+ * @param obj The ruler object.
+ * @param step Step in pixels between dashes.
  *
  * @ingroup Ruler
  */
 void
-ui_ruler_step_relative_set(Evas_Object *obj, double step);
+ui_ruler_scale_absolute_dashes_step_set(Evas_Object *obj, int step);
+
+/**
+ * Get step between dahses in absolute scale.
+ *
+ * @param obj The ruler object.
+ * @return Coordinate in canvas.
+ *
+ * @ingroup Ruler
+ */
+int
+ui_ruler_scale_absolute_dashes_step_get(Evas_Object *obj);
+
+/**
+ * Set relative scale step.
+ *
+ * @param obj Ruler object.
+ * @param step Step size for marks on relative scale.
+ *
+ * @ingroup Ruler
+ */
+void
+ui_ruler_step_relative_set(Evas_Object *obj, int step);
 
 /**
  * Get relative scale step size.
  *
  * @param obj Ruler object.
- * @return Step sizef value in range from 0.1 to 1.0.
+ * @return Step sizef value.
  *
  * @ingroup Ruler
  */
-double
+int
 ui_ruler_step_relative_get(Evas_Object *obj);
 
 /**
@@ -247,5 +290,15 @@ ui_ruler_scale_absolute_visible_set(Evas_Object *obj, Eina_Bool enable);
  */
 Eina_Bool
 ui_ruler_scale_absolute_visible_get(Evas_Object *obj);
+
+/**
+ * Forces ruler redraw.
+ *
+ * @param obj Ruler object.
+ *
+ * @ingroup Ruler
+ */
+void
+ui_ruler_redraw(Evas_Object *obj);
 
 #endif /* UI_RULER_HEADER_H */

@@ -1,0 +1,40 @@
+EFL Edje Theme Editor
+*********************
+
+Requirements
+============
+
+Must have:
+ Elementary (1.8.0) with deps
+ Autotools
+ check (optional)
+
+Compiling and installing
+========================
+
+1) Install EFL libraries (http://www.enlightenment.org/p.php?p=download).
+2) Install Autotools.
+3) Build eflete from top source directory.
+
+Build and Install
+=================
+
+   ./autogen.sh
+   cd build
+   make
+   sudo make install
+
+To install program to specified directory use --prefix option on configure step:
+
+   ./autogen.sh --prefix=/full/path/to/some/dir
+
+Run tests
+=========
+
+   make check
+
+Run editor
+==========
+
+   eflete
+

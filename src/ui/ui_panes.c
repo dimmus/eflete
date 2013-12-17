@@ -1,4 +1,23 @@
-#include "ui_settings.h"
+/* Edje Theme Editor
+* Copyright (C) 2013 Samsung Electronics.
+*
+* This file is part of Edje Theme Editor.
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
+*/
+
+#include "settings.h"
 #include "ui_block.h"
 
 void
@@ -41,10 +60,29 @@ UI_Elements_Settings *us;
  */
 Evas_Object *panes;
 
+static void
+_add_state_button_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
+}
+
+static void
+_del_state_button_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_part_state_delete(ap);
+//   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
+}
+
 UI_Current_State_Panes *
 _ui_panes_current_state_struct_init(void)
 {
-   UI_Current_State_Panes *csp = calloc(1, sizeof(UI_Current_State_Panes));
+   UI_Current_State_Panes *csp = mem_malloc (sizeof(UI_Current_State_Panes));
    csp->panes_left.left_size = 0;
    csp->panes_left.right_size = 0;
 
@@ -149,8 +187,7 @@ _ui_panes_current_state_get(void)
    ui_csp->panes_center_down.right_size=
       (int)(ui_csp->panes_right.left_size*size_get);
 
-   if (_need_resize)
-     _ui_panes_current_state_set();
+   if (_need_resize) _ui_panes_current_state_set();
 }
 
 void
@@ -193,11 +230,11 @@ _unpress_cb(void *data __UNUSED__,
 
 static void
 _double_click_up_cb(void * data __UNUSED__,
-                     Evas_Object *obj,
-                     void *event_info __UNUSED__)
+                    Evas_Object *obj,
+                    void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
-   if (elm_panes_content_left_size_get(obj) > 0)
+   if (elm_panes_content_left_size_get(obj) > 0.0)
      {
         _size = elm_panes_content_left_size_get(obj);
         elm_panes_content_left_size_set(obj, 0.0);
@@ -212,11 +249,11 @@ _double_click_up_cb(void * data __UNUSED__,
 
 static void
 _double_click_left_panes_down_cb(void * data __UNUSED__,
-                       Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                                 Evas_Object *obj,
+                                 void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
-   if (elm_panes_content_right_size_get(obj) > 0)
+   if (elm_panes_content_right_size_get(obj) > 0.0)
      {
         _size = elm_panes_content_right_size_get(obj);
         elm_panes_content_right_size_set(obj, 0.0);
@@ -230,11 +267,11 @@ _double_click_left_panes_down_cb(void * data __UNUSED__,
 
 static void
 _double_click_center_panes_down_cb(void * data __UNUSED__,
-                       Evas_Object *obj,
-                       void *event_info __UNUSED__)
+                                   Evas_Object *obj,
+                                   void *event_info __UNUSED__)
 {
    static volatile double _size = 0.0;
-   if (elm_panes_content_right_size_get(obj) > 0)
+   if (elm_panes_content_right_size_get(obj) > 0.0)
      {
         _size=elm_panes_content_right_size_get(obj);
         elm_panes_content_right_size_set(obj, 0.0);
@@ -265,17 +302,19 @@ ui_panes_add(App_Data *ap)
    Evas_Object *block;
    Evas_Object *panes_left, *panes_left_hor, *panes_right;
    Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
+   Evas_Object *panel, *button, *icon;
 
    us = ui_element_settings_init();
    if (!us)
      {
-        NOTIFY_ERROR (ap->win, "ERROR: unable initialize settings module");
+        NOTIFY_ERROR ("ERROR: unable initialize settings module");
         return EINA_FALSE;
      }
    ui_csp =_ui_panes_current_state_struct_init();
 
    panes_left = elm_panes_add(ap->win_layout);
    if (panes_left == NULL) return EINA_FALSE;
+   elm_object_style_set(panes_left, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left,
@@ -284,9 +323,11 @@ ui_panes_add(App_Data *ap)
    panes = panes_left;
    elm_object_part_content_set(ap->win_layout, "swallow/panes", panes_left);
 
+
    panes_left_hor = elm_panes_add(ap->win_layout);
    if (panes_left_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_left_hor, EINA_TRUE);
+   elm_object_style_set(panes_left_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left_hor,
@@ -296,6 +337,7 @@ ui_panes_add(App_Data *ap)
 
    panes_right = elm_panes_add(ap->win_layout);
    if (panes_right == NULL) return EINA_FALSE;
+   elm_object_style_set(panes_right, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right,
@@ -306,6 +348,7 @@ ui_panes_add(App_Data *ap)
    panes_right_hor = elm_panes_add(ap->win_layout);
    if (panes_right_hor == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_right_hor, EINA_TRUE);
+   elm_object_style_set(panes_right_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right_hor,
@@ -316,6 +359,7 @@ ui_panes_add(App_Data *ap)
    panes_center = elm_panes_add(ap->win_layout);
    if (panes_center == NULL) return EINA_FALSE;
    elm_panes_horizontal_set(panes_center, EINA_TRUE);
+   elm_object_style_set(panes_center, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center,
@@ -325,6 +369,7 @@ ui_panes_add(App_Data *ap)
 
    panes_center_down = elm_panes_add(ap->win_layout);
    if (panes_center_down == NULL) return EINA_FALSE;
+   elm_object_style_set(panes_center_down, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center_down,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center_down,
@@ -358,10 +403,38 @@ ui_panes_add(App_Data *ap)
    block = ui_block_add(ap->win_layout);
    ui_block_title_text_set(block, "Part States");
    elm_object_part_content_set(panes_center_down, "left", block);
+
+   panel = elm_box_add(block);
+   elm_box_horizontal_set(panel, EINA_TRUE);
+   elm_box_align_set(panel, 1.0, 1.0);
+   button = elm_button_add (panel);
+   icon = elm_icon_add (button);
+   elm_icon_standard_set(icon, "apps");
+   elm_image_no_scale_set (icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add (button, "clicked", _add_state_button_cb, ap);
+   elm_object_style_set(button, DEFAULT_STYLE);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+
+   button = elm_button_add (panel);
+   icon = elm_icon_add (button);
+   elm_icon_standard_set(icon, "delete");
+   elm_image_no_scale_set (icon, EINA_TRUE);
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add (button, "clicked", _del_state_button_cb, ap);
+   evas_object_show(button);
+   elm_box_pack_end(panel, button);
+   elm_object_part_content_set(block, "elm.swallow.title", panel);
+   evas_object_show(panel);
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(block, "title,content,hide", "eflete");
+   elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_show(block);
    ap->block.bottom_left = block;
 
    block = ui_block_add(ap->win_layout);
+   ui_block_title_text_set(block, "Live View");
    elm_object_part_content_set(panes_center_down, "right", block);
    evas_object_show(block);
    ap->block.bottom_right = block;
@@ -400,7 +473,7 @@ void
 ui_panes_show(App_Data *ap)
 {
    elm_object_signal_emit(ap->win_layout, "window,panes,show", "");
- }
+}
 
 void
 ui_panes_hide(App_Data *ap)
