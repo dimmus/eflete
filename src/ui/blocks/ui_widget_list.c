@@ -373,8 +373,6 @@ _on_group_clicked_double(void *data,
    Eina_Inlist *parts;
    Group *_group;
    Part *_part;
-   Evas_Object *box = NULL;
-   Evas_Object *panel = NULL;
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
@@ -416,9 +414,7 @@ _on_group_clicked_double(void *data,
      }
    evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, nf);
 
-   ic = elm_icon_add(nf);
-   elm_icon_standard_set(ic, "arrow_left");
-   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   ICON_ADD(nf, ic, false, TET_IMG_PATH"icon-back.png");
 
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -426,54 +422,43 @@ _on_group_clicked_double(void *data,
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
    elm_object_style_set(bt, "eflete/default");
    evas_object_show(gl_parts);
-   box = elm_box_add(nf);
-   panel = elm_box_add(box);
-   elm_box_horizontal_set(panel, EINA_TRUE);
 
-   button = elm_button_add (panel);
-   ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "apps");
+   evas_object_smart_callback_add(_group->obj, "wl,part,added", _part_added, gl_parts);
+   elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+
+   BUTTON_ADD(nf, button, NULL)
+   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-add.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _add_part_unpress, _group);
-   elm_object_style_set(button, "eflete/default");
-   evas_object_show(button);
-   elm_box_pack_end(panel, button);
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
-   button = elm_button_add (panel);
-   ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "delete");
+   BUTTON_ADD(nf, button, NULL)
+   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-remove.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "delete,part", _delete_part_click, gl_parts);
    evas_object_smart_callback_add (button, "unpressed", _delete_part_unpress, _group);
-   elm_object_style_set(button, "eflete/default");
-   evas_object_show(button);
-   elm_box_pack_end(panel, button);
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
-   button = elm_button_add (panel);
-   ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "arrow_up");
+   BUTTON_ADD(nf, button, NULL)
+   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-slideup.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "move,part,up", _above_part_click, gl_parts);
    evas_object_smart_callback_add (button, "unpressed", _above_part_unpress, _group);
-   evas_object_show(button);
-   elm_object_style_set(button, "eflete/default");
-   elm_box_pack_end(panel, button);
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
-   button = elm_button_add (panel);
-   ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "arrow_down");
+   BUTTON_ADD(nf, button, NULL)
+   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-slidedown.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "move,part,down", _past_part_click, gl_parts);
    evas_object_smart_callback_add (button, "unpressed", _past_part_unpress, _group);
-   evas_object_show(button);
-   elm_object_style_set(button, "eflete/default");
-   elm_box_pack_end(panel, button);
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 
 
-   elm_box_pack_end(box, panel);
-   elm_box_pack_end(box, gl_parts);
 
-   evas_object_show(box);
-   evas_object_show(panel);
-
-   evas_object_smart_callback_add(_group->obj, "wl,part,added", _part_added, gl_parts);
-   elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, box, NULL);
 }
 
 static void
@@ -488,8 +473,6 @@ _on_widget_clicked_double(void *data,
    Widget *_widget;
    Style *_style;
    Group *_group;
-   Evas_Object *box = NULL;
-   Evas_Object *panel = NULL;
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
@@ -545,10 +528,7 @@ _on_widget_clicked_double(void *data,
           }
      }
 
-   ic = elm_icon_add(nf);
-   elm_icon_standard_set(ic, "arrow_left");
-   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-
+   ICON_ADD(nf, ic, false, TET_IMG_PATH"icon-back.png");
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
@@ -557,36 +537,26 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add(gl_styles, "clicked,double",
                                   _on_group_clicked_double, data);
 
-   box = elm_box_add(nf);
-   panel = elm_box_add(box);
-   elm_box_horizontal_set(panel, EINA_TRUE);
+   elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
 
-   button = elm_button_add (panel);
-   ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "apps");
-   elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);
-   evas_object_show(button);
-   elm_object_style_set(button, "eflete/default");
-   elm_box_pack_end(panel, button);
-
-   button = elm_button_add (panel);
-   ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "delete");
+   BUTTON_ADD(nf, button, NULL)
+   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-remove.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
-   evas_object_show(button);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(nf, "elm.swallow.bt0", button);
    /* temporary solution, while deleting aliases is not working. */
    elm_object_disabled_set(button, true);
    /*************************************************************/
-   elm_box_pack_end(panel, button);
 
-   elm_box_pack_end(box, panel);
-   elm_box_pack_end(box, gl_styles);
-
-   evas_object_show(box);
-   evas_object_show(panel);
+   BUTTON_ADD(nf, button, NULL)
+   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-add.png");
+   evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
+   elm_object_part_content_set(button, NULL, _icon);
+   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(nf, "elm.swallow.bt1", button);
    evas_object_show(gl_styles);
-   elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, box, NULL);
 }
 
 void
@@ -659,7 +629,7 @@ ui_widget_list_add(Evas_Object *parent)
    nf = elm_naviframe_add(parent);
    evas_object_size_hint_align_set(nf, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(nf, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_style_set(nf, "custom");
+   elm_object_style_set(nf, "eflete");
 
    gl_widgets = elm_genlist_add(nf);
    elm_object_style_set(gl_widgets, "eflete/default");

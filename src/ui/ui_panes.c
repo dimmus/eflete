@@ -435,19 +435,15 @@ ui_panes_add(App_Data *ap)
    elm_box_horizontal_set(panel, EINA_TRUE);
    elm_box_align_set(panel, 1.0, 1.0);
    button = elm_button_add (panel);
-   icon = elm_icon_add (button);
-   elm_icon_standard_set(icon, "apps");
-   elm_image_no_scale_set (icon, EINA_TRUE);
+   ICON_ADD(button, icon, EINA_TRUE, TET_IMG_PATH"icon-add.png");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add (button, "clicked", _add_state_button_cb, ap);
-   elm_object_style_set(button, DEFAULT_STYLE);
+   elm_object_style_set(button, "eflete/simple");
    evas_object_show(button);
    elm_box_pack_end(panel, button);
 
    button = elm_button_add (panel);
-   icon = elm_icon_add (button);
-   elm_icon_standard_set(icon, "delete");
-   elm_image_no_scale_set (icon, EINA_TRUE);
+   ICON_ADD(button, icon, EINA_TRUE, TET_IMG_PATH"icon-remove.png");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add (button, "clicked", _del_state_button_cb, ap);
    evas_object_show(button);
@@ -456,7 +452,7 @@ ui_panes_add(App_Data *ap)
    evas_object_show(panel);
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(block, "title,content,hide", "eflete");
-   elm_object_style_set(button, DEFAULT_STYLE);
+   elm_object_style_set(button, "eflete/simple");
    evas_object_show(block);
    ap->block.bottom_left = block;
 

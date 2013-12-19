@@ -120,6 +120,12 @@
    elm_image_no_scale_set(ICON, NOSCALE);\
    evas_object_show(ICON);
 
+#define ICON_ADD(PARENT, ICON, NOSCALE, FILE_NAME) \
+   ICON = elm_icon_add (PARENT);\
+   elm_image_file_set(ICON, FILE_NAME, NULL);\
+   elm_image_no_scale_set(ICON, NOSCALE);\
+   evas_object_show(ICON);
+
 #define HOVERSEL_ADD(PARENT, HOVERSEL, ISHORIZONTAL) \
    HOVERSEL = elm_hoversel_add(PARENT); \
    evas_object_size_hint_align_set(HOVERSEL, EVAS_HINT_FILL, EVAS_HINT_FILL); \

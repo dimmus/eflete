@@ -338,11 +338,9 @@ _reload_styles(App_Data *ap, Eina_Inlist *styles)
 {
    Evas_Object *gl_style = NULL;
    Elm_Object_Item *eoi = NULL;
-   Evas_Object *box = NULL;
 
    eoi = elm_naviframe_top_item_get(ui_block_widget_list_get(ap));
-   box = elm_object_item_part_content_get(eoi, NULL);
-   gl_style = eina_list_data_get(eina_list_last(elm_box_children_get(box)));
+   gl_style = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_style_data_reload(gl_style, styles);
 }
@@ -355,14 +353,10 @@ _style_from_ap_get(App_Data *ap)
    Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
    Elm_Object_Item *parent_eoi = NULL;
-   Evas_Object *box = NULL;
-   Eina_List *box_childs = NULL;
 
    nf = ui_block_widget_list_get(ap);
    eoi = elm_naviframe_top_item_get(nf);
-   box = elm_object_item_part_content_get(eoi, NULL);
-   box_childs = elm_box_children_get(box);
-   gl_style = eina_list_data_get(eina_list_last(box_childs));
+   gl_style = elm_object_item_part_content_get(eoi, NULL);
    eoi = elm_genlist_selected_item_get(gl_style);
    if (!eoi)
      {
