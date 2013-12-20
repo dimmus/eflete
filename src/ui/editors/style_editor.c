@@ -301,7 +301,7 @@ _on_bt_tag_add(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *box, *button, *style_label;
+   Evas_Object *box, *button;
    Evas_Object *item_tag = NULL;
    Evas_Object *item_value = NULL;
 
