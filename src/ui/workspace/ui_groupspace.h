@@ -54,7 +54,7 @@ ui_groupspace_add(Evas_Object *parent);
  * @ingroup Groupspace
  */
 void
-ui_groupspace_set(Workspace *ws, Project *project, Group *group);
+ui_groupspace_set(Evas_Object *ws, Project *project, Group *group);
 
 /**
  * Unset group data from groupspace object.
@@ -64,7 +64,7 @@ ui_groupspace_set(Workspace *ws, Project *project, Group *group);
  * @ingroup Groupspace
  */
 void
-ui_groupspace_unset (Evas_Object *obj);
+ui_groupspace_unset(Evas_Object *obj);
 
 /**
  * Update view parts on groupspace. Need to draw/redraw states of parts.
@@ -98,8 +98,8 @@ ui_groupspace_part_state_update(Evas_Object *groupspace,
  *
  * @ingroup Groupspace
  */
-void
-ui_groupspace_separate(Workspace *ws);
+Eina_Bool
+ui_groupspace_separate(Evas_Object *ws);
 
 /**
  * Get current group, that loaded into groupspace.

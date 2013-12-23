@@ -61,12 +61,17 @@ UI_Elements_Settings *us;
 Evas_Object *panes;
 
 static void
-_add_state_button_cb(void *data __UNUSED__,
+_add_state_button_cb(void *data,
                      Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
+   Evas_Object *groupspace = NULL;
+   if (!ap) return;
+   groupspace = ws_groupspace_get(ap->ws);
+   if (!groupspace) return;
+
+   evas_object_smart_callback_call(groupspace, "gs,state,add", NULL);
 }
 
 static void
@@ -76,7 +81,7 @@ _del_state_button_cb(void *data __UNUSED__,
 {
    App_Data *ap = (App_Data *)data;
    ui_part_state_delete(ap);
-//   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
+/*   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);*/
 }
 
 UI_Current_State_Panes *

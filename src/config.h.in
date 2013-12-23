@@ -28,6 +28,7 @@
 #define VERMIC @V_MIC@
 
 #define __UNUSED__ __attribute__((unused))
+#define DEPRECATED __attribute__((deprecated))
 
 #ifndef HAVE_PATH_MAX
 #define PATH_MAX 4096

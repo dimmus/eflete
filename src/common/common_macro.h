@@ -22,6 +22,7 @@
 
 #define true EINA_TRUE
 #define false EINA_FALSE
+#define RETURN_VOID
 
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \

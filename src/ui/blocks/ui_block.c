@@ -130,6 +130,12 @@ ui_block_widget_list_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
+ui_block_ws_set(App_Data *ap, Evas_Object *content)
+{
+   return ui_block_content_set(ap->block.canvas, content);
+}
+
+Eina_Bool
 ui_block_signal_list_set(App_Data *ap, Evas_Object *content)
 {
    return ui_block_content_set(ap->block.left_bottom, content);

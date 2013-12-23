@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef UI_WORKSPACE_HEADER_H
@@ -24,12 +24,12 @@
  * @defgroup Workspace Workspace
  * @ingroup EFL_TET
  *
- * A Workspace module create and control workspace area. It's contain buttons
- * for zoom operation with workspace, button to split part of showed group.
- * In workspace providet highlight element for show current part.
+ * A Workspace module create and control workspace area. It's contain control
+ * for zoom operation with workspace, button to switch separate mode view.
+ * Workspace provide highlight element for show and edit current part.
  * Also Workspace contain two rulers vertical and horizontal with functional
- * like most graphics editors. A popup menu can show by click right button on
- * workspace.
+ * like most graphics editors. A popup menu can show by mouse click right
+ * button on workspace object.
  */
 
 #include <Evas.h>
@@ -38,85 +38,111 @@
 #include "ui_ruler.h"
 
 /**
- * @typedef  Workspace
+ * Create a new Workspace object to the parent.
  *
- * Contain helper objects for manipulate workspace.
- * A canvas object get handle to an Evas canvas.
- */
-struct _Workspace
-{
-    Evas *canvas;
-    Evas_Object *bg;
-    double zoom_step;
-    Evas_Object *ruler_hor;
-    Evas_Object *ruler_ver;
-    Evas_Object *button_zoom_out;
-    Evas_Object *button_zoom_in;
-    Evas_Object *button_separate;
-    Evas_Object *scroller;
-    Evas_Object *groupspace;
-    struct {
-        Evas_Object *legend;
-        Eina_Bool visible;
-    } legend;
-    Eina_Bool separated;
-    struct {
-        Evas_Object *highlight;
-        Part *part; /* highlighting object */
-        Evas_Object *space_hl;
-    } highlight;
-};
-typedef struct _Workspace Workspace;
-
-/**
- * Set zoom step for workspace.
+ * @param parent The parent object.
  *
- * @param step Step size.
- * @param ws Workspace structure.
+ * @return The new object or NULL if it cannot be created.
  *
  * @ingroup Workspace
  */
-void
-ws_zoom_step_set (Workspace *ws, double step);
+Evas_Object *
+workspace_add(Evas_Object *parent);
 
 /**
- * Get zoom step for workspace.
+ * Set background image for workspace. If image file corrupt or have invalid
+ * image format or extenstion, then will be set default background image
+ * (transparency style). Background image will be tiled automaticaly.
  *
- * @param ws Workspace structure.
- * @return integer value of step size.
+ * @param obj The workspace object.
+ * @param path The path to the image file load from.
+ *
+ * @return EINA_TRUE, on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+ws_background_image_set(Evas_Object *obj, const char *path);
+
+/**
+ * Get the groupspace object, which loaded into workspace.
+ *
+ * @param obj The workspace object.
+ *
+ * @return The groupspace object or NULL if it didn't exist'.
+ *
+ * @ingroup Workspace
+ */
+Evas_Object *
+ws_groupspace_get(Evas_Object *obj);
+
+/**
+ * Set the groupspace object for workspace.
+ *
+ * @param obj The workspace object.
+ * @param gs The groupspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+ws_groupspace_set(Evas_Object *obj, Evas_Object *gs);
+
+/**
+ * Set zoom factor for view zoommed style in groupspace.
+ *
+ * @param obj The Workspace object.
+ * @param factor A factor for scale. Where value 1.0 = 100% scale (not zoom
+ * object). Minimum is 0.01, maximum is 20. (from 1% to 2000% zoom).
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+ws_zoom_factor_set(Evas_Object *obj, double factor);
+
+/**
+ * Get zoom factor from workspace.
+ *
+ * @param The workspace object.
+ *
+ * @return double value of zoom factor, or '0' if fail.
  *
  * @ingroup Workspace
  */
 double
-ws_zoom_step_get (Workspace *ws);
+ws_zoom_factor_get(Evas_Object *obj);
 
 /**
- * Add new workspace object to the given parent Elemntary (container) object
+  * Switch beetwen show or hide mode of legend in workspace object.
+  *
+ * @param obj The workspace object.
  *
- * @param parent The parent object.
- * @return pointer to an Workspace structure in wich store workspace elements.
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
  */
-Workspace *
-ws_add (Evas_Object *parent);
+Eina_Bool
+ws_legend_visible_set(Evas_Object *obj);
 
-/**
- *
- */
-void
-ws_free(Workspace *ws);
 
+
+/*-------------DEPRECATED functions-----------------------*/
 /**
  * Set highlight to selected part.
  *
- * @param ws Workspace structure.
+ * @param obj The workspace object.
  * @param part Evas_Object pointer to selected part object.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
  */
-void
-ui_object_highlight_set(Workspace *ws, Part *part);
+Eina_Bool
+ws_object_highlight_set(Evas_Object *obj, Part *part);
 
 /**
  * Move highlight object on workspace.
@@ -125,12 +151,15 @@ ui_object_highlight_set(Workspace *ws, Part *part);
  * That means that all handlers will be both resized and moved.
  * (There will be calculations of size and position of every handler)
  *
- * @param ws Workspace structure.
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
  */
-void
-ui_object_highlight_move(Workspace *ws);
+Eina_Bool
+ws_object_highlight_move(Evas_Object *obj);
 
 /**
  * Move highlight object on workspace.
@@ -139,67 +168,97 @@ ui_object_highlight_move(Workspace *ws);
  * That means that all handlers will be moved only.
  * (There will be calculations of position of every handler)
  *
- * @param ws Workspace structure.
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
  */
-void
-ui_object_highlight_handler_move(Workspace *ws);
+Eina_Bool
+ws_object_highlight_handler_move(Evas_Object *obj);
 
 /**
  * Hide highlight object.
  *
- * @param ws Workspace structure.
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
- */
-void
-ui_object_highlight_hide(Workspace *ws);
-
-/**
- * Delete highlight object's'.
- *
- * @param ws Workspace structure.
- *
- * @ingroup Workspace
- */
-void
-ui_object_highlight_del(Workspace *ws);
-
-/**
- * Zoom in loaded objects on workspace. With step 0.1.
- *
- * @param ws Workspace structure.
- * @return EINA_TRUE if zoom finished normal, or EINA_FALSE if zoom coefficient
- * more than 10 (1000%).
- *
- * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
  */
 Eina_Bool
-ui_ws_zoom_in(Workspace *ws);
+ws_object_highlight_hide(Evas_Object *obj);
 
 /**
- * Zoom out loaded objects on workspace. With step 0.1.
+ * Delete highlight object's.
  *
- * @param ws Workspace structure.
- * @return EINA_TRUE if zoom finished normal, or EINA_FALSE if zoom coefficient
- * less than 0.1 (10%).
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
  */
 Eina_Bool
-ui_ws_zoom_out(Workspace *ws);
+ws_object_highlight_del(Evas_Object *obj);
 
 /**
- * Show or hide legend element on workspace.
+ * Delete highlight object's.
  *
- * @param ws Workspace structure.
- * @param visible EINA_TRUE if need show legend, or EINA_FALSE need to hide
- * legend.
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
  */
-void
-ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible);
+Evas_Object *
+ws_space_hl_get(Evas_Object *obj);
+
+/**
+ * Delete highlight object's.
+ *
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ * @deprecated replace with new functional of smart highlight object.
+ */
+Evas_Object *
+ws_highlight_get(Evas_Object *obj);
+
+
+/**
+ * Get current separate state of workspace object.
+ *
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE if workspace in normal mode or EINA_TRUE if it separated.
+ *
+ * @ingroup Workspace
+ * @deprecated replace with functional of smart groupspace
+ */
+Eina_Bool
+ws_separated_mode_get(Evas_Object *obj);
+
+/**
+ * Set separate mode for workspace object.
+ *
+ * @param obj The workspace object.
+ * @param separated EINA_TRUE if workspace set to separate view, EINA_FALSE otherwise.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ * @deprecated replace with functional of smart groupspace
+ */
+Eina_Bool
+ws_separated_mode_set(Evas_Object *obj, Eina_Bool separated);
+
+/*-------------End of DEPRECATED functions------------------*/
+
 
 #endif /* UI_WORKSPACE_HEADER_H */

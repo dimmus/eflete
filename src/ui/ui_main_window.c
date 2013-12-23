@@ -39,7 +39,6 @@ ui_main_window_del(App_Data *ap)
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    pm_free(ap->project);
-   ws_free(ap->ws);
    demo_free(ap->demo);
    elm_exit();
 }
@@ -53,42 +52,6 @@ _on_window_resize(void *data __UNUSED__,
    int w, h;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    ui_resize_pans(w,h);
-}
-
-static void
-_add_part_dailog(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   part_dialog_add(ap->win_layout, ap->ws->groupspace);
-}
-
-static void
-_add_state_dailog(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   state_dialog_add(ap);
-}
-
-static void
-_del_style(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_style_delete(ap);
-}
-
-static void
-_add_style_dailog(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   style_dialog_add(ap);
 }
 
 Eina_Bool
@@ -152,23 +115,25 @@ ui_main_window_add(App_Data *ap)
      }
 
    ui_panes_settings_load(win);
-   ap->ws = ws_add(ap->block.canvas);
+   ap->ws = workspace_add(ap->block.canvas);
    if (!ap->ws)
      {
         ERR("Failrue create workspace in main window.");
         return false;
      }
+   ui_block_ws_set(ap, ap->ws);
+   evas_object_show(ap->ws);
    ap->demo = ui_demospace_add(ap->block.bottom_right);
-   ui_block_demo_view_set(ap, ap->demo->layout);
+   if (!ap->demo)
+     ERR("Failed create live view");
+   else
+     ui_block_demo_view_set(ap, ap->demo->layout);
 
-   evas_object_smart_callback_add(ap->ws->groupspace, "gs,dialog,add",
-                                  _add_part_dailog, ap);
-   evas_object_smart_callback_add(ap->ws->groupspace, "gs,state,add",
-                                  _add_state_dailog, ap);
-   evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
-                                  _add_style_dailog, ap);
-   evas_object_smart_callback_add(ap->block.left_top, "gs,style,del",
-                                  _del_style, ap);
+   if (!register_callbacks(ap))
+     {
+        CRIT("Failed register callbacks");
+        return false;
+     }
    evas_object_show(win);
 
    return true;

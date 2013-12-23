@@ -108,7 +108,8 @@ state_dialog_add(App_Data *ap)
         return NULL;
      }
 
-   groupspace = ap->ws->groupspace;
+   groupspace = ws_groupspace_get(ap->ws);
+   if (!groupspace) return NULL;
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
