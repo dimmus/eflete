@@ -150,6 +150,7 @@ group { name: "elm/popup/base/eflete";
          scale: 1;
          description { state: "default" 0.0;
             min: 400 30;
+            max: 400 30;
             fixed: 1 1;
             align: 0.5 0.0;
             visible: 0;
@@ -223,11 +224,10 @@ group { name: "elm/popup/base/eflete";
             fixed: 1 1;
             text {
               style: "popup_title_style";
-              min: 1 1;
+              min: 0 1;
             }
             color: 255 255 255 255;
             visible: 0;
-            align: 0.5 0.5;
             rel1 {
                relative: 1.0 0.0;
                to: "left_pad";

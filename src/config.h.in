@@ -22,6 +22,7 @@
 
 #define ETE_PACKAGE "@P_NAME@"
 #define ETE_PACKAGE_NAME ETE_PACKAGE
+#define SH_NAME "@SHORT_NAME@"
 #define VERSION "@P_VERSION@"
 #define VERMAJ @V_MAJ@
 #define VERMIN @V_MIN@
@@ -33,5 +34,8 @@
 #define PATH_MAX 4096
 #define BUFF_MAX 512
 #endif
+
+/* Eflete debug */
+#define HAVE_EFLETE_DEBUG @E_DEBUG@
 
 #endif /* CONFIG_H */

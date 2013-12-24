@@ -75,6 +75,7 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
   edje_edit_program_##param##_set(edje_edit_group, program_name,\
     edje_edit_program_##param##_get(template_edje_edit, program_name));
 
+   if (!group) return false;
    edje_edit = group->obj;
 
    if ((!edje_edit) || (!e))
@@ -295,7 +296,6 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
           }
         script_source = edje_edit_script_program_get(template_edje_edit,
                               program_name);
-        DBG("Program [%s] script[%s]", program_name, script_source);
         if (!script_source) continue;
         edje_edit_script_program_set(template_edje_edit,
                               program_name, script_source);
@@ -338,11 +338,9 @@ _reload_styles(App_Data *ap, Eina_Inlist *styles)
 {
    Evas_Object *gl_style = NULL;
    Elm_Object_Item *eoi = NULL;
-   Evas_Object *box = NULL;
 
    eoi = elm_naviframe_top_item_get(ui_block_widget_list_get(ap));
-   box = elm_object_item_part_content_get(eoi, NULL);
-   gl_style = eina_list_data_get(eina_list_last(elm_box_children_get(box)));
+   gl_style = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_style_data_reload(gl_style, styles);
 }
@@ -355,14 +353,10 @@ _style_from_ap_get(App_Data *ap)
    Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
    Elm_Object_Item *parent_eoi = NULL;
-   Evas_Object *box = NULL;
-   Eina_List *box_childs = NULL;
 
    nf = ui_block_widget_list_get(ap);
    eoi = elm_naviframe_top_item_get(nf);
-   box = elm_object_item_part_content_get(eoi, NULL);
-   box_childs = elm_box_children_get(box);
-   gl_style = eina_list_data_get(eina_list_last(box_childs));
+   gl_style = elm_object_item_part_content_get(eoi, NULL);
    eoi = elm_genlist_selected_item_get(gl_style);
    if (!eoi)
      {
@@ -432,17 +426,20 @@ _on_popup_btn_yes(void *data,
         eina_stringshare_del(class_name);\
 
 
-   template_file = eina_stringshare_add(TET_EDJ_PATH"template.edj");
    widget = _widget_from_ap_get(ap);
+   if (!widget) return;
 
+   template_file = eina_stringshare_add(TET_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
+
    if (eina_stringshare_strlen(style_name) <= 0)
      {
         NOTIFY_WARNING("Please type style name");
         STRING_CLEAR;
         return;
      }
+
    if (eina_stringshare_strlen(class_name) <= 0)
      {
         NOTIFY_WARNING("Please type class name");
@@ -465,6 +462,7 @@ _on_popup_btn_yes(void *data,
         NOTIFY_ERROR("Sorry, there are no templates for [%s]",
                      widget->widget_name);
         evas_object_smart_callback_call(obj, "close,popup", NULL);
+        STRING_CLEAR;
         return;
      }
 
@@ -480,6 +478,12 @@ _on_popup_btn_yes(void *data,
    EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, temporary_wdg)
      {
         if (!strcmp(temporary_wdg->widget_name, widget->widget_name)) break;
+     }
+
+   if (!temporary_wdg)
+     {
+        STRING_CLEAR;
+        return;
      }
 
    if (style_exist)
@@ -512,6 +516,13 @@ _on_popup_btn_yes(void *data,
                                                     Group);
         groups = eina_list_append(groups, full_name);
         style = wm_style_add(style_name, groups);
+        if (!style)
+          {
+             ERR("Failed create style");
+             STRING_CLEAR
+             return;
+          }
+
         group = EINA_INLIST_CONTAINER_GET(style->groups, Group);
         temporary_wdg->styles = eina_inlist_sorted_insert(temporary_wdg->styles,
                                    EINA_INLIST_GET(style), _sort_style_add_cb);
@@ -520,6 +531,12 @@ _on_popup_btn_yes(void *data,
    EINA_INLIST_FOREACH_SAFE(template_wdg->styles, l, template_style)
      {
         if (!strcmp(template_style->style_name, "default")) break;
+     }
+
+   if (!template_style)
+     {
+        STRING_CLEAR;
+        return;
      }
 
    EINA_INLIST_FOREACH_SAFE(template_style->groups, l, template_group)

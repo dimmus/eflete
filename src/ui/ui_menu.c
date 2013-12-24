@@ -23,7 +23,7 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "program_editor.h"
-#include "ui_highlight.h"
+#include "highlight.h" /*TODO: it need ro remove from here */
 #include "about_window.h"
 
 static int _menu_delayed_event = 0;
@@ -34,11 +34,16 @@ struct _menu_event
    enum {
       OPEN_EDC = 0,
       OPEN_EDJ,
-      SAVE_EDJ
+      SAVE_EDJ,
+      SAVE_AS_EDJ
    } type;
 };
 
 typedef struct _menu_event Menu_Event;
+
+/* TODO: Make delayed events from all menu callbacks. Otherwise menu will be
+ * blocked after any long operation on week machines
+ */
 
 static Eina_Bool
 _menu_event_handler_cb(void *data __UNUSED__,
@@ -56,6 +61,19 @@ _menu_event_handler_cb(void *data __UNUSED__,
          open_edj_file(menu_event->ap);
       break;
       case SAVE_EDJ:
+         if (pm_save_project_to_swap(menu_event->ap->project))
+           {
+              if (pm_save_project_edj(menu_event->ap->project))
+                {
+                   NOTIFY_INFO(3, "Theme saved: %s", menu_event->ap->project->edj)
+                   ui_demospace_set(menu_event->ap->demo, menu_event->ap->project,
+                                    menu_event->ap->project->current_group);
+                }
+              else
+                 NOTIFY_ERROR("Theme can not be saved: %s", menu_event->ap->project->edj);
+           }
+      break;
+      case SAVE_AS_EDJ:
          save_as_edj_file(menu_event->ap);
       break;
       }
@@ -230,27 +248,13 @@ _on_save_menu(void *data,
         ERR("Project coud'nt be save");
         return;
      }
-
+   menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = ap;
    if (!ap->project->edj)
-     {
-        menu_event = mem_malloc(sizeof(Menu_Event));
-        menu_event->ap = ap;
-        menu_event->type = SAVE_EDJ;
-        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-     }
+      menu_event->type = SAVE_AS_EDJ;
    else
-     {
-        if (pm_save_project_to_swap(ap->project))
-          {
-             if (pm_save_project_edj(ap->project))
-               {
-                  NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
-                     ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
-               }
-             else
-               NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
-          }
-     }
+      menu_event->type = SAVE_EDJ;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -260,7 +264,7 @@ _on_save_as_menu(void *data,
 {
    Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
    menu_event->ap = (App_Data *)data;
-   menu_event->type = SAVE_EDJ;
+   menu_event->type = SAVE_AS_EDJ;
    ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
@@ -349,9 +353,11 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   Eina_Bool visible;
    if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
-   hl_highlight_visible_set(ap->ws->highlight.space_hl,
-                !hl_highlight_visible_get(ap->ws->highlight.space_hl));
+   visible = evas_object_visible_get(ap->ws->highlight.space_hl);
+   if (visible) evas_object_hide(ap->ws->highlight.space_hl);
+   else evas_object_show(ap->ws->highlight.space_hl);
 }
 
 static void
@@ -396,8 +402,7 @@ _on_style_window_menu(void *data,
                       void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ap->project != NULL) style_editor_window_add(ap->win, ap->project);
-   else NOTIFY_ERROR("EDC/EDJ file is not loaded. \n");
+   style_editor_window_add(ap->project);
 }
 
 static void

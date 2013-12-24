@@ -44,7 +44,7 @@ styles {
       tag:  "tab" "\t";
    }
    style { name: "popup_title_style";
-      base: "font=Sans font_size=15 align=center color=#d6d6d6 wrap=mixed ellipsis=1.0";
+base: "font=Sans:style=Bold font_size=13 color=#d6d6d6 wrap=none text_class=label align=center ellipsis=1.0";
       tag:  "br" "\n";
       tag:  "tab" "\t";
    }

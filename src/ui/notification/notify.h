@@ -28,7 +28,7 @@
  * like warning or error's.
  */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "widget_macro.h"
 
 /**

@@ -101,6 +101,7 @@ Eina_Bool
 ui_main_window_add(App_Data *ap)
 {
    Evas_Object *win, *bg, *layout;
+
    if (!ap)
      {
         ERR("ap is NULL");
@@ -108,10 +109,11 @@ ui_main_window_add(App_Data *ap)
      }
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
+
    if (win == NULL)
      {
         ERR("Failrue create main window.");
-        return EINA_FALSE;
+        return false;
      }
    ap->win = win;
 
@@ -133,9 +135,24 @@ ui_main_window_add(App_Data *ap)
    elm_layout_file_set(layout, TET_EDJ, "ui/main_window");
    evas_object_show(layout);
    ap->win_layout = layout;
+   if (!ap->win_layout)
+     {
+        ERR("Failrue create layout main window.");
+        return false;
+     }
+
    ap->main_menu = ui_menu_add(ap);
-   if (!ap->main_menu) ERR("Failrue add menu on main window.");
-   if (!ui_panes_add(ap)) ERR("Failrue add panes on main window.");
+   if (!ap->main_menu)
+     {
+        ERR("Failrue add menu on main window.");
+        return false;
+     }
+
+   if (!ui_panes_add(ap))
+     {
+        ERR("Failrue add panes on main window.");
+        return false;
+     }
 
    if (!ecore_file_mkpath(TET_SETT_PATH))
      {
@@ -145,6 +162,11 @@ ui_main_window_add(App_Data *ap)
 
    ui_panes_settings_load(win);
    ap->ws = ws_add(ap->block.canvas);
+   if (!ap->ws)
+     {
+        ERR("Failrue create workspace in main window.");
+        return false;
+     }
    ap->demo = ui_demospace_add(ap->block.bottom_right);
    ui_block_demo_view_set(ap, ap->demo->layout);
 
@@ -158,5 +180,5 @@ ui_main_window_add(App_Data *ap)
                                   _del_style, ap);
    evas_object_show(win);
 
-   return EINA_TRUE;
+   return true;
 }

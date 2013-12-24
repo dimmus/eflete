@@ -27,7 +27,7 @@
  * This widget designed for show group and part details.
  */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "widget_manager.h"
 
 /**

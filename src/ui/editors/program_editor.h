@@ -29,7 +29,7 @@
  * all the programs used by the project.
  */
 
-#include "efl_ete.h"
+#include "eflete.h"
 #include "modal_window.h"
 #include "widget_macro.h"
 #include "string_macro.h"

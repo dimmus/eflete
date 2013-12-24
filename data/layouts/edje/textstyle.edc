@@ -15,9 +15,31 @@ group {
          type: SWALLOW;
          description {
             state: "default" 0.0;
+            visible: 0;
             rel1.to: "background";
             rel2.to: "background";
          }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "entry_show";
+         signal: "entry,show";
+         source: "eflete";
+         action: STATE_SET "visible" 0.0;
+         target: "entry";
+      }
+      program {
+         name: "entry_hide";
+         signal: "entry,hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "entry";
       }
    }
 }

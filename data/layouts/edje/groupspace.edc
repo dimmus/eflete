@@ -253,7 +253,7 @@ group {
       program {
          name: "bg_hide";
          signal: "bg,hide";
-         source: "";
+         source: "eflete";
          action: STATE_SET "hidden" 0.0;
          target: "bg";
          target: "base";
@@ -262,7 +262,7 @@ group {
       program {
          name: "bg_show";
          signal: "bg,show";
-         source: "";
+         source: "eflete";
          action: STATE_SET "displayed" 0.0;
          target: "bg";
          target: "base";

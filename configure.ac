@@ -1,7 +1,8 @@
 m4_define([v_maj], [0])
-m4_define([v_min], [0])
-m4_define([v_mic], [28])
+m4_define([v_min], [1])
+m4_define([v_mic], [0-alpha])
 m4_define([p_name], "EFL\ Edje\ Theme\ Editor")
+m4_define([short_name], "eflete")
 m4_define([project_version], [v_maj.v_min.v_mic])
 
 AC_INIT([eflete], [project_version])
@@ -13,6 +14,7 @@ AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
 
 AC_SUBST(P_NAME,"p_name")
+AC_SUBST(SHORT_NAME, "short_name")
 AC_SUBST(P_VERSION,"project_version")
 AC_SUBST(V_MAJ,"v_maj")
 AC_SUBST(V_MIN,"v_min")
@@ -53,8 +55,18 @@ if test "x${have_efreet}" = "xyes"; then
    PKG_CHECK_MODULES([EFREET], [efreet >= 1.8.0], [have_ver_efreet=""], [have_ver_efreet=" (version < 1.8.0)"])
 fi
 
-
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
+
+want_eflete_deubg="no"
+AC_ARG_ENABLE([debug],
+   [AC_HELP_STRING([--enable-debug], [enable eflete debug support. @<:@default=disabled@:>@])],
+   [want_eflete_debug=$enableval], [])
+
+if test "x$want_eflete_debug" = "xyes"; then
+   AC_SUBST(E_DEBUG, "1")
+else
+   AC_SUBST(E_DEBUG, "0")
+fi
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 

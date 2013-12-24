@@ -36,7 +36,6 @@
 #include "widget_manager.h"
 #include <Eio.h>
 #include "logger.h"
-#include "edit_common.h"
 
 /**
  * @struct _Project

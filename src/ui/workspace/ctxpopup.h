@@ -14,33 +14,29 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef UI_POPUP_HEADER_H
-#define UI_POPUP_HEADER_H
+#ifndef CTXPOPUP_H
+#define CTXPOPUP_H
 
 /**
- * @defgroup Popup Popup
+ * @defgroup UI_Ctxpopup UI Ctxpopup
  * @ingroup Workspace
  *
- * Popup module provide some method to manipulate popup object.
+ * Ctxpopup module provide some method to manipulate popup object.
  */
-#include "logger.h"
 #include "Elementary.h"
 #include "ui_workspace.h"
-#include "ui_groupspace.h"
-#include "efl_ete.h"
-#include "ui_highlight.h"
-
 
 /**
- * Show popup object on workspace.
+ * Show ctxpopup object on workspace. Ctxpopup will be deleted automatically
+ * after the object be hide.
  *
- * @param ws  An workspace structure pointer. Needed to create popup menu on it
+ * @param ws  An workspace structure pointer. Needed to create ctxpopup menu on it
  *
- * @ingroup Popup
+ * @ingroup UI_Ctxpopup
  */
 void
-ui_popup_show (Workspace *ws);
-#endif /* UI_POPUP_HEADER_H */
+ws_ctxpopup_show(Workspace *ws);
+#endif /* CTXPOPUP_H */

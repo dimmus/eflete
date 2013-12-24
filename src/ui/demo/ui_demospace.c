@@ -290,6 +290,8 @@ void
 demo_free(Demospace *demo)
 {
    if (demo) ui_demospace_unset(demo);
+   else return;
+
    if (demo->th)
      elm_theme_free(demo->th);
    free(demo);

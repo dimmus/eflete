@@ -32,10 +32,8 @@
  * serves for view information about current modal window.
  */
 
-#include "efl_ete.h"
-#include "widget_manager.h"
+#include "eflete.h"
 #include "widget_macro.h"
-#include <Elementary.h>
 
 /**
  * Adds an modal window to the window.
