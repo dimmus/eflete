@@ -19,9 +19,9 @@
 
 #include "ctxpopup.h"
 #include "common_macro.h"
-#include "ui_groupspace.h"
 #include "highlight.h"
 #include "logger.h"
+#include "eflete.h"
 
 static void
 _dismissed(void *data __UNUSED__,
@@ -75,13 +75,13 @@ _ctxpopup_item_zoom_out_cb(void *data,
 }
 
 static void
-_ctxpopup_item_separate_cb(void *data,
-                           Evas_Object *obj,
+_ctxpopup_item_separate_cb(void *data __UNUSED__,
+                           Evas_Object *obj __UNUSED__,
                            void *event_info __UNUSED__)
 {
-   Evas_Object *ws = (Evas_Object *)data;
-   ui_groupspace_separate(ws);
-   elm_ctxpopup_dismiss(obj);
+   //Evas_Object *ws = (Evas_Object *)data;
+   //ui_groupspace_separate(ws);
+   //elm_ctxpopup_dismiss(obj);
 }
 
 static void

@@ -20,7 +20,8 @@
 #ifndef HIGHLIGHT_H
 #define HIGHLIGHT_H
 
-#include "ui_groupspace.h"
+//#include "ui_groupspace.h"
+#include "Edje.h"
 
 /**
  * @defgroup Highlight Highlight

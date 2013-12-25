@@ -64,7 +64,7 @@ struct _App_Data
        Evas_Object *right_bottom;
        Evas_Object *canvas;
     } block;
-    Evas_Object *ws;
+    Evas_Object *workspace;
     Demospace *demo;
     Project *project;
 };

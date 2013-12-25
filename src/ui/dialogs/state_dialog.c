@@ -42,6 +42,7 @@ _ok_clicked(void *data,
             Evas_Object *obj,
             void *event_info __UNUSED__)
 {
+   /*
    Evas_Object *groupspace = (Evas_Object *)data;
    Evas_Object *glist = evas_object_data_del(obj, STADD_LIST_KEY);
    Part *part = ui_state_list_part_get(glist);
@@ -58,6 +59,7 @@ _ok_clicked(void *data,
    value = atof(str_value);
    if (ui_groupspace_part_state_add(groupspace, part, state_name, value))
      ui_states_list_data_set(glist, group, part);
+     */
 }
 
 static void
@@ -94,7 +96,7 @@ state_dialog_add(App_Data *ap)
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
 
-   if ((!ap) && (!ap->ws))
+   if ((!ap) && (!ap->workspace))
      {
         ERR("Failed create state dialog.");
         return NULL;
@@ -108,7 +110,7 @@ state_dialog_add(App_Data *ap)
         return NULL;
      }
 
-   groupspace = ws_groupspace_get(ap->ws);
+   groupspace = ws_groupspace_get(ap->workspace);
    if (!groupspace) return NULL;
 
    popup = elm_popup_add(ap->win_layout);

@@ -301,7 +301,7 @@ _on_bt_tag_add(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   Evas_Object *box, *button, *style_label;
+   Evas_Object *box, *button;
    Evas_Object *item_tag = NULL;
    Evas_Object *item_value = NULL;
 
@@ -309,6 +309,7 @@ _on_bt_tag_add(void *data,
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
+   Eina_Stringshare *buf;
 
    if (!glit)
      {
@@ -329,10 +330,10 @@ _on_bt_tag_add(void *data,
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_style_set(POPUP.dialog, "eflete");
-   elm_object_part_text_set(POPUP.dialog, "title,text", "Add tag to style");
+   buf = eina_stringshare_printf("Add tag to style: %s", style_name);
+   elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
    BOX_ADD(POPUP.dialog, box, false, false);
-   LABEL_ADD(box, style_label, style_name)
 
    ITEM_ADD(box, item_tag, "Tag name:")
    ENTRY_ADD(item_tag, POPUP.name, true, DEFAULT_STYLE);
@@ -349,7 +350,6 @@ _on_bt_tag_add(void *data,
                                   &accept_value);
    elm_object_part_content_set(item_value, "elm.swallow.content", POPUP.value);
 
-   elm_box_pack_end(box, style_label);
    elm_box_pack_end(box, item_tag);
    elm_box_pack_end(box, item_value);
    elm_object_content_set(POPUP.dialog, box);
@@ -366,6 +366,7 @@ _on_bt_tag_add(void *data,
    elm_object_part_content_set(POPUP.dialog, "button2", button);
 
    evas_object_show(POPUP.dialog);
+   eina_stringshare_del(buf);
 }
 
 static void

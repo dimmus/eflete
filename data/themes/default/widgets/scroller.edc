@@ -727,8 +727,8 @@ group { name: "elm/scroller/base/eflete/workspace";
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
 /* FIXME: make bg fo bar is area-dark.png */
@@ -885,7 +885,11 @@ group { name: "elm/scroller/base/eflete/workspace";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 0 1;
+            rel1 {
+               to_x: "ruler.swallow.ver";
+               to_y: "ruler.swallow.hor";
+               relative: 1.0 1.0;
+            }
             rel2 {
                relative: 0.0 0.0;
                to_x: "sb_vbar";

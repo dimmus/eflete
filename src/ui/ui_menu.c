@@ -292,9 +292,9 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_groupspace_separate(ap->ws);
+   //ui_groupspace_separate(ap->workspace);
    ui_menu_disable_set(ap->menu_hash, "Highlight space",
-                       ws_separated_mode_get(ap->ws));
+                       ws_separated_mode_get(ap->workspace));
 }
 
 static void
@@ -303,8 +303,8 @@ _on_view_zoom_in(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   double current_factor = ws_zoom_factor_get(ap->ws);
-   ws_zoom_factor_set(ap->ws, current_factor + 0.1);
+   double current_factor = ws_zoom_factor_get(ap->workspace);
+   ws_zoom_factor_set(ap->workspace, current_factor + 0.1);
 }
 
 static void
@@ -313,8 +313,8 @@ _on_view_zoom_out(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   double current_factor = ws_zoom_factor_get(ap->ws);
-   ws_zoom_factor_set(ap->ws, current_factor - 0.1);
+   double current_factor = ws_zoom_factor_get(ap->workspace);
+   ws_zoom_factor_set(ap->workspace, current_factor - 0.1);
 }
 
 static void
@@ -323,7 +323,7 @@ _on_view_ruler_hor(void *data,
                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws, "ruler,hide,hor", strdup("hor"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("hor"));
 }
 
 static void
@@ -332,7 +332,7 @@ _on_view_ruler_ver(void *data,
                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws, "ruler,hide,ver", strdup("ver"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,ver", strdup("ver"));
 }
 
 static void
@@ -341,7 +341,7 @@ _on_view_legend(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ws_legend_visible_set(ap->ws);
+   ws_legend_visible_set(ap->workspace);
 }
 
 static void
@@ -350,7 +350,7 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws, "highlight,visible", NULL);
+   evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
 }
 
 static void
@@ -359,7 +359,7 @@ _on_view_ruler_rel(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws, "ruler,hide,hor", strdup("rel"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("rel"));
 }
 
 static void
@@ -368,7 +368,7 @@ _on_view_ruler_abs(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws, "ruler,hide,hor", strdup("abs"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("abs"));
 }
 
 static void

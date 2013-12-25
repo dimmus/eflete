@@ -91,8 +91,6 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
      }
    edje_object_freeze(edje_edit_obj);
    group->obj = edje_edit_obj;
-   group->current_w = -1;
-   group->current_h = -1;
 
    parts_list = edje_edit_parts_list_get(group->obj);
    EINA_LIST_FOREACH(parts_list, l, name)

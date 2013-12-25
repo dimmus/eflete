@@ -77,17 +77,30 @@ Evas_Object *
 ws_groupspace_get(Evas_Object *obj);
 
 /**
- * Set the groupspace object for workspace.
+ * Set the editable object to the workspace.
  *
  * @param obj The workspace object.
- * @param gs The groupspace object.
+ * @param group The group was be editing.
+ * @param file Path to the file from been loaded the edje edit object.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
  */
 Eina_Bool
-ws_groupspace_set(Evas_Object *obj, Evas_Object *gs);
+workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file);
+
+/**
+ *
+ */
+void
+workspace_edit_object_unset(Evas_Object *obj);
+
+/**
+ *
+ */
+Eina_Bool
+workspace_edit_object_part_state_set(Evas_Object *obj, Part *part);
 
 /**
  * Set zoom factor for view zoommed style in groupspace.

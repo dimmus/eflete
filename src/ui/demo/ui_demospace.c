@@ -1,5 +1,5 @@
 #include "ui_demospace.h"
-#include "ui_groupspace.h"
+//#include "ui_groupspace.h"
 #include "notify.h"
 
 #define ZOOM_ON_CLICK(type, scale) \
@@ -18,6 +18,7 @@ ZOOM_ON_CLICK(half, 0.5)
 ZOOM_ON_CLICK(one, 1.0)
 ZOOM_ON_CLICK(two, 2.0)
 
+/*
 static Elm_Bubble_Pos
 _bubble_pos_get(const char *class)
 {
@@ -64,7 +65,9 @@ _panes_orient_get(const char *class)
 
    return horizontal;
 }
+*/
 
+/*
 static Evas_Object *
 _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
 {
@@ -145,6 +148,7 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
 
    return object;
 }
+*/
 
 static Demospace *
 _demo_init(void)
@@ -186,10 +190,10 @@ ui_demospace_add(Evas_Object *parent)
                                _button);
    evas_object_smart_callback_add(_button, "clicked", _zoom_two_on_click, demo);
 
-   demo->groupspace = ui_groupspace_add(_layout);
-   elm_object_part_content_set(_layout, "base/demospace/groupspace",
-                               demo->groupspace);
-   elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
+   //demo->groupspace = ui_groupspace_add(_layout);
+   //elm_object_part_content_set(_layout, "base/demospace/groupspace",
+   //                            demo->groupspace);
+   //elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
 
    return demo;
 }
@@ -200,14 +204,16 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
    if (group)
      {
         char **c = eina_str_split(group->full_group_name, "/", 4);
-        const char *widget = c[1], *type = c[2], *style = c[3];
+        const char /* *widget = c[1],  *type = c[2], */ *style = c[3];
 
+        /*
         if (!demo->object)
           {
              demo->object = _elm_widget_create(widget, type, demo->groupspace);
              elm_object_part_content_set(demo->groupspace, "groupspace", demo->object);
              evas_object_show(demo->groupspace);
           }
+          */
 
         if (!demo->object)
           {
@@ -235,7 +241,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
         WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
         return false;
      }
-   elm_layout_signal_emit (demo->groupspace, "groupspace,show", "");
+   //elm_layout_signal_emit (demo->groupspace, "groupspace,show", "");
    return true;
 }
 
@@ -243,8 +249,8 @@ Eina_Bool
 ui_demospace_unset(Demospace *demo)
 {
    if (!demo) return false;
-   elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
-   elm_object_part_content_unset(demo->groupspace, "groupspace");
+   //elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
+   //elm_object_part_content_unset(demo->groupspace, "groupspace");
    evas_object_del(demo->object);
    demo->object = NULL;
    return true;
@@ -255,34 +261,34 @@ ui_demospace_update(Demospace *demo)
 {
    if (!demo) return false;
 
-   const Evas_Object *part_bottom = edje_object_part_object_get(
-      elm_layout_edje_get(demo->groupspace), "bottom_pad");
-   const Evas_Object *part_top = edje_object_part_object_get(
-      elm_layout_edje_get(demo->groupspace), "top_pad");
+   //const Evas_Object *part_bottom = edje_object_part_object_get(
+   //   elm_layout_edje_get(demo->groupspace), "bottom_pad");
+   //const Evas_Object *part_top = edje_object_part_object_get(
+   //   elm_layout_edje_get(demo->groupspace), "top_pad");
 
-   elm_config_cursor_engine_only_set(false);
-   elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
-   elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
-   elm_config_cursor_engine_only_set(true);
+   //elm_config_cursor_engine_only_set(false);
+   //elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
+   //elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
+   //elm_config_cursor_engine_only_set(true);
 
-   int x, y, gw, gh, w, h;
-   double dx, dy;
-   evas_object_geometry_get(demo->groupspace, NULL, NULL, &w, &h);
-   evas_object_geometry_get(elm_object_parent_widget_get(demo->groupspace), NULL, NULL, &gw, &gh);
-   x = (int)((w - gw) / 2);
-   y = (int)((h - gh) / 2);
+   //int x, y, gw, gh, w, h;
+   //double dx, dy;
+   //evas_object_geometry_get(demo->groupspace, NULL, NULL, &w, &h);
+   //evas_object_geometry_get(elm_object_parent_widget_get(demo->groupspace), NULL, NULL, &gw, &gh);
+   //x = (int)((w - gw) / 2);
+   //y = (int)((h - gh) / 2);
    /*
     *  value 0.01 needed for groupspace offset from top left and bottom right
     *  corners workspace area
     */
-   dx = (double)x / w + 0.01;
-   dy = (double)y / h + 0.01;
-   edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
-                                   "top_pad", dx, dy);
-   dx = (double)(x + gw) / w - 0.01;
-   dy = (double)(y + gh) / h - 0.01;
-   edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
-                                   "bottom_pad", dx, dy);
+   //dx = (double)x / w + 0.01;
+   //dy = (double)y / h + 0.01;
+   //edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
+   //                                "top_pad", dx, dy);
+   //dx = (double)(x + gw) / w - 0.01;
+   //dy = (double)(y + gh) / h - 0.01;
+   //edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
+   //                                "bottom_pad", dx, dy);
    return true;
 }
 

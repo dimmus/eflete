@@ -64,7 +64,7 @@ struct _Prop_Data
       Evas_Object *visible;
       Evas_Object *min;
       Evas_Object *max;
-      Evas_Object *fixed; /* not implemented in yet the edje */
+      Evas_Object *fixed;
       Evas_Object *align;
       Evas_Object *aspect;
       Evas_Object *aspect_pref;
@@ -306,6 +306,8 @@ ui_property_group_set(Evas_Object *property, Group *group)
    if ((!property) || (!group)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
 
+   elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+
    pd->group = group;
 
    if (!pd_group.frame)
@@ -346,6 +348,7 @@ ui_property_group_unset(Evas_Object *property)
    PROP_DATA_GET()
    evas_object_hide(pd_group.frame);
    ui_property_part_unset(property);
+   elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 }
 #undef pd_group
 
@@ -393,6 +396,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
    type = edje_edit_part_type_get(pd->group->obj, part->name);
    prop_box = elm_object_content_get(property);
 
+   elm_box_unpack(prop_box, pd->prop_part.frame);
+   elm_box_unpack(prop_box, pd->prop_part_drag.frame);
+
    if (!pd_part.frame)
      {
         FRAME_ADD(property, part_frame, true, "Part property")
@@ -430,6 +436,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_mouse_events_update(pd_part.mouse, pd->group, part);
          prop_item_part_repeat_events_update(pd_part.repeat, pd->group, part);
          prop_item_part_clip_to_update(pd_part.clip_to, pd->group, part);
+         elm_box_pack_after(prop_box, pd_part.frame, pd->prop_group.frame);
          evas_object_show(pd_part.frame);
      }
    if (!pd_part_drag.frame)
@@ -468,6 +475,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         prop_item_part_drag_y_step_y_update(pd_part_drag.drag_y, pd->group, part);
         prop_item_part_drag_confine_update(pd_part_drag.confine, pd->group, part);
         prop_item_part_drag_event_update(pd_part_drag.event, pd->group, part);
+        elm_box_pack_after(prop_box, pd_part_drag.frame, pd_part.frame);
         evas_object_show(pd_part_drag.frame);
      }
 
@@ -477,11 +485,15 @@ ui_property_part_set(Evas_Object *property, Part *part)
 void
 ui_property_part_unset(Evas_Object *property)
 {
+   Evas_Object *prop_box;
    if (!property) return;
    PROP_DATA_GET()
 
+   prop_box = elm_object_content_get(property);
    evas_object_hide(pd->prop_part.frame);
    evas_object_hide(pd->prop_part_drag.frame);
+   elm_box_unpack(prop_box, pd->prop_part.frame);
+   elm_box_unpack(prop_box, pd->prop_part_drag.frame);
 
    ui_property_state_unset(property);
 }
@@ -521,8 +533,7 @@ ui_property_part_unset(Evas_Object *property)
 ITEM_1CHECK_STATE_CREATE("visible", state, visible)
 ITEM_2SPINNER_STATE_CREATE("min", state_min, w, h, int)
 ITEM_2SPINNER_STATE_CREATE("max", state_max, w, h, int)
-/* uncomment it after apply patch https://phab.enlightenment.org/D339 */
-/* ITEM_2CHECK_STATE_CREATE("fixed", state_fixed, w, h) */
+ITEM_2CHECK_STATE_CREATE("fixed", state_fixed, w, h)
 ITEM_2SPINNER_STATE_CREATE("align", state_align, x, y, double)
 ITEM_2SPINNER_STATE_CREATE("acpect", state_aspect, min, max, double)
 ITEM_1ENTRY_STATE_CREATE("color class", state, color_class, NULL)
@@ -562,12 +573,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
                           -1.0, 9999.0, 1.0, "%.0f",
                           "Maximum part width in pixels.",
                           "Maximum part height in pixels.");
-        /* uncomment it after apply patch https://phab.enlightenment.org/D339 */
-        /*
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd->group, part,
                            "This affects the minimum width calculation.",
                            "This affects the minimum height calculation.");
-        */
         pd_state.align = prop_item_state_align_x_y_add(box, pd->group, part,
                             0.0, 1.0, 0.1, "%1.2f",
                             "Part horizontal align: 0.0 = left  1.0 = right",
@@ -591,7 +599,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.visible);
         elm_box_pack_end(box, pd_state.min);
         elm_box_pack_end(box, pd_state.max);
-        /* elm_box_pack_end(box, pd_state.fixed); */
+        elm_box_pack_end(box, pd_state.fixed);
         elm_box_pack_end(box, pd_state.align);
         elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.aspect_pref);
@@ -615,8 +623,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_visible_update(pd_state.visible, pd->group, part);
         prop_item_state_min_w_h_update(pd_state.min, pd->group, part);
         prop_item_state_max_w_h_update(pd_state.max, pd->group, part);
-        /* uncomment it after apply patch https://phab.enlightenment.org/D339 */
-        /* prop_item_state_fixed_w_h_update(pd_state.fixed, pd->group, part); */
+        prop_item_state_fixed_w_h_update(pd_state.fixed, pd->group, part);
         prop_item_state_align_x_y_update(pd_state.align, pd->group, part);
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd->group, part);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd->group, part);
@@ -653,10 +660,12 @@ ui_property_state_unset(Evas_Object *property)
    PROP_DATA_GET()
 
    evas_object_hide(pd->prop_state.frame);
+   
    ui_property_state_rel1_unset(property);
    ui_property_state_rel2_unset(property);
    ui_property_state_text_unset(property);
    ui_property_state_image_unset(property);
+   ui_property_state_textblock_unset(property);
 }
 
 #define ITEM_2ENTRY_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \

@@ -111,9 +111,6 @@ struct _Group
     Evas_Object *obj;
    /** is it Group modificated **/
     Eina_Bool isModify;
-   /** Show/Hide a object on a workspace. **/
-    Eina_Bool show;
-    int current_w, current_h;
    /** Member 'parts' saved a list of a group parts data. **/
     Eina_Inlist *parts;
     type __type;

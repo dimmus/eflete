@@ -20,6 +20,7 @@
 #include <ui_workspace.h>
 #include "ctxpopup.h"
 #include "highlight.h"
+#include "groupedit.h"
 #include "eflete.h"
 
 /**
@@ -31,50 +32,50 @@
  *
  * @ingroup Workspace
  */
-
 struct _Ws_Smart_Data
 {
-    Evas_Object_Smart_Clipped_Data base;    /**< Needed for correct create and \
-                                              managment of Smart Object. \
-                                              In future clip rulers, for \
-                                              increase efficiency of EFLETE */
-    Evas_Object *clipper;         /**< Needed for processing common events,\
-                                       like mouse move or mouse click. */
-    Evas_Object *background;      /**< A backround image, \
-                                       which swallowed into scroller.*/
-    Evas_Object *ruler_hor;       /**< A ruler object, which created and \
-                                       managed with ui_ruler API. Horizontal.*/
-    Evas_Object *ruler_ver;       /**< A ruler object, which created and \
-                                       managed with ui_ruler API. Vertical.*/
-    Evas_Object *scroller;        /**< A scroler with 'eflete/workspace' style. \
-                                       Implement scrollable interface.*/
-    Evas_Object *groupspace;      /**< A groupspace smart object, \
-                                       needed for view and edit style.*/
-    Evas_Object *obj;             /**< A elementary layout object, \
-                                       which markup with workspace.edc file.*/
-    Evas_Object *button_separate; /**< A button object, which switch (on/off)\
-                                       separate mode of groupspace.*/
-    Eina_List *guides;            /**< A guides list. Not implemented yet*/
-    struct {
-         double factor;           /**< zoom factor, coefficient for view \
-                                       groupspace primitives with zoom.*/
-         Evas_Object *control;    /**< ui element, which provide change zoom \
-                                       factor. Markup in zoom_control.edc*/
-    } zoom;
-    struct {
+   Evas_Object_Smart_Clipped_Data base;    /**< Needed for correct create and \
+                                             managment of Smart Object. \
+                                             In future clip rulers, for \
+                                             increase efficiency of EFLETE */
+   Evas_Object *clipper;         /**< Needed for processing common events,\
+                                   like mouse move or mouse click. */
+   Evas_Object *background;      /**< A backround image, \
+                                   which swallowed into scroller.*/
+   Evas_Object *ruler_hor;       /**< A ruler object, which created and \
+                                   managed with ui_ruler API. Horizontal.*/
+   Evas_Object *ruler_ver;       /**< A ruler object, which created and \
+                                   managed with ui_ruler API. Vertical.*/
+   Evas_Object *scroller;        /**< A scroler with 'eflete/workspace' style. \
+                                   Implement scrollable interface.*/
+   Evas_Object *groupedit;       /**< A groupedit smart object, \
+                                   needed for view and edit style.*/
+   Evas_Object *obj;             /**< A elementary layout object, \
+                                   which markup with workspace.edc file.*/
+   Evas_Object *button_separate; /**< A button object, which switch (on/off)\
+                                   separate mode of groupedit.*/
+   Eina_List *guides;            /**< A guides list. Not implemented yet*/
+   struct {
+        double factor;           /**< zoom factor, coefficient for view \
+                                   groupedit primitives with zoom.*/
+        Evas_Object *control;    /**< ui element, which provide change zoom \
+                                   factor. Markup in zoom_control.edc*/
+   } zoom;
+   struct {
         Evas_Object *view;        /**< A elementary layout with special \
-                                       markup stored in legend.edc. TDD*/
+                                    markup stored in legend.edc. TDD*/
         Eina_Bool visible;        /**< Boolean flag for legend view visibly. */
-    } legend;
+   } legend;
+   Group *group;
 
-    struct {
-         DEPRECATED Evas_Object *highlight; /**< A highlight object */
-         DEPRECATED Part *part; /**< A pointer to part object, highlight edit*/
-         DEPRECATED  Evas_Object *space_hl; /**< A object area highlight*/
+   struct {
+        DEPRECATED Evas_Object *highlight; /**< A highlight object */
+        DEPRECATED Part *part; /**< A pointer to part object, highlight edit*/
+        DEPRECATED  Evas_Object *space_hl; /**< A object area highlight*/
 
-    } highlight;
-    DEPRECATED Eina_Bool separated; /**< Will remove, when groupspace \
-                                         will be smart */
+   } highlight;
+   DEPRECATED Eina_Bool separated; /**< Will remove, when groupedit \
+                                     will be smart */
 };
 typedef struct _Ws_Smart_Data Ws_Smart_Data;
 
@@ -152,7 +153,7 @@ _ws_ruler_hide_cb(void *data,
    free(data_info);
 }
 
-
+/*
 static void
 _ws_smart_ruler_move_cb(void *data __UNUSED__,
                Evas_Object *obj,
@@ -178,6 +179,7 @@ _ws_smart_ruler_move_cb(void *data __UNUSED__,
    ui_ruler_redraw(sd->ruler_hor);
    ui_ruler_redraw(sd->ruler_ver);
 }
+*/
 
 static void
 _ws_smart_mouse_click_cb(void *data ,
@@ -211,8 +213,8 @@ _separate_smart_on_click(void *data,
 {
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
-   ui_groupspace_separate(o);
-   /* FIXME:  when groupspace wiil be implement change call with right signal */
+   //ui_groupspace_separate(o);
+   /* FIXME:  when groupedit wiil be implement change call with right signal */
 }
 static void
 _sc_smart_resize_cb(void *data ,
@@ -221,13 +223,13 @@ _sc_smart_resize_cb(void *data ,
                     void *event_info __UNUSED__)
 {
    Evas_Object *o = (Evas_Object *)data;
-   Evas_Object *box = NULL;
+   //Evas_Object *box = NULL;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   if (!sd->groupspace) return;
-   box = ui_groupspace_box_get(sd->groupspace);
-   if (!box) return;
-   evas_object_smart_calculate(box);
+   //if (!sd->groupedit) return;
+   //box = ui_groupspace_box_get(sd->groupedit);
+   //if (!box) return;
+   //evas_object_smart_calculate(box);
 }
 
 
@@ -239,18 +241,17 @@ _sc_smart_move_cb(void *data,
    int bg_x, bg_y, gs_x, gs_y, gs_w, gs_h;
    int cross_size;
    Evas_Object *o = (Evas_Object *)data;
-   Group *group = NULL;
    Evas_Object *box = NULL;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
 
-   if (!sd->groupspace) return;
-   group = ui_groupspace_group_get(sd->groupspace);
-   if (!group) return;
-   box = ui_groupspace_box_get(sd->groupspace);
+   //if (!sd->groupedit) return;
+   //group = ui_groupspace_group_get(sd->groupedit);
+   if (!sd->group) return;
+   //box = ui_groupspace_box_get(sd->groupedit);
    evas_object_geometry_get(sd->ruler_hor, &cross_size, NULL, NULL, NULL);
    evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
-   evas_object_geometry_get(group->obj, &gs_x, &gs_y, &gs_w, &gs_h);
+   evas_object_geometry_get(sd->group->obj, &gs_x, &gs_y, &gs_w, &gs_h);
    cross_size -= bg_x;
    ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, gs_x - bg_x - cross_size);
    ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, gs_y - bg_y - cross_size);
@@ -289,11 +290,11 @@ static Eina_Bool
 _zoom_factor_update(Evas_Object *obj, double factor)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!sd->groupspace) return false;
+   //if (!sd->groupedit) return false;
    sd->zoom.factor = factor;
    /*
     * TODO:
-    * Create method, which update current zoom in groupspace and workspace
+    * Create method, which update current zoom in groupedit and workspace
     */
    return true;
 }
@@ -327,20 +328,23 @@ Evas_Object *
 ws_groupspace_get(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
-   return sd->groupspace;
+   //return sd->groupedit;
+      return NULL;
 }
 
+/*
 Eina_Bool
 ws_groupspace_set(Evas_Object *obj, Evas_Object *gs)
 {
    if (!gs) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   sd->groupspace = gs;
-   elm_object_content_set(sd->scroller, sd->groupspace);
+   sd->groupedit = gs;
+   elm_object_content_set(sd->scroller, sd->groupedit);
    evas_object_smart_callback_add(obj, "ruler,move",  _ws_smart_ruler_move_cb,
                                   NULL);
    return true;
 }
+*/
 
 Eina_Bool
 ws_legend_visible_set(Evas_Object *obj)
@@ -357,6 +361,7 @@ ws_legend_visible_set(Evas_Object *obj)
 
 
 /*-------------DEPRECATED functions-----------------------*/
+/*
 DEPRECATED static void
 _ws_mouse_move_cb(void *data, Evas *e,
                   Evas_Object *obj __UNUSED__,
@@ -369,8 +374,9 @@ _ws_mouse_move_cb(void *data, Evas *e,
    ui_ruler_pointer_pos_set(sd->ruler_hor, x);
    ui_ruler_pointer_pos_set(sd->ruler_ver, y);
 }
+*/
 
-
+/*
 DEPRECATED static void
 _on_resize(void *data,
             Evas_Object * obj __UNUSED__,
@@ -389,11 +395,13 @@ _on_resize(void *data,
                              part->curr_state, part->curr_state_value,
                              events->h);
 }
+*/
 
 
 DEPRECATED Eina_Bool
 ws_object_highlight_set(Evas_Object *obj, Part *part)
 {
+   /*
    int x, y, w, h;
    if (!part) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
@@ -436,11 +444,14 @@ ws_object_highlight_set(Evas_Object *obj, Part *part)
                                   _on_resize, obj);
 
    return true;
+   */
+   return true;
 }
 
 DEPRECATED Eina_Bool
 ws_object_highlight_move(Evas_Object *obj)
 {
+   /*
    int x, y, w, h;
 
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
@@ -456,11 +467,14 @@ ws_object_highlight_move(Evas_Object *obj)
    evas_object_resize(sd->highlight.space_hl, w, h);
    evas_object_move(sd->highlight.space_hl, x, y);
    return true;
+   */
+   return true;
 }
 
 DEPRECATED Eina_Bool
 ws_object_highlight_handler_move(Evas_Object *obj)
 {
+   /*
    int x, y, w, h;
 
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
@@ -476,22 +490,28 @@ ws_object_highlight_handler_move(Evas_Object *obj)
    evas_object_resize(sd->highlight.space_hl, w, h);
    evas_object_move(sd->highlight.space_hl, x, y);
    return true;
+   */
+   return true;
 }
 
 DEPRECATED Eina_Bool
 ws_object_highlight_hide(Evas_Object *obj)
 {
+   /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
    if (!sd->highlight.part) return false;
 
    evas_object_hide(sd->highlight.highlight);
    evas_object_hide(sd->highlight.space_hl);
    return true;
+   */
+   return true;
 }
 
 DEPRECATED Eina_Bool
 ws_object_highlight_del(Evas_Object *obj)
 {
+   /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
    if (!sd->highlight.part) return false;
 
@@ -502,32 +522,44 @@ ws_object_highlight_del(Evas_Object *obj)
    sd->highlight.part = NULL;
 
    return true;
+   */
+   return true;
 }
 
 DEPRECATED Evas_Object *
 ws_space_hl_get(Evas_Object *obj)
 {
+   /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
    return sd->highlight.space_hl;
+   */
+   return NULL;
 }
 
 DEPRECATED Evas_Object *
 ws_highlight_get(Evas_Object *obj)
 {
+   /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
    return sd->highlight.highlight;
+   */
+   return NULL;
 }
 
 DEPRECATED Eina_Bool
 ws_separated_mode_get(Evas_Object *obj)
 {
+   /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
    return sd->separated;
+   */
+   return false;
 }
 
 DEPRECATED Eina_Bool
 ws_separated_mode_set(Evas_Object *obj, Eina_Bool separated)
 {
+   /*
    Evas_Object *icon = NULL;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
@@ -547,6 +579,8 @@ ws_separated_mode_set(Evas_Object *obj, Eina_Bool separated)
    elm_object_part_content_set(sd->button_separate, NULL, icon);
 
    return true;
+   */
+   return true;
 }
 
 /*-------------End of DEPRECATED functions------------------*/
@@ -557,11 +591,19 @@ _workspace_smart_add(Evas_Object *o)
    /* Allocate memory for workspace smart data*/
    EVAS_SMART_DATA_ALLOC(o, Ws_Smart_Data)
 
+   _workspace_parent_sc->add(o);
+}
+
+static Eina_Bool
+_workspace_child_create(Evas_Object *o, Evas_Object *parent)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, priv, false);
+
    Evas *e = evas_object_evas_get(o);
    Evas_Object *icon = NULL;
 
    /* Load main markup layout into smart_data->obj*/
-   priv->obj = elm_layout_add(o);
+   priv->obj = elm_layout_add(parent);
    elm_layout_file_set(priv->obj, TET_EDJ, "elm/workspace/base/smart");
    evas_object_smart_member_add(priv->obj, o);
 
@@ -591,10 +633,10 @@ _workspace_smart_add(Evas_Object *o)
    evas_object_smart_member_add(priv->button_separate, o);
 
    /* create empty groupspace object */
-   priv->groupspace = ui_groupspace_add(o);
-   evas_object_smart_member_add(priv->groupspace, o);
-   evas_object_smart_callback_add(o, "ruler,move",  _ws_smart_ruler_move_cb,
-                                  NULL);
+   priv->groupedit = NULL;
+   //evas_object_smart_member_add(priv->groupedit, o);
+   //evas_object_smart_callback_add(o, "ruler,move",  _ws_smart_ruler_move_cb,
+   //                               NULL);
 
    /* using scroller in workspace, with special style*/
    priv->scroller = elm_scroller_add(priv->obj);
@@ -619,7 +661,7 @@ _workspace_smart_add(Evas_Object *o)
                                priv->clipper);
    elm_object_part_content_set(priv->scroller, "cross.swallow",
                                priv->button_separate);
-   elm_object_content_set(priv->scroller, priv->groupspace);
+   //elm_object_content_set(priv->scroller, priv->groupedit);
 
    /* create rulers, using ui_ruler.h API*/
    priv->ruler_hor = ui_ruler_add(priv->scroller);
@@ -644,16 +686,16 @@ _workspace_smart_add(Evas_Object *o)
    priv->legend.visible = false;
 
    /* TODO: DEPRECATED <- delete */
-   priv->highlight.highlight = NULL;
-   priv->highlight.part = NULL;
-   priv->highlight.space_hl = NULL;
+   //priv->highlight.highlight = NULL;
+   //priv->highlight.part = NULL;
+   //priv->highlight.space_hl = NULL;
 
    /*TODO: DEPRECATED <- delete */
-   priv->separated = true;
+   //priv->separated = true;
 
+   priv->group = NULL;
    priv->guides = NULL;
-   _workspace_parent_sc->add(o);
-   return;
+   return true;
 }
 
 
@@ -662,15 +704,15 @@ _workspace_smart_del(Evas_Object *o)
 {
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
+   evas_object_smart_member_del(sd->ruler_hor);
+   evas_object_smart_member_del(sd->ruler_ver);
    evas_object_smart_member_del(sd->obj);
    evas_object_smart_member_del(sd->background);
    evas_object_smart_member_del(sd->button_separate);
    evas_object_smart_member_del(sd->scroller);
-   evas_object_smart_member_del(sd->ruler_hor);
-   evas_object_smart_member_del(sd->ruler_ver);
    evas_object_smart_member_del(sd->clipper);
-   if (sd->groupspace)
-      evas_object_smart_member_del(sd->groupspace);
+   if (sd->groupedit)
+     evas_object_smart_member_del(sd->groupedit);
 
    _workspace_parent_sc->del(o);
 }
@@ -684,8 +726,8 @@ _workspace_smart_show(Evas_Object *o)
    evas_object_show(sd->scroller);
    evas_object_show(sd->clipper);
 
-   if (sd->groupspace)
-     evas_object_show(sd->groupspace);
+   if (sd->groupedit)
+     evas_object_show(sd->groupedit);
    if (sd->ruler_hor)
      ui_ruler_show(sd->ruler_hor);
    if (sd->ruler_ver)
@@ -700,15 +742,13 @@ _workspace_smart_hide(Evas_Object *o)
 {
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
+   if (sd->groupedit) evas_object_hide(sd->groupedit);
+   if (sd->ruler_hor) ui_ruler_hide(sd->ruler_hor);
+   if (sd->ruler_ver) ui_ruler_hide(sd->ruler_ver);
+
    evas_object_hide(sd->button_separate);
    evas_object_hide(sd->scroller);
    evas_object_hide(sd->clipper);
-   if (sd->groupspace)
-     evas_object_hide(sd->groupspace);
-   if (sd->ruler_hor)
-     ui_ruler_hide(sd->ruler_hor);
-   if (sd->ruler_ver)
-     ui_ruler_hide(sd->ruler_ver);
 
    _workspace_parent_sc->hide(o);
 }
@@ -718,12 +758,13 @@ _workspace_smart_resize(Evas_Object *o,
                             Evas_Coord w,
                             Evas_Coord h)
 {
-   Evas_Coord ow, oh;
+   Evas_Coord ox, oy, ow, oh;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
+   evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
    evas_object_resize(sd->obj, w, h);
+
    evas_object_smart_changed(o);
 }
 
@@ -731,6 +772,7 @@ _workspace_smart_resize(Evas_Object *o,
 static void
 _workspace_smart_set_user(Evas_Smart_Class *sc)
 {
+   //evas_object_smart_clipped_smart_set(sc);
    sc->add = _workspace_smart_add;
    sc->del = _workspace_smart_del;
    sc->show = _workspace_smart_show;
@@ -751,6 +793,50 @@ workspace_add(Evas_Object *parent)
 
    e = evas_object_evas_get(parent);
    obj = evas_object_smart_add(e, _workspace_smart_class_new());
-   return obj;
+   if (_workspace_child_create(obj, parent)) return obj;
+   else
+     {
+        evas_object_del(obj);
+        return NULL;
+     }
 }
 
+Eina_Bool
+workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if ((!group) || (!file)) return false;
+   if (!sd->groupedit) sd->groupedit = groupedit_add(sd->scroller);
+   else groupedit_edit_object_unset(sd->groupedit);
+   sd->group = group;
+   groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
+   groupedit_edit_object_set(sd->groupedit, group->obj, file);
+   elm_object_content_set(sd->scroller, sd->groupedit);
+   evas_object_show(sd->groupedit);
+
+   return true;
+}
+
+void
+workspace_edit_object_unset(Evas_Object *obj)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+
+   sd->group = NULL;
+   groupedit_edit_object_unset(sd->groupedit);
+   elm_object_content_unset(sd->scroller);
+   evas_object_del(sd->groupedit);
+   sd->groupedit = NULL;
+}
+
+Eina_Bool
+workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!part) return false;
+   return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
+                                               part->curr_state,
+                                               part->curr_state_value);
+}

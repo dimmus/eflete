@@ -181,14 +181,14 @@ part_dialog_add(Evas_Object *parent, Evas_Object *groupspace)
 {
    Evas_Object *box, *button;
    Evas_Object *popup, *bt_no;
-   Eina_Stringshare *title;
-   Group *group;
+   //Eina_Stringshare *title;
+   //Group *group;
 
-   group = ui_groupspace_group_get(groupspace);
+   //group = ui_groupspace_group_get(groupspace);
    popup = elm_popup_add(parent);
    elm_object_style_set(popup, "eflete");
-   title = eina_stringshare_printf("Add new part to group \"%s\"", group->group_name);
-   elm_object_part_text_set(popup, "title,text", title);
+   //title = eina_stringshare_printf("Add new part to group \"%s\"", group->group_name);
+   //elm_object_part_text_set(popup, "title,text", title);
 
    BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);
    ENTRY_ADD(popup, entry, EINA_TRUE, DEFAULT_STYLE);

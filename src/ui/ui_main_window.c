@@ -39,7 +39,10 @@ ui_main_window_del(App_Data *ap)
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    pm_free(ap->project);
+   /* FIXME: remove it from here */
    demo_free(ap->demo);
+   /* FIXME: when be implemented multi workspace feature, remove this line */
+   evas_object_del(ap->workspace);
    elm_exit();
 }
 
@@ -63,6 +66,7 @@ ui_main_window_add(App_Data *ap)
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
+   elm_win_autodel_set(win, true);
 
    if (win == NULL)
      {
@@ -85,6 +89,7 @@ ui_main_window_add(App_Data *ap)
    layout = elm_layout_add(win);
    evas_object_size_hint_weight_set(layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
    elm_win_resize_object_add(win, layout);
    elm_layout_file_set(layout, TET_EDJ, "ui/main_window");
    evas_object_show(layout);
@@ -115,14 +120,14 @@ ui_main_window_add(App_Data *ap)
      }
 
    ui_panes_settings_load(win);
-   ap->ws = workspace_add(ap->block.canvas);
-   if (!ap->ws)
+   ap->workspace = workspace_add(ap->block.canvas);
+   if (!ap->workspace)
      {
         ERR("Failrue create workspace in main window.");
         return false;
      }
-   ui_block_ws_set(ap, ap->ws);
-   evas_object_show(ap->ws);
+   ui_block_ws_set(ap, ap->workspace);
+   evas_object_show(ap->workspace);
    ap->demo = ui_demospace_add(ap->block.bottom_right);
    if (!ap->demo)
      ERR("Failed create live view");

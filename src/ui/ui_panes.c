@@ -68,7 +68,7 @@ _add_state_button_cb(void *data,
    App_Data *ap = (App_Data *)data;
    Evas_Object *groupspace = NULL;
    if (!ap) return;
-   groupspace = ws_groupspace_get(ap->ws);
+   //groupspace = ws_groupspace_get(ap->ws);
    if (!groupspace) return;
 
    evas_object_smart_callback_call(groupspace, "gs,state,add", NULL);

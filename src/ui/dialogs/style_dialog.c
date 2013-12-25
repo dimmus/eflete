@@ -492,7 +492,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
-   canvas = evas_object_evas_get(ap->ws);
+   canvas = evas_object_evas_get(ap->workspace);
    if (style_exist)
      {
         EINA_INLIST_FOREACH_SAFE(style_in_widget->groups, l, class_in_style)
