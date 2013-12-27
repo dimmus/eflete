@@ -298,6 +298,8 @@ _groupedit_smart_del(Evas_Object *o)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
+   eina_hash_free(sd->parts);
+
    evas_object_smart_member_del(sd->container);
    evas_object_smart_member_del(sd->handler_TL.obj);
    evas_object_smart_member_del(sd->handler_BR.obj);
@@ -374,8 +376,8 @@ _groupedit_smart_calculate(Evas_Object *o)
    evas_object_move(priv->handler_BR.obj, x + w - hrb_w, y + h - hrb_h);
 
    //Evas_Object *clipper = evas_object_smart_clipped_clipper_get(o);
-   evas_object_resize(priv->edit_obj, cw, ch);
-   evas_object_move(priv->edit_obj, x + htl_w, y + htl_h);
+   //evas_object_resize(priv->edit_obj, cw, ch);
+   //evas_object_move(priv->edit_obj, x + htl_w, y + htl_h);
    //fprintf(stdout, "size: x[%i] y[%i] w[%i] h[%i]\n", x, y, w, h);
 
    _parts_recalc(priv);
@@ -387,6 +389,8 @@ _groupedit_smart_calculate(Evas_Object *o)
 static void
 _groupedit_smart_set_user(Evas_Smart_Class *sc)
 {
+   evas_object_smart_clipped_smart_set(sc);
+
    sc->add = _groupedit_smart_add;
    sc->del = _groupedit_smart_del;
    sc->show = _groupedit_smart_show;
@@ -529,8 +533,13 @@ groupedit_edit_object_set(Evas_Object *obj,
      }
    if (!file) return EINA_FALSE;
 
+   edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
    edje_object_freeze(edit_obj);
-   evas_object_hide(edit_obj);
+   /* hide the editing object, we can not use evas_object_hide, because object
+    * will be showed again, after changing, for example part add, or change
+    * part state. so set the object opacity 0 - object invisible and calculate
+    * geometry. */
+   evas_object_color_set(edit_obj, 0, 0, 0, 0);
    /*TODO: set the state for all parts to default 0.0 */
    sd->edit_obj = edit_obj;
    sd->edit_obj_file = file;
@@ -545,7 +554,6 @@ groupedit_edit_object_set(Evas_Object *obj,
      sd->con_size_max.h = -1;
    else
      sd->con_size_max.h = edje_edit_group_max_h_get(edit_obj);
-   //edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
 
    _edit_object_load(sd);
    if (sd->parts) _parts_hash_free(sd);
@@ -577,6 +585,25 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
    _parts_recalc(sd);
+}
+
+Eina_Bool
+groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
+                               Edje_Part_Type type, const char *data)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part) return false;
+
+   return _edit_object_part_add(sd, part, type, data);
+}
+
+Eina_Bool
+groupedit_edit_object_part_del(Evas_Object *obj, const char *part)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part) return false;
+
+   return _edit_object_part_del(sd, part);
 }
 
 Eina_Bool

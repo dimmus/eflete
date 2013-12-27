@@ -9,6 +9,18 @@
    edje_edit_string_free(state);
 
 static void
+_part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type);
+
+static void
+_part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part);
+
+static Evas_Object *
+_part_spacer_add(Evas *e);
+
+static Evas_Object *
+_part_swallow_add(Evas *e);
+
+static void
 _part_object_area_calc(Ws_Groupedit_Smart_Data *sd);
 
 static void
@@ -48,6 +60,39 @@ _edit_object_load(Ws_Groupedit_Smart_Data *sd)
    edje_edit_string_list_free(parts_list);
 }
 
+Eina_Bool
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
+                      Edje_Part_Type type, const char *data)
+{
+   if ((!sd->parts) && (!part)) return false;
+   if (!edje_edit_part_add(sd->edit_obj, part, type))
+     {
+        ERR("Cann't add part %s to edit object %p", part, sd->edit_obj);
+        return false;
+     }
+   if ((type == EDJE_PART_TYPE_IMAGE) && (data))
+     edje_edit_state_image_set(sd->edit_obj, part, "default", 0.0, data);
+
+   _part_draw_add(sd, part, type);
+   //_parts_recalc(sd);
+   evas_object_smart_changed(sd->obj);
+
+   return true;
+}
+
+Eina_Bool
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
+{
+   if ((!sd->parts) && (!part)) return false;
+   if (!edje_edit_part_del(sd->edit_obj, part)) return false;
+
+   _part_draw_del(sd, part);
+   //_parts_recalc(sd);
+   evas_object_smart_changed(sd->obj);
+
+   return true;
+}
+
 static unsigned int
 _edit_part_string_key_length(const char *key)
 {
@@ -77,7 +122,7 @@ _parts_hash_new(Ws_Groupedit_Smart_Data *sd)
 {
    Eina_List *parts_list, *l;
    const char *name;
-   Edje_Part_Type ept;
+   Edje_Part_Type type;
 
    sd->parts = eina_hash_new(EINA_KEY_LENGTH(_edit_part_string_key_length),
                              EINA_KEY_CMP(_edit_part_string_cmp),
@@ -90,49 +135,8 @@ _parts_hash_new(Ws_Groupedit_Smart_Data *sd)
    evas_event_freeze(sd->e);
    EINA_LIST_FOREACH(parts_list, l, name)
      {
-        Groupspace_Part *gp;
-        gp = malloc(sizeof(Groupspace_Part));
-
-        ept = edje_edit_part_type_get(sd->edit_obj, name);
-
-        gp->name = eina_stringshare_add(name);
-        gp->visible = EINA_TRUE;
-        switch (ept)
-          {
-             case EDJE_PART_TYPE_RECTANGLE:
-                gp->draw = evas_object_rectangle_add(sd->e);
-                break;
-             case EDJE_PART_TYPE_TEXT:
-                gp->draw = evas_object_text_add(sd->e);
-                break;
-             case EDJE_PART_TYPE_IMAGE:
-                gp->draw = evas_object_image_filled_add(sd->e);
-                break;
-             case EDJE_PART_TYPE_SWALLOW:
-                gp->draw = evas_object_image_add(sd->e);
-                evas_object_image_file_set(gp->draw, TET_IMG_PATH"part_swallow_bg.png", NULL);
-                evas_object_image_fill_set(gp->draw, 0, 0, 17, 17);
-                evas_object_image_filled_set(gp->draw, EINA_FALSE);
-                break;
-             case EDJE_PART_TYPE_TEXTBLOCK:
-                gp->draw = evas_object_textblock_add(sd->e);
-                break;
-             case EDJE_PART_TYPE_SPACER:
-                gp->draw = evas_object_image_add(sd->e);
-                evas_object_image_file_set(gp->draw, TET_IMG_PATH"part_spacer_bg.png", NULL);
-                evas_object_image_fill_set(gp->draw, 0, 0, 8, 8);
-                evas_object_image_filled_set(gp->draw, EINA_FALSE);
-                break;
-             case EDJE_PART_TYPE_GROUP:
-             case EDJE_PART_TYPE_BOX:
-             case EDJE_PART_TYPE_TABLE:
-             case EDJE_PART_TYPE_EXTERNAL:
-             case EDJE_PART_TYPE_PROXY: // like image
-             default:
-                break;
-          }
-        evas_object_smart_member_add(gp->draw, sd->obj);
-        eina_hash_add(sd->parts, name, gp);
+        type = edje_edit_part_type_get(sd->edit_obj, name);
+        _part_draw_add(sd, name, type);
      }
    evas_event_thaw(sd->e);
    edje_edit_string_list_free(parts_list);
@@ -165,27 +169,27 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
         ept = edje_edit_part_type_get(sd->edit_obj, gp->name);
         switch (ept)
           {
-             case EDJE_PART_TYPE_RECTANGLE:
-                _rectangle_param_update(gp, sd->edit_obj);
-                break;
-             case EDJE_PART_TYPE_TEXT:
-                _text_param_update(gp, sd->edit_obj);
-                break;
-             case EDJE_PART_TYPE_IMAGE:
-                _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
-                break;
-             case EDJE_PART_TYPE_TEXTBLOCK:
-                _textblock_param_update(gp, sd->edit_obj);
-                break;
-             case EDJE_PART_TYPE_SPACER:
-             case EDJE_PART_TYPE_SWALLOW:
-             case EDJE_PART_TYPE_GROUP:
-             case EDJE_PART_TYPE_BOX:
-             case EDJE_PART_TYPE_TABLE:
-             case EDJE_PART_TYPE_EXTERNAL:
-             case EDJE_PART_TYPE_PROXY: // like image
-             default:
-                break;
+           case EDJE_PART_TYPE_RECTANGLE:
+              _rectangle_param_update(gp, sd->edit_obj);
+              break;
+           case EDJE_PART_TYPE_TEXT:
+              _text_param_update(gp, sd->edit_obj);
+              break;
+           case EDJE_PART_TYPE_IMAGE:
+           case EDJE_PART_TYPE_PROXY: // it part like image
+              _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              break;
+           case EDJE_PART_TYPE_TEXTBLOCK:
+              _textblock_param_update(gp, sd->edit_obj);
+              break;
+           case EDJE_PART_TYPE_SPACER:
+           case EDJE_PART_TYPE_SWALLOW:
+           case EDJE_PART_TYPE_GROUP:
+           case EDJE_PART_TYPE_BOX:
+           case EDJE_PART_TYPE_TABLE:
+           case EDJE_PART_TYPE_EXTERNAL:
+           default:
+              break;
           }
 
         edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
@@ -207,11 +211,85 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                   else evas_object_hide(sd->obj_area.obj);
                }
              _part_object_area_calc(sd);
-             /*TODO: add smart callback call */
           }
-
      }
    eina_iterator_free(it);
+}
+
+void
+_part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
+{
+   Groupspace_Part *gp;
+
+   gp = malloc(sizeof(Groupspace_Part));
+   gp->name = eina_stringshare_add(part);
+   gp->visible = true;
+
+   switch (type)
+     {
+      case EDJE_PART_TYPE_RECTANGLE:
+         gp->draw = evas_object_rectangle_add(sd->e);
+         break;
+      case EDJE_PART_TYPE_TEXT:
+         gp->draw = evas_object_text_add(sd->e);
+         break;
+      case EDJE_PART_TYPE_IMAGE:
+      case EDJE_PART_TYPE_PROXY: // it part like image
+         gp->draw = evas_object_image_add(sd->e);
+         break;
+      case EDJE_PART_TYPE_SWALLOW:
+         gp->draw = _part_swallow_add(sd->e);
+         break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         gp->draw = evas_object_textblock_add(sd->e);
+         break;
+      case EDJE_PART_TYPE_SPACER:
+         gp->draw = _part_spacer_add(sd->e);
+         break;
+      case EDJE_PART_TYPE_GROUP:
+      case EDJE_PART_TYPE_BOX:
+      case EDJE_PART_TYPE_TABLE:
+      case EDJE_PART_TYPE_EXTERNAL:
+      default:
+         break;
+     }
+   eina_hash_add(sd->parts, part, gp);
+   evas_object_smart_member_add(gp->draw, sd->obj);
+}
+
+static void
+_part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
+{
+   Groupspace_Part *gp;
+
+   gp = (Groupspace_Part *)eina_hash_find(sd->parts, part);
+   eina_hash_del(sd->parts, part, gp);
+}
+
+static Evas_Object *
+_part_spacer_add(Evas *e)
+{
+   Evas_Object *spacer;
+
+   spacer = evas_object_image_add(e);
+   evas_object_image_file_set(spacer, TET_IMG_PATH"part_spacer_bg.png", NULL);
+   evas_object_image_fill_set(spacer, 0, 0, 8, 8);
+   evas_object_image_filled_set(spacer, EINA_FALSE);
+
+   return spacer;
+}
+
+static Evas_Object *
+_part_swallow_add(Evas *e)
+{
+   Evas_Object *swallow;
+
+   swallow = evas_object_image_filled_add(e);
+   evas_object_image_file_set(swallow, TET_IMG_PATH"part_swallow_bg.png", NULL);
+   evas_object_image_filled_set(swallow, false);
+   evas_object_image_fill_set(swallow, 0, 0, 17, 17);
+
+   return swallow;
 }
 
 static void
@@ -220,7 +298,7 @@ _rectangle_param_update(Groupspace_Part *gp, Evas_Object *edit_obj)
    int r, g, b, a;
    PART_STATE_GET(edit_obj, gp->name)
 
-   edje_edit_state_color_get(edit_obj,gp->name, state, value, &r, &g, &b, &a);
+   edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
    evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
 
    PART_STATE_FREE
@@ -256,8 +334,11 @@ _image_param_update(Groupspace_Part *gp, Evas_Object *edit_obj, const char *file
 
    /* FIXME: need see in edje, to know how to work with edje fill param */
    //evas_object_image_fill_set(gp->draw, 0, 0, 1, 1);
+   evas_object_image_filled_set(gp->draw, true);
 
    evas_object_image_smooth_scale_set(gp->draw, EINA_TRUE);
+
+   //evas_object_image_data_update_add()
 
    PART_STATE_FREE
    edje_edit_string_free(image_normal);

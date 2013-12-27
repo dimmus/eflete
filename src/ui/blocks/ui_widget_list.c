@@ -28,6 +28,7 @@ static Elm_Genlist_Item_Class *_itc_part = NULL;
 static inline Elm_Object_Item *
 _widget_list_get(Evas_Object *naviframe)
 {
+   /*
    Eina_List *items;
    Elm_Object_Item *item_gl_widgets;
 
@@ -35,6 +36,10 @@ _widget_list_get(Evas_Object *naviframe)
    item_gl_widgets = eina_list_data_get(eina_list_last(items));
 
    eina_list_free(items);
+   */
+
+   Elm_Object_Item *item_gl_widgets = elm_naviframe_top_item_get(naviframe);
+
    return item_gl_widgets;
 }
 
@@ -186,9 +191,9 @@ _navi_gl_parts_pop(void *data,
 }
 
 static void
-_part_added(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info)
+_wl_part_add(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info)
 {
    Elm_Object_Item *eoi = NULL;
    Evas_Object *glist = (Evas_Object *)data;
@@ -219,8 +224,8 @@ _unset_cur_group(void *data,
 {
    Project *pr = (Project *)data;
    if (pr->current_group)
-      evas_object_smart_callback_del(pr->current_group->obj, "wl,part,added",
-                                     _part_added);
+     evas_object_smart_callback_del(pr->current_group->obj, "edit_obj,part,add",
+                                    _wl_part_add);
    pr->current_group = NULL;
 
 }
@@ -274,8 +279,8 @@ _add_part_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Group *group = (Group *)data;
-   evas_object_smart_callback_call(group->obj, "gs,part,add", NULL);
+   Evas_Object *nf = (Evas_Object *)data;
+   evas_object_smart_callback_call(nf, "wl,part,add", NULL);
 }
 
 static void
@@ -433,7 +438,8 @@ _on_group_clicked_double(void *data,
    button = elm_button_add (panel);
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "apps");
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "unpressed", _add_part_unpress, _group);
+   evas_object_smart_callback_add(button, "clicked", _add_part_unpress, nf);
+   //evas_object_smart_callback_add(_group->obj, "edit_obj,part,add", _wl_part_add, gl_parts);
    elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
    elm_box_pack_end(panel, button);
@@ -472,7 +478,6 @@ _on_group_clicked_double(void *data,
    evas_object_show(box);
    evas_object_show(panel);
 
-   evas_object_smart_callback_add(_group->obj, "wl,part,added", _part_added, gl_parts);
    elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, box, NULL);
 }
 
@@ -718,6 +723,31 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
                                   _on_widget_clicked_double, project);
 
    return EINA_TRUE;
+}
+
+Eina_Bool
+ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name)
+{
+   Evas_Object *parts_list;
+   Elm_Object_Item *eoi;
+   Part *part;
+
+   if ((!object) || (!group) || (!name)) return false;
+   part = wm_part_add(group, name);
+
+   parts_list = elm_object_item_part_content_get(_widget_list_get(object),
+                                                 "elm.swallow.content");
+   /* FIXME: remove it after merge to develop */
+   Eina_List * list = elm_box_children_get(parts_list);
+   parts_list =  eina_list_data_get(eina_list_last(list));
+   /*  */
+
+   eoi = elm_genlist_item_append(parts_list, _itc_part, part, NULL,
+                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   elm_object_item_data_set(eoi, part);
+   elm_genlist_item_selected_set(eoi, EINA_TRUE);
+
+   return false;
 }
 
 void

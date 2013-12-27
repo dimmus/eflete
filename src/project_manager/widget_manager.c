@@ -78,7 +78,6 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
    Evas_Object *edje_edit_obj;
    Eina_List *parts_list, *l;
    char *name;
-   Part *part;
 
    if (!group || !e) return;
 
@@ -95,30 +94,30 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
    parts_list = edje_edit_parts_list_get(group->obj);
    EINA_LIST_FOREACH(parts_list, l, name)
      {
-        part = wm_part_add(group->obj, name);
-        group->parts = eina_inlist_append(group->parts,
-                                          EINA_INLIST_GET(part));
+        wm_part_add(group, name);
      }
    edje_edit_string_list_free(parts_list);
 }
 
 Part *
-wm_part_add(Evas_Object *obj, const char *part)
+wm_part_add(Group *group, const char *part)
 {
    Part *result;
    double value;
 
-   if (!part || !obj) return NULL;
+   if ((!group->obj) || (!part)) return NULL;
 
    result = mem_malloc(sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part);
-   result->type = edje_edit_part_type_get(obj, part);
+   result->type = edje_edit_part_type_get(group->obj, part);
    result->obj = NULL;
-   result->curr_state = edje_edit_part_selected_state_get(obj, part, &value);
+   result->curr_state = edje_edit_part_selected_state_get(group->obj, part, &value);
    result->curr_state_value = value;
    result->show = EINA_TRUE;
+
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(result));
 
    return result;
 }

@@ -31,6 +31,7 @@
  * @li "wl,group,back": the user clicked on the "back" button
  * @li "wl,part,select": the user selected on the part name
  * @li "wl,part,back": the user clicked on the "back" button
+ * @li "wl,part,add" : the user clicked on the "plus" button
  *
  * A Widget List used for view a list of widgets styles
  */
@@ -76,7 +77,13 @@ Eina_Bool
 ui_widget_list_data_set(Evas_Object *object, Project *project);
 
 /**
- * Reolad content style genlist.
+ *
+ */
+Eina_Bool
+ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name);
+
+/**
+ * Reload content style genlist.
  *
  * @param gl_styles A 'style list' object. (genlist container)
  * @param styles A Eina_Inlist pointer for loaded styles in project

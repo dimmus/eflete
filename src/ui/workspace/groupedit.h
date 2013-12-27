@@ -66,6 +66,13 @@ void
 groupedit_edit_object_recalc_all(Evas_Object *obj);
 
 Eina_Bool
+groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
+                               Edje_Part_Type type, const char *data);
+
+Eina_Bool
+groupedit_edit_object_part_del(Evas_Object *obj, const char *part);
+
+Eina_Bool
 groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
                                      const char *state, double value);
 

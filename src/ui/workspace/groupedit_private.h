@@ -3,6 +3,7 @@
 #include "Elementary.h"
 #include "groupedit.h"
 #include "common_macro.h"
+#include "logger.h"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupspace_Part Groupspace_Part;
@@ -100,3 +101,10 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd);
 
 void
 _edit_object_load(Ws_Groupedit_Smart_Data *sd);
+
+Eina_Bool
+_edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
+                      Edje_Part_Type type, const char *data);
+
+Eina_Bool
+_edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part);

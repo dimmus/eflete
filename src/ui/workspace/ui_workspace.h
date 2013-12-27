@@ -99,6 +99,19 @@ workspace_edit_object_unset(Evas_Object *obj);
 /**
  *
  */
+Group *
+workspace_edit_object_get(Evas_Object *obj);
+
+/**
+ *
+ */
+Eina_Bool
+workspace_edit_object_part_add(Evas_Object *obj, const char *part,
+                               Edje_Part_Type type, const char *data);
+
+/**
+ *
+ */
 Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part *part);
 

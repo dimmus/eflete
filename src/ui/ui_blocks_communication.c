@@ -20,16 +20,16 @@
 #include "ui_main_window.h"
 
 static void
-_add_part_dailog(void *data,
+_add_part_dialog(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *groupspace = ws_groupspace_get(ap->workspace);
-   if (!groupspace) return;
-   part_dialog_add(ap->win_layout, groupspace);
+   /* FIXME: change ap->workspace to ui_block_workspace_get(ap) */
+   part_dialog_add(ap->win_layout, ap->workspace, ui_block_widget_list_get(ap));
 }
 
+/*
 static void
 _add_state_dailog(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -38,6 +38,7 @@ _add_state_dailog(void *data,
    App_Data *ap = (App_Data *)data;
    state_dialog_add(ap);
 }
+*/
 
 static void
 _del_style(void *data,
@@ -62,7 +63,11 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *prop, *block;
+   Evas_Object *prop, *block, *wl_list;
+
+   wl_list = ui_block_widget_list_get(ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
+
    workspace_edit_object_unset(ap->workspace);
    //ws_object_highlight_del(ap->workspace);
    /* FIXME:  find way to does'nt make immidietly render */
@@ -148,6 +153,7 @@ ui_part_select(App_Data *ap,
 void
 ui_group_clicked(App_Data *ap, Group *group)
 {
+   Evas_Object *wl_list = NULL;
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
    Eina_List *signals = NULL;
@@ -157,6 +163,9 @@ ui_group_clicked(App_Data *ap, Group *group)
         ERR("App Data or group is missing!");
         return;
      }
+
+   wl_list = ui_block_widget_list_get(ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,add", _add_part_dialog, ap);
 
    /* Get signals list of a group and show them */
    gl_signals = ui_signal_list_add(ap->win);
@@ -202,7 +211,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
-             //if (groupspace) ui_groupspace_unset(groupspace);
+             workspace_edit_object_unset(ap->workspace);
              if (ap->demo) ui_demospace_unset(ap->demo);
              pm_free(ap->project);
              GET_NAME_FROM_PATH(name, selected)
@@ -218,10 +227,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 
              ui_menu_base_disabled_set(ap->menu_hash, false);
           }
-        else
-          {
-             NOTIFY_ERROR("The file must have a extension '.edj'");
-          }
+        else NOTIFY_ERROR("The file must have a extension '.edj'");
      }
    evas_object_hide(elm_object_parent_widget_get(obj));
    return wd_list;
@@ -249,7 +255,7 @@ ui_edc_load_done(App_Data* ap,
         elm_genlist_clear(ui_block_state_list_get(ap));
         elm_genlist_clear(ui_block_signal_list_get(ap));
 
-        //if (groupspace) ui_groupspace_unset(groupspace);
+        workspace_edit_object_unset(ap->workspace);
         if (ap->demo) ui_demospace_unset(ap->demo);
         pm_free(ap->project);
         ap->project = pm_open_project_edc(project_name,
@@ -503,8 +509,8 @@ ui_part_state_delete(App_Data *ap)
 
    if ((!ap) && (!ap->workspace)) return false;
 
-   Evas_Object *groupspace = ws_groupspace_get(ap->workspace);
-   if (!groupspace) return false;
+   //Evas_Object *groupspace = ws_groupspace_get(ap->workspace);
+   //if (!groupspace) return false;
 
    state_list = ui_block_state_list_get(ap);
    part = ui_state_list_part_get(state_list);
@@ -548,16 +554,16 @@ ui_part_state_delete(App_Data *ap)
 Eina_Bool
 register_callbacks(App_Data *ap)
 {
-   Evas_Object *groupspace = NULL;
+   //Evas_Object *groupspace = NULL;
 
    if (!ap) return false;
-   groupspace = ws_groupspace_get(ap->workspace);
+   //groupspace = ws_groupspace_get(ap->workspace);
 /* FIXME: preload groupspace */
-   if (!groupspace) return true;
-   evas_object_smart_callback_add(groupspace, "gs,dialog,add",
-                                  _add_part_dailog, ap);
-   evas_object_smart_callback_add(groupspace, "gs,state,add",
-                                  _add_state_dailog, ap);
+   //if (!groupspace) return true;
+   //evas_object_smart_callback_add(groupspace, "gs,dialog,add",
+   //                               _add_part_dailog, ap);
+   //evas_object_smart_callback_add(groupspace, "gs,state,add",
+   //                               _add_state_dailog, ap);
 
    evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
                                   _add_style_dailog, ap);

@@ -169,14 +169,14 @@ typedef struct _Widget Widget;
 /**
  * Create a new Part object
  *
- * @param obj The edje edit object with a 'group' data.
+ * @param group The Group object with a 'group' data.
  * @param part The name of a part.
  * @return A new Part object.
  *
  * @ingroup WidgetManager
  */
 Part *
-wm_part_add(Evas_Object *obj, const char *part);
+wm_part_add(Group *group, const char *part);
 
 /**
  * Set a current state in Part object.

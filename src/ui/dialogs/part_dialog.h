@@ -29,10 +29,11 @@
 
 #include "eflete.h"
 #include "widget_manager.h"
-//#include "ui_groupspace.h"
 #include "modal_window.h"
 #include "widget_macro.h"
 #include "image_editor.h"
+#include "ui_workspace.h"
+#include "ui_widget_list.h"
 
 /**
  * Add new dialog for choise part type add inwin object.
@@ -45,6 +46,6 @@
  * @ingroup New_Part_Dialog
  */
 Evas_Object *
-part_dialog_add(Evas_Object *parent, Evas_Object *groupspace);
+part_dialog_add(Evas_Object *parent, Evas_Object *groupspace, Evas_Object *widget_list);
 
 #endif /* PART_DIALOG_H */
