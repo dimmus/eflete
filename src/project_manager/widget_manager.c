@@ -72,6 +72,9 @@ static char *part_types[] = {
    free(arr[0]); \
    free(arr);
 
+static void
+_wm_part_free(Part *part);
+
 void
 wm_group_data_load(Group *group, Evas *e, const char *edj)
 {
@@ -122,10 +125,10 @@ wm_part_add(Group *group, const char *part)
    return result;
 }
 
-Eina_Bool
-wm_part_free(Part *part)
+static void
+_wm_part_free(Part *part)
 {
-   if (!part) return EINA_FALSE;
+   if (!part) return;
 
    eina_stringshare_del(part->name);
    eina_stringshare_del(part->curr_state);
@@ -133,8 +136,20 @@ wm_part_free(Part *part)
 
    free(part);
    part = NULL;
+}
 
-   return EINA_TRUE;
+Eina_Bool
+wm_part_del(Group *group, Part *part)
+{
+   Eina_Inlist *tmp;
+
+   if ((!group) || (!part)) return false;
+
+   tmp = eina_inlist_find(group->parts, EINA_INLIST_GET(part));
+   if (tmp)
+     group->parts = eina_inlist_remove(group->parts, tmp);
+
+   return true;
 }
 
 Eina_Bool
@@ -216,7 +231,7 @@ wm_group_free(Group *group)
      {
         part = EINA_INLIST_CONTAINER_GET(group->parts, Part);
         group->parts = eina_inlist_remove(group->parts, group->parts);
-        wm_part_free(part);
+        _wm_part_free(part);
      }
 
    if (!group->group_name)

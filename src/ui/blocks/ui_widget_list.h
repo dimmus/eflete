@@ -83,6 +83,24 @@ Eina_Bool
 ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name);
 
 /**
+ *
+ */
+Eina_Bool
+ui_widget_list_selected_part_del(Evas_Object *object, Group *group);
+
+/**
+ *
+ */
+Part *
+ui_widget_list_selected_part_get(Evas_Object *object);
+
+/**
+ *
+ */
+Eina_List *
+ui_widget_list_selected_parts_get(Evas_Object *object);
+
+/**
  * Reload content style genlist.
  *
  * @param gl_styles A 'style list' object. (genlist container)

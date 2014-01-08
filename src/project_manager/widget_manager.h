@@ -199,15 +199,16 @@ wm_part_current_state_set(Part *part, const char *state);
 /*TODO: Add 'wm_part_new', for new part which will be add user */
 
 /**
- * Free a Part object
+ * Delete a Part from the Group object
  *
- * @param part A Part object to free.
+ * @param group A Group object being editing
+ * @param part A Part object to be deleted.
  * @return EINA_TRUE if a object deleted, else EINA_FALSE.
  *
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_part_free(Part *part);
+wm_part_del(Group *group, Part *part);
 
 /**
  * Get a list of signals which using in a 'group' programs

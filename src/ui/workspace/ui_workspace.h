@@ -113,6 +113,12 @@ workspace_edit_object_part_add(Evas_Object *obj, const char *part,
  *
  */
 Eina_Bool
+workspace_edit_object_part_del(Evas_Object *obj, const char *part);
+
+/**
+ *
+ */
+Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part *part);
 
 /**

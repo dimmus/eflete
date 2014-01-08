@@ -258,7 +258,7 @@ _above_part_unpress(void *data,
 
 static void
 _past_part_unpress(void *data,
-                   Evas_Object *obj __UNUSED__,
+                   Evas_Object *obj,
                    void *event_info __UNUSED__)
 {
    Group *group = (Group *)data;
@@ -270,8 +270,8 @@ _delete_part_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Group *group = (Group *)data;
-   evas_object_smart_callback_call(obj, "delete,part", group);
+   Evas_Object *nf = (Evas_Object *)data;
+   evas_object_smart_callback_call(nf, "wl,part,del", NULL);
 }
 
 static void
@@ -281,31 +281,6 @@ _add_part_unpress(void *data,
 {
    Evas_Object *nf = (Evas_Object *)data;
    evas_object_smart_callback_call(nf, "wl,part,add", NULL);
-}
-
-static void
-_delete_part_click(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Group *group = (Group *)event_info;
-   Evas_Object *gl_parts = (Evas_Object *)data;
-   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
-   Part *part = elm_object_item_data_get(eoi);
-
-   if (!eoi)
-     {
-        WARN("None one part does'nt selected");
-        return;
-     }
-
-   Elm_Object_Item *new_eoi = elm_genlist_item_next_get(eoi);
-   if (!new_eoi) new_eoi = elm_genlist_item_prev_get(eoi);
-
-   elm_object_item_del(eoi);
-   evas_object_smart_callback_call(group->obj, "gs,part,delete", part);
-   if (new_eoi)
-      elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
 }
 
 static void
@@ -447,8 +422,8 @@ _on_group_clicked_double(void *data,
    button = elm_button_add (panel);
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "delete");
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "delete,part", _delete_part_click, gl_parts);
-   evas_object_smart_callback_add (button, "unpressed", _delete_part_unpress, _group);
+   //evas_object_smart_callback_add (button, "delete,part", _delete_part_click, gl_parts);
+   evas_object_smart_callback_add (button, "clicked", _delete_part_unpress, nf);
    elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
    elm_box_pack_end(panel, button);
@@ -728,26 +703,106 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 Eina_Bool
 ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name)
 {
-   Evas_Object *parts_list;
+   Evas_Object *gl_parts;
    Elm_Object_Item *eoi;
    Part *part;
 
    if ((!object) || (!group) || (!name)) return false;
    part = wm_part_add(group, name);
 
-   parts_list = elm_object_item_part_content_get(_widget_list_get(object),
-                                                 "elm.swallow.content");
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
    /* FIXME: remove it after merge to develop */
-   Eina_List * list = elm_box_children_get(parts_list);
-   parts_list =  eina_list_data_get(eina_list_last(list));
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
    /*  */
 
-   eoi = elm_genlist_item_append(parts_list, _itc_part, part, NULL,
+   eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
                                  ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_object_item_data_set(eoi, part);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
    return false;
+}
+
+Eina_Bool
+ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
+{
+   Evas_Object *gl_parts;
+   Elm_Object_Item *eoi, *next_eoi;
+
+   if ((!object) || (!group)) return false;
+
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
+
+   /* FIXME: remove it after merge to develop */
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
+   /*  */
+   eoi = elm_genlist_selected_item_get(gl_parts);
+
+   if (!eoi)
+     {
+        WARN("None one part does'nt selected");
+        return false;
+     }
+   next_eoi = elm_genlist_item_next_get(eoi);
+   if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
+   elm_genlist_item_selected_set(next_eoi, true);
+   elm_object_item_del(eoi);
+
+   return true;
+}
+
+Part *
+ui_widget_list_selected_part_get(Evas_Object *object)
+{
+   Evas_Object *gl_parts;
+   Part *part;
+   Elm_Object_Item *eoi;
+
+   if (!object) return NULL;
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
+   /* FIXME: remove it after merge to develop  */
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
+   /*  */
+
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   part = (Part *)elm_object_item_data_get(eoi);
+   if (!part) return NULL;
+
+   return part;
+}
+
+Eina_List *
+ui_widget_list_selected_parts_get(Evas_Object *object)
+{
+   Evas_Object *gl_parts;
+   Part *part;
+   Elm_Object_Item *eoi;
+   Eina_List *selected, *l;
+   Eina_List *parts = NULL;
+
+   if (!object) return NULL;
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
+   /* FIXME: remove it after merge to develop  */
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
+   /*  */
+   selected = (Eina_List *)elm_genlist_selected_items_get(gl_parts);
+   if (!selected) return NULL;
+
+   EINA_LIST_FOREACH(selected, l, eoi)
+     {
+        part = (Part *)elm_object_item_data_get(eoi);
+        parts = eina_list_append(parts, part);
+     }
+
+   return parts;
 }
 
 void

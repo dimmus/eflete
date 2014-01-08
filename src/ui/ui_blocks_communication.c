@@ -29,6 +29,19 @@ _add_part_dialog(void *data,
    part_dialog_add(ap->win_layout, ap->workspace, ui_block_widget_list_get(ap));
 }
 
+static void
+_del_part(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Group *group = ap->project->current_group;
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   if ((part) && (workspace_edit_object_part_del(ap->workspace, part->name)))
+     ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), group);
+}
+
+
 /*
 static void
 _add_state_dailog(void *data,
@@ -67,6 +80,7 @@ ui_part_back(App_Data *ap)
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,del", _del_part, ap);
 
    workspace_edit_object_unset(ap->workspace);
    //ws_object_highlight_del(ap->workspace);
@@ -166,6 +180,7 @@ ui_group_clicked(App_Data *ap, Group *group)
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_add(wl_list, "wl,part,add", _add_part_dialog, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,del", _del_part, ap);
 
    /* Get signals list of a group and show them */
    gl_signals = ui_signal_list_add(ap->win);
