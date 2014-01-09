@@ -24,6 +24,10 @@
 #include "common_macro.h"
 #include "logger.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* include config.h */
+
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupspace_Part Groupspace_Part;
 

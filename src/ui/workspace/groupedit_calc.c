@@ -31,6 +31,9 @@ static void
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type);
 
 static void
+_move_border_to_top(Ws_Groupedit_Smart_Data *sd);
+
+static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part);
 
 static Evas_Object *
@@ -93,7 +96,7 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
      edje_edit_state_image_set(sd->edit_obj, part, "default", 0.0, data);
 
    _part_draw_add(sd, part, type);
-   //_parts_recalc(sd);
+   _move_border_to_top(sd);
    evas_object_smart_changed(sd->obj);
 
    return true;
@@ -120,8 +123,8 @@ _edit_part_string_key_length(const char *key)
 }
 
 static int
-_edit_part_string_cmp(const char *key1, int key1_length,
-                      const char *key2, int key2_length)
+_edit_part_string_cmp(const char *key1, int key1_length __UNUSED__,
+                      const char *key2, int key2_length __UNUSED__)
 {
    return strcmp(key1, key2);
 }
@@ -159,6 +162,7 @@ _parts_hash_new(Ws_Groupedit_Smart_Data *sd)
      }
    evas_event_thaw(sd->e);
    edje_edit_string_list_free(parts_list);
+   _move_border_to_top(sd);
 }
 
 void
@@ -274,6 +278,18 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
      }
    eina_hash_add(sd->parts, part, gp);
    evas_object_smart_member_add(gp->draw, sd->obj);
+}
+
+static void
+_move_border_to_top(Ws_Groupedit_Smart_Data *sd)
+{
+   evas_object_smart_member_del(sd->container);
+   evas_object_smart_member_del(sd->handler_TL.obj);
+   evas_object_smart_member_del(sd->handler_BR.obj);
+
+   evas_object_smart_member_add(sd->container, sd->obj);
+   evas_object_smart_member_add(sd->handler_TL.obj, sd->obj);
+   evas_object_smart_member_add(sd->handler_BR.obj, sd->obj);
 }
 
 static void

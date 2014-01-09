@@ -48,8 +48,8 @@ _user_size_calc(Evas_Object *o)
 
 static void
 _mouse_down_hTL_cb(void *data,
-                   Evas *e,
-                   Evas_Object *obj,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
@@ -64,8 +64,8 @@ _mouse_down_hTL_cb(void *data,
 
 static void
 _mouse_down_hRB_cb(void *data,
-                   Evas *e,
-                   Evas_Object *obj,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
@@ -80,9 +80,9 @@ _mouse_down_hRB_cb(void *data,
 
 static void
 _mouse_up_hTL_cb(void *data,
-                 Evas *e,
-                 Evas_Object *obj,
-                 void *event_info)
+                 Evas *e __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(data, sd)
    sd->handler_TL_pressed = EINA_FALSE;
@@ -91,9 +91,9 @@ _mouse_up_hTL_cb(void *data,
 
 static void
 _mouse_up_hRB_cb(void *data,
-                 Evas *e,
-                 Evas_Object *obj,
-                 void *event_info)
+                 Evas *e __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(data, sd)
    sd->handler_BR_pressed = EINA_FALSE;
@@ -102,8 +102,8 @@ _mouse_up_hRB_cb(void *data,
 
 static void
 _mouse_move_cb(void *data,
-               Evas *e,
-               Evas_Object *obj,
+               Evas *e __UNUSED__,
+               Evas_Object *obj __UNUSED__,
                void *event_info)
 {
    Evas_Coord x, y, w, h;
