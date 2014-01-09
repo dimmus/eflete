@@ -115,7 +115,6 @@ wm_part_add(Group *group, const char *part)
 
    result->name = eina_stringshare_add(part);
    result->type = edje_edit_part_type_get(group->obj, part);
-   result->obj = NULL;
    result->curr_state = edje_edit_part_selected_state_get(group->obj, part, &value);
    result->curr_state_value = value;
    result->show = EINA_TRUE;
@@ -132,7 +131,6 @@ _wm_part_free(Part *part)
 
    eina_stringshare_del(part->name);
    eina_stringshare_del(part->curr_state);
-   if (part->obj) evas_object_del(part->obj);
 
    free(part);
    part = NULL;

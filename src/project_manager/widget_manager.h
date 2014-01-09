@@ -79,7 +79,6 @@ struct _Part
 {
     EINA_INLIST;
     Eina_Stringshare *name;
-    Evas_Object *obj;
     Eina_Stringshare *curr_state;
     double curr_state_value;
     Eina_Bool show;

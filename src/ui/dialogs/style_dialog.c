@@ -243,7 +243,6 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
         part->__type = PART;
         part->name = eina_stringshare_add(part_name);
         part->type = part_type;
-        part->obj = NULL;
         part->curr_state = edje_edit_part_selected_state_get(
                               edje_edit_group, part->name, &state_val);
         part->curr_state_value = state_val;

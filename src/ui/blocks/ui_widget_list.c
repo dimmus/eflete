@@ -74,15 +74,9 @@ _on_icon_click(void *data,
    Part *_part = (Part *) data;
    _part->show = !_part->show;
    if (_part->show)
-     {
-        evas_object_show(_part->obj);
-        elm_image_file_set(obj, TET_IMG_PATH"eye_open.png", NULL);
-     }
+      elm_image_file_set(obj, TET_IMG_PATH"eye_open.png", NULL);
    else
-     {
-        evas_object_hide(_part->obj);
-        elm_image_file_set(obj, TET_IMG_PATH"eye_close.png", NULL);
-     }
+      elm_image_file_set(obj, TET_IMG_PATH"eye_close.png", NULL);
 }
 
 static Evas_Object *

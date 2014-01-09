@@ -340,7 +340,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
    edje_edit_##SUB##_##VALUE##_set(group->obj, part->name, \
                                    part->curr_state, part->curr_state_value, \
                                    r, g, b, a); \
-   evas_object_color_set(part->obj, r*a/255, g*a/255, b*a/255, a); \
    box = elm_object_parent_widget_get(obj); \
    nodes = elm_box_children_get(box); \
    image = eina_list_nth(nodes, 1); \
