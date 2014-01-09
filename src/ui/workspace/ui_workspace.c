@@ -867,3 +867,23 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
                                                part->curr_state,
                                                part->curr_state_value);
 }
+
+Eina_Bool
+workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
+                                     const char *state, double value)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state)) return false;
+
+   return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
+}
+
+Eina_Bool
+workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
+                                     const char *state, double value)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state)) return false;
+
+   return groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
+}

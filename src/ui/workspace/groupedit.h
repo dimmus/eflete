@@ -76,6 +76,14 @@ Eina_Bool
 groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
                                      const char *state, double value);
 
+Eina_Bool
+groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
+                                     const char *state, double value);
+
+Eina_Bool
+groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
+                                     const char *state, double value);
+
 void
 groupedit_part_object_area_set(Evas_Object *obj, const char *part);
 

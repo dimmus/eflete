@@ -266,18 +266,18 @@ _past_part_unpress(void *data,
 }
 
 static void
-_delete_part_unpress(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_del_part_cb(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
    evas_object_smart_callback_call(nf, "wl,part,del", NULL);
 }
 
 static void
-_add_part_unpress(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_add_part_cb(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
    Evas_Object *nf = (Evas_Object *)data;
    evas_object_smart_callback_call(nf, "wl,part,add", NULL);
@@ -413,7 +413,7 @@ _on_group_clicked_double(void *data,
    button = elm_button_add (panel);
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "apps");
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add(button, "clicked", _add_part_unpress, nf);
+   evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
    //evas_object_smart_callback_add(_group->obj, "edit_obj,part,add", _wl_part_add, gl_parts);
    elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
@@ -423,7 +423,7 @@ _on_group_clicked_double(void *data,
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "delete");
    elm_object_part_content_set(button, NULL, _icon);
    //evas_object_smart_callback_add (button, "delete,part", _delete_part_click, gl_parts);
-   evas_object_smart_callback_add (button, "clicked", _delete_part_unpress, nf);
+   evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
    elm_object_style_set(button, "eflete/default");
    evas_object_show(button);
    elm_box_pack_end(panel, button);
@@ -730,6 +730,7 @@ ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
 {
    Evas_Object *gl_parts;
    Elm_Object_Item *eoi, *next_eoi;
+   Part *part;
 
    if ((!object) || (!group)) return false;
 
@@ -747,6 +748,9 @@ ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
         WARN("None one part does'nt selected");
         return false;
      }
+   part = (Part *)elm_object_item_data_get(eoi);
+   wm_part_del(group, part);
+
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
    elm_genlist_item_selected_set(next_eoi, true);

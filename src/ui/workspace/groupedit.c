@@ -619,6 +619,36 @@ groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
    return ret;
 }
 
+Eina_Bool
+groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
+                                     const char *state, double value)
+{
+   Eina_Bool ret;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state)) return false;
+
+   ret = edje_edit_state_add(sd->edit_obj, part, state, value);
+   ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
+
+   if (ret) _parts_recalc(sd);
+   return ret;
+}
+
+Eina_Bool
+groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
+                                     const char *state, double value)
+{
+   Eina_Bool ret;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state)) return false;
+
+   ret = edje_edit_state_add(sd->edit_obj, part, state, value);
+
+   _parts_recalc(sd);
+   return ret;
+}
+
+
 void
 groupedit_part_object_area_set(Evas_Object *obj, const char *part)
 {

@@ -42,16 +42,14 @@ _del_part(void *data,
 }
 
 
-/*
 static void
-_add_state_dailog(void *data,
+_add_state_dialog(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    state_dialog_add(ap);
 }
-*/
 
 static void
 _del_style(void *data,
@@ -87,8 +85,9 @@ ui_part_back(App_Data *ap)
    /* FIXME:  find way to does'nt make immidietly render */
    block = ui_block_state_list_get(ap);
    if (block) elm_genlist_clear(block);
-   block = ui_block_signal_list_get(ap);
-   if (block) elm_genlist_clear(block);
+   ui_states_list_data_unset(ui_block_signal_list_get(ap));
+   //block = ui_block_signal_list_get(ap);
+   //if (block) elm_genlist_clear(block);
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    prop = ui_block_property_get(ap);
@@ -150,11 +149,14 @@ ui_part_select(App_Data *ap,
 
    ui_property_part_set(prop, part);
 
-   gl_states = ui_states_list_add(ap->win);
+   gl_states = ui_states_list_add(ap->block.bottom_left);
    ui_states_list_data_set(gl_states, ap->project->current_group, part);
    ui_block_state_list_set(ap, gl_states);
+   evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
+   //evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
+
    /*TODO: in future it will be moved to block api. */
-   elm_object_signal_emit(ap->block.bottom_left, "title,content,show", "eflete");
+   //elm_object_signal_emit(ap->block.bottom_left, "title,content,show", "eflete");
 
    evas_object_show(gl_states);
 
@@ -183,7 +185,7 @@ ui_group_clicked(App_Data *ap, Group *group)
    evas_object_smart_callback_add(wl_list, "wl,part,del", _del_part, ap);
 
    /* Get signals list of a group and show them */
-   gl_signals = ui_signal_list_add(ap->win);
+   gl_signals = ui_signal_list_add(ap->block.left_bottom);
    ui_signal_list_data_set(gl_signals, group);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);

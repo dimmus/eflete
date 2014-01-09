@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "ui_states_list.h"
@@ -23,6 +23,24 @@
 #define STATES_LIST "states_list"
 
 static Elm_Genlist_Item_Class *_itc_state = NULL;
+
+static void
+_add_state_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *state_list = (Evas_Object *)data;
+   evas_object_smart_callback_call(state_list, "stl,state,add", NULL);
+}
+
+static void
+_del_state_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *state_list = (Evas_Object *)data;
+   evas_object_smart_callback_call(state_list, "stl,state,del", NULL);
+}
 
 static char *
 _item_state_label_get(void *data,
@@ -81,32 +99,59 @@ ui_states_list_data_set(Evas_Object *object,
    Eina_List *states, *l;
    const char *state_name;
    Elm_Object_Item *stit;
-   Evas_Object *gl_states = (Evas_Object *)object;
+   Evas_Object *parent, *box, *button, *icon;
 
-   if ((!gl_states) || (!group) || (!part)) return EINA_FALSE;
+   if ((!object) || (!group) || (!part)) return false;
 
-   states = evas_object_data_get(gl_states, STATES_LIST);
-   if (states)
-     {
-        edje_edit_string_list_free(states);
-        evas_object_data_del(gl_states, STATES_LIST);
-     }
-   elm_genlist_clear(gl_states);
+   parent = elm_object_parent_widget_get(object);
+   elm_genlist_clear(object);
 
    states = edje_edit_part_states_list_get(group->obj, part->name);
-   evas_object_data_set(gl_states, STLIST_PART_KEY, part);
+   evas_object_data_set(object, STLIST_PART_KEY, part);
    EINA_LIST_FOREACH(states, l, state_name)
      {
-        stit = elm_genlist_item_append(gl_states, _itc_state,
+        stit = elm_genlist_item_append(object, _itc_state,
                                        state_name,
                                        NULL, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
         elm_object_item_data_set(stit, (void *)state_name);
      }
-   evas_object_data_set(gl_states, STATES_LIST, states);
+   BOX_ADD(parent, box, true, false)
+   elm_box_align_set(box, 1.0, 0.5);
+   button = elm_button_add(box);
+   elm_object_style_set(button, DEFAULT_STYLE);
+   evas_object_smart_callback_add(button, "clicked", _add_state_cb, object);
+   evas_object_show(button);
+   ICON_STANDARD_ADD(button, icon, EINA_TRUE, "apps")
+   elm_object_part_content_set(button, NULL, icon);
+   elm_box_pack_end(box, button);
+   button = elm_button_add(box);
+   elm_object_style_set(button, DEFAULT_STYLE);
+   evas_object_smart_callback_add(button, "clicked", _del_state_cb, object);
+   evas_object_show(button);
+   ICON_STANDARD_ADD(button, icon, EINA_TRUE, "delete")
+   elm_object_part_content_set(button, NULL, icon);
+   elm_box_pack_end(box, button);
+   elm_object_part_content_set(parent, "elm.swallow.title", box);
+   elm_object_signal_emit(parent, "title,content,show", "eflete");
 
-   return EINA_TRUE;
+   return true;
 }
+
+void
+ui_states_list_data_unset(Evas_Object *object)
+{
+   Evas_Object *parent, *content;
+
+   if (!object) return;
+
+   elm_genlist_clear(object);
+   parent = elm_object_parent_widget_get(object);
+   content = elm_object_part_content_get(parent, "elm.swallow.title");
+   evas_object_del(content);
+   evas_object_del(object);
+}
+
 
 Part *
 ui_state_list_part_get(Evas_Object *obj)

@@ -57,4 +57,10 @@ ui_signal_list_add(Evas_Object *parent);
 Eina_Bool
 ui_signal_list_data_set(Evas_Object *object, Group *group);
 
+/**
+ *
+ */
+void
+ui_states_list_data_unset(Evas_Object *object);
+
 #endif /* UI_SIGNAL_LIST_H */

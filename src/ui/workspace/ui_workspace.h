@@ -121,6 +121,15 @@ workspace_edit_object_part_del(Evas_Object *obj, const char *part);
 Eina_Bool
 workspace_edit_object_part_state_set(Evas_Object *obj, Part *part);
 
+Eina_Bool
+workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
+                                     const char *state, double value);
+
+Eina_Bool
+workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
+                                     const char *state, double value);
+
+
 /**
  * Set zoom factor for view zoommed style in groupspace.
  *
