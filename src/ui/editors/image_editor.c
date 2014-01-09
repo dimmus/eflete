@@ -20,7 +20,7 @@
 #include "image_editor.h"
 
 #define ITEM_WIDTH 100
-#define ITEM_HEIGHT 100
+#define ITEM_HEIGHT 115
 #define IMG_EDIT_KEY "image_editor_key"
 
 typedef struct _Image_Editor Image_Editor;
