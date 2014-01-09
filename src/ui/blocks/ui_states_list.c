@@ -56,7 +56,7 @@ _on_state_selected(void *data __UNUSED__,
                    void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   evas_object_smart_callback_call(obj, "st,state,select", glit);
+   evas_object_smart_callback_call(obj, "stl,state,select", glit);
 }
 
 Evas_Object *
