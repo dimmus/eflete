@@ -84,6 +84,9 @@ groupedit_edit_object_unset(Evas_Object *obj);
 void
 groupedit_edit_object_recalc_all(Evas_Object *obj);
 
+Evas_Object *
+groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part);
+
 Eina_Bool
 groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data);
@@ -105,6 +108,9 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
 
 void
 groupedit_part_object_area_set(Evas_Object *obj, const char *part);
+
+Evas_Object *
+groupedit_part_object_area_get(Evas_Object *obj);
 
 void
 groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible);

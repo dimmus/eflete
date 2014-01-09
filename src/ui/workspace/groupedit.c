@@ -606,6 +606,18 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
    _parts_recalc(sd);
 }
 
+Evas_Object *
+groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
+{
+   Groupspace_Part *gp;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
+   if (!part) return NULL;
+
+   gp = (Groupspace_Part *)eina_hash_find(sd->parts, part);
+
+   return gp->draw;
+}
+
 Eina_Bool
 groupedit_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data)
@@ -667,6 +679,13 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
    return ret;
 }
 
+Evas_Object *
+groupedit_part_object_area_get(Evas_Object *obj)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
+
+   return sd->obj_area.obj;
+}
 
 void
 groupedit_part_object_area_set(Evas_Object *obj, const char *part)

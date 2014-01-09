@@ -20,8 +20,8 @@
 #ifndef HIGHLIGHT_H
 #define HIGHLIGHT_H
 
-//#include "ui_groupspace.h"
-#include "Edje.h"
+#include <Evas.h>
+#include <Elementary.h>
 
 /**
  * @defgroup Highlight Highlight
@@ -113,6 +113,12 @@ struct _Highlight_Events
 };
 typedef struct _Highlight_Events Highlight_Events;
 
+typedef enum
+{
+   HIGHLIGHT_STATIC_HANDLERS,
+   HIGHLIGHT_DYNAMIC_HANDLERS
+} Highlight_Mode;
+
 /**
  * Adds highlight.
  *
@@ -142,10 +148,11 @@ highlight_add(Evas_Object *parent);
  *
  * @param highlight The smart object that is represent a highlight.
  * @param object The object that is represent selected part.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
  *
  * @ingroup Highlight
  */
-void
+Eina_Bool
 highlight_object_set(Evas_Object *hl, Evas_Object *obj);
 
 /**
@@ -159,10 +166,11 @@ highlight_object_set(Evas_Object *hl, Evas_Object *obj);
  * @param g Green color.
  * @param b Blur color.
  * @param a Alpha channel.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
  *
  * @ingroup Highlight
  */
-void
+Eina_Bool
 highlight_handler_color_set(Evas_Object *hl,
                             Evas_Coord r,
                             Evas_Coord g,
@@ -180,10 +188,11 @@ highlight_handler_color_set(Evas_Object *hl,
  * @param g Green color.
  * @param b Blur color.
  * @param a Alpha channel.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
  *
  * @ingroup Highlight
  */
-void
+Eina_Bool
 highlight_bg_color_set(Evas_Object *hl,
                        Evas_Coord r,
                        Evas_Coord g,
@@ -201,10 +210,11 @@ highlight_bg_color_set(Evas_Object *hl,
  * @param g Green color.
  * @param b Blur color.
  * @param a Alpha channel.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
  *
  * @ingroup Highlight
  */
-void
+Eina_Bool
 highlight_border_color_set(Evas_Object *hl,
                            Evas_Coord r,
                            Evas_Coord g,
@@ -218,10 +228,29 @@ highlight_border_color_set(Evas_Object *hl,
  *
  * @param obj The smart object that is represent a highlight.
  * @param disabled EINA_TRUE will disable handlers, EINA_FALSE will enable handlers.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
  *
  * @ingroup Highlight
  */
 Eina_Bool
 highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled);
+
+/**
+ * Set mode of the highlight.
+ *
+ * This function will change highlight mode into the given. Currently
+ * there are only two modes:
+ *
+ * - HIGHLIGHT_STATIC_HANDLERS - when highlight is normal one, with handlers which has same size and placed outside of the main border.
+ * - HIGHLIGHT_DYNAMIC_HANDLERS - when handlers are changing it's size depends on the size of main border. Handlers will be placed outside if the size small or inside if big enough.
+ *
+ * @param obj The smart object that is represent a highlight.
+ * @param mode Mode of the highlight it will be changed into.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
+ *
+ * @ingroup Highlight
+ */
+Eina_Bool
+highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode);
 
 #endif /* HIGHLIGHT_H */
