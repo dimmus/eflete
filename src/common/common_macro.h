@@ -23,6 +23,8 @@
 #define true EINA_TRUE
 #define false EINA_FALSE
 
+#define HIGHLIGHT_COLOR 58,110,155,255
+
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \
    Eina_Inlist *__styles, *__groups, *__widgets = NULL; \
