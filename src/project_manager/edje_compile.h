@@ -48,7 +48,7 @@ struct _Compiler_Message
    /** Member 'time' consist a time of a compile message */
    time_t time;
    /** Member 'text' consist a text of a compile message */
-   char *text;
+   Eina_Stringshare *text;
 };
 
 /**
@@ -66,7 +66,7 @@ struct _Edje_CC
    /** Member 'exe' consist a Ecore_Exe heandler */
    Ecore_Exe *exe;
    /** Member 'cmd' consist a executing command */
-   char *cmd;
+   Eina_Stringshare *cmd;
    /** Member 'messages' consist a compile messages */
    Eina_Inlist *messages;
 };

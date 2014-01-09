@@ -30,7 +30,7 @@ compiler_message_clear(Eina_Inlist *list)
              Compiler_Message *mes = EINA_INLIST_CONTAINER_GET(list,
                                                                Compiler_Message);
              list = eina_inlist_remove(list, EINA_INLIST_GET(mes));
-             free(mes->text);
+             eina_stringshare_del(mes->text);
              free(mes);
           }
      }
@@ -58,7 +58,7 @@ exe_data(void *data __UNUSED__,
           {
              message = mem_malloc(sizeof(*message));
              message->time = time(NULL);
-             message->text = strdup(ev->lines[i].line);
+             message->text = eina_stringshare_add(ev->lines[i].line);
              messages = eina_inlist_append(messages, EINA_INLIST_GET(message));
              DBG("%s", message->text);
           }
@@ -87,7 +87,6 @@ compile(const char *edc,
         const char *sound_directory)
 {
    Edje_CC *edjecc = NULL;
-   int size;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
@@ -95,12 +94,13 @@ compile(const char *edc,
 
    edjecc = mem_malloc(sizeof(*edjecc));
    edjecc->messages = NULL;
-   size = strlen(edc) + strlen(edj) +
-      strlen(image_directory) + strlen(font_directory) +
-      strlen(sound_directory) + BUFF_MAX;
-   edjecc->cmd = (char *)mem_malloc(size);
-   sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
-           image_directory, font_directory, sound_directory,
+   edjecc->cmd = eina_stringshare_printf("edje_cc %s%s %s%s %s%s %s %s",
+           ((image_directory) && strcmp(image_directory, "")) ? "-id " : "",
+           ((image_directory) && strcmp(image_directory, "")) ? image_directory : "",
+           ((font_directory) && strcmp(font_directory, "")) ? "-fd " : "",
+           ((font_directory) && strcmp(font_directory, "")) ? font_directory : "",
+           ((sound_directory) && strcmp(sound_directory, "")) ? "-sd " : "",
+           ((sound_directory) && strcmp(sound_directory, "")) ? sound_directory : "",
            edc, edj);
    INFO("Run command: %s", edjecc->cmd);
 
@@ -123,7 +123,6 @@ Edje_DeCC *
 decompile(const char *edj, const char *edc __UNUSED__)
 {
    Edje_DeCC *edjedecc = NULL;
-   int size;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
       ECORE_EXE_PIPE_READ_LINE_BUFFERED |
       ECORE_EXE_PIPE_ERROR |
@@ -132,9 +131,7 @@ decompile(const char *edj, const char *edc __UNUSED__)
    edjedecc = mem_malloc(sizeof(*edjedecc));
    edjedecc->messages = NULL;
 
-   size = strlen(edj) + BUFF_MAX;
-   edjedecc->cmd = (char *)mem_malloc(size);
-   sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh", edj);
+   edjedecc->cmd = eina_stringshare_printf("edje_decc %s -no-build-sh", edj);
 
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
@@ -151,7 +148,7 @@ edje_cc_free(struct _Edje_CC *edje_cc)
 {
    if (!edje_cc) return;
 
-   free(edje_cc->cmd);
+   eina_stringshare_del(edje_cc->cmd);
    compiler_message_clear(edje_cc->messages);
    free(edje_cc);
 }
