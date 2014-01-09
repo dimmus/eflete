@@ -46,12 +46,12 @@ _ok_clicked(void *data,
    Evas_Object *workspace = ap->workspace;
    Evas_Object *glist = evas_object_data_del(obj, STADD_LIST_KEY);
    Part *part = ui_state_list_part_get(glist);
-   Group *group = workspace_edit_object_get(workspace);
    const char *str_name, *str_value;
+   Eina_Stringshare *state;
 
    if (elm_entry_is_empty(entry_name))
      {
-        NOTIFY_WARNING("State name can not be empty")
+        NOTIFY_WARNING("State name can not be empty!")
         return;
      }
 
@@ -59,7 +59,11 @@ _ok_clicked(void *data,
    str_value = elm_entry_entry_get(entry_value);
    if (workspace_edit_object_part_state_add(workspace, part->name,
                                             str_name, atof(str_value)))
-     ui_states_list_data_set(glist, group, part);
+     {
+        state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
+        ui_state_list_state_add(glist, state);
+        eina_stringshare_del(state);
+     }
 }
 
 static void

@@ -65,4 +65,16 @@ ui_states_list_data_set(Evas_Object *object, Group *group, Part *part);
 Part *
 ui_state_list_part_get(Evas_Object *obj);
 
+Eina_Bool
+ui_state_list_state_add(Evas_Object *obj, const char *state);
+
+Eina_Bool
+ui_state_list_selected_state_del(Evas_Object *obj);
+
+Eina_Stringshare *
+ui_state_list_selected_state_get(Evas_Object *obj);
+
+Eina_List *
+ui_state_list_selected_states_get(Evas_Object *obj);
+
 #endif /* UI_STATES_LIST_H */
