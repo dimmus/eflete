@@ -52,6 +52,32 @@ _add_state_dialog(void *data,
 }
 
 static void
+_del_state_dialog(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *state_list = ui_block_state_list_get(ap);
+   Evas_Object *workspace = ap->workspace;
+   Part *part = ui_state_list_part_get(state_list);
+   Eina_Stringshare *state = ui_state_list_selected_state_get(state_list);
+
+   char **arr = eina_str_split(state, " ", 2);
+
+   /*TODO: need to check the program, some program can use the given state.
+     If given state used in programs - show dialog window with the question:
+     'This state used in the program(s). Are you sure you want to delete
+     %state name%' and delete the programs or some params from the program */
+   if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
+     ui_state_list_selected_state_del(state_list);
+
+   free(arr[0]);
+   free(arr);
+   eina_stringshare_del(state);
+}
+
+
+static void
 _del_style(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -153,7 +179,7 @@ ui_part_select(App_Data *ap,
    ui_states_list_data_set(gl_states, ap->project->current_group, part);
    ui_block_state_list_set(ap, gl_states);
    evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
-   //evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
+   evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
 
    /*TODO: in future it will be moved to block api. */
    //elm_object_signal_emit(ap->block.bottom_left, "title,content,show", "eflete");

@@ -642,7 +642,7 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if ((!part) || (!state)) return false;
 
-   ret = edje_edit_state_add(sd->edit_obj, part, state, value);
+   ret = edje_edit_state_del(sd->edit_obj, part, state, value);
 
    _parts_recalc(sd);
    return ret;

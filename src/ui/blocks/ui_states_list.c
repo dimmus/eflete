@@ -91,6 +91,16 @@ ui_states_list_add(Evas_Object *parent)
    return gl_states;
 }
 
+static void
+_item_del(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   Elm_Object_Item *item = (Elm_Object_Item *)event_info;
+   Eina_Stringshare *state = elm_object_item_data_get(item);
+   eina_stringshare_del(state);
+}
+
 Eina_Bool
 ui_states_list_data_set(Evas_Object *object,
                         Group *group,
@@ -98,6 +108,7 @@ ui_states_list_data_set(Evas_Object *object,
 {
    Eina_List *states, *l;
    const char *state_name;
+   Eina_Stringshare *state;
    Elm_Object_Item *stit;
    Evas_Object *parent, *box, *button, *icon;
 
@@ -110,12 +121,16 @@ ui_states_list_data_set(Evas_Object *object,
    evas_object_data_set(object, STLIST_PART_KEY, part);
    EINA_LIST_FOREACH(states, l, state_name)
      {
+        state = eina_stringshare_add(state_name);
         stit = elm_genlist_item_append(object, _itc_state,
-                                       state_name,
+                                       state,
                                        NULL, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
-        elm_object_item_data_set(stit, (void *)state_name);
+        elm_object_item_data_set(stit, (void *)state);
+        elm_object_item_del_cb_set(stit, _item_del);
      }
+   edje_edit_string_list_free(states);
+
    BOX_ADD(parent, box, true, false)
    elm_box_align_set(box, 1.0, 0.5);
    button = elm_button_add(box);
@@ -152,7 +167,6 @@ ui_states_list_data_unset(Evas_Object *object)
    evas_object_del(object);
 }
 
-
 Part *
 ui_state_list_part_get(Evas_Object *obj)
 {
@@ -160,4 +174,78 @@ ui_state_list_part_get(Evas_Object *obj)
    if (!obj) return NULL;
    _part = evas_object_data_get(obj, STLIST_PART_KEY);
    return _part;
+}
+
+Eina_Bool
+ui_state_list_state_add(Evas_Object *obj, const char *state)
+{
+   Elm_Object_Item *eoi;
+
+   if ((!obj) || (!state)) return false;
+
+   eoi = elm_genlist_item_append(obj, _itc_state, state,
+                                 NULL, ELM_GENLIST_ITEM_NONE,
+                                 NULL, NULL);
+   elm_object_item_data_set(eoi, (void *)state);
+   elm_genlist_item_selected_set(eoi, true);
+
+   return true;
+}
+
+Eina_Bool
+ui_state_list_selected_state_del(Evas_Object *obj)
+{
+   Elm_Object_Item *eoi, *next_eoi;
+   if (!obj) return false;
+
+   eoi = elm_genlist_selected_item_get(obj);
+
+   if (!eoi)
+     {
+        WARN("None one part does'nt selected!");
+        return false;
+     }
+
+   next_eoi = elm_genlist_item_next_get(eoi);
+   if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
+   elm_genlist_item_selected_set(next_eoi, true);
+   elm_object_item_del(eoi);
+
+   return true;
+
+}
+
+Eina_Stringshare *
+ui_state_list_selected_state_get(Evas_Object *obj)
+{
+   Elm_Object_Item *eoi;
+   Eina_Stringshare *state;
+
+   if (!obj) return NULL;
+   eoi = elm_genlist_selected_item_get(obj);
+   if (!eoi) return NULL;
+   state = eina_stringshare_add(elm_object_item_data_get(eoi));
+
+   return state;
+}
+
+Eina_List *
+ui_state_list_selected_states_get(Evas_Object *obj)
+{
+   Elm_Object_Item *eoi;
+   Eina_List *items, *l, *states = NULL;
+   Eina_Stringshare *state;
+
+   if (!obj) return NULL;
+   items = (Eina_List *)elm_genlist_selected_items_get(obj);
+   if (!items) return NULL;
+
+   EINA_LIST_FOREACH(items, l, eoi)
+     {
+        state = eina_stringshare_add(elm_object_item_data_get(eoi));
+        states = eina_list_append(states, state);
+     }
+
+   eina_list_free(items);
+   return states;
 }
