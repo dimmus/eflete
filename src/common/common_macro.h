@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef COMMON_MACRO_H
@@ -26,26 +26,26 @@
 
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \
-   Eina_Inlist *__styles, *__groups, *__widgets = NULL; \
-   Widget *__widget; \
-   Style *__style; \
-   Group *__group; \
-   __widgets = PROJECT->widgets; \
-   if (!__widgets) EDJE_OBJECT = NULL; \
+   Eina_Inlist *_styles, *_groups, *_widgets = NULL; \
+   Widget *_widget; \
+   Style *_style; \
+   Group *_group; \
+   _widgets = PROJECT->widgets; \
+   if (!_widgets) EDJE_OBJECT = NULL; \
    else\
      { \
-         __widget = EINA_INLIST_CONTAINER_GET(__widgets, Widget); \
-         __styles = __widget->styles; \
-         if (!__styles) EDJE_OBJECT = NULL; \
+         _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
+         _styles = _widget->styles; \
+         if (!_styles) EDJE_OBJECT = NULL; \
          else \
            { \
-               __style = EINA_INLIST_CONTAINER_GET(__styles, Style); \
-               __groups = __style->groups; \
-               if (!__groups) EDJE_OBJECT = NULL; \
+               _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
+               _groups = _style->groups; \
+               if (!_groups) EDJE_OBJECT = NULL; \
                else\
                  { \
-                     __group = EINA_INLIST_CONTAINER_GET(__groups, Group); \
-                     EDJE_OBJECT = __group->obj; \
+                     _group = EINA_INLIST_CONTAINER_GET(_groups, Group); \
+                     EDJE_OBJECT = _group->obj; \
                  } \
            } \
      }
