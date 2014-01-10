@@ -216,6 +216,8 @@ ui_group_clicked(App_Data *ap, Group *group)
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
+   workspace_edit_object_set(ap->workspace, group, ap->project->swapfile);
+
    /* group properties */
    prop = ui_block_property_get(ap);
    if (!prop)
@@ -223,13 +225,9 @@ ui_group_clicked(App_Data *ap, Group *group)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
-   ui_property_group_set(prop, group);
+   ui_property_group_set(prop, group, ap->workspace);
    evas_object_show(prop);
 
-   //ui_groupspace_set(ap->workspace, ap->project, group);
-   //ui_groupspace_update(groupspace);
-   //ws_groupspace_set(ap->workspace, groupspace);
-   workspace_edit_object_set(ap->workspace, group, ap->project->swapfile);
    ui_demospace_set(ap->demo, ap->project, group);
    ui_demospace_update(ap->demo);
    ui_menu_disable_set(ap->menu_hash, "Programs", EINA_FALSE);

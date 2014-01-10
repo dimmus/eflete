@@ -838,6 +838,13 @@ workspace_edit_object_get(Evas_Object *obj)
    return sd->group;
 }
 
+void
+workspace_edit_object_recalc(Evas_Object *obj)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+   groupedit_edit_object_recalc_all(sd->groupedit);
+}
+
 Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data)
