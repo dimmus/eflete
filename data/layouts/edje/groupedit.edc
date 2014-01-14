@@ -3,7 +3,7 @@ group { name: "eflete/groupedit/base/default";
       image: "groupedit_border.png" COMP;
    }
    parts {
-      part { name: "border";
+     part { name: "border";
          type: IMAGE;
          mouse_events: 0;
          scale: 1;
@@ -11,6 +11,7 @@ group { name: "eflete/groupedit/base/default";
             image {
                normal: "groupedit_border.png";
                border: 2 2 2 2;
+               middle: NONE;
             }
             rel1.offset: -2 -2;
             rel2.offset: 1 1;
