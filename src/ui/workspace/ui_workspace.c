@@ -69,10 +69,9 @@ struct _Ws_Smart_Data
    Group *group;
 
    struct {
-        DEPRECATED Evas_Object *highlight; /**< A highlight object */
-        DEPRECATED Part *part; /**< A pointer to part object, highlight edit*/
-        DEPRECATED  Evas_Object *space_hl; /**< A object area highlight*/
-
+        Evas_Object *highlight; /**< A highlight object */
+        Evas_Object *space_hl; /**< A object area highlight*/
+        Part *part; /**< Contain part name and it's state. need for callbacks of highlight. */
    } highlight;
    DEPRECATED Eina_Bool separated; /**< Will remove, when groupedit \
                                      will be smart */
@@ -233,7 +232,6 @@ _sc_smart_resize_cb(void *data ,
    //evas_object_smart_calculate(box);
 }
 
-
 void
 _sc_smart_move_cb(void *data,
                   Evas_Object *obj __UNUSED__,
@@ -359,11 +357,7 @@ ws_legend_visible_set(Evas_Object *obj)
    return true;
 }
 
-
-
-/*-------------DEPRECATED functions-----------------------*/
-/*
-DEPRECATED static void
+static void
 _ws_mouse_move_cb(void *data, Evas *e,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
@@ -375,10 +369,8 @@ _ws_mouse_move_cb(void *data, Evas *e,
    ui_ruler_pointer_pos_set(sd->ruler_hor, x);
    ui_ruler_pointer_pos_set(sd->ruler_ver, y);
 }
-*/
 
-/*
-DEPRECATED static void
+static void
 _on_resize(void *data,
             Evas_Object * obj __UNUSED__,
             void *ei)
@@ -386,57 +378,38 @@ _on_resize(void *data,
    Highlight_Events *events = (Highlight_Events *)ei;
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
-   Group *group = ui_groupspace_group_get(sd->groupspace);
+
    Part *part = sd->highlight.part;
-   if ((!group) && (!part)) return;
-   edje_edit_state_max_w_set(group->obj, part->name,
+   if ((!sd->group) && (!part)) return;
+   edje_edit_state_max_w_set(sd->group->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->w);
-   edje_edit_state_max_h_set(group->obj, part->name,
+   edje_edit_state_max_h_set(sd->group->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->h);
+   workspace_edit_object_recalc(ws_obj);
+   evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }
-*/
 
-
-DEPRECATED Eina_Bool
-ws_object_highlight_set(Evas_Object *obj __UNUSED__, Part *part __UNUSED__)
+Eina_Bool
+workspace_highlight_set(Evas_Object *obj, Part *part)
 {
-   /*
-   int x, y, w, h;
-   if (!part) return false;
+   Evas_Object *object;
+   if ((!obj) || (!part)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
-   Evas_Object *box = ui_groupspace_box_get(sd->groupspace);
-   Group *group = ui_groupspace_group_get(sd->groupspace);
-   if (!sd->separated) return false;
+   groupedit_part_object_area_set(sd->groupedit, part->name);
+
+   object = groupedit_edit_object_part_draw_get(sd->groupedit, part->name);
+   highlight_object_follow(sd->highlight.highlight, object);
+
+   object = groupedit_part_object_area_get(sd->groupedit);
+   highlight_object_follow(sd->highlight.space_hl, object);
+
    sd->highlight.part = part;
 
-   if (!sd->highlight.space_hl)
-     {
-        sd->highlight.space_hl = highlight_add(sd->groupspace);
-        highlight_bg_color_set(sd->highlight.space_hl, 64, 64, 64, 64);
-        highlight_border_color_set(sd->highlight.space_hl, 0, 0, 0, 255);
-        highlight_handler_disabled_set(sd->highlight.space_hl, true);
-     }
-   ui_groupspace_part_space_geometry_get(group, part, &x, &y, &w, &h);
-   evas_object_resize(sd->highlight.space_hl, w, h);
-   evas_object_move(sd->highlight.space_hl, x, y);
    evas_object_hide(sd->highlight.space_hl);
-   evas_object_box_insert_at(box, sd->highlight.space_hl, 0);
-
-   if (!sd->highlight.highlight)
-     {
-        sd->highlight.highlight = highlight_add(sd->groupspace);
-        highlight_bg_color_set(sd->highlight.highlight , 0, 0, 0 , 0);
-        highlight_handler_color_set(sd->highlight.highlight, 255, 0, 0, 255);
-        highlight_border_color_set(sd->highlight.highlight, 0, 255, 0, 255);
-     }
-   evas_object_geometry_get(part->obj, &x, &y, &w, &h);
-   evas_object_resize(sd->highlight.highlight, w, h);
-   evas_object_move(sd->highlight.highlight, x, y);
    evas_object_show(sd->highlight.highlight);
-   evas_object_box_insert_at(box, sd->highlight.highlight, 0);
 
    evas_object_event_callback_add(sd->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
@@ -445,9 +418,28 @@ ws_object_highlight_set(Evas_Object *obj __UNUSED__, Part *part __UNUSED__)
                                   _on_resize, obj);
 
    return true;
-   */
+}
+
+Eina_Bool
+workspace_highlight_unset(Evas_Object *obj)
+{
+   if (!obj) return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   highlight_object_unfollow(sd->highlight.highlight);
+   highlight_object_unfollow(sd->highlight.highlight);
+   sd->highlight.part = NULL;
+   evas_object_hide(sd->highlight.space_hl);
+   evas_object_hide(sd->highlight.highlight);
+
+   evas_object_event_callback_del(sd->highlight.highlight,
+                                  EVAS_CALLBACK_MOUSE_MOVE,
+                                  _ws_mouse_move_cb);
+   evas_object_smart_callback_del(sd->highlight.highlight, "hl,resize",
+                                  _on_resize);
    return true;
 }
+
+/*-------------DEPRECATED functions-----------------------*/
 
 DEPRECATED Eina_Bool
 ws_object_highlight_move(Evas_Object *obj __UNUSED__)
@@ -686,16 +678,27 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->legend.view = NULL;
    priv->legend.visible = false;
 
-   /* TODO: DEPRECATED <- delete */
-   //priv->highlight.highlight = NULL;
-   //priv->highlight.part = NULL;
-   //priv->highlight.space_hl = NULL;
-
    /*TODO: DEPRECATED <- delete */
    //priv->separated = true;
 
    priv->group = NULL;
    priv->guides = NULL;
+
+   /* Create highlights for object and relative space */
+   /*TODO: remake scroller and layout with rulers etc.
+           because highlight work wrong because of that */
+   priv->highlight.space_hl = highlight_add(priv->scroller);
+   highlight_bg_color_set(priv->highlight.space_hl, OBG_AREA_BG_COLOR);
+   highlight_border_color_set(priv->highlight.space_hl, OBG_AREA_COLOR);
+   highlight_handler_disabled_set(priv->highlight.space_hl, true);
+   evas_object_smart_member_add(priv->highlight.space_hl, o);
+
+   priv->highlight.highlight = highlight_add(priv->scroller);
+   highlight_bg_color_set(priv->highlight.highlight, HIGHLIGHT_BG_COLOR);
+   highlight_handler_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
+   highlight_border_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
+   evas_object_smart_member_add(priv->highlight.highlight, o);
+
    return true;
 }
 
@@ -712,6 +715,8 @@ _workspace_smart_del(Evas_Object *o)
    evas_object_smart_member_del(sd->button_separate);
    evas_object_smart_member_del(sd->scroller);
    evas_object_smart_member_del(sd->clipper);
+   evas_object_smart_member_del(sd->highlight.highlight);
+   evas_object_smart_member_del(sd->highlight.space_hl);
    if (sd->groupedit)
      evas_object_smart_member_del(sd->groupedit);
 
@@ -825,10 +830,13 @@ workspace_edit_object_unset(Evas_Object *obj)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
    sd->group = NULL;
-   groupedit_edit_object_unset(sd->groupedit);
-   elm_object_content_unset(sd->scroller);
-   evas_object_del(sd->groupedit);
-   sd->groupedit = NULL;
+   if (sd->groupedit)
+     {
+        groupedit_edit_object_unset(sd->groupedit);
+        elm_object_content_unset(sd->scroller);
+        evas_object_del(sd->groupedit);
+        sd->groupedit = NULL;
+     }
 }
 
 Group *

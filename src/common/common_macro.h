@@ -20,6 +20,10 @@
 #ifndef COMMON_MACRO_H
 #define COMMON_MACRO_H
 
+#define HIGHLIGHT_BG_COLOR 0,0,0,0
+#define HIGHLIGHT_COLOR 58,110,155,255
+#define OBG_AREA_BG_COLOR 64,64,64,64
+#define OBG_AREA_COLOR 0,0,0,255
 #define true EINA_TRUE
 #define false EINA_FALSE
 #define RETURN_VOID

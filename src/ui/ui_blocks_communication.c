@@ -95,6 +95,22 @@ _add_style_dailog(void *data,
    style_dialog_add(ap);
 }
 
+static void
+_property_change(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *prop = ui_block_property_get(ap);
+   if (!prop)
+     {
+        ERR("Property view is missing!");
+        return;
+     }
+   Part *part = (Part *)event_info;
+   ui_property_state_set(prop, part);
+}
+
 void
 ui_part_back(App_Data *ap)
 {
@@ -121,6 +137,9 @@ ui_part_back(App_Data *ap)
    ui_demospace_unset(ap->demo);
 
    ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+
+   evas_object_smart_callback_del(ap->workspace, "part,changed", _property_change);
+   workspace_highlight_unset(ap->workspace);
 }
 
 /**
@@ -152,6 +171,7 @@ ui_state_select(App_Data *ap,
    workspace_edit_object_part_state_set(ap->workspace, part);
    //ui_groupspace_part_state_update(groupspace, part);
    //ws_object_highlight_move(ap->workspace);
+
 }
 
 Evas_Object *
@@ -187,7 +207,9 @@ ui_part_select(App_Data *ap,
    evas_object_show(gl_states);
 
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
-   //ws_object_highlight_set(ap->workspace, part);
+   workspace_highlight_set(ap->workspace, part);
+   evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
+   evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
 
    return gl_states;
 }
@@ -252,7 +274,12 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
-             workspace_edit_object_unset(ap->workspace);
+             if (ap->workspace)
+               {
+                  workspace_edit_object_unset(ap->workspace);
+                  workspace_highlight_unset(ap->workspace);
+               }
+
              if (ap->demo) ui_demospace_unset(ap->demo);
              pm_free(ap->project);
              GET_NAME_FROM_PATH(name, selected)
@@ -296,7 +323,12 @@ ui_edc_load_done(App_Data* ap,
         elm_genlist_clear(ui_block_state_list_get(ap));
         elm_genlist_clear(ui_block_signal_list_get(ap));
 
-        workspace_edit_object_unset(ap->workspace);
+        if (ap->workspace)
+          {
+             workspace_edit_object_unset(ap->workspace);
+             workspace_highlight_unset(ap->workspace);
+          }
+
         if (ap->demo) ui_demospace_unset(ap->demo);
         pm_free(ap->project);
         ap->project = pm_open_project_edc(project_name,
@@ -372,6 +404,13 @@ new_theme_create(App_Data *ap)
         if (signal) elm_genlist_clear(signal);
         prop = ui_block_property_get(ap);
         if (prop) ui_property_group_unset(prop);
+
+        if (ap->workspace)
+          {
+             workspace_edit_object_unset(ap->workspace);
+             workspace_highlight_unset(ap->workspace);
+          }
+
         if ((ap->demo) || (ap->project))
           ui_demospace_unset(ap->demo);
         ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);

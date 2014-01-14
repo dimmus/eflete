@@ -174,9 +174,6 @@ ws_zoom_factor_get(Evas_Object *obj);
 Eina_Bool
 ws_legend_visible_set(Evas_Object *obj);
 
-
-
-/*-------------DEPRECATED functions-----------------------*/
 /**
  * Set highlight to selected part.
  *
@@ -186,10 +183,24 @@ ws_legend_visible_set(Evas_Object *obj);
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup Workspace
- * @deprecated replace with new functional of smart highlight object.
  */
 Eina_Bool
-ws_object_highlight_set(Evas_Object *obj, Part *part);
+workspace_highlight_set(Evas_Object *obj, Part *part);
+
+/**
+ * Unset highlight from previously selected part.
+ *
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_highlight_unset(Evas_Object *obj);
+
+
+/*-------------DEPRECATED functions-----------------------*/
 
 /**
  * Move highlight object on workspace.

@@ -749,6 +749,7 @@ groupedit_part_object_area_set(Evas_Object *obj, const char *part)
 
    gp = _parts_list_find(sd->parts, part);
    sd->obj_area.gp = gp;
+   _parts_recalc(sd);
 }
 
 void
