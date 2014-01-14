@@ -94,7 +94,9 @@ tests/edj_build/Makefile
 tests/edj_build/radio.edc
 doc/Makefile
 ])
-
+AC_CONFIG_COMMANDS( [cp], [cp ${srcdir}/tests/edj_build/radio.png ./tests/edj_build/radio.png])
+AC_CONFIG_COMMANDS( [cp1], [cp ${srcdir}/tests/edj_build/radio2.png ./tests/edj_build/radio2.png])
+AC_CONFIG_COMMANDS( [cp2], [cp ${srcdir}/tests/edj_build/radio_base.png ./tests/edj_build/radio_base.png])
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "xyes"])
 AC_SUBST([CHECK_FOUND])
 AM_CONDITIONAL([PREFIX], [test "x$prefix" = "xNONE"])

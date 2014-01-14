@@ -122,6 +122,9 @@ compile(const char *edc,
 Edje_DeCC *
 decompile(const char *edj, const char *edc __UNUSED__)
 {
+   if (!edj)
+      return NULL;
+
    Edje_DeCC *edjedecc = NULL;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
       ECORE_EXE_PIPE_READ_LINE_BUFFERED |
