@@ -117,3 +117,9 @@ groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible);
 
 Eina_Bool
 groupedit_part_object_area_visible_get(Evas_Object *obj);
+
+void
+groupedit_edit_object_parts_separeted(Evas_Object *obj, Eina_Bool separeted);
+
+Eina_Bool
+groupedit_edit_object_parts_separeted_is(Evas_Object *obj);

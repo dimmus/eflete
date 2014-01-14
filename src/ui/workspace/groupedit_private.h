@@ -29,7 +29,7 @@
 #endif /* include config.h */
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
-typedef struct _Groupspace_Part Groupspace_Part;
+typedef struct _Groupedit_Part Groupedit_Part;
 
 static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_PART_SEPARETED[] = "parts,separeted";
@@ -89,14 +89,16 @@ struct _Ws_Groupedit_Smart_Data
    const char *style;
    Evas_Object *edit_obj;
    const char *edit_obj_file;
-   Eina_Hash *parts;
+   Eina_List *parts;
    struct {
       Evas_Object *obj;
-      Groupspace_Part *gp;
+      Groupedit_Part *gp;
       Groupedit_Geom *geom;
       Eina_Bool visible : 1;
    } obj_area;
    Eina_Bool separeted : 1;
+   Groupedit_Part *selected;
+   Groupedit_Part *to_select;
    Evas_Coord downx;
    Evas_Coord downy;
 };
@@ -113,19 +115,38 @@ struct _Ws_Groupedit_Smart_Data
         return val;                                                     \
      }
 
-struct _Groupspace_Part
+/**
+ * It a padding for parts layer in the separete mod.
+ */
+#define SEP_ITEM_PAD_X 50
+#define SEP_ITEM_PAD_Y 30
+
+/**
+ * Groupedit part this struct contains all object for draw edit object part in
+ * groupedit object.
+ */
+struct _Groupedit_Part
 {
-   Eina_Stringshare *name;
-   Evas_Object *draw; /* part to be draw in groupedit */
-   Eina_Bool visible : 1; /* visible or not on canvas */
-   //const Evas_Object *edit; /* const object from edje edit object */
+   Eina_Stringshare *name;    /**< The part name.  */
+   Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
+                                   The valid evas object types: image, rectangle,
+                                   text and textblock.*/
+   Eina_Bool visible : 1;     /**< Visible or not on canvas. */
+   Evas_Object *border;       /**< The object border, use for next part types:
+                                   TEXT, TEXTBLOCK, SWALLOW, SPACER. This object
+                                   created only for these parts types, in other
+                                   cases object is NULL. */
+   Evas_Object *item;         /**< The object border in the separete mode */
 };
 
 void
-_parts_hash_new(Ws_Groupedit_Smart_Data *sd);
+_parts_list_new(Ws_Groupedit_Smart_Data *sd);
 
 void
-_parts_hash_free(Ws_Groupedit_Smart_Data *sd);
+_parts_list_free(Ws_Groupedit_Smart_Data *sd);
+
+Groupedit_Part *
+_parts_list_find(Eina_List *parts, const char *part);
 
 void
 _parts_recalc(Ws_Groupedit_Smart_Data *sd);

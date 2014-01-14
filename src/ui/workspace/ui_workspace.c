@@ -213,8 +213,9 @@ _separate_smart_on_click(void *data,
 {
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
-   //ui_groupspace_separate(o);
-   /* FIXME:  when groupedit wiil be implement change call with right signal */
+
+   Eina_Bool sep = groupedit_edit_object_parts_separeted_is(sd->groupedit);
+   groupedit_edit_object_parts_separeted(sd->groupedit, !sep);
 }
 static void
 _sc_smart_resize_cb(void *data ,
@@ -841,7 +842,7 @@ workspace_edit_object_get(Evas_Object *obj)
 void
 workspace_edit_object_recalc(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
    groupedit_edit_object_recalc_all(sd->groupedit);
 }
 

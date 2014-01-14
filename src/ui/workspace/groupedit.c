@@ -306,8 +306,6 @@ _groupedit_smart_add(Evas_Object *o)
    priv->con_size_max.w = -1;
    priv->con_size_max.h = -1;
    priv->con_current_size = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
-   //priv->con_current_size.w = 0;
-   //priv->con_current_size.h = 0;
    priv->edit_obj = NULL;
    priv->parts = NULL;
    priv->handler_TL_pressed = EINA_FALSE;
@@ -316,6 +314,8 @@ _groupedit_smart_add(Evas_Object *o)
    priv->obj_area.gp = NULL;
    priv->obj_area.visible = EINA_FALSE;
    priv->separeted = EINA_FALSE;
+   priv->selected = NULL;
+   priv->to_select = NULL;
 
    priv->paddings.t_left = PADDING_INIT;
    priv->paddings.t_top = PADDING_INIT;
@@ -338,7 +338,7 @@ _groupedit_smart_del(Evas_Object *o)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   eina_hash_free(sd->parts);
+   _parts_list_free(sd);
 
    evas_object_smart_member_del(sd->container);
    evas_object_smart_member_del(sd->handler_TL.obj);
@@ -352,10 +352,19 @@ _groupedit_smart_show(Evas_Object *o)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
-   if (sd->handler_TL.obj) evas_object_show(sd->handler_TL.obj);
-   if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
+   if (sd->separeted)
+     {
+        evas_object_hide(sd->handler_TL.obj);
+        evas_object_hide(sd->handler_BR.obj);
+        evas_object_hide(sd->container);
+     }
+   else
+     {
+        evas_object_show(sd->handler_TL.obj);
+        evas_object_show(sd->handler_BR.obj);
+        evas_object_show(sd->container);
+     }
 
-   evas_object_show(sd->container);
    _groupedit_parent_sc->show(o);
 }
 
@@ -364,10 +373,10 @@ _groupedit_smart_hide(Evas_Object *o)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   if (sd->handler_TL.obj) evas_object_hide(sd->handler_TL.obj);
-   if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
-
+   evas_object_hide(sd->handler_TL.obj);
+   evas_object_hide(sd->handler_BR.obj);
    evas_object_hide(sd->container);
+
    _groupedit_parent_sc->hide(o);
 }
 
@@ -408,23 +417,37 @@ _groupedit_smart_calculate(Evas_Object *o)
    x += priv->paddings.t_left;
    y += priv->paddings.t_top;
 
+   if (!priv->separeted)
+     {
+        evas_object_resize(priv->container, cw, ch);
+        evas_object_move(priv->container, x + htl_w, y + htl_h);
+        priv->con_current_size->x = x + htl_w;
+        priv->con_current_size->y = y + htl_h;
+        priv->con_current_size->w = cw;
+        priv->con_current_size->h = ch;
+        sprintf(buff, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
+        edje_object_part_text_set(priv->container, TEXT_TOOLTIP, buff);
 
-   evas_object_resize(priv->container, cw, ch);
-   evas_object_move(priv->container, x + htl_w, y + htl_h);
-   priv->con_current_size->x = x + htl_w;
-   priv->con_current_size->y = y + htl_h;
-   priv->con_current_size->w = cw;
-   priv->con_current_size->h = ch;
-   sprintf(buff, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
-   edje_object_part_text_set(priv->container, TEXT_TOOLTIP, buff);
+        evas_object_resize(priv->handler_TL.obj, htl_w, htl_h);
+        evas_object_move(priv->handler_TL.obj, x, y);
 
-
-   evas_object_resize(priv->handler_TL.obj, htl_w, htl_h);
-   evas_object_move(priv->handler_TL.obj, x, y);
-
-   evas_object_resize(priv->handler_BR.obj, hrb_w, hrb_h);
-   evas_object_move(priv->handler_BR.obj, priv->con_current_size->x + cw,
+        evas_object_resize(priv->handler_BR.obj, hrb_w, hrb_h);
+        evas_object_move(priv->handler_BR.obj, priv->con_current_size->x + cw,
                                           priv->con_current_size->y + ch);
+
+        evas_object_show(priv->container);
+        evas_object_show(priv->handler_TL.obj);
+        evas_object_show(priv->handler_BR.obj);
+     }
+   else
+     {
+        evas_object_hide(priv->container);
+        evas_object_hide(priv->handler_TL.obj);
+        evas_object_hide(priv->handler_BR.obj);
+     }
+
+   DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
+
    _parts_recalc(priv);
 
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
@@ -604,8 +627,8 @@ groupedit_edit_object_set(Evas_Object *obj,
      sd->con_size_max.h = edje_edit_group_max_h_get(edit_obj);
 
    _edit_object_load(sd);
-   if (sd->parts) _parts_hash_free(sd);
-   _parts_hash_new(sd);
+   if (sd->parts) _parts_list_free(sd);
+   _parts_list_new(sd);
 
    evas_object_smart_changed(sd->obj);
 
@@ -620,7 +643,7 @@ groupedit_edit_object_unset(Evas_Object *obj)
 
    if ((!sd->edit_obj) && (!sd->parts)) return NULL;
 
-   _parts_hash_free(sd);
+   _parts_list_free(sd);
    ret = sd->edit_obj;
    sd->edit_obj = NULL;
 
@@ -638,11 +661,11 @@ groupedit_edit_object_recalc_all(Evas_Object *obj)
 Evas_Object *
 groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 {
-   Groupspace_Part *gp;
+   Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
    if (!part) return NULL;
 
-   gp = (Groupspace_Part *)eina_hash_find(sd->parts, part);
+   gp = _parts_list_find(sd->parts, part);
 
    return gp->draw;
 }
@@ -719,12 +742,12 @@ groupedit_part_object_area_get(Evas_Object *obj)
 void
 groupedit_part_object_area_set(Evas_Object *obj, const char *part)
 {
-   Groupspace_Part *gp;
+   Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
    if (!sd->parts) return;
 
-   gp = (Groupspace_Part *) eina_hash_find(sd->parts, part);
+   gp = _parts_list_find(sd->parts, part);
    sd->obj_area.gp = gp;
 }
 
@@ -740,6 +763,32 @@ groupedit_part_object_area_visible_get(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
    return sd->obj_area.visible;
+}
+
+void
+groupedit_edit_object_parts_separeted(Evas_Object *obj, Eina_Bool separeted)
+{
+   int w, h, count;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   if ((!sd->edit_obj) || (!sd->parts)) return;
+   if (sd->separeted == separeted) return;
+
+   sd->separeted = separeted;
+   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+   count = eina_list_count(sd->parts);
+   /* after resize the groupedit object it will be marked as dirty,
+      and parts will be recalced. */
+   if (separeted)
+     evas_object_resize(obj, w + (SEP_ITEM_PAD_X * count), h + (SEP_ITEM_PAD_Y * count));
+   else
+     evas_object_resize(obj, w - (SEP_ITEM_PAD_X * count), h - (SEP_ITEM_PAD_Y * count));
+}
+
+Eina_Bool
+groupedit_edit_object_parts_separeted_is(Evas_Object *obj)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return sd->separeted;
 }
 
 #undef MY_CLASS_NAME
