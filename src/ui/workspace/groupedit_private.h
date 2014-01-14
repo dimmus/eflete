@@ -57,6 +57,14 @@ struct _Ws_Groupedit_Smart_Data
    Evas *e;
    Evas_Object *obj;
    Evas_Object *container;
+   Evas_Object *parent;
+   /* Paddings which solve scroller issue,
+      when container data move to 0,0 coords */
+   struct {
+      int t_left;
+      int t_top;
+      int bottom;
+   } paddings;
    /* Minimal and maximum size of the container,
       i.e size of the edie_edit object */
    struct {
