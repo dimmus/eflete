@@ -400,7 +400,7 @@ _on_resize(void *data,
 
 
 DEPRECATED Eina_Bool
-ws_object_highlight_set(Evas_Object *obj, Part *part)
+ws_object_highlight_set(Evas_Object *obj __UNUSED__, Part *part __UNUSED__)
 {
    /*
    int x, y, w, h;
@@ -450,7 +450,7 @@ ws_object_highlight_set(Evas_Object *obj, Part *part)
 }
 
 DEPRECATED Eina_Bool
-ws_object_highlight_move(Evas_Object *obj)
+ws_object_highlight_move(Evas_Object *obj __UNUSED__)
 {
    /*
    int x, y, w, h;
@@ -473,7 +473,7 @@ ws_object_highlight_move(Evas_Object *obj)
 }
 
 DEPRECATED Eina_Bool
-ws_object_highlight_handler_move(Evas_Object *obj)
+ws_object_highlight_handler_move(Evas_Object *obj __UNUSED__)
 {
    /*
    int x, y, w, h;
@@ -496,7 +496,7 @@ ws_object_highlight_handler_move(Evas_Object *obj)
 }
 
 DEPRECATED Eina_Bool
-ws_object_highlight_hide(Evas_Object *obj)
+ws_object_highlight_hide(Evas_Object *obj __UNUSED__)
 {
    /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
@@ -510,7 +510,7 @@ ws_object_highlight_hide(Evas_Object *obj)
 }
 
 DEPRECATED Eina_Bool
-ws_object_highlight_del(Evas_Object *obj)
+ws_object_highlight_del(Evas_Object *obj __UNUSED__)
 {
    /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
@@ -528,7 +528,7 @@ ws_object_highlight_del(Evas_Object *obj)
 }
 
 DEPRECATED Evas_Object *
-ws_space_hl_get(Evas_Object *obj)
+ws_space_hl_get(Evas_Object *obj __UNUSED__)
 {
    /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
@@ -538,7 +538,7 @@ ws_space_hl_get(Evas_Object *obj)
 }
 
 DEPRECATED Evas_Object *
-ws_highlight_get(Evas_Object *obj)
+ws_highlight_get(Evas_Object *obj __UNUSED__)
 {
    /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
@@ -548,7 +548,7 @@ ws_highlight_get(Evas_Object *obj)
 }
 
 DEPRECATED Eina_Bool
-ws_separated_mode_get(Evas_Object *obj)
+ws_separated_mode_get(Evas_Object *obj __UNUSED__)
 {
    /*
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
@@ -558,7 +558,7 @@ ws_separated_mode_get(Evas_Object *obj)
 }
 
 DEPRECATED Eina_Bool
-ws_separated_mode_set(Evas_Object *obj, Eina_Bool separated)
+ws_separated_mode_set(Evas_Object *obj __UNUSED__, Eina_Bool separated __UNUSED__)
 {
    /*
    Evas_Object *icon = NULL;
