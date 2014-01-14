@@ -57,7 +57,7 @@ fi
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 
-want_eflete_deubg="no"
+want_eflete_debug="no"
 AC_ARG_ENABLE([debug],
    [AC_HELP_STRING([--enable-debug], [enable eflete debug support. @<:@default=disabled@:>@])],
    [want_eflete_debug=$enableval], [])
@@ -150,6 +150,8 @@ echo "  run tests......: make check"
 echo "  run tests......: to run tests you should install check:"
 echo "                   sudo apt-get install check"
 ])
+echo ""
+echo "Debug output.....: ${want_eflete_debug}"
 echo ""
 echo "Installation.....: sudo make install"
 echo "  CFLAGS.........: ${CFLAGS}"

@@ -1,5 +1,5 @@
 group { name: "elm/toolbar/base/eflete/default";
-   data.item: "icon_size" "14";
+   data.item: "icon_size" "16";
    parts {
       part { name: "base";
          type: RECT;

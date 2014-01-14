@@ -3,6 +3,7 @@ group { name: "elm/gengrid/item/eflete/default/default";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    images {
       image: "gallery-overlay.png" COMP;
+      image: "image_border.png" COMP;
    }
    parts {
       part { name: "spacer1";
@@ -61,6 +62,24 @@ group { name: "elm/gengrid/item/eflete/default/default";
             }
          }
       }
+      part { name: "icon_border";
+         type:IMAGE;
+         description { state: "default" 0.0;
+            image {
+               normal: "image_border.png";
+               border: 1 1 1 1;
+               middle: 0;
+            }
+            rel1 {
+               to: "elm.swallow.icon";
+               offset: -1 -1;
+            }
+            rel2 {
+               to: "elm.swallow.icon";
+               offset: 1 1;
+            }
+         }
+      }
       part { name: "elm.swallow.icon";
          clip_to: "disclip";
          repeat_events: 1;
@@ -110,14 +129,15 @@ group { name: "elm/gengrid/item/eflete/default/default";
          description { state: "default" 0.0;
             align: 1.0 1.0;
             rel1 {
-               relative: 1.0  0.0;
-               to_x: "spacer1";
+               relative: 0.0  0.0;
+               to_x: "elm.swallow.icon";
                to_y: "text_bottom";
                offset: 2 0;
             }
             rel2 {
-               relative: 0.0  0.0;
-               to: "text_bottom";
+               relative: 1.0  0.0;
+               to_x: "elm.swallow.icon";
+               to_y: "text_bottom";
                offset: -2 0;
             }
             color: FN_COL_LIGHT_GREY;
