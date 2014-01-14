@@ -99,6 +99,7 @@ struct _Ws_Groupedit_Smart_Data
    Eina_Bool separeted : 1;
    Groupedit_Part *selected;
    Groupedit_Part *to_select;
+   Evas_Object *bg;
    Evas_Coord downx;
    Evas_Coord downy;
 };
@@ -124,6 +125,17 @@ struct _Ws_Groupedit_Smart_Data
 /**
  * Groupedit part this struct contains all object for draw edit object part in
  * groupedit object.
+ *
+ * The evas objects of groupedit has next stack:
+ *    in normal mode:
+ *       - border;
+ *       - draw;
+ *    in separete mode:
+ *       - item;
+ *       - border;
+ *       - draw;
+ *       - clipper;
+ *       - bg.
  */
 struct _Groupedit_Part
 {
@@ -137,6 +149,10 @@ struct _Groupedit_Part
                                    created only for these parts types, in other
                                    cases object is NULL. */
    Evas_Object *item;         /**< The object border in the separete mode */
+   Evas_Object *bg;           /**< The item background, it object overlaps
+                                   enother groupedit part. */
+   Evas_Object *clipper;      /**< The background clipper, need to draw item bg
+                                   in the separete mode.*/
 };
 
 void
@@ -160,3 +176,6 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
 
 Eina_Bool
 _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part);
+
+void
+_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);

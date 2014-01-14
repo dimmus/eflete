@@ -782,7 +782,10 @@ groupedit_edit_object_parts_separeted(Evas_Object *obj, Eina_Bool separeted)
    if (separeted)
      evas_object_resize(obj, w + (SEP_ITEM_PAD_X * count), h + (SEP_ITEM_PAD_Y * count));
    else
-     evas_object_resize(obj, w - (SEP_ITEM_PAD_X * count), h - (SEP_ITEM_PAD_Y * count));
+     {
+        evas_object_resize(obj, w - (SEP_ITEM_PAD_X * count), h - (SEP_ITEM_PAD_Y * count));
+        _selected_item_return_to_place(sd);
+     }
 }
 
 Eina_Bool
@@ -790,6 +793,23 @@ groupedit_edit_object_parts_separeted_is(Evas_Object *obj)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    return sd->separeted;
+}
+
+void
+groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   if (!bg) return;
+
+   sd->bg = bg;
+}
+
+void
+groupedit_bg_unset(Evas_Object *obj)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+
+   sd->bg = NULL;
 }
 
 #undef MY_CLASS_NAME

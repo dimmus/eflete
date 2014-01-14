@@ -123,3 +123,9 @@ groupedit_edit_object_parts_separeted(Evas_Object *obj, Eina_Bool separeted);
 
 Eina_Bool
 groupedit_edit_object_parts_separeted_is(Evas_Object *obj);
+
+void
+groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);
+
+void
+groupedit_bg_unset(Evas_Object *obj);

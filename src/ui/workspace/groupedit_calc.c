@@ -156,6 +156,10 @@ _parts_list_free(Ws_Groupedit_Smart_Data *sd)
 static void
 _groupedit_part_free(Groupedit_Part *gp)
 {
+   evas_object_smart_member_del(gp->bg);
+   evas_object_del(gp->bg);
+   evas_object_smart_member_del(gp->clipper);
+   evas_object_del(gp->clipper);
    evas_object_smart_member_del(gp->draw);
    evas_object_del(gp->draw);
    eina_stringshare_del(gp->name);
@@ -164,12 +168,10 @@ _groupedit_part_free(Groupedit_Part *gp)
         evas_object_smart_member_del(gp->border);
         evas_object_del(gp->border);
      }
-   if (gp->item)
-     {
-        evas_object_smart_member_del(gp->item);
-        evas_object_del(gp->item);
-     }
-   free(gp);
+   evas_object_smart_member_del(gp->item);
+   evas_object_del(gp->item);
+
+   //free(gp);
 }
 
 Groupedit_Part *
@@ -187,8 +189,8 @@ _parts_list_find(Eina_List *parts, const char *part)
    return NULL;
 }
 
-static void
-_groupedit_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
+void
+_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 {
    Groupedit_Part *gp;
    Eina_List *l, *ln;
@@ -213,6 +215,9 @@ _groupedit_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
         evas_object_stack_above(sd->selected->draw, gp->item);
         DBG("Separete mode, return to place part %s. Restack above the part %s", sd->selected->name, gp->name);
      }
+   evas_object_hide(sd->selected->clipper);
+   evas_object_clip_unset(sd->selected->bg);
+   evas_object_hide(sd->selected->bg);
    if (sd->selected->border)
      evas_object_stack_below(sd->selected->border, sd->selected->draw);
    edje_object_signal_emit(sd->selected->item, "item,unselected", "eflete");
@@ -221,10 +226,39 @@ _groupedit_selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 }
 
 static void
-_groupedit_select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
+_item_bg_add(Ws_Groupedit_Smart_Data *sd)
+{
+   int x, y, w, h, sw, sh;
+   Eina_Bool filled;
+   Groupedit_Part *gp;
+   void *data; /* raw image data */
+   gp = sd->to_select;
+
+   data = evas_object_image_data_get(sd->bg, true);
+   evas_object_geometry_get(sd->bg, &x, &y, &w, &h);
+   filled = evas_object_image_filled_get(sd->bg);
+   evas_object_image_size_get(sd->bg, &sw, &sh);
+
+   evas_object_image_size_set(gp->bg, sw, sh);
+   evas_object_image_data_copy_set(gp->bg, data);
+   evas_object_image_filled_set(gp->bg, filled);
+   evas_object_image_fill_set(gp->bg, 0, 0, sw, sh);
+   evas_object_resize(gp->bg, w, h);
+   evas_object_move(gp->bg, x, y);
+}
+
+static void
+_select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 {
    if (sd->selected == sd->to_select) return;
-   if (sd->selected) _groupedit_selected_item_return_to_place(sd);
+   if (sd->selected) _selected_item_return_to_place(sd);
+
+   _item_bg_add(sd);
+   evas_object_show(sd->to_select->bg);
+   evas_object_show(sd->to_select->clipper);
+   evas_object_clip_set(sd->to_select->bg, sd->to_select->clipper);
+
+   evas_object_raise(sd->to_select->bg);
    evas_object_raise(sd->to_select->draw);
    if (sd->to_select->border)
      evas_object_raise(sd->to_select->border);
@@ -246,7 +280,7 @@ _part_separete_mod_mouse_click_cb(void *data,
 
    if (emd->button != 1) return;
    sd->to_select = gp;
-   _groupedit_select_item_move_to_top(sd);
+   _select_item_move_to_top(sd);
 }
 
 static void
@@ -326,24 +360,11 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              evas_object_move(gp->draw,
                               x + xe + (i * SEP_ITEM_PAD_X),
                               y + ye + (i * SEP_ITEM_PAD_Y));
+
              if (gp->border) evas_object_move(gp->border,
                                               x + xe + (i * SEP_ITEM_PAD_X),
                                               y + ye + (i * SEP_ITEM_PAD_Y));
 
-             if (!gp->item)
-               {
-                  gp->item = edje_object_add(sd->e);
-                  evas_object_smart_member_add(gp->item, sd->obj);
-                  edje_object_file_set(gp->item, TET_EDJ, "eflete/group/item/default");
-                  evas_object_stack_above(gp->item, gp->draw);
-                  evas_object_data_set(gp->item, "sd", sd);
-                  evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
-                                                 _part_separete_mod_mouse_click_cb, gp);
-                  evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_IN,
-                                                 _part_separete_mod_mouse_in_cb, gp);
-                  evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_OUT,
-                                                 _part_separete_mod_mouse_out_cb, gp);
-               }
              evas_object_resize(gp->item,
                                 sd->con_current_size->w,
                                 sd->con_current_size->h);
@@ -351,6 +372,13 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                               sd->con_current_size->x + (i * SEP_ITEM_PAD_X),
                               sd->con_current_size->y + (i * SEP_ITEM_PAD_Y));
              evas_object_show(gp->item);
+
+             evas_object_resize(gp->clipper,
+                                sd->con_current_size->w,
+                                sd->con_current_size->h);
+             evas_object_move(gp->clipper,
+                              sd->con_current_size->x + (i * SEP_ITEM_PAD_X),
+                              sd->con_current_size->y + (i * SEP_ITEM_PAD_Y));
 
              i++;
           }
@@ -394,7 +422,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
    evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A); \
    evas_object_image_border_set(gp->border, 1, 1, 1, 1); \
    evas_object_image_filled_set(gp->border, true); \
-   evas_object_smart_member_add(gp->border, sd->obj);
+   evas_object_image_border_center_fill_set(gp->border, EVAS_BORDER_FILL_NONE);
 
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
@@ -405,7 +433,10 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    gp->name = eina_stringshare_add(part);
    gp->visible = true;
    gp->border = NULL;
-   gp->item = NULL;
+
+   gp->bg = evas_object_image_add(sd->e);
+
+   gp->clipper = evas_object_rectangle_add(sd->e);
 
    switch (type)
      {
@@ -439,7 +470,22 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
       default:
          break;
      }
+   gp->item = edje_object_add(sd->e);
+   edje_object_file_set(gp->item, TET_EDJ, "eflete/group/item/default");
+   evas_object_data_set(gp->item, "sd", sd);
+   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _part_separete_mod_mouse_click_cb, gp);
+   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_IN,
+                                  _part_separete_mod_mouse_in_cb, gp);
+   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_OUT,
+                                  _part_separete_mod_mouse_out_cb, gp);
+
+
+   evas_object_smart_member_add(gp->bg, sd->obj);
+   evas_object_smart_member_add(gp->clipper, sd->obj);
    evas_object_smart_member_add(gp->draw, sd->obj);
+   if (gp->border) evas_object_smart_member_add(gp->border, sd->obj);
+   evas_object_smart_member_add(gp->item, sd->obj);
    return gp;
 }
 

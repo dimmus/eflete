@@ -818,6 +818,7 @@ workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
    sd->group = group;
    groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
    groupedit_edit_object_set(sd->groupedit, group->obj, file);
+   groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->groupedit);
    evas_object_show(sd->groupedit);
 
