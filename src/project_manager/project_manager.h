@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef PROJECT_MANAGER_H
@@ -112,17 +112,18 @@ pm_open_project_edj(const char *name,
  * This function actually decompile the resulted and changed by user EDC file.
  *
  * @param project A Project structure.
+ * @return EINA_TRUE if saved successfully.
  *
  * @ingroup ProjectManager
  */
-void
+Eina_Bool
 pm_save_project_edc(Project *project);
 
 /**
  * Save opened EDJ-project.
  *
  * @param project A Project structure.
- * @return TRUE if saved successfully.
+ * @return EINA_TRUE if saved successfully.
  *
  * @ingroup ProjectManager
  */

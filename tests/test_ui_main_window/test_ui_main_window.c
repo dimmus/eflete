@@ -19,7 +19,7 @@
 
 #include <check.h>
 #include "ui_main_window.h"
-#include "efl_ete.h"
+#include "eflete.h"
 
 /**
  * @addtogroup ui_main_window_add

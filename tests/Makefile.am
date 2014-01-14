@@ -6,7 +6,6 @@ TESTS = part_dialog_test \
 alloc_test \
 colorclass_editor_test \
 edje_compile_test \
-font_viewer_dialog_test \
 image_editor_test \
 logger_test \
 modal_window_test \
@@ -34,7 +33,6 @@ FLAGS = \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/project_manager/edit \
 -I${top_srcdir}/src/settings \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/blocks \
@@ -43,6 +41,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
+-I${top_srcdir}/src/ui/demo \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \
@@ -84,10 +83,6 @@ edje_compile_test_LDADD = ${LD}
 widget_manager_test_SOURCES = test_widget_manager/test_widget_manager.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
-
-font_viewer_dialog_test_SOURCES = test_font_viewer_dialog/test_font_viewer_dialog.c
-font_viewer_dialog_test_CFLAGS = ${FLAGS}
-font_viewer_dialog_test_LDADD = ${LD}
 
 image_editor_test_SOURCES = test_image_editor/test_image_editor.c
 image_editor_test_CFLAGS = ${FLAGS}
