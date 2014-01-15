@@ -243,7 +243,6 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
         part->__type = PART;
         part->name = eina_stringshare_add(part_name);
         part->type = part_type;
-        part->obj = NULL;
         part->curr_state = edje_edit_part_selected_state_get(
                               edje_edit_group, part->name, &state_val);
         part->curr_state_value = state_val;
@@ -418,7 +417,7 @@ _on_popup_btn_yes(void *data,
    Eina_Inlist *l =NULL;
    Eina_Inlist *template_widgets = NULL;
    Eina_List *groups = NULL;
-
+   Evas *canvas = NULL;
 
 #define STRING_CLEAR\
         eina_stringshare_del(template_file);\
@@ -486,6 +485,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
+   canvas = evas_object_evas_get(ap->workspace);
    if (style_exist)
      {
         EINA_INLIST_FOREACH_SAFE(style_in_widget->groups, l, class_in_style)
@@ -546,10 +546,10 @@ _on_popup_btn_yes(void *data,
 
    if (!template_group)
       template_group = EINA_INLIST_CONTAINER_GET(template_style->groups, Group);
-   wm_group_data_load(template_group, ap->ws->canvas, template_file);
+   wm_group_data_load(template_group, canvas, template_file);
 
    if (_group_template_copy(temporary_group, template_group->obj, full_name,
-                           ap->ws->canvas, ap->project, group))
+                            canvas, ap->project, group))
      _reload_styles(ap, temporary_wdg->styles);
 
    if (!wm_widget_list_free(template_widgets) && template_widgets)

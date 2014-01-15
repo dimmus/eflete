@@ -42,22 +42,28 @@ _ok_clicked(void *data,
             Evas_Object *obj,
             void *event_info __UNUSED__)
 {
-   Evas_Object *groupspace = (Evas_Object *)data;
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *workspace = ap->workspace;
    Evas_Object *glist = evas_object_data_del(obj, STADD_LIST_KEY);
    Part *part = ui_state_list_part_get(glist);
-   Group *group = ui_groupspace_group_get(groupspace);
-   double value = 0.0;
-   const char *str_name = elm_entry_entry_get(entry_name);
-   const char *str_value = elm_entry_entry_get(entry_value);
-   char state_name[BUFF_MAX];
+   const char *str_name, *str_value;
+   Eina_Stringshare *state;
 
-   if (!elm_entry_is_empty(entry_name))
-     snprintf(state_name, sizeof(state_name), "%s", str_name);
-   else return;
+   if (elm_entry_is_empty(entry_name))
+     {
+        NOTIFY_WARNING("State name can not be empty!")
+        return;
+     }
 
-   value = atof(str_value);
-   if (ui_groupspace_part_state_add(groupspace, part, state_name, value))
-     ui_states_list_data_set(glist, group, part);
+   str_name = elm_entry_entry_get(entry_name);
+   str_value = elm_entry_entry_get(entry_value);
+   if (workspace_edit_object_part_state_add(workspace, part->name,
+                                            str_name, atof(str_value)))
+     {
+        state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
+        ui_state_list_state_add(glist, state);
+        eina_stringshare_del(state);
+     }
 }
 
 static void
@@ -66,12 +72,7 @@ _ok_close_clicked(void *data,
                   void *event_info __UNUSED__)
 {
    Evas_Object *popup = (Evas_Object *)data;
-   if (elm_entry_is_empty(entry_name))
-     {
-        NOTIFY_WARNING("State name can not be empty")
-        return;
-     }
-   else evas_object_del(popup);
+   evas_object_del(popup);
 }
 
 static void
@@ -90,11 +91,10 @@ state_dialog_add(App_Data *ap)
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *item_name, *item_value, *item_dup;
    Evas_Object *glist = NULL;
-   Evas_Object *groupspace = NULL;
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
 
-   if ((!ap) && (!ap->ws))
+   if ((!ap) && (!ap->workspace))
      {
         ERR("Failed create state dialog.");
         return NULL;
@@ -107,8 +107,6 @@ state_dialog_add(App_Data *ap)
         NOTIFY_INFO(3, "Please select part");
         return NULL;
      }
-
-   groupspace = ap->ws->groupspace;
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
@@ -143,7 +141,7 @@ state_dialog_add(App_Data *ap)
 
    BUTTON_ADD(popup, bt_yes, "Add");
    evas_object_data_set(bt_yes, STADD_LIST_KEY, glist);
-   evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, groupspace);
+   evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, ap);
    evas_object_smart_callback_add (bt_yes, "unpressed", _ok_close_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
 

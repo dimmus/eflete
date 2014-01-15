@@ -1,0 +1,178 @@
+group { name: "eflete/groupedit/base/default";
+   images {
+      image: "groupedit_border.png" COMP;
+   }
+   parts {
+     part { name: "border";
+         type: IMAGE;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            image {
+               normal: "groupedit_border.png";
+               border: 2 2 2 2;
+               middle: NONE;
+            }
+            rel1.offset: -2 -2;
+            rel2.offset: 1 1;
+         }
+      }
+      part { name: "gs.swallow.edit";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part { name: "gs.current.size.tooltip";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+            visible: 0;
+            text {
+               font: Sans;
+               size: 12;
+               min: 1 1;
+            }
+         }
+         description { state: "show" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { name: "tooltip_show";
+         signal: "tooltip,show";
+         source: "eflete";
+         action: STATE_SET "show" 0.0;
+         target: "gs.current.size.tooltip";
+      }
+      program { name: "tooltip_hide";
+         in: 2.0 0.0; //hide tooltip after 3 second;
+         signal: "tooltip,hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "gs.current.size.tooltip";
+      }
+   }
+}
+group { name: "eflete/groupedit/handler_TL/default";
+   alias: "eflete/groupedit/handler_BR/default";
+   parts{
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+         }
+      }
+   }
+}
+group { name: "eflete/group/item/default";
+   images {
+      image: "border_1.png" COMP;
+      image: "border_glow.png" COMP;
+      image: "border_glow_big.png" COMP;
+   }
+   parts {
+      part { name: "border";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+            rel2.offset: 0 0;
+            color: 0 0 0 255;
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "border_glow";
+         description { state: "default" 0.0;
+            visible: 0;
+            image {
+               normal: "border_glow.png";
+               border: 4 4 4 4;
+               middle: NONE;
+            }
+            rel1.offset: -3 -3;
+            rel2.offset: 3 3;
+            color: 51 153 255 255;
+         }
+         description { state: "hilighted" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "selected" 0.0;
+            image {
+               normal: "border_glow_big.png";
+               border: 6 6 6 6;
+               middle: NONE;
+            }
+            rel1.offset: -5 -5;
+            rel2.offset: 5 5;
+            color: 28 160 67 255;
+         }
+         description { state: "selected" 1.0;
+            inherit: "hilighted" 0.0;
+            color: 28 160 67 255;
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel2.offset: 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "hilight_show";
+         source: "eflete";
+         signal: "item,mouse,in";
+         action: STATE_SET "hilighted" 0.0;
+         target: "border_glow";
+         target: "border";
+      }
+      program { name: "hilight_hide";
+         source: "eflete";
+         signal: "item,mouse,out";
+         action: STATE_SET "default" 0.0;
+         target: "border_glow";
+         target: "border";
+      }
+      program { name: "select";
+         source: "eflete";
+         signal: "item,selected";
+         action: STATE_SET "selected" 0.0;
+         target: "border_glow";
+         target: "border";
+         after: "select_anim";
+      }
+      program { name: "select_anim";
+         action: STATE_SET "selected" 1.0;
+         transition: LINEAR 0.2;
+         target: "border_glow";
+      }
+      program { name: "unselect";
+         source: "eflete";
+         signal: "item,unselected";
+         action: STATE_SET "defult" 0.0;
+         transition: LINEAR 0.2;
+         target: "border_glow";
+         target: "border";
+      }
+   }
+}

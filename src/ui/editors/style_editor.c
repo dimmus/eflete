@@ -309,7 +309,7 @@ _on_bt_tag_add(void *data,
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
-   char buf[BUFF_MAX];
+   Eina_Stringshare *buf;
 
    if (!glit)
      {
@@ -330,7 +330,7 @@ _on_bt_tag_add(void *data,
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_style_set(POPUP.dialog, "eflete");
-   sprintf(buf, "Add tag to style: %s", style_name);
+   buf = eina_stringshare_printf("Add tag to style: %s", style_name);
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
    BOX_ADD(POPUP.dialog, box, false, false);
@@ -366,6 +366,7 @@ _on_bt_tag_add(void *data,
    elm_object_part_content_set(POPUP.dialog, "button2", button);
 
    evas_object_show(POPUP.dialog);
+   eina_stringshare_del(buf);
 }
 
 static void

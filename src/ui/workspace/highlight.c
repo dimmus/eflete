@@ -62,6 +62,7 @@ struct _Highlight
    Evas_Object *border; /* border layout for showing handler's border image. */
    Evas_Object *parent; /* need to know parent object for knowing about bounds */
    Evas_Object *bg;     /* background */
+   Evas_Object *object; /* ojbect that is being highlighted. */
    Handler *handler_RB;
    Handler *handler_RT;
    Handler *handler_LB;
@@ -438,14 +439,15 @@ _handler_mouse_out_cb(void *data,
 Handler *
 _handler_object_add(Evas_Object *parent,
                     Highlight *highlight,
-                    Handler_Corner descr)
+                    Handler_Corner descr,
+                    const char *style)
 {
    Handler *handler;
    handler = mem_calloc(1, sizeof(Handler));
    Evas_Object *border;
 
    border = edje_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(border, TET_EDJ, "base/groupspace/part/highlight");
+   edje_object_file_set(border, TET_EDJ, style);
    evas_object_smart_member_add(border, parent);
 
    handler->descr = descr;
@@ -463,6 +465,8 @@ _handler_object_add(Evas_Object *parent,
                                   _handler_mouse_in_cb, highlight);
    evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_OUT,
                                   _handler_mouse_out_cb, highlight);
+
+   evas_object_repeat_events_set(border, true);
 
    return handler;
 }
@@ -490,16 +494,17 @@ _smart_add(Evas_Object *parent)
    _highlight_parent_sc->add(parent);
 
    border = edje_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(border, TET_EDJ, "base/groupspace/part/highlight");
+   edje_object_file_set(border, TET_EDJ, "eflete/highlight/border/default");
+   evas_object_repeat_events_set(border, true);
 
    priv->border = border;
    evas_object_smart_member_add(border, parent);
    priv->bg = _bg_object_add(parent, priv);
 
-   priv->handler_RB = _handler_object_add(parent, priv, RB);
-   priv->handler_RT = _handler_object_add(parent, priv, RT);
-   priv->handler_LB = _handler_object_add(parent, priv, LB);
-   priv->handler_LT = _handler_object_add(parent, priv, LT);
+   priv->handler_RB = _handler_object_add(parent, priv, RB, "eflete/highlight/handler_RB/default");
+   priv->handler_RT = _handler_object_add(parent, priv, RT, "eflete/highlight/handler_RT/default");
+   priv->handler_LB = _handler_object_add(parent, priv, LB, "eflete/highlight/handler_LB/default");
+   priv->handler_LT = _handler_object_add(parent, priv, LT, "eflete/highlight/handler_LT/default");
    priv->outside = false;
    priv->clicked = false;
    priv->events = (Highlight_Events *)mem_calloc(1, sizeof(Highlight_Events));
@@ -710,6 +715,65 @@ highlight_handler_mode_set(Evas_Object *hl, Highlight_Mode mode)
    if (!hl) return false;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    highlight->mode = mode;
+   return true;
+}
+
+static void
+_object_changed(void *data,
+                Evas *evas __UNUSED__,
+                Evas_Object *o,
+                void *einfo __UNUSED__)
+{
+   int x, y, w, h;
+   Evas_Object *hl = (Evas_Object *)data;
+   evas_object_geometry_get(o, &x, &y, &w, &h);
+   evas_object_resize(hl, w, h);
+   evas_object_move(hl, x, y);
+}
+
+Eina_Bool
+highlight_object_follow(Evas_Object *hl, Evas_Object *object)
+{
+   int x, y, w, h;
+   if ((!hl) || (!object)) return false;
+   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+
+   if (highlight->object)
+     {
+        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
+                                            _object_changed, hl);
+        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
+                                            _object_changed, hl);
+     }
+   evas_object_event_callback_add(object, EVAS_CALLBACK_RESIZE,
+                                  _object_changed, hl);
+   evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
+                                  _object_changed, hl);
+
+   highlight->object = object;
+
+   evas_object_geometry_get(object, &x, &y, &w, &h);
+   evas_object_resize(hl, w, h);
+   evas_object_move(hl, x, y);
+
+   return true;
+}
+
+Eina_Bool
+highlight_object_unfollow(Evas_Object *hl)
+{
+   if (!hl) return false;
+   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+
+   if (highlight->object)
+     {
+        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
+                                            _object_changed, hl);
+        evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
+                                            _object_changed, hl);
+        highlight->object = NULL;
+     }
+
    return true;
 }
 

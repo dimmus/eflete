@@ -41,6 +41,10 @@
 #include "open_file_dialog.h"
 #include "string_macro.h"
 
+#include "part_dialog.h"
+#include "state_dialog.h"
+#include "style_dialog.h"
+
 /**
  * Adds main window object for Edje tool development.
  *
@@ -299,5 +303,9 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
  */
 Eina_Bool
 ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag);
+
+/* FIXME: Add comments */
+Eina_Bool
+register_callbacks(App_Data *ap);
 
 #endif /* UI_MAIN_WINDOW_H */

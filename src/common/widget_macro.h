@@ -40,12 +40,12 @@
    elm_object_part_text_set(ITEM, "elm.text", TEXT); \
    evas_object_show(ITEM);
 
-#define BOX_ADD(PARENT, BOX, ISHORIZONTAL, isHomogeneos) \
+#define BOX_ADD(PARENT, BOX, ISHORIZONTAL, ISHOMOGENEOS) \
    BOX = elm_box_add(PARENT); \
    evas_object_size_hint_weight_set(BOX, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(BOX, EVAS_HINT_FILL, 0.0); \
    elm_box_horizontal_set(BOX, ISHORIZONTAL); \
-   elm_box_homogeneous_set(BOX, isHomogeneos); \
+   elm_box_homogeneous_set(BOX, ISHOMOGENEOS); \
    evas_object_show(BOX);
 
 #define SCROLLER_ADD(PARENT, SCROLLER) \

@@ -292,8 +292,9 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_groupspace_separate(ap->ws);
-   ui_menu_disable_set(ap->menu_hash, "Highlight space", !ap->ws->separated);
+   //ui_groupspace_separate(ap->workspace);
+   ui_menu_disable_set(ap->menu_hash, "Highlight space",
+                       ws_separated_mode_get(ap->workspace));
 }
 
 static void
@@ -302,7 +303,8 @@ _on_view_zoom_in(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_zoom_in(ap->ws);
+   double current_factor = ws_zoom_factor_get(ap->workspace);
+   ws_zoom_factor_set(ap->workspace, current_factor + 0.1);
 }
 
 static void
@@ -311,7 +313,8 @@ _on_view_zoom_out(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_zoom_out(ap->ws);
+   double current_factor = ws_zoom_factor_get(ap->workspace);
+   ws_zoom_factor_set(ap->workspace, current_factor - 0.1);
 }
 
 static void
@@ -320,10 +323,7 @@ _on_view_ruler_hor(void *data,
                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_visible_get(ap->ws->ruler_hor))
-     ui_ruler_hide (ap->ws->ruler_hor);
-   else
-     ui_ruler_show (ap->ws->ruler_hor);
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("hor"));
 }
 
 static void
@@ -332,10 +332,7 @@ _on_view_ruler_ver(void *data,
                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_visible_get(ap->ws->ruler_ver))
-     ui_ruler_hide (ap->ws->ruler_ver);
-   else
-     ui_ruler_show (ap->ws->ruler_ver);
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,ver", strdup("ver"));
 }
 
 static void
@@ -344,7 +341,7 @@ _on_view_legend(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_legend_visible_set(ap->ws, !ap->ws->legend.visible);
+   ws_legend_visible_set(ap->workspace);
 }
 
 static void
@@ -353,11 +350,7 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Eina_Bool visible;
-   if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
-   visible = evas_object_visible_get(ap->ws->highlight.space_hl);
-   if (visible) evas_object_hide(ap->ws->highlight.space_hl);
-   else evas_object_show(ap->ws->highlight.space_hl);
+   evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
 }
 
 static void
@@ -366,16 +359,7 @@ _on_view_ruler_rel(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_scale_relative_visible_get(ap->ws->ruler_hor))
-     {
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_FALSE);
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_FALSE);
-     }
-   else
-     {
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_TRUE);
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_TRUE);
-     }
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("rel"));
 }
 
 static void
@@ -384,16 +368,7 @@ _on_view_ruler_abs(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_scale_absolute_visible_get(ap->ws->ruler_hor))
-     {
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_FALSE);
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_FALSE);
-     }
-   else
-     {
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_TRUE);
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_TRUE);
-     }
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("abs"));
 }
 
 static void

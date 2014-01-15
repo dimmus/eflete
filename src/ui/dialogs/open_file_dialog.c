@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "open_file_dialog.h"
@@ -74,9 +74,9 @@ _on_part_selected(void *data,
 
    if (gl_states)
      {
-        evas_object_smart_callback_add(gl_states, "st,state,select",
+        evas_object_smart_callback_add(gl_states, "stl,state,select",
                                        _on_state_selected, ap);
-        evas_object_smart_callback_call(gl_states, "st,state,select",
+        evas_object_smart_callback_call(gl_states, "stl,state,select",
                                         elm_genlist_first_item_get(gl_states));
      }
 }

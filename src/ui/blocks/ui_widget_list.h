@@ -31,6 +31,7 @@
  * @li "wl,group,back": the user clicked on the "back" button
  * @li "wl,part,select": the user selected on the part name
  * @li "wl,part,back": the user clicked on the "back" button
+ * @li "wl,part,add" : the user clicked on the "plus" button
  *
  * A Widget List used for view a list of widgets styles
  */
@@ -38,7 +39,7 @@
 #include "ui_main_window.h"
 #include "ui_property.h"
 #include "ui_states_list.h"
-#include "ui_groupspace.h"
+//#include "ui_groupspace.h"
 
 /**
  * Add a new 'widget list' object.
@@ -68,7 +69,8 @@ ui_widget_list_title_set(Evas_Object *object, const char *title);
  *
  * @param object A 'widget list' object
  * @param project A opened project
- * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup WidgetList
  */
@@ -76,7 +78,63 @@ Eina_Bool
 ui_widget_list_data_set(Evas_Object *object, Project *project);
 
 /**
- * Reolad content style genlist.
+ *
+ */
+Eina_Bool
+ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name);
+
+/**
+ *
+ */
+Eina_Bool
+ui_widget_list_selected_part_del(Evas_Object *object, Group *group);
+
+/**
+ * Move above selected item of widgetlist.
+ *
+ * @param object The container object, which contain genlist of widgetlist.
+ * @param group The struct @Group of current loaded group.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_selected_part_above(Evas_Object *object, Group *group);
+
+/**
+ * Move below selected item of widgetlist.
+ *
+ * @param object The container object, which contain genlist of widgetlist.
+ * @param group The struct @Group of current loaded group.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_selected_part_below(Evas_Object *object, Group *group);
+
+/**
+ *
+ */
+Part *
+ui_widget_list_selected_part_get(Evas_Object *object);
+
+/**
+ *
+ */
+Eina_Bool
+ui_widget_list_select_part(Evas_Object *object, const char *part);
+
+/**
+ *
+ */
+Eina_List *
+ui_widget_list_selected_parts_get(Evas_Object *object);
+
+/**
+ * Reload content style genlist.
  *
  * @param gl_styles A 'style list' object. (genlist container)
  * @param styles A Eina_Inlist pointer for loaded styles in project

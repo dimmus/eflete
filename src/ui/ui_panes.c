@@ -60,25 +60,6 @@ UI_Elements_Settings *us;
  */
 Evas_Object *panes;
 
-static void
-_add_state_button_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
-}
-
-static void
-_del_state_button_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_part_state_delete(ap);
-//   evas_object_smart_callback_call(ap->ws->groupspace, "gs,state,add", NULL);
-}
-
 UI_Current_State_Panes *
 _ui_panes_current_state_struct_init(void)
 {
@@ -324,7 +305,6 @@ ui_panes_add(App_Data *ap)
    Evas_Object *block;
    Evas_Object *panes_left, *panes_left_hor, *panes_right;
    Evas_Object *panes_center, *panes_center_down, *panes_right_hor;
-   Evas_Object *panel, *button, *icon;
    if (!ap)
      {
         ERR("ap is NULL");
@@ -431,28 +411,6 @@ ui_panes_add(App_Data *ap)
    ui_block_title_text_set(block, "Part States");
    elm_object_part_content_set(panes_center_down, "left", block);
 
-   panel = elm_box_add(block);
-   elm_box_horizontal_set(panel, EINA_TRUE);
-   elm_box_align_set(panel, 1.0, 1.0);
-   button = elm_button_add (panel);
-   ICON_ADD(button, icon, EINA_TRUE, TET_IMG_PATH"icon-add.png");
-   elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add (button, "clicked", _add_state_button_cb, ap);
-   elm_object_style_set(button, "eflete/simple");
-   evas_object_show(button);
-   elm_box_pack_end(panel, button);
-
-   button = elm_button_add (panel);
-   ICON_ADD(button, icon, EINA_TRUE, TET_IMG_PATH"icon-remove.png");
-   elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add (button, "clicked", _del_state_button_cb, ap);
-   evas_object_show(button);
-   elm_box_pack_end(panel, button);
-   elm_object_part_content_set(block, "elm.swallow.title", panel);
-   evas_object_show(panel);
-   /*TODO: in future it will be moved to block api. */
-   elm_object_signal_emit(block, "title,content,hide", "eflete");
-   elm_object_style_set(button, "eflete/simple");
    evas_object_show(block);
    ap->block.bottom_left = block;
 

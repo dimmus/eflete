@@ -44,8 +44,10 @@ ui_main_window_del(App_Data *ap)
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    pm_free(ap->project);
-   ws_free(ap->ws);
+   /* FIXME: remove it from here */
    demo_free(ap->demo);
+   /* FIXME: when be implemented multi workspace feature, remove this line */
+   evas_object_del(ap->workspace);
    elm_exit();
    return true;
 }
@@ -61,42 +63,6 @@ _on_window_resize(void *data __UNUSED__,
    ui_resize_panes(w,h);
 }
 
-static void
-_add_part_dailog(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   part_dialog_add(ap->win_layout, ap->ws->groupspace);
-}
-
-static void
-_add_state_dailog(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   state_dialog_add(ap);
-}
-
-static void
-_del_style(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_style_delete(ap);
-}
-
-static void
-_add_style_dailog(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   style_dialog_add(ap);
-}
-
 Eina_Bool
 ui_main_window_add(App_Data *ap)
 {
@@ -109,6 +75,7 @@ ui_main_window_add(App_Data *ap)
      }
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
+   elm_win_autodel_set(win, true);
 
    if (win == NULL)
      {
@@ -131,6 +98,7 @@ ui_main_window_add(App_Data *ap)
    layout = elm_layout_add(win);
    evas_object_size_hint_weight_set(layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
    elm_win_resize_object_add(win, layout);
    elm_layout_file_set(layout, TET_EDJ, "ui/main_window");
    evas_object_show(layout);
@@ -161,23 +129,27 @@ ui_main_window_add(App_Data *ap)
      }
 
    ui_panes_settings_load(win);
-   ap->ws = ws_add(ap->block.canvas);
-   if (!ap->ws)
+   ap->workspace = workspace_add(ap->block.canvas);
+   if (!ap->workspace)
      {
         ERR("Failrue create workspace in main window.");
         return false;
      }
+   ui_block_ws_set(ap, ap->workspace);
+   evas_object_show(ap->workspace);
    ap->demo = ui_demospace_add(ap->block.bottom_right);
-   ui_block_demo_view_set(ap, ap->demo->layout);
+   if (!ap->demo)
+     {
+        ERR("Failed create live view");
+     }
+   else
+     ui_block_demo_view_set(ap, ap->demo->layout);
 
-   evas_object_smart_callback_add(ap->ws->groupspace, "gs,dialog,add",
-                                  _add_part_dailog, ap);
-   evas_object_smart_callback_add(ap->ws->groupspace, "gs,state,add",
-                                  _add_state_dailog, ap);
-   evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
-                                  _add_style_dailog, ap);
-   evas_object_smart_callback_add(ap->block.left_top, "gs,style,del",
-                                  _del_style, ap);
+   if (!register_callbacks(ap))
+     {
+        CRIT("Failed register callbacks");
+        return false;
+     }
    evas_object_show(win);
 
    return true;

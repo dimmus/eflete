@@ -19,23 +19,135 @@
 
 #include "ui_main_window.h"
 
+static void
+_add_part_dialog(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   /* FIXME: change ap->workspace to ui_block_workspace_get(ap) */
+   part_dialog_add(ap->win_layout, ap->workspace, ui_block_widget_list_get(ap));
+}
+
+static void
+_del_part(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Group *group = ap->project->current_group;
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   if ((part) && (workspace_edit_object_part_del(ap->workspace, part->name)))
+     ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), group);
+}
+
+static void
+_above_part(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Group *group = ap->project->current_group;
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   if ((part) && (workspace_edit_object_part_above(ap->workspace, part->name)))
+      ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), group);
+}
+
+static void
+_below_part(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Group *group = ap->project->current_group;
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   if ((part) && (workspace_edit_object_part_below(ap->workspace, part->name)))
+      ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), group);
+}
+
+static void
+_add_state_dialog(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   state_dialog_add(ap);
+}
+
+static void
+_del_state_dialog(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *state_list = ui_block_state_list_get(ap);
+   Evas_Object *workspace = ap->workspace;
+   Part *part = ui_state_list_part_get(state_list);
+   Eina_Stringshare *state = ui_state_list_selected_state_get(state_list);
+
+   char **arr = eina_str_split(state, " ", 2);
+
+   /*TODO: need to check the program, some program can use the given state.
+     If given state used in programs - show dialog window with the question:
+     'This state used in the program(s). Are you sure you want to delete
+     %state name%' and delete the programs or some params from the program */
+   if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
+     ui_state_list_selected_state_del(state_list);
+
+   free(arr[0]);
+   free(arr);
+   eina_stringshare_del(state);
+}
+
+
+static void
+_del_style(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_style_delete(ap);
+}
+
+static void
+_add_style_dailog(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   style_dialog_add(ap);
+}
+
+static void
+_on_ws_part_select(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   const char *part = (const char *)event_info;
+   if (part)
+     ui_widget_list_select_part(ui_block_widget_list_get(ap), part);
+}
+
 
 void
 ui_part_back(App_Data *ap)
 {
-   Evas_Object *prop;
-   if (ap->ws->groupspace)
-     {
-        ui_groupspace_unset(ap->ws->groupspace);
-        ui_object_highlight_del(ap->ws);
-        /* FIXME:  find way to does'nt make immidietly render */
-        evas_render_updates_free(evas_render_updates(ap->ws->canvas));
-     }
-   else
-     WARN ("Groupspace object always delete");
-   ap->ws->zoom_step = 1.0;
-   elm_genlist_clear(ui_block_state_list_get(ap));
-   elm_genlist_clear(ui_block_signal_list_get(ap));
+   if (!ap) return;
+
+   Evas_Object *prop, *block, *wl_list;
+
+   wl_list = ui_block_widget_list_get(ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,del", _del_part, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,above", _above_part, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,below", _below_part, ap);
+
+   workspace_edit_object_unset(ap->workspace);
+   /* FIXME:  find way to does'nt make immidietly render */
+   block = ui_block_state_list_get(ap);
+   if (block) elm_genlist_clear(block);
+   ui_states_list_data_unset(ui_block_signal_list_get(ap));
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    prop = ui_block_property_get(ap);
@@ -43,6 +155,10 @@ ui_part_back(App_Data *ap)
    ui_demospace_unset(ap->demo);
 
    ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+
+   evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
+                                       _on_ws_part_select, ap);
+   workspace_highlight_unset(ap->workspace);
 }
 
 /**
@@ -61,14 +177,9 @@ ui_state_select(App_Data *ap,
    Part *part = NULL;
    Evas_Object *prop_view;
 
-   if (!ap)
+   if ((!ap) && (!obj))
      {
-        ERR("App Data is missing!");
-        return;
-     }
-   if (!obj)
-     {
-        ERR("Evas Object is missing");
+        ERR("App Data or State list is missing!");
         return;
      }
 
@@ -76,9 +187,7 @@ ui_state_select(App_Data *ap,
    part = ui_state_list_part_get(obj);
    wm_part_current_state_set(part, state);
    ui_property_state_set(prop_view, part);
-   ui_groupspace_part_state_update(ap->ws->groupspace, part);
-   if (ap->ws->highlight.part)
-     ui_object_highlight_move(ap->ws);
+   workspace_edit_object_part_state_set(ap->workspace, part);
 }
 
 Evas_Object *
@@ -88,14 +197,9 @@ ui_part_select(App_Data *ap,
    Evas_Object *prop;
    Evas_Object *gl_states;
 
-   if (!ap)
+   if ((!ap) && (!part))
      {
-        ERR("App Data is missing!");
-        return NULL;
-     }
-   if (!part)
-     {
-        ERR("Coud not get acess to part object");
+        ERR("App Data or part is missing!");
         return NULL;
      }
    prop = ui_block_property_get(ap);
@@ -107,16 +211,16 @@ ui_part_select(App_Data *ap,
 
    ui_property_part_set(prop, part);
 
-   gl_states = ui_states_list_add(ap->win);
+   gl_states = ui_states_list_add(ap->block.bottom_left);
    ui_states_list_data_set(gl_states, ap->project->current_group, part);
    ui_block_state_list_set(ap, gl_states);
-   /*TODO: in future it will be moved to block api. */
-   elm_object_signal_emit(ap->block.bottom_left, "title,content,show", "eflete");
+   evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
+   evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
 
    evas_object_show(gl_states);
 
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
-   ui_object_highlight_set(ap->ws, part);
+   workspace_highlight_set(ap->workspace, part);
 
    return gl_states;
 }
@@ -124,26 +228,32 @@ ui_part_select(App_Data *ap,
 void
 ui_group_clicked(App_Data *ap, Group *group)
 {
+   Evas_Object *wl_list = NULL;
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
    Eina_List *signals = NULL;
 
-   if (!ap)
+   if ((!ap) && (!ap->project) && (!group))
      {
-        ERR("App Data is missing!");
-        return;
-     }
-   if (!group)
-     {
-        ERR("Group is missing!");
+        ERR("App Data or group is missing!");
         return;
      }
 
+   wl_list = ui_block_widget_list_get(ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,add", _add_part_dialog, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,del", _del_part, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,above", _above_part, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,below", _below_part, ap);
+
    /* Get signals list of a group and show them */
-   gl_signals = ui_signal_list_add(ap->win);
+   gl_signals = ui_signal_list_add(ap->block.left_bottom);
    ui_signal_list_data_set(gl_signals, group);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
+
+   workspace_edit_object_set(ap->workspace, group, ap->project->swapfile);
+   evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
+                                  _on_ws_part_select, ap);
 
    /* group properties */
    prop = ui_block_property_get(ap);
@@ -152,11 +262,9 @@ ui_group_clicked(App_Data *ap, Group *group)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
-   ui_property_group_set(prop, group);
+   ui_property_group_set(prop, group, ap->workspace);
    evas_object_show(prop);
 
-   ui_groupspace_set(ap->ws, ap->project, group);
-   ui_groupspace_update(ap->ws->groupspace);
    ui_demospace_set(ap->demo, ap->project, group);
    ui_demospace_update(ap->demo);
    ui_menu_disable_set(ap->menu_hash, "Programs", EINA_FALSE);
@@ -168,14 +276,10 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
    char *name;
+
    if (!ap)
      {
         ERR("ap is NULL");
-        return NULL;
-     }
-   if (!ap->ws)
-     {
-        ERR("ap->ws is NULL");
         return NULL;
      }
 
@@ -191,7 +295,12 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
 
-             if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
+             if (ap->workspace)
+               {
+                  workspace_edit_object_unset(ap->workspace);
+                  workspace_highlight_unset(ap->workspace);
+               }
+
              if (ap->demo) ui_demospace_unset(ap->demo);
              pm_free(ap->project);
              GET_NAME_FROM_PATH(name, selected)
@@ -207,10 +316,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
 
              ui_menu_base_disabled_set(ap->menu_hash, false);
           }
-        else
-          {
-             NOTIFY_ERROR("The file must have a extension '.edj'");
-          }
+        else NOTIFY_ERROR("The file must have a extension '.edj'");
      }
    evas_object_hide(elm_object_parent_widget_get(obj));
    return wd_list;
@@ -227,26 +333,8 @@ ui_edc_load_done(App_Data* ap,
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
 
-   if (!ap)
-     {
-        ERR("ap is NULL");
-        return NULL;
-     }
-   if (!ap->ws)
-     {
-        ERR("ap->ws is NULL");
-        return NULL;
-     }
-   if (!project_name)
-     {
-        ERR("project_name is NULL");
-        return NULL;
-     }
-   if (!path_edc)
-     {
-        ERR("path_edc is NULL");
-        return NULL;
-     }
+   if (!ap) return NULL;
+
    prop = ui_block_property_get(ap);
 
    if (eina_str_has_suffix(path_edc, ".edc"))
@@ -256,7 +344,12 @@ ui_edc_load_done(App_Data* ap,
         elm_genlist_clear(ui_block_state_list_get(ap));
         elm_genlist_clear(ui_block_signal_list_get(ap));
 
-        if (ap->ws->groupspace) ui_groupspace_unset(ap->ws->groupspace);
+        if (ap->workspace)
+          {
+             workspace_edit_object_unset(ap->workspace);
+             workspace_highlight_unset(ap->workspace);
+          }
+
         if (ap->demo) ui_demospace_unset(ap->demo);
         pm_free(ap->project);
         ap->project = pm_open_project_edc(project_name,
@@ -324,21 +417,24 @@ new_theme_create(App_Data *ap)
 
    if (!errors)
      {
-        if (ap->ws->groupspace)
+        Evas_Object *prop, *state, *signal;
+        ws_object_highlight_del(ap->workspace);
+        state = ui_block_state_list_get(ap);
+        if (state) elm_genlist_clear(state);
+        signal = ui_block_signal_list_get(ap);
+        if (signal) elm_genlist_clear(signal);
+        prop = ui_block_property_get(ap);
+        if (prop) ui_property_group_unset(prop);
+
+        if (ap->workspace)
           {
-             Evas_Object *prop, *state, *signal;
-             ui_groupspace_unset(ap->ws->groupspace);
-             ui_object_highlight_del(ap->ws);
-             state = ui_block_state_list_get(ap);
-             if (state) elm_genlist_clear(state);
-             signal = ui_block_signal_list_get(ap);
-             if (signal) elm_genlist_clear(signal);
-             prop = ui_block_property_get(ap);
-             if (prop) ui_property_group_unset(prop);
-             if ((ap->demo) || (ap->project))
-               ui_demospace_unset(ap->demo);
-             ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+             workspace_edit_object_unset(ap->workspace);
+             workspace_highlight_unset(ap->workspace);
           }
+
+        if ((ap->demo) || (ap->project))
+          ui_demospace_unset(ap->demo);
+        ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
@@ -512,13 +608,11 @@ ui_part_state_delete(App_Data *ap)
         free(arr[0]); \
         free(arr);
 
-   if ((!ap) && (!ap->ws)) return false;
+   if ((!ap) && (!ap->workspace)) return false;
 
    state_list = ui_block_state_list_get(ap);
    part = ui_state_list_part_get(state_list);
    if (!part) return false;
-   group = ui_groupspace_group_get(ap->ws->groupspace);
-   if (!group) return false;
 
    eoi = elm_genlist_selected_item_get(state_list);
    if (!eoi)
@@ -551,4 +645,16 @@ ui_part_state_delete(App_Data *ap)
   CLEAR_STRINGS;
 #undef CLEAR_STRINGS
   return EINA_TRUE;
+}
+
+Eina_Bool
+register_callbacks(App_Data *ap)
+{
+   if (!ap) return false;
+
+   evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
+                                  _add_style_dailog, ap);
+   evas_object_smart_callback_add(ap->block.left_top, "gs,style,del",
+                                  _del_style, ap);
+   return true;
 }
