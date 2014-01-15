@@ -124,6 +124,12 @@ ui_widget_list_selected_part_get(Evas_Object *object);
 /**
  *
  */
+Eina_Bool
+ui_widget_list_select_part(Evas_Object *object, const char *part);
+
+/**
+ *
+ */
 Eina_List *
 ui_widget_list_selected_parts_get(Evas_Object *object);
 

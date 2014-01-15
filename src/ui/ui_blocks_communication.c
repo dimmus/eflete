@@ -118,6 +118,7 @@ _add_style_dailog(void *data,
    style_dialog_add(ap);
 }
 
+/*
 static void
 _property_change(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -133,6 +134,19 @@ _property_change(void *data,
    Part *part = (Part *)event_info;
    ui_property_state_set(prop, part);
 }
+*/
+
+static void
+_on_ws_part_select(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   const char *part = (const char *)event_info;
+   if (part)
+     ui_widget_list_select_part(ui_block_widget_list_get(ap), part);
+}
+
 
 void
 ui_part_back(App_Data *ap)
@@ -163,7 +177,9 @@ ui_part_back(App_Data *ap)
 
    ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
 
-   evas_object_smart_callback_del(ap->workspace, "part,changed", _property_change);
+   //evas_object_smart_callback_del(ap->workspace, "part,changed", _property_change);
+   evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
+                                       _on_ws_part_select, ap);
    workspace_highlight_unset(ap->workspace);
 }
 
@@ -233,8 +249,9 @@ ui_part_select(App_Data *ap,
 
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
    workspace_highlight_set(ap->workspace, part);
-   evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
-   evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
+   //evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
+   //                                    _on_ws_part_select, ap);
+   //evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
 
    return gl_states;
 }
@@ -266,6 +283,8 @@ ui_group_clicked(App_Data *ap, Group *group)
    ui_block_signal_list_set(ap, gl_signals);
 
    workspace_edit_object_set(ap->workspace, group, ap->project->swapfile);
+   evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
+                                  _on_ws_part_select, ap);
 
    /* group properties */
    prop = ui_block_property_get(ap);

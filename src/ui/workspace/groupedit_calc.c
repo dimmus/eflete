@@ -378,6 +378,7 @@ _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
    evas_object_raise(sd->to_select->item);
    sd->selected = sd->to_select;
    edje_object_signal_emit(sd->selected->item, "item,selected", "eflete");
+
    sd->to_select = NULL;
 }
 
@@ -394,6 +395,8 @@ _part_separete_mod_mouse_click_cb(void *data,
    if (emd->button != 1) return;
    sd->to_select = gp;
    _select_item_move_to_top(sd);
+   evas_object_smart_callback_call(sd->obj, SIG_PART_SELECTED,
+                                   (void *)sd->selected->name);
 }
 
 static void
@@ -468,7 +471,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              /* FIXME: need remove it from here */
              evas_object_stack_above(gp->border, gp->draw);
           }
-        if (sd->separeted)
+        if (sd->separated)
           {
              evas_object_move(gp->draw,
                               x + xe + (i * SEP_ITEM_PAD_X),
@@ -482,16 +485,16 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                                 sd->con_current_size->w,
                                 sd->con_current_size->h);
              evas_object_move(gp->item,
-                              sd->con_current_size->x + (i * SEP_ITEM_PAD_X),
-                              sd->con_current_size->y + (i * SEP_ITEM_PAD_Y));
+                              xe + (i * SEP_ITEM_PAD_X),
+                              ye + (i * SEP_ITEM_PAD_Y));
              evas_object_show(gp->item);
 
              evas_object_resize(gp->clipper,
                                 sd->con_current_size->w,
                                 sd->con_current_size->h);
              evas_object_move(gp->clipper,
-                              sd->con_current_size->x + (i * SEP_ITEM_PAD_X),
-                              sd->con_current_size->y + (i * SEP_ITEM_PAD_Y));
+                              xe + (i * SEP_ITEM_PAD_X),
+                              ye + (i * SEP_ITEM_PAD_Y));
 
              i++;
           }

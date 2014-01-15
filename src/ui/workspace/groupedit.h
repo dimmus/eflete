@@ -119,12 +119,15 @@ Eina_Bool
 groupedit_part_object_area_visible_get(Evas_Object *obj);
 
 void
-groupedit_edit_object_parts_separeted(Evas_Object *obj,
-                                      Eina_Bool separeted,
-                                      const char *name);
+groupedit_edit_object_parts_separated(Evas_Object *obj,
+                                      Eina_Bool separated,
+                                      const char *part);
 
 Eina_Bool
-groupedit_edit_object_parts_separeted_is(Evas_Object *obj);
+groupedit_edit_object_parts_separated_is(Evas_Object *obj);
+
+void
+groupedit_edit_object_part_select(Evas_Object *obj, const char *part);
 
 void
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);

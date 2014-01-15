@@ -43,6 +43,22 @@ _widget_list_get(Evas_Object *naviframe)
    return item_gl_widgets;
 }
 
+static Elm_Object_Item *
+_genlist_find_item_by_name(Evas_Object *obj, const char *name)
+{
+   Part *part;
+   Elm_Object_Item *item = elm_genlist_first_item_get(obj);
+
+   while (item)
+     {
+        part = elm_object_item_data_get(item);
+        if (strncmp(part->name, name, strlen(name)) == 0)
+          break;
+        item = elm_genlist_item_next_get(item);
+     }
+   return item;
+}
+
 static char *
 _item_part_label_get(void *data,
                      Evas_Object *obj __UNUSED__,
@@ -830,6 +846,30 @@ ui_widget_list_selected_part_get(Evas_Object *object)
    if (!part) return NULL;
 
    return part;
+}
+
+Eina_Bool
+ui_widget_list_select_part(Evas_Object *object, const char *part)
+{
+   Evas_Object *gl_parts;
+
+   if (!object) return false;
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
+   /* FIXME: remove it after merge to develop  */
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
+   /*  */
+
+   Elm_Object_Item *item = _genlist_find_item_by_name(gl_parts, part);
+   if (item)
+     {
+        elm_genlist_item_selected_set(item, true);
+        elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+     }
+   else return false;
+
+   return true;
 }
 
 Eina_List *
