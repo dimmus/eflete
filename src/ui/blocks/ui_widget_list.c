@@ -242,24 +242,6 @@ _del_style_unpress(void *data,
 }
 
 static void
-_above_part_unpress(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   Group *group = (Group *)data;
-   evas_object_smart_callback_call(obj, "move,part,up", group);
-}
-
-static void
-_past_part_unpress(void *data,
-                   Evas_Object *obj,
-                   void *event_info __UNUSED__)
-{
-   Group *group = (Group *)data;
-   evas_object_smart_callback_call(obj, "move,part,down", group);
-}
-
-static void
 _del_part_cb(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
@@ -278,61 +260,21 @@ _add_part_cb(void *data,
 }
 
 static void
-_above_part_click(void *data,
+_above_part_cb(void *data,
                    Evas_Object *obj __UNUSED__,
-                   void *event_info)
+                   void *event_info __UNUSED__)
 {
-   Group *group = (Group *)event_info;
-   Evas_Object *gl_parts = (Evas_Object *)data;
-   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
-   if (!eoi)
-     {
-        NOTIFY_INFO(3, "None one part does'nt selected");
-        return;
-     }
-   Elm_Object_Item *new_eoi = NULL;
-   Elm_Object_Item *prev_eoi = elm_genlist_item_prev_get(eoi);
-   if (!prev_eoi)
-     {
-        NOTIFY_INFO(3, "Selected part currently on top in list");
-        return;
-     }
-   Part *part = elm_object_item_data_get(eoi);
-   new_eoi = elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
-                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
-   eoi = elm_genlist_selected_item_get(gl_parts);
-   elm_object_item_del(eoi);
-   elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
-   evas_object_smart_callback_call(group->obj, "gs,layer,up", part);
+   Evas_Object *nf = (Evas_Object *)data;
+   evas_object_smart_callback_call(nf, "wl,part,above", NULL);
 }
 
 static void
-_past_part_click(void *data __UNUSED__,
+_past_part_cb(void *data,
                    Evas_Object *obj __UNUSED__,
-                   void *event_info)
+                   void *event_info __UNUSED__)
 {
-   Group *group = (Group *)event_info;
-   Evas_Object *gl_parts = (Evas_Object *)data;
-   Elm_Object_Item *eoi = elm_genlist_selected_item_get(gl_parts);
-   if (!eoi)
-     {
-        NOTIFY_INFO(3, "None one part does'nt selected");
-        return;
-     }
-   Elm_Object_Item *new_eoi = NULL;
-   Elm_Object_Item *prev_eoi = elm_genlist_item_next_get(eoi);
-   if (!prev_eoi)
-     {
-        NOTIFY_INFO(3, "Selected part currently on bottom in list");
-        return;
-     }
-   Part *part = elm_object_item_data_get(eoi);
-   new_eoi = elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
-                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
-   eoi = elm_genlist_selected_item_get(gl_parts);
-   elm_object_item_del(eoi);
-   elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
-   evas_object_smart_callback_call(group->obj, "gs,layer,down", part);
+   Evas_Object *nf = (Evas_Object *)data;
+   evas_object_smart_callback_call(nf, "wl,part,below", NULL);
 }
 
 static void
@@ -425,8 +367,7 @@ _on_group_clicked_double(void *data,
    button = elm_button_add (panel);
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "arrow_up");
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "move,part,up", _above_part_click, gl_parts);
-   evas_object_smart_callback_add (button, "unpressed", _above_part_unpress, _group);
+   evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
    evas_object_show(button);
    elm_object_style_set(button, "eflete/default");
    elm_box_pack_end(panel, button);
@@ -434,8 +375,7 @@ _on_group_clicked_double(void *data,
    button = elm_button_add (panel);
    ICON_STANDARD_ADD(button, _icon, EINA_TRUE, "arrow_down");
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "move,part,down", _past_part_click, gl_parts);
-   evas_object_smart_callback_add (button, "unpressed", _past_part_unpress, _group);
+   evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
    evas_object_show(button);
    elm_object_style_set(button, "eflete/default");
    elm_box_pack_end(panel, button);
@@ -750,6 +690,123 @@ ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
    elm_genlist_item_selected_set(next_eoi, true);
    elm_object_item_del(eoi);
 
+   return true;
+}
+
+Eina_Bool
+ui_widget_list_selected_part_above(Evas_Object *object, Group *group)
+{
+   Evas_Object *gl_parts = NULL;
+   Elm_Object_Item *eoi = NULL;
+   Elm_Object_Item *new_eoi = NULL;
+   Elm_Object_Item *prev_eoi = NULL;
+   Part *part = NULL;
+   Eina_Inlist *prev_elm =  NULL;
+   Eina_Inlist *itr = NULL;
+   Part *_part = NULL;
+
+
+   if ((!object) || (!group)) return false;
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
+   /* FIXME: remove it after merge to develop */
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
+
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   if (!eoi)
+     {
+        NOTIFY_INFO(3, "None one part does'nt selected");
+        eina_list_free(list);
+        return false;
+     }
+   prev_eoi = elm_genlist_item_prev_get(eoi);
+   if (!prev_eoi)
+     {
+        NOTIFY_INFO(3, "Selected part currently on top in list");
+        eina_list_free(list);
+        return false;
+     }
+   part = elm_object_item_data_get(eoi);
+   new_eoi = elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
+                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   elm_object_item_del(eoi);
+   elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+   eina_list_free(list);
+
+   for(itr = group->parts; itr != NULL; itr = itr->next)
+     {
+        _part = EINA_INLIST_CONTAINER_GET(itr, Part);
+        if (_part == part)
+          {
+             prev_elm = itr->prev;
+             group->parts = eina_inlist_remove(group->parts, itr);
+             group->parts = eina_inlist_prepend_relative(group->parts,
+                                                         itr, prev_elm);
+             break;
+          }
+     }
+
+   return true;
+}
+
+
+Eina_Bool
+ui_widget_list_selected_part_below(Evas_Object *object, Group *group)
+{
+
+   Evas_Object *gl_parts = NULL;
+   Elm_Object_Item *eoi = NULL;
+   Elm_Object_Item *new_eoi = NULL;
+   Elm_Object_Item *next_eoi = NULL;
+   Part *part = NULL;
+   Eina_Inlist *next_elm =  NULL;
+   Eina_Inlist *itr = NULL;
+   Part *_part = NULL;
+
+   if ((!object) || (!group)) return false;
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
+                                               "elm.swallow.content");
+   /* FIXME: remove it after merge to develop */
+   Eina_List *list = elm_box_children_get(gl_parts);
+   gl_parts = eina_list_data_get(eina_list_last(list));
+
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   if (!eoi)
+     {
+        NOTIFY_INFO(3, "None one part does'nt selected");
+        eina_list_free(list);
+        return false;
+     }
+   next_eoi = elm_genlist_item_next_get(eoi);
+   if (!next_eoi)
+     {
+        NOTIFY_INFO(3, "Selected part currently on bottom in list");
+        eina_list_free(list);
+        return false;
+     }
+   part = elm_object_item_data_get(eoi);
+   new_eoi = elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
+                         next_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+   eoi = elm_genlist_selected_item_get(gl_parts);
+   elm_object_item_del(eoi);
+   elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
+
+   eina_list_free(list);
+
+   for (itr = group->parts; itr != NULL; itr = itr->next)
+     {
+        _part = EINA_INLIST_CONTAINER_GET(itr, Part);
+        if (_part == part)
+          {
+             next_elm = itr->next;
+             group->parts = eina_inlist_remove(group->parts, itr);
+             group->parts = eina_inlist_append_relative(group->parts,
+                                                        itr, next_elm);
+             break;
+          }
+     }
    return true;
 }
 

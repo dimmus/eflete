@@ -69,7 +69,8 @@ ui_widget_list_title_set(Evas_Object *object, const char *title);
  *
  * @param object A 'widget list' object
  * @param project A opened project
- * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup WidgetList
  */
@@ -87,6 +88,32 @@ ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name);
  */
 Eina_Bool
 ui_widget_list_selected_part_del(Evas_Object *object, Group *group);
+
+/**
+ * Move above selected item of widgetlist.
+ *
+ * @param object The container object, which contain genlist of widgetlist.
+ * @param group The struct @Group of current loaded group.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_selected_part_above(Evas_Object *object, Group *group);
+
+/**
+ * Move below selected item of widgetlist.
+ *
+ * @param object The container object, which contain genlist of widgetlist.
+ * @param group The struct @Group of current loaded group.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_selected_part_below(Evas_Object *object, Group *group);
 
 /**
  *

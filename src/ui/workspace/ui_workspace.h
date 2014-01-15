@@ -114,12 +114,39 @@ workspace_edit_object_recalc(Evas_Object *obj);
 Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data);
-
 /**
  *
  */
 Eina_Bool
 workspace_edit_object_part_del(Evas_Object *obj, const char *part);
+
+/**
+ * Stack part above above in workspace module. This function is a wrapper
+ * on _edit_object_part_restack_above();
+ *
+ * @param obj The workspace object.
+ * @param part The name of part, which need above above.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_part_above(Evas_Object *obj, const char *part);
+
+/**
+ * Stack part below below in workspace module. This function is a wrapper
+ * on _edit_object_part_restack_below();
+ *
+ * @param obj The workspace object.
+ * @param part The name of part, which need below below.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_part_below(Evas_Object *obj, const char *part);
 
 /**
  *

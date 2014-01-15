@@ -120,6 +120,119 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
    return true;
 }
 
+/**
+  * Internal function, which provide restack parts at parts list and restack
+  * part primitives at canvas.
+  * If param part_to is NULL, part, which name stored at param part, will
+  * restack below or above at one position. Else part will restack to part which
+  * name stored at part_to.
+  *
+  * @param sd The groupedit smart data structure for get access to parts list.
+  * @param part The name of part to stack.
+  * @param part_to The name of part which to stack.
+  * @param mode If EINA_TRUE operation restack above will be process, else is
+  * restack below.
+  *
+  * @return EINA_FALSE on failure, EINA_TRUE on success.
+  */
+static Eina_Bool
+_part_restack(Ws_Groupedit_Smart_Data *sd,
+              const char *part,
+              const char *part_to,
+              Eina_Bool mode)
+{
+   Eina_List *l = NULL;
+   Groupedit_Part *ge_part_to, *ge_part;
+
+   ge_part = _parts_list_find(sd->parts, part);
+   if (!ge_part) return false;
+   /* Here find part_to in parts stack. ge_part will be restack abow or below
+    * ge_part_to object. */
+   if (part_to)
+     ge_part_to = _parts_list_find(sd->parts, part_to);
+   else
+     {
+        l = eina_list_data_find_list(sd->parts, ge_part);
+        if (mode)
+          ge_part_to = eina_list_data_get(eina_list_prev(l));
+        else
+          ge_part_to = eina_list_data_get(eina_list_next(l));
+     }
+
+   if (!ge_part_to) return false;
+
+   /* For changing position ge_part in Eina_List of parts, at first need to
+    * remove node with data ge_part, and for second prepend/append ge_part to
+    * list of parts. (Operation prepend use when restack above, and
+    * append if restack below)
+    */
+   sd->parts = eina_list_remove(sd->parts, ge_part);
+
+   if (mode)
+     {
+        sd->parts = eina_list_prepend_relative(sd->parts, ge_part, ge_part_to);
+        evas_object_stack_below(ge_part->draw, ge_part_to->draw);
+        if (ge_part->border)
+          evas_object_stack_below(ge_part->border, ge_part_to->draw);
+        evas_object_stack_below(ge_part->item, ge_part_to->draw);
+     }
+   else
+     {
+        sd->parts = eina_list_append_relative(sd->parts, ge_part, ge_part_to);
+
+        evas_object_stack_above(ge_part->item, ge_part_to->item);
+        if (ge_part->border)
+          evas_object_stack_above(ge_part->border, ge_part_to->item);
+        evas_object_stack_above(ge_part->draw, ge_part_to->item);
+     }
+
+   return true;
+}
+
+Eina_Bool
+_edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
+                                const char *part,
+                                const char *part_above)
+{
+   Eina_Bool ret = false;
+   if ((!sd->parts) || (!part)) return false;
+   if (part_above)
+     ret = edje_edit_part_restack_part_above(sd->edit_obj, part, part_above);
+   else
+     ret = edje_edit_part_restack_below(sd->edit_obj, part);
+
+   if (!ret)
+     {
+        ERR("Failed restack in edje_edit object");
+        return false;
+     }
+   _part_restack(sd, part, part_above, true);
+   evas_object_smart_changed(sd->obj);
+   return true;
+}
+
+Eina_Bool
+_edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
+                                const char *part,
+                                const char *part_below)
+{
+   Eina_Bool ret = false;
+   if ((!sd->parts) || (!part)) return false;
+   if (part_below)
+     ret = edje_edit_part_restack_part_below(sd->edit_obj, part, part_below);
+   else
+     ret = edje_edit_part_restack_above(sd->edit_obj, part);
+
+   if (!ret)
+     {
+        ERR("Failed restack in edje_edit object");
+        return false;
+     }
+   _part_restack(sd, part, part_below, false);
+   evas_object_smart_changed(sd->obj);
+   return true;
+}
+
 void
 _parts_list_new(Ws_Groupedit_Smart_Data *sd)
 {

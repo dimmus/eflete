@@ -251,14 +251,10 @@ _sc_smart_move_cb(void *data,
    int bg_x, bg_y, gs_x, gs_y, gs_w, gs_h;
    int cross_size;
    Evas_Object *o = (Evas_Object *)data;
-   Evas_Object *box = NULL;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
 
-   //if (!sd->groupedit) return;
-   //group = ui_groupspace_group_get(sd->groupedit);
    if (!sd->group) return;
-   //box = ui_groupspace_box_get(sd->groupedit);
    evas_object_geometry_get(sd->ruler_hor, &cross_size, NULL, NULL, NULL);
    evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
    evas_object_geometry_get(sd->group->obj, &gs_x, &gs_y, &gs_w, &gs_h);
@@ -272,7 +268,6 @@ _sc_smart_move_cb(void *data,
    ui_ruler_redraw(sd->ruler_hor);
    ui_ruler_redraw(sd->ruler_ver);
    ws_object_highlight_move(o);
-   evas_object_smart_calculate(box);
 }
 
 static Eina_Bool
@@ -907,6 +902,24 @@ workspace_edit_object_part_del(Evas_Object *obj, const char *part)
    if (!part) return false;
 
    return groupedit_edit_object_part_del(sd->groupedit, part);
+}
+
+Eina_Bool
+workspace_edit_object_part_above(Evas_Object *obj, const char *part)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part) return false;
+
+   return groupedit_edit_object_part_above(sd->groupedit, part);
+}
+
+Eina_Bool
+workspace_edit_object_part_below(Evas_Object *obj, const char *part)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part) return false;
+
+   return groupedit_edit_object_part_below(sd->groupedit, part);
 }
 
 Eina_Bool
