@@ -767,8 +767,11 @@ groupedit_part_object_area_visible_get(Evas_Object *obj)
 }
 
 void
-groupedit_edit_object_parts_separeted(Evas_Object *obj, Eina_Bool separeted)
+groupedit_edit_object_parts_separeted(Evas_Object *obj,
+                                      Eina_Bool separeted,
+                                      const char *name)
 {
+   Groupedit_Part *gp;
    int w, h, count;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
    if ((!sd->edit_obj) || (!sd->parts)) return;
@@ -780,10 +783,25 @@ groupedit_edit_object_parts_separeted(Evas_Object *obj, Eina_Bool separeted)
    /* after resize the groupedit object it will be marked as dirty,
       and parts will be recalced. */
    if (separeted)
-     evas_object_resize(obj, w + (SEP_ITEM_PAD_X * count), h + (SEP_ITEM_PAD_Y * count));
+     {
+        evas_object_resize(obj, w + (SEP_ITEM_PAD_X * count), h + (SEP_ITEM_PAD_Y * count));
+        evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_OPEN, NULL);
+        if (name)
+          {
+             gp = _parts_list_find(sd->parts, name);
+             if (gp) sd->to_select = gp;
+             _select_item_move_to_top(sd);
+          }
+     }
    else
      {
         evas_object_resize(obj, w - (SEP_ITEM_PAD_X * count), h - (SEP_ITEM_PAD_Y * count));
+        /* emit the signal that the groupedit returned to the normal mode.
+           send the name of selected item(part), for hilight and widget list
+           events. */
+        DBG("%s", sd->selected ? sd->selected->name : NULL);
+        evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE,
+                                        sd->selected ? (void *)sd->selected->name : NULL);
         _selected_item_return_to_place(sd);
      }
 }

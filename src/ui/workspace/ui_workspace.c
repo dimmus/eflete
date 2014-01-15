@@ -210,11 +210,22 @@ _separate_smart_on_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
+   const char *name = NULL;
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    Eina_Bool sep = groupedit_edit_object_parts_separeted_is(sd->groupedit);
-   groupedit_edit_object_parts_separeted(sd->groupedit, !sep);
+   if (sd->highlight.part)
+     {
+        name = sd->highlight.part->name;
+        highlight_object_unfollow(sd->highlight.highlight);
+        highlight_object_unfollow(sd->highlight.space_hl);
+        evas_object_hide(sd->highlight.space_hl);
+        evas_object_hide(sd->highlight.highlight);
+        sd->highlight.part = NULL;
+     }
+   groupedit_edit_object_parts_separeted(sd->groupedit, !sep, name);
+
 }
 static void
 _sc_smart_resize_cb(void *data ,
@@ -426,7 +437,7 @@ workspace_highlight_unset(Evas_Object *obj)
    if (!obj) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
    highlight_object_unfollow(sd->highlight.highlight);
-   highlight_object_unfollow(sd->highlight.highlight);
+   highlight_object_unfollow(sd->highlight.space_hl);
    sd->highlight.part = NULL;
    evas_object_hide(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.highlight);
@@ -807,6 +818,28 @@ workspace_add(Evas_Object *parent)
      }
 }
 
+static void
+_on_separete_close(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Evas_Object *follow;
+   Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
+   const char *part_name = (const char *)event_info;
+
+   if (!part_name) return;
+
+   groupedit_part_object_area_set(sd->groupedit, part_name);
+
+   follow = groupedit_edit_object_part_draw_get(sd->groupedit, part_name);
+   highlight_object_follow(sd->highlight.highlight, follow);
+   follow = groupedit_part_object_area_get(sd->groupedit);
+   highlight_object_follow(sd->highlight.space_hl, follow);
+
+   evas_object_hide(sd->highlight.space_hl);
+   evas_object_show(sd->highlight.highlight);
+}
+
 Eina_Bool
 workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
 {
@@ -818,6 +851,8 @@ workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
    sd->group = group;
    groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
    groupedit_edit_object_set(sd->groupedit, group->obj, file);
+   evas_object_smart_callback_add(sd->groupedit, "parts,separete,close",
+                                  _on_separete_close, sd);
    groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->groupedit);
    evas_object_show(sd->groupedit);

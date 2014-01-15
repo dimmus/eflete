@@ -247,7 +247,7 @@ _item_bg_add(Ws_Groupedit_Smart_Data *sd)
    evas_object_move(gp->bg, x, y);
 }
 
-static void
+void
 _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 {
    if (sd->selected == sd->to_select) return;
