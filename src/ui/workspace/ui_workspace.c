@@ -157,33 +157,37 @@ _ws_ruler_hide_cb(void *data,
    free(data_info);
 }
 
-/*
 static void
-_ws_smart_ruler_move_cb(void *data __UNUSED__,
-               Evas_Object *obj,
-               void *event_info __UNUSED__)
+_ws_ruler_abs_zero_move_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
 {
-   Evas_Object *target = (Evas_Object *)event_info;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   Evas_Object *workspace = (Evas_Object *)data;
+   Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
+   WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
 
-   int x, y, w, h;
-   int xt, yt;
-   int cross_size;
+   ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, ge_geom->x);
+   ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, ge_geom->y);
 
-   evas_object_geometry_get(sd->ruler_hor, &cross_size, NULL, NULL, NULL);
-   evas_object_geometry_get(target, &x, &y, &w, &h);
-   evas_object_geometry_get(sd->background, &xt, &yt, NULL, NULL);
-   cross_size -= xt;
-   ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, x - xt - cross_size);
-   ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, y - yt - cross_size);
-   ui_ruler_scale_relative_position_set(sd->ruler_hor, x - xt - cross_size,
-                                        x + w - xt - cross_size);
-   ui_ruler_scale_relative_position_set(sd->ruler_ver, y - yt - cross_size,
-                                        y + h - yt - cross_size);
    ui_ruler_redraw(sd->ruler_hor);
    ui_ruler_redraw(sd->ruler_ver);
 }
-*/
+
+static void
+_ws_ruler_rel_zero_move_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
+   WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
+
+   ui_ruler_scale_relative_position_set(sd->ruler_hor, ge_geom->x, ge_geom->x + ge_geom->w);
+   ui_ruler_scale_relative_position_set(sd->ruler_ver, ge_geom->y, ge_geom->y + ge_geom->h);
+
+   ui_ruler_redraw(sd->ruler_hor);
+   ui_ruler_redraw(sd->ruler_ver);
+}
 
 static void
 _ws_smart_mouse_click_cb(void *data ,
@@ -855,6 +859,10 @@ workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
    groupedit_edit_object_set(sd->groupedit, group->obj, file);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
+   evas_object_smart_callback_add(sd->groupedit, "container,changed",
+                                  _ws_ruler_abs_zero_move_cb, obj);
+   evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
+                                  _ws_ruler_rel_zero_move_cb, obj);
    groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->groupedit);
    evas_object_show(sd->groupedit);

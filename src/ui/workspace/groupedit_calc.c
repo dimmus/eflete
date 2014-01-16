@@ -529,22 +529,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              evas_object_hide(gp->draw);
              if (gp->border) evas_object_hide(gp->border);
           }
-
-        if ((sd->obj_area.gp) && ((sd->obj_area.gp->name == gp->name) ||
-                                  (!strcmp(sd->obj_area.gp->name, gp->name))))
-          {
-             if (!sd->obj_area.obj)
-               {
-                  sd->obj_area.obj = evas_object_rectangle_add(sd->e);
-                  evas_object_color_set(sd->obj_area.obj,
-                                        255*50/255 , 0*50/255, 0*50/255, 50);
-                  sd->obj_area.geom = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
-                  if (sd->obj_area.visible) evas_object_show(sd->obj_area.obj);
-                  else evas_object_hide(sd->obj_area.obj);
-               }
-             _part_object_area_calc(sd);
-          }
      }
+     _part_object_area_calc(sd);
 }
 
 #define BORDER_ADD(R, G, B, A) \
@@ -887,46 +873,61 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    int xg, yg, wg, hg; // groupedit geometry
    int x, w, y, h;
    double relative;
-   PART_STATE_GET(sd->edit_obj, sd->obj_area.gp->name)
-   const char *name = sd->obj_area.gp->name;
 
-   evas_object_geometry_get(sd->edit_obj, &xg, &yg, &wg, &hg);
+   if (!sd->obj_area.gp)
+     {
+        x = sd->con_current_size->x; y = sd->con_current_size->y;
+        w = sd->con_current_size->w; h = sd->con_current_size->h;
+     }
+   else
+     {
+        PART_STATE_GET(sd->edit_obj, sd->obj_area.gp->name)
+        const char *name = sd->obj_area.gp->name;
 
-   xc = wc = 0;
-   rel_to = edje_edit_state_rel1_to_x_get(sd->edit_obj, name, state, value);
-   relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
-   if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
-   x = xg + (xc + (int)(wc * relative));
-   edje_edit_string_free(rel_to);
+        evas_object_geometry_get(sd->edit_obj, &xg, &yg, &wg, &hg);
 
-   yc = hc = 0;
-   rel_to = edje_edit_state_rel1_to_y_get(sd->edit_obj, name, state, value);
-   relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
-   if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
-   y = yg + (yc + (int)(hc * relative));
-   edje_edit_string_free(rel_to);
+        xc = wc = 0;
+        rel_to = edje_edit_state_rel1_to_x_get(sd->edit_obj, name, state, value);
+        relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
+        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
+        x = xg + (xc + (int)(wc * relative));
+        edje_edit_string_free(rel_to);
 
-   xc = wc = 0;
-   rel_to = edje_edit_state_rel2_to_x_get(sd->edit_obj, name, state, value);
-   relative = edje_edit_state_rel2_relative_x_get(sd->edit_obj, name, state, value);
-   if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
-   w = xg + (xc + (int)(wc * relative)) - x;
-   edje_edit_string_free(rel_to);
+        yc = hc = 0;
+        rel_to = edje_edit_state_rel1_to_y_get(sd->edit_obj, name, state, value);
+        relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
+        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
+        y = yg + (yc + (int)(hc * relative));
+        edje_edit_string_free(rel_to);
 
-   yc = hc = 0;
-   rel_to = edje_edit_state_rel2_to_y_get(sd->edit_obj, name, state, value);
-   relative = edje_edit_state_rel2_relative_y_get(sd->edit_obj, name, state, value);
-   if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
-   h = yg + (yc + (int)(hc * relative)) - y;
-   edje_edit_string_free(rel_to);
+        xc = 0; wc = sd->con_current_size->w;
+        rel_to = edje_edit_state_rel2_to_x_get(sd->edit_obj, name, state, value);
+        relative = edje_edit_state_rel2_relative_x_get(sd->edit_obj, name, state, value);
+        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
+        w = xg + (xc + (int)(wc * relative)) - x;
+        DBG("xg: %i, xc %i, wc %i, relative %f, x %i", xg, xc, wc, relative, x);
+        edje_edit_string_free(rel_to);
+
+        yc = 0; hc = sd->con_current_size->h;
+        rel_to = edje_edit_state_rel2_to_y_get(sd->edit_obj, name, state, value);
+        relative = edje_edit_state_rel2_relative_y_get(sd->edit_obj, name, state, value);
+        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
+        h = yg + (yc + (int)(hc * relative)) - y;
+        edje_edit_string_free(rel_to);
+
+        evas_object_geometry_get(sd->obj, &xc, &yc, NULL, NULL);
+
+        evas_object_resize(sd->obj_area.obj, w, h);
+        evas_object_move(sd->obj_area.obj, x, y);
+
+        PART_STATE_FREE
+
+        x -= xc; y -= yc;
+     }
 
    sd->obj_area.geom->x = x; sd->obj_area.geom->y = y;
    sd->obj_area.geom->w = w; sd->obj_area.geom->h = h;
 
-   evas_object_resize(sd->obj_area.obj, w, h);
-   evas_object_move(sd->obj_area.obj, x, y);
-
+   DBG("Groupedit object area geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
    evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
-
-   PART_STATE_FREE
 }

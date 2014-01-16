@@ -25,7 +25,6 @@
 #define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h)
 
 #define PADDING_INIT 5
-//#define EFLETE_THEME "groupedit.edj"
 
 /* here we create and define some functions for creating our groupedit smart
   object that is inherited from general Smart Object. */
@@ -203,7 +202,6 @@ _mouse_move_cb(void *data,
 
         if (sd->paddings.t_top <= 0) sd->paddings.t_top = sd->paddings.bottom;
         if (sd->paddings.t_left <= 0) sd->paddings.t_left = sd->paddings.bottom;
-        evas_object_smart_changed(o);
      }
    if (sd->handler_BR_pressed)
      {
@@ -231,10 +229,11 @@ _mouse_move_cb(void *data,
           }
         evas_object_resize(o, nw, nh);
 
-        evas_object_smart_changed(o);
      }
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
+
+   evas_object_smart_changed(o);
 }
 
 static void
@@ -310,9 +309,12 @@ _groupedit_smart_add(Evas_Object *o)
    priv->parts = NULL;
    priv->handler_TL_pressed = EINA_FALSE;
    priv->handler_BR_pressed = EINA_FALSE;
-   priv->obj_area.obj = NULL;
+   /* FIXME: temporary solution with color */
+   priv->obj_area.obj = evas_object_rectangle_add(priv->e);
+   evas_object_color_set(priv->obj_area.obj, 255*50/255, 0*50/255, 0*50/255, 50);
    priv->obj_area.gp = NULL;
    priv->obj_area.visible = EINA_FALSE;
+   priv->obj_area.geom = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
    priv->separated = EINA_FALSE;
    priv->selected = NULL;
    priv->to_select = NULL;
@@ -421,8 +423,8 @@ _groupedit_smart_calculate(Evas_Object *o)
      {
         evas_object_resize(priv->container, cw, ch);
         evas_object_move(priv->container, x + htl_w, y + htl_h);
-        priv->con_current_size->x = x + htl_w;
-        priv->con_current_size->y = y + htl_h;
+        priv->con_current_size->x = priv->paddings.t_left + htl_w;
+        priv->con_current_size->y = priv->paddings.t_top + htl_h;
         priv->con_current_size->w = cw;
         priv->con_current_size->h = ch;
         sprintf(buff, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
@@ -432,8 +434,7 @@ _groupedit_smart_calculate(Evas_Object *o)
         evas_object_move(priv->handler_TL.obj, x, y);
 
         evas_object_resize(priv->handler_BR.obj, hrb_w, hrb_h);
-        evas_object_move(priv->handler_BR.obj, priv->con_current_size->x + cw,
-                                          priv->con_current_size->y + ch);
+        evas_object_move(priv->handler_BR.obj, x + htl_w + cw, y + htl_h + ch);
 
         evas_object_show(priv->container);
         evas_object_show(priv->handler_TL.obj);
@@ -713,7 +714,7 @@ groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
 
    ret = edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
 
-   _parts_recalc(sd);
+   evas_object_smart_changed(sd->obj);
    return ret;
 }
 
@@ -728,7 +729,7 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
    ret = edje_edit_state_add(sd->edit_obj, part, state, value);
    ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
 
-   if (ret) _parts_recalc(sd);
+   if (ret) evas_object_smart_changed(sd->obj);
    return ret;
 }
 
@@ -742,7 +743,7 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
 
    ret = edje_edit_state_del(sd->edit_obj, part, state, value);
 
-   _parts_recalc(sd);
+   evas_object_smart_changed(sd->obj);
    return ret;
 }
 
@@ -764,7 +765,8 @@ groupedit_part_object_area_set(Evas_Object *obj, const char *part)
 
    gp = _parts_list_find(sd->parts, part);
    sd->obj_area.gp = gp;
-   _parts_recalc(sd);
+
+   evas_object_smart_changed(sd->obj);
 }
 
 void
