@@ -905,7 +905,11 @@ workspace_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part) return false;
+   if (!part)
+     {
+        ERR("Can't add the part '%s' to the group '%s'!", part, sd->group->full_group_name)
+        return false;
+     }
 
    return groupedit_edit_object_part_add(sd->groupedit, part, type, data);
 }
@@ -914,7 +918,11 @@ Eina_Bool
 workspace_edit_object_part_del(Evas_Object *obj, const char *part)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part) return false;
+   if (!part)
+     {
+        ERR("Can't delete the part '%s' from the group '%s'!", part, sd->group->full_group_name)
+        return false;
+     }
 
    return groupedit_edit_object_part_del(sd->groupedit, part);
 }
@@ -923,7 +931,11 @@ Eina_Bool
 workspace_edit_object_part_above(Evas_Object *obj, const char *part)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part) return false;
+   if (!part)
+     {
+        ERR("Can't restack above the part '%s' in the group %s!", part, sd->group->full_group_name)
+        return false;
+     }
 
    return groupedit_edit_object_part_above(sd->groupedit, part);
 }
@@ -932,7 +944,11 @@ Eina_Bool
 workspace_edit_object_part_below(Evas_Object *obj, const char *part)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if (!part) return false;
+   if (!part)
+     {
+        ERR("Can't restack below the part '%s' in the group %s!", part, sd->group->full_group_name)
+        return false;
+     }
 
    return groupedit_edit_object_part_below(sd->groupedit, part);
 }
@@ -942,7 +958,12 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (!part) return false;
+   if (!part)
+     {
+        ERR("Can't set state '%s %f' to part '%s' in the group %s!",
+            part->curr_state, part->curr_state_value, part->name, sd->group->full_group_name)
+        return false;
+     }
    return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
                                                part->curr_state,
                                                part->curr_state_value);
@@ -953,7 +974,12 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!state)) return false;
+   if ((!part) || (!state))
+     {
+        ERR("Can't add state '%s %f' to part '%s' in the group %s!",
+            state, value, part, sd->group->full_group_name)
+        return false;
+     }
 
    return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
 }
@@ -963,7 +989,29 @@ workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   if ((!part) || (!state)) return false;
+   if ((!part) || (!state))
+     {
+        ERR("Can't delete state '%s %f' from part '%s' in the group %s!",
+            state, value, part, sd->group->full_group_name)
+        return false;
+     }
 
    return groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
+}
+
+Eina_Bool
+workspace_edit_object_visible_set(Evas_Object *obj,
+                                  const char *part,
+                                  Eina_Bool visible)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!part)
+     {
+        ERR("Can't %s the part '%s' in the group %s!", visible ? "show" : "false",
+            part, sd->group->full_group_name)
+        return false;
+     }
+
+   return groupedit_part_visible_set(sd->groupedit, part, visible);
 }

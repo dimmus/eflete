@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "ui_main_window.h"
@@ -63,6 +63,28 @@ _below_part(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_below(ap->workspace, part->name)))
       ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), group);
+}
+
+static void
+_show_part(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   const char *part_name = (const char *)event_info;
+   if (!workspace_edit_object_visible_set(ap->workspace, part_name, true))
+     ERR("Can't show groupedit part %s!", part_name);
+}
+
+static void
+_hide_part(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   const char *part_name = (const char *)event_info;
+   if (!workspace_edit_object_visible_set(ap->workspace, part_name, false))
+     ERR("Can't hide groupedit part %s!", part_name);
 }
 
 static void
@@ -126,7 +148,7 @@ _on_ws_part_select(void *data,
    App_Data *ap = (App_Data *)data;
    const char *part = (const char *)event_info;
    if (part)
-     ui_widget_list_select_part(ui_block_widget_list_get(ap), part);
+     ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part);
 }
 
 
@@ -142,6 +164,8 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(wl_list, "wl,part,del", _del_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,above", _above_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,below", _below_part, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,show", _show_part, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,hide", _hide_part, ap);
 
    workspace_edit_object_unset(ap->workspace);
    /* FIXME:  find way to does'nt make immidietly render */
@@ -244,6 +268,8 @@ ui_group_clicked(App_Data *ap, Group *group)
    evas_object_smart_callback_add(wl_list, "wl,part,del", _del_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,above", _above_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,below", _below_part, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,show", _show_part, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,hide", _hide_part, ap);
 
    /* Get signals list of a group and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);

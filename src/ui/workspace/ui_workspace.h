@@ -161,7 +161,21 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
 Eina_Bool
 workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value);
-
+/**
+ * Set a visibility for part of current groupedit object in the workspace.
+ *
+ * @param obj The workspace object
+ * @param part The name of groupedit part to be showed of hided
+ * @param visible Use EINA_TRUE to show, EINA_FALSE to hide part.
+ *
+ * @return EINA_TRUE, if it's showed/hided, EINA_FALSE otherwise
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_visible_set(Evas_Object *obj,
+                                  const char *part,
+                                  Eina_Bool visible);
 
 /**
  * Set zoom factor for view zoommed style in groupspace.

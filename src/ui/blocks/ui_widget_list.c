@@ -77,12 +77,24 @@ _on_icon_click(void *data,
                Evas_Object *obj,
                void *event_data __UNUSED__)
 {
-   Part *_part = (Part *) data;
+   Evas_Object *gl_parts, *nf;
+   Part *_part = (Part *)data;
    _part->show = !_part->show;
+
+   gl_parts = evas_object_data_get(obj, "gl_parts");
+   nf = evas_object_data_get(gl_parts, "naviframe");
+   DBG("%s", evas_object_type_get(gl_parts));
+
    if (_part->show)
-      elm_image_file_set(obj, TET_IMG_PATH"eye_open.png", NULL);
+     {
+        elm_image_file_set(obj, TET_IMG_PATH"eye_open.png", NULL);
+        evas_object_smart_callback_call(nf, "wl,part,show", (void *)_part->name);
+     }
    else
-      elm_image_file_set(obj, TET_IMG_PATH"eye_close.png", NULL);
+     {
+        elm_image_file_set(obj, TET_IMG_PATH"eye_close.png", NULL);
+        evas_object_smart_callback_call(nf, "wl,part,hide", (void *)_part->name);
+     }
 }
 
 static Evas_Object *
@@ -100,9 +112,10 @@ _item_part_content_get(void *data,
           elm_image_file_set(icon, TET_IMG_PATH"eye_close.png", NULL);
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
+        evas_object_data_set(icon, "gl_parts", obj);
         return icon;
      }
-    if (!strcmp(part, "elm.swallow.end"))
+   if (!strcmp(part, "elm.swallow.end"))
      {
         Evas_Object *icon = elm_icon_add(obj);
         if (_part->type == EDJE_PART_TYPE_RECTANGLE)
@@ -123,7 +136,7 @@ _item_part_content_get(void *data,
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
      }
-  else return NULL;
+   return NULL;
 }
 
 static char *
@@ -335,6 +348,7 @@ _on_group_clicked_double(void *data,
         elm_object_item_data_set(eoi, _part);
      }
    evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, nf);
+   evas_object_data_set(gl_parts, "naviframe", nf);
 
    ICON_ADD(nf, ic, false, TET_IMG_PATH"icon-back.png");
 
@@ -773,7 +787,7 @@ ui_widget_list_selected_part_get(Evas_Object *object)
 }
 
 Eina_Bool
-ui_widget_list_select_part(Evas_Object *object, const char *part)
+ui_widget_list_part_selected_set(Evas_Object *object, const char *part)
 {
    Evas_Object *gl_parts;
 

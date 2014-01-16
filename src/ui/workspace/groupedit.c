@@ -844,6 +844,21 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
    }
 }
 
+Eina_Bool
+groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible)
+{
+   Groupedit_Part *gp;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!part) return false;
+
+   gp = _parts_list_find(sd->parts, part);
+   gp->visible = visible;
+
+   _parts_recalc(sd);
+   return true;
+}
+
 void
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {

@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef UI_WIDGET_LIST_H
@@ -27,11 +27,16 @@
  * This widget inherit from the Naviframe and Genlist.
  *
  * This widget emits the following signals:
- * @li "wl,group,select": the user double clicked on the group name
- * @li "wl,group,back": the user clicked on the "back" button
- * @li "wl,part,select": the user selected on the part name
- * @li "wl,part,back": the user clicked on the "back" button
- * @li "wl,part,add" : the user clicked on the "plus" button
+ * @li "wl,group,select": the user double clicked on the group name;
+ * @li "wl,group,back": the user clicked on the "back" button;
+ * @li "wl,part,select": the user selected on the part name;
+ * @li "wl,part,back": the user clicked on the "back" button;
+ * @li "wl,part,add" : the user clicked on the "plus" button;
+ * @li "wl,part,del" : the user clicked on the "minus" button;
+ * @li "wl,part,above" : the user clicked on the "above" button;
+ * @li "wl,part,below" : the user clicked on the "below" button;
+ * @li "wl,part,show" : the user clicked on the "eye" in item;
+ * @li "wl,part,hide": the user clicked on the "eye" in item.
  *
  * A Widget List used for view a list of widgets styles
  */
@@ -78,13 +83,28 @@ Eina_Bool
 ui_widget_list_data_set(Evas_Object *object, Project *project);
 
 /**
+ * Add to end new part item in list.
  *
+ * @param object A 'widget list' object
+ * @param group The struct @Group of current loaded group, in this group part will be added
+ * @param name The name of new part with will be added
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
  */
 Eina_Bool
 ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name);
 
 /**
+ * Delete the selected item (part) from list.
  *
+ * @param object A 'widget list' object
+ * @param group The struct @Group of current loaded group, in this group part will be deleted
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
  */
 Eina_Bool
 ui_widget_list_selected_part_del(Evas_Object *object, Group *group);
@@ -116,22 +136,42 @@ Eina_Bool
 ui_widget_list_selected_part_below(Evas_Object *object, Group *group);
 
 /**
+ * Get the selected @Part in the widget list.
  *
+ * @param object A 'widget list' object
+ *
+ * @return The selected Part, or NULL if none is selected.
+ *
+ * @ingroup WidgetList
  */
 Part *
 ui_widget_list_selected_part_get(Evas_Object *object);
 
 /**
+ * Get a list of selected @Part's in the widget list.
  *
- */
-Eina_Bool
-ui_widget_list_select_part(Evas_Object *object, const char *part);
-
-/**
+ * @param object A 'widget list' object
  *
+ * @return The list of selected Parts, or NULL if none are selected.
+ *
+ * @ingroup WidgetList
  */
 Eina_List *
 ui_widget_list_selected_parts_get(Evas_Object *object);
+
+/**
+ * Select in a given widget list Part if is exist.
+ * The list must be freed by the caller when done with eina_list_free().
+ *
+ * @param object A 'widget list' object
+ * @param name The name of new part with will be selcted
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_part_selected_set(Evas_Object *object, const char *part);
 
 /**
  * Reload content style genlist.
