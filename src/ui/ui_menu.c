@@ -34,6 +34,7 @@ struct _menu_event
    enum {
       OPEN_EDC = 0,
       OPEN_EDJ,
+      EXPORT_EDC,
       SAVE_EDJ,
       SAVE_AS_EDJ
    } type;
@@ -59,6 +60,9 @@ _menu_event_handler_cb(void *data __UNUSED__,
       break;
       case OPEN_EDJ:
          open_edj_file(menu_event->ap);
+      break;
+      case EXPORT_EDC:
+         save_as_edc_file(menu_event->ap);
       break;
       case SAVE_EDJ:
          if (pm_save_project_to_swap(menu_event->ap->project))
@@ -269,12 +273,14 @@ _on_save_as_menu(void *data,
 }
 
 static void
-_on_edc_save_menu(void *data __UNUSED__,
+_on_export_edc_menu(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   save_as_edc_file(ap);
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = (App_Data *)data;
+   menu_event->type = EXPORT_EDC;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -451,7 +457,7 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, menu_it, NULL, "Open edj-file", _on_edj_open_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, "Save", _on_save_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, "Save as...", _on_save_as_menu, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, "Save to edc", _on_edc_save_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Export to edc...", _on_export_edc_menu, ap, it);
    elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, "Exit", _on_exit_menu, ap, it);
 
@@ -529,7 +535,7 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    Eina_Bool result = true;
    result = ui_menu_disable_set(menu_hash, "Save", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Save as...", flag) && result;
-   result = ui_menu_disable_set(menu_hash, "Save to edc", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Export to edc...", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Workspace", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Separate", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Legend", flag) && result;

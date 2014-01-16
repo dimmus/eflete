@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "save_file_dialog.h"
@@ -120,6 +120,22 @@ _on_edj_done(void *data,
 }
 
 static void
+_on_edc_done(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   const char *selected = (const char *)event_info;
+   if ((!selected) || (!strcmp(selected, "")))
+     {
+        ecore_main_loop_quit();
+        return;
+     }
+   pm_export_to_edc(ap->project, selected, NULL);
+   ecore_main_loop_quit();
+}
+
+static void
 _on_inwin_delete(void *data,
                        Evas *e __UNUSED__,
                        Evas_Object *obj __UNUSED__,
@@ -130,21 +146,26 @@ _on_inwin_delete(void *data,
    *dialog_deleted = true;
 }
 
-Eina_Bool
-save_as_edj_file(App_Data *ap)
+static Eina_Bool
+_save_as_edx_file(App_Data *ap,
+                  const char* title,
+                  Evas_Smart_Cb done_cb,
+                  Eina_Bool folder_only)
 {
    Evas_Object *fs;
    Eina_Bool dialog_deleted = false;
 
-   if ((!ap) || (!ap->win) || (!ap->project)) return EINA_FALSE;
+   if ((!ap->win) || (!ap->project)) return false;
 
    Evas_Object *inwin = mw_add(ap->win);
    evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
                                   _on_inwin_delete, &dialog_deleted);
-   OPEN_DIALOG_ADD(inwin, fs, "Save as EDJ file");
-   elm_fileselector_is_save_set(fs, EINA_TRUE);
-   evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
-   evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
+   OPEN_DIALOG_ADD(inwin, fs, title);
+   elm_fileselector_is_save_set(fs, true);
+   elm_fileselector_folder_only_set(fs, folder_only);
+   elm_fileselector_path_set(fs, getenv("HOME"));
+   evas_object_smart_callback_add(fs, "done", done_cb, ap);
+   evas_object_smart_callback_add(fs, "activated", done_cb, ap);
 
    elm_win_inwin_activate(inwin);
 
@@ -156,26 +177,19 @@ save_as_edj_file(App_Data *ap)
         evas_object_del(fs);
         evas_object_del(inwin);
      }
-
    return EINA_TRUE;
 }
 
-/* TO BE IMPLEMENTED. */
+Eina_Bool
+save_as_edj_file(App_Data *ap)
+{
+   if (!ap) return false;
+   return _save_as_edx_file(ap, "Save as EDJ file", _on_edj_done, false);
+}
+
 Eina_Bool
 save_as_edc_file(App_Data *ap)
 {
-   if (!ap)
-     {
-        ERR("App Data missing!");
-        return EINA_FALSE;
-     }
-   if (!ap->project)
-     {
-        ERR("Project missing!");
-        return EINA_FALSE;
-     }
-
-   pm_save_project_edc(ap->project);
-
-   return EINA_TRUE;
+   if (!ap) return false;
+   return _save_as_edx_file(ap, "Export to EDC", _on_edc_done, true);
 }

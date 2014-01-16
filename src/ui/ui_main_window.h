@@ -223,20 +223,6 @@ Evas_Object *
 ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
 
 /**
- * Load project data to App_Data structure. Turn to work state for application.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param ap The App_Data structure pointer.
- * @param obj The Evas_Object pointer, wich pointed to fileselector widget.
- * @param selected String with opened project file name.
- *
- * @ingroup Window
- */
-Evas_Object *
-ui_edc_load_done(App_Data* ap, const char *project_name, const char *path_edc, const char *path_id, const char *path_sd, const char *path_fd);
-
-
-/**
  * Delete selected state from current part.
  * Moved to own method for the separation of the interaction between the blocks.
  *

@@ -65,8 +65,6 @@ _on_unlink_done_cb(void *data,
    if (project->image_directory) free(project->image_directory);
    if (project->font_directory) free(project->font_directory);
    if (project->sound_directory) free(project->sound_directory);
-   if (project->compiler) compiler_free(project->compiler);
-   if (project->decompiler) decompiler_free(project->decompiler);
    INFO ("Closed project: %s", project->name);
    free(project->name);
    wm_widget_list_free(project->widgets);
@@ -177,95 +175,21 @@ _pm_project_add(const char *name,
    pro->sound_directory = sd ? strdup(sd) : NULL;
    DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
-   pro->compiler = NULL;
-   pro->decompiler = NULL;
-
    return pro;
 }
 
 Eina_Bool
-pm_save_project_edc(Project *project)
+pm_export_to_edc(Project *project,
+                 Eina_Stringshare *edc_dir,
+                 Edje_Compile_Log_Cb log_cb)
 {
-   char **split;
-   const char *save_path;
-   int size;
-   char *save_dir;
-
    if (!project)
      {
         WARN("Project is missing. Please open one.");
         return false;
      }
 
-   /* compile project and create swapfile */
-   project->decompiler = decompile(project->edj, NULL);
-
-   if (project->decompiler)
-     {
-        split = eina_str_split(ecore_file_file_get(project->edj), ".", 2);
-
-        save_path = ecore_file_dir_get(project->edj);
-        size = strlen(save_path) + BUFF_MAX;
-        save_dir = mem_malloc(size * sizeof(char));
-        sprintf(save_dir, "%s/DECOMPILED", save_path);
-
-
-        if (!ecore_file_mkpath(save_dir))
-          {
-             NOTIFY_WARNING("Could not create dir with decompiled project. <br>"
-                          "Please check directory permissions or move edj file into another directory.");
-             free(save_dir);
-             free(split[0]);
-             free(split);
-             return false;
-          }
-
-        eio_dir_move(split[0], save_dir, NULL, NULL,
-                     _on_copy_done_cb, _on_copy_error_cb, NULL);
-        ecore_main_loop_begin();
-
-        free(save_dir);
-        free(split[0]);
-        free(split);
-        return true;
-     }
-   return false;
-}
-
-Project *
-pm_open_project_edc(const char *name,
-                    const char *path,
-                    const char *image_directory,
-                    const char *font_directory,
-                    const char *sound_directory)
-{
-   Project *project = NULL;
-
-   if (!path) return NULL;
-
-   project = _pm_project_add(name,
-                            path,
-                            image_directory,
-                            font_directory,
-                            sound_directory);
-
-   if (!project) return NULL;
-
-   project->edj = NULL;
-   /* compile project and create swapfile */
-   project->compiler = compile(project->edc,
-                               project->swapfile,
-                               project->image_directory,
-                               project->font_directory,
-                               project->sound_directory);
-
-   /* TODO: handle compilation errors here */
-
-   if (!project->compiler) return NULL;
-
-   project->widgets = wm_widget_list_new(project->swapfile);
-
-   return project;
+   return !decompile(project->edj, edc_dir, log_cb);
 }
 
 Project *

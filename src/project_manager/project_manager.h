@@ -53,10 +53,6 @@ struct _Project
    char *edj;
    /** path to swap(work) file */
    char *swapfile;
-   /**  */
-   Edje_CC *compiler;
-   /**  */
-   Edje_DeCC *decompiler;
    /** path to image directory, for compile */
    char *image_directory;
    /** path to font directory, for compile */
@@ -74,24 +70,6 @@ struct _Project
  * @ingroup ProjectManager
  */
 typedef struct _Project Project;
-
-/**
- * Open project from edc-file.
- *
- * @param name The name of a project.
- * @param path Path to a edc-file.
- * @param image_directory Path to a image directory of a project.
- * @param font_directory Path to a font directory of a project.
- * @param sound_direcotory Path to a sound directory of a project.
- *
- * @ingroup ProjectManager
- */
-Project *
-pm_open_project_edc(const char *name,
-                    const char *path,
-                    const char *image_directory,
-                    const char *font_directory,
-                    const char *sound_direcotory);
 
 /**
  * Open project from edj-file.
@@ -112,12 +90,16 @@ pm_open_project_edj(const char *name,
  * This function actually decompile the resulted and changed by user EDC file.
  *
  * @param project A Project structure.
+ * @param edc_dir Output directory.
+ * @param log_cb This callback will be called after every line returned from edje_decc.
  * @return EINA_TRUE if saved successfully.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_save_project_edc(Project *project);
+pm_export_to_edc(Project *project,
+                 Eina_Stringshare *edc_dir,
+                 Edje_Compile_Log_Cb log_cb);
 
 /**
  * Save opened EDJ-project.

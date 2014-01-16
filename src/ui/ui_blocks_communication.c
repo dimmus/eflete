@@ -364,62 +364,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
           }
         else NOTIFY_ERROR("The file must have a extension '.edj'");
      }
-   evas_object_hide(elm_object_parent_widget_get(obj));
-   return wd_list;
-}
-
-Evas_Object *
-ui_edc_load_done(App_Data* ap,
-                 const char *project_name,
-                 const char *path_edc,
-                 const char *path_id,
-                 const char *path_sd,
-                 const char *path_fd)
-{
-   Evas_Object *wd_list = NULL;
-   Evas_Object *prop = NULL;
-
-   if (!ap) return NULL;
-
-   prop = ui_block_property_get(ap);
-
-   if (eina_str_has_suffix(path_edc, ".edc"))
-     {
-        INFO("Select file: %s", path_edc);
-        if (prop) ui_property_group_unset(prop);
-        elm_genlist_clear(ui_block_state_list_get(ap));
-        elm_genlist_clear(ui_block_signal_list_get(ap));
-
-        if (ap->workspace)
-          {
-             workspace_edit_object_unset(ap->workspace);
-             workspace_highlight_unset(ap->workspace);
-          }
-
-        if (ap->demo) ui_demospace_unset(ap->demo);
-        pm_free(ap->project);
-        ap->project = pm_open_project_edc(project_name,
-                                          path_edc,
-                                          path_id,
-                                          path_sd,
-                                          path_fd);
-        if  (!ap->project) return NULL;
-
-        wd_list = ui_widget_list_add(ap->win);
-        ui_widget_list_title_set(wd_list, ap->project->name);
-        ui_widget_list_data_set(wd_list, ap->project);
-        ui_block_widget_list_set(ap, wd_list);
-        evas_object_show(wd_list);
-        ui_panes_show(ap);
-
-        ui_menu_base_disabled_set(ap->menu_hash, false);
-     }
-   else
-     {
-        ERR("The file must have a extension '.edc'");
-        NOTIFY_ERROR("The file must have a extension '.edc'");
-     }
-
+   if (obj) evas_object_hide(elm_object_parent_widget_get(obj));
    return wd_list;
 }
 

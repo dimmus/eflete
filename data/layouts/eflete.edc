@@ -10,4 +10,5 @@ collections {
    #include "edje/colorclass_editor.edc"
    #include "edje/prop_item.edc"
    #include "edje/highlight.edc"
+   #include "edje/compile.edc"
 }
