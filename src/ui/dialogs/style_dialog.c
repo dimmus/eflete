@@ -213,7 +213,11 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
              STATE_COPY(fill_size_offset_y);
 
              STATE_COPY(visible);
-             STATE_COPY(color_class);
+             /* FIXME: if uncommemt it line we have segfault.
+                Maybe it issue related with patch to edje edit, with appling
+                new colors when setting new color class to the part state.
+                NEED CHECK IT, AND FIX */
+             //STATE_COPY(color_class);
 
              part_type = edje_edit_part_type_get(template_edje_edit, part_name);
 
