@@ -253,7 +253,13 @@ _on_button_delete_clicked_cb(void *data,
    Elm_Object_Item *grid_item = NULL;
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
+   int deleted = 0, notdeleted = 0;
+   Eina_List * in_use = NULL, *used_in = NULL;
+   char *name;
+   Edje_Part_Image_Use *item;
    Evas_Object *edje_edit_obj = NULL;
+   char buf[BUFF_MAX];
+   int symbs = 0;
 
    if (!img_edit->gengrid) return;
 
@@ -265,10 +271,49 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        edje_edit_image_del(edje_edit_obj, it->image_name);
-        elm_object_item_del(grid_item);
+        if (edje_edit_image_del(edje_edit_obj, it->image_name))
+          {
+             deleted++;
+             elm_object_item_del(grid_item);
+          }
+        else
+          {
+             notdeleted++;
+             if (notdeleted < 4)
+                in_use = eina_list_append(in_use, it->image_name);
+             elm_gengrid_item_selected_set(grid_item, false);
+          }
      }
-   eina_list_free(grid_list);
+   if (notdeleted == 1)
+     {
+        EINA_LIST_FOREACH(in_use, l, name)
+           used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
+        snprintf(buf, BUFF_MAX, "Images is used in:");
+        symbs = strlen(buf);
+        EINA_LIST_FOREACH(used_in, l, item)
+          {
+             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f",
+                      item->group, item->part, item->state.name, item->state.value);
+             symbs+= strlen(name);
+             break; //TODO: remove this break after warning style remake
+          }
+          edje_edit_image_usage_list_free(used_in);
+        NOTIFY_WARNING("%s", buf);
+     }
+   else if (notdeleted >1)
+     {
+        snprintf(buf, BUFF_MAX, "%d images in use:", notdeleted);
+        symbs = strlen(buf);
+        EINA_LIST_FOREACH(in_use, l, name)
+          {
+             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", name);
+             symbs+= strlen(name);
+          }
+        if (notdeleted >= 4)
+           snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
+        NOTIFY_WARNING("%s", buf);
+     }
+   eina_list_free(in_use);
 }
 
 static void
