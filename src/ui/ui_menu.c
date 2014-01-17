@@ -298,9 +298,7 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   //ui_groupspace_separate(ap->workspace);
-   ui_menu_disable_set(ap->menu_hash, "Highlight space",
-                       ws_separated_mode_get(ap->workspace));
+   ui_menu_disable_set(ap->menu_hash, "Highlight space", true);
 }
 
 static void

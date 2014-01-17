@@ -409,7 +409,6 @@ new_theme_create(App_Data *ap)
    if (!errors)
      {
         Evas_Object *prop, *state, *signal;
-        ws_object_highlight_del(ap->workspace);
         state = ui_block_state_list_get(ap);
         if (state) elm_genlist_clear(state);
         signal = ui_block_signal_list_get(ap);
