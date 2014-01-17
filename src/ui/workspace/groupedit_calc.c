@@ -329,6 +329,7 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
    if (!ln)
      {
         ln = eina_list_next(l);
+        if (!ln) return;
         gp = (Groupedit_Part *)eina_list_data_get(ln);
         evas_object_stack_below(sd->selected->draw, gp->draw);
         evas_object_stack_below(sd->selected->border, gp->draw);
