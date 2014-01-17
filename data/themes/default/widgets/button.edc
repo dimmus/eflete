@@ -344,6 +344,7 @@ group { name: "elm/button/base/eflete/simple";
          description { state: "clicked" 0;
             inherit: "default" 0.0;
             image.normal: "button-click-bg.png";
+            color: 255 255 255 255;
          }
          description { state: "disabled" 0;
              inherit: "default" 0.0;

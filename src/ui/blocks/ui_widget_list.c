@@ -365,28 +365,28 @@ _on_group_clicked_double(void *data,
    ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-add.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-remove.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-slideup.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-slidedown.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
-   elm_object_style_set(button, "eflete/default");
+   elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 }
 
