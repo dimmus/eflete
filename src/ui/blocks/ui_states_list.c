@@ -137,14 +137,14 @@ ui_states_list_data_set(Evas_Object *object,
    elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_smart_callback_add(button, "clicked", _add_state_cb, object);
    evas_object_show(button);
-   ICON_STANDARD_ADD(button, icon, EINA_TRUE, "apps")
+   ICON_ADD(button, icon, EINA_TRUE, TET_IMG_PATH"icon-add.png")
    elm_object_part_content_set(button, NULL, icon);
    elm_box_pack_end(box, button);
    button = elm_button_add(box);
    elm_object_style_set(button, DEFAULT_STYLE);
    evas_object_smart_callback_add(button, "clicked", _del_state_cb, object);
    evas_object_show(button);
-   ICON_STANDARD_ADD(button, icon, EINA_TRUE, "delete")
+   ICON_ADD(button, icon, EINA_TRUE, TET_IMG_PATH"icon-remove.png")
    elm_object_part_content_set(button, NULL, icon);
    elm_box_pack_end(box, button);
    elm_object_part_content_set(parent, "elm.swallow.title", box);
