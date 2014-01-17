@@ -103,6 +103,23 @@ EVAS_SMART_SUBCLASS_NEW(_evas_smart_ws, _workspace,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
 static void
+_obj_area_visible_change(void *data,
+                         Evas_Object *obj,
+                         void *event_info __UNUSED__)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   Evas_Object *highlight = (Evas_Object *)data;
+   Eina_Bool visible = evas_object_visible_get(highlight);
+   if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
+     {
+        if (visible)
+          evas_object_hide(highlight);
+        else
+          evas_object_show(highlight);
+     }
+}
+
+static void
 _ws_ruler_hide_cb(void *data,
                Evas_Object *obj,
                void *event_info)
@@ -245,7 +262,6 @@ _separate_smart_on_click(void *data,
         evas_object_show(sd->highlight.highlight);
      }
    groupedit_edit_object_parts_separated(sd->groupedit, !sep, name);
-
 }
 
 static void
@@ -318,10 +334,14 @@ _sc_smart_move_cb(void *data,
                                         gs_y + gs_h - bg_y - cross_size);
    ui_ruler_redraw(sd->ruler_hor);
    ui_ruler_redraw(sd->ruler_ver);
+
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
        && (sd->scroll_flag < 2))
      evas_object_smart_callback_call(sd->scroller, "vbar,drag", NULL);
+   else
+     groupedit_edit_object_recalc_all(sd->groupedit);
    sd->scroll_flag = 0;
+
 }
 
 static Eina_Bool
@@ -580,22 +600,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->group = NULL;
    priv->guides = NULL;
 
-   /* Create highlights for object and relative space */
-   /*TODO: remake scroller and layout with rulers etc.
-           because highlight work wrong because of that */
-   priv->highlight.space_hl = highlight_add(priv->scroller);
-   highlight_bg_color_set(priv->highlight.space_hl, OBG_AREA_BG_COLOR);
-   highlight_border_color_set(priv->highlight.space_hl, OBG_AREA_COLOR);
-   highlight_handler_disabled_set(priv->highlight.space_hl, true);
-   evas_object_smart_member_add(priv->highlight.space_hl, o);
-
-   priv->highlight.highlight = highlight_add(priv->scroller);
-   highlight_bg_color_set(priv->highlight.highlight, HIGHLIGHT_BG_COLOR);
-   highlight_handler_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
-   highlight_border_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
-   evas_object_smart_member_add(priv->highlight.highlight, o);
-   evas_object_stack_above(priv->highlight.highlight, priv->scroller);
-
    return true;
 }
 
@@ -744,6 +748,8 @@ workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
         highlight_border_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
         highlight_handler_disabled_set(sd->highlight.space_hl, true);
         evas_object_smart_member_add(sd->highlight.space_hl, obj);
+        evas_object_smart_callback_add(obj, "highlight,visible",
+                                       _obj_area_visible_change, sd->highlight.space_hl);
      }
 
    if (!sd->highlight.highlight)
