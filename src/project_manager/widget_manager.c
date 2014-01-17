@@ -93,6 +93,7 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
         return false;
      }
    edje_object_freeze(edje_edit_obj);
+   evas_object_freeze_events_set(edje_edit_obj, true);
    group->obj = edje_edit_obj;
 
    parts_list = edje_edit_parts_list_get(group->obj);
