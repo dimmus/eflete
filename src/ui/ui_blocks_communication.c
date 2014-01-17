@@ -141,6 +141,22 @@ _add_style_dailog(void *data,
 }
 
 static void
+_property_change(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *prop = ui_block_property_get(ap);
+   if (!prop)
+     {
+        ERR("Property view is missing!");
+        return;
+     }
+   Part *part = (Part *)event_info;
+   ui_property_state_set(prop, part);
+}
+
+static void
 _on_ws_part_select(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info)
@@ -182,6 +198,7 @@ ui_part_back(App_Data *ap)
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
+   evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    workspace_highlight_unset(ap->workspace);
 }
 
@@ -244,7 +261,10 @@ ui_part_select(App_Data *ap,
    evas_object_show(gl_states);
 
    elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+   workspace_highlight_unset(ap->workspace);
    workspace_highlight_set(ap->workspace, part);
+   evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
+   evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
 
    return gl_states;
 }

@@ -369,9 +369,7 @@ _handler_move_cb(void *data,
         events->w = width;
         events->h = height;
 
-        evas_object_smart_callback_call(handler->highlight->smart_object,
-                                        "hl,resize", events);
-        _handler_pos_recalc(handler->highlight);
+        evas_object_smart_changed(handler->highlight->smart_object);
      }
 }
 
@@ -436,6 +434,8 @@ _handler_mouse_out_cb(void *data,
    evas_object_show(highlight->handler_LT->border);
 }
 
+
+
 Handler *
 _handler_object_add(Evas_Object *parent,
                     Highlight *highlight,
@@ -482,6 +482,27 @@ _bg_object_add(Evas_Object *parent, Highlight *highlight)
    background = evas_object_rectangle_add(e);
    edje_object_part_swallow(highlight->border, "bg", background);
    return background;
+}
+
+
+/* create and setup a new example smart object's internals */
+static void
+_smart_calc(Evas_Object *obj)
+{
+   Evas_Coord x, y, w, h;
+   HIGHLIGHT_DATA_GET(obj, highlight)
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   evas_object_resize(highlight->border, w, h);
+   evas_object_move(highlight->border, x, y);
+
+   if (!highlight->clicked)
+      _handler_size_recalc(highlight);
+   _handler_pos_recalc(highlight);
+
+   if (highlight->clicked)
+     evas_object_smart_callback_call(highlight->smart_object,
+                                     "hl,resize", highlight->events);
 }
 
 /* create and setup a new example smart object's internals */
@@ -581,13 +602,10 @@ _smart_move(Evas_Object *obj,
             Evas_Coord x,
             Evas_Coord y)
 {
-   HIGHLIGHT_DATA_GET(obj, highlight)
-   evas_object_move(highlight->border, x, y);
-   if (!highlight->clicked)
-     {
-        _handler_size_recalc(highlight);
-        _handler_pos_recalc(highlight);
-     }
+   Evas_Coord ox, oy;
+   evas_object_geometry_get(obj, &ox, &oy, NULL, NULL);
+   if ((ox == x) && (oy == y)) return;
+   evas_object_smart_changed(obj);
 }
 
 static void
@@ -595,13 +613,10 @@ _smart_resize(Evas_Object *obj,
               Evas_Coord w,
               Evas_Coord h)
 {
-   HIGHLIGHT_DATA_GET(obj, highlight)
-   evas_object_resize(highlight->border, w, h);
-   if (!highlight->clicked)
-     {
-        _handler_size_recalc(highlight);
-        _handler_pos_recalc(highlight);
-     }
+   Evas_Coord ow, oh;
+   evas_object_geometry_get(obj, NULL, NULL, &ow, &oh);
+   if ((ow == w) && (oh == h)) return;
+   evas_object_smart_changed(obj);
 }
 
 static void
@@ -613,6 +628,7 @@ _highlight_smart_set_user(Evas_Smart_Class *sc)
    sc->del       = _smart_del;
    sc->resize    = _smart_resize;
    sc->move      = _smart_move;
+   sc->calculate = _smart_calc;
 }
 
 Evas_Object *
@@ -738,6 +754,7 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
    if ((!hl) || (!object)) return false;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
 
+   highlight->object = object;
    if (highlight->object)
      {
         evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
@@ -749,8 +766,6 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
                                   _object_changed, hl);
    evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
                                   _object_changed, hl);
-
-   highlight->object = object;
 
    evas_object_geometry_get(object, &x, &y, &w, &h);
    evas_object_resize(hl, w, h);

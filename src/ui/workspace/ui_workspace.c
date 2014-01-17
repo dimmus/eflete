@@ -749,21 +749,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->group = NULL;
    priv->guides = NULL;
 
-   /* Create highlights for object and relative space */
-   /*TODO: remake scroller and layout with rulers etc.
-           because highlight work wrong because of that */
-   priv->highlight.space_hl = highlight_add(priv->scroller);
-   highlight_bg_color_set(priv->highlight.space_hl, OBG_AREA_BG_COLOR);
-   highlight_border_color_set(priv->highlight.space_hl, OBG_AREA_COLOR);
-   highlight_handler_disabled_set(priv->highlight.space_hl, true);
-   evas_object_smart_member_add(priv->highlight.space_hl, o);
-
-   priv->highlight.highlight = highlight_add(priv->scroller);
-   highlight_bg_color_set(priv->highlight.highlight, HIGHLIGHT_BG_COLOR);
-   highlight_handler_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
-   highlight_border_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
-   evas_object_smart_member_add(priv->highlight.highlight, o);
-
    return true;
 }
 
@@ -901,6 +886,27 @@ workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
    groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->groupedit);
    evas_object_show(sd->groupedit);
+
+   /* Create highlights for object and relative space */
+   /*TODO: remake scroller and layout with rulers etc.
+           because highlight work wrong because of that */
+   if (!sd->highlight.space_hl)
+     {
+        sd->highlight.space_hl = highlight_add(sd->scroller);
+        highlight_bg_color_set(sd->highlight.space_hl, OBG_AREA_BG_COLOR);
+        highlight_border_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
+        highlight_handler_disabled_set(sd->highlight.space_hl, true);
+        evas_object_smart_member_add(sd->highlight.space_hl, obj);
+     }
+
+   if (!sd->highlight.highlight)
+     {
+        sd->highlight.highlight = highlight_add(sd->scroller);
+        highlight_bg_color_set(sd->highlight.highlight, HIGHLIGHT_BG_COLOR);
+        highlight_handler_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
+        highlight_border_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
+        evas_object_smart_member_add(sd->highlight.highlight, obj);
+     }
 
    return true;
 }
