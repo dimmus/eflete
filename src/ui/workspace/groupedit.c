@@ -565,8 +565,8 @@ groupedit_container_size_get(Evas_Object *obj, int *w, int *h)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
-   *w = sd->con_current_size->w;
-   *h = sd->con_current_size->h;
+   if (w) *w = sd->con_current_size->w;
+   if (h) *h = sd->con_current_size->h;
 }
 
 Eina_Bool

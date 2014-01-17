@@ -892,6 +892,7 @@ group { name: "elm/scroller/base/eflete/workspace";
             }
             rel2 {
                relative: 0.0 0.0;
+               offset: -1 -2;
                to_x: "sb_vbar";
                to_y: "sb_hbar";
             }

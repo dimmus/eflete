@@ -48,6 +48,7 @@ struct _Ws_Smart_Data
                                    managed with ui_ruler API. Vertical.*/
    Evas_Object *scroller;        /**< A scroler with 'eflete/workspace' style. \
                                    Implement scrollable interface.*/
+   char scroll_flag;             /** Needed for control drag bar's in scroller*/
    Evas_Object *groupedit;       /**< A groupedit smart object, \
                                    needed for view and edit style.*/
    Evas_Object *obj;             /**< A elementary layout object, \
@@ -248,20 +249,52 @@ _separate_smart_on_click(void *data,
    groupedit_edit_object_parts_separated(sd->groupedit, !sep, name);
 
 }
+
 static void
-_sc_smart_resize_cb(void *data ,
-                    Evas *e __UNUSED__,
+_sc_smart_drag_y_cb(void *data ,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
    Evas_Object *o = (Evas_Object *)data;
-   //Evas_Object *box = NULL;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   //if (!sd->groupedit) return;
-   //box = ui_groupspace_box_get(sd->groupedit);
-   //if (!box) return;
-   //evas_object_smart_calculate(box);
+   int x, y, w, h, w_ge, h_ge, w_cont;
+
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
+       && (!sd->scroll_flag))
+     {
+        elm_scroller_region_get(sd->scroller, NULL, &y, &w, &h);
+        elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
+        groupedit_container_size_get(sd->groupedit, &w_cont, NULL);
+
+        x = ceil((y * ((double)w_ge / h_ge)));
+        if (y >=  (h_ge - h)) x += w_cont;
+        elm_scroller_region_show(sd->scroller, x, y, w, h);
+        sd->scroll_flag = 1;
+     }
+}
+
+static void
+_sc_smart_drag_x_cb(void *data ,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Evas_Object *o = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   int x, y, w, h, w_ge, h_ge, h_cont;
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
+       && (!sd->scroll_flag))
+     {
+        elm_scroller_region_get(sd->scroller, &x, NULL, &w, &h);
+        elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
+        groupedit_container_size_get(sd->groupedit, NULL, &h_cont);
+
+        y = ceil((x * ((double)h_ge / w_ge)));
+        if (x >=  (w_ge - w)) y += h_cont;
+        elm_scroller_region_show(sd->scroller, x, y, w, h);
+        sd->scroll_flag = 2;
+     }
 }
 
 void
@@ -273,7 +306,6 @@ _sc_smart_move_cb(void *data,
    int cross_size;
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
-
 
    if (!sd->group) return;
    evas_object_geometry_get(sd->ruler_hor, &cross_size, NULL, NULL, NULL);
@@ -289,6 +321,10 @@ _sc_smart_move_cb(void *data,
    ui_ruler_redraw(sd->ruler_hor);
    ui_ruler_redraw(sd->ruler_ver);
    ws_object_highlight_move(o);
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
+       && (sd->scroll_flag < 2))
+     evas_object_smart_callback_call(sd->scroller, "vbar,drag", NULL);
+   sd->scroll_flag = 0;
 }
 
 static Eina_Bool
@@ -657,11 +693,9 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* create empty groupspace object */
    priv->groupedit = NULL;
-   //evas_object_smart_member_add(priv->groupedit, o);
-   //evas_object_smart_callback_add(o, "ruler,move",  _ws_smart_ruler_move_cb,
-   //                               NULL);
 
    /* using scroller in workspace, with special style*/
+   priv->scroll_flag = 0;
    priv->scroller = elm_scroller_add(priv->obj);
    elm_object_style_set(priv->scroller, "eflete/workspace");
    elm_scroller_policy_set(priv->scroller, ELM_SCROLLER_POLICY_ON,
@@ -669,11 +703,13 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_scroller_content_min_limit(priv->scroller, false, false);
    elm_object_part_content_set(priv->obj, "groupspace", priv->scroller);
 
-   evas_object_smart_callback_add(priv->scroller, "scroll", _sc_smart_move_cb, o);
-   evas_object_smart_callback_add(priv->scroller, "scroll,drag,stop",
+   evas_object_smart_callback_add(priv->scroller, "scroll",
                                   _sc_smart_move_cb, o);
-   evas_object_event_callback_add(priv->scroller, EVAS_CALLBACK_RESIZE,
-                                  _sc_smart_resize_cb, o);
+
+   evas_object_smart_callback_add(priv->scroller, "vbar,drag",
+                                  _sc_smart_drag_y_cb, o);
+   evas_object_smart_callback_add(priv->scroller, "hbar,drag",
+                                  _sc_smart_drag_x_cb, o);
    evas_object_smart_member_add(priv->scroller, o);
 
 
@@ -684,7 +720,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                priv->clipper);
    elm_object_part_content_set(priv->scroller, "cross.swallow",
                                priv->button_separate);
-   //elm_object_content_set(priv->scroller, priv->groupedit);
 
    /* create rulers, using ui_ruler.h API*/
    priv->ruler_hor = ui_ruler_add(priv->scroller);
