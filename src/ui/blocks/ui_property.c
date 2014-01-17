@@ -591,7 +591,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "Normally width and height can be "
                              "resized to any values independently");
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, property, pd,
-                                   "");
+                                   "The aspect control hints for this object.");
         pd_state.color_class = prop_item_state_color_class_add(box, pd, NULL,
                                   "Current color class",
                                   NULL);
@@ -695,15 +695,21 @@ ui_property_state_rel1_set(Evas_Object *property)
 
         pd_rel1.relative = prop_item_state_rel1_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
-                              "Relative 1 x",
-                              "Relative 1 y");
+                              "Define the position of left-up corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by X axis.",
+                              "Define the position of left-up corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by Y axis.");
         pd_rel1.offset = prop_item_state_rel1_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
                             "Left offset from relative position in pixels",
                             "Top offset from relative position in pixels");
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd,
-                        "Left reference part.",
-                        "Top reference part.");
+                        "Causes a corner to be positioned relatively to the X axis of another "
+                        "part. Setting to \"\" will un-set this value",
+                        "Causes a corner to be positioned relatively to the Y axis of another "
+                        "part. Setting to \"\" will un-set this value");
 
         elm_box_pack_end(box, pd_rel1.relative);
         elm_box_pack_end(box, pd_rel1.offset);
@@ -752,15 +758,21 @@ ui_property_state_rel2_set(Evas_Object *property)
 
         pd_rel2.relative = prop_item_state_rel2_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
-                              "Relative 2 x",
-                              "Relative 2 y");
+                              "Define the position of right-down corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by X axis.",
+                              "Define the position of right-down corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by Y axis.");
         pd_rel2.offset = prop_item_state_rel2_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
                             "Left offset from relative position in pixels",
                             "Top offset from relative position in pixels");
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd,
-                        "Right reference part.",
-                        "Bottom reference part.");
+                        "Causes a corner to be positioned relatively to the X axis of another "
+                        "part. Setting to \"\" will un-set this value",
+                        "Causes a corner to be positioned relatively to the Y axis of another "
+                        "part. Setting to \"\" will un-set this value");
 
         elm_box_pack_end(box, pd_rel2.relative);
         elm_box_pack_end(box, pd_rel2.offset);
