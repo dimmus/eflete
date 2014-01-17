@@ -1,24 +1,19 @@
 #include "ui_demospace.h"
-//#include "ui_groupspace.h"
 #include "notify.h"
 
-#define ZOOM_ON_CLICK(type, scale) \
-   static void \
-   _zoom_##type##_on_click(void *data, \
-                           Evas_Object *obj __UNUSED__, \
-                           void *event_info __UNUSED__) \
-   { \
-      Demospace *demo = (Demospace *)data; \
-      demo->current_scale = scale; \
-      elm_object_scale_set(demo->object, demo->current_scale); \
-   }
 #define ELEMENTS_COUNT 16
 
-ZOOM_ON_CLICK(half, 0.5)
-ZOOM_ON_CLICK(one, 1.0)
-ZOOM_ON_CLICK(two, 2.0)
+static void
+_on_zoom_change(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Demospace *demo = (Demospace *)data;
+   demo->current_scale = elm_spinner_value_get(obj);
+   if (demo->object)
+      elm_object_scale_set(demo->object, demo->current_scale);
+}
 
-/*
 static Elm_Bubble_Pos
 _bubble_pos_get(const char *class)
 {
@@ -65,9 +60,7 @@ _panes_orient_get(const char *class)
 
    return horizontal;
 }
-*/
 
-/*
 static Evas_Object *
 _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
 {
@@ -145,10 +138,17 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
              evas_object_show(tb);
           }
      }
+   else  if (strcmp(widget, "spinner") == 0)
+     {
+        object = elm_spinner_add(parent);
+        elm_spinner_label_format_set(object, "%1.1f units");
+        elm_spinner_step_set(object, 1.5);
+        elm_spinner_wrap_set(object, EINA_TRUE);
+        elm_spinner_min_max_set(object, -50.0, 250.0);
+     }
 
    return object;
 }
-*/
 
 static Demospace *
 _demo_init(void)
@@ -160,40 +160,29 @@ Demospace *
 ui_demospace_add(Evas_Object *parent)
 {
    Demospace *demo;
-   Evas_Object *_button, *_layout;
+   Evas_Object *spinner, *_layout;
 
    demo = _demo_init();
    demo->current_scale = 1.0;
 
    _layout = elm_layout_add(parent);
    demo->layout = _layout;
-   elm_layout_file_set(_layout, TET_EDJ, "base/demospace");
+   elm_layout_file_set(_layout, TET_EDJ, "eflete/demospace/toolbar/default");
 
-   _button = elm_button_add(parent);
-   elm_object_text_set(_button, "0.5");
-   elm_object_style_set(_button, "eflete/default");
-   elm_object_part_content_set(_layout, "base/demospace/button_zoom_half",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_half_on_click, demo);
+   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/default");
+   elm_spinner_label_format_set(spinner, "%1.2f");
+   elm_object_tooltip_text_set(spinner, "Change scale of the whole demo object.");
+   evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, demo);
+   elm_spinner_value_set(spinner, 1.0);
+   elm_object_part_content_set(demo->layout, "zoom_spinner",
+                               spinner);
+   evas_object_show(spinner);
 
-   _button = elm_button_add(parent);
-   elm_object_text_set(_button, "1.0");
-   elm_object_style_set(_button, "eflete/default");
-   elm_object_part_content_set(_layout, "base/demospace/button_zoom_one",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_one_on_click, demo);
-
-   _button = elm_button_add(parent);
-   elm_object_text_set(_button, "2.0");
-   elm_object_style_set(_button, "eflete/default");
-   elm_object_part_content_set(_layout, "base/demospace/button_zoom_two",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _zoom_two_on_click, demo);
-
-   //demo->groupspace = ui_groupspace_add(_layout);
-   //elm_object_part_content_set(_layout, "base/demospace/groupspace",
-   //                            demo->groupspace);
-   //elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
+   demo->demospace = elm_layout_add(parent);
+   elm_layout_file_set(demo->demospace, TET_EDJ, "eflete/demospace/base/default");
+   elm_object_part_content_set(demo->layout, "demospace",
+                               demo->demospace);
+   elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
 
    return demo;
 }
@@ -201,19 +190,18 @@ ui_demospace_add(Evas_Object *parent)
 Eina_Bool
 ui_demospace_set(Demospace *demo, Project *project, Group *group)
 {
+   if ((!demo) || (!project)) return false;
    if (group)
      {
         char **c = eina_str_split(group->full_group_name, "/", 4);
-        const char /* *widget = c[1],  *type = c[2], */ *style = c[3];
+        const char *widget = c[1],  *type = c[2], *style = c[3];
 
-        /*
         if (!demo->object)
           {
-             demo->object = _elm_widget_create(widget, type, demo->groupspace);
-             elm_object_part_content_set(demo->groupspace, "groupspace", demo->object);
-             evas_object_show(demo->groupspace);
+             demo->object = _elm_widget_create(widget, type, demo->demospace);
+             elm_object_part_content_set(demo->demospace, "demo", demo->object);
+             evas_object_show(demo->demospace);
           }
-          */
 
         if (!demo->object)
           {
@@ -241,7 +229,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
         WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
         return false;
      }
-   //elm_layout_signal_emit (demo->groupspace, "groupspace,show", "");
+   elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
    return true;
 }
 
@@ -249,8 +237,8 @@ Eina_Bool
 ui_demospace_unset(Demospace *demo)
 {
    if (!demo) return false;
-   //elm_layout_signal_emit(demo->groupspace, "groupspace,hide", "");
-   //elm_object_part_content_unset(demo->groupspace, "groupspace");
+   elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
+   elm_object_part_content_unset(demo->demospace, "demo");
    evas_object_del(demo->object);
    demo->object = NULL;
    return true;
@@ -261,34 +249,20 @@ ui_demospace_update(Demospace *demo)
 {
    if (!demo) return false;
 
-   //const Evas_Object *part_bottom = edje_object_part_object_get(
-   //   elm_layout_edje_get(demo->groupspace), "bottom_pad");
-   //const Evas_Object *part_top = edje_object_part_object_get(
-   //   elm_layout_edje_get(demo->groupspace), "top_pad");
+   const Evas_Object *part_bottom = edje_object_part_object_get(
+      elm_layout_edje_get(demo->demospace), "bottom_pad");
+   const Evas_Object *part_top = edje_object_part_object_get(
+      elm_layout_edje_get(demo->demospace), "top_pad");
 
-   //elm_config_cursor_engine_only_set(false);
-   //elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
-   //elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
-   //elm_config_cursor_engine_only_set(true);
+   elm_config_cursor_engine_only_set(false);
+   elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
+   elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
+   elm_config_cursor_engine_only_set(true);
 
-   //int x, y, gw, gh, w, h;
-   //double dx, dy;
-   //evas_object_geometry_get(demo->groupspace, NULL, NULL, &w, &h);
-   //evas_object_geometry_get(elm_object_parent_widget_get(demo->groupspace), NULL, NULL, &gw, &gh);
-   //x = (int)((w - gw) / 2);
-   //y = (int)((h - gh) / 2);
-   /*
-    *  value 0.01 needed for groupspace offset from top left and bottom right
-    *  corners workspace area
-    */
-   //dx = (double)x / w + 0.01;
-   //dy = (double)y / h + 0.01;
-   //edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
-   //                                "top_pad", dx, dy);
-   //dx = (double)(x + gw) / w - 0.01;
-   //dy = (double)(y + gh) / h - 0.01;
-   //edje_object_part_drag_value_set(elm_layout_edje_get(demo->groupspace),
-   //                                "bottom_pad", dx, dy);
+   Evas_Coord x, y;
+   evas_object_geometry_get(demo->demospace, NULL, NULL, &x, &y);
+   edje_object_part_drag_value_set(elm_layout_edje_get(demo->demospace),
+                                   "bottom_pad", x, y);
    return true;
 }
 
@@ -302,3 +276,5 @@ demo_free(Demospace *demo)
      elm_theme_free(demo->th);
    free(demo);
 }
+
+#undef ELEMENTS_COUNT
