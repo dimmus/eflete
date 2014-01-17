@@ -74,8 +74,6 @@ struct _Ws_Smart_Data
         Evas_Object *space_hl; /**< A object area highlight*/
         Part *part; /**< Contain part name and it's state. need for callbacks of highlight. */
    } highlight;
-   DEPRECATED Eina_Bool separated; /**< Will remove, when groupedit \
-                                     will be smart */
 };
 typedef struct _Ws_Smart_Data Ws_Smart_Data;
 
@@ -320,7 +318,6 @@ _sc_smart_move_cb(void *data,
                                         gs_y + gs_h - bg_y - cross_size);
    ui_ruler_redraw(sd->ruler_hor);
    ui_ruler_redraw(sd->ruler_ver);
-   ws_object_highlight_move(o);
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
        && (sd->scroll_flag < 2))
      evas_object_smart_callback_call(sd->scroller, "vbar,drag", NULL);
@@ -352,7 +349,6 @@ static Eina_Bool
 _zoom_factor_update(Evas_Object *obj, double factor)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   //if (!sd->groupedit) return false;
    sd->zoom.factor = factor;
    /*
     * TODO:
@@ -385,28 +381,6 @@ ws_background_image_set(Evas_Object *obj, const char *path)
    if (!_background_load(sd->background, path)) return false;
    return true;
 }
-
-Evas_Object *
-ws_groupspace_get(Evas_Object *obj)
-{
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
-   //return sd->groupedit;
-      return NULL;
-}
-
-/*
-Eina_Bool
-ws_groupspace_set(Evas_Object *obj, Evas_Object *gs)
-{
-   if (!gs) return false;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   sd->groupedit = gs;
-   elm_object_content_set(sd->scroller, sd->groupedit);
-   evas_object_smart_callback_add(obj, "ruler,move",  _ws_smart_ruler_move_cb,
-                                  NULL);
-   return true;
-}
-*/
 
 Eina_Bool
 ws_legend_visible_set(Evas_Object *obj)
@@ -483,7 +457,6 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
         evas_object_smart_callback_add(sd->highlight.highlight, "hl,resize",
                                        _on_resize, obj);
      }
-
    return true;
 }
 
@@ -506,144 +479,6 @@ workspace_highlight_unset(Evas_Object *obj)
    return true;
 }
 
-/*-------------DEPRECATED functions-----------------------*/
-
-DEPRECATED Eina_Bool
-ws_object_highlight_move(Evas_Object *obj __UNUSED__)
-{
-   /*
-   int x, y, w, h;
-
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   if(!sd->highlight.part) return false;
-
-   evas_object_geometry_get(sd->highlight.part->obj, &x, &y, &w, &h);
-   evas_object_move(sd->highlight.highlight, x, y);
-   evas_object_resize(sd->highlight.highlight, w, h);
-
-   Group *group = ui_groupspace_group_get(sd->groupspace);
-   ui_groupspace_part_space_geometry_get(group, sd->highlight.part,
-                                         &x, &y, &w, &h);
-   evas_object_resize(sd->highlight.space_hl, w, h);
-   evas_object_move(sd->highlight.space_hl, x, y);
-   return true;
-   */
-   return true;
-}
-
-DEPRECATED Eina_Bool
-ws_object_highlight_handler_move(Evas_Object *obj __UNUSED__)
-{
-   /*
-   int x, y, w, h;
-
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   if(!sd->highlight.part) return false;
-
-   evas_object_geometry_get(sd->highlight.part->obj, &x, &y, &w, &h);
-   evas_object_move(sd->highlight.highlight, x, y);
-   evas_object_resize(sd->highlight.highlight, w, h);
-
-   Group *group = ui_groupspace_group_get(sd->groupspace);
-   ui_groupspace_part_space_geometry_get(group, sd->highlight.part, &x, &y, &w, &h);
-   evas_object_resize(sd->highlight.space_hl, w, h);
-   evas_object_move(sd->highlight.space_hl, x, y);
-   return true;
-   */
-   return true;
-}
-
-DEPRECATED Eina_Bool
-ws_object_highlight_hide(Evas_Object *obj __UNUSED__)
-{
-   /*
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   if (!sd->highlight.part) return false;
-
-   evas_object_hide(sd->highlight.highlight);
-   evas_object_hide(sd->highlight.space_hl);
-   return true;
-   */
-   return true;
-}
-
-DEPRECATED Eina_Bool
-ws_object_highlight_del(Evas_Object *obj __UNUSED__)
-{
-   /*
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   if (!sd->highlight.part) return false;
-
-   evas_object_del(sd->highlight.highlight);
-   evas_object_del(sd->highlight.space_hl);
-   sd->highlight.highlight = NULL;
-   sd->highlight.space_hl = NULL;
-   sd->highlight.part = NULL;
-
-   return true;
-   */
-   return true;
-}
-
-DEPRECATED Evas_Object *
-ws_space_hl_get(Evas_Object *obj __UNUSED__)
-{
-   /*
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
-   return sd->highlight.space_hl;
-   */
-   return NULL;
-}
-
-DEPRECATED Evas_Object *
-ws_highlight_get(Evas_Object *obj __UNUSED__)
-{
-   /*
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL)
-   return sd->highlight.highlight;
-   */
-   return NULL;
-}
-
-DEPRECATED Eina_Bool
-ws_separated_mode_get(Evas_Object *obj __UNUSED__)
-{
-   /*
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   return sd->separated;
-   */
-   return false;
-}
-
-DEPRECATED Eina_Bool
-ws_separated_mode_set(Evas_Object *obj __UNUSED__, Eina_Bool separated __UNUSED__)
-{
-   /*
-   Evas_Object *icon = NULL;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-
-   icon = elm_object_part_content_get(sd->button_separate, NULL);
-   sd->separated = separated;
-   if (!separated)
-     {
-        evas_object_color_set(icon, 58, 110, 155, 255);
-        ws_object_highlight_del(obj);
-    }
-   else
-     {
-        evas_object_color_set(icon, 255, 255, 255, 255);
-        ws_object_highlight_set(obj, sd->highlight.part);
-        ws_object_highlight_move(obj);
-     }
-   elm_object_part_content_set(sd->button_separate, NULL, icon);
-
-   return true;
-   */
-   return true;
-}
-
-/*-------------End of DEPRECATED functions------------------*/
-
 static void
 _workspace_smart_add(Evas_Object *o)
 {
@@ -663,7 +498,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* Load main markup layout into smart_data->obj*/
    priv->obj = elm_layout_add(parent);
-   elm_layout_file_set(priv->obj, TET_EDJ, "elm/workspace/base/smart");
+   elm_layout_file_set(priv->obj, TET_EDJ, "eflete/workspace/base/smart");
    evas_object_smart_member_add(priv->obj, o);
 
    /* Here create evas image, whitch will be background for workspace*/
@@ -680,17 +515,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    evas_object_event_callback_add(priv->clipper, EVAS_CALLBACK_MOUSE_DOWN,
                                   _ws_smart_mouse_click_cb, o);
 
-   /* button for switch mode of view: separated or normal*/
-   priv->button_separate = elm_button_add(priv->obj);
-   elm_object_style_set(priv->button_separate, "eflete/simple");
-   icon = elm_icon_add(priv->button_separate);
-   elm_image_file_set(icon, TET_IMG_PATH"icon-separate.png", NULL);
-   elm_image_no_scale_set(icon, true);
-   elm_object_part_content_set(priv->button_separate, NULL, icon);
-   evas_object_smart_callback_add(priv->button_separate, "clicked",
-                                  _separate_smart_on_click, o);
-   evas_object_smart_member_add(priv->button_separate, o);
-
    /* create empty groupspace object */
    priv->groupedit = NULL;
 
@@ -705,12 +529,22 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    evas_object_smart_callback_add(priv->scroller, "scroll",
                                   _sc_smart_move_cb, o);
-
    evas_object_smart_callback_add(priv->scroller, "vbar,drag",
                                   _sc_smart_drag_y_cb, o);
    evas_object_smart_callback_add(priv->scroller, "hbar,drag",
                                   _sc_smart_drag_x_cb, o);
    evas_object_smart_member_add(priv->scroller, o);
+
+   /* button for switch mode of view: separated or normal*/
+   priv->button_separate = elm_button_add(priv->scroller);
+   elm_object_style_set(priv->button_separate, "eflete/simple");
+   icon = elm_icon_add(priv->scroller);
+   elm_image_file_set(icon, TET_IMG_PATH"icon-separate.png", NULL);
+   elm_image_no_scale_set(icon, true);
+   elm_object_part_content_set(priv->button_separate, NULL, icon);
+   evas_object_smart_callback_add(priv->button_separate, "clicked",
+                                  _separate_smart_on_click, o);
+   evas_object_smart_member_add(priv->button_separate, o);
 
 
    /* Add members of workspace into scroller markup field''s*/
@@ -743,11 +577,24 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->legend.view = NULL;
    priv->legend.visible = false;
 
-   /*TODO: DEPRECATED <- delete */
-   //priv->separated = true;
-
    priv->group = NULL;
    priv->guides = NULL;
+
+   /* Create highlights for object and relative space */
+   /*TODO: remake scroller and layout with rulers etc.
+           because highlight work wrong because of that */
+   priv->highlight.space_hl = highlight_add(priv->scroller);
+   highlight_bg_color_set(priv->highlight.space_hl, OBG_AREA_BG_COLOR);
+   highlight_border_color_set(priv->highlight.space_hl, OBG_AREA_COLOR);
+   highlight_handler_disabled_set(priv->highlight.space_hl, true);
+   evas_object_smart_member_add(priv->highlight.space_hl, o);
+
+   priv->highlight.highlight = highlight_add(priv->scroller);
+   highlight_bg_color_set(priv->highlight.highlight, HIGHLIGHT_BG_COLOR);
+   highlight_handler_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
+   highlight_border_color_set(priv->highlight.highlight, HIGHLIGHT_COLOR);
+   evas_object_smart_member_add(priv->highlight.highlight, o);
+   evas_object_stack_above(priv->highlight.highlight, priv->scroller);
 
    return true;
 }

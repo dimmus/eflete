@@ -131,7 +131,7 @@ group {
    }
 }
 group {
-   name: "elm/workspace/base/smart";
+   name: "eflete/workspace/base/smart";
    parts {
       part {
          name: "background";
