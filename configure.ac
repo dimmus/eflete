@@ -1,7 +1,8 @@
 m4_define([v_maj], [0])
 m4_define([v_min], [1])
-m4_define([v_mic], [0-alpha])
+m4_define([v_mic], [0-beta])
 m4_define([p_name], "EFL\ Edje\ Theme\ Editor")
+m4_define([short_name], "eflete")
 m4_define([project_version], [v_maj.v_min.v_mic])
 
 AC_INIT([eflete], [project_version])
@@ -13,6 +14,7 @@ AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
 
 AC_SUBST(P_NAME,"p_name")
+AC_SUBST(SHORT_NAME, "short_name")
 AC_SUBST(P_VERSION,"project_version")
 AC_SUBST(V_MAJ,"v_maj")
 AC_SUBST(V_MIN,"v_min")
@@ -22,39 +24,49 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([_EINA], [eina], [have_eina="yes"], [have_eina="no"])
 if test "x${have_eina}" = "xyes"; then
-   PKG_CHECK_MODULES([EINA], [eina >= 1.8.0], [have_ver_eina=""], [have_ver_eina=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([EINA], [eina >= 1.8.3], [have_ver_eina=""], [have_ver_eina=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_ELEMENTARY], [elementary], [have_elementary="yes"], [have_elementary="no"])
 if test "x${have_elementary}" = "xyes"; then
-   PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.8.0], [have_ver_elementary=""], [have_ver_elementary=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([ELEMENTARY], [elementary >= 1.8.3], [have_ver_elementary=""], [have_ver_elementary=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_EET], [eet], [have_eet="yes"], [have_eet="no"])
 if test "x${have_eet}" = "xyes"; then
-   PKG_CHECK_MODULES([EET], [eet >= 1.8.0], [have_ver_eet=""], [have_ver_eet=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([EET], [eet >= 1.8.3], [have_ver_eet=""], [have_ver_eet=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_EVAS], [evas], [have_evas="yes"], [have_evas="no"])
 if test "x${have_evas}" = "xyes"; then
-   PKG_CHECK_MODULES([EVAS], [evas >= 1.8.0], [have_ver_evas=""], [have_ver_evas=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([EVAS], [evas >= 1.8.3], [have_ver_evas=""], [have_ver_evas=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_ECORE], [ecore], [have_ecore="yes"], [have_ecore="no"])
 if test "x${have_ecore}" = "xyes"; then
-   PKG_CHECK_MODULES([ECORE], [ecore >= 1.8.0], [have_ver_ecore=""], [have_ver_ecore=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([ECORE], [ecore >= 1.8.3], [have_ver_ecore=""], [have_ver_ecore=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_EIO], [eio], [have_eio="yes"], [have_eio="no"])
 if test "x${have_eio}" = "xyes"; then
-   PKG_CHECK_MODULES([EIO], [eio >= 1.8.0], [have_ver_eio=""], [have_ver_eio=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([EIO], [eio >= 1.8.3], [have_ver_eio=""], [have_ver_eio=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_EDJE], [edje], [have_edje="yes"], [have_edje="no"])
 if test "x${have_edje}" = "xyes"; then
-   PKG_CHECK_MODULES([EDJE], [edje >= 1.8.0], [have_ver_edje=""], [have_ver_edje=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([EDJE], [edje >= 1.8.3], [have_ver_edje=""], [have_ver_edje=" (version < 1.8.3)"])
 fi
 PKG_CHECK_MODULES([_EFREET], [efreet], [have_efreet="yes"], [have_efreet="no"])
 if test "x${have_efreet}" = "xyes"; then
-   PKG_CHECK_MODULES([EFREET], [efreet >= 1.8.0], [have_ver_efreet=""], [have_ver_efreet=" (version < 1.8.0)"])
+   PKG_CHECK_MODULES([EFREET], [efreet >= 1.8.3], [have_ver_efreet=""], [have_ver_efreet=" (version < 1.8.3)"])
 fi
 
-
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
+
+want_eflete_debug="no"
+AC_ARG_ENABLE([debug],
+   [AC_HELP_STRING([--enable-debug], [enable eflete debug support. @<:@default=disabled@:>@])],
+   [want_eflete_debug=$enableval], [])
+
+if test "x$want_eflete_debug" = "xyes"; then
+   AC_SUBST(E_DEBUG, "1")
+else
+   AC_SUBST(E_DEBUG, "0")
+fi
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
@@ -79,9 +91,12 @@ data/Makefile
 data/eflete.desktop
 tests/Makefile
 tests/edj_build/Makefile
+tests/edj_build/radio.edc
 doc/Makefile
 ])
-
+AC_CONFIG_COMMANDS( [cp], [cp ${srcdir}/tests/edj_build/radio.png ./tests/edj_build/radio.png])
+AC_CONFIG_COMMANDS( [cp1], [cp ${srcdir}/tests/edj_build/radio2.png ./tests/edj_build/radio2.png])
+AC_CONFIG_COMMANDS( [cp2], [cp ${srcdir}/tests/edj_build/radio_base.png ./tests/edj_build/radio_base.png])
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "xyes"])
 AC_SUBST([CHECK_FOUND])
 AM_CONDITIONAL([PREFIX], [test "x$prefix" = "xNONE"])
@@ -108,14 +123,19 @@ if test  "x$have_ver_eina" != "x" ||
    test  "x$have_ver_eio" != "x" ||
    test  "x$have_ver_edje" != "x" ||
    test  "x$have_ver_efreet" != "x"; then
-AC_MSG_ERROR("EFL version must be >= 1.8.0")
+AC_MSG_ERROR("EFL version must be >= 1.8.3")
 fi
 
 AC_OUTPUT
 
 echo ""
-echo "Configuration Options Summary:"
 echo ""
+echo ""
+echo "------------------------------------------------------------------------"
+echo "${P_NAME} ${P_VERSION}"
+echo "------------------------------------------------------------------------"
+echo ""
+echo "Configuration Options Summary:"
 echo "  eina...........: ${have_eina} ${have_ver_eina}"
 echo "  eet............: ${have_eet} ${have_ver_eet}"
 echo "  evas...........: ${have_evas} ${have_ver_evas}"
@@ -136,7 +156,10 @@ echo "  run tests......: to run tests you should install check:"
 echo "                   sudo apt-get install check"
 ])
 echo ""
-echo "Installation.....: sudo make install"
+echo "Debug output.....: ${want_eflete_debug}"
+echo ""
+echo "Installation.....: make install (as root if needed, with 'su' or 'sudo')"
 echo "  CFLAGS.........: ${CFLAGS}"
+echo "  LDFLAGS........: ${LDFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""

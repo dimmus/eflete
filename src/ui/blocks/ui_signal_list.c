@@ -72,9 +72,9 @@ ui_signal_list_data_set(Evas_Object *object, Group *group)
 {
    Eina_List *signals, *l;
    char *signal;
-   Evas_Object *gl_signals = (Evas_Object *)object;
+   Evas_Object *gl_signals = object;
 
-   if ((!object) || (!group)) return EINA_FALSE;
+   if ((!object) || (!group) || (!group->obj)) return false;
 
    signals = evas_object_data_get(gl_signals, SIGNALS_LIST);
    if (signals)
@@ -93,15 +93,5 @@ ui_signal_list_data_set(Evas_Object *object, Group *group)
      }
    evas_object_data_set(gl_signals, SIGNALS_LIST, signals);
 
-   return EINA_TRUE;
-}
-
-void
-ui_signal_list_callback_add(Evas_Object *object,
-                            const char *event,
-                            Edje_Signal_Cb func,
-                            void *data)
-{
-   if (!object) return;
-   elm_object_signal_callback_add(object, event, "", func, data);
+   return true;
 }

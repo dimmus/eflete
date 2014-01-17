@@ -29,6 +29,7 @@
 
 #include "eflete.h"
 #include "widget_manager.h"
+#include "ui_workspace.h"
 
 /**
  * Add a new Property widget.
@@ -47,11 +48,15 @@ ui_property_add(Evas_Object *parent);
  *
  * @param property The 'property' widget.
  * @param group The Group data which will be displayed.
+ * @param workspace The workspace object with editable object.
+ *
+ * @note If the parameter group and editable group in the workspace not matched
+ * propety do not set, and function will return EINA_FALSE.
  *
  * @ingroup Property
  */
 Eina_Bool
-ui_property_group_set(Evas_Object *property, Group *group);
+ui_property_group_set(Evas_Object *property, Group *group, Evas_Object *workspace);
 
 /**
  * Unset the group view content on a given property.

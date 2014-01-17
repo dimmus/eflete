@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "widget_manager.h"
@@ -42,6 +42,7 @@ static char *part_types[] = {
      "PROXY",
      "SPACER"
 };
+static unsigned int part_types_count = 12;
 
 #define WM_WIDGET_NAME_GET(widget, group) \
    arr = eina_str_split(group, "/", 3); \
@@ -72,72 +73,85 @@ static char *part_types[] = {
    free(arr[0]); \
    free(arr);
 
-void
+static void
+_wm_part_free(Part *part);
+
+Eina_Bool
 wm_group_data_load(Group *group, Evas *e, const char *edj)
 {
    Evas_Object *edje_edit_obj;
    Eina_List *parts_list, *l;
    char *name;
-   Part *part;
 
-   if (!group || !e) return;
+   if ((!group) || (!e)) return false;
 
    edje_edit_obj = edje_edit_object_add(e);
 
    if (!edje_object_file_set(edje_edit_obj, edj, group->full_group_name))
      {
         evas_object_del(edje_edit_obj);
-        return;
+        return false;
      }
    edje_object_freeze(edje_edit_obj);
+   evas_object_freeze_events_set(edje_edit_obj, true);
    group->obj = edje_edit_obj;
-   group->current_w = -1;
-   group->current_h = -1;
 
    parts_list = edje_edit_parts_list_get(group->obj);
    EINA_LIST_FOREACH(parts_list, l, name)
      {
-        part = wm_part_add(group->obj, name);
-        group->parts = eina_inlist_append(group->parts,
-                                          EINA_INLIST_GET(part));
+        wm_part_add(group, name);
      }
    edje_edit_string_list_free(parts_list);
+
+   return true;
 }
 
 Part *
-wm_part_add(Evas_Object *obj, const char *part)
+wm_part_add(Group *group, const char *part)
 {
    Part *result;
    double value;
 
-   if (!part || !obj) return NULL;
+   if ((!group->obj) || (!part)) return NULL;
 
    result = mem_malloc(sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part);
-   result->type = edje_edit_part_type_get(obj, part);
-   result->obj = NULL;
-   result->curr_state = edje_edit_part_selected_state_get(obj, part, &value);
+   result->type = edje_edit_part_type_get(group->obj, part);
+   result->curr_state = edje_edit_part_selected_state_get(group->obj, part, &value);
    result->curr_state_value = value;
    result->show = EINA_TRUE;
+
+   group->parts = eina_inlist_append(group->parts, EINA_INLIST_GET(result));
 
    return result;
 }
 
-Eina_Bool
-wm_part_free(Part *part)
+static void
+_wm_part_free(Part *part)
 {
-   if (!part) return EINA_FALSE;
+   if (!part) return;
 
    eina_stringshare_del(part->name);
    eina_stringshare_del(part->curr_state);
-   if (part->obj) evas_object_del(part->obj);
 
    free(part);
    part = NULL;
+}
 
-   return EINA_TRUE;
+Eina_Bool
+wm_part_del(Group *group, Part *part)
+{
+   Eina_Inlist *tmp;
+
+   if ((!group) || (!part)) return false;
+
+   tmp = eina_inlist_find(group->parts, EINA_INLIST_GET(part));
+   if (tmp)
+     group->parts = eina_inlist_remove(group->parts, tmp);
+
+   return true;
 }
 
 Eina_Bool
@@ -162,6 +176,8 @@ wm_program_signals_list_get(Group *group)
    Eina_List *progs, *l;
    Eina_Stringshare *prog_name, *sig_name;
 
+   if ((!group) || (!group->obj)) return NULL;
+
    progs = edje_edit_programs_list_get(group->obj);
    EINA_LIST_FOREACH(progs, l, prog_name)
      {
@@ -181,7 +197,7 @@ wm_program_signals_list_free(Eina_List *signals)
    if (!signals) return EINA_FALSE;
 
    EINA_LIST_FREE(signals, sig)
-      edje_edit_string_free(sig);
+     edje_edit_string_free(sig);
 
    eina_list_free(signals);
    signals = NULL;
@@ -213,13 +229,13 @@ wm_group_free(Group *group)
 
    if (!group) return EINA_FALSE;
 
-   if (!group->obj) evas_object_del(group->obj);
+   if (group->obj) evas_object_del(group->obj);
 
    while (group->parts)
      {
         part = EINA_INLIST_CONTAINER_GET(group->parts, Part);
         group->parts = eina_inlist_remove(group->parts, group->parts);
-        wm_part_free(part);
+        _wm_part_free(part);
      }
 
    if (!group->group_name)
@@ -319,7 +335,7 @@ wm_widget_add(const char *widget, Eina_List *groups)
    char *style_name = NULL, *style_name_next = NULL;
    char *group, *group_next;
 
-   if (!widget) return NULL;
+   if ((!widget) || (!groups)) return NULL;
 
    _widget = mem_malloc(sizeof(*_widget));
    _widget->widget_name = eina_stringshare_add(widget);
@@ -438,7 +454,6 @@ wm_widget_list_new(const char *file)
                widget_name_next = &empty;
              widget_styles = eina_list_append(widget_styles, group);
 
-
              if (strcmp(widget_name, widget_name_next) != 0)
                {
                   widget = wm_widget_add(widget_name, widget_styles);
@@ -486,6 +501,8 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
    Group *_group = NULL;
    Widget *_widget = NULL;
    Style *_style = NULL;
+
+   if ((!widget_list) || (!group_full_name)) return NULL;
 
    WM_WIDGET_NAME_GET(widget_name, group_full_name);
    if (widget_name [0] <= 'm')
@@ -575,6 +592,7 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
 const char *
 wm_part_type_get(Edje_Part_Type type)
 {
+   if (type > part_types_count) return NULL;
    return part_types[type];
 }
 

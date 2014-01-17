@@ -179,6 +179,19 @@ Eina_Bool
 ui_block_state_list_set(App_Data *ap, Evas_Object *content);
 
 /**
+ * Set the content in to the state workspace block
+ *
+ * @param ap the application data
+ * @param content the content object
+ *
+ * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
+ * @ingroup Block
+ */
+Eina_Bool
+ui_block_ws_set(App_Data *ap, Evas_Object *content);
+
+/**
  * Set the content in to the property block
  *
  * @param ap the application data

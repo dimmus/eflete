@@ -79,7 +79,6 @@ struct _Part
 {
     EINA_INLIST;
     Eina_Stringshare *name;
-    Evas_Object *obj;
     Eina_Stringshare *curr_state;
     double curr_state_value;
     Eina_Bool show;
@@ -111,9 +110,6 @@ struct _Group
     Evas_Object *obj;
    /** is it Group modificated **/
     Eina_Bool isModify;
-   /** Show/Hide a object on a workspace. **/
-    Eina_Bool show;
-    int current_w, current_h;
    /** Member 'parts' saved a list of a group parts data. **/
     Eina_Inlist *parts;
     type __type;
@@ -172,14 +168,14 @@ typedef struct _Widget Widget;
 /**
  * Create a new Part object
  *
- * @param obj The edje edit object with a 'group' data.
+ * @param group The Group object with a 'group' data.
  * @param part The name of a part.
  * @return A new Part object.
  *
  * @ingroup WidgetManager
  */
 Part *
-wm_part_add(Evas_Object *obj, const char *part);
+wm_part_add(Group *group, const char *part);
 
 /**
  * Set a current state in Part object.
@@ -202,15 +198,16 @@ wm_part_current_state_set(Part *part, const char *state);
 /*TODO: Add 'wm_part_new', for new part which will be add user */
 
 /**
- * Free a Part object
+ * Delete a Part from the Group object
  *
- * @param part A Part object to free.
+ * @param group A Group object being editing
+ * @param part A Part object to be deleted.
  * @return EINA_TRUE if a object deleted, else EINA_FALSE.
  *
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_part_free(Part *part);
+wm_part_del(Group *group, Part *part);
 
 /**
  * Get a list of signals which using in a 'group' programs
@@ -370,10 +367,11 @@ wm_part_type_get(Edje_Part_Type type);
  * @param group A Group object pointer, in wich must be loaded data.
  * @param e A Evas, parent object.
  * @param path Path to theme file (.edj).
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
  *
  * @ingroup WidgetManager
  */
-void
+Eina_Bool
 wm_group_data_load(Group *group, Evas *e, const char *edj);
 
 #endif /* WIDGET_MANAGER_H */

@@ -20,7 +20,7 @@
 #include "image_editor.h"
 
 #define ITEM_WIDTH 100
-#define ITEM_HEIGHT 100
+#define ITEM_HEIGHT 115
 #define IMG_EDIT_KEY "image_editor_key"
 
 typedef struct _Image_Editor Image_Editor;
@@ -551,11 +551,11 @@ image_editor_callback_add(Evas_Object *win, Evas_Smart_Cb func, void *data)
         return false;
      }
 
-   if (!data)
-     {
-        ERR("Function's data is missing.");
-        return false;
-     }
+   //if (!data)
+   //  {
+   //     ERR("Function's data is missing.");
+   //     return false;
+   //  }
 
    img_edit->func_data.choose_func = func;
    img_edit->func_data.data = data;

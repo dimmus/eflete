@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "project_manager.h"
@@ -65,8 +65,6 @@ _on_unlink_done_cb(void *data,
    if (project->image_directory) free(project->image_directory);
    if (project->font_directory) free(project->font_directory);
    if (project->sound_directory) free(project->sound_directory);
-   if (project->compiler) compiler_free(project->compiler);
-   if (project->decompiler) decompiler_free(project->decompiler);
    INFO ("Closed project: %s", project->name);
    free(project->name);
    wm_widget_list_free(project->widgets);
@@ -100,7 +98,7 @@ pm_free(Project *project)
 }
 
 static Project *
-pm_project_add(const char *name,
+_pm_project_add(const char *name,
                const char *path,
                const char *id, /* image directory */
                const char *fd, /* font directory */
@@ -108,6 +106,19 @@ pm_project_add(const char *name,
 {
    Project *pro;
    char *tmp = NULL;
+   int len;
+
+   if (!name)
+     {
+        ERR("Project name is NULL");
+        return NULL;
+     }
+   if (!path)
+     {
+        ERR("Path is NULL");
+        return NULL;
+     }
+   if (!ecore_file_exists(path)) return NULL;
 
    pro = mem_calloc(1, sizeof(Project));
    pro->name = strdup(name);
@@ -116,21 +127,33 @@ pm_project_add(const char *name,
    /* set path to edc */
    pro->edc = strdup(path);
 
-   /* FIXME: A substirng '.edj' can meet in the middle of the path */
-   tmp = strstr(pro->edc, ".edj");
-   if (tmp != NULL)
-     strncpy(tmp, ".edc", 4);
-   tmp = NULL;
+   len = strlen(pro->edc);
+   if (len > 4) // 4 == strlen(".edj")
+     {
+        tmp = pro->edc + len - 4;
+        if (!strcmp(tmp, ".edj")) strncpy(tmp, ".edc", 4);
+        if (strcmp(tmp, ".edc"))
+          {
+             free(pro->name);
+             free(pro->edc);
+             free(pro);
+             return NULL;
+          }
+     }
+   else
+     {
+        free(pro->name);
+        free(pro->edc);
+        free(pro);
+        return NULL;
+     }
 
    /* set path to edj */
    pro->edj = strdup(path);
 
-   /* FIXME: A substring '.edc' can meet in the middle of the path */
-   tmp = strstr(pro->edj, ".edc");
-   if (tmp != NULL)
-     strncpy(tmp, ".edj", 4);
+   tmp = pro->edj + len - 4;
+   if (!strcmp(tmp, ".edc")) strncpy(tmp, ".edj", 4);
 
-   tmp = NULL;
    DBG ("Path to edc-file: '%s'", pro->edc);
    DBG ("Path to edj-file: '%s'", pro->edj);
 
@@ -152,92 +175,21 @@ pm_project_add(const char *name,
    pro->sound_directory = sd ? strdup(sd) : NULL;
    DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
-   pro->compiler = NULL;
-   pro->decompiler = NULL;
-
    return pro;
 }
 
-void
-pm_save_project_edc(Project *project)
+Eina_Bool
+pm_export_to_edc(Project *project,
+                 Eina_Stringshare *edc_dir,
+                 Edje_Compile_Log_Cb log_cb)
 {
-   char **split;
-   const char *save_path;
-   int size;
-   char *save_dir;
-
    if (!project)
      {
         WARN("Project is missing. Please open one.");
-        return;
+        return false;
      }
 
-   /* compile project and create swapfile */
-   project->decompiler = decompile(project->edj, NULL);
-
-   if (project->decompiler)
-     {
-        split = eina_str_split(ecore_file_file_get(project->edj), ".", 2);
-
-        save_path = ecore_file_dir_get(project->edj);
-        size = strlen(save_path) + BUFF_MAX;
-        save_dir = mem_malloc(size * sizeof(char));
-        sprintf(save_dir, "%s/DECOMPILED", save_path);
-
-
-        if (!ecore_file_mkpath(save_dir))
-          {
-             NOTIFY_WARNING("Could not create dir with decompiled project. <br>"
-                          "Please check directory permissions or move edj file into another directory.");
-             free(save_dir);
-             free(split[0]);
-             free(split);
-             return;
-          }
-
-        eio_dir_move(split[0], save_dir, NULL, NULL,
-                     _on_copy_done_cb, _on_copy_error_cb, NULL);
-        ecore_main_loop_begin();
-
-        free(save_dir);
-        free(split[0]);
-        free(split);
-     }
-}
-
-Project *
-pm_open_project_edc(const char *name,
-                    const char *path,
-                    const char *image_directory,
-                    const char *font_directory,
-                    const char *sound_directory)
-{
-   Project *project = NULL;
-
-   if (!path) return NULL;
-
-   project = pm_project_add(name,
-                            path,
-                            image_directory,
-                            font_directory,
-                            sound_directory);
-
-   /* compile project and create swapfile */
-   project->compiler = compile(project->edc,
-                               project->edj,
-                               project->image_directory,
-                               project->font_directory,
-                               project->sound_directory);
-   if (project->compiler)
-     {
-        eio_file_move(project->edj, project->swapfile, NULL,
-                      _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
-        ecore_main_loop_begin();
-     }
-
-   project->widgets = wm_widget_list_new(project->swapfile);
-
-   return project;
+   return !decompile(project->edj, edc_dir, log_cb);
 }
 
 Project *
@@ -253,7 +205,10 @@ pm_open_project_edj(const char *name,
      }
 
    INFO("Open project! Path to project: '%s'.", path);
-   project = pm_project_add(name, path, NULL, NULL, NULL);
+   project = _pm_project_add(name, path, NULL, NULL, NULL);
+
+   if (!project) return NULL;
+
    eio_file_copy(project->edj, project->swapfile, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();

@@ -41,6 +41,10 @@
 #include "open_file_dialog.h"
 #include "string_macro.h"
 
+#include "part_dialog.h"
+#include "state_dialog.h"
+#include "style_dialog.h"
+
 /**
  * Adds main window object for Edje tool development.
  *
@@ -56,10 +60,11 @@ ui_main_window_add(App_Data *ap);
  * Delete main window object for Edje tool development.
  *
  * @param ap The App_Data structure pointer.
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
-void
+Eina_Bool
 ui_main_window_del(App_Data *ap);
 
 /**
@@ -78,16 +83,18 @@ ui_panes_add(App_Data *ap);
  * Start process load settings for panes.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_settings_load();
 
 /**
  * Start process save settings for panes.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_settings_save();
 
 /**
@@ -109,9 +116,10 @@ ui_menu_add(App_Data *ap);
  * @param h A main window new height value
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
-ui_resize_pans(int w, int h);
+Eina_Bool
+ui_resize_panes(int w, int h);
 
 /**
  * Show panes element on main window
@@ -119,8 +127,9 @@ ui_resize_pans(int w, int h);
  * @param ap The App_Data structure pointer.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_show(App_Data *ap);
 
 /**
@@ -129,8 +138,9 @@ ui_panes_show(App_Data *ap);
  * @param ap The App_Data structure pointer.
  *
  * @ingroup Window
+ * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
  */
-void
+Eina_Bool
 ui_panes_hide(App_Data *ap);
 
 /**
@@ -213,20 +223,6 @@ Evas_Object *
 ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
 
 /**
- * Load project data to App_Data structure. Turn to work state for application.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param ap The App_Data structure pointer.
- * @param obj The Evas_Object pointer, wich pointed to fileselector widget.
- * @param selected String with opened project file name.
- *
- * @ingroup Window
- */
-Evas_Object *
-ui_edc_load_done(App_Data* ap, const char *project_name, const char *path_edc, const char *path_id, const char *path_sd, const char *path_fd);
-
-
-/**
  * Delete selected state from current part.
  * Moved to own method for the separation of the interaction between the blocks.
  *
@@ -293,5 +289,9 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
  */
 Eina_Bool
 ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag);
+
+/* FIXME: Add comments */
+Eina_Bool
+register_callbacks(App_Data *ap);
 
 #endif /* UI_MAIN_WINDOW_H */

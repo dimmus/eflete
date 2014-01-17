@@ -14,191 +14,404 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include <ui_workspace.h>
 #include "ctxpopup.h"
 #include "highlight.h"
+#include "groupedit.h"
 #include "eflete.h"
 
-#define GS_BOX_KEY "gs_box_key"
-
-Evas_Object *
-ui_groupspace_add(Evas_Object *parent);
-
-Group *
-ui_groupspace_group_get(Evas_Object *groupspace);
-
-Evas_Object *
-ui_groupspace_box_get(Evas_Object *groupspace);
-
-void
-ui_groupspace_separate(Workspace *ws);
-
-void
-ui_popup_show (Workspace *ws);
-
-Workspace *
-_ws_init(void);
-
-void
-ui_ws_legend_visible_set(Workspace *ws, Eina_Bool visible)
+/**
+ * @typedef Ws_Smart_Data
+ *
+ * @brief The struct _Ws_Smart_Data uses, as smart data for Workspace object.
+ * All UI elements of workspace stored here, only provate API of a workspace
+ * module can modify pointers and values in this struct.
+ *
+ * @ingroup Workspace
+ */
+struct _Ws_Smart_Data
 {
-  Evas_Object *parent = elm_object_parent_widget_get(ws->scroller);
-  char label_text[BUFF_MAX];
-  if (!visible)
-    elm_layout_signal_emit(parent, "legend,hide", "");
-  else
-    elm_layout_signal_emit(parent, "legend,show", "");
+   Evas_Object_Smart_Clipped_Data base;    /**< Needed for correct create and \
+                                             managment of Smart Object. \
+                                             In future clip rulers, for \
+                                             increase efficiency of EFLETE */
+   Evas_Object *clipper;         /**< Needed for processing common events,\
+                                   like mouse move or mouse click. */
+   Evas_Object *background;      /**< A backround image, \
+                                   which swallowed into scroller.*/
+   Evas_Object *ruler_hor;       /**< A ruler object, which created and \
+                                   managed with ui_ruler API. Horizontal.*/
+   Evas_Object *ruler_ver;       /**< A ruler object, which created and \
+                                   managed with ui_ruler API. Vertical.*/
+   Evas_Object *scroller;        /**< A scroler with 'eflete/workspace' style. \
+                                   Implement scrollable interface.*/
+   char scroll_flag;             /** Needed for control drag bar's in scroller*/
+   Evas_Object *groupedit;       /**< A groupedit smart object, \
+                                   needed for view and edit style.*/
+   Evas_Object *obj;             /**< A elementary layout object, \
+                                   which markup with workspace.edc file.*/
+   Evas_Object *button_separate; /**< A button object, which switch (on/off)\
+                                   separate mode of groupedit.*/
+   Eina_List *guides;            /**< A guides list. Not implemented yet*/
+   struct {
+        double factor;           /**< zoom factor, coefficient for view \
+                                   groupedit primitives with zoom.*/
+        Evas_Object *control;    /**< ui element, which provide change zoom \
+                                   factor. Markup in zoom_control.edc*/
+   } zoom;
+   struct {
+        Evas_Object *view;        /**< A elementary layout with special \
+                                    markup stored in legend.edc. TDD*/
+        Eina_Bool visible;        /**< Boolean flag for legend view visibly. */
+   } legend;
+   Group *group;
 
-  snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
-            (int)(ws->zoom_step * 100));
-  elm_object_text_set(ws->legend.legend, label_text);
-  ws->legend.visible = visible;
-}
+   struct {
+        Evas_Object *highlight; /**< A highlight object */
+        Evas_Object *space_hl; /**< A object area highlight*/
+        Part *part; /**< Contain part name and it's state. need for callbacks of highlight. */
+   } highlight;
+};
+typedef struct _Ws_Smart_Data Ws_Smart_Data;
 
-Eina_Bool
-ui_ws_zoom_in(Workspace *ws)
+#define _evas_smart_ws "Evas_Smart_Ws"
+
+#define WS_DATA_GET(o, ptr) \
+   Ws_Smart_Data *ptr = evas_object_smart_data_get(o);
+
+#define WS_DATA_GET_OR_RETURN_VAL(o, ptr, val)      \
+   WS_DATA_GET(o, ptr);                             \
+   if (!ptr)                                        \
+    {                                               \
+       ERR("No workspace data for object %p (%s)!", \
+           o, evas_object_type_get(o));             \
+       return val;                                  \
+    }
+
+static const char SIG_PART_SELECTED[] = "ws,part,selected";
+
+static const Evas_Smart_Cb_Description _smart_callbacks[] = {
+   {SIG_PART_SELECTED, "s"},
+   {NULL, NULL}
+};
+
+EVAS_SMART_SUBCLASS_NEW(_evas_smart_ws, _workspace,
+                        Evas_Smart_Class, Evas_Smart_Class,
+                        evas_object_smart_clipped_class_get, _smart_callbacks);
+
+static void
+_obj_area_visible_change(void *data,
+                         Evas_Object *obj,
+                         void *event_info __UNUSED__)
 {
-   if (!ws)
-   {
-      ERR("Workspace is NULL");
-      return EINA_FALSE;
-   }
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-   Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
-   int w, h;
-   char label_text[BUFF_MAX];
-
-   if ((!group) || (!box))
-     return EINA_FALSE;
-   ws->zoom_step += 0.1;
-   if (ws->zoom_step > 10)
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   Evas_Object *highlight = (Evas_Object *)data;
+   Eina_Bool visible = evas_object_visible_get(highlight);
+   if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
      {
-        ws->zoom_step = 10;
-        return EINA_FALSE;
+        if (visible)
+          evas_object_hide(highlight);
+        else
+          evas_object_show(highlight);
      }
-   evas_object_smart_calculate(box);
-   evas_object_geometry_get(ws->groupspace, NULL, NULL, &w, &h);
-   ui_groupspace_scale_set(ws->groupspace, ws->zoom_step);
-   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
-                                           (int)(ws->zoom_step * 5));
-   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
-                                           (int)(ws->zoom_step * 5));
-   ui_ruler_redraw(ws->ruler_hor);
-   ui_ruler_redraw(ws->ruler_ver);
-   snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
-            (int)(ws->zoom_step * 100));
-   elm_object_text_set(ws->legend.legend, label_text);
-   return EINA_TRUE;
-}
-
-Eina_Bool
-ui_ws_zoom_out(Workspace *ws)
-{
-   if (!ws)
-   {
-      ERR("Workspace is NULL");
-      return EINA_FALSE;
-   }
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-   Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
-   int w, h;
-   char label_text[BUFF_MAX];
-   if ((!group) || (!box)) return EINA_FALSE;
-   ws->zoom_step -= 0.1;
-   if (ws->zoom_step < 0)
-     {
-        ws->zoom_step = 0;
-        return EINA_FALSE;
-     }
-   evas_object_geometry_get(group->obj, NULL, NULL, &w, &h);
-   evas_object_resize(group->obj, (int)(w + w * ws->zoom_step),
-                      (int)(h + h * ws->zoom_step));
-   ui_groupspace_scale_set(ws->groupspace, ws->zoom_step);
-   evas_object_smart_calculate(box);
-   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_hor,
-                                           (int)(ws->zoom_step * 5));
-   ui_ruler_scale_absolute_dashes_step_set(ws->ruler_ver,
-                                           (int)(ws->zoom_step * 5));
-   ui_ruler_redraw(ws->ruler_hor);
-   ui_ruler_redraw(ws->ruler_ver);
-
-   snprintf(label_text, sizeof(label_text), "Current scale is %d%%",
-            (int)(ws->zoom_step * 100));
-   elm_object_text_set(ws->legend.legend, label_text);
-   return EINA_TRUE;
-}
-
-void
-_sc_move_cb(void *data,  Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Workspace *ws = (Workspace *)data;
-   if (!ws->groupspace) return;
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-   if (!group) return;
-
-   Evas_Object *box = ui_groupspace_box_get(ws->groupspace);
-   if (!box) return;
-   int bg_x, bg_y, obj_x, obj_y, obj_w, obj_h;
-   evas_object_geometry_get(ws->bg, &bg_x, &bg_y, NULL, NULL);
-   evas_object_geometry_get(group->obj, &obj_x, &obj_y, &obj_w, &obj_h);
-   ui_ruler_scale_absolute_position_zero_set(ws->ruler_hor, obj_x - bg_x - 25);
-   ui_ruler_scale_absolute_position_zero_set(ws->ruler_ver, obj_y - bg_y - 25);
-   ui_ruler_scale_relative_position_set(ws->ruler_hor, obj_x - bg_x - 25,
-                                        obj_x + obj_w - bg_x - 25);
-   ui_ruler_scale_relative_position_set(ws->ruler_ver, obj_y - bg_y - 25,
-                                        obj_y + obj_h - bg_y - 25);
-   ui_ruler_redraw(ws->ruler_hor);
-   ui_ruler_redraw(ws->ruler_ver);
-   evas_object_smart_calculate(box);
-
-   if (ws->highlight.part)
-     ui_object_highlight_move(ws);
 }
 
 static void
-_separate_on_click(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_ws_ruler_hide_cb(void *data,
+               Evas_Object *obj,
+               void *event_info)
 {
-   Workspace *ws = (Workspace *)data;
-   ui_groupspace_separate(ws);
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   Eina_Bool visible = false;
+   Evas_Object *ruler = (Evas_Object *)data;
+   char *data_info = (char *)event_info;
+
+   if (!strcmp(data_info, "hor"))
+     {
+        if (ui_ruler_visible_get(ruler))
+          {
+             elm_layout_signal_emit(sd->scroller, "ruler,hide,hor", "");
+             ui_ruler_hide(ruler);
+          }
+        else
+          {
+             ui_ruler_show(ruler);
+             elm_layout_signal_emit(sd->scroller, "ruler,show,hor", "");
+          }
+     }
+
+   if (!strcmp(data_info, "ver"))
+     {
+        if (ui_ruler_visible_get(ruler))
+          {
+             elm_layout_signal_emit(sd->scroller, "ruler,hide,ver", "");
+             ui_ruler_hide(ruler);
+          }
+        else
+          {
+             ui_ruler_show(ruler);
+             elm_layout_signal_emit(sd->scroller, "ruler,show,ver", "");
+          }
+     }
+
+   if (!strcmp(data_info, "abs"))
+     {
+        visible = ui_ruler_scale_absolute_visible_get(sd->ruler_hor);
+        ui_ruler_scale_absolute_visible_set(sd->ruler_hor, !visible);
+        ui_ruler_scale_absolute_visible_set(sd->ruler_ver, !visible);
+     }
+
+   if (!strcmp(data_info, "rel"))
+     {
+        visible = ui_ruler_scale_relative_visible_get(sd->ruler_hor);
+        ui_ruler_scale_relative_visible_set(sd->ruler_hor, !visible);
+        ui_ruler_scale_relative_visible_set(sd->ruler_ver, !visible);
+     }
+   free(data_info);
 }
 
 static void
-_ws_mouse_click_cb(void *data ,
+_ws_ruler_abs_zero_move_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
+   WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
+
+   ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, ge_geom->x);
+   ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, ge_geom->y);
+
+   ui_ruler_redraw(sd->ruler_hor);
+   ui_ruler_redraw(sd->ruler_ver);
+}
+
+static void
+_ws_ruler_rel_zero_move_cb(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
+   WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
+
+   ui_ruler_scale_relative_position_set(sd->ruler_hor, ge_geom->x, ge_geom->x + ge_geom->w);
+   ui_ruler_scale_relative_position_set(sd->ruler_ver, ge_geom->y, ge_geom->y + ge_geom->h);
+
+   ui_ruler_redraw(sd->ruler_hor);
+   ui_ruler_redraw(sd->ruler_ver);
+}
+
+static void
+_ws_smart_mouse_click_cb(void *data ,
                    Evas *e __UNUSED__,
                    Evas_Object *obj __UNUSED__,
                    void *event_info)
 {
    Evas_Event_Mouse_Down *ev = event_info;
-   Workspace *ws = (Workspace*)data;
-   if (ev->button == 3) ws_ctxpopup_show(ws);
+   Evas_Object *ws = (Evas_Object *)data;
+
+   if (ev->button == 3) ui_popup_add(ws);
+}
+
+static void
+_ws_smart_mouse_move_cb(void *data, Evas *e,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   int x, y;
+   Evas_Object *ws = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(ws, sd, RETURN_VOID)
+   evas_pointer_output_xy_get(e, &x, &y);
+   ui_ruler_pointer_pos_set(sd->ruler_hor, x);
+   ui_ruler_pointer_pos_set(sd->ruler_ver, y);
+}
+
+static void
+_separate_smart_on_click(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   Evas_Object *follow;
+   const char *name = NULL;
+   Evas_Object *o = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
+   if (sd->highlight.part)
+     name = sd->highlight.part->name;
+   if (!sep)
+     {
+        highlight_object_unfollow(sd->highlight.highlight);
+        highlight_object_unfollow(sd->highlight.space_hl);
+        evas_object_hide(sd->highlight.space_hl);
+        evas_object_hide(sd->highlight.highlight);
+     }
+   else
+     {
+        follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
+        highlight_object_follow(sd->highlight.highlight, follow);
+
+        follow = groupedit_part_object_area_get(sd->groupedit);
+        highlight_object_follow(sd->highlight.space_hl, follow);
+
+        evas_object_hide(sd->highlight.space_hl);
+        evas_object_show(sd->highlight.highlight);
+     }
+   groupedit_edit_object_parts_separated(sd->groupedit, !sep, name);
+}
+
+static void
+_sc_smart_drag_y_cb(void *data ,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Evas_Object *o = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   int x, y, w, h, w_ge, h_ge, w_cont;
+
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
+       && (!sd->scroll_flag))
+     {
+        elm_scroller_region_get(sd->scroller, NULL, &y, &w, &h);
+        elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
+        groupedit_container_size_get(sd->groupedit, &w_cont, NULL);
+
+        x = ceil((y * ((double)w_ge / h_ge)));
+        if (y >=  (h_ge - h)) x += w_cont;
+        elm_scroller_region_show(sd->scroller, x, y, w, h);
+        sd->scroll_flag = 1;
+     }
+}
+
+static void
+_sc_smart_drag_x_cb(void *data ,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Evas_Object *o = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   int x, y, w, h, w_ge, h_ge, h_cont;
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
+       && (!sd->scroll_flag))
+     {
+        elm_scroller_region_get(sd->scroller, &x, NULL, &w, &h);
+        elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
+        groupedit_container_size_get(sd->groupedit, NULL, &h_cont);
+
+        y = ceil((x * ((double)h_ge / w_ge)));
+        if (x >=  (w_ge - w)) y += h_cont;
+        elm_scroller_region_show(sd->scroller, x, y, w, h);
+        sd->scroll_flag = 2;
+     }
 }
 
 void
-ws_zoom_step_set (Workspace *ws, double step)
+_sc_smart_move_cb(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
 {
-   if (!ws)
-   {
-      ERR("Cannot set zoom step: workspace is NULL");
-      return;
-   }
-   ws->zoom_step = step;
+   int bg_x, bg_y, gs_x, gs_y, gs_w, gs_h;
+   int cross_size;
+   Evas_Object *o = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   if (!sd->group) return;
+   evas_object_geometry_get(sd->ruler_hor, &cross_size, NULL, NULL, NULL);
+   evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
+   evas_object_geometry_get(sd->group->obj, &gs_x, &gs_y, &gs_w, &gs_h);
+   cross_size -= bg_x;
+   ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, gs_x - bg_x - cross_size);
+   ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, gs_y - bg_y - cross_size);
+   ui_ruler_scale_relative_position_set(sd->ruler_hor, gs_x - bg_x - cross_size,
+                                        gs_x + gs_w - bg_x - cross_size);
+   ui_ruler_scale_relative_position_set(sd->ruler_ver, gs_y - bg_y - cross_size,
+                                        gs_y + gs_h - bg_y - cross_size);
+   ui_ruler_redraw(sd->ruler_hor);
+   ui_ruler_redraw(sd->ruler_ver);
+
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
+       && (sd->scroll_flag < 2))
+     evas_object_smart_callback_call(sd->scroller, "vbar,drag", NULL);
+   else
+     groupedit_edit_object_recalc_all(sd->groupedit);
+   sd->scroll_flag = 0;
+
+}
+
+static Eina_Bool
+_background_load(Evas_Object *image, const char *path)
+{
+   Evas_Load_Error err;
+   int w, h;
+   evas_object_image_file_set(image, path, NULL);
+   err = evas_object_image_load_error_get(image);
+   if (err != EVAS_LOAD_ERROR_NONE)
+     {
+        ERR("Could not load image [%s]. Error is \"%s\"", path,
+            evas_load_error_str(err));
+        /* Load default background*/
+        evas_object_image_file_set(image, TET_IMG_PATH"bg_demo.png", NULL);
+        return false;
+     }
+   evas_object_image_size_get(image, &w, &h);
+   evas_object_image_filled_set(image, false);
+   evas_object_image_fill_set(image, 0, 0, w, h);
+   return true;
+}
+
+static Eina_Bool
+_zoom_factor_update(Evas_Object *obj, double factor)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   sd->zoom.factor = factor;
+   /*
+    * TODO:
+    * Create method, which update current zoom in groupedit and workspace
+    */
+   return true;
+}
+
+Eina_Bool
+ws_zoom_factor_set(Evas_Object *obj, double factor)
+{
+   if ((factor < 0.01) || (factor > 20 )) return false;
+   return _zoom_factor_update(obj, factor);
 }
 
 double
-ws_zoom_step_get (Workspace *ws)
+ws_zoom_factor_get(Evas_Object *obj)
 {
-   if (!ws)
-   {
-      ERR("Cannot get zoom step: workspace is NULL");
-      return 0;
-   }
-   return ws->zoom_step;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
+   return sd->zoom.factor;
+}
+
+Eina_Bool
+ws_background_image_set(Evas_Object *obj, const char *path)
+{
+   if (!path) return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   if (!sd->background) return false;
+   if (!_background_load(sd->background, path)) return false;
+   return true;
+}
+
+Eina_Bool
+ws_legend_visible_set(Evas_Object *obj)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   if (!sd->legend.visible)
+    elm_layout_signal_emit(obj, "legend,hide", "");
+   else
+    elm_layout_signal_emit(obj, "legend,show", "");
+   sd->legend.visible = !sd->legend.visible;
+   return true;
 }
 
 static void
@@ -207,228 +420,492 @@ _ws_mouse_move_cb(void *data, Evas *e,
                   void *event_info __UNUSED__)
 {
    int x, y;
-   Workspace *ws = (Workspace*)data;
+   Evas_Object *ws_obj = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
    evas_pointer_output_xy_get (e, &x, &y);
-   ui_ruler_pointer_pos_set(ws->ruler_hor, x);
-   ui_ruler_pointer_pos_set(ws->ruler_ver, y);
-}
-
-Workspace *
-ws_add(Evas_Object *parent)
-{
-   if (!parent)
-   {
-      ERR("Parent for workspace is NULL");
-      return NULL;
-   }
-   const char* parent_type = evas_object_type_get(parent);
-   if (strcmp(parent_type,"elm_layout"))
-   {
-      ERR("Workspace parent must be layout");
-      return NULL;
-   }
-   Workspace *ws;
-   Evas_Object *_bg, *_button, *_ruler_hor, *_ruler_ver;
-   Evas_Object *_icon;
-   Evas_Object *_scroller;
-   Evas_Object *_legend;
-   Evas *canvas;
-
-   ws = _ws_init();
-   ws->separated = EINA_TRUE;
-   ws_zoom_step_set(ws, 1);
-   canvas = evas_object_evas_get(parent);
-   ws->canvas = canvas;
-   elm_layout_file_set(parent, TET_EDJ, "base/workspace" );
-   _bg = evas_object_image_filled_add(canvas);
-   evas_object_image_filled_set(_bg, EINA_FALSE);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"bg_demo.png", NULL);
-   evas_object_image_fill_set(_bg, 0, 0, 16, 16);
-   elm_object_part_content_set(parent, "base/workspace/background", _bg);
-   evas_object_show(_bg);
-   ws->bg = _bg;
-
-   _button = elm_button_add(parent);
-   elm_object_style_set(_button, "eflete/default");
-   elm_object_part_content_set(parent, "base/workspace/button_separate",
-                               _button);
-   evas_object_smart_callback_add(_button, "clicked", _separate_on_click, ws);
-   ws->button_separate = _button;
-   _icon = elm_icon_add(_button);
-   elm_image_file_set(_icon, TET_IMG_PATH"icon-separate.png", NULL);
-   elm_image_no_scale_set(_icon, EINA_TRUE);
-   elm_object_part_content_set(_button, NULL, _icon);
-
-   _ruler_hor = ui_ruler_add(parent);
-   elm_object_part_content_set(parent, "base/workspace/ruler_hor",_ruler_hor);
-   ws->ruler_hor = _ruler_hor;
-
-   _ruler_ver = ui_ruler_add(parent);
-   ui_ruler_orient_set(_ruler_ver, VERTICAL);
-   elm_object_part_content_set(parent, "base/workspace/ruler_ver",_ruler_ver);
-   ws->ruler_ver = _ruler_ver;
-
-   _scroller = elm_scroller_add(parent);
-   elm_object_style_set(_scroller, "eflete/default");
-   ws->scroller = _scroller;
-   elm_scroller_policy_set(_scroller, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
-   elm_scroller_content_min_limit(_scroller, EINA_FALSE, EINA_FALSE);
-   elm_object_part_content_set(parent, "base/workspace/groupspace", _scroller);
-   ws->groupspace = ui_groupspace_add(parent);
-   elm_object_content_set(_scroller, ws->groupspace);
-   evas_object_show(ws->groupspace);
-   evas_object_show(_scroller);
-
-   LABEL_ADD(parent, _legend, "")
-   ws->legend.legend = _legend;
-   ws->legend.visible = EINA_FALSE;
-   elm_object_part_content_set(parent, "legend", _legend);
-
-   evas_object_smart_callback_add(_scroller, "scroll", _sc_move_cb, ws);
-   evas_object_smart_callback_add(_scroller, "scroll,drag,stop", _sc_move_cb, ws);
-
-   evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _ws_mouse_move_cb, ws);
-   evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _ws_mouse_move_cb, ws);
-
-   evas_object_event_callback_add(_bg, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _ws_mouse_click_cb, ws);
-   evas_object_event_callback_add(ws->groupspace, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _ws_mouse_click_cb, ws);
-
-   return ws;
-}
-
-void
-ws_free(Workspace *ws)
-{
-   if (ws->groupspace) ui_groupspace_unset(ws->groupspace);
-   free(ws);
-}
-
-Workspace *
-_ws_init (void)
-{
-   return mem_calloc (1, sizeof (Workspace));
+   ui_ruler_pointer_pos_set(sd->ruler_hor, x);
+   ui_ruler_pointer_pos_set(sd->ruler_ver, y);
 }
 
 static void
-__on_resize(void *data,
+_on_resize(void *data,
             Evas_Object * obj __UNUSED__,
             void *ei)
 {
    Highlight_Events *events = (Highlight_Events *)ei;
-   Workspace *ws = (Workspace *)data;
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-   Part * part = ws->highlight.part;
-   if ((!group) || (!part)) return;
-   edje_edit_state_max_w_set(group->obj, part->name,
+   Evas_Object *ws_obj = (Evas_Object *)data;
+   WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
+
+   Part *part = sd->highlight.part;
+   if ((!sd->group) && (!part)) return;
+   edje_edit_state_max_w_set(sd->group->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->w);
-   edje_edit_state_max_h_set(group->obj, part->name,
+   edje_edit_state_max_h_set(sd->group->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->h);
+   workspace_edit_object_recalc(ws_obj);
+   evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }
 
-void
-ui_object_highlight_set(Workspace *ws, Part *part)
+Eina_Bool
+workspace_highlight_set(Evas_Object *obj, Part *part)
 {
-   int x, y, w, h;
+   Evas_Object *follow;
+   if ((!obj) || (!part)) return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
-   if ((!ws) || (!part) || (!ws->separated)) return;
+   groupedit_part_object_area_set(sd->groupedit, part->name);
+   sd->highlight.part = part;
 
-   Evas_Object *box = evas_object_data_get(ws->groupspace, GS_BOX_KEY);
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-
-   ws->highlight.part = part;
-
-   if (!ws->highlight.space_hl)
+   if (groupedit_edit_object_parts_separated_is(sd->groupedit))
+     groupedit_edit_object_part_select(sd->groupedit, part->name);
+   else
      {
-        ws->highlight.space_hl = highlight_add(ws->groupspace);
-        highlight_bg_color_set(ws->highlight.space_hl, 64, 64, 64, 64);
-        highlight_border_color_set(ws->highlight.space_hl, 0, 0, 0, 255);
-        highlight_handler_disabled_set(ws->highlight.space_hl, EINA_TRUE);
-     }
-   ui_groupspace_part_space_geometry_get(group, part, &x, &y, &w, &h);
-   evas_object_resize(ws->highlight.space_hl, w, h);
-   evas_object_move(ws->highlight.space_hl, x, y);
-   evas_object_hide(ws->highlight.space_hl);
-   evas_object_box_insert_at(box, ws->highlight.space_hl, 0);
+        follow = groupedit_edit_object_part_draw_get(sd->groupedit, part->name);
+        highlight_object_follow(sd->highlight.highlight, follow);
 
-   if (!ws->highlight.highlight)
-     {
-        ws->highlight.highlight = highlight_add(ws->groupspace);
-        highlight_bg_color_set(ws->highlight.highlight , 0, 0, 0 , 0);
-        highlight_handler_color_set(ws->highlight.highlight, 255, 0, 0, 255);
-        highlight_border_color_set(ws->highlight.highlight, 0, 255, 0, 255);
-     }
-   evas_object_geometry_get(part->obj, &x, &y, &w, &h);
-   evas_object_resize(ws->highlight.highlight, w, h);
-   evas_object_move(ws->highlight.highlight, x, y);
-   evas_object_show(ws->highlight.highlight);
-   evas_object_box_insert_at(box, ws->highlight.highlight, 0);
+        follow = groupedit_part_object_area_get(sd->groupedit);
+        highlight_object_follow(sd->highlight.space_hl, follow);
 
-   evas_object_event_callback_add(ws->highlight.highlight,
+        evas_object_hide(sd->highlight.space_hl);
+        evas_object_show(sd->highlight.highlight);
+
+        evas_object_event_callback_add(sd->highlight.highlight,
+                                       EVAS_CALLBACK_MOUSE_MOVE,
+                                       _ws_mouse_move_cb, obj);
+        evas_object_smart_callback_add(sd->highlight.highlight, "hl,resize",
+                                       _on_resize, obj);
+     }
+   return true;
+}
+
+Eina_Bool
+workspace_highlight_unset(Evas_Object *obj)
+{
+   if (!obj) return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   highlight_object_unfollow(sd->highlight.highlight);
+   highlight_object_unfollow(sd->highlight.space_hl);
+   sd->highlight.part = NULL;
+   evas_object_hide(sd->highlight.space_hl);
+   evas_object_hide(sd->highlight.highlight);
+
+   evas_object_event_callback_del(sd->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
-                                  _ws_mouse_move_cb, ws);
-   evas_object_smart_callback_add(ws->highlight.highlight, "hl,resize",
-                                  __on_resize, ws);
+                                  _ws_mouse_move_cb);
+   evas_object_smart_callback_del(sd->highlight.highlight, "hl,resize",
+                                  _on_resize);
+   return true;
+}
 
+static void
+_workspace_smart_add(Evas_Object *o)
+{
+   /* Allocate memory for workspace smart data*/
+   EVAS_SMART_DATA_ALLOC(o, Ws_Smart_Data)
+
+   _workspace_parent_sc->add(o);
+}
+
+static Eina_Bool
+_workspace_child_create(Evas_Object *o, Evas_Object *parent)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, priv, false);
+
+   Evas *e = evas_object_evas_get(o);
+   Evas_Object *icon = NULL;
+
+   /* Load main markup layout into smart_data->obj*/
+   priv->obj = elm_layout_add(parent);
+   elm_layout_file_set(priv->obj, TET_EDJ, "eflete/workspace/base/smart");
+   evas_object_smart_member_add(priv->obj, o);
+
+   /* Here create evas image, whitch will be background for workspace*/
+   priv->background = evas_object_image_filled_add(e);
+   _background_load(priv->background, TET_IMG_PATH"bg_demo.png");
+   evas_object_smart_member_add(priv->background, o);
+
+   /* Clipper needed for check mouse events*/
+   priv->clipper = evas_object_rectangle_add(e);
+   evas_object_color_set(priv->clipper, 0, 0, 0, 0);
+   evas_object_smart_member_add(priv->clipper, o);
+   evas_object_event_callback_add(priv->clipper, EVAS_CALLBACK_MOUSE_MOVE,
+                                  _ws_smart_mouse_move_cb, o);
+   evas_object_event_callback_add(priv->clipper, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _ws_smart_mouse_click_cb, o);
+
+   /* create empty groupspace object */
+   priv->groupedit = NULL;
+
+   /* using scroller in workspace, with special style*/
+   priv->scroll_flag = 0;
+   priv->scroller = elm_scroller_add(priv->obj);
+   elm_object_style_set(priv->scroller, "eflete/workspace");
+   elm_scroller_policy_set(priv->scroller, ELM_SCROLLER_POLICY_ON,
+                           ELM_SCROLLER_POLICY_ON);
+   elm_scroller_content_min_limit(priv->scroller, false, false);
+   elm_object_part_content_set(priv->obj, "groupspace", priv->scroller);
+
+   evas_object_smart_callback_add(priv->scroller, "scroll",
+                                  _sc_smart_move_cb, o);
+   evas_object_smart_callback_add(priv->scroller, "vbar,drag",
+                                  _sc_smart_drag_y_cb, o);
+   evas_object_smart_callback_add(priv->scroller, "hbar,drag",
+                                  _sc_smart_drag_x_cb, o);
+   evas_object_smart_member_add(priv->scroller, o);
+
+   /* button for switch mode of view: separated or normal*/
+   priv->button_separate = elm_button_add(priv->scroller);
+   elm_object_style_set(priv->button_separate, "eflete/simple");
+   icon = elm_icon_add(priv->scroller);
+   elm_image_file_set(icon, TET_IMG_PATH"icon-separate.png", NULL);
+   elm_image_no_scale_set(icon, true);
+   elm_object_part_content_set(priv->button_separate, NULL, icon);
+   evas_object_smart_callback_add(priv->button_separate, "clicked",
+                                  _separate_smart_on_click, o);
+   evas_object_smart_member_add(priv->button_separate, o);
+
+
+   /* Add members of workspace into scroller markup field''s*/
+   elm_object_part_content_set(priv->scroller, "elm.swallow.background",
+                               priv->background);
+   elm_object_part_content_set(priv->scroller, "elm.swallow.overlay",
+                               priv->clipper);
+   elm_object_part_content_set(priv->scroller, "cross.swallow",
+                               priv->button_separate);
+
+   /* create rulers, using ui_ruler.h API*/
+   priv->ruler_hor = ui_ruler_add(priv->scroller);
+   elm_object_part_content_set(priv->scroller, "ruler.swallow.hor", priv->ruler_hor);
+   evas_object_smart_callback_add(o, "ruler,hide,hor",
+                                  _ws_ruler_hide_cb, priv->ruler_hor);
+   evas_object_smart_member_add(priv->ruler_hor, o);
+
+   priv->ruler_ver = ui_ruler_add(priv->scroller);
+   ui_ruler_orient_set(priv->ruler_ver, VERTICAL);
+   elm_object_part_content_set(priv->scroller, "ruler.swallow.ver", priv->ruler_ver);
+   evas_object_smart_callback_add(o, "ruler,hide,ver",
+                                  _ws_ruler_hide_cb, priv->ruler_ver);
+   evas_object_smart_member_add(priv->ruler_ver, o);
+
+
+   /* Simple initialize variavbles of smart data */
+   priv->zoom.factor = 1.0;
+   priv->zoom.control = NULL;
+
+   priv->legend.view = NULL;
+   priv->legend.visible = false;
+
+   priv->group = NULL;
+   priv->guides = NULL;
+
+   return true;
+}
+
+
+static void
+_workspace_smart_del(Evas_Object *o)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+
+   evas_object_smart_member_del(sd->ruler_hor);
+   evas_object_smart_member_del(sd->ruler_ver);
+   evas_object_smart_member_del(sd->obj);
+   evas_object_smart_member_del(sd->background);
+   evas_object_smart_member_del(sd->button_separate);
+   evas_object_smart_member_del(sd->scroller);
+   evas_object_smart_member_del(sd->clipper);
+   evas_object_smart_member_del(sd->highlight.highlight);
+   evas_object_smart_member_del(sd->highlight.space_hl);
+   if (sd->groupedit)
+     evas_object_smart_member_del(sd->groupedit);
+
+   _workspace_parent_sc->del(o);
+}
+
+static void
+_workspace_smart_show(Evas_Object *o)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   evas_object_show(sd->button_separate);
+   evas_object_show(sd->scroller);
+   evas_object_show(sd->clipper);
+
+   if (sd->groupedit)
+     evas_object_show(sd->groupedit);
+   if (sd->ruler_hor)
+     ui_ruler_show(sd->ruler_hor);
+   if (sd->ruler_ver)
+     ui_ruler_show(sd->ruler_ver);
+
+   evas_object_show(sd->background);
+   _workspace_parent_sc->show(o);
+}
+
+static void
+_workspace_smart_hide(Evas_Object *o)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+
+   if (sd->groupedit) evas_object_hide(sd->groupedit);
+   if (sd->ruler_hor) ui_ruler_hide(sd->ruler_hor);
+   if (sd->ruler_ver) ui_ruler_hide(sd->ruler_ver);
+
+   evas_object_hide(sd->button_separate);
+   evas_object_hide(sd->scroller);
+   evas_object_hide(sd->clipper);
+
+   _workspace_parent_sc->hide(o);
+}
+
+static void
+_workspace_smart_resize(Evas_Object *o,
+                            Evas_Coord w,
+                            Evas_Coord h)
+{
+   Evas_Coord ox, oy, ow, oh;
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
+   if ((ow == w) && (oh == h)) return;
+   evas_object_resize(sd->obj, w, h);
+
+   evas_object_smart_changed(o);
+}
+
+
+static void
+_workspace_smart_set_user(Evas_Smart_Class *sc)
+{
+   //evas_object_smart_clipped_smart_set(sc);
+   sc->add = _workspace_smart_add;
+   sc->del = _workspace_smart_del;
+   sc->show = _workspace_smart_show;
+   sc->hide = _workspace_smart_hide;
+
+   sc->resize = _workspace_smart_resize;
+   sc->calculate = NULL;
+}
+
+
+Evas_Object *
+workspace_add(Evas_Object *parent)
+{
+   Evas *e = NULL;
+   Evas_Object *obj = NULL;
+
+   if (!parent) return NULL;
+
+   e = evas_object_evas_get(parent);
+   obj = evas_object_smart_add(e, _workspace_smart_class_new());
+   if (_workspace_child_create(obj, parent)) return obj;
+   else
+     {
+        evas_object_del(obj);
+        return NULL;
+     }
+}
+
+static void
+_on_part_select(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   evas_object_smart_callback_call(workspace, SIG_PART_SELECTED, event_info);
+}
+
+Eina_Bool
+workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if ((!group) || (!file)) return false;
+   if (!sd->groupedit) sd->groupedit = groupedit_add(sd->scroller);
+   else groupedit_edit_object_unset(sd->groupedit);
+   sd->group = group;
+   groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
+   groupedit_edit_object_set(sd->groupedit, group->obj, file);
+   evas_object_smart_callback_add(sd->groupedit, "part,selected",
+                                  _on_part_select, obj);
+   evas_object_smart_callback_add(sd->groupedit, "container,changed",
+                                  _ws_ruler_abs_zero_move_cb, obj);
+   evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
+                                  _ws_ruler_rel_zero_move_cb, obj);
+   groupedit_bg_set(sd->groupedit, sd->background);
+   elm_object_content_set(sd->scroller, sd->groupedit);
+   evas_object_show(sd->groupedit);
+
+   /* Create highlights for object and relative space */
+   /*TODO: remake scroller and layout with rulers etc.
+           because highlight work wrong because of that */
+   if (!sd->highlight.space_hl)
+     {
+        sd->highlight.space_hl = highlight_add(sd->scroller);
+        highlight_bg_color_set(sd->highlight.space_hl, OBG_AREA_BG_COLOR);
+        highlight_border_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
+        highlight_handler_disabled_set(sd->highlight.space_hl, true);
+        evas_object_smart_member_add(sd->highlight.space_hl, obj);
+        evas_object_smart_callback_add(obj, "highlight,visible",
+                                       _obj_area_visible_change, sd->highlight.space_hl);
+     }
+
+   if (!sd->highlight.highlight)
+     {
+        sd->highlight.highlight = highlight_add(sd->scroller);
+        highlight_bg_color_set(sd->highlight.highlight, HIGHLIGHT_BG_COLOR);
+        highlight_handler_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
+        highlight_border_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
+        evas_object_smart_member_add(sd->highlight.highlight, obj);
+     }
+
+   return true;
 }
 
 void
-ui_object_highlight_move(Workspace *ws)
+workspace_edit_object_unset(Evas_Object *obj)
 {
-   int x, y, w, h;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
-   if (!ws) return;
+   sd->group = NULL;
+   if (sd->groupedit)
+     {
+        groupedit_edit_object_unset(sd->groupedit);
+        elm_object_content_unset(sd->scroller);
+        evas_object_del(sd->groupedit);
+        sd->groupedit = NULL;
+     }
+}
 
-   evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
-   evas_object_move(ws->highlight.highlight, x, y);
-   evas_object_resize(ws->highlight.highlight, w, h);
+Group *
+workspace_edit_object_get(Evas_Object *obj)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-   ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
-   evas_object_resize(ws->highlight.space_hl, w, h);
-   evas_object_move(ws->highlight.space_hl, x, y);
+   return sd->group;
 }
 
 void
-ui_object_highlight_handler_move(Workspace *ws)
+workspace_edit_object_recalc(Evas_Object *obj)
 {
-   int x, y, w, h;
-
-   if (!ws) return;
-
-   evas_object_geometry_get(ws->highlight.part->obj, &x, &y, &w, &h);
-   evas_object_move(ws->highlight.highlight, x, y);
-   evas_object_resize(ws->highlight.highlight, w, h);
-
-
-   Group *group = ui_groupspace_group_get(ws->groupspace);
-   ui_groupspace_part_space_geometry_get(group, ws->highlight.part, &x, &y, &w, &h);
-   evas_object_resize(ws->highlight.space_hl, w, h);
-   evas_object_move(ws->highlight.space_hl, x, y);
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
-void
-ui_object_highlight_hide(Workspace *ws)
+Eina_Bool
+workspace_edit_object_part_add(Evas_Object *obj, const char *part,
+                               Edje_Part_Type type, const char *data)
 {
-   if ((!ws) || (!ws->highlight.part)) return;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part)
+     {
+        ERR("Can't add the part '%s' to the group '%s'!", part, sd->group->full_group_name)
+        return false;
+     }
 
-   evas_object_hide(ws->highlight.highlight);
-   evas_object_hide(ws->highlight.space_hl);
+   return groupedit_edit_object_part_add(sd->groupedit, part, type, data);
 }
 
-void
-ui_object_highlight_del(Workspace *ws)
+Eina_Bool
+workspace_edit_object_part_del(Evas_Object *obj, const char *part)
 {
-   if ((!ws) || (!ws->highlight.part)) return;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part)
+     {
+        ERR("Can't delete the part '%s' from the group '%s'!", part, sd->group->full_group_name)
+        return false;
+     }
 
-   evas_object_del(ws->highlight.highlight);
-   evas_object_del(ws->highlight.space_hl);
-   ws->highlight.highlight = NULL;
-   ws->highlight.space_hl = NULL;
-   ws->highlight.part = NULL;
+   return groupedit_edit_object_part_del(sd->groupedit, part);
+}
+
+Eina_Bool
+workspace_edit_object_part_above(Evas_Object *obj, const char *part)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part)
+     {
+        ERR("Can't restack above the part '%s' in the group %s!", part, sd->group->full_group_name)
+        return false;
+     }
+
+   return groupedit_edit_object_part_above(sd->groupedit, part);
+}
+
+Eina_Bool
+workspace_edit_object_part_below(Evas_Object *obj, const char *part)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part)
+     {
+        ERR("Can't restack below the part '%s' in the group %s!", part, sd->group->full_group_name)
+        return false;
+     }
+
+   return groupedit_edit_object_part_below(sd->groupedit, part);
+}
+
+Eina_Bool
+workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!part)
+     {
+        ERR("Can't set state '%s %f' to part '%s' in the group %s!",
+            part->curr_state, part->curr_state_value, part->name, sd->group->full_group_name)
+        return false;
+     }
+   return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
+                                               part->curr_state,
+                                               part->curr_state_value);
+}
+
+Eina_Bool
+workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
+                                     const char *state, double value)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state))
+     {
+        ERR("Can't add state '%s %f' to part '%s' in the group %s!",
+            state, value, part, sd->group->full_group_name)
+        return false;
+     }
+
+   return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
+}
+
+Eina_Bool
+workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
+                                     const char *state, double value)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state))
+     {
+        ERR("Can't delete state '%s %f' from part '%s' in the group %s!",
+            state, value, part, sd->group->full_group_name)
+        return false;
+     }
+
+   return groupedit_edit_object_part_state_del(sd->groupedit, part, state, value);
+}
+
+Eina_Bool
+workspace_edit_object_visible_set(Evas_Object *obj,
+                                  const char *part,
+                                  Eina_Bool visible)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!part)
+     {
+        ERR("Can't %s the part '%s' in the group %s!", visible ? "show" : "false",
+            part, sd->group->full_group_name)
+        return false;
+     }
+
+   return groupedit_part_visible_set(sd->groupedit, part, visible);
 }

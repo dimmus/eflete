@@ -30,13 +30,14 @@
 #include "ui_workspace.h"
 
 /**
- * Show ctxpopup object on workspace. Ctxpopup will be deleted automatically
+ * Show ctxpopup object on parent. Ctxpopup will be deleted automatically
  * after the object be hide.
  *
- * @param ws  An workspace structure pointer. Needed to create ctxpopup menu on it
+ * @param obj A parent object.
  *
  * @ingroup UI_Ctxpopup
  */
-void
-ws_ctxpopup_show(Workspace *ws);
+Evas_Object *
+ui_popup_add(Evas_Object *obj);
+
 #endif /* CTXPOPUP_H */

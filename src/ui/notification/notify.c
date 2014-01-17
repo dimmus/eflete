@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "notify.h"
@@ -32,10 +32,11 @@ _notify_close (void *data,
 /*TODO: it all need to remake, use widget macro. notify style make as popup,
  with a blink block area*/
 
-void
-noti_error_show (Evas_Object *obj, const char *message)
+Eina_Bool
+noti_error_show(Evas_Object *obj, const char *message)
 {
-   Evas_Object *notify, *layout, *image, *entry, *btn;
+   Evas_Object *notify, *layout, *btn;
+   if (!obj) return false;
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -49,22 +50,10 @@ noti_error_show (Evas_Object *obj, const char *message)
    evas_object_size_hint_weight_set(layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "notify/content/default");
-
-   //2.1. add an image to the layout
-   image = elm_image_add(notify);
-   elm_image_file_set(image, TET_IMG_PATH"error.png", NULL);
-   elm_object_part_content_set (layout, "image", image);
-   evas_object_show(image);
+   elm_layout_signal_emit(layout, "notify,error", "eflete");
 
    //2.2 add not editable entry for information viewable
-   entry = elm_entry_add(obj);
-   elm_entry_editable_set(entry, EINA_FALSE);
-   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set (layout, "information", entry);
-   elm_object_text_set(entry, message);
-   evas_object_show(entry);
+   elm_object_part_text_set(layout, "information", message);
 
    //2.3. add button for closing the error message
    BUTTON_ADD(obj, btn, "Close");
@@ -76,12 +65,14 @@ noti_error_show (Evas_Object *obj, const char *message)
    elm_object_content_set(notify, layout);
    elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
+   return true;
 }
 
-void
-noti_warning_show (Evas_Object *obj, const char *message)
+Eina_Bool
+noti_warning_show(Evas_Object *obj, const char *message)
 {
-   Evas_Object *notify, *layout, *image, *entry, *btn;
+   Evas_Object *notify, *layout, *btn;
+   if (!obj) return false;
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -95,41 +86,30 @@ noti_warning_show (Evas_Object *obj, const char *message)
    evas_object_size_hint_weight_set(layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "notify/content/default");
-
-   //2.1. add an image to the layout
-   image = elm_image_add(obj);
-   elm_image_file_set(image, TET_IMG_PATH"warning.png", NULL);
-   elm_object_part_content_set (layout, "image", image);
-   evas_object_show(image);
+   elm_layout_signal_emit(layout, "notify,warning", "eflete");
 
    //2.2 add not editable entry for information viewable
-   entry = elm_entry_add(obj);
-   elm_entry_editable_set(entry, EINA_FALSE);
-   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set (layout, "information", entry);
-   elm_object_text_set(entry, message);
-   evas_object_show(entry);
+   elm_object_part_text_set(layout, "information", message);
 
    //2.3. add button for closing the error message
-   btn = elm_button_add(obj);
-   elm_object_text_set(btn, "Close");
+   BUTTON_ADD(obj, btn, "Close");
    evas_object_smart_callback_add(btn, "clicked", _notify_close, notify);
    elm_object_part_content_set (layout, "close_button", btn);
-   evas_object_show(btn);
 
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
    elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
+   return true;
 }
 
-void
-noti_info_show (Evas_Object *obj, const char *message, double time)
+Eina_Bool
+noti_info_show(Evas_Object *obj, const char *message, double time)
 {
-   Evas_Object *notify, *layout, *image, *entry;
+   Evas_Object *notify, *layout;
+   if (!obj) return false;
+   if (time < 0) return false;
 
    //1. setting notify up
    notify = elm_notify_add(obj);
@@ -137,6 +117,7 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
    evas_object_size_hint_align_set(notify, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_notify_align_set(notify, 0.5, 1.0);
    elm_notify_timeout_set(notify, time);
+   evas_object_smart_callback_add(notify, "timeout", _notify_close, notify);
 
    //2. start forming layout
    layout = elm_layout_add(notify);
@@ -144,24 +125,12 @@ noti_info_show (Evas_Object *obj, const char *message, double time)
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, TET_EDJ, "notify/content/info");
 
-   //2.1. add an image to the layout
-   image = elm_image_add(obj);
-   elm_image_file_set(image, TET_IMG_PATH"info.png", NULL);
-   elm_object_part_content_set (layout, "image", image);
-   evas_object_show(image);
-
    //2.2 add not editable entry for information viewable
-   entry = elm_entry_add(obj);
-   elm_entry_editable_set(entry, EINA_FALSE);
-   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set (layout, "information", entry);
-   elm_object_text_set(entry, message);
-   evas_object_show(entry);
+   elm_object_part_text_set(layout, "information", message);
 
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
    evas_object_show (notify);
+   return true;
 }

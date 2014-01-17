@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef EDJE_COMPILE_H
@@ -36,108 +36,40 @@
 #include <Ecore.h>
 #include "logger.h"
 
-/**
- * @struct _Compiler_Message
- * The struct designed to saved compile messages.
- *
- * @ingroup EdjeCompile
- */
-struct _Compiler_Message
-{
-   EINA_INLIST;
-   /** Member 'time' consist a time of a compile message */
-   time_t time;
-   /** Member 'text' consist a text of a compile message */
-   char *text;
-};
-
-/**
- * @typedef Compiler_Message
- * @ingroup EdjeCompile
- */
-typedef struct _Compiler_Message Compiler_Message;
-
-/**
- * @struct _Edje_CC
- * @ingroup EdjeCompile
- */
-struct _Edje_CC
-{
-   /** Member 'exe' consist a Ecore_Exe heandler */
-   Ecore_Exe *exe;
-   /** Member 'cmd' consist a executing command */
-   char *cmd;
-   /** Member 'messages' consist a compile messages */
-   Eina_Inlist *messages;
-};
-
-/**
- * @typedef Edje_CC
- * @ingroup EdjeCompile
- */
-typedef struct _Edje_CC Edje_CC;
-
-/**
- * @typedef Edje_DeCC
- * @ingroup EdjeCompile
- */
-typedef struct _Edje_CC Edje_DeCC;
+typedef void (*Edje_Compile_Log_Cb)(time_t, Eina_Stringshare*, int type);
 
 /**
  * Compile a edc file.
  *
- * @param edc Path to input edc file.
- * @param edj Path to output edj file.
+ * @param edc Path to input edc file. returns -1 if param is NULL or ""
+ * @param edj Path to output edj file. returns -2 if param is NULL or ""
  * @param image_directory Path to a image directory of a project.
  * @param font_directory Path to a font directory of a project.
  * @param sound_direcotory Path to a sound directory of a project.
- * @return A Edje_CC object.
+ * @return edje_cc exit code
  *
  * @ingroup EdjeCompile
  */
-Edje_CC *
+int
 compile(const char *edc,
         const char *edj,
         const char *image_directory,
         const char *font_directory,
-        const char *sound_directory);
+        const char *sound_directory,
+        Edje_Compile_Log_Cb);
 
 /**
  * Decompile a edj file.
  *
- * @param edj Path to input edj file.
- * @param edc Path to output edc file.(TODO:NOT IMPLEMENTED)
+ * @param edj Path to input edj file. returns -1 if param is NULL or ""
+ * @param edc Path to output folder. returns -2 if param is NULL or ""
+ * @return edje_cc exit code
  *
  * @ingroup EdjeCompile
  */
-Edje_DeCC *
-decompile(const char *edj, const char *edc);
-
-/**
- * Delete a Edje_CC object.
- *
- * @param compiler A Edje_CC object to free.
- *
- * @ingroup EdjeCompile
- */
-#define compiler_free(compiler) \
-   edje_cc_free(compiler);
-
-/**
- * Delete a Edje_DeCC object.
- *
- * @param decompiler A Edje_DeCC object to free.
- *
- * @ingroup EdjeCompile
- */
-#define decompiler_free(decompiler) \
-   edje_cc_free(decompiler);
-
-
-/**
- *
- */
-void
-edje_cc_free(struct _Edje_CC *edje_cc);
+int
+decompile(const char *edj,
+          const char *edc,
+          Edje_Compile_Log_Cb);
 
 #endif /* EDJE_COMPILE_H */

@@ -213,7 +213,11 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
              STATE_COPY(fill_size_offset_y);
 
              STATE_COPY(visible);
-             STATE_COPY(color_class);
+             /* FIXME: if uncommemt it line we have segfault.
+                Maybe it issue related with patch to edje edit, with appling
+                new colors when setting new color class to the part state.
+                NEED CHECK IT, AND FIX */
+             //STATE_COPY(color_class);
 
              part_type = edje_edit_part_type_get(template_edje_edit, part_name);
 
@@ -243,7 +247,6 @@ _group_template_copy(Group *group, Evas_Object *template_edje_edit,
         part->__type = PART;
         part->name = eina_stringshare_add(part_name);
         part->type = part_type;
-        part->obj = NULL;
         part->curr_state = edje_edit_part_selected_state_get(
                               edje_edit_group, part->name, &state_val);
         part->curr_state_value = state_val;
@@ -338,11 +341,9 @@ _reload_styles(App_Data *ap, Eina_Inlist *styles)
 {
    Evas_Object *gl_style = NULL;
    Elm_Object_Item *eoi = NULL;
-   Evas_Object *box = NULL;
 
    eoi = elm_naviframe_top_item_get(ui_block_widget_list_get(ap));
-   box = elm_object_item_part_content_get(eoi, NULL);
-   gl_style = eina_list_data_get(eina_list_last(elm_box_children_get(box)));
+   gl_style = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_style_data_reload(gl_style, styles);
 }
@@ -355,14 +356,10 @@ _style_from_ap_get(App_Data *ap)
    Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
    Elm_Object_Item *parent_eoi = NULL;
-   Evas_Object *box = NULL;
-   Eina_List *box_childs = NULL;
 
    nf = ui_block_widget_list_get(ap);
    eoi = elm_naviframe_top_item_get(nf);
-   box = elm_object_item_part_content_get(eoi, NULL);
-   box_childs = elm_box_children_get(box);
-   gl_style = eina_list_data_get(eina_list_last(box_childs));
+   gl_style = elm_object_item_part_content_get(eoi, NULL);
    eoi = elm_genlist_selected_item_get(gl_style);
    if (!eoi)
      {
@@ -424,7 +421,7 @@ _on_popup_btn_yes(void *data,
    Eina_Inlist *l =NULL;
    Eina_Inlist *template_widgets = NULL;
    Eina_List *groups = NULL;
-
+   Evas *canvas = NULL;
 
 #define STRING_CLEAR\
         eina_stringshare_del(template_file);\
@@ -492,6 +489,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
+   canvas = evas_object_evas_get(ap->workspace);
    if (style_exist)
      {
         EINA_INLIST_FOREACH_SAFE(style_in_widget->groups, l, class_in_style)
@@ -552,10 +550,10 @@ _on_popup_btn_yes(void *data,
 
    if (!template_group)
       template_group = EINA_INLIST_CONTAINER_GET(template_style->groups, Group);
-   wm_group_data_load(template_group, ap->ws->canvas, template_file);
+   wm_group_data_load(template_group, canvas, template_file);
 
    if (_group_template_copy(temporary_group, template_group->obj, full_name,
-                           ap->ws->canvas, ap->project, group))
+                            canvas, ap->project, group))
      _reload_styles(ap, temporary_wdg->styles);
 
    if (!wm_widget_list_free(template_widgets) && template_widgets)

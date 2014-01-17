@@ -26,16 +26,24 @@
  * The application logger
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* include config.h */
+
 #include <Eina.h>
 
-extern int _tet_log_dom;
+extern int _eflete_lod_dom;
 
 /**
  * Logs a message on the specified domain, level and format.
  *
  * @ingroup Logger
  */
-#define TET_LOG(DOM, LEVEL, fmt, ...) EINA_LOG(DOM, LEVEL, fmt, ## __VA_ARGS__)
+#define EFLETE_LOG(DOM, LEVEL, fmt, ...) \
+  { \
+    if (HAVE_EFLETE_DEBUG) EINA_LOG(DOM, LEVEL, fmt, ## __VA_ARGS__); \
+    else logger_message_print(LEVEL, fmt, ## __VA_ARGS__); \
+  }
 
 /**
  * Logs a message with level CRITICAL.
@@ -43,7 +51,7 @@ extern int _tet_log_dom;
  * @ingroup Logger
  */
 #define CRIT(fmt, ...) \
-   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level ERROR.
@@ -51,7 +59,7 @@ extern int _tet_log_dom;
  * @ingroup Logger
  */
 #define ERR(fmt, ...) \
-   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level WARNING.
@@ -59,7 +67,7 @@ extern int _tet_log_dom;
  * @ingroup Logger
  */
 #define WARN(fmt, ...) \
-   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level INFO.
@@ -67,7 +75,7 @@ extern int _tet_log_dom;
  * @ingroup Logger
  */
 #define INFO(fmt, ...) \
-   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level DEBUG.
@@ -75,7 +83,7 @@ extern int _tet_log_dom;
  * @ingroup Logger
  */
 #define DBG(fmt, ...) \
-   TET_LOG(_tet_log_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
 
 /**
  * Init logger
@@ -92,5 +100,13 @@ logger_init(void);
  */
 void
 logger_shutdown(void);
+
+/**
+ * Print the log message to strerr. Used only in case when debug is disable.
+ *
+ * @ingroup Logger
+ */
+void
+logger_message_print(Eina_Log_Level level, const char *fmt, ...);
 
 #endif /* LOGGER_H */

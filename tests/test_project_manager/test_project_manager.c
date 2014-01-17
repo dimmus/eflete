@@ -14,44 +14,51 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include <check.h>
 #include "project_manager.h"
-#include "efl_ete.h"
+#include "eflete.h"
+
+#define M_ mark_point();
+
 /**
  * @addtogroup pm_open_project_edc_test
  * @{
- * @objective Positive test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
  *
  * @procedure
- * @step 1 Create parameters
- * @step 2 Add parameters to pm_open_project_edc() function
- * @param name The name of a project
- * @param path Path to a edc-file
- * @param img Path to a image firectory of a project
- * @param font Path to a font directory of a project
- * @param sound Path to a sound directory of a project.
+ * @step 1 Call pm_open_project_edc()
+ * @step 2 Check returned pointer
+ * @step 3 Check setted name, img, fnt, snd dirs, edc/edj paths
  *
- * @passcondition: EINA_TRUE returned from function
+ * @passcondition: Filled Project *returned
  * @}
  */
-START_TEST (pm_open_project_edc_test_n1)
+START_TEST (pm_open_project_edc_test_p1)
 {
    elm_init(0,0);
    const char *name, *path, *img, *font, *sound;
-   name = "./test_project_manager/data";
-   path = "./test_project_manager/data/check.edc";
-   img = "./test_project_manager/data";
-   font = "./test_project_manager/data";
-   sound = "./test_project_manager/data";
+   name = "radio_test";
+   path = "./edj_build/radio.edc";
+   img = "./edj_build/";
+   font = "./edj_build/fnt";
+   sound = "./edj_build/snd";
    Project* pro = pm_open_project_edc(name, path, img, font, sound);
-   if (!pro)
-   {
-      ck_abort_msg("failure: cannot open project from edc-file");
-   }
-   pm_free(pro);
+M_ ck_assert_msg(pro != NULL, "failure: cannot open project from edc-file");
+
+M_ ck_assert_msg(!strcmp(pro->name, "radio_test"), "project name is incorrect");
+M_ ck_assert_msg(!strcmp(pro->edc, "./edj_build/radio.edc"), "edc path is incorrect");
+M_ ck_assert_msg(pro->edj == NULL, "edj path is not NULL");
+M_ ck_assert_msg(!strcmp(pro->image_directory, "./edj_build/"), "image dir is incorrect");
+M_ ck_assert_msg(!strcmp(pro->font_directory, "./edj_build/fnt"), "font dir is incorrect");
+M_ ck_assert_msg(!strcmp(pro->sound_directory, "./edj_build/snd"), "sound dir is incorrect");
+
+M_ pm_free(pro);
    elm_shutdown();
 }
 END_TEST
@@ -59,62 +66,115 @@ END_TEST
 /**
  * @addtogroup pm_open_project_edc_test
  * @{
- * @objective Negative test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
  *
  * @procedure
- * @step 1 Calling NULL parameters to function
+ * @step 1 call pm_open_project_edc() without img, snd and fnt dirs
+ * @step 2 check returned pointer
+ * @step 3 check setted name, img, fnt, snd dirs, edc/edj paths
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: Filled Project *returned
  * @}
  */
-START_TEST (pm_open_project_edc_test_n2)
+START_TEST (pm_open_project_edc_test_p2)
 {
-   fail_unless(pm_open_project_edc(NULL, NULL, NULL, NULL, NULL) == EINA_FALSE, "failure: uncorrect work function");
+   elm_init(0,0);
+   const char *name, *path;
+   name = "radio_test";
+   path = "./edj_build/radio.edc";
+   Project* pro = pm_open_project_edc(name, path, NULL, NULL, NULL);
+M_ ck_assert_msg(pro != NULL, "failure: cannot open project from edc-file");
+
+M_ ck_assert_msg(!strcmp(pro->name, "radio_test"), "project name is incorrect");
+M_ ck_assert_msg(!strcmp(pro->edc, "./edj_build/radio.edc"), "edc path is incorrect");
+M_ ck_assert_msg(pro->edj == NULL, "edj path is not NULL");
+M_ ck_assert_msg(pro->image_directory == NULL, "image dir is not NULL");
+M_ ck_assert_msg(pro->font_directory == NULL, "font dir is not NULL");
+M_ ck_assert_msg(pro->sound_directory == NULL, "sound dir is not NULL");
+
+M_ pm_free(pro);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_open_project_edc_test
+ * @{
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
+ *
+ * @procedure
+ * @step 1 call pm_open_project_edc() with all params set to NULL
+ * @step 2 check returned pointer
+ * @step 3 call pm_open_project_edc() with all params set to NULL but name
+ * @step 4 check returned pointer
+ * @step 5 call pm_open_project_edc() with all params set to NULL but path
+ * @step 6 check returned pointer
+ *
+ * @passcondition: NULL returned
+ * @}
+ */
+START_TEST (pm_open_project_edc_test_n)
+{
+   elm_init(0,0);
+   const char *name, *path;
+   name = "radio_test";
+   path = "./edj_build/radio.edc";
+M_ ck_assert_msg(pm_open_project_edc(NULL, NULL, NULL, NULL, NULL) == NULL, "Not NULL returned");
+M_ ck_assert_msg(pm_open_project_edc(name, NULL, NULL, NULL, NULL) == NULL, "Not NULL returned");
+M_ ck_assert_msg(pm_open_project_edc(NULL, path, NULL, NULL, NULL) == NULL, "Not NULL returned");
+   elm_shutdown();
 }
 END_TEST
 
 /**
  * @addtogroup pm_free_test
  * @{
- * @objective Negative test case:
+ * @objective Positive test case
  *
  * @procedure
- * @step 1 Call NULL parameter to function
+ * @step 1 Open Project
+ * @step 2 Call pm_free()
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: EINA_TRUE returned
  * @}
  */
-START_TEST (pm_free_test_n2)
-{
-   Project *project = NULL;
-   fail_unless(pm_free(project) == EINA_FALSE, "failure: uncorrect work function");
-}
-END_TEST
-
-/**
- * @addtogroup pm_free_test
- * @{
- * @objective Positive test case:
- *
- * @procedure
- * @step 1 Create Project object
- * @step 2 Add object to function
- *
- * @passcondition: EINA_TRUE returned from function
- * @}
- */
-START_TEST (pm_free_test_n1)
+START_TEST (pm_free_test_p)
 {
    elm_init(0,0);
    Project *pro;
    const char *name, *path, *img, *font, *sound;
-   name = "./test_project_manager/data";
-   path = "./test_project_manager/data/check.edc";
-   img = "./test_project_manager/data";
-   font = "./test_project_manager/data";
-   sound = "./test_project_manager/data";
-   pro = pm_open_project_edc(name, path, img, font, sound);
-   fail_unless(pm_free(pro) == EINA_TRUE, "failure: uncorrect work function");
+   name = "radio_test";
+   path = "./edj_build/radio.edc";
+   img = "./edj_build/img";
+   font = "./edj_build/fnt";
+   sound = "./edj_build/snd";
+M_ pro = pm_open_project_edc(name, path, img, font, sound);
+M_ ck_assert_msg(pm_free(pro) == EINA_TRUE, "Can't delete project");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_free_test
+ * @{
+ * @objective Negative test case
+ *
+ * @procedure
+ * @step 1 Call pm_free(NULL)
+ *
+ * @passcondition: EINA_FALSE returned
+ * @}
+ */
+START_TEST (pm_free_test_n)
+{
+   elm_init(0,0);
+   ck_assert_msg(pm_free(NULL) == EINA_FALSE, "NULL project deleted");
    elm_shutdown();
 }
 END_TEST
@@ -122,29 +182,37 @@ END_TEST
 /**
  * @addtogroup pm_open_project_edj_test
  * @{
- * @objective Positive test case:
+ * @objective Positive test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
  *
  * @procedure
- * @step 1 Create parameters
- * @step 2 Add parameters to pm_open_project_edj() function
- * @param name The name of a project
- * @param path Path to edj-file.
+ * @step 1 Call pm_open_project_edj()
+ * @step 2 Check returned pointer
+ * @step 3 Check setted name, img, fnt, snd dirs, edc/edj paths
  *
- * @passcondition: EINA_TRUE returned from function
+ * @passcondition: Filled Project *returned
  * @}
  */
-START_TEST (pm_open_project_edj_test_n1)
+START_TEST (pm_open_project_edj_test_p)
 {
    elm_init(0,0);
    char *name, *path;
-   name = "./test_project_manager/data";
-   path = "./test_project_manager/data/check.edj";
-   Project* pro = pm_open_project_edj(name, path);
-   if (!pro)
-   {
-      ck_abort_msg("failure: cannot open project from edj-file");
-   }
-   pm_free(pro);
+   name = "radio_test";
+   path = "./edj_build/radio.edj";
+M_ Project* pro = pm_open_project_edj(name, path);
+M_ ck_assert_msg(pro != NULL, "failure: cannot open project from edj-file");
+
+M_ ck_assert_msg(!strcmp(pro->name, "radio_test"), "project name is incorrect");
+M_ ck_assert_msg(!strcmp(pro->edc, "./edj_build/radio.edc"), "edc path is incorrect");
+M_ ck_assert_msg(!strcmp(pro->edj, "./edj_build/radio.edj"), "edj path is incorrect");
+M_ ck_assert_msg(!strcmp(pro->swapfile, "./edj_build/radio.edj.swap"), "swapfile path is incorrect");
+M_ ck_assert_msg(pro->image_directory == NULL, "image dir is incorrect");
+M_ ck_assert_msg(pro->font_directory == NULL, "font dir is incorrect");
+M_ ck_assert_msg(pro->sound_directory == NULL, "sound dir is incorrect");
+
+M_ pm_free(pro);
    elm_shutdown();
 }
 END_TEST
@@ -152,24 +220,159 @@ END_TEST
 /**
  * @addtogroup pm_open_project_edj_test
  * @{
- * @objective Negative test case:
+ * @objective Negative test case
+ *
+ * @precondition
+ * @step 1 initialized efl and app
  *
  * @procedure
- * @step 1 Calling NULL parameters to function
+ * @step 1 call pm_open_project_edj() with all params set to NULL
+ * @step 2 check returned pointer
+ * @step 3 call pm_open_project_edj() with all params set to NULL but name
+ * @step 4 check returned pointer
+ * @step 5 call pm_open_project_edj() with all params set to NULL but path
+ * @step 6 check returned pointer
  *
- * @passcondition: EINA_FALSE returned from function
+ * @passcondition: NULL returned
  * @}
  */
-START_TEST (pm_open_project_edj_test_n2)
+START_TEST (pm_open_project_edj_test_n)
 {
-   fail_unless(pm_open_project_edj(NULL, NULL) == EINA_FALSE, "failure: uncorrect work function");
+   elm_init(0,0);
+   char *name, *path;
+   name = "radio_test";
+   path = "./edj_build/radio.edj";
+M_ ck_assert_msg(pm_open_project_edj(NULL, NULL) == NULL, "Project created without path");
+M_ ck_assert_msg(pm_open_project_edj(name, NULL) == NULL, "Project created without path");
+M_ ck_assert_msg(pm_open_project_edj(NULL, path) == NULL, "Project created without name");
+   elm_shutdown();
 }
 END_TEST
+
+/**
+ * @addtogroup pm_save_project_edj_test
+ * @{
+ * @objective Positive test case
+ *
+ * @procedure
+ * @step 1 Open project
+ * @step 2 pm_save_project_edj()
+ *
+ * @passcondition: EINA_TRUE returned
+ * @}
+ */
+START_TEST (pm_save_project_edj_test_p)
+{
+   elm_init(0,0);
+   char *name, *path;
+   name = "radio_test";
+   path = "./edj_build/radio.edj";
+M_ Project* pro = pm_open_project_edj(name, path);
+M_ ck_assert_msg(pm_save_project_edj(pro), "Can't save project to edj");
+M_ pm_free(pro);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_save_project_edj_test
+ * @{
+ * @objective Negative test case
+ *
+ * @procedure
+ * @step 1 pm_save_project_edj(NULL)
+ *
+ * @passcondition: EINA_FALSE returned
+ * @}
+ */
+START_TEST (pm_save_project_edj_test_n)
+{
+   elm_init(0,0);
+   ck_assert_msg(!pm_save_project_edj(NULL), "Saved NULL project");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_save_project_edc_test
+ * @{
+ * @objective Positive test case
+ *
+ * @procedure
+ * @step 1 Open project
+ * @step 2 pm_save_project_edc()
+ *
+ * @passcondition: EINA_TRUE returned
+ * @}
+ */
+START_TEST (pm_save_project_edc_test_p)
+{
+   elm_init(0,0);
+   char *name, *path;
+   name = "radio_test";
+   path = "./edj_build/radio.edj";
+M_ Project* pro = pm_open_project_edj(name, path);
+
+M_ ck_assert_msg(pm_save_project_edc(pro), "Can't save project to edc");
+
+M_ pm_free(pro);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_save_project_edc_test
+ * @{
+ * @objective Negative test case
+ *
+ * @procedure
+ * @step 1 pm_save_project_edc(NULL)
+ *
+ * @passcondition: EINA_FALSE returned
+ * @}
+ */
+START_TEST (pm_save_project_edc_test_n1)
+{
+   elm_init(0,0);
+   ck_assert_msg(!pm_save_project_edc(NULL), "Saved NULL project");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_save_project_edc_test
+ * @{
+ * @objective Positive test case
+ *
+ * @procedure
+ * @step 1 Open EDC project
+ * @step 2 pm_save_project_edc() without saving edj
+ *
+ * @passcondition: EINA_FALSE returned
+ * @}
+ */
+START_TEST (pm_save_project_edc_test_n2)
+{
+   elm_init(0,0);
+   Project *pro;
+   const char *name, *path, *img, *font, *sound;
+   name = "radio_test";
+   path = "./edj_build/radio.edc";
+   img = "./edj_build/img";
+   font = "./edj_build/fnt";
+   sound = "./edj_build/snd";
+M_ pro = pm_open_project_edc(name, path, img, font, sound);
+M_ ck_assert_msg(!pm_save_project_edc(pro), "Saved project without compiled EDJ");
+M_ pm_free(pro);
+   elm_shutdown();
+}
+END_TEST
+
 
 /**
  * @addtogroup test_suite
  * @{
- * @objective Creating above to the test case:
+ * @objective Creating above to the test case
  *
  * @procedure
  * @step 1 Create suite
@@ -183,12 +386,18 @@ END_TEST
 Suite* test_suite (void) {
    Suite *suite = suite_create("pr_manager_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, pm_free_test_n1);
-   tcase_add_test(tcase, pm_free_test_n2);
-   tcase_add_test(tcase, pm_open_project_edj_test_n1);
-   tcase_add_test(tcase, pm_open_project_edj_test_n2);
-   tcase_add_test(tcase, pm_open_project_edc_test_n1);
-   tcase_add_test(tcase, pm_open_project_edc_test_n2);
+   tcase_add_test(tcase, pm_free_test_p);
+   tcase_add_test(tcase, pm_free_test_n);
+   tcase_add_test(tcase, pm_open_project_edj_test_p);
+   tcase_add_test(tcase, pm_open_project_edj_test_n);
+   tcase_add_test(tcase, pm_open_project_edc_test_p1);
+   tcase_add_test(tcase, pm_open_project_edc_test_p2);
+   tcase_add_test(tcase, pm_open_project_edc_test_n);
+   tcase_add_test(tcase, pm_save_project_edc_test_p);
+   tcase_add_test(tcase, pm_save_project_edc_test_n1);
+   tcase_add_test(tcase, pm_save_project_edc_test_n2);
+   tcase_add_test(tcase, pm_save_project_edj_test_p);
+   tcase_add_test(tcase, pm_save_project_edj_test_n);
    suite_add_tcase(suite, tcase);
    return suite;
 }

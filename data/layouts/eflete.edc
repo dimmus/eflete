@@ -5,8 +5,10 @@ collections {
    #include "edje/ruler.edc"
    #include "edje/main_window.edc"
    #include "edje/textstyle.edc"
-   #include "edje/groupspace.edc"
+   #include "edje/groupedit.edc"
    #include "edje/notify.edc"
    #include "edje/colorclass_editor.edc"
    #include "edje/prop_item.edc"
+   #include "edje/highlight.edc"
+   #include "edje/compile.edc"
 }

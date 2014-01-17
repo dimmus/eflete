@@ -2,12 +2,10 @@ MAINTAINERCLEANFILES = Makefile.in
 
 ACLOCAL_AMFLAGS = -I m4
 
-TESTS = addpart_test \
+TESTS = part_dialog_test \
 alloc_test \
 colorclass_editor_test \
-colorclasses_edit_api_test \
 edje_compile_test \
-font_viewer_dialog_test \
 image_editor_test \
 logger_test \
 modal_window_test \
@@ -35,7 +33,6 @@ FLAGS = \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/project_manager/edit \
 -I${top_srcdir}/src/settings \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/blocks \
@@ -44,6 +41,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
+-I${top_srcdir}/src/ui/demo \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \
@@ -66,9 +64,9 @@ LD = $(top_builddir)/src/libete.a \
 @EDJE_LIBS@ \
 @ELEMENTARY_LIBS@
 
-addpart_test_SOURCES = test_addpart/test_addpart.c
-addpart_test_CFLAGS = ${FLAGS}
-addpart_test_LDADD = ${LD}
+part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c
+part_dialog_test_CFLAGS = ${FLAGS}
+part_dialog_test_LDADD = ${LD}
 
 alloc_test_SOURCES = test_alloc/test_alloc.c
 alloc_test_CFLAGS = ${FLAGS}
@@ -78,10 +76,6 @@ colorclass_editor_test_SOURCES = test_colorclass_editor/test_colorclass_editor.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
 
-colorclasses_edit_api_test_SOURCES = test_colorclasses_edit_api/test_colorclasses_edit_api.c
-colorclasses_edit_api_test_CFLAGS = ${FLAGS}
-colorclasses_edit_api_test_LDADD = ${LD}
-
 edje_compile_test_SOURCES = test_edje_compile/test_edje_compile.c
 edje_compile_test_CFLAGS = ${FLAGS}
 edje_compile_test_LDADD = ${LD}
@@ -89,10 +83,6 @@ edje_compile_test_LDADD = ${LD}
 widget_manager_test_SOURCES = test_widget_manager/test_widget_manager.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
-
-font_viewer_dialog_test_SOURCES = test_font_viewer_dialog/test_font_viewer_dialog.c
-font_viewer_dialog_test_CFLAGS = ${FLAGS}
-font_viewer_dialog_test_LDADD = ${LD}
 
 image_editor_test_SOURCES = test_image_editor/test_image_editor.c
 image_editor_test_CFLAGS = ${FLAGS}

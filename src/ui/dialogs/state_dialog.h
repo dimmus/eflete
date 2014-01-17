@@ -31,7 +31,7 @@
 #include "widget_manager.h"
 #include "widget_macro.h"
 #include "ui_states_list.h"
-#include "ui_groupspace.h"
+//#include "ui_groupspace.h"
 #include "notify.h"
 /**
  * Add new dialog for input params state, like name and value.

@@ -35,7 +35,7 @@
 START_TEST (style_editor_window_add_test_n1)
 {
    elm_init(0,0);
-   style_editor_window_add(NULL, NULL);
+   style_editor_window_add(NULL);
    elm_shutdown();
 }
 END_TEST
@@ -59,7 +59,7 @@ START_TEST (style_editor_window_add_test_n2)
    App_Data *app = NULL;
    app_init();
    app = app_create();
-   if(app == NULL)
+   if (app == NULL)
    {
       ck_abort_msg("uncorrect work function 'app_create'");
    }
@@ -67,7 +67,7 @@ START_TEST (style_editor_window_add_test_n2)
       " window");
    ui_edc_load_done(app, "first", EDC_PATH
       "naviframe.edc","","","");
-   ck_assert_msg(style_editor_window_add(app->win, app->project) != NULL,
+   ck_assert_msg(style_editor_window_add(app->project) != NULL,
                                    "Window not added");
    elm_shutdown();
    app_shutdown();

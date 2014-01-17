@@ -34,11 +34,17 @@ struct _menu_event
    enum {
       OPEN_EDC = 0,
       OPEN_EDJ,
-      SAVE_EDJ
+      EXPORT_EDC,
+      SAVE_EDJ,
+      SAVE_AS_EDJ
    } type;
 };
 
 typedef struct _menu_event Menu_Event;
+
+/* TODO: Make delayed events from all menu callbacks. Otherwise menu will be
+ * blocked after any long operation on week machines
+ */
 
 static Eina_Bool
 _menu_event_handler_cb(void *data __UNUSED__,
@@ -55,7 +61,23 @@ _menu_event_handler_cb(void *data __UNUSED__,
       case OPEN_EDJ:
          open_edj_file(menu_event->ap);
       break;
+      case EXPORT_EDC:
+         save_as_edc_file(menu_event->ap);
+      break;
       case SAVE_EDJ:
+         if (pm_save_project_to_swap(menu_event->ap->project))
+           {
+              if (pm_save_project_edj(menu_event->ap->project))
+                {
+                   NOTIFY_INFO(3, "Theme saved: %s", menu_event->ap->project->edj)
+                   ui_demospace_set(menu_event->ap->demo, menu_event->ap->project,
+                                    menu_event->ap->project->current_group);
+                }
+              else
+                 NOTIFY_ERROR("Theme can not be saved: %s", menu_event->ap->project->edj);
+           }
+      break;
+      case SAVE_AS_EDJ:
          save_as_edj_file(menu_event->ap);
       break;
       }
@@ -230,27 +252,13 @@ _on_save_menu(void *data,
         ERR("Project coud'nt be save");
         return;
      }
-
+   menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = ap;
    if (!ap->project->edj)
-     {
-        menu_event = mem_malloc(sizeof(Menu_Event));
-        menu_event->ap = ap;
-        menu_event->type = SAVE_EDJ;
-        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-     }
+      menu_event->type = SAVE_AS_EDJ;
    else
-     {
-        if (pm_save_project_to_swap(ap->project))
-          {
-             if (pm_save_project_edj(ap->project))
-               {
-                  NOTIFY_INFO(3, "Theme saved: %s", ap->project->edj)
-                     ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
-               }
-             else
-               NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
-          }
-     }
+      menu_event->type = SAVE_EDJ;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -260,17 +268,19 @@ _on_save_as_menu(void *data,
 {
    Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
    menu_event->ap = (App_Data *)data;
-   menu_event->type = SAVE_EDJ;
+   menu_event->type = SAVE_AS_EDJ;
    ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
-_on_edc_save_menu(void *data __UNUSED__,
+_on_export_edc_menu(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   save_as_edc_file(ap);
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->ap = (App_Data *)data;
+   menu_event->type = EXPORT_EDC;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 static void
@@ -288,8 +298,7 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_groupspace_separate(ap->ws);
-   ui_menu_disable_set(ap->menu_hash, "Highlight space", !ap->ws->separated);
+   ui_menu_disable_set(ap->menu_hash, "Highlight space", true);
 }
 
 static void
@@ -298,7 +307,8 @@ _on_view_zoom_in(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_zoom_in(ap->ws);
+   double current_factor = ws_zoom_factor_get(ap->workspace);
+   ws_zoom_factor_set(ap->workspace, current_factor + 0.1);
 }
 
 static void
@@ -307,7 +317,8 @@ _on_view_zoom_out(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_zoom_out(ap->ws);
+   double current_factor = ws_zoom_factor_get(ap->workspace);
+   ws_zoom_factor_set(ap->workspace, current_factor - 0.1);
 }
 
 static void
@@ -316,10 +327,7 @@ _on_view_ruler_hor(void *data,
                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_visible_get(ap->ws->ruler_hor))
-     ui_ruler_hide (ap->ws->ruler_hor);
-   else
-     ui_ruler_show (ap->ws->ruler_hor);
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("hor"));
 }
 
 static void
@@ -328,10 +336,7 @@ _on_view_ruler_ver(void *data,
                    void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_visible_get(ap->ws->ruler_ver))
-     ui_ruler_hide (ap->ws->ruler_ver);
-   else
-     ui_ruler_show (ap->ws->ruler_ver);
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,ver", strdup("ver"));
 }
 
 static void
@@ -340,7 +345,7 @@ _on_view_legend(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_ws_legend_visible_set(ap->ws, !ap->ws->legend.visible);
+   ws_legend_visible_set(ap->workspace);
 }
 
 static void
@@ -349,11 +354,7 @@ _on_view_highlight(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Eina_Bool visible;
-   if ((!ap->ws->highlight.part) || (!ap->ws->highlight.space_hl)) return;
-   visible = evas_object_visible_get(ap->ws->highlight.space_hl);
-   if (visible) evas_object_hide(ap->ws->highlight.space_hl);
-   else evas_object_show(ap->ws->highlight.space_hl);
+   evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
 }
 
 static void
@@ -362,16 +363,7 @@ _on_view_ruler_rel(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_scale_relative_visible_get(ap->ws->ruler_hor))
-     {
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_FALSE);
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_FALSE);
-     }
-   else
-     {
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_hor, EINA_TRUE);
-        ui_ruler_scale_relative_visible_set (ap->ws->ruler_ver, EINA_TRUE);
-     }
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("rel"));
 }
 
 static void
@@ -380,16 +372,7 @@ _on_view_ruler_abs(void *data,
               void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (ui_ruler_scale_absolute_visible_get(ap->ws->ruler_hor))
-     {
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_FALSE);
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_FALSE);
-     }
-   else
-     {
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_hor, EINA_TRUE);
-        ui_ruler_scale_absolute_visible_set (ap->ws->ruler_ver, EINA_TRUE);
-     }
+   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("abs"));
 }
 
 static void
@@ -446,7 +429,16 @@ ui_menu_add(App_Data *ap)
    Evas_Object *menu, *toolbar;
    Elm_Object_Item *it, *menu_it, *sub_menu;
    Eina_Hash *menu_elms_hash = NULL;
-
+   if (!ap)
+     {
+        ERR("ap is NULL");
+        return NULL;
+     }
+   if (!ap->win)
+     {
+        ERR("ap->win is NULL");
+        return NULL;
+     }
    _menu_delayed_event = ecore_event_type_new();
 
    ecore_event_handler_add(_menu_delayed_event, _menu_event_handler_cb, NULL);
@@ -463,7 +455,7 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, menu_it, NULL, "Open edj-file", _on_edj_open_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, "Save", _on_save_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, "Save as...", _on_save_as_menu, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, "Save to edc", _on_edc_save_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, "Export to edc...", _on_export_edc_menu, ap, it);
    elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, "Exit", _on_exit_menu, ap, it);
 
@@ -541,7 +533,7 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    Eina_Bool result = true;
    result = ui_menu_disable_set(menu_hash, "Save", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Save as...", flag) && result;
-   result = ui_menu_disable_set(menu_hash, "Save to edc", flag) && result;
+   result = ui_menu_disable_set(menu_hash, "Export to edc...", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Workspace", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Separate", flag) && result;
    result = ui_menu_disable_set(menu_hash, "Legend", flag) && result;

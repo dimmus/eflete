@@ -443,7 +443,7 @@ START_TEST (box_get_test_p)
    ws->groupspace = ui_groupspace_add(par);
    ui_groupspace_set(ws, pro, group);
 
-   ck_assert_msg(ui_groupspace_box_get(ws->groupspace), "NULL returned");
+   ck_assert_msg(ui_groupspace_box_get(ws->groupspace) != NULL, "NULL returned");
    elm_shutdown();
 }
 END_TEST

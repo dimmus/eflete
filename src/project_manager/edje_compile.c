@@ -14,53 +14,25 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "edje_compile.h"
 #include "alloc.h"
 
-static void
-compiler_message_clear(Eina_Inlist *list)
-{
-   if(list)
-     {
-        while(list)
-          {
-             Compiler_Message *mes = EINA_INLIST_CONTAINER_GET(list,
-                                                               Compiler_Message);
-             list = eina_inlist_remove(list, EINA_INLIST_GET(mes));
-             free(mes->text);
-             free(mes);
-          }
-     }
-}
-
-/***
- *
- */
 static Eina_Bool
-exe_data(void *data __UNUSED__,
-         int type __UNUSED__,
+_exe_data(void *data,
+         int type,
          void *event)
 {
-   Ecore_Exe_Event_Data *ev;
-   Eina_Inlist *messages = NULL;
-   Compiler_Message *message = NULL;
-
-   ev = event;
-   messages = (Eina_Inlist *)data;
-
+   Ecore_Exe_Event_Data *ev = event;
+   Edje_Compile_Log_Cb msg_cb = (Edje_Compile_Log_Cb)data;
    if (ev->lines)
      {
         int i;
         for (i = 0; ev->lines[i].line; i++)
           {
-             message = mem_malloc(sizeof(*message));
-             message->time = time(NULL);
-             message->text = strdup(ev->lines[i].line);
-             messages = eina_inlist_append(messages, EINA_INLIST_GET(message));
-             DBG("%s", message->text);
+             msg_cb(time(NULL), eina_stringshare_add(ev->lines[i].line), type);
           }
      }
 
@@ -68,90 +40,87 @@ exe_data(void *data __UNUSED__,
 }
 
 static Eina_Bool
-exe_exit(void *data __UNUSED__,
+_exe_exit(void *data,
          int type __UNUSED__,
-         void *event __UNUSED__)
+         void *event)
 {
-   INFO("End of compile.");
-
+   Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)event;
+   int * exit_code = (int *) data;
+   *exit_code = e->exit_code;
    ecore_main_loop_quit();
 
    return EINA_TRUE;
 }
 
-Edje_CC *
-compile(const char *edc,
-        const char *edj,
-        const char *image_directory,
-        const char *font_directory,
-        const char *sound_directory)
+static int
+_exec(Eina_Stringshare *cmd, Edje_Compile_Log_Cb log_cb)
 {
-   Edje_CC *edjecc = NULL;
-   int size;
+   int exit_code = 0;
+   Ecore_Event_Handler *cb_exit, *cb_msg_stdout, *cb_msg_stderr;
    Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
 
-   edjecc = mem_malloc(sizeof(*edjecc));
-   edjecc->messages = NULL;
-   size = strlen(edc) + strlen(edj) +
-      strlen(image_directory) + strlen(font_directory) +
-      strlen(sound_directory) + BUFF_MAX;
-   edjecc->cmd = (char *)mem_malloc(size);
-   sprintf(edjecc->cmd, "edje_cc -id %s -fd %s -sd %s %s %s",
-           image_directory, font_directory, sound_directory,
+   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, &exit_code);
+   if (log_cb)
+     {
+        cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, log_cb);
+        cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, log_cb);
+     }
+
+   ecore_exe_pipe_run(cmd, flags, NULL);
+   ecore_main_loop_begin();
+
+   ecore_event_handler_del(cb_exit);
+   if (log_cb)
+     {
+        ecore_event_handler_del(cb_msg_stdout);
+        ecore_event_handler_del(cb_msg_stderr);
+     }
+   return exit_code;
+}
+
+int
+compile(const char *edc,
+        const char *edj,
+        const char *image_directory,
+        const char *font_directory,
+        const char *sound_directory,
+        Edje_Compile_Log_Cb log_cb)
+{
+   if ((!edc) || (!strcmp(edc, ""))) return -1;
+   if ((!edj) || (!strcmp(edj, ""))) return -2;
+
+   Eina_Stringshare *cmd = eina_stringshare_printf("edje_cc -v %s%s %s%s %s%s %s %s",
+           ((image_directory) && strcmp(image_directory, "")) ? "-id " : "",
+           ((image_directory) && strcmp(image_directory, "")) ? image_directory : "",
+           ((font_directory) && strcmp(font_directory, "")) ? "-fd " : "",
+           ((font_directory) && strcmp(font_directory, "")) ? font_directory : "",
+           ((sound_directory) && strcmp(sound_directory, "")) ? "-sd " : "",
+           ((sound_directory) && strcmp(sound_directory, "")) ? sound_directory : "",
            edc, edj);
-   INFO("Run command: %s", edjecc->cmd);
+   INFO("Run command: %s", cmd);
 
-   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
-   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjecc->messages);
-   ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjecc->messages);
-
-   edjecc->exe = ecore_exe_pipe_run(edjecc->cmd, flags, NULL);
-   ecore_main_loop_begin();
-
-   return edjecc;
+   int exit_code = _exec(cmd, log_cb);
+   eina_stringshare_del(cmd);
+   return exit_code;
 }
 
-/*
-   TODO: Saving decompiled EDC into another folder.
-   edje_decc dont have ability to save EDC into another directory.
-   Waiting for edje patch.
- */
-Edje_DeCC *
-decompile(const char *edj, const char *edc __UNUSED__)
+int
+decompile(const char *edj,
+          const char *dest_folder,
+          Edje_Compile_Log_Cb log_cb)
 {
-   Edje_DeCC *edjedecc = NULL;
-   int size;
-   Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
-      ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-      ECORE_EXE_PIPE_ERROR |
-      ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+   if ((!dest_folder) || (!strcmp(dest_folder, ""))) return -1;
+   if ((!edj) || (!strcmp(edj, ""))) return -2;
 
-   edjedecc = mem_malloc(sizeof(*edjedecc));
-   edjedecc->messages = NULL;
+   Eina_Stringshare *cmd = (!dest_folder) ?
+            eina_stringshare_printf("edje_decc %s -no-build-sh", edj) :
+            eina_stringshare_printf("edje_decc %s -no-build-sh -o %s", edj, dest_folder);
+   INFO("Run command: %s", cmd);
 
-   size = strlen(edj) + BUFF_MAX;
-   edjedecc->cmd = (char *)mem_malloc(size);
-   sprintf(edjedecc->cmd, "edje_decc %s -no-build-sh", edj);
-
-   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
-   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, edjedecc->messages);
-   ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, exe_data, edjedecc->messages);
-
-   edjedecc->exe = ecore_exe_pipe_run(edjedecc->cmd, flags, NULL);
-   ecore_main_loop_begin();
-
-   return edjedecc;
-}
-
-void
-edje_cc_free(struct _Edje_CC *edje_cc)
-{
-   if (!edje_cc) return;
-
-   free(edje_cc->cmd);
-   compiler_message_clear(edje_cc->messages);
-   free(edje_cc);
+   int exit_code = _exec(cmd, log_cb);
+   eina_stringshare_del(cmd);
+   return exit_code;
 }
