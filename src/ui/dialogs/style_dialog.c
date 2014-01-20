@@ -26,7 +26,7 @@ static Evas_Object *entry_style;
 
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
+   .rejected = STYLE_NAME_BANNED_SYMBOLS
 };
 
 static Eina_Bool
