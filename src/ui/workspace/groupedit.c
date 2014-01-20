@@ -667,7 +667,7 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 
    gp = _parts_list_find(sd->parts, part);
 
-   return gp->draw;
+   return gp->border;
 }
 
 Eina_Bool

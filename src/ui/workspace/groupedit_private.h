@@ -145,9 +145,9 @@ struct _Groupedit_Part
                                    text and textblock.*/
    Eina_Bool visible : 1;     /**< Visible or not on canvas. */
    Evas_Object *border;       /**< The object border, use for next part types:
-                                   TEXT, TEXTBLOCK, SWALLOW, SPACER. This object
-                                   created only for these parts types, in other
-                                   cases object is NULL. */
+                                   TEXT, TEXTBLOCK, SWALLOW, SPACER. In another
+                                   case border has opacity 0. This object serves
+                                   for show the edje part geometry. */
    Evas_Object *item;         /**< The object border in the separete mode */
    Evas_Object *bg;           /**< The item background, it object overlaps
                                    enother groupedit part. */
