@@ -192,7 +192,7 @@ _on_image_done(void *data,
 
    if ((!selected) || (!strcmp(selected, "")))
      {
-        ecore_main_loop_quit();
+        loop_quit(false);
         return;
      }
 
@@ -219,7 +219,7 @@ _on_image_done(void *data,
    else
      NOTIFY_ERROR("Error while loading file.<br> File is not exist");
 
-   ecore_main_loop_quit();
+   loop_quit(false);
 }
 
 static void
@@ -229,7 +229,7 @@ _on_inwin_delete(void *data,
                        void *event_info __UNUSED__)
 {
    Eina_Bool *dialog_deleted = (Eina_Bool *)data;
-   if (!*dialog_deleted) ecore_main_loop_quit();
+   if (!*dialog_deleted) loop_quit(false);
    *dialog_deleted = true;
 }
 
@@ -250,7 +250,7 @@ _on_button_add_clicked_cb(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(NULL, NULL);
 
    if (!dialog_deleted)
      {

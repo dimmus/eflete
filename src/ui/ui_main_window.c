@@ -24,12 +24,21 @@
 #include "style_dialog.h"
 
 static void
-_on_done(void *data,
+_on_done(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
+   loop_quit(false);
+}
+
+static Eina_Bool
+_on_window_close(Eina_Bool force __UNUSED__,
+                 void *data)
+{
    App_Data *ap = (App_Data *)data;
+   /* TODO: add unsaved project check here*/
    ui_main_window_del(ap);
+   return true;
 }
 
 Eina_Bool
@@ -75,7 +84,6 @@ ui_main_window_add(App_Data *ap)
      }
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
-   elm_win_autodel_set(win, true);
 
    if (win == NULL)
      {
@@ -151,6 +159,6 @@ ui_main_window_add(App_Data *ap)
         return false;
      }
    evas_object_show(win);
-
+   loop_begin(_on_window_close, ap);
    return true;
 }

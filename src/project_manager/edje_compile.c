@@ -47,9 +47,15 @@ _exe_exit(void *data,
    Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)event;
    int * exit_code = (int *) data;
    *exit_code = e->exit_code;
-   ecore_main_loop_quit();
+   loop_quit(true);
 
    return EINA_TRUE;
+}
+
+static Eina_Bool
+_on_quit(Eina_Bool force, void *data __UNUSED__)
+{
+   return force;
 }
 
 static int
@@ -70,7 +76,7 @@ _exec(Eina_Stringshare *cmd, Edje_Compile_Log_Cb log_cb)
      }
 
    ecore_exe_pipe_run(cmd, flags, NULL);
-   ecore_main_loop_begin();
+   loop_begin(_on_quit, NULL);
 
    ecore_event_handler_del(cb_exit);
    if (log_cb)

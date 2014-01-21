@@ -34,7 +34,7 @@ win_layout_get(void)
 App_Data *
 app_create (void)
 {
-   if(!ap)
+   if (!ap)
      ap = mem_calloc(1, sizeof (App_Data));
    return ap;
 }
