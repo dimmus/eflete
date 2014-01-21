@@ -1434,7 +1434,7 @@ program_editor_window_add(Group *group)
    prog_edit = (Program_Editor *)mem_calloc(1, sizeof(Program_Editor));
 
    prop.group = group;
-   prog_edit->mwin = mw_add(NULL);
+   prog_edit->mwin = mw_add(NULL, NULL);
    mw_title_set(prog_edit->mwin, "Program editor");
    evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_program_editor_close, prog_edit);

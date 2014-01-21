@@ -645,7 +645,7 @@ style_editor_window_add(Project *project)
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
    style_edit->pr = project;
-   style_edit->mwin = mw_add(NULL);
+   style_edit->mwin = mw_add(_on_viewer_exit, style_edit);
    mw_title_set(style_edit->mwin, "Textblock style editor");
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);

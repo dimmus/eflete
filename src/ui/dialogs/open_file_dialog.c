@@ -95,35 +95,24 @@ _on_group_clicked(void *data,
 static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
-   App_Data *ap = (App_Data *)data;
-   const char *selected = event_info;
-   Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
-   add_callbacks_wd(wd_list, ap);
+   if (data)
+     {
+        App_Data *ap = (App_Data *)data;
+        const char *selected = event_info;
+        Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
+        add_callbacks_wd(wd_list, ap);
+     }
    loop_quit(false);
-}
-
-static void
-_on_inwin_delete(void *data,
-                       Evas *e __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
-{
-   Eina_Bool *dialog_deleted = (Eina_Bool *)data;
-   if (!*dialog_deleted) loop_quit(false);
-   *dialog_deleted = true;
 }
 
 Eina_Bool
 open_edj_file(App_Data *ap)
 {
    Evas_Object *fs;
-   Eina_Bool dialog_deleted = false;
 
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
-   Evas_Object *inwin = mw_add(ap->win);
-   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                 _on_inwin_delete, &dialog_deleted);
+   Evas_Object *inwin = mw_add(NULL, NULL);
    OPEN_DIALOG_ADD(inwin, fs, "Open EDJ file dialog");
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
    evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
@@ -132,12 +121,8 @@ open_edj_file(App_Data *ap)
 
    loop_begin(NULL, NULL);
 
-   if (!dialog_deleted)
-     {
-        dialog_deleted = true;
-        evas_object_del(fs);
-        evas_object_del(inwin);
-     }
+   evas_object_del(fs);
+   evas_object_del(inwin);
    return EINA_TRUE;
 }
 
@@ -229,7 +214,7 @@ _on_cancel_cb(void *data __UNUSED__,
 }
 
 static void
-_on_compile_edc_done(void *data __UNUSED__,
+_on_compile_edc_done(void *data,
              Evas_Object *obj,
              void *event_info)
 {
@@ -239,7 +224,7 @@ _on_compile_edc_done(void *data __UNUSED__,
    Eina_Array *array;
    int i, j;
 
-   if (!selected)
+   if ((!data) || (!selected))
      {
         evas_object_del(obj);
         loop_quit(false);
@@ -283,7 +268,7 @@ _on_path_done(void *data,
 {
    const char *selected = (const char *)event_info;
    Evas_Object *entry = (Evas_Object *)data;
-   if (selected)
+   if ((data) && (selected))
      elm_object_text_set(entry, selected);
 
    loop_quit(false);
@@ -300,7 +285,6 @@ _edx_select(void *data,
 
    entry = (edc) ? fs_ent->edc : fs_ent->edj;
 
-   Eina_Bool dialog_deleted = false;
    const char *path = elm_object_text_get(entry);
 
    if (!ecore_file_exists(path))
@@ -308,15 +292,15 @@ _edx_select(void *data,
 
    if (!fs_ent->parent) return;
 
-   Evas_Object *inwin = mw_add(fs_ent->parent);
-   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                  _on_inwin_delete, &dialog_deleted);
+   Evas_Object *inwin;
+   inwin = mw_add(NULL, NULL);
+
    OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
    elm_fileselector_selected_set(fs, path);
    if (edc)
      {
-        evas_object_smart_callback_add(fs, "done", _on_compile_edc_done, NULL);
-        evas_object_smart_callback_add(fs, "activated", _on_compile_edc_done, NULL);
+        evas_object_smart_callback_add(fs, "done", _on_compile_edc_done, fs);
+        evas_object_smart_callback_add(fs, "activated", _on_compile_edc_done, fs);
      }
    else
      {
@@ -329,12 +313,8 @@ _edx_select(void *data,
 
    loop_begin(NULL, NULL);
 
-   if (!dialog_deleted)
-     {
-        dialog_deleted = true;
-        evas_object_del(fs);
-        evas_object_del(inwin);
-     }
+   evas_object_del(fs);
+   evas_object_del(inwin);
 }
 
 static void
@@ -352,7 +332,6 @@ _path_select(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *fs;
-   Eina_Bool dialog_deleted = false;
    Evas_Object *entry = (Evas_Object *)data;
    const char *path = elm_object_text_get(entry);
 
@@ -361,9 +340,7 @@ _path_select(void *data,
 
    if (!fs_ent->parent) return;
 
-   Evas_Object *inwin = mw_add(fs_ent->parent);
-   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                 _on_inwin_delete, &dialog_deleted);
+   Evas_Object *inwin = mw_add(NULL, NULL);
    OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
    elm_fileselector_path_set(fs, path);
    elm_fileselector_folder_only_set(fs, EINA_TRUE);
@@ -373,12 +350,8 @@ _path_select(void *data,
 
    loop_begin(NULL, NULL);
 
-   if (!dialog_deleted)
-     {
-        dialog_deleted = true;
-        evas_object_del(fs);
-        evas_object_del(inwin);
-     }
+   evas_object_del(fs);
+   evas_object_del(inwin);
 }
 
 Eina_Bool
@@ -387,7 +360,6 @@ open_edc_file(App_Data *ap)
    Evas_Object *button_box, *layout;
    Evas_Object *label, *fs_entry;
    Evas_Object *bt;
-   Eina_Bool dialog_deleted = false;
 
    if ((!ap) || (!ap->win))
      {
@@ -395,9 +367,7 @@ open_edc_file(App_Data *ap)
         return EINA_FALSE;
      }
 
-   Evas_Object *inwin = mw_add(ap->win);
-   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                  _on_inwin_delete, &dialog_deleted);
+   Evas_Object *inwin = mw_add(_on_cancel_cb, NULL);
    mw_title_set(inwin, "Compile EDC file");
    evas_object_focus_set(inwin, EINA_TRUE);
 
@@ -492,11 +462,7 @@ open_edc_file(App_Data *ap)
    free(fs_ent->project_name);
    free(fs_ent);
    fs_ent = NULL;
-   if (!dialog_deleted)
-     {
-        dialog_deleted = true;
-        evas_object_del(inwin);
-     }
+   evas_object_del(inwin);
 
    return EINA_TRUE;
 }

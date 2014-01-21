@@ -60,18 +60,22 @@ _mw_info(void *data,
 }
 
 static void
-_on_key_down(void *data __UNUSED__,
+_on_key_down(void *data,
              Evas *e __UNUSED__,
-             Evas_Object *obj,
+             Evas_Object *obj __UNUSED__,
              void *event_info)
 {
    Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+   Evas_Object *btn_close = (Evas_Object *) data;
    if (strcmp(ev->keyname, "Escape") == 0)
-     evas_object_del(obj);
+     evas_object_smart_callback_call(btn_close, "clicked", NULL);
 }
 
 Evas_Object *
-_mw_create(Evas_Object *parent, const char *style_name)
+_mw_create(Evas_Object *parent,
+           const char *style_name,
+           Evas_Smart_Cb func,
+           void *data)
 {
    Evas_Object *mw, *bt_close, *ic_close;
 
@@ -79,11 +83,14 @@ _mw_create(Evas_Object *parent, const char *style_name)
    elm_object_style_set(mw, style_name);
 
    evas_object_focus_set(mw, EINA_TRUE);
-   evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
-                                  _on_key_down, NULL);
 
    BUTTON_ADD(mw, bt_close, "");
-   evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
+   evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
+                                  _on_key_down, bt_close);
+   if (func)
+      evas_object_smart_callback_add(bt_close, "clicked", func, data);
+   else
+      evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
    ic_close = elm_icon_add(bt_close);
    elm_image_file_set(ic_close, TET_IMG_PATH"mw_button_close.png", NULL);
    elm_layout_content_set(bt_close, "icon", ic_close);
@@ -93,7 +100,7 @@ _mw_create(Evas_Object *parent, const char *style_name)
 }
 
 Evas_Object *
-mw_add(Evas_Object *parent __UNUSED__)
+mw_add(Evas_Smart_Cb func, void *data)
 {
    Evas_Object *win = NULL;
    win = main_window_get();
@@ -104,11 +111,11 @@ mw_add(Evas_Object *parent __UNUSED__)
         return NULL;
      }
 
-   return _mw_create(win, DEFAULT_STYLE);
+   return _mw_create(win, DEFAULT_STYLE, func, data);
 }
 
 Evas_Object *
-mw_about_add(Evas_Object *parent __UNUSED__)
+mw_about_add(Evas_Smart_Cb func, void *data)
 {
    Evas_Object *win = NULL;
    win = main_window_get();
@@ -119,7 +126,7 @@ mw_about_add(Evas_Object *parent __UNUSED__)
         return NULL;
      }
 
-   return _mw_create(win, "about_window");
+   return _mw_create(win, "about_window", func, data);
 }
 
 Eina_Bool
