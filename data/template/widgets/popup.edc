@@ -512,7 +512,7 @@ group { name: "elm/popup/content/default";
             mouse_events: 0;
             type: RECT;
             scale: 1;
-            description { state: "dafault" 0.0;
+            description { state: "default" 0.0;
                color: 180 180 180 255;
                align: 0.5 1.0;
                min: 0 1;
