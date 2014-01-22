@@ -181,8 +181,7 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
         evas_object_stack_below(ge_part->bg, ge_part_to->draw);
         evas_object_stack_below(ge_part->clipper, ge_part_to->draw);
         evas_object_stack_below(ge_part->draw, ge_part_to->draw);
-        if (ge_part->border)
-          evas_object_stack_below(ge_part->border, ge_part_to->draw);
+        evas_object_stack_below(ge_part->border, ge_part_to->draw);
         evas_object_stack_below(ge_part->item, ge_part_to->draw);
      }
    else
@@ -196,8 +195,7 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
         evas_object_stack_above(ge_part->bg, ge_part_to->draw);
         evas_object_stack_above(ge_part->clipper, ge_part_to->draw);
         evas_object_stack_above(ge_part->item, ge_part_to->item);
-        if (ge_part->border)
-          evas_object_stack_above(ge_part->border, ge_part_to->item);
+        evas_object_stack_above(ge_part->border, ge_part_to->item);
         evas_object_stack_above(ge_part->draw, ge_part_to->item);
      }
 
@@ -291,11 +289,8 @@ _groupedit_part_free(Groupedit_Part *gp)
    evas_object_smart_member_del(gp->draw);
    evas_object_del(gp->draw);
    eina_stringshare_del(gp->name);
-   if (gp->border)
-     {
-        evas_object_smart_member_del(gp->border);
-        evas_object_del(gp->border);
-     }
+   evas_object_smart_member_del(gp->border);
+   evas_object_del(gp->border);
    evas_object_smart_member_del(gp->item);
    evas_object_del(gp->item);
 
@@ -347,8 +342,7 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
    evas_object_hide(sd->selected->clipper);
    evas_object_clip_unset(sd->selected->bg);
    evas_object_hide(sd->selected->bg);
-   if (sd->selected->border)
-     evas_object_stack_below(sd->selected->border, sd->selected->draw);
+   evas_object_stack_below(sd->selected->border, sd->selected->draw);
    edje_object_signal_emit(sd->selected->item, "item,unselected", "eflete");
 
    sd->selected = NULL;
@@ -389,8 +383,7 @@ _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 
    evas_object_raise(sd->to_select->bg);
    evas_object_raise(sd->to_select->draw);
-   if (sd->to_select->border)
-     evas_object_raise(sd->to_select->border);
+   evas_object_raise(sd->to_select->border);
    evas_object_raise(sd->to_select->item);
    sd->selected = sd->to_select;
    edje_object_signal_emit(sd->selected->item, "item,selected", "eflete");
@@ -481,21 +474,16 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
         edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
         evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
         evas_object_resize(gp->draw, w, h);
-        if (gp->border)
-          {
-             evas_object_resize(gp->border, w, h);
-             /* FIXME: need remove it from here */
-             evas_object_stack_above(gp->border, gp->draw);
-          }
+        evas_object_resize(gp->border, w, h);
         if (sd->separated)
           {
              evas_object_move(gp->draw,
                               x + xe + (i * SEP_ITEM_PAD_X),
                               y + ye + (i * SEP_ITEM_PAD_Y));
 
-             if (gp->border) evas_object_move(gp->border,
-                                              x + xe + (i * SEP_ITEM_PAD_X),
-                                              y + ye + (i * SEP_ITEM_PAD_Y));
+             evas_object_move(gp->border,
+                              x + xe + (i * SEP_ITEM_PAD_X),
+                              y + ye + (i * SEP_ITEM_PAD_Y));
 
              evas_object_resize(gp->item,
                                 sd->con_current_size->w,
@@ -517,18 +505,18 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
         else
           {
              evas_object_move(gp->draw, x + xe, y + ye);
-             if (gp->border) evas_object_move(gp->border, x + xe, y + ye);
+             evas_object_move(gp->border, x + xe, y + ye);
              evas_object_hide(gp->item);
           }
         if (gp->visible)
           {
              evas_object_show(gp->draw);
-             if (gp->border) evas_object_show(gp->border);
+             evas_object_show(gp->border);
           }
         else
           {
              evas_object_hide(gp->draw);
-             if (gp->border) evas_object_hide(gp->border);
+             evas_object_hide(gp->border);
           }
      }
      _part_object_area_calc(sd);
@@ -560,6 +548,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
      {
       case EDJE_PART_TYPE_RECTANGLE:
          gp->draw = evas_object_rectangle_add(sd->e);
+         BORDER_ADD(0, 0, 0, 0)
          break;
       case EDJE_PART_TYPE_TEXT:
          gp->draw = evas_object_text_add(sd->e);
@@ -568,6 +557,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
       case EDJE_PART_TYPE_IMAGE:
       case EDJE_PART_TYPE_PROXY: // it part like image
          gp->draw = evas_object_image_add(sd->e);
+         BORDER_ADD(0, 0, 0, 0)
          break;
       case EDJE_PART_TYPE_SWALLOW:
          gp->draw = _part_swallow_add(sd->e);
@@ -602,7 +592,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    evas_object_smart_member_add(gp->bg, sd->obj);
    evas_object_smart_member_add(gp->clipper, sd->obj);
    evas_object_smart_member_add(gp->draw, sd->obj);
-   if (gp->border) evas_object_smart_member_add(gp->border, sd->obj);
+   evas_object_smart_member_add(gp->border, sd->obj);
    evas_object_smart_member_add(gp->item, sd->obj);
    return gp;
 }
