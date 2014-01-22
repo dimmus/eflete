@@ -335,8 +335,7 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
      {
         if (eina_str_has_suffix(selected, ".edj"))
           {
-             INFO("Select file: %s", selected);
-             NOTIFY_INFO(3, "Select file: %s", selected);
+             INFO("Selected file: %s", selected);
              if (prop) ui_property_group_unset(prop);
              elm_genlist_clear(ui_block_state_list_get(ap));
              elm_genlist_clear(ui_block_signal_list_get(ap));
@@ -352,6 +351,12 @@ ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
              GET_NAME_FROM_PATH(name, selected)
              ap->project = pm_open_project_edj(name, selected);
              free(name);
+             if (!ap->project)
+               {
+                  NOTIFY_ERROR("Can't open file: %s", selected);
+                  return NULL;
+               }
+             NOTIFY_INFO(3, "Selected file: %s", selected);
 
              wd_list = ui_widget_list_add(ap->win);
              ui_widget_list_title_set(wd_list, ap->project->name);
