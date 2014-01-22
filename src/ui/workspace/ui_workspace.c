@@ -444,6 +444,7 @@ _on_resize(void *data,
    edje_edit_state_max_h_set(sd->group->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->h);
+   if (!sd->group->isModify) sd->group->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }

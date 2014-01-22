@@ -69,6 +69,12 @@ enum _type
 typedef enum _type type;
 
 /**
+ * @typedef Part
+ * @ingroup WidgetManager
+ */
+typedef struct _Part Part;
+
+/**
  * @struct _Part
  * This struct designed to storage a data of part of group.
  * In a theme file (.edc) this data presented as block 'part'
@@ -87,10 +93,10 @@ struct _Part
 };
 
 /**
- * @typedef Part
+ * @typedef Group
  * @ingroup WidgetManager
  */
-typedef struct _Part Part;
+typedef struct _Group Group;
 
 /**
  * @struct _Group
@@ -110,16 +116,20 @@ struct _Group
     Evas_Object *obj;
    /** is it Group modificated **/
     Eina_Bool isModify;
+   /** is it Group an alias **/
+    Eina_Bool isAlias;
+   /** link to main group that is being aliased **/
+    Group *main_group;
    /** Member 'parts' saved a list of a group parts data. **/
     Eina_Inlist *parts;
     type __type;
 };
 
 /**
- * @typedef Group
+ * @typedef Style
  * @ingroup WidgetManager
  */
-typedef struct _Group Group;
+typedef struct _Style Style;
 
 /**
  * @struct _Style
@@ -138,10 +148,10 @@ struct _Style
 };
 
 /**
- * @typedef Style
+ * @typedef Widget
  * @ingroup WidgetManager
  */
-typedef struct _Style Style;
+typedef struct _Widget Widget;
 
 /**
  * @struct _Widget
@@ -158,12 +168,6 @@ struct _Widget
     Eina_Inlist *styles;
     type __type;
 };
-
-/**
- * @typedef Widget
- * @ingroup WidgetManager
- */
-typedef struct _Widget Widget;
 
 /**
  * Create a new Part object
@@ -341,11 +345,11 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
  *
  * @param widget_list the Eina_Inlist list that contain wdgets structures.
  * @param group_full_name the string full name of group.(with widget/class/style)
- * @return the group object.
+ * @return the group structure.
  *
  * @ingroup WidgetManager
  */
-Evas_Object *
+Group *
 wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
 
 /**

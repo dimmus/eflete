@@ -250,9 +250,24 @@ pm_save_as_project_edj(Project *project, const char *path)
 Eina_Bool
 pm_save_project_to_swap(Project *project)
 {
-   Evas_Object *edje_object;
-   GET_OBJ(project, edje_object)
-   if (!edje_object) return EINA_FALSE;
-   else edje_edit_save_all(edje_object);
+   Widget *widget;
+   Style *style;
+   Group *group;
+
+   EINA_INLIST_FOREACH(project->widgets, widget)
+     {
+        EINA_INLIST_FOREACH(widget->styles, style)
+          {
+             EINA_INLIST_FOREACH(style->groups, group)
+               {
+                  if (group->isModify)
+                    {
+                       group->isModify = false;
+                       edje_edit_save(group->obj);
+                    }
+               }
+          }
+     }
+
    return EINA_TRUE;
 }

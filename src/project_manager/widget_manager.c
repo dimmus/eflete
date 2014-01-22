@@ -95,6 +95,11 @@ wm_group_data_load(Group *group, Evas *e, const char *edj)
    edje_object_freeze(edje_edit_obj);
    evas_object_freeze_events_set(edje_edit_obj, true);
    group->obj = edje_edit_obj;
+   if (edje_edit_group_alias_is(edje_edit_obj, group->full_group_name))
+     {
+        group->isAlias = true;
+        return true;
+     }
 
    parts_list = edje_edit_parts_list_get(group->obj);
    EINA_LIST_FOREACH(parts_list, l, name)
@@ -217,7 +222,10 @@ wm_group_add(const char* group_name, const char* full_group_name)
    group_edje->full_group_name = eina_stringshare_add(full_group_name);
    group_edje->obj = NULL;
    group_edje->parts = NULL;
+   group_edje->main_group = NULL;
    group_edje->__type = GROUP;
+   group_edje->isAlias = false;
+   group_edje->isModify = false;
 
    return group_edje;
 }
@@ -492,7 +500,7 @@ wm_widget_list_free(Eina_Inlist *widget_list)
    return EINA_TRUE;
 }
 
-Evas_Object *
+Group *
 wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
 {
    char *widget_name = NULL;
@@ -563,7 +571,7 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name)
 
    if (!_group) return NULL;
 
-   return _group->obj;
+   return _group;
 }
 
 void
@@ -573,7 +581,9 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
 {
    Widget *widget;
    Style *style;
-   Group *group;
+   Group *group, *alias;
+   Eina_List *alias_list = NULL, *l = NULL;
+   const char *main_name;
 
    if ((!widget_list) || (!e) || (!path)) return;
 
@@ -584,9 +594,20 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
              EINA_INLIST_FOREACH(style->groups, group)
                {
                   wm_group_data_load(group, e, path);
+                  if (group->isAlias)
+                    alias_list = eina_list_append(alias_list, group);
                }
           }
      }
+
+   EINA_LIST_FOREACH(alias_list, l, alias)
+     {
+        main_name = edje_edit_group_aliased_get(alias->obj, alias->full_group_name);
+        alias->main_group = wm_group_object_find(widget_list, main_name);
+        evas_object_del(alias->obj);
+        alias->obj = NULL;
+     }
+   eina_list_free(alias_list);
 }
 
 const char *

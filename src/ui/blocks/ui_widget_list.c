@@ -314,6 +314,9 @@ _on_group_clicked_double(void *data,
    nf = evas_object_data_get(obj, "naviframe");
    _group = elm_object_item_data_get(glit);
    if (_group->__type != GROUP) return;
+   if (_group->isAlias)
+        _group = _group->main_group;
+
    parts = _group->parts;
 
    evas_object_smart_callback_call (nf, "wl,group,select", _group);
@@ -390,6 +393,23 @@ _on_group_clicked_double(void *data,
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 }
 
+static Evas_Object *
+_item_group_content_get(void *data,
+                       Evas_Object *obj,
+                       const char *part __UNUSED__)
+{
+   Group *_group = (Group *) data;
+   if ((!strcmp(part, "elm.swallow.end")) && (_group->isAlias))
+     {
+        Evas_Object *icon = elm_icon_add(obj);
+        elm_image_file_set(icon, TET_IMG_PATH"alias_link.png", NULL);
+        elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
+        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        return icon;
+     }
+   return NULL;
+}
+
 static void
 _on_widget_clicked_double(void *data,
                           Evas_Object *obj,
@@ -425,7 +445,7 @@ _on_widget_clicked_double(void *data,
         _itc_group = elm_genlist_item_class_new();
         _itc_group->item_style = "eflete/default";
         _itc_group->func.text_get = _item_group_label_get;
-        _itc_group->func.content_get = NULL;
+        _itc_group->func.content_get = _item_group_content_get;
         _itc_group->func.state_get = NULL;
         _itc_group->func.del = NULL;
      }
