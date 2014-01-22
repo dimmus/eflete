@@ -99,7 +99,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
    const char *selected = event_info;
    Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
    add_callbacks_wd(wd_list, ap);
-   ecore_main_loop_quit();
+   loop_quit(false);
 }
 
 static void
@@ -109,7 +109,7 @@ _on_inwin_delete(void *data,
                        void *event_info __UNUSED__)
 {
    Eina_Bool *dialog_deleted = (Eina_Bool *)data;
-   if (!*dialog_deleted) ecore_main_loop_quit();
+   if (!*dialog_deleted) loop_quit(false);
    *dialog_deleted = true;
 }
 
@@ -130,7 +130,7 @@ open_edj_file(App_Data *ap)
 
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(NULL, NULL);
 
    if (!dialog_deleted)
      {
@@ -155,7 +155,7 @@ _on_open_edj_cb(void *data,
    if (wd_list)
      {
         add_callbacks_wd(wd_list, ap);
-        ecore_main_loop_quit();
+        loop_quit(false);
      }
 }
 
@@ -225,7 +225,7 @@ _on_cancel_cb(void *data __UNUSED__,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   ecore_main_loop_quit();
+   loop_quit(false);
 }
 
 static void
@@ -242,7 +242,7 @@ _on_compile_edc_done(void *data __UNUSED__,
    if (!selected)
      {
         evas_object_del(obj);
-        ecore_main_loop_quit();
+        loop_quit(false);
         return;
      }
 
@@ -270,7 +270,7 @@ _on_compile_edc_done(void *data __UNUSED__,
         elm_object_text_set(fs_ent->edj, edj);
         free(edj);
 
-        ecore_main_loop_quit();
+        loop_quit(false);
      }
    else
      NOTIFY_ERROR("The file must have an extension '.edc'");
@@ -286,7 +286,7 @@ _on_path_done(void *data,
    if (selected)
      elm_object_text_set(entry, selected);
 
-   ecore_main_loop_quit();
+   loop_quit(false);
 }
 
 static void
@@ -327,7 +327,7 @@ _edx_select(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(NULL, NULL);
 
    if (!dialog_deleted)
      {
@@ -371,7 +371,7 @@ _path_select(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(NULL, NULL);
 
    if (!dialog_deleted)
      {
@@ -487,7 +487,7 @@ open_edc_file(App_Data *ap)
    elm_win_inwin_content_set(inwin, layout);
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(NULL, NULL);
 
    free(fs_ent->project_name);
    free(fs_ent);

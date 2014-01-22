@@ -41,6 +41,7 @@
 #include <Efreet.h>
 #include <Elementary.h>
 #include "alloc.h"
+#include "loop_manager.h"
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"

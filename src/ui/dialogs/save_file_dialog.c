@@ -55,7 +55,7 @@ _ok_cb(void *data,
      }
    evas_object_del(cbdata->popup);
    free(cbdata);
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 static void
@@ -68,7 +68,7 @@ _on_edj_done(void *data,
    const char *selected = event_info;
    if ((!selected) || (!strcmp(selected, "")))
      {
-        ecore_main_loop_quit();
+        loop_quit(true);
         return;
      }
    if (ecore_file_exists(selected))
@@ -111,7 +111,7 @@ _on_edj_done(void *data,
                   else
                     NOTIFY_ERROR("Theme can not be saved: %s", selected);
                }
-             ecore_main_loop_quit();
+             loop_quit(true);
           }
         else
            NOTIFY_ERROR("The file must have a extension '.edj'");
@@ -128,11 +128,11 @@ _on_edc_done(void *data,
    const char *selected = (const char *)event_info;
    if ((!selected) || (!strcmp(selected, "")))
      {
-        ecore_main_loop_quit();
+        loop_quit(true);
         return;
      }
    pm_export_to_edc(ap->project, selected, NULL);
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 static void
@@ -142,8 +142,14 @@ _on_inwin_delete(void *data,
                        void *event_info __UNUSED__)
 {
    Eina_Bool *dialog_deleted = (Eina_Bool *)data;
-   if (!*dialog_deleted) ecore_main_loop_quit();
+   if (!*dialog_deleted) loop_quit(true);
    *dialog_deleted = true;
+}
+
+static Eina_Bool
+_on_quit(Eina_Bool force, void *data __UNUSED__)
+{
+   return force; /* blocking dialog exit if we are not forced. */
 }
 
 static Eina_Bool
@@ -169,7 +175,7 @@ _save_as_edx_file(App_Data *ap,
 
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(_on_quit, NULL);
 
    if (!dialog_deleted)
      {
