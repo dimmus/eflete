@@ -488,9 +488,9 @@ group { name: "elm/entry/base/eflete/default";
 
 group { name: "elm/scroller/entry_single/eflete/default";
    images {
-      image: "input-text-bg-error.png" COMP;
-      image: "input-text-bg-focus.png" COMP;
       image: "input-text-bg.png" COMP;
+      image: "input-text-bg-focus.png" COMP;
+      image: "input-text-bg-error.png" COMP;
    }
    data {
       item: "focus_highlight" "on";
@@ -500,8 +500,8 @@ group { name: "elm/scroller/entry_single/eflete/default";
          type: RECT;
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel2.relative: 1.0 0.0;
             visible: 0;
+            rel2.relative: 1.0 0.0;
          }
       }
       part { name: "elm.dragable.vbar";
@@ -512,24 +512,24 @@ group { name: "elm/scroller/entry_single/eflete/default";
             confine: "sb_vbar_base";
          }
          description { state: "default" 0.0;
+            visible: 0;
             fixed: 1 1;
             rel1 {
-               relative: 0.5  0.5;
+               relative: 0.5 0.5;
                to: "sb_vbar_base";
             }
-            rel2{
-               relative: 0.5  0.5;
+            rel2 {
+               relative: 0.5 0.5;
                to: "sb_vbar_base";
             }
-            visible: 0;
          }
       }
       part { name: "sb_hbar_base";
          type: RECT;
          description { state: "default" 0.0;
+            visible: 0;
             fixed: 1 1;
             rel1.relative: 1.0 0.0;
-            visible: 0;
          }
       }
       part { name: "elm.dragable.hbar";
@@ -540,25 +540,24 @@ group { name: "elm/scroller/entry_single/eflete/default";
             confine: "sb_hbar_base";
          }
          description { state: "default" 0.0;
+            visible: 0;
             fixed: 1 1;
             rel1 {
-               relative: 0.5  0.5;
+               relative: 0.5 0.5;
                to: "sb_hbar_base";
             }
             rel2 {
-               relative: 0.5  0.5;
+               relative: 0.5 0.5;
                to: "sb_hbar_base";
             }
-            visible: 0;
          }
       }
-
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            min: 36 19;
+            align: 0.5 0.5;
+            min: 0 19;
             max: -1 19;
-            fixed: 1 1;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
             image {
@@ -568,25 +567,16 @@ group { name: "elm/scroller/entry_single/eflete/default";
             }
          }
          description { state: "focus" 0.0;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
-            image {
-               normal: "input-text-bg-focus.png";
-               border: 5 5 5 5;
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.0;
+            image.normal: "input-text-bg-focus.png";
          }
          description { state: "error" 0.0;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
-            image {
-               normal: "input-text-bg-error.png";
-               border: 5 5 5 5;
-               middle: DEFAULT;
-            }
+            inherit: "default" 0.0;
+            image.normal: "input-text-bg-error.png";
          }
       }
-      part { name: "clipper"; type: RECT;
+      part { name: "clipper";
+         type: RECT;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
@@ -604,13 +594,15 @@ group { name: "elm/scroller/entry_single/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
+            fixed: 1 1;
             rel1 {
-               to: "elm.swallow.icon";
                relative: 1.0 0.0;
+               to: "elm.swallow.icon";
+               offset: 5 0;
             }
             rel2 {
-               to: "elm.swallow.end";
                relative: 0.0 1.0;
+               to: "elm.swallow.end";
             }
          }
       }
@@ -626,38 +618,37 @@ group { name: "elm/scroller/entry_single/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            fixed: 1 1;
-            rel1.offset: 1 1;
-            rel2 {
-               offset: 1 -2;
-               relative: 0.0 1.0;
-            }
             visible: 0;
-            align: 1.0 0.5;
+            align: 0.0 0.5;
+            max: 0 17;
+            rel1 {
+               offset: 1 -1;
+               to: "bg";
+            }
+            rel2.to: "bg";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
+            max: 19 17;
             visible: 1;
-            align: 0.0 0.5;
          }
       }
       part { name: "elm.swallow.end";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            fixed: 1 1;
-            rel1 {
-               offset: -2 1;
-               relative: 1.0 0.0;
-            }
-            rel2.offset: -2 -2;
             visible: 0;
-            align: 0.0 0.5;
+            align: 1 0.5;
+            max: 19 17;
+            rel1.to: "bg";
+            rel2 {
+               offset: -2 -1;
+               to: "bg";
+            }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            align: 1.0 0.5;
          }
       }
    }
@@ -690,7 +681,7 @@ group { name: "elm/scroller/entry_single/eflete/default";
          signal: "load";
          source: "";
          script {
-            emit("reload", "elm");
+           emit("reload", "elm");
          }
       }
       program { name: "focused";

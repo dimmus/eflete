@@ -452,30 +452,27 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 const char *tooltip, \
                                 const char *btn_tooltip) \
 { \
-   Evas_Object *item, *entry, *box, *btn; \
+   Evas_Object *item, *entry, *btn; \
    const char *value; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->group->obj, pd->part->name, \
                                            pd->part->curr_state, \
                                            pd->part->curr_state_value); \
    ITEM_ADD(parent, item, TEXT) \
-   BOX_ADD(parent, box, true, false) \
    ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
-   elm_box_pack_end(box, entry); \
    if (btn_func_cb) \
      { \
         btn = elm_button_add(parent); \
-        elm_object_text_set(btn, "..."); \
-        elm_object_style_set(btn, DEFAULT_STYLE); \
+        elm_object_style_set(btn, "eflete/elipsis"); \
         evas_object_show(btn); \
         evas_object_smart_callback_add(btn, "clicked", btn_func_cb, entry); \
-        elm_box_pack_end(box, btn); \
+        elm_object_part_content_set(entry, "elm.swallow.end", btn); \
         elm_object_tooltip_text_set(btn, btn_tooltip); \
      } \
    elm_entry_entry_set(entry, value); \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", box); \
+   elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
 
