@@ -395,11 +395,6 @@
                inherit: "default" 0.0;
                visible: 0;
             }
-            description { state: "disabled_active" 0.0;
-               inherit: "default" 0.0;
-               color:  0 0 0 128;
-               color3: 0 0 0 0;
-            }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
                color: 0 0 0 128;
@@ -521,102 +516,84 @@
          }
       }
       programs {
-         CLICK("mouse,down,1*","downh","new");
-         CLICK("mouse,up,1","downh","default");
-         CLICK("mouse,down,1*","uph","new");
-         CLICK("mouse,up,1","uph","default");
-
-         INCDEC("mouse,down,1*", "downh",  "elm,action,decrement,start");
-         INCDEC("mouse,up,1", "downh",  "elm,action,decrement,stop");
-         INCDEC("mouse,down,1*", "uph",  "elm,action,increment,start");
-         INCDEC("mouse,up,1", "uph",  "elm,action,increment,stop");
-
-         FOCUS("elm,action,focus", "glow", "new");
-         FOCUS("elm,action,unfocus", "glow", "default");
-
-         program { name: "text_show";
-            signal: "elm,state,text,visible";
-            source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.text";
-         }
-         program { name: "text_hide";
-            signal: "elm,state,text,hidden";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.text";
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
+         program {
+            signal: "mouse,down,1"; source: "downh";
+            action: STATE_SET "new" 0.0;
             target: "downh";
+            after: "left2";
+         }
+         program { name: "left2";
+            action: SIGNAL_EMIT "elm,action,decrement,start" "elm";
+         }
+         program {
+            signal: "mouse,up,1"; source: "downh";
+            action: STATE_SET "default" 0.0;
+            target: "downh";
+            after: "left3";
+         }
+         program { name: "left3";
+            action: SIGNAL_EMIT "elm,action,decrement,stop" "elm";
+         }
+         program {
+            signal: "mouse,down,1"; source: "uph";
+            action: STATE_SET "new" 0.0;
             target: "uph";
-            target: "disabler";
-            target: "access.text";
-            after: "disable_text";
+            after: "right2";
          }
-         program { name: "disable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "active"))
-                 set_state(PART:"elm.text", "disabled_active", 0.0);
-               else
-                 set_state(PART:"elm.text", "disabled", 0.0);
-               get_state(PART:"elm.swallow.entry", st, 30, vl);
-               if (!strcmp(st, "active"))
-                 set_state(PART:"elm.swallow.entry", "disabled_active", 0.0);
-               else
-                 set_state(PART:"elm.swallow.entry", "disabled", 0.0);
-            }
+         program { name: "right2";
+            action: SIGNAL_EMIT "elm,action,increment,start" "elm";
          }
-         program { name: "enable";
-             signal: "elm,state,enabled";
-             source: "elm";
-             action: STATE_SET "default" 0.0;
-             target: "downh";
-             target: "uph";
-             target: "disabler";
-             target: "access.text";
-             after: "enable_text";
+         program {
+            signal: "mouse,up,1"; source: "uph";
+            action: STATE_SET "default" 0.0;
+            target: "uph";
+            after: "right3";
          }
-         program { name: "enable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "disabled_active"))
-                 set_state(PART:"elm.text", "active", 0.0);
-               else
-                 set_state(PART:"elm.text", "default", 0.0);
-               get_state(PART:"elm.swallow.entry", st, 30, vl);
-               if (!strcmp(st, "disabled_active"))
-                 set_state(PART:"elm.swallow.entry", "active", 0.0);
-               else
-                 set_state(PART:"elm.swallow.entry", "default", 0.0);
-            }
+         program { name: "right3";
+            action: SIGNAL_EMIT "elm,action,increment,stop" "elm";
+         }
+         program {
+            signal: "mouse,clicked,1"; source: "access_text";
+            action: SIGNAL_EMIT "elm,action,click" "elm";
          }
          program { name: "active";
-            signal: "elm,state,active";
-            source: "elm";
+            signal: "elm,state,active"; source: "elm";
             action: STATE_SET "active" 0.0;
             target: "elm.text";
             target: "elm.swallow.entry";
          }
          program { name: "inactive";
-            signal: "elm,state,inactive";
-            source: "elm";
+            signal: "elm,state,inactive"; source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.text";
             target: "elm.swallow.entry";
          }
          program { name: "toggle_text";
-            signal: "mouse,up,1";
-            source: "button_events";
-            action: SIGNAL_EMIT "elm,action,entry,toggle" "";
+            signal: "mouse,clicked,1"; source: "elm.dragable.slider";
+            action: SIGNAL_EMIT "elm,action,entry,toggle" "elm";
          }
+         program {
+            signal: "elm,state,enabled"; source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "downh";
+            target: "uph";
+            target: "access.text";
+            target: "disabler";
+            target: "elm.swallow.entry";
+            target: "elm.text";
+         }
+         program {
+            signal: "elm,state,disabled"; source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "downh";
+            target: "uph";
+            target: "access.text";
+            target: "disabler";
+            target: "elm.swallow.entry";
+            target: "elm.text";
+         }
+         FOCUS("elm,action,focus", "glow", "new");
+         FOCUS("elm,action,unfocus", "glow", "default");
       }
    }
    group { name: "elm/spinner/base/eflete/demo";
@@ -850,102 +827,84 @@
          }
       }
       programs {
-         CLICK("mouse,down,1*","downh","new");
-         CLICK("mouse,up,1","downh","default");
-         CLICK("mouse,down,1*","uph","new");
-         CLICK("mouse,up,1","uph","default");
-
-         INCDEC("mouse,down,1*", "downh",  "elm,action,decrement,start");
-         INCDEC("mouse,up,1", "downh",  "elm,action,decrement,stop");
-         INCDEC("mouse,down,1*", "uph",  "elm,action,increment,start");
-         INCDEC("mouse,up,1", "uph",  "elm,action,increment,stop");
-
-         FOCUS("elm,action,focus", "glow", "new");
-         FOCUS("elm,action,unfocus", "glow", "default");
-
-         program { name: "text_show";
-            signal: "elm,state,text,visible";
-            source: "elm";
-            action:  STATE_SET "visible" 0.0;
-            target: "elm.text";
-         }
-         program { name: "text_hide";
-            signal: "elm,state,text,hidden";
-            source: "elm";
-            action:  STATE_SET "default" 0.0;
-            target: "elm.text";
-         }
-         program { name: "disable";
-            signal: "elm,state,disabled";
-            source: "elm";
-            action: STATE_SET "disabled" 0.0;
+         program {
+            signal: "mouse,down,1"; source: "downh";
+            action: STATE_SET "new" 0.0;
             target: "downh";
+            after: "left2";
+         }
+         program { name: "left2";
+            action: SIGNAL_EMIT "elm,action,decrement,start" "elm";
+         }
+         program {
+            signal: "mouse,up,1"; source: "downh";
+            action: STATE_SET "default" 0.0;
+            target: "downh";
+            after: "left3";
+         }
+         program { name: "left3";
+            action: SIGNAL_EMIT "elm,action,decrement,stop" "elm";
+         }
+         program {
+            signal: "mouse,down,1"; source: "uph";
+            action: STATE_SET "new" 0.0;
             target: "uph";
-            target: "disabler";
-            target: "access.text";
-            after: "disable_text";
+            after: "right2";
          }
-         program { name: "disable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "active"))
-                 set_state(PART:"elm.text", "disabled_active", 0.0);
-               else
-                 set_state(PART:"elm.text", "disabled", 0.0);
-               get_state(PART:"elm.swallow.entry", st, 30, vl);
-               if (!strcmp(st, "active"))
-                 set_state(PART:"elm.swallow.entry", "disabled_active", 0.0);
-               else
-                 set_state(PART:"elm.swallow.entry", "disabled", 0.0);
-            }
+         program { name: "right2";
+            action: SIGNAL_EMIT "elm,action,increment,start" "elm";
          }
-         program { name: "enable";
-             signal: "elm,state,enabled";
-             source: "elm";
-             action: STATE_SET "default" 0.0;
-             target: "downh";
-             target: "uph";
-             target: "disabler";
-             target: "access.text";
-             after: "enable_text";
+         program {
+            signal: "mouse,up,1"; source: "uph";
+            action: STATE_SET "default" 0.0;
+            target: "uph";
+            after: "right3";
          }
-         program { name: "enable_text";
-            script {
-               new st[31];
-               new Float:vl;
-               get_state(PART:"elm.text", st, 30, vl);
-               if (!strcmp(st, "disabled_active"))
-                 set_state(PART:"elm.text", "active", 0.0);
-               else
-                 set_state(PART:"elm.text", "default", 0.0);
-               get_state(PART:"elm.swallow.entry", st, 30, vl);
-               if (!strcmp(st, "disabled_active"))
-                 set_state(PART:"elm.swallow.entry", "active", 0.0);
-               else
-                 set_state(PART:"elm.swallow.entry", "default", 0.0);
-            }
+         program { name: "right3";
+            action: SIGNAL_EMIT "elm,action,increment,stop" "elm";
+         }
+         program {
+            signal: "mouse,clicked,1"; source: "access_text";
+            action: SIGNAL_EMIT "elm,action,click" "elm";
          }
          program { name: "active";
-            signal: "elm,state,active";
-            source: "elm";
+            signal: "elm,state,active"; source: "elm";
             action: STATE_SET "active" 0.0;
             target: "elm.text";
             target: "elm.swallow.entry";
          }
          program { name: "inactive";
-            signal: "elm,state,inactive";
-            source: "elm";
+            signal: "elm,state,inactive"; source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.text";
             target: "elm.swallow.entry";
          }
          program { name: "toggle_text";
-            signal: "mouse,up,1";
-            source: "button_events";
-            action: SIGNAL_EMIT "elm,action,entry,toggle" "";
+            signal: "mouse,clicked,1"; source: "elm.dragable.slider";
+            action: SIGNAL_EMIT "elm,action,entry,toggle" "elm";
          }
+         program {
+            signal: "elm,state,enabled"; source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "downh";
+            target: "uph";
+            target: "access.text";
+            target: "disabler";
+            target: "elm.swallow.entry";
+            target: "elm.text";
+         }
+         program {
+            signal: "elm,state,disabled"; source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "downh";
+            target: "uph";
+            target: "access.text";
+            target: "disabler";
+            target: "elm.swallow.entry";
+            target: "elm.text";
+         }
+         FOCUS("elm,action,focus", "glow", "new");
+         FOCUS("elm,action,unfocus", "glow", "default");
       }
    }
 
