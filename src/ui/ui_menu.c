@@ -419,8 +419,7 @@ _on_about_window_menu(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   about_window_add(ap->win);
+   about_window_add();
 }
 
 Evas_Object *

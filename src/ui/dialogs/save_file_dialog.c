@@ -66,7 +66,7 @@ _on_edj_done(void *data,
    /*TODO: change a project name and set to ui widget list */
    App_Data *ap = (App_Data *)data;
    const char *selected = event_info;
-   if ((!selected) || (!strcmp(selected, "")))
+   if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
         loop_quit(true);
         return;
@@ -126,24 +126,13 @@ _on_edc_done(void *data,
 {
    App_Data *ap = (App_Data *)data;
    const char *selected = (const char *)event_info;
-   if ((!selected) || (!strcmp(selected, "")))
+   if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
         loop_quit(true);
         return;
      }
    pm_export_to_edc(ap->project, selected, NULL);
    loop_quit(true);
-}
-
-static void
-_on_inwin_delete(void *data,
-                       Evas *e __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
-{
-   Eina_Bool *dialog_deleted = (Eina_Bool *)data;
-   if (!*dialog_deleted) loop_quit(true);
-   *dialog_deleted = true;
 }
 
 static Eina_Bool
@@ -159,13 +148,10 @@ _save_as_edx_file(App_Data *ap,
                   Eina_Bool folder_only)
 {
    Evas_Object *fs;
-   Eina_Bool dialog_deleted = false;
 
    if ((!ap->win) || (!ap->project)) return false;
 
-   Evas_Object *inwin = mw_add(ap->win);
-   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                  _on_inwin_delete, &dialog_deleted);
+   Evas_Object *inwin = mw_add(NULL, NULL);
    OPEN_DIALOG_ADD(inwin, fs, title);
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_folder_only_set(fs, folder_only);
@@ -177,12 +163,8 @@ _save_as_edx_file(App_Data *ap,
 
    loop_begin(_on_quit, NULL);
 
-   if (!dialog_deleted)
-     {
-        dialog_deleted = true;
-        evas_object_del(fs);
-        evas_object_del(inwin);
-     }
+   evas_object_del(fs);
+   evas_object_del(inwin);
    return EINA_TRUE;
 }
 

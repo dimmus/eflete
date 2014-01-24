@@ -14,15 +14,15 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #include "style_editor.h"
 
 Evas_Object *
-about_window_add(Evas_Object *parent)
+about_window_add()
 {
-   Evas_Object *mwin = mw_about_add(parent);
+   Evas_Object *mwin = mw_about_add(NULL, NULL);
    mw_title_set(mwin, "About");
    Evas_Object *label, *box;
 
