@@ -171,7 +171,6 @@ ui_demospace_add(Evas_Object *parent)
 
    SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/default");
    elm_spinner_label_format_set(spinner, "%1.2f");
-   elm_object_tooltip_text_set(spinner, "Change scale of the whole demo object.");
    evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, demo);
    elm_spinner_value_set(spinner, 1.0);
    elm_object_part_content_set(demo->layout, "zoom_spinner",
