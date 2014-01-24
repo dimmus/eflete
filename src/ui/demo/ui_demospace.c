@@ -182,6 +182,7 @@ ui_demospace_add(Evas_Object *parent)
    elm_object_part_content_set(demo->layout, "demospace",
                                demo->demospace);
    elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
+   elm_layout_signal_emit(demo->layout, "demospace,hide", "eflete");
 
    return demo;
 }
@@ -229,6 +230,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
         return false;
      }
    elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
+   elm_layout_signal_emit(demo->layout, "demospace,show", "eflete");
    return true;
 }
 
@@ -237,6 +239,7 @@ ui_demospace_unset(Demospace *demo)
 {
    if (!demo) return false;
    elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
+   elm_layout_signal_emit(demo->layout, "demospace,hide", "eflete");
    elm_object_part_content_unset(demo->demospace, "demo");
    evas_object_del(demo->object);
    demo->object = NULL;
