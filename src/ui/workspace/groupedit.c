@@ -605,6 +605,7 @@ groupedit_edit_object_set(Evas_Object *obj,
      }
    if (!file) return EINA_FALSE;
 
+   edje_object_animation_set(edit_obj, false);
    edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
    /* hide the editing object, we can not use evas_object_hide, because object
     * will be showed again, after changing, for example part add, or change
