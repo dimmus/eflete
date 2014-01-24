@@ -169,7 +169,7 @@ ui_demospace_add(Evas_Object *parent)
    demo->layout = _layout;
    elm_layout_file_set(_layout, TET_EDJ, "eflete/demospace/toolbar/default");
 
-   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/default");
+   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/demo");
    elm_spinner_label_format_set(spinner, "%1.2f");
    evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, demo);
    elm_spinner_value_set(spinner, 1.0);
