@@ -46,7 +46,10 @@ static unsigned int part_types_count = 12;
 
 #define WM_WIDGET_NAME_GET(widget, group) \
    arr = eina_str_split(group, "/", 3); \
-   widget = strdup(arr[1]); \
+   if (!arr[1]) \
+     widget = NULL; \
+   else \
+     widget = strdup(arr[1]); \
    free(arr[0]); \
    free(arr);
 
@@ -462,7 +465,7 @@ wm_widget_list_new(const char *file)
                widget_name_next = &empty;
              widget_styles = eina_list_append(widget_styles, group);
 
-             if (strcmp(widget_name, widget_name_next) != 0)
+             if ((widget_name) && (widget_name_next) && (strcmp(widget_name, widget_name_next) != 0))
                {
                   widget = wm_widget_add(widget_name, widget_styles);
                   widget_list = eina_inlist_append(widget_list,
@@ -470,7 +473,8 @@ wm_widget_list_new(const char *file)
                   widget_styles = eina_list_free(widget_styles);
                   widget_styles = NULL;
                }
-             free(widget_name);
+             if (widget_name)
+               free(widget_name);
           }
         else
           ERR("Invalid style name in group: %s", group);
