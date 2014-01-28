@@ -163,7 +163,6 @@ ui_demospace_add(Evas_Object *parent)
    Evas_Object *spinner, *_layout;
 
    demo = _demo_init();
-   demo->current_scale = 1.0;
 
    _layout = elm_layout_add(parent);
    demo->layout = _layout;
@@ -175,7 +174,7 @@ ui_demospace_add(Evas_Object *parent)
    elm_spinner_value_set(spinner, 1.0);
    elm_object_part_content_set(demo->layout, "zoom_spinner",
                                spinner);
-   evas_object_show(spinner);
+   demo->scale_spinner = spinner;
 
    demo->demospace = elm_layout_add(parent);
    elm_layout_file_set(demo->demospace, TET_EDJ, "eflete/demospace/base/default");
@@ -210,6 +209,9 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
              free(c);
              return false;
           }
+
+        demo->current_scale = 1.0;
+        elm_spinner_value_set(demo->scale_spinner, 1.0);
 
         if (!demo->th)
           demo->th = elm_theme_new();

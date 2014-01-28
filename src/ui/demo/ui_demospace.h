@@ -34,6 +34,7 @@ struct _Demospace
    Evas_Object *demospace;
    Evas_Object *layout;
    Evas_Object *object;
+   Evas_Object *scale_spinner;
    double current_scale;
    Elm_Theme *th;
 };
