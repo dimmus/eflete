@@ -170,3 +170,28 @@ group {
       }
    }
 }
+
+group {
+   name: "property/item/script";
+   inherit: "property/item/editor";
+   parts {
+      part {
+         name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            min: 1 100;
+            rel1 {
+               to_x: "elm.text";
+               to_y: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+   }
+}
