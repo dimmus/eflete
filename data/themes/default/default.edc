@@ -18,4 +18,5 @@ collections {
    #include "widgets/ctxpopup.edc"
    #include "widgets/label.edc"
    #include "widgets/radio.edc"
+   #include "widgets/menu.edc"
 }
