@@ -93,6 +93,14 @@ _on_group_clicked(void *data,
 }
 
 static void
+_on_cancel_cb(void *data __UNUSED__,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   loop_quit(false);
+}
+
+static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *wd_list;
@@ -125,7 +133,7 @@ open_edj_file(App_Data *ap)
 
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
-   Evas_Object *inwin = mw_add(NULL, NULL);
+   Evas_Object *inwin = mw_add(_on_cancel_cb, NULL);
    OPEN_DIALOG_ADD(inwin, fs, "Open EDJ file dialog");
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
    evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
@@ -136,7 +144,8 @@ open_edj_file(App_Data *ap)
 
    evas_object_del(fs);
    evas_object_del(inwin);
-   return EINA_TRUE;
+
+   return true;
 }
 
 static void
@@ -217,14 +226,6 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
    evas_object_smart_callback_add(wd_list, "wl,group,back", _on_group_back, ap);
-}
-
-static void
-_on_cancel_cb(void *data __UNUSED__,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   loop_quit(false);
 }
 
 static void

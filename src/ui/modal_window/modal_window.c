@@ -59,6 +59,7 @@ _mw_info(void *data,
    evas_object_show(popup);
 }
 
+/* PLEASE, see comment below
 static void
 _on_key_down(void *data,
              Evas *e __UNUSED__,
@@ -70,6 +71,7 @@ _on_key_down(void *data,
    if (strcmp(ev->keyname, "Escape") == 0)
      evas_object_smart_callback_call(btn_close, "clicked", NULL);
 }
+*/
 
 Evas_Object *
 _mw_create(Evas_Object *parent,
@@ -85,8 +87,10 @@ _mw_create(Evas_Object *parent,
    evas_object_focus_set(mw, EINA_TRUE);
 
    BUTTON_ADD(mw, bt_close, "");
-   evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
-                                  _on_key_down, bt_close);
+   /*TODO: uncomment it when focus will be adequate
+     evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
+                                    _on_key_down, bt_close);
+   */
    if (func)
       evas_object_smart_callback_add(bt_close, "clicked", func, data);
    else
