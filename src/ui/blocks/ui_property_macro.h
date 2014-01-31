@@ -481,18 +481,14 @@ static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
 { \
-   Evas_Object *entry, *box; \
-   Eina_List *nodes; \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
-   entry = eina_list_nth(nodes, 0); \
+   Evas_Object *entry; \
+   entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    const char *value = edje_edit_##SUB##_##VALUE##_get(pd->group->obj, pd->part->name, \
                                                        pd->part->curr_state, \
                                                        pd->part->curr_state_value); \
    elm_entry_entry_set(entry, value); \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   eina_list_free(nodes); \
 }
 
 #define ITEM_COLOR_STATE_ADD(text, SUB, VALUE) \
