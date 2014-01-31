@@ -92,7 +92,7 @@ _on_unlink_error_cb(void *data,
 Eina_Bool
 pm_free(Project *project)
 {
-   if (!project) return EINA_FALSE;
+   if (!project) return false;
 
    eio_file_unlink(project->swapfile, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
@@ -100,7 +100,8 @@ pm_free(Project *project)
 
    if (project->swapfile) free(project->swapfile);
    free(project);
-   return EINA_TRUE;
+   project = NULL;
+   return true;
 }
 
 static Project *
@@ -227,24 +228,24 @@ pm_open_project_edj(const char *name,
 Eina_Bool
 pm_save_project_edj(Project *project)
 {
-   if (!project) return EINA_FALSE;
+   if (!project) return false;
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    loop_begin(_on_quit, NULL);
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
 pm_save_as_project_edj(Project *project, const char *path)
 {
-   if (!project) return EINA_FALSE;
-   if (!path) return EINA_FALSE;
+   if (!project) return false;
+   if (!path) return false;
 
    dst_path = path;
    eio_file_copy(project->swapfile, path, NULL,
                  _on_copy_done_save_as_cb, _on_copy_error_cb, project);
    loop_begin(_on_quit, NULL);
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
@@ -269,5 +270,5 @@ pm_save_project_to_swap(Project *project)
           }
      }
 
-   return EINA_TRUE;
+   return true;
 }

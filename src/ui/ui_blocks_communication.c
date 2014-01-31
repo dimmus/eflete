@@ -194,7 +194,7 @@ ui_part_back(App_Data *ap)
    ui_property_group_unset(prop);
    ui_demospace_unset(ap->demo);
 
-   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -260,7 +260,7 @@ ui_part_select(App_Data *ap,
 
    evas_object_show(gl_states);
 
-   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), true);
    workspace_highlight_unset(ap->workspace);
    workspace_highlight_set(ap->workspace, part);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
@@ -313,7 +313,7 @@ ui_group_clicked(App_Data *ap, Group *group)
 
    ui_demospace_set(ap->demo, ap->project, group);
    ui_demospace_update(ap->demo);
-   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_FALSE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", false);
 }
 
 Evas_Object *
@@ -378,11 +378,11 @@ new_theme_create(App_Data *ap)
 {
    Eina_Stringshare *path = NULL;
    Eina_Stringshare *file_full_path = NULL;
-   Eina_Bool errors = EINA_FALSE;
+   Eina_Bool errors = false;
    Evas_Object *wd_list = NULL;
    char *name;
 
-   if (!ap) return EINA_FALSE;
+   if (!ap) return false;
 
    ap->is_new = false;
    path = eina_stringshare_add(TET_SETT_PATH"cache/");
@@ -393,7 +393,7 @@ new_theme_create(App_Data *ap)
         if (!ecore_file_mkdir(path))
           {
              NOTIFY_ERROR("Coud'nt create cache directory");
-             errors = EINA_TRUE;
+             errors = true;
           }
      }
    if ((!errors) && (ecore_file_exists(file_full_path)))
@@ -401,14 +401,14 @@ new_theme_create(App_Data *ap)
         if (!ecore_file_remove(file_full_path))
           {
              ERR("Coud'nt clean cache directory");
-             errors = EINA_TRUE;
+             errors = true;
           }
      }
 
    if ((!errors) && (!ecore_file_cp(TET_EDJ_PATH"template.edj", file_full_path)))
      {
         ERR("Coud'nt copy theme template to cache");
-        errors = EINA_TRUE;
+        errors = true;
      }
 
    if (!errors)
@@ -429,7 +429,7 @@ new_theme_create(App_Data *ap)
 
         if ((ap->demo) || (ap->project))
           ui_demospace_unset(ap->demo);
-        ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+        ui_menu_disable_set(ap->menu_hash, "Programs", true);
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
@@ -493,7 +493,7 @@ ui_style_delete(App_Data *ap)
    if (!eoi)
      {
         NOTIFY_INFO(3, "No one style is selected");
-        return EINA_FALSE;
+        return false;
      }
    eoi_work = elm_genlist_item_parent_get(eoi);
    if (eoi_work)
@@ -504,7 +504,7 @@ ui_style_delete(App_Data *ap)
    if (!strcmp(style->style_name, "default"))
      {
         NOTIFY_INFO(3, "Coud'nt delete anything from default style");
-        return EINA_FALSE;
+        return false;
      }
 
    if(eoi_work)
@@ -513,14 +513,14 @@ ui_style_delete(App_Data *ap)
         if (inlist_count <= 1)
           {
              NOTIFY_INFO(3, "Coud'nt delete last class in style. Try to delete style");
-             return EINA_FALSE;
+             return false;
           }
 
         group = elm_object_item_data_get(eoi);
         if (!edje_edit_group_exist(group->obj, group->full_group_name))
           {
              NOTIFY_INFO(3, "Class[%s] did'nt exist", group->group_name);
-             return EINA_FALSE;
+             return false;
           }
 
         EINA_INLIST_FOREACH_SAFE(style->groups, l, group_work)
@@ -535,7 +535,7 @@ ui_style_delete(App_Data *ap)
         if (!edje_edit_group_del(group_work->obj, group->full_group_name))
           {
              NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
-             return EINA_FALSE;
+             return false;
           }
         style->groups = eina_inlist_remove(style->groups, EINA_INLIST_GET(group));
         wm_group_free(group);
@@ -546,7 +546,7 @@ ui_style_delete(App_Data *ap)
         if (inlist_count <= 1)
           {
              NOTIFY_INFO(3, "Coud'nt delete last style in widget.");
-             return EINA_FALSE;
+             return false;
           }
 
         EINA_INLIST_FOREACH_SAFE(widget->styles, l, style_work)
@@ -580,7 +580,7 @@ ui_style_delete(App_Data *ap)
         wm_style_free(style);
      }
    ui_widget_list_style_data_reload(gl_style, widget->styles);
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
@@ -613,11 +613,11 @@ ui_part_state_delete(App_Data *ap)
    if (!eoi)
      {
         NOTIFY_INFO(3, "Please select part state");
-        return EINA_FALSE;
+        return false;
      }
 
    full_state_name = eina_stringshare_add(elm_object_item_data_get(eoi));
-   if (!full_state_name) return EINA_FALSE;
+   if (!full_state_name) return false;
 
    arr = eina_str_split(full_state_name, " ", 3);
    state_name = eina_stringshare_add(arr[0]);
@@ -633,13 +633,13 @@ ui_part_state_delete(App_Data *ap)
         else
           NOTIFY_WARNING("Failed delete state \n[%s %3.2f]", state_name, value);
         CLEAR_STRINGS;
-        return EINA_FALSE;
+        return false;
      }
   elm_object_item_del(eoi);
-  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), EINA_TRUE);
+  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), true);
   CLEAR_STRINGS;
 #undef CLEAR_STRINGS
-  return EINA_TRUE;
+  return true;
 }
 
 Eina_Bool

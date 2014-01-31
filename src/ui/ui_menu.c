@@ -23,7 +23,6 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "program_editor.h"
-#include "highlight.h" /*TODO: it need ro remove from here */
 #include "about_window.h"
 
 static int _menu_delayed_event = 0;
@@ -126,6 +125,7 @@ _project_not_save_new(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
    evas_object_hide(ap->popup);
    new_theme_create(ap);
    ui_menu_locked_set(ap->menu_hash, false);
@@ -138,6 +138,10 @@ _project_not_save_edc(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   ui_panes_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, false);
+
    evas_object_hide(ap->popup);
    open_edc_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
@@ -149,6 +153,10 @@ _project_not_save_edj(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   ui_panes_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, false);
+
    evas_object_hide(ap->popup);
    open_edj_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);

@@ -100,7 +100,7 @@ ui_main_window_add(App_Data *ap)
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_focus_highlight_enabled_set(win, EINA_FALSE);
+   elm_win_focus_highlight_enabled_set(win, false);
    evas_object_show(bg);
 
    layout = elm_layout_add(win);
