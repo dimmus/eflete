@@ -95,13 +95,26 @@ _on_group_clicked(void *data,
 static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
-   if (data)
+   Evas_Object *wd_list;
+   const char *selected = (const char *)event_info;
+   App_Data *ap = (App_Data *)data;
+
+   if (selected)
      {
-        App_Data *ap = (App_Data *)data;
-        const char *selected = event_info;
-        Evas_Object *wd_list = ui_edj_load_done(ap, obj, selected);
-        add_callbacks_wd(wd_list, ap);
+        if (eina_str_has_suffix(selected, ".edj"))
+          {
+             wd_list = ui_edj_load_done(ap, selected);
+             if (!wd_list) return;
+             add_callbacks_wd(wd_list, ap);
+          }
+        else
+          {
+             NOTIFY_ERROR("The file must have a extension '.edj'");
+             return;
+          }
      }
+
+   evas_object_hide(elm_object_parent_widget_get(obj));
    loop_quit(false);
 }
 
@@ -128,18 +141,19 @@ open_edj_file(App_Data *ap)
 
 static void
 _on_open_edj_cb(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    Evas_Object *wd_list = NULL;
 
    const char *path_edj = elm_object_text_get(fs_ent->edj);
 
-   wd_list = ui_edj_load_done(ap, NULL, path_edj);
+   wd_list = ui_edj_load_done(ap, path_edj);
    if (wd_list)
      {
         add_callbacks_wd(wd_list, ap);
+        evas_object_hide(elm_object_parent_widget_get(obj));
         loop_quit(false);
      }
 }

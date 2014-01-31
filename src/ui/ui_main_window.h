@@ -212,7 +212,6 @@ ui_group_clicked(App_Data *ap, Group *group);
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param obj The Evas_Object pointer, wich pointed to fileselector widget.
  * @param selected String with opened project file name.
  *
  * @return The Evas_Object pointer. Widget list object.
@@ -220,7 +219,7 @@ ui_group_clicked(App_Data *ap, Group *group);
  * @ingroup Window
  */
 Evas_Object *
-ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
+ui_edj_load_done(App_Data* ap, const char *selected);
 
 /**
  * Delete selected state from current part.

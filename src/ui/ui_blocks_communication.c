@@ -316,59 +316,52 @@ ui_group_clicked(App_Data *ap, Group *group)
 }
 
 Evas_Object *
-ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
+ui_edj_load_done(App_Data* ap, const char *selected)
 {
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
    char *name;
 
-   if (!ap)
-     {
-        ERR("ap is NULL");
-        return NULL;
-     }
+   if ((!ap) || (!selected)) return NULL;
 
    prop = ui_block_property_get(ap);
 
-   if (selected)
+   if (eina_str_has_suffix(selected, ".edj"))
      {
-        if (eina_str_has_suffix(selected, ".edj"))
+        INFO("Selected file: %s", selected);
+        if (prop) ui_property_group_unset(prop);
+        elm_genlist_clear(ui_block_state_list_get(ap));
+        elm_genlist_clear(ui_block_signal_list_get(ap));
+
+        if (ap->workspace)
           {
-             INFO("Selected file: %s", selected);
-             if (prop) ui_property_group_unset(prop);
-             elm_genlist_clear(ui_block_state_list_get(ap));
-             elm_genlist_clear(ui_block_signal_list_get(ap));
-
-             if (ap->workspace)
-               {
-                  workspace_edit_object_unset(ap->workspace);
-                  workspace_highlight_unset(ap->workspace);
-               }
-
-             if (ap->demo) ui_demospace_unset(ap->demo);
-             pm_free(ap->project);
-             GET_NAME_FROM_PATH(name, selected)
-             ap->project = pm_open_project_edj(name, selected);
-             free(name);
-             if (!ap->project)
-               {
-                  NOTIFY_ERROR("Can't open file: %s", selected);
-                  return NULL;
-               }
-             NOTIFY_INFO(3, "Selected file: %s", selected);
-
-             wd_list = ui_widget_list_add(ap->win);
-             ui_widget_list_title_set(wd_list, ap->project->name);
-             ui_widget_list_data_set(wd_list, ap->project);
-             ui_block_widget_list_set(ap, wd_list);
-             evas_object_show(wd_list);
-             ui_panes_show(ap);
-
-             ui_menu_base_disabled_set(ap->menu_hash, false);
+             workspace_edit_object_unset(ap->workspace);
+             workspace_highlight_unset(ap->workspace);
           }
-        else NOTIFY_ERROR("The file must have a extension '.edj'");
+
+        if (ap->demo) ui_demospace_unset(ap->demo);
+        pm_free(ap->project);
+        GET_NAME_FROM_PATH(name, selected)
+        ap->project = pm_open_project_edj(name, selected);
+        free(name);
+        if (!ap->project)
+          {
+             NOTIFY_ERROR("Can't open file: %s", selected);
+             return NULL;
+          }
+        NOTIFY_INFO(3, "Selected file: %s", selected);
+
+        wd_list = ui_widget_list_add(ap->win);
+        ui_widget_list_title_set(wd_list, ap->project->name);
+        ui_widget_list_data_set(wd_list, ap->project);
+        ui_block_widget_list_set(ap, wd_list);
+        evas_object_show(wd_list);
+        ui_panes_show(ap);
+
+        ui_menu_base_disabled_set(ap->menu_hash, false);
      }
-   if (obj) evas_object_hide(elm_object_parent_widget_get(obj));
+   else NOTIFY_ERROR("The file must have a extension '.edj'");
+
    return wd_list;
 }
 
