@@ -25,8 +25,7 @@ _add_part_dialog(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   /* FIXME: change ap->workspace to ui_block_workspace_get(ap) */
-   part_dialog_add(ap->win_layout, ap->workspace, ui_block_widget_list_get(ap));
+   part_dialog_add(ap);
 }
 
 static void

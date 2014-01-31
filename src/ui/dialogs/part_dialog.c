@@ -20,15 +20,20 @@
 #include "part_dialog.h"
 #include "string_macro.h"
 
-#define APD_WORKSPACE_KEY "workspace"
-#define APD_WIDGET_LIST_KEY "widget_list"
+#define AP_KEY "app_data"
 
 #define ENTRY_IS_EMPTY \
+   const char *str = elm_entry_entry_get(entry); \
    if (elm_entry_is_empty(entry)) \
-   { \
-      NOTIFY_WARNING("Part name can not be empty") \
-      return; \
-   } \
+     { \
+        NOTIFY_WARNING("Part name can not be empty") \
+        return; \
+     } \
+   if (edje_edit_part_exist(ap->project->current_group->obj, str)) \
+     { \
+        NOTIFY_WARNING("Can't add the part %s, part with the same name already exists", str) \
+        return; \
+     }
 
 static Evas_Object *entry;
 
@@ -47,8 +52,9 @@ _cancel_clicked(void *data,
 }
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
-   Evas_Object *workspace = evas_object_data_get(entry, APD_WORKSPACE_KEY); \
-   Evas_Object *widget_list = evas_object_data_get(entry, APD_WIDGET_LIST_KEY); \
+   App_Data *ap = evas_object_data_get(entry, AP_KEY); \
+   Evas_Object *workspace = ap->workspace; \
+   Evas_Object *widget_list = ui_block_widget_list_get(ap); \
    Group *group = workspace_edit_object_get(workspace); \
    ENTRY_IS_EMPTY \
    const char *name = elm_entry_entry_get(entry); \
@@ -106,38 +112,12 @@ _rect_add_on_click(void *data,
    WORKSPACE_PART_ADD(EDJE_PART_TYPE_RECTANGLE, NULL)
 }
 
-/*
-static void
-_img_add_on_click(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
-{
-   Evas_Object *popup = (Evas_Object *)data;
-   Evas_Object *workspace = evas_object_data_get(entry, APD_WORKSPACE_KEY);
-   evas_object_smart_callback_del(workspace, "gs,image,choosed", _img_add_on_click);
-   char *char_arr[2];
-   char_arr[0] = (char *)event_info;
-   char_arr[1] = (char *)elm_entry_entry_get(entry);
-   evas_object_smart_callback_call(workspace, "gs,img,add", char_arr);
-   evas_object_del(popup);
-}
-*/
-
 static void
 _on_image_editor_done(void *data __UNUSED__,
                        Evas_Object *obj __UNUSED__,
                        void *event_info)
 {
-   //Evas_Object *workspace = (Evas_Object *)data;
    char *selected = (char *)event_info;
-   /*
-   if (!selected)
-     {
-        evas_object_smart_callback_del(workspace, "gs,image,choosed", _img_add_on_click);
-        return;
-     }
-   evas_object_smart_callback_call(workspace, "gs,image,choosed", selected);
-   */
    if (!selected) return;
    WORKSPACE_PART_ADD(EDJE_PART_TYPE_IMAGE, selected)
 }
@@ -149,41 +129,30 @@ _on_state_image_choose(void *data,
 {
    Evas_Object *img_edit;
    Evas_Object *popup = (Evas_Object *)data;
+   App_Data *ap = evas_object_data_get(entry, AP_KEY);
    ENTRY_IS_EMPTY
-   /* popup remove in _on_image_editor_done */
    evas_object_hide(popup);
-   /* FIXME: need to delete it */
-   App_Data *ap = app_create();
-   //Evas_Object *workspace = evas_object_data_get(entry, APD_WORKSPACE_KEY);
    img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_callback_add(img_edit, _on_image_editor_done, NULL);
 }
 
-/*
-static void
-_on_delete_popup(void *data,
-                 Evas *evas __UNUSED__,
-                 Evas_Object *o __UNUSED__,
-                 void *einfo __UNUSED__)
-{
-   Evas_Object *gs = (Evas_Object *)data;
-   evas_object_smart_callback_del(gs, "gs,image,choosed", _img_add_on_click);
-}
-*/
-
-
 Evas_Object *
-part_dialog_add(Evas_Object *parent, Evas_Object *workspace, Evas_Object *widget_list)
+part_dialog_add(App_Data *ap)
 {
+   Evas_Object *win, *workspace, *widget_list;
    Evas_Object *box, *button;
    Evas_Object *popup, *bt_no;
    Eina_Stringshare *title;
    Group *group;
 
-   if ((!parent) || (!workspace) || (!widget_list)) return NULL;
+   if ((!ap) || (!ap->project)) return NULL;
+   win = ap->win;
+   workspace = ap->workspace;
+   widget_list = ui_block_widget_list_get(ap);
+   if ((!win) || (!workspace) || (!widget_list)) return NULL;
 
    group = workspace_edit_object_get(workspace);
-   popup = elm_popup_add(parent);
+   popup = elm_popup_add(win);
    elm_object_style_set(popup, "eflete");
    title = eina_stringshare_printf("Add new part to group \"%s\"", group->group_name);
    elm_object_part_text_set(popup, "title,text", title);
@@ -194,8 +163,7 @@ part_dialog_add(Evas_Object *parent, Evas_Object *workspace, Evas_Object *widget
    elm_object_part_text_set(entry, "guide", "Type the new part new.");
    evas_object_show(entry);
    elm_box_pack_end(box, entry);
-   evas_object_data_set(entry, APD_WORKSPACE_KEY, workspace);
-   evas_object_data_set(entry, APD_WIDGET_LIST_KEY, widget_list);
+   evas_object_data_set(entry, AP_KEY, ap);
 
    BUTTON_ADD(box, button, "Rectangle");
    evas_object_smart_callback_add(button, "clicked", _rect_add_on_click, popup);
@@ -220,13 +188,9 @@ part_dialog_add(Evas_Object *parent, Evas_Object *workspace, Evas_Object *widget
    elm_box_pack_end(box, button);
 
    elm_object_content_set(popup, box);
-   //evas_object_smart_callback_add(groupspace, "gs,image,choosed",
-   //                               _img_add_on_click, popup);
    BUTTON_ADD(box, bt_no, "Cancel");
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_no);
-   //evas_object_event_callback_add(popup, EVAS_CALLBACK_DEL, _on_delete_popup,
-   //                               groupspace);
    evas_object_show(popup);
    eina_stringshare_del(title);
    return popup;
