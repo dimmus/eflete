@@ -26,24 +26,24 @@ struct _Program_Editor
    Evas_Object *gl_progs;
    Elm_Object_Item *sel;
    struct {
-        Evas_Object *popup;
-        Evas_Object *entry;
+      Evas_Object *popup;
+      Evas_Object *entry;
    } popup;
    struct {
-     Group *group;
-     const char *program;
-     Evas_Object *name;
-     Evas_Object *signal;
-     Evas_Object *source;
-     Evas_Object *in;
-     Evas_Object *action;
-     Evas_Object *script;
-     Evas_Object *transition;
-     Evas_Object *targets;
-     Evas_Object *afters;
-     Edje_Action_Type act_type;
-     Edje_Tween_Mode trans_type;
-     Evas_Object *prop_box;
+      Group *group;
+      const char *program;
+      Evas_Object *name;
+      Evas_Object *signal;
+      Evas_Object *source;
+      Evas_Object *in;
+      Evas_Object *action;
+      Evas_Object *script;
+      Evas_Object *transition;
+      Evas_Object *targets;
+      Evas_Object *afters;
+      Edje_Action_Type act_type;
+      Edje_Tween_Mode trans_type;
+      Evas_Object *prop_box;
    } prop_view;
 };
 
@@ -259,6 +259,8 @@ _prop_item_program_script_add(Evas_Object *parent,
 
    BOX_ADD(item, box, true, false);
    ENTRY_ADD(item, entry, false, DEFAULT_STYLE)
+   elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF,
+                                  ELM_SCROLLER_POLICY_AUTO);
    elm_entry_editable_set(entry, false);
    elm_box_pack_end(box, entry);
    elm_object_part_content_set(item, "elm.swallow.content", box);
@@ -277,6 +279,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 
    script = edje_edit_script_program_get(prop.group->obj, prop.program);
    entry = eina_list_nth(childs, 0);
+   script = elm_entry_utf8_to_markup(script);
    elm_entry_entry_set(entry, script);
    eina_list_free(childs);
 }
