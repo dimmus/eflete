@@ -52,7 +52,8 @@ ui_main_window_del(App_Data *ap)
    eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
-   pm_free(ap->project);
+   if (ap->project)
+     pm_free(ap->project);
    /* FIXME: remove it from here */
    demo_free(ap->demo);
    /* FIXME: when be implemented multi workspace feature, remove this line */

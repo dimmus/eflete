@@ -59,6 +59,28 @@ _ok_cb(void *data,
 }
 
 static void
+_on_cancel_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   if (ap)
+     {
+        if (ap->project)
+          {
+             ui_menu_locked_set(ap->menu_hash, true);
+             ui_menu_base_disabled_set(ap->menu_hash, false);
+          }
+        else
+          {
+             ui_menu_locked_set(ap->menu_hash, false);
+             ui_menu_base_disabled_set(ap->menu_hash, true);
+          }
+     }
+   loop_quit(false);
+}
+
+static void
 _on_edj_done(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info)
@@ -136,12 +158,6 @@ _on_edc_done(void *data,
 }
 
 static Eina_Bool
-_on_quit(Eina_Bool force, void *data __UNUSED__)
-{
-   return force; /* blocking dialog exit if we are not forced. */
-}
-
-static Eina_Bool
 _save_as_edx_file(App_Data *ap,
                   const char* title,
                   Evas_Smart_Cb done_cb,
@@ -151,7 +167,7 @@ _save_as_edx_file(App_Data *ap,
 
    if ((!ap->win) || (!ap->project)) return false;
 
-   Evas_Object *inwin = mw_add(NULL, NULL);
+   Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
    OPEN_DIALOG_ADD(inwin, fs, title);
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_folder_only_set(fs, folder_only);
@@ -161,7 +177,7 @@ _save_as_edx_file(App_Data *ap,
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(_on_quit, NULL);
+   loop_begin(NULL, NULL);
 
    evas_object_del(fs);
    evas_object_del(inwin);

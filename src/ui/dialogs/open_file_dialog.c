@@ -82,6 +82,7 @@ _on_part_selected(void *data,
                                         elm_genlist_first_item_get(gl_states));
      }
 }
+
 static void
 _on_group_clicked(void *data,
                          Evas_Object *obj __UNUSED__,
@@ -93,10 +94,24 @@ _on_group_clicked(void *data,
 }
 
 static void
-_on_cancel_cb(void *data __UNUSED__,
+_on_cancel_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
+   App_Data *ap = (App_Data *)data;
+   if (ap)
+     {
+        if (ap->project)
+          {
+             ui_menu_base_disabled_set(ap->menu_hash, false);
+             ui_menu_locked_set(ap->menu_hash, true);
+          }
+        else
+          {
+             ui_menu_base_disabled_set(ap->menu_hash, true);
+             ui_menu_locked_set(ap->menu_hash, false);
+          }
+     }
    loop_quit(false);
 }
 
@@ -133,7 +148,7 @@ open_edj_file(App_Data *ap)
 
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
-   Evas_Object *inwin = mw_add(_on_cancel_cb, NULL);
+   Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
    OPEN_DIALOG_ADD(inwin, fs, "Open EDJ file dialog");
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
    evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
@@ -382,7 +397,7 @@ open_edc_file(App_Data *ap)
         return EINA_FALSE;
      }
 
-   Evas_Object *inwin = mw_add(_on_cancel_cb, NULL);
+   Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
    mw_title_set(inwin, "Compile EDC file");
    evas_object_focus_set(inwin, EINA_TRUE);
 
@@ -464,7 +479,7 @@ open_edc_file(App_Data *ap)
 
    _BUTTON_ADD(button_box, "Compile", _on_compile_cb, bt);
    _BUTTON_ADD(button_box, "Open EDJ", _on_open_edj_cb, ap);
-   _BUTTON_ADD(button_box, "Cancel", _on_cancel_cb, NULL);
+   _BUTTON_ADD(button_box, "Cancel", _on_cancel_cb, ap);
    #undef _BUTTON_ADD
 
    elm_object_part_content_set(layout, "button_box", button_box);

@@ -154,6 +154,8 @@ _project_not_save_edj(void *data,
 {
    App_Data *ap = (App_Data *)data;
 
+   if (ap->project)
+     pm_free(ap->project);
    ui_panes_hide(ap);
    ui_menu_base_disabled_set(ap->menu_hash, false);
 
