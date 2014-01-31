@@ -6,6 +6,7 @@ noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
 alloc/alloc.c \
+loop_manager/loop_manager.c \
 project_manager/edje_compile.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
@@ -25,6 +26,7 @@ ui/dialogs/part_dialog.c \
 ui/dialogs/state_dialog.c \
 ui/dialogs/style_dialog.c \
 ui/dialogs/about_window.c \
+ui/dialogs/colorsel.c \
 ui/modal_window/modal_window.c \
 ui/blocks/ui_block.c \
 ui/blocks/ui_property.c \
@@ -46,6 +48,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
+-I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/settings \
 -I${top_srcdir}/src/ui \

@@ -466,8 +466,6 @@ _handler_object_add(Evas_Object *parent,
    evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_OUT,
                                   _handler_mouse_out_cb, highlight);
 
-   evas_object_repeat_events_set(border, true);
-
    return handler;
 }
 

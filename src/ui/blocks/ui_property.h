@@ -27,7 +27,6 @@
  * This widget designed for show group and part details.
  */
 
-#include "eflete.h"
 #include "widget_manager.h"
 #include "ui_workspace.h"
 
@@ -43,32 +42,32 @@ Evas_Object *
 ui_property_add(Evas_Object *parent);
 
 /**
- * Set to current 'property' widget a group view which group details.
- * If current property has a group view, then old view will be removed.
+ * Set to current 'property' widget a style view which style details.
+ * If current property has a style view, then old view will be removed.
  *
  * @param property The 'property' widget.
- * @param group The Group data which will be displayed.
+ * @param style The Style data which will be displayed.
  * @param workspace The workspace object with editable object.
  *
- * @note If the parameter group and editable group in the workspace not matched
+ * @note If the parameter style and editable style in the workspace not matched
  * propety do not set, and function will return EINA_FALSE.
  *
  * @ingroup Property
  */
 Eina_Bool
-ui_property_group_set(Evas_Object *property, Group *group, Evas_Object *workspace);
+ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspace);
 
 /**
- * Unset the group view content on a given property.
+ * Unset the style view content on a given property.
  * This method cascade unset all prop view:
- * group -> part -> state
+ * style -> part -> state
  *
  * @param property the 'property' widget.
  *
  * @ingroup property
  */
 void
-ui_property_group_unset(Evas_Object *property);
+ui_property_style_unset(Evas_Object *property);
 
 /**
  * Set to current 'property' widget a part view which part details.

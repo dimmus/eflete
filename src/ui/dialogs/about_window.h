@@ -36,13 +36,11 @@
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
- * @param parent - the object that will be the parent of this dialog.
- *
  * @return the inwin object that contain style viewer
  *
  * @ingroup TextStyle
  */
 Evas_Object *
-about_window_add(Evas_Object *parent);
+about_window_add();
 
 #endif  /* ABOUT_DIALOG_H */

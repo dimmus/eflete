@@ -45,14 +45,14 @@ ui_states_list_add(Evas_Object *parent);
  * Set to a 'states list' widget a data of a part states.
  *
  * @param object The 'states list' object.
- * @param group The Group object.
+ * @param group The Style data.
  * @param part The Part object.
  * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
  *
  * @ingroup StateList
  */
 Eina_Bool
-ui_states_list_data_set(Evas_Object *object, Group *group, Part *part);
+ui_states_list_data_set(Evas_Object *object, Style *style, Part *part);
 
 /**
  * Get Part object, wich states currently showed.

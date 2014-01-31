@@ -103,7 +103,7 @@ _item_del(void *data __UNUSED__,
 
 Eina_Bool
 ui_states_list_data_set(Evas_Object *object,
-                        Group *group,
+                        Style *style,
                         Part *part)
 {
    Eina_List *states, *l;
@@ -112,12 +112,12 @@ ui_states_list_data_set(Evas_Object *object,
    Elm_Object_Item *stit;
    Evas_Object *parent, *box, *button, *icon;
 
-   if ((!object) || (!group) || (!part)) return false;
+   if ((!object) || (!style) || (!part)) return false;
 
    parent = elm_object_parent_widget_get(object);
    elm_genlist_clear(object);
 
-   states = edje_edit_part_states_list_get(group->obj, part->name);
+   states = edje_edit_part_states_list_get(style->obj, part->name);
    evas_object_data_set(object, STLIST_PART_KEY, part);
    EINA_LIST_FOREACH(states, l, state_name)
      {

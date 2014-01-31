@@ -190,9 +190,9 @@ _on_image_done(void *data,
    Evas_Object *edje_edit_obj = NULL;
    const char *selected = event_info;
 
-   if ((!selected) || (!strcmp(selected, "")))
+   if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
-        ecore_main_loop_quit();
+        loop_quit(false);
         return;
      }
 
@@ -219,18 +219,7 @@ _on_image_done(void *data,
    else
      NOTIFY_ERROR("Error while loading file.<br> File is not exist");
 
-   ecore_main_loop_quit();
-}
-
-static void
-_on_inwin_delete(void *data,
-                       Evas *e __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
-{
-   Eina_Bool *dialog_deleted = (Eina_Bool *)data;
-   if (!*dialog_deleted) ecore_main_loop_quit();
-   *dialog_deleted = true;
+   loop_quit(false);
 }
 
 static void
@@ -239,25 +228,18 @@ _on_button_add_clicked_cb(void *data,
                          void *event_info __UNUSED__)
 {
    Evas_Object *fs;
-   Eina_Bool dialog_deleted = false;
 
-   Evas_Object *inwin = mw_add(NULL);
-   evas_object_event_callback_add(inwin, EVAS_CALLBACK_FREE,
-                                  _on_inwin_delete, &dialog_deleted);
+   Evas_Object *inwin = mw_add(NULL, NULL);
    OPEN_DIALOG_ADD(inwin, fs, "Add image to library");
    evas_object_smart_callback_add(fs, "done", _on_image_done, data);
    evas_object_smart_callback_add(fs, "activated", _on_image_done, data);
 
    elm_win_inwin_activate(inwin);
 
-   ecore_main_loop_begin();
+   loop_begin(NULL, NULL);
 
-   if (!dialog_deleted)
-     {
-        dialog_deleted = true;
-        evas_object_del(fs);
-        evas_object_del(inwin);
-     }
+   evas_object_del(fs);
+   evas_object_del(inwin);
 
    return;
 }
@@ -271,7 +253,13 @@ _on_button_delete_clicked_cb(void *data,
    Elm_Object_Item *grid_item = NULL;
    Item *it = NULL;
    Eina_List *grid_list, *l, *l2;
+   int deleted = 0, notdeleted = 0;
+   Eina_List * in_use = NULL, *used_in = NULL;
+   char *name;
+   Edje_Part_Image_Use *item;
    Evas_Object *edje_edit_obj = NULL;
+   char buf[BUFF_MAX];
+   int symbs = 0;
 
    if (!img_edit->gengrid) return;
 
@@ -283,10 +271,49 @@ _on_button_delete_clicked_cb(void *data,
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
-        edje_edit_image_del(edje_edit_obj, it->image_name);
-        elm_object_item_del(grid_item);
+        if (edje_edit_image_del(edje_edit_obj, it->image_name))
+          {
+             deleted++;
+             elm_object_item_del(grid_item);
+          }
+        else
+          {
+             notdeleted++;
+             if (notdeleted < 4)
+                in_use = eina_list_append(in_use, it->image_name);
+             elm_gengrid_item_selected_set(grid_item, false);
+          }
      }
-   eina_list_free(grid_list);
+   if (notdeleted == 1)
+     {
+        EINA_LIST_FOREACH(in_use, l, name)
+           used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
+        snprintf(buf, BUFF_MAX, "Images is used in:");
+        symbs = strlen(buf);
+        EINA_LIST_FOREACH(used_in, l, item)
+          {
+             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f",
+                      item->group, item->part, item->state.name, item->state.value);
+             symbs+= strlen(name);
+             break; //TODO: remove this break after warning style remake
+          }
+          edje_edit_image_usage_list_free(used_in);
+        NOTIFY_WARNING("%s", buf);
+     }
+   else if (notdeleted >1)
+     {
+        snprintf(buf, BUFF_MAX, "%d images in use:", notdeleted);
+        symbs = strlen(buf);
+        EINA_LIST_FOREACH(in_use, l, name)
+          {
+             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>%s", name);
+             symbs+= strlen(name);
+          }
+        if (notdeleted >= 4)
+           snprintf(buf + symbs, BUFF_MAX - symbs, "<br>...");
+        NOTIFY_WARNING("%s", buf);
+     }
+   eina_list_free(in_use);
 }
 
 static void
@@ -387,7 +414,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add(NULL);
+   img_edit->win = mw_add(_on_button_cancel_clicked_cb, img_edit);
    mw_title_set(img_edit->win, "Image editor");
 
    BOX_ADD(img_edit->win, box, false, false);

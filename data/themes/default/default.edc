@@ -15,6 +15,7 @@ collections {
    #include "widgets/button.edc"
    #include "widgets/spinner.edc"
    #include "widgets/popup.edc"
+   #include "widgets/ctxpopup.edc"
    #include "widgets/label.edc"
    #include "widgets/radio.edc"
 }

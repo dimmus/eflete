@@ -473,7 +473,7 @@ colorclass_viewer_add(Project *project)
    ccl_edit = (Colorclasses_Editor *)mem_calloc(1, sizeof(Colorclasses_Editor));
 
    ccl_edit->pr = project;
-   ccl_edit->mwin = mw_add(NULL);
+   ccl_edit->mwin = mw_add(NULL, NULL);
    mw_title_set(ccl_edit->mwin, "Color class editor");
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_ccl_editor_close, ccl_edit);

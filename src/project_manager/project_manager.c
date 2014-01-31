@@ -22,13 +22,19 @@
 
 static const char *dst_path;
 
+static Eina_Bool
+_on_quit(Eina_Bool force, void *data __UNUSED__)
+{
+   return force;
+}
+
 static void
 _on_copy_done_cb(void *data,
                  Eio_File *handler __UNUSED__)
 {
    char *file_name = (char *)data;
    DBG("Copy file '%s' is finished!", file_name);
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 static void
@@ -41,7 +47,7 @@ _on_copy_done_save_as_cb(void *data,
    project->edj = strdup(dst_path);
    DBG("Copy file '%s' is finished!", dst_path);
    dst_path = NULL;
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 static void
@@ -52,7 +58,7 @@ _on_copy_error_cb(void *data,
    char *file_name = (char *)data;
    ERR("Copy file '%s' is failed. Something wrong has happend: %s\n",
        file_name, strerror(error));
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 static void
@@ -69,7 +75,7 @@ _on_unlink_done_cb(void *data,
    free(project->name);
    wm_widget_list_free(project->widgets);
    DBG ("Project data is released.");
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 static void
@@ -80,21 +86,22 @@ _on_unlink_error_cb(void *data,
    char *file_name = (char *)data;
    ERR("Unlink file '%s' is failed. Something wrong has happend: %s\n",
        file_name, strerror(error));
-   ecore_main_loop_quit();
+   loop_quit(true);
 }
 
 Eina_Bool
 pm_free(Project *project)
 {
-   if (!project) return EINA_FALSE;
+   if (!project) return false;
 
    eio_file_unlink(project->swapfile, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
-   ecore_main_loop_begin();
+   loop_begin(_on_quit, NULL);
 
    if (project->swapfile) free(project->swapfile);
    free(project);
-   return EINA_TRUE;
+   project = NULL;
+   return true;
 }
 
 static Project *
@@ -211,7 +218,7 @@ pm_open_project_edj(const char *name,
 
    eio_file_copy(project->edj, project->swapfile, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
-   ecore_main_loop_begin();
+   loop_begin(_on_quit, NULL);
    project->widgets = wm_widget_list_new(project->swapfile);
    INFO("Project '%s' is open!", project->name);
 
@@ -221,32 +228,47 @@ pm_open_project_edj(const char *name,
 Eina_Bool
 pm_save_project_edj(Project *project)
 {
-   if (!project) return EINA_FALSE;
+   if (!project) return false;
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
-   ecore_main_loop_begin();
-   return EINA_TRUE;
+   loop_begin(_on_quit, NULL);
+   return true;
 }
 
 Eina_Bool
 pm_save_as_project_edj(Project *project, const char *path)
 {
-   if (!project) return EINA_FALSE;
-   if (!path) return EINA_FALSE;
+   if (!project) return false;
+   if (!path) return false;
 
    dst_path = path;
    eio_file_copy(project->swapfile, path, NULL,
                  _on_copy_done_save_as_cb, _on_copy_error_cb, project);
-   ecore_main_loop_begin();
-   return EINA_TRUE;
+   loop_begin(_on_quit, NULL);
+   return true;
 }
 
 Eina_Bool
 pm_save_project_to_swap(Project *project)
 {
-   Evas_Object *edje_object;
-   GET_OBJ(project, edje_object)
-   if (!edje_object) return EINA_FALSE;
-   else edje_edit_save_all(edje_object);
-   return EINA_TRUE;
+   Widget *widget;
+   Style *style;
+   Class *class_st;
+
+   EINA_INLIST_FOREACH(project->widgets, widget)
+     {
+        EINA_INLIST_FOREACH(widget->classes, class_st)
+          {
+             EINA_INLIST_FOREACH(class_st->styles, style)
+               {
+                  if (style->isModify)
+                    {
+                       style->isModify = false;
+                       edje_edit_save(style->obj);
+                    }
+               }
+          }
+     }
+
+   return true;
 }

@@ -25,8 +25,7 @@ _add_part_dialog(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   /* FIXME: change ap->workspace to ui_block_workspace_get(ap) */
-   part_dialog_add(ap->win_layout, ap->workspace, ui_block_widget_list_get(ap));
+   part_dialog_add(ap);
 }
 
 static void
@@ -35,10 +34,10 @@ _del_part(void *data,
           void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Group *group = ap->project->current_group;
+   Style *style = ap->project->current_style;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_del(ap->workspace, part->name)))
-     ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), group);
+     ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
 }
 
 static void
@@ -47,10 +46,10 @@ _above_part(void *data,
           void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Group *group = ap->project->current_group;
+   Style *style = ap->project->current_style;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_above(ap->workspace, part->name)))
-      ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), group);
+      ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
 }
 
 static void
@@ -59,10 +58,10 @@ _below_part(void *data,
           void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Group *group = ap->project->current_group;
+   Style *style = ap->project->current_style;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_below(ap->workspace, part->name)))
-      ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), group);
+      ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
 }
 
 static void
@@ -191,10 +190,10 @@ ui_part_back(App_Data *ap)
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    prop = ui_block_property_get(ap);
-   ui_property_group_unset(prop);
+   ui_property_style_unset(prop);
    ui_demospace_unset(ap->demo);
 
-   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -206,7 +205,7 @@ ui_part_back(App_Data *ap)
   * may be usable for future API.
   */
 void
-ui_group_back(App_Data *ap __UNUSED__)
+ui_style_back(App_Data *ap __UNUSED__)
 {
 }
 
@@ -253,14 +252,14 @@ ui_part_select(App_Data *ap,
    ui_property_part_set(prop, part);
 
    gl_states = ui_states_list_add(ap->block.bottom_left);
-   ui_states_list_data_set(gl_states, ap->project->current_group, part);
+   ui_states_list_data_set(gl_states, ap->project->current_style, part);
    ui_block_state_list_set(ap, gl_states);
    evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
    evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
 
    evas_object_show(gl_states);
 
-   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), EINA_TRUE);
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), true);
    workspace_highlight_unset(ap->workspace);
    workspace_highlight_set(ap->workspace, part);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
@@ -269,17 +268,18 @@ ui_part_select(App_Data *ap,
    return gl_states;
 }
 
+/* FIXME: rename to style_clicked */
 void
-ui_group_clicked(App_Data *ap, Group *group)
+ui_style_clicked(App_Data *ap, Style *style)
 {
    Evas_Object *wl_list = NULL;
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
    Eina_List *signals = NULL;
 
-   if ((!ap) && (!ap->project) && (!group))
+   if ((!ap) && (!ap->project) && (!style))
      {
-        ERR("App Data or group is missing!");
+        ERR("App Data or style is missing!");
         return;
      }
 
@@ -291,80 +291,78 @@ ui_group_clicked(App_Data *ap, Group *group)
    evas_object_smart_callback_add(wl_list, "wl,part,show", _show_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,hide", _hide_part, ap);
 
-   /* Get signals list of a group and show them */
+   /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);
-   ui_signal_list_data_set(gl_signals, group);
+   ui_signal_list_data_set(gl_signals, style);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
-   workspace_edit_object_set(ap->workspace, group, ap->project->swapfile);
+   workspace_edit_object_set(ap->workspace, style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
 
-   /* group properties */
+   /* style properties */
    prop = ui_block_property_get(ap);
    if (!prop)
      {
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
-   ui_property_group_set(prop, group, ap->workspace);
+   ui_property_style_set(prop, style, ap->workspace);
    evas_object_show(prop);
 
-   ui_demospace_set(ap->demo, ap->project, group);
+   ui_demospace_set(ap->demo, ap->project, style);
    ui_demospace_update(ap->demo);
-   ui_menu_disable_set(ap->menu_hash, "Programs", EINA_FALSE);
+   ui_menu_disable_set(ap->menu_hash, "Programs", false);
 }
 
 Evas_Object *
-ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected)
+ui_edj_load_done(App_Data* ap, const char *selected)
 {
    Evas_Object *wd_list = NULL;
    Evas_Object *prop = NULL;
    char *name;
 
-   if (!ap)
-     {
-        ERR("ap is NULL");
-        return NULL;
-     }
+   if ((!ap) || (!selected)) return NULL;
 
    prop = ui_block_property_get(ap);
 
-   if (selected)
+   if (eina_str_has_suffix(selected, ".edj"))
      {
-        if (eina_str_has_suffix(selected, ".edj"))
+        INFO("Selected file: %s", selected);
+        if (prop) ui_property_style_unset(prop);
+        elm_genlist_clear(ui_block_state_list_get(ap));
+        elm_genlist_clear(ui_block_signal_list_get(ap));
+
+        if (ap->workspace)
           {
-             INFO("Select file: %s", selected);
-             NOTIFY_INFO(3, "Select file: %s", selected);
-             if (prop) ui_property_group_unset(prop);
-             elm_genlist_clear(ui_block_state_list_get(ap));
-             elm_genlist_clear(ui_block_signal_list_get(ap));
-
-             if (ap->workspace)
-               {
-                  workspace_edit_object_unset(ap->workspace);
-                  workspace_highlight_unset(ap->workspace);
-               }
-
-             if (ap->demo) ui_demospace_unset(ap->demo);
-             pm_free(ap->project);
-             GET_NAME_FROM_PATH(name, selected)
-             ap->project = pm_open_project_edj(name, selected);
-             free(name);
-
-             wd_list = ui_widget_list_add(ap->win);
-             ui_widget_list_title_set(wd_list, ap->project->name);
-             ui_widget_list_data_set(wd_list, ap->project);
-             ui_block_widget_list_set(ap, wd_list);
-             evas_object_show(wd_list);
-             ui_panes_show(ap);
-
-             ui_menu_base_disabled_set(ap->menu_hash, false);
+             workspace_edit_object_unset(ap->workspace);
+             workspace_highlight_unset(ap->workspace);
           }
-        else NOTIFY_ERROR("The file must have a extension '.edj'");
+
+        if (ap->demo) ui_demospace_unset(ap->demo);
+        pm_free(ap->project);
+        GET_NAME_FROM_PATH(name, selected)
+        ap->project = pm_open_project_edj(name, selected);
+        free(name);
+        if (!ap->project)
+          {
+             NOTIFY_ERROR("Can't open file: %s", selected);
+             return NULL;
+          }
+        NOTIFY_INFO(3, "Selected file: %s", selected);
+
+        wd_list = ui_widget_list_add(ap->win);
+        ui_widget_list_title_set(wd_list, ap->project->name);
+        ui_widget_list_data_set(wd_list, ap->project);
+        ui_block_widget_list_set(ap, wd_list);
+        evas_object_show(wd_list);
+        ui_panes_show(ap);
+
+        ui_menu_base_disabled_set(ap->menu_hash, false);
      }
-   if (obj) evas_object_hide(elm_object_parent_widget_get(obj));
+   else NOTIFY_ERROR("The file must have a extension '.edj'");
+
    return wd_list;
 }
 
@@ -373,11 +371,11 @@ new_theme_create(App_Data *ap)
 {
    Eina_Stringshare *path = NULL;
    Eina_Stringshare *file_full_path = NULL;
-   Eina_Bool errors = EINA_FALSE;
+   Eina_Bool errors = false;
    Evas_Object *wd_list = NULL;
    char *name;
 
-   if (!ap) return EINA_FALSE;
+   if (!ap) return false;
 
    ap->is_new = false;
    path = eina_stringshare_add(TET_SETT_PATH"cache/");
@@ -388,7 +386,7 @@ new_theme_create(App_Data *ap)
         if (!ecore_file_mkdir(path))
           {
              NOTIFY_ERROR("Coud'nt create cache directory");
-             errors = EINA_TRUE;
+             errors = true;
           }
      }
    if ((!errors) && (ecore_file_exists(file_full_path)))
@@ -396,14 +394,14 @@ new_theme_create(App_Data *ap)
         if (!ecore_file_remove(file_full_path))
           {
              ERR("Coud'nt clean cache directory");
-             errors = EINA_TRUE;
+             errors = true;
           }
      }
 
    if ((!errors) && (!ecore_file_cp(TET_EDJ_PATH"template.edj", file_full_path)))
      {
         ERR("Coud'nt copy theme template to cache");
-        errors = EINA_TRUE;
+        errors = true;
      }
 
    if (!errors)
@@ -414,7 +412,7 @@ new_theme_create(App_Data *ap)
         signal = ui_block_signal_list_get(ap);
         if (signal) elm_genlist_clear(signal);
         prop = ui_block_property_get(ap);
-        if (prop) ui_property_group_unset(prop);
+        if (prop) ui_property_style_unset(prop);
 
         if (ap->workspace)
           {
@@ -424,7 +422,7 @@ new_theme_create(App_Data *ap)
 
         if ((ap->demo) || (ap->project))
           ui_demospace_unset(ap->demo);
-        ui_menu_disable_set(ap->menu_hash, "Programs", EINA_TRUE);
+        ui_menu_disable_set(ap->menu_hash, "Programs", true);
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
@@ -456,10 +454,10 @@ Eina_Bool
 ui_style_delete(App_Data *ap)
 {
    Widget *widget = NULL;
+   Class *class_st = NULL;
+   Class *class_work = NULL;
    Style *style = NULL;
    Style *style_work = NULL;
-   Group *group = NULL;
-   Group *group_work = NULL;
 
    Evas_Object *gl_style = NULL;
    Evas_Object *gl_widget = NULL;
@@ -488,94 +486,94 @@ ui_style_delete(App_Data *ap)
    if (!eoi)
      {
         NOTIFY_INFO(3, "No one style is selected");
-        return EINA_FALSE;
+        return false;
      }
    eoi_work = elm_genlist_item_parent_get(eoi);
    if (eoi_work)
-      style = elm_object_item_data_get(eoi_work);
+      class_st = elm_object_item_data_get(eoi_work);
    else
-      style = elm_object_item_data_get(eoi);
+      class_st = elm_object_item_data_get(eoi);
 
-   if (!strcmp(style->style_name, "default"))
+   if (!strcmp(class_st->name, "base"))
      {
-        NOTIFY_INFO(3, "Coud'nt delete anything from default style");
-        return EINA_FALSE;
+        NOTIFY_INFO(3, "Coud'nt delete anything from base class");
+        return false;
      }
 
    if(eoi_work)
      {
-        inlist_count = eina_inlist_count(style->groups);
+        inlist_count = eina_inlist_count(class_st->styles);
         if (inlist_count <= 1)
           {
              NOTIFY_INFO(3, "Coud'nt delete last class in style. Try to delete style");
-             return EINA_FALSE;
+             return false;
           }
 
-        group = elm_object_item_data_get(eoi);
-        if (!edje_edit_group_exist(group->obj, group->full_group_name))
+        style = elm_object_item_data_get(eoi);
+        if (!edje_edit_group_exist(style->obj, style->full_group_name))
           {
-             NOTIFY_INFO(3, "Class[%s] did'nt exist", group->group_name);
-             return EINA_FALSE;
+             NOTIFY_INFO(3, "Style [%s] did'nt exist", style->name);
+             return false;
           }
 
-        EINA_INLIST_FOREACH_SAFE(style->groups, l, group_work)
+        EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style_work)
           {
-             if (strcmp(group->full_group_name, group_work->full_group_name))
-               break;
-          }
-
-        if (!group_work) return false;
-
-        evas_object_del(group->obj);
-        if (!edje_edit_group_del(group_work->obj, group->full_group_name))
-          {
-             NOTIFY_INFO(3, "Failed to delete class[%s]", group->group_name);
-             return EINA_FALSE;
-          }
-        style->groups = eina_inlist_remove(style->groups, EINA_INLIST_GET(group));
-        wm_group_free(group);
-     }
-   else
-     {
-        inlist_count = eina_inlist_count(widget->styles);
-        if (inlist_count <= 1)
-          {
-             NOTIFY_INFO(3, "Coud'nt delete last style in widget.");
-             return EINA_FALSE;
-          }
-
-        EINA_INLIST_FOREACH_SAFE(widget->styles, l, style_work)
-          {
-             if (!style_work) continue;
-             if (strcmp(style->style_name, style_work->style_name))
+             if (strcmp(style->full_group_name, style_work->full_group_name))
                break;
           }
 
         if (!style_work) return false;
 
-        group_work = EINA_INLIST_CONTAINER_GET(style_work->groups, Group);
-        if (!group_work) return false;
-
-        EINA_INLIST_FOREACH_SAFE(style->groups, l, group)
+        evas_object_del(style->obj);
+        if (!edje_edit_group_del(style_work->obj, style->full_group_name))
           {
-             if (!group)
+             NOTIFY_INFO(3, "Failed to delete class[%s]", style->name);
+             return false;
+          }
+        class_st->styles = eina_inlist_remove(class_st->styles, EINA_INLIST_GET(style));
+        wm_style_free(style);
+     }
+   else
+     {
+        inlist_count = eina_inlist_count(widget->classes);
+        if (inlist_count <= 1)
+          {
+             NOTIFY_INFO(3, "Coud'nt delete last class in widget.");
+             return false;
+          }
+
+        EINA_INLIST_FOREACH_SAFE(widget->classes, l, class_work)
+          {
+             if (!class_work) continue;
+             if (strcmp(class_st->name, class_work->name))
+               break;
+          }
+
+        if (!class_work) return false;
+
+        style_work = EINA_INLIST_CONTAINER_GET(class_work->styles, Style);
+        if (!style_work) return false;
+
+        EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style)
+          {
+             if (!style)
                {
-                  ERR("NULL group pointer.");
+                  ERR("NULL style pointer.");
                   continue;
                }
 
-             evas_object_del(group->obj);
-             if (!edje_edit_group_del(group_work->obj, group->full_group_name))
+             evas_object_del(style->obj);
+             if (!edje_edit_group_del(style_work->obj, style->full_group_name))
                {
-                  NOTIFY_INFO(3, "Failed to delete class[%s] in style [%s]",
-                              group->group_name, style->style_name);
+                  NOTIFY_INFO(3, "Failed to delete style[%s] in class [%s]",
+                              style->name, class_st->name);
                }
           }
-        widget->styles = eina_inlist_remove(widget->styles, EINA_INLIST_GET(style));
-        wm_style_free(style);
+        widget->classes = eina_inlist_remove(widget->classes, EINA_INLIST_GET(class_st));
+        wm_class_free(class_st);
      }
-   ui_widget_list_style_data_reload(gl_style, widget->styles);
-   return EINA_TRUE;
+   ui_widget_list_class_data_reload(gl_style, widget->classes);
+   return true;
 }
 
 Eina_Bool
@@ -583,7 +581,7 @@ ui_part_state_delete(App_Data *ap)
 {
    Evas_Object *state_list = NULL;
    Part *part = NULL;
-   Group *group = NULL;
+   Style *style = NULL;
    Elm_Object_Item *eoi = NULL;
    char **arr = NULL;
    Eina_Stringshare *full_state_name = NULL;
@@ -608,33 +606,33 @@ ui_part_state_delete(App_Data *ap)
    if (!eoi)
      {
         NOTIFY_INFO(3, "Please select part state");
-        return EINA_FALSE;
+        return false;
      }
 
    full_state_name = eina_stringshare_add(elm_object_item_data_get(eoi));
-   if (!full_state_name) return EINA_FALSE;
+   if (!full_state_name) return false;
 
    arr = eina_str_split(full_state_name, " ", 3);
    state_name = eina_stringshare_add(arr[0]);
    state_value = eina_stringshare_add(arr[1]);
    value = atof(state_value);
 
-   if (!edje_edit_state_del(group->obj, part->name, state_name, value))
+   if (!edje_edit_state_del(style->obj, part->name, state_name, value))
      {
-        if (!strcmp(state_name, "default"))
+        if ((!strcmp(state_name, "default")) && (value == 0))
           {
              NOTIFY_WARNING("Coud'nt delete default state");
           }
         else
           NOTIFY_WARNING("Failed delete state \n[%s %3.2f]", state_name, value);
         CLEAR_STRINGS;
-        return EINA_FALSE;
+        return false;
      }
   elm_object_item_del(eoi);
-  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), EINA_TRUE);
+  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), true);
   CLEAR_STRINGS;
 #undef CLEAR_STRINGS
-  return EINA_TRUE;
+  return true;
 }
 
 Eina_Bool
@@ -642,9 +640,9 @@ register_callbacks(App_Data *ap)
 {
    if (!ap) return false;
 
-   evas_object_smart_callback_add(ap->block.left_top, "gs,style,add",
+   evas_object_smart_callback_add(ap->block.left_top, "wl,style,add",
                                   _add_style_dailog, ap);
-   evas_object_smart_callback_add(ap->block.left_top, "gs,style,del",
+   evas_object_smart_callback_add(ap->block.left_top, "wl,style,del",
                                   _del_style, ap);
    return true;
 }

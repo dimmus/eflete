@@ -62,7 +62,7 @@ struct _Project
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
    /** opened group */
-   Group *current_group;
+   Style *current_style;
 };
 
 /**

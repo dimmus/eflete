@@ -959,6 +959,5 @@ group { name: "elm/popup/buttons3/popup/eflete";
       }
    }
 }
-
 #undef POPUP_ITEM_STATE_ENABLED
 #undef POPUP_ITEM_STATE_DISABLED

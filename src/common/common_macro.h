@@ -32,26 +32,26 @@
 
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \
-   Eina_Inlist *_styles, *_groups, *_widgets = NULL; \
+   Eina_Inlist *_styles, *_classes, *_widgets = NULL; \
    Widget *_widget; \
+   Class *_class; \
    Style *_style; \
-   Group *_group; \
    _widgets = PROJECT->widgets; \
    if (!_widgets) EDJE_OBJECT = NULL; \
    else\
      { \
          _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
-         _styles = _widget->styles; \
-         if (!_styles) EDJE_OBJECT = NULL; \
+         _classes = _widget->classes; \
+         if (!_classes) EDJE_OBJECT = NULL; \
          else \
            { \
-               _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
-               _groups = _style->groups; \
-               if (!_groups) EDJE_OBJECT = NULL; \
+               _class = EINA_INLIST_CONTAINER_GET(_classes, Class); \
+               _styles = _class->styles; \
+               if (!_styles) EDJE_OBJECT = NULL; \
                else\
                  { \
-                     _group = EINA_INLIST_CONTAINER_GET(_groups, Group); \
-                     EDJE_OBJECT = _group->obj; \
+                     _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
+                     EDJE_OBJECT = _style->obj; \
                  } \
            } \
      }

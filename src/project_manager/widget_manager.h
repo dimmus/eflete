@@ -14,11 +14,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef WIDGET_MANAGER_H
-#define WIDGET_MANAGER_H
+#ifndef WIDGET_MANAGER_B_H
+#define WIDGET_MANAGER_B_H
 
 /**
  * @defgroup WidgetManager Widget Manager
@@ -29,14 +29,14 @@
  * Eina_Inlist, of widgets which consist in a theme file. List has the following
  * stucture:
  * - widget (#_Widget)
- *   - style (#_Style)
- *     - group (#_Group)
+ *   - class (#_Class)
+ *     - style (#_Style)
  *       - part (#_Part)
  *       - [part]
  *       - ...
- *     - [group]
+ *     - [style]
  *     - ...
- *   - [style]
+ *   - [class]
  *   - ...
  * - [widget]
  * - ...
@@ -57,8 +57,8 @@
 enum _type
 {
     WIDGET = 0,
+    CLASS,
     STYLE,
-    GROUP,
     PART
 };
 
@@ -69,8 +69,15 @@ enum _type
 typedef enum _type type;
 
 /**
+ * @typedef Part
+ * @ingroup WidgetManager
+ */
+typedef struct _Part Part;
+
+/**
  * @struct _Part
- * This struct designed to storage a data of part of group.
+ *
+ * @brief This struct designed to storage a data part in style.
  * In a theme file (.edc) this data presented as block 'part'
  *
  * @ingroup WidgetManager
@@ -78,63 +85,12 @@ typedef enum _type type;
 struct _Part
 {
     EINA_INLIST;
-    Eina_Stringshare *name;
-    Eina_Stringshare *curr_state;
-    double curr_state_value;
-    Eina_Bool show;
-    int type;
-    type __type;
-};
-
-/**
- * @typedef Part
- * @ingroup WidgetManager
- */
-typedef struct _Part Part;
-
-/**
- * @struct _Group
- * This struct designed to storage a data of 'group' - a widget layout.
- * In a theme file (.edc) this data presented as block 'group'.
- *
- * @ingroup WidgetManager
- */
-struct _Group
-{
-    EINA_INLIST;
-   /** Member 'group_name' consist a name of a group. **/
-    Eina_Stringshare *group_name;
-   /** Member 'full_group_name' consist a name of a block 'group'. **/
-    Eina_Stringshare *full_group_name;
-   /** Member 'obj' - edje edit object.**/
-    Evas_Object *obj;
-   /** is it Group modificated **/
-    Eina_Bool isModify;
-   /** Member 'parts' saved a list of a group parts data. **/
-    Eina_Inlist *parts;
-    type __type;
-};
-
-/**
- * @typedef Group
- * @ingroup WidgetManager
- */
-typedef struct _Group Group;
-
-/**
- * @struct _Style
- * This struct designed to storage a data of style.
- *
- * @ingroup WidgetManager
- */
-struct _Style
-{
-    EINA_INLIST;
-   /** Member 'style_name' consist a name of a style. **/
-    Eina_Stringshare *style_name;
-   /** Member 'groups' saved a list of groups that make up the style. **/
-    Eina_Inlist *groups;
-    type __type;
+    Eina_Stringshare *name; /**< Part name in style */
+    Eina_Stringshare *curr_state; /**< Current selected part state name */
+    double curr_state_value; /**< Current selected part state value */
+    Eina_Bool show; /**< Flag indicate current visibly part evas primitive */
+    int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
+    type __type; /**< PART from enum @_type */
 };
 
 /**
@@ -144,19 +100,47 @@ struct _Style
 typedef struct _Style Style;
 
 /**
- * @struct _Widget
- * This struct designed to storage a widget style data.
+ * @struct _Style
+ *
+ * @brief This struct designed to storage a data of 'style' - a widget layout.
+ * In a theme file (.edc) this data presented as block 'group'.
  *
  * @ingroup WidgetManager
  */
-struct _Widget
+struct _Style
 {
     EINA_INLIST;
-   /** Member 'widget_name' consist a name of a widget. **/
-    Eina_Stringshare *widget_name;
-   /** Member 'styles' consist a list of a widget styles. **/
-    Eina_Inlist *styles;
-    type __type;
+    Eina_Stringshare *name; /**< The name of style. */
+    Eina_Stringshare *full_group_name; /**< The name of a block 'group' in edc. */
+    Evas_Object *obj; /** Edje edit object, which loaded form theme file. */
+    Eina_Bool isModify;  /**< Is it style modificated. */
+    /** is it Group an alias **/
+    Eina_Bool isAlias;
+    /** link to main group that is being aliased **/
+    Style *main_group;
+    Eina_Inlist *parts;  /**< The list of a style parts data. */
+    type __type; /**< STYLE from enum @_type */
+};
+
+/**
+ * @typedef Class
+ * @ingroup WidgetManager
+ */
+typedef struct _Class Class;
+
+/**
+ * @struct _Class
+ *
+ * @brief This struct designed to storage a data of class.
+ *
+ * @ingroup WidgetManager
+ */
+struct _Class
+{
+    EINA_INLIST;
+    Eina_Stringshare *name; /**< The name of a class. */
+    Eina_Inlist *styles;    /**<The list of styles that make up the class. */
+    type __type; /**< CLASS from enum @_type */
 };
 
 /**
@@ -166,16 +150,31 @@ struct _Widget
 typedef struct _Widget Widget;
 
 /**
- * Create a new Part object
+ * @struct _Widget
  *
- * @param group The Group object with a 'group' data.
- * @param part The name of a part.
- * @return A new Part object.
+ * @brief This struct designed to storage a widget classes data.
  *
  * @ingroup WidgetManager
  */
-Part *
-wm_part_add(Group *group, const char *part);
+struct _Widget
+{
+    EINA_INLIST;
+    Eina_Stringshare *name; /**< The name of a widget. */
+    Eina_Inlist *classes; /**< The list of a widget classes. */
+    type __type; /**< WIDGET from enum @_type */
+};
+
+/**
+ * Delete a Part from the @Style object
+ *
+ * @param style A @Style object being editing
+ * @param part A Part object to be deleted.
+ * @return EINA_TRUE if a object deleted, else EINA_FALSE.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_part_del(Style *style, Part *part);
 
 /**
  * Set a current state in Part object.
@@ -184,7 +183,7 @@ wm_part_add(Group *group, const char *part);
  * @param state Name of the state to set.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
- * @note State has format "NAME X.X" we need to extract NAME\
+ * @note State has format "NAME X.X" we need to extract NAME
  * and double value separately
  *
  * @ingroup WidgetManager
@@ -193,32 +192,27 @@ Eina_Bool
 wm_part_current_state_set(Part *part, const char *state);
 
 /**
+ * Create a new Part object
  *
- */
-/*TODO: Add 'wm_part_new', for new part which will be add user */
-
-/**
- * Delete a Part from the Group object
- *
- * @param group A Group object being editing
- * @param part A Part object to be deleted.
- * @return EINA_TRUE if a object deleted, else EINA_FALSE.
+ * @param style The @Style object.
+ * @param part The name of a part.
+ * @return A new Part object.
  *
  * @ingroup WidgetManager
  */
-Eina_Bool
-wm_part_del(Group *group, Part *part);
+Part *
+wm_part_add(Style *style, const char *part);
 
 /**
- * Get a list of signals which using in a 'group' programs
+ * Get a list of signals which using in a style programs
  *
- * @param programs A list of programs.
+ * @param style The @Style object with loaded edje edit object.
  * @return A list of signals
  *
  * @ingroup WidgetManager
  */
 Eina_List *
-wm_program_signals_list_get(Group *group);
+wm_program_signals_list_get(Style *style);
 
 /**
  * Free a signal list.
@@ -232,45 +226,40 @@ Eina_Bool
 wm_program_signals_list_free(Eina_List *signals);
 
 /**
- * Create a new Group object.
+ * Load part data to @Style object, also load base style parametrs and create
+ * edje_edit object.
  *
- * @param group_name A name of a group.
- * @param full_group_name A full name of group, a name of block 'group' in a
- *        edc-file.
- * @return A new Group object.
+ * @param style A @Style object pointer, in wich must be loaded data.
+ * @param e A Evas, parent object.
+ * @param edj Path to theme file (.edj).
  *
- * @ingroup WidgetManager
- */
-Group *
-wm_group_add(const char *group_name, const char *full_group_name);
-
-/**
- * Free a Group object.
- *
- * @param group A Group object to free.
- * @return EINA_TRUE if a object is deleted, else EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
  *
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_group_free(Group *group);
+wm_style_data_load(Style *style, Evas *e, const char *edj);
 
 /**
- * Create a new Style object.
+ * Create a new @Style object.
  *
- * @param style A name of a style.
- * @param groups A list of groups in a current style.
+ * @param style_name The style name.
+ * @param full_group_name A full name of group, a name of block 'group' in a
+ *        edc-file.
+ *
+ * @return A new @Style object.
  *
  * @ingroup WidgetManager
  */
 Style *
-wm_style_add(const char *style, Eina_List *groups);
+wm_style_add(const char* style_name, const char* full_group_name);
 
 /**
- * Free a Style object.
+ * Free a @Style object.
  *
- * @param style A Style object to free.
- * @return EINA_TRUE if a object is deleted.
+ * @param style A @Style object to free.
+ *
+ * @return EINA_TRUE if a object is deleted, else EINA_FALSE.
  *
  * @ingroup WidgetManager
  */
@@ -278,16 +267,63 @@ Eina_Bool
 wm_style_free(Style *style);
 
 /**
+ * Copy all parms of style from one edje_edit object to another. Before call
+ * this function need prepare pointer to edje edit object, which contain
+ * source style. Also need pointer to edje_edit object where new style will
+ * created.
+ * First of all copy main params of style, like min/max size. At second copy
+ * all params of states of parts in style. Also copyes programms for style.
+ *
+ * @param dest_edje The edje_edit object, which provide access to edj file data.
+ * in this object will copy new style.
+ * @param source_edje The edje_edit object, which provide access to edj file data.
+ * from this object will gave params for copying.
+ * @param full_name The string with full name of new style.
+ * @param dest_file The string path to edj file, where will copyed new style.
+ * @param style The new @Style structure object with new style
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ */
+Eina_Bool
+wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
+              Eina_Stringshare *full_name, Eina_Stringshare *dest_file,
+              Style *style);
+
+/**
+ * Create a new @Class object.
+ *
+ * @param class_name A name of a class.
+ * @param styles A list of styles in a current class.
+ *
+ * @ingroup WidgetManager
+ */
+Class *
+wm_class_add(const char *class_name, Eina_List *styles);
+
+/**
+ * Free a @Class object.
+ *
+ * @param class A @Class object to free.
+ *
+ * @return EINA_TRUE if a object is deleted.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_class_free(Class *class_st);
+
+/**
  * Create a new Widget object.
  *
  * @param widget A name of a widget.
- * @param groups A list of 'group' styles in a current widget.
+ * @param styles A list of styles in a current widget.
  * @return A new Widget object.
  *
  * @ingroup WidgetManager
  */
 Widget *
-wm_widget_add(const char *widget, Eina_List *groups);
+wm_widget_add(const char *widget_name, Eina_List *styles);
 
 /**
  * Free a Widget object.
@@ -323,6 +359,19 @@ Eina_Bool
 wm_widget_list_free(Eina_Inlist *widget_list);
 
 /**
+ * Find style object in widget list. Use full name of style.
+ *
+ * @param widget_list the Eina_Inlist list that contain wdgets structures.
+ * @param style_full_name the string full name of style.(with widget/class/style)
+ *
+ * @return the @Style object.
+ *
+ * @ingroup WidgetManager
+ */
+Style *
+wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name);
+
+/**
  * Create edje edit object and load data from edj-file.
  *
  * @param widget_list A list of widget to load data.
@@ -335,19 +384,6 @@ void
 wm_widget_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path);
-
-/**
- * Find group object in widget list. Use full name of group.
- *
- * @param widget_list the Eina_Inlist list that contain wdgets structures.
- * @param group_full_name the string full name of group.(with widget/class/style)
- * @return the group object.
- *
- * @ingroup WidgetManager
- */
-Evas_Object *
-wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
-
 /**
  * Return the string with the name of the part type by the giving id (int).
  * @note the returned string should not be deleted!
@@ -360,18 +396,5 @@ wm_group_object_find(Eina_Inlist *widget_list, const char *group_full_name);
 const char *
 wm_part_type_get(Edje_Part_Type type);
 
-/**
- * Load part data to Group object, also load base group parametrs and create
- * edje-edit object.
- *
- * @param group A Group object pointer, in wich must be loaded data.
- * @param e A Evas, parent object.
- * @param path Path to theme file (.edj).
- * @return EINA_TRUE if successful, EINA_FALSE if not.
- *
- * @ingroup WidgetManager
- */
-Eina_Bool
-wm_group_data_load(Group *group, Evas *e, const char *edj);
+#endif /* WIDGET_MANAGER_B_H*/
 
-#endif /* WIDGET_MANAGER_H */

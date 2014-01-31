@@ -44,6 +44,7 @@
 #include "part_dialog.h"
 #include "state_dialog.h"
 #include "style_dialog.h"
+#include "colorsel.h"
 
 /**
  * Adds main window object for Edje tool development.
@@ -66,6 +67,16 @@ ui_main_window_add(App_Data *ap);
  */
 Eina_Bool
 ui_main_window_del(App_Data *ap);
+
+/**
+ * Get the colorselector object.
+ *
+ * @return the colorselector object.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+ui_window_colorsel_get(void);
 
 /**
  * Adds marked panes to the given Elementary layout.
@@ -156,15 +167,14 @@ void
 ui_part_back(App_Data *ap);
 
 /**
- * Can be used in future API!!!!
- * This function will be called when back from group list button is clicked.
+ * This function will be called when back from style list button is clicked.
  *
  * @param ap The App_Data structure pointer.
  *
  * @ingroup Window
  */
 void
-ui_group_back(App_Data *ap);
+ui_style_back(App_Data *ap);
 
 /**
  * Update displayed information about current part state. Update part object
@@ -195,24 +205,23 @@ Evas_Object *
 ui_part_select(App_Data *ap, Part* part);
 
 /**
- * View group objects on workspace, load signals in list. Show, or update
- * information about group parameters.1
+ * View style objects on workspace, load signals in list. Show, or update
+ * information about group parameters.
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param group The Group pointer.
+ * @param style The @Style structure object.
  *
  * @ingroup Window
  */
 void
-ui_group_clicked(App_Data *ap, Group *group);
+ui_style_clicked(App_Data *ap, Style *style);
 
 /**
  * Load project data to App_Data structure. Turn to work state for application.
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param obj The Evas_Object pointer, wich pointed to fileselector widget.
  * @param selected String with opened project file name.
  *
  * @return The Evas_Object pointer. Widget list object.
@@ -220,7 +229,7 @@ ui_group_clicked(App_Data *ap, Group *group);
  * @ingroup Window
  */
 Evas_Object *
-ui_edj_load_done(App_Data* ap, Evas_Object* obj, const char *selected);
+ui_edj_load_done(App_Data* ap, const char *selected);
 
 /**
  * Delete selected state from current part.

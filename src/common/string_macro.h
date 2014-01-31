@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef STRING_MACRO_H
@@ -29,9 +29,10 @@
    free(arr[0]); \
    free(arr);
 
-#define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\"
-#define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{}|\\"
-#define PROP_BANNED_SYMBOLS ":;,'\"~!?&^%$#@()[]=+*{} |/\\"
+#define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\№"
+#define STYLE_NAME_BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |\\№"
+#define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{}|\\№"
+#define PROP_BANNED_SYMBOLS ";,'\"~!?&^%$#@()[]=+*{} |/\\№"
 
 #define EINA_LIST_STRINGSHARE_FREE(EINA_LIST) \
    Eina_Stringshare *_data_; \

@@ -23,7 +23,6 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "program_editor.h"
-#include "highlight.h" /*TODO: it need ro remove from here */
 #include "about_window.h"
 
 static int _menu_delayed_event = 0;
@@ -71,7 +70,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
                 {
                    NOTIFY_INFO(3, "Theme saved: %s", menu_event->ap->project->edj)
                    ui_demospace_set(menu_event->ap->demo, menu_event->ap->project,
-                                    menu_event->ap->project->current_group);
+                                    menu_event->ap->project->current_style);
                 }
               else
                  NOTIFY_ERROR("Theme can not be saved: %s", menu_event->ap->project->edj);
@@ -113,7 +112,7 @@ _on_close_project_save(void *data,
         if (pm_save_project_to_swap(ap->project))
           {
              if (pm_save_project_edj(ap->project))
-                ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+                ui_demospace_set(ap->demo, ap->project, ap->project->current_style);
              else
                 NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
           }
@@ -126,6 +125,7 @@ _project_not_save_new(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
    evas_object_hide(ap->popup);
    new_theme_create(ap);
    ui_menu_locked_set(ap->menu_hash, false);
@@ -138,6 +138,10 @@ _project_not_save_edc(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   ui_panes_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, false);
+
    evas_object_hide(ap->popup);
    open_edc_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
@@ -149,6 +153,12 @@ _project_not_save_edj(void *data,
                       void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+
+   if (ap->project)
+     pm_free(ap->project);
+   ui_panes_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, false);
+
    evas_object_hide(ap->popup);
    open_edj_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
@@ -408,10 +418,10 @@ _on_prog_editor_menu(void *data __UNUSED__,
                      void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (!ap->project->current_group)
+   if (!ap->project->current_style)
      NOTIFY_WARNING("Please open the widget style for editing style programs!")
    else
-     program_editor_window_add(ap->project->current_group);
+     program_editor_window_add(ap->project->current_style);
 }
 
 static void
@@ -419,8 +429,7 @@ _on_about_window_menu(void *data __UNUSED__,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   about_window_add(ap->win);
+   about_window_add();
 }
 
 Evas_Object *

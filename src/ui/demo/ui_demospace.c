@@ -163,37 +163,36 @@ ui_demospace_add(Evas_Object *parent)
    Evas_Object *spinner, *_layout;
 
    demo = _demo_init();
-   demo->current_scale = 1.0;
 
    _layout = elm_layout_add(parent);
    demo->layout = _layout;
    elm_layout_file_set(_layout, TET_EDJ, "eflete/demospace/toolbar/default");
 
-   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/default");
+   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/demo");
    elm_spinner_label_format_set(spinner, "%1.2f");
-   elm_object_tooltip_text_set(spinner, "Change scale of the whole demo object.");
    evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, demo);
    elm_spinner_value_set(spinner, 1.0);
    elm_object_part_content_set(demo->layout, "zoom_spinner",
                                spinner);
-   evas_object_show(spinner);
+   demo->scale_spinner = spinner;
 
    demo->demospace = elm_layout_add(parent);
    elm_layout_file_set(demo->demospace, TET_EDJ, "eflete/demospace/base/default");
    elm_object_part_content_set(demo->layout, "demospace",
                                demo->demospace);
    elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
+   elm_layout_signal_emit(demo->layout, "demospace,hide", "eflete");
 
    return demo;
 }
 
 Eina_Bool
-ui_demospace_set(Demospace *demo, Project *project, Group *group)
+ui_demospace_set(Demospace *demo, Project *project, Style *style)
 {
    if ((!demo) || (!project)) return false;
-   if (group)
+   if (style)
      {
-        char **c = eina_str_split(group->full_group_name, "/", 4);
+        char **c = eina_str_split(style->full_group_name, "/", 4);
         const char *widget = c[1],  *type = c[2], *style = c[3];
 
         if (!demo->object)
@@ -211,6 +210,9 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
              return false;
           }
 
+        demo->current_scale = 1.0;
+        elm_spinner_value_set(demo->scale_spinner, 1.0);
+
         if (!demo->th)
           demo->th = elm_theme_new();
         else
@@ -226,10 +228,11 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
      }
    else
      {
-        WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
+        WARN("Edje edit style object was deleted. Could'nt set it into groupspace");
         return false;
      }
    elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
+   elm_layout_signal_emit(demo->layout, "demospace,show", "eflete");
    return true;
 }
 
@@ -238,6 +241,7 @@ ui_demospace_unset(Demospace *demo)
 {
    if (!demo) return false;
    elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
+   elm_layout_signal_emit(demo->layout, "demospace,hide", "eflete");
    elm_object_part_content_unset(demo->demospace, "demo");
    evas_object_del(demo->object);
    demo->object = NULL;

@@ -34,6 +34,7 @@ struct _Demospace
    Evas_Object *demospace;
    Evas_Object *layout;
    Evas_Object *object;
+   Evas_Object *scale_spinner;
    double current_scale;
    Elm_Theme *th;
 };
@@ -64,13 +65,13 @@ ui_demospace_add(Evas_Object *parent);
  *
  * @param demo demospace structure.
  * @param project project structure that contain path to swap, demo and edj files.
- * @param group group that contain current group name is being showed.
+ * @param style style that contain current style name is being showed.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Demospace
  */
 Eina_Bool
-ui_demospace_set(Demospace *demo, Project *project, Group *group);
+ui_demospace_set(Demospace *demo, Project *project, Style *style);
 
 /**
  * Set and show selected group and apply style to it.

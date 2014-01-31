@@ -21,8 +21,8 @@
 #include "widget_manager.h"
 
 static Elm_Genlist_Item_Class *_itc_widget = NULL;
+static Elm_Genlist_Item_Class *_itc_class = NULL;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
-static Elm_Genlist_Item_Class *_itc_group = NULL;
 static Elm_Genlist_Item_Class *_itc_part = NULL;
 
 static inline Elm_Object_Item *
@@ -140,17 +140,17 @@ _item_part_content_get(void *data,
 }
 
 static char *
-_item_group_label_get(void *data,
+_item_style_label_get(void *data,
                       Evas_Object *obj __UNUSED__,
                       const char *part __UNUSED__)
 {
-   Group *g = (Group *)data;
-   if (!g->group_name)
+   Style *style = (Style *)data;
+   if (!style->name)
      {
-        ERR("It impossible, but it is occurred, group name is missing!");
+        ERR("It impossible, but it is occurred, style name is missing!");
         return NULL;
      }
-   return strdup(g->group_name);
+   return strdup(style->name);
 }
 
 static char *
@@ -158,27 +158,27 @@ _item_widget_label_get(void *data,
                        Evas_Object *obj __UNUSED__,
                        const char *part __UNUSED__)
 {
-   Widget *w = (Widget *)data;
-   if (!w->widget_name)
+   Widget *widget = (Widget *)data;
+   if (!widget->name)
      {
         ERR("It impossible, but it is occurred, widget name is missing!");
         return NULL;
      }
-   return strdup(w->widget_name);
+   return strdup(widget->name);
 }
 
 static char *
-_item_style_label_get(void *data,
+_item_class_label_get(void *data,
                       Evas_Object *obj __UNUSED__,
                       const char *part __UNUSED__)
 {
-   Style *st = (Style *)data;
-   if (!st->style_name)
+   Class *class = (Class *)data;
+   if (!class->name)
      {
-        ERR("It impossible, but it is occurred, style name is missing!");
+        ERR("It impossible, but it is occurred, class name is missing!");
         return NULL;
      }
-   return strdup(st->style_name);
+   return strdup(class->name);
 }
 
 static void
@@ -189,7 +189,7 @@ _navi_gl_styles_pop(void *data,
    Evas_Object *nf = (Evas_Object *)data;
    elm_naviframe_item_pop(nf);
 
-   evas_object_smart_callback_call (nf, "wl,group,back", NULL);
+   evas_object_smart_callback_call (nf, "wl,style,back", NULL);
 }
 
 static void
@@ -231,24 +231,25 @@ _on_part_select(void *data,
    evas_object_smart_callback_call (nf, "wl,part,select", _part);
 }
 static void
-_unset_cur_group(void *data,
+_unset_cur_style(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *ei __UNUSED__)
 {
-   Project *pr = (Project *)data;
-   if (pr->current_group)
-     evas_object_smart_callback_del(pr->current_group->obj, "edit_obj,part,add",
-                                    _wl_part_add);
-   pr->current_group = NULL;
+   Project *project = (Project *)data;
+   if (project->current_style)
+     evas_object_smart_callback_del(project->current_style->obj,
+                                    "edit_obj,part,add", _wl_part_add);
+   project->current_style = NULL;
 
 }
+
 static void
 _add_style_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
    Evas_Object *block =  elm_object_parent_widget_get(data);
-   evas_object_smart_callback_call(block, "gs,style,add", NULL);
+   evas_object_smart_callback_call(block, "wl,style,add", NULL);
 }
 
 static void
@@ -257,7 +258,7 @@ _del_style_unpress(void *data,
                    void *event_info __UNUSED__)
 {
    Evas_Object *block =  elm_object_parent_widget_get(data);
-   evas_object_smart_callback_call(block, "gs,style,del", NULL);
+   evas_object_smart_callback_call(block, "wl,style,del", NULL);
 }
 
 static void
@@ -297,7 +298,7 @@ _past_part_cb(void *data,
 }
 
 static void
-_on_group_clicked_double(void *data,
+_on_style_clicked_double(void *data,
                          Evas_Object *obj,
                          void *event_info)
 {
@@ -306,17 +307,18 @@ _on_group_clicked_double(void *data,
    Elm_Object_Item *eoi;
    Evas_Object *nf, *gl_parts, *bt, *ic;
    Eina_Inlist *parts;
-   Group *_group;
+   Style *_style;
    Part *_part;
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
    nf = evas_object_data_get(obj, "naviframe");
-   _group = elm_object_item_data_get(glit);
-   if (_group->__type != GROUP) return;
-   parts = _group->parts;
+   _style = elm_object_item_data_get(glit);
+   if (_style->__type != STYLE) return;
+   if (_style->isAlias) _style = _style->main_group;
+   parts = _style->parts;
 
-   evas_object_smart_callback_call (nf, "wl,group,select", _group);
+   evas_object_smart_callback_call(nf, "wl,style,select", _style);
 
    if (!_itc_part)
      {
@@ -330,14 +332,10 @@ _on_group_clicked_double(void *data,
 
    gl_parts = elm_genlist_add(nf);
    elm_object_style_set(gl_parts, DEFAULT_STYLE);
-   pr->current_group = _group;
-   evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_group, pr);
-   evas_object_size_hint_align_set(gl_parts,
-                                   EVAS_HINT_FILL,
-                                   EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl_parts,
-                                    EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
+   pr->current_style = _style;
+   evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_style, pr);
+   evas_object_size_hint_align_set(gl_parts, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(gl_parts, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    EINA_INLIST_FOREACH(parts, _part)
      {
@@ -359,7 +357,7 @@ _on_group_clicked_double(void *data,
    elm_object_style_set(bt, "eflete/default");
    evas_object_show(gl_parts);
 
-   elm_naviframe_item_push(nf, _group->full_group_name, bt, NULL, gl_parts, NULL);
+   elm_naviframe_item_push(nf, _style->full_group_name, bt, NULL, gl_parts, NULL);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-add.png");
@@ -390,70 +388,81 @@ _on_group_clicked_double(void *data,
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 }
 
+static Evas_Object *
+_item_style_content_get(void *data,
+                       Evas_Object *obj,
+                       const char *part __UNUSED__)
+{
+   Style *_style = (Style *)data;
+   if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
+     {
+        Evas_Object *icon = elm_icon_add(obj);
+        elm_image_file_set(icon, TET_IMG_PATH"alias_link.png", NULL);
+        elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
+        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        return icon;
+     }
+   return NULL;
+}
+
 static void
 _on_widget_clicked_double(void *data,
                           Evas_Object *obj,
                           void *event_info)
 {
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Elm_Object_Item *glit_style, *glit_group;
-   Evas_Object *nf, *gl_styles, *bt, *ic;
-   Eina_Inlist *styles, *groups;
+   Elm_Object_Item *glit_class, *glit_style;
+   Evas_Object *nf, *gl_class, *bt, *ic;
+   Eina_Inlist *styles = NULL, *classes = NULL;
    Widget *_widget;
+   Class *_class;
    Style *_style;
-   Group *_group;
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
    nf = evas_object_data_get(obj, "naviframe");
    _widget = elm_object_item_data_get(glit);
-   styles = _widget->styles;
+   classes = _widget->classes;
 
+   if(!_itc_class)
+     {
+        _itc_class = elm_genlist_item_class_new();
+        _itc_class->item_style = "eflete/default";
+        _itc_class->func.text_get = _item_class_label_get;
+        _itc_class->func.content_get = NULL;
+        _itc_class->func.state_get = NULL;
+        _itc_class->func.del = NULL;
+     }
 
-   if(!_itc_style)
+   if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
         _itc_style->item_style = "eflete/default";
         _itc_style->func.text_get = _item_style_label_get;
-        _itc_style->func.content_get = NULL;
+        _itc_style->func.content_get = _item_style_content_get;
         _itc_style->func.state_get = NULL;
         _itc_style->func.del = NULL;
      }
 
-   if (!_itc_group)
-     {
-        _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "eflete/default";
-        _itc_group->func.text_get = _item_group_label_get;
-        _itc_group->func.content_get = NULL;
-        _itc_group->func.state_get = NULL;
-        _itc_group->func.del = NULL;
-     }
+   gl_class = elm_genlist_add(nf);
+   evas_object_data_set(gl_class, "naviframe", nf);
+   elm_object_style_set(gl_class, "eflete/default");
+   evas_object_size_hint_align_set(gl_class, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(gl_class, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   gl_styles = elm_genlist_add(nf);
-   evas_object_data_set(gl_styles, "naviframe", nf);
-   elm_object_style_set(gl_styles, "eflete/default");
-   evas_object_size_hint_align_set(gl_styles,
-                                   EVAS_HINT_FILL,
-                                   EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(gl_styles,
-                                    EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-
-   EINA_INLIST_FOREACH(styles, _style)
+   EINA_INLIST_FOREACH(classes, _class)
      {
-        glit_style = elm_genlist_item_append(gl_styles, _itc_style,
-                                             _style,
+        glit_class = elm_genlist_item_append(gl_class, _itc_class, _class,
                                              NULL, ELM_GENLIST_ITEM_NONE,
                                              NULL, NULL);
-        groups = _style->groups;
+        styles = _class->styles;
 
-        EINA_INLIST_FOREACH(groups, _group)
+        EINA_INLIST_FOREACH(styles, _style)
           {
-             glit_group = elm_genlist_item_append(gl_styles, _itc_group,
-                             _group, glit_style, ELM_GENLIST_ITEM_NONE,
+             glit_style = elm_genlist_item_append(gl_class, _itc_style,
+                             _style, glit_class, ELM_GENLIST_ITEM_NONE,
                              NULL, NULL);
-             elm_object_item_data_set(glit_group, _group);
+             elm_object_item_data_set(glit_style, _style);
           }
      }
 
@@ -463,10 +472,10 @@ _on_widget_clicked_double(void *data,
    elm_layout_content_set(bt, "icon", ic);
    elm_object_style_set(bt, "eflete/default");
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
-   evas_object_smart_callback_add(gl_styles, "clicked,double",
-                                  _on_group_clicked_double, data);
+   evas_object_smart_callback_add(gl_class, "clicked,double",
+                                  _on_style_clicked_double, data);
 
-   elm_naviframe_item_push(nf, _widget->widget_name, bt, NULL, gl_styles, NULL);
+   elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-remove.png");
@@ -485,22 +494,32 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
-   evas_object_show(gl_styles);
+   evas_object_show(gl_class);
 }
 
 void
-ui_widget_list_style_data_reload(Evas_Object *gl_styles, Eina_Inlist *styles)
+ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
 {
    Style *_style = NULL;
-   Group *_group = NULL;
-   Eina_Inlist *groups = NULL;
+   Class *_class = NULL;
+   Eina_Inlist *styles = NULL;
    Elm_Object_Item *glit_style = NULL;
-   Elm_Object_Item *glit_group = NULL;
+   Elm_Object_Item *glit_class = NULL;
 
-   if((!gl_styles) || (!styles)) return;
-   elm_genlist_clear(gl_styles);
+   if ((!gl_classes) || (!classes)) return;
+   elm_genlist_clear(gl_classes);
 
-   if(!_itc_style)
+   if(!_itc_class)
+     {
+        _itc_class = elm_genlist_item_class_new();
+        _itc_class->item_style = "eflete/default";
+        _itc_class->func.text_get = _item_class_label_get;
+        _itc_class->func.content_get = NULL;
+        _itc_class->func.state_get = NULL;
+        _itc_class->func.del = NULL;
+     }
+
+   if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
         _itc_style->item_style = "eflete/default";
@@ -510,30 +529,19 @@ ui_widget_list_style_data_reload(Evas_Object *gl_styles, Eina_Inlist *styles)
         _itc_style->func.del = NULL;
      }
 
-   if (!_itc_group)
+   EINA_INLIST_FOREACH(classes, _class)
      {
-        _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "eflete/default";
-        _itc_group->func.text_get = _item_group_label_get;
-        _itc_group->func.content_get = NULL;
-        _itc_group->func.state_get = NULL;
-        _itc_group->func.del = NULL;
-     }
-
-   EINA_INLIST_FOREACH(styles, _style)
-     {
-        glit_style = elm_genlist_item_append(gl_styles, _itc_style,
-                                             _style,
+        glit_class = elm_genlist_item_append(gl_classes, _itc_class, _class,
                                              NULL, ELM_GENLIST_ITEM_NONE,
                                              NULL, NULL);
-        groups = _style->groups;
+        styles = _class->styles;
 
-        EINA_INLIST_FOREACH(groups, _group)
+        EINA_INLIST_FOREACH(styles, _style)
           {
-             glit_group = elm_genlist_item_append(gl_styles, _itc_group,
-                             _group, glit_style, ELM_GENLIST_ITEM_NONE,
+             glit_style = elm_genlist_item_append(gl_classes, _itc_style,
+                             _style, glit_class, ELM_GENLIST_ITEM_NONE,
                              NULL, NULL);
-             elm_object_item_data_set(glit_group, _group);
+             elm_object_item_data_set(glit_style, _style);
           }
      }
 }
@@ -593,9 +601,11 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
    Widget *_widget;
    Elm_Object_Item *eoi;
    Evas_Object *gl_widgets;
-   Eina_Inlist *widget_list = project->widgets;
+   Eina_Inlist *widget_list = NULL;
 
-   if ((!object) || (!widget_list)) return EINA_FALSE;
+   if ((!object) || (!project) || (!project->widgets)) return false;
+
+   widget_list = project->widgets;
 
    gl_widgets = elm_object_item_part_content_get(_widget_list_get(object),
                                                  "elm.swallow.content");
@@ -605,29 +615,26 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    EINA_INLIST_FOREACH(widget_list, _widget)
      {
-        eoi = elm_genlist_item_append(gl_widgets, _itc_widget,
-                                      _widget,
-                                      NULL, ELM_GENLIST_ITEM_NONE,
-                                      NULL, NULL);
-        /* maybe add a ref to _widget */
+        eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget, NULL,
+                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
         elm_object_item_data_set(eoi, _widget);
      }
 
    evas_object_smart_callback_add(gl_widgets, "clicked,double",
                                   _on_widget_clicked_double, project);
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
-ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name)
+ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
 {
    Evas_Object *gl_parts;
    Elm_Object_Item *eoi;
    Part *part;
 
-   if ((!object) || (!group) || (!name)) return false;
-   part = wm_part_add(group, name);
+   if ((!object) || (!style) || (!name)) return false;
+   part = wm_part_add(style, name);
 
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
@@ -640,13 +647,13 @@ ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name)
 }
 
 Eina_Bool
-ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
+ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
 {
    Evas_Object *gl_parts;
    Elm_Object_Item *eoi, *next_eoi;
    Part *part;
 
-   if ((!object) || (!group)) return false;
+   if ((!object) || (!style)) return false;
 
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
@@ -658,7 +665,7 @@ ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
         return false;
      }
    part = (Part *)elm_object_item_data_get(eoi);
-   wm_part_del(group, part);
+   wm_part_del(style, part);
 
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
@@ -669,7 +676,7 @@ ui_widget_list_selected_part_del(Evas_Object *object, Group *group)
 }
 
 Eina_Bool
-ui_widget_list_selected_part_above(Evas_Object *object, Group *group)
+ui_widget_list_selected_part_above(Evas_Object *object, Style *style)
 {
    Evas_Object *gl_parts = NULL;
    Elm_Object_Item *eoi = NULL;
@@ -681,7 +688,7 @@ ui_widget_list_selected_part_above(Evas_Object *object, Group *group)
    Part *_part = NULL;
 
 
-   if ((!object) || (!group)) return false;
+   if ((!object) || (!style)) return false;
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    eoi = elm_genlist_selected_item_get(gl_parts);
@@ -703,14 +710,14 @@ ui_widget_list_selected_part_above(Evas_Object *object, Group *group)
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
 
-   for(itr = group->parts; itr != NULL; itr = itr->next)
+   for(itr = style->parts; itr != NULL; itr = itr->next)
      {
         _part = EINA_INLIST_CONTAINER_GET(itr, Part);
         if (_part == part)
           {
              prev_elm = itr->prev;
-             group->parts = eina_inlist_remove(group->parts, itr);
-             group->parts = eina_inlist_prepend_relative(group->parts,
+             style->parts = eina_inlist_remove(style->parts, itr);
+             style->parts = eina_inlist_prepend_relative(style->parts,
                                                          itr, prev_elm);
              break;
           }
@@ -720,7 +727,7 @@ ui_widget_list_selected_part_above(Evas_Object *object, Group *group)
 }
 
 Eina_Bool
-ui_widget_list_selected_part_below(Evas_Object *object, Group *group)
+ui_widget_list_selected_part_below(Evas_Object *object, Style *style)
 {
 
    Evas_Object *gl_parts = NULL;
@@ -732,7 +739,7 @@ ui_widget_list_selected_part_below(Evas_Object *object, Group *group)
    Eina_Inlist *itr = NULL;
    Part *_part = NULL;
 
-   if ((!object) || (!group)) return false;
+   if ((!object) || (!style)) return false;
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    eoi = elm_genlist_selected_item_get(gl_parts);
@@ -754,14 +761,14 @@ ui_widget_list_selected_part_below(Evas_Object *object, Group *group)
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
 
-   for (itr = group->parts; itr != NULL; itr = itr->next)
+   for (itr = style->parts; itr != NULL; itr = itr->next)
      {
         _part = EINA_INLIST_CONTAINER_GET(itr, Part);
         if (_part == part)
           {
              next_elm = itr->next;
-             group->parts = eina_inlist_remove(group->parts, itr);
-             group->parts = eina_inlist_append_relative(group->parts,
+             style->parts = eina_inlist_remove(style->parts, itr);
+             style->parts = eina_inlist_append_relative(style->parts,
                                                         itr, next_elm);
              break;
           }
