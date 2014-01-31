@@ -44,6 +44,7 @@
 #include "part_dialog.h"
 #include "state_dialog.h"
 #include "style_dialog.h"
+#include "colorsel.h"
 
 /**
  * Adds main window object for Edje tool development.
@@ -66,6 +67,16 @@ ui_main_window_add(App_Data *ap);
  */
 Eina_Bool
 ui_main_window_del(App_Data *ap);
+
+/**
+ * Get the colorselector object.
+ *
+ * @return the colorselector object.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+ui_window_colorsel_get(void);
 
 /**
  * Adds marked panes to the given Elementary layout.

@@ -55,6 +55,8 @@ struct _App_Data
     Evas_Object *main_menu;
     Eina_Hash *menu_hash;
     Evas_Object *popup;
+    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
+                                application. */
     Eina_Bool is_new;
     struct {
        Evas_Object *left_top;
@@ -138,5 +140,15 @@ app_free(App_Data *ap);
  */
 Evas_Object *
 main_window_get(void);
+
+/**
+ * Get the colorselector object pointer.
+ * The colorselector one for the entire application.
+ *
+ * @return pointer to colorselector.
+ * @ingroup EFL_TET
+ */
+Evas_Object *
+colorselector_get(void);
 
 #endif /* EFL_TET_H */

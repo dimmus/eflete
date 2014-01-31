@@ -72,6 +72,12 @@ _on_window_resize(void *data __UNUSED__,
    ui_resize_panes(w,h);
 }
 
+#define MARK_TO_SHUTDOWN(fmt, ...) \
+   { \
+      ERR(fmt, ## __VA_ARGS__); \
+      return false; \
+   } \
+
 Eina_Bool
 ui_main_window_add(App_Data *ap)
 {
@@ -79,11 +85,15 @@ ui_main_window_add(App_Data *ap)
 
    if (!ap)
      {
-        ERR("ap is NULL");
+        ERR("Can't create the window. App_Data is NULL");
         return EINA_FALSE;
      }
+
+   if (!ecore_file_mkpath(TET_SETT_PATH))
+     ERR("Can't create settings directory");
+
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
-   win = elm_win_add(NULL, "panes", ELM_WIN_BASIC);
+   win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
 
    if (win == NULL)
      {
@@ -112,53 +122,37 @@ ui_main_window_add(App_Data *ap)
    evas_object_show(layout);
    ap->win_layout = layout;
    if (!ap->win_layout)
-     {
-        ERR("Failrue create layout main window.");
-        return false;
-     }
+     MARK_TO_SHUTDOWN("Failrue create layout main window.")
 
    ap->main_menu = ui_menu_add(ap);
    if (!ap->main_menu)
-     {
-        ERR("Failrue add menu on main window.");
-        return false;
-     }
+     MARK_TO_SHUTDOWN("Failrue add menu on main window.")
 
    if (!ui_panes_add(ap))
-     {
-        ERR("Failrue add panes on main window.");
-        return false;
-     }
-
-   if (!ecore_file_mkpath(TET_SETT_PATH))
-     {
-        ERR("Couldn't create settings directory");
-        NOTIFY_ERROR("Couldn't create settings directory");
-     }
+     MARK_TO_SHUTDOWN("Failrue add panes on main window.")
 
    ui_panes_settings_load(win);
    ap->workspace = workspace_add(ap->block.canvas);
    if (!ap->workspace)
-     {
-        ERR("Failrue create workspace in main window.");
-        return false;
-     }
+     MARK_TO_SHUTDOWN("Failrue create workspace in main window.")
+
    ui_block_ws_set(ap, ap->workspace);
    evas_object_show(ap->workspace);
    ap->demo = ui_demospace_add(ap->block.bottom_right);
    if (!ap->demo)
-     {
-        ERR("Failed create live view");
-     }
+     MARK_TO_SHUTDOWN("Failed create live view")
    else
      ui_block_demo_view_set(ap, ap->demo->layout);
 
+   ap->colorsel = colorselector_add(ap->win);
+   if (!ap->colorsel)
+     MARK_TO_SHUTDOWN("Can't create a colorselector.")
+
    if (!register_callbacks(ap))
-     {
-        CRIT("Failed register callbacks");
-        return false;
-     }
+     MARK_TO_SHUTDOWN("Failed register callbacks");
+
    evas_object_show(win);
    loop_begin(_on_window_close, ap);
    return true;
 }
+#undef MARK_TO_SHUTDOWN

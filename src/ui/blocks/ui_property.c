@@ -504,9 +504,6 @@ ui_property_part_unset(Evas_Object *property)
 #undef pd_part
 #undef pd_part_drag
 
-/*   miss:
-     Evas_Object *aspect_pref;
- */
 #define ITEM_2SPINNER_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2, type) \
    ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE1, type) \
    ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE2, type) \

@@ -18,14 +18,11 @@
 */
 
 #include "string_macro.h"
+#include "colorsel.h"
 
 static Elm_Entry_Filter_Accept_Set accept_color = {
-     .accepted = "0123456789 ",
-     .rejected = NULL
-};
-static Elm_Entry_Filter_Limit_Size limit_color = {
-     .max_char_count = 15,
-     .max_byte_count = 0
+   .accepted = "0123456789 ",
+   .rejected = NULL
 };
 
 static Elm_Entry_Filter_Accept_Set accept_prop = {
@@ -297,37 +294,61 @@ _on_##SUB##_##VALUE##_change(void *data, \
 #define ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
-                              Evas_Object *obj, \
-                              void *ei __UNUSED__) \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    int r, g, b, a; \
-   unsigned int tok_elm; \
    Prop_Data *pd = (Prop_Data *)data; \
-   const char *value = elm_entry_entry_get(obj); \
-   char **c = eina_str_split_full (value, " ", 4, &tok_elm); \
-   if (tok_elm < 4) \
-     { \
-        free(c[0]); \
-        free(c); \
-        NOTIFY_ERROR ("Please input correct color data:\n r g b a") \
-        return; \
-     } \
-   Evas_Object *box, *image; \
-   Eina_List *nodes = NULL; \
-   r = atoi(c[0]); g = atoi(c[1]); b = atoi(c[2]); a = atoi(c[3]); \
+   Evas_Object *color, *rect; \
+   color = evas_object_data_get(obj, "color"); \
+   colorselector_color_get(obj, &r, &g, &b, &a); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->group->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        r, g, b, a)) \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        r, g, b, a))\
      return; \
-   box = elm_object_parent_widget_get(obj); \
-   nodes = elm_box_children_get(box); \
-   image = eina_list_nth(nodes, 1); \
-   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a); \
-   free(c[0]); \
-   free(c); \
-   eina_list_free(nodes); \
+   rect = elm_object_part_content_get(color, "elm.swallow.content"); \
+   evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->group->isModify = true; \
+} \
+static void \
+_on_##SUB##_##VALUE##_dismissed(void *data, \
+                                Evas_Object *obj, \
+                                void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   evas_object_smart_callback_del_full(obj, "color,changed", \
+                                      _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_del_full(obj, "palette,item,selected", \
+                                       _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_data_del(obj, "color"); \
+   evas_object_hide(obj); \
+} \
+static void \
+_on_##SUB##_##VALUE##_clicked(void *data, \
+                              Evas *e __UNUSED__, \
+                              Evas_Object *obj, \
+                              void *event_info __UNUSED__) \
+{ \
+   int x, y; \
+   int r, g, b, a; \
+   Evas_Object *colorsel, *rect; \
+   Prop_Data *pd = (Prop_Data *)data; \
+   colorsel = colorselector_get(); \
+   evas_object_data_set(colorsel, "color", obj); \
+   rect = elm_object_part_content_get(obj, "elm.swallow.content"); \
+   evas_object_color_get(rect, &r, &g, &b, &a); \
+   colorselector_color_set(colorsel, r, g, b, a); \
+   evas_object_smart_callback_add(colorsel, "color,changed", \
+                                  _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(colorsel, "palette,item,selected", \
+                                  _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(colorsel, "dismissed", \
+                                  _on_##SUB##_##VALUE##_dismissed, pd); \
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y); \
+   evas_object_move(colorsel, x, y); \
+   evas_object_show(colorsel); \
 }
 
 #define ITEM_CHECK_STATE_CALLBACK(SUB, VALUE) \
@@ -497,26 +518,23 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
                                 const char *tooltip) \
 { \
-   Evas_Object *item, *box, *entry, *image; \
-   char buff[BUFF_MAX]; \
+   Evas_Object *item, *color, *rect; \
    int r, g, b, a; \
    edje_edit_##SUB##_##VALUE##_get(pd->group->obj, pd->part->name, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &r, &g, &b, &a); \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(parent, box, true, false) \
-   ENTRY_ADD(box, entry, true, DEFAULT_STYLE) \
-   IMAGE_ADD(box, image, TET_IMG_PATH"bg_demo.png"); \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_limit_size, &limit_color); \
-   snprintf(buff, sizeof(buff), "%i %i %i %i", r, g, b, a); \
-   elm_entry_entry_set(entry, buff); \
-   elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a); \
-   elm_box_pack_end(box, entry); \
-   elm_box_pack_end(box, image); \
-   elm_object_part_content_set(item, "elm.swallow.content", box); \
+   color = elm_layout_add(item); \
+   elm_layout_file_set(color, TET_EDJ, "eflete/prop/color"); \
+   evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(color, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_tooltip_text_set(color, tooltip); \
+   rect = evas_object_rectangle_add(evas_object_evas_get(parent)); \
+   evas_object_event_callback_add(color, EVAS_CALLBACK_MOUSE_DOWN, \
+                                  _on_##SUB##_##VALUE##_clicked, pd); \
+   evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a); \
+   elm_object_part_content_set(color, "elm.swallow.content", rect); \
+   elm_object_part_content_set(item, "elm.swallow.content", color); \
    return item; \
 }
 
@@ -525,23 +543,18 @@ static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
 { \
-   Evas_Object *box, *entry, *image; \
-   char buff[BUFF_MAX]; \
+   Evas_Object *color, *rect; \
    int r, g, b, a; \
-   Eina_List *nodes; \
    edje_edit_##SUB##_##VALUE##_get(pd->group->obj, pd->part->name, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &r, &g, &b, &a); \
-   snprintf(buff, sizeof(buff), "%i %i %i %i", r, g, b, a); \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
-   entry = eina_list_nth(nodes, 0); \
-   elm_entry_entry_set(entry, buff); \
-   evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   image = eina_list_nth(nodes, 1); \
-   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a); \
-   eina_list_free(nodes); \
+   color = elm_object_part_content_get(item, "elm.swallow.content"); \
+   rect = elm_object_part_content_get(color, "elm.swallow.content"); \
+   evas_object_event_callback_del_full(color, EVAS_CALLBACK_MOUSE_DOWN, \
+                                       _on_##SUB##_##VALUE##_clicked, pd); \
+   evas_object_event_callback_add(color, EVAS_CALLBACK_MOUSE_DOWN, \
+                                  _on_##SUB##_##VALUE##_clicked, pd); \
+   evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a); \
 }
 
 #define ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \

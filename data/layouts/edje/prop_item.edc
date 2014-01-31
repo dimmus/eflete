@@ -195,3 +195,48 @@ group {
       }
    }
 }
+
+group {
+   name: "eflete/prop/color";
+   images {
+      image: "bg_demo.png" COMP;
+      image: "corners.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 16 16;
+            image.normal: "bg_demo.png";
+            fill {
+               type: TILE;
+               origin.relative: 0.0 0.0;
+               size.relative: 1.0 1.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "corners";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "corners.png";
+               border: 3 3 3 3;
+               middle: NONE;
+            }
+         }
+      }
+   }
+}
