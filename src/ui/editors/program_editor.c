@@ -255,7 +255,7 @@ _prop_item_program_script_add(Evas_Object *parent,
 
    if (!parent) return NULL;
 
-   ITEM_ADD_(parent, item, "script", "editor");
+   ITEM_ADD_(parent, item, "script", "script");
 
    BOX_ADD(item, box, true, false);
    ENTRY_ADD(item, entry, false, DEFAULT_STYLE)
