@@ -18,6 +18,7 @@
 */
 
 #include "groupedit_private.h"
+#include "alloc.h"
 
 #define PART_STATE_GET(obj, part) \
    const char *state; \
@@ -535,7 +536,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 {
    Groupedit_Part *gp;
 
-   gp = malloc(sizeof(Groupedit_Part));
+   gp = mem_malloc(sizeof(Groupedit_Part));
    gp->name = eina_stringshare_add(part);
    gp->visible = true;
    gp->border = NULL;
@@ -543,7 +544,6 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    gp->bg = evas_object_image_add(sd->e);
 
    gp->clipper = evas_object_rectangle_add(sd->e);
-
    switch (type)
      {
       case EDJE_PART_TYPE_RECTANGLE:
@@ -576,6 +576,12 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
       case EDJE_PART_TYPE_TABLE:
       case EDJE_PART_TYPE_EXTERNAL:
       default:
+         /* Temporary solution for type parts, which not implemented yet.
+          * Here created transparent rectangle as draw evas primitives.
+          * TODO: add support for all part types.
+          */
+         gp->draw = evas_object_rectangle_add(sd->e);
+         evas_object_color_set(gp->draw, 0, 0, 0, 0);
          break;
      }
    gp->item = edje_object_add(sd->e);
@@ -896,7 +902,6 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
         relative = edje_edit_state_rel2_relative_x_get(sd->edit_obj, name, state, value);
         if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
         w = xg + (xc + (int)(wc * relative)) - x;
-        DBG("xg: %i, xc %i, wc %i, relative %f, x %i", xg, xc, wc, relative, x);
         edje_edit_string_free(rel_to);
 
         yc = 0; hc = sd->con_current_size->h;
@@ -919,6 +924,5 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    sd->obj_area.geom->x = x; sd->obj_area.geom->y = y;
    sd->obj_area.geom->w = w; sd->obj_area.geom->h = h;
 
-   DBG("Groupedit object area geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
    evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
 }

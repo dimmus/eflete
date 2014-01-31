@@ -35,7 +35,7 @@
 struct _Prop_Data
 {
    Evas_Object *workspace;
-   Group *group;
+   Style *style;
    Part *part;
    struct {
       Evas_Object *frame;
@@ -199,12 +199,12 @@ _on_state_pref_pref_change(void *data,
    Prop_Data *pd = (Prop_Data *)data;
    Index *index = elm_object_item_data_get((Elm_Object_Item *)ei);
    elm_object_text_set(obj, edje_aspect_pref[index->i]);
-   if (!edje_edit_state_aspect_pref_set(pd->group->obj, pd->part->name,
+   if (!edje_edit_state_aspect_pref_set(pd->style->obj, pd->part->name,
                                         pd->part->curr_state, pd->part->curr_state_value,
                                         index->i))
      return;
    workspace_edit_object_recalc(pd->workspace);
-   pd->group->isModify = true;
+   pd->style->isModify = true;
 }
 
 #define INDEX_APPEND(VALUE) \
@@ -227,7 +227,7 @@ prop_item_state_aspect_pref_add(Evas_Object *parent,
    HOVERSEL_ADD(item, hoversel, false)
    elm_hoversel_hover_parent_set(hoversel, hoversel_parent);
    elm_object_tooltip_text_set(hoversel, tooltip);
-   asp_pref = edje_edit_state_aspect_pref_get(pd->group->obj,
+   asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
                                               pd->part->name,
                                               pd->part->curr_state,
                                               pd->part->curr_state_value);
@@ -251,7 +251,7 @@ prop_item_state_aspect_pref_update(Evas_Object *item,
    Evas_Object *hoversel;
    unsigned char asp_pref;
    hoversel = elm_object_part_content_get(item, "elm.swallow.content");
-   asp_pref = edje_edit_state_aspect_pref_get(pd->group->obj,
+   asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
                                               pd->part->name,
                                               pd->part->curr_state,
                                               pd->part->curr_state_value);
@@ -297,7 +297,7 @@ ITEM_2SPINNER_GROUP_CREATE("max", group_max, w, h)
 
 #define pd_group pd->prop_group
 Eina_Bool
-ui_property_group_set(Evas_Object *property, Group *group, Evas_Object *workspace)
+ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspace)
 {
    Evas_Object *group_frame, *box, *prop_box;
 
@@ -307,12 +307,13 @@ ui_property_group_set(Evas_Object *property, Group *group, Evas_Object *workspac
    elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->workspace = workspace;
-   if (group != workspace_edit_object_get(workspace))
+   if (style != workspace_edit_object_get(workspace))
      {
-        ERR("Cann't set the group! Group [%p] not matched with editable group in workspace", group);
+        ERR("Cann't set the style! Style [%p] not matched"
+            " with editable group in workspace", style);
         return false;
      }
-   pd->group = group;
+   pd->style = style;
 
    if (!pd_group.frame)
      {
@@ -347,7 +348,7 @@ ui_property_group_set(Evas_Object *property, Group *group, Evas_Object *workspac
 }
 
 void
-ui_property_group_unset(Evas_Object *property)
+ui_property_style_unset(Evas_Object *property)
 {
    PROP_DATA_GET()
    evas_object_hide(pd_group.frame);
@@ -397,7 +398,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    pd->part = part;
 
-   type = edje_edit_part_type_get(pd->group->obj, part->name);
+   type = edje_edit_part_type_get(pd->style->obj, part->name);
    prop_box = elm_object_content_get(property);
 
    elm_box_unpack(prop_box, pd->prop_part.frame);
@@ -553,7 +554,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if (pd->part != part) return EINA_FALSE; /* time for panic */
    #define pd_state pd->prop_state
 
-   type = edje_edit_part_type_get(pd->group->obj, part->name);
+   type = edje_edit_part_type_get(pd->style->obj, part->name);
    sprintf(state, "%s %1.2f", part->curr_state, part->curr_state_value);
 
    if (!pd_state.frame)

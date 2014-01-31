@@ -29,7 +29,7 @@
         NOTIFY_WARNING("Part name can not be empty") \
         return; \
      } \
-   if (edje_edit_part_exist(ap->project->current_group->obj, str)) \
+   if (edje_edit_part_exist(ap->project->current_style->obj, str)) \
      { \
         NOTIFY_WARNING("Can't add the part %s, part with the same name already exists", str) \
         return; \
@@ -55,13 +55,12 @@ _cancel_clicked(void *data,
    App_Data *ap = evas_object_data_get(entry, AP_KEY); \
    Evas_Object *workspace = ap->workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(ap); \
-   Group *group = workspace_edit_object_get(workspace); \
+   Style *style = workspace_edit_object_get(workspace); \
    ENTRY_IS_EMPTY \
    const char *name = elm_entry_entry_get(entry); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
-     ui_widget_list_part_add(widget_list, group, name); \
+     ui_widget_list_part_add(widget_list, style, name); \
    evas_object_del((Evas_Object *)data);
-
 
 static void
 _swallow_add_on_click(void *data,
@@ -143,7 +142,7 @@ part_dialog_add(App_Data *ap)
    Evas_Object *box, *button;
    Evas_Object *popup, *bt_no;
    Eina_Stringshare *title;
-   Group *group;
+   Style *style;
 
    if ((!ap) || (!ap->project)) return NULL;
    win = ap->win;
@@ -151,10 +150,10 @@ part_dialog_add(App_Data *ap)
    widget_list = ui_block_widget_list_get(ap);
    if ((!win) || (!workspace) || (!widget_list)) return NULL;
 
-   group = workspace_edit_object_get(workspace);
-   popup = elm_popup_add(win);
+   style = workspace_edit_object_get(workspace);
+   popup = elm_popup_add(ap->win);
    elm_object_style_set(popup, "eflete");
-   title = eina_stringshare_printf("Add new part to group \"%s\"", group->group_name);
+   title = eina_stringshare_printf("Add new part to group \"%s\"", style->name);
    elm_object_part_text_set(popup, "title,text", title);
 
    BOX_ADD(popup, box, EINA_FALSE, EINA_TRUE);

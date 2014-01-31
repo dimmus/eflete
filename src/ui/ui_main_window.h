@@ -167,15 +167,14 @@ void
 ui_part_back(App_Data *ap);
 
 /**
- * Can be used in future API!!!!
- * This function will be called when back from group list button is clicked.
+ * This function will be called when back from style list button is clicked.
  *
  * @param ap The App_Data structure pointer.
  *
  * @ingroup Window
  */
 void
-ui_group_back(App_Data *ap);
+ui_style_back(App_Data *ap);
 
 /**
  * Update displayed information about current part state. Update part object
@@ -206,17 +205,17 @@ Evas_Object *
 ui_part_select(App_Data *ap, Part* part);
 
 /**
- * View group objects on workspace, load signals in list. Show, or update
- * information about group parameters.1
+ * View style objects on workspace, load signals in list. Show, or update
+ * information about group parameters.
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param group The Group pointer.
+ * @param style The @Style structure object.
  *
  * @ingroup Window
  */
 void
-ui_group_clicked(App_Data *ap, Group *group);
+ui_style_clicked(App_Data *ap, Style *style);
 
 /**
  * Load project data to App_Data structure. Turn to work state for application.

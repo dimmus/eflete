@@ -67,7 +67,7 @@ struct _Ws_Smart_Data
                                     markup stored in legend.edc. TDD*/
         Eina_Bool visible;        /**< Boolean flag for legend view visibly. */
    } legend;
-   Group *group;
+   Style *style;
 
    struct {
         Evas_Object *highlight; /**< A highlight object */
@@ -321,10 +321,10 @@ _sc_smart_move_cb(void *data,
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   if (!sd->group) return;
+   if (!sd->style) return;
    evas_object_geometry_get(sd->ruler_hor, &cross_size, NULL, NULL, NULL);
    evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
-   evas_object_geometry_get(sd->group->obj, &gs_x, &gs_y, &gs_w, &gs_h);
+   evas_object_geometry_get(sd->style->obj, &gs_x, &gs_y, &gs_w, &gs_h);
    cross_size -= bg_x;
    ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, gs_x - bg_x - cross_size);
    ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, gs_y - bg_y - cross_size);
@@ -437,14 +437,14 @@ _on_resize(void *data,
    WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
 
    Part *part = sd->highlight.part;
-   if ((!sd->group) && (!part)) return;
-   edje_edit_state_max_w_set(sd->group->obj, part->name,
+   if ((!sd->style) && (!part)) return;
+   edje_edit_state_max_w_set(sd->style->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->w);
-   edje_edit_state_max_h_set(sd->group->obj, part->name,
+   edje_edit_state_max_h_set(sd->style->obj, part->name,
                              part->curr_state, part->curr_state_value,
                              events->h);
-   if (!sd->group->isModify) sd->group->isModify = true;
+   if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
 }
@@ -598,7 +598,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->legend.view = NULL;
    priv->legend.visible = false;
 
-   priv->group = NULL;
+   priv->style = NULL;
    priv->guides = NULL;
 
    return true;
@@ -719,16 +719,16 @@ _on_part_select(void *data,
 }
 
 Eina_Bool
-workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file)
+workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if ((!group) || (!file)) return false;
+   if ((!style) || (!file)) return false;
    if (!sd->groupedit) sd->groupedit = groupedit_add(sd->scroller);
    else groupedit_edit_object_unset(sd->groupedit);
-   sd->group = group;
+   sd->style = style;
    groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
-   groupedit_edit_object_set(sd->groupedit, group->obj, file);
+   groupedit_edit_object_set(sd->groupedit, style->obj, file);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",
@@ -770,7 +770,7 @@ workspace_edit_object_unset(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
-   sd->group = NULL;
+   sd->style = NULL;
    if (sd->groupedit)
      {
         groupedit_edit_object_unset(sd->groupedit);
@@ -780,12 +780,12 @@ workspace_edit_object_unset(Evas_Object *obj)
      }
 }
 
-Group *
+Style *
 workspace_edit_object_get(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
-   return sd->group;
+   return sd->style;
 }
 
 void
@@ -802,7 +802,8 @@ workspace_edit_object_part_add(Evas_Object *obj, const char *part,
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!part)
      {
-        ERR("Can't add the part '%s' to the group '%s'!", part, sd->group->full_group_name)
+        ERR("Can't add the part '%s' to the group '%s'!",
+            part, sd->style->full_group_name)
         return false;
      }
 
@@ -815,7 +816,8 @@ workspace_edit_object_part_del(Evas_Object *obj, const char *part)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!part)
      {
-        ERR("Can't delete the part '%s' from the group '%s'!", part, sd->group->full_group_name)
+        ERR("Can't delete the part '%s' from the group '%s'!",
+            part, sd->style->full_group_name)
         return false;
      }
 
@@ -828,7 +830,8 @@ workspace_edit_object_part_above(Evas_Object *obj, const char *part)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!part)
      {
-        ERR("Can't restack above the part '%s' in the group %s!", part, sd->group->full_group_name)
+        ERR("Can't restack above the part '%s' in the group %s!",
+            part, sd->style->full_group_name)
         return false;
      }
 
@@ -841,7 +844,8 @@ workspace_edit_object_part_below(Evas_Object *obj, const char *part)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!part)
      {
-        ERR("Can't restack below the part '%s' in the group %s!", part, sd->group->full_group_name)
+        ERR("Can't restack below the part '%s' in the group %s!",
+            part, sd->style->full_group_name)
         return false;
      }
 
@@ -856,7 +860,8 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
    if (!part)
      {
         ERR("Can't set state '%s %f' to part '%s' in the group %s!",
-            part->curr_state, part->curr_state_value, part->name, sd->group->full_group_name)
+            part->curr_state, part->curr_state_value, part->name,
+            sd->style->full_group_name)
         return false;
      }
    return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
@@ -872,7 +877,7 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
    if ((!part) || (!state))
      {
         ERR("Can't add state '%s %f' to part '%s' in the group %s!",
-            state, value, part, sd->group->full_group_name)
+            state, value, part, sd->style->full_group_name)
         return false;
      }
 
@@ -887,7 +892,7 @@ workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
    if ((!part) || (!state))
      {
         ERR("Can't delete state '%s %f' from part '%s' in the group %s!",
-            state, value, part, sd->group->full_group_name)
+            state, value, part, sd->style->full_group_name)
         return false;
      }
 
@@ -904,7 +909,7 @@ workspace_edit_object_visible_set(Evas_Object *obj,
    if (!part)
      {
         ERR("Can't %s the part '%s' in the group %s!", visible ? "show" : "false",
-            part, sd->group->full_group_name)
+            part, sd->style->full_group_name)
         return false;
      }
 

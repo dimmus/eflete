@@ -37,7 +37,7 @@
 /**
  * Add new program editor inwin object.
  *
- * @param group Current style and group already loaded into groupspace.
+ * @param style A @Style structure data.
  *
  * @return Pointer to inwin object, which contain some program properties and
  * list of programs.
@@ -45,6 +45,6 @@
  * @ingroup ProgramEditor
  */
 Evas_Object *
-program_editor_window_add(Group *group);
+program_editor_window_add(Style *style);
 
 #endif /* PROGRAM_EDITOR_H */

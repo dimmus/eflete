@@ -80,7 +80,7 @@ ws_groupspace_get(Evas_Object *obj);
  * Set the editable object to the workspace.
  *
  * @param obj The workspace object.
- * @param group The group was be editing.
+ * @param style The style to be editing.
  * @param file Path to the file from been loaded the edje edit object.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
@@ -88,34 +88,66 @@ ws_groupspace_get(Evas_Object *obj);
  * @ingroup Workspace
  */
 Eina_Bool
-workspace_edit_object_set(Evas_Object *obj, Group *group, const char *file);
+workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file);
 
 /**
+ * Unset the editable object from the workspace.
  *
+ * @param obj The workspace object.
+ *
+ * @ingroup Workspace
  */
 void
 workspace_edit_object_unset(Evas_Object *obj);
 
 /**
+ * Get the editable object from the workspace.
  *
+ * @param obj The workspace object.
+ *
+ * @return A @Style object, which stored in workspace as editable, or NULL if
+ * no one object is setted.
+ *
+ * @ingroup Workspace
  */
-Group *
+Style *
 workspace_edit_object_get(Evas_Object *obj);
 
 /**
+ * Force recal for editable object from the workspace.
  *
+ * @param obj The workspace object.
+ *
+ * @ingroup Workspace
  */
 void
 workspace_edit_object_recalc(Evas_Object *obj);
 
 /**
+ * Add new part into style, which currently loaded into workspace.
  *
+ * @param obj The workspace object.
+ * @param part The name for new part in style.
+ * @param type One of @Edje_Part_Type enum types of edje parts.
+ * @param data If new part type is @EDJE_PART_TYPE_IMAGE in param 'data' stored
+ * image name, which will be set as normal for created part.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
  */
 Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data);
 /**
+ * Delete part from style, which currently loaded into workspace.
  *
+ * @param obj The workspace object.
+ * @param part The name for deleting part.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
  */
 Eina_Bool
 workspace_edit_object_part_del(Evas_Object *obj, const char *part);

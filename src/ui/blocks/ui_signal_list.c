@@ -68,13 +68,13 @@ ui_signal_list_add(Evas_Object *parent)
 }
 
 Eina_Bool
-ui_signal_list_data_set(Evas_Object *object, Group *group)
+ui_signal_list_data_set(Evas_Object *object, Style *style)
 {
    Eina_List *signals, *l;
    char *signal;
    Evas_Object *gl_signals = object;
 
-   if ((!object) || (!group) || (!group->obj)) return false;
+   if ((!object) || (!style) || (!style->obj)) return false;
 
    signals = evas_object_data_get(gl_signals, SIGNALS_LIST);
    if (signals)
@@ -83,7 +83,7 @@ ui_signal_list_data_set(Evas_Object *object, Group *group)
         evas_object_data_del(gl_signals, SIGNALS_LIST);
      }
 
-   signals = wm_program_signals_list_get(group);
+   signals = wm_program_signals_list_get(style);
    EINA_LIST_FOREACH(signals, l, signal)
      {
         elm_genlist_item_append(object, _itc_signal,

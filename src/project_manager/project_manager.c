@@ -253,18 +253,18 @@ pm_save_project_to_swap(Project *project)
 {
    Widget *widget;
    Style *style;
-   Group *group;
+   Class *class_st;
 
    EINA_INLIST_FOREACH(project->widgets, widget)
      {
-        EINA_INLIST_FOREACH(widget->styles, style)
+        EINA_INLIST_FOREACH(widget->classes, class_st)
           {
-             EINA_INLIST_FOREACH(style->groups, group)
+             EINA_INLIST_FOREACH(class_st->styles, style)
                {
-                  if (group->isModify)
+                  if (style->isModify)
                     {
-                       group->isModify = false;
-                       edje_edit_save(group->obj);
+                       style->isModify = false;
+                       edje_edit_save(style->obj);
                     }
                }
           }

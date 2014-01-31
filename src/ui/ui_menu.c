@@ -70,7 +70,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
                 {
                    NOTIFY_INFO(3, "Theme saved: %s", menu_event->ap->project->edj)
                    ui_demospace_set(menu_event->ap->demo, menu_event->ap->project,
-                                    menu_event->ap->project->current_group);
+                                    menu_event->ap->project->current_style);
                 }
               else
                  NOTIFY_ERROR("Theme can not be saved: %s", menu_event->ap->project->edj);
@@ -112,7 +112,7 @@ _on_close_project_save(void *data,
         if (pm_save_project_to_swap(ap->project))
           {
              if (pm_save_project_edj(ap->project))
-                ui_demospace_set(ap->demo, ap->project, ap->project->current_group);
+                ui_demospace_set(ap->demo, ap->project, ap->project->current_style);
              else
                 NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
           }
@@ -418,10 +418,10 @@ _on_prog_editor_menu(void *data __UNUSED__,
                      void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (!ap->project->current_group)
+   if (!ap->project->current_style)
      NOTIFY_WARNING("Please open the widget style for editing style programs!")
    else
-     program_editor_window_add(ap->project->current_group);
+     program_editor_window_add(ap->project->current_style);
 }
 
 static void

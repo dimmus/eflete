@@ -44,7 +44,6 @@
 #include "ui_main_window.h"
 #include "ui_property.h"
 #include "ui_states_list.h"
-//#include "ui_groupspace.h"
 
 /**
  * Add a new 'widget list' object.
@@ -86,7 +85,8 @@ ui_widget_list_data_set(Evas_Object *object, Project *project);
  * Add to end new part item in list.
  *
  * @param object A 'widget list' object
- * @param group The struct @Group of current loaded group, in this group part will be added
+ * @param style The struct @Style of current loaded group from theme,
+ * in this style part will be added
  * @param name The name of new part with will be added
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
@@ -94,46 +94,47 @@ ui_widget_list_data_set(Evas_Object *object, Project *project);
  * @ingroup WidgetList
  */
 Eina_Bool
-ui_widget_list_part_add(Evas_Object *object, Group *group, const char *name);
+ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name);
 
 /**
  * Delete the selected item (part) from list.
  *
  * @param object A 'widget list' object
- * @param group The struct @Group of current loaded group, in this group part will be deleted
+ * @param style The struct @Style of current loaded group from theme,
+ * in this style part will be deleted
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup WidgetList
  */
 Eina_Bool
-ui_widget_list_selected_part_del(Evas_Object *object, Group *group);
+ui_widget_list_selected_part_del(Evas_Object *object, Style *style);
 
 /**
  * Move above selected item of widgetlist.
  *
  * @param object The container object, which contain genlist of widgetlist.
- * @param group The struct @Group of current loaded group.
+ * @param style The struct @Style of current loaded group from theme.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup WidgetList
  */
 Eina_Bool
-ui_widget_list_selected_part_above(Evas_Object *object, Group *group);
+ui_widget_list_selected_part_above(Evas_Object *object, Style *style);
 
 /**
  * Move below selected item of widgetlist.
  *
  * @param object The container object, which contain genlist of widgetlist.
- * @param group The struct @Group of current loaded group.
+ * @param style The struct @Style of current loaded group from theme.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup WidgetList
  */
 Eina_Bool
-ui_widget_list_selected_part_below(Evas_Object *object, Group *group);
+ui_widget_list_selected_part_below(Evas_Object *object, Style *style);
 
 /**
  * Get the selected @Part in the widget list.
@@ -174,14 +175,14 @@ Eina_Bool
 ui_widget_list_part_selected_set(Evas_Object *object, const char *part);
 
 /**
- * Reload content style genlist.
+ * Reload content class genlist.
  *
  * @param gl_styles A 'style list' object. (genlist container)
- * @param styles A Eina_Inlist pointer for loaded styles in project
+ * @param classes A Eina_Inlist pointer for loaded classes in project
  *
  * @ingroup WidgetList
  */
 void
-ui_widget_list_style_data_reload(Evas_Object *gl_styles, Eina_Inlist *styles);
+ui_widget_list_class_data_reload(Evas_Object *gl_styles, Eina_Inlist *classes);
 
 #endif /* UI_WIDGET_LIST_H */

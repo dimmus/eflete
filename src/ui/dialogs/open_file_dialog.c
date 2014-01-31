@@ -46,12 +46,12 @@ _on_part_back(void *data,
 }
 
 static void
-_on_group_back(void *data,
+_on_style_back(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_data __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_group_back(ap);
+   ui_style_back(ap);
 }
 
 static void
@@ -84,13 +84,13 @@ _on_part_selected(void *data,
 }
 
 static void
-_on_group_clicked(void *data,
+_on_style_clicked(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_data)
 {
    App_Data *ap = (App_Data *)data;
-   Group *_group = (Group *)event_data;
-   ui_group_clicked(ap, _group);
+   Style *_style = (Style *)event_data;
+   ui_style_clicked(ap, _style);
 }
 
 static void
@@ -237,10 +237,10 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
 {
    if (!wd_list) return;
 
-   evas_object_smart_callback_add(wd_list, "wl,group,select", _on_group_clicked, ap);
+   evas_object_smart_callback_add(wd_list, "wl,style,select", _on_style_clicked, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
-   evas_object_smart_callback_add(wd_list, "wl,group,back", _on_group_back, ap);
+   evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, ap);
 }
 
 static void

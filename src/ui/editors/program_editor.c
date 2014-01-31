@@ -30,20 +30,20 @@ struct _Program_Editor
       Evas_Object *entry;
    } popup;
    struct {
-      Group *group;
-      const char *program;
-      Evas_Object *name;
-      Evas_Object *signal;
-      Evas_Object *source;
-      Evas_Object *in;
-      Evas_Object *action;
-      Evas_Object *script;
-      Evas_Object *transition;
-      Evas_Object *targets;
-      Evas_Object *afters;
-      Edje_Action_Type act_type;
-      Edje_Tween_Mode trans_type;
-      Evas_Object *prop_box;
+     Style *style;
+     const char *program;
+     Evas_Object *name;
+     Evas_Object *signal;
+     Evas_Object *source;
+     Evas_Object *in;
+     Evas_Object *action;
+     Evas_Object *script;
+     Evas_Object *transition;
+     Evas_Object *targets;
+     Evas_Object *afters;
+     Edje_Action_Type act_type;
+     Edje_Tween_Mode trans_type;
+     Evas_Object *prop_box;
    } prop_view;
 };
 
@@ -116,7 +116,7 @@ _on_##sub##_##value##_change(void *data, \
 { \
    Program_Editor *prog_edit = (Program_Editor *)data; \
    const char *value = elm_entry_entry_get(obj); \
-   Eina_Bool res = edje_edit_##sub##_##value##_set(prop.group->obj, \
+   Eina_Bool res = edje_edit_##sub##_##value##_set(prop.style->obj, \
                                                    prop.program, \
                                                    value); \
    if (!res) \
@@ -146,7 +146,7 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    Evas_Object *entry; \
    const char *value; \
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
-   value = edje_edit_##sub##_##value##_get(prop.group->obj, prop.program); \
+   value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
    elm_entry_entry_set(entry, value); \
    evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
    evas_object_smart_callback_add(entry, "activated", \
@@ -186,7 +186,7 @@ _on_program_name_change(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value = elm_entry_entry_get(obj);
-   Eina_Bool res = edje_edit_program_name_set(prop.group->obj, prop.program,
+   Eina_Bool res = edje_edit_program_name_set(prop.style->obj, prop.program,
                                               value);
    if (!res)
      {
@@ -204,7 +204,7 @@ _on_in_from_change(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value = elm_entry_entry_get(obj);
-   Eina_Bool res = edje_edit_program_in_from_set(prop.group->obj, prop.program,
+   Eina_Bool res = edje_edit_program_in_from_set(prop.style->obj, prop.program,
                                                  atof(value));
    if (!res)
      {
@@ -220,7 +220,7 @@ _on_in_range_change(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value = elm_entry_entry_get(obj);
-   Eina_Bool res = edje_edit_program_in_range_set(prop.group->obj, prop.program,
+   Eina_Bool res = edje_edit_program_in_range_set(prop.style->obj, prop.program,
                                                  atof(value));
    if (!res)
      {
@@ -236,7 +236,7 @@ _on_target_name_change(void *data __UNUSED__,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value = elm_entry_entry_get(obj);
-   Eina_Bool res = edje_edit_program_target_add(prop.group->obj, prop.program,
+   Eina_Bool res = edje_edit_program_target_add(prop.style->obj, prop.program,
                                                 value);
    if (!res)
      {
@@ -277,7 +277,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    box = elm_object_part_content_get(prop.script, "elm.swallow.content");
    Eina_List *childs = elm_box_children_get(box);
 
-   script = edje_edit_script_program_get(prop.group->obj, prop.program);
+   script = edje_edit_script_program_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
    script = elm_entry_utf8_to_markup(script);
    elm_entry_entry_set(entry, script);
@@ -302,7 +302,7 @@ _on_hoversel_trans_sel(void *data,
    elm_entry_entry_set(entry3, "");
 
    elm_object_text_set(obj, transition_type[index->i]);
-   edje_edit_program_transition_set(prop.group->obj, prop.program,
+   edje_edit_program_transition_set(prop.style->obj, prop.program,
                                     (Edje_Tween_Mode)index->i);
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
@@ -374,7 +374,7 @@ _on_hoversel_sel(void *data,
    elm_entry_entry_set(entry2, "");
 
    elm_object_text_set(obj, action_type[index->i]);
-   edje_edit_program_action_set(prop.group->obj, prop.program,
+   edje_edit_program_action_set(prop.style->obj, prop.program,
                                 (Edje_Action_Type)index->i);
    evas_object_hide(entry1);
    evas_object_hide(entry2);
@@ -444,7 +444,7 @@ _on_transition_time_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
-   if (!edje_edit_program_transition_time_set(prop.group->obj, prop.program,
+   if (!edje_edit_program_transition_time_set(prop.style->obj, prop.program,
                                               atof(value)))
      NOTIFY_WARNING("The entered data is not valid!");
 }
@@ -458,7 +458,7 @@ _on_state_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *state;
    state = elm_entry_entry_get(obj);
-   if (!edje_edit_program_state_set(prop.group->obj, prop.program, state))
+   if (!edje_edit_program_state_set(prop.style->obj, prop.program, state))
      NOTIFY_WARNING("The entered data is not valid!");
 }
 
@@ -484,7 +484,7 @@ _on_value2_active(void *data,
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
         {
-           if (!edje_edit_program_value2_set(prop.group->obj, prop.program,
+           if (!edje_edit_program_value2_set(prop.style->obj, prop.program,
                                              atof(value)))
              NOTIFY_WARNING("The entered data is not valid!");
         }
@@ -502,7 +502,7 @@ _on_v1_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
-   if (!edje_edit_program_transition_value1_set(prop.group->obj, prop.program,
+   if (!edje_edit_program_transition_value1_set(prop.style->obj, prop.program,
                                                 atof(value)))
              NOTIFY_WARNING("The entered data is not valid!");
 
@@ -516,7 +516,7 @@ _on_v2_active(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
-   if (!edje_edit_program_transition_value2_set(prop.group->obj, prop.program,
+   if (!edje_edit_program_transition_value2_set(prop.style->obj, prop.program,
                                                 atof(value)))
              NOTIFY_WARNING("The entered data is not valid!");
 
@@ -544,14 +544,14 @@ _on_value_active(void *data,
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
       case EDJE_ACTION_TYPE_STATE_SET:
         {
-           if (!edje_edit_program_value_set(prop.group->obj, prop.program,
+           if (!edje_edit_program_value_set(prop.style->obj, prop.program,
                                             atof(value)))
              NOTIFY_WARNING("The entered data is not valid!");
         }
       break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
         {
-           if (!edje_edit_program_state2_set(prop.group->obj, prop.program,
+           if (!edje_edit_program_state2_set(prop.style->obj, prop.program,
                                              value))
              NOTIFY_WARNING("the entered data is not valid!");
         }
@@ -570,7 +570,7 @@ _on_after_name_change(void *data,
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = false;
 
-   res = edje_edit_program_after_add(prop.group->obj, prop.program, value);
+   res = edje_edit_program_after_add(prop.style->obj, prop.program, value);
    if (!res)
      {
         NOTIFY_WARNING("The entered data is not valid!")
@@ -595,7 +595,7 @@ _after_remove_button_cb(void *data,
    childs = elm_box_children_get(element_box);
    entry = eina_list_nth(childs, 0);
    elm_box_unpack(entrys_box, element_box);
-   edje_edit_program_after_del(prop.group->obj, prop.program,
+   edje_edit_program_after_del(prop.style->obj, prop.program,
                                elm_entry_entry_get(entry));
    evas_object_smart_callback_del(entry, "activated", _on_after_name_change);
    eina_list_free(childs);
@@ -654,7 +654,7 @@ _target_remove_button_cb(void *data,
    childs = elm_box_children_get(element_box);
    entry = eina_list_nth(childs, 0);
    elm_box_unpack(entrys_box, element_box);
-   edje_edit_program_target_del(prop.group->obj, prop.program,
+   edje_edit_program_target_del(prop.style->obj, prop.program,
                                 elm_entry_entry_get(entry));
    evas_object_smart_callback_del(entry, "activated", _on_target_name_change);
    eina_list_free(childs);
@@ -707,7 +707,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    double value;
    if (!prop.transition) return;
    prop.trans_type =
-      edje_edit_program_transition_get(prop.group->obj, prop.program);
+      edje_edit_program_transition_get(prop.style->obj, prop.program);
    box = elm_object_part_content_get(prop.transition, "elm.swallow.content");
    nodes = elm_box_children_get(box);
    hoversel = eina_list_nth(nodes, 0);
@@ -720,7 +720,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      prop.trans_type = EDJE_TWEEN_MODE_NONE;
    elm_object_text_set(hoversel, transition_type[(int)prop.trans_type]);
-   value = edje_edit_program_transition_time_get(prop.group->obj,
+   value = edje_edit_program_transition_time_get(prop.style->obj,
                                                  prop.program);
    evas_object_smart_callback_del(entry1, "activated",
                                   _on_transition_time_active);
@@ -762,14 +762,14 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
       case EDJE_TWEEN_MODE_OPT_FROM_CURRENT:
         {
            value =
-              edje_edit_program_transition_value1_get(prop.group->obj,
+              edje_edit_program_transition_value1_get(prop.style->obj,
                                                       prop.program);
            snprintf(buff, sizeof(buff), "%1.2f", value);
            elm_entry_entry_set(entry2, buff);
            evas_object_smart_callback_del(entry2, "activated", _on_v1_active);
            evas_object_smart_callback_add(entry2, "activated", _on_v1_active,
                                           prog_edit);
-           value = edje_edit_program_transition_value2_get(prop.group->obj,
+           value = edje_edit_program_transition_value2_get(prop.style->obj,
                                                            prop.program);
            snprintf(buff, sizeof(buff), "%1.2f", value);
            elm_entry_entry_set(entry3, buff);
@@ -901,7 +901,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    double value;
 
    if (!prop.action) return;
-   prop.act_type = edje_edit_program_action_get(prop.group->obj, prop.program);
+   prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
    box = elm_object_part_content_get(prop.action, "elm.swallow.content");
    nodes = elm_box_children_get(box);
    hoversel = eina_list_nth(nodes, 0);
@@ -941,13 +941,13 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
       break;
       case EDJE_ACTION_TYPE_STATE_SET:
         {
-           str = edje_edit_program_state_get(prop.group->obj, prop.program);
+           str = edje_edit_program_state_get(prop.style->obj, prop.program);
            elm_entry_entry_set(entry1, str);
            edje_edit_string_free(str);
            evas_object_smart_callback_del(entry1, "activated", _on_state_active);
            evas_object_smart_callback_add(entry1, "activated", _on_state_active,
                                           prog_edit);
-           value = edje_edit_program_value_get(prop.group->obj, prop.program);
+           value = edje_edit_program_value_get(prop.style->obj, prop.program);
            sprintf(buff, "%1.2f", value);
            elm_entry_entry_set(entry2, buff);
            evas_object_smart_callback_del(entry2, "activated", _on_value_active);
@@ -957,13 +957,13 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
       break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
         {
-           str = edje_edit_program_state_get(prop.group->obj, prop.program);
+           str = edje_edit_program_state_get(prop.style->obj, prop.program);
            elm_entry_entry_set(entry1, str);
            edje_edit_string_free(str);
            evas_object_smart_callback_del(entry1, "activated", _on_state_active);
            evas_object_smart_callback_add(entry1, "activated", _on_state_active,
                                           prog_edit);
-           str = edje_edit_program_state2_get(prop.group->obj, prop.program);
+           str = edje_edit_program_state2_get(prop.style->obj, prop.program);
            elm_entry_entry_set(entry2, str);
            edje_edit_string_free(str);
            evas_object_smart_callback_del(entry2, "activated", _on_value_active);
@@ -975,13 +975,13 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
         {
-           value = edje_edit_program_value_get(prop.group->obj, prop.program);
+           value = edje_edit_program_value_get(prop.style->obj, prop.program);
            snprintf(buff, sizeof(buff), "%1.2f", value);
            elm_entry_entry_set(entry1, buff);
            evas_object_smart_callback_del(entry1, "activated", _on_value_active);
            evas_object_smart_callback_add(entry1, "activated", _on_value_active,
                                           prog_edit);
-           value = edje_edit_program_value2_get(prop.group->obj, prop.program);
+           value = edje_edit_program_value2_get(prop.style->obj, prop.program);
            snprintf(buff, sizeof(buff), "%1.2f", value);
            elm_entry_entry_set(entry2, buff);
            evas_object_smart_callback_del(entry2, "activated", _on_value2_active);
@@ -1035,7 +1035,7 @@ _prop_item_program_after_update(Program_Editor *prog_edit)
 
    if (!prop.afters) return;
 
-   afters_list = edje_edit_program_afters_get(prop.group->obj, prop.program);
+   afters_list = edje_edit_program_afters_get(prop.style->obj, prop.program);
    count_afters = eina_list_count(afters_list);
 
    box = elm_object_part_content_get(prop.afters, "elm.swallow.content");
@@ -1094,7 +1094,7 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
 
    if (!prop.targets) return;
 
-   targets_list = edje_edit_program_targets_get(prop.group->obj, prop.program);
+   targets_list = edje_edit_program_targets_get(prop.style->obj, prop.program);
    count_targets = eina_list_count(targets_list);
 
    box = elm_object_part_content_get(prop.targets, "elm.swallow.content");
@@ -1120,14 +1120,14 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    double range = 0;
    char instr[BUFF_MAX];
 
-   range = edje_edit_program_in_from_get(prop.group->obj, prop.program);
+   range = edje_edit_program_in_from_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    elm_entry_entry_set(entry, instr);
    evas_object_smart_callback_del(entry, "activated", _on_in_from_change);
    evas_object_smart_callback_add(entry, "activated",
                                   _on_in_from_change, prog_edit);
-   range = edje_edit_program_in_range_get(prop.group->obj,
+   range = edje_edit_program_in_range_get(prop.style->obj,
                                           prop.program);
    entry = eina_list_nth(childs, 1);
    snprintf(instr, sizeof(instr), "%2.3f", range);
@@ -1266,7 +1266,7 @@ _gl_progs_add(Program_Editor *prog_edit)
                            ELM_SCROLLER_POLICY_OFF);
    evas_object_show(gl_progs);
 
-   progs_list = edje_edit_programs_list_get(prop.group->obj);
+   progs_list = edje_edit_programs_list_get(prop.style->obj);
    EINA_LIST_FOREACH(progs_list, l, prog_name)
      {
         if (!prog_name) continue; /* if the list have NULL item */
@@ -1300,8 +1300,8 @@ _on_editor_save(void *data,
                 Evas_Object* obj __UNUSED__,
                 void *ei __UNUSED__)
 {
-   Group *group = (Group *)data;
-   edje_edit_save(group->obj);
+   Style *style = (Style *)data;
+   edje_edit_save(style->obj);
 }
 
 static void
@@ -1327,7 +1327,7 @@ _on_add_popup_bt_add(void *data,
         NOTIFY_WARNING("Program's 'name can not be empty!");
         return;
      }
-   if(!edje_edit_program_add(prop.group->obj, name))
+   if(!edje_edit_program_add(prop.style->obj, name))
      {
         NOTIFY_WARNING("Program's name must be unique!");
         return;
@@ -1365,10 +1365,10 @@ _on_bt_prog_del(void *data,
    const char *program_name = NULL;
 
    program_name = elm_object_item_part_text_get(glit, "elm.text");
-   if (!edje_edit_program_del(prop.group->obj, program_name))
+   if (!edje_edit_program_del(prop.style->obj, program_name))
      {
-        NOTIFY_WARNING("Failed to delete %s from group %s", program_name,
-                    prop.group->group_name)
+        NOTIFY_WARNING("Failed to delete %s from style %s", program_name,
+                    prop.style->name)
      }
    else
      elm_object_item_del(glit);
@@ -1420,7 +1420,7 @@ _on_bt_prog_add(void *data,
 }
 
 Evas_Object *
-program_editor_window_add(Group *group)
+program_editor_window_add(Style *style)
 {
    Evas_Object *mw_box, *pans;
    Evas_Object *scroller;
@@ -1428,15 +1428,15 @@ program_editor_window_add(Group *group)
    Program_Editor *prog_edit = NULL;
 
 
-   if (!group)
+   if (!style)
      {
-        ERR("Failed create image editor for current group");
+        ERR("Failed create image editor for current style");
         return NULL;
      }
 
    prog_edit = (Program_Editor *)mem_calloc(1, sizeof(Program_Editor));
 
-   prop.group = group;
+   prop.style = style;
    prog_edit->mwin = mw_add(NULL, NULL);
    mw_title_set(prog_edit->mwin, "Program editor");
    evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_FREE,
@@ -1482,7 +1482,7 @@ program_editor_window_add(Group *group)
    evas_object_size_hint_align_set(box, 1, 0.5);
 
    BUTTON_ADD(box, bt, "Apply");
-   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, prop.group);
+   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, prop.style);
    elm_box_pack_end(box, bt);
 
    BUTTON_ADD(box, bt, "Close");

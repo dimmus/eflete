@@ -187,12 +187,12 @@ ui_demospace_add(Evas_Object *parent)
 }
 
 Eina_Bool
-ui_demospace_set(Demospace *demo, Project *project, Group *group)
+ui_demospace_set(Demospace *demo, Project *project, Style *style)
 {
    if ((!demo) || (!project)) return false;
-   if (group)
+   if (style)
      {
-        char **c = eina_str_split(group->full_group_name, "/", 4);
+        char **c = eina_str_split(style->full_group_name, "/", 4);
         const char *widget = c[1],  *type = c[2], *style = c[3];
 
         if (!demo->object)
@@ -228,7 +228,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
      }
    else
      {
-        WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
+        WARN("Edje edit style object was deleted. Could'nt set it into groupspace");
         return false;
      }
    elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
