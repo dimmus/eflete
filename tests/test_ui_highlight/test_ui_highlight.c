@@ -144,6 +144,7 @@ END_TEST
  */
 START_TEST (hl_highlight_handler_color_set_test_n2)
 {
+/*
    elm_init(0,0);
    App_Data *app = NULL;
    app_init();
@@ -155,6 +156,7 @@ START_TEST (hl_highlight_handler_color_set_test_n2)
 //   hl_highlight_handler_color_set(app->ws->highlight.highlight, 255, 255, 255, 255);
    elm_shutdown();
    app_free(app);
+*/
 }
 END_TEST
 
@@ -189,6 +191,7 @@ END_TEST
  */
 START_TEST (hl_highlight_border_color_set_test_n2)
 {
+/*
    elm_init(0,0);
    App_Data *app = NULL;
    app_init();
@@ -200,6 +203,7 @@ START_TEST (hl_highlight_border_color_set_test_n2)
 //   hl_highlight_border_color_set(app->ws->highlight.highlight, 255, 255, 255, 255);
    elm_shutdown();
    app_free(app);
+*/
 }
 END_TEST
 

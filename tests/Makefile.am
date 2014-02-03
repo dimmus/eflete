@@ -14,7 +14,6 @@ project_manager_test \
 settings_test \
 style_editor_test \
 ui_block_test \
-ui_groupspace_test \
 ui_highlight_test \
 ui_main_window_test \
 ui_ruler_test \
@@ -32,6 +31,7 @@ FLAGS = \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
+-I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/settings \
 -I${top_srcdir}/src/ui \
