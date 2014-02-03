@@ -17,8 +17,8 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef UI_WORKSPACE_HEADER_H
-#define UI_WORKSPACE_HEADER_H
+#ifndef UI_WORKSPACEH
+#define UI_WORKSPACEH
 
 /**
  * @defgroup Workspace Workspace
@@ -272,4 +272,4 @@ workspace_highlight_set(Evas_Object *obj, Part *part);
 Eina_Bool
 workspace_highlight_unset(Evas_Object *obj);
 
-#endif /* UI_WORKSPACE_HEADER_H */
+#endif /* UI_WORKSPACE_H */

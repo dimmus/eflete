@@ -800,8 +800,7 @@ wm_widget_list_new(const char *file)
      }
    edje_file_collection_list_free(collection);
    DBG("Parse the edje group collection id finished! The list of widget - created.");
-   INFO("The theme consist a styles for %i widgets.",
-        eina_inlist_count(widget_list));
+   INFO("The theme consists of styles for %i widgets.", eina_inlist_count(widget_list));
 
    return widget_list;
 }

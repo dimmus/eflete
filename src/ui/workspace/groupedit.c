@@ -395,6 +395,7 @@ _groupedit_smart_resize(Evas_Object *o,
    evas_object_smart_changed(o);
 }
 
+/* groupedit geometry calculate */
 static void
 _groupedit_smart_calculate(Evas_Object *o)
 {
@@ -483,12 +484,11 @@ groupedit_add(Evas_Object *parent)
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
    sd->parent = parent;
 
-
    return obj;
 }
 
 Eina_Bool
-groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h)
+groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hbr_w, int hbr_h)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
 
@@ -496,25 +496,23 @@ groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
    else sd->handler_TL.w = htl_w;
    if (htl_h < 5) sd->handler_TL.h = 5;
    else sd->handler_TL.h = htl_h;
-   if (hrb_w < 5) sd->handler_BR.w = 5;
-   else sd->handler_BR.w = hrb_w;
-   if (hrb_h < 5) sd->handler_BR.h = 5;
-   else sd->handler_BR.h = hrb_h;
+   if (hbr_w < 5) sd->handler_BR.w = 5;
+   else sd->handler_BR.w = hbr_w;
+   if (hbr_h < 5) sd->handler_BR.h = 5;
+   else sd->handler_BR.h = hbr_h;
 
    return EINA_TRUE;
 }
 
-Eina_Bool
-groupedit_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hrb_w, int *hrb_h)
+void
+groupedit_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
-   *htl_w = sd->handler_TL.w;
-   *htl_h = sd->handler_TL.h;
-   *hrb_w = sd->handler_BR.w;
-   *hrb_h = sd->handler_BR.h;
-
-   return EINA_TRUE;
+   if (htl_w) *htl_w = sd->handler_TL.w;
+   if (htl_h) *htl_h = sd->handler_TL.h;
+   if (hbr_w) *hbr_w = sd->handler_BR.w;
+   if (hbr_h) *hbr_h = sd->handler_BR.h;
 }
 
 Eina_Bool
@@ -647,6 +645,11 @@ groupedit_edit_object_unset(Evas_Object *obj)
    _parts_list_free(sd);
    ret = sd->edit_obj;
    sd->edit_obj = NULL;
+
+   sd->con_size_min.w = 0;
+   sd->con_size_min.h = 0;
+   sd->con_size_max.w = -1;
+   sd->con_size_max.h = -1;
 
    return ret;
 }
