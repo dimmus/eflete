@@ -14,6 +14,15 @@ _on_zoom_change(void *data,
       elm_object_scale_set(demo->object, demo->current_scale);
 }
 
+static void
+_on_click(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   Evas_Object *notify = data;
+   evas_object_show(notify);
+}
+
 static Elm_Bubble_Pos
 _bubble_pos_get(const char *class)
 {
@@ -61,8 +70,60 @@ _panes_orient_get(const char *class)
    return horizontal;
 }
 
+static void
+_notify_orient_get(const char *class, double *horizontal, double *vertical)
+{
+   *horizontal = 0.5;
+   *vertical = 0.0;
+   if (strcmp(class, "top") == 0)
+     {
+        *horizontal = 0.5;
+        *vertical = 0.0;
+     }
+   else if (strcmp(class, "center") == 0)
+     {
+        *horizontal = 0.5;
+        *vertical = 0.5;
+     }
+   else if (strcmp(class, "bottom") == 0)
+     {
+        *horizontal = 0.5;
+        *vertical = 1.0;
+     }
+   else if (strcmp(class, "left") == 0)
+     {
+        *horizontal = 0.0;
+        *vertical = 0.5;
+     }
+   else if (strcmp(class, "right") == 0)
+     {
+        *horizontal = 1.0;
+        *vertical = 0.5;
+     }
+   else if (strcmp(class, "top_left") == 0)
+     {
+        *horizontal = 0.0;
+        *vertical = 0.0;
+     }
+   else if (strcmp(class, "top_right") == 0)
+     {
+        *horizontal = 1.0;
+        *vertical = 0.0;
+     }
+   else if (strcmp(class, "bottom_left") == 0)
+     {
+        *horizontal = 0.0;
+        *vertical = 1.0;
+     }
+   else if (strcmp(class, "bottom_right") == 0)
+     {
+        *horizontal = 1.0;
+        *vertical = 1.0;
+     }
+}
+
 static Evas_Object *
-_icon_create(const char * image_path, Evas_Object *parent)
+_icon_create(const char *image_path, Evas_Object *parent)
 {
    Evas_Object *icon;
 
@@ -234,6 +295,27 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         elm_box_pack_end(object, rd);
 
         elm_radio_value_set(rdg, 2);
+     }
+   else if (strcmp(widget, "notify") == 0)
+     {
+        Evas_Object *content, *noti, *bx, *btn;
+        double horizontal, vertical;
+        BUTTON_ADD(parent, btn, "Press to show Notify");
+
+        noti = elm_notify_add(btn);
+        _notify_orient_get(class, &horizontal, &vertical);
+        elm_notify_align_set(noti, horizontal, vertical);
+        elm_notify_timeout_set(noti, 5);
+        BOX_ADD(parent, bx, false, false);
+        elm_object_content_set(noti,bx);
+        LABEL_ADD(parent, content, "Text example. Timeout 5 sec");
+        elm_box_pack_end(bx, content);
+
+        evas_object_smart_callback_add(btn, "clicked", _on_click, noti);
+
+        object = elm_box_add(parent);
+        elm_box_pack_end(object, noti);
+        elm_box_pack_end(object, btn);
      }
    return object;
 }
