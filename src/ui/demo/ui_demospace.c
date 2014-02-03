@@ -146,6 +146,14 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         elm_spinner_wrap_set(object, EINA_TRUE);
         elm_spinner_min_max_set(object, -50.0, 250.0);
      }
+   else  if (strcmp(widget, "actionslider") == 0)
+     {
+        object = elm_actionslider_add(parent);
+        elm_object_part_text_set(object, "left", "Left");
+        elm_object_part_text_set(object, "right", "Right");
+        elm_object_part_text_set(object, "center", "Center");
+        elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
+     }
 
    return object;
 }
