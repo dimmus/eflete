@@ -216,7 +216,25 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         else
            elm_list_mode_set(object, ELM_LIST_SCROLL);
      }
+   else  if (strcmp(widget, "radio") == 0)
+     {
+        Evas_Object *rd, *rdg;
 
+        object = elm_box_add(parent);
+        evas_object_size_hint_weight_set(object, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
+        RADIO_ADD(parent, rd, 1, "Radio 1 Text Example");
+        elm_box_pack_end(object, rd);
+        rdg = rd;
+        RADIO_ADD(parent, rd, 2, "Radio 2 Text Example");
+        elm_radio_group_add(rd, rdg);
+        elm_box_pack_end(object, rd);
+        RADIO_ADD(parent, rd, 3, "Radio 3 Text Example");
+        elm_radio_group_add(rd, rdg);
+        elm_box_pack_end(object, rd);
+
+        elm_radio_value_set(rdg, 2);
+     }
    return object;
 }
 
