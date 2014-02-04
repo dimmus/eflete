@@ -213,10 +213,9 @@ ui_demospace_set(Demospace *demo, Project *project, Style *style)
         demo->current_scale = 1.0;
         elm_spinner_value_set(demo->scale_spinner, 1.0);
 
-        if (!demo->th)
-          demo->th = elm_theme_new();
-        else
-          elm_theme_flush(demo->th);
+        if (demo->th)
+          elm_theme_free(demo->th);
+        demo->th = elm_theme_new();
         elm_theme_set(demo->th, project->swapfile);
         elm_object_theme_set(demo->object, demo->th);
         elm_object_style_set(demo->object, style);
