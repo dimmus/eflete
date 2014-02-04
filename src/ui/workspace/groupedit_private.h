@@ -111,8 +111,8 @@ struct _Ws_Groupedit_Smart_Data
    WS_GROUPEDIT_DATA_GET(o, ptr)                                        \
    if (!ptr)                                                            \
      {                                                                  \
-        fprintf(stderr, "No Groupedit data for object %p (%s)!",        \
-                o, evas_object_type_get(o));                            \
+        ERR("No Groupedit data for object %p (%s)!",                    \
+            o, evas_object_type_get(o));                                \
         return val;                                                     \
      }
 
