@@ -165,7 +165,10 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         elm_calendar_mark_add(object, "checked", &saturday,
                                 ELM_CALENDAR_WEEKLY);
      }
-
+   else if (strcmp(widget, "bg") == 0)
+     {
+        object = elm_bg_add(parent);
+     }
    return object;
 }
 
