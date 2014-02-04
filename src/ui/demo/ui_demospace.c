@@ -154,6 +154,17 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         elm_object_part_text_set(object, "center", "Center");
         elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
      }
+   else  if (strcmp(widget, "calendar") == 0)
+     {
+        object = elm_calendar_add(parent);
+        /* Structure containing a calendar date and time
+           broken down into its components (see "time.h").
+           {sec, min, hour, day of the month, month, year since 1900,
+              days since Sunday, days since January 1, Daylight Saving Time flag} */
+        struct tm saturday = {0, 0, 0, 0, 1, 114, 6, -1, 0, 0, NULL};
+        elm_calendar_mark_add(object, "checked", &saturday,
+                                ELM_CALENDAR_WEEKLY);
+     }
 
    return object;
 }
