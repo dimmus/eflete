@@ -103,19 +103,25 @@ EVAS_SMART_SUBCLASS_NEW(_evas_smart_ws, _workspace,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
 static void
-_obj_area_visible_change(void *data,
+_obj_area_visible_change(void *data __UNUSED__,
                          Evas_Object *obj,
                          void *event_info __UNUSED__)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   /* Uncomment it, whene the object area will be resize on hilight.
    Evas_Object *highlight = (Evas_Object *)data;
    Eina_Bool visible = evas_object_visible_get(highlight);
+   */
+   Eina_Bool visible = groupedit_part_object_area_visible_get(sd->groupedit);
    if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
      {
+        groupedit_part_object_area_visible_set(sd->groupedit, !visible);
+        /* Uncomment it, whene the object area will be resize on hilight.
         if (visible)
           evas_object_hide(highlight);
         else
           evas_object_show(highlight);
+        */
      }
 }
 

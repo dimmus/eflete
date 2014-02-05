@@ -132,10 +132,10 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
   * @param sd The groupedit smart data structure for get access to parts list.
   * @param part The name of part to stack.
   * @param part_to The name of part which to stack.
-  * @param mode If EINA_TRUE operation restack above will be process, else is
+  * @param mode If true operation restack above will be process, else is
   * restack below.
   *
-  * @return EINA_FALSE on failure, EINA_TRUE on success.
+  * @return false on failure, true on success.
   */
 static Eina_Bool
 _part_restack(Ws_Groupedit_Smart_Data *sd,
@@ -538,7 +538,6 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
            default:
               break;
           }
-
         if (gp->visible)
           {
              evas_object_show(gp->draw);
@@ -665,7 +664,7 @@ _part_spacer_add(Evas *e)
    spacer = evas_object_image_add(e);
    evas_object_image_file_set(spacer, SPACER_IMG, NULL);
    evas_object_image_fill_set(spacer, 0, 0, 8, 8);
-   evas_object_image_filled_set(spacer, EINA_FALSE);
+   evas_object_image_filled_set(spacer, false);
 
    return spacer;
 }
@@ -724,12 +723,12 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    evas_object_image_border_set(gp->draw, bl, br, bt, bb);
 
    /* FIXME: need see in edje, to know how to work with edje fill param */
-   //evas_object_image_fill_set(gp->draw, 0, 0, 1, 1);
+   /* evas_object_image_fill_set(gp->draw, 0, 0, 1, 1); */
    evas_object_image_filled_set(gp->draw, true);
 
-   evas_object_image_smooth_scale_set(gp->draw, EINA_TRUE);
+   evas_object_image_smooth_scale_set(gp->draw, true);
 
-   //evas_object_image_data_update_add()
+   /* evas_object_image_data_update_add() */
 
    PART_STATE_FREE
    edje_edit_string_free(image_normal);

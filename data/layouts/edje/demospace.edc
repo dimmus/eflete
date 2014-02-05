@@ -108,7 +108,6 @@ group {
       image: "desktop_resize_handler_down.png" COMP;
       image: "groupedit_border.png" COMP;
       image: "tooltip-base.png" COMP;
-      image: "outline_glow.png" COMP;
    }
    name: "eflete/demospace/base/default";
    parts {

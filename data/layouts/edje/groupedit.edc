@@ -58,18 +58,7 @@ group { name: "eflete/groupedit/base/default";
       }
    }
 }
-group { name: "eflete/groupedit/handler_TL/default";
-   alias: "eflete/groupedit/handler_BR/default";
-   parts{
-      part { name: "bg";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: 0 0 0 255;
-         }
-      }
-   }
-}
+
 group { name: "eflete/group/item/default";
    images {
       image: "border_1.png" COMP;
@@ -173,6 +162,55 @@ group { name: "eflete/group/item/default";
          transition: LINEAR 0.2;
          target: "border_glow";
          target: "border";
+      }
+   }
+}
+
+group { name: "eflete/groupedit/handler_TL/default";
+   alias: "eflete/groupedit/handler_BR/default";
+   parts{
+      part { name: "bg";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+         }
+      }
+   }
+}
+
+group { name: "eflete/groupedit/object_area/default";
+   images {
+      image: "object_area_bg.png" COMP;
+      image: "border_1.png" COMP;
+   }
+   parts {
+      part { name: "clip";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 58 110 155 255;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         scale: 1;
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            image.normal: "object_area_bg.png";
+            fill.type: TILE;
+         }
+      }
+      part { name: "border";
+         type: IMAGE;
+         scale: 1;
+         clip_to: "clip";
+         description { state: "default" 0.0;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+            }
+         }
       }
    }
 }

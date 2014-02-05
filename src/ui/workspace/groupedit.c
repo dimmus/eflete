@@ -36,14 +36,14 @@ static Eina_Bool
 _user_size_calc(Evas_Object *o)
 {
    int nw, nh;
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, EINA_FALSE)
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, false)
 
    nw = sd->con_current_size->w + H_WIGTH;
    nh = sd->con_current_size->h + H_HEIGHT;
 
    evas_object_resize(o, nw, nh);
 
-   return EINA_TRUE;
+   return true;
 }
 
 static void
@@ -58,7 +58,7 @@ _mouse_down_hTL_cb(void *data,
    WS_GROUPEDIT_DATA_GET(data, sd)
    sd->downx = ev->canvas.x;
    sd->downy = ev->canvas.y;
-   sd->handler_TL_pressed = EINA_TRUE;
+   sd->handler_TL_pressed = true;
    edje_object_signal_emit(sd->container, "tooltip,show", "eflete");
 }
 
@@ -74,7 +74,7 @@ _mouse_down_hRB_cb(void *data,
    WS_GROUPEDIT_DATA_GET(data, sd)
    sd->downx = ev->canvas.x;
    sd->downy = ev->canvas.y;
-   sd->handler_BR_pressed = EINA_TRUE;
+   sd->handler_BR_pressed = true;
    edje_object_signal_emit(sd->container, "tooltip,show", "eflete");
 }
 
@@ -85,7 +85,7 @@ _mouse_up_hTL_cb(void *data,
                  void *event_info __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(data, sd)
-   sd->handler_TL_pressed = EINA_FALSE;
+   sd->handler_TL_pressed = false;
    edje_object_signal_emit(sd->container, "tooltip,hide", "eflete");
 
    /*----some scroll logic-----Move from here-------*/
@@ -118,7 +118,7 @@ _mouse_up_hRB_cb(void *data,
                  void *event_info __UNUSED__)
 {
    WS_GROUPEDIT_DATA_GET(data, sd)
-   sd->handler_BR_pressed = EINA_FALSE;
+   sd->handler_BR_pressed = false;
    edje_object_signal_emit(sd->container, "tooltip,hide", "eflete");
 }
 
@@ -260,8 +260,14 @@ _style_set(Evas_Object *o, const char *style)
    GROUP_NAME("handler_BR", style)
    if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
      {
-        GROUP_NAME("handler_BR", style)
+        GROUP_NAME("handler_BR", "default")
         edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group);
+     }
+   GROUP_NAME("object_area", style)
+   if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
+     {
+        GROUP_NAME("object_area", "default")
+        edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group);
      }
 
    if (sd->style) free((void *)sd->style);
@@ -307,15 +313,13 @@ _groupedit_smart_add(Evas_Object *o)
    priv->con_current_size = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
    priv->edit_obj = NULL;
    priv->parts = NULL;
-   priv->handler_TL_pressed = EINA_FALSE;
-   priv->handler_BR_pressed = EINA_FALSE;
-   /* FIXME: temporary solution with color */
-   priv->obj_area.obj = evas_object_rectangle_add(priv->e);
-   evas_object_color_set(priv->obj_area.obj, 255*50/255, 0*50/255, 0*50/255, 50);
+   priv->handler_TL_pressed = false;
+   priv->handler_BR_pressed = false;
+   priv->obj_area.obj = edje_object_add(priv->e);
    priv->obj_area.gp = NULL;
-   priv->obj_area.visible = EINA_FALSE;
+   priv->obj_area.visible = false;
    priv->obj_area.geom = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
-   priv->separated = EINA_FALSE;
+   priv->separated = false;
    priv->selected = NULL;
    priv->to_select = NULL;
 
@@ -323,14 +327,15 @@ _groupedit_smart_add(Evas_Object *o)
    priv->paddings.t_top = PADDING_INIT;
    priv->paddings.bottom = PADDING_INIT;
 
-   elm_config_cursor_engine_only_set(EINA_FALSE);
+   elm_config_cursor_engine_only_set(false);
    elm_object_cursor_set(priv->handler_TL.obj, "top_left_corner");
    elm_object_cursor_set(priv->handler_BR.obj, "bottom_right_corner");
-   elm_config_cursor_engine_only_set(EINA_TRUE);
+   elm_config_cursor_engine_only_set(true);
 
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_TL.obj, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
+   evas_object_smart_member_add(priv->obj_area.obj, o);
 
    _style_set(o, "default");
 }
@@ -490,7 +495,7 @@ groupedit_add(Evas_Object *parent)
 Eina_Bool
 groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hbr_w, int hbr_h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (htl_w < 5) sd->handler_TL.w = 5;
    else sd->handler_TL.w = htl_w;
@@ -501,7 +506,7 @@ groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hbr_w, in
    if (hbr_h < 5) sd->handler_BR.h = 5;
    else sd->handler_BR.h = hbr_h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 void
@@ -518,33 +523,33 @@ groupedit_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w,
 Eina_Bool
 groupedit_min_size_set(Evas_Object *obj, int w, int h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w < 0) sd->con_size_min.w = 0;
    else sd->con_size_min.w = w;
    if (h < 0) sd->con_size_min.h = 0;
    else sd->con_size_min.h = h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
 groupedit_max_size_set(Evas_Object *obj, int w, int h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w < 0) sd->con_size_max.w = -1;
    else sd->con_size_max.w = w;
    if (h < 0) sd->con_size_max.h = -1;
    else sd->con_size_max.h = h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
 groupedit_container_size_set(Evas_Object *obj, int w, int h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w < sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
    if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
@@ -570,12 +575,12 @@ groupedit_container_size_get(Evas_Object *obj, int *w, int *h)
 Eina_Bool
 groupedit_style_set(Evas_Object *obj, const char *style)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (!style || (!strcmp(sd->style, style))) return EINA_FALSE;
+   if (!style || (!strcmp(sd->style, style))) return false;
    _style_set(obj, style);
 
-   return EINA_TRUE;
+   return true;
 }
 
 const char *
@@ -593,15 +598,15 @@ groupedit_edit_object_set(Evas_Object *obj,
                           Evas_Object *edit_obj,
                           const char *file)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   /* check input edit_obj, if it not a edje object return EINA_FALSE */
+   /* check input edit_obj, if it not a edje object return false */
    if ((!edit_obj) && (!strcmp("edje", evas_object_type_get(edit_obj))))
      {
         /* TODO: add error message */
-        return EINA_FALSE;
+        return false;
      }
-   if (!file) return EINA_FALSE;
+   if (!file) return false;
 
    edje_object_animation_set(edit_obj, false);
    edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
@@ -631,7 +636,7 @@ groupedit_edit_object_set(Evas_Object *obj,
 
    evas_object_smart_changed(sd->obj);
 
-   return EINA_TRUE;
+   return true;
 }
 
 Evas_Object *
@@ -769,6 +774,7 @@ groupedit_part_object_area_set(Evas_Object *obj, const char *part)
 
    gp = _parts_list_find(sd->parts, part);
    sd->obj_area.gp = gp;
+   evas_object_stack_below(sd->obj_area.obj, gp->draw);
 
    evas_object_smart_changed(sd->obj);
 }
@@ -778,12 +784,14 @@ groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
    sd->obj_area.visible = visible;
+   if (visible) evas_object_show(sd->obj_area.obj);
+   else evas_object_hide(sd->obj_area.obj);
 }
 
 Eina_Bool
 groupedit_part_object_area_visible_get(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    return sd->obj_area.visible;
 }
 
