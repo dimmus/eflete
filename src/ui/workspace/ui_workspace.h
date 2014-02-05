@@ -65,16 +65,16 @@ Eina_Bool
 ws_background_image_set(Evas_Object *obj, const char *path);
 
 /**
- * Get the groupspace object, which loaded into workspace.
+ * Get the groupedit object, which loaded into workspace.
  *
  * @param obj The workspace object.
  *
- * @return The groupspace object or NULL if it didn't exist'.
+ * @return The groupedit object or NULL if it didn't exist'.
  *
  * @ingroup Workspace
  */
 Evas_Object *
-ws_groupspace_get(Evas_Object *obj);
+ws_groupedit_get(Evas_Object *obj);
 
 /**
  * Set the editable object to the workspace.

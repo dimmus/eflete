@@ -710,6 +710,14 @@ workspace_add(Evas_Object *parent)
      }
 }
 
+Evas_Object *
+ws_groupedit_get(Evas_Object *obj)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   return sd->groupedit;
+}
+
 static void
 _on_part_select(void *data,
                 Evas_Object *obj __UNUSED__,

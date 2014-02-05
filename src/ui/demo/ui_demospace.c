@@ -213,11 +213,7 @@ ui_demospace_set(Demospace *demo, Project *project, Style *style)
         demo->current_scale = 1.0;
         elm_spinner_value_set(demo->scale_spinner, 1.0);
 
-        if (demo->th)
-          elm_theme_free(demo->th);
-        demo->th = elm_theme_new();
-        elm_theme_set(demo->th, project->swapfile);
-        elm_object_theme_set(demo->object, demo->th);
+        ui_demospace_update(demo, project);
         elm_object_style_set(demo->object, style);
         elm_object_scale_set(demo->object, demo->current_scale);
         evas_object_show(demo->object);
@@ -232,6 +228,24 @@ ui_demospace_set(Demospace *demo, Project *project, Style *style)
      }
    elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
    elm_layout_signal_emit(demo->layout, "demospace,show", "eflete");
+
+   /* updating handlers for fitting block in LiveView
+      after opening another widget. */
+   const Evas_Object *part_bottom = edje_object_part_object_get(
+      elm_layout_edje_get(demo->demospace), "bottom_pad");
+   const Evas_Object *part_top = edje_object_part_object_get(
+      elm_layout_edje_get(demo->demospace), "top_pad");
+
+   elm_config_cursor_engine_only_set(false);
+   elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
+   elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
+   elm_config_cursor_engine_only_set(true);
+
+   Evas_Coord x, y;
+   evas_object_geometry_get(demo->demospace, NULL, NULL, &x, &y);
+   edje_object_part_drag_value_set(elm_layout_edje_get(demo->demospace),
+                                   "bottom_pad", x, y);
+
    return true;
 }
 
@@ -248,24 +262,16 @@ ui_demospace_unset(Demospace *demo)
 }
 
 Eina_Bool
-ui_demospace_update(Demospace *demo)
+ui_demospace_update(Demospace *demo, Project *project)
 {
-   if (!demo) return false;
+   if ((!demo) || (!project)) return false;
 
-   const Evas_Object *part_bottom = edje_object_part_object_get(
-      elm_layout_edje_get(demo->demospace), "bottom_pad");
-   const Evas_Object *part_top = edje_object_part_object_get(
-      elm_layout_edje_get(demo->demospace), "top_pad");
+   Elm_Theme *theme = elm_theme_new();
+   elm_theme_set(theme, project->swapfile);
+   elm_object_theme_set(demo->object, theme);
+   elm_object_scale_set(demo->object, demo->current_scale);
+   elm_theme_free(theme);
 
-   elm_config_cursor_engine_only_set(false);
-   elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
-   elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
-   elm_config_cursor_engine_only_set(true);
-
-   Evas_Coord x, y;
-   evas_object_geometry_get(demo->demospace, NULL, NULL, &x, &y);
-   edje_object_part_drag_value_set(elm_layout_edje_get(demo->demospace),
-                                   "bottom_pad", x, y);
    return true;
 }
 
@@ -275,8 +281,6 @@ demo_free(Demospace *demo)
    if (demo) ui_demospace_unset(demo);
    else return;
 
-   if (demo->th)
-     elm_theme_free(demo->th);
    free(demo);
 }
 

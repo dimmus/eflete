@@ -36,7 +36,6 @@ struct _Demospace
    Evas_Object *object;
    Evas_Object *scale_spinner;
    double current_scale;
-   Elm_Theme *th;
 };
 typedef struct _Demospace Demospace;
 
@@ -94,12 +93,13 @@ ui_demospace_unset(Demospace *demo);
  * properly.
  *
  * @param demo demospace structure.
+ * @param project project structure that contain path to swap, demo and edj files.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Demospace
  */
 Eina_Bool
-ui_demospace_update(Demospace *demo);
+ui_demospace_update(Demospace *demo, Project *project);
 
 /**
  * Freeing the demospace structure.

@@ -76,6 +76,15 @@ _show_part(void *data,
 }
 
 static void
+_live_view_update(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_demospace_update(ap->demo, ap->project);
+}
+
+static void
 _hide_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info)
@@ -172,7 +181,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *prop, *block, *wl_list;
+   Evas_Object *prop, *block, *wl_list, *groupedit;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -181,6 +190,9 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(wl_list, "wl,part,below", _below_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,show", _show_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,hide", _hide_part, ap);
+
+   groupedit = ws_groupedit_get(ap->workspace);
+   evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
 
    workspace_edit_object_unset(ap->workspace);
    /* FIXME:  find way to does'nt make immidietly render */
@@ -275,6 +287,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *wl_list = NULL;
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
+   Evas_Object *groupedit = NULL;
    Eina_List *signals = NULL;
 
    if ((!ap) && (!ap->project) && (!style))
@@ -300,6 +313,9 @@ ui_style_clicked(App_Data *ap, Style *style)
    workspace_edit_object_set(ap->workspace, style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
+   groupedit = ws_groupedit_get(ap->workspace);
+   evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
+
 
    /* style properties */
    prop = ui_block_property_get(ap);
@@ -312,7 +328,6 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_show(prop);
 
    ui_demospace_set(ap->demo, ap->project, style);
-   ui_demospace_update(ap->demo);
    ui_menu_disable_set(ap->menu_hash, "Programs", false);
 }
 
