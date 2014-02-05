@@ -62,6 +62,18 @@ _panes_orient_get(const char *class)
 }
 
 static Evas_Object *
+_icon_create(const char * image_path, Evas_Object *parent)
+{
+   Evas_Object *icon;
+
+   icon = elm_icon_add(parent);
+   elm_image_file_set(icon, image_path, NULL);
+   elm_image_resizable_set(icon, false, false);
+
+   return icon;
+}
+
+static Evas_Object *
 _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
 {
    Evas_Object *object = NULL;
@@ -169,6 +181,42 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
      {
         object = elm_bg_add(parent);
      }
+   else if (strcmp(widget, "list") == 0)
+     {
+        int i = 0;
+        Evas_Object *start, *end;
+
+        object = elm_list_add(parent);
+
+        for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
+             elm_list_item_append(object, "No icons", NULL, NULL, NULL, NULL);
+        for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
+          {
+             start = _icon_create(TET_IMG_PATH"mw_button_info.png", parent);
+             end = _icon_create(TET_IMG_PATH"mw_button_close.png", parent);
+             elm_list_item_append(object, "Two icons", start, end, NULL, NULL);
+          }
+        for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
+          {
+             end = _icon_create(TET_IMG_PATH"mw_button_close.png", parent);
+             elm_list_item_append(object, "End icon", NULL, end, NULL, NULL);
+          }
+        for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
+          {
+             start = _icon_create(TET_IMG_PATH"mw_button_info.png", parent);
+             elm_list_item_append(object, "Start icon", start,
+                                    NULL, NULL, NULL);
+          }
+
+        if (strstr(class, "h_") == class)
+           elm_list_horizontal_set(object, true);
+
+        if (strstr(class, "compress"))
+           elm_list_mode_set(object, ELM_LIST_COMPRESS);
+        else
+           elm_list_mode_set(object, ELM_LIST_SCROLL);
+     }
+
    return object;
 }
 
