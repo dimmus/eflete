@@ -2,6 +2,8 @@
 #include "notify.h"
 
 #define ELEMENTS_COUNT 16
+#define COLOR_BLUE_LIGHT 57, 102, 147, 255
+#define COLOR_BLUE_DARK 58, 92, 126, 255
 
 static void
 _on_zoom_change(void *data,
@@ -317,6 +319,34 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         elm_box_pack_end(object, noti);
         elm_box_pack_end(object, btn);
      }
+   else if (strcmp(widget, "separator") == 0)
+     {
+        Evas_Object *rect;
+        Evas_Object *separator;
+        Eina_Bool is_horizontal;
+
+        object = elm_box_add(parent);
+        separator = elm_separator_add(parent);
+
+        is_horizontal = !strcmp(class, "horizontal");
+        elm_box_horizontal_set(object, !is_horizontal);
+        elm_separator_horizontal_set(separator, is_horizontal);
+
+#define _ADD_RECT(COLOR_BLUE) \
+        rect = evas_object_rectangle_add(evas_object_evas_get(parent)); \
+        evas_object_color_set(rect, COLOR_BLUE); \
+        evas_object_size_hint_weight_set(rect, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+        evas_object_size_hint_align_set(rect, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+        elm_box_pack_end(object, rect); \
+        evas_object_show(rect);
+
+        _ADD_RECT(COLOR_BLUE_LIGHT);
+        elm_box_pack_end(object, separator);
+        evas_object_show(separator);
+        _ADD_RECT(COLOR_BLUE_DARK);
+
+#undef _ADD_RECT
+     }
    return object;
 }
 
@@ -452,3 +482,5 @@ demo_free(Demospace *demo)
 }
 
 #undef ELEMENTS_COUNT
+#undef COLOR_BLUE_LIGHT
+#undef COLOR_BLUE_DARK
