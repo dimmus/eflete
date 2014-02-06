@@ -38,7 +38,6 @@ ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
-ui/workspace/ctxpopup.c \
 ui/demo/ui_demospace.c \
 ui/notification/notify.c
 
