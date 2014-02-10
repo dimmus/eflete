@@ -264,7 +264,7 @@ ui_demospace_unset(Demospace *demo)
 Eina_Bool
 ui_demospace_update(Demospace *demo, Project *project)
 {
-   if ((!demo) || (!project)) return false;
+   if ((!demo) || (!project) || (!demo->object)) return false;
 
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
