@@ -403,7 +403,7 @@ open_edc_file(App_Data *ap)
 
    layout = elm_layout_add(inwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, TET_EDJ, "compile_dialog");
+   elm_layout_file_set(layout, EFLETE_EDJ, "compile_dialog");
 
    #define _BUTTON_ADD(box, text, func, data) \
       bt = elm_button_add(box); \

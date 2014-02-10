@@ -103,7 +103,7 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    item = elm_layout_add(parent); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(item, TET_EDJ, "property/item/"style); \
+   elm_layout_file_set(item, EFLETE_EDJ, "property/item/"style); \
    elm_object_part_text_set(item, "elm.text", text); \
    evas_object_show(item);
 

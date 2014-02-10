@@ -141,7 +141,7 @@ _on_popup_btn_yes(void *data,
    widget = _widget_from_ap_get(ap);
    if (!widget) return;
 
-   source_file = eina_stringshare_add(TET_EDJ_PATH"template.edj");
+   source_file = eina_stringshare_add(EFLETE_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
 

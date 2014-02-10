@@ -246,22 +246,22 @@ _style_set(Evas_Object *o, const char *style)
       sprintf(group, "eflete/groupedit/%s/%s", item, style);
 
    GROUP_NAME("base", style)
-   if (!edje_object_file_set(sd->container, TET_EDJ, group))
+   if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
      {
         GROUP_NAME("base", "default")
-        edje_object_file_set(sd->container, TET_EDJ, group);
+        edje_object_file_set(sd->container, EFLETE_EDJ, group);
      }
    GROUP_NAME("handler_TL", style)
-   if (!edje_object_file_set(sd->handler_TL.obj, TET_EDJ, group))
+   if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("handler_TL", "default")
-        edje_object_file_set(sd->handler_TL.obj, TET_EDJ, group);
+        edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group);
      }
    GROUP_NAME("handler_BR", style)
-   if (!edje_object_file_set(sd->handler_BR.obj, TET_EDJ, group))
+   if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("handler_BR", style)
-        edje_object_file_set(sd->handler_BR.obj, TET_EDJ, group);
+        edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group);
      }
 
    if (sd->style) free((void *)sd->style);

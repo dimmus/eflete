@@ -46,7 +46,7 @@ ui_block_add(Evas_Object *parent)
         return NULL;
      }
    block = elm_layout_add(parent);
-   elm_layout_file_set(block, TET_EDJ, "eflete/block/layout");
+   elm_layout_file_set(block, EFLETE_EDJ, "eflete/block/layout");
 
    return block;
 }

@@ -70,12 +70,12 @@ fi
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
-TET_DEFINE=" -DTET_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
-TET_DEFINE+=" -DTET_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
-TET_DEFINE+=" -DTET_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
-TET_DEFINE+=" -DTET_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
-TET_DEFINE+=" -DTET_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
-AC_SUBST([TET_DEFINE])
+EFLETE_DEFINE=" -DEFLETE_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
+EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
+EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
+EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
+EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
+AC_SUBST([EFLETE_DEFINE])
 
 AC_DEFINE(HAVE_CONFIG_H)
 

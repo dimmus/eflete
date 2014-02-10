@@ -28,6 +28,10 @@
 #include "config.h"
 #endif /* include config.h */
 
+#define BORDER_IMG EFLETE_IMG_PATH"border_part.png"
+#define SPACER_IMG EFLETE_IMG_PATH"part_spacer_bg.png"
+#define SWALLOW_IMG EFLETE_IMG_PATH"part_swallow_bg.png"
+
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
 

@@ -396,8 +396,8 @@ new_theme_create(App_Data *ap)
    if (!ap) return false;
 
    ap->is_new = false;
-   path = eina_stringshare_add(TET_SETT_PATH"cache/");
-   file_full_path = eina_stringshare_add( TET_SETT_PATH"cache/Untitled.edj");
+   path = eina_stringshare_add(EFLETE_SETT_PATH"cache/");
+   file_full_path = eina_stringshare_add( EFLETE_SETT_PATH"cache/Untitled.edj");
 
    if (!ecore_file_exists(path))
      {
@@ -416,7 +416,7 @@ new_theme_create(App_Data *ap)
           }
      }
 
-   if ((!errors) && (!ecore_file_cp(TET_EDJ_PATH"template.edj", file_full_path)))
+   if ((!errors) && (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", file_full_path)))
      {
         ERR("Coud'nt copy theme template to cache");
         errors = true;

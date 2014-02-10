@@ -525,7 +525,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                    &r, &g, &b, &a); \
    ITEM_ADD(parent, item, text) \
    color = elm_layout_add(item); \
-   elm_layout_file_set(color, TET_EDJ, "eflete/prop/color"); \
+   elm_layout_file_set(color, EFLETE_EDJ, "eflete/prop/color"); \
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(color, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_object_tooltip_text_set(color, tooltip); \

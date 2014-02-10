@@ -90,7 +90,7 @@ ui_main_window_add(App_Data *ap)
         return EINA_FALSE;
      }
 
-   if (!ecore_file_mkpath(TET_SETT_PATH))
+   if (!ecore_file_mkpath(EFLETE_SETT_PATH))
      ERR("Can't create settings directory");
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -119,7 +119,7 @@ ui_main_window_add(App_Data *ap)
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    elm_win_resize_object_add(win, layout);
-   elm_layout_file_set(layout, TET_EDJ, "ui/main_window");
+   elm_layout_file_set(layout, EFLETE_EDJ, "ui/main_window");
    evas_object_show(layout);
    ap->win_layout = layout;
    if (!ap->win_layout)

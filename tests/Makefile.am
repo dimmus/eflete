@@ -50,7 +50,7 @@ FLAGS = \
 @EFREET_CFLAGS@ \
 @EDJE_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
-@TET_DEFINE@ \
+@EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/libete.a \

@@ -166,7 +166,7 @@ ui_demospace_add(Evas_Object *parent)
 
    _layout = elm_layout_add(parent);
    demo->layout = _layout;
-   elm_layout_file_set(_layout, TET_EDJ, "eflete/demospace/toolbar/default");
+   elm_layout_file_set(_layout, EFLETE_EDJ, "eflete/demospace/toolbar/default");
 
    SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/demo");
    elm_spinner_label_format_set(spinner, "%1.2f");
@@ -177,7 +177,7 @@ ui_demospace_add(Evas_Object *parent)
    demo->scale_spinner = spinner;
 
    demo->demospace = elm_layout_add(parent);
-   elm_layout_file_set(demo->demospace, TET_EDJ, "eflete/demospace/base/default");
+   elm_layout_file_set(demo->demospace, EFLETE_EDJ, "eflete/demospace/base/default");
    elm_object_part_content_set(demo->layout, "demospace",
                                demo->demospace);
    elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
