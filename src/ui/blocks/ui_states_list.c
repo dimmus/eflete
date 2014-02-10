@@ -108,7 +108,7 @@ ui_states_list_data_set(Evas_Object *object,
 {
    Eina_List *states, *l;
    const char *state_name;
-   Eina_Stringshare *state;
+   Eina_Stringshare *state, *curr_state;
    Elm_Object_Item *stit;
    Evas_Object *parent, *box, *button, *icon;
 
@@ -119,6 +119,9 @@ ui_states_list_data_set(Evas_Object *object,
 
    states = edje_edit_part_states_list_get(style->obj, part->name);
    evas_object_data_set(object, STLIST_PART_KEY, part);
+   curr_state = eina_stringshare_printf("%s %.2f",
+                                        part->curr_state,
+                                        part->curr_state_value);
    EINA_LIST_FOREACH(states, l, state_name)
      {
         state = eina_stringshare_add(state_name);
@@ -126,6 +129,9 @@ ui_states_list_data_set(Evas_Object *object,
                                        state,
                                        NULL, ELM_GENLIST_ITEM_NONE,
                                        NULL, NULL);
+        if (strcmp(state, curr_state) == 0)
+          elm_genlist_item_selected_set(stit, true);
+
         elm_object_item_data_set(stit, (void *)state);
         elm_object_item_del_cb_set(stit, _item_del);
      }
@@ -149,6 +155,7 @@ ui_states_list_data_set(Evas_Object *object,
    elm_box_pack_end(box, button);
    elm_object_part_content_set(parent, "elm.swallow.title", box);
    elm_object_signal_emit(parent, "title,content,show", "eflete");
+   eina_stringshare_del(curr_state);
 
    return true;
 }

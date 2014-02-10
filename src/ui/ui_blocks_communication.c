@@ -266,12 +266,15 @@ ui_part_select(App_Data *ap,
    gl_states = ui_states_list_add(ap->block.bottom_left);
    ui_states_list_data_set(gl_states, ap->project->current_style, part);
    ui_block_state_list_set(ap, gl_states);
+   evas_object_smart_callback_del_full(gl_states, "stl,state,add", _add_state_dialog, ap);
    evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
+   evas_object_smart_callback_del_full(gl_states, "stl,state,del", _del_state_dialog, ap);
    evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
 
    evas_object_show(gl_states);
 
-   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), true);
+   ui_property_state_set(prop, part);
+   workspace_edit_object_part_state_set(ap->workspace, part);
    workspace_highlight_unset(ap->workspace);
    workspace_highlight_set(ap->workspace, part);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
