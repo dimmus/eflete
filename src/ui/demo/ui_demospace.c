@@ -218,7 +218,7 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
         object = elm_spinner_add(parent);
         elm_spinner_label_format_set(object, "%1.1f units");
         elm_spinner_step_set(object, 1.5);
-        elm_spinner_wrap_set(object, EINA_TRUE);
+        elm_spinner_wrap_set(object, true);
         elm_spinner_min_max_set(object, -50.0, 250.0);
      }
    else  if (strcmp(widget, "actionslider") == 0)
@@ -347,6 +347,35 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
 
 #undef _ADD_RECT
      }
+   else  if (strcmp(widget, "clock") == 0)
+     {
+        object = elm_clock_add(parent);
+        unsigned int digit_edit;
+        if (strcmp(class, "flipdigit") == 0)
+          elm_clock_edit_set(object, true);
+  /****************************************************************************
+   * Enum  Elm_Clock_Edit_Mode are identifiers for which clock digits should
+   * be editable, when a clock widget is in edition mode. For "flipampm"
+   * mode variable ELM_CLOCK_EDIT_HOUR_DECIMAL is responsible for user editing
+   * time. In this case time can be increased or decreased with step 12 hours.
+   ***************************************************************************/
+        else if (strcmp(class, "flipampm") == 0)
+          {
+             elm_clock_show_am_pm_set(object, true);
+             elm_clock_edit_set(object, true);
+             digit_edit = ELM_CLOCK_EDIT_HOUR_DECIMAL;
+             elm_clock_edit_mode_set(object, digit_edit);
+          }
+        else if (strcmp(class, "base-seconds") == 0)
+          elm_clock_show_seconds_set(object, true);
+        else if (strcmp(class, "base-am_pm") == 0)
+          elm_clock_show_am_pm_set(object, true);
+        else if (strcmp(class, "base-all") == 0)
+          {
+             elm_clock_show_seconds_set(object, true);
+             elm_clock_show_am_pm_set(object, true);
+          }
+     }
    return object;
 }
 
@@ -428,7 +457,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
      }
    else
      {
-        WARN("Edje edit group object was deleted. Could'nt set it into groupspace");
+        WARN("Edje edit style object was deleted. Couldn't set it into groupspace");
         return false;
      }
    elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
