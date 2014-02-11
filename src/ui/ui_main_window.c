@@ -24,21 +24,16 @@
 #include "style_dialog.h"
 
 static void
-_on_done(void *data __UNUSED__,
+_on_done(void *data,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   loop_quit(false);
-}
-
-static Eina_Bool
-_on_window_close(Eina_Bool force __UNUSED__,
-                 void *data)
-{
+   /*TODO: add mesasge about save the project */
    App_Data *ap = (App_Data *)data;
    /* TODO: add unsaved project check here*/
    ui_main_window_del(ap);
-   return true;
+
+   ecore_main_loop_quit();
 }
 
 Eina_Bool
@@ -153,7 +148,7 @@ ui_main_window_add(App_Data *ap)
      MARK_TO_SHUTDOWN("Failed register callbacks");
 
    evas_object_show(win);
-   loop_begin(_on_window_close, ap);
+   ecore_main_loop_begin();
    return true;
 }
 #undef MARK_TO_SHUTDOWN

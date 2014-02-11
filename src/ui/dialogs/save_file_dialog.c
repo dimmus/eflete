@@ -55,7 +55,7 @@ _ok_cb(void *data,
      }
    evas_object_del(cbdata->popup);
    free(cbdata);
-   loop_quit(true);
+   ecore_main_loop_quit();
 }
 
 static void
@@ -77,7 +77,7 @@ _on_cancel_cb(void *data,
              ui_menu_base_disabled_set(ap->menu_hash, true);
           }
      }
-   loop_quit(false);
+   ecore_main_loop_quit();
 }
 
 static void
@@ -90,7 +90,7 @@ _on_edj_done(void *data,
    const char *selected = event_info;
    if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
-        loop_quit(true);
+        ecore_main_loop_quit();
         return;
      }
    if (ecore_file_exists(selected))
@@ -133,7 +133,7 @@ _on_edj_done(void *data,
                   else
                     NOTIFY_ERROR("Theme can not be saved: %s", selected);
                }
-             loop_quit(true);
+             ecore_main_loop_quit();
           }
         else
            NOTIFY_ERROR("The file must have a extension '.edj'");
@@ -150,11 +150,11 @@ _on_edc_done(void *data,
    const char *selected = (const char *)event_info;
    if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
-        loop_quit(true);
+        ecore_main_loop_quit();
         return;
      }
    pm_export_to_edc(ap->project, selected, NULL);
-   loop_quit(true);
+   ecore_main_loop_quit();
 }
 
 static Eina_Bool
@@ -177,7 +177,7 @@ _save_as_edx_file(App_Data *ap,
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    evas_object_del(fs);
    evas_object_del(inwin);
