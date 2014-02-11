@@ -192,7 +192,7 @@ _on_image_done(void *data,
 
    if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
-        loop_quit(false);
+        ecore_main_loop_quit();
         return;
      }
 
@@ -219,7 +219,7 @@ _on_image_done(void *data,
    else
      NOTIFY_ERROR("Error while loading file.<br> File is not exist");
 
-   loop_quit(false);
+   ecore_main_loop_quit();
 }
 
 static void
@@ -236,7 +236,7 @@ _on_button_add_clicked_cb(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    evas_object_del(fs);
    evas_object_del(inwin);

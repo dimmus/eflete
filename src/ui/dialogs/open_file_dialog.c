@@ -107,7 +107,7 @@ _on_cancel_cb(void *data,
              ui_menu_locked_set(ap->menu_hash, false);
           }
      }
-   loop_quit(false);
+   ecore_main_loop_quit();
 }
 
 static void
@@ -133,7 +133,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
      }
 
    evas_object_hide(elm_object_parent_widget_get(obj));
-   loop_quit(false);
+   ecore_main_loop_quit();
 }
 
 Eina_Bool
@@ -150,7 +150,7 @@ open_edj_file(App_Data *ap)
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    evas_object_del(fs);
    evas_object_del(inwin);
@@ -173,7 +173,7 @@ _on_open_edj_cb(void *data,
      {
         add_callbacks_wd(wd_list, ap);
         evas_object_hide(elm_object_parent_widget_get(obj));
-        loop_quit(false);
+        ecore_main_loop_quit();
      }
 }
 
@@ -252,7 +252,7 @@ _on_compile_edc_done(void *data,
    if ((!data) || (!selected))
      {
         evas_object_del(obj);
-        loop_quit(false);
+        ecore_main_loop_quit();
         return;
      }
 
@@ -280,7 +280,7 @@ _on_compile_edc_done(void *data,
         elm_object_text_set(fs_ent->edj, edj);
         free(edj);
 
-        loop_quit(false);
+        ecore_main_loop_quit();
      }
    else
      NOTIFY_ERROR("The file must have an extension '.edc'");
@@ -296,7 +296,7 @@ _on_path_done(void *data,
    if ((data) && (selected))
      elm_object_text_set(entry, selected);
 
-   loop_quit(false);
+   ecore_main_loop_quit();
 }
 
 static void
@@ -336,7 +336,7 @@ _edx_select(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    evas_object_del(fs);
    evas_object_del(inwin);
@@ -373,7 +373,7 @@ _path_select(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    evas_object_del(fs);
    evas_object_del(inwin);
@@ -482,7 +482,7 @@ open_edc_file(App_Data *ap)
    elm_win_inwin_content_set(inwin, layout);
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    free(fs_ent->project_name);
    free(fs_ent);
