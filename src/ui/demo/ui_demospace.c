@@ -5,6 +5,105 @@
 #define COLOR_BLUE_LIGHT 57, 102, 147, 255
 #define COLOR_BLUE_DARK 58, 92, 126, 255
 
+static const char *imgs[] =
+{
+   "insanely_huge_test_image.jpg",
+   "mystrale.jpg",
+   "mystrale_2.jpg",
+   "twofish.jpg",
+   "sky_01.jpg",
+   "sky_02.jpg",
+   "sky_03.jpg",
+   "sky_04.jpg",
+};
+
+typedef struct _TestItem
+{
+   Eina_Stringshare *path;
+   int checked;
+} TestItem;
+
+static void
+_grid_del(void         *data,
+          Evas_Object  *obj __UNUSED__)
+{
+   TestItem *ti = data;
+   eina_stringshare_del(ti->path);
+   free(data);
+}
+
+char *
+_grid_text_get(void        *data,
+              Evas_Object  *obj __UNUSED__,
+              const char   *part __UNUSED__)
+{
+   const TestItem *ti = data;
+   char buf[256];
+   snprintf(buf, sizeof(buf), "Photo %s", ti->path);
+   return strdup(buf);
+}
+
+static Evas_Object *
+_grid_content_get(void        *data,
+                  Evas_Object *obj,
+                  const char  *part)
+{
+   const TestItem *ti = data;
+   Evas_Object *content;
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        content = elm_bg_add(obj);
+        elm_bg_file_set(content, ti->path, NULL);
+        evas_object_size_hint_aspect_set(content, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        evas_object_show(content);
+        return content;
+     }
+   else if (!strcmp(part, "elm.swallow.end"))
+     {
+        content = elm_check_add(obj);
+        evas_object_propagate_events_set(content, 0);
+        elm_check_state_set(content, ti->checked);
+        evas_object_show(content);
+        return content;
+     }
+   return NULL;
+}
+
+static Evas_Object *
+_create_gengrid(Evas_Object *obj, const char *style)
+{
+   Elm_Gengrid_Item_Class *ic = NULL;
+   TestItem *ti;
+   int i;
+   Evas_Object *grid = NULL;
+   double scale = elm_config_scale_get();
+   if (!obj) return NULL;
+   grid = elm_gengrid_add(obj);
+   elm_gengrid_item_size_set(grid, scale * 100, scale * 100);
+   evas_object_size_hint_align_set(grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+
+   if (!ic)
+     {
+        ic = elm_gengrid_item_class_new();
+        ic->item_style = strdup(style);
+        ic->func.text_get = _grid_text_get;
+        ic->func.content_get = _grid_content_get;
+        ic->func.state_get = NULL;
+        ic->func.del = _grid_del;
+     }
+
+   for (i = 0; i < 40; i++)
+     {
+        ti = mem_calloc(1, sizeof(TestItem));
+        ti->path = eina_stringshare_printf(TET_IMG_PATH"%s", imgs[rand() %
+                                          (sizeof(imgs) / (sizeof(imgs[0])))]);
+        elm_gengrid_item_append(grid, ic, ti, NULL, NULL);
+     }
+   elm_gengrid_item_class_free(ic);
+   return grid;
+}
+
 static void
 _on_zoom_change(void *data,
                 Evas_Object *obj __UNUSED__,
@@ -137,7 +236,10 @@ _icon_create(const char *image_path, Evas_Object *parent)
 }
 
 static Evas_Object *
-_elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
+_elm_widget_create(const char  *widget,
+                   const char  *class,
+                   const char  *style,
+                   Evas_Object *parent)
 {
    Evas_Object *object = NULL;
 
@@ -375,6 +477,19 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
              elm_clock_show_seconds_set(object, true);
              elm_clock_show_am_pm_set(object, true);
           }
+   }
+   else if (strcmp(widget, "gengrid") == 0)
+     {
+        if (strcmp(class, "base") == 0)
+          {
+             object = _create_gengrid(parent, "default");
+             evas_object_show(object);
+          }
+        if (strcmp(class, "item") == 0)
+          {
+             object = _create_gengrid(parent, style);
+             evas_object_show(object);
+          }
      }
    return object;
 }
@@ -421,12 +536,23 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
    if ((!demo) || (!project)) return false;
    if (group)
      {
-        char **c = eina_str_split(group->full_group_name, "/", 4);
-        const char *widget = c[1],  *type = c[2], *style = c[3];
+        char **c = NULL;
+        const char *widget = NULL, *type = NULL, *style_name = NULL,
+                   *custom_name = NULL;
+        if (strstr(group->full_group_name, "gengrid"))
+          {
+             c = eina_str_split(group->full_group_name, "/", 5);
+             custom_name = c[4];
+          }
+        else
+          c = eina_str_split(group->full_group_name, "/", 4);
+        widget = c[1];
+        type = c[2];
+        style_name = c[3];
 
         if (!demo->object)
           {
-             demo->object = _elm_widget_create(widget, type, demo->demospace);
+             demo->object = _elm_widget_create(widget, type, style_name, demo->demospace);
              elm_object_part_content_set(demo->demospace, "demo", demo->object);
              evas_object_show(demo->demospace);
           }
@@ -448,7 +574,11 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
           elm_theme_flush(demo->th);
         elm_theme_set(demo->th, project->swapfile);
         elm_object_theme_set(demo->object, demo->th);
-        elm_object_style_set(demo->object, style);
+
+        if ((!strcmp(type, "item")) && (custom_name))
+          elm_object_style_set(demo->object, custom_name);
+        else
+          elm_object_style_set(demo->object, style_name);
         elm_object_scale_set(demo->object, demo->current_scale);
         evas_object_show(demo->object);
 
@@ -457,7 +587,7 @@ ui_demospace_set(Demospace *demo, Project *project, Group *group)
      }
    else
      {
-        WARN("Edje edit style object was deleted. Couldn't set it into groupspace");
+        WARN("Edje edit group object was deleted. Couldn't set it into groupspace");
         return false;
      }
    elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
