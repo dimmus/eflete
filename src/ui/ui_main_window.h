@@ -34,7 +34,7 @@
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_workspace.h"
-#include "ui_demospace.h"
+#include "live_view.h"
 #include "ui_block.h"
 #include "colorclass_editor.h"
 #include "notify.h"

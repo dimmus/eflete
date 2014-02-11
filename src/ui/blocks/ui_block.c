@@ -118,7 +118,7 @@ ui_block_graph_vision_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_demo_view_get(App_Data *ap)
+ui_block_live_view_get(App_Data *ap)
 {
    return ui_block_content_get(ap->block.bottom_right);
 }
@@ -160,7 +160,7 @@ ui_block_graph_vision_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_demo_view_set(App_Data *ap, Evas_Object *content)
+ui_block_live_view_set(App_Data *ap, Evas_Object *content)
 {
    return ui_block_content_set(ap->block.bottom_right, content);
 }

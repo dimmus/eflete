@@ -37,7 +37,7 @@ ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
-ui/demo/ui_demospace.c \
+ui/live_view/live_view.c \
 ui/notification/notify.c
 
 eflete_SOURCES  = main.c
@@ -55,7 +55,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
--I${top_srcdir}/src/ui/demo \
+-I${top_srcdir}/src/ui/live_view \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \

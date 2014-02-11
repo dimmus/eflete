@@ -129,7 +129,7 @@ Evas_Object *
 ui_block_graph_vision_get(App_Data *ap);
 
 /**
- * Get the demo object
+ * Get the live view object
  *
  * @param ap the application data
  * @return the demo object
@@ -137,7 +137,7 @@ ui_block_graph_vision_get(App_Data *ap);
  * @ingroup Block
  */
 Evas_Object *
-ui_block_demo_view_get(App_Data *ap);
+ui_block_live_view_get(App_Data *ap);
 
 /**
  * Set the content in to the widget list block
@@ -218,7 +218,7 @@ Eina_Bool
 ui_block_graph_vision_set(App_Data *ap, Evas_Object *content);
 
 /**
- * Set the content in to the demo block
+ * Set the content in to the live view block
  *
  * @param ap the application data
  * @param content the content object
@@ -228,6 +228,6 @@ ui_block_graph_vision_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_demo_view_set(App_Data *ap, Evas_Object *content);
+ui_block_live_view_set(App_Data *ap, Evas_Object *content);
 
 #endif /* UI_BLOCK_HEADER_H */

@@ -50,7 +50,7 @@ ui_main_window_del(App_Data *ap)
    if (ap->project)
      pm_free(ap->project);
    /* FIXME: remove it from here */
-   demo_free(ap->demo);
+   live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */
    evas_object_del(ap->workspace);
    elm_exit();
@@ -134,11 +134,11 @@ ui_main_window_add(App_Data *ap)
 
    ui_block_ws_set(ap, ap->workspace);
    evas_object_show(ap->workspace);
-   ap->demo = ui_demospace_add(ap->block.bottom_right);
-   if (!ap->demo)
+   ap->live_view = live_view_add(ap->block.bottom_right);
+   if (!ap->live_view)
      MARK_TO_SHUTDOWN("Failed create live view")
    else
-     ui_block_demo_view_set(ap, ap->demo->layout);
+     ui_block_live_view_set(ap, ap->live_view->layout);
 
    ap->colorsel = colorselector_add(ap->win);
    if (!ap->colorsel)

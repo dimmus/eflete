@@ -1,5 +1,5 @@
 group {
-   name: "eflete/demospace/toolbar/default";
+   name: "eflete/live_view/toolbar/default";
    parts {
       part { name: "background";
          type: RECT;
@@ -20,7 +20,7 @@ group {
             align: 0.0 1.0;
          }
       }
-      part { name: "demospace";
+      part { name: "live_view";
          type: SWALLOW;
          scale: 1;
          mouse_events: 1;
@@ -86,15 +86,15 @@ group {
    }
    programs {
       program {
-         name: "demospace_spinner_hide";
-         signal: "demospace,hide";
+         name: "live_view_spinner_hide";
+         signal: "live_view,hide";
          source: "eflete";
          action: STATE_SET "default" 0.0;
          target: "zoom_spinner";
       }
       program {
-         name: "demospace_spinner_show";
-         signal: "demospace,show";
+         name: "live_view_spinner_show";
+         signal: "live_view,show";
          source: "eflete";
          action: STATE_SET "displayed" 0.0;
          target: "zoom_spinner";
@@ -109,7 +109,7 @@ group {
       image: "groupedit_border.png" COMP;
       image: "tooltip-base.png" COMP;
    }
-   name: "eflete/demospace/base/default";
+   name: "eflete/live_view/base/default";
    parts {
       part { name: "bg";
          scale: 1;
@@ -138,9 +138,9 @@ group {
             }
          }
       }
-      part { name: "demo";
+      part { name: "live_object";
          type: SWALLOW;
-         mouse_events:1;
+         mouse_events: 1;
          clip_to: "clipper";
          description {
             state: "default" 0.0;
@@ -240,8 +240,8 @@ group {
       }
       programs {
          program {
-            name: "demospace_hide";
-            signal: "demospace,hide";
+            name: "live_view_hide";
+            signal: "live_view,hide";
             source: "eflete";
             action: STATE_SET "default" 0.0;
             target: "border";
@@ -249,8 +249,8 @@ group {
             target: "bottom_pad";
          }
          program {
-            name: "demospace_show";
-            signal: "demospace,show";
+            name: "live_view_show";
+            signal: "live_view,show";
             source: "eflete";
             action: STATE_SET "displayed" 0.0;
             target: "border";

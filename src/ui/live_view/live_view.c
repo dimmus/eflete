@@ -1,4 +1,4 @@
-#include "ui_demospace.h"
+#include "live_view.h"
 #include "notify.h"
 
 #define ELEMENTS_COUNT 16
@@ -8,10 +8,10 @@ _on_zoom_change(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Demospace *demo = (Demospace *)data;
-   demo->current_scale = elm_spinner_value_get(obj);
-   if (demo->object)
-      elm_object_scale_set(demo->object, demo->current_scale);
+   Live_View *live = (Live_View *)data;
+   live->current_scale = elm_spinner_value_get(obj);
+   if (live->object)
+      elm_object_scale_set(live->object, live->current_scale);
 }
 
 static Elm_Bubble_Pos
@@ -150,59 +150,59 @@ _elm_widget_create(const char *widget, const char *class, Evas_Object *parent)
    return object;
 }
 
-static Demospace *
-_demo_init(void)
+static Live_View *
+_live_view_init(void)
 {
-   return mem_calloc(1, sizeof(Demospace));
+   return mem_calloc(1, sizeof(Live_View));
 }
 
-Demospace *
-ui_demospace_add(Evas_Object *parent)
+Live_View *
+live_view_add(Evas_Object *parent)
 {
-   Demospace *demo;
+   Live_View *live;
    Evas_Object *spinner, *_layout;
 
-   demo = _demo_init();
+   live = _live_view_init();
 
    _layout = elm_layout_add(parent);
-   demo->layout = _layout;
-   elm_layout_file_set(_layout, EFLETE_EDJ, "eflete/demospace/toolbar/default");
+   live->layout = _layout;
+   elm_layout_file_set(_layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
 
-   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/demo");
+   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/live_view");
    elm_spinner_label_format_set(spinner, "%1.2f");
-   evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, demo);
+   evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, live);
    elm_spinner_value_set(spinner, 1.0);
-   elm_object_part_content_set(demo->layout, "zoom_spinner",
+   elm_object_part_content_set(live->layout, "zoom_spinner",
                                spinner);
-   demo->scale_spinner = spinner;
+   live->scale_spinner = spinner;
 
-   demo->demospace = elm_layout_add(parent);
-   elm_layout_file_set(demo->demospace, EFLETE_EDJ, "eflete/demospace/base/default");
-   elm_object_part_content_set(demo->layout, "demospace",
-                               demo->demospace);
-   elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
-   elm_layout_signal_emit(demo->layout, "demospace,hide", "eflete");
+   live->live_view = elm_layout_add(parent);
+   elm_layout_file_set(live->live_view, EFLETE_EDJ, "eflete/live_view/base/default");
+   elm_object_part_content_set(live->layout, "live_view",
+                               live->live_view);
+   elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
+   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
-   return demo;
+   return live;
 }
 
 Eina_Bool
-ui_demospace_set(Demospace *demo, Project *project, Style *style)
+live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
-   if ((!demo) || (!project)) return false;
+   if ((!live) || (!project)) return false;
    if (style)
      {
         char **c = eina_str_split(style->full_group_name, "/", 4);
         const char *widget = c[1],  *type = c[2], *style = c[3];
 
-        if (!demo->object)
+        if (!live->object)
           {
-             demo->object = _elm_widget_create(widget, type, demo->demospace);
-             elm_object_part_content_set(demo->demospace, "demo", demo->object);
-             evas_object_show(demo->demospace);
+             live->object = _elm_widget_create(widget, type, live->live_view);
+             elm_object_part_content_set(live->live_view, "live_object", live->object);
+             evas_object_show(live->live_view);
           }
 
-        if (!demo->object)
+        if (!live->object)
           {
              NOTIFY_INFO(3, "Widget isn't implemented yet or isn't exist");
              free(c[0]);
@@ -210,13 +210,13 @@ ui_demospace_set(Demospace *demo, Project *project, Style *style)
              return false;
           }
 
-        demo->current_scale = 1.0;
-        elm_spinner_value_set(demo->scale_spinner, 1.0);
+        live->current_scale = 1.0;
+        elm_spinner_value_set(live->scale_spinner, 1.0);
 
-        ui_demospace_update(demo, project);
-        elm_object_style_set(demo->object, style);
-        elm_object_scale_set(demo->object, demo->current_scale);
-        evas_object_show(demo->object);
+        live_view_theme_update(live, project);
+        elm_object_style_set(live->object, style);
+        elm_object_scale_set(live->object, live->current_scale);
+        evas_object_show(live->object);
 
         free(c[0]);
         free(c);
@@ -226,15 +226,15 @@ ui_demospace_set(Demospace *demo, Project *project, Style *style)
         WARN("Edje edit style object was deleted. Could'nt set it into groupspace");
         return false;
      }
-   elm_layout_signal_emit(demo->demospace, "demospace,show", "eflete");
-   elm_layout_signal_emit(demo->layout, "demospace,show", "eflete");
+   elm_layout_signal_emit(live->live_view, "live_view,show", "eflete");
+   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
-   /* updating handlers for fitting block in LiveView
+   /* updating handlers for fitting block in Live_View
       after opening another widget. */
    const Evas_Object *part_bottom = edje_object_part_object_get(
-      elm_layout_edje_get(demo->demospace), "bottom_pad");
+      elm_layout_edje_get(live->live_view), "bottom_pad");
    const Evas_Object *part_top = edje_object_part_object_get(
-      elm_layout_edje_get(demo->demospace), "top_pad");
+      elm_layout_edje_get(live->live_view), "top_pad");
 
    elm_config_cursor_engine_only_set(false);
    elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
@@ -242,46 +242,46 @@ ui_demospace_set(Demospace *demo, Project *project, Style *style)
    elm_config_cursor_engine_only_set(true);
 
    Evas_Coord x, y;
-   evas_object_geometry_get(demo->demospace, NULL, NULL, &x, &y);
-   edje_object_part_drag_value_set(elm_layout_edje_get(demo->demospace),
+   evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
+   edje_object_part_drag_value_set(elm_layout_edje_get(live->live_view),
                                    "bottom_pad", x, y);
 
    return true;
 }
 
 Eina_Bool
-ui_demospace_unset(Demospace *demo)
+live_view_widget_style_unset(Live_View *live)
 {
-   if (!demo) return false;
-   elm_layout_signal_emit(demo->demospace, "demospace,hide", "eflete");
-   elm_layout_signal_emit(demo->layout, "demospace,hide", "eflete");
-   elm_object_part_content_unset(demo->demospace, "demo");
-   evas_object_del(demo->object);
-   demo->object = NULL;
+   if (!live) return false;
+   elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
+   elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
+   elm_object_part_content_unset(live->live_view, "live");
+   evas_object_del(live->object);
+   live->object = NULL;
    return true;
 }
 
 Eina_Bool
-ui_demospace_update(Demospace *demo, Project *project)
+live_view_theme_update(Live_View *live, Project *project)
 {
-   if ((!demo) || (!project) || (!demo->object)) return false;
+   if ((!live) || (!project) || (!live->object)) return false;
 
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
-   elm_object_theme_set(demo->object, theme);
-   elm_object_scale_set(demo->object, demo->current_scale);
+   elm_object_theme_set(live->object, theme);
+   elm_object_scale_set(live->object, live->current_scale);
    elm_theme_free(theme);
 
    return true;
 }
 
 void
-demo_free(Demospace *demo)
+live_view_free(Live_View *live)
 {
-   if (demo) ui_demospace_unset(demo);
+   if (live) live_view_widget_style_unset(live);
    else return;
 
-   free(demo);
+   free(live);
 }
 
 #undef ELEMENTS_COUNT

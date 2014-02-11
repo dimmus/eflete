@@ -44,7 +44,7 @@
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"
-#include "ui_demospace.h"
+#include "live_view.h"
 #include "notify.h"
 
 struct _App_Data
@@ -67,7 +67,7 @@ struct _App_Data
        Evas_Object *canvas;
     } block;
     Evas_Object *workspace;
-    Demospace *demo;
+    Live_View *live_view;
     Project *project;
 };
 

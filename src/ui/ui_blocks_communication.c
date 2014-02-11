@@ -81,7 +81,7 @@ _live_view_update(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_demospace_update(ap->demo, ap->project);
+   live_view_theme_update(ap->live_view, ap->project);
 }
 
 static void
@@ -203,7 +203,7 @@ ui_part_back(App_Data *ap)
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    prop = ui_block_property_get(ap);
    ui_property_style_unset(prop);
-   ui_demospace_unset(ap->demo);
+   live_view_widget_style_unset(ap->live_view);
 
    ui_menu_disable_set(ap->menu_hash, "Programs", true);
 
@@ -330,7 +330,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_property_style_set(prop, style, ap->workspace);
    evas_object_show(prop);
 
-   ui_demospace_set(ap->demo, ap->project, style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
    ui_menu_disable_set(ap->menu_hash, "Programs", false);
 }
 
@@ -358,7 +358,7 @@ ui_edj_load_done(App_Data* ap, const char *selected)
              workspace_highlight_unset(ap->workspace);
           }
 
-        if (ap->demo) ui_demospace_unset(ap->demo);
+        if (ap->live_view) live_view_widget_style_unset(ap->live_view);
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, selected)
         ap->project = pm_open_project_edj(name, selected);
@@ -438,8 +438,8 @@ new_theme_create(App_Data *ap)
              workspace_highlight_unset(ap->workspace);
           }
 
-        if ((ap->demo) || (ap->project))
-          ui_demospace_unset(ap->demo);
+        if ((ap->live_view) || (ap->project))
+          live_view_widget_style_unset(ap->live_view);
         ui_menu_disable_set(ap->menu_hash, "Programs", true);
         pm_free(ap->project);
         GET_NAME_FROM_PATH(name, file_full_path)

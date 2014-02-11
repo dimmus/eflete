@@ -69,8 +69,8 @@ _menu_event_handler_cb(void *data __UNUSED__,
               if (pm_save_project_edj(menu_event->ap->project))
                 {
                    NOTIFY_INFO(3, "Theme saved: %s", menu_event->ap->project->edj)
-                   ui_demospace_set(menu_event->ap->demo, menu_event->ap->project,
-                                    menu_event->ap->project->current_style);
+                   live_view_widget_style_set(menu_event->ap->live_view, menu_event->ap->project,
+                                              menu_event->ap->project->current_style);
                 }
               else
                  NOTIFY_ERROR("Theme can not be saved: %s", menu_event->ap->project->edj);
@@ -112,7 +112,7 @@ _on_close_project_save(void *data,
         if (pm_save_project_to_swap(ap->project))
           {
              if (pm_save_project_edj(ap->project))
-                ui_demospace_set(ap->demo, ap->project, ap->project->current_style);
+                live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
              else
                 NOTIFY_ERROR("Theme can not be saved: %s", ap->project->edj);
           }
