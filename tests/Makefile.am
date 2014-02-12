@@ -149,6 +149,27 @@ ui_widget_list_test_SOURCES = test_ui_widget_list/test_ui_widget_list.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
 ui_widget_list_test_LDADD = ${LD}
 
-ui_workspace_test_SOURCES = test_ui_workspace/test_ui_workspace.c
+ui_workspace_test_SOURCES = \
+test_ui_workspace/test_ui_workspace.c \
+test_ui_workspace/workspace_add.c \
+test_ui_workspace/workspace_edit_object_get.c \
+test_ui_workspace/workspace_edit_object_part_above.c \
+test_ui_workspace/workspace_edit_object_part_add.c \
+test_ui_workspace/workspace_edit_object_part_below.c \
+test_ui_workspace/workspace_edit_object_part_del.c \
+test_ui_workspace/workspace_edit_object_part_state_add.c \
+test_ui_workspace/workspace_edit_object_part_state_del.c \
+test_ui_workspace/workspace_edit_object_part_state_set.c \
+test_ui_workspace/workspace_edit_object_recalc.c \
+test_ui_workspace/workspace_edit_object_set.c \
+test_ui_workspace/workspace_edit_object_unset.c \
+test_ui_workspace/workspace_edit_object_visible_set.c \
+test_ui_workspace/workspace_highlight_set.c \
+test_ui_workspace/workspace_highlight_unset.c \
+test_ui_workspace/workspace_background_image_set.c \
+test_ui_workspace/workspace_legend_visible_set.c \
+test_ui_workspace/workspace_zoom_factor_get.c \
+test_ui_workspace/workspace_zoom_factor_set.c
+
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
