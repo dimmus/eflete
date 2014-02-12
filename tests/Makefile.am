@@ -41,7 +41,8 @@ FLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
--I${top_srcdir}/src/ui/demo \
+-I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/tests \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \
@@ -96,7 +97,11 @@ modal_window_test_SOURCES = test_modal_window/test_modal_window.c
 modal_window_test_CFLAGS = ${FLAGS}
 modal_window_test_LDADD = ${LD}
 
-notify_test_SOURCES = test_notify/test_notify.c
+notify_test_SOURCES = \
+test_notify/test_notify.c \
+test_notify/noti_error_show_test.c \
+test_notify/noti_warning_show_test.c \
+test_notify/noti_info_show_test.c
 notify_test_CFLAGS = ${FLAGS}
 notify_test_LDADD = ${LD}
 
