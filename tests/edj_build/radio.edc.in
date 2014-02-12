@@ -23,6 +23,7 @@ color_classes {
    }
 }
 group { name: "elm/radio/base/def";
+   alias: "elm/radio/base/aliased";
    images {
       image: "radio_base.png" COMP;
       image: "radio.png" COMP;
