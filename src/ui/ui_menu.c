@@ -127,6 +127,9 @@ _project_not_save_new(void *data,
    App_Data *ap = (App_Data *)data;
 
    evas_object_hide(ap->popup);
+
+   if (pm_project_close(ap->project)) ap->project = NULL;
+
    new_theme_create(ap);
    ui_menu_locked_set(ap->menu_hash, false);
 }
@@ -140,6 +143,9 @@ _project_not_save_edc(void *data,
    App_Data *ap = (App_Data *)data;
 
    ui_panes_hide(ap);
+
+   if (pm_project_close(ap->project)) ap->project = NULL;
+
    ui_menu_base_disabled_set(ap->menu_hash, false);
 
    evas_object_hide(ap->popup);
@@ -154,9 +160,10 @@ _project_not_save_edj(void *data,
 {
    App_Data *ap = (App_Data *)data;
 
-   if (ap->project)
-     pm_free(ap->project);
    ui_panes_hide(ap);
+
+   if (pm_project_close(ap->project)) ap->project = NULL;
+
    ui_menu_base_disabled_set(ap->menu_hash, false);
 
    evas_object_hide(ap->popup);

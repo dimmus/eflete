@@ -359,7 +359,6 @@ ui_edj_load_done(App_Data* ap, const char *selected)
           }
 
         if (ap->live_view) live_view_widget_style_unset(ap->live_view);
-        pm_free(ap->project);
         GET_NAME_FROM_PATH(name, selected)
         ap->project = pm_open_project_edj(name, selected);
         free(name);
@@ -441,7 +440,7 @@ new_theme_create(App_Data *ap)
         if ((ap->live_view) || (ap->project))
           live_view_widget_style_unset(ap->live_view);
         ui_menu_disable_set(ap->menu_hash, "Programs", true);
-        pm_free(ap->project);
+
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
         free(name);

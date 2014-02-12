@@ -42,18 +42,19 @@ ui_main_window_del(App_Data *ap)
    if (!ap)
      {
         ERR("ap is NULL");
-        return false;
+         return false;
      }
    eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    if (ap->project)
-     pm_free(ap->project);
+     pm_project_close(ap->project);
    /* FIXME: remove it from here */
    live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */
    evas_object_del(ap->workspace);
    elm_exit();
+
    return true;
 }
 
@@ -148,7 +149,6 @@ ui_main_window_add(App_Data *ap)
      MARK_TO_SHUTDOWN("Failed register callbacks");
 
    evas_object_show(win);
-   ecore_main_loop_begin();
    return true;
 }
 #undef MARK_TO_SHUTDOWN

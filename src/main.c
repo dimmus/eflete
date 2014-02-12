@@ -38,6 +38,7 @@ elm_main()
         app_shutdown();
         return -1;
      }
+   elm_run();
    elm_shutdown();
    app_shutdown();
    return 0;

@@ -68,6 +68,9 @@ _on_unlink_done_cb(void *data,
    INFO ("Closed project: %s", project->name);
    free(project->name);
    wm_widget_list_free(project->widgets);
+
+   free(project);
+
    DBG ("Project data is released.");
    ecore_main_loop_quit();
 }
@@ -80,24 +83,7 @@ _on_unlink_error_cb(void *data,
    char *file_name = (char *)data;
    ERR("Unlink file '%s' is failed. Something wrong has happend: %s\n",
        file_name, strerror(error));
-   //loop_quit(true);
    ecore_main_loop_quit();
-}
-
-Eina_Bool
-pm_free(Project *project)
-{
-   if (!project) return false;
-
-   eio_file_unlink(project->swapfile, _on_unlink_done_cb,
-                   _on_unlink_error_cb, project);
-   ecore_main_loop_begin();
-
-   /* FIXME need to find where else to happen free swapfile */
-   //if (project->swapfile) free(project->swapfile);
-   //free(project);
-   project = NULL;
-   return true;
 }
 
 static Project *
@@ -219,6 +205,18 @@ pm_open_project_edj(const char *name,
    INFO("Project '%s' is open!", project->name);
 
    return project;
+}
+
+Eina_Bool
+pm_project_close(Project *project)
+{
+   if (!project) return false;
+
+   eio_file_unlink(project->swapfile, _on_unlink_done_cb,
+                   _on_unlink_error_cb, project);
+   ecore_main_loop_begin();
+
+   return true;
 }
 
 Eina_Bool
