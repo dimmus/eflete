@@ -20,6 +20,7 @@ ui_ruler_test \
 ui_signal_list_test \
 ui_state_list_test \
 ui_widget_list_test \
+groupedit_test \
 ui_workspace_test \
 widget_manager_test
 
@@ -41,6 +42,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
+-I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/tests \
 @EINA_CFLAGS@ \
@@ -99,7 +101,6 @@ test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
 test_widget_manager/wm_widget_list_objects_load.c
-
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
@@ -188,6 +189,40 @@ test_ui_workspace/workspace_background_image_set.c \
 test_ui_workspace/workspace_legend_visible_set.c \
 test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c
-
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
+
+groupedit_test_SOURCES = \
+test_groupedit/test_groupedit.c \
+test_groupedit/groupedit_add.c \
+test_groupedit/groupedit_bg_set.c \
+test_groupedit/groupedit_bg_unset.c \
+test_groupedit/groupedit_container_size_get.c \
+test_groupedit/groupedit_container_size_set.c \
+test_groupedit/groupedit_edit_object_part_above.c \
+test_groupedit/groupedit_edit_object_part_add.c \
+test_groupedit/groupedit_edit_object_part_below.c \
+test_groupedit/groupedit_edit_object_part_del.c \
+test_groupedit/groupedit_edit_object_part_draw_get.c \
+test_groupedit/groupedit_edit_object_part_select.c \
+test_groupedit/groupedit_edit_object_part_state_add.c \
+test_groupedit/groupedit_edit_object_part_state_del.c \
+test_groupedit/groupedit_edit_object_part_state_set.c \
+test_groupedit/groupedit_edit_object_parts_separated.c \
+test_groupedit/groupedit_edit_object_parts_separated_is.c \
+test_groupedit/groupedit_edit_object_recalc_all.c \
+test_groupedit/groupedit_edit_object_set.c \
+test_groupedit/groupedit_edit_object_unset.c \
+test_groupedit/groupedit_handler_size_get.c \
+test_groupedit/groupedit_handler_size_set.c \
+test_groupedit/groupedit_max_size_set.c \
+test_groupedit/groupedit_min_size_set.c \
+test_groupedit/groupedit_part_object_area_get.c \
+test_groupedit/groupedit_part_object_area_set.c \
+test_groupedit/groupedit_part_object_area_visible_get.c \
+test_groupedit/groupedit_part_object_area_visible_set.c \
+test_groupedit/groupedit_part_visible_set.c \
+test_groupedit/groupedit_style_get.c \
+test_groupedit/groupedit_style_set.c
+groupedit_test_CFLAGS = ${FLAGS}
+groupedit_test_LDADD = ${LD}
