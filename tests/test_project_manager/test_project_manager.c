@@ -59,7 +59,7 @@ M_ ck_assert_msg(!strcmp(pro->image_directory, "./edj_build/"), "image dir is in
 M_ ck_assert_msg(!strcmp(pro->font_directory, "./edj_build/fnt"), "font dir is incorrect");
 M_ ck_assert_msg(!strcmp(pro->sound_directory, "./edj_build/snd"), "sound dir is incorrect");
 
-M_ pm_free(pro);
+M_ pm_project_close(pro);
    elm_shutdown();
 */
 }
@@ -98,7 +98,7 @@ M_ ck_assert_msg(pro->image_directory == NULL, "image dir is not NULL");
 M_ ck_assert_msg(pro->font_directory == NULL, "font dir is not NULL");
 M_ ck_assert_msg(pro->sound_directory == NULL, "sound dir is not NULL");
 
-M_ pm_free(pro);
+M_ pm_project_close(pro);
    elm_shutdown();
 */
 }
@@ -139,18 +139,18 @@ M_ ck_assert_msg(pm_open_project_edc(NULL, path, NULL, NULL, NULL) == NULL, "Not
 END_TEST
 
 /**
- * @addtogroup pm_free_test
+ * @addtogroup pm_project_close_test
  * @{
  * @objective Positive test case
  *
  * @procedure
  * @step 1 Open Project
- * @step 2 Call pm_free()
+ * @step 2 Call pm_project_close()
  *
  * @passcondition: EINA_TRUE returned
  * @}
  */
-START_TEST (pm_free_test_p)
+START_TEST (pm_project_close_test_p)
 {
 /*
    elm_init(0,0);
@@ -162,27 +162,27 @@ START_TEST (pm_free_test_p)
    font = "./edj_build/fnt";
    sound = "./edj_build/snd";
 M_ pro = pm_open_project_edc(name, path, img, font, sound);
-M_ ck_assert_msg(pm_free(pro) == EINA_TRUE, "Can't delete project");
+M_ ck_assert_msg(pm_project_close(pro) == EINA_TRUE, "Can't delete project");
    elm_shutdown();
 */
 }
 END_TEST
 
 /**
- * @addtogroup pm_free_test
+ * @addtogroup pm_project_close_test
  * @{
  * @objective Negative test case
  *
  * @procedure
- * @step 1 Call pm_free(NULL)
+ * @step 1 Call pm_project_close(NULL)
  *
  * @passcondition: EINA_FALSE returned
  * @}
  */
-START_TEST (pm_free_test_n)
+START_TEST (pm_project_close_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(pm_free(NULL) == EINA_FALSE, "NULL project deleted");
+   ck_assert_msg(pm_project_close(NULL) == EINA_FALSE, "NULL project deleted");
    elm_shutdown();
 }
 END_TEST
@@ -220,7 +220,7 @@ M_ ck_assert_msg(pro->image_directory == NULL, "image dir is incorrect");
 M_ ck_assert_msg(pro->font_directory == NULL, "font dir is incorrect");
 M_ ck_assert_msg(pro->sound_directory == NULL, "sound dir is incorrect");
 
-M_ pm_free(pro);
+M_ pm_project_close(pro);
    elm_shutdown();
 }
 END_TEST
@@ -277,7 +277,7 @@ START_TEST (pm_save_project_edj_test_p)
    path = "./edj_build/radio.edj";
 M_ Project* pro = pm_open_project_edj(name, path);
 M_ ck_assert_msg(pm_save_project_edj(pro), "Can't save project to edj");
-M_ pm_free(pro);
+M_ pm_project_close(pro);
    elm_shutdown();
 }
 END_TEST
@@ -324,7 +324,7 @@ M_ Project* pro = pm_open_project_edj(name, path);
 
 M_ ck_assert_msg(pm_save_project_edc(pro), "Can't save project to edc");
 
-M_ pm_free(pro);
+M_ pm_project_close(pro);
    elm_shutdown();
 */
 }
@@ -376,7 +376,7 @@ START_TEST (pm_save_project_edc_test_n2)
    sound = "./edj_build/snd";
 M_ pro = pm_open_project_edc(name, path, img, font, sound);
 M_ ck_assert_msg(!pm_save_project_edc(pro), "Saved project without compiled EDJ");
-M_ pm_free(pro);
+M_ pm_project_close(pro);
    elm_shutdown();
 */
 }
@@ -400,8 +400,8 @@ END_TEST
 Suite* test_suite (void) {
    Suite *suite = suite_create("pr_manager_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, pm_free_test_p);
-   tcase_add_test(tcase, pm_free_test_n);
+   tcase_add_test(tcase, pm_project_close_test_p);
+   tcase_add_test(tcase, pm_project_close_test_n);
    tcase_add_test(tcase, pm_open_project_edj_test_p);
    tcase_add_test(tcase, pm_open_project_edj_test_n);
    tcase_add_test(tcase, pm_open_project_edc_test_p1);
