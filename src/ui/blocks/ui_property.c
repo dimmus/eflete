@@ -274,7 +274,7 @@ ui_property_add(Evas_Object *parent)
 
    _bg = evas_object_image_add(evas_object_evas_get(parent));
    evas_object_image_filled_set(_bg, true);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"section-item-bg.png", NULL);
+   evas_object_image_file_set(_bg, EFLETE_IMG_PATH"section-item-bg.png", NULL);
    evas_object_image_border_set(_bg, 0, 0, 0, 2);
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
    evas_object_show(_bg);

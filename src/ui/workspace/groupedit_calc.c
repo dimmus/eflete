@@ -132,10 +132,10 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
   * @param sd The groupedit smart data structure for get access to parts list.
   * @param part The name of part to stack.
   * @param part_to The name of part which to stack.
-  * @param mode If EINA_TRUE operation restack above will be process, else is
+  * @param mode If true operation restack above will be process, else is
   * restack below.
   *
-  * @return EINA_FALSE on failure, EINA_TRUE on success.
+  * @return false on failure, true on success.
   */
 static Eina_Bool
 _part_restack(Ws_Groupedit_Smart_Data *sd,
@@ -433,81 +433,110 @@ _part_separete_mod_mouse_out_cb(void *data,
    edje_object_signal_emit(gp->item, "item,mouse,out", "eflete");
 }
 
+#define GP_GEOMETRY_SET \
+   evas_object_resize(gp->border, w, h); \
+   evas_object_move(gp->border, x + xe + offset_x, y + ye + offset_y); \
+   evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
+   evas_object_move(gp->item, xe + offset_x, ye + offset_y); \
+   evas_object_resize(gp->clipper, sd->con_current_size->w, sd->con_current_size->h); \
+   evas_object_move(gp->clipper, xe + offset_x, ye + offset_y); \
+
+static void
+_part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
+                        Groupedit_Part *gp,
+                        int offset_x,
+                        int offset_y)
+{
+   Evas_Coord x, y, xe, ye, ro_x, ro_y;
+   int w, h, ro_w, ro_h;
+   const Evas_Object *ro;
+
+   edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
+   evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
+   ro = edje_object_part_object_get(sd->edit_obj, gp->name);
+   evas_object_geometry_get(ro, &ro_x, &ro_y, &ro_w, &ro_h);
+
+   evas_object_resize(gp->draw, ro_w, ro_h);
+   evas_object_move(gp->draw, ro_x + offset_x, ro_y + offset_y);
+
+   GP_GEOMETRY_SET
+}
+
+static void
+_part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
+                   Groupedit_Part *gp,
+                   int offset_x,
+                   int offset_y)
+{
+   Evas_Coord x, y, xe, ye;
+   int w, h;
+
+   edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
+   evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
+
+   evas_object_resize(gp->draw, w, h);
+   evas_object_move(gp->draw, x + xe + offset_x, y + ye + offset_y);
+
+   GP_GEOMETRY_SET
+}
+
+#undef GP_GEOMETRY_SET
+
 void
 _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 {
-   int x, y, w, h, xe, ye;
    Eina_List *l;
    Groupedit_Part *gp;
    Edje_Part_Type ept;
-   int i = 0;
+   int i = 0, offset_x, offset_y;
 
    if (!sd->parts) return;
 
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
+        if (sd->separated)
+          {
+             i++;
+             evas_object_show(gp->item);
+          }
+        else evas_object_hide(gp->item);
+
+        offset_x = i * SEP_ITEM_PAD_X;
+        offset_y = i * SEP_ITEM_PAD_Y;
+
         ept = edje_edit_part_type_get(sd->edit_obj, gp->name);
         switch (ept)
           {
            case EDJE_PART_TYPE_RECTANGLE:
               _rectangle_param_update(gp, sd->edit_obj);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
+
            case EDJE_PART_TYPE_TEXT:
               _text_param_update(gp, sd->edit_obj);
+              _part_text_recalc_apply(sd, gp, offset_x, offset_y);
               break;
+
            case EDJE_PART_TYPE_IMAGE:
            case EDJE_PART_TYPE_PROXY: // it part like image
               _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
+
            case EDJE_PART_TYPE_TEXTBLOCK:
               _textblock_param_update(gp, sd->edit_obj);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
+
            case EDJE_PART_TYPE_SPACER:
            case EDJE_PART_TYPE_SWALLOW:
            case EDJE_PART_TYPE_GROUP:
            case EDJE_PART_TYPE_BOX:
            case EDJE_PART_TYPE_TABLE:
            case EDJE_PART_TYPE_EXTERNAL:
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
            default:
               break;
-          }
-
-        edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
-        evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
-        evas_object_resize(gp->draw, w, h);
-        evas_object_resize(gp->border, w, h);
-        if (sd->separated)
-          {
-             evas_object_move(gp->draw,
-                              x + xe + (i * SEP_ITEM_PAD_X),
-                              y + ye + (i * SEP_ITEM_PAD_Y));
-
-             evas_object_move(gp->border,
-                              x + xe + (i * SEP_ITEM_PAD_X),
-                              y + ye + (i * SEP_ITEM_PAD_Y));
-
-             evas_object_resize(gp->item,
-                                sd->con_current_size->w,
-                                sd->con_current_size->h);
-             evas_object_move(gp->item,
-                              xe + (i * SEP_ITEM_PAD_X),
-                              ye + (i * SEP_ITEM_PAD_Y));
-             evas_object_show(gp->item);
-
-             evas_object_resize(gp->clipper,
-                                sd->con_current_size->w,
-                                sd->con_current_size->h);
-             evas_object_move(gp->clipper,
-                              xe + (i * SEP_ITEM_PAD_X),
-                              ye + (i * SEP_ITEM_PAD_Y));
-
-             i++;
-          }
-        else
-          {
-             evas_object_move(gp->draw, x + xe, y + ye);
-             evas_object_move(gp->border, x + xe, y + ye);
-             evas_object_hide(gp->item);
           }
         if (gp->visible)
           {
@@ -525,7 +554,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 
 #define BORDER_ADD(R, G, B, A) \
    gp->border = evas_object_image_add(sd->e); \
-   evas_object_image_file_set(gp->border, TET_IMG_PATH"border_part.png", NULL); \
+   evas_object_image_file_set(gp->border, BORDER_IMG, NULL); \
    evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A); \
    evas_object_image_border_set(gp->border, 1, 1, 1, 1); \
    evas_object_image_filled_set(gp->border, true); \
@@ -585,7 +614,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
      }
    gp->item = edje_object_add(sd->e);
-   edje_object_file_set(gp->item, TET_EDJ, "eflete/group/item/default");
+   edje_object_file_set(gp->item, EFLETE_EDJ, "eflete/group/item/default");
    evas_object_data_set(gp->item, "sd", sd);
    evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
                                   _part_separete_mod_mouse_click_cb, gp);
@@ -633,9 +662,9 @@ _part_spacer_add(Evas *e)
    Evas_Object *spacer;
 
    spacer = evas_object_image_add(e);
-   evas_object_image_file_set(spacer, TET_IMG_PATH"part_spacer_bg.png", NULL);
+   evas_object_image_file_set(spacer, SPACER_IMG, NULL);
    evas_object_image_fill_set(spacer, 0, 0, 8, 8);
-   evas_object_image_filled_set(spacer, EINA_FALSE);
+   evas_object_image_filled_set(spacer, false);
 
    return spacer;
 }
@@ -646,7 +675,7 @@ _part_swallow_add(Evas *e)
    Evas_Object *swallow;
 
    swallow = evas_object_image_filled_add(e);
-   evas_object_image_file_set(swallow, TET_IMG_PATH"part_swallow_bg.png", NULL);
+   evas_object_image_file_set(swallow, SWALLOW_IMG, NULL);
    evas_object_image_filled_set(swallow, false);
    evas_object_image_fill_set(swallow, 0, 0, 17, 17);
 
@@ -694,12 +723,12 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    evas_object_image_border_set(gp->draw, bl, br, bt, bb);
 
    /* FIXME: need see in edje, to know how to work with edje fill param */
-   //evas_object_image_fill_set(gp->draw, 0, 0, 1, 1);
+   /* evas_object_image_fill_set(gp->draw, 0, 0, 1, 1); */
    evas_object_image_filled_set(gp->draw, true);
 
-   evas_object_image_smooth_scale_set(gp->draw, EINA_TRUE);
+   evas_object_image_smooth_scale_set(gp->draw, true);
 
-   //evas_object_image_data_update_add()
+   /* evas_object_image_data_update_add() */
 
    PART_STATE_FREE
    edje_edit_string_free(image_normal);

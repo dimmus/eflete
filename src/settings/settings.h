@@ -30,17 +30,17 @@
 
 #include "ui_main_window.h"
 
-#define SETTINGSFILE TET_SETT_PATH".efltet"
+#define SETTINGSFILE EFLETE_SETT_PATH".efltet"
 
 struct _UI_Elements_Settings
 {
-	Evas_Object *panes_left;
-	Evas_Object *panes_left_hor;
-	Evas_Object *panes_right;
-	Evas_Object *panes_right_hor;
-	Evas_Object *panes_center;
-	Evas_Object *panes_center_down;
-	Evas_Object *window;
+   Evas_Object *panes_left;
+   Evas_Object *panes_left_hor;
+   Evas_Object *panes_right;
+   Evas_Object *panes_right_hor;
+   Evas_Object *panes_center;
+   Evas_Object *panes_center_down;
+   Evas_Object *window;
 };
 typedef struct _UI_Elements_Settings UI_Elements_Settings;
 

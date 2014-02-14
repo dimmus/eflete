@@ -539,7 +539,7 @@ colorclass_viewer_add(Project *project)
    elm_object_content_set(scroller, scr_box);
 
    ccl_edit->label = edje_object_add(evas_object_evas_get(ccl_edit->mwin));
-   edje_object_file_set(ccl_edit->label, TET_EDJ,
+   edje_object_file_set(ccl_edit->label, EFLETE_EDJ,
                                         "base/colorclass_editor/text_example");
    edje_object_part_text_set(ccl_edit->label, "text_example", "EXAMPLE");
    evas_object_size_hint_align_set(ccl_edit->label, -1, -1);
@@ -563,7 +563,7 @@ colorclass_viewer_add(Project *project)
    elm_box_pack_end(box, label); \
    color = edje_object_add(evas_object_evas_get(ccl_edit->mwin)); \
    rect = evas_object_rectangle_add(evas_object_evas_get(ccl_edit->mwin)); \
-   edje_object_file_set(color,TET_EDJ, "base/colorclass_editor/color_example"); \
+   edje_object_file_set(color, EFLETE_EDJ, "base/colorclass_editor/color_example"); \
    edje_object_part_swallow(color, "color_example", rect); \
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_min_set(color, 150, 35); \

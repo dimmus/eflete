@@ -87,12 +87,12 @@ _on_icon_click(void *data,
 
    if (_part->show)
      {
-        elm_image_file_set(obj, TET_IMG_PATH"eye_open.png", NULL);
+        elm_image_file_set(obj, EFLETE_IMG_PATH"eye_open.png", NULL);
         evas_object_smart_callback_call(nf, "wl,part,show", (void *)_part->name);
      }
    else
      {
-        elm_image_file_set(obj, TET_IMG_PATH"eye_close.png", NULL);
+        elm_image_file_set(obj, EFLETE_IMG_PATH"eye_close.png", NULL);
         evas_object_smart_callback_call(nf, "wl,part,hide", (void *)_part->name);
      }
 }
@@ -107,9 +107,9 @@ _item_part_content_get(void *data,
      {
         Evas_Object *icon = elm_icon_add(obj);
         if (_part->show)
-          elm_image_file_set(icon, TET_IMG_PATH"eye_open.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"eye_open.png", NULL);
         else
-          elm_image_file_set(icon, TET_IMG_PATH"eye_close.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"eye_close.png", NULL);
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
         evas_object_data_set(icon, "gl_parts", obj);
@@ -119,19 +119,19 @@ _item_part_content_get(void *data,
      {
         Evas_Object *icon = elm_icon_add(obj);
         if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-rectangle.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-rectangle.png", NULL);
         if (_part->type == EDJE_PART_TYPE_IMAGE)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-image.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-image.png", NULL);
         if (_part->type == EDJE_PART_TYPE_SPACER)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-spacer.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-spacer.png", NULL);
         if (_part->type == EDJE_PART_TYPE_SWALLOW)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-swallow.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-swallow.png", NULL);
         if (_part->type == EDJE_PART_TYPE_TEXT)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-text.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-text.png", NULL);
         if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-textblock.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-textblock.png", NULL);
         if (_part->type == EDJE_PART_TYPE_GROUP)
-          elm_image_file_set(icon, TET_IMG_PATH"icon-group.png", NULL);
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-group.png", NULL);
         elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
@@ -348,7 +348,7 @@ _on_style_clicked_double(void *data,
    evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, nf);
    evas_object_data_set(gl_parts, "naviframe", nf);
 
-   ICON_ADD(nf, ic, false, TET_IMG_PATH"icon-back.png");
+   ICON_ADD(nf, ic, false, EFLETE_IMG_PATH"icon-back.png");
 
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -360,28 +360,28 @@ _on_style_clicked_double(void *data,
    elm_naviframe_item_push(nf, _style->full_group_name, bt, NULL, gl_parts, NULL);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-add.png");
+   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-remove.png");
+   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-remove.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-slideup.png");
+   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-slideup.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-slidedown.png");
+   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-slidedown.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
@@ -397,7 +397,7 @@ _item_style_content_get(void *data,
    if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
      {
         Evas_Object *icon = elm_icon_add(obj);
-        elm_image_file_set(icon, TET_IMG_PATH"alias_link.png", NULL);
+        elm_image_file_set(icon, EFLETE_IMG_PATH"alias_link.png", NULL);
         elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
@@ -466,7 +466,7 @@ _on_widget_clicked_double(void *data,
           }
      }
 
-   ICON_ADD(nf, ic, false, TET_IMG_PATH"icon-back.png");
+   ICON_ADD(nf, ic, false, EFLETE_IMG_PATH"icon-back.png");
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
@@ -478,7 +478,7 @@ _on_widget_clicked_double(void *data,
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-remove.png");
+   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-remove.png");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    elm_object_style_set(button, "eflete/simple");
@@ -488,7 +488,7 @@ _on_widget_clicked_double(void *data,
    /*************************************************************/
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, TET_IMG_PATH"icon-add.png");
+   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);

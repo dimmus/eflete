@@ -85,6 +85,17 @@ pm_open_project_edj(const char *name,
                     const char *path);
 
 /**
+ * Close the project. Swap file will be deleted.
+ *
+ * @param project The project will be closed.
+ * @return EINA_TRUE if close successfully, overwise EINA_FALSE.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_close(Project *project);
+
+/**
  * Save project into edc.
  *
  * This function actually decompile the resulted and changed by user EDC file.
@@ -148,7 +159,7 @@ pm_save_project_to_swap(Project *project);
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
-pm_free(Project *project);
+//Eina_Bool
+//pm_free(Project *project);
 
 #endif /* PROJECT_MANAGER_H */

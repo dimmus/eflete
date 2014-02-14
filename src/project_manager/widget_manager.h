@@ -377,10 +377,11 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name);
  * @param widget_list A list of widget to load data.
  * @param e A Evas, parent object.
  * @param path Path to theme file (.edj).
+ * @return EINA_TRUE if a list os deleted.
  *
  * @ingroup WidgetManager
  */
-void
+Eina_Bool
 wm_widget_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path);

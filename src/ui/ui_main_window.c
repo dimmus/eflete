@@ -24,21 +24,16 @@
 #include "style_dialog.h"
 
 static void
-_on_done(void *data __UNUSED__,
+_on_done(void *data,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   loop_quit(false);
-}
-
-static Eina_Bool
-_on_window_close(Eina_Bool force __UNUSED__,
-                 void *data)
-{
+   /*TODO: add mesasge about save the project */
    App_Data *ap = (App_Data *)data;
    /* TODO: add unsaved project check here*/
    ui_main_window_del(ap);
-   return true;
+
+   ecore_main_loop_quit();
 }
 
 Eina_Bool
@@ -47,18 +42,19 @@ ui_main_window_del(App_Data *ap)
    if (!ap)
      {
         ERR("ap is NULL");
-        return false;
+         return false;
      }
    eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
    INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
    if (ap->project)
-     pm_free(ap->project);
+     pm_project_close(ap->project);
    /* FIXME: remove it from here */
-   demo_free(ap->demo);
+   live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */
    evas_object_del(ap->workspace);
    elm_exit();
+
    return true;
 }
 
@@ -90,7 +86,7 @@ ui_main_window_add(App_Data *ap)
         return EINA_FALSE;
      }
 
-   if (!ecore_file_mkpath(TET_SETT_PATH))
+   if (!ecore_file_mkpath(EFLETE_SETT_PATH))
      ERR("Can't create settings directory");
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
@@ -119,7 +115,7 @@ ui_main_window_add(App_Data *ap)
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    elm_win_resize_object_add(win, layout);
-   elm_layout_file_set(layout, TET_EDJ, "ui/main_window");
+   elm_layout_file_set(layout, EFLETE_EDJ, "ui/main_window");
    evas_object_show(layout);
    ap->win_layout = layout;
    if (!ap->win_layout)
@@ -139,11 +135,11 @@ ui_main_window_add(App_Data *ap)
 
    ui_block_ws_set(ap, ap->workspace);
    evas_object_show(ap->workspace);
-   ap->demo = ui_demospace_add(ap->block.bottom_right);
-   if (!ap->demo)
+   ap->live_view = live_view_add(ap->block.bottom_right);
+   if (!ap->live_view)
      MARK_TO_SHUTDOWN("Failed create live view")
    else
-     ui_block_demo_view_set(ap, ap->demo->layout);
+     ui_block_live_view_set(ap, ap->live_view->layout);
 
    ap->colorsel = colorselector_add(ap->win);
    if (!ap->colorsel)
@@ -152,8 +148,6 @@ ui_main_window_add(App_Data *ap)
    if (!register_callbacks(ap))
      MARK_TO_SHUTDOWN("Failed register callbacks");
 
-   evas_object_show(win);
-   loop_begin(_on_window_close, ap);
    return true;
 }
 #undef MARK_TO_SHUTDOWN

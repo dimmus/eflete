@@ -17,8 +17,8 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef EFL_TET_H
-#define EFL_TET_H
+#ifndef EFLETE_H
+#define EFLETE_H
 
 /**
  * @defgroup ELM_MAIN ELM_MAIN
@@ -41,11 +41,10 @@
 #include <Efreet.h>
 #include <Elementary.h>
 #include "alloc.h"
-#include "loop_manager.h"
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"
-#include "ui_demospace.h"
+#include "live_view.h"
 #include "notify.h"
 
 struct _App_Data
@@ -68,7 +67,7 @@ struct _App_Data
        Evas_Object *canvas;
     } block;
     Evas_Object *workspace;
-    Demospace *demo;
+    Live_View *live_view;
     Project *project;
 };
 
@@ -151,4 +150,4 @@ main_window_get(void);
 Evas_Object *
 colorselector_get(void);
 
-#endif /* EFL_TET_H */
+#endif /* EFLETE_H */

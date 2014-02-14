@@ -540,7 +540,7 @@ _change_bg_cb(void *data,
         {
            bg = evas_object_image_filled_add(canvas);
            evas_object_image_filled_set(bg, false);
-           evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
+           evas_object_image_file_set(bg, EFLETE_IMG_PATH"bg_demo.png", NULL);
            evas_object_image_fill_set(bg, 0, 0, 16, 16);
         }
       break;
@@ -575,7 +575,7 @@ _form_right_side(Style_Editor *style_edit)
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, TET_EDJ, "ui/style_viewer_window/property");
+   elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
 
    ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
@@ -606,10 +606,10 @@ _form_right_side(Style_Editor *style_edit)
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
    elm_box_pack_end(box_bg, RADIO);
 
-   _RADIO_ADD(radio_group, 0, TET_IMG_PATH"styles-preview-bg-transparent.png");
-   _RADIO_ADD(radio, 1, TET_IMG_PATH"styles-preview-bg-black.png");
+   _RADIO_ADD(radio_group, 0, EFLETE_IMG_PATH"styles-preview-bg-transparent.png");
+   _RADIO_ADD(radio, 1, EFLETE_IMG_PATH"styles-preview-bg-black.png");
    elm_radio_group_add(radio, radio_group);
-   _RADIO_ADD(radio, 2, TET_IMG_PATH"styles-preview-bg-white.png");
+   _RADIO_ADD(radio, 2, EFLETE_IMG_PATH"styles-preview-bg-white.png");
    elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
    elm_object_part_content_set(layout, "menu_container", box_bg);
@@ -673,7 +673,7 @@ style_editor_window_add(Project *project)
    style_edit->entry_prev = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(style_edit->entry_prev, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   elm_layout_file_set(style_edit->entry_prev, TET_EDJ,
+   elm_layout_file_set(style_edit->entry_prev, EFLETE_EDJ,
                        "ui/style_viewer_window/preview");
    evas_object_show(style_edit->entry_prev);
    elm_object_part_content_set(panes_h, "left", style_edit->entry_prev);
@@ -682,7 +682,7 @@ style_editor_window_add(Project *project)
    canvas = evas_object_evas_get(style_edit->mwin);
    bg = evas_object_image_filled_add(canvas);
    evas_object_image_filled_set(bg, false);
-   evas_object_image_file_set(bg, TET_IMG_PATH"bg_demo.png", NULL);
+   evas_object_image_file_set(bg, EFLETE_IMG_PATH"bg_demo.png", NULL);
    evas_object_image_fill_set(bg, 0, 0, 16, 16);
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
    evas_object_show(bg);

@@ -6,7 +6,6 @@ noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
 alloc/alloc.c \
-loop_manager/loop_manager.c \
 project_manager/edje_compile.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
@@ -38,8 +37,7 @@ ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
-ui/workspace/ctxpopup.c \
-ui/demo/ui_demospace.c \
+ui/live_view/live_view.c \
 ui/notification/notify.c
 
 eflete_SOURCES  = main.c
@@ -48,7 +46,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
--I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/settings \
 -I${top_srcdir}/src/ui \
@@ -58,7 +55,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
--I${top_srcdir}/src/ui/demo \
+-I${top_srcdir}/src/ui/live_view \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \
@@ -67,7 +64,7 @@ eflete_CPPFLAGS = \
 @EFREET_CFLAGS@ \
 @EDJE_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
-@TET_DEFINE@
+@EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS}
 

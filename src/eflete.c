@@ -107,7 +107,7 @@ app_init()
         return false;
      }
 
-   elm_theme_extension_add(NULL, TET_THEME);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
    return true;
 }
 
@@ -115,7 +115,7 @@ void
 app_shutdown()
 {
    app_free(ap);
-   elm_theme_extension_del(NULL, TET_THEME);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
    eina_shutdown();
    efreet_shutdown();
    ecore_shutdown();

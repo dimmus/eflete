@@ -36,7 +36,7 @@
    ITEM = elm_layout_add(PARENT); \
    evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(ITEM, TET_EDJ, "property/item/default"); \
+   elm_layout_file_set(ITEM, EFLETE_EDJ, "property/item/default"); \
    elm_object_part_text_set(ITEM, "elm.text", TEXT); \
    evas_object_show(ITEM);
 
@@ -146,5 +146,12 @@
    elm_fileselector_mode_set(FILESELECTOR, ELM_FILESELECTOR_LIST); \
    elm_win_inwin_content_set(INWIN, FILESELECTOR); \
    evas_object_show(FILESELECTOR);
+
+#define RADIO_ADD(PARENT, RADIO, STATE, TEXT) \
+   RADIO = elm_radio_add(PARENT); \
+   evas_object_size_hint_weight_set(RADIO, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   elm_radio_state_value_set(RADIO, STATE); \
+   elm_object_text_set(RADIO, TEXT); \
+   evas_object_show(RADIO);
 
 #endif /* WIDGET_MACRO_H */

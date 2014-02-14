@@ -192,7 +192,7 @@ _on_image_done(void *data,
 
    if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
-        loop_quit(false);
+        ecore_main_loop_quit();
         return;
      }
 
@@ -219,7 +219,7 @@ _on_image_done(void *data,
    else
      NOTIFY_ERROR("Error while loading file.<br> File is not exist");
 
-   loop_quit(false);
+   ecore_main_loop_quit();
 }
 
 static void
@@ -236,7 +236,7 @@ _on_button_add_clicked_cb(void *data,
 
    elm_win_inwin_activate(inwin);
 
-   loop_begin(NULL, NULL);
+   ecore_main_loop_begin();
 
    evas_object_del(fs);
    evas_object_del(inwin);
@@ -430,7 +430,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    _bg = evas_object_image_add(evas_object_evas_get(img_edit->gengrid));
    evas_object_image_filled_set(_bg, true);
-   evas_object_image_file_set(_bg, TET_IMG_PATH"gallery-bg.png", NULL);
+   evas_object_image_file_set(_bg, EFLETE_IMG_PATH"gallery-bg.png", NULL);
    evas_object_image_border_set(_bg, 2, 2, 2, 6);
    elm_object_part_content_set(img_edit->gengrid, "elm.swallow.background", _bg);
    evas_object_show(_bg);

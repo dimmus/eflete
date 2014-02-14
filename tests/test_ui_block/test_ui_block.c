@@ -197,14 +197,14 @@ END_TEST
 TEST_UI_BLOCK_CONTENT_TC(_func_,p,_block_,ui_block_add(parent),ui_block_add(parent),content)\
 TEST_UI_BLOCK_CONTENT_TC(_func_,n1,_block_,NULL,ui_block_add(parent),NULL)\
 TEST_UI_BLOCK_CONTENT_TC(_func_,n2,_block_,ui_block_add(parent),NULL,NULL)
-
+/*
 TEST_UI_BLOCK_CONTENT(ui_block_widget_list,left_top)
 TEST_UI_BLOCK_CONTENT(ui_block_signal_list,left_bottom)
 TEST_UI_BLOCK_CONTENT(ui_block_state_list,bottom_left)
 TEST_UI_BLOCK_CONTENT(ui_block_property,right_bottom)
 TEST_UI_BLOCK_CONTENT(ui_block_graph_vision,right_top)
 TEST_UI_BLOCK_CONTENT(ui_block_demo_view,bottom_right)
-
+*/
 /**
  * @addtogroup test_suite
  * @{
@@ -227,7 +227,7 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_block_title_visible_n);
    tcase_add_test(tcase, ui_block_title_text_n);
    tcase_add_test(tcase, ui_block_title_text_p);
-   tcase_add_test(tcase, ui_block_widget_list_test_p);
+/*   tcase_add_test(tcase, ui_block_widget_list_test_p);
    tcase_add_test(tcase, ui_block_widget_list_test_n1);
    tcase_add_test(tcase, ui_block_widget_list_test_n2);
    tcase_add_test(tcase, ui_block_signal_list_test_p);
@@ -244,7 +244,7 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_block_graph_vision_test_n2);
    tcase_add_test(tcase, ui_block_demo_view_test_p);
    tcase_add_test(tcase, ui_block_demo_view_test_n1);
-   tcase_add_test(tcase, ui_block_demo_view_test_n2);
+   tcase_add_test(tcase, ui_block_demo_view_test_n2);*/
    suite_add_tcase(suite, tcase);
    return suite;
 }

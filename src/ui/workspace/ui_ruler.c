@@ -119,12 +119,12 @@ ui_ruler_orient_set(Evas_Object *obj, Orient orient)
    _ruler_data->orient = orient;
    if (_ruler_data->orient == HORIZONTAL)
      {
-        edje_object_file_set(obj, TET_EDJ, "ui/ruler/horizontal/default");
+        edje_object_file_set(obj, EFLETE_EDJ, "ui/ruler/horizontal/default");
         edje_object_message_send(obj,EDJE_MESSAGE_NONE,MSG_ORIENT_HOR,0);
      }
    else
      {
-        edje_object_file_set(obj, TET_EDJ, "ui/ruler/vertical/default");
+        edje_object_file_set(obj, EFLETE_EDJ, "ui/ruler/vertical/default");
         edje_object_message_send(obj,EDJE_MESSAGE_NONE,MSG_ORIENT_VER,0);
      }
 }

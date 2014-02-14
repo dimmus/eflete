@@ -162,8 +162,9 @@ wm_part_del(Style *style, Part *part)
    if ((!style) || (!part)) return false;
 
    tmp = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   if (tmp)
-     style->parts = eina_inlist_remove(style->parts, tmp);
+   if (!tmp) return false;
+
+   style->parts = eina_inlist_remove(style->parts, tmp);
 
    return true;
 }
@@ -173,7 +174,7 @@ wm_part_current_state_set(Part *part, const char *state)
 {
    char **split;
 
-   if ((!part) || (!state)) return false;
+   if ((!part) || (!state) || (!strcmp(state, ""))) return false;
    split = eina_str_split(state, " ", 2);
    eina_stringshare_del(part->curr_state);
    part->curr_state = eina_stringshare_add(split[0]);
@@ -189,7 +190,9 @@ wm_part_add(Style *style, const char *part)
    Part *result = NULL;
    double value;
 
-   if ((!style->obj) || (!part)) return NULL;
+   if ((!style) || (!part) || (!style->obj)) return NULL;
+   if (!edje_edit_part_exist(style->obj, part))
+     return NULL;
 
    result = (Part *)mem_malloc(sizeof(Part));
    result->__type = PART;
@@ -313,7 +316,7 @@ wm_style_free(Style *style)
         _wm_part_free(part);
      }
 
-   if (!style->name)
+   if (style->name)
      eina_stringshare_del(style->name);
 
    eina_stringshare_del(style->full_group_name);
@@ -357,6 +360,10 @@ wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
    double state_val = 0;
    int r, g, b, a;
    int b_l, b_r, b_t, b_b;
+
+   if ((!source_edje) || (!full_name) || (!dest_file) || (!style))
+     return false;
+
 #define STATE_COPY(param) \
    edje_edit_state_##param##_set(edje_edit_group, part_name, \
      state_name, state_val,\
@@ -800,8 +807,7 @@ wm_widget_list_new(const char *file)
      }
    edje_file_collection_list_free(collection);
    DBG("Parse the edje group collection id finished! The list of widget - created.");
-   INFO("The theme consist a styles for %i widgets.",
-        eina_inlist_count(widget_list));
+   INFO("The theme consists of styles for %i widgets.", eina_inlist_count(widget_list));
 
    return widget_list;
 }
@@ -899,7 +905,7 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    return _style;
 }
 
-void
+Eina_Bool
 wm_widget_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path)
@@ -910,7 +916,7 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
    Eina_List *alias_list = NULL, *l = NULL;
    const char *main_name;
 
-   if ((!widget_list) || (!e) || (!path)) return;
+   if ((!widget_list) || (!e) || (!path)) return true;
 
    EINA_INLIST_FOREACH(widget_list, widget)
      {
@@ -933,6 +939,7 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
         alias->obj = NULL;
      }
    eina_list_free(alias_list);
+   return true;
 }
 
 const char *

@@ -76,6 +76,15 @@ _show_part(void *data,
 }
 
 static void
+_live_view_update(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   live_view_theme_update(ap->live_view, ap->project);
+}
+
+static void
 _hide_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info)
@@ -172,7 +181,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *prop, *block, *wl_list;
+   Evas_Object *prop, *block, *wl_list, *groupedit;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -181,6 +190,9 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(wl_list, "wl,part,below", _below_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,show", _show_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,hide", _hide_part, ap);
+
+   groupedit = ws_groupedit_get(ap->workspace);
+   evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
 
    workspace_edit_object_unset(ap->workspace);
    /* FIXME:  find way to does'nt make immidietly render */
@@ -191,7 +203,7 @@ ui_part_back(App_Data *ap)
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    prop = ui_block_property_get(ap);
    ui_property_style_unset(prop);
-   ui_demospace_unset(ap->demo);
+   live_view_widget_style_unset(ap->live_view);
 
    ui_menu_disable_set(ap->menu_hash, "Programs", true);
 
@@ -254,12 +266,15 @@ ui_part_select(App_Data *ap,
    gl_states = ui_states_list_add(ap->block.bottom_left);
    ui_states_list_data_set(gl_states, ap->project->current_style, part);
    ui_block_state_list_set(ap, gl_states);
+   evas_object_smart_callback_del_full(gl_states, "stl,state,add", _add_state_dialog, ap);
    evas_object_smart_callback_add(gl_states, "stl,state,add", _add_state_dialog, ap);
+   evas_object_smart_callback_del_full(gl_states, "stl,state,del", _del_state_dialog, ap);
    evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
 
    evas_object_show(gl_states);
 
-   elm_genlist_item_selected_set(elm_genlist_first_item_get(gl_states), true);
+   ui_property_state_set(prop, part);
+   workspace_edit_object_part_state_set(ap->workspace, part);
    workspace_highlight_unset(ap->workspace);
    workspace_highlight_set(ap->workspace, part);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
@@ -275,6 +290,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *wl_list = NULL;
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
+   Evas_Object *groupedit = NULL;
    Eina_List *signals = NULL;
 
    if ((!ap) && (!ap->project) && (!style))
@@ -300,6 +316,9 @@ ui_style_clicked(App_Data *ap, Style *style)
    workspace_edit_object_set(ap->workspace, style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
+   groupedit = ws_groupedit_get(ap->workspace);
+   evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
+
 
    /* style properties */
    prop = ui_block_property_get(ap);
@@ -311,8 +330,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_property_style_set(prop, style, ap->workspace);
    evas_object_show(prop);
 
-   ui_demospace_set(ap->demo, ap->project, style);
-   ui_demospace_update(ap->demo);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
    ui_menu_disable_set(ap->menu_hash, "Programs", false);
 }
 
@@ -340,8 +358,7 @@ ui_edj_load_done(App_Data* ap, const char *selected)
              workspace_highlight_unset(ap->workspace);
           }
 
-        if (ap->demo) ui_demospace_unset(ap->demo);
-        pm_free(ap->project);
+        if (ap->live_view) live_view_widget_style_unset(ap->live_view);
         GET_NAME_FROM_PATH(name, selected)
         ap->project = pm_open_project_edj(name, selected);
         free(name);
@@ -378,8 +395,8 @@ new_theme_create(App_Data *ap)
    if (!ap) return false;
 
    ap->is_new = false;
-   path = eina_stringshare_add(TET_SETT_PATH"cache/");
-   file_full_path = eina_stringshare_add( TET_SETT_PATH"cache/Untitled.edj");
+   path = eina_stringshare_add(EFLETE_SETT_PATH"cache/");
+   file_full_path = eina_stringshare_add( EFLETE_SETT_PATH"cache/Untitled.edj");
 
    if (!ecore_file_exists(path))
      {
@@ -398,7 +415,7 @@ new_theme_create(App_Data *ap)
           }
      }
 
-   if ((!errors) && (!ecore_file_cp(TET_EDJ_PATH"template.edj", file_full_path)))
+   if ((!errors) && (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", file_full_path)))
      {
         ERR("Coud'nt copy theme template to cache");
         errors = true;
@@ -420,10 +437,10 @@ new_theme_create(App_Data *ap)
              workspace_highlight_unset(ap->workspace);
           }
 
-        if ((ap->demo) || (ap->project))
-          ui_demospace_unset(ap->demo);
+        if ((ap->live_view) || (ap->project))
+          live_view_widget_style_unset(ap->live_view);
         ui_menu_disable_set(ap->menu_hash, "Programs", true);
-        pm_free(ap->project);
+
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
         free(name);

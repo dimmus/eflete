@@ -14,13 +14,13 @@ project_manager_test \
 settings_test \
 style_editor_test \
 ui_block_test \
-ui_groupspace_test \
 ui_highlight_test \
 ui_main_window_test \
 ui_ruler_test \
 ui_signal_list_test \
 ui_state_list_test \
 ui_widget_list_test \
+groupedit_test \
 ui_workspace_test \
 widget_manager_test
 
@@ -32,6 +32,7 @@ FLAGS = \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
+-I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/settings \
 -I${top_srcdir}/src/ui \
@@ -41,7 +42,9 @@ FLAGS = \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
--I${top_srcdir}/src/ui/demo \
+-I${top_srcdir}/src/ui/workspace/groupedit \
+-I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/tests \
 @EINA_CFLAGS@ \
 @EET_CFLAGS@ \
 @EVAS_CFLAGS@ \
@@ -50,7 +53,7 @@ FLAGS = \
 @EFREET_CFLAGS@ \
 @EDJE_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
-@TET_DEFINE@ \
+@EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/libete.a \
@@ -80,7 +83,24 @@ edje_compile_test_SOURCES = test_edje_compile/test_edje_compile.c
 edje_compile_test_CFLAGS = ${FLAGS}
 edje_compile_test_LDADD = ${LD}
 
-widget_manager_test_SOURCES = test_widget_manager/test_widget_manager.c
+widget_manager_test_SOURCES = \
+test_widget_manager/test_widget_manager.c \
+test_widget_manager/wm_part_add_test.c \
+test_widget_manager/wm_class_add.c \
+test_widget_manager/wm_class_free.c \
+test_widget_manager/wm_part_current_state_set.c \
+test_widget_manager/wm_part_del_test.c \
+test_widget_manager/wm_part_type_get.c \
+test_widget_manager/wm_program_signals_list_get.c \
+test_widget_manager/wm_style_add_test.c \
+test_widget_manager/wm_style_copy.c \
+test_widget_manager/wm_style_free_test.c \
+test_widget_manager/wm_style_object_find.c \
+test_widget_manager/wm_widget_add.c \
+test_widget_manager/wm_widget_free.c \
+test_widget_manager/wm_widget_list_free.c \
+test_widget_manager/wm_widget_list_new.c \
+test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
@@ -96,7 +116,11 @@ modal_window_test_SOURCES = test_modal_window/test_modal_window.c
 modal_window_test_CFLAGS = ${FLAGS}
 modal_window_test_LDADD = ${LD}
 
-notify_test_SOURCES = test_notify/test_notify.c
+notify_test_SOURCES = \
+test_notify/test_notify.c \
+test_notify/noti_error_show_test.c \
+test_notify/noti_warning_show_test.c \
+test_notify/noti_info_show_test.c
 notify_test_CFLAGS = ${FLAGS}
 notify_test_LDADD = ${LD}
 
@@ -144,6 +168,61 @@ ui_widget_list_test_SOURCES = test_ui_widget_list/test_ui_widget_list.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
 ui_widget_list_test_LDADD = ${LD}
 
-ui_workspace_test_SOURCES = test_ui_workspace/test_ui_workspace.c
+ui_workspace_test_SOURCES = \
+test_ui_workspace/test_ui_workspace.c \
+test_ui_workspace/workspace_add.c \
+test_ui_workspace/workspace_edit_object_get.c \
+test_ui_workspace/workspace_edit_object_part_above.c \
+test_ui_workspace/workspace_edit_object_part_add.c \
+test_ui_workspace/workspace_edit_object_part_below.c \
+test_ui_workspace/workspace_edit_object_part_del.c \
+test_ui_workspace/workspace_edit_object_part_state_add.c \
+test_ui_workspace/workspace_edit_object_part_state_del.c \
+test_ui_workspace/workspace_edit_object_part_state_set.c \
+test_ui_workspace/workspace_edit_object_recalc.c \
+test_ui_workspace/workspace_edit_object_set.c \
+test_ui_workspace/workspace_edit_object_unset.c \
+test_ui_workspace/workspace_edit_object_visible_set.c \
+test_ui_workspace/workspace_highlight_set.c \
+test_ui_workspace/workspace_highlight_unset.c \
+test_ui_workspace/workspace_background_image_set.c \
+test_ui_workspace/workspace_legend_visible_set.c \
+test_ui_workspace/workspace_zoom_factor_get.c \
+test_ui_workspace/workspace_zoom_factor_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
+
+groupedit_test_SOURCES = \
+test_groupedit/test_groupedit.c \
+test_groupedit/groupedit_add.c \
+test_groupedit/groupedit_bg_set.c \
+test_groupedit/groupedit_bg_unset.c \
+test_groupedit/groupedit_container_size_get.c \
+test_groupedit/groupedit_container_size_set.c \
+test_groupedit/groupedit_edit_object_part_above.c \
+test_groupedit/groupedit_edit_object_part_add.c \
+test_groupedit/groupedit_edit_object_part_below.c \
+test_groupedit/groupedit_edit_object_part_del.c \
+test_groupedit/groupedit_edit_object_part_draw_get.c \
+test_groupedit/groupedit_edit_object_part_select.c \
+test_groupedit/groupedit_edit_object_part_state_add.c \
+test_groupedit/groupedit_edit_object_part_state_del.c \
+test_groupedit/groupedit_edit_object_part_state_set.c \
+test_groupedit/groupedit_edit_object_parts_separated.c \
+test_groupedit/groupedit_edit_object_parts_separated_is.c \
+test_groupedit/groupedit_edit_object_recalc_all.c \
+test_groupedit/groupedit_edit_object_set.c \
+test_groupedit/groupedit_edit_object_unset.c \
+test_groupedit/groupedit_handler_size_get.c \
+test_groupedit/groupedit_handler_size_set.c \
+test_groupedit/groupedit_max_size_set.c \
+test_groupedit/groupedit_min_size_set.c \
+test_groupedit/groupedit_part_object_area_get.c \
+test_groupedit/groupedit_part_object_area_set.c \
+test_groupedit/groupedit_part_object_area_visible_get.c \
+test_groupedit/groupedit_part_object_area_visible_set.c \
+test_groupedit/groupedit_part_visible_set.c \
+test_groupedit/groupedit_style_get.c \
+test_groupedit/groupedit_style_set.c
+groupedit_test_CFLAGS = ${FLAGS}
+groupedit_test_LDADD = ${LD}

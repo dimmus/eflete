@@ -596,7 +596,7 @@
          FOCUS("elm,action,unfocus", "glow", "default");
       }
    }
-   group { name: "elm/spinner/base/eflete/demo";
+   group { name: "elm/spinner/base/eflete/live_view";
       images {
          image: "scale-bg.png" COMP;
          image: "scale-zoom_in.png" COMP;
