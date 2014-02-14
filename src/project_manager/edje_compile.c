@@ -115,9 +115,8 @@ decompile(const char *edj,
    if ((!dest_folder) || (!strcmp(dest_folder, ""))) return -1;
    if ((!edj) || (!strcmp(edj, ""))) return -2;
 
-   Eina_Stringshare *cmd = (!dest_folder) ?
-            eina_stringshare_printf("edje_decc %s -no-build-sh", edj) :
-            eina_stringshare_printf("edje_decc %s -no-build-sh -o %s", edj, dest_folder);
+   Eina_Stringshare *cmd = eina_stringshare_printf("edje_decc %s -no-build-sh -o %s",
+                                                   edj, dest_folder);
    INFO("Run command: %s", cmd);
 
    int exit_code = _exec(cmd, log_cb);
