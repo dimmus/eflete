@@ -38,6 +38,8 @@ elm_main()
         app_shutdown();
         return -1;
      }
+   evas_object_show(ap->win);
+
    elm_run();
    elm_shutdown();
    app_shutdown();

@@ -148,7 +148,6 @@ ui_main_window_add(App_Data *ap)
    if (!register_callbacks(ap))
      MARK_TO_SHUTDOWN("Failed register callbacks");
 
-   evas_object_show(win);
    return true;
 }
 #undef MARK_TO_SHUTDOWN
