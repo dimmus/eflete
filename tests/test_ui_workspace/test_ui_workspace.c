@@ -23,6 +23,9 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("ui_workspace_test");
    TCase *tcase = tcase_create("TCase");
 
+   tcase_add_test(tcase, workspace_add_test_p);
+   tcase_add_test(tcase, workspace_add_test_n);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -32,7 +35,7 @@ int main(void)
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_uiworkspace.xml");
+   srunner_set_xml (runner, "test_ui_workspace.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
