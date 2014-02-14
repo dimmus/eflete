@@ -22,7 +22,7 @@
 /**
  * @addtogroup groupedit_test
  * @{
- * @addtogroup FUNC_NAME
+ * @addtogroup groupedit_add
  * @{
  * Groupedit
  * <TABLE>
@@ -30,7 +30,80 @@
  */
 
 /**
- * @addtogroup FUNC_NAME
+ * @addtogroup groupedit_add
+ * @{
+ * <tr>
+ * <td>groupedit_add</td>
+ * <td>groupedit_add_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 create parent window
+ *
+ * @procedure
+ * @step 1 call groupedit_add
+ * @step 2 check returned pointer
+ * </td>
+ * <td>(Evas_Object *) window</td>
+ * <td>Returned pointer not NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (groupedit_add_test_p)
+{
+   Evas_Object *parent, *groupedit;
+
+   elm_init(0, 0);
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+
+   groupedit = groupedit_add(parent);
+   ck_assert_msg(groupedit != NULL, "Failed create groupedit object.");
+   evas_object_del(parent);
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupedit_add
+ * @{
+ * <tr>
+ * <td>groupedit_add</td>
+ * <td>groupedit_add_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call groupedit_add
+ * @step 2 check returned pointer
+ * </td>
+ * <td>NULL</td>
+ * <td>Returned pointer is NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (groupedit_add_test_n)
+{
+   Evas_Object *groupedit;
+
+   elm_init(0, 0);
+
+   groupedit = groupedit_add(NULL);
+   ck_assert_msg(groupedit == NULL, "Failed create groupedit object.");
+
+   elm_shutdown();
+}
+END_TEST
+
+
+/**
+ * @addtogroup groupedit_add
  * @{
  * </TABLE>
  * @}
