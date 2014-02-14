@@ -362,7 +362,7 @@ _on_view_legend(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ws_legend_visible_set(ap->workspace);
+   workspace_legend_visible_set(ap->workspace);
 }
 
 static void

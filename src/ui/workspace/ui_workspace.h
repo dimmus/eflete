@@ -247,7 +247,7 @@ ws_zoom_factor_get(Evas_Object *obj);
  * @ingroup Workspace
  */
 Eina_Bool
-ws_legend_visible_set(Evas_Object *obj);
+workspace_legend_visible_set(Evas_Object *obj);
 
 /**
  * Set highlight to selected part.

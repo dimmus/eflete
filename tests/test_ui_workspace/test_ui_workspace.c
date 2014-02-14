@@ -41,6 +41,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_edit_object_unset_test_n);
    tcase_add_test(tcase, workspace_edit_object_unset_test_n1);
 
+   tcase_add_test(tcase, workspace_legend_visible_set_test_p);
+   tcase_add_test(tcase, workspace_legend_visible_set_test_n);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

@@ -563,7 +563,7 @@ workspace_background_image_set(Evas_Object *obj, const char *path)
 }
 
 Eina_Bool
-ws_legend_visible_set(Evas_Object *obj)
+workspace_legend_visible_set(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
    if (!sd->legend.visible)
