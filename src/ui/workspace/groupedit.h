@@ -77,6 +77,8 @@ groupedit_add(Evas_Object *parent);
  * @param hbr_w wigth of bottom-right handler,
  * @param hbr_h height of bottom-tight handler.
  *
+ * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 5.
+ *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
