@@ -223,7 +223,7 @@ workspace_edit_object_visible_set(Evas_Object *obj,
  * @ingroup Workspace
  */
 Eina_Bool
-ws_zoom_factor_set(Evas_Object *obj, double factor);
+workspace_zoom_factor_set(Evas_Object *obj, double factor);
 
 /**
  * Get zoom factor from workspace.
@@ -235,7 +235,7 @@ ws_zoom_factor_set(Evas_Object *obj, double factor);
  * @ingroup Workspace
  */
 double
-ws_zoom_factor_get(Evas_Object *obj);
+workspace_zoom_factor_get(Evas_Object *obj);
 
 /**
   * Switch beetwen show or hide mode of legend in workspace object.

@@ -324,8 +324,8 @@ _on_view_zoom_in(void *data,
                  void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   double current_factor = ws_zoom_factor_get(ap->workspace);
-   ws_zoom_factor_set(ap->workspace, current_factor + 0.1);
+   double current_factor = workspace_zoom_factor_get(ap->workspace);
+   workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
 }
 
 static void
@@ -334,8 +334,8 @@ _on_view_zoom_out(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   double current_factor = ws_zoom_factor_get(ap->workspace);
-   ws_zoom_factor_set(ap->workspace, current_factor - 0.1);
+   double current_factor = workspace_zoom_factor_get(ap->workspace);
+   workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
 }
 
 static void

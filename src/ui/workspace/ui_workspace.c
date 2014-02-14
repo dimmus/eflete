@@ -538,14 +538,14 @@ _zoom_factor_update(Evas_Object *obj, double factor)
 }
 
 Eina_Bool
-ws_zoom_factor_set(Evas_Object *obj, double factor)
+workspace_zoom_factor_set(Evas_Object *obj, double factor)
 {
    if ((factor < 0.01) || (factor > 20 )) return false;
    return _zoom_factor_update(obj, factor);
 }
 
 double
-ws_zoom_factor_get(Evas_Object *obj)
+workspace_zoom_factor_get(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
    return sd->zoom.factor;
