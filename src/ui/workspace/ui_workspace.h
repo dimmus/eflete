@@ -62,7 +62,7 @@ workspace_add(Evas_Object *parent);
  * @ingroup Workspace
  */
 Eina_Bool
-ws_background_image_set(Evas_Object *obj, const char *path);
+workspace_background_image_set(Evas_Object *obj, const char *path);
 
 /**
  * Get the groupedit object, which loaded into workspace.

@@ -552,7 +552,7 @@ ws_zoom_factor_get(Evas_Object *obj)
 }
 
 Eina_Bool
-ws_background_image_set(Evas_Object *obj, const char *path)
+workspace_background_image_set(Evas_Object *obj, const char *path)
 {
    if (!path) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
