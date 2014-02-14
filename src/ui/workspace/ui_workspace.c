@@ -940,19 +940,22 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    return true;
 }
 
-void
+Eina_Bool
 workspace_edit_object_unset(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
+   Eina_Bool is_unset = false;
    sd->style = NULL;
    if (sd->groupedit)
      {
-        groupedit_edit_object_unset(sd->groupedit);
+        if (groupedit_edit_object_unset(sd->groupedit)) is_unset = true;
         elm_object_content_unset(sd->scroller);
         evas_object_del(sd->groupedit);
         sd->groupedit = NULL;
+        return is_unset;
      }
+   return false;
 }
 
 Style *

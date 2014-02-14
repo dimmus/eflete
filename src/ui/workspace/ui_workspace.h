@@ -95,9 +95,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file);
  *
  * @param obj The workspace object.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Workspace
  */
-void
+Eina_Bool
 workspace_edit_object_unset(Evas_Object *obj);
 
 /**
