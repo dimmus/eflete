@@ -606,7 +606,7 @@ groupedit_edit_object_set(Evas_Object *obj,
         /* TODO: add error message */
         return false;
      }
-   if (!file) return false;
+   if ((file) && (!ecore_file_exists(file))) return false;
 
    edje_object_animation_set(edit_obj, false);
    edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
