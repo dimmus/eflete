@@ -147,4 +147,11 @@
    elm_win_inwin_content_set(INWIN, FILESELECTOR); \
    evas_object_show(FILESELECTOR);
 
+#define RADIO_ADD(PARENT, RADIO, STATE, TEXT) \
+   RADIO = elm_radio_add(PARENT); \
+   evas_object_size_hint_weight_set(RADIO, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   elm_radio_state_value_set(RADIO, STATE); \
+   elm_object_text_set(RADIO, TEXT); \
+   evas_object_show(RADIO);
+
 #endif /* WIDGET_MACRO_H */

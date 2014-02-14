@@ -17,7 +17,7 @@ alayouts_DATA = eflete.edj
 
 aimagesdir = $(datadir)/eflete/images
 aimages_DATA = \
-   ${srcdir}/layouts/images/*.png
+   ${srcdir}/layouts/images/*.png ${srcdir}/layouts/images/*.jpg
 
 shortcutdir = /usr/local/share/applications
 shortcut_DATA = eflete.desktop
