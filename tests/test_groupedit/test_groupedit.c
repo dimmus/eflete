@@ -36,8 +36,8 @@ Suite* test_suite (void) {
    //tcase_add_test(tcase, groupedit_handler_size_get_test_p);
    //tcase_add_test(tcase, groupedit_handler_size_get_test_n);
 
-   //tcase_add_test(tcase, groupedit_min_size_set_test_p);
-   //tcase_add_test(tcase, groupedit_min_size_set_test_n);
+   tcase_add_test(tcase, groupedit_min_size_set_test_p);
+   tcase_add_test(tcase, groupedit_min_size_set_test_n);
 
    //tcase_add_test(tcase, groupedit_max_size_set_test_p);
    //tcase_add_test(tcase, groupedit_max_size_set_test_n);
