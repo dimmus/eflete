@@ -79,7 +79,10 @@ colorclass_editor_test_SOURCES = test_colorclass_editor/test_colorclass_editor.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
 
-edje_compile_test_SOURCES = test_edje_compile/test_edje_compile.c
+edje_compile_test_SOURCES = \
+test_edje_compile/test_edje_compile.c \
+test_edje_compile/compile.c \
+test_edje_compile/decompile.c
 edje_compile_test_CFLAGS = ${FLAGS}
 edje_compile_test_LDADD = ${LD}
 
