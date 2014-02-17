@@ -60,14 +60,14 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    BOX_ADD(item, box, true, true); \
    elm_box_padding_set(box, 5, 0); \
    SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
-   elm_spinner_label_format_set(spinner1, "%.0f"); \
+   elm_spinner_label_format_set(spinner1, "%.0f px"); \
    elm_spinner_value_set(spinner1, edje_edit_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    elm_box_pack_end(box, spinner1); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
-   elm_spinner_label_format_set(spinner2, "%.0f"); \
+   elm_spinner_label_format_set(spinner2, "%.0f px"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    elm_box_pack_end(box, spinner2); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
