@@ -213,7 +213,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    int ch_value, st_value; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, true, true) \
-   CHECK_ADD(box, check, DEFAULT_STYLE) \
+   CHECK_ADD(box, check, "eflete/toggle") \
    ch_value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, pd->part->name); \
    elm_check_state_set(check, ch_value); \
    elm_object_tooltip_text_set(check, tooltip1); \
@@ -678,7 +678,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *check; \
    Eina_Bool value; \
    ITEM_ADD(parent, item, TEXT) \
-   CHECK_ADD(item, check, DEFAULT_STYLE) \
+   CHECK_ADD(item, check, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
                                            pd->part->curr_state, \
@@ -718,8 +718,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    Eina_Bool value; \
    ITEM_ADD(parent, item, TEXT) \
    BOX_ADD(item, box, true, true) \
-   CHECK_ADD(box, check1, DEFAULT_STYLE) \
-   CHECK_ADD(box, check2, DEFAULT_STYLE) \
+   CHECK_ADD(box, check1, "eflete/toggle") \
+   CHECK_ADD(box, check2, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
