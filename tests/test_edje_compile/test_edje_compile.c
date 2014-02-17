@@ -22,12 +22,12 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("edje_compile_test");
    TCase *tcase = tcase_create("TCase");
-//   tcase_add_test(tcase, compile_callback_test_p);
-//   tcase_add_test(tcase, compile_callback_test_n);
-//   tcase_add_test(tcase, compile_test_p);
-//   tcase_add_test(tcase, compile_test_n1);
-//   tcase_add_test(tcase, compile_test_n2);
-//   tcase_add_test(tcase, compile_test_n3);
+   tcase_add_test(tcase, compile_callback_test_p);
+   tcase_add_test(tcase, compile_callback_test_n);
+   tcase_add_test(tcase, compile_test_p);
+   tcase_add_test(tcase, compile_test_n1);
+   tcase_add_test(tcase, compile_test_n2);
+   tcase_add_test(tcase, compile_test_n3);
 
 //   tcase_add_test(tcase, decompile_callback_test_p);
 //   tcase_add_test(tcase, decompile_test_p);
