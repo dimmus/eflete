@@ -29,10 +29,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, compile_test_n2);
    tcase_add_test(tcase, compile_test_n3);
 
-//   tcase_add_test(tcase, decompile_callback_test_p);
-//   tcase_add_test(tcase, decompile_test_p);
-//   tcase_add_test(tcase, decompile_test_n1);
-//   tcase_add_test(tcase, decompile_test_n2);
+   tcase_add_test(tcase, decompile_callback_test_p);
+   tcase_add_test(tcase, decompile_test_p);
+   tcase_add_test(tcase, decompile_test_n1);
+   tcase_add_test(tcase, decompile_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
