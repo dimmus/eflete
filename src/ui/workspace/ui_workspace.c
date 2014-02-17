@@ -966,11 +966,11 @@ workspace_edit_object_get(Evas_Object *obj)
    return sd->style;
 }
 
-void
+Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj)
 {
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-   groupedit_edit_object_recalc_all(sd->groupedit);
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
 Eina_Bool

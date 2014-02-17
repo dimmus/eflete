@@ -236,9 +236,11 @@ groupedit_edit_object_unset(Evas_Object *obj);
  *
  * @param obj The groupedit object.
  *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj);
 
 /**

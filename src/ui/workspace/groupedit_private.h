@@ -168,7 +168,7 @@ _parts_list_free(Ws_Groupedit_Smart_Data *sd);
 Groupedit_Part *
 _parts_list_find(Eina_List *parts, const char *part);
 
-void
+Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd);
 
 void

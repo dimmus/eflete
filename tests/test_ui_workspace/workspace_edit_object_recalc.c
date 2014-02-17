@@ -20,10 +20,144 @@
 #include "test_ui_workspace.h"
 
 /**
- * @addgroup test_ui_workspace
+ * @addtogroup ui_workspace_test
  * @{
+ * @addtogroup workspace_edit_object_recalc
+ * @{
+ * ui_workspace
+ * <TABLE>
+ * @}
  */
 
-/*
+/**
+ * @addtogroup workspace_edit_object_recalc
+ * @{
+ * <tr>
+ * <td>workspace_edit_object_recalc</td>
+ * <td>workspace_edit_object_recalc_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 load extenstion theme from EFLETE_THEME file
+ * @step 3 create parent window
+ * @step 4 create workspace object
+ * @step 5 create style object
+ * @step 6 load style data from edje file
+ * @step 7 set edit object into workspace
+ *
+ * @procedure
+ * @step 1 call workspace_edit_object_recalc
+ * @step 2 check returned value
+ * </td>
+ * <td>(Evas_Object *) workspace</td>
+ * <td>Returned EINA_TRUE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (workspace_edit_object_recalc_test_p)
+{
+   elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   Evas_Object *parent, *workspace;
+   Eina_Bool ret = EINA_FALSE;
+   Style *style = NULL;
+   Evas *e = NULL;
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   workspace = workspace_add(parent);
+   e = evas_object_evas_get(parent);
+   style = wm_style_add("test", "elm/radio/base/test");
+   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   ret = workspace_edit_object_recalc(workspace);
+   ck_assert_msg(ret == EINA_TRUE, "Fail recalc edit object in workspace");
+   wm_style_free(style);
+   evas_object_del(parent);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup workspace_edit_object_recalc
+ * @{
+ * <tr>
+ * <td>workspace_edit_object_recalc</td>
+ * <td>workspace_edit_object_recalc_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 load extenstion theme from EFLETE_THEME file
+ * @step 3 create parent window
+ * @step 4 create workspace object
+ *
+ * @procedure
+ * @step 1 call workspace_edit_object_recalc
+ * @step 2 check returned value
+ * </td>
+ * <td>(Evas_Object *) workspace</td>
+ * <td>Returned EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (workspace_edit_object_recalc_test_n)
+{
+   elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   Evas_Object *parent, *workspace;
+   Eina_Bool ret = EINA_FALSE;
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   workspace = workspace_add(parent);
+   ret = workspace_edit_object_recalc(workspace);
+   ck_assert_msg(ret == EINA_FALSE, "Recalc edit object in workspace, "
+                                    "without prevision set edit object");
+   evas_object_del(parent);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup workspace_edit_object_recalc
+ * @{
+ * <tr>
+ * <td>workspace_edit_object_recalc</td>
+ * <td>workspace_edit_object_recalc_test_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call workspace_edit_object_recalc with NULL param
+ * @step 2 check returned value
+ * </td>
+ * <td>NULL</td>
+ * <td>Returned EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (workspace_edit_object_recalc_test_n1)
+{
+   elm_init(0, 0);
+   Eina_Bool ret = EINA_TRUE;
+
+   ret = workspace_edit_object_recalc(NULL);
+   ck_assert_msg(ret == EINA_FALSE, "Recalc edit object in NULL object");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup workspace_edit_object_recalc
+ * @{
+ * </TABLE>
+ * @}
  * @}
  */

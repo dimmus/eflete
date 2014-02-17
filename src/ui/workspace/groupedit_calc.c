@@ -482,7 +482,7 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 
 #undef GP_GEOMETRY_SET
 
-void
+Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 {
    Eina_List *l;
@@ -490,7 +490,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
    Edje_Part_Type ept;
    int i = 0, offset_x, offset_y;
 
-   if (!sd->parts) return;
+   if (!sd->parts) return false;
 
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
@@ -550,6 +550,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           }
      }
      _part_object_area_calc(sd);
+   return true;
 }
 
 #define BORDER_ADD(R, G, B, A) \

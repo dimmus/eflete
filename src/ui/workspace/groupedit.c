@@ -665,12 +665,12 @@ groupedit_edit_object_unset(Evas_Object *obj)
    return ret;
 }
 
-void
+Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   _parts_recalc(sd);
+   return _parts_recalc(sd);
 }
 
 Evas_Object *

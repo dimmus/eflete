@@ -120,9 +120,11 @@ workspace_edit_object_get(Evas_Object *obj);
  *
  * @param obj The workspace object.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Workspace
  */
-void
+Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj);
 
 /**
