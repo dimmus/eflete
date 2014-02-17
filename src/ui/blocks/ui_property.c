@@ -317,7 +317,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    if (!pd_group.frame)
      {
-        FRAME_ADD(property, group_frame, true, "Group property")
+        FRAME_ADD(property, group_frame, true, "Layout property")
         BOX_ADD(group_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
@@ -374,16 +374,16 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
 
 /* part property */
-ITEM_1CHECK_PART_CREATE("scale", part, scale)
-ITEM_1CHECK_PART_CREATE("mouse", part, mouse_events)
-ITEM_1CHECK_PART_CREATE("repeat", part, repeat_events)
+ITEM_1CHECK_PART_CREATE("scalable", part, scale)
+ITEM_1CHECK_PART_CREATE("mouse events", part, mouse_events)
+ITEM_1CHECK_PART_CREATE("event propagation", part, repeat_events)
 ITEM_1ENTRY_PART_CREATE("clip to", part, clip_to)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE("x", part_drag, x, step_x)
 ITEM_DRAG_PART_CREATE("y", part_drag, y, step_y)
-ITEM_1ENTRY_PART_CREATE("confine", part_drag, confine)
-ITEM_1ENTRY_PART_CREATE("event", part_drag, event)
+ITEM_1ENTRY_PART_CREATE("drag area", part_drag, confine)
+ITEM_1ENTRY_PART_CREATE("forward events", part_drag, event)
 
 #define pd_part pd->prop_part
 #define pd_part_drag pd->prop_part_drag
@@ -452,11 +452,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_object_content_set(part_drag_frame, box);
 
         pd_part_drag.drag_x = prop_item_part_drag_x_step_x_add(box, pd,
-                                 0.0, 9999.0, 1.0, "%.0f",
+                                 0.0, 9999.0, 1.0, "%.0f px",
                                  "Enable/Disable draggin along X axis",
                                  "Set a drag step value");
         pd_part_drag.drag_y = prop_item_part_drag_y_step_y_add(box, pd,
-                                 0.0, 9999.0, 1.0, "%.0f",
+                                 0.0, 9999.0, 1.0, "%.0f px",
                                  "Enable/Disable draggin along Y axis",
                                  "Set a drag step value");
         pd_part_drag.confine = prop_item_part_drag_confine_add(box, pd,
@@ -568,11 +568,11 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0, "%.0f",
+                          0.0, 9999.0, 1.0, "%.0f px",
                           "Minimum part width in pixels.",
                           "Minimum part height in pixels.");
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
-                          -1.0, 9999.0, 1.0, "%.0f",
+                          -1.0, 9999.0, 1.0, "%.0f px",
                           "Maximum part width in pixels.",
                           "Maximum part height in pixels.");
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
@@ -700,7 +700,7 @@ ui_property_state_rel1_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis.");
         pd_rel1.offset = prop_item_state_rel1_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f",
+                            -9999.0, 9999.0, 1.0, "%.0f px",
                             "Left offset from relative position in pixels",
                             "Top offset from relative position in pixels");
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd,
@@ -763,7 +763,7 @@ ui_property_state_rel2_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis.");
         pd_rel2.offset = prop_item_state_rel2_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f",
+                            -9999.0, 9999.0, 1.0, "%.0f px",
                             "Left offset from relative position in pixels",
                             "Top offset from relative position in pixels");
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd,
