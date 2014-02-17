@@ -393,8 +393,14 @@ _groupedit_smart_resize(Evas_Object *o,
                             Evas_Coord h)
 {
    Evas_Coord ow, oh;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
+   if (w > sd->con_size_max.w) w = sd->con_size_max.w;
+   if (w < sd->con_size_min.w) w = sd->con_size_min.w;
+   if (h > sd->con_size_max.h) h = sd->con_size_max.h;
+   if (h < sd->con_size_min.h) h = sd->con_size_min.h;
 
    evas_object_size_hint_min_set(o, w, h);
    evas_object_smart_changed(o);
