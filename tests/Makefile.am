@@ -22,7 +22,8 @@ ui_state_list_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
-widget_manager_test
+widget_manager_test \
+program_editor_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -229,3 +230,9 @@ test_groupedit/groupedit_style_get.c \
 test_groupedit/groupedit_style_set.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
+
+program_editor_test_SOURCES = \
+test_program_editor/test_program_editor.c \
+test_program_editor/program_editor_window_add_test.c
+program_editor_test_CFLAGS = ${FLAGS}
+program_editor_test_LDADD = ${LD}

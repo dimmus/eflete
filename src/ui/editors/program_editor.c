@@ -1428,9 +1428,9 @@ program_editor_window_add(Style *style)
    Program_Editor *prog_edit = NULL;
 
 
-   if (!style)
+   if ((!style) || (!style->obj))
      {
-        ERR("Failed create image editor for current style");
+        ERR("Failed create program editor for current style");
         return NULL;
      }
 
