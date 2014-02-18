@@ -57,10 +57,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, wm_widget_add_test_n3);
 /*   tcase_add_test(tcase, wm_widget_free_test_p); */
 /*   tcase_add_test(tcase, wm_widget_free_test_n); */
-/*   tcase_add_test(tcase, wm_widget_list_new_test_p); */
-/*   tcase_add_test(tcase, wm_widget_list_new_test_n); */
    tcase_add_test(tcase, wm_widget_list_free_test_p);
    tcase_add_test(tcase, wm_widget_list_free_test_n);
+   tcase_add_test(tcase, wm_widget_list_new_test_p);
+   tcase_add_test(tcase, wm_widget_list_new_test_n);
 /*   tcase_add_test(tcase, wm_style_object_find_test_p1); */
 /*   tcase_add_test(tcase, wm_style_object_find_test_p2); */
 /*   tcase_add_test(tcase, wm_style_object_find_test_n1); */
