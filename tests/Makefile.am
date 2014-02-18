@@ -136,7 +136,9 @@ settings_test_SOURCES = test_settings/test_settings.c
 settings_test_CFLAGS = ${FLAGS}
 settings_test_LDADD = ${LD}
 
-style_editor_test_SOURCES = test_style_editor/test_style_editor.c
+style_editor_test_SOURCES = \
+test_style_editor/test_style_editor.c \
+test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 
