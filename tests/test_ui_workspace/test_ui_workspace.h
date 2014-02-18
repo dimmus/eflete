@@ -53,9 +53,9 @@ void workspace_edit_object_unset_test_p(int);
 void workspace_edit_object_unset_test_n(int);
 void workspace_edit_object_unset_test_n1(int);
 
-void workspace_edit_object_get_p(int);
-void workspace_edit_object_get_p2(int);
-void workspace_edit_object_get_n1(int);
+void workspace_edit_object_get_test_p(int);
+void workspace_edit_object_get_test_p1(int);
+void workspace_edit_object_get_test_n(int);
 
 void workspace_edit_object_recalc_p(int);
 void workspace_edit_object_recalc_n1(int);
