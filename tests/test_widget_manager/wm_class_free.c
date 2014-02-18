@@ -18,12 +18,88 @@
 */
 
 #include "test_widget_manager.h"
+
 /**
  * @addtogroup test_widget_manager
  * @{
+ * @addtogroup wm_class_free
+ * @{
+ * widget_manager
+ * <TABLE>
+ * @}
  */
 
+/**
+ * @addtogroup wm_class_free
+ * @{
+ * <tr>
+ * <td>wm_class_free</td>
+ * <td>wm_class_free_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 Class structure.
+ *
+ * @procedure
+ * @step 1 Call function wm_style_free(style).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>Class *class</td>
+ * <td>true returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (wm_class_free_test_p)
+{
+   elm_init(0,0);
+   Eina_List *groups = NULL;
+   Class *class= NULL;
+   const char* class_name = "test";
 
-/*
+   groups = eina_list_append(groups, "elm/radio/base/test");
+   groups = eina_list_append(groups, "elm/radio/notbase/test");
+   class = wm_class_add(class_name, groups);
+
+   ck_assert_msg(wm_class_free(class) == true, "cannot delete Class structure.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup wm_class_free
+ * @{
+ * <tr>
+ * <td>wm_class_free</td>
+ * <td>wm_class_free_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call function wm_class_free(NULL).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>NULL</td>
+ * <td>true returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (wm_class_free_test_n)
+{
+   elm_init(0,0);
+   ck_assert_msg(wm_class_free(NULL) == false, "NULL Class structure was deleted.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup wm_class_free
+ * @{
+ * </TABLE>
+ * @}
  * @}
  */
