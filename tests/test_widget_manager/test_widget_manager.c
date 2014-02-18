@@ -32,10 +32,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, wm_part_del_test_n1);
    tcase_add_test(tcase, wm_part_del_test_n2);
    tcase_add_test(tcase, wm_part_del_test_n3);
-/*   tcase_add_test(tcase, wm_style_add_test_p); */
-/*   tcase_add_test(tcase, wm_style_add_test_n1); */
-/*   tcase_add_test(tcase, wm_style_add_test_n2); */
-/*   tcase_add_test(tcase, wm_style_add_test_n3); */
+   tcase_add_test(tcase, wm_style_add_test_p);
+   tcase_add_test(tcase, wm_style_add_test_n1);
+   tcase_add_test(tcase, wm_style_add_test_n2);
+   tcase_add_test(tcase, wm_style_add_test_n3);
 /*   tcase_add_test(tcase, wm_style_free_test_p1); */
 /*   tcase_add_test(tcase, wm_style_free_test_p2); */
 /*   tcase_add_test(tcase, wm_style_free_test_n); */
@@ -93,7 +93,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_wmanager.xml");
+   srunner_set_xml (runner, "test_widget_manager.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
