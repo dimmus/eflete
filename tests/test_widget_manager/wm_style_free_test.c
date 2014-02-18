@@ -18,12 +18,129 @@
 */
 
 #include "test_widget_manager.h"
+
 /**
  * @addtogroup test_widget_manager
  * @{
+ * @addtogroup wm_style_free
+ * @{
+ * widget_manager
+ * <TABLE>
+ * @}
  */
 
+/**
+ * @addtogroup wm_style_free
+ * @{
+ * <tr>
+ * <td>wm_style_free</td>
+ * <td>wm_style_free_test_p1</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 Evas canvas created
+ * @step 3 Create Style structure
+ * @step 4 Edje Edit object of the tested existing group
+ * @step 5 Fill Style with parts.
+ *
+ * @procedure
+ * @step 1 Call function wm_style_free(style).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>Style *style</td>
+ * <td>true returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (wm_style_free_test_p1)
+{
+   elm_init(0,0);
+   Evas_Object *win = NULL;
+   Evas *e = NULL;
+   Style *style = NULL;
+   const char *style_name = "def";
+   const char *full_style_name = "elm/radio/base/def";
 
-/*
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   e = evas_object_evas_get(win);
+   style = wm_style_add(style_name, full_style_name);
+   style->obj = edje_edit_object_add(e);
+   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   ck_assert_msg(wm_style_free(style) == true, "cannot delete Style object");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup wm_style_free
+ * @{
+ * <tr>
+ * <td>wm_style_free</td>
+ * <td>wm_style_free_test_p2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 Empty Style structure.
+ *
+ * @procedure
+ * @step 1 Call function wm_style_free(style).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>Style *style</td>
+ * <td>true returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (wm_style_free_test_p2)
+{
+   elm_init(0,0);
+   Style *style = NULL;
+   const char *style_name = "defaul";
+   const char *full_style_name = "elm/check/base/defaul";
+   style = wm_style_add(style_name, full_style_name);
+   ck_assert_msg(wm_style_free(style) == true, "cannot delete Group object");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup wm_style_free
+ * @{
+ * <tr>
+ * <td>wm_style_free</td>
+ * <td>wm_style_free_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call function wm_style_free(NULL).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>NULL</td>
+ * <td>false returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (wm_style_free_test_n)
+{
+   elm_init(0,0);
+   ck_assert_msg(wm_style_free(NULL) == false, "Deleting NULL as Group object.");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup wm_style_free
+ * @{
+ * </TABLE>
+ * @}
  * @}
  */
