@@ -9,6 +9,8 @@ AC_INIT([eflete], [project_version])
 AM_INIT_AUTOMAKE([1.11 dist-bzip2 subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
+AM_GNU_GETTEXT_VERSION(0.18.1)
+AM_GNU_GETTEXT([external])
 PKG_CHECK_MODULES([CHECK], [check], [have_check="yes"], [have_check="no"])
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
@@ -84,6 +86,7 @@ AM_PROG_CC_C_O
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile]) ])
 AC_CONFIG_FILES([
+po/Makefile.in
 Makefile
 src/Makefile
 src/config.h
