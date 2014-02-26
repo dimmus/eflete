@@ -333,7 +333,7 @@ group { name: "elm/button/base/eflete/simple";
       part { name: "button_image";
          type: IMAGE;
          description { state: "default" 0;
-            min: 12 12;
+            min: 16 16;
             color: 0 0 0 0;
             rel2.offset: -1 -1;
             image {
@@ -343,12 +343,18 @@ group { name: "elm/button/base/eflete/simple";
          }
          description { state: "clicked" 0;
             inherit: "default" 0.0;
-            image.normal: "button-click-bg.png";
+            image {
+               normal: "button-click-bg.png";
+               border: BUTTON_BORDER;
+            }
             color: 255 255 255 255;
          }
          description { state: "disabled" 0;
              inherit: "default" 0.0;
-             image.normal: "button-disabled-bg.png";
+             image {
+               normal: "button-disabled-bg.png";
+               border: BUTTON_BORDER;
+             }
           }
       }
       part { name: "elm.swallow.content";
