@@ -263,10 +263,20 @@ _elm_widget_create(const char  *widget,
      }
    else if (strcmp(widget, "panes") == 0)
      {
-        Evas_Object *test_right = elm_button_add(parent);
-        Evas_Object *test_left = elm_button_add(parent);
-        elm_object_text_set(test_right, "Right side");
-        elm_object_text_set(test_left, "Left side");
+        Evas *e = evas_object_evas_get(parent);
+        Evas_Object *test_right = evas_object_rectangle_add(e);
+        Evas_Object *test_left = evas_object_rectangle_add(e);
+
+        evas_object_color_set(test_right,
+                              255 * 255 / 255,
+                              0,
+                              0,
+                              255);
+        evas_object_color_set(test_left,
+                              0,
+                              0,
+                              255 * 255 / 255,
+                              255);
 
         object = elm_panes_add(parent);
         elm_panes_horizontal_set(object, _panes_orient_get(class));
