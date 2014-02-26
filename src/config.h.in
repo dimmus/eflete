@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef CONFIG_H
@@ -35,6 +35,9 @@
 #define PATH_MAX 4096
 #define BUFF_MAX 512
 #endif
+
+/* localization */
+#define LOCALEDIR "/usr/local/share/locale"
 
 /* Eflete debug */
 #define HAVE_EFLETE_DEBUG @E_DEBUG@

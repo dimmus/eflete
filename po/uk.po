@@ -1,0 +1,182 @@
+# Ukrainian translations for eflete package.
+# Copyright (C) 2014 Samsung Electronics
+# This file is distributed under the same license as the eflete package.
+# a.kroitor <an.kroitor@samsung.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eflete 0.1.1\n"
+"Report-Msgid-Bugs-To: v.reutskiy@samsung.com\n"
+"POT-Creation-Date: 2014-02-25 12:48+0200\n"
+"PO-Revision-Date: 2014-02-25 12:51+0200\n"
+"Last-Translator: a.kroitor <an.kroitor@samsung.com>\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: src/ui/ui_menu.c:71
+#, c-format
+msgid "Theme saved: %s"
+msgstr "Збережено тему: %s"
+
+#: src/ui/ui_menu.c:76 src/ui/ui_menu.c:117
+#, c-format
+msgid "Theme can not be saved: %s"
+msgstr "Неможливо зберегти тему: %s"
+
+#: src/ui/ui_menu.c:179
+#, c-format
+msgid "Close project %s"
+msgstr "Закрити проект %s"
+
+#: src/ui/ui_menu.c:186 src/ui/ui_menu.c:472 src/ui/ui_menu.c:550
+msgid "Save"
+msgstr "Зберегти"
+
+#: src/ui/ui_menu.c:189
+msgid "Don't save"
+msgstr "Не зберігати"
+
+#: src/ui/ui_menu.c:192
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: src/ui/ui_menu.c:206
+msgid ""
+"You want to create a new theme, but now you have<br/>open project. If you "
+"dont save the open project<br/>all your changes will be lost!"
+msgstr ""
+"Відкритий проект ще не збережено.<br/>Створення нової теми призведе до<br/"
+">втрати усіх незбережених змін"
+
+#: src/ui/ui_menu.c:223 src/ui/ui_menu.c:246
+msgid ""
+"You want to open new theme, but now you have<br/>open project. If you dont "
+"save the open project<br/>all your changes will be lost!"
+msgstr ""
+"Відкритий проект ще не збережено.<br/>Відкриття нової теми призведе до<br/"
+">втрати усіх незбережених змін"
+
+#: src/ui/ui_menu.c:318 src/ui/ui_menu.c:491 src/ui/ui_menu.c:557
+msgid "Highlight space"
+msgstr ""
+
+#: src/ui/ui_menu.c:429
+msgid "Please open the widget style for editing style programs!"
+msgstr "Для редагування програм необхідно спочатку відкрити стиль віджета!"
+
+#: src/ui/ui_menu.c:468 src/ui/ui_menu.c:568
+msgid "File"
+msgstr "Файл"
+
+#: src/ui/ui_menu.c:469
+msgid "New theme"
+msgstr "Нова тема"
+
+#: src/ui/ui_menu.c:470
+msgid "Open edc-file"
+msgstr "Відкрити edc-файл"
+
+#: src/ui/ui_menu.c:471
+msgid "Open edj-file"
+msgstr "Відкрити edj-файл"
+
+#: src/ui/ui_menu.c:473 src/ui/ui_menu.c:551
+msgid "Save as..."
+msgstr "Зберегти як..."
+
+#: src/ui/ui_menu.c:474 src/ui/ui_menu.c:552
+msgid "Export to edc..."
+msgstr "Експорт в edc..."
+
+#: src/ui/ui_menu.c:476
+msgid "Exit"
+msgstr "Вихід"
+
+#: src/ui/ui_menu.c:478 src/ui/ui_menu.c:569
+msgid "View"
+msgstr "Відображення"
+
+#: src/ui/ui_menu.c:479 src/ui/ui_menu.c:553
+msgid "Workspace"
+msgstr "Робоча область"
+
+#: src/ui/ui_menu.c:480
+msgid "Zoom in"
+msgstr "Збільшити"
+
+#: src/ui/ui_menu.c:482
+msgid "Zoom out"
+msgstr "Зменшити"
+
+#: src/ui/ui_menu.c:484 src/ui/ui_menu.c:554
+msgid "Separate"
+msgstr "Розділити шари"
+
+#: src/ui/ui_menu.c:485 src/ui/ui_menu.c:555
+msgid "Legend"
+msgstr "Легенда"
+
+#: src/ui/ui_menu.c:486 src/ui/ui_menu.c:556
+msgid "Rulers"
+msgstr "Лінійки"
+
+#: src/ui/ui_menu.c:487
+msgid "Show/hide hor."
+msgstr "Показати/приховати горизонтальну лінійку"
+
+#: src/ui/ui_menu.c:488
+msgid "Show/hide ver."
+msgstr "Показати/приховати вертикальну лінійку"
+
+#: src/ui/ui_menu.c:489
+msgid "Absolute scale"
+msgstr "Абсолютна шкала"
+
+#: src/ui/ui_menu.c:490
+msgid "Relative scale"
+msgstr "Відносна шкала"
+
+#: src/ui/ui_menu.c:493 src/ui/ui_menu.c:570
+msgid "Editors"
+msgstr "Редактори"
+
+#: src/ui/ui_menu.c:494 src/ui/ui_menu.c:558
+msgid "Styles"
+msgstr "Стилі"
+
+#: src/ui/ui_menu.c:495 src/ui/ui_menu.c:559
+msgid "Images"
+msgstr "Зображення"
+
+#: src/ui/ui_menu.c:496 src/ui/ui_menu.c:560
+msgid "Colorclasses"
+msgstr "Класи кольорів"
+
+#: src/ui/ui_menu.c:497
+msgid "Programs"
+msgstr "Програми"
+
+#: src/ui/ui_menu.c:500 src/ui/ui_menu.c:571
+msgid "Help"
+msgstr "Допомога"
+
+#: src/ui/ui_menu.c:501
+msgid "About"
+msgstr "Про програму"
+
+#: src/ui/ui_menu.c:516
+msgid "New project"
+msgstr "Новий проект"
+
+#: src/ui/ui_menu.c:517
+msgid "Open project"
+msgstr "Відкрити проект"
+
+#: src/ui/ui_menu.c:518
+msgid "Save project"
+msgstr "Зберегти проект"

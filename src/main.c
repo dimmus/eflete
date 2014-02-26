@@ -23,7 +23,6 @@
 EAPI_MAIN int
 elm_main()
 {
-
    if (!app_init()) return -1;
 
    #ifdef HAVE_CONFIG_H
@@ -31,6 +30,10 @@ elm_main()
    #else
       CRIT("Could not find 'config.h'");
    #endif
+
+   setlocale(LC_ALL, "");
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   textdomain(PACKAGE);
 
    App_Data *ap = app_create();
    if (!ui_main_window_add(ap))
