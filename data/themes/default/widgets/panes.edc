@@ -36,7 +36,6 @@ group { name: "elm/panes/vertical/eflete/default";
             rel2 {
                to_x: "elm.bar";
                relative: 0.0 1.0;
-               offset: -2 0;
             }
          }
       }
@@ -48,7 +47,6 @@ group { name: "elm/panes/vertical/eflete/default";
             rel1 {
                to_x: "elm.bar";
                relative: 1.0 0.0;
-               offset: 1 0;
             }
          }
       }
@@ -59,8 +57,8 @@ group { name: "elm/panes/vertical/eflete/default";
             y: 0 0 0;
          }
          description { state: "default" 0.0;
-            max: 0 -1;
-            min: 0 PANEMIN;
+            min: PANEMIN 0;
+            max: PANEMIN -1;
             fixed: 1 1;
             rel1.relative: 0.0 0.5;
             rel2.relative: 1.0 0.5;
@@ -80,7 +78,7 @@ group { name: "elm/panes/vertical/eflete/default";
          type: IMAGE;
          dragable.events: "elm.bar";
          description { state: "default" 0.0;
-            min: PANEMIN PANEMIN;
+            min: PANEMIN 0;
             max: PANEMIN -1;
             fixed: 1 1;
             rel1.to_x: "elm.swallow.event";
@@ -287,11 +285,9 @@ group { name: "elm/panes/horizontal/eflete/default";
          clip_to: "whole_left";
          description { state: "default" 0.0;
             fixed: 1 1;
-            rel1.offset: 1 0;
             rel2 {
                to_y: "elm.bar";
-               relative: 1.0 1.0;
-               offset: -1 -2;
+               relative: 1.0 0.0;
             }
          }
       }
@@ -302,8 +298,7 @@ group { name: "elm/panes/horizontal/eflete/default";
             fixed: 1 1;
             rel1 {
                to_y: "elm.bar";
-               relative: 0.0 0.0;
-               offset: 1 1;
+               relative: 0.0 1.0;
             }
          }
       }
@@ -314,8 +309,8 @@ group { name: "elm/panes/horizontal/eflete/default";
             y: 1 1 0;
          }
          description { state: "default" 0.0;
-            max: -1 0;
-            min: PANEMIN 0;
+            max: -1 PANEMIN;
+            min: 0 PANEMIN;
             fixed: 1 1;
             rel1.relative: 0.5 0.0;
             rel2.relative: 0.5 1.0;
