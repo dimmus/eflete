@@ -142,7 +142,17 @@ test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 
-ui_block_test_SOURCES = test_ui_block/test_ui_block.c
+ui_block_test_SOURCES = \
+test_ui_block/test_ui_block.c \
+test_ui_block/ui_block_graph_vision.c \
+test_ui_block/ui_block_live_view.c \
+test_ui_block/ui_block_property.c \
+test_ui_block/ui_block_signal_list.c \
+test_ui_block/ui_block_state_list.c \
+test_ui_block/ui_block_title_text.c \
+test_ui_block/ui_block_title_visible.c \
+test_ui_block/ui_block_widget_list.c \
+test_ui_block/ui_block_ws_set.c
 ui_block_test_CFLAGS = ${FLAGS}
 ui_block_test_LDADD = ${LD}
 
