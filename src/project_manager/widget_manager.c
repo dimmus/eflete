@@ -916,7 +916,7 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
    Eina_List *alias_list = NULL, *l = NULL;
    const char *main_name;
 
-   if ((!widget_list) || (!e) || (!path)) return true;
+   if ((!widget_list) || (!e) || (!path)) return false;
 
    EINA_INLIST_FOREACH(widget_list, widget)
      {
