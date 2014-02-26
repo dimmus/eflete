@@ -208,7 +208,7 @@ _on_add_popup_btn_add(void *data,
 
    if ((!it->name) || (!strcmp(it->name, "")))
      {
-        NOTIFY_WARNING("Color class name can not be empty!");
+        NOTIFY_WARNING(_("Color class name can not be empty!"));
         free(it);
         return;
      }
@@ -216,7 +216,7 @@ _on_add_popup_btn_add(void *data,
    GET_OBJ(ccl_edit->pr, edje_edit_obj);
    if (!edje_edit_color_class_add(edje_edit_obj, it->name))
      {
-        NOTIFY_WARNING("Color class name must be unique!");
+        NOTIFY_WARNING(_("Color class name must be unique!"));
         free(it);
         return;
      }
@@ -281,7 +281,7 @@ _on_btn_add(void *data,
 
    ccl_edit->popup = elm_popup_add(ccl_edit->mwin);
    elm_object_style_set(ccl_edit->popup, "eflete");
-   elm_object_part_text_set(ccl_edit->popup, "title,text", "Add color class:");
+   elm_object_part_text_set(ccl_edit->popup, "title,text", _("Add color class:"));
 
    box = elm_box_add(ccl_edit->popup);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -294,26 +294,26 @@ _on_btn_add(void *data,
    evas_object_show(ccl_box);
 
    ccl_label = elm_label_add(ccl_box);
-   LABEL_ADD(ccl_box, ccl_label, "Color class name: ")
+   LABEL_ADD(ccl_box, ccl_label, _("Color class name: "))
    elm_box_pack_end(ccl_box, ccl_label);
 
    ENTRY_ADD(ccl_box, ccl_edit->entry, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_markup_filter_append(ccl_edit->entry, elm_entry_filter_accept_set,
                                   &accept_name);
    elm_object_part_text_set(ccl_edit->entry, "guide",
-                            "Type new color class name here.");
+                            _("Type new color class name here."));
    elm_box_pack_end(ccl_box, ccl_edit->entry);
 
    elm_box_pack_end(box, ccl_box);
    elm_object_content_set(ccl_edit->popup, box);
    evas_object_show(box);
 
-   BUTTON_ADD(ccl_edit->popup, bt_yes, "Ok");
+   BUTTON_ADD(ccl_edit->popup, bt_yes, _("Ok"));
    evas_object_smart_callback_add(bt_yes, "clicked", _on_add_popup_btn_add,
                                   ccl_edit);
    elm_object_part_content_set(ccl_edit->popup, "button1", bt_yes);
 
-   BUTTON_ADD(ccl_edit->popup, bt_no, "Cancel");
+   BUTTON_ADD(ccl_edit->popup, bt_no, _("Cancel"));
    evas_object_smart_callback_add(bt_no, "clicked", _on_add_popup_btn_cancel,
                                   ccl_edit);
    elm_object_part_content_set(ccl_edit->popup, "button2", bt_no);
@@ -368,14 +368,14 @@ _on_ccl_selected(void *data,
      }
    ccl_edit->popup = elm_popup_add(ccl_edit->mwin);
    elm_object_style_set(ccl_edit->popup, "eflete");
-   elm_object_part_text_set(ccl_edit->popup, "title,text", "Apply changes?");
+   elm_object_part_text_set(ccl_edit->popup, "title,text", _("Apply changes?"));
 
-   BUTTON_ADD(ccl_edit->popup, button, "Yes");
+   BUTTON_ADD(ccl_edit->popup, button, _("Yes"));
    evas_object_smart_callback_add(button, "clicked", _on_apply_popup_btn_yes,
                                   ccl_edit);
    elm_object_part_content_set(ccl_edit->popup, "button1", button);
 
-   BUTTON_ADD(ccl_edit->popup, button, "No");
+   BUTTON_ADD(ccl_edit->popup, button, _("No"));
    evas_object_smart_callback_add(button, "clicked", _on_apply_popup_btn_no,
                                   ccl_edit);
    elm_object_part_content_set(ccl_edit->popup, "button2", button);
@@ -466,7 +466,7 @@ colorclass_viewer_add(Project *project)
 
    if (!project)
      {
-        NOTIFY_ERROR("EDJ/EDC file is not loaded");
+        NOTIFY_ERROR(_("EDJ/EDC file is not loaded"));
         return NULL;
      }
 
@@ -474,7 +474,7 @@ colorclass_viewer_add(Project *project)
 
    ccl_edit->pr = project;
    ccl_edit->mwin = mw_add(NULL, NULL);
-   mw_title_set(ccl_edit->mwin, "Color class editor");
+   mw_title_set(ccl_edit->mwin, _("Color class editor"));
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_ccl_editor_close, ccl_edit);
 
@@ -514,19 +514,19 @@ colorclass_viewer_add(Project *project)
    BOX_ADD(panes, bottom_box, true, false)
    elm_box_pack_end(box, bottom_box);
 
-   BUTTON_ADD(ccl_edit->mwin, button, "Add");
+   BUTTON_ADD(ccl_edit->mwin, button, _("Add"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_add, ccl_edit);
    elm_box_pack_end(bottom_box, button);
 
-   BUTTON_ADD(ccl_edit->mwin, button, "Delete");
+   BUTTON_ADD(ccl_edit->mwin, button, _("Delete"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_del, ccl_edit);
    elm_box_pack_end(bottom_box, button);
 
-   BUTTON_ADD(ccl_edit->mwin, button, "Apply");
+   BUTTON_ADD(ccl_edit->mwin, button, _("Apply"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_apply, ccl_edit);
    elm_box_pack_end(bottom_box, button);
 
-   BUTTON_ADD(ccl_edit->mwin, button, "Close");
+   BUTTON_ADD(ccl_edit->mwin, button, _("Close"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, ccl_edit->mwin);
    elm_box_pack_end(bottom_box, button);
 
@@ -541,7 +541,7 @@ colorclass_viewer_add(Project *project)
    ccl_edit->label = edje_object_add(evas_object_evas_get(ccl_edit->mwin));
    edje_object_file_set(ccl_edit->label, EFLETE_EDJ,
                                         "base/colorclass_editor/text_example");
-   edje_object_part_text_set(ccl_edit->label, "text_example", "EXAMPLE");
+   edje_object_part_text_set(ccl_edit->label, "text_example", _("EXAMPLE"));
    evas_object_size_hint_align_set(ccl_edit->label, -1, -1);
    evas_object_show(ccl_edit->label);
 
@@ -577,34 +577,34 @@ colorclass_viewer_add(Project *project)
 
 
    elm_box_pack_start(param_box, ccl_edit->label);
-   _COLOR_ADD(ccl_edit->rect_color1,"Object color", param_box)
-   _SPINNER_ADD(ccl_edit->obj_r,"R:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->obj_g,"G:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->obj_b,"B:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->obj_a,"A:%3.0f", param_box)
+   _COLOR_ADD(ccl_edit->rect_color1,_("Object color"), param_box)
+   _SPINNER_ADD(ccl_edit->obj_r,_("R:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->obj_g,_("G:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->obj_b,_("B:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->obj_a,_("A:%3.0f"), param_box)
    elm_box_pack_end(scr_box, param_box);
 
    BOX_ADD(scr_box, param_box, false, true);
-   _COLOR_ADD(ccl_edit->rect_color2,"Outline color", param_box)
-   _SPINNER_ADD(ccl_edit->out_r,"R:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->out_g,"G:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->out_b,"B:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->out_a,"A:%3.0f", param_box)
+   _COLOR_ADD(ccl_edit->rect_color2,_("Outline color"), param_box)
+   _SPINNER_ADD(ccl_edit->out_r,_("R:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->out_g,_("G:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->out_b,_("B:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->out_a,_("A:%3.0f"), param_box)
    elm_box_pack_end(scr_box, param_box);
 
    BOX_ADD(scr_box, param_box, false, true);
-   _COLOR_ADD(ccl_edit->rect_color3,"Shadow color", param_box)
-   _SPINNER_ADD(ccl_edit->sdw_r,"R:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->sdw_g,"G:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->sdw_b,"B:%3.0f", param_box)
-   _SPINNER_ADD(ccl_edit->sdw_a,"A:%3.0f", param_box)
+   _COLOR_ADD(ccl_edit->rect_color3,_("Shadow color"), param_box)
+   _SPINNER_ADD(ccl_edit->sdw_r,_("R:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->sdw_g,_("G:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->sdw_b,_("B:%3.0f"), param_box)
+   _SPINNER_ADD(ccl_edit->sdw_a,_("A:%3.0f"), param_box)
    elm_box_pack_end(scr_box, param_box);
 
 #undef _SPINNER_ADD
 #undef _COLOR_ADD
    if (!_colorclass_viewer_init(ccl_edit))
      {
-        NOTIFY_ERROR("Failed initialize colorclasses editor");
+        NOTIFY_ERROR(_("Failed initialize colorclasses editor"));
         free(ccl_edit);
         return NULL;
      }

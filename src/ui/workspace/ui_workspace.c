@@ -246,43 +246,43 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    ws->menu.obj = menu = elm_menu_add(elm_object_top_widget_get (parent));
    elm_object_style_set(menu, "eflete/default");
 
-   items->undo = elm_menu_item_add(menu, NULL, NULL, "Undo", NULL, NULL);
+   items->undo = elm_menu_item_add(menu, NULL, NULL, _("Undo"), NULL, NULL);
    elm_object_item_disabled_set(items->undo, true);
-   items->redo = elm_menu_item_add(menu, NULL, NULL, "Redo", NULL, NULL);
+   items->redo = elm_menu_item_add(menu, NULL, NULL, _("Redo"), NULL, NULL);
    elm_object_item_disabled_set(items->redo, true);
    elm_menu_item_separator_add(menu, NULL);
 
-   items->rulers = elm_menu_item_add(menu, NULL, NULL, "Rulers", NULL, NULL);
-   items->rulers_enable = elm_menu_item_add(menu, items->rulers, NULL, "Rulers enabled", _menu_rulers_enabled_cb, ws->obj);
+   items->rulers = elm_menu_item_add(menu, NULL, NULL, _("Rulers"), NULL, NULL);
+   items->rulers_enable = elm_menu_item_add(menu, items->rulers, NULL, _("Rulers enabled"), _menu_rulers_enabled_cb, ws->obj);
    elm_menu_item_icon_name_set(items->rulers_enable, EFLETE_IMG_PATH"context_menu-check.png");
    elm_menu_item_separator_add(menu, items->rulers);
-   items->rulers_abs = elm_menu_item_add(menu, items->rulers, NULL, "Absolute scale", _menu_rulers_abs_cb, ws->obj);
+   items->rulers_abs = elm_menu_item_add(menu, items->rulers, NULL, _("Absolute scale"), _menu_rulers_abs_cb, ws->obj);
    elm_menu_item_icon_name_set(items->rulers_abs, EFLETE_IMG_PATH"context_menu-bullet.png");
-   items->rulers_rel = elm_menu_item_add(menu, items->rulers, NULL, "Relative scale", _menu_rulers_rel_cb, ws->obj);
-   items->rulers_both = elm_menu_item_add(menu, items->rulers, NULL, "Both", _menu_rulers_both_cb, ws->obj);
+   items->rulers_rel = elm_menu_item_add(menu, items->rulers, NULL, _("Relative scale"), _menu_rulers_rel_cb, ws->obj);
+   items->rulers_both = elm_menu_item_add(menu, items->rulers, NULL, _("Both"), _menu_rulers_both_cb, ws->obj);
 
-   items->zoom = elm_menu_item_add(menu, NULL, NULL, "Zoom", NULL, NULL);
-   items->zoom_in = elm_menu_item_add(menu, items->zoom, NULL, "Zoom in", NULL, NULL);
+   items->zoom = elm_menu_item_add(menu, NULL, NULL, _("Zoom"), NULL, NULL);
+   items->zoom_in = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom in"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_in, true);
-   items->zoom_out = elm_menu_item_add(menu, items->zoom, NULL, "Zoom out", NULL, NULL);
+   items->zoom_out = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom out"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_out, true);
    elm_menu_item_separator_add(menu, items->zoom);
-   items->zoom_fit = elm_menu_item_add(menu, items->zoom, NULL, "Fit", NULL, NULL);
+   items->zoom_fit = elm_menu_item_add(menu, items->zoom, NULL, _("Fit"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_fit, true);
    elm_menu_item_separator_add(menu, items->zoom);
-   items->zoom_far = elm_menu_item_add(menu, items->zoom, NULL, "20%", NULL, NULL);
+   items->zoom_far = elm_menu_item_add(menu, items->zoom, NULL, _("20%"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_far, true);
-   items->zoom_normal = elm_menu_item_add(menu, items->zoom, NULL, "100%", NULL, NULL);
+   items->zoom_normal = elm_menu_item_add(menu, items->zoom, NULL, _("100%"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_normal, true);
-   items->zoom_near = elm_menu_item_add(menu, items->zoom, NULL, "500%", NULL, NULL);
+   items->zoom_near = elm_menu_item_add(menu, items->zoom, NULL, _("500%"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_near, true);
    elm_menu_item_separator_add(menu, NULL);
 
-   items->mode_normal = elm_menu_item_add(menu, NULL, NULL, "Normal mode", _normal_mode_click, ws->obj);
+   items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws->obj);
    elm_menu_item_icon_name_set(items->mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
-   items->mode_separate = elm_menu_item_add(menu, NULL, NULL, "Separate mode", _separate_mode_click, ws->obj);
+   items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws->obj);
    elm_menu_item_separator_add(menu, NULL);
-   items->settings = elm_menu_item_add(menu, NULL, NULL, "Settings...", NULL, NULL);
+   items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
 }
 
 static void

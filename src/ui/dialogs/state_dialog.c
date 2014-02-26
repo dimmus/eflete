@@ -51,7 +51,7 @@ _ok_clicked(void *data,
 
    if (elm_entry_is_empty(entry_name))
      {
-        NOTIFY_WARNING("State name can not be empty!")
+        NOTIFY_WARNING(_("State name can not be empty!"))
         return;
      }
 
@@ -104,33 +104,33 @@ state_dialog_add(App_Data *ap)
    part = ui_state_list_part_get(glist);
    if (!part)
      {
-        NOTIFY_INFO(3, "Please select part");
+        NOTIFY_INFO(3, _("Please select part"));
         return NULL;
      }
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
-   title = eina_stringshare_printf("Add new state to part \"%s\"", part->name);
+   title = eina_stringshare_printf(_("Add new state to part \"%s\""), part->name);
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
 
    BOX_ADD(popup, box, false, false);
 
-   ITEM_ADD(box, item_name, "Name:")
+   ITEM_ADD(box, item_name, _("Name:"))
    ENTRY_ADD(item_name, entry_name, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(entry_name, "guide", "Type a new state name.");
+   elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
    elm_object_part_content_set(item_name, "elm.swallow.content", entry_name);
 
-   ITEM_ADD(box, item_value, "Value:")
+   ITEM_ADD(box, item_value, _("Value:"))
    ENTRY_ADD(item_name, entry_value, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
-   elm_object_part_text_set(entry_value, "guide", "Type a state value (0.0 - 1.0).");
+   elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
    elm_object_part_content_set(item_value, "elm.swallow.content", entry_value);
 
-   ITEM_ADD(box, item_dup, "Duplicate state:")
+   ITEM_ADD(box, item_dup, _("Duplicate state:"))
    HOVERSEL_ADD(item_dup, hover_dup_state, false)
-   elm_object_text_set(hover_dup_state, "None");
+   elm_object_text_set(hover_dup_state, _("None"));
    elm_object_disabled_set(hover_dup_state, true);
    elm_object_part_content_set(item_dup, "elm.swallow.content", hover_dup_state);
 
@@ -139,13 +139,13 @@ state_dialog_add(App_Data *ap)
    elm_box_pack_end(box, item_dup);
    elm_object_content_set(popup, box);
 
-   BUTTON_ADD(popup, bt_yes, "Add");
+   BUTTON_ADD(popup, bt_yes, _("Add"));
    evas_object_data_set(bt_yes, STADD_LIST_KEY, glist);
    evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, ap);
    evas_object_smart_callback_add (bt_yes, "unpressed", _ok_close_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
 
-   BUTTON_ADD(popup, bt_no, "Cancel");
+   BUTTON_ADD(popup, bt_no, _("Cancel"));
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
    elm_object_part_content_set(popup, "button2", bt_no);
 

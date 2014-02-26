@@ -632,7 +632,7 @@ _highlight_smart_set_user(Evas_Smart_Class *sc)
 Evas_Object *
 highlight_add(Evas_Object *parent)
 {
-   if(!parent)
+   if (!parent)
    {
       ERR("parent is NULL");
       return NULL;

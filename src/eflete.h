@@ -36,6 +36,7 @@
 /* localization */
 #include <libintl.h>
 #define _(string) gettext(string)
+#define N_(string) string
 
 #include <Eina.h>
 #include <Ecore.h>

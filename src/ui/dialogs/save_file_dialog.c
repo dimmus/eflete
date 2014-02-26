@@ -49,9 +49,9 @@ _ok_cb(void *data,
    if (pm_save_project_to_swap(cbdata->project))
      {
         if (pm_save_as_project_edj(cbdata->project, selected))
-          NOTIFY_INFO(3, "Theme saved: %s", cbdata->path)
+          NOTIFY_INFO(3, _("Theme saved: %s"), cbdata->path)
         else
-          NOTIFY_ERROR("Theme can not be saved: %s", selected);
+          NOTIFY_ERROR(_("Theme can not be saved: %s"), selected);
      }
    evas_object_del(cbdata->popup);
    free(cbdata);
@@ -107,20 +107,20 @@ _on_edj_done(void *data,
              d_data->path = event_info;
              d_data->project = ap->project;
 
-             elm_object_text_set(popup, "File is already exist. Would"
-                                 "you like to replace it?");
-             BUTTON_ADD(popup, btn1, "OK");
+             elm_object_text_set(popup, _("File is already exist. Would"
+                                 "you like to replace it?"));
+             BUTTON_ADD(popup, btn1, _("OK"));
              elm_object_part_content_set(popup, "button1", btn1);
              evas_object_smart_callback_add(btn1, "clicked", _ok_cb, d_data);
 
-             BUTTON_ADD(popup, btn2, "Cancel");
+             BUTTON_ADD(popup, btn2, _("Cancel"));
              elm_object_part_content_set(popup, "button2", btn2);
              evas_object_smart_callback_add(btn2, "clicked", _cancel_cb, d_data);
 
              evas_object_show(popup);
           }
         else
-          NOTIFY_ERROR("The file must have a extension '.edj'");
+          NOTIFY_ERROR(_("The file must have an extension '.edj'"));
      }
    else
      {
@@ -129,14 +129,14 @@ _on_edj_done(void *data,
              if (pm_save_project_to_swap(ap->project))
                {
                   if (pm_save_as_project_edj(ap->project, selected))
-                    NOTIFY_INFO(3, "Theme saved: %s", selected)
+                    NOTIFY_INFO(3, _("Theme saved: %s"), selected)
                   else
-                    NOTIFY_ERROR("Theme can not be saved: %s", selected);
+                    NOTIFY_ERROR(_("Theme can not be saved: %s"), selected);
                }
              ecore_main_loop_quit();
           }
         else
-           NOTIFY_ERROR("The file must have a extension '.edj'");
+           NOTIFY_ERROR(_("The file must have an extension '.edj'"));
      }
    if (ap->is_new) new_theme_create(ap);
 }
@@ -188,12 +188,12 @@ Eina_Bool
 save_as_edj_file(App_Data *ap)
 {
    if (!ap) return false;
-   return _save_as_edx_file(ap, "Save as EDJ file", _on_edj_done, false);
+   return _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
 }
 
 Eina_Bool
 save_as_edc_file(App_Data *ap)
 {
    if (!ap) return false;
-   return _save_as_edx_file(ap, "Export to EDC", _on_edc_done, true);
+   return _save_as_edx_file(ap, _("Export to EDC"), _on_edc_done, true);
 }

@@ -393,13 +393,13 @@ wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
 
    if (edje_edit_group_exist(dest_edje, full_name))
      {
-        NOTIFY_ERROR("Group [%s] exist", full_name);
+        NOTIFY_ERROR(_("Group [%s] exist"), full_name);
         return false;
      }
 
    if (!edje_edit_group_add(dest_edje, full_name))
      {
-        NOTIFY_ERROR("Failed create style [%s]", full_name);
+        NOTIFY_ERROR(_("Failed create style [%s]"), full_name);
         return false;
      }
 
@@ -412,7 +412,7 @@ wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
 
    if (!edje_object_file_set(edje_edit_group, dest_file, full_name))
      {
-        NOTIFY_ERROR("Failed load created style to memory.");
+        NOTIFY_ERROR(_("Failed load created style to memory."));
         ERR("\n\tFile: %s\n\tStyle name: %s\n\tEdje edit: %p",
                      dest_file, full_name, edje_edit_group);
         evas_object_del(edje_edit_group);

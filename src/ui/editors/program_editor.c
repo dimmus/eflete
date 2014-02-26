@@ -57,37 +57,37 @@ struct _Index
 };
 
 static const char *transition_type[] = {
-                                    "NONE",
-                                    "LINEAR",
-                                    "SINUSOIDAL",
-                                    "ACCELERATE",
-                                    "DECELERATE",
-                                    "ACCELERATE FACTOR",
-                                    "DECELERATE FACTOR",
-                                    "SINUSOIDAL FACTOR",
-                                    "DIVISOR INTERP",
-                                    "BOUNCE",
-                                    "SPRING",
-                                    "LAST",
-                                    "MASK",
-                                    "OPT_FROM_CURRENT"};
+                                    N_("NONE"),
+                                    N_("LINEAR"),
+                                    N_("SINUSOIDAL"),
+                                    N_("ACCELERATE"),
+                                    N_("DECELERATE"),
+                                    N_("ACCELERATE FACTOR"),
+                                    N_("DECELERATE FACTOR"),
+                                    N_("SINUSOIDAL FACTOR"),
+                                    N_("DIVISOR INTERP"),
+                                    N_("BOUNCE"),
+                                    N_("SPRING"),
+                                    N_("LAST"),
+                                    N_("MASK"),
+                                    N_("OPT_FROM_CURRENT")};
 
 
-static const char *action_type[] = {"NONE",
-                                    "STATE_SET",
-                                    "ACTION_STOP",
-                                    "SIGNAL_EMIT",
-                                    "DRAG_VAL_SET",
-                                    "DRAG_VAL_STEP",
-                                    "DRAG_VAL_PAGE",
-                                    "SCRIPT",
-                                    "FOCUS_SET",
-                                    "RESERVED00",
-                                    "FOCUS_OBJECT",
-                                    "PARAM_COPY",
-                                    "PARAM_SET",
-                                    "SOUND_SAMPLE",
-                                    "SOUND_TONE"};
+static const char *action_type[] = {N_("NONE"),
+                                    N_("STATE_SET"),
+                                    N_("ACTION_STOP"),
+                                    N_("SIGNAL_EMIT"),
+                                    N_("DRAG_VAL_SET"),
+                                    N_("DRAG_VAL_STEP"),
+                                    N_("DRAG_VAL_PAGE"),
+                                    N_("SCRIPT"),
+                                    N_("FOCUS_SET"),
+                                    N_("RESERVED00"),
+                                    N_("FOCUS_OBJECT"),
+                                    N_("PARAM_COPY"),
+                                    N_("PARAM_SET"),
+                                    N_("SOUND_SAMPLE"),
+                                    N_("SOUND_TONE")};
 
 typedef struct _Index Index;
 typedef struct _Program_Editor Program_Editor;
@@ -121,7 +121,7 @@ _on_##sub##_##value##_change(void *data, \
                                                    value); \
    if (!res) \
      { \
-        NOTIFY_WARNING("The entered data is not valid!") \
+        NOTIFY_WARNING(_("The entered data is not valid!")) \
         return; \
      } \
 }
@@ -159,9 +159,9 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    ITEM_1ENTRY_UPDATE(sub, value) \
 
 
-ITEM_1ENTRY_PROG_CREATE("signal", program, signal)
-ITEM_1ENTRY_PROG_CREATE("source", program, source)
-ITEM_1ENTRY_ADD("name", program, name)
+ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal)
+ITEM_1ENTRY_PROG_CREATE(_("source"), program, source)
+ITEM_1ENTRY_ADD(_("name"), program, name)
 
 static void
 _gl_progs_update_sel_item(const char *str, Program_Editor *prog_edit)
@@ -190,7 +190,7 @@ _on_program_name_change(void *data,
                                               value);
    if (!res)
      {
-        NOTIFY_WARNING("The entered data is not valid!")
+        NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
    _gl_progs_update_sel_item(value, prog_edit);
@@ -208,7 +208,7 @@ _on_in_from_change(void *data,
                                                  atof(value));
    if (!res)
      {
-        NOTIFY_WARNING("The entered data is not valid!")
+        NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
 }
@@ -224,7 +224,7 @@ _on_in_range_change(void *data,
                                                  atof(value));
    if (!res)
      {
-        NOTIFY_WARNING("The entered data is not valid!")
+        NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
 }
@@ -240,7 +240,7 @@ _on_target_name_change(void *data __UNUSED__,
                                                 value);
    if (!res)
      {
-        NOTIFY_WARNING("The entered data is not valid!")
+        NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
 }
@@ -255,7 +255,7 @@ _prop_item_program_script_add(Evas_Object *parent,
 
    if (!parent) return NULL;
 
-   ITEM_ADD_(parent, item, "script", "script");
+   ITEM_ADD_(parent, item, _("script"), "script");
 
    BOX_ADD(item, box, true, false);
    ENTRY_ADD(item, entry, false, DEFAULT_STYLE)
@@ -301,14 +301,14 @@ _on_hoversel_trans_sel(void *data,
    elm_entry_entry_set(entry2, "");
    elm_entry_entry_set(entry3, "");
 
-   elm_object_text_set(obj, transition_type[index->i]);
+   elm_object_text_set(obj, _(transition_type[index->i]));
    edje_edit_program_transition_set(prop.style->obj, prop.program,
                                     (Edje_Tween_Mode)index->i);
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
-        NOTIFY_INFO(5, "Transition block can used only with STATE_SET action");
-        elm_object_text_set(obj, transition_type[0]);
+        NOTIFY_INFO(5, _("Transition block can used only with STATE_SET action"));
+        elm_object_text_set(obj, _(transition_type[0]));
         evas_object_hide(entry1);
         evas_object_hide(entry2);
         evas_object_hide(entry3);
@@ -373,7 +373,7 @@ _on_hoversel_sel(void *data,
    elm_entry_entry_set(entry1, "");
    elm_entry_entry_set(entry2, "");
 
-   elm_object_text_set(obj, action_type[index->i]);
+   elm_object_text_set(obj, _(action_type[index->i]));
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 (Edje_Action_Type)index->i);
    evas_object_hide(entry1);
@@ -393,7 +393,7 @@ _on_hoversel_sel(void *data,
         evas_object_hide(entry_trans);
         entry_trans = eina_list_nth(childs, 3);
         evas_object_hide(entry_trans);
-        elm_object_text_set(hoversel_trans, transition_type[0]);
+        elm_object_text_set(hoversel_trans, _(transition_type[0]));
      }
 
    if (prop.script)
@@ -413,7 +413,7 @@ _on_hoversel_sel(void *data,
       case EDJE_ACTION_TYPE_SCRIPT:
         {
 
-           prop.script = _prop_item_program_script_add(prop.prop_box, "script");
+           prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
            _prop_item_program_script_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.script, prop.action);
            evas_object_hide(entry1);
@@ -446,7 +446,7 @@ _on_transition_time_active(void *data,
    value = elm_entry_entry_get(obj);
    if (!edje_edit_program_transition_time_set(prop.style->obj, prop.program,
                                               atof(value)))
-     NOTIFY_WARNING("The entered data is not valid!");
+     NOTIFY_WARNING(_("The entered data is not valid!"));
 }
 
 
@@ -459,7 +459,7 @@ _on_state_active(void *data,
    const char *state;
    state = elm_entry_entry_get(obj);
    if (!edje_edit_program_state_set(prop.style->obj, prop.program, state))
-     NOTIFY_WARNING("The entered data is not valid!");
+     NOTIFY_WARNING(_("The entered data is not valid!"));
 }
 
 static void
@@ -486,7 +486,7 @@ _on_value2_active(void *data,
         {
            if (!edje_edit_program_value2_set(prop.style->obj, prop.program,
                                              atof(value)))
-             NOTIFY_WARNING("The entered data is not valid!");
+             NOTIFY_WARNING(_("The entered data is not valid!"));
         }
       break;
       default:
@@ -504,7 +504,7 @@ _on_v1_active(void *data,
    value = elm_entry_entry_get(obj);
    if (!edje_edit_program_transition_value1_set(prop.style->obj, prop.program,
                                                 atof(value)))
-             NOTIFY_WARNING("The entered data is not valid!");
+             NOTIFY_WARNING(_("The entered data is not valid!"));
 
 }
 
@@ -518,7 +518,7 @@ _on_v2_active(void *data,
    value = elm_entry_entry_get(obj);
    if (!edje_edit_program_transition_value2_set(prop.style->obj, prop.program,
                                                 atof(value)))
-             NOTIFY_WARNING("The entered data is not valid!");
+             NOTIFY_WARNING(_("The entered data is not valid!"));
 
 }
 
@@ -546,14 +546,14 @@ _on_value_active(void *data,
         {
            if (!edje_edit_program_value_set(prop.style->obj, prop.program,
                                             atof(value)))
-             NOTIFY_WARNING("The entered data is not valid!");
+             NOTIFY_WARNING(_("The entered data is not valid!"));
         }
       break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
         {
            if (!edje_edit_program_state2_set(prop.style->obj, prop.program,
                                              value))
-             NOTIFY_WARNING("the entered data is not valid!");
+             NOTIFY_WARNING(_("the entered data is not valid!"));
         }
       break;
       default:
@@ -573,7 +573,7 @@ _on_after_name_change(void *data,
    res = edje_edit_program_after_add(prop.style->obj, prop.program, value);
    if (!res)
      {
-        NOTIFY_WARNING("The entered data is not valid!")
+        NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
 }
@@ -615,7 +615,7 @@ _after_item_add(Program_Editor *prog_edit, char *name)
                                           "elm.swallow.content"));
    item_box = eina_list_nth(childs, 0);
    BOX_ADD(item_box, element_box, true, false);
-   BUTTON_ADD(element_box, button, "Del");
+   BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
@@ -675,7 +675,7 @@ _target_item_add(Program_Editor *prog_edit, char *name)
    item_box = eina_list_nth(childs, 0);
 
    BOX_ADD(item_box, element_box, true, false);
-   BUTTON_ADD(element_box, button, "Del");
+   BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
@@ -719,7 +719,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    evas_object_show(entry3);
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      prop.trans_type = EDJE_TWEEN_MODE_NONE;
-   elm_object_text_set(hoversel, transition_type[(int)prop.trans_type]);
+   elm_object_text_set(hoversel, _(transition_type[(int)prop.trans_type]));
    value = edje_edit_program_transition_time_get(prop.style->obj,
                                                  prop.program);
    evas_object_smart_callback_del(entry1, "activated",
@@ -799,18 +799,18 @@ _prop_item_program_transition_add(Evas_Object *parent,
    Index *index;
    int i = 0;
 
-   ITEM_ADD_(parent, item, "transition", "editor")
+   ITEM_ADD_(parent, item, _("transition"), "editor")
    BOX_ADD(item, box, true, true)
    HOVERSEL_ADD(item, hoversel, false)
    ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
    ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
    ENTRY_ADD(item, entry3, true, DEFAULT_STYLE)
    elm_hoversel_hover_parent_set(hoversel, prog_edit->mwin);
-   elm_object_text_set(hoversel, transition_type[0]);
+   elm_object_text_set(hoversel, _(transition_type[0]));
 
    for (i = 0; i < TRANSITIONS_COUNT; i++)
      {
-        hovit = elm_hoversel_item_add(hoversel, transition_type[i], NULL,
+        hovit = elm_hoversel_item_add(hoversel, _(transition_type[i]), NULL,
                                  ELM_ICON_NONE, NULL, NULL);
         INDEX_APPEND(i)
      }
@@ -837,7 +837,7 @@ _prop_item_program_action_add(Evas_Object *parent,
    Elm_Object_Item *hovit;
    Index *index;
 
-   ITEM_ADD_(parent, item, "action", "editor")
+   ITEM_ADD_(parent, item, _("action"), "editor")
    BOX_ADD(item, box, true, true)
    HOVERSEL_ADD(item, hoversel, false)
    ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
@@ -846,36 +846,36 @@ _prop_item_program_action_add(Evas_Object *parent,
    evas_object_hide(entry2);
 
    elm_hoversel_hover_parent_set(hoversel, prog_edit->mwin);
-   elm_object_text_set(hoversel, action_type[0]);
+   elm_object_text_set(hoversel, _(action_type[0]));
 
-   hovit = elm_hoversel_item_add(hoversel, action_type[0], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[0]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(0)
-   hovit = elm_hoversel_item_add(hoversel, action_type[1], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[1]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(1)
-   hovit = elm_hoversel_item_add(hoversel, action_type[2], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[2]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(2)
-   hovit = elm_hoversel_item_add(hoversel, action_type[3], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[3]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(3)
-   hovit = elm_hoversel_item_add(hoversel, action_type[4], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[4]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(4)
-   hovit = elm_hoversel_item_add(hoversel, action_type[5], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[5]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(5)
-   hovit = elm_hoversel_item_add(hoversel, action_type[6], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[6]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(6)
-   hovit = elm_hoversel_item_add(hoversel, action_type[7], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[7]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(7)
-   hovit = elm_hoversel_item_add(hoversel, action_type[8], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[8]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(8)
-   hovit = elm_hoversel_item_add(hoversel, action_type[10], NULL, ELM_ICON_NONE,
+   hovit = elm_hoversel_item_add(hoversel, _(action_type[10]), NULL, ELM_ICON_NONE,
                                  NULL, NULL);
    INDEX_APPEND(10)
    evas_object_smart_callback_add(hoversel, "selected", _on_hoversel_sel,
@@ -910,7 +910,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    evas_object_show(entry1);
    evas_object_show(entry2);
 
-   elm_object_text_set(hoversel, action_type[(int)prop.act_type]);
+   elm_object_text_set(hoversel, _(action_type[(int)prop.act_type]));
 
    if (prop.script)
      {
@@ -923,7 +923,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
      {
       case EDJE_ACTION_TYPE_SCRIPT:
         {
-           prop.script = _prop_item_program_script_add(prop.prop_box, "script");
+           prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
            _prop_item_program_script_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.script, prop.action);
            evas_object_hide(entry1);
@@ -1007,11 +1007,11 @@ _prop_item_program_after_add(Evas_Object *parent,
 
    if (!parent) return NULL;
 
-   ITEM_ADD_(parent, item, "after", "editor");
+   ITEM_ADD_(parent, item, _("after"), "editor");
    BOX_ADD(item, box, true, false);
    BOX_ADD(box, entrys_box, false, false);
 
-   BUTTON_ADD(box, button, "Add");
+   BUTTON_ADD(box, button, _("Add"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    evas_object_smart_callback_add(button, "clicked", _after_add_button_cb,
                                   prog_edit);
@@ -1065,11 +1065,11 @@ _prop_item_program_target_add(Evas_Object *parent,
 
    if (!parent) return NULL;
 
-   ITEM_ADD_(parent, item, "targets", "editor");
+   ITEM_ADD_(parent, item, _("targets"), "editor");
    BOX_ADD(item, box, true, false);
    BOX_ADD(box, entries_box, false, false);
 
-   BUTTON_ADD(box, button, "Add");
+   BUTTON_ADD(box, button, _("Add"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
 
    elm_box_pack_end(box, entries_box);
@@ -1148,7 +1148,7 @@ _prop_item_program_in_add(Evas_Object *parent,
 
    if (!parent) return NULL;
 
-   ITEM_ADD_(parent, item, "in", "editor");
+   ITEM_ADD_(parent, item, _("in"), "editor");
 
    BOX_ADD(item, box, true, false);
    ENTRY_ADD(item, entry, true, DEFAULT_STYLE)
@@ -1178,15 +1178,15 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    BOX_ADD(parent, box, false, false)
    evas_object_size_hint_align_set(box, 0.5, 0);
 
-   prop.name = _prop_item_program_name_add(box, "Unique name of program ");
-   prop.signal = _prop_item_program_signal_add(box, "signal");
-   prop.source = _prop_item_program_source_add(box, "source");
-   prop.in = _prop_item_program_in_add(box, "in");
-   prop.action = _prop_item_program_action_add(box, prog_edit, "action");
+   prop.name = _prop_item_program_name_add(box, _("Unique name of program "));
+   prop.signal = _prop_item_program_signal_add(box, _("signal"));
+   prop.source = _prop_item_program_source_add(box, _("source"));
+   prop.in = _prop_item_program_in_add(box, _("in"));
+   prop.action = _prop_item_program_action_add(box, prog_edit, _("action"));
    prop.transition = _prop_item_program_transition_add(box, prog_edit,
-                                                       "transition");
-   prop.targets = _prop_item_program_target_add(box, prog_edit, "targets");
-   prop.afters = _prop_item_program_after_add(box, prog_edit, "afters");
+                                                       _("transition"));
+   prop.targets = _prop_item_program_target_add(box, prog_edit, _("targets"));
+   prop.afters = _prop_item_program_after_add(box, prog_edit, _("afters"));
 
    elm_box_pack_end(box, prop.name);
    elm_box_pack_end(box, prop.signal);
@@ -1324,12 +1324,12 @@ _on_add_popup_bt_add(void *data,
 
    if ((!name) || (strcmp(name, "") == 0))
      {
-        NOTIFY_WARNING("Program's 'name can not be empty!");
+        NOTIFY_WARNING(_("Program's 'name can not be empty!"));
         return;
      }
-   if(!edje_edit_program_add(prop.style->obj, name))
+   if (!edje_edit_program_add(prop.style->obj, name))
      {
-        NOTIFY_WARNING("Program's name must be unique!");
+        NOTIFY_WARNING(_("Program's name must be unique!"));
         return;
      }
 
@@ -1367,7 +1367,7 @@ _on_bt_prog_del(void *data,
    program_name = elm_object_item_part_text_get(glit, "elm.text");
    if (!edje_edit_program_del(prop.style->obj, program_name))
      {
-        NOTIFY_WARNING("Failed to delete %s from style %s", program_name,
+        NOTIFY_WARNING(_("Failed to delete program [%s] from style [%s]"), program_name,
                     prop.style->name)
      }
    else
@@ -1388,30 +1388,30 @@ _on_bt_prog_add(void *data,
    prog_edit->popup.popup = elm_popup_add(prog_edit->mwin);
    elm_object_style_set(prog_edit->popup.popup, "eflete");
    elm_object_part_text_set(prog_edit->popup.popup, "title,text",
-                            "Add new program:");
+                            _("Add new program:"));
 
    BOX_ADD(prog_edit->popup.popup, box, false, false);
    BOX_ADD(box, prog_box, true, false);
 
-   LABEL_ADD(prog_box, prog_label, "Program name: ")
+   LABEL_ADD(prog_box, prog_label, _("Program name: "))
    elm_box_pack_end(prog_box, prog_label);
 
    ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(prog_edit->popup.entry,
                                   elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(prog_edit->popup.entry, "guide",
-                            "Type new program name here.");
+                            _("Type new program name here."));
    elm_box_pack_end(prog_box, prog_edit->popup.entry);
 
    elm_box_pack_end(box, prog_box);
    elm_object_content_set(prog_edit->popup.popup, box);
 
-   BUTTON_ADD(prog_edit->popup.popup, button, "Ok");
+   BUTTON_ADD(prog_edit->popup.popup, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_add,
                                   prog_edit);
    elm_object_part_content_set(prog_edit->popup.popup, "button1", button);
 
-   BUTTON_ADD(prog_edit->popup.popup, button, "Cancel");
+   BUTTON_ADD(prog_edit->popup.popup, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_cancel,
                                   prog_edit);
    elm_object_part_content_set(prog_edit->popup.popup, "button2", button);
@@ -1438,7 +1438,7 @@ program_editor_window_add(Style *style)
 
    prop.style = style;
    prog_edit->mwin = mw_add(NULL, NULL);
-   mw_title_set(prog_edit->mwin, "Program editor");
+   mw_title_set(prog_edit->mwin, _("Program editor"));
    evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_program_editor_close, prog_edit);
 
@@ -1462,12 +1462,12 @@ program_editor_window_add(Style *style)
    evas_object_size_hint_weight_set(prog_edit->gl_progs, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
 
-   BUTTON_ADD(box, bt, "New program");
+   BUTTON_ADD(box, bt, _("New program"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_add, prog_edit);
    elm_box_pack_end(box, bt);
 
-   BUTTON_ADD(box, bt, "Delete");
+   BUTTON_ADD(box, bt, _("Delete"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_bt_prog_del, prog_edit);
    elm_box_pack_end(box, bt);
@@ -1481,11 +1481,11 @@ program_editor_window_add(Style *style)
    BOX_ADD(mw_box, box, true, false);
    evas_object_size_hint_align_set(box, 1, 0.5);
 
-   BUTTON_ADD(box, bt, "Apply");
+   BUTTON_ADD(box, bt, _("Apply"));
    evas_object_smart_callback_add(bt, "clicked", _on_editor_save, prop.style);
    elm_box_pack_end(box, bt);
 
-   BUTTON_ADD(box, bt, "Close");
+   BUTTON_ADD(box, bt, _("Close"));
    evas_object_smart_callback_add(bt, "clicked", _on_editor_cancel,
                                   prog_edit->mwin);
    elm_box_pack_end(box, bt);

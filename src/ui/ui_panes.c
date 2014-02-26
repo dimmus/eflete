@@ -314,7 +314,7 @@ ui_panes_add(App_Data *ap)
    us = ui_element_settings_init();
    if (!us)
      {
-        NOTIFY_ERROR ("ERROR: unable initialize settings module");
+        NOTIFY_ERROR (_("ERROR: unable initialize settings module"));
         return EINA_FALSE;
      }
    ui_csp =_ui_panes_current_state_struct_init();
@@ -408,14 +408,14 @@ ui_panes_add(App_Data *ap)
 
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, "Part States");
+   ui_block_title_text_set(block, _("Part States"));
    elm_object_part_content_set(panes_center_down, "left", block);
 
    evas_object_show(block);
    ap->block.bottom_left = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, "Live View");
+   ui_block_title_text_set(block, _("Live View"));
    elm_object_part_content_set(panes_center_down, "right", block);
    evas_object_show(block);
    ap->block.bottom_right = block;
@@ -431,7 +431,7 @@ ui_panes_add(App_Data *ap)
    ap->block.left_top = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, "Using Signals");
+   ui_block_title_text_set(block, _("Using Signals"));
    elm_object_part_content_set(panes_left_hor, "right", block);
    evas_object_show(block);
    ap->block.left_bottom = block;
@@ -442,7 +442,7 @@ ui_panes_add(App_Data *ap)
    ap->block.right_top = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, "Property");
+   ui_block_title_text_set(block, _("Property"));
    elm_object_part_content_set(panes_right_hor, "right", block);
    evas_object_show(block);
    ap->block.right_bottom = block;

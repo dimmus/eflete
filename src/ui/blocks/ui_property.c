@@ -121,11 +121,11 @@ struct _Index
 };
 typedef struct _Index Index;
 
-static const char *edje_aspect_pref[] = { "None",
-                                          "Vertical",
-                                          "Horizontal",
-                                          "Both",
-                                          "Source" };
+static const char *edje_aspect_pref[] = { N_("None"),
+                                          N_("Vertical"),
+                                          N_("Horizontal"),
+                                          N_("Both"),
+                                          N_("Source") };
 #define ASPECT_PREF_TYPE_COUNT 5
 
 static Eina_Bool
@@ -198,7 +198,7 @@ _on_state_pref_pref_change(void *data,
 {
    Prop_Data *pd = (Prop_Data *)data;
    Index *index = elm_object_item_data_get((Elm_Object_Item *)ei);
-   elm_object_text_set(obj, edje_aspect_pref[index->i]);
+   elm_object_text_set(obj, _(edje_aspect_pref[index->i]));
    if (!edje_edit_state_aspect_pref_set(pd->style->obj, pd->part->name,
                                         pd->part->curr_state, pd->part->curr_state_value,
                                         index->i))
@@ -223,7 +223,7 @@ prop_item_state_aspect_pref_add(Evas_Object *parent,
    unsigned char asp_pref;
    Index *index;
    int i = 0;
-   ITEM_ADD(parent, item, "aspect pref")
+   ITEM_ADD(parent, item, _("aspect pref"))
    HOVERSEL_ADD(item, hoversel, false)
    elm_hoversel_hover_parent_set(hoversel, hoversel_parent);
    elm_object_tooltip_text_set(hoversel, tooltip);
@@ -233,11 +233,11 @@ prop_item_state_aspect_pref_add(Evas_Object *parent,
                                               pd->part->curr_state_value);
    for (i = 0; i < ASPECT_PREF_TYPE_COUNT; i++)
      {
-        hovit = elm_hoversel_item_add(hoversel, edje_aspect_pref[i], NULL,
+        hovit = elm_hoversel_item_add(hoversel, _(edje_aspect_pref[i]), NULL,
                   ELM_ICON_NONE, NULL, NULL);
         INDEX_APPEND(i)
      }
-   elm_object_text_set(hoversel, edje_aspect_pref[asp_pref]);
+   elm_object_text_set(hoversel, _(edje_aspect_pref[asp_pref]));
    evas_object_smart_callback_add(hoversel, "selected", _on_state_pref_pref_change, pd);
    elm_object_part_content_set(item, "elm.swallow.content", hoversel);
    return item;
@@ -255,7 +255,7 @@ prop_item_state_aspect_pref_update(Evas_Object *item,
                                               pd->part->name,
                                               pd->part->curr_state,
                                               pd->part->curr_state_value);
-   elm_object_text_set(hoversel, edje_aspect_pref[asp_pref]);
+   elm_object_text_set(hoversel, _(edje_aspect_pref[asp_pref]));
 }
 #undef HOVERSEL_LABEL_SET
 
@@ -292,8 +292,8 @@ ui_property_add(Evas_Object *parent)
    ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2)
 
 /* group property */
-ITEM_2SPINNER_GROUP_CREATE("min", group_min, w, h)
-ITEM_2SPINNER_GROUP_CREATE("max", group_max, w, h)
+ITEM_2SPINNER_GROUP_CREATE(_("min"), group_min, w, h)
+ITEM_2SPINNER_GROUP_CREATE(_("max"), group_max, w, h)
 
 #define pd_group pd->prop_group
 Eina_Bool
@@ -317,19 +317,19 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    if (!pd_group.frame)
      {
-        FRAME_ADD(property, group_frame, true, "Layout property")
+        FRAME_ADD(property, group_frame, true, _("Layout property"))
         BOX_ADD(group_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
 
         pd_group.min = prop_item_group_min_w_h_add(box, pd,
                           0.0, 9999.0, 1.0,
-                          "Minimum group width in pixels.",
-                          "Minimum group height in pixels.");
+                          _("Minimum group width in pixels."),
+                          _("Minimum group height in pixels."));
         pd_group.max = prop_item_group_max_w_h_add(box, pd,
                           -1.0, 9999.0, 1.0,
-                          "Maximum group width in pixels.",
-                          "Maximum group height in pixels.");
+                          _("Maximum group width in pixels."),
+                          _("Maximum group height in pixels."));
         elm_box_pack_end(box, pd_group.min);
         elm_box_pack_end(box, pd_group.max);
 
@@ -374,16 +374,16 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
 
 /* part property */
-ITEM_1CHECK_PART_CREATE("scalable", part, scale)
-ITEM_1CHECK_PART_CREATE("mouse events", part, mouse_events)
-ITEM_1CHECK_PART_CREATE("event propagation", part, repeat_events)
-ITEM_1ENTRY_PART_CREATE("clip to", part, clip_to)
+ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
+ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
+ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
+ITEM_1ENTRY_PART_CREATE(_("clip to"), part, clip_to)
 
 /* part drag property */
-ITEM_DRAG_PART_CREATE("x", part_drag, x, step_x)
-ITEM_DRAG_PART_CREATE("y", part_drag, y, step_y)
-ITEM_1ENTRY_PART_CREATE("drag area", part_drag, confine)
-ITEM_1ENTRY_PART_CREATE("forward events", part_drag, event)
+ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
+ITEM_DRAG_PART_CREATE(_("y"), part_drag, y, step_y)
+ITEM_1ENTRY_PART_CREATE(_("drag area"), part_drag, confine)
+ITEM_1ENTRY_PART_CREATE(_("forward events"), part_drag, event)
 
 #define pd_part pd->prop_part
 #define pd_part_drag pd->prop_part_drag
@@ -406,23 +406,23 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if (!pd_part.frame)
      {
-        FRAME_ADD(property, part_frame, true, "Part property")
+        FRAME_ADD(property, part_frame, true, _("Part property"))
         BOX_ADD(part_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_frame, box);
 
-        pd_part.name = prop_item_label_add(box, "name", part->name);
-        pd_part.type = prop_item_label_add(box, "type", wm_part_type_get(type));
+        pd_part.name = prop_item_label_add(box, _("name"), part->name);
+        pd_part.type = prop_item_label_add(box, _("type"), wm_part_type_get(type));
         pd_part.scale = prop_item_part_scale_add(box, pd,
-                           "Specifies whether the part will scale "
-                           "its size with an edje scaling factor.");
+                           _("Specifies whether the part will scale "
+                           "its size with an edje scaling factor."));
         pd_part.mouse = prop_item_part_mouse_events_add(box, pd,
-                           "Enable mouse events in this part.");
+                           _("Enable mouse events in this part."));
         pd_part.repeat = prop_item_part_repeat_events_add(box, pd,
-                            "Enable repeat mouse events to the parts below.");
+                            _("Enable repeat mouse events to the parts below."));
         pd_part.clip_to = prop_item_part_clip_to_add(box, pd,
-                             "Show only the area of part that coincides with "
-                             "another part's container");
+                             _("Show only the area of part that coincides with "
+                             "another part's container"));
         elm_box_pack_end(box, pd_part.name);
         elm_box_pack_end(box, pd_part.type);
         elm_box_pack_end(box, pd_part.scale);
@@ -446,25 +446,25 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    if (!pd_part_drag.frame)
      {
-        FRAME_ADD(property, part_drag_frame, true, "Part dragable property")
+        FRAME_ADD(property, part_drag_frame, true, _("Part dragable property"))
         BOX_ADD(part_drag_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_drag_frame, box);
 
         pd_part_drag.drag_x = prop_item_part_drag_x_step_x_add(box, pd,
-                                 0.0, 9999.0, 1.0, "%.0f px",
-                                 "Enable/Disable draggin along X axis",
-                                 "Set a drag step value");
+                                 0.0, 9999.0, 1.0, _("%.0f px"),
+                                 _("Enable/Disable draggin along X axis"),
+                                 _("Set a drag step value"));
         pd_part_drag.drag_y = prop_item_part_drag_y_step_y_add(box, pd,
-                                 0.0, 9999.0, 1.0, "%.0f px",
-                                 "Enable/Disable draggin along Y axis",
-                                 "Set a drag step value");
+                                 0.0, 9999.0, 1.0, _("%.0f px"),
+                                 _("Enable/Disable draggin along Y axis"),
+                                 _("Set a drag step value"));
         pd_part_drag.confine = prop_item_part_drag_confine_add(box, pd,
-                                  "Limits the movement of the dragged part to "
-                                  "another part's container'");
+                                 _("Limits the movement of the dragged part to "
+                                  "another part's container'"));
         pd_part_drag.event = prop_item_part_drag_event_add(box, pd,
-                                "It causes the part to forward the drag events "
-                                "to another part, thus ignoring them for itself.");
+                                _("It causes the part to forward the drag events "
+                                "to another part, thus ignoring them for itself."));
 
         elm_box_pack_end(box, pd_part_drag.drag_x);
         elm_box_pack_end(box, pd_part_drag.drag_y);
@@ -532,14 +532,14 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
-ITEM_1CHECK_STATE_CREATE("visible", state, visible)
-ITEM_2SPINNER_STATE_CREATE("min", state_min, w, h, int)
-ITEM_2SPINNER_STATE_CREATE("max", state_max, w, h, int)
-ITEM_2CHECK_STATE_CREATE("fixed", state_fixed, w, h)
-ITEM_2SPINNER_STATE_CREATE("align", state_align, x, y, double)
-ITEM_2SPINNER_STATE_CREATE("aspect", state_aspect, min, max, double)
-ITEM_1ENTRY_STATE_CREATE("color class", state, color_class)
-ITEM_COLOR_STATE_CREATE("color", state, color)
+ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
+ITEM_2SPINNER_STATE_CREATE(_("min"), state_min, w, h, int)
+ITEM_2SPINNER_STATE_CREATE(_("max"), state_max, w, h, int)
+ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
+ITEM_2SPINNER_STATE_CREATE(_("align"), state_align, x, y, double)
+ITEM_2SPINNER_STATE_CREATE(_("aspect"), state_aspect, min, max, double)
+ITEM_1ENTRY_STATE_CREATE(_("color class"), state, color_class)
+ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
@@ -559,42 +559,42 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    if (!pd_state.frame)
      {
-        FRAME_ADD(property, state_frame, true, "State")
+        FRAME_ADD(property, state_frame, true, _("State"))
         BOX_ADD(state_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(state_frame, box);
 
-        pd_state.state = prop_item_label_add(box, "state", state);
+        pd_state.state = prop_item_label_add(box, _("state"), state);
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0, "%.0f px",
-                          "Minimum part width in pixels.",
-                          "Minimum part height in pixels.");
+                          0.0, 9999.0, 1.0, _("%.0f px"),
+                          _("Minimum part width in pixels."),
+                          _("Minimum part height in pixels."));
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
-                          -1.0, 9999.0, 1.0, "%.0f px",
-                          "Maximum part width in pixels.",
-                          "Maximum part height in pixels.");
+                          -1.0, 9999.0, 1.0, _("%.0f px"),
+                          _("Maximum part width in pixels."),
+                          _("Maximum part height in pixels."));
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
-                           "This affects the minimum width calculation.",
-                           "This affects the minimum height calculation.");
+                           _("This affects the minimum width calculation."),
+                           _("This affects the minimum height calculation."));
         pd_state.align = prop_item_state_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
-                            "Part horizontal align: 0.0 = left  1.0 = right",
-                            "Part vertical align: 0.0 = top  1.0 = bottom");
+                            _("Part horizontal align: 0.0 = left  1.0 = right"),
+                            _("Part vertical align: 0.0 = top  1.0 = bottom"));
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
                              0.0, 1.0, 0.1, "%1.2f",
-                             "Normally width and height can be "
-                             "resized to any values independently",
-                             "Normally width and height can be "
-                             "resized to any values independently");
+                            _("Normally width and height can be "
+                             "resized to any values independently"),
+                            _("Normally width and height can be "
+                             "resized to any values independently"));
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, property, pd,
-                                   "The aspect control hints for this object.");
+                                   _("The aspect control hints for this object."));
         pd_state.color_class = prop_item_state_color_class_add(box, pd, NULL,
-                                  "Current color class",
+                                  _("Current color class"),
                                   NULL);
         pd_state.color = prop_item_state_color_add(box, pd,
-                            "Part main color.");
+                            _("Part main color."));
 
         elm_box_pack_end(box, pd_state.state);
         elm_box_pack_end(box, pd_state.visible);
@@ -673,9 +673,9 @@ ui_property_state_unset(Evas_Object *property)
    ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2ENTRY_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
-ITEM_2SPINNER_STATE_CREATE("relative", state_rel1_relative, x, y, double)
-ITEM_2SPINNER_STATE_CREATE("offset", state_rel1_offset, x, y, int)
-ITEM_2ENTRY_STATE_CREATE("to", state_rel1_to, x, y)
+ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel1_relative, x, y, double)
+ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel1_offset, x, y, int)
+ITEM_2ENTRY_STATE_CREATE(_("to"), state_rel1_to, x, y)
 
 #define pd_rel1 pd->prop_state_rel1
 static Eina_Bool
@@ -686,28 +686,28 @@ ui_property_state_rel1_set(Evas_Object *property)
 
    if (!pd_rel1.frame)
      {
-        FRAME_ADD(property, rel1_frame, true, "rel1: top-left")
+        FRAME_ADD(property, rel1_frame, true, _("rel1: top-left"))
         BOX_ADD(rel1_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(rel1_frame, box);
 
         pd_rel1.relative = prop_item_state_rel1_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
-                              "Define the position of left-up corner of the part's container. "
+                              _("Define the position of left-up corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
-                              "by X axis.",
-                              "Define the position of left-up corner of the part's container. "
+                              "by X axis."),
+                              _("Define the position of left-up corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
-                              "by Y axis.");
+                              "by Y axis."));
         pd_rel1.offset = prop_item_state_rel1_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f px",
-                            "Left offset from relative position in pixels",
-                            "Top offset from relative position in pixels");
+                            -9999.0, 9999.0, 1.0, _("%.0f px"),
+                            _("Left offset from relative position in pixels"),
+                            _("Top offset from relative position in pixels"));
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd,
-                        "Causes a corner to be positioned relatively to the X axis of another "
-                        "part. Setting to \"\" will un-set this value",
-                        "Causes a corner to be positioned relatively to the Y axis of another "
-                        "part. Setting to \"\" will un-set this value");
+                        _("Causes a corner to be positioned relatively to the X axis of another "
+                        "part. Setting to \"\" will un-set this value"),
+                        _("Causes a corner to be positioned relatively to the Y axis of another "
+                        "part. Setting to \"\" will un-set this value"));
 
         elm_box_pack_end(box, pd_rel1.relative);
         elm_box_pack_end(box, pd_rel1.offset);
@@ -736,9 +736,9 @@ ui_property_state_rel1_unset(Evas_Object *property)
 }
 #undef pd_rel1
 
-ITEM_2SPINNER_STATE_CREATE("relative", state_rel2_relative, x, y, double)
-ITEM_2SPINNER_STATE_CREATE("offset", state_rel2_offset, x, y, int)
-ITEM_2ENTRY_STATE_CREATE("to", state_rel2_to, x, y)
+ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel2_relative, x, y, double)
+ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel2_offset, x, y, int)
+ITEM_2ENTRY_STATE_CREATE(_("to"), state_rel2_to, x, y)
 
 #define pd_rel2 pd->prop_state_rel2
 static Eina_Bool
@@ -749,28 +749,28 @@ ui_property_state_rel2_set(Evas_Object *property)
 
    if (!pd_rel2.frame)
      {
-        FRAME_ADD(property, rel2_frame, true, "rel2: bottom-right")
+        FRAME_ADD(property, rel2_frame, true, _("rel2: bottom-right"))
         BOX_ADD(rel2_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(rel2_frame, box);
 
         pd_rel2.relative = prop_item_state_rel2_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
-                              "Define the position of right-down corner of the part's container. "
+                              _("Define the position of right-down corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
-                              "by X axis.",
-                              "Define the position of right-down corner of the part's container. "
+                              "by X axis."),
+                              _("Define the position of right-down corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
-                              "by Y axis.");
+                              "by Y axis."));
         pd_rel2.offset = prop_item_state_rel2_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f px",
-                            "Left offset from relative position in pixels",
-                            "Top offset from relative position in pixels");
+                            -9999.0, 9999.0, 1.0, _("%.0f px"),
+                            _("Left offset from relative position in pixels"),
+                            _("Top offset from relative position in pixels"));
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd,
-                        "Causes a corner to be positioned relatively to the X axis of another "
-                        "part. Setting to \"\" will un-set this value",
-                        "Causes a corner to be positioned relatively to the Y axis of another "
-                        "part. Setting to \"\" will un-set this value");
+                        _("Causes a corner to be positioned relatively to the X axis of another "
+                        "part. Setting to \"\" will un-set this value"),
+                        _("Causes a corner to be positioned relatively to the Y axis of another "
+                        "part. Setting to \"\" will un-set this value"));
 
         elm_box_pack_end(box, pd_rel2.relative);
         elm_box_pack_end(box, pd_rel2.offset);
@@ -804,16 +804,16 @@ ui_property_state_rel2_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
-ITEM_1ENTRY_STATE_CREATE("text", state, text)
-ITEM_1ENTRY_STATE_CREATE("font", state, font)
-ITEM_1SPINNER_STATE_CREATE("size", state_text, size, int)
-ITEM_2SPINNER_STATE_CREATE("align", state_text_align, x, y, double)
-ITEM_2CHECK_STATE_CREATE("max", state_text_max, x, y)
-ITEM_2CHECK_STATE_CREATE("min", state_text_min, x, y)
-ITEM_1SPINNER_STATE_CREATE("elipsis", state_text, elipsis, double)
-ITEM_2CHECK_STATE_CREATE("fit", state_text_fit, x, y)
-ITEM_COLOR_STATE_CREATE("shadow color", state, color2)
-ITEM_COLOR_STATE_CREATE("outline color", state, color3)
+ITEM_1ENTRY_STATE_CREATE(_("text"), state, text)
+ITEM_1ENTRY_STATE_CREATE(_("font"), state, font)
+ITEM_1SPINNER_STATE_CREATE(_("size"), state_text, size, int)
+ITEM_2SPINNER_STATE_CREATE(_("align"), state_text_align, x, y, double)
+ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
+ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
+ITEM_1SPINNER_STATE_CREATE(_("elipsis"), state_text, elipsis, double)
+ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
+ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color2)
+ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
 
 #define pd_text pd->prop_state_text
 static Eina_Bool
@@ -827,49 +827,49 @@ ui_property_state_text_set(Evas_Object *property)
    prop_box = elm_object_content_get(property);
    if (!pd_text.frame)
      {
-         FRAME_ADD(property, text_frame, true, "Text")
+         FRAME_ADD(property, text_frame, true, _("Text"))
          BOX_ADD(text_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
 
          pd_text.text = prop_item_state_text_add(box, pd, NULL,
-                           "Set the text of part.", NULL);
+                           _("Set the text of part."), NULL);
          pd_text.font = prop_item_state_font_add(box, pd, NULL,
-                           "Change the text's font", NULL);
+                           _("Change the text's font"), NULL);
          pd_text.size = prop_item_state_text_size_add(box, pd,
                            0.0, 128.0, 1.0, "%.0f pt",
-                           "Change text font's size.'");
+                           _("Change text font's size.'"));
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
-                            "Text horizontal align. "
-                            "0.0 = left  1.0 = right",
-                            "Text vertical align. "
-                            "0.0 = top  1.0 = bottom");
+                            _("Text horizontal align. "
+                            "0.0 = left  1.0 = right"),
+                            _("Text vertical align. "
+                            "0.0 = top  1.0 = bottom"));
          pd_text.min = prop_item_state_text_min_x_y_add(box, pd,
-                           "When any of the parameters is enabled it forces \t"
+                           _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text.",
-                           "When any of the parameters is enabled it forces \t"
+                           "the minimum size of the text."),
+                           _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text.");
+                           "the minimum size of the text."));
          pd_text.max = prop_item_state_text_max_x_y_add(box, pd,
-                           "When any of the parameters is enabled it forces \t"
+                           _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text.",
-                           "When any of the parameters is enabled it forces \t"
+                           "the maximum size of the text."),
+                           _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text.");
+                           "the maximum size of the text."));
          pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd,
                               0.0, 1.0, 0.1, "%1.2f",
-                              "Cut text if biggest then part's area"
-                              "0.0 = fix the left side  1.0 = right side");
+                              _("Cut text if biggest then part's area"
+                              "0.0 = fix the left side  1.0 = right side"));
          pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd,
-                          "Resize the text for it to fit in it's container by X axis",
-                          "Resize the text for it to fit in it's container by Y axis");
+                          _("Resize the text for it to fit in it's container by X axis"),
+                          _("Resize the text for it to fit in it's container by Y axis"));
          pd_text.color2 = prop_item_state_color2_add(box, pd,
-                             "Text shadow color.");
+                             _("Text shadow color."));
          pd_text.color3 = prop_item_state_color3_add(box, pd,
-                             "Text outline color.");
+                             _("Text outline color."));
 
          elm_box_pack_end(box, pd_text.text);
          elm_box_pack_end(box, pd_text.font);
@@ -928,27 +928,27 @@ ui_property_state_textblock_set(Evas_Object *property)
    prop_box = elm_object_content_get(property);
    if (!pd_textblock.frame)
      {
-         FRAME_ADD(property, textblock_frame, true, "TextBlock")
+         FRAME_ADD(property, textblock_frame, true, _("TextBlock"))
          BOX_ADD(textblock_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(textblock_frame, box);
 
          pd_textblock.text = prop_item_state_text_add(box, pd, NULL,
-                           "Set the text of part.", NULL);
+                           _("Set the text of part."), NULL);
          pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
-                           "When any of the parameters is enabled it forces \t"
+                           _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text.",
-                           "When any of the parameters is enabled it forces \t"
+                           "the minimum size of the text."),
+                           _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text.");
+                           "the minimum size of the text."));
          pd_textblock.max = prop_item_state_text_max_x_y_add(box, pd,
-                           "When any of the parameters is enabled it forces \t"
+                           _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text.",
-                           "When any of the parameters is enabled it forces \t"
+                           "the maximum size of the text."),
+                           _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text.");
+                           "the maximum size of the text."));
 
          elm_box_pack_end(box, pd_textblock.text);
          elm_box_pack_end(box, pd_textblock.min);
@@ -1018,8 +1018,8 @@ _on_state_image_choose(void *data,
    image_editor_callback_add(img_edit, _on_image_editor_done, entry);
 }
 
-ITEM_1ENTRY_STATE_CREATE("image", state, image)
-ITEM_IM_BORDER_STATE_CREATE("border", state_image, border)
+ITEM_1ENTRY_STATE_CREATE(_("image"), state, image)
+ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -1032,16 +1032,16 @@ ui_property_state_image_set(Evas_Object *property)
    prop_box = elm_object_content_get(property);
    if (!pd_image.frame)
      {
-        FRAME_ADD(property, image_frame, true, "Image")
+        FRAME_ADD(property, image_frame, true, _("Image"))
         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
 
         pd_image.normal = prop_item_state_image_add(box, pd, _on_state_image_choose,
-                             "Current image name",
-                             "Change image");
+                             _("Current image name"),
+                             _("Change image"));
         pd_image.border = prop_item_state_image_border_add(box, pd,
-                             "Image's border value");
+                             _("Image's border value"));
 
         elm_box_pack_end(box, pd_image.normal);
         elm_box_pack_end(box, pd_image.border);
