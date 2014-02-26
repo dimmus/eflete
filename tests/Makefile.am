@@ -96,6 +96,7 @@ test_widget_manager/wm_part_current_state_set.c \
 test_widget_manager/wm_part_del_test.c \
 test_widget_manager/wm_part_type_get.c \
 test_widget_manager/wm_program_signals_list_get.c \
+test_widget_manager/wm_program_signals_list_free_test.c \
 test_widget_manager/wm_style_add_test.c \
 test_widget_manager/wm_style_copy.c \
 test_widget_manager/wm_style_free_test.c \
