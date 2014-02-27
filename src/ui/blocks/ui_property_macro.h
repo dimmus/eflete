@@ -27,7 +27,7 @@ static Elm_Entry_Filter_Accept_Set accept_color = {
 
 static Elm_Entry_Filter_Accept_Set accept_prop = {
    .accepted = NULL,
-   .rejected = PROP_BANNED_SYMBOLS
+   .rejected = PART_NAME_BANNED_SYMBOLS
 };
 
 /* group */

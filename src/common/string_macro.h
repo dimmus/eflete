@@ -32,7 +32,7 @@
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\№"
 #define STYLE_NAME_BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |\\№"
 #define EDITORS_BANNED_SYMBOLS ":;'\"~!?&^%$@()[]*{}|\\№"
-#define PROP_BANNED_SYMBOLS ";,'\"~!?&^%$#@()[]=+*{} |/\\№"
+#define PART_NAME_BANNED_SYMBOLS ";,'\"~!?&^%$#@()[]=+*{} |/\\№"
 
 #define EINA_LIST_STRINGSHARE_FREE(EINA_LIST) \
    Eina_Stringshare *_data_; \
