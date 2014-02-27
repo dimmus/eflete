@@ -55,6 +55,63 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_edit_object_recalc_test_n);
    tcase_add_test(tcase, workspace_edit_object_recalc_test_n1);
 
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_p);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n3);
+
+//tcase_add_test(tcase, workspace_edit_object_part_del_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_del_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_del_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_del_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n2);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n3);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n4);
+
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n2);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n3);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n4);
+
+//tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
+//tcase_add_test(tcase, workspace_edit_object_visible_set_test_n);
+//tcase_add_test(tcase, workspace_edit_object_visible_set_test_n1);
+
+//tcase_add_test(tcase, workspace_highlight_set_test_p);
+//tcase_add_test(tcase, workspace_highlight_set_test_n);
+//tcase_add_test(tcase, workspace_highlight_set_test_n1);
+//tcase_add_test(tcase, workspace_highlight_set_test_n2);
+//tcase_add_test(tcase, workspace_highlight_set_test_n3);
+
+//tcase_add_test(tcase, workspace_highlight_unset_test_p);
+//tcase_add_test(tcase, workspace_highlight_unset_test_n);
+//tcase_add_test(tcase, workspace_highlight_unset_test_n1);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
