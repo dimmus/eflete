@@ -220,7 +220,7 @@ END_TEST
 
 
 /**
- * @addtogroup workspace_edit_object_part_add
+ * @addtogroup workspace_edit_object_part_del
  * @{
  * </TABLE>
  * @}
