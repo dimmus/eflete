@@ -280,7 +280,9 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
 
    items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws->obj);
    elm_menu_item_icon_name_set(items->mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
+   elm_object_item_disabled_set(items->mode_normal, true);
    items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws->obj);
+   elm_object_item_disabled_set(items->mode_separate, true);
    elm_menu_item_separator_add(menu, NULL);
    items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
    elm_object_item_disabled_set(items->settings, true);
@@ -938,6 +940,9 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         evas_object_smart_member_add(sd->highlight.highlight, obj);
      }
 
+   elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
+   elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
+
    return true;
 }
 
@@ -948,15 +953,17 @@ workspace_edit_object_unset(Evas_Object *obj)
 
    Eina_Bool is_unset = false;
    sd->style = NULL;
-   if (sd->groupedit)
-     {
-        if (groupedit_edit_object_unset(sd->groupedit)) is_unset = true;
-        elm_object_content_unset(sd->scroller);
-        evas_object_del(sd->groupedit);
-        sd->groupedit = NULL;
-        return is_unset;
-     }
-   return false;
+   if (!sd->groupedit) return false;
+
+   if (groupedit_edit_object_unset(sd->groupedit)) is_unset = true;
+   elm_object_content_unset(sd->scroller);
+   evas_object_del(sd->groupedit);
+   sd->groupedit = NULL;
+
+   elm_object_item_disabled_set(sd->menu.items.mode_normal, true);
+   elm_object_item_disabled_set(sd->menu.items.mode_separate, true);
+
+   return is_unset;
 }
 
 Style *
