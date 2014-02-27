@@ -21,11 +21,11 @@
 #include "common_macro.h"
 #include "string_macro.h"
 
-#define STADD_LIST_KEY "state_list_key"
 
 static Evas_Object *entry_name;
 static Evas_Object *entry_value;
 static Evas_Object *hover_dup_state;
+static Eina_Bool to_close;
 
 static Elm_Entry_Filter_Accept_Set accept_value = {
    .accepted = "0123456789.",
@@ -39,12 +39,12 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 
 static void
 _ok_clicked(void *data,
-            Evas_Object *obj,
+            Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    Evas_Object *workspace = ap->workspace;
-   Evas_Object *glist = evas_object_data_del(obj, STADD_LIST_KEY);
+   Evas_Object *glist = ui_block_state_list_get(ap);
    Part *part = ui_state_list_part_get(glist);
    const char *str_name, *str_value;
    Eina_Stringshare *state;
@@ -52,6 +52,7 @@ _ok_clicked(void *data,
    if (elm_entry_is_empty(entry_name))
      {
         NOTIFY_WARNING(_("State name can not be empty!"))
+        to_close = false;
         return;
      }
 
@@ -64,6 +65,7 @@ _ok_clicked(void *data,
         ui_state_list_state_add(glist, state);
         eina_stringshare_del(state);
      }
+   to_close = true;
 }
 
 static void
@@ -72,6 +74,8 @@ _ok_close_clicked(void *data,
                   void *event_info __UNUSED__)
 {
    Evas_Object *popup = (Evas_Object *)data;
+
+   if (!to_close) return;
    evas_object_del(popup);
 }
 
@@ -140,7 +144,6 @@ state_dialog_add(App_Data *ap)
    elm_object_content_set(popup, box);
 
    BUTTON_ADD(popup, bt_yes, _("Add"));
-   evas_object_data_set(bt_yes, STADD_LIST_KEY, glist);
    evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, ap);
    evas_object_smart_callback_add (bt_yes, "unpressed", _ok_close_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
