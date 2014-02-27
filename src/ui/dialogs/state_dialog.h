@@ -31,17 +31,29 @@
 #include "widget_manager.h"
 #include "widget_macro.h"
 #include "ui_states_list.h"
-//#include "ui_groupspace.h"
 #include "notify.h"
+
 /**
  * Add new dialog for input params state, like name and value.
  *
  * @param ap The App_Data struct pointer.
- * @return Pointer to inwin object.
+ * @return Pointer to popup object.
  *
  * @ingroup New_Part_Dialog
  */
 Evas_Object *
-state_dialog_add(App_Data *ap);
+state_dialog_state_add(App_Data *ap);
+
+/**
+ * Add new dialog with question, what user want do: delete or not delete a
+ * state of the part.
+ *
+ * @param ap The App_Data struct pointer.
+ * @return Pointer to popup object.
+ *
+ * @ingroup New_Part_Dialog
+ */
+Evas_Object *
+state_dialog_state_del(App_Data *ap);
 
 #endif /* STATE_DIALOG_H */

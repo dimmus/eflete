@@ -198,8 +198,8 @@ group { name: "elm/popup/base/eflete";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: 48 48;
-            max: 48 48;
+            min: 24 24;
+            max: 24 24;
             fixed: 1 1;
             align: 0.0 0.5;
             visible: 0;
@@ -246,15 +246,15 @@ group { name: "elm/popup/base/eflete";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            min: 400 0;
+            min: 0 70;
             fixed: 1 0;
             rel1 {
-               relative: 0.5 0.0;
-               to: "base";
+               to: "elm.bg.title";
+               relative: 0.0 1.0;
             }
             rel2 {
-               relative: 0.5 1.0;
-               to: "base";
+               to: "elm.bg.action_area.separator";
+               relative: 1.0 1.0;
             }
          }
          description { state: "show_title_area" 0.0;
