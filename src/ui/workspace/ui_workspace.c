@@ -283,6 +283,7 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws->obj);
    elm_menu_item_separator_add(menu, NULL);
    items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
+   elm_object_item_disabled_set(items->settings, true);
 }
 
 static void
