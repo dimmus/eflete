@@ -879,21 +879,26 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    return true;
 }
 
-void
+Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-   if (!bg) return;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!bg) return false;
 
    sd->bg = bg;
+   return true;
 }
 
-void
+Evas_Object *
 groupedit_bg_unset(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   Evas_Object *bg;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
+   bg = sd->bg;
    sd->bg = NULL;
+
+   return bg;
 }
 
 #undef MY_CLASS_NAME
