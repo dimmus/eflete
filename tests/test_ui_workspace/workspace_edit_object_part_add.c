@@ -331,3 +331,10 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n3)
 }
 END_TEST
 
+/**
+ * @addtogroup workspace_edit_object_part_add
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */
