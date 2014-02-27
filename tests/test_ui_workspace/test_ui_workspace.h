@@ -61,60 +61,60 @@ void workspace_edit_object_recalc_test_p(int);
 void workspace_edit_object_recalc_test_n(int);
 void workspace_edit_object_recalc_test_n1(int);
 
-void workspace_edit_object_part_add_p(int);
-void workspace_edit_object_part_add_p1(int);
-void workspace_edit_object_part_add_n1(int);
-void workspace_edit_object_part_add_n2(int);
-void workspace_edit_object_part_add_n3(int);
-void workspace_edit_object_part_add_n4(int);
+void workspace_edit_object_part_add_test_p(int);
+void workspace_edit_object_part_add_test_p1(int);
+void workspace_edit_object_part_add_test_n(int);
+void workspace_edit_object_part_add_test_n1(int);
+void workspace_edit_object_part_add_test_n2(int);
+void workspace_edit_object_part_add_test_n3(int);
 
-void workspace_edit_object_part_del_p(int);
-void workspace_edit_object_part_del_n1(int);
-void workspace_edit_object_part_del_n2(int);
-void workspace_edit_object_part_del_n3(int);
+void workspace_edit_object_part_del_test_p(int);
+void workspace_edit_object_part_del_test_n(int);
+void workspace_edit_object_part_del_test_n1(int);
+void workspace_edit_object_part_del_test_n2(int);
 
-void workspace_edit_object_part_above_p(int);
-void workspace_edit_object_part_above_n1(int);
-void workspace_edit_object_part_above_n2(int);
-void workspace_edit_object_part_above_n3(int);
+void workspace_edit_object_part_above_test_p(int);
+void workspace_edit_object_part_above_test_n(int);
+void workspace_edit_object_part_above_test_n1(int);
+void workspace_edit_object_part_above_test_n2(int);
 
-void workspace_edit_object_part_below_p(int);
-void workspace_edit_object_part_below_n1(int);
-void workspace_edit_object_part_below_n2(int);
-void workspace_edit_object_part_below_n3(int);
+void workspace_edit_object_part_below_test_p(int);
+void workspace_edit_object_part_below_test_n(int);
+void workspace_edit_object_part_below_test_n1(int);
+void workspace_edit_object_part_below_test_n2(int);
 
-void workspace_edit_object_part_state_set_p(int);
-void workspace_edit_object_part_state_set_n1(int);
-void workspace_edit_object_part_state_set_n2(int);
-void workspace_edit_object_part_state_set_n3(int);
+void workspace_edit_object_part_state_set_test_p(int);
+void workspace_edit_object_part_state_set_test_n(int);
+void workspace_edit_object_part_state_set_test_n1(int);
+void workspace_edit_object_part_state_set_test_n2(int);
 
-void workspace_edit_object_part_state_add_p(int);
-void workspace_edit_object_part_state_add_p1(int);
-void workspace_edit_object_part_state_add_n1(int);
-void workspace_edit_object_part_state_add_n2(int);
-void workspace_edit_object_part_state_add_n3(int);
-void workspace_edit_object_part_state_add_n4(int);
-void workspace_edit_object_part_state_add_n5(int);
+void workspace_edit_object_part_state_add_test_p(int);
+void workspace_edit_object_part_state_add_test_p1(int);
+void workspace_edit_object_part_state_add_test_n(int);
+void workspace_edit_object_part_state_add_test_n1(int);
+void workspace_edit_object_part_state_add_test_n2(int);
+void workspace_edit_object_part_state_add_test_n3(int);
+void workspace_edit_object_part_state_add_test_n4(int);
 
-void workspace_edit_object_part_state_del_p(int);
-void workspace_edit_object_part_state_del_p1(int);
-void workspace_edit_object_part_state_del_n1(int);
-void workspace_edit_object_part_state_del_n2(int);
-void workspace_edit_object_part_state_del_n3(int);
-void workspace_edit_object_part_state_del_n4(int);
-void workspace_edit_object_part_state_del_n5(int);
+void workspace_edit_object_part_state_del_test_p(int);
+void workspace_edit_object_part_state_del_test_p1(int);
+void workspace_edit_object_part_state_del_test_n(int);
+void workspace_edit_object_part_state_del_test_n1(int);
+void workspace_edit_object_part_state_del_test_n2(int);
+void workspace_edit_object_part_state_del_test_n3(int);
+void workspace_edit_object_part_state_del_test_n4(int);
 
-void workspace_edit_object_visible_set_p(int);
-void workspace_edit_object_visible_set_n1(int);
-void workspace_edit_object_visible_set_n2(int);
+void workspace_edit_object_visible_set_test_p(int);
+void workspace_edit_object_visible_set_test_n(int);
+void workspace_edit_object_visible_set_test_n1(int);
 
-void workspace_highlight_set_p(int);
-void workspace_highlight_set_n1(int);
-void workspace_highlight_set_n2(int);
-void workspace_highlight_set_n3(int);
-void workspace_highlight_set_n4(int);
+void workspace_highlight_set_test_p(int);
+void workspace_highlight_set_test_n(int);
+void workspace_highlight_set_test_n1(int);
+void workspace_highlight_set_test_n2(int);
+void workspace_highlight_set_test_n3(int);
 
-void workspace_highlight_unset_p(int);
-void workspace_highlight_unset_n1(int);
-void workspace_highlight_unset_n2(int);
+void workspace_highlight_unset_test_p(int);
+void workspace_highlight_unset_test_n(int);
+void workspace_highlight_unset_test_n1(int);
 
