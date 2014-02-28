@@ -60,14 +60,14 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    BOX_ADD(item, box, true, true); \
    elm_box_padding_set(box, 5, 0); \
    SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
-   elm_spinner_label_format_set(spinner1, "%.0f"); \
+   elm_spinner_label_format_set(spinner1, "%.0f px"); \
    elm_spinner_value_set(spinner1, edje_edit_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    elm_box_pack_end(box, spinner1); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
-   elm_spinner_label_format_set(spinner2, "%.0f"); \
+   elm_spinner_label_format_set(spinner2, "%.0f px"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    elm_box_pack_end(box, spinner2); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
@@ -213,7 +213,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    int ch_value, st_value; \
    ITEM_ADD(parent, item, text) \
    BOX_ADD(item, box, true, true) \
-   CHECK_ADD(box, check, DEFAULT_STYLE) \
+   CHECK_ADD(box, check, "eflete/toggle") \
    ch_value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, pd->part->name); \
    elm_check_state_set(check, ch_value); \
    elm_object_tooltip_text_set(check, tooltip1); \
@@ -678,7 +678,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *check; \
    Eina_Bool value; \
    ITEM_ADD(parent, item, TEXT) \
-   CHECK_ADD(item, check, DEFAULT_STYLE) \
+   CHECK_ADD(item, check, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
                                            pd->part->curr_state, \
@@ -718,8 +718,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    Eina_Bool value; \
    ITEM_ADD(parent, item, TEXT) \
    BOX_ADD(item, box, true, true) \
-   CHECK_ADD(box, check1, DEFAULT_STYLE) \
-   CHECK_ADD(box, check2, DEFAULT_STYLE) \
+   CHECK_ADD(box, check1, "eflete/toggle") \
+   CHECK_ADD(box, check2, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \

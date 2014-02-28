@@ -47,13 +47,13 @@ _mw_info(void *data,
 
    popup = elm_popup_add(mwin);
    elm_object_style_set(popup, "eflete/popup");
-   elm_object_part_text_set(popup, "title,text", "Title will be deleted");
+   elm_object_part_text_set(popup, "title,text", _("Title will be deleted"));
    LABEL_ADD(popup, content, info);
    evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(content, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_content_set(popup, content);
 
-   BUTTON_ADD(popup, bt, "OK");
+   BUTTON_ADD(popup, bt, _("Ok"));
    elm_object_part_content_set(popup, "button1", bt);
    evas_object_smart_callback_add(bt, "clicked", _response_cb, popup);
    evas_object_show(popup);

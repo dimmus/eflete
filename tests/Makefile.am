@@ -22,7 +22,8 @@ ui_state_list_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
-widget_manager_test
+widget_manager_test \
+program_editor_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -79,7 +80,10 @@ colorclass_editor_test_SOURCES = test_colorclass_editor/test_colorclass_editor.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
 
-edje_compile_test_SOURCES = test_edje_compile/test_edje_compile.c
+edje_compile_test_SOURCES = \
+test_edje_compile/test_edje_compile.c \
+test_edje_compile/compile.c \
+test_edje_compile/decompile.c
 edje_compile_test_CFLAGS = ${FLAGS}
 edje_compile_test_LDADD = ${LD}
 
@@ -92,6 +96,7 @@ test_widget_manager/wm_part_current_state_set.c \
 test_widget_manager/wm_part_del_test.c \
 test_widget_manager/wm_part_type_get.c \
 test_widget_manager/wm_program_signals_list_get.c \
+test_widget_manager/wm_program_signals_list_free_test.c \
 test_widget_manager/wm_style_add_test.c \
 test_widget_manager/wm_style_copy.c \
 test_widget_manager/wm_style_free_test.c \
@@ -132,11 +137,23 @@ settings_test_SOURCES = test_settings/test_settings.c
 settings_test_CFLAGS = ${FLAGS}
 settings_test_LDADD = ${LD}
 
-style_editor_test_SOURCES = test_style_editor/test_style_editor.c
+style_editor_test_SOURCES = \
+test_style_editor/test_style_editor.c \
+test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 
-ui_block_test_SOURCES = test_ui_block/test_ui_block.c
+ui_block_test_SOURCES = \
+test_ui_block/test_ui_block.c \
+test_ui_block/ui_block_graph_vision.c \
+test_ui_block/ui_block_live_view.c \
+test_ui_block/ui_block_property.c \
+test_ui_block/ui_block_signal_list.c \
+test_ui_block/ui_block_state_list.c \
+test_ui_block/ui_block_title_text.c \
+test_ui_block/ui_block_title_visible.c \
+test_ui_block/ui_block_widget_list.c \
+test_ui_block/ui_block_ws_set.c
 ui_block_test_CFLAGS = ${FLAGS}
 ui_block_test_LDADD = ${LD}
 
@@ -226,3 +243,9 @@ test_groupedit/groupedit_style_get.c \
 test_groupedit/groupedit_style_set.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
+
+program_editor_test_SOURCES = \
+test_program_editor/test_program_editor.c \
+test_program_editor/program_editor_window_add_test.c
+program_editor_test_CFLAGS = ${FLAGS}
+program_editor_test_LDADD = ${LD}

@@ -62,7 +62,7 @@ workspace_add(Evas_Object *parent);
  * @ingroup Workspace
  */
 Eina_Bool
-ws_background_image_set(Evas_Object *obj, const char *path);
+workspace_background_image_set(Evas_Object *obj, const char *path);
 
 /**
  * Get the groupedit object, which loaded into workspace.
@@ -95,9 +95,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file);
  *
  * @param obj The workspace object.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Workspace
  */
-void
+Eina_Bool
 workspace_edit_object_unset(Evas_Object *obj);
 
 /**
@@ -118,9 +120,11 @@ workspace_edit_object_get(Evas_Object *obj);
  *
  * @param obj The workspace object.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Workspace
  */
-void
+Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj);
 
 /**
@@ -221,7 +225,7 @@ workspace_edit_object_visible_set(Evas_Object *obj,
  * @ingroup Workspace
  */
 Eina_Bool
-ws_zoom_factor_set(Evas_Object *obj, double factor);
+workspace_zoom_factor_set(Evas_Object *obj, double factor);
 
 /**
  * Get zoom factor from workspace.
@@ -233,7 +237,7 @@ ws_zoom_factor_set(Evas_Object *obj, double factor);
  * @ingroup Workspace
  */
 double
-ws_zoom_factor_get(Evas_Object *obj);
+workspace_zoom_factor_get(Evas_Object *obj);
 
 /**
   * Switch beetwen show or hide mode of legend in workspace object.
@@ -245,7 +249,7 @@ ws_zoom_factor_get(Evas_Object *obj);
  * @ingroup Workspace
  */
 Eina_Bool
-ws_legend_visible_set(Evas_Object *obj);
+workspace_legend_visible_set(Evas_Object *obj);
 
 /**
  * Set highlight to selected part.

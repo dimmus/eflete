@@ -39,7 +39,7 @@ _grid_text_get(void        *data,
 {
    const TestItem *ti = data;
    char buf[256];
-   snprintf(buf, sizeof(buf), "Photo %s", ti->path);
+   snprintf(buf, sizeof(buf), _("Photo %s"), ti->path);
    return strdup(buf);
 }
 
@@ -248,25 +248,35 @@ _elm_widget_create(const char  *widget,
         object = elm_bubble_add(parent);
         if (strcmp(class, "base") != 0)
           elm_bubble_pos_set(object, _bubble_pos_get(class));
-        elm_object_part_text_set(object, "info", "Info");
-        elm_object_text_set(object, "Text example");
+        elm_object_part_text_set(object, "info", _("Info"));
+        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "button") == 0)
      {
         object = elm_button_add(parent);
-        elm_object_text_set(object, "Text example");
+        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "check") == 0)
      {
         object = elm_check_add(parent);
-        elm_object_text_set(object, "Text example");
+        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "panes") == 0)
      {
-        Evas_Object *test_right = elm_button_add(parent);
-        Evas_Object *test_left = elm_button_add(parent);
-        elm_object_text_set(test_right, "Right side");
-        elm_object_text_set(test_left, "Left side");
+        Evas *e = evas_object_evas_get(parent);
+        Evas_Object *test_right = evas_object_rectangle_add(e);
+        Evas_Object *test_left = evas_object_rectangle_add(e);
+
+        evas_object_color_set(test_right,
+                              255 * 255 / 255,
+                              0,
+                              0,
+                              255);
+        evas_object_color_set(test_left,
+                              0,
+                              0,
+                              255 * 255 / 255,
+                              255);
 
         object = elm_panes_add(parent);
         elm_panes_horizontal_set(object, _panes_orient_get(class));
@@ -280,8 +290,8 @@ _elm_widget_create(const char  *widget,
      }
    else if (strcmp(widget, "label") == 0)
      {
-        LABEL_ADD(parent, object, "Some long text for our label, that is long but"
-                            "not too long.");
+        LABEL_ADD(parent, object, _("Some long text for our label, that is"
+                                    "long but not too long."));
         elm_label_slide_duration_set(object, 0.5);
         elm_label_slide_mode_set(object, ELM_LABEL_SLIDE_MODE_ALWAYS);
      }
@@ -306,7 +316,7 @@ _elm_widget_create(const char  *widget,
                   for (i = 0; i < ELEMENTS_COUNT; i++)
                     {
                        bt = elm_button_add(tb);
-                       elm_object_text_set(bt, "Both");
+                       elm_object_text_set(bt, _("Both"));
                        elm_table_pack(tb, bt, i, j, 1, 1);
                        evas_object_show(bt);
                     }
@@ -318,7 +328,7 @@ _elm_widget_create(const char  *widget,
    else  if (strcmp(widget, "spinner") == 0)
      {
         object = elm_spinner_add(parent);
-        elm_spinner_label_format_set(object, "%1.1f units");
+        elm_spinner_label_format_set(object, _("%1.1f units"));
         elm_spinner_step_set(object, 1.5);
         elm_spinner_wrap_set(object, true);
         elm_spinner_min_max_set(object, -50.0, 250.0);
@@ -326,9 +336,9 @@ _elm_widget_create(const char  *widget,
    else  if (strcmp(widget, "actionslider") == 0)
      {
         object = elm_actionslider_add(parent);
-        elm_object_part_text_set(object, "left", "Left");
-        elm_object_part_text_set(object, "right", "Right");
-        elm_object_part_text_set(object, "center", "Center");
+        elm_object_part_text_set(object, "left", _("Left"));
+        elm_object_part_text_set(object, "right", _("Right"));
+        elm_object_part_text_set(object, "center", _("Center"));
         elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
      }
    else  if (strcmp(widget, "calendar") == 0)
@@ -354,22 +364,22 @@ _elm_widget_create(const char  *widget,
         object = elm_list_add(parent);
 
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
-             elm_list_item_append(object, "No icons", NULL, NULL, NULL, NULL);
+             elm_list_item_append(object, _("No icons"), NULL, NULL, NULL, NULL);
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
              start = _icon_create(EFLETE_IMG_PATH"mw_button_info.png", parent);
              end = _icon_create(EFLETE_IMG_PATH"mw_button_close.png", parent);
-             elm_list_item_append(object, "Two icons", start, end, NULL, NULL);
+             elm_list_item_append(object, _("Two icons"), start, end, NULL, NULL);
           }
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
              end = _icon_create(EFLETE_IMG_PATH"mw_button_close.png", parent);
-             elm_list_item_append(object, "End icon", NULL, end, NULL, NULL);
+             elm_list_item_append(object, _("End icon"), NULL, end, NULL, NULL);
           }
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
              start = _icon_create(EFLETE_IMG_PATH"mw_button_info.png", parent);
-             elm_list_item_append(object, "Start icon", start,
+             elm_list_item_append(object, _("Start icon"), start,
                                     NULL, NULL, NULL);
           }
 
@@ -388,13 +398,13 @@ _elm_widget_create(const char  *widget,
         object = elm_box_add(parent);
         evas_object_size_hint_weight_set(object, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-        RADIO_ADD(parent, rd, 1, "Radio 1 Text Example");
+        RADIO_ADD(parent, rd, 1, _("Radio 1 Text Example"));
         elm_box_pack_end(object, rd);
         rdg = rd;
-        RADIO_ADD(parent, rd, 2, "Radio 2 Text Example");
+        RADIO_ADD(parent, rd, 2, _("Radio 2 Text Example"));
         elm_radio_group_add(rd, rdg);
         elm_box_pack_end(object, rd);
-        RADIO_ADD(parent, rd, 3, "Radio 3 Text Example");
+        RADIO_ADD(parent, rd, 3, _("Radio 3 Text Example"));
         elm_radio_group_add(rd, rdg);
         elm_box_pack_end(object, rd);
 
@@ -404,7 +414,7 @@ _elm_widget_create(const char  *widget,
      {
         Evas_Object *content, *noti, *bx, *btn;
         double horizontal, vertical;
-        BUTTON_ADD(parent, btn, "Press to show Notify");
+        BUTTON_ADD(parent, btn, _("Press to show Notify"));
 
         noti = elm_notify_add(btn);
         _notify_orient_get(class, &horizontal, &vertical);
@@ -412,7 +422,7 @@ _elm_widget_create(const char  *widget,
         elm_notify_timeout_set(noti, 5);
         BOX_ADD(parent, bx, false, false);
         elm_object_content_set(noti,bx);
-        LABEL_ADD(parent, content, "Text example. Timeout 5 sec");
+        LABEL_ADD(parent, content, _("Text example. Timeout 5 sec"));
         elm_box_pack_end(bx, content);
 
         evas_object_smart_callback_add(btn, "clicked", _on_click, noti);
@@ -559,7 +569,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             NOTIFY_INFO(3, "Widget isn't implemented yet or isn't exist");
+             NOTIFY_INFO(3, _("Widget isn't implemented yet or isn't exist"));
              free(c[0]);
              free(c);
              return false;

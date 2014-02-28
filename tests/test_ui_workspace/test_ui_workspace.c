@@ -23,6 +23,95 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("ui_workspace_test");
    TCase *tcase = tcase_create("TCase");
 
+   tcase_add_test(tcase, workspace_add_test_p);
+   tcase_add_test(tcase, workspace_add_test_n);
+
+   tcase_add_test(tcase, workspace_background_image_set_test_p);
+   tcase_add_test(tcase, workspace_background_image_set_test_n);
+   tcase_add_test(tcase, workspace_background_image_set_test_n1);
+   tcase_add_test(tcase, workspace_background_image_set_test_n2);
+
+   tcase_add_test(tcase, workspace_edit_object_set_test_p);
+   tcase_add_test(tcase, workspace_edit_object_set_test_n);
+   tcase_add_test(tcase, workspace_edit_object_set_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_set_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_set_test_n3);
+
+   tcase_add_test(tcase, workspace_edit_object_unset_test_p);
+   tcase_add_test(tcase, workspace_edit_object_unset_test_n);
+   tcase_add_test(tcase, workspace_edit_object_unset_test_n1);
+
+   tcase_add_test(tcase, workspace_legend_visible_set_test_p);
+   tcase_add_test(tcase, workspace_legend_visible_set_test_n);
+
+   tcase_add_test(tcase, workspace_zoom_factor_get_test_p);
+   tcase_add_test(tcase, workspace_zoom_factor_get_test_n1);
+
+   tcase_add_test(tcase, workspace_edit_object_get_test_p);
+   tcase_add_test(tcase, workspace_edit_object_get_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_get_test_n);
+
+   tcase_add_test(tcase, workspace_edit_object_recalc_test_p);
+   tcase_add_test(tcase, workspace_edit_object_recalc_test_n);
+   tcase_add_test(tcase, workspace_edit_object_recalc_test_n1);
+
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_p);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_add_test_n3);
+
+   tcase_add_test(tcase, workspace_edit_object_part_del_test_p);
+   tcase_add_test(tcase, workspace_edit_object_part_del_test_n);
+   tcase_add_test(tcase, workspace_edit_object_part_del_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_del_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_above_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_below_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n2);
+
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_p1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n2);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n3);
+//tcase_add_test(tcase, workspace_edit_object_part_state_add_test_n4);
+
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_p1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n1);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n2);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n3);
+//tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n4);
+
+//tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
+//tcase_add_test(tcase, workspace_edit_object_visible_set_test_n);
+//tcase_add_test(tcase, workspace_edit_object_visible_set_test_n1);
+
+//tcase_add_test(tcase, workspace_highlight_set_test_p);
+//tcase_add_test(tcase, workspace_highlight_set_test_n);
+//tcase_add_test(tcase, workspace_highlight_set_test_n1);
+//tcase_add_test(tcase, workspace_highlight_set_test_n2);
+//tcase_add_test(tcase, workspace_highlight_set_test_n3);
+
+//tcase_add_test(tcase, workspace_highlight_unset_test_p);
+//tcase_add_test(tcase, workspace_highlight_unset_test_n);
+//tcase_add_test(tcase, workspace_highlight_unset_test_n1);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -32,7 +121,7 @@ int main(void)
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_uiworkspace.xml");
+   srunner_set_xml (runner, "test_ui_workspace.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

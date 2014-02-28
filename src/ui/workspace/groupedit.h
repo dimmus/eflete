@@ -77,6 +77,8 @@ groupedit_add(Evas_Object *parent);
  * @param hbr_w wigth of bottom-right handler,
  * @param hbr_h height of bottom-tight handler.
  *
+ * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 5.
+ *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Groupedit
@@ -234,9 +236,11 @@ groupedit_edit_object_unset(Evas_Object *obj);
  *
  * @param obj The groupedit object.
  *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj);
 
 /**
@@ -417,9 +421,11 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part);
  * @param obj The groupedit object,
  * @param bg The Evas image.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);
 
 /**
@@ -427,9 +433,11 @@ groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);
  *
  * @param obj The groupedit object.
  *
+ * @return The image object.
+ *
  * @ingroup Groupedit
  */
-void
+Evas_Object *
 groupedit_bg_unset(Evas_Object *obj);
 
 /**

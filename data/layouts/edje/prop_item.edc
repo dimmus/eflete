@@ -61,7 +61,7 @@ group {
             }
             rel2 {
                to_y: "padding_right_bottom";
-               relative: 0.3 0.0;
+               relative: 0.4 0.0;
             }
             text {
                style: "prop_item_label";

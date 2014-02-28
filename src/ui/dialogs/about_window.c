@@ -23,7 +23,7 @@ Evas_Object *
 about_window_add()
 {
    Evas_Object *mwin = mw_about_add(NULL, NULL);
-   mw_title_set(mwin, "About");
+   mw_title_set(mwin, _("About"));
    Evas_Object *label, *box;
 
    box = elm_box_add(mwin);

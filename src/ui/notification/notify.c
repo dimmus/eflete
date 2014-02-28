@@ -55,7 +55,7 @@ noti_error_show(Evas_Object *obj, const char *message)
    elm_object_part_text_set(layout, "information", message);
 
    //2.3. add button for closing the error message
-   BUTTON_ADD(obj, btn, "Close");
+   BUTTON_ADD(obj, btn, _("Close"));
    evas_object_smart_callback_add(btn, "clicked", _notify_close, notify);
    elm_object_part_content_set (layout, "close_button", btn);
 
@@ -91,7 +91,7 @@ noti_warning_show(Evas_Object *obj, const char *message)
    elm_object_part_text_set(layout, "information", message);
 
    //2.3. add button for closing the error message
-   BUTTON_ADD(obj, btn, "Close");
+   BUTTON_ADD(obj, btn, _("Close"));
    evas_object_smart_callback_add(btn, "clicked", _notify_close, notify);
    elm_object_part_content_set (layout, "close_button", btn);
 

@@ -128,7 +128,7 @@ _grid_sel(void *data,
    switch (selected_images_count)
      {
       case 0:
-         elm_object_text_set(img_edit->legend, "No images selected<br><br>");
+         elm_object_text_set(img_edit->legend, _("No images selected<br><br>"));
          break;
       case 1:
          image = elm_image_add(img_edit->gengrid);
@@ -140,42 +140,44 @@ _grid_sel(void *data,
          switch(comp)
            {
             case EDJE_EDIT_IMAGE_COMP_RAW:
-               comp_str = "RAW";
+               comp_str = _("RAW");
                break;
             case EDJE_EDIT_IMAGE_COMP_USER:
-               comp_str = "USER";
+               comp_str = _("USER");
                break;
             case EDJE_EDIT_IMAGE_COMP_COMP:
-               comp_str = "COMP";
+               comp_str = _("COMP");
                break;
             case EDJE_EDIT_IMAGE_COMP_LOSSY:
-               comp_str = "LOSSY";
+               comp_str = _("LOSSY");
                comp_rate = edje_edit_image_compression_rate_get(edje_edit_obj,
                                                                  it->image_name);
                break;
             default:
-               comp_str = "Unknown compression type";
+               comp_str = _("Unknown compression type");
                ERR("Unknown compression type");
                break;
            }
          if (comp_rate > 0)
            {
               snprintf(buf, BUFF_MAX,
-                       "Selected image: %s<br>size: %dx%d<br>Compression"
-                       " type:%s rate:%d", it->image_name, w, h, comp_str,
+                       _("Selected image: %s<br>size: %dx%d<br>Compression"
+                       " type:%s rate:%d"), it->image_name, w, h, comp_str,
                        comp_rate);
            }
          else
            {
               snprintf(buf, BUFF_MAX,
-                      "Selected image: %s<br>size: %dx%d<br>Compression type: %s",
+                      _("Selected image: %s<br>size: %dx%d<br>Compression type: %s"),
                       it->image_name, w, h, comp_str);
            }
          elm_object_text_set(img_edit->legend, buf);
          evas_object_del(image);
          break;
       default:
-         snprintf(buf, BUFF_MAX, "%d images selected<br><br>",
+         snprintf(buf, BUFF_MAX, ngettext("%d image selected<br><br>",
+                                          "%d images selected<br><br>",
+                                          selected_images_count),
                   selected_images_count);
          elm_object_text_set(img_edit->legend, buf);
      }
@@ -204,9 +206,9 @@ _on_image_done(void *data,
      {
         if (!edje_edit_image_add(edje_edit_obj, selected))
           {
-             NOTIFY_ERROR("Error while loading file.<br>"
+             NOTIFY_ERROR(_("Error while loading file.<br>"
                           "Please check if file is image"
-                          "or/and file is accessible.");
+                          "or/and file is accessible."));
           }
         else
           {
@@ -217,7 +219,7 @@ _on_image_done(void *data,
           }
      }
    else
-     NOTIFY_ERROR("Error while loading file.<br> File is not exist");
+     NOTIFY_ERROR(_("Error while loading file.<br> File is not exist"));
 
    ecore_main_loop_quit();
 }
@@ -230,7 +232,7 @@ _on_button_add_clicked_cb(void *data,
    Evas_Object *fs;
 
    Evas_Object *inwin = mw_add(NULL, NULL);
-   OPEN_DIALOG_ADD(inwin, fs, "Add image to library");
+   OPEN_DIALOG_ADD(inwin, fs, _("Add image to library"));
    evas_object_smart_callback_add(fs, "done", _on_image_done, data);
    evas_object_smart_callback_add(fs, "activated", _on_image_done, data);
 
@@ -288,11 +290,11 @@ _on_button_delete_clicked_cb(void *data,
      {
         EINA_LIST_FOREACH(in_use, l, name)
            used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
-        snprintf(buf, BUFF_MAX, "Images is used in:");
+        snprintf(buf, BUFF_MAX, _("Images is used in:"));
         symbs = strlen(buf);
         EINA_LIST_FOREACH(used_in, l, item)
           {
-             snprintf(buf + symbs, BUFF_MAX - symbs, "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f",
+             snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       item->group, item->part, item->state.name, item->state.value);
              symbs+= strlen(name);
              break; //TODO: remove this break after warning style remake
@@ -302,7 +304,10 @@ _on_button_delete_clicked_cb(void *data,
      }
    else if (notdeleted >1)
      {
-        snprintf(buf, BUFF_MAX, "%d images in use:", notdeleted);
+        snprintf(buf, BUFF_MAX, ngettext("%d image in use:",
+                                         "%d images in use:",
+                                         notdeleted),
+                 notdeleted);
         symbs = strlen(buf);
         EINA_LIST_FOREACH(in_use, l, name)
           {
@@ -407,7 +412,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    if (!project)
      {
-        ERR("Project does'nt opened");
+        ERR("Project doesn't opened");
         return NULL;
      }
 
@@ -415,7 +420,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    img_edit->pr = project;
 
    img_edit->win = mw_add(_on_button_cancel_clicked_cb, img_edit);
-   mw_title_set(img_edit->win, "Image editor");
+   mw_title_set(img_edit->win, _("Image editor"));
 
    BOX_ADD(img_edit->win, box, false, false);
    elm_win_inwin_content_set(img_edit->win, box);
@@ -456,14 +461,14 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_size_hint_align_set(bottom_box, 0, 0.5);
    elm_box_pack_end(panel_box, bottom_box);
 
-   BUTTON_ADD(bottom_box, button, "Add image");
+   BUTTON_ADD(bottom_box, button, _("Add image"));
    evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb,
                                    img_edit);
    evas_object_size_hint_max_set(button, 80, 25);
    evas_object_size_hint_min_set(button, 80, 25);
    elm_box_pack_end(bottom_box, button);
 
-   BUTTON_ADD(bottom_box, button, "Delete image");
+   BUTTON_ADD(bottom_box, button, _("Delete image"));
    evas_object_smart_callback_add(button, "clicked", _on_button_delete_clicked_cb,
                                    img_edit);
    evas_object_size_hint_max_set(button, 80, 25);
@@ -471,7 +476,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_disabled_set(button, true); /* temporary solution, while save is not working */
    elm_box_pack_end(bottom_box, button);
 
-   LABEL_ADD(bottom_box, img_edit->legend, "No images selected<br><br>")
+   LABEL_ADD(bottom_box, img_edit->legend, _("No images selected<br><br>"))
    elm_box_pack_end(bottom_box,img_edit->legend);
    evas_object_size_hint_align_set(img_edit->legend, -1.0,-1.0);
    elm_label_ellipsis_set(img_edit->legend, true);
@@ -480,14 +485,14 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_size_hint_align_set(bottom_box, 1, 0.5);
    elm_box_pack_end(panel_box, bottom_box);
 
-   BUTTON_ADD(bottom_box, button, "Ok");
+   BUTTON_ADD(bottom_box, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
                                   img_edit);
    evas_object_size_hint_max_set(button, 80, 25);
    evas_object_size_hint_min_set(button, 80, 25);
    elm_box_pack_end(bottom_box, button);
 
-   BUTTON_ADD(bottom_box, button, "Cancel");
+   BUTTON_ADD(bottom_box, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked_cb,
                                    img_edit);
    evas_object_size_hint_max_set(button, 80, 25);

@@ -132,6 +132,8 @@ _item_part_content_get(void *data,
           elm_image_file_set(icon, EFLETE_IMG_PATH"icon-textblock.png", NULL);
         if (_part->type == EDJE_PART_TYPE_GROUP)
           elm_image_file_set(icon, EFLETE_IMG_PATH"icon-group.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_PROXY)
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-proxy.png", NULL);
         elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
@@ -579,7 +581,7 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_data_set(gl_widgets, "naviframe", nf);
 
    it = elm_naviframe_item_push(nf, NULL, NULL, NULL, gl_widgets, NULL);
-   elm_object_item_part_text_set(it, "subtitle", "Widget list");
+   elm_object_item_part_text_set(it, "subtitle", _("Widget list"));
 
    return nf;
 }
@@ -694,13 +696,13 @@ ui_widget_list_selected_part_above(Evas_Object *object, Style *style)
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
-        NOTIFY_INFO(3, "None one part does'nt selected");
+        NOTIFY_INFO(3, _("No part selected"));
         return false;
      }
    prev_eoi = elm_genlist_item_prev_get(eoi);
    if (!prev_eoi)
      {
-        NOTIFY_INFO(3, "Selected part currently on top in list");
+        NOTIFY_INFO(3, _("Selected part is currently on top of the list"));
         return false;
      }
    part = elm_object_item_data_get(eoi);
@@ -745,13 +747,13 @@ ui_widget_list_selected_part_below(Evas_Object *object, Style *style)
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi)
      {
-        NOTIFY_INFO(3, "None one part does'nt selected");
+        NOTIFY_INFO(3, _("No part selected"));
         return false;
      }
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi)
      {
-        NOTIFY_INFO(3, "Selected part currently on bottom in list");
+        NOTIFY_INFO(3, _("Selected part is currently on bottom of the list"));
         return false;
      }
    part = elm_object_item_data_get(eoi);

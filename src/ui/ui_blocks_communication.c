@@ -205,7 +205,7 @@ ui_part_back(App_Data *ap)
    ui_property_style_unset(prop);
    live_view_widget_style_unset(ap->live_view);
 
-   ui_menu_disable_set(ap->menu_hash, "Programs", true);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -331,7 +331,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_show(prop);
 
    live_view_widget_style_set(ap->live_view, ap->project, style);
-   ui_menu_disable_set(ap->menu_hash, "Programs", false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
 }
 
 Evas_Object *
@@ -364,10 +364,10 @@ ui_edj_load_done(App_Data* ap, const char *selected)
         free(name);
         if (!ap->project)
           {
-             NOTIFY_ERROR("Can't open file: %s", selected);
+             NOTIFY_ERROR(_("Can't open file: %s"), selected);
              return NULL;
           }
-        NOTIFY_INFO(3, "Selected file: %s", selected);
+        NOTIFY_INFO(3, _("Selected file: %s"), selected);
 
         wd_list = ui_widget_list_add(ap->win);
         ui_widget_list_title_set(wd_list, ap->project->name);
@@ -378,7 +378,7 @@ ui_edj_load_done(App_Data* ap, const char *selected)
 
         ui_menu_base_disabled_set(ap->menu_hash, false);
      }
-   else NOTIFY_ERROR("The file must have a extension '.edj'");
+   else NOTIFY_ERROR(_("The file must have a extension '.edj'"));
 
    return wd_list;
 }
@@ -402,7 +402,7 @@ new_theme_create(App_Data *ap)
      {
         if (!ecore_file_mkdir(path))
           {
-             NOTIFY_ERROR("Coud'nt create cache directory");
+             NOTIFY_ERROR(_("Couldn't create cache directory"));
              errors = true;
           }
      }
@@ -410,14 +410,14 @@ new_theme_create(App_Data *ap)
      {
         if (!ecore_file_remove(file_full_path))
           {
-             ERR("Coud'nt clean cache directory");
+             ERR("Couldn't clean cache directory");
              errors = true;
           }
      }
 
    if ((!errors) && (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", file_full_path)))
      {
-        ERR("Coud'nt copy theme template to cache");
+        ERR("Couldn't copy theme template to cache");
         errors = true;
      }
 
@@ -439,7 +439,7 @@ new_theme_create(App_Data *ap)
 
         if ((ap->live_view) || (ap->project))
           live_view_widget_style_unset(ap->live_view);
-        ui_menu_disable_set(ap->menu_hash, "Programs", true);
+        ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
 
         GET_NAME_FROM_PATH(name, file_full_path)
         ap->project = pm_open_project_edj(name, file_full_path);
@@ -502,7 +502,7 @@ ui_style_delete(App_Data *ap)
 
    if (!eoi)
      {
-        NOTIFY_INFO(3, "No one style is selected");
+        NOTIFY_INFO(3, _("No one style is selected"));
         return false;
      }
    eoi_work = elm_genlist_item_parent_get(eoi);
@@ -513,23 +513,23 @@ ui_style_delete(App_Data *ap)
 
    if (!strcmp(class_st->name, "base"))
      {
-        NOTIFY_INFO(3, "Coud'nt delete anything from base class");
+        NOTIFY_INFO(3, _("Couldn't delete anything from base class"));
         return false;
      }
 
-   if(eoi_work)
+   if (eoi_work)
      {
         inlist_count = eina_inlist_count(class_st->styles);
         if (inlist_count <= 1)
           {
-             NOTIFY_INFO(3, "Coud'nt delete last class in style. Try to delete style");
+             NOTIFY_INFO(3, _("Couldn't delete last class in style. Try to delete style"));
              return false;
           }
 
         style = elm_object_item_data_get(eoi);
         if (!edje_edit_group_exist(style->obj, style->full_group_name))
           {
-             NOTIFY_INFO(3, "Style [%s] did'nt exist", style->name);
+             NOTIFY_INFO(3, _("Style [%s] don't exist"), style->name);
              return false;
           }
 
@@ -544,7 +544,7 @@ ui_style_delete(App_Data *ap)
         evas_object_del(style->obj);
         if (!edje_edit_group_del(style_work->obj, style->full_group_name))
           {
-             NOTIFY_INFO(3, "Failed to delete class[%s]", style->name);
+             NOTIFY_INFO(3, _("Failed to delete class[%s]"), style->name);
              return false;
           }
         class_st->styles = eina_inlist_remove(class_st->styles, EINA_INLIST_GET(style));
@@ -555,7 +555,7 @@ ui_style_delete(App_Data *ap)
         inlist_count = eina_inlist_count(widget->classes);
         if (inlist_count <= 1)
           {
-             NOTIFY_INFO(3, "Coud'nt delete last class in widget.");
+             NOTIFY_INFO(3, _("Couldn't delete last class in widget."));
              return false;
           }
 
@@ -582,7 +582,7 @@ ui_style_delete(App_Data *ap)
              evas_object_del(style->obj);
              if (!edje_edit_group_del(style_work->obj, style->full_group_name))
                {
-                  NOTIFY_INFO(3, "Failed to delete style[%s] in class [%s]",
+                  NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
                               style->name, class_st->name);
                }
           }
@@ -622,7 +622,7 @@ ui_part_state_delete(App_Data *ap)
    eoi = elm_genlist_selected_item_get(state_list);
    if (!eoi)
      {
-        NOTIFY_INFO(3, "Please select part state");
+        NOTIFY_INFO(3, _("Please select part state"));
         return false;
      }
 
@@ -638,10 +638,10 @@ ui_part_state_delete(App_Data *ap)
      {
         if ((!strcmp(state_name, "default")) && (value == 0))
           {
-             NOTIFY_WARNING("Coud'nt delete default state");
+             NOTIFY_WARNING(_("Couldn't delete default state"));
           }
         else
-          NOTIFY_WARNING("Failed delete state \n[%s %3.2f]", state_name, value);
+          NOTIFY_WARNING(_("Failed delete state \n[%s %3.2f]"), state_name, value);
         CLEAR_STRINGS;
         return false;
      }

@@ -148,18 +148,18 @@ _on_st_add_bt_ok(void *data,
 
    if ((!style_name) || (strcmp(style_name, "") == 0))
      {
-        NOTIFY_WARNING("Style name can not be empty!");
+        NOTIFY_WARNING(_("Style name can not be empty!"));
         return;
      }
    if (!((isalpha(default_tags[0])) || (default_tags[0] == '+')
          || (!strcmp(default_tags, ""))))
      {
-        NOTIFY_WARNING("The default tag must begin from + or alphabetic symbol");
+        NOTIFY_WARNING(_("The default tag must begin from + or alphabetic symbol"));
         return;
      }
-   if(!edje_edit_style_add(edje_edit_obj, style_name))
+   if (!edje_edit_style_add(edje_edit_obj, style_name))
      {
-        NOTIFY_WARNING("Style name must be unique!");
+        NOTIFY_WARNING(_("Style name must be unique!"));
         return;
      }
    if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
@@ -167,14 +167,14 @@ _on_st_add_bt_ok(void *data,
         if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, "DEFAULT",
                                         default_tags))
           {
-             NOTIFY_WARNING("Failed add tag value. Tag will bw deleted");
+             NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
              edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
              return;
           }
      }
    else
      {
-        NOTIFY_WARNING("Failed add tag.");
+        NOTIFY_WARNING(_("Failed to add tag."));
         return;
      }
 
@@ -208,29 +208,29 @@ _on_tag_add_bt_ok(void *data,
 
    if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
-        NOTIFY_WARNING("Tag name can not be empty!");
+        NOTIFY_WARNING(_("Tag name can not be empty!"));
         return;
      }
    if ((!tag_value) || (strcmp(tag_value, "") == 0))
      {
-        NOTIFY_WARNING("Tag value can not be empty!");
+        NOTIFY_WARNING(_("Tag value can not be empty!"));
         return;
      }
    if (!((isalpha(tag_value[0])) || (tag_value[0] == '+')))
      {
-        NOTIFY_WARNING("Tag value must begin from + or alphabetic symbol");
+        NOTIFY_WARNING(_("Tag value must begin from + or alphabetic symbol"));
         return;
      }
    if (!edje_edit_style_tag_add(edje_edit_obj, style_name, tag_name))
      {
-        NOTIFY_WARNING("Tag name must be unique!");
+        NOTIFY_WARNING(_("Tag name must be unique!"));
         return;
      }
    else
      if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, tag_name,
                                         tag_value))
        {
-          NOTIFY_WARNING("Failed to add tag value. Tag will be deleted");
+          NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag_name);
           return;
        }
@@ -259,21 +259,21 @@ _on_bt_style_add(void *data,
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_style_set(POPUP.dialog, "eflete");
-   elm_object_part_text_set(POPUP.dialog, "title,text", "Add textblock style");
+   elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
    BOX_ADD(POPUP.dialog, box, false, false);
 
-   ITEM_ADD(box, item_st, "Style name:")
+   ITEM_ADD(box, item_st, _("Style name:"))
    ENTRY_ADD(item_st, POPUP.name, true, DEFAULT_STYLE);
-   elm_object_part_text_set(POPUP.name, "guide", "Type a new style name.");
+   elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name."));
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
    elm_object_part_content_set(item_st, "elm.swallow.content", POPUP.name);
 
-   ITEM_ADD(box, item_tag, "Default tags:")
+   ITEM_ADD(box, item_tag, _("Default tags:"))
    ENTRY_ADD(item_tag, POPUP.value, true, DEFAULT_STYLE);
    elm_object_part_text_set(POPUP.value, "guide",
-                            "Type tag which will be used as default.");
+                            _("Type tag which will be used as default."));
    elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
                                   &accept_value);
    elm_object_part_content_set(item_tag, "elm.swallow.content", POPUP.value);
@@ -283,12 +283,12 @@ _on_bt_style_add(void *data,
    elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
-   BUTTON_ADD(POPUP.dialog, button, "Ok");
+   BUTTON_ADD(POPUP.dialog, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_st_add_bt_ok,
                                   style_edit);
    elm_object_part_content_set(POPUP.dialog, "button1", button);
 
-   BUTTON_ADD(POPUP.dialog, button, "Cancel");
+   BUTTON_ADD(POPUP.dialog, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel,
                                   style_edit);
    elm_object_part_content_set(POPUP.dialog, "button2", button);
@@ -313,7 +313,7 @@ _on_bt_tag_add(void *data,
 
    if (!glit)
      {
-         NOTIFY_WARNING("Select a style!");
+         NOTIFY_WARNING(_("Select a style!"));
          return;
      }
 
@@ -330,22 +330,22 @@ _on_bt_tag_add(void *data,
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_style_set(POPUP.dialog, "eflete");
-   buf = eina_stringshare_printf("Add tag to style: %s", style_name);
+   buf = eina_stringshare_printf(_("Add tag to style: %s"), style_name);
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
    BOX_ADD(POPUP.dialog, box, false, false);
 
-   ITEM_ADD(box, item_tag, "Tag name:")
+   ITEM_ADD(box, item_tag, _("Tag name:"))
    ENTRY_ADD(item_tag, POPUP.name, true, DEFAULT_STYLE);
-   elm_object_part_text_set(POPUP.name, "guide", "Type a new tag name.");
+   elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
    elm_object_part_content_set(item_tag, "elm.swallow.content", POPUP.name);
 
-   ITEM_ADD(box, item_value, "Tag value:")
+   ITEM_ADD(box, item_value, _("Tag value:"))
    ENTRY_ADD(item_value, POPUP.value, true, DEFAULT_STYLE);
    elm_object_part_text_set(POPUP.value, "guide",
-                            "Type tag with be using as default.");
+                            _("Type tag with be using as default."));
    elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
                                   &accept_value);
    elm_object_part_content_set(item_value, "elm.swallow.content", POPUP.value);
@@ -355,12 +355,12 @@ _on_bt_tag_add(void *data,
    elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
-   BUTTON_ADD(POPUP.dialog, button, "Ok");
+   BUTTON_ADD(POPUP.dialog, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_tag_add_bt_ok,
                                   style_edit);
    elm_object_part_content_set(POPUP.dialog, "button1", button);
 
-   BUTTON_ADD(POPUP.dialog, button, "Cancel");
+   BUTTON_ADD(POPUP.dialog, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_popup_bt_cancel,
                                   style_edit);
    elm_object_part_content_set(POPUP.dialog, "button2", button);
@@ -507,17 +507,17 @@ _form_left_side(Style_Editor *style_edit)
      }
    eina_list_free(styles);
 
-   BUTTON_ADD(style_edit->mwin, btn, "New style");
+   BUTTON_ADD(style_edit->mwin, btn, _("New style"));
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_smart_callback_add(btn, "clicked", _on_bt_style_add, style_edit);
    elm_box_pack_end(box, btn);
 
-   BUTTON_ADD(style_edit->mwin, btn, "New tag");
+   BUTTON_ADD(style_edit->mwin, btn, _("New tag"));
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_smart_callback_add(btn, "clicked", _on_bt_tag_add, style_edit);
    elm_box_pack_end(box, btn);
 
-   BUTTON_ADD(style_edit->mwin, btn, "Delete");
+   BUTTON_ADD(style_edit->mwin, btn, _("Delete"));
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
    elm_box_pack_end(box, btn);
@@ -586,7 +586,7 @@ _form_right_side(Style_Editor *style_edit)
    elm_object_part_content_set (layout, "swallow/prop_entry",
                                 style_edit->entry_prop);
 
-   BUTTON_ADD(style_edit->mwin, btn, "Close viewer");
+   BUTTON_ADD(style_edit->mwin, btn, _("Close viewer"));
    evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit,
                                   style_edit);
    elm_object_part_content_set (layout, "swallow/button_close", btn);
@@ -646,7 +646,7 @@ style_editor_window_add(Project *project)
 
    style_edit->pr = project;
    style_edit->mwin = mw_add(_on_viewer_exit, style_edit);
-   mw_title_set(style_edit->mwin, "Textblock style editor");
+   mw_title_set(style_edit->mwin, _("Textblock style editor"));
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);
 
@@ -694,7 +694,7 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(style_edit->entry_prev, "entry",
                                style_edit->entry_style);
    elm_object_text_set(style_edit->entry_style,
-                       "The quick brown fox jumps over the lazy dog");
+                       _("The quick brown fox jumps over the lazy dog"));
    elm_entry_text_style_user_push(style_edit->entry_style,
                                   "DEFAULT='align=center "
                                   "font_size="FONT_SIZE" font_weight=Bold'");

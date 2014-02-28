@@ -127,7 +127,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
           }
         else
           {
-             NOTIFY_ERROR("The file must have a extension '.edj'");
+             NOTIFY_ERROR(_("The file must have a extension '.edj'"));
              return;
           }
      }
@@ -144,7 +144,7 @@ open_edj_file(App_Data *ap)
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
    Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
-   OPEN_DIALOG_ADD(inwin, fs, "Open EDJ file dialog");
+   OPEN_DIALOG_ADD(inwin, fs, _("Open EDJ file dialog"));
    evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
    evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
 
@@ -196,9 +196,11 @@ _log_cb(time_t time,
 
 static void
 _on_compile_cb(void *data,
-          Evas_Object *obj __UNUSED__,
+          Evas_Object *obj,
           void *event_info __UNUSED__)
 {
+   Evas_Object *bt_c = (Evas_Object *)data;
+
    const char *path_edc = elm_object_text_get(fs_ent->edc);
    const char *path_edj = elm_object_text_get(fs_ent->edj);
    const char *path_id = elm_object_text_get(fs_ent->id);
@@ -207,23 +209,24 @@ _on_compile_cb(void *data,
 
    if (!eina_str_has_suffix(path_edc, ".edc"))
      {
-        NOTIFY_ERROR("Input file must have an extension '.edc'");
+        NOTIFY_ERROR(_("Input file must have an extension '.edc'"));
         return;
      }
    if (!eina_str_has_suffix(path_edj, ".edj"))
      {
-        NOTIFY_ERROR("Output file must have an extension '.edj'");
+        NOTIFY_ERROR(_("Output file must have an extension '.edj'"));
         return;
      }
-   Evas_Object *bt = (Evas_Object *) data;
-   elm_object_disabled_set(bt, true);
+   elm_object_disabled_set(obj, true);
+   elm_object_disabled_set(bt_c, true);
 
    elm_entry_cursor_end_set(fs_ent->log);
-   elm_entry_entry_insert(fs_ent->log, "<b>Compilation started...</b>");
+   elm_entry_entry_insert(fs_ent->log, _("<b>Compilation started...</b>"));
    int exit_code = compile(path_edc, path_edj, path_id, path_fd, path_sd, _log_cb);
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, "<br><br>");
-   elm_object_disabled_set(bt, false);
+   elm_object_disabled_set(obj, false);
+   elm_object_disabled_set(bt_c, false);
    DBG("Compile exit code: %d", exit_code);
 }
 
@@ -283,7 +286,7 @@ _on_compile_edc_done(void *data,
         ecore_main_loop_quit();
      }
    else
-     NOTIFY_ERROR("The file must have an extension '.edc'");
+     NOTIFY_ERROR(_("The file must have an extension '.edc'"));
 }
 
 static void
@@ -384,7 +387,7 @@ open_edc_file(App_Data *ap)
 {
    Evas_Object *button_box, *layout;
    Evas_Object *label, *fs_entry;
-   Evas_Object *bt;
+   Evas_Object *bt, *bt_c, *bt_o;
 
    if ((!ap) || (!ap->win))
      {
@@ -393,7 +396,7 @@ open_edc_file(App_Data *ap)
      }
 
    Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
-   mw_title_set(inwin, "Compile EDC file");
+   mw_title_set(inwin, _("Compile EDC file"));
    evas_object_focus_set(inwin, EINA_TRUE);
 
    if (!fs_ent)
@@ -405,13 +408,12 @@ open_edc_file(App_Data *ap)
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, EFLETE_EDJ, "compile_dialog");
 
-   #define _BUTTON_ADD(box, text, func, data) \
-      bt = elm_button_add(box); \
-      elm_object_text_set(bt, text); \
-      elm_object_style_set(bt, DEFAULT_STYLE); \
-      evas_object_smart_callback_add(bt, "clicked", func, data); \
-      evas_object_show(bt); \
-      elm_box_pack_end(box, bt);
+   #define _BUTTON_ADD(button, box, text, func, data) \
+      button = elm_button_add(box); \
+      elm_object_text_set(button, text); \
+      elm_object_style_set(button, DEFAULT_STYLE); \
+      evas_object_smart_callback_add(button, "clicked", func, data); \
+      evas_object_show(button);
 
    #define _ITEM_ADD(parent, label_text, button_text, title, _fs, func, data) \
       LABEL_ADD(inwin, label, label_text) \
@@ -425,39 +427,40 @@ open_edc_file(App_Data *ap)
       elm_entry_scrollable_set(fs_entry, true); \
       _fs = fs_entry; \
       evas_object_show(fs_entry); \
-      _BUTTON_ADD(parent, button_text, func, data);
+      _BUTTON_ADD(bt, parent, button_text, func, data); \
+      elm_box_pack_end(parent, bt);
 
-   _ITEM_ADD(inwin, "Path to EDC:", "[Select]", "Select EDC file",
+   _ITEM_ADD(inwin, _("Path to EDC:"), _("Select"), _("Select a EDC file."),
          fs_ent->edc, _edx_select, fs_ent->edc);
    elm_object_part_content_set(layout, "label_edc", label);
    elm_object_part_content_set(layout, "button_edc", bt);
    elm_object_part_content_set(layout, "entry_edc", fs_ent->edc);
 
-   _ITEM_ADD(inwin, "Path to EDJ:", "[Select]", "Select EDJ file",
+   _ITEM_ADD(inwin, _("Path to EDJ:"), _("Select"), _("Select a EDJ file."),
          fs_ent->edj, _edx_select, fs_ent->edj);
    elm_object_part_content_set(layout, "label_edj", label);
    elm_object_part_content_set(layout, "button_edj", bt);
    elm_object_part_content_set(layout, "entry_edj", fs_ent->edj);
 
-   _ITEM_ADD(inwin, "Image directory:", "[Select]", "Select images directory",
+   _ITEM_ADD(inwin, _("Image directory:"), _("Select"), _("Select a images directory."),
          fs_ent->id, _path_select, fs_ent->id);
    elm_object_part_content_set(layout, "label_img", label);
    elm_object_part_content_set(layout, "button_img", bt);
    elm_object_part_content_set(layout, "entry_img", fs_ent->id);
 
-   _ITEM_ADD(inwin, "Sound directory:", "[Select]", "Select sounds directory",
+   _ITEM_ADD(inwin, _("Sound directory:"), _("Select"), _("Select a sounds directory."),
          fs_ent->sd, _path_select, fs_ent->sd);
    elm_object_part_content_set(layout, "label_snd", label);
    elm_object_part_content_set(layout, "button_snd", bt);
    elm_object_part_content_set(layout, "entry_snd", fs_ent->sd);
 
-   _ITEM_ADD(inwin, "Font directory:", "[Select]", "Select fonts directory",
+   _ITEM_ADD(inwin, _("Font directory:"), _("Select"), _("Select a fonts directory."),
          fs_ent->fd, _path_select, fs_ent->fd);
    elm_object_part_content_set(layout, "label_fnt", label);
    elm_object_part_content_set(layout, "button_fnt", bt);
    elm_object_part_content_set(layout, "entry_fnt", fs_ent->fd);
 
-   _ITEM_ADD(inwin, "Log:", "[Clean]", "",
+   _ITEM_ADD(inwin, _("Log:"), _("Clean"), "Clean the log messages.",
          fs_ent->log, _clean_log, fs_ent->log);
    elm_object_part_content_set(layout, "label_log", label);
    elm_object_part_content_set(layout, "button_log", bt);
@@ -472,9 +475,12 @@ open_edc_file(App_Data *ap)
 
    BOX_ADD(inwin, button_box, true, true);
 
-   _BUTTON_ADD(button_box, "Compile", _on_compile_cb, bt);
-   _BUTTON_ADD(button_box, "Open EDJ", _on_open_edj_cb, ap);
-   _BUTTON_ADD(button_box, "Cancel", _on_cancel_cb, ap);
+   _BUTTON_ADD(bt_o, button_box, _("Open EDJ"), _on_open_edj_cb, ap);
+   _BUTTON_ADD(bt, button_box, _("Compile"), _on_compile_cb, bt_o);
+   _BUTTON_ADD(bt_c, button_box, _("Cancel"), _on_cancel_cb, ap);
+   elm_box_pack_end(button_box, bt);
+   elm_box_pack_end(button_box, bt_o);
+   elm_box_pack_end(button_box, bt_c);
    #undef _BUTTON_ADD
 
    elm_object_part_content_set(layout, "button_box", button_box);

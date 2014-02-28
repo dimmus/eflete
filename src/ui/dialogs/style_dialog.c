@@ -43,7 +43,7 @@ _widget_from_ap_get(App_Data *ap)
    eoi = elm_genlist_selected_item_get(gl_widget);
    if (!eoi)
      {
-         NOTIFY_ERROR("Coud'nt add new state/class to no widget");
+         NOTIFY_ERROR(_("Couldn't add new state/class without opened widget"));
          return NULL;
      }
    widget = elm_object_item_data_get(eoi);
@@ -147,14 +147,14 @@ _on_popup_btn_yes(void *data,
 
    if (eina_stringshare_strlen(style_name) <= 0)
      {
-        NOTIFY_WARNING("Please type style name");
+        NOTIFY_WARNING(_("Please type style name"));
         STRING_CLEAR;
         return;
      }
 
    if (eina_stringshare_strlen(class_name) <= 0)
      {
-        NOTIFY_WARNING("Please type class name");
+        NOTIFY_WARNING(_("Please type class name"));
         STRING_CLEAR;
         return;
      }
@@ -164,7 +164,7 @@ _on_popup_btn_yes(void *data,
 
    if (wm_style_object_find(ap->project->widgets, full_name))
      {
-        NOTIFY_WARNING("[%s] alredy exist. Type another style name.",
+        NOTIFY_WARNING(_("[%s] alredy exist. Type another style name."),
                       full_name);
         STRING_CLEAR;
         eina_stringshare_del(full_name);
@@ -179,7 +179,7 @@ _on_popup_btn_yes(void *data,
 
    if (!source_wdg)
      {
-        NOTIFY_ERROR("Sorry, there are no templates for [%s]", widget->name);
+        NOTIFY_ERROR(_("Sorry, there are no templates for [%s]"), widget->name);
         evas_object_smart_callback_call(obj, "close,popup", NULL);
         STRING_CLEAR;
         eina_stringshare_del(full_name);
@@ -324,7 +324,7 @@ style_dialog_add(App_Data *ap)
    if (!ap) return;
    widget = _widget_from_ap_get(ap);
    if (!widget) return;
-   title = eina_stringshare_printf("Add style/class for \"%s\" widget",
+   title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
@@ -333,33 +333,33 @@ style_dialog_add(App_Data *ap)
 
    BOX_ADD(popup, box, false, false);
 
-   ITEM_ADD(box, item_style, "Style name:")
+   ITEM_ADD(box, item_style, _("Style name:"))
 
    ENTRY_ADD(item_style, entry_style, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(entry_style, "guide", "Type a new style name.");
+   elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
    elm_object_part_content_set(item_style, "elm.swallow.content", entry_style);
 
    class_st = _class_from_ap_get(ap);
    if (!class_st) return;
    entry_text = eina_stringshare_add(class_st->name);
-   ITEM_ADD(box, item_class, "Class name:")
+   ITEM_ADD(box, item_class, _("Class name:"))
    ENTRY_ADD(item_class, entry_class, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
    elm_entry_entry_set(entry_class, entry_text);
-   elm_object_part_text_set(entry_class, "guide", "Type a new class name.");
+   elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
    elm_object_part_content_set(item_class, "elm.swallow.content", entry_class);
 
    elm_box_pack_end(box, item_style);
    elm_box_pack_end(box, item_class);
    elm_object_content_set(popup, box);
 
-   BUTTON_ADD(popup, button, "Add");
+   BUTTON_ADD(popup, button, _("Add"));
    evas_object_smart_callback_add(button, "close,popup", _popup_close, popup);
    evas_object_smart_callback_add(button, "pressed", _on_popup_btn_yes, ap);
    elm_object_part_content_set(popup, "button1", button);
 
-   BUTTON_ADD(popup, button, "Cancel");
+   BUTTON_ADD(popup, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _popup_close, popup);
    elm_object_part_content_set(popup, "button2", button);
 

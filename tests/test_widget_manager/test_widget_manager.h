@@ -80,7 +80,7 @@ void wm_part_current_state_set_test_p3(int);
 void wm_part_current_state_set_test_n1(int);
 void wm_part_current_state_set_test_n2(int);
 void wm_part_current_state_set_test_n3(int);
-void wm_widget_list_objects_load_test_p1(int);
+void wm_widget_list_objects_load_test_p(int);
 void wm_widget_list_objects_load_test_n1(int);
 void wm_widget_list_objects_load_test_n2(int);
 void wm_widget_list_objects_load_test_n3(int);

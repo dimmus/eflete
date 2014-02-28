@@ -393,8 +393,16 @@ _groupedit_smart_resize(Evas_Object *o,
                             Evas_Coord h)
 {
    Evas_Coord ow, oh;
+   //WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
+   /* FIXME: uncomment it, when the paddings logic will be removed
+   if (w > sd->con_size_max.w + H_WIGTH) w = sd->con_size_max.w + H_WIGTH;
+   if (w < sd->con_size_min.w + H_WIGTH) w = sd->con_size_min.w + H_WIGTH;
+   if (h > sd->con_size_max.h + H_HEIGHT) h = sd->con_size_max.h + H_HEIGHT;
+   if (h < sd->con_size_min.h + H_HEIGHT) h = sd->con_size_min.h + H_HEIGHT;
+   */
 
    evas_object_size_hint_min_set(o, w, h);
    evas_object_smart_changed(o);
@@ -606,7 +614,7 @@ groupedit_edit_object_set(Evas_Object *obj,
         /* TODO: add error message */
         return false;
      }
-   if (!file) return false;
+   if ((file) && (!ecore_file_exists(file))) return false;
 
    edje_object_animation_set(edit_obj, false);
    edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
@@ -659,12 +667,12 @@ groupedit_edit_object_unset(Evas_Object *obj)
    return ret;
 }
 
-void
+Eina_Bool
 groupedit_edit_object_recalc_all(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   _parts_recalc(sd);
+   return _parts_recalc(sd);
 }
 
 Evas_Object *
@@ -871,21 +879,26 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    return true;
 }
 
-void
+Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-   if (!bg) return;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!bg) return false;
 
    sd->bg = bg;
+   return true;
 }
 
-void
+Evas_Object *
 groupedit_bg_unset(Evas_Object *obj)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   Evas_Object *bg;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
+   bg = sd->bg;
    sd->bg = NULL;
+
+   return bg;
 }
 
 #undef MY_CLASS_NAME

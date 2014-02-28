@@ -56,6 +56,23 @@ missing
 config.log
 config.status
 test-driver
+INSTALL
+config.guess
+config.sub
+config.rpath
+m4/*
+ABOUT-NLS
+INSTALL
+po/*.sin
+po/*.sed
+po/*.header
+po/Rules-quot
+po/Makevars.template
+
+#localization
+*.gmo
+*.pot
+po/en@quot.po
 
 #documentation
 doc/*

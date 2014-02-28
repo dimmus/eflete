@@ -22,67 +22,67 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("widget_manager_test");
    TCase *tcase = tcase_create("TCase");
-/*   tcase_add_test(tcase, wm_part_add_test_p); */
-/*   tcase_add_test(tcase, wm_part_add_test_n1); */
-/*   tcase_add_test(tcase, wm_part_add_test_n2); */
-/*   tcase_add_test(tcase, wm_part_add_test_n3); */
-/*   tcase_add_test(tcase, wm_part_add_test_n4); */
-/*   tcase_add_test(tcase, wm_part_del_test_p1); */
-/*   tcase_add_test(tcase, wm_part_del_test_p2); */
-/*   tcase_add_test(tcase, wm_part_del_test_n1); */
-/*   tcase_add_test(tcase, wm_part_del_test_n2); */
-/*   tcase_add_test(tcase, wm_part_del_test_n3); */
-/*   tcase_add_test(tcase, wm_style_add_test_p); */
-/*   tcase_add_test(tcase, wm_style_add_test_n1); */
-/*   tcase_add_test(tcase, wm_style_add_test_n2); */
-/*   tcase_add_test(tcase, wm_style_add_test_n3); */
-/*   tcase_add_test(tcase, wm_style_free_test_p1); */
-/*   tcase_add_test(tcase, wm_style_free_test_p2); */
-/*   tcase_add_test(tcase, wm_style_free_test_n); */
-/*   tcase_add_test(tcase, wm_program_signals_list_get_test_p1); */
-/*   tcase_add_test(tcase, wm_program_signals_list_get_test_p2); */
-/*   tcase_add_test(tcase, wm_program_signals_list_get_test_n1); */
-/*   tcase_add_test(tcase, wm_program_signals_list_get_test_n2); */
-/*   tcase_add_test(tcase, wm_program_signals_list_free_test_p); */
-/*   tcase_add_test(tcase, wm_program_signals_list_free_test_n); */
-/*   tcase_add_test(tcase, wm_class_add_test_p); */
-/*   tcase_add_test(tcase, wm_class_add_test_n1); */
-/*   tcase_add_test(tcase, wm_class_add_test_n2); */
-/*   tcase_add_test(tcase, wm_class_add_test_n3); */
-/*   tcase_add_test(tcase, wm_class_free_test_p); */
-/*   tcase_add_test(tcase, wm_class_free_test_n); */
-/*   tcase_add_test(tcase, wm_widget_add_test_p); */
-/*   tcase_add_test(tcase, wm_widget_add_test_n1); */
-/*   tcase_add_test(tcase, wm_widget_add_test_n2); */
-/*   tcase_add_test(tcase, wm_widget_add_test_n3); */
-/*   tcase_add_test(tcase, wm_widget_free_test_p); */
-/*   tcase_add_test(tcase, wm_widget_free_test_n); */
-/*   tcase_add_test(tcase, wm_widget_list_new_test_p); */
-/*   tcase_add_test(tcase, wm_widget_list_new_test_n); */
-/*   tcase_add_test(tcase, wm_widget_list_free_test_p); */
-/*   tcase_add_test(tcase, wm_widget_list_free_test_n); */
-/*   tcase_add_test(tcase, wm_style_object_find_test_p1); */
-/*   tcase_add_test(tcase, wm_style_object_find_test_p2); */
-/*   tcase_add_test(tcase, wm_style_object_find_test_n1); */
-/*   tcase_add_test(tcase, wm_style_object_find_test_n2); */
-/*   tcase_add_test(tcase, wm_style_object_find_test_n3); */
-/*   tcase_add_test(tcase, wm_part_type_get_test_p1); */
-/*   tcase_add_test(tcase, wm_part_type_get_test_p2); */
-/*   tcase_add_test(tcase, wm_part_type_get_test_n1); */
-/*   tcase_add_test(tcase, wm_part_type_get_test_n2); */
-/*   tcase_add_test(tcase, wm_part_current_state_set_test_p1); */
-/*   tcase_add_test(tcase, wm_part_current_state_set_test_p2); */
-/*   tcase_add_test(tcase, wm_part_current_state_set_test_p3); */
-/*   tcase_add_test(tcase, wm_part_current_state_set_test_n1); */
-/*   tcase_add_test(tcase, wm_part_current_state_set_test_n2); */
-/*   tcase_add_test(tcase, wm_part_current_state_set_test_n3); */
-/*   tcase_add_test(tcase, wm_widget_list_objects_load_test_p1); */
-/*   tcase_add_test(tcase, wm_widget_list_objects_load_test_n1); */
-/*   tcase_add_test(tcase, wm_widget_list_objects_load_test_n2); */
-/*   tcase_add_test(tcase, wm_widget_list_objects_load_test_n3); */
-/*   tcase_add_test(tcase, wm_style_copy_test_p); */
-/*   tcase_add_test(tcase, wm_style_copy_test_n1); */
-/*   tcase_add_test(tcase, wm_style_copy_test_n2); */
+   tcase_add_test(tcase, wm_part_add_test_p);
+   tcase_add_test(tcase, wm_part_add_test_n1);
+   tcase_add_test(tcase, wm_part_add_test_n2);
+   tcase_add_test(tcase, wm_part_add_test_n3);
+   tcase_add_test(tcase, wm_part_add_test_n4);
+   tcase_add_test(tcase, wm_part_del_test_p1);
+   tcase_add_test(tcase, wm_part_del_test_p2);
+   tcase_add_test(tcase, wm_part_del_test_n1);
+   tcase_add_test(tcase, wm_part_del_test_n2);
+   tcase_add_test(tcase, wm_part_del_test_n3);
+   tcase_add_test(tcase, wm_program_signals_list_get_test_p1);
+   tcase_add_test(tcase, wm_program_signals_list_get_test_p2);
+   tcase_add_test(tcase, wm_program_signals_list_get_test_n1);
+   tcase_add_test(tcase, wm_program_signals_list_get_test_n2);
+   tcase_add_test(tcase, wm_style_add_test_p);
+   tcase_add_test(tcase, wm_style_add_test_n1);
+   tcase_add_test(tcase, wm_style_add_test_n2);
+   tcase_add_test(tcase, wm_style_add_test_n3);
+   tcase_add_test(tcase, wm_style_free_test_p1);
+   tcase_add_test(tcase, wm_style_free_test_p2);
+   tcase_add_test(tcase, wm_style_free_test_n);
+   tcase_add_test(tcase, wm_program_signals_list_free_test_p);
+   tcase_add_test(tcase, wm_program_signals_list_free_test_n);
+   tcase_add_test(tcase, wm_class_add_test_p);
+   tcase_add_test(tcase, wm_class_add_test_n1);
+   tcase_add_test(tcase, wm_class_add_test_n2);
+   tcase_add_test(tcase, wm_class_add_test_n3);
+   tcase_add_test(tcase, wm_class_free_test_p);
+   tcase_add_test(tcase, wm_class_free_test_n);
+   tcase_add_test(tcase, wm_widget_add_test_p);
+   tcase_add_test(tcase, wm_widget_add_test_n1);
+   tcase_add_test(tcase, wm_widget_add_test_n2);
+   tcase_add_test(tcase, wm_widget_add_test_n3);
+   tcase_add_test(tcase, wm_widget_free_test_p);
+   tcase_add_test(tcase, wm_widget_free_test_n);
+   tcase_add_test(tcase, wm_widget_list_free_test_p);
+   tcase_add_test(tcase, wm_widget_list_free_test_n);
+   tcase_add_test(tcase, wm_widget_list_new_test_p);
+   tcase_add_test(tcase, wm_widget_list_new_test_n);
+   tcase_add_test(tcase, wm_style_object_find_test_p1);
+   tcase_add_test(tcase, wm_style_object_find_test_p2);
+   tcase_add_test(tcase, wm_style_object_find_test_n1);
+   tcase_add_test(tcase, wm_style_object_find_test_n2);
+   tcase_add_test(tcase, wm_style_object_find_test_n3);
+   tcase_add_test(tcase, wm_part_type_get_test_p1);
+   tcase_add_test(tcase, wm_part_type_get_test_p2);
+   tcase_add_test(tcase, wm_part_type_get_test_n1);
+   tcase_add_test(tcase, wm_part_type_get_test_n2);
+   tcase_add_test(tcase, wm_part_current_state_set_test_p1);
+   tcase_add_test(tcase, wm_part_current_state_set_test_p2);
+   tcase_add_test(tcase, wm_part_current_state_set_test_p3);
+   tcase_add_test(tcase, wm_part_current_state_set_test_n1);
+   tcase_add_test(tcase, wm_part_current_state_set_test_n2);
+   tcase_add_test(tcase, wm_part_current_state_set_test_n3);
+   tcase_add_test(tcase, wm_widget_list_objects_load_test_p);
+   tcase_add_test(tcase, wm_widget_list_objects_load_test_n1);
+   tcase_add_test(tcase, wm_widget_list_objects_load_test_n2);
+   tcase_add_test(tcase, wm_widget_list_objects_load_test_n3);
+   tcase_add_test(tcase, wm_style_copy_test_p);
+   tcase_add_test(tcase, wm_style_copy_test_n1);
+   tcase_add_test(tcase, wm_style_copy_test_n2);
 
    suite_add_tcase(suite, tcase);
 
@@ -93,7 +93,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_wmanager.xml");
+   srunner_set_xml (runner, "test_widget_manager.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
