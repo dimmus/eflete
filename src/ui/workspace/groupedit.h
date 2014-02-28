@@ -421,9 +421,11 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part);
  * @param obj The groupedit object,
  * @param bg The Evas image.
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);
 
 /**
@@ -431,9 +433,11 @@ groupedit_bg_set(Evas_Object *obj, Evas_Object *bg);
  *
  * @param obj The groupedit object.
  *
+ * @return The image object.
+ *
  * @ingroup Groupedit
  */
-void
+Evas_Object *
 groupedit_bg_unset(Evas_Object *obj);
 
 /**
