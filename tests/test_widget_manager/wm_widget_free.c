@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_widget_free
  * @{
@@ -45,7 +45,7 @@
  * @step 2 Check returned value.
  * </td>
  * <td>Widget *widget</td>
- * <td>Not NULL object pointer returned.</td>
+ * <td>EINA_TRUE returned.</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -61,7 +61,7 @@ EFLETE_TEST (wm_widget_free_test_p)
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
    widget = wm_widget_add(widget_name, groups);
-   ck_assert_msg(wm_widget_free(widget) == true, "cannot delete Widget.");
+   ck_assert_msg(wm_widget_free(widget) == EINA_TRUE, "cannot delete Widget.");
    elm_shutdown();
 }
 END_TEST
@@ -81,7 +81,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
- * <td>NULL object pointer returned.</td>
+ * <td>EINA_FALSE returned.</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -90,7 +90,7 @@ END_TEST
 EFLETE_TEST (wm_widget_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_free(NULL) == false, "NULL parameter was deleted as Widget.");
+   ck_assert_msg(wm_widget_free(NULL) == EINA_FALSE, "NULL parameter was deleted as Widget.");
    elm_shutdown();
 }
 END_TEST

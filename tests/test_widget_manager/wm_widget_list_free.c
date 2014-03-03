@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_widget_list_free
  * @{
@@ -45,7 +45,7 @@
  * @step 2 Check returned value.
  * </td>
  * <td>Eina_Inlist *widget_list</td>
- * <td>true returned</td>
+ * <td>EINA_TRUE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -58,7 +58,7 @@ EFLETE_TEST (wm_widget_list_free_test_p)
    Eina_Inlist *widget_list = NULL;
 
    widget_list = wm_widget_list_new(file);
-   ck_assert_msg(wm_widget_list_free(widget_list) == true, "widget list wasn't deleted.");
+   ck_assert_msg(wm_widget_list_free(widget_list) == EINA_TRUE, "widget list wasn't deleted.");
    elm_shutdown();
 }
 END_TEST
@@ -78,7 +78,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -87,7 +87,7 @@ END_TEST
 EFLETE_TEST (wm_widget_list_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_list_free(NULL) == false, "NULL parameter was deleted as widget list.");
+   ck_assert_msg(wm_widget_list_free(NULL) == EINA_FALSE, "NULL parameter was deleted as widget list.");
    elm_shutdown();
 }
 END_TEST

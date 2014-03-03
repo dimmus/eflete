@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_program_signal_list_free
  * @{
@@ -48,7 +48,7 @@
  * @step 2 Check returned value.
  * </td>
  * <td>Eina_List *sig_list</td>
- * <td>true returned</td>
+ * <td>EINA_TRUE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -70,7 +70,7 @@ EFLETE_TEST (wm_program_signals_list_free_test_p)
    style = wm_style_add(style_name, full_style_name);
    wm_style_data_load(style, e, edj);
    sig_list = wm_program_signals_list_get(style);
-   ck_assert_msg(wm_program_signals_list_free(sig_list) == true, "Cannot free signal list.");
+   ck_assert_msg(wm_program_signals_list_free(sig_list) == EINA_TRUE, "Cannot free signal list.");
 
    wm_style_free(style);
    elm_shutdown();
@@ -92,7 +92,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -101,7 +101,7 @@ END_TEST
 EFLETE_TEST (wm_program_signals_list_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_program_signals_list_free(NULL) == false, "NULL signal list was deleted.");
+   ck_assert_msg(wm_program_signals_list_free(NULL) == EINA_FALSE, "NULL signal list was deleted.");
    elm_shutdown();
 }
 END_TEST

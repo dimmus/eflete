@@ -19,7 +19,6 @@
 
 #include "utc_common.h"
 #include "widget_manager.h"
-#include "common_macro.h"
 #include "alloc.h"
 
 /**

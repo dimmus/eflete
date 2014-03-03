@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_part_del
  * @{
@@ -48,7 +48,7 @@
  * @step 2 Check returned value.
  * </td>
  * <td>Style *style, "elm.swallow.content"</td>
- * <td>true returned</td>
+ * <td>EINA_TRUE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -72,7 +72,7 @@ EFLETE_TEST (wm_part_del_test_p1)
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
-   ck_assert_msg(wm_part_del(style, part) == true, "cannot delete Part object");
+   ck_assert_msg(wm_part_del(style, part) == EINA_TRUE, "cannot delete Part object");
 
    elm_shutdown();
 }
@@ -97,7 +97,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>Style *style, "elm.double.eflete"</td>
- * <td>true returned</td>
+ * <td>EINA_TRUE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -121,7 +121,7 @@ EFLETE_TEST (wm_part_del_test_p2)
 
    part = (Part *)mem_malloc(sizeof(Part));
    part->name = eina_stringshare_add("elm.double.eflete");
-   ck_assert_msg(wm_part_del(style, part) == false, "Part was found in Style and deleted");
+   ck_assert_msg(wm_part_del(style, part) == EINA_FALSE, "Part was found in Style and deleted");
 
    elm_shutdown();
 }
@@ -146,7 +146,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>NULL, "elm.double.eflete"</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -169,7 +169,7 @@ EFLETE_TEST (wm_part_del_test_n1)
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
-   ck_assert_msg(wm_part_del(NULL, part) == false, "Part object deleted from NULL Style");
+   ck_assert_msg(wm_part_del(NULL, part) == EINA_FALSE, "Part object deleted from NULL Style");
 
    elm_shutdown();
 }
@@ -193,7 +193,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>Style *style, NULL</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -213,7 +213,7 @@ EFLETE_TEST (wm_part_del_test_n2)
    style = wm_style_add(style_name, full_style_name);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
-   ck_assert_msg(wm_part_del(style, NULL) == false, "deleting not existing Part");
+   ck_assert_msg(wm_part_del(style, NULL) == EINA_FALSE, "deleting not existing Part");
 
    elm_shutdown();
 }
@@ -234,7 +234,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>NULL, NULL</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -243,7 +243,7 @@ END_TEST
 EFLETE_TEST (wm_part_del_test_n3)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_part_del(NULL, NULL) == false, "NULL Part object was deleted");
+   ck_assert_msg(wm_part_del(NULL, NULL) == EINA_FALSE, "NULL Part object was deleted");
    elm_shutdown();
 }
 END_TEST

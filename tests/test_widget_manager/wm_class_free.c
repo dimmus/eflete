@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_class_free
  * @{
@@ -45,7 +45,7 @@
  * @step 2 Check returned value.
  * </td>
  * <td>Class *class</td>
- * <td>true returned</td>
+ * <td>EINA_TRUE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -62,7 +62,7 @@ EFLETE_TEST (wm_class_free_test_p)
    groups = eina_list_append(groups, "elm/radio/notbase/test");
    class = wm_class_add(class_name, groups);
 
-   ck_assert_msg(wm_class_free(class) == true, "cannot delete Class structure.");
+   ck_assert_msg(wm_class_free(class) == EINA_TRUE, "cannot delete Class structure.");
    elm_shutdown();
 }
 END_TEST
@@ -82,7 +82,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
- * <td>true returned</td>
+ * <td>EINA_TRUE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -91,7 +91,7 @@ END_TEST
 EFLETE_TEST (wm_class_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_class_free(NULL) == false, "NULL Class structure was deleted.");
+   ck_assert_msg(wm_class_free(NULL) == EINA_FALSE, "NULL Class structure was deleted.");
    elm_shutdown();
 }
 END_TEST
