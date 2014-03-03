@@ -145,6 +145,7 @@ style_editor_test_LDADD = ${LD}
 
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \
+test_ui_block/ui_block_add.c \
 test_ui_block/ui_block_graph_vision.c \
 test_ui_block/ui_block_live_view.c \
 test_ui_block/ui_block_property.c \
