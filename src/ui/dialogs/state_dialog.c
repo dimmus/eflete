@@ -38,7 +38,7 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static void
-_ok_clicked(void *data,
+_add_ok_clicked(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
@@ -69,7 +69,7 @@ _ok_clicked(void *data,
 }
 
 static void
-_ok_close_clicked(void *data,
+_add_ok_close_clicked(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
@@ -90,7 +90,7 @@ _cancel_clicked(void *data,
 
 
 Evas_Object *
-state_dialog_add(App_Data *ap)
+state_dialog_state_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *bt_yes, *bt_no;
    Evas_Object *item_name, *item_value, *item_dup;
@@ -100,17 +100,12 @@ state_dialog_add(App_Data *ap)
 
    if ((!ap) && (!ap->workspace))
      {
-        ERR("Failed create state dialog.");
+        ERR("Failed create a add state dialog.");
         return NULL;
      }
 
    glist = ui_block_state_list_get(ap);
    part = ui_state_list_part_get(glist);
-   if (!part)
-     {
-        NOTIFY_INFO(3, _("Please select part"));
-        return NULL;
-     }
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
@@ -144,8 +139,8 @@ state_dialog_add(App_Data *ap)
    elm_object_content_set(popup, box);
 
    BUTTON_ADD(popup, bt_yes, _("Add"));
-   evas_object_smart_callback_add (bt_yes, "pressed", _ok_clicked, ap);
-   evas_object_smart_callback_add (bt_yes, "unpressed", _ok_close_clicked, popup);
+   evas_object_smart_callback_add (bt_yes, "pressed", _add_ok_clicked, ap);
+   evas_object_smart_callback_add (bt_yes, "unpressed", _add_ok_close_clicked, popup);
    elm_object_part_content_set(popup, "button1", bt_yes);
 
    BUTTON_ADD(popup, bt_no, _("Cancel"));
@@ -154,5 +149,88 @@ state_dialog_add(App_Data *ap)
 
    evas_object_show(popup);
    eina_stringshare_del(title);
+   return popup;
+}
+
+static void
+_del_ok_clicked(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *state_list, *workspace;
+   Part *part;
+   Eina_Stringshare *state;
+
+   state_list = ui_block_state_list_get(ap);
+   workspace = ap->workspace;
+   part = ui_state_list_part_get(state_list);
+   state = ui_state_list_selected_state_get(state_list);
+
+   char **arr = eina_str_split(state, " ", 2);
+
+   /*TODO: need to check the program, some program can use the given state.
+     If given state used in programs - show dialog window with the question:
+     'This state used in the program(s). Are you sure you want to delete
+     %state name%' and delete the programs or some params from the program */
+   if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
+     ui_state_list_selected_state_del(state_list);
+
+   free(arr[0]);
+   free(arr);
+}
+
+Evas_Object *
+state_dialog_state_del(App_Data *ap)
+{
+   Evas_Object *popup, *label, *bt_yes, *bt_no;
+   Evas_Object *state_list;
+   Part *part;
+   Eina_Stringshare *state, *title, *message;
+
+   if ((!ap) && (!ap->workspace))
+     {
+        ERR("Failed create an add state dialog.");
+        return NULL;
+     }
+
+   state_list = ui_block_state_list_get(ap);
+   part = ui_state_list_part_get(state_list);
+   state = ui_state_list_selected_state_get(state_list);
+
+   if (!strcmp(state, "default 0.00"))
+     {
+        NOTIFY_WARNING(_("Can't delete the default state."));
+        return NULL;
+     }
+
+   popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(popup, "eflete");
+   part = ui_state_list_part_get(state_list);
+   title = eina_stringshare_printf(_("Delete the state from part"));
+   elm_object_part_text_set(popup, "title,text", title);
+   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+
+   message = eina_stringshare_printf(_("Do you want to delete the state \"%s\" "
+                                       "from part \"%s\"."), state, part->name);
+   LABEL_ADD(popup, label, message)
+   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_label_line_wrap_set(label, ELM_WRAP_CHAR);
+   elm_object_content_set(popup, label);
+
+   BUTTON_ADD(popup, bt_yes, _("Delete"));
+   evas_object_smart_callback_add (bt_yes, "pressed", _del_ok_clicked, ap);
+   evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, popup);
+   elm_object_part_content_set(popup, "button1", bt_yes);
+
+   BUTTON_ADD(popup, bt_no, _("Cancel"));
+   evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
+   elm_object_part_content_set(popup, "button2", bt_no);
+
+   evas_object_show(popup);
+   eina_stringshare_del(state);
+   eina_stringshare_del(message);
+
    return popup;
 }
