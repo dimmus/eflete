@@ -67,7 +67,7 @@ EFLETE_TEST (wm_program_signals_list_free_test_p)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name);
+   style = wm_style_add(style_name, full_style_name, STYLE);
    wm_style_data_load(style, e, edj);
    sig_list = wm_program_signals_list_get(style);
    ck_assert_msg(wm_program_signals_list_free(sig_list) == EINA_TRUE, "Cannot free signal list.");

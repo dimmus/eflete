@@ -281,12 +281,12 @@ wm_style_data_load(Style *style, Evas *e, const char *edj)
 }
 
 Style *
-wm_style_add(const char* style_name, const char* full_group_name)
+wm_style_add(const char* style_name, const char* full_group_name, type style_type)
 {
    Style *style_edje = NULL;
 
    if ((!full_group_name) || (!style_name)) return NULL;
-
+   if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
    style_edje = (Style *)mem_malloc(sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
@@ -295,7 +295,7 @@ wm_style_add(const char* style_name, const char* full_group_name)
    style_edje->main_group = NULL;
    style_edje->isModify = false;
    style_edje->isAlias = false;
-   style_edje->__type = STYLE;
+   style_edje->__type = style_type;
 
    return style_edje;
 }
@@ -643,7 +643,7 @@ wm_class_add(const char *class_name, Eina_List *styles)
    EINA_LIST_FOREACH(styles, l, style_name_full)
      {
         WM_STYLE_NAME_GET(style_name, class_edje->name, style_name_full);
-        style_edje = wm_style_add(style_name, style_name_full);
+        style_edje = wm_style_add(style_name, style_name_full, STYLE);
         class_edje->styles = eina_inlist_append(class_edje->styles,
                                                 EINA_INLIST_GET(style_edje));
      }
@@ -810,6 +810,46 @@ wm_widget_list_new(const char *file)
    INFO("The theme consists of styles for %i widgets.", eina_inlist_count(widget_list));
 
    return widget_list;
+}
+
+Eina_Inlist *
+wm_widget_list_layouts_load(const char *file)
+{
+   Style *layout;
+   Eina_List *collection, *l;
+   Eina_Inlist *layouts = NULL;
+   char *group;
+   const char prefix[] = "elm/";
+   Eina_Error error;
+
+   if (!file) return NULL;
+
+   DBG("Start to parse the edje group collection.");
+   collection = edje_file_collection_list(file);
+   if (!collection)
+     {
+        error = eina_error_get();
+        ERR("%s", eina_error_msg_get(error));
+     }
+
+   collection = eina_list_sort(collection,
+                               eina_list_count(collection),
+                               _sort_collection_cb);
+
+   EINA_LIST_FOREACH(collection, l, group)
+     {
+        if (!eina_str_has_prefix(group, prefix))
+          {
+             printf("Layout: %s\n", group);
+             layout = wm_style_add(group, group, LAYOUT);
+             layouts = eina_inlist_append(layouts, EINA_INLIST_GET(layout));
+          }
+         printf("Group with prefix: %s\n", group);
+     }
+   edje_file_collection_list_free(collection);
+   DBG("Parse the edje group collection on layouts id finished!");
+   INFO("The file contain styles for %i layouts.", eina_inlist_count(layouts));
+   return layouts;
 }
 
 Eina_Bool

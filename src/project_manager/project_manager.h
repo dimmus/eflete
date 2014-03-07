@@ -61,6 +61,7 @@ struct _Project
    char *sound_directory;
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
+   Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */
    /** opened group */
    Style *current_style;
 };

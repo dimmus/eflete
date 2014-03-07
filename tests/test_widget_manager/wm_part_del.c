@@ -68,7 +68,7 @@ EFLETE_TEST (wm_part_del_test_p1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name);
+   style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
@@ -115,7 +115,7 @@ EFLETE_TEST (wm_part_del_test_p2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name);
+   style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
 
@@ -165,7 +165,7 @@ EFLETE_TEST (wm_part_del_test_n1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name);
+   style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
@@ -210,7 +210,7 @@ EFLETE_TEST (wm_part_del_test_n2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name);
+   style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
    ck_assert_msg(wm_part_del(style, NULL) == EINA_FALSE, "deleting not existing Part");

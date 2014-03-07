@@ -59,7 +59,8 @@ enum _type
     WIDGET = 0,
     CLASS,
     STYLE,
-    PART
+    PART,
+    LAYOUT
 };
 
 /**
@@ -246,13 +247,14 @@ wm_style_data_load(Style *style, Evas *e, const char *edj);
  * @param style_name The style name.
  * @param full_group_name A full name of group, a name of block 'group' in a
  *        edc-file.
+ * @param style_type May be STYLE or LAYOUT, in case what type needed to create.
  *
  * @return A new @Style object.
  *
  * @ingroup WidgetManager
  */
 Style *
-wm_style_add(const char* style_name, const char* full_group_name);
+wm_style_add(const char* style_name, const char* full_group_name, type style_type);
 
 /**
  * Free a @Style object.
@@ -346,6 +348,17 @@ wm_widget_free(Widget *widget);
  */
 Eina_Inlist *
 wm_widget_list_new(const char *file);
+
+/**
+ * Load list of custom layouts, which stored in file.
+ *
+ * @param file A edj-file to load data of custom layouts styles.
+ * @return A list of custom layouts if successful or NULL if failed.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Inlist *
+wm_widget_list_layouts_load(const char *file);
 
 /**
  * Free a generic Eina_Inlist of widgets, allocated by \ref wm_widget_list_new.

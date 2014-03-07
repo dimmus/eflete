@@ -272,7 +272,7 @@ _on_popup_btn_yes(void *data,
      }
    else
      {
-        style = wm_style_add(style_name, full_name);
+        style = wm_style_add(style_name, full_name, STYLE);
         dest_class->styles = eina_inlist_append(dest_class->styles,
                                                 EINA_INLIST_GET(style));
      }

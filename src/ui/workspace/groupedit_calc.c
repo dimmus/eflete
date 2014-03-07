@@ -93,6 +93,7 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
    Groupedit_Part *gp;
 
    if (!part) return false;
+   if ((type > EDJE_PART_TYPE_LAST)) return false;
    if (!edje_edit_part_add(sd->edit_obj, part, type))
      {
         ERR("Cann't add part %s to edit object %p", part, sd->edit_obj);
