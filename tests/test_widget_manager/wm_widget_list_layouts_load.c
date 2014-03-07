@@ -22,7 +22,7 @@
 /**
  * @addtogroup widget_manager_test
  * @{
- * @addtogroup wm_widget_list_free
+ * @addtogroup wm_widget_list_layouts_load
  * @{
  * widget_manager
  * <TABLE>
@@ -30,70 +30,78 @@
  */
 
 /**
- * @addtogroup wm_widget_list_free
+ * @addtogroup wm_widget_list_layouts_load
  * @{
  * <tr>
- * <td>wm_widget_list_free</td>
- * <td>wm_widget_list_free_test_p</td>
+ * <td>wm_widget_list_layouts_load</td>
+ * <td>wm_widget_list_layouts_load_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
- * @step 2 Widget list loaded from a file.
+ * @step 1 Path to edj file.
  *
  * @procedure
- * @step 1 Call function wm_widget_list_free(widget_list).
- * @step 2 Check returned value.
+ * @step 1 Call function wm_widget_list_layouts_load("./edj_build/radio.edj").
+ * @step 2 Check returned layouts list.
+ * @step 3 Check layouts list's content.
  * </td>
- * <td>Eina_Inlist *widget_list</td>
- * <td>EINA_TRUE returned</td>
+ * <td>char *file = "./edj_build/radio.edj"</td>
+ * <td>All Checks was successfuly passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (wm_widget_list_free_test_p)
+EFLETE_TEST (wm_widget_list_layouts_load_test_p)
 {
    elm_init(0,0);
    const char *file = "./edj_build/radio.edj";
-   Eina_Inlist *widget_list = NULL;
+   const char *layout_name = "load/layout/test";
+   Eina_Inlist *layouts_list = NULL;
+   Style *layout = NULL;
 
-   widget_list = wm_widget_list_new(file);
-   ck_assert_msg(wm_widget_list_free(widget_list) == EINA_TRUE, "widget list wasn't deleted.");
+   layouts_list = wm_widget_list_layouts_load(file);
+   printf("\nLayouts list %p\n\n", layouts_list);
+   ck_assert_msg(layouts_list != NULL, "Layouts doesn't loaded from file");
+   layout = EINA_INLIST_CONTAINER_GET(layouts_list, Style);
+   printf("\nStyle %s\n\n", layout->full_group_name);
+   ck_assert_str_eq(layout->full_group_name, layout_name);
+
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup wm_widget_list_free
+ * @addtogroup wm_widget_list_layouts_load
  * @{
  * <tr>
- * <td>wm_widget_list_free</td>
- * <td>wm_widget_list_free_test_n</td>
+ * <td>wm_widget_list_layouts_load</td>
+ * <td>wm_widget_list_layouts_load_test_n</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
  *
  * @procedure
- * @step 1 Call function wm_widget_list_free(NULL).
+ * @step 1 Call function wm_widget_list_layouts_load(NULL).
  * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
+ * <td>NULL object pointer returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (wm_widget_list_free_test_n)
+EFLETE_TEST (wm_widget_list_layouts_load_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_list_free(NULL) == EINA_FALSE, "NULL parameter was deleted as widget list.");
+   ck_assert_msg(wm_widget_list_layouts_load(NULL) == NULL, "Layouts loaded from NULL pointer file name");
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup wm_widget_list_free
+ * @addtogroup wm_widget_list_layouts_load
  * @{
  * </TABLE>
  * @}

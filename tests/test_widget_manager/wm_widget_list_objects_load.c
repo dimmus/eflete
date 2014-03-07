@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_widget_list_objects_load
  * @{
@@ -98,7 +98,7 @@ END_TEST
  * @step 2 Check returned bool.
  * </td>
  * <td>NULL, Evas *e, char *file = "./edj_build/radio.edj"</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -135,7 +135,7 @@ END_TEST
  * @step 2 Check returned bool.
  * </td>
  * <td>Eina_Inlist *widget_list, NULL, char *file = "./edj_build/radio.edj"</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -171,7 +171,7 @@ END_TEST
  * @step 2 Check returned bool.
  * </td>
  * <td>Eina_Inlist *widget_list, Evas *e, NULL</td>
- * <td>false returned</td>
+ * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>

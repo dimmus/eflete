@@ -202,6 +202,7 @@ pm_open_project_edj(const char *name,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
    project->widgets = wm_widget_list_new(project->swapfile);
+   project->layouts = wm_widget_list_layouts_load(project->swapfile);
    INFO("Project '%s' is open!", project->name);
 
    return project;

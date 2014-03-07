@@ -39,7 +39,7 @@ static Evas_Object *entry;
 
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
-   .rejected = BANNED_SYMBOLS
+   .rejected = PART_NAME_BANNED_SYMBOLS
 };
 
 static void

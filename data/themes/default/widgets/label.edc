@@ -23,6 +23,7 @@ group { name: "elm/label/base/eflete/default";
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
+            fixed: 1 1;
             text {
                style: "textblock_style";
                min: 0 1;

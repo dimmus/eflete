@@ -89,22 +89,23 @@ edje_compile_test_LDADD = ${LD}
 
 widget_manager_test_SOURCES = \
 test_widget_manager/test_widget_manager.c \
-test_widget_manager/wm_part_add_test.c \
+test_widget_manager/wm_part_add.c \
 test_widget_manager/wm_class_add.c \
 test_widget_manager/wm_class_free.c \
 test_widget_manager/wm_part_current_state_set.c \
-test_widget_manager/wm_part_del_test.c \
+test_widget_manager/wm_part_del.c \
 test_widget_manager/wm_part_type_get.c \
 test_widget_manager/wm_program_signals_list_get.c \
-test_widget_manager/wm_program_signals_list_free_test.c \
-test_widget_manager/wm_style_add_test.c \
+test_widget_manager/wm_program_signals_list_free.c \
+test_widget_manager/wm_style_add.c \
 test_widget_manager/wm_style_copy.c \
-test_widget_manager/wm_style_free_test.c \
+test_widget_manager/wm_style_free.c \
 test_widget_manager/wm_style_object_find.c \
 test_widget_manager/wm_widget_add.c \
 test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
+test_widget_manager/wm_widget_list_layouts_load.c \
 test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
@@ -145,6 +146,7 @@ style_editor_test_LDADD = ${LD}
 
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \
+test_ui_block/ui_block_add.c \
 test_ui_block/ui_block_graph_vision.c \
 test_ui_block/ui_block_live_view.c \
 test_ui_block/ui_block_property.c \

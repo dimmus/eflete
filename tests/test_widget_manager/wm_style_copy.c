@@ -20,7 +20,7 @@
 #include "test_widget_manager.h"
 
 /**
- * @addtogroup test_widget_manager
+ * @addtogroup widget_manager_test
  * @{
  * @addtogroup wm_style_copy
  * @{
@@ -83,7 +83,7 @@ EFLETE_TEST (wm_style_copy_test_p)
    dest_class = EINA_INLIST_CONTAINER_GET(
                    EINA_INLIST_CONTAINER_GET(widget_list, Widget)->classes,
                    Class);
-   new_style = wm_style_add(style_name, copy_name);
+   new_style = wm_style_add(style_name, copy_name, STYLE);
    dest_class->styles = eina_inlist_append(dest_class->styles,
                                            EINA_INLIST_GET(new_style));
 
@@ -122,7 +122,7 @@ END_TEST
  * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", "./edj_build/radio.edj", Style).
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/radio.edj", Style *style</td>
- * <td>false return</td>
+ * <td>EINA_FALSE return</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -152,7 +152,7 @@ EFLETE_TEST (wm_style_copy_test_n1)
    dest_class = EINA_INLIST_CONTAINER_GET(
                    EINA_INLIST_CONTAINER_GET(widget_list, Widget)->classes,
                    Class);
-   new_style = wm_style_add(style_name, copy_name);
+   new_style = wm_style_add(style_name, copy_name, STYLE);
    dest_class->styles = eina_inlist_append(dest_class->styles,
                                            EINA_INLIST_GET(new_style));
 
@@ -188,7 +188,7 @@ END_TEST
  * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", "./edj_build/radio.edj", NULL).
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/radio.edj", Style *style</td>
- * <td>false return</td>
+ * <td>EINA_FALSE return</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -218,7 +218,7 @@ EFLETE_TEST (wm_style_copy_test_n2)
    dest_class = EINA_INLIST_CONTAINER_GET(
                    EINA_INLIST_CONTAINER_GET(widget_list, Widget)->classes,
                    Class);
-   new_style = wm_style_add(style_name, copy_name);
+   new_style = wm_style_add(style_name, copy_name, STYLE);
    dest_class->styles = eina_inlist_append(dest_class->styles,
                                            EINA_INLIST_GET(new_style));
 
