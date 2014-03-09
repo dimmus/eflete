@@ -19,10 +19,10 @@ aimagesdir = $(datadir)/eflete/images
 aimages_DATA = \
    ${srcdir}/layouts/images/*.png ${srcdir}/layouts/images/*.jpg
 
-shortcutdir = /usr/local/share/applications
+shortcutdir = $(datadir)/applications
 shortcut_DATA = eflete.desktop
 
-icondir = /usr/local/share/icons
+icondir = $(datadir)/icons
 icon_DATA = ${srcdir}/layouts/images/eflete.svg
 
 eflete.edj: Makefile
