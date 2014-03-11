@@ -802,8 +802,6 @@ wm_widget_list_new(const char *file)
              if (widget_name)
                free(widget_name);
           }
-        else
-          ERR("Invalid style name in group: %s", group);
      }
    edje_file_collection_list_free(collection);
    DBG("Parse the edje group collection id finished! The list of widget - created.");
@@ -824,7 +822,6 @@ wm_widget_list_layouts_load(const char *file)
 
    if (!file) return NULL;
 
-   DBG("Start to parse the edje group collection.");
    collection = edje_file_collection_list(file);
    if (!collection)
      {
@@ -840,11 +837,9 @@ wm_widget_list_layouts_load(const char *file)
      {
         if (!eina_str_has_prefix(group, prefix))
           {
-             printf("Layout: %s\n", group);
              layout = wm_style_add(group, group, LAYOUT);
              layouts = eina_inlist_append(layouts, EINA_INLIST_GET(layout));
           }
-         printf("Group with prefix: %s\n", group);
      }
    edje_file_collection_list_free(collection);
    DBG("Parse the edje group collection on layouts id finished!");

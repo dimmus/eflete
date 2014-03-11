@@ -691,6 +691,78 @@ group { name: "elm/genlist/tree/eflete/tree/default";
    }
 }
 
+group { name: "elm/genlist/item/eflete/level2/default";
+    inherit:"elm/genlist/item/eflete/default/default";
+    images {
+      image: "treemenu-lvl2-item-current-bg.png" COMP;
+      image: "treemenu-lvl2-item-bg.png" COMP;
+   }
+   parts {
+     part { name: "base";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fill.smooth: 0;
+            image {
+               normal: "treemenu-lvl2-item-bg.png";
+               border: 0 0 3 3;
+            }
+         }
+      }
+      part { name: "bg";
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            fill.smooth: 0;
+            image {
+               normal: "treemenu-lvl2-item-current-bg.png";
+               border: 0 0 3 3;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+}
+
+group { name: "elm/genlist/item/eflete/level3/default";
+    inherit:"elm/genlist/item/eflete/default/default";
+    images {
+      image: "treemenu-lvl3-item-current-bg.png" COMP;
+      image: "treemenu-lvl3-item-bg.png" COMP;
+   }
+   parts {
+     part { name: "base";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fill.smooth: 0;
+            image {
+               normal: "treemenu-lvl3-item-bg.png";
+               border: 0 0 1 1;
+            }
+         }
+      }
+      part { name: "bg";
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            fill.smooth: 0;
+            image {
+               normal: "treemenu-lvl3-item-current-bg.png";
+               border: 0 0 1 1;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+}
+
 #undef ITEM_HEIGHT
 
 group { name: "elm/genlist/base/eflete/default";
