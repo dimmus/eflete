@@ -223,7 +223,7 @@ prop_item_state_aspect_pref_add(Evas_Object *parent,
    unsigned char asp_pref;
    Index *index;
    int i = 0;
-   ITEM_ADD(parent, item, _("aspect pref"))
+   ITEM_ADD(parent, item, _("aspect ratio mode"))
    HOVERSEL_ADD(item, hoversel, false)
    elm_hoversel_hover_parent_set(hoversel, hoversel_parent);
    elm_object_tooltip_text_set(hoversel, tooltip);
@@ -537,7 +537,7 @@ ITEM_2SPINNER_STATE_CREATE(_("min"), state_min, w, h, int)
 ITEM_2SPINNER_STATE_CREATE(_("max"), state_max, w, h, int)
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_CREATE(_("align"), state_align, x, y, double)
-ITEM_2SPINNER_STATE_CREATE(_("aspect"), state_aspect, min, max, double)
+ITEM_2SPINNER_STATE_CREATE(_("aspect ratio"), state_aspect, min, max, double)
 ITEM_1ENTRY_STATE_CREATE(_("color class"), state, color_class)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
@@ -606,8 +606,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.max);
         elm_box_pack_end(box, pd_state.fixed);
         elm_box_pack_end(box, pd_state.align);
-        elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.aspect_pref);
+        elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
         if (type == EDJE_PART_TYPE_SPACER)
           {
@@ -679,7 +679,7 @@ ui_property_state_unset(Evas_Object *property)
 
 ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel1_relative, x, y, double)
 ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel1_offset, x, y, int)
-ITEM_2ENTRY_STATE_CREATE(_("to"), state_rel1_to, x, y)
+ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
 
 #define pd_rel1 pd->prop_state_rel1
 static Eina_Bool
@@ -710,14 +710,15 @@ ui_property_state_rel1_set(Evas_Object *property)
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"));
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd,
+                        "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
 
+        elm_box_pack_end(box, pd_rel1.to);
         elm_box_pack_end(box, pd_rel1.relative);
         elm_box_pack_end(box, pd_rel1.offset);
-        elm_box_pack_end(box, pd_rel1.to);
 
         prop_box = elm_object_content_get(property);
         elm_box_pack_end(prop_box, rel1_frame);
@@ -744,7 +745,7 @@ ui_property_state_rel1_unset(Evas_Object *property)
 
 ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel2_relative, x, y, double)
 ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel2_offset, x, y, int)
-ITEM_2ENTRY_STATE_CREATE(_("to"), state_rel2_to, x, y)
+ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 #define pd_rel2 pd->prop_state_rel2
 static Eina_Bool
@@ -775,14 +776,15 @@ ui_property_state_rel2_set(Evas_Object *property)
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"));
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd,
+                        "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
 
+        elm_box_pack_end(box, pd_rel2.to);
         elm_box_pack_end(box, pd_rel2.relative);
         elm_box_pack_end(box, pd_rel2.offset);
-        elm_box_pack_end(box, pd_rel2.to);
 
         prop_box = elm_object_content_get(property);
         elm_box_pack_end(prop_box, rel2_frame);

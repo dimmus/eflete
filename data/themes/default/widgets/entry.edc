@@ -661,12 +661,24 @@ group { name: "elm/scroller/entry_single/eflete/default";
       item: "focus_highlight" "on";
    }
    parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 20;
+            max: -1 20;
+            fixed: 1 1;
+         }
+      }
       part { name: "sb_vbar_base";
          type: RECT;
          description { state: "default" 0.0;
             fixed: 1 1;
             visible: 0;
-            rel2.relative: 1.0 0.0;
+            rel1.to: "base";
+            rel2 {
+               to: "base";
+               relative: 1.0 0.0;
+            }
          }
       }
       part { name: "elm.dragable.vbar";
@@ -694,7 +706,11 @@ group { name: "elm/scroller/entry_single/eflete/default";
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
-            rel1.relative: 1.0 0.0;
+            rel1 {
+               to: "base";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
          }
       }
       part { name: "elm.dragable.hbar";
@@ -721,10 +737,8 @@ group { name: "elm/scroller/entry_single/eflete/default";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 0.5 0.5;
-            min: 0 19;
-            max: -1 19;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
+            rel1.to: "base";
+            rel2.to: "base";
             image {
                normal: "input-text-bg1.png";
                border: 5 5 5 5;
@@ -743,8 +757,14 @@ group { name: "elm/scroller/entry_single/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 1 1;
-            rel2.offset: -2 -2;
+            rel1 {
+               to: "base";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "base";
+               offset: -2 -2;
+            }
          }
       }
       part { name: "elm.swallow.content";
@@ -767,8 +787,14 @@ group { name: "elm/scroller/entry_single/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 1 1;
-            rel2.offset: -2 -2;
+            rel1 {
+               to: "base";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "base";
+               offset: -2 -2;
+            }
          }
       }
       part { name: "elm.swallow.icon";
@@ -779,7 +805,6 @@ group { name: "elm/scroller/entry_single/eflete/default";
             align: 0.0 0.5;
             max: 0 18;
             rel1 {
-               offset: 1 -1;
                to: "bg";
             }
             rel2.to: "bg";
@@ -795,7 +820,7 @@ group { name: "elm/scroller/entry_single/eflete/default";
          clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 0;
-            align: 1 0.5;
+            align: 1.0 0.5;
             max: 0 17;
             rel1.to: "bg";
             rel2 {
