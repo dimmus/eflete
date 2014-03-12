@@ -940,6 +940,24 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    return _style;
 }
 
+Style *
+_layout_object_find(Eina_Inlist *layout_list, const char *style_full_name)
+{
+   Style *_layout = NULL;
+
+   if ((!layout_list) || (!style_full_name)) return NULL;
+
+   EINA_INLIST_FOREACH(layout_list, _layout)
+     {
+        if (!strcmp(_layout->full_group_name, style_full_name)) break;
+     }
+
+   if (!_layout) return NULL;
+
+   return _layout;
+
+}
+
 Eina_Bool
 wm_widget_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
@@ -970,6 +988,36 @@ wm_widget_list_objects_load(Eina_Inlist *widget_list,
      {
         main_name = edje_edit_group_aliased_get(alias->obj, alias->full_group_name);
         alias->main_group = wm_style_object_find(widget_list, main_name);
+        evas_object_del(alias->obj);
+        alias->obj = NULL;
+     }
+   eina_list_free(alias_list);
+   return true;
+}
+
+Eina_Bool
+wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
+                            Evas *e,
+                            const char *path)
+{
+   Style *layout = NULL, *alias = NULL;
+   Eina_List *alias_list = NULL, *l = NULL;
+   const char *main_name;
+
+   if ((!layouts_list) || (!e) || (!path)) return false;
+
+   EINA_INLIST_FOREACH(layouts_list, layout)
+     {
+         wm_style_data_load(layout, e, path);
+         if (layout->isAlias)
+           alias_list = eina_list_append(alias_list, layout);
+     }
+
+   EINA_LIST_FOREACH(alias_list, l, alias)
+     {
+        main_name = edje_edit_group_aliased_get(alias->obj, alias->full_group_name);
+        alias->main_group = _layout_object_find(layouts_list, main_name);
+        if (!alias->main_group) continue;
         evas_object_del(alias->obj);
         alias->obj = NULL;
      }

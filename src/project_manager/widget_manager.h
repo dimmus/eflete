@@ -398,6 +398,21 @@ Eina_Bool
 wm_widget_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path);
+
+/**
+ * Create edje edit object and load data from edj-file for custom layouts only.
+ *
+ * @param layouts_list A list of layouts, which stored in file.
+ * @param e A Evas object.
+ * @param path Path to theme file (.edj).
+ * @return EINA_TRUE if a list os deleted.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
+                             Evas *e, const char *path);
+
 /**
  * Return the string with the name of the part type by the giving id (int).
  * @note the returned string should not be deleted!
