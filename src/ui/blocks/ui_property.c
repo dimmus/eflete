@@ -452,11 +452,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_object_content_set(part_drag_frame, box);
 
         pd_part_drag.drag_x = prop_item_part_drag_x_step_x_add(box, pd,
-                                 0.0, 9999.0, 1.0, _("%.0f px"),
+                                 0.0, 9999.0, 1.0, _("%.0f"),
                                  _("Enable/Disable draggin along X axis"),
                                  _("Set a drag step value"));
         pd_part_drag.drag_y = prop_item_part_drag_y_step_y_add(box, pd,
-                                 0.0, 9999.0, 1.0, _("%.0f px"),
+                                 0.0, 9999.0, 1.0, _("%.0f"),
                                  _("Enable/Disable draggin along Y axis"),
                                  _("Set a drag step value"));
         pd_part_drag.confine = prop_item_part_drag_confine_add(box, pd,
@@ -568,11 +568,13 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0, _("%.0f px"),
+                          0.0, 9999.0, 1.0, "%.0f",
+                          "w", "px", "h", "px",
                           _("Minimum part width in pixels."),
                           _("Minimum part height in pixels."));
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
-                          -1.0, 9999.0, 1.0, _("%.0f px"),
+                          -1.0, 9999.0, 1.0, "%.0f",
+                          "w", "px", "h", "px",
                           _("Maximum part width in pixels."),
                           _("Maximum part height in pixels."));
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
@@ -580,10 +582,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
                            _("This affects the minimum height calculation."));
         pd_state.align = prop_item_state_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
+                            "x", "%", "y", "%",
                             _("Part horizontal align: 0.0 = left  1.0 = right"),
                             _("Part vertical align: 0.0 = top  1.0 = bottom"));
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
                              0.0, 1.0, 0.1, "%1.2f",
+                             "", "", "", "",
                             _("Normally width and height can be "
                              "resized to any values independently"),
                             _("Normally width and height can be "
@@ -693,6 +697,7 @@ ui_property_state_rel1_set(Evas_Object *property)
 
         pd_rel1.relative = prop_item_state_rel1_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
+                              "", "%", "", "%",
                               _("Define the position of left-up corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
                               "by X axis."),
@@ -700,7 +705,8 @@ ui_property_state_rel1_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."));
         pd_rel1.offset = prop_item_state_rel1_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, _("%.0f px"),
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "x", "px", "y", "px",
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"));
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd,
@@ -756,6 +762,7 @@ ui_property_state_rel2_set(Evas_Object *property)
 
         pd_rel2.relative = prop_item_state_rel2_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
+                              "", "%", "", "%",
                               _("Define the position of right-down corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
                               "by X axis."),
@@ -763,7 +770,8 @@ ui_property_state_rel2_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."));
         pd_rel2.offset = prop_item_state_rel2_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, _("%.0f px"),
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "x", "px", "y", "px",
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"));
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd,
@@ -841,6 +849,7 @@ ui_property_state_text_set(Evas_Object *property)
                            _("Change text font's size.'"));
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
+                            "x", "%", "y", "%",
                             _("Text horizontal align. "
                             "0.0 = left  1.0 = right"),
                             _("Text vertical align. "

@@ -57,17 +57,19 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *box, *spinner1, *spinner2; \
    ITEM_ADD(parent, item, text) \
-   BOX_ADD(item, box, true, true); \
-   elm_box_padding_set(box, 5, 0); \
+   BOX_ADD(item, box, true, false); \
+   elm_box_align_set(box, 0.0, 0.5); \
    SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
-   elm_spinner_label_format_set(spinner1, "%.0f px"); \
+   elm_spinner_label_format_set(spinner1, "%.0f"); \
+   elm_object_part_text_set(spinner1, "text.end", "px"); \
    elm_spinner_value_set(spinner1, edje_edit_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    elm_box_pack_end(box, spinner1); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
-   elm_spinner_label_format_set(spinner2, "%.0f px"); \
+   elm_spinner_label_format_set(spinner2, "%.0f"); \
+   elm_object_part_text_set(spinner2, "text.end", "px"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    elm_box_pack_end(box, spinner2); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
@@ -220,6 +222,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    elm_box_pack_end(box, check); \
    SPINNER_ADD(box, spinner, min, max, step, true, DEFAULT_STYLE) \
+   elm_object_part_text_set(spinner, "text.end", "px"); \
    elm_spinner_label_format_set(spinner, fmt); \
    st_value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, pd->part->name); \
    elm_spinner_value_set(spinner, st_value); \
@@ -403,6 +406,10 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             double max, \
                                             double step, \
                                             const char *fmt, \
+                                            const char *sp1_lb_start, \
+                                            const char *sp1_lb_end, \
+                                            const char *sp2_lb_start, \
+                                            const char *sp2_lb_end, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
@@ -413,6 +420,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_box_padding_set(box, 5, 0); \
    SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner1, fmt); \
+   elm_object_part_text_set(spinner1, "text.start", sp1_lb_start); \
+   elm_object_part_text_set(spinner1, "text.end", sp1_lb_end); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -423,6 +432,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner2, fmt); \
+   elm_object_part_text_set(spinner2, "text.start", sp2_lb_start); \
+   elm_object_part_text_set(spinner2, "text.end", sp2_lb_end); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
