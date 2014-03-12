@@ -45,10 +45,11 @@ ui_block_add(Evas_Object *parent);
  *
  * @param block the block object
  * @param vis if EINA_TRUE - title show, EINA_FALSE - title hide
+ * @return EINA_TRUE if succesfull, EINA_FALSE - otherwise
  *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_title_visible(Evas_Object *block, Eina_Bool vis);
 
 /**
@@ -56,10 +57,11 @@ ui_block_title_visible(Evas_Object *block, Eina_Bool vis);
  *
  * @param block the block object
  * @param title the title to set
+ * @return EINA_TRUE if succesfull, EINA_FALSE - otherwise
  *
  * @ingroup Block
  */
-void
+Eina_Bool
 ui_block_title_text_set(Evas_Object *block, const char *title);
 
 /**

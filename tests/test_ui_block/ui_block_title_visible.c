@@ -29,6 +29,72 @@
  * @}
  */
 
+/**
+ * @addtogroup ui_block_title_visible
+ * @{
+ * <tr>
+ * <td>ui_block_title_visible</td>
+ * <td>ui_block_title_visible_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 Created window.
+ * @step 3 block created
+ *
+ * @procedure
+ * @step 1 Call ui_block_title_visible(block, EINA_FALSE)
+ * @step 2 Call ui_block_title_visible(block, EINA_TRUE)
+ * @step 3 Call ui_block_title_visible(block, EINA_TRUE)
+ * </td>
+ * <td>Evas_Object *block, Eina_Bool</td>
+ * <td>all checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_block_title_visible_p)
+{
+   Evas_Object *win, *block;
+
+   elm_init(0, 0);
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   block = ui_block_add(win);
+   ck_assert_msg(ui_block_title_visible(block, EINA_TRUE), "Cannot set visibility\n");
+   ck_assert_msg(ui_block_title_visible(block, EINA_FALSE), "Cannot set visibility\n");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_block_title_visible
+ * @{
+ * <tr>
+ * <td>ui_block_title_visible</td>
+ * <td>ui_block_title_visible_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call ui_block_title_visible(NULL, EINA_FALSE)
+ * @step 2 Call ui_block_title_visible(NULL, EINA_TRUE)
+ * </td>
+ * <td>NULL, EINA_TRUE</td>
+ * <td>all checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_block_title_visible_n)
+{
+   elm_init(0, 0);
+   ck_assert_msg(!ui_block_title_visible(NULL, EINA_TRUE), "Set visible to not existing object\n");
+   ck_assert_msg(!ui_block_title_visible(NULL, EINA_FALSE), "Set visible to not existing object\n");
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup ui_block_title_visible
