@@ -490,7 +490,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                            pd->part->curr_state, \
                                            pd->part->curr_state_value); \
    ITEM_ADD(parent, item, TEXT) \
-   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    if (btn_func_cb) \
      { \
@@ -572,18 +572,22 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             Prop_Data *pd, \
+                                            const char* guide1, \
+                                            const char* guide2, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
    Evas_Object *item, *box, *entry1, *entry2; \
    Eina_Stringshare *value; \
    ITEM_ADD(parent, item, TEXT) \
-   BOX_ADD(item, box, true, true) \
-   elm_box_padding_set(box, 5, 0); \
+   BOX_ADD(item, box, false, true) \
+   elm_box_padding_set(box, 0, 6); \
    ENTRY_ADD(box, entry1, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry1, elm_entry_filter_accept_set, &accept_prop); \
+   elm_object_part_text_set(entry1, "elm.guide", guide1); \
    ENTRY_ADD(box, entry2, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry2, elm_entry_filter_accept_set, &accept_prop); \
+   elm_object_part_text_set(entry2, "elm.guide", guide2); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
