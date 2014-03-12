@@ -549,51 +549,71 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         char **c = NULL;
         const char *widget = NULL, *type = NULL, *style_name = NULL,
                    *custom_name = NULL;
-        if (strstr(style->full_group_name, "gengrid"))
-          {
-             c = eina_str_split(style->full_group_name, "/", 5);
-             custom_name = c[4];
-          }
-        else
-          c = eina_str_split(style->full_group_name, "/", 4);
-        widget = c[1];
-        type = c[2];
-        style_name = c[3];
-
-        if (!live->object)
-          {
-             live->object = _elm_widget_create(widget, type, style_name, live->live_view);
-             elm_object_part_content_set(live->live_view, "live_object", live->object);
-             evas_object_show(live->live_view);
-          }
-
-        if (!live->object)
-          {
-             NOTIFY_INFO(3, _("Widget isn't implemented yet or isn't exist"));
-             free(c[0]);
-             free(c);
-             return false;
-          }
-
         live->current_scale = 1.0;
         elm_spinner_value_set(live->scale_spinner, 1.0);
 
-        live_view_theme_update(live, project);
-        if ((!strcmp(type, "item")) && (custom_name))
-          elm_object_style_set(live->object, custom_name);
-        else
-          elm_object_style_set(live->object, style_name);
-        elm_object_scale_set(live->object, live->current_scale);
-        evas_object_show(live->object);
+        if (style->__type != LAYOUT)
+          {
+             if (strstr(style->full_group_name, "gengrid"))
+               {
+                  c = eina_str_split(style->full_group_name, "/", 5);
+                  custom_name = c[4];
+               }
+             else
+               c = eina_str_split(style->full_group_name, "/", 4);
+             widget = c[1];
+             type = c[2];
+             style_name = c[3];
 
-        free(c[0]);
-        free(c);
+             if (!live->object)
+               {
+                  live->object = _elm_widget_create(widget, type, style_name,
+                                                    live->live_view);
+                  elm_object_part_content_set(live->live_view, "live_object",
+                                              live->object);
+                  evas_object_show(live->live_view);
+               }
+
+             if (!live->object)
+               {
+                  NOTIFY_INFO(3, _("Widget isn't implemented yet or isn't exist"));
+                  free(c[0]);
+                  free(c);
+                  return false;
+               }
+
+             live_view_theme_update(live, project);
+             if ((!strcmp(type, "item")) && (custom_name))
+               elm_object_style_set(live->object, custom_name);
+             else
+               elm_object_style_set(live->object, style_name);
+             elm_object_scale_set(live->object, live->current_scale);
+             evas_object_show(live->object);
+
+             free(c[0]);
+             free(c);
+          }
+        else
+          {
+             live->object = elm_layout_add(live->live_view);
+             elm_layout_file_set(live->object, project->swapfile,
+                                 style->full_group_name);
+             elm_object_part_content_set(live->live_view, "live_object",
+                                         live->object);
+             evas_object_show(live->live_view);
+             live_view_theme_update(live, project);
+             elm_object_style_set(live->object, style->full_group_name);
+             elm_object_scale_set(live->object, live->current_scale);
+
+             evas_object_show(live->object);
+          }
      }
    else
      {
         WARN("Edje edit style object was deleted. Could'nt set it into groupspace");
         return false;
      }
+
    elm_layout_signal_emit(live->live_view, "live_view,show", "eflete");
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
@@ -633,7 +653,9 @@ Eina_Bool
 live_view_theme_update(Live_View *live, Project *project)
 {
    if ((!live) || (!project) || (!live->object)) return false;
-
+   if ((project->current_style) && (project->current_style->__type == LAYOUT))
+     elm_layout_file_set(live->object, project->swapfile,
+                           project->current_style->full_group_name);
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
    elm_object_theme_set(live->object, theme);

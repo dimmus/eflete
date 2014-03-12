@@ -232,6 +232,46 @@ group { name: "elm/genlist/item/small/double_label/default";
       }
    }
 }
+
+group { name: "elm/genlist/item/eflete/double_label/default";
+   inherit: "elm/genlist/item/small/double_label/default";
+   images {
+      image: "treemenu-lvl3-item-current-bg.png" COMP;
+      image: "treemenu-lvl3-item-bg.png" COMP;
+   }
+   parts {
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "base";
+         type: IMAGE;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image.normal: "treemenu-lvl3-item-bg.png";
+            fill.smooth: 0;
+         }
+      }
+      part { name: "bg";
+         type: IMAGE;
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            image.normal: "treemenu-lvl3-item-current-bg.png";
+            fill.smooth: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+    }
+}
+
+
 group { name: "elm/genlist/item/eflete/default/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
@@ -1205,3 +1245,20 @@ group { name: "elm/genlist/base/eflete/default";
       }
    }
 }
+
+group { name: "elm/genlist/base/eflete/dark";
+      inherit: "elm/genlist/base/eflete/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.background";
+            rel2.to: "elm.swallow.background";
+            color: LIST_DARK_BG_COLOR
+            color_class: "scrollframe_base";
+         }
+      }
+
+   }
+}
+

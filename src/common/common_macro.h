@@ -54,5 +54,11 @@
                      EDJE_OBJECT = _style->obj; \
                  } \
            } \
+     } \
+   if ((!EDJE_OBJECT) && (PROJECT->layouts)) \
+     { \
+       _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
+       EDJE_OBJECT = _style->obj;\
      }
+
 #endif /* COMMON_MACRO_H */

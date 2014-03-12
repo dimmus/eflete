@@ -1017,9 +1017,11 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
      {
         main_name = edje_edit_group_aliased_get(alias->obj, alias->full_group_name);
         alias->main_group = _layout_object_find(layouts_list, main_name);
-        if (!alias->main_group) continue;
-        evas_object_del(alias->obj);
-        alias->obj = NULL;
+        if (alias->main_group)
+          {
+             evas_object_del(alias->obj);
+             alias->obj = NULL;
+          }
      }
    eina_list_free(alias_list);
    return true;

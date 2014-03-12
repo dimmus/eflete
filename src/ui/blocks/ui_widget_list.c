@@ -20,9 +20,11 @@
 #include "ui_widget_list.h"
 #include "widget_manager.h"
 
+static Elm_Genlist_Item_Class *_itc_node = NULL;
 static Elm_Genlist_Item_Class *_itc_widget = NULL;
 static Elm_Genlist_Item_Class *_itc_class = NULL;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
+static Elm_Genlist_Item_Class *_itc_layout = NULL;
 static Elm_Genlist_Item_Class *_itc_part = NULL;
 
 static inline Elm_Object_Item *
@@ -140,6 +142,35 @@ _item_part_content_get(void *data,
      }
    return NULL;
 }
+
+static char *
+_item_node_label_get(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       const char *part __UNUSED__)
+{
+   if (!data)
+     {
+        ERR("Missing node of genlist item is missing");
+        return NULL;
+     }
+   return strdup((char *)data);
+}
+
+
+static char *
+_item_layout_label_get(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      const char *part __UNUSED__)
+{
+   Style *layout = (Style *)data;
+   if (!layout->full_group_name)
+     {
+        ERR("It impossible, but it is occurred, layout name is missing!");
+        return NULL;
+     }
+   return strdup(layout->full_group_name);
+}
+
 
 static char *
 _item_style_label_get(void *data,
@@ -316,8 +347,12 @@ _on_style_clicked_double(void *data,
 
    nf = evas_object_data_get(obj, "naviframe");
    _style = elm_object_item_data_get(glit);
-   if (_style->__type != STYLE) return;
-   if (_style->isAlias) _style = _style->main_group;
+   if ((_style->__type != STYLE) && (_style->__type != LAYOUT)) return;
+   if (_style->isAlias)
+     {
+       if (!_style->main_group) return;
+        _style = _style->main_group;
+     }
    parts = _style->parts;
 
    evas_object_smart_callback_call(nf, "wl,style,select", _style);
@@ -325,7 +360,7 @@ _on_style_clicked_double(void *data,
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "small/double_label";
+        _itc_part->item_style = "eflete/double_label";
         _itc_part->func.text_get = _item_part_label_get;
         _itc_part->func.content_get = _item_part_content_get;
         _itc_part->func.state_get = NULL;
@@ -333,7 +368,8 @@ _on_style_clicked_double(void *data,
      }
 
    gl_parts = elm_genlist_add(nf);
-   elm_object_style_set(gl_parts, DEFAULT_STYLE);
+   elm_object_style_set(gl_parts, "eflete/dark");
+   elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
    pr->current_style = _style;
    evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_style, pr);
    evas_object_size_hint_align_set(gl_parts, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -341,13 +377,11 @@ _on_style_clicked_double(void *data,
 
    EINA_INLIST_FOREACH(parts, _part)
      {
-        eoi = elm_genlist_item_append(gl_parts, _itc_part,
-                                      _part,
+        eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
                                       NULL, ELM_GENLIST_ITEM_NONE,
-                                      NULL, NULL);
+                                      _on_part_select, nf);
         elm_object_item_data_set(eoi, _part);
      }
-   evas_object_smart_callback_add(gl_parts, "selected", _on_part_select, nf);
    evas_object_data_set(gl_parts, "naviframe", nf);
 
    ICON_ADD(nf, ic, false, EFLETE_IMG_PATH"icon-back.png");
@@ -429,7 +463,7 @@ _on_widget_clicked_double(void *data,
    if(!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "eflete/default";
+        _itc_class->item_style = "eflete/level2";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -439,7 +473,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "eflete/default";
+        _itc_style->item_style = "eflete/level3";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = _item_style_content_get;
         _itc_style->func.state_get = NULL;
@@ -448,7 +482,8 @@ _on_widget_clicked_double(void *data,
 
    gl_class = elm_genlist_add(nf);
    evas_object_data_set(gl_class, "naviframe", nf);
-   elm_object_style_set(gl_class, "eflete/default");
+   elm_object_style_set(gl_class, "eflete/dark");
+   elm_genlist_select_mode_set(gl_class, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_align_set(gl_class, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_class, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
@@ -463,7 +498,7 @@ _on_widget_clicked_double(void *data,
           {
              glit_style = elm_genlist_item_append(gl_class, _itc_style,
                              _style, glit_class, ELM_GENLIST_ITEM_NONE,
-                             NULL, NULL);
+                             _on_style_clicked_double, data);
              elm_object_item_data_set(glit_style, _style);
           }
      }
@@ -474,9 +509,6 @@ _on_widget_clicked_double(void *data,
    elm_layout_content_set(bt, "icon", ic);
    elm_object_style_set(bt, "eflete/default");
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
-   evas_object_smart_callback_add(gl_class, "clicked,double",
-                                  _on_style_clicked_double, data);
-
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
    BUTTON_ADD(nf, button, NULL)
@@ -514,7 +546,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if(!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "eflete/default";
+        _itc_class->item_style = "eflete/level2";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -524,7 +556,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "eflete/default";
+        _itc_style->item_style = "eflete/level3";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -558,11 +590,31 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_widget)
      {
         _itc_widget = elm_genlist_item_class_new();
-        _itc_widget->item_style = "eflete/default";
+        _itc_widget->item_style = "eflete/level2";
         _itc_widget->func.text_get = _item_widget_label_get;
         _itc_widget->func.content_get = NULL;
         _itc_widget->func.state_get = NULL;
         _itc_widget->func.del = NULL;
+     }
+
+   if (!_itc_node)
+     {
+        _itc_node = elm_genlist_item_class_new();
+        _itc_node->item_style = "eflete/tree";
+        _itc_node->func.text_get = _item_node_label_get;
+        _itc_node->func.content_get = NULL;
+        _itc_node->func.state_get = NULL;
+        _itc_node->func.del = NULL;
+     }
+
+   if (!_itc_layout)
+     {
+        _itc_layout = elm_genlist_item_class_new();
+        _itc_layout->item_style ="eflete/level2";
+        _itc_layout->func.text_get = _item_layout_label_get;
+        _itc_layout->func.content_get = _item_style_content_get;
+        _itc_layout->func.state_get = NULL;
+        _itc_layout->func.del = NULL;
      }
 
    nf = elm_naviframe_add(parent);
@@ -571,7 +623,7 @@ ui_widget_list_add(Evas_Object *parent)
    elm_object_style_set(nf, "eflete");
 
    gl_widgets = elm_genlist_add(nf);
-   elm_object_style_set(gl_widgets, "eflete/default");
+   elm_object_style_set(gl_widgets, "eflete/dark");
    evas_object_size_hint_align_set(gl_widgets,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
@@ -596,34 +648,129 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
    item_gl_widgets = _widget_list_get(object);
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
 }
+static void
+_expand_request_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, true);
+}
+
+static void
+_contract_request_cb(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, false);
+}
+
+static void
+_wl_expanded_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Style *_layout;
+   Widget *_widget;
+   Project *project = (Project *)data;
+   Elm_Object_Item *eoi;
+   Elm_Object_Item *tree_main = event_info;
+   Evas_Object *gl_widgets = obj;
+   char *type = NULL;
+
+   type = elm_object_item_data_get(tree_main);
+   if (!strcmp("Widgets", type))
+     {
+      EINA_INLIST_FOREACH(project->widgets, _widget)
+        {
+          eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget,
+                                        tree_main, ELM_GENLIST_ITEM_NONE,
+                                        _on_widget_clicked_double, project);
+          elm_object_item_data_set(eoi, _widget);
+        }
+     }
+   else
+    {
+       EINA_INLIST_FOREACH(project->layouts, _layout)
+         {
+            eoi = elm_genlist_item_append(gl_widgets, _itc_layout, _layout,
+                                          tree_main, ELM_GENLIST_ITEM_NONE,
+                                          _on_style_clicked_double, project);
+            elm_object_item_data_set(eoi, _layout);
+         }
+    }
+   elm_genlist_item_selected_set(tree_main, false);
+}
+
+static void
+_wl_contracted_cb(void *data __UNUSED__,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
+}
+
 
 Eina_Bool
 ui_widget_list_data_set(Evas_Object *object, Project *project)
 {
    Widget *_widget;
+   Style *_layout;
    Elm_Object_Item *eoi;
+   Elm_Object_Item *tree_group;
    Evas_Object *gl_widgets;
    Eina_Inlist *widget_list = NULL;
 
-   if ((!object) || (!project) || (!project->widgets)) return false;
+   if ((!object) || (!project)) return false;
 
    widget_list = project->widgets;
 
    gl_widgets = elm_object_item_part_content_get(_widget_list_get(object),
                                                  "elm.swallow.content");
+   elm_genlist_select_mode_set(gl_widgets, ELM_OBJECT_SELECT_MODE_ALWAYS);
    wm_widget_list_objects_load(widget_list,
                                evas_object_evas_get(gl_widgets),
                                project->swapfile);
+   tree_group = elm_genlist_item_append(gl_widgets, _itc_node, "Widgets", NULL,
+                                      ELM_GENLIST_ITEM_TREE, NULL, NULL);
+   elm_object_item_data_set(tree_group, strdup("Widgets"));
+   elm_genlist_item_expanded_set(tree_group, EINA_TRUE);
 
    EINA_INLIST_FOREACH(widget_list, _widget)
      {
-        eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget, NULL,
-                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget,
+                                      tree_group, ELM_GENLIST_ITEM_NONE,
+                                      _on_widget_clicked_double, project);
         elm_object_item_data_set(eoi, _widget);
      }
 
-   evas_object_smart_callback_add(gl_widgets, "clicked,double",
-                                  _on_widget_clicked_double, project);
+   wm_layouts_list_objects_load(project->layouts,
+                               evas_object_evas_get(gl_widgets),
+                               project->swapfile);
+
+   tree_group = elm_genlist_item_append(gl_widgets, _itc_node, "Layouts", NULL,
+                                      ELM_GENLIST_ITEM_TREE, NULL, NULL);
+   elm_object_item_data_set(tree_group, strdup("Layouts"));
+   elm_genlist_item_expanded_set(tree_group, EINA_TRUE);
+
+   EINA_INLIST_FOREACH(project->layouts, _layout)
+     {
+        eoi = elm_genlist_item_append(gl_widgets, _itc_layout, _layout,
+                                      tree_group, ELM_GENLIST_ITEM_NONE,
+                                      _on_style_clicked_double, project);
+        elm_object_item_data_set(eoi, _layout);
+     }
+
+
+   evas_object_smart_callback_add(gl_widgets, "expand,request",
+                                  _expand_request_cb, gl_widgets);
+   evas_object_smart_callback_add(gl_widgets, "contract,request",
+                                  _contract_request_cb, gl_widgets);
+   evas_object_smart_callback_add(gl_widgets, "expanded",
+                                  _wl_expanded_cb, project);
+   evas_object_smart_callback_add(gl_widgets, "contracted",
+                                  _wl_contracted_cb, gl_widgets);
+
 
    return true;
 }
