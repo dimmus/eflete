@@ -19,4 +19,5 @@ collections {
    #include "widgets/label.edc"
    #include "widgets/radio.edc"
    #include "widgets/menu.edc"
+   #include "widgets/separator.edc"
 }
