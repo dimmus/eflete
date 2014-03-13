@@ -8,6 +8,7 @@ group { name: "elm/label/base/eflete/default";
          tag:  "hilight" "+ font_weight=Bold";
          tag:  "b" "+ font_weight=Bold";
          tag:  "br" "\n";
+         tag:  "a" "+ color=#00000080 underline=on underline_color=#00000080";
       }
    }
    parts {
