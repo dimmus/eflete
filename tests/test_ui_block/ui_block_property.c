@@ -29,6 +29,7 @@
  * @}
  */
 
+TEST_UI_BLOCK_CONTENT(ui_block_property, right_bottom)
 
 /**
  * @addtogroup ui_block_property

@@ -29,6 +29,7 @@
  * @}
  */
 
+TEST_UI_BLOCK_CONTENT(ui_block_live_view, bottom_right)
 
 /**
  * @addtogroup ui_block_live_view

@@ -96,6 +96,12 @@ ui_block_widget_list_get(App_Data *ap)
 }
 
 Evas_Object *
+ui_block_ws_get(App_Data *ap)
+{
+   return ui_block_content_get(ap->block.canvas);
+}
+
+Evas_Object *
 ui_block_signal_list_get(App_Data *ap)
 {
    return ui_block_content_get(ap->block.left_bottom);
