@@ -276,12 +276,17 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *prop = NULL;
    Evas_Object *groupedit = NULL;
    Eina_List *signals = NULL;
+   Style *_style = NULL, *_alias_style = NULL;
 
    if ((!ap) && (!ap->project) && (!style))
      {
         ERR("App Data or style is missing!");
         return;
      }
+
+   _alias_style = style;
+   _style = style;
+   if (_alias_style->isAlias) _style = _alias_style->main_group;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_add(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -293,11 +298,11 @@ ui_style_clicked(App_Data *ap, Style *style)
 
    /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);
-   ui_signal_list_data_set(gl_signals, style);
+   ui_signal_list_data_set(gl_signals, _style);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
-   workspace_edit_object_set(ap->workspace, style, ap->project->swapfile);
+   workspace_edit_object_set(ap->workspace, _style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
    groupedit = ws_groupedit_get(ap->workspace);
@@ -311,10 +316,10 @@ ui_style_clicked(App_Data *ap, Style *style)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
-   ui_property_style_set(prop, style, ap->workspace);
+   ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
 
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
 }
 

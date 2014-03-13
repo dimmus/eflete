@@ -340,22 +340,25 @@ _on_style_clicked_double(void *data,
    Elm_Object_Item *eoi;
    Evas_Object *nf, *gl_parts, *bt, *ic;
    Eina_Inlist *parts;
-   Style *_style;
+   Style *_style, *clicked_style;
    Part *_part;
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
    nf = evas_object_data_get(obj, "naviframe");
    _style = elm_object_item_data_get(glit);
+
    if ((_style->__type != STYLE) && (_style->__type != LAYOUT)) return;
+   clicked_style = _style;
    if (_style->isAlias)
      {
        if (!_style->main_group) return;
         _style = _style->main_group;
      }
+
    parts = _style->parts;
 
-   evas_object_smart_callback_call(nf, "wl,style,select", _style);
+   evas_object_smart_callback_call(nf, "wl,style,select", clicked_style);
 
    if (!_itc_part)
      {
@@ -393,7 +396,7 @@ _on_style_clicked_double(void *data,
    elm_object_style_set(bt, "eflete/default");
    evas_object_show(gl_parts);
 
-   elm_naviframe_item_push(nf, _style->full_group_name, bt, NULL, gl_parts, NULL);
+   elm_naviframe_item_push(nf, clicked_style->full_group_name, bt, NULL, gl_parts, NULL);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
