@@ -29,6 +29,7 @@
  * @}
  */
 
+TEST_UI_BLOCK_CONTENT(ui_block_ws, canvas)
 
 /**
  * @addtogroup ui_block_ws_set

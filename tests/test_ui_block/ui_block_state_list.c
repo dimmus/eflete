@@ -29,6 +29,7 @@
  * @}
  */
 
+TEST_UI_BLOCK_CONTENT(ui_block_state_list, bottom_left)
 
 /**
  * @addtogroup ui_block_state_list

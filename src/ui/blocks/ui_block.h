@@ -87,6 +87,17 @@ Evas_Object *
 ui_block_widget_list_get(App_Data *ap);
 
 /**
+ * Get the workspace object
+ *
+ * @param ap the application data
+ * @return workspace object
+ *
+ * @ingroup Block
+ */
+Evas_Object *
+ui_block_ws_get(App_Data *ap);
+
+/**
  * Get the part signal list object
  *
  * @param ap the application data
