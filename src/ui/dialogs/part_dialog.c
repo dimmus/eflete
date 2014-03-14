@@ -60,7 +60,8 @@ _cancel_clicked(void *data,
    const char *name = elm_entry_entry_get(entry); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
      ui_widget_list_part_add(widget_list, style, name); \
-   evas_object_del((Evas_Object *)data);
+   evas_object_del((Evas_Object *)data); \
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 
 static void
 _swallow_add_on_click(void *data,

@@ -544,6 +544,7 @@ Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
    if ((!live) || (!project)) return false;
+   live_view_widget_style_unset(live);
    if (style)
      {
         char **c = NULL;
@@ -654,8 +655,11 @@ live_view_theme_update(Live_View *live, Project *project)
 {
    if ((!live) || (!project) || (!live->object)) return false;
    if ((project->current_style) && (project->current_style->__type == LAYOUT))
-     elm_layout_file_set(live->object, project->swapfile,
-                           project->current_style->full_group_name);
+     {
+        elm_layout_file_set(live->object, project->swapfile,
+                            project->current_style->full_group_name);
+        return true;
+     }
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
    elm_object_theme_set(live->object, theme);
