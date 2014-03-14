@@ -41,6 +41,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *info;
       Evas_Object *shared_check;
+      Evas_Object *ctxpopup;
       Evas_Object *min;
       Evas_Object *max;
       Evas_Object *current;
@@ -298,26 +299,75 @@ ITEM_2SPINNER_GROUP_CREATE(_("min"), group_min, w, h)
 ITEM_2SPINNER_GROUP_CREATE(_("max"), group_max, w, h)
 
 #define pd_group pd->prop_group
+
 static void
-prop_item_alias_update(Evas_Object *item, Style *style, int count)
+_on__dismissed(void *data __UNUSED__,
+               Evas_Object *obj,
+               void *event_info __UNUSED__)
 {
-   Evas_Object *entry;
-   entry = elm_object_part_content_get(item, "elm.swallow.content");
-   const char *text_info;
+   evas_object_hide(obj);
+}
+static void
+_on__clicked(void *data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj,
+             void *event_info __UNUSED__)
+{
+   int x, y;
+   Prop_Data *pd = (Prop_Data *)data;
+   evas_object_smart_callback_del_full(pd_group.ctxpopup, "dismissed",
+                                       _on__dismissed, pd);
+   evas_object_smart_callback_add(pd_group.ctxpopup, "dismissed",
+                                  _on__dismissed, pd);
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+   evas_object_move(pd_group.ctxpopup, x, y);
+   evas_object_show(pd_group.ctxpopup);
+}
+static void
+prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
+{
+   Evas_Object *label, *label_ctx;
+   Eina_List *list = NULL, *l;
+   const char *text_info = NULL;
+   void *list_data;
+   Eina_Strbuf *text_ctx;
+
+   label = elm_object_part_content_get(pd_group.info, "elm.swallow.content");
+   label_ctx = elm_object_content_get(pd_group.ctxpopup);
+   list = edje_edit_group_aliases_get(style->obj, style->full_group_name);
    if (style->isAlias)
      {
-        text_info = eina_stringshare_add("This is alias of [<a>%s</a>]");
+        text_info = eina_stringshare_add("This is alias of <a>%s</a>");
         text_info = eina_stringshare_printf(text_info,
                                             style->main_group->full_group_name);
      }
    else
      {
         text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
-        text_info = eina_stringshare_printf(text_info, count);
+        text_info = eina_stringshare_printf(text_info, aliases_count);
+
+        int count = 1;
+        text_ctx = eina_strbuf_new();
+
+        EINA_LIST_FOREACH(list, l, list_data)
+          {
+             const char *step = "%d. %s";
+             if (eina_strbuf_length_get(text_ctx) > 0)
+               eina_strbuf_append(text_ctx, "</br>");
+             step = eina_stringshare_printf(step, count++, (char *)list_data);
+             eina_strbuf_append(text_ctx, step);
+          }
+
+        evas_object_event_callback_del_full(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                       _on__clicked, pd);
+        evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                       _on__clicked, pd);
+        elm_object_text_set(label_ctx, eina_strbuf_string_get(text_ctx));
+        eina_strbuf_free(text_ctx);
      }
 
-   elm_object_text_set(entry, text_info);
-   evas_object_show(item);
+   elm_object_text_set(label, text_info);
+   evas_object_show(pd_group.info);
    eina_stringshare_del(text_info);
 }
 
@@ -337,10 +387,12 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 {
    Evas_Object *group_frame, *box, *prop_box, *info_en = NULL;
    Evas_Object *info_image;
-   Evas_Object *check;
-   Eina_List *aliases = NULL;
+   Evas_Object *check, *label_ctx;
+   Eina_List *aliases = NULL, *l;
    const char *text_info = NULL;
    int aliases_count = 0;
+   void *list_data;
+   Eina_Strbuf *text_ctx = NULL;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -362,20 +414,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    if (!pd_group.info)
      {
-        if (style->isAlias)
-          {
-             text_info = eina_stringshare_add("This is alias of [<a>%s</a>]");
-             text_info = eina_stringshare_printf(text_info,
-                                                 style->main_group->full_group_name);
-          }
-        else
-          {
-             text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
-             text_info = eina_stringshare_printf(text_info, aliases_count);
-          }
-
         LABEL_ADD(property, info_en, text_info)
-        eina_stringshare_del(text_info);
 
         info_image = elm_image_add(property);
         elm_image_file_set(info_image, EFLETE_IMG_PATH"icon-notification.png", NULL);
@@ -385,6 +424,48 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         evas_object_size_hint_weight_set(pd_group.info, EVAS_HINT_EXPAND, 0.0);
         evas_object_size_hint_align_set(pd_group.info, EVAS_HINT_FILL, 0.0);
         elm_layout_file_set(pd_group.info, EFLETE_EDJ, "eflete/property/item/info");
+
+        pd_group.ctxpopup = elm_ctxpopup_add(main_window_get());
+        elm_ctxpopup_direction_priority_set(pd_group.ctxpopup,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN);
+        elm_object_style_set(pd_group.ctxpopup, "eflete/info");
+        evas_object_hide(pd_group.ctxpopup);
+
+        if (style->isAlias)
+          {
+             text_info = eina_stringshare_add("This is alias of <a>%s</a>");
+             text_info = eina_stringshare_printf(text_info,
+                                                 style->main_group->full_group_name);
+          }
+        else
+          {
+             text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
+             text_info = eina_stringshare_printf(text_info, aliases_count);
+             int count = 1;
+             text_ctx = eina_strbuf_new();
+
+             EINA_LIST_FOREACH(aliases, l, list_data)
+               {
+                  const char *step = "%d. %s";
+                  if (eina_strbuf_length_get(text_ctx) > 0)
+                    eina_strbuf_append(text_ctx, "</br>");
+                  step = eina_stringshare_printf(step, count++, (char *)list_data);
+                  eina_strbuf_append(text_ctx, step);
+               }
+             evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                            _on__clicked, pd);
+          }
+
+        LABEL_ADD(property, label_ctx, eina_strbuf_string_get(text_ctx))
+        eina_strbuf_free(text_ctx);
+        elm_object_style_set(label_ctx, "eflete/info");
+        elm_object_content_set(pd_group.ctxpopup, label_ctx);
+
+        elm_object_text_set(info_en, text_info);
+        elm_object_style_set(info_en, "eflete/info");
         elm_object_part_content_set(pd_group.info, "elm.swallow.content", info_en);
         elm_object_part_content_set(pd_group.info, "info", info_image);
      }
@@ -430,7 +511,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      {
         if ((aliases_count > 0) || (style->isAlias))
           {
-             prop_item_alias_update(pd_group.info, style, aliases_count);
+             prop_item_alias_update(pd, style, aliases_count);
              evas_object_show(pd_group.info);
           }
         prop_item_shared_check_update(pd_group.shared_check, aliases_count);
@@ -459,6 +540,8 @@ ui_property_style_unset(Evas_Object *property)
    evas_object_hide(pd_group.info);
    elm_box_unpack(prop_box, pd_group.info);
    elm_box_unpack(prop_box, pd_group.shared_check);
+   evas_object_event_callback_del_full(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _on__clicked, pd);
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
