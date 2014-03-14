@@ -122,9 +122,11 @@ typedef struct _Ws_Smart_Data Ws_Smart_Data;
     }
 
 static const char SIG_PART_SELECTED[] = "ws,part,selected";
+static const char SIG_PART_UNSELECTED[] = "ws,part,unselected";
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_PART_SELECTED, "s"},
+   {SIG_PART_UNSELECTED, "s"},
    {NULL, NULL}
 };
 
@@ -231,7 +233,8 @@ _normal_mode_click(void *data,
    highlight_object_follow(sd->highlight.space_hl, follow);
 
    evas_object_hide(sd->highlight.space_hl);
-   evas_object_show(sd->highlight.highlight);
+   if (sd->highlight.part)
+     evas_object_show(sd->highlight.highlight);
 
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
@@ -893,6 +896,16 @@ _on_part_select(void *data,
    evas_object_smart_callback_call(workspace, SIG_PART_SELECTED, event_info);
 }
 
+static void
+_on_part_unselect(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   Evas_Object *workspace = (Evas_Object *)data;
+   evas_object_smart_callback_call(workspace, SIG_PART_UNSELECTED, event_info);
+   workspace_highlight_unset(workspace);
+}
+
 Eina_Bool
 workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 {
@@ -909,6 +922,8 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
+   evas_object_smart_callback_add(sd->groupedit, "part,unselected",
+                                  _on_part_unselect, obj);
    evas_object_smart_callback_add(sd->groupedit, "container,changed",
                                   _ws_ruler_abs_zero_move_cb, obj);
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",

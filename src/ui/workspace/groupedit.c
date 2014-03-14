@@ -276,6 +276,24 @@ _style_set(Evas_Object *o, const char *style)
    #undef GROUP_NAME
 }
 
+static void
+_unselect_part(void *data,
+               Evas *e __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Evas_Object *o = data;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   if (!sd->obj_area.gp) return;
+   if (sd->separated)
+     {
+        if (!sd->selected) return;
+        _selected_item_return_to_place(sd);
+     }
+   evas_object_smart_callback_call(o, SIG_PART_UNSELECTED,
+                                   (void *)sd->obj_area.gp->name);
+}
+
 /* create and setup a new example smart object's internals */
 static void
 _groupedit_smart_add(Evas_Object *o)
@@ -286,6 +304,8 @@ _groupedit_smart_add(Evas_Object *o)
 
    priv->e = evas_object_evas_get(o);
    priv->container = edje_object_add(priv->e);
+   priv->event = evas_object_rectangle_add(priv->e);
+   evas_object_color_set(priv->event, 0, 0, 0, 0);
 
    priv->handler_TL.obj = edje_object_add(priv->e);
    priv->handler_TL.w = priv->handler_TL.h = 5;
@@ -304,6 +324,9 @@ _groupedit_smart_add(Evas_Object *o)
                                   _mouse_up_hRB_cb, o);
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_cb, o);
+
+   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _unselect_part, o);
 
    priv->obj = o;
    priv->con_size_min.w = 0;
@@ -336,6 +359,7 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_smart_member_add(priv->handler_TL.obj, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
    evas_object_smart_member_add(priv->obj_area.obj, o);
+   evas_object_smart_member_add(priv->event, o);
 
    _style_set(o, "default");
 }
@@ -350,6 +374,7 @@ _groupedit_smart_del(Evas_Object *o)
    evas_object_smart_member_del(sd->container);
    evas_object_smart_member_del(sd->handler_TL.obj);
    evas_object_smart_member_del(sd->handler_BR.obj);
+   evas_object_smart_member_del(sd->event);
 
    _groupedit_parent_sc->del(o);
 }
@@ -371,6 +396,7 @@ _groupedit_smart_show(Evas_Object *o)
         evas_object_show(sd->handler_BR.obj);
         evas_object_show(sd->container);
      }
+   evas_object_show(sd->event);
 
    _groupedit_parent_sc->show(o);
 }
@@ -383,14 +409,15 @@ _groupedit_smart_hide(Evas_Object *o)
    evas_object_hide(sd->handler_TL.obj);
    evas_object_hide(sd->handler_BR.obj);
    evas_object_hide(sd->container);
+   evas_object_hide(sd->event);
 
    _groupedit_parent_sc->hide(o);
 }
 
 static void
 _groupedit_smart_resize(Evas_Object *o,
-                            Evas_Coord w,
-                            Evas_Coord h)
+                        Evas_Coord w,
+                        Evas_Coord h)
 {
    Evas_Coord ow, oh;
    //WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
@@ -413,12 +440,15 @@ static void
 _groupedit_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord cw, ch;
+   Evas_Coord cw, ch, pw, ph;
    int htl_w, htl_h;
    int hrb_w, hrb_h;
    char buff[16];
 
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
+   evas_object_geometry_get(priv->parent, NULL, NULL, &pw, &ph);
+   evas_object_resize(priv->event, pw, ph);
+
    evas_object_geometry_get(o, &x, &y, &w, &h);
    htl_w = priv->handler_TL.w;
    htl_h = priv->handler_TL.h;

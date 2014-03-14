@@ -946,7 +946,9 @@ ui_widget_list_selected_part_get(Evas_Object *object)
 }
 
 Eina_Bool
-ui_widget_list_part_selected_set(Evas_Object *object, const char *part)
+ui_widget_list_part_selected_set(Evas_Object *object,
+                                 const char *part,
+                                 Eina_Bool selected)
 {
    Evas_Object *gl_parts;
 
@@ -956,7 +958,7 @@ ui_widget_list_part_selected_set(Evas_Object *object, const char *part)
    Elm_Object_Item *item = _genlist_find_item_by_name(gl_parts, part);
    if (item)
      {
-        elm_genlist_item_selected_set(item, true);
+        elm_genlist_item_selected_set(item, selected);
         elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
      }
    else return false;

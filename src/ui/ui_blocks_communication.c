@@ -150,15 +150,37 @@ _property_change(void *data,
 
 static void
 _on_ws_part_select(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
    App_Data *ap = (App_Data *)data;
    const char *part = (const char *)event_info;
    if (part)
-     ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part);
+     ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
 }
 
+static void
+_on_ws_part_unselect(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *block, *prop;
+   const char *part = (const char *)event_info;
+
+   if (part)
+     {
+        ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
+        /* FIXME:  find way to does'nt make immidietly render */
+        block = ui_block_state_list_get(ap);
+        if (block) elm_genlist_clear(block);
+        ui_states_list_data_unset(ui_block_signal_list_get(ap));
+        /*TODO: in future it will be moved to block api. */
+        elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
+        prop = ui_block_property_get(ap);
+        ui_property_part_unset(prop);
+     }
+}
 
 void
 ui_part_back(App_Data *ap)
@@ -193,6 +215,8 @@ ui_part_back(App_Data *ap)
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
+   evas_object_smart_callback_del_full(ap->workspace, "ws,part,unselected",
+                                       _on_ws_part_unselect, ap);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    workspace_highlight_unset(ap->workspace);
 }
@@ -305,6 +329,8 @@ ui_style_clicked(App_Data *ap, Style *style)
    workspace_edit_object_set(ap->workspace, _style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
+   evas_object_smart_callback_add(ap->workspace, "ws,part,unselected",
+                                  _on_ws_part_unselect, ap);
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
 
