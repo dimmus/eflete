@@ -93,7 +93,8 @@ _on_glit_selected(void *data,
 
    const char *style_name = NULL;
    const char *tag, *value;
-   char style[BUFF_MAX] = "DEFAULT=' font_size="FONT_SIZE;
+   Eina_Strbuf *style = eina_strbuf_new();
+   eina_strbuf_append(style, "DEFAULT=' font_size="FONT_SIZE);
 
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
@@ -110,7 +111,7 @@ _on_glit_selected(void *data,
           {
              value = edje_edit_style_tag_value_get(edje_edit_obj, style_name,
                                                    tag);
-             eina_strlcat(style, value, BUFF_MAX);
+             eina_strbuf_append(style, value);
           }
         elm_entry_entry_set(style_edit->entry_tag, "");
         elm_entry_entry_set(style_edit->entry_prop, "");
@@ -123,14 +124,16 @@ _on_glit_selected(void *data,
         value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
         elm_entry_entry_set(style_edit->entry_tag, tag);
         elm_entry_entry_set(style_edit->entry_prop, value);
-        eina_strlcat(style, value, BUFF_MAX);
+        eina_strbuf_append(style, value);
      }
    elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
-   eina_strlcat(style, "'", BUFF_MAX);
+   eina_strbuf_append(style, "'");
    evas_object_show(style_edit->entry_style);
-   elm_entry_text_style_user_push(style_edit->entry_style, style);
+   elm_entry_text_style_user_push(style_edit->entry_style,
+                                  eina_strbuf_string_get(style));
    evas_object_size_hint_max_set(style_edit->entry_style, EVAS_HINT_FILL,
                                  EVAS_HINT_FILL);
+   eina_strbuf_free(style);
 }
 
 static void
