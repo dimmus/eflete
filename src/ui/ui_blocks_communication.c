@@ -35,9 +35,11 @@ _del_part(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
+   if (!style) return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_del(ap->workspace, part->name)))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void
@@ -50,6 +52,7 @@ _above_part(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_above(ap->workspace, part->name)))
       ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void
@@ -62,6 +65,7 @@ _below_part(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_below(ap->workspace, part->name)))
       ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void

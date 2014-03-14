@@ -85,7 +85,6 @@ _on_icon_click(void *data,
 
    gl_parts = evas_object_data_get(obj, "gl_parts");
    nf = evas_object_data_get(gl_parts, "naviframe");
-   DBG("%s", evas_object_type_get(gl_parts));
 
    if (_part->show)
      {
@@ -237,6 +236,17 @@ _navi_gl_parts_pop(void *data,
 }
 
 static void
+_on_part_select(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Evas_Object *nf = (Evas_Object *)data;
+   Part *_part = elm_object_item_data_get(glit);
+   evas_object_smart_callback_call(nf, "wl,part,select", _part);
+}
+
+static void
 _wl_part_add(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info)
@@ -247,22 +257,12 @@ _wl_part_add(void *data,
 
    part->show = EINA_TRUE;
    eoi = elm_genlist_item_append(glist, _itc_part, part, NULL,
-                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
+                                 ELM_GENLIST_ITEM_NONE, _on_part_select,
+                                 elm_object_parent_widget_get(glist));
    elm_object_item_data_set(eoi, part);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 }
 
-static void
-_on_part_select(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info)
-{
-   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Evas_Object *nf = (Evas_Object *)data;
-   Part *_part = elm_object_item_data_get(glit);
-
-   evas_object_smart_callback_call (nf, "wl,part,select", _part);
-}
 static void
 _unset_cur_style(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -791,7 +791,7 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
-                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
+                                 ELM_GENLIST_ITEM_NONE, _on_part_select, object);
    elm_object_item_data_set(eoi, part);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
@@ -857,7 +857,7 @@ ui_widget_list_selected_part_above(Evas_Object *object, Style *style)
      }
    part = elm_object_item_data_get(eoi);
    new_eoi = elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
-                         prev_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+                         prev_eoi, elm_genlist_item_type_get(eoi), _on_part_select, object);
    eoi = elm_genlist_selected_item_get(gl_parts);
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
@@ -908,7 +908,7 @@ ui_widget_list_selected_part_below(Evas_Object *object, Style *style)
      }
    part = elm_object_item_data_get(eoi);
    new_eoi = elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
-                         next_eoi, elm_genlist_item_type_get(eoi), NULL, NULL);
+                         next_eoi, elm_genlist_item_type_get(eoi),  _on_part_select, object);
    eoi = elm_genlist_selected_item_get(gl_parts);
    elm_object_item_del(eoi);
    elm_genlist_item_selected_set(new_eoi, EINA_TRUE);
