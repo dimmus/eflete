@@ -309,8 +309,8 @@ _on__dismissed(void *data __UNUSED__,
 }
 static void
 _on__clicked(void *data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj,
+             Evas *e,
+             Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
 {
    int x, y;
@@ -319,17 +319,17 @@ _on__clicked(void *data,
                                        _on__dismissed, pd);
    evas_object_smart_callback_add(pd_group.ctxpopup, "dismissed",
                                   _on__dismissed, pd);
-   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+   evas_pointer_canvas_xy_get(e, &x, &y);
    evas_object_move(pd_group.ctxpopup, x, y);
    evas_object_show(pd_group.ctxpopup);
 }
 static void
-prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
+_prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
 {
    Evas_Object *label, *label_ctx;
    Eina_List *list = NULL, *l;
    const char *text_info = NULL;
-   void *list_data;
+   char *list_data;
    Eina_Strbuf *text_ctx;
 
    label = elm_object_part_content_get(pd_group.info, "elm.swallow.content");
@@ -354,7 +354,7 @@ prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
              const char *step = "%d. %s";
              if (eina_strbuf_length_get(text_ctx) > 0)
                eina_strbuf_append(text_ctx, "</br>");
-             step = eina_stringshare_printf(step, count++, (char *)list_data);
+             step = eina_stringshare_printf(step, count++, list_data);
              eina_strbuf_append(text_ctx, step);
           }
 
@@ -372,7 +372,7 @@ prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
 }
 
 static void
-prop_item_shared_check_update(Evas_Object *item, int count)
+_prop_item_shared_check_update(Evas_Object *item, int count)
 {
    Evas_Object *entry;
    entry = elm_object_part_content_get(item, "info");
@@ -391,7 +391,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    Eina_List *aliases = NULL, *l;
    const char *text_info = NULL;
    int aliases_count = 0;
-   void *list_data;
+   char *list_data;
    Eina_Strbuf *text_ctx = NULL;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
@@ -452,7 +452,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                   const char *step = "%d. %s";
                   if (eina_strbuf_length_get(text_ctx) > 0)
                     eina_strbuf_append(text_ctx, "</br>");
-                  step = eina_stringshare_printf(step, count++, (char *)list_data);
+                  step = eina_stringshare_printf(step, count++, list_data);
                   eina_strbuf_append(text_ctx, step);
                }
              evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
@@ -511,10 +511,10 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      {
         if ((aliases_count > 0) || (style->isAlias))
           {
-             prop_item_alias_update(pd, style, aliases_count);
+             _prop_item_alias_update(pd, style, aliases_count);
              evas_object_show(pd_group.info);
           }
-        prop_item_shared_check_update(pd_group.shared_check, aliases_count);
+        _prop_item_shared_check_update(pd_group.shared_check, aliases_count);
         prop_item_group_min_w_h_update(pd_group.min, pd);
         prop_item_group_max_w_h_update(pd_group.max, pd);
         evas_object_show(pd_group.frame);

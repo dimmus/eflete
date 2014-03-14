@@ -24,9 +24,6 @@ group { name: "elm/ctxpopup/bg/eflete/colorsel";
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
       }
    }
    programs {
@@ -34,20 +31,6 @@ group { name: "elm/ctxpopup/bg/eflete/colorsel";
          signal: "mouse,clicked,1";
          source: "base";
          action: SIGNAL_EMIT "elm,action,click" "elm";
-      }
-      program {
-         signal: "elm,state,show";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         transition: LINEAR 0.2;
-         target: "base";
-      }
-      program {
-         signal: "elm,state,hide";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         transition: LINEAR 0.3;
-         target: "base";
       }
    }
 }
@@ -65,7 +48,7 @@ group { name: "elm/ctxpopup/base/eflete/colorsel";
             rel2.offset: 30 30;
             image {
                normal: "popup-bg.png";
-               border: 34 34 34 34;
+               border: CTXPOPUP_BG_COLOR;
             }
          }
       }
@@ -98,14 +81,14 @@ group { name: "elm/ctxpopup/base/eflete/colorsel";
       part { name: "clip";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            color: WHITE_INVISIBLE_COLOR;
             visible: 0;
             rel1.offset: -20 -20;
             rel2.offset: 19 19;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 255;
+            color: WHITE_VISIBLE_COLOR;
             visible: 1;
          }
       }
@@ -115,8 +98,10 @@ group { name: "elm/ctxpopup/base/eflete/colorsel";
             fixed: 1 0;
             align: 1.0 0.5;
             rel1.to: "base";
-            rel2.to: "base";
-            rel2.relative: 0.0 1.0;
+            rel2 {
+               to: "base";
+               relative: 0.0 1.0;
+            }
          }
       }
       part { name: "elm.swallow.arrow_left";
@@ -194,7 +179,9 @@ group { name: "elm/ctxpopup/base/eflete/colorsel";
             rel2.to: "base";
          }
       }
-      part { name: "elm.swallow.arrow_down"; type: SWALLOW; mouse_events: 0;
+      part { name: "elm.swallow.arrow_down";
+         type: SWALLOW;
+         mouse_events: 0;
          clip_to: "clip";
          dragable {
             x: 1 1 0;
@@ -292,9 +279,6 @@ group { name: "elm/ctxpopup/bg/eflete/info";
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
       }
    }
    programs {
@@ -302,20 +286,6 @@ group { name: "elm/ctxpopup/bg/eflete/info";
          signal: "mouse,clicked,1";
          source: "base";
          action: SIGNAL_EMIT "elm,action,click" "elm";
-      }
-      program {
-         signal: "elm,state,show";
-         source: "elm";
-         action: STATE_SET "visible" 0.0;
-         transition: LINEAR 0.2;
-         target: "base";
-      }
-      program {
-         signal: "elm,state,hide";
-         source: "elm";
-         action: STATE_SET "default" 0.0;
-         transition: LINEAR 0.3;
-         target: "base";
       }
    }
 }
@@ -333,7 +303,7 @@ group { name: "elm/ctxpopup/base/eflete/info";
             rel2.offset: 30 30;
             image {
                normal: "popup-bg.png";
-               border: 34 34 34 34;
+               border: CTXPOPUP_BG_COLOR;
             }
          }
       }
@@ -365,14 +335,14 @@ group { name: "elm/ctxpopup/base/eflete/info";
       part { name: "clip";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 0;
+            color: WHITE_INVISIBLE_COLOR;
             visible: 0;
             rel1.offset: -20 -20;
             rel2.offset: 19 19;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 255;
+            color: WHITE_VISIBLE_COLOR;
             visible: 1;
          }
       }
@@ -382,8 +352,10 @@ group { name: "elm/ctxpopup/base/eflete/info";
             fixed: 1 0;
             align: 1.0 0.5;
             rel1.to: "base";
-            rel2.to: "base";
-            rel2.relative: 0.0 1.0;
+            rel2 {
+               to: "base";
+               relative: 0.0 1.0;
+            }
          }
       }
       part { name: "elm.swallow.arrow_left";
@@ -461,7 +433,9 @@ group { name: "elm/ctxpopup/base/eflete/info";
             rel2.to: "base";
          }
       }
-      part { name: "elm.swallow.arrow_down"; type: SWALLOW; mouse_events: 0;
+      part { name: "elm.swallow.arrow_down";
+         type: SWALLOW;
+         mouse_events: 0;
          clip_to: "clip";
          dragable {
             x: 1 1 0;
