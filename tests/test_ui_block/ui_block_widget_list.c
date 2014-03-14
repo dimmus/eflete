@@ -29,6 +29,7 @@
  * @}
  */
 
+TEST_UI_BLOCK_CONTENT(ui_block_widget_list, left_top)
 
 /**
  * @addtogroup ui_block_widget_list

@@ -106,6 +106,7 @@ test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
 test_widget_manager/wm_widget_list_layouts_load.c \
+test_widget_manager/wm_layouts_list_objects_load.c \
 test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
@@ -118,7 +119,13 @@ logger_test_SOURCES = test_logger/test_logger.c
 logger_test_CFLAGS = ${FLAGS}
 logger_test_LDADD = ${LD}
 
-modal_window_test_SOURCES = test_modal_window/test_modal_window.c
+modal_window_test_SOURCES =  \
+test_modal_window/test_modal_window.c \
+test_modal_window/mw_add.c \
+test_modal_window/mw_about_add.c \
+test_modal_window/mw_title_set.c \
+test_modal_window/mw_info_text_set.c \
+test_modal_window/mw_icon_set.c
 modal_window_test_CFLAGS = ${FLAGS}
 modal_window_test_LDADD = ${LD}
 

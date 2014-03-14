@@ -1,5 +1,5 @@
 /* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
+* Copyright (C) 2014 Samsung Electronics.
 *
 * This file is part of Edje Theme Editor.
 *
@@ -17,22 +17,21 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include "test_ui_block.h"
+#include "test_modal_window.h"
 
 /**
- * @addtogroup ui_block_test
+ * @addtogroup modal_window_test
  * @{
- * @addtogroup ui_block_state_list
+ * @addtogroup mw_title_set
  * @{
- * ui_block
+ * modal_window
  * <TABLE>
  * @}
  */
 
-TEST_UI_BLOCK_CONTENT(ui_block_state_list, bottom_left)
 
 /**
- * @addtogroup ui_block_state_list
+ * @addtogroup mw_title_set
  * @{
  * </TABLE>
  * @}

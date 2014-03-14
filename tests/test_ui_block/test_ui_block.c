@@ -24,30 +24,31 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, ui_block_add_test_p);
    tcase_add_test(tcase, ui_block_add_test_n);
-/*  tcase_add_test(tcase, ui_block_title_visible_n); */
-/*  tcase_add_test(tcase, ui_block_title_text_n); */
-/*  tcase_add_test(tcase, ui_block_title_text_p); */
-/*  tcase_add_test(tcase, ui_block_widget_list_test_p); */
-/*  tcase_add_test(tcase, ui_block_widget_list_test_n1); */
-/*  tcase_add_test(tcase, ui_block_widget_list_test_n2); */
-/*  tcase_add_test(tcase, ui_block_signal_list_test_p); */
-/*  tcase_add_test(tcase, ui_block_signal_list_test_n1); */
-/*  tcase_add_test(tcase, ui_block_signal_list_test_n2); */
-/*  tcase_add_test(tcase, ui_block_state_list_test_p); */
-/*  tcase_add_test(tcase, ui_block_state_list_test_n1); */
-/*  tcase_add_test(tcase, ui_block_state_list_test_n2); */
-/*  tcase_add_test(tcase, ui_block_property_test_p); */
-/*  tcase_add_test(tcase, ui_block_property_test_n1); */
-/*  tcase_add_test(tcase, ui_block_property_test_n2); */
-/*  tcase_add_test(tcase, ui_block_graph_vision_test_p); */
-/*  tcase_add_test(tcase, ui_block_graph_vision_test_n1); */
-/*  tcase_add_test(tcase, ui_block_graph_vision_test_n2); */
-/*  tcase_add_test(tcase, ui_block_live_view_test_p); */
-/*  tcase_add_test(tcase, ui_block_live_view_test_n1); */
-/*  tcase_add_test(tcase, ui_block_live_view_test_n2); */
-/*  tcase_add_test(tcase, ui_block_ws_test_p); */
-/*  tcase_add_test(tcase, ui_block_ws_view_test_n1); */
-/*  tcase_add_test(tcase, ui_block_ws_view_test_n2); */
+   tcase_add_test(tcase, ui_block_title_visible_p);
+   tcase_add_test(tcase, ui_block_title_visible_n);
+   tcase_add_test(tcase, ui_block_title_text_p);
+   tcase_add_test(tcase, ui_block_title_text_n);
+   tcase_add_test(tcase, ui_block_widget_list_test_p);
+   tcase_add_test(tcase, ui_block_widget_list_test_n1);
+   tcase_add_test(tcase, ui_block_widget_list_test_n2);
+   tcase_add_test(tcase, ui_block_signal_list_test_p);
+   tcase_add_test(tcase, ui_block_signal_list_test_n1);
+   tcase_add_test(tcase, ui_block_signal_list_test_n2);
+   tcase_add_test(tcase, ui_block_state_list_test_p);
+   tcase_add_test(tcase, ui_block_state_list_test_n1);
+   tcase_add_test(tcase, ui_block_state_list_test_n2);
+   tcase_add_test(tcase, ui_block_property_test_p);
+   tcase_add_test(tcase, ui_block_property_test_n1);
+   tcase_add_test(tcase, ui_block_property_test_n2);
+   tcase_add_test(tcase, ui_block_graph_vision_test_p);
+   tcase_add_test(tcase, ui_block_graph_vision_test_n1);
+   tcase_add_test(tcase, ui_block_graph_vision_test_n2);
+   tcase_add_test(tcase, ui_block_live_view_test_p);
+   tcase_add_test(tcase, ui_block_live_view_test_n1);
+   tcase_add_test(tcase, ui_block_live_view_test_n2);
+   tcase_add_test(tcase, ui_block_ws_test_p);
+   tcase_add_test(tcase, ui_block_ws_test_n1);
+   tcase_add_test(tcase, ui_block_ws_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }

@@ -69,4 +69,18 @@ base: "font=Sans:style=Bold font_size=13 color=#d6d6d6 wrap=none text_class=labe
       tag:  "em" "+ font_style=Oblique";
       tag:  "hilight" "+ font_weight=Bold";
    }
+   style { name: "eflete_textblock_style";
+      base: "font=FN font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "b" "+ font_weight=Bold";
+      tag:  "br" "\n";
+      tag:  "a" "+ color=#00000080 underline=on underline_color=#00000080";
+   }
+   style { name: "eflete_infoblock_style";
+      base: "font=FN font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "b" "+ font_weight=Bold";
+      tag:  "br" "\n";
+      tag:  "a" "+ color=#5893c6ff underline=on underline_color=#5893c6ff";
+   }
 }

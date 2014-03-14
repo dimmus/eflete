@@ -2,14 +2,6 @@ group { name: "elm/label/base/eflete/default";
    data.item: "default_font_size" "11";
    data.item: "min_font_size" "6";
    data.item: "max_font_size" "60";
-   styles {
-      style { name: "textblock_style";
-         base: "font=FN font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
-         tag:  "hilight" "+ font_weight=Bold";
-         tag:  "b" "+ font_weight=Bold";
-         tag:  "br" "\n";
-      }
-   }
    parts {
       part { name: "label.text.clip";
          type: RECT;
@@ -25,8 +17,34 @@ group { name: "elm/label/base/eflete/default";
             rel2.relative: 1.0 1.0;
             fixed: 1 1;
             text {
-               style: "textblock_style";
+               style: "eflete_textblock_style";
                min: 0 1;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/label/base/eflete/info";
+   data.item: "default_font_size" "11";
+   data.item: "min_font_size" "6";
+   data.item: "max_font_size" "60";
+   parts {
+      part { name: "label.text.clip";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         clip_to: "label.text.clip";
+         description { state: "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+            text {
+               style: "eflete_infoblock_style";
+               min: 1 1;
             }
          }
       }

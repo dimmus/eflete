@@ -39,6 +39,7 @@ static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_PART_SEPARETE_OPEN[] = "parts,separete,open";
 static const char SIG_PART_SEPARETE_CLOSE[] = "parts,separete,close";
 static const char SIG_PART_SELECTED[] = "part,selected";
+static const char SIG_PART_UNSELECTED[] = "part,unselected";
 static const char SIG_OBJ_AREA_CHANGED[] = "object,area,changed";
 static const char TEXT_TOOLTIP[] = "gs.current.size.tooltip";
 static const char SWALLOW_FOR_EDIT[] = "gs.swallow.edit";
@@ -51,6 +52,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_PART_SEPARETE_OPEN, ""},
    {SIG_PART_SEPARETE_CLOSE, ""},
    {SIG_PART_SELECTED, "s"},
+   {SIG_PART_UNSELECTED, "s"},
    {SIG_OBJ_AREA_CHANGED, "(iiii)"},
    {NULL, NULL}
 };
@@ -60,6 +62,7 @@ struct _Ws_Groupedit_Smart_Data
    Evas_Object_Smart_Clipped_Data base;
    Evas *e;
    Evas_Object *obj;
+   Evas_Object *event;
    Evas_Object *container;
    Evas_Object *parent;
    /* Paddings which solve scroller issue,

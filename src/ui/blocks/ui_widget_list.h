@@ -161,18 +161,21 @@ Eina_List *
 ui_widget_list_selected_parts_get(Evas_Object *object);
 
 /**
- * Select in a given widget list Part if is exist.
+ * Select or Unselect in a given widget list Part if is exist.
  * The list must be freed by the caller when done with eina_list_free().
  *
  * @param object A 'widget list' object
  * @param name The name of new part with will be selcted
+ * @param selected Defines if given part will be selected or unselected.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
  *
  * @ingroup WidgetList
  */
 Eina_Bool
-ui_widget_list_part_selected_set(Evas_Object *object, const char *part);
+ui_widget_list_part_selected_set(Evas_Object *object,
+                                 const char *part,
+                                 Eina_Bool select);
 
 /**
  * Reload content class genlist.

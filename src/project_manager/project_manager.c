@@ -265,5 +265,13 @@ pm_save_project_to_swap(Project *project)
           }
      }
 
+   EINA_INLIST_FOREACH(project->layouts, style)
+     {
+        if (style->isModify)
+          {
+             style->isModify = false;
+             edje_edit_save(style->obj);
+          }
+     }
    return true;
 }

@@ -39,6 +39,9 @@ struct _Prop_Data
    Part *part;
    struct {
       Evas_Object *frame;
+      Evas_Object *info;
+      Evas_Object *shared_check;
+      Evas_Object *ctxpopup;
       Evas_Object *min;
       Evas_Object *max;
       Evas_Object *current;
@@ -223,7 +226,7 @@ prop_item_state_aspect_pref_add(Evas_Object *parent,
    unsigned char asp_pref;
    Index *index;
    int i = 0;
-   ITEM_ADD(parent, item, _("aspect pref"))
+   ITEM_ADD(parent, item, _("aspect ratio mode"))
    HOVERSEL_ADD(item, hoversel, false)
    elm_hoversel_hover_parent_set(hoversel, hoversel_parent);
    elm_object_tooltip_text_set(hoversel, tooltip);
@@ -296,10 +299,100 @@ ITEM_2SPINNER_GROUP_CREATE(_("min"), group_min, w, h)
 ITEM_2SPINNER_GROUP_CREATE(_("max"), group_max, w, h)
 
 #define pd_group pd->prop_group
+
+static void
+_on__dismissed(void *data __UNUSED__,
+               Evas_Object *obj,
+               void *event_info __UNUSED__)
+{
+   evas_object_hide(obj);
+}
+static void
+_on__clicked(void *data,
+             Evas *e,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   int x, y;
+   Prop_Data *pd = (Prop_Data *)data;
+   evas_object_smart_callback_del_full(pd_group.ctxpopup, "dismissed",
+                                       _on__dismissed, pd);
+   evas_object_smart_callback_add(pd_group.ctxpopup, "dismissed",
+                                  _on__dismissed, pd);
+   evas_pointer_canvas_xy_get(e, &x, &y);
+   evas_object_move(pd_group.ctxpopup, x, y);
+   evas_object_show(pd_group.ctxpopup);
+}
+static void
+_prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
+{
+   Evas_Object *label, *label_ctx;
+   Eina_List *list = NULL, *l;
+   const char *text_info = NULL;
+   char *list_data;
+   Eina_Strbuf *text_ctx;
+
+   label = elm_object_part_content_get(pd_group.info, "elm.swallow.content");
+   label_ctx = elm_object_content_get(pd_group.ctxpopup);
+   list = edje_edit_group_aliases_get(style->obj, style->full_group_name);
+   if (style->isAlias)
+     {
+        text_info = eina_stringshare_add("This is alias of <a>%s</a>");
+        text_info = eina_stringshare_printf(text_info,
+                                            style->main_group->full_group_name);
+     }
+   else
+     {
+        text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
+        text_info = eina_stringshare_printf(text_info, aliases_count);
+
+        int count = 1;
+        text_ctx = eina_strbuf_new();
+
+        EINA_LIST_FOREACH(list, l, list_data)
+          {
+             const char *step = "%d. %s";
+             if (eina_strbuf_length_get(text_ctx) > 0)
+               eina_strbuf_append(text_ctx, "</br>");
+             step = eina_stringshare_printf(step, count++, list_data);
+             eina_strbuf_append(text_ctx, step);
+          }
+
+        evas_object_event_callback_del_full(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                       _on__clicked, pd);
+        evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                       _on__clicked, pd);
+        elm_object_text_set(label_ctx, eina_strbuf_string_get(text_ctx));
+        eina_strbuf_free(text_ctx);
+     }
+
+   elm_object_text_set(label, text_info);
+   evas_object_show(pd_group.info);
+   eina_stringshare_del(text_info);
+}
+
+static void
+_prop_item_shared_check_update(Evas_Object *item, int count)
+{
+   Evas_Object *entry;
+   entry = elm_object_part_content_get(item, "info");
+   Eina_Bool bool = false;
+   if (count > 0) bool = true;
+   elm_check_state_set(entry, bool);
+   evas_object_show(item);
+}
+
 Eina_Bool
 ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspace)
 {
-   Evas_Object *group_frame, *box, *prop_box;
+   Evas_Object *group_frame, *box, *prop_box, *info_en = NULL;
+   Evas_Object *info_image;
+   Evas_Object *check, *label_ctx;
+   Eina_List *aliases = NULL, *l;
+   const char *text_info = NULL;
+   int aliases_count = 0;
+   char *list_data;
+   Eina_Strbuf *text_ctx = NULL;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -307,13 +400,91 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->workspace = workspace;
-   if (style != workspace_edit_object_get(workspace))
+   pd->style = style;
+   if (style->isAlias) pd->style = style->main_group;
+   if (pd->style != workspace_edit_object_get(workspace))
      {
         ERR("Cann't set the style! Style [%p] not matched"
             " with editable group in workspace", style);
         return false;
      }
-   pd->style = style;
+   prop_box = elm_object_content_get(property);
+   aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
+   aliases_count = eina_list_count(aliases);
+
+   if (!pd_group.info)
+     {
+        LABEL_ADD(property, info_en, text_info)
+
+        info_image = elm_image_add(property);
+        elm_image_file_set(info_image, EFLETE_IMG_PATH"icon-notification.png", NULL);
+        evas_object_show(info_image);
+
+        pd_group.info = elm_layout_add(property);
+        evas_object_size_hint_weight_set(pd_group.info, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(pd_group.info, EVAS_HINT_FILL, 0.0);
+        elm_layout_file_set(pd_group.info, EFLETE_EDJ, "eflete/property/item/info");
+
+        pd_group.ctxpopup = elm_ctxpopup_add(main_window_get());
+        elm_ctxpopup_direction_priority_set(pd_group.ctxpopup,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN,
+                                            ELM_CTXPOPUP_DIRECTION_DOWN);
+        elm_object_style_set(pd_group.ctxpopup, "eflete/info");
+        evas_object_hide(pd_group.ctxpopup);
+
+        if (style->isAlias)
+          {
+             text_info = eina_stringshare_add("This is alias of <a>%s</a>");
+             text_info = eina_stringshare_printf(text_info,
+                                                 style->main_group->full_group_name);
+          }
+        else
+          {
+             text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
+             text_info = eina_stringshare_printf(text_info, aliases_count);
+             int count = 1;
+             text_ctx = eina_strbuf_new();
+
+             EINA_LIST_FOREACH(aliases, l, list_data)
+               {
+                  const char *step = "%d. %s";
+                  if (eina_strbuf_length_get(text_ctx) > 0)
+                    eina_strbuf_append(text_ctx, "</br>");
+                  step = eina_stringshare_printf(step, count++, list_data);
+                  eina_strbuf_append(text_ctx, step);
+               }
+             evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                            _on__clicked, pd);
+          }
+
+        LABEL_ADD(property, label_ctx, eina_strbuf_string_get(text_ctx))
+        eina_strbuf_free(text_ctx);
+        elm_object_style_set(label_ctx, "eflete/info");
+        elm_object_content_set(pd_group.ctxpopup, label_ctx);
+
+        elm_object_text_set(info_en, text_info);
+        elm_object_style_set(info_en, "eflete/info");
+        elm_object_part_content_set(pd_group.info, "elm.swallow.content", info_en);
+        elm_object_part_content_set(pd_group.info, "info", info_image);
+     }
+
+   if (!pd_group.shared_check)
+     {
+        CHECK_ADD(property, check, DEFAULT_STYLE)
+        elm_object_text_set(check, "Shared style");
+        if (aliases_count > 0) elm_check_state_set(check, true);
+        elm_object_disabled_set(check, true);
+
+        pd_group.shared_check = elm_layout_add(property);
+        evas_object_size_hint_weight_set(pd_group.shared_check, EVAS_HINT_EXPAND, 0.0);
+        evas_object_size_hint_align_set(pd_group.shared_check, EVAS_HINT_FILL, 0.0);
+        elm_layout_file_set(pd_group.shared_check, EFLETE_EDJ, "eflete/property/item/info");
+        elm_layout_signal_emit(pd_group.shared_check, "prop_item,content,hide", "eflete");
+        elm_object_part_content_set(pd_group.shared_check, "info", check);
+        evas_object_show(pd_group.shared_check);
+     }
 
    if (!pd_group.frame)
      {
@@ -333,16 +504,27 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         elm_box_pack_end(box, pd_group.min);
         elm_box_pack_end(box, pd_group.max);
 
-        prop_box = elm_object_content_get(property);
         elm_box_pack_start(prop_box, group_frame);
         pd_group.frame = group_frame;
      }
    else
      {
+        if ((aliases_count > 0) || (style->isAlias))
+          {
+             _prop_item_alias_update(pd, style, aliases_count);
+             evas_object_show(pd_group.info);
+          }
+        _prop_item_shared_check_update(pd_group.shared_check, aliases_count);
         prop_item_group_min_w_h_update(pd_group.min, pd);
         prop_item_group_max_w_h_update(pd_group.max, pd);
         evas_object_show(pd_group.frame);
      }
+   if ((aliases_count > 0) || (style->isAlias))
+     {
+        elm_box_pack_start(prop_box, pd_group.info);
+        evas_object_show(pd_group.info);
+     }
+   elm_box_pack_start(prop_box, pd_group.shared_check);
 
    return true;
 }
@@ -350,8 +532,18 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 void
 ui_property_style_unset(Evas_Object *property)
 {
+   Evas_Object *prop_box;
+   if (!property) return;
    PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(property);
+   evas_object_hide(pd_group.info);
+   elm_box_unpack(prop_box, pd_group.info);
+   elm_box_unpack(prop_box, pd_group.shared_check);
+   evas_object_event_callback_del_full(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _on__clicked, pd);
    evas_object_hide(pd_group.frame);
+   evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
    elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 }
@@ -452,11 +644,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_object_content_set(part_drag_frame, box);
 
         pd_part_drag.drag_x = prop_item_part_drag_x_step_x_add(box, pd,
-                                 0.0, 9999.0, 1.0, _("%.0f px"),
+                                 0.0, 9999.0, 1.0, _("%.0f"),
                                  _("Enable/Disable draggin along X axis"),
                                  _("Set a drag step value"));
         pd_part_drag.drag_y = prop_item_part_drag_y_step_y_add(box, pd,
-                                 0.0, 9999.0, 1.0, _("%.0f px"),
+                                 0.0, 9999.0, 1.0, _("%.0f"),
                                  _("Enable/Disable draggin along Y axis"),
                                  _("Set a drag step value"));
         pd_part_drag.confine = prop_item_part_drag_confine_add(box, pd,
@@ -537,7 +729,7 @@ ITEM_2SPINNER_STATE_CREATE(_("min"), state_min, w, h, int)
 ITEM_2SPINNER_STATE_CREATE(_("max"), state_max, w, h, int)
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_CREATE(_("align"), state_align, x, y, double)
-ITEM_2SPINNER_STATE_CREATE(_("aspect"), state_aspect, min, max, double)
+ITEM_2SPINNER_STATE_CREATE(_("aspect ratio"), state_aspect, min, max, double)
 ITEM_1ENTRY_STATE_CREATE(_("color class"), state, color_class)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
@@ -568,11 +760,13 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0, _("%.0f px"),
+                          0.0, 9999.0, 1.0, "%.0f",
+                          "w", "px", "h", "px",
                           _("Minimum part width in pixels."),
                           _("Minimum part height in pixels."));
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
-                          -1.0, 9999.0, 1.0, _("%.0f px"),
+                          -1.0, 9999.0, 1.0, "%.0f",
+                          "w", "px", "h", "px",
                           _("Maximum part width in pixels."),
                           _("Maximum part height in pixels."));
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
@@ -580,10 +774,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
                            _("This affects the minimum height calculation."));
         pd_state.align = prop_item_state_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
+                            "x", "%", "y", "%",
                             _("Part horizontal align: 0.0 = left  1.0 = right"),
                             _("Part vertical align: 0.0 = top  1.0 = bottom"));
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
                              0.0, 1.0, 0.1, "%1.2f",
+                             "", "", "", "",
                             _("Normally width and height can be "
                              "resized to any values independently"),
                             _("Normally width and height can be "
@@ -602,8 +798,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.max);
         elm_box_pack_end(box, pd_state.fixed);
         elm_box_pack_end(box, pd_state.align);
-        elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.aspect_pref);
+        elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
         if (type == EDJE_PART_TYPE_SPACER)
           {
@@ -675,7 +871,7 @@ ui_property_state_unset(Evas_Object *property)
 
 ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel1_relative, x, y, double)
 ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel1_offset, x, y, int)
-ITEM_2ENTRY_STATE_CREATE(_("to"), state_rel1_to, x, y)
+ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
 
 #define pd_rel1 pd->prop_state_rel1
 static Eina_Bool
@@ -693,6 +889,7 @@ ui_property_state_rel1_set(Evas_Object *property)
 
         pd_rel1.relative = prop_item_state_rel1_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
+                              "", "%", "", "%",
                               _("Define the position of left-up corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
                               "by X axis."),
@@ -700,18 +897,20 @@ ui_property_state_rel1_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."));
         pd_rel1.offset = prop_item_state_rel1_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, _("%.0f px"),
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "x", "px", "y", "px",
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"));
         pd_rel1.to = prop_item_state_rel1_to_x_y_add(box, pd,
+                        "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
 
+        elm_box_pack_end(box, pd_rel1.to);
         elm_box_pack_end(box, pd_rel1.relative);
         elm_box_pack_end(box, pd_rel1.offset);
-        elm_box_pack_end(box, pd_rel1.to);
 
         prop_box = elm_object_content_get(property);
         elm_box_pack_end(prop_box, rel1_frame);
@@ -738,7 +937,7 @@ ui_property_state_rel1_unset(Evas_Object *property)
 
 ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel2_relative, x, y, double)
 ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel2_offset, x, y, int)
-ITEM_2ENTRY_STATE_CREATE(_("to"), state_rel2_to, x, y)
+ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 #define pd_rel2 pd->prop_state_rel2
 static Eina_Bool
@@ -756,6 +955,7 @@ ui_property_state_rel2_set(Evas_Object *property)
 
         pd_rel2.relative = prop_item_state_rel2_relative_x_y_add(box, pd,
                               -5.0, 5.0, 0.1, "%1.2f",
+                              "", "%", "", "%",
                               _("Define the position of right-down corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
                               "by X axis."),
@@ -763,18 +963,20 @@ ui_property_state_rel2_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."));
         pd_rel2.offset = prop_item_state_rel2_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, _("%.0f px"),
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "x", "px", "y", "px",
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"));
         pd_rel2.to = prop_item_state_rel2_to_x_y_add(box, pd,
+                        "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
 
+        elm_box_pack_end(box, pd_rel2.to);
         elm_box_pack_end(box, pd_rel2.relative);
         elm_box_pack_end(box, pd_rel2.offset);
-        elm_box_pack_end(box, pd_rel2.to);
 
         prop_box = elm_object_content_get(property);
         elm_box_pack_end(prop_box, rel2_frame);
@@ -841,6 +1043,7 @@ ui_property_state_text_set(Evas_Object *property)
                            _("Change text font's size.'"));
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
+                            "x", "%", "y", "%",
                             _("Text horizontal align. "
                             "0.0 = left  1.0 = right"),
                             _("Text vertical align. "

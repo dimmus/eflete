@@ -340,31 +340,145 @@
          image: "input-text-bg1.png" COMP;
       }
       parts {
-         part { name: "bg";
+         part { name: "base";
             type: RECT;
             description { state: "default" 0.0;
-               min: 45 20;
-               max: 80 20;
                color: 255 255 255 0;
             }
          }
-         part { name: "back";
+         part { name: "bg";
             type: IMAGE;
             description {state: "default" 0.0;
                fixed: 1 1;
-                image {
+               image {
                    normal: "input-text-bg1.png";
                   border: 5 5 5 5;
                }
-               rel1.to: "bg";
-               rel2.to: "bg";
+               min: 60 20;
+               max: 60 20;
+               rel1.to: "base";
+               rel2.to: "base";
             }
          }
+         part { name: "spinner_start_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: 6 0;
+               max: 6 -1;
+               align: 1.0 0.5;
+               fixed: 1 1;
+               rel1 {
+                  to_x: "base";
+                  to_y: "bg";
+               }
+               rel2 {
+                  to: "text.start";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "spinner_end_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: 6 0;
+               max: 6 -1;
+               align: 0.0 0.5;
+               fixed: 1 1;
+               rel1 {
+                  to: "text.end";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "base";
+                  to_y: "bg";
+               }
+            }
+         }
+         part { name: "text_start_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: 4 0;
+               max: 4 -1;
+               align: 1.0 0.5;
+               fixed: 1 1;
+               rel1 {
+                  to_x: "base";
+                  to_y: "bg";
+               }
+               rel2 {
+                  to: "bg";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "text_end_padding";
+            type: SPACER;
+            description { state: "default" 0.0;
+               min: 4 0;
+               max: 4 -1;
+               align: 0.0 0.5;
+               fixed: 1 1;
+               rel1 {
+                  to: "bg";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "base";
+                  to_y: "bg";
+               }
+            }
+         }
+         part { name: "text.start";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: FN_COL_SPINNER_MAIN;
+               text {
+                  font: FN_B;
+                  size: 11;
+                  max: 1 0;
+               }
+               fixed: 1 1;
+               align: 1.0 0.5;
+               rel1 {
+                  to_x: "base";
+                  to_y: "bg";
+               }
+               rel2 {
+                  to: "text_start_padding";
+                  relative: 0.0 1.0;
+               }
+            }
+         }
+         part { name: "text.end";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: FN_COL_SPINNER_MAIN;
+               text {
+                  font: FN_B;
+                  size: 11;
+                  max: 1 0;
+               }
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1 {
+                  to: "text_end_padding";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to_x: "base";
+                  to_y: "bg";
+               }
+            }
+         }
+
+
          part { name: "elm.text";
             type: TEXT;
             mouse_events: 0;
             description { state: "default" 0.0;
-               color: 213 213 213 84;
+               color: FN_COL_SPINNER_MAIN;
                text {
                   font: FN;
                   size: 11;
@@ -398,8 +512,8 @@
                y: 0 0 0;
             }
             description { state: "default" 0.0;
-               rel1.to: "back";
-               rel2.to: "back";
+               rel1.to: "base";
+               rel2.to: "base";
                fixed: 1 1;
                color: 0 0 0 0;
             }
@@ -411,8 +525,8 @@
             }
             mouse_events: 1;
             description { state: "default" 0.0;
-               rel1.to: "elm.text";
-               rel2.to: "elm.text";
+               rel1.to: "text.start";
+               rel2.to: "text.end";
                fixed: 1 1;
                color: 0 0 0 0;
             }
@@ -516,7 +630,8 @@
       }
       programs {
          program {
-            signal: "mouse,down,1"; source: "downh";
+            signal: "mouse,down,1";
+            source: "downh";
             action: STATE_SET "clicked" 0.0;
             target: "downh";
             after: "left2";
@@ -525,7 +640,8 @@
             action: SIGNAL_EMIT "elm,action,decrement,start" "elm";
          }
          program {
-            signal: "mouse,up,1"; source: "downh";
+            signal: "mouse,up,1";
+            source: "downh";
             action: STATE_SET "default" 0.0;
             target: "downh";
             after: "left3";
@@ -534,7 +650,8 @@
             action: SIGNAL_EMIT "elm,action,decrement,stop" "elm";
          }
          program {
-            signal: "mouse,down,1"; source: "uph";
+            signal: "mouse,down,1";
+            source: "uph";
             action: STATE_SET "clicked" 0.0;
             target: "uph";
             after: "right2";
@@ -543,7 +660,8 @@
             action: SIGNAL_EMIT "elm,action,increment,start" "elm";
          }
          program {
-            signal: "mouse,up,1"; source: "uph";
+            signal: "mouse,up,1";
+            source: "uph";
             action: STATE_SET "default" 0.0;
             target: "uph";
             after: "right3";
@@ -552,27 +670,32 @@
             action: SIGNAL_EMIT "elm,action,increment,stop" "elm";
          }
          program {
-            signal: "mouse,clicked,1"; source: "access_text";
+            signal: "mouse,clicked,1";
+            source: "access_text";
             action: SIGNAL_EMIT "elm,action,click" "elm";
          }
          program { name: "active";
-            signal: "elm,state,active"; source: "elm";
+            signal: "elm,state,active";
+            source: "elm";
             action: STATE_SET "active" 0.0;
             target: "elm.text";
             target: "elm.swallow.entry";
          }
          program { name: "inactive";
-            signal: "elm,state,inactive"; source: "elm";
+            signal: "elm,state,inactive";
+            source: "elm";
             action: STATE_SET "default" 0.0;
             target: "elm.text";
             target: "elm.swallow.entry";
          }
          program { name: "toggle_text";
-            signal: "mouse,clicked,1"; source: "elm.dragable.slider";
+            signal: "mouse,clicked,1";
+            source: "elm.dragable.slider";
             action: SIGNAL_EMIT "elm,action,entry,toggle" "elm";
          }
          program {
-            signal: "elm,state,enabled"; source: "elm";
+            signal: "elm,state,enabled";
+            source: "elm";
             action: STATE_SET "default" 0.0;
             target: "downh";
             target: "uph";
@@ -591,8 +714,6 @@
             target: "elm.swallow.entry";
             target: "elm.text";
          }
-         //FOCUS("elm,action,focus", "glow", "new");
-         //FOCUS("elm,action,unfocus", "glow", "default");
       }
    }
    group { name: "elm/spinner/base/eflete/live_view";

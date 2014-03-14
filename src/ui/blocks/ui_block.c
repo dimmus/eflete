@@ -51,28 +51,30 @@ ui_block_add(Evas_Object *parent)
    return block;
 }
 
-void
+Eina_Bool
 ui_block_title_visible(Evas_Object *block, Eina_Bool vis)
 {
    if (!block)
      {
         ERR("Could not show/hide a title, because a block is NULL.");
-        return;
+        return false;
      }
    if (vis) elm_object_signal_emit(block, "title,show", "eflete");
    else elm_object_signal_emit(block, "title,hide", "eflete");
+   return true;
 }
 
-void
+Eina_Bool
 ui_block_title_text_set(Evas_Object *block, const char *title)
 {
    if (!block)
      {
         ERR("Could not set title text, because a block is NULL.");
-        return;
+        return false;
      }
    elm_object_part_text_set(block, "elm.text.title", title);
    ui_block_title_visible(block, EINA_TRUE);
+   return true;
 }
 
 const char *
@@ -91,6 +93,12 @@ Evas_Object *
 ui_block_widget_list_get(App_Data *ap)
 {
    return ui_block_content_get(ap->block.left_top);
+}
+
+Evas_Object *
+ui_block_ws_get(App_Data *ap)
+{
+   return ui_block_content_get(ap->block.canvas);
 }
 
 Evas_Object *

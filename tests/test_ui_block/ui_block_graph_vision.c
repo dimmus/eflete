@@ -29,6 +29,7 @@
  * @}
  */
 
+TEST_UI_BLOCK_CONTENT(ui_block_graph_vision, right_top)
 
 /**
  * @addtogroup ui_block_graph_vision

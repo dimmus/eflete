@@ -35,9 +35,11 @@ _del_part(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
+   if (!style) return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_del(ap->workspace, part->name)))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void
@@ -50,6 +52,7 @@ _above_part(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_above(ap->workspace, part->name)))
       ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void
@@ -62,6 +65,7 @@ _below_part(void *data,
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if ((part) && (workspace_edit_object_part_below(ap->workspace, part->name)))
       ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
+   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void
@@ -150,15 +154,37 @@ _property_change(void *data,
 
 static void
 _on_ws_part_select(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
    App_Data *ap = (App_Data *)data;
    const char *part = (const char *)event_info;
    if (part)
-     ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part);
+     ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
 }
 
+static void
+_on_ws_part_unselect(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *block, *prop;
+   const char *part = (const char *)event_info;
+
+   if (part)
+     {
+        ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
+        /* FIXME:  find way to does'nt make immidietly render */
+        block = ui_block_state_list_get(ap);
+        if (block) elm_genlist_clear(block);
+        ui_states_list_data_unset(ui_block_signal_list_get(ap));
+        /*TODO: in future it will be moved to block api. */
+        elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
+        prop = ui_block_property_get(ap);
+        ui_property_part_unset(prop);
+     }
+}
 
 void
 ui_part_back(App_Data *ap)
@@ -193,6 +219,8 @@ ui_part_back(App_Data *ap)
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
+   evas_object_smart_callback_del_full(ap->workspace, "ws,part,unselected",
+                                       _on_ws_part_unselect, ap);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    workspace_highlight_unset(ap->workspace);
 }
@@ -276,12 +304,17 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *prop = NULL;
    Evas_Object *groupedit = NULL;
    Eina_List *signals = NULL;
+   Style *_style = NULL, *_alias_style = NULL;
 
    if ((!ap) && (!ap->project) && (!style))
      {
         ERR("App Data or style is missing!");
         return;
      }
+
+   _alias_style = style;
+   _style = style;
+   if (_alias_style->isAlias) _style = _alias_style->main_group;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_add(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -293,13 +326,15 @@ ui_style_clicked(App_Data *ap, Style *style)
 
    /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);
-   ui_signal_list_data_set(gl_signals, style);
+   ui_signal_list_data_set(gl_signals, _style);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
-   workspace_edit_object_set(ap->workspace, style, ap->project->swapfile);
+   workspace_edit_object_set(ap->workspace, _style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
+   evas_object_smart_callback_add(ap->workspace, "ws,part,unselected",
+                                  _on_ws_part_unselect, ap);
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
 
@@ -311,10 +346,10 @@ ui_style_clicked(App_Data *ap, Style *style)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
-   ui_property_style_set(prop, style, ap->workspace);
+   ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
 
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
 }
 

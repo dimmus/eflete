@@ -1,0 +1,147 @@
+group { name: "elm/separator/horizontal/eflete/property";
+   images {
+      image: "group-border-bg-upper.png" COMP;
+   }
+   parts {
+      part { name: "padding_left_top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            FIXED_SIZE(6, 6);
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "padding_right_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            FIXED_SIZE(6, 6);
+            align: 1.0 1.0;
+      }
+      part { name: "base";
+         type: SPACER;
+         description {
+            rel1 {
+               to: "padding_left_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding_right_bottom";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "separator_left";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            SET_SIZE(6, 2);
+            rel1 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            align: 0.0 0.5;
+            image.normal: "group-border-bg-upper.png";
+            fill.smooth: 0;
+         }
+      }
+      part { name: "padding_text_left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               to_x: "separator_left";
+               to_y: "base";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "eflete.text";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            min: 0 0;
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 {
+               to: "padding_text_left";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
+         }
+      }
+      part { name: "padding_text_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               to_x: "eflete.text";
+               to_y: "base";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "eflete.swallow.icon";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            FIXED_SIZE(16, 16)
+            rel1 {
+               to_x: "padding_text_right";
+               to_y: "eflete.text";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "padding_icon_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               to_x: "eflete.swallow.icon";
+               to_y: "base";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "separator_right";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: -1 2;
+            rel1 {
+               to_x: "padding_icon_right";
+               to_y: "eflete.text";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "base";
+               to_y: "eflete.text";
+            }
+            align: 0.0 0.5;
+            image.normal: "group-border-bg-upper.png";
+            fill.smooth: 0;
+         }
+      }
+   }
+}
