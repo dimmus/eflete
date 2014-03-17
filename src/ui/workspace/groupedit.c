@@ -304,6 +304,7 @@ _groupedit_smart_add(Evas_Object *o)
 
    priv->e = evas_object_evas_get(o);
    priv->container = edje_object_add(priv->e);
+   evas_object_repeat_events_set(priv->container, true);
    priv->event = evas_object_rectangle_add(priv->e);
    evas_object_color_set(priv->event, 0, 0, 0, 0);
 
