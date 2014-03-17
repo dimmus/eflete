@@ -29,9 +29,7 @@
  *some functions that free/init base required components)
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif /* include config.h */
 
 /* localization */
 #include <libintl.h>

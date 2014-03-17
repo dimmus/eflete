@@ -32,8 +32,8 @@ elm_main()
    #endif
 
    setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   textdomain(PACKAGE);
+   //bindtextdomain(PACKAGE, LOCALEDIR);
+   //textdomain(PACKAGE);
 
    App_Data *ap = app_create();
    if (!ui_main_window_add(ap))
