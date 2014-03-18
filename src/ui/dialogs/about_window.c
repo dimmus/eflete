@@ -34,7 +34,7 @@ about_window_add()
 
    LABEL_ADD(mwin, label,
      "<color=#b6b6b6>"
-     "<b><align=center>"ETE_PACKAGE" (Eflete) v."VERSION"</align></b><br>"
+     "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
      "This application was written for Enlightenment, to use EFL<br>"
      "and design to a create and modify a Elementary widgets style.<br>"
      "<br>"
@@ -45,16 +45,18 @@ about_window_add()
      "Mykyta Biliavskyi (m.biliavskyi@samsung.com)<br>"
      "Vitalii Vorobiov (vi.vorobiov@samsung.com)<br>"
      "Andrii Kroitor (an.kroitor@samsung.com)<br>"
-     "Ievgen Bugai (i.bugai@samsung.com)<br>"
+     "Kateryna Fesyna (k.fesyna@samsung.com)<br>"
+     "Maksym Volodin (m.volodin@samsung.com)<br>"
      "Artem Popov (artem.popov@samsung.com)<br>"
+     "<br>"
+     "Ievgen Bugai (i.bugai@samsung.com)<br>"
+     "Olga Kolesnik (o.kolesnik@samsung.com)<br>"
      "<br>"
      "Oleg Dotsenko (o.dotsenko@samsung.com)<br>"
      "Dmitriy Samoylov (dm.samoylov@samsung.com)<br>"
      "<br>"
      "<b>Special thanks for the help:</b><br>"
      "Sergey Osadchy (se.osadchy@samsung.com)<br>"
-     "Kateryna Fesyna (k.fesyna@samsung.com)<br>"
-     "Maksym Volodin (m.volodin@samsung.com)<br>"
      "</align>");
    elm_box_pack_end(box, label);
    elm_win_inwin_content_set(mwin, box);

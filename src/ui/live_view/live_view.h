@@ -10,15 +10,11 @@
  * by using user's theme (already saved one).
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* include config.h */
-
-#include <Evas.h>
-#include <Elementary.h>
 #include "widget_manager.h"
 #include "project_manager.h"
 #include "common_macro.h"
+#include <Evas.h>
+#include <Elementary.h>
 
 /**
  * @typedef Live_View

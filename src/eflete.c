@@ -71,6 +71,14 @@ app_free(App_Data *ap)
 Eina_Bool
 app_init()
 {
+
+   setlocale(LC_ALL, "");
+#ifdef ENABLE_NLS
+   bindtextdomain(PACKAGE, LOCALE_DIR);
+   textdomain(PACKAGE);
+#endif /* set locale */
+
+
    if (!eina_init())
      {
         CRIT("Can't initialize the Eina library");

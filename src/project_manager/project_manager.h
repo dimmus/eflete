@@ -28,14 +28,10 @@
  * styles.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* include config.h */
-
 #include "edje_compile.h"
 #include "widget_manager.h"
-#include <Eio.h>
 #include "logger.h"
+#include <Eio.h>
 
 /**
  * @struct _Project

@@ -19,6 +19,10 @@
 
 #include <check.h>
 
+#ifdef HAVE_CONFIG_H
+   #include "eflete_config.h"
+#endif /* include eflete_config.h */
+
 #define EFLETE_TEST(__testname) \
 void __testname (int _i CK_ATTRIBUTE_UNUSED) \
 { \

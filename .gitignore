@@ -66,6 +66,7 @@ config.rpath
 m4/*
 !m4/eflete.m4
 !m4/eflete_binary.m4
+!m4/ac_attribute.m4
 ABOUT-NLS
 INSTALL
 po/*.sin
