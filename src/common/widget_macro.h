@@ -20,10 +20,6 @@
 #ifndef WIDGET_MACRO_H
 #define WIDGET_MACRO_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* include config.h */
-
 #include <Elementary.h>
 
 /* TODO: (refactoring) Style param in every widget define is needed. */

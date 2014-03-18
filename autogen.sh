@@ -3,6 +3,7 @@
 rm -rf autom4te.cache
 rm -f aclocal.m4
 
+echo "Cleaning the build folder..."; rm -rf build; mkdir build || exit 1
 echo "Running autopoint..." ; autopoint -f || :
 echo "Running aclocal..." ; aclocal $ACLOCAL_FLAGS -I m4 || exit 1
 echo "Running autoheader..." ; autoheader || exit 1
@@ -33,8 +34,6 @@ else
 fi
 
 if [ -z "$NOCONFIGURE" ]; then
-	rm -rf build
-	mkdir build
 	cd build
 	../configure -C "$@"
 fi

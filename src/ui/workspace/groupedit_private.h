@@ -18,15 +18,12 @@
 */
 
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
+#include "eflete.h"
 #include "Edje_Edit.h"
 #include "Elementary.h"
 #include "groupedit.h"
 #include "common_macro.h"
 #include "logger.h"
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* include config.h */
 
 #define BORDER_IMG EFLETE_IMG_PATH"border_part.png"
 #define SPACER_IMG EFLETE_IMG_PATH"part_spacer_bg.png"

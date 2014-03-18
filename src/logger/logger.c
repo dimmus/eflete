@@ -19,26 +19,31 @@
 
 #include "logger.h"
 
+#ifdef HAVE_CONFIG_H
+   #include "eflete_config.h"
+#endif /* include eflete_config.h */
+
 int _eflete_lod_dom = -1;
 
 Eina_Bool
 logger_init(void)
 {
+#ifdef HAVE_EFLETE_DEBUG
    if (!eina_init()) return EINA_FALSE;
 
-   if (HAVE_EFLETE_DEBUG) eina_log_level_set(EINA_LOG_LEVEL_DBG);
+      eina_log_level_set(EINA_LOG_LEVEL_DBG);
 
    if(_eflete_lod_dom < 0)
      {
-        _eflete_lod_dom = eina_log_domain_register(SH_NAME,
+        _eflete_lod_dom = eina_log_domain_register(PACKAGE,
                                                    EINA_COLOR_LIGHTBLUE);
         if(_eflete_lod_dom < 0)
           {
-             EINA_LOG_CRIT("Could not register log domain "SH_NAME);
+             EINA_LOG_CRIT("Could not register log domain "PACKAGE);
              return EINA_FALSE;
           }
      }
-
+#endif
    return EINA_TRUE;
 }
 
@@ -56,6 +61,10 @@ void
 logger_message_print(Eina_Log_Level level, const char *fmt, ...)
 {
    va_list args;
+
+#ifdef HAVE_EFLETE_DEBUG
+   EINA_LOG(_eflete_lod_dom, level, fmt, args);
+#else
    const char *prefix;
 
    eina_log_console_color_set(stderr, eina_log_level_color_get(level));
@@ -76,11 +85,13 @@ logger_message_print(Eina_Log_Level level, const char *fmt, ...)
       default:
          prefix = "";
      }
-   fprintf(stderr, "%s: %s", SH_NAME, prefix);
+      fprintf(stderr, "%s: %s", "eflete", prefix);
+
    eina_log_console_color_set(stderr, EINA_COLOR_RESET);
 
    va_start(args, fmt);
    vfprintf(stderr, fmt, args);
    va_end(args);
    putc('\n', stderr);
+#endif
 }

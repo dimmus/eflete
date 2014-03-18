@@ -1,5 +1,6 @@
 EFLETE_VERSION([0], [1], [4])
-AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
+        [eflete])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_AUX_DIR(config)
@@ -9,7 +10,7 @@ AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
 AM_INIT_AUTOMAKE([1.11 dist-bzip2 subdir-objects color-tests])
 
-m4_define([package], "EFL\ Edje\ Theme\ Editor")
+dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.8.5])
 m4_define([elm_version], [1.8.4])
 
@@ -22,6 +23,7 @@ AH_TOP([
 AH_BOTTOM([
 #endif /* EFLETE_CONFIG_H */
 ])
+AC_C___ATTRIBUTE__
 
 PKG_PROG_PKG_CONFIG
 
@@ -62,24 +64,33 @@ AM_COND_IF([CHECK_FOUND],
 EFLETE_WITH_BIN([edje], [edje_cc], [edje_cc])
 
 dnl locale, gettext
-dnl m4_ifdef([AM_GNU_GETTEXT_VERSION], [
-dnl AM_GNU_GETTEXT_VERSION([0.17])
-dnl ])
 AM_GNU_GETTEXT_VERSION(0.18.1)
 AM_GNU_GETTEXT([external])
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 
+dnl custom flags
+dnl --enable-debug/--disable-debug
+EFLETE_DEBUG_DEF="#undef"
 want_eflete_debug="no"
 AC_ARG_ENABLE([debug],
-   [AC_HELP_STRING([--enable-debug], [enable eflete debug support. @<:@default=disabled@:>@])],
+   [AC_HELP_STRING([--enable-debug], [enable Eflete debug support. @<:@default=disabled@:>@])],
    [want_eflete_debug=$enableval], [])
 
 if test "x$want_eflete_debug" = "xyes"; then
-   AC_SUBST(E_DEBUG, "1")
-else
-   AC_SUBST(E_DEBUG, "0")
+   AC_DEFINE(HAVE_EFLETE_DEBUG, 1, [Eflete debug.])
+   EFLETE_DEBUG_DEF="#define"
 fi
+AC_SUBST(EFLETE_DEBUG_DEF)
+
+#===============================================================================
+if test "x${prefix}" = "xNONE"; then
+   LOCALE_DIR="${ac_default_prefix}/share/locale"
+else
+   LOCALE_DIR="${prefix}/share/locale"
+fi
+AC_SUBST(LOCALE_DIR)
+#===============================================================================
 
 EFLETE_DEFINE=" -DEFLETE_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
@@ -96,7 +107,6 @@ AC_CONFIG_FILES([
 po/Makefile.in
 Makefile
 src/Makefile
-src/config.h
 data/Makefile
 data/eflete.desktop
 tests/Makefile
