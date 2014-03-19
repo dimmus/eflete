@@ -271,7 +271,7 @@ _style_set(Evas_Object *o, const char *style)
      }
 
    if (sd->style) free((void *)sd->style);
-   sd->style = strdup(group);
+   sd->style = strdup(style);
 
    #undef GROUP_NAME
 }
@@ -625,7 +625,8 @@ groupedit_style_set(Evas_Object *obj, const char *style)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (!style || (!strcmp(sd->style, style))) return false;
+   if (!style) return false;
+   if (!strcmp(sd->style, style)) return true;
    _style_set(obj, style);
 
    return true;
