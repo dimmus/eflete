@@ -25,6 +25,36 @@ AH_BOTTOM([
 ])
 AC_C___ATTRIBUTE__
 
+#= Check OS ====================================================================
+AC_CANONICAL_HOST
+
+os_version="" dnl to set the OS version
+os_remark="" dnl to set the remark for current OS
+
+case "$host_os" in
+   cegcc*)
+      AC_MSG_ERROR([ceGCC compiler is not supported anymore. Exiting...])
+   ;;
+   mingw32ce*)
+      os_remark="For this OS Eflete not been tested. Applicationmay be unstable!"
+   ;;
+   mingw*|cygwin*)
+      # TODO: check cygwin* here
+      os_remark="For this OS Eflete not been tested. Applicationmay be unstable!"
+   ;;
+   darwin*)
+      os_remark="For this OS Eflete not been tested. Applicationmay be unstable!"
+   ;;
+   linux*)
+      os_remark=""
+   ;;
+   *)
+      AC_MSG_ERROR([Unknown OS. Exiting...])
+   ;;
+esac
+
+#===============================================================================
+
 PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([EFL],
@@ -128,6 +158,8 @@ echo "$PACKAGE $VERSION"
 echo "------------------------------------------------------------------------"
 echo ""
 echo "Configuration Options Summary:"
+echo "  os.............: ${host_os}"
+echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
 echo ""
