@@ -602,13 +602,15 @@ groupedit_container_size_set(Evas_Object *obj, int w, int h)
    return _user_size_calc(obj);
 }
 
-void
+Eina_Bool
 groupedit_container_size_get(Evas_Object *obj, int *w, int *h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w) *w = sd->con_current_size->w;
    if (h) *h = sd->con_current_size->h;
+
+   return true;
 }
 
 Eina_Bool
