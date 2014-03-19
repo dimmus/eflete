@@ -26,21 +26,21 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, groupedit_add_test_p);
    tcase_add_test(tcase, groupedit_add_test_n);
 
-   //tcase_add_test(tcase, groupedit_handler_size_set_test_p);
-   //tcase_add_test(tcase, groupedit_handler_size_set_test_n1);
-   //tcase_add_test(tcase, groupedit_handler_size_set_test_n2);
-   //tcase_add_test(tcase, groupedit_handler_size_set_test_n3);
-   //tcase_add_test(tcase, groupedit_handler_size_set_test_n4);
-   //tcase_add_test(tcase, groupedit_handler_size_set_test_n5);
+   tcase_add_test(tcase, groupedit_handler_size_set_test_p);
+   tcase_add_test(tcase, groupedit_handler_size_set_test_n1);
+   tcase_add_test(tcase, groupedit_handler_size_set_test_n2);
+   tcase_add_test(tcase, groupedit_handler_size_set_test_n3);
+   tcase_add_test(tcase, groupedit_handler_size_set_test_n4);
+   tcase_add_test(tcase, groupedit_handler_size_set_test_n5);
 
-   //tcase_add_test(tcase, groupedit_handler_size_get_test_p);
-   //tcase_add_test(tcase, groupedit_handler_size_get_test_n);
+   tcase_add_test(tcase, groupedit_handler_size_get_test_p);
+   tcase_add_test(tcase, groupedit_handler_size_get_test_n);
 
    tcase_add_test(tcase, groupedit_min_size_set_test_p);
    tcase_add_test(tcase, groupedit_min_size_set_test_n);
 
-   //tcase_add_test(tcase, groupedit_max_size_set_test_p);
-   //tcase_add_test(tcase, groupedit_max_size_set_test_n);
+   tcase_add_test(tcase, groupedit_max_size_set_test_p);
+   tcase_add_test(tcase, groupedit_max_size_set_test_n);
 
    //tcase_add_test(tcase, groupedit_container_size_set_test_p);
    //tcase_add_test(tcase, groupedit_container_size_set_test_n1);
