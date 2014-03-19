@@ -590,14 +590,21 @@ groupedit_container_size_set(Evas_Object *obj, int w, int h)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (w < sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
-   if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
-     sd->con_current_size->w = sd->con_size_max.w;
-   else sd->con_current_size->w = w;
-   if (h < sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
-   if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
-     sd->con_current_size->h = sd->con_size_max.h;
-   else sd->con_current_size->h = h;
+   if (w <= sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
+   else
+     {
+        if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
+          sd->con_current_size->w = sd->con_size_max.w;
+        else sd->con_current_size->w = w;
+     }
+
+   if (h <= sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
+   else
+     {
+        if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
+          sd->con_current_size->h = sd->con_size_max.h;
+        else sd->con_current_size->h = h;
+     }
 
    return _user_size_calc(obj);
 }

@@ -45,10 +45,10 @@ void groupedit_min_size_set_test_n(int);
 void groupedit_max_size_set_test_p(int);
 void groupedit_max_size_set_test_n(int);
 
-void groupedit_container_size_set_test_p(int);
-void groupedit_container_size_set_test_n1(int);
-void groupedit_container_size_set_test_n2(int);
-void groupedit_container_size_set_test_n3(int);
+void groupedit_container_size_set_test_p1(int);
+void groupedit_container_size_set_test_p2(int);
+void groupedit_container_size_set_test_p3(int);
+void groupedit_container_size_set_test_n(int);
 
 void groupedit_container_size_get_test_p(int);
 void groupedit_container_size_get_test_n(int);
