@@ -58,8 +58,7 @@ void groupedit_style_set_test_n1(int);
 void groupedit_style_set_test_n2(int);
 
 void groupedit_style_get_test_p(int);
-void groupedit_style_get_test_n1(int);
-void groupedit_style_get_test_n2(int);
+void groupedit_style_get_test_n(int);
 
 void groupedit_edit_object_set_test_p(int);
 void groupedit_edit_object_set_test_n1(int);
