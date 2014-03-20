@@ -850,7 +850,95 @@ group { name: "elm/genlist/item/eflete/level3/default";
    }
 }
 
-#undef ITEM_HEIGHT
+group { name: "elm/genlist/item/eflete/mode/default";
+   alias: "elm/genlist/item_odd/eflete/mode/default";
+   data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
+   data.item: "treesize" TREEPAD;
+   images.image: "treemenu-lvl2-item-bg.png" COMP;
+
+   parts {
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: WHITE_INVISIBLE_COLOR;
+         }
+      }
+      part { name: "bg";
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image {
+               normal: "treemenu-lvl2-item-bg.png";
+               border: 0 0 1 1;
+            }
+            fill.smooth: 0;
+         }
+      }
+      part { name: "end.bottom.pad";
+         type: SPACER;
+         description {
+            SET_SIZE(5, 5);
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "elm.swallow.modeicon";
+         clip_to: "disclip";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
+            rel1 {
+               relative: 0.0  1.0;
+               to_x: "end.bottom.pad";
+               to_y: "start.top.pad";
+            }
+            rel2 {
+               relative: 0.0  0.0;
+               to: "end.bottom.pad";
+            }
+         }
+      }
+      part { name: "elm.swallow.container";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "start.top.pad";
+               to_y: "elm.swallow.modeicon";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "elm.swallow.modeicon";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "start.top.pad";
+         type:SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel2.offset: 0 0;
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: WHITE_VISIBLE_COLOR;
+         }
+      }
+   }
+}
+
 
 group { name: "elm/genlist/base/eflete/default";
    images {
@@ -1308,4 +1396,4 @@ group { name: "elm/genlist/base/eflete/dark";
 
    }
 }
-
+#undef ITEM_HEIGHT
