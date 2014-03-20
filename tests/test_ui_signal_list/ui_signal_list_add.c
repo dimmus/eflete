@@ -20,66 +20,86 @@
 #include "test_ui_signal_list.h"
 
 /**
- * @addtogroup ui_state_list_test
+ * @addtogroup ui_signal_list_test
  * @{
- * @addtogroup ui_state_list_add
+ * @addtogroup ui_signal_list_add
  * @{
- * Groupedit
+ * Signal List
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup ui_signal_list_add_test
+ * @addtogroup ui_signal_list_add
  * @{
- * @objective Positive test case
- *
+ * <tr>
+ * <td>ui_signal_list_add</td>
+ * <td>ui_signal_list_add_test_p</td>
+ * <td>
  * @precondition
- * @step 1 initialized elm
- * @step 2 created widget Window
+ * @step 1 initialize elementary library
+ * @step 2 create parent window
  *
  * @procedure
- * @step 1 Call function ui_signal_list_add(window).
- * @step 2 Check returned value.
- *
- * @passcondition not NULL pointer returned
+ * @step 1 call ui_signal_list_add
+ * @step 2 check returned pointer
+ * </td>
+ * <td>(Evas_Object *) window</td>
+ * <td>Returned pointer not NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(ui_signal_list_add_test_p)
 {
+   Evas_Object *window;
+
    elm_init(0,0);
-   Evas_Object *win;
-   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   ck_assert_msg(ui_signal_list_add(win) != NULL, "Signal List can't be created.");
+
+   window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   ck_assert_msg(ui_signal_list_add(window) != NULL,
+                 "Signal List not created.");
+   evas_object_del(window);
+
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_signal_list_add_test
+ * @addtogroup ui_signal_list_add
  * @{
- * @objective Positive test case
- *
+ * <tr>
+ * <td>ui_signal_list_add</td>
+ * <td>ui_signal_list_add_test_n</td>
+ * <td>
  * @precondition
- * @step 1 initialized elm
+ * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 Call function ui_signal_list_add(NULL).
- * @step 2 Check returned value.
- *
- * @passcondition NULL pointer returned
+ * @step 1 call ui_signal_list_add
+ * @step 2 check returned pointer
+ * </td>
+ * <td>NULL</td>
+ * <td>Returned pointer is NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(ui_signal_list_add_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(ui_signal_list_add(NULL) == NULL, "Signal List created with parent NULL.");
+
+   ck_assert_msg(ui_signal_list_add(NULL) == NULL,
+                 "Signal List created with parent NULL.");
+
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_state_list_add
+ * @addtogroup ui_signal_list_add
  * @{
  * </TABLE>
  * @}
