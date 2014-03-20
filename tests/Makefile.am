@@ -46,6 +46,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/src/ui/signal_list \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
@@ -171,7 +172,11 @@ ui_ruler_test_SOURCES = test_ui_ruler/test_ui_ruler.c
 ui_ruler_test_CFLAGS = ${FLAGS}
 ui_ruler_test_LDADD = ${LD}
 
-ui_signal_list_test_SOURCES = test_ui_signal_list/test_ui_signal_list.c
+ui_signal_list_test_SOURCES = \
+test_ui_signal_list/test_ui_signal_list.c \
+test_ui_signal_list/ui_signal_list_add.c \
+test_ui_signal_list/ui_signal_list_data_set.c \
+test_ui_signal_list/ui_signal_list_data_unset.c
 ui_signal_list_test_CFLAGS = ${FLAGS}
 ui_signal_list_test_LDADD = ${LD}
 
