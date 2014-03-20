@@ -430,7 +430,7 @@ _on_style_clicked_double(void *data,
 static Evas_Object *
 _item_style_content_get(void *data,
                        Evas_Object *obj,
-                       const char *part __UNUSED__)
+                       const char *part)
 {
    Style *_style = (Style *)data;
    if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
@@ -440,6 +440,41 @@ _item_style_content_get(void *data,
         elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
+     }
+   return NULL;
+}
+
+static Evas_Object *
+_item_node_content_get(void *data __UNUSED__,
+                       Evas_Object *obj,
+                       const char *part __UNUSED__)
+{
+   Evas_Object *ic, *bt;
+   if (!strcmp("Widgets", (char *)data)) return NULL;
+   if (!strcmp(part, "elm.swallow.add"))
+     {
+
+        ICON_ADD(obj, ic, false, EFLETE_IMG_PATH"icon-add.png");
+        elm_image_resizable_set(ic, false, false);
+        bt = elm_button_add(obj);
+        evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        elm_layout_content_set(bt, "icon", ic);
+        elm_object_style_set(bt, "eflete/simple");
+        elm_object_disabled_set(bt, true);
+        evas_object_show(bt);
+        return bt;
+     }
+   if (!strcmp(part, "elm.swallow.del"))
+     {
+        ICON_ADD(obj, ic, false, EFLETE_IMG_PATH"icon-remove.png");
+        elm_image_resizable_set(ic, false, false);
+        bt = elm_button_add(obj);
+        evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        elm_layout_content_set(bt, "icon", ic);
+        elm_object_style_set(bt, "eflete/simple");
+        elm_object_disabled_set(bt, true);
+        evas_object_show(bt);
+        return bt;
      }
    return NULL;
 }
@@ -605,7 +640,7 @@ ui_widget_list_add(Evas_Object *parent)
         _itc_node = elm_genlist_item_class_new();
         _itc_node->item_style = "eflete/tree";
         _itc_node->func.text_get = _item_node_label_get;
-        _itc_node->func.content_get = NULL;
+        _itc_node->func.content_get = _item_node_content_get;
         _itc_node->func.state_get = NULL;
         _itc_node->func.del = NULL;
      }
@@ -726,6 +761,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    if ((!object) || (!project)) return false;
 
+
    widget_list = project->widgets;
 
    gl_widgets = elm_object_item_part_content_get(_widget_list_get(object),
@@ -753,6 +789,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    tree_group = elm_genlist_item_append(gl_widgets, _itc_node, "Layouts", NULL,
                                       ELM_GENLIST_ITEM_TREE, NULL, NULL);
+
    elm_object_item_data_set(tree_group, strdup("Layouts"));
    elm_genlist_item_expanded_set(tree_group, EINA_TRUE);
 
