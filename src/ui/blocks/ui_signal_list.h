@@ -48,7 +48,7 @@ ui_signal_list_add(Evas_Object *parent);
 /**
  * Set to a 'signal list' widget a data of signal with using in a part.
  *
- * @param object The 'signal list' object
+ * @param object The 'signal list' object;
  * @param style The structure @Style object.
  * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
  *
@@ -57,11 +57,17 @@ ui_signal_list_add(Evas_Object *parent);
 Eina_Bool
 ui_signal_list_data_set(Evas_Object *object, Style *style);
 
-/* FIXME: Add comments! */
 /**
+ * Unset the 'signal list' data, and clear the list.
  *
+ * @param object The 'signal list' object.
+ *
+ * @return The Style object with been setted as data or NULL if any Style not
+ *         been setted.
+ *
+ * @ingroup SignalList
  */
-void
-ui_states_list_data_unset(Evas_Object *object);
+Style *
+ui_signal_list_data_unset(Evas_Object *object);
 
 #endif /* UI_SIGNAL_LIST_H */
