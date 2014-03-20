@@ -857,12 +857,6 @@ group { name: "elm/genlist/item/eflete/mode/default";
    images.image: "treemenu-lvl2-item-bg.png" COMP;
 
    parts {
-      part { name: "event";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: WHITE_INVISIBLE_COLOR;
-         }
-      }
       part { name: "bg";
          clip_to: "disclip";
          mouse_events: 0;
@@ -902,6 +896,7 @@ group { name: "elm/genlist/item/eflete/mode/default";
       }
       part { name: "elm.swallow.container";
          type: SWALLOW;
+         clip_to: "disclip";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
@@ -927,6 +922,7 @@ group { name: "elm/genlist/item/eflete/mode/default";
       }
       part { name: "disclip";
          type: RECT;
+         mouse_events: 0;
          description { state: "default" 0.0;
             rel1.to: "bg";
             rel2.to: "bg";
