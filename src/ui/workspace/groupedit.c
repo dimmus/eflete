@@ -271,7 +271,7 @@ _style_set(Evas_Object *o, const char *style)
      }
 
    if (sd->style) free((void *)sd->style);
-   sd->style = strdup(group);
+   sd->style = strdup(style);
 
    #undef GROUP_NAME
 }
@@ -304,6 +304,7 @@ _groupedit_smart_add(Evas_Object *o)
 
    priv->e = evas_object_evas_get(o);
    priv->container = edje_object_add(priv->e);
+   evas_object_repeat_events_set(priv->container, true);
    priv->event = evas_object_rectangle_add(priv->e);
    evas_object_color_set(priv->event, 0, 0, 0, 0);
 
@@ -589,25 +590,34 @@ groupedit_container_size_set(Evas_Object *obj, int w, int h)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (w < sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
-   if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
-     sd->con_current_size->w = sd->con_size_max.w;
-   else sd->con_current_size->w = w;
-   if (h < sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
-   if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
-     sd->con_current_size->h = sd->con_size_max.h;
-   else sd->con_current_size->h = h;
+   if (w <= sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
+   else
+     {
+        if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
+          sd->con_current_size->w = sd->con_size_max.w;
+        else sd->con_current_size->w = w;
+     }
+
+   if (h <= sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
+   else
+     {
+        if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
+          sd->con_current_size->h = sd->con_size_max.h;
+        else sd->con_current_size->h = h;
+     }
 
    return _user_size_calc(obj);
 }
 
-void
+Eina_Bool
 groupedit_container_size_get(Evas_Object *obj, int *w, int *h)
 {
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w) *w = sd->con_current_size->w;
    if (h) *h = sd->con_current_size->h;
+
+   return true;
 }
 
 Eina_Bool
@@ -615,7 +625,8 @@ groupedit_style_set(Evas_Object *obj, const char *style)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (!style || (!strcmp(sd->style, style))) return false;
+   if (!style) return false;
+   if (!strcmp(sd->style, style)) return true;
    _style_set(obj, style);
 
    return true;

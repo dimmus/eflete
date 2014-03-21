@@ -19,14 +19,14 @@
 
 #include "ui_signal_list.h"
 
-#define SIGNALS_LIST "signals_list"
+#define STYLE "style"
 
 static Elm_Genlist_Item_Class *_itc_signal = NULL;
 
 static char *
-_item_signal_label_get(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *part __UNUSED__)
+_item_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *part __UNUSED__)
 {
    return strdup(data);
 }
@@ -40,6 +40,13 @@ _on_signal_selected(void *data __UNUSED__,
    evas_object_smart_callback_call(obj, "sl,signal,select", glit);
 }
 
+static void
+_item_del(void *data,
+          Evas_Object *obj __UNUSED__)
+{
+   eina_stringshare_del((Eina_Stringshare *)data);
+}
+
 Evas_Object *
 ui_signal_list_add(Evas_Object *parent)
 {
@@ -51,10 +58,10 @@ ui_signal_list_add(Evas_Object *parent)
      {
         _itc_signal = elm_genlist_item_class_new();
         _itc_signal->item_style = "eflete/default";
-        _itc_signal->func.text_get = _item_signal_label_get;
+        _itc_signal->func.text_get = _item_label_get;
         _itc_signal->func.content_get = NULL;
         _itc_signal->func.state_get = NULL;
-        _itc_signal->func.del = NULL;
+        _itc_signal->func.del = _item_del;
      }
 
    gl_signals = elm_genlist_add(parent);
@@ -71,27 +78,38 @@ Eina_Bool
 ui_signal_list_data_set(Evas_Object *object, Style *style)
 {
    Eina_List *signals, *l;
-   char *signal;
-   Evas_Object *gl_signals = object;
+   Style *tmp;
+   Eina_Stringshare *signal;
 
    if ((!object) || (!style) || (!style->obj)) return false;
 
-   signals = evas_object_data_get(gl_signals, SIGNALS_LIST);
-   if (signals)
-     {
-        wm_program_signals_list_free(signals);
-        evas_object_data_del(gl_signals, SIGNALS_LIST);
-     }
+   tmp = evas_object_data_get(object, STYLE);
+   if (tmp) evas_object_data_del(object, STYLE);
 
    signals = wm_program_signals_list_get(style);
    EINA_LIST_FOREACH(signals, l, signal)
      {
         elm_genlist_item_append(object, _itc_signal,
-                                signal,
+                                eina_stringshare_add(signal),
                                 NULL, ELM_GENLIST_ITEM_NONE,
                                 NULL, NULL);
      }
-   evas_object_data_set(gl_signals, SIGNALS_LIST, signals);
+   wm_program_signals_list_free(signals);
+   evas_object_data_set(object, STYLE, style);
 
    return true;
+}
+
+Style *
+ui_signal_list_data_unset(Evas_Object *object)
+{
+   Style *style;
+   if (!object) return NULL;
+
+   style = evas_object_data_get(object, STYLE);
+   if (style) evas_object_data_del(object, STYLE);
+
+   elm_genlist_clear(object);
+
+   return style;
 }

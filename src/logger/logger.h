@@ -20,17 +20,13 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <Eina.h>
+
 /**
  * @defgroup Logger Logger
  *
  * The application logger
  */
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* include config.h */
-
-#include <Eina.h>
 
 extern int _eflete_lod_dom;
 
@@ -39,11 +35,17 @@ extern int _eflete_lod_dom;
  *
  * @ingroup Logger
  */
-#define EFLETE_LOG(DOM, LEVEL, fmt, ...) \
-  { \
-    if (HAVE_EFLETE_DEBUG) EINA_LOG(DOM, LEVEL, fmt, ## __VA_ARGS__); \
-    else logger_message_print(LEVEL, fmt, ## __VA_ARGS__); \
-  }
+#ifdef HAVE_EFLETE_DEBUG
+   #define EFLETE_LOG(LEVEL, fmt, ...) \
+     { \
+       EINA_LOG(_eflete_lod_dom, LEVEL, fmt, ## __VA_ARGS__); \
+     }
+#else
+   #define EFLETE_LOG(LEVEL, fmt, ...) \
+     { \
+       logger_message_print(LEVEL, fmt, ## __VA_ARGS__); \
+     }
+#endif /*  */
 
 /**
  * Logs a message with level CRITICAL.
@@ -51,7 +53,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define CRIT(fmt, ...) \
-   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level ERROR.
@@ -59,7 +61,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define ERR(fmt, ...) \
-   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level WARNING.
@@ -67,7 +69,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define WARN(fmt, ...) \
-   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level INFO.
@@ -75,7 +77,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define INFO(fmt, ...) \
-   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
 
 /**
  * Logs a message with level DEBUG.
@@ -83,7 +85,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define DBG(fmt, ...) \
-   EFLETE_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
+   EFLETE_LOG(EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
 
 /**
  * Init logger

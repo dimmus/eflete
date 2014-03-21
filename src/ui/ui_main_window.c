@@ -17,11 +17,12 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
+#ifdef HAVE_CONFIG_H
+   #include "eflete_config.h"
+#endif /* include eflete_config.h */
+
 #include "ui_main_window.h"
 #include "settings.h"
-#include "part_dialog.h"
-#include "state_dialog.h"
-#include "style_dialog.h"
 
 static void
 _on_done(void *data,
@@ -46,7 +47,7 @@ ui_main_window_del(App_Data *ap)
      }
    eina_hash_free(ap->menu_hash);
    ui_panes_settings_save();
-   INFO("%s: %s - Finished...", ETE_PACKAGE_NAME, VERSION);
+   INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    if (ap->project)
      pm_project_close(ap->project);
    /* FIXME: remove it from here */
@@ -99,7 +100,7 @@ ui_main_window_add(App_Data *ap)
      }
    ap->win = win;
 
-   elm_win_title_set(win, ETE_PACKAGE);
+   elm_win_title_set(win, "EFL Edje Theme Editor");
    evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
    evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, _on_window_resize,
                                   NULL);

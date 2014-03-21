@@ -25,15 +25,11 @@ elm_main()
 {
    if (!app_init()) return -1;
 
-   #ifdef HAVE_CONFIG_H
-      INFO("%s: %s - Started...", ETE_PACKAGE_NAME, VERSION);
-   #else
-      CRIT("Could not find 'config.h'");
-   #endif
-
-   setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   textdomain(PACKAGE);
+#ifdef HAVE_CONFIG_H
+   INFO("%s: %s - Started...", PACKAGE_NAME, VERSION);
+#else
+   CRIT("Could not find 'eflete_config.h'");
+#endif
 
    App_Data *ap = app_create();
    if (!ui_main_window_add(ap))

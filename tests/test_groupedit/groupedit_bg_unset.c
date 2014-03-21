@@ -32,6 +32,85 @@
 /**
  * @addtogroup groupedit_bg_unset
  * @{
+ * <tr>
+ * <td>groupedit_bg_unset</td>
+ * <td>groupedit_bg_unset_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 create parent window
+ * @step 3 create evas image
+ *
+ * @procedure
+ * @step 1 call groupedit_add
+ * @step 2 call groupedit_bg_set
+ * @step 3 call groupedit_bg_unset
+ * @step 4 check returned value
+ * </td>
+ * <td>(Evas_Object *) groupedit</td>
+ * <td>Image pointer equal to setted image pointer</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(groupedit_bg_unset_test_p)
+{
+   Evas_Object *parent, *groupedit, *image;
+   Evas_Object *res_image;
+
+   elm_init(0, 0);
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   image = evas_object_image_add(evas_object_evas_get(parent));
+
+   groupedit = groupedit_add(parent);
+   groupedit_bg_set(groupedit, image);
+   res_image = groupedit_bg_unset(groupedit);
+   ck_assert_msg(image == res_image,
+                 "Failed to unset the bg image from groupedit.");
+   evas_object_del(image);
+   evas_object_del(parent);
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupedit_bg_unset
+ * @{
+ * <tr>
+ * <td>groupedit_bg_unset</td>
+ * <td>groupedit_bg_unset_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call groupedit_bg_unset
+ * @step 2 check returned value
+ * </td>
+ * <td>NULL</td>
+ * <td>NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(groupedit_bg_unset_test_n)
+{
+   elm_init(0, 0);
+
+   ck_assert_msg(groupedit_bg_unset(NULL) == NULL,
+                 "Groupedit returned not NULL pointer, must to return NULL.");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupedit_bg_unset
+ * @{
  * </TABLE>
  * @}
  * @}

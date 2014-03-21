@@ -2,7 +2,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 ACLOCAL_AMFLAGS = -I m4
 
-TESTS = part_dialog_test \
+TESTS = \
+part_dialog_test \
 alloc_test \
 colorclass_editor_test \
 edje_compile_test \
@@ -45,27 +46,16 @@ FLAGS = \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/src/ui/signal_list \
 -I${top_srcdir}/tests \
-@EINA_CFLAGS@ \
-@EET_CFLAGS@ \
-@EVAS_CFLAGS@ \
-@ECORE_CFLAGS@ \
-@EIO_CFLAGS@ \
-@EFREET_CFLAGS@ \
-@EDJE_CFLAGS@ \
+@EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/libete.a \
 @CHECK_LIBS@ \
-@EINA_LIBS@ \
-@EET_LIBS@ \
-@EVAS_LIBS@ \
-@ECORE_LIBS@ \
-@EIO_LIBS@ \
-@EFREET_LIBS@ \
-@EDJE_LIBS@ \
+@EFL_LIBS@ \
 @ELEMENTARY_LIBS@
 
 part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c
@@ -182,7 +172,11 @@ ui_ruler_test_SOURCES = test_ui_ruler/test_ui_ruler.c
 ui_ruler_test_CFLAGS = ${FLAGS}
 ui_ruler_test_LDADD = ${LD}
 
-ui_signal_list_test_SOURCES = test_ui_signal_list/test_ui_signal_list.c
+ui_signal_list_test_SOURCES = \
+test_ui_signal_list/test_ui_signal_list.c \
+test_ui_signal_list/ui_signal_list_add.c \
+test_ui_signal_list/ui_signal_list_data_set.c \
+test_ui_signal_list/ui_signal_list_data_unset.c
 ui_signal_list_test_CFLAGS = ${FLAGS}
 ui_signal_list_test_LDADD = ${LD}
 

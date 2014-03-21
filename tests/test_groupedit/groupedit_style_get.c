@@ -32,6 +32,81 @@
 /**
  * @addtogroup groupedit_style_get
  * @{
+ * <tr>
+ * <td>groupedit_style_get</td>
+ * <td>groupedit_style_get_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 create parent window
+ * @step 3 create a groupedit
+ *
+ * @procedure
+ * @step 1 set the new style to groupedit
+ * @step 2 get the style name from groupedit
+ * @step 3 check returned value
+ * </td>
+ * <td>(Evas_Object *) groupedit, "default"</td>
+ * <td>EINA_TRUE, "default"</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(groupedit_style_get_test_p)
+{
+   Evas_Object *parent, *groupedit;
+
+   elm_init(0, 0);
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+
+   groupedit = groupedit_add(parent);
+   groupedit_style_set(groupedit, "default");
+   ck_assert_msg(strcmp(groupedit_style_get(groupedit), "default") == 0,
+                 "Failed to get the groupedit a style.");
+
+   evas_object_del(parent);
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupedit_style_get
+ * @{
+ * <tr>
+ * <td>groupedit_style_get</td>
+ * <td>groupedit_style_get_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 get the a new style name
+ * @step 2 check returned value
+ * </td>
+ * <td>NULL, "default"</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(groupedit_style_get_test_n)
+{
+   elm_init(0, 0);
+
+   ck_assert_msg(!groupedit_style_get(NULL),
+                 "Getting a style from NULL object.");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup groupedit_style_get
+ * @{
  * </TABLE>
  * @}
  * @}

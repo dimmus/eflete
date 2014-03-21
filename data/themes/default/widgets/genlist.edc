@@ -478,7 +478,7 @@ group { name: "elm/genlist/tree/eflete/tree/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
    data.item: "texts" "elm.text";
-   data.item: "contents" "elm.swallow.icon elm.swallow.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end elm.swallow.add elm.swallow.del";
    data.item: "treesize" TREEPAD;
    images {
       image: "treemenu-lvl1-item-current-bg.png" COMP;
@@ -499,7 +499,7 @@ group { name: "elm/genlist/tree/eflete/tree/default";
             fill.smooth: 0;
             image {
                normal: "treemenu-lvl1-item-bg.png";
-               border: 0 0 3 3;
+               border: 0 0 1 1;
             }
          }
       }
@@ -509,12 +509,18 @@ group { name: "elm/genlist/tree/eflete/tree/default";
          description { state: "default" 0.0;
             visible: 1;
             fill.smooth: 0;
-            image.normal: "treemenu-lvl1-item-current-bg.png";
+            image {
+               normal: "treemenu-lvl1-item-current-bg.png";
+               border: 0 0 1 1;
+            }
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            image.normal: "treemenu-lvl1-item-bg.png";
+            image {
+               normal: "treemenu-lvl1-item-bg.png";
+               border: 0 0 1 1;
+            }
          }
       }
       part { name: "elm.swallow.pad";
@@ -576,12 +582,13 @@ group { name: "elm/genlist/tree/eflete/tree/default";
          scale: 1;
          description{ state:"default" 0.0;
             align: 0.0 0.0;
+            fixed: 0 1;
             rel1 {
                to: "elm.swallow.icon";
                relative: 1.0 0.0;
             }
             rel2 {
-               to: "elm.swallow.end";
+               to: "elm.swallow.add";
                relative: 0.0 1.0;
             }
          }
@@ -644,7 +651,48 @@ group { name: "elm/genlist/tree/eflete/tree/default";
             image.normal: "icon-treemenu-lvl1-slideup.png";
          }
       }
-
+      part { name: "elm.swallow.add";
+         clip_to: "disclip";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            min: ITEM_HEIGHT ITEM_HEIGHT;
+            max: ITEM_HEIGHT ITEM_HEIGHT;
+            rel1 {
+               to_y: "elm.swallow.end";
+               relative: 1.0  0.0;
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               offset: 0 0;
+               to: "elm.swallow.del";
+            }
+         }
+      }
+      part { name: "elm.swallow.del";
+         clip_to: "disclip";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            min: ITEM_HEIGHT ITEM_HEIGHT;
+            max: ITEM_HEIGHT ITEM_HEIGHT;
+            rel1 {
+               to_y: "elm.swallow.end";
+               relative: 1.0  0.0;
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               offset: 0 0;
+               to: "elm.swallow.end";
+            }
+         }
+      }
       part { name: "elm.text";
          clip_to: "disclip";
          type: TEXT;
@@ -665,8 +713,7 @@ group { name: "elm/genlist/tree/eflete/tree/default";
                relative: 1.0  1.0;
             }
             rel2 {
-               to_x: "elm.swallow.end";
-               to_y: "text_container";
+               to: "elm.swallow.add";
                relative: 0.0  1.0;
             }
          }
@@ -803,7 +850,91 @@ group { name: "elm/genlist/item/eflete/level3/default";
    }
 }
 
-#undef ITEM_HEIGHT
+group { name: "elm/genlist/item/eflete/mode/default";
+   alias: "elm/genlist/item_odd/eflete/mode/default";
+   data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
+   data.item: "treesize" TREEPAD;
+   images.image: "treemenu-lvl2-item-bg.png" COMP;
+
+   parts {
+      part { name: "bg";
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image {
+               normal: "treemenu-lvl2-item-bg.png";
+               border: 0 0 1 1;
+            }
+            fill.smooth: 0;
+         }
+      }
+      part { name: "end.bottom.pad";
+         type: SPACER;
+         description {
+            SET_SIZE(5, 5);
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "elm.swallow.modeicon";
+         clip_to: "disclip";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
+            rel1 {
+               relative: 0.0  1.0;
+               to_x: "end.bottom.pad";
+               to_y: "start.top.pad";
+            }
+            rel2 {
+               relative: 0.0  0.0;
+               to: "end.bottom.pad";
+            }
+         }
+      }
+      part { name: "elm.swallow.container";
+         type: SWALLOW;
+         clip_to: "disclip";
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "start.top.pad";
+               to_y: "elm.swallow.modeicon";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "elm.swallow.modeicon";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "start.top.pad";
+         type:SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel2.offset: 0 0;
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: WHITE_VISIBLE_COLOR;
+         }
+      }
+   }
+}
+
 
 group { name: "elm/genlist/base/eflete/default";
    images {
@@ -1261,4 +1392,4 @@ group { name: "elm/genlist/base/eflete/dark";
 
    }
 }
-
+#undef ITEM_HEIGHT

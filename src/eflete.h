@@ -30,13 +30,22 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* include config.h */
+   #include "eflete_config.h"
+#endif /* include eflete_config.h */
 
 /* localization */
-#include <libintl.h>
-#define _(string) gettext(string)
-#define N_(string) string
+#ifdef HAVE_GETTEXT
+   #include <libintl.h>
+   #define _(string) gettext(string)
+   #define N_(string) string
+#else
+   #define _(string) string
+   #define N_(string) string
+#endif /* localization */
+
+/* TODO: delete it, and remake all strings to eina_stringshare or eina_strbuff */
+#define PATH_MAX 4096
+#define BUFF_MAX 512
 
 #include <Eina.h>
 #include <Ecore.h>

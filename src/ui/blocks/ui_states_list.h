@@ -77,4 +77,6 @@ ui_state_list_selected_state_get(Evas_Object *obj);
 Eina_List *
 ui_state_list_selected_states_get(Evas_Object *obj);
 
+void
+ui_states_list_data_unset(Evas_Object *obj);
 #endif /* UI_STATES_LIST_H */

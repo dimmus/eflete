@@ -17,29 +17,22 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#include "ui_signal_list.h"
+#include "utc_common.h"
 
-#define ETE_PACKAGE "@P_NAME@"
-#define ETE_PACKAGE_NAME ETE_PACKAGE
-#define SH_NAME "@SHORT_NAME@"
-#define VERSION "@P_VERSION@"
-#define VERMAJ @V_MAJ@
-#define VERMIN @V_MIN@
-#define VERMIC @V_MIC@
+void ui_signal_list_add_test_p(int);
+void ui_signal_list_add_test_n(int);
 
-#define __UNUSED__ __attribute__((unused))
-#define DEPRECATED __attribute__((deprecated))
+void ui_signal_list_data_set_test_p1(int);
+void ui_signal_list_data_set_test_p2(int);
+void ui_signal_list_data_set_test_p3(int);
+void ui_signal_list_data_set_test_p4(int);
+void ui_signal_list_data_set_test_n1(int);
+void ui_signal_list_data_set_test_n2(int);
+void ui_signal_list_data_set_test_n3(int);
+void ui_signal_list_data_set_test_n4(int);
+void ui_signal_list_data_set_test_n5(int);
 
-#ifndef HAVE_PATH_MAX
-#define PATH_MAX 4096
-#define BUFF_MAX 512
-#endif
-
-/* localization */
-#define LOCALEDIR "/usr/local/share/locale"
-
-/* Eflete debug */
-#define HAVE_EFLETE_DEBUG @E_DEBUG@
-
-#endif /* CONFIG_H */
+void ui_signal_list_data_unset_test_p1(int);
+void ui_signal_list_data_unset_test_p2(int);
+void ui_signal_list_data_unset_test_n(int);

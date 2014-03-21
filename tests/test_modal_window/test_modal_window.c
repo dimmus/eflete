@@ -22,10 +22,10 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("modal_window_test");
    TCase *tcase = tcase_create("TCase");
-/*  tcase_add_test(tcase, mw_add_test_p); */
-/*  tcase_add_test(tcase, mw_add_test_n); */
-/*  tcase_add_test(tcase, mw_about_add_test_p); */
-/*  tcase_add_test(tcase, mw_about_add_test_n); */
+   tcase_add_test(tcase, mw_add_test_p);
+   tcase_add_test(tcase, mw_add_test_n);
+   tcase_add_test(tcase, mw_about_add_test_p);
+   tcase_add_test(tcase, mw_about_add_test_n);
 /*  tcase_add_test(tcase, mw_title_set_test_n1); */
 /*  tcase_add_test(tcase, mw_title_set_test_p); */
 /*  tcase_add_test(tcase, mw_title_set_test_n2); */

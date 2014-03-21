@@ -158,9 +158,11 @@ groupedit_container_size_set(Evas_Object *obj, int w, int h);
  * @param w The int pointer where width will be set,
  * @param h The int pointer where height will be set.
  *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_container_size_get(Evas_Object *obj, int *w, int *h);
 
 /*TODO: aspect for groupedit */
