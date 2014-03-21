@@ -690,6 +690,8 @@ ui_widget_list_add(Evas_Object *parent)
    Evas_Object *gl_widgets = NULL;
    Elm_Object_Item *it;
 
+   if (!parent) return NULL;
+
    if (!_itc_widget)
      {
         _itc_widget = elm_genlist_item_class_new();

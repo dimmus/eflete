@@ -184,7 +184,21 @@ ui_state_list_test_SOURCES = test_ui_state_list/test_ui_state_list.c
 ui_state_list_test_CFLAGS = ${FLAGS}
 ui_state_list_test_LDADD = ${LD}
 
-ui_widget_list_test_SOURCES = test_ui_widget_list/test_ui_widget_list.c
+ui_widget_list_test_SOURCES = \
+test_ui_widget_list/test_ui_widget_list.c \
+test_ui_widget_list/ui_widget_list_add.c \
+test_ui_widget_list/ui_widget_list_class_data_reload.c \
+test_ui_widget_list/ui_widget_list_data_set.c \
+test_ui_widget_list/ui_widget_list_layouts_reload.c \
+test_ui_widget_list/ui_widget_list_part_add.c \
+test_ui_widget_list/ui_widget_list_part_get.c \
+test_ui_widget_list/ui_widget_list_selected_part_above.c \
+test_ui_widget_list/ui_widget_list_selected_part_below.c \
+test_ui_widget_list/ui_widget_list_selected_part_del.c \
+test_ui_widget_list/ui_widget_list_selected_part_get.c \
+test_ui_widget_list/ui_widget_list_selected_part_set.c \
+test_ui_widget_list/ui_widget_list_selected_parts_get.c \
+test_ui_widget_list/ui_widget_list_title_set.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
 ui_widget_list_test_LDADD = ${LD}
 
