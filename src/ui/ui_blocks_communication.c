@@ -117,6 +117,87 @@ _del_state_dialog(void *data,
    state_dialog_state_del(ap);
 }
 
+static void
+_del_layout(void *data __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   return;
+}
+
+static void
+_add_layout_cb(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info)
+{
+   Evas_Object *widget_list = (Evas_Object *)event_info;
+   Eina_Bool nameExist = true;
+   App_Data *ap = (App_Data *)data;
+   Widget *widget = NULL;
+   Class *class = NULL;
+   Style *layout = NULL;
+   unsigned int i = 0;
+   const char *name = NULL;
+
+   layout = EINA_INLIST_CONTAINER_GET(ap->project->layouts, Style);
+   if (!layout)
+     {
+        widget = EINA_INLIST_CONTAINER_GET(ap->project->widgets, Widget);
+        if (widget)
+          {
+             class = EINA_INLIST_CONTAINER_GET(widget->classes, Class);
+             if (class)
+               {
+                  layout = EINA_INLIST_CONTAINER_GET(class->styles, Style);
+                  if (!layout)
+                    {
+                       NOTIFY_INFO(3, _("Failed create new layout."));
+                       ERR("Failed create new layout: edje edit object not find");
+                       return;
+                    }
+               }
+             else return;
+          }
+        else return;
+     }
+   for (i = 0; i < 999; i++)
+     {
+        name = eina_stringshare_printf("new/layout/%d", i);
+        if (!edje_edit_group_exist(layout->obj, name))
+          {
+             nameExist = false;
+             break;
+          }
+     }
+
+   if (nameExist)
+     {
+        NOTIFY_INFO(3, _("Failed create new layout."));
+        ERR("Failed create new layout: all avalaible names is exists");
+        eina_stringshare_del(name);
+        return;
+     }
+
+   if (!edje_edit_group_add(layout->obj, name))
+     {
+        NOTIFY_INFO(3, _("Failed create new layout."));
+        ERR("Failed create new layout: edje edit group add fail");
+        eina_stringshare_del(name);
+        return;
+     }
+
+   edje_edit_save_all(layout->obj);
+   layout = wm_style_add(name, name, LAYOUT);
+   layout->isModify = true;
+   ap->project->layouts = eina_inlist_append(ap->project->layouts,
+                                             EINA_INLIST_GET(layout));
+
+   wm_style_data_load(layout, evas_object_evas_get(widget_list),
+                      ap->project->swapfile);
+   ui_widget_list_layouts_reload(widget_list, ap->project);
+   eina_stringshare_del(name);
+   return;
+}
 
 static void
 _del_style(void *data,
@@ -680,5 +761,11 @@ register_callbacks(App_Data *ap)
                                   _add_style_dailog, ap);
    evas_object_smart_callback_add(ap->block.left_top, "wl,style,del",
                                   _del_style, ap);
+
+   evas_object_smart_callback_add(ap->block.left_top, "wl,layout,add",
+                                  _add_layout_cb, ap);
+   evas_object_smart_callback_add(ap->block.left_top, "wl,layout,del",
+                                  _del_layout, ap);
+
    return true;
 }

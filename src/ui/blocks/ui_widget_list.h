@@ -188,4 +188,17 @@ ui_widget_list_part_selected_set(Evas_Object *object,
 void
 ui_widget_list_class_data_reload(Evas_Object *gl_styles, Eina_Inlist *classes);
 
+/**
+ * Reload layouts into widget list.
+ *
+ * @param obj A widget list object.
+ * @param project A pointer of project structure.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_layouts_reload(Evas_Object *obj, Project *project);
+
 #endif /* UI_WIDGET_LIST_H */
