@@ -134,7 +134,11 @@ project_manager_test_SOURCES = test_project_manager/test_project_manager.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
-settings_test_SOURCES = test_settings/test_settings.c
+settings_test_SOURCES = \
+test_settings/test_settings.c \
+test_settings/ui_element_settings_init.c\
+test_settings/ui_settings_save.c \
+test_settings/ui_settings_load.c
 settings_test_CFLAGS = ${FLAGS}
 settings_test_LDADD = ${LD}
 
