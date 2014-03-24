@@ -29,8 +29,12 @@ Suite* test_suite (void) {
 // tcase_add_test(tcase, ui_widget_list_title_set_test_p);
 // tcase_add_test(tcase, ui_widget_list_title_set_test_n);
 //
-// tcase_add_test(tcase, ui_widget_list_data_set_test_p);
-// tcase_add_test(tcase, ui_widget_list_data_set_test_n);
+   tcase_add_test(tcase, ui_widget_list_data_set_test_p1);
+   tcase_add_test(tcase, ui_widget_list_data_set_test_p2);
+   tcase_add_test(tcase, ui_widget_list_data_set_test_p3);
+   tcase_add_test(tcase, ui_widget_list_data_set_test_p4);
+   tcase_add_test(tcase, ui_widget_list_data_set_test_n1);
+   tcase_add_test(tcase, ui_widget_list_data_set_test_n2);
 //
 // tcase_add_test(tcase, ui_widget_list_part_add_test_p);
 // tcase_add_test(tcase, ui_widget_list_part_add_test_n);

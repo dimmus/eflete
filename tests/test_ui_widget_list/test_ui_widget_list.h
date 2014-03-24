@@ -27,4 +27,10 @@
 void ui_widget_list_add_test_p(int);
 void ui_widget_list_add_test_n(int);
 
+void ui_widget_list_data_set_test_p1(int);
+void ui_widget_list_data_set_test_p2(int);
+void ui_widget_list_data_set_test_p3(int);
+void ui_widget_list_data_set_test_p4(int);
+void ui_widget_list_data_set_test_n1(int);
+void ui_widget_list_data_set_test_n2(int);
 
