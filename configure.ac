@@ -8,7 +8,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
-AM_INIT_AUTOMAKE([1.11 dist-bzip2 subdir-objects color-tests])
+AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.8.5])
