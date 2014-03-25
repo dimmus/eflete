@@ -914,6 +914,7 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    if (!part) return false;
 
    gp = _parts_list_find(sd->parts, part);
+   if (!gp) return false;
    gp->visible = visible;
 
    _parts_recalc(sd);

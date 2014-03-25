@@ -1107,8 +1107,7 @@ workspace_edit_object_visible_set(Evas_Object *obj,
 
    if (!part)
      {
-        ERR("Can't %s the part '%s' in the group %s!", visible ? "show" : "false",
-            part, sd->style->full_group_name)
+        ERR("Can't change visible params for NULL pointer");
         return false;
      }
 

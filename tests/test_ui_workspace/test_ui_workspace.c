@@ -98,9 +98,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n3);
    tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n4);
 
-//tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
-//tcase_add_test(tcase, workspace_edit_object_visible_set_test_n);
-//tcase_add_test(tcase, workspace_edit_object_visible_set_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
+   tcase_add_test(tcase, workspace_edit_object_visible_set_test_n);
+   tcase_add_test(tcase, workspace_edit_object_visible_set_test_n1);
 
 //tcase_add_test(tcase, workspace_highlight_set_test_p);
 //tcase_add_test(tcase, workspace_highlight_set_test_n);
