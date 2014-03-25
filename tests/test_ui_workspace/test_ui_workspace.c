@@ -72,10 +72,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_edit_object_part_above_test_n1);
    tcase_add_test(tcase, workspace_edit_object_part_above_test_n2);
 
-//tcase_add_test(tcase, workspace_edit_object_part_below_test_p);
-//tcase_add_test(tcase, workspace_edit_object_part_below_test_n);
-//tcase_add_test(tcase, workspace_edit_object_part_below_test_n1);
-//tcase_add_test(tcase, workspace_edit_object_part_below_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_below_test_p);
+   tcase_add_test(tcase, workspace_edit_object_part_below_test_n);
+   tcase_add_test(tcase, workspace_edit_object_part_below_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_below_test_n2);
 
 //tcase_add_test(tcase, workspace_edit_object_part_state_set_test_p);
 //tcase_add_test(tcase, workspace_edit_object_part_state_set_test_n);
