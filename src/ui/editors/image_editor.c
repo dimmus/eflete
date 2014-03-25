@@ -380,26 +380,28 @@ _image_editor_init(Image_Editor *img_edit)
    if (!img_edit) return false;
    GET_OBJ(img_edit->pr, edje_edit_obj);
    images = edje_edit_images_list_get(edje_edit_obj);
-   if (!images) return false;
 
-   EINA_LIST_FOREACH(images, l, image_name)
+   if (images)
      {
-        counter++;
-        if (!image_name)
-          {
-             ERR("name not found for image #%d",counter);
-             continue;
-          }
-        it = (Item *)mem_malloc(sizeof(Item));
-        it->image_name = eina_stringshare_add(image_name);
-        it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
-        elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+        EINA_LIST_FOREACH(images, l, image_name)
+           {
+              counter++;
+              if (!image_name)
+                {
+                   ERR("name not found for image #%d",counter);
+                   continue;
+                }
+              it = (Item *)mem_malloc(sizeof(Item));
+              it->image_name = eina_stringshare_add(image_name);
+              it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
+              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+           }
+         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
+                                   ELM_GENGRID_ITEM_SCROLLTO_TOP);
+         eina_list_free(images);
      }
-   elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
-                             ELM_GENGRID_ITEM_SCROLLTO_TOP);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
-   eina_list_free(images);
    return true;
 }
 
