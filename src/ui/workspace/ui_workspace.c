@@ -621,7 +621,7 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
    Evas_Object *follow;
    if ((!obj) || (!part)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-
+   if (!sd->groupedit) return false;
    groupedit_part_object_area_set(sd->groupedit, part->name);
    sd->highlight.part = part;
 
@@ -630,6 +630,11 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
    else
      {
         follow = groupedit_edit_object_part_draw_get(sd->groupedit, part->name);
+        if (!follow)
+          {
+             sd->highlight.part = NULL;
+             return false;
+          }
         highlight_object_follow(sd->highlight.highlight, follow);
 
         follow = groupedit_part_object_area_get(sd->groupedit);
