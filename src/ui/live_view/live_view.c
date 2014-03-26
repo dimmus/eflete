@@ -819,13 +819,15 @@ live_view_theme_update(Live_View *live, Project *project)
    return true;
 }
 
-void
+Eina_Bool
 live_view_free(Live_View *live)
 {
    if (live) live_view_widget_style_unset(live);
-   else return;
+   else return false;
 
    free(live);
+   live = NULL;
+   return true;
 }
 
 #undef ELEMENTS_COUNT

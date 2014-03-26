@@ -103,9 +103,11 @@ live_view_theme_update(Live_View *live, Project *project);
  *
  * @param live live_view structure.
  *
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ *
  * @ingroup Live_View
  */
-void
+Eina_Bool
 live_view_free(Live_View *live);
 
 #endif /* UI_LIVEVIEW_HEADER_H */
