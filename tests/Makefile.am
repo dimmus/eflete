@@ -24,8 +24,8 @@ ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
 widget_manager_test \
-program_editor_test
-
+program_editor_test \
+live_view_test
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
@@ -266,3 +266,13 @@ test_program_editor/test_program_editor.c \
 test_program_editor/program_editor_window_add_test.c
 program_editor_test_CFLAGS = ${FLAGS}
 program_editor_test_LDADD = ${LD}
+
+live_view_test_SOURCES = \
+test_live_view/test_live_view.c \
+test_live_view/live_view_add.c \
+test_live_view/live_view_free.c \
+test_live_view/live_view_widget_style_set.c \
+test_live_view/live_view_widget_style_unset.c \
+test_live_view/live_view_theme_update.c
+live_view_test_CFLAGS = ${FLAGS}
+live_view_test_LDADD = ${LD}
