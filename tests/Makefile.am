@@ -105,7 +105,10 @@ image_editor_test_SOURCES = test_image_editor/test_image_editor.c
 image_editor_test_CFLAGS = ${FLAGS}
 image_editor_test_LDADD = ${LD}
 
-logger_test_SOURCES = test_logger/test_logger.c
+logger_test_SOURCES = \
+test_logger/test_logger.c \
+test_logger/logger_init.c \
+test_logger/logger_shutdown.c
 logger_test_CFLAGS = ${FLAGS}
 logger_test_LDADD = ${LD}
 

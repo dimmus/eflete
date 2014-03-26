@@ -17,24 +17,13 @@
 * along with this program; If not, see .
 */
 
-#include "test_logger.h"
+#include "logger.h"
+#include "utc_common.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("logger_test");
-   TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, logger_init_test_p);
-   tcase_add_test(tcase, logger_shutdown_test_p);
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
+/**
+ * @defgroup test_logger
+ */
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_logger.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+void logger_init_test_p(int);
+void logger_shutdown_test_p(int);
+

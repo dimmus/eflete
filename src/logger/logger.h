@@ -21,6 +21,7 @@
 #define LOGGER_H
 
 #include <Eina.h>
+#include "common_macro.h"
 
 /**
  * @defgroup Logger Logger
@@ -88,7 +89,9 @@ extern int _eflete_lod_dom;
    EFLETE_LOG(EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
 
 /**
- * Init logger
+ * Initialize logger
+ *
+ * @return EINA_TRUE, on success or EINA_FALSE, on errors.
  *
  * @ingroup Logger
  */
@@ -98,9 +101,12 @@ logger_init(void);
 /**
  * Shutdown logger
  *
+ * @return -1 when module are completely shutdown, 0 or greater otherwise.
+ *
  * @ingroup Logger
+ *
  */
-void
+int
 logger_shutdown(void);
 
 /**

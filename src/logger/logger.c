@@ -29,9 +29,9 @@ Eina_Bool
 logger_init(void)
 {
 #ifdef HAVE_EFLETE_DEBUG
-   if (!eina_init()) return EINA_FALSE;
+   if (!eina_init()) return false;
 
-      eina_log_level_set(EINA_LOG_LEVEL_DBG);
+   eina_log_level_set(EINA_LOG_LEVEL_DBG);
 
    if(_eflete_lod_dom < 0)
      {
@@ -40,14 +40,14 @@ logger_init(void)
         if(_eflete_lod_dom < 0)
           {
              EINA_LOG_CRIT("Could not register log domain "PACKAGE);
-             return EINA_FALSE;
+             return false;
           }
      }
 #endif
-   return EINA_TRUE;
+   return true;
 }
 
-void
+int
 logger_shutdown(void)
 {
    if(_eflete_lod_dom >= 0)
@@ -55,6 +55,7 @@ logger_shutdown(void)
         eina_log_domain_unregister(_eflete_lod_dom);
         _eflete_lod_dom = -1;
      }
+   return _eflete_lod_dom;
 }
 
 void
@@ -62,6 +63,7 @@ logger_message_print(Eina_Log_Level level, const char *fmt, ...)
 {
    va_list args;
 
+   if (!fmt) return;
 #ifdef HAVE_EFLETE_DEBUG
    EINA_LOG(_eflete_lod_dom, level, fmt, args);
 #else
@@ -85,7 +87,7 @@ logger_message_print(Eina_Log_Level level, const char *fmt, ...)
       default:
          prefix = "";
      }
-      fprintf(stderr, "%s: %s", "eflete", prefix);
+   fprintf(stderr, "%s: %s", "eflete", prefix);
 
    eina_log_console_color_set(stderr, EINA_COLOR_RESET);
 
@@ -94,4 +96,5 @@ logger_message_print(Eina_Log_Level level, const char *fmt, ...)
    va_end(args);
    putc('\n', stderr);
 #endif
+   return;
 }
