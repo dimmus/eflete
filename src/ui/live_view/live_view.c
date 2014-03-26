@@ -791,7 +791,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 Eina_Bool
 live_view_widget_style_unset(Live_View *live)
 {
-   if (!live) return false;
+   if ((!live) || (!live->object)) return false;
    elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
    elm_object_part_content_unset(live->live_view, "live");
