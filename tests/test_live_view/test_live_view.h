@@ -37,7 +37,8 @@
  void live_view_widget_style_unset_test_n1(int);
  void live_view_widget_style_unset_test_n2(int);
 
- void live_view_theme_update_test_p(int);
+ void live_view_theme_update_test_p1(int);
+ void live_view_theme_update_test_p2(int);
  void live_view_theme_update_test_n1(int);
  void live_view_theme_update_test_n2(int);
  void live_view_theme_update_test_n3(int);
