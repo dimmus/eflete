@@ -1060,9 +1060,7 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
 
    if (!part)
      {
-        ERR("Can't set state '%s %f' to part '%s' in the group %s!",
-            part->curr_state, part->curr_state_value, part->name,
-            sd->style->full_group_name)
+        ERR("Can't set state to NULL pointer part");
         return false;
      }
    return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
