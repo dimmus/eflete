@@ -657,6 +657,7 @@ workspace_highlight_unset(Evas_Object *obj)
 {
    if (!obj) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
    sd->highlight.part = NULL;
