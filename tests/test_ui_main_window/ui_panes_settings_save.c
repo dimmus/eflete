@@ -32,6 +32,85 @@
 /**
  * @addtogroup ui_panes_settings_save
  * @{
+ * <tr>
+ * <td>ui_panes_settings_save</td>
+ * <td>ui_panes_settings_save_test_p</td>
+ * <td>
+ *
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize requred libraries.
+ * @step 3 Create application data structure.
+ * @step 4 Create main window using ui_main_window_add().
+ *
+ * @procedure
+ * @step 1 Call ui_panes_settings_save.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(void)</td>
+ * <td>EINA_TRUE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(ui_panes_settings_save_test_p)
+{
+   App_Data *app_data = NULL;
+   Eina_Bool ret = EINA_FALSE;
+
+   elm_init(0, 0);
+   app_init();
+   app_data = app_create();
+   ui_main_window_add(app_data);
+
+   ret = ui_panes_settings_save();
+   ck_assert_msg(ret == EINA_TRUE, "Failed to save panes settings");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_panes_settings_save
+ * @{
+ * <tr>
+ * <td>ui_panes_settings_save</td>
+ * <td>ui_panes_settings_save_test_n</td>
+ * <td>
+ *
+ * @precondition
+ * @step 1 Initialize elementary library.
+ *
+ * @procedure
+ * @step 1 Call ui_panes_settings_save.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(void)</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(ui_panes_settings_save_test_n)
+{
+   Eina_Bool ret = EINA_FALSE;
+
+   elm_init(0, 0);
+
+   ret = ui_panes_settings_save();
+   ck_assert_msg(ret == EINA_FALSE, "Save panes settings without create main window");
+
+   elm_shutdown();
+}
+END_TEST
+
+
+/**
+ * @addtogroup ui_panes_settings_save
+ * @{
  * </TABLE>
  * @}
  * @}

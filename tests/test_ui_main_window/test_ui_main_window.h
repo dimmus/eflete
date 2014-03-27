@@ -50,3 +50,6 @@ void ui_resize_panes_test_n2(int);
 void ui_panes_settings_load_test_p(int);
 void ui_panes_settings_load_test_n(int);
 
+void ui_panes_settings_save_test_p(int);
+void ui_panes_settings_save_test_n(int);
+
