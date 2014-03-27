@@ -99,7 +99,7 @@ _ui_panes_current_state_get(void)
    _panes = panes;
    _panes_temp = NULL;
 
-   Eina_Bool _need_resize = EINA_FALSE;
+   Eina_Bool _need_resize = false;
 
    size_get = elm_panes_content_left_size_get(_panes);
    ui_csp->panes_left.left_size = (int)(ui_csp->window.width * size_get);
@@ -145,7 +145,7 @@ _ui_panes_current_state_get(void)
         _shift_size = 300 - ui_csp->panes_center.left_size;
         ui_csp->panes_center.left_size = 300;
         ui_csp->panes_center.right_size -= _shift_size;
-        _need_resize = EINA_TRUE;
+        _need_resize = true;
         _shift_size = 0;
      }
 
@@ -156,7 +156,7 @@ _ui_panes_current_state_get(void)
         _shift_size = 300 - ui_csp->panes_right.left_size;
         ui_csp->panes_right.left_size = 300;
         ui_csp->panes_right.right_size -= _shift_size;
-        _need_resize = EINA_TRUE;
+        _need_resize = true;
         _shift_size = 0;
      }
 
@@ -308,19 +308,19 @@ ui_panes_add(App_Data *ap)
    if (!ap)
      {
         ERR("ap is NULL");
-        return EINA_FALSE;
+        return false;
      }
 
    us = ui_element_settings_init();
    if (!us)
      {
         NOTIFY_ERROR (_("ERROR: unable initialize settings module"));
-        return EINA_FALSE;
+        return false;
      }
    ui_csp =_ui_panes_current_state_struct_init();
 
    panes_left = elm_panes_add(ap->win_layout);
-   if (panes_left == NULL) return EINA_FALSE;
+   if (panes_left == NULL) return false;
    elm_object_style_set(panes_left, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -332,8 +332,8 @@ ui_panes_add(App_Data *ap)
 
 
    panes_left_hor = elm_panes_add(ap->win_layout);
-   if (panes_left_hor == NULL) return EINA_FALSE;
-   elm_panes_horizontal_set(panes_left_hor, EINA_TRUE);
+   if (panes_left_hor == NULL) return false;
+   elm_panes_horizontal_set(panes_left_hor, true);
    elm_object_style_set(panes_left_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -343,7 +343,7 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_left_hor, 0.45);
 
    panes_right = elm_panes_add(ap->win_layout);
-   if (panes_right == NULL) return EINA_FALSE;
+   if (panes_right == NULL) return false;
    elm_object_style_set(panes_right, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -353,8 +353,8 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_right, 0.75);
 
    panes_right_hor = elm_panes_add(ap->win_layout);
-   if (panes_right_hor == NULL) return EINA_FALSE;
-   elm_panes_horizontal_set(panes_right_hor, EINA_TRUE);
+   if (panes_right_hor == NULL) return false;
+   elm_panes_horizontal_set(panes_right_hor, true);
    elm_object_style_set(panes_right_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right_hor,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -364,8 +364,8 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_right_hor, 0.45);
 
    panes_center = elm_panes_add(ap->win_layout);
-   if (panes_center == NULL) return EINA_FALSE;
-   elm_panes_horizontal_set(panes_center, EINA_TRUE);
+   if (panes_center == NULL) return false;
+   elm_panes_horizontal_set(panes_center, true);
    elm_object_style_set(panes_center, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -375,7 +375,7 @@ ui_panes_add(App_Data *ap)
    elm_panes_content_left_size_set(panes_center, 0.65);
 
    panes_center_down = elm_panes_add(ap->win_layout);
-   if (panes_center_down == NULL) return EINA_FALSE;
+   if (panes_center_down == NULL) return false;
    elm_object_style_set(panes_center_down, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center_down,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -447,7 +447,7 @@ ui_panes_add(App_Data *ap)
    evas_object_show(block);
    ap->block.right_bottom = block;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
