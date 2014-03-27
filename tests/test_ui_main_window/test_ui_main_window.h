@@ -39,3 +39,7 @@ void ui_panes_show_test_p(int);
 void ui_panes_show_test_n1(int);
 void ui_panes_show_test_n2(int);
 
+void ui_panes_hide_test_p(int);
+void ui_panes_hide_test_n1(int);
+void ui_panes_hide_test_n2(int);
+
