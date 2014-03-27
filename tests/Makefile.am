@@ -164,7 +164,30 @@ ui_highlight_test_SOURCES = test_ui_highlight/test_ui_highlight.c
 ui_highlight_test_CFLAGS = ${FLAGS}
 ui_highlight_test_LDADD = ${LD}
 
-ui_main_window_test_SOURCES = test_ui_main_window/test_ui_main_window.c
+ui_main_window_test_SOURCES = \
+test_ui_main_window/test_ui_main_window.c \
+test_ui_main_window/new_theme_create.c \
+test_ui_main_window/register_callbacks.c \
+test_ui_main_window/ui_edj_load_done.c \
+test_ui_main_window/ui_main_window_add.c \
+test_ui_main_window/ui_main_window_del.c \
+test_ui_main_window/ui_menu_add.c \
+test_ui_main_window/ui_menu_base_disabled_set.c \
+test_ui_main_window/ui_menu_disable_set.c \
+test_ui_main_window/ui_menu_locked_set.c \
+test_ui_main_window/ui_panes_add.c \
+test_ui_main_window/ui_panes_hide.c \
+test_ui_main_window/ui_panes_settings_load.c \
+test_ui_main_window/ui_panes_settings_save.c \
+test_ui_main_window/ui_panes_show.c \
+test_ui_main_window/ui_part_back.c \
+test_ui_main_window/ui_part_select.c \
+test_ui_main_window/ui_part_state_delete.c \
+test_ui_main_window/ui_resize_panes.c \
+test_ui_main_window/ui_state_select.c \
+test_ui_main_window/ui_style_back.c \
+test_ui_main_window/ui_style_delete.c \
+test_ui_main_window/ui_window_colorsel_get.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 

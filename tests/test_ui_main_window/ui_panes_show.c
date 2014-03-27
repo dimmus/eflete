@@ -19,22 +19,20 @@
 
 #include "test_ui_main_window.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("ui_main_window_test");
-   TCase *tcase = tcase_create("TCase");
+/**
+ * @addtogroup ui_main_window_test
+ * @{
+ * @addtogroup ui_panes_show
+ * @{
+ * ui_main_window
+ * <TABLE>
+ * @}
+ */
 
-   suite_add_tcase(suite, tcase);
-
-   return suite;
-}
-
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_ui_main_window.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+/**
+ * @addtogroup ui_panes_show
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */
