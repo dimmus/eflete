@@ -142,6 +142,7 @@ data/eflete.desktop
 tests/Makefile
 tests/edj_build/Makefile
 tests/edj_build/radio.edc
+tests/Doxyfile
 doc/Makefile
 ])
 AC_CONFIG_COMMANDS( [cp], [cp ${srcdir}/tests/edj_build/radio.png ./tests/edj_build/radio.png])
