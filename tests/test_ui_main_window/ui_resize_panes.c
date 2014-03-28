@@ -32,6 +32,127 @@
 /**
  * @addtogroup ui_resize_panes
  * @{
+ * <tr>
+ * <td>ui_resize_panes</td>
+ * <td>ui_resize_panes_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize requred libraries.
+ * @step 3 Create application data structure.
+ * @step 4 Create main window using ui_main_window_add().
+ *
+ * @procedure
+ * @step 1 Call ui_resize_panes.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(int) 20, (int) 20</td>
+ * <td>EINA_TRUE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(ui_resize_panes_test_p)
+{
+   App_Data *app_data = NULL;
+   Eina_Bool ret = EINA_FALSE;
+
+   elm_init(0, 0);
+   app_init();
+   app_data = app_create();
+   ui_main_window_add(app_data);
+
+   ret = ui_resize_panes(20, 20);
+   ck_assert_msg(ret == EINA_TRUE, "Failed to resize panes");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_resize_panes
+ * @{
+ * <tr>
+ * <td>ui_resize_panes</td>
+ * <td>ui_resize_panes_test_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize requred libraries.
+ * @step 3 Create application data structure.
+ * @step 4 Create main window using ui_main_window_add().
+ *
+ * @procedure
+ * @step 1 Call ui_resize_panes.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(int) -10, (int) 20</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(ui_resize_panes_test_n1)
+{
+   App_Data *app_data = NULL;
+   Eina_Bool ret = EINA_TRUE;
+
+   elm_init(0, 0);
+   app_init();
+   app_data = app_create();
+   ui_main_window_add(app_data);
+
+   ret = ui_resize_panes(-10, 20);
+   ck_assert_msg(ret == EINA_FALSE, "Resized panes with height less than 0");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_resize_panes
+ * @{
+ * <tr>
+ * <td>ui_resize_panes</td>
+ * <td>ui_resize_panes_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize requred libraries.
+ *
+ * @procedure
+ * @step 1 Call ui_resize_panes.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(int) 20, (int) 20</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(ui_resize_panes_test_n2)
+{
+   Eina_Bool ret = EINA_TRUE;
+
+   elm_init(0, 0);
+   app_init();
+
+   ret = ui_resize_panes(20, 20);
+   ck_assert_msg(ret == EINA_FALSE, "Resized panes without create main window");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_resize_panes
+ * @{
  * </TABLE>
  * @}
  * @}
