@@ -24,3 +24,7 @@
  * @defgroup test_ui_main_window
  */
 
+
+void ui_main_window_add_test_p(int);
+void ui_main_window_add_test_n(int);
+
