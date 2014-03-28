@@ -250,21 +250,15 @@ _on_ws_part_unselect(void *data,
                      void *event_info)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *block, *prop;
    const char *part = (const char *)event_info;
 
-   if (part)
-     {
-        ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
-        /* FIXME:  find way to does'nt make immidietly render */
-        block = ui_block_state_list_get(ap);
-        if (block) elm_genlist_clear(block);
-        ui_states_list_data_unset(ui_block_signal_list_get(ap));
-        /*TODO: in future it will be moved to block api. */
-        elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
-        prop = ui_block_property_get(ap);
-        ui_property_part_unset(prop);
-     }
+   if (!part) return;
+
+   ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
+   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   ui_property_part_unset(ui_block_property_get(ap));
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
 }
 
 void
@@ -272,7 +266,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *prop, *block, *wl_list, *groupedit;
+   Evas_Object *wl_list, *groupedit;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -286,14 +280,11 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
 
    workspace_edit_object_unset(ap->workspace);
-   /* FIXME:  find way to does'nt make immidietly render */
-   block = ui_block_state_list_get(ap);
-   if (block) elm_genlist_clear(block);
-   ui_states_list_data_unset(ui_block_signal_list_get(ap));
+   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+   ui_property_style_unset(ui_block_property_get(ap));
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
-   prop = ui_block_property_get(ap);
-   ui_property_style_unset(prop);
    live_view_widget_style_unset(ap->live_view);
 
    ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
@@ -438,19 +429,16 @@ Evas_Object *
 ui_edj_load_done(App_Data* ap, const char *selected)
 {
    Evas_Object *wd_list = NULL;
-   Evas_Object *prop = NULL;
    char *name;
 
    if ((!ap) || (!selected)) return NULL;
 
-   prop = ui_block_property_get(ap);
-
    if (eina_str_has_suffix(selected, ".edj"))
      {
         INFO("Selected file: %s", selected);
-        if (prop) ui_property_style_unset(prop);
-        elm_genlist_clear(ui_block_state_list_get(ap));
-        elm_genlist_clear(ui_block_signal_list_get(ap));
+        ui_property_style_unset(ui_block_property_get(ap));
+        ui_states_list_data_unset(ui_block_state_list_get(ap));
+        ui_signal_list_data_unset(ui_block_signal_list_get(ap));
 
         if (ap->workspace)
           {

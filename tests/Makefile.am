@@ -15,7 +15,7 @@ project_manager_test \
 settings_test \
 style_editor_test \
 ui_block_test \
-ui_highlight_test \
+highlight_test \
 ui_main_window_test \
 ui_ruler_test \
 ui_signal_list_test \
@@ -24,8 +24,8 @@ ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
 widget_manager_test \
-program_editor_test
-
+program_editor_test \
+live_view_test
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
@@ -105,7 +105,10 @@ image_editor_test_SOURCES = test_image_editor/test_image_editor.c
 image_editor_test_CFLAGS = ${FLAGS}
 image_editor_test_LDADD = ${LD}
 
-logger_test_SOURCES = test_logger/test_logger.c
+logger_test_SOURCES = \
+test_logger/test_logger.c \
+test_logger/logger_init.c \
+test_logger/logger_shutdown.c
 logger_test_CFLAGS = ${FLAGS}
 logger_test_LDADD = ${LD}
 
@@ -131,7 +134,11 @@ project_manager_test_SOURCES = test_project_manager/test_project_manager.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
-settings_test_SOURCES = test_settings/test_settings.c
+settings_test_SOURCES = \
+test_settings/test_settings.c \
+test_settings/ui_element_settings_init.c\
+test_settings/ui_settings_save.c \
+test_settings/ui_settings_load.c
 settings_test_CFLAGS = ${FLAGS}
 settings_test_LDADD = ${LD}
 
@@ -160,11 +167,43 @@ ui_groupspace_test_SOURCES = test_ui_groupspace/test_ui_groupspace.c
 ui_groupspace_test_CFLAGS = ${FLAGS}
 ui_groupspace_test_LDADD = ${LD}
 
-ui_highlight_test_SOURCES = test_ui_highlight/test_ui_highlight.c
-ui_highlight_test_CFLAGS = ${FLAGS}
-ui_highlight_test_LDADD = ${LD}
+highlight_test_SOURCES = \
+test_highlight/test_highlight.c \
+test_highlight/highlight_add.c \
+test_highlight/highlight_bg_color_set.c \
+test_highlight/highlight_border_color_set.c \
+test_highlight/highlight_handler_color_set.c \
+test_highlight/highlight_handler_disabled_set.c \
+test_highlight/highlight_handler_mode_set.c \
+test_highlight/highlight_object_follow.c \
+test_highlight/highlight_object_unfollow.c
+highlight_test_CFLAGS = ${FLAGS}
+highlight_test_LDADD = ${LD}
 
-ui_main_window_test_SOURCES = test_ui_main_window/test_ui_main_window.c
+ui_main_window_test_SOURCES = \
+test_ui_main_window/test_ui_main_window.c \
+test_ui_main_window/new_theme_create.c \
+test_ui_main_window/register_callbacks.c \
+test_ui_main_window/ui_edj_load_done.c \
+test_ui_main_window/ui_main_window_add.c \
+test_ui_main_window/ui_main_window_del.c \
+test_ui_main_window/ui_menu_add.c \
+test_ui_main_window/ui_menu_base_disabled_set.c \
+test_ui_main_window/ui_menu_disable_set.c \
+test_ui_main_window/ui_menu_locked_set.c \
+test_ui_main_window/ui_panes_add.c \
+test_ui_main_window/ui_panes_hide.c \
+test_ui_main_window/ui_panes_settings_load.c \
+test_ui_main_window/ui_panes_settings_save.c \
+test_ui_main_window/ui_panes_show.c \
+test_ui_main_window/ui_part_back.c \
+test_ui_main_window/ui_part_select.c \
+test_ui_main_window/ui_part_state_delete.c \
+test_ui_main_window/ui_resize_panes.c \
+test_ui_main_window/ui_state_select.c \
+test_ui_main_window/ui_style_back.c \
+test_ui_main_window/ui_style_delete.c \
+test_ui_main_window/ui_window_colorsel_get.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
@@ -184,7 +223,21 @@ ui_state_list_test_SOURCES = test_ui_state_list/test_ui_state_list.c
 ui_state_list_test_CFLAGS = ${FLAGS}
 ui_state_list_test_LDADD = ${LD}
 
-ui_widget_list_test_SOURCES = test_ui_widget_list/test_ui_widget_list.c
+ui_widget_list_test_SOURCES = \
+test_ui_widget_list/test_ui_widget_list.c \
+test_ui_widget_list/ui_widget_list_add.c \
+test_ui_widget_list/ui_widget_list_class_data_reload.c \
+test_ui_widget_list/ui_widget_list_data_set.c \
+test_ui_widget_list/ui_widget_list_layouts_reload.c \
+test_ui_widget_list/ui_widget_list_part_add.c \
+test_ui_widget_list/ui_widget_list_part_get.c \
+test_ui_widget_list/ui_widget_list_selected_part_above.c \
+test_ui_widget_list/ui_widget_list_selected_part_below.c \
+test_ui_widget_list/ui_widget_list_selected_part_del.c \
+test_ui_widget_list/ui_widget_list_selected_part_get.c \
+test_ui_widget_list/ui_widget_list_selected_part_set.c \
+test_ui_widget_list/ui_widget_list_selected_parts_get.c \
+test_ui_widget_list/ui_widget_list_title_set.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
 ui_widget_list_test_LDADD = ${LD}
 
@@ -252,3 +305,13 @@ test_program_editor/test_program_editor.c \
 test_program_editor/program_editor_window_add_test.c
 program_editor_test_CFLAGS = ${FLAGS}
 program_editor_test_LDADD = ${LD}
+
+live_view_test_SOURCES = \
+test_live_view/test_live_view.c \
+test_live_view/live_view_add.c \
+test_live_view/live_view_free.c \
+test_live_view/live_view_widget_style_set.c \
+test_live_view/live_view_widget_style_unset.c \
+test_live_view/live_view_theme_update.c
+live_view_test_CFLAGS = ${FLAGS}
+live_view_test_LDADD = ${LD}

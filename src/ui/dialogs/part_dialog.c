@@ -59,7 +59,10 @@ _cancel_clicked(void *data,
    ENTRY_IS_EMPTY \
    const char *name = elm_entry_entry_get(entry); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, DATA)) \
-     ui_widget_list_part_add(widget_list, style, name); \
+     { \
+       ui_widget_list_part_add(widget_list, style, name); \
+       style->isModify = true; \
+     } \
    evas_object_del((Evas_Object *)data); \
    live_view_widget_style_set(ap->live_view, ap->project, style);
 

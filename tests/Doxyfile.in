@@ -8,7 +8,6 @@ PROJECT_NAME           = "Check Unit Test"
 PROJECT_NUMBER         = 
 PROJECT_BRIEF          =
 PROJECT_LOGO           =
-OUTPUT_DIRECTORY       = Documentation
 CREATE_SUBDIRS         = YES
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -95,7 +94,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./ 
+INPUT                  = @top_srcdir@/tests
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c
 RECURSIVE              = YES
@@ -181,8 +180,8 @@ SERVER_BASED_SEARCH    = NO
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
-GENERATE_LATEX         = YES
-LATEX_OUTPUT           = latex
+GENERATE_LATEX         = NO
+LATEX_OUTPUT           =
 LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
 COMPACT_LATEX          = NO
@@ -190,8 +189,8 @@ PAPER_TYPE             = a4
 EXTRA_PACKAGES         =
 LATEX_HEADER           =
 LATEX_FOOTER           =
-PDF_HYPERLINKS         = YES
-USE_PDFLATEX           = YES
+PDF_HYPERLINKS         = NO
+USE_PDFLATEX           = NO
 LATEX_BATCHMODE        = NO
 LATEX_HIDE_INDICES     = NO
 LATEX_SOURCE_CODE      = NO
@@ -214,7 +213,7 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 # configuration options related to the XML output
 #---------------------------------------------------------------------------
-GENERATE_XML           = YES
+GENERATE_XML           = NO
 XML_OUTPUT             = xml
 XML_SCHEMA             =
 XML_DTD                =

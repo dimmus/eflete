@@ -621,7 +621,7 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
    Evas_Object *follow;
    if ((!obj) || (!part)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-
+   if (!sd->groupedit) return false;
    groupedit_part_object_area_set(sd->groupedit, part->name);
    sd->highlight.part = part;
 
@@ -630,6 +630,11 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
    else
      {
         follow = groupedit_edit_object_part_draw_get(sd->groupedit, part->name);
+        if (!follow)
+          {
+             sd->highlight.part = NULL;
+             return false;
+          }
         highlight_object_follow(sd->highlight.highlight, follow);
 
         follow = groupedit_part_object_area_get(sd->groupedit);
@@ -652,6 +657,7 @@ workspace_highlight_unset(Evas_Object *obj)
 {
    if (!obj) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
    sd->highlight.part = NULL;
@@ -1060,9 +1066,7 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part *part)
 
    if (!part)
      {
-        ERR("Can't set state '%s %f' to part '%s' in the group %s!",
-            part->curr_state, part->curr_state_value, part->name,
-            sd->style->full_group_name)
+        ERR("Can't set state to NULL pointer part");
         return false;
      }
    return groupedit_edit_object_part_state_set(sd->groupedit, part->name,
@@ -1109,8 +1113,7 @@ workspace_edit_object_visible_set(Evas_Object *obj,
 
    if (!part)
      {
-        ERR("Can't %s the part '%s' in the group %s!", visible ? "show" : "false",
-            part, sd->style->full_group_name)
+        ERR("Can't change visible params for NULL pointer");
         return false;
      }
 

@@ -29,6 +29,121 @@
  * @}
  */
 
+/**
+ * @addtogroup mw_info_text_set
+ * @{
+ * <tr>
+ * <td>mw_info_text_set</td>
+ * <td>mw_info_text_set_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized efl and app
+ * @step 2 main_window created
+ * @step 3 modal window created
+ *
+ * @procedure
+ * @step 1 Call mw_info_text_set(modal_window, "test text")
+ * @step 2 Check returned value
+ * </td>
+ * <td>Evas_Object *modal_window, const char *text = "test text"</td>
+ * <td>EINA_TRUE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (mw_info_text_set_test_p)
+{
+   Evas_Object *mw;
+   App_Data *app;
+
+   elm_init(0,0);
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   mw = mw_add(NULL, NULL);
+
+   ck_assert_msg(mw_info_text_set(mw, "test text"), "Can't set title");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup mw_info_text_set
+ * @{
+ * <tr>
+ * <td>mw_info_text_set</td>
+ * <td>mw_info_text_set_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized efl and app
+ *
+ * @procedure
+ * @step 1 Call mw_info_text_set(NULL, "new_modal_window")
+ * @step 2 Check returned value
+ * </td>
+ * <td>NULL, const char *text = "new_modal_window"</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (mw_info_text_set_test_n1)
+{
+   elm_init(0,0);
+   app_init();
+
+   ck_assert_msg(mw_info_text_set(NULL, "new_modal_window") == EINA_FALSE, "Trying to set"
+                  " title to NULL object");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup mw_info_text_set
+ * @{
+ * <tr>
+ * <td>mw_info_text_set</td>
+ * <td>mw_info_text_set_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized efl and app
+ * @step 2 main_window created
+ * @step 3 modal window created
+ *
+ * @procedure
+ * @step 1 Call mw_info_text_set(modal_window, NULL)
+ * @step 2 Check returned value
+ * </td>
+ * <td>Evas_Object *modal_window, NULL</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (mw_info_text_set_test_n2)
+{
+   Evas_Object *mw;
+   App_Data *app;
+
+   elm_init(0,0);
+   app_init();
+   app = app_create();
+   ui_main_window_add(app);
+   mw = mw_add(NULL, NULL);
+
+   ck_assert_msg(mw_info_text_set(mw, NULL) == EINA_FALSE, "Trying to set NULL title");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup mw_info_text_set

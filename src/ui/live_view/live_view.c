@@ -664,6 +664,8 @@ live_view_add(Evas_Object *parent)
    Live_View *live;
    Evas_Object *spinner, *_layout;
 
+   if (!parent) return NULL;
+
    live = _live_view_init();
 
    _layout = elm_layout_add(parent);
@@ -789,7 +791,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 Eina_Bool
 live_view_widget_style_unset(Live_View *live)
 {
-   if (!live) return false;
+   if ((!live) || (!live->object)) return false;
    elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
    elm_object_part_content_unset(live->live_view, "live");
@@ -817,13 +819,15 @@ live_view_theme_update(Live_View *live, Project *project)
    return true;
 }
 
-void
+Eina_Bool
 live_view_free(Live_View *live)
 {
    if (live) live_view_widget_style_unset(live);
-   else return;
+   else return false;
 
    free(live);
+   live = NULL;
+   return true;
 }
 
 #undef ELEMENTS_COUNT

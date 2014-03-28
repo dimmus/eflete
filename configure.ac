@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [1], [5])
+EFLETE_VERSION([0], [1], [6])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -8,7 +8,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
-AM_INIT_AUTOMAKE([1.11 dist-bzip2 subdir-objects color-tests])
+AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.8.5])
@@ -142,6 +142,7 @@ data/eflete.desktop
 tests/Makefile
 tests/edj_build/Makefile
 tests/edj_build/radio.edc
+tests/Doxyfile
 doc/Makefile
 ])
 AC_CONFIG_COMMANDS( [cp], [cp ${srcdir}/tests/edj_build/radio.png ./tests/edj_build/radio.png])

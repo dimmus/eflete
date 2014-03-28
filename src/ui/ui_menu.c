@@ -450,11 +450,7 @@ ui_menu_add(App_Data *ap)
         ERR("ap is NULL");
         return NULL;
      }
-   if (!ap->win)
-     {
-        ERR("ap->win is NULL");
-        return NULL;
-     }
+   if ((!ap->win) || (!ap->win_layout)) return NULL;
    _menu_delayed_event = ecore_event_type_new();
 
    ecore_event_handler_add(_menu_delayed_event, _menu_event_handler_cb, NULL);
