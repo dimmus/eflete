@@ -22,8 +22,8 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("highlight_test");
    TCase *tcase = tcase_create("TCase");
-/*   tcase_add_test(tcase, highlight_add_test_p); */
- /*  tcase_add_test(tcase, highlight_add_test_n); */
+   tcase_add_test(tcase, highlight_add_test_p);
+   tcase_add_test(tcase, highlight_add_test_n);
  /*  tcase_add_test(tcase, highlight_bg_color_set_test_p1); */
  /*  tcase_add_test(tcase, highlight_bg_color_set_test_p2); */
  /*  tcase_add_test(tcase, highlight_bg_color_set_test_n1); */
