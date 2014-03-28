@@ -664,6 +664,8 @@ live_view_add(Evas_Object *parent)
    Live_View *live;
    Evas_Object *spinner, *_layout;
 
+   if (!parent) return NULL;
+
    live = _live_view_init();
 
    _layout = elm_layout_add(parent);
