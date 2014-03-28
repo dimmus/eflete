@@ -15,7 +15,7 @@ project_manager_test \
 settings_test \
 style_editor_test \
 ui_block_test \
-ui_highlight_test \
+highlight_test \
 ui_main_window_test \
 ui_ruler_test \
 ui_signal_list_test \
@@ -167,9 +167,18 @@ ui_groupspace_test_SOURCES = test_ui_groupspace/test_ui_groupspace.c
 ui_groupspace_test_CFLAGS = ${FLAGS}
 ui_groupspace_test_LDADD = ${LD}
 
-ui_highlight_test_SOURCES = test_ui_highlight/test_ui_highlight.c
-ui_highlight_test_CFLAGS = ${FLAGS}
-ui_highlight_test_LDADD = ${LD}
+highlight_test_SOURCES = \
+test_highlight/test_highlight.c \
+test_highlight/highlight_add.c \
+test_highlight/highlight_bg_color_set.c \
+test_highlight/highlight_border_color_set.c \
+test_highlight/highlight_handler_color_set.c \
+test_highlight/highlight_handler_disabled_set.c \
+test_highlight/highlight_handler_mode_set.c \
+test_highlight/highlight_object_follow.c \
+test_highlight/highlight_object_unfollow.c
+highlight_test_CFLAGS = ${FLAGS}
+highlight_test_LDADD = ${LD}
 
 ui_main_window_test_SOURCES = \
 test_ui_main_window/test_ui_main_window.c \
