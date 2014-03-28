@@ -30,3 +30,8 @@ void ui_main_window_add_test_n(int);
 
 void ui_main_window_del_test_p(int);
 void ui_main_window_del_test_n(int);
+
+void ui_panes_add_test_p(int);
+void ui_panes_add_test_n1(int);
+void ui_panes_add_test_n2(int);
+
