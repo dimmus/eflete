@@ -48,6 +48,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_panes_settings_load_test_p);
    tcase_add_test(tcase, ui_panes_settings_load_test_n);
 
+   tcase_add_test(tcase, ui_panes_settings_save_test_p);
+   tcase_add_test(tcase, ui_panes_settings_save_test_n);
+
    suite_add_tcase(suite, tcase);
 
    return suite;
