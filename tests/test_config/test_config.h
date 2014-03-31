@@ -18,9 +18,9 @@
 */
 
 #include "utc_common.h"
-#include "settings.h"
+#include "config.h"
 #include "ui_main_window.h"
 
-void ui_element_settings_init_test_p(int);
-void ui_settings_save_test_p(int);
-void ui_settings_load_test_p(int);
+void config_init_test_p(int);
+void config_save_test_p(int);
+void config_load_test_p(int);

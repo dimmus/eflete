@@ -17,7 +17,7 @@
 * along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include "settings.h"
+#include "config.h"
 #include "ui_block.h"
 
 void
@@ -53,7 +53,7 @@ struct _UI_Current_State_Panes
 typedef struct _UI_Current_State_Panes UI_Current_State_Panes;
 
 UI_Current_State_Panes *ui_csp;
-UI_Elements_Settings *us;
+Config *config;
 
 /*
    Store main panes in global pointer. This need for have access to all panes.
@@ -283,7 +283,7 @@ ui_panes_settings_save()
         return false;
      }
    _ui_panes_current_state_set();
-   ui_settings_save();
+   config_save();
    return true;
 }
 
@@ -295,8 +295,8 @@ ui_panes_settings_load()
         ERR("Can't load panes settings: panes is NULL");
         return false;
      }
-   ui_settings_load();
-   _ui_panes_current_state_get ();
+   config_load();
+   _ui_panes_current_state_get();
    return true;
 }
 Eina_Bool
@@ -311,12 +311,7 @@ ui_panes_add(App_Data *ap)
         return false;
      }
 
-   us = ui_element_settings_init();
-   if (!us)
-     {
-        NOTIFY_ERROR (_("ERROR: unable initialize settings module"));
-        return false;
-     }
+   config = config_init();
    ui_csp =_ui_panes_current_state_struct_init();
 
    panes_left = elm_panes_add(ap->win_layout);
@@ -383,13 +378,13 @@ ui_panes_add(App_Data *ap)
                                    EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_content_set(panes_center, "right", panes_center_down);
 
-   us->panes_left = panes_left;
-   us->panes_right = panes_right;
-   us->panes_left_hor = panes_left_hor;
-   us->panes_right_hor = panes_right_hor;
-   us->panes_center = panes_center;
-   us->panes_center_down = panes_center_down;
-   us->window = ap->win;
+   config->panes_left = panes_left;
+   config->panes_right = panes_right;
+   config->panes_left_hor = panes_left_hor;
+   config->panes_right_hor = panes_right_hor;
+   config->panes_center = panes_center;
+   config->panes_center_down = panes_center_down;
+   config->window = ap->win;
 
    evas_object_smart_callback_add(panes_left,"unpress",_unpress_cb, NULL);
    evas_object_smart_callback_add(panes_left_hor,"unpress",_unpress_cb, NULL);
@@ -399,7 +394,7 @@ ui_panes_add(App_Data *ap)
    evas_object_smart_callback_add(panes_center_down,"unpress",
                                   _unpress_cb, NULL);
 
-   evas_object_smart_callback_add(us->panes_right_hor, "clicked,double",
+   evas_object_smart_callback_add(config->panes_right_hor, "clicked,double",
                                   _double_click_up_cb, NULL);
    evas_object_smart_callback_add(panes_left_hor, "clicked,double",
                                  _double_click_left_panes_down_cb, NULL);

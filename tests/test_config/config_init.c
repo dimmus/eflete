@@ -17,25 +17,54 @@
 * along with this program; If not, see see www.gnu.org/licenses/gpl-2.0.htm.
 */
 
-#include "test_settings.h"
+#include "test_config.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("settings_test");
-   TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, ui_element_settings_init_test_p);
-   tcase_add_test(tcase, ui_settings_save_test_p);
-   tcase_add_test(tcase, ui_settings_load_test_p);
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
+/**
+ * @addtogroup settings_test
+ * @{
+ * @addtogroup config_init
+ * @{
+ * Config
+ * <TABLE>
+ * @}
+ */
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_settings.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
+/**
+ * @addtogroup config_init
+ * @{
+ * <tr>
+ * <td>config_init</td>
+ * <td>config_init_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call config_init
+ * </td>
+ * <td>void</td>
+ * <td>Not NULL pointer</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(config_init_test_p)
+{
+   elm_init(0,0);
+
+   Config *config = config_init();
+   ck_assert_msg(config != NULL, "Return NULL pointer.");
+
+   if (config) free(config);
+   elm_shutdown();
 }
+END_TEST
+
+/**
+ * @addtogroup config_init
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */

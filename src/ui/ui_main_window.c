@@ -22,7 +22,6 @@
 #endif /* include eflete_config.h */
 
 #include "ui_main_window.h"
-#include "settings.h"
 
 static void
 _on_done(void *data,

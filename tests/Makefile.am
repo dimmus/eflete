@@ -12,7 +12,7 @@ logger_test \
 modal_window_test \
 notify_test \
 project_manager_test \
-settings_test \
+config_test \
 style_editor_test \
 ui_block_test \
 highlight_test \
@@ -36,7 +36,7 @@ FLAGS = \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/settings \
+-I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
@@ -134,13 +134,13 @@ project_manager_test_SOURCES = test_project_manager/test_project_manager.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
-settings_test_SOURCES = \
-test_settings/test_settings.c \
-test_settings/ui_element_settings_init.c\
-test_settings/ui_settings_save.c \
-test_settings/ui_settings_load.c
-settings_test_CFLAGS = ${FLAGS}
-settings_test_LDADD = ${LD}
+config_test_SOURCES = \
+test_config/test_config.c \
+test_config/config_init.c\
+test_config/config_save.c \
+test_config/config_load.c
+config_test_CFLAGS = ${FLAGS}
+config_test_LDADD = ${LD}
 
 style_editor_test_SOURCES = \
 test_style_editor/test_style_editor.c \

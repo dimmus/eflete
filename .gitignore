@@ -43,6 +43,7 @@ Testing/*
 config.cache-env
 config/
 src/config.h
+!src/config/
 build/*
 *Makefile
 !*.am

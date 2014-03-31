@@ -14,7 +14,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see .
+* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
 #ifndef SETTINGS_HEADER_H
@@ -30,9 +30,9 @@
 
 #include "ui_main_window.h"
 
-#define SETTINGSFILE EFLETE_SETT_PATH".efltet"
+#define CONFIGFILE EFLETE_SETT_PATH"eflete.cfg"
 
-struct _UI_Elements_Settings
+struct _Config
 {
    Evas_Object *panes_left;
    Evas_Object *panes_left_hor;
@@ -42,21 +42,20 @@ struct _UI_Elements_Settings
    Evas_Object *panes_center_down;
    Evas_Object *window;
 };
-typedef struct _UI_Elements_Settings UI_Elements_Settings;
+typedef struct _Config Config;
 
 /**
- * Initialisation fields of UI_Elements_Settings struct.
+ * Initialisation fields of Window_Config struct.
  *
- * @return pointer of UI_Elements_Setting if it succes init, or NULL if fail.
+ * @return pointer of Config, if it succes init, or NULL if fail.
  *
  * @ingroup Settings
  */
-UI_Elements_Settings *
-ui_element_settings_init(void);
+Config *
+config_init(void);
 
 /**
- * Save ui elements settings (position and size of main window, size of panes)
- * to "ui.set" file. Key in file "settings".
+ * Save the Eflete config.
  *
  * @return EINA_TRUE if save complete successful. EINA_FALSE if fail
  * save data to disk.
@@ -64,11 +63,10 @@ ui_element_settings_init(void);
  * @ingroup Settings
  */
 Eina_Bool
-ui_settings_save(void);
+config_save(void);
 
 /**
- * Load settings from "ui.set" file. Key in file "settings"
- * Load position and size of main window, and left and right sizes of panes.
+ * Load the Eflete config.
  *
  * @return EINA_TRUE if load complete successful. EINA_FALSE if fail
  * to load stored data.
@@ -76,6 +74,6 @@ ui_settings_save(void);
  * @ingroup Settings
  */
 Eina_Bool
-ui_settings_load(void);
+config_load(void);
 
 #endif /* SETTINGS_HEADER_H */
