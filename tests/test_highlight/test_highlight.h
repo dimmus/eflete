@@ -34,12 +34,12 @@ void highlight_bg_color_set_test_n1(int);
 void highlight_bg_color_set_test_n2(int);
 void highlight_bg_color_set_test_n3(int);
 
-void highlight_border_color_set_test_p1(int);
+void highlight_border_color_set_test_p(int);
 void highlight_border_color_set_test_n1(int);
 void highlight_border_color_set_test_n2(int);
 void highlight_border_color_set_test_n3(int);
 
-void highlight_handler_color_set_test_p1(int);
+void highlight_handler_color_set_test_p(int);
 void highlight_handler_color_set_test_n1(int);
 void highlight_handler_color_set_test_n2(int);
 void highlight_handler_color_set_test_n3(int);

@@ -28,10 +28,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, highlight_bg_color_set_test_n1);
    tcase_add_test(tcase, highlight_bg_color_set_test_n2);
    tcase_add_test(tcase, highlight_bg_color_set_test_n3);
- /*  tcase_add_test(tcase, highlight_border_color_set_test_p); */
- /*  tcase_add_test(tcase, highlight_border_color_set_test_n1); */
- /*  tcase_add_test(tcase, highlight_border_color_set_test_n2); */
- /*  tcase_add_test(tcase, highlight_border_color_set_test_n3); */
+   tcase_add_test(tcase, highlight_border_color_set_test_p);
+   tcase_add_test(tcase, highlight_border_color_set_test_n1);
+   tcase_add_test(tcase, highlight_border_color_set_test_n2);
+   tcase_add_test(tcase, highlight_border_color_set_test_n3);
  /*  tcase_add_test(tcase, highlight_handler_color_set_test_p); */
  /*  tcase_add_test(tcase, highlight_handler_color_set_test_n1); */
  /*  tcase_add_test(tcase, highlight_handler_color_set_test_n2); */
