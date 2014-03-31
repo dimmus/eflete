@@ -38,6 +38,12 @@
         return val; \
      }
 
+#define COLOR_CHECK \
+   if ((r < 0) || (r > 255)) return false; \
+   if ((g < 0) || (g > 255)) return false; \
+   if ((b < 0) || (b > 255)) return false; \
+   if ((a < 0) || (a > 255)) return false; \
+
 /**
   * TODO: add some comments.
   */
@@ -659,6 +665,7 @@ highlight_handler_color_set(Evas_Object *hl,
                             Evas_Coord a)
 {
    if (!hl) return false;
+   COLOR_CHECK;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    evas_object_color_set(highlight->handler_LT->border,
                          r * a / 255, g * a / 255, b * a / 255, a);
@@ -679,6 +686,7 @@ highlight_border_color_set(Evas_Object *hl,
                            Evas_Coord a)
 {
    if (!hl) return false;
+   COLOR_CHECK;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    evas_object_color_set(highlight->border,
                          r * a / 255, g * a / 255, b * a / 255, a);
@@ -693,6 +701,7 @@ highlight_bg_color_set(Evas_Object *hl,
                        Evas_Coord a)
 {
    if (!hl) return false;
+   COLOR_CHECK;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    evas_object_color_set(highlight->bg,
                          r * a / 255, g * a / 255, b * a / 255, a);
