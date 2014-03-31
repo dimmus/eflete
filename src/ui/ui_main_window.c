@@ -58,17 +58,6 @@ ui_main_window_del(App_Data *ap)
    return true;
 }
 
-static void
-_on_window_resize(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   int w, h;
-   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-   ui_resize_panes(w,h);
-}
-
 #define MARK_TO_SHUTDOWN(fmt, ...) \
    { \
       ERR(fmt, ## __VA_ARGS__); \
@@ -101,8 +90,6 @@ ui_main_window_add(App_Data *ap)
 
    elm_win_title_set(win, "EFL Edje Theme Editor");
    evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
-   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, _on_window_resize,
-                                  NULL);
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
@@ -115,7 +102,7 @@ ui_main_window_add(App_Data *ap)
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    elm_win_resize_object_add(win, layout);
-   elm_layout_file_set(layout, EFLETE_EDJ, "ui/main_window");
+   elm_layout_file_set(layout, EFLETE_EDJ, "eflete/main_window/base/default");
    evas_object_show(layout);
    ap->win_layout = layout;
    if (!ap->win_layout)

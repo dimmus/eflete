@@ -17,8 +17,8 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef PROFILE_H
+#define PROFILE_H
 
 struct _Config_Color
 {
@@ -32,6 +32,12 @@ struct _BG
    const char *image;
 }
 typedef struct _BG BG;
+
+enum Ruler_Mode {
+   ABSOLUTE_SCALE,
+   RELATIVE_SCALE,
+   ABS_REL_SCALE
+};
 
 struct _Config
 {
@@ -52,7 +58,10 @@ struct _Config
          Config_color   border_color;
          unsigned int   handler_size;
       } groupedit;
-      //int rulers;
+      struct {
+         Eina_Bool      visible : 1;
+         Ruler_Mode     mode;
+      } rulers;
    } workspace;
    struct {
       BG bg;
@@ -62,4 +71,4 @@ struct _Config
 }
 typedef _Config Config;
 
-#endif /* CONFIG_H */
+#endif /* PROFILE_H */
