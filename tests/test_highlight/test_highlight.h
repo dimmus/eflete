@@ -44,10 +44,10 @@ void highlight_handler_color_set_test_n1(int);
 void highlight_handler_color_set_test_n2(int);
 void highlight_handler_color_set_test_n3(int);
 
-void highlight_handler_disable_set_test_p1(int);
-void highlight_handler_disable_set_test_p2(int);
-void highlight_handler_disable_set_test_n1(int);
-void highlight_handler_disable_set_test_n2(int);
+void highlight_handler_disabled_set_test_p1(int);
+void highlight_handler_disabled_set_test_p2(int);
+void highlight_handler_disabled_set_test_n1(int);
+void highlight_handler_disabled_set_test_n2(int);
 
 void highlight_handler_mode_set_test_p(int);
 void highlight_handler_mode_set_test_n1(int);

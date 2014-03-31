@@ -713,7 +713,7 @@ highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 {
    if (!hl) return false;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
-   if (highlight->handlers_disabled == disabled) return false;
+   if (highlight->handlers_disabled == disabled) return true;
    highlight->handlers_disabled = disabled;
    if (disabled)
      {
@@ -805,3 +805,4 @@ highlight_object_unfollow(Evas_Object *hl)
 #undef COEFF
 #undef HIGHLIGHT_DATA_GET
 #undef HIGHLIGHT_DATA_GET_OR_RETURN_VAL
+#undef COLOR_CHECK
