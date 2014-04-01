@@ -506,7 +506,7 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_align_set(toolbar, 0.0);
    evas_object_size_hint_weight_set(toolbar, 0.0, 0.0);
    evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.0);
-   elm_object_part_content_set(ap->win_layout, "swallow/button_toolbar", toolbar);
+   elm_object_part_content_set(ap->win_layout, "eflete.swallow.toolbar", toolbar);
    evas_object_show(toolbar);
 
    elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_theme_menu, ap);

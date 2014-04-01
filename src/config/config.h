@@ -17,8 +17,8 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#ifndef SETTINGS_HEADER_H
-#define SETTINGS_HEADER_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 /**
  * @defgroup Settings Settings
@@ -76,4 +76,4 @@ config_save(void);
 Eina_Bool
 config_load(void);
 
-#endif /* SETTINGS_HEADER_H */
+#endif /* CONFIG_H */
