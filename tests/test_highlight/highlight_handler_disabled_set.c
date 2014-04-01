@@ -34,7 +34,7 @@
  * @{
  * <tr>
  * <td>highlight_handler_disabled_set</td>
- * <td>highlight_handler_disable_set_test_p1</td>
+ * <td>highlight_handler_disabled_set_test_p1</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
@@ -74,7 +74,7 @@ END_TEST
  * @{
  * <tr>
  * <td>highlight_handler_disabled_set</td>
- * <td>highlight_handler_disable_set_test_p2</td>
+ * <td>highlight_handler_disabled_set_test_p2</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
