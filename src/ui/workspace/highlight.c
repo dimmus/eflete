@@ -761,7 +761,6 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
    if ((!hl) || (!object)) return false;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
 
-   highlight->object = object;
    if (highlight->object)
      {
         evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
@@ -769,6 +768,7 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
         evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
                                             _object_changed, hl);
      }
+   highlight->object = object;
    evas_object_event_callback_add(object, EVAS_CALLBACK_RESIZE,
                                   _object_changed, hl);
    evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
