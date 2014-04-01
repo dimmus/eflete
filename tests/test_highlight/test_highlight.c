@@ -43,12 +43,12 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, highlight_handler_mode_set_test_p);
    tcase_add_test(tcase, highlight_handler_mode_set_test_n1);
    tcase_add_test(tcase, highlight_handler_mode_set_test_n2);
- /*  tcase_add_test(tcase, highlight_object_follow_test_p1); */
- /*  tcase_add_test(tcase, highlight_object_follow_test_p2); */
- /*  tcase_add_test(tcase, highlight_object_follow_test_n1); */
- /*  tcase_add_test(tcase, highlight_object_follow_test_n2); */
- /*  tcase_add_test(tcase, highlight_object_follow_test_n3); */
- /*  tcase_add_test(tcase, highlight_object_follow_test_n4); */
+   tcase_add_test(tcase, highlight_object_follow_test_p1);
+   tcase_add_test(tcase, highlight_object_follow_test_p2);
+   tcase_add_test(tcase, highlight_object_follow_test_n1);
+   tcase_add_test(tcase, highlight_object_follow_test_n2);
+   tcase_add_test(tcase, highlight_object_follow_test_n3);
+   tcase_add_test(tcase, highlight_object_follow_test_n4);
  /*  tcase_add_test(tcase, highlight_object_unfollow_test_p1); */
  /*  tcase_add_test(tcase, highlight_object_unfollow_test_p2); */
  /*  tcase_add_test(tcase, highlight_object_unfollow_test_n1); */
