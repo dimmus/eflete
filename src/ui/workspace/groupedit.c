@@ -650,12 +650,12 @@ groupedit_edit_object_set(Evas_Object *obj,
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    /* check input edit_obj, if it not a edje object return false */
-   if ((!edit_obj) && (!strcmp("edje", evas_object_type_get(edit_obj))))
+   if ((!edit_obj) || (strcmp("edje", evas_object_type_get(edit_obj))))
      {
         /* TODO: add error message */
         return false;
      }
-   if ((file) && (!ecore_file_exists(file))) return false;
+   if ((!file) || (!ecore_file_exists(file))) return false;
 
    edje_object_animation_set(edit_obj, false);
    edje_object_part_swallow(sd->container, SWALLOW_FOR_EDIT, edit_obj);
