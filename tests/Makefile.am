@@ -17,7 +17,6 @@ style_editor_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
-ui_ruler_test \
 ui_signal_list_test \
 ui_state_list_test \
 ui_widget_list_test \
@@ -205,10 +204,6 @@ test_ui_main_window/ui_style_delete.c \
 test_ui_main_window/ui_window_colorsel_get.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
-
-ui_ruler_test_SOURCES = test_ui_ruler/test_ui_ruler.c
-ui_ruler_test_CFLAGS = ${FLAGS}
-ui_ruler_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
