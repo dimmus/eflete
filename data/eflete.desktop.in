@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=EFL Edje Theme Editor
-Comment=EFL Edje Theme Editor
-Keywords=eflete
-Exec=@PREFIX@eflete
+Version=@VERSION@
+Comment=Graphical editor for EFL theme development
+Exec=eflete
 Icon=eflete
 Terminal=false
 Type=Application
-Categories=Application;
+Categories=Development;
