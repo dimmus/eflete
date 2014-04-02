@@ -18,6 +18,7 @@
 */
 
 #include "eflete.h"
+#include "config.h"
 #include "ui_main_window.h"
 
 EAPI_MAIN int

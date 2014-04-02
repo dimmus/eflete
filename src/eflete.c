@@ -71,13 +71,13 @@ app_free(App_Data *ap)
 Eina_Bool
 app_init()
 {
+   Eina_Stringshare *config_path, *cache_path;
 
    setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
    bindtextdomain(PACKAGE, LOCALE_DIR);
    textdomain(PACKAGE);
 #endif /* set locale */
-
 
    if (!eina_init())
      {
@@ -109,11 +109,12 @@ app_init()
         return false;
      }
 
-   if (!ecore_evas_init())
-     {
-        CRIT("Can't initialize the Ecore_Evas system");
-        return false;
-     }
+   config_path = eina_stringshare_add(EFLETE_SETT_PATH);
+   if (!ecore_file_exists(config_path)) ecore_file_mkdir(config_path);
+   cache_path = eina_stringshare_add(EFLETE_CACHE_PATH);
+   if (!ecore_file_exists(cache_path)) ecore_file_mkdir(cache_path);
+
+   if (!config_init()) return false;
 
    elm_theme_extension_add(NULL, EFLETE_THEME);
    return true;
@@ -122,6 +123,7 @@ app_init()
 void
 app_shutdown()
 {
+   config_shutdown();
    app_free(ap);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    eina_shutdown();
@@ -129,7 +131,6 @@ app_shutdown()
    ecore_shutdown();
    edje_shutdown();
    logger_shutdown();
-   ecore_evas_shutdown();
 }
 
 #undef CHECK_AP

@@ -20,9 +20,9 @@
 #include "test_config.h"
 
 /**
- * @addtogroup config_test
+ * @addtogroup settings_test
  * @{
- * @addtogroup config_load
+ * @addtogroup config_get
  * @{
  * Config
  * <TABLE>
@@ -30,52 +30,73 @@
  */
 
 /**
- * @addtogroup config_load
+ * @addtogroup config_get
  * @{
  * <tr>
- * <td>config_load</td>
- * <td>config_load_test_p</td>
+ * <td>config_get</td>
+ * <td>config_get_test_p1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create App_Data
- * @step 3 create Eflete window
+ * @step 2 initialize config
  *
  * @procedure
- * @step 1 call config_load
+ * @step 1 call config_get
  * </td>
  * <td>void</td>
- * <td>EINA_TRUE</td>
+ * <td>NULL</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(config_load_test_p)
+EFLETE_TEST(config_get_test_p1)
 {
-   /*
-   App_Data *ap;
-   Config *config;
-
    elm_init(0,0);
    config_init();
-   ap = app_create();
-   app_init();
-   ui_main_window_add(ap);
 
-   config_load();
-   config = config_get();
-   ck_assert_msg(config != NULL, "Config not been loaded.");
+   ck_assert_msg(config_get() == NULL, "Config not NULL");
 
-   config_shutdown();
-   app_free(ap);
    elm_shutdown();
-   */
 }
 END_TEST
 
 /**
- * @addtogroup config_load
+ * @addtogroup config_get
+ * @{
+ * <tr>
+ * <td>config_get</td>
+ * <td>config_get_test_p2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 initialize config
+ * @step 3 load config
+ *
+ * @procedure
+ * @step 1 call config_get
+ * </td>
+ * <td>void</td>
+ * <td>not NULL pointer</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(config_get_test_p2)
+{
+   elm_init(0,0);
+   config_init();
+   config_load();
+
+   ck_assert_msg(config_get() != NULL, "Config not loaded.");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup config_get
  * @{
  * </TABLE>
  * @}

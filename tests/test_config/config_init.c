@@ -43,7 +43,7 @@
  * @step 1 call config_init
  * </td>
  * <td>void</td>
- * <td>Not NULL pointer</td>
+ * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -53,10 +53,9 @@ EFLETE_TEST(config_init_test_p)
 {
    elm_init(0,0);
 
-   Config *config = config_init();
-   ck_assert_msg(config != NULL, "Return NULL pointer.");
+   ck_assert_msg(config_init(), "Config not initialized.");
 
-   if (config) free(config);
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST

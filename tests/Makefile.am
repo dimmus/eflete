@@ -136,8 +136,10 @@ project_manager_test_LDADD = ${LD}
 config_test_SOURCES = \
 test_config/test_config.c \
 test_config/config_init.c\
+test_config/config_shutdown.c\
 test_config/config_save.c \
-test_config/config_load.c
+test_config/config_load.c \
+test_config/config_get.c
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
 
@@ -192,8 +194,6 @@ test_ui_main_window/ui_menu_disable_set.c \
 test_ui_main_window/ui_menu_locked_set.c \
 test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
-test_ui_main_window/ui_panes_settings_load.c \
-test_ui_main_window/ui_panes_settings_save.c \
 test_ui_main_window/ui_panes_show.c \
 test_ui_main_window/ui_part_back.c \
 test_ui_main_window/ui_part_select.c \

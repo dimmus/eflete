@@ -19,26 +19,53 @@
 
 #include "test_config.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("config_test");
-   TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, config_init_test_p);
-   tcase_add_test(tcase, config_shutdown_test_p);
-   tcase_add_test(tcase, config_save_test_p);
-   tcase_add_test(tcase, config_load_test_p);
-   tcase_add_test(tcase, config_get_test_p1);
-   tcase_add_test(tcase, config_get_test_p2);
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
+/**
+ * @addtogroup config_test
+ * @{
+ * @addtogroup config_shutdown
+ * @{
+ * Config
+ * <TABLE>
+ * @}
+ */
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_config.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
+/**
+ * @addtogroup config_shutdown
+ * @{
+ * <tr>
+ * <td>config_shutdown</td>
+ * <td>config_shutdown_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 initialize config
+ *
+ * @procedure
+ * @step 1 call config_shutdown
+ * </td>
+ * <td>void</td>
+ * <td>config is NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(config_shutdown_test_p)
+{
+   elm_init(0,0);
+   config_init();
+
+   config_shutdown();
+   ck_assert_msg(config_get() == NULL, "Config not initialized.");
+
+   elm_shutdown();
 }
+END_TEST
+
+/**
+ * @addtogroup config_shutdown
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */

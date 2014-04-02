@@ -21,38 +21,58 @@
 #define CONFIG_H
 
 /**
- * @defgroup Settings Settings
- * @ingroup EFL_TET
+ * @defgroup Config Config
+ * @ingroup EFLTET
  *
- * A Settings module respons for save current sizes of window and panes.
+ * A Config module respons for save current sizes of window, panes and user
+ * profiles.
  * Also stored window position on descktop.
  */
 
-#include "ui_main_window.h"
-
-#define CONFIGFILE EFLETE_SETT_PATH"eflete.cfg"
+#include "eflete.h"
 
 struct _Config
 {
-   Evas_Object *panes_left;
-   Evas_Object *panes_left_hor;
-   Evas_Object *panes_right;
-   Evas_Object *panes_right_hor;
-   Evas_Object *panes_center;
-   Evas_Object *panes_center_down;
-   Evas_Object *window;
+   struct {
+      int x, y, w, h;
+   } window;
+   struct { /* take and save left panes size */
+      double left;
+      double right;
+      double left_hor;
+      double right_hor;
+      double center;
+      double center_down;
+   } panes;
+   const char *profile;
 };
 typedef struct _Config Config;
 
 /**
- * Initialisation fields of Window_Config struct.
+ * Initialisation config module.
  *
- * @return pointer of Config, if it succes init, or NULL if fail.
+ * @return EINA_TRUE if init complete successful. EINA_FALSE overwise.
  *
- * @ingroup Settings
+ * @ingroup Config
  */
-Config *
+Eina_Bool
 config_init(void);
+
+/**
+ * Release the config module.
+ *
+ * @ingroup Config
+ */
+void
+config_shutdown(void);
+
+/**
+ * Load the Eflete config.
+ *
+ * @ingroup Config
+ */
+void
+config_load(void);
 
 /**
  * Save the Eflete config.
@@ -60,20 +80,19 @@ config_init(void);
  * @return EINA_TRUE if save complete successful. EINA_FALSE if fail
  * save data to disk.
  *
- * @ingroup Settings
+ * @ingroup Config
  */
 Eina_Bool
-config_save(void);
+config_save(App_Data *ap);
 
 /**
- * Load the Eflete config.
+ * Get the Eflete config.
  *
- * @return EINA_TRUE if load complete successful. EINA_FALSE if fail
- * to load stored data.
+ * @return The Eflete config, or NULL if it not loaded.
  *
- * @ingroup Settings
+ * @ingroup Config
  */
-Eina_Bool
-config_load(void);
+Config *
+config_get(void);
 
 #endif /* CONFIG_H */

@@ -38,8 +38,10 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create App_Data
- * @step 3 create Eflete window
+ * @step 2 init config
+ * @step 3 load config
+ * @step 4 create App_Data
+ * @step 5 create Eflete window
  *
  * @procedure
  * @step 1 call config_save
@@ -53,14 +55,19 @@
  */
 EFLETE_TEST(config_save_test_p)
 {
+   App_Data *ap;
+
    elm_init(0,0);
-   App_Data *app = app_create();
+   ap = app_create();
    app_init();
-   ui_main_window_add(app);
+   config_init();
+   config_load();
+   ui_main_window_add(ap);
 
-   ck_assert_msg(config_save(), "UI setting not been saved.");
+   ck_assert_msg(config_save(ap), "Config not saved.");
 
-   app_free(app);
+   config_shutdown();
+   app_free(ap);
    elm_shutdown();
 }
 END_TEST

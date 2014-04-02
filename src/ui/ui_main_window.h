@@ -30,6 +30,7 @@
  */
 
 #include "eflete.h"
+#include "config.h"
 #include "common_macro.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
