@@ -62,8 +62,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, groupedit_edit_object_set_test_n2);
    tcase_add_test(tcase, groupedit_edit_object_set_test_n3);
 
-   //tcase_add_test(tcase, groupedit_edit_object_unset_test_p);
-   //tcase_add_test(tcase, groupedit_edit_object_unset_test_n);
+   tcase_add_test(tcase, groupedit_edit_object_unset_test_p);
+   tcase_add_test(tcase, groupedit_edit_object_unset_test_n1);
+   tcase_add_test(tcase, groupedit_edit_object_unset_test_n2);
 
    //tcase_add_test(tcase, groupedit_edit_object_recalc_all_test_p);
    //tcase_add_test(tcase, groupedit_edit_object_recalc_all_test_n);
