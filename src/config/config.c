@@ -87,6 +87,7 @@ config_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, Profile_Color, "r", r, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, Profile_Color, "g", g, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, Profile_Color, "b", b, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd_color, Profile_Color, "a", a, EET_T_UCHAR);
 
    if (!edd_color) return false;
 
@@ -179,18 +180,25 @@ _profile_default_new(void)
    prof->liveview.auto_fill_text             = false;
    prof->liveview.auto_fill_content          = false;
 
-   prof->colors[WORKSPACE_COLOR].r           = 0;
-   prof->colors[WORKSPACE_COLOR].g           = 0;
-   prof->colors[WORKSPACE_COLOR].b           = 0;
+   prof->colors[WORKSPACE].r           = 255;
+   prof->colors[WORKSPACE].g           = 255;
+   prof->colors[WORKSPACE].b           = 255;
+   prof->colors[WORKSPACE].a           = 255;
 
-   prof->colors[GROUPEDIT_COLOR].r           = 0;
-   prof->colors[GROUPEDIT_COLOR].g           = 0;
-   prof->colors[GROUPEDIT_COLOR].b           = 0;
+   prof->colors[GROUPEDIT].r           = 0;
+   prof->colors[GROUPEDIT].g           = 0;
+   prof->colors[GROUPEDIT].b           = 0;
+   prof->colors[GROUPEDIT].a           = 255;
 
-   prof->colors[LIVEVIEW_COLOR].r            = 0;
-   prof->colors[LIVEVIEW_COLOR].g            = 0;
-   prof->colors[LIVEVIEW_COLOR].b            = 0;
+   prof->colors[LIVEVIEW].r            = 255;
+   prof->colors[LIVEVIEW].g            = 255;
+   prof->colors[LIVEVIEW].b            = 255;
+   prof->colors[LIVEVIEW].a            = 255;
 
+   prof->colors[HIGHLIGHT].r           = 58;
+   prof->colors[HIGHLIGHT].g           = 100;
+   prof->colors[HIGHLIGHT].b           = 155;
+   prof->colors[HIGHLIGHT].a           = 255;
    return prof;
 }
 

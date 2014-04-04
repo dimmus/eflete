@@ -50,15 +50,17 @@ typedef struct _Config Config;
 
 enum _COLORS
 {
-   WORKSPACE_COLOR = 0,
-   GROUPEDIT_COLOR,
-   LIVEVIEW_COLOR
+   WORKSPACE = 0,
+   GROUPEDIT,
+   LIVEVIEW,
+   HIGHLIGHT,
+   LAST
 };
 typedef enum _COLORS COLORS;
 
 struct _Profile_Color
 {
-   unsigned char r, g, b;
+   unsigned char r, g, b, a;
 };
 typedef struct _Profile_Color Profile_Color;
 
@@ -95,7 +97,7 @@ struct _Profile
       Eina_Bool   auto_fill_text;
       Eina_Bool   auto_fill_content;
    } liveview;
-   Profile_Color colors[3];
+   Profile_Color colors[LAST];
 };
 typedef struct _Profile Profile;
 
