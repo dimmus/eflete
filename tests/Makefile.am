@@ -137,6 +137,10 @@ config_test_SOURCES = \
 test_config/test_config.c \
 test_config/config_init.c\
 test_config/config_shutdown.c\
+test_config/profile_load.c \
+test_config/profile_save.c \
+test_config/profile_get.c \
+test_config/profiles_get.c \
 test_config/config_save.c \
 test_config/config_load.c \
 test_config/config_get.c

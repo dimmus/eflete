@@ -22,7 +22,7 @@
 /**
  * @addtogroup config_test
  * @{
- * @addtogroup config_load
+ * @addtogroup profile_save
  * @{
  * Config
  * <TABLE>
@@ -30,47 +30,76 @@
  */
 
 /**
- * @addtogroup config_load
+ * @addtogroup profile_save
  * @{
  * <tr>
- * <td>config_load</td>
- * <td>config_load_test_p</td>
+ * <td>profile_save</td>
+ * <td>profile_save_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create App_Data
- * @step 3 create Eflete window
+ * @step 2 initialize config
+ * @step 3 load config
  *
  * @procedure
- * @step 1 call config_load
+ * @step 1 call profile_save
  * </td>
- * <td>void</td>
- * <td>Config  will be loaded</td>
+ * <td>(const char *)"default"</td>
+ * <td>Profile will be loaded</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(config_load_test_p)
+EFLETE_TEST(profile_save_test_p)
 {
-   App_Data *ap;
-   Config *config;
 
    elm_init(0,0);
-   ap = app_create();
-   app_init();
-   ui_main_window_add(ap);
+   config_init();
+   config_load();
 
-   config = config_get();
-   ck_assert_msg(config != NULL, "Config not been loaded.");
+   ck_assert_msg(profile_save("default"), "Profile not saved.");
 
-   app_free(ap);
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup config_load
+ * @addtogroup profile_save
+ * @{
+ * <tr>
+ * <td>profile_save</td>
+ * <td>profile_save_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 initialize config
+ *
+ * @procedure
+ * @step 1 call profile_save
+ * </td>
+ * <td>NULL</td>
+ * <td>NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(profile_save_test_n)
+{
+   elm_init(0,0);
+   config_init();
+
+   ck_assert_msg(!profile_save(NULL), "Profile is saved.");
+
+   config_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup profile_save
  * @{
  * </TABLE>
  * @}

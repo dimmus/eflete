@@ -22,8 +22,19 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("config_test");
    TCase *tcase = tcase_create("TCase");
+
    tcase_add_test(tcase, config_init_test_p);
    tcase_add_test(tcase, config_shutdown_test_p);
+
+   tcase_add_test(tcase, profile_load_test_p1);
+   tcase_add_test(tcase, profile_load_test_p2);
+   tcase_add_test(tcase, profile_load_test_n);
+   tcase_add_test(tcase, profile_save_test_p);
+   tcase_add_test(tcase, profile_save_test_n);
+   tcase_add_test(tcase, profile_get_test_p1);
+   tcase_add_test(tcase, profile_get_test_p2);
+   tcase_add_test(tcase, profiles_get_test_p);
+
    tcase_add_test(tcase, config_save_test_p);
    tcase_add_test(tcase, config_load_test_p);
    tcase_add_test(tcase, config_get_test_p1);
