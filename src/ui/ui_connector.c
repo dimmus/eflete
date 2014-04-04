@@ -480,7 +480,7 @@ new_theme_create(App_Data *ap)
 
    ap->is_new = false;
 
-   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_CACHE_PATH"Untitled.edj"))
+   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_SWAP_PATH"Untitled.edj"))
      {
         ERR("Couldn't copy theme template to cache");
         return false;
@@ -504,7 +504,7 @@ new_theme_create(App_Data *ap)
      live_view_widget_style_unset(ap->live_view);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
 
-   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_CACHE_PATH"Untitled.edj");
+   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_SWAP_PATH"Untitled.edj");
    if (!ap->project) return false;
    wd_list = ui_widget_list_add(ap->win);
    ui_widget_list_title_set(wd_list, ap->project->name);
