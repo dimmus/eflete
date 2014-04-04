@@ -17,52 +17,51 @@
 * along with this program; If not, see see www.gnu.org/licenses/gpl-2.0.htm.
 */
 
-#include "test_settings.h"
+#include "test_config.h"
 
 /**
  * @addtogroup settings_test
  * @{
- * @addtogroup ui_element_settings_init
+ * @addtogroup config_init
  * @{
- * Settings
+ * Config
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup ui_element_settings_init
+ * @addtogroup config_init
  * @{
  * <tr>
- * <td>ui_element_settings_init</td>
- * <td>ui_element_settings_init_test_p</td>
+ * <td>config_init</td>
+ * <td>config_init_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 call ui_element_settings_init
+ * @step 1 call config_init
  * </td>
  * <td>void</td>
- * <td>Not NULL pointer</td>
+ * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_element_settings_init_test_p)
+EFLETE_TEST(config_init_test_p)
 {
    elm_init(0,0);
 
-   UI_Elements_Settings *set = ui_element_settings_init();
-   ck_assert_msg(set != NULL, "Return NULL pointer.");
+   ck_assert_msg(config_init(), "Config not initialized.");
 
-   if (set) free(set);
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_element_settings_init
+ * @addtogroup config_init
  * @{
  * </TABLE>
  * @}

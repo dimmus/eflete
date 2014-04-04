@@ -17,14 +17,17 @@
 * along with this program; If not, see see www.gnu.org/licenses/gpl-2.0.htm.
 */
 
-#include "test_settings.h"
+#include "test_config.h"
 
 Suite* test_suite (void) {
-   Suite *suite = suite_create("settings_test");
+   Suite *suite = suite_create("config_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, ui_element_settings_init_test_p);
-   tcase_add_test(tcase, ui_settings_save_test_p);
-   tcase_add_test(tcase, ui_settings_load_test_p);
+   tcase_add_test(tcase, config_init_test_p);
+   tcase_add_test(tcase, config_shutdown_test_p);
+   tcase_add_test(tcase, config_save_test_p);
+   tcase_add_test(tcase, config_load_test_p);
+   tcase_add_test(tcase, config_get_test_p1);
+   tcase_add_test(tcase, config_get_test_p2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -33,7 +36,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_settings.xml");
+   srunner_set_xml (runner, "test_config.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

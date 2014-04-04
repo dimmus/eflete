@@ -474,85 +474,50 @@ ui_edj_load_done(App_Data* ap, const char *selected)
 Eina_Bool
 new_theme_create(App_Data *ap)
 {
-   Eina_Stringshare *path = NULL;
-   Eina_Stringshare *file_full_path = NULL;
-   Eina_Bool errors = false;
    Evas_Object *wd_list = NULL;
-   char *name;
 
    if (!ap) return false;
 
    ap->is_new = false;
-   path = eina_stringshare_add(EFLETE_SETT_PATH"cache/");
-   file_full_path = eina_stringshare_add( EFLETE_SETT_PATH"cache/Untitled.edj");
 
-   if (!ecore_file_exists(path))
-     {
-        if (!ecore_file_mkdir(path))
-          {
-             NOTIFY_ERROR(_("Couldn't create cache directory"));
-             errors = true;
-          }
-     }
-   if ((!errors) && (ecore_file_exists(file_full_path)))
-     {
-        if (!ecore_file_remove(file_full_path))
-          {
-             ERR("Couldn't clean cache directory");
-             errors = true;
-          }
-     }
-
-   if ((!errors) && (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", file_full_path)))
+   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_CACHE_PATH"Untitled.edj"))
      {
         ERR("Couldn't copy theme template to cache");
-        errors = true;
+        return false;
      }
 
-   if (!errors)
+   Evas_Object *prop, *state, *signal;
+   state = ui_block_state_list_get(ap);
+   if (state) elm_genlist_clear(state);
+   signal = ui_block_signal_list_get(ap);
+   if (signal) elm_genlist_clear(signal);
+   prop = ui_block_property_get(ap);
+   if (prop) ui_property_style_unset(prop);
+
+   if (ap->workspace)
      {
-        Evas_Object *prop, *state, *signal;
-        state = ui_block_state_list_get(ap);
-        if (state) elm_genlist_clear(state);
-        signal = ui_block_signal_list_get(ap);
-        if (signal) elm_genlist_clear(signal);
-        prop = ui_block_property_get(ap);
-        if (prop) ui_property_style_unset(prop);
-
-        if (ap->workspace)
-          {
-             workspace_edit_object_unset(ap->workspace);
-             workspace_highlight_unset(ap->workspace);
-          }
-
-        if ((ap->live_view) || (ap->project))
-          live_view_widget_style_unset(ap->live_view);
-        ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-
-        GET_NAME_FROM_PATH(name, file_full_path)
-        ap->project = pm_open_project_edj(name, file_full_path);
-        free(name);
-        if  (!ap->project)
-          {
-             eina_stringshare_del(path);
-             eina_stringshare_del(file_full_path);
-             return false;
-          }
-        wd_list = ui_widget_list_add(ap->win);
-        ui_widget_list_title_set(wd_list, ap->project->name);
-        ui_widget_list_data_set(wd_list, ap->project);
-        ui_block_widget_list_set(ap, wd_list);
-        add_callbacks_wd(wd_list, ap);
-        evas_object_show(wd_list);
-        ui_panes_show(ap);
-        ap->project->edj = NULL;
-
-        ui_menu_base_disabled_set(ap->menu_hash, false);
+        workspace_edit_object_unset(ap->workspace);
+        workspace_highlight_unset(ap->workspace);
      }
 
-   eina_stringshare_del(path);
-   eina_stringshare_del(file_full_path);
-   return !errors;
+   if ((ap->live_view) || (ap->project))
+     live_view_widget_style_unset(ap->live_view);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+
+   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_CACHE_PATH"Untitled.edj");
+   if (!ap->project) return false;
+   wd_list = ui_widget_list_add(ap->win);
+   ui_widget_list_title_set(wd_list, ap->project->name);
+   ui_widget_list_data_set(wd_list, ap->project);
+   ui_block_widget_list_set(ap, wd_list);
+   add_callbacks_wd(wd_list, ap);
+   evas_object_show(wd_list);
+   ui_panes_show(ap);
+   ap->project->edj = NULL;
+
+   ui_menu_base_disabled_set(ap->menu_hash, false);
+
+   return true;
 }
 
 Eina_Bool

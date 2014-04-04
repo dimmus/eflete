@@ -12,12 +12,11 @@ logger_test \
 modal_window_test \
 notify_test \
 project_manager_test \
-settings_test \
+config_test \
 style_editor_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
-ui_ruler_test \
 ui_signal_list_test \
 ui_state_list_test \
 ui_widget_list_test \
@@ -36,7 +35,7 @@ FLAGS = \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/settings \
+-I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
@@ -134,13 +133,15 @@ project_manager_test_SOURCES = test_project_manager/test_project_manager.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
-settings_test_SOURCES = \
-test_settings/test_settings.c \
-test_settings/ui_element_settings_init.c\
-test_settings/ui_settings_save.c \
-test_settings/ui_settings_load.c
-settings_test_CFLAGS = ${FLAGS}
-settings_test_LDADD = ${LD}
+config_test_SOURCES = \
+test_config/test_config.c \
+test_config/config_init.c\
+test_config/config_shutdown.c\
+test_config/config_save.c \
+test_config/config_load.c \
+test_config/config_get.c
+config_test_CFLAGS = ${FLAGS}
+config_test_LDADD = ${LD}
 
 style_editor_test_SOURCES = \
 test_style_editor/test_style_editor.c \
@@ -193,23 +194,16 @@ test_ui_main_window/ui_menu_disable_set.c \
 test_ui_main_window/ui_menu_locked_set.c \
 test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
-test_ui_main_window/ui_panes_settings_load.c \
-test_ui_main_window/ui_panes_settings_save.c \
 test_ui_main_window/ui_panes_show.c \
 test_ui_main_window/ui_part_back.c \
 test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_part_state_delete.c \
-test_ui_main_window/ui_resize_panes.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \
 test_ui_main_window/ui_style_delete.c \
 test_ui_main_window/ui_window_colorsel_get.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
-
-ui_ruler_test_SOURCES = test_ui_ruler/test_ui_ruler.c
-ui_ruler_test_CFLAGS = ${FLAGS}
-ui_ruler_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \

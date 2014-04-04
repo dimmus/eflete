@@ -22,7 +22,6 @@
 #endif /* include eflete_config.h */
 
 #include "ui_main_window.h"
-#include "settings.h"
 
 static void
 _on_done(void *data,
@@ -46,7 +45,7 @@ ui_main_window_del(App_Data *ap)
          return false;
      }
    eina_hash_free(ap->menu_hash);
-   ui_panes_settings_save();
+   config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    if (ap->project)
      pm_project_close(ap->project);
@@ -59,17 +58,6 @@ ui_main_window_del(App_Data *ap)
    return true;
 }
 
-static void
-_on_window_resize(void *data __UNUSED__,
-                  Evas *e __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   int w, h;
-   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-   ui_resize_panes(w,h);
-}
-
 #define MARK_TO_SHUTDOWN(fmt, ...) \
    { \
       ERR(fmt, ## __VA_ARGS__); \
@@ -79,48 +67,44 @@ _on_window_resize(void *data __UNUSED__,
 Eina_Bool
 ui_main_window_add(App_Data *ap)
 {
-   Evas_Object *win, *bg, *layout;
+   Config *config;
+   Evas_Object *bg;
 
    if (!ap)
      {
         ERR("Can't create the window. App_Data is NULL");
         return EINA_FALSE;
      }
-
-   if (!ecore_file_mkpath(EFLETE_SETT_PATH))
-     ERR("Can't create settings directory");
+   config_load();
+   config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
-   win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
+   ap->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
 
-   if (win == NULL)
+   if (ap->win == NULL)
      {
         ERR("Failrue create main window.");
         return false;
      }
-   ap->win = win;
+   evas_object_resize(ap->win, config->window.w, config->window.h);
+   evas_object_move(ap->win, config->window.x, config->window.y);
 
-   elm_win_title_set(win, "EFL Edje Theme Editor");
-   evas_object_smart_callback_add(win, "delete,request", _on_done, ap);
-   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, _on_window_resize,
-                                  NULL);
+   elm_win_title_set(ap->win, "EFL Edje Theme Editor");
+   evas_object_smart_callback_add(ap->win, "delete,request", _on_done, ap);
 
-   bg = elm_bg_add(win);
-   elm_win_resize_object_add(win, bg);
+   bg = elm_bg_add(ap->win);
+   elm_win_resize_object_add(ap->win, bg);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_focus_highlight_enabled_set(win, false);
+   elm_win_focus_highlight_enabled_set(ap->win, false);
    evas_object_show(bg);
 
-   layout = elm_layout_add(win);
-   evas_object_size_hint_weight_set(layout,
-                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   ap->win_layout = elm_layout_add(ap->win);
+   if (!ap->win_layout) MARK_TO_SHUTDOWN("Failrue create layout main window.")
+   evas_object_size_hint_weight_set(ap->win_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-   elm_win_resize_object_add(win, layout);
-   elm_layout_file_set(layout, EFLETE_EDJ, "ui/main_window");
-   evas_object_show(layout);
-   ap->win_layout = layout;
-   if (!ap->win_layout)
-     MARK_TO_SHUTDOWN("Failrue create layout main window.")
+   elm_win_resize_object_add(ap->win, ap->win_layout);
+   elm_layout_file_set(ap->win_layout, EFLETE_EDJ, "eflete/main_window/base/default");
+   evas_object_show(ap->win_layout);
 
    ap->main_menu = ui_menu_add(ap);
    if (!ap->main_menu)
@@ -129,7 +113,6 @@ ui_main_window_add(App_Data *ap)
    if (!ui_panes_add(ap))
      MARK_TO_SHUTDOWN("Failrue add panes on main window.")
 
-   ui_panes_settings_load(win);
    ap->workspace = workspace_add(ap->block.canvas);
    if (!ap->workspace)
      MARK_TO_SHUTDOWN("Failrue create workspace in main window.")

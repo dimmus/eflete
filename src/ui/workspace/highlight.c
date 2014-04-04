@@ -38,6 +38,12 @@
         return val; \
      }
 
+#define COLOR_CHECK \
+   if ((r < 0) || (r > 255)) return false; \
+   if ((g < 0) || (g > 255)) return false; \
+   if ((b < 0) || (b > 255)) return false; \
+   if ((a < 0) || (a > 255)) return false; \
+
 /**
   * TODO: add some comments.
   */
@@ -659,6 +665,7 @@ highlight_handler_color_set(Evas_Object *hl,
                             Evas_Coord a)
 {
    if (!hl) return false;
+   COLOR_CHECK;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    evas_object_color_set(highlight->handler_LT->border,
                          r * a / 255, g * a / 255, b * a / 255, a);
@@ -679,6 +686,7 @@ highlight_border_color_set(Evas_Object *hl,
                            Evas_Coord a)
 {
    if (!hl) return false;
+   COLOR_CHECK;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    evas_object_color_set(highlight->border,
                          r * a / 255, g * a / 255, b * a / 255, a);
@@ -693,6 +701,7 @@ highlight_bg_color_set(Evas_Object *hl,
                        Evas_Coord a)
 {
    if (!hl) return false;
+   COLOR_CHECK;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    evas_object_color_set(highlight->bg,
                          r * a / 255, g * a / 255, b * a / 255, a);
@@ -704,7 +713,7 @@ highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 {
    if (!hl) return false;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
-   if (highlight->handlers_disabled == disabled) return false;
+   if (highlight->handlers_disabled == disabled) return true;
    highlight->handlers_disabled = disabled;
    if (disabled)
      {
@@ -752,7 +761,6 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
    if ((!hl) || (!object)) return false;
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
 
-   highlight->object = object;
    if (highlight->object)
      {
         evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_RESIZE,
@@ -760,6 +768,7 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
         evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
                                             _object_changed, hl);
      }
+   highlight->object = object;
    evas_object_event_callback_add(object, EVAS_CALLBACK_RESIZE,
                                   _object_changed, hl);
    evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
@@ -796,3 +805,4 @@ highlight_object_unfollow(Evas_Object *hl)
 #undef COEFF
 #undef HIGHLIGHT_DATA_GET
 #undef HIGHLIGHT_DATA_GET_OR_RETURN_VAL
+#undef COLOR_CHECK

@@ -17,24 +17,24 @@
 * along with this program; If not, see see www.gnu.org/licenses/gpl-2.0.htm.
 */
 
-#include "test_settings.h"
+#include "test_config.h"
 
 /**
- * @addtogroup settings_test
+ * @addtogroup config_test
  * @{
- * @addtogroup ui_settings_load
+ * @addtogroup config_load
  * @{
- * Settings
+ * Config
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup ui_settings_load
+ * @addtogroup config_load
  * @{
  * <tr>
- * <td>ui_settings_load</td>
- * <td>ui_settings_load_test_p</td>
+ * <td>config_load</td>
+ * <td>config_load_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -42,7 +42,7 @@
  * @step 3 create Eflete window
  *
  * @procedure
- * @step 1 call ui_settings_load
+ * @step 1 call config_load
  * </td>
  * <td>void</td>
  * <td>EINA_TRUE</td>
@@ -51,22 +51,31 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_settings_load_test_p)
+EFLETE_TEST(config_load_test_p)
 {
+   /*
+   App_Data *ap;
+   Config *config;
+
    elm_init(0,0);
-   App_Data *app = app_create();
+   config_init();
+   ap = app_create();
    app_init();
-   ui_main_window_add(app);
+   ui_main_window_add(ap);
 
-   ck_assert_msg(ui_settings_load(), "UI setting not been loaded.");
+   config_load();
+   config = config_get();
+   ck_assert_msg(config != NULL, "Config not been loaded.");
 
-   app_free(app);
+   config_shutdown();
+   app_free(ap);
    elm_shutdown();
+   */
 }
 END_TEST
 
 /**
- * @addtogroup ui_settings_load
+ * @addtogroup config_load
  * @{
  * </TABLE>
  * @}

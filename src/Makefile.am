@@ -12,7 +12,7 @@ project_manager/edje_compile.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
 logger/logger.c \
-settings/settings.c \
+config/config.c \
 ui/ui_panes.c \
 ui/ui_menu.c \
 ui/ui_main_window.c \
@@ -49,7 +49,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/settings \
+-I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \

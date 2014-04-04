@@ -63,26 +63,35 @@
 
 struct _App_Data
 {
-    Evas_Object *win;
-    Evas_Object *win_layout;
-    Evas_Object *main_menu;
-    Eina_Hash *menu_hash;
-    Evas_Object *popup;
-    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
-                                application. */
-    Eina_Bool is_new;
-    struct {
-       Evas_Object *left_top;
-       Evas_Object *left_bottom;
-       Evas_Object *bottom_left;
-       Evas_Object *bottom_right;
-       Evas_Object *right_top;
-       Evas_Object *right_bottom;
-       Evas_Object *canvas;
-    } block;
-    Evas_Object *workspace;
-    Live_View *live_view;
-    Project *project;
+   Evas_Object *win;
+   Evas_Object *win_layout;
+   Evas_Object *main_menu;
+   Eina_Hash *menu_hash;
+   Evas_Object *popup;
+   Evas_Object *colorsel; /**< global colorselector. the one colorselector for
+                            application. */
+   Eina_Bool is_new;
+   struct {
+      Evas_Object *left;
+      Evas_Object *right;
+      Evas_Object *left_hor;
+      Evas_Object *right_hor;
+      Evas_Object *center;
+      Evas_Object *center_down;
+   } panes;
+
+   struct {
+      Evas_Object *left_top;
+      Evas_Object *left_bottom;
+      Evas_Object *bottom_left;
+      Evas_Object *bottom_right;
+      Evas_Object *right_top;
+      Evas_Object *right_bottom;
+      Evas_Object *canvas;
+   } block;
+   Evas_Object *workspace;
+   Live_View *live_view;
+   Project *project;
 };
 
 /**

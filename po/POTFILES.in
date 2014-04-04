@@ -5,7 +5,7 @@ src/project_manager/edje_compile.c
 src/project_manager/widget_manager.c
 src/project_manager/project_manager.c
 src/logger/logger.c
-src/settings/settings.c
+src/config/config.c
 src/ui/ui_panes.c
 src/ui/ui_menu.c
 src/ui/ui_main_window.c
