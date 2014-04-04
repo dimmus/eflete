@@ -54,6 +54,7 @@
 #include <Eet.h>
 #include <Efreet.h>
 #include <Elementary.h>
+#include <ewe.h>
 #include "alloc.h"
 #include "logger.h"
 #include "project_manager.h"

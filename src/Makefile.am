@@ -60,6 +60,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/live_view \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@EWE_CFLAGS@ \
 @EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
@@ -69,4 +70,5 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
+@EWE_LIBS@ \
 @LTLIBINTL@

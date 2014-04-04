@@ -49,12 +49,14 @@ FLAGS = \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
+@EWE_LIBS@ \
 @ELEMENTARY_LIBS@
 
 part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c

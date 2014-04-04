@@ -116,6 +116,12 @@ app_init()
 
    if (!config_init()) return false;
 
+   if (!ewe_init(0, 0))
+     {
+        CRIT("Can't initialize the Ewe library");
+        return false;
+     }
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
 
    eina_stringshare_del(config_path);
@@ -134,6 +140,7 @@ app_shutdown()
    ecore_shutdown();
    edje_shutdown();
    logger_shutdown();
+   ewe_shutdown();
 }
 
 #undef CHECK_AP
