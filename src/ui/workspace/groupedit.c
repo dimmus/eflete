@@ -202,6 +202,7 @@ _mouse_move_cb(void *data,
 
         if (sd->paddings.t_top <= 0) sd->paddings.t_top = sd->paddings.bottom;
         if (sd->paddings.t_left <= 0) sd->paddings.t_left = sd->paddings.bottom;
+        evas_object_smart_changed(o);
      }
    if (sd->handler_BR_pressed)
      {
@@ -228,12 +229,10 @@ _mouse_move_cb(void *data,
              else nh = h + dy;
           }
         evas_object_resize(o, nw, nh);
-
+        evas_object_smart_changed(o);
      }
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
-
-   evas_object_smart_changed(o);
 }
 
 static void
