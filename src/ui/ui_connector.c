@@ -320,7 +320,7 @@ ui_state_select(App_Data *ap,
      }
 
    prop_view = ui_block_property_get(ap);
-   part = ui_state_list_part_get(obj);
+   part = ui_states_list_part_get(obj);
    wm_part_current_state_set(part, state);
    ui_property_state_set(prop_view, part);
    workspace_edit_object_part_state_set(ap->workspace, part);
@@ -669,7 +669,7 @@ ui_part_state_delete(App_Data *ap)
    if ((!ap) && (!ap->workspace)) return false;
 
    state_list = ui_block_state_list_get(ap);
-   part = ui_state_list_part_get(state_list);
+   part = ui_states_list_part_get(state_list);
    if (!part) return false;
 
    eoi = elm_genlist_selected_item_get(state_list);

@@ -18,7 +18,7 @@ ui_block_test \
 highlight_test \
 ui_main_window_test \
 ui_signal_list_test \
-ui_state_list_test \
+ui_states_list_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
@@ -217,9 +217,17 @@ test_ui_signal_list/ui_signal_list_data_unset.c
 ui_signal_list_test_CFLAGS = ${FLAGS}
 ui_signal_list_test_LDADD = ${LD}
 
-ui_state_list_test_SOURCES = test_ui_state_list/test_ui_state_list.c
-ui_state_list_test_CFLAGS = ${FLAGS}
-ui_state_list_test_LDADD = ${LD}
+ui_states_list_test_SOURCES = \
+test_ui_states_list/test_ui_states_list.c \
+test_ui_states_list/ui_states_list_selected_state_get.c \
+test_ui_states_list/ui_states_list_selected_states_del.c \
+test_ui_states_list/ui_states_list_selected_states_get.c \
+test_ui_states_list/ui_states_list_state_add.c \
+test_ui_states_list/ui_states_list_add.c \
+test_ui_states_list/ui_states_list_data_set.c \
+test_ui_states_list/ui_states_list_part_get.c
+ui_states_list_test_CFLAGS = ${FLAGS}
+ui_states_list_test_LDADD = ${LD}
 
 ui_widget_list_test_SOURCES = \
 test_ui_widget_list/test_ui_widget_list.c \

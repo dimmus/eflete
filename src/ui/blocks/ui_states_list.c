@@ -160,22 +160,24 @@ ui_states_list_data_set(Evas_Object *object,
    return true;
 }
 
-void
+Eina_Bool
 ui_states_list_data_unset(Evas_Object *object)
 {
    Evas_Object *parent, *content;
 
-   if (!object) return;
+   if (!object) return false;
 
    elm_genlist_clear(object);
    parent = elm_object_parent_widget_get(object);
    content = elm_object_part_content_get(parent, "elm.swallow.title");
    evas_object_del(content);
    evas_object_del(object);
+
+   return true;
 }
 
 Part *
-ui_state_list_part_get(Evas_Object *obj)
+ui_states_list_part_get(Evas_Object *obj)
 {
    Part *_part = NULL;
    if (!obj) return NULL;
@@ -184,7 +186,7 @@ ui_state_list_part_get(Evas_Object *obj)
 }
 
 Eina_Bool
-ui_state_list_state_add(Evas_Object *obj, const char *state)
+ui_states_list_state_add(Evas_Object *obj, const char *state)
 {
    Elm_Object_Item *eoi;
 
@@ -200,7 +202,7 @@ ui_state_list_state_add(Evas_Object *obj, const char *state)
 }
 
 Eina_Bool
-ui_state_list_selected_state_del(Evas_Object *obj)
+ui_states_list_selected_state_del(Evas_Object *obj)
 {
    Elm_Object_Item *eoi, *next_eoi;
    if (!obj) return false;
@@ -223,7 +225,7 @@ ui_state_list_selected_state_del(Evas_Object *obj)
 }
 
 Eina_Stringshare *
-ui_state_list_selected_state_get(Evas_Object *obj)
+ui_states_list_selected_state_get(Evas_Object *obj)
 {
    Elm_Object_Item *eoi;
    Eina_Stringshare *state;
@@ -237,7 +239,7 @@ ui_state_list_selected_state_get(Evas_Object *obj)
 }
 
 Eina_List *
-ui_state_list_selected_states_get(Evas_Object *obj)
+ui_states_list_selected_states_get(Evas_Object *obj)
 {
    Elm_Object_Item *eoi;
    Eina_List *items, *l, *states = NULL;
