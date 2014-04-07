@@ -1,6 +1,28 @@
 #define POINTER_IMAGE  "cursor-pointer.png"
 #define BORDER_IMAGE   "cursor_rect.png"
 
+group { name: "elm/cursor/arrow/default";
+   images {
+      image: POINTER_IMAGE COMP;
+   }
+   parts {
+      part { name: "cursor_image";
+         description { state: "default" 0.0;
+            SET_SIZE(15, 18);
+            image.normal: POINTER_IMAGE;
+            rel2.relative: 0.5 0.5;
+         }
+      }
+      part { name: "elm.content.hotspot";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 0.0;
+         }
+      }
+   }
+}
+
 group {
    images {
       image: POINTER_IMAGE COMP;
@@ -62,6 +84,13 @@ group {
             color: HIGHLIGHT_BLUE;
             rel1.to: "cursor_rect";
             rel2.to: "cursor_rect";
+         }
+      }
+      part { name: "elm.content.hotspot";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 0.0 0.0;
          }
       }
    }
