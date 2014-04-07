@@ -177,9 +177,6 @@ ui_groupspace_test_LDADD = ${LD}
 highlight_test_SOURCES = \
 test_highlight/test_highlight.c \
 test_highlight/highlight_add.c \
-test_highlight/highlight_bg_color_set.c \
-test_highlight/highlight_border_color_set.c \
-test_highlight/highlight_handler_color_set.c \
 test_highlight/highlight_handler_disabled_set.c \
 test_highlight/highlight_handler_mode_set.c \
 test_highlight/highlight_object_follow.c \

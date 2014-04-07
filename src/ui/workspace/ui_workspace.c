@@ -135,19 +135,17 @@ EVAS_SMART_SUBCLASS_NEW(_evas_smart_ws, _workspace,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
 static void
-_obj_area_visible_change(void *data,
+_obj_area_visible_change(void *data __UNUSED__,
                          Evas_Object *obj,
                          void *event_info __UNUSED__)
 {
+   Eina_Bool visible;
+
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-   Evas_Object *highlight = (Evas_Object *)data;
-   Eina_Bool visible = evas_object_visible_get(highlight);
    if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
      {
-        if (visible)
-          evas_object_hide(highlight);
-        else
-          evas_object_show(highlight);
+        visible = groupedit_part_object_area_visible_get(sd->groupedit);
+        groupedit_part_object_area_visible_set(sd->groupedit, !visible);
      }
 }
 
@@ -660,6 +658,7 @@ workspace_highlight_unset(Evas_Object *obj)
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
+   groupedit_part_object_area_visible_set(sd->groupedit, false);
    sd->highlight.part = NULL;
    evas_object_hide(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.highlight);
@@ -951,8 +950,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    if (!sd->highlight.space_hl)
      {
         sd->highlight.space_hl = highlight_add(sd->scroller);
-        highlight_bg_color_set(sd->highlight.space_hl, OBG_AREA_BG_COLOR);
-        highlight_border_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
+        evas_object_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
         highlight_handler_disabled_set(sd->highlight.space_hl, true);
         evas_object_smart_member_add(sd->highlight.space_hl, obj);
         evas_object_smart_callback_add(obj, "highlight,visible",
@@ -962,9 +960,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    if (!sd->highlight.highlight)
      {
         sd->highlight.highlight = highlight_add(sd->scroller);
-        highlight_bg_color_set(sd->highlight.highlight, HIGHLIGHT_BG_COLOR);
-        highlight_handler_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
-        highlight_border_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
+        evas_object_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
         evas_object_smart_member_add(sd->highlight.highlight, obj);
      }
 
