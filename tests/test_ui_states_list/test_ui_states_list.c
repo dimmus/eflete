@@ -24,12 +24,12 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, ui_states_list_add_test_p);
    tcase_add_test(tcase, ui_states_list_add_test_n);
-/*tcase_add_test(tcase, ui_states_list_data_set_test_p); */
-/*tcase_add_test(tcase, ui_states_list_data_set_test_n1); */
-/*tcase_add_test(tcase, ui_states_list_data_set_test_n2); */
-/*   tcase_add_test(tcase, ui_states_list_data_set_test_n3); */
- /*  tcase_add_test(tcase, ui_states_list_data_set_test_n4); */
- /*  tcase_add_test(tcase, ui_states_list_data_set_test_n5); */
+   tcase_add_test(tcase, ui_states_list_data_set_test_p);
+   tcase_add_test(tcase, ui_states_list_data_set_test_n1);
+   tcase_add_test(tcase, ui_states_list_data_set_test_n2);
+   tcase_add_test(tcase, ui_states_list_data_set_test_n3);
+   tcase_add_test(tcase, ui_states_list_data_set_test_n4);
+   tcase_add_test(tcase, ui_states_list_data_set_test_n5);
  /*  tcase_add_test(tcase, ui_states_list_data_set_test_n6); */
  /*  tcase_add_test(tcase, ui_states_list_part_get_test_p1); */
  /*  tcase_add_test(tcase, ui_states_list_part_get_test_p2); */
