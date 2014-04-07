@@ -351,10 +351,10 @@ _groupedit_smart_add(Evas_Object *o)
    priv->paddings.t_top = PADDING_INIT;
    priv->paddings.bottom = PADDING_INIT;
 
-   elm_config_cursor_engine_only_set(false);
    elm_object_cursor_set(priv->handler_TL.obj, "top_left_corner");
+   elm_object_cursor_theme_search_enabled_set(priv->handler_TL.obj, EINA_TRUE);
    elm_object_cursor_set(priv->handler_BR.obj, "bottom_right_corner");
-   elm_config_cursor_engine_only_set(true);
+   elm_object_cursor_theme_search_enabled_set(priv->handler_BR.obj, EINA_TRUE);
 
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_TL.obj, o);
