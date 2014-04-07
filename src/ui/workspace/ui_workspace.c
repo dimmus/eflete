@@ -924,7 +924,13 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if ((!style) || (!file)) return false;
-   if (!sd->groupedit) sd->groupedit = groupedit_add(sd->scroller);
+   if (!sd->groupedit)
+     {
+        sd->groupedit = groupedit_add(sd->scroller);
+        /* it temporary solution white not implemented preference module
+           and not finished config module */
+        evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
+     }
    else groupedit_edit_object_unset(sd->groupedit);
    sd->style = style;
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,

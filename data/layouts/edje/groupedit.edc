@@ -173,7 +173,6 @@ group { name: "eflete/groupedit/handler_TL/default";
          type: RECT;
          scale: 1;
          description { state: "default" 0.0;
-            color: 0 0 0 255;
          }
       }
    }

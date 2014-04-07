@@ -415,6 +415,16 @@ _groupedit_smart_hide(Evas_Object *o)
 }
 
 static void
+_groupedit_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   evas_object_color_set(sd->container, r, g, b, a);
+   evas_object_color_set(sd->handler_TL.obj, r, g, b, a);
+   evas_object_color_set(sd->handler_BR.obj, r, g, b, a);
+}
+
+static void
 _groupedit_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
@@ -508,6 +518,7 @@ _groupedit_smart_set_user(Evas_Smart_Class *sc)
    sc->del = _groupedit_smart_del;
    sc->show = _groupedit_smart_show;
    sc->hide = _groupedit_smart_hide;
+   sc->color_set = _groupedit_smart_color_set;
 
    /* clipped smart object has no hook on resizes or calculations */
    sc->resize = _groupedit_smart_resize;
