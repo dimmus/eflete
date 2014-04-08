@@ -22,7 +22,7 @@
 
 /**
  * @defgroup Config Config
- * @ingroup EFLTET
+ * @ingroup EFLETE
  *
  * A Config module respons for save current sizes of window, panes and user
  * profiles.

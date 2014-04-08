@@ -22,7 +22,7 @@
 
 /**
  * @defgroup Workspace Workspace
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  *
  * A Workspace module create and control workspace area. It's contain control
  * for zoom operation with workspace, button to switch separate mode view.
