@@ -839,8 +839,8 @@ _workspace_smart_hide(Evas_Object *o)
 
 static void
 _workspace_smart_resize(Evas_Object *o,
-                            Evas_Coord w,
-                            Evas_Coord h)
+                        Evas_Coord w,
+                        Evas_Coord h)
 {
    Evas_Coord ox, oy, ow, oh;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
@@ -852,15 +852,22 @@ _workspace_smart_resize(Evas_Object *o,
    evas_object_smart_changed(o);
 }
 
+static void
+_workspace_color_set(Evas_Object *o, int r, int g, int b, int a)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+
+   evas_object_color_set(sd->background, r, g, b, a);
+}
 
 static void
 _workspace_smart_set_user(Evas_Smart_Class *sc)
 {
-   //evas_object_smart_clipped_smart_set(sc);
    sc->add = _workspace_smart_add;
    sc->del = _workspace_smart_del;
    sc->show = _workspace_smart_show;
    sc->hide = _workspace_smart_hide;
+   sc->color_set = _workspace_color_set;
 
    sc->resize = _workspace_smart_resize;
    sc->calculate = NULL;
