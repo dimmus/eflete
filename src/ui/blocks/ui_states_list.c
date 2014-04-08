@@ -237,24 +237,3 @@ ui_states_list_selected_state_get(Evas_Object *obj)
 
    return state;
 }
-
-Eina_List *
-ui_states_list_selected_states_get(Evas_Object *obj)
-{
-   Elm_Object_Item *eoi;
-   Eina_List *items, *l, *states = NULL;
-   Eina_Stringshare *state;
-
-   if (!obj) return NULL;
-   items = (Eina_List *)elm_genlist_selected_items_get(obj);
-   if (!items) return NULL;
-
-   EINA_LIST_FOREACH(items, l, eoi)
-     {
-        state = eina_stringshare_add(elm_object_item_data_get(eoi));
-        states = eina_list_append(states, state);
-     }
-
-   eina_list_free(items);
-   return states;
-}

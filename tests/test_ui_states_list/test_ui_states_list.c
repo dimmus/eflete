@@ -42,9 +42,6 @@ Suite* test_suite (void) {
  /*  tcase_add_test(tcase, ui_states_list_selected_state_get_test_p); */
  /*  tcase_add_test(tcase, ui_states_list_selected_state_get_test_n1); */
  /*  tcase_add_test(tcase, ui_states_list_selected_state_get_test_n2); */
- /*  tcase_add_test(tcase, ui_states_list_selected_states_get_test_p); */
- /*  tcase_add_test(tcase, ui_states_list_selected_states_get_test_n1); */
- /*  tcase_add_test(tcase, ui_states_list_selected_states_get_test_n2); */
   /*  tcase_add_test(tcase, ui_states_list_selected_states_del_test_p); */
   /*  tcase_add_test(tcase, ui_states_list_selected_states_del_test_n1); */
   /*  tcase_add_test(tcase, ui_states_list_selected_states_del_test_n2); */

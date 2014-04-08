@@ -223,7 +223,6 @@ ui_states_list_test_SOURCES = \
 test_ui_states_list/test_ui_states_list.c \
 test_ui_states_list/ui_states_list_selected_state_get.c \
 test_ui_states_list/ui_states_list_selected_states_del.c \
-test_ui_states_list/ui_states_list_selected_states_get.c \
 test_ui_states_list/ui_states_list_state_add.c \
 test_ui_states_list/ui_states_list_add.c \
 test_ui_states_list/ui_states_list_data_set.c \
