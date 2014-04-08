@@ -35,10 +35,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_states_list_part_get_test_p2);
    tcase_add_test(tcase, ui_states_list_part_get_test_n1);
    tcase_add_test(tcase, ui_states_list_part_get_test_n2);
- /*  tcase_add_test(tcase, ui_states_list_state_add_test_p); */
- /*  tcase_add_test(tcase, ui_states_list_state_add_test_n1); */
- /*  tcase_add_test(tcase, ui_states_list_state_add_test_n2); */
- /*  tcase_add_test(tcase, ui_states_list_state_add_test_n3); */
+   tcase_add_test(tcase, ui_states_list_state_add_test_p);
+   tcase_add_test(tcase, ui_states_list_state_add_test_n1);
+   tcase_add_test(tcase, ui_states_list_state_add_test_n2);
+   tcase_add_test(tcase, ui_states_list_state_add_test_n3);
  /*  tcase_add_test(tcase, ui_states_list_selected_state_get_test_p); */
  /*  tcase_add_test(tcase, ui_states_list_selected_state_get_test_n1); */
  /*  tcase_add_test(tcase, ui_states_list_selected_state_get_test_n2); */
