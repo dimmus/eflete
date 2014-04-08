@@ -22,7 +22,7 @@
 
 /**
  * @defgroup Window Window
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  *
  * Main window header provide API to create and manipulate main window object.
  * Create panes markup for differents block's, like workspace, widget list,
