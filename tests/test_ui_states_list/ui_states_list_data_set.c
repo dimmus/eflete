@@ -292,7 +292,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>(Evas_Object *) window, (Style *) style, (Part *) part</td>
- * <td>EINA_FALSE</td>
+ * <td>All checks passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -316,8 +316,10 @@ EFLETE_TEST(ui_states_list_data_set_test_n5)
    wm_style_data_load(style, e, edj);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
 
-   ck_assert_msg(ui_states_list_data_set(window, style, part) == EINA_FALSE,
-                 "Data was set to the State List");
+   ck_assert_msg(ui_states_list_data_set(window, style, part) == EINA_TRUE,
+                 "Something is wrong with setting data.");
+   ck_assert_msg(elm_genlist_items_count(window) == 0,
+                 "Data was set into window.");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
 
