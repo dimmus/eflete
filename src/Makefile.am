@@ -17,6 +17,7 @@ ui/ui_panes.c \
 ui/ui_menu.c \
 ui/ui_main_window.c \
 ui/ui_connector.c \
+ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
 ui/editors/colorclass_editor.c \
@@ -46,6 +47,7 @@ eflete_SOURCES  = main.c
 
 eflete_CPPFLAGS = \
 -I${top_srcdir}/src/alloc \
+-I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \

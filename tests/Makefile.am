@@ -17,6 +17,7 @@ style_editor_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
+preference_test \
 ui_signal_list_test \
 ui_states_list_test \
 ui_widget_list_test \
@@ -41,6 +42,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/dialogs \
 -I${top_srcdir}/src/ui/editors \
 -I${top_srcdir}/src/ui/modal_window \
+-I${top_srcdir}/src/ui/preference \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
@@ -170,10 +172,6 @@ test_ui_block/ui_block_ws_set.c
 ui_block_test_CFLAGS = ${FLAGS}
 ui_block_test_LDADD = ${LD}
 
-ui_groupspace_test_SOURCES = test_ui_groupspace/test_ui_groupspace.c
-ui_groupspace_test_CFLAGS = ${FLAGS}
-ui_groupspace_test_LDADD = ${LD}
-
 highlight_test_SOURCES = \
 test_highlight/test_highlight.c \
 test_highlight/highlight_add.c \
@@ -207,6 +205,12 @@ test_ui_main_window/ui_style_delete.c \
 test_ui_main_window/ui_window_colorsel_get.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
+
+preference_test_SOURCES = \
+test_preference/test_preference.c \
+test_preference/preference_add_test.c
+preference_test_CFLAGS = ${FLAGS}
+preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
