@@ -617,9 +617,11 @@ Eina_Bool
 workspace_highlight_set(Evas_Object *obj, Part *part)
 {
    Evas_Object *follow;
-   if ((!obj) || (!part)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   if (!part) return false;
    if (!sd->groupedit) return false;
+
    groupedit_part_object_area_set(sd->groupedit, part->name);
    sd->highlight.part = part;
 
@@ -658,7 +660,6 @@ workspace_highlight_unset(Evas_Object *obj)
    if ((!sd->highlight.highlight) || (!sd->highlight.space_hl)) return false;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
-   groupedit_part_object_area_visible_set(sd->groupedit, false);
    sd->highlight.part = NULL;
    evas_object_hide(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.highlight);

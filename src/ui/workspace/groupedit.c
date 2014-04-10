@@ -353,11 +353,6 @@ _groupedit_smart_add(Evas_Object *o)
    priv->paddings.t_top = PADDING_INIT;
    priv->paddings.bottom = PADDING_INIT;
 
-   elm_object_cursor_set(priv->handler_TL.obj, "top_left_corner");
-   elm_object_cursor_theme_search_enabled_set(priv->handler_TL.obj, EINA_TRUE);
-   elm_object_cursor_set(priv->handler_BR.obj, "bottom_right_corner");
-   elm_object_cursor_theme_search_enabled_set(priv->handler_BR.obj, EINA_TRUE);
-
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_TL.obj, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
@@ -846,6 +841,9 @@ groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
    sd->obj_area.visible = visible;
+
+   if (!sd->selected) return;
+
    if (visible) evas_object_show(sd->obj_area.obj);
    else evas_object_hide(sd->obj_area.obj);
 }
