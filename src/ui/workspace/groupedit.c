@@ -279,10 +279,13 @@ static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               void *event_info)
 {
-   Evas_Object *o = data;
+   Evas_Object *o = (Evas_Object *)data;
+   Evas_Event_Mouse_Down *ev = event_info;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   if (ev->button != 1) return;
    if (!sd->obj_area.gp) return;
    if (sd->separated)
      {
