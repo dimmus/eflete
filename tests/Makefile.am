@@ -17,8 +17,9 @@ style_editor_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
+preference_test \
 ui_signal_list_test \
-ui_state_list_test \
+ui_states_list_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
@@ -41,6 +42,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/dialogs \
 -I${top_srcdir}/src/ui/editors \
 -I${top_srcdir}/src/ui/modal_window \
+-I${top_srcdir}/src/ui/preference \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
@@ -49,12 +51,14 @@ FLAGS = \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
+@EWE_LIBS@ \
 @ELEMENTARY_LIBS@
 
 part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c
@@ -137,6 +141,10 @@ config_test_SOURCES = \
 test_config/test_config.c \
 test_config/config_init.c\
 test_config/config_shutdown.c\
+test_config/profile_load.c \
+test_config/profile_save.c \
+test_config/profile_get.c \
+test_config/profiles_get.c \
 test_config/config_save.c \
 test_config/config_load.c \
 test_config/config_get.c
@@ -164,16 +172,9 @@ test_ui_block/ui_block_ws_set.c
 ui_block_test_CFLAGS = ${FLAGS}
 ui_block_test_LDADD = ${LD}
 
-ui_groupspace_test_SOURCES = test_ui_groupspace/test_ui_groupspace.c
-ui_groupspace_test_CFLAGS = ${FLAGS}
-ui_groupspace_test_LDADD = ${LD}
-
 highlight_test_SOURCES = \
 test_highlight/test_highlight.c \
 test_highlight/highlight_add.c \
-test_highlight/highlight_bg_color_set.c \
-test_highlight/highlight_border_color_set.c \
-test_highlight/highlight_handler_color_set.c \
 test_highlight/highlight_handler_disabled_set.c \
 test_highlight/highlight_handler_mode_set.c \
 test_highlight/highlight_object_follow.c \
@@ -205,6 +206,12 @@ test_ui_main_window/ui_window_colorsel_get.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
+preference_test_SOURCES = \
+test_preference/test_preference.c \
+test_preference/preference_add_test.c
+preference_test_CFLAGS = ${FLAGS}
+preference_test_LDADD = ${LD}
+
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
 test_ui_signal_list/ui_signal_list_add.c \
@@ -213,9 +220,16 @@ test_ui_signal_list/ui_signal_list_data_unset.c
 ui_signal_list_test_CFLAGS = ${FLAGS}
 ui_signal_list_test_LDADD = ${LD}
 
-ui_state_list_test_SOURCES = test_ui_state_list/test_ui_state_list.c
-ui_state_list_test_CFLAGS = ${FLAGS}
-ui_state_list_test_LDADD = ${LD}
+ui_states_list_test_SOURCES = \
+test_ui_states_list/test_ui_states_list.c \
+test_ui_states_list/ui_states_list_selected_state_get.c \
+test_ui_states_list/ui_states_list_selected_states_del.c \
+test_ui_states_list/ui_states_list_state_add.c \
+test_ui_states_list/ui_states_list_add.c \
+test_ui_states_list/ui_states_list_data_set.c \
+test_ui_states_list/ui_states_list_part_get.c
+ui_states_list_test_CFLAGS = ${FLAGS}
+ui_states_list_test_LDADD = ${LD}
 
 ui_widget_list_test_SOURCES = \
 test_ui_widget_list/test_ui_widget_list.c \

@@ -45,7 +45,7 @@ _add_ok_clicked(void *data,
    App_Data *ap = (App_Data *)data;
    Evas_Object *workspace = ap->workspace;
    Evas_Object *glist = ui_block_state_list_get(ap);
-   Part *part = ui_state_list_part_get(glist);
+   Part *part = ui_states_list_part_get(glist);
    const char *str_name, *str_value;
    Eina_Stringshare *state;
 
@@ -62,7 +62,7 @@ _add_ok_clicked(void *data,
                                             str_name, atof(str_value)))
      {
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
-        ui_state_list_state_add(glist, state);
+        ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
      }
    to_close = true;
@@ -105,7 +105,7 @@ state_dialog_state_add(App_Data *ap)
      }
 
    glist = ui_block_state_list_get(ap);
-   part = ui_state_list_part_get(glist);
+   part = ui_states_list_part_get(glist);
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
@@ -164,8 +164,8 @@ _del_ok_clicked(void *data,
 
    state_list = ui_block_state_list_get(ap);
    workspace = ap->workspace;
-   part = ui_state_list_part_get(state_list);
-   state = ui_state_list_selected_state_get(state_list);
+   part = ui_states_list_part_get(state_list);
+   state = ui_states_list_selected_state_get(state_list);
 
    char **arr = eina_str_split(state, " ", 2);
 
@@ -174,7 +174,7 @@ _del_ok_clicked(void *data,
      'This state used in the program(s). Are you sure you want to delete
      %state name%' and delete the programs or some params from the program */
    if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
-     ui_state_list_selected_state_del(state_list);
+     ui_states_list_selected_state_del(state_list);
 
    free(arr[0]);
    free(arr);
@@ -195,8 +195,8 @@ state_dialog_state_del(App_Data *ap)
      }
 
    state_list = ui_block_state_list_get(ap);
-   part = ui_state_list_part_get(state_list);
-   state = ui_state_list_selected_state_get(state_list);
+   part = ui_states_list_part_get(state_list);
+   state = ui_states_list_selected_state_get(state_list);
 
    if (!strcmp(state, "default 0.00"))
      {
@@ -206,7 +206,7 @@ state_dialog_state_del(App_Data *ap)
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
-   part = ui_state_list_part_get(state_list);
+   part = ui_states_list_part_get(state_list);
    title = eina_stringshare_printf(_("Delete the state from part"));
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);

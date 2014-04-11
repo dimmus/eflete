@@ -23,6 +23,16 @@
 
 void config_init_test_p(int);
 void config_shutdown_test_p(int);
+
+void profile_load_test_p1(int);
+void profile_load_test_p2(int);
+void profile_load_test_n(int);
+void profile_save_test_p(int);
+void profile_save_test_n(int);
+void profile_get_test_p1(int);
+void profile_get_test_p2(int);
+void profiles_get_test_p(int);
+
 void config_save_test_p(int);
 void config_load_test_p(int);
 void config_get_test_p1(int);

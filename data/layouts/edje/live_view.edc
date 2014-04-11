@@ -102,20 +102,18 @@ group {
    }
 }
 
-group {
+group { name: "eflete/live_view/base/default";
    images {
       image: "desktop_resize_handler_up.png" COMP;
       image: "desktop_resize_handler_down.png" COMP;
       image: "groupedit_border.png" COMP;
       image: "tooltip-base.png" COMP;
    }
-   name: "eflete/live_view/base/default";
    parts {
       part { name: "bg";
          scale: 1;
          type: RECT;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             color: 0 0 0 0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
@@ -124,8 +122,7 @@ group {
       part { name: "clipper";
          scale: 1;
          type: RECT;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             color: 255 255 255 255;
             fixed: 1 1;
             rel1 {
@@ -142,8 +139,7 @@ group {
          type: SWALLOW;
          mouse_events: 1;
          clip_to: "clipper";
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             fixed: 1 1;
             visible: 1;
             rel1 {
@@ -158,8 +154,7 @@ group {
       }
       part { name: "top_pad";
          type: IMAGE;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             visible: 0;
             min: 15 15;
             max: 15 15;
@@ -170,8 +165,7 @@ group {
                normal: "desktop_resize_handler_up.png";
             }
          }
-         description {
-            state: "displayed" 0.0;
+         description { state: "displayed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
@@ -183,20 +177,16 @@ group {
       }
       part { name: "bottom_pad";
          type: IMAGE;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             visible: 0;
             min: 15 15;
             max: 15 15;
             rel1.to: "bg";
             rel2.to: "bg";
             align: 1.0 1.0;
-            image {
-               normal: "desktop_resize_handler_down.png";
-            }
+            image.normal: "desktop_resize_handler_down.png";
          }
-         description {
-            state: "displayed" 0.0;
+         description { state: "displayed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
@@ -211,11 +201,11 @@ group {
          mouse_events: 1;
          repeat_events: 1;
          type: IMAGE;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             visible: 0;
             min: 0 0;
             fixed: 1 1;
+            color: 0 0 0 255;
             rel1 {
                relative: 1.0 1.0;
                to: "top_pad";
@@ -232,15 +222,13 @@ group {
                border: 2 2 2 2;
             }
          }
-         description {
-            state: "displayed" 0.0;
+         description { state: "displayed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
          }
       }
       programs {
-         program {
-            name: "live_view_hide";
+         program { name: "live_view_hide";
             signal: "live_view,hide";
             source: "eflete";
             action: STATE_SET "default" 0.0;
@@ -248,8 +236,7 @@ group {
             target: "top_pad";
             target: "bottom_pad";
          }
-         program {
-            name: "live_view_show";
+         program { name: "live_view_show";
             signal: "live_view,show";
             source: "eflete";
             action: STATE_SET "displayed" 0.0;

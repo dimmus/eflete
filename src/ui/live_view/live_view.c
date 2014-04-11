@@ -768,18 +768,6 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    elm_layout_signal_emit(live->live_view, "live_view,show", "eflete");
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
-   /* updating handlers for fitting block in Live_View
-      after opening another widget. */
-   const Evas_Object *part_bottom = edje_object_part_object_get(
-      elm_layout_edje_get(live->live_view), "bottom_pad");
-   const Evas_Object *part_top = edje_object_part_object_get(
-      elm_layout_edje_get(live->live_view), "top_pad");
-
-   elm_config_cursor_engine_only_set(false);
-   elm_object_cursor_set((Evas_Object *)part_top, "top_left_corner");
-   elm_object_cursor_set((Evas_Object *)part_bottom, "bottom_right_corner");
-   elm_config_cursor_engine_only_set(true);
-
    Evas_Coord x, y;
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
    edje_object_part_drag_value_set(elm_layout_edje_get(live->live_view),

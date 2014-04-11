@@ -22,7 +22,7 @@
 
 /**
  * @defgroup ELM_MAIN ELM_MAIN
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  *
  * The begging point of the programm
  * (contain starting function like main and
@@ -54,6 +54,7 @@
 #include <Eet.h>
 #include <Efreet.h>
 #include <Elementary.h>
+#include <ewe.h>
 #include "alloc.h"
 #include "logger.h"
 #include "project_manager.h"
@@ -107,7 +108,7 @@ EAPI_MAIN int elm_main();
  * @return EINA_TRUE all libraries initialized succesfully.
  * EINA_FALSE one of the libraries was failed to inti.
  *
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 Eina_Bool
 app_init(void);
@@ -117,7 +118,7 @@ app_init(void);
  * (custom EDC needed for this program) and shutdown all launched
  * and inited libraries.
  *
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 void
 app_shutdown(void);
@@ -129,7 +130,7 @@ app_shutdown(void);
  *
  * @return win_layout if exist, NULL if not exist.
  *
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 Evas_Object *
 win_layout_get(void);
@@ -139,7 +140,7 @@ win_layout_get(void);
  *
  * @return link to created empty App_Data.
  *
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 App_Data *
 app_create(void);
@@ -149,7 +150,7 @@ app_create(void);
  *
  * @param ap - App_Data of this program for removing before program shutdown.
  *
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 void
 app_free(App_Data *ap);
@@ -158,7 +159,7 @@ app_free(App_Data *ap);
  * This function get pointer to main window of application.
  *
  * @return pointer to main window Evas_Object.
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 Evas_Object *
 main_window_get(void);
@@ -168,7 +169,7 @@ main_window_get(void);
  * The colorselector one for the entire application.
  *
  * @return pointer to colorselector.
- * @ingroup EFL_TET
+ * @ingroup EFLETE
  */
 Evas_Object *
 colorselector_get(void);

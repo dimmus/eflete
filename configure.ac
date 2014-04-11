@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [1], [7])
+EFLETE_VERSION([0], [1], [8])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -11,8 +11,9 @@ AM_SILENT_RULES([yes])
 AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
-m4_define([efl_version], [1.8.5])
-m4_define([elm_version], [1.8.4])
+m4_define([efl_version], [1.9.2])
+m4_define([elm_version], [1.9.2])
+m4_define([ewe_version], [0.0.1])
 
 EFLETE_INIT
 AC_CONFIG_HEADERS([eflete_config.h])
@@ -81,6 +82,10 @@ PKG_CHECK_MODULES([ELEMENTARY], [elementary >= elm_version],
    [have_elm="${GREEN}yes${RESET}"],
    [have_elm="${RED}no${RESET} (version < elm_version)"])
 
+PKG_CHECK_MODULES([EWE], [ewe >= ewe_version],
+   [have_ewe="${GREEN}yes${RESET}"],
+   [have_ewe="${RED}no${RESET} (version < ewe_version)"])
+
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
    [have_check="${RED}no${RESET}"])
@@ -127,7 +132,7 @@ EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
-EFLETE_DEFINE+=" -DEFLETE_CACHE_PATH=\\\"${HOME}/.eflete/cache/\\\" "
+EFLETE_DEFINE+=" -DEFLETE_SWAP_PATH=\\\"${HOME}/.eflete/swap/\\\" "
 AC_SUBST([EFLETE_DEFINE])
 
 AM_PROG_CC_C_O
@@ -164,6 +169,7 @@ echo "  os.............: ${host_os}"
 echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
+echo "  ewe............: ${have_ewe}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo

@@ -135,19 +135,17 @@ EVAS_SMART_SUBCLASS_NEW(_evas_smart_ws, _workspace,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
 static void
-_obj_area_visible_change(void *data,
+_obj_area_visible_change(void *data __UNUSED__,
                          Evas_Object *obj,
                          void *event_info __UNUSED__)
 {
+   Eina_Bool visible;
+
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-   Evas_Object *highlight = (Evas_Object *)data;
-   Eina_Bool visible = evas_object_visible_get(highlight);
    if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
      {
-        if (visible)
-          evas_object_hide(highlight);
-        else
-          evas_object_show(highlight);
+        visible = groupedit_part_object_area_visible_get(sd->groupedit);
+        groupedit_part_object_area_visible_set(sd->groupedit, !visible);
      }
 }
 
@@ -619,9 +617,11 @@ Eina_Bool
 workspace_highlight_set(Evas_Object *obj, Part *part)
 {
    Evas_Object *follow;
-   if ((!obj) || (!part)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   if (!part) return false;
    if (!sd->groupedit) return false;
+
    groupedit_part_object_area_set(sd->groupedit, part->name);
    sd->highlight.part = part;
 
@@ -839,8 +839,8 @@ _workspace_smart_hide(Evas_Object *o)
 
 static void
 _workspace_smart_resize(Evas_Object *o,
-                            Evas_Coord w,
-                            Evas_Coord h)
+                        Evas_Coord w,
+                        Evas_Coord h)
 {
    Evas_Coord ox, oy, ow, oh;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
@@ -852,15 +852,22 @@ _workspace_smart_resize(Evas_Object *o,
    evas_object_smart_changed(o);
 }
 
+static void
+_workspace_color_set(Evas_Object *o, int r, int g, int b, int a)
+{
+   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
+
+   evas_object_color_set(sd->background, r, g, b, a);
+}
 
 static void
 _workspace_smart_set_user(Evas_Smart_Class *sc)
 {
-   //evas_object_smart_clipped_smart_set(sc);
    sc->add = _workspace_smart_add;
    sc->del = _workspace_smart_del;
    sc->show = _workspace_smart_show;
    sc->hide = _workspace_smart_hide;
+   sc->color_set = _workspace_color_set;
 
    sc->resize = _workspace_smart_resize;
    sc->calculate = NULL;
@@ -918,7 +925,13 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if ((!style) || (!file)) return false;
-   if (!sd->groupedit) sd->groupedit = groupedit_add(sd->scroller);
+   if (!sd->groupedit)
+     {
+        sd->groupedit = groupedit_add(sd->scroller);
+        /* it temporary solution white not implemented preference module
+           and not finished config module */
+        evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
+     }
    else groupedit_edit_object_unset(sd->groupedit);
    sd->style = style;
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
@@ -944,8 +957,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    if (!sd->highlight.space_hl)
      {
         sd->highlight.space_hl = highlight_add(sd->scroller);
-        highlight_bg_color_set(sd->highlight.space_hl, OBG_AREA_BG_COLOR);
-        highlight_border_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
+        evas_object_color_set(sd->highlight.space_hl, OBG_AREA_COLOR);
         highlight_handler_disabled_set(sd->highlight.space_hl, true);
         evas_object_smart_member_add(sd->highlight.space_hl, obj);
         evas_object_smart_callback_add(obj, "highlight,visible",
@@ -955,9 +967,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    if (!sd->highlight.highlight)
      {
         sd->highlight.highlight = highlight_add(sd->scroller);
-        highlight_bg_color_set(sd->highlight.highlight, HIGHLIGHT_BG_COLOR);
-        highlight_handler_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
-        highlight_border_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
+        evas_object_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
         evas_object_smart_member_add(sd->highlight.highlight, obj);
      }
 

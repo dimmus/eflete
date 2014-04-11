@@ -67,7 +67,6 @@ struct _Highlight
    Evas_Object_Smart_Clipped_Data data;
    Evas_Object *border; /* border layout for showing handler's border image. */
    Evas_Object *parent; /* need to know parent object for knowing about bounds */
-   Evas_Object *bg;     /* background */
    Evas_Object *object; /* ojbect that is being highlighted. */
    Handler *handler_RB;
    Handler *handler_RT;
@@ -475,20 +474,6 @@ _handler_object_add(Evas_Object *parent,
    return handler;
 }
 
-Evas_Object *
-_bg_object_add(Evas_Object *parent, Highlight *highlight)
-{
-   Evas *e;
-   Evas_Object *background = NULL;
-
-   e = evas_object_evas_get(parent);
-
-   background = evas_object_rectangle_add(e);
-   edje_object_part_swallow(highlight->border, "bg", background);
-   return background;
-}
-
-
 /* create and setup a new example smart object's internals */
 static void
 _smart_calc(Evas_Object *obj)
@@ -524,7 +509,6 @@ _smart_add(Evas_Object *parent)
 
    priv->border = border;
    evas_object_smart_member_add(border, parent);
-   priv->bg = _bg_object_add(parent, priv);
 
    priv->handler_RB = _handler_object_add(parent, priv, RB, "eflete/highlight/handler_RB/default");
    priv->handler_RT = _handler_object_add(parent, priv, RT, "eflete/highlight/handler_RT/default");
@@ -559,8 +543,6 @@ _smart_del(Evas_Object *obj)
    free(highlight->handler_RT);
    free(highlight->handler_LB);
    free(highlight->handler_LT);
-
-   evas_object_del(highlight->bg);
 
   _highlight_parent_sc->del(obj);
 }
@@ -624,6 +606,18 @@ _smart_resize(Evas_Object *obj,
 }
 
 static void
+_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
+{
+   HIGHLIGHT_DATA_GET(o, highlight)
+
+   evas_object_color_set(highlight->border, r, g, b, a);
+   evas_object_color_set(highlight->handler_RB->border, r, g, b, a);
+   evas_object_color_set(highlight->handler_RT->border, r, g, b, a);
+   evas_object_color_set(highlight->handler_LB->border, r, g, b, a);
+   evas_object_color_set(highlight->handler_LT->border, r, g, b, a);
+}
+
+static void
 _highlight_smart_set_user(Evas_Smart_Class *sc)
 {
    sc->add       = _smart_add;
@@ -633,6 +627,7 @@ _highlight_smart_set_user(Evas_Smart_Class *sc)
    sc->resize    = _smart_resize;
    sc->move      = _smart_move;
    sc->calculate = _smart_calc;
+   sc->color_set = _smart_color_set;
 }
 
 Evas_Object *
@@ -655,57 +650,6 @@ highlight_add(Evas_Object *parent)
    highlight->smart_object = obj;
 
    return obj;
-}
-
-Eina_Bool
-highlight_handler_color_set(Evas_Object *hl,
-                            Evas_Coord r,
-                            Evas_Coord g,
-                            Evas_Coord b,
-                            Evas_Coord a)
-{
-   if (!hl) return false;
-   COLOR_CHECK;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
-   evas_object_color_set(highlight->handler_LT->border,
-                         r * a / 255, g * a / 255, b * a / 255, a);
-   evas_object_color_set(highlight->handler_LB->border,
-                         r * a / 255, g * a / 255, b * a / 255, a);
-   evas_object_color_set(highlight->handler_RT->border,
-                         r * a / 255, g * a / 255, b * a / 255, a);
-   evas_object_color_set(highlight->handler_RB->border,
-                         r * a / 255, g * a / 255, b * a / 255, a);
-   return true;
-}
-
-Eina_Bool
-highlight_border_color_set(Evas_Object *hl,
-                           Evas_Coord r,
-                           Evas_Coord g,
-                           Evas_Coord b,
-                           Evas_Coord a)
-{
-   if (!hl) return false;
-   COLOR_CHECK;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
-   evas_object_color_set(highlight->border,
-                         r * a / 255, g * a / 255, b * a / 255, a);
-   return true;
-}
-
-Eina_Bool
-highlight_bg_color_set(Evas_Object *hl,
-                       Evas_Coord r,
-                       Evas_Coord g,
-                       Evas_Coord b,
-                       Evas_Coord a)
-{
-   if (!hl) return false;
-   COLOR_CHECK;
-   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
-   evas_object_color_set(highlight->bg,
-                         r * a / 255, g * a / 255, b * a / 255, a);
-   return true;
 }
 
 Eina_Bool

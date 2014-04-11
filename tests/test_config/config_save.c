@@ -60,13 +60,10 @@ EFLETE_TEST(config_save_test_p)
    elm_init(0,0);
    ap = app_create();
    app_init();
-   config_init();
-   config_load();
    ui_main_window_add(ap);
 
    ck_assert_msg(config_save(ap), "Config not saved.");
 
-   config_shutdown();
    app_free(ap);
    elm_shutdown();
 }

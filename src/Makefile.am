@@ -17,6 +17,7 @@ ui/ui_panes.c \
 ui/ui_menu.c \
 ui/ui_main_window.c \
 ui/ui_connector.c \
+ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
 ui/editors/colorclass_editor.c \
@@ -46,6 +47,7 @@ eflete_SOURCES  = main.c
 
 eflete_CPPFLAGS = \
 -I${top_srcdir}/src/alloc \
+-I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \
@@ -60,6 +62,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/live_view \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@EWE_CFLAGS@ \
 @EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
@@ -69,4 +72,5 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
+@EWE_LIBS@ \
 @LTLIBINTL@

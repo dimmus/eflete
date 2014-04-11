@@ -320,7 +320,7 @@ ui_state_select(App_Data *ap,
      }
 
    prop_view = ui_block_property_get(ap);
-   part = ui_state_list_part_get(obj);
+   part = ui_states_list_part_get(obj);
    wm_part_current_state_set(part, state);
    ui_property_state_set(prop_view, part);
    workspace_edit_object_part_state_set(ap->workspace, part);
@@ -480,7 +480,7 @@ new_theme_create(App_Data *ap)
 
    ap->is_new = false;
 
-   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_CACHE_PATH"Untitled.edj"))
+   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_SWAP_PATH"Untitled.edj"))
      {
         ERR("Couldn't copy theme template to cache");
         return false;
@@ -504,7 +504,7 @@ new_theme_create(App_Data *ap)
      live_view_widget_style_unset(ap->live_view);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
 
-   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_CACHE_PATH"Untitled.edj");
+   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_SWAP_PATH"Untitled.edj");
    if (!ap->project) return false;
    wd_list = ui_widget_list_add(ap->win);
    ui_widget_list_title_set(wd_list, ap->project->name);
@@ -669,7 +669,7 @@ ui_part_state_delete(App_Data *ap)
    if ((!ap) && (!ap->workspace)) return false;
 
    state_list = ui_block_state_list_get(ap);
-   part = ui_state_list_part_get(state_list);
+   part = ui_states_list_part_get(state_list);
    if (!part) return false;
 
    eoi = elm_genlist_selected_item_get(state_list);

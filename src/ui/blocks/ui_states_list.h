@@ -47,7 +47,7 @@ ui_states_list_add(Evas_Object *parent);
  * @param object The 'states list' object.
  * @param group The Style data.
  * @param part The Part object.
- * @return EINA_TRUE - it all ok, EINA_FALSE - samsing wrong
+ * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
  *
  * @ingroup StateList
  */
@@ -63,20 +63,61 @@ ui_states_list_data_set(Evas_Object *object, Style *style, Part *part);
  * @ingroup StateList
  */
 Part *
-ui_state_list_part_get(Evas_Object *obj);
+ui_states_list_part_get(Evas_Object *obj);
 
+/**
+ * Add new state to current selected part in state list.
+ *
+ * @param object A 'states list' object
+ * @param state new state name that is going to be added.
+ * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
+ *
+ * @ingroup StateList
+ */
 Eina_Bool
-ui_state_list_state_add(Evas_Object *obj, const char *state);
+ui_states_list_state_add(Evas_Object *obj, const char *state);
 
+/**
+ * Delete state from given states list.
+ *
+ * @param object A 'states list' object
+ * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
+ *
+ * @ingroup StateList
+ */
 Eina_Bool
-ui_state_list_selected_state_del(Evas_Object *obj);
+ui_states_list_selected_state_del(Evas_Object *obj);
 
+/**
+ * Return currently selected state in 'states list' object.
+ *
+ * @param object A 'states list' object
+ * @return selected state's name.
+ *
+ * @ingroup StateList
+ */
 Eina_Stringshare *
-ui_state_list_selected_state_get(Evas_Object *obj);
+ui_states_list_selected_state_get(Evas_Object *obj);
 
+/**
+ * Return currently selected state in 'states list' object.
+ *
+ * @param object A 'states list' object
+ * @return selected state's name.
+ *
+ * @ingroup StateList
+ */
 Eina_List *
-ui_state_list_selected_states_get(Evas_Object *obj);
+ui_states_list_selected_states_get(Evas_Object *obj);
 
-void
+/**
+ * Unset data of a part states from 'states list'.
+ *
+ * @param object A 'states list' object
+ * @return EINA_TRUE - successful, EINA_FALSE - something wrong.
+ *
+ * @ingroup StateList
+ */
+Eina_Bool
 ui_states_list_data_unset(Evas_Object *obj);
 #endif /* UI_STATES_LIST_H */

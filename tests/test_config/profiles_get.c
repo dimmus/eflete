@@ -20,57 +20,55 @@
 #include "test_config.h"
 
 /**
- * @addtogroup config_test
+ * @addtogroup settings_test
  * @{
- * @addtogroup config_load
+ * @addtogroup profiles_get
  * @{
  * Config
  * <TABLE>
  * @}
  */
-
 /**
- * @addtogroup config_load
+ * @addtogroup profiles_get
  * @{
  * <tr>
- * <td>config_load</td>
- * <td>config_load_test_p</td>
+ * <td>profiles_get</td>
+ * <td>profiles_get_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 create App_Data
- * @step 3 create Eflete window
+ * @step 2 initialize config
+ * @step 3 load config
  *
  * @procedure
- * @step 1 call config_load
+ * @step 1 call profiles_get
  * </td>
  * <td>void</td>
- * <td>Config  will be loaded</td>
+ * <td>not NULL pointer</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(config_load_test_p)
+EFLETE_TEST(profiles_get_test_p)
 {
-   App_Data *ap;
-   Config *config;
+   Eina_List *profiles;
 
    elm_init(0,0);
-   ap = app_create();
-   app_init();
-   ui_main_window_add(ap);
+   config_init();
+   config_load();
 
-   config = config_get();
-   ck_assert_msg(config != NULL, "Config not been loaded.");
+   profiles = profiles_get();
+   ck_assert_msg(profiles != NULL, "Config not loaded.");
 
-   app_free(ap);
+   EINA_LIST_STRINGSHARE_FREE(profiles);
+   config_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup config_load
+ * @addtogroup profiles_get
  * @{
  * </TABLE>
  * @}

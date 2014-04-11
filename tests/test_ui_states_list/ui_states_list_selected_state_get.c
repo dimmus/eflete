@@ -1,5 +1,5 @@
 /* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
+* Copyright (C) 2014 Samsung Electronics.
 *
 * This file is part of Edje Theme Editor.
 *
@@ -17,24 +17,23 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-#include <check.h>
 
-#ifdef HAVE_CONFIG_H
-   #include "eflete_config.h"
-#endif /* include eflete_config.h */
+#include "test_ui_states_list.h"
 
-#define EFLETE_TEST(__testname) \
-void __testname (int _i CK_ATTRIBUTE_UNUSED) \
-{ \
-  printf("\033[7;32m============================= "#__testname" ==================================================================\033[0m\n"); \
-  tcase_fn_start (""# __testname, __FILE__, __LINE__);
+/**
+ * @addgroup test_ui_states_list
+ * @{
+ * @addtogroup ui_states_list_selected_state_get
+ * @{
+ * ui_states_list
+ * <TABLE>
+ * @}
+ */
 
-#ifdef END_TEST
-#undef END_TEST
-#endif
-
-#define END_TEST \
-  printf("\n\n"); \
-}
-
-#define M_ mark_point();
+/**
+ * @addtogroup ui_states_list_selected_state_get
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */

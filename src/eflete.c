@@ -71,7 +71,7 @@ app_free(App_Data *ap)
 Eina_Bool
 app_init()
 {
-   Eina_Stringshare *config_path, *cache_path;
+   Eina_Stringshare *config_path, *swap_path;
 
    setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
@@ -111,12 +111,21 @@ app_init()
 
    config_path = eina_stringshare_add(EFLETE_SETT_PATH);
    if (!ecore_file_exists(config_path)) ecore_file_mkdir(config_path);
-   cache_path = eina_stringshare_add(EFLETE_CACHE_PATH);
-   if (!ecore_file_exists(cache_path)) ecore_file_mkdir(cache_path);
+   swap_path = eina_stringshare_add(EFLETE_SWAP_PATH);
+   if (!ecore_file_exists(swap_path)) ecore_file_mkdir(swap_path);
 
    if (!config_init()) return false;
 
+   if (!ewe_init(0, 0))
+     {
+        CRIT("Can't initialize the Ewe library");
+        return false;
+     }
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
+
+   eina_stringshare_del(config_path);
+   eina_stringshare_del(swap_path);
    return true;
 }
 
@@ -131,6 +140,7 @@ app_shutdown()
    ecore_shutdown();
    edje_shutdown();
    logger_shutdown();
+   ewe_shutdown();
 }
 
 #undef CHECK_AP

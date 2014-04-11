@@ -202,6 +202,7 @@ _mouse_move_cb(void *data,
 
         if (sd->paddings.t_top <= 0) sd->paddings.t_top = sd->paddings.bottom;
         if (sd->paddings.t_left <= 0) sd->paddings.t_left = sd->paddings.bottom;
+        evas_object_smart_changed(o);
      }
    if (sd->handler_BR_pressed)
      {
@@ -228,12 +229,10 @@ _mouse_move_cb(void *data,
              else nh = h + dy;
           }
         evas_object_resize(o, nw, nh);
-
+        evas_object_smart_changed(o);
      }
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
-
-   evas_object_smart_changed(o);
 }
 
 static void
@@ -280,10 +279,13 @@ static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+               void *event_info)
 {
-   Evas_Object *o = data;
+   Evas_Object *o = (Evas_Object *)data;
+   Evas_Event_Mouse_Down *ev = event_info;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   if (ev->button != 1) return;
    if (!sd->obj_area.gp) return;
    if (sd->separated)
      {
@@ -351,11 +353,6 @@ _groupedit_smart_add(Evas_Object *o)
    priv->paddings.t_top = PADDING_INIT;
    priv->paddings.bottom = PADDING_INIT;
 
-   elm_config_cursor_engine_only_set(false);
-   elm_object_cursor_set(priv->handler_TL.obj, "top_left_corner");
-   elm_object_cursor_set(priv->handler_BR.obj, "bottom_right_corner");
-   elm_config_cursor_engine_only_set(true);
-
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_TL.obj, o);
    evas_object_smart_member_add(priv->handler_BR.obj, o);
@@ -413,6 +410,16 @@ _groupedit_smart_hide(Evas_Object *o)
    evas_object_hide(sd->event);
 
    _groupedit_parent_sc->hide(o);
+}
+
+static void
+_groupedit_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   evas_object_color_set(sd->container, r, g, b, a);
+   evas_object_color_set(sd->handler_TL.obj, r, g, b, a);
+   evas_object_color_set(sd->handler_BR.obj, r, g, b, a);
 }
 
 static void
@@ -509,6 +516,7 @@ _groupedit_smart_set_user(Evas_Smart_Class *sc)
    sc->del = _groupedit_smart_del;
    sc->show = _groupedit_smart_show;
    sc->hide = _groupedit_smart_hide;
+   sc->color_set = _groupedit_smart_color_set;
 
    /* clipped smart object has no hook on resizes or calculations */
    sc->resize = _groupedit_smart_resize;
@@ -833,6 +841,9 @@ groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
    sd->obj_area.visible = visible;
+
+   if (!sd->selected) return;
+
    if (visible) evas_object_show(sd->obj_area.obj);
    else evas_object_hide(sd->obj_area.obj);
 }
