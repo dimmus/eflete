@@ -8,17 +8,12 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * eina (>= 1.8.3)
-   * eet (>= 1.8.3)
-   * evas (>= 1.8.3)
-   * ecore (>= 1.8.3)
-   * eio (>= 1.8.3)
-   * edje (>= 1.8.3)
-   * efreet (>= 1.8.3)
-   * elementary (>= 1.8.3)
+   * efl (= 1.9.2)
+   * elementary (= 1.9.2)
+   * ewe (>= 0.0.1)
 
 Please note that some features may not quite function correctly or
-completely on EFL 1.8.3 or newer would be better.
+completely on EFL 1.9.2.
 
 Please see http://www.enlightenment.org for information on these.
 
