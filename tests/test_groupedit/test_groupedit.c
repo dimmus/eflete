@@ -101,10 +101,6 @@ Suite* test_suite (void) {
    //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_n3);
    //tcase_add_test(tcase, groupedit_edit_object_part_state_del_test_n4);
 
-   //tcase_add_test(tcase, groupedit_part_object_area_set_test_p);
-   //tcase_add_test(tcase, groupedit_part_object_area_set_test_n1);
-   //tcase_add_test(tcase, groupedit_part_object_area_set_test_n2);
-
    //tcase_add_test(tcase, groupedit_part_object_area_get_test_p);
    //tcase_add_test(tcase, groupedit_part_object_area_get_test_n1);
    //tcase_add_test(tcase, groupedit_part_object_area_get_test_n2);

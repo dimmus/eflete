@@ -104,10 +104,6 @@ void groupedit_edit_object_part_state_del_test_n2(int);
 void groupedit_edit_object_part_state_del_test_n3(int);
 void groupedit_edit_object_part_state_del_test_n4(int);
 
-void groupedit_part_object_area_set_test_p(int);
-void groupedit_part_object_area_set_test_n1(int);
-void groupedit_part_object_area_set_test_n2(int);
-
 void groupedit_part_object_area_get_test_p(int);
 void groupedit_part_object_area_get_test_n1(int);
 void groupedit_part_object_area_get_test_n2(int);

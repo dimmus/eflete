@@ -315,7 +315,7 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_disable_set(ap->menu_hash, _("Highlight space"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
 }
 
 static void
@@ -480,11 +480,11 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Separate"), _on_view_separate, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Legend"), _on_view_legend, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Rulers"), NULL, NULL, sub_menu);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/hide hor."), _on_view_ruler_hor, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/hide ver."), _on_view_ruler_ver, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide hor."), _on_view_ruler_hor, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide ver."), _on_view_ruler_ver, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Absolute scale"), _on_view_ruler_abs, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Relative scale"), _on_view_ruler_rel, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Highlight space"), _on_view_highlight, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Show/Hide object area"), _on_view_highlight, ap, it);
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("Editors"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Styles"), _on_style_window_menu, ap, it);
@@ -550,7 +550,7 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result = ui_menu_disable_set(menu_hash, _("Separate"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Legend"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Rulers"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Highlight space"), flag) && result;
+   result = ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Styles"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Images"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Colorclasses"), flag) && result;

@@ -303,7 +303,6 @@ test_groupedit/groupedit_handler_size_set.c \
 test_groupedit/groupedit_max_size_set.c \
 test_groupedit/groupedit_min_size_set.c \
 test_groupedit/groupedit_part_object_area_get.c \
-test_groupedit/groupedit_part_object_area_set.c \
 test_groupedit/groupedit_part_object_area_visible_get.c \
 test_groupedit/groupedit_part_object_area_visible_set.c \
 test_groupedit/groupedit_part_visible_set.c \

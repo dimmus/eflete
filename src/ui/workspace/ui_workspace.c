@@ -190,15 +190,12 @@ _separate_mode_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   const char *name = NULL;
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    if (!sd->groupedit) return;
    Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
    if (sep) return;
-   if (sd->highlight.part)
-      name = sd->highlight.part->name;
    highlight_object_unfollow(sd->highlight.highlight);
    highlight_object_unfollow(sd->highlight.space_hl);
    evas_object_hide(sd->highlight.space_hl);
@@ -206,7 +203,7 @@ _separate_mode_click(void *data,
 
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal, "");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, EFLETE_IMG_PATH"context_menu-bullet.png");
-   groupedit_edit_object_parts_separated(sd->groupedit, !sep, name);
+   groupedit_edit_object_parts_separated(sd->groupedit, !sep);
 }
 
 static void
@@ -223,7 +220,7 @@ _normal_mode_click(void *data,
    Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
    if (!sep) return;
    if (sd->highlight.part)
-      name = sd->highlight.part->name;
+     name = sd->highlight.part->name;
    follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
    highlight_object_follow(sd->highlight.highlight, follow);
 
@@ -236,7 +233,7 @@ _normal_mode_click(void *data,
 
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-   groupedit_edit_object_parts_separated(sd->groupedit, !sep, name);
+   groupedit_edit_object_parts_separated(sd->groupedit, !sep);
 }
 
 static void
@@ -622,24 +619,22 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
    if (!part) return false;
    if (!sd->groupedit) return false;
 
-   groupedit_part_object_area_set(sd->groupedit, part->name);
    sd->highlight.part = part;
 
-   if (groupedit_edit_object_parts_separated_is(sd->groupedit))
-     groupedit_edit_object_part_select(sd->groupedit, part->name);
-   else
+   groupedit_edit_object_part_select(sd->groupedit, part->name);
+   follow = groupedit_edit_object_part_draw_get(sd->groupedit, part->name);
+   if (!follow)
      {
-        follow = groupedit_edit_object_part_draw_get(sd->groupedit, part->name);
-        if (!follow)
-          {
-             sd->highlight.part = NULL;
-             return false;
-          }
-        highlight_object_follow(sd->highlight.highlight, follow);
+        sd->highlight.part = NULL;
+        return false;
+     }
+   highlight_object_follow(sd->highlight.highlight, follow);
 
-        follow = groupedit_part_object_area_get(sd->groupedit);
-        highlight_object_follow(sd->highlight.space_hl, follow);
+   follow = groupedit_part_object_area_get(sd->groupedit);
+   highlight_object_follow(sd->highlight.space_hl, follow);
 
+   if (!groupedit_edit_object_parts_separated_is(sd->groupedit))
+     {
         evas_object_hide(sd->highlight.space_hl);
         evas_object_show(sd->highlight.highlight);
 

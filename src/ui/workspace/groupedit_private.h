@@ -96,7 +96,6 @@ struct _Ws_Groupedit_Smart_Data
    Eina_List *parts;
    struct {
       Evas_Object *obj;
-      Groupedit_Part *gp;
       Groupedit_Geom *geom;
       Eina_Bool visible : 1;
    } obj_area;

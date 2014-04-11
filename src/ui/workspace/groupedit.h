@@ -338,17 +338,6 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value);
 
 /**
- * Set the part to calculate it's object area.
- *
- * @param obj The groupedit object,
- * @param part The name of the part to calculate it's object area.
- *
- * @ingroup Groupedit
- */
-void
-groupedit_part_object_area_set(Evas_Object *obj, const char *part);
-
-/**
  * Get the object with the object area geometry.
  *
  * @param obj The groupedit object.
@@ -387,14 +376,12 @@ groupedit_part_object_area_visible_get(Evas_Object *obj);
  *
  * @param obj The groupedit object,
  * @param separated ON/OFF (true/false) the separate mode,
- * @param part Part to select (highlight).
  *
  * @ingroup Groupedit
  */
 void
 groupedit_edit_object_parts_separated(Evas_Object *obj,
-                                      Eina_Bool separated,
-                                      const char *part);
+                                      Eina_Bool separated);
 
 /**
  * Check if separate mode is activated.
