@@ -570,7 +570,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              evas_object_hide(gp->border);
           }
      }
-     _part_object_area_calc(sd);
+   _part_object_area_calc(sd);
+
    return true;
 }
 
@@ -976,6 +977,9 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
 
    sd->obj_area.geom->x = x; sd->obj_area.geom->y = y;
    sd->obj_area.geom->w = w; sd->obj_area.geom->h = h;
+
+   if (sd->obj_area.visible) evas_object_show(sd->obj_area.obj);
+   else evas_object_hide(sd->obj_area.obj);
 
    evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
 }
