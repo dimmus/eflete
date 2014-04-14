@@ -78,7 +78,7 @@
    evas_object_show(SPINNER);
 
 #define ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE) \
-   ENTRY = elm_entry_add(PARENT); \
+   ENTRY = ewe_entry_add(PARENT); \
    elm_object_style_set(ENTRY, STYLE); \
    evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
