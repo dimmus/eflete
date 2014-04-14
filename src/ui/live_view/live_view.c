@@ -693,87 +693,82 @@ live_view_add(Evas_Object *parent)
 Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
+   char **c;
+   const char *widget, *type, *style_name;
+   const char *custom_name = NULL;
+   Eina_Bool ret = true;
+   int x, y;
+
    if ((!live) || (!project)) return false;
-   live_view_widget_style_unset(live);
-   if (style)
+
+   if (!style)
      {
-        char **c = NULL;
-        const char *widget = NULL, *type = NULL, *style_name = NULL,
-                   *custom_name = NULL;
-        live->current_scale = 1.0;
-        elm_spinner_value_set(live->scale_spinner, 1.0);
+        WARN("Could'nt apply the style to live view. The Styke is missing!");
+        return false;
+     }
+   live_view_widget_style_unset(live);
+   live->current_scale = 1.0;
+   elm_spinner_value_set(live->scale_spinner, 1.0);
 
-        if (style->__type != LAYOUT)
+   if (style->__type != LAYOUT)
+     {
+        if (strstr(style->full_group_name, "gengrid"))
           {
-             if (strstr(style->full_group_name, "gengrid"))
-               {
-                  c = eina_str_split(style->full_group_name, "/", 5);
-                  custom_name = c[4];
-               }
-             else
-               c = eina_str_split(style->full_group_name, "/", 4);
-             widget = c[1];
-             type = c[2];
-             style_name = c[3];
-
-             if (!live->object)
-               {
-                  live->object = _elm_widget_create(widget, type, style_name,
-                                                    live->live_view);
-                  elm_object_part_content_set(live->live_view, "live_object",
-                                              live->object);
-                  evas_object_show(live->live_view);
-               }
-
-             if (!live->object)
-               {
-                  NOTIFY_INFO(3, _("Widget isn't implemented yet or isn't exist"));
-                  free(c[0]);
-                  free(c);
-                  return false;
-               }
-
-             live_view_theme_update(live, project);
-             if ((!strcmp(type, "item")) && (custom_name))
-               elm_object_style_set(live->object, custom_name);
-             else
-               elm_object_style_set(live->object, style_name);
-             elm_object_scale_set(live->object, live->current_scale);
-             evas_object_show(live->object);
-
-             free(c[0]);
-             free(c);
+             c = eina_str_split(style->full_group_name, "/", 5);
+             custom_name = c[4];
           }
         else
-          {
-             live->object = elm_layout_add(live->live_view);
-             elm_layout_file_set(live->object, project->swapfile,
-                                 style->full_group_name);
-             elm_object_part_content_set(live->live_view, "live_object",
-                                         live->object);
-             evas_object_show(live->live_view);
-             live_view_theme_update(live, project);
-             elm_object_style_set(live->object, style->full_group_name);
-             elm_object_scale_set(live->object, live->current_scale);
+          c = eina_str_split(style->full_group_name, "/", 4);
 
-             evas_object_show(live->object);
+        widget = c[1];
+        type = c[2];
+        style_name = c[3];
+
+        if (!live->object)
+          {
+             live->object = _elm_widget_create(widget, type, style_name, live->live_view);
+             elm_object_part_content_set(live->live_view, "live_object", live->object);
           }
+
+        if (!live->object)
+          {
+             live->object = elm_label_add(live->live_view);
+             elm_object_text_set(live->object, _("Widget isn't implemented yet!"));
+             elm_object_part_content_set(live->live_view, "live_object", live->object);
+
+             ret = false;
+          }
+
+        live_view_theme_update(live, project);
+        if ((!strcmp(type, "item")) && (custom_name))
+          elm_object_style_set(live->object, custom_name);
+        else
+          elm_object_style_set(live->object, style_name);
+
+        free(c[0]);
+        free(c);
      }
    else
      {
-        WARN("Edje edit style object was deleted. Could'nt set it into groupspace");
-        return false;
+        live->object = elm_layout_add(live->live_view);
+        elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
+        elm_object_part_content_set(live->live_view, "live_object", live->object);
+        live_view_theme_update(live, project);
+        elm_object_style_set(live->object, style->full_group_name);
      }
+
+   elm_object_scale_set(live->object, live->current_scale);
+   evas_object_show(live->live_view);
+   evas_object_show(live->object);
 
    elm_layout_signal_emit(live->live_view, "live_view,show", "eflete");
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
-   Evas_Coord x, y;
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
    edje_object_part_drag_value_set(elm_layout_edje_get(live->live_view),
                                    "bottom_pad", x, y);
 
-   return true;
+   return ret;
 }
 
 Eina_Bool
