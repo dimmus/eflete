@@ -104,7 +104,11 @@ test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
-image_editor_test_SOURCES = test_image_editor/test_image_editor.c
+image_editor_test_SOURCES = \
+test_image_editor/test_image_editor.c \
+test_image_editor/image_editor_callback_add.c \
+test_image_editor/image_editor_file_choose.c \
+test_image_editor/image_editor_window_add.c
 image_editor_test_CFLAGS = ${FLAGS}
 image_editor_test_LDADD = ${LD}
 

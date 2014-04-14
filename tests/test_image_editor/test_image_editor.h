@@ -14,26 +14,15 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+* along with this program; If not, see .
 */
 
-#include "test_image_editor.h"
+#include "utc_common.h"
+#include "image_editor.h"
+#include "ui_main_window.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("test_image_editor");
-   TCase *tcase = tcase_create("TCase");
-/*   tcase_add_test(tcase, image_editor_window_add_test_p); */
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
+/**
+ * @defgroup style_editor_test
+ */
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml(runner, "test_image_editor.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+void image_editor_window_add_test_p(int);
