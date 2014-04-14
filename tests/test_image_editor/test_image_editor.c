@@ -22,7 +22,10 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("test_image_editor");
    TCase *tcase = tcase_create("TCase");
-/*   tcase_add_test(tcase, image_editor_window_add_test_p); */
+   tcase_add_test(tcase, image_editor_window_add_test_p1);
+   tcase_add_test(tcase, image_editor_window_add_test_p2);
+   tcase_add_test(tcase, image_editor_window_add_test_n1);
+   tcase_add_test(tcase, image_editor_window_add_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }
