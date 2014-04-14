@@ -903,6 +903,7 @@ group { name: "elm/scroller/base/eflete/workspace";
          mouse_events: 1;
          repeat_events: 1;
          description { state: "default" 0.0;
+            fixed: 1 1;
             align: 0.0 0.0;
             rel1.to: "cross_spacer";
             rel2.to: "cross_spacer";
