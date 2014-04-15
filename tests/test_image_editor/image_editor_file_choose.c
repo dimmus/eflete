@@ -64,7 +64,7 @@ EFLETE_TEST (image_editor_file_choose_test_p)
    app_init();
    app = app_create();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/radio.edj");
+   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
                         evas_object_evas_get(app->win), app->project->swapfile);
    Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
@@ -111,7 +111,7 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    app_init();
    app = app_create();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/radio.edj");
+   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->swapfile);
    Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
 
@@ -156,7 +156,7 @@ EFLETE_TEST (image_editor_file_choose_test_n2)
    app_init();
    app = app_create();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/radio.edj");
+   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->swapfile);
    image_editor_window_add(app->project, SINGLE);
 
@@ -201,7 +201,7 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
    app_init();
    app = app_create();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/radio.edj");
+   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->swapfile);
    Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
 

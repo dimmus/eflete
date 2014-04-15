@@ -70,8 +70,8 @@ EFLETE_TEST (workspace_edit_object_unset_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_unset.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_unset.edj");
    res = workspace_edit_object_unset(workspace);
    ck_assert_msg(res == EINA_TRUE, "Fail unset edit object from workspace");
    wm_style_free(style);

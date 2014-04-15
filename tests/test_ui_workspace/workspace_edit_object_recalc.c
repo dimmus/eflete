@@ -70,8 +70,8 @@ EFLETE_TEST (workspace_edit_object_recalc_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_recalc.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_recalc.edj");
    ret = workspace_edit_object_recalc(workspace);
    ck_assert_msg(ret == EINA_TRUE, "Fail recalc edit object in workspace");
    wm_style_free(style);

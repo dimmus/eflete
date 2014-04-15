@@ -62,7 +62,7 @@ EFLETE_TEST (image_editor_window_add_test_p1)
    app_init();
    app = app_create();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/radio.edj");
+   app->project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
 
    ck_assert_msg(image_editor_window_add(app->project, SINGLE) != NULL,
                  "failure: cannot create image editor window in SINGLE mode");
@@ -104,7 +104,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
    app_init();
    app = app_create();
    ui_main_window_add(app);
-   Project *project = pm_open_project_edj("test", "./edj_build/radio.edj");
+   Project *project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
 
    ck_assert_msg(image_editor_window_add(project, MULTIPLE) != NULL,
                  "failure: cannot create image editor window in MULTIPLE mode");

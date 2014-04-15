@@ -73,7 +73,7 @@ EFLETE_TEST (wm_part_current_state_set_test_p1)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_current_state_set.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
 
    ck_assert_msg(wm_part_current_state_set(part, "visible 0.0"), "Error!");
@@ -166,7 +166,7 @@ EFLETE_TEST (wm_part_current_state_set_test_p3)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_current_state_set.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
 
    ck_assert_msg(wm_part_current_state_set(part, "notvisible fhtagn"), "Error. State was changed!");
@@ -220,7 +220,7 @@ EFLETE_TEST (wm_part_current_state_set_test_n1)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_current_state_set.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
 
    ck_assert_msg(!wm_part_current_state_set(part, NULL), "Error!");
@@ -273,7 +273,7 @@ EFLETE_TEST (wm_part_current_state_set_test_n2)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_current_state_set.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
 
    ck_assert_msg(!wm_part_current_state_set(part, ""), "Error. State was changed!");

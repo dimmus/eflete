@@ -55,7 +55,7 @@
 EFLETE_TEST (wm_widget_list_free_test_p)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_widget_list_free.edj";
    Eina_Inlist *widget_list = NULL;
 
    widget_list = wm_widget_list_new(file);

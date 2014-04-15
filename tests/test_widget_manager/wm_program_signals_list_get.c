@@ -60,7 +60,7 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
    Evas_Object *win;
    Evas *e;
    Style *style = NULL;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/wm_program_signals_list_get.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    Eina_List *sig_list;
@@ -109,7 +109,7 @@ EFLETE_TEST (wm_program_signals_list_get_test_p2)
    Evas_Object *win;
    Evas *e;
    Style *style = NULL;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/wm_program_signals_list_get.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/notbase/test";
 

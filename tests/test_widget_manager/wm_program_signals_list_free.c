@@ -61,7 +61,7 @@ EFLETE_TEST (wm_program_signals_list_free_test_p)
    Evas_Object *win = NULL;
    Evas *e = NULL;
    Style *style = NULL;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/wm_program_signals_list_free.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    Eina_List *sig_list = NULL;

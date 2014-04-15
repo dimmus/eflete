@@ -64,8 +64,8 @@ EFLETE_TEST(groupedit_edit_object_unset_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    groupedit = groupedit_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/radio.edj", "elm/radio/base/def");
-   groupedit_edit_object_set(groupedit, edje_edit, "./edj_build/radio.edj");
+   edje_object_file_set(edje_edit, "edj_build/groupedit_edit_object_unset.edj", "elm/radio/base/def");
+   groupedit_edit_object_set(groupedit, edje_edit, "./edj_build/groupedit_edit_object_unset.edj");
 
    ck_assert_msg(groupedit_edit_object_unset(groupedit) != NULL,
                  "Can't unset the edje edit object from the groupedit.");

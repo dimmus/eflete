@@ -64,7 +64,7 @@ EFLETE_TEST(ui_states_list_state_add_test_p)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_state_add.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    const char *state = "new_state";
@@ -211,7 +211,7 @@ EFLETE_TEST(ui_states_list_state_add_test_n3)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_state_add.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    int count_before, count_after;

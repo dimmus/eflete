@@ -74,10 +74,10 @@ EFLETE_TEST(live_view_widget_style_set_test_p1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_set.edj");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_set.edj");
    project->current_style = style;
    live = live_view_add(parent);
 
@@ -142,10 +142,10 @@ EFLETE_TEST(live_view_widget_style_set_test_p2)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_set.edj");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT);
-   wm_style_data_load(layout, e, "./edj_build/radio.edj");
+   wm_style_data_load(layout, e, "./edj_build/live_view_widget_style_set.edj");
    project->current_style = layout;
    live = live_view_add(parent);
 
@@ -204,10 +204,10 @@ EFLETE_TEST(live_view_widget_style_set_test_n1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_set.edj");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_set.edj");
    project->current_style = style;
 
    res = live_view_widget_style_set(NULL, project, style);
@@ -255,7 +255,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n2)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_set.edj");
    live = live_view_add(parent);
 
    res = live_view_widget_style_set(live, project, NULL);
@@ -307,7 +307,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n3)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_set.edj");
    live = live_view_add(parent);
 
    res = live_view_widget_style_set(live, NULL, style);

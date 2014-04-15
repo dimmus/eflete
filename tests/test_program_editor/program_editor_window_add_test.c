@@ -55,7 +55,7 @@
 EFLETE_TEST (program_editor_window_add_test_p)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/program_editor_window_add_test.edj";
    const char *full_style_name = "elm/radio/base/test";
    Evas_Object *manager, *win;
    App_Data *app;

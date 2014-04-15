@@ -57,7 +57,7 @@
 EFLETE_TEST (wm_style_object_find_test_p1)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_style_object_find.edj";
    const char *full_style_name = "elm/radio/base/test";
    Eina_Inlist *widget_list = NULL;
    Evas_Object *win = NULL;
@@ -101,7 +101,7 @@ END_TEST
 EFLETE_TEST (wm_style_object_find_test_p2)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_style_object_find.edj";
    const char *full_style_name = "elm/widget/base/test";
    Eina_Inlist *widget_list = NULL;
    Evas_Object *win = NULL;
@@ -174,7 +174,7 @@ END_TEST
 EFLETE_TEST (wm_style_object_find_test_n2)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_style_object_find.edj";
    Eina_Inlist *widget_list = NULL;
    Evas_Object *win = NULL;
    Evas *e = NULL;

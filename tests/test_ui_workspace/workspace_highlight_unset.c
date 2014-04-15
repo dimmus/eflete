@@ -73,10 +73,10 @@ EFLETE_TEST(workspace_highlight_unset_test_p)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_unset.edj",
                         style->full_group_name);
    part = wm_part_add(style, "bg");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_unset.edj");
    workspace_highlight_set(workspace, part);
 
    res = workspace_highlight_unset(workspace);

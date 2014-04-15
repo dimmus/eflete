@@ -69,8 +69,8 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
 
    res = workspace_edit_object_part_state_add(workspace, "bg", "test", 1.0);
    ck_assert_msg(res == EINA_TRUE, "Failed add state for part, loaded into workspace");
@@ -124,8 +124,8 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_p1)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
 
    res = workspace_edit_object_part_state_add(workspace, "bg", "default", 0.5);
    ck_assert_msg(res == EINA_TRUE, "Failed add state for part, loaded into workspace");
@@ -177,8 +177,8 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
 
    res = workspace_edit_object_part_state_add(workspace, "non_exist", "test", 1.0);
    ck_assert_msg(res == EINA_FALSE, "Add state for non exist part.");
@@ -229,8 +229,8 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_n1)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
 
    res = workspace_edit_object_part_state_add(workspace, "bg", "default", 0.0);
    ck_assert_msg(res == EINA_FALSE, "Add already exist state for part.");
@@ -315,8 +315,8 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_n3)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
 
    res = workspace_edit_object_part_state_add(workspace, "bg", NULL, 0.0);
    ck_assert_msg(res == EINA_FALSE, "Add state without name");
@@ -367,8 +367,8 @@ EFLETE_TEST(workspace_edit_object_part_state_add_test_n4)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_add.edj");
 
    res = workspace_edit_object_part_state_add(workspace, NULL, "new", 0.0);
    ck_assert_msg(res == EINA_FALSE, "Add state to part without name");

@@ -71,8 +71,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
    ret = workspace_edit_object_part_add(workspace, "new_part",
                                         EDJE_PART_TYPE_RECTANGLE, NULL);
    ck_assert_msg(ret == EINA_TRUE, "Failed add new part into edit object ");
@@ -126,8 +126,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p1)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
    ret = workspace_edit_object_part_add(workspace, "new_part",
                                         EDJE_PART_TYPE_IMAGE, "radio_base.png");
    ck_assert_msg(ret == EINA_TRUE, "Failed add new part into edit object ");
@@ -180,8 +180,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
    ret = workspace_edit_object_part_add(workspace, "bg",
                                         EDJE_PART_TYPE_RECTANGLE, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Add new part into edit object, "
@@ -266,8 +266,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n2)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
    ret = workspace_edit_object_part_add(workspace, NULL,
                                         EDJE_PART_TYPE_RECTANGLE, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Add new part into without name");
@@ -319,8 +319,8 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n3)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_add.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_add.edj");
    ret = workspace_edit_object_part_add(workspace, "new_part", 105, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Add new part into with invalid type");
    ck_assert_msg(edje_edit_part_exist(style->obj, "new_part") == EINA_FALSE,

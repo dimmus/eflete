@@ -72,8 +72,8 @@ EFLETE_TEST (workspace_edit_object_part_del_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_del.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, "bg");
    ck_assert_msg(ret == EINA_TRUE, "Failed delete part from edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "bg") == EINA_FALSE,
@@ -125,8 +125,8 @@ EFLETE_TEST (workspace_edit_object_part_del_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_del.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, "b_g");
    ck_assert_msg(ret == EINA_FALSE, "Delete non exist part from edit object ");
    wm_style_free(style);
@@ -208,8 +208,8 @@ EFLETE_TEST (workspace_edit_object_part_del_test_n2)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_del.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Delete part without name");
    wm_style_free(style);

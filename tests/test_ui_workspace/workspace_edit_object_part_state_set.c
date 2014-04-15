@@ -77,10 +77,10 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "elm.text");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
    part->curr_state = eina_stringshare_add("visible");
    part->curr_state_value = 0.0;
 
@@ -139,7 +139,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "elm.text");
    part->curr_state = eina_stringshare_add("visible");
@@ -194,8 +194,8 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n1)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_set.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
 
    res = workspace_edit_object_part_state_set(workspace, NULL);
    ck_assert_msg(res == EINA_FALSE, "Set state for NULL pointer of part");
@@ -249,10 +249,10 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "elm.text");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
    part->curr_state = eina_stringshare_add("non_exist");
    part->curr_state_value = 2.0;
 

@@ -64,7 +64,7 @@ EFLETE_TEST(ui_states_list_part_get_test_p1)
    Evas *e;
    Style *style;
    Part *part, *states_list_part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_part_get.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 

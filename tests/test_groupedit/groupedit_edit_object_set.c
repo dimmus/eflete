@@ -63,9 +63,9 @@ EFLETE_TEST(groupedit_edit_object_set_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    groupedit = groupedit_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(edje_edit, "edj_build/groupedit_edit_object_set.edj", "elm/radio/base/def");
 
-   ck_assert_msg(groupedit_edit_object_set(groupedit, edje_edit, "./edj_build/radio.edj"),
+   ck_assert_msg(groupedit_edit_object_set(groupedit, edje_edit, "./edj_build/groupedit_edit_object_set.edj"),
                  "The edje edit object not setted to the groupedit.");
 
    evas_object_del(parent);
@@ -105,9 +105,9 @@ EFLETE_TEST(groupedit_edit_object_set_test_n1)
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(edje_edit, "./edj_build/groupedit_edit_object_set.edj", "elm/radio/base/def");
 
-   ck_assert_msg(!groupedit_edit_object_set(NULL, edje_edit, "./edj_build/radio.edj"),
+   ck_assert_msg(!groupedit_edit_object_set(NULL, edje_edit, "./edj_build/groupedit_edit_object_set.edj"),
                  "The edje edit object setted to the NULL pointer.");
 
    evas_object_del(parent);
@@ -147,7 +147,7 @@ EFLETE_TEST(groupedit_edit_object_set_test_n2)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    groupedit = groupedit_add(parent);
 
-   ck_assert_msg(!groupedit_edit_object_set(groupedit, NULL, "./edj_build/radio.edj"),
+   ck_assert_msg(!groupedit_edit_object_set(groupedit, NULL, "./edj_build/groupedit_edit_object_set.edj"),
                  "The NULL edje edit object setted to the groupedit.");
 
    evas_object_del(parent);
@@ -189,7 +189,7 @@ EFLETE_TEST(groupedit_edit_object_set_test_n3)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    groupedit = groupedit_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(edje_edit, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(edje_edit, "./edj_build/groupedit_edit_object_set.edj", "elm/radio/base/def");
 
    ck_assert_msg(!groupedit_edit_object_set(groupedit, edje_edit, NULL),
                  "The edje edit object with not valid file setted to the groupedit.");

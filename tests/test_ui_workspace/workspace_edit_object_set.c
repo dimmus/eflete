@@ -69,8 +69,8 @@ EFLETE_TEST (workspace_edit_object_set_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   res = workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
+   res = workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_TRUE, "Fail add edit object into workspace");
    wm_style_free(style);
    evas_object_del(parent);
@@ -118,7 +118,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
    res = workspace_edit_object_set(workspace, style,
                                    "./edj_build/invalid.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object with invalid file path");
@@ -164,8 +164,8 @@ EFLETE_TEST (workspace_edit_object_set_test_n1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   res = workspace_edit_object_set(NULL, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
+   res = workspace_edit_object_set(NULL, style, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object to workspace NULL object");
    wm_style_free(style);
    evas_object_del(parent);
@@ -207,7 +207,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n2)
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
-   res = workspace_edit_object_set(workspace, NULL, "./edj_build/radio.edj");
+   res = workspace_edit_object_set(workspace, NULL, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object to workspace without style");
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
@@ -254,7 +254,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n3)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
    res = workspace_edit_object_set(workspace, style, NULL);
    ck_assert_msg(res == EINA_FALSE, "Add edit object with NULL file path");
    wm_style_free(style);

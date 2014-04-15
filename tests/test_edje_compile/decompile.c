@@ -70,7 +70,7 @@ EFLETE_TEST (decompile_callback_test_p)
 {
    elm_init(0,0);
    const char *edj, *dest;
-   edj = "./edj_build/radio.edj";
+   edj = "./edj_build/decompile.edj";
    dest = "./edj_build/RADIO_DECC";
    cb_flag = 0;
    if (ecore_file_exists(dest))
@@ -110,7 +110,7 @@ EFLETE_TEST (decompile_test_p)
 {
    elm_init(0,0);
    const char *edj, *dest;
-   edj = "./edj_build/radio.edj";
+   edj = "./edj_build/decompile.edj";
    dest = "./edj_build/RADIO_DECC";
    if (ecore_file_exists(dest))
       ecore_file_recursive_rm(dest);
@@ -148,7 +148,7 @@ EFLETE_TEST (decompile_test_n1)
 {
    elm_init(0,0);
    const char *edj;
-   edj = "./edj_build/radio.edj";
+   edj = "./edj_build/decompile.edj";
 M_ int exit_code = decompile (edj, NULL, NULL);
    ck_assert_msg(exit_code != 0, "Exit code is 0");
 M_ exit_code = decompile (edj, "", NULL);

@@ -68,8 +68,8 @@ EFLETE_TEST (wm_style_free_test_p1)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   edje_object_file_set(style->obj, "./edj_build/wm_style_free.edj", "elm/radio/base/def");
+   wm_style_data_load(style, e, "./edj_build/wm_style_free.edj");
    ck_assert_msg(wm_style_free(style) == EINA_TRUE, "cannot delete Style object");
    elm_shutdown();
 }

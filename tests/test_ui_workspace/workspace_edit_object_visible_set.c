@@ -69,8 +69,8 @@ EFLETE_TEST(workspace_edit_object_visible_set_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_visible_set.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_visible_set.edj");
 
    res = workspace_edit_object_visible_set(workspace, "bg", EINA_TRUE);
    ck_assert_msg(res == EINA_TRUE, "Failed set visibily part object, loaded into workspace");
@@ -121,8 +121,8 @@ EFLETE_TEST(workspace_edit_object_visible_set_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_visible_set.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_visible_set.edj");
 
    res = workspace_edit_object_visible_set(workspace, "non_exist", EINA_TRUE);
    ck_assert_msg(res == EINA_FALSE, "Set visibily for non exist part");

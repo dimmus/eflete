@@ -42,11 +42,11 @@
  * @step 1 Path to edj file.
  *
  * @procedure
- * @step 1 Call function wm_widget_list_new("./edj_build/radio.edj").
+ * @step 1 Call function wm_widget_list_new("./edj_build/wm_widget_list_new.edj").
  * @step 2 Check returned widget list.
  * @step 3 Check widget list's content.
  * </td>
- * <td>char *file = "./edj_build/radio.edj"</td>
+ * <td>char *file = "./edj_build/wm_widget_list_new.edj"</td>
  * <td>All Checks was successfuly passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -56,7 +56,7 @@
 EFLETE_TEST (wm_widget_list_new_test_p)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_widget_list_new.edj";
    const char *widget_name = "radio";
    Eina_Inlist *widget_list = NULL;
    Widget *widget = NULL;

@@ -70,8 +70,8 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "radio");
    ck_assert_msg(ret == EINA_TRUE, "Failed above part");
    ret = workspace_edit_object_part_above(workspace, "radio");
@@ -122,8 +122,8 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "non_exist");
    ck_assert_msg(ret == EINA_FALSE, "Non exist part is above");
    wm_style_free(style);
@@ -172,8 +172,8 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n1)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "NULL named part is above");
    wm_style_free(style);

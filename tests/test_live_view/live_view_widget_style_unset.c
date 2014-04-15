@@ -71,10 +71,10 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_unset.edj");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_unset.edj");
    project->current_style = style;
    live = live_view_add(parent);
    live_view_widget_style_set(live, project, style);

@@ -69,8 +69,8 @@ EFLETE_TEST (workspace_edit_object_get_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_get.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_get.edj");
    style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style == style_ret, "Setted and getted style objects are not equals");
    wm_style_free(style);

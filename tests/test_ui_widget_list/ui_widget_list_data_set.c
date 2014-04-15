@@ -64,7 +64,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p1)
    Eina_Bool result = EINA_FALSE;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    widget_list = ui_widget_list_add(parent);
 
    result = ui_widget_list_data_set(widget_list, project);
@@ -109,7 +109,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p2)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    project->layouts = NULL;
    while (project->layouts)
      {
@@ -162,7 +162,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p3)
    Widget *widget = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    while (project->widgets)
      {
         widget = EINA_INLIST_CONTAINER_GET(project->widgets, Widget);
@@ -215,7 +215,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p4)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    project->widgets = NULL;
    project->layouts = NULL;
    while (project->layouts)
@@ -310,7 +310,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_n2)
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    result = ui_widget_list_data_set(NULL, project);
 
    ck_assert_msg(!result, "Data loaded with NULL widget list object");

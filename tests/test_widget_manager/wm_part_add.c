@@ -71,7 +71,7 @@ EFLETE_TEST (wm_part_add_test_p)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_add.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
    ck_assert_msg(part != NULL, "cannot create Part object");
    ck_assert_msg(part->type == EDJE_PART_TYPE_SWALLOW, "Part has wrong type");
@@ -120,7 +120,7 @@ EFLETE_TEST (wm_part_add_test_n1)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_add.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
    ck_assert_msg(part == NULL, "Unexisting Part was successfully added");
 
@@ -166,7 +166,7 @@ EFLETE_TEST (wm_part_add_test_n2)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_add.edj", "elm/radio/base/def");
    part = wm_part_add(style, NULL);
    ck_assert_msg(part == NULL, "Part without a name was successfully added");
 

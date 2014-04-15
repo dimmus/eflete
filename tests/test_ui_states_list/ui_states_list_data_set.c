@@ -62,7 +62,7 @@ EFLETE_TEST(ui_states_list_data_set_test_p)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -114,7 +114,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n1)
    Evas_Object *window, *gl_states;
    Evas *e;
    Style *style;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -167,7 +167,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n2)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -220,7 +220,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n3)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -304,7 +304,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n5)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 

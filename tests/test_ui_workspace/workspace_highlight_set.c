@@ -72,10 +72,10 @@ EFLETE_TEST(workspace_highlight_set_test_p)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "bg");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_set.edj");
 
    res = workspace_highlight_set(workspace, part);
    ck_assert_msg(res == EINA_TRUE, "Failed set highlight for workspace");
@@ -129,10 +129,10 @@ EFLETE_TEST(workspace_highlight_set_test_n)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "b_g");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_set.edj");
 
    res = workspace_highlight_set(workspace, part);
    ck_assert_msg(res == EINA_FALSE, "Set highlight for workspace to non exist part");
@@ -184,9 +184,9 @@ EFLETE_TEST(workspace_highlight_set_test_n1)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_set.edj",
                         style->full_group_name);
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_set.edj");
 
    res = workspace_highlight_set(workspace, NULL);
    ck_assert_msg(res == EINA_FALSE, "Set highlight for workspace to non exist part");
@@ -239,7 +239,7 @@ EFLETE_TEST(workspace_highlight_set_test_n2)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "bg");
 
@@ -291,7 +291,7 @@ EFLETE_TEST(workspace_highlight_set_test_n3)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_set.edj",
                         style->full_group_name);
    part = wm_part_add(style, "bg");
 
