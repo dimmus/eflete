@@ -1,5 +1,6 @@
-/* Edje Theme Editor
- * Copyright (C) 2013 Samsung Electronics.
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *

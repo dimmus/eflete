@@ -1,3 +1,23 @@
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
+
 #ifndef UI_LIVEVIEW_HEADER_H
 #define UI_LIVEVIEW_HEADER_H
 
@@ -24,11 +44,11 @@
 struct _Live_View
 {
    Evas_Object *live_view; /**< live_view object that contain widget for showing,
-                                and spinner for scaling */
+                             and spinner for scaling */
    Evas_Object *layout; /**< the layout of the whole live view widget */
    Evas_Object *object; /**< current widget for being showed in live view */
    Evas_Object *scale_spinner; /**< spinner that changes scale
-                                    of the showed widget */
+                                 of the showed widget */
    double current_scale; /**< current scale value */
 };
 typedef struct _Live_View Live_View;
@@ -40,8 +60,8 @@ typedef struct _Live_View Live_View;
  * It uses layout that contain spinner for scaling widget,
  * and also it contains groupspace (for showing widget example).
  *
- * @param parent The parent Evas_Object.
- * @return Pointer to live_view structure.
+ * @paramram parent The parent Evas_Object.
+ * @returnturn Pointer to live_view structure.
  *
  * @ingroup Live_View
  */
@@ -56,10 +76,10 @@ live_view_add(Evas_Object *parent);
  * and create new theme for applying changed style to widget.
  * This function also will hide the scaling spinner.
  *
- * @param live live_view structure.
- * @param project project structure that contain path to swap file.
- * @param style style that contain current style name is being showed.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @paramram live live_view structure.
+ * @paramram project project structure that contain path to swap file.
+ * @paramram style style that contain current style name is being showed.
+ * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
@@ -72,8 +92,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style);
  * This function will delete and unset all previously created widgets from live
  view and then hide live view and scaling spinner.
  *
- * @param live live_view structure.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @paramram live live_view structure.
+ * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
@@ -86,9 +106,9 @@ live_view_widget_style_unset(Live_View *live);
  * This function will update the widget inside of the live view.
  * If previously loaded theme was changed it will update the widget aswell.
  *
- * @param live live_view structure.
- * @param project project structure that contain path to swap file.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @paramram live live_view structure.
+ * @paramram project project structure that contain path to swap file.
+ * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
@@ -101,9 +121,9 @@ live_view_theme_update(Live_View *live, Project *project);
  * This function will free and delete the structure that contain all
  * information about live view.
  *
- * @param live live_view structure.
+ * @paramram live live_view structure.
  *
- * @return EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
