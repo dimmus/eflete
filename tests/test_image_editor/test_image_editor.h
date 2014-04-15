@@ -35,3 +35,8 @@ void image_editor_file_choose_test_p(int);
 void image_editor_file_choose_test_n1(int);
 void image_editor_file_choose_test_n2(int);
 void image_editor_file_choose_test_n3(int);
+
+void image_editor_callback_add_test_p1(int);
+void image_editor_callback_add_test_p2(int);
+void image_editor_callback_add_test_n1(int);
+void image_editor_callback_add_test_n2(int);
