@@ -50,3 +50,6 @@ void ui_states_list_selected_state_get_test_n2(int);
 void ui_states_list_selected_state_del_test_p(int);
 void ui_states_list_selected_state_del_test_n1(int);
 void ui_states_list_selected_state_del_test_n2(int);
+void ui_states_list_data_unset_test_p1(int);
+void ui_states_list_data_unset_test_p2(int);
+void ui_states_list_data_unset_test_n(int);

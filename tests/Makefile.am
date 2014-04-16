@@ -241,6 +241,7 @@ test_ui_states_list/ui_states_list_selected_state_del.c \
 test_ui_states_list/ui_states_list_state_add.c \
 test_ui_states_list/ui_states_list_add.c \
 test_ui_states_list/ui_states_list_data_set.c \
+test_ui_states_list/ui_states_list_data_unset.c \
 test_ui_states_list/ui_states_list_part_get.c
 ui_states_list_test_CFLAGS = ${FLAGS}
 ui_states_list_test_LDADD = ${LD}

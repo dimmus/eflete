@@ -47,6 +47,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_states_list_selected_state_del_test_p);
    tcase_add_test(tcase, ui_states_list_selected_state_del_test_n1);
    tcase_add_test(tcase, ui_states_list_selected_state_del_test_n2);
+   tcase_add_test(tcase, ui_states_list_data_unset_test_p1);
+   tcase_add_test(tcase, ui_states_list_data_unset_test_p2);
+   tcase_add_test(tcase, ui_states_list_data_unset_test_n);
    suite_add_tcase(suite, tcase);
    return suite;
 }
