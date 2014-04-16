@@ -23,7 +23,7 @@
 /**
  * @addtogroup ui_states_list_test
  * @{
- * @addtogroup ui_states_list_selected_states_del
+ * @addtogroup ui_states_list_selected_state_del
  * @{
  * ui_states_list
  * <TABLE>
@@ -31,11 +31,11 @@
  */
 
 /**
- * @addtogroup ui_states_list_selected_states_del
+ * @addtogroup ui_states_list_selected_state_del
  * @{
  * <tr>
- * <td>ui_states_list_selected_states_del</td>
- * <td>ui_states_list_selected_states_del_test_p</td>
+ * <td>ui_states_list_selected_state_del</td>
+ * <td>ui_states_list_selected_state_del_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialized elm.
@@ -59,7 +59,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_states_list_selected_states_del_test_p)
+EFLETE_TEST(ui_states_list_selected_state_del_test_p)
 {
    Evas_Object *window, *gl_states;
    Evas *e;
@@ -99,11 +99,11 @@ EFLETE_TEST(ui_states_list_selected_states_del_test_p)
 END_TEST
 
 /**
- * @addtogroup ui_states_list_selected_states_del
+ * @addtogroup ui_states_list_selected_state_del
  * @{
  * <tr>
- * <td>ui_states_list_selected_states_del</td>
- * <td>ui_states_list_selected_states_del_test_n1</td>
+ * <td>ui_states_list_selected_state_del</td>
+ * <td>ui_states_list_selected_state_del_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialized elm.
@@ -121,7 +121,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_states_list_selected_states_del_test_n1)
+EFLETE_TEST(ui_states_list_selected_state_del_test_n1)
 {
    Evas_Object *window;
 
@@ -136,11 +136,11 @@ EFLETE_TEST(ui_states_list_selected_states_del_test_n1)
 END_TEST
 
 /**
- * @addtogroup ui_states_list_selected_states_del
+ * @addtogroup ui_states_list_selected_state_del
  * @{
  * <tr>
- * <td>ui_states_list_selected_states_del</td>
- * <td>ui_states_list_selected_states_del_test_n2</td>
+ * <td>ui_states_list_selected_state_del</td>
+ * <td>ui_states_list_selected_state_del_test_n2</td>
  * <td>
  * @precondition
  * @step 1 initialized elm.
@@ -157,7 +157,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_states_list_selected_states_del_test_n2)
+EFLETE_TEST(ui_states_list_selected_state_del_test_n2)
 {
    elm_init(0,0);
 
@@ -169,7 +169,7 @@ EFLETE_TEST(ui_states_list_selected_states_del_test_n2)
 END_TEST
 
 /**
- * @addtogroup ui_states_list_selected_states_del
+ * @addtogroup ui_states_list_selected_state_del
  * @{
  * </TABLE>
  * @}
