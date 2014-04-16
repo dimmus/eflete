@@ -652,6 +652,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    evas_object_smart_member_add(gp->draw, sd->obj);
    evas_object_smart_member_add(gp->border, sd->obj);
    evas_object_smart_member_add(gp->item, sd->obj);
+
    return gp;
 }
 
@@ -980,8 +981,10 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    sd->obj_area.geom->x = x; sd->obj_area.geom->y = y;
    sd->obj_area.geom->w = w; sd->obj_area.geom->h = h;
 
-   if ((sd->obj_area.visible) && (sd->selected)) evas_object_show(sd->obj_area.obj);
-   else evas_object_hide(sd->obj_area.obj);
+   if ((sd->selected) && ((sd->obj_area.visible) || (sd->obj_area.show_now)))
+     evas_object_show(sd->obj_area.obj);
+   else
+     evas_object_hide(sd->obj_area.obj);
 
    evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
 }

@@ -277,6 +277,52 @@ _style_set(Evas_Object *o, const char *style)
 }
 
 static void
+_key_down(void *data __UNUSED__,
+          Evas *e __UNUSED__,
+          Evas_Object *obj,
+          void *event_info)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+
+   if (sd->obj_area.visible) return;
+   if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
+     {
+        if (sd->selected)
+          {
+             evas_object_show(sd->obj_area.obj);
+             sd->obj_area.show_now = true;
+          }
+     }
+}
+
+static void
+_key_up(void *data __UNUSED__,
+        Evas *e __UNUSED__,
+        Evas_Object *obj,
+        void *event_info)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+
+   if (sd->obj_area.visible) return;
+   if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
+     {
+        evas_object_hide(sd->obj_area.obj);
+        sd->obj_area.show_now = false;
+     }
+}
+
+static void
+_focus_set(void *data __UNUSED__,
+           Evas *e __UNUSED__,
+           Evas_Object *obj,
+           void *event_info __UNUSED__)
+{
+   evas_object_focus_set(obj, true);
+}
+
+static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -331,8 +377,15 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_cb, o);
 
-   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_DOWN,
+   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);
+
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,
+                                  _focus_set, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
+                                  _key_down, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP,
+                                  _key_up, NULL);
 
    priv->obj = o;
    priv->con_size_min.w = 0;
@@ -345,7 +398,9 @@ _groupedit_smart_add(Evas_Object *o)
    priv->handler_TL_pressed = false;
    priv->handler_BR_pressed = false;
    priv->obj_area.obj = edje_object_add(priv->e);
+   evas_object_repeat_events_set(priv->obj_area.obj, true);
    priv->obj_area.visible = false;
+   priv->obj_area.show_now = false;
    priv->obj_area.geom = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
    priv->separated = false;
    priv->selected = NULL;
@@ -505,6 +560,7 @@ _groupedit_smart_calculate(Evas_Object *o)
 
    _parts_recalc(priv);
 
+   evas_object_focus_set(o, true);
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
 }
 
@@ -860,7 +916,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
      {
         evas_object_resize(obj, w + (SEP_ITEM_PAD_X * count), h + (SEP_ITEM_PAD_Y * count));
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_OPEN, NULL);
-        if (sd->selected) 
+        if (sd->selected)
           {
              sd->to_select = sd->selected;
              sd->selected = NULL;

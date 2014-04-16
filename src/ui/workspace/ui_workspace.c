@@ -929,6 +929,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
      }
    else groupedit_edit_object_unset(sd->groupedit);
+   evas_object_focus_set(sd->groupedit, true);
    sd->style = style;
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");

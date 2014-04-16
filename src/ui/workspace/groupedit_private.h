@@ -99,6 +99,7 @@ struct _Ws_Groupedit_Smart_Data
       Evas_Object *obj;
       Groupedit_Geom *geom;
       Eina_Bool visible : 1;
+      Eina_Bool show_now : 1;
    } obj_area;
    Eina_Bool separated : 1;
    Groupedit_Part *selected;
