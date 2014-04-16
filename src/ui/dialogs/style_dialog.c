@@ -327,7 +327,7 @@ style_dialog_add(App_Data *ap)
 
    BOX_ADD(popup, box, false, false);
 
-   ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE);
    ewe_entry_label_visible_set(entry_style, EINA_TRUE);
    ewe_entry_label_text_set(entry_style, "Style name:");
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
@@ -339,7 +339,7 @@ style_dialog_add(App_Data *ap)
    if (!class_st) return;
    entry_text = eina_stringshare_add(class_st->name);
 
-   ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
    ewe_entry_label_visible_set(entry_class, EINA_TRUE);
    ewe_entry_label_text_set(entry_class, "Class name:");
    elm_entry_entry_set(entry_class, entry_text);
