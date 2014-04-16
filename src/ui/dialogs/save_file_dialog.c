@@ -108,6 +108,7 @@ _on_edj_done(void *data,
              d_data->path = event_info;
              d_data->project = ap->project;
 
+             elm_object_part_text_set(popup, "title,text", _("Warning"));
              elm_object_text_set(popup, _("File is already exist. Would"
                                  "you like to replace it?"));
              BUTTON_ADD(popup, btn1, _("OK"));
