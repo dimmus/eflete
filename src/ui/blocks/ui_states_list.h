@@ -101,17 +101,6 @@ Eina_Stringshare *
 ui_states_list_selected_state_get(Evas_Object *obj);
 
 /**
- * Return currently selected state in 'states list' object.
- *
- * @param object A 'states list' object
- * @return selected state's name.
- *
- * @ingroup StateList
- */
-Eina_List *
-ui_states_list_selected_states_get(Evas_Object *obj);
-
-/**
  * Unset data of a part states from 'states list'.
  *
  * @param object A 'states list' object

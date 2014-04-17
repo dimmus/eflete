@@ -290,6 +290,7 @@ END_TEST
  * @procedure
  * @step 1 Call function ui_states_list_data_set(window, style, part).
  * @step 2 Check returned value.
+ * @step 3 Check count of items of not states list object (should be 0).
  * </td>
  * <td>(Evas_Object *) window, (Style *) style, (Part *) part</td>
  * <td>All checks passed</td>
