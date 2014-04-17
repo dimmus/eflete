@@ -40,10 +40,7 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "default" theme
- * @step 5 set the CURSOR_ARROW as main
+ * @step 2 set the CURSOR_ARROW as main
  *
  * @procedure
  * @step 1 call cursor_main_get
@@ -58,9 +55,6 @@
 EFLETE_TEST(cursor_main_get_test_p1)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
-   cursor_theme_set("default");
    cursor_main_set(CURSOR_ARROW);
 
    ck_assert_msg(cursor_main_get() != CURSOR_ARROW,
@@ -80,10 +74,7 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "not_valid_theme" theme
- * @step 5 set the CURSOR_ARROW as main
+ * @step 2 set the CURSOR_SYSTEM as main
  *
  * @procedure
  * @step 1 call cursor_main_get
@@ -98,10 +89,7 @@ END_TEST
 EFLETE_TEST(cursor_main_get_test_p2)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
-   cursor_theme_set("not_valid_theme");
-   cursor_main_set(CURSOR_ARROW);
+   cursor_main_set(CURSOR_SYSTEM);
 
    ck_assert_msg(cursor_main_get() != CURSOR_SYSTEM,
                  "Main cursor return not valid cursor.");

@@ -21,13 +21,6 @@
 #include "utc_common.h"
 #include "cursor.h"
 
-void cursor_theme_set_test_p(int);
-void cursor_theme_set_test_n1(int);
-void cursor_theme_set_test_n2(int);
-
-void cursor_theme_get_test_p1(int);
-void cursor_theme_get_test_p2(int);
-
 void cursor_main_set_test_p1(int);
 void cursor_main_set_test_p2(int);
 void cursor_main_set_test_n(int);

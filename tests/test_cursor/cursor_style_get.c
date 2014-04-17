@@ -40,11 +40,7 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "default" theme
- * @step 5 create a new Evas_Object.
- * @step 6 set to Evas_Object a cursor type CURSOR_FLEUR
+ * @step 2 set to Evas_Object a cursor type CURSOR_FLEUR
  *
  * @procedure
  * @step 1 call cursor_style_get
@@ -61,16 +57,13 @@ EFLETE_TEST(cursor_style_get_test_p)
    Evas_Object *obj;
 
    elm_init(0,0);
-   config_init();
-   config_load();
    obj = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   cursor_theme_set("default");
    cursor_style_set(obj, CURSOR_FLEUR);
 
    ck_assert_msg(cursor_style_get(obj) == CURSOR_FLEUR,
                  "Can not get the cursor to given object");
 
-   config_shutdown();
+   evas_object_del(obj);
    elm_shutdown();
 }
 END_TEST

@@ -40,9 +40,6 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "default" theme
  *
  * @procedure
  * @step 1 call cursor_main_set
@@ -57,13 +54,9 @@
 EFLETE_TEST(cursor_main_set_test_p1)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
-   cursor_theme_set("default");
 
    ck_assert_msg(cursor_main_set(CURSOR_ARROW), "Main cursor is not setted");
 
-   config_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -77,14 +70,11 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "not_valid_theme" theme
  *
  * @procedure
  * @step 1 call cursor_main_set
  * </td>
- * <td>(Cursor_Type) CURSOR_ARROW</td>
+ * <td>(Cursor_Type) CURSOR_SYSTEM</td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -94,48 +84,9 @@ END_TEST
 EFLETE_TEST(cursor_main_set_test_p2)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
-   cursor_theme_set("not_valid_theme");
 
-   ck_assert_msg(cursor_main_set(CURSOR_ARROW), "Main cursor is not setted");
+   ck_assert_msg(cursor_main_set(CURSOR_SYSTEM), "Main cursor is not setted");
 
-   config_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup cursor_main_set
- * @{
- * <tr>
- * <td>cursor_main_set</td>
- * <td>cursor_main_set_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- *
- * @procedure
- * @step 1 call cursor_main_set
- * </td>
- * <td>(Cursor_Type) CURSOR_ARROW</td>
- * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(cursor_main_set_test_n)
-{
-   elm_init(0,0);
-   config_init();
-   config_load();
-
-   ck_assert_msg(!cursor_main_set(CURSOR_ARROW), "Theme is NULL! Main cursor is setted");
-
-   config_shutdown();
    elm_shutdown();
 }
 END_TEST

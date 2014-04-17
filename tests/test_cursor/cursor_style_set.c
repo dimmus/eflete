@@ -40,10 +40,7 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "default" theme
- * @step 5 create a new Evas_Object.
+ * @step 2 create a new Evas_Object.
  *
  * @procedure
  * @step 1 call cursor_style_set
@@ -60,15 +57,12 @@ EFLETE_TEST(cursor_style_set_test_p)
    Evas_Object *obj;
 
    elm_init(0,0);
-   config_init();
-   config_load();
    obj = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   cursor_theme_set("default");
 
    ck_assert_msg(cursor_style_set(obj, CURSOR_FLEUR),
                  "Can not set the cursor to given object");
 
-   config_shutdown();
+   evas_object_del(obj);
    elm_shutdown();
 }
 END_TEST
@@ -82,10 +76,7 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "default" theme
- * @step 5 create a new Evas_Object.
+ * @step 2 create a new Evas_Object.
  *
  * @procedure
  * @step 1 call cursor_style_set
@@ -102,15 +93,12 @@ EFLETE_TEST(cursor_style_set_test_n1)
    Evas_Object *obj;
 
    elm_init(0,0);
-   config_init();
-   config_load();
    obj = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   cursor_theme_set("default");
 
    ck_assert_msg(!cursor_style_set(obj, (Cursor_Type)-10000),
                  "Set the not valid cursor to giver object");
 
-   config_shutdown();
+   evas_object_del(obj);
    elm_shutdown();
 }
 END_TEST
@@ -124,9 +112,6 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
- * @step 3 load config
- * @step 4 set the cursor "default" theme
  *
  * @procedure
  * @step 1 call cursor_style_set
@@ -141,14 +126,10 @@ END_TEST
 EFLETE_TEST(cursor_style_set_test_n2)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
-   cursor_theme_set("default");
 
    ck_assert_msg(!cursor_style_set(NULL, CURSOR_ARROW),
                  "Set the cursor to not valid object");
 
-   config_shutdown();
    elm_shutdown();
 }
 END_TEST

@@ -24,13 +24,6 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("cursor_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, cursor_theme_set_test_p);
-   tcase_add_test(tcase, cursor_theme_set_test_n1);
-   tcase_add_test(tcase, cursor_theme_set_test_n2);
-
-   tcase_add_test(tcase, cursor_theme_get_test_p1);
-   tcase_add_test(tcase, cursor_theme_get_test_p2);
-
    tcase_add_test(tcase, cursor_main_set_test_p1);
    tcase_add_test(tcase, cursor_main_set_test_p2);
    tcase_add_test(tcase, cursor_main_set_test_n);

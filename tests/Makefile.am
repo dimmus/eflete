@@ -158,8 +158,6 @@ config_test_LDADD = ${LD}
 
 cursor_test_SOURCES = \
 test_cursor/test_cursor.c \
-test_cursor/cursor_theme_set.c \
-test_cursor/cursor_theme_get.c \
 test_cursor/cursor_main_set.c \
 test_cursor/cursor_main_get.c \
 test_cursor/cursor_style_set.c \

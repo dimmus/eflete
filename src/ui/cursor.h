@@ -52,29 +52,6 @@ enum _Cursor_Type
 typedef enum _Cursor_Type Cursor_Type;
 
 /**
- * Set the style for all Eflete cursors. If in the theme some cursor is missing
- * will be used default.
- *
- * @param theme The cursors theme will be loaded and setted.
- *
- * @return EINA_TRUE, if style is loaded or EINA_FALSE overwise.
- *
- * @ingroup Cursor
- */
-Eina_Bool
-cursor_theme_set(const char *theme);
-
-/**
- * Get the cursors theme.
- *
- * @return the theme name or NULL if the system cursors is used.
- *
- * @ingroup Cursor
- */
-const char *
-cursor_theme_get(void);
-
-/**
  * Set the Eflete main cursor, it means that cursor will be shown in all Eflete
  * parts, except objects that setted cursor personaly, using
  * @ref cursor_style_set ["cursor_style_set()"]

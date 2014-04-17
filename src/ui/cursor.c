@@ -23,18 +23,6 @@
 #define CURSOR_KEY "eflete_cursor"
 
 Eina_Bool
-cursor_theme_set(const char *theme __UNUSED__)
-{
-   return false;
-}
-
-const char *
-cursor_theme_get(void)
-{
-   return NULL;
-}
-
-Eina_Bool
 cursor_main_set(Cursor_Type type __UNUSED__)
 {
    return false;
