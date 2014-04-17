@@ -13,6 +13,7 @@ modal_window_test \
 notify_test \
 project_manager_test \
 config_test \
+cursor_test \
 style_editor_test \
 ui_block_test \
 highlight_test \
@@ -154,6 +155,17 @@ test_config/config_load.c \
 test_config/config_get.c
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
+
+cursor_test_SOURCES = \
+test_cursor/test_cursor.c \
+test_cursor/cursor_theme_set.c \
+test_cursor/cursor_theme_get.c \
+test_cursor/cursor_main_set.c \
+test_cursor/cursor_main_get.c \
+test_cursor/cursor_style_set.c \
+test_cursor/cursor_style_get.c
+cursor_test_CFLAGS = ${FLAGS}
+cursor_test_LDADD = ${LD}
 
 style_editor_test_SOURCES = \
 test_style_editor/test_style_editor.c \
