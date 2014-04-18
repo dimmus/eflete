@@ -40,3 +40,8 @@ void ui_widget_list_class_data_reload_test_p2(int);
 void ui_widget_list_class_data_reload_test_n1(int);
 void ui_widget_list_class_data_reload_test_n2(int);
 void ui_widget_list_class_data_reload_test_n3(int);
+
+void ui_widget_list_layouts_reload_test_p(int);
+void ui_widget_list_layouts_reload_test_n1(int);
+void ui_widget_list_layouts_reload_test_n2(int);
+void ui_widget_list_layouts_reload_test_n3(int);
