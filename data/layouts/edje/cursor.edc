@@ -9,18 +9,19 @@
 #define HAND1                       "cursor-hand1.png"
 
 #define CURSOR(NAME, IMG, IMG_W, IMG_H, REL1, REL2)         \
-group { name: "elm/cursor/"##NAME##"/default";              \
+group { name: "eflete/cursor/"##NAME##"/default";           \
    images.image: IMG COMP;                                  \
    parts {                                                  \
       part { name: "base";                                  \
          type: IMAGE;                                       \
          description { state: "default" 0.0;                \
-            SET_SIZE(IMG_H, IMG_W);                         \
+            min: IMG_H IMG_W;                               \
+            max: IMG_H IMG_W;                               \
             image.normal: IMG;                              \
          }                                                  \
       }                                                     \
-      part { name: "elm.content.hotspot";                   \
-         type: SWALLOW;                                     \
+      part { name: "hotspot";                               \
+         type: SPACER;                                      \
          description { state: "default" 0.0;                \
             rel1.relative: REL1;                            \
             rel2.relative: REL2;                            \
