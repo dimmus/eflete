@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_widget_manager.h"
 
@@ -45,13 +46,13 @@
  *
  * @procedure
  * @step 1 Add new style.
- * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/undef", "./edj_build/radio.edj", Style).
+ * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/undef", "./edj_build/wm_style_copy.edj", Style).
  * @step 3 Check if group was added into a file successfully.
  * @step 4 Load all data of new group from the file
  * @step 5 Get signal list from old and new style
  * @step 6 Compare old and new style by comparing it's signal from their signal lists.
  * </td>
- * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/undef", char *file = "./edj_build/radio.edj", Style *style</td>
+ * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/undef", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>All Checks passed successfuly</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -61,7 +62,7 @@
 EFLETE_TEST (wm_style_copy_test_p)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_style_copy.edj";
    const char *group_name = "elm/radio/base/def";
    const char *copy_name = "elm/radio/base/undef";
    const char *style_name = "undef";
@@ -119,9 +120,9 @@ END_TEST
  *
  * @procedure
  * @step 1 Add new style.
- * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", "./edj_build/radio.edj", Style).
+ * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", "./edj_build/wm_style_copy.edj", Style).
  * </td>
- * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/radio.edj", Style *style</td>
+ * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>EINA_FALSE return</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -131,7 +132,7 @@ END_TEST
 EFLETE_TEST (wm_style_copy_test_n1)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_style_copy.edj";
    const char *group_name = "elm/radio/base/def";
    const char *copy_name = "elm/radio/base/aliased";
    const char *style_name = "aliased";
@@ -182,12 +183,12 @@ END_TEST
  *
  * @procedure
  * @step 1 Add new style.
- * @step 2 Call function wm_style_copy(NULL, "elm/radio/base/aliased", "./edj_build/radio.edj", Style).
- * @step 2 Call function wm_style_copy(edje_edit_obj, NULL, "./edj_build/radio.edj", Style).
+ * @step 2 Call function wm_style_copy(NULL, "elm/radio/base/aliased", "./edj_build/wm_style_copy.edj", Style).
+ * @step 2 Call function wm_style_copy(edje_edit_obj, NULL, "./edj_build/wm_style_copy.edj", Style).
  * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", NULL, Style).
- * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", "./edj_build/radio.edj", NULL).
+ * @step 2 Call function wm_style_copy(edje_edit_obj, "elm/radio/base/aliased", "./edj_build/wm_style_copy.edj", NULL).
  * </td>
- * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/radio.edj", Style *style</td>
+ * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>EINA_FALSE return</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -197,7 +198,7 @@ END_TEST
 EFLETE_TEST (wm_style_copy_test_n2)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_style_copy.edj";
    const char *group_name = "elm/radio/base/def";
    const char *copy_name = "elm/radio/base/aliased";
    const char *style_name = "aliased";

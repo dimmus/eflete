@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_widget_manager.h"
 
@@ -41,11 +42,11 @@
  * @step 1 Path to edj file.
  *
  * @procedure
- * @step 1 Call function wm_widget_list_layouts_load("./edj_build/radio.edj").
+ * @step 1 Call function wm_widget_list_layouts_load("./edj_build/wm_widget_list_layouts_load.edj").
  * @step 2 Check returned layouts list.
  * @step 3 Check layouts list's content.
  * </td>
- * <td>char *file = "./edj_build/radio.edj"</td>
+ * <td>char *file = "./edj_build/wm_widget_list_layouts_load.edj"</td>
  * <td>All Checks was successfuly passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -55,7 +56,7 @@
 EFLETE_TEST (wm_widget_list_layouts_load_test_p)
 {
    elm_init(0,0);
-   const char *file = "./edj_build/radio.edj";
+   const char *file = "./edj_build/wm_widget_list_layouts_load.edj";
    const char *layout_name = "load/layout/test";
    Eina_Inlist *layouts_list = NULL;
    Style *layout = NULL;

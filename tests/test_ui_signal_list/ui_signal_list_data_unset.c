@@ -1,5 +1,6 @@
-/* Edje Theme Editor
- * Copyright (C) 2013 Samsung Electronics.
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
@@ -59,7 +60,7 @@ EFLETE_TEST(ui_signal_list_data_unset_test_p1)
    Evas_Object *window, *gl_signals;
    Evas *e;
    Style *style, *ret_style;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_signal_list_data_unset.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 

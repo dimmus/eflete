@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2014 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_live_view.h"
 
@@ -70,10 +71,10 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_unset.edj");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_unset.edj");
    project->current_style = style;
    live = live_view_add(parent);
    live_view_widget_style_set(live, project, style);

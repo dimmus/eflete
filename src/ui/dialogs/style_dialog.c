@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "style_dialog.h"
 #include "common_macro.h"
@@ -23,11 +24,6 @@
 
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;
-
-static Elm_Entry_Filter_Accept_Set accept_name = {
-   .accepted = NULL,
-   .rejected = STYLE_NAME_BANNED_SYMBOLS
-};
 
 static Widget *
 _widget_from_ap_get(App_Data *ap)
@@ -315,7 +311,6 @@ void
 style_dialog_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *button;
-   Evas_Object *item_style, *item_class;
    Widget *widget = NULL;
    Class *class_st = NULL;
    Eina_Stringshare *title = NULL;
@@ -333,25 +328,29 @@ style_dialog_add(App_Data *ap)
 
    BOX_ADD(popup, box, false, false);
 
-   ITEM_ADD(box, item_style, _("Style name:"))
-
-   ENTRY_ADD(item_style, entry_style, true, DEFAULT_STYLE);
-   elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
+   EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE);
+   ewe_entry_label_visible_set(entry_style, EINA_TRUE);
+   ewe_entry_label_text_set(entry_style, "Style name:");
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
-   elm_object_part_content_set(item_style, "elm.swallow.content", entry_style);
+   ewe_entry_regex_set(entry_style, STYLE_NAME_REGEX, EWE_REG_ICASE);
+   ewe_entry_regex_glow_set(entry_style, EINA_TRUE);
+   ewe_entry_regex_autocheck_set(entry_style, EINA_TRUE);
 
    class_st = _class_from_ap_get(ap);
    if (!class_st) return;
    entry_text = eina_stringshare_add(class_st->name);
-   ITEM_ADD(box, item_class, _("Class name:"))
-   ENTRY_ADD(item_class, entry_class, true, DEFAULT_STYLE);
-   elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
+
+   EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
+   ewe_entry_label_visible_set(entry_class, EINA_TRUE);
+   ewe_entry_label_text_set(entry_class, "Class name:");
    elm_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
-   elm_object_part_content_set(item_class, "elm.swallow.content", entry_class);
+   ewe_entry_regex_set(entry_class, STYLE_NAME_REGEX, EWE_REG_ICASE);
+   ewe_entry_regex_glow_set(entry_class, EINA_TRUE);
+   ewe_entry_regex_autocheck_set(entry_class, EINA_TRUE);
 
-   elm_box_pack_end(box, item_style);
-   elm_box_pack_end(box, item_class);
+   elm_box_pack_end(box, entry_style);
+   elm_box_pack_end(box, entry_class);
    elm_object_content_set(popup, box);
 
    BUTTON_ADD(popup, button, _("Add"));

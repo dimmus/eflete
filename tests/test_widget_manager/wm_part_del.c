@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_widget_manager.h"
 
@@ -70,7 +71,7 @@ EFLETE_TEST (wm_part_del_test_p1)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_del.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
    ck_assert_msg(wm_part_del(style, part) == EINA_TRUE, "cannot delete Part object");
 
@@ -117,7 +118,7 @@ EFLETE_TEST (wm_part_del_test_p2)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_del.edj", "elm/radio/base/def");
 
    part = (Part *)mem_malloc(sizeof(Part));
    part->name = eina_stringshare_add("elm.double.eflete");
@@ -167,7 +168,7 @@ EFLETE_TEST (wm_part_del_test_n1)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_del.edj", "elm/radio/base/def");
    part = wm_part_add(style, name);
    ck_assert_msg(wm_part_del(NULL, part) == EINA_FALSE, "Part object deleted from NULL Style");
 
@@ -212,7 +213,7 @@ EFLETE_TEST (wm_part_del_test_n2)
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj", "elm/radio/base/def");
+   edje_object_file_set(style->obj, "./edj_build/wm_part_del.edj", "elm/radio/base/def");
    ck_assert_msg(wm_part_del(style, NULL) == EINA_FALSE, "deleting not existing Part");
 
    elm_shutdown();

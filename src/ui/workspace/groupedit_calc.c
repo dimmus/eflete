@@ -349,8 +349,6 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
    evas_object_clip_unset(sd->selected->bg);
    evas_object_hide(sd->selected->bg);
    edje_object_signal_emit(sd->selected->item, "item,unselected", "eflete");
-
-   sd->selected = NULL;
 }
 
 static void
@@ -570,8 +568,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              evas_object_hide(gp->border);
           }
      }
-   _part_object_area_calc(sd);
-
+     if (!sd->separated) _part_object_area_calc(sd);
+     else evas_object_hide(sd->obj_area.obj);
    return true;
 }
 
@@ -654,6 +652,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    evas_object_smart_member_add(gp->draw, sd->obj);
    evas_object_smart_member_add(gp->border, sd->obj);
    evas_object_smart_member_add(gp->item, sd->obj);
+
    return gp;
 }
 
@@ -925,15 +924,15 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    int x, w, y, h;
    double relative;
 
-   if (!sd->obj_area.gp)
+   if (!sd->selected)
      {
         x = sd->con_current_size->x; y = sd->con_current_size->y;
         w = sd->con_current_size->w; h = sd->con_current_size->h;
      }
    else
      {
-        PART_STATE_GET(sd->edit_obj, sd->obj_area.gp->name)
-        const char *name = sd->obj_area.gp->name;
+        PART_STATE_GET(sd->edit_obj, sd->selected->name)
+        const char *name = sd->selected->name;
 
         evas_object_geometry_get(sd->edit_obj, &xg, &yg, &wg, &hg);
 
@@ -969,17 +968,23 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
 
         evas_object_resize(sd->obj_area.obj, w, h);
         evas_object_move(sd->obj_area.obj, x, y);
+        evas_object_stack_below(sd->obj_area.obj, sd->selected->draw);
 
         PART_STATE_FREE
 
         x -= xc; y -= yc;
      }
 
+   if (sd->obj_area.visible) evas_object_show(sd->obj_area.obj);
+   else evas_object_hide(sd->obj_area.obj);
+
    sd->obj_area.geom->x = x; sd->obj_area.geom->y = y;
    sd->obj_area.geom->w = w; sd->obj_area.geom->h = h;
 
-   if (sd->obj_area.visible) evas_object_show(sd->obj_area.obj);
-   else evas_object_hide(sd->obj_area.obj);
+   if ((sd->selected) && ((sd->obj_area.visible) || (sd->obj_area.show_now)))
+     evas_object_show(sd->obj_area.obj);
+   else
+     evas_object_hide(sd->obj_area.obj);
 
    evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
 }

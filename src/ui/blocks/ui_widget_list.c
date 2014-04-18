@@ -548,6 +548,7 @@ _on_widget_clicked_double(void *data,
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
+   if (_itc_node == elm_genlist_item_item_class_get(glit)) return;
    _style = elm_object_item_data_get(glit);
 
    if (_style->__type == LAYOUT)
@@ -634,7 +635,7 @@ _on_widget_clicked_double(void *data,
    evas_object_show(gl_class);
 }
 
-void
+Eina_Bool
 ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
 {
    Style *_style = NULL;
@@ -643,7 +644,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    Elm_Object_Item *glit_style = NULL;
    Elm_Object_Item *glit_class = NULL;
 
-   if ((!gl_classes) || (!classes)) return;
+   if ((!gl_classes) || (!classes)) return false;
    elm_genlist_clear(gl_classes);
 
    if(!_itc_class)
@@ -681,6 +682,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
              elm_object_item_data_set(glit_style, _style);
           }
      }
+   return true;
 }
 
 Evas_Object *

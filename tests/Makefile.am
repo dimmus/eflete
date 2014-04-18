@@ -13,6 +13,7 @@ modal_window_test \
 notify_test \
 project_manager_test \
 config_test \
+cursor_test \
 style_editor_test \
 ui_block_test \
 highlight_test \
@@ -104,7 +105,11 @@ test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
-image_editor_test_SOURCES = test_image_editor/test_image_editor.c
+image_editor_test_SOURCES = \
+test_image_editor/test_image_editor.c \
+test_image_editor/image_editor_callback_add.c \
+test_image_editor/image_editor_file_choose.c \
+test_image_editor/image_editor_window_add.c
 image_editor_test_CFLAGS = ${FLAGS}
 image_editor_test_LDADD = ${LD}
 
@@ -150,6 +155,15 @@ test_config/config_load.c \
 test_config/config_get.c
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
+
+cursor_test_SOURCES = \
+test_cursor/test_cursor.c \
+test_cursor/cursor_main_set.c \
+test_cursor/cursor_main_get.c \
+test_cursor/cursor_style_set.c \
+test_cursor/cursor_style_get.c
+cursor_test_CFLAGS = ${FLAGS}
+cursor_test_LDADD = ${LD}
 
 style_editor_test_SOURCES = \
 test_style_editor/test_style_editor.c \
@@ -223,10 +237,11 @@ ui_signal_list_test_LDADD = ${LD}
 ui_states_list_test_SOURCES = \
 test_ui_states_list/test_ui_states_list.c \
 test_ui_states_list/ui_states_list_selected_state_get.c \
-test_ui_states_list/ui_states_list_selected_states_del.c \
+test_ui_states_list/ui_states_list_selected_state_del.c \
 test_ui_states_list/ui_states_list_state_add.c \
 test_ui_states_list/ui_states_list_add.c \
 test_ui_states_list/ui_states_list_data_set.c \
+test_ui_states_list/ui_states_list_data_unset.c \
 test_ui_states_list/ui_states_list_part_get.c
 ui_states_list_test_CFLAGS = ${FLAGS}
 ui_states_list_test_LDADD = ${LD}
@@ -299,7 +314,6 @@ test_groupedit/groupedit_handler_size_set.c \
 test_groupedit/groupedit_max_size_set.c \
 test_groupedit/groupedit_min_size_set.c \
 test_groupedit/groupedit_part_object_area_get.c \
-test_groupedit/groupedit_part_object_area_set.c \
 test_groupedit/groupedit_part_object_area_visible_get.c \
 test_groupedit/groupedit_part_object_area_visible_set.c \
 test_groupedit/groupedit_part_visible_set.c \

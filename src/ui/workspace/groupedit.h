@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #ifndef GROUPEDIT_H
 #define GROUPEDIT_H
@@ -338,17 +339,6 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value);
 
 /**
- * Set the part to calculate it's object area.
- *
- * @param obj The groupedit object,
- * @param part The name of the part to calculate it's object area.
- *
- * @ingroup Groupedit
- */
-void
-groupedit_part_object_area_set(Evas_Object *obj, const char *part);
-
-/**
  * Get the object with the object area geometry.
  *
  * @param obj The groupedit object.
@@ -387,14 +377,12 @@ groupedit_part_object_area_visible_get(Evas_Object *obj);
  *
  * @param obj The groupedit object,
  * @param separated ON/OFF (true/false) the separate mode,
- * @param part Part to select (highlight).
  *
  * @ingroup Groupedit
  */
 void
 groupedit_edit_object_parts_separated(Evas_Object *obj,
-                                      Eina_Bool separated,
-                                      const char *part);
+                                      Eina_Bool separated);
 
 /**
  * Check if separate mode is activated.

@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2014 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 
 #include "test_ui_widget_list.h"
@@ -63,7 +64,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p1)
    Eina_Bool result = EINA_FALSE;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    widget_list = ui_widget_list_add(parent);
 
    result = ui_widget_list_data_set(widget_list, project);
@@ -108,7 +109,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p2)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    project->layouts = NULL;
    while (project->layouts)
      {
@@ -161,7 +162,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p3)
    Widget *widget = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    while (project->widgets)
      {
         widget = EINA_INLIST_CONTAINER_GET(project->widgets, Widget);
@@ -214,7 +215,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p4)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    project->widgets = NULL;
    project->layouts = NULL;
    while (project->layouts)
@@ -309,7 +310,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_n2)
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
-   project = pm_open_project_edj("UTC", "./edj_build/radio.edj");
+   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_set.edj");
    result = ui_widget_list_data_set(NULL, project);
 
    ck_assert_msg(!result, "Data loaded with NULL widget list object");

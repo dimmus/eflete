@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "groupedit_private.h"
 
@@ -276,6 +277,52 @@ _style_set(Evas_Object *o, const char *style)
 }
 
 static void
+_key_down(void *data __UNUSED__,
+          Evas *e __UNUSED__,
+          Evas_Object *obj,
+          void *event_info)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+
+   if (sd->obj_area.visible) return;
+   if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
+     {
+        if (sd->selected)
+          {
+             evas_object_show(sd->obj_area.obj);
+             sd->obj_area.show_now = true;
+          }
+     }
+}
+
+static void
+_key_up(void *data __UNUSED__,
+        Evas *e __UNUSED__,
+        Evas_Object *obj,
+        void *event_info)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+
+   if (sd->obj_area.visible) return;
+   if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
+     {
+        evas_object_hide(sd->obj_area.obj);
+        sd->obj_area.show_now = false;
+     }
+}
+
+static void
+_focus_set(void *data __UNUSED__,
+           Evas *e __UNUSED__,
+           Evas_Object *obj,
+           void *event_info __UNUSED__)
+{
+   evas_object_focus_set(obj, true);
+}
+
+static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -286,14 +333,16 @@ _unselect_part(void *data,
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    if (ev->button != 1) return;
-   if (!sd->obj_area.gp) return;
+   if (!sd->selected) return;
    if (sd->separated)
      {
         if (!sd->selected) return;
         _selected_item_return_to_place(sd);
      }
+   evas_object_hide(sd->obj_area.obj);
    evas_object_smart_callback_call(o, SIG_PART_UNSELECTED,
-                                   (void *)sd->obj_area.gp->name);
+                                   (void *)sd->selected->name);
+   sd->selected = NULL;
 }
 
 /* create and setup a new example smart object's internals */
@@ -328,8 +377,15 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_cb, o);
 
-   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_DOWN,
+   evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);
+
+   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,
+                                  _focus_set, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
+                                  _key_down, NULL);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP,
+                                  _key_up, NULL);
 
    priv->obj = o;
    priv->con_size_min.w = 0;
@@ -342,8 +398,9 @@ _groupedit_smart_add(Evas_Object *o)
    priv->handler_TL_pressed = false;
    priv->handler_BR_pressed = false;
    priv->obj_area.obj = edje_object_add(priv->e);
-   priv->obj_area.gp = NULL;
+   evas_object_repeat_events_set(priv->obj_area.obj, true);
    priv->obj_area.visible = false;
+   priv->obj_area.show_now = false;
    priv->obj_area.geom = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
    priv->separated = false;
    priv->selected = NULL;
@@ -503,6 +560,7 @@ _groupedit_smart_calculate(Evas_Object *o)
 
    _parts_recalc(priv);
 
+   evas_object_focus_set(o, true);
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
 }
 
@@ -822,21 +880,6 @@ groupedit_part_object_area_get(Evas_Object *obj)
 }
 
 void
-groupedit_part_object_area_set(Evas_Object *obj, const char *part)
-{
-   Groupedit_Part *gp;
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-
-   if (!sd->parts) return;
-
-   gp = _parts_list_find(sd->parts, part);
-   sd->obj_area.gp = gp;
-   evas_object_stack_below(sd->obj_area.obj, gp->draw);
-
-   evas_object_smart_changed(sd->obj);
-}
-
-void
 groupedit_part_object_area_visible_set(Evas_Object *obj, Eina_Bool visible)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
@@ -857,10 +900,8 @@ groupedit_part_object_area_visible_get(Evas_Object *obj)
 
 void
 groupedit_edit_object_parts_separated(Evas_Object *obj,
-                                      Eina_Bool separated,
-                                      const char *part)
+                                      Eina_Bool separated)
 {
-   Groupedit_Part *gp;
    int w, h, count;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
    if ((!sd->edit_obj) || (!sd->parts)) return;
@@ -875,12 +916,12 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
      {
         evas_object_resize(obj, w + (SEP_ITEM_PAD_X * count), h + (SEP_ITEM_PAD_Y * count));
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_OPEN, NULL);
-        if (part)
+        if (sd->selected)
           {
-             gp = _parts_list_find(sd->parts, part);
-             if (gp) sd->to_select = gp;
-             _select_item_move_to_top(sd);
+             sd->to_select = sd->selected;
+             sd->selected = NULL;
           }
+        _select_item_move_to_top(sd);
      }
    else
      {
@@ -907,13 +948,17 @@ groupedit_edit_object_part_select(Evas_Object *obj, const char *part)
    Groupedit_Part *gp;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
 
-   if (!part) _selected_item_return_to_place(sd);
+   gp = _parts_list_find(sd->parts, part);
+   if (!sd->separated) sd->selected = gp;
    else
-   {
-      gp = _parts_list_find(sd->parts, part);
-      if (gp) sd->to_select = gp;
-      _select_item_move_to_top(sd);
-   }
+     {
+        if (!part) _selected_item_return_to_place(sd);
+        else
+          {
+             if (gp) sd->to_select = gp;
+             _select_item_move_to_top(sd);
+          }
+     }
 }
 
 Eina_Bool

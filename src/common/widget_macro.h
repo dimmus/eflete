@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #ifndef WIDGET_MACRO_H
 #define WIDGET_MACRO_H
@@ -80,6 +81,16 @@
 #define ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE) \
    ENTRY = elm_entry_add(PARENT); \
    elm_object_style_set(ENTRY, STYLE); \
+   evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_entry_single_line_set(ENTRY, ISSINGLELINE); \
+   elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
+   elm_scroller_policy_set(ENTRY, ELM_SCROLLER_POLICY_OFF, \
+                                  ELM_SCROLLER_POLICY_OFF); \
+   evas_object_show(ENTRY);
+
+#define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE) \
+   ENTRY = ewe_entry_add(PARENT); \
    evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_entry_single_line_set(ENTRY, ISSINGLELINE); \

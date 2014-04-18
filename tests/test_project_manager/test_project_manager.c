@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include <check.h>
 #include "project_manager.h"
@@ -208,14 +209,14 @@ START_TEST (pm_open_project_edj_test_p)
    elm_init(0,0);
    char *name, *path;
    name = "radio_test";
-   path = "./edj_build/radio.edj";
+   path = "./edj_build/test_project_manager.edj";
 M_ Project* pro = pm_open_project_edj(name, path);
 M_ ck_assert_msg(pro != NULL, "failure: cannot open project from edj-file");
 
 M_ ck_assert_msg(!strcmp(pro->name, "radio_test"), "project name is incorrect");
-M_ ck_assert_msg(!strcmp(pro->edc, "./edj_build/radio.edc"), "edc path is incorrect");
-M_ ck_assert_msg(!strcmp(pro->edj, "./edj_build/radio.edj"), "edj path is incorrect");
-M_ ck_assert_msg(!strcmp(pro->swapfile, "./edj_build/radio.edj.swap"), "swapfile path is incorrect");
+M_ ck_assert_msg(!strcmp(pro->edc, "./edj_build/test_project_manager.edc"), "edc path is incorrect");
+M_ ck_assert_msg(!strcmp(pro->edj, "./edj_build/test_project_manager.edj"), "edj path is incorrect");
+M_ ck_assert_msg(!strcmp(pro->swapfile, "./edj_build/test_project_manager.edj.swap"), "swapfile path is incorrect");
 M_ ck_assert_msg(pro->image_directory == NULL, "image dir is incorrect");
 M_ ck_assert_msg(pro->font_directory == NULL, "font dir is incorrect");
 M_ ck_assert_msg(pro->sound_directory == NULL, "sound dir is incorrect");
@@ -249,7 +250,7 @@ START_TEST (pm_open_project_edj_test_n)
    elm_init(0,0);
    char *name, *path;
    name = "radio_test";
-   path = "./edj_build/radio.edj";
+   path = "./edj_build/test_project_manager.edj";
 M_ ck_assert_msg(pm_open_project_edj(NULL, NULL) == NULL, "Project created without path");
 M_ ck_assert_msg(pm_open_project_edj(name, NULL) == NULL, "Project created without path");
 M_ ck_assert_msg(pm_open_project_edj(NULL, path) == NULL, "Project created without name");
@@ -274,7 +275,7 @@ START_TEST (pm_save_project_edj_test_p)
    elm_init(0,0);
    char *name, *path;
    name = "radio_test";
-   path = "./edj_build/radio.edj";
+   path = "./edj_build/test_project_manager.edj";
 M_ Project* pro = pm_open_project_edj(name, path);
 M_ ck_assert_msg(pm_save_project_edj(pro), "Can't save project to edj");
 M_ pm_project_close(pro);
@@ -319,7 +320,7 @@ START_TEST (pm_save_project_edc_test_p)
    elm_init(0,0);
    char *name, *path;
    name = "radio_test";
-   path = "./edj_build/radio.edj";
+   path = "./edj_build/test_project_manager.edj";
 M_ Project* pro = pm_open_project_edj(name, path);
 
 M_ ck_assert_msg(pm_save_project_edc(pro), "Can't save project to edc");

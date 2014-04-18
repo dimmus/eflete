@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_ui_workspace.h"
 
@@ -68,8 +69,8 @@ EFLETE_TEST(workspace_edit_object_visible_set_test_p)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_visible_set.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_visible_set.edj");
 
    res = workspace_edit_object_visible_set(workspace, "bg", EINA_TRUE);
    ck_assert_msg(res == EINA_TRUE, "Failed set visibily part object, loaded into workspace");
@@ -120,8 +121,8 @@ EFLETE_TEST(workspace_edit_object_visible_set_test_n)
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
-   wm_style_data_load(style, e, "./edj_build/radio.edj");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_visible_set.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_visible_set.edj");
 
    res = workspace_edit_object_visible_set(workspace, "non_exist", EINA_TRUE);
    ck_assert_msg(res == EINA_FALSE, "Set visibily for non exist part");

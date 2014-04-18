@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "ui_main_window.h"
 
@@ -242,6 +243,10 @@ _on_ws_part_select(void *data,
    const char *part = (const char *)event_info;
    if (part)
      ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
+
+   /* set the focus to groupedit, that the hotkeys is work */
+   CRIT("%p", ws_groupedit_get(ap->workspace));
+   evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 }
 
 static void
@@ -327,8 +332,7 @@ ui_state_select(App_Data *ap,
 }
 
 Evas_Object *
-ui_part_select(App_Data *ap,
-               Part* part)
+ui_part_select(App_Data *ap, Part* part)
 {
    Evas_Object *prop;
    Evas_Object *gl_states;
@@ -363,6 +367,9 @@ ui_part_select(App_Data *ap,
    workspace_highlight_set(ap->workspace, part);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
+
+   /* set the focus to groupedit, that the hotkeys is work */
+   evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 
    return gl_states;
 }
@@ -409,7 +416,6 @@ ui_style_clicked(App_Data *ap, Style *style)
                                   _on_ws_part_unselect, ap);
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
-
 
    /* style properties */
    prop = ui_block_property_get(ap);

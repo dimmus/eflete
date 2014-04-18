@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "ui_main_window.h"
 #include "open_file_dialog.h"
@@ -315,7 +316,7 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_disable_set(ap->menu_hash, _("Highlight space"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
 }
 
 static void
@@ -480,11 +481,11 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Separate"), _on_view_separate, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Legend"), _on_view_legend, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Rulers"), NULL, NULL, sub_menu);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/hide hor."), _on_view_ruler_hor, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/hide ver."), _on_view_ruler_ver, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide hor."), _on_view_ruler_hor, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide ver."), _on_view_ruler_ver, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Absolute scale"), _on_view_ruler_abs, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Relative scale"), _on_view_ruler_rel, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Highlight space"), _on_view_highlight, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Show/Hide object area"), _on_view_highlight, ap, it);
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("Editors"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Styles"), _on_style_window_menu, ap, it);
@@ -550,7 +551,7 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result = ui_menu_disable_set(menu_hash, _("Separate"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Legend"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Rulers"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Highlight space"), flag) && result;
+   result = ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Styles"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Images"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Colorclasses"), flag) && result;

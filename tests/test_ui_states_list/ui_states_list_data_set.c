@@ -1,27 +1,27 @@
-/* Edje Theme Editor
-* Copyright (C) 2014 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
-
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_ui_states_list.h"
 
 /**
- * @addgroup test_ui_states_list
+ * @addtogroup ui_states_list_test
  * @{
  * @addtogroup ui_states_list_data_set
  * @{
@@ -62,7 +62,7 @@ EFLETE_TEST(ui_states_list_data_set_test_p)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -114,7 +114,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n1)
    Evas_Object *window, *gl_states;
    Evas *e;
    Style *style;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -167,7 +167,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n2)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -220,7 +220,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n3)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 
@@ -290,6 +290,7 @@ END_TEST
  * @procedure
  * @step 1 Call function ui_states_list_data_set(window, style, part).
  * @step 2 Check returned value.
+ * @step 3 Check count of items of not states list object (should be 0).
  * </td>
  * <td>(Evas_Object *) window, (Style *) style, (Part *) part</td>
  * <td>All checks passed</td>
@@ -304,7 +305,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n5)
    Evas *e;
    Style *style;
    Part *part;
-   const char *edj = "./edj_build/radio.edj";
+   const char *edj = "./edj_build/ui_states_list_data_set.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
 

@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "test_ui_workspace.h"
 
@@ -72,10 +73,10 @@ EFLETE_TEST(workspace_highlight_unset_test_p)
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE);
    style->obj = edje_edit_object_add(e);
-   edje_object_file_set(style->obj, "./edj_build/radio.edj",
+   edje_object_file_set(style->obj, "./edj_build/workspace_highlight_unset.edj",
                         style->full_group_name);
    part = wm_part_add(style, "bg");
-   workspace_edit_object_set(workspace, style, "./edj_build/radio.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_highlight_unset.edj");
    workspace_highlight_set(workspace, part);
 
    res = workspace_highlight_unset(workspace);

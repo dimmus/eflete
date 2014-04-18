@@ -1,8 +1,8 @@
 /**
- * Edje Editor Tool
- * Copyright (C) 2013 Samsung Electronics.
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
  *
- * This file is part of Edje Editor Tool.
+ * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; If not, see <http://www.gnu.org/licenses/>.
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
 #include "alloc.h"

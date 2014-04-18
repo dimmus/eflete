@@ -1,21 +1,22 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see http://www.gnu.org/licenses/gpl-2.0.html.
-*/
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ */
 
 #include "state_dialog.h"
 #include "common_macro.h"
@@ -58,7 +59,12 @@ _add_ok_clicked(void *data,
 
    str_name = elm_entry_entry_get(entry_name);
    str_value = elm_entry_entry_get(entry_value);
-   if (workspace_edit_object_part_state_add(workspace, part->name,
+   if (edje_edit_state_exist(ap->project->current_style->obj, part->name, str_name, atof(str_value)))
+     {
+        NOTIFY_WARNING(_("State is exist!"))
+        return;
+     }
+   else if (workspace_edit_object_part_state_add(workspace, part->name,
                                             str_name, atof(str_value)))
      {
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
