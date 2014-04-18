@@ -548,6 +548,7 @@ _on_widget_clicked_double(void *data,
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
 
+   if (_itc_node == elm_genlist_item_item_class_get(glit)) return;
    _style = elm_object_item_data_get(glit);
 
    if (_style->__type == LAYOUT)
