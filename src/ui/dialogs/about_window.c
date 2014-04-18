@@ -25,21 +25,16 @@ about_window_add()
 {
    Evas_Object *mwin = mw_about_add(NULL, NULL);
    mw_title_set(mwin, _("About"));
-   Evas_Object *label, *box;
+   Evas_Object *label;
 
-   box = elm_box_add(mwin);
-   evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(box, EVAS_HINT_FILL, 0.0);
-   elm_box_align_set(box, 1.0, 0.4);
-   evas_object_show(box);
-
-   LABEL_ADD(mwin, label,
+   label = elm_label_add(mwin);
+   elm_object_text_set(label,
      "<color=#b6b6b6>"
      "<b><align=center>"PACKAGE_NAME" v."VERSION"</align></b><br>"
      "This application was written for Enlightenment, to use EFL<br>"
      "and design to a create and modify a Elementary widgets style.<br>"
      "<br>"
-     "Copyright (C) 2013 Samsung Electronics.<br>"
+     "Copyright (C) 2013 - 2014 Samsung Electronics.<br>"
      "<br>"
      "<align=center><b>Authors:</b><br>"
      "Vyacheslav \"rimmed\" Reutskiy (v.reutskiy@samsung.com))<br>"
@@ -59,11 +54,9 @@ about_window_add()
      "<b>Special thanks for the help:</b><br>"
      "Sergey Osadchy (se.osadchy@samsung.com)<br>"
      "</align>");
-   elm_box_pack_end(box, label);
-   elm_win_inwin_content_set(mwin, box);
+
+   elm_win_inwin_content_set(mwin, label);
 
    evas_object_show(mwin);
    return mwin;
 }
-
-#undef FONT_SIZE
