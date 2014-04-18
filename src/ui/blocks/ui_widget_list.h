@@ -184,9 +184,11 @@ ui_widget_list_part_selected_set(Evas_Object *object,
  * @param gl_styles A 'style list' object. (genlist container)
  * @param classes A Eina_Inlist pointer for loaded classes in project
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup WidgetList
  */
-void
+Eina_Bool
 ui_widget_list_class_data_reload(Evas_Object *gl_styles, Eina_Inlist *classes);
 
 /**
