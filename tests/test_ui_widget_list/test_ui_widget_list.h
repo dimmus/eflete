@@ -45,3 +45,9 @@ void ui_widget_list_layouts_reload_test_p(int);
 void ui_widget_list_layouts_reload_test_n1(int);
 void ui_widget_list_layouts_reload_test_n2(int);
 void ui_widget_list_layouts_reload_test_n3(int);
+
+void ui_widget_list_part_add_test_p(int);
+void ui_widget_list_part_add_test_n1(int);
+void ui_widget_list_part_add_test_n2(int);
+void ui_widget_list_part_add_test_n3(int);
+void ui_widget_list_part_add_test_n4(int);

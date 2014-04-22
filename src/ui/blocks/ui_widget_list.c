@@ -976,6 +976,8 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    if ((!object) || (!style) || (!name)) return false;
    part = wm_part_add(style, name);
 
+   if (!part) return false;
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
@@ -984,7 +986,7 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    elm_object_item_data_set(eoi, part);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
-   return false;
+   return true;
 }
 
 Eina_Bool
