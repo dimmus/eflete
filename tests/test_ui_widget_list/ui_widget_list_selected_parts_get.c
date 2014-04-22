@@ -22,7 +22,7 @@
 #include "test_ui_widget_list.h"
 
 /**
- * @addgroup test_ui_widget_list
+ * @addtogroup ui_widget_list_test
  * @{
  * @addtogroup ui_widget_list_selected_parts_get
  * @{

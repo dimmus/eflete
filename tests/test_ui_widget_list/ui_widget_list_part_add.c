@@ -28,7 +28,7 @@
    glit = elm_genlist_item_next_get(glit);
 
 /**
- * @addgroup test_ui_widget_list
+ * @addtogroup ui_widget_list_test
  * @{
  * @addtogroup ui_widget_list_part_add
  * @{
@@ -335,7 +335,6 @@ EFLETE_TEST (ui_widget_list_part_add_test_n4)
    elm_shutdown();
 }
 END_TEST
-
 
 /**
  * @addtogroup ui_widget_list_part_add

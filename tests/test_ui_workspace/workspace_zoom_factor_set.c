@@ -21,7 +21,7 @@
 #include "test_ui_workspace.h"
 
 /**
- * @addgroup test_ui_workspace
+ * @addtogroup test_ui_workspace
  * @{
  */
 
