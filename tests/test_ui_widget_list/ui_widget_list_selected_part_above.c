@@ -348,3 +348,5 @@ END_TEST
  * @}
  * @}
  */
+
+#undef _BEFORE_DOUBLE_CLICK

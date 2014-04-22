@@ -57,3 +57,9 @@ void ui_widget_list_selected_part_above_test_n1(int);
 void ui_widget_list_selected_part_above_test_n2(int);
 void ui_widget_list_selected_part_above_test_n3(int);
 void ui_widget_list_selected_part_above_test_n4(int);
+
+void ui_widget_list_selected_part_below_test_p(int);
+void ui_widget_list_selected_part_below_test_n1(int);
+void ui_widget_list_selected_part_below_test_n2(int);
+void ui_widget_list_selected_part_below_test_n3(int);
+void ui_widget_list_selected_part_below_test_n4(int);
