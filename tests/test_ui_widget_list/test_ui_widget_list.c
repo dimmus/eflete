@@ -51,6 +51,12 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_widget_list_part_add_test_n3);
    tcase_add_test(tcase, ui_widget_list_part_add_test_n4);
 
+   tcase_add_test(tcase, ui_widget_list_selected_part_above_test_p);
+   tcase_add_test(tcase, ui_widget_list_selected_part_above_test_n1);
+   tcase_add_test(tcase, ui_widget_list_selected_part_above_test_n2);
+   tcase_add_test(tcase, ui_widget_list_selected_part_above_test_n3);
+   tcase_add_test(tcase, ui_widget_list_selected_part_above_test_n4);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

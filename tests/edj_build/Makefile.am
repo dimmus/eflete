@@ -65,6 +65,7 @@ check: Makefile
 	$(builddir)/ui_widget_list_data_reload.edj \
 	$(builddir)/ui_widget_list_layout_reload.edj \
 	$(builddir)/ui_widget_list_part_add.edj \
+	$(builddir)/ui_widget_list_selected_part_above.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj
