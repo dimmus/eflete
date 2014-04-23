@@ -24,8 +24,8 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("alloc_test");
    TCase *tcase = tcase_create("TCase");
 
-//   tcase_add_test(tcase, mem_malloc_test_p);
-//   tcase_add_test(tcase, mem_calloc_test_p);
+   tcase_add_test(tcase, mem_malloc_test_p);
+   tcase_add_test(tcase, mem_calloc_test_p);
 
    suite_add_tcase(suite, tcase);
    return suite;

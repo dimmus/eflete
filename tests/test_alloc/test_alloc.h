@@ -21,5 +21,5 @@
 #include "utc_common.h"
 #include "config.h"
 
-//void mem_malloc_test_p(int);
-//void mem_calloc_test_p(int);
+void mem_malloc_test_p(int);
+void mem_calloc_test_p(int);

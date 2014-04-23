@@ -30,6 +30,37 @@
  * @}
  */
 
+/**
+ * @addtogroup mem_malloc
+ * @{
+ * <tr>
+ * <td>mem_malloc</td>
+ * <td>mem_malloc_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 nothing
+ *
+ * @procedure
+ * @step 1 call mem_malloc for 1024 ints
+ * @step 2 check returned pointer
+ * @step 3 check for segfault by setting 1023th int into 42.
+ * </td>
+ * <td>sizeof(int)*1024</td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (mem_malloc_test_p)
+{
+   int *mm = mem_malloc(sizeof(int)*1024);
+   ck_assert_msg(mm != NULL,
+                 "failure: cannot return pointer to the memory block allocated");
+   mm[1023] = 42;
+   free(mm);
+}
+END_TEST
 
 /**
  * @addtogroup mem_malloc
