@@ -73,7 +73,9 @@ test_alloc/mem_calloc.c
 alloc_test_CFLAGS = ${FLAGS}
 alloc_test_LDADD = ${LD}
 
-colorclass_editor_test_SOURCES = test_colorclass_editor/test_colorclass_editor.c
+colorclass_editor_test_SOURCES = \
+test_colorclass_editor/test_colorclass_editor.c \
+test_colorclass_editor/colorclass_viewer_add.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
 

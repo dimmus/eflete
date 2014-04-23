@@ -18,26 +18,9 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "test_colorclass_editor.h"
+#include "colorclass_editor.h"
+#include "ui_main_window.h"
+#include "utc_common.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("colorclass_editor_test");
-   TCase *tcase = tcase_create("TCase");
-
-   tcase_add_test(tcase, colorclass_viewer_add_test_n);
-   tcase_add_test(tcase, colorclass_viewer_add_test_p);
-
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
-
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml(runner, "test_colorclass_editor.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+void colorclass_viewer_add_test_n(int);
+void colorclass_viewer_add_test_p(int);
