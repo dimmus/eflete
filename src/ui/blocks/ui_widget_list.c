@@ -1143,7 +1143,7 @@ ui_widget_list_part_selected_set(Evas_Object *object,
 {
    Evas_Object *gl_parts;
 
-   if (!object) return false;
+   if ((!object) || (!part)) return false;
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    Elm_Object_Item *item = _genlist_find_item_by_name(gl_parts, part);

@@ -72,3 +72,8 @@ void ui_widget_list_selected_part_del_test_n3(int);
 void ui_widget_list_selected_part_get_test_p(int);
 void ui_widget_list_selected_part_get_test_n1(int);
 void ui_widget_list_selected_part_get_test_n2(int);
+
+void ui_widget_list_part_selected_set_test_p(int);
+void ui_widget_list_part_selected_set_test_n1(int);
+void ui_widget_list_part_selected_set_test_n2(int);
+void ui_widget_list_part_selected_set_test_n3(int);
