@@ -746,15 +746,17 @@ ui_widget_list_add(Evas_Object *parent)
    return nf;
 }
 
-void
+Eina_Bool
 ui_widget_list_title_set(Evas_Object *object, const char *title)
 {
    Elm_Object_Item *item_gl_widgets;
 
-   if (!object) return;
+   if ((!object) || (!title)) return false;
 
    item_gl_widgets = _widget_list_get(object);
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
+
+   return true;
 }
 
 static void
