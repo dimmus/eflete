@@ -3,6 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
+eflete_test \
 part_dialog_test \
 alloc_test \
 colorclass_editor_test \
@@ -61,6 +62,18 @@ LD = $(top_builddir)/src/libete.a \
 @EFL_LIBS@ \
 @EWE_LIBS@ \
 @ELEMENTARY_LIBS@
+
+eflete_test_SOURCES = \
+test_eflete/test_eflete.c \
+test_eflete/app_init.c \
+test_eflete/app_shutdown.c \
+test_eflete/win_layout_get.c \
+test_eflete/app_create.c \
+test_eflete/app_free.c \
+test_eflete/main_window_get.c \
+test_eflete/colorselector_get.c
+eflete_test_CFLAGS = ${FLAGS}
+eflete_test_LDADD = ${LD}
 
 part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c
 part_dialog_test_CFLAGS = ${FLAGS}
