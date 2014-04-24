@@ -37,3 +37,6 @@ void app_shutdown_test_n(int);
 
 void app_create_test_p1(int);
 void app_create_test_p2(int);
+
+void app_free_test_p(int);
+void app_free_test_n(int);
