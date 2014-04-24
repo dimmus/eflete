@@ -44,3 +44,7 @@ void app_free_test_n(int);
 void main_window_get_test_p(int);
 void main_window_get_test_n1(int);
 void main_window_get_test_n2(int);
+
+void colorselector_get_test_p(int);
+void colorselector_get_test_n1(int);
+void colorselector_get_test_n2(int);
