@@ -40,3 +40,7 @@ void app_create_test_p2(int);
 
 void app_free_test_p(int);
 void app_free_test_n(int);
+
+void main_window_get_test_p(int);
+void main_window_get_test_n1(int);
+void main_window_get_test_n2(int);
