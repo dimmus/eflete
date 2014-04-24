@@ -24,6 +24,7 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("eflete_test");
    TCase *tcase = tcase_create("TCase");
 
+   tcase_add_test(tcase, app_init_test_p);
 
    suite_add_tcase(suite, tcase);
    return suite;

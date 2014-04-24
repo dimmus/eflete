@@ -26,4 +26,4 @@
  * @defgroup eflete_test
  */
 
-
+void app_init_test_p(int);
