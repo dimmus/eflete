@@ -30,7 +30,68 @@
  * @}
  */
 
+/**
+ * @addtogroup app_create
+ * @{
+ * <tr>
+ * <td>app_create</td>
+ * <td>app_create_test_p1</td>
+ * <td>
+ * @precondition
+ * @step 1 Nothing.
+ *
+ * @procedure
+ * @step 1 call app_create
+ * @step 2 check returned pointer
+ * </td>
+ * <td>void</td>
+ * <td>Not NULL object</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (app_create_test_p1)
+{
+   ck_assert_msg(app_create() != NULL, "Cannot create empty App_Data");
+}
+END_TEST
 
+/**
+ * @addtogroup app_create
+ * @{
+ * <tr>
+ * <td>app_create</td>
+ * <td>app_create_test_p2</td>
+ * <td>
+ * @precondition
+ * @step 1 Nothing.
+ *
+ * @procedure
+ * @step 1 call app_create
+ * @step 2 check returned pointer
+ * @step 3 call app_create
+ * @step 4 check returned pointer
+ * @step 5 check that app_create returns same application data.
+ * </td>
+ * <td>void</td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (app_create_test_p2)
+{
+   App_Data *data1, *data2;
+
+   data1 = app_create();
+   ck_assert_msg(data1 != NULL, "Cannot create empty App_Data");
+   data2 = app_create();
+   ck_assert_msg(data2 != NULL, "Cannot create empty App_Data");
+   ck_assert_msg(data1 == data2, "Created two different App_Data's for one application");
+}
+END_TEST
 
 /**
  * @addtogroup app_create
