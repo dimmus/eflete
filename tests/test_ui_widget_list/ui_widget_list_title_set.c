@@ -22,7 +22,7 @@
 #include "test_ui_widget_list.h"
 
 /**
- * @addgroup test_ui_widget_list
+ * @addtogroup ui_widget_list_test
  * @{
  * @addtogroup ui_widget_list_title_set
  * @{
@@ -31,6 +31,124 @@
  * @}
  */
 
+/**
+ * @addtogroup ui_widget_list_title_set
+ * @{
+ * <tr>
+ * <td>ui_widget_list_title_set</td>
+ * <td>ui_widget_list_title_set_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 add theme extension "eflete theme".
+ * @step 3 create parent window
+ * @step 4 create widget list.
+ *
+ * @procedure
+ * @step 1 Call ui_widget_list_title_set
+ * @step 2 Check returned value
+ * </td>
+ * <td>(Evas_Object *) widget_list, (const char *)"Opened EDJ file"</td>
+ * <td>EINA_TRUE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_widget_list_title_set_test_p)
+{
+   elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   Evas_Object *parent, *widget_list;
+   Eina_Bool result = EINA_FALSE;
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   widget_list = ui_widget_list_add(parent);
+
+   result = ui_widget_list_title_set(widget_list, "Opened EDJ file");
+   ck_assert_msg(result, "Can't set title into widget list");
+
+   evas_object_del(parent);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_widget_list_title_set
+ * @{
+ * <tr>
+ * <td>ui_widget_list_title_set</td>
+ * <td>ui_widget_list_title_set_test_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 add theme extension "eflete theme".
+ * @step 3 create parent window
+ * @step 4 create widget list.
+ *
+ * @procedure
+ * @step 1 Call ui_widget_list_title_set
+ * @step 2 Check returned value
+ * </td>
+ * <td>(Evas_Object *) widget_list, NULL</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_widget_list_title_set_test_n1)
+{
+   elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   Evas_Object *parent, *widget_list;
+   Eina_Bool result = EINA_FALSE;
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   widget_list = ui_widget_list_add(parent);
+
+   result = ui_widget_list_title_set(widget_list, NULL);
+   ck_assert_msg(!result, "NULL was set as title into widget list");
+
+   evas_object_del(parent);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_widget_list_title_set
+ * @{
+ * <tr>
+ * <td>ui_widget_list_title_set</td>
+ * <td>ui_widget_list_title_set_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 Call ui_widget_list_title_set
+ * @step 2 Check returned value
+ * </td>
+ * <td>NULL, NULL</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_widget_list_title_set_test_n2)
+{
+   elm_init(0, 0);
+   Eina_Bool result = EINA_FALSE;
+
+   result = ui_widget_list_title_set(NULL, NULL);
+   ck_assert_msg(!result, "NULL was set as title into widget list");
+
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup ui_widget_list_title_set

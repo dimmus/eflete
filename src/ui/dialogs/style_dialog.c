@@ -25,6 +25,11 @@
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;
 
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = STYLE_NAME_BANNED_SYMBOLS
+};
+
 static Widget *
 _widget_from_ap_get(App_Data *ap)
 {
@@ -329,25 +334,21 @@ style_dialog_add(App_Data *ap)
    BOX_ADD(popup, box, false, false);
 
    EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
    ewe_entry_label_visible_set(entry_style, EINA_TRUE);
    ewe_entry_label_text_set(entry_style, "Style name:");
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
-   ewe_entry_regex_set(entry_style, STYLE_NAME_REGEX, EWE_REG_ICASE);
-   ewe_entry_regex_glow_set(entry_style, EINA_TRUE);
-   ewe_entry_regex_autocheck_set(entry_style, EINA_TRUE);
 
    class_st = _class_from_ap_get(ap);
    if (!class_st) return;
    entry_text = eina_stringshare_add(class_st->name);
 
    EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
    ewe_entry_label_visible_set(entry_class, EINA_TRUE);
    ewe_entry_label_text_set(entry_class, "Class name:");
    elm_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
-   ewe_entry_regex_set(entry_class, STYLE_NAME_REGEX, EWE_REG_ICASE);
-   ewe_entry_regex_glow_set(entry_class, EINA_TRUE);
-   ewe_entry_regex_autocheck_set(entry_class, EINA_TRUE);
 
    elm_box_pack_end(box, entry_style);
    elm_box_pack_end(box, entry_class);

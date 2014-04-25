@@ -64,9 +64,11 @@ ui_widget_list_add(Evas_Object *parent);
  * @param object A 'widget list' object
  * @param title The title string
  *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
  * @ingroup WidgetList
  */
-void
+Eina_Bool
 ui_widget_list_title_set(Evas_Object *object, const char *title);
 
 /**

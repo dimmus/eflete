@@ -21,7 +21,7 @@
 #include "test_ui_workspace.h"
 
 /**
- * @addgroup ui_workspace_test
+ * @addtogroup ui_workspace_test
  * @{
  * @addtogroup workspace_edit_object_visible_set
  * @{

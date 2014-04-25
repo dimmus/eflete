@@ -18,66 +18,31 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-
-#include "test_ui_widget_list.h"
+#include "test_colorclass_editor.h"
 
 /**
- * @addtogroup ui_widget_list_test
+ * @addtogroup colorclass_editor_test
  * @{
- * @addtogroup ui_widget_list_add
+ * @addtogroup colorclass_viewer_add
  * @{
- * ui_widget_list
+ * Color Class
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup ui_widget_list_add
+ * @addtogroup colorclass_viewer_add
  * @{
  * <tr>
- * <td>ui_widget_list_add</td>
- * <td>ui_widget_list_add_test_p</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 create parent window
- *
- * @procedure
- * @step 1 Call ui_widget_list_add
- * @step 2 Check returned pointer
- * </td>
- * <td>(Evas_Object *) parent</td>
- * <td>Returned pointer not NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_widget_list_add_test_p)
-{
-   elm_init(0, 0);
-   Evas_Object *parent, *widget_list;
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   widget_list = ui_widget_list_add(parent);
-   ck_assert_msg(widget_list != NULL, "Failed create widget list object.");
-   evas_object_del(parent);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_widget_list_add
- * @{
- * <tr>
- * <td>ui_widget_list_add</td>
- * <td>ui_widget_list_add_test_n</td>
+ * <td>colorclass_viewer_add</td>
+ * <td>colorclass_viewer_add_test_n</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 Call ui_widget_list_add
- * @step 2 Check returned pointer
+ * @step 1 call colorclass_viewer_add
+ * @step 2 check returned pointer
  * </td>
  * <td>NULL</td>
  * <td>NULL pointer returned</td>
@@ -86,18 +51,60 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (ui_widget_list_add_test_n)
+EFLETE_TEST (colorclass_viewer_add_test_n)
 {
-   elm_init(0, 0);
-   Evas_Object *widget_list;
-   widget_list = ui_widget_list_add(NULL);
-   ck_assert_msg(widget_list == NULL, "Create widget list object without parent.");
+   elm_init(0,0);
+
+   ck_assert_msg(colorclass_viewer_add(NULL) == NULL, "Not NULL returned");
+
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_widget_list_add
+ * @addtogroup colorclass_viewer_add
+ * @{
+ * <tr>
+ * <td>colorclass_viewer_add</td>
+ * <td>colorclass_viewer_add_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 initialize application data
+ * @step 3 create empty Project
+ * @step 4 create main window
+ *
+ * @procedure
+ * @step 1 call colorclass_viewer_add
+ * @step 2 check returned pointer
+ * </td>
+ * <td>(Project *)project</td>
+ * <td>Evas_Object returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (colorclass_viewer_add_test_p)
+{
+   elm_init(0,0);
+   App_Data *app;
+
+   app_init();
+   app = app_create();
+   app->project = calloc(1, sizeof(Project));
+   ui_main_window_add(app);
+
+   ck_assert_msg(colorclass_viewer_add(app->project) != NULL, "failure: cannot"
+      " create image editor window");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup colorclass_viewer_add
  * @{
  * </TABLE>
  * @}

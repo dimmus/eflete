@@ -18,14 +18,17 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "test_colorclass_editor.h"
+#include "test_eflete.h"
 
 Suite* test_suite (void) {
-   Suite *suite = suite_create("colorclass_editor_test");
+   Suite *suite = suite_create("eflete_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, colorclass_viewer_add_test_n);
-   tcase_add_test(tcase, colorclass_viewer_add_test_p);
+   tcase_add_test(tcase, app_init_test_p);
+
+   tcase_add_test(tcase, win_layout_get_test_p);
+   tcase_add_test(tcase, win_layout_get_test_n1);
+   tcase_add_test(tcase, win_layout_get_test_n2);
 
    suite_add_tcase(suite, tcase);
    return suite;
@@ -35,7 +38,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml(runner, "test_colorclass_editor.xml");
+   srunner_set_xml (runner, "test_eflete.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

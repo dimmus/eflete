@@ -18,26 +18,54 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "test_colorclass_editor.h"
+#include "test_eflete.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("colorclass_editor_test");
-   TCase *tcase = tcase_create("TCase");
+/**
+ * @addtogroup eflete_test
+ * @{
+ * @addtogroup app_init
+ * @{
+ * eflete
+ * <TABLE>
+ * @}
+ */
 
-   tcase_add_test(tcase, colorclass_viewer_add_test_n);
-   tcase_add_test(tcase, colorclass_viewer_add_test_p);
+/**
+ * @addtogroup app_init
+ * @{
+ * <tr>
+ * <td>app_init</td>
+ * <td>app_init_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call app_init
+ * @step 2 check returned pointer
+ * </td>
+ * <td>void</td>
+ * <td>EINA_TRUE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (app_init_test_p)
+{
+   elm_init(0,0);
 
-   suite_add_tcase(suite, tcase);
-   return suite;
+   ck_assert_msg(app_init() == EINA_TRUE, "failure: libraries was failed to init");
+
+   elm_shutdown();
 }
+END_TEST
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml(runner, "test_colorclass_editor.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+
+/**
+ * @addtogroup app_init
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */

@@ -3,6 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
+eflete_test \
 part_dialog_test \
 alloc_test \
 colorclass_editor_test \
@@ -62,15 +63,34 @@ LD = $(top_builddir)/src/libete.a \
 @EWE_LIBS@ \
 @ELEMENTARY_LIBS@
 
-part_dialog_test_SOURCES = test_part_dialog/test_part_dialog.c
+eflete_test_SOURCES = \
+test_eflete/test_eflete.c \
+test_eflete/app_init.c \
+test_eflete/app_shutdown.c \
+test_eflete/win_layout_get.c \
+test_eflete/app_create.c \
+test_eflete/app_free.c \
+test_eflete/main_window_get.c \
+test_eflete/colorselector_get.c
+eflete_test_CFLAGS = ${FLAGS}
+eflete_test_LDADD = ${LD}
+
+part_dialog_test_SOURCES = \
+test_part_dialog/test_part_dialog.c \
+test_part_dialog/part_dialog_add.c
 part_dialog_test_CFLAGS = ${FLAGS}
 part_dialog_test_LDADD = ${LD}
 
-alloc_test_SOURCES = test_alloc/test_alloc.c
+alloc_test_SOURCES = \
+test_alloc/test_alloc.c \
+test_alloc/mem_malloc.c \
+test_alloc/mem_calloc.c
 alloc_test_CFLAGS = ${FLAGS}
 alloc_test_LDADD = ${LD}
 
-colorclass_editor_test_SOURCES = test_colorclass_editor/test_colorclass_editor.c
+colorclass_editor_test_SOURCES = \
+test_colorclass_editor/test_colorclass_editor.c \
+test_colorclass_editor/colorclass_viewer_add.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
 
@@ -253,12 +273,11 @@ test_ui_widget_list/ui_widget_list_class_data_reload.c \
 test_ui_widget_list/ui_widget_list_data_set.c \
 test_ui_widget_list/ui_widget_list_layouts_reload.c \
 test_ui_widget_list/ui_widget_list_part_add.c \
-test_ui_widget_list/ui_widget_list_part_get.c \
 test_ui_widget_list/ui_widget_list_selected_part_above.c \
 test_ui_widget_list/ui_widget_list_selected_part_below.c \
 test_ui_widget_list/ui_widget_list_selected_part_del.c \
 test_ui_widget_list/ui_widget_list_selected_part_get.c \
-test_ui_widget_list/ui_widget_list_selected_part_set.c \
+test_ui_widget_list/ui_widget_list_part_selected_set.c \
 test_ui_widget_list/ui_widget_list_selected_parts_get.c \
 test_ui_widget_list/ui_widget_list_title_set.c
 ui_widget_list_test_CFLAGS = ${FLAGS}

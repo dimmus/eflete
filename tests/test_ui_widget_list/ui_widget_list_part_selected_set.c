@@ -30,7 +30,7 @@
 /**
  * @addtogroup ui_widget_list_test
  * @{
- * @addtogroup ui_widget_list_selected_part_above
+ * @addtogroup ui_widget_list_part_selected_set
  * @{
  * ui_widget_list
  * <TABLE>
@@ -38,214 +38,11 @@
  */
 
 /**
- * @addtogroup ui_widget_list_selected_part_above
+ * @addtogroup ui_widget_list_part_selected_set
  * @{
  * <tr>
- * <td>ui_widget_list_selected_part_above</td>
- * <td>ui_widget_list_selected_part_above_test_p</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 create parent window
- * @step 4 open project into Project structure. Use edj file,
- *         wich contain widgets and layout groups.
- * @step 5 create widget list.
- * @step 6 set data into widget list.
- * @step 7 double click on widget in widget list
- * @step 8 Get currently selected Style structure
- * @step 9 double click on class/style in widget list
- * @step 10 Select second part (so it can be moved above to the first place).
- *
- * @procedure
- * @step 1 Call ui_widget_list_selected_part_above
- * @step 2 Check returned value
- * </td>
- * <td>(Evas_Object *) widget_list, (Style *) style</td>
- * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_widget_list_selected_part_above_test_p)
-{
-   elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
-   Evas_Object *parent, *widget_list, *glist;
-   Project *project = NULL;
-   Eina_Bool result = EINA_FALSE;
-   Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_above.edj";
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", edj_path);
-   widget_list = ui_widget_list_add(parent);
-   ui_widget_list_data_set(widget_list, project);
-   /********Choosing widget, so widget list contain parts********/
-   /* Double-click on widget*/
-   _BEFORE_DOUBLE_CLICK
-   evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /* Double-click on style*/
-   _BEFORE_DOUBLE_CLICK
-   glit = elm_genlist_item_next_get(glit);
-   Style *_style = elm_object_item_data_get(glit);
-   evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /* select second part, so it can be move above or below */
-   _BEFORE_DOUBLE_CLICK
-   elm_genlist_item_selected_set(glit, EINA_TRUE);
-   /*************************************************************/
-
-   result = ui_widget_list_selected_part_above(widget_list, _style);
-   ck_assert_msg(result, "Failed to move part above");
-
-   evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_widget_list_selected_part_above
- * @{
- * <tr>
- * <td>ui_widget_list_selected_part_above</td>
- * <td>ui_widget_list_selected_part_above_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 create parent window
- * @step 4 open project into Project structure. Use edj file,
- *         wich contain widgets and layout groups.
- * @step 5 create widget list.
- * @step 6 set data into widget list.
- * @step 7 double click on widget in widget list
- * @step 8 Get currently selected Style structure
- * @step 9 double click on class/style in widget list
- * @step 10 Do not select any parts (unselected all parts in widget_list).
- *
- * @procedure
- * @step 1 Call ui_widget_list_selected_part_above
- * @step 2 Check returned value
- * </td>
- * <td>(Evas_Object *) widget_list, (Style *) style</td>
- * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_widget_list_selected_part_above_test_n1)
-{
-   elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
-   Evas_Object *parent, *widget_list, *glist;
-   Project *project = NULL;
-   Eina_Bool result = EINA_FALSE;
-   Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_above.edj";
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", edj_path);
-   widget_list = ui_widget_list_add(parent);
-   ui_widget_list_data_set(widget_list, project);
-   /********Choosing widget, so widget list contain parts********/
-   /* Double-click on widget*/
-   _BEFORE_DOUBLE_CLICK
-   evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /* Double-click on style*/
-   _BEFORE_DOUBLE_CLICK
-   glit = elm_genlist_item_next_get(glit);
-   Style *_style = elm_object_item_data_get(glit);
-   evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /*************************************************************/
-
-   result = ui_widget_list_selected_part_above(widget_list, _style);
-   ck_assert_msg(!result, "Something was moved above");
-
-   evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_widget_list_selected_part_above
- * @{
- * <tr>
- * <td>ui_widget_list_selected_part_above</td>
- * <td>ui_widget_list_selected_part_above_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 create parent window
- * @step 4 open project into Project structure. Use edj file,
- *         wich contain widgets and layout groups.
- * @step 5 create widget list.
- * @step 6 set data into widget list.
- * @step 7 double click on widget in widget list
- * @step 8 Get currently selected Style structure
- * @step 9 double click on class/style in widget list
- * @step 10 Select first part.
- *
- * @procedure
- * @step 1 Call ui_widget_list_selected_part_above
- * @step 2 Check returned value
- * </td>
- * <td>(Evas_Object *) widget_list, (Style *) style</td>
- * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (ui_widget_list_selected_part_above_test_n2)
-{
-   elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
-   Evas_Object *parent, *widget_list, *glist;
-   Project *project = NULL;
-   Eina_Bool result = EINA_FALSE;
-   Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_above.edj";
-
-   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", edj_path);
-   widget_list = ui_widget_list_add(parent);
-   ui_widget_list_data_set(widget_list, project);
-   /********Choosing widget, so widget list contain parts********/
-   /* Double-click on widget*/
-   _BEFORE_DOUBLE_CLICK
-   evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /* Double-click on style*/
-   _BEFORE_DOUBLE_CLICK
-   glit = elm_genlist_item_next_get(glit);
-   Style *_style = elm_object_item_data_get(glit);
-   evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /* select first part, so it can't be moved above */
-   eoi = elm_naviframe_top_item_get(widget_list);
-   glist = elm_object_item_part_content_get(eoi, "elm.swallow.content");
-   glit = elm_genlist_first_item_get(glist);
-   elm_genlist_item_selected_set(glit, EINA_TRUE);
-   /*************************************************************/
-
-   result = ui_widget_list_selected_part_above(widget_list, _style);
-   ck_assert_msg(!result, "Something was moved above");
-
-   evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_widget_list_selected_part_above
- * @{
- * <tr>
- * <td>ui_widget_list_selected_part_above</td>
- * <td>ui_widget_list_selected_part_above_test_n3</td>
+ * <td>ui_widget_list_part_selected_set</td>
+ * <td>ui_widget_list_part_selected_set_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -257,20 +54,19 @@ END_TEST
  * @step 6 set data into widget list.
  * @step 7 double click on widget in widget list
  * @step 8 double click on class/style in widget list
- * @step 9 Select first part.
  *
  * @procedure
- * @step 1 Call ui_widget_list_selected_part_above
+ * @step 1 Call ui_widget_list_part_selected_set for selecting existed part
  * @step 2 Check returned value
  * </td>
- * <td>(Evas_Object *) widget_list, NULL</td>
- * <td>EINA_FALSE</td>
+ * <td>(Evas_Object *) widget_list, (const char *) part = "bg", EINA_TRUE</td>
+ * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (ui_widget_list_selected_part_above_test_n3)
+EFLETE_TEST (ui_widget_list_part_selected_set_test_p)
 {
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
@@ -278,7 +74,7 @@ EFLETE_TEST (ui_widget_list_selected_part_above_test_n3)
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_above.edj";
+   const char *edj_path = "./edj_build/ui_widget_list_part_selected_set.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    project = pm_open_project_edj("UTC", edj_path);
@@ -292,15 +88,10 @@ EFLETE_TEST (ui_widget_list_selected_part_above_test_n3)
    _BEFORE_DOUBLE_CLICK
    glit = elm_genlist_item_next_get(glit);
    evas_object_smart_callback_call(glist, "clicked,double", glit);
-   /* select first part, so it can't be moved above */
-   eoi = elm_naviframe_top_item_get(widget_list);
-   glist = elm_object_item_part_content_get(eoi, "elm.swallow.content");
-   glit = elm_genlist_first_item_get(glist);
-   elm_genlist_item_selected_set(glit, EINA_TRUE);
    /*************************************************************/
 
-   result = ui_widget_list_selected_part_above(widget_list, NULL);
-   ck_assert_msg(!result, "Something was moved above");
+   result = ui_widget_list_part_selected_set(widget_list, "bg", EINA_TRUE);
+   ck_assert_msg(result, "Can't select part");
 
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
@@ -309,40 +100,164 @@ EFLETE_TEST (ui_widget_list_selected_part_above_test_n3)
 END_TEST
 
 /**
- * @addtogroup ui_widget_list_selected_part_above
+ * @addtogroup ui_widget_list_part_selected_set
  * @{
  * <tr>
- * <td>ui_widget_list_selected_part_above</td>
- * <td>ui_widget_list_selected_part_above_test_n4</td>
+ * <td>ui_widget_list_part_selected_set</td>
+ * <td>ui_widget_list_part_selected_set_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
+ * @step 2 add theme extension "eflete theme".
+ * @step 3 create parent window
+ * @step 4 open project into Project structure. Use edj file,
+ *         wich contain widgets and layout groups.
+ * @step 5 create widget list.
+ * @step 6 set data into widget list.
+ * @step 7 double click on widget in widget list
+ * @step 8 double click on class/style in widget list
  *
  * @procedure
- * @step 1 Call ui_widget_list_selected_part_above
+ * @step 1 Call ui_widget_list_part_selected_set for selecting not existed part
  * @step 2 Check returned value
  * </td>
- * <td>NULL, NULL</td>
+ * <td>(Evas_Object *) widget_list, (const char *) part = "part_name_here", EINA_TRUE</td>
  * <td>EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (ui_widget_list_selected_part_above_test_n4)
+EFLETE_TEST (ui_widget_list_part_selected_set_test_n1)
 {
    elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   Evas_Object *parent, *widget_list, *glist;
+   Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
+   Elm_Object_Item *glit, *eoi;
+   const char *edj_path = "./edj_build/ui_widget_list_part_selected_set.edj";
 
-   result = ui_widget_list_selected_part_above(NULL, NULL);
-   ck_assert_msg(!result, "Something was moved above");
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   project = pm_open_project_edj("UTC", edj_path);
+   widget_list = ui_widget_list_add(parent);
+   ui_widget_list_data_set(widget_list, project);
+   /********Choosing widget, so widget list contain parts********/
+   /* Double-click on widget*/
+   _BEFORE_DOUBLE_CLICK
+   evas_object_smart_callback_call(glist, "clicked,double", glit);
+   /* Double-click on style*/
+   _BEFORE_DOUBLE_CLICK
+   glit = elm_genlist_item_next_get(glit);
+   evas_object_smart_callback_call(glist, "clicked,double", glit);
+   /*************************************************************/
+
+   result = ui_widget_list_part_selected_set(widget_list, "part_name_here", EINA_TRUE);
+   ck_assert_msg(!result, "Unexisted part was selected");
+
+   evas_object_del(parent);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_widget_list_part_selected_set
+ * @{
+ * <tr>
+ * <td>ui_widget_list_part_selected_set</td>
+ * <td>ui_widget_list_part_selected_set_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 add theme extension "eflete theme".
+ * @step 3 create parent window
+ * @step 4 open project into Project structure. Use edj file,
+ *         wich contain widgets and layout groups.
+ * @step 5 create widget list.
+ * @step 6 set data into widget list.
+ * @step 7 double click on widget in widget list
+ * @step 8 double click on class/style in widget list
+ *
+ * @procedure
+ * @step 1 Call ui_widget_list_part_selected_set
+ * @step 2 Check returned value
+ * </td>
+ * <td>(Evas_Object *) widget_list, NULL, EINA_TRUE</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_widget_list_part_selected_set_test_n2)
+{
+   elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   Evas_Object *parent, *widget_list, *glist;
+   Project *project = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Elm_Object_Item *glit, *eoi;
+   const char *edj_path = "./edj_build/ui_widget_list_part_selected_set.edj";
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   project = pm_open_project_edj("UTC", edj_path);
+   widget_list = ui_widget_list_add(parent);
+   ui_widget_list_data_set(widget_list, project);
+   /********Choosing widget, so widget list contain parts********/
+   /* Double-click on widget*/
+   _BEFORE_DOUBLE_CLICK
+   evas_object_smart_callback_call(glist, "clicked,double", glit);
+   /* Double-click on style*/
+   _BEFORE_DOUBLE_CLICK
+   glit = elm_genlist_item_next_get(glit);
+   evas_object_smart_callback_call(glist, "clicked,double", glit);
+   /*************************************************************/
+
+   result = ui_widget_list_part_selected_set(widget_list, NULL, EINA_TRUE);
+   ck_assert_msg(!result, "NULL was selected in widget list");
+
+   evas_object_del(parent);
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup ui_widget_list_part_selected_set
+ * @{
+ * <tr>
+ * <td>ui_widget_list_part_selected_set</td>
+ * <td>ui_widget_list_part_selected_set_test_n3</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 Call ui_widget_list_part_selected_set
+ * @step 2 Check returned value
+ * </td>
+ * <td>NULL, NULL, EINA_TRUE</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (ui_widget_list_part_selected_set_test_n3)
+{
+   elm_init(0, 0);
+   Eina_Bool result;
+
+   result = ui_widget_list_part_selected_set(NULL, NULL, EINA_TRUE);
+   ck_assert_msg(!result, "NULL was selected in widget list");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_widget_list_selected_part_above
+ * @addtogroup ui_widget_list_part_selected_set
  * @{
  * </TABLE>
  * @}

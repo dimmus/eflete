@@ -23,15 +23,19 @@
 #define CURSOR_KEY "eflete_cursor"
 
 Eina_Bool
-cursor_main_set(Cursor_Type type __UNUSED__)
+cursor_main_set(Evas_Object *win, Cursor_Type type __UNUSED__)
 {
+   if (!win) return false;
+
    return false;
 }
 
 Cursor_Type
-cursor_main_get(void)
+cursor_main_get(Evas_Object *win)
 {
-   return CURSOR_SYSTEM;
+   if (!win) return CURSOR_UNKNOWN;
+
+   return CURSOR_UNKNOWN;
 }
 
 Eina_Bool

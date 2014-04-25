@@ -18,24 +18,16 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-
-#include "test_ui_widget_list.h"
-
-/**
- * @addgroup test_ui_widget_list
- * @{
- * @addtogroup ui_widget_list_part_get
- * @{
- * ui_widget_list
- * <TABLE>
- * @}
- */
-
+#include "utc_common.h"
+#include "eflete.h"
+#include "ui_main_window.h"
 
 /**
- * @addtogroup ui_widget_list_part_get
- * @{
- * </TABLE>
- * @}
- * @}
+ * @defgroup eflete_test
  */
+
+void app_init_test_p(int);
+
+void win_layout_get_test_p(int);
+void win_layout_get_test_n1(int);
+void win_layout_get_test_n2(int);

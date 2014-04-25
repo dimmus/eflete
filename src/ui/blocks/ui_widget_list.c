@@ -746,15 +746,17 @@ ui_widget_list_add(Evas_Object *parent)
    return nf;
 }
 
-void
+Eina_Bool
 ui_widget_list_title_set(Evas_Object *object, const char *title)
 {
    Elm_Object_Item *item_gl_widgets;
 
-   if (!object) return;
+   if ((!object) || (!title)) return false;
 
    item_gl_widgets = _widget_list_get(object);
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
+
+   return true;
 }
 
 static void
@@ -976,6 +978,8 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    if ((!object) || (!style) || (!name)) return false;
    part = wm_part_add(style, name);
 
+   if (!part) return false;
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
@@ -984,7 +988,7 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    elm_object_item_data_set(eoi, part);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
-   return false;
+   return true;
 }
 
 Eina_Bool
@@ -1141,7 +1145,7 @@ ui_widget_list_part_selected_set(Evas_Object *object,
 {
    Evas_Object *gl_parts;
 
-   if (!object) return false;
+   if ((!object) || (!part)) return false;
    gl_parts = elm_object_item_part_content_get(_widget_list_get(object),
                                                "elm.swallow.content");
    Elm_Object_Item *item = _genlist_find_item_by_name(gl_parts, part);
