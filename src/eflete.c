@@ -62,11 +62,13 @@ colorselector_get(void)
    return ap->colorsel;
 }
 
-void
+Eina_Bool
 app_free(App_Data *ap)
 {
+   if (!ap) return false;
    /*TODO: here need delete all created objects from ap! */
-   if (ap) free(ap);
+   free(ap);
+   return true;
 }
 
 Eina_Bool
@@ -130,11 +132,10 @@ app_init()
    return true;
 }
 
-void
+Eina_Bool
 app_shutdown()
 {
    config_shutdown();
-   app_free(ap);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    eina_shutdown();
    efreet_shutdown();
@@ -142,6 +143,12 @@ app_shutdown()
    edje_shutdown();
    logger_shutdown();
    ewe_shutdown();
+   if (!app_free(ap))
+     {
+        CRIT("Can't free application data.");
+        return false;
+     }
+   return true;
 }
 
 #undef CHECK_AP

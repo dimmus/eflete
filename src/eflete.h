@@ -119,9 +119,12 @@ app_init(void);
  * (custom EDC needed for this program) and shutdown all launched
  * and inited libraries.
  *
+ * @return EINA_TRUE all libraries initialized succesfully.
+ * EINA_FALSE one of the libraries was failed to inti.
+ *
  * @ingroup EFLETE
  */
-void
+Eina_Bool
 app_shutdown(void);
 
 /**
@@ -151,9 +154,12 @@ app_create(void);
  *
  * @param ap - App_Data of this program for removing before program shutdown.
  *
+ * @return EINA_TRUE application data freed succesfully.
+ * EINA_FALSE failed to free application data.
+ *
  * @ingroup EFLETE
  */
-void
+Eina_Bool
 app_free(App_Data *ap);
 
 /**
