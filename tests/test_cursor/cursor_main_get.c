@@ -40,12 +40,13 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 set the CURSOR_ARROW as main
+ * @step 2 create window
+ * @step 3 set the CURSOR_ARROW as main
  *
  * @procedure
  * @step 1 call cursor_main_get
  * </td>
- * <td>void</td>
+ * <td>(Evas_Object *) win</td>
  * <td>(Cursor_Type) CURSOR_ARROW</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -54,13 +55,16 @@
  */
 EFLETE_TEST(cursor_main_get_test_p1)
 {
-   elm_init(0,0);
-   cursor_main_set(CURSOR_ARROW);
+   Evas_Object *win;
 
-   ck_assert_msg(cursor_main_get() != CURSOR_ARROW,
+   elm_init(0,0);
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   cursor_main_set(win, CURSOR_ARROW);
+
+   ck_assert_msg(cursor_main_get(win) != CURSOR_ARROW,
                  "Main cursor return not valid cursor.");
 
-   config_shutdown();
+   evas_object_del(win);
    elm_shutdown();
 }
 END_TEST
@@ -74,12 +78,12 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 set the CURSOR_SYSTEM as main
+ * @step 2 create window
  *
  * @procedure
  * @step 1 call cursor_main_get
  * </td>
- * <td>void</td>
+ * <td>(Evas_Object *) win</td>
  * <td>CURSOR_SYSTEM</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -88,13 +92,15 @@ END_TEST
  */
 EFLETE_TEST(cursor_main_get_test_p2)
 {
-   elm_init(0,0);
-   cursor_main_set(CURSOR_SYSTEM);
+   Evas_Object *win;
 
-   ck_assert_msg(cursor_main_get() != CURSOR_SYSTEM,
+   elm_init(0,0);
+   win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+
+   ck_assert_msg(cursor_main_get(win) != CURSOR_SYSTEM,
                  "Main cursor return not valid cursor.");
 
-   config_shutdown();
+   evas_object_del(win);
    elm_shutdown();
 }
 END_TEST
@@ -112,7 +118,7 @@ END_TEST
  * @procedure
  * @step 1 call cursor_main_get
  * </td>
- * <td>void</td>
+ * <td>NULL</td>
  * <td>CURSOR_SYSTEM</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -123,7 +129,7 @@ EFLETE_TEST(cursor_main_get_test_n)
 {
    elm_init(0,0);
 
-   ck_assert_msg(cursor_main_get() != CURSOR_SYSTEM,
+   ck_assert_msg(cursor_main_get(NULL) != CURSOR_UNKNOWN,
                  "Main cursor return not valid cursor.");
 
    elm_shutdown();

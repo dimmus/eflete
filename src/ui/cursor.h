@@ -56,6 +56,7 @@ typedef enum _Cursor_Type Cursor_Type;
  * parts, except objects that setted cursor personaly, using
  * @ref cursor_style_set ["cursor_style_set()"]
  *
+ * @param win The window will be set the cursor.
  * @param type The cursor type
  *
  * @return EINA_TRUE if cursor setted or EINA_FALSE overwise.
@@ -67,17 +68,19 @@ typedef enum _Cursor_Type Cursor_Type;
  * @ingroup Cursor
  */
 Eina_Bool
-cursor_main_set(Cursor_Type type);
+cursor_main_set(Evas_Object *win, Cursor_Type type);
 
 /**
  * Get the currset main cursor type.
+ *
+ * @param win The window which want to know main cursor.
  *
  * @return The cursor type.
  *
  * @ingroup Cursor
  */
 Cursor_Type
-cursor_main_get(void);
+cursor_main_get(Evas_Object *win);
 
 /**
  * Set the cursor to be shown when the mouse is over the object.
