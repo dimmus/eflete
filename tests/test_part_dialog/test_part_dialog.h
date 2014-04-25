@@ -26,4 +26,8 @@
  * @defgroup test_part_dialog
  */
 
-
+void part_dialog_add_test_p(int);
+void part_dialog_add_test_n1(int);
+void part_dialog_add_test_n2(int);
+void part_dialog_add_test_n3(int);
+void part_dialog_add_test_n4(int);
