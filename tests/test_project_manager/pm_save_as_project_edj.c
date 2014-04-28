@@ -30,6 +30,85 @@
  * @}
  */
 
+/**
+ * @addtogroup pm_save_as_project_edj
+ * @{
+ * <tr>
+ * <td>pm_save_as_project_edj</td>
+ * <td>pm_save_as_project_edj_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 Open edj project.
+ *
+ * @procedure
+ * @step 1 Call function pm_save_as_project_edj(project, "./edj_build/NEWpm_save_as_project_edj.edj")
+ * @step 2 Check returned value.
+ * </td>
+ * <td>Project *project, (const char *)dest = "./edj_build/NEWpm_save_as_project_edj.edj"</td>
+ * <td>EINA_TRUE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (pm_save_as_project_edj_test_p)
+{
+   elm_init(0,0);
+   char *name, *path, *dest;
+   name = "radio_test";
+   path = "./edj_build/pm_save_as_project_edj.edj";
+   dest = "./edj_build/NEWpm_save_as_project_edj.edj";
+   Project* pro = pm_open_project_edj(name, path);
+
+   ck_assert_msg(pm_save_as_project_edj(pro, dest) == EINA_TRUE, "Can't save project to edj");
+
+   pm_project_close(pro);
+   elm_shutdown();
+}
+END_TEST
+
+
+/**
+ * @addtogroup pm_save_as_project_edj
+ * @{
+ * <tr>
+ * <td>pm_save_as_project_edj</td>
+ * <td>pm_save_as_project_edj_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ * @step 2 Open edj project.
+ *
+ * @procedure
+ * @step 1 Call function pm_save_as_project_edj(project, NULL)
+ * @step 2 Check returned value.
+ * @step 3 Call function pm_save_as_project_edj(NULL, "./edj_build/NEWpm_save_as_project_edj.edj")
+ * @step 4 Check returned value.
+ * @step 5 Call function pm_save_as_project_edj(NULL, NULL)
+ * @step 6 Check returned value.
+ * </td>
+ * <td>NULL, NULL</td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (pm_save_as_project_edj_test_n)
+{
+   elm_init(0,0);
+   char *name, *path, *dest;
+   name = "radio_test";
+   path = "./edj_build/pm_save_as_project_edj.edj";
+   dest = "./edj_build/NEWpm_save_as_project_edj.edj";
+   Project* pro = pm_open_project_edj(name, path);
+
+   ck_assert_msg(pm_save_as_project_edj(NULL, NULL) == EINA_FALSE, "Saved NULL project");
+
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup pm_save_as_project_edj
