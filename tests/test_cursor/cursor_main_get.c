@@ -61,7 +61,7 @@ EFLETE_TEST(cursor_main_get_test_p1)
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    cursor_main_set(win, CURSOR_ARROW);
 
-   ck_assert_msg(cursor_main_get(win) != CURSOR_ARROW,
+   ck_assert_msg(cursor_main_get(win) == CURSOR_ARROW,
                  "Main cursor return not valid cursor.");
 
    evas_object_del(win);
@@ -97,7 +97,7 @@ EFLETE_TEST(cursor_main_get_test_p2)
    elm_init(0,0);
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   ck_assert_msg(cursor_main_get(win) != CURSOR_SYSTEM,
+   ck_assert_msg(cursor_main_get(win) == CURSOR_SYSTEM,
                  "Main cursor return not valid cursor.");
 
    evas_object_del(win);

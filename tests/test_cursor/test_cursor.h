@@ -30,9 +30,9 @@ void cursor_main_get_test_p1(int);
 void cursor_main_get_test_p2(int);
 void cursor_main_get_test_n(int);
 
-void cursor_style_set_test_p(int);
-void cursor_style_set_test_n1(int);
-void cursor_style_set_test_n2(int);
+void cursor_type_set_test_p(int);
+void cursor_type_set_test_n1(int);
+void cursor_type_set_test_n2(int);
 
-void cursor_style_get_test_p(int);
-void cursor_style_get_test_n(int);
+void cursor_type_get_test_p(int);
+void cursor_type_get_test_n(int);

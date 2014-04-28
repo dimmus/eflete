@@ -187,8 +187,8 @@ cursor_test_SOURCES = \
 test_cursor/test_cursor.c \
 test_cursor/cursor_main_set.c \
 test_cursor/cursor_main_get.c \
-test_cursor/cursor_style_set.c \
-test_cursor/cursor_style_get.c
+test_cursor/cursor_type_set.c \
+test_cursor/cursor_type_get.c
 cursor_test_CFLAGS = ${FLAGS}
 cursor_test_LDADD = ${LD}
 

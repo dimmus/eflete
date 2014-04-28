@@ -21,6 +21,7 @@
 #include "highlight.h"
 #include "alloc.h"
 #include "common_macro.h"
+#include "cursor.h"
 
 #define SIZE 30
 #define MINSIZE 120 /* 120 * 0.25 = 30 */
@@ -471,6 +472,23 @@ _handler_object_add(Evas_Object *parent,
                                   _handler_mouse_in_cb, highlight);
    evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_OUT,
                                   _handler_mouse_out_cb, highlight);
+   switch (descr)
+     {
+      case RB:
+         cursor_type_set(border, CURSOR_BOTTOM_RIGHT_CORNER);
+         break;
+      case RT:
+         cursor_type_set(border, CURSOR_TOP_RIGHT_CORNER);
+         break;
+      case LB:
+         cursor_type_set(border, CURSOR_BOTTOM_LEFT_CORNER);
+         break;
+      case LT:
+         cursor_type_set(border, CURSOR_TOP_LEFT_CORNER);
+         break;
+      default:
+         break;
+     }
 
    return handler;
 }
