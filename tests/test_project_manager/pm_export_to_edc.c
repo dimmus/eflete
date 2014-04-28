@@ -20,21 +20,21 @@
 
 #include "test_project_manager.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("project_manager_test");
-   TCase *tcase = tcase_create("TCase");
+/**
+ * @addtogroup project_manager_test
+ * @{
+ * @addtogroup pm_export_to_edc
+ * @{
+ * project_manager
+ * <TABLE>
+ * @}
+ */
 
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_project_manager.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+/**
+ * @addtogroup pm_export_to_edc
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */

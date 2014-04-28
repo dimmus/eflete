@@ -158,7 +158,14 @@ test_notify/noti_info_show_test.c
 notify_test_CFLAGS = ${FLAGS}
 notify_test_LDADD = ${LD}
 
-project_manager_test_SOURCES = test_project_manager/test_project_manager.c
+project_manager_test_SOURCES = \
+test_project_manager/test_project_manager.c \
+test_project_manager/pm_export_to_edc.c \
+test_project_manager/pm_open_project_edj.c \
+test_project_manager/pm_project_close.c \
+test_project_manager/pm_save_as_project_edj.c \
+test_project_manager/pm_save_project_edj.c \
+test_project_manager/pm_save_project_to_swap.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
