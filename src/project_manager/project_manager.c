@@ -251,6 +251,8 @@ pm_save_project_to_swap(Project *project)
    Style *style;
    Class *class_st;
 
+   if (!project) return false;
+
    EINA_INLIST_FOREACH(project->widgets, widget)
      {
         EINA_INLIST_FOREACH(widget->classes, class_st)
