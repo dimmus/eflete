@@ -28,6 +28,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, pm_open_project_edj_test_n1);
    tcase_add_test(tcase, pm_open_project_edj_test_n2);
 
+   tcase_add_test(tcase, pm_project_close_test_p1);
+   tcase_add_test(tcase, pm_project_close_test_p2);
+   tcase_add_test(tcase, pm_project_close_test_n);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
