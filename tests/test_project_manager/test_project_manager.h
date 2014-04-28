@@ -33,3 +33,6 @@ void pm_open_project_edj_test_n2(int);
 void pm_project_close_test_p1(int);
 void pm_project_close_test_p2(int);
 void pm_project_close_test_n(int);
+
+void pm_save_project_edj_test_p(int);
+void pm_save_project_edj_test_n(int);
