@@ -39,6 +39,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, pm_save_project_to_swap_test_p2);
    tcase_add_test(tcase, pm_save_project_to_swap_test_n);
 
+   tcase_add_test(tcase, pm_export_to_edc_test_p1);
+   tcase_add_test(tcase, pm_export_to_edc_test_p2);
+   tcase_add_test(tcase, pm_export_to_edc_test_n);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

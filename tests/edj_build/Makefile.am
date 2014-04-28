@@ -77,6 +77,7 @@ check: Makefile
 	$(builddir)/pm_project_close.edj \
 	$(builddir)/pm_save_project_edj.edj \
 	$(builddir)/pm_save_project_to_swap.edj \
+	$(builddir)/pm_export_to_edc.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

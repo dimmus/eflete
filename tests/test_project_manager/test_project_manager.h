@@ -40,3 +40,7 @@ void pm_save_project_edj_test_n(int);
 void pm_save_project_to_swap_test_p1(int);
 void pm_save_project_to_swap_test_p2(int);
 void pm_save_project_to_swap_test_n(int);
+
+void pm_export_to_edc_test_p1(int);
+void pm_export_to_edc_test_p2(int);
+void pm_export_to_edc_test_n(int);
