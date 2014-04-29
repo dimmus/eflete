@@ -18,23 +18,11 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "test_project_manager.h"
+#include "utc_common.h"
+#include "project_manager.h"
+#include "eflete.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("project_manager_test");
-   TCase *tcase = tcase_create("TCase");
+/**
+ * @defgroup test_project_manager
+ */
 
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
-
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_project_manager.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
