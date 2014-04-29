@@ -117,9 +117,6 @@ _eflete_object_cursor_del(void *data,
                           void *event_info __UNUSED__)
 {
    Cursor *cursor = (Cursor *)data;
-   if (cursor->obj)
-     evas_object_del(cursor_obj);
-
    free(cursor);
 }
 
