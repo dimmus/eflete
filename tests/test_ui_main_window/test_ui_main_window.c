@@ -57,6 +57,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_edj_load_done_test_p);
    tcase_add_test(tcase, ui_edj_load_done_test_n);
 
+   tcase_add_test(tcase, ui_menu_base_disabled_set_test_p);
+   tcase_add_test(tcase, ui_menu_base_disabled_set_test_n);
+
    suite_add_tcase(suite, tcase);
 
    return suite;
