@@ -476,7 +476,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                    img_edit);
    evas_object_size_hint_max_set(button, 80, 25);
    evas_object_size_hint_min_set(button, 80, 25);
-   elm_object_disabled_set(button, true); /* temporary solution, while save is not working */
    elm_box_pack_end(bottom_box, button);
 
    LABEL_ADD(bottom_box, img_edit->legend, _("No images selected<br><br>"))
