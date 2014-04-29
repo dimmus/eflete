@@ -55,3 +55,6 @@ void new_theme_create_test_n(int);
 void register_callbacks_test_p(int);
 void register_callbacks_test_n1(int);
 void register_callbacks_test_n2(int);
+
+void ui_edj_load_done_test_p(int);
+void ui_edj_load_done_test_n(int);

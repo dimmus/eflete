@@ -80,6 +80,7 @@ check: Makefile
 	$(builddir)/pm_export_to_edc.edj \
 	$(builddir)/pm_save_as_project_edj.edj \
 	$(builddir)/register_callbacks.edj \
+	$(builddir)/ui_edj_load_done.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj
