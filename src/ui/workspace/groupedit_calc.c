@@ -945,7 +945,7 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
 
         yc = hc = 0;
         rel_to = edje_edit_state_rel1_to_y_get(sd->edit_obj, name, state, value);
-        relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
+        relative = edje_edit_state_rel1_relative_y_get(sd->edit_obj, name, state, value);
         if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
         y = yg + (yc + (int)(hc * relative));
         edje_edit_string_free(rel_to);
