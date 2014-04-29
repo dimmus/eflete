@@ -24,6 +24,10 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("project_manager_test");
    TCase *tcase = tcase_create("TCase");
 
+   tcase_add_test(tcase, pm_open_project_edj_test_p);
+   tcase_add_test(tcase, pm_open_project_edj_test_n1);
+   tcase_add_test(tcase, pm_open_project_edj_test_n2);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

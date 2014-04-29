@@ -26,3 +26,6 @@
  * @defgroup test_project_manager
  */
 
+void pm_open_project_edj_test_p(int);
+void pm_open_project_edj_test_n1(int);
+void pm_open_project_edj_test_n2(int);
