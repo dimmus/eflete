@@ -72,6 +72,7 @@ check: Makefile
 	$(builddir)/ui_widget_list_part_selected_set.edj \
 	$(builddir)/ui_widget_list_title_set.edj \
 	$(builddir)/ui_widget_list_selected_parts_get.edj \
+	$(builddir)/part_dialog_add.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj
