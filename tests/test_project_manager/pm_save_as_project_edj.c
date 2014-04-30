@@ -98,12 +98,14 @@ END_TEST
 EFLETE_TEST (pm_save_as_project_edj_test_n)
 {
    elm_init(0,0);
-   char *name, *path, *dest;
+   const char *name, *path, *dest;
    name = "radio_test";
    path = "./edj_build/pm_save_as_project_edj.edj";
    dest = "./edj_build/NEWpm_save_as_project_edj.edj";
    Project* pro = pm_open_project_edj(name, path);
 
+   ck_assert_msg(pm_save_as_project_edj(pro, NULL) == EINA_FALSE, "Project was saved without path to file");
+   ck_assert_msg(pm_save_as_project_edj(NULL, dest) == EINA_FALSE, "Saved NULL project");
    ck_assert_msg(pm_save_as_project_edj(NULL, NULL) == EINA_FALSE, "Saved NULL project");
 
    elm_shutdown();
