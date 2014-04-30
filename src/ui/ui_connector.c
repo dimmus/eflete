@@ -714,7 +714,7 @@ ui_part_state_delete(App_Data *ap)
 Eina_Bool
 register_callbacks(App_Data *ap)
 {
-   if (!ap) return false;
+   if ((!ap) || (!ap->block.left_top)) return false;
 
    evas_object_smart_callback_add(ap->block.left_top, "wl,style,add",
                                   _add_style_dailog, ap);

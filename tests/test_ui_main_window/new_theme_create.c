@@ -62,7 +62,7 @@ EFLETE_TEST(new_theme_create_test_p1)
    elm_init(0, 0);
    app_init();
    app_data = app_create();
-   ui_main_window(app_data);
+   ui_main_window_add(app_data);
 
    ret = new_theme_create(app_data);
    ck_assert_msg(ret == EINA_TRUE, "Failed to create new theme and open project");
