@@ -50,6 +50,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, new_theme_create_test_p2);
    tcase_add_test(tcase, new_theme_create_test_n);
 
+   tcase_add_test(tcase, register_callbacks_test_p);
+   tcase_add_test(tcase, register_callbacks_test_n1);
+   tcase_add_test(tcase, register_callbacks_test_n2);
+
    suite_add_tcase(suite, tcase);
 
    return suite;
