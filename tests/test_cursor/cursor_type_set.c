@@ -24,7 +24,7 @@
 /**
  * @addtogroup cursor_test
  * @{
- * @addtogroup cursor_style_set
+ * @addtogroup cursor_type_set
  * @{
  * Cursor
  * <TABLE>
@@ -32,18 +32,18 @@
  */
 
 /**
- * @addtogroup cursor_style_set
+ * @addtogroup cursor_type_set
  * @{
  * <tr>
- * <td>cursor_style_set</td>
- * <td>cursor_style_set_test_p</td>
+ * <td>cursor_type_set</td>
+ * <td>cursor_type_set_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create a new Evas_Object.
  *
  * @procedure
- * @step 1 call cursor_style_set
+ * @step 1 call cursor_type_set
  * </td>
  * <td>(Evas_Object *)obj, CURSOR_FLUER</td>
  * <td>EINA_TRUE</td>
@@ -52,14 +52,14 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(cursor_style_set_test_p)
+EFLETE_TEST(cursor_type_set_test_p)
 {
    Evas_Object *obj;
 
    elm_init(0,0);
    obj = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   ck_assert_msg(cursor_style_set(obj, CURSOR_FLEUR),
+   ck_assert_msg(cursor_type_set(obj, CURSOR_FLEUR),
                  "Can not set the cursor to given object");
 
    evas_object_del(obj);
@@ -68,18 +68,18 @@ EFLETE_TEST(cursor_style_set_test_p)
 END_TEST
 
 /**
- * @addtogroup cursor_style_set
+ * @addtogroup cursor_type_set
  * @{
  * <tr>
- * <td>cursor_style_set</td>
- * <td>cursor_style_set_test_n1</td>
+ * <td>cursor_type_set</td>
+ * <td>cursor_type_set_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create a new Evas_Object.
  *
  * @procedure
- * @step 1 call cursor_style_set
+ * @step 1 call cursor_type_set
  * </td>
  * <td>(Evas_Object *)obj, (Cursor_Type)-10000</td>
  * <td>EINA_FALSE</td>
@@ -88,14 +88,14 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(cursor_style_set_test_n1)
+EFLETE_TEST(cursor_type_set_test_n1)
 {
    Evas_Object *obj;
 
    elm_init(0,0);
    obj = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   ck_assert_msg(!cursor_style_set(obj, (Cursor_Type)-10000),
+   ck_assert_msg(!cursor_type_set(obj, (Cursor_Type)-10000),
                  "Set the not valid cursor to giver object");
 
    evas_object_del(obj);
@@ -104,17 +104,17 @@ EFLETE_TEST(cursor_style_set_test_n1)
 END_TEST
 
 /**
- * @addtogroup cursor_style_set
+ * @addtogroup cursor_type_set
  * @{
  * <tr>
- * <td>cursor_style_set</td>
- * <td>cursor_style_set_test_n2</td>
+ * <td>cursor_type_set</td>
+ * <td>cursor_type_set_test_n2</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 call cursor_style_set
+ * @step 1 call cursor_type_set
  * </td>
  * <td>NULL, (Cursor_Type)10</td>
  * <td>EINA_FALSE</td>
@@ -123,11 +123,11 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(cursor_style_set_test_n2)
+EFLETE_TEST(cursor_type_set_test_n2)
 {
    elm_init(0,0);
 
-   ck_assert_msg(!cursor_style_set(NULL, CURSOR_ARROW),
+   ck_assert_msg(!cursor_type_set(NULL, CURSOR_ARROW),
                  "Set the cursor to not valid object");
 
    elm_shutdown();
@@ -135,7 +135,7 @@ EFLETE_TEST(cursor_style_set_test_n2)
 END_TEST
 
 /**
- * @addtogroup cursor_style_set
+ * @addtogroup cursor_type_set
  * @{
  * </TABLE>
  * @}

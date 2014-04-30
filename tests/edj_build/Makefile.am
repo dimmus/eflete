@@ -72,6 +72,15 @@ check: Makefile
 	$(builddir)/ui_widget_list_part_selected_set.edj \
 	$(builddir)/ui_widget_list_title_set.edj \
 	$(builddir)/ui_widget_list_selected_parts_get.edj \
+	$(builddir)/part_dialog_add.edj \
+	$(builddir)/pm_open_project_edj.edj \
+	$(builddir)/pm_project_close.edj \
+	$(builddir)/pm_save_project_edj.edj \
+	$(builddir)/pm_save_project_to_swap.edj \
+	$(builddir)/pm_export_to_edc.edj \
+	$(builddir)/pm_save_as_project_edj.edj \
+	$(builddir)/register_callbacks.edj \
+	$(builddir)/ui_edj_load_done.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

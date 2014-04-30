@@ -18,60 +18,69 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "test_eflete.h"
+#include "test_project_manager.h"
 
 /**
- * @addtogroup eflete_test
+ * @addtogroup project_manager_test
  * @{
- * @addtogroup app_free
+ * @addtogroup pm_save_project_edj
  * @{
- * eflete
+ * project_manager
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup app_free
+ * @addtogroup pm_save_project_edj
  * @{
  * <tr>
- * <td>app_free</td>
- * <td>app_free_test_p</td>
+ * <td>pm_save_project_edj</td>
+ * <td>pm_save_project_edj_test_p</td>
  * <td>
  * @precondition
- * @step 1 create application data.
+ * @step 1 initialized elm
+ * @step 2 Open edj project.
  *
  * @procedure
- * @step 1 call app_free
- * @step 2 check returned pointer
+ * @step 1 Call function pm_save_project_edj(project)
+ * @step 2 Check returned value.
  * </td>
- * <td>App_Data *app</td>
+ * <td>Project *project</td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (app_free_test_p)
+EFLETE_TEST (pm_save_project_edj_test_p)
 {
-   App_Data *ap = app_create();
+   elm_init(0,0);
+   char *name, *path;
+   name = "radio_test";
+   path = "./edj_build/pm_save_project_edj.edj";
+   Project* pro = pm_open_project_edj(name, path);
 
-   ck_assert_msg(app_free(ap) == EINA_TRUE, "Could not free application data");
+   ck_assert_msg(pm_save_project_edj(pro) == EINA_TRUE, "Can't save project to edj");
+
+   pm_project_close(pro);
+   elm_shutdown();
 }
 END_TEST
 
+
 /**
- * @addtogroup app_free
+ * @addtogroup pm_save_project_edj
  * @{
  * <tr>
- * <td>app_free</td>
- * <td>app_free_test_n</td>
+ * <td>pm_save_project_edj</td>
+ * <td>pm_save_project_edj_test_n</td>
  * <td>
  * @precondition
- * @step 1 Nothing.
+ * @step 1 initialized elm
  *
  * @procedure
- * @step 1 call app_free
- * @step 2 check returned pointer
+ * @step 1 Call function pm_save_project_edj(NULL)
+ * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE</td>
@@ -80,15 +89,18 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (app_free_test_n)
+EFLETE_TEST (pm_save_project_edj_test_n)
 {
-   ck_assert_msg(app_free(NULL) == EINA_FALSE, "Something was freed");
+   elm_init(0,0);
+
+   ck_assert_msg(pm_save_project_edj(NULL) == EINA_FALSE, "Saved NULL project");
+
+   elm_shutdown();
 }
 END_TEST
 
-
 /**
- * @addtogroup app_free
+ * @addtogroup pm_save_project_edj
  * @{
  * </TABLE>
  * @}

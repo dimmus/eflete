@@ -23,6 +23,7 @@
 #endif /* include eflete_config.h */
 
 #include "ui_main_window.h"
+#include "cursor.h"
 
 static void
 _on_done(void *data,
@@ -92,6 +93,8 @@ ui_main_window_add(App_Data *ap)
 
    elm_win_title_set(ap->win, "EFL Edje Theme Editor");
    evas_object_smart_callback_add(ap->win, "delete,request", _on_done, ap);
+   if (!cursor_main_set(ap->win, CURSOR_ARROW))
+     ERR("Main cursor not setted.");
 
    bg = elm_bg_add(ap->win);
    elm_win_resize_object_add(ap->win, bg);

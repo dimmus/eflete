@@ -19,15 +19,31 @@
  */
 
 #include "utc_common.h"
-#include "ui_main_window.h"
-#include "part_dialog.h"
+#include "project_manager.h"
+#include "eflete.h"
 
 /**
- * @defgroup test_part_dialog
+ * @defgroup test_project_manager
  */
 
-void part_dialog_add_test_p(int);
-void part_dialog_add_test_n1(int);
-void part_dialog_add_test_n2(int);
-void part_dialog_add_test_n3(int);
-void part_dialog_add_test_n4(int);
+void pm_open_project_edj_test_p(int);
+void pm_open_project_edj_test_n1(int);
+void pm_open_project_edj_test_n2(int);
+
+void pm_project_close_test_p1(int);
+void pm_project_close_test_p2(int);
+void pm_project_close_test_n(int);
+
+void pm_save_project_edj_test_p(int);
+void pm_save_project_edj_test_n(int);
+
+void pm_save_project_to_swap_test_p1(int);
+void pm_save_project_to_swap_test_p2(int);
+void pm_save_project_to_swap_test_n(int);
+
+void pm_export_to_edc_test_p1(int);
+void pm_export_to_edc_test_p2(int);
+void pm_export_to_edc_test_n(int);
+
+void pm_save_as_project_edj_test_p(int);
+void pm_save_as_project_edj_test_n(int);

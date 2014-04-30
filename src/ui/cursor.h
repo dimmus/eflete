@@ -93,16 +93,16 @@ cursor_main_get(Evas_Object *win);
  * @ingroup Cursor
  */
 Eina_Bool
-cursor_style_set(Evas_Object *obj, Cursor_Type type);
+cursor_type_set(Evas_Object *obj, Cursor_Type type);
 
 /**
- * Get the cursor name which was setted to given object.
+ * Get the cursor type which was setted to given object.
  *
  * @return The cursor type.
  *
  * @ingroup Cursor
  */
 Cursor_Type
-cursor_style_get(Evas_Object *obj);
+cursor_type_get(Evas_Object *obj);
 
 #endif /* CURSOR_H */

@@ -543,6 +543,8 @@ ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag)
 Eina_Bool
 ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
 {
+   if (!menu_hash) return false;
+
    Eina_Bool result = true;
    result = ui_menu_disable_set(menu_hash, _("Save"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Save as..."), flag) && result;

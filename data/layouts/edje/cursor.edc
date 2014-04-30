@@ -30,7 +30,7 @@ group { name: "eflete/cursor/"##NAME##"/default";           \
    }                                                        \
 }
 
-CURSOR(arrow, ARROW, 15, 18, 0.0 0.0, 0.0 0.0)
+CURSOR(arrow, ARROW, 18, 15, 0.0 0.0, 0.0 0.0)
 CURSOR(bottom_left_corner, BOTTOM_LEFT_CORNER, 12, 12, 0.0 1.0, 0.0 1.0)
 CURSOR(bottom_right_corner, BOTTOM_RIGHT_CORNER, 12, 12, 1.0 1.0, 1.0 1.0)
 CURSOR(top_left_corner, TOP_LEFT_CORNER, 12, 12, 0.0 0.0, 0.0 0.0)

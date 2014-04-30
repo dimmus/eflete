@@ -19,6 +19,7 @@
  */
 
 #include "groupedit_private.h"
+#include "cursor.h"
 
 #define MY_CLASS_NAME "Ws_Groupedit"
 
@@ -367,6 +368,7 @@ _groupedit_smart_add(Evas_Object *o)
                                   _mouse_up_hTL_cb, o);
    evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_cb, o);
+   cursor_type_set(priv->handler_TL.obj, CURSOR_SIZING);
 
    priv->handler_BR.obj = edje_object_add(priv->e);
    priv->handler_BR.w = priv->handler_BR.h = 5;
@@ -376,6 +378,7 @@ _groupedit_smart_add(Evas_Object *o)
                                   _mouse_up_hRB_cb, o);
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_cb, o);
+   cursor_type_set(priv->handler_BR.obj, CURSOR_SIZING);
 
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);

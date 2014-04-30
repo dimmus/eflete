@@ -30,7 +30,108 @@
  * @}
  */
 
+/**
+ * @addtogroup main_window_get
+ * @{
+ * <tr>
+ * <td>main_window_get</td>
+ * <td>main_window_get_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize requred libraries.
+ * @step 3 Create application data structure.
+ * @step 4 create main window
+ *
+ * @procedure
+ * @step 1 call main_window_get
+ * @step 2 check returned pointer
+ * </td>
+ * <td>void</td>
+ * <td>Not NULL object</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (main_window_get_test_p)
+{
+   elm_init(0,0);
+   app_init();
+   App_Data *app = app_create();
+   ui_main_window_add(app);
 
+   ck_assert_msg(main_window_get() != NULL, "Main window not exist");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup main_window_get
+ * @{
+ * <tr>
+ * <td>main_window_get</td>
+ * <td>main_window_get_test_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize requred libraries.
+ * @step 3 Create application data structure.
+ *
+ * @procedure
+ * @step 1 call main_window_get
+ * @step 2 check returned pointer
+ * </td>
+ * <td>void</td>
+ * <td>NULL object</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (main_window_get_test_n1)
+{
+   elm_init(0,0);
+   app_init();
+   app_create();
+
+   ck_assert_msg(main_window_get() == NULL, "Main window was returned");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup main_window_get
+ * @{
+ * <tr>
+ * <td>main_window_get</td>
+ * <td>main_window_get_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ *
+ * @procedure
+ * @step 1 call main_window_get
+ * @step 2 check returned pointer
+ * </td>
+ * <td>void</td>
+ * <td>NULL object</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (main_window_get_test_n2)
+{
+   elm_init(0,0);
+
+   ck_assert_msg(main_window_get() == NULL, "Main window was returned");
+
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup main_window_get

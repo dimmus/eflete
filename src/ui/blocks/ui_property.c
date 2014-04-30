@@ -289,7 +289,7 @@ ui_property_add(Evas_Object *parent)
    evas_object_show(_bg);
    pd->visual = scroller;
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
-   ewe_tabs_item_content_set(it, pd->visual);
+   ewe_tabs_item_content_set(tabs, it, pd->visual);
 
    pd->code = elm_entry_add(tabs);
    elm_object_style_set(pd->code, DEFAULT_STYLE);
@@ -299,7 +299,7 @@ ui_property_add(Evas_Object *parent)
    evas_object_size_hint_align_set(pd->code, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_scrollable_set(pd->code, true);
    it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
-   ewe_tabs_item_content_set(it, pd->code);
+   ewe_tabs_item_content_set(tabs, it, pd->code);
    elm_entry_editable_set(pd->code, false);
 
    evas_object_data_set(tabs, PROP_DATA, pd);
