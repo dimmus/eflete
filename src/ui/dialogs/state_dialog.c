@@ -99,7 +99,7 @@ Evas_Object *
 state_dialog_state_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *bt_yes, *bt_no;
-   Evas_Object *item_name, *item_value, *item_dup;
+   Evas_Object *item_dup;
    Evas_Object *glist = NULL;
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
@@ -121,17 +121,17 @@ state_dialog_state_add(App_Data *ap)
 
    BOX_ADD(popup, box, false, false);
 
-   ITEM_ADD(box, item_name, _("Name:"))
-   ENTRY_ADD(item_name, entry_name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_name, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
+   ewe_entry_label_visible_set(entry_name, EINA_TRUE);
+   ewe_entry_label_text_set(entry_name, "Name:");
    elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
-   elm_object_part_content_set(item_name, "elm.swallow.content", entry_name);
 
-   ITEM_ADD(box, item_value, _("Value:"))
-   ENTRY_ADD(item_name, entry_value, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_value, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
+   ewe_entry_label_visible_set(entry_value, EINA_TRUE);
+   ewe_entry_label_text_set(entry_value, "Value:");
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
-   elm_object_part_content_set(item_value, "elm.swallow.content", entry_value);
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"))
    HOVERSEL_ADD(item_dup, hover_dup_state, false)
@@ -139,8 +139,8 @@ state_dialog_state_add(App_Data *ap)
    elm_object_disabled_set(hover_dup_state, true);
    elm_object_part_content_set(item_dup, "elm.swallow.content", hover_dup_state);
 
-   elm_box_pack_end(box, item_name);
-   elm_box_pack_end(box, item_value);
+   elm_box_pack_end(box, entry_name);
+   elm_box_pack_end(box, entry_value);
    elm_box_pack_end(box, item_dup);
    elm_object_content_set(popup, box);
 
