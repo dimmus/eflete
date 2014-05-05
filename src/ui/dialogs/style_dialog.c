@@ -316,7 +316,6 @@ void
 style_dialog_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *button;
-   Evas_Object *item_style, *item_class;
    Widget *widget = NULL;
    Class *class_st = NULL;
    Eina_Stringshare *title = NULL;
@@ -334,41 +333,25 @@ style_dialog_add(App_Data *ap)
 
    BOX_ADD(popup, box, false, false);
 
-/*
    EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
    ewe_entry_label_visible_set(entry_style, EINA_TRUE);
    ewe_entry_label_text_set(entry_style, "Style name:");
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
-*/
-   ITEM_ADD(box, item_style, _("Style name:"))
-
-   ENTRY_ADD(item_style, entry_style, true, DEFAULT_STYLE);
-   elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
-   elm_object_part_content_set(item_style, "elm.swallow.content", entry_style);
 
    class_st = _class_from_ap_get(ap);
    if (!class_st) return;
    entry_text = eina_stringshare_add(class_st->name);
 
-/*
    EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
    ewe_entry_label_visible_set(entry_class, EINA_TRUE);
    ewe_entry_label_text_set(entry_class, "Class name:");
    elm_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
-*/
-   ITEM_ADD(box, item_class, _("Class name:"))
-   ENTRY_ADD(item_class, entry_class, true, DEFAULT_STYLE);
-   elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
-   elm_entry_entry_set(entry_class, entry_text);
-   elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
-   elm_object_part_content_set(item_class, "elm.swallow.content", entry_class);
 
-   elm_box_pack_end(box, item_style);
-   elm_box_pack_end(box, item_class);
+   elm_box_pack_end(box, entry_style);
+   elm_box_pack_end(box, entry_class);
    elm_object_content_set(popup, box);
 
    BUTTON_ADD(popup, button, _("Add"));
