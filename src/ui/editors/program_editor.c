@@ -133,7 +133,7 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
-   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
    elm_object_tooltip_text_set(entry, tooltip); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
@@ -170,6 +170,14 @@ _gl_progs_update_sel_item(const char *str, Program_Editor *prog_edit)
    eina_stringshare_replace(&item_data, str);
    elm_object_item_data_set(prog_edit->sel, (void *)item_data);
    elm_genlist_item_update(prog_edit->sel);
+}
+
+static void
+_entry_state_update(Evas_Object *entry, Eina_Bool is_disabled, const char* text)
+{
+   elm_object_disabled_set(entry, is_disabled);
+   if (text)
+     ewe_entry_label_text_set(entry, text);
 }
 
 static void
@@ -258,7 +266,7 @@ _prop_item_program_script_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("script"), "script");
 
    BOX_ADD(item, box, true, false);
-   ENTRY_ADD(item, entry, false, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry, false, DEFAULT_STYLE)
    elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF,
                                   ELM_SCROLLER_POLICY_AUTO);
    elm_entry_editable_set(entry, false);
@@ -309,22 +317,23 @@ _on_hoversel_trans_sel(void *data,
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         NOTIFY_INFO(5, _("Transition block can used only with STATE_SET action"));
         elm_object_text_set(obj, _(transition_type[0]));
-        evas_object_hide(entry1);
-        evas_object_hide(entry2);
-        evas_object_hide(entry3);
+        _entry_state_update(entry1, true, NULL);
+        _entry_state_update(entry2, true, "param1");
+        _entry_state_update(entry3, true, "param2");
         return;
      }
-   evas_object_show(entry1);
-   evas_object_show(entry2);
-   evas_object_show(entry3);
+
+   _entry_state_update(entry1, false, NULL);
+   _entry_state_update(entry2, false, "param1");
+   _entry_state_update(entry3, false, "param2");
    prop.trans_type = (Edje_Tween_Mode)index->i;
    switch (prop.trans_type)
      {
       case EDJE_TWEEN_MODE_NONE:
         {
-           evas_object_hide(entry1);
-           evas_object_hide(entry2);
-           evas_object_hide(entry3);
+           _entry_state_update(entry1, true, NULL);
+           _entry_state_update(entry2, true, NULL);
+           _entry_state_update(entry3, true, NULL);
         }
       break;
       case EDJE_TWEEN_MODE_LINEAR:
@@ -332,20 +341,36 @@ _on_hoversel_trans_sel(void *data,
       case EDJE_TWEEN_MODE_ACCELERATE:
       case EDJE_TWEEN_MODE_DECELERATE:
         {
-           evas_object_hide(entry2);
-           evas_object_hide(entry3);
+           _entry_state_update(entry2, true, NULL);
+           _entry_state_update(entry3, true, NULL);
         }
       break;
       case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
       case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
       case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
         {
-           evas_object_hide(entry3);
+           _entry_state_update(entry2, false, "factor");
+           _entry_state_update(entry3, true, NULL);
         }
       break;
       case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+        {
+           _entry_state_update(entry2, false, "gradient");
+           _entry_state_update(entry3, false, "factor");
+        }
+      break;
       case EDJE_TWEEN_MODE_BOUNCE:
+        {
+           _entry_state_update(entry2, false, "decay");
+           _entry_state_update(entry3, false, "bounces");
+        }
+      break;
       case EDJE_TWEEN_MODE_SPRING:
+        {
+           _entry_state_update(entry2, false, "decay");
+           _entry_state_update(entry3, false, "swings");
+        }
+      break;
       case EDJE_TWEEN_MODE_LAST:
       case EDJE_TWEEN_MODE_MASK:
       case EDJE_TWEEN_MODE_OPT_FROM_CURRENT:
@@ -353,6 +378,7 @@ _on_hoversel_trans_sel(void *data,
       default:
       break;
      }
+
    eina_list_free(childs);
 }
 
@@ -376,8 +402,8 @@ _on_hoversel_sel(void *data,
    elm_object_text_set(obj, _(action_type[index->i]));
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 (Edje_Action_Type)index->i);
-   evas_object_hide(entry1);
-   evas_object_hide(entry2);
+   _entry_state_update(entry1, true, "param1");
+   _entry_state_update(entry2, true, "param2");
    prop.act_type = (Edje_Action_Type)index->i;
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
@@ -388,11 +414,11 @@ _on_hoversel_sel(void *data,
         hoversel_trans = eina_list_nth(childs, 0);
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         entry_trans = eina_list_nth(childs, 1);
-        evas_object_hide(entry_trans);
+        _entry_state_update(entry_trans, true, NULL);
         entry_trans = eina_list_nth(childs, 2);
-        evas_object_hide(entry_trans);
+        _entry_state_update(entry_trans, true, "param1");
         entry_trans = eina_list_nth(childs, 3);
-        evas_object_hide(entry_trans);
+        _entry_state_update(entry_trans, true, "param1");
         elm_object_text_set(hoversel_trans, _(transition_type[0]));
      }
 
@@ -416,18 +442,26 @@ _on_hoversel_sel(void *data,
            prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
            _prop_item_program_script_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.script, prop.action);
-           evas_object_hide(entry1);
-           evas_object_hide(entry2);
+           break;
         }
-      break;
       case EDJE_ACTION_TYPE_STATE_SET:
+        {
+           _entry_state_update(entry1, false, "state name");
+           _entry_state_update(entry2, false,  "state value");
+           break;
+        }
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
+        {
+           _entry_state_update(entry1, false, "signal name");
+           _entry_state_update(entry2, false, "emitter");
+           break;
+        }
       case EDJE_ACTION_TYPE_DRAG_VAL_SET:
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
         {
-           evas_object_show(entry1);
-           evas_object_show(entry2);
+           _entry_state_update(entry1, false, "x");
+           _entry_state_update(entry2, false, "y");
         }
       break;
       default:
@@ -617,7 +651,7 @@ _after_item_add(Program_Editor *prog_edit, char *name)
    BOX_ADD(item_box, element_box, true, false);
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
-   ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",_on_after_name_change,
                                   prog_edit);
@@ -677,7 +711,7 @@ _target_item_add(Program_Editor *prog_edit, char *name)
    BOX_ADD(item_box, element_box, true, false);
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
-   ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
    elm_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated", _on_target_name_change,
                                   prog_edit);
@@ -714,9 +748,6 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    entry1 = eina_list_nth(nodes, 1);
    entry2 = eina_list_nth(nodes, 2);
    entry3 = eina_list_nth(nodes, 3);
-   evas_object_show(entry1);
-   evas_object_show(entry2);
-   evas_object_show(entry3);
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      prop.trans_type = EDJE_TWEEN_MODE_NONE;
    elm_object_text_set(hoversel, _(transition_type[(int)prop.trans_type]));
@@ -729,13 +760,16 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
 
    snprintf(buff, sizeof(buff), "%1.2f", value);
    elm_entry_entry_set(entry1, buff);
+   _entry_state_update(entry1, false, NULL);
+   _entry_state_update(entry2, false, NULL);
+   _entry_state_update(entry3, false, NULL);
    switch (prop.trans_type)
      {
       case EDJE_TWEEN_MODE_NONE:
         {
-           evas_object_hide(entry1);
-           evas_object_hide(entry2);
-           evas_object_hide(entry3);
+           _entry_state_update(entry1, true, NULL);
+           _entry_state_update(entry2, true, NULL);
+           _entry_state_update(entry3, true, NULL);
         }
       break;
       case EDJE_TWEEN_MODE_LINEAR:
@@ -743,15 +777,15 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
       case EDJE_TWEEN_MODE_ACCELERATE:
       case EDJE_TWEEN_MODE_DECELERATE:
         {
-           evas_object_hide(entry2);
-           evas_object_hide(entry3);
+           _entry_state_update(entry2, true, NULL);
+           _entry_state_update(entry3, true, NULL);
         }
       break;
       case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
       case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
       case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
         {
-           evas_object_hide(entry3);
+           _entry_state_update(entry3, true, NULL);
         }
       break;
       case EDJE_TWEEN_MODE_DIVISOR_INTERP:
@@ -776,7 +810,6 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
            evas_object_smart_callback_del(entry3, "activated", _on_v2_active);
            evas_object_smart_callback_add(entry3, "activated", _on_v2_active,
                                           prog_edit);
-
         }
       break;
       default:
@@ -789,6 +822,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    index = mem_malloc(sizeof(Index)); \
    index->i = value; \
    elm_object_item_data_set(hovit, index);
+
 static Evas_Object *
 _prop_item_program_transition_add(Evas_Object *parent,
                                   Program_Editor *prog_edit,
@@ -800,11 +834,20 @@ _prop_item_program_transition_add(Evas_Object *parent,
    int i = 0;
 
    ITEM_ADD_(parent, item, _("transition"), "editor")
-   BOX_ADD(item, box, true, true)
+   BOX_ADD(item, box, false, true)
    HOVERSEL_ADD(item, hoversel, false)
-   ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
-   ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
-   ENTRY_ADD(item, entry3, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry3, true, DEFAULT_STYLE)
+   ewe_entry_label_visible_set(entry1, true);
+   ewe_entry_label_visible_set(entry2, true);
+   ewe_entry_label_visible_set(entry3, true);
+   _entry_state_update(entry1, true, "length");
+   _entry_state_update(entry2, true, "param1");
+   _entry_state_update(entry3, true, "param2");
+   evas_object_show(entry1);
+   evas_object_show(entry2);
+   evas_object_show(entry3);
    elm_hoversel_hover_parent_set(hoversel, prog_edit->mwin);
    elm_object_text_set(hoversel, _(transition_type[0]));
 
@@ -838,12 +881,14 @@ _prop_item_program_action_add(Evas_Object *parent,
    Index *index;
 
    ITEM_ADD_(parent, item, _("action"), "editor")
-   BOX_ADD(item, box, true, true)
+   BOX_ADD(item, box, false, true)
    HOVERSEL_ADD(item, hoversel, false)
-   ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
-   ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
-   evas_object_hide(entry1);
-   evas_object_hide(entry2);
+   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
+   ewe_entry_label_visible_set(entry1, true);
+   ewe_entry_label_visible_set(entry2, true);
+   _entry_state_update(entry1, true, "param1");
+   _entry_state_update(entry2, true, "param2");
 
    elm_hoversel_hover_parent_set(hoversel, prog_edit->mwin);
    elm_object_text_set(hoversel, _(action_type[0]));
@@ -909,6 +954,8 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    entry2 = eina_list_nth(nodes, 2);
    evas_object_show(entry1);
    evas_object_show(entry2);
+   _entry_state_update(entry1, false, NULL);
+   _entry_state_update(entry2, false, NULL);
 
    elm_object_text_set(hoversel, _(action_type[(int)prop.act_type]));
 
@@ -926,8 +973,8 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
            prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
            _prop_item_program_script_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.script, prop.action);
-           evas_object_hide(entry1);
-           evas_object_hide(entry2);
+           _entry_state_update(entry1, true, NULL);
+           _entry_state_update(entry2, true, NULL);
         }
       break;
       case EDJE_ACTION_TYPE_NONE:
@@ -935,8 +982,8 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
       case EDJE_ACTION_TYPE_FOCUS_SET:
       case EDJE_ACTION_TYPE_FOCUS_OBJECT:
         {
-           evas_object_hide(entry1);
-           evas_object_hide(entry2);
+           _entry_state_update(entry1, true, NULL);
+           _entry_state_update(entry2, true, NULL);
         }
       break;
       case EDJE_ACTION_TYPE_STATE_SET:
@@ -1144,17 +1191,22 @@ _prop_item_program_in_add(Evas_Object *parent,
 {
    Evas_Object *item = NULL;
    Evas_Object *box = NULL;
-   Evas_Object *entry = NULL;
+   Evas_Object *entry1 = NULL;
+   Evas_Object *entry2 = NULL;
 
    if (!parent) return NULL;
 
    ITEM_ADD_(parent, item, _("in"), "editor");
 
-   BOX_ADD(item, box, true, false);
-   ENTRY_ADD(item, entry, true, DEFAULT_STYLE)
-   elm_box_pack_end(box, entry);
-   ENTRY_ADD(item, entry, true, DEFAULT_STYLE)
-   elm_box_pack_end(box, entry);
+   BOX_ADD(item, box, false, false);
+   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
+   ewe_entry_label_visible_set(entry1, true);
+   ewe_entry_label_visible_set(entry2, true);
+   _entry_state_update(entry1, false, "range");
+   _entry_state_update(entry2, false, "from");
+   elm_box_pack_end(box, entry1);
+   elm_box_pack_end(box, entry2);
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
 }
@@ -1396,7 +1448,7 @@ _on_bt_prog_add(void *data,
    LABEL_ADD(prog_box, prog_label, _("Program name: "))
    elm_box_pack_end(prog_box, prog_label);
 
-   ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(prog_edit->popup.entry,
                                   elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(prog_edit->popup.entry, "guide",
