@@ -419,7 +419,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    evas_object_show(property);
 
-   elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
 
    pd->workspace = workspace;
    pd->style = style;

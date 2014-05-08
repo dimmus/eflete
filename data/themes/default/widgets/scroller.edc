@@ -169,7 +169,6 @@ group { name: "elm/scroller/base/eflete/default";
             inherit: "default" 0.0;
             min: 0 0;
             max: -1 0;
-            rel2.offset: 0 8;
          }
       }
       part { name: "sb_hbar_base";
