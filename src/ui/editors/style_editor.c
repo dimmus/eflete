@@ -257,8 +257,6 @@ _on_bt_style_add(void *data,
 {
    Evas_Object *box;
    Evas_Object *button = NULL;
-   Evas_Object *item_st;
-   Evas_Object *item_tag;
    Style_Editor *style_edit = (Style_Editor *)data;
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
@@ -267,23 +265,23 @@ _on_bt_style_add(void *data,
 
    BOX_ADD(POPUP.dialog, box, false, false);
 
-   ITEM_ADD(box, item_st, _("Style name:"))
-   ENTRY_ADD(item_st, POPUP.name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, POPUP.name, true, DEFAULT_STYLE);
+   ewe_entry_label_visible_set(POPUP.name, EINA_TRUE);
+   ewe_entry_label_text_set(POPUP.name, "Style name:");
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name."));
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
-   elm_object_part_content_set(item_st, "elm.swallow.content", POPUP.name);
 
-   ITEM_ADD(box, item_tag, _("Default tags:"))
-   ENTRY_ADD(item_tag, POPUP.value, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, POPUP.value, true, DEFAULT_STYLE);
+   ewe_entry_label_visible_set(POPUP.value, EINA_TRUE);
+   ewe_entry_label_text_set(POPUP.value, "Default tags:");
    elm_object_part_text_set(POPUP.value, "guide",
                             _("Type tag which will be used as default."));
    elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
                                   &accept_value);
-   elm_object_part_content_set(item_tag, "elm.swallow.content", POPUP.value);
 
-   elm_box_pack_end(box, item_st);
-   elm_box_pack_end(box, item_tag);
+   elm_box_pack_end(box, POPUP.name);
+   elm_box_pack_end(box, POPUP.value);
    elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
@@ -306,8 +304,6 @@ _on_bt_tag_add(void *data,
               void *event_info __UNUSED__)
 {
    Evas_Object *box, *button;
-   Evas_Object *item_tag = NULL;
-   Evas_Object *item_value = NULL;
 
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
@@ -339,23 +335,23 @@ _on_bt_tag_add(void *data,
 
    BOX_ADD(POPUP.dialog, box, false, false);
 
-   ITEM_ADD(box, item_tag, _("Tag name:"))
-   ENTRY_ADD(item_tag, POPUP.name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, POPUP.name, true, DEFAULT_STYLE);
+   ewe_entry_label_visible_set(POPUP.name, EINA_TRUE);
+   ewe_entry_label_text_set(POPUP.name, "Tag name:");
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
-   elm_object_part_content_set(item_tag, "elm.swallow.content", POPUP.name);
 
-   ITEM_ADD(box, item_value, _("Tag value:"))
-   ENTRY_ADD(item_value, POPUP.value, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, POPUP.value, true, DEFAULT_STYLE);
+   ewe_entry_label_visible_set(POPUP.value, EINA_TRUE);
+   ewe_entry_label_text_set(POPUP.value, "Tag value:");
    elm_object_part_text_set(POPUP.value, "guide",
                             _("Type tag with be using as default."));
    elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
                                   &accept_value);
-   elm_object_part_content_set(item_value, "elm.swallow.content", POPUP.value);
 
-   elm_box_pack_end(box, item_tag);
-   elm_box_pack_end(box, item_value);
+   elm_box_pack_end(box, POPUP.name);
+   elm_box_pack_end(box, POPUP.value);
    elm_object_content_set(POPUP.dialog, box);
    evas_object_show(box);
 
@@ -582,11 +578,11 @@ _form_right_side(Style_Editor *style_edit)
    elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
 
-   ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/tag_entry",
                                 style_edit->entry_tag);
 
-   ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/prop_entry",
                                 style_edit->entry_prop);
 
@@ -691,7 +687,7 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
    evas_object_show(bg);
 
-   ENTRY_ADD(style_edit->mwin, style_edit->entry_style, true, "style_editor");
+   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_style, true, "style_editor");
    elm_entry_editable_set(style_edit->entry_style, false);
    evas_object_size_hint_weight_set(style_edit->entry_style,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
