@@ -136,6 +136,13 @@ ui_main_window_add(App_Data *ap)
    if (!register_callbacks(ap))
      MARK_TO_SHUTDOWN("Failed register callbacks");
 
+   ap->statusbar = ewe_statusbar_add(ap->win_layout);
+   if (!ap->statusbar)
+     MARK_TO_SHUTDOWN("Can't create a statusbar.")
+   elm_object_part_content_set(ap->win_layout, "eflete.swallow.statusbar",
+                               ap->statusbar);
+   evas_object_show(ap->statusbar);
+
    return true;
 }
 #undef MARK_TO_SHUTDOWN
