@@ -578,11 +578,11 @@ _form_right_side(Style_Editor *style_edit)
    elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
 
-   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
+   ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/tag_entry",
                                 style_edit->entry_tag);
 
-   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
+   ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/prop_entry",
                                 style_edit->entry_prop);
 
@@ -687,7 +687,7 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
    evas_object_show(bg);
 
-   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_style, true, "style_editor");
+   ENTRY_ADD(style_edit->mwin, style_edit->entry_style, true, "style_editor");
    elm_entry_editable_set(style_edit->entry_style, false);
    evas_object_size_hint_weight_set(style_edit->entry_style,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
