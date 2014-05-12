@@ -19,6 +19,7 @@
  */
 
 #include "project_manager.h"
+#include "string_macro.h"
 #include "alloc.h"
 
 static const char *dst_path;
@@ -40,7 +41,9 @@ _on_copy_done_save_as_cb(void *data,
    if (project->edj)
      free(project->edj);
    project->edj = strdup(dst_path);
-   DBG("Copy file '%s' is finished!", dst_path);
+   if (project->name) free(project->name);
+   GET_NAME_FROM_PATH(project->name, project->edj);
+   DBG("Copy file '%s' is finished!", project->edj);
    dst_path = NULL;
    ecore_main_loop_quit();
 }

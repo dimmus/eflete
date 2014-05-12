@@ -30,6 +30,11 @@
 #define false EINA_FALSE
 #define RETURN_VOID
 
+#define STATUSBAR_PROJECT_PATH(AP, TEXT) \
+   Evas_Object *label = ewe_statusbar_item_content_get( \
+         eina_list_data_get(ewe_statusbar_items_list_get(AP->statusbar))); \
+   elm_object_text_set(label, TEXT);
+
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \
    Eina_Inlist *_styles, *_classes, *_widgets = NULL; \

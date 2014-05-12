@@ -53,6 +53,9 @@ _menu_event_handler_cb(void *data __UNUSED__,
 {
    Menu_Event *menu_event = (Menu_Event *)event;
    ui_menu_locked_set(menu_event->ap->menu_hash, true);
+
+   Evas_Object *nf;
+
    switch (menu_event->type)
       {
       case OPEN_EDC:
@@ -79,6 +82,9 @@ _menu_event_handler_cb(void *data __UNUSED__,
       break;
       case SAVE_AS_EDJ:
          save_as_edj_file(menu_event->ap);
+         nf = ui_block_widget_list_get(menu_event->ap);
+         ui_widget_list_title_set(nf, menu_event->ap->project->name);
+         STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
       break;
       }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
@@ -150,6 +156,7 @@ _project_not_save_edc(void *data,
    ui_menu_base_disabled_set(ap->menu_hash, false);
 
    evas_object_hide(ap->popup);
+   STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
    open_edc_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
 }
@@ -168,6 +175,8 @@ _project_not_save_edj(void *data,
    ui_menu_base_disabled_set(ap->menu_hash, false);
 
    evas_object_hide(ap->popup);
+   STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
+
    open_edj_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
 }

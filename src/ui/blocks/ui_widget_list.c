@@ -753,7 +753,7 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
 
    if ((!object) || (!title)) return false;
 
-   item_gl_widgets = _widget_list_get(object);
+   item_gl_widgets = elm_naviframe_bottom_item_get(object);
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
 
    return true;

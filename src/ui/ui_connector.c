@@ -469,6 +469,7 @@ ui_edj_load_done(App_Data* ap, const char *selected)
         ui_block_widget_list_set(ap, wd_list);
         evas_object_show(wd_list);
         ui_panes_show(ap);
+        STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
 
         ui_menu_base_disabled_set(ap->menu_hash, false);
      }
@@ -522,6 +523,7 @@ new_theme_create(App_Data *ap)
    ap->project->edj = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
+   STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
 
    return true;
 }
