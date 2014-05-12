@@ -58,10 +58,7 @@ static const char *transition_type[] = {
                                     N_("SINUSOIDAL FACTOR"),
                                     N_("DIVISOR INTERP"),
                                     N_("BOUNCE"),
-                                    N_("SPRING"),
-                                    N_("LAST"),
-                                    N_("MASK"),
-                                    N_("OPT_FROM_CURRENT")};
+                                    N_("SPRING")};
 
 
 static const char *action_type[] = {N_("NONE"),
@@ -116,7 +113,7 @@ _on_##sub##_##value##_change(void *data, \
      } \
 }
 
-#define ITEM_1ENTRY_ADD(text, sub, value) \
+#define ITEM_1ENTRY_ADD(text, sub, value, regex) \
 static Evas_Object * \
 _prop_item_##sub##_##value##_add(Evas_Object *parent, \
                                 const char *tooltip) \
@@ -124,6 +121,7 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
    EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   REGEX_SET(entry, regex); \
    elm_object_tooltip_text_set(entry, tooltip); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
@@ -137,21 +135,35 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    const char *value; \
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
-   elm_entry_entry_set(entry, value); \
+   ewe_entry_entry_set(entry, value); \
    evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
    evas_object_smart_callback_add(entry, "activated", \
                                   _on_##sub##_##value##_change, prog_edit); \
 }
 
-#define ITEM_1ENTRY_PROG_CREATE(text, sub, value) \
+#define ITEM_1ENTRY_PROG_CREATE(text, sub, value, regex) \
    ITEM_STRING_CALLBACK(sub, value) \
-   ITEM_1ENTRY_ADD(text, sub, value) \
-   ITEM_1ENTRY_UPDATE(sub, value) \
+   ITEM_1ENTRY_ADD(text, sub, value, regex) \
+   ITEM_1ENTRY_UPDATE(sub, value)
 
+#define ENTRY_UPDATE(entry, is_disabled, text) \
+   elm_object_disabled_set(entry, is_disabled); \
+   if (text) ewe_entry_label_text_set(entry, text);
 
-ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal)
-ITEM_1ENTRY_PROG_CREATE(_("source"), program, source)
-ITEM_1ENTRY_ADD(_("name"), program, name)
+#define REGEX_SET(entry, regex) \
+   ewe_entry_regex_set(entry, regex, EWE_REG_EXTENDED); \
+   ewe_entry_regex_autocheck_set(entry, true); \
+   ewe_entry_regex_glow_set(entry, true);
+
+static void _on_v1_active(void *data, Evas_Object *obj, void *ei);
+static void _on_v2_active(void *data, Evas_Object *obj, void *ei);
+static void _on_state_active(void *data, Evas_Object *obj, void *ei);
+static void _on_value_active(void *data, Evas_Object *obj, void *ei);
+static void _on_value2_active(void *data, Evas_Object *obj, void *ei);
+
+ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
+ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
+ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
 
 static void
 _gl_progs_update_sel_item(const char *str, Program_Editor *prog_edit)
@@ -160,14 +172,6 @@ _gl_progs_update_sel_item(const char *str, Program_Editor *prog_edit)
    eina_stringshare_replace(&item_data, str);
    elm_object_item_data_set(prog_edit->sel, (void *)item_data);
    elm_genlist_item_update(prog_edit->sel);
-}
-
-static void
-_entry_state_update(Evas_Object *entry, Eina_Bool is_disabled, const char* text)
-{
-   elm_object_disabled_set(entry, is_disabled);
-   if (text)
-     ewe_entry_label_text_set(entry, text);
 }
 
 static void
@@ -278,8 +282,183 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    script = edje_edit_script_program_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
    script = elm_entry_utf8_to_markup(script);
-   elm_entry_entry_set(entry, script);
+   ewe_entry_entry_set(entry, script);
    eina_list_free(childs);
+}
+
+#define TRANS_ENTRIES_DEFAULT_SET(entry1, entry2, entry3, is_disabled) \
+   ENTRY_UPDATE(entry1, is_disabled, NULL); \
+   ENTRY_UPDATE(entry2, is_disabled, "param1"); \
+   ENTRY_UPDATE(entry3, is_disabled, "param2");
+
+#define TRANS_VAL_GET(_val_num, _entry, _callback) \
+   value = edje_edit_program_transition_value##_val_num##_get(prop.style->obj, \
+              prop.program); \
+   snprintf(buff, sizeof(buff), "%1.2f", value); \
+   ewe_entry_entry_set(_entry, buff); \
+   evas_object_smart_callback_del(_entry, \
+      "activated", _callback); \
+   evas_object_smart_callback_add(_entry, \
+      "activated", _callback, prog_edit); \
+
+static void
+_trans_entries_set(Evas_Object *entry1, Evas_Object *entry2, Evas_Object *entry3, Program_Editor *prog_edit, Eina_Bool is_update)
+{
+   char buff[BUFF_MAX];
+   double value;
+
+   switch (prop.trans_type)
+     {
+      case EDJE_TWEEN_MODE_NONE:
+        {
+           TRANS_ENTRIES_DEFAULT_SET(entry1, entry2, entry3, true);
+           break;
+        }
+      case EDJE_TWEEN_MODE_LINEAR:
+      case EDJE_TWEEN_MODE_SINUSOIDAL:
+      case EDJE_TWEEN_MODE_ACCELERATE:
+      case EDJE_TWEEN_MODE_DECELERATE:
+        {
+           ENTRY_UPDATE(entry2, true, NULL);
+           ENTRY_UPDATE(entry3, true, NULL);
+           break;
+        }
+      case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
+      case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
+      case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
+        {
+           ENTRY_UPDATE(entry2, false, "factor");
+           ENTRY_UPDATE(entry3, true, NULL);
+           if (is_update)
+             {
+                TRANS_VAL_GET(1, entry2, _on_v1_active);
+             }
+           break;
+        }
+      case EDJE_TWEEN_MODE_DIVISOR_INTERP:
+        {
+           ENTRY_UPDATE(entry2, false, "gradient");
+           ENTRY_UPDATE(entry3, false, "factor");
+           if (is_update)
+             {
+                TRANS_VAL_GET(1, entry2, _on_v1_active);
+                TRANS_VAL_GET(2, entry3, _on_v2_active);
+             }
+           break;
+        }
+      case EDJE_TWEEN_MODE_BOUNCE:
+        {
+           ENTRY_UPDATE(entry2, false, "decay");
+           ENTRY_UPDATE(entry3, false, "bounces");
+           if (is_update)
+             {
+                TRANS_VAL_GET(1, entry2, _on_v1_active);
+                TRANS_VAL_GET(2, entry3, _on_v2_active);
+             }
+           break;
+        }
+      case EDJE_TWEEN_MODE_SPRING:
+        {
+           ENTRY_UPDATE(entry2, false, "decay");
+           ENTRY_UPDATE(entry3, false, "swings");
+           if (is_update)
+             {
+                TRANS_VAL_GET(1, entry2, _on_v1_active);
+                TRANS_VAL_GET(2, entry3, _on_v2_active);
+             }
+           break;
+        }
+      case EDJE_TWEEN_MODE_CUBIC_BEZIER: // TODO: implement
+      default:
+        break;
+     }
+}
+
+#define ACTION_STATE_GET(_state_get, _activated_cb, _entry) \
+         str = _state_get(prop.style->obj, prop.program); \
+         ewe_entry_entry_set(_entry, str); \
+         edje_edit_string_free(str); \
+         evas_object_smart_callback_del(_entry, "activated", _activated_cb); \
+         evas_object_smart_callback_add(_entry, "activated", _activated_cb, \
+                                        prog_edit);
+
+#define ACTION_VAL_GET(_val_get, _activated_cb, _entry) \
+         value = _val_get(prop.style->obj, prop.program); \
+         sprintf(buff, "%1.2f", value); \
+         ewe_entry_entry_set(_entry, buff); \
+         evas_object_smart_callback_del(_entry, "activated", _activated_cb); \
+         evas_object_smart_callback_add(_entry, "activated", _activated_cb, \
+                                        prog_edit);
+
+static void
+_action_entries_set(Evas_Object *entry1, Evas_Object *entry2, Program_Editor *prog_edit, Eina_Bool is_update)
+{
+   Eina_Stringshare *str = NULL;
+   double value;
+   char buff[BUFF_MAX];
+
+   switch (prop.act_type)
+     {
+      case EDJE_ACTION_TYPE_NONE:
+      case EDJE_ACTION_TYPE_ACTION_STOP:
+      case EDJE_ACTION_TYPE_FOCUS_SET:
+      case EDJE_ACTION_TYPE_FOCUS_OBJECT:
+        {
+           ENTRY_UPDATE(entry1, true, NULL);
+           ENTRY_UPDATE(entry2, true, NULL);
+           break;
+        }
+      case EDJE_ACTION_TYPE_SCRIPT:
+        {
+           prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
+           _prop_item_program_script_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.script, prop.action);
+           break;
+        }
+      case EDJE_ACTION_TYPE_STATE_SET:
+        {
+           ENTRY_UPDATE(entry1, false, "state name");
+           REGEX_SET(entry1, EDJE_NAME_REGEX);
+           ENTRY_UPDATE(entry2, false,  "state value");
+           REGEX_SET(entry2, FLOAT_NUMBER_0_1_REGEX);
+           if (is_update)
+             {
+                ACTION_STATE_GET(edje_edit_program_state_get, _on_state_active, entry1)
+                ACTION_VAL_GET(edje_edit_program_value_get, _on_value_active, entry2);
+             }
+           break;
+        }
+      case EDJE_ACTION_TYPE_SIGNAL_EMIT:
+        {
+           ENTRY_UPDATE(entry1, false, "signal name");
+           REGEX_SET(entry1, EDJE_NAME_REGEX);
+           ENTRY_UPDATE(entry2, false, "emitter");
+           REGEX_SET(entry2, EDJE_NAME_REGEX);
+           if (is_update)
+             {
+                ACTION_STATE_GET(edje_edit_program_state_get, _on_state_active, entry1)
+                ACTION_STATE_GET(edje_edit_program_state2_get, _on_value_active, entry2);
+             }
+           break;
+        }
+      case EDJE_ACTION_TYPE_DRAG_VAL_SET:
+      case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
+      case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
+        {
+           ENTRY_UPDATE(entry1, false, "x");
+           REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
+           ENTRY_UPDATE(entry2, false, "y");
+           REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
+           if (is_update)
+             {
+                ACTION_VAL_GET(edje_edit_program_value_get, _on_value_active, entry1)
+                ACTION_VAL_GET(edje_edit_program_value2_get, _on_value2_active, entry2);
+             }
+           break;
+        }
+      default:
+        break;
+     }
 }
 
 static void
@@ -295,9 +474,9 @@ _on_combobox_trans_sel(void *data,
    Evas_Object *entry1 = eina_list_nth(childs, 1);
    Evas_Object *entry2 = eina_list_nth(childs, 2);
    Evas_Object *entry3 = eina_list_nth(childs, 3);
-   elm_entry_entry_set(entry1, "");
-   elm_entry_entry_set(entry2, "");
-   elm_entry_entry_set(entry3, "");
+   ewe_entry_entry_set(entry1, "");
+   ewe_entry_entry_set(entry2, "");
+   ewe_entry_entry_set(entry3, "");
 
    edje_edit_program_transition_set(prop.style->obj, prop.program,
                                    (Edje_Tween_Mode)(combitem->index));
@@ -305,68 +484,14 @@ _on_combobox_trans_sel(void *data,
      {
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         NOTIFY_INFO(5, _("Transition block can used only with STATE_SET action"));
-        _entry_state_update(entry1, true, NULL);
-        _entry_state_update(entry2, true, "param1");
-        _entry_state_update(entry3, true, "param2");
+        TRANS_ENTRIES_DEFAULT_SET(entry1, entry2, entry3, true);
         ewe_combobox_select_item_set(combitem->owner, 0);
         return;
      }
 
-   _entry_state_update(entry1, false, NULL);
-   _entry_state_update(entry2, false, "param1");
-   _entry_state_update(entry3, false, "param2");
+   TRANS_ENTRIES_DEFAULT_SET(entry1, entry2, entry3, false);
    prop.trans_type = (Edje_Tween_Mode)combitem->index;
-   switch (prop.trans_type)
-     {
-      case EDJE_TWEEN_MODE_NONE:
-        {
-           _entry_state_update(entry1, true, NULL);
-           _entry_state_update(entry2, true, NULL);
-           _entry_state_update(entry3, true, NULL);
-        }
-      break;
-      case EDJE_TWEEN_MODE_LINEAR:
-      case EDJE_TWEEN_MODE_SINUSOIDAL:
-      case EDJE_TWEEN_MODE_ACCELERATE:
-      case EDJE_TWEEN_MODE_DECELERATE:
-        {
-           _entry_state_update(entry2, true, NULL);
-           _entry_state_update(entry3, true, NULL);
-        }
-      break;
-      case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
-      case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
-      case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
-        {
-           _entry_state_update(entry2, false, "factor");
-           _entry_state_update(entry3, true, NULL);
-        }
-      break;
-      case EDJE_TWEEN_MODE_DIVISOR_INTERP:
-        {
-           _entry_state_update(entry2, false, "gradient");
-           _entry_state_update(entry3, false, "factor");
-        }
-      break;
-      case EDJE_TWEEN_MODE_BOUNCE:
-        {
-           _entry_state_update(entry2, false, "decay");
-           _entry_state_update(entry3, false, "bounces");
-        }
-      break;
-      case EDJE_TWEEN_MODE_SPRING:
-        {
-           _entry_state_update(entry2, false, "decay");
-           _entry_state_update(entry3, false, "swings");
-        }
-      break;
-      case EDJE_TWEEN_MODE_LAST:
-      case EDJE_TWEEN_MODE_MASK:
-      case EDJE_TWEEN_MODE_OPT_FROM_CURRENT:
-      break;
-      default:
-      break;
-     }
+   _trans_entries_set(entry1, entry2, entry3, prog_edit, false);
 
    eina_list_free(childs);
 }
@@ -385,13 +510,11 @@ _on_combobox_sel(void *data,
    Evas_Object *entry2 = eina_list_nth(childs, 2);
    Evas_Object *combobox_trans = NULL;
    Evas_Object *entry_trans = NULL;
-   elm_entry_entry_set(entry1, "");
-   elm_entry_entry_set(entry2, "");
+   ewe_entry_entry_set(entry1, "");
+   ewe_entry_entry_set(entry2, "");
 
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 (Edje_Action_Type)combitem->index);
-   _entry_state_update(entry1, true, "param1");
-   _entry_state_update(entry2, true, "param2");
    prop.act_type = (Edje_Action_Type)combitem->index;
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
@@ -403,11 +526,11 @@ _on_combobox_sel(void *data,
         ewe_combobox_select_item_set(combobox_trans, 0);
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         entry_trans = eina_list_nth(childs, 1);
-        _entry_state_update(entry_trans, true, NULL);
+        ENTRY_UPDATE(entry_trans, true, NULL);
         entry_trans = eina_list_nth(childs, 2);
-        _entry_state_update(entry_trans, true, "param1");
+        ENTRY_UPDATE(entry_trans, true, "param1");
         entry_trans = eina_list_nth(childs, 3);
-        _entry_state_update(entry_trans, true, "param1");
+        ENTRY_UPDATE(entry_trans, true, "param2");
      }
 
    if (prop.script)
@@ -417,44 +540,7 @@ _on_combobox_sel(void *data,
         prop.script = NULL;
      }
 
-   switch (prop.act_type)
-     {
-      case EDJE_ACTION_TYPE_NONE:
-      case EDJE_ACTION_TYPE_ACTION_STOP:
-      case EDJE_ACTION_TYPE_FOCUS_SET:
-      case EDJE_ACTION_TYPE_FOCUS_OBJECT:
-      break;
-      case EDJE_ACTION_TYPE_SCRIPT:
-        {
-
-           prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
-           _prop_item_program_script_update(prog_edit);
-           elm_box_pack_after(prop.prop_box, prop.script, prop.action);
-           break;
-        }
-      case EDJE_ACTION_TYPE_STATE_SET:
-        {
-           _entry_state_update(entry1, false, "state name");
-           _entry_state_update(entry2, false,  "state value");
-           break;
-        }
-      case EDJE_ACTION_TYPE_SIGNAL_EMIT:
-        {
-           _entry_state_update(entry1, false, "signal name");
-           _entry_state_update(entry2, false, "emitter");
-           break;
-        }
-      case EDJE_ACTION_TYPE_DRAG_VAL_SET:
-      case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
-      case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-        {
-           _entry_state_update(entry1, false, "x");
-           _entry_state_update(entry2, false, "y");
-        }
-      break;
-      default:
-      break;
-     }
+   _action_entries_set(entry1, entry2, prog_edit, false);
    eina_list_free(childs);
 }
 
@@ -501,7 +587,7 @@ _on_value2_active(void *data,
       case EDJE_ACTION_TYPE_STATE_SET:
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
       case EDJE_ACTION_TYPE_SCRIPT:
-      break;
+        break;
       case EDJE_ACTION_TYPE_DRAG_VAL_SET:
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
@@ -509,10 +595,10 @@ _on_value2_active(void *data,
            if (!edje_edit_program_value2_set(prop.style->obj, prop.program,
                                              atof(value)))
              NOTIFY_WARNING(_("The entered data is not valid!"));
+           break;
         }
-      break;
       default:
-      break;
+        break;
      }
 }
 
@@ -527,7 +613,6 @@ _on_v1_active(void *data,
    if (!edje_edit_program_transition_value1_set(prop.style->obj, prop.program,
                                                 atof(value)))
              NOTIFY_WARNING(_("The entered data is not valid!"));
-
 }
 
 static void
@@ -541,7 +626,6 @@ _on_v2_active(void *data,
    if (!edje_edit_program_transition_value2_set(prop.style->obj, prop.program,
                                                 atof(value)))
              NOTIFY_WARNING(_("The entered data is not valid!"));
-
 }
 
 static void
@@ -560,7 +644,7 @@ _on_value_active(void *data,
       case EDJE_ACTION_TYPE_FOCUS_SET:
       case EDJE_ACTION_TYPE_FOCUS_OBJECT:
       case EDJE_ACTION_TYPE_SCRIPT:
-      break;
+        break;
       case EDJE_ACTION_TYPE_DRAG_VAL_SET:
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
@@ -569,17 +653,17 @@ _on_value_active(void *data,
            if (!edje_edit_program_value_set(prop.style->obj, prop.program,
                                             atof(value)))
              NOTIFY_WARNING(_("The entered data is not valid!"));
+           break;
         }
-      break;
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
         {
            if (!edje_edit_program_state2_set(prop.style->obj, prop.program,
                                              value))
              NOTIFY_WARNING(_("the entered data is not valid!"));
+           break;
         }
-      break;
       default:
-      break;
+        break;
      }
 }
 
@@ -640,7 +724,7 @@ _after_item_add(Program_Editor *prog_edit, char *name)
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
-   elm_entry_entry_set(entry, name);
+   ewe_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",_on_after_name_change,
                                   prog_edit);
    evas_object_smart_callback_add(button, "clicked", _after_remove_button_cb,
@@ -700,7 +784,7 @@ _target_item_add(Program_Editor *prog_edit, char *name)
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
-   elm_entry_entry_set(entry, name);
+   ewe_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated", _on_target_name_change,
                                   prog_edit);
    evas_object_smart_callback_add(button, "clicked", _target_remove_button_cb,
@@ -736,9 +820,19 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    entry1 = eina_list_nth(nodes, 1);
    entry2 = eina_list_nth(nodes, 2);
    entry3 = eina_list_nth(nodes, 3);
+   ewe_entry_entry_set(entry1, "");
+   ewe_entry_entry_set(entry2, "");
+   ewe_entry_entry_set(entry3, "");
+
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      prop.trans_type = EDJE_TWEEN_MODE_NONE;
    ewe_combobox_select_item_set(combobox, (int)prop.trans_type);
+   if (prop.trans_type == EDJE_TWEEN_MODE_NONE)
+     {
+        TRANS_ENTRIES_DEFAULT_SET(entry1, entry2, entry3, true);
+        return;
+     }
+
    value = edje_edit_program_transition_time_get(prop.style->obj,
                                                  prop.program);
    evas_object_smart_callback_del(entry1, "activated",
@@ -747,62 +841,11 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
                                   _on_transition_time_active, prog_edit);
 
    snprintf(buff, sizeof(buff), "%1.2f", value);
-   elm_entry_entry_set(entry1, buff);
-   _entry_state_update(entry1, false, NULL);
-   _entry_state_update(entry2, false, NULL);
-   _entry_state_update(entry3, false, NULL);
-   switch (prop.trans_type)
-     {
-      case EDJE_TWEEN_MODE_NONE:
-        {
-           _entry_state_update(entry1, true, NULL);
-           _entry_state_update(entry2, true, NULL);
-           _entry_state_update(entry3, true, NULL);
-        }
-      break;
-      case EDJE_TWEEN_MODE_LINEAR:
-      case EDJE_TWEEN_MODE_SINUSOIDAL:
-      case EDJE_TWEEN_MODE_ACCELERATE:
-      case EDJE_TWEEN_MODE_DECELERATE:
-        {
-           _entry_state_update(entry2, true, NULL);
-           _entry_state_update(entry3, true, NULL);
-        }
-      break;
-      case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
-      case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
-      case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
-        {
-           _entry_state_update(entry3, true, NULL);
-        }
-      break;
-      case EDJE_TWEEN_MODE_DIVISOR_INTERP:
-      case EDJE_TWEEN_MODE_BOUNCE:
-      case EDJE_TWEEN_MODE_SPRING:
-      case EDJE_TWEEN_MODE_LAST:
-      case EDJE_TWEEN_MODE_MASK:
-      case EDJE_TWEEN_MODE_OPT_FROM_CURRENT:
-        {
-           value =
-              edje_edit_program_transition_value1_get(prop.style->obj,
-                                                      prop.program);
-           snprintf(buff, sizeof(buff), "%1.2f", value);
-           elm_entry_entry_set(entry2, buff);
-           evas_object_smart_callback_del(entry2, "activated", _on_v1_active);
-           evas_object_smart_callback_add(entry2, "activated", _on_v1_active,
-                                          prog_edit);
-           value = edje_edit_program_transition_value2_get(prop.style->obj,
-                                                           prop.program);
-           snprintf(buff, sizeof(buff), "%1.2f", value);
-           elm_entry_entry_set(entry3, buff);
-           evas_object_smart_callback_del(entry3, "activated", _on_v2_active);
-           evas_object_smart_callback_add(entry3, "activated", _on_v2_active,
-                                          prog_edit);
-        }
-      break;
-      default:
-      break;
-     }
+   ewe_entry_entry_set(entry1, buff);
+   TRANS_ENTRIES_DEFAULT_SET(entry1, entry2, entry3, false);
+
+   _trans_entries_set(entry1, entry2, entry3, prog_edit, true);
+
    eina_list_free(nodes);
 }
 
@@ -823,9 +866,12 @@ _prop_item_program_transition_add(Evas_Object *parent,
    ewe_entry_label_visible_set(entry1, true);
    ewe_entry_label_visible_set(entry2, true);
    ewe_entry_label_visible_set(entry3, true);
-   _entry_state_update(entry1, true, "length");
-   _entry_state_update(entry2, true, "param1");
-   _entry_state_update(entry3, true, "param2");
+   ENTRY_UPDATE(entry1, true, "length");
+   ENTRY_UPDATE(entry2, true, "param1");
+   ENTRY_UPDATE(entry3, true, "param2");
+   REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
+   REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
+   REGEX_SET(entry3, FLOAT_NUMBER_REGEX);
    evas_object_show(entry1);
    evas_object_show(entry2);
    evas_object_show(entry3);
@@ -860,8 +906,8 @@ _prop_item_program_action_add(Evas_Object *parent,
    EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
    ewe_entry_label_visible_set(entry1, true);
    ewe_entry_label_visible_set(entry2, true);
-   _entry_state_update(entry1, true, "param1");
-   _entry_state_update(entry2, true, "param2");
+   ENTRY_UPDATE(entry1, true, "param1");
+   ENTRY_UPDATE(entry2, true, "param2");
 
    for (i = 0; i < ACTIONS_COUNT; i++)
      {
@@ -886,9 +932,6 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
 {
    Evas_Object *box, *combobox, *entry1, *entry2;
    Eina_List *nodes = NULL;
-   Eina_Stringshare *str = NULL;
-   char buff[BUFF_MAX];
-   double value;
 
    if (!prop.action) return;
    prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
@@ -897,10 +940,14 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    combobox = eina_list_nth(nodes, 0);
    entry1 = eina_list_nth(nodes, 1);
    entry2 = eina_list_nth(nodes, 2);
+   ewe_entry_entry_set(entry1, "");
+   ewe_entry_entry_set(entry2, "");
    evas_object_show(entry1);
    evas_object_show(entry2);
-   _entry_state_update(entry1, false, NULL);
-   _entry_state_update(entry2, false, NULL);
+   ENTRY_UPDATE(entry1, false, NULL);
+   ENTRY_UPDATE(entry2, false, NULL);
+   ENTRY_UPDATE(entry1, true, "param1");
+   ENTRY_UPDATE(entry2, true, "param2");
 
    ewe_combobox_select_item_set(combobox, (int)prop.act_type);
 
@@ -911,79 +958,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
         prop.script = NULL;
      }
 
-   switch (prop.act_type)
-     {
-      case EDJE_ACTION_TYPE_SCRIPT:
-        {
-           prop.script = _prop_item_program_script_add(prop.prop_box, _("script"));
-           _prop_item_program_script_update(prog_edit);
-           elm_box_pack_after(prop.prop_box, prop.script, prop.action);
-           _entry_state_update(entry1, true, NULL);
-           _entry_state_update(entry2, true, NULL);
-        }
-      break;
-      case EDJE_ACTION_TYPE_NONE:
-      case EDJE_ACTION_TYPE_ACTION_STOP:
-      case EDJE_ACTION_TYPE_FOCUS_SET:
-      case EDJE_ACTION_TYPE_FOCUS_OBJECT:
-        {
-           _entry_state_update(entry1, true, NULL);
-           _entry_state_update(entry2, true, NULL);
-        }
-      break;
-      case EDJE_ACTION_TYPE_STATE_SET:
-        {
-           str = edje_edit_program_state_get(prop.style->obj, prop.program);
-           elm_entry_entry_set(entry1, str);
-           edje_edit_string_free(str);
-           evas_object_smart_callback_del(entry1, "activated", _on_state_active);
-           evas_object_smart_callback_add(entry1, "activated", _on_state_active,
-                                          prog_edit);
-           value = edje_edit_program_value_get(prop.style->obj, prop.program);
-           sprintf(buff, "%1.2f", value);
-           elm_entry_entry_set(entry2, buff);
-           evas_object_smart_callback_del(entry2, "activated", _on_value_active);
-           evas_object_smart_callback_add(entry2, "activated", _on_value_active,
-                                          prog_edit);
-        }
-      break;
-      case EDJE_ACTION_TYPE_SIGNAL_EMIT:
-        {
-           str = edje_edit_program_state_get(prop.style->obj, prop.program);
-           elm_entry_entry_set(entry1, str);
-           edje_edit_string_free(str);
-           evas_object_smart_callback_del(entry1, "activated", _on_state_active);
-           evas_object_smart_callback_add(entry1, "activated", _on_state_active,
-                                          prog_edit);
-           str = edje_edit_program_state2_get(prop.style->obj, prop.program);
-           elm_entry_entry_set(entry2, str);
-           edje_edit_string_free(str);
-           evas_object_smart_callback_del(entry2, "activated", _on_value_active);
-           evas_object_smart_callback_add(entry2, "activated", _on_value_active,
-                                          prog_edit);
-        }
-      break;
-      case EDJE_ACTION_TYPE_DRAG_VAL_SET:
-      case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
-      case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
-        {
-           value = edje_edit_program_value_get(prop.style->obj, prop.program);
-           snprintf(buff, sizeof(buff), "%1.2f", value);
-           elm_entry_entry_set(entry1, buff);
-           evas_object_smart_callback_del(entry1, "activated", _on_value_active);
-           evas_object_smart_callback_add(entry1, "activated", _on_value_active,
-                                          prog_edit);
-           value = edje_edit_program_value2_get(prop.style->obj, prop.program);
-           snprintf(buff, sizeof(buff), "%1.2f", value);
-           elm_entry_entry_set(entry2, buff);
-           evas_object_smart_callback_del(entry2, "activated", _on_value2_active);
-           evas_object_smart_callback_add(entry2, "activated", _on_value2_active,
-                                          prog_edit);
-        }
-      break;
-      default:
-      break;
-     }
+   _action_entries_set(entry1, entry2, prog_edit, true);
    eina_list_free(nodes);
 }
 
@@ -1115,7 +1090,7 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    range = edje_edit_program_in_from_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
    snprintf(instr, sizeof(instr), "%2.3f", range);
-   elm_entry_entry_set(entry, instr);
+   ewe_entry_entry_set(entry, instr);
    evas_object_smart_callback_del(entry, "activated", _on_in_from_change);
    evas_object_smart_callback_add(entry, "activated",
                                   _on_in_from_change, prog_edit);
@@ -1123,7 +1098,7 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
                                           prop.program);
    entry = eina_list_nth(childs, 1);
    snprintf(instr, sizeof(instr), "%2.3f", range);
-   elm_entry_entry_set(entry, instr);
+   ewe_entry_entry_set(entry, instr);
    evas_object_smart_callback_del(entry, "activated", _on_in_range_change);
    evas_object_smart_callback_add(entry, "activated",
                                   _on_in_range_change, prog_edit);
@@ -1148,8 +1123,10 @@ _prop_item_program_in_add(Evas_Object *parent,
    EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
    ewe_entry_label_visible_set(entry1, true);
    ewe_entry_label_visible_set(entry2, true);
-   _entry_state_update(entry1, false, "range");
-   _entry_state_update(entry2, false, "from");
+   ENTRY_UPDATE(entry1, false, "range");
+   ENTRY_UPDATE(entry2, false, "from");
+   REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
+   REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
    elm_box_pack_end(box, entry1);
    elm_box_pack_end(box, entry2);
    elm_object_part_content_set(item, "elm.swallow.content", box);
@@ -1161,7 +1138,8 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
 {
    Evas_Object *entry = elm_object_part_content_get(prop.name,
                                                     "elm.swallow.content");
-   elm_entry_entry_set(entry, prop.program);
+
+   ewe_entry_entry_set(entry, prop.program);
    evas_object_smart_callback_del(entry, "activated", _on_program_name_change);
    evas_object_smart_callback_add(entry, "activated", _on_program_name_change,
                                   prog_edit);
@@ -1496,4 +1474,9 @@ program_editor_window_add(Style *style)
 }
 
 #undef prop
-#undef ITEM_ADD_
+#undef ACTION_STATE_GET
+#undef ACTION_VAL_GET
+#undef TRANS_ENTRIES_DEFAULT_SET
+#undef TRANS_VAL_GET
+#undef ENTRY_UPDATE
+#undef REGEX_SET
