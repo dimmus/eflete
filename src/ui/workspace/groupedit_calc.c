@@ -101,6 +101,12 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
      }
    if ((type == EDJE_PART_TYPE_IMAGE) && (data))
      edje_edit_state_image_set(sd->edit_obj, part, "default", 0.0, data);
+   if (type == EDJE_PART_TYPE_TEXT)
+     {
+        edje_edit_state_font_set(sd->edit_obj, part, "default", 0.0, "Sans");
+        edje_edit_state_text_size_set(sd->edit_obj, part, "default", 0.0, 10);
+        edje_object_part_text_set(sd->edit_obj, part, part);
+     }
 
    gp = _part_draw_add(sd, part, type);
    sd->parts = eina_list_append(sd->parts, gp);
