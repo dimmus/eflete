@@ -539,6 +539,11 @@ ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag)
         ERR("Name is NULL");
         return false;
      }
+   if (!menu_hash)
+     {
+        ERR("Hash is NULL");
+        return false;
+     }
    item = eina_hash_find(menu_hash, name);
    if (!item)
      {
