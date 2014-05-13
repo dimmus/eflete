@@ -38,7 +38,12 @@ _del_part(void *data,
    Style *style = ap->project->current_style;
    if (!style) return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   if ((part) && (workspace_edit_object_part_del(ap->workspace, part->name)))
+   if (!part)
+     {
+        NOTIFY_INFO(3, _("No part selected"));
+        return;
+     }
+   if (workspace_edit_object_part_del(ap->workspace, part->name))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
@@ -50,9 +55,14 @@ _above_part(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
+   if (!ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style))
+      return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   if ((part) && (workspace_edit_object_part_above(ap->workspace, part->name)))
-      ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
+   if ((!part) || (!workspace_edit_object_part_above(ap->workspace, part->name)))
+     {
+        NOTIFY_ERROR(_("Internal edje error occurred on part move"));
+        ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
+     }
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
@@ -63,9 +73,14 @@ _below_part(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
+   if (!ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style))
+      return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
-   if ((part) && (workspace_edit_object_part_below(ap->workspace, part->name)))
-      ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
+   if ((!part) || (!workspace_edit_object_part_below(ap->workspace, part->name)))
+     {
+        NOTIFY_ERROR(_("Internal edje error occurred on part move"));
+        ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
+     }
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
@@ -244,8 +259,6 @@ _on_ws_part_select(void *data,
    if (part)
      ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
 
-   /* set the focus to groupedit, that the hotkeys is work */
-   CRIT("%p", ws_groupedit_get(ap->workspace));
    evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 }
 
