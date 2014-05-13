@@ -47,15 +47,6 @@ struct _Program_Editor
    } prop_view;
 };
 
-/*
-   FIXME: this struct needed to delete, when hoversel can return
-  index of selected item.
-*/
-struct _Index
-{
-   int i;
-};
-
 static const char *transition_type[] = {
                                     N_("NONE"),
                                     N_("LINEAR"),
@@ -89,7 +80,6 @@ static const char *action_type[] = {N_("NONE"),
                                     N_("SOUND_SAMPLE"),
                                     N_("SOUND_TONE")};
 
-typedef struct _Index Index;
 typedef struct _Program_Editor Program_Editor;
 static Elm_Genlist_Item_Class *_itc_prog;
 static Elm_Entry_Filter_Accept_Set accept_name = {
@@ -293,12 +283,12 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 }
 
 static void
-_on_hoversel_trans_sel(void *data,
-                 Evas_Object *obj,
-                 void *ei)
+_on_combobox_trans_sel(void *data,
+                       Evas_Object *obj,
+                       void *ei EINA_UNUSED)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Index *index = elm_object_item_data_get(ei);
+   Ewe_Combobox_Item *combitem = ewe_combobox_select_item_get(obj);
    Evas_Object *item = prop.transition;
    Evas_Object *box = elm_object_part_content_get(item, "elm.swallow.content");
    Eina_List *childs = elm_box_children_get(box);
@@ -309,14 +299,12 @@ _on_hoversel_trans_sel(void *data,
    elm_entry_entry_set(entry2, "");
    elm_entry_entry_set(entry3, "");
 
-   elm_object_text_set(obj, _(transition_type[index->i]));
    edje_edit_program_transition_set(prop.style->obj, prop.program,
-                                    (Edje_Tween_Mode)index->i);
+                                   (Edje_Tween_Mode)(combitem->index));
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         NOTIFY_INFO(5, _("Transition block can used only with STATE_SET action"));
-        elm_object_text_set(obj, _(transition_type[0]));
         _entry_state_update(entry1, true, NULL);
         _entry_state_update(entry2, true, "param1");
         _entry_state_update(entry3, true, "param2");
@@ -326,7 +314,7 @@ _on_hoversel_trans_sel(void *data,
    _entry_state_update(entry1, false, NULL);
    _entry_state_update(entry2, false, "param1");
    _entry_state_update(entry3, false, "param2");
-   prop.trans_type = (Edje_Tween_Mode)index->i;
+   prop.trans_type = (Edje_Tween_Mode)combitem->index;
    switch (prop.trans_type)
      {
       case EDJE_TWEEN_MODE_NONE:
@@ -383,35 +371,34 @@ _on_hoversel_trans_sel(void *data,
 }
 
 static void
-_on_hoversel_sel(void *data,
+_on_combobox_sel(void *data,
                  Evas_Object *obj,
-                 void *ei)
+                 void *ei EINA_UNUSED)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Index *index = elm_object_item_data_get(ei);
+   Ewe_Combobox_Item *combitem = ewe_combobox_select_item_get(obj);
    Evas_Object *item = prop.action;
    Evas_Object *box = elm_object_part_content_get(item, "elm.swallow.content");
    Eina_List *childs = elm_box_children_get(box);
    Evas_Object *entry1 = eina_list_nth(childs, 1);
    Evas_Object *entry2 = eina_list_nth(childs, 2);
-   Evas_Object *hoversel_trans = NULL;
+   Evas_Object *combobox_trans = NULL;
    Evas_Object *entry_trans = NULL;
    elm_entry_entry_set(entry1, "");
    elm_entry_entry_set(entry2, "");
 
-   elm_object_text_set(obj, _(action_type[index->i]));
    edje_edit_program_action_set(prop.style->obj, prop.program,
-                                (Edje_Action_Type)index->i);
+                                (Edje_Action_Type)combitem->index);
    _entry_state_update(entry1, true, "param1");
    _entry_state_update(entry2, true, "param2");
-   prop.act_type = (Edje_Action_Type)index->i;
+   prop.act_type = (Edje_Action_Type)combitem->index;
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
         box = elm_object_part_content_get(prop.transition,
                                           "elm.swallow.content");
         childs = elm_box_children_get(box);
-        hoversel_trans = eina_list_nth(childs, 0);
+        combobox_trans = eina_list_nth(childs, 0);
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         entry_trans = eina_list_nth(childs, 1);
         _entry_state_update(entry_trans, true, NULL);
@@ -419,7 +406,7 @@ _on_hoversel_sel(void *data,
         _entry_state_update(entry_trans, true, "param1");
         entry_trans = eina_list_nth(childs, 3);
         _entry_state_update(entry_trans, true, "param1");
-        elm_object_text_set(hoversel_trans, _(transition_type[0]));
+        ewe_combobox_select_item_set(combobox_trans, 0);
      }
 
    if (prop.script)
@@ -735,7 +722,7 @@ _target_add_button_cb(void *data,
 static void
 _prop_item_program_transition_update(Program_Editor *prog_edit)
 {
-   Evas_Object *box, *hoversel, *entry1, *entry2, *entry3;
+   Evas_Object *box, *combobox, *entry1, *entry2, *entry3;
    Eina_List *nodes;
    char buff[BUFF_MAX];
    double value;
@@ -744,13 +731,13 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
       edje_edit_program_transition_get(prop.style->obj, prop.program);
    box = elm_object_part_content_get(prop.transition, "elm.swallow.content");
    nodes = elm_box_children_get(box);
-   hoversel = eina_list_nth(nodes, 0);
+   combobox = eina_list_nth(nodes, 0);
    entry1 = eina_list_nth(nodes, 1);
    entry2 = eina_list_nth(nodes, 2);
    entry3 = eina_list_nth(nodes, 3);
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      prop.trans_type = EDJE_TWEEN_MODE_NONE;
-   elm_object_text_set(hoversel, _(transition_type[(int)prop.trans_type]));
+   ewe_combobox_select_item_set(combobox, (int)prop.trans_type);
    value = edje_edit_program_transition_time_get(prop.style->obj,
                                                  prop.program);
    evas_object_smart_callback_del(entry1, "activated",
@@ -818,24 +805,17 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    eina_list_free(nodes);
 }
 
-#define INDEX_APPEND(value) \
-   index = mem_malloc(sizeof(Index)); \
-   index->i = value; \
-   elm_object_item_data_set(hovit, index);
-
 static Evas_Object *
 _prop_item_program_transition_add(Evas_Object *parent,
                                   Program_Editor *prog_edit,
                                   const char *tooltip)
 {
-   Evas_Object *item, *box, *hoversel, *entry1, *entry2, *entry3;
-   Elm_Object_Item *hovit;
-   Index *index;
+   Evas_Object *item, *box, *combobox, *entry1, *entry2, *entry3;
    int i = 0;
 
    ITEM_ADD_(parent, item, _("transition"), "editor")
    BOX_ADD(item, box, false, true)
-   HOVERSEL_ADD(item, hoversel, false)
+   EWE_COMBOBOX_ADD(item, combobox)
    EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
    EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
    EWE_ENTRY_ADD(item, entry3, true, DEFAULT_STYLE)
@@ -848,20 +828,15 @@ _prop_item_program_transition_add(Evas_Object *parent,
    evas_object_show(entry1);
    evas_object_show(entry2);
    evas_object_show(entry3);
-   elm_hoversel_hover_parent_set(hoversel, prog_edit->mwin);
-   elm_object_text_set(hoversel, _(transition_type[0]));
 
    for (i = 0; i < TRANSITIONS_COUNT; i++)
      {
-        hovit = elm_hoversel_item_add(hoversel, _(transition_type[i]), NULL,
-                                 ELM_ICON_NONE, NULL, NULL);
-        INDEX_APPEND(i)
+        ewe_combobox_item_add(combobox, transition_type[i]);
      }
-   evas_object_smart_callback_add(hoversel, "selected", _on_hoversel_trans_sel,
+   evas_object_smart_callback_add(combobox, "selected", _on_combobox_trans_sel,
                                   prog_edit);
 
-
-   elm_box_pack_end(box, hoversel);
+   elm_box_pack_end(box, combobox);
    elm_box_pack_end(box, entry1);
    elm_box_pack_end(box, entry2);
    elm_box_pack_end(box, entry3);
@@ -873,16 +848,15 @@ _prop_item_program_transition_add(Evas_Object *parent,
 
 static Evas_Object *
 _prop_item_program_action_add(Evas_Object *parent,
-                             Program_Editor *prog_edit,
-                             const char *tooltip)
+                              Program_Editor *prog_edit,
+                              const char *tooltip)
 {
-   Evas_Object *item, *box, *hoversel, *entry1, *entry2;
-   Elm_Object_Item *hovit;
-   Index *index;
+   Evas_Object *item, *box, *combobox, *entry1, *entry2;
+   int i = 0;
 
    ITEM_ADD_(parent, item, _("action"), "editor")
    BOX_ADD(item, box, false, true)
-   HOVERSEL_ADD(item, hoversel, false)
+   EWE_COMBOBOX_ADD(item, combobox)
    EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
    EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
    ewe_entry_label_visible_set(entry1, true);
@@ -890,56 +864,26 @@ _prop_item_program_action_add(Evas_Object *parent,
    _entry_state_update(entry1, true, "param1");
    _entry_state_update(entry2, true, "param2");
 
-   elm_hoversel_hover_parent_set(hoversel, prog_edit->mwin);
-   elm_object_text_set(hoversel, _(action_type[0]));
-
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[0]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(0)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[1]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(1)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[2]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(2)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[3]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(3)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[4]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(4)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[5]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(5)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[6]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(6)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[7]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(7)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[8]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(8)
-   hovit = elm_hoversel_item_add(hoversel, _(action_type[10]), NULL, ELM_ICON_NONE,
-                                 NULL, NULL);
-   INDEX_APPEND(10)
-   evas_object_smart_callback_add(hoversel, "selected", _on_hoversel_sel,
+   for (i = 0; i < ACTIONS_COUNT; i++)
+     {
+        ewe_combobox_item_add(combobox, _(action_type[i]));
+     }
+   evas_object_smart_callback_add(combobox, "selected", _on_combobox_sel,
                                   prog_edit);
 
    elm_object_tooltip_text_set(item, tooltip);
-   elm_box_pack_end(box, hoversel);
+   elm_box_pack_end(box, combobox);
    elm_box_pack_end(box, entry1);
    elm_box_pack_end(box, entry2);
 
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
 }
-#undef INDEX_APPEND
 
 static void
 _prop_item_program_action_update(Program_Editor *prog_edit)
 {
-   Evas_Object *box, *hoversel, *entry1, *entry2;
+   Evas_Object *box, *combobox, *entry1, *entry2;
    Eina_List *nodes = NULL;
    Eina_Stringshare *str = NULL;
    char buff[BUFF_MAX];
@@ -949,7 +893,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
    box = elm_object_part_content_get(prop.action, "elm.swallow.content");
    nodes = elm_box_children_get(box);
-   hoversel = eina_list_nth(nodes, 0);
+   combobox = eina_list_nth(nodes, 0);
    entry1 = eina_list_nth(nodes, 1);
    entry2 = eina_list_nth(nodes, 2);
    evas_object_show(entry1);
@@ -957,7 +901,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
    _entry_state_update(entry1, false, NULL);
    _entry_state_update(entry2, false, NULL);
 
-   elm_object_text_set(hoversel, _(action_type[(int)prop.act_type]));
+   ewe_combobox_select_item_set(combobox, (int)prop.act_type);
 
    if (prop.script)
      {
@@ -1234,7 +1178,7 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    prop.signal = _prop_item_program_signal_add(box, _("signal"));
    prop.source = _prop_item_program_source_add(box, _("source"));
    prop.in = _prop_item_program_in_add(box, _("in"));
-   prop.action = _prop_item_program_action_add(box, prog_edit, _("action"));
+   prop.action = _prop_item_program_action_add(box, prog_edit,_("action"));
    prop.transition = _prop_item_program_transition_add(box, prog_edit,
                                                        _("transition"));
    prop.targets = _prop_item_program_target_add(box, prog_edit, _("targets"));

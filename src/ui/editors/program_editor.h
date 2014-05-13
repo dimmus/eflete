@@ -22,6 +22,7 @@
 #define PROGRAM_EDITOR_H
 
 #define TRANSITIONS_COUNT 14
+#define ACTIONS_COUNT 11
 
 /**
  * @defgroup ProgramEditor Program Editor

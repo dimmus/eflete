@@ -99,6 +99,12 @@
                                   ELM_SCROLLER_POLICY_OFF); \
    evas_object_show(ENTRY);
 
+#define EWE_COMBOBOX_ADD(PARENT, COMBOBOX) \
+   COMBOBOX = ewe_combobox_add(item); \
+   evas_object_size_hint_weight_set(COMBOBOX, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_show(COMBOBOX);
+
 #define CHECK_ADD(PARENT, CHECK, STYLE) \
    CHECK = elm_check_add(PARENT); \
    elm_object_style_set(CHECK, STYLE); \
