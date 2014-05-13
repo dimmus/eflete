@@ -242,8 +242,7 @@ test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_part_state_delete.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \
-test_ui_main_window/ui_style_delete.c \
-test_ui_main_window/ui_window_colorsel_get.c
+test_ui_main_window/ui_style_delete.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
