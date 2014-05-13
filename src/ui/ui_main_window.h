@@ -224,14 +224,14 @@ ui_style_clicked(App_Data *ap, Style *style);
  * Moved to own method for the separation of the interaction between the blocks.
  *
  * @param ap The App_Data structure pointer.
- * @param selected String with opened project file name.
+ * @param selected_file String with opened project file name.
  *
  * @return The Evas_Object pointer. Widget list object.
  *
  * @ingroup Window
  */
 Evas_Object *
-ui_edj_load_done(App_Data* ap, const char *selected);
+ui_edj_load_done(App_Data* ap, const char *selected_file);
 
 /**
  * Delete selected state from current part.

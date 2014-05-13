@@ -445,15 +445,16 @@ ui_style_clicked(App_Data *ap, Style *style)
 }
 
 Evas_Object *
-ui_edj_load_done(App_Data* ap, const char *selected)
+ui_edj_load_done(App_Data* ap, const char *selected_file)
 {
    Evas_Object *wd_list = NULL;
-   char *name;
+   char *name, *selected;
 
-   if ((!ap) || (!selected)) return NULL;
+   if ((!ap) || (!selected_file)) return NULL;
 
-   if (eina_str_has_suffix(selected, ".edj"))
+   if (eina_str_has_suffix(selected_file, ".edj"))
      {
+        selected = eina_file_path_sanitize(selected_file);
         INFO("Selected file: %s", selected);
         ui_property_style_unset(ui_block_property_get(ap));
         ui_states_list_data_unset(ui_block_state_list_get(ap));

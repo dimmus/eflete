@@ -696,6 +696,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    char **c;
    const char *widget, *type, *style_name;
    const char *custom_name = NULL;
+   const char *fail_message = NULL;
    Eina_Bool ret = true;
    int x, y;
 
@@ -732,11 +733,23 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             live->object = elm_label_add(live->live_view);
-             elm_object_text_set(live->object, _("Widget isn't implemented yet!"));
-             elm_object_part_content_set(live->live_view, "live_object", live->object);
-
+             fail_message = _("Widget isn't implemented yet!");
              ret = false;
+          }
+        if (ret)
+          {
+             const char *version = edje_edit_data_value_get(style->obj, "version");
+             if (!version || strcmp(version, "110"))
+               {
+                  fail_message = _("Outdated version of EDJ file! Should be 110");
+                  ret = false;
+               }
+          }
+        if (!ret)
+          {
+             live->object = elm_label_add(live->live_view);
+             elm_object_text_set(live->object, fail_message);
+             elm_object_part_content_set(live->live_view, "live_object", live->object);
           }
 
         live_view_theme_update(live, project);
