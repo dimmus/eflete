@@ -388,7 +388,7 @@ ui_part_select(App_Data *ap, Part* part)
 }
 
 /* FIXME: rename to style_clicked */
-void
+Eina_Bool
 ui_style_clicked(App_Data *ap, Style *style)
 {
    Evas_Object *wl_list = NULL;
@@ -398,10 +398,10 @@ ui_style_clicked(App_Data *ap, Style *style)
    Eina_List *signals = NULL;
    Style *_style = NULL, *_alias_style = NULL;
 
-   if ((!ap) && (!ap->project) && (!style))
+   if ((!ap) || (!ap->project) || (!style))
      {
         ERR("App Data or style is missing!");
-        return;
+        return false;
      }
 
    _alias_style = style;
@@ -442,6 +442,8 @@ ui_style_clicked(App_Data *ap, Style *style)
 
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
+
+   return true;
 }
 
 Evas_Object *

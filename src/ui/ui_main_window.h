@@ -71,16 +71,6 @@ Eina_Bool
 ui_main_window_del(App_Data *ap);
 
 /**
- * Get the colorselector object.
- *
- * @return the colorselector object.
- *
- * @ingroup Window
- */
-Evas_Object *
-ui_window_colorsel_get(void);
-
-/**
  * Adds marked panes to the given Elementary layout.
  *
  * @param ap The App_Data structure pointer.
@@ -93,24 +83,6 @@ Eina_Bool
 ui_panes_add(App_Data *ap);
 
 /**
- * Start process load settings for panes.
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_panes_settings_load();
-
-/**
- * Start process save settings for panes.
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_panes_settings_save();
-
-/**
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
  * @param ap The App_Data structure pointer.
@@ -121,18 +93,6 @@ ui_panes_settings_save();
  */
 Evas_Object *
 ui_menu_add(App_Data *ap);
-
-/**
- * Resize all panes on main window according to window new size.
- *
- * @param w A main window new width value.
- * @param h A main window new height value
- *
- * @ingroup Window
- * @return EINA_TRUE if successful, or EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_resize_panes(int w, int h);
 
 /**
  * Show panes element on main window
@@ -213,10 +173,11 @@ ui_part_select(App_Data *ap, Part* part);
  *
  * @param ap The App_Data structure pointer.
  * @param style The @Style structure object.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
-void
+Eina_Bool
 ui_style_clicked(App_Data *ap, Style *style);
 
 /**
