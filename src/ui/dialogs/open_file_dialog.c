@@ -230,15 +230,17 @@ _on_compile_cb(void *data,
    DBG("Compile exit code: %d", exit_code);
 }
 
-void
+Eina_Bool
 add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
 {
-   if (!wd_list) return;
+   if (!wd_list) return false;
 
    evas_object_smart_callback_add(wd_list, "wl,style,select", _on_style_clicked, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
    evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, ap);
+
+   return true;
 }
 
 static void

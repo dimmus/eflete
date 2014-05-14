@@ -61,9 +61,10 @@ open_edc_file(App_Data *ap);
  *
  * @param wd_list A pointer to widget list object.
  * @param ap The Apllication data.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
  *
  * @ingroup OpenFileDialog
  */
-void
+Eina_Bool
 add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
 #endif /* OPEN_FILE_DIALOG_H */
