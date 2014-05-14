@@ -284,11 +284,11 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 
 static void
 _on_combobox_trans_sel(void *data,
-                       Evas_Object *obj,
-                       void *ei EINA_UNUSED)
+                       Evas_Object *obj EINA_UNUSED,
+                       void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Ewe_Combobox_Item *combitem = ewe_combobox_select_item_get(obj);
+   Ewe_Combobox_Item *combitem = ei;
    Evas_Object *item = prop.transition;
    Evas_Object *box = elm_object_part_content_get(item, "elm.swallow.content");
    Eina_List *childs = elm_box_children_get(box);
@@ -308,6 +308,7 @@ _on_combobox_trans_sel(void *data,
         _entry_state_update(entry1, true, NULL);
         _entry_state_update(entry2, true, "param1");
         _entry_state_update(entry3, true, "param2");
+        ewe_combobox_select_item_set(combitem->owner, 0);
         return;
      }
 
@@ -372,11 +373,11 @@ _on_combobox_trans_sel(void *data,
 
 static void
 _on_combobox_sel(void *data,
-                 Evas_Object *obj,
-                 void *ei EINA_UNUSED)
+                 Evas_Object *obj EINA_UNUSED,
+                 void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Ewe_Combobox_Item *combitem = ewe_combobox_select_item_get(obj);
+   Ewe_Combobox_Item *combitem = ei;
    Evas_Object *item = prop.action;
    Evas_Object *box = elm_object_part_content_get(item, "elm.swallow.content");
    Eina_List *childs = elm_box_children_get(box);
@@ -399,6 +400,7 @@ _on_combobox_sel(void *data,
                                           "elm.swallow.content");
         childs = elm_box_children_get(box);
         combobox_trans = eina_list_nth(childs, 0);
+        ewe_combobox_select_item_set(combobox_trans, 0);
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
         entry_trans = eina_list_nth(childs, 1);
         _entry_state_update(entry_trans, true, NULL);
@@ -406,7 +408,6 @@ _on_combobox_sel(void *data,
         _entry_state_update(entry_trans, true, "param1");
         entry_trans = eina_list_nth(childs, 3);
         _entry_state_update(entry_trans, true, "param1");
-        ewe_combobox_select_item_set(combobox_trans, 0);
      }
 
    if (prop.script)
