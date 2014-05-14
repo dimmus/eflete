@@ -18,31 +18,28 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#ifndef STYLE_DIALOG_H
-#define STYLE_DIALOG_H
+#include "test_style_dialog.h"
 
-/**
- * @defgroup New_Style_Dialog New_Style_Dialog
- * @ingroup Dialogs
- *
- * Show dialog window for create new style and/or class.
- */
+Suite* test_suite (void) {
+   Suite *suite = suite_create("test_style_dialog");
+   TCase *tcase = tcase_create("TCase");
 
-#include "eflete.h"
-#include "widget_manager.h"
-#include "widget_macro.h"
-#include "notify.h"
-#include "ui_widget_list.h"
+   tcase_add_test(tcase, style_dialog_add_test_p1);
+   tcase_add_test(tcase, style_dialog_add_test_p2);
+   tcase_add_test(tcase, style_dialog_add_test_n1);
+   tcase_add_test(tcase, style_dialog_add_test_n2);
 
-/**
- * Add new dialog for input params style and/or class, like names of style and class.
- *
- * @param ap The App_Data struct pointer.
- * @return EINA_TRUE if a dialog was added, else EINA_FALSE.
- *
- * @ingroup New_Style_Dialog
- */
-Eina_Bool
-style_dialog_add(App_Data *ap);
+   suite_add_tcase(suite, tcase);
+   return suite;
+}
 
-#endif /* STYLE_DIALOG_H */
+int main(void) {
+   int number_failed;
+   Suite *suite = test_suite();
+   SRunner *runner = srunner_create(suite);
+   srunner_set_xml(runner, "test_style_dialog.xml");
+   srunner_run_all(runner, CK_VERBOSE);
+   number_failed = srunner_ntests_failed(runner);
+   srunner_free(runner);
+   return number_failed;
+}

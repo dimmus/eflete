@@ -18,31 +18,15 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#ifndef STYLE_DIALOG_H
-#define STYLE_DIALOG_H
+#include "utc_common.h"
+#include "ui_main_window.h"
+#include "style_dialog.h"
 
 /**
- * @defgroup New_Style_Dialog New_Style_Dialog
- * @ingroup Dialogs
- *
- * Show dialog window for create new style and/or class.
+ * @defgroup style_dialog_test
  */
 
-#include "eflete.h"
-#include "widget_manager.h"
-#include "widget_macro.h"
-#include "notify.h"
-#include "ui_widget_list.h"
-
-/**
- * Add new dialog for input params style and/or class, like names of style and class.
- *
- * @param ap The App_Data struct pointer.
- * @return EINA_TRUE if a dialog was added, else EINA_FALSE.
- *
- * @ingroup New_Style_Dialog
- */
-Eina_Bool
-style_dialog_add(App_Data *ap);
-
-#endif /* STYLE_DIALOG_H */
+void style_dialog_add_test_p1(int);
+void style_dialog_add_test_p2(int);
+void style_dialog_add_test_n1(int);
+void style_dialog_add_test_n2(int);

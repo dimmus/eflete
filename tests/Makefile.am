@@ -18,6 +18,7 @@ project_manager_test \
 config_test \
 cursor_test \
 style_editor_test \
+style_dialog_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
@@ -214,6 +215,12 @@ test_style_editor/test_style_editor.c \
 test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
+
+style_dialog_test_SOURCES = \
+test_style_dialog/test_style_dialog.c \
+test_style_dialog/style_dialog_add.c
+style_dialog_test_CFLAGS = ${FLAGS}
+style_dialog_test_LDADD = ${LD}
 
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \
