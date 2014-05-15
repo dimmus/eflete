@@ -26,7 +26,7 @@
 #define H_WIGTH (sd->handler_TL.w + sd->handler_BR.w)
 #define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h)
 
-#define PADDING_INIT 5
+#define PADDING_INIT 50
 
 /* here we create and define some functions for creating our groupedit smart
   object that is inherited from general Smart Object. */
