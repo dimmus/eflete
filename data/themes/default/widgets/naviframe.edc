@@ -1,7 +1,4 @@
 group { name: "elm/naviframe/item/basic/eflete";
-   images {
-      image: "section-header-bg.png" COMP;
-   }
    script {
       public noprev = 0;
       public notitle = 0;
@@ -104,16 +101,10 @@ group { name: "elm/naviframe/item/basic/eflete";
          }
       }
       part { name: "title_base";
-         type: IMAGE;
-         clip_to: "title_clip";
+         type: SPACER;
          description { state: "default" 0.0;
             rel1.to: "elements_clip";
             rel2.to: "elements_clip";
-            image {
-               normal: "section-header-bg.png";
-               border: 0 0 0 2;
-               middle: SOLID;
-            }
          }
       }
 
@@ -153,18 +144,17 @@ group { name: "elm/naviframe/item/basic/eflete";
          scale: 1;
          clip_to: "elements_clip";
          description { state: "default" 0.0;
-            min: 40 30;
-            max: 40 30;
+            SET_SIZE(30, 30);
             align: 0.0 0.5;
             fixed: 1 1;
             rel1 {
                to: "elements_clip";
-               offset: 5 5;
+               offset: 0 5;
             }
             rel2 {
                to: "elements_clip";
                relative: 0.0 1.0;
-               offset: 5 -5;
+               offset: 0 -5;
             }
          }
          description { state: "hidden" 0.0;
@@ -192,11 +182,11 @@ group { name: "elm/naviframe/item/basic/eflete";
                to_x: "elm.swallow.prev_btn";
                to_y: "title_base";
                relative: 1.0 0.0;
-               offset: 5 0;
+               offset: -2 0;
             }
             rel2 {
                to: "title_base";
-               offset: -3 -4;
+               offset: -3 -6;
                relative: 1.0 1.0;
             }
             color: 183 179 170 200;

@@ -429,7 +429,7 @@ _on_style_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
-   elm_object_style_set(bt, "eflete/default");
+   elm_object_style_set(bt, "eflete/simple");
    evas_object_show(gl_parts);
 
    elm_naviframe_item_push(nf, clicked_style->full_group_name, bt, NULL, gl_parts, NULL);
@@ -565,7 +565,7 @@ _on_widget_clicked_double(void *data,
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "eflete/default");
+   elm_object_style_set(bt, "eflete/simple");
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
