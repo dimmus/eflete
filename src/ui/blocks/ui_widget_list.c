@@ -655,7 +655,7 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_widget)
      {
         _itc_widget = elm_genlist_item_class_new();
-        _itc_widget->item_style = "eflete/level2";
+        _itc_widget->item_style = "eflete/level1";
         _itc_widget->func.text_get = _item_widget_label_get;
         _itc_widget->func.content_get = NULL;
         _itc_widget->func.state_get = NULL;
@@ -664,7 +664,7 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_layout)
      {
         _itc_layout = elm_genlist_item_class_new();
-        _itc_layout->item_style = "eflete/level2";
+        _itc_layout->item_style = "eflete/level1";
         _itc_layout->decorate_item_style = "eflete/mode";
         _itc_layout->func.text_get = _item_layout_label_get;
         _itc_layout->func.content_get = _item_style_content_get;
