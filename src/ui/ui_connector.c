@@ -477,7 +477,7 @@ ui_edj_load_done(App_Data* ap, const char *selected_file)
           }
         NOTIFY_INFO(3, _("Selected file: %s"), selected);
 
-        wd_list = ui_widget_list_add(ap->win);
+        wd_list = ui_widget_list_add(ap->block.left_top);
         ui_widget_list_title_set(wd_list, ap->project->name);
         ui_widget_list_data_set(wd_list, ap->project);
         ui_block_widget_list_set(ap, wd_list);
@@ -527,7 +527,7 @@ new_theme_create(App_Data *ap)
 
    ap->project = pm_open_project_edj("Untitled.edj", EFLETE_SWAP_PATH"Untitled.edj");
    if (!ap->project) return false;
-   wd_list = ui_widget_list_add(ap->win);
+   wd_list = ui_widget_list_add(ap->block.left_top);
    ui_widget_list_title_set(wd_list, ap->project->name);
    ui_widget_list_data_set(wd_list, ap->project);
    ui_block_widget_list_set(ap, wd_list);
