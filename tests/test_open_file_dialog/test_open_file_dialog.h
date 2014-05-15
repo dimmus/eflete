@@ -29,3 +29,9 @@
 void add_callbacks_wd_test_p1(int);
 void add_callbacks_wd_test_p2(int);
 void add_callbacks_wd_test_n(int);
+
+void open_edc_file_test_n1(int);
+void open_edc_file_test_n2(int);
+
+void open_edj_file_test_n1(int);
+void open_edj_file_test_n2(int);
