@@ -24,6 +24,9 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("open_file_dialog_test");
    TCase *tcase = tcase_create("TCase");
 
+   tcase_add_test(tcase, add_callbacks_wd_test_p1);
+   tcase_add_test(tcase, add_callbacks_wd_test_p2);
+   tcase_add_test(tcase, add_callbacks_wd_test_n);
 
    suite_add_tcase(suite, tcase);
    return suite;

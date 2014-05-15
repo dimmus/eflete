@@ -26,10 +26,6 @@
  * @defgroup test_open_file_dialog
  */
 
-void save_as_edj_file_test_n1(int);
-void save_as_edj_file_test_n2(int);
-void save_as_edj_file_test_n3(int);
-
-void save_as_edc_file_test_n1(int);
-void save_as_edc_file_test_n2(int);
-void save_as_edc_file_test_n3(int);
+void add_callbacks_wd_test_p1(int);
+void add_callbacks_wd_test_p2(int);
+void add_callbacks_wd_test_n(int);
