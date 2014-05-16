@@ -20,6 +20,7 @@ group {
          scale: 1;
          mouse_events: 0;
          description {
+            min: 360 0;
             state: "default" 0.0;
             color: 0 0 0 0;
          }

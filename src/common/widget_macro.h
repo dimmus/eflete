@@ -108,7 +108,7 @@
 #define CHECK_ADD(PARENT, CHECK, STYLE) \
    CHECK = elm_check_add(PARENT); \
    elm_object_style_set(CHECK, STYLE); \
-   evas_object_size_hint_align_set(CHECK, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_size_hint_align_set(CHECK, 0.0, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(CHECK, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(CHECK);
 
