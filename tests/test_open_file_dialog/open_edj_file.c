@@ -30,6 +30,80 @@
  * @}
  */
 
+/**
+ * @addtogroup open_edj_file
+ * @{
+ * <tr>
+ * <td>open_edj_file</td>
+ * <td>open_edj_file_test_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ * @step 2 add theme extension "eflete theme".
+ * @step 3 initialize application with app_init() function
+ * @step 4 create application data
+ *
+ * @procedure
+ * @step 1 Call function open_edj_file(app_data).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>App_Data *app_data</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (open_edj_file_test_n1)
+{
+   elm_init(0, 0);
+   elm_theme_extension_add(NULL, EFLETE_THEME);
+   App_Data *app_data;
+   Eina_Bool result = EINA_FALSE;
+
+   app_init();
+   app_data = app_create();
+
+   result = open_edj_file(app_data);
+   ck_assert_msg(result == EINA_FALSE, "'Open edc' dialog was created");
+
+   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup open_edj_file
+ * @{
+ * <tr>
+ * <td>open_edj_file</td>
+ * <td>open_edj_file_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 Call function open_edj_file(NULL).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>NULL</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (open_edj_file_test_n2)
+{
+   elm_init(0, 0);
+   Eina_Bool result = EINA_FALSE;
+
+   result = open_edj_file(NULL);
+   ck_assert_msg(result == EINA_FALSE, "'Open edc' dialog was created");
+
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup open_edj_file
