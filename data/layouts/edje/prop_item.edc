@@ -10,7 +10,7 @@ group {
    styles {
       style {
          name: "prop_item_label";
-         base: "font=FN font_size=11 color=#dfdbd2 align=left valign=0.0";
+         base: "font=FN font_size=12 color=#dfdbd2 align=left";
        }
    }
    name: "eflete/property/item/default";
@@ -63,8 +63,7 @@ group {
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            min: 0 20;
-            align: 0.0 0.0;
+            align: 0.0 0.5;
             fixed: 1 0;
             rel1 {
                to: "text_padding_top_left";
@@ -119,6 +118,7 @@ group {
          type: SWALLOW;
          scale: 1;
          description {
+            min: 0 20;
             state: "default" 0.0;
             rel1 {
                to: "content_padding_top_left";
@@ -381,6 +381,91 @@ group {
                normal: "corners.png";
                border: 3 3 3 3;
                middle: NONE;
+            }
+         }
+      }
+   }
+}
+
+group { name: "eflete/prop/container/1label";
+   parts {
+      part { name: "eflete.text.start";
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            text {
+               style: "prop_item_label";
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "content_left_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            max: 4 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "eflete.text.start";
+            }
+            rel2 {
+               relative: 2.0 1.0;
+               to_x: "eflete.text.start";
+            }
+         }
+      }
+      part { name: "eflete.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "content_left_padding";
+            }
+            align: 0.0 0.5;
+         }
+      }
+   }
+}
+
+group { name: "eflete/prop/container/2label";
+   inherit: "eflete/prop/container/1label";
+   parts {
+      part { name: "eflete.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 60 20;
+            max: 60 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "content_left_padding";
+            }
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "content_right_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            max: 4 -1;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "eflete.content";
+            }
+         }
+      }
+      part { name: "eflete.text.end";
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "content_right_padding";
+            }
+            text {
+               style: "prop_item_label";
+               max: 1 1;
             }
          }
       }
