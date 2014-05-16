@@ -475,7 +475,7 @@ group { name: "elm/check/base/eflete/toggle";
 
 group { name: "elm/check/base/eflete/default";
    images {
-      image: "checkbox-bg.png" COMP;
+      image: "input-text-bg1.png" COMP;
       image: "checkbox-white.png" COMP;
    }
    parts {
@@ -485,8 +485,8 @@ group { name: "elm/check/base/eflete/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 16 16;
-            max: 16 16;
+            min: 20 20;
+            max: 20 20;
             aspect: 1 1;
             aspect_preference: VERTICAL;
             rel1.offset: 1 1;
@@ -495,9 +495,8 @@ group { name: "elm/check/base/eflete/default";
                offset: 1 -2;
             }
             image {
-               normal: "checkbox-bg.png";
-               border: 8 8 8 8;
-               middle: NONE;
+               normal: "input-text-bg1.png";
+               border: 5 5 5 5;
             }
          }
       }
