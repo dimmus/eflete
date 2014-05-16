@@ -78,17 +78,8 @@ group { name: "elm/check/base/eflete/toggle";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            align: 0.5 0.5;
             SET_SIZE(55, 19);
-            rel1 {
-               relative: 0.5 0.5;
-               offset: 2 2;
-            }
-            rel2 {
-               offset: -3 -3;
-               relative: 0.5 0.5;
-            }
+            rel1.offset: 0 1;
         }
       }
       part { name: "bg_image";
@@ -152,10 +143,7 @@ group { name: "elm/check/base/eflete/toggle";
             min: 30 17;
             max: 30 17;
             fixed: 1 1;
-            image {
-               normal: "toggle-off.png";
-               border: 4 4 13 13;
-            }
+            image.normal: "toggle-off.png";
             fill.smooth: 0;
             rel1.to: "button";
             rel2.to: "button";
@@ -260,12 +248,10 @@ group { name: "elm/check/base/eflete/toggle";
             rel1 {
                to_x: "elm.swallow.content";
                relative: 1.0 0.0;
-               offset: 2 2;
             }
             rel2 {
                to_x: "tog";
                relative: 0.0 1.0;
-               offset: -5 -3;
             }
          }
          description { state: "disabled" 0.0;
