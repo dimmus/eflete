@@ -378,22 +378,33 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              void *ei __UNUSED__) \
 { \
    unsigned int tok_elm; \
+   char **c = NULL; \
    Prop_Data *pd = (Prop_Data *)data; \
    const char *value = elm_entry_entry_get(obj); \
-   char **c = eina_str_split_full (value, " ", 4, &tok_elm); \
-   if (tok_elm < 4) \
+   if (!value || !strcmp(value, "")) \
      { \
-        free(c[0]); \
-        free(c); \
-        NOTIFY_ERROR ("Please input correct border data: l r t b, " \
-                      "where l - left, r - right, t - top, b - bottom borders") \
-        return; \
+        elm_object_part_text_set(obj, "elm.guide", "left right top bottom"); \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                           pd->part->curr_state, pd->part->curr_state_value, \
+                           0, 0, 0, 0); \
      } \
-   edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                   pd->part->curr_state, pd->part->curr_state_value, \
-                                   atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
-   free(c[0]); \
-   free(c); \
+   else \
+     { \
+        c = eina_str_split_full (value, " ", 4, &tok_elm); \
+        if (tok_elm < 4) \
+          { \
+             free(c[0]); \
+             free(c); \
+             NOTIFY_ERROR ("Please input correct border data: l r t b, " \
+                           "where l - left, r - right, t - top, b - bottom borders") \
+             return; \
+          } \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value, \
+                                        atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
+       free(c[0]); \
+       free(c); \
+     } \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -799,8 +810,13 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, TEXT) \
    ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
-   snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
-   elm_entry_entry_set(entry, buff); \
+   if (!l && !r && !t && !b) \
+     elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
+   else \
+     { \
+        snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
+        elm_entry_entry_set(entry, buff); \
+     } \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
@@ -819,8 +835,13 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
-   snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
-   elm_entry_entry_set(entry, buff); \
+   if (!l && !r && !t && !b) \
+     elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
+   else \
+     { \
+        snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
+        elm_entry_entry_set(entry, buff); \
+     } \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    return item; \
