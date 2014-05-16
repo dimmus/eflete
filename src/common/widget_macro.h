@@ -100,7 +100,7 @@
    evas_object_show(ENTRY);
 
 #define EWE_COMBOBOX_ADD(PARENT, COMBOBOX) \
-   COMBOBOX = ewe_combobox_add(item); \
+   COMBOBOX = ewe_combobox_add(PARENT); \
    evas_object_size_hint_weight_set(COMBOBOX, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_show(COMBOBOX);

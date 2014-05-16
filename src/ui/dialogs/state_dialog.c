@@ -25,7 +25,7 @@
 
 static Evas_Object *entry_name;
 static Evas_Object *entry_value;
-static Evas_Object *hover_dup_state;
+static Evas_Object *combobox_dup_state;
 static Eina_Bool to_close;
 
 static Elm_Entry_Filter_Accept_Set accept_value = {
@@ -134,10 +134,8 @@ state_dialog_state_add(App_Data *ap)
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"))
-   HOVERSEL_ADD(item_dup, hover_dup_state, false)
-   elm_object_text_set(hover_dup_state, _("None"));
-   elm_object_disabled_set(hover_dup_state, true);
-   elm_object_part_content_set(item_dup, "elm.swallow.content", hover_dup_state);
+   EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
+   elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);
 
    elm_box_pack_end(box, entry_name);
    elm_box_pack_end(box, entry_value);

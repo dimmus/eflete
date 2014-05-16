@@ -831,9 +831,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
    evas_object_show(entry3);
 
    for (i = 0; i < TRANSITIONS_COUNT; i++)
-     {
-        ewe_combobox_item_add(combobox, transition_type[i]);
-     }
+     ewe_combobox_item_add(combobox, transition_type[i]);
    evas_object_smart_callback_add(combobox, "selected", _on_combobox_trans_sel,
                                   prog_edit);
 
@@ -867,6 +865,8 @@ _prop_item_program_action_add(Evas_Object *parent,
 
    for (i = 0; i < ACTIONS_COUNT; i++)
      {
+        /*9th action state is reserved, can't be an item*/
+        if (i == 9) continue;
         ewe_combobox_item_add(combobox, _(action_type[i]));
      }
    evas_object_smart_callback_add(combobox, "selected", _on_combobox_sel,

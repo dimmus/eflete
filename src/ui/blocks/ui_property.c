@@ -121,12 +121,6 @@ struct _Prop_Data
 };
 typedef struct _Prop_Data Prop_Data;
 
-struct _Index
-{
-   int i;
-};
-typedef struct _Index Index;
-
 static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Vertical"),
                                           N_("Horizontal"),
@@ -199,71 +193,56 @@ prop_item_label_update(Evas_Object *item,
 
 static void
 _on_state_pref_pref_change(void *data,
-                           Evas_Object *obj,
+                           Evas_Object *obj EINA_UNUSED,
                            void *ei)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   Index *index = elm_object_item_data_get((Elm_Object_Item *)ei);
-   elm_object_text_set(obj, _(edje_aspect_pref[index->i]));
+   Ewe_Combobox_Item *item = ei;
    if (!edje_edit_state_aspect_pref_set(pd->style->obj, pd->part->name,
                                         pd->part->curr_state, pd->part->curr_state_value,
-                                        index->i))
+                                        item->index))
      return;
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
 }
 
-#define INDEX_APPEND(VALUE) \
-   index = mem_malloc(sizeof(Index)); \
-   index->i = VALUE; \
-   elm_object_item_data_set(hovit, index);
-
 static Evas_Object *
 prop_item_state_aspect_pref_add(Evas_Object *parent,
-                                Evas_Object *hoversel_parent,
                                 Prop_Data *pd,
+                                Evas_Object *property EINA_UNUSED,
                                 const char *tooltip)
 {
-   Evas_Object *item, *hoversel;
-   Elm_Object_Item *hovit;
+   Evas_Object *item, *combobox;
    unsigned char asp_pref;
-   Index *index;
    int i = 0;
    ITEM_ADD(parent, item, _("aspect ratio mode"))
-   HOVERSEL_ADD(item, hoversel, false)
-   elm_hoversel_hover_parent_set(hoversel, hoversel_parent);
-   elm_object_tooltip_text_set(hoversel, tooltip);
+   EWE_COMBOBOX_ADD(item, combobox)
+   elm_object_tooltip_text_set(combobox, tooltip);
    asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
                                               pd->part->name,
                                               pd->part->curr_state,
                                               pd->part->curr_state_value);
    for (i = 0; i < ASPECT_PREF_TYPE_COUNT; i++)
-     {
-        hovit = elm_hoversel_item_add(hoversel, _(edje_aspect_pref[i]), NULL,
-                  ELM_ICON_NONE, NULL, NULL);
-        INDEX_APPEND(i)
-     }
-   elm_object_text_set(hoversel, _(edje_aspect_pref[asp_pref]));
-   evas_object_smart_callback_add(hoversel, "selected", _on_state_pref_pref_change, pd);
-   elm_object_part_content_set(item, "elm.swallow.content", hoversel);
+     ewe_combobox_item_add(combobox, _(edje_aspect_pref[i]));
+   ewe_combobox_select_item_set(combobox, asp_pref);
+   evas_object_smart_callback_add(combobox, "selected", _on_state_pref_pref_change, pd);
+   elm_object_part_content_set(item, "elm.swallow.content", combobox);
    return item;
 }
-#undef INDEX_APPEND
 
 static void
 prop_item_state_aspect_pref_update(Evas_Object *item,
                                    Prop_Data *pd)
 {
-   Evas_Object *hoversel;
+   Evas_Object *combobox;
    unsigned char asp_pref;
-   hoversel = elm_object_part_content_get(item, "elm.swallow.content");
+   combobox = elm_object_part_content_get(item, "elm.swallow.content");
    asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
                                               pd->part->name,
                                               pd->part->curr_state,
                                               pd->part->curr_state_value);
-   elm_object_text_set(hoversel, _(edje_aspect_pref[asp_pref]));
+   ewe_combobox_select_item_set(combobox, asp_pref);
 }
-#undef HOVERSEL_LABEL_SET
 
 Evas_Object *
 ui_property_add(Evas_Object *parent)
@@ -808,7 +787,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "resized to any values independently"),
                             _("Normally width and height can be "
                              "resized to any values independently"));
-        pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, property, pd,
+        pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd, property,
                                    _("The aspect control hints for this object."));
         pd_state.color_class = prop_item_state_color_class_add(box, pd, NULL,
                                   _("Current color class"),
