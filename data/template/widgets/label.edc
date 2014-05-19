@@ -1,31 +1,25 @@
-#define TEXT_SLIDE_DURATION     10
-
 group { name: "elm/label/base/default";
-   data.item: "default_font_size" "10";
-   data.item: "min_font_size" "6";
-   data.item: "max_font_size" "60";
    styles {
-      style { name: "textblock_style";
-         base: "font=Sans font_size=10 color=#000 text_class=label left_margin=2 right_margin=2";
-         tag:  "hilight" "+ font_weight=Bold";
-         tag:  "b" "+ font_weight=Bold";
+      style { name: "label_style";
+         base: "font="FN" font_size=10 text_class=tb_plain align=center color=#ffffffff style=shadow,bottom shadow_color=#00000080";
+         tag: "br" "\n";
+         tag: "hilight" "+ font="FNBD" text_class=tb_light";
+         tag: "b" "+ font="FNBD" text_class=tb_light";
       }
    }
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
-         scale: 1;
+      part { name: "elm.text"; type: TEXTBLOCK;
          clip_to: "label.text.clip";
+         scale: 1;
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
             text {
-               style: "textblock_style";
+               style: "label_style";
                min: 0 1;
             }
          }
@@ -34,24 +28,21 @@ group { name: "elm/label/base/default";
 }
 
 group { name: "elm/label/base/marker";
-   data.item: "default_font_size" "10";
-   data.item: "min_font_size" "6";
-   data.item: "max_font_size" "60";
    styles {
-      style { name: "textblock_style2";
-         base: "font=Sans:style=Bold font_size=10 align=center color=#fff wrap=word text_class=label left_margin=2 right_margin=2";
-         tag:  "hilight" "+ color=#ffff";
-         tag:  "b" "+ color=#ffff";
+      style { name: "label_style2";
+         base: "font="FNBD" font_size=10 text_class=tb_plain align=center color=#ffffffff style=shadow,bottom shadow_color=#00000080";
+         tag: "br" "\n";
+         tag: "hilight" "+ font="FNBD" color=#3399ff text_class=tb_light";
+         tag: "b" "+ font="FNBD" color=#3399ff text_class=tb_light";
       }
    }
    parts {
-      part { name: "elm.text";
-         type: TEXTBLOCK;
+      part { name: "elm.text"; type: TEXTBLOCK;
          scale: 1;
          description { state: "default" 0.0;
-            text {
-               style: "textblock_style2";
+            text { style: "label_style2";
                min: 1 1;
+               ellipsis: -1;
             }
          }
       }
@@ -59,10 +50,6 @@ group { name: "elm/label/base/marker";
 }
 
 group { name: "elm/label/base/slide_long";
-   data.item: "default_font_size" "10";
-   data.item: "min_font_size" "6";
-   data.item: "max_font_size" "60";
-
    script {
       public g_duration, g_stopslide, g_timer_id, g_anim_id;
 
@@ -118,16 +105,12 @@ group { name: "elm/label/base/slide_long";
          set_state(PART:"elm.text", "default", 0.0);
       }
    }
-
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
+      part { name: "elm.text"; type: TEXTBLOCK;
          scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
@@ -135,8 +118,8 @@ group { name: "elm/label/base/slide_long";
             rel2.relative: 1.0 1.0;
             align: 0.0 0.0;
             text {
-               style: "textblock_style";
-               min: 1 1;
+               style: "label_style";
+               min: 0 1;
             }
          }
          description { state: "slide_end" 0.0;
@@ -144,29 +127,35 @@ group { name: "elm/label/base/slide_long";
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
             align: 1.0 0.0;
+            text {
+               style: "label_style";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "slide_begin" 0.0;
             inherit: "default" 0.0;
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 0.0 0.0;
+            text {
+               style: "label_style";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
    }
    programs {
       program { name: "start_slide";
-         source: "elm";
-         signal: "elm,state,slide,start";
-         script
-         {
+         signal: "elm,state,slide,start"; source: "elm"; 
+         script {
             start_slide();
          }
       }
       program { name: "stop_slide";
-         source: "elm";
-         signal: "elm,state,slide,stop";
-         script
-         {
+         signal: "elm,state,slide,stop"; source: "elm";
+         script {
             stop_slide();
          }
       }
@@ -175,10 +164,6 @@ group { name: "elm/label/base/slide_long";
 
 
 group { name: "elm/label/base/slide_short";
-   data.item: "default_font_size" "10";
-   data.item: "min_font_size" "6";
-   data.item: "max_font_size" "60";
-
    script {
       public g_duration, g_stopslide, g_timer_id, g_anim_id;
 
@@ -234,25 +219,20 @@ group { name: "elm/label/base/slide_short";
          set_state(PART:"elm.text", "default", 0.0);
       }
    }
-
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
+      part { name: "elm.text"; type: TEXTBLOCK;
          scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 0.0 0.0;
-            text {
-               style: "textblock_style";
-               min: 1 1;
+            text { style: "label_style";
+               min: 0 1;
             }
          }
          description { state: "slide_end" 0.0;
@@ -260,29 +240,33 @@ group { name: "elm/label/base/slide_short";
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 1.0 0.0;
+            text { style: "label_style";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "slide_begin" 0.0;
             inherit: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
             align: 0.0 0.0;
+            text { style: "label_style";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
    }
    programs {
       program { name: "start_slide";
-         source: "elm";
-         signal: "elm,state,slide,start";
-         script
-         {
+         signal: "elm,state,slide,start"; source: "elm";
+         script {
             start_slide();
          }
       }
       program { name: "stop_slide";
-         source: "elm";
-         signal: "elm,state,slide,stop";
-         script
-         {
+         signal: "elm,state,slide,stop"; source: "elm";
+         script {
             stop_slide();
          }
       }
@@ -290,10 +274,6 @@ group { name: "elm/label/base/slide_short";
 }
 
 group { name: "elm/label/base/slide_bounce";
-   data.item: "default_font_size" "10";
-   data.item: "min_font_size" "6";
-   data.item: "max_font_size" "60";
-
    script {
       public g_duration, g_stopslide, g_timer_id, g_anim_id;
 
@@ -361,25 +341,20 @@ group { name: "elm/label/base/slide_bounce";
          set_state(PART:"elm.text", "default", 0.0);
       }
    }
-
    parts {
-      part { name: "label.text.clip";
-         type: RECT;
+      part { name: "label.text.clip"; type: RECT;
          description { state: "default" 0.0;
-            color: 255 255 255 255;
          }
       }
-      part { name: "elm.text";
-         type: TEXTBLOCK;
+      part { name: "elm.text"; type: TEXTBLOCK;
          scale: 1;
          clip_to: "label.text.clip";
          description { state: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 0.0 0.0;
-            text {
-               style: "textblock_style";
-               min: 1 1;
+            text { style: "label_style";
+               min: 0 1;
             }
          }
          description { state: "slide_end" 0.0;
@@ -387,29 +362,33 @@ group { name: "elm/label/base/slide_bounce";
             rel1.relative: 1.0 0.0;
             rel2.relative: 1.0 1.0;
             align: 1.0 0.0;
+            text { style: "label_style";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "slide_begin" 0.0;
             inherit: "default" 0.0;
             rel1.relative: 0.0 0.0;
             rel2.relative: 0.0 1.0;
             align: 0.0 0.0;
+            text { style: "label_style";
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
    }
    programs {
       program { name: "start_slide";
-         source: "elm";
-         signal: "elm,state,slide,start";
-         script
-         {
+         signal: "elm,state,slide,start"; source: "elm";
+         script {
             start_slide();
          }
       }
       program { name: "stop_slide";
-         source: "elm";
-         signal: "elm,state,slide,stop";
-         script
-         {
+         signal: "elm,state,slide,stop"; source: "elm";
+         script {
             stop_slide();
          }
       }

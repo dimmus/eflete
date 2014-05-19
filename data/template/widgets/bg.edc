@@ -1,65 +1,29 @@
 group { name: "elm/bg/base/default";
-   images {
-      image: "dia_grad.png" COMP;
-      image: "dia_topshad.png" COMP;
-      image: "dia_botshad.png" COMP;
-   }
+   images.image: "bevel_dark_out.png" COMP;
    parts {
-      part { name: "base";
-         mouse_events:  0;
+      part { name: "base"; type: RECT;
          description { state: "default" 0.0;
-            image.normal: "dia_grad.png";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
+            color_class: "dialog_base";
+            color: 64 64 64 255;
          }
       }
-      part { name: "elm.swallow.rectangle";
-         type: SWALLOW;
+      part { name: "elm.swallow.rectangle"; type: SWALLOW;
          description { state: "default" 0.0;
          }
       }
-      part { name: "elm.swallow.background";
-         type: SWALLOW;
+      part { name: "elm.swallow.background"; type: SWALLOW;
          description { state: "default" 0.0;
          }
       }
-      part { name: "shadow";
-         mouse_events:  0;
+      part { name: "bevel";
          description { state: "default" 0.0;
-            rel2.relative: 1.0 0.0;
-            rel2.offset: -1 31;
-            image.normal: "dia_topshad.png";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
+            image.normal: "bevel_dark_out.png";
+            image.border: 1 1 1 1;
+            image.middle: 0;
+            fill.smooth: 0;
          }
       }
-      part { name: "shadow2";
-         mouse_events:  0;
-         description { state: "default" 0.0;
-            rel1.relative: 0.0 1.0;
-            rel1.offset: 0 -9;
-            image.normal: "dia_botshad.png";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
-         }
-      }
-      part { name: "elm.swallow.content";
-         type: SWALLOW;
+      part { name: "elm.swallow.content"; type: SWALLOW;
          description { state: "default" 0.0;
          }
       }

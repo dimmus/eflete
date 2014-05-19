@@ -13,236 +13,177 @@ group { name: "elm/segment_control/base/default";
       part { name: "bg";
          type: RECT;
          mouse_events: 0;
-         scale: 1;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
-            min: 100 40;
+            min: 160 31;
          }
       }
    }
 }
 group { name: "elm/segment_control/item/default";
    images {
-      image: "seg_single_pressed.png" COMP;
-      image: "seg_single_selected.png" COMP;
-      image: "seg_single_normal.png" COMP;
-
-      image: "seg_left_pressed.png" COMP;
-      image: "seg_left_selected.png" COMP;
-      image: "seg_left_normal.png" COMP;
-
-      image: "seg_middle_pressed.png" COMP;
-      image: "seg_middle_selected.png" COMP;
-      image: "seg_middle_normal.png" COMP;
-
-      image: "seg_right_pressed.png" COMP;
-      image: "seg_right_selected.png" COMP;
-      image: "seg_right_normal.png" COMP;
+      image: "day_single_press.png" COMP;
+      image: "day_single_selected.png" COMP;
+      image: "day_single_normal.png" COMP;
+      image: "day_left_press.png" COMP;
+      image: "day_left_selected.png" COMP;
+      image: "day_left_normal.png" COMP;
+      image: "day_middle_press.png" COMP;
+      image: "day_middle_selected.png" COMP;
+      image: "day_middle_normal.png" COMP;
+      image: "day_right_press.png" COMP;
+      image: "day_right_selected.png" COMP;
+      image: "day_right_normal.png" COMP;
    }
    parts {
       part { name: "segment";
-         mouse_events: 1;
          scale: 1;
          description { state: "default" 0.0;
-            min: 1 1;
             visible: 0;
             image {
-               normal: "seg_single_normal.png";
-               border: 7 7 7 7;
-               border_scale: 1;
-               middle: 1;
+               normal: "day_single_normal.png";
+               border: 4 4 3 5;
             }
          }
          description { state: "default_single" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            image {
-               normal: "seg_single_normal.png";
-               border: 7 7 7 7;
-            }
          }
          description { state: "default_left" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_left_normal.png";
-               border:  6 1 7 7;
+               normal: "day_left_normal.png";
+               border:  4 1 3 5;
             }
          }
          description { state: "default_right" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_right_normal.png";
-               border: 1 6 7 7;
+               normal: "day_right_normal.png";
+               border: 1 4 3 5;
             }
          }
          description { state: "default_middle" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_middle_normal.png";
-               border: 2 2 2 2;
+               normal: "day_middle_normal.png";
+               border: 1 1 3 5;
             }
          }
          description { state: "pressed_single" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_single_pressed.png";
-               border: 7 7 7 7;
+               normal: "day_single_press.png";
+               border: 4 4 3 5;
             }
          }
          description { state: "pressed_left" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_left_pressed.png";
-               border:  6 1 7 7;
+               normal: "day_left_press.png";
+               border:  4 1 3 5;
             }
          }
          description { state: "pressed_right" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_right_pressed.png";
-               border: 1 6 7 7;
+               normal: "day_right_press.png";
+               border: 1 4 3 5;
             }
          }
          description { state: "pressed_middle" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_middle_pressed.png";
-               border: 1 1 2 2;
+               normal: "day_middle_press.png";
+               border: 1 1 3 5;
             }
          }
          description { state: "selected_single" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_single_selected.png";
-               border: 7 7 7 7;
+               normal: "day_single_selected.png";
+               border: 4 4 3 5;
             }
          }
          description { state: "selected_left" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_left_selected.png";
-               border:  6 3 7 7;
+               normal: "day_left_selected.png";
+               border:  4 1 3 5;
             }
          }
          description { state: "selected_right" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_right_selected.png";
-               border: 3 6 7 7;
+               normal: "day_right_selected.png";
+               border: 1 4 3 5;
             }
          }
          description { state: "selected_middle" 0.0;
             inherit: "default" 0.0;
             visible: 1;
             image {
-               normal: "seg_middle_selected.png";
-               border: 3 3 3 3;
+               normal: "day_middle_selected.png";
+               border: 1 1 3 5;
             }
-         }
-      }
-      part { name: "padding_frame";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            /* Add a padding of 2 pxs in all directions */
-            rel1.offset: 2 2;
-            rel2.offset: -3 -3;
-         }
-      }
-      part { name: "icon.bg";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            fixed: 1 0;
-            rel1.to: "elm.swallow.icon";
-            rel2.to: "elm.swallow.icon";
-         }
-      }
-      part { name: "padding_icon_text";
-         type: RECT;
-         scale: 1;
-         mouse_events: 0;
-         description { state: "default" 0.0; //when only icon or no icon is there
-            visible: 0;
-            align: 0.0 0.0;
-            rel1 {
-               to: "icon.bg";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to: "icon.bg";
-               relative: 1.0 1.0;
-            }
-         }
-         description { state: "icononly" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "visible" 0.0; //when icon is visible
-            inherit: "default" 0.0;
-            rel2.offset: 2 0;
          }
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          scale: 1;
+         clip_to: "disabler";
          description { state: "default" 0.0;
-            visible: 0;
             align: 0.5 0.5;
-            rel1.to: "padding_frame";
-            rel2.to: "padding_frame";
-            rel2.relative: 0.0 0.0;
+            rel1.offset: 10 3;
+            rel2.relative: 0.0 1.0;
             aspect: 1.0 1.0;
             aspect_preference: BOTH;
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            rel2.relative: 0.3 1.0;
+            rel2.relative: 0.25 1.0;
+            rel2.offset: -5 -4;
          }
          description { state: "icononly" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
+            rel1.offset: 5 2;
             rel2.relative: 1.0 1.0;
+            rel2.offset: -5 -4;
          }
       }
       part { name: "elm.text";
          type: TEXT;
          mouse_events: 0;
          scale: 1;
+         effect: SHADOW BOTTOM;
          description {
             state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
             min: 1 1;
             rel1 {
-               to_x: "padding_icon_text";
+               to_x: "elm.swallow.icon";
                relative: 1.0 0.0;
+               offset: 0 -1;
             }
-            rel2.to: "padding_frame";
-            color: 224 224 224 255;
-            color3: 0 0 0 64;
+            rel2.offset: -6 -2;
+            color: FN_COL_DEFAULT;
             text {
-               font: "Sans";
-               ellipsis: 0.0;
-               fit: 1 1;
-               size: 24;
-               size_range: 8 36;
+               font: FN;
+               size: 10;
                min: 0 1;
+               text_class: "button";
             }
          }
          description { state: "normal" 0.0;
@@ -252,68 +193,48 @@ group { name: "elm/segment_control/item/default";
          description { state: "pressed" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            color: 0 0 0 255;
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 50 50 50 255;
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            color: 200 200 200 255;
+            color: FN_COL_DISABLE;
          }
       }
-      part { name: "disabler";
-         repeat_events: 0;
+      part { name: "text2";
+         type: TEXT;
+         mouse_events: 0;
          scale: 1;
-         description { state: "default" 0.0;
+         effect: GLOW;
+         description {
+            state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
             min: 1 1;
-            align: 0.0 0.5;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "segment";
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+            text {
+               font: FN;
+               size: 10;
+               min: 0 1;
+               text_source: "elm.text";
+               text_class: "button";
             }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "segment";
-            }
-            color: 255 255 255 150;
+            color: FN_COL_WHITE_GLOW;
          }
-         description { state: "disabled_single" 0.0;
+         description { state: "selected" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            image {
-               normal: "seg_single_normal.png";
-               border: 7 7 7 7;
-            }
          }
-         description { state: "disabled_left" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            image {
-               normal: "seg_left_normal.png";
-               border:  6 1 7 7;
-            }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "segment";
+            rel2.to: "segment";
          }
-         description { state: "disabled_right" 0.0;
+         description { state: "disabled" 0.0;
             inherit: "default" 0.0;
-            visible: 1;
-            image {
-               normal: "seg_right_normal.png";
-               border: 1 6 7 7;
-            }
-         }
-         description { state: "disabled_middle" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            image {
-               normal: "seg_middle_normal.png";
-               border: 2 2 2 2;
-            }
+            color: 255 255 255 64;
          }
       }
    }
@@ -324,63 +245,61 @@ group { name: "elm/segment_control/item/default";
          public seg_status;// Enabled/Default, Disabled
 
          public update_state() {
-            new type, state, disabled;
+            new type, state, status;
             type = get_int(seg_type);
             state = get_int(seg_state);
-            disabled = get_int(seg_status);
+            status = get_int(seg_status);
 
-            if(state == SEGMENT_STATE_NORMAL)
-            {
-               if(type == SEGMENT_TYPE_SINGLE)
-               set_state(PART:"segment", "default_single", 0.0);
-               else if(type == SEGMENT_TYPE_LEFT)
-               set_state(PART:"segment", "default_left", 0.0);
-               else if(type == SEGMENT_TYPE_MIDDLE)
-               set_state(PART:"segment", "default_middle", 0.0);
-               else if(type == SEGMENT_TYPE_RIGHT)
-               set_state(PART:"segment", "default_right", 0.0);
-               set_state(PART:"elm.text", "normal", 0.0);
-            }
-            else if(state == SEGMENT_STATE_PRESSED)
-            {
-               if(type == SEGMENT_TYPE_SINGLE)
-               set_state(PART:"segment", "pressed_single", 0.0);
-               else if(type == SEGMENT_TYPE_LEFT)
-               set_state(PART:"segment", "pressed_left", 0.0);
-               else if(type == SEGMENT_TYPE_MIDDLE)
-               set_state(PART:"segment", "pressed_middle", 0.0);
-               else if(type == SEGMENT_TYPE_RIGHT)
-               set_state(PART:"segment", "pressed_right", 0.0);
-               set_state(PART:"elm.text", "pressed", 0.0);
-            }
-            else if(state == SEGMENT_STATE_SELECTED)
-            {
-               if(type == SEGMENT_TYPE_SINGLE)
-               set_state(PART:"segment", "selected_single", 0.0);
-               else if(type == SEGMENT_TYPE_LEFT)
-               set_state(PART:"segment", "selected_left", 0.0);
-               else if(type == SEGMENT_TYPE_MIDDLE)
-               set_state(PART:"segment", "selected_middle", 0.0);
-               else if(type == SEGMENT_TYPE_RIGHT)
-               set_state(PART:"segment", "selected_right", 0.0);
-               set_state(PART:"elm.text", "selected", 0.0);
-            }
-            if(disabled == SEGMENT_STATUS_DISABLED)
-            {
-               if(type == SEGMENT_TYPE_SINGLE)
-               set_state(PART:"disabler", "disabled_single", 0.0);
-               else if(type == SEGMENT_TYPE_LEFT)
-               set_state(PART:"disabler", "disabled_left", 0.0);
-               else if(type == SEGMENT_TYPE_MIDDLE)
-               set_state(PART:"disabler", "disabled_middle", 0.0);
-               else if(type == SEGMENT_TYPE_RIGHT)
-               set_state(PART:"disabler", "disabled_right", 0.0);
+            if (status == SEGMENT_STATUS_ENABLED) {
+               if(state == SEGMENT_STATE_NORMAL) {
+                  if(type == SEGMENT_TYPE_SINGLE)
+                     set_state(PART:"segment", "default_single", 0.0);
+                  else if(type == SEGMENT_TYPE_LEFT)
+                     set_state(PART:"segment", "default_left", 0.0);
+                  else if(type == SEGMENT_TYPE_MIDDLE)
+                    set_state(PART:"segment", "default_middle", 0.0);
+                  else if(type == SEGMENT_TYPE_RIGHT)
+                    set_state(PART:"segment", "default_right", 0.0);
+                  set_state(PART:"elm.text", "normal", 0.0);
+                  set_state(PART:"text2", "default", 0.0);
+               } else if(state == SEGMENT_STATE_PRESSED) {
+                  if(type == SEGMENT_TYPE_SINGLE)
+                     set_state(PART:"segment", "pressed_single", 0.0);
+                  else if(type == SEGMENT_TYPE_LEFT)
+                     set_state(PART:"segment", "pressed_left", 0.0);
+                  else if(type == SEGMENT_TYPE_MIDDLE)
+                     set_state(PART:"segment", "pressed_middle", 0.0);
+                  else if(type == SEGMENT_TYPE_RIGHT)
+                     set_state(PART:"segment", "pressed_right", 0.0);
+                  set_state(PART:"elm.text", "pressed", 0.0);
+                  set_state(PART:"text2", "default", 0.0);
+               } else if(state == SEGMENT_STATE_SELECTED) {
+                  if(type == SEGMENT_TYPE_SINGLE)
+                     set_state(PART:"segment", "selected_single", 0.0);
+                  else if(type == SEGMENT_TYPE_LEFT)
+                    set_state(PART:"segment", "selected_left", 0.0);
+                  else if(type == SEGMENT_TYPE_MIDDLE)
+                    set_state(PART:"segment", "selected_middle", 0.0);
+                  else if(type == SEGMENT_TYPE_RIGHT)
+                    set_state(PART:"segment", "selected_right", 0.0);
+                  set_state(PART:"elm.text", "default", 0.0);
+                  set_state(PART:"text2", "selected", 0.0);
+               }
+              set_state(PART:"disabler", "default", 0.0);
+            } else {
                set_state(PART:"elm.text", "disabled", 0.0);
+               set_state(PART:"text2", "normal", 0.0);
+               set_state(PART:"disabler", "disabled", 0.0);
+               if(type == SEGMENT_TYPE_SINGLE)
+                 set_state(PART:"segment", "default_single", 0.0);
+               else if(type == SEGMENT_TYPE_LEFT)
+                 set_state(PART:"segment", "default_left", 0.0);
+               else if(type == SEGMENT_TYPE_MIDDLE)
+                 set_state(PART:"segment", "default_middle", 0.0);
+               else if(type == SEGMENT_TYPE_RIGHT)
+                 set_state(PART:"segment", "default_right", 0.0);
             }
-            else
-               set_state(PART:"disabler", "default", 0.0);
-            
-         }
+         } 
       }
       program {
          name: "segment_type_s";
@@ -469,15 +388,7 @@ group { name: "elm/segment_control/item/default";
             new Float:vl;
             get_state(PART:"elm.swallow.icon", st, 30, vl);
             if (!strcmp(st, "icononly"))
-            {
-               set_state(PART:"elm.swallow.icon", "visible", 0.0);
-               set_state(PART:"padding_icon_text", "visible", 0.0);
-            }
-            get_state(PART:"elm.text", st, 30, vl);
-            if (!strcmp(st, "selected"))
-            set_state(PART:"elm.text", "selected", 0.0);
-            else
-            set_state(PART:"elm.text", "normal", 0.0);
+              set_state(PART:"elm.swallow.icon", "visible", 0.0);
          }
       }
       program { name: "text_hide";
@@ -488,11 +399,9 @@ group { name: "elm/segment_control/item/default";
             new Float:vl;
             get_state(PART:"elm.swallow.icon", st, 30, vl);
             if (!strcmp(st, "visible"))
-            {
-               set_state(PART:"elm.swallow.icon", "icononly", 0.0);
-               set_state(PART:"padding_icon_text", "icononly", 0.0);
-            }
+              set_state(PART:"elm.swallow.icon", "icononly", 0.0);
             set_state(PART:"elm.text", "default", 0.0);
+            set_state(PART:"text2", "default", 0.0);
          }
       }
       program { name: "icon_show";
@@ -503,15 +412,9 @@ group { name: "elm/segment_control/item/default";
             new Float:vl;
             get_state(PART:"elm.text", st, 30, vl);
             if ((!strcmp(st, "normal")) || (!strcmp(st, "selected")))
-            {
-               set_state(PART:"elm.swallow.icon", "visible", 0.0);
-               set_state(PART:"padding_icon_text", "visible", 0.0);
-            }
+              set_state(PART:"elm.swallow.icon", "visible", 0.0);
             else
-            {
-               set_state(PART:"elm.swallow.icon", "icononly", 0.0);
-               set_state(PART:"padding_icon_text", "icononly", 0.0);
-            }
+              set_state(PART:"elm.swallow.icon", "icononly", 0.0);
          }
       }
       program { name: "icon_hide";
