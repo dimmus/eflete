@@ -67,6 +67,7 @@ _add_ok_clicked(void *data,
    else if (workspace_edit_object_part_state_add(workspace, part->name,
                                             str_name, atof(str_value)))
      {
+        ap->project->current_style->isModify = true;
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
@@ -178,7 +179,10 @@ _del_ok_clicked(void *data,
      'This state used in the program(s). Are you sure you want to delete
      %state name%' and delete the programs or some params from the program */
    if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
-     ui_states_list_selected_state_del(state_list);
+     {
+        ap->project->current_style->isModify = true;
+        ui_states_list_selected_state_del(state_list);
+     }
 
    free(arr[0]);
    free(arr);
