@@ -199,6 +199,7 @@ group { name: "elm/toolbar/item/eflete/default";
                font: FN;
                size: 12;
                min: 1 1;
+               ellipsis: -1;
                align: 0.5 0.5;
             }
             fixed: 0 1;

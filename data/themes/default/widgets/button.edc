@@ -83,7 +83,10 @@ group { name: "elm/button/base/eflete/default";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -94,7 +97,10 @@ group { name: "elm/button/base/eflete/default";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "over2";
@@ -159,6 +165,7 @@ group { name: "elm/button/base/eflete/default";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -168,6 +175,7 @@ group { name: "elm/button/base/eflete/default";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -413,7 +421,10 @@ group { name: "elm/button/base/eflete/simple";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -424,7 +435,10 @@ group { name: "elm/button/base/eflete/simple";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "over2";
@@ -489,6 +503,7 @@ group { name: "elm/button/base/eflete/simple";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -498,6 +513,7 @@ group { name: "elm/button/base/eflete/simple";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -733,7 +749,10 @@ group { name: "elm/button/base/eflete/elipsis";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -743,7 +762,10 @@ group { name: "elm/button/base/eflete/elipsis";
             color: 0 0 0 128;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "over2";
@@ -789,6 +811,7 @@ group { name: "elm/button/base/eflete/elipsis";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }

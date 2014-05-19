@@ -214,6 +214,7 @@ group { name: "elm/check/base/eflete/toggle";
             inherit: "default" 0.0;
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
             rel1.to: "elm.swallow.content";
@@ -223,6 +224,7 @@ group { name: "elm/check/base/eflete/toggle";
             inherit: "default" 0.0;
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
             rel1.to: "elm.swallow.content";
@@ -262,14 +264,20 @@ group { name: "elm/check/base/eflete/toggle";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled_visible" 0.0;
             inherit: "default" 0.0;
             color: 21 21 21 255;
             color3: 255 255 255 25;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "event2";
@@ -591,7 +599,10 @@ group { name: "elm/check/base/eflete/default";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -599,7 +610,10 @@ group { name: "elm/check/base/eflete/default";
          description { state: "disabled_visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text{
+               min: 1 1;
+               ellipsis: -1;
+            }
             color: 182 182 182 255;
          }
       }

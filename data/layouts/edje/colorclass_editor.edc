@@ -39,6 +39,7 @@ group {
             text {
                size: 28;
                min: 1 1;
+               ellipsis: -1;
                font: "arial";
             }
             rel1.to: "bg";

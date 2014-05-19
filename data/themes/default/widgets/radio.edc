@@ -88,7 +88,10 @@ group { name: "elm/radio/base/eflete/style_editor";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -100,7 +103,10 @@ group { name: "elm/radio/base/eflete/style_editor";
             color: 0 0 0 128;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "events";

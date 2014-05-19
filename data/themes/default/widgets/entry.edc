@@ -189,6 +189,7 @@ group { name: "elm/entry/base-single-noedit/style_editor";
                style: "entry_textblock_style_editor";
                min: 1 1;
                max: 0 0;
+               ellipsis: -1;
                align: 0.0 0.5;
             }
          }
@@ -889,6 +890,7 @@ group { name: "elm/entry/base-single/eflete/default";
                style: "eflete_text_style";
                min: 1 1;
                max: 0 0;
+               ellipsis: -1;
                align: 0.0 0.5;
             }
          }

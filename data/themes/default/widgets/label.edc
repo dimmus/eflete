@@ -45,6 +45,7 @@ group { name: "elm/label/base/eflete/info";
             text {
                style: "eflete_infoblock_style";
                min: 1 1;
+               ellipsis: -1;
             }
          }
       }

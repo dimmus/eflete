@@ -167,6 +167,7 @@ group { name: "elm/genlist/item/small/double_label/default";
                font: FN;
                size: 8;
                min: 1 1;
+               ellipsis: -1;
                align: 0.0 0.5;
                text_class: "list_item";
             }
