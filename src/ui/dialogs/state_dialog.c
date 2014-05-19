@@ -136,6 +136,7 @@ state_dialog_state_add(App_Data *ap)
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"))
    EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
+   elm_object_disabled_set(combobox_dup_state, true);
    elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);
 
    elm_box_pack_end(box, entry_name);
