@@ -153,7 +153,15 @@ _item_part_content_get(void *data,
           elm_image_file_set(icon, EFLETE_IMG_PATH"icon-group.png", NULL);
         if (_part->type == EDJE_PART_TYPE_PROXY)
           elm_image_file_set(icon, EFLETE_IMG_PATH"icon-proxy.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_TABLE)
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-table.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_BOX)
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-box.png", NULL);
+        if (_part->type == EDJE_PART_TYPE_EXTERNAL)
+          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-external.png", NULL);
+
         elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
+
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
      }
