@@ -740,3 +740,31 @@ group { name: "elm/check/base/eflete/default";
       }
    }
 }
+
+group { name: "elm/check/base/eflete/widgetlist/default";
+   images {
+      image: "icon-treemenu-item-visibility.png" COMP;
+      image: "treemenu-item-visibility-bg.png" COMP;
+   }
+   inherit: "elm/check/base/eflete/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            SET_SIZE(13 13, 13 13);
+            align: 0.0 0.5;
+            image.normal: "treemenu-item-visibility-bg.png";
+            rel1.offset: 0 1;
+            rel2.offset: 0 1;
+         }
+      }
+      part { name: "check";
+         description { state: "default" 0.0;
+            image.normal: "icon-treemenu-item-visibility.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+}

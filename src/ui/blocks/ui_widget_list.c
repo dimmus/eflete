@@ -93,7 +93,7 @@ _item_part_label_get(void *data,
 }
 
 static void
-_on_icon_click(void *data,
+_on_check_click(void *data,
                Evas_Object *obj,
                void *event_data __UNUSED__)
 {
@@ -105,15 +105,9 @@ _on_icon_click(void *data,
    tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
 
    if (_part->show)
-     {
-        elm_image_file_set(obj, EFLETE_IMG_PATH"eye_open.png", NULL);
-        evas_object_smart_callback_call(tabs, "wl,part,show", (void *)_part->name);
-     }
+     evas_object_smart_callback_call(tabs, "wl,part,show", (void *)_part->name);
    else
-     {
-        elm_image_file_set(obj, EFLETE_IMG_PATH"eye_close.png", NULL);
-        evas_object_smart_callback_call(tabs, "wl,part,hide", (void *)_part->name);
-     }
+     evas_object_smart_callback_call(tabs, "wl,part,hide", (void *)_part->name);
 }
 
 static Evas_Object *
@@ -124,15 +118,17 @@ _item_part_content_get(void *data,
    Part *_part = (Part *) data;
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        Evas_Object *icon = elm_icon_add(obj);
+        Evas_Object *check = elm_check_add(obj);
         if (_part->show)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"eye_open.png", NULL);
+          elm_check_state_set(check, true);
         else
-          elm_image_file_set(icon, EFLETE_IMG_PATH"eye_close.png", NULL);
-        evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-        evas_object_smart_callback_add(icon, "clicked", _on_icon_click, _part);
-        evas_object_data_set(icon, PARTLIST_DATA_KEY, obj);
-        return icon;
+           elm_check_state_set(check, false);
+        elm_object_style_set(check, "eflete/widgetlist/default");
+
+        evas_object_size_hint_aspect_set(check, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+        evas_object_smart_callback_add(check, "changed", _on_check_click, _part);
+        evas_object_data_set(check, PARTLIST_DATA_KEY, obj);
+        return check;
      }
    if (!strcmp(part, "elm.swallow.end"))
      {
