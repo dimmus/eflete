@@ -85,10 +85,6 @@ _item_part_label_get(void *data,
      {
         return strdup(p->name);
      }
-   else if (!strcmp(part, "elm.text.sub"))
-     {
-        return strdup(wm_part_type_get(p->type));
-     }
    return "";
 }
 
@@ -402,7 +398,7 @@ _on_style_clicked_double(void *data,
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "eflete/double_label";
+        _itc_part->item_style = "eflete/level4";
         _itc_part->func.text_get = _item_part_label_get;
         _itc_part->func.content_get = _item_part_content_get;
         _itc_part->func.state_get = NULL;
