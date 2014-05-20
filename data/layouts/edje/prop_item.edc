@@ -6,22 +6,20 @@
 #define SET_SIZE(_X, _Y) \
    min: _X _Y; max: _X _Y;
 
-group {
+group { name: "eflete/property/item/default";
    styles {
       style {
          name: "prop_item_label";
          base: "font="FN" font_size=12 color=#dfdbd2 align=left";
        }
    }
-   name: "eflete/property/item/default";
    parts {
       part { name: "base";
          type: RECT;
          scale: 1;
          mouse_events: 0;
-         description {
+         description { state: "default" 0.0;
             min: 360 0;
-            state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
@@ -57,13 +55,11 @@ group {
             align: 1.0 1.0;
          }
       }
-      part {
-         name: "elm.text";
+      part { name: "elm.text";
          type: TEXTBLOCK;
          scale: 1;
          mouse_events: 0;
-         description {
-            state: "default" 0.0;
+         description { state: "default" 0.0;
             align: 0.0 0.5;
             fixed: 1 0;
             rel1 {
@@ -114,13 +110,11 @@ group {
             align: 1.0 1.0;
          }
       }
-      part {
-         name: "elm.swallow.content";
+      part { name: "elm.swallow.content";
          type: SWALLOW;
          scale: 1;
-         description {
+         description { state: "default" 0.0;
             min: 0 20;
-            state: "default" 0.0;
             rel1 {
                to: "content_padding_top_left";
                relative: 1.0 1.0;
@@ -129,6 +123,113 @@ group {
                to: "content_padding_bottom_right";
                relative: 0.0 0.0;
             }
+         }
+      }
+   }
+}
+
+group { name: "eflete/property/item/relative";
+   inherit: "eflete/property/item/default";
+   parts {
+      part { name: "eflete.swallow.icon";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            max: 15 15;
+            rel1 {
+               to: "text_padding_top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "text_padding_bottom_right";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part {name: "padding_text_right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 4 0;
+            max: 4 -1;
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "eflete.swallow.icon";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            rel1 {
+               to_x: "padding_text_right";
+               to_y: "text_padding_top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "text_padding_bottom_right";
+               relative: 0.0 0.0;
+            }
+            text {
+               style: "prop_item_label";
+               min: 0 0;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "text_padding_top_left";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 31 6;
+            max: 31 6;
+            rel1.to: "label.area";
+            align: 0.0 0.0;
+         }
+      }
+   }
+}
+
+group { name: "eflete/property/item/relative_to";
+   inherit: "eflete/property/item/relative";
+   parts {
+      part { name: "eflete.swallow.icon";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            max: 0 0;
+         }
+      }
+      part {name: "padding_text_right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 0;
+            max: 0 -1;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 20;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 46;
          }
       }
    }

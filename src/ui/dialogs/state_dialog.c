@@ -134,7 +134,7 @@ state_dialog_state_add(App_Data *ap)
    ewe_entry_label_text_set(entry_value, "Value:");
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
 
-   ITEM_ADD(box, item_dup, _("Duplicate state:"))
+   ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")
    EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
    elm_object_disabled_set(combobox_dup_state, true);
    elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);

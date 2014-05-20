@@ -165,7 +165,7 @@ prop_item_label_add(Evas_Object *parent,
                     const char *text)
 {
    Evas_Object *item, *label;
-   ITEM_ADD(parent, item, lab_text)
+   ITEM_ADD(parent, item, lab_text, "eflete/property/item/default")
    LABEL_ADD(parent, label, text)
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -206,7 +206,7 @@ prop_item_state_aspect_pref_add(Evas_Object *parent,
    Evas_Object *item, *combobox;
    unsigned char asp_pref;
    int i = 0;
-   ITEM_ADD(parent, item, _("aspect ratio mode"))
+   ITEM_ADD(parent, item, _("aspect ratio mode"), "eflete/property/item/default")
    EWE_COMBOBOX_ADD(item, combobox)
    elm_object_tooltip_text_set(combobox, tooltip);
    asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
@@ -694,7 +694,7 @@ ui_property_part_unset(Evas_Object *property)
 #define ITEM_2SPINNER_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2, type) \
    ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE1, type) \
    ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE2, type) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, "eflete/property/item/default") \
    ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 #define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE) \
@@ -857,17 +857,24 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_textblock_unset(property);
 }
 
+#define ITEM_2SPINNER_STATE_REL_CREATE(TEXT, SUB, VALUE1, VALUE2, type) \
+   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE1, type) \
+   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE2, type) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, "eflete/property/item/relative") \
+   ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
+
+
 #define ITEM_2ENTRY_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_STRING_STATE_CALLBACK(SUB, VALUE1) \
    ITEM_STRING_STATE_CALLBACK(SUB, VALUE2) \
    ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2ENTRY_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
-ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel1_relative, x, y, double)
-ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel1_offset, x, y, int)
+ITEM_2SPINNER_STATE_REL_CREATE(_("align"), state_rel1_relative, x, y, double)
+ITEM_2SPINNER_STATE_REL_CREATE(_("offset"), state_rel1_offset, x, y, int)
 ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
-ITEM_2SPINNER_STATE_CREATE(_("relative"), state_rel2_relative, x, y, double)
-ITEM_2SPINNER_STATE_CREATE(_("offset"), state_rel2_offset, x, y, int)
+ITEM_2SPINNER_STATE_REL_CREATE(_("align"), state_rel2_relative, x, y, double)
+ITEM_2SPINNER_STATE_REL_CREATE(_("offset"), state_rel2_offset, x, y, int)
 ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 #define pd_obj_area pd->prop_state_object_area
@@ -889,32 +896,34 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Start point"));
-        icon = elm_icon_add(separator);
-        elm_image_file_set(icon, EFLETE_IMG_PATH"icon_start-point.png", NULL);
+        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_start-point.png")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(icon);
         evas_object_show(separator);
 
-        pd_obj_area.rel1_relative = prop_item_state_rel1_relative_x_y_add(box, pd,
-                              -5.0, 5.0, 0.1, "%1.2f",
-                              "", "%", "", "%",
-                              _("Define the position of left-up corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by X axis."),
-                              _("Define the position of left-up corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by Y axis."));
-        pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f",
-                            "x", "px", "y", "px",
-                            _("Left offset from relative position in pixels"),
-                            _("Top offset from relative position in pixels"));
         pd_obj_area.rel1_to = prop_item_state_rel1_to_x_y_add(box, pd,
                         "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
+        pd_obj_area.rel1_relative = prop_item_state_rel1_relative_x_y_add(box, pd,
+                              -5.0, 5.0, 0.1, "%1.2f",
+                              "x:", "%", "y:", "%",
+                              _("Define the position of left-up corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by X axis."),
+                              _("Define the position of left-up corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by Y axis."));
+        ICON_ADD(pd_obj_area.rel1_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        elm_object_part_content_set(pd_obj_area.rel1_relative, "eflete.swallow.icon", icon);
+        pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "x:", "px", "y:", "px",
+                            _("Left offset from relative position in pixels"),
+                            _("Top offset from relative position in pixels"));
+        ICON_ADD(pd_obj_area.rel1_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);
         elm_box_pack_end(box, pd_obj_area.rel1_to);
@@ -925,32 +934,35 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("End point"));
-        icon = elm_icon_add(separator);
-        elm_image_file_set(icon, EFLETE_IMG_PATH"icon_end-point.png", NULL);
+        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_end-point.png");
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(icon);
         evas_object_show(separator);
 
-        pd_obj_area.rel2_relative = prop_item_state_rel2_relative_x_y_add(box, pd,
-                              -5.0, 5.0, 0.1, "%1.2f",
-                              "", "%", "", "%",
-                              _("Define the position of right-down corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by X axis."),
-                              _("Define the position of right-down corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by Y axis."));
-        pd_obj_area.rel2_offset = prop_item_state_rel2_offset_x_y_add(box, pd,
-                            -9999.0, 9999.0, 1.0, "%.0f",
-                            "x", "px", "y", "px",
-                            _("Left offset from relative position in pixels"),
-                            _("Top offset from relative position in pixels"));
         pd_obj_area.rel2_to = prop_item_state_rel2_to_x_y_add(box, pd,
                         "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
+        pd_obj_area.rel2_relative = prop_item_state_rel2_relative_x_y_add(box, pd,
+                              -5.0, 5.0, 0.1, "%1.2f",
+                              "x:", "%", "y:", "%",
+                              _("Define the position of right-down corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by X axis."),
+                              _("Define the position of right-down corner of the part's container. "
+                              "Moves a corner to a relative position inside the container "
+                              "by Y axis."));
+        ICON_ADD(pd_obj_area.rel2_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        elm_object_part_content_set(pd_obj_area.rel2_relative, "eflete.swallow.icon", icon);
+        pd_obj_area.rel2_offset = prop_item_state_rel2_offset_x_y_add(box, pd,
+                            -9999.0, 9999.0, 1.0, "%.0f",
+                            "x:", "px", "y:", "px",
+                            _("Left offset from relative position in pixels"),
+                            _("Top offset from relative position in pixels"));
+        ICON_ADD(pd_obj_area.rel2_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        elm_object_part_content_set(pd_obj_area.rel2_offset, "eflete.swallow.icon", icon);
+
 
         elm_box_pack_end(box, separator);
         elm_box_pack_end(box, pd_obj_area.rel2_to);
