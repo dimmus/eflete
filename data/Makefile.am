@@ -5,8 +5,8 @@ AM_V_EDJ = $(am__v_EDJ)
 am__v_EDJ = @echo "  EDJ   " $@;
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/themes
-EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/themes/default/fonts
+EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/fonts
+EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_TEMPLATE = -id $(top_srcdir)/data/template/images -fd $(top_srcdir)/data/themes -sd $(top_srcdir)/data/template/sounds
 
 filesdir = $(datadir)/eflete/themes/default

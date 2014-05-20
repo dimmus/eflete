@@ -589,7 +589,7 @@ group { name: "elm/check/base/eflete/default";
             }
             color: 0 0 0 255;
             text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                style: "textblock_style";
                size: 12;
                min: 0 1;
