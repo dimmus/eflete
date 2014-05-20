@@ -10,7 +10,7 @@ group {
    styles {
       style {
          name: "prop_item_label";
-         base: "font=FN font_size=12 color=#dfdbd2 align=left";
+         base: "font="FN" font_size=12 color=#dfdbd2 align=left";
        }
    }
    name: "eflete/property/item/default";

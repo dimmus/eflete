@@ -153,7 +153,7 @@ group { name: "elm/button/base/eflete/default";
             visible: 0;
             fixed: 1 1;
                text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                text_class: "button";
@@ -491,7 +491,7 @@ group { name: "elm/button/base/eflete/simple";
             visible: 0;
             fixed: 1 1;
                text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                text_class: "button";
@@ -739,10 +739,10 @@ group { name: "elm/button/base/eflete/elipsis";
             color: 224 224 224 255;
             color3: 0 0 0 64;
             text {
-               font:     "Sans,Edje-Vera";
-               size:     10;
-               min:      0 0;
-               align:    0.5 0.5;
+               font: FN;
+               size: 10;
+               min: 0 0;
+               align: 0.5 0.5;
                text_class: "button";
             }
          }
@@ -799,7 +799,7 @@ group { name: "elm/button/base/eflete/elipsis";
          description { state: "default" 0.0;
             visible: 0;
             text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                text_class: "button";

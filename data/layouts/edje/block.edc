@@ -38,7 +38,7 @@ group {
                relative: 1.0 1.0;
             }
             text {
-               font: "Sans:style=Bold";
+               font: FN_B;
                size: 11;
                max: 1 1;
             }
