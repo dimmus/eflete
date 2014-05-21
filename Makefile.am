@@ -7,8 +7,8 @@ else
 SUBDIRS = src data doc . po
 endif
 
+.PHONY: doc update-po report coverage
 if HAVE_DOXYGEN
-.PHONY: doc update-po report
 doc:
 	$(MAKE) $(AM_MAKEFLAGS) -C doc doc
 
@@ -21,5 +21,8 @@ endif
 
 update-po:
 	$(MAKE) $(AM_MAKEFLAGS) -C po update-po
+
+coverage:
+	$(MAKE) $(AM_MAKEFLAGS) -C tests coverage
 
 EXTRA_DIST = config.rpath

@@ -409,3 +409,25 @@ test_colorselector/colorselector_add.c \
 test_colorselector/colorselector_color_get.c
 colorselector_test_CFLAGS = ${FLAGS}
 colorselector_test_LDADD = ${LD}
+
+coverage:
+	echo "<html><body>" > ../coverage.html
+	lcov --zerocounters --directory ../src
+	lcov -i --directory ../src -c -o coverage_base.info
+	+make check || true
+	lcov --directory ../src -c -o coverage.info
+	lcov --add-tracefile coverage_base.info --add-tracefile coverage.info --output-file coverage_total.info
+	genhtml coverage_total.info -o ../coverage/cov_ALL -t Total_coverage
+	echo "<p><a href='coverage/cov_ALL/index.html'>Full</a></p>" >> ../coverage.html
+	for i in ${TESTS}; \
+	do \
+		echo "Processing module: $$i..." ; \
+		lcov --zerocounters --directory ../src ; \
+		./$$i 2>/dev/null >/dev/null ; \
+		rm coverage.info ; \
+		lcov --directory ../src -c -o coverage.info ; \
+		genhtml coverage.info -o ../coverage/cov_$$i -t $$i ; \
+		echo "<p><a href='coverage/cov_$$i/index.html'>$$i</a></p>" >> ../coverage.html ; \
+		echo "" ; \
+	done;
+	echo "</body></html>" >> ../coverage.html
