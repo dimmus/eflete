@@ -78,7 +78,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    Evas_Object *item, *box, *layout, *spinner1, *spinner2; \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    BOX_ADD(item, box, true, false); \
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, "px"); \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, "w:", "px"); \
    SPINNER_ADD(layout, spinner1, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner1, "%.0f"); \
    elm_spinner_value_set(spinner1, edje_edit_##SUB##_##VALUE1##_get(pd->style->obj)); \
@@ -86,7 +86,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_content_set(layout, "eflete.content", spinner1); \
    elm_box_pack_end(box, layout); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, "px"); \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, "h:", "px"); \
    SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
    elm_spinner_label_format_set(spinner2, "%.0f"); \
