@@ -702,11 +702,12 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
    if ((!live) || (!project)) return false;
 
-   if (!style)
+   if ((!style) || (!style->parts))
      {
-        WARN("Could'nt apply the style to live view. The Styke is missing!");
+        WARN("Could'nt apply the style to live view. The style is missing!");
         return false;
      }
+
    live_view_widget_style_unset(live);
    live->current_scale = 1.0;
    elm_spinner_value_set(live->scale_spinner, 1.0);
@@ -805,6 +806,13 @@ live_view_theme_update(Live_View *live, Project *project)
         elm_layout_file_set(live->object, project->swapfile,
                             project->current_style->full_group_name);
         return true;
+     }
+
+   if ((!project->current_style) || (!project->current_style->parts))
+     {
+        WARN("Could'nt apply the empty style to live view.");
+        live_view_widget_style_unset(live);
+        return false;
      }
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
