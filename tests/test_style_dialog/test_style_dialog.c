@@ -24,8 +24,8 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("test_style_dialog");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, style_dialog_add_test_p1);
-   tcase_add_test(tcase, style_dialog_add_test_p2);
+/* tcase_add_test(tcase, style_dialog_add_test_p1);
+   tcase_add_test(tcase, style_dialog_add_test_p2);   TODO: separate functional tests*/
    tcase_add_test(tcase, style_dialog_add_test_n1);
    tcase_add_test(tcase, style_dialog_add_test_n2);
 
