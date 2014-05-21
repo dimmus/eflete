@@ -85,6 +85,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
          nf = ui_block_widget_list_get(menu_event->ap);
          ui_widget_list_title_set(nf, menu_event->ap->project->name);
          STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
+         ui_menu_disable_set(menu_event->ap->menu_hash, "Save project", false);
       break;
       }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
@@ -154,6 +155,7 @@ _project_not_save_edc(void *data,
    if (pm_project_close(ap->project)) ap->project = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, "Save project", true);
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
@@ -172,7 +174,8 @@ _project_not_save_edj(void *data,
 
    if (pm_project_close(ap->project)) ap->project = NULL;
 
-   ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_base_disabled_set(ap->menu_hash, true);
+   ui_menu_disable_set(ap->menu_hash, "Save project", true);
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
@@ -519,10 +522,17 @@ ui_menu_add(App_Data *ap)
    elm_object_part_content_set(ap->win_layout, "eflete.swallow.toolbar", toolbar);
    evas_object_show(toolbar);
 
-   elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_theme_menu, ap);
-   elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_edj_open_menu, ap);
-   elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save_menu, ap);
+#define ITEM_TB_ADD(toolbar_obj, icon, label, callback, data, ret) \
+   ret = elm_toolbar_item_append(toolbar_obj, icon, label, callback, data); \
+   eina_hash_add(menu_elms_hash, label, ret);
 
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_theme_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_edj_open_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save_menu, ap, it);
+
+   elm_object_item_disabled_set(it, true);
+
+#undef ITEM_TB_ADD
    ap->menu_hash = menu_elms_hash;
    ui_menu_base_disabled_set(ap->menu_hash, true);
 

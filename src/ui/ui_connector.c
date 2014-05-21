@@ -517,7 +517,7 @@ ui_edj_load_done(App_Data* ap, const char *selected_file)
         evas_object_show(wd_list);
         ui_panes_show(ap);
         STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
-
+        ui_menu_disable_set(ap->menu_hash, "Save project", false);
         ui_menu_base_disabled_set(ap->menu_hash, false);
      }
    else NOTIFY_ERROR(_("The file must have a extension '.edj'"));
@@ -571,6 +571,7 @@ new_theme_create(App_Data *ap)
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
    STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
+   ui_menu_disable_set(ap->menu_hash, "Save project", false);
 
    return true;
 }
