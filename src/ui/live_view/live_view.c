@@ -650,6 +650,21 @@ _elm_widget_create(const char  *widget,
           object = _create_genlist(parent, class, style);
         evas_object_show(object);
      }
+   else if (!strcmp(widget, "toolbar"))
+     {
+        object = elm_toolbar_add(parent);
+        elm_toolbar_shrink_mode_set(object, ELM_TOOLBAR_SHRINK_MENU);
+        elm_toolbar_select_mode_set(object, ELM_OBJECT_SELECT_MODE_NONE);
+        elm_toolbar_item_append(object, EFLETE_IMG_PATH"icon_save.png", _("#1"),
+                                NULL, NULL);
+        Elm_Object_Item *item =  elm_toolbar_item_append(object,
+                                    EFLETE_IMG_PATH"icon_save.png", _("#2"),
+                                    NULL, NULL);
+        elm_object_item_disabled_set(item, true);
+        elm_toolbar_item_append(object, EFLETE_IMG_PATH"icon_save.png", _("#3"),
+                                NULL, NULL);
+        evas_object_show(object);
+     }
    return object;
 }
 
