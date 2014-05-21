@@ -408,14 +408,15 @@ _elm_widget_create(const char  *widget,
         Evas_Object *test_left = evas_object_rectangle_add(e);
 
         evas_object_color_set(test_right,
-                              255 * 255 / 255,
-                              0,
-                              0,
+                              254 * 255 / 255,
+                              212 * 255 / 255,
+                              3 * 255 / 255,
                               255);
+
         evas_object_color_set(test_left,
-                              0,
-                              0,
-                              255 * 255 / 255,
+                              2 * 255 / 255,
+                              90 * 255 / 255,
+                              188 * 255 / 255,
                               255);
 
         object = elm_panes_add(parent);
