@@ -30,7 +30,9 @@ groupedit_test \
 ui_workspace_test \
 widget_manager_test \
 program_editor_test \
-live_view_test
+live_view_test \
+about_window_test
+
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
@@ -387,3 +389,9 @@ test_live_view/live_view_widget_style_unset.c \
 test_live_view/live_view_theme_update.c
 live_view_test_CFLAGS = ${FLAGS}
 live_view_test_LDADD = ${LD}
+
+about_window_test_SOURCES = \
+test_about_window/test_about_window.c \
+test_about_window/about_window_add.c
+about_window_test_CFLAGS = ${FLAGS}
+about_window_test_LDADD = ${LD}
