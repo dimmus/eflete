@@ -593,7 +593,7 @@ group { name: "elm/check/base/eflete/default";
                style: "textblock_style";
                size: 12;
                min: 0 1;
-               align: -1.0 0.5;
+               align: 0.0 0.5;
             }
          }
          description { state: "visible" 0.0;
