@@ -30,12 +30,34 @@ _add_part_dialog(void *data,
 }
 
 static void
+_on_ws_part_unselect(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   const char *part = (const char *)event_info;
+
+   if (!part) return;
+
+   ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
+   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   ui_property_part_unset(ui_block_property_get(ap));
+   /*TODO: in future it will be moved to block api. */
+   elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
+}
+
+static void
 _del_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    Style *style = ap->project->current_style;
+   Eina_List *programs = NULL;
+   Eina_List *l = NULL;
+   Evas_Object *gl_signals, *property;
+   char *program_name = NULL;
+   char *part_name = NULL;
    if (!style) return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    if (!part)
@@ -43,8 +65,32 @@ _del_part(void *data,
         NOTIFY_INFO(3, _("No part selected"));
         return;
      }
+   part_name = strdup(part->name);
+   /* In case when deleting part which is dragable area for another part,
+      reloading style into liveview crash application */
+   live_view_widget_style_unset(ap->live_view);
    if (workspace_edit_object_part_del(ap->workspace, part->name))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
+   style->isModify = true;
+
+   /* If deleted all parts in style, also should deleted all programs*/
+   if (!style->parts)
+     {
+        programs = edje_edit_programs_list_get(style->obj);
+        EINA_LIST_FOREACH(programs, l, program_name)
+          {
+             edje_edit_program_del(style->obj, program_name);
+          }
+        edje_edit_string_list_free(programs);
+
+        gl_signals = ui_block_signal_list_get(ap);
+        ui_signal_list_data_unset(gl_signals);
+        _on_ws_part_unselect(ap, ap->workspace, part_name);
+        property = ui_block_property_get(ap);
+        ui_property_style_set(property, style, ap->workspace);
+        workspace_highlight_unset(ap->workspace);
+    }
+   free(part_name);
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
@@ -63,6 +109,7 @@ _above_part(void *data,
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
      }
+   style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
@@ -81,6 +128,7 @@ _below_part(void *data,
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
      }
+   style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
@@ -260,23 +308,6 @@ _on_ws_part_select(void *data,
      ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
 
    evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
-}
-
-static void
-_on_ws_part_unselect(void *data,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info)
-{
-   App_Data *ap = (App_Data *)data;
-   const char *part = (const char *)event_info;
-
-   if (!part) return;
-
-   ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
-   ui_states_list_data_unset(ui_block_state_list_get(ap));
-   ui_property_part_unset(ui_block_property_get(ap));
-   /*TODO: in future it will be moved to block api. */
-   elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
 }
 
 void
