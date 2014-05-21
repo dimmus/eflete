@@ -279,8 +279,8 @@ ui_property_add(Evas_Object *parent)
 }
 
 #define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_SPINNER_CALLBACK(SUB, VALUE1, int) \
-   ITEM_SPINNER_CALLBACK(SUB, VALUE2, int) \
+   ITEM_SPINNER_INT_CALLBACK(SUB, VALUE1) \
+   ITEM_SPINNER_INT_CALLBACK(SUB, VALUE2) \
    ITEM_2SPINNER_GROUP_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2)
 
@@ -691,10 +691,16 @@ ui_property_part_unset(Evas_Object *property)
 #undef pd_part
 #undef pd_part_drag
 
-#define ITEM_2SPINNER_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2, type) \
-   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE1, type) \
-   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE2, type) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, "eflete/property/item/default") \
+#define ITEM_2SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
+   ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE1) \
+   ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE2) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE) \
+   ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
+
+#define ITEM_2SPINNER_STATE_DOUBLE_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
+   ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE1) \
+   ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE2) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 #define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE) \
@@ -719,11 +725,11 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
-ITEM_2SPINNER_STATE_CREATE(_("min"), state_min, w, h, int)
-ITEM_2SPINNER_STATE_CREATE(_("max"), state_max, w, h, int)
+ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
+ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
-ITEM_2SPINNER_STATE_CREATE(_("align"), state_align, x, y, double)
-ITEM_2SPINNER_STATE_CREATE(_("aspect ratio"), state_aspect, min, max, double)
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/property/item/default")
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
 ITEM_1ENTRY_STATE_CREATE(_("color class"), state, color_class)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
@@ -757,27 +763,31 @@ ui_property_state_set(Evas_Object *property, Part *part)
                           0.0, 9999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
                           _("Minimum part width in pixels."),
-                          _("Minimum part height in pixels."));
+                          _("Minimum part height in pixels."),
+                          false);
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
                           -1.0, 9999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
                           _("Maximum part width in pixels."),
-                          _("Maximum part height in pixels."));
+                          _("Maximum part height in pixels."),
+                          false);
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
                            _("This affects the minimum width calculation."),
                            _("This affects the minimum height calculation."));
         pd_state.align = prop_item_state_align_x_y_add(box, pd,
-                            0.0, 1.0, 0.1, "%1.2f",
+                            0, 100, 1, NULL,
                             "x:", "%", "y:", "%",
                             _("Part horizontal align: 0.0 = left  1.0 = right"),
-                            _("Part vertical align: 0.0 = top  1.0 = bottom"));
+                            _("Part vertical align: 0.0 = top  1.0 = bottom"),
+                            true);
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
-                             0.0, 1.0, 0.1, "%1.2f",
+                             0.0, 9999.0, 0.1, "%1.2f",
                              "", "", "", "",
                             _("Normally width and height can be "
                              "resized to any values independently"),
                             _("Normally width and height can be "
-                             "resized to any values independently"));
+                             "resized to any values independently"),
+                            false);
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd, property,
                                    _("The aspect control hints for this object."));
         pd_state.color_class = prop_item_state_color_class_add(box, pd, NULL,
@@ -812,11 +822,11 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_unpack(box, pd_state.color);
         prop_item_label_update(pd_state.state, state);
         prop_item_state_visible_update(pd_state.visible, pd);
-        prop_item_state_min_w_h_update(pd_state.min, pd);
-        prop_item_state_max_w_h_update(pd_state.max, pd);
+        prop_item_state_min_w_h_update(pd_state.min, pd, false);
+        prop_item_state_max_w_h_update(pd_state.max, pd,false);
         prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
-        prop_item_state_align_x_y_update(pd_state.align, pd);
-        prop_item_state_aspect_min_max_update(pd_state.aspect, pd);
+        prop_item_state_align_x_y_update(pd_state.align, pd, true);
+        prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
         if (type != EDJE_PART_TYPE_SPACER)
@@ -857,24 +867,17 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_textblock_unset(property);
 }
 
-#define ITEM_2SPINNER_STATE_REL_CREATE(TEXT, SUB, VALUE1, VALUE2, type) \
-   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE1, type) \
-   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE2, type) \
-   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, "eflete/property/item/relative") \
-   ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
-
-
 #define ITEM_2ENTRY_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_STRING_STATE_CALLBACK(SUB, VALUE1) \
    ITEM_STRING_STATE_CALLBACK(SUB, VALUE2) \
    ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2ENTRY_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
-ITEM_2SPINNER_STATE_REL_CREATE(_("align"), state_rel1_relative, x, y, double)
-ITEM_2SPINNER_STATE_REL_CREATE(_("offset"), state_rel1_offset, x, y, int)
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel1_relative, x, y, "eflete/property/item/relative")
+ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel1_offset, x, y, "eflete/property/item/relative")
 ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
-ITEM_2SPINNER_STATE_REL_CREATE(_("align"), state_rel2_relative, x, y, double)
-ITEM_2SPINNER_STATE_REL_CREATE(_("offset"), state_rel2_offset, x, y, int)
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
+ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
 ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 #define pd_obj_area pd->prop_state_object_area
@@ -907,21 +910,23 @@ ui_property_state_obj_area_set(Evas_Object *property)
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
         pd_obj_area.rel1_relative = prop_item_state_rel1_relative_x_y_add(box, pd,
-                              -5.0, 5.0, 0.1, "%1.2f",
+                              -500, 500, 1, NULL,
                               "x:", "%", "y:", "%",
                               _("Define the position of left-up corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
                               "by X axis."),
                               _("Define the position of left-up corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
-                              "by Y axis."));
+                              "by Y axis."),
+                              true);
         ICON_ADD(pd_obj_area.rel1_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
         elm_object_part_content_set(pd_obj_area.rel1_relative, "eflete.swallow.icon", icon);
         pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
                             "x:", "px", "y:", "px",
                             _("Left offset from relative position in pixels"),
-                            _("Top offset from relative position in pixels"));
+                            _("Top offset from relative position in pixels"),
+                            false);
         ICON_ADD(pd_obj_area.rel1_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
         elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
 
@@ -945,21 +950,23 @@ ui_property_state_obj_area_set(Evas_Object *property)
                         _("Causes a corner to be positioned relatively to the Y axis of another "
                         "part. Setting to \"\" will un-set this value"));
         pd_obj_area.rel2_relative = prop_item_state_rel2_relative_x_y_add(box, pd,
-                              -5.0, 5.0, 0.1, "%1.2f",
+                              -500, 500, 1, NULL,
                               "x:", "%", "y:", "%",
                               _("Define the position of right-down corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
                               "by X axis."),
                               _("Define the position of right-down corner of the part's container. "
                               "Moves a corner to a relative position inside the container "
-                              "by Y axis."));
+                              "by Y axis."),
+                              true);
         ICON_ADD(pd_obj_area.rel2_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
         elm_object_part_content_set(pd_obj_area.rel2_relative, "eflete.swallow.icon", icon);
         pd_obj_area.rel2_offset = prop_item_state_rel2_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
                             "x:", "px", "y:", "px",
                             _("Left offset from relative position in pixels"),
-                            _("Top offset from relative position in pixels"));
+                            _("Top offset from relative position in pixels"),
+                            false);
         ICON_ADD(pd_obj_area.rel2_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
         elm_object_part_content_set(pd_obj_area.rel2_offset, "eflete.swallow.icon", icon);
 
@@ -976,13 +983,14 @@ ui_property_state_obj_area_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_rel1_relative_x_y_update(pd_obj_area.rel1_relative, pd);
-        prop_item_state_rel1_offset_x_y_update(pd_obj_area.rel1_offset, pd);
+        prop_item_state_rel1_relative_x_y_update(pd_obj_area.rel1_relative, pd, true);
+        prop_item_state_rel1_offset_x_y_update(pd_obj_area.rel1_offset, pd, false);
         prop_item_state_rel1_to_x_y_update(pd_obj_area.rel1_to, pd);
 
-        prop_item_state_rel2_relative_x_y_update(pd_obj_area.rel2_relative, pd);
-        prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd);
+        prop_item_state_rel2_relative_x_y_update(pd_obj_area.rel2_relative, pd, true);
+        prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd, false);
         prop_item_state_rel2_to_x_y_update(pd_obj_area.rel2_to, pd);
+
         evas_object_show(pd_obj_area.frame);
      }
 
@@ -997,18 +1005,24 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 }
 #undef pd_obj_area
 
-#define ITEM_1SPINNER_STATE_CREATE(TEXT, SUB, VALUE, type) \
-   ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE, type) \
+#define ITEM_1SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE) \
+   ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE) \
    ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
+#define ITEM_1SPINNER_STATE_DOUBLE_CREATE(TEXT, SUB, VALUE) \
+   ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE) \
+   ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
+
+
 ITEM_1ENTRY_STATE_CREATE(_("text"), state, text)
 ITEM_1ENTRY_STATE_CREATE(_("font"), state, font)
-ITEM_1SPINNER_STATE_CREATE(_("size"), state_text, size, int)
-ITEM_2SPINNER_STATE_CREATE(_("align"), state_text_align, x, y, double)
+ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
 ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
-ITEM_1SPINNER_STATE_CREATE(_("elipsis"), state_text, elipsis, double)
+ITEM_1SPINNER_STATE_DOUBLE_CREATE(_("elipsis"), state_text, elipsis)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color2)
 ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
@@ -1038,12 +1052,13 @@ ui_property_state_text_set(Evas_Object *property)
                            0.0, 128.0, 1.0, "%.0f pt",
                            _("Change text font's size.'"));
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
-                            0.0, 1.0, 0.1, "%1.2f",
+                            0, 100, 1, NULL,
                             "x:", "%", "y:", "%",
                             _("Text horizontal align. "
                             "0.0 = left  1.0 = right"),
                             _("Text vertical align. "
-                            "0.0 = top  1.0 = bottom"));
+                            "0.0 = top  1.0 = bottom"),
+                            true);
          pd_text.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -1089,7 +1104,7 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_update(pd_text.text, pd);
         prop_item_state_font_update(pd_text.font, pd);
         prop_item_state_text_size_update(pd_text.size, pd);
-        prop_item_state_text_align_x_y_update(pd_text.align, pd);
+        prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
         prop_item_state_text_elipsis_update(pd_text.elipsis, pd);

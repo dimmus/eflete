@@ -50,21 +50,21 @@ static Elm_Entry_Filter_Accept_Set accept_prop = {
    elm_object_part_text_set(ITEM, "eflete.text.end", TEXT2); \
    evas_object_show(ITEM);
 
-/* group */
-#define ITEM_SPINNER_CALLBACK(SUB, VALUE, type) \
+#define ITEM_SPINNER_INT_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   type value = (type)elm_spinner_value_get(obj); \
+   int value = (int)elm_spinner_value_get(obj); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, value)) \
      return; \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
 
+/* group */
 #define ITEM_2SPINNER_GROUP_ADD(text, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
@@ -301,14 +301,32 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-#define ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE, type) \
+#define ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   type value = (type)elm_spinner_value_get(obj); \
+   int value = (int)elm_spinner_value_get(obj); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        value)) \
+     return; \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+#define ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   double value = elm_spinner_value_get(obj); \
+   value /= 100; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
                                         pd->part->curr_state, \
                                         pd->part->curr_state_value, \
@@ -446,7 +464,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *sp2_lb_start, \
                                             const char *sp2_lb_end, \
                                             const char *tooltip1, \
-                                            const char *tooltip2) \
+                                            const char *tooltip2, \
+                                            Eina_Bool to_percent) \
 { \
    Evas_Object *item, *box, *layout, *spinner1, *spinner2; \
    double value; \
@@ -459,6 +478,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner1, value); \
    elm_object_part_content_set(layout, "eflete.content", spinner1); \
    elm_box_pack_end(box, layout); \
@@ -471,6 +491,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner2, value); \
    elm_object_part_content_set(layout, "eflete.content", spinner2); \
    elm_box_pack_end(box, layout); \
@@ -486,7 +507,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 #define ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
-                                               Prop_Data *pd) \
+                                               Prop_Data *pd, \
+                                               Eina_Bool to_percent) \
 { \
    Evas_Object *spinner1, *spinner2; \
    double value; \
@@ -495,6 +517,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner1, value); \
    evas_object_smart_callback_del_full(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
@@ -503,6 +526,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner2, value); \
    evas_object_smart_callback_del_full(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
