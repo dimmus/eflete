@@ -32,7 +32,8 @@ ui_workspace_test \
 widget_manager_test \
 program_editor_test \
 live_view_test \
-about_window_test
+about_window_test \
+colorselector_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -403,3 +404,10 @@ test_ui_state_dialog/test_state_dialog.c \
 test_ui_state_dialog/state_dialog_state_add.c
 ui_state_dialog_test_CFLAGS = ${FLAGS}
 ui_state_dialog_test_LDADD = ${LD}
+
+colorselector_test_SOURCES = \
+test_colorselector/test_colorselector.c \
+test_colorselector/colorselector_add.c \
+test_colorselector/colorselector_color_get.c
+colorselector_test_CFLAGS = ${FLAGS}
+colorselector_test_LDADD = ${LD}
