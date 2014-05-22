@@ -352,21 +352,12 @@ _on_view_zoom_out(void *data,
 }
 
 static void
-_on_view_ruler_hor(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_on_view_rulers(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("hor"));
-}
-
-static void
-_on_view_ruler_ver(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,ver", strdup("ver"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rulers"));
 }
 
 static void
@@ -380,8 +371,8 @@ _on_view_legend(void *data,
 
 static void
 _on_view_highlight(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
@@ -389,20 +380,29 @@ _on_view_highlight(void *data,
 
 static void
 _on_view_ruler_rel(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("rel"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rel"));
 }
 
 static void
 _on_view_ruler_abs(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("abs"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs"));
+}
+
+static void
+_on_view_ruler_both(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs&rel"));
 }
 
 static void
@@ -493,10 +493,10 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Separate"), _on_view_separate, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Legend"), _on_view_legend, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Rulers"), NULL, NULL, sub_menu);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide hor."), _on_view_ruler_hor, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide ver."), _on_view_ruler_ver, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide rulers"), _on_view_rulers, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Absolute scale"), _on_view_ruler_abs, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Relative scale"), _on_view_ruler_rel, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Both"), _on_view_ruler_both, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Show/Hide object area"), _on_view_highlight, ap, it);
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("Editors"), NULL, NULL, menu_it);

@@ -150,6 +150,8 @@ _obj_area_visible_change(void *data __UNUSED__,
      }
 }
 
+/*TODO: need to remake it. create the public functions for workspace
+  for ruler manipulation. */
 static void
 _menu_rulers_enabled_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -159,6 +161,8 @@ _menu_rulers_enabled_cb(void *data,
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("rulers"));
 }
 
+/*TODO: need to remake it. create the public functions for workspace
+  for ruler manipulation. */
 static void
 _menu_rulers_abs_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -168,6 +172,8 @@ _menu_rulers_abs_cb(void *data,
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("abs"));
 }
 
+/*TODO: need to remake it. create the public functions for workspace
+  for ruler manipulation. */
 static void
 _menu_rulers_rel_cb(void *data,
                         Evas_Object *obj __UNUSED__,
@@ -177,6 +183,8 @@ _menu_rulers_rel_cb(void *data,
    evas_object_smart_callback_call(ws, "ruler,toggle", strdup("rel"));
 }
 
+/*TODO: need to remake it. create the public functions for workspace
+  for ruler manipulation. */
 static void
 _menu_rulers_both_cb(void *data,
                         Evas_Object *obj __UNUSED__,
