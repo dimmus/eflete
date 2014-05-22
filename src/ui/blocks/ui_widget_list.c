@@ -485,14 +485,6 @@ _item_style_content_get(void *data,
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
      }
-   if ((!strcmp(part, "elm.swallow.container")) && (_style->__type == LAYOUT))
-     {
-        Evas_Object *entry = NULL;
-        ENTRY_ADD(obj, entry, true, DEFAULT_STYLE);
-        elm_entry_entry_set(entry, _style->full_group_name);
-        elm_entry_cursor_end_set(entry);
-        return entry;
-     }
    return NULL;
 }
 
