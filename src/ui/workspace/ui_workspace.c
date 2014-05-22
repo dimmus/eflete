@@ -1140,3 +1140,10 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
    groupedit_edit_object_parts_separated(sd->groupedit, separate);
    return true;
 }
+
+Eina_Bool
+workspace_separate_mode_get(Evas_Object *obj)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+   return groupedit_edit_object_parts_separated_is(sd->groupedit);
+}

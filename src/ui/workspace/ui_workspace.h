@@ -288,4 +288,16 @@ workspace_highlight_unset(Evas_Object *obj);
 Eina_Bool
 workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate);
 
+/**
+ * Check if separate mode is activated.
+ *
+ * @param obj The workspace object.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_separate_mode_get(Evas_Object *obj);
+
 #endif /* UI_WORKSPACE_H */
