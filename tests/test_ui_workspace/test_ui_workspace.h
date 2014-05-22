@@ -116,3 +116,7 @@ void workspace_highlight_unset_test_p(int);
 void workspace_highlight_unset_test_n(int);
 void workspace_highlight_unset_test_n1(int);
 
+void workspace_separate_mode_set_test_p1(int);
+void workspace_separate_mode_set_test_p2(int);
+void workspace_separate_mode_set_test_n1(int);
+void workspace_separate_mode_set_test_n2(int);
