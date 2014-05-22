@@ -755,12 +755,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
                                                        "");
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
                           0.0, 9999.0, 1.0, "%.0f",
-                          "w", "px", "h", "px",
+                          "w:", "px", "h:", "px",
                           _("Minimum part width in pixels."),
                           _("Minimum part height in pixels."));
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
                           -1.0, 9999.0, 1.0, "%.0f",
-                          "w", "px", "h", "px",
+                          "w:", "px", "h:", "px",
                           _("Maximum part width in pixels."),
                           _("Maximum part height in pixels."));
         pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
@@ -768,7 +768,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
                            _("This affects the minimum height calculation."));
         pd_state.align = prop_item_state_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
-                            "x", "%", "y", "%",
+                            "x:", "%", "y:", "%",
                             _("Part horizontal align: 0.0 = left  1.0 = right"),
                             _("Part vertical align: 0.0 = top  1.0 = bottom"));
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
@@ -1039,7 +1039,7 @@ ui_property_state_text_set(Evas_Object *property)
                            _("Change text font's size.'"));
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
                             0.0, 1.0, 0.1, "%1.2f",
-                            "x", "%", "y", "%",
+                            "x:", "%", "y:", "%",
                             _("Text horizontal align. "
                             "0.0 = left  1.0 = right"),
                             _("Text vertical align. "
