@@ -578,11 +578,11 @@ _form_right_side(Style_Editor *style_edit)
    elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
 
-   ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/tag_entry",
                                 style_edit->entry_tag);
 
-   ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
    elm_object_part_content_set (layout, "swallow/prop_entry",
                                 style_edit->entry_prop);
 
