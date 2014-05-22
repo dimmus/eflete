@@ -93,11 +93,6 @@ struct _Ws_Smart_Data
         Evas_Object *control;    /**< ui element, which provide change zoom \
                                    factor. Markup in zoom_control.edc*/
    } zoom;
-   struct {
-        Evas_Object *view;        /**< A elementary layout with special \
-                                    markup stored in legend.edc. TDD*/
-        Eina_Bool visible;        /**< Boolean flag for legend view visibly. */
-   } legend;
    Style *style;
 
    struct {
@@ -587,18 +582,6 @@ workspace_background_image_set(Evas_Object *obj, const char *path)
    return true;
 }
 
-Eina_Bool
-workspace_legend_visible_set(Evas_Object *obj)
-{
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-   if (!sd->legend.visible)
-    elm_layout_signal_emit(obj, "legend,hide", "");
-   else
-    elm_layout_signal_emit(obj, "legend,show", "");
-   sd->legend.visible = !sd->legend.visible;
-   return true;
-}
-
 static void
 _ws_mouse_move_cb(void *data, Evas *e,
                   Evas_Object *obj __UNUSED__,
@@ -789,9 +772,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* Simple initialize variavbles of smart data */
    priv->zoom.factor = 1.0;
    priv->zoom.control = NULL;
-
-   priv->legend.view = NULL;
-   priv->legend.visible = false;
 
    priv->style = NULL;
    priv->guides = NULL;

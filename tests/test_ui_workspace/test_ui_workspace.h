@@ -41,9 +41,6 @@ void workspace_zoom_factor_set_n3(int);
 void workspace_zoom_factor_get_test_p(int);
 void workspace_zoom_factor_get_test_n1(int);
 
-void workspace_legend_visible_set_test_p(int);
-void workspace_legend_visible_set_test_n(int);
-
 void workspace_edit_object_set_test_p(int);
 void workspace_edit_object_set_test_n(int);
 void workspace_edit_object_set_test_n1(int);

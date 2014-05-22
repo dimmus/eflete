@@ -361,15 +361,6 @@ _on_view_rulers(void *data,
 }
 
 static void
-_on_view_legend(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   workspace_legend_visible_set(ap->workspace);
-}
-
-static void
 _on_view_highlight(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
@@ -491,7 +482,6 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Zoom out"), _on_view_zoom_out, ap, it);
    elm_object_item_disabled_set(it, true);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Separate"), _on_view_separate, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Legend"), _on_view_legend, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Rulers"), NULL, NULL, sub_menu);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide rulers"), _on_view_rulers, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Absolute scale"), _on_view_ruler_abs, ap, it);
