@@ -18,8 +18,8 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#ifndef UI_WORKSPACEH
-#define UI_WORKSPACEH
+#ifndef UI_WORKSPACE_H
+#define UI_WORKSPACE_H
 
 /**
  * @defgroup Workspace Workspace
@@ -241,8 +241,8 @@ double
 workspace_zoom_factor_get(Evas_Object *obj);
 
 /**
-  * Switch beetwen show or hide mode of legend in workspace object.
-  *
+ * Switch beetwen show or hide mode of legend in workspace object.
+ *
  * @param obj The workspace object.
  *
  * @return EINA_FALSE on failure, EINA_TRUE on success.
@@ -276,5 +276,16 @@ workspace_highlight_set(Evas_Object *obj, Part *part);
  */
 Eina_Bool
 workspace_highlight_unset(Evas_Object *obj);
+
+/**
+ * Turn on/off the separatr mode
+ *
+ * @param obj The workspace object,
+ * @param separated ON/OFF (true/false) the separate mode,
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate);
 
 #endif /* UI_WORKSPACE_H */

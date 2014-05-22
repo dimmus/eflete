@@ -194,20 +194,8 @@ _separate_mode_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *o = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
-
-   if (!sd->groupedit) return;
-   Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
-   if (sep) return;
-   highlight_object_unfollow(sd->highlight.highlight);
-   highlight_object_unfollow(sd->highlight.space_hl);
-   evas_object_hide(sd->highlight.space_hl);
-   evas_object_hide(sd->highlight.highlight);
-
-   elm_menu_item_icon_name_set(sd->menu.items.mode_normal, "");
-   elm_menu_item_icon_name_set(sd->menu.items.mode_separate, EFLETE_IMG_PATH"context_menu-bullet.png");
-   groupedit_edit_object_parts_separated(sd->groupedit, !sep);
+   Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
+   workspace_separate_mode_set(sd->obj, true);
 }
 
 static void
@@ -215,29 +203,8 @@ _normal_mode_click(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *follow;
-   const char *name = NULL;
-   Evas_Object *o = (Evas_Object *)data;
-   WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
-
-   if (!sd->groupedit) return;
-   Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
-   if (!sep) return;
-   if (sd->highlight.part)
-     name = sd->highlight.part->name;
-   follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
-   highlight_object_follow(sd->highlight.highlight, follow);
-
-   follow = groupedit_part_object_area_get(sd->groupedit);
-   highlight_object_follow(sd->highlight.space_hl, follow);
-
-   evas_object_hide(sd->highlight.space_hl);
-   if (sd->highlight.part)
-     evas_object_show(sd->highlight.highlight);
-
-   elm_menu_item_icon_name_set(sd->menu.items.mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
-   elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
-   groupedit_edit_object_parts_separated(sd->groupedit, !sep);
+   Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
+   workspace_separate_mode_set(sd->obj, false);
 }
 
 static void
@@ -280,10 +247,10 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    elm_object_item_disabled_set(items->zoom_near, true);
    elm_menu_item_separator_add(menu, NULL);
 
-   items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws->obj);
+   items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws);
    elm_menu_item_icon_name_set(items->mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_object_item_disabled_set(items->mode_normal, true);
-   items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws->obj);
+   items->mode_separate = elm_menu_item_add(menu, NULL, NULL, _("Separate mode"), _separate_mode_click, ws);
    elm_object_item_disabled_set(items->mode_separate, true);
    elm_menu_item_separator_add(menu, NULL);
    items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
@@ -431,9 +398,9 @@ _separate_smart_on_click(void *data,
    Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
    /* FIXME: stub until set mode api remake */
    if (!sep)
-      _separate_mode_click(o, NULL, NULL);
+      _separate_mode_click(sd, NULL, NULL);
    else
-      _normal_mode_click(o, NULL, NULL);
+      _normal_mode_click(sd, NULL, NULL);
 }
 
 static void
@@ -1128,4 +1095,48 @@ workspace_edit_object_visible_set(Evas_Object *obj,
      }
 
    return groupedit_part_visible_set(sd->groupedit, part, visible);
+}
+
+Eina_Bool
+workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
+{
+   Evas_Object *follow;
+   const char *name = NULL;
+   Eina_Bool sep;
+
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   if (!sd->groupedit) return false;
+   sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
+   if (sep == separate) return false;
+
+   if (separate)
+     {
+        highlight_object_unfollow(sd->highlight.highlight);
+        highlight_object_unfollow(sd->highlight.space_hl);
+        evas_object_hide(sd->highlight.space_hl);
+        evas_object_hide(sd->highlight.highlight);
+
+        elm_menu_item_icon_name_set(sd->menu.items.mode_separate, EFLETE_IMG_PATH"context_menu-bullet.png");
+        elm_menu_item_icon_name_set(sd->menu.items.mode_normal, "");
+     }
+   else
+     {
+        if (sd->highlight.part)
+          name = sd->highlight.part->name;
+        follow = groupedit_edit_object_part_draw_get(sd->groupedit, name);
+        highlight_object_follow(sd->highlight.highlight, follow);
+        follow = groupedit_part_object_area_get(sd->groupedit);
+        highlight_object_follow(sd->highlight.space_hl, follow);
+
+        evas_object_hide(sd->highlight.space_hl);
+        if (sd->highlight.part)
+          evas_object_show(sd->highlight.highlight);
+
+        elm_menu_item_icon_name_set(sd->menu.items.mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
+        elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
+     }
+
+   groupedit_edit_object_parts_separated(sd->groupedit, separate);
+   return true;
 }
