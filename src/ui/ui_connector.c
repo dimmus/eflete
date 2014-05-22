@@ -470,7 +470,7 @@ ui_style_clicked(App_Data *ap, Style *style)
      }
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
-
+   ap->project->current_style = _style;
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
 
