@@ -1,5 +1,6 @@
 #define ITEM_HEIGHT 26
 #define BORDER_COLOR 34 35 36 255
+#define LIST_BORDER_COLOR 45 46 47 255
 #define BG_COLOR 39 42 43 255
 
 group { name: "elm/genlist/item/eflete/default/default";
@@ -1180,19 +1181,49 @@ group { name: "elm/genlist/base/eflete/default";
 
 group { name: "elm/genlist/base/eflete/dark";
       inherit: "elm/genlist/base/eflete/default";
+   images {
+      image: "treemenu-background.png" COMP;
+   }
    parts {
       part { name: "bg";
-         type: RECT;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
-            color: LIST_DARK_BG_COLOR
-            color_class: "scrollframe_base";
+            image { normal: "treemenu-background.png";
+               border: 2 2 2 2;
+            }
          }
       }
-
+      part { name: "top_border";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 1 1;
+            max: -1 1;
+            color: LIST_BORDER_COLOR;
+         }
+      }
+      part { name: "left_border";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 1 1;
+            max: 1 -1;
+            color: LIST_BORDER_COLOR;
+         }
+      }
+      part { name: "elm.swallow.background";
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left_border";
+               to_y: "top_border";
+            }
+         }
+      }
    }
 }
 #undef ITEM_HEIGHT
 #ungef BORDER_COLOR
+#undef LIST_BORDER_COLOR
 #undef BG_COLOR
