@@ -737,9 +737,11 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
 
    if ((!object) || (!title)) return false;
 
-   item_gl_widgets = _widget_list_get(evas_object_data_get(object, WIDGETS_NAVIFRAME_DATA_KEY));
+   item_gl_widgets = elm_naviframe_bottom_item_get(evas_object_data_get(object,
+                                                   WIDGETS_NAVIFRAME_DATA_KEY));
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
-   item_gl_widgets = _widget_list_get(evas_object_data_get(object, LAYOUTS_NAVIFRAME_DATA_KEY));
+   item_gl_widgets = elm_naviframe_bottom_item_get(evas_object_data_get(object,
+                                                   LAYOUTS_NAVIFRAME_DATA_KEY));
    elm_object_item_part_text_set(item_gl_widgets, "elm.text.title", title);
 
    return true;
