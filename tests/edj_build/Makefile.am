@@ -87,6 +87,7 @@ check: Makefile
 	$(builddir)/save_as_edc_file.edj \
 	$(builddir)/ui_style_clicked.edj \
 	$(builddir)/style_dialog_add.edj \
+	$(builddir)/state_dialog_state_add.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

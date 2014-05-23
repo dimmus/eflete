@@ -105,7 +105,7 @@ state_dialog_state_add(App_Data *ap)
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
 
-   if ((!ap) && (!ap->workspace))
+   if ((!ap) || (!ap->workspace))
      {
         ERR("Failed create a add state dialog.");
         return NULL;
@@ -113,6 +113,7 @@ state_dialog_state_add(App_Data *ap)
 
    glist = ui_block_state_list_get(ap);
    part = ui_states_list_part_get(glist);
+   if (!part) return NULL;
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");

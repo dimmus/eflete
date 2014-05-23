@@ -25,6 +25,7 @@ ui_main_window_test \
 preference_test \
 ui_signal_list_test \
 ui_states_list_test \
+ui_state_dialog_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
@@ -396,3 +397,9 @@ test_about_window/test_about_window.c \
 test_about_window/about_window_add.c
 about_window_test_CFLAGS = ${FLAGS}
 about_window_test_LDADD = ${LD}
+
+ui_state_dialog_test_SOURCES = \
+test_ui_state_dialog/test_state_dialog.c \
+test_ui_state_dialog/state_dialog_state_add.c
+ui_state_dialog_test_CFLAGS = ${FLAGS}
+ui_state_dialog_test_LDADD = ${LD}
