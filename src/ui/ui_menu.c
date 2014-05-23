@@ -328,7 +328,8 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+   Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
+   workspace_separate_mode_set(ap->workspace, !sep);
 }
 
 static void
