@@ -282,6 +282,17 @@ _add_style_dailog(void *data,
 }
 
 static void
+_part_name_change(void *data, Evas_Object *obj, void *event_info)
+{
+   Part *part = (Part*)event_info;
+   App_Data *ap = (App_Data *)data;
+
+   ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
+   workspace_edit_object_set(obj, ap->project->current_style, ap->project->swapfile);
+   evas_object_smart_callback_call(ui_block_widget_list_get(ap), "wl,part,select", part);
+}
+
+static void
 _property_change(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info)
@@ -327,6 +338,8 @@ ui_part_back(App_Data *ap)
 
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
+   evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
+                                       _part_name_change, ap);
 
    workspace_edit_object_unset(ap->workspace);
    ui_states_list_data_unset(ui_block_state_list_get(ap));
@@ -404,6 +417,11 @@ ui_part_select(App_Data *ap, Part* part)
    evas_object_smart_callback_add(gl_states, "stl,state,del", _del_state_dialog, ap);
 
    evas_object_show(gl_states);
+
+   evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
+                                       _part_name_change, ap);
+   evas_object_smart_callback_add(ap->workspace, "part,name,changed",
+                                  _part_name_change, ap);
 
    ui_property_state_set(prop, part);
    workspace_edit_object_part_state_set(ap->workspace, part);

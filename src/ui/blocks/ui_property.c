@@ -553,6 +553,10 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_1ENTRY_PART_ADD(TEXT, SUB, VALUE) \
    ITEM_1ENTRY_PART_UPDATE(SUB, VALUE)
 
+#define ITEM_1ENTRY_PART_NAME_CREATE(TEXT, SUB, VALUE) \
+   ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
+   ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
+
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
    ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
@@ -560,6 +564,7 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
 
 /* part property */
+ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
@@ -597,7 +602,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_frame, box);
 
-        pd_part.name = prop_item_label_add(box, _("name"), part->name);
+        pd_part.name = prop_item_part_name_add(box, pd, _("Selected part name"));
         pd_part.type = prop_item_label_add(box, _("type"), wm_part_type_get(type));
         pd_part.scale = prop_item_part_scale_add(box, pd,
                            _("Specifies whether the part will scale "

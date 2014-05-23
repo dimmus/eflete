@@ -206,4 +206,17 @@ ui_widget_list_class_data_reload(Evas_Object *gl_styles, Eina_Inlist *classes);
 Eina_Bool
 ui_widget_list_layouts_reload(Evas_Object *obj, Project *project);
 
+/**
+ * Genlist item of part view will have update with relevant data of part structure.
+ *
+ * @param object A widget list object.
+ * @param part The name of new part wich item should be updated.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_part_update(Evas_Object *object, const char *part);
+
 #endif /* UI_WIDGET_LIST_H */

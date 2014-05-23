@@ -1119,6 +1119,22 @@ ui_widget_list_part_selected_set(Evas_Object *object,
    return true;
 }
 
+Eina_Bool
+ui_widget_list_part_update(Evas_Object *object, const char *part)
+{
+   Evas_Object *gl_parts;
+   Elm_Object_Item *item;
+
+   if ((!object) || (!part)) return false;
+   gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
+                                               "elm.swallow.content");
+   item = _genlist_find_item_by_name(gl_parts, part);
+   if (item) elm_genlist_item_update(item);
+   else return false;
+
+   return true;
+}
+
 Eina_List *
 ui_widget_list_selected_parts_get(Evas_Object *object)
 {
