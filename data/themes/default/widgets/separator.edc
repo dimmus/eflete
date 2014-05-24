@@ -19,6 +19,7 @@ group { name: "elm/separator/horizontal/eflete/property";
       part { name: "base";
          type: SPACER;
          description {
+            min: 0 20;
             rel1 {
                to: "padding_left_top";
                relative: 1.0 1.0;
@@ -60,46 +61,12 @@ group { name: "elm/separator/horizontal/eflete/property";
             align: 0.0 0.5;
          }
       }
-      part { name: "eflete.text";
-         type: TEXT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: FN_COL_DEFAULT;
-            min: 0 0;
-            text {
-               font: FN;
-               size: 12;
-               max: 1 1;
-            }
-            fixed: 1 1;
-            align: 0.0 0.5;
-            rel1 {
-               to: "padding_text_left";
-               relative: 1.0 0.0;
-            }
-            rel2.to: "base";
-         }
-      }
-      part { name: "padding_text_right";
-         type: SPACER;
-         description { state: "default" 0.0;
-            min: 3 0;
-            max: 3 -1;
-            rel1 {
-               to_x: "eflete.text";
-               to_y: "base";
-               relative: 1.0 0.0;
-            }
-            rel2.to: "base";
-            align: 0.0 0.5;
-         }
-      }
       part { name: "eflete.swallow.icon";
          type: SWALLOW;
          description { state: "default" 0.0;
-            FIXED_SIZE(16, 16)
+            FIXED_SIZE(12, 12)
             rel1 {
-               to_x: "padding_text_right";
+               to_x: "padding_text_left";
                to_y: "eflete.text";
                relative: 1.0 0.0;
             }
@@ -124,13 +91,47 @@ group { name: "elm/separator/horizontal/eflete/property";
             align: 0.0 0.5;
          }
       }
+      part { name: "eflete.text";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            min: 0 0;
+            text {
+               font: FN;
+               size: 13;
+               max: 1 1;
+            }
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 {
+               to: "padding_icon_right";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
+         }
+      }
+      part { name: "padding_text_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 3 0;
+            max: 3 -1;
+            rel1 {
+               to_x: "eflete.text";
+               to_y: "base";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base";
+            align: 0.0 0.5;
+         }
+      }
       part { name: "separator_right";
          type: IMAGE;
          description { state: "default" 0.0;
             min: 0 2;
             max: -1 2;
             rel1 {
-               to_x: "padding_icon_right";
+               to_x: "padding_text_right";
                to_y: "eflete.text";
                relative: 1.0 0.0;
             }

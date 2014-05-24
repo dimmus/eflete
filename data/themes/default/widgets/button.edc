@@ -83,7 +83,10 @@ group { name: "elm/button/base/eflete/default";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -94,7 +97,10 @@ group { name: "elm/button/base/eflete/default";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "over2";
@@ -147,7 +153,7 @@ group { name: "elm/button/base/eflete/default";
             visible: 0;
             fixed: 1 1;
                text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                text_class: "button";
@@ -159,6 +165,7 @@ group { name: "elm/button/base/eflete/default";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -168,6 +175,7 @@ group { name: "elm/button/base/eflete/default";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -413,7 +421,10 @@ group { name: "elm/button/base/eflete/simple";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -424,7 +435,10 @@ group { name: "elm/button/base/eflete/simple";
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "over2";
@@ -477,7 +491,7 @@ group { name: "elm/button/base/eflete/simple";
             visible: 0;
             fixed: 1 1;
                text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                text_class: "button";
@@ -489,6 +503,7 @@ group { name: "elm/button/base/eflete/simple";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -498,6 +513,7 @@ group { name: "elm/button/base/eflete/simple";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }
@@ -723,17 +739,20 @@ group { name: "elm/button/base/eflete/elipsis";
             color: 224 224 224 255;
             color3: 0 0 0 64;
             text {
-               font:     "Sans,Edje-Vera";
-               size:     10;
-               min:      0 0;
-               align:    0.5 0.5;
+               font: FN;
+               size: 10;
+               min: 0 0;
+               align: 0.5 0.5;
                text_class: "button";
             }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -743,7 +762,10 @@ group { name: "elm/button/base/eflete/elipsis";
             color: 0 0 0 128;
             color3: 0 0 0 0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
       part { name: "over2";
@@ -777,7 +799,7 @@ group { name: "elm/button/base/eflete/elipsis";
          description { state: "default" 0.0;
             visible: 0;
             text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                size: 10;
                min: 0 0;
                text_class: "button";
@@ -789,6 +811,7 @@ group { name: "elm/button/base/eflete/elipsis";
             rel2.to: "elm.swallow.content";
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
          }

@@ -193,7 +193,7 @@ group {
          while #absLabels<absLabelsNeeded+1 do
             label=edje.text();
             label:color(139,139,139,255);
-            label:font("Sans",8);
+            label:font(FN,8);
             label:show();
             table.insert(absLabels,label);
          end
@@ -222,7 +222,7 @@ group {
          while #relLabels<relLabelsNeeded do
             label=edje.text();
             label:color(50,150,50,255);
-            label:font("Sans",8);
+            label:font(FN,8);
             label:show();
             table.insert(relLabels,label);
          end

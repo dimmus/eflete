@@ -4,15 +4,15 @@ group {
    min: 200 156;
    styles {
       style { name: "warning_notify_title_style";
-         base: "font=Sans font_size=15 color=#c0c000ff wrap=none align=0.5 ellipsis=0.0 \
+         base: "font="FN" font_size=15 color=#c0c000ff wrap=none align=0.5 ellipsis=0.0 \
                 shadow_color=#d17c15ff  style=shadow,bottom_right";
       }
       style { name: "info_style";
-         base: "font=Sans font_size=10 color=#ffffffff wrap=word align=0.5 ellipsis=0.0";
+         base: "font="FN" font_size=10 color=#ffffffff wrap=word align=0.5 ellipsis=0.0";
       }
 
       style { name: "error_notify_title_style";
-         base: "font=Sans font_size=15 color=#f0c000ff wrap=none align=0.5 ellipsis=0.0 \
+         base: "font="FN" font_size=15 color=#f0c000ff wrap=none align=0.5 ellipsis=0.0 \
                 shadow_color=#d11515ff  style=shadow,bottom_right";
       }
    }

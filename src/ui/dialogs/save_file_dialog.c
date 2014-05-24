@@ -183,7 +183,8 @@ _save_as_edx_file(App_Data *ap,
 
    evas_object_del(fs);
    evas_object_del(inwin);
-   return EINA_TRUE;
+
+   return true;
 }
 
 Eina_Bool

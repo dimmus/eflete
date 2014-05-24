@@ -25,7 +25,7 @@
 
 static Evas_Object *entry_name;
 static Evas_Object *entry_value;
-static Evas_Object *hover_dup_state;
+static Evas_Object *combobox_dup_state;
 static Eina_Bool to_close;
 
 static Elm_Entry_Filter_Accept_Set accept_value = {
@@ -67,6 +67,7 @@ _add_ok_clicked(void *data,
    else if (workspace_edit_object_part_state_add(workspace, part->name,
                                             str_name, atof(str_value)))
      {
+        ap->project->current_style->isModify = true;
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
@@ -104,7 +105,7 @@ state_dialog_state_add(App_Data *ap)
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
 
-   if ((!ap) && (!ap->workspace))
+   if ((!ap) || (!ap->workspace))
      {
         ERR("Failed create a add state dialog.");
         return NULL;
@@ -112,6 +113,7 @@ state_dialog_state_add(App_Data *ap)
 
    glist = ui_block_state_list_get(ap);
    part = ui_states_list_part_get(glist);
+   if (!part) return NULL;
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
@@ -133,11 +135,10 @@ state_dialog_state_add(App_Data *ap)
    ewe_entry_label_text_set(entry_value, "Value:");
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
 
-   ITEM_ADD(box, item_dup, _("Duplicate state:"))
-   HOVERSEL_ADD(item_dup, hover_dup_state, false)
-   elm_object_text_set(hover_dup_state, _("None"));
-   elm_object_disabled_set(hover_dup_state, true);
-   elm_object_part_content_set(item_dup, "elm.swallow.content", hover_dup_state);
+   ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")
+   EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
+   elm_object_disabled_set(combobox_dup_state, true);
+   elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);
 
    elm_box_pack_end(box, entry_name);
    elm_box_pack_end(box, entry_value);
@@ -180,7 +181,10 @@ _del_ok_clicked(void *data,
      'This state used in the program(s). Are you sure you want to delete
      %state name%' and delete the programs or some params from the program */
    if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
-     ui_states_list_selected_state_del(state_list);
+     {
+        ap->project->current_style->isModify = true;
+        ui_states_list_selected_state_del(state_list);
+     }
 
    free(arr[0]);
    free(arr);

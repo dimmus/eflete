@@ -344,6 +344,7 @@
             type: RECT;
             description { state: "default" 0.0;
                color: 255 255 255 0;
+               SET_SIZE(60, 20);
             }
          }
          part { name: "bg";
@@ -354,126 +355,10 @@
                    normal: "input-text-bg1.png";
                   border: 5 5 5 5;
                }
-               min: 60 20;
-               max: 60 20;
                rel1.to: "base";
                rel2.to: "base";
             }
          }
-         part { name: "spinner_start_padding";
-            type: SPACER;
-            description { state: "default" 0.0;
-               min: 6 0;
-               max: 6 -1;
-               align: 1.0 0.5;
-               fixed: 1 1;
-               rel1 {
-                  to_x: "base";
-                  to_y: "bg";
-               }
-               rel2 {
-                  to: "text.start";
-                  relative: 0.0 1.0;
-               }
-            }
-         }
-         part { name: "spinner_end_padding";
-            type: SPACER;
-            description { state: "default" 0.0;
-               min: 6 0;
-               max: 6 -1;
-               align: 0.0 0.5;
-               fixed: 1 1;
-               rel1 {
-                  to: "text.end";
-                  relative: 1.0 0.0;
-               }
-               rel2 {
-                  to_x: "base";
-                  to_y: "bg";
-               }
-            }
-         }
-         part { name: "text_start_padding";
-            type: SPACER;
-            description { state: "default" 0.0;
-               min: 4 0;
-               max: 4 -1;
-               align: 1.0 0.5;
-               fixed: 1 1;
-               rel1 {
-                  to_x: "base";
-                  to_y: "bg";
-               }
-               rel2 {
-                  to: "bg";
-                  relative: 0.0 1.0;
-               }
-            }
-         }
-         part { name: "text_end_padding";
-            type: SPACER;
-            description { state: "default" 0.0;
-               min: 4 0;
-               max: 4 -1;
-               align: 0.0 0.5;
-               fixed: 1 1;
-               rel1 {
-                  to: "bg";
-                  relative: 1.0 0.0;
-               }
-               rel2 {
-                  to_x: "base";
-                  to_y: "bg";
-               }
-            }
-         }
-         part { name: "text.start";
-            type: TEXT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: FN_COL_SPINNER_MAIN;
-               text {
-                  font: FN_B;
-                  size: 11;
-                  max: 1 0;
-               }
-               fixed: 1 1;
-               align: 1.0 0.5;
-               rel1 {
-                  to_x: "base";
-                  to_y: "bg";
-               }
-               rel2 {
-                  to: "text_start_padding";
-                  relative: 0.0 1.0;
-               }
-            }
-         }
-         part { name: "text.end";
-            type: TEXT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               color: FN_COL_SPINNER_MAIN;
-               text {
-                  font: FN_B;
-                  size: 11;
-                  max: 1 0;
-               }
-               fixed: 1 1;
-               align: 0.0 0.5;
-               rel1 {
-                  to: "text_end_padding";
-                  relative: 1.0 0.0;
-               }
-               rel2 {
-                  to_x: "base";
-                  to_y: "bg";
-               }
-            }
-         }
-
-
          part { name: "elm.text";
             type: TEXT;
             mouse_events: 0;
@@ -525,8 +410,8 @@
             }
             mouse_events: 1;
             description { state: "default" 0.0;
-               rel1.to: "text.start";
-               rel2.to: "text.end";
+               rel1.to: "bg";
+               rel2.to: "bg";
                fixed: 1 1;
                color: 0 0 0 0;
             }
@@ -621,6 +506,8 @@
             description { state: "default" 0.0;
                color: 0 0 0 0;
                visible: 0;
+               rel1.to: "base";
+               rel2.to: "base";
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;

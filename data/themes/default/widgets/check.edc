@@ -1,9 +1,8 @@
 group { name: "elm/check/base/eflete/toggle";
    images {
-      image: "input-text-bg.png" COMP;
+      image: "input-text-bg1.png" COMP;
       image: "toggle-on.png" COMP;
       image: "toggle-off.png" COMP;
-      image: "focus-outer-glow.png" COMP;
    }
 #define ICON     1
 #define LABEL    2
@@ -79,18 +78,8 @@ group { name: "elm/check/base/eflete/toggle";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            align: 0.5 0.5;
-            min: 60 20;
-            max: -1 20;
-             rel1 {
-               relative: 0.5 0.5;
-               offset: 2 2;
-            }
-            rel2 {
-               offset: -3 -3;
-               relative: 0.5 0.5;
-            }
+            SET_SIZE(55, 19);
+            rel1.offset: 0 1;
         }
       }
       part { name: "bg_image";
@@ -100,13 +89,13 @@ group { name: "elm/check/base/eflete/toggle";
          clip_to: "tog_clip";
          description { state: "default" 0.0;
             image {
-               normal: "input-text-bg.png";
+               normal: "input-text-bg1.png";
                border: 5 5 5 5;
             }
             rel1 {
                to: "tog";
                relative: 0.0 0.0;
-               offset: 0 -2;
+               offset: -1 -1;
             }
             rel2 {
                to: "tog";
@@ -154,31 +143,14 @@ group { name: "elm/check/base/eflete/toggle";
             min: 30 17;
             max: 30 17;
             fixed: 1 1;
-            image {
-               normal: "toggle-off.png";
-               border: 4 4 13 13;
-            }
+            image.normal: "toggle-off.png";
             fill.smooth: 0;
-             rel1 {
-               to: "button";
-               offset: 4 0;
-            }
-            rel2 {
-               to: "button";
-               offset: -1 0;
-            }
+            rel1.to: "button";
+            rel2.to: "button";
          }
          description { state: "on_state" 0.0;
             inherit: "default" 0.0;
             image.normal: "toggle-on.png";
-            rel1 {
-               to: "button";
-               offset: 1 0;
-            }
-            rel2 {
-               to: "button";
-               offset: -4 0;
-            }
          }
          description { state: "off_state" 0.0;
             inherit: "default" 0.0;
@@ -242,6 +214,7 @@ group { name: "elm/check/base/eflete/toggle";
             inherit: "default" 0.0;
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
             rel1.to: "elm.swallow.content";
@@ -251,6 +224,7 @@ group { name: "elm/check/base/eflete/toggle";
             inherit: "default" 0.0;
             text {
                min: 1 1;
+               ellipsis: -1;
                text: "M";
             }
             rel1.to: "elm.swallow.content";
@@ -276,12 +250,10 @@ group { name: "elm/check/base/eflete/toggle";
             rel1 {
                to_x: "elm.swallow.content";
                relative: 1.0 0.0;
-               offset: 2 2;
             }
             rel2 {
                to_x: "tog";
                relative: 0.0 1.0;
-               offset: -5 -3;
             }
          }
          description { state: "disabled" 0.0;
@@ -292,45 +264,23 @@ group { name: "elm/check/base/eflete/toggle";
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled_visible" 0.0;
             inherit: "default" 0.0;
             color: 21 21 21 255;
             color3: 255 255 255 25;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
       }
-      part { name: "glow";
-         type: IMAGE;
-         mouse_events: 0;
-         repeat_events: 1;
-         scale: 1;
-         description { state: "default" 0.0;
-            image {
-               normal: "focus-outer-glow.png";
-               border: 3 3 4 3;
-            }
-            visible: 0;
-            color: HIGHLIGHT_BLUE;
-            rel1 {
-               to: "bg_image";
-               relative: 0.0 0.0;
-               offset: -4 -3;
-            }
-            rel2 {
-               to: "bg_image";
-               relative: 1.0 1.0;
-               offset: 2 2;
-            }
-         }
-         description { state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-       part { name: "event2";
+      part { name: "event2";
          type: RECT;
          ignore_flags: ON_HOLD;
          description { state: "default" 0.0;
@@ -345,7 +295,7 @@ group { name: "elm/check/base/eflete/toggle";
             visible: 0;
          }
       }
-     part { name: "event";
+      part { name: "event";
          type: RECT;
          ignore_flags: ON_HOLD;
          description { state: "default" 0.0;
@@ -359,18 +309,6 @@ group { name: "elm/check/base/eflete/toggle";
       }
    }
    programs {
-      program {
-         name: "focused";
-         signal: "elm,action,focus"; source: "elm";
-         action: STATE_SET "active" 0.0;
-         target: "glow";
-      }
-      program {
-         name: "unfocused";
-         signal: "elm,action,unfocus"; source: "elm";
-         action: STATE_SET "default" 0.0;
-         target: "glow";
-      }
       program {
          name: "check_on";
          signal: "elm,state,check,on"; source: "elm";
@@ -545,7 +483,7 @@ group { name: "elm/check/base/eflete/toggle";
 
 group { name: "elm/check/base/eflete/default";
    images {
-      image: "checkbox-bg.png" COMP;
+      image: "input-text-bg1.png" COMP;
       image: "checkbox-white.png" COMP;
    }
    parts {
@@ -555,8 +493,8 @@ group { name: "elm/check/base/eflete/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 16 16;
-            max: 16 16;
+            min: 20 20;
+            max: 20 20;
             aspect: 1 1;
             aspect_preference: VERTICAL;
             rel1.offset: 1 1;
@@ -565,9 +503,8 @@ group { name: "elm/check/base/eflete/default";
                offset: 1 -2;
             }
             image {
-               normal: "checkbox-bg.png";
-               border: 8 8 8 8;
-               middle: NONE;
+               normal: "input-text-bg1.png";
+               border: 5 5 5 5;
             }
          }
       }
@@ -652,17 +589,20 @@ group { name: "elm/check/base/eflete/default";
             }
             color: 0 0 0 255;
             text {
-               font: "Sans,Edje-Vera";
+               font: FN;
                style: "textblock_style";
                size: 12;
                min: 0 1;
-               align: -1.0 0.5;
+               align: 0.0 0.5;
             }
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+            }
          }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
@@ -670,7 +610,10 @@ group { name: "elm/check/base/eflete/default";
          description { state: "disabled_visible" 0.0;
             inherit: "default" 0.0;
             visible: 1;
-            text.min: 1 1;
+            text{
+               min: 1 1;
+               ellipsis: -1;
+            }
             color: 182 182 182 255;
          }
       }
@@ -793,6 +736,34 @@ group { name: "elm/check/base/eflete/default";
             set_state(PART:"check", "visible", 0.0);
             else
             set_state(PART:"check", "default", 0.0);
+         }
+      }
+   }
+}
+
+group { name: "elm/check/base/eflete/widgetlist/default";
+   images {
+      image: "icon-treemenu-item-visibility.png" COMP;
+      image: "treemenu-item-visibility-bg.png" COMP;
+   }
+   inherit: "elm/check/base/eflete/default";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            SET_SIZE(13 13, 13 13);
+            align: 0.0 0.5;
+            image.normal: "treemenu-item-visibility-bg.png";
+            rel1.offset: 0 1;
+            rel2.offset: 0 1;
+         }
+      }
+      part { name: "check";
+         description { state: "default" 0.0;
+            image.normal: "icon-treemenu-item-visibility.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
    }

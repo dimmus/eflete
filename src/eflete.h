@@ -72,6 +72,7 @@ struct _App_Data
    Evas_Object *popup;
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
+   Evas_Object *statusbar; /**< The statusbar object, which contain some items */
    Eina_Bool is_new;
    struct {
       Evas_Object *left;

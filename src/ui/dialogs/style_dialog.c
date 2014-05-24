@@ -312,7 +312,7 @@ _popup_close(void *data, Evas_Object *obj __UNUSED__, void *ei __UNUSED__)
 
 
 /* FIXME: change name to class_dialog_add */
-void
+Eina_Bool
 style_dialog_add(App_Data *ap)
 {
    Evas_Object *popup, *box, *button;
@@ -321,9 +321,9 @@ style_dialog_add(App_Data *ap)
    Eina_Stringshare *title = NULL;
    Eina_Stringshare *entry_text = NULL;
 
-   if (!ap) return;
+   if (!ap) return false;
    widget = _widget_from_ap_get(ap);
-   if (!widget) return;
+   if (!widget) return false;
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
    popup = elm_popup_add(ap->win_layout);
@@ -340,7 +340,7 @@ style_dialog_add(App_Data *ap)
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
 
    class_st = _class_from_ap_get(ap);
-   if (!class_st) return;
+   if (!class_st) return false;
    entry_text = eina_stringshare_add(class_st->name);
 
    EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
@@ -366,4 +366,6 @@ style_dialog_add(App_Data *ap)
    evas_object_show(popup);
    eina_stringshare_del(title);
    eina_stringshare_del(entry_text);
+
+   return true;
 }

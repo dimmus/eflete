@@ -110,7 +110,7 @@ _on_zoom_change(void *data,
                 void *event_info __UNUSED__)
 {
    Live_View *live = (Live_View *)data;
-   live->current_scale = elm_spinner_value_get(obj);
+   live->current_scale = elm_spinner_value_get(obj) / 100;
    if (live->object)
       elm_object_scale_set(live->object, live->current_scale);
 }
@@ -408,14 +408,15 @@ _elm_widget_create(const char  *widget,
         Evas_Object *test_left = evas_object_rectangle_add(e);
 
         evas_object_color_set(test_right,
-                              255 * 255 / 255,
-                              0,
-                              0,
+                              254 * 255 / 255,
+                              212 * 255 / 255,
+                              3 * 255 / 255,
                               255);
+
         evas_object_color_set(test_left,
-                              0,
-                              0,
-                              255 * 255 / 255,
+                              2 * 255 / 255,
+                              90 * 255 / 255,
+                              188 * 255 / 255,
                               255);
 
         object = elm_panes_add(parent);
@@ -649,6 +650,21 @@ _elm_widget_create(const char  *widget,
           object = _create_genlist(parent, class, style);
         evas_object_show(object);
      }
+   else if (!strcmp(widget, "toolbar"))
+     {
+        object = elm_toolbar_add(parent);
+        elm_toolbar_shrink_mode_set(object, ELM_TOOLBAR_SHRINK_MENU);
+        elm_toolbar_select_mode_set(object, ELM_OBJECT_SELECT_MODE_NONE);
+        elm_toolbar_item_append(object, EFLETE_IMG_PATH"icon_save.png", _("#1"),
+                                NULL, NULL);
+        Elm_Object_Item *item =  elm_toolbar_item_append(object,
+                                    EFLETE_IMG_PATH"icon_save.png", _("#2"),
+                                    NULL, NULL);
+        elm_object_item_disabled_set(item, true);
+        elm_toolbar_item_append(object, EFLETE_IMG_PATH"icon_save.png", _("#3"),
+                                NULL, NULL);
+        evas_object_show(object);
+     }
    return object;
 }
 
@@ -672,18 +688,16 @@ live_view_add(Evas_Object *parent)
    live->layout = _layout;
    elm_layout_file_set(_layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
 
-   SPINNER_ADD(parent, spinner, 0.01, 5.0, 0.01, true, "eflete/live_view");
-   elm_spinner_label_format_set(spinner, "%1.2f");
+   SPINNER_ADD(parent, spinner, 1, 500, 1, true, "eflete/live_view");
+   elm_spinner_label_format_set(spinner, "%3.0f%%");
    evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, live);
-   elm_spinner_value_set(spinner, 1.0);
-   elm_object_part_content_set(live->layout, "zoom_spinner",
-                               spinner);
+   elm_spinner_value_set(spinner, 100);
+   elm_object_part_content_set(live->layout, "zoom_spinner", spinner);
    live->scale_spinner = spinner;
 
    live->live_view = elm_layout_add(parent);
    elm_layout_file_set(live->live_view, EFLETE_EDJ, "eflete/live_view/base/default");
-   elm_object_part_content_set(live->layout, "live_view",
-                               live->live_view);
+   elm_object_part_content_set(live->layout, "live_view", live->live_view);
    elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
@@ -696,19 +710,21 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    char **c;
    const char *widget, *type, *style_name;
    const char *custom_name = NULL;
+   const char *fail_message = NULL;
    Eina_Bool ret = true;
    int x, y;
 
    if ((!live) || (!project)) return false;
 
-   if (!style)
+   if ((!style) || (!style->parts))
      {
-        WARN("Could'nt apply the style to live view. The Styke is missing!");
+        WARN("Could'nt apply the style to live view. The style is missing!");
         return false;
      }
+
    live_view_widget_style_unset(live);
    live->current_scale = 1.0;
-   elm_spinner_value_set(live->scale_spinner, 1.0);
+   elm_spinner_value_set(live->scale_spinner, 100);
 
    if (style->__type != LAYOUT)
      {
@@ -732,11 +748,23 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             live->object = elm_label_add(live->live_view);
-             elm_object_text_set(live->object, _("Widget isn't implemented yet!"));
-             elm_object_part_content_set(live->live_view, "live_object", live->object);
-
+             fail_message = _("Widget isn't implemented yet!");
              ret = false;
+          }
+        if (ret)
+          {
+             const char *version = edje_edit_data_value_get(style->obj, "version");
+             if (!version || strcmp(version, "110"))
+               {
+                  fail_message = _("Outdated version of EDJ file! Should be 110");
+                  ret = false;
+               }
+          }
+        if (!ret)
+          {
+             live->object = elm_label_add(live->live_view);
+             elm_object_text_set(live->object, fail_message);
+             elm_object_part_content_set(live->live_view, "live_object", live->object);
           }
 
         live_view_theme_update(live, project);
@@ -792,6 +820,13 @@ live_view_theme_update(Live_View *live, Project *project)
         elm_layout_file_set(live->object, project->swapfile,
                             project->current_style->full_group_name);
         return true;
+     }
+
+   if ((!project->current_style) || (!project->current_style->parts))
+     {
+        WARN("Could'nt apply the empty style to live view.");
+        live_view_widget_style_unset(live);
+        return false;
      }
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);

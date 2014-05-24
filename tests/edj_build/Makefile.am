@@ -19,6 +19,8 @@ check: Makefile
 	$(builddir)/workspace_edit_object_recalc.edj \
 	$(builddir)/workspace_edit_object_get.edj \
 	$(builddir)/workspace_highlight_set.edj \
+	$(builddir)/workspace_separate_mode_set.edj \
+	$(builddir)/workspace_separate_mode_get.edj \
 	$(builddir)/workspace_edit_object_part_above.edj \
 	$(builddir)/workspace_edit_object_set.edj \
 	$(builddir)/workspace_edit_object_part_below.edj \
@@ -81,6 +83,11 @@ check: Makefile
 	$(builddir)/pm_save_as_project_edj.edj \
 	$(builddir)/register_callbacks.edj \
 	$(builddir)/ui_edj_load_done.edj \
+	$(builddir)/save_as_edj_file.edj \
+	$(builddir)/save_as_edc_file.edj \
+	$(builddir)/ui_style_clicked.edj \
+	$(builddir)/style_dialog_add.edj \
+	$(builddir)/state_dialog_state_add.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

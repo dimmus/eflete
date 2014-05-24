@@ -60,6 +60,30 @@ ui_main_window_del(App_Data *ap)
    return true;
 }
 
+Evas_Object *
+_statusbar_init(Evas_Object *obj)
+{
+   Evas_Object *statusbar = NULL;
+   Evas_Object *label = NULL;
+   Ewe_Statusbar_Item *item = NULL;
+
+   statusbar = ewe_statusbar_add(obj);
+   elm_object_part_content_set(obj, "eflete.swallow.statusbar",
+                               statusbar);
+   evas_object_show(statusbar);
+   LABEL_ADD(statusbar, label, "the project didn't opened");
+
+   item = ewe_statusbar_item_append(statusbar, label,
+                                    EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
+   ewe_statusbar_item_label_set(item, _("Project path: "));
+   /* MAGIC number 500 is width of item, which display path to currently open
+      project. It will be fixed in ewe_statusbar module from ewe library. Currently
+      width param "-1"(unlimited width) work incorrect. */
+   ewe_statusbar_item_width_set(item, 500);
+
+   return statusbar;
+}
+
 #define MARK_TO_SHUTDOWN(fmt, ...) \
    { \
       ERR(fmt, ## __VA_ARGS__); \
@@ -92,6 +116,13 @@ ui_main_window_add(App_Data *ap)
    evas_object_move(ap->win, config->window.x, config->window.y);
 
    elm_win_title_set(ap->win, "EFL Edje Theme Editor");
+
+   /* FIXME: Magic that solves font issue with property item */
+   Evas_Object *N = elm_layout_add(ap->win);
+   elm_layout_file_set(N, EFLETE_EDJ, "eflete/property/item/default");
+   evas_object_resize(N, 1, 1);
+   /* End of magic */
+
    evas_object_smart_callback_add(ap->win, "delete,request", _on_done, ap);
    if (!cursor_main_set(ap->win, CURSOR_ARROW))
      ERR("Main cursor not setted.");
@@ -135,6 +166,10 @@ ui_main_window_add(App_Data *ap)
 
    if (!register_callbacks(ap))
      MARK_TO_SHUTDOWN("Failed register callbacks");
+
+   ap->statusbar = _statusbar_init(ap->win_layout);
+   if (!ap->statusbar)
+     MARK_TO_SHUTDOWN("Can't create a statusbar.")
 
    return true;
 }

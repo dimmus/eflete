@@ -29,11 +29,11 @@
 #define FS_INWIN "fs_inwin"
 #define FS_TITLE "fs_title"
 
-#define ITEM_ADD(PARENT, ITEM, TEXT) \
+#define ITEM_ADD(PARENT, ITEM, TEXT, STYLE) \
    ITEM = elm_layout_add(PARENT); \
    evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(ITEM, EFLETE_EDJ, "eflete/property/item/default"); \
+   elm_layout_file_set(ITEM, EFLETE_EDJ, STYLE); \
    elm_object_part_text_set(ITEM, "elm.text", TEXT); \
    evas_object_show(ITEM);
 
@@ -99,10 +99,16 @@
                                   ELM_SCROLLER_POLICY_OFF); \
    evas_object_show(ENTRY);
 
+#define EWE_COMBOBOX_ADD(PARENT, COMBOBOX) \
+   COMBOBOX = ewe_combobox_add(PARENT); \
+   evas_object_size_hint_weight_set(COMBOBOX, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_show(COMBOBOX);
+
 #define CHECK_ADD(PARENT, CHECK, STYLE) \
    CHECK = elm_check_add(PARENT); \
    elm_object_style_set(CHECK, STYLE); \
-   evas_object_size_hint_align_set(CHECK, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_size_hint_align_set(CHECK, 0.0, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(CHECK, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(CHECK);
 

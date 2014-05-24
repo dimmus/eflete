@@ -1,0 +1,55 @@
+/*
+ *  [ macros ]
+ */
+#define TILED_HORIZ(_WIDTH) \
+   fill { size { relative: 0.0 1.0; offset: _WIDTH 0; } }
+
+#define FIXED_SIZE(_WIDTH, _HEIGHT) \
+   min: _WIDTH _HEIGHT; max: _WIDTH _HEIGHT; fixed: 1 1;
+
+#define SET_SIZE(_X, _Y) \
+   min: _X _Y; max: _X _Y;
+/*
+ *  [ fonts ]
+ */
+fonts {
+   font: "PTS55F.ttf" "PT";
+   font: "PTS75F.ttf" "PT-Bold";
+   font: "PTS56F.ttf" "PT-Italic";
+   font: "PTS76F.ttf" "PT-BoldItalic";
+}
+#define FN "PT"
+#define FN_B "PT-Bold"
+#define FN_I "PT-Italic"
+#define FN_BI "PT-BoldItalic"
+
+/*
+ *  [ colors ]
+ */
+#define LIGHT_GREY_BG_COLOR 80 82 83 255
+#define DARK_GREY_BG_COLOR 48 48 48 255
+#define DARK_GREY_BG_DISABLED_COLOR 64 64 64 255
+
+#define MENU_BG_COLOR 242 241 240 255
+#define MENU_HIGHLIGHT_COLOR 160 203 240 255
+#define MENU_BORDER_COLOR 196 193 189 255
+#define MENU_TEXT_COLOR 76 76 76 255; color2: 76 76 76 24; color3: 76 76 76 18
+#define MENU_TEXT_COLOR_DISABLED 193 193 193 255; color2: 193 193 193 24; color3: 193 193 193 18
+#define MENU_TEXT_COLOR_HIGHLIGHT 50 50 50 255; color2: 50 50 50 24; color3: 50 50 50 18
+
+#define LIST_DARK_BG_COLOR 39 42 43 255;
+
+#define HIGHLIGHT_BLUE 51 153 255 255;
+#define HIGHLIGHT_TOOLBAR_BLUE 58 110 155 255;
+#define TOOLBAR_GREY_SEPARATOR 89 93 95 255;
+#define FN_COL_DEFAULT 223 219 210 255; color3: 255 255 255 25
+#define FN_COL_LIGHT_GREY 200 190 185 255; color3: 255 255 255 25
+#define FN_COL_HIGHLIGHT 51 53 255 255; color2: 51 153 255 24; color3: 51 153 255 18
+#define FN_COL_DISABLE 21 21 21 255; color3: 255 255 255 25;
+#define FN_COL_SPINNER_MAIN 182 182 182 255
+
+#define CTXPOPUP_BG_COLOR 34 34 34 34
+#define WHITE_VISIBLE_COLOR 255 255 255 255
+#define WHITE_INVISIBLE_COLOR 255 255 255 0
+
+#define TREEPAD 15

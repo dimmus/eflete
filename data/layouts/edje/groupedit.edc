@@ -31,9 +31,10 @@ group { name: "eflete/groupedit/base/default";
             color: 0 0 0 255;
             visible: 0;
             text {
-               font: Sans;
+               font: FN;
                size: 12;
                min: 1 1;
+               ellipsis: -1;
             }
          }
          description { state: "show" 0.0;

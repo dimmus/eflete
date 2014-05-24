@@ -5,6 +5,8 @@ ACLOCAL_AMFLAGS = -I m4
 TESTS = \
 eflete_test \
 part_dialog_test \
+save_file_dialog_test \
+open_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
 edje_compile_test \
@@ -16,18 +18,23 @@ project_manager_test \
 config_test \
 cursor_test \
 style_editor_test \
+style_dialog_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
 preference_test \
 ui_signal_list_test \
 ui_states_list_test \
+ui_state_dialog_test \
 ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
 widget_manager_test \
 program_editor_test \
-live_view_test
+live_view_test \
+about_window_test \
+colorselector_test
+
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
@@ -80,6 +87,21 @@ test_part_dialog/test_part_dialog.c \
 test_part_dialog/part_dialog_add.c
 part_dialog_test_CFLAGS = ${FLAGS}
 part_dialog_test_LDADD = ${LD}
+
+save_file_dialog_test_SOURCES = \
+test_save_file_dialog/test_save_file_dialog.c \
+test_save_file_dialog/save_as_edc_file.c \
+test_save_file_dialog/save_as_edj_file.c
+save_file_dialog_test_CFLAGS = ${FLAGS}
+save_file_dialog_test_LDADD = ${LD}
+
+open_file_dialog_test_SOURCES = \
+test_open_file_dialog/test_open_file_dialog.c \
+test_open_file_dialog/open_edc_file.c \
+test_open_file_dialog/open_edj_file.c \
+test_open_file_dialog/add_callbacks_wd.c
+open_file_dialog_test_CFLAGS = ${FLAGS}
+open_file_dialog_test_LDADD = ${LD}
 
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \
@@ -198,6 +220,12 @@ test_style_editor/style_editor_window_add.c
 style_editor_test_CFLAGS = ${FLAGS} -DEDC_PATH=\"${srcdir}/test_style_editor/data/\"
 style_editor_test_LDADD = ${LD}
 
+style_dialog_test_SOURCES = \
+test_style_dialog/test_style_dialog.c \
+test_style_dialog/style_dialog_add.c
+style_dialog_test_CFLAGS = ${FLAGS}
+style_dialog_test_LDADD = ${LD}
+
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \
 test_ui_block/ui_block_add.c \
@@ -242,8 +270,8 @@ test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_part_state_delete.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \
-test_ui_main_window/ui_style_delete.c \
-test_ui_main_window/ui_window_colorsel_get.c
+test_ui_main_window/ui_style_clicked.c \
+test_ui_main_window/ui_style_delete.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
@@ -308,9 +336,10 @@ test_ui_workspace/workspace_edit_object_visible_set.c \
 test_ui_workspace/workspace_highlight_set.c \
 test_ui_workspace/workspace_highlight_unset.c \
 test_ui_workspace/workspace_background_image_set.c \
-test_ui_workspace/workspace_legend_visible_set.c \
 test_ui_workspace/workspace_zoom_factor_get.c \
-test_ui_workspace/workspace_zoom_factor_set.c
+test_ui_workspace/workspace_zoom_factor_set.c \
+test_ui_workspace/workspace_separate_mode_set.c \
+test_ui_workspace/workspace_separate_mode_get.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 
@@ -363,3 +392,22 @@ test_live_view/live_view_widget_style_unset.c \
 test_live_view/live_view_theme_update.c
 live_view_test_CFLAGS = ${FLAGS}
 live_view_test_LDADD = ${LD}
+
+about_window_test_SOURCES = \
+test_about_window/test_about_window.c \
+test_about_window/about_window_add.c
+about_window_test_CFLAGS = ${FLAGS}
+about_window_test_LDADD = ${LD}
+
+ui_state_dialog_test_SOURCES = \
+test_ui_state_dialog/test_state_dialog.c \
+test_ui_state_dialog/state_dialog_state_add.c
+ui_state_dialog_test_CFLAGS = ${FLAGS}
+ui_state_dialog_test_LDADD = ${LD}
+
+colorselector_test_SOURCES = \
+test_colorselector/test_colorselector.c \
+test_colorselector/colorselector_add.c \
+test_colorselector/colorselector_color_get.c
+colorselector_test_CFLAGS = ${FLAGS}
+colorselector_test_LDADD = ${LD}

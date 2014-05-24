@@ -30,21 +30,41 @@ static Elm_Entry_Filter_Accept_Set accept_prop = {
    .rejected = PART_NAME_BANNED_SYMBOLS
 };
 
-/* group */
-#define ITEM_SPINNER_CALLBACK(SUB, VALUE, type) \
+#define ITEM1 "item1"
+#define ITEM2 "item2"
+
+#define ITEM_CONTEINER_1LABEL_ADD(PARENT, ITEM, TEXT1) \
+   ITEM = elm_layout_add(PARENT); \
+   evas_object_size_hint_weight_set(ITEM, 1.0, 0.0); \
+   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
+   elm_layout_file_set(ITEM, EFLETE_EDJ, "eflete/prop/container/1label"); \
+   elm_object_part_text_set(ITEM, "eflete.text.start", TEXT1); \
+   evas_object_show(ITEM);
+
+#define ITEM_CONTEINER_2LABEL_ADD(PARENT, ITEM, TEXT1, TEXT2) \
+   ITEM = elm_layout_add(PARENT); \
+   evas_object_size_hint_weight_set(ITEM, 1.0, 0.0); \
+   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
+   elm_layout_file_set(ITEM, EFLETE_EDJ, "eflete/prop/container/2label"); \
+   elm_object_part_text_set(ITEM, "eflete.text.start", TEXT1); \
+   elm_object_part_text_set(ITEM, "eflete.text.end", TEXT2); \
+   evas_object_show(ITEM);
+
+#define ITEM_SPINNER_INT_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   type value = (type)elm_spinner_value_get(obj); \
+   int value = (int)elm_spinner_value_get(obj); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, value)) \
      return; \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
 
+/* group */
 #define ITEM_2SPINNER_GROUP_ADD(text, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
@@ -55,25 +75,28 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
-   Evas_Object *item, *box, *spinner1, *spinner2; \
-   ITEM_ADD(parent, item, text) \
+   Evas_Object *item, *box, *layout, *spinner1, *spinner2; \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    BOX_ADD(item, box, true, false); \
-   elm_box_align_set(box, 0.0, 0.5); \
-   SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, "w:", "px"); \
+   SPINNER_ADD(layout, spinner1, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner1, "%.0f"); \
-   elm_object_part_text_set(spinner1, "text.end", "px"); \
    elm_spinner_value_set(spinner1, edje_edit_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
-   elm_box_pack_end(box, spinner1); \
+   elm_object_part_content_set(layout, "eflete.content", spinner1); \
+   elm_box_pack_end(box, layout); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, "h:", "px"); \
+   SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
    elm_spinner_label_format_set(spinner2, "%.0f"); \
-   elm_object_part_text_set(spinner2, "text.end", "px"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
-   elm_box_pack_end(box, spinner2); \
+   elm_object_part_content_set(layout, "eflete.content", spinner2); \
+   elm_box_pack_end(box, layout); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
+   evas_object_data_set(item, ITEM1, spinner1); \
+   evas_object_data_set(item, ITEM2, spinner2); \
    return item; \
 }
 
@@ -81,19 +104,15 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, Prop_Data *pd) \
 { \
-   Evas_Object *box, *spinner1, *spinner2; \
-   Eina_List *nodes; \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
-   spinner1 = eina_list_nth(nodes, 0); \
+   Evas_Object *spinner1, *spinner2; \
+   spinner1 = evas_object_data_get(item, ITEM1); \
    elm_spinner_value_set(spinner1, edje_edit_##SUB##_##VALUE1##_get(pd->style->obj)); \
    evas_object_smart_callback_del_full(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   spinner2 = eina_list_nth(nodes, 1); \
+   spinner2 = evas_object_data_get(item, ITEM2); \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
    evas_object_smart_callback_del_full(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   eina_list_free(nodes); \
 }
 
 /* part */
@@ -143,6 +162,44 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
+#define ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   const char *value = elm_entry_entry_get(obj); \
+   if (strcmp(value, "") == 0) return; \
+     if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, value)) \
+       { \
+         NOTIFY_INFO(5, "Wrong input value for "#VALUE" field"); \
+         return; \
+       } \
+   pd->part->name = value; \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+   evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part); \
+}
+
+#define ITEM_1ENTRY_PART_NAME_ADD(text, SUB, VALUE) \
+static Evas_Object * \
+prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                                Prop_Data *pd, \
+                                const char *tooltip) \
+{ \
+   Evas_Object *item, *entry; \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
+   elm_entry_entry_set(entry, pd->part->name); \
+   elm_object_tooltip_text_set(entry, tooltip); \
+   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", entry); \
+   evas_object_data_set(item, ITEM1, entry); \
+   return item; \
+}
+
 #define ITEM_1ENTRY_PART_ADD(text, SUB, VALUE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
@@ -150,13 +207,14 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 const char *tooltip) \
 { \
    Evas_Object *item, *entry; \
-   ITEM_ADD(parent, item, text) \
-   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    elm_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
+   evas_object_data_set(item, ITEM1, entry); \
    return item; \
 }
 
@@ -166,7 +224,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
 { \
    Evas_Object *entry; \
-   entry = elm_object_part_content_get(item, "elm.swallow.content"); \
+   entry = evas_object_data_get(item, ITEM1); \
    elm_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
@@ -178,13 +236,16 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
                                 const char *tooltip) \
 { \
-   Evas_Object *item, *check; \
-   ITEM_ADD(parent, item, text) \
-   CHECK_ADD(parent, check, DEFAULT_STYLE) \
+   Evas_Object *item, *layout, *check; \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   ITEM_CONTEINER_1LABEL_ADD(item, layout, NULL); \
+   CHECK_ADD(layout, check, DEFAULT_STYLE) \
    elm_check_state_set(check, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    elm_object_tooltip_text_set(check, tooltip); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", check); \
+   elm_object_part_content_set(layout, "eflete.content", check); \
+   elm_object_part_content_set(item, "elm.swallow.content", layout); \
+   evas_object_data_set(item, ITEM1, check); \
    return item; \
 }
 
@@ -194,7 +255,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
 { \
    Evas_Object *check; \
-   check = elm_object_part_content_get(item, "elm.swallow.content"); \
+   check = evas_object_data_get(item, ITEM1); \
    elm_check_state_set(check, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    evas_object_smart_callback_del_full(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
@@ -211,25 +272,30 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *tooltip1, \
                                             const char *tooltip2 ) \
 { \
-   Evas_Object *item, *box, *check, *spinner; \
+   Evas_Object *item, *box, *layout, *check, *spinner; \
    int ch_value, st_value; \
-   ITEM_ADD(parent, item, text) \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    BOX_ADD(item, box, true, true) \
-   CHECK_ADD(box, check, "eflete/toggle") \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, "turn", NULL); \
+   CHECK_ADD(layout, check, "eflete/toggle") \
    ch_value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, pd->part->name); \
    elm_check_state_set(check, ch_value); \
    elm_object_tooltip_text_set(check, tooltip1); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   elm_box_pack_end(box, check); \
+   elm_object_part_content_set(layout, "eflete.content", check); \
+   elm_box_pack_end(box, layout); \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, "px"); \
    SPINNER_ADD(box, spinner, min, max, step, true, DEFAULT_STYLE) \
-   elm_object_part_text_set(spinner, "text.end", "px"); \
    elm_spinner_label_format_set(spinner, fmt); \
    st_value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, pd->part->name); \
    elm_spinner_value_set(spinner, st_value); \
    elm_object_tooltip_text_set(spinner, tooltip2); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   elm_box_pack_end(box, spinner); \
+   elm_object_part_content_set(layout, "eflete.content", spinner); \
+   elm_box_pack_end(box, layout); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
+   evas_object_data_set(item, ITEM1, check); \
+   evas_object_data_set(item, ITEM2, spinner); \
    return item; \
 }
 
@@ -238,22 +304,18 @@ static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                                Prop_Data *pd) \
 { \
-   Evas_Object *box, *check, *spinner; \
+   Evas_Object *check, *spinner; \
    int ch_value, st_value; \
-   Eina_List *nodes; \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
-   check = eina_list_nth(nodes, 0); \
+   check = evas_object_data_get(item, ITEM1); \
    ch_value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, pd->part->name); \
    elm_check_state_set(check, ch_value); \
    evas_object_smart_callback_del_full(check, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   spinner = eina_list_nth(nodes, 1); \
+   spinner = evas_object_data_get(item, ITEM2); \
    st_value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, pd->part->name); \
    elm_spinner_value_set(spinner, st_value); \
    evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   eina_list_free(nodes); \
 }
 
 /* state */
@@ -277,14 +339,32 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-#define ITEM_SPINNER_STATE_CALLBACK(SUB, VALUE, type) \
+#define ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   type value = (type)elm_spinner_value_get(obj); \
+   int value = (int)elm_spinner_value_get(obj); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        value)) \
+     return; \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+#define ITEM_SPINNER_STATE_DOUBLE_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   double value = elm_spinner_value_get(obj); \
+   value /= 100; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
                                         pd->part->curr_state, \
                                         pd->part->curr_state_value, \
@@ -378,27 +458,38 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              void *ei __UNUSED__) \
 { \
    unsigned int tok_elm; \
+   char **c = NULL; \
    Prop_Data *pd = (Prop_Data *)data; \
    const char *value = elm_entry_entry_get(obj); \
-   char **c = eina_str_split_full (value, " ", 4, &tok_elm); \
-   if (tok_elm < 4) \
+   if (!value || !strcmp(value, "")) \
      { \
-        free(c[0]); \
-        free(c); \
-        NOTIFY_ERROR ("Please input correct border data: l r t b, " \
-                      "where l - left, r - right, t - top, b - bottom borders") \
-        return; \
+        elm_object_part_text_set(obj, "elm.guide", "left right top bottom"); \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                           pd->part->curr_state, pd->part->curr_state_value, \
+                           0, 0, 0, 0); \
      } \
-   edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                   pd->part->curr_state, pd->part->curr_state_value, \
-                                   atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
-   free(c[0]); \
-   free(c); \
+   else \
+     { \
+        c = eina_str_split_full (value, " ", 4, &tok_elm); \
+        if (tok_elm < 4) \
+          { \
+             free(c[0]); \
+             free(c); \
+             NOTIFY_ERROR ("Please input correct border data: l r t b, " \
+                           "where l - left, r - right, t - top, b - bottom borders") \
+             return; \
+          } \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value, \
+                                        atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
+       free(c[0]); \
+       free(c); \
+     } \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
 
-#define ITEM_2SPINNER_STATE_ADD(text, SUB, VALUE1, VALUE2) \
+#define ITEM_2SPINNER_STATE_ADD(text, SUB, VALUE1, VALUE2, STYLE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             Prop_Data *pd, \
@@ -411,69 +502,72 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *sp2_lb_start, \
                                             const char *sp2_lb_end, \
                                             const char *tooltip1, \
-                                            const char *tooltip2) \
+                                            const char *tooltip2, \
+                                            Eina_Bool to_percent) \
 { \
-   Evas_Object *item, *box, *spinner1, *spinner2; \
+   Evas_Object *item, *box, *layout, *spinner1, *spinner2; \
    double value; \
-   ITEM_ADD(parent, item, text) \
+   ITEM_ADD(parent, item, text, STYLE) \
    BOX_ADD(item, box, true, true) \
-   elm_box_padding_set(box, 5, 0); \
-   SPINNER_ADD(box, spinner1, min, max, step, true, DEFAULT_STYLE) \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, sp1_lb_start, sp1_lb_end); \
+   SPINNER_ADD(layout, spinner1, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner1, fmt); \
-   elm_object_part_text_set(spinner1, "text.start", sp1_lb_start); \
-   elm_object_part_text_set(spinner1, "text.end", sp1_lb_end); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner1, value); \
-   elm_box_pack_end(box, spinner1); \
+   elm_object_part_content_set(layout, "eflete.content", spinner1); \
+   elm_box_pack_end(box, layout); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   SPINNER_ADD(box, spinner2, min, max, step, true, DEFAULT_STYLE) \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, sp2_lb_start, sp2_lb_end); \
+   SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner2, fmt); \
-   elm_object_part_text_set(spinner2, "text.start", sp2_lb_start); \
-   elm_object_part_text_set(spinner2, "text.end", sp2_lb_end); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner2, value); \
-   elm_box_pack_end(box, spinner2); \
+   elm_object_part_content_set(layout, "eflete.content", spinner2); \
+   elm_box_pack_end(box, layout); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    evas_object_smart_callback_add(spinner2, "changed", \
                                   _on_##SUB##_##VALUE2##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
+   evas_object_data_set(item, ITEM1, spinner1); \
+   evas_object_data_set(item, ITEM2, spinner2); \
    return item;\
 }
 
 #define ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
-                                               Prop_Data *pd) \
+                                               Prop_Data *pd, \
+                                               Eina_Bool to_percent) \
 { \
-   Evas_Object *box, *spinner1, *spinner2; \
+   Evas_Object *spinner1, *spinner2; \
    double value; \
-   Eina_List *nodes; \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
-   spinner1 = eina_list_nth(nodes, 0); \
+   spinner1 = evas_object_data_get(item, ITEM1); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner1, value); \
    evas_object_smart_callback_del_full(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   spinner2 = eina_list_nth(nodes, 1); \
+   spinner2 = evas_object_data_get(item, ITEM2); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
+   if (to_percent) value *= 100; \
    elm_spinner_value_set(spinner2, value); \
    evas_object_smart_callback_del_full(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   eina_list_free(nodes); \
 }
 
 #define ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
@@ -489,8 +583,8 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                                            pd->part->curr_state, \
                                            pd->part->curr_state_value); \
-   ITEM_ADD(parent, item, TEXT) \
-   ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    if (btn_func_cb) \
      { \
@@ -534,7 +628,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &r, &g, &b, &a); \
-   ITEM_ADD(parent, item, text) \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    color = elm_layout_add(item); \
    elm_layout_file_set(color, EFLETE_EDJ, "eflete/prop/color"); \
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
@@ -577,26 +671,29 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
-   Evas_Object *item, *box, *entry1, *entry2; \
+   Evas_Object *item, *box, *layout, *entry1, *entry2; \
    Eina_Stringshare *value; \
-   ITEM_ADD(parent, item, TEXT) \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/relative_to") \
    BOX_ADD(item, box, false, true) \
    elm_box_padding_set(box, 0, 6); \
-   ENTRY_ADD(box, entry1, true, DEFAULT_STYLE) \
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, NULL); \
+   EWE_ENTRY_ADD(layout, entry1, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry1, elm_entry_filter_accept_set, &accept_prop); \
    elm_object_part_text_set(entry1, "elm.guide", guide1); \
-   ENTRY_ADD(box, entry2, true, DEFAULT_STYLE) \
-   elm_entry_markup_filter_append(entry2, elm_entry_filter_accept_set, &accept_prop); \
-   elm_object_part_text_set(entry2, "elm.guide", guide2); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
    elm_entry_entry_set(entry1, value); \
    elm_object_tooltip_text_set(entry1, tooltip1); \
-   evas_object_smart_callback_add(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
-   elm_box_pack_end(box, entry1); \
+   elm_object_part_content_set(layout, "eflete.content", entry1); \
+   elm_box_pack_end(box, layout); \
    edje_edit_string_free(value); \
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, NULL); \
+   EWE_ENTRY_ADD(layout, entry2, true, DEFAULT_STYLE) \
+   elm_entry_markup_filter_append(entry2, elm_entry_filter_accept_set, &accept_prop); \
+   elm_object_part_text_set(entry2, "elm.guide", guide2); \
+   evas_object_smart_callback_add(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -604,9 +701,12 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_entry_entry_set(entry2, value); \
    elm_object_tooltip_text_set(entry2, tooltip2); \
    evas_object_smart_callback_add(entry2, "activated", _on_##SUB##_##VALUE2##_change, pd); \
-   elm_box_pack_end(box, entry2); \
+   elm_object_part_content_set(layout, "eflete.content", entry2); \
+   elm_box_pack_end(box, layout); \
    edje_edit_string_free(value); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
+   evas_object_data_set(item, ITEM1, entry1); \
+   evas_object_data_set(item, ITEM2, entry2); \
    return item; \
 }
 
@@ -615,16 +715,13 @@ static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                                Prop_Data *pd) \
 { \
-   Evas_Object *box, *entry1, *entry2; \
+   Evas_Object *entry1, *entry2; \
    Eina_Stringshare *value; \
-   Eina_List *nodes; \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   entry1 = eina_list_nth(nodes, 0); \
+   entry1 = evas_object_data_get(item, ITEM1); \
    elm_entry_entry_set(entry1, value); \
    evas_object_smart_callback_del_full(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
@@ -633,12 +730,11 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   entry2 = eina_list_nth(nodes, 1); \
+   entry2 = evas_object_data_get(item, ITEM2); \
    elm_entry_entry_set(entry2, value); \
    evas_object_smart_callback_del_full(entry2, "activated", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(entry2, "activated", _on_##SUB##_##VALUE2##_change, pd); \
    edje_edit_string_free(value); \
-   eina_list_free(nodes); \
 }
 
 #define ITEM_1SPINNER_STATE_ADD(text, SUB, VALUE) \
@@ -651,10 +747,11 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 const char *fmt, \
                                 const char *tooltip) \
 { \
-   Evas_Object *item, *spinner; \
+   Evas_Object *item, *layout, *spinner; \
    double value; \
-   ITEM_ADD(parent, item, text) \
-   SPINNER_ADD(item, spinner, min, max, step, true, DEFAULT_STYLE) \
+   ITEM_ADD(parent, item, text , "eflete/property/item/default") \
+   ITEM_CONTEINER_2LABEL_ADD(item, layout, NULL, NULL); \
+   SPINNER_ADD(layout, spinner, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner, fmt); \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
@@ -663,7 +760,8 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    elm_spinner_value_set(spinner, value); \
    elm_object_tooltip_text_set(spinner, tooltip); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", spinner); \
+   elm_object_part_content_set(layout, "eflete.content", spinner); \
+   elm_object_part_content_set(item, "elm.swallow.content", layout); \
    return item;\
 }
 
@@ -674,7 +772,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
 { \
    Evas_Object *spinner; \
    double value; \
-   spinner = elm_object_part_content_get(item, "elm.swallow.content"); \
+   spinner = evas_object_data_get(item, ITEM1); \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
                                            pd->part->curr_state, \
@@ -690,10 +788,11 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
                                 const char *tooltip) \
 { \
-   Evas_Object *item, *check; \
+   Evas_Object *item, *layout, *check; \
    Eina_Bool value; \
-   ITEM_ADD(parent, item, TEXT) \
-   CHECK_ADD(item, check, "eflete/toggle") \
+   ITEM_ADD(parent, item, TEXT , "eflete/property/item/default") \
+   ITEM_CONTEINER_2LABEL_ADD(item, layout, NULL, NULL); \
+   CHECK_ADD(layout, check, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
                                            pd->part->curr_state, \
@@ -701,7 +800,8 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    elm_check_state_set(check, value); \
    elm_object_tooltip_text_set(check, tooltip); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", check); \
+   elm_object_part_content_set(layout, "eflete.content", check); \
+   elm_object_part_content_set(item, "elm.swallow.content", layout); \
    return item; \
 }
 
@@ -712,7 +812,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
 { \
    Evas_Object *check; \
    Eina_Bool value; \
-   check = elm_object_part_content_get(item, "elm.swallow.content"); \
+   check = evas_object_data_get(item, ITEM1); \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
                                            pd->part->curr_state, \
@@ -729,12 +829,12 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
-   Evas_Object *item, *box, *check1, *check2; \
+   Evas_Object *item, *box, *layout, *check1, *check2; \
    Eina_Bool value; \
-   ITEM_ADD(parent, item, TEXT) \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    BOX_ADD(item, box, true, true) \
-   CHECK_ADD(box, check1, "eflete/toggle") \
-   CHECK_ADD(box, check2, "eflete/toggle") \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL); \
+   CHECK_ADD(layout, check1, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -742,7 +842,10 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_check_state_set(check1, value); \
    elm_object_tooltip_text_set(check1, tooltip1); \
    evas_object_smart_callback_add(check1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   elm_box_pack_end(box, check1); \
+   elm_object_part_content_set(layout, "eflete.content", check1); \
+   elm_box_pack_end(box, layout); \
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL); \
+   CHECK_ADD(layout, check2, "eflete/toggle") \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -750,8 +853,11 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_check_state_set(check2, value); \
    elm_object_tooltip_text_set(check2, tooltip2); \
    evas_object_smart_callback_add(check2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   elm_box_pack_end(box, check2); \
+   elm_object_part_content_set(layout, "eflete.content", check2); \
+   elm_box_pack_end(box, layout); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
+   evas_object_data_set(item, ITEM1, check1); \
+   evas_object_data_set(item, ITEM2, check2); \
    return item; \
 }
 
@@ -760,12 +866,9 @@ static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                                Prop_Data *pd) \
 { \
-   Evas_Object *box, *check1, *check2; \
-   Eina_List *nodes; \
+   Evas_Object *check1, *check2; \
    Eina_Bool value; \
-   box = elm_object_part_content_get(item, "elm.swallow.content"); \
-   nodes = elm_box_children_get(box); \
-   check1 = eina_list_nth(nodes, 0); \
+   check1 = evas_object_data_get(item, ITEM1); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -773,7 +876,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    elm_check_state_set(check1, value); \
    evas_object_smart_callback_del_full(check1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(check1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   check2 = eina_list_nth(nodes, 1); \
+   check2 = evas_object_data_get(item, ITEM2); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -781,7 +884,6 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    elm_check_state_set(check2, value); \
    evas_object_smart_callback_del_full(check2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(check2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   eina_list_free(nodes); \
 }
 
 #define ITEM_IM_BORDER_STATE_ADD(TEXT, SUB, VALUE) \
@@ -796,11 +898,16 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
-   ITEM_ADD(parent, item, TEXT) \
-   ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
-   snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
-   elm_entry_entry_set(entry, buff); \
+   if (!l && !r && !t && !b) \
+     elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
+   else \
+     { \
+        snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
+        elm_entry_entry_set(entry, buff); \
+     } \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
@@ -819,8 +926,13 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
-   snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
-   elm_entry_entry_set(entry, buff); \
+   if (!l && !r && !t && !b) \
+     elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
+   else \
+     { \
+        snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
+        elm_entry_entry_set(entry, buff); \
+     } \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    return item; \

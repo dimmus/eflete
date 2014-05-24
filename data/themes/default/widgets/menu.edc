@@ -79,6 +79,7 @@ group { name: "elm/menu/item/eflete/default";
             text { font: FN;
                size: 10;
                min: 1 1;
+               ellipsis: -1;
                align: 0.0 0.5;
                text_class: "menu_item";
             }

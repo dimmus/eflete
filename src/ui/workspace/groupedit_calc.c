@@ -101,6 +101,12 @@ _edit_object_part_add(Ws_Groupedit_Smart_Data *sd, const char *part,
      }
    if ((type == EDJE_PART_TYPE_IMAGE) && (data))
      edje_edit_state_image_set(sd->edit_obj, part, "default", 0.0, data);
+   if (type == EDJE_PART_TYPE_TEXT)
+     {
+        edje_edit_state_font_set(sd->edit_obj, part, "default", 0.0, "Sans");
+        edje_edit_state_text_size_set(sd->edit_obj, part, "default", 0.0, 10);
+        edje_object_part_text_set(sd->edit_obj, part, part);
+     }
 
    gp = _part_draw_add(sd, part, type);
    sd->parts = eina_list_append(sd->parts, gp);
@@ -354,23 +360,29 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 static void
 _item_bg_add(Ws_Groupedit_Smart_Data *sd)
 {
-   int x, y, w, h, sw, sh;
+   int x, y, w, h;
+   const char *file = NULL;
    Eina_Bool filled;
    Groupedit_Part *gp;
-   void *data; /* raw image data */
    gp = sd->to_select;
 
-   data = evas_object_image_data_get(sd->bg, true);
-   evas_object_geometry_get(sd->bg, &x, &y, &w, &h);
-   filled = evas_object_image_filled_get(sd->bg);
-   evas_object_image_size_get(sd->bg, &sw, &sh);
+   /* if background is loaded return to create separate view*/
+   if (evas_object_image_data_get(gp->bg, false)) return;
 
-   evas_object_image_size_set(gp->bg, sw, sh);
-   evas_object_image_data_copy_set(gp->bg, data);
+   evas_object_image_file_get(sd->bg, &file, NULL);
+
+   filled = evas_object_image_filled_get(sd->bg);
+   evas_object_image_size_get(sd->bg, &w, &h);
+
+   /*TODO: maybe will be better create one background item for all parts */
+   evas_object_image_file_set(gp->bg, file, NULL);
+   evas_object_image_size_set(gp->bg, w, h);
    evas_object_image_filled_set(gp->bg, filled);
-   evas_object_image_fill_set(gp->bg, 0, 0, sw, sh);
-   evas_object_resize(gp->bg, w, h);
+   evas_object_image_fill_set(gp->bg, 0, 0, w, h);
+
+   evas_object_geometry_get(sd->obj, &x, &y, &w, &h);
    evas_object_move(gp->bg, x, y);
+   evas_object_resize(gp->bg, w, h);
 }
 
 void

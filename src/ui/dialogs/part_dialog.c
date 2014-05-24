@@ -83,6 +83,8 @@ _txtblock_add_on_click(void *data,
    WORKSPACE_PART_ADD(EDJE_PART_TYPE_TEXTBLOCK, NULL)
 }
 
+/*
+Not implemented yet
 static void
 _group_add_on_click(void *data,
                     Evas_Object *obj __UNUSED__,
@@ -90,7 +92,7 @@ _group_add_on_click(void *data,
 {
    WORKSPACE_PART_ADD(EDJE_PART_TYPE_GROUP, NULL)
 }
-
+*/
 static void
 _spacer_add_on_click(void *data,
                      Evas_Object *obj __UNUSED__,
@@ -184,9 +186,11 @@ part_dialog_add(App_Data *ap)
    BUTTON_ADD(box, button, _("Textblock"));
    evas_object_smart_callback_add(button, "clicked", _txtblock_add_on_click, popup);
    elm_box_pack_end(box, button);
+/* Not implemented yet
    BUTTON_ADD(box, button, _("Group"));
    evas_object_smart_callback_add(button, "clicked", _group_add_on_click, popup);
    elm_box_pack_end(box, button);
+*/
    BUTTON_ADD(box, button, _("Spacer"));
    evas_object_smart_callback_add(button, "clicked", _spacer_add_on_click, popup);
    elm_box_pack_end(box, button);

@@ -53,6 +53,9 @@ _menu_event_handler_cb(void *data __UNUSED__,
 {
    Menu_Event *menu_event = (Menu_Event *)event;
    ui_menu_locked_set(menu_event->ap->menu_hash, true);
+
+   Evas_Object *nf;
+
    switch (menu_event->type)
       {
       case OPEN_EDC:
@@ -79,6 +82,10 @@ _menu_event_handler_cb(void *data __UNUSED__,
       break;
       case SAVE_AS_EDJ:
          save_as_edj_file(menu_event->ap);
+         nf = ui_block_widget_list_get(menu_event->ap);
+         ui_widget_list_title_set(nf, menu_event->ap->project->name);
+         STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
+         ui_menu_disable_set(menu_event->ap->menu_hash, "Save project", false);
       break;
       }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
@@ -148,8 +155,10 @@ _project_not_save_edc(void *data,
    if (pm_project_close(ap->project)) ap->project = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, "Save project", true);
 
    evas_object_hide(ap->popup);
+   STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
    open_edc_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
 }
@@ -165,9 +174,12 @@ _project_not_save_edj(void *data,
 
    if (pm_project_close(ap->project)) ap->project = NULL;
 
-   ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_base_disabled_set(ap->menu_hash, true);
+   ui_menu_disable_set(ap->menu_hash, "Save project", true);
 
    evas_object_hide(ap->popup);
+   STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
+
    open_edj_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
 }
@@ -316,7 +328,8 @@ _on_view_separate(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+   Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
+   workspace_separate_mode_set(ap->workspace, !sep);
 }
 
 static void
@@ -340,36 +353,18 @@ _on_view_zoom_out(void *data,
 }
 
 static void
-_on_view_ruler_hor(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("hor"));
-}
-
-static void
-_on_view_ruler_ver(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,ver", strdup("ver"));
-}
-
-static void
-_on_view_legend(void *data,
+_on_view_rulers(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   workspace_legend_visible_set(ap->workspace);
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rulers"));
 }
 
 static void
 _on_view_highlight(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
@@ -377,20 +372,29 @@ _on_view_highlight(void *data,
 
 static void
 _on_view_ruler_rel(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("rel"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rel"));
 }
 
 static void
 _on_view_ruler_abs(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,hide,hor", strdup("abs"));
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs"));
+}
+
+static void
+_on_view_ruler_both(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs&rel"));
 }
 
 static void
@@ -479,12 +483,11 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Zoom out"), _on_view_zoom_out, ap, it);
    elm_object_item_disabled_set(it, true);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Separate"), _on_view_separate, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Legend"), _on_view_legend, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Rulers"), NULL, NULL, sub_menu);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide hor."), _on_view_ruler_hor, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide ver."), _on_view_ruler_ver, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide rulers"), _on_view_rulers, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Absolute scale"), _on_view_ruler_abs, ap, it);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Relative scale"), _on_view_ruler_rel, ap, it);
+   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Both"), _on_view_ruler_both, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Show/Hide object area"), _on_view_highlight, ap, it);
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("Editors"), NULL, NULL, menu_it);
@@ -510,10 +513,17 @@ ui_menu_add(App_Data *ap)
    elm_object_part_content_set(ap->win_layout, "eflete.swallow.toolbar", toolbar);
    evas_object_show(toolbar);
 
-   elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_theme_menu, ap);
-   elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_edj_open_menu, ap);
-   elm_toolbar_item_append(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save_menu, ap);
+#define ITEM_TB_ADD(toolbar_obj, icon, label, callback, data, ret) \
+   ret = elm_toolbar_item_append(toolbar_obj, icon, label, callback, data); \
+   eina_hash_add(menu_elms_hash, label, ret);
 
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_theme_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_edj_open_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save_menu, ap, it);
+
+   elm_object_item_disabled_set(it, true);
+
+#undef ITEM_TB_ADD
    ap->menu_hash = menu_elms_hash;
    ui_menu_base_disabled_set(ap->menu_hash, true);
 
@@ -528,6 +538,11 @@ ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag)
    if (!name)
      {
         ERR("Name is NULL");
+        return false;
+     }
+   if (!menu_hash)
+     {
+        ERR("Hash is NULL");
         return false;
      }
    item = eina_hash_find(menu_hash, name);
@@ -551,7 +566,6 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result = ui_menu_disable_set(menu_hash, _("Export to edc..."), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Workspace"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Separate"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Legend"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Rulers"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Styles"), flag) && result;
@@ -563,6 +577,8 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
 Eina_Bool
 ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag)
 {
+   if (!menu_hash) return false;
+
    Eina_Bool result = true;
    result = ui_menu_disable_set(menu_hash, _("File"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("View"), flag) && result;

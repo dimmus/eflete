@@ -47,7 +47,7 @@ group { name: "elm/frame/base/eflete/default";
             min: 0 0;
             text {
                font: FN;
-               size: 12;
+               size: 13;
                align: 0.0 0.0;
                max: 1 1;
             }

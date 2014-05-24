@@ -38,10 +38,11 @@
  * Add new dialog for input params style and/or class, like names of style and class.
  *
  * @param ap The App_Data struct pointer.
+ * @return EINA_TRUE if a dialog was added, else EINA_FALSE.
  *
  * @ingroup New_Style_Dialog
  */
-void
+Eina_Bool
 style_dialog_add(App_Data *ap);
 
 #endif /* STYLE_DIALOG_H */

@@ -1,276 +1,7 @@
 #define ITEM_HEIGHT 26
-group { name: "elm/genlist/item/small/double_label/default";
-   data.item: "stacking" "above";
-   data.item: "selectraise" "on";
-   data.item: "texts" "elm.text elm.text.sub";
-   data.item: "contents" "elm.swallow.icon elm.swallow.end";
-   data.item: "treesize" TREEPAD;
-   images {
-      image: "section-item-current-bg.png" COMP;
-      image: "section-item-bg.png" COMP;
-   }
-   parts {
-      part { name: "event";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "base";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            image.normal: "section-item-bg.png";
-            fill.smooth: 0;
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         clip_to: "disclip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            image.normal: "section-item-current-bg.png";
-            fill.smooth: 0;
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-      part { name: "elm.swallow.pad";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            rel2.relative: 0.0  1.0;
-         }
-      }
-      part { name: "elm.swallow.icon";
-         clip_to: "disclip";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            rel1 {
-               to_x: "elm.swallow.pad";
-               relative: 1.0  0.0;
-            }
-            rel2.to_x: "elm.swallow.pad";
-         }
-      }
-      part { name: "swallow.end_left_top_pad";
-         type:SPACER;
-         description {
-            SET_SIZE(5, 5);
-            align: 1.0 0.0;
-         }
-      }
-      part { name: "swallow.end_left_bot_pad";
-         type:SPACER;
-         description {
-            SET_SIZE(5, 5);
-            align: 1.0 1.0;
-         }
-      }
-      part { name: "elm.swallow.end";
-         type: SWALLOW;
-         clip_to: "disclip";
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 1.0 0.5;
-            aspect: 1.0 1.0;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            rel1 {
-               relative: 0.0  1.0;
-               to: "swallow.end_left_top_pad";
-            }
-            rel2 {
-               relative: 0.0  0.0;
-               to: "swallow.end_left_bot_pad";
-            }
-         }
-      }
-      part { name: "text_container";
-         type:SPACER;
-         scale: 1;
-         description{ state:"default" 0.0;
-            align: 0.0 0.0;
-            rel1 {
-               to: "elm.swallow.icon";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to: "elm.swallow.end";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "text_container_top_pad";
-         type:SPACER;
-         scale: 1;
-         description{ state:"default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(ITEM_HEIGHT/8, ITEM_HEIGHT/8);
-            rel1.to: "text_container";
-            rel2.to: "text_container";
-         }
-      }
-      part { name: "text_container_bot_pad";
-         type:SPACER;
-         scale: 1;
-         description{ state:"default" 0.0;
-            align: 0.0 1.0;
-            SET_SIZE(ITEM_HEIGHT/8, ITEM_HEIGHT/8);
-            rel1.to: "text_container";
-            rel2.to: "text_container";
-         }
-      }
-      part { name: "elm.text";
-         type: TEXT;
-         clip_to: "disclip";
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            color: 246 246 246 255;
-            text {
-               font: FN;
-               size: 12;
-               min: 0 1;
-               align: 0.0 0.5;
-               text_class: "list_item";
-            }
-            rel1 { to: "text_container_top_pad";
-               relative: 1.0  1.0;
-            }
-            rel2 { to_x: "elm.swallow.end";
-               to_y: "text_container";
-               relative: 0.0  0.5;
-            }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-         }
-      }
-      part { name: "elm.text.sub";
-         type: TEXT;
-         clip_to: "disclip";
-         mouse_events: 0;
-         scale: 1;
-         description { state: "default" 0.0;
-            fixed: 0 1;
-            color: 0 0 0 128;
-            color3: 0 0 0 0;
-            text {
-               font: FN;
-               size: 8;
-               min: 1 1;
-               align: 0.0 0.5;
-               text_class: "list_item";
-            }
-            rel1 { to_x: "text_container_bot_pad";
-               to_y: "text_container";
-               relative: 1.0  0.5;
-            }
-            rel2 { to: "text_container";
-               relative: 1.0  1.0;
-            }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            color: 128 128 128 255;
-            color3: 0 0 0 32;
-         }
-      }
-      part { name: "disclip";
-         type: RECT;
-         description { state: "default" 0.0;
-            rel1.to: "bg";
-            rel2.to: "bg";
-         }
-         description { state: "disabled" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 125;
-         }
-      }
-   }
-   programs {
-      program {
-         name:    "go_active";
-         signal:  "elm,state,selected";
-         source:  "elm";
-         action:  STATE_SET "selected" 0.0;
-         target:  "bg";
-         target:  "elm.text";
-         target:  "elm.text.sub";
-      }
-      program {
-         name:    "go_passive";
-         signal:  "elm,state,unselected";
-         source:  "elm";
-         action:  STATE_SET "default" 0.0;
-         target:  "bg";
-         target:  "elm.text";
-         target:  "elm.text.sub";
-         transition: LINEAR 0.1;
-      }
-      program {
-         name:    "go_disabled";
-         signal:  "elm,state,disabled";
-         source:  "elm";
-         action:  STATE_SET "disabled" 0.0;
-         target:  "disclip";
-      }
-      program {
-         name:    "go_enabled";
-         signal:  "elm,state,enabled";
-         source:  "elm";
-         action:  STATE_SET "default" 0.0;
-         target:  "disclip";
-      }
-   }
-}
-
-group { name: "elm/genlist/item/eflete/double_label/default";
-   inherit: "elm/genlist/item/small/double_label/default";
-   images {
-      image: "treemenu-lvl3-item-current-bg.png" COMP;
-      image: "treemenu-lvl3-item-bg.png" COMP;
-   }
-   parts {
-      part { name: "event";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-         }
-      }
-      part { name: "base";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            image.normal: "treemenu-lvl3-item-bg.png";
-            fill.smooth: 0;
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         clip_to: "disclip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            image.normal: "treemenu-lvl3-item-current-bg.png";
-            fill.smooth: 0;
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
-      }
-    }
-}
-
+#define BORDER_COLOR 34 35 36 255
+#define LIST_BORDER_COLOR 45 46 47 255
+#define BG_COLOR 39 42 43 255
 
 group { name: "elm/genlist/item/eflete/default/default";
    data.item: "stacking" "above";
@@ -309,40 +40,14 @@ group { name: "elm/genlist/item/eflete/default/default";
             visible: 1;
          }
       }
-      part { name: "elm.swallow.pad";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            fixed: 1 0;
-            align: 0.0 0.5;
-            rel2.relative: 0.0  1.0;
-         }
-      }
       part { name: "elm.swallow.icon";
          clip_to: "disclip";
          type: SWALLOW;
          description { state: "default" 0.0;
-            fixed: 1 0;
+            fixed: 1 1;
             align: 0.0 0.5;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            rel1 {
-               to_x: "elm.swallow.pad";
-               relative: 1.0  0.0;
-            }
-            rel2.to_x: "elm.swallow.pad";
-         }
-      }
-      part { name: "swallow.end_left_top_pad";
-         type:SPACER;
-         description {
-            SET_SIZE(5, 5);
-            align: 1.0 0.0;
-         }
-      }
-      part { name: "swallow.end_left_bot_pad";
-         type:SPACER;
-         description {
-            SET_SIZE(5, 5);
-            align: 1.0 1.0;
+            rel1.to: "icon_start_arrea";
+            rel2.to: "icon_start_arrea";
          }
       }
       part { name: "elm.swallow.end";
@@ -350,52 +55,9 @@ group { name: "elm/genlist/item/eflete/default/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 0;
-            align: 1.0 0.5;
             aspect: 1.0 1.0;
-            SET_SIZE(ITEM_HEIGHT, ITEM_HEIGHT);
-            rel1 {
-               relative: 0.0  1.0;
-               to: "swallow.end_left_top_pad";
-            }
-            rel2 {
-               relative: 0.0  0.0;
-               to: "swallow.end_left_bot_pad";
-            }
-         }
-      }
-      part { name: "text_container";
-         type:SPACER;
-         scale: 1;
-         description{ state:"default" 0.0;
-            align: 0.0 0.0;
-            rel1 {
-               to: "elm.swallow.icon";
-               relative: 1.0 0.0;
-            }
-            rel2 {
-               to: "elm.swallow.end";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "text_container_top_pad";
-         type:SPACER;
-         scale: 1;
-         description{ state:"default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(ITEM_HEIGHT/8, ITEM_HEIGHT/8);
-            rel1.to: "text_container";
-            rel2.to: "text_container";
-         }
-      }
-      part { name: "text_container_bot_pad";
-         type:SPACER;
-         scale: 1;
-         description{ state:"default" 0.0;
-            align: 0.0 1.0;
-            SET_SIZE(ITEM_HEIGHT/8, ITEM_HEIGHT/8);
-            rel1.to: "text_container";
-            rel2.to: "text_container";
+            rel1.to: "icon_end_arrea";
+            rel2.to: "icon_end_arrea";
          }
       }
       part { name: "elm.text";
@@ -413,15 +75,8 @@ group { name: "elm/genlist/item/eflete/default/default";
                align: 0.0 0.5;
                text_class: "list_item";
             }
-            rel1 {
-               to: "text_container_top_pad";
-               relative: 1.0  1.0;
-            }
-            rel2 {
-               to_x: "elm.swallow.end";
-               to_y: "text_container";
-               relative: 0.0  1.0;
-            }
+            rel1.to: "text_arrea";
+            rel2.to: "text_arrea";
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
@@ -436,6 +91,55 @@ group { name: "elm/genlist/item/eflete/default/default";
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             color: 255 255 255 125;
+         }
+      }
+      part { name: "left_pad";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(6 ITEM_HEIGHT, 6 ITEM_HEIGHT);
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "right_pad";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(6 ITEM_HEIGHT, 6 ITEM_HEIGHT);
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "icon_start_arrea";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(20 19, 20 19);
+            rel1 {
+               to_x: "left_pad";
+               relative: 1.0 0.0;
+            }
+            align: 0.0 0.5;
+         }
+      }
+      part { name: "icon_end_arrea";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(20 19, 20 19);
+            rel2 {
+               to_x: "right_pad";
+               relative: 0.0 1.0;
+            }
+            align: 1.0 0.5;
+         }
+      }
+      part { name: "text_arrea";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "icon_start_arrea";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "icon_end_arrea";
+               relative: 0.0 1.0;
+            }
          }
       }
    }
@@ -778,21 +482,17 @@ group { name: "elm/genlist/tree/eflete/tree/default";
    }
 }
 
-group { name: "elm/genlist/item/eflete/level2/default";
+group { name: "elm/genlist/item/eflete/level1/default";
     inherit:"elm/genlist/item/eflete/default/default";
     images {
-      image: "treemenu-lvl2-item-current-bg.png" COMP;
-      image: "treemenu-lvl2-item-bg.png" COMP;
+      image: "treemenu-lvl1-item-current-pressed.png" COMP;
    }
    parts {
      part { name: "base";
          mouse_events: 0;
          description { state: "default" 0.0;
             fill.smooth: 0;
-            image {
-               normal: "treemenu-lvl2-item-bg.png";
-               border: 0 0 3 3;
-            }
+            image.normal: "treemenu-lvl1-item-current-bg.png";
          }
       }
       part { name: "bg";
@@ -800,15 +500,43 @@ group { name: "elm/genlist/item/eflete/level2/default";
          mouse_events: 0;
          description { state: "default" 0.0;
             visible: 0;
+            image.normal: "treemenu-lvl1-item-current-pressed.png";
             fill.smooth: 0;
-            image {
-               normal: "treemenu-lvl2-item-current-bg.png";
-               border: 0 0 3 3;
-            }
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+      }
+   }
+}
+
+group { name: "elm/genlist/item/eflete/level2/default";
+   inherit:"elm/genlist/item/eflete/default/default";
+   parts {
+     part { name: "base";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fill.smooth: 0;
+            image {
+               normal: "treemenu-lvl1-item-current-bg.png";
+               border: 0 0 3 3;
+            }
+         }
+      }
+      part { name: "bg";
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "shadow";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 1 2;
+            color: BORDER_COLOR;
+            rel1.relative: 0.0 1.0;
          }
       }
    }
@@ -822,13 +550,34 @@ group { name: "elm/genlist/item/eflete/level3/default";
    }
    parts {
      part { name: "base";
+         type: RECT;
          mouse_events: 0;
          description { state: "default" 0.0;
-            fill.smooth: 0;
-            image {
-               normal: "treemenu-lvl3-item-bg.png";
-               border: 0 0 1 1;
+            color: BG_COLOR;
+         }
+      }
+      part { name: "base_border_top";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: BORDER_COLOR;
+            min: 1 1;
+            rel1.offset: 0 -1;
+            rel2 {
+               relative: 1.0 0.0;
+               offset: 0 -1;
             }
+         }
+      }
+      part { name: "base_border_bot";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: BORDER_COLOR;
+            min: 1 1;
+            rel1.relative: 0.0 1.0;
          }
       }
       part { name: "bg";
@@ -847,8 +596,61 @@ group { name: "elm/genlist/item/eflete/level3/default";
             visible: 1;
          }
       }
+      part { name: "text_arrea";
+         description { state: "default" 0.0;
+            rel1.to_x: "left_spacer";
+         }
+      }
+      part { name: "left_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(15 15, 15 15);
+            rel1 {
+               to: "icon_start_arrea";
+               relative: 1.0 0.0;
+            }
+         }
+      }
    }
 }
+
+group { name: "elm/genlist/item/eflete/level4/default";
+    inherit:"elm/genlist/item/eflete/level3/default";
+   parts {
+      part { name: "base_border_top";
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "left_pad";
+               relative: 0.5 0.0;
+            }
+            rel2 {
+               to_x: "right_pad";
+               relative: 0.5 0.0;
+            }
+         }
+      }
+      part { name: "base_border_bot";
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "left_pad";
+               relative: 0.5 1.0;
+            }
+            rel2 {
+               to_x: "right_pad";
+               relative: 0.5 1.0;
+            }
+         }
+      }
+      part { name: "left_spacer";
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(0 0, 0 0);
+         }
+      }
+   }
+}
+
 
 group { name: "elm/genlist/item/eflete/mode/default";
    alias: "elm/genlist/item_odd/eflete/mode/default";
@@ -1379,17 +1181,49 @@ group { name: "elm/genlist/base/eflete/default";
 
 group { name: "elm/genlist/base/eflete/dark";
       inherit: "elm/genlist/base/eflete/default";
+   images {
+      image: "treemenu-background.png" COMP;
+   }
    parts {
       part { name: "bg";
-         type: RECT;
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.background";
             rel2.to: "elm.swallow.background";
-            color: LIST_DARK_BG_COLOR
-            color_class: "scrollframe_base";
+            image { normal: "treemenu-background.png";
+               border: 2 2 2 2;
+            }
          }
       }
-
+      part { name: "top_border";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 1 1;
+            max: -1 1;
+            color: LIST_BORDER_COLOR;
+         }
+      }
+      part { name: "left_border";
+         type: RECT;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 1 1;
+            max: 1 -1;
+            color: LIST_BORDER_COLOR;
+         }
+      }
+      part { name: "elm.swallow.background";
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "left_border";
+               to_y: "top_border";
+            }
+         }
+      }
    }
 }
 #undef ITEM_HEIGHT
+#ungef BORDER_COLOR
+#undef LIST_BORDER_COLOR
+#undef BG_COLOR

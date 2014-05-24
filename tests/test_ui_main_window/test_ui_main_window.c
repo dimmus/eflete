@@ -60,6 +60,17 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_menu_base_disabled_set_test_p);
    tcase_add_test(tcase, ui_menu_base_disabled_set_test_n);
 
+   tcase_add_test(tcase, ui_menu_disable_set_test_p);
+   tcase_add_test(tcase, ui_menu_disable_set_test_n1);
+   tcase_add_test(tcase, ui_menu_disable_set_test_n2);
+
+   tcase_add_test(tcase, ui_menu_locked_set_test_p);
+   tcase_add_test(tcase, ui_menu_locked_set_test_n);
+
+/* tcase_add_test(tcase, ui_style_clicked_test_p);
+   tcase_add_test(tcase, ui_style_clicked_test_n1);
+   tcase_add_test(tcase, ui_style_clicked_test_n2);   TODO: separate functional tests*/
+
    suite_add_tcase(suite, tcase);
 
    return suite;
