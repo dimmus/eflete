@@ -566,7 +566,6 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result = ui_menu_disable_set(menu_hash, _("Export to edc..."), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Workspace"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Separate"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Legend"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Rulers"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Styles"), flag) && result;
