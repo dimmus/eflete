@@ -89,7 +89,7 @@
                                   ELM_SCROLLER_POLICY_OFF); \
    evas_object_show(ENTRY);
 
-#define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE) \
+#define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE, LABEL_TEXT) \
    ENTRY = ewe_entry_add(PARENT); \
    evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -97,6 +97,11 @@
    elm_entry_scrollable_set(ENTRY, EINA_TRUE); \
    elm_scroller_policy_set(ENTRY, ELM_SCROLLER_POLICY_OFF, \
                                   ELM_SCROLLER_POLICY_OFF); \
+   if (LABEL_TEXT) \
+     { \
+        ewe_entry_label_visible_set(ENTRY, true); \
+        ewe_entry_label_text_set(ENTRY, LABEL_TEXT); \
+     } \
    evas_object_show(ENTRY);
 
 #define EWE_COMBOBOX_ADD(PARENT, COMBOBOX) \

@@ -123,16 +123,12 @@ state_dialog_state_add(App_Data *ap)
 
    BOX_ADD(popup, box, false, false);
 
-   EWE_ENTRY_ADD(box, entry_name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_name, true, DEFAULT_STYLE, "Name:");
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
-   ewe_entry_label_visible_set(entry_name, EINA_TRUE);
-   ewe_entry_label_text_set(entry_name, "Name:");
    elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
 
-   EWE_ENTRY_ADD(box, entry_value, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_value, true, DEFAULT_STYLE, "Value:");
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
-   ewe_entry_label_visible_set(entry_value, EINA_TRUE);
-   ewe_entry_label_text_set(entry_value, "Value:");
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")

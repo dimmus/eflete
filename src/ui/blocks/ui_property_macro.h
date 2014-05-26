@@ -188,7 +188,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    elm_entry_entry_set(entry, pd->part->name); \
    elm_object_tooltip_text_set(entry, tooltip); \
@@ -206,7 +206,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    elm_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    elm_object_tooltip_text_set(entry, tooltip); \
@@ -582,7 +582,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                            pd->part->curr_state, \
                                            pd->part->curr_state_value); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    if (btn_func_cb) \
      { \
@@ -675,7 +675,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    BOX_ADD(item, box, false, true) \
    elm_box_padding_set(box, 0, 6); \
    ITEM_CONTEINER_1LABEL_ADD(box, layout, NULL); \
-   EWE_ENTRY_ADD(layout, entry1, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(layout, entry1, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry1, elm_entry_filter_accept_set, &accept_prop); \
    elm_object_part_text_set(entry1, "elm.guide", guide1); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
@@ -688,7 +688,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_box_pack_end(box, layout); \
    edje_edit_string_free(value); \
    ITEM_CONTEINER_1LABEL_ADD(box, layout, NULL); \
-   EWE_ENTRY_ADD(layout, entry2, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(layout, entry2, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry2, elm_entry_filter_accept_set, &accept_prop); \
    elm_object_part_text_set(entry2, "elm.guide", guide2); \
    evas_object_smart_callback_add(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
@@ -897,7 +897,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE, NULL) \
    if (!l && !r && !t && !b) \
      elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
    else \

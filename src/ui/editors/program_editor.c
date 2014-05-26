@@ -121,7 +121,7 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
    REGEX_SET(entry, regex); \
    elm_object_tooltip_text_set(entry, tooltip); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
@@ -261,7 +261,7 @@ _prop_item_program_script_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("script"), "script");
 
    BOX_ADD(item, box, true, false);
-   EWE_ENTRY_ADD(item, entry, false, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, entry, false, DEFAULT_STYLE, NULL)
    elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF,
                                   ELM_SCROLLER_POLICY_AUTO);
    elm_entry_editable_set(entry, false);
@@ -724,7 +724,7 @@ _after_item_add(Program_Editor *prog_edit, char *name)
    BOX_ADD(item_box, element_box, true, false);
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
-   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE, NULL);
    ewe_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated",_on_after_name_change,
                                   prog_edit);
@@ -784,7 +784,7 @@ _target_item_add(Program_Editor *prog_edit, char *name)
    BOX_ADD(item_box, element_box, true, false);
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
-   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE, NULL);
    ewe_entry_entry_set(entry, name);
    evas_object_smart_callback_add(entry, "activated", _on_target_name_change,
                                   prog_edit);
@@ -861,15 +861,9 @@ _prop_item_program_transition_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("transition"), "editor")
    BOX_ADD(item, box, false, true)
    EWE_COMBOBOX_ADD(item, combobox)
-   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
-   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
-   EWE_ENTRY_ADD(item, entry3, true, DEFAULT_STYLE)
-   ewe_entry_label_visible_set(entry1, true);
-   ewe_entry_label_visible_set(entry2, true);
-   ewe_entry_label_visible_set(entry3, true);
-   ENTRY_UPDATE(entry1, true, "length");
-   ENTRY_UPDATE(entry2, true, "param1");
-   ENTRY_UPDATE(entry3, true, "param2");
+   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE, "length")
+   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE, "param1")
+   EWE_ENTRY_ADD(item, entry3, true, DEFAULT_STYLE, "param2")
    REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
    REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
    REGEX_SET(entry3, FLOAT_NUMBER_REGEX);
@@ -903,12 +897,8 @@ _prop_item_program_action_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("action"), "editor")
    BOX_ADD(item, box, false, true)
    EWE_COMBOBOX_ADD(item, combobox)
-   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
-   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
-   ewe_entry_label_visible_set(entry1, true);
-   ewe_entry_label_visible_set(entry2, true);
-   ENTRY_UPDATE(entry1, true, "param1");
-   ENTRY_UPDATE(entry2, true, "param2");
+   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE, "param1")
+   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE, "param2")
 
    for (i = 0; i < ACTIONS_COUNT; i++)
      {
@@ -1120,12 +1110,8 @@ _prop_item_program_in_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("in"), "editor");
 
    BOX_ADD(item, box, false, false);
-   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE)
-   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE)
-   ewe_entry_label_visible_set(entry1, true);
-   ewe_entry_label_visible_set(entry2, true);
-   ENTRY_UPDATE(entry1, false, "range");
-   ENTRY_UPDATE(entry2, false, "from");
+   EWE_ENTRY_ADD(item, entry1, true, DEFAULT_STYLE, "range")
+   EWE_ENTRY_ADD(item, entry2, true, DEFAULT_STYLE, "from")
    REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
    REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
    elm_box_pack_end(box, entry1);
@@ -1372,7 +1358,7 @@ _on_bt_prog_add(void *data,
    LABEL_ADD(prog_box, prog_label, _("Program name: "))
    elm_box_pack_end(prog_box, prog_label);
 
-   EWE_ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE, NULL);
    elm_entry_markup_filter_append(prog_edit->popup.entry,
                                   elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(prog_edit->popup.entry, "guide",
