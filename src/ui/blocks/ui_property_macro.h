@@ -137,6 +137,28 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
+/* combobox */
+#define ITEM_COMBOBOX_PART_CALLBACK(SUB, VALUE) \
+static void \
+_on_combobox_##SUB##_##VALUE##_change(void *data, \
+                                      Evas_Object *obj, \
+                                      void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Part *part; \
+   Edje_Part_Type type; \
+   ewe_combobox_items_list_free(obj, false); \
+   ewe_combobox_item_add(obj, "None"); \
+   EINA_INLIST_FOREACH(pd->style->parts, part) \
+     { \
+        type = edje_edit_part_type_get(pd->style->obj, part->name); \
+        if (!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
+          ewe_combobox_item_add(obj, part->name); \
+     } \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
 #define ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
@@ -231,6 +253,42 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
+}
+
+#define ITEM_1COMBOBOX_PART_ADD(text, SUB, VALUE) \
+static Evas_Object * \
+prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                                Prop_Data *pd, \
+                                const char *tooltip) \
+{ \
+   Evas_Object *item, *combobox; \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   EWE_COMBOBOX_ADD(parent, combobox) \
+   elm_object_tooltip_text_set(combobox, tooltip); \
+   evas_object_smart_callback_add(combobox, "expanded", _on_combobox_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(combobox, "selected", _clip_to_sel, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", combobox); \
+   evas_object_data_set(item, ITEM1, combobox); \
+   return item; \
+}
+
+#define ITEM_1COMBOBOX_PART_UPDATE(SUB, VALUE) \
+static void \
+prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
+                                   Prop_Data *pd) \
+{ \
+   Evas_Object *combobox; \
+   combobox = evas_object_data_get(item, ITEM1); \
+   ewe_combobox_items_list_free(combobox, true); \
+   const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
+   if (value) \
+     { \
+        ewe_combobox_text_set(combobox, value); \
+     } \
+   else \
+     { \
+        ewe_combobox_text_set(combobox, "None"); \
+     } \
 }
 
 #define ITEM_1CHEACK_PART_ADD(text, SUB, VALUE) \

@@ -543,6 +543,16 @@ ui_property_style_unset(Evas_Object *property)
 }
 #undef pd_group
 
+static void _clip_to_sel(void *data,
+                         Evas_Object *obj EINA_UNUSED,
+                         void *ei)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   Ewe_Combobox_Item *item = ei;
+   if (strcmp(item->title, "None")) edje_edit_part_clip_to_set(pd->style->obj, pd->part->name, item->title);
+   else edje_edit_part_clip_to_set(pd->style->obj, pd->part->name, NULL);
+}
+
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
    ITEM_1CHEACK_PART_ADD(TEXT, SUB, VALUE) \
@@ -557,6 +567,11 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
    ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
+#define ITEM_1COMBOBOX_PART_CREATE(TEXT, SUB, VALUE) \
+   ITEM_COMBOBOX_PART_CALLBACK(SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_UPDATE(SUB, VALUE)
+
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
    ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
@@ -568,7 +583,7 @@ ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
-ITEM_1ENTRY_PART_CREATE(_("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
