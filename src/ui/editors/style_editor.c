@@ -115,8 +115,8 @@ _on_glit_selected(void *data,
                                                    tag);
              eina_strbuf_append(style, value);
           }
-        elm_entry_entry_set(style_edit->entry_tag, "");
-        elm_entry_entry_set(style_edit->entry_prop, "");
+        ewe_entry_entry_set(style_edit->entry_tag, "");
+        ewe_entry_entry_set(style_edit->entry_prop, "");
         eina_list_free(tags);
      }
    else
@@ -124,8 +124,8 @@ _on_glit_selected(void *data,
         style_name = elm_object_item_data_get(glit_parent);
         tag = (char *)elm_object_item_data_get(glit);
         value = edje_edit_style_tag_value_get(edje_edit_obj, style_name, tag);
-        elm_entry_entry_set(style_edit->entry_tag, tag);
-        elm_entry_entry_set(style_edit->entry_prop, value);
+        ewe_entry_entry_set(style_edit->entry_tag, tag);
+        ewe_entry_entry_set(style_edit->entry_prop, value);
         eina_strbuf_append(style, value);
      }
    elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");

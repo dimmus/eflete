@@ -357,7 +357,7 @@ style_dialog_add(App_Data *ap)
 
    EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE, "Class name:");
    elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
-   elm_entry_entry_set(entry_class, entry_text);
+   ewe_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
 
    elm_box_pack_end(box, entry_style);

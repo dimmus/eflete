@@ -1217,7 +1217,7 @@ _on_image_editor_done(void *data,
    const char *selected = (const char *)ei;
    if (!selected) return;
    if (strcmp(value, selected) == 0) return;
-   elm_entry_entry_set(entry, selected);
+   ewe_entry_entry_set(entry, selected);
    evas_object_smart_callback_call(entry, "activated", NULL);
 }
 

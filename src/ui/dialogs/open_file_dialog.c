@@ -473,7 +473,7 @@ open_edc_file(App_Data *ap)
    elm_entry_single_line_set(fs_ent->log, false);
    elm_entry_editable_set(fs_ent->log, false);
    elm_scroller_policy_set(fs_ent->log, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
-   elm_entry_entry_set(fs_ent->log, "");
+   ewe_entry_entry_set(fs_ent->log, "");
    elm_entry_cursor_end_set(fs_ent->log);
    #undef _ITEM_ADD
 

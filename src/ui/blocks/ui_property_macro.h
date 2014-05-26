@@ -190,7 +190,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
-   elm_entry_entry_set(entry, pd->part->name); \
+   ewe_entry_entry_set(entry, pd->part->name); \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
@@ -208,7 +208,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
-   elm_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
+   ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
@@ -223,7 +223,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
 { \
    Evas_Object *entry; \
    entry = evas_object_data_get(item, ITEM1); \
-   elm_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
+   ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
 }
@@ -593,7 +593,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         elm_object_part_content_set(entry, "elm.swallow.end", btn); \
         elm_object_tooltip_text_set(btn, btn_tooltip); \
      } \
-   elm_entry_entry_set(entry, value); \
+   ewe_entry_entry_set(entry, value); \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
@@ -610,7 +610,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                                                        pd->part->curr_state, \
                                                        pd->part->curr_state_value); \
-   elm_entry_entry_set(entry, value); \
+   ewe_entry_entry_set(entry, value); \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
 }
@@ -682,7 +682,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   elm_entry_entry_set(entry1, value); \
+   ewe_entry_entry_set(entry1, value); \
    elm_object_tooltip_text_set(entry1, tooltip1); \
    elm_object_part_content_set(layout, "eflete.content", entry1); \
    elm_box_pack_end(box, layout); \
@@ -696,7 +696,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   elm_entry_entry_set(entry2, value); \
+   ewe_entry_entry_set(entry2, value); \
    elm_object_tooltip_text_set(entry2, tooltip2); \
    evas_object_smart_callback_add(entry2, "activated", _on_##SUB##_##VALUE2##_change, pd); \
    elm_object_part_content_set(layout, "eflete.content", entry2); \
@@ -720,7 +720,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
    entry1 = evas_object_data_get(item, ITEM1); \
-   elm_entry_entry_set(entry1, value); \
+   ewe_entry_entry_set(entry1, value); \
    evas_object_smart_callback_del_full(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(entry1, "activated", _on_##SUB##_##VALUE1##_change, pd); \
    edje_edit_string_free(value); \
@@ -729,7 +729,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
    entry2 = evas_object_data_get(item, ITEM2); \
-   elm_entry_entry_set(entry2, value); \
+   ewe_entry_entry_set(entry2, value); \
    evas_object_smart_callback_del_full(entry2, "activated", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(entry2, "activated", _on_##SUB##_##VALUE2##_change, pd); \
    edje_edit_string_free(value); \
@@ -903,7 +903,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    else \
      { \
         snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
-        elm_entry_entry_set(entry, buff); \
+        ewe_entry_entry_set(entry, buff); \
      } \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
@@ -928,7 +928,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    else \
      { \
         snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
-        elm_entry_entry_set(entry, buff); \
+        ewe_entry_entry_set(entry, buff); \
      } \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
