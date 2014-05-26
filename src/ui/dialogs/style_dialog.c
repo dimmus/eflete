@@ -35,10 +35,14 @@ _widget_from_ap_get(App_Data *ap)
 {
    Widget *widget = NULL;
    Evas_Object *gl_widget = NULL;
-   Evas_Object *nf = NULL;
+   const Evas_Object *nf = NULL;
+   Evas_Object *tabs = NULL;
    Elm_Object_Item *eoi = NULL;
+   Ewe_Tabs_Item *widgets_tab = NULL;
 
-   nf = ui_block_widget_list_get(ap);
+   tabs = ui_block_widget_list_get(ap);
+   widgets_tab = ewe_tabs_active_item_get(tabs);
+   nf = ewe_tabs_item_content_get(tabs, widgets_tab);
    eoi = elm_naviframe_bottom_item_get(nf);
    gl_widget = elm_object_item_part_content_get(eoi, NULL);
    eoi = elm_genlist_selected_item_get(gl_widget);
@@ -55,9 +59,15 @@ static void
 _reload_classes(App_Data *ap, Eina_Inlist *classes)
 {
    Evas_Object *gl_classes = NULL;
+   const Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
+   Ewe_Tabs_Item *class_tab = NULL;
+   Evas_Object *tabs = NULL;
 
-   eoi = elm_naviframe_top_item_get(ui_block_widget_list_get(ap));
+   tabs = ui_block_widget_list_get(ap);
+   class_tab = ewe_tabs_active_item_get(tabs);
+   nf = ewe_tabs_item_content_get(tabs, class_tab);
+   eoi = elm_naviframe_top_item_get(nf);
    gl_classes = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_class_data_reload(gl_classes, classes);
@@ -67,11 +77,15 @@ static Class *
 _class_from_ap_get(App_Data *ap)
 {
    Evas_Object *gl_class = NULL;
-   Evas_Object *nf = NULL;
+   const Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
    Elm_Object_Item *parent_eoi = NULL;
+   Ewe_Tabs_Item *class_tab = NULL;
+   Evas_Object *tabs = NULL;
 
-   nf = ui_block_widget_list_get(ap);
+   tabs = ui_block_widget_list_get(ap);
+   class_tab = ewe_tabs_active_item_get(tabs);
+   nf = ewe_tabs_item_content_get(tabs, class_tab);
    eoi = elm_naviframe_top_item_get(nf);
    gl_class = elm_object_item_part_content_get(eoi, NULL);
    eoi = elm_genlist_selected_item_get(gl_class);
@@ -141,7 +155,6 @@ _on_popup_btn_yes(void *data,
 
    widget = _widget_from_ap_get(ap);
    if (!widget) return;
-
    source_file = eina_stringshare_add(EFLETE_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
@@ -292,6 +305,7 @@ _on_popup_btn_yes(void *data,
      {
         wm_style_data_load(style, canvas, ap->project->swapfile);
         _reload_classes(ap, dest_wdg->classes);
+        style->isModify = true;
      }
 
    if (!wm_widget_list_free(source_widgets))

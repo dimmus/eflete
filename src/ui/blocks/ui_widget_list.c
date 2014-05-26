@@ -286,7 +286,7 @@ _add_style_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *block =  elm_object_parent_widget_get(elm_object_parent_widget_get(data));
+   Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
    evas_object_smart_callback_call(block, "wl,style,add", NULL);
 }
 
@@ -575,7 +575,7 @@ _on_widget_clicked_double(void *data,
    ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);
+   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, obj);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
    evas_object_show(gl_class);
@@ -692,7 +692,6 @@ ui_widget_list_add(Evas_Object *parent)
    NAVI(widgets, _("Widget list"));
    NAVI(layouts, _("Layouts list"));
 #undef NAVI
-
    ICON_ADD(nf_layouts, ic, false, EFLETE_IMG_PATH"icon-add.png");
    elm_image_resizable_set(ic, false, false);
    bt = elm_button_add(nf_layouts);
@@ -712,6 +711,7 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_show(bt);
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_del_cb, parent);
+   elm_object_disabled_set(bt, true);
    elm_object_item_part_content_set(it_layouts, "elm.swallow.bt0", bt);
 
    evas_object_data_set(tabs, WIDGETS_NAVIFRAME_DATA_KEY, nf_widgets);
