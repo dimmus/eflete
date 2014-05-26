@@ -125,6 +125,13 @@ _on_close_project_save(void *data,
                 NOTIFY_ERROR(_("Theme can not be saved: %s"), ap->project->edj);
           }
      }
+   ui_panes_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, true);
+   pm_project_close(ap->project);
+   ap->project = NULL;
+   open_edj_file(ap);
+   ui_menu_locked_set(ap->menu_hash, false);
+
 }
 
 static void
@@ -259,7 +266,7 @@ _on_edj_open_menu(void *data,
         POPUP_CLOSE_PROJECT(_("You want to open new theme, but now you have<br/>"
                             "open project. If you dont save the open project<br/>"
                             "all your changes will be lost!"),
-                            _project_not_save_edj);
+                            _project_not_save_edj)
      }
    else
      {
