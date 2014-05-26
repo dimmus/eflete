@@ -50,7 +50,7 @@
  * @step 2 call workspace_separate_mode_get
  * @step 3 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -106,7 +106,7 @@ END_TEST
  * @step 1 call workspace_separate_mode_get
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -158,7 +158,7 @@ END_TEST
  * @step 1 call workspace_separate_mode_get
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -200,7 +200,7 @@ END_TEST
  * @step 1 call workspace_separate_mode_get(EINA_TRUE)
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
