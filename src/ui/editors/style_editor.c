@@ -19,6 +19,7 @@
  */
 
 #include "style_editor.h"
+#include "ui_main_window.h"
 #define FONT_SIZE "24"
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
@@ -627,6 +628,16 @@ _on_style_editor_close(void *data,
    free(style_edit);
 }
 
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
 Evas_Object *
 style_editor_window_add(Project *project)
 {
@@ -635,6 +646,8 @@ style_editor_window_add(Project *project)
    Evas_Object *bg = NULL;
    Evas *canvas = NULL;
    Style_Editor *style_edit = NULL;
+   /* temporary solution, while it not moved to modal window */
+   App_Data *ap = app_create();
 
    if (!project)
      {
@@ -703,6 +716,9 @@ style_editor_window_add(Project *project)
    layout_right = _form_right_side(style_edit);
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
+
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
    return style_edit->mwin;
