@@ -20,11 +20,6 @@
 #include "string_macro.h"
 #include "colorsel.h"
 
-static Elm_Entry_Filter_Accept_Set accept_color = {
-   .accepted = "0123456789 ",
-   .rejected = NULL
-};
-
 static Elm_Entry_Filter_Accept_Set accept_prop = {
    .accepted = NULL,
    .rejected = PART_NAME_BANNED_SYMBOLS
@@ -32,6 +27,9 @@ static Elm_Entry_Filter_Accept_Set accept_prop = {
 
 #define ITEM1 "item1"
 #define ITEM2 "item2"
+
+#define IMAGE_NAME_REGEX "^([a-z0-9\\._\\-]*\\.(png|jpg|jpeg|gif|tiff|tga|jp2k|bmp|svg))*$"
+#define IMAGE_BORDER_REGEX "^([0-9]+( [0-9]+){3}){0,1}$"
 
 #define ITEM_CONTEINER_1LABEL_ADD(PARENT, ITEM, TEXT1) \
    ITEM = elm_layout_add(PARENT); \
@@ -900,7 +898,6 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_color); \
    if (!l && !r && !t && !b) \
      elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
    else \
