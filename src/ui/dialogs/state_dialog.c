@@ -198,7 +198,7 @@ state_dialog_state_del(App_Data *ap)
    Part *part;
    Eina_Stringshare *state, *title, *message;
 
-   if ((!ap) && (!ap->workspace))
+   if ((!ap) || (!ap->workspace))
      {
         ERR("Failed create an add state dialog.");
         return NULL;
@@ -206,6 +206,7 @@ state_dialog_state_del(App_Data *ap)
 
    state_list = ui_block_state_list_get(ap);
    part = ui_states_list_part_get(state_list);
+   if (!part) return NULL;
    state = ui_states_list_selected_state_get(state_list);
 
    if (!strcmp(state, "default 0.00"))
@@ -216,7 +217,6 @@ state_dialog_state_del(App_Data *ap)
 
    popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(popup, "eflete");
-   part = ui_states_list_part_get(state_list);
    title = eina_stringshare_printf(_("Delete the state from part"));
    elm_object_part_text_set(popup, "title,text", title);
    elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
