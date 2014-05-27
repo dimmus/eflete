@@ -29,11 +29,6 @@ static Evas_Object *entry_value;
 static Evas_Object *combobox_dup_state;
 static Eina_Bool to_close;
 
-static Elm_Entry_Filter_Accept_Set accept_value = {
-   .accepted = "0123456789.",
-   .rejected = NULL
-};
-
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = BANNED_SYMBOLS
@@ -131,8 +126,10 @@ state_dialog_state_add(App_Data *ap)
    elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
 
    EWE_ENTRY_ADD(box, entry_value, true, DEFAULT_STYLE, "Value:");
-   elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
+   ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX, EWE_REG_EXTENDED);
+   ewe_entry_regex_autocheck_set(entry_value, true);
+   ewe_entry_regex_glow_set(entry_value, true);
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")
    EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
