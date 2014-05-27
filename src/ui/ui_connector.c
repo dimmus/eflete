@@ -350,6 +350,8 @@ ui_part_back(App_Data *ap)
    live_view_widget_style_unset(ap->live_view);
 
    ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -491,6 +493,8 @@ ui_style_clicked(App_Data *ap, Style *style)
    ap->project->current_style = _style;
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), false);
 
    return true;
 }
@@ -588,6 +592,8 @@ new_theme_create(App_Data *ap)
    ap->project->edj = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
    STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
    ui_menu_disable_set(ap->menu_hash, "Save project", false);
 
