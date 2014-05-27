@@ -58,6 +58,7 @@ _add_ok_clicked(void *data,
    if (edje_edit_state_exist(ap->project->current_style->obj, part->name, str_name, atof(str_value)))
      {
         NOTIFY_WARNING(_("State is exist!"))
+        to_close = false;
         return;
      }
    else if (workspace_edit_object_part_state_add(workspace, part->name,
