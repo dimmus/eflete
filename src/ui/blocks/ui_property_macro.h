@@ -25,6 +25,11 @@ static Elm_Entry_Filter_Accept_Set accept_prop = {
    .rejected = PART_NAME_BANNED_SYMBOLS
 };
 
+static void
+_on_state_color_class_change(void *data,
+                             Evas_Object *obj,
+                             void *event_info __UNUSED__);
+
 #define ITEM1 "item1"
 #define ITEM2 "item2"
 
@@ -390,6 +395,10 @@ _on_##SUB##_##VALUE##_change(void *data, \
      return; \
    rect = elm_object_part_content_get(color, "elm.swallow.content"); \
    evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a); \
+   edje_edit_state_color_class_set(pd->style->obj, pd->part->name, \
+                                   pd->part->curr_state, \
+                                   pd->part->curr_state_value, NULL); \
+   prop_item_state_color_class_update(pd->prop_state.color_class, pd); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 } \

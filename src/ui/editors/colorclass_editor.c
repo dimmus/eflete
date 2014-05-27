@@ -26,7 +26,7 @@ typedef struct _Colorclasses_Editor Colorclasses_Editor;
 
 struct _Colorclass_Item
 {
-   const char *name;
+   Eina_Stringshare *name;
    int r1, g1, b1, a1;
    int r2, g2, b2, a2;
    int r3, g3, b3, a3;
@@ -44,6 +44,8 @@ struct _Colorclasses_Editor
    Evas_Object *label;
    Evas_Object *popup;
    Evas_Object *entry;
+   Evas_Object *edit_obj;
+   Eina_Bool changed;
 };
 
 static Elm_Entry_Filter_Accept_Set accept_name = {
@@ -99,6 +101,15 @@ _on_spinner_value_changed(void *data,
                           ccl_edit->current_ccl->b2, ccl_edit->current_ccl->a2,
                           ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
                           ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
+   edje_edit_color_class_colors_set(ccl_edit->edit_obj, ccl_edit->current_ccl->name,
+                          ccl_edit->current_ccl->r1, ccl_edit->current_ccl->g1,
+                          ccl_edit->current_ccl->b1, ccl_edit->current_ccl->a1,
+                          ccl_edit->current_ccl->r2, ccl_edit->current_ccl->g2,
+                          ccl_edit->current_ccl->b2, ccl_edit->current_ccl->a2,
+                          ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
+                          ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
+   ccl_edit->changed = true;
+
 }
 
 void _disable(Eina_Bool disabled, Colorclasses_Editor *ccl_edit)
@@ -148,6 +159,13 @@ _on_ccl_editor_close(void *data,
                       void *event_info __UNUSED__)
 {
    Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
+   Style *style = NULL;
+   if (ccl_edit->changed)
+     {
+        GET_STYLE(ccl_edit->pr, style);
+        if (style) style->isModify = true;
+     }
+
    evas_object_del(ccl_edit->rect_color1);
    evas_object_del(ccl_edit->rect_color2);
    evas_object_del(ccl_edit->rect_color3);
@@ -216,7 +234,7 @@ _on_add_popup_btn_add(void *data,
      }
 
    GET_OBJ(ccl_edit->pr, edje_edit_obj);
-   if (!edje_edit_color_class_add(edje_edit_obj, it->name))
+   if (!edje_edit_color_class_add(edje_edit_obj, eina_stringshare_add(it->name)))
      {
         NOTIFY_WARNING(_("Color class name must be unique!"));
         free(it);
@@ -229,6 +247,7 @@ _on_add_popup_btn_add(void *data,
    evas_object_del(ccl_edit->popup);
    ccl_edit->popup = NULL;
    _disable(EINA_FALSE, ccl_edit);
+   ccl_edit->changed = true;
 }
 
 static void
@@ -249,26 +268,6 @@ _on_btn_cancel(void *data,
 {
    Evas_Object *mwin = (Evas_Object *)data;
    evas_object_del(mwin);
-}
-
-static void
-_on_btn_apply(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *ei __UNUSED__)
-{
-   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
-   Evas_Object *edje_edit_obj = NULL;
-
-   if (!ccl_edit->current_ccl) return;
-   GET_OBJ(ccl_edit->pr, edje_edit_obj);
-   edje_edit_color_class_colors_set(edje_edit_obj, ccl_edit->current_ccl->name,
-                         ccl_edit->current_ccl->r1, ccl_edit->current_ccl->g1,
-                         ccl_edit->current_ccl->b1, ccl_edit->current_ccl->a1,
-                         ccl_edit->current_ccl->r2, ccl_edit->current_ccl->g2,
-                         ccl_edit->current_ccl->b2, ccl_edit->current_ccl->a2,
-                         ccl_edit->current_ccl->r3, ccl_edit->current_ccl->g3,
-                         ccl_edit->current_ccl->b3, ccl_edit->current_ccl->a3);
-   ccl_edit->old_ccl = ccl_edit->current_ccl;
 }
 
 static void
@@ -421,6 +420,7 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
    Evas_Object *edje_edit_obj = NULL;
 
    GET_OBJ(ccl_edit->pr, edje_edit_obj);
+   ccl_edit->edit_obj = edje_edit_obj;
    cclist = edje_edit_color_classes_list_get(edje_edit_obj);
 
    EINA_LIST_FOREACH(cclist, l, ccname)
@@ -453,7 +453,6 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
       elm_genlist_item_selected_set(elm_genlist_first_item_get(ccl_edit->genlist),
                                       EINA_TRUE);
    eina_list_free(cclist);
-   eina_list_free(l);
    return true;
 }
 
@@ -485,7 +484,7 @@ colorclass_viewer_add(Project *project)
      }
 
    ccl_edit = (Colorclasses_Editor *)mem_calloc(1, sizeof(Colorclasses_Editor));
-
+   ccl_edit->changed = false;
    ccl_edit->pr = project;
    ccl_edit->mwin = mw_add(NULL, NULL);
    mw_title_set(ccl_edit->mwin, _("Color class editor"));
@@ -534,10 +533,6 @@ colorclass_viewer_add(Project *project)
 
    BUTTON_ADD(ccl_edit->mwin, button, _("Delete"));
    evas_object_smart_callback_add(button, "clicked", _on_btn_del, ccl_edit);
-   elm_box_pack_end(bottom_box, button);
-
-   BUTTON_ADD(ccl_edit->mwin, button, _("Apply"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_apply, ccl_edit);
    elm_box_pack_end(bottom_box, button);
 
    BUTTON_ADD(ccl_edit->mwin, button, _("Close"));

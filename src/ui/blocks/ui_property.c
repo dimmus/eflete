@@ -713,6 +713,10 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
+#define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE) \
+   ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
+
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
    ITEM_COLOR_STATE_ADD(TEXT, SUB, VALUE) \
@@ -729,13 +733,14 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
+
 ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
 ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
-ITEM_1ENTRY_STATE_CREATE(_("color class"), state, color_class)
+ITEM_STATE_CCL_CREATE(_("color class"), state, color_class)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
 Eina_Bool
@@ -1298,6 +1303,49 @@ ui_property_state_image_unset(Evas_Object *property)
    evas_object_hide(pd_image.frame);
 }
 #undef pd_image
+
+static void
+_on_state_color_class_change(void *data,
+                             Evas_Object *obj,
+                             void *event_info __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
+   r = g = b = a = r1 = g1 = b1 = a1 = r2 = g2 = b2 = a2 = 0;
+
+   const char *value = elm_entry_entry_get(obj);
+   if (strcmp(value, "") == 0) value = NULL;
+   if ((!edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
+                                        pd->part->curr_state,
+                                        pd->part->curr_state_value,
+                                        value)) && (value))
+     {
+        NOTIFY_INFO(5, "Wrong input value for color class field.");
+        return;
+     }
+
+   if (value)
+     {
+        edje_edit_color_class_colors_get(pd->style->obj, value, &r, &g, &b, &a,
+                                         &r1, &g1, &b1, &a1, &r2, &g2, &b2, &a2);
+        edje_edit_state_color_set(pd->style->obj, pd->part->name,
+                             pd->part->curr_state, pd->part->curr_state_value,
+                             r, g, b, a);
+        edje_edit_state_color2_set(pd->style->obj, pd->part->name,
+                             pd->part->curr_state, pd->part->curr_state_value,
+                             r1, g1, b1, a1);
+        edje_edit_state_color3_set(pd->style->obj, pd->part->name,
+                             pd->part->curr_state, pd->part->curr_state_value,
+                             r2, g2, b2, a2);
+
+        prop_item_state_color_update(pd->prop_state.color, pd);
+        prop_item_state_color2_update(pd->prop_state_text.color2, pd);
+        prop_item_state_color3_update(pd->prop_state_text.color3, pd);
+     }
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+}
+
 
 #undef PROP_DATA
 #undef PROP_DATA_GET
