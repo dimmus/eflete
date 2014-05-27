@@ -21,6 +21,7 @@
 #include "state_dialog.h"
 #include "common_macro.h"
 #include "string_macro.h"
+#include "ui_main_window.h"
 
 
 static Evas_Object *entry_name;
@@ -77,13 +78,14 @@ _add_ok_clicked(void *data,
 
 static void
 _add_ok_close_clicked(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
 {
-   Evas_Object *popup = (Evas_Object *)data;
+   App_Data *ap = (App_Data *)data;
 
    if (!to_close) return;
-   evas_object_del(popup);
+   evas_object_del(ap->popup);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 static void
@@ -91,15 +93,16 @@ _cancel_clicked(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   Evas_Object *popup = (Evas_Object *)data;
-   evas_object_del(popup);
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 
 Evas_Object *
 state_dialog_state_add(App_Data *ap)
 {
-   Evas_Object *popup, *box, *bt_yes, *bt_no;
+   Evas_Object *box, *bt_yes, *bt_no;
    Evas_Object *item_dup;
    Evas_Object *glist = NULL;
    Part *part = NULL;
@@ -115,13 +118,13 @@ state_dialog_state_add(App_Data *ap)
    part = ui_states_list_part_get(glist);
    if (!part) return NULL;
 
-   popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(popup, "eflete");
+   ap->popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(ap->popup, "eflete");
    title = eina_stringshare_printf(_("Add new state to part \"%s\""), part->name);
-   elm_object_part_text_set(popup, "title,text", title);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+   elm_object_part_text_set(ap->popup, "title,text", title);
+   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(popup, box, false, false);
+   BOX_ADD(ap->popup, box, false, false);
 
    EWE_ENTRY_ADD(box, entry_name, true, DEFAULT_STYLE, "Name:");
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
@@ -139,20 +142,21 @@ state_dialog_state_add(App_Data *ap)
    elm_box_pack_end(box, entry_name);
    elm_box_pack_end(box, entry_value);
    elm_box_pack_end(box, item_dup);
-   elm_object_content_set(popup, box);
+   elm_object_content_set(ap->popup, box);
 
-   BUTTON_ADD(popup, bt_yes, _("Add"));
+   BUTTON_ADD(ap->popup, bt_yes, _("Add"));
    evas_object_smart_callback_add (bt_yes, "pressed", _add_ok_clicked, ap);
-   evas_object_smart_callback_add (bt_yes, "unpressed", _add_ok_close_clicked, popup);
-   elm_object_part_content_set(popup, "button1", bt_yes);
+   evas_object_smart_callback_add (bt_yes, "unpressed", _add_ok_close_clicked, ap);
+   elm_object_part_content_set(ap->popup, "button1", bt_yes);
 
-   BUTTON_ADD(popup, bt_no, _("Cancel"));
-   evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
-   elm_object_part_content_set(popup, "button2", bt_no);
+   BUTTON_ADD(ap->popup, bt_no, _("Cancel"));
+   evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, ap);
+   elm_object_part_content_set(ap->popup, "button2", bt_no);
 
-   evas_object_show(popup);
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_show(ap->popup);
    eina_stringshare_del(title);
-   return popup;
+   return ap->popup;
 }
 
 static void
@@ -182,6 +186,7 @@ _del_ok_clicked(void *data,
         ui_states_list_selected_state_del(state_list);
      }
 
+   ui_menu_locked_set(ap->menu_hash, false);
    free(arr[0]);
    free(arr);
 }
@@ -189,7 +194,7 @@ _del_ok_clicked(void *data,
 Evas_Object *
 state_dialog_state_del(App_Data *ap)
 {
-   Evas_Object *popup, *label, *bt_yes, *bt_no;
+   Evas_Object *label, *bt_yes, *bt_no;
    Evas_Object *state_list;
    Part *part;
    Eina_Stringshare *state, *title, *message;
@@ -211,32 +216,34 @@ state_dialog_state_del(App_Data *ap)
         return NULL;
      }
 
-   popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(popup, "eflete");
+   ap->popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(ap->popup, "eflete");
    title = eina_stringshare_printf(_("Delete the state from part"));
-   elm_object_part_text_set(popup, "title,text", title);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+   elm_object_part_text_set(ap->popup, "title,text", title);
+   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
 
    message = eina_stringshare_printf(_("Do you want to delete the state \"%s\" "
                                        "from part \"%s\"."), state, part->name);
-   LABEL_ADD(popup, label, message)
+   LABEL_ADD(ap->popup, label, message)
    evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_label_line_wrap_set(label, ELM_WRAP_CHAR);
-   elm_object_content_set(popup, label);
+   elm_object_content_set(ap->popup, label);
 
-   BUTTON_ADD(popup, bt_yes, _("Delete"));
+   BUTTON_ADD(ap->popup, bt_yes, _("Delete"));
    evas_object_smart_callback_add (bt_yes, "pressed", _del_ok_clicked, ap);
-   evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, popup);
-   elm_object_part_content_set(popup, "button1", bt_yes);
+   evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, ap);
+   elm_object_part_content_set(ap->popup, "button1", bt_yes);
 
-   BUTTON_ADD(popup, bt_no, _("Cancel"));
-   evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
-   elm_object_part_content_set(popup, "button2", bt_no);
+   BUTTON_ADD(ap->popup, bt_no, _("Cancel"));
+   evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, ap);
+   elm_object_part_content_set(ap->popup, "button2", bt_no);
 
-   evas_object_show(popup);
+   ui_menu_locked_set(ap->menu_hash, true);
+
+   evas_object_show(ap->popup);
    eina_stringshare_del(state);
    eina_stringshare_del(message);
 
-   return popup;
+   return ap->popup;
 }
