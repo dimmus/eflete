@@ -19,6 +19,7 @@
  */
 
 #include "colorclass_editor.h"
+#include "ui_main_window.h"
 
 typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
@@ -456,6 +457,16 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
    return true;
 }
 
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
 Evas_Object *
 colorclass_viewer_add(Project *project)
 {
@@ -464,6 +475,8 @@ colorclass_viewer_add(Project *project)
    Evas_Object *box, *bottom_box, *param_box, *scr_box;
    Evas_Object *scroller = NULL;
    Colorclasses_Editor *ccl_edit = NULL;
+   /* temporary solution, while it not moved to modal window */
+   App_Data *ap = app_create();
 
    if (!project)
      {
@@ -610,7 +623,9 @@ colorclass_viewer_add(Project *project)
         return NULL;
      }
 
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+
    evas_object_show(ccl_edit->mwin);
    return ccl_edit->mwin;
 }
-
