@@ -318,10 +318,13 @@ _on_popup_btn_yes(void *data,
 }
 
 static void
-_popup_close(void *data, Evas_Object *obj __UNUSED__, void *ei __UNUSED__)
+_popup_close(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
-   Evas_Object *popup = (Evas_Object *)data;
-   evas_object_del(popup);
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 
@@ -329,7 +332,7 @@ _popup_close(void *data, Evas_Object *obj __UNUSED__, void *ei __UNUSED__)
 Eina_Bool
 style_dialog_add(App_Data *ap)
 {
-   Evas_Object *popup, *box, *button;
+   Evas_Object *box, *button;
    Widget *widget = NULL;
    Class *class_st = NULL;
    Eina_Stringshare *title = NULL;
@@ -340,12 +343,12 @@ style_dialog_add(App_Data *ap)
    if (!widget) return false;
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
-   popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(popup, "eflete");
-   elm_object_part_text_set(popup, "title,text", title);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+   ap->popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(ap->popup, "eflete");
+   elm_object_part_text_set(ap->popup, "title,text", title);
+   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(popup, box, false, false);
+   BOX_ADD(ap->popup, box, false, false);
 
    EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE, "Style name:");
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
@@ -362,18 +365,20 @@ style_dialog_add(App_Data *ap)
 
    elm_box_pack_end(box, entry_style);
    elm_box_pack_end(box, entry_class);
-   elm_object_content_set(popup, box);
+   elm_object_content_set(ap->popup, box);
 
-   BUTTON_ADD(popup, button, _("Add"));
-   evas_object_smart_callback_add(button, "close,popup", _popup_close, popup);
+   BUTTON_ADD(ap->popup, button, _("Add"));
+   evas_object_smart_callback_add(button, "close,popup", _popup_close, ap);
    evas_object_smart_callback_add(button, "pressed", _on_popup_btn_yes, ap);
-   elm_object_part_content_set(popup, "button1", button);
+   elm_object_part_content_set(ap->popup, "button1", button);
 
-   BUTTON_ADD(popup, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _popup_close, popup);
-   elm_object_part_content_set(popup, "button2", button);
+   BUTTON_ADD(ap->popup, button, _("Cancel"));
+   evas_object_smart_callback_add(button, "clicked", _popup_close, ap);
+   elm_object_part_content_set(ap->popup, "button2", button);
 
-   evas_object_show(popup);
+   ui_menu_locked_set(ap->menu_hash, true);
+
+   evas_object_show(ap->popup);
    eina_stringshare_del(title);
    eina_stringshare_del(entry_text);
 
