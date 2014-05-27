@@ -19,6 +19,7 @@
  */
 
 #include "program_editor.h"
+#include "ui_main_window.h"
 
 struct _Program_Editor
 {
@@ -1394,6 +1395,16 @@ _on_bt_prog_add(void *data,
    evas_object_show(prog_edit->popup.popup);
 }
 
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
 Evas_Object *
 program_editor_window_add(Style *style)
 {
@@ -1401,7 +1412,8 @@ program_editor_window_add(Style *style)
    Evas_Object *scroller;
    Evas_Object *bt, *box;
    Program_Editor *prog_edit = NULL;
-
+   /* temporary solution, while it not moved to modal window */
+   App_Data *ap = app_create();
 
    if ((!style) || (!style->obj))
      {
@@ -1469,6 +1481,10 @@ program_editor_window_add(Style *style)
    elm_box_pack_end(mw_box, box);
 
    elm_win_inwin_content_set(prog_edit->mwin, mw_box);
+
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+
    evas_object_show(prog_edit->mwin);
    return prog_edit->mwin;
 }
