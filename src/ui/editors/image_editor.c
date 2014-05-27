@@ -19,6 +19,7 @@
  */
 
 #include "image_editor.h"
+#include "ui_main_window.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -406,12 +407,24 @@ _image_editor_init(Image_Editor *img_edit)
    return true;
 }
 
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
 Evas_Object *
 image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
    Evas_Object *button;
    Evas_Object *box, *bottom_box, *panel_box;
    Evas_Object *_bg = NULL;
+   /* temporary solution, while it not moved to modal window */
+   App_Data *ap = app_create();
 
    if (!project)
      {
@@ -519,6 +532,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      }
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
    evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
+
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+
    return img_edit->win;
 }
 
