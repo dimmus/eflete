@@ -568,7 +568,6 @@ static void _clip_to_sel(void *data,
    ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_CREATE(TEXT, SUB, VALUE) \
-   ITEM_COMBOBOX_PART_CALLBACK(SUB, VALUE) \
    ITEM_1COMBOBOX_PART_ADD(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_UPDATE(SUB, VALUE)
 
@@ -729,8 +728,8 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
 #define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE) \
-   ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
+   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_UPDATE(SUB, VALUE)
 
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
@@ -815,9 +814,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
                             false);
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd, property,
                                    _("The aspect control hints for this object."));
-        pd_state.color_class = prop_item_state_color_class_add(box, pd, NULL,
-                                  _("Current color class"),
-                                  NULL);
+        pd_state.color_class = prop_item_state_color_class_add(box, pd,
+                                  _("Current color class"));
         pd_state.color = prop_item_state_color_add(box, pd,
                             _("Part main color."));
 
@@ -892,18 +890,18 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_textblock_unset(property);
 }
 
-#define ITEM_2ENTRY_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_STRING_STATE_CALLBACK(SUB, VALUE1) \
-   ITEM_STRING_STATE_CALLBACK(SUB, VALUE2) \
-   ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_2ENTRY_STATE_UPDATE(SUB, VALUE1, VALUE2)
+#define ITEM_2COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE1) \
+   ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE2) \
+   ITEM_2COMBOBOX_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2COMBOBOX_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel1_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel1_offset, x, y, "eflete/property/item/relative")
-ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
+ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
-ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
+ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 #define pd_obj_area pd->prop_state_object_area
 static Eina_Bool
@@ -1321,27 +1319,21 @@ ui_property_state_image_unset(Evas_Object *property)
 
 static void
 _on_state_color_class_change(void *data,
-                             Evas_Object *obj,
-                             void *event_info __UNUSED__)
+                             Evas_Object *obj EINA_UNUSED,
+                             void *event_info)
 {
    Prop_Data *pd = (Prop_Data *)data;
    int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
    r = g = b = a = r1 = g1 = b1 = a1 = r2 = g2 = b2 = a2 = 0;
 
-   const char *value = elm_entry_entry_get(obj);
-   if (strcmp(value, "") == 0) value = NULL;
-   if ((!edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
-                                        pd->part->curr_state,
-                                        pd->part->curr_state_value,
-                                        value)) && (value))
+   Ewe_Combobox_Item *item = event_info;
+   if (strcmp(item->title, "None"))
      {
-        NOTIFY_INFO(5, "Wrong input value for color class field.");
-        return;
-     }
-
-   if (value)
-     {
-        edje_edit_color_class_colors_get(pd->style->obj, value, &r, &g, &b, &a,
+        edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
+                                     pd->part->curr_state,
+                                     pd->part->curr_state_value,
+                                     item->title);
+        edje_edit_color_class_colors_get(pd->style->obj, item->title, &r, &g, &b, &a,
                                          &r1, &g1, &b1, &a1, &r2, &g2, &b2, &a2);
         edje_edit_state_color_set(pd->style->obj, pd->part->name,
                              pd->part->curr_state, pd->part->curr_state_value,
@@ -1357,6 +1349,11 @@ _on_state_color_class_change(void *data,
         prop_item_state_color2_update(pd->prop_state_text.color2, pd);
         prop_item_state_color3_update(pd->prop_state_text.color3, pd);
      }
+   else edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
+                                        pd->part->curr_state,
+                                        pd->part->curr_state_value,
+                                        NULL);
+
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
 }
