@@ -161,6 +161,15 @@ open_edj_file(App_Data *ap)
 }
 
 static void
+_on_edj_name_changed_cb(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
+{
+   Evas_Object *bt_open = data;
+   elm_object_disabled_set(bt_open, true);
+}
+
+static void
 _on_open_edj_cb(void *data,
                 Evas_Object *obj,
                 void *event_info __UNUSED__)
@@ -201,7 +210,7 @@ _on_compile_cb(void *data,
           Evas_Object *obj,
           void *event_info __UNUSED__)
 {
-   Evas_Object *bt_c = (Evas_Object *)data;
+   Evas_Object *bt_open = (Evas_Object *)data;
 
    const char *path_edc = elm_object_text_get(fs_ent->edc);
    const char *path_edj = elm_object_text_get(fs_ent->edj);
@@ -220,7 +229,7 @@ _on_compile_cb(void *data,
         return;
      }
    elm_object_disabled_set(obj, true);
-   elm_object_disabled_set(bt_c, true);
+   elm_object_disabled_set(bt_open, true);
 
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, _("<b>Compilation started...</b>"));
@@ -228,7 +237,7 @@ _on_compile_cb(void *data,
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, "<br><br>");
    elm_object_disabled_set(obj, false);
-   elm_object_disabled_set(bt_c, false);
+   if (exit_code == 0) elm_object_disabled_set(bt_open, false);
    DBG("Compile exit code: %d", exit_code);
 }
 
@@ -480,6 +489,8 @@ open_edc_file(App_Data *ap)
    BOX_ADD(inwin, button_box, true, true);
 
    _BUTTON_ADD(bt_o, button_box, _("Open EDJ"), _on_open_edj_cb, ap);
+   elm_object_disabled_set(bt_o, true);
+   evas_object_smart_callback_add(fs_ent->edj, "changed", _on_edj_name_changed_cb, bt_o);
    _BUTTON_ADD(bt, button_box, _("Compile"), _on_compile_cb, bt_o);
    _BUTTON_ADD(bt_c, button_box, _("Cancel"), _on_cancel_cb, ap);
    elm_box_pack_end(button_box, bt);
