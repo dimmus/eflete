@@ -288,9 +288,8 @@ group { name: "elm/gengrid/base/eflete/default";
             }
          }
       }
-     part { name: "elm.swallow.content";
-         type: SWALLOW;
-         clip_to: "clipper";
+      part { name: "content_clipper";
+         type: RECT;
          description { state: "default" 0.0;
             rel1.offset: 1 1;
             rel2 {
@@ -301,9 +300,17 @@ group { name: "elm/gengrid/base/eflete/default";
             }
          }
       }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "content_clipper";
+         description { state: "default" 0.0;
+            rel1.to: "content_clipper";
+            rel2.to: "content_clipper";
+         }
+      }
       part { name: "elm.swallow.overlay";
          type: SWALLOW;
-         clip_to: "clipper";
+         clip_to: "content_clipper";
          description { state: "default" 0.0;
             rel1.to: "elm.swallow.content";
             rel2.to: "elm.swallow.content";
