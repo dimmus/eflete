@@ -85,7 +85,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
          nf = ui_block_widget_list_get(menu_event->ap);
          ui_widget_list_title_set(nf, menu_event->ap->project->name);
          STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
-         ui_menu_disable_set(menu_event->ap->menu_hash, "Save project", false);
+         ui_menu_disable_set(menu_event->ap->menu_hash, _("Save project"), false);
       break;
       }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
@@ -163,7 +163,7 @@ _project_not_save_edc(void *data,
    if (pm_project_close(ap->project)) ap->project = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, "Save project", true);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
@@ -184,7 +184,7 @@ _project_not_save_edj(void *data,
    if (pm_project_close(ap->project)) ap->project = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, true);
-   ui_menu_disable_set(ap->menu_hash, "Save project", true);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));

@@ -100,13 +100,13 @@ _on_cancel_cb(void *data,
           {
              ui_menu_base_disabled_set(ap->menu_hash, false);
              ui_menu_locked_set(ap->menu_hash, true);
-             ui_menu_disable_set(ap->menu_hash, "Save project", false);
+             ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
           }
         else
           {
              ui_menu_base_disabled_set(ap->menu_hash, true);
              ui_menu_locked_set(ap->menu_hash, false);
-             ui_menu_disable_set(ap->menu_hash, "Save project", true);
+             ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
           }
      }
    ecore_main_loop_quit();
