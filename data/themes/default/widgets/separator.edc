@@ -3,31 +3,10 @@ group { name: "elm/separator/horizontal/eflete/property";
       image: "group-border-bg-upper.png" COMP;
    }
    parts {
-      part { name: "padding_left_top";
-         type: SPACER;
-         description { state: "default" 0.0;
-            FIXED_SIZE(6, 6);
-            align: 0.0 0.0;
-         }
-      }
-      part { name: "padding_right_bottom";
-         type: SPACER;
-         description { state: "default" 0.0;
-            FIXED_SIZE(6, 6);
-            align: 1.0 1.0;
-      }
       part { name: "base";
          type: SPACER;
          description {
-            min: 0 20;
-            rel1 {
-               to: "padding_left_top";
-               relative: 1.0 1.0;
-            }
-            rel2 {
-               to: "padding_right_bottom";
-               relative: 0.0 0.0;
-            }
+            min: 360 32;
          }
       }
       part { name: "separator_left";
@@ -93,16 +72,13 @@ group { name: "elm/separator/horizontal/eflete/property";
       }
       part { name: "eflete.text";
          type: TEXT;
-         scale: 1;
          description { state: "default" 0.0;
             color: FN_COL_DEFAULT;
-            min: 0 0;
             text {
                font: FN;
                size: 13;
                max: 1 1;
             }
-            fixed: 1 1;
             align: 0.0 0.5;
             rel1 {
                to: "padding_icon_right";
