@@ -398,8 +398,9 @@ about_window_test_CFLAGS = ${FLAGS}
 about_window_test_LDADD = ${LD}
 
 ui_state_dialog_test_SOURCES = \
-test_ui_state_dialog/test_state_dialog.c \
-test_ui_state_dialog/state_dialog_state_add.c
+test_ui_state_dialog/test_ui_state_dialog.c \
+test_ui_state_dialog/state_dialog_state_add.c \
+test_ui_state_dialog/state_dialog_state_del.c
 ui_state_dialog_test_CFLAGS = ${FLAGS}
 ui_state_dialog_test_LDADD = ${LD}
 
