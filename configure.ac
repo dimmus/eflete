@@ -11,8 +11,8 @@ AM_SILENT_RULES([yes])
 AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
-m4_define([efl_version], [1.10.0-alpha1])
-m4_define([elm_version], [1.10.0-alpha1])
+m4_define([efl_version], [1.10.0])
+m4_define([elm_version], [1.10.0])
 m4_define([ewe_version], [0.0.6])
 
 EFLETE_INIT
