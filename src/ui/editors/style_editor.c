@@ -450,7 +450,7 @@ _form_left_side(Style_Editor *style_edit)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = DEFAULT_STYLE;
+        _itc_style->item_style = "eflete/level1";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -459,7 +459,7 @@ _form_left_side(Style_Editor *style_edit)
    if (!_itc_tags)
      {
         _itc_tags= elm_genlist_item_class_new();
-        _itc_tags->item_style = DEFAULT_STYLE;
+        _itc_tags->item_style = "eflete/level3";
         _itc_tags->func.text_get = _item_tags_label_get;
         _itc_tags->func.content_get = NULL;
         _itc_tags->func.state_get = NULL;
