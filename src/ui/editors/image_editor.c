@@ -233,7 +233,7 @@ _on_button_add_clicked_cb(void *data,
 {
    Evas_Object *fs;
 
-   Evas_Object *inwin = mw_add(NULL, NULL);
+   Evas_Object *inwin = mw_add(_on_image_done, NULL);
    OPEN_DIALOG_ADD(inwin, fs, _("Add image to library"));
    evas_object_smart_callback_add(fs, "done", _on_image_done, data);
    evas_object_smart_callback_add(fs, "activated", _on_image_done, data);
