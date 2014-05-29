@@ -89,15 +89,17 @@ EFLETE_TEST (colorclass_viewer_add_test_p)
 {
    elm_init(0,0);
    App_Data *app;
+   Evas_Object *colorclass;
 
    app_init();
    app = app_create();
    app->project = calloc(1, sizeof(Project));
    ui_main_window_add(app);
 
-   ck_assert_msg(colorclass_viewer_add(app->project) != NULL, "failure: cannot"
-      " create image editor window");
+   colorclass  = colorclass_viewer_add(app->project);
+   ck_assert_msg(colorclass != NULL, "failure: cannot create image editor window");
 
+   evas_object_del(colorclass);
    app_shutdown();
    elm_shutdown();
 }
