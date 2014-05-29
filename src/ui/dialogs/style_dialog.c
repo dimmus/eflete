@@ -281,7 +281,7 @@ _popup_close(void *data,
 Eina_Bool
 style_dialog_add(App_Data *ap)
 {
-   Evas_Object *box, *button;
+   Evas_Object *box, *item, *button;
    Widget *widget = NULL;
    Class *class_st = NULL;
    Eina_Stringshare *title = NULL;
@@ -299,21 +299,25 @@ style_dialog_add(App_Data *ap)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE, "Style name:");
+   ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
+   EWE_ENTRY_ADD(item, entry_style, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
+   elm_object_part_content_set(item, "elm.swallow.content", entry_style);
+   elm_box_pack_end(box, item);
 
    class_st = ui_class_from_ap_get(ap);
    if (!class_st) return false;
    entry_text = eina_stringshare_add(class_st->name);
 
-   EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE, "Class name:");
+   ITEM_ADD(box, item, "Class name:", "eflete/property/item/default")
+   EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
    ewe_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
+   elm_object_part_content_set(item, "elm.swallow.content", entry_class);
+   elm_box_pack_end(box, item);
 
-   elm_box_pack_end(box, entry_style);
-   elm_box_pack_end(box, entry_class);
    elm_object_content_set(ap->popup, box);
 
    BUTTON_ADD(ap->popup, button, _("Add"));

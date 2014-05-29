@@ -162,7 +162,7 @@ part_dialog_add(App_Data *ap)
    elm_object_part_text_set(ap->popup, "title,text", title);
 
    BOX_ADD(ap->popup, box, EINA_FALSE, EINA_TRUE);
-   EWE_ENTRY_ADD(box, entry, EINA_TRUE, DEFAULT_STYLE, NULL);
+   EWE_ENTRY_ADD(box, entry, EINA_TRUE, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry, "guide", _("Type the new part new."));
    evas_object_show(entry);

@@ -193,7 +193,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    ewe_entry_entry_set(entry, pd->part->name); \
    elm_object_tooltip_text_set(entry, tooltip); \
@@ -211,7 +211,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE, NULL) \
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    elm_object_tooltip_text_set(entry, tooltip); \
@@ -699,7 +699,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                            pd->part->curr_state, \
                                            pd->part->curr_state_value); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE, NULL) \
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
    if (btn_func_cb) \
      { \
@@ -1099,7 +1099,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE, NULL) \
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
    if (!l && !r && !t && !b) \
      elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
    else \

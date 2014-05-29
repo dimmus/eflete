@@ -109,7 +109,7 @@ _cancel_clicked(void *data,
 Evas_Object *
 state_dialog_state_add(App_Data *ap)
 {
-   Evas_Object *box, *bt_yes, *bt_no;
+   Evas_Object *box, *item, *bt_yes, *bt_no;
    Evas_Object *item_dup;
    Evas_Object *glist = NULL;
    Part *part = NULL;
@@ -133,24 +133,28 @@ state_dialog_state_add(App_Data *ap)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   EWE_ENTRY_ADD(box, entry_name, true, DEFAULT_STYLE, "Name:");
+   ITEM_ADD(box, item, "Name:", "eflete/property/item/default")
+   EWE_ENTRY_ADD(item, entry_name, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
+   elm_object_part_content_set(item, "elm.swallow.content", entry_name);
+   elm_box_pack_end(box, item);
 
-   EWE_ENTRY_ADD(box, entry_value, true, DEFAULT_STYLE, "Value:");
+   ITEM_ADD(box, item, "Value:", "eflete/property/item/default")
+   EWE_ENTRY_ADD(item, entry_value, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
    ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX, EWE_REG_EXTENDED);
    ewe_entry_regex_autocheck_set(entry_value, true);
    ewe_entry_regex_glow_set(entry_value, true);
+   elm_object_part_content_set(item, "elm.swallow.content", entry_value);
+   elm_box_pack_end(box, item);
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")
    EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
    elm_object_disabled_set(combobox_dup_state, true);
    elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);
 
-   elm_box_pack_end(box, entry_name);
-   elm_box_pack_end(box, entry_value);
    elm_box_pack_end(box, item_dup);
    elm_object_content_set(ap->popup, box);
 
