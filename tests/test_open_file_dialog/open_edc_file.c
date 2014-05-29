@@ -39,9 +39,8 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 initialize application with app_init() function
- * @step 4 create application data
+ * @step 2 initialize application with app_init() function
+ * @step 3 create application data
  *
  * @procedure
  * @step 1 Call function open_edc_file(app_data).
@@ -57,7 +56,6 @@
 EFLETE_TEST (open_edc_file_test_n1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
 
@@ -67,7 +65,7 @@ EFLETE_TEST (open_edc_file_test_n1)
    result = open_edc_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Open edc' dialog was created");
 
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

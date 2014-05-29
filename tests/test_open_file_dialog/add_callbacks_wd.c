@@ -39,11 +39,10 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 initialize application with app_init() function
- * @step 4 create application data
- * @step 5 create main window
- * @step 6 create widget list.
+ * @step 2 initialize application with app_init() function
+ * @step 3 create application data
+ * @step 4 create main window
+ * @step 5 create widget list.
  *
  * @procedure
  * @step 1 Call add_callbacks_wd(widget_list, app_data)
@@ -66,11 +65,12 @@ EFLETE_TEST (add_callbacks_wd_test_p1)
    app_init();
    app_data = app_create();
    ui_main_window_add(app_data);
-   widget_list = elm_genlist_add(app_data->win);
+   widget_list = ui_widget_list_add(app_data->win);
 
    result = add_callbacks_wd(widget_list, app_data);
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -84,11 +84,10 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 initialize application with app_init() function
- * @step 4 create application data
- * @step 5 create main window
- * @step 6 create widget list.
+ * @step 2 initialize application with app_init() function
+ * @step 3 create application data
+ * @step 4 create main window
+ * @step 5 create widget list.
  *
  * @procedure
  * @step 1 Call add_callbacks_wd(widget_list, NULL)
@@ -111,11 +110,12 @@ EFLETE_TEST (add_callbacks_wd_test_p2)
    app_init();
    app_data = app_create();
    ui_main_window_add(app_data);
-   widget_list = elm_genlist_add(app_data->win);
+   widget_list = ui_widget_list_add(app_data->win);
 
    result = add_callbacks_wd(widget_list, NULL);
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -129,11 +129,6 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 initialize application with app_init() function
- * @step 4 create application data
- * @step 5 create main window
- * @step 6 create widget list.
  *
  * @procedure
  * @step 1 Call add_callbacks_wd(NULL, NULL)
