@@ -39,10 +39,9 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 initialize application with app_init() function
- * @step 4 create application data
- * @step 5 create main window
+ * @step 2 initialize application with app_init() function
+ * @step 3 create application data
+ * @step 4 create main window
  *
  * @procedure
  * @step 1 Call function save_as_edj_file(app_data).
@@ -58,7 +57,6 @@
 EFLETE_TEST (save_as_edj_file_test_n1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
 
@@ -69,7 +67,7 @@ EFLETE_TEST (save_as_edj_file_test_n1)
    result = save_as_edj_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Save as edj' dialog was created");
 
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -83,10 +81,9 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 add theme extension "eflete theme".
- * @step 3 initialize application with app_init() function
- * @step 4 create application data
- * @step 5 open new project and create widget list
+ * @step 2 initialize application with app_init() function
+ * @step 3 create application data
+ * @step 4 open new project and create widget list
  *
  * @procedure
  * @step 1 Call function save_as_edj_file(app_data).
@@ -102,7 +99,6 @@ END_TEST
 EFLETE_TEST (save_as_edj_file_test_n2)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    const char *path = "./edj_build/save_as_edj_file.edj";
@@ -114,7 +110,7 @@ EFLETE_TEST (save_as_edj_file_test_n2)
    result = save_as_edj_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Save as edj' dialog was created");
 
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
