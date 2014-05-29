@@ -334,7 +334,7 @@ _edx_select(void *data,
    if (!fs_ent->parent) return;
 
    Evas_Object *inwin;
-   inwin = mw_add(NULL, NULL);
+   inwin = mw_add(_on_path_done, NULL);
 
    OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
    elm_fileselector_selected_set(fs, path);
