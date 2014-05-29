@@ -890,9 +890,34 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_textblock_unset(property);
 }
 
+/* FIXME: edje_edit_state_relX_to do not update object properly.
+   Setting of any other param completes the object update.
+   Here min_w param is setted to its current value. */
+#define ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE) \
+static void \
+_on_combobox_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj EINA_UNUSED, \
+                             void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   if (strcmp(item->title, "None")) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value, \
+                                        item->title); \
+   else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value, \
+                                        NULL); \
+  int temp = edje_edit_state_min_w_get(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value); \
+  edje_edit_state_min_w_set(pd->style->obj, pd->part->name, pd->part->curr_state, \
+                                        pd->part->curr_state_value, temp); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
 #define ITEM_2COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE1) \
-   ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE2) \
+   ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE1) \
+   ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE2) \
    ITEM_2COMBOBOX_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2COMBOBOX_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
