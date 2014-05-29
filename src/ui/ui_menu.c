@@ -147,6 +147,7 @@ _project_not_save_new(void *data,
 
    new_theme_create(ap);
    ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
    evas_object_del(ap->popup);
 }
 
@@ -169,6 +170,7 @@ _project_not_save_edc(void *data,
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
    open_edc_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
    evas_object_del(ap->popup);
 }
 
@@ -191,6 +193,7 @@ _project_not_save_edj(void *data,
 
    open_edj_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
    evas_object_del(ap->popup);
 }
 
