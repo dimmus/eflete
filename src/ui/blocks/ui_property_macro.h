@@ -233,6 +233,19 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
 }
 
+/* combobox */
+#define ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                              Evas_Object *obj EINA_UNUSED, \
+                              void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   if (strcmp(item->title, "None")) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, item->title); \
+   else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, NULL); \
+}
+
 #define ITEM_1COMBOBOX_PART_ADD(text, SUB, VALUE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
@@ -253,17 +266,28 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         type = edje_edit_part_type_get(pd->style->obj, part->name); \
-        if(!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
-          ewe_combobox_item_add(combobox, part->name); \
+        if (!strcmp(text, "clip to")) \
+          { \
+             if(!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
+            ewe_combobox_item_add(combobox, part->name); \
+          } \
+        else if (!strcmp(text, "forward events"))\
+          { \
+             if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
+             ewe_combobox_item_add(combobox, part->name); \
+          } \
+        else \
+          if(strcmp(pd->part->name, part->name)) \
+            ewe_combobox_item_add(combobox, part->name); \
      } \
    elm_object_tooltip_text_set(combobox, tooltip); \
-   evas_object_smart_callback_add(combobox, "selected", _clip_to_sel, pd); \
+   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", combobox); \
    evas_object_data_set(item, ITEM1, combobox); \
    return item; \
 }
 
-#define ITEM_1COMBOBOX_PART_UPDATE(SUB, VALUE) \
+#define ITEM_1COMBOBOX_PART_UPDATE(text, SUB, VALUE) \
 static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
@@ -282,8 +306,19 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         type = edje_edit_part_type_get(pd->style->obj, part->name); \
-        if(!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
-          ewe_combobox_item_add(combobox, part->name); \
+        if (!strcmp(text, "clip to")) \
+          { \
+             if(!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
+            ewe_combobox_item_add(combobox, part->name); \
+          } \
+        else if (!strcmp(text, "forward events"))\
+          { \
+             if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
+             ewe_combobox_item_add(combobox, part->name); \
+          } \
+        else \
+          if(strcmp(pd->part->name, part->name)) \
+            ewe_combobox_item_add(combobox, part->name); \
      } \
 }
 
@@ -396,7 +431,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-/* state */
+/* combobox */
 #define ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE) \
 static void \
 _on_combobox_##SUB##_##VALUE##_change(void *data, \

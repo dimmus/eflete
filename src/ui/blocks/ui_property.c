@@ -543,16 +543,6 @@ ui_property_style_unset(Evas_Object *property)
 }
 #undef pd_group
 
-static void _clip_to_sel(void *data,
-                         Evas_Object *obj EINA_UNUSED,
-                         void *ei)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Ewe_Combobox_Item *item = ei;
-   if (strcmp(item->title, "None")) edje_edit_part_clip_to_set(pd->style->obj, pd->part->name, item->title);
-   else edje_edit_part_clip_to_set(pd->style->obj, pd->part->name, NULL);
-}
-
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
    ITEM_1CHEACK_PART_ADD(TEXT, SUB, VALUE) \
@@ -568,8 +558,9 @@ static void _clip_to_sel(void *data,
    ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_CREATE(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
    ITEM_1COMBOBOX_PART_ADD(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_PART_UPDATE(SUB, VALUE)
+   ITEM_1COMBOBOX_PART_UPDATE(TEXT, SUB, VALUE)
 
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
@@ -587,8 +578,8 @@ ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
 ITEM_DRAG_PART_CREATE(_("y"), part_drag, y, step_y)
-ITEM_1ENTRY_PART_CREATE(_("drag area"), part_drag, confine)
-ITEM_1ENTRY_PART_CREATE(_("forward events"), part_drag, event)
+ITEM_1COMBOBOX_PART_CREATE(_("drag area"), part_drag, confine)
+ITEM_1COMBOBOX_PART_CREATE(_("forward events"), part_drag, event)
 
 #define pd_part pd->prop_part
 #define pd_part_drag pd->prop_part_drag
