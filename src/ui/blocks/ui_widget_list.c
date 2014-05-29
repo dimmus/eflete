@@ -295,7 +295,7 @@ _del_style_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *block =  elm_object_parent_widget_get(elm_object_parent_widget_get(data));
+   Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
    evas_object_smart_callback_call(block, "wl,style,del", NULL);
 }
 
@@ -567,9 +567,6 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
-   /* temporary solution, while deleting aliases is not working. */
-   elm_object_disabled_set(button, true);
-   /*************************************************************/
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
@@ -711,7 +708,6 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_show(bt);
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_del_cb, parent);
-   elm_object_disabled_set(bt, true);
    elm_object_item_part_content_set(it_layouts, "elm.swallow.bt0", bt);
 
    evas_object_data_set(tabs, WIDGETS_NAVIFRAME_DATA_KEY, nf_widgets);
@@ -849,16 +845,11 @@ _wl_key_down_cb(void *data __UNUSED__,
 }
 
 Eina_Bool
-ui_widget_list_layouts_reload(Evas_Object *obj, Project *project)
+ui_widget_list_layouts_reload(Evas_Object *gl_layouts, Project *project)
 {
    Elm_Object_Item *eoi = NULL;
    Style *_layout = NULL;
-   Evas_Object *gl_layouts;
-
-   if ((!obj) || (!project)) return false;
-   Evas_Object *nf = evas_object_data_get(obj, LAYOUTS_NAVIFRAME_DATA_KEY);
-   gl_layouts = elm_object_item_part_content_get(_widget_list_get(nf),
-                                                 "elm.swallow.content");
+   if ((!gl_layouts) || (!project)) return false;
 
    elm_genlist_clear(gl_layouts);
    EINA_INLIST_FOREACH(project->layouts, _layout)

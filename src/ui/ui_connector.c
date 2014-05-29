@@ -182,19 +182,42 @@ _del_state_dialog(void *data,
 }
 
 static void
-_del_layout(void *data __UNUSED__,
+_del_layout(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   return;
+   ui_group_delete(data, LAYOUT);
+}
+
+static Evas_Object *
+_widgetlist_current_genlist_get(App_Data *ap, type group_type)
+{
+   Evas_Object *tabs = NULL;
+   const Evas_Object *nf = NULL;
+   Elm_Object_Item *nf_item = NULL;
+   Ewe_Tabs_Item *current_tab_item = NULL;
+
+   if (!ap)
+     return false;
+
+   tabs = ui_block_widget_list_get(ap);
+   current_tab_item = ewe_tabs_active_item_get(tabs);
+   nf = ewe_tabs_item_content_get(tabs, current_tab_item);
+
+   if ((group_type == STYLE) || (group_type == CLASS))
+      nf_item = elm_naviframe_top_item_get(nf);
+   else
+      nf_item = elm_naviframe_bottom_item_get(nf);
+
+   return elm_object_item_part_content_get(nf_item, NULL);
 }
 
 static void
 _add_layout_cb(void *data,
                Evas_Object *obj __UNUSED__,
-               void *event_info)
+               void *event_info __UNUSED__)
 {
-   Evas_Object *widget_list = (Evas_Object *)event_info;
+   Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT);
    Eina_Bool nameExist = true;
    App_Data *ap = (App_Data *)data;
    Widget *widget = NULL;
@@ -269,7 +292,7 @@ _del_style(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_style_delete(ap);
+   ui_group_delete(ap, STYLE);
 }
 
 static void
@@ -320,6 +343,44 @@ _on_ws_part_select(void *data,
 
    evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 }
+
+Widget *
+ui_widget_from_ap_get(App_Data *ap)
+{
+   Widget *widget = NULL;
+   Evas_Object *gl_widget = NULL;
+   Elm_Object_Item *eoi = NULL;
+
+   gl_widget = _widgetlist_current_genlist_get(ap, WIDGET);
+   eoi = elm_genlist_selected_item_get(gl_widget);
+   if (!eoi)
+     {
+         NOTIFY_ERROR(_("Couldn't add new state/class without opened widget"));
+         return NULL;
+     }
+   widget = elm_object_item_data_get(eoi);
+   return widget;
+}
+
+Class *
+ui_class_from_ap_get(App_Data *ap)
+{
+   Evas_Object *gl_class = NULL;
+   Elm_Object_Item *eoi = NULL;
+   Elm_Object_Item *parent_eoi = NULL;
+
+   gl_class = _widgetlist_current_genlist_get(ap, CLASS);
+   eoi = elm_genlist_selected_item_get(gl_class);
+   if (!eoi)
+     {
+        eoi = elm_genlist_first_item_get(gl_class);
+        if (!eoi) return NULL;
+     }
+   parent_eoi = elm_genlist_item_parent_get(eoi);
+   if(parent_eoi) eoi = parent_eoi;
+   return elm_object_item_data_get(eoi);
+}
+
 
 void
 ui_part_back(App_Data *ap)
@@ -600,49 +661,65 @@ new_theme_create(App_Data *ap)
    return true;
 }
 
-Eina_Bool
-ui_style_delete(App_Data *ap)
+static Eina_Bool
+_selected_layout_delete(Evas_Object *genlist, App_Data *ap)
 {
-   Widget *widget = NULL;
+   Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist);
+   Style *style = elm_object_item_data_get(item_to_del);;
+   Style *style_work = NULL;
+   Eina_Inlist *l = NULL;
+
+   if (!item_to_del)
+     {
+        NOTIFY_INFO(3, _("Select item to be deleted"));
+        return false;
+     }
+
+   EINA_INLIST_FOREACH_SAFE(ap->project->layouts, l, style_work)
+     {
+        if (strcmp(style->name, style_work->name))
+          break;
+     }
+
+   if (!style_work) return false;
+
+   evas_object_del(style->obj);
+   if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+     {
+        NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
+                    style->name, style->name);
+     }
+   ap->project->layouts = eina_inlist_remove(ap->project->layouts,
+                                             EINA_INLIST_GET(style));
+   ui_widget_list_layouts_reload(genlist, ap->project);
+   return true;
+}
+
+static Eina_Bool
+_selected_style_delete(Evas_Object *genlist, App_Data *ap)
+{
+   Widget *widget = ui_widget_from_ap_get(ap);
    Class *class_st = NULL;
    Class *class_work = NULL;
    Style *style = NULL;
    Style *style_work = NULL;
-
-   Evas_Object *gl_style = NULL;
-   Evas_Object *gl_widget = NULL;
-   Evas_Object *nf = NULL;
-   Elm_Object_Item *eoi = NULL;
    Elm_Object_Item *eoi_work = NULL;
-   Evas_Object *box = NULL;
-   Eina_List *box_childs = NULL;
+
    Eina_Inlist *l = NULL;
    int inlist_count = 0;
 
-   if (!ap) return false;
-
-   nf = ui_block_widget_list_get(ap);
-   eoi = elm_naviframe_bottom_item_get(nf);
-   gl_widget = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_widget);
-   widget = elm_object_item_data_get(eoi);
-
-   eoi = elm_naviframe_top_item_get(nf);
-   box = elm_object_item_part_content_get(eoi, NULL);
-   box_childs = elm_box_children_get(box);
-   gl_style = eina_list_data_get(eina_list_last(box_childs));
-   eoi = elm_genlist_selected_item_get(gl_style);
-
-   if (!eoi)
+   Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist);
+   if (!item_to_del)
      {
-        NOTIFY_INFO(3, _("No one style is selected"));
+        NOTIFY_INFO(3, _("Select item to be deleted"));
         return false;
      }
-   eoi_work = elm_genlist_item_parent_get(eoi);
+
+   eoi_work = elm_genlist_item_parent_get(item_to_del);
    if (eoi_work)
-      class_st = elm_object_item_data_get(eoi_work);
+     class_st = elm_object_item_data_get(eoi_work);
    else
-      class_st = elm_object_item_data_get(eoi);
+     class_st = elm_object_item_data_get(item_to_del);
 
    if (!strcmp(class_st->name, "base"))
      {
@@ -659,7 +736,7 @@ ui_style_delete(App_Data *ap)
              return false;
           }
 
-        style = elm_object_item_data_get(eoi);
+        style = elm_object_item_data_get(item_to_del);
         if (!edje_edit_group_exist(style->obj, style->full_group_name))
           {
              NOTIFY_INFO(3, _("Style [%s] don't exist"), style->name);
@@ -669,7 +746,7 @@ ui_style_delete(App_Data *ap)
         EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style_work)
           {
              if (strcmp(style->full_group_name, style_work->full_group_name))
-               break;
+             break;
           }
 
         if (!style_work) return false;
@@ -713,16 +790,31 @@ ui_style_delete(App_Data *ap)
                }
 
              evas_object_del(style->obj);
-             if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+             if (!edje_edit_group_del(style_work->obj,style->full_group_name))
                {
                   NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
                               style->name, class_st->name);
                }
           }
-        widget->classes = eina_inlist_remove(widget->classes, EINA_INLIST_GET(class_st));
+        widget->classes = eina_inlist_remove(widget->classes,
+                                             EINA_INLIST_GET(class_st));
         wm_class_free(class_st);
      }
-   ui_widget_list_class_data_reload(gl_style, widget->classes);
+   ui_widget_list_class_data_reload(genlist, widget->classes);
+   return true;
+}
+
+Eina_Bool
+ui_group_delete(App_Data *ap, type group_type)
+{
+   Evas_Object *gl_groups = NULL;
+
+   gl_groups = _widgetlist_current_genlist_get(ap, group_type);
+
+   if (group_type != LAYOUT)
+     return _selected_style_delete(gl_groups, ap);
+   else
+     return _selected_layout_delete(gl_groups, ap);
    return true;
 }
 

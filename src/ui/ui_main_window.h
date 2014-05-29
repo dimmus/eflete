@@ -207,15 +207,16 @@ Eina_Bool
 ui_part_state_delete(App_Data *ap);
 
 /**
- * Delete selected style/class from current widget
+ * Delete selected style/class/layout from current widget
  *
  * @param ap The App_Data structure pointer.
+ * @param group_type type of group to be deleted.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
 Eina_Bool
-ui_style_delete(App_Data *ap);
+ui_group_delete(App_Data *ap, type group_type);
 
 /**
  * Open new theme from template file.
@@ -261,6 +262,24 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
  */
 Eina_Bool
 ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag);
+
+/**
+ * Get data of widget user currently works with.
+ *
+ * @param ap The App_Data structure pointer.
+ * @return Widget data structure.
+ */
+Widget *
+ui_widget_from_ap_get(App_Data *ap);
+
+/**
+ * Get data of class user currently works with.
+ *
+ * @param ap The App_Data structure pointer.
+ * @return Class data structure.
+ */
+Class *
+ui_class_from_ap_get(App_Data *ap);
 
 /* FIXME: Add comments */
 Eina_Bool

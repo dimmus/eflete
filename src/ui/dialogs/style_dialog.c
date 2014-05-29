@@ -30,31 +30,6 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .rejected = STYLE_NAME_BANNED_SYMBOLS
 };
 
-static Widget *
-_widget_from_ap_get(App_Data *ap)
-{
-   Widget *widget = NULL;
-   Evas_Object *gl_widget = NULL;
-   const Evas_Object *nf = NULL;
-   Evas_Object *tabs = NULL;
-   Elm_Object_Item *eoi = NULL;
-   Ewe_Tabs_Item *widgets_tab = NULL;
-
-   tabs = ui_block_widget_list_get(ap);
-   widgets_tab = ewe_tabs_active_item_get(tabs);
-   nf = ewe_tabs_item_content_get(tabs, widgets_tab);
-   eoi = elm_naviframe_bottom_item_get(nf);
-   gl_widget = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_widget);
-   if (!eoi)
-     {
-         NOTIFY_ERROR(_("Couldn't add new state/class without opened widget"));
-         return NULL;
-     }
-   widget = elm_object_item_data_get(eoi);
-   return widget;
-}
-
 static void
 _reload_classes(App_Data *ap, Eina_Inlist *classes)
 {
@@ -71,32 +46,6 @@ _reload_classes(App_Data *ap, Eina_Inlist *classes)
    gl_classes = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_class_data_reload(gl_classes, classes);
-}
-
-static Class *
-_class_from_ap_get(App_Data *ap)
-{
-   Evas_Object *gl_class = NULL;
-   const Evas_Object *nf = NULL;
-   Elm_Object_Item *eoi = NULL;
-   Elm_Object_Item *parent_eoi = NULL;
-   Ewe_Tabs_Item *class_tab = NULL;
-   Evas_Object *tabs = NULL;
-
-   tabs = ui_block_widget_list_get(ap);
-   class_tab = ewe_tabs_active_item_get(tabs);
-   nf = ewe_tabs_item_content_get(tabs, class_tab);
-   eoi = elm_naviframe_top_item_get(nf);
-   gl_class = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_class);
-   if (!eoi)
-     {
-        eoi = elm_genlist_first_item_get(gl_class);
-        if (!eoi) return NULL;
-     }
-   parent_eoi = elm_genlist_item_parent_get(eoi);
-   if(parent_eoi) eoi = parent_eoi;
-   return elm_object_item_data_get(eoi);
 }
 
 int
@@ -153,7 +102,7 @@ _on_popup_btn_yes(void *data,
         eina_stringshare_del(class_name);\
 
 
-   widget = _widget_from_ap_get(ap);
+   widget = ui_widget_from_ap_get(ap);
    if (!widget) return;
    source_file = eina_stringshare_add(EFLETE_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
@@ -339,7 +288,7 @@ style_dialog_add(App_Data *ap)
    Eina_Stringshare *entry_text = NULL;
 
    if (!ap) return false;
-   widget = _widget_from_ap_get(ap);
+   widget = ui_widget_from_ap_get(ap);
    if (!widget) return false;
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
@@ -354,7 +303,7 @@ style_dialog_add(App_Data *ap)
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
 
-   class_st = _class_from_ap_get(ap);
+   class_st = ui_class_from_ap_get(ap);
    if (!class_st) return false;
    entry_text = eina_stringshare_add(class_st->name);
 
