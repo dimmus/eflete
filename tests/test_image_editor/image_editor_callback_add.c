@@ -45,10 +45,11 @@ _cb (void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUS
  * @precondition
  * @step 1 init elemantary
  * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
- * @step 6 add image editor
+ * @step 3 create app
+ * @step 4 create main window
+ * @step 5 load project
+ * @step 6 call wm_widget_list_objects_load
+ * @step 7 add image editor
  *
  * @procedure
  * @step 1 call image_editor_callback_add
@@ -67,16 +68,20 @@ EFLETE_TEST (image_editor_callback_add_test_p1)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
-                        evas_object_evas_get(app->win), app->project->swapfile);
-   Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_callback_add(ie, _cb, NULL) == EINA_TRUE,
+   ck_assert_msg(image_editor_callback_add(images, _cb, NULL) == EINA_TRUE,
                  "cannot add callback");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
@@ -92,10 +97,11 @@ END_TEST
  * @precondition
  * @step 1 init elemantary
  * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
- * @step 6 add image editor
+ * @step 3 create app
+ * @step 4 create main window
+ * @step 5 load project
+ * @step 6 call wm_widget_list_objects_load
+ * @step 7 add image editor
  *
  * @procedure
  * @step 1 call image_editor_callback_add
@@ -114,16 +120,20 @@ EFLETE_TEST (image_editor_callback_add_test_p2)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
-                        evas_object_evas_get(app->win), app->project->swapfile);
-   Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_callback_add(ie, _cb, app) == EINA_TRUE,
+   ck_assert_msg(image_editor_callback_add(images, _cb, app) == EINA_TRUE,
                  "cannot add callback");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
@@ -139,10 +149,11 @@ END_TEST
  * @precondition
  * @step 1 init elemantary
  * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
- * @step 6 add image editor
+ * @step 3 create app
+ * @step 4 create main window
+ * @step 5 load project
+ * @step 6 call wm_widget_list_objects_load
+ * @step 7 add image editor
  *
  * @procedure
  * @step 1 call image_editor_callback_add
@@ -161,16 +172,20 @@ EFLETE_TEST (image_editor_callback_add_test_n1)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
-                        evas_object_evas_get(app->win), app->project->swapfile);
-   image_editor_window_add(app->project, SINGLE);
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(NULL, _cb, app) == EINA_FALSE,
                  "Callback added to NULL object");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
@@ -186,10 +201,11 @@ END_TEST
  * @precondition
  * @step 1 init elemantary
  * @step 2 init app
- * @step 3 create main window
- * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
- * @step 6 add image editor
+ * @step 3 create app
+ * @step 4 create main window
+ * @step 5 load project
+ * @step 6 call wm_widget_list_objects_load
+ * @step 7 add image editor
  *
  * @procedure
  * @step 1 call image_editor_callback_add
@@ -208,16 +224,20 @@ EFLETE_TEST (image_editor_callback_add_test_n2)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
-                        evas_object_evas_get(app->win), app->project->swapfile);
-   Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_callback_add(ie, NULL, app) == EINA_FALSE,
+   ck_assert_msg(image_editor_callback_add(images, NULL, app) == EINA_FALSE,
                  "Null callback function added");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
