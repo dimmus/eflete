@@ -274,11 +274,15 @@ _layout_del_cb(void *data,
 
 static void
 _unset_cur_style(void *data,
-                 Evas_Object *obj __UNUSED__,
+                 Evas_Object *obj,
                  void *ei __UNUSED__)
 {
    Project *project = (Project *)data;
+   Part *pr;
+   EINA_INLIST_FOREACH(project->current_style->parts, pr)
+      pr->show = true;
    project->current_style = NULL;
+   evas_object_smart_callback_del(obj, "wl,part,back", _unset_cur_style);
 }
 
 static void
@@ -411,7 +415,7 @@ _on_style_clicked_double(void *data,
    elm_object_style_set(gl_parts, "eflete/dark");
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
    pr->current_style = _style;
-   evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_style, pr);
+   evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
    evas_object_size_hint_align_set(gl_parts, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_parts, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
