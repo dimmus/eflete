@@ -487,8 +487,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    BUTTON_ADD(bottom_box, button, _("Delete image"));
    evas_object_smart_callback_add(button, "clicked", _on_button_delete_clicked_cb,
                                    img_edit);
-   evas_object_size_hint_max_set(button, 80, 25);
-   evas_object_size_hint_min_set(button, 80, 25);
+   evas_object_size_hint_max_set(button, 100, 25);
+   evas_object_size_hint_min_set(button, 100, 25);
    elm_box_pack_end(bottom_box, button);
 
    LABEL_ADD(bottom_box, img_edit->legend, _("No images selected<br><br>"))
