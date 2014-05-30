@@ -274,7 +274,7 @@ _add_layout_cb(void *data,
      }
 
    edje_edit_save_all(layout->obj);
-   layout = wm_style_add(name, name, LAYOUT);
+   layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
@@ -699,107 +699,94 @@ static Eina_Bool
 _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 {
    Widget *widget = ui_widget_from_ap_get(ap);
+   Widget *widget_work = NULL;
    Class *class_st = NULL;
    Class *class_work = NULL;
    Style *style = NULL;
+   Style *alias_style = NULL;
    Style *style_work = NULL;
-   Elm_Object_Item *eoi_work = NULL;
 
+   Elm_Object_Item *eoi = elm_genlist_selected_item_get(genlist);
    Eina_Inlist *l = NULL;
-   int inlist_count = 0;
+   Eina_List *ll = NULL;
 
-   Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist);
-   if (!item_to_del)
+   if (!eoi)
      {
-        NOTIFY_INFO(3, _("Select item to be deleted"));
+        NOTIFY_INFO(3, _("No one style is selected"));
         return false;
      }
 
-   eoi_work = elm_genlist_item_parent_get(item_to_del);
-   if (eoi_work)
-     class_st = elm_object_item_data_get(eoi_work);
+   /* Check which type type of node selected: style or class */
+   if (elm_genlist_item_parent_get(eoi))
+     {
+        style = elm_object_item_data_get(eoi);
+        class_st = style->parent;
+     }
    else
-     class_st = elm_object_item_data_get(item_to_del);
+      class_st = elm_object_item_data_get(eoi);
 
-   if (!strcmp(class_st->name, "base"))
+   /* Search edje edit object, which willn't delete now. This object needed
+      for manipulate with group in *.edj file*/
+   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, widget_work)
      {
-        NOTIFY_INFO(3, _("Couldn't delete anything from base class"));
+        if (!strcmp(widget->name, widget_work->name)) continue;
+        EINA_INLIST_FOREACH_SAFE(widget_work->classes, l, class_work)
+          {
+             EINA_INLIST_FOREACH_SAFE(class_work->styles, l, style_work)
+              {
+                 if (!style_work->isAlias) break;
+              }
+          }
+     }
+   if (!style_work)
+     {
+        ERR("Failed search style object from another class");
         return false;
      }
 
-   if (eoi_work)
+   if (style) /* Deleting style */
      {
-        inlist_count = eina_inlist_count(class_st->styles);
-        if (inlist_count <= 1)
-          {
-             NOTIFY_INFO(3, _("Couldn't delete last class in style. Try to delete style"));
-             return false;
-          }
+        Evas_Object *st_cur = style->obj;
 
-        style = elm_object_item_data_get(item_to_del);
-        if (!edje_edit_group_exist(style->obj, style->full_group_name))
+        if (style->isAlias) st_cur = style->main_group->obj;
+
+        if (!edje_edit_group_exist(st_cur, style->full_group_name))
           {
              NOTIFY_INFO(3, _("Style [%s] don't exist"), style->name);
              return false;
           }
-
-        EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style_work)
+        /* Before delete groups from edj file need free tree of aliasses structures*/
+        EINA_LIST_FOREACH(style->aliasses, ll, alias_style)
           {
-             if (strcmp(style->full_group_name, style_work->full_group_name))
-             break;
+              if (eina_inlist_count(alias_style->parent->styles) <= 1)
+                wm_class_free(alias_style->parent);
+              else
+                wm_style_free(alias_style);
           }
-
-        if (!style_work) return false;
-
+         /*Delete loaded object for unlock group in edj file*/
         evas_object_del(style->obj);
         if (!edje_edit_group_del(style_work->obj, style->full_group_name))
           {
-             NOTIFY_INFO(3, _("Failed to delete class[%s]"), style->name);
+             NOTIFY_INFO(3, _("Failed to delete style[%s]"), style->name);
              return false;
           }
-        class_st->styles = eina_inlist_remove(class_st->styles, EINA_INLIST_GET(style));
-        wm_style_free(style);
+        if (eina_inlist_count(class_st->styles) <= 1)
+          wm_class_free(class_st);
+        else
+          wm_style_free(style);
      }
-   else
+   else /* Deleting all styles in class. Work slow! Need patch for edje_edit_group_del */
      {
-        inlist_count = eina_inlist_count(widget->classes);
-        if (inlist_count <= 1)
-          {
-             NOTIFY_INFO(3, _("Couldn't delete last class in widget."));
-             return false;
-          }
-
-        EINA_INLIST_FOREACH_SAFE(widget->classes, l, class_work)
-          {
-             if (!class_work) continue;
-             if (strcmp(class_st->name, class_work->name))
-               break;
-          }
-
-        if (!class_work) return false;
-
-        style_work = EINA_INLIST_CONTAINER_GET(class_work->styles, Style);
-        if (!style_work) return false;
-
         EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style)
           {
-             if (!style)
-               {
-                  ERR("NULL style pointer.");
-                  continue;
-               }
-
              evas_object_del(style->obj);
-             if (!edje_edit_group_del(style_work->obj,style->full_group_name))
-               {
-                  NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
+             if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+               NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
                               style->name, class_st->name);
-               }
           }
-        widget->classes = eina_inlist_remove(widget->classes,
-                                             EINA_INLIST_GET(class_st));
         wm_class_free(class_st);
      }
+   style_work->isModify = true;
    ui_widget_list_class_data_reload(genlist, widget->classes);
    return true;
 }

@@ -77,6 +77,25 @@ typedef enum _type type;
 typedef struct _Part Part;
 
 /**
+ * @typedef Style
+ * @ingroup WidgetManager
+ */
+typedef struct _Style Style;
+
+
+/**
+ * @typedef Class
+ * @ingroup WidgetManager
+ */
+typedef struct _Class Class;
+
+/**
+ * @typedef Widget
+ * @ingroup WidgetManager
+ */
+typedef struct _Widget Widget;
+
+/**
  * @struct _Part
  *
  * @brief This struct designed to storage a data part in style.
@@ -94,12 +113,6 @@ struct _Part
     int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
     type __type; /**< PART from enum @_type */
 };
-
-/**
- * @typedef Style
- * @ingroup WidgetManager
- */
-typedef struct _Style Style;
 
 /**
  * @struct _Style
@@ -121,14 +134,10 @@ struct _Style
     /** link to main group that is being aliased **/
     Style *main_group;
     Eina_Inlist *parts;  /**< The list of a style parts data. */
+    Eina_List *aliasses; /**< The list of pointer Style structures which aliased to this style */
+    Class *parent; /**< Pointer to class, which contain this style */
     type __type; /**< STYLE from enum @_type */
 };
-
-/**
- * @typedef Class
- * @ingroup WidgetManager
- */
-typedef struct _Class Class;
 
 /**
  * @struct _Class
@@ -142,14 +151,9 @@ struct _Class
     EINA_INLIST;
     Eina_Stringshare *name; /**< The name of a class. */
     Eina_Inlist *styles;    /**<The list of styles that make up the class. */
+    Widget *parent; /**< Pointer to widget, which contain this class*/
     type __type; /**< CLASS from enum @_type */
 };
-
-/**
- * @typedef Widget
- * @ingroup WidgetManager
- */
-typedef struct _Widget Widget;
 
 /**
  * @struct _Widget
@@ -249,13 +253,15 @@ wm_style_data_load(Style *style, Evas *e, const char *edj);
  * @param full_group_name A full name of group, a name of block 'group' in a
  *        edc-file.
  * @param style_type May be STYLE or LAYOUT, in case what type needed to create.
+ * @param parent The pointer to Class structure, which contain creating  style.
  *
  * @return A new @Style object.
  *
  * @ingroup WidgetManager
  */
 Style *
-wm_style_add(const char* style_name, const char* full_group_name, type style_type);
+wm_style_add(const char* style_name, const char* full_group_name,
+             type style_type, Class *parent);
 
 /**
  * Free a @Style object.
@@ -298,11 +304,12 @@ wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
  *
  * @param class_name A name of a class.
  * @param styles A list of styles in a current class.
+ * @param parent A pointer to Widget structure, which contain creating class.
  *
  * @ingroup WidgetManager
  */
 Class *
-wm_class_add(const char *class_name, Eina_List *styles);
+wm_class_add(const char *class_name, Eina_List *styles, Widget *parent);
 
 /**
  * Free a @Class object.
