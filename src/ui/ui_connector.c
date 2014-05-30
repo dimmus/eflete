@@ -681,13 +681,17 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
           break;
      }
 
-   if (!style_work) return false;
+   if (!style_work)
+     {
+        NOTIFY_INFO(3, _("Can not delete last layout"));
+        return false;
+     }
 
    evas_object_del(style->obj);
    if (!edje_edit_group_del(style_work->obj, style->full_group_name))
      {
-        NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
-                    style->name, style->name);
+        NOTIFY_INFO(3, _("Failed to delete layout[%s]"),
+                    style->name);
      }
    ap->project->layouts = eina_inlist_remove(ap->project->layouts,
                                              EINA_INLIST_GET(style));
