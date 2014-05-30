@@ -581,7 +581,12 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           }
      }
      if (!sd->separated) _part_object_area_calc(sd);
-     else evas_object_hide(sd->obj_area.obj);
+     else
+       {
+          evas_object_hide(sd->obj_area.obj);
+          evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
+       }
+
    return true;
 }
 
