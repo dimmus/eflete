@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.10.0])
 m4_define([elm_version], [1.10.0])
-m4_define([ewe_version], [0.0.6])
+m4_define([ewe_version], [0.1.0])
 
 EFLETE_INIT
 AC_CONFIG_HEADERS([eflete_config.h])
