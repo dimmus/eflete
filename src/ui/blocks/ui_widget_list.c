@@ -590,9 +590,9 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    Eina_Inlist *styles = NULL;
    Elm_Object_Item *glit_style = NULL;
    Elm_Object_Item *glit_class = NULL;
+   elm_genlist_clear(gl_classes);
 
    if ((!gl_classes) || (!classes)) return false;
-   elm_genlist_clear(gl_classes);
 
    if (!_itc_class)
      {
