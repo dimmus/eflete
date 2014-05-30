@@ -228,14 +228,14 @@ _on_popup_btn_yes(void *data,
                         EINA_INLIST_CONTAINER_GET(widget->classes, Class)->styles,
                         Style);
         styles = eina_list_append(styles, full_name);
-        dest_class = wm_class_add(class_name, styles);
+        dest_class = wm_class_add(class_name, styles, dest_wdg);
         dest_wdg->classes = eina_inlist_append(dest_wdg->classes,
                                                   EINA_INLIST_GET(dest_class));
         style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
      }
    else
      {
-        style = wm_style_add(style_name, full_name, STYLE);
+        style = wm_style_add(style_name, full_name, STYLE, dest_class);
         dest_class->styles = eina_inlist_append(dest_class->styles,
                                                 EINA_INLIST_GET(style));
      }
