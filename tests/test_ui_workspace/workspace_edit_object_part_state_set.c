@@ -75,7 +75,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
@@ -137,7 +137,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);
@@ -193,7 +193,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_state_set.edj");
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_state_set.edj");
 
@@ -247,7 +247,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_edit_object_part_state_set.edj",
                         style->full_group_name);

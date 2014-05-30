@@ -94,7 +94,7 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p1)
    /**************************************************************************/
    groups = eina_list_append(groups, "elm/radio/qqqqq/test33");
    groups = eina_list_append(groups, "elm/radio/qqqqq/test55");
-   class = wm_class_add("qqqqq", groups);
+   class = wm_class_add("qqqqq", groups, _widget);
    _widget->classes = eina_inlist_append(_widget->classes,
                                          EINA_INLIST_GET(class));
    eoi = elm_naviframe_top_item_get(widget_list);
@@ -152,10 +152,10 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p2)
    widget_list = ui_widget_list_add(parent);
    groups = eina_list_append(groups, "elm/radio/qqqqq/test33");
    groups = eina_list_append(groups, "elm/radio/qqqqq/test55");
-   class = wm_class_add("qqqqq", groups);
    _widget = (Widget *)malloc(sizeof(Widget));
    _widget->name = eina_stringshare_add("radio");
    _widget->__type = WIDGET;
+   class = wm_class_add("qqqqq", groups, _widget);
    _widget->classes = eina_inlist_append(_widget->classes,
                                          EINA_INLIST_GET(class));
    Elm_Object_Item *eoi = elm_naviframe_top_item_get(widget_list);
@@ -227,9 +227,8 @@ END_TEST
  * @step 1 initialize elementary library
  * @step 2 add theme extension "eflete theme".
  * @step 3 create parent window
- * @step 4 create two Styles "test33" and "test55".
- * @step 5 create Class "qqqqq".
- * @step 6 Create Widget filled with classes and styles.
+ * @step 4 create list with names two Styles "test33" and "test55".
+ * @step 5 create widget filled with styles from step 4.
  *
  * @procedure
  * @step 1 Call ui_widget_list_class_data_reload
@@ -250,17 +249,11 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_n2)
    Widget *_widget;
    Eina_Bool result = EINA_FALSE;
    Eina_List *groups = NULL;
-   Class *class = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    groups = eina_list_append(groups, "elm/radio/qqqqq/test33");
    groups = eina_list_append(groups, "elm/radio/qqqqq/test55");
-   class = wm_class_add("qqqqq", groups);
-   _widget = (Widget *)mem_malloc(sizeof(Widget));
-   _widget->name = eina_stringshare_add("radio");
-   _widget->__type = WIDGET;
-   _widget->classes = eina_inlist_append(_widget->classes,
-                                         EINA_INLIST_GET(class));
+   _widget = wm_widget_add("radio", groups);
 
    result = ui_widget_list_class_data_reload(NULL, _widget->classes);
    ck_assert_msg(result == EINA_FALSE, "Data in widget list was reloaded");

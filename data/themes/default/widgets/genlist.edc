@@ -1,6 +1,8 @@
 #define ITEM_HEIGHT 26
 #define BORDER_COLOR 34 35 36 255
+#define LIGHT_BORDER_COLOR 70 72 73 255
 #define LIST_BORDER_COLOR 45 46 47 255
+#define LIST_ITEM_SELECTED_COLOR 58 110 155 255
 #define BG_COLOR 39 42 43 255
 
 group { name: "elm/genlist/item/eflete/default/default";
@@ -9,10 +11,6 @@ group { name: "elm/genlist/item/eflete/default/default";
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    data.item: "treesize" TREEPAD;
-   images {
-      image: "section-item-current-bg.png" COMP;
-      image: "section-item-bg.png" COMP;
-   }
    parts {
       part { name: "event";
          type: RECT;
@@ -20,20 +18,21 @@ group { name: "elm/genlist/item/eflete/default/default";
             color: 0 0 0 0;
          }
       }
-     part { name: "base";
+      part { name: "base";
+         type:RECT;
          mouse_events: 0;
          description { state: "default" 0.0;
-            image.normal: "section-item-bg.png";
-            fill.smooth: 0;
+            color: LIGHT_GREY_BG_COLOR;
          }
       }
       part { name: "bg";
+         type: RECT;
          clip_to: "disclip";
          mouse_events: 0;
          description { state: "default" 0.0;
             visible: 0;
-            image.normal: "section-item-current-bg.png";
-            fill.smooth: 0;
+            color: LIST_ITEM_SELECTED_COLOR;
+            rel2.offset: 0 -2;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
@@ -139,6 +138,42 @@ group { name: "elm/genlist/item/eflete/default/default";
             rel2 {
                to_x: "icon_end_arrea";
                relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "base_border_top";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: LIGHT_BORDER_COLOR;
+            min: 1 1;
+            rel1 {
+               to_x: "left_pad";
+               relative: 0.5 0.0;
+               offset: 0 -1;
+            }
+            rel2 {
+               to_x: "right_pad";
+               relative: 0.5 0.0;
+               offset: 0 -1;
+            }
+         }
+      }
+      part { name: "base_border_bot";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            color: LIGHT_BORDER_COLOR;
+            min: 1 1;
+            rel1 {
+               to_x: "left_pad";
+               relative: 0.5 1.0;
+            }
+            rel2 {
+               to_x: "right_pad";
+               relative: 0.5 1.0;
             }
          }
       }
@@ -486,26 +521,44 @@ group { name: "elm/genlist/item/eflete/level1/default";
     inherit:"elm/genlist/item/eflete/default/default";
     images {
       image: "treemenu-lvl1-item-current-pressed.png" COMP;
+      image: "treemenu-lvl1-item-current-bg.png" COMP;
    }
    parts {
      part { name: "base";
+         type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
             fill.smooth: 0;
-            image.normal: "treemenu-lvl1-item-current-bg.png";
+            color: WHITE_VISIBLE_COLOR;
+            image {
+               normal: "treemenu-lvl1-item-current-bg.png";
+               border: 0 0 1 1;
+            }
          }
       }
       part { name: "bg";
-         clip_to: "disclip";
-         mouse_events: 0;
+         type: IMAGE;
          description { state: "default" 0.0;
-            visible: 0;
-            image.normal: "treemenu-lvl1-item-current-pressed.png";
-            fill.smooth: 0;
+            image {
+               normal: "treemenu-lvl1-item-current-pressed.png";
+               border: 0 0 1 1;
+            }
+            color: WHITE_VISIBLE_COLOR;
+            rel2.offset: 0 0;
          }
          description { state: "selected" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+      }
+      part { name: "base_border_top";
+         description { state: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part { name: "base_border_bot";
+         description { state: "default" 0.0;
+            visible: 0;
          }
       }
    }
@@ -515,9 +568,11 @@ group { name: "elm/genlist/item/eflete/level2/default";
    inherit:"elm/genlist/item/eflete/default/default";
    parts {
      part { name: "base";
+         type: IMAGE;
          mouse_events: 0;
          description { state: "default" 0.0;
             fill.smooth: 0;
+            color: WHITE_VISIBLE_COLOR;
             image {
                normal: "treemenu-lvl1-item-current-bg.png";
                border: 0 0 3 3;
@@ -530,13 +585,14 @@ group { name: "elm/genlist/item/eflete/level2/default";
             visible: 0;
          }
       }
-      part { name: "shadow";
-         type: RECT;
+      part { name: "base_border_top";
          description { state: "default" 0.0;
-            fixed: 1 1;
-            min: 1 2;
-            color: BORDER_COLOR;
-            rel1.relative: 0.0 1.0;
+            visible: 0;
+         }
+      }
+      part { name: "base_border_bot";
+         description { state: "default" 0.0;
+            visible: 0;
          }
       }
    }
@@ -544,56 +600,10 @@ group { name: "elm/genlist/item/eflete/level2/default";
 
 group { name: "elm/genlist/item/eflete/level3/default";
     inherit:"elm/genlist/item/eflete/default/default";
-    images {
-      image: "treemenu-lvl3-item-current-bg.png" COMP;
-      image: "treemenu-lvl3-item-bg.png" COMP;
-   }
    parts {
-     part { name: "base";
-         type: RECT;
-         mouse_events: 0;
+      part { name: "base";
          description { state: "default" 0.0;
             color: BG_COLOR;
-         }
-      }
-      part { name: "base_border_top";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            color: BORDER_COLOR;
-            min: 1 1;
-            rel1.offset: 0 -1;
-            rel2 {
-               relative: 1.0 0.0;
-               offset: 0 -1;
-            }
-         }
-      }
-      part { name: "base_border_bot";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            fixed: 1 1;
-            color: BORDER_COLOR;
-            min: 1 1;
-            rel1.relative: 0.0 1.0;
-         }
-      }
-      part { name: "bg";
-         clip_to: "disclip";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            fill.smooth: 0;
-            image {
-               normal: "treemenu-lvl3-item-current-bg.png";
-               border: 0 0 1 1;
-            }
-         }
-         description { state: "selected" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
       }
       part { name: "text_arrea";
@@ -612,45 +622,44 @@ group { name: "elm/genlist/item/eflete/level3/default";
             }
          }
       }
-   }
-}
-
-group { name: "elm/genlist/item/eflete/level4/default";
-    inherit:"elm/genlist/item/eflete/level3/default";
-   parts {
       part { name: "base_border_top";
          description { state: "default" 0.0;
-            rel1 {
-               to_x: "left_pad";
-               relative: 0.5 0.0;
-            }
-            rel2 {
-               to_x: "right_pad";
-               relative: 0.5 0.0;
-            }
+            color: BORDER_COLOR;
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 0.0;
          }
       }
       part { name: "base_border_bot";
          description { state: "default" 0.0;
-            rel1 {
-               to_x: "left_pad";
-               relative: 0.5 1.0;
-            }
-            rel2 {
-               to_x: "right_pad";
-               relative: 0.5 1.0;
-            }
-         }
-      }
-      part { name: "left_spacer";
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            SET_SIZE(0 0, 0 0);
+            color: BORDER_COLOR;
+            rel1.relative: 0.0 1.0;
+            rel2.relative: 1.0 1.0;
          }
       }
    }
 }
 
+group { name: "elm/genlist/item/eflete/level4/default";
+    inherit:"elm/genlist/item/eflete/default/default";
+   parts {
+      part { name: "base";
+         description { state: "default" 0.0;
+            color: BG_COLOR;
+         }
+      }
+      part { name: "base_border_top";
+         description { state: "default" 0.0;
+            color: BORDER_COLOR;
+         }
+      }
+      
+      part { name: "base_border_bot";
+         description { state: "default" 0.0;
+            color: BORDER_COLOR;
+         }
+      }
+   }
+}
 
 group { name: "elm/genlist/item/eflete/mode/default";
    alias: "elm/genlist/item_odd/eflete/mode/default";
@@ -1226,4 +1235,6 @@ group { name: "elm/genlist/base/eflete/dark";
 #undef ITEM_HEIGHT
 #ungef BORDER_COLOR
 #undef LIST_BORDER_COLOR
+#undef LIST_ITEM_SELECTED_COLOR
+#undef LIGHT_BORDER_COLOR
 #undef BG_COLOR

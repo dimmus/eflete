@@ -557,6 +557,11 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
    ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
+#define ITEM_1COMBOBOX_PART_CREATE(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_UPDATE(TEXT, SUB, VALUE)
+
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
    ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
@@ -568,13 +573,13 @@ ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
-ITEM_1ENTRY_PART_CREATE(_("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
 ITEM_DRAG_PART_CREATE(_("y"), part_drag, y, step_y)
-ITEM_1ENTRY_PART_CREATE(_("drag area"), part_drag, confine)
-ITEM_1ENTRY_PART_CREATE(_("forward events"), part_drag, event)
+ITEM_1COMBOBOX_PART_CREATE(_("drag area"), part_drag, confine)
+ITEM_1COMBOBOX_PART_CREATE(_("forward events"), part_drag, event)
 
 #define pd_part pd->prop_part
 #define pd_part_drag pd->prop_part_drag
@@ -713,6 +718,10 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
+#define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_UPDATE(SUB, VALUE)
+
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
    ITEM_COLOR_STATE_ADD(TEXT, SUB, VALUE) \
@@ -729,13 +738,14 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
+
 ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
 ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
-ITEM_1ENTRY_STATE_CREATE(_("color class"), state, color_class)
+ITEM_STATE_CCL_CREATE(_("color class"), state, color_class)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
 Eina_Bool
@@ -795,9 +805,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
                             false);
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd, property,
                                    _("The aspect control hints for this object."));
-        pd_state.color_class = prop_item_state_color_class_add(box, pd, NULL,
-                                  _("Current color class"),
-                                  NULL);
+        pd_state.color_class = prop_item_state_color_class_add(box, pd,
+                                  _("Current color class"));
         pd_state.color = prop_item_state_color_add(box, pd,
                             _("Part main color."));
 
@@ -872,18 +881,43 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_textblock_unset(property);
 }
 
-#define ITEM_2ENTRY_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_STRING_STATE_CALLBACK(SUB, VALUE1) \
-   ITEM_STRING_STATE_CALLBACK(SUB, VALUE2) \
-   ITEM_2ENTRY_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_2ENTRY_STATE_UPDATE(SUB, VALUE1, VALUE2)
+/* FIXME: edje_edit_state_relX_to do not update object properly.
+   Setting of any other param completes the object update.
+   Here min_w param is setted to its current value. */
+#define ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE) \
+static void \
+_on_combobox_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj EINA_UNUSED, \
+                             void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   if (strcmp(item->title, "None")) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value, \
+                                        item->title); \
+   else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value, \
+                                        NULL); \
+  int temp = edje_edit_state_min_w_get(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value); \
+  edje_edit_state_min_w_set(pd->style->obj, pd->part->name, pd->part->curr_state, \
+                                        pd->part->curr_state_value, temp); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+#define ITEM_2COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE1) \
+   ITEM_REL_TO_COMBOBOX_STATE_CALLBACK(SUB, VALUE2) \
+   ITEM_2COMBOBOX_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
+   ITEM_2COMBOBOX_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel1_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel1_offset, x, y, "eflete/property/item/relative")
-ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
+ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
-ITEM_2ENTRY_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
+ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 #define pd_obj_area pd->prop_state_object_area
 static Eina_Bool
@@ -1217,7 +1251,7 @@ _on_image_editor_done(void *data,
    const char *selected = (const char *)ei;
    if (!selected) return;
    if (strcmp(value, selected) == 0) return;
-   elm_entry_entry_set(entry, selected);
+   ewe_entry_entry_set(entry, selected);
    evas_object_smart_callback_call(entry, "activated", NULL);
 }
 
@@ -1259,8 +1293,16 @@ ui_property_state_image_set(Evas_Object *property)
         pd_image.normal = prop_item_state_image_add(box, pd, _on_state_image_choose,
                              _("Current image name"),
                              _("Change image"));
+        Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
+        ewe_entry_regex_set(entry, IMAGE_NAME_REGEX, EWE_REG_ICASE | EWE_REG_EXTENDED);
+        ewe_entry_regex_autocheck_set(entry, true);
+        ewe_entry_regex_glow_set(entry, true);
         pd_image.border = prop_item_state_image_border_add(box, pd,
                              _("Image's border value"));
+        entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
+        ewe_entry_regex_set(entry, IMAGE_BORDER_REGEX, EWE_REG_EXTENDED);
+        ewe_entry_regex_autocheck_set(entry, true);
+        ewe_entry_regex_glow_set(entry, true);
 
         elm_box_pack_end(box, pd_image.normal);
         elm_box_pack_end(box, pd_image.border);
@@ -1290,6 +1332,48 @@ ui_property_state_image_unset(Evas_Object *property)
    evas_object_hide(pd_image.frame);
 }
 #undef pd_image
+
+static void
+_on_state_color_class_change(void *data,
+                             Evas_Object *obj EINA_UNUSED,
+                             void *event_info)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
+   r = g = b = a = r1 = g1 = b1 = a1 = r2 = g2 = b2 = a2 = 0;
+
+   Ewe_Combobox_Item *item = event_info;
+   if (strcmp(item->title, "None"))
+     {
+        edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
+                                     pd->part->curr_state,
+                                     pd->part->curr_state_value,
+                                     item->title);
+        edje_edit_color_class_colors_get(pd->style->obj, item->title, &r, &g, &b, &a,
+                                         &r1, &g1, &b1, &a1, &r2, &g2, &b2, &a2);
+        edje_edit_state_color_set(pd->style->obj, pd->part->name,
+                             pd->part->curr_state, pd->part->curr_state_value,
+                             r, g, b, a);
+        edje_edit_state_color2_set(pd->style->obj, pd->part->name,
+                             pd->part->curr_state, pd->part->curr_state_value,
+                             r1, g1, b1, a1);
+        edje_edit_state_color3_set(pd->style->obj, pd->part->name,
+                             pd->part->curr_state, pd->part->curr_state_value,
+                             r2, g2, b2, a2);
+
+        prop_item_state_color_update(pd->prop_state.color, pd);
+        prop_item_state_color2_update(pd->prop_state_text.color2, pd);
+        prop_item_state_color3_update(pd->prop_state_text.color3, pd);
+     }
+   else edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
+                                        pd->part->curr_state,
+                                        pd->part->curr_state_value,
+                                        NULL);
+
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+}
+
 
 #undef PROP_DATA
 #undef PROP_DATA_GET

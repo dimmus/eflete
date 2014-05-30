@@ -18,16 +18,21 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "test_state_dialog.h"
+#include "test_ui_state_dialog.h"
 
 Suite* test_suite (void) {
    Suite *suite = suite_create("state_dialog_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, state_dialog_state_add_test_p1);
-   tcase_add_test(tcase, state_dialog_state_add_test_p2);
+   tcase_add_test(tcase, state_dialog_state_add_test_p);
    tcase_add_test(tcase, state_dialog_state_add_test_n1);
    tcase_add_test(tcase, state_dialog_state_add_test_n2);
+   tcase_add_test(tcase, state_dialog_state_add_test_n3);
+
+   tcase_add_test(tcase, state_dialog_state_del_test_p);
+   tcase_add_test(tcase, state_dialog_state_del_test_n1);
+   tcase_add_test(tcase, state_dialog_state_del_test_n2);
+   tcase_add_test(tcase, state_dialog_state_del_test_n3);
 
    suite_add_tcase(suite, tcase);
    return suite;

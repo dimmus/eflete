@@ -68,7 +68,7 @@ EFLETE_TEST(ui_signal_list_data_unset_test_p1)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_signals = ui_signal_list_add(window);
    ui_signal_list_data_set(gl_signals, style);

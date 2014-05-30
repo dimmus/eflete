@@ -50,7 +50,7 @@
  * @step 2 call workspace_separate_mode_get
  * @step 3 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -69,7 +69,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_p1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/test", STYLE);
+   style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_separate_mode_get.edj",
                         style->full_group_name);
@@ -106,7 +106,7 @@ END_TEST
  * @step 1 call workspace_separate_mode_get
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -125,7 +125,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_p2)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/test", STYLE);
+   style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    style->obj = edje_edit_object_add(e);
    edje_object_file_set(style->obj, "./edj_build/workspace_separate_mode_get.edj",
                         style->full_group_name);
@@ -158,7 +158,7 @@ END_TEST
  * @step 1 call workspace_separate_mode_get
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -200,7 +200,7 @@ END_TEST
  * @step 1 call workspace_separate_mode_get(EINA_TRUE)
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) workspace, EINA_TRUE</td>
+ * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>

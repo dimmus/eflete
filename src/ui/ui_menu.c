@@ -85,7 +85,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
          nf = ui_block_widget_list_get(menu_event->ap);
          ui_widget_list_title_set(nf, menu_event->ap->project->name);
          STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
-         ui_menu_disable_set(menu_event->ap->menu_hash, "Save project", false);
+         ui_menu_disable_set(menu_event->ap->menu_hash, _("Save project"), false);
       break;
       }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
@@ -98,7 +98,7 @@ _on_close_project_cancel(void *data,
                          void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   evas_object_hide(ap->popup);
+   evas_object_del(ap->popup);
    ui_menu_locked_set(ap->menu_hash, false);
 }
 
@@ -125,6 +125,13 @@ _on_close_project_save(void *data,
                 NOTIFY_ERROR(_("Theme can not be saved: %s"), ap->project->edj);
           }
      }
+   ui_panes_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, true);
+   pm_project_close(ap->project);
+   ap->project = NULL;
+   open_edj_file(ap);
+   ui_menu_locked_set(ap->menu_hash, false);
+   evas_object_del(ap->popup);
 }
 
 static void
@@ -140,6 +147,8 @@ _project_not_save_new(void *data,
 
    new_theme_create(ap);
    ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+   evas_object_del(ap->popup);
 }
 
 
@@ -155,12 +164,14 @@ _project_not_save_edc(void *data,
    if (pm_project_close(ap->project)) ap->project = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, "Save project", true);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
    open_edc_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+   evas_object_del(ap->popup);
 }
 
 static void
@@ -175,13 +186,15 @@ _project_not_save_edj(void *data,
    if (pm_project_close(ap->project)) ap->project = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, true);
-   ui_menu_disable_set(ap->menu_hash, "Save project", true);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
 
    open_edj_file(ap);
    ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+   evas_object_del(ap->popup);
 }
 
 
@@ -190,8 +203,7 @@ _project_not_save_edj(void *data,
    Eina_Stringshare *title; \
    ui_menu_locked_set(ap->menu_hash, true); \
    title = eina_stringshare_printf(_("Close project %s"), ap->project->name); \
-   if (!ap->popup) \
-     ap->popup = elm_popup_add(ap->win_layout); \
+   ap->popup = elm_popup_add(ap->win_layout); \
    elm_object_style_set(ap->popup, "eflete"); \
    elm_object_part_text_set(ap->popup, "title,text", title); \
    LABEL_ADD(ap->popup, label, MESSAGE) \
@@ -259,7 +271,7 @@ _on_edj_open_menu(void *data,
         POPUP_CLOSE_PROJECT(_("You want to open new theme, but now you have<br/>"
                             "open project. If you dont save the open project<br/>"
                             "all your changes will be lost!"),
-                            _project_not_save_edj);
+                            _project_not_save_edj)
      }
    else
      {

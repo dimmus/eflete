@@ -30,59 +30,22 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .rejected = STYLE_NAME_BANNED_SYMBOLS
 };
 
-static Widget *
-_widget_from_ap_get(App_Data *ap)
-{
-   Widget *widget = NULL;
-   Evas_Object *gl_widget = NULL;
-   Evas_Object *nf = NULL;
-   Elm_Object_Item *eoi = NULL;
-
-   nf = ui_block_widget_list_get(ap);
-   eoi = elm_naviframe_bottom_item_get(nf);
-   gl_widget = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_widget);
-   if (!eoi)
-     {
-         NOTIFY_ERROR(_("Couldn't add new state/class without opened widget"));
-         return NULL;
-     }
-   widget = elm_object_item_data_get(eoi);
-   return widget;
-}
-
 static void
 _reload_classes(App_Data *ap, Eina_Inlist *classes)
 {
    Evas_Object *gl_classes = NULL;
+   const Evas_Object *nf = NULL;
    Elm_Object_Item *eoi = NULL;
+   Ewe_Tabs_Item *class_tab = NULL;
+   Evas_Object *tabs = NULL;
 
-   eoi = elm_naviframe_top_item_get(ui_block_widget_list_get(ap));
+   tabs = ui_block_widget_list_get(ap);
+   class_tab = ewe_tabs_active_item_get(tabs);
+   nf = ewe_tabs_item_content_get(tabs, class_tab);
+   eoi = elm_naviframe_top_item_get(nf);
    gl_classes = elm_object_item_part_content_get(eoi, NULL);
 
    ui_widget_list_class_data_reload(gl_classes, classes);
-}
-
-static Class *
-_class_from_ap_get(App_Data *ap)
-{
-   Evas_Object *gl_class = NULL;
-   Evas_Object *nf = NULL;
-   Elm_Object_Item *eoi = NULL;
-   Elm_Object_Item *parent_eoi = NULL;
-
-   nf = ui_block_widget_list_get(ap);
-   eoi = elm_naviframe_top_item_get(nf);
-   gl_class = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_class);
-   if (!eoi)
-     {
-        eoi = elm_genlist_first_item_get(gl_class);
-        if (!eoi) return NULL;
-     }
-   parent_eoi = elm_genlist_item_parent_get(eoi);
-   if(parent_eoi) eoi = parent_eoi;
-   return elm_object_item_data_get(eoi);
 }
 
 int
@@ -139,9 +102,8 @@ _on_popup_btn_yes(void *data,
         eina_stringshare_del(class_name);\
 
 
-   widget = _widget_from_ap_get(ap);
+   widget = ui_widget_from_ap_get(ap);
    if (!widget) return;
-
    source_file = eina_stringshare_add(EFLETE_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
@@ -266,14 +228,14 @@ _on_popup_btn_yes(void *data,
                         EINA_INLIST_CONTAINER_GET(widget->classes, Class)->styles,
                         Style);
         styles = eina_list_append(styles, full_name);
-        dest_class = wm_class_add(class_name, styles);
+        dest_class = wm_class_add(class_name, styles, dest_wdg);
         dest_wdg->classes = eina_inlist_append(dest_wdg->classes,
                                                   EINA_INLIST_GET(dest_class));
         style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
      }
    else
      {
-        style = wm_style_add(style_name, full_name, STYLE);
+        style = wm_style_add(style_name, full_name, STYLE, dest_class);
         dest_class->styles = eina_inlist_append(dest_class->styles,
                                                 EINA_INLIST_GET(style));
      }
@@ -292,6 +254,7 @@ _on_popup_btn_yes(void *data,
      {
         wm_style_data_load(style, canvas, ap->project->swapfile);
         _reload_classes(ap, dest_wdg->classes);
+        style->isModify = true;
      }
 
    if (!wm_widget_list_free(source_widgets))
@@ -304,10 +267,13 @@ _on_popup_btn_yes(void *data,
 }
 
 static void
-_popup_close(void *data, Evas_Object *obj __UNUSED__, void *ei __UNUSED__)
+_popup_close(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
-   Evas_Object *popup = (Evas_Object *)data;
-   evas_object_del(popup);
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   ui_menu_locked_set(ap->menu_hash, false);
 }
 
 
@@ -315,55 +281,57 @@ _popup_close(void *data, Evas_Object *obj __UNUSED__, void *ei __UNUSED__)
 Eina_Bool
 style_dialog_add(App_Data *ap)
 {
-   Evas_Object *popup, *box, *button;
+   Evas_Object *box, *item, *button;
    Widget *widget = NULL;
    Class *class_st = NULL;
    Eina_Stringshare *title = NULL;
    Eina_Stringshare *entry_text = NULL;
 
    if (!ap) return false;
-   widget = _widget_from_ap_get(ap);
+   widget = ui_widget_from_ap_get(ap);
    if (!widget) return false;
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
-   popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(popup, "eflete");
-   elm_object_part_text_set(popup, "title,text", title);
-   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+   ap->popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(ap->popup, "eflete");
+   elm_object_part_text_set(ap->popup, "title,text", title);
+   elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
 
-   BOX_ADD(popup, box, false, false);
+   BOX_ADD(ap->popup, box, false, false);
 
-   EWE_ENTRY_ADD(box, entry_style, true, DEFAULT_STYLE);
+   ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
+   EWE_ENTRY_ADD(item, entry_style, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
-   ewe_entry_label_visible_set(entry_style, EINA_TRUE);
-   ewe_entry_label_text_set(entry_style, "Style name:");
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
+   elm_object_part_content_set(item, "elm.swallow.content", entry_style);
+   elm_box_pack_end(box, item);
 
-   class_st = _class_from_ap_get(ap);
+   class_st = ui_class_from_ap_get(ap);
    if (!class_st) return false;
    entry_text = eina_stringshare_add(class_st->name);
 
+   ITEM_ADD(box, item, "Class name:", "eflete/property/item/default")
    EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
-   ewe_entry_label_visible_set(entry_class, EINA_TRUE);
-   ewe_entry_label_text_set(entry_class, "Class name:");
-   elm_entry_entry_set(entry_class, entry_text);
+   ewe_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));
+   elm_object_part_content_set(item, "elm.swallow.content", entry_class);
+   elm_box_pack_end(box, item);
 
-   elm_box_pack_end(box, entry_style);
-   elm_box_pack_end(box, entry_class);
-   elm_object_content_set(popup, box);
+   elm_object_content_set(ap->popup, box);
 
-   BUTTON_ADD(popup, button, _("Add"));
-   evas_object_smart_callback_add(button, "close,popup", _popup_close, popup);
+   BUTTON_ADD(ap->popup, button, _("Add"));
+   evas_object_smart_callback_add(button, "close,popup", _popup_close, ap);
    evas_object_smart_callback_add(button, "pressed", _on_popup_btn_yes, ap);
-   elm_object_part_content_set(popup, "button1", button);
+   elm_object_part_content_set(ap->popup, "button1", button);
 
-   BUTTON_ADD(popup, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _popup_close, popup);
-   elm_object_part_content_set(popup, "button2", button);
+   BUTTON_ADD(ap->popup, button, _("Cancel"));
+   evas_object_smart_callback_add(button, "clicked", _popup_close, ap);
+   elm_object_part_content_set(ap->popup, "button2", button);
 
-   evas_object_show(popup);
+   ui_menu_locked_set(ap->menu_hash, true);
+
+   evas_object_show(ap->popup);
    eina_stringshare_del(title);
    eina_stringshare_del(entry_text);
 

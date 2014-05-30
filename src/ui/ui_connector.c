@@ -182,19 +182,42 @@ _del_state_dialog(void *data,
 }
 
 static void
-_del_layout(void *data __UNUSED__,
+_del_layout(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   return;
+   ui_group_delete(data, LAYOUT);
+}
+
+static Evas_Object *
+_widgetlist_current_genlist_get(App_Data *ap, type group_type)
+{
+   Evas_Object *tabs = NULL;
+   const Evas_Object *nf = NULL;
+   Elm_Object_Item *nf_item = NULL;
+   Ewe_Tabs_Item *current_tab_item = NULL;
+
+   if (!ap)
+     return false;
+
+   tabs = ui_block_widget_list_get(ap);
+   current_tab_item = ewe_tabs_active_item_get(tabs);
+   nf = ewe_tabs_item_content_get(tabs, current_tab_item);
+
+   if ((group_type == STYLE) || (group_type == CLASS))
+      nf_item = elm_naviframe_top_item_get(nf);
+   else
+      nf_item = elm_naviframe_bottom_item_get(nf);
+
+   return elm_object_item_part_content_get(nf_item, NULL);
 }
 
 static void
 _add_layout_cb(void *data,
                Evas_Object *obj __UNUSED__,
-               void *event_info)
+               void *event_info __UNUSED__)
 {
-   Evas_Object *widget_list = (Evas_Object *)event_info;
+   Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT);
    Eina_Bool nameExist = true;
    App_Data *ap = (App_Data *)data;
    Widget *widget = NULL;
@@ -251,7 +274,7 @@ _add_layout_cb(void *data,
      }
 
    edje_edit_save_all(layout->obj);
-   layout = wm_style_add(name, name, LAYOUT);
+   layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
@@ -269,7 +292,7 @@ _del_style(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_style_delete(ap);
+   ui_group_delete(ap, STYLE);
 }
 
 static void
@@ -321,6 +344,44 @@ _on_ws_part_select(void *data,
    evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 }
 
+Widget *
+ui_widget_from_ap_get(App_Data *ap)
+{
+   Widget *widget = NULL;
+   Evas_Object *gl_widget = NULL;
+   Elm_Object_Item *eoi = NULL;
+
+   gl_widget = _widgetlist_current_genlist_get(ap, WIDGET);
+   eoi = elm_genlist_selected_item_get(gl_widget);
+   if (!eoi)
+     {
+         NOTIFY_ERROR(_("Couldn't add new state/class without opened widget"));
+         return NULL;
+     }
+   widget = elm_object_item_data_get(eoi);
+   return widget;
+}
+
+Class *
+ui_class_from_ap_get(App_Data *ap)
+{
+   Evas_Object *gl_class = NULL;
+   Elm_Object_Item *eoi = NULL;
+   Elm_Object_Item *parent_eoi = NULL;
+
+   gl_class = _widgetlist_current_genlist_get(ap, CLASS);
+   eoi = elm_genlist_selected_item_get(gl_class);
+   if (!eoi)
+     {
+        eoi = elm_genlist_first_item_get(gl_class);
+        if (!eoi) return NULL;
+     }
+   parent_eoi = elm_genlist_item_parent_get(eoi);
+   if(parent_eoi) eoi = parent_eoi;
+   return elm_object_item_data_get(eoi);
+}
+
+
 void
 ui_part_back(App_Data *ap)
 {
@@ -350,6 +411,8 @@ ui_part_back(App_Data *ap)
    live_view_widget_style_unset(ap->live_view);
 
    ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -491,6 +554,8 @@ ui_style_clicked(App_Data *ap, Style *style)
    ap->project->current_style = _style;
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), false);
 
    return true;
 }
@@ -535,7 +600,7 @@ ui_edj_load_done(App_Data* ap, const char *selected_file)
         evas_object_show(wd_list);
         ui_panes_show(ap);
         STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
-        ui_menu_disable_set(ap->menu_hash, "Save project", false);
+        ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
         ui_menu_base_disabled_set(ap->menu_hash, false);
      }
    else NOTIFY_ERROR(_("The file must have a extension '.edj'"));
@@ -588,135 +653,159 @@ new_theme_create(App_Data *ap)
    ap->project->edj = NULL;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
    STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
-   ui_menu_disable_set(ap->menu_hash, "Save project", false);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
 
    return true;
 }
 
-Eina_Bool
-ui_style_delete(App_Data *ap)
+static Eina_Bool
+_selected_layout_delete(Evas_Object *genlist, App_Data *ap)
 {
-   Widget *widget = NULL;
+   Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist);
+   Style *style = elm_object_item_data_get(item_to_del);;
+   Style *style_work = NULL;
+   Eina_Inlist *l = NULL;
+
+   if (!item_to_del)
+     {
+        NOTIFY_INFO(3, _("Select item to be deleted"));
+        return false;
+     }
+
+   EINA_INLIST_FOREACH_SAFE(ap->project->layouts, l, style_work)
+     {
+        if (strcmp(style->name, style_work->name))
+          break;
+     }
+
+   if (!style_work)
+     {
+        NOTIFY_INFO(3, _("Can not delete last layout"));
+        return false;
+     }
+
+   evas_object_del(style->obj);
+   if (!edje_edit_group_del(style_work->obj, style->full_group_name))
+     {
+        NOTIFY_INFO(3, _("Failed to delete layout[%s]"),
+                    style->name);
+     }
+   ap->project->layouts = eina_inlist_remove(ap->project->layouts,
+                                             EINA_INLIST_GET(style));
+   ui_widget_list_layouts_reload(genlist, ap->project);
+   return true;
+}
+
+static Eina_Bool
+_selected_style_delete(Evas_Object *genlist, App_Data *ap)
+{
+   Widget *widget = ui_widget_from_ap_get(ap);
+   Widget *widget_work = NULL;
    Class *class_st = NULL;
    Class *class_work = NULL;
    Style *style = NULL;
+   Style *alias_style = NULL;
    Style *style_work = NULL;
 
-   Evas_Object *gl_style = NULL;
-   Evas_Object *gl_widget = NULL;
-   Evas_Object *nf = NULL;
-   Elm_Object_Item *eoi = NULL;
-   Elm_Object_Item *eoi_work = NULL;
-   Evas_Object *box = NULL;
-   Eina_List *box_childs = NULL;
+   Elm_Object_Item *eoi = elm_genlist_selected_item_get(genlist);
    Eina_Inlist *l = NULL;
-   int inlist_count = 0;
-
-   if (!ap) return false;
-
-   nf = ui_block_widget_list_get(ap);
-   eoi = elm_naviframe_bottom_item_get(nf);
-   gl_widget = elm_object_item_part_content_get(eoi, NULL);
-   eoi = elm_genlist_selected_item_get(gl_widget);
-   widget = elm_object_item_data_get(eoi);
-
-   eoi = elm_naviframe_top_item_get(nf);
-   box = elm_object_item_part_content_get(eoi, NULL);
-   box_childs = elm_box_children_get(box);
-   gl_style = eina_list_data_get(eina_list_last(box_childs));
-   eoi = elm_genlist_selected_item_get(gl_style);
+   Eina_List *ll = NULL;
 
    if (!eoi)
      {
         NOTIFY_INFO(3, _("No one style is selected"));
         return false;
      }
-   eoi_work = elm_genlist_item_parent_get(eoi);
-   if (eoi_work)
-      class_st = elm_object_item_data_get(eoi_work);
+
+   /* Check which type type of node selected: style or class */
+   if (elm_genlist_item_parent_get(eoi))
+     {
+        style = elm_object_item_data_get(eoi);
+        class_st = style->parent;
+     }
    else
       class_st = elm_object_item_data_get(eoi);
 
-   if (!strcmp(class_st->name, "base"))
+   /* Search edje edit object, which willn't delete now. This object needed
+      for manipulate with group in *.edj file*/
+   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, widget_work)
      {
-        NOTIFY_INFO(3, _("Couldn't delete anything from base class"));
+        if (!strcmp(widget->name, widget_work->name)) continue;
+        EINA_INLIST_FOREACH_SAFE(widget_work->classes, l, class_work)
+          {
+             EINA_INLIST_FOREACH_SAFE(class_work->styles, l, style_work)
+              {
+                 if (!style_work->isAlias) break;
+              }
+          }
+     }
+   if (!style_work)
+     {
+        ERR("Failed search style object from another class");
         return false;
      }
 
-   if (eoi_work)
+   if (style) /* Deleting style */
      {
-        inlist_count = eina_inlist_count(class_st->styles);
-        if (inlist_count <= 1)
-          {
-             NOTIFY_INFO(3, _("Couldn't delete last class in style. Try to delete style"));
-             return false;
-          }
+        Evas_Object *st_cur = style->obj;
 
-        style = elm_object_item_data_get(eoi);
-        if (!edje_edit_group_exist(style->obj, style->full_group_name))
+        if (style->isAlias) st_cur = style->main_group->obj;
+
+        if (!edje_edit_group_exist(st_cur, style->full_group_name))
           {
              NOTIFY_INFO(3, _("Style [%s] don't exist"), style->name);
              return false;
           }
-
-        EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style_work)
+        /* Before delete groups from edj file need free tree of aliasses structures*/
+        EINA_LIST_FOREACH(style->aliasses, ll, alias_style)
           {
-             if (strcmp(style->full_group_name, style_work->full_group_name))
-               break;
+              if (eina_inlist_count(alias_style->parent->styles) <= 1)
+                wm_class_free(alias_style->parent);
+              else
+                wm_style_free(alias_style);
           }
-
-        if (!style_work) return false;
-
+         /*Delete loaded object for unlock group in edj file*/
         evas_object_del(style->obj);
         if (!edje_edit_group_del(style_work->obj, style->full_group_name))
           {
-             NOTIFY_INFO(3, _("Failed to delete class[%s]"), style->name);
+             NOTIFY_INFO(3, _("Failed to delete style[%s]"), style->name);
              return false;
           }
-        class_st->styles = eina_inlist_remove(class_st->styles, EINA_INLIST_GET(style));
-        wm_style_free(style);
+        if (eina_inlist_count(class_st->styles) <= 1)
+          wm_class_free(class_st);
+        else
+          wm_style_free(style);
      }
-   else
+   else /* Deleting all styles in class. Work slow! Need patch for edje_edit_group_del */
      {
-        inlist_count = eina_inlist_count(widget->classes);
-        if (inlist_count <= 1)
-          {
-             NOTIFY_INFO(3, _("Couldn't delete last class in widget."));
-             return false;
-          }
-
-        EINA_INLIST_FOREACH_SAFE(widget->classes, l, class_work)
-          {
-             if (!class_work) continue;
-             if (strcmp(class_st->name, class_work->name))
-               break;
-          }
-
-        if (!class_work) return false;
-
-        style_work = EINA_INLIST_CONTAINER_GET(class_work->styles, Style);
-        if (!style_work) return false;
-
         EINA_INLIST_FOREACH_SAFE(class_st->styles, l, style)
           {
-             if (!style)
-               {
-                  ERR("NULL style pointer.");
-                  continue;
-               }
-
              evas_object_del(style->obj);
              if (!edje_edit_group_del(style_work->obj, style->full_group_name))
-               {
-                  NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
+               NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
                               style->name, class_st->name);
-               }
           }
-        widget->classes = eina_inlist_remove(widget->classes, EINA_INLIST_GET(class_st));
         wm_class_free(class_st);
      }
-   ui_widget_list_class_data_reload(gl_style, widget->classes);
+   style_work->isModify = true;
+   ui_widget_list_class_data_reload(genlist, widget->classes);
+   return true;
+}
+
+Eina_Bool
+ui_group_delete(App_Data *ap, type group_type)
+{
+   Evas_Object *gl_groups = NULL;
+
+   gl_groups = _widgetlist_current_genlist_get(ap, group_type);
+
+   if (group_type != LAYOUT)
+     return _selected_style_delete(gl_groups, ap);
+   else
+     return _selected_layout_delete(gl_groups, ap);
    return true;
 }
 

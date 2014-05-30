@@ -22,7 +22,6 @@ style_dialog_test \
 ui_block_test \
 highlight_test \
 ui_main_window_test \
-preference_test \
 ui_signal_list_test \
 ui_states_list_test \
 ui_state_dialog_test \
@@ -51,7 +50,6 @@ FLAGS = \
 -I${top_srcdir}/src/ui/dialogs \
 -I${top_srcdir}/src/ui/editors \
 -I${top_srcdir}/src/ui/modal_window \
--I${top_srcdir}/src/ui/preference \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
@@ -275,11 +273,11 @@ test_ui_main_window/ui_style_delete.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
-preference_test_SOURCES = \
-test_preference/test_preference.c \
-test_preference/preference_add_test.c
-preference_test_CFLAGS = ${FLAGS}
-preference_test_LDADD = ${LD}
+#preference_test_SOURCES = \
+#test_preference/test_preference.c \
+#test_preference/preference_add_test.c
+#preference_test_CFLAGS = ${FLAGS}
+#preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
@@ -400,8 +398,9 @@ about_window_test_CFLAGS = ${FLAGS}
 about_window_test_LDADD = ${LD}
 
 ui_state_dialog_test_SOURCES = \
-test_ui_state_dialog/test_state_dialog.c \
-test_ui_state_dialog/state_dialog_state_add.c
+test_ui_state_dialog/test_ui_state_dialog.c \
+test_ui_state_dialog/state_dialog_state_add.c \
+test_ui_state_dialog/state_dialog_state_del.c
 ui_state_dialog_test_CFLAGS = ${FLAGS}
 ui_state_dialog_test_LDADD = ${LD}
 
@@ -411,3 +410,25 @@ test_colorselector/colorselector_add.c \
 test_colorselector/colorselector_color_get.c
 colorselector_test_CFLAGS = ${FLAGS}
 colorselector_test_LDADD = ${LD}
+
+coverage:
+	echo "<html><body>" > ../coverage.html
+	lcov --zerocounters --directory ../src
+	lcov -i --directory ../src -c -o coverage_base.info
+	+make check || true
+	lcov --directory ../src -c -o coverage.info
+	lcov --add-tracefile coverage_base.info --add-tracefile coverage.info --output-file coverage_total.info
+	genhtml coverage_total.info -o ../coverage/cov_ALL -t Total_coverage
+	echo "<p><a href='coverage/cov_ALL/index.html'>Full</a></p>" >> ../coverage.html
+	for i in ${TESTS}; \
+	do \
+		echo "Processing module: $$i..." ; \
+		lcov --zerocounters --directory ../src ; \
+		./$$i 2>/dev/null >/dev/null ; \
+		rm coverage.info ; \
+		lcov --directory ../src -c -o coverage.info ; \
+		genhtml coverage.info -o ../coverage/cov_$$i -t $$i ; \
+		echo "<p><a href='coverage/cov_$$i/index.html'>$$i</a></p>" >> ../coverage.html ; \
+		echo "" ; \
+	done;
+	echo "</body></html>" >> ../coverage.html

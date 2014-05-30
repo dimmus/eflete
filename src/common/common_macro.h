@@ -70,4 +70,33 @@
        EDJE_OBJECT = _style->obj;\
      }
 
+#define GET_STYLE(PROJECT, STYLE) \
+   Eina_Inlist *_styles, *_classes, *_widgets = NULL; \
+   Widget *_widget; \
+   Class *_class; \
+   Style *_style; \
+   _widgets = PROJECT->widgets; \
+   if (!_widgets) STYLE = NULL; \
+   else\
+     { \
+         _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
+         _classes = _widget->classes; \
+         if (!_classes) STYLE = NULL; \
+         else \
+           { \
+               _class = EINA_INLIST_CONTAINER_GET(_classes, Class); \
+               _styles = _class->styles; \
+               if (!_styles) STYLE = NULL; \
+               else\
+                 { \
+                     _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
+                     STYLE = _style; \
+                 } \
+           } \
+     } \
+   if ((!STYLE) && (PROJECT->layouts)) \
+     { \
+       _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
+       STYLE = _style;\
+     }
 #endif /* COMMON_MACRO_H */

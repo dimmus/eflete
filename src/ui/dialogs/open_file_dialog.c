@@ -100,13 +100,13 @@ _on_cancel_cb(void *data,
           {
              ui_menu_base_disabled_set(ap->menu_hash, false);
              ui_menu_locked_set(ap->menu_hash, true);
-             ui_menu_disable_set(ap->menu_hash, "Save project", false);
+             ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
           }
         else
           {
              ui_menu_base_disabled_set(ap->menu_hash, true);
              ui_menu_locked_set(ap->menu_hash, false);
-             ui_menu_disable_set(ap->menu_hash, "Save project", true);
+             ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
           }
      }
    ecore_main_loop_quit();
@@ -161,6 +161,15 @@ open_edj_file(App_Data *ap)
 }
 
 static void
+_on_edj_name_changed_cb(void *data,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info __UNUSED__)
+{
+   Evas_Object *bt_open = data;
+   elm_object_disabled_set(bt_open, true);
+}
+
+static void
 _on_open_edj_cb(void *data,
                 Evas_Object *obj,
                 void *event_info __UNUSED__)
@@ -201,7 +210,7 @@ _on_compile_cb(void *data,
           Evas_Object *obj,
           void *event_info __UNUSED__)
 {
-   Evas_Object *bt_c = (Evas_Object *)data;
+   Evas_Object *bt_open = (Evas_Object *)data;
 
    const char *path_edc = elm_object_text_get(fs_ent->edc);
    const char *path_edj = elm_object_text_get(fs_ent->edj);
@@ -220,7 +229,7 @@ _on_compile_cb(void *data,
         return;
      }
    elm_object_disabled_set(obj, true);
-   elm_object_disabled_set(bt_c, true);
+   elm_object_disabled_set(bt_open, true);
 
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, _("<b>Compilation started...</b>"));
@@ -228,7 +237,7 @@ _on_compile_cb(void *data,
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, "<br><br>");
    elm_object_disabled_set(obj, false);
-   elm_object_disabled_set(bt_c, false);
+   if (exit_code == 0) elm_object_disabled_set(bt_open, false);
    DBG("Compile exit code: %d", exit_code);
 }
 
@@ -325,7 +334,7 @@ _edx_select(void *data,
    if (!fs_ent->parent) return;
 
    Evas_Object *inwin;
-   inwin = mw_add(NULL, NULL);
+   inwin = mw_add(_on_path_done, NULL);
 
    OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
    elm_fileselector_selected_set(fs, path);
@@ -473,13 +482,15 @@ open_edc_file(App_Data *ap)
    elm_entry_single_line_set(fs_ent->log, false);
    elm_entry_editable_set(fs_ent->log, false);
    elm_scroller_policy_set(fs_ent->log, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
-   elm_entry_entry_set(fs_ent->log, "");
+   ewe_entry_entry_set(fs_ent->log, "");
    elm_entry_cursor_end_set(fs_ent->log);
    #undef _ITEM_ADD
 
    BOX_ADD(inwin, button_box, true, true);
 
    _BUTTON_ADD(bt_o, button_box, _("Open EDJ"), _on_open_edj_cb, ap);
+   elm_object_disabled_set(bt_o, true);
+   evas_object_smart_callback_add(fs_ent->edj, "changed", _on_edj_name_changed_cb, bt_o);
    _BUTTON_ADD(bt, button_box, _("Compile"), _on_compile_cb, bt_o);
    _BUTTON_ADD(bt_c, button_box, _("Cancel"), _on_cancel_cb, ap);
    elm_box_pack_end(button_box, bt);

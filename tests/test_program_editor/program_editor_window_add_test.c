@@ -117,7 +117,7 @@ EFLETE_TEST (program_editor_window_add_test_n1)
    app = app_create();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
 
    manager = program_editor_window_add(style);
    ck_assert_msg(manager == NULL, "Program Editor was successfully created");

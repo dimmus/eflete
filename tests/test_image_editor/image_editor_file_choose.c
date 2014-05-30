@@ -62,16 +62,20 @@ EFLETE_TEST (image_editor_file_choose_test_p)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
-                        evas_object_evas_get(app->win), app->project->swapfile);
-   Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_file_choose(ie, "radio.png") == EINA_TRUE,
+   ck_assert_msg(image_editor_file_choose(images, "radio.png") == EINA_TRUE,
                  "failure: cannot select file");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
@@ -97,7 +101,7 @@ END_TEST
  * @step 2 check returned value
  *
  * </td>
- * <td>image_editor, "bla-bla-bla-there is no such image"</td>
+ * <td>image_editor, "not_correct_image_name"</td>
  * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -109,14 +113,20 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
-   wm_widget_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->swapfile);
-   Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_file_choose(ie, "bla-bla-bla-there is no such image") == EINA_FALSE, "Selected image that not exist");
+   ck_assert_msg(image_editor_file_choose(images, "not_correct_image_name") == EINA_FALSE,
+                 "Selected image that not exist");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
@@ -142,7 +152,7 @@ END_TEST
  * @step 2 check returned value
  *
  * </td>
- * <td>NULL, "radio.png"</td>
+ * <td>NULL, "not_correct_image_name"</td>
  * <td>EINA_FALSE returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -154,14 +164,20 @@ EFLETE_TEST (image_editor_file_choose_test_n2)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
-   wm_widget_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->swapfile);
-   image_editor_window_add(app->project, SINGLE);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_file_choose(NULL, "bla-bla-bla-there is no such image") == EINA_FALSE, "Selected image that not exist");
+   ck_assert_msg(image_editor_file_choose(NULL, "not_correct_image_name") == EINA_FALSE,
+                 "Selected image that not exist");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }
@@ -199,14 +215,19 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
    elm_init(0,0);
    App_Data *app;
    app_init();
+   Evas_Object *images;
+
    app = app_create();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
-   wm_widget_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->swapfile);
-   Evas_Object *ie = image_editor_window_add(app->project, SINGLE);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->swapfile);
+   images = image_editor_window_add(app->project, SINGLE);
 
-   ck_assert_msg(image_editor_file_choose(ie, NULL) == EINA_FALSE, "Selected image that not exist");
+   ck_assert_msg(image_editor_file_choose(images, NULL) == EINA_FALSE, "Selected image that not exist");
 
+   evas_object_del(images);
    app_shutdown();
    elm_shutdown();
 }

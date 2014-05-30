@@ -72,7 +72,7 @@ EFLETE_TEST(ui_states_list_part_get_test_p1)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_states = ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);

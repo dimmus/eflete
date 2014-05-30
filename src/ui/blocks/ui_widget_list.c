@@ -274,11 +274,15 @@ _layout_del_cb(void *data,
 
 static void
 _unset_cur_style(void *data,
-                 Evas_Object *obj __UNUSED__,
+                 Evas_Object *obj,
                  void *ei __UNUSED__)
 {
    Project *project = (Project *)data;
+   Part *pr;
+   EINA_INLIST_FOREACH(project->current_style->parts, pr)
+      pr->show = true;
    project->current_style = NULL;
+   evas_object_smart_callback_del(obj, "wl,part,back", _unset_cur_style);
 }
 
 static void
@@ -286,7 +290,7 @@ _add_style_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *block =  elm_object_parent_widget_get(elm_object_parent_widget_get(data));
+   Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
    evas_object_smart_callback_call(block, "wl,style,add", NULL);
 }
 
@@ -295,7 +299,7 @@ _del_style_unpress(void *data,
                    Evas_Object *obj __UNUSED__,
                    void *event_info __UNUSED__)
 {
-   Evas_Object *block =  elm_object_parent_widget_get(elm_object_parent_widget_get(data));
+   Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
    evas_object_smart_callback_call(block, "wl,style,del", NULL);
 }
 
@@ -411,7 +415,7 @@ _on_style_clicked_double(void *data,
    elm_object_style_set(gl_parts, "eflete/dark");
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
    pr->current_style = _style;
-   evas_object_smart_callback_add(nf, "wl,part,back", _unset_cur_style, pr);
+   evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
    evas_object_size_hint_align_set(gl_parts, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_parts, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
@@ -567,15 +571,12 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
-   /* temporary solution, while deleting aliases is not working. */
-   elm_object_disabled_set(button, true);
-   /*************************************************************/
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, nf);
+   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, obj);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
    evas_object_show(gl_class);
@@ -590,8 +591,9 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    Elm_Object_Item *glit_style = NULL;
    Elm_Object_Item *glit_class = NULL;
 
-   if ((!gl_classes) || (!classes)) return false;
-   elm_genlist_clear(gl_classes);
+   if (gl_classes) elm_genlist_clear(gl_classes);
+   else return false;
+   if (!classes) return false;
 
    if (!_itc_class)
      {
@@ -692,7 +694,6 @@ ui_widget_list_add(Evas_Object *parent)
    NAVI(widgets, _("Widget list"));
    NAVI(layouts, _("Layouts list"));
 #undef NAVI
-
    ICON_ADD(nf_layouts, ic, false, EFLETE_IMG_PATH"icon-add.png");
    elm_image_resizable_set(ic, false, false);
    bt = elm_button_add(nf_layouts);
@@ -849,16 +850,11 @@ _wl_key_down_cb(void *data __UNUSED__,
 }
 
 Eina_Bool
-ui_widget_list_layouts_reload(Evas_Object *obj, Project *project)
+ui_widget_list_layouts_reload(Evas_Object *gl_layouts, Project *project)
 {
    Elm_Object_Item *eoi = NULL;
    Style *_layout = NULL;
-   Evas_Object *gl_layouts;
-
-   if ((!obj) || (!project)) return false;
-   Evas_Object *nf = evas_object_data_get(obj, LAYOUTS_NAVIFRAME_DATA_KEY);
-   gl_layouts = elm_object_item_part_content_get(_widget_list_get(nf),
-                                                 "elm.swallow.content");
+   if ((!gl_layouts) || (!project)) return false;
 
    elm_genlist_clear(gl_layouts);
    EINA_INLIST_FOREACH(project->layouts, _layout)

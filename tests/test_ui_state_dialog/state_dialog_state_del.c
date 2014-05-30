@@ -23,7 +23,7 @@
 /**
  * @addtogroup ui_state_dialog_test
  * @{
- * @addtogroup state_dialog_state_add
+ * @addtogroup state_dialog_state_del
  * @{
  * ui_state_dialog
  * <TABLE>
@@ -31,11 +31,11 @@
  */
 
 /**
- * @addtogroup state_dialog_state_add
+ * @addtogroup state_dialog_state_del
  * @{
  * <tr>
- * <td>state_dialog_state_add</td>
- * <td>state_dialog_state_add_test_p</td>
+ * <td>state_dialog_state_del</td>
+ * <td>state_dialog_state_del_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -49,19 +49,22 @@
  * @step 9 add state list to app data
  * @step 10 set state list with data from edj project
  * @step 11 set block state list with data from state_list
+ * @step 12 add new state for first part from edj project
+ * @step 13 get the last item from state_list
+ * @step 14 make the last state as selected
  *
  * @procedure
- * @step 1 Call function state_dialog_state_add(app_data).
+ * @step 1 Call function state_dialog_state_del(app_data).
  * @step 2 Check returned value.
  * </td>
- * <td>(App_Data *) app_data</td>
+ * <td>App_Data *app_data</td>
  * <td>Evas_Object *popup</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (state_dialog_state_add_test_p)
+EFLETE_TEST (state_dialog_state_del_test_p)
 {
    elm_init(0, 0);
    App_Data *app_data;
@@ -69,10 +72,11 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    Evas_Object *popup, *state_list;
    Style *style = NULL;
    Part *part = NULL;
+   Elm_Object_Item *eoi;
    const char *name, *path;
 
    name = "UTC";
-   path = "./edj_build/state_dialog_state_add.edj";
+   path = "./edj_build/state_dialog_state_del.edj";
    app_init();
    app_data = app_create();
    ui_main_window_add(app_data);
@@ -84,9 +88,12 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    state_list = ui_states_list_add(app_data->win);
    ui_states_list_data_set(state_list, style, part);
    ui_block_state_list_set(app_data, state_list);
+   ui_states_list_state_add(state_list, "new_state 1.0");
+   eoi = elm_genlist_last_item_get(state_list);
+   elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
-   popup = state_dialog_state_add(app_data);
-   ck_assert_msg(popup != NULL, "Failed to create state dialog");
+   popup = state_dialog_state_del(app_data);
+   ck_assert_msg(popup != NULL, "Failed to delete state of part");
 
    app_shutdown();
    elm_shutdown();
@@ -94,11 +101,11 @@ EFLETE_TEST (state_dialog_state_add_test_p)
 END_TEST
 
 /**
- * @addtogroup state_dialog_state_add
+ * @addtogroup state_dialog_state_del
  * @{
  * <tr>
- * <td>state_dialog_state_add</td>
- * <td>state_dialog_state_add_test_n1</td>
+ * <td>state_dialog_state_del</td>
+ * <td>state_dialog_state_del_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -106,44 +113,7 @@ END_TEST
  * @step 3 create application data
  *
  * @procedure
- * @step 1 Call function state_dialog_state_add(app_data).
- * @step 2 Check returned value.
- * </td>
- * <td>(App_Data *) app_data</td>
- * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (state_dialog_state_add_test_n1)
-{
-   elm_init(0, 0);
-   App_Data *app_data;
-   Evas_Object *popup;
-
-   app_init();
-   app_data = app_create();
-
-   popup = state_dialog_state_add(app_data);
-   ck_assert_msg(popup == NULL, "It create popup with 'state dialog' without creating main window");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup state_dialog_state_add
- * @{
- * <tr>
- * <td>state_dialog_state_add</td>
- * <td>state_dialog_state_add_test_n2</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 Call function state_dialog_state_add(app_data).
+ * @step 1 Call function state_dialog_state_del(app_data).
  * @step 2 Check returned value.
  * </td>
  * <td>App_Data *app_data</td>
@@ -153,24 +123,61 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (state_dialog_state_add_test_n2)
+EFLETE_TEST (state_dialog_state_del_test_n1)
 {
    elm_init(0, 0);
+   App_Data *app_data;
    Evas_Object *popup;
 
-   popup = state_dialog_state_add(NULL);
-   ck_assert_msg(popup == NULL, "It create popup with 'state dialog' with NULL data");
+   app_init();
+   app_data = app_create();
+
+   popup = state_dialog_state_del(app_data);
+   ck_assert_msg(popup == NULL, "It delete part's state without creating main window");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup state_dialog_state_add
+ * @addtogroup state_dialog_state_del
  * @{
  * <tr>
- * <td>state_dialog_state_add</td>
- * <td>state_dialog_state_add_test_n3</td>
+ * <td>state_dialog_state_del</td>
+ * <td>state_dialog_state_del_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 Call function state_dialog_state_del(app_data).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>NULL</td>
+ * <td>NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (state_dialog_state_del_test_n2)
+{
+   elm_init(0, 0);
+   Evas_Object *popup;
+
+   popup = state_dialog_state_del(NULL);
+   ck_assert_msg(popup == NULL, "It delete some state of some part with NULL data");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup state_dialog_state_del
+ * @{
+ * <tr>
+ * <td>state_dialog_state_del</td>
+ * <td>state_dialog_state_del_test_n3</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -179,17 +186,17 @@ END_TEST
  * @step 4 create main window
  *
  * @procedure
- * @step 1 Call function state_dialog_state_add(app_data).
+ * @step 1 Call function state_dialog_state_del(app_data).
  * @step 2 Check returned value.
  * </td>
- * <td>(App_Data *) app_data</td>
+ * <td>App_Data *app_data</td>
  * <td>NULL</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (state_dialog_state_add_test_n3)
+EFLETE_TEST (state_dialog_state_del_test_n3)
 {
    elm_init(0, 0);
    App_Data *app_data;
@@ -199,8 +206,8 @@ EFLETE_TEST (state_dialog_state_add_test_n3)
    app_data = app_create();
    ui_main_window_add(app_data);
 
-   popup = state_dialog_state_add(app_data);
-   ck_assert_msg(popup == NULL, " Failed to create state dialog");
+   popup = state_dialog_state_del(app_data);
+   ck_assert_msg(popup == NULL, "Delete the state without initialize the project");
 
    app_shutdown();
    elm_shutdown();
@@ -208,7 +215,7 @@ EFLETE_TEST (state_dialog_state_add_test_n3)
 END_TEST
 
 /**
- * @addtogroup state_dialog_state_add
+ * @addtogroup state_dialog_state_del
  * @{
  * </TABLE>
  * @}

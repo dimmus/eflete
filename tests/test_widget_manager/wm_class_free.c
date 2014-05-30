@@ -61,7 +61,7 @@ EFLETE_TEST (wm_class_free_test_p)
 
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
-   class = wm_class_add(class_name, groups);
+   class = wm_class_add(class_name, groups, NULL);
 
    ck_assert_msg(wm_class_free(class) == EINA_TRUE, "cannot delete Class structure.");
    elm_shutdown();

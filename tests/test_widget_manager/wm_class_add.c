@@ -42,11 +42,11 @@
  * @step 2 List of groups.
  *
  * @procedure
- * @step 1 Call function wm_class_add(style_name, list_of_groups).
+ * @step 1 Call function wm_class_add(style_name, list_of_groups, NULL).
  * @step 2 Check returned Class.
  * @step 3 Check that Class contains Style structure list.
  * </td>
- * <td>char* class_name = "notbase", Eina_List *groups</td>
+ * <td>char* class_name = "notbase", Eina_List *groups, NULL</td>
  * <td>All check's are passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -64,7 +64,7 @@ EFLETE_TEST (wm_class_add_test_p)
 
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
-   class = wm_class_add(class_name, groups);
+   class = wm_class_add(class_name, groups, NULL);
    ck_assert_msg(class != NULL, "Class is not created.");
    style = EINA_INLIST_CONTAINER_GET(class->styles->next, Style);
    ck_assert_str_eq(style->name, style_name);
@@ -86,7 +86,7 @@ END_TEST
  * @step 2 List of groups.
  *
  * @procedure
- * @step 1 Call function wm_class_add(NULL, list_of_groups).
+ * @step 1 Call function wm_class_add(NULL, list_of_groups, NULl).
  * @step 2 Check returned value.
  * </td>
  * <td>NULL, Eina_List *groups</td>
@@ -102,7 +102,7 @@ EFLETE_TEST (wm_class_add_test_n1)
    Eina_List *groups = NULL;
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
-   ck_assert_msg(wm_class_add(NULL, groups) == NULL, "Class structure was created.");
+   ck_assert_msg(wm_class_add(NULL, groups, NULL) == NULL, "Class structure was created.");
    elm_shutdown();
 }
 END_TEST
@@ -118,7 +118,7 @@ END_TEST
  * @step 1 initialized elm
  *
  * @procedure
- * @step 1 Call function wm_class_add("test", NULL).
+ * @step 1 Call function wm_class_add("test", NULL, NULL).
  * @step 2 Check returned value.
  * </td>
  * <td>char* class_name = "test"; NULL</td>
@@ -132,7 +132,7 @@ EFLETE_TEST (wm_class_add_test_n2)
 {
    elm_init(0,0);
    const char* class_name = "test";
-   ck_assert_msg(wm_class_add(class_name, NULL) == NULL, "Class structure was created.");
+   ck_assert_msg(wm_class_add(class_name, NULL, NULL) == NULL, "Class structure was created.");
    elm_shutdown();
 }
 END_TEST
@@ -148,7 +148,7 @@ END_TEST
  * @step 1 initialized elm
  *
  * @procedure
- * @step 1 Call function wm_class_add(NULL, NULL).
+ * @step 1 Call function wm_class_add(NULL, NULL, NULL).
  * @step 2 Check returned value.
  * </td>
  * <td>NULL, NULL</td>
@@ -161,7 +161,7 @@ END_TEST
 EFLETE_TEST (wm_class_add_test_n3)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_class_add(NULL, NULL) == NULL, "Class structure was created.");
+   ck_assert_msg(wm_class_add(NULL, NULL, NULL) == NULL, "Class structure was created.");
    elm_shutdown();
 }
 END_TEST

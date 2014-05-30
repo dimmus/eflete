@@ -67,7 +67,7 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    sig_list = wm_program_signals_list_get(style);
    ck_assert_msg(sig_list != NULL, "Signals list isn't exist.");
@@ -115,7 +115,7 @@ EFLETE_TEST (wm_program_signals_list_get_test_p2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    ck_assert_msg(wm_program_signals_list_get(style) == NULL, "Style returned data that should don't exist.");
 
@@ -153,7 +153,7 @@ EFLETE_TEST (wm_program_signals_list_get_test_n1)
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/test";
 
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    ck_assert_msg(wm_program_signals_list_get(style) == NULL, "Style returned data that should don't exist.");
 
    wm_style_free(style);

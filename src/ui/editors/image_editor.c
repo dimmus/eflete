@@ -19,6 +19,7 @@
  */
 
 #include "image_editor.h"
+#include "ui_main_window.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -232,7 +233,7 @@ _on_button_add_clicked_cb(void *data,
 {
    Evas_Object *fs;
 
-   Evas_Object *inwin = mw_add(NULL, NULL);
+   Evas_Object *inwin = mw_add(_on_image_done, NULL);
    OPEN_DIALOG_ADD(inwin, fs, _("Add image to library"));
    evas_object_smart_callback_add(fs, "done", _on_image_done, data);
    evas_object_smart_callback_add(fs, "activated", _on_image_done, data);
@@ -406,12 +407,24 @@ _image_editor_init(Image_Editor *img_edit)
    return true;
 }
 
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
 Evas_Object *
 image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
    Evas_Object *button;
    Evas_Object *box, *bottom_box, *panel_box;
    Evas_Object *_bg = NULL;
+   /* temporary solution, while it not moved to modal window */
+   App_Data *ap = app_create();
 
    if (!project)
      {
@@ -474,8 +487,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    BUTTON_ADD(bottom_box, button, _("Delete image"));
    evas_object_smart_callback_add(button, "clicked", _on_button_delete_clicked_cb,
                                    img_edit);
-   evas_object_size_hint_max_set(button, 80, 25);
-   evas_object_size_hint_min_set(button, 80, 25);
+   evas_object_size_hint_max_set(button, 100, 25);
+   evas_object_size_hint_min_set(button, 100, 25);
    elm_box_pack_end(bottom_box, button);
 
    LABEL_ADD(bottom_box, img_edit->legend, _("No images selected<br><br>"))
@@ -519,6 +532,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      }
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
    evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
+
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+
    return img_edit->win;
 }
 

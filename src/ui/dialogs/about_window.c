@@ -19,6 +19,17 @@
  */
 
 #include "style_editor.h"
+#include "ui_main_window.h"
+
+static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
 
 Evas_Object *
 about_window_add()
@@ -26,6 +37,8 @@ about_window_add()
    Evas_Object *mwin = mw_about_add(NULL, NULL);
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
+   /* temporary solution, while it not moved to modal window */
+   App_Data *ap = app_create();
 
    label = elm_label_add(mwin);
    elm_object_text_set(label,
@@ -56,6 +69,8 @@ about_window_add()
      "</align>");
 
    elm_win_inwin_content_set(mwin, label);
+   ui_menu_locked_set(ap->menu_hash, true);
+   evas_object_event_callback_add(mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(mwin);
    return mwin;
