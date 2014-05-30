@@ -313,7 +313,8 @@ wm_style_free(Style *style)
 
    if (!style) return false;
 
-   style->parent->styles = eina_inlist_remove(style->parent->styles,
+   if (style->parent)
+     style->parent->styles = eina_inlist_remove(style->parent->styles,
                                               EINA_INLIST_GET(style));
 
    if (style->isAlias)
@@ -678,7 +679,8 @@ wm_class_free(Class *class_st)
 
    if (!class_st) return false;
 
-   class_st->parent->classes = eina_inlist_remove(
+   if (class_st->parent)
+     class_st->parent->classes = eina_inlist_remove(
          class_st->parent->classes, EINA_INLIST_GET(class_st));
 
 

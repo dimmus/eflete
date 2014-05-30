@@ -78,7 +78,7 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    ui_main_window_add(app_data);
    app_data->project = pm_open_project_edj(name, path);
    canvas = evas_object_evas_get(app_data->win);
-   style = wm_style_add("radio", "elm/radio/base/def", STYLE);
+   style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, canvas, path);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);

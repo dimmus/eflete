@@ -69,7 +69,7 @@ EFLETE_TEST (workspace_edit_object_unset_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/test", STYLE);
+   style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_unset.edj");
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_unset.edj");
    res = workspace_edit_object_unset(workspace);

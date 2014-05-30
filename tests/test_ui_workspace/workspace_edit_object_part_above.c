@@ -69,7 +69,7 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "radio");
@@ -121,7 +121,7 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "non_exist");
@@ -171,7 +171,7 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
-   style = wm_style_add("test", "elm/radio/base/def", STYLE);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, NULL);

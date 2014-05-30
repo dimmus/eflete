@@ -74,7 +74,7 @@ EFLETE_TEST (ui_widget_list_layouts_reload_test_p)
    project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_layout_reload.edj");
    widget_list = ui_widget_list_add(parent);
    result = ui_widget_list_data_set(widget_list, project);
-   layout = wm_style_add("newstyle", "newstyle", LAYOUT);
+   layout = wm_style_add("newstyle", "newstyle", LAYOUT, NULL);
    project->layouts = eina_inlist_append(project->layouts,
                                          EINA_INLIST_GET(layout));
    eoi = elm_naviframe_top_item_get(widget_list);

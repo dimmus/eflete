@@ -68,7 +68,7 @@ EFLETE_TEST(ui_signal_list_data_set_test_p1)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_signals = ui_signal_list_add(window);
    ck_assert_msg(ui_signal_list_data_set(gl_signals, style) == EINA_TRUE,
@@ -117,7 +117,7 @@ EFLETE_TEST(ui_signal_list_data_set_test_p2)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_signals = ui_signal_list_add(window);
    ck_assert_msg(ui_signal_list_data_set(gl_signals, style) == EINA_TRUE,
@@ -167,7 +167,7 @@ EFLETE_TEST(ui_signal_list_data_set_test_p3)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_signals = ui_signal_list_add(window);
    ui_signal_list_data_set(gl_signals, style);
@@ -223,8 +223,8 @@ EFLETE_TEST(ui_signal_list_data_set_test_p4)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
-   another_style = wm_style_add(another_style_name, another_full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
+   another_style = wm_style_add(another_style_name, another_full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    wm_style_data_load(another_style, e, edj);
    gl_signals = ui_signal_list_add(window);
@@ -275,7 +275,7 @@ EFLETE_TEST(ui_signal_list_data_set_test_n1)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
 
    ck_assert_msg(ui_signal_list_data_set(NULL, style) == EINA_FALSE,
@@ -392,7 +392,7 @@ EFLETE_TEST(ui_signal_list_data_set_test_n4)
    const char *full_group_name = "elm/radio/base/def";
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   style = wm_style_add(group_name, full_group_name, STYLE);
+   style = wm_style_add(group_name, full_group_name, STYLE, NULL);
    gl_signals = ui_signal_list_add(window);
    ck_assert_msg(ui_signal_list_data_set(gl_signals, style) == EINA_FALSE,
                  "Successfull set the not preloaded data to the Signal List.");
@@ -444,8 +444,8 @@ EFLETE_TEST(ui_signal_list_data_set_test_n5)
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(group_name, full_group_name, STYLE);
-   another_style = wm_style_add(another_group_name, another_full_group_name, STYLE);
+   style = wm_style_add(group_name, full_group_name, STYLE, NULL);
+   another_style = wm_style_add(another_group_name, another_full_group_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_signals = ui_signal_list_add(window);
    ui_signal_list_data_set(gl_signals, style);

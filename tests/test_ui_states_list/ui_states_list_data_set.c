@@ -70,7 +70,7 @@ EFLETE_TEST(ui_states_list_data_set_test_p)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_states = ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
@@ -122,7 +122,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n1)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_states = ui_states_list_add(window);
 
@@ -175,7 +175,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n2)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    gl_states = ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
@@ -228,7 +228,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n3)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
 
@@ -313,7 +313,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n5)
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(window);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    wm_style_data_load(style, e, edj);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
 
@@ -365,7 +365,7 @@ EFLETE_TEST(ui_states_list_data_set_test_n6)
    elm_init(0,0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   style = wm_style_add(style_name, full_style_name, STYLE);
+   style = wm_style_add(style_name, full_style_name, STYLE, NULL);
    gl_states = ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
 
