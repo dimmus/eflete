@@ -311,15 +311,16 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
        ewe_entry_entry_set(transition.entry3, ""); \
      }
 
-#define TRANS_VAL_GET(_val_num, _entry, _callback) \
+#define TRANS_VAL_GET(_val_num, _entry) \
    value = edje_edit_program_transition_value##_val_num##_get(prop.style->obj, \
               prop.program); \
    snprintf(buff, sizeof(buff), "%1.2f", value); \
-   ewe_entry_entry_set(_entry, buff); \
-   evas_object_smart_callback_del(_entry, \
-      "activated", _callback); \
-   evas_object_smart_callback_add(_entry, \
-      "activated", _callback, prog_edit); \
+   ewe_entry_entry_set(_entry, buff);
+
+#define CALLBACK_UPDATE(_activated_cb, _entry) \
+        evas_object_smart_callback_del(_entry, "activated", _activated_cb); \
+        evas_object_smart_callback_add(_entry, "activated", _activated_cb, \
+                                       prog_edit);
 
 static void
 _trans_entries_set(Program_Editor *prog_edit,
@@ -350,9 +351,10 @@ _trans_entries_set(Program_Editor *prog_edit,
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "factor");
            ENTRY_UPDATE(transition.entry3, true, transition.layout3, NULL);
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
            if (is_update)
              {
-                TRANS_VAL_GET(1, transition.entry2, _on_v1_active);
+                TRANS_VAL_GET(1, transition.entry2);
              }
            break;
         }
@@ -360,10 +362,12 @@ _trans_entries_set(Program_Editor *prog_edit,
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "gradient");
            ENTRY_UPDATE(transition.entry3, false, transition.layout3, "factor");
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
+           CALLBACK_UPDATE(_on_v2_active, transition.entry3)
            if (is_update)
              {
-                TRANS_VAL_GET(1, transition.entry2, _on_v1_active);
-                TRANS_VAL_GET(2, transition.entry3, _on_v2_active);
+                TRANS_VAL_GET(1, transition.entry2);
+                TRANS_VAL_GET(2, transition.entry3);
              }
            break;
         }
@@ -371,10 +375,12 @@ _trans_entries_set(Program_Editor *prog_edit,
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "decay");
            ENTRY_UPDATE(transition.entry3, false, transition.layout3, "bounces");
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
+           CALLBACK_UPDATE(_on_v2_active, transition.entry3)
            if (is_update)
              {
-                TRANS_VAL_GET(1, transition.entry2, _on_v1_active);
-                TRANS_VAL_GET(2, transition.entry3, _on_v2_active);
+                TRANS_VAL_GET(1, transition.entry2);
+                TRANS_VAL_GET(2, transition.entry3);
              }
            break;
         }
@@ -382,10 +388,12 @@ _trans_entries_set(Program_Editor *prog_edit,
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "decay");
            ENTRY_UPDATE(transition.entry3, false, transition.layout3, "swings");
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
+           CALLBACK_UPDATE(_on_v2_active, transition.entry3)
            if (is_update)
              {
-                TRANS_VAL_GET(1, transition.entry2, _on_v1_active);
-                TRANS_VAL_GET(2, transition.entry3, _on_v2_active);
+                TRANS_VAL_GET(1, transition.entry2);
+                TRANS_VAL_GET(2, transition.entry3);
              }
            break;
         }
@@ -395,21 +403,15 @@ _trans_entries_set(Program_Editor *prog_edit,
      }
 }
 
-#define ACTION_STATE_GET(_state_get, _activated_cb, _entry) \
+#define ACTION_STATE_GET(_state_get, _entry) \
          str = _state_get(prop.style->obj, prop.program); \
          ewe_entry_entry_set(_entry, str); \
-         edje_edit_string_free(str); \
-         evas_object_smart_callback_del(_entry, "activated", _activated_cb); \
-         evas_object_smart_callback_add(_entry, "activated", _activated_cb, \
-                                        prog_edit);
+         edje_edit_string_free(str);
 
-#define ACTION_VAL_GET(_val_get, _activated_cb, _entry) \
+#define ACTION_VAL_GET(_val_get, _entry) \
          value = _val_get(prop.style->obj, prop.program); \
          sprintf(buff, "%1.2f", value); \
-         ewe_entry_entry_set(_entry, buff); \
-         evas_object_smart_callback_del(_entry, "activated", _activated_cb); \
-         evas_object_smart_callback_add(_entry, "activated", _activated_cb, \
-                                        prog_edit);
+         ewe_entry_entry_set(_entry, buff);
 
 static void
 _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
@@ -443,10 +445,12 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "state value");
            REGEX_SET(action.entry2, FLOAT_NUMBER_0_1_REGEX);
+           CALLBACK_UPDATE(_on_state_active, action.entry1);
+           CALLBACK_UPDATE(_on_value_active, action.entry2);
            if (is_update)
              {
-                ACTION_STATE_GET(edje_edit_program_state_get, _on_state_active, action.entry1)
-                ACTION_VAL_GET(edje_edit_program_value_get, _on_value_active, action.entry2);
+                ACTION_STATE_GET(edje_edit_program_state_get, action.entry1)
+                ACTION_VAL_GET(edje_edit_program_value_get, action.entry2);
              }
            break;
         }
@@ -456,10 +460,12 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "emitter");
            REGEX_SET(action.entry2, EDJE_NAME_REGEX);
+           CALLBACK_UPDATE(_on_state_active, action.entry1);
+           CALLBACK_UPDATE(_on_value_active, action.entry2);
            if (is_update)
              {
-                ACTION_STATE_GET(edje_edit_program_state_get, _on_state_active, action.entry1)
-                ACTION_STATE_GET(edje_edit_program_state2_get, _on_value_active, action.entry2);
+                ACTION_STATE_GET(edje_edit_program_state_get, action.entry1)
+                ACTION_STATE_GET(edje_edit_program_state2_get, action.entry2);
              }
            break;
         }
@@ -471,10 +477,12 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            REGEX_SET(action.entry1, FLOAT_NUMBER_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "y");
            REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
+           CALLBACK_UPDATE(_on_value_active, action.entry1);
+           CALLBACK_UPDATE(_on_value2_active, action.entry2);
            if (is_update)
              {
-                ACTION_VAL_GET(edje_edit_program_value_get, _on_value_active, action.entry1)
-                ACTION_VAL_GET(edje_edit_program_value2_get, _on_value2_active, action.entry2);
+                ACTION_VAL_GET(edje_edit_program_value_get, action.entry1)
+                ACTION_VAL_GET(edje_edit_program_value2_get, action.entry2);
              }
            break;
         }
@@ -1472,6 +1480,7 @@ program_editor_window_add(Style *style)
 #undef prop
 #undef ACTION_STATE_GET
 #undef ACTION_VAL_GET
+#undef CALLBACK_UPDATE
 #undef TRANS_ENTRIES_DEFAULT_SET
 #undef TRANS_VAL_GET
 #undef REGEX_SET
