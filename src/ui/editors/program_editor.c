@@ -1263,7 +1263,7 @@ _on_editor_save(void *data,
                 void *ei __UNUSED__)
 {
    Style *style = (Style *)data;
-   edje_edit_save(style->obj);
+   edje_edit_without_source_save(style->obj, true);
 }
 
 static void
