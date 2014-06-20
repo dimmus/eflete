@@ -3,7 +3,10 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_V_EDJ = $(am__v_EDJ)
 am__v_EDJ = @echo "  EDJ   " $@;
+AM_V_EET = $(am__v_EET)
+am__v_EET = @echo "  EET   " $@;
 
+EET_EET = @eet_eet@
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/fonts
@@ -25,6 +28,9 @@ shortcut_DATA = eflete.desktop
 icondir = $(datadir)/icons
 icon_DATA = ${srcdir}/layouts/images/eflete.svg
 
+colorsdir = $(datadir)/eflete/themes/default
+colors_DATA = color.eet
+
 eflete.edj: Makefile
 	$(AM_V_EDJ)$(EDJE_CC) \
 		$(EDJE_FLAGS) \
@@ -43,5 +49,10 @@ default.edj: Makefile
 	$(top_srcdir)/data/themes/default/default.edc \
 	$(top_builddir)/data/default.edj
 
+color.eet: Makefile
+	$(AM_V_EET)$(EET_EET) -e \
+	$(top_builddir)/data/color.eet color \
+	$(top_srcdir)/data/color/color.src 1
+
 clean-local:
-	rm -f *.edj
+	rm -f *.edj *.eet

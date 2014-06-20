@@ -28,6 +28,7 @@
  * This widget designed for show group and part details.
  */
 
+#include "syntax_color.h"
 #include "widget_manager.h"
 #include "ui_workspace.h"
 

@@ -40,6 +40,7 @@ struct _Prop_Data
    Part *part;
    Evas_Object *visual;
    Evas_Object *code;
+   color_data *color_data;
    struct {
       Evas_Object *frame;
       Evas_Object *info;
@@ -156,6 +157,7 @@ _del_prop_data(void *data,
                void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+   color_term(pd->color_data);
    free(pd);
 }
 
@@ -271,6 +273,7 @@ ui_property_add(Evas_Object *parent)
    it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->code);
    elm_entry_editable_set(pd->code, false);
+   pd->color_data = color_init(eina_strbuf_new());
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
@@ -383,6 +386,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    int aliases_count = 0;
    char *list_data;
    Eina_Strbuf *text_ctx = NULL;
+   char *markup_code;
+   const char *colorized_code;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -400,7 +405,12 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
             " with editable group in workspace", style);
         return false;
      }
-   elm_object_text_set(pd->code, elm_entry_utf8_to_markup(edje_edit_source_generate(style->obj)));
+
+   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
+   colorized_code = color_apply(pd->color_data, markup_code,
+                                strlen(markup_code), NULL, NULL);
+   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
+
    prop_box = elm_object_content_get(pd->visual);
    aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
    aliases_count = eina_list_count(aliases);
@@ -754,6 +764,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
    Evas_Object *state_frame, *box, *prop_box;
    Edje_Part_Type type;
    char state[BUFF_MAX];
+   char *markup_code;
+   const char *colorized_code;
 
    if ((!property) || (!part)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -861,7 +873,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if (type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property);
    else ui_property_state_image_unset(property);
 
-   elm_object_text_set(pd->code, elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj)));
+   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
+   colorized_code = color_apply(pd->color_data, markup_code,
+                                strlen(markup_code), NULL, NULL);
+   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
 
    #undef pd_state
    return true;
