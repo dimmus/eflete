@@ -837,57 +837,57 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
-   Evas_Object *item, *box, *layout, *combobox1, *combobox2; \
+   Evas_Object *item, *box, *layout, *combobox; \
    Part *part; \
    Eina_Stringshare *value; \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/relative_to") \
    BOX_ADD(item, box, false, true) \
    elm_box_padding_set(box, 0, 6); \
    ITEM_CONTEINER_1LABEL_ADD(box, layout, "x:"); \
-   EWE_COMBOBOX_ADD(layout, combobox1) \
+   EWE_COMBOBOX_ADD(layout, combobox) \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
    if (value) \
-     ewe_combobox_text_set(combobox1, value); \
+     ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox1, _("Layout")); \
-   ewe_combobox_item_add(combobox1, _("Layout")); \
+     ewe_combobox_text_set(combobox, _("Layout")); \
+   ewe_combobox_item_add(combobox, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
-          ewe_combobox_item_add(combobox1, part->name); \
+          ewe_combobox_item_add(combobox, part->name); \
      } \
-   elm_object_tooltip_text_set(combobox1, tooltip1); \
-   elm_object_part_content_set(layout, "eflete.content", combobox1); \
+   elm_object_tooltip_text_set(combobox, tooltip1); \
+   elm_object_part_content_set(layout, "eflete.content", combobox); \
    elm_box_pack_end(box, layout); \
    edje_edit_string_free(value); \
-   evas_object_smart_callback_add(combobox1, "selected", _on_combobox_##SUB##_##VALUE1##_change, pd); \
+   evas_object_smart_callback_add(combobox, "selected", _on_combobox_##SUB##_##VALUE1##_change, pd); \
+   evas_object_data_set(item, ITEM1, combobox); \
    ITEM_CONTEINER_1LABEL_ADD(box, layout, "y:"); \
-   EWE_COMBOBOX_ADD(layout, combobox2) \
+   EWE_COMBOBOX_ADD(layout, combobox) \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
    if (value) \
-     ewe_combobox_text_set(combobox2, value); \
+     ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox2, _("Layout")); \
-   ewe_combobox_item_add(combobox2, _("Layout")); \
+     ewe_combobox_text_set(combobox, _("Layout")); \
+   ewe_combobox_item_add(combobox, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
-          ewe_combobox_item_add(combobox2, part->name); \
+          ewe_combobox_item_add(combobox, part->name); \
      } \
-   elm_object_tooltip_text_set(combobox2, tooltip2); \
-   evas_object_smart_callback_add(combobox2, "selected", _on_combobox_##SUB##_##VALUE2##_change, pd); \
-   elm_object_part_content_set(layout, "eflete.content", combobox2); \
+   elm_object_tooltip_text_set(combobox, tooltip2); \
+   evas_object_smart_callback_add(combobox, "selected", _on_combobox_##SUB##_##VALUE2##_change, pd); \
+   elm_object_part_content_set(layout, "eflete.content", combobox); \
    elm_box_pack_end(box, layout); \
    edje_edit_string_free(value); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
-   evas_object_data_set(item, ITEM1, combobox1); \
-   evas_object_data_set(item, ITEM2, combobox2); \
+   evas_object_data_set(item, ITEM2, combobox); \
    return item; \
 }
 
@@ -896,41 +896,41 @@ static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                                Prop_Data *pd) \
 { \
-   Evas_Object *combobox1, *combobox2; \
+   Evas_Object *combobox; \
    Eina_Stringshare *value; \
    Part *part; \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   combobox1 = evas_object_data_get(item, ITEM1); \
-   ewe_combobox_items_list_free(combobox1, true); \
+   combobox = evas_object_data_get(item, ITEM1); \
+   ewe_combobox_items_list_free(combobox, true); \
    if (value) \
-     ewe_combobox_text_set(combobox1, value); \
+     ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox1, _("Layout")); \
-   ewe_combobox_item_add(combobox1, _("Layout")); \
+     ewe_combobox_text_set(combobox, _("Layout")); \
+   ewe_combobox_item_add(combobox, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
-          ewe_combobox_item_add(combobox1, part->name); \
+          ewe_combobox_item_add(combobox, part->name); \
      } \
    edje_edit_string_free(value); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   combobox2 = evas_object_data_get(item, ITEM2); \
-   ewe_combobox_items_list_free(combobox2, true); \
+   combobox = evas_object_data_get(item, ITEM2); \
+   ewe_combobox_items_list_free(combobox, true); \
    if (value) \
-     ewe_combobox_text_set(combobox2, value); \
+     ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox2, _("Layout")); \
-   ewe_combobox_item_add(combobox2, _("Layout")); \
+     ewe_combobox_text_set(combobox, _("Layout")); \
+   ewe_combobox_item_add(combobox, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
-          ewe_combobox_item_add(combobox2, part->name); \
+          ewe_combobox_item_add(combobox, part->name); \
      } \
    edje_edit_string_free(value); \
 }
