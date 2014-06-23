@@ -892,16 +892,18 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (strcmp(item->title, "None")) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        item->title); \
+   if (strcmp(item->title, _("Layout"))) \
+     edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                     pd->part->curr_state, pd->part->curr_state_value, \
+                                     item->title); \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         NULL); \
   int temp = edje_edit_state_min_w_get(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value); \
-  edje_edit_state_min_w_set(pd->style->obj, pd->part->name, pd->part->curr_state, \
-                                        pd->part->curr_state_value, temp); \
+                                       pd->part->curr_state, pd->part->curr_state_value); \
+  edje_edit_state_min_w_set(pd->style->obj, pd->part->name, \
+                            pd->part->curr_state, \
+                            pd->part->curr_state_value, temp); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -943,7 +945,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
         evas_object_show(separator);
 
         pd_obj_area.rel1_to = prop_item_state_rel1_to_x_y_add(box, pd,
-                        "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
@@ -983,7 +984,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
         evas_object_show(separator);
 
         pd_obj_area.rel2_to = prop_item_state_rel2_to_x_y_add(box, pd,
-                        "layout", "layout",
                         _("Causes a corner to be positioned relatively to the X axis of another "
                         "part. Setting to \"\" will un-set this value"),
                         _("Causes a corner to be positioned relatively to the Y axis of another "
