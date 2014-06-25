@@ -91,9 +91,11 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
  * @param hbr_w pointer of int width of bottom-right handler,
  * @param hbr_h pointer of int height of bottom-tight handler.
  *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
  * @ingroup Container
  */
-void
+Eina_Bool
 container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h);
 
 /**

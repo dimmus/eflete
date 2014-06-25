@@ -12,6 +12,7 @@ colorclass_editor_test \
 edje_compile_test \
 image_editor_test \
 logger_test \
+container_test \
 modal_window_test \
 notify_test \
 project_manager_test \
@@ -46,6 +47,7 @@ FLAGS = \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
+-I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
 -I${top_srcdir}/src/ui/editors \
@@ -223,6 +225,20 @@ test_style_dialog/test_style_dialog.c \
 test_style_dialog/style_dialog_add.c
 style_dialog_test_CFLAGS = ${FLAGS}
 style_dialog_test_LDADD = ${LD}
+
+container_test_SOURCES = \
+test_container/test_container.c \
+test_container/container_add.c \
+test_container/container_container_size_set.c \
+test_container/container_container_size_get.c \
+test_container/container_min_size_set.c \
+test_container/container_max_size_set.c \
+test_container/container_handler_size_set.c \
+test_container/container_handler_size_get.c \
+test_container/container_style_get.c \
+test_container/container_style_set.c
+container_test_CFLAGS = ${FLAGS}
+container_test_LDADD = ${LD}
 
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \

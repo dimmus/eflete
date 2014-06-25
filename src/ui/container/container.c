@@ -76,8 +76,8 @@ struct _Container_Smart_Data
    CONTAINER_DATA_GET(o, ptr)                                           \
    if (!ptr)                                                            \
      {                                                                  \
-        fprintf(stderr, "No container data for object %p (%s)!",        \
-                o, evas_object_type_get(o));                            \
+        ERR("No container data for object %p (%s)!",                    \
+            o, evas_object_type_get(o));                                \
         return val;                                                     \
      }
 
@@ -91,7 +91,7 @@ static Eina_Bool
 _user_size_calc(Evas_Object *o)
 {
    int nw, nh;
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, EINA_FALSE)
+   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, false)
 
    nw = sd->con_current_size->w + H_WIGTH;
    nh = sd->con_current_size->h + H_HEIGHT;
@@ -463,7 +463,7 @@ container_add(Evas_Object *parent)
 Eina_Bool
 container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, int hrb_h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (htl_w < 5) sd->handler_TL.w = 5;
    else sd->handler_TL.w = htl_w;
@@ -474,61 +474,68 @@ container_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hrb_w, in
    if (hrb_h < 5) sd->handler_BR.h = 5;
    else sd->handler_BR.h = hrb_h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
-container_handler_seze_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hrb_w, int *hrb_h)
+container_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   *htl_w = sd->handler_TL.w;
-   *htl_h = sd->handler_TL.h;
-   *hrb_w = sd->handler_BR.w;
-   *hrb_h = sd->handler_BR.h;
+   if (htl_w) *htl_w = sd->handler_TL.w;
+   if (htl_h) *htl_h = sd->handler_TL.h;
+   if (hbr_w) *hbr_w = sd->handler_BR.w;
+   if (hbr_h) *hbr_h = sd->handler_BR.h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
 container_min_size_set(Evas_Object *obj, int w, int h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w < 0) sd->con_size_min.w = 0;
    else sd->con_size_min.w = w;
    if (h < 0) sd->con_size_min.h = 0;
    else sd->con_size_min.h = h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
 container_max_size_set(Evas_Object *obj, int w, int h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (w < 0) sd->con_size_max.w = -1;
    else sd->con_size_max.w = w;
    if (h < 0) sd->con_size_max.h = -1;
    else sd->con_size_max.h = h;
 
-   return EINA_TRUE;
+   return true;
 }
 
 Eina_Bool
 container_container_size_set(Evas_Object *obj, int w, int h)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (w < sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
-   if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
-     sd->con_current_size->w = sd->con_size_max.w;
-   else sd->con_current_size->w = w;
-   if (h < sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
-   if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
-     sd->con_current_size->h = sd->con_size_max.h;
-   else sd->con_current_size->h = h;
+   if (w <= sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
+   else
+     {
+        if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
+          sd->con_current_size->w = sd->con_size_max.w;
+        else sd->con_current_size->w = w;
+     }
+
+   if (h <= sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
+   else
+     {
+        if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
+          sd->con_current_size->h = sd->con_size_max.h;
+        else sd->con_current_size->h = h;
+     }
 
    return _user_size_calc(obj);
 }
@@ -538,8 +545,8 @@ container_container_size_get(Evas_Object *obj, int *w, int *h)
 {
    CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   *w = sd->con_current_size->w;
-   *h = sd->con_current_size->h;
+   if (w) *w = sd->con_current_size->w;
+   if (h) *h = sd->con_current_size->h;
 
    return true;
 }
@@ -547,12 +554,12 @@ container_container_size_get(Evas_Object *obj, int *w, int *h)
 Eina_Bool
 container_style_set(Evas_Object *obj, const char *style)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, EINA_FALSE);
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (!style || (!strcmp(sd->style, style))) return EINA_FALSE;
+   if (!style || (!strcmp(sd->style, style))) return false;
    _style_set(obj, style);
 
-   return EINA_TRUE;
+   return true;
 }
 
 const char *
