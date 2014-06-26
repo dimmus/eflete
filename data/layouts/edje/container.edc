@@ -19,8 +19,14 @@ group { name: "eflete/container/base/default";
       part { name: "eflete.swallow.container";
          type: SWALLOW;
          scale: 1;
+         clip_to: "clipper";
          description { state: "default" 0.0;
             visible: 1;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
          }
       }
       part { name: "eflete.size.tooltip";
