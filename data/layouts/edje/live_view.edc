@@ -1,11 +1,9 @@
-group {
-   name: "eflete/live_view/toolbar/default";
+group { name: "eflete/live_view/toolbar/default";
    parts {
-      part { name: "background";
-         type: RECT;
+      part { name: "eflete.swallow.bg";
+         type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            color: 203 207 209 255;
          }
       }
       part { name: "menu";
@@ -16,7 +14,7 @@ group {
             align: 0.0 1.0;
          }
       }
-      part { name: "live_view";
+      part { name: "eflete.swallow.content";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -48,7 +46,9 @@ group {
             rel1.to: "menu";
          }
       }
-      part { name: "zoom_spinner";
+      /* TODO: this container need to move to the live_view property,
+       * when property will be implemented ;) */
+      part { name: "eflete.swallow.spinner";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -76,13 +76,13 @@ group {
          signal: "live_view,hide";
          source: "eflete";
          action: STATE_SET "default" 0.0;
-         target: "zoom_spinner";
+         target: "eflete.swallow.spinner";
       }
       program { name: "live_view_spinner_show";
          signal: "live_view,show";
          source: "eflete";
          action: STATE_SET "displayed" 0.0;
-         target: "zoom_spinner";
+         target: "eflete.swallow.spinner";
       }
    }
 }

@@ -18,6 +18,10 @@ static const char *imgs[] =
    "sky_04.jpg",
 };
 
+#define SWALLOW_BG "eflete.swallow.bg"
+#define SWALLOW_CONTENT "eflete.swallow.content"
+#define SWALLOW_SPINNER "eflete.swallow.spinner"
+
 typedef struct _TestItem
 {
    Eina_Stringshare *path;
@@ -679,25 +683,28 @@ Live_View *
 live_view_add(Evas_Object *parent)
 {
    Live_View *live;
-   Evas_Object *spinner, *_layout;
+   Evas_Object *spinner, *bg;
 
    if (!parent) return NULL;
 
    live = _live_view_init();
 
-   _layout = elm_layout_add(parent);
-   live->layout = _layout;
-   elm_layout_file_set(_layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
+   live->layout = elm_layout_add(parent);
+   elm_layout_file_set(live->layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
+   bg = elm_bg_add(live->layout);
+   elm_bg_color_set(bg, 203, 207, 209);
+   evas_object_show(bg);
 
    SPINNER_ADD(parent, spinner, 1, 500, 1, true, "eflete/live_view");
    elm_spinner_label_format_set(spinner, "%3.0f%%");
    evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, live);
    elm_spinner_value_set(spinner, 100);
-   elm_object_part_content_set(live->layout, "zoom_spinner", spinner);
+   elm_object_part_content_set(live->layout, SWALLOW_SPINNER, spinner);
    live->scale_spinner = spinner;
 
    live->live_view = container_add(parent);
-   elm_object_part_content_set(live->layout, "live_view", live->live_view);
+   elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
+   elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
