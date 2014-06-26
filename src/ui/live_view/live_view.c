@@ -673,12 +673,6 @@ _elm_widget_create(const char  *widget,
    return object;
 }
 
-static Live_View *
-_live_view_init(void)
-{
-   return mem_calloc(1, sizeof(Live_View));
-}
-
 Live_View *
 live_view_add(Evas_Object *parent)
 {
@@ -687,7 +681,7 @@ live_view_add(Evas_Object *parent)
 
    if (!parent) return NULL;
 
-   live = _live_view_init();
+   live = mem_malloc(sizeof(Live_View));
 
    live->layout = elm_layout_add(parent);
    elm_layout_file_set(live->layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
