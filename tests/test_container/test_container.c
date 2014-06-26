@@ -58,6 +58,14 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, container_style_get_test_p);
    tcase_add_test(tcase, container_style_get_test_n);
 
+   tcase_add_test(tcase, container_content_set_test_p);
+   tcase_add_test(tcase, container_content_set_test_n1);
+   tcase_add_test(tcase, container_content_set_test_n2);
+
+   tcase_add_test(tcase, container_content_unset_test_p);
+   tcase_add_test(tcase, container_content_unset_test_n1);
+   tcase_add_test(tcase, container_content_unset_test_n2);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

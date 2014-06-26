@@ -30,7 +30,7 @@ typedef struct _Container_Smart_Data Container_Smart_Data;
 static const char SIG_CHANGED[] = "container,changed";
 
 static const char TEXT_TOOLTIP[] = "eflete.size.tooltip";
-static const char SWALLOW_FOR_EDIT[] = "eflete.swallow.container";
+static const char SWALLOW[] = "eflete.swallow.container";
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, "(iiii)"},
@@ -296,7 +296,7 @@ _style_set(Evas_Object *o, const char *style)
    GROUP_NAME("handler_BR", style)
    if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
      {
-        GROUP_NAME("handler_BR", style)
+        GROUP_NAME("handler_BR", "default")
         edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group);
      }
 
@@ -567,6 +567,28 @@ container_style_get(Evas_Object *obj)
 {
    CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
    return sd->style;
+}
+
+Eina_Bool
+container_content_set(Evas_Object *obj, Evas_Object *content)
+{
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!content) return false;
+   edje_object_part_swallow(sd->container, SWALLOW, content);
+
+   return true;
+}
+
+Evas_Object *
+container_content_unset(Evas_Object *obj)
+{
+   Evas_Object *ret;
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
+
+   ret = edje_object_part_swallow_get(sd->container, SWALLOW);
+   edje_object_part_unswallow(obj, ret);
+   return ret;
 }
 
 #undef MY_CLASS_NAME

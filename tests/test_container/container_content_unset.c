@@ -23,48 +23,50 @@
 /**
  * @addtogroup container_test
  * @{
- * @addtogroup container_style_set
+ * @addtogroup container_content_unset
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_unset
  * @{
  * <tr>
- * <td>container_style_set</td>
- * <td>container_style_set_test_p</td>
+ * <td>container_content_unset</td>
+ * <td>container_content_unset_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create parent window
  * @step 3 create a container
+ * @step 4 create a content, elm_button
+ * @step 5 set the content object to the container
  *
  * @procedure
- * @step 1 set the new style to container
+ * @step 1 try to unset content object from the container
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) container, "default"</td>
- * <td>EINA_TRUE</td>
+ * <td>(Evas_Object *) container</td>
+ * <td>Not NULL pointer</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_style_set_test_p)
+EFLETE_TEST(container_content_unset_test_p)
 {
-   Evas_Object *parent, *container;
+   Evas_Object *parent, *container, *content;
 
    elm_init(0, 0);
-
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
    container = container_add(parent);
-   container_style_set(container, "wrong_style");
-   ck_assert_msg(container_style_set(container, "default"),
-                 "Style 'default' not setted to the conteiner.");
+   content = elm_button_add(container);
+   container_content_set(container, content);
+
+   ck_assert_msg(container_content_unset(container) != NULL,
+                 "Can't unset the content object from the container.");
 
    evas_object_del(parent);
 
@@ -73,43 +75,11 @@ EFLETE_TEST(container_style_set_test_p)
 END_TEST
 
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_unset
  * @{
  * <tr>
- * <td>container_style_set</td>
- * <td>container_style_set_test_n1</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 set the a new style name
- * @step 2 check returned value
- * </td>
- * <td>NULL, "default"</td>
- * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(container_style_set_test_n1)
-{
-   elm_init(0, 0);
-
-   ck_assert_msg(!container_style_set(NULL, "default"),
-                 "Setted to NULL object style.");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup container_style_set
- * @{
- * <tr>
- * <td>container_style_set</td>
- * <td>container_style_set_test_n2</td>
+ * <td>container_content_unset</td>
+ * <td>container_content_unset_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -117,35 +87,67 @@ END_TEST
  * @step 3 create a container
  *
  * @procedure
- * @step 1 call container_style_set
+ * @step 1 try to unset the content object from the container
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) container, NULL</td>
- * <td>EINA_FALSE</td>
+ * <td>(Evas_Object *) container</td>
+ * <td>NULL</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_style_set_test_n2)
+EFLETE_TEST(container_content_unset_test_n1)
 {
    Evas_Object *parent, *container;
 
    elm_init(0, 0);
-
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
    container = container_add(parent);
-   ck_assert_msg(!container_style_set(container, NULL),
-                 "Setted NULL style to container object");
+
+   ck_assert_msg(container_content_unset(container) == NULL,
+                 "Unset the content object from the container without content.");
+
+   evas_object_del(parent);
 
    elm_shutdown();
 }
 END_TEST
 
+/**
+ * @addtogroup container_content_unset
+ * @{
+ * <tr>
+ * <td>container_content_unset</td>
+ * <td>container_content_unset_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 try to unset the content object from the containet
+ * @step 2 check returned value
+ * </td>
+ * <td>NULL</td>
+ * <td>NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(container_content_unset_test_n2)
+{
+   elm_init(0, 0);
+
+   ck_assert_msg(container_content_unset(NULL) == NULL,
+                 "Unset the content object from the NULL container.");
+
+   elm_shutdown();
+}
+END_TEST
 
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_unset
  * @{
  * </TABLE>
  * @}

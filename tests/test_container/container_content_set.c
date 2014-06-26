@@ -23,48 +23,48 @@
 /**
  * @addtogroup container_test
  * @{
- * @addtogroup container_style_set
+ * @addtogroup container_content_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_set
  * @{
  * <tr>
- * <td>container_style_set</td>
- * <td>container_style_set_test_p</td>
+ * <td>container_content_set</td>
+ * <td>container_content_set_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create parent window
  * @step 3 create a container
+ * @step 4 create a content, elm_button
  *
  * @procedure
- * @step 1 set the new style to container
+ * @step 1 set to the container the elm_buttom object
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) container, "default"</td>
+ * <td>(Evas_Object *) container, (Evas_Object) *content<td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_style_set_test_p)
+EFLETE_TEST(container_content_set_test_p)
 {
-   Evas_Object *parent, *container;
+   Evas_Object *parent, *container, *content;
 
    elm_init(0, 0);
-
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
    container = container_add(parent);
-   container_style_set(container, "wrong_style");
-   ck_assert_msg(container_style_set(container, "default"),
-                 "Style 'default' not setted to the conteiner.");
+   content = elm_button_add(container);
+
+   ck_assert_msg(container_content_set(container, content),
+                 "The content object not setted to the container.");
 
    evas_object_del(parent);
 
@@ -73,43 +73,51 @@ EFLETE_TEST(container_style_set_test_p)
 END_TEST
 
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_set
  * @{
  * <tr>
- * <td>container_style_set</td>
- * <td>container_style_set_test_n1</td>
+ * <td>container_content_set</td>
+ * <td>container_content_set_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
+ * @step 2 create parent window
+ * @step 3 create a content, elm_button
  *
  * @procedure
- * @step 1 set the a new style name
+ * @step 1 set to the container editable object
  * @step 2 check returned value
  * </td>
- * <td>NULL, "default"</td>
+ * <td>NULL, (Evas_Object) *content</td>
  * <td>EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_style_set_test_n1)
+EFLETE_TEST(container_content_set_test_n1)
 {
-   elm_init(0, 0);
+   Evas_Object *parent, *content;
 
-   ck_assert_msg(!container_style_set(NULL, "default"),
-                 "Setted to NULL object style.");
+   elm_init(0, 0);
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   content = elm_button_add(parent);
+
+   ck_assert_msg(!container_content_set(NULL, content),
+                 "The content object setted to the NULL pointer.");
+
+   evas_object_del(parent);
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_set
  * @{
  * <tr>
- * <td>container_style_set</td>
- * <td>container_style_set_test_n2</td>
+ * <td>container_content_set</td>
+ * <td>container_content_set_test_n2</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -117,7 +125,7 @@ END_TEST
  * @step 3 create a container
  *
  * @procedure
- * @step 1 call container_style_set
+ * @step 1 set to the container editable object
  * @step 2 check returned value
  * </td>
  * <td>(Evas_Object *) container, NULL</td>
@@ -127,25 +135,25 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(container_style_set_test_n2)
+EFLETE_TEST(container_content_set_test_n2)
 {
    Evas_Object *parent, *container;
 
    elm_init(0, 0);
-
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
    container = container_add(parent);
-   ck_assert_msg(!container_style_set(container, NULL),
-                 "Setted NULL style to container object");
+
+   ck_assert_msg(!container_content_set(container, NULL),
+                 "The NULL object setted to the container.");
+
+   evas_object_del(parent);
 
    elm_shutdown();
 }
 END_TEST
 
-
 /**
- * @addtogroup container_style_set
+ * @addtogroup container_content_set
  * @{
  * </TABLE>
  * @}

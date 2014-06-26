@@ -58,3 +58,11 @@ void container_style_set_test_n2(int);
 
 void container_style_get_test_p(int);
 void container_style_get_test_n(int);
+
+void container_content_set_test_p(int);
+void container_content_set_test_n1(int);
+void container_content_set_test_n2(int);
+
+void container_content_unset_test_p(int);
+void container_content_unset_test_n1(int);
+void container_content_unset_test_n2(int);

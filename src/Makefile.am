@@ -55,6 +55,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
+-I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
 -I${top_srcdir}/src/ui/editors \

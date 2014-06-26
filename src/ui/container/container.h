@@ -191,4 +191,30 @@ container_style_set(Evas_Object *obj, const char *style);
 const char *
 container_style_get(Evas_Object *obj);
 
+/**
+ * Set the content to the Container object.
+ *
+ * @param obj The Container object,
+ * @param content The content object.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_content_set(Evas_Object *obj, Evas_Object *content);
+
+/**
+ * Unset the content to the Container object.
+ *
+ * @param obj The Container object,
+ * @param content The content object.
+ *
+ * @return The content object will be returned, or NULL if object not set setted.
+ *
+ * @ingroup Container
+ */
+Evas_Object *
+container_content_unset(Evas_Object *obj);
+
 #endif /* CONTAINER_H */

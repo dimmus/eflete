@@ -236,7 +236,9 @@ test_container/container_max_size_set.c \
 test_container/container_handler_size_set.c \
 test_container/container_handler_size_get.c \
 test_container/container_style_get.c \
-test_container/container_style_set.c
+test_container/container_style_set.c \
+test_container/container_content_set.c \
+test_container/container_content_unset.c
 container_test_CFLAGS = ${FLAGS}
 container_test_LDADD = ${LD}
 
