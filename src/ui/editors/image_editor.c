@@ -204,7 +204,7 @@ _on_image_done(void *data,
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
 
-   if (ecore_file_exists(selected))
+   if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
         if (!edje_edit_image_add(edje_edit_obj, selected))
           {
@@ -221,7 +221,10 @@ _on_image_done(void *data,
           }
      }
    else
-     NOTIFY_ERROR(_("Error while loading file.<br> File is not exist"));
+     {
+        NOTIFY_ERROR(_("Error while loading file.<br>File is not exist"));
+        return;
+     }
 
    ecore_main_loop_quit();
 }
