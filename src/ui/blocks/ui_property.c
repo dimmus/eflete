@@ -59,6 +59,7 @@ struct _Prop_Data
       Evas_Object *clip_to;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
+      Evas_Object *pointer_mode;
    } prop_part;
    struct {
       Evas_Object *frame;
@@ -135,6 +136,10 @@ static const char *edje_entry_mode[] = { N_("None"),
                                           N_("Plain"),
                                           N_("Editable"),
                                           N_("Password"),
+                                          NULL};
+
+static const char *edje_pointer_mode[] = { N_("Autograb"),
+                                          N_("Nograb"),
                                           NULL};
 
 static Eina_Bool
@@ -594,6 +599,7 @@ ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
 ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
+ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
@@ -654,8 +660,12 @@ ui_property_part_set(Evas_Object *property, Part *part)
              pd_part.entry_mode = prop_item_part_entry_mode_add(box, pd,
                              _("Sets the edit mode for a textblock part"),
                              edje_entry_mode);
+             pd_part.pointer_mode = prop_item_part_pointer_mode_add(box, pd,
+                             _("Sets the mouse pointer behavior for a given part."),
+                             edje_pointer_mode);
              elm_box_pack_end(box, pd_part.select_mode);
              elm_box_pack_end(box, pd_part.entry_mode);
+             elm_box_pack_end(box, pd_part.pointer_mode);
           }
 
         elm_box_pack_after(prop_box, part_frame, pd->prop_group.frame);
@@ -693,16 +703,30 @@ ui_property_part_set(Evas_Object *property, Part *part)
                 }
               else
                 prop_item_part_entry_mode_update(pd_part.entry_mode, pd);
+
+              if (!pd_part.pointer_mode)
+                {
+                   pd_part.pointer_mode = prop_item_part_pointer_mode_add(box, pd,
+                             _("Sets the mouse pointer behavior for a given part."),
+                             edje_pointer_mode);
+                   elm_box_pack_after(box, pd_part.pointer_mode, pd_part.entry_mode);
+
+                }
+              else
+                prop_item_part_pointer_mode_update(pd_part.pointer_mode, pd);
            }
          else
            {
               box = elm_object_content_get(pd_part.frame);
               elm_box_unpack(box, pd_part.select_mode);
               elm_box_unpack(box, pd_part.entry_mode);
+              elm_box_unpack(box, pd_part.pointer_mode);
               evas_object_del(pd_part.select_mode);
               evas_object_del(pd_part.entry_mode);
+              evas_object_del(pd_part.pointer_mode);
               pd_part.select_mode = NULL;
               pd_part.entry_mode = NULL;
+              pd_part.pointer_mode = NULL;
            }
          elm_box_pack_after(prop_box, pd_part.frame, pd->prop_group.frame);
          evas_object_show(pd_part.frame);
