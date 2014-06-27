@@ -153,6 +153,36 @@ _live_view_update(void *data,
 }
 
 static void
+_signal_select(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Signal *sig = (Signal *)event_info;
+   Part *part = NULL;
+   Evas_Object *state_list = NULL;
+   Evas_Object *prop_view = NULL;
+   evas_object_freeze_events_set(sig->style->obj, false);
+   wm_style_state_parts_reset(sig->style);
+   edje_edit_program_run(sig->style->obj, sig->program);
+   wm_style_current_state_parts_update(sig->style);
+
+   prop_view = ui_block_property_get(ap);
+   state_list = ui_block_state_list_get(ap);
+   part = ui_states_list_part_get(state_list);
+   if (part)
+     {
+        ui_states_list_data_set(state_list, sig->style, part);
+        ui_property_state_set(prop_view, part);
+        workspace_edit_object_part_state_set(ap->workspace, part);
+     }
+   else
+     workspace_edit_object_recalc(ap->workspace);
+   evas_object_freeze_events_set(sig->style->obj, true);
+}
+
+
+static void
 _hide_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info)
@@ -387,7 +417,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *wl_list, *groupedit;
+   Evas_Object *wl_list, *groupedit, *st_list;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -403,7 +433,9 @@ ui_part_back(App_Data *ap)
                                        _part_name_change, ap);
 
    workspace_edit_object_unset(ap->workspace);
-   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   st_list = ui_block_state_list_get(ap);
+   ui_states_list_data_unset(st_list);
+   evas_object_smart_callback_del_full(st_list, "sl,signal,select", _signal_select, ap);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_property_style_unset(ui_block_property_get(ap));
    /*TODO: in future it will be moved to block api. */
@@ -533,6 +565,8 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_signal_list_data_set(gl_signals, _style);
    wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
+
+   evas_object_smart_callback_add(gl_signals, "sl,signal,select", _signal_select, ap);
 
    workspace_edit_object_set(ap->workspace, _style, ap->project->swapfile);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
