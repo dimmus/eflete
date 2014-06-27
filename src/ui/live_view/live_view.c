@@ -699,6 +699,7 @@ live_view_add(Evas_Object *parent)
    live->live_view = container_add(parent);
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
+   container_confine_set(live->live_view, bg);
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 

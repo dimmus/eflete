@@ -46,27 +46,31 @@ struct _Container_Smart_Data
    /* Minimal and maximum size of the container,
       i.e size of the edie_edit object */
    struct {
-      int w; /* default: 0 */
-      int h; /* default: 0 */
+      Evas_Coord w; /* default: 0 */
+      Evas_Coord h; /* default: 0 */
    } con_size_min;
    struct {
-      int w; /* default: -1, size is not limited */
-      int h; /* default: -1, size is not limited */
+      Evas_Coord w; /* default: -1, size is not limited */
+      Evas_Coord h; /* default: -1, size is not limited */
    } con_size_max;
    Container_Geom *con_current_size;
    struct {
       Evas_Object *obj;
-      int w, h;
+      Evas_Coord w, h;
    } handler_TL;
    struct{
       Evas_Object *obj;
-      int w, h;
+      Evas_Coord w, h;
    } handler_BR;
    Eina_Bool handler_TL_pressed : 1;
    Eina_Bool handler_BR_pressed : 1;
    const char *style;
    Evas_Coord downx;
    Evas_Coord downy;
+   struct {
+      Evas_Object *obj;
+      Evas_Coord x, y, w, h;
+   } confine;
 };
 
 #define CONTAINER_DATA_GET(o, ptr) \
@@ -156,10 +160,10 @@ _mouse_up_hRB_cb(void *data,
 }
 
 static void
-_mouse_move_cb(void *data,
-               Evas *e __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info)
+_mouse_move_hTL_cb(void *data,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
 {
    Evas_Coord x, y, w, h;
    Evas_Coord lw, lh;
@@ -174,100 +178,123 @@ _mouse_move_cb(void *data,
    dx = (ev->cur.canvas.x - sd->downx);
    dy = (ev->cur.canvas.y - sd->downy);
 
-   /* check container size, if size equal min or max size,
-      no sense to calc new geometry and render it */
-   if (sd->handler_TL_pressed)
-     {
-        if ((dx < 0) && (dy < 0) &&
-            (lw == sd->con_size_max.w) && (lh == sd->con_size_max.h))
-          return;
-
-        if ((dx > 0) && (dy > 0) &&
-            (lw == sd->con_size_min.w) && (lh == sd->con_size_min.h))
-          return;
-     }
-
-   if (sd->handler_BR_pressed)
-     {
-        if ((dx > 0) && (dy > 0) &&
-            (lw == sd->con_size_max.w) && (lh == sd->con_size_max.h))
-          return;
-
-        if ((dx < 0) && (dy < 0) &&
-            (lw == sd->con_size_min.w) && (lh == sd->con_size_min.h))
-          return;
-     }
-
-   if (sd->handler_TL_pressed)
-     {
+   if (!sd->handler_TL_pressed) return;
         /* calc x and wigth */
-        nw = w - dx;
-        if (nw <= sd->con_size_min.w + H_WIGTH)
+
+   nw = w - dx;
+   /*TODO: need do refactoring here */
+   if (nw <= sd->con_size_min.w + H_WIGTH)
+     {
+        nw = sd->con_size_min.w + H_WIGTH;
+        nx = x + (w - nw);
+     }
+   else
+     {
+        if ((sd->con_size_max.w != -1)
+            && (nw >= sd->con_size_max.w + H_WIGTH))
           {
-             nw = sd->con_size_min.w + H_WIGTH;
+             nw = sd->con_size_max.w + H_WIGTH;
              nx = x + (w - nw);
           }
-        else
+        else nx = x + dx;
+        if ((sd->confine.obj) && (nx < sd->confine.x))
           {
-             if ((sd->con_size_max.w != -1)
-                 && (nw >= sd->con_size_max.w + H_WIGTH))
+             if (nx != sd->confine.x)
                {
-                  nw = sd->con_size_max.w + H_WIGTH;
-                  nx = x + (w - nw);
+                 nw = w + (x - sd->confine.x);
+                 nx = sd->confine.x;
                }
-             else nx = x + dx;
           }
+     }
 
-        /* calc y and height */
-        nh = h - dy;
-        if (nh <= sd->con_size_min.h + H_HEIGHT)
+   /* calc y and height */
+   nh = h - dy;
+   if (nh <= sd->con_size_min.h + H_HEIGHT)
+     {
+        nh = sd->con_size_min.h + H_HEIGHT;
+        ny = y + (h - nh);
+     }
+   else
+     {
+        if ((sd->con_size_max.h != -1)
+            && (nh >= sd->con_size_max.h + H_HEIGHT))
           {
-             nh = sd->con_size_min.h + H_HEIGHT;
+             nh = sd->con_size_max.h + H_HEIGHT;
              ny = y + (h - nh);
           }
-        else
+        else ny = y + dy;
+        if ((sd->confine.obj) && (ny < sd->confine.y))
           {
-             if ((sd->con_size_max.h != -1)
-                 && (nh >= sd->con_size_max.h + H_HEIGHT))
+             if (ny != sd->confine.y)
                {
-                  nh = sd->con_size_max.h + H_HEIGHT;
-                  ny = y + (h - nh);
+                  nh = h + (y - sd->confine.y);
+                  ny = sd->confine.y;
                }
-             else ny = y + dy;
           }
-
-        evas_object_resize(o, nw, nh);
-        evas_object_move(o, nx, ny);
-
-        evas_object_smart_changed(o);
      }
-   if (sd->handler_BR_pressed)
+
+   evas_object_resize(o, nw, nh);
+   evas_object_move(o, nx, ny);
+
+   evas_object_smart_changed(o);
+
+   sd->downx = ev->cur.canvas.x;
+   sd->downy = ev->cur.canvas.y;
+}
+
+static void
+_mouse_move_hBR_cb(void *data,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info)
+{
+   Evas_Coord x, y, w, h;
+   Evas_Coord nw, nh;
+   Evas_Coord dx, dy;
+   Evas_Event_Mouse_Move *ev = event_info;
+   Evas_Object *o = data;
+
+   CONTAINER_DATA_GET(o, sd)
+   evas_object_geometry_get(o, &x, &y, &w, &h);
+   dx = (ev->cur.canvas.x - sd->downx);
+   dy = (ev->cur.canvas.y - sd->downy);
+
+   if (!sd->handler_BR_pressed) return;
+
+   /* calc wigth and heght */
+   /*TODO: need do refactoring here */
+   nw = w + dx;
+   if (nw <= sd->con_size_min.w + H_WIGTH)
+     nw = sd->con_size_min.w + H_WIGTH;
+   else
      {
-        /* calc wigth and heght */
-        nw = w + dx;
-        if (nw <= sd->con_size_min.w + H_WIGTH)
-          nw = sd->con_size_min.w + H_WIGTH;
-        else
-          {
-             if ((sd->con_size_max.w != -1)
-                 && (nw >= sd->con_size_max.w + H_WIGTH))
-               nw = sd->con_size_max.w + H_WIGTH;
-             else nw = w + dx;
-          }
-
-        nh = h + dy;
-        if (nh <= sd->con_size_min.h + H_HEIGHT)
-          nh = sd->con_size_min.h + H_HEIGHT;
-        else
-          {
-             if ((sd->con_size_max.h != -1)
-                 && (nh >= sd->con_size_max.h + H_HEIGHT))
-               nh = sd->con_size_max.h + H_HEIGHT;
-             else nh = h + dy;
-          }
-        evas_object_resize(o, nw, nh);
-        evas_object_smart_changed(o);
+        if ((sd->con_size_max.w != -1)
+            && (nw >= sd->con_size_max.w + H_WIGTH))
+          nw = sd->con_size_max.w + H_WIGTH;
+        else nw = w + dx;
      }
+
+   nh = h + dy;
+   if (nh <= sd->con_size_min.h + H_HEIGHT)
+     nh = sd->con_size_min.h + H_HEIGHT;
+   else
+     {
+        if ((sd->con_size_max.h != -1)
+            && (nh >= sd->con_size_max.h + H_HEIGHT))
+          nh = sd->con_size_max.h + H_HEIGHT;
+        else nh = h + dy;
+     }
+   if (sd->confine.obj)
+     {
+        if ((sd->confine.x + sd->confine.w) < (x + nw))
+          nw = sd->confine.w - (x - sd->confine.x);
+        if ((sd->confine.y + sd->confine.h) < (y + nh))
+          nh = sd->confine.h - (y - sd->confine.y);
+     }
+   evas_object_resize(o, nw, nh);
+
+   evas_object_smart_changed(o);
+
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
 }
@@ -323,7 +350,7 @@ _container_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_UP,
                                   _mouse_up_hTL_cb, o);
    evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _mouse_move_cb, o);
+                                  _mouse_move_hTL_cb, o);
 
    priv->handler_BR.obj = edje_object_add(priv->e);
    priv->handler_BR.w = priv->handler_BR.h = 5;
@@ -332,7 +359,7 @@ _container_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_UP,
                                   _mouse_up_hRB_cb, o);
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_MOVE,
-                                  _mouse_move_cb, o);
+                                  _mouse_move_hBR_cb, o);
 
    priv->obj = o;
    priv->con_size_min.w = 0;
@@ -342,6 +369,7 @@ _container_smart_add(Evas_Object *o)
    priv->con_current_size = (Container_Geom *)malloc(sizeof(Container_Geom));
    priv->handler_TL_pressed = false;
    priv->handler_BR_pressed = false;
+   priv->confine.obj = NULL;
 
    evas_object_smart_member_add(priv->container, o);
    evas_object_smart_member_add(priv->handler_TL.obj, o);
@@ -589,6 +617,59 @@ container_content_unset(Evas_Object *obj)
    ret = edje_object_part_swallow_get(sd->container, SWALLOW);
    edje_object_part_unswallow(obj, ret);
    return ret;
+}
+
+static void
+_confine_changed(void *data,
+                 Evas *e __UNUSED__,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+   Container_Smart_Data *sd = (Container_Smart_Data *)data;
+
+   evas_object_geometry_get(obj,
+                            &sd->confine.x,
+                            &sd->confine.y,
+                            &sd->confine.w,
+                            &sd->confine.h);
+
+}
+
+Eina_Bool
+container_confine_set(Evas_Object *obj, Evas_Object *confine)
+{
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!confine) return false;
+
+   sd->confine.obj = confine;
+   evas_object_geometry_get(confine,
+                            &sd->confine.x,
+                            &sd->confine.y,
+                            &sd->confine.w,
+                            &sd->confine.h);
+   evas_object_event_callback_add(confine, EVAS_CALLBACK_MOVE,
+                                  _confine_changed, sd);
+   evas_object_event_callback_add(confine, EVAS_CALLBACK_RESIZE,
+                                  _confine_changed, sd);
+
+   return true;
+}
+
+Eina_Bool
+container_confine_unset(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!sd->confine.obj) return false;
+
+   evas_object_event_callback_del_full(sd->confine.obj, EVAS_CALLBACK_MOVE,
+                                       _confine_changed, sd);
+   evas_object_event_callback_del_full(sd->confine.obj, EVAS_CALLBACK_RESIZE,
+                                       _confine_changed, sd);
+   sd->confine.obj = NULL;
+
+   return true;
 }
 
 #undef MY_CLASS_NAME
