@@ -57,6 +57,7 @@ struct _Prop_Data
       Evas_Object *mouse;
       Evas_Object *repeat;
       Evas_Object *clip_to;
+      Evas_Object *select_mode;
    } prop_part;
    struct {
       Evas_Object *frame;
@@ -124,6 +125,10 @@ static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Both"),
                                           N_("Source") };
 #define ASPECT_PREF_TYPE_COUNT 5
+
+static const char *edje_select_mode[] = { N_("Default"),
+                                          N_("Explicit"),
+                                          NULL};
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -562,6 +567,12 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_1COMBOBOX_PART_ADD(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_UPDATE(TEXT, SUB, VALUE)
 
+#define ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(TEXT, SUB, VALUE, TYPE) \
+   ITEM_1COMBOBOX_PART_TEXTBLOCK_CALLBACK(SUB, VALUE, TYPE) \
+   ITEM_1COMBOBOX_PART_TEXTBLOCK_ADD(TEXT, SUB, VALUE, TYPE) \
+   ITEM_1COMBOBOX_PART_TEXTBLOCK_UPDATE(TEXT, SUB, VALUE, TYPE)
+
+
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
    ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
@@ -574,6 +585,7 @@ ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
 ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
@@ -626,6 +638,14 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_part.repeat);
         elm_box_pack_end(box, pd_part.clip_to);
 
+        if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
+          {
+             pd_part.select_mode = prop_item_part_select_mode_add(box, pd,
+                             _("Sets the selection mode for a textblock part"),
+                             edje_select_mode);
+             elm_box_pack_end(box, pd_part.select_mode);
+          }
+
         elm_box_pack_after(prop_box, part_frame, pd->prop_group.frame);
         pd_part.frame = part_frame;
      }
@@ -637,6 +657,27 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_mouse_events_update(pd_part.mouse, pd);
          prop_item_part_repeat_events_update(pd_part.repeat, pd);
          prop_item_part_clip_to_update(pd_part.clip_to, pd);
+         if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
+           {
+             box = elm_object_content_get(pd_part.frame);
+              if (!pd_part.select_mode)
+                {
+                   pd_part.select_mode = prop_item_part_select_mode_add(box, pd,
+                             _("Sets the selection mode for a textblock part"),
+                             edje_select_mode);
+                   elm_box_pack_after(box, pd_part.select_mode, pd_part.clip_to);
+
+                }
+              else
+                prop_item_part_select_mode_update(pd_part.select_mode, pd);
+           }
+         else
+           {
+              box = elm_object_content_get(pd_part.frame);
+              elm_box_unpack(box, pd_part.select_mode);
+              evas_object_del(pd_part.select_mode);
+              pd_part.select_mode = NULL;
+           }
          elm_box_pack_after(prop_box, pd_part.frame, pd->prop_group.frame);
          evas_object_show(pd_part.frame);
      }
