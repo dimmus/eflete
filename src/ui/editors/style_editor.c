@@ -334,7 +334,7 @@ _on_bt_tag_add(void *data,
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 
    BOX_ADD(POPUP.dialog, box, false, false);
-   ITEM_ADD(box, item, "Tag name:", DEFAULT_STYLE)
+   ITEM_ADD(box, item, "Tag name:", "eflete/property/item/default")
 
    EWE_ENTRY_ADD(item, POPUP.name, true, DEFAULT_STYLE);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
@@ -343,7 +343,7 @@ _on_bt_tag_add(void *data,
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item, "Tag value:", DEFAULT_STYLE)
+   ITEM_ADD(box, item, "Tag value:", "eflete/property/item/default")
    EWE_ENTRY_ADD(box, POPUP.value, true, DEFAULT_STYLE);
    elm_object_part_text_set(POPUP.value, "guide",
                             _("Type tag with be using as default."));
