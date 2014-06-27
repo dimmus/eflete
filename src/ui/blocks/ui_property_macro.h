@@ -834,8 +834,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             Prop_Data *pd, \
-                                            const char* guide1 EINA_UNUSED, \
-                                            const char* guide2 EINA_UNUSED, \
                                             const char *tooltip1, \
                                             const char *tooltip2) \
 { \
@@ -845,7 +843,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/relative_to") \
    BOX_ADD(item, box, false, true) \
    elm_box_padding_set(box, 0, 6); \
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, NULL); \
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, "x:"); \
    EWE_COMBOBOX_ADD(layout, combobox1) \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
@@ -854,8 +852,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    if (value) \
      ewe_combobox_text_set(combobox1, value); \
    else \
-     ewe_combobox_text_set(combobox1, "None"); \
-   ewe_combobox_item_add(combobox1, "None"); \
+     ewe_combobox_text_set(combobox1, _("Layout")); \
+   ewe_combobox_item_add(combobox1, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
@@ -866,7 +864,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_box_pack_end(box, layout); \
    edje_edit_string_free(value); \
    evas_object_smart_callback_add(combobox1, "selected", _on_combobox_##SUB##_##VALUE1##_change, pd); \
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, NULL); \
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, "y:"); \
    EWE_COMBOBOX_ADD(layout, combobox2) \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
@@ -875,8 +873,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    if (value) \
      ewe_combobox_text_set(combobox2, value); \
    else \
-     ewe_combobox_text_set(combobox2, "None"); \
-   ewe_combobox_item_add(combobox2, "None"); \
+     ewe_combobox_text_set(combobox2, _("Layout")); \
+   ewe_combobox_item_add(combobox2, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
@@ -910,8 +908,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    if (value) \
      ewe_combobox_text_set(combobox1, value); \
    else \
-     ewe_combobox_text_set(combobox1, "None"); \
-   ewe_combobox_item_add(combobox1, "None"); \
+     ewe_combobox_text_set(combobox1, _("Layout")); \
+   ewe_combobox_item_add(combobox1, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
@@ -927,8 +925,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    if (value) \
      ewe_combobox_text_set(combobox2, value); \
    else \
-     ewe_combobox_text_set(combobox2, "None"); \
-   ewe_combobox_item_add(combobox2, "None"); \
+     ewe_combobox_text_set(combobox2, _("Layout")); \
+   ewe_combobox_item_add(combobox2, _("Layout")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         if (strcmp(pd->part->name, part->name)) \
