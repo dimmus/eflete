@@ -685,7 +685,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
 }
 
-#define ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
+#define ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
@@ -700,7 +700,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                            pd->part->curr_state_value); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, FILTER); \
    if (btn_func_cb) \
      { \
         btn = elm_button_add(parent); \

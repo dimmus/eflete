@@ -713,9 +713,9 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
-#define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE) \
+#define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE, FILTER) \
    ITEM_STRING_STATE_CALLBACK(SUB, VALUE) \
-   ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
 #define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE) \
@@ -1055,8 +1055,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
 
-ITEM_1ENTRY_STATE_CREATE(_("text"), state, text)
-ITEM_1ENTRY_STATE_CREATE(_("font"), state, font)
+ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
+ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop)
 ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
@@ -1271,7 +1271,7 @@ _on_state_image_choose(void *data,
    image_editor_callback_add(img_edit, _on_image_editor_done, entry);
 }
 
-ITEM_1ENTRY_STATE_CREATE(_("image"), state, image)
+ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop)
 ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
 
 static Eina_Bool
