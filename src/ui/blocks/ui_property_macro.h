@@ -29,7 +29,10 @@ static void
 _on_state_color_class_change(void *data,
                              Evas_Object *obj,
                              void *event_info __UNUSED__);
-
+static void
+_on_state_text_style_change(void *data,
+                             Evas_Object *obj,
+                             void *event_info __UNUSED__);
 #define ITEM1 "item1"
 #define ITEM2 "item2"
 
@@ -854,10 +857,11 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
 }
-#define ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
+#define ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
+                                void *func_cb, \
                                 const char *tooltip) \
 { \
    Evas_Object *item, *combobox; \
@@ -888,16 +892,16 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
      } \
    else \
      { \
-        Eina_List *cclist = edje_edit_color_classes_list_get(pd->style->obj); \
-        EINA_LIST_FOREACH(cclist, list, ccname) \
+        Eina_List *l = edje_edit_##LIST##_list_get(pd->style->obj); \
+        EINA_LIST_FOREACH(l, list, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
-        evas_object_smart_callback_add(combobox, "selected", _on_state_color_class_change, pd); \
+        evas_object_smart_callback_add(combobox, "selected", func_cb, pd); \
      } \
    elm_object_part_content_set(item, "elm.swallow.content", combobox); \
    return item; \
 }
 
-#define ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE) \
+#define ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST) \
 static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
@@ -930,7 +934,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
      } \
    else \
      { \
-        Eina_List *cclist = edje_edit_color_classes_list_get(pd->style->obj); \
+        Eina_List *cclist = edje_edit_##LIST##_list_get(pd->style->obj); \
         EINA_LIST_FOREACH(cclist, list, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
      } \
