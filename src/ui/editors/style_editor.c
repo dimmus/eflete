@@ -391,7 +391,13 @@ _on_bt_del(void *data,
      {
         style_name = elm_object_item_part_text_get(glit_parent, "elm.text");
         tag = elm_object_item_part_text_get(glit, "elm.text");
-        edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
+        if (!strcmp(tag, "DEFAULT"))
+          {
+             NOTIFY_WARNING(_("DEFAULT tag cannot be deleted!"));
+             return;
+          }
+        else
+          edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
    elm_object_item_del(glit);
 }
