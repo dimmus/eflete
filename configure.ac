@@ -131,6 +131,7 @@ EFLETE_DEFINE=" -DEFLETE_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
+EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/resources.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SWAP_PATH=\\\"${HOME}/.eflete/swap/\\\" "
 AC_SUBST([EFLETE_DEFINE])

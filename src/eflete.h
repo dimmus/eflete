@@ -182,4 +182,12 @@ main_window_get(void);
 Evas_Object *
 colorselector_get(void);
 
+
+#define GET_IMAGE(IMG, PARENT, NAME) \
+{ \
+   IMG = edje_object_add(PARENT); \
+   if (!edje_object_file_set(IMG, EFLETE_RESOURCES, NAME)) \
+     ERR("Image with name \"%s\" was not found in resources\n", NAME); \
+}
+
 #endif /* EFLETE_H */
