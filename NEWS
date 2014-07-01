@@ -1,0 +1,21 @@
+============
+Eflete 0.2.1
+============
+
+Changes sinse 0.2.0
+-------------------
+
+Features:
+   * Signal list: change states of the group parts accordenly to selected
+     signal.
+
+Fixes:
+
+   * delete the build target folder.
+   * fix bug with STATE_SET after creatin new program.
+   * update the default value in the rel1_to (x/y) fields from "None" to
+     "Layout".
+   * fix the bug with closing file dialog in the image editor, if image not be
+     selected.
+   * in the field "text" of TEXT and TEXTBLOCK part property may type all
+     symbols.

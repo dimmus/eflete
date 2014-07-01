@@ -9,6 +9,10 @@
 *.o
 intl/
 src/eflete
+*.dirstamp
+*.log
+*.trs
+*.swap
 tests/addpart_test
 tests/alloc_test
 tests/colorclass_editor_test
@@ -34,6 +38,21 @@ tests/ui_state_list_test
 tests/ui_widget_list_test
 tests/ui_workspace_test
 tests/widget_manager_test
+tests/about_window_test
+tests/colorselector_test
+tests/config_test
+tests/cursor_test
+tests/eflete_test
+tests/highlight_test
+tests/live_view_test
+tests/open_file_dialog_test
+tests/save_file_dialog_test
+tests/style_dialog_test
+tests/ui_state_dialog_test
+tests/ui_states_list_test
+tests/edj_build/RADIO_DECC/
+report.html
+tests/html/
 
 #tests
 tests/*xml
@@ -78,6 +97,14 @@ po/Makevars.template
 po/POTFILES
 po/en@quot.insert-header
 po/stamp-po
+config.cache
+data/eflete.desktop
+eflete_config.h
+*.deps
+stamp-h1
+tests/Doxyfile
+tests/edj_build/radio.edc
+
 
 #localization
 *.gmo

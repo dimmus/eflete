@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [2], [0])
+EFLETE_VERSION([0], [2], [1])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -11,9 +11,9 @@ AM_SILENT_RULES([yes])
 AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
-m4_define([efl_version], [1.10.0])
-m4_define([elm_version], [1.10.0])
-m4_define([ewe_version], [0.1.0])
+m4_define([efl_version], [1.10.1])
+m4_define([elm_version], [1.10.1])
+m4_define([ewe_version], [0.1.1])
 
 EFLETE_INIT
 AC_CONFIG_HEADERS([eflete_config.h])
@@ -179,8 +179,7 @@ echo "  run tests......: ${run_test}"
 echo ""
 echo "Debug output.....: ${want_eflete_debug}"
 echo ""
-echo "Installation.....: cd build"
-echo "                   make install (as root if needed, with 'su' or 'sudo')"
+echo "Installation.....: make install (as root if needed, with 'su' or 'sudo')"
 echo "  CFLAGS.........: ${CFLAGS}"
 echo "  LDFLAGS........: ${LDFLAGS}"
 echo "  prefix.........: ${prefix}"
