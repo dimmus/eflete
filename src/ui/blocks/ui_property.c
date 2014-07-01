@@ -61,6 +61,7 @@ struct _Prop_Data
       Evas_Object *entry_mode;
       Evas_Object *pointer_mode;
       Evas_Object *cursor_mode;
+      Evas_Object *multiline;
    } prop_part;
    struct {
       Evas_Object *frame;
@@ -606,6 +607,7 @@ ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_E
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("cursor mode"), part, cursor_mode, unsigned int)
+ITEM_1CHECK_PART_CREATE(_("multiline"), part, multiline)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
@@ -672,10 +674,13 @@ ui_property_part_set(Evas_Object *property, Part *part)
              pd_part.cursor_mode = prop_item_part_cursor_mode_add(box, pd,
                              _("Sets the cursor mode for a textblock part"),
                              edje_cursor_mode);
+             pd_part.multiline = prop_item_part_multiline_add(box, pd,
+                           _("It causes a textblock that is editable to allow multiple lines for editing."));
              elm_box_pack_end(box, pd_part.select_mode);
              elm_box_pack_end(box, pd_part.entry_mode);
              elm_box_pack_end(box, pd_part.pointer_mode);
              elm_box_pack_end(box, pd_part.cursor_mode);
+             elm_box_pack_end(box, pd_part.multiline);
           }
 
         elm_box_pack_after(prop_box, part_frame, pd->prop_group.frame);
@@ -735,6 +740,14 @@ ui_property_part_set(Evas_Object *property, Part *part)
                 }
               else
                 prop_item_part_cursor_mode_update(pd_part.cursor_mode, pd);
+              if (!pd_part.multiline)
+                {
+                  pd_part.multiline = prop_item_part_multiline_add(box, pd,
+                           _("It causes a textblock that is editable to allow multiple lines for editing."));
+                   elm_box_pack_after(box, pd_part.multiline, pd_part.cursor_mode);
+                }
+              else
+                prop_item_part_multiline_update(pd_part.multiline, pd);
            }
          else
            {
@@ -743,14 +756,17 @@ ui_property_part_set(Evas_Object *property, Part *part)
               elm_box_unpack(box, pd_part.entry_mode);
               elm_box_unpack(box, pd_part.pointer_mode);
               elm_box_unpack(box, pd_part.cursor_mode);
+              elm_box_unpack(box, pd_part.multiline);
               evas_object_del(pd_part.select_mode);
               evas_object_del(pd_part.entry_mode);
               evas_object_del(pd_part.pointer_mode);
               evas_object_del(pd_part.cursor_mode);
+              evas_object_del(pd_part.multiline);
               pd_part.select_mode = NULL;
               pd_part.entry_mode = NULL;
               pd_part.pointer_mode = NULL;
               pd_part.cursor_mode = NULL;
+              pd_part.multiline = NULL;
            }
          elm_box_pack_after(prop_box, pd_part.frame, pd->prop_group.frame);
          evas_object_show(pd_part.frame);
