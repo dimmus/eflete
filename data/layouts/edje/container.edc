@@ -11,6 +11,7 @@ group { name: "eflete/container/base/default";
             image {
                normal: "container_border.png";
                border: 2 2 2 2;
+               middle: NONE;
             }
             rel1.offset: -2 -2;
             rel2.offset: 1 1;
