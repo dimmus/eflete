@@ -171,6 +171,39 @@ wm_part_del(Style *style, Part *part)
 }
 
 Eina_Bool
+wm_style_current_state_parts_update(Style *style)
+{
+   Part *part = NULL;
+   double val = 0;
+   const char *state = NULL;
+   if (!style) return false;
+
+   EINA_INLIST_FOREACH(style->parts, part)
+     {
+        state = edje_edit_part_selected_state_get(style->obj, part->name, &val);
+        eina_stringshare_replace(&part->curr_state, state);
+        part->curr_state_value = val;
+     }
+   return true;
+}
+
+Eina_Bool
+wm_style_state_parts_reset(Style *style)
+{
+   Part *part = NULL;
+   if (!style) return false;
+
+   EINA_INLIST_FOREACH(style->parts, part)
+     {
+        eina_stringshare_replace(&part->curr_state, "default");
+        part->curr_state_value = 0.0;
+        edje_edit_part_selected_state_set(style->obj, part->name,
+                                          part->curr_state, part->curr_state_value);
+     }
+   return true;
+}
+
+Eina_Bool
 wm_part_current_state_set(Part *part, const char *state)
 {
    char **split;
@@ -214,7 +247,8 @@ wm_program_signals_list_get(Style *style)
 {
    Eina_List *result = NULL;
    Eina_List *progs, *l;
-   Eina_Stringshare *prog_name, *sig_name;
+   Eina_Stringshare *prog_name, *sig_name, *source_name;
+   Signal *sig = NULL;
 
    if ((!style) || (!style->obj)) return NULL;
 
@@ -222,8 +256,19 @@ wm_program_signals_list_get(Style *style)
    EINA_LIST_FOREACH(progs, l, prog_name)
      {
         sig_name = edje_edit_program_signal_get(style->obj, prog_name);
+        source_name = edje_edit_program_source_get(style->obj, prog_name);
         if (sig_name)
-          result = eina_list_append(result, sig_name);
+          {
+             sig = (Signal *)mem_malloc(sizeof(Signal));
+             sig->name = eina_stringshare_add(sig_name);
+             if (!source_name)
+               sig->source = eina_stringshare_add("");
+             else
+               sig->source = eina_stringshare_add(source_name);
+             sig->program = eina_stringshare_add(prog_name);
+             sig->style = style;
+             result = eina_list_append(result, sig);
+          }
      }
    edje_edit_string_list_free(progs);
 
@@ -233,11 +278,17 @@ wm_program_signals_list_get(Style *style)
 Eina_Bool
 wm_program_signals_list_free(Eina_List *signals)
 {
-   Eina_Stringshare *sig;
+   Signal *sig;
    if (!signals) return false;
 
    EINA_LIST_FREE(signals, sig)
-     edje_edit_string_free(sig);
+     {
+        eina_stringshare_del(sig->program);
+        eina_stringshare_del(sig->source);
+        eina_stringshare_del(sig->name);
+        sig->style = NULL;
+        free(sig);
+     }
 
    eina_list_free(signals);
    signals = NULL;
