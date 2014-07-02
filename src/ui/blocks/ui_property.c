@@ -124,6 +124,8 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *type;
       Evas_Object *smooth;
+      Evas_Object *origin_relative;
+      Evas_Object *origin_offset;
    } prop_state_fill;
 };
 typedef struct _Prop_Data Prop_Data;
@@ -1441,11 +1443,14 @@ ui_property_state_image_unset(Evas_Object *property)
 #define pd_fill pd->prop_state_fill
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
 ITEM_1CHECK_STATE_CREATE(_("smooth"), state_fill, smooth)
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_origin_relative, x, y, "eflete/property/item/relative")
+ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_origin_offset, x, y, "eflete/property/item/relative")
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
 {
    Evas_Object *fill_frame, *box, *prop_box;
+   Evas_Object *icon, *separator;
    PROP_DATA_GET(EINA_FALSE)
 
    /* if previos selected part is IMAGE or PROXY too, unpack it */
@@ -1468,6 +1473,40 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_box_pack_end(box, pd_fill.type);
         elm_box_pack_end(box, pd_fill.smooth);
 
+       /* origin subblock of fill block */
+        separator = elm_separator_add(fill_frame);
+        elm_separator_horizontal_set(separator, true);
+        elm_object_style_set(separator, "eflete/property");
+        elm_object_part_text_set(separator, "eflete.text", _("Origin"));
+        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_start-point.png")
+        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
+        evas_object_show(separator);
+
+        pd_fill.origin_relative = prop_item_state_fill_origin_relative_x_y_add(box,
+                                     pd, -500, 500, 1, NULL,
+                                     "x:", "%", "y:", "%",
+                                     _("Sets the starting point X coordinate "
+                                       "relatively to displayed element's content."),
+                                     _("Sets the starting point Y coordinate "
+                                       "relatively to displayed element's content."),
+                                     true);
+        ICON_ADD(pd_fill.origin_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        elm_object_part_content_set(pd_fill.origin_relative, "eflete.swallow.icon", icon);
+        pd_fill.origin_offset = prop_item_state_fill_origin_offset_x_y_add(box,
+                                     pd, -9999.0, 9999.0, 1.0, "%.0f",
+                                     "x:", "px", "y:", "px",
+                                     _("Affects the starting point a fixed "
+                                       "number of pixels along X axis"),
+                                     _("Affects the starting point a fixed "
+                                       "number of pixels along Y axis"),
+                                     false);
+        ICON_ADD(pd_fill.origin_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        elm_object_part_content_set(pd_fill.origin_offset, "eflete.swallow.icon", icon);
+
+        elm_box_pack_end(box, separator);
+        elm_box_pack_end(box, pd_fill.origin_relative);
+        elm_box_pack_end(box, pd_fill.origin_offset);
+
         pd_fill.frame = fill_frame;
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
@@ -1475,6 +1514,8 @@ ui_property_state_fill_set(Evas_Object *property)
      {
         prop_item_state_fill_type_update(pd_fill.type, pd);
         prop_item_state_fill_smooth_update(pd_fill.smooth, pd);
+        prop_item_state_fill_origin_relative_x_y_update(pd_fill.origin_relative, pd, true);
+        prop_item_state_fill_origin_offset_x_y_update(pd_fill.origin_offset, pd, false);
 
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
