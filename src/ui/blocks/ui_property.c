@@ -259,10 +259,7 @@ ui_property_add(Evas_Object *parent)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   _bg = evas_object_image_add(evas_object_evas_get(parent));
-   evas_object_image_filled_set(_bg, true);
-   evas_object_image_file_set(_bg, EFLETE_IMG_PATH"section-item-bg.png", NULL);
-   evas_object_image_border_set(_bg, 0, 0, 0, 2);
+   GET_IMAGE(_bg, parent, "section-item-bg");
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
    evas_object_show(_bg);
    pd->visual = scroller;
@@ -425,8 +422,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      {
         LABEL_ADD(property, info_en, text_info)
 
-        info_image = elm_image_add(property);
-        elm_image_file_set(info_image, EFLETE_IMG_PATH"icon-notification.png", NULL);
+        GET_IMAGE(info_image, property, "icon-notification");
         evas_object_show(info_image);
 
         pd_group.info = elm_layout_add(property);
@@ -1089,7 +1085,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Start point"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_start-point.png")
+        ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1108,7 +1104,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."),
                               true);
-        ICON_ADD(pd_obj_area.rel1_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_obj_area.rel1_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_obj_area.rel1_relative, "eflete.swallow.icon", icon);
         pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
@@ -1116,7 +1112,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"),
                             false);
-        ICON_ADD(pd_obj_area.rel1_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_obj_area.rel1_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);
@@ -1128,7 +1124,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("End point"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_end-point.png");
+        ICON_ADD(separator, icon, false, "icon_end-point");
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1147,7 +1143,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."),
                               true);
-        ICON_ADD(pd_obj_area.rel2_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_obj_area.rel2_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_obj_area.rel2_relative, "eflete.swallow.icon", icon);
         pd_obj_area.rel2_offset = prop_item_state_rel2_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
@@ -1155,7 +1151,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"),
                             false);
-        ICON_ADD(pd_obj_area.rel2_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_obj_area.rel2_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel2_offset, "eflete.swallow.icon", icon);
 
 

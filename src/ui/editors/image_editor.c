@@ -477,10 +477,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
 
-   _bg = evas_object_image_add(evas_object_evas_get(img_edit->gengrid));
-   evas_object_image_filled_set(_bg, true);
-   evas_object_image_file_set(_bg, EFLETE_IMG_PATH"gallery-bg.png", NULL);
-   evas_object_image_border_set(_bg, 2, 2, 2, 6);
+   GET_IMAGE(_bg, img_edit->gengrid, "gallery-bg");
    elm_object_part_content_set(img_edit->gengrid, "elm.swallow.background", _bg);
    evas_object_show(_bg);
 

@@ -26,9 +26,9 @@
 #include "common_macro.h"
 #include "logger.h"
 
-#define BORDER_IMG EFLETE_IMG_PATH"border_part.png"
-#define SPACER_IMG EFLETE_IMG_PATH"part_spacer_bg.png"
-#define SWALLOW_IMG EFLETE_IMG_PATH"part_swallow_bg.png"
+#define BORDER_IMG "border_part"
+#define SPACER_IMG "part_spacer_bg"
+#define SWALLOW_IMG "part_swallow_bg"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;

@@ -591,12 +591,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 }
 
 #define BORDER_ADD(R, G, B, A) \
-   gp->border = evas_object_image_add(sd->e); \
-   evas_object_image_file_set(gp->border, BORDER_IMG, NULL); \
+   GET_IMAGE(gp->border, sd->e, BORDER_IMG); \
    evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A); \
-   evas_object_image_border_set(gp->border, 1, 1, 1, 1); \
-   evas_object_image_filled_set(gp->border, true); \
-   evas_object_image_border_center_fill_set(gp->border, EVAS_BORDER_FILL_NONE);
 
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
@@ -702,10 +698,8 @@ _part_spacer_add(Evas *e)
 {
    Evas_Object *spacer;
 
-   spacer = evas_object_image_add(e);
-   evas_object_image_file_set(spacer, SPACER_IMG, NULL);
-   evas_object_image_fill_set(spacer, 0, 0, 8, 8);
-   evas_object_image_filled_set(spacer, false);
+   GET_IMAGE(spacer, e, SPACER_IMG);
+   evas_object_smart_calculate(spacer);
 
    return spacer;
 }
@@ -715,10 +709,8 @@ _part_swallow_add(Evas *e)
 {
    Evas_Object *swallow;
 
-   swallow = evas_object_image_filled_add(e);
-   evas_object_image_file_set(swallow, SWALLOW_IMG, NULL);
-   evas_object_image_filled_set(swallow, false);
-   evas_object_image_fill_set(swallow, 0, 0, 17, 17);
+   GET_IMAGE(swallow, e, SWALLOW_IMG);
+   evas_object_smart_calculate(swallow);
 
    return swallow;
 }

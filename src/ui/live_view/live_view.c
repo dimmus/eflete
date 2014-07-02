@@ -228,18 +228,6 @@ _notify_orient_get(const char *class, double *horizontal, double *vertical)
      }
 }
 
-static Evas_Object *
-_icon_create(const char *image_path, Evas_Object *parent)
-{
-   Evas_Object *icon;
-
-   icon = elm_icon_add(parent);
-   elm_image_file_set(icon, image_path, NULL);
-   elm_image_resizable_set(icon, false, false);
-
-   return icon;
-}
-
 char *
 _glist_text_get(void        *data,
               Evas_Object  *obj __UNUSED__,
@@ -254,8 +242,8 @@ _glist_content_get(void *data __UNUSED__,
                   Evas_Object *obj,
                   const char  *part __UNUSED__)
 {
-   Evas_Object *icon = elm_icon_add(obj);
-   elm_image_file_set(icon, EFLETE_IMG_PATH"eye_open.png", NULL);
+   Evas_Object *icon = NULL;
+   GET_IMAGE(icon, obj, "eye_open");
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
    return icon;
 }
@@ -513,18 +501,18 @@ _elm_widget_create(const char  *widget,
              elm_list_item_append(object, _("No icons"), NULL, NULL, NULL, NULL);
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
-             start = _icon_create(EFLETE_IMG_PATH"mw_button_info.png", parent);
-             end = _icon_create(EFLETE_IMG_PATH"mw_button_close.png", parent);
+             GET_IMAGE(start, parent, "mw_button_info");
+             GET_IMAGE(end, parent, "mw_button_close");
              elm_list_item_append(object, _("Two icons"), start, end, NULL, NULL);
           }
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
-             end = _icon_create(EFLETE_IMG_PATH"mw_button_close.png", parent);
+             GET_IMAGE(end, parent, "mw_button_close");
              elm_list_item_append(object, _("End icon"), NULL, end, NULL, NULL);
           }
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
-             start = _icon_create(EFLETE_IMG_PATH"mw_button_info.png", parent);
+             GET_IMAGE(start, parent, "mw_button_info");
              elm_list_item_append(object, _("Start icon"), start,
                                     NULL, NULL, NULL);
           }

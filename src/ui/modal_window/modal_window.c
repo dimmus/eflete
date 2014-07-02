@@ -96,8 +96,7 @@ _mw_create(Evas_Object *parent,
       evas_object_smart_callback_add(bt_close, "clicked", func, data);
    else
       evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
-   ic_close = elm_icon_add(bt_close);
-   elm_image_file_set(ic_close, EFLETE_IMG_PATH"mw_button_close.png", NULL);
+   GET_IMAGE(ic_close, bt_close, "mw_button_close");
    elm_layout_content_set(bt_close, "icon", ic_close);
    elm_layout_content_set(mw, "elm.swallow.close", bt_close);
 
@@ -174,8 +173,7 @@ mw_info_text_set(Evas_Object *object, const char *text)
    bt_info = elm_button_add(object);
    evas_object_size_hint_align_set(bt_info, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_smart_callback_add(bt_info, "clicked", _mw_info, text);
-   ic_info = elm_icon_add(bt_info);
-   elm_image_file_set(ic_info, EFLETE_IMG_PATH"mw_button_info.png", NULL);
+   GET_IMAGE(ic_info, bt_info, "mw_button_info");
    elm_layout_content_set(bt_info, "icon", ic_info);
    elm_layout_content_set(object, "elm.swallow.info", bt_info);
    evas_object_show(bt_info);

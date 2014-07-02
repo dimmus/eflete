@@ -503,7 +503,7 @@ _background_load(Evas_Object *image, const char *path)
         ERR("Could not load image [%s]. Error is \"%s\"", path,
             evas_load_error_str(err));
         /* Load default background*/
-        evas_object_image_file_set(image, EFLETE_IMG_PATH"bg_demo.png", NULL);
+        edje_object_file_set(image, EFLETE_RESOURCES, "bg_demo.png");
         return false;
      }
    evas_object_image_size_get(image, &w, &h);
@@ -666,8 +666,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    evas_object_smart_member_add(priv->layout, o);
 
    /* Here create evas image, whitch will be background for workspace*/
-   priv->background = evas_object_image_filled_add(e);
-   _background_load(priv->background, EFLETE_IMG_PATH"bg_demo.png");
+   GET_IMAGE(priv->background, e, "bg_demo");
    evas_object_smart_member_add(priv->background, o);
 
    /* Clipper needed for check mouse events*/
@@ -702,9 +701,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
    elm_object_style_set(priv->button_separate, "eflete/simple");
-   icon = elm_icon_add(priv->scroller);
-   elm_image_file_set(icon, EFLETE_IMG_PATH"icon-separate.png", NULL);
-   elm_image_no_scale_set(icon, true);
+   GET_IMAGE(icon, priv->scroller, "icon-separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
                                   _separate_smart_on_click, o);
