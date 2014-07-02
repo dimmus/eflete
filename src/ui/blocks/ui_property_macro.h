@@ -481,6 +481,58 @@ _on_##SUB##_##VALUE##_change(void *data, \
 }
 
 /* combobox */
+#define ITEM_1COMBOBOX_STATE_PART_CALLBACK(SUB, VALUE, TYPE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj EINA_UNUSED, \
+                             void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+     pd->part->curr_state, pd->part->curr_state_value, (TYPE)item->index); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+#define ITEM_1COMBOBOX_STATE_PART_ADD(text, SUB, VALUE, TYPE) \
+static Evas_Object * \
+prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                                Prop_Data *pd, \
+                                const char *tooltip, \
+                                const char **entries) \
+{ \
+   Evas_Object *item, *combobox; \
+   TYPE value; \
+   int i = 0; \
+   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   EWE_COMBOBOX_ADD(parent, combobox) \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+             pd->part->curr_state, pd->part->curr_state_value); \
+   while (entries[i]) \
+    { \
+       ewe_combobox_item_add(combobox, entries[i]); \
+       i++; \
+    } \
+   ewe_combobox_select_item_set(combobox, value); \
+   elm_object_tooltip_text_set(combobox, tooltip); \
+   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", combobox); \
+   return item; \
+}
+
+#define ITEM_1COMBOBOX_STATE_PART_UPDATE(text, SUB, VALUE, TYPE) \
+static void \
+prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
+                                   Prop_Data *pd) \
+{ \
+   Evas_Object *combobox = elm_object_part_content_get(item, "elm.swallow.content"); \
+   TYPE value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                  pd->part->curr_state, pd->part->curr_state_value); \
+   ewe_combobox_select_item_set(combobox, value); \
+}
+
+
 #define ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE) \
 static void \
 _on_combobox_##SUB##_##VALUE##_change(void *data, \

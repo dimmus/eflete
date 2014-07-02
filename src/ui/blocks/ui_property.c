@@ -127,8 +127,8 @@ static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Vertical"),
                                           N_("Horizontal"),
                                           N_("Both"),
-                                          N_("Source") };
-#define ASPECT_PREF_TYPE_COUNT 5
+                                          N_("Source"),
+                                          NULL};
 
 static const char *edje_select_mode[] = { N_("Default"),
                                           N_("Explicit"),
@@ -203,59 +203,6 @@ prop_item_label_update(Evas_Object *item,
    Evas_Object *label;
    label = elm_object_part_content_get(item, "elm.swallow.content");
    elm_object_text_set(label, text);
-}
-
-static void
-_on_state_pref_pref_change(void *data,
-                           Evas_Object *obj EINA_UNUSED,
-                           void *ei)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Ewe_Combobox_Item *item = ei;
-   if (!edje_edit_state_aspect_pref_set(pd->style->obj, pd->part->name,
-                                        pd->part->curr_state, pd->part->curr_state_value,
-                                        item->index))
-     return;
-   workspace_edit_object_recalc(pd->workspace);
-   pd->style->isModify = true;
-}
-
-static Evas_Object *
-prop_item_state_aspect_pref_add(Evas_Object *parent,
-                                Prop_Data *pd,
-                                Evas_Object *property EINA_UNUSED,
-                                const char *tooltip)
-{
-   Evas_Object *item, *combobox;
-   unsigned char asp_pref;
-   int i = 0;
-   ITEM_ADD(parent, item, _("aspect ratio mode"), "eflete/property/item/default")
-   EWE_COMBOBOX_ADD(item, combobox)
-   elm_object_tooltip_text_set(combobox, tooltip);
-   asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
-                                              pd->part->name,
-                                              pd->part->curr_state,
-                                              pd->part->curr_state_value);
-   for (i = 0; i < ASPECT_PREF_TYPE_COUNT; i++)
-     ewe_combobox_item_add(combobox, _(edje_aspect_pref[i]));
-   ewe_combobox_select_item_set(combobox, asp_pref);
-   evas_object_smart_callback_add(combobox, "selected", _on_state_pref_pref_change, pd);
-   elm_object_part_content_set(item, "elm.swallow.content", combobox);
-   return item;
-}
-
-static void
-prop_item_state_aspect_pref_update(Evas_Object *item,
-                                   Prop_Data *pd)
-{
-   Evas_Object *combobox;
-   unsigned char asp_pref;
-   combobox = elm_object_part_content_get(item, "elm.swallow.content");
-   asp_pref = edje_edit_state_aspect_pref_get(pd->style->obj,
-                                              pd->part->name,
-                                              pd->part->curr_state,
-                                              pd->part->curr_state_value);
-   ewe_combobox_select_item_set(combobox, asp_pref);
 }
 
 Evas_Object *
@@ -869,6 +816,10 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2CHEACK_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
+#define ITEM_1COMBOBOX_PART_STATE_CREATE(TEXT, SUB, VALUE, TYPE) \
+   ITEM_1COMBOBOX_STATE_PART_CALLBACK(SUB, VALUE, TYPE) \
+   ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE, TYPE) \
+   ITEM_1COMBOBOX_STATE_PART_UPDATE(TEXT, SUB, VALUE, TYPE)
 
 ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
 ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
@@ -878,6 +829,7 @@ ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/propert
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
 ITEM_STATE_CCL_CREATE(_("color class"), state, color_class)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
+ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
@@ -934,8 +886,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
                             _("Normally width and height can be "
                              "resized to any values independently"),
                             false);
-        pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd, property,
-                                   _("The aspect control hints for this object."));
+        pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd,
+                                   _("The aspect control hints for this object."),
+                                   edje_aspect_pref);
         pd_state.color_class = prop_item_state_color_class_add(box, pd,
                                   _("Current color class"));
         pd_state.color = prop_item_state_color_add(box, pd,
