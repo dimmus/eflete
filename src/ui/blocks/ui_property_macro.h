@@ -276,6 +276,17 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
              if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
              ewe_combobox_item_add(combobox, part->name); \
           } \
+        if (!strncmp(text, "source", 6)) \
+          { \
+             Eina_List *collections, *l; \
+             char *group; \
+             App_Data *ap = app_create(); \
+             collections = edje_file_collection_list(ap->project->swapfile); \
+             EINA_LIST_FOREACH(collections, l, group) \
+               { \
+                  ewe_combobox_item_add(combobox, group); \
+               } \
+          } \
         else \
           if(strcmp(pd->part->name, part->name)) \
             ewe_combobox_item_add(combobox, part->name); \
@@ -315,6 +326,17 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
           { \
              if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
              ewe_combobox_item_add(combobox, part->name); \
+          } \
+        if (!strncmp(text, "source", 6)) \
+          { \
+             Eina_List *collections, *l; \
+             char *group; \
+             App_Data *ap = app_create(); \
+             collections = edje_file_collection_list(ap->project->swapfile); \
+             EINA_LIST_FOREACH(collections, l, group) \
+               { \
+                  ewe_combobox_item_add(combobox, group); \
+               } \
           } \
         else \
           if(strcmp(pd->part->name, part->name)) \

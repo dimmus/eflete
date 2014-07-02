@@ -112,6 +112,12 @@ struct _Prop_Data
       Evas_Object *style; /* not implemented in yet the edje  */
       Evas_Object *min;
       Evas_Object *max;
+      Evas_Object *source;
+      Evas_Object *source2;
+      Evas_Object *source3;
+      Evas_Object *source4;
+      Evas_Object *source5;
+      Evas_Object *source6;
    } prop_state_textblock;
    struct {
       Evas_Object *frame;
@@ -1279,6 +1285,12 @@ ui_property_state_text_unset(Evas_Object *property)
 #undef pd_text
 
 #define pd_textblock pd->prop_state_textblock
+ITEM_1COMBOBOX_PART_CREATE(_("source (under selected text)"), part, source)
+ITEM_1COMBOBOX_PART_CREATE(_("source2 (over selected text)"), part, source2)
+ITEM_1COMBOBOX_PART_CREATE(_("source3 (under cursor)"), part, source3)
+ITEM_1COMBOBOX_PART_CREATE(_("source4 (over cursor)"), part, source4)
+ITEM_1COMBOBOX_PART_CREATE(_("source5 (under anchor)"), part, source5)
+ITEM_1COMBOBOX_PART_CREATE(_("source6 (over anchor)"), part, source6)
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
 {
@@ -1311,10 +1323,35 @@ ui_property_state_textblock_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
+         pd_textblock.source = prop_item_part_source_add(box, pd,
+                               _("Used for the group to be loaded and used for selection \t"
+                               "display UNDER the selected text the source \t"
+                               "of TEXTBLOCK part."));
+         pd_textblock.source2 = prop_item_part_source2_add(box, pd,
+                               _("It is used for the group to be loaded and used for \t"
+                               "selection display OVER the selected text."));
+         pd_textblock.source3 = prop_item_part_source3_add(box, pd,
+                               _("It is used for the group to be loaded and used for \t"
+                               "cursor display UNDER the cursor position."));
+         pd_textblock.source4 = prop_item_part_source4_add(box, pd,
+                               _("It is used for the group to be loaded and used \t"
+                               "for cursor display OVER the cursor position."));
+         pd_textblock.source5 = prop_item_part_source5_add(box, pd,
+                               _("It is used for the group to be loaded and used for \t"
+                               "anchors display UNDER the anchor position."));
+         pd_textblock.source6 = prop_item_part_source6_add(box, pd,
+                               _("It is used for the group to be loaded and used for \t"
+                               "anchor display OVER the anchor position."));
 
          elm_box_pack_end(box, pd_textblock.text);
          elm_box_pack_end(box, pd_textblock.min);
          elm_box_pack_end(box, pd_textblock.max);
+         elm_box_pack_end(box, pd_textblock.source);
+         elm_box_pack_end(box, pd_textblock.source2);
+         elm_box_pack_end(box, pd_textblock.source3);
+         elm_box_pack_end(box, pd_textblock.source4);
+         elm_box_pack_end(box, pd_textblock.source5);
+         elm_box_pack_end(box, pd_textblock.source6);
 
          elm_box_pack_end(prop_box, textblock_frame);
          pd_textblock.frame = textblock_frame;
@@ -1324,6 +1361,12 @@ ui_property_state_textblock_set(Evas_Object *property)
         prop_item_state_text_update(pd_textblock.text, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
+        prop_item_part_source_update(pd_textblock.source, pd);
+        prop_item_part_source2_update(pd_textblock.source2, pd);
+        prop_item_part_source3_update(pd_textblock.source3, pd);
+        prop_item_part_source4_update(pd_textblock.source4, pd);
+        prop_item_part_source5_update(pd_textblock.source5, pd);
+        prop_item_part_source6_update(pd_textblock.source6, pd);
         elm_box_pack_end(prop_box, pd_textblock.frame);
         evas_object_show(pd_textblock.frame);
      }
