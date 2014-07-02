@@ -123,6 +123,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *type;
+      Evas_Object *smooth;
    } prop_state_fill;
 };
 typedef struct _Prop_Data Prop_Data;
@@ -1439,6 +1440,7 @@ ui_property_state_image_unset(Evas_Object *property)
 
 #define pd_fill pd->prop_state_fill
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
+ITEM_1CHECK_STATE_CREATE(_("smooth"), state_fill, smooth)
 
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
@@ -1460,8 +1462,11 @@ ui_property_state_fill_set(Evas_Object *property)
                              _("Sets the image fill type."),
                              edje_fill_type);
 
+        pd_fill.smooth = prop_item_state_fill_smooth_add(box, pd,
+                             _("On/off image smooth on scaling"));
 
         elm_box_pack_end(box, pd_fill.type);
+        elm_box_pack_end(box, pd_fill.smooth);
 
         pd_fill.frame = fill_frame;
         elm_box_pack_end(prop_box, pd_fill.frame);
@@ -1469,6 +1474,7 @@ ui_property_state_fill_set(Evas_Object *property)
    else
      {
         prop_item_state_fill_type_update(pd_fill.type, pd);
+        prop_item_state_fill_smooth_update(pd_fill.smooth, pd);
 
         elm_box_pack_end(prop_box, pd_fill.frame);
      }
@@ -1487,6 +1493,7 @@ ui_property_state_fill_unset(Evas_Object *property)
    evas_object_hide(pd_fill.frame);
 }
 #undef pd_fill
+
 static void
 _on_state_color_class_change(void *data,
                              Evas_Object *obj EINA_UNUSED,
