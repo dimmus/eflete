@@ -120,6 +120,10 @@ struct _Prop_Data
       Evas_Object *middle;
       Evas_Object *tween;
    } prop_state_image;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *type;
+   } prop_state_fill;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -148,6 +152,10 @@ static const char *edje_cursor_mode[] = { N_("Under"),
                                           N_("Before"),
                                           NULL};
 
+static const char *edje_fill_type[] = { N_("Scale"),
+                                        N_("Tile"),
+                                        NULL};
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -171,6 +179,13 @@ ui_property_state_image_set(Evas_Object *property);
 
 static void
 ui_property_state_image_unset(Evas_Object *property);
+
+static Eina_Bool
+ui_property_state_fill_set(Evas_Object *property);
+
+static void
+ui_property_state_fill_unset(Evas_Object *property);
+
 
 static void
 _del_prop_data(void *data,
@@ -944,6 +959,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else ui_property_state_textblock_unset(property);
    if (type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property);
    else ui_property_state_image_unset(property);
+   if ((type == EDJE_PART_TYPE_IMAGE) || (type == EDJE_PART_TYPE_PROXY))
+     ui_property_state_fill_set(property);
+   else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
+     ui_property_state_fill_unset(property);
 
    elm_object_text_set(pd->code, elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj)));
 
@@ -963,6 +982,7 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_text_unset(property);
    ui_property_state_image_unset(property);
    ui_property_state_textblock_unset(property);
+   ui_property_state_fill_unset(property);
 }
 
 /* FIXME: edje_edit_state_relX_to do not update object properly.
@@ -1417,6 +1437,56 @@ ui_property_state_image_unset(Evas_Object *property)
 }
 #undef pd_image
 
+#define pd_fill pd->prop_state_fill
+ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
+
+static Eina_Bool
+ui_property_state_fill_set(Evas_Object *property)
+{
+   Evas_Object *fill_frame, *box, *prop_box;
+   PROP_DATA_GET(EINA_FALSE)
+
+   /* if previos selected part is IMAGE or PROXY too, unpack it */
+   ui_property_state_fill_unset(property);
+   prop_box = elm_object_content_get(pd->visual);
+   if (!pd_fill.frame)
+     {
+        FRAME_ADD(property, fill_frame, true, _("Fill"))
+        BOX_ADD(fill_frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(fill_frame, box);
+
+        pd_fill.type = prop_item_state_fill_type_add(box, pd,
+                             _("Sets the image fill type."),
+                             edje_fill_type);
+
+
+        elm_box_pack_end(box, pd_fill.type);
+
+        pd_fill.frame = fill_frame;
+        elm_box_pack_end(prop_box, pd_fill.frame);
+     }
+   else
+     {
+        prop_item_state_fill_type_update(pd_fill.type, pd);
+
+        elm_box_pack_end(prop_box, pd_fill.frame);
+     }
+   evas_object_show(pd_fill.frame);
+   return true;
+}
+
+static void
+ui_property_state_fill_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+   PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_fill.frame);
+   evas_object_hide(pd_fill.frame);
+}
+#undef pd_fill
 static void
 _on_state_color_class_change(void *data,
                              Evas_Object *obj EINA_UNUSED,
