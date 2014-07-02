@@ -28,11 +28,6 @@
 void workspace_add_test_p(int);
 void workspace_add_test_n(int);
 
-void workspace_background_image_set_test_p(int);
-void workspace_background_image_set_test_n(int);
-void workspace_background_image_set_test_n1(int);
-void workspace_background_image_set_test_n2(int);
-
 void workspace_zoom_factor_set_p(int);
 void workspace_zoom_factor_set_n1(int);
 void workspace_zoom_factor_set_n2(int);

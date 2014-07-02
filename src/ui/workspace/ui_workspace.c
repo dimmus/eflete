@@ -492,27 +492,6 @@ _sc_smart_move_cb(void *data,
 }
 
 static Eina_Bool
-_background_load(Evas_Object *image, const char *path)
-{
-   Evas_Load_Error err;
-   int w, h;
-   evas_object_image_file_set(image, path, NULL);
-   err = evas_object_image_load_error_get(image);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     {
-        ERR("Could not load image [%s]. Error is \"%s\"", path,
-            evas_load_error_str(err));
-        /* Load default background*/
-        edje_object_file_set(image, EFLETE_RESOURCES, "bg_demo.png");
-        return false;
-     }
-   evas_object_image_size_get(image, &w, &h);
-   evas_object_image_filled_set(image, false);
-   evas_object_image_fill_set(image, 0, 0, w, h);
-   return true;
-}
-
-static Eina_Bool
 _zoom_factor_update(Evas_Object *obj, double factor)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
@@ -536,17 +515,6 @@ workspace_zoom_factor_get(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
    return sd->zoom.factor;
-}
-
-Eina_Bool
-workspace_background_image_set(Evas_Object *obj, const char *path)
-{
-   if (!path) return false;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-
-   if (!sd->background) return false;
-   if (!_background_load(sd->background, path)) return false;
-   return true;
 }
 
 static void

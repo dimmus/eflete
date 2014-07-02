@@ -51,21 +51,6 @@ Evas_Object *
 workspace_add(Evas_Object *parent);
 
 /**
- * Set background image for workspace. If image file corrupt or have invalid
- * image format or extenstion, then will be set default background image
- * (transparency style). Background image will be tiled automaticaly.
- *
- * @param obj The workspace object.
- * @param path The path to the image file load from.
- *
- * @return EINA_TRUE, on success or EINA_FALSE, on errors.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_background_image_set(Evas_Object *obj, const char *path);
-
-/**
  * Get the groupedit object, which loaded into workspace.
  *
  * @param obj The workspace object.

@@ -351,7 +351,6 @@ test_ui_workspace/workspace_edit_object_unset.c \
 test_ui_workspace/workspace_edit_object_visible_set.c \
 test_ui_workspace/workspace_highlight_set.c \
 test_ui_workspace/workspace_highlight_unset.c \
-test_ui_workspace/workspace_background_image_set.c \
 test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c \
 test_ui_workspace/workspace_separate_mode_set.c \
