@@ -861,6 +861,23 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
 }
 
 Eina_Bool
+groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
+                                      const char *state_from, double value_from,
+                                      const char *state_to, double value_to)
+{
+   Eina_Bool ret;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state_from) || (!state_to)) return false;
+
+   ret = edje_edit_state_copy(sd->edit_obj, part, state_from, value_from,
+                              state_to, value_to);
+   ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state_to, value_to);
+
+   if (ret) evas_object_smart_changed(sd->obj);
+   return ret;
+}
+
+Eina_Bool
 groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {

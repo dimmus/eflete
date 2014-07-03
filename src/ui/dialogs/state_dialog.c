@@ -26,8 +26,13 @@
 
 static Evas_Object *entry_name;
 static Evas_Object *entry_value;
-static Evas_Object *combobox_dup_state;
 static Eina_Bool to_close;
+
+static const char *state_from;
+static double value_from;
+static Eina_Bool state_copy;
+
+
 
 static Elm_Entry_Filter_Accept_Set accept_value = {
    .accepted = "0123456789.",
@@ -50,6 +55,7 @@ _add_ok_clicked(void *data,
    Part *part = ui_states_list_part_get(glist);
    const char *str_name, *str_value;
    Eina_Stringshare *state;
+   Eina_Bool result = false;
 
    if (elm_entry_is_empty(entry_name))
      {
@@ -66,14 +72,23 @@ _add_ok_clicked(void *data,
 
    str_name = elm_entry_entry_get(entry_name);
    str_value = elm_entry_entry_get(entry_value);
-   if (edje_edit_state_exist(ap->project->current_style->obj, part->name, str_name, atof(str_value)))
+   if (edje_edit_state_exist(ap->project->current_style->obj, part->name,
+                             str_name, atof(str_value)))
      {
         NOTIFY_WARNING(_("State is exist!"))
         to_close = false;
         return;
      }
-   else if (workspace_edit_object_part_state_add(workspace, part->name,
-                                            str_name, atof(str_value)))
+
+   if (!state_copy)
+     result = workspace_edit_object_part_state_add(workspace, part->name,
+                                                   str_name, atof(str_value));
+   else
+     result =  workspace_edit_object_part_state_copy(workspace, part->name,
+                                                     state_from, value_from,
+                                                     str_name, atof(str_value));
+
+   if (result)
      {
         ap->project->current_style->isModify = true;
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
@@ -105,6 +120,29 @@ _cancel_clicked(void *data,
    ui_menu_locked_set(ap->menu_hash, false);
 }
 
+static void
+_on_dup_state_change(void *data,
+                     Evas_Object *obj EINA_UNUSED,
+                     void *ei)
+{
+   char **split = NULL;
+   Part *part = (Part *) data;
+   Ewe_Combobox_Item *it = ei;
+   const char *state = it->title;
+   if (!it->index)
+     {
+        state_copy = false;
+        return;
+     }
+
+   split = eina_str_split(state, " ", 2);
+   eina_stringshare_del(part->curr_state);
+   state_from = eina_stringshare_add(split[0]);
+   value_from = atof(split[1]);
+   free(split[0]);
+   free(split);
+   state_copy = true;
+}
 
 Evas_Object *
 state_dialog_state_add(App_Data *ap)
@@ -114,6 +152,9 @@ state_dialog_state_add(App_Data *ap)
    Evas_Object *glist = NULL;
    Part *part = NULL;
    Eina_Stringshare *title = NULL;
+   Eina_List *states = NULL, *l = NULL;
+   const char *state_name = NULL;
+   Evas_Object *combobox_dup_state;
 
    if ((!ap) || (!ap->workspace))
      {
@@ -125,6 +166,8 @@ state_dialog_state_add(App_Data *ap)
    part = ui_states_list_part_get(glist);
    if (!part) return NULL;
 
+   state_copy = false;
+
    ap->popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(ap->popup, "eflete");
    title = eina_stringshare_printf(_("Add new state to part \"%s\""), part->name);
@@ -133,14 +176,14 @@ state_dialog_state_add(App_Data *ap)
 
    BOX_ADD(ap->popup, box, false, false);
 
-   ITEM_ADD(box, item, "Name:", "eflete/property/item/default")
+   ITEM_ADD(box, item, _("Name:"), "eflete/property/item/default")
    EWE_ENTRY_ADD(item, entry_name, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
    elm_object_part_content_set(item, "elm.swallow.content", entry_name);
    elm_box_pack_end(box, item);
 
-   ITEM_ADD(box, item, "Value:", "eflete/property/item/default")
+   ITEM_ADD(box, item, _("Value:"), "eflete/property/item/default")
    EWE_ENTRY_ADD(item, entry_value, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
@@ -152,8 +195,19 @@ state_dialog_state_add(App_Data *ap)
 
    ITEM_ADD(box, item_dup, _("Duplicate state:"), "eflete/property/item/default")
    EWE_COMBOBOX_ADD(item_dup, combobox_dup_state)
-   elm_object_disabled_set(combobox_dup_state, true);
+
+   states = edje_edit_part_states_list_get(ap->project->current_style->obj, part->name);
+
+   ewe_combobox_item_add(combobox_dup_state, _("None"));
+   ewe_combobox_select_item_set(combobox_dup_state, 0);
+   EINA_LIST_FOREACH(states, l, state_name)
+     {
+       ewe_combobox_item_add(combobox_dup_state, state_name);
+     }
    elm_object_part_content_set(item_dup, "elm.swallow.content", combobox_dup_state);
+   evas_object_smart_callback_add(combobox_dup_state, "selected",
+                                  _on_dup_state_change, part);
+   edje_edit_string_list_free(states);
 
    elm_box_pack_end(box, item_dup);
    elm_object_content_set(ap->popup, box);
