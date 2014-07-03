@@ -58,6 +58,7 @@ struct _Prop_Data
       Evas_Object *mouse;
       Evas_Object *repeat;
       Evas_Object *clip_to;
+      Evas_Object *ignore_flags;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
       Evas_Object *pointer_mode;
@@ -168,6 +169,10 @@ static const char *edje_cursor_mode[] = { N_("Under"),
 static const char *edje_fill_type[] = { N_("Scale"),
                                         N_("Tile"),
                                         NULL};
+
+static const char *edje_ignore_flags[] = { N_("None"),
+                                           N_("On hold"),
+                                           NULL};
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -581,12 +586,15 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_DRAG_PART_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
 
+#define ITEM_1COMBOBOX_PART_PROPERTY_CREATE ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE
+
 /* part property */
 ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
 ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_PROPERTY_CREATE(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
@@ -637,12 +645,16 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd_part.clip_to = prop_item_part_clip_to_add(box, pd,
                              _("Show only the area of part that coincides with "
                              "another part's container"));
+        pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
+                                  _("Specifies whether events with the given "
+                                  " flags should be ignored"), edje_ignore_flags);
         elm_box_pack_end(box, pd_part.name);
         elm_box_pack_end(box, pd_part.type);
         elm_box_pack_end(box, pd_part.scale);
         elm_box_pack_end(box, pd_part.mouse);
         elm_box_pack_end(box, pd_part.repeat);
         elm_box_pack_end(box, pd_part.clip_to);
+        elm_box_pack_end(box, pd_part.ignore_flags);
 
         if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
           {
@@ -678,6 +690,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_mouse_events_update(pd_part.mouse, pd);
          prop_item_part_repeat_events_update(pd_part.repeat, pd);
          prop_item_part_clip_to_update(pd_part.clip_to, pd);
+         prop_item_part_ignore_flags_update(pd_part.ignore_flags, pd);
          if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
            {
              box = elm_object_content_get(pd_part.frame);
