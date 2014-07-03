@@ -98,6 +98,7 @@ struct _Prop_Data
       Evas_Object *font;
       Evas_Object *size;
       Evas_Object *align;
+      Evas_Object *source;
       Evas_Object *elipsis;
       Evas_Object *min;
       Evas_Object *max;
@@ -824,7 +825,7 @@ ui_property_part_unset(Evas_Object *property)
 
 #define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_UPDATE(SUB, VALUE)
+   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE)
 
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
@@ -1169,6 +1170,10 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
+#define ITEM_1COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE)
+
 
 ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
 ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop)
@@ -1180,6 +1185,7 @@ ITEM_1SPINNER_STATE_DOUBLE_CREATE(_("elipsis"), state_text, elipsis)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color2)
 ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
+ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source)
 
 #define pd_text pd->prop_state_text
 static Eina_Bool
@@ -1227,6 +1233,10 @@ ui_property_state_text_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
+         pd_text.source = prop_item_state_text_source_add(box, pd,
+                                   _("Causes the part to use the text properties\t"
+                                   "(like font and size) of another part\t"
+                                   "and update them as they change."));
          pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd,
                               0.0, 1.0, 0.1, "%1.2f",
                               _("Cut text if biggest then part's area"
@@ -1245,6 +1255,7 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, pd_text.align);
          elm_box_pack_end(box, pd_text.min);
          elm_box_pack_end(box, pd_text.max);
+         elm_box_pack_end(box, pd_text.source);
          elm_box_pack_end(box, pd_text.elipsis);
          elm_box_pack_end(box, pd_text.fit);
          elm_box_pack_end(box, pd_text.color2);
@@ -1261,6 +1272,7 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
+        prop_item_state_text_source_update(pd_text.source, pd);
         prop_item_state_text_elipsis_update(pd_text.elipsis, pd);
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
         prop_item_state_color2_update(pd_text.color2, pd);
