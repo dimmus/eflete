@@ -13,6 +13,7 @@ project_manager/widget_manager.c \
 project_manager/project_manager.c \
 logger/logger.c \
 config/config.c \
+external/syntax_color.c \
 ui/cursor.c \
 ui/ui_panes.c \
 ui/ui_menu.c \
@@ -48,6 +49,7 @@ eflete_SOURCES  = main.c
 
 eflete_CPPFLAGS = \
 -I${top_srcdir}/src/alloc \
+-I${top_srcdir}/src/external \
 -I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \

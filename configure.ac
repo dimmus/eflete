@@ -97,7 +97,7 @@ AM_COND_IF([CHECK_FOUND],
 
 #Usage: EFLETE_WITH_BIN(package, binary, default_value). See eflete_binary.m4
 EFLETE_WITH_BIN([edje], [edje_cc], [edje_cc])
-
+EFLETE_WITH_BIN([eet], [eet-eet], [eet])
 dnl locale, gettext
 AM_GNU_GETTEXT_VERSION(0.18.1)
 AM_GNU_GETTEXT([external])
