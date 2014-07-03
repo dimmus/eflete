@@ -21,7 +21,7 @@ alayouts_DATA = eflete.edj
 
 aimagesdir = $(datadir)/eflete/images
 aimages_DATA = \
-   ${srcdir}/layouts/images/*.png ${srcdir}/layouts/images/*.jpg
+   ${srcdir}/images/*.png ${srcdir}/images/*.jpg
 
 aresourcesdir = $(datadir)/eflete/
 aresources_DATA = resources.edj
@@ -30,7 +30,7 @@ shortcutdir = $(datadir)/applications
 shortcut_DATA = eflete.desktop
 
 icondir = $(datadir)/icons
-icon_DATA = ${srcdir}/layouts/images/eflete.svg
+icon_DATA = ${srcdir}/images/eflete.svg
 
 colorsdir = $(datadir)/eflete/themes/default
 colors_DATA = color.eet
