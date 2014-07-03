@@ -18,13 +18,18 @@ group { name: "eflete/live_view/toolbar/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            visible: 1;
+            visible: 0;
             fixed: 1 1;
             rel2 {
                relative: 1.0 0.0;
                to: "menu";
             }
          }
+         description { state: "displayed" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+
       }
       part { name: "menu_pad_top";
          type: SPACER;
@@ -76,12 +81,14 @@ group { name: "eflete/live_view/toolbar/default";
          signal: "live_view,hide";
          source: "eflete";
          action: STATE_SET "default" 0.0;
+         target: "eflete.swallow.content";
          target: "eflete.swallow.spinner";
       }
       program { name: "live_view_spinner_show";
          signal: "live_view,show";
          source: "eflete";
          action: STATE_SET "displayed" 0.0;
+         target: "eflete.swallow.content";
          target: "eflete.swallow.spinner";
       }
    }
