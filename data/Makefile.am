@@ -53,18 +53,16 @@ default.edj: Makefile
 	$(top_srcdir)/data/themes/default/default.edc \
 	$(top_builddir)/data/default.edj
 
-<<<<<<< HEAD
 resources.edj: Makefile
 	$(AM_V_EDJ)$(EDJE_CC) \
 		$(EDJE_FLAGS_RESOURCES) \
 	$(top_srcdir)/data/resources/resources.edc \
 	$(top_builddir)/data/resources.edj
-=======
+
 color.eet: Makefile
 	$(AM_V_EET)$(EET_EET) -e \
 	$(top_builddir)/data/color.eet color \
 	$(top_srcdir)/data/color/color.src 1
->>>>>>> enventor_colors
 
 clean-local:
 	rm -f *.edj *.eet
