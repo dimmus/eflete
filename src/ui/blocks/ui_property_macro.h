@@ -861,13 +861,14 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 const char *tooltip) \
 { \
    Evas_Object *item, *combobox; \
+   Part *part; \
+   Edje_Part_Type type; \
    Eina_List *list = NULL; \
    const char *ccname = NULL; \
    Eina_Stringshare *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
                                             pd->part->curr_state_value); \
-   Eina_List *cclist = edje_edit_color_classes_list_get(pd->style->obj); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_COMBOBOX_ADD(item, combobox) \
    elm_object_tooltip_text_set(combobox, tooltip); \
@@ -876,23 +877,37 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    else \
      ewe_combobox_text_set(combobox, "None"); \
    ewe_combobox_item_add(combobox, "None"); \
-   EINA_LIST_FOREACH(cclist, list, ccname) \
-     ewe_combobox_item_add(combobox, ccname); \
-   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   if (!strcmp(TEXT, "source")) \
+     { \
+        EINA_INLIST_FOREACH(pd->style->parts, part) \
+          { \
+             type = edje_edit_part_type_get(pd->style->obj, part->name); \
+             if(!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
+               ewe_combobox_item_add(combobox, part->name); \
+          } \
+     } \
+   else \
+     { \
+        Eina_List *cclist = edje_edit_color_classes_list_get(pd->style->obj); \
+        EINA_LIST_FOREACH(cclist, list, ccname) \
+          ewe_combobox_item_add(combobox, ccname); \
+        evas_object_smart_callback_add(combobox, "selected", _on_state_color_class_change, pd); \
+     } \
    elm_object_part_content_set(item, "elm.swallow.content", combobox); \
    return item; \
 }
 
-#define ITEM_1COMBOBOX_STATE_UPDATE(SUB, VALUE) \
+#define ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE) \
 static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
 { \
    Evas_Object *combobox; \
+   Part *part; \
+   Edje_Part_Type type; \
    Eina_Stringshare *value; \
    Eina_List *list = NULL; \
    const char *ccname = NULL; \
-   Eina_List *cclist = edje_edit_color_classes_list_get(pd->style->obj); \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -904,8 +919,21 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    else \
      ewe_combobox_text_set(combobox, "None"); \
    ewe_combobox_item_add(combobox, "None"); \
-   EINA_LIST_FOREACH(cclist, list, ccname) \
-     ewe_combobox_item_add(combobox, ccname); \
+   if (!strcmp(TEXT, "source")) \
+     { \
+        EINA_INLIST_FOREACH(pd->style->parts, part) \
+          { \
+             type = edje_edit_part_type_get(pd->style->obj, part->name); \
+             if(!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
+               ewe_combobox_item_add(combobox, part->name); \
+          } \
+     } \
+   else \
+     { \
+        Eina_List *cclist = edje_edit_color_classes_list_get(pd->style->obj); \
+        EINA_LIST_FOREACH(cclist, list, ccname) \
+          ewe_combobox_item_add(combobox, ccname); \
+     } \
 }
 
 #define ITEM_COLOR_STATE_ADD(text, SUB, VALUE) \
