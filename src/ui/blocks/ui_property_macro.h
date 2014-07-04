@@ -1151,6 +1151,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(layout, "eflete.content", check); \
    elm_object_part_content_set(item, "elm.swallow.content", layout); \
+   evas_object_data_set(item, ITEM1, check); \
    return item; \
 }
 
