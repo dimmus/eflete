@@ -1,6 +1,23 @@
 ============
-Eflete 0.2.1
+Eflete 0.2.2
 ============
+
+Changes sinse 0.2.1
+-------------------
+
+Features:
+   * Part property: add the fill property for image part type;
+   * Part property: multiline mode for textblock part;
+   * Part property: cursor mode for textblock part;
+   * Part property: poinrt mode for textblock part;
+   * Part property: entry mode for textblock part;
+   * Part property: select mode for textblock part;
+   * Part property: source [1-6] for textblock part;
+   * Dublicate part state.
+
+Fixes:
+   * Add Container to the live view;
+   * Small fixes in live view module.
 
 Changes sinse 0.2.0
 -------------------
@@ -10,7 +27,6 @@ Features:
      signal.
 
 Fixes:
-
    * delete the build target folder.
    * fix bug with STATE_SET after creatin new program.
    * update the default value in the rel1_to (x/y) fields from "None" to
