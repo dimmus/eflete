@@ -1,18 +1,34 @@
 ============
-Eflete 0.2.1
+Eflete 0.2.2
 ============
 
-Changes sinse 0.2.0
+Changes since 0.2.1
 -------------------
 
 Features:
-   * Signal list: change states of the group parts accordenly to selected
+   * Part property: add the fill property for image part type;
+   * Part property: multiline mode for textblock part;
+   * Part property: cursor mode for textblock part;
+   * Part property: pointer mode for textblock part;
+   * Part property: entry mode for textblock part;
+   * Part property: select mode for textblock part;
+   * Part property: source [1-6] for textblock part;
+   * Duplicate part state.
+
+Fixes:
+   * Add Container to the live view;
+   * Small fixes in live view module.
+
+Changes since 0.2.0
+-------------------
+
+Features:
+   * Signal list: change states of the group parts accordingly to selected
      signal.
 
 Fixes:
-
    * delete the build target folder.
-   * fix bug with STATE_SET after creatin new program.
+   * fix bug with STATE_SET after creating new program.
    * update the default value in the rel1_to (x/y) fields from "None" to
      "Layout".
    * fix the bug with closing file dialog in the image editor, if image not be
