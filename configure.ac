@@ -82,7 +82,7 @@ PKG_CHECK_MODULES([ELEMENTARY], [elementary > elm_version],
    [have_elm="${GREEN}yes${RESET}"],
    [have_elm="${RED}no${RESET} (version < elm_version)"])
 
-PKG_CHECK_MODULES([EWE], [ewe > ewe_version],
+PKG_CHECK_MODULES([EWE], [ewe >= ewe_version],
    [have_ewe="${GREEN}yes${RESET}"],
    [have_ewe="${RED}no${RESET} (version < ewe_version)"])
 
