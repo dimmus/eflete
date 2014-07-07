@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [2], [1])
+EFLETE_VERSION([0], [2], [2])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.10.1])
 m4_define([elm_version], [1.10.1])
-m4_define([ewe_version], [0.1.1])
+m4_define([ewe_version], [0.1.2])
 
 EFLETE_INIT
 AC_CONFIG_HEADERS([eflete_config.h])
@@ -60,29 +60,29 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([EFL],
    [
-    eina >= efl_version
-    eet >= efl_version
-    evas >= efl_version
-    ecore >= efl_version
-    ecore-input >= efl_version
-    edje >= efl_version
-    eo >= efl_version
-    ecore-imf >= efl_version
-    ecore-con >= efl_version
-    eio >= efl_version
-    eldbus >= efl_version
-    efreet >= efl_version
-    efreet-mime >= efl_version
+    eina > efl_version
+    eet > efl_version
+    evas > efl_version
+    ecore > efl_version
+    ecore-input > efl_version
+    edje > efl_version
+    eo > efl_version
+    ecore-imf > efl_version
+    ecore-con > efl_version
+    eio > efl_version
+    eldbus > efl_version
+    efreet > efl_version
+    efreet-mime > efl_version
    ],
    [have_efl="${GREEN}yes${RESET}"],
    [have_efl="${RED}no${RESET} (version < efl_version)"]
 )
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary >= elm_version],
+PKG_CHECK_MODULES([ELEMENTARY], [elementary > elm_version],
    [have_elm="${GREEN}yes${RESET}"],
    [have_elm="${RED}no${RESET} (version < elm_version)"])
 
-PKG_CHECK_MODULES([EWE], [ewe >= ewe_version],
+PKG_CHECK_MODULES([EWE], [ewe > ewe_version],
    [have_ewe="${GREEN}yes${RESET}"],
    [have_ewe="${RED}no${RESET} (version < ewe_version)"])
 
