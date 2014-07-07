@@ -13,6 +13,7 @@ src/eflete
 *.log
 *.trs
 *.swap
+*.eet
 tests/addpart_test
 tests/alloc_test
 tests/colorclass_editor_test
