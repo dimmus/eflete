@@ -8,6 +8,7 @@ collections {
    #include "edje/cursor.edc"
    #include "edje/textstyle.edc"
    #include "edje/groupedit.edc"
+   #include "edje/container.edc"
    #include "edje/notify.edc"
    #include "edje/colorclass_editor.edc"
    #include "edje/prop_item.edc"

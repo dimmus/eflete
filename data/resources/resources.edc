@@ -1,0 +1,19 @@
+#define ADD_IMAGE(NAME, IMG) \
+   group { name: NAME; \
+      images.image: IMG COMP; \
+      parts { \
+         part { name: "image"; \
+            type: IMAGE; \
+            description { state: "default" 0.0; \
+               image.normal: IMG; \
+            } \
+         } \
+      } \
+   }
+
+#define ADD_PNG(NAME) ADD_IMAGE(NAME, NAME".png")
+#define ADD_JPG(NAME) ADD_IMAGE(NAME, NAME".jpg")
+
+collections {
+//   ADD_PNG("test")
+}

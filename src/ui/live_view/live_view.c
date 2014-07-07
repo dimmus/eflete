@@ -1,5 +1,6 @@
 #include "live_view.h"
 #include "notify.h"
+#include "container.h"
 
 #define ELEMENTS_COUNT 16
 #define COLOR_BLUE_LIGHT 57, 102, 147, 255
@@ -16,6 +17,10 @@ static const char *imgs[] =
    "sky_03.jpg",
    "sky_04.jpg",
 };
+
+#define SWALLOW_BG "eflete.swallow.bg"
+#define SWALLOW_CONTENT "eflete.swallow.content"
+#define SWALLOW_SPINNER "eflete.swallow.spinner"
 
 typedef struct _TestItem
 {
@@ -668,37 +673,34 @@ _elm_widget_create(const char  *widget,
    return object;
 }
 
-static Live_View *
-_live_view_init(void)
-{
-   return mem_calloc(1, sizeof(Live_View));
-}
-
 Live_View *
 live_view_add(Evas_Object *parent)
 {
    Live_View *live;
-   Evas_Object *spinner, *_layout;
+   Evas_Object *spinner, *bg;
 
    if (!parent) return NULL;
 
-   live = _live_view_init();
+   live = mem_malloc(sizeof(Live_View));
 
-   _layout = elm_layout_add(parent);
-   live->layout = _layout;
-   elm_layout_file_set(_layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
+   live->layout = elm_layout_add(parent);
+   elm_layout_file_set(live->layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
+   bg = elm_bg_add(live->layout);
+   elm_bg_color_set(bg, 203, 207, 209);
+   evas_object_show(bg);
 
    SPINNER_ADD(parent, spinner, 1, 500, 1, true, "eflete/live_view");
    elm_spinner_label_format_set(spinner, "%3.0f%%");
    evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, live);
    elm_spinner_value_set(spinner, 100);
-   elm_object_part_content_set(live->layout, "zoom_spinner", spinner);
+   elm_object_part_content_set(live->layout, SWALLOW_SPINNER, spinner);
    live->scale_spinner = spinner;
 
-   live->live_view = elm_layout_add(parent);
-   elm_layout_file_set(live->live_view, EFLETE_EDJ, "eflete/live_view/base/default");
-   elm_object_part_content_set(live->layout, "live_view", live->live_view);
-   elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
+   live->live_view = container_add(parent);
+   elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
+   elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
+   container_confine_set(live->live_view, bg);
+   evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
 
    return live;
@@ -743,7 +745,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         if (!live->object)
           {
              live->object = _elm_widget_create(widget, type, style_name, live->live_view);
-             elm_object_part_content_set(live->live_view, "live_object", live->object);
+             container_content_set(live->live_view, live->object);
           }
 
         if (!live->object)
@@ -764,7 +766,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           {
              live->object = elm_label_add(live->live_view);
              elm_object_text_set(live->object, fail_message);
-             elm_object_part_content_set(live->live_view, "live_object", live->object);
+             container_content_set(live->live_view, live->object);
           }
 
         live_view_theme_update(live, project);
@@ -780,7 +782,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      {
         live->object = elm_layout_add(live->live_view);
         elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
-        elm_object_part_content_set(live->live_view, "live_object", live->object);
+        container_content_set(live->live_view, live->object);
         live_view_theme_update(live, project);
         elm_object_style_set(live->object, style->full_group_name);
      }
@@ -789,7 +791,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    evas_object_show(live->live_view);
    evas_object_show(live->object);
 
-   elm_layout_signal_emit(live->live_view, "live_view,show", "eflete");
+   evas_object_show(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
@@ -803,9 +805,10 @@ Eina_Bool
 live_view_widget_style_unset(Live_View *live)
 {
    if ((!live) || (!live->object)) return false;
-   elm_layout_signal_emit(live->live_view, "live_view,hide", "eflete");
+   evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
-   elm_object_part_content_unset(live->live_view, "live");
+   container_content_unset(live->live_view);
+   evas_object_del(live->object);
    evas_object_del(live->object);
    live->object = NULL;
    return true;

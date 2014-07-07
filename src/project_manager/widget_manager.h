@@ -171,6 +171,23 @@ struct _Widget
 };
 
 /**
+ * @struct _Signal
+ *
+ * @brief This struct is designed to store a signal data. I.e. program name
+ *        where this signal is used, source name (emitter) of this signal and
+ *        pointer to @Style which using this signal.
+ *
+ * @ingroup WidgetManager
+ */
+struct _Signal
+{
+    Eina_Stringshare *name; /**< text name of signal */
+    Eina_Stringshare *source; /**< emitter name */
+    Eina_Stringshare *program; /**< program, where this signal is used */
+    Style *style; /**< pointer to style, where this signal is used */
+};
+typedef struct _Signal Signal;
+/**
  * Delete a Part from the @Style object
  *
  * @param style A @Style object being editing
@@ -196,6 +213,30 @@ wm_part_del(Style *style, Part *part);
  */
 Eina_Bool
 wm_part_current_state_set(Part *part, const char *state);
+
+/**
+ * Fill current states for all parts structures, which exist in style.
+ *
+ * @param style A @Style object being editing
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_current_state_parts_update(Style *style);
+
+/**
+ * Set "default" 0.0 state for all parts, which exist in style.
+ *
+ * @param style A @Style object being editing
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_state_parts_reset(Style *style);
 
 /**
  * Create a new Part object

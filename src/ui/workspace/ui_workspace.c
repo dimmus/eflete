@@ -1067,6 +1067,19 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
 }
 
 Eina_Bool
+workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
+                                     const char *state_from, double value_from,
+                                     const char *state_to, double value_to)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state_from) || (!state_to))
+     return false;
+
+   return groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
+                                               value_from, state_to, value_to);
+}
+
+Eina_Bool
 workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
