@@ -108,6 +108,7 @@ struct _Prop_Data
       Evas_Object *text_source; /* not implemented in yet the edje */
       Evas_Object *color2;
       Evas_Object *color3;
+      Evas_Object *effect;
    } prop_state_text;
    struct {
       Evas_Object *frame;
@@ -173,6 +174,29 @@ static const char *edje_fill_type[] = { N_("Scale"),
 static const char *edje_ignore_flags[] = { N_("None"),
                                            N_("On hold"),
                                            NULL};
+
+static const char *edje_text_effect_type[] = { N_("None"),
+                                               N_("Plain"),
+                                               N_("Outline"),
+                                               N_("Soft Outline"),
+                                               N_("Shadow"),
+                                               N_("Soft Shadow"),
+                                               N_("Outline Shadow"),
+                                               N_("Outline Soft Shadow"),
+                                               N_("Far Shadow"),
+                                               N_("Far Soft Shadow"),
+                                               N_("Glow"),
+                                               NULL};
+
+static const char *edje_text_effect_direction[] = { N_("Bottom Right"),
+                                                    N_("Bottom"),
+                                                    N_("Bottom Left"),
+                                                    N_("Left"),
+                                                    N_("Top Left"),
+                                                    N_("Top"),
+                                                    N_("Top Right"),
+                                                    N_("Right"),
+                                                    NULL};
 
 static const char *edje_middle_type[] = { N_("None"),
                                           N_("Default"),
@@ -1218,6 +1242,165 @@ ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
 ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source, styles)
 ITEM_1COMBOBOX_STATE_CREATE(_("text source"), state_text, text_source, styles)
 
+
+static void
+_text_effect_get(Prop_Data *pd, int *type, int *direction)
+{
+   Edje_Text_Effect edje_effect = edje_edit_part_effect_get(pd->style->obj,
+                                                            pd->part->name);
+   if (type)
+     *type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
+   if (direction)
+     *direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
+}
+
+typedef struct {
+   Evas_Object *type_combobox;
+   Evas_Object *direction_combobox;
+   Prop_Data *pd;
+} _text_effect_callback_data;
+
+static void
+_text_effect_value_update(_text_effect_callback_data *effect_data)
+{
+   Edje_Text_Effect edje_effect;
+   edje_effect = ewe_combobox_select_item_get(effect_data->type_combobox)->index;
+   edje_effect |= ewe_combobox_select_item_get(effect_data->direction_combobox)->index << 4;
+   edje_edit_part_effect_set(effect_data->pd->style->obj,
+                             effect_data->pd->part->name, edje_effect);
+   workspace_edit_object_recalc(effect_data->pd->workspace);
+   effect_data->pd->style->isModify = true;
+}
+
+static void
+prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
+{
+   int type, direction;
+   Evas_Object *combobox;
+   _text_effect_get(pd, &type, &direction);
+   combobox = evas_object_data_get(item, ITEM1);
+   ewe_combobox_select_item_set(combobox, type);
+   combobox = evas_object_data_get(item, ITEM2);
+   if ((type <= EDJE_TEXT_EFFECT_SOFT_OUTLINE) ||
+       (type == EDJE_TEXT_EFFECT_GLOW))
+     {
+        ewe_combobox_select_item_set(combobox,
+           EDJE_TEXT_EFFECT_SHADOW_DIRECTION_BOTTOM_RIGHT >> 4);
+        ewe_combobox_text_set(combobox, "None");
+        elm_object_disabled_set(combobox, true);
+     }
+   else
+     {
+        ewe_combobox_select_item_set(combobox, direction);
+        elm_object_disabled_set(combobox, false);
+     }
+}
+
+static void
+_on_text_effect_type_change(void *data EINA_UNUSED,
+                            Evas_Object *obj EINA_UNUSED,
+                            void *event_info)
+{
+   _text_effect_callback_data *effect_data = (_text_effect_callback_data *)data;
+   Ewe_Combobox_Item *selected_item = event_info;
+
+   switch (selected_item->index)
+     {
+      case EDJE_TEXT_EFFECT_NONE:
+      case EDJE_TEXT_EFFECT_PLAIN:
+      case EDJE_TEXT_EFFECT_OUTLINE:
+      case EDJE_TEXT_EFFECT_SOFT_OUTLINE:
+      case EDJE_TEXT_EFFECT_GLOW:
+        {
+           ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
+           ewe_combobox_text_set(effect_data->direction_combobox, "None");
+           elm_object_disabled_set(effect_data->direction_combobox, true);
+           break;
+        }
+      default:
+        {
+           if (elm_object_disabled_get(effect_data->direction_combobox))
+             {
+                ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
+                elm_object_disabled_set(effect_data->direction_combobox, false);
+             }
+        }
+     }
+   _text_effect_value_update(effect_data);
+}
+
+static void
+_on_text_effect_direction_change(void *data,
+                                 Evas_Object *obj EINA_UNUSED,
+                                 void *event_info EINA_UNUSED)
+{
+   _text_effect_value_update(data);
+}
+
+static void
+_del_text_effect_callback_data(void *data,
+                               Evas *e __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *ei __UNUSED__)
+{
+   _text_effect_callback_data *data_to_del = (_text_effect_callback_data *)data;
+   free(data_to_del);
+}
+
+#define ADD_TEXT_EFFECT_COMBOBOX(_prop_name, _prop_callback, _prop_names_array) \
+   i = 0; \
+   ITEM_ADD(box, layout, _(#_prop_name":"), "eflete/property/item/small_label") \
+   EWE_COMBOBOX_ADD(layout, combobox) \
+   while (_prop_names_array[i]) \
+     { \
+        ewe_combobox_item_add(combobox, _prop_names_array[i]); \
+        i++; \
+     } \
+   evas_object_smart_callback_add(combobox, "selected", \
+                                  _prop_callback, callback_data); \
+   elm_object_part_content_set(layout, "elm.swallow.content", combobox); \
+   elm_box_pack_end(box, layout);
+
+static Evas_Object *
+prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
+{
+   int i = 0;
+   Evas_Object *item, *box, *layout;
+   Evas_Object *combobox;
+   int type, direction;
+
+   _text_effect_callback_data *callback_data = (_text_effect_callback_data *)
+                                   malloc(sizeof(_text_effect_callback_data));
+   if (!callback_data)
+     return NULL;
+
+   _text_effect_get(pd, &type, &direction);
+
+   ITEM_ADD(parent, item, _("effect"), "eflete/property/item/multiple_prop")
+   evas_object_event_callback_add(item, EVAS_CALLBACK_DEL,
+                                  _del_text_effect_callback_data,
+                                  callback_data);
+   callback_data->pd = pd;
+
+   BOX_ADD(item, box, false, true)
+   elm_box_padding_set(box, 0, 6);
+
+   ADD_TEXT_EFFECT_COMBOBOX(type, _on_text_effect_type_change, edje_text_effect_type);
+   callback_data->type_combobox = combobox;
+   evas_object_data_set(item, ITEM1, combobox);
+   elm_object_tooltip_text_set(combobox, _("Causes Edje to draw the selected effect."));
+
+   ADD_TEXT_EFFECT_COMBOBOX(direction, _on_text_effect_direction_change, edje_text_effect_direction);
+   callback_data->direction_combobox = combobox;
+   evas_object_data_set(item, ITEM2, combobox);
+   elm_object_tooltip_text_set(combobox, _("Shadow directions."));
+
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   prop_item_state_effect_update(item, pd);
+   return item;
+}
+#undef ADD_TEXT_EFFECT_COMBOBOX
+
 #define pd_text pd->prop_state_text
 static Eina_Bool
 ui_property_state_text_set(Evas_Object *property)
@@ -1282,6 +1465,7 @@ ui_property_state_text_set(Evas_Object *property)
                             _("Text shadow color."));
          pd_text.color3 = prop_item_state_color3_add(box, pd,
                             _("Text outline color."));
+         pd_text.effect = prop_item_state_effect_add(box, pd);
 
          elm_box_pack_end(box, pd_text.text);
          elm_box_pack_end(box, pd_text.font);
@@ -1295,6 +1479,7 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, pd_text.fit);
          elm_box_pack_end(box, pd_text.color2);
          elm_box_pack_end(box, pd_text.color3);
+         elm_box_pack_end(box, pd_text.effect);
 
          elm_box_pack_end(prop_box, text_frame);
          pd_text.frame = text_frame;
@@ -1313,6 +1498,7 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
         prop_item_state_color2_update(pd_text.color2, pd);
         prop_item_state_color3_update(pd_text.color3, pd);
+        prop_item_state_effect_update(pd_text.effect, pd);
         elm_box_pack_end(prop_box, pd_text.frame);
         evas_object_show(pd_text.frame);
      }

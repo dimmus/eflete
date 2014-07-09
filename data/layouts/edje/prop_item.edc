@@ -128,6 +128,59 @@ group { name: "eflete/property/item/default";
    }
 }
 
+group { name: "eflete/property/item/multiple_prop";
+   inherit: "eflete/property/item/default";
+   parts {
+      part { name: "text_padding_top_left";
+         description { state: "default" 0.0;
+            FIXED_SIZE(6, 12);
+         }
+      }
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+         }
+      }
+   }
+}
+
+group { name: "eflete/property/item/small_label";
+   inherit: "eflete/property/item/default";
+   parts {
+      part { name: "base";
+         description { state: "default" 0.0;
+            min: 0 0;
+         }
+      }
+      part { name: "label.area";
+         description { state: "default" 0.0;
+            rel2.relative: 0.25 1.0;
+         }
+      }
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            rel1 {
+               to: "label.area";
+               relative: 0.0 0.0;
+            }
+            rel2 {
+               to: "label.area";
+               relative: 1.0 1.0;
+            }
+            text.ellipsis: 0;
+         }
+      }
+      part { name: "content.area";
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "label.area";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+   }
+}
+
 group { name: "eflete/property/item/relative";
    inherit: "eflete/property/item/default";
    parts {
