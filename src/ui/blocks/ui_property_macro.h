@@ -557,7 +557,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_select_item_set(combobox, value); \
 }
 
-
 #define ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE) \
 static void \
 _on_combobox_##SUB##_##VALUE##_change(void *data, \

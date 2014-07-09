@@ -174,6 +174,10 @@ static const char *edje_ignore_flags[] = { N_("None"),
                                            N_("On hold"),
                                            NULL};
 
+static const char *edje_middle_type[] = { N_("None"),
+                                          N_("Default"),
+                                          N_("Solid")};
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -1489,6 +1493,7 @@ _on_state_image_choose(void *data,
 
 ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop)
 ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
+ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -1519,9 +1524,12 @@ ui_property_state_image_set(Evas_Object *property)
         ewe_entry_regex_set(entry, IMAGE_BORDER_REGEX, EWE_REG_EXTENDED);
         ewe_entry_regex_autocheck_set(entry, true);
         ewe_entry_regex_glow_set(entry, true);
+        pd_image.middle = prop_item_state_image_border_fill_add(box, pd,
+                             _("Image's middle value"), edje_middle_type);
 
         elm_box_pack_end(box, pd_image.normal);
         elm_box_pack_end(box, pd_image.border);
+        elm_box_pack_end(box, pd_image.middle);
 
         elm_box_pack_end(prop_box, image_frame);
         pd_image.frame = image_frame;
@@ -1530,6 +1538,7 @@ ui_property_state_image_set(Evas_Object *property)
      {
         prop_item_state_image_update(pd_image.normal, pd);
         prop_item_state_image_border_update(pd_image.border, pd);
+        prop_item_state_image_border_fill_update(pd_image.middle, pd);
         elm_box_pack_end(prop_box, pd_image.frame);
         evas_object_show(pd_image.frame);
      }

@@ -748,6 +748,7 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    int img_w, img_h;
    double fill_w, fill_h, fill_x, fill_y;
    int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
+   unsigned char middle;
 
    PART_STATE_GET(edit_obj, gp->name)
 
@@ -768,6 +769,13 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
                                     &bl, &br, &bt, &bb);
    evas_object_image_border_set(gp->draw, bl, br, bt, bb);
 
+   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
+   if (middle == 0)
+     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_NONE);
+   else if (middle == 1)
+     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_DEFAULT);
+   else if (middle == 2)
+     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_SOLID);
 
    /* setups settings from filled block  into evas image object*/
    evas_object_image_smooth_scale_set(gp->draw,
