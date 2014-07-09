@@ -78,6 +78,13 @@ image_editor_file_choose(Evas_Object *win, const char *selected);
  *
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
+ * @note In callback function will be passed different types of data, in depends
+ *   of selection mode which set for image editor. For SINGLE mode in event_info
+ *   param of callback function will be send (const char *) string with name of
+ *   selected image. In case when image editor was created with MULTIPLE mode,
+ *   in event info will be passed (Eina_List *) names list of selected images.
+ *   User  should free received list with eina_list_free, after using.
+ *
  * @ingroup ImageEditor
  */
 Eina_Bool

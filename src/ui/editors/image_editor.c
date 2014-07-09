@@ -332,34 +332,59 @@ _on_button_ok_clicked_cb(void *data,
                          void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
+   Eina_Bool multiselect = false;
+   const Eina_List *items;
+   Eina_List *l, *names = NULL;
+   Elm_Object_Item *it;
+   const Item *item = NULL;
+
    if (!img_edit->gengrid)
      {
         _image_editor_del(img_edit);
         return;
      }
 
-   Elm_Object_Item *it = elm_gengrid_selected_item_get(img_edit->gengrid);
-   if (!it)
+   multiselect = elm_gengrid_multi_select_get(img_edit->gengrid);
+
+   if (multiselect)
      {
-        _image_editor_del(img_edit);
-        return;
+        items = elm_gengrid_selected_items_get(img_edit->gengrid);
+        EINA_LIST_FOREACH((Eina_List *)items, l, it)
+          {
+             item = elm_object_item_data_get(it);
+             if (!item) continue;
+             names = eina_list_append(names, eina_stringshare_add(item->image_name));
+          }
      }
-   const Item* item = elm_object_item_data_get(it);
-   if (!item)
+   else
      {
-        _image_editor_del(img_edit);
-        return;
+        it = elm_gengrid_selected_item_get(img_edit->gengrid);
+        if (!it)
+          {
+            _image_editor_del(img_edit);
+            return;
+          }
+        item = elm_object_item_data_get(it);
+        if (!item)
+         {
+            _image_editor_del(img_edit);
+            return;
+         }
      }
 
    if (img_edit->func_data.choose_func)
      {
-        img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
+        if (!multiselect)
+          img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
                                         (char *)item->image_name);
+        else
+          img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
+                                        (Eina_List *)names);
         img_edit->func_data.choose_func = NULL;
         img_edit->func_data.data = NULL;
      }
-
    _image_editor_del(img_edit);
+
 }
 
 static void
