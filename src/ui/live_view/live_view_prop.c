@@ -47,7 +47,7 @@ live_view_property_style_set(Evas_Object *property,
                              Style *style __UNUSED__,
                              const char *widget)
 {
-   Evas_Object *prop_box, *spinner;
+   Evas_Object *prop_box, *spinner, *check;
    Evas_Object *item;
 
    if ((!property) || (!object)) return false;
@@ -84,6 +84,22 @@ live_view_property_style_set(Evas_Object *property,
    elm_box_pack_start(prop_box, pd->scale_spinner);
    evas_object_show(pd->scale_spinner);
 
+   if (!pd->prop_swallow.swallows)
+     {
+        FRAME_ADD(property, pd->prop_swallow.frame, true, _("Swallows"));
+        elm_object_style_set(pd->prop_swallow.frame, "eflete/live_view");
+
+        CHECK_ADD(prop_box, check, "eflete/live_view");
+        elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", check);
+
+        BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
+        elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
+        elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
+     }
+   elm_box_pack_end(prop_box, pd->prop_swallow.frame);
+   evas_object_show(pd->prop_swallow.frame);
+   evas_object_show(pd->prop_swallow.swallows);
+
    return true;
 }
 
@@ -119,7 +135,7 @@ live_view_property_add(Evas_Object *parent)
 Eina_Bool
 live_view_property_style_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box;
+   Evas_Object *prop_box, *check;
 
    if (!property) return false;
    PROP_DATA_GET(false)
@@ -127,6 +143,14 @@ live_view_property_style_unset(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd->scale_spinner);
    evas_object_hide(pd->scale_spinner);
+
+   elm_box_unpack(prop_box, pd->prop_swallow.frame);
+   evas_object_hide(pd->prop_swallow.frame);
+
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
+   elm_check_state_set(check, false);
+
+   pd->live_object = NULL;
 
    return true;
 }
