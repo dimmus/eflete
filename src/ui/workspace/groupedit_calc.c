@@ -740,10 +740,15 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 {
    Evas_Load_Error err;
    const char *image_normal;
-   char buf[512]; /* FIXME: change 512 to BUFF_MAX */
+   const char *buf = NULL;
    int r, g, b, a;
    int id;
    int bl, br, bt, bb;
+   int x, y, w, h;
+   int img_w, img_h;
+   double fill_w, fill_h, fill_x, fill_y;
+   int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
+
    PART_STATE_GET(edit_obj, gp->name)
 
    state = edje_edit_part_selected_state_get(edit_obj, gp->name, &value);
@@ -753,25 +758,61 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
    if (!image_normal) return;
    id = edje_edit_image_id_get(edit_obj, image_normal);
-   snprintf(buf, sizeof(buf), "edje/images/%i", id);
+   buf = eina_stringshare_printf("edje/images/%i", id);
    evas_object_image_file_set(gp->draw, file, buf);
    err = evas_object_image_load_error_get(gp->draw);
    if (err != EVAS_LOAD_ERROR_NONE)
-     fprintf(stdout, "Could not update image:\"%s\"\n",  evas_load_error_str(err));
+     WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
 
    edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
                                     &bl, &br, &bt, &bb);
    evas_object_image_border_set(gp->draw, bl, br, bt, bb);
 
-   /* FIXME: need see in edje, to know how to work with edje fill param */
-   /* evas_object_image_fill_set(gp->draw, 0, 0, 1, 1); */
-   evas_object_image_filled_set(gp->draw, true);
 
-   evas_object_image_smooth_scale_set(gp->draw, true);
+   /* setups settings from filled block  into evas image object*/
+   evas_object_image_smooth_scale_set(gp->draw,
+            edje_edit_state_fill_smooth_get(edit_obj, gp->name, state, value));
 
-   /* evas_object_image_data_update_add() */
+   /* take fill params here, because need to know is default params set*/
+   fill_x = edje_edit_state_fill_origin_relative_x_get(edit_obj, gp->name, state, value);
+   fill_y = edje_edit_state_fill_origin_relative_y_get(edit_obj, gp->name, state, value);
+   fill_w = edje_edit_state_fill_size_relative_x_get(edit_obj, gp->name, state, value);
+   fill_h = edje_edit_state_fill_size_relative_y_get(edit_obj, gp->name, state, value);
+   fill_origin_offset_x = edje_edit_state_fill_origin_offset_x_get(edit_obj, gp->name, state, value);
+   fill_origin_offset_y = edje_edit_state_fill_origin_offset_y_get(edit_obj, gp->name, state, value);
+   fill_size_offset_x = edje_edit_state_fill_size_offset_x_get(edit_obj, gp->name, state, value);
+   fill_size_offset_y = edje_edit_state_fill_size_offset_y_get(edit_obj, gp->name, state, value);
+   if (edje_edit_state_fill_type_get(edit_obj, gp->name, state, value))
+     {
+        /* If image tiled, set fill param to evas image object */
+        evas_object_image_size_get(gp->draw, &img_w, &img_h);
+        x = (int)(img_w * fill_x) + fill_origin_offset_x;
+        y = (int)(img_h * fill_y) + fill_origin_offset_y;
+        w = (int)(img_w * fill_w) + fill_size_offset_x;
+        h = (int)(img_h * fill_h) + fill_size_offset_y;
+        evas_object_image_filled_set(gp->draw, false);
+        evas_object_image_fill_set(gp->draw, x, y, w, h);
+     }
+   else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
+            fill_origin_offset_x || fill_origin_offset_y ||
+            fill_size_offset_x || fill_size_offset_y)
+         {
+           /* If image fill is scale and params are non default values, set
+              this params to evas image object */
+            evas_object_geometry_get(gp->draw, NULL, NULL, &img_w, &img_h);
+            x = (int)(img_w * fill_x) + fill_origin_offset_x;
+            y = (int)(img_h * fill_y) + fill_origin_offset_y;
+            w = (int)(img_w * fill_w) + fill_size_offset_x;
+            h = (int)(img_h * fill_h) + fill_size_offset_y;
+            evas_object_image_filled_set(gp->draw, false);
+            evas_object_image_fill_set(gp->draw, x, y, w, h);
+         }
+       else
+         /* If image fill is scale with default params. */
+         evas_object_image_filled_set(gp->draw, true);
 
    PART_STATE_FREE
+   eina_stringshare_del(buf);
    edje_edit_string_free(image_normal);
 }
 

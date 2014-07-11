@@ -58,6 +58,7 @@ struct _Prop_Data
       Evas_Object *mouse;
       Evas_Object *repeat;
       Evas_Object *clip_to;
+      Evas_Object *ignore_flags;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
       Evas_Object *pointer_mode;
@@ -168,6 +169,10 @@ static const char *edje_cursor_mode[] = { N_("Under"),
 static const char *edje_fill_type[] = { N_("Scale"),
                                         N_("Tile"),
                                         NULL};
+
+static const char *edje_ignore_flags[] = { N_("None"),
+                                           N_("On hold"),
+                                           NULL};
 
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
@@ -581,12 +586,15 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_DRAG_PART_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
 
+#define ITEM_1COMBOBOX_PART_PROPERTY_CREATE ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE
+
 /* part property */
 ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
 ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_PROPERTY_CREATE(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
@@ -637,12 +645,16 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd_part.clip_to = prop_item_part_clip_to_add(box, pd,
                              _("Show only the area of part that coincides with "
                              "another part's container"));
+        pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
+                                  _("Specifies whether events with the given "
+                                  " flags should be ignored"), edje_ignore_flags);
         elm_box_pack_end(box, pd_part.name);
         elm_box_pack_end(box, pd_part.type);
         elm_box_pack_end(box, pd_part.scale);
         elm_box_pack_end(box, pd_part.mouse);
         elm_box_pack_end(box, pd_part.repeat);
         elm_box_pack_end(box, pd_part.clip_to);
+        elm_box_pack_end(box, pd_part.ignore_flags);
 
         if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
           {
@@ -678,6 +690,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_mouse_events_update(pd_part.mouse, pd);
          prop_item_part_repeat_events_update(pd_part.repeat, pd);
          prop_item_part_clip_to_update(pd_part.clip_to, pd);
+         prop_item_part_ignore_flags_update(pd_part.ignore_flags, pd);
          if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
            {
              box = elm_object_content_get(pd_part.frame);
@@ -833,9 +846,9 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE)
+#define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST)
 
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
@@ -864,7 +877,7 @@ ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
-ITEM_STATE_CCL_CREATE(_("color class"), state, color_class)
+ITEM_STATE_CCL_CREATE(_("color class"), state, color_class, color_classes)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
 
@@ -929,7 +942,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
                                    _("The aspect control hints for this object."),
                                    edje_aspect_pref);
         pd_state.color_class = prop_item_state_color_class_add(box, pd,
-                                  _("Current color class"));
+                                   _on_state_color_class_change,
+                                   _("Current color class"));
         pd_state.color = prop_item_state_color_add(box, pd,
                             _("Part main color."));
 
@@ -1185,9 +1199,9 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_1COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE)
+#define ITEM_1COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST)
 
 
 ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
@@ -1200,7 +1214,7 @@ ITEM_1SPINNER_STATE_DOUBLE_CREATE(_("elipsis"), state_text, elipsis)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color2)
 ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
-ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source)
+ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source, styles)
 
 #define pd_text pd->prop_state_text
 static Eina_Bool
@@ -1248,7 +1262,7 @@ ui_property_state_text_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
-         pd_text.source = prop_item_state_text_source_add(box, pd,
+         pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
                                    _("Causes the part to use the text properties\t"
                                    "(like font and size) of another part\t"
                                    "and update them as they change."));
@@ -1318,6 +1332,24 @@ ITEM_1COMBOBOX_PART_CREATE(_("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(_("source4 (over cursor)"), part, source4)
 ITEM_1COMBOBOX_PART_CREATE(_("source5 (under anchor)"), part, source5)
 ITEM_1COMBOBOX_PART_CREATE(_("source6 (over anchor)"), part, source6)
+static void
+_on_state_text_style_change(void *data,
+                      Evas_Object *obj EINA_UNUSED,
+                      void *ei)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   Ewe_Combobox_Item *item = ei;
+   if (!edje_edit_state_text_style_set(pd->style->obj,
+                                       pd->part->name,
+                                       pd->part->curr_state,
+                                       pd->part->curr_state_value,
+                                       item->title))
+     return;
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+}
+ITEM_1COMBOBOX_STATE_CREATE(_("text style"), state, text_style, styles)
+
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
 {
@@ -1336,6 +1368,9 @@ ui_property_state_textblock_set(Evas_Object *property)
 
          pd_textblock.text = prop_item_state_text_add(box, pd, NULL,
                            _("Set the text of part."), NULL);
+         pd_textblock.style = prop_item_state_text_style_add(box, pd,
+                           _on_state_text_style_change,
+                           _("Set the text style of part."));
          pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -1371,6 +1406,7 @@ ui_property_state_textblock_set(Evas_Object *property)
                                "anchor display OVER the anchor position."));
 
          elm_box_pack_end(box, pd_textblock.text);
+         elm_box_pack_end(box, pd_textblock.style);
          elm_box_pack_end(box, pd_textblock.min);
          elm_box_pack_end(box, pd_textblock.max);
          elm_box_pack_end(box, pd_textblock.source);
@@ -1386,6 +1422,7 @@ ui_property_state_textblock_set(Evas_Object *property)
    else
      {
         prop_item_state_text_update(pd_textblock.text, pd);
+        prop_item_state_text_style_update(pd_textblock.style, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
         prop_item_part_source_update(pd_textblock.source, pd);
