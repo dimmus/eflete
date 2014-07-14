@@ -46,10 +46,9 @@ struct _Live_View
    Evas_Object *live_view; /**< live_view object that contain widget for showing,
                              and spinner for scaling */
    Evas_Object *layout; /**< the layout of the whole live view widget */
+   Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
-   Evas_Object *scale_spinner; /**< spinner that changes scale
-                                 of the showed widget */
-   double current_scale; /**< current scale value */
+   Evas_Object *property; /**< Live View properties */
 };
 typedef struct _Live_View Live_View;
 

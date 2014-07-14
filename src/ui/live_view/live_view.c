@@ -1,4 +1,5 @@
 #include "live_view.h"
+#include "live_view_prop.h"
 #include "notify.h"
 #include "container.h"
 
@@ -20,6 +21,7 @@ static const char *imgs[] =
 
 #define SWALLOW_BG "eflete.swallow.bg"
 #define SWALLOW_CONTENT "eflete.swallow.content"
+#define SWALLOW_MENU "eflete.swallow.menu"
 #define SWALLOW_SPINNER "eflete.swallow.spinner"
 
 typedef struct _TestItem
@@ -107,17 +109,6 @@ _create_gengrid(Evas_Object *obj, const char *style)
      }
    elm_gengrid_item_class_free(ic);
    return grid;
-}
-
-static void
-_on_zoom_change(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   Live_View *live = (Live_View *)data;
-   live->current_scale = elm_spinner_value_get(obj) / 100;
-   if (live->object)
-      elm_object_scale_set(live->object, live->current_scale);
 }
 
 static void
@@ -665,7 +656,7 @@ Live_View *
 live_view_add(Evas_Object *parent)
 {
    Live_View *live;
-   Evas_Object *spinner, *bg;
+   Evas_Object *bg;
 
    if (!parent) return NULL;
 
@@ -677,15 +668,18 @@ live_view_add(Evas_Object *parent)
    elm_bg_color_set(bg, 203, 207, 209);
    evas_object_show(bg);
 
-   SPINNER_ADD(parent, spinner, 1, 500, 1, true, "eflete/live_view");
-   elm_spinner_label_format_set(spinner, "%3.0f%%");
-   evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, live);
-   elm_spinner_value_set(spinner, 100);
-   elm_object_part_content_set(live->layout, SWALLOW_SPINNER, spinner);
-   live->scale_spinner = spinner;
-
    live->live_view = container_add(parent);
+   live->panel = elm_panel_add(parent);
+   live->property = live_view_property_add(live->panel);
+   elm_object_content_set(live->panel, live->property);
+   elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
+   elm_panel_hidden_set(live->panel, true);
+   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(live->panel);
+
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
+   elm_object_part_content_set(live->layout, SWALLOW_MENU, live->panel);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
    container_confine_set(live->live_view, bg);
    evas_object_hide(live->live_view);
@@ -713,8 +707,6 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
 
    live_view_widget_style_unset(live);
-   live->current_scale = 1.0;
-   elm_spinner_value_set(live->scale_spinner, 100);
 
    if (style->__type != LAYOUT)
      {
@@ -775,7 +767,6 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         elm_object_style_set(live->object, style->full_group_name);
      }
 
-   elm_object_scale_set(live->object, live->current_scale);
    evas_object_show(live->live_view);
    evas_object_show(live->object);
 
@@ -822,7 +813,6 @@ live_view_theme_update(Live_View *live, Project *project)
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
    elm_object_theme_set(live->object, theme);
-   elm_object_scale_set(live->object, live->current_scale);
    elm_theme_free(theme);
 
    return true;
