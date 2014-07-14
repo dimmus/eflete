@@ -343,6 +343,29 @@ _past_part_cb(void *data,
 }
 
 static void
+_part_reordered(Evas_Object *data,
+                Evas_Object *obj __UNUSED__,
+                Elm_Object_Item *item)
+{
+   Evas_Object *nf = (Evas_Object *)data;
+   Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+   Part *part = NULL;
+   Elm_Object_Item *rel = elm_genlist_item_next_get(item);
+   elm_genlist_item_selected_set(item, true);
+   if (rel)
+     {
+        part = elm_object_item_data_get(rel);
+        evas_object_smart_callback_call(tabs, "wl,part,moved,up", part);
+     }
+   else
+     {
+        rel = elm_genlist_item_prev_get(item);
+        part =  elm_object_item_data_get(rel);
+        evas_object_smart_callback_call(tabs, "wl,part,moved,down", part);
+     }
+}
+
+static void
 _wl_item_selected(void *data __UNUSED__,
                   Evas_Object *obj,
                   void *event_info __UNUSED__)
@@ -412,6 +435,7 @@ _on_style_clicked_double(void *data,
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
    elm_object_style_set(gl_parts, "eflete/dark");
+   elm_genlist_reorder_mode_set(gl_parts, true);
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
    pr->current_style = _style;
    evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
@@ -425,6 +449,8 @@ _on_style_clicked_double(void *data,
                                       _on_part_select, nf);
         elm_object_item_data_set(eoi, _part);
      }
+   evas_object_smart_callback_add(gl_parts, "moved",
+                                  (Evas_Smart_Cb)_part_reordered, nf);
 
    ICON_ADD(nf, ic, false, "icon-back");
 
