@@ -120,3 +120,11 @@ void workspace_separate_mode_get_test_p1(int);
 void workspace_separate_mode_get_test_p2(int);
 void workspace_separate_mode_get_test_n1(int);
 void workspace_separate_mode_get_test_n2(int);
+
+void workspace_edit_object_part_restack_test_p1(int);
+void workspace_edit_object_part_restack_test_p2(int);
+void workspace_edit_object_part_restack_test_n1(int);
+void workspace_edit_object_part_restack_test_n2(int);
+void workspace_edit_object_part_restack_test_n3(int);
+void workspace_edit_object_part_restack_test_n4(int);
+void workspace_edit_object_part_restack_test_n5(int);

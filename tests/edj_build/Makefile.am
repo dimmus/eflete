@@ -22,6 +22,7 @@ check: Makefile
 	$(builddir)/workspace_separate_mode_set.edj \
 	$(builddir)/workspace_separate_mode_get.edj \
 	$(builddir)/workspace_edit_object_part_above.edj \
+	$(builddir)/workspace_edit_object_part_restack.edj \
 	$(builddir)/workspace_edit_object_set.edj \
 	$(builddir)/workspace_edit_object_part_below.edj \
 	$(builddir)/workspace_edit_object_unset.edj \

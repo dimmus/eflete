@@ -357,7 +357,8 @@ test_ui_workspace/workspace_highlight_unset.c \
 test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c \
 test_ui_workspace/workspace_separate_mode_set.c \
-test_ui_workspace/workspace_separate_mode_get.c
+test_ui_workspace/workspace_separate_mode_get.c \
+test_ui_workspace/workspace_edit_object_part_restack.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 
