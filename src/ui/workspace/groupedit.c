@@ -833,6 +833,24 @@ groupedit_edit_object_part_below(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
+groupedit_edit_object_part_move_above(Evas_Object *obj,
+                                      const char *part,
+                                      const char *above)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return _edit_object_part_restack_above(sd, part, above);
+}
+
+Eina_Bool
+groupedit_edit_object_part_move_below(Evas_Object *obj,
+                                      const char *part,
+                                      const char *below)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return _edit_object_part_restack_below(sd, part, below);
+}
+
+Eina_Bool
 groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {

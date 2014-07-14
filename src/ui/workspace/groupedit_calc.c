@@ -218,7 +218,7 @@ _edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
    Eina_Bool ret = false;
    if ((!sd->parts) || (!part)) return false;
    if (part_above)
-     ret = edje_edit_part_restack_part_above(sd->edit_obj, part, part_above);
+     ret = edje_edit_part_restack_part_below(sd->edit_obj, part, part_above);
    else
      ret = edje_edit_part_restack_below(sd->edit_obj, part);
 
@@ -240,7 +240,7 @@ _edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
    Eina_Bool ret = false;
    if ((!sd->parts) || (!part)) return false;
    if (part_below)
-     ret = edje_edit_part_restack_part_below(sd->edit_obj, part, part_below);
+     ret = edje_edit_part_restack_part_above(sd->edit_obj, part, part_below);
    else
      ret = edje_edit_part_restack_above(sd->edit_obj, part);
 
