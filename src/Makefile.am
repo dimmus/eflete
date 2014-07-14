@@ -43,6 +43,7 @@ ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
+ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
 ui/notification/notify.c
 
