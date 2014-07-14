@@ -4,6 +4,7 @@
 #define LIST_BORDER_COLOR 45 46 47 255
 #define LIST_ITEM_SELECTED_COLOR 58 110 155 255
 #define BG_COLOR 39 42 43 255
+#define LIST_ITEM_REORDERED_COLOR 200 150 0 255
 
 group { name: "elm/genlist/item/eflete/default/default";
    data.item: "stacking" "above";
@@ -842,11 +843,18 @@ group { name: "elm/genlist/item/eflete/level3/default";
 }
 
 group { name: "elm/genlist/item/eflete/level4/default";
-    inherit:"elm/genlist/item/eflete/default/default";
+   inherit:"elm/genlist/item/eflete/default/default";
    parts {
       part { name: "base";
          description { state: "default" 0.0;
             color: BG_COLOR;
+         }
+      }
+      part { name: "bg";
+         description { state: "reordered" 0.0;
+            inherit: "default" 0.0;
+            color: LIST_ITEM_REORDERED_COLOR;
+            visible: 1;
          }
       }
       part { name: "base_border_top";
@@ -854,13 +862,28 @@ group { name: "elm/genlist/item/eflete/level4/default";
             color: BORDER_COLOR;
          }
       }
-      
       part { name: "base_border_bot";
          description { state: "default" 0.0;
             color: BORDER_COLOR;
          }
       }
    }
+   programs {
+      program {
+         name:    "reorder";
+         signal:  "elm,state,reorder,enabled";
+         source:  "elm";
+         action:  STATE_SET "reordered" 0.0;
+         target:  "bg";
+      }
+      program {
+         name:    "unreordered";
+         signal:  "elm,state,reorder,disabled";
+         source:  "elm";
+         after:   "go_active";
+      }
+   }
+
 }
 
 group { name: "elm/genlist/item/eflete/mode/default";
