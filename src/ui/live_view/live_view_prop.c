@@ -2,6 +2,7 @@
 
 #define PROP_DATA "prop_data"
 #define ITEM "item"
+#define PART_NAME "part_name"
 
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
@@ -41,14 +42,46 @@ _on_zoom_change(void *data,
       elm_object_scale_set(pd->live_object, pd->current_scale);
 }
 
+static void
+_on_all_swallow_check(void *data,
+                      Evas_Object *obj,
+                      void *ei __UNUSED__)
+{
+   Evas_Object *check = NULL, *item = NULL;
+   Eina_List *part_list = NULL, *part = NULL;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   part_list = elm_box_children_get(pd->prop_swallow.swallows);
+   if (!part_list) return;
+
+   EINA_LIST_FOREACH(part_list, part, item)
+     {
+        check = elm_object_part_content_get(item, "info");
+        elm_check_state_set(check, elm_check_state_get(obj));
+     }
+
+   eina_list_free(part_list);
+}
+
+static void
+_on_swallow_check(void *data __UNUSED__,
+           Evas_Object *obj __UNUSED__,
+           void *ei __UNUSED__)
+{
+
+}
+
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
-                             Style *style __UNUSED__,
+                             Style *style,
                              const char *widget)
 {
    Evas_Object *prop_box, *spinner, *check;
    Evas_Object *item;
+   const char *part_name;
+   Eina_List *part_list = NULL, *part = NULL;
+   Edje_Part_Type part_type;
 
    if ((!property) || (!object)) return false;
    PROP_DATA_GET(false)
@@ -95,10 +128,34 @@ live_view_property_style_set(Evas_Object *property,
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
         elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
+
+        evas_object_smart_callback_add(check, "changed", _on_all_swallow_check, pd);
      }
    elm_box_pack_end(prop_box, pd->prop_swallow.frame);
    evas_object_show(pd->prop_swallow.frame);
    evas_object_show(pd->prop_swallow.swallows);
+
+   /* setting all swallows with rectangles */
+   part_list = edje_edit_parts_list_get(style->obj);
+
+   EINA_LIST_FOREACH(part_list, part, part_name)
+     {
+        part_type = edje_edit_part_type_get(style->obj, part_name);
+
+        if (part_type ==  EDJE_PART_TYPE_SWALLOW)
+          {
+             ITEM_ADD(pd->prop_swallow.swallows, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
+             CHECK_ADD(item, check, "eflete/live_view");
+
+             evas_object_smart_callback_add(check, "changed", _on_swallow_check, pd->live_object);
+             evas_object_data_set(check, PART_NAME, part_name);
+
+             elm_object_part_content_set(item, "info", check);
+             elm_box_pack_end(pd->prop_swallow.swallows, item);
+             evas_object_show(item);
+          }
+     }
+   edje_edit_string_list_free(part_list);
 
    return true;
 }
@@ -135,7 +192,8 @@ live_view_property_add(Evas_Object *parent)
 Eina_Bool
 live_view_property_style_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box, *check;
+   Evas_Object *prop_box, *item = NULL, *check = NULL;
+   Eina_List *part_list = NULL, *part = NULL;
 
    if (!property) return false;
    PROP_DATA_GET(false)
@@ -146,6 +204,20 @@ live_view_property_style_unset(Evas_Object *property)
 
    elm_box_unpack(prop_box, pd->prop_swallow.frame);
    evas_object_hide(pd->prop_swallow.frame);
+
+   part_list = elm_box_children_get(pd->prop_swallow.swallows);
+
+   elm_box_unpack_all(pd->prop_swallow.swallows);
+
+   EINA_LIST_FOREACH(part_list, part, item)
+     {
+        check = elm_object_part_content_unset(item, "info");
+        evas_object_smart_callback_del_full(check, "changed", _on_swallow_check, pd->live_object);
+        evas_object_data_del(check, PART_NAME);
+        evas_object_del(check);
+        evas_object_del(item);
+     }
+   eina_list_free(part_list);
 
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
    elm_check_state_set(check, false);
