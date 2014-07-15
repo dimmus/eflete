@@ -41,6 +41,8 @@ FLAGS = \
 -I${top_srcdir}/src \
 -I${top_builddir}/src \
 -I${top_srcdir}/src/alloc \
+-I${top_srcdir}/src/external \
+-I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
