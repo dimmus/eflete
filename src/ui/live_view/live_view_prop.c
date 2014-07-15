@@ -87,6 +87,42 @@ _on_swallow_check(void *data,
      }
 }
 
+static void
+_on_all_text_check(void *data,
+                   Evas_Object *obj,
+                   void *ei __UNUSED__)
+{
+   Evas_Object *check = NULL, *item = NULL;
+   Eina_List *part_list = NULL, *part = NULL;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   part_list = elm_box_children_get(pd->prop_text.texts);
+   if (!part_list) return;
+
+   EINA_LIST_FOREACH(part_list, part, item)
+     {
+        check = elm_object_part_content_get(item, "info");
+        elm_check_state_set(check, elm_check_state_get(obj));
+        evas_object_smart_callback_call(check, "changed", NULL);
+     }
+
+   eina_list_free(part_list);
+}
+
+static void
+_on_text_check(void *data,
+               Evas_Object *obj,
+               void *ei __UNUSED__)
+{
+   Evas_Object *object = (Evas_Object *)data;
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+
+   if (elm_check_state_get(obj))
+     elm_object_part_text_set(object, part_name, "Look at it! This is absolutely and totally text");
+   else
+     elm_object_part_text_set(object, part_name, NULL);
+}
+
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
@@ -99,7 +135,8 @@ live_view_property_style_set(Evas_Object *property,
    Eina_List *part_list = NULL, *part = NULL;
    Edje_Part_Type part_type;
 
-   if ((!property) || (!object)) return false;
+   if ((!property) || (!object) || (!style) || (!widget))
+     return false;
    PROP_DATA_GET(false)
 
    evas_object_show(property);
@@ -133,6 +170,7 @@ live_view_property_style_set(Evas_Object *property,
    elm_box_pack_start(prop_box, pd->scale_spinner);
    evas_object_show(pd->scale_spinner);
 
+   /* Swallows UI setting*/
    if (!pd->prop_swallow.swallows)
      {
         FRAME_ADD(property, pd->prop_swallow.frame, true, _("Swallows"));
@@ -151,6 +189,26 @@ live_view_property_style_set(Evas_Object *property,
    evas_object_show(pd->prop_swallow.frame);
    evas_object_show(pd->prop_swallow.swallows);
 
+   /* Texts UI setting*/
+   if (!pd->prop_text.texts)
+     {
+        FRAME_ADD(property, pd->prop_text.frame, true, _("Texts"));
+        elm_object_style_set(pd->prop_text.frame, "eflete/live_view");
+
+        CHECK_ADD(prop_box, check, "eflete/live_view");
+        elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", check);
+
+        BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
+        elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
+        elm_object_content_set(pd->prop_text.frame, pd->prop_text.texts);
+
+        evas_object_smart_callback_add(check, "changed", _on_all_text_check, pd);
+     }
+
+   elm_box_pack_end(prop_box, pd->prop_text.frame);
+   evas_object_show(pd->prop_text.frame);
+   evas_object_show(pd->prop_text.texts);
+
    /* setting all swallows with rectangles */
    part_list = edje_edit_parts_list_get(style->obj);
 
@@ -168,6 +226,19 @@ live_view_property_style_set(Evas_Object *property,
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_swallow.swallows, item);
+             evas_object_show(item);
+          }
+        else if ((part_type ==  EDJE_PART_TYPE_TEXT) ||
+                 (part_type ==  EDJE_PART_TYPE_TEXTBLOCK))
+          {
+             ITEM_ADD(pd->prop_text.texts, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
+             CHECK_ADD(item, check, "eflete/live_view");
+
+             evas_object_smart_callback_add(check, "changed", _on_text_check, pd->live_object);
+             evas_object_data_set(check, PART_NAME, part_name);
+
+             elm_object_part_content_set(item, "info", check);
+             elm_box_pack_end(pd->prop_text.texts, item);
              evas_object_show(item);
           }
      }
@@ -218,9 +289,9 @@ live_view_property_style_unset(Evas_Object *property)
    elm_box_unpack(prop_box, pd->scale_spinner);
    evas_object_hide(pd->scale_spinner);
 
+   /* Swallows Clear */
    elm_box_unpack(prop_box, pd->prop_swallow.frame);
    evas_object_hide(pd->prop_swallow.frame);
-
    part_list = elm_box_children_get(pd->prop_swallow.swallows);
 
    elm_box_unpack_all(pd->prop_swallow.swallows);
@@ -236,6 +307,25 @@ live_view_property_style_unset(Evas_Object *property)
    eina_list_free(part_list);
 
    check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
+   elm_check_state_set(check, false);
+
+   /* Texts Clear */
+   elm_box_unpack(prop_box, pd->prop_text.frame);
+   evas_object_hide(pd->prop_text.frame);
+   part_list = elm_box_children_get(pd->prop_text.texts);
+   elm_box_unpack_all(pd->prop_text.texts);
+
+   EINA_LIST_FOREACH(part_list, part, item)
+     {
+        check = elm_object_part_content_unset(item, "info");
+        evas_object_smart_callback_del_full(check, "changed", _on_text_check, pd->live_object);
+        evas_object_data_del(check, PART_NAME);
+        evas_object_del(check);
+        evas_object_del(item);
+     }
+   eina_list_free(part_list);
+
+   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
    elm_check_state_set(check, false);
 
    pd->live_object = NULL;

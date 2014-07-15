@@ -372,18 +372,14 @@ _elm_widget_create(const char  *widget,
         object = elm_bubble_add(parent);
         if (strcmp(class, "base") != 0)
           elm_bubble_pos_set(object, _bubble_pos_get(class));
-        elm_object_part_text_set(object, "info", _("Info"));
-        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "button") == 0)
      {
         object = elm_button_add(parent);
-        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "check") == 0)
      {
         object = elm_check_add(parent);
-        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "panes") == 0)
      {
@@ -441,8 +437,8 @@ _elm_widget_create(const char  *widget,
                   for (i = 0; i < ELEMENTS_COUNT; i++)
                     {
                        bt = elm_button_add(tb);
-                       elm_object_text_set(bt, _("Both"));
                        elm_table_pack(tb, bt, i, j, 1, 1);
+                       elm_object_text_set(bt, _("Both"));
                        evas_object_show(bt);
                     }
                }
@@ -461,9 +457,6 @@ _elm_widget_create(const char  *widget,
    else  if (strcmp(widget, "actionslider") == 0)
      {
         object = elm_actionslider_add(parent);
-        elm_object_part_text_set(object, "left", _("Left"));
-        elm_object_part_text_set(object, "right", _("Right"));
-        elm_object_part_text_set(object, "center", _("Center"));
         elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
      }
    else  if (strcmp(widget, "calendar") == 0)
