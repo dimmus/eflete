@@ -692,7 +692,7 @@ Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
    char **c;
-   const char *widget, *type, *style_name;
+   const char *widget = NULL, *type, *style_name;
    const char *custom_name = NULL;
    const char *fail_message = NULL;
    Eina_Bool ret = true;
