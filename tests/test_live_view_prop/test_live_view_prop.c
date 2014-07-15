@@ -27,14 +27,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, live_view_property_add_test_p);
    tcase_add_test(tcase, live_view_property_add_test_n);
 
-/*
    tcase_add_test(tcase, live_view_property_style_set_test_p);
    tcase_add_test(tcase, live_view_property_style_set_test_n1);
    tcase_add_test(tcase, live_view_property_style_set_test_n2);
    tcase_add_test(tcase, live_view_property_style_set_test_n3);
-   tcase_add_test(tcase, live_view_property_style_set_test_n4);
-   tcase_add_test(tcase, live_view_property_style_set_test_n5);
-*/
 
    tcase_add_test(tcase, live_view_property_style_unset_test_p);
    tcase_add_test(tcase, live_view_property_style_unset_test_n1);
