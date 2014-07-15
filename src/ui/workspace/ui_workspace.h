@@ -170,6 +170,23 @@ workspace_edit_object_part_above(Evas_Object *obj, const char *part);
 Eina_Bool
 workspace_edit_object_part_below(Evas_Object *obj, const char *part);
 
+/** Move the given part relative the next one.
+ *
+ * @param obj The workspace object.
+ * @param part Name of part, which will reordered.
+ * @param rel_part Name of part, which will be relative to reordering 'part'.
+ * @param direct If EINA_TRUE, part will restack below, otherwise part will
+ *   restack above rel_part.
+ *
+ * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
+ */
+
+Eina_Bool
+workspace_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *rel_part,
+                                   Eina_Bool direct);
+
 /**
  *
  */

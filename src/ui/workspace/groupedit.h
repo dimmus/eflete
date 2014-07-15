@@ -463,6 +463,38 @@ Eina_Bool
 groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible);
 
 /**
+ * Restack part above another part in groupedit module.
+ *
+ * @param obj The groupedit object.
+ * @param part The name of part, which need above above.
+ * @param above Name of part for which will be moved 'part'.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_move_above(Evas_Object *obj,
+                                      const char *part,
+                                      const char *above);
+
+/**
+ * Restack part below another part in groupedit module.
+ *
+ * @param obj The groupedit object.
+ * @param part The name of part, which need above above.
+ * @param below Name of part for which will be moved 'part'.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_move_below(Evas_Object *obj,
+                                      const char *part,
+                                      const char *below);
+
+/**
  * Stack part above above in groupedit module.
  *
  * @param obj The groupedit object.

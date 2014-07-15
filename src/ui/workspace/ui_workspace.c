@@ -1032,6 +1032,26 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
 }
 
 Eina_Bool
+workspace_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *rel_part,
+                                   Eina_Bool direct)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part || !rel_part)
+     {
+        ERR("Input arguments wrong: part[%s] rel_part[%s]", part, rel_part);
+        return false;
+     }
+
+   if (!direct)
+      return groupedit_edit_object_part_move_above(sd->groupedit, part, rel_part);
+   else
+      return groupedit_edit_object_part_move_below(sd->groupedit, part, rel_part);
+}
+
+
+Eina_Bool
 workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
                                      const char *state_from, double value_from,
                                      const char *state_to, double value_to)
