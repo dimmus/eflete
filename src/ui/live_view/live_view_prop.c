@@ -271,7 +271,7 @@ live_view_property_add(Evas_Object *parent)
 
    pd->visual = scroller;
 
-   evas_object_data_set(parent, PROP_DATA, pd);
+   evas_object_data_set(scroller, PROP_DATA, pd);
 
    return scroller;
 }
