@@ -700,7 +700,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
 
    live_view_widget_style_unset(live);
-   live_view_property_style_unset(live->panel);
+   live_view_property_style_unset(live->property);
 
    if (style->__type != LAYOUT)
      {
@@ -764,7 +764,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    evas_object_show(live->live_view);
    evas_object_show(live->object);
 
-   live_view_property_style_set(live->panel, live->object, style, widget);
+   live_view_property_style_set(live->property, live->object, style, widget);
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
@@ -781,7 +781,7 @@ live_view_widget_style_unset(Live_View *live)
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
    container_content_unset(live->live_view);
-   live_view_property_style_unset(live->panel);
+   live_view_property_style_unset(live->property);
    evas_object_del(live->object);
    live->object = NULL;
    return true;
@@ -802,7 +802,7 @@ live_view_theme_update(Live_View *live, Project *project)
      {
         WARN("Could'nt apply the empty style to live view.");
         live_view_widget_style_unset(live);
-        live_view_property_style_unset(live->panel);
+        live_view_property_style_unset(live->property);
         return false;
      }
    Elm_Theme *theme = elm_theme_new();
@@ -819,7 +819,7 @@ live_view_free(Live_View *live)
    if (live)
      {
         live_view_widget_style_unset(live);
-        live_view_property_style_unset(live->panel);
+        live_view_property_style_unset(live->property);
      }
    else return false;
 
