@@ -23,10 +23,9 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("live_view_prop_test");
    TCase *tcase = tcase_create("TCase");
-/*
+
    tcase_add_test(tcase, live_view_property_add_test_p);
    tcase_add_test(tcase, live_view_property_add_test_n);
-*/
 
 /*
    tcase_add_test(tcase, live_view_property_style_set_test_p);
