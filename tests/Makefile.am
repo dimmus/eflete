@@ -32,6 +32,7 @@ ui_workspace_test \
 widget_manager_test \
 program_editor_test \
 live_view_test \
+live_view_prop_test \
 about_window_test \
 colorselector_test
 
@@ -409,6 +410,14 @@ test_live_view/live_view_widget_style_unset.c \
 test_live_view/live_view_theme_update.c
 live_view_test_CFLAGS = ${FLAGS}
 live_view_test_LDADD = ${LD}
+
+live_view_prop_test_SOURCES = \
+test_live_view_prop/test_live_view_prop.c \
+test_live_view_prop/live_view_property_add.c \
+test_live_view_prop/live_view_property_style_set.c \
+test_live_view_prop/live_view_property_style_unset.c
+live_view_prop_test_CFLAGS = ${FLAGS}
+live_view_prop_test_LDADD = ${LD}
 
 about_window_test_SOURCES = \
 test_about_window/test_about_window.c \
