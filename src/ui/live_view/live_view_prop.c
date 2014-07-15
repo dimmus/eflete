@@ -58,17 +58,33 @@ _on_all_swallow_check(void *data,
      {
         check = elm_object_part_content_get(item, "info");
         elm_check_state_set(check, elm_check_state_get(obj));
+        evas_object_smart_callback_call(check, "changed", NULL);
      }
 
    eina_list_free(part_list);
 }
 
 static void
-_on_swallow_check(void *data __UNUSED__,
-           Evas_Object *obj __UNUSED__,
+_on_swallow_check(void *data,
+           Evas_Object *obj,
            void *ei __UNUSED__)
 {
+   Evas_Object *rect = NULL;
 
+   Evas_Object *object = (Evas_Object *)data;
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+
+   if (elm_check_state_get(obj))
+     {
+        rect = evas_object_rectangle_add(object);
+        evas_object_color_set(rect, 136, 24, 242, 255);
+        elm_object_part_content_set(object, part_name, rect);
+     }
+   else
+     {
+        rect = elm_object_part_content_unset(object, part_name);
+        evas_object_del(rect);
+     }
 }
 
 Eina_Bool
