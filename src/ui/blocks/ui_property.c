@@ -1200,9 +1200,9 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
 #define ITEM_1COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE, LIST) \
+   ITEM_COMBOBOX_STATE_CALLBACK(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
    ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST)
-
 
 ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
 ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop)
@@ -1215,6 +1215,7 @@ ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color2)
 ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
 ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source, styles)
+ITEM_1COMBOBOX_STATE_CREATE(_("text source"), state_text, text_source, styles)
 
 #define pd_text pd->prop_state_text
 static Eina_Bool
@@ -1263,20 +1264,23 @@ ui_property_state_text_set(Evas_Object *property)
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
          pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
-                                   _("Causes the part to use the text properties\t"
-                                   "(like font and size) of another part\t"
-                                   "and update them as they change."));
+                            _("Causes the part to use the text properties\t"
+                            "(like font and size) of another part\t"
+                            "and update them as they change."));
+         pd_text.text_source = prop_item_state_text_text_source_add(box, pd, NULL,
+                               _("Causes the part to display the text content of \t"
+                               "another part and update them as they change."));
          pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd,
-                              0.0, 1.0, 0.1, "%1.2f",
-                              _("Cut text if biggest then part's area"
-                              "0.0 = fix the left side  1.0 = right side"));
+                            0.0, 1.0, 0.1, "%1.2f",
+                            _("Cut text if biggest then part's area"
+                            "0.0 = fix the left side  1.0 = right side"));
          pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd,
                           _("Resize the text for it to fit in it's container by X axis"),
                           _("Resize the text for it to fit in it's container by Y axis"));
          pd_text.color2 = prop_item_state_color2_add(box, pd,
-                             _("Text shadow color."));
+                            _("Text shadow color."));
          pd_text.color3 = prop_item_state_color3_add(box, pd,
-                             _("Text outline color."));
+                            _("Text outline color."));
 
          elm_box_pack_end(box, pd_text.text);
          elm_box_pack_end(box, pd_text.font);
@@ -1285,6 +1289,7 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, pd_text.min);
          elm_box_pack_end(box, pd_text.max);
          elm_box_pack_end(box, pd_text.source);
+         elm_box_pack_end(box, pd_text.text_source);
          elm_box_pack_end(box, pd_text.elipsis);
          elm_box_pack_end(box, pd_text.fit);
          elm_box_pack_end(box, pd_text.color2);
@@ -1302,6 +1307,7 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
         prop_item_state_text_source_update(pd_text.source, pd);
+        prop_item_state_text_text_source_update(pd_text.text_source, pd);
         prop_item_state_text_elipsis_update(pd_text.elipsis, pd);
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
         prop_item_state_color2_update(pd_text.color2, pd);
@@ -1332,22 +1338,7 @@ ITEM_1COMBOBOX_PART_CREATE(_("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(_("source4 (over cursor)"), part, source4)
 ITEM_1COMBOBOX_PART_CREATE(_("source5 (under anchor)"), part, source5)
 ITEM_1COMBOBOX_PART_CREATE(_("source6 (over anchor)"), part, source6)
-static void
-_on_state_text_style_change(void *data,
-                      Evas_Object *obj EINA_UNUSED,
-                      void *ei)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Ewe_Combobox_Item *item = ei;
-   if (!edje_edit_state_text_style_set(pd->style->obj,
-                                       pd->part->name,
-                                       pd->part->curr_state,
-                                       pd->part->curr_state_value,
-                                       item->title))
-     return;
-   workspace_edit_object_recalc(pd->workspace);
-   pd->style->isModify = true;
-}
+
 ITEM_1COMBOBOX_STATE_CREATE(_("text style"), state, text_style, styles)
 
 static Eina_Bool
