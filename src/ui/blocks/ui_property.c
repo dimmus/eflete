@@ -1814,7 +1814,7 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Origin"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_start-point.png")
+        ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1826,7 +1826,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Sets the starting point Y coordinate "
                                        "relatively to displayed element's content."),
                                      true);
-        ICON_ADD(pd_fill.origin_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_fill.origin_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_fill.origin_relative, "eflete.swallow.icon", icon);
         pd_fill.origin_offset = prop_item_state_fill_origin_offset_x_y_add(box,
                                      pd, -9999.0, 9999.0, 1.0, "%.0f",
@@ -1836,7 +1836,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Affects the starting point a fixed "
                                        "number of pixels along Y axis"),
                                      false);
-        ICON_ADD(pd_fill.origin_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_fill.origin_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_fill.origin_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);
@@ -1848,7 +1848,7 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Size"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_end-point.png")
+        ICON_ADD(separator, icon, false, "icon_end-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1860,7 +1860,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Value that represent the percentual value "
                                        "of the original size of the element by Y axis."),
                                       true);
-        ICON_ADD(pd_fill.size_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_fill.size_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_fill.size_relative, "eflete.swallow.icon", icon);
         pd_fill.size_offset = prop_item_state_fill_size_offset_x_y_add(box,
                                      pd, -9999.0, 9999.0, 1.0, "%.0f",
@@ -1870,7 +1870,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Affects the size of the tile a fixed "
                                        "number of pixels along Y axis."),
                                      false);
-        ICON_ADD(pd_fill.size_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_fill.size_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_fill.size_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);
