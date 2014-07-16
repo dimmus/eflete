@@ -19,7 +19,7 @@
  */
 
 #include "style_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 #define FONT_SIZE "24"
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;

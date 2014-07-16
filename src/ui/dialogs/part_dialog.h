@@ -29,7 +29,7 @@
  */
 
 #include "eflete.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 #include "widget_manager.h"
 #include "modal_window.h"
 #include "widget_macro.h"

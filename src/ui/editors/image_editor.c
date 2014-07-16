@@ -19,7 +19,7 @@
  */
 
 #include "image_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115

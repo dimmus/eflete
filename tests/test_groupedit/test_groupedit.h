@@ -21,7 +21,7 @@
 #include <Elementary.h>
 #include "utc_common.h"
 #include "groupedit.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 /**
  * @defgroup test_groupedit

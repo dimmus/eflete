@@ -21,7 +21,7 @@
 #include <Ecore_Getopt.h>
 #include "eflete.h"
 #include "config.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 static const Ecore_Getopt options = {
    PACKAGE_NAME,

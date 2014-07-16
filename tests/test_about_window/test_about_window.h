@@ -20,7 +20,7 @@
 
 #include "utc_common.h"
 #include "about_window.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 /**
  * @defgroup about_window_test

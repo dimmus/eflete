@@ -18,7 +18,7 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "ui_main_window.h"
+#include "main_window.h"
 
 static void
 _add_part_dialog(void *data,

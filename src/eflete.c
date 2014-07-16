@@ -19,7 +19,7 @@
  */
 
 #include "eflete.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 #define CHECK_AP(RET) \
 if (!ap) \
