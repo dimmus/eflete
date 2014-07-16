@@ -742,6 +742,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              elm_object_text_set(live->object, fail_message);
              container_content_set(live->live_view, live->object);
           }
+        else
+          live_view_property_style_set(live->property, live->object, style, widget);
 
         live_view_theme_update(live, project);
         if ((!strcmp(type, "item")) && (custom_name))
@@ -764,7 +766,6 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    evas_object_show(live->live_view);
    evas_object_show(live->object);
 
-   live_view_property_style_set(live->property, live->object, style, widget);
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
