@@ -516,13 +516,13 @@ _elm_widget_create(const char  *widget,
         object = elm_box_add(parent);
         evas_object_size_hint_weight_set(object, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-        RADIO_ADD(parent, rd, 1, _("Radio 1 Text Example"));
+        RADIO_ADD(parent, rd, 1, NULL);
         elm_box_pack_end(object, rd);
         rdg = rd;
-        RADIO_ADD(parent, rd, 2, _("Radio 2 Text Example"));
+        RADIO_ADD(parent, rd, 2, NULL);
         elm_radio_group_add(rd, rdg);
         elm_box_pack_end(object, rd);
-        RADIO_ADD(parent, rd, 3, _("Radio 3 Text Example"));
+        RADIO_ADD(parent, rd, 3, NULL);
         elm_radio_group_add(rd, rdg);
         elm_box_pack_end(object, rd);
 
