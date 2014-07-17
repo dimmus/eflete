@@ -106,7 +106,7 @@ END_TEST
 EFLETE_TEST(live_view_property_style_set_test_n1)
 {
    Evas *e = NULL;
-   Evas_Object *parent = NULL, *live_view_prop = NULL;
+   Evas_Object *parent = NULL;
    Style *style = NULL;
    Eina_Bool res = EINA_FALSE;
 
@@ -151,14 +151,12 @@ END_TEST
  */
 EFLETE_TEST(live_view_property_style_set_test_n2)
 {
-   Evas *e = NULL;
    Evas_Object *parent = NULL, *live_view_prop = NULL;
    Style *style = NULL;
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    live_view_prop = live_view_property_add(parent);
 
@@ -203,14 +201,12 @@ END_TEST
  */
 EFLETE_TEST(live_view_property_style_set_test_n3)
 {
-   Evas *e = NULL;
    Evas_Object *parent = NULL, *live_view_prop = NULL;
    Style *style = NULL;
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    live_view_prop = live_view_property_add(parent);
 
