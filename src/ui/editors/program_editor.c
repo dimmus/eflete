@@ -19,7 +19,7 @@
  */
 
 #include "program_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 struct _Program_Editor
 {

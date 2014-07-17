@@ -21,7 +21,7 @@
 #include "state_dialog.h"
 #include "common_macro.h"
 #include "string_macro.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 
 static Evas_Object *entry_name;

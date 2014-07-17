@@ -19,7 +19,7 @@
  */
 
 #include "style_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 static void
 _on_mwin_del(void * data,

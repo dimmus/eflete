@@ -19,7 +19,7 @@
  */
 
 #include "colorclass_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 #include "utc_common.h"
 
 void colorclass_viewer_add_test_n(int);

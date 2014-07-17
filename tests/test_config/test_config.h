@@ -20,7 +20,7 @@
 
 #include "utc_common.h"
 #include "config.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 void config_init_test_p(int);
 void config_shutdown_test_p(int);

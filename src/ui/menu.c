@@ -18,7 +18,7 @@
  * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
  */
 
-#include "ui_main_window.h"
+#include "main_window.h"
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"

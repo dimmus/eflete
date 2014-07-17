@@ -20,7 +20,7 @@
 
 #include "utc_common.h"
 #include "notify.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 /**
  * @defgroup test_notify

@@ -22,7 +22,7 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
-#include "ui_main_window.h"
+#include "main_window.h"
 #include "cursor.h"
 
 static void

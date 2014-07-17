@@ -19,7 +19,7 @@
  */
 
 #include "colorclass_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
