@@ -761,6 +761,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         container_content_set(live->live_view, live->object);
         live_view_theme_update(live, project);
         elm_object_style_set(live->object, style->full_group_name);
+        live_view_property_style_set(live->property, live->object, style, "layout");
      }
 
    evas_object_show(live->live_view);
