@@ -33,29 +33,12 @@
 extern int _eflete_lod_dom;
 
 /**
- * Logs a message on the specified domain, level and format.
- *
- * @ingroup Logger
- */
-#ifdef HAVE_EFLETE_DEBUG
-   #define EFLETE_LOG(LEVEL, fmt, ...) \
-     { \
-       EINA_LOG(_eflete_lod_dom, LEVEL, fmt, ## __VA_ARGS__); \
-     }
-#else
-   #define EFLETE_LOG(LEVEL, fmt, ...) \
-     { \
-       logger_message_print(LEVEL, fmt, ## __VA_ARGS__); \
-     }
-#endif /*  */
-
-/**
  * Logs a message with level CRITICAL.
  *
  * @ingroup Logger
  */
 #define CRIT(fmt, ...) \
-   EFLETE_LOG(EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__)
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_CRITICAL, fmt, ## __VA_ARGS__);
 
 /**
  * Logs a message with level ERROR.
@@ -63,7 +46,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define ERR(fmt, ...) \
-   EFLETE_LOG(EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__)
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_ERR, fmt, ## __VA_ARGS__);
 
 /**
  * Logs a message with level WARNING.
@@ -71,7 +54,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define WARN(fmt, ...) \
-   EFLETE_LOG(EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__)
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_WARN, fmt, ## __VA_ARGS__);
 
 /**
  * Logs a message with level INFO.
@@ -79,7 +62,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define INFO(fmt, ...) \
-   EFLETE_LOG(EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__)
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_INFO, fmt, ## __VA_ARGS__);
 
 /**
  * Logs a message with level DEBUG.
@@ -87,7 +70,7 @@ extern int _eflete_lod_dom;
  * @ingroup Logger
  */
 #define DBG(fmt, ...) \
-   EFLETE_LOG(EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__)
+   EINA_LOG(_eflete_lod_dom, EINA_LOG_LEVEL_DBG, fmt, ## __VA_ARGS__);
 
 /**
  * Initialize logger
@@ -109,13 +92,5 @@ logger_init(void);
  */
 int
 logger_shutdown(void);
-
-/**
- * Print the log message to strerr. Used only in case when debug is disable.
- *
- * @ingroup Logger
- */
-void
-logger_message_print(Eina_Log_Level level, const char *fmt, ...);
 
 #endif /* LOGGER_H */

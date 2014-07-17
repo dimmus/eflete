@@ -29,22 +29,23 @@ int _eflete_lod_dom = -1;
 Eina_Bool
 logger_init(void)
 {
-#ifdef HAVE_EFLETE_DEBUG
    if (!eina_init()) return false;
 
+#ifdef HAVE_EFLETE_DEBUG
    eina_log_level_set(EINA_LOG_LEVEL_DBG);
+#else
+   eina_log_level_set(EINA_LOG_LEVEL_ERR);
+#endif
 
    if(_eflete_lod_dom < 0)
      {
-        _eflete_lod_dom = eina_log_domain_register(PACKAGE,
-                                                   EINA_COLOR_LIGHTBLUE);
+        _eflete_lod_dom = eina_log_domain_register(PACKAGE, EINA_COLOR_LIGHTBLUE);
         if(_eflete_lod_dom < 0)
           {
              EINA_LOG_CRIT("Could not register log domain "PACKAGE);
              return false;
           }
      }
-#endif
    return true;
 }
 
@@ -57,45 +58,4 @@ logger_shutdown(void)
         _eflete_lod_dom = -1;
      }
    return _eflete_lod_dom;
-}
-
-void
-logger_message_print(Eina_Log_Level level, const char *fmt, ...)
-{
-   va_list args;
-
-   if (!fmt) return;
-#ifdef HAVE_EFLETE_DEBUG
-   EINA_LOG(_eflete_lod_dom, level, fmt, args);
-#else
-   const char *prefix;
-
-   eina_log_console_color_set(stderr, eina_log_level_color_get(level));
-   switch (level)
-     {
-      case EINA_LOG_LEVEL_CRITICAL:
-         prefix = "Critical. ";
-         break;
-      case EINA_LOG_LEVEL_ERR:
-         prefix = "Error. ";
-         break;
-      case EINA_LOG_LEVEL_WARN:
-         prefix = "Warning. ";
-         break;
-      case EINA_LOG_LEVEL_INFO:
-      case EINA_LOG_LEVEL_DBG:
-         return;
-      default:
-         prefix = "";
-     }
-   fprintf(stderr, "%s: %s", "eflete", prefix);
-
-   eina_log_console_color_set(stderr, EINA_COLOR_RESET);
-
-   va_start(args, fmt);
-   vfprintf(stderr, fmt, args);
-   va_end(args);
-   putc('\n', stderr);
-#endif
-   return;
 }
