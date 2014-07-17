@@ -134,6 +134,7 @@ live_view_property_style_set(Evas_Object *property,
    const char *part_name;
    Eina_List *part_list = NULL, *part = NULL;
    Edje_Part_Type part_type;
+   Eina_Bool swallow_parts_exists = false, text_parts_exists = false;
 
    if ((!property) || (!object) || (!style) || (!widget))
      return false;
@@ -182,12 +183,10 @@ live_view_property_style_set(Evas_Object *property,
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
         elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
+        evas_object_hide(pd->prop_swallow.frame);
 
         evas_object_smart_callback_add(check, "changed", _on_all_swallow_check, pd);
      }
-   elm_box_pack_end(prop_box, pd->prop_swallow.frame);
-   evas_object_show(pd->prop_swallow.frame);
-   evas_object_show(pd->prop_swallow.swallows);
 
    /* Texts UI setting*/
    if (!pd->prop_text.texts)
@@ -201,13 +200,10 @@ live_view_property_style_set(Evas_Object *property,
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
         elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
         elm_object_content_set(pd->prop_text.frame, pd->prop_text.texts);
+        evas_object_hide(pd->prop_text.frame);
 
         evas_object_smart_callback_add(check, "changed", _on_all_text_check, pd);
      }
-
-   elm_box_pack_end(prop_box, pd->prop_text.frame);
-   evas_object_show(pd->prop_text.frame);
-   evas_object_show(pd->prop_text.texts);
 
    /* setting all swallows with rectangles */
    part_list = edje_edit_parts_list_get(style->obj);
@@ -218,6 +214,7 @@ live_view_property_style_set(Evas_Object *property,
 
         if (part_type ==  EDJE_PART_TYPE_SWALLOW)
           {
+             swallow_parts_exists = true;
              ITEM_ADD(pd->prop_swallow.swallows, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
              CHECK_ADD(item, check, "eflete/live_view");
 
@@ -231,6 +228,7 @@ live_view_property_style_set(Evas_Object *property,
         else if ((part_type ==  EDJE_PART_TYPE_TEXT) ||
                  (part_type ==  EDJE_PART_TYPE_TEXTBLOCK))
           {
+             text_parts_exists = true;
              ITEM_ADD(pd->prop_text.texts, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
              CHECK_ADD(item, check, "eflete/live_view");
 
@@ -243,6 +241,19 @@ live_view_property_style_set(Evas_Object *property,
           }
      }
    edje_edit_string_list_free(part_list);
+
+   if (swallow_parts_exists)
+     {
+        elm_box_pack_end(prop_box, pd->prop_swallow.frame);
+        evas_object_show(pd->prop_swallow.frame);
+        evas_object_show(pd->prop_swallow.swallows);
+     }
+   if (text_parts_exists)
+     {
+        elm_box_pack_end(prop_box, pd->prop_text.frame);
+        evas_object_show(pd->prop_text.frame);
+        evas_object_show(pd->prop_text.texts);
+     }
 
    return true;
 }
