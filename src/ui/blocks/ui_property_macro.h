@@ -4,17 +4,16 @@
 * This file is part of Edje Theme Editor.
 *
 * This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation.
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* GNU Lesser General Public License for more details.
 *
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program; If not, see www.gnu.org/licenses/lgpl.html.
 */
 
 #include "string_macro.h"
@@ -557,10 +556,9 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_select_item_set(combobox, value); \
 }
 
-
-#define ITEM_COMBOBOX_STATE_CALLBACK(SUB, VALUE) \
+#define ITEM_COMBOBOX_STATE_CALLBACK(TEXT, SUB, VALUE) \
 static void \
-_on_combobox_##SUB##_##VALUE##_change(void *data, \
+_on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj EINA_UNUSED, \
                              void *ei) \
 { \
@@ -572,6 +570,8 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         NULL); \
+   if ((strcmp(TEXT, "color class")) && (strcmp(TEXT, "text style"))) \
+     prop_item_state_text_update(pd->prop_state_text.text, pd); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -881,13 +881,18 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    else \
      ewe_combobox_text_set(combobox, "None"); \
    ewe_combobox_item_add(combobox, "None"); \
-   if (!strcmp(TEXT, "source")) \
+   if ((strcmp(TEXT, "color class")) && (strcmp(TEXT, "text style"))) \
      { \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
+                                        pd->part->name, \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, value); \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
              if(!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
                ewe_combobox_item_add(combobox, part->name); \
+             evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
           } \
      } \
    else \
@@ -913,9 +918,9 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    Eina_List *list = NULL; \
    const char *ccname = NULL; \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
-                                            pd->part->name, \
-                                            pd->part->curr_state, \
-                                            pd->part->curr_state_value); \
+                                           pd->part->name, \
+                                           pd->part->curr_state, \
+                                           pd->part->curr_state_value); \
    combobox = elm_object_part_content_get(item, "elm.swallow.content"); \
    ewe_combobox_items_list_free(combobox, true); \
    if (value) \
@@ -923,8 +928,12 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    else \
      ewe_combobox_text_set(combobox, "None"); \
    ewe_combobox_item_add(combobox, "None"); \
-   if (!strcmp(TEXT, "source")) \
+   if ((strcmp(TEXT, "color class")) && (strcmp(TEXT, "text style"))) \
      { \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
+                                        pd->part->name, \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, value); \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
@@ -1115,6 +1124,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(layout, "eflete.content", spinner); \
    elm_object_part_content_set(item, "elm.swallow.content", layout); \
+   evas_object_data_set(item, ITEM1, spinner); \
    return item;\
 }
 

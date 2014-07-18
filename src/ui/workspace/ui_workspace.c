@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include <ui_workspace.h>
@@ -492,27 +491,6 @@ _sc_smart_move_cb(void *data,
 }
 
 static Eina_Bool
-_background_load(Evas_Object *image, const char *path)
-{
-   Evas_Load_Error err;
-   int w, h;
-   evas_object_image_file_set(image, path, NULL);
-   err = evas_object_image_load_error_get(image);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     {
-        ERR("Could not load image [%s]. Error is \"%s\"", path,
-            evas_load_error_str(err));
-        /* Load default background*/
-        evas_object_image_file_set(image, EFLETE_IMG_PATH"bg_demo.png", NULL);
-        return false;
-     }
-   evas_object_image_size_get(image, &w, &h);
-   evas_object_image_filled_set(image, false);
-   evas_object_image_fill_set(image, 0, 0, w, h);
-   return true;
-}
-
-static Eina_Bool
 _zoom_factor_update(Evas_Object *obj, double factor)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
@@ -536,17 +514,6 @@ workspace_zoom_factor_get(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
    return sd->zoom.factor;
-}
-
-Eina_Bool
-workspace_background_image_set(Evas_Object *obj, const char *path)
-{
-   if (!path) return false;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-
-   if (!sd->background) return false;
-   if (!_background_load(sd->background, path)) return false;
-   return true;
 }
 
 static void
@@ -666,8 +633,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    evas_object_smart_member_add(priv->layout, o);
 
    /* Here create evas image, whitch will be background for workspace*/
-   priv->background = evas_object_image_filled_add(e);
-   _background_load(priv->background, EFLETE_IMG_PATH"bg_demo.png");
+   GET_IMAGE(priv->background, e, "bg_demo");
    evas_object_smart_member_add(priv->background, o);
 
    /* Clipper needed for check mouse events*/
@@ -702,9 +668,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
    elm_object_style_set(priv->button_separate, "eflete/simple");
-   icon = elm_icon_add(priv->scroller);
-   elm_image_file_set(icon, EFLETE_IMG_PATH"icon-separate.png", NULL);
-   elm_image_no_scale_set(icon, true);
+   GET_IMAGE(icon, priv->scroller, "icon-separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
                                   _separate_smart_on_click, o);
@@ -1065,6 +1029,26 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
 
    return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
 }
+
+Eina_Bool
+workspace_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *rel_part,
+                                   Eina_Bool direct)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part || !rel_part)
+     {
+        ERR("Input arguments wrong: part[%s] rel_part[%s]", part, rel_part);
+        return false;
+     }
+
+   if (!direct)
+      return groupedit_edit_object_part_move_above(sd->groupedit, part, rel_part);
+   else
+      return groupedit_edit_object_part_move_below(sd->groupedit, part, rel_part);
+}
+
 
 Eina_Bool
 workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,

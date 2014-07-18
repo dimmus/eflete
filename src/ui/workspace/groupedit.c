@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "groupedit_private.h"
@@ -830,6 +829,24 @@ groupedit_edit_object_part_below(Evas_Object *obj, const char *part)
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!part) return false;
    return _edit_object_part_restack_below(sd, part, NULL);
+}
+
+Eina_Bool
+groupedit_edit_object_part_move_above(Evas_Object *obj,
+                                      const char *part,
+                                      const char *above)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return _edit_object_part_restack_above(sd, part, above);
+}
+
+Eina_Bool
+groupedit_edit_object_part_move_below(Evas_Object *obj,
+                                      const char *part,
+                                      const char *below)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return _edit_object_part_restack_below(sd, part, below);
 }
 
 Eina_Bool

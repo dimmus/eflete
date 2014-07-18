@@ -4,6 +4,7 @@
 #define LIST_BORDER_COLOR 45 46 47 255
 #define LIST_ITEM_SELECTED_COLOR 58 110 155 255
 #define BG_COLOR 39 42 43 255
+#define LIST_ITEM_REORDERED_COLOR 200 150 0 255
 
 group { name: "elm/genlist/item/eflete/default/default";
    data.item: "stacking" "above";
@@ -718,6 +719,67 @@ group { name: "elm/genlist/item/eflete/signals/default";
    }
 }
 
+group { name: "elm/genlist/item/eflete/tween/default";
+   inherit: "elm/genlist/item/eflete/default/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: LIST_ITEM_SELECTED_COLOR;
+            rel2.offset: 0 -2;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "reordered" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: LIST_ITEM_REORDERED_COLOR;
+         }
+      }
+      part { name: "text_arrea";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "padding.icon";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to_x: "icon_end_arrea";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "padding.icon";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            FIXED_SIZE(5, 5);
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "icon_start_arrea";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "reorder";
+         signal: "elm,state,reorder,enabled";
+         source: "elm";
+         action: STATE_SET "reordered" 0.0;
+         target: "bg";
+      }
+      program { name: "unreorder";
+         signal: "elm,state,reorder,disabled";
+         source: "elm";
+         after: "go_active";
+      }
+   }
+}
 
 group { name: "elm/genlist/item/eflete/level1/default";
     inherit:"elm/genlist/item/eflete/default/default";
@@ -842,11 +904,18 @@ group { name: "elm/genlist/item/eflete/level3/default";
 }
 
 group { name: "elm/genlist/item/eflete/level4/default";
-    inherit:"elm/genlist/item/eflete/default/default";
+   inherit:"elm/genlist/item/eflete/default/default";
    parts {
       part { name: "base";
          description { state: "default" 0.0;
             color: BG_COLOR;
+         }
+      }
+      part { name: "bg";
+         description { state: "reordered" 0.0;
+            inherit: "default" 0.0;
+            color: LIST_ITEM_REORDERED_COLOR;
+            visible: 1;
          }
       }
       part { name: "base_border_top";
@@ -854,13 +923,28 @@ group { name: "elm/genlist/item/eflete/level4/default";
             color: BORDER_COLOR;
          }
       }
-      
       part { name: "base_border_bot";
          description { state: "default" 0.0;
             color: BORDER_COLOR;
          }
       }
    }
+   programs {
+      program {
+         name:    "reorder";
+         signal:  "elm,state,reorder,enabled";
+         source:  "elm";
+         action:  STATE_SET "reordered" 0.0;
+         target:  "bg";
+      }
+      program {
+         name:    "unreordered";
+         signal:  "elm,state,reorder,disabled";
+         source:  "elm";
+         after:   "go_active";
+      }
+   }
+
 }
 
 group { name: "elm/genlist/item/eflete/mode/default";

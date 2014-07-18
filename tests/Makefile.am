@@ -32,6 +32,7 @@ ui_workspace_test \
 widget_manager_test \
 program_editor_test \
 live_view_test \
+live_view_prop_test \
 about_window_test \
 colorselector_test
 
@@ -41,6 +42,8 @@ FLAGS = \
 -I${top_srcdir}/src \
 -I${top_builddir}/src \
 -I${top_srcdir}/src/alloc \
+-I${top_srcdir}/src/external \
+-I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
@@ -351,11 +354,11 @@ test_ui_workspace/workspace_edit_object_unset.c \
 test_ui_workspace/workspace_edit_object_visible_set.c \
 test_ui_workspace/workspace_highlight_set.c \
 test_ui_workspace/workspace_highlight_unset.c \
-test_ui_workspace/workspace_background_image_set.c \
 test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c \
 test_ui_workspace/workspace_separate_mode_set.c \
-test_ui_workspace/workspace_separate_mode_get.c
+test_ui_workspace/workspace_separate_mode_get.c \
+test_ui_workspace/workspace_edit_object_part_restack.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 
@@ -408,6 +411,14 @@ test_live_view/live_view_widget_style_unset.c \
 test_live_view/live_view_theme_update.c
 live_view_test_CFLAGS = ${FLAGS}
 live_view_test_LDADD = ${LD}
+
+live_view_prop_test_SOURCES = \
+test_live_view_prop/test_live_view_prop.c \
+test_live_view_prop/live_view_property_add.c \
+test_live_view_prop/live_view_property_style_set.c \
+test_live_view_prop/live_view_property_style_unset.c
+live_view_prop_test_CFLAGS = ${FLAGS}
+live_view_prop_test_LDADD = ${LD}
 
 about_window_test_SOURCES = \
 test_about_window/test_about_window.c \

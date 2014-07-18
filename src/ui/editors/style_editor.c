@@ -5,21 +5,20 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "style_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 #define FONT_SIZE "24"
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
@@ -544,10 +543,8 @@ _change_bg_cb(void *data,
      {
       case 0:
         {
-           bg = evas_object_image_filled_add(canvas);
-           evas_object_image_filled_set(bg, false);
-           evas_object_image_file_set(bg, EFLETE_IMG_PATH"bg_demo.png", NULL);
-           evas_object_image_fill_set(bg, 0, 0, 16, 16);
+           GET_IMAGE(bg, canvas, "bg_demo");
+           evas_object_show(bg);
         }
       break;
       case 1:
@@ -604,15 +601,14 @@ _form_right_side(Style_Editor *style_edit)
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
    IMAGE_ADD(box_bg, image_bg, IMAGE); \
-   elm_image_resizable_set(image_bg, false, false); \
    elm_object_part_content_set(RADIO, "bg", image_bg); \
    evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, style_edit); \
    elm_box_pack_end(box_bg, RADIO);
 
-   _RADIO_ADD(radio_group, 0, EFLETE_IMG_PATH"styles-preview-bg-transparent.png");
-   _RADIO_ADD(radio, 1, EFLETE_IMG_PATH"styles-preview-bg-black.png");
+   _RADIO_ADD(radio_group, 0, "styles-preview-bg-transparent");
+   _RADIO_ADD(radio, 1, "styles-preview-bg-black");
    elm_radio_group_add(radio, radio_group);
-   _RADIO_ADD(radio, 2, EFLETE_IMG_PATH"styles-preview-bg-white.png");
+   _RADIO_ADD(radio, 2, "styles-preview-bg-white");
    elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
    elm_object_part_content_set(layout, "menu_container", box_bg);
@@ -695,10 +691,7 @@ style_editor_window_add(Project *project)
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
 
    canvas = evas_object_evas_get(style_edit->mwin);
-   bg = evas_object_image_filled_add(canvas);
-   evas_object_image_filled_set(bg, false);
-   evas_object_image_file_set(bg, EFLETE_IMG_PATH"bg_demo.png", NULL);
-   evas_object_image_fill_set(bg, 0, 0, 16, 16);
+   GET_IMAGE(bg, canvas, "bg_demo");
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
    evas_object_show(bg);
 

@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef UI_LIVEVIEW_HEADER_H
@@ -46,10 +45,9 @@ struct _Live_View
    Evas_Object *live_view; /**< live_view object that contain widget for showing,
                              and spinner for scaling */
    Evas_Object *layout; /**< the layout of the whole live view widget */
+   Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
-   Evas_Object *scale_spinner; /**< spinner that changes scale
-                                 of the showed widget */
-   double current_scale; /**< current scale value */
+   Evas_Object *property; /**< Live View properties */
 };
 typedef struct _Live_View Live_View;
 

@@ -1,4 +1,5 @@
 #include "live_view.h"
+#include "live_view_prop.h"
 #include "notify.h"
 #include "container.h"
 
@@ -20,6 +21,7 @@ static const char *imgs[] =
 
 #define SWALLOW_BG "eflete.swallow.bg"
 #define SWALLOW_CONTENT "eflete.swallow.content"
+#define SWALLOW_MENU "eflete.swallow.menu"
 #define SWALLOW_SPINNER "eflete.swallow.spinner"
 
 typedef struct _TestItem
@@ -107,17 +109,6 @@ _create_gengrid(Evas_Object *obj, const char *style)
      }
    elm_gengrid_item_class_free(ic);
    return grid;
-}
-
-static void
-_on_zoom_change(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   Live_View *live = (Live_View *)data;
-   live->current_scale = elm_spinner_value_get(obj) / 100;
-   if (live->object)
-      elm_object_scale_set(live->object, live->current_scale);
 }
 
 static void
@@ -228,18 +219,6 @@ _notify_orient_get(const char *class, double *horizontal, double *vertical)
      }
 }
 
-static Evas_Object *
-_icon_create(const char *image_path, Evas_Object *parent)
-{
-   Evas_Object *icon;
-
-   icon = elm_icon_add(parent);
-   elm_image_file_set(icon, image_path, NULL);
-   elm_image_resizable_set(icon, false, false);
-
-   return icon;
-}
-
 char *
 _glist_text_get(void        *data,
               Evas_Object  *obj __UNUSED__,
@@ -254,8 +233,8 @@ _glist_content_get(void *data __UNUSED__,
                   Evas_Object *obj,
                   const char  *part __UNUSED__)
 {
-   Evas_Object *icon = elm_icon_add(obj);
-   elm_image_file_set(icon, EFLETE_IMG_PATH"eye_open.png", NULL);
+   Evas_Object *icon = NULL;
+   GET_IMAGE(icon, obj, "eye_open");
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
    return icon;
 }
@@ -393,18 +372,14 @@ _elm_widget_create(const char  *widget,
         object = elm_bubble_add(parent);
         if (strcmp(class, "base") != 0)
           elm_bubble_pos_set(object, _bubble_pos_get(class));
-        elm_object_part_text_set(object, "info", _("Info"));
-        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "button") == 0)
      {
         object = elm_button_add(parent);
-        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "check") == 0)
      {
         object = elm_check_add(parent);
-        elm_object_text_set(object, _("Text example"));
      }
    else if (strcmp(widget, "panes") == 0)
      {
@@ -462,8 +437,8 @@ _elm_widget_create(const char  *widget,
                   for (i = 0; i < ELEMENTS_COUNT; i++)
                     {
                        bt = elm_button_add(tb);
-                       elm_object_text_set(bt, _("Both"));
                        elm_table_pack(tb, bt, i, j, 1, 1);
+                       elm_object_text_set(bt, _("Both"));
                        evas_object_show(bt);
                     }
                }
@@ -482,9 +457,6 @@ _elm_widget_create(const char  *widget,
    else  if (strcmp(widget, "actionslider") == 0)
      {
         object = elm_actionslider_add(parent);
-        elm_object_part_text_set(object, "left", _("Left"));
-        elm_object_part_text_set(object, "right", _("Right"));
-        elm_object_part_text_set(object, "center", _("Center"));
         elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
      }
    else  if (strcmp(widget, "calendar") == 0)
@@ -513,18 +485,18 @@ _elm_widget_create(const char  *widget,
              elm_list_item_append(object, _("No icons"), NULL, NULL, NULL, NULL);
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
-             start = _icon_create(EFLETE_IMG_PATH"mw_button_info.png", parent);
-             end = _icon_create(EFLETE_IMG_PATH"mw_button_close.png", parent);
+             GET_IMAGE(start, parent, "mw_button_info");
+             GET_IMAGE(end, parent, "mw_button_close");
              elm_list_item_append(object, _("Two icons"), start, end, NULL, NULL);
           }
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
-             end = _icon_create(EFLETE_IMG_PATH"mw_button_close.png", parent);
+             GET_IMAGE(end, parent, "mw_button_close");
              elm_list_item_append(object, _("End icon"), NULL, end, NULL, NULL);
           }
         for (i = 0; i < (ELEMENTS_COUNT / 4); i++)
           {
-             start = _icon_create(EFLETE_IMG_PATH"mw_button_info.png", parent);
+             GET_IMAGE(start, parent, "mw_button_info");
              elm_list_item_append(object, _("Start icon"), start,
                                     NULL, NULL, NULL);
           }
@@ -677,7 +649,7 @@ Live_View *
 live_view_add(Evas_Object *parent)
 {
    Live_View *live;
-   Evas_Object *spinner, *bg;
+   Evas_Object *bg;
 
    if (!parent) return NULL;
 
@@ -689,15 +661,18 @@ live_view_add(Evas_Object *parent)
    elm_bg_color_set(bg, 203, 207, 209);
    evas_object_show(bg);
 
-   SPINNER_ADD(parent, spinner, 1, 500, 1, true, "eflete/live_view");
-   elm_spinner_label_format_set(spinner, "%3.0f%%");
-   evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, live);
-   elm_spinner_value_set(spinner, 100);
-   elm_object_part_content_set(live->layout, SWALLOW_SPINNER, spinner);
-   live->scale_spinner = spinner;
-
    live->live_view = container_add(parent);
+   live->panel = elm_panel_add(parent);
+   live->property = live_view_property_add(live->panel);
+   elm_object_content_set(live->panel, live->property);
+   elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
+   elm_panel_hidden_set(live->panel, true);
+   evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(live->panel);
+
    elm_object_part_content_set(live->layout, SWALLOW_CONTENT, live->live_view);
+   elm_object_part_content_set(live->layout, SWALLOW_MENU, live->panel);
    elm_object_part_content_set(live->layout, SWALLOW_BG, bg);
    container_confine_set(live->live_view, bg);
    evas_object_hide(live->live_view);
@@ -710,7 +685,7 @@ Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
    char **c;
-   const char *widget, *type, *style_name;
+   const char *widget = NULL, *type, *style_name;
    const char *custom_name = NULL;
    const char *fail_message = NULL;
    Eina_Bool ret = true;
@@ -725,8 +700,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
 
    live_view_widget_style_unset(live);
-   live->current_scale = 1.0;
-   elm_spinner_value_set(live->scale_spinner, 100);
+   live_view_property_style_unset(live->property);
 
    if (style->__type != LAYOUT)
      {
@@ -768,6 +742,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              elm_object_text_set(live->object, fail_message);
              container_content_set(live->live_view, live->object);
           }
+        else
+          live_view_property_style_set(live->property, live->object, style, widget);
 
         live_view_theme_update(live, project);
         if ((!strcmp(type, "item")) && (custom_name))
@@ -785,13 +761,12 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         container_content_set(live->live_view, live->object);
         live_view_theme_update(live, project);
         elm_object_style_set(live->object, style->full_group_name);
+        live_view_property_style_set(live->property, live->object, style, "layout");
      }
 
-   elm_object_scale_set(live->object, live->current_scale);
    evas_object_show(live->live_view);
    evas_object_show(live->object);
 
-   evas_object_show(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
@@ -808,7 +783,7 @@ live_view_widget_style_unset(Live_View *live)
    evas_object_hide(live->live_view);
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
    container_content_unset(live->live_view);
-   evas_object_del(live->object);
+   live_view_property_style_unset(live->property);
    evas_object_del(live->object);
    live->object = NULL;
    return true;
@@ -829,12 +804,12 @@ live_view_theme_update(Live_View *live, Project *project)
      {
         WARN("Could'nt apply the empty style to live view.");
         live_view_widget_style_unset(live);
+        live_view_property_style_unset(live->property);
         return false;
      }
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->swapfile);
    elm_object_theme_set(live->object, theme);
-   elm_object_scale_set(live->object, live->current_scale);
    elm_theme_free(theme);
 
    return true;
@@ -843,7 +818,11 @@ live_view_theme_update(Live_View *live, Project *project)
 Eina_Bool
 live_view_free(Live_View *live)
 {
-   if (live) live_view_widget_style_unset(live);
+   if (live)
+     {
+        live_view_widget_style_unset(live);
+        live_view_property_style_unset(live->property);
+     }
    else return false;
 
    free(live);

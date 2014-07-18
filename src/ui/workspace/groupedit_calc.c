@@ -4,17 +4,16 @@
 * This file is part of Edje Theme Editor.
 *
 * This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation.
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* GNU Lesser General Public License for more details.
 *
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program; If not, see www.gnu.org/licenses/lgpl.html.
 */
 
 #include "groupedit_private.h"
@@ -218,7 +217,7 @@ _edit_object_part_restack_above(Ws_Groupedit_Smart_Data *sd,
    Eina_Bool ret = false;
    if ((!sd->parts) || (!part)) return false;
    if (part_above)
-     ret = edje_edit_part_restack_part_above(sd->edit_obj, part, part_above);
+     ret = edje_edit_part_restack_part_below(sd->edit_obj, part, part_above);
    else
      ret = edje_edit_part_restack_below(sd->edit_obj, part);
 
@@ -240,7 +239,7 @@ _edit_object_part_restack_below(Ws_Groupedit_Smart_Data *sd,
    Eina_Bool ret = false;
    if ((!sd->parts) || (!part)) return false;
    if (part_below)
-     ret = edje_edit_part_restack_part_below(sd->edit_obj, part, part_below);
+     ret = edje_edit_part_restack_part_above(sd->edit_obj, part, part_below);
    else
      ret = edje_edit_part_restack_above(sd->edit_obj, part);
 
@@ -591,12 +590,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 }
 
 #define BORDER_ADD(R, G, B, A) \
-   gp->border = evas_object_image_add(sd->e); \
-   evas_object_image_file_set(gp->border, BORDER_IMG, NULL); \
+   GET_IMAGE(gp->border, sd->e, BORDER_IMG); \
    evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A); \
-   evas_object_image_border_set(gp->border, 1, 1, 1, 1); \
-   evas_object_image_filled_set(gp->border, true); \
-   evas_object_image_border_center_fill_set(gp->border, EVAS_BORDER_FILL_NONE);
 
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
@@ -702,10 +697,8 @@ _part_spacer_add(Evas *e)
 {
    Evas_Object *spacer;
 
-   spacer = evas_object_image_add(e);
-   evas_object_image_file_set(spacer, SPACER_IMG, NULL);
-   evas_object_image_fill_set(spacer, 0, 0, 8, 8);
-   evas_object_image_filled_set(spacer, false);
+   GET_IMAGE(spacer, e, SPACER_IMG);
+   evas_object_smart_calculate(spacer);
 
    return spacer;
 }
@@ -715,10 +708,8 @@ _part_swallow_add(Evas *e)
 {
    Evas_Object *swallow;
 
-   swallow = evas_object_image_filled_add(e);
-   evas_object_image_file_set(swallow, SWALLOW_IMG, NULL);
-   evas_object_image_filled_set(swallow, false);
-   evas_object_image_fill_set(swallow, 0, 0, 17, 17);
+   GET_IMAGE(swallow, e, SWALLOW_IMG);
+   evas_object_smart_calculate(swallow);
 
    return swallow;
 }
@@ -748,6 +739,7 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    int img_w, img_h;
    double fill_w, fill_h, fill_x, fill_y;
    int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
+   unsigned char middle;
 
    PART_STATE_GET(edit_obj, gp->name)
 
@@ -768,6 +760,13 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
                                     &bl, &br, &bt, &bb);
    evas_object_image_border_set(gp->draw, bl, br, bt, bb);
 
+   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
+   if (middle == 0)
+     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_NONE);
+   else if (middle == 1)
+     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_DEFAULT);
+   else if (middle == 2)
+     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_SOLID);
 
    /* setups settings from filled block  into evas image object*/
    evas_object_image_smooth_scale_set(gp->draw,
@@ -849,10 +848,10 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
    evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
 
-   edje_edit_state_color2_get(edit_obj, gp->name, state, value, &sr, &sg, &sb, &sa);
+   edje_edit_state_color3_get(edit_obj, gp->name, state, value, &sr, &sg, &sb, &sa);
    evas_object_text_shadow_color_set(gp->draw, sr, sg, sb, sa);
 
-   edje_edit_state_color3_get(edit_obj, gp->name, state, value, &or, &og, &ob, &oa);
+   edje_edit_state_color2_get(edit_obj, gp->name, state, value, &or, &og, &ob, &oa);
    evas_object_text_outline_color_set(gp->draw, or, og, ob, oa);
 
    style = EVAS_TEXT_STYLE_PLAIN;

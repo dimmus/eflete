@@ -15,10 +15,10 @@ logger/logger.c \
 config/config.c \
 external/syntax_color.c \
 ui/cursor.c \
-ui/ui_panes.c \
-ui/ui_menu.c \
-ui/ui_main_window.c \
-ui/ui_connector.c \
+ui/panes.c \
+ui/menu.c \
+ui/main_window.c \
+ui/connector.c \
 ui/container/container.c \
 ui/preference/preference.c \
 ui/editors/style_editor.c \
@@ -43,6 +43,7 @@ ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
+ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
 ui/notification/notify.c
 

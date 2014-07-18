@@ -5,20 +5,19 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "ui_main_window.h"
+#include "main_window.h"
 
 static void
 _add_part_dialog(void *data,
@@ -128,6 +127,38 @@ _below_part(void *data,
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
      }
+   style->isModify = true;
+   live_view_widget_style_set(ap->live_view, ap->project, style);
+}
+
+static void
+_restack_part_above(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Part *rel = (Part *)event_info;
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   Style *style = ap->project->current_style;
+
+   if ((!part) || (!style)) return;
+   workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
+   style->isModify = true;
+   live_view_widget_style_set(ap->live_view, ap->project, style);
+}
+
+static void
+_restack_part_below(void *data,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Part *rel = (Part *)event_info;
+   Style *style = ap->project->current_style;
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+
+   if ((!part) || (!style)) return;
+   workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
 }
@@ -426,6 +457,10 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(wl_list, "wl,part,below", _below_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,show", _show_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,hide", _hide_part, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,moved,up",
+                                       _restack_part_above, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,moved,down",
+                                       _restack_part_below, ap);
 
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
@@ -559,6 +594,10 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_smart_callback_add(wl_list, "wl,part,below", _below_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,show", _show_part, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,hide", _hide_part, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,moved,up",
+                                  _restack_part_above, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,moved,down",
+                                  _restack_part_below, ap);
 
    /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);

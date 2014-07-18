@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "ui_property.h"
@@ -108,6 +107,7 @@ struct _Prop_Data
       Evas_Object *text_source; /* not implemented in yet the edje */
       Evas_Object *color2;
       Evas_Object *color3;
+      Evas_Object *effect;
    } prop_state_text;
    struct {
       Evas_Object *frame;
@@ -174,6 +174,33 @@ static const char *edje_ignore_flags[] = { N_("None"),
                                            N_("On hold"),
                                            NULL};
 
+static const char *edje_text_effect_type[] = { N_("None"),
+                                               N_("Plain"),
+                                               N_("Outline"),
+                                               N_("Soft Outline"),
+                                               N_("Shadow"),
+                                               N_("Soft Shadow"),
+                                               N_("Outline Shadow"),
+                                               N_("Outline Soft Shadow"),
+                                               N_("Far Shadow"),
+                                               N_("Far Soft Shadow"),
+                                               N_("Glow"),
+                                               NULL};
+
+static const char *edje_text_effect_direction[] = { N_("Bottom Right"),
+                                                    N_("Bottom"),
+                                                    N_("Bottom Left"),
+                                                    N_("Left"),
+                                                    N_("Top Left"),
+                                                    N_("Top"),
+                                                    N_("Top Right"),
+                                                    N_("Right"),
+                                                    NULL};
+
+static const char *edje_middle_type[] = { N_("None"),
+                                          N_("Default"),
+                                          N_("Solid")};
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -204,6 +231,7 @@ ui_property_state_fill_set(Evas_Object *property);
 static void
 ui_property_state_fill_unset(Evas_Object *property);
 
+static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
 _del_prop_data(void *data,
@@ -255,10 +283,7 @@ ui_property_add(Evas_Object *parent)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   _bg = evas_object_image_add(evas_object_evas_get(parent));
-   evas_object_image_filled_set(_bg, true);
-   evas_object_image_file_set(_bg, EFLETE_IMG_PATH"section-item-bg.png", NULL);
-   evas_object_image_border_set(_bg, 0, 0, 0, 2);
+   GET_IMAGE(_bg, parent, "section-item-bg");
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
    evas_object_show(_bg);
    pd->visual = scroller;
@@ -421,8 +446,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
      {
         LABEL_ADD(property, info_en, text_info)
 
-        info_image = elm_image_add(property);
-        elm_image_file_set(info_image, EFLETE_IMG_PATH"icon-notification.png", NULL);
+        GET_IMAGE(info_image, property, "icon-notification");
         evas_object_show(info_image);
 
         pd_group.info = elm_layout_add(property);
@@ -1085,7 +1109,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Start point"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_start-point.png")
+        ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1104,7 +1128,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."),
                               true);
-        ICON_ADD(pd_obj_area.rel1_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_obj_area.rel1_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_obj_area.rel1_relative, "eflete.swallow.icon", icon);
         pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
@@ -1112,7 +1136,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"),
                             false);
-        ICON_ADD(pd_obj_area.rel1_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_obj_area.rel1_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);
@@ -1124,7 +1148,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("End point"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_end-point.png");
+        ICON_ADD(separator, icon, false, "icon_end-point");
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1143,7 +1167,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                               "Moves a corner to a relative position inside the container "
                               "by Y axis."),
                               true);
-        ICON_ADD(pd_obj_area.rel2_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_obj_area.rel2_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_obj_area.rel2_relative, "eflete.swallow.icon", icon);
         pd_obj_area.rel2_offset = prop_item_state_rel2_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
@@ -1151,7 +1175,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
                             _("Left offset from relative position in pixels"),
                             _("Top offset from relative position in pixels"),
                             false);
-        ICON_ADD(pd_obj_area.rel2_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_obj_area.rel2_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel2_offset, "eflete.swallow.icon", icon);
 
 
@@ -1200,9 +1224,9 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
 #define ITEM_1COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE, LIST) \
+   ITEM_COMBOBOX_STATE_CALLBACK(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
    ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST)
-
 
 ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
 ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop)
@@ -1212,9 +1236,169 @@ ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
 ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
 ITEM_1SPINNER_STATE_DOUBLE_CREATE(_("elipsis"), state_text, elipsis)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
-ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color2)
-ITEM_COLOR_STATE_CREATE(_("outline color"), state, color3)
+ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color3)
+ITEM_COLOR_STATE_CREATE(_("outline color"), state, color2)
 ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source, styles)
+ITEM_1COMBOBOX_STATE_CREATE(_("text source"), state_text, text_source, styles)
+
+
+static void
+_text_effect_get(Prop_Data *pd, int *type, int *direction)
+{
+   Edje_Text_Effect edje_effect = edje_edit_part_effect_get(pd->style->obj,
+                                                            pd->part->name);
+   if (type)
+     *type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
+   if (direction)
+     *direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
+}
+
+typedef struct {
+   Evas_Object *type_combobox;
+   Evas_Object *direction_combobox;
+   Prop_Data *pd;
+} _text_effect_callback_data;
+
+static void
+_text_effect_value_update(_text_effect_callback_data *effect_data)
+{
+   Edje_Text_Effect edje_effect;
+   edje_effect = ewe_combobox_select_item_get(effect_data->type_combobox)->index;
+   edje_effect |= ewe_combobox_select_item_get(effect_data->direction_combobox)->index << 4;
+   edje_edit_part_effect_set(effect_data->pd->style->obj,
+                             effect_data->pd->part->name, edje_effect);
+   workspace_edit_object_recalc(effect_data->pd->workspace);
+   effect_data->pd->style->isModify = true;
+}
+
+static void
+prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
+{
+   int type, direction;
+   Evas_Object *combobox;
+   _text_effect_get(pd, &type, &direction);
+   combobox = evas_object_data_get(item, ITEM1);
+   ewe_combobox_select_item_set(combobox, type);
+   combobox = evas_object_data_get(item, ITEM2);
+   if ((type <= EDJE_TEXT_EFFECT_SOFT_OUTLINE) ||
+       (type == EDJE_TEXT_EFFECT_GLOW))
+     {
+        ewe_combobox_select_item_set(combobox,
+           EDJE_TEXT_EFFECT_SHADOW_DIRECTION_BOTTOM_RIGHT >> 4);
+        ewe_combobox_text_set(combobox, "None");
+        elm_object_disabled_set(combobox, true);
+     }
+   else
+     {
+        ewe_combobox_select_item_set(combobox, direction);
+        elm_object_disabled_set(combobox, false);
+     }
+}
+
+static void
+_on_text_effect_type_change(void *data EINA_UNUSED,
+                            Evas_Object *obj EINA_UNUSED,
+                            void *event_info)
+{
+   _text_effect_callback_data *effect_data = (_text_effect_callback_data *)data;
+   Ewe_Combobox_Item *selected_item = event_info;
+
+   switch (selected_item->index)
+     {
+      case EDJE_TEXT_EFFECT_NONE:
+      case EDJE_TEXT_EFFECT_PLAIN:
+      case EDJE_TEXT_EFFECT_OUTLINE:
+      case EDJE_TEXT_EFFECT_SOFT_OUTLINE:
+      case EDJE_TEXT_EFFECT_GLOW:
+        {
+           ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
+           ewe_combobox_text_set(effect_data->direction_combobox, "None");
+           elm_object_disabled_set(effect_data->direction_combobox, true);
+           break;
+        }
+      default:
+        {
+           if (elm_object_disabled_get(effect_data->direction_combobox))
+             {
+                ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
+                elm_object_disabled_set(effect_data->direction_combobox, false);
+             }
+        }
+     }
+   _text_effect_value_update(effect_data);
+}
+
+static void
+_on_text_effect_direction_change(void *data,
+                                 Evas_Object *obj EINA_UNUSED,
+                                 void *event_info EINA_UNUSED)
+{
+   _text_effect_value_update(data);
+}
+
+static void
+_del_text_effect_callback_data(void *data,
+                               Evas *e __UNUSED__,
+                               Evas_Object *obj __UNUSED__,
+                               void *ei __UNUSED__)
+{
+   _text_effect_callback_data *data_to_del = (_text_effect_callback_data *)data;
+   free(data_to_del);
+}
+
+#define ADD_TEXT_EFFECT_COMBOBOX(_prop_name, _prop_callback, _prop_names_array) \
+   i = 0; \
+   ITEM_ADD(box, layout, _(#_prop_name":"), "eflete/property/item/small_label") \
+   EWE_COMBOBOX_ADD(layout, combobox) \
+   while (_prop_names_array[i]) \
+     { \
+        ewe_combobox_item_add(combobox, _prop_names_array[i]); \
+        i++; \
+     } \
+   evas_object_smart_callback_add(combobox, "selected", \
+                                  _prop_callback, callback_data); \
+   elm_object_part_content_set(layout, "elm.swallow.content", combobox); \
+   elm_box_pack_end(box, layout);
+
+static Evas_Object *
+prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
+{
+   int i = 0;
+   Evas_Object *item, *box, *layout;
+   Evas_Object *combobox;
+   int type, direction;
+
+   _text_effect_callback_data *callback_data = (_text_effect_callback_data *)
+                                   malloc(sizeof(_text_effect_callback_data));
+   if (!callback_data)
+     return NULL;
+
+   _text_effect_get(pd, &type, &direction);
+
+   ITEM_ADD(parent, item, _("effect"), "eflete/property/item/multiple_prop")
+   evas_object_event_callback_add(item, EVAS_CALLBACK_DEL,
+                                  _del_text_effect_callback_data,
+                                  callback_data);
+   callback_data->pd = pd;
+
+   BOX_ADD(item, box, false, true)
+   elm_box_padding_set(box, 0, 6);
+
+   ADD_TEXT_EFFECT_COMBOBOX(type, _on_text_effect_type_change, edje_text_effect_type);
+   callback_data->type_combobox = combobox;
+   evas_object_data_set(item, ITEM1, combobox);
+   elm_object_tooltip_text_set(combobox, _("Causes Edje to draw the selected effect."));
+
+   ADD_TEXT_EFFECT_COMBOBOX(direction, _on_text_effect_direction_change, edje_text_effect_direction);
+   callback_data->direction_combobox = combobox;
+   evas_object_data_set(item, ITEM2, combobox);
+   elm_object_tooltip_text_set(combobox, _("Shadow directions."));
+
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   prop_item_state_effect_update(item, pd);
+   return item;
+}
+#undef ADD_TEXT_EFFECT_COMBOBOX
 
 #define pd_text pd->prop_state_text
 static Eina_Bool
@@ -1263,20 +1447,24 @@ ui_property_state_text_set(Evas_Object *property)
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
          pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
-                                   _("Causes the part to use the text properties\t"
-                                   "(like font and size) of another part\t"
-                                   "and update them as they change."));
+                            _("Causes the part to use the text properties\t"
+                            "(like font and size) of another part\t"
+                            "and update them as they change."));
+         pd_text.text_source = prop_item_state_text_text_source_add(box, pd, NULL,
+                               _("Causes the part to display the text content of \t"
+                               "another part and update them as they change."));
          pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd,
-                              0.0, 1.0, 0.1, "%1.2f",
-                              _("Cut text if biggest then part's area"
-                              "0.0 = fix the left side  1.0 = right side"));
+                            0.0, 1.0, 0.1, "%1.2f",
+                            _("Cut text if biggest then part's area"
+                            "0.0 = fix the left side  1.0 = right side"));
          pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd,
                           _("Resize the text for it to fit in it's container by X axis"),
                           _("Resize the text for it to fit in it's container by Y axis"));
          pd_text.color2 = prop_item_state_color2_add(box, pd,
-                             _("Text shadow color."));
+                            _("Text shadow color."));
          pd_text.color3 = prop_item_state_color3_add(box, pd,
-                             _("Text outline color."));
+                            _("Text outline color."));
+         pd_text.effect = prop_item_state_effect_add(box, pd);
 
          elm_box_pack_end(box, pd_text.text);
          elm_box_pack_end(box, pd_text.font);
@@ -1285,10 +1473,12 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, pd_text.min);
          elm_box_pack_end(box, pd_text.max);
          elm_box_pack_end(box, pd_text.source);
+         elm_box_pack_end(box, pd_text.text_source);
          elm_box_pack_end(box, pd_text.elipsis);
          elm_box_pack_end(box, pd_text.fit);
          elm_box_pack_end(box, pd_text.color2);
          elm_box_pack_end(box, pd_text.color3);
+         elm_box_pack_end(box, pd_text.effect);
 
          elm_box_pack_end(prop_box, text_frame);
          pd_text.frame = text_frame;
@@ -1302,10 +1492,12 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
         prop_item_state_text_source_update(pd_text.source, pd);
+        prop_item_state_text_text_source_update(pd_text.text_source, pd);
         prop_item_state_text_elipsis_update(pd_text.elipsis, pd);
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
         prop_item_state_color2_update(pd_text.color2, pd);
         prop_item_state_color3_update(pd_text.color3, pd);
+        prop_item_state_effect_update(pd_text.effect, pd);
         elm_box_pack_end(prop_box, pd_text.frame);
         evas_object_show(pd_text.frame);
      }
@@ -1332,22 +1524,7 @@ ITEM_1COMBOBOX_PART_CREATE(_("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(_("source4 (over cursor)"), part, source4)
 ITEM_1COMBOBOX_PART_CREATE(_("source5 (under anchor)"), part, source5)
 ITEM_1COMBOBOX_PART_CREATE(_("source6 (over anchor)"), part, source6)
-static void
-_on_state_text_style_change(void *data,
-                      Evas_Object *obj EINA_UNUSED,
-                      void *ei)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   Ewe_Combobox_Item *item = ei;
-   if (!edje_edit_state_text_style_set(pd->style->obj,
-                                       pd->part->name,
-                                       pd->part->curr_state,
-                                       pd->part->curr_state_value,
-                                       item->title))
-     return;
-   workspace_edit_object_recalc(pd->workspace);
-   pd->style->isModify = true;
-}
+
 ITEM_1COMBOBOX_STATE_CREATE(_("text style"), state, text_style, styles)
 
 static Eina_Bool
@@ -1487,8 +1664,233 @@ _on_state_image_choose(void *data,
    image_editor_callback_add(img_edit, _on_image_editor_done, entry);
 }
 
+static void
+_del_tween_image(void *data,
+                 Evas_Object *obj,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *tween_list = elm_object_parent_widget_get(obj);
+   const char *selected = (const char *)data;
+   Elm_Object_Item *it = elm_genlist_selected_item_get(tween_list);
+   Prop_Data *pd = evas_object_data_get(tween_list, PROP_DATA);
+
+   if ((!selected) || (!it) || (!pd)) return;
+   if (edje_edit_state_tween_del(pd->style->obj, pd->part->name,
+                                 pd->part->curr_state, pd->part->curr_state_value,
+                                 selected))
+     {
+        elm_object_item_del(it);
+        pd->style->isModify = true;
+     }
+}
+
+static void
+_on_image_editor_tween_done(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *ei)
+{
+   Evas_Object *tween_list = (Evas_Object *)data;
+   Eina_List *selected = (Eina_List *)ei;
+   Eina_List *l = NULL;
+   const char *name = NULL;
+   Prop_Data *pd = evas_object_data_get(tween_list, PROP_DATA);
+
+   if ((!selected) || (!pd)) return;
+
+   EINA_LIST_FOREACH(selected, l, name)
+     {
+        if (edje_edit_state_tween_add(pd->style->obj, pd->part->name,
+                                      pd->part->curr_state,
+                                      pd->part->curr_state_value, name))
+          {
+             elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
+                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
+             pd->style->isModify = true;
+          }
+     }
+   elm_frame_collapse_go(pd->prop_state_image.tween, false);
+   edje_edit_string_list_free(selected);
+}
+
+static void
+_add_tween_image(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *img_edit;
+   Evas_Object *tween_list = (Evas_Object *)data;
+
+   App_Data *ap = app_create();
+
+   img_edit = image_editor_window_add(ap->project, MULTIPLE);
+   image_editor_callback_add(img_edit, _on_image_editor_tween_done, tween_list);
+
+   return;
+}
+
+static char *
+_item_label_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *part __UNUSED__)
+{
+   return strdup(data);
+}
+
+static Evas_Object *
+_item_content_get(void *data, Evas_Object *obj, const char *part)
+{
+   const char* buf = NULL;
+   const char *file = NULL, *group = NULL;
+   Evas_Load_Error err;
+   Evas_Object *button, *image;
+   Prop_Data *pd = NULL;
+
+   if (!strcmp(part, "elm.swallow.icon"))
+    {
+       pd = evas_object_data_get(obj, PROP_DATA);
+       if (!pd) return NULL;
+       edje_object_file_get((const Eo*)pd->style->obj, &file, &group);
+       image = evas_object_image_add(evas_object_evas_get(obj));
+       buf = eina_stringshare_printf("edje/images/%i",
+                        edje_edit_image_id_get(pd->style->obj, (const char*)data));
+       evas_object_image_file_set(image, file, buf);
+       err = evas_object_image_load_error_get(image);
+       if (err != EVAS_LOAD_ERROR_NONE)
+         {
+            WARN("Image [%s] from file [%s] loaded with errors", buf, file);
+            return NULL;
+         }
+       evas_object_image_filled_set(image, true);
+       return image;
+    }
+   if (!strcmp(part, "elm.swallow.end"))
+    {
+       BUTTON_ADD(obj, button, NULL)
+       ICON_ADD(button, image, true, "icon-remove");
+       elm_object_part_content_set(button, NULL, image);
+       evas_object_smart_callback_add(button, "clicked", _del_tween_image,
+                                      (const char*)data);
+       elm_object_style_set(button, "eflete/simple");
+       return button;
+    }
+    return NULL;
+
+}
+
+static void
+_tween_image_moved(Evas_Object *data,
+                   Evas_Object *obj,
+                   Elm_Object_Item *item EINA_UNUSED)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   Eina_List *images_list, *l;
+   Elm_Object_Item *next;
+   const char *image_name;
+
+   images_list = edje_edit_state_tweens_list_get(pd->style->obj,
+                                                 pd->part->name,
+                                                 pd->part->curr_state,
+                                                 pd->part->curr_state_value);
+
+   EINA_LIST_FOREACH(images_list, l, image_name)
+     {
+        edje_edit_state_tween_del(pd->style->obj, pd->part->name,
+                                  pd->part->curr_state, pd->part->curr_state_value,
+                                  image_name);
+     }
+
+   next = elm_genlist_first_item_get(obj);
+   while (next)
+     {
+        image_name  = elm_object_item_data_get(next);
+        edje_edit_state_tween_add(pd->style->obj, pd->part->name,
+                                  pd->part->curr_state, pd->part->curr_state_value,
+                                  image_name);
+        next = elm_genlist_item_next_get(next);
+     }
+}
+
+Evas_Object *
+prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
+{
+   Evas_Object *tween_frame, *tween_list;
+   Evas_Object *button, *icon;
+   Eina_List *images_list, *l;
+   char *image_name;
+
+   FRAME_ADD(box, tween_frame, true, _("Tweens"))
+   elm_object_style_set(tween_frame, "eflete/tween");
+
+   tween_list = elm_genlist_add(tween_frame);
+   elm_genlist_reorder_mode_set(tween_list, true);
+   evas_object_data_set(tween_list, PROP_DATA, pd);
+   elm_object_style_set(tween_list, "eflete/default");
+
+   if (!_itc_tween)
+     {
+        _itc_tween = elm_genlist_item_class_new();
+        _itc_tween->item_style = "eflete/tween";
+        _itc_tween->func.text_get = _item_label_get;
+        _itc_tween->func.content_get = _item_content_get;
+        _itc_tween->func.state_get = NULL;
+        _itc_tween->func.del = NULL;
+     }
+
+   images_list = edje_edit_state_tweens_list_get(pd->style->obj,
+                                                 pd->part->name,
+                                                 pd->part->curr_state,
+                                                 pd->part->curr_state_value);
+   if (!images_list) elm_frame_collapse_go(tween_frame, true);
+   EINA_LIST_FOREACH(images_list, l, image_name)
+     {
+       elm_genlist_item_append(tween_list, _itc_tween,
+                               eina_stringshare_add(image_name), NULL,
+                               ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+   edje_edit_string_list_free(images_list);
+   elm_object_content_set(tween_frame, tween_list);
+
+   BUTTON_ADD(tween_frame, button, NULL)
+   ICON_ADD(button, icon, true, "icon-add");
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add(button, "unpressed", _add_tween_image,
+                                  tween_list);
+   elm_object_style_set(button, "eflete/simple");
+   elm_object_part_content_set(tween_frame, "elm.swallow.add", button);
+   evas_object_smart_callback_add(tween_list, "moved",
+                                  (Evas_Smart_Cb)_tween_image_moved, pd);
+
+   evas_object_show(tween_list);
+
+   return tween_frame;
+}
+
+void
+prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
+{
+   Evas_Object *tween_list;
+   Eina_List *images_list, *l;
+   const char *image_name = NULL;
+
+   tween_list = elm_object_content_get(tween);
+   elm_genlist_clear(tween_list);
+   images_list = edje_edit_state_tweens_list_get(pd->style->obj,
+                                                 pd->part->name,
+                                                 pd->part->curr_state,
+                                                 pd->part->curr_state_value);
+   if (!images_list) elm_frame_collapse_go(tween, true);
+   else elm_frame_collapse_go(tween, false);
+
+   EINA_LIST_FOREACH(images_list, l, image_name)
+     {
+       elm_genlist_item_append(tween_list, _itc_tween, image_name, NULL,
+                               ELM_GENLIST_ITEM_NONE, NULL, NULL);
+     }
+}
+
 ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop)
 ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
+ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -1519,9 +1921,15 @@ ui_property_state_image_set(Evas_Object *property)
         ewe_entry_regex_set(entry, IMAGE_BORDER_REGEX, EWE_REG_EXTENDED);
         ewe_entry_regex_autocheck_set(entry, true);
         ewe_entry_regex_glow_set(entry, true);
+        pd_image.middle = prop_item_state_image_border_fill_add(box, pd,
+                             _("Image's middle value"), edje_middle_type);
+
+        pd_image.tween = prop_item_state_image_tween_add(box, pd);
 
         elm_box_pack_end(box, pd_image.normal);
         elm_box_pack_end(box, pd_image.border);
+        elm_box_pack_end(box, pd_image.middle);
+        elm_box_pack_end(box, pd_image.tween);
 
         elm_box_pack_end(prop_box, image_frame);
         pd_image.frame = image_frame;
@@ -1530,6 +1938,8 @@ ui_property_state_image_set(Evas_Object *property)
      {
         prop_item_state_image_update(pd_image.normal, pd);
         prop_item_state_image_border_update(pd_image.border, pd);
+        prop_item_state_image_border_fill_update(pd_image.middle, pd);
+        prop_item_state_image_tween_update(pd_image.tween, pd);
         elm_box_pack_end(prop_box, pd_image.frame);
         evas_object_show(pd_image.frame);
      }
@@ -1589,7 +1999,7 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Origin"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_start-point.png")
+        ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1601,7 +2011,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Sets the starting point Y coordinate "
                                        "relatively to displayed element's content."),
                                      true);
-        ICON_ADD(pd_fill.origin_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_fill.origin_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_fill.origin_relative, "eflete.swallow.icon", icon);
         pd_fill.origin_offset = prop_item_state_fill_origin_offset_x_y_add(box,
                                      pd, -9999.0, 9999.0, 1.0, "%.0f",
@@ -1611,7 +2021,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Affects the starting point a fixed "
                                        "number of pixels along Y axis"),
                                      false);
-        ICON_ADD(pd_fill.origin_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_fill.origin_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_fill.origin_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);
@@ -1623,7 +2033,7 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_separator_horizontal_set(separator, true);
         elm_object_style_set(separator, "eflete/property");
         elm_object_part_text_set(separator, "eflete.text", _("Size"));
-        ICON_ADD(separator, icon, false, EFLETE_IMG_PATH"icon_end-point.png")
+        ICON_ADD(separator, icon, false, "icon_end-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
 
@@ -1635,7 +2045,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Value that represent the percentual value "
                                        "of the original size of the element by Y axis."),
                                       true);
-        ICON_ADD(pd_fill.size_relative, icon, false, EFLETE_IMG_PATH"icon_align.png");
+        ICON_ADD(pd_fill.size_relative, icon, false, "icon_align");
         elm_object_part_content_set(pd_fill.size_relative, "eflete.swallow.icon", icon);
         pd_fill.size_offset = prop_item_state_fill_size_offset_x_y_add(box,
                                      pd, -9999.0, 9999.0, 1.0, "%.0f",
@@ -1645,7 +2055,7 @@ ui_property_state_fill_set(Evas_Object *property)
                                      _("Affects the size of the tile a fixed "
                                        "number of pixels along Y axis."),
                                      false);
-        ICON_ADD(pd_fill.size_offset, icon, false, EFLETE_IMG_PATH"icon_offset.png");
+        ICON_ADD(pd_fill.size_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_fill.size_offset, "eflete.swallow.icon", icon);
 
         elm_box_pack_end(box, separator);

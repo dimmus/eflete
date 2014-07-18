@@ -6,10 +6,10 @@ src/project_manager/widget_manager.c
 src/project_manager/project_manager.c
 src/logger/logger.c
 src/config/config.c
-src/ui/ui_panes.c
-src/ui/ui_menu.c
-src/ui/ui_main_window.c
-src/ui/ui_connector.c
+src/ui/panes.c
+src/ui/menu.c
+src/ui/main_window.c
+src/ui/connector.c
 src/ui/editors/style_editor.c
 src/ui/editors/image_editor.c
 src/ui/editors/colorclass_editor.c

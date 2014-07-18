@@ -22,6 +22,7 @@ check: Makefile
 	$(builddir)/workspace_separate_mode_set.edj \
 	$(builddir)/workspace_separate_mode_get.edj \
 	$(builddir)/workspace_edit_object_part_above.edj \
+	$(builddir)/workspace_edit_object_part_restack.edj \
 	$(builddir)/workspace_edit_object_set.edj \
 	$(builddir)/workspace_edit_object_part_below.edj \
 	$(builddir)/workspace_edit_object_unset.edj \
@@ -34,6 +35,8 @@ check: Makefile
 	$(builddir)/live_view_widget_style_set.edj \
 	$(builddir)/live_view_widget_style_unset.edj \
 	$(builddir)/live_view_theme_update.edj \
+	$(builddir)/live_view_property_style_set.edj \
+	$(builddir)/live_view_property_style_unset.edj \
 	$(builddir)/mw_icon_set.edj \
 	$(builddir)/program_editor_window_add_test.edj \
 	$(builddir)/style_editor_window_add.edj \

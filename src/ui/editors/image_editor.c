@@ -5,21 +5,20 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "image_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -477,10 +476,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
 
-   _bg = evas_object_image_add(evas_object_evas_get(img_edit->gengrid));
-   evas_object_image_filled_set(_bg, true);
-   evas_object_image_file_set(_bg, EFLETE_IMG_PATH"gallery-bg.png", NULL);
-   evas_object_image_border_set(_bg, 2, 2, 2, 6);
+   GET_IMAGE(_bg, img_edit->gengrid, "gallery-bg");
    elm_object_part_content_set(img_edit->gengrid, "elm.swallow.background", _bg);
    evas_object_show(_bg);
 

@@ -4,17 +4,16 @@
 * This file is part of Edje Theme Editor.
 *
 * This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2, or (at your option)
-* any later version.
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation.
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* GNU Lesser General Public License for more details.
 *
-* You should have received a copy of the GNU General Public License
-* along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program; If not, see www.gnu.org/licenses/lgpl.html.
 */
 
 #include "ui_widget_list.h"
@@ -128,31 +127,30 @@ _item_part_content_get(void *data,
      }
    if (!strcmp(part, "elm.swallow.end"))
      {
-        Evas_Object *icon = elm_icon_add(obj);
+        Evas_Object *icon = NULL;
+        Evas *ev = evas_object_evas_get(obj);
         if (_part->type == EDJE_PART_TYPE_RECTANGLE)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-rectangle.png", NULL);
+          GET_IMAGE(icon, ev, "icon-rectangle");
         if (_part->type == EDJE_PART_TYPE_IMAGE)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-image.png", NULL);
+          GET_IMAGE(icon, ev, "icon-image");
         if (_part->type == EDJE_PART_TYPE_SPACER)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-spacer.png", NULL);
+          GET_IMAGE(icon, ev, "icon-spacer");
         if (_part->type == EDJE_PART_TYPE_SWALLOW)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-swallow.png", NULL);
+          GET_IMAGE(icon, ev, "icon-swallow");
         if (_part->type == EDJE_PART_TYPE_TEXT)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-text.png", NULL);
+          GET_IMAGE(icon, ev, "icon-text");
         if (_part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-textblock.png", NULL);
+          GET_IMAGE(icon, ev, "icon-textblock");
         if (_part->type == EDJE_PART_TYPE_GROUP)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-group.png", NULL);
+          GET_IMAGE(icon, ev, "icon-group");
         if (_part->type == EDJE_PART_TYPE_PROXY)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-proxy.png", NULL);
+          GET_IMAGE(icon, ev, "icon-proxy");
         if (_part->type == EDJE_PART_TYPE_TABLE)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-table.png", NULL);
+          GET_IMAGE(icon, ev, "icon-table");
         if (_part->type == EDJE_PART_TYPE_BOX)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-box.png", NULL);
+          GET_IMAGE(icon, ev, "icon-box");
         if (_part->type == EDJE_PART_TYPE_EXTERNAL)
-          elm_image_file_set(icon, EFLETE_IMG_PATH"icon-external.png", NULL);
-
-        elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
+          GET_IMAGE(icon, ev, "icon-external");
 
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
@@ -344,6 +342,29 @@ _past_part_cb(void *data,
 }
 
 static void
+_part_reordered(Evas_Object *data,
+                Evas_Object *obj __UNUSED__,
+                Elm_Object_Item *item)
+{
+   Evas_Object *nf = (Evas_Object *)data;
+   Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+   Part *part = NULL;
+   Elm_Object_Item *rel = elm_genlist_item_next_get(item);
+   elm_genlist_item_selected_set(item, true);
+   if (rel)
+     {
+        part = elm_object_item_data_get(rel);
+        evas_object_smart_callback_call(tabs, "wl,part,moved,up", part);
+     }
+   else
+     {
+        rel = elm_genlist_item_prev_get(item);
+        part =  elm_object_item_data_get(rel);
+        evas_object_smart_callback_call(tabs, "wl,part,moved,down", part);
+     }
+}
+
+static void
 _wl_item_selected(void *data __UNUSED__,
                   Evas_Object *obj,
                   void *event_info __UNUSED__)
@@ -413,6 +434,7 @@ _on_style_clicked_double(void *data,
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
    elm_object_style_set(gl_parts, "eflete/dark");
+   elm_genlist_reorder_mode_set(gl_parts, true);
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
    pr->current_style = _style;
    evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
@@ -426,8 +448,10 @@ _on_style_clicked_double(void *data,
                                       _on_part_select, nf);
         elm_object_item_data_set(eoi, _part);
      }
+   evas_object_smart_callback_add(gl_parts, "moved",
+                                  (Evas_Smart_Cb)_part_reordered, nf);
 
-   ICON_ADD(nf, ic, false, EFLETE_IMG_PATH"icon-back.png");
+   ICON_ADD(nf, ic, false, "icon-back");
 
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -439,28 +463,28 @@ _on_style_clicked_double(void *data,
    elm_naviframe_item_push(nf, clicked_style->full_group_name, bt, NULL, gl_parts, NULL);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
+   ICON_ADD(button, _icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-remove.png");
+   ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-slideup.png");
+   ICON_ADD(button, _icon, true, "icon-slideup");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-slidedown.png");
+   ICON_ADD(button, _icon, true, "icon-slidedown");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
    elm_object_style_set(button, "eflete/simple");
@@ -475,9 +499,8 @@ _item_style_content_get(void *data,
    Style *_style = (Style *)data;
    if ((!strcmp(part, "elm.swallow.end")) && (_style->isAlias))
      {
-        Evas_Object *icon = elm_icon_add(obj);
-        elm_image_file_set(icon, EFLETE_IMG_PATH"alias_link.png", NULL);
-        elm_image_resizable_set(icon, EINA_FALSE, EINA_FALSE);
+        Evas_Object *icon = NULL;
+        GET_IMAGE(icon, obj, "alias_link");
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
      }
@@ -557,7 +580,7 @@ _on_widget_clicked_double(void *data,
    evas_object_smart_callback_add(gl_class, "clicked,double",
                                   _on_style_clicked_double, data);
 
-   ICON_ADD(nf, ic, false, EFLETE_IMG_PATH"icon-back.png");
+   ICON_ADD(nf, ic, false, "icon-back");
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
@@ -566,14 +589,14 @@ _on_widget_clicked_double(void *data,
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-remove.png");
+   ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 
    BUTTON_ADD(nf, button, NULL)
-   ICON_ADD(button, _icon, true, EFLETE_IMG_PATH"icon-add.png");
+   ICON_ADD(button, _icon, true, "icon-add");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, obj);
@@ -694,8 +717,7 @@ ui_widget_list_add(Evas_Object *parent)
    NAVI(widgets, _("Widget list"));
    NAVI(layouts, _("Layouts list"));
 #undef NAVI
-   ICON_ADD(nf_layouts, ic, false, EFLETE_IMG_PATH"icon-add.png");
-   elm_image_resizable_set(ic, false, false);
+   ICON_ADD(nf_layouts, ic, false, "icon-add");
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
@@ -704,8 +726,7 @@ ui_widget_list_add(Evas_Object *parent)
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_add_cb, parent);
    elm_object_item_part_content_set(it_layouts, "elm.swallow.bt1", bt);
-   ICON_ADD(nf_layouts, ic, false, EFLETE_IMG_PATH"icon-remove.png");
-   elm_image_resizable_set(ic, false, false);
+   ICON_ADD(nf_layouts, ic, false, "icon-remove");
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
