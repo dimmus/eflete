@@ -1,8 +1,25 @@
 ============
-Eflete 0.2.3
+Eflete 0.2.4
 ============
 
+Changes since 0.2.3
+-------------------
+
+Features:
+   * Live View property: setting swallows blocks into live view object;
+   * Live View property: setting texts blocks into live view object;
+   * Live View property: sending signals into live view object;
+   * Part property: add border_fill combobox for IMAGE part;
+   * Part property: add tweens for IMAGE part;
+   * Part property: add effect for TEXT part;
+   * Styles: add reorder mode for genlist of parts of loaded style.
+
+Fixes:
+   * packing images into resources.edj file (refactoring);
+   * fixing UTC compile;
+
 Changes since 0.2.2
+-------------------
 
 Features:
    * Part property: add styles list to the textblock;
