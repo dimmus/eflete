@@ -3,6 +3,8 @@
 #define PROP_DATA "prop_data"
 #define ITEM "item"
 #define PART_NAME "part_name"
+#define SIGNAL_NAME "signal_data_name"
+#define SIGNAL_SOURCE "signal_data_source"
 
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
@@ -28,6 +30,11 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *texts;
    } prop_text;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *signals;
+   } prop_signal;
+   Eina_List *signals;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -123,18 +130,32 @@ _on_text_check(void *data,
      elm_object_part_text_set(object, part_name, NULL);
 }
 
+static void
+_send_signal(void *data,
+             Evas_Object *obj,
+             void *ei __UNUSED__)
+{
+   Evas_Object *object = (Evas_Object *)data;
+   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
+   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   elm_layout_signal_emit(object, name, source);
+}
+
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
                              Style *style,
                              const char *widget)
 {
-   Evas_Object *prop_box, *spinner, *check;
+   Evas_Object *prop_box, *spinner, *check, *button;
    Evas_Object *item;
    const char *part_name;
-   Eina_List *part_list = NULL, *part = NULL;
+   Eina_List *part_list = NULL, *part = NULL, *l = NULL;
+   Signal *sig = NULL;
    Edje_Part_Type part_type;
    Eina_Bool swallow_parts_exists = false, text_parts_exists = false;
+   Eina_Bool signals_exists = false;
 
    if ((!property) || (!object) || (!style) || (!widget))
      return false;
@@ -205,6 +226,18 @@ live_view_property_style_set(Evas_Object *property,
         evas_object_smart_callback_add(check, "changed", _on_all_text_check, pd);
      }
 
+   /* Signals UI setting*/
+   if (!pd->prop_signal.signals)
+     {
+        FRAME_ADD(property, pd->prop_signal.frame, true, _("Signals"));
+        elm_object_style_set(pd->prop_signal.frame, "eflete/default");
+
+        BOX_ADD(pd->prop_signal.frame, pd->prop_signal.signals, false, false)
+        elm_box_align_set(pd->prop_signal.signals, 0.5, 0.0);
+        elm_object_content_set(pd->prop_signal.frame, pd->prop_signal.signals);
+        evas_object_hide(pd->prop_signal.frame);
+     }
+
    /* setting all swallows with rectangles */
    part_list = edje_edit_parts_list_get(style->obj);
 
@@ -242,6 +275,30 @@ live_view_property_style_set(Evas_Object *property,
      }
    edje_edit_string_list_free(part_list);
 
+   /* setting all signals for current widget or style except mouse-like ones */
+   pd->signals = wm_program_signals_list_get(style);
+
+   EINA_LIST_FOREACH(pd->signals, l, sig)
+     {
+        if ((strcmp(sig->name, "drag") != 0) &&
+            (strncmp(sig->name, "mouse", strlen("mouse")) != 0))
+          {
+             signals_exists = true;
+             ITEM_ADD(pd->prop_signal.signals, item, eina_stringshare_add(sig->name), "eflete/property/item/signals");
+             BUTTON_ADD(item, button, "<-");
+
+             evas_object_smart_callback_add(button, "clicked", _send_signal, pd->live_object);
+             evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig->name));
+             evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(sig->source));
+
+             elm_object_part_content_set(item, "elm.swallow.content", button);
+             elm_box_pack_end(pd->prop_signal.signals, item);
+             evas_object_show(item);
+          }
+     }
+
+   wm_program_signals_list_free(pd->signals);
+
    if (swallow_parts_exists)
      {
         elm_box_pack_end(prop_box, pd->prop_swallow.frame);
@@ -253,6 +310,12 @@ live_view_property_style_set(Evas_Object *property,
         elm_box_pack_end(prop_box, pd->prop_text.frame);
         evas_object_show(pd->prop_text.frame);
         evas_object_show(pd->prop_text.texts);
+     }
+   if (signals_exists)
+     {
+        elm_box_pack_end(prop_box, pd->prop_signal.frame);
+        evas_object_show(pd->prop_signal.frame);
+        evas_object_show(pd->prop_signal.signals);
      }
 
    return true;
@@ -290,8 +353,10 @@ live_view_property_add(Evas_Object *parent)
 Eina_Bool
 live_view_property_style_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box, *item = NULL, *check = NULL;
+   Evas_Object *prop_box, *item = NULL, *check = NULL, *button = NULL;
    Eina_List *part_list = NULL, *part = NULL;
+   Eina_List *signal_list = NULL, *signal = NULL;
+   const char *string = NULL;
 
    if (!property) return false;
    PROP_DATA_GET(false)
@@ -338,6 +403,29 @@ live_view_property_style_unset(Evas_Object *property)
 
    check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
    elm_check_state_set(check, false);
+
+   /* Signals Clear */
+   elm_box_unpack(prop_box, pd->prop_signal.frame);
+   evas_object_hide(pd->prop_signal.frame);
+   signal_list = elm_box_children_get(pd->prop_signal.signals);
+   elm_box_unpack_all(pd->prop_signal.signals);
+
+   EINA_LIST_FOREACH(signal_list, signal, item)
+     {
+        button = elm_object_part_content_unset(item, "elm.swallow.content");
+        evas_object_smart_callback_del_full(button, "clicked", _send_signal, pd->live_object);
+
+        string = evas_object_data_get(button, SIGNAL_NAME);
+        eina_stringshare_del(string);
+        evas_object_data_del(button, SIGNAL_NAME);
+
+        string = evas_object_data_get(button, SIGNAL_SOURCE);
+        eina_stringshare_del(string);
+        evas_object_data_del(button, SIGNAL_SOURCE);
+
+        evas_object_del(button);
+        evas_object_del(item);
+     }
 
    pd->live_object = NULL;
 
