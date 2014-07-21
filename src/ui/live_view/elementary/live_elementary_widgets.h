@@ -111,6 +111,9 @@ widget_panel_create(Evas_Object *parent, const char *class, const char *style);
 Evas_Object *
 widget_panes_create(Evas_Object *parent, const char *class, const char *style);
 
+Evas_Object *
+widget_radio_create(Evas_Object *parent, const char *class, const char *style);
+
 /*****************************************************
  *****************************************************
  *****************************************************/

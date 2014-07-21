@@ -39,6 +39,7 @@ static struct _live_widget_item widgets[] =
      { "label", widget_label_create },
      { "panel", widget_panel_create },
      { "panes", widget_panes_create },
+     { "radio", widget_radio_create },
      /* do not delete below */
      { NULL, NULL }
 };
