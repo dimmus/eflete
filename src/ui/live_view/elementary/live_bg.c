@@ -16,3 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+
+#include "live_elementary_widgets.h"
+
+Evas_Object *
+widget_bg_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+{
+   Evas_Object *object = elm_bg_add(parent);
+
+   evas_object_data_set(object, SWALLOW_FUNC, &on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, &on_text_check);
+
+   return object;
+}
