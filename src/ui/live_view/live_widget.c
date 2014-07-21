@@ -37,6 +37,7 @@ static struct _live_widget_item widgets[] =
      { "check", widget_check_create },
      { "clock", widget_clock_create },
      { "label", widget_label_create },
+     { "panel", widget_panel_create },
      /* do not delete below */
      { NULL, NULL }
 };
