@@ -55,3 +55,15 @@ on_text_check(void *data,
    else
      elm_object_part_text_set(object, part_name, NULL);
 }
+
+void
+send_signal(void *data,
+             Evas_Object *obj,
+             void *ei __UNUSED__)
+{
+   Evas_Object *object = (Evas_Object *)data;
+   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
+   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   elm_layout_signal_emit(object, name, source);
+}

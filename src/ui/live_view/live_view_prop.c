@@ -201,6 +201,7 @@ _on_radio_text_check(void *data,
 }
 */
 
+/**
 static void
 _send_signal(void *data,
              Evas_Object *obj,
@@ -212,6 +213,7 @@ _send_signal(void *data,
 
    elm_layout_signal_emit(object, name, source);
 }
+*/
 
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
@@ -362,7 +364,9 @@ live_view_property_style_set(Evas_Object *property,
              ITEM_ADD(pd->prop_signal.signals, item, eina_stringshare_add(sig->name), "eflete/property/item/signals");
              BUTTON_ADD(item, button, "<-");
 
-             evas_object_smart_callback_add(button, "clicked", _send_signal, pd->live_object);
+             evas_object_smart_callback_add(button, "clicked",
+                                            evas_object_data_get(pd->live_object, SIGNAL_FUNC),
+                                            pd->live_object);
              evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig->name));
              evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(sig->source));
 
@@ -500,7 +504,9 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(signal_list, signal, item)
      {
         button = elm_object_part_content_unset(item, "elm.swallow.content");
-        evas_object_smart_callback_del_full(button, "clicked", _send_signal, pd->live_object);
+        evas_object_smart_callback_del_full(button, "clicked",
+                                            evas_object_data_get(pd->live_object, SIGNAL_FUNC),
+                                            pd->live_object);
 
         string = evas_object_data_get(button, SIGNAL_NAME);
         eina_stringshare_del(string);

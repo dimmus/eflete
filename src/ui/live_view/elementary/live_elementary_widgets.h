@@ -43,6 +43,7 @@
 
 #define TEXT_FUNC "text_func"
 #define SWALLOW_FUNC "swallow_func"
+#define SIGNAL_FUNC "signal_func"
 
 #define RECT_COLOR 136, 24, 242, 255
 
@@ -69,6 +70,18 @@ on_swallow_check(void *data, Evas_Object *obj, void *event_info);
  */
 void
 on_text_check(void *data, Evas_Object *obj, void *event_info);
+
+/**
+ * Common Signal callback that is used for sending signals into widgets.
+ *
+ * @param data data from callback register.
+ * @param obj object that generates signal that cause this callback.
+ * @param event_info information about event.
+ *
+ * @ingroup Live_Elementary_Widgets
+ */
+void
+send_signal(void *data, Evas_Object *obj, void *event_info);
 
 /*****************************************************
  **************** CREATING WIDGETS *******************
