@@ -102,6 +102,9 @@ widget_check_create(Evas_Object *parent, const char *class, const char *style);
 Evas_Object *
 widget_clock_create(Evas_Object *parent, const char *class, const char *style);
 
+Evas_Object *
+widget_label_create(Evas_Object *parent, const char *class, const char *style);
+
 /*****************************************************
  *****************************************************
  *****************************************************/

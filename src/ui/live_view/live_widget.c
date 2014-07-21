@@ -36,6 +36,7 @@ static struct _live_widget_item widgets[] =
      { "calendar", widget_calendar_create },
      { "check", widget_check_create },
      { "clock", widget_clock_create },
+     { "label", widget_label_create },
      /* do not delete below */
      { NULL, NULL }
 };
