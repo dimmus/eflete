@@ -87,6 +87,9 @@ widget_bubble_create(Evas_Object *parent, const char *class, const char *style);
 Evas_Object *
 widget_button_create(Evas_Object *parent, const char *class, const char *style);
 
+Evas_Object *
+widget_check_create(Evas_Object *parent, const char *class, const char *style);
+
 /*****************************************************
  *****************************************************
  *****************************************************/
