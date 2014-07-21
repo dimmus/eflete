@@ -33,7 +33,7 @@
 #include <Elementary.h>
 
 /*****************************************************
- ****************** COMMON MACRO *********************
+ ************** COMMON MACRO AND FUNCTIONS************
  *****************************************************/
 
 #define ITEM "item"
@@ -44,21 +44,45 @@
 #define TEXT_FUNC "text_func"
 #define SWALLOW_FUNC "swallow_func"
 
-/*****************************************************
- ***************** BUBBLE WIDGET *********************
- *****************************************************/
+#define RECT_COLOR 136, 24, 242, 255
 
 /**
- * Create bubble widget.
+ * Common Swallow callback that is used in most of simple widgets.
  *
- * @param parent The parent widget.
- * @param class class of bubble.
- * @return A new 'bubble' widget handler or
+ * @param data data from callback register.
+ * @param obj object that generates signal that cause this callback.
+ * @param event_info information about event.
  *
  * @ingroup Live_Elementary_Widgets
  */
+void
+on_swallow_check(void *data, Evas_Object *obj, void *event_info);
+
+/**
+ * Common Text callback that is used in most of simple widgets.
+ *
+ * @param data data from callback register.
+ * @param obj object that generates signal that cause this callback.
+ * @param event_info information about event.
+ *
+ * @ingroup Live_Elementary_Widgets
+ */
+void
+on_text_check(void *data, Evas_Object *obj, void *event_info);
+
+/*****************************************************
+ **************** CREATING WIDGETS *******************
+ * !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  ! *
+ * ! *** Those undocumented functions are same *** ! *
+ * ! *** and they are private, not public API  *** ! *
+ * !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  !  ! *
+ *****************************************************/
+
 Evas_Object *
-widget_bubble_create(Evas_Object *parent, const char *class);
+widget_bubble_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
+widget_button_create(Evas_Object *parent, const char *class, const char *style);
 
 /*****************************************************
  *****************************************************

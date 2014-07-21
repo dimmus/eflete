@@ -20,17 +20,38 @@
 #include "live_widget.h"
 #include "live_elementary_widgets.h"
 
+struct _live_widget_item {
+     const char *name;
+     Evas_Object * (*func)(Evas_Object *parent,
+                  const char  *class,
+                  const char  *style);
+};
+
+static struct _live_widget_item widgets[] =
+{
+     { "bubble", widget_bubble_create },
+     { "button", widget_button_create },
+     /* do not delete below */
+     { NULL, NULL }
+};
+
 Evas_Object *
 live_widget_create(const char  *widget,
                    const char  *class,
-                   const char  *style __UNUSED__,
+                   const char  *style,
                    Evas_Object *parent)
 {
    Evas_Object *object = NULL;
+   unsigned int i = 0;
 
-   if (strcmp(widget, "bubble") == 0)
+   while (widgets[i].name != NULL)
      {
-        object = widget_bubble_create(parent, class);
+        if (strcmp(widget, widgets[i].name) == 0)
+          {
+             object = widgets[i].func(parent, class, style);
+             break;
+          }
+        i++;
      }
 
    return object;
