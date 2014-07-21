@@ -45,6 +45,26 @@ ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
 ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
+ui/live_view/live_widget.c \
+ui/live_view/elementary/live_actionslider.c \
+ui/live_view/elementary/live_bg.c \
+ui/live_view/elementary/live_bubble.c \
+ui/live_view/elementary/live_button.c \
+ui/live_view/elementary/live_calendar.c \
+ui/live_view/elementary/live_check.c \
+ui/live_view/elementary/live_clock.c \
+ui/live_view/elementary/live_gengrid.c \
+ui/live_view/elementary/live_genlist.c \
+ui/live_view/elementary/live_label.c \
+ui/live_view/elementary/live_list.c \
+ui/live_view/elementary/live_notify.c \
+ui/live_view/elementary/live_panel.c \
+ui/live_view/elementary/live_panes.c \
+ui/live_view/elementary/live_radio.c \
+ui/live_view/elementary/live_scroller.c \
+ui/live_view/elementary/live_separator.c \
+ui/live_view/elementary/live_spinner.c \
+ui/live_view/elementary/live_toolbar.c \
 ui/notification/notify.c
 
 eflete_SOURCES  = main.c
@@ -66,6 +86,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/src/ui/live_view/elementary \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @EWE_CFLAGS@ \

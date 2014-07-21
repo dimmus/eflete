@@ -29,6 +29,7 @@
  * by using user's theme (already saved one).
  */
 
+#include "live_widget.h"
 #include "widget_manager.h"
 #include "project_manager.h"
 #include "common_macro.h"

@@ -1,3 +1,22 @@
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_view.h"
 #include "live_view_prop.h"
 #include "notify.h"
@@ -7,6 +26,7 @@
 #define COLOR_BLUE_LIGHT 57, 102, 147, 255
 #define COLOR_BLUE_DARK 58, 92, 126, 255
 
+/*
 static const char *imgs[] =
 {
    "insanely_huge_test_image.jpg",
@@ -17,13 +37,14 @@ static const char *imgs[] =
    "sky_02.jpg",
    "sky_03.jpg",
    "sky_04.jpg",
-};
+}; */
 
 #define SWALLOW_BG "eflete.swallow.bg"
 #define SWALLOW_CONTENT "eflete.swallow.content"
 #define SWALLOW_MENU "eflete.swallow.menu"
 #define SWALLOW_SPINNER "eflete.swallow.spinner"
 
+/*
 typedef struct _TestItem
 {
    Eina_Stringshare *path;
@@ -462,10 +483,10 @@ _elm_widget_create(const char  *widget,
    else  if (strcmp(widget, "calendar") == 0)
      {
         object = elm_calendar_add(parent);
-        /* Structure containing a calendar date and time
+        * Structure containing a calendar date and time
            broken down into its components (see "time.h").
            {sec, min, hour, day of the month, month, year since 1900,
-              days since Sunday, days since January 1, Daylight Saving Time flag} */
+              days since Sunday, days since January 1, Daylight Saving Time flag} *
         struct tm saturday = {0, 0, 0, 0, 1, 114, 6, -1, 0, 0, NULL};
         elm_calendar_mark_add(object, "checked", &saturday,
                                 ELM_CALENDAR_WEEKLY);
@@ -583,12 +604,12 @@ _elm_widget_create(const char  *widget,
         unsigned int digit_edit;
         if (strcmp(class, "flipdigit") == 0)
           elm_clock_edit_set(object, true);
-  /****************************************************************************
+  ****************************************************************************
    * Enum  Elm_Clock_Edit_Mode are identifiers for which clock digits should
    * be editable, when a clock widget is in edition mode. For "flipampm"
    * mode variable ELM_CLOCK_EDIT_HOUR_DECIMAL is responsible for user editing
    * time. In this case time can be increased or decreased with step 12 hours.
-   ***************************************************************************/
+   ***************************************************************************
         else if (strcmp(class, "flipampm") == 0)
           {
              elm_clock_show_am_pm_set(object, true);
@@ -644,6 +665,7 @@ _elm_widget_create(const char  *widget,
      }
    return object;
 }
+*/
 
 Live_View *
 live_view_add(Evas_Object *parent)
@@ -718,7 +740,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             live->object = _elm_widget_create(widget, type, style_name, live->live_view);
+             live->object = live_widget_create(widget, type, style_name, live->live_view);
              container_content_set(live->live_view, live->object);
           }
 
