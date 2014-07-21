@@ -49,6 +49,7 @@
 
 #define COLOR_BLUE_LIGHT 57, 102, 147, 255
 #define COLOR_BLUE_DARK 58, 92, 126, 255
+#define ELEMENTS_COUNT 16
 
 /**
  * Common Swallow callback that is used in most of simple widgets.
@@ -129,6 +130,9 @@ widget_panes_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
 widget_radio_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
+widget_scroller_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
 widget_separator_create(Evas_Object *parent, const char *class, const char *style);
