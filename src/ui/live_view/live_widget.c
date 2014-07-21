@@ -30,11 +30,12 @@ struct _live_widget_item {
 static struct _live_widget_item widgets[] =
 {
      { "actionslider", widget_actionslider_create },
+     { "bg", widget_bg_create },
      { "bubble", widget_bubble_create },
      { "button", widget_button_create },
-     { "check", widget_check_create },
      { "calendar", widget_calendar_create },
-     { "bg", widget_bg_create },
+     { "check", widget_check_create },
+     { "clock", widget_clock_create },
      /* do not delete below */
      { NULL, NULL }
 };

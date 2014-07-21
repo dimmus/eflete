@@ -85,19 +85,22 @@ Evas_Object *
 widget_actionslider_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
+widget_bg_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
 widget_bubble_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
 widget_button_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
-widget_check_create(Evas_Object *parent, const char *class, const char *style);
-
-Evas_Object *
 widget_calendar_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
-widget_bg_create(Evas_Object *parent, const char *class, const char *style);
+widget_check_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
+widget_clock_create(Evas_Object *parent, const char *class, const char *style);
 
 /*****************************************************
  *****************************************************
