@@ -806,7 +806,7 @@ live_view_widget_style_unset(Live_View *live)
    elm_layout_signal_emit(live->layout, "live_view,hide", "eflete");
    container_content_unset(live->live_view);
    live_view_property_style_unset(live->property);
-   evas_object_del(live->object);
+   live_widget_del(live->object);
    live->object = NULL;
    return true;
 }

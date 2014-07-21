@@ -23,7 +23,7 @@
 Evas_Object *
 live_widget_create(const char  *widget,
                    const char  *class,
-                   const char  *style EINA_UNUSED,
+                   const char  *style __UNUSED__,
                    Evas_Object *parent)
 {
    Evas_Object *object = NULL;
@@ -34,4 +34,22 @@ live_widget_create(const char  *widget,
      }
 
    return object;
+}
+
+Eina_Bool
+live_widget_del(Evas_Object *widget)
+{
+   if (!evas_object_data_del(widget, TEXT_FUNC))
+     {
+        WARN("Given Object doesn't contain any data so it probably wrong object!");
+        return false;
+     }
+   if (!evas_object_data_del(widget, SWALLOW_FUNC))
+     {
+        WARN("Given Object doesn't contain any data so it probably wrong object!");
+        return false;
+     }
+   evas_object_del(widget);
+
+   return true;
 }

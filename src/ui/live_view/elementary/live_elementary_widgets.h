@@ -27,8 +27,22 @@
  * This folder mostly contains only Elementary Widgets
  */
 
+#include "eflete_config.h"
+#include "eflete.h"
 #include <Evas.h>
 #include <Elementary.h>
+
+/*****************************************************
+ ****************** COMMON MACRO *********************
+ *****************************************************/
+
+#define ITEM "item"
+#define PART_NAME "part_name"
+#define SIGNAL_NAME "signal_data_name"
+#define SIGNAL_SOURCE "signal_data_source"
+
+#define TEXT_FUNC "text_func"
+#define SWALLOW_FUNC "swallow_func"
 
 /*****************************************************
  ***************** BUBBLE WIDGET *********************

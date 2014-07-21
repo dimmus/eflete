@@ -19,6 +19,43 @@
 
 #include "live_elementary_widgets.h"
 
+static void
+_on_swallow_check(void *data,
+                  Evas_Object *obj,
+                  void *ei __UNUSED__)
+{
+   Evas_Object *rect = NULL;
+
+   Evas_Object *object = (Evas_Object *)data;
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+
+   if (elm_check_state_get(obj))
+     {
+        rect = evas_object_rectangle_add(object);
+        evas_object_color_set(rect, 136, 24, 242, 255);
+        elm_object_part_content_set(object, part_name, rect);
+     }
+   else
+     {
+        rect = elm_object_part_content_unset(object, part_name);
+        evas_object_del(rect);
+     }
+}
+
+static void
+_on_text_check(void *data,
+               Evas_Object *obj,
+               void *ei __UNUSED__)
+{
+   Evas_Object *object = (Evas_Object *)data;
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+
+   if (elm_check_state_get(obj))
+     elm_object_part_text_set(object, part_name, _("Look at it! This is absolutely and totally text"));
+   else
+     elm_object_part_text_set(object, part_name, NULL);
+}
+
 static Elm_Bubble_Pos
 _bubble_pos_get(const char *class)
 {
@@ -42,6 +79,9 @@ widget_bubble_create(Evas_Object *parent, const char *class)
    Evas_Object *object = elm_bubble_add(parent);
    if (strcmp(class, "base") != 0)
      elm_bubble_pos_set(object, _bubble_pos_get(class));
+
+   evas_object_data_set(object, SWALLOW_FUNC, &_on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, &_on_text_check);
 
    return object;
 }

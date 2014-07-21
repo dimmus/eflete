@@ -20,11 +20,6 @@
 #include "live_view_prop.h"
 
 #define PROP_DATA "prop_data"
-#define ITEM "item"
-#define PART_NAME "part_name"
-#define SIGNAL_NAME "signal_data_name"
-#define SIGNAL_SOURCE "signal_data_source"
-
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
    if (!pd) \
@@ -90,6 +85,7 @@ _on_all_swallow_check(void *data,
    eina_list_free(part_list);
 }
 
+/**
 static void
 _on_swallow_check(void *data,
            Evas_Object *obj,
@@ -142,6 +138,7 @@ _on_radio_swallow_check(void *data,
      }
    eina_list_free(radio_list);
 }
+*/
 
 static void
 _on_all_text_check(void *data,
@@ -165,6 +162,7 @@ _on_all_text_check(void *data,
    eina_list_free(part_list);
 }
 
+/**
 static void
 _on_text_check(void *data,
                Evas_Object *obj,
@@ -201,6 +199,7 @@ _on_radio_text_check(void *data,
      }
    eina_list_free(radio_list);
 }
+*/
 
 static void
 _send_signal(void *data,
@@ -323,11 +322,10 @@ live_view_property_style_set(Evas_Object *property,
              ITEM_ADD(pd->prop_swallow.swallows, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
              CHECK_ADD(item, check, "eflete/live_view");
 
-             if (strcmp(widget, "radio"))
-               evas_object_smart_callback_add(check, "changed", _on_swallow_check, pd->live_object);
-             else
-               evas_object_smart_callback_add(check, "changed", _on_radio_swallow_check, pd->live_object);
-             evas_object_data_set(check, PART_NAME, part_name);
+             evas_object_smart_callback_add(check, "changed",
+                                            evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                            pd->live_object);
+             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_swallow.swallows, item);
@@ -339,15 +337,11 @@ live_view_property_style_set(Evas_Object *property,
              text_parts_exists = true;
              ITEM_ADD(pd->prop_text.texts, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
              CHECK_ADD(item, check, "eflete/live_view");
-             if (strcmp(widget, "radio"))
-               evas_object_smart_callback_add(check, "changed",
-                                              _on_text_check,
-                                              pd->live_object);
-             else
-               evas_object_smart_callback_add(check, "changed",
-                                              _on_radio_text_check,
-                                              pd->live_object);
-             evas_object_data_set(check, PART_NAME, part_name);
+
+             evas_object_smart_callback_add(check, "changed",
+                                            evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                            pd->live_object);
+             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_text.texts, item);
@@ -456,15 +450,14 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_unset(item, "info");
-        if (strcmp(pd->widget, "radio"))
-          evas_object_smart_callback_del_full(check, "changed",
-                                              _on_text_check,
-                                              pd->live_object);
-        else
-          evas_object_smart_callback_del_full(check, "changed",
-                                              _on_radio_text_check,
-                                              pd->live_object);
+        evas_object_smart_callback_del_full(check, "changed",
+                                            evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                            pd->live_object);
+
+        string = evas_object_data_get(check, PART_NAME);
+        eina_stringshare_del(string);
         evas_object_data_del(check, PART_NAME);
+
         evas_object_del(check);
         evas_object_del(item);
      }
@@ -482,15 +475,14 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_unset(item, "info");
-        if (strcmp(pd->widget, "radio"))
-          evas_object_smart_callback_del_full(check, "changed",
-                                              _on_text_check,
-                                              pd->live_object);
-        else
-          evas_object_smart_callback_del_full(check, "changed",
-                                              _on_radio_text_check,
-                                              pd->live_object);
+        evas_object_smart_callback_del_full(check, "changed",
+                                            evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                            pd->live_object);
+
+        string = evas_object_data_get(check, PART_NAME);
+        eina_stringshare_del(string);
         evas_object_data_del(check, PART_NAME);
+
         evas_object_del(check);
         evas_object_del(item);
      }

@@ -30,6 +30,7 @@
  * the widget.
  */
 
+#include "live_elementary_widgets.h"
 #include "widget_macro.h"
 #include "notify.h"
 #include <Evas.h>

@@ -35,4 +35,8 @@
 Evas_Object *
 live_widget_create(const char *widget, const char *class, const char *style, Evas_Object *parent);
 
+Eina_Bool
+live_widget_del(Evas_Object *widget);
+
+
 #endif /* LIVE_WIDGET_H */
