@@ -33,6 +33,7 @@ widget_manager_test \
 program_editor_test \
 live_view_test \
 live_view_prop_test \
+live_widget_test \
 about_window_test \
 colorselector_test
 
@@ -59,6 +60,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/src/ui/live_view/elementary \
 -I${top_srcdir}/src/ui/signal_list \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
@@ -419,6 +421,13 @@ test_live_view_prop/live_view_property_style_set.c \
 test_live_view_prop/live_view_property_style_unset.c
 live_view_prop_test_CFLAGS = ${FLAGS}
 live_view_prop_test_LDADD = ${LD}
+
+live_widget_test_SOURCES = \
+test_live_widget/test_live_widget.c \
+test_live_widget/live_widget_create.c \
+test_live_widget/live_widget_del.c
+live_widget_test_CFLAGS = ${FLAGS}
+live_widget_test_LDADD = ${LD}
 
 about_window_test_SOURCES = \
 test_about_window/test_about_window.c \
