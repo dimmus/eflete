@@ -735,6 +735,8 @@ _workspace_smart_del(Evas_Object *o)
 static void
 _workspace_smart_show(Evas_Object *o)
 {
+   if (evas_object_visible_get(o)) return;
+
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    evas_object_show(sd->button_separate);
@@ -755,6 +757,8 @@ _workspace_smart_show(Evas_Object *o)
 static void
 _workspace_smart_hide(Evas_Object *o)
 {
+   if (!evas_object_visible_get(o)) return;
+
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
    if (sd->groupedit) evas_object_hide(sd->groupedit);
