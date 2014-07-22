@@ -27,6 +27,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, live_widget_create_test_n1);
    tcase_add_test(tcase, live_widget_create_test_n2);
 
+   tcase_add_test(tcase, live_widget_del_test_p);
+   tcase_add_test(tcase, live_widget_del_test_n1);
+   tcase_add_test(tcase, live_widget_del_test_n2);
+
    suite_add_tcase(suite, tcase);
 
    return suite;
