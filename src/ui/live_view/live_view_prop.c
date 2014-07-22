@@ -85,61 +85,6 @@ _on_all_swallow_check(void *data,
    eina_list_free(part_list);
 }
 
-/**
-static void
-_on_swallow_check(void *data,
-           Evas_Object *obj,
-           void *ei __UNUSED__)
-{
-   Evas_Object *rect = NULL;
-
-   Evas_Object *object = (Evas_Object *)data;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
-
-   if (elm_check_state_get(obj))
-     {
-        rect = evas_object_rectangle_add(object);
-        evas_object_color_set(rect, 136, 24, 242, 255);
-        elm_object_part_content_set(object, part_name, rect);
-     }
-   else
-     {
-        rect = elm_object_part_content_unset(object, part_name);
-        evas_object_del(rect);
-     }
-}
-
-static void
-_on_radio_swallow_check(void *data,
-                        Evas_Object *obj,
-                        void *ei __UNUSED__)
-{
-   Evas_Object *rect = NULL, *radio_obj = NULL;
-   Eina_List* radio_list = elm_box_children_get(data);
-   Eina_List *l = NULL;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
-
-   if (elm_check_state_get(obj))
-     {
-        EINA_LIST_FOREACH(radio_list, l, radio_obj)
-          {
-             rect = evas_object_rectangle_add(radio_obj);
-             evas_object_color_set(rect, HIGHLIGHT_COLOR);
-             elm_object_part_content_set(radio_obj, part_name, rect);
-          }
-     }
-   else
-     {
-        EINA_LIST_FOREACH(radio_list, l, radio_obj)
-          {
-             rect = elm_object_part_content_unset(radio_obj, part_name);
-             evas_object_del(rect);
-          }
-     }
-   eina_list_free(radio_list);
-}
-*/
-
 static void
 _on_all_text_check(void *data,
                    Evas_Object *obj,
@@ -161,59 +106,6 @@ _on_all_text_check(void *data,
 
    eina_list_free(part_list);
 }
-
-/**
-static void
-_on_text_check(void *data,
-               Evas_Object *obj,
-               void *ei __UNUSED__)
-{
-   Evas_Object *object = (Evas_Object *)data;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
-
-   if (elm_check_state_get(obj))
-     elm_object_part_text_set(object, part_name, "Look at it! This is absolutely and totally text");
-   else
-     elm_object_part_text_set(object, part_name, NULL);
-}
-
-static void
-_on_radio_text_check(void *data,
-                     Evas_Object *obj,
-                     void *ei __UNUSED__)
-{
-   Evas_Object *radio_obj = NULL;
-   Eina_List* radio_list = elm_box_children_get(data);
-   Eina_List *l = NULL;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
-
-   if (elm_check_state_get(obj))
-     {
-        EINA_LIST_FOREACH(radio_list, l, radio_obj)
-          elm_object_part_text_set(radio_obj, part_name, "Text Example");
-     }
-   else
-     {
-        EINA_LIST_FOREACH(radio_list, l, radio_obj)
-          elm_object_part_text_set(radio_obj, part_name, "");
-     }
-   eina_list_free(radio_list);
-}
-*/
-
-/**
-static void
-_send_signal(void *data,
-             Evas_Object *obj,
-             void *ei __UNUSED__)
-{
-   Evas_Object *object = (Evas_Object *)data;
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   elm_layout_signal_emit(object, name, source);
-}
-*/
 
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
