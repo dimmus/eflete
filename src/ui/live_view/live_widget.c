@@ -59,6 +59,9 @@ live_widget_create(const char  *widget,
    Evas_Object *object = NULL;
    unsigned int i = 0;
 
+   if ((!widget) || (!class) || (!style) || (!parent))
+     return object;
+
    while (widgets[i].name != NULL)
      {
         if (strcmp(widget, widgets[i].name) == 0)
@@ -75,6 +78,8 @@ live_widget_create(const char  *widget,
 Eina_Bool
 live_widget_del(Evas_Object *widget)
 {
+   if (!widget) return false;
+
    if (!evas_object_data_del(widget, TEXT_FUNC))
      {
         WARN("Given Object doesn't contain any data so it probably wrong object!");
@@ -86,6 +91,10 @@ live_widget_del(Evas_Object *widget)
         return false;
      }
    evas_object_del(widget);
+
+   /* this one for genlist and gengrid */
+   evas_object_data_del(widget, SWALLOW_LIST);
+   evas_object_data_del(widget, TEXT_LIST);
 
    return true;
 }

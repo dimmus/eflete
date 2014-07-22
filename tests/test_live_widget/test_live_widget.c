@@ -23,6 +23,9 @@ Suite* test_suite (void) {
    Suite *suite = suite_create("live_widget_test");
    TCase *tcase = tcase_create("TCase");
 
+   tcase_add_test(tcase, live_widget_create_test_p);
+   tcase_add_test(tcase, live_widget_create_test_n1);
+   tcase_add_test(tcase, live_widget_create_test_n2);
 
    suite_add_tcase(suite, tcase);
 
