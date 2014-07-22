@@ -103,7 +103,10 @@ struct _Ws_Groupedit_Smart_Data
    Eina_Bool separated : 1;
    Groupedit_Part *selected;
    Groupedit_Part *to_select;
-   Evas_Object *bg;
+   Evas_Object *bg;  /**< The item background, it object overlaps
+                         enother groupedit part. */
+   Evas_Object *clipper;      /**< The background clipper, need to draw item bg
+                                   in the separete mode.*/
    Evas_Coord downx;
    Evas_Coord downy;
 };
@@ -138,8 +141,6 @@ struct _Ws_Groupedit_Smart_Data
  *       - item;
  *       - border;
  *       - draw;
- *       - clipper;
- *       - bg.
  */
 struct _Groupedit_Part
 {
@@ -153,10 +154,6 @@ struct _Groupedit_Part
                                    case border has opacity 0. This object serves
                                    for show the edje part geometry. */
    Evas_Object *item;         /**< The object border in the separete mode */
-   Evas_Object *bg;           /**< The item background, it object overlaps
-                                   enother groupedit part. */
-   Evas_Object *clipper;      /**< The background clipper, need to draw item bg
-                                   in the separete mode.*/
 };
 
 void
