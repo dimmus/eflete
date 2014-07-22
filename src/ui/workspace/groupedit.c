@@ -439,6 +439,8 @@ _groupedit_smart_del(Evas_Object *o)
 static void
 _groupedit_smart_show(Evas_Object *o)
 {
+   if (evas_object_visible_get(o)) return;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
    if (sd->separated)
@@ -461,6 +463,8 @@ _groupedit_smart_show(Evas_Object *o)
 static void
 _groupedit_smart_hide(Evas_Object *o)
 {
+   if (!evas_object_visible_get(o)) return;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    evas_object_hide(sd->handler_TL.obj);
