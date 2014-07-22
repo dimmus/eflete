@@ -122,6 +122,9 @@ Evas_Object *
 widget_clock_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
+widget_gengrid_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
 widget_genlist_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
