@@ -40,6 +40,7 @@ static struct _live_widget_item widgets[] =
      { "genlist", widget_genlist_create },
      { "label", widget_label_create },
      { "list", widget_list_create },
+     { "notify", widget_notify_create },
      { "panel", widget_panel_create },
      { "panes", widget_panes_create },
      { "radio", widget_radio_create },

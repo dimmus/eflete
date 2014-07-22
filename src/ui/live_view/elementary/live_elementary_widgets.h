@@ -134,6 +134,9 @@ Evas_Object *
 widget_list_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
+widget_notify_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
 widget_panel_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
