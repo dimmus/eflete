@@ -21,7 +21,7 @@ alayouts_DATA = eflete.edj
 
 aimagesdir = $(datadir)/eflete/images
 aimages_DATA = \
-   ${srcdir}/images/*.png ${srcdir}/images/*.jpg
+   ${srcdir}/images/*.png
 
 aresourcesdir = $(datadir)/eflete/
 aresources_DATA = resources.edj

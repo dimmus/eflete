@@ -44,6 +44,8 @@
 #define TEXT_FUNC "text_func"
 #define SWALLOW_FUNC "swallow_func"
 #define SIGNAL_FUNC "signal_func"
+#define SWALLOW_LIST "swallow_list"
+#define TEXT_LIST "part_list"
 
 #define RECT_COLOR 136, 24, 242, 255
 
@@ -118,6 +120,9 @@ widget_check_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
 widget_clock_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
+widget_genlist_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
 widget_label_create(Evas_Object *parent, const char *class, const char *style);
