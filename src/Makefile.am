@@ -38,7 +38,6 @@ ui/blocks/ui_property.c \
 ui/blocks/ui_widget_list.c \
 ui/blocks/ui_signal_list.c \
 ui/blocks/ui_states_list.c \
-ui/workspace/ui_ruler.c \
 ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
