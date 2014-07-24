@@ -19,7 +19,7 @@
 
 #include "style_editor.h"
 #include "main_window.h"
-#define FONT_SIZE "24"
+#define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000 "
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
 typedef struct _Style_entries Style_Entries;
@@ -94,8 +94,10 @@ _on_glit_selected(void *data,
 
    const char *style_name = NULL;
    const char *tag, *value;
+   Evas_Textblock_Style *ts = NULL;
+
    Eina_Strbuf *style = eina_strbuf_new();
-   eina_strbuf_append(style, "DEFAULT=' font_size="FONT_SIZE);
+   eina_strbuf_append(style, FONT_DEFAULT);
 
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
@@ -129,12 +131,13 @@ _on_glit_selected(void *data,
      }
    elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
    eina_strbuf_append(style, "'");
-   evas_object_show(style_edit->entry_style);
-   elm_entry_text_style_user_push(style_edit->entry_style,
-                                  eina_strbuf_string_get(style));
+   ts = evas_textblock_style_new();
+   evas_textblock_style_set(ts, eina_strbuf_string_get(style));
+   evas_object_textblock_style_set(style_edit->entry_style, ts);
    evas_object_size_hint_max_set(style_edit->entry_style, EVAS_HINT_FILL,
                                  EVAS_HINT_FILL);
    eina_strbuf_free(style);
+   evas_textblock_style_free(ts);
 }
 
 static void
@@ -644,6 +647,9 @@ style_editor_window_add(Project *project)
    Evas_Object *bg = NULL;
    Evas *canvas = NULL;
    Style_Editor *style_edit = NULL;
+   Evas_Textblock_Style *ts = NULL;
+   static const char *style_buf = FONT_DEFAULT"'";
+
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_create();
 
@@ -695,18 +701,15 @@ style_editor_window_add(Project *project)
    elm_object_part_content_set(style_edit->entry_prev, "background", bg);
    evas_object_show(bg);
 
-   ENTRY_ADD(style_edit->mwin, style_edit->entry_style, true, "style_editor");
-   elm_entry_editable_set(style_edit->entry_style, false);
-   evas_object_size_hint_weight_set(style_edit->entry_style,
-                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_part_content_set(style_edit->entry_prev, "entry",
-                               style_edit->entry_style);
-   elm_object_text_set(style_edit->entry_style,
+   style_edit->entry_style = evas_object_textblock_add(canvas);
+   elm_object_part_content_set(style_edit->entry_prev, "entry", style_edit->entry_style);
+   evas_object_textblock_valign_set(style_edit->entry_style, 0.5);
+   ts = evas_textblock_style_new();
+   evas_textblock_style_set(ts, style_buf);
+   evas_object_textblock_style_set(style_edit->entry_style, ts);
+   evas_object_textblock_text_markup_set(style_edit->entry_style,
                        _("The quick brown fox jumps over the lazy dog"));
-   elm_entry_text_style_user_push(style_edit->entry_style,
-                                  "DEFAULT='align=center "
-                                  "font_size="FONT_SIZE" font_weight=Bold'");
-
+   evas_object_show(style_edit->entry_style);
 
    layout_right = _form_right_side(style_edit);
    elm_object_part_content_set(panes_h, "right", layout_right);
@@ -716,8 +719,9 @@ style_editor_window_add(Project *project)
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
+   evas_textblock_style_free(ts);
    return style_edit->mwin;
 }
 
-#undef FONT_SIZE
+#undef FONT_DEFAULT
 #undef POPUP
