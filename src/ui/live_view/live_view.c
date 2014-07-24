@@ -778,7 +778,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
    else
      {
-        live->object = elm_layout_add(live->live_view);
+        live->object = layout_custom_create(live->live_view);
         elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
         container_content_set(live->live_view, live->object);
         live_view_theme_update(live, project);

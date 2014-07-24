@@ -47,6 +47,7 @@ ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
 ui/live_view/live_widget.c \
 ui/live_view/elementary/live_widget_common.c \
+ui/live_view/elementary/live_custom_layout.c \
 ui/live_view/elementary/live_actionslider.c \
 ui/live_view/elementary/live_bg.c \
 ui/live_view/elementary/live_bubble.c \

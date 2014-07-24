@@ -79,6 +79,9 @@ on_text_check(void *data, Evas_Object *obj, void *event_info);
  *****************************************************/
 
 Evas_Object *
+layout_custom_create(Evas_Object *parent);
+
+Evas_Object *
 widget_bubble_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
