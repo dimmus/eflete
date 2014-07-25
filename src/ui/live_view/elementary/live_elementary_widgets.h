@@ -82,6 +82,9 @@ Evas_Object *
 layout_custom_create(Evas_Object *parent);
 
 Evas_Object *
+widget_actionslider_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
 widget_bubble_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *

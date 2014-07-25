@@ -29,6 +29,7 @@ struct _live_widget_item {
 
 static struct _live_widget_item widgets[] =
 {
+     { "actionslider", widget_actionslider_create },
      { "bubble", widget_bubble_create },
      { "button", widget_button_create },
      { "check", widget_check_create },

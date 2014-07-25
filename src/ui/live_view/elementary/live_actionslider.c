@@ -16,3 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
+
+#include "live_elementary_widgets.h"
+
+Evas_Object *
+widget_actionslider_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+{
+   Evas_Object *object = elm_actionslider_add(parent);
+   elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
+
+   evas_object_data_set(object, SWALLOW_FUNC, &on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, &on_text_check);
+
+   return object;
+}
