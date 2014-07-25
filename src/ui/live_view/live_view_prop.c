@@ -122,7 +122,7 @@ live_view_property_style_set(Evas_Object *property,
    Eina_Bool swallow_parts_exists = false, text_parts_exists = false;
    Eina_Bool signals_exists = false;
 
-   if ((!property) || (!object) || (!style) || (!widget))
+   if ((!property) || (!object) || (!style) || (!widget) || (!style->obj))
      return false;
    PROP_DATA_GET(false)
 
