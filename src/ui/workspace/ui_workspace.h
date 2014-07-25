@@ -34,8 +34,8 @@
 
 #include <Evas.h>
 #include <Elementary.h>
+#include <Ewe.h>
 #include "widget_manager.h"
-#include "ui_ruler.h"
 
 /**
  * Create a new Workspace object to the parent.

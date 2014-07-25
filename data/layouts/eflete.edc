@@ -3,7 +3,6 @@ collections {
    #include "edje/block.edc"
    #include "edje/workspace.edc"
    #include "edje/live_view.edc"
-   #include "edje/ruler.edc"
    #include "edje/main_window.edc"
    #include "edje/cursor.edc"
    #include "edje/textstyle.edc"

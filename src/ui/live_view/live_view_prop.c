@@ -1,11 +1,25 @@
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "live_view_prop.h"
 
 #define PROP_DATA "prop_data"
-#define ITEM "item"
-#define PART_NAME "part_name"
-#define SIGNAL_NAME "signal_data_name"
-#define SIGNAL_SOURCE "signal_data_source"
-
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
    if (!pd) \
@@ -72,29 +86,6 @@ _on_all_swallow_check(void *data,
 }
 
 static void
-_on_swallow_check(void *data,
-           Evas_Object *obj,
-           void *ei __UNUSED__)
-{
-   Evas_Object *rect = NULL;
-
-   Evas_Object *object = (Evas_Object *)data;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
-
-   if (elm_check_state_get(obj))
-     {
-        rect = evas_object_rectangle_add(object);
-        evas_object_color_set(rect, 136, 24, 242, 255);
-        elm_object_part_content_set(object, part_name, rect);
-     }
-   else
-     {
-        rect = elm_object_part_content_unset(object, part_name);
-        evas_object_del(rect);
-     }
-}
-
-static void
 _on_all_text_check(void *data,
                    Evas_Object *obj,
                    void *ei __UNUSED__)
@@ -116,32 +107,6 @@ _on_all_text_check(void *data,
    eina_list_free(part_list);
 }
 
-static void
-_on_text_check(void *data,
-               Evas_Object *obj,
-               void *ei __UNUSED__)
-{
-   Evas_Object *object = (Evas_Object *)data;
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
-
-   if (elm_check_state_get(obj))
-     elm_object_part_text_set(object, part_name, "Look at it! This is absolutely and totally text");
-   else
-     elm_object_part_text_set(object, part_name, NULL);
-}
-
-static void
-_send_signal(void *data,
-             Evas_Object *obj,
-             void *ei __UNUSED__)
-{
-   Evas_Object *object = (Evas_Object *)data;
-   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
-   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
-
-   elm_layout_signal_emit(object, name, source);
-}
-
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
@@ -157,7 +122,7 @@ live_view_property_style_set(Evas_Object *property,
    Eina_Bool swallow_parts_exists = false, text_parts_exists = false;
    Eina_Bool signals_exists = false;
 
-   if ((!property) || (!object) || (!style) || (!widget))
+   if ((!property) || (!object) || (!style) || (!widget) || (!style->obj))
      return false;
    PROP_DATA_GET(false)
 
@@ -251,8 +216,10 @@ live_view_property_style_set(Evas_Object *property,
              ITEM_ADD(pd->prop_swallow.swallows, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
              CHECK_ADD(item, check, "eflete/live_view");
 
-             evas_object_smart_callback_add(check, "changed", _on_swallow_check, pd->live_object);
-             evas_object_data_set(check, PART_NAME, part_name);
+             evas_object_smart_callback_add(check, "changed",
+                                            evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                            pd->live_object);
+             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_swallow.swallows, item);
@@ -265,8 +232,10 @@ live_view_property_style_set(Evas_Object *property,
              ITEM_ADD(pd->prop_text.texts, item, eina_stringshare_add(part_name), "eflete/property/item/live_view");
              CHECK_ADD(item, check, "eflete/live_view");
 
-             evas_object_smart_callback_add(check, "changed", _on_text_check, pd->live_object);
-             evas_object_data_set(check, PART_NAME, part_name);
+             evas_object_smart_callback_add(check, "changed",
+                                            evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                            pd->live_object);
+             evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_text.texts, item);
@@ -287,7 +256,9 @@ live_view_property_style_set(Evas_Object *property,
              ITEM_ADD(pd->prop_signal.signals, item, eina_stringshare_add(sig->name), "eflete/property/item/signals");
              BUTTON_ADD(item, button, "<-");
 
-             evas_object_smart_callback_add(button, "clicked", _send_signal, pd->live_object);
+             evas_object_smart_callback_add(button, "clicked",
+                                            evas_object_data_get(pd->live_object, SIGNAL_FUNC),
+                                            pd->live_object);
              evas_object_data_set(button, SIGNAL_NAME, eina_stringshare_add(sig->name));
              evas_object_data_set(button, SIGNAL_SOURCE, eina_stringshare_add(sig->source));
 
@@ -375,8 +346,14 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_unset(item, "info");
-        evas_object_smart_callback_del_full(check, "changed", _on_swallow_check, pd->live_object);
+        evas_object_smart_callback_del_full(check, "changed",
+                                            evas_object_data_get(pd->live_object, SWALLOW_FUNC),
+                                            pd->live_object);
+
+        string = evas_object_data_get(check, PART_NAME);
+        eina_stringshare_del(string);
         evas_object_data_del(check, PART_NAME);
+
         evas_object_del(check);
         evas_object_del(item);
      }
@@ -394,8 +371,14 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_unset(item, "info");
-        evas_object_smart_callback_del_full(check, "changed", _on_text_check, pd->live_object);
+        evas_object_smart_callback_del_full(check, "changed",
+                                            evas_object_data_get(pd->live_object, TEXT_FUNC),
+                                            pd->live_object);
+
+        string = evas_object_data_get(check, PART_NAME);
+        eina_stringshare_del(string);
         evas_object_data_del(check, PART_NAME);
+
         evas_object_del(check);
         evas_object_del(item);
      }
@@ -413,7 +396,9 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(signal_list, signal, item)
      {
         button = elm_object_part_content_unset(item, "elm.swallow.content");
-        evas_object_smart_callback_del_full(button, "clicked", _send_signal, pd->live_object);
+        evas_object_smart_callback_del_full(button, "clicked",
+                                            evas_object_data_get(pd->live_object, SIGNAL_FUNC),
+                                            pd->live_object);
 
         string = evas_object_data_get(button, SIGNAL_NAME);
         eina_stringshare_del(string);

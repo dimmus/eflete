@@ -1,6 +1,14 @@
 ============
-Eflete 0.2.4
+Eflete 0.2.5
 ============
+
+Changes since 0.2.4
+-------------------
+
+Fixes:
+   * Live View refactoring;
+   * Groupedit: remake bg in the separate mode;
+   * Workspace: move to ewe_ruler.
 
 Changes since 0.2.3
 -------------------

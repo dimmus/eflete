@@ -439,6 +439,8 @@ _groupedit_smart_del(Evas_Object *o)
 static void
 _groupedit_smart_show(Evas_Object *o)
 {
+   if (evas_object_visible_get(o)) return;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
    if (sd->separated)
@@ -461,6 +463,8 @@ _groupedit_smart_show(Evas_Object *o)
 static void
 _groupedit_smart_hide(Evas_Object *o)
 {
+   if (!evas_object_visible_get(o)) return;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    evas_object_hide(sd->handler_TL.obj);
@@ -479,6 +483,31 @@ _groupedit_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
    evas_object_color_set(sd->container, r, g, b, a);
    evas_object_color_set(sd->handler_TL.obj, r, g, b, a);
    evas_object_color_set(sd->handler_BR.obj, r, g, b, a);
+}
+
+
+static void
+_groupedit_smart_move(Evas_Object *o,
+                      Evas_Coord x,
+                      Evas_Coord y)
+{
+   Evas_Coord ox, oy;
+   Evas_Object *bg;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   _groupedit_parent_sc->move(o, x, y);
+
+   evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
+   if ((ox == x) && (oy == y)) return;
+
+   if (sd->separated)
+     {
+        bg = evas_object_image_source_get(sd->bg);
+        evas_object_geometry_get(bg, &ox, &oy, NULL, NULL);
+        evas_object_move(sd->bg, ox, oy);
+        evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
+        evas_object_move(sd->clipper, ox, oy);
+     }
 }
 
 static void
@@ -579,6 +608,7 @@ _groupedit_smart_set_user(Evas_Smart_Class *sc)
    sc->color_set = _groupedit_smart_color_set;
 
    /* clipped smart object has no hook on resizes or calculations */
+   sc->move = _groupedit_smart_move;
    sc->resize = _groupedit_smart_resize;
    sc->calculate = _groupedit_smart_calculate;
 }
@@ -958,7 +988,6 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
              sd->to_select = sd->selected;
              sd->selected = NULL;
           }
-        _select_item_move_to_top(sd);
      }
    else
      {
@@ -966,7 +995,8 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
         /* emit the signal that the groupedit returned to the normal mode.
            send the name of selected item(part), for hilight and widget list
            events. */
-        DBG("%s", sd->selected ? sd->selected->name : NULL);
+        DBG("Separate mod off; selected part is %s",
+            sd->selected ? sd->selected->name : NULL);
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE, NULL);
         _selected_item_return_to_place(sd);
      }
@@ -1017,10 +1047,21 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
 Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {
+   int w, h;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!bg) return false;
 
-   sd->bg = bg;
+   sd->bg = evas_object_image_filled_add(sd->e);
+   sd->clipper = evas_object_rectangle_add(sd->e);
+
+   evas_object_geometry_get(bg, NULL, NULL, &w, &h);
+   evas_object_image_source_set(sd->bg, bg);
+   evas_object_resize(sd->bg, w, h);
+
+   evas_object_smart_member_add(sd->bg, obj);
+   evas_object_smart_member_add(sd->clipper, obj);
+
    return true;
 }
 
@@ -1030,7 +1071,8 @@ groupedit_bg_unset(Evas_Object *obj)
    Evas_Object *bg;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
-   bg = sd->bg;
+   bg = evas_object_image_source_get(sd->bg);
+   evas_object_del(sd->bg);
    sd->bg = NULL;
 
    return bg;
