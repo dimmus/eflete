@@ -30,6 +30,7 @@ widget_label_create(Evas_Object *parent, const char *class __UNUSED__, const cha
 
    evas_object_data_set(object, SWALLOW_FUNC, &on_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, &on_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, &send_signal);
 
    return object;
 }

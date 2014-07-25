@@ -72,6 +72,22 @@ _on_radio_text_check(void *data,
    eina_list_free(radio_list);
 }
 
+static void
+_radio_send_signal(void *data,
+                   Evas_Object *obj,
+                   void *ei __UNUSED__)
+{
+   Evas_Object *radio_obj = NULL;
+   Eina_List* radio_list = elm_box_children_get(data);
+   Eina_List *l = NULL;
+
+   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
+   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   EINA_LIST_FOREACH(radio_list, l, radio_obj)
+     elm_layout_signal_emit(radio_obj, name, source);
+}
+
 Evas_Object *
 widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
 {
@@ -94,6 +110,7 @@ widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const cha
 
    evas_object_data_set(object, SWALLOW_FUNC, &_on_radio_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, &_on_radio_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, &_radio_send_signal);
 
    return object;
 }
