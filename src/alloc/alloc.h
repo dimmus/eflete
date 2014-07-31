@@ -1,4 +1,4 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,6 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef ALLOC_H
@@ -23,8 +24,11 @@
 /**
  * @defgroup Alloc Alloc
  *
- * This header describes functions used to manage dynamic storage in a project
- * PACKAGE
+ * @brief
+ * This module provide a memory allocate managment.
+ *
+ * If alloc cannot allocate the memory then that module finished the
+ * application.
  */
 
 #include "eflete.h"
