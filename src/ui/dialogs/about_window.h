@@ -21,7 +21,7 @@
 #define ABOUT_DIALOG_H
 
 /**
- * @defgroup TextStyle Text Style
+ * @defgroup AboutDialog About Dialog
  *
  * This widget emits the following signals:
  *
@@ -38,7 +38,7 @@
  *
  * @return the inwin object that contain style viewer
  *
- * @ingroup TextStyle
+ * @ingroup AboutDialog
  */
 Evas_Object *
 about_window_add();

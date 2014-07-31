@@ -293,8 +293,11 @@ _groupedit_part_free(Groupedit_Part *gp)
    eina_stringshare_del(gp->name);
    evas_object_smart_member_del(gp->border);
    evas_object_del(gp->border);
-   evas_object_smart_member_del(gp->item);
-   evas_object_del(gp->item);
+   if (gp->item)
+     {
+        evas_object_smart_member_del(gp->item);
+        evas_object_del(gp->item);
+     }
 
    //free(gp);
 }
@@ -388,7 +391,7 @@ _part_separete_mod_mouse_click_cb(void *data,
                                   void *event_info)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->item, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
@@ -405,7 +408,7 @@ _part_separete_mod_mouse_in_cb(void *data,
                                void *event_info __UNUSED__)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->item, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
    if (sd->selected == gp) return;
    edje_object_signal_emit(gp->item, "item,mouse,in", "eflete");
 }
@@ -417,7 +420,7 @@ _part_separete_mod_mouse_out_cb(void *data,
                                 void *event_info __UNUSED__)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->item, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
    if (sd->selected == gp) return;
    edje_object_signal_emit(gp->item, "item,mouse,out", "eflete");
 }
@@ -429,7 +432,7 @@ _part_select(void *data,
              void *event_info)
 {
    Groupedit_Part *gp = (Groupedit_Part *)data;
-   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->item, "sd");
+   Ws_Groupedit_Smart_Data *sd = evas_object_data_get(gp->border, "sd");
    Evas_Event_Mouse_Down *emd = (Evas_Event_Mouse_Down *)event_info;
 
    if (emd->button != 1) return;
@@ -500,9 +503,37 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
         if (sd->separated)
           {
              i++;
-             evas_object_show(gp->item);
+             if (!gp->item)
+               {
+                  gp->item = edje_object_add(sd->e);
+                  edje_object_file_set(gp->item, EFLETE_EDJ, "eflete/group/item/default");
+                  evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
+                                                 _part_separete_mod_mouse_click_cb, gp);
+                  evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_IN,
+                                                 _part_separete_mod_mouse_in_cb, gp);
+                  evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_OUT,
+                                                 _part_separete_mod_mouse_out_cb, gp);
+                  evas_object_smart_member_add(gp->item, sd->obj);
+                  evas_object_show(gp->item);
+               }
           }
-        else evas_object_hide(gp->item);
+        else
+          {
+             if (gp->item)
+               {
+                  evas_object_hide(gp->item);
+                  evas_object_event_callback_del_full(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
+                                                      _part_separete_mod_mouse_click_cb, gp);
+                  evas_object_event_callback_del_full(gp->item, EVAS_CALLBACK_MOUSE_IN,
+                                                      _part_separete_mod_mouse_in_cb, gp);
+                  evas_object_event_callback_del_full(gp->item, EVAS_CALLBACK_MOUSE_OUT,
+                                                      _part_separete_mod_mouse_out_cb, gp);
+
+                  evas_object_smart_member_del(gp->item);
+                  evas_object_del(gp->item);
+                  gp->item = NULL;
+               }
+          }
 
         offset_x = i * SEP_ITEM_PAD_X;
         offset_y = i * SEP_ITEM_PAD_Y;
@@ -576,6 +607,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    gp->name = eina_stringshare_add(part);
    gp->visible = true;
    gp->border = NULL;
+   gp->item = NULL;
 
    switch (type)
      {
@@ -617,22 +649,13 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          evas_object_color_set(gp->draw, 0, 0, 0, 0);
          break;
      }
-   gp->item = edje_object_add(sd->e);
-   edje_object_file_set(gp->item, EFLETE_EDJ, "eflete/group/item/default");
-   evas_object_data_set(gp->item, "sd", sd);
-   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _part_separete_mod_mouse_click_cb, gp);
-   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_IN,
-                                  _part_separete_mod_mouse_in_cb, gp);
-   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_OUT,
-                                  _part_separete_mod_mouse_out_cb, gp);
 
+   evas_object_data_set(gp->border, "sd", sd);
    evas_object_event_callback_add(gp->border, EVAS_CALLBACK_MOUSE_DOWN,
                                   _part_select, gp);
 
    evas_object_smart_member_add(gp->draw, sd->obj);
    evas_object_smart_member_add(gp->border, sd->obj);
-   evas_object_smart_member_add(gp->item, sd->obj);
 
    return gp;
 }

@@ -1,4 +1,4 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,18 +15,18 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef EFLETE_H
 #define EFLETE_H
 
 /**
- * @defgroup ELM_MAIN ELM_MAIN
- * @ingroup EFLETE
+ * @defgroup Eflete EFL Edje Theme Editor
  *
  * The begging point of the programm
  * (contain starting function like main and
- *some functions that free/init base required components)
+ * some functions that free/init base required components)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -109,7 +109,7 @@ EAPI_MAIN int elm_main();
  * @return EINA_TRUE all libraries initialized succesfully.
  * EINA_FALSE one of the libraries was failed to inti.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Eina_Bool
 app_init(void);
@@ -122,7 +122,7 @@ app_init(void);
  * @return EINA_TRUE all libraries initialized succesfully.
  * EINA_FALSE one of the libraries was failed to inti.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Eina_Bool
 app_shutdown(void);
@@ -134,7 +134,7 @@ app_shutdown(void);
  *
  * @return win_layout if exist, NULL if not exist.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Evas_Object *
 win_layout_get(void);
@@ -144,7 +144,7 @@ win_layout_get(void);
  *
  * @return link to created empty App_Data.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 App_Data *
 app_create(void);
@@ -157,7 +157,7 @@ app_create(void);
  * @return EINA_TRUE application data freed succesfully.
  * EINA_FALSE failed to free application data.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Eina_Bool
 app_free(App_Data *ap);
@@ -166,7 +166,7 @@ app_free(App_Data *ap);
  * This function get pointer to main window of application.
  *
  * @return pointer to main window Evas_Object.
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Evas_Object *
 main_window_get(void);
@@ -176,7 +176,7 @@ main_window_get(void);
  * The colorselector one for the entire application.
  *
  * @return pointer to colorselector.
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Evas_Object *
 colorselector_get(void);
