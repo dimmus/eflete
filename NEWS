@@ -1,6 +1,14 @@
 ============
-Eflete 0.2.5
+Eflete 0.2.6
 ============
+
+Changes since 0.2.5
+-------------------
+
+Fixes:
+   * Groupedit: remake a separate mode, delete unnecessary objects;
+   * Fix documentation.
+
 
 Changes since 0.2.4
 -------------------
