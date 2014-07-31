@@ -22,8 +22,8 @@
 
 static Eina_Bool
 _exe_data(void *data,
-         int type,
-         void *event)
+          int type,
+          void *event)
 {
    Ecore_Exe_Event_Data *ev = event;
    Edje_Compile_Log_Cb msg_cb = (Edje_Compile_Log_Cb)data;
@@ -41,8 +41,8 @@ _exe_data(void *data,
 
 static Eina_Bool
 _exe_exit(void *data,
-         int type __UNUSED__,
-         void *event)
+          int type __UNUSED__,
+          void *event)
 {
    Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)event;
    int * exit_code = (int *) data;
