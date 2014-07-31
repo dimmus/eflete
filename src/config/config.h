@@ -1,4 +1,4 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,6 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ * }
  */
 
 #ifndef CONFIG_H
@@ -22,7 +23,7 @@
 
 /**
  * @defgroup Config Config
- * @ingroup EFLETE
+ * @ingroup Eflete
  *
  * A Config module respons for save current sizes of window, panes and user
  * profiles.

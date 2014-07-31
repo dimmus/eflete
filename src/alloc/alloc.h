@@ -23,6 +23,7 @@
 
 /**
  * @defgroup Alloc Alloc
+ * @ingroup Eflete
  *
  * @brief
  * This module provide a memory allocate managment.

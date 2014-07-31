@@ -1,4 +1,4 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,6 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef PROJECT_MANAGER_H
@@ -22,10 +23,11 @@
 
 /**
  * @defgroup ProjectManager Project Manager
+ * @ingroup Eflete
  *
- * It is a basic object. Project manager object consist a information
- * about opened project. Project manager object consist the list of widgets
- * styles.
+ * Project manager object consist a information about opened project.
+ * Project manager object consist the list of widgets styles and list of
+ * custom layouts.
  */
 
 #include "edje_compile.h"
@@ -35,9 +37,6 @@
 
 /**
  * @struct _Project
- * Main struct of $project. It struct consist a data of a opened project.
- *
- * @ingroup ProjectManager
  */
 struct _Project
 {
@@ -64,6 +63,11 @@ struct _Project
 
 /**
  * @typedef Project
+ *
+ * Main struct of 'Project' in the Eflete. It struct consist a data of a opened
+ * project.
+ * Under the 'Project' means edj or edc file which loaded in the Eflete.
+ *
  * @ingroup ProjectManager
  */
 typedef struct _Project Project;
@@ -71,8 +75,9 @@ typedef struct _Project Project;
 /**
  * Open project from edj-file.
  *
- * @param name The name of a project.
+ * @param name The name of a project;
  * @param path Path to edj-file.
+ *
  * @return The Project object.
  *
  * @ingroup ProjectManager
@@ -85,6 +90,7 @@ pm_open_project_edj(const char *name,
  * Close the project. Swap file will be deleted.
  *
  * @param project The project will be closed.
+ *
  * @return EINA_TRUE if close successfully, overwise EINA_FALSE.
  *
  * @ingroup ProjectManager
@@ -97,10 +103,15 @@ pm_project_close(Project *project);
  *
  * This function actually decompile the resulted and changed by user EDC file.
  *
- * @param project A Project structure.
- * @param edc_dir Output directory.
- * @param log_cb This callback will be called after every line returned from edje_decc.
- * @return EINA_TRUE if saved successfully.
+ * @param project A Project structure;
+ * @param edc_dir Output directory;
+ * @param log_cb This callback will be called after every line returned from
+ *        edje_decc.
+ *
+ * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
+ *
+ * @see Project
+ * @see Edje_Compile_Log_Cb
  *
  * @ingroup ProjectManager
  */
@@ -112,8 +123,13 @@ pm_export_to_edc(Project *project,
 /**
  * Save opened EDJ-project.
  *
- * @param project A Project structure.
- * @return EINA_TRUE if saved successfully.
+ * @param project A Project structure;
+ * @param edc_dir Path to the directory where been the source code of @ref Project;
+ * @param log_cb The logger function.
+ *
+ * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
+ *
+ * @see Project
  *
  * @ingroup ProjectManager
  */
@@ -123,9 +139,12 @@ pm_save_project_edj(Project *project);
 /**
  * Save project into specific edj-file that is in another location.
  *
- * @param project A Project structure.
+ * @param project A Project structure;
  * @param path Path to edj-file.
- * @return TRUE if saved successfully.
+ *
+ * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
+ *
+ * @see Project
  *
  * @ingroup ProjectManager
  */
