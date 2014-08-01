@@ -7,6 +7,8 @@
 #build generated files
 *.a
 *.o
+*.i
+*.s
 intl/
 src/eflete
 *.dirstamp
@@ -116,3 +118,7 @@ po/en@quot.po
 doc/*
 !doc/Doxyfile.in
 !doc/Makefile.am
+
+#coverage
+*.gcno
+*.gcda
