@@ -284,4 +284,18 @@ ui_class_from_ap_get(App_Data *ap);
 Eina_Bool
 register_callbacks(App_Data *ap);
 
+/**
+ * Add callbacks to widget list. Callbacks are using next signals:
+ * "wl,group,select"
+ * "wl,part,select",
+ * "wl,part,back",
+ * "wl,group,back",
+ *
+ * @param wd_list A pointer to widget list object.
+ * @param ap The Apllication data.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ */
+Eina_Bool
+add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
+
 #endif /* UI_MAIN_WINDOW_H */

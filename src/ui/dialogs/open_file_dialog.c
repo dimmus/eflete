@@ -36,58 +36,6 @@ typedef struct _fs_entries fs_entries;
 static fs_entries *fs_ent = NULL;
 
 static void
-_on_part_back(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_data __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_part_back(ap);
-}
-
-static void
-_on_style_back(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_data __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_style_back(ap);
-}
-
-static void
-_on_state_selected(void *data,
-                   Evas_Object *obj,
-                   void *event_info)
-{
-   App_Data *ap = (App_Data *)data;
-   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
-   Eina_Stringshare *state = elm_object_item_data_get(eoit);
-   ui_state_select(ap, obj, state);
-}
-
-static void
-_on_part_selected(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_data)
-{
-   App_Data *ap = (App_Data *)data;
-   Part *part = (Part *) event_data;
-   Evas_Object *gl_states = ui_part_select(ap, part);
-
-   if (gl_states)
-     evas_object_smart_callback_add(gl_states, "stl,state,select", _on_state_selected, ap);
-}
-
-static void
-_on_style_clicked(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *event_data)
-{
-   App_Data *ap = (App_Data *)data;
-   Style *_style = (Style *)event_data;
-   ui_style_clicked(ap, _style);
-}
-
-static void
 _on_cancel_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
@@ -238,19 +186,6 @@ _on_compile_cb(void *data,
    elm_object_disabled_set(obj, false);
    if (exit_code == 0) elm_object_disabled_set(bt_open, false);
    DBG("Compile exit code: %d", exit_code);
-}
-
-Eina_Bool
-add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
-{
-   if (!wd_list) return false;
-
-   evas_object_smart_callback_add(wd_list, "wl,style,select", _on_style_clicked, ap);
-   evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
-   evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
-   evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, ap);
-
-   return true;
 }
 
 static void
