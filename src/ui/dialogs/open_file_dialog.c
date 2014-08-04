@@ -128,33 +128,33 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
           }
         else
           {
-             NOTIFY_ERROR(_("The file must have a extension '.edj'"));
+             Evas_Object *win = elm_object_parent_widget_get(obj);
+             WIN_NOTIFY_ERROR(win, _("The file must have a extension '.edj'"));
              return;
           }
      }
 
-   evas_object_hide(elm_object_parent_widget_get(obj));
    ecore_main_loop_quit();
 }
 
 Eina_Bool
 open_edj_file(App_Data *ap)
 {
-   Evas_Object *fs;
+   Evas_Object *win, *bg, *fs;
 
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
-   Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
-   OPEN_DIALOG_ADD(inwin, fs, _("Open EDJ file dialog"));
-   evas_object_smart_callback_add(fs, "done", _on_edj_done, ap);
-   evas_object_smart_callback_add(fs, "activated", _on_edj_done, ap);
-
-   elm_win_inwin_activate(inwin);
+   MODAL_WINDOW_ADD(win, ap->win, _("Open EDJ file dialog"), _on_edj_done, ap);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+   FILESELECTOR_ADD(fs, win, _on_edj_done, ap);
+   elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
 
-   evas_object_del(fs);
-   evas_object_del(inwin);
+   evas_object_del(win);
 
    return true;
 }
@@ -298,7 +298,10 @@ _on_compile_edc_done(void *data,
         ecore_main_loop_quit();
      }
    else
-     NOTIFY_ERROR(_("The file must have an extension '.edc'"));
+     {
+        Evas_Object *win = elm_object_parent_widget_get(obj);
+        WIN_NOTIFY_ERROR(win, _("The file must have an extension '.edc'"));
+     }
 }
 
 static void
@@ -316,10 +319,10 @@ _on_path_done(void *data,
 
 static void
 _edx_select(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *win, *bg, *fs;
    Eina_Bool edc = (Evas_Object *)data == fs_ent->edc;
    Evas_Object *entry;
 
@@ -332,35 +335,33 @@ _edx_select(void *data,
 
    if (!fs_ent->parent) return;
 
-   Evas_Object *inwin;
-   inwin = mw_add(_on_path_done, NULL);
+   MODAL_WINDOW_ADD(win, main_window_get(), evas_object_data_get(entry, FS_TITLE), _on_path_done, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
 
-   OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
-   elm_fileselector_selected_set(fs, path);
    if (edc)
      {
-        evas_object_smart_callback_add(fs, "done", _on_compile_edc_done, fs);
-        evas_object_smart_callback_add(fs, "activated", _on_compile_edc_done, fs);
+        FILESELECTOR_ADD(fs, win, _on_compile_edc_done, fs);
      }
    else
      {
+        FILESELECTOR_ADD(fs, win, _on_path_done, fs_ent->edj);
         elm_fileselector_is_save_set(fs, true);
-        evas_object_smart_callback_add(fs, "done", _on_path_done, fs_ent->edj);
-        evas_object_smart_callback_add(fs, "activated", _on_path_done, fs_ent->edj);
      }
-
-   elm_win_inwin_activate(inwin);
+   elm_fileselector_selected_set(fs, path);
+   elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
 
-   evas_object_del(fs);
-   evas_object_del(inwin);
+   evas_object_del(win);
 }
 
 static void
 _clean_log(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
 {
    Evas_Object *entry = (Evas_Object *)data;
    elm_object_text_set(entry, "");
@@ -368,10 +369,10 @@ _clean_log(void *data,
 
 static void
 _path_select(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *win, *bg, *fs;
    Evas_Object *entry = (Evas_Object *)data;
    const char *path = elm_object_text_get(entry);
 
@@ -380,18 +381,20 @@ _path_select(void *data,
 
    if (!fs_ent->parent) return;
 
-   Evas_Object *inwin = mw_add(NULL, NULL);
-   OPEN_DIALOG_ADD(inwin, fs, evas_object_data_get(entry, FS_TITLE));
+   MODAL_WINDOW_ADD(win, main_window_get(), evas_object_data_get(entry, FS_TITLE), _on_path_done, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+
+   FILESELECTOR_ADD(fs, win, _on_path_done, entry);
    elm_fileselector_path_set(fs, path);
    elm_fileselector_folder_only_set(fs, EINA_TRUE);
-   evas_object_smart_callback_add(fs, "done", _on_path_done, entry);
-
-   elm_win_inwin_activate(inwin);
+   elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
 
-   evas_object_del(fs);
-   evas_object_del(inwin);
+   evas_object_del(win);
 }
 
 Eina_Bool
