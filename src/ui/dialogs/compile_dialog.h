@@ -17,13 +17,21 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
+#ifndef COMPILE_DIALOG_H
+#define COMPILE_DIALOG_H
+
+#include "eflete.h"
 #include "main_window.h"
-#include "open_file_dialog.h"
 
 /**
- * @defgroup test_open_file_dialog
+ * Create and show a dialog for compiling an edc file.
+ *
+ * @param ap The Apllication data.
+ * @return EINA_TRUE if dialog executed, else EINA_FALSE.
+ *
+ * @ingroup OpenFileDialog
  */
+Eina_Bool
+compile_dialog(App_Data *ap);
 
-void open_edj_file_test_n1(int);
-void open_edj_file_test_n2(int);
+#endif /* COMPILE_DIALOG_H */

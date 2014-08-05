@@ -19,11 +19,11 @@
 
 #include "utc_common.h"
 #include "main_window.h"
-#include "open_file_dialog.h"
+#include "compile_dialog.h"
 
 /**
- * @defgroup test_open_file_dialog
+ * @defgroup test_compile_dialog
  */
 
-void open_edj_file_test_n1(int);
-void open_edj_file_test_n2(int);
+void compile_dialog_test_n1(int);
+void compile_dialog_test_n2(int);

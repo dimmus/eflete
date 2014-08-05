@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "compile_dialog.h"
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"
@@ -58,7 +59,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
    switch (menu_event->type)
       {
       case OPEN_EDC:
-         open_edc_file(menu_event->ap);
+         compile_dialog(menu_event->ap);
       break;
       case OPEN_EDJ:
          open_edj_file(menu_event->ap);
@@ -167,7 +168,7 @@ _project_not_save_edc(void *data,
 
    evas_object_hide(ap->popup);
    STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
-   open_edc_file(ap);
+   compile_dialog(ap);
    ui_menu_locked_set(ap->menu_hash, false);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
    evas_object_del(ap->popup);
