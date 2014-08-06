@@ -157,14 +157,14 @@ _wm_part_free(Part *part)
 Eina_Bool
 wm_part_del(Style *style, Part *part)
 {
-   Eina_Inlist *tmp = NULL;
+   Eina_Inlist *tmp_list = NULL;
 
    if ((!style) || (!part)) return false;
 
-   tmp = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   if (!tmp) return false;
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   if (!tmp_list) return false;
 
-   style->parts = eina_inlist_remove(style->parts, tmp);
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
 
    return true;
 }
@@ -333,7 +333,7 @@ wm_style_data_load(Style *style, Evas *e, const char *edj)
 
 Style *
 wm_style_add(const char* style_name, const char* full_group_name,
-             type style_type, Class *parent)
+             Type style_type, Class *parent)
 {
    Style *style_edje = NULL;
 
@@ -1092,10 +1092,10 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
 }
 
 const char *
-wm_part_type_get(Edje_Part_Type type)
+wm_part_type_get(Edje_Part_Type part_type)
 {
-   if (type > part_types_count) return NULL;
-   return part_types[type];
+   if (part_type > part_types_count) return NULL;
+   return part_types[part_type];
 }
 
 #undef WM_WIDGET_NAME_GET

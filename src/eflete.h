@@ -152,15 +152,13 @@ app_create(void);
 /**
  * This function will free allocated memory used for App_Data.
  *
- * @param ap - App_Data of this program for removing before program shutdown.
- *
  * @return EINA_TRUE application data freed succesfully.
  * EINA_FALSE failed to free application data.
  *
  * @ingroup Eflete
  */
 Eina_Bool
-app_free(App_Data *ap);
+app_free();
 
 /**
  * This function get pointer to main window of application.

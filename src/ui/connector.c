@@ -251,7 +251,7 @@ _del_layout(void *data,
 }
 
 static Evas_Object *
-_widgetlist_current_genlist_get(App_Data *ap, type group_type)
+_widgetlist_current_genlist_get(App_Data *ap, Type group_type)
 {
    Evas_Object *tabs = NULL;
    const Evas_Object *nf = NULL;
@@ -869,7 +869,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 }
 
 Eina_Bool
-ui_group_delete(App_Data *ap, type group_type)
+ui_group_delete(App_Data *ap, Type group_type)
 {
    Evas_Object *gl_groups = NULL;
 
