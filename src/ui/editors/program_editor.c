@@ -1261,7 +1261,10 @@ _on_editor_save(void *data,
                 Evas_Object* obj __UNUSED__,
                 void *ei __UNUSED__)
 {
-   Style *style = (Style *)data;
+   App_Data *ap = data;
+   Style *style = ap->project->current_style;
+   ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+   ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
    edje_edit_without_source_save(style->obj, true);
 }
 
@@ -1454,7 +1457,7 @@ program_editor_window_add(Style *style)
    evas_object_size_hint_align_set(box, 1, 0.5);
 
    BUTTON_ADD(box, bt, _("Apply"));
-   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, prop.style);
+   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, ap);
    elm_box_pack_end(box, bt);
 
    BUTTON_ADD(box, bt, _("Close"));
