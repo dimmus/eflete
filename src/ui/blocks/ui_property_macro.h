@@ -278,7 +278,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
              if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
              ewe_combobox_item_add(combobox, part->name); \
           } \
-        if (!strncmp(text, "source", 6)) \
+        else if (!strncmp(text, "source", 6)) \
           { \
              Eina_List *collections, *l; \
              char *group; \
@@ -329,7 +329,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
              if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
              ewe_combobox_item_add(combobox, part->name); \
           } \
-        if (!strncmp(text, "source", 6)) \
+        else if (!strncmp(text, "source", 6)) \
           { \
              Eina_List *collections, *l; \
              char *group; \
