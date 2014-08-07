@@ -74,7 +74,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
    if ((!live) || (!project)) return false;
 
-   if ((!style) || (!style->parts))
+   if (!style)
      {
         WARN("Could'nt apply the style to live view. The style is missing!");
         return false;
