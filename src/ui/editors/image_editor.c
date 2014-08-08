@@ -233,19 +233,20 @@ _on_button_add_clicked_cb(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
 {
-   Evas_Object *fs;
+   Evas_Object *win, *bg, *fs;
 
-   Evas_Object *inwin = mw_add(_on_image_done, NULL);
-   OPEN_DIALOG_ADD(inwin, fs, _("Add image to library"));
-   evas_object_smart_callback_add(fs, "done", _on_image_done, data);
-   evas_object_smart_callback_add(fs, "activated", _on_image_done, data);
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Add image to library"), _on_image_done, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
 
-   elm_win_inwin_activate(inwin);
+   FILESELECTOR_ADD(fs, win, _on_image_done, data);
+   elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
 
-   evas_object_del(fs);
-   evas_object_del(inwin);
+   evas_object_del(win);
 
    return;
 }
