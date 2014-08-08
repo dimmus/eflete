@@ -215,7 +215,7 @@ ui_part_state_delete(App_Data *ap);
  * @ingroup Window
  */
 Eina_Bool
-ui_group_delete(App_Data *ap, type group_type);
+ui_group_delete(App_Data *ap, Type group_type);
 
 /**
  * Open new theme from template file.
