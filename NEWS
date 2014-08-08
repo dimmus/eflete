@@ -1,6 +1,21 @@
 ============
-Eflete 0.2.6
+Eflete 0.2.7
 ============
+
+Changes since 0.2.6
+-------------------
+
+Features:
+   * Dialogs: open and save files dialogs now moved from inwin to modal windows.
+
+Fixes:
+   * Dialogs: refactoring;
+   * Program Editor: changing program properties without pressing Enter;
+   * Program Editor: applying changes to signal list after adding new signal;
+   * Live View: empty container is shown even when part's list is empty;
+   * Property: fixing "clip_to" wrong list of items;
+   * Property: scroller doesn't scroll when anything of parts isn't selected;
+   * Fix -Wshadow errors.
 
 Changes since 0.2.5
 -------------------
@@ -8,7 +23,6 @@ Changes since 0.2.5
 Fixes:
    * Groupedit: remake a separate mode, delete unnecessary objects;
    * Fix documentation.
-
 
 Changes since 0.2.4
 -------------------
