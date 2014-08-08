@@ -52,10 +52,10 @@
 #include "logger.h"
 
 /**
- * @enum _type
+ * @enum _Type
  * @ingroup WidgetManager
  */
-enum _type
+enum _Type
 {
     WIDGET = 0,
     CLASS,
@@ -65,10 +65,10 @@ enum _type
 };
 
 /**
- * @typedef type
+ * @typedef Type
  * @ingroup WidgetManager
  */
-typedef enum _type type;
+typedef enum _Type Type;
 
 /**
  * @typedef Part
@@ -111,7 +111,7 @@ struct _Part
     double curr_state_value; /**< Current selected part state value */
     Eina_Bool show; /**< Flag indicate current visibly part evas primitive */
     int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
-    type __type; /**< PART from enum @_type */
+    Type __type; /**< PART from enum @_type */
 };
 
 /**
@@ -136,7 +136,7 @@ struct _Style
     Eina_Inlist *parts;  /**< The list of a style parts data. */
     Eina_List *aliasses; /**< The list of pointer Style structures which aliased to this style */
     Class *parent; /**< Pointer to class, which contain this style */
-    type __type; /**< STYLE from enum @_type */
+    Type __type; /**< STYLE from enum @_type */
 };
 
 /**
@@ -152,7 +152,7 @@ struct _Class
     Eina_Stringshare *name; /**< The name of a class. */
     Eina_Inlist *styles;    /**<The list of styles that make up the class. */
     Widget *parent; /**< Pointer to widget, which contain this class*/
-    type __type; /**< CLASS from enum @_type */
+    Type __type; /**< CLASS from enum @_type */
 };
 
 /**
@@ -167,7 +167,7 @@ struct _Widget
     EINA_INLIST;
     Eina_Stringshare *name; /**< The name of a widget. */
     Eina_Inlist *classes; /**< The list of a widget classes. */
-    type __type; /**< WIDGET from enum @_type */
+    Type __type; /**< WIDGET from enum @_type */
 };
 
 /**
@@ -302,7 +302,7 @@ wm_style_data_load(Style *style, Evas *e, const char *edj);
  */
 Style *
 wm_style_add(const char* style_name, const char* full_group_name,
-             type style_type, Class *parent);
+             Type style_type, Class *parent);
 
 /**
  * Free a @Style object.

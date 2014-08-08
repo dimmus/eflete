@@ -7,6 +7,8 @@
 #build generated files
 *.a
 *.o
+*.i
+*.s
 intl/
 src/eflete
 *.dirstamp
@@ -51,6 +53,10 @@ tests/save_file_dialog_test
 tests/style_dialog_test
 tests/ui_state_dialog_test
 tests/ui_states_list_test
+tests/compile_dialog_test
+tests/container_test
+tests/live_view_prop_test
+tests/live_widget_test
 tests/edj_build/RADIO_DECC/
 report.html
 tests/html/
@@ -116,3 +122,7 @@ po/en@quot.po
 doc/*
 !doc/Doxyfile.in
 !doc/Makefile.am
+
+#coverage
+*.gcno
+*.gcda

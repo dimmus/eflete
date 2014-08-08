@@ -215,7 +215,7 @@ ui_part_state_delete(App_Data *ap);
  * @ingroup Window
  */
 Eina_Bool
-ui_group_delete(App_Data *ap, type group_type);
+ui_group_delete(App_Data *ap, Type group_type);
 
 /**
  * Open new theme from template file.
@@ -283,5 +283,19 @@ ui_class_from_ap_get(App_Data *ap);
 /* FIXME: Add comments */
 Eina_Bool
 register_callbacks(App_Data *ap);
+
+/**
+ * Add callbacks to widget list. Callbacks are using next signals:
+ * "wl,group,select"
+ * "wl,part,select",
+ * "wl,part,back",
+ * "wl,group,back",
+ *
+ * @param wd_list A pointer to widget list object.
+ * @param ap The Apllication data.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ */
+Eina_Bool
+add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
 
 #endif /* UI_MAIN_WINDOW_H */

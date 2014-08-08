@@ -62,9 +62,9 @@ colorselector_get(void)
 }
 
 Eina_Bool
-app_free(App_Data *ap)
+app_free()
 {
-   if (!ap) return false;
+   CHECK_AP(false)
    /*TODO: here need delete all created objects from ap! */
    free(ap);
    return true;
@@ -142,7 +142,7 @@ app_shutdown()
    edje_shutdown();
    logger_shutdown();
    ewe_shutdown();
-   if (!app_free(ap))
+   if (!app_free())
      {
         CRIT("Can't free application data.");
         return false;

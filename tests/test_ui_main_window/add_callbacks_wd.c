@@ -17,14 +17,14 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_open_file_dialog.h"
+#include "test_ui_main_window.h"
 
 /**
- * @addtogroup open_file_dialog_test
+ * @addtogroup ui_main_window_test
  * @{
  * @addtogroup add_callbacks_wd
  * @{
- * open_file_dialog
+ * ui_main_window
  * <TABLE>
  * @}
  */

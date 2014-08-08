@@ -251,7 +251,7 @@ _del_layout(void *data,
 }
 
 static Evas_Object *
-_widgetlist_current_genlist_get(App_Data *ap, type group_type)
+_widgetlist_current_genlist_get(App_Data *ap, Type group_type)
 {
    Evas_Object *tabs = NULL;
    const Evas_Object *nf = NULL;
@@ -869,7 +869,7 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 }
 
 Eina_Bool
-ui_group_delete(App_Data *ap, type group_type)
+ui_group_delete(App_Data *ap, Type group_type)
 {
    Evas_Object *gl_groups = NULL;
 
@@ -955,6 +955,71 @@ register_callbacks(App_Data *ap)
                                   _add_layout_cb, ap);
    evas_object_smart_callback_add(ap->block.left_top, "wl,layout,del",
                                   _del_layout, ap);
+
+   return true;
+}
+
+static void
+_on_state_selected(void *data,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Elm_Object_Item *eoit = (Elm_Object_Item *)event_info;
+   Eina_Stringshare *state = elm_object_item_data_get(eoit);
+   ui_state_select(ap, obj, state);
+}
+
+static void
+_on_style_clicked(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_data)
+{
+   App_Data *ap = (App_Data *)data;
+   Style *_style = (Style *)event_data;
+   ui_style_clicked(ap, _style);
+}
+
+static void
+_on_part_selected(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_data)
+{
+   App_Data *ap = (App_Data *)data;
+   Part *part = (Part *) event_data;
+   Evas_Object *gl_states = ui_part_select(ap, part);
+
+   if (gl_states)
+     evas_object_smart_callback_add(gl_states, "stl,state,select", _on_state_selected, ap);
+}
+
+static void
+_on_part_back(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_data __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_part_back(ap);
+}
+
+static void
+_on_style_back(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_data __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   ui_style_back(ap);
+}
+
+Eina_Bool
+add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
+{
+   if (!wd_list) return false;
+
+   evas_object_smart_callback_add(wd_list, "wl,style,select", _on_style_clicked, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
+   evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, ap);
 
    return true;
 }

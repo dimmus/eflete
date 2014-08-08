@@ -100,7 +100,8 @@ _on_edj_done(void *data,
              cb_data *d_data = mem_malloc(sizeof(cb_data));
 
              Evas_Object *popup, *btn1, *btn2;
-             popup = elm_popup_add(ap->win_layout);
+             Evas_Object *win = elm_object_parent_widget_get(obj);
+             popup = elm_popup_add(win);
              elm_object_style_set(popup, "eflete");
 
              d_data->popup = popup;
@@ -121,7 +122,10 @@ _on_edj_done(void *data,
              evas_object_show(popup);
           }
         else
-          NOTIFY_ERROR(_("The file must have an extension '.edj'"));
+          {
+             Evas_Object *win = elm_object_parent_widget_get(obj);
+             WIN_NOTIFY_ERROR(win, _("The file must have an extension '.edj'"));
+          }
      }
    else
      {
@@ -137,7 +141,10 @@ _on_edj_done(void *data,
              ecore_main_loop_quit();
           }
         else
-           NOTIFY_ERROR(_("The file must have an extension '.edj'"));
+          {
+             Evas_Object *win = elm_object_parent_widget_get(obj);
+             WIN_NOTIFY_ERROR(win, _("The file must have an extension '.edj'"));
+          }
      }
    if (ap->is_new) new_theme_create(ap);
 }
@@ -164,24 +171,25 @@ _save_as_edx_file(App_Data *ap,
                   Evas_Smart_Cb done_cb,
                   Eina_Bool folder_only)
 {
-   Evas_Object *fs;
+   Evas_Object *win, *bg, *fs;
 
    if ((!ap->win) || (!ap->project)) return false;
 
-   Evas_Object *inwin = mw_add(_on_cancel_cb, ap);
-   OPEN_DIALOG_ADD(inwin, fs, title);
+   MODAL_WINDOW_ADD(win, main_window_get(), title, _on_cancel_cb, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+
+   FILESELECTOR_ADD(fs, win, done_cb, ap);
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_folder_only_set(fs, folder_only);
    elm_fileselector_path_set(fs, getenv("HOME"));
-   evas_object_smart_callback_add(fs, "done", done_cb, ap);
-   evas_object_smart_callback_add(fs, "activated", done_cb, ap);
-
-   elm_win_inwin_activate(inwin);
+   elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
 
-   evas_object_del(fs);
-   evas_object_del(inwin);
+   evas_object_del(win);
 
    return true;
 }

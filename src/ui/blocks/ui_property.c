@@ -847,6 +847,7 @@ ui_property_part_unset(Evas_Object *property)
    evas_object_hide(pd->prop_part_drag.frame);
    elm_box_unpack(prop_box, pd->prop_part.frame);
    elm_box_unpack(prop_box, pd->prop_part_drag.frame);
+   elm_box_unpack(prop_box, pd->prop_state.frame);
 
    ui_property_state_unset(property);
 }
@@ -922,6 +923,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    type = edje_edit_part_type_get(pd->style->obj, part->name);
    sprintf(state, "%s %1.2f", part->curr_state, part->curr_state_value);
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_state.frame);
 
    if (!pd_state.frame)
      {
@@ -1011,6 +1015,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
              elm_box_pack_end(box, pd_state.color);
           }
         else evas_object_hide(pd_state.color);
+        prop_box = elm_object_content_get(pd->visual);
+        elm_box_pack_end(prop_box, pd_state.frame);
         evas_object_show(pd_state.frame);
      }
 
@@ -1097,6 +1103,9 @@ ui_property_state_obj_area_set(Evas_Object *property)
    Evas_Object *obj_area_frame, *box, *prop_box;
    Evas_Object *separator, *icon;
    PROP_DATA_GET(EINA_FALSE)
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_obj_area.frame);
 
    if (!pd_obj_area.frame)
      {
@@ -1199,6 +1208,8 @@ ui_property_state_obj_area_set(Evas_Object *property)
         prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd, false);
         prop_item_state_rel2_to_x_y_update(pd_obj_area.rel2_to, pd);
 
+        prop_box = elm_object_content_get(pd->visual);
+        elm_box_pack_end(prop_box, pd_obj_area.frame);
         evas_object_show(pd_obj_area.frame);
      }
 
@@ -1208,7 +1219,11 @@ ui_property_state_obj_area_set(Evas_Object *property)
 static void
 ui_property_state_obj_area_unset(Evas_Object *property)
 {
+   Evas_Object *prop_box;
    PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_obj_area.frame);
    evas_object_hide(pd_obj_area.frame);
 }
 #undef pd_obj_area

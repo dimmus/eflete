@@ -149,8 +149,8 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
    ewe_entry_entry_set(entry, value); \
-   evas_object_smart_callback_del(entry, "activated", _on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "activated", \
+   evas_object_smart_callback_del(entry, "changed", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "changed", \
                                   _on_##sub##_##value##_change, prog_edit); \
 }
 
@@ -317,8 +317,8 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    ewe_entry_entry_set(_entry, buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
-        evas_object_smart_callback_del(_entry, "activated", _activated_cb); \
-        evas_object_smart_callback_add(_entry, "activated", _activated_cb, \
+        evas_object_smart_callback_del(_entry, "changed", _activated_cb); \
+        evas_object_smart_callback_add(_entry, "changed", _activated_cb, \
                                        prog_edit);
 
 static void
@@ -707,7 +707,7 @@ _after_remove_button_cb(void *data,
    elm_box_unpack(entrys_box, element_box);
    edje_edit_program_after_del(prop.style->obj, prop.program,
                                elm_entry_entry_get(entry));
-   evas_object_smart_callback_del(entry, "activated", _on_after_name_change);
+   evas_object_smart_callback_del(entry, "changed", _on_after_name_change);
    eina_list_free(childs);
    evas_object_del(element_box);
 }
@@ -729,7 +729,7 @@ _after_item_add(Program_Editor *prog_edit, char *name)
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
    ewe_entry_entry_set(entry, name);
-   evas_object_smart_callback_add(entry, "activated",_on_after_name_change,
+   evas_object_smart_callback_add(entry, "changed",_on_after_name_change,
                                   prog_edit);
    evas_object_smart_callback_add(button, "clicked", _after_remove_button_cb,
                                   prog_edit);
@@ -766,7 +766,7 @@ _target_remove_button_cb(void *data,
    elm_box_unpack(entrys_box, element_box);
    edje_edit_program_target_del(prop.style->obj, prop.program,
                                 elm_entry_entry_get(entry));
-   evas_object_smart_callback_del(entry, "activated", _on_target_name_change);
+   evas_object_smart_callback_del(entry, "changed", _on_target_name_change);
    eina_list_free(childs);
    evas_object_del(element_box);
 }
@@ -789,7 +789,7 @@ _target_item_add(Program_Editor *prog_edit, char *name)
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
    EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
    ewe_entry_entry_set(entry, name);
-   evas_object_smart_callback_add(entry, "activated", _on_target_name_change,
+   evas_object_smart_callback_add(entry, "changed", _on_target_name_change,
                                   prog_edit);
    evas_object_smart_callback_add(button, "clicked", _target_remove_button_cb,
                                   prog_edit);
@@ -874,9 +874,9 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
      }
 
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
-   evas_object_smart_callback_del(transition.entry1, "activated",
+   evas_object_smart_callback_del(transition.entry1, "changed",
                                   _on_transition_time_active);
-   evas_object_smart_callback_add(transition.entry1, "activated",
+   evas_object_smart_callback_add(transition.entry1, "changed",
                                   _on_transition_time_active, prog_edit);
 
    snprintf(buff, sizeof(buff), "%1.2f", value);
@@ -1078,16 +1078,16 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    entry = eina_list_nth(childs, 0);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "activated", _on_in_from_change);
-   evas_object_smart_callback_add(entry, "activated",
+   evas_object_smart_callback_del(entry, "changed", _on_in_from_change);
+   evas_object_smart_callback_add(entry, "changed",
                                   _on_in_from_change, prog_edit);
    range = edje_edit_program_in_range_get(prop.style->obj,
                                           prop.program);
    entry = eina_list_nth(childs, 1);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "activated", _on_in_range_change);
-   evas_object_smart_callback_add(entry, "activated",
+   evas_object_smart_callback_del(entry, "changed", _on_in_range_change);
+   evas_object_smart_callback_add(entry, "changed",
                                   _on_in_range_change, prog_edit);
    eina_list_free(childs);
 }
@@ -1127,8 +1127,8 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
                                                     "elm.swallow.content");
 
    ewe_entry_entry_set(entry, prop.program);
-   evas_object_smart_callback_del(entry, "activated", _on_program_name_change);
-   evas_object_smart_callback_add(entry, "activated", _on_program_name_change,
+   evas_object_smart_callback_del(entry, "changed", _on_program_name_change);
+   evas_object_smart_callback_add(entry, "changed", _on_program_name_change,
                                   prog_edit);
 }
 
@@ -1261,7 +1261,10 @@ _on_editor_save(void *data,
                 Evas_Object* obj __UNUSED__,
                 void *ei __UNUSED__)
 {
-   Style *style = (Style *)data;
+   App_Data *ap = data;
+   Style *style = ap->project->current_style;
+   ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+   ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
    edje_edit_without_source_save(style->obj, true);
 }
 
@@ -1454,7 +1457,7 @@ program_editor_window_add(Style *style)
    evas_object_size_hint_align_set(box, 1, 0.5);
 
    BUTTON_ADD(box, bt, _("Apply"));
-   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, prop.style);
+   evas_object_smart_callback_add(bt, "clicked", _on_editor_save, ap);
    elm_box_pack_end(box, bt);
 
    BUTTON_ADD(box, bt, _("Close"));

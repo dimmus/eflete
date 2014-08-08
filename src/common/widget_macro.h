@@ -25,7 +25,6 @@
 /* TODO: (refactoring) Style param in every widget define is needed. */
 #define DEFAULT_STYLE "eflete/default"
 
-#define FS_INWIN "fs_inwin"
 #define FS_TITLE "fs_title"
 
 #define ITEM_ADD(PARENT, ITEM, TEXT, STYLE) \
@@ -142,18 +141,23 @@
    elm_hoversel_horizontal_set(HOVERSEL, ISHORIZONTAL); \
    evas_object_show(HOVERSEL);
 
-#define OPEN_DIALOG_ADD(INWIN, FILESELECTOR, DIALOGTITLE) \
-   mw_title_set(INWIN, DIALOGTITLE); \
-   evas_object_focus_set(INWIN, EINA_TRUE); \
-   FILESELECTOR = elm_fileselector_add(INWIN); \
-   evas_object_data_set(FILESELECTOR, FS_INWIN, INWIN); \
+#define MODAL_WINDOW_ADD(WIN, PARENT, TITLE, DEL_CB, CB_DATA) \
+   WIN = elm_win_add(PARENT, NULL, ELM_WIN_DIALOG_BASIC); \
+   elm_win_modal_set(WIN, true); \
+   elm_win_title_set(WIN, TITLE); \
+   evas_object_resize(WIN, 800, 600); \
+   evas_object_smart_callback_add(WIN, "delete,request", DEL_CB, CB_DATA); \
+   evas_object_show(WIN);
+
+#define FILESELECTOR_ADD(FILESELECTOR, PARENT, CALLBACK, DATA) \
+   FILESELECTOR = elm_fileselector_add(PARENT); \
    evas_object_size_hint_weight_set(FILESELECTOR, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(FILESELECTOR, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_fileselector_path_set(FILESELECTOR, getenv("HOME")); \
-   elm_fileselector_buttons_ok_cancel_set(FILESELECTOR, EINA_TRUE); \
-   elm_fileselector_expandable_set(FILESELECTOR, EINA_FALSE); \
+   elm_fileselector_buttons_ok_cancel_set(FILESELECTOR, true); \
+   elm_fileselector_expandable_set(FILESELECTOR, false); \
    elm_fileselector_mode_set(FILESELECTOR, ELM_FILESELECTOR_LIST); \
-   elm_win_inwin_content_set(INWIN, FILESELECTOR); \
+   evas_object_smart_callback_add(FILESELECTOR, "done", CALLBACK, DATA); \
+   evas_object_smart_callback_add(FILESELECTOR, "activated", CALLBACK, DATA); \
    evas_object_show(FILESELECTOR);
 
 #define RADIO_ADD(PARENT, RADIO, STATE, TEXT) \
