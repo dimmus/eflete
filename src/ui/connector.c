@@ -340,8 +340,6 @@ _add_layout_cb(void *data,
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
 
-   wm_style_data_load(layout, evas_object_evas_get(widget_list),
-                      ap->project->swapfile);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
    return;
