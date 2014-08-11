@@ -221,6 +221,7 @@ _on_add_popup_btn_add(void *data,
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Evas_Object *edje_edit_obj = NULL;
+   App_Data *ap = app_create();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(ccl_edit->entry);
@@ -243,6 +244,10 @@ _on_add_popup_btn_add(void *data,
    glit_ccl = elm_genlist_item_append(ccl_edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
    evas_object_del(ccl_edit->popup);
    ccl_edit->popup = NULL;
    _disable(EINA_FALSE, ccl_edit);
@@ -391,11 +396,17 @@ _on_btn_del(void *data,
 {
    Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
    Evas_Object *edje_edit_obj;
+   App_Data *ap = app_create();
    if (!ccl_edit->current_ccl) return;
    GET_OBJ(ccl_edit->pr, edje_edit_obj);
    edje_edit_color_class_del(edje_edit_obj, ccl_edit->current_ccl->name);
    Elm_Object_Item *it = elm_genlist_selected_item_get(ccl_edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
+
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
       elm_genlist_item_selected_set(next, EINA_TRUE);
