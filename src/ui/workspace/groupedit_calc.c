@@ -341,11 +341,11 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
    else
      {
         gp = (Groupedit_Part *)eina_list_data_get(ln);
-        evas_object_stack_above(sd->bg, gp->item);
-        evas_object_stack_above(sd->clipper, gp->item);
-        evas_object_stack_above(sd->selected->item, gp->item);
-        evas_object_stack_above(sd->selected->border, gp->item);
-        evas_object_stack_above(sd->selected->draw, gp->item);
+        evas_object_stack_above(sd->bg, gp->border);
+        evas_object_stack_above(sd->clipper, gp->border);
+        evas_object_stack_above(sd->selected->item, gp->border);
+        evas_object_stack_above(sd->selected->border, gp->border);
+        evas_object_stack_above(sd->selected->draw, gp->border);
         DBG("Separete mode, return to place part %s. Restack above the part %s", sd->selected->name, gp->name);
      }
    evas_object_hide(sd->clipper);
