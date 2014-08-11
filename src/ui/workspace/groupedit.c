@@ -505,8 +505,11 @@ _groupedit_smart_move(Evas_Object *o,
         bg = evas_object_image_source_get(sd->bg);
         evas_object_geometry_get(bg, &ox, &oy, NULL, NULL);
         evas_object_move(sd->bg, ox, oy);
-        evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
-        evas_object_move(sd->clipper, ox, oy);
+        if (sd->selected)
+          {
+             evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
+             evas_object_move(sd->clipper, ox, oy);
+          }
      }
 }
 
