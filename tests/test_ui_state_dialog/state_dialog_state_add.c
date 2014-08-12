@@ -44,10 +44,11 @@
  * @step 5 open edj project
  * @step 6 get a canvas form win
  * @step 7 add and load data of style to the project structure
- * @step 8 get the firs part from style
- * @step 9 add state list to app data
- * @step 10 set state list with data from edj project
- * @step 11 set block state list with data from state_list
+ * @step 8 set style as current
+ * @step 9 get the first part from style
+ * @step 10 add state list to app data
+ * @step 11 set state list with data from edj project
+ * @step 12 set block state list with data from state_list
  *
  * @procedure
  * @step 1 Call function state_dialog_state_add(app_data).
@@ -79,6 +80,7 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, canvas, path);
+   app_data->project->current_style = style;
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);
    ui_states_list_data_set(state_list, style, part);
