@@ -67,6 +67,7 @@ ui/live_view/elementary/live_scroller.c \
 ui/live_view/elementary/live_separator.c \
 ui/live_view/elementary/live_spinner.c \
 ui/live_view/elementary/live_toolbar.c \
+ui/live_view/elementary/live_naviframe.c \
 ui/notification/notify.c
 
 eflete_SOURCES  = main.c

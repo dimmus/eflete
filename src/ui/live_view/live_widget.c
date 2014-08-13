@@ -23,8 +23,8 @@
 struct _live_widget_item {
      const char *name;
      Evas_Object * (*func)(Evas_Object *parent,
-                  const char  *class,
-                  const char  *style);
+                           const char  *class,
+                           const char  *style);
 };
 
 static struct _live_widget_item widgets[] =
@@ -47,6 +47,7 @@ static struct _live_widget_item widgets[] =
      { "scroller", widget_scroller_create },
      { "separator", widget_separator_create },
      { "spinner", widget_spinner_create },
+     { "naviframe", widget_naviframe_create },
      /* do not delete below */
      { NULL, NULL }
 };
