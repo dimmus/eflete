@@ -217,6 +217,7 @@ _on_image_done(void *data,
              it->image_name = eina_stringshare_add(ecore_file_file_get(selected));
              it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+             pm_project_changed(app_create()->project);
           }
      }
    else
@@ -267,6 +268,7 @@ _on_button_delete_clicked_cb(void *data,
    Evas_Object *edje_edit_obj = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
+   int images_to_del = 0;
 
    if (!img_edit->gengrid) return;
 
@@ -274,6 +276,7 @@ _on_button_delete_clicked_cb(void *data,
 
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
    if (!grid_list) return;
+   images_to_del = eina_list_count(grid_list);
 
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
@@ -291,6 +294,8 @@ _on_button_delete_clicked_cb(void *data,
              elm_gengrid_item_selected_set(grid_item, false);
           }
      }
+   if (notdeleted < images_to_del)
+     pm_project_changed(app_create()->project);
    if (notdeleted == 1)
      {
         EINA_LIST_FOREACH(in_use, l, name)

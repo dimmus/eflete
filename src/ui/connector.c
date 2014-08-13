@@ -722,6 +722,7 @@ new_theme_create(App_Data *ap)
    evas_object_show(wd_list);
    ui_panes_show(ap);
    ap->project->edj = NULL;
+   ap->project->is_saved = false;
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
    ui_menu_disable_set(ap->menu_hash, _("Separate"), true);

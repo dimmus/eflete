@@ -1080,6 +1080,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
   edje_edit_state_min_w_set(pd->style->obj, pd->part->name, \
                             pd->part->curr_state, \
                             pd->part->curr_state_value, temp); \
+   pm_project_changed(app_create()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -1342,6 +1343,7 @@ _on_text_effect_type_change(void *data,
         }
      }
    _text_effect_value_update(effect_data);
+   pm_project_changed(app_create()->project);
 }
 
 static void
@@ -1350,6 +1352,7 @@ _on_text_effect_direction_change(void *data,
                                  void *event_info EINA_UNUSED)
 {
    _text_effect_value_update(data);
+   pm_project_changed(app_create()->project);
 }
 
 static void
@@ -1360,6 +1363,7 @@ _del_text_effect_callback_data(void *data,
 {
    _text_effect_callback_data *data_to_del = (_text_effect_callback_data *)data;
    free(data_to_del);
+   pm_project_changed(app_create()->project);
 }
 
 #define ADD_TEXT_EFFECT_COMBOBOX(_prop_name, _prop_callback, _prop_names_array) \
@@ -1694,6 +1698,7 @@ _del_tween_image(void *data,
      {
         elm_object_item_del(it);
         pd->style->isModify = true;
+        pm_project_changed(app_create()->project);
      }
 }
 
@@ -1719,6 +1724,7 @@ _on_image_editor_tween_done(void *data,
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
              pd->style->isModify = true;
+             pm_project_changed(app_create()->project);
           }
      }
    elm_frame_collapse_go(pd->prop_state_image.tween, false);
@@ -1821,6 +1827,7 @@ _tween_image_moved(Evas_Object *data,
                                   image_name);
         next = elm_genlist_item_next_get(next);
      }
+   pm_project_changed(app_create()->project);
 }
 
 Evas_Object *

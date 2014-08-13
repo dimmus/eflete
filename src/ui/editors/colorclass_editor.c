@@ -163,6 +163,7 @@ _on_ccl_editor_close(void *data,
      {
         GET_STYLE(ccl_edit->pr, style);
         if (style) style->isModify = true;
+        pm_project_changed(app_create()->project);
      }
 
    evas_object_del(ccl_edit->rect_color1);
