@@ -93,9 +93,15 @@ _on_edj_done(void *data,
         ecore_main_loop_quit();
         return;
      }
-   if (ecore_file_exists(selected))
+
+   if (!eina_str_has_suffix(selected, ".edj"))
      {
-        if (eina_str_has_suffix(selected, ".edj"))
+        Evas_Object *win = elm_object_parent_widget_get(obj);
+        WIN_NOTIFY_ERROR(win, _("The file must have an extension '.edj'"));
+     }
+   else
+     {
+        if (ecore_file_exists(selected))
           {
              cb_data *d_data = mem_malloc(sizeof(cb_data));
 
@@ -110,7 +116,7 @@ _on_edj_done(void *data,
 
              elm_object_part_text_set(popup, "title,text", _("Warning"));
              elm_object_text_set(popup, _("File is already exist. Would"
-                                 "you like to replace it?"));
+                                          "you like to replace it?"));
              BUTTON_ADD(popup, btn1, _("OK"));
              elm_object_part_content_set(popup, "button1", btn1);
              evas_object_smart_callback_add(btn1, "clicked", _ok_cb, d_data);
@@ -123,14 +129,6 @@ _on_edj_done(void *data,
           }
         else
           {
-             Evas_Object *win = elm_object_parent_widget_get(obj);
-             WIN_NOTIFY_ERROR(win, _("The file must have an extension '.edj'"));
-          }
-     }
-   else
-     {
-        if (eina_str_has_suffix(selected, ".edj"))
-          {
              if (pm_save_project_to_swap(ap->project))
                {
                   if (pm_save_as_project_edj(ap->project, selected))
@@ -140,13 +138,7 @@ _on_edj_done(void *data,
                }
              ecore_main_loop_quit();
           }
-        else
-          {
-             Evas_Object *win = elm_object_parent_widget_get(obj);
-             WIN_NOTIFY_ERROR(win, _("The file must have an extension '.edj'"));
-          }
      }
-   if (ap->is_new) new_theme_create(ap);
 }
 
 static void
