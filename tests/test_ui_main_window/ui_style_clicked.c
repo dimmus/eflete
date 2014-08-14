@@ -78,8 +78,8 @@ EFLETE_TEST (ui_style_clicked_test_p)
    app_init();
    app_data = app_create();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
+   widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
    /* Double-click on widget*/
@@ -210,8 +210,8 @@ EFLETE_TEST (ui_style_clicked_test_n2)
    app_init();
    app_data = app_create();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
+   widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
    /* Double-click on widget*/

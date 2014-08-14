@@ -73,14 +73,11 @@ _on_open_edj_cb(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *wd_list = NULL;
 
    const char *path_edj = elm_object_text_get(fs_ent->edj);
 
-   wd_list = ui_edj_load_done(ap, path_edj);
-   if (wd_list)
+   if (ui_edj_load(ap, path_edj))
      {
-        add_callbacks_wd(wd_list, ap);
         evas_object_hide(elm_object_parent_widget_get(obj));
         ecore_main_loop_quit();
      }

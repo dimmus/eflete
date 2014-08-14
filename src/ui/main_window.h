@@ -186,12 +186,12 @@ ui_style_clicked(App_Data *ap, Style *style);
  * @param ap The App_Data structure pointer.
  * @param selected_file String with opened project file name.
  *
- * @return The Evas_Object pointer. Widget list object.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  *
  * @ingroup Window
  */
-Evas_Object *
-ui_edj_load_done(App_Data* ap, const char *selected_file);
+Eina_Bool
+ui_edj_load(App_Data* ap, const char *selected_file);
 
 /**
  * Delete selected state from current part.

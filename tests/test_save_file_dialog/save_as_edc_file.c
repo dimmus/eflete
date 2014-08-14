@@ -104,7 +104,7 @@ EFLETE_TEST (save_as_edc_file_test_n2)
 
    app_init();
    app_data = app_create();
-   ui_edj_load_done(app_data, path);
+   ui_edj_load(app_data, path);
 
    result = save_as_edc_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Save as edc' dialog was created");

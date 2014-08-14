@@ -631,59 +631,85 @@ ui_style_clicked(App_Data *ap, Style *style)
    return true;
 }
 
-Evas_Object *
-ui_edj_load_done(App_Data* ap, const char *selected_file)
+static Eina_Bool
+_ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 {
    Evas_Object *wd_list = NULL;
    char *name, *selected;
 
-   if ((!ap) || (!selected_file)) return NULL;
+   if ((!ap) || (!selected_file)) return false;
 
-   if (eina_str_has_suffix(selected_file, ".edj"))
+   if (ap->project)
      {
-        selected = eina_file_path_sanitize(selected_file);
-        INFO("Selected file: %s", selected);
         ui_property_style_unset(ui_block_property_get(ap));
         ui_states_list_data_unset(ui_block_state_list_get(ap));
         ui_signal_list_data_unset(ui_block_signal_list_get(ap));
-
-        if (ap->workspace)
-          {
-             workspace_edit_object_unset(ap->workspace);
-             workspace_highlight_unset(ap->workspace);
-          }
-
-        if (ap->live_view) live_view_widget_style_unset(ap->live_view);
-        GET_NAME_FROM_PATH(name, selected)
-        ap->project = pm_open_project_edj(name, selected);
-        free(name);
-        if (!ap->project)
-          {
-             NOTIFY_ERROR(_("Can't open file: %s"), selected);
-             return NULL;
-          }
-        NOTIFY_INFO(3, _("Selected file: %s"), selected);
-
-        wd_list = ui_widget_list_add(ap->block.left_top);
-        ui_widget_list_title_set(wd_list, ap->project->name);
-        ui_widget_list_data_set(wd_list, ap->project);
-        ui_block_widget_list_set(ap, wd_list);
-        evas_object_show(wd_list);
-        ui_panes_show(ap);
-        STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
-        ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
-        ui_menu_base_disabled_set(ap->menu_hash, false);
+        pm_project_close(ap->project);
      }
-   else NOTIFY_ERROR(_("The file must have a extension '.edj'"));
+   if (ap->live_view) live_view_widget_style_unset(ap->live_view);
+   if (ap->workspace)
+     {
+        workspace_edit_object_unset(ap->workspace);
+        workspace_highlight_unset(ap->workspace);
+     }
 
-   return wd_list;
+   selected = eina_file_path_sanitize(selected_file);
+   INFO("Selected file: %s", selected);
+
+   if (is_new) name = strdup("Untitled.edj");
+   else GET_NAME_FROM_PATH(name, selected);
+
+   ap->project = pm_open_project_edj(name, selected);
+   free(name);
+
+   if (!ap->project)
+     {
+        NOTIFY_ERROR(_("Can't open file: %s"), selected);
+        return false;
+     }
+
+   wd_list = ui_widget_list_add(ap->block.left_top);
+   ui_widget_list_title_set(wd_list, ap->project->name);
+   ui_widget_list_data_set(wd_list, ap->project);
+   ui_block_widget_list_set(ap, wd_list);
+   add_callbacks_wd(wd_list, ap);
+   evas_object_show(wd_list);
+   ui_panes_show(ap);
+
+   ap->is_new = is_new;
+   if (is_new)
+     {
+        NOTIFY_INFO(3, _("New theme created"))
+        STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
+        ap->project->edj = NULL;
+        ap->project->is_saved = false;
+     }
+   else
+     {
+        STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
+        ap->project->is_saved = true;
+        NOTIFY_INFO(3, _("Selected file: %s"), selected)
+     }
+
+   ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+
+   free(selected);
+
+   return true;
+}
+
+Eina_Bool
+ui_edj_load(App_Data* ap, const char *selected_file)
+{
+   return _ui_edj_load_internal(ap, selected_file, false);
 }
 
 Eina_Bool
 new_theme_create(App_Data *ap)
 {
-   Evas_Object *wd_list = NULL;
-
    if (!ap) return false;
 
    ap->is_new = false;
@@ -694,43 +720,7 @@ new_theme_create(App_Data *ap)
         return false;
      }
 
-   Evas_Object *prop, *state, *signal;
-   state = ui_block_state_list_get(ap);
-   if (state) elm_genlist_clear(state);
-   signal = ui_block_signal_list_get(ap);
-   if (signal) elm_genlist_clear(signal);
-   prop = ui_block_property_get(ap);
-   if (prop) ui_property_style_unset(prop);
-
-   if (ap->workspace)
-     {
-        workspace_edit_object_unset(ap->workspace);
-        workspace_highlight_unset(ap->workspace);
-     }
-
-   if ((ap->live_view) || (ap->project))
-     live_view_widget_style_unset(ap->live_view);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-
-   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_SWAP_PATH"Untitled.edj");
-   if (!ap->project) return false;
-   wd_list = ui_widget_list_add(ap->block.left_top);
-   ui_widget_list_title_set(wd_list, ap->project->name);
-   ui_widget_list_data_set(wd_list, ap->project);
-   ui_block_widget_list_set(ap, wd_list);
-   add_callbacks_wd(wd_list, ap);
-   evas_object_show(wd_list);
-   ui_panes_show(ap);
-   ap->project->edj = NULL;
-   ap->project->is_saved = false;
-
-   ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
-   STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
-
-   return true;
+   return _ui_edj_load_internal(ap, EFLETE_SWAP_PATH"Untitled.edj", true);
 }
 
 static Eina_Bool

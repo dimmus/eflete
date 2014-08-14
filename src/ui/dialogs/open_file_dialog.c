@@ -21,7 +21,6 @@
 static void
 _on_edj_done(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *wd_list;
    const char *selected = (const char *)event_info;
    App_Data *ap = (App_Data *)data;
 
@@ -29,9 +28,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
      {
         if (eina_str_has_suffix(selected, ".edj"))
           {
-             wd_list = ui_edj_load_done(ap, selected);
-             if (!wd_list) return;
-             add_callbacks_wd(wd_list, ap);
+             if (!ui_edj_load(ap, selected)) return;
           }
         else
           {
