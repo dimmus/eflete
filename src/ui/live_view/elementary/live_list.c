@@ -110,9 +110,9 @@ widget_list_create(Evas_Object *parent, const char *class, const char *style __U
    else
      elm_list_mode_set(object, ELM_LIST_SCROLL);
 
-   evas_object_data_set(object, SWALLOW_FUNC, &_on_list_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &_on_list_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &_list_send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, _on_list_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, _on_list_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, _list_send_signal);
 
    return object;
 }

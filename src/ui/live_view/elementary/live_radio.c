@@ -108,9 +108,9 @@ widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const cha
 
    elm_radio_value_set(rdg, 2);
 
-   evas_object_data_set(object, SWALLOW_FUNC, &_on_radio_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &_on_radio_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &_radio_send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, _on_radio_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, _on_radio_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, _radio_send_signal);
 
    return object;
 }

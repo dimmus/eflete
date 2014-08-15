@@ -25,9 +25,9 @@ widget_actionslider_create(Evas_Object *parent, const char *class __UNUSED__, co
    Evas_Object *object = elm_actionslider_add(parent);
    elm_actionslider_magnet_pos_set(object, ELM_ACTIONSLIDER_ALL);
 
-   evas_object_data_set(object, SWALLOW_FUNC, &on_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &on_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, on_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
    return object;
 }
