@@ -1,6 +1,23 @@
 ============
-Eflete 0.2.7
+Eflete 0.2.8
 ============
+
+Changes since 0.2.7
+-------------------
+
+Features:
+   * Live View: adding notify;
+   * Live View: adding naviframe.
+
+Fixes:
+   * UTC: fixing report generation;
+   * UTC: fixing failing tests;
+   * Colorclasses: updating property after adding new colorclass or removing old;
+   * Property: fixing GLOW effect;
+   * Live View: fixing code style;
+   * Groupedit: fixing segfault when scroll down;
+   * Groupedit: fixing restack of items when in separated mode;
+   * Groupedit: fixing unselect after scroll down.
 
 Changes since 0.2.6
 -------------------
