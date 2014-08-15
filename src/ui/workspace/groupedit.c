@@ -505,8 +505,11 @@ _groupedit_smart_move(Evas_Object *o,
         bg = evas_object_image_source_get(sd->bg);
         evas_object_geometry_get(bg, &ox, &oy, NULL, NULL);
         evas_object_move(sd->bg, ox, oy);
-        evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
-        evas_object_move(sd->clipper, ox, oy);
+        if (sd->selected)
+          {
+             evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
+             evas_object_move(sd->clipper, ox, oy);
+          }
      }
 }
 
@@ -536,14 +539,17 @@ static void
 _groupedit_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord cw, ch, pw, ph;
+   Evas_Coord cw, ch, pw, ph, ow, oh;
    int htl_w, htl_h;
    int hrb_w, hrb_h;
    char buff[16];
 
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
+   evas_object_geometry_get(priv->obj, NULL, NULL, &ow, &oh);
    evas_object_geometry_get(priv->parent, NULL, NULL, &pw, &ph);
-   evas_object_resize(priv->event, pw, ph);
+   if (ow < pw) ow = pw;
+   if (oh < ph) oh = ph;
+   evas_object_resize(priv->event, ow, oh);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
    htl_w = priv->handler_TL.w;

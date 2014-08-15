@@ -53,7 +53,7 @@ on_text_check(void *data,
    if (elm_check_state_get(obj))
      elm_object_part_text_set(object, part_name, _("Look at it! This is absolutely and totally text"));
    else
-     elm_object_part_text_set(object, part_name, NULL);
+     elm_object_part_text_set(object, part_name, "");
 }
 
 void

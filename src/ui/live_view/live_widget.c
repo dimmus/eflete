@@ -23,8 +23,8 @@
 struct _live_widget_item {
      const char *name;
      Evas_Object * (*func)(Evas_Object *parent,
-                  const char  *class,
-                  const char  *style);
+                           const char  *class,
+                           const char  *style);
 };
 
 static struct _live_widget_item widgets[] =
@@ -40,12 +40,14 @@ static struct _live_widget_item widgets[] =
      { "genlist", widget_genlist_create },
      { "label", widget_label_create },
      { "list", widget_list_create },
+     { "notify", widget_notify_create },
      { "panel", widget_panel_create },
      { "panes", widget_panes_create },
      { "radio", widget_radio_create },
      { "scroller", widget_scroller_create },
      { "separator", widget_separator_create },
      { "spinner", widget_spinner_create },
+     { "naviframe", widget_naviframe_create },
      /* do not delete below */
      { NULL, NULL }
 };

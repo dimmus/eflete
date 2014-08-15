@@ -57,9 +57,9 @@ widget_panes_create(Evas_Object *parent, const char *class, const char *style __
    elm_object_part_content_set(object, "right", test_right);
    elm_object_part_content_set(object, "left", test_left);
 
-   evas_object_data_set(object, SWALLOW_FUNC, &on_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &on_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, on_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
    return object;
 }

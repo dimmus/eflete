@@ -20,7 +20,7 @@
 #include "test_config.h"
 
 /**
- * @addtogroup settings_test
+ * @addtogroup config_test
  * @{
  * @addtogroup config_get
  * @{

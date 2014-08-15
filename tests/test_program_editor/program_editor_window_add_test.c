@@ -81,7 +81,7 @@ EFLETE_TEST (program_editor_window_add_test_p)
 END_TEST
 
 /**
- * @addtogroup program_editor_window
+ * @addtogroup program_editor_window_add
  * @{
  * <tr>
  * <td>program_editor_window_add</td>
@@ -127,10 +127,10 @@ EFLETE_TEST (program_editor_window_add_test_n1)
 END_TEST
 
 /**
- * @addtogroup program_editor_window
+ * @addtogroup program_editor_window_add
  * @{
  * <tr>
- * <td>program_editor_window</td>
+ * <td>program_editor_window_add</td>
  * <td>program_editor_window_add_test_n2</td>
  * <td>
  * @precondition
@@ -168,7 +168,7 @@ EFLETE_TEST (program_editor_window_add_test_n2)
 END_TEST
 
 /**
- * @addtogroup program_editor_window
+ * @addtogroup program_editor_window_add
  * @{
  * </TABLE>
  * @}

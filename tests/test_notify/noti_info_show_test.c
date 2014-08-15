@@ -18,16 +18,24 @@
  */
 
 #include "test_notify.h"
+
 /**
- * @addtogroup test_notify
+ * @addtogroup notify_test
  * @{
+ * @addtogroup noti_info_show
+ * @{
+ * Notify
+ * <TABLE>
+ * @}
  */
 
 /**
  * @addtogroup noti_info_show
  * @{
- * @objective Positive test case
- *
+ * <tr>
+ * <td>noti_info_show</td>
+ * <td>noti_info_show_test_p</td>
+ * <td>
  * @precondition
  * @step 1. initialized efl and app
  * @step 2. main window created
@@ -37,8 +45,12 @@
  * @step 2 Check returned value
  * @step 3 Call noti_info_show(win_layout_get(), NULL, 1)
  * @step 4 Check returned value
- *
- * @passcondition true returned
+ * </td>
+ * <td>Evas_Object *win_layout, "text"/NULL, 1</td>
+ * <td>EINA_TRUE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(noti_info_show_test_p)
@@ -60,8 +72,10 @@ END_TEST
 /**
  * @addtogroup noti_info_show
  * @{
- * @objective Negative test case
- *
+ * <tr>
+ * <td>noti_info_show</td>
+ * <td>noti_info_show_test_n</td>
+ * <td>
  * @precondition
  * @step 1 initialized efl and app
  * @step 2 main window created
@@ -71,8 +85,12 @@ END_TEST
  * @step 2 Check returned value
  * @step 3 Call noti_info_show(NULL, NULL, 1)
  * @step 4 Check returned value
- *
- * @passcondition false returned
+ * </td>
+ * <td>NULL, "text"/NULL, 1</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(noti_info_show_test_n1)
@@ -94,8 +112,10 @@ END_TEST
 /**
  * @addtogroup noti_info_show
  * @{
- * @objective Negative test case
- *
+ * <tr>
+ * <td>noti_info_show</td>
+ * <td>noti_info_show_test_n2</td>
+ * <td>
  * @precondition
  * @step 1. initialized efl and app
  * @step 2. main window created
@@ -105,8 +125,12 @@ END_TEST
  * @step 2 Check returned value
  * @step 3 Call noti_info_show(win_layout_get(), NULL, -1)
  * @step 4 Check returned value
- *
- * @passcondition false returned
+ * </td>
+ * <td>Evas_Object *win_layout, "text"/NULL, -1</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(noti_info_show_test_n2)
@@ -125,6 +149,10 @@ EFLETE_TEST(noti_info_show_test_n2)
 }
 END_TEST
 
-/*
+/**
+ * @addtogroup noti_info_show
+ * @{
+ * </TABLE>
+ * @}
  * @}
  */

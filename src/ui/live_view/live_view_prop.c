@@ -60,7 +60,7 @@ _on_zoom_change(void *data,
    Prop_Data *pd = (Prop_Data *)data;
    pd->current_scale = elm_spinner_value_get(obj) / 100;
    if (pd->live_object)
-      elm_object_scale_set(pd->live_object, pd->current_scale);
+     elm_object_scale_set(pd->live_object, pd->current_scale);
 }
 
 static void
@@ -126,8 +126,6 @@ live_view_property_style_set(Evas_Object *property,
      return false;
    PROP_DATA_GET(false)
 
-   evas_object_show(property);
-
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
 
    pd->widget = widget;
@@ -142,7 +140,6 @@ live_view_property_style_set(Evas_Object *property,
         evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
         elm_layout_file_set(item, EFLETE_EDJ, "eflete/prop/container/live_view_spinner");
         elm_object_part_text_set(item, "eflete.text.start", "Scale: ");
-        evas_object_show(item);
         SPINNER_ADD(item, spinner, 1, 500, 1, true, "eflete/live_view");
         elm_spinner_label_format_set(spinner, "%3.0f%%");
         evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, pd);
@@ -202,6 +199,7 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_content_set(pd->prop_signal.frame, pd->prop_signal.signals);
         evas_object_hide(pd->prop_signal.frame);
      }
+   evas_object_show(property);
 
    /* setting all swallows with rectangles */
    part_list = edje_edit_parts_list_get(style->obj);

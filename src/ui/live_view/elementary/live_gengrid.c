@@ -173,9 +173,9 @@ widget_gengrid_create(Evas_Object *parent, const char *class, const char *style)
    else
      object = _create_gengrid(parent, "default");
 
-   evas_object_data_set(object, SWALLOW_FUNC, &_on_gengrid_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &_on_gengrid_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &_gengrid_send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, _on_gengrid_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, _on_gengrid_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, _gengrid_send_signal);
 
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);

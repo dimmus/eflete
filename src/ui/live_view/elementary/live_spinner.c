@@ -28,9 +28,9 @@ widget_spinner_create(Evas_Object *parent, const char *class __UNUSED__, const c
    elm_spinner_wrap_set(object, true);
    elm_spinner_min_max_set(object, -50.0, 250.0);
 
-   evas_object_data_set(object, SWALLOW_FUNC, &on_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &on_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, on_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
    return object;
 }

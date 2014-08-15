@@ -187,7 +187,8 @@ static const char *edje_text_effect_type[] = { N_("None"),
                                                N_("Glow"),
                                                NULL};
 
-static const char *edje_text_effect_direction[] = { N_("Bottom Right"),
+static const char *edje_text_effect_direction[] = { N_("None"),
+                                                    N_("Bottom Right"),
                                                     N_("Bottom"),
                                                     N_("Bottom Left"),
                                                     N_("Left"),
@@ -1264,8 +1265,10 @@ _text_effect_get(Prop_Data *pd, int *type, int *direction)
                                                             pd->part->name);
    if (type)
      *type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
-   if (direction)
+   if ((direction) && (*type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) &&
+       (*type != EDJE_TEXT_EFFECT_GLOW))
      *direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
+   else *direction = 0;
 }
 
 typedef struct {
@@ -1282,6 +1285,7 @@ _text_effect_value_update(_text_effect_callback_data *effect_data)
    edje_effect |= ewe_combobox_select_item_get(effect_data->direction_combobox)->index << 4;
    edje_edit_part_effect_set(effect_data->pd->style->obj,
                              effect_data->pd->part->name, edje_effect);
+
    workspace_edit_object_recalc(effect_data->pd->workspace);
    effect_data->pd->style->isModify = true;
 }
@@ -1298,10 +1302,8 @@ prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
    if ((type <= EDJE_TEXT_EFFECT_SOFT_OUTLINE) ||
        (type == EDJE_TEXT_EFFECT_GLOW))
      {
-        ewe_combobox_select_item_set(combobox,
-           EDJE_TEXT_EFFECT_SHADOW_DIRECTION_BOTTOM_RIGHT >> 4);
-        ewe_combobox_text_set(combobox, "None");
         elm_object_disabled_set(combobox, true);
+        ewe_combobox_select_item_set(combobox, 0);
      }
    else
      {
@@ -1311,7 +1313,7 @@ prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
 }
 
 static void
-_on_text_effect_type_change(void *data EINA_UNUSED,
+_on_text_effect_type_change(void *data,
                             Evas_Object *obj EINA_UNUSED,
                             void *event_info)
 {
@@ -1327,7 +1329,6 @@ _on_text_effect_type_change(void *data EINA_UNUSED,
       case EDJE_TEXT_EFFECT_GLOW:
         {
            ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
-           ewe_combobox_text_set(effect_data->direction_combobox, "None");
            elm_object_disabled_set(effect_data->direction_combobox, true);
            break;
         }
@@ -1335,7 +1336,7 @@ _on_text_effect_type_change(void *data EINA_UNUSED,
         {
            if (elm_object_disabled_get(effect_data->direction_combobox))
              {
-                ewe_combobox_select_item_set(effect_data->direction_combobox, 0);
+                ewe_combobox_select_item_set(effect_data->direction_combobox, 1);
                 elm_object_disabled_set(effect_data->direction_combobox, false);
              }
         }
@@ -1381,14 +1382,11 @@ prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
    int i = 0;
    Evas_Object *item, *box, *layout;
    Evas_Object *combobox;
-   int type, direction;
 
    _text_effect_callback_data *callback_data = (_text_effect_callback_data *)
                                    malloc(sizeof(_text_effect_callback_data));
    if (!callback_data)
      return NULL;
-
-   _text_effect_get(pd, &type, &direction);
 
    ITEM_ADD(parent, item, _("effect"), "eflete/property/item/multiple_prop")
    evas_object_event_callback_add(item, EVAS_CALLBACK_DEL,

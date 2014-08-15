@@ -263,9 +263,9 @@ widget_genlist_create(Evas_Object *parent, const char *class, const char *style)
      object = _create_genlist(parent, class, style);
    evas_object_show(object);
 
-   evas_object_data_set(object, SWALLOW_FUNC, &_on_genlist_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, &_on_genlist_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, &_genlist_send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, _on_genlist_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, _on_genlist_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, _genlist_send_signal);
 
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);

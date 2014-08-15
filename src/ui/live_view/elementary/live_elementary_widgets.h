@@ -134,6 +134,9 @@ Evas_Object *
 widget_list_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
+widget_notify_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
 widget_panel_create(Evas_Object *parent, const char *class, const char *style);
 
 Evas_Object *
@@ -150,6 +153,9 @@ widget_separator_create(Evas_Object *parent, const char *class, const char *styl
 
 Evas_Object *
 widget_spinner_create(Evas_Object *parent, const char *class, const char *style);
+
+Evas_Object *
+widget_naviframe_create(Evas_Object *parent, const char *class, const char *style);
 
 /*****************************************************
  *****************************************************
