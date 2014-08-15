@@ -106,7 +106,7 @@ EFLETE_TEST(preference_add_test_n)
 END_TEST
 
 /**
- * @addtogroup preference_test
+ * @addtogroup preference_add
  * @{
  * </TABLE>
  * @}

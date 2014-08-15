@@ -22,7 +22,7 @@
 /**
  * @addtogroup widget_manager_test
  * @{
- * @addtogroup wm_program_signal_list_free
+ * @addtogroup wm_program_signals_list_free
  * @{
  * widget_manager
  * <TABLE>
@@ -30,10 +30,10 @@
  */
 
 /**
- * @addtogroup wm_program_signal_list_free
+ * @addtogroup wm_program_signals_list_free
  * @{
  * <tr>
- * <td>wm_program_signal_list_free</td>
+ * <td>wm_program_signals_list_free</td>
  * <td>wm_program_signals_list_free_test_p</td>
  * <td>
  * @precondition
@@ -44,7 +44,7 @@
  * @step 5 Signal List.
  *
  * @procedure
- * @step 1 Call function wm_program_signals_list_free(signal_list).
+ * @step 1 Call function wm_program_signals_list_free(signals_list).
  * @step 2 Check returned value.
  * </td>
  * <td>Eina_List *sig_list</td>
@@ -78,10 +78,10 @@ EFLETE_TEST (wm_program_signals_list_free_test_p)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_free
+ * @addtogroup wm_program_signals_list_free
  * @{
  * <tr>
- * <td>wm_program_signal_list_free</td>
+ * <td>wm_program_signals_list_free</td>
  * <td>wm_program_signals_list_free_test_n</td>
  * <td>
  * @precondition

@@ -18,16 +18,24 @@
  */
 
 #include "test_notify.h"
+
 /**
- * @addtogroup test_notify
+ * @addtogroup notify_test
  * @{
+ * @addtogroup noti_warning_show
+ * @{
+ * Notify
+ * <TABLE>
+ * @}
  */
 
 /**
  * @addtogroup noti_warning_show
  * @{
- * @objective Positive test case
- *
+ * <tr>
+ * <td>noti_warning_show</td>
+ * <td>noti_warning_show_test_p</td>
+ * <td>
  * @precondition
  * @step 1. initialized efl and app
  * @step 2. main window created
@@ -37,8 +45,12 @@
  * @step 2 Check returned value
  * @step 3 Call noti_warning_show(win_layout_get(), NULL)
  * @step 4 Check returned value
- *
- * @passcondition true returned
+ * </td>
+ * <td>Evas_Object *win_layout, "text"/NULL</td>
+ * <td>EINA_TRUE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(noti_warning_show_test_p)
@@ -60,8 +72,10 @@ END_TEST
 /**
  * @addtogroup noti_warning_show
  * @{
- * @objective Negative test case
- *
+ * <tr>
+ * <td>noti_warning_show</td>
+ * <td>noti_warning_show_test_n</td>
+ * <td>
  * @precondition
  * @step 1 initialized efl and app
  * @step 2 main window created
@@ -71,8 +85,12 @@ END_TEST
  * @step 2 Check returned value
  * @step 3 Call noti_warning_show(NULL, NULL)
  * @step 4 Check returned value
- *
- * @passcondition false returned
+ * </td>
+ * <td>NULL, "text"/NULL</td>
+ * <td>EINA_FALSE returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
  * @}
  */
 EFLETE_TEST(noti_warning_show_test_n)
@@ -91,6 +109,10 @@ EFLETE_TEST(noti_warning_show_test_n)
 }
 END_TEST
 
-/*
+/**
+ * @addtogroup noti_warning_show
+ * @{
+ * </TABLE>
+ * @}
  * @}
  */

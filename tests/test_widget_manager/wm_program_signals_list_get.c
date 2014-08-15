@@ -21,7 +21,7 @@
 /**
  * @addtogroup widget_manager_test
  * @{
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * widget_manager
  * <TABLE>
@@ -29,10 +29,10 @@
  */
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_p1</td>
  * <td>
  * @precondition
@@ -79,10 +79,10 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_p2</td>
  * <td>
  * @precondition
@@ -124,10 +124,10 @@ EFLETE_TEST (wm_program_signals_list_get_test_p2)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_n1</td>
  * <td>
  * @precondition
@@ -161,10 +161,10 @@ EFLETE_TEST (wm_program_signals_list_get_test_n1)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_n2</td>
  * <td>
  * @precondition

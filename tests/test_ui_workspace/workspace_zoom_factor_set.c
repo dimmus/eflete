@@ -20,7 +20,7 @@
 #include "test_ui_workspace.h"
 
 /**
- * @addtogroup test_ui_workspace
+ * @addtogroup ui_workspace_test
  * @{
  */
 
