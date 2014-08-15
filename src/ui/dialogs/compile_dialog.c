@@ -271,6 +271,13 @@ compile_dialog(App_Data *ap)
         return EINA_FALSE;
      }
 
+   if (!ui_close_project_request(ap,
+                                 _("You want to compile and open new theme, but now <br/>"
+                                   "you have opened project. If you dont save opened<br/>"
+                                   "project before opening compiled one "
+                                   "all your changes will be lost!")))
+     return false;
+
    MODAL_WINDOW_ADD(win, ap->win, _("Compile EDC file"), _on_cancel_cb, ap);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

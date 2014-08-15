@@ -40,6 +40,7 @@
 #include "colorclass_editor.h"
 #include "notify.h"
 #include "open_file_dialog.h"
+#include "save_file_dialog.h"
 #include "string_macro.h"
 
 #include "part_dialog.h"
@@ -227,6 +228,18 @@ ui_group_delete(App_Data *ap, Type group_type);
  */
 Eina_Bool
 new_theme_create(App_Data *ap);
+
+/**
+ * Ask user if he wants to close project
+ *
+ * @param ap The App_Data structure pointer.
+ * @param msg The explanation text that will be shown to user. NULL for default message.
+ * @return EINA_TRUE if roject is saved or user wants to discard changes, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+ui_close_project_request(App_Data *ap, const char *msg);
 
 /**
  * Disable or enable menu item by it's name.'

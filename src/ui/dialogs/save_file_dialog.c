@@ -24,9 +24,37 @@ struct _cb_data
    Project *project;
    char *path;
    void *popup;
+   Eina_Bool *cancel;
 };
 
 typedef struct _cb_data cb_data;
+
+static Eina_Bool
+_save_internal(Project *project, const char *path)
+{
+   if (pm_save_project_to_swap(project))
+     {
+        if (path)
+          {
+             if (pm_save_as_project_edj(project, path))
+               {
+                  NOTIFY_INFO(3, _("Theme saved: %s"), path);
+                  return true;
+               }
+             else NOTIFY_ERROR(_("Theme can not be saved: %s"), path)
+          }
+        else
+          {
+             if (pm_save_project_edj(project))
+               {
+                  NOTIFY_INFO(3, _("Theme saved"));
+                  return true;
+               }
+             else NOTIFY_ERROR(_("Theme can not be saved"))
+          }
+     }
+   return false;
+}
 
 static void
 _cancel_cb(void *data,
@@ -45,14 +73,8 @@ _ok_cb(void *data,
 {
    cb_data *cbdata = (cb_data *)data;
 
-   const char *selected = cbdata->path;
-   if (pm_save_project_to_swap(cbdata->project))
-     {
-        if (pm_save_as_project_edj(cbdata->project, selected))
-          NOTIFY_INFO(3, _("Theme saved: %s"), cbdata->path)
-        else
-          NOTIFY_ERROR(_("Theme can not be saved: %s"), selected);
-     }
+   *cbdata->cancel = !_save_internal(cbdata->project, cbdata->path);
+
    evas_object_del(cbdata->popup);
    free(cbdata);
    ecore_main_loop_quit();
@@ -63,20 +85,8 @@ _on_cancel_cb(void *data,
               Evas_Object *obj __UNUSED__,
               void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   if (ap)
-     {
-        if (ap->project)
-          {
-             ui_menu_locked_set(ap->menu_hash, true);
-             ui_menu_base_disabled_set(ap->menu_hash, false);
-          }
-        else
-          {
-             ui_menu_locked_set(ap->menu_hash, false);
-             ui_menu_base_disabled_set(ap->menu_hash, true);
-          }
-     }
+   Eina_Bool *cancel = data;
+   *cancel = true;
    ecore_main_loop_quit();
 }
 
@@ -86,9 +96,10 @@ _on_edj_done(void *data,
              void *event_info)
 {
    /*TODO: change a project name and set to ui widget list */
-   App_Data *ap = (App_Data *)data;
+   App_Data *ap = app_create();
+   Eina_Bool *cancel = data;
    const char *selected = event_info;
-   if ((!data) || (!selected) || (!strcmp(selected, "")))
+   if ((!data) || (!ap) || (!selected) || (!strcmp(selected, "")))
      {
         ecore_main_loop_quit();
         return;
@@ -113,6 +124,7 @@ _on_edj_done(void *data,
              d_data->popup = popup;
              d_data->path = event_info;
              d_data->project = ap->project;
+             d_data->cancel = cancel;
 
              elm_object_part_text_set(popup, "title,text", _("Warning"));
              elm_object_text_set(popup, _("File is already exist. Would"
@@ -129,13 +141,7 @@ _on_edj_done(void *data,
           }
         else
           {
-             if (pm_save_project_to_swap(ap->project))
-               {
-                  if (pm_save_as_project_edj(ap->project, selected))
-                    NOTIFY_INFO(3, _("Theme saved: %s"), selected)
-                  else
-                    NOTIFY_ERROR(_("Theme can not be saved: %s"), selected);
-               }
+             *cancel = !_save_internal(ap->project, selected);
              ecore_main_loop_quit();
           }
      }
@@ -164,16 +170,17 @@ _save_as_edx_file(App_Data *ap,
                   Eina_Bool folder_only)
 {
    Evas_Object *win, *bg, *fs;
+   Eina_Bool cancel = false;
 
    if ((!ap->win) || (!ap->project)) return false;
 
-   MODAL_WINDOW_ADD(win, main_window_get(), title, _on_cancel_cb, NULL);
+   MODAL_WINDOW_ADD(win, main_window_get(), title, _on_cancel_cb, &cancel);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
    elm_win_resize_object_add(win, bg);
 
-   FILESELECTOR_ADD(fs, win, done_cb, ap);
+   FILESELECTOR_ADD(fs, win, done_cb, &cancel);
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_folder_only_set(fs, folder_only);
    elm_fileselector_path_set(fs, getenv("HOME"));
@@ -183,7 +190,7 @@ _save_as_edx_file(App_Data *ap,
 
    evas_object_del(win);
 
-   return true;
+   return !cancel;
 }
 
 Eina_Bool
@@ -198,4 +205,14 @@ save_as_edc_file(App_Data *ap)
 {
    if (!ap) return false;
    return _save_as_edx_file(ap, _("Export to EDC"), _on_edc_done, true);
+}
+
+Eina_Bool
+save_edj_file(App_Data *ap)
+{
+   if (!ap) return false;
+   if (ap->project->is_new)
+     return _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
+   else
+     return _save_internal(ap->project, NULL);
 }
