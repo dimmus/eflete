@@ -167,6 +167,8 @@ _pm_project_add(const char *name,
    pro->sound_directory = sd ? strdup(sd) : NULL;
    DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
+   pro->close_request = false;
+
    return pro;
 }
 

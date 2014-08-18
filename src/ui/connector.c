@@ -784,6 +784,8 @@ ui_close_project_request(App_Data *ap, const char *msg)
             "all your unsaved changes will be lost!");
 
    if ((!ap->project) || (ap->project->is_saved)) return true;
+   if (ap->project->close_request) return false;
+   ap->project->close_request = true;
 
    Eina_Bool result = false;
    Evas_Object *btn, *label;
@@ -809,6 +811,7 @@ ui_close_project_request(App_Data *ap, const char *msg)
 
    ecore_main_loop_begin();
 
+   ap->project->close_request = false;
    evas_object_del(ap->popup);
 
    return result;

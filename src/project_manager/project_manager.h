@@ -61,6 +61,7 @@ struct _Project
    Style *current_style;
    Eina_Bool is_saved : 1;
    Eina_Bool is_new : 1;
+   Eina_Bool close_request : 1;
 };
 
 /**
