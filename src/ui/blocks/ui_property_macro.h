@@ -251,12 +251,12 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (strcmp(item->title, "None")) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, item->title); \
+   if (item->index != 0) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, item->title); \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, NULL); \
    pm_project_changed(app_create()->project); \
 }
 
-#define ITEM_1COMBOBOX_PART_ADD(text, SUB, VALUE) \
+#define ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
@@ -265,41 +265,47 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *combobox; \
    Part *part; \
    Edje_Part_Type type; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_COMBOBOX_ADD(parent, combobox) \
    const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
    if (value) \
      ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox, "None"); \
-   ewe_combobox_item_add(combobox, "None"); \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         type = edje_edit_part_type_get(pd->style->obj, part->name); \
-        if (!strcmp(text, "clip to")) \
+        switch(TYPE) \
           { \
-             if(!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
-            ewe_combobox_item_add(combobox, part->name); \
+             case CLIP_TO: \
+                { \
+                   if (!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
+                      ewe_combobox_item_add(combobox, part->name); \
+                } \
+                break; \
+             case FORWARD_EVENTS: \
+                { \
+                   if ((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
+                      ewe_combobox_item_add(combobox, part->name); \
+                } \
+                break; \
+             case SOURCE: \
+                { \
+                   Eina_List *collections, *l; \
+                   char *group; \
+                   App_Data *ap = app_create(); \
+                   collections = edje_file_collection_list(ap->project->swapfile); \
+                   EINA_LIST_FOREACH(collections, l, group) \
+                   { \
+                      ewe_combobox_item_add(combobox, group); \
+                   } \
+                } \
+                break; \
+             default: \
+                if (strcmp(pd->part->name, part->name)) \
+                   ewe_combobox_item_add(combobox, part->name); \
           } \
-        else if (!strcmp(text, "forward events"))\
-          { \
-             if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
-             ewe_combobox_item_add(combobox, part->name); \
-          } \
-        else if (!strncmp(text, "source", 6)) \
-          { \
-             Eina_List *collections, *l; \
-             char *group; \
-             App_Data *ap = app_create(); \
-             collections = edje_file_collection_list(ap->project->swapfile); \
-             EINA_LIST_FOREACH(collections, l, group) \
-               { \
-                  ewe_combobox_item_add(combobox, group); \
-               } \
-          } \
-        else \
-          if(strcmp(pd->part->name, part->name)) \
-            ewe_combobox_item_add(combobox, part->name); \
      } \
    elm_object_tooltip_text_set(combobox, tooltip); \
    evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
@@ -308,7 +314,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    return item; \
 }
 
-#define ITEM_1COMBOBOX_PART_UPDATE(text, SUB, VALUE) \
+#define ITEM_1COMBOBOX_PART_UPDATE(TYPE, text, SUB, VALUE) \
 static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
@@ -322,35 +328,41 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    if (value) \
      ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox, "None"); \
-   ewe_combobox_item_add(combobox, "None"); \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
    EINA_INLIST_FOREACH(pd->style->parts, part) \
      { \
         type = edje_edit_part_type_get(pd->style->obj, part->name); \
-        if (!strcmp(text, "clip to")) \
+        switch(TYPE) \
           { \
-             if(!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
-            ewe_combobox_item_add(combobox, part->name); \
+             case CLIP_TO: \
+                { \
+                   if (!strcmp(wm_part_type_get(type), "RECTANGLE") && (strcmp(pd->part->name, part->name))) \
+                      ewe_combobox_item_add(combobox, part->name); \
+                } \
+                break; \
+             case FORWARD_EVENTS: \
+                { \
+                   if ((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
+                      ewe_combobox_item_add(combobox, part->name); \
+                } \
+                break; \
+             case SOURCE: \
+                { \
+                   Eina_List *collections, *l; \
+                   char *group; \
+                   App_Data *ap = app_create(); \
+                   collections = edje_file_collection_list(ap->project->swapfile); \
+                   EINA_LIST_FOREACH(collections, l, group) \
+                   { \
+                      ewe_combobox_item_add(combobox, group); \
+                   } \
+                } \
+                break; \
+             default: \
+                if (strcmp(pd->part->name, part->name)) \
+                   ewe_combobox_item_add(combobox, part->name); \
           } \
-        else if (!strcmp(text, "forward events"))\
-          { \
-             if((edje_edit_part_drag_x_get(pd->style->obj, part->name) || edje_edit_part_drag_y_get(pd->style->obj, part->name)) && (strcmp(pd->part->name, part->name))) \
-             ewe_combobox_item_add(combobox, part->name); \
-          } \
-        else if (!strncmp(text, "source", 6)) \
-          { \
-             Eina_List *collections, *l; \
-             char *group; \
-             App_Data *ap = app_create(); \
-             collections = edje_file_collection_list(ap->project->swapfile); \
-             EINA_LIST_FOREACH(collections, l, group) \
-               { \
-                  ewe_combobox_item_add(combobox, group); \
-               } \
-          } \
-        else \
-          if(strcmp(pd->part->name, part->name)) \
-            ewe_combobox_item_add(combobox, part->name); \
      } \
    pm_project_changed(app_create()->project); \
 }
@@ -370,7 +382,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-#define ITEM_1COMBOBOX_PART_TEXTBLOCK_ADD(text, SUB, VALUE, TYPE) \
+#define ITEM_1COMBOBOX_PART_TEXTBLOCK_ADD(TEXT, SUB, VALUE, TYPE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
@@ -380,7 +392,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *combobox; \
    TYPE value; \
    int i = 0; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_COMBOBOX_ADD(parent, combobox) \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
    while (entries[i]) \
@@ -534,7 +546,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-#define ITEM_1COMBOBOX_STATE_PART_ADD(text, SUB, VALUE, TYPE) \
+#define ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE, TYPE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
@@ -544,7 +556,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *combobox; \
    TYPE value; \
    int i = 0; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_COMBOBOX_ADD(parent, combobox) \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
              pd->part->curr_state, pd->part->curr_state_value); \
@@ -560,7 +572,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    return item; \
 }
 
-#define ITEM_1COMBOBOX_STATE_PART_UPDATE(text, SUB, VALUE, TYPE) \
+#define ITEM_1COMBOBOX_STATE_PART_UPDATE(TEXT, SUB, VALUE, TYPE) \
 static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
@@ -572,7 +584,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    pm_project_changed(app_create()->project); \
 }
 
-#define ITEM_COMBOBOX_STATE_CALLBACK(TEXT, SUB, VALUE) \
+#define ITEM_COMBOBOX_STATE_CALLBACK(TYPE, TEXT, SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj EINA_UNUSED, \
@@ -580,13 +592,13 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (strcmp(item->title, "None")) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+   if (item->index != 0) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         item->title); \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         NULL); \
-   if ((strcmp(TEXT, "color class")) && (strcmp(TEXT, "text style"))) \
+   if (TYPE != TEXT_STYLE) \
      prop_item_state_text_update(pd->prop_state_text.text, pd); \
    pm_project_changed(app_create()->project); \
    workspace_edit_object_recalc(pd->workspace); \
@@ -881,7 +893,8 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
    pm_project_changed(app_create()->project); \
 }
-#define ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
+
+#define ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
@@ -903,9 +916,9 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    if (value) \
      ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox, "None"); \
-   ewe_combobox_item_add(combobox, "None"); \
-   if ((strcmp(TEXT, "color class")) && (strcmp(TEXT, "text style"))) \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
+   if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
         edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
                                         pd->part->name, \
@@ -914,7 +927,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
-             if(!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
+             if (!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
                ewe_combobox_item_add(combobox, part->name); \
              evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
           } \
@@ -930,7 +943,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    return item; \
 }
 
-#define ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST) \
+#define ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST) \
 static void \
 prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    Prop_Data *pd) \
@@ -950,9 +963,9 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    if (value) \
      ewe_combobox_text_set(combobox, value); \
    else \
-     ewe_combobox_text_set(combobox, "None"); \
-   ewe_combobox_item_add(combobox, "None"); \
-   if ((strcmp(TEXT, "color class")) && (strcmp(TEXT, "text style"))) \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
+   if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
         edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
                                         pd->part->name, \
@@ -961,7 +974,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
-             if(!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
+             if (!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
                ewe_combobox_item_add(combobox, part->name); \
           } \
      } \
@@ -1033,7 +1046,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/relative_to") \
    BOX_ADD(item, box, false, true) \
    elm_box_padding_set(box, 0, 6); \
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, "x:"); \
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, _("x:")); \
    EWE_COMBOBOX_ADD(layout, combobox) \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
@@ -1055,7 +1068,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    edje_edit_string_free(value); \
    evas_object_smart_callback_add(combobox, "selected", _on_combobox_##SUB##_##VALUE1##_change, pd); \
    evas_object_data_set(item, ITEM1, combobox); \
-   ITEM_CONTEINER_1LABEL_ADD(box, layout, "y:"); \
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, _("y:")); \
    EWE_COMBOBOX_ADD(layout, combobox) \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \

@@ -141,6 +141,17 @@ struct _Prop_Data
 };
 typedef struct _Prop_Data Prop_Data;
 
+enum Property_Combo
+{
+   CLIP_TO,
+   FORWARD_EVENTS,
+   SOURCE,
+   DRAG_AREA,
+   COLOR_CLASS,
+   TEXT_STYLE,
+   TEXT_SOURCE
+};
+
 static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Vertical"),
                                           N_("Horizontal"),
@@ -594,10 +605,10 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
    ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
-#define ITEM_1COMBOBOX_PART_CREATE(TEXT, SUB, VALUE) \
+#define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
-   ITEM_1COMBOBOX_PART_ADD(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_PART_UPDATE(TEXT, SUB, VALUE)
+   ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_PART_UPDATE(TYPE, TEXT, SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(TEXT, SUB, VALUE, TYPE) \
    ITEM_1COMBOBOX_PART_TEXTBLOCK_CALLBACK(SUB, VALUE, TYPE) \
@@ -618,7 +629,7 @@ ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
-ITEM_1COMBOBOX_PART_CREATE(_("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_CREATE(CLIP_TO, _("clip to"), part, clip_to)
 ITEM_1COMBOBOX_PART_PROPERTY_CREATE(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
@@ -629,8 +640,8 @@ ITEM_1CHECK_PART_CREATE(_("multiline"), part, multiline)
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
 ITEM_DRAG_PART_CREATE(_("y"), part_drag, y, step_y)
-ITEM_1COMBOBOX_PART_CREATE(_("drag area"), part_drag, confine)
-ITEM_1COMBOBOX_PART_CREATE(_("forward events"), part_drag, event)
+ITEM_1COMBOBOX_PART_CREATE(DRAG_AREA, _("drag area"), part_drag, confine)
+ITEM_1COMBOBOX_PART_CREATE(FORWARD_EVENTS, _("forward events"), part_drag, event)
 
 #define pd_part pd->prop_part
 #define pd_part_drag pd->prop_part_drag
@@ -872,9 +883,9 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_STATE_CCL_CREATE(TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST)
+#define ITEM_STATE_CCL_CREATE(TYPE, TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
 
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
@@ -903,7 +914,7 @@ ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
-ITEM_STATE_CCL_CREATE(_("color class"), state, color_class, color_classes)
+ITEM_STATE_CCL_CREATE(COLOR_CLASS, _("color class"), state, color_class, color_classes)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
 
@@ -1240,10 +1251,10 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_1SPINNER_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_1COMBOBOX_STATE_CREATE(TEXT, SUB, VALUE, LIST) \
-   ITEM_COMBOBOX_STATE_CALLBACK(TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_STATE_ADD(TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TEXT, SUB, VALUE, LIST)
+#define ITEM_1COMBOBOX_STATE_CREATE(TYPE, TEXT, SUB, VALUE, LIST) \
+   ITEM_COMBOBOX_STATE_CALLBACK(TYPE, TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
+   ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
 
 ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
 ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop)
@@ -1255,8 +1266,8 @@ ITEM_1SPINNER_STATE_DOUBLE_CREATE(_("elipsis"), state_text, elipsis)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color3)
 ITEM_COLOR_STATE_CREATE(_("outline color"), state, color2)
-ITEM_1COMBOBOX_STATE_CREATE(_("source"), state_text, source, styles)
-ITEM_1COMBOBOX_STATE_CREATE(_("text source"), state_text, text_source, styles)
+ITEM_1COMBOBOX_STATE_CREATE(SOURCE, _("source"), state_text, source, styles)
+ITEM_1COMBOBOX_STATE_CREATE(TEXT_SOURCE, _("text source"), state_text, text_source, styles)
 
 
 static void
@@ -1535,14 +1546,14 @@ ui_property_state_text_unset(Evas_Object *property)
 #undef pd_text
 
 #define pd_textblock pd->prop_state_textblock
-ITEM_1COMBOBOX_PART_CREATE(_("source (under selected text)"), part, source)
-ITEM_1COMBOBOX_PART_CREATE(_("source2 (over selected text)"), part, source2)
-ITEM_1COMBOBOX_PART_CREATE(_("source3 (under cursor)"), part, source3)
-ITEM_1COMBOBOX_PART_CREATE(_("source4 (over cursor)"), part, source4)
-ITEM_1COMBOBOX_PART_CREATE(_("source5 (under anchor)"), part, source5)
-ITEM_1COMBOBOX_PART_CREATE(_("source6 (over anchor)"), part, source6)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source (under selected text)"), part, source)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source2 (over selected text)"), part, source2)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source3 (under cursor)"), part, source3)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source4 (over cursor)"), part, source4)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source5 (under anchor)"), part, source5)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source6 (over anchor)"), part, source6)
 
-ITEM_1COMBOBOX_STATE_CREATE(_("text style"), state, text_style, styles)
+ITEM_1COMBOBOX_STATE_CREATE(TEXT_STYLE, _("text style"), state, text_style, styles)
 
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
