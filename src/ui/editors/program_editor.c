@@ -54,6 +54,7 @@ struct _Program_Editor
      Evas_Object *afters;
      Edje_Action_Type act_type;
      Edje_Tween_Mode trans_type;
+     Evas_Object *prop_scroller;
      Evas_Object *prop_box;
    } prop_view;
 };
@@ -1164,12 +1165,17 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
 static void
 _prop_progs_update(Program_Editor *prog_edit)
 {
+   if (!prop.prop_box)
+     {
+        prop.prop_box = _prop_progs_add(prop.prop_scroller, prog_edit);
+        elm_object_content_set(prop.prop_scroller, prop.prop_box);
+     }
    _prop_item_program_name_update(prog_edit);
    _prop_item_program_signal_update(prop.signal, prog_edit);
    _prop_item_program_source_update(prop.source, prog_edit);
+   _prop_item_program_action_update(prog_edit);
    _prop_item_program_targets_update(prog_edit);
    _prop_item_program_in_update(prog_edit);
-   _prop_item_program_action_update(prog_edit);
    _prop_item_program_transition_update(prog_edit);
    _prop_item_program_after_update(prog_edit);
 }
@@ -1327,6 +1333,7 @@ _on_bt_prog_del(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(prog_edit->gl_progs);
+   if (!glit) return;
    const char *program_name = NULL;
 
    program_name = elm_object_item_part_text_get(glit, "elm.text");
@@ -1336,7 +1343,20 @@ _on_bt_prog_del(void *data,
                     prop.style->name)
      }
    else
-     elm_object_item_del(glit);
+     {
+        if (elm_genlist_items_count(prog_edit->gl_progs) == 1)
+          {
+             elm_object_content_set(prop.prop_scroller, NULL);
+             prop.prop_box = NULL;
+          }
+        else
+          {
+             Elm_Object_Item *next = elm_genlist_item_next_get(glit);
+             if (!next) next = elm_genlist_item_prev_get(glit);
+             elm_genlist_item_selected_set(next, true);
+          }
+        elm_object_item_del(glit);
+     }
 }
 
 static void
@@ -1441,9 +1461,8 @@ program_editor_window_add(Style *style)
    elm_object_part_content_set(pans, "left", box);
 
    SCROLLER_ADD(pans, scroller);
-   prop.prop_box = _prop_progs_add(scroller, prog_edit);
-   elm_object_content_set(scroller,   prop.prop_box);
    elm_object_part_content_set(pans, "right", scroller);
+   prop.prop_scroller = scroller;
 
    BOX_ADD(mw_box, box, true, false);
    evas_object_size_hint_align_set(box, 1, 0.5);
