@@ -1344,32 +1344,23 @@ _on_bt_prog_add(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *box = NULL;
    Evas_Object *button = NULL;
-   Evas_Object *prog_box, *prog_label;
+   Evas_Object *item;
 
    Program_Editor *prog_edit = (Program_Editor*)data;
 
    prog_edit->popup.popup = elm_popup_add(prog_edit->mwin);
    elm_object_style_set(prog_edit->popup.popup, "eflete");
    elm_object_part_text_set(prog_edit->popup.popup, "title,text",
-                            _("Add new program:"));
+                            _("New program"));
 
-   BOX_ADD(prog_edit->popup.popup, box, false, false);
-   BOX_ADD(box, prog_box, true, false);
-
-   LABEL_ADD(prog_box, prog_label, _("Program name: "))
-   elm_box_pack_end(prog_box, prog_label);
-
-   EWE_ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE);
+   ITEM_ADD(prog_edit->popup.popup, item, _("Program name:"), "eflete/property/item/default");
+   EWE_ENTRY_ADD(item, prog_edit->popup.entry, true, DEFAULT_STYLE)
    elm_entry_markup_filter_append(prog_edit->popup.entry,
                                   elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(prog_edit->popup.entry, "guide",
-                            _("Type new program name here."));
-   elm_box_pack_end(prog_box, prog_edit->popup.entry);
+   elm_object_part_content_set(item, "elm.swallow.content", prog_edit->popup.entry);
 
-   elm_box_pack_end(box, prog_box);
-   elm_object_content_set(prog_edit->popup.popup, box);
+   elm_object_content_set(prog_edit->popup.popup, item);
 
    BUTTON_ADD(prog_edit->popup.popup, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_add,
