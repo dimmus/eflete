@@ -867,7 +867,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         btn = elm_button_add(parent); \
         elm_object_style_set(btn, "eflete/elipsis"); \
         evas_object_show(btn); \
-        evas_object_smart_callback_add(btn, "clicked", btn_func_cb, entry); \
+        evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd); \
         elm_object_part_content_set(entry, "elm.swallow.end", btn); \
         elm_object_tooltip_text_set(btn, btn_tooltip); \
      } \

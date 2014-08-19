@@ -1664,32 +1664,41 @@ ui_property_state_textblock_unset(Evas_Object *property)
 
 static void
 _on_image_editor_done(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei)
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
 {
-   Evas_Object *entry = (Evas_Object *)data;
-   const char *value = elm_entry_entry_get(entry);
-   const char *selected = (const char *)ei;
+   Evas_Object *image_entry, * border_entry;
+   Prop_Data *pd = (Prop_Data *)data;
+   const char *value;
+   const char *selected = (const char *)event_info;
+
    if (!selected) return;
+   image_entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
+   border_entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
+   value = elm_entry_entry_get(image_entry);
+
    if (strcmp(value, selected) == 0) return;
-   ewe_entry_entry_set(entry, selected);
-   evas_object_smart_callback_call(entry, "activated", NULL);
+   ewe_entry_entry_set(image_entry, selected);
+   evas_object_smart_callback_call(image_entry, "activated", NULL);
+   ewe_entry_entry_set(border_entry, NULL);
+   evas_object_smart_callback_call(border_entry, "activated", NULL);
 }
 
 static void
 _on_state_image_choose(void *data,
-                        Evas_Object *obj __UNUSED__,
-                        void *ei __UNUSED__)
+                       Evas_Object *obj __UNUSED__,
+                       void *ei __UNUSED__)
 {
    Evas_Object *img_edit;
-   Evas_Object *entry = (Evas_Object *)data;
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
    const char *selected = elm_entry_entry_get(entry);
 
    App_Data *ap = app_create();
 
    img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_file_choose(img_edit, selected);
-   image_editor_callback_add(img_edit, _on_image_editor_done, entry);
+   image_editor_callback_add(img_edit, _on_image_editor_done, pd);
 }
 
 static void
