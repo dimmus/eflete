@@ -100,7 +100,7 @@ struct _Prop_Data
       Evas_Object *size;
       Evas_Object *align;
       Evas_Object *source;
-      Evas_Object *elipsis;
+      Evas_Object *ellipsis;
       Evas_Object *min;
       Evas_Object *max;
       Evas_Object *fit;
@@ -1241,6 +1241,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
 }
 #undef pd_obj_area
 
+
+
 #define ITEM_1SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE) \
    ITEM_1SPINNER_STATE_ADD(TEXT, SUB, VALUE) \
@@ -1262,7 +1264,6 @@ ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
 ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
-ITEM_1SPINNER_STATE_DOUBLE_CREATE(_("elipsis"), state_text, elipsis)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color3)
 ITEM_COLOR_STATE_CREATE(_("outline color"), state, color2)
@@ -1429,6 +1430,144 @@ prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
 #undef ADD_TEXT_EFFECT_COMBOBOX
 
 #define pd_text pd->prop_state_text
+
+
+static void
+_on_state_text_ellipsis_change(void *data,
+                               Evas_Object *obj,
+                               void *event_info __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   double value = elm_spinner_value_get(obj);
+   if (!edje_edit_state_text_elipsis_set(pd->style->obj,
+                                         pd->part->name,
+                                         pd->part->curr_state,
+                                         pd->part->curr_state_value,
+                                         value))
+     return;
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+   pm_project_changed(app_create()->project);
+   /*TODO: app_create()->project AGRRRRRR!!!!! need a define project in the pd */
+}
+
+static void
+_on_state_text_ellipsis_toggle_change(void *data,
+                                      Evas_Object *obj,
+                                      void *event_info __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   Eina_Bool state = elm_check_state_get(obj);
+   Evas_Object *spinner = evas_object_data_get(pd_text.ellipsis, ITEM2);
+   double value = 0.0;
+
+   if (state)
+     {
+        elm_object_disabled_set(spinner, false);
+        value = elm_spinner_value_get(spinner);
+     }
+   else
+     {
+        elm_object_disabled_set(spinner, true);
+        value = -1.0;
+     }
+   edje_edit_state_text_elipsis_set(pd->style->obj,
+                                    pd->part->name,
+                                    pd->part->curr_state,
+                                    pd->part->curr_state_value,
+                                    value);
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+   pm_project_changed(app_create()->project);
+}
+
+static Evas_Object *
+prop_item_state_text_ellipsis_add(Evas_Object *parent,
+                                  Prop_Data *pd,
+                                  const char *tooltip)
+{
+   Evas_Object *item, *box, *layout, *check, *spinner;
+   double value;
+
+   ITEM_ADD(parent, item, "ellipsis", "eflete/property/item/default")
+   BOX_ADD(item, box, true, true)
+   elm_box_align_set(box, 0.0, 0.5);
+   ITEM_CONTEINER_2LABEL_ADD(box, layout, "turn", NULL);
+   elm_object_tooltip_text_set(item, tooltip);
+
+   CHECK_ADD(layout, check, "eflete/toggle")
+   elm_object_part_content_set(layout, "eflete.content", check);
+   evas_object_smart_callback_add(check, "changed",
+                                  _on_state_text_ellipsis_toggle_change, pd);
+
+   SPINNER_ADD(box, spinner, 0.0, 1.0, 0.1, true, DEFAULT_STYLE)
+   elm_spinner_label_format_set(spinner, "%1.2f");
+   value = edje_edit_state_text_elipsis_get(pd->style->obj,
+                                            pd->part->name,
+                                            pd->part->curr_state,
+                                            pd->part->curr_state_value);
+   evas_object_smart_callback_add(spinner, "changed",
+                                  _on_state_text_ellipsis_change, pd);
+
+   if (value < 0)
+     {
+        elm_check_state_set(check, false);
+        elm_object_disabled_set(spinner, true);
+        elm_spinner_value_set(spinner, 0.0);
+     }
+   else
+     {
+        elm_check_state_set(check, true);
+        elm_object_disabled_set(spinner, false);
+        elm_spinner_value_set(spinner, value);
+     }
+
+   elm_box_pack_end(box, layout);
+   elm_box_pack_end(box, spinner);
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   evas_object_data_set(item, ITEM1, check);
+   evas_object_data_set(item, ITEM2, spinner);
+   return item;
+
+}
+
+static void
+prop_item_state_text_ellipsis_update(Evas_Object *item,
+                                     Prop_Data *pd)
+{
+   Evas_Object *check, *spinner;
+   double value;
+
+   check = evas_object_data_get(item, ITEM1);
+   evas_object_smart_callback_del_full(check, "changed",
+                                       _on_state_text_ellipsis_toggle_change, pd);
+   evas_object_smart_callback_add(check, "changed",
+                                  _on_state_text_ellipsis_toggle_change, pd);
+
+   spinner = evas_object_data_get(item, ITEM2);
+   evas_object_smart_callback_del_full(spinner, "changed",
+                                       _on_state_text_ellipsis_change, pd);
+   evas_object_smart_callback_add(spinner, "changed",
+                                  _on_state_text_ellipsis_change, pd);
+
+   value = edje_edit_state_text_elipsis_get(pd->style->obj,
+                                            pd->part->name,
+                                            pd->part->curr_state,
+                                            pd->part->curr_state_value);
+    if (value < 0)
+     {
+        elm_check_state_set(check, false);
+        elm_object_disabled_set(spinner, true);
+        elm_spinner_value_set(spinner, 0.0);
+     }
+   else
+     {
+        elm_check_state_set(check, true);
+        elm_object_disabled_set(spinner, false);
+        elm_spinner_value_set(spinner, value);
+     }
+}
+
 static Eina_Bool
 ui_property_state_text_set(Evas_Object *property)
 {
@@ -1481,8 +1620,7 @@ ui_property_state_text_set(Evas_Object *property)
          pd_text.text_source = prop_item_state_text_text_source_add(box, pd, NULL,
                                _("Causes the part to display the text content of \t"
                                "another part and update them as they change."));
-         pd_text.elipsis = prop_item_state_text_elipsis_add(box, pd,
-                            0.0, 1.0, 0.1, "%1.2f",
+         pd_text.ellipsis = prop_item_state_text_ellipsis_add(box, pd,
                             _("Cut text if biggest then part's area"
                             "0.0 = fix the left side  1.0 = right side"));
          pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd,
@@ -1502,7 +1640,7 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, pd_text.max);
          elm_box_pack_end(box, pd_text.source);
          elm_box_pack_end(box, pd_text.text_source);
-         elm_box_pack_end(box, pd_text.elipsis);
+         elm_box_pack_end(box, pd_text.ellipsis);
          elm_box_pack_end(box, pd_text.fit);
          elm_box_pack_end(box, pd_text.color2);
          elm_box_pack_end(box, pd_text.color3);
@@ -1521,7 +1659,7 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
         prop_item_state_text_source_update(pd_text.source, pd);
         prop_item_state_text_text_source_update(pd_text.text_source, pd);
-        prop_item_state_text_elipsis_update(pd_text.elipsis, pd);
+        prop_item_state_text_ellipsis_update(pd_text.ellipsis, pd);
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
         prop_item_state_color2_update(pd_text.color2, pd);
         prop_item_state_color3_update(pd_text.color3, pd);
