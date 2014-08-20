@@ -96,6 +96,11 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .rejected = EDITORS_BANNED_SYMBOLS
 };
 
+static void
+_prop_item_program_targets_update(Program_Editor *prog_edit);
+static Evas_Object *
+_prop_item_program_target_add(Evas_Object *parent, Program_Editor *prog_edit, const char *tooltip);
+
 #define prop prog_edit->prop_view
 #define action prog_edit->prop_view.action
 #define transition prog_edit->prop_view.transition
@@ -174,6 +179,23 @@ static void _on_value2_active(void *data, Evas_Object *obj, void *ei);
 ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
 ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
+
+static void
+_special_properties_hide(Program_Editor *prog_edit)
+{
+   if (prop.script)
+     {
+        elm_box_unpack(prop.prop_box, prop.script);
+        evas_object_del(prop.script);
+        prop.script = NULL;
+     }
+   if (prop.targets)
+     {
+        elm_box_unpack(prop.prop_box, prop.targets);
+        evas_object_del(prop.targets);
+        prop.targets = NULL;
+     }
+}
 
 static void
 _gl_progs_update_sel_item(const char *str, Program_Editor *prog_edit)
@@ -423,10 +445,19 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
    switch (prop.act_type)
      {
       case EDJE_ACTION_TYPE_NONE:
+        {
+           ENTRY_UPDATE(action.entry1, true, action.layout1, NULL);
+           ENTRY_UPDATE(action.entry2, true, action.layout2, NULL);
+           break;
+        }
       case EDJE_ACTION_TYPE_ACTION_STOP:
       case EDJE_ACTION_TYPE_FOCUS_SET:
       case EDJE_ACTION_TYPE_FOCUS_OBJECT:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, true, action.layout1, NULL);
            ENTRY_UPDATE(action.entry2, true, action.layout2, NULL);
            break;
@@ -441,6 +472,10 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
         }
       case EDJE_ACTION_TYPE_STATE_SET:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, false, action.layout1, "state name");
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "state value");
@@ -456,6 +491,10 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
         }
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, false, action.layout1, "signal name");
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "emitter");
@@ -473,6 +512,10 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, false, action.layout1, "x");
            REGEX_SET(action.entry1, FLOAT_NUMBER_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "y");
@@ -540,12 +583,7 @@ _on_combobox_action_sel(void *data,
         ENTRY_UPDATE(transition.entry3, false, transition.layout3, "param2");
      }
 
-   if (prop.script)
-     {
-        elm_box_unpack(prop.prop_box, prop.script);
-        evas_object_del(prop.script);
-        prop.script = NULL;
-     }
+   _special_properties_hide(prog_edit);
    _action_entries_set(prog_edit, false);
 }
 
@@ -940,12 +978,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
 
    ewe_combobox_select_item_set(action.combobox, (int)prop.act_type);
 
-   if (prop.script)
-     {
-        elm_box_unpack(prop.prop_box, prop.script);
-        evas_object_del(prop.script);
-        prop.script = NULL;
-     }
+   _special_properties_hide(prog_edit);
 
    _action_entries_set(prog_edit, true);
 }
@@ -1147,7 +1180,6 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    prop.in = _prop_item_program_in_add(box, _("in"));
    action.item = _prop_item_program_action_add(box, prog_edit, _("action"));
    transition.item = _prop_item_program_transition_add(box, prog_edit, _("transition"));
-   prop.targets = _prop_item_program_target_add(box, prog_edit, _("targets"));
    prop.afters = _prop_item_program_after_add(box, prog_edit, _("afters"));
 
    elm_box_pack_end(box, prop.name);
@@ -1156,7 +1188,6 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    elm_box_pack_end(box, prop.in);
    elm_box_pack_end(box, action.item);
    elm_box_pack_end(box, transition.item);
-   elm_box_pack_end(box, prop.targets);
    elm_box_pack_end(box, prop.afters);
 
    return box;
@@ -1174,7 +1205,6 @@ _prop_progs_update(Program_Editor *prog_edit)
    _prop_item_program_signal_update(prop.signal, prog_edit);
    _prop_item_program_source_update(prop.source, prog_edit);
    _prop_item_program_action_update(prog_edit);
-   _prop_item_program_targets_update(prog_edit);
    _prop_item_program_in_update(prog_edit);
    _prop_item_program_transition_update(prog_edit);
    _prop_item_program_after_update(prog_edit);
