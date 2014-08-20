@@ -971,7 +971,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
                             _("Part vertical align: 0.0 = top  1.0 = bottom"),
                             true);
         pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
-                             0.0, 9999.0, 0.1, "%1.2f",
+                             0, 100, 1, NULL,
                              "x:", "", "y:", "",
                             _("Normally width and height can be "
                              "resized to any values independently"),
