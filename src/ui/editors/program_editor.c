@@ -530,7 +530,7 @@ _on_combobox_action_sel(void *data,
 
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 (Edje_Action_Type)combitem->index);
-   prop.act_type = (Edje_Action_Type)combitem->index;
+   prop.act_type = (Edje_Action_Type)((combitem->index < 9) ? combitem->index : combitem->index + 1);
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
