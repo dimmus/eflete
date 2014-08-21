@@ -489,7 +489,11 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_show(_bg);
 
    if (mode == SINGLE)
-     elm_gengrid_multi_select_set(img_edit->gengrid, false);
+     {
+       elm_gengrid_multi_select_set(img_edit->gengrid, false);
+       evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
+                                      _on_button_ok_clicked_cb, img_edit);
+     }
    else
      elm_gengrid_multi_select_set(img_edit->gengrid, true);
 
