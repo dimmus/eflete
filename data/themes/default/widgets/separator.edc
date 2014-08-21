@@ -9,12 +9,20 @@ group { name: "elm/separator/horizontal/eflete/property";
             min: 360 32;
          }
       }
+      part { name: "padding_left";
+         type: SPACER;
+         description { state: "default" 0;
+            align: 0 0.5;
+            max: 3 -1;
+         }
+      }
       part { name: "separator_left";
          type: IMAGE;
          description { state: "default" 0.0;
             SET_SIZE(6, 2);
             rel1 {
-               to_x: "base";
+               relative: 1.0 0.0;
+               to_x: "padding_left";
                to_y: "eflete.text";
             }
             rel2 {
@@ -101,6 +109,13 @@ group { name: "elm/separator/horizontal/eflete/property";
             align: 0.0 0.5;
          }
       }
+      part { name: "padding_right";
+         type: SPACER;
+         description { state: "default" 0;
+            align: 1.0 0.5;
+            max: 3 -1;
+         }
+      }
       part { name: "separator_right";
          type: IMAGE;
          description { state: "default" 0.0;
@@ -112,7 +127,8 @@ group { name: "elm/separator/horizontal/eflete/property";
                relative: 1.0 0.0;
             }
             rel2 {
-               to_x: "base";
+               relative: 0.0 1.0;
+               to_x: "padding_right";
                to_y: "eflete.text";
             }
             align: 0.0 0.5;
