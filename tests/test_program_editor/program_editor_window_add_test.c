@@ -63,7 +63,7 @@ EFLETE_TEST (program_editor_window_add_test_p)
    Style *style;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
    e = evas_object_evas_get(win);
@@ -113,7 +113,7 @@ EFLETE_TEST (program_editor_window_add_test_n1)
    Style *style;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
@@ -155,7 +155,7 @@ EFLETE_TEST (program_editor_window_add_test_n2)
    App_Data *app;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
 

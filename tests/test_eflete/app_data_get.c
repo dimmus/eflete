@@ -22,7 +22,7 @@
 /**
  * @addtogroup eflete_test
  * @{
- * @addtogroup app_create
+ * @addtogroup app_data_get
  * @{
  * eflete
  * <TABLE>
@@ -30,17 +30,17 @@
  */
 
 /**
- * @addtogroup app_create
+ * @addtogroup app_data_get
  * @{
  * <tr>
- * <td>app_create</td>
- * <td>app_create_test_p1</td>
+ * <td>app_data_get</td>
+ * <td>app_data_get_test_p1</td>
  * <td>
  * @precondition
  * @step 1 Nothing.
  *
  * @procedure
- * @step 1 call app_create
+ * @step 1 call app_data_get
  * @step 2 check returned pointer
  * </td>
  * <td>void</td>
@@ -50,28 +50,28 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (app_create_test_p1)
+EFLETE_TEST (app_data_get_test_p1)
 {
-   ck_assert_msg(app_create() != NULL, "Cannot create empty App_Data");
+   ck_assert_msg(app_data_get() != NULL, "Cannot create empty App_Data");
 }
 END_TEST
 
 /**
- * @addtogroup app_create
+ * @addtogroup app_data_get
  * @{
  * <tr>
- * <td>app_create</td>
- * <td>app_create_test_p2</td>
+ * <td>app_data_get</td>
+ * <td>app_data_get_test_p2</td>
  * <td>
  * @precondition
  * @step 1 Nothing.
  *
  * @procedure
- * @step 1 call app_create
+ * @step 1 call app_data_get
  * @step 2 check returned pointer
- * @step 3 call app_create
+ * @step 3 call app_data_get
  * @step 4 check returned pointer
- * @step 5 check that app_create returns same application data.
+ * @step 5 check that app_data_get returns same application data.
  * </td>
  * <td>void</td>
  * <td>All checks passed</td>
@@ -80,20 +80,20 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (app_create_test_p2)
+EFLETE_TEST (app_data_get_test_p2)
 {
    App_Data *data1, *data2;
 
-   data1 = app_create();
+   data1 = app_data_get();
    ck_assert_msg(data1 != NULL, "Cannot create empty App_Data");
-   data2 = app_create();
+   data2 = app_data_get();
    ck_assert_msg(data2 != NULL, "Cannot create empty App_Data");
    ck_assert_msg(data1 == data2, "Created two different App_Data's for one application");
 }
 END_TEST
 
 /**
- * @addtogroup app_create
+ * @addtogroup app_data_get
  * @{
  * </TABLE>
  * @}

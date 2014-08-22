@@ -66,7 +66,7 @@ EFLETE_TEST(ui_main_window_add_test_p)
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    ret = ui_main_window_add(app_data);
    ck_assert_msg(ret == EINA_TRUE, "Failed to create main window");

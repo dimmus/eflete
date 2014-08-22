@@ -54,6 +54,7 @@ struct _Program_Editor
      Evas_Object *afters;
      Edje_Action_Type act_type;
      Edje_Tween_Mode trans_type;
+     Evas_Object *prop_scroller;
      Evas_Object *prop_box;
    } prop_view;
 };
@@ -94,6 +95,11 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = EDITORS_BANNED_SYMBOLS
 };
+
+static void
+_prop_item_program_targets_update(Program_Editor *prog_edit);
+static Evas_Object *
+_prop_item_program_target_add(Evas_Object *parent, Program_Editor *prog_edit, const char *tooltip);
 
 #define prop prog_edit->prop_view
 #define action prog_edit->prop_view.action
@@ -149,8 +155,8 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
    ewe_entry_entry_set(entry, value); \
-   evas_object_smart_callback_del(entry, "changed", _on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "changed", \
+   evas_object_smart_callback_del(entry, "changed,user", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "changed,user", \
                                   _on_##sub##_##value##_change, prog_edit); \
 }
 
@@ -173,6 +179,35 @@ static void _on_value2_active(void *data, Evas_Object *obj, void *ei);
 ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
 ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
+
+static int
+_sort_cb(const void *d1, const void *d2)
+{
+   const char *txt = d1;
+   const char *txt2 = d2;
+
+   if (!txt) return(1);
+   if (!txt2) return(-1);
+
+   return(strcmp(txt, txt2));
+}
+
+static void
+_special_properties_hide(Program_Editor *prog_edit)
+{
+   if (prop.script)
+     {
+        elm_box_unpack(prop.prop_box, prop.script);
+        evas_object_del(prop.script);
+        prop.script = NULL;
+     }
+   if (prop.targets)
+     {
+        elm_box_unpack(prop.prop_box, prop.targets);
+        evas_object_del(prop.targets);
+        prop.targets = NULL;
+     }
+}
 
 static void
 _gl_progs_update_sel_item(const char *str, Program_Editor *prog_edit)
@@ -241,19 +276,25 @@ _on_in_range_change(void *data,
 }
 
 static void
-_on_target_name_change(void *data __UNUSED__,
-                         Evas_Object *obj,
-                         void *ei __UNUSED__)
+_on_target_name_change(void *data,
+                       Evas_Object *obj,
+                       void *ei)
 {
+   const char *value;
+   const char *old_value;
+   Evas_Object *del_button;
    Program_Editor *prog_edit = (Program_Editor*)data;
-   const char *value = elm_entry_entry_get(obj);
-   Eina_Bool res = edje_edit_program_target_add(prop.style->obj, prop.program,
-                                                value);
-   if (!res)
-     {
-        NOTIFY_WARNING(_("The entered data is not valid!"))
-        return;
-     }
+   Ewe_Combobox_Item *item = ei;
+
+   value = ewe_combobox_item_title_get(obj, item->index);
+   old_value = evas_object_data_get(obj, TARGET_NAME_KEY);
+
+   edje_edit_program_target_del(prop.style->obj, prop.program, old_value);
+   edje_edit_program_target_add(prop.style->obj, prop.program, value);
+
+   del_button = evas_object_data_get(obj, DEL_BUTTON_KEY);
+   evas_object_data_set(del_button, TARGET_NAME_KEY, value);
+   evas_object_data_set(obj, TARGET_NAME_KEY, value);
 }
 
 static Evas_Object *
@@ -317,8 +358,8 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    ewe_entry_entry_set(_entry, buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
-        evas_object_smart_callback_del(_entry, "changed", _activated_cb); \
-        evas_object_smart_callback_add(_entry, "changed", _activated_cb, \
+        evas_object_smart_callback_del(_entry, "changed,user", _activated_cb); \
+        evas_object_smart_callback_add(_entry, "changed,user", _activated_cb, \
                                        prog_edit);
 
 static void
@@ -422,10 +463,19 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
    switch (prop.act_type)
      {
       case EDJE_ACTION_TYPE_NONE:
+        {
+           ENTRY_UPDATE(action.entry1, true, action.layout1, NULL);
+           ENTRY_UPDATE(action.entry2, true, action.layout2, NULL);
+           break;
+        }
       case EDJE_ACTION_TYPE_ACTION_STOP:
       case EDJE_ACTION_TYPE_FOCUS_SET:
       case EDJE_ACTION_TYPE_FOCUS_OBJECT:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, true, action.layout1, NULL);
            ENTRY_UPDATE(action.entry2, true, action.layout2, NULL);
            break;
@@ -440,6 +490,10 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
         }
       case EDJE_ACTION_TYPE_STATE_SET:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, false, action.layout1, "state name");
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "state value");
@@ -455,6 +509,10 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
         }
       case EDJE_ACTION_TYPE_SIGNAL_EMIT:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, false, action.layout1, "signal name");
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "emitter");
@@ -472,6 +530,10 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
       case EDJE_ACTION_TYPE_DRAG_VAL_STEP:
       case EDJE_ACTION_TYPE_DRAG_VAL_PAGE:
         {
+           prop.targets = _prop_item_program_target_add(prop.prop_box, prog_edit, _("targets"));
+           _prop_item_program_targets_update(prog_edit);
+           elm_box_pack_after(prop.prop_box, prop.targets, action.item);
+
            ENTRY_UPDATE(action.entry1, false, action.layout1, "x");
            REGEX_SET(action.entry1, FLOAT_NUMBER_REGEX);
            ENTRY_UPDATE(action.entry2, false, action.layout2, "y");
@@ -529,7 +591,7 @@ _on_combobox_action_sel(void *data,
 
    edje_edit_program_action_set(prop.style->obj, prop.program,
                                 (Edje_Action_Type)combitem->index);
-   prop.act_type = (Edje_Action_Type)combitem->index;
+   prop.act_type = (Edje_Action_Type)((combitem->index < 9) ? combitem->index : combitem->index + 1);
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
@@ -539,12 +601,7 @@ _on_combobox_action_sel(void *data,
         ENTRY_UPDATE(transition.entry3, false, transition.layout3, "param2");
      }
 
-   if (prop.script)
-     {
-        elm_box_unpack(prop.prop_box, prop.script);
-        evas_object_del(prop.script);
-        prop.script = NULL;
-     }
+   _special_properties_hide(prog_edit);
    _action_entries_set(prog_edit, false);
 }
 
@@ -673,67 +730,79 @@ _on_value_active(void *data,
 
 static void
 _on_after_name_change(void *data,
-                         Evas_Object *obj,
-                         void *ei __UNUSED__)
+                      Evas_Object *obj,
+                      void *ei)
 {
+   const char *value;
+   const char *old_value;
+   Evas_Object *del_button;
    Program_Editor *prog_edit = (Program_Editor*)data;
-   const char *value = elm_entry_entry_get(obj);
-   Eina_Bool res = false;
+   Ewe_Combobox_Item *item = ei;
 
-   res = edje_edit_program_after_add(prop.style->obj, prop.program, value);
-   if (!res)
-     {
-        NOTIFY_WARNING(_("The entered data is not valid!"))
-        return;
-     }
+   value = ewe_combobox_item_title_get(obj, item->index);
+   old_value = evas_object_data_get(obj, AFTER_NAME_KEY);
+
+   edje_edit_program_after_del(prop.style->obj, prop.program, old_value);
+   edje_edit_program_after_add(prop.style->obj, prop.program, value);
+
+   del_button = evas_object_data_get(obj, DEL_BUTTON_KEY);
+   evas_object_data_set(del_button, AFTER_NAME_KEY, value);
+   evas_object_data_set(obj, AFTER_NAME_KEY, value);
 }
 
 static void
 _after_remove_button_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                        Evas_Object *obj,
+                        void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Evas_Object *entry = NULL;
-   Eina_List *childs = NULL;
-
-   Evas_Object *element_box = elm_object_part_content_get(prop.afters,
-                                 "elm.swallow.content");
-
-   Evas_Object *entrys_box = elm_object_parent_widget_get(element_box);
-
-   childs = elm_box_children_get(element_box);
-   entry = eina_list_nth(childs, 0);
-   elm_box_unpack(entrys_box, element_box);
-   edje_edit_program_after_del(prop.style->obj, prop.program,
-                               elm_entry_entry_get(entry));
-   evas_object_smart_callback_del(entry, "changed", _on_after_name_change);
-   eina_list_free(childs);
-   evas_object_del(element_box);
+   const char *after = evas_object_data_get(obj, AFTER_NAME_KEY);
+   Evas_Object *item = evas_object_data_get(obj, AFTER_ITEM_KEY);
+   edje_edit_program_after_del(prop.style->obj, prop.program, after);
+   evas_object_del(item);
 }
 
 static void
-_after_item_add(Program_Editor *prog_edit, char *name)
+_after_item_add(Program_Editor *prog_edit, const char *name)
 {
+   Eina_List *posible_afters_list = NULL;
+   Eina_List *l;
+   const char *after_name;
    Evas_Object *element_box = NULL;
    Evas_Object *button = NULL;
-   Evas_Object *entry = NULL;
-   Eina_List *childs = NULL;
+   Evas_Object *combobox = NULL;
    Evas_Object *item_box = NULL;
+   Eina_List *childs = NULL;
 
    childs = elm_box_children_get(elm_object_part_content_get(prop.afters,
                                           "elm.swallow.content"));
    item_box = eina_list_nth(childs, 0);
+
    BOX_ADD(item_box, element_box, true, false);
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
-   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
-   ewe_entry_entry_set(entry, name);
-   evas_object_smart_callback_add(entry, "changed",_on_after_name_change,
+
+   posible_afters_list = edje_edit_programs_list_get(prop.style->obj);
+
+   posible_afters_list = eina_list_sort(posible_afters_list,
+                                         eina_list_count(posible_afters_list),
+                                         _sort_cb);
+   EWE_COMBOBOX_ADD(element_box, combobox);
+   EINA_LIST_FOREACH(posible_afters_list, l, after_name)
+     ewe_combobox_item_add(combobox, after_name);
+   ewe_combobox_text_set(combobox, name);
+
+   evas_object_data_set(combobox, AFTER_NAME_KEY, name);
+   evas_object_data_set(combobox, DEL_BUTTON_KEY, button);
+   evas_object_data_set(button, AFTER_NAME_KEY, name);
+   evas_object_data_set(button, AFTER_ITEM_KEY, element_box);
+
+   evas_object_smart_callback_add(combobox, "selected", _on_after_name_change,
                                   prog_edit);
    evas_object_smart_callback_add(button, "clicked", _after_remove_button_cb,
                                   prog_edit);
-   elm_box_pack_end(element_box, entry);
+
+   elm_box_pack_end(element_box, combobox);
    elm_box_pack_end(element_box, button);
    elm_box_pack_end(item_box, element_box);
    eina_list_free(childs);
@@ -741,8 +810,8 @@ _after_item_add(Program_Editor *prog_edit, char *name)
 
 static void
 _after_add_button_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    _after_item_add(prog_edit, "");
@@ -750,33 +819,25 @@ _after_add_button_cb(void *data,
 
 static void
 _target_remove_button_cb(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                         Evas_Object *obj,
+                         void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Evas_Object *entry = NULL;
-   Eina_List *childs = NULL;
-
-   Evas_Object *element_box = elm_object_part_content_get(prop.targets,
-                                 "elm.swallow.content");
-   Evas_Object *entrys_box = elm_object_parent_widget_get(element_box);
-
-   childs = elm_box_children_get(element_box);
-   entry = eina_list_nth(childs, 0);
-   elm_box_unpack(entrys_box, element_box);
-   edje_edit_program_target_del(prop.style->obj, prop.program,
-                                elm_entry_entry_get(entry));
-   evas_object_smart_callback_del(entry, "changed", _on_target_name_change);
-   eina_list_free(childs);
-   evas_object_del(element_box);
+   const char *target = evas_object_data_get(obj, TARGET_NAME_KEY);
+   Evas_Object *item = evas_object_data_get(obj, TARGET_ITEM_KEY);
+   edje_edit_program_target_del(prop.style->obj, prop.program, target);
+   evas_object_del(item);
 }
 
 static void
-_target_item_add(Program_Editor *prog_edit, char *name)
+_target_item_add(Program_Editor *prog_edit, const char *name)
 {
+   Eina_List *posible_targets_list = NULL;
+   Eina_List *l;
+   const char *target_name;
    Evas_Object *element_box = NULL;
    Evas_Object *button = NULL;
-   Evas_Object *entry = NULL;
+   Evas_Object *combobox = NULL;
    Evas_Object *item_box = NULL;
    Eina_List *childs = NULL;
 
@@ -787,13 +848,31 @@ _target_item_add(Program_Editor *prog_edit, char *name)
    BOX_ADD(item_box, element_box, true, false);
    BUTTON_ADD(element_box, button, _("Del"));
    evas_object_size_hint_weight_set(button, 0.0, 0.0);
-   EWE_ENTRY_ADD(element_box, entry, true, DEFAULT_STYLE);
-   ewe_entry_entry_set(entry, name);
-   evas_object_smart_callback_add(entry, "changed", _on_target_name_change,
+
+   if (prop.act_type == EDJE_ACTION_TYPE_ACTION_STOP)
+     posible_targets_list = edje_edit_programs_list_get(prop.style->obj);
+   else
+     posible_targets_list = edje_edit_parts_list_get(prop.style->obj);
+
+   posible_targets_list = eina_list_sort(posible_targets_list,
+                                         eina_list_count(posible_targets_list),
+                                         _sort_cb);
+   EWE_COMBOBOX_ADD(element_box, combobox);
+   EINA_LIST_FOREACH(posible_targets_list, l, target_name)
+     ewe_combobox_item_add(combobox, target_name);
+   ewe_combobox_text_set(combobox, name);
+
+   evas_object_data_set(combobox, TARGET_NAME_KEY, name);
+   evas_object_data_set(combobox, DEL_BUTTON_KEY, button);
+   evas_object_data_set(button, TARGET_NAME_KEY, name);
+   evas_object_data_set(button, TARGET_ITEM_KEY, element_box);
+
+   evas_object_smart_callback_add(combobox, "selected", _on_target_name_change,
                                   prog_edit);
    evas_object_smart_callback_add(button, "clicked", _target_remove_button_cb,
                                   prog_edit);
-   elm_box_pack_end(element_box, entry);
+
+   elm_box_pack_end(element_box, combobox);
    elm_box_pack_end(element_box, button);
    elm_box_pack_end(item_box, element_box);
    eina_list_free(childs);
@@ -874,9 +953,9 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
      }
 
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
-   evas_object_smart_callback_del(transition.entry1, "changed",
+   evas_object_smart_callback_del(transition.entry1, "changed,user",
                                   _on_transition_time_active);
-   evas_object_smart_callback_add(transition.entry1, "changed",
+   evas_object_smart_callback_add(transition.entry1, "changed,user",
                                   _on_transition_time_active, prog_edit);
 
    snprintf(buff, sizeof(buff), "%1.2f", value);
@@ -939,12 +1018,7 @@ _prop_item_program_action_update(Program_Editor *prog_edit)
 
    ewe_combobox_select_item_set(action.combobox, (int)prop.act_type);
 
-   if (prop.script)
-     {
-        elm_box_unpack(prop.prop_box, prop.script);
-        evas_object_del(prop.script);
-        prop.script = NULL;
-     }
+   _special_properties_hide(prog_edit);
 
    _action_entries_set(prog_edit, true);
 }
@@ -980,9 +1054,9 @@ static void
 _prop_item_program_after_update(Program_Editor *prog_edit)
 {
    Eina_List *afters_list = NULL;
+   Eina_List *l;
+   const char *after_name;
    Eina_List *childs = NULL;
-   int count_afters = 0;
-   int i = 0;
 
    Evas_Object *box = NULL;
    Evas_Object *entrys_box = NULL;
@@ -990,22 +1064,18 @@ _prop_item_program_after_update(Program_Editor *prog_edit)
    if (!prop.afters) return;
 
    afters_list = edje_edit_program_afters_get(prop.style->obj, prop.program);
-   count_afters = eina_list_count(afters_list);
 
    box = elm_object_part_content_get(prop.afters, "elm.swallow.content");
    childs = elm_box_children_get(box);
    entrys_box = eina_list_nth(childs, 0);
    elm_box_clear(entrys_box);
 
-   if (!count_afters) return;
-
-   for (i = 0; i < count_afters; i++)
-     _after_item_add(prog_edit, eina_list_nth(afters_list, i));
+   afters_list = eina_list_sort(afters_list, eina_list_count(afters_list), _sort_cb);
+   EINA_LIST_FOREACH(afters_list, l, after_name)
+     _after_item_add(prog_edit, after_name);
    eina_list_free(childs);
    eina_list_free(afters_list);
 }
-
-
 
 static Evas_Object *
 _prop_item_program_target_add(Evas_Object *parent,
@@ -1039,9 +1109,9 @@ static void
 _prop_item_program_targets_update(Program_Editor *prog_edit)
 {
    Eina_List *targets_list = NULL;
+   Eina_List *l;
+   const char *target_name;
    Eina_List *childs = NULL;
-   int count_targets = 0;
-   int i = 0;
 
    Evas_Object *box = NULL;
    Evas_Object *entrys_box = NULL;
@@ -1049,17 +1119,15 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
    if (!prop.targets) return;
 
    targets_list = edje_edit_program_targets_get(prop.style->obj, prop.program);
-   count_targets = eina_list_count(targets_list);
 
    box = elm_object_part_content_get(prop.targets, "elm.swallow.content");
    childs = elm_box_children_get(box);
    entrys_box = eina_list_nth(childs, 0);
    elm_box_clear(entrys_box);
 
-   if (!count_targets) return;
-
-   for (i = 0; i < count_targets; i++)
-     _target_item_add(prog_edit, eina_list_nth(targets_list, i));
+   targets_list = eina_list_sort(targets_list, eina_list_count(targets_list), _sort_cb);
+   EINA_LIST_FOREACH(targets_list, l, target_name)
+     _target_item_add(prog_edit, target_name);
    eina_list_free(childs);
    eina_list_free(targets_list);
 }
@@ -1078,16 +1146,16 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    entry = eina_list_nth(childs, 0);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "changed", _on_in_from_change);
-   evas_object_smart_callback_add(entry, "changed",
+   evas_object_smart_callback_del(entry, "changed,user", _on_in_from_change);
+   evas_object_smart_callback_add(entry, "changed,user",
                                   _on_in_from_change, prog_edit);
    range = edje_edit_program_in_range_get(prop.style->obj,
                                           prop.program);
    entry = eina_list_nth(childs, 1);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "changed", _on_in_range_change);
-   evas_object_smart_callback_add(entry, "changed",
+   evas_object_smart_callback_del(entry, "changed,user", _on_in_range_change);
+   evas_object_smart_callback_add(entry, "changed,user",
                                   _on_in_range_change, prog_edit);
    eina_list_free(childs);
 }
@@ -1127,8 +1195,8 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
                                                     "elm.swallow.content");
 
    ewe_entry_entry_set(entry, prop.program);
-   evas_object_smart_callback_del(entry, "changed", _on_program_name_change);
-   evas_object_smart_callback_add(entry, "changed", _on_program_name_change,
+   evas_object_smart_callback_del(entry, "changed,user", _on_program_name_change);
+   evas_object_smart_callback_add(entry, "changed,user", _on_program_name_change,
                                   prog_edit);
 }
 
@@ -1146,7 +1214,6 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    prop.in = _prop_item_program_in_add(box, _("in"));
    action.item = _prop_item_program_action_add(box, prog_edit, _("action"));
    transition.item = _prop_item_program_transition_add(box, prog_edit, _("transition"));
-   prop.targets = _prop_item_program_target_add(box, prog_edit, _("targets"));
    prop.afters = _prop_item_program_after_add(box, prog_edit, _("afters"));
 
    elm_box_pack_end(box, prop.name);
@@ -1155,7 +1222,6 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    elm_box_pack_end(box, prop.in);
    elm_box_pack_end(box, action.item);
    elm_box_pack_end(box, transition.item);
-   elm_box_pack_end(box, prop.targets);
    elm_box_pack_end(box, prop.afters);
 
    return box;
@@ -1164,12 +1230,16 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
 static void
 _prop_progs_update(Program_Editor *prog_edit)
 {
+   if (!prop.prop_box)
+     {
+        prop.prop_box = _prop_progs_add(prop.prop_scroller, prog_edit);
+        elm_object_content_set(prop.prop_scroller, prop.prop_box);
+     }
    _prop_item_program_name_update(prog_edit);
    _prop_item_program_signal_update(prop.signal, prog_edit);
    _prop_item_program_source_update(prop.source, prog_edit);
-   _prop_item_program_targets_update(prog_edit);
-   _prop_item_program_in_update(prog_edit);
    _prop_item_program_action_update(prog_edit);
+   _prop_item_program_in_update(prog_edit);
    _prop_item_program_transition_update(prog_edit);
    _prop_item_program_after_update(prog_edit);
 }
@@ -1266,6 +1336,7 @@ _on_editor_save(void *data,
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
    edje_edit_without_source_save(style->obj, true);
+   pm_project_changed(ap->project);
 }
 
 static void
@@ -1326,6 +1397,7 @@ _on_bt_prog_del(void *data,
    Program_Editor *prog_edit = (Program_Editor*)data;
 
    Elm_Object_Item *glit = elm_genlist_selected_item_get(prog_edit->gl_progs);
+   if (!glit) return;
    const char *program_name = NULL;
 
    program_name = elm_object_item_part_text_get(glit, "elm.text");
@@ -1335,7 +1407,20 @@ _on_bt_prog_del(void *data,
                     prop.style->name)
      }
    else
-     elm_object_item_del(glit);
+     {
+        if (elm_genlist_items_count(prog_edit->gl_progs) == 1)
+          {
+             elm_object_content_set(prop.prop_scroller, NULL);
+             prop.prop_box = NULL;
+          }
+        else
+          {
+             Elm_Object_Item *next = elm_genlist_item_next_get(glit);
+             if (!next) next = elm_genlist_item_prev_get(glit);
+             elm_genlist_item_selected_set(next, true);
+          }
+        elm_object_item_del(glit);
+     }
 }
 
 static void
@@ -1343,32 +1428,23 @@ _on_bt_prog_add(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *box = NULL;
    Evas_Object *button = NULL;
-   Evas_Object *prog_box, *prog_label;
+   Evas_Object *item;
 
    Program_Editor *prog_edit = (Program_Editor*)data;
 
    prog_edit->popup.popup = elm_popup_add(prog_edit->mwin);
    elm_object_style_set(prog_edit->popup.popup, "eflete");
    elm_object_part_text_set(prog_edit->popup.popup, "title,text",
-                            _("Add new program:"));
+                            _("New program"));
 
-   BOX_ADD(prog_edit->popup.popup, box, false, false);
-   BOX_ADD(box, prog_box, true, false);
-
-   LABEL_ADD(prog_box, prog_label, _("Program name: "))
-   elm_box_pack_end(prog_box, prog_label);
-
-   EWE_ENTRY_ADD(prog_box, prog_edit->popup.entry, true, DEFAULT_STYLE);
+   ITEM_ADD(prog_edit->popup.popup, item, _("Program name:"), "eflete/property/item/default");
+   EWE_ENTRY_ADD(item, prog_edit->popup.entry, true, DEFAULT_STYLE)
    elm_entry_markup_filter_append(prog_edit->popup.entry,
                                   elm_entry_filter_accept_set, &accept_name);
-   elm_object_part_text_set(prog_edit->popup.entry, "guide",
-                            _("Type new program name here."));
-   elm_box_pack_end(prog_box, prog_edit->popup.entry);
+   elm_object_part_content_set(item, "elm.swallow.content", prog_edit->popup.entry);
 
-   elm_box_pack_end(box, prog_box);
-   elm_object_content_set(prog_edit->popup.popup, box);
+   elm_object_content_set(prog_edit->popup.popup, item);
 
    BUTTON_ADD(prog_edit->popup.popup, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_add_popup_bt_add,
@@ -1401,7 +1477,7 @@ program_editor_window_add(Style *style)
    Evas_Object *bt, *box;
    Program_Editor *prog_edit = NULL;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if ((!style) || (!style->obj))
      {
@@ -1449,9 +1525,8 @@ program_editor_window_add(Style *style)
    elm_object_part_content_set(pans, "left", box);
 
    SCROLLER_ADD(pans, scroller);
-   prop.prop_box = _prop_progs_add(scroller, prog_edit);
-   elm_object_content_set(scroller,   prop.prop_box);
    elm_object_part_content_set(pans, "right", scroller);
+   prop.prop_scroller = scroller;
 
    BOX_ADD(mw_box, box, true, false);
    evas_object_size_hint_align_set(box, 1, 0.5);

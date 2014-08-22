@@ -62,7 +62,7 @@ EFLETE_TEST(ui_menu_locked_set_test_p)
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
    ui_menu_add(app_data);

@@ -431,6 +431,7 @@ _on_style_clicked_double(void *data,
      }
 
    gl_parts = elm_genlist_add(nf);
+   elm_genlist_longpress_timeout_set(gl_parts, 0.2);
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
    elm_object_style_set(gl_parts, "eflete/dark");

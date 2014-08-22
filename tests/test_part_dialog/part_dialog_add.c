@@ -77,7 +77,7 @@ EFLETE_TEST (part_dialog_add_test_p)
    const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("UTC", edj_path);
    widget_list = ui_widget_list_add(app->win);
@@ -143,7 +143,7 @@ EFLETE_TEST (part_dialog_add_test_n1)
    const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("UTC", edj_path);
    widget_list = ui_widget_list_add(app->win);
@@ -209,7 +209,7 @@ EFLETE_TEST (part_dialog_add_test_n2)
    const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    app->win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->project = pm_open_project_edj("UTC", edj_path);
    widget_list = ui_widget_list_add(app->win);
@@ -273,7 +273,7 @@ EFLETE_TEST (part_dialog_add_test_n3)
    const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    widget_list = ui_widget_list_add(app->win);
    ui_block_widget_list_set(app, widget_list);

@@ -57,7 +57,7 @@ EFLETE_TEST (main_window_get_test_p)
 {
    elm_init(0,0);
    app_init();
-   App_Data *app = app_create();
+   App_Data *app = app_data_get();
    ui_main_window_add(app);
 
    ck_assert_msg(main_window_get() != NULL, "Main window not exist");
@@ -93,7 +93,7 @@ EFLETE_TEST (main_window_get_test_n1)
 {
    elm_init(0,0);
    app_init();
-   app_create();
+   app_data_get();
 
    ck_assert_msg(main_window_get() == NULL, "Main window was returned");
 

@@ -29,9 +29,12 @@ _on_done(void *data,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-   /*TODO: add mesasge about save the project */
    App_Data *ap = (App_Data *)data;
-   /* TODO: add unsaved project check here*/
+   if (!ui_close_project_request(ap,
+                                 _("You want to close Eflete, but now you have<br/>"
+                                   "opened project. If you dont save opened project<br/>"
+                                   "all your changes will be lost!")))
+     return;
    ui_main_window_del(ap);
 
    ecore_main_loop_quit();

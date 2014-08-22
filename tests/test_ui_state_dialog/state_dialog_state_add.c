@@ -74,7 +74,7 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    name = "UTC";
    path = "./edj_build/state_dialog_state_add.edj";
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    app_data->project = pm_open_project_edj(name, path);
    canvas = evas_object_evas_get(app_data->win);
@@ -124,7 +124,7 @@ EFLETE_TEST (state_dialog_state_add_test_n1)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    popup = state_dialog_state_add(app_data);
    ck_assert_msg(popup == NULL, "It create popup with 'state dialog' without creating main window");
@@ -197,7 +197,7 @@ EFLETE_TEST (state_dialog_state_add_test_n3)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    popup = state_dialog_state_add(app_data);

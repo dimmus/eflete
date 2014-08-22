@@ -58,7 +58,7 @@ EFLETE_TEST(preference_add_test_p)
 
    elm_init(0,0);
    app_init();
-   ap = app_create();
+   ap = app_data_get();
    ui_main_window_add(ap);
 
    preference = preference_add(PREFERENCE_NONE);

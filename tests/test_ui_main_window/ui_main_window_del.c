@@ -60,7 +60,7 @@ EFLETE_TEST(ui_main_window_del_test_p)
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    ret = ui_main_window_del(app_data);

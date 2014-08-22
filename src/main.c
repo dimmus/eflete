@@ -74,7 +74,7 @@ elm_main(int argc, char **argv)
         CRIT("Could not find 'eflete_config.h'");
 #endif
 
-        App_Data *ap = app_create();
+        App_Data *ap = app_data_get();
         if (!ui_main_window_add(ap))
           {
              app_shutdown();
@@ -86,9 +86,7 @@ elm_main(int argc, char **argv)
           {
              if (eina_str_has_suffix(edj, ".edj"))
                {
-                  Evas_Object *wd_list = ui_edj_load_done(ap, edj);
-                  if (wd_list)
-                    add_callbacks_wd(wd_list, ap);
+                  ui_edj_load(ap, edj);
                }
           }
         elm_run();

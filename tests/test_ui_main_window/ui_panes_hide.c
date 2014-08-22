@@ -60,7 +60,7 @@ EFLETE_TEST(ui_panes_hide_test_p)
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    ret = ui_panes_hide(app_data);
@@ -138,7 +138,7 @@ EFLETE_TEST(ui_panes_hide_test_n2)
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    ret = ui_panes_hide(app_data);
    ck_assert_msg(ret == EINA_FALSE, "Hide panes without main window");

@@ -21,13 +21,15 @@
 #define STRING_MACRO_H
 
 #define GET_NAME_FROM_PATH(NAME, PATH) \
+{ \
    char **arr; \
    int i; \
    arr = eina_str_split(PATH, "/", 0); \
    for (i = 0; arr[i]; i++) ; \
    NAME = strdup(arr[i-1]); \
    free(arr[0]); \
-   free(arr);
+   free(arr); \
+}
 
 #define BANNED_SYMBOLS ":;,.'\"~!?&^%$#@()[]=+*{} |/\\№"
 #define STYLE_NAME_BANNED_SYMBOLS ":;,.'`\"~!?&^%$#@()[]=+*{} |\\№"

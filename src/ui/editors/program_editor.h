@@ -22,6 +22,11 @@
 
 #define TRANSITIONS_COUNT 11
 #define ACTIONS_COUNT 11
+#define TARGET_NAME_KEY "target.name.key"
+#define TARGET_ITEM_KEY "target.item.key"
+#define AFTER_NAME_KEY "after.name.key"
+#define AFTER_ITEM_KEY "after.item.key"
+#define DEL_BUTTON_KEY "del.button.key"
 
 /**
  * @defgroup ProgramEditor Program Editor

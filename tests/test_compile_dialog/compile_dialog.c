@@ -59,7 +59,7 @@ EFLETE_TEST (compile_dialog_test_n1)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    result = compile_dialog(app_data);
    ck_assert_msg(result == EINA_FALSE, "Compile dialog was created");

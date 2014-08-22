@@ -186,8 +186,8 @@ _grid_sel(void *data,
 
 static void
 _on_image_done(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info)
+               Evas_Object *obj,
+               void *event_info)
 {
    Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
@@ -207,9 +207,11 @@ _on_image_done(void *data,
      {
         if (!edje_edit_image_add(edje_edit_obj, selected))
           {
-             NOTIFY_ERROR(_("Error while loading file.<br>"
-                          "Please check if file is image"
-                          "or/and file is accessible."));
+             WIN_NOTIFY_ERROR(obj,
+                              _("Error while loading file.<br>"
+                                "Please check if file is image"
+                                "or/and file is accessible."));
+             return;
           }
         else
           {
@@ -217,11 +219,12 @@ _on_image_done(void *data,
              it->image_name = eina_stringshare_add(ecore_file_file_get(selected));
              it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+             pm_project_changed(app_data_get()->project);
           }
      }
    else
      {
-        NOTIFY_ERROR(_("Error while loading file.<br>File is not exist"));
+        WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
         return;
      }
 
@@ -267,6 +270,7 @@ _on_button_delete_clicked_cb(void *data,
    Evas_Object *edje_edit_obj = NULL;
    char buf[BUFF_MAX];
    int symbs = 0;
+   int images_to_del = 0;
 
    if (!img_edit->gengrid) return;
 
@@ -274,6 +278,7 @@ _on_button_delete_clicked_cb(void *data,
 
    grid_list = (Eina_List *)elm_gengrid_selected_items_get(img_edit->gengrid);
    if (!grid_list) return;
+   images_to_del = eina_list_count(grid_list);
 
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
@@ -291,6 +296,8 @@ _on_button_delete_clicked_cb(void *data,
              elm_gengrid_item_selected_set(grid_item, false);
           }
      }
+   if (notdeleted < images_to_del)
+     pm_project_changed(app_data_get()->project);
    if (notdeleted == 1)
      {
         EINA_LIST_FOREACH(in_use, l, name)
@@ -361,7 +368,7 @@ _on_button_ok_clicked_cb(void *data,
         it = elm_gengrid_selected_item_get(img_edit->gengrid);
         if (!it)
           {
-            _image_editor_del(img_edit);
+            WIN_NOTIFY_WARNING(img_edit->win, _("Image not selected"));
             return;
           }
         item = elm_object_item_data_get(it);
@@ -452,7 +459,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Evas_Object *box, *bottom_box, *panel_box;
    Evas_Object *_bg = NULL;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if (!project)
      {
@@ -482,7 +489,11 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_show(_bg);
 
    if (mode == SINGLE)
-     elm_gengrid_multi_select_set(img_edit->gengrid, false);
+     {
+       elm_gengrid_multi_select_set(img_edit->gengrid, false);
+       evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
+                                      _on_button_ok_clicked_cb, img_edit);
+     }
    else
      elm_gengrid_multi_select_set(img_edit->gengrid, true);
 

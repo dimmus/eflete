@@ -60,7 +60,7 @@ EFLETE_TEST (mw_icon_set_test_p)
 
    elm_init(0,0);
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    mw = mw_add(NULL, NULL);
    Evas_Object *ic = elm_icon_add(app->win);
@@ -103,7 +103,7 @@ EFLETE_TEST (mw_icon_set_test_n1)
 
    elm_init(0,0);
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    mw = mw_add(NULL, NULL);
 
@@ -144,7 +144,7 @@ EFLETE_TEST (mw_icon_set_test_n2)
 
    elm_init(0,0);
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    Evas_Object *ic = elm_icon_add(app->win);
 

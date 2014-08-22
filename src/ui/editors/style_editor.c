@@ -448,6 +448,7 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
+   pm_project_changed(app_data_get()->project);
    evas_object_del(style_edit->mwin);
 }
 
@@ -651,7 +652,7 @@ style_editor_window_add(Project *project)
    static const char *style_buf = FONT_DEFAULT"'";
 
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if (!project)
      {

@@ -77,7 +77,7 @@ EFLETE_TEST (state_dialog_state_del_test_p)
    name = "UTC";
    path = "./edj_build/state_dialog_state_del.edj";
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    app_data->project = pm_open_project_edj(name, path);
    canvas = evas_object_evas_get(app_data->win);
@@ -129,7 +129,7 @@ EFLETE_TEST (state_dialog_state_del_test_n1)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    popup = state_dialog_state_del(app_data);
    ck_assert_msg(popup == NULL, "It delete part's state without creating main window");
@@ -202,7 +202,7 @@ EFLETE_TEST (state_dialog_state_del_test_n3)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    popup = state_dialog_state_del(app_data);

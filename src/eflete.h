@@ -72,7 +72,6 @@ struct _App_Data
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
-   Eina_Bool is_new;
    struct {
       Evas_Object *left;
       Evas_Object *right;
@@ -147,7 +146,7 @@ win_layout_get(void);
  * @ingroup Eflete
  */
 App_Data *
-app_create(void);
+app_data_get(void);
 
 /**
  * This function will free allocated memory used for App_Data.

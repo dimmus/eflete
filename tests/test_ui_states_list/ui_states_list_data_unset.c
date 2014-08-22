@@ -160,7 +160,7 @@ EFLETE_TEST(ui_states_list_data_unset_test_n)
 END_TEST
 
 /**
- * @addtogroup ui_states_list_data_set
+ * @addtogroup ui_states_list_data_unset
  * @{
  * </TABLE>
  * @}

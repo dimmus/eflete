@@ -28,6 +28,7 @@ struct _fs_entries
    Evas_Object *log;
 
    Evas_Object *parent;
+   Evas_Object *win;
 };
 
 typedef struct _fs_entries fs_entries;
@@ -73,14 +74,11 @@ _on_open_edj_cb(void *data,
                 void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   Evas_Object *wd_list = NULL;
 
    const char *path_edj = elm_object_text_get(fs_ent->edj);
 
-   wd_list = ui_edj_load_done(ap, path_edj);
-   if (wd_list)
+   if (ui_edj_load(ap, path_edj))
      {
-        add_callbacks_wd(wd_list, ap);
         evas_object_hide(elm_object_parent_widget_get(obj));
         ecore_main_loop_quit();
      }
@@ -118,12 +116,12 @@ _on_compile_cb(void *data,
 
    if (!eina_str_has_suffix(path_edc, ".edc"))
      {
-        NOTIFY_ERROR(_("Input file must have an extension '.edc'"));
+        WIN_NOTIFY_ERROR(fs_ent->win, _("Input file must have an extension '.edc'"));
         return;
      }
    if (!eina_str_has_suffix(path_edj, ".edj"))
      {
-        NOTIFY_ERROR(_("Output file must have an extension '.edj'"));
+        WIN_NOTIFY_ERROR(fs_ent->win, _("Output file must have an extension '.edj'"));
         return;
      }
    elm_object_disabled_set(obj, true);
@@ -274,6 +272,13 @@ compile_dialog(App_Data *ap)
         return EINA_FALSE;
      }
 
+   if (!ui_close_project_request(ap,
+                                 _("You want to compile and open new theme, but now <br/>"
+                                   "you have opened project. If you dont save opened<br/>"
+                                   "project before opening compiled one "
+                                   "all your changes will be lost!")))
+     return false;
+
    MODAL_WINDOW_ADD(win, ap->win, _("Compile EDC file"), _on_cancel_cb, ap);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -283,6 +288,7 @@ compile_dialog(App_Data *ap)
    if (!fs_ent)
      fs_ent = mem_malloc(sizeof(fs_entries));
    fs_ent->parent = ap->win;
+   fs_ent->win = win;
    fs_ent->project_name = NULL;
 
    layout = elm_layout_add(win);

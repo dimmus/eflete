@@ -48,6 +48,17 @@ Eina_Bool
 save_as_edj_file(App_Data *ap);
 
 /**
+ * Save current project. If project is new save dialog will be shown(@see save_as_edj_file).
+ *
+ * @param ap The Application data.
+ * @return EINA_TRUE if a project saved, else EINA_FALSE.
+ *
+ * @ingroup SaveFileDialog
+ */
+Eina_Bool
+save_edj_file(App_Data *ap);
+
+/**
  * Create and show a dialog for save project into a edc file.
  *
  * @param ap The Apllication data.

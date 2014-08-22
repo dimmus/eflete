@@ -60,7 +60,7 @@ EFLETE_TEST (save_as_edc_file_test_n1)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    result = save_as_edc_file(app_data);
@@ -103,8 +103,8 @@ EFLETE_TEST (save_as_edc_file_test_n2)
    const char *path = "./edj_build/save_as_edc_file.edj";
 
    app_init();
-   app_data = app_create();
-   ui_edj_load_done(app_data, path);
+   app_data = app_data_get();
+   ui_edj_load(app_data, path);
 
    result = save_as_edc_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Save as edc' dialog was created");

@@ -59,7 +59,7 @@ EFLETE_TEST (colorselector_color_get_test_n1)
    App_Data *app;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    r = 120;
    g = 130;
@@ -150,7 +150,7 @@ EFLETE_TEST (colorselector_color_get_test_p)
    int r, g, b, a;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    Evas_Object *colsel = colorselector_add(app->win);
 

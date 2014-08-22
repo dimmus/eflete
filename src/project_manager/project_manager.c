@@ -167,6 +167,8 @@ _pm_project_add(const char *name,
    pro->sound_directory = sd ? strdup(sd) : NULL;
    DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
+   pro->close_request = false;
+
    return pro;
 }
 
@@ -206,6 +208,7 @@ pm_open_project_edj(const char *name,
    ecore_main_loop_begin();
    project->widgets = wm_widget_list_new(project->swapfile);
    project->layouts = wm_widget_list_layouts_load(project->swapfile);
+   project->is_saved = true;
    INFO("Project '%s' is open!", project->name);
 
    return project;
@@ -230,6 +233,7 @@ pm_save_project_edj(Project *project)
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
+   project->is_saved = true;
    return true;
 }
 
@@ -243,6 +247,7 @@ pm_save_as_project_edj(Project *project, const char *path)
    eio_file_copy(project->swapfile, path, NULL,
                  _on_copy_done_save_as_cb, _on_copy_error_cb, project);
    ecore_main_loop_begin();
+   project->is_saved = true;
    return true;
 }
 
@@ -278,5 +283,14 @@ pm_save_project_to_swap(Project *project)
              edje_edit_save(style->obj);
           }
      }
+   return true;
+}
+
+Eina_Bool
+pm_project_changed(Project *project)
+{
+   DBG("Project marker as changed\n");
+   if (!project) return false;
+   project->is_saved = false;
    return true;
 }

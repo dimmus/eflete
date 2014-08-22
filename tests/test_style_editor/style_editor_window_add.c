@@ -57,9 +57,9 @@ EFLETE_TEST(style_editor_window_add_test_p)
    elm_init(0,0);
    App_Data *app = NULL;
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
-   ui_edj_load_done(app, "./edj_build/style_editor_window_add.edj");
+   ui_edj_load(app, "./edj_build/style_editor_window_add.edj");
    ck_assert_msg(style_editor_window_add(app->project) != NULL,
                  "Style_edtor not added");
    elm_shutdown();
@@ -125,8 +125,8 @@ EFLETE_TEST(style_editor_window_add_test_n2)
    elm_init(0,0);
    App_Data *app = NULL;
    app_init();
-   app = app_create();
-   ui_edj_load_done(app, "./edj_build/style_editor_window_add.edj");
+   app = app_data_get();
+   ui_edj_load(app, "./edj_build/style_editor_window_add.edj");
    ck_assert_msg(style_editor_window_add(app->project) == NULL,
                  "Style_edtor added to non-existing window");
    elm_shutdown();
@@ -162,7 +162,7 @@ EFLETE_TEST(style_editor_window_add_test_n3)
    elm_init(0,0);
    App_Data *app = NULL;
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    ck_assert_msg(style_editor_window_add(app->project) == NULL,
                  "Style_edtor added without open project");

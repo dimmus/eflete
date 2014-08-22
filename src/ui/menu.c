@@ -36,7 +36,8 @@ struct _menu_event
       OPEN_EDJ,
       EXPORT_EDC,
       SAVE_EDJ,
-      SAVE_AS_EDJ
+      SAVE_AS_EDJ,
+      NEW_THEME
    } type;
 };
 
@@ -57,273 +58,68 @@ _menu_event_handler_cb(void *data __UNUSED__,
    Evas_Object *nf;
 
    switch (menu_event->type)
-      {
+     {
       case OPEN_EDC:
-         compile_dialog(menu_event->ap);
-      break;
+        {
+           compile_dialog(menu_event->ap);
+           break;
+        }
       case OPEN_EDJ:
-         open_edj_file(menu_event->ap);
-      break;
+        {
+           open_edj_file(menu_event->ap);
+           break;
+        }
       case EXPORT_EDC:
-         save_as_edc_file(menu_event->ap);
-      break;
+        {
+           save_as_edc_file(menu_event->ap);
+           break;
+        }
       case SAVE_EDJ:
-         if (pm_save_project_to_swap(menu_event->ap->project))
+         if (save_edj_file(menu_event->ap))
            {
-              if (pm_save_project_edj(menu_event->ap->project))
-                {
-                   NOTIFY_INFO(3, _("Theme saved: %s"), menu_event->ap->project->edj)
-                   live_view_widget_style_set(menu_event->ap->live_view, menu_event->ap->project,
-                                              menu_event->ap->project->current_style);
-                }
-              else
-                 NOTIFY_ERROR(_("Theme can not be saved: %s"), menu_event->ap->project->edj);
+              nf = ui_block_widget_list_get(menu_event->ap);
+              ui_widget_list_title_set(nf, menu_event->ap->project->name);
+              STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
            }
-      break;
+         break;
       case SAVE_AS_EDJ:
-         save_as_edj_file(menu_event->ap);
-         nf = ui_block_widget_list_get(menu_event->ap);
-         ui_widget_list_title_set(nf, menu_event->ap->project->name);
-         STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
-         ui_menu_disable_set(menu_event->ap->menu_hash, _("Save project"), false);
-      break;
-      }
+         if (save_as_edj_file(menu_event->ap))
+           {
+              nf = ui_block_widget_list_get(menu_event->ap);
+              ui_widget_list_title_set(nf, menu_event->ap->project->name);
+              STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
+           }
+         break;
+      case NEW_THEME:
+        {
+           new_theme_create(menu_event->ap);
+           break;
+        }
+     }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
    return ECORE_CALLBACK_DONE;
 }
 
-static void
-_on_close_project_cancel(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
-   ui_menu_locked_set(ap->menu_hash, false);
-}
+#define DELAYED_CB(NAME, EVENT) \
+static void \
+NAME(void *data, \
+     Evas_Object *obj __UNUSED__, \
+     void *event_info __UNUSED__) \
+{ \
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event)); \
+   menu_event->ap = data; \
+   menu_event->type = EVENT; \
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL); \
+} \
 
-static void
-_on_close_project_save(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       void *ei __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
+DELAYED_CB(_on_new_theme_menu, NEW_THEME);
+DELAYED_CB(_on_edc_open_menu, OPEN_EDC);
+DELAYED_CB(_on_edj_open_menu, OPEN_EDJ);
+DELAYED_CB(_on_save_menu, SAVE_EDJ);
+DELAYED_CB(_on_save_as_menu, SAVE_AS_EDJ);
+DELAYED_CB(_on_export_edc_menu, EXPORT_EDC);
 
-   evas_object_hide(ap->popup);
-   if (!ap->project->edj)
-     {
-        ap->is_new = true;
-        save_as_edj_file(ap);
-     }
-   else
-     {
-        if (pm_save_project_to_swap(ap->project))
-          {
-             if (pm_save_project_edj(ap->project))
-                live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
-             else
-                NOTIFY_ERROR(_("Theme can not be saved: %s"), ap->project->edj);
-          }
-     }
-   ui_panes_hide(ap);
-   ui_menu_base_disabled_set(ap->menu_hash, true);
-   pm_project_close(ap->project);
-   ap->project = NULL;
-   open_edj_file(ap);
-   ui_menu_locked_set(ap->menu_hash, false);
-   evas_object_del(ap->popup);
-}
-
-static void
-_project_not_save_new(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *ei __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-
-   evas_object_hide(ap->popup);
-
-   if (pm_project_close(ap->project)) ap->project = NULL;
-
-   new_theme_create(ap);
-   ui_menu_locked_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-   evas_object_del(ap->popup);
-}
-
-
-static void
-_project_not_save_edc(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *ei __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-
-   ui_panes_hide(ap);
-
-   if (pm_project_close(ap->project)) ap->project = NULL;
-
-   ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
-
-   evas_object_hide(ap->popup);
-   STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
-   compile_dialog(ap);
-   ui_menu_locked_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-   evas_object_del(ap->popup);
-}
-
-static void
-_project_not_save_edj(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *ei __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-
-   ui_panes_hide(ap);
-
-   if (pm_project_close(ap->project)) ap->project = NULL;
-
-   ui_menu_base_disabled_set(ap->menu_hash, true);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
-
-   evas_object_hide(ap->popup);
-   STATUSBAR_PROJECT_PATH(ap, _("the project didn't opened"));
-
-   open_edj_file(ap);
-   ui_menu_locked_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-   evas_object_del(ap->popup);
-}
-
-
-#define POPUP_CLOSE_PROJECT(MESSAGE, func_pro_not_save) \
-   Evas_Object *btn, *label; \
-   Eina_Stringshare *title; \
-   ui_menu_locked_set(ap->menu_hash, true); \
-   title = eina_stringshare_printf(_("Close project %s"), ap->project->name); \
-   ap->popup = elm_popup_add(ap->win_layout); \
-   elm_object_style_set(ap->popup, "eflete"); \
-   elm_object_part_text_set(ap->popup, "title,text", title); \
-   LABEL_ADD(ap->popup, label, MESSAGE) \
-   elm_object_content_set(ap->popup, label); \
-   BUTTON_ADD(ap->popup, btn, _("Save")) \
-   evas_object_smart_callback_add(btn, "clicked", _on_close_project_save, ap); \
-   elm_object_part_content_set(ap->popup, "button1", btn); \
-   BUTTON_ADD(ap->popup, btn, _("Don't save")) \
-   evas_object_smart_callback_add(btn, "clicked", func_pro_not_save, ap); \
-   elm_object_part_content_set(ap->popup, "button2", btn); \
-   BUTTON_ADD(ap->popup, btn, _("Cancel")) \
-   evas_object_smart_callback_add(btn, "clicked", _on_close_project_cancel, ap); \
-   elm_object_part_content_set(ap->popup, "button3", btn); \
-   evas_object_show(ap->popup);  \
-   eina_stringshare_del(title);
-
-static void
-_on_new_theme_menu(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   if (ap->project)
-     {
-        POPUP_CLOSE_PROJECT(_("You want to create a new theme, but now you have<br/>"
-                            "open project. If you dont save the open project<br/>"
-                            "all your changes will be lost!"),
-                            _project_not_save_new);
-     }
-   else new_theme_create(ap);
-}
-
-static void
-_on_edc_open_menu(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   Menu_Event *menu_event;
-   if (ap->project)
-     {
-        POPUP_CLOSE_PROJECT(_("You want to open new theme, but now you have<br/>"
-                            "open project. If you dont save the open project<br/>"
-                            "all your changes will be lost!"),
-                            _project_not_save_edc);
-     }
-   else
-     {
-        menu_event = mem_malloc(sizeof(Menu_Event));
-        menu_event->ap = ap;
-        menu_event->type = OPEN_EDC;
-        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-     }
-}
-
-static void
-_on_edj_open_menu(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   Menu_Event *menu_event;
-   if (ap->project)
-     {
-        POPUP_CLOSE_PROJECT(_("You want to open new theme, but now you have<br/>"
-                            "open project. If you dont save the open project<br/>"
-                            "all your changes will be lost!"),
-                            _project_not_save_edj)
-     }
-   else
-     {
-        menu_event = mem_malloc(sizeof(Menu_Event));
-        menu_event->ap = ap;
-        menu_event->type = OPEN_EDJ;
-        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-     }
-}
-
-static void
-_on_save_menu(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   Menu_Event *menu_event;
-   if ((!ap) || (!ap->project))
-     {
-        ERR("Project coud'nt be saved");
-        return;
-     }
-   menu_event = mem_malloc(sizeof(Menu_Event));
-   menu_event->ap = ap;
-   if (!ap->project->edj)
-      menu_event->type = SAVE_AS_EDJ;
-   else
-      menu_event->type = SAVE_EDJ;
-   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-}
-
-static void
-_on_save_as_menu(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
-   menu_event->ap = (App_Data *)data;
-   menu_event->type = SAVE_AS_EDJ;
-   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-}
-
-static void
-_on_export_edc_menu(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
-   menu_event->ap = (App_Data *)data;
-   menu_event->type = EXPORT_EDC;
-   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
-}
+#undef DELAYED_CB
 
 static void
 _on_exit_menu(void *data,

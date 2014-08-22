@@ -59,6 +59,9 @@ struct _Project
    Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */
    /** opened group */
    Style *current_style;
+   Eina_Bool is_saved : 1;
+   Eina_Bool is_new : 1;
+   Eina_Bool close_request : 1;
 };
 
 /**
@@ -156,6 +159,19 @@ pm_save_as_project_edj(Project *project, const char *path);
  */
 Eina_Bool
 pm_save_project_to_swap(Project *project);
+
+/**
+ * Mark project as changed
+ *
+ * Changed flag will be automatically dropped when project will be saved.
+ * When closing project that is marked as changed, warning will be shown
+ *
+ * @param project A Project structure;
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_changed(Project *project);
 
 /**
  *

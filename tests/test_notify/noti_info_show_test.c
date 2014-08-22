@@ -58,7 +58,7 @@ EFLETE_TEST(noti_info_show_test_p)
    elm_init(0,0);
    App_Data *app;
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    ck_assert_msg(noti_info_show(win_layout_get(), "text", 1),
                  "can't show notify with text");
@@ -98,7 +98,7 @@ EFLETE_TEST(noti_info_show_test_n1)
    elm_init(0,0);
    App_Data *app;
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    ck_assert_msg(noti_info_show(NULL, "text", 1) == false,
                  "can't show notify with text");
@@ -138,7 +138,7 @@ EFLETE_TEST(noti_info_show_test_n2)
    elm_init(0,0);
    App_Data *app;
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    ck_assert_msg(noti_info_show(win_layout_get(), "text", -1) == false,
                  "can't show notify with text");

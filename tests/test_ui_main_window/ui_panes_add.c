@@ -73,7 +73,7 @@ EFLETE_TEST(ui_panes_add_test_p)
    app_init();
    config_init();
    config_load();
-   app_data = app_create();
+   app_data = app_data_get();
 
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
@@ -168,7 +168,7 @@ EFLETE_TEST(ui_panes_add_test_n2)
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    ret = ui_panes_add(app_data);
    ck_assert_msg(ret == EINA_FALSE, "Create panes without main window create");

@@ -75,10 +75,10 @@ EFLETE_TEST (style_dialog_add_test_p1)
    const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
+   widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
    /* Double-click on widget*/
@@ -134,10 +134,10 @@ EFLETE_TEST (style_dialog_add_test_p2)
    const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
+   widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
    /* Double-click on widget*/
@@ -184,16 +184,14 @@ EFLETE_TEST (style_dialog_add_test_n1)
 {
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
-   Evas_Object *widget_list;
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
 
    result = style_dialog_add(app_data);
    ck_assert_msg(result == EINA_FALSE, "Style dialog was added");

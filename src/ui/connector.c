@@ -140,11 +140,19 @@ _restack_part_above(void *data,
    Part *rel = (Part *)event_info;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    Style *style = ap->project->current_style;
+   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
    if ((!part) || (!style)) return;
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
+   if (!tmp_list) return;
+
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
+   style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
 }
 
 static void
@@ -156,11 +164,19 @@ _restack_part_below(void *data,
    Part *rel = (Part *)event_info;
    Style *style = ap->project->current_style;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
    if ((!part) || (!style)) return;
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
+   if (!tmp_list) return;
+
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
+   style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
 }
 
 static void
@@ -340,8 +356,6 @@ _add_layout_cb(void *data,
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
 
-   wm_style_data_load(layout, evas_object_evas_get(widget_list),
-                      ap->project->swapfile);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
    return;
@@ -633,89 +647,43 @@ ui_style_clicked(App_Data *ap, Style *style)
    return true;
 }
 
-Evas_Object *
-ui_edj_load_done(App_Data* ap, const char *selected_file)
+static Eina_Bool
+_ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 {
    Evas_Object *wd_list = NULL;
    char *name, *selected;
 
-   if ((!ap) || (!selected_file)) return NULL;
+   if ((!ap) || (!selected_file)) return false;
 
-   if (eina_str_has_suffix(selected_file, ".edj"))
+   if (ap->project)
      {
-        selected = eina_file_path_sanitize(selected_file);
-        INFO("Selected file: %s", selected);
         ui_property_style_unset(ui_block_property_get(ap));
         ui_states_list_data_unset(ui_block_state_list_get(ap));
         ui_signal_list_data_unset(ui_block_signal_list_get(ap));
-
-        if (ap->workspace)
-          {
-             workspace_edit_object_unset(ap->workspace);
-             workspace_highlight_unset(ap->workspace);
-          }
-
-        if (ap->live_view) live_view_widget_style_unset(ap->live_view);
-        GET_NAME_FROM_PATH(name, selected)
-        ap->project = pm_open_project_edj(name, selected);
-        free(name);
-        if (!ap->project)
-          {
-             NOTIFY_ERROR(_("Can't open file: %s"), selected);
-             return NULL;
-          }
-        NOTIFY_INFO(3, _("Selected file: %s"), selected);
-
-        wd_list = ui_widget_list_add(ap->block.left_top);
-        ui_widget_list_title_set(wd_list, ap->project->name);
-        ui_widget_list_data_set(wd_list, ap->project);
-        ui_block_widget_list_set(ap, wd_list);
-        evas_object_show(wd_list);
-        ui_panes_show(ap);
-        STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
-        ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
-        ui_menu_base_disabled_set(ap->menu_hash, false);
+        pm_project_close(ap->project);
      }
-   else NOTIFY_ERROR(_("The file must have a extension '.edj'"));
-
-   return wd_list;
-}
-
-Eina_Bool
-new_theme_create(App_Data *ap)
-{
-   Evas_Object *wd_list = NULL;
-
-   if (!ap) return false;
-
-   ap->is_new = false;
-
-   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_SWAP_PATH"Untitled.edj"))
-     {
-        ERR("Couldn't copy theme template to cache");
-        return false;
-     }
-
-   Evas_Object *prop, *state, *signal;
-   state = ui_block_state_list_get(ap);
-   if (state) elm_genlist_clear(state);
-   signal = ui_block_signal_list_get(ap);
-   if (signal) elm_genlist_clear(signal);
-   prop = ui_block_property_get(ap);
-   if (prop) ui_property_style_unset(prop);
-
+   if (ap->live_view) live_view_widget_style_unset(ap->live_view);
    if (ap->workspace)
      {
         workspace_edit_object_unset(ap->workspace);
         workspace_highlight_unset(ap->workspace);
      }
 
-   if ((ap->live_view) || (ap->project))
-     live_view_widget_style_unset(ap->live_view);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
+   selected = eina_file_path_sanitize(selected_file);
+   INFO("Selected file: %s", selected);
 
-   ap->project = pm_open_project_edj("Untitled.edj", EFLETE_SWAP_PATH"Untitled.edj");
-   if (!ap->project) return false;
+   if (is_new) name = strdup("Untitled.edj");
+   else GET_NAME_FROM_PATH(name, selected);
+
+   ap->project = pm_open_project_edj(name, selected);
+   free(name);
+
+   if (!ap->project)
+     {
+        NOTIFY_ERROR(_("Can't open file: %s"), selected);
+        return false;
+     }
+
    wd_list = ui_widget_list_add(ap->block.left_top);
    ui_widget_list_title_set(wd_list, ap->project->name);
    ui_widget_list_data_set(wd_list, ap->project);
@@ -723,15 +691,130 @@ new_theme_create(App_Data *ap)
    add_callbacks_wd(wd_list, ap);
    evas_object_show(wd_list);
    ui_panes_show(ap);
-   ap->project->edj = NULL;
+
+   ap->project->is_new = is_new;
+   if (is_new)
+     {
+        NOTIFY_INFO(3, _("New theme created"))
+        STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
+        ap->project->edj = NULL;
+        ap->project->is_saved = false;
+     }
+   else
+     {
+        STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
+        ap->project->is_saved = true;
+        NOTIFY_INFO(3, _("Selected file: %s"), selected)
+     }
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
    ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
    ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
-   STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
+
+   free(selected);
 
    return true;
+}
+
+Eina_Bool
+ui_edj_load(App_Data* ap, const char *selected_file)
+{
+   return _ui_edj_load_internal(ap, selected_file, false);
+}
+
+Eina_Bool
+new_theme_create(App_Data *ap)
+{
+   if (!ap) return false;
+   if (!ui_close_project_request(ap,
+                                 _("You want to create a new theme, but now you have<br/>"
+                                   "opened project. If you dont save opened project<br/>"
+                                   "all your changes will be lost!")))
+     return false;
+   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_SWAP_PATH"Untitled.edj"))
+     {
+        ERR("Couldn't copy theme template to cache");
+        return false;
+     }
+
+   return _ui_edj_load_internal(ap, EFLETE_SWAP_PATH"Untitled.edj", true);
+}
+
+static void
+_discard_cb(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = true;
+   ecore_main_loop_quit();
+}
+
+static void
+_cancel_cb(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = false;
+   ecore_main_loop_quit();
+}
+
+static void
+_save_cb(void *data,
+         Evas_Object *obj __UNUSED__,
+         void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   if (save_edj_file(app_data_get()))
+     {
+        *res = true;
+        ecore_main_loop_quit();
+     }
+}
+
+Eina_Bool
+ui_close_project_request(App_Data *ap, const char *msg)
+{
+   if (!ap) return false;
+
+   if (!msg)
+      msg = _("If you dont save the open project<br/>"
+            "all your unsaved changes will be lost!");
+
+   if ((!ap->project) || (ap->project->is_saved)) return true;
+   if (ap->project->close_request) return false;
+   ap->project->close_request = true;
+
+   Eina_Bool result = false;
+   Evas_Object *btn, *label;
+   Eina_Stringshare *title;
+   ui_menu_locked_set(ap->menu_hash, true);
+   title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
+   ap->popup = elm_popup_add(ap->win_layout);
+   elm_object_style_set(ap->popup, "eflete");
+   elm_object_part_text_set(ap->popup, "title,text", title);
+   LABEL_ADD(ap->popup, label, msg);
+   elm_object_content_set(ap->popup, label);
+   BUTTON_ADD(ap->popup, btn, _("Save"));
+   evas_object_smart_callback_add(btn, "clicked", _save_cb, &result);
+   elm_object_part_content_set(ap->popup, "button1", btn);
+   BUTTON_ADD(ap->popup, btn, _("Don't save"));
+   evas_object_smart_callback_add(btn, "clicked", _discard_cb, &result);
+   elm_object_part_content_set(ap->popup, "button2", btn);
+   BUTTON_ADD(ap->popup, btn, _("Cancel"));
+   evas_object_smart_callback_add(btn, "clicked", _cancel_cb, &result);
+   elm_object_part_content_set(ap->popup, "button3", btn);
+   evas_object_show(ap->popup);
+   eina_stringshare_del(title);
+
+   ecore_main_loop_begin();
+
+   ap->project->close_request = false;
+   evas_object_del(ap->popup);
+
+   return result;
 }
 
 static Eina_Bool

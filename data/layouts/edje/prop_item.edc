@@ -60,7 +60,7 @@ group { name: "eflete/property/item/default";
          scale: 1;
          mouse_events: 0;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             fixed: 1 0;
             rel1 {
                to: "text_padding_top_left";
@@ -219,7 +219,7 @@ group { name: "eflete/property/item/relative";
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             fixed: 1 0;
             rel1 {
                to_x: "padding_text_right";
@@ -335,7 +335,7 @@ group {
             state: "default" 0.0;
             min: 75 25;
             max: 75 25;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             fixed: 1 1;
             rel1 {
                to: "padding_left_top";
@@ -547,7 +547,7 @@ group { name: "eflete/prop/container/1label";
       part { name: "eflete.text.start";
          type: TEXTBLOCK;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             text {
                style: "prop_item_label";
                max: 1 1;
@@ -613,7 +613,7 @@ group { name: "eflete/prop/container/2label";
       part { name: "eflete.text.end";
          type: TEXTBLOCK;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             rel1 {
                relative: 1.0 0.0;
                to_x: "content_right_padding";
@@ -632,7 +632,7 @@ group { name: "eflete/prop/container/live_view_spinner";
       part { name: "eflete.text.start";
          type: TEXTBLOCK;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             text {
                style: "prop_item_label";
                max: 1 1;
@@ -712,7 +712,7 @@ group { name: "eflete/property/item/live_view";
          description {
             state: "default" 0.0;
             min: 1 16;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             rel1 {
                to_x: "padding_middle";
                to_y: "padding_left_top";
@@ -749,7 +749,7 @@ group { name: "eflete/property/item/signals";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0;
-            align: 0 0.5;
+            align: 0 0.0;
             rel1 {
                relative: 1 0;
                to_x: "text_padding_top_left";

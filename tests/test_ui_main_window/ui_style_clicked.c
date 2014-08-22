@@ -76,10 +76,10 @@ EFLETE_TEST (ui_style_clicked_test_p)
    const char *path = "./edj_build/ui_style_clicked.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
+   widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
    /* Double-click on widget*/
@@ -141,7 +141,7 @@ EFLETE_TEST (ui_style_clicked_test_n1)
    const char *path = "./edj_build/ui_style_clicked.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    project = pm_open_project_edj("UTC", path);
    widget_list = ui_widget_list_add(parent);
@@ -208,10 +208,10 @@ EFLETE_TEST (ui_style_clicked_test_n2)
    const char *path = "./edj_build/ui_style_clicked.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   widget_list = ui_edj_load_done(app_data, path);
-   add_callbacks_wd(widget_list, app_data);
+   ui_edj_load(app_data, path);
+   widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
    /* Double-click on widget*/

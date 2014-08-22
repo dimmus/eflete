@@ -1,6 +1,22 @@
 ============
-Eflete 0.2.8
+Eflete 0.2.9
 ============
+
+Changes since 0.2.8
+-------------------
+
+Feature:
+   * Property: add turn option on/off ellipsis attribute;
+   * Image editor: choose a image on double click.
+
+Fixes:
+   * Fix warning window shown;
+   * Program editor: fix a bug with delete 'target' and 'after' fields;
+   * Program editor: fix extra warnings;
+   * Program editor: add label to 'Add program' window;
+   * Property: reset a image border after image change;
+   * Property: fix a sequence of parts in the combobox after part reorder in the
+     'Widget List'.
 
 Changes since 0.2.7
 -------------------
@@ -10,14 +26,14 @@ Features:
    * Live View: adding naviframe.
 
 Fixes:
-   * UTC: fixing report generation;
-   * UTC: fixing failing tests;
+   * UTC: fix report generation;
+   * UTC: fix failing tests;
    * Colorclasses: updating property after adding new colorclass or removing old;
-   * Property: fixing GLOW effect;
-   * Live View: fixing code style;
-   * Groupedit: fixing segfault when scroll down;
-   * Groupedit: fixing restack of items when in separated mode;
-   * Groupedit: fixing unselect after scroll down.
+   * Property: fix GLOW effect;
+   * Live View: fix code style;
+   * Groupedit: fix segfault when scroll down;
+   * Groupedit: fix restack of items when in separated mode;
+   * Groupedit: fix unselect after scroll down.
 
 Changes since 0.2.6
 -------------------
