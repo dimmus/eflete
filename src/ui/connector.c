@@ -140,11 +140,19 @@ _restack_part_above(void *data,
    Part *rel = (Part *)event_info;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
    Style *style = ap->project->current_style;
+   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
    if ((!part) || (!style)) return;
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
+   if (!tmp_list) return;
+
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
+   style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
 }
 
 static void
@@ -156,11 +164,19 @@ _restack_part_below(void *data,
    Part *rel = (Part *)event_info;
    Style *style = ap->project->current_style;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
    if ((!part) || (!style)) return;
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
+   if (!tmp_list) return;
+
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
+   style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
 }
 
 static void
