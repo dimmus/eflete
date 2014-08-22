@@ -63,7 +63,7 @@ EFLETE_TEST (ui_edj_load_test_p)
    const char *path = "./edj_build/ui_edj_load.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    result = ui_edj_load(app_data, path);
@@ -117,7 +117,7 @@ EFLETE_TEST (ui_edj_load_test_n)
    const char *path3 = "./edj_build/find_me_I_am_exist.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    result = ui_edj_load(app_data, path1);

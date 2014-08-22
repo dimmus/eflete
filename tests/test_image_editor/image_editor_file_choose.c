@@ -63,7 +63,7 @@ EFLETE_TEST (image_editor_file_choose_test_p)
    app_init();
    Evas_Object *images;
 
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
@@ -114,7 +114,7 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    app_init();
    Evas_Object *images;
 
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
@@ -165,7 +165,7 @@ EFLETE_TEST (image_editor_file_choose_test_n2)
    app_init();
    Evas_Object *images;
 
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
@@ -216,7 +216,7 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
    app_init();
    Evas_Object *images;
 
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,

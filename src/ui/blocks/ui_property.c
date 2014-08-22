@@ -1091,7 +1091,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
   edje_edit_state_min_w_set(pd->style->obj, pd->part->name, \
                             pd->part->curr_state, \
                             pd->part->curr_state_value, temp); \
-   pm_project_changed(app_create()->project); \
+   pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -1355,7 +1355,7 @@ _on_text_effect_type_change(void *data,
         }
      }
    _text_effect_value_update(effect_data);
-   pm_project_changed(app_create()->project);
+   pm_project_changed(app_data_get()->project);
 }
 
 static void
@@ -1364,7 +1364,7 @@ _on_text_effect_direction_change(void *data,
                                  void *event_info EINA_UNUSED)
 {
    _text_effect_value_update(data);
-   pm_project_changed(app_create()->project);
+   pm_project_changed(app_data_get()->project);
 }
 
 static void
@@ -1375,7 +1375,7 @@ _del_text_effect_callback_data(void *data,
 {
    _text_effect_callback_data *data_to_del = (_text_effect_callback_data *)data;
    free(data_to_del);
-   pm_project_changed(app_create()->project);
+   pm_project_changed(app_data_get()->project);
 }
 
 #define ADD_TEXT_EFFECT_COMBOBOX(_prop_name, _prop_callback, _prop_names_array) \
@@ -1447,8 +1447,8 @@ _on_state_text_ellipsis_change(void *data,
      return;
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
-   pm_project_changed(app_create()->project);
-   /*TODO: app_create()->project AGRRRRRR!!!!! need a define project in the pd */
+   pm_project_changed(app_data_get()->project);
+   /*TODO: app_data_get()->project AGRRRRRR!!!!! need a define project in the pd */
 }
 
 static void
@@ -1478,7 +1478,7 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                     value);
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
-   pm_project_changed(app_create()->project);
+   pm_project_changed(app_data_get()->project);
 }
 
 static Evas_Object *
@@ -1832,7 +1832,7 @@ _on_state_image_choose(void *data,
    Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
    const char *selected = elm_entry_entry_get(entry);
 
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_file_choose(img_edit, selected);
@@ -1856,7 +1856,7 @@ _del_tween_image(void *data,
      {
         elm_object_item_del(it);
         pd->style->isModify = true;
-        pm_project_changed(app_create()->project);
+        pm_project_changed(app_data_get()->project);
      }
 }
 
@@ -1882,7 +1882,7 @@ _on_image_editor_tween_done(void *data,
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
              pd->style->isModify = true;
-             pm_project_changed(app_create()->project);
+             pm_project_changed(app_data_get()->project);
           }
      }
    elm_frame_collapse_go(pd->prop_state_image.tween, false);
@@ -1897,7 +1897,7 @@ _add_tween_image(void *data,
    Evas_Object *img_edit;
    Evas_Object *tween_list = (Evas_Object *)data;
 
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    img_edit = image_editor_window_add(ap->project, MULTIPLE);
    image_editor_callback_add(img_edit, _on_image_editor_tween_done, tween_list);
@@ -1985,7 +1985,7 @@ _tween_image_moved(Evas_Object *data,
                                   image_name);
         next = elm_genlist_item_next_get(next);
      }
-   pm_project_changed(app_create()->project);
+   pm_project_changed(app_data_get()->project);
 }
 
 Evas_Object *

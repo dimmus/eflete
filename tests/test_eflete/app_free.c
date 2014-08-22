@@ -52,7 +52,7 @@
  */
 EFLETE_TEST (app_free_test_p)
 {
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    ck_assert_msg(app_free(ap) == EINA_TRUE, "Could not free application data");
 }

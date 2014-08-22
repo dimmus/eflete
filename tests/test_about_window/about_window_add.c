@@ -58,7 +58,7 @@ EFLETE_TEST (about_window_add_test_p)
    Evas_Object *about;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    about = about_window_add();
    ck_assert_msg(about != NULL, "cannot create new About Window");

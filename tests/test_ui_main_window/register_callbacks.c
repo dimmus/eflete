@@ -68,7 +68,7 @@ EFLETE_TEST (register_callbacks_test_p)
    const char *edj_path = "./edj_build/register_callbacks.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    project = pm_open_project_edj("UTC", edj_path);
    widget_list = ui_widget_list_add(app_data->win);
@@ -116,7 +116,7 @@ EFLETE_TEST (register_callbacks_test_n1)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    result = register_callbacks(app_data);
    ck_assert_msg(result == EINA_FALSE, "Callbacks were registered!");

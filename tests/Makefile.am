@@ -81,7 +81,7 @@ test_eflete/test_eflete.c \
 test_eflete/app_init.c \
 test_eflete/app_shutdown.c \
 test_eflete/win_layout_get.c \
-test_eflete/app_create.c \
+test_eflete/app_data_get.c \
 test_eflete/app_free.c \
 test_eflete/main_window_get.c \
 test_eflete/colorselector_get.c

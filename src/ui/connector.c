@@ -767,7 +767,7 @@ _save_cb(void *data,
          void *ei __UNUSED__)
 {
    Eina_Bool *res = data;
-   if (save_edj_file(app_create()))
+   if (save_edj_file(app_data_get()))
      {
         *res = true;
         ecore_main_loop_quit();

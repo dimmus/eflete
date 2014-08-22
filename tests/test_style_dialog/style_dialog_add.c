@@ -75,7 +75,7 @@ EFLETE_TEST (style_dialog_add_test_p1)
    const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    ui_edj_load(app_data, path);
    widget_list = ui_block_widget_list_get(app_data);
@@ -134,7 +134,7 @@ EFLETE_TEST (style_dialog_add_test_p2)
    const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    ui_edj_load(app_data, path);
    widget_list = ui_block_widget_list_get(app_data);
@@ -189,7 +189,7 @@ EFLETE_TEST (style_dialog_add_test_n1)
    const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    ui_edj_load(app_data, path);
 

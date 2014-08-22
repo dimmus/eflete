@@ -163,7 +163,7 @@ _on_ccl_editor_close(void *data,
      {
         GET_STYLE(ccl_edit->pr, style);
         if (style) style->isModify = true;
-        pm_project_changed(app_create()->project);
+        pm_project_changed(app_data_get()->project);
      }
 
    evas_object_del(ccl_edit->rect_color1);
@@ -222,7 +222,7 @@ _on_add_popup_btn_add(void *data,
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Evas_Object *edje_edit_obj = NULL;
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(ccl_edit->entry);
@@ -397,7 +397,7 @@ _on_btn_del(void *data,
 {
    Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
    Evas_Object *edje_edit_obj;
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
    if (!ccl_edit->current_ccl) return;
    GET_OBJ(ccl_edit->pr, edje_edit_obj);
    edje_edit_color_class_del(edje_edit_obj, ccl_edit->current_ccl->name);
@@ -486,7 +486,7 @@ colorclass_viewer_add(Project *project)
    Evas_Object *scroller = NULL;
    Colorclasses_Editor *ccl_edit = NULL;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if (!project)
      {

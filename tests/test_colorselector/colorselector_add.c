@@ -57,7 +57,7 @@ EFLETE_TEST (colorselector_add_test_p)
    App_Data *app;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    ck_assert_msg(colorselector_add(app->win) != NULL, "cannot create the Colorselector");
 

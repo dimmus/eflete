@@ -37,7 +37,7 @@ about_window_add()
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    label = elm_label_add(mwin);
    elm_object_text_set(label,

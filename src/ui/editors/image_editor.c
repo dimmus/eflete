@@ -219,7 +219,7 @@ _on_image_done(void *data,
              it->image_name = eina_stringshare_add(ecore_file_file_get(selected));
              it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
-             pm_project_changed(app_create()->project);
+             pm_project_changed(app_data_get()->project);
           }
      }
    else
@@ -297,7 +297,7 @@ _on_button_delete_clicked_cb(void *data,
           }
      }
    if (notdeleted < images_to_del)
-     pm_project_changed(app_create()->project);
+     pm_project_changed(app_data_get()->project);
    if (notdeleted == 1)
      {
         EINA_LIST_FOREACH(in_use, l, name)
@@ -459,7 +459,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Evas_Object *box, *bottom_box, *panel_box;
    Evas_Object *_bg = NULL;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if (!project)
      {

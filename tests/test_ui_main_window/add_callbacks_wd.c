@@ -62,7 +62,7 @@ EFLETE_TEST (add_callbacks_wd_test_p1)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    widget_list = ui_widget_list_add(app_data->win);
 
@@ -107,7 +107,7 @@ EFLETE_TEST (add_callbacks_wd_test_p2)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
    widget_list = ui_widget_list_add(app_data->win);
 

@@ -57,7 +57,7 @@ EFLETE_TEST(config_load_test_p)
    Config *config;
 
    elm_init(0,0);
-   ap = app_create();
+   ap = app_data_get();
    app_init();
    ui_main_window_add(ap);
 

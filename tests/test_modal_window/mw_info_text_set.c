@@ -59,7 +59,7 @@ EFLETE_TEST (mw_info_text_set_test_p)
 
    elm_init(0,0);
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    mw = mw_add(NULL, NULL);
 
@@ -134,7 +134,7 @@ EFLETE_TEST (mw_info_text_set_test_n2)
 
    elm_init(0,0);
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    mw = mw_add(NULL, NULL);
 

@@ -146,7 +146,7 @@ win_layout_get(void);
  * @ingroup Eflete
  */
 App_Data *
-app_create(void);
+app_data_get(void);
 
 /**
  * This function will free allocated memory used for App_Data.

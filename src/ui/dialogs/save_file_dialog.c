@@ -96,7 +96,7 @@ _on_edj_done(void *data,
              void *event_info)
 {
    /*TODO: change a project name and set to ui widget list */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
    Eina_Bool *cancel = data;
    const char *selected = event_info;
    if ((!data) || (!ap) || (!selected) || (!strcmp(selected, "")))

@@ -1477,7 +1477,7 @@ program_editor_window_add(Style *style)
    Evas_Object *bt, *box;
    Program_Editor *prog_edit = NULL;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if ((!style) || (!style->obj))
      {

@@ -91,7 +91,7 @@ EFLETE_TEST (colorclass_viewer_add_test_p)
    Evas_Object *colorclass;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    app->project = calloc(1, sizeof(Project));
    ui_main_window_add(app);
 

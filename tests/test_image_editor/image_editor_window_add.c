@@ -60,7 +60,7 @@ EFLETE_TEST (image_editor_window_add_test_p1)
    App_Data *app;
    app_init();
    Evas_Object *images;
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
 
@@ -106,7 +106,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
    app_init();
    Evas_Object *images;
 
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
    Project *project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
 
@@ -149,7 +149,7 @@ EFLETE_TEST (image_editor_window_add_test_n1)
    elm_init(0,0);
    App_Data *app;
    app_init();
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
 
    ck_assert_msg(image_editor_window_add(NULL, SINGLE) == NULL,
@@ -191,7 +191,7 @@ EFLETE_TEST (image_editor_window_add_test_n2)
    app_init();
    Evas_Object *images;
 
-   app = app_create();
+   app = app_data_get();
    ui_main_window_add(app);
 
    images = image_editor_window_add(NULL, MULTIPLE);
