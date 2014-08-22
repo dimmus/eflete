@@ -186,8 +186,8 @@ _grid_sel(void *data,
 
 static void
 _on_image_done(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info)
+               Evas_Object *obj,
+               void *event_info)
 {
    Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
@@ -207,9 +207,11 @@ _on_image_done(void *data,
      {
         if (!edje_edit_image_add(edje_edit_obj, selected))
           {
-             NOTIFY_ERROR(_("Error while loading file.<br>"
-                          "Please check if file is image"
-                          "or/and file is accessible."));
+             WIN_NOTIFY_ERROR(obj,
+                              _("Error while loading file.<br>"
+                                "Please check if file is image"
+                                "or/and file is accessible."));
+             return;
           }
         else
           {
@@ -222,7 +224,7 @@ _on_image_done(void *data,
      }
    else
      {
-        NOTIFY_ERROR(_("Error while loading file.<br>File is not exist"));
+        WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
         return;
      }
 
