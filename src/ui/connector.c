@@ -698,12 +698,10 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
         NOTIFY_INFO(3, _("New theme created"))
         STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
         ap->project->edj = NULL;
-        ap->project->is_saved = false;
      }
    else
      {
         STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
-        ap->project->is_saved = true;
         NOTIFY_INFO(3, _("Selected file: %s"), selected)
      }
 
