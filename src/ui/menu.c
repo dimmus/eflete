@@ -36,7 +36,8 @@ struct _menu_event
       OPEN_EDJ,
       EXPORT_EDC,
       SAVE_EDJ,
-      SAVE_AS_EDJ
+      SAVE_AS_EDJ,
+      NEW_THEME
    } type;
 };
 
@@ -57,37 +58,52 @@ _menu_event_handler_cb(void *data __UNUSED__,
    Evas_Object *nf;
 
    switch (menu_event->type)
-      {
+     {
       case OPEN_EDC:
-         compile_dialog(menu_event->ap);
-      break;
+        {
+           compile_dialog(menu_event->ap);
+           break;
+        }
       case OPEN_EDJ:
-         open_edj_file(menu_event->ap);
-      break;
+        {
+           open_edj_file(menu_event->ap);
+           break;
+        }
       case EXPORT_EDC:
-         save_as_edc_file(menu_event->ap);
-      break;
+        {
+           save_as_edc_file(menu_event->ap);
+           break;
+        }
       case SAVE_EDJ:
-         if (pm_save_project_to_swap(menu_event->ap->project))
-           {
-              if (pm_save_project_edj(menu_event->ap->project))
-                {
-                   NOTIFY_INFO(3, _("Theme saved: %s"), menu_event->ap->project->edj)
-                   live_view_widget_style_set(menu_event->ap->live_view, menu_event->ap->project,
-                                              menu_event->ap->project->current_style);
-                }
-              else
-                 NOTIFY_ERROR(_("Theme can not be saved: %s"), menu_event->ap->project->edj);
-           }
-      break;
+        {
+           if (pm_save_project_to_swap(menu_event->ap->project))
+             {
+                if (pm_save_project_edj(menu_event->ap->project))
+                  {
+                     NOTIFY_INFO(3, _("Theme saved: %s"), menu_event->ap->project->edj);
+                     live_view_widget_style_set(menu_event->ap->live_view, menu_event->ap->project,
+                                                menu_event->ap->project->current_style);
+                  }
+                else
+                  NOTIFY_ERROR(_("Theme can not be saved: %s"), menu_event->ap->project->edj);
+             }
+           break;
+        }
       case SAVE_AS_EDJ:
-         save_as_edj_file(menu_event->ap);
-         nf = ui_block_widget_list_get(menu_event->ap);
-         ui_widget_list_title_set(nf, menu_event->ap->project->name);
-         STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
-         ui_menu_disable_set(menu_event->ap->menu_hash, _("Save project"), false);
-      break;
-      }
+        {
+           save_as_edj_file(menu_event->ap);
+           nf = ui_block_widget_list_get(menu_event->ap);
+           ui_widget_list_title_set(nf, menu_event->ap->project->name);
+           STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
+           ui_menu_disable_set(menu_event->ap->menu_hash, _("Save project"), false);
+           break;
+        }
+      case NEW_THEME:
+        {
+           new_theme_create(menu_event->ap);
+           break;
+        }
+     }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
    return ECORE_CALLBACK_DONE;
 }
@@ -226,6 +242,7 @@ _on_new_theme_menu(void *data,
                   void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   Menu_Event *menu_event;
    if (ap->project)
      {
         POPUP_CLOSE_PROJECT(_("You want to create a new theme, but now you have<br/>"
@@ -233,7 +250,13 @@ _on_new_theme_menu(void *data,
                             "all your changes will be lost!"),
                             _project_not_save_new);
      }
-   else new_theme_create(ap);
+   else
+     {
+        menu_event = mem_malloc(sizeof(Menu_Event));
+        menu_event->ap = ap;
+        menu_event->type = NEW_THEME;
+        ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
+     }
 }
 
 static void
