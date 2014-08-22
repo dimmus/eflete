@@ -155,8 +155,8 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
    ewe_entry_entry_set(entry, value); \
-   evas_object_smart_callback_del(entry, "changed", _on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "changed", \
+   evas_object_smart_callback_del(entry, "changed,user", _on_##sub##_##value##_change); \
+   evas_object_smart_callback_add(entry, "changed,user", \
                                   _on_##sub##_##value##_change, prog_edit); \
 }
 
@@ -358,8 +358,8 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    ewe_entry_entry_set(_entry, buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
-        evas_object_smart_callback_del(_entry, "changed", _activated_cb); \
-        evas_object_smart_callback_add(_entry, "changed", _activated_cb, \
+        evas_object_smart_callback_del(_entry, "changed,user", _activated_cb); \
+        evas_object_smart_callback_add(_entry, "changed,user", _activated_cb, \
                                        prog_edit);
 
 static void
@@ -953,9 +953,9 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
      }
 
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
-   evas_object_smart_callback_del(transition.entry1, "changed",
+   evas_object_smart_callback_del(transition.entry1, "changed,user",
                                   _on_transition_time_active);
-   evas_object_smart_callback_add(transition.entry1, "changed",
+   evas_object_smart_callback_add(transition.entry1, "changed,user",
                                   _on_transition_time_active, prog_edit);
 
    snprintf(buff, sizeof(buff), "%1.2f", value);
@@ -1146,16 +1146,16 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    entry = eina_list_nth(childs, 0);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "changed", _on_in_from_change);
-   evas_object_smart_callback_add(entry, "changed",
+   evas_object_smart_callback_del(entry, "changed,user", _on_in_from_change);
+   evas_object_smart_callback_add(entry, "changed,user",
                                   _on_in_from_change, prog_edit);
    range = edje_edit_program_in_range_get(prop.style->obj,
                                           prop.program);
    entry = eina_list_nth(childs, 1);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "changed", _on_in_range_change);
-   evas_object_smart_callback_add(entry, "changed",
+   evas_object_smart_callback_del(entry, "changed,user", _on_in_range_change);
+   evas_object_smart_callback_add(entry, "changed,user",
                                   _on_in_range_change, prog_edit);
    eina_list_free(childs);
 }
@@ -1195,8 +1195,8 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
                                                     "elm.swallow.content");
 
    ewe_entry_entry_set(entry, prop.program);
-   evas_object_smart_callback_del(entry, "changed", _on_program_name_change);
-   evas_object_smart_callback_add(entry, "changed", _on_program_name_change,
+   evas_object_smart_callback_del(entry, "changed,user", _on_program_name_change);
+   evas_object_smart_callback_add(entry, "changed,user", _on_program_name_change,
                                   prog_edit);
 }
 
