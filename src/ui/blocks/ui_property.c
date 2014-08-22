@@ -1835,6 +1835,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    elm_object_style_set(tween_frame, "eflete/tween");
 
    tween_list = elm_genlist_add(tween_frame);
+   elm_genlist_longpress_timeout_set(tween_list, 0.2);
    elm_genlist_reorder_mode_set(tween_list, true);
    evas_object_data_set(tween_list, PROP_DATA, pd);
    elm_object_style_set(tween_list, "eflete/default");
