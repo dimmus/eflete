@@ -28,6 +28,7 @@ struct _fs_entries
    Evas_Object *log;
 
    Evas_Object *parent;
+   Evas_Object *win;
 };
 
 typedef struct _fs_entries fs_entries;
@@ -115,12 +116,12 @@ _on_compile_cb(void *data,
 
    if (!eina_str_has_suffix(path_edc, ".edc"))
      {
-        NOTIFY_ERROR(_("Input file must have an extension '.edc'"));
+        WIN_NOTIFY_ERROR(fs_ent->win, _("Input file must have an extension '.edc'"));
         return;
      }
    if (!eina_str_has_suffix(path_edj, ".edj"))
      {
-        NOTIFY_ERROR(_("Output file must have an extension '.edj'"));
+        WIN_NOTIFY_ERROR(fs_ent->win, _("Output file must have an extension '.edj'"));
         return;
      }
    elm_object_disabled_set(obj, true);
@@ -287,6 +288,7 @@ compile_dialog(App_Data *ap)
    if (!fs_ent)
      fs_ent = mem_malloc(sizeof(fs_entries));
    fs_ent->parent = ap->win;
+   fs_ent->win = win;
    fs_ent->project_name = NULL;
 
    layout = elm_layout_add(win);
