@@ -366,7 +366,7 @@ _on_button_ok_clicked_cb(void *data,
         it = elm_gengrid_selected_item_get(img_edit->gengrid);
         if (!it)
           {
-            _image_editor_del(img_edit);
+            WIN_NOTIFY_WARNING(img_edit->win, _("Image not selected"));
             return;
           }
         item = elm_object_item_data_get(it);
