@@ -1307,8 +1307,9 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
    if (!l && !r && !t && !b) \
-     elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
+     ewe_entry_entry_set(entry, NULL); \
    else \
      { \
         snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
@@ -1333,7 +1334,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
    if (!l && !r && !t && !b) \
-     elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
+     ewe_entry_entry_set(entry, NULL); \
    else \
      { \
         snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
