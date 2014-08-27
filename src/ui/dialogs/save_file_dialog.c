@@ -152,14 +152,15 @@ _on_edc_done(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info)
 {
-   App_Data *ap = (App_Data *)data;
+   App_Data *ap = app_data_get();
+   Eina_Bool *cancel = data;
    const char *selected = (const char *)event_info;
    if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
         ecore_main_loop_quit();
         return;
      }
-   pm_export_to_edc(ap->project, selected, NULL);
+   *cancel = !pm_export_to_edc(ap->project, selected, NULL);
    ecore_main_loop_quit();
 }
 
