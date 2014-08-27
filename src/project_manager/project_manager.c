@@ -187,7 +187,7 @@ pm_export_to_edc(Project *project,
         return false;
      }
 
-   return !decompile(project->edj, edc_dir, log_cb);
+   return !decompile(project->swapfile, edc_dir, log_cb);
 }
 
 Project *
