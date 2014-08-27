@@ -1368,7 +1368,7 @@ _on_add_popup_bt_add(void *data,
         return;
      }
 
-   glit_prog = elm_genlist_item_append(prog_edit->gl_progs, _itc_prog, name,
+   glit_prog = elm_genlist_item_append(prog_edit->gl_progs, _itc_prog, eina_stringshare_add(name),
                                        NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_prog, true);
    evas_object_del(prog_edit->popup.popup);
