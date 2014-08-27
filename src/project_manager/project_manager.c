@@ -22,6 +22,7 @@
 #include "alloc.h"
 
 static const char *dst_path;
+static Eina_Bool copy_success;
 
 static void
 _on_copy_done_cb(void *data,
@@ -29,12 +30,13 @@ _on_copy_done_cb(void *data,
 {
    char *file_name = (char *)data;
    DBG("Copy file '%s' is finished!", file_name);
+   copy_success = true;
    ecore_main_loop_quit();
 }
 
 static void
 _on_copy_done_save_as_cb(void *data,
-                 Eio_File *handler __UNUSED__)
+                         Eio_File *handler __UNUSED__)
 {
    Project *project = (Project *)data;
    if (project->edj)
@@ -44,6 +46,7 @@ _on_copy_done_save_as_cb(void *data,
    GET_NAME_FROM_PATH(project->name, project->edj);
    DBG("Copy file '%s' is finished!", project->edj);
    dst_path = NULL;
+   copy_success = true;
    ecore_main_loop_quit();
 }
 
@@ -55,6 +58,7 @@ _on_copy_error_cb(void *data,
    char *file_name = (char *)data;
    ERR("Copy file '%s' is failed. Something wrong has happend: %s\n",
        file_name, strerror(error));
+   copy_success = false;
    ecore_main_loop_quit();
 }
 
@@ -203,9 +207,15 @@ pm_open_project_edj(const char *name,
 
    if (!project) return NULL;
 
+   copy_success = false;
    eio_file_copy(project->edj, project->swapfile, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
+   if (!copy_success)
+     {
+        _on_unlink_done_cb(project, NULL); /* TODO: separate pm_free from unlink callback */
+        return NULL;
+     }
    project->widgets = wm_widget_list_new(project->swapfile);
    project->layouts = wm_widget_list_layouts_load(project->swapfile);
    project->is_saved = true;
@@ -230,9 +240,11 @@ Eina_Bool
 pm_save_project_edj(Project *project)
 {
    if (!project) return false;
+   copy_success = false;
    eio_file_copy(project->swapfile, project->edj, NULL,
                  _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
    ecore_main_loop_begin();
+   if (!copy_success) return false;
    project->is_saved = true;
    return true;
 }
@@ -244,9 +256,11 @@ pm_save_as_project_edj(Project *project, const char *path)
    if (!path) return false;
 
    dst_path = path;
+   copy_success = false;
    eio_file_copy(project->swapfile, path, NULL,
                  _on_copy_done_save_as_cb, _on_copy_error_cb, project);
    ecore_main_loop_begin();
+   if (!copy_success) return false;
    project->is_saved = true;
    return true;
 }
