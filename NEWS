@@ -1,6 +1,17 @@
 ============
-Eflete 0.2.9
+Eflete 0.3.0
 ============
+
+Changes since 0.2.9
+-------------------
+
+Fixes:
+   * Project Manager: export to edc with latest changes in project;
+   * Project Manager: fixing wrong behavior on file access issues;
+   * Property: fix update border value in property;
+   * Save File Dialog: fixing SEGFAULT on edc export;
+   * Program Editor: fixing wrong names of new programs;
+   * Panes: fixed min size for right part (property block).
 
 Changes since 0.2.8
 -------------------

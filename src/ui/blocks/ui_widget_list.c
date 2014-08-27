@@ -824,6 +824,7 @@ _wl_contracted_cb(void *data __UNUSED__,
    elm_genlist_item_subitems_clear(glit);
 }
 
+/* TODO: fix renaming
 static void
 _wl_key_down_cb(void *data __UNUSED__,
                 Evas *e __UNUSED__,
@@ -869,7 +870,7 @@ _wl_key_down_cb(void *data __UNUSED__,
         return;
      }
    return;
-}
+} */
 
 Eina_Bool
 ui_widget_list_layouts_reload(Evas_Object *gl_layouts, Project *project)
@@ -947,11 +948,12 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
                                   _wl_expanded_cb, project); \
    evas_object_smart_callback_add(gl_##TYPE, "contracted", \
                                   _wl_contracted_cb, gl_##TYPE); \
-   evas_object_event_callback_add(gl_##TYPE, EVAS_CALLBACK_KEY_DOWN, \
-                                  _wl_key_down_cb, NULL); \
    evas_object_smart_callback_add(gl_##TYPE, "clicked,double", \
                                   _on_widget_clicked_double, project);
 
+/* TODO: fix renaming
+   evas_object_event_callback_add(gl_##TYPE, EVAS_CALLBACK_KEY_DOWN, \
+                                  _wl_key_down_cb, NULL); \ */
    CALLBACKS(widgets);
    CALLBACKS(layouts);
 #undef CALLBACKS

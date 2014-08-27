@@ -108,6 +108,7 @@ ui_panes_add(App_Data *ap)
    evas_object_size_hint_align_set(panes_left, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_left, config->panes.left);
    elm_panes_content_left_min_size_set(panes_left, 300);
+   elm_panes_content_right_min_size_set(panes_left, 385);
    elm_object_part_content_set(ap->win_layout, "eflete.swallow.panes", panes_left);
    panes = panes_left;
 
