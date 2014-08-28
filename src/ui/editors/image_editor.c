@@ -76,6 +76,7 @@ _image_editor_del(Image_Editor *img_edit)
 }
 
 /* icon fetching callback */
+#define MAX_ICON_SIZE 16
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -92,12 +93,19 @@ _grid_content_get(void *data,
         image = elm_image_add(grid);
         snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
         elm_image_file_set(image, img_edit->pr->swapfile, buf);
-        evas_object_size_hint_aspect_set(image, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+
+        int w, h;
+        elm_image_object_size_get(image, &w, &h);
+        if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
+          evas_object_size_hint_max_set(image, MAX_ICON_SIZE, MAX_ICON_SIZE);
+        else
+          elm_image_resizable_set(image, false, true);
         evas_object_show(image);
         return image;
-   }
+     }
    return NULL;
 }
+#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
