@@ -31,6 +31,7 @@ struct _Item
 {
    int id;
    const char* image_name;
+   Edje_Edit_Image_Comp comp_type;
 };
 
 struct _Image_Editor
@@ -43,6 +44,10 @@ struct _Image_Editor
       Evas_Smart_Cb choose_func;
       void *data;
    } func_data;
+   struct {
+      Elm_Object_Item *included;
+      Elm_Object_Item *linked;
+   } group_items;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL;
@@ -60,6 +65,8 @@ static void
 _image_editor_del(Image_Editor *img_edit)
 {
    img_edit->pr = NULL;
+   elm_gengrid_item_class_free(gic);
+   gic = NULL;
    evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
    evas_object_del(img_edit->legend);
@@ -184,6 +191,18 @@ _grid_sel(void *data,
      }
 }
 
+static inline Item *
+_image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
+                                       const char *image_name)
+{
+   Item *it = (Item *)mem_malloc(sizeof(Item));
+   it->image_name = eina_stringshare_add(image_name);
+   it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
+   it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
+                                                        it->image_name);
+   return it;
+}
+
 static void
 _on_image_done(void *data,
                Evas_Object *obj,
@@ -215,10 +234,11 @@ _on_image_done(void *data,
           }
         else
           {
-             it = (Item *)mem_malloc(sizeof(Item));
-             it->image_name = eina_stringshare_add(ecore_file_file_get(selected));
-             it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
-             elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+             it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+                                                         ecore_file_file_get(selected));
+             elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+                                            img_edit->group_items.linked,
+                                            _grid_sel, img_edit);
              pm_project_changed(app_data_get()->project);
           }
      }
@@ -403,6 +423,42 @@ _on_button_cancel_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
+void
+_grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
+{
+   if (data)
+     eina_stringshare_del(data);
+}
+
+static char *
+_grid_group_item_label_get(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           const char  *part __UNUSED__)
+{
+   return strdup(data);
+}
+
+static void
+_image_editor_gengrid_group_items_add(Image_Editor *img_edit)
+{
+   Elm_Gengrid_Item_Class *ggic = elm_gengrid_item_class_new();
+
+   ggic->item_style = "group_index";
+   ggic->func.text_get = _grid_group_item_label_get;
+   ggic->func.content_get = NULL;
+   ggic->func.state_get = NULL;
+   ggic->func.del = _grid_group_item_del;
+
+   img_edit->group_items.included =
+      elm_gengrid_item_append(img_edit->gengrid, ggic,
+      eina_stringshare_add("Include"), NULL, NULL);
+   img_edit->group_items.linked =
+      elm_gengrid_item_append(img_edit->gengrid, ggic,
+      eina_stringshare_add("Linked"), NULL, NULL);
+   //TODO: Add Void gtoup with images that are not included to the edj-file yet.
+
+   elm_gengrid_item_class_free(ggic);
+}
 
 Eina_Bool
 _image_editor_init(Image_Editor *img_edit)
@@ -416,6 +472,8 @@ _image_editor_init(Image_Editor *img_edit)
 
    if (!img_edit) return false;
    GET_OBJ(img_edit->pr, edje_edit_obj);
+
+   _image_editor_gengrid_group_items_add(img_edit);
    images = edje_edit_images_list_get(edje_edit_obj);
 
    if (images)
@@ -428,10 +486,15 @@ _image_editor_init(Image_Editor *img_edit)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              it = (Item *)mem_malloc(sizeof(Item));
-              it->image_name = eina_stringshare_add(image_name);
-              it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
-              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+                                                          image_name);
+              if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+                elm_gengrid_item_append(img_edit->gengrid, gic, it,
+                                        _grid_sel, img_edit);
+              else
+                elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+                                               img_edit->group_items.linked,
+                                               _grid_sel, img_edit);
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
@@ -601,6 +664,14 @@ image_editor_file_choose(Evas_Object *win, const char *selected)
 
    while(grid_item)
      {
+        const char* item_style =
+           elm_gengrid_item_item_class_get(grid_item)->item_style;
+        if (!strcmp(item_style, "group_index"))
+          {
+             grid_item = elm_gengrid_item_next_get(grid_item);
+             continue;
+          }
+
         it = elm_object_item_data_get(grid_item);
         if (!it) return false;
         if (!strcmp(it->image_name, selected))
