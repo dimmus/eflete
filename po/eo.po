@@ -1,0 +1,1818 @@
+# Copyright (C) 2014 Enlightenment
+# This file is distributed under the same license as the eflete package.
+#
+# Eliovir <eliovir@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: $MSGID_BUGS_ADDRESS\n"
+"POT-Creation-Date: 2014-08-23 11:32+0200\n"
+"PO-Revision-Date: 2014-08-08 18:33+0000\n"
+"Last-Translator: Eliovir <Unknown>\n"
+"Language-Team: Esperanto <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2014-08-25 07:02+0000\n"
+"X-Generator: Launchpad (build 17163)\n"
+"Language: Esperanto\n"
+
+#: src/project_manager/widget_manager.c:462
+#, c-format
+msgid "Group [%s] exist"
+msgstr "La grupo [%s] ekzistas"
+
+#: src/project_manager/widget_manager.c:468
+#, c-format
+msgid "Failed create style [%s]"
+msgstr "Kreo de stilo [%s] fiaskis"
+
+#: src/project_manager/widget_manager.c:481
+msgid "Failed load created style to memory."
+msgstr ""
+
+#: src/ui/panes.c:169
+msgid "Part States"
+msgstr ""
+
+#: src/ui/panes.c:176
+msgid "Live View"
+msgstr ""
+
+#: src/ui/panes.c:192
+msgid "Using Signals"
+msgstr ""
+
+#: src/ui/panes.c:203
+msgid "Property"
+msgstr "Atributo"
+
+#: src/ui/menu.c:242
+msgid "Please open the widget style for editing style programs!"
+msgstr ""
+
+#: src/ui/menu.c:277 src/ui/menu.c:391
+msgid "File"
+msgstr "Dosiero"
+
+#: src/ui/menu.c:278
+msgid "New theme"
+msgstr "Nova etoso"
+
+#: src/ui/menu.c:279
+msgid "Open edc-file"
+msgstr ""
+
+#: src/ui/menu.c:280
+msgid "Open edj-file"
+msgstr ""
+
+#: src/ui/menu.c:281 src/ui/menu.c:372 src/ui/connector.c:800
+msgid "Save"
+msgstr "Konservi"
+
+#: src/ui/menu.c:282 src/ui/menu.c:373
+msgid "Save as..."
+msgstr "Konservi kiel..."
+
+#: src/ui/menu.c:283 src/ui/menu.c:374
+msgid "Export to edc..."
+msgstr ""
+
+#: src/ui/menu.c:285
+msgid "Exit"
+msgstr "Eliri"
+
+#: src/ui/menu.c:287 src/ui/menu.c:392
+msgid "View"
+msgstr "Vidigi"
+
+#: src/ui/menu.c:288 src/ui/menu.c:375
+msgid "Workspace"
+msgstr "Laborspaco"
+
+#: src/ui/menu.c:289 src/ui/workspace/ui_workspace.c:237
+msgid "Zoom in"
+msgstr "Zomi"
+
+#: src/ui/menu.c:291 src/ui/workspace/ui_workspace.c:239
+msgid "Zoom out"
+msgstr "Malzomi"
+
+#: src/ui/menu.c:293 src/ui/menu.c:376 src/ui/connector.c:495
+#: src/ui/connector.c:644 src/ui/connector.c:712
+msgid "Separate"
+msgstr "Apartigi"
+
+#: src/ui/menu.c:294 src/ui/menu.c:377 src/ui/workspace/ui_workspace.c:227
+msgid "Rulers"
+msgstr ""
+
+#: src/ui/menu.c:295
+msgid "Show/Hide rulers"
+msgstr ""
+
+#: src/ui/menu.c:296 src/ui/workspace/ui_workspace.c:231
+msgid "Absolute scale"
+msgstr ""
+
+#: src/ui/menu.c:297 src/ui/workspace/ui_workspace.c:233
+msgid "Relative scale"
+msgstr ""
+
+#: src/ui/menu.c:298 src/ui/blocks/ui_property.c:158
+#: src/ui/workspace/ui_workspace.c:234
+msgid "Both"
+msgstr "Ambaŭ"
+
+#: src/ui/menu.c:299 src/ui/menu.c:378 src/ui/connector.c:496
+#: src/ui/connector.c:645 src/ui/connector.c:713
+msgid "Show/Hide object area"
+msgstr ""
+
+#: src/ui/menu.c:301 src/ui/menu.c:393
+msgid "Editors"
+msgstr "Redaktiloj"
+
+#: src/ui/menu.c:302 src/ui/menu.c:379
+msgid "Styles"
+msgstr "Stiloj"
+
+#: src/ui/menu.c:303 src/ui/menu.c:380
+msgid "Images"
+msgstr "Bildoj"
+
+#: src/ui/menu.c:304 src/ui/menu.c:381
+msgid "Colorclasses"
+msgstr ""
+
+#: src/ui/menu.c:305 src/ui/connector.c:494 src/ui/connector.c:643
+msgid "Programs"
+msgstr "Programoj"
+
+#: src/ui/menu.c:308 src/ui/menu.c:394
+msgid "Help"
+msgstr "Helpo"
+
+#: src/ui/menu.c:309 src/ui/dialogs/about_window.c:37
+msgid "About"
+msgstr "Pri"
+
+#: src/ui/menu.c:328
+msgid "New project"
+msgstr "Nova projekto"
+
+#: src/ui/menu.c:329
+msgid "Open project"
+msgstr "Malfermi projekton"
+
+#: src/ui/menu.c:330 src/ui/connector.c:711
+msgid "Save project"
+msgstr ""
+
+#: src/ui/main_window.c:34
+msgid ""
+"You want to close Eflete, but now you have<br/>opened project. If you dont "
+"save opened project<br/>all your changes will be lost!"
+msgstr ""
+
+#: src/ui/main_window.c:80
+msgid "Project path: "
+msgstr "Projekta vojo: "
+
+#: src/ui/connector.c:64 src/ui/blocks/ui_widget_list.c:999
+#: src/ui/blocks/ui_widget_list.c:1035
+msgid "No part selected"
+msgstr ""
+
+#: src/ui/connector.c:108 src/ui/connector.c:127
+msgid "Internal edje error occurred on part move"
+msgstr ""
+
+#: src/ui/connector.c:318 src/ui/connector.c:339 src/ui/connector.c:347
+msgid "Failed create new layout."
+msgstr ""
+
+#: src/ui/connector.c:433
+msgid "Couldn't add new state/class without opened widget"
+msgstr ""
+
+#: src/ui/connector.c:683
+#, c-format
+msgid "Can't open file: %s"
+msgstr ""
+
+#: src/ui/connector.c:698
+msgid "New theme created"
+msgstr ""
+
+#: src/ui/connector.c:699
+msgid "Unsaved project"
+msgstr ""
+
+#: src/ui/connector.c:707
+#, c-format
+msgid "Selected file: %s"
+msgstr "Elektita dosiero: %s"
+
+#: src/ui/connector.c:731
+msgid ""
+"You want to create a new theme, but now you have<br/>opened project. If you "
+"dont save opened project<br/>all your changes will be lost!"
+msgstr ""
+
+#: src/ui/connector.c:783
+msgid ""
+"If you dont save the open project<br/>all your unsaved changes will be lost!"
+msgstr ""
+
+#: src/ui/connector.c:794
+#, c-format
+msgid "Close project %s"
+msgstr ""
+
+#: src/ui/connector.c:803
+msgid "Don't save"
+msgstr "Ne konservi"
+
+#: src/ui/connector.c:806 src/ui/editors/style_editor.c:295
+#: src/ui/editors/style_editor.c:365 src/ui/editors/image_editor.c:546
+#: src/ui/editors/colorclass_editor.c:322 src/ui/editors/program_editor.c:1454
+#: src/ui/dialogs/save_file_dialog.c:136 src/ui/dialogs/part_dialog.c:195
+#: src/ui/dialogs/state_dialog.c:219 src/ui/dialogs/state_dialog.c:305
+#: src/ui/dialogs/style_dialog.c:327
+msgid "Cancel"
+msgstr "Rezigni"
+
+#: src/ui/connector.c:830
+msgid "Select item to be deleted"
+msgstr ""
+
+#: src/ui/connector.c:842
+msgid "Can not delete last layout"
+msgstr ""
+
+#: src/ui/connector.c:849
+#, c-format
+msgid "Failed to delete layout[%s]"
+msgstr ""
+
+#: src/ui/connector.c:875
+msgid "No one style is selected"
+msgstr "Neniu stilo estas elektita"
+
+#: src/ui/connector.c:915
+#, c-format
+msgid "Style [%s] don't exist"
+msgstr "La stilo [%s] ne ekzistas"
+
+#: src/ui/connector.c:930
+#, c-format
+msgid "Failed to delete style[%s]"
+msgstr ""
+
+#: src/ui/connector.c:944
+#, c-format
+msgid "Failed to delete style[%s] in class [%s]"
+msgstr ""
+
+#: src/ui/connector.c:997
+msgid "Please select part state"
+msgstr ""
+
+#: src/ui/connector.c:1013
+msgid "Couldn't delete default state"
+msgstr ""
+
+#: src/ui/connector.c:1016
+#, c-format
+msgid ""
+"Failed delete state \n"
+"[%s %3.2f]"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:158
+msgid "Style name can not be empty!"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:164
+msgid "The default tag must begin from + or alphabetic symbol"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:169
+msgid "Style name must be unique!"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:177 src/ui/editors/style_editor.c:240
+msgid "Failed to add tag value. Tag will be deleted"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:184
+msgid "Failed to add tag."
+msgstr ""
+
+#: src/ui/editors/style_editor.c:218
+msgid "Tag name can not be empty!"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:223
+msgid "Tag value can not be empty!"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:228
+msgid "Tag value must begin from + or alphabetic symbol"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:233
+msgid "Tag name must be unique!"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:266
+msgid "Add textblock style"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:272 src/ui/dialogs/style_dialog.c:304
+msgid "Type a new style name."
+msgstr ""
+
+#: src/ui/editors/style_editor.c:281
+msgid "Type tag which will be used as default."
+msgstr ""
+
+#: src/ui/editors/style_editor.c:290 src/ui/editors/style_editor.c:360
+#: src/ui/editors/image_editor.c:539 src/ui/editors/colorclass_editor.c:317
+#: src/ui/editors/program_editor.c:1449 src/ui/modal_window/modal_window.c:56
+msgid "Ok"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:318
+msgid "Select a style!"
+msgstr "Elektu stilon!"
+
+#: src/ui/editors/style_editor.c:335
+#, c-format
+msgid "Add tag to style: %s"
+msgstr "Aldoni etikedon al stilo: %s"
+
+#: src/ui/editors/style_editor.c:342
+msgid "Type a new tag name."
+msgstr ""
+
+#: src/ui/editors/style_editor.c:351
+msgid "Type tag with be using as default."
+msgstr ""
+
+#: src/ui/editors/style_editor.c:398
+msgid "DEFAULT tag cannot be deleted!"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:519
+msgid "New style"
+msgstr "Nova stilo"
+
+#: src/ui/editors/style_editor.c:524
+msgid "New tag"
+msgstr "Nova etikedo"
+
+#: src/ui/editors/style_editor.c:529 src/ui/editors/colorclass_editor.c:545
+#: src/ui/editors/program_editor.c:1521 src/ui/dialogs/state_dialog.c:300
+msgid "Delete"
+msgstr "Forigi"
+
+#: src/ui/editors/style_editor.c:594
+msgid "Close viewer"
+msgstr "Fermi vidigilon"
+
+#: src/ui/editors/style_editor.c:667
+msgid "Textblock style editor"
+msgstr ""
+
+#: src/ui/editors/style_editor.c:712
+msgid "The quick brown fox jumps over the lazy dog"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:132 src/ui/editors/image_editor.c:530
+msgid "No images selected<br><br>"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:144
+msgid "RAW"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:147
+msgid "USER"
+msgstr "UZANTO"
+
+#: src/ui/editors/image_editor.c:150
+msgid "COMP"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:153
+msgid "LOSSY"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:158
+msgid "Unknown compression type"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:165
+#, c-format
+msgid "Selected image: %s<br>size: %dx%d<br>Compression type:%s rate:%d"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:172
+#, c-format
+msgid "Selected image: %s<br>size: %dx%d<br>Compression type: %s"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:179
+#, c-format
+msgid "%d image selected<br><br>"
+msgid_plural "%d images selected<br><br>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/ui/editors/image_editor.c:211
+msgid ""
+"Error while loading file.<br>Please check if file is imageor/and file is "
+"accessible."
+msgstr ""
+
+#: src/ui/editors/image_editor.c:227
+msgid "Error while loading file.<br>File is not exist"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:241
+msgid "Add image to library"
+msgstr "Aldoni bildon en bibliotekon"
+
+#: src/ui/editors/image_editor.c:305
+#, c-format
+msgid "Images is used in:"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:309
+#, c-format
+msgid "<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:319
+#, c-format
+msgid "%d image in use:"
+msgid_plural "%d images in use:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/ui/editors/image_editor.c:371
+msgid "Image not selected"
+msgstr ""
+
+#: src/ui/editors/image_editor.c:474
+msgid "Image editor"
+msgstr "Bildoredaktilo"
+
+#: src/ui/editors/image_editor.c:516
+msgid "Add image"
+msgstr "Aldoni bildon"
+
+#: src/ui/editors/image_editor.c:523
+msgid "Delete image"
+msgstr "Forigi bildon"
+
+#: src/ui/editors/colorclass_editor.c:232
+msgid "Color class name can not be empty!"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:240
+msgid "Color class name must be unique!"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:290
+msgid "Add color class:"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:303
+msgid "Color class name: "
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:310
+msgid "Type new color class name here."
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:377
+msgid "Apply changes?"
+msgstr "Ĉu apliki modifon?"
+
+#: src/ui/editors/colorclass_editor.c:379
+msgid "Yes"
+msgstr "Jes"
+
+#: src/ui/editors/colorclass_editor.c:384
+msgid "No"
+msgstr "Ne"
+
+#: src/ui/editors/colorclass_editor.c:493
+msgid "EDJ/EDC file is not loaded"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:501
+msgid "Color class editor"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:541 src/ui/editors/program_editor.c:1042
+#: src/ui/editors/program_editor.c:1096 src/ui/dialogs/state_dialog.c:214
+#: src/ui/dialogs/style_dialog.c:322
+msgid "Add"
+msgstr "Aldoni"
+
+#: src/ui/editors/colorclass_editor.c:549 src/ui/editors/program_editor.c:1538
+#: src/ui/notification/notify.c:58 src/ui/notification/notify.c:94
+msgid "Close"
+msgstr "Fermi"
+
+#: src/ui/editors/colorclass_editor.c:564
+msgid "EXAMPLE"
+msgstr "EKZEMPLO"
+
+#: src/ui/editors/colorclass_editor.c:600
+msgid "Object color"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:601
+#: src/ui/editors/colorclass_editor.c:609
+#: src/ui/editors/colorclass_editor.c:617
+#, c-format
+msgid "R:%3.0f"
+msgstr "R:%3.0f"
+
+#: src/ui/editors/colorclass_editor.c:602
+#: src/ui/editors/colorclass_editor.c:610
+#: src/ui/editors/colorclass_editor.c:618
+#, c-format
+msgid "G:%3.0f"
+msgstr "V:%3.0f"
+
+#: src/ui/editors/colorclass_editor.c:603
+#: src/ui/editors/colorclass_editor.c:611
+#: src/ui/editors/colorclass_editor.c:619
+#, c-format
+msgid "B:%3.0f"
+msgstr "B:%3.0f"
+
+#: src/ui/editors/colorclass_editor.c:604
+#: src/ui/editors/colorclass_editor.c:612
+#: src/ui/editors/colorclass_editor.c:620
+#, c-format
+msgid "A:%3.0f"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:608
+msgid "Outline color"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:616
+msgid "Shadow color"
+msgstr ""
+
+#: src/ui/editors/colorclass_editor.c:627
+msgid "Failed initialize colorclasses editor"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:63 src/ui/editors/program_editor.c:76
+msgid "NONE"
+msgstr "NENIU"
+
+#: src/ui/editors/program_editor.c:64
+msgid "LINEAR"
+msgstr "LINEARA"
+
+#: src/ui/editors/program_editor.c:65
+msgid "SINUSOIDAL"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:66
+msgid "ACCELERATE"
+msgstr "PLIRAPIDIGI"
+
+#: src/ui/editors/program_editor.c:67
+msgid "DECELERATE"
+msgstr "MALPLIRAPIDIGI"
+
+#: src/ui/editors/program_editor.c:68
+msgid "ACCELERATE FACTOR"
+msgstr "PLIRAPIDIGA FAKTORO"
+
+#: src/ui/editors/program_editor.c:69
+msgid "DECELERATE FACTOR"
+msgstr "MALPLIRAPIDIGA FAKTORO"
+
+#: src/ui/editors/program_editor.c:70
+msgid "SINUSOIDAL FACTOR"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:71
+msgid "DIVISOR INTERP"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:72
+msgid "BOUNCE"
+msgstr "RESALTI"
+
+#: src/ui/editors/program_editor.c:73
+msgid "SPRING"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:77
+msgid "STATE_SET"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:78
+msgid "ACTION_STOP"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:79
+msgid "SIGNAL_EMIT"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:80
+msgid "DRAG_VAL_SET"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:81
+msgid "DRAG_VAL_STEP"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:82
+msgid "DRAG_VAL_PAGE"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:83
+msgid "SCRIPT"
+msgstr "SKRIPTO"
+
+#: src/ui/editors/program_editor.c:84
+msgid "FOCUS_SET"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:85
+msgid "RESERVED00"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:86
+msgid "FOCUS_OBJECT"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:87
+msgid "PARAM_COPY"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:88
+msgid "PARAM_SET"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:89
+msgid "SOUND_SAMPLE"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:90
+msgid "SOUND_TONE"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:130 src/ui/editors/program_editor.c:239
+#: src/ui/editors/program_editor.c:257 src/ui/editors/program_editor.c:273
+#: src/ui/editors/program_editor.c:618 src/ui/editors/program_editor.c:631
+#: src/ui/editors/program_editor.c:658 src/ui/editors/program_editor.c:676
+#: src/ui/editors/program_editor.c:689 src/ui/editors/program_editor.c:716
+msgid "The entered data is not valid!"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:179 src/ui/editors/program_editor.c:1212
+msgid "signal"
+msgstr "signalo"
+
+#: src/ui/editors/program_editor.c:180 src/ui/editors/program_editor.c:1213
+#: src/ui/blocks/ui_property.c:1270
+msgid "source"
+msgstr "fonto"
+
+#: src/ui/editors/program_editor.c:181 src/ui/blocks/ui_property.c:628
+msgid "name"
+msgstr "nomo"
+
+#: src/ui/editors/program_editor.c:310 src/ui/editors/program_editor.c:485
+msgid "script"
+msgstr "skripto"
+
+#: src/ui/editors/program_editor.c:475 src/ui/editors/program_editor.c:493
+#: src/ui/editors/program_editor.c:512 src/ui/editors/program_editor.c:533
+#: src/ui/editors/program_editor.c:1092
+msgid "targets"
+msgstr "celoj"
+
+#: src/ui/editors/program_editor.c:571
+msgid "Transition block can used only with STATE_SET action"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:723
+msgid "the entered data is not valid!"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:782 src/ui/editors/program_editor.c:849
+msgid "Del"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:898 src/ui/editors/program_editor.c:1216
+msgid "transition"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:902
+msgid "length"
+msgstr "longo"
+
+#: src/ui/editors/program_editor.c:909 src/ui/editors/program_editor.c:979
+msgid "param1"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:916 src/ui/editors/program_editor.c:985
+msgid "param2"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:976 src/ui/editors/program_editor.c:1215
+msgid "action"
+msgstr "ago"
+
+#: src/ui/editors/program_editor.c:1038
+msgid "after"
+msgstr "post"
+
+#: src/ui/editors/program_editor.c:1172 src/ui/editors/program_editor.c:1214
+msgid "in"
+msgstr "en"
+
+#: src/ui/editors/program_editor.c:1175
+msgid "range"
+msgstr "intervalo"
+
+#: src/ui/editors/program_editor.c:1181
+msgid "from"
+msgstr "el"
+
+#: src/ui/editors/program_editor.c:1211
+msgid "Unique name of program "
+msgstr ""
+
+#: src/ui/editors/program_editor.c:1217
+msgid "afters"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:1362
+msgid "Program's 'name can not be empty!"
+msgstr "Nomo de programoj ne povas esti malplenaj!"
+
+#: src/ui/editors/program_editor.c:1367
+msgid "Program's name must be unique!"
+msgstr "Nomo de programoj devas esti unikaj!"
+
+#: src/ui/editors/program_editor.c:1406
+#, c-format
+msgid "Failed to delete program [%s] from style [%s]"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:1439 src/ui/editors/program_editor.c:1516
+msgid "New program"
+msgstr "Nova programo"
+
+#: src/ui/editors/program_editor.c:1441
+msgid "Program name:"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:1492
+msgid "Program editor"
+msgstr ""
+
+#: src/ui/editors/program_editor.c:1534
+msgid "Apply"
+msgstr "Apliki"
+
+#: src/ui/dialogs/open_file_dialog.c:37
+msgid "The file must have a extension '.edj'"
+msgstr ""
+
+#: src/ui/dialogs/open_file_dialog.c:54
+msgid ""
+"You want to open new theme, but now you have<br/>opened project. If you dont "
+"save opened project<br/>all your changes will be lost!"
+msgstr ""
+
+#: src/ui/dialogs/open_file_dialog.c:59
+msgid "Open EDJ file dialog"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:41
+#, c-format
+msgid "Theme saved: %s"
+msgstr "Etoso konservita: %s"
+
+#: src/ui/dialogs/save_file_dialog.c:44
+#, c-format
+msgid "Theme can not be saved: %s"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:50
+msgid "Theme saved"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:53
+msgid "Theme can not be saved"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:111
+msgid "The file must have an extension '.edj'"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:129
+msgid "Warning"
+msgstr "Averto"
+
+#: src/ui/dialogs/save_file_dialog.c:130
+msgid "File is already exist. Wouldyou like to replace it?"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:132
+msgid "OK"
+msgstr ""
+
+#: src/ui/dialogs/save_file_dialog.c:200 src/ui/dialogs/save_file_dialog.c:215
+msgid "Save as EDJ file"
+msgstr "Konservi kiel EDJ dosiero"
+
+#: src/ui/dialogs/save_file_dialog.c:207
+msgid "Export to EDC"
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:27
+msgid "Part name can not be empty"
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:32
+#, c-format
+msgid "Can't add the part %s, part with the same name already exists"
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:160
+#, c-format
+msgid "Add new part to group \"%s\""
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:166
+msgid "Type the new part new."
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:170
+msgid "Rectangle"
+msgstr "Ortangulo"
+
+#: src/ui/dialogs/part_dialog.c:173 src/ui/blocks/ui_property.c:1582
+msgid "Text"
+msgstr "Teksto"
+
+#: src/ui/dialogs/part_dialog.c:176 src/ui/blocks/ui_property.c:2085
+msgid "Image"
+msgstr "Bildo"
+
+#: src/ui/dialogs/part_dialog.c:179
+msgid "Swallow"
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:182
+msgid "Textblock"
+msgstr ""
+
+#: src/ui/dialogs/part_dialog.c:190
+msgid "Spacer"
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:61
+msgid "State name can not be empty!"
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:67
+msgid "State value is not correct!"
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:77
+msgid "State is exist!"
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:172
+#, c-format
+msgid "Add new state to part \"%s\""
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:178
+msgid "Name:"
+msgstr "Nomo:"
+
+#: src/ui/dialogs/state_dialog.c:181
+msgid "Type a new state name."
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:185
+msgid "Value:"
+msgstr "Valoro:"
+
+#: src/ui/dialogs/state_dialog.c:188
+msgid "Type a state value (0.0 - 1.0)."
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:195
+msgid "Duplicate state:"
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:200 src/ui/blocks/ui_property.c:155
+#: src/ui/blocks/ui_property.c:166 src/ui/blocks/ui_property.c:184
+#: src/ui/blocks/ui_property.c:188 src/ui/blocks/ui_property.c:201
+#: src/ui/blocks/ui_property.c:212
+msgid "None"
+msgstr "Neniu"
+
+#: src/ui/dialogs/state_dialog.c:282
+msgid "Can't delete the default state."
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:288
+msgid "Delete the state from part"
+msgstr ""
+
+#: src/ui/dialogs/state_dialog.c:292
+#, c-format
+msgid "Do you want to delete the state \"%s\" from part \"%s\"."
+msgstr ""
+
+#: src/ui/dialogs/style_dialog.c:112
+msgid "Please type style name"
+msgstr ""
+
+#: src/ui/dialogs/style_dialog.c:119
+msgid "Please type class name"
+msgstr ""
+
+#: src/ui/dialogs/style_dialog.c:129
+#, c-format
+msgid "[%s] alredy exist. Type another style name."
+msgstr ""
+
+#: src/ui/dialogs/style_dialog.c:144
+#, c-format
+msgid "Sorry, there are no templates for [%s]"
+msgstr ""
+
+#: src/ui/dialogs/style_dialog.c:292
+#, c-format
+msgid "Add style/class for \"%s\" widget"
+msgstr ""
+
+#: src/ui/dialogs/style_dialog.c:316
+msgid "Type a new class name."
+msgstr ""
+
+#: src/ui/modal_window/modal_window.c:50
+msgid "Title will be deleted"
+msgstr "Titolo estos forigata"
+
+#: src/ui/blocks/ui_property.c:156
+msgid "Vertical"
+msgstr "Vertikala"
+
+#: src/ui/blocks/ui_property.c:157
+msgid "Horizontal"
+msgstr "Horizontala"
+
+#: src/ui/blocks/ui_property.c:159
+msgid "Source"
+msgstr "Fonto"
+
+#: src/ui/blocks/ui_property.c:162 src/ui/blocks/ui_property.c:213
+msgid "Default"
+msgstr "Aprioro"
+
+#: src/ui/blocks/ui_property.c:163
+msgid "Explicit"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:167 src/ui/blocks/ui_property.c:189
+msgid "Plain"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:168
+msgid "Editable"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:169
+msgid "Password"
+msgstr "Pasvorto"
+
+#: src/ui/blocks/ui_property.c:172
+msgid "Autograb"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:173
+msgid "Nograb"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:176
+msgid "Under"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:177
+msgid "Before"
+msgstr "Antaŭ"
+
+#: src/ui/blocks/ui_property.c:180
+msgid "Scale"
+msgstr "Skalo"
+
+#: src/ui/blocks/ui_property.c:181
+msgid "Tile"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:185
+msgid "On hold"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:190
+msgid "Outline"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:191
+msgid "Soft Outline"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:192
+msgid "Shadow"
+msgstr "Ombro"
+
+#: src/ui/blocks/ui_property.c:193
+msgid "Soft Shadow"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:194
+msgid "Outline Shadow"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:195
+msgid "Outline Soft Shadow"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:196
+msgid "Far Shadow"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:197
+msgid "Far Soft Shadow"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:198
+msgid "Glow"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:202
+msgid "Bottom Right"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:203
+msgid "Bottom"
+msgstr "Malsupro"
+
+#: src/ui/blocks/ui_property.c:204
+msgid "Bottom Left"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:205
+msgid "Left"
+msgstr "Malsupro"
+
+#: src/ui/blocks/ui_property.c:206
+msgid "Top Left"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:207
+msgid "Top"
+msgstr "Supro"
+
+#: src/ui/blocks/ui_property.c:208
+msgid "Top Right"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:209
+msgid "Right"
+msgstr "Dekstro"
+
+#: src/ui/blocks/ui_property.c:214
+msgid "Solid"
+msgstr "Solida"
+
+#: src/ui/blocks/ui_property.c:302
+msgid "Visual"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:312
+msgid "Code"
+msgstr "Kodo"
+
+#: src/ui/blocks/ui_property.c:330 src/ui/blocks/ui_property.c:912
+#: src/ui/blocks/ui_property.c:1266
+msgid "min"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:331 src/ui/blocks/ui_property.c:913
+#: src/ui/blocks/ui_property.c:1265
+msgid "max"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:532
+msgid "Layout property"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:539
+msgid "Minimum group width in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:540
+msgid "Minimum group height in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:543
+msgid "Maximum group width in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:544
+msgid "Maximum group height in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:629
+msgid "scalable"
+msgstr "skalebla"
+
+#: src/ui/blocks/ui_property.c:630
+msgid "mouse events"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:631
+msgid "event propagation"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:632
+msgid "clip to"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:633
+msgid "ignore flags"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:634
+msgid "select mode"
+msgstr "Elekto-reĝimo"
+
+#: src/ui/blocks/ui_property.c:635
+msgid "entry mode"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:636
+msgid "pointer mode"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:637
+msgid "cursor mode"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:638
+msgid "multiline"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:641
+msgid "x"
+msgstr "x"
+
+#: src/ui/blocks/ui_property.c:642
+msgid "y"
+msgstr "y"
+
+#: src/ui/blocks/ui_property.c:643
+msgid "drag area"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:644
+msgid "forward events"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:667
+msgid "Part property"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:672
+msgid "Selected part name"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:673 src/ui/blocks/ui_property.c:2142
+msgid "type"
+msgstr "tipo"
+
+#: src/ui/blocks/ui_property.c:675
+msgid ""
+"Specifies whether the part will scale its size with an edje scaling factor."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:678
+msgid "Enable mouse events in this part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:680
+msgid "Enable repeat mouse events to the parts below."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:682
+msgid ""
+"Show only the area of part that coincides with another part's container"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:685
+msgid "Specifies whether events with the given  flags should be ignored"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:698 src/ui/blocks/ui_property.c:736
+msgid "Sets the selection mode for a textblock part"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:701
+msgid "Sets the edit mode for a textblock part"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:704 src/ui/blocks/ui_property.c:758
+msgid "Sets the mouse pointer behavior for a given part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:707
+msgid "Sets the cursor mode for a textblock part"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:710 src/ui/blocks/ui_property.c:779
+msgid ""
+"It causes a textblock that is editable to allow multiple lines for editing."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:747
+msgid "Sets the edit mode for a textblock part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:769
+msgid " Sets the cursor mode for a textblock part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:809
+msgid "Part dragable property"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:815 src/ui/blocks/ui_property.c:819
+#, c-format
+msgid "%.0f"
+msgstr "%.0f"
+
+#: src/ui/blocks/ui_property.c:816
+msgid "Enable/Disable draggin along X axis"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:817 src/ui/blocks/ui_property.c:821
+msgid "Set a drag step value"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:820
+msgid "Enable/Disable draggin along Y axis"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:823
+msgid "Limits the movement of the dragged part to another part's container'"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:826
+msgid ""
+"It causes the part to forward the drag events to another part, thus ignoring "
+"them for itself."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:911
+msgid "visible"
+msgstr "videbla"
+
+#: src/ui/blocks/ui_property.c:914
+msgid "fixed"
+msgstr "fiksita"
+
+#: src/ui/blocks/ui_property.c:915 src/ui/blocks/ui_property.c:1105
+#: src/ui/blocks/ui_property.c:1108 src/ui/blocks/ui_property.c:1264
+#: src/ui/blocks/ui_property.c:2144 src/ui/blocks/ui_property.c:2146
+msgid "align"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:916
+msgid "aspect ratio"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:917
+msgid "color class"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:918
+msgid "color"
+msgstr "koloro"
+
+#: src/ui/blocks/ui_property.c:919
+msgid "aspect ratio mode"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:944
+msgid "State"
+msgstr "Stato"
+
+#: src/ui/blocks/ui_property.c:949
+msgid "state"
+msgstr "stato"
+
+#: src/ui/blocks/ui_property.c:955
+msgid "Minimum part width in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:956
+msgid "Minimum part height in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:961
+msgid "Maximum part width in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:962
+msgid "Maximum part height in pixels."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:965
+msgid "This affects the minimum width calculation."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:966
+msgid "This affects the minimum height calculation."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:970
+msgid "Part horizontal align: 0.0 = left  1.0 = right"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:971
+msgid "Part vertical align: 0.0 = top  1.0 = bottom"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:976 src/ui/blocks/ui_property.c:978
+msgid "Normally width and height can be resized to any values independently"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:982
+msgid "The aspect control hints for this object."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:986
+msgid "Current color class"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:988
+msgid "Part main color."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1082
+msgid "Layout"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1106 src/ui/blocks/ui_property.c:1109
+#: src/ui/blocks/ui_property.c:2145 src/ui/blocks/ui_property.c:2147
+msgid "offset"
+msgstr "deŝovo"
+
+#: src/ui/blocks/ui_property.c:1107 src/ui/blocks/ui_property.c:1110
+msgid "relative to"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1125
+msgid "Object area"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1133
+msgid "Start point"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1139 src/ui/blocks/ui_property.c:1178
+msgid ""
+"Causes a corner to be positioned relatively to the X axis of another part. "
+"Setting to \"\" will un-set this value"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1141 src/ui/blocks/ui_property.c:1180
+msgid ""
+"Causes a corner to be positioned relatively to the Y axis of another part. "
+"Setting to \"\" will un-set this value"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1146
+msgid ""
+"Define the position of left-up corner of the part's container. Moves a "
+"corner to a relative position inside the container by X axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1149
+msgid ""
+"Define the position of left-up corner of the part's container. Moves a "
+"corner to a relative position inside the container by Y axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1158 src/ui/blocks/ui_property.c:1197
+msgid "Left offset from relative position in pixels"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1159 src/ui/blocks/ui_property.c:1198
+msgid "Top offset from relative position in pixels"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1172
+msgid "End point"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1185
+msgid ""
+"Define the position of right-down corner of the part's container. Moves a "
+"corner to a relative position inside the container by X axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1188
+msgid ""
+"Define the position of right-down corner of the part's container. Moves a "
+"corner to a relative position inside the container by Y axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1261
+msgid "text"
+msgstr "teksto"
+
+#: src/ui/blocks/ui_property.c:1262
+msgid "font"
+msgstr "tiparo"
+
+#: src/ui/blocks/ui_property.c:1263
+msgid "size"
+msgstr "grando"
+
+#: src/ui/blocks/ui_property.c:1267
+msgid "fit"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1268
+msgid "shadow color"
+msgstr "ombra koloro"
+
+#: src/ui/blocks/ui_property.c:1269
+msgid "outline color"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1271
+msgid "text source"
+msgstr "teksta fonto"
+
+#: src/ui/blocks/ui_property.c:1383
+msgid ":"
+msgstr ":"
+
+#: src/ui/blocks/ui_property.c:1407
+msgid "effect"
+msgstr "efekto"
+
+#: src/ui/blocks/ui_property.c:1419
+msgid "Causes Edje to draw the selected effect."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1424
+msgid "Shadow directions."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1588 src/ui/blocks/ui_property.c:1713
+msgid "Set the text of part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1590
+msgid "Change the text's font"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1593
+msgid "Change text font's size.'"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1597
+msgid "Text horizontal align. 0.0 = left  1.0 = right"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1599
+msgid "Text vertical align. 0.0 = top  1.0 = bottom"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1603 src/ui/blocks/ui_property.c:1606
+#: src/ui/blocks/ui_property.c:1718 src/ui/blocks/ui_property.c:1721
+msgid ""
+"When any of the parameters is enabled it forces \tthe minimum size of the "
+"container to be equal to\tthe minimum size of the text."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1610 src/ui/blocks/ui_property.c:1613
+#: src/ui/blocks/ui_property.c:1725 src/ui/blocks/ui_property.c:1728
+msgid ""
+"When any of the parameters is enabled it forces \tthe maximum size of the "
+"container to be equal to\tthe maximum size of the text."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1617
+msgid ""
+"Causes the part to use the text properties\t(like font and size) of another "
+"part\tand update them as they change."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1621
+msgid ""
+"Causes the part to display the text content of \tanother part and update "
+"them as they change."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1624
+msgid ""
+"Cut text if biggest then part's area0.0 = fix the left side  1.0 = right side"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1627
+msgid "Resize the text for it to fit in it's container by X axis"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1628
+msgid "Resize the text for it to fit in it's container by Y axis"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1630
+msgid "Text shadow color."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1632
+msgid "Text outline color."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1687
+msgid "source (under selected text)"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1688
+msgid "source2 (over selected text)"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1689
+msgid "source3 (under cursor)"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1690
+msgid "source4 (over cursor)"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1691
+msgid "source5 (under anchor)"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1692
+msgid "source6 (over anchor)"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1694
+msgid "text style"
+msgstr "teksta stilo"
+
+#: src/ui/blocks/ui_property.c:1707
+msgid "TextBlock"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1716
+msgid "Set the text style of part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1732
+msgid ""
+"Used for the group to be loaded and used for selection \tdisplay UNDER the "
+"selected text the source \tof TEXTBLOCK part."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1736
+msgid ""
+"It is used for the group to be loaded and used for \tselection display OVER "
+"the selected text."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1739
+msgid ""
+"It is used for the group to be loaded and used for \tcursor display UNDER "
+"the cursor position."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1742
+msgid ""
+"It is used for the group to be loaded and used \tfor cursor display OVER the "
+"cursor position."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1745
+msgid ""
+"It is used for the group to be loaded and used for \tanchors display UNDER "
+"the anchor position."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1748
+msgid ""
+"It is used for the group to be loaded and used for \tanchor display OVER the "
+"anchor position."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:1999
+msgid "Tweens"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2070
+msgid "image"
+msgstr "bildo"
+
+#: src/ui/blocks/ui_property.c:2071
+msgid "border"
+msgstr "bordero"
+
+#: src/ui/blocks/ui_property.c:2072
+msgid "middle"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2091
+msgid "Current image name"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2092
+msgid "Change image"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2098
+msgid "Image's border value"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2104
+msgid "Image's middle value"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2143
+msgid "smooth"
+msgstr "glata"
+
+#: src/ui/blocks/ui_property.c:2161
+msgid "Fill"
+msgstr "Plenigi"
+
+#: src/ui/blocks/ui_property.c:2167
+msgid "Sets the image fill type."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2171
+msgid "On/off image smooth on scaling"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2180
+msgid "Origin"
+msgstr "Origino"
+
+#: src/ui/blocks/ui_property.c:2188
+msgid ""
+"Sets the starting point X coordinate relatively to displayed element's "
+"content."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2190
+msgid ""
+"Sets the starting point Y coordinate relatively to displayed element's "
+"content."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2198
+msgid "Affects the starting point a fixed number of pixels along X axis"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2200
+msgid "Affects the starting point a fixed number of pixels along Y axis"
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2214
+msgid "Size"
+msgstr "Grando"
+
+#: src/ui/blocks/ui_property.c:2222
+msgid ""
+"Value that represent the percentual value of the original size of the "
+"element by X axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2224
+msgid ""
+"Value that represent the percentual value of the original size of the "
+"element by Y axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2232
+msgid "Affects the size of the tile a fixed number of pixels along X axis."
+msgstr ""
+
+#: src/ui/blocks/ui_property.c:2234
+msgid "Affects the size of the tile a fixed number of pixels along Y axis."
+msgstr ""
+
+#: src/ui/blocks/ui_widget_list.c:718
+msgid "Widget list"
+msgstr ""
+
+#: src/ui/blocks/ui_widget_list.c:719
+msgid "Layouts list"
+msgstr ""
+
+#: src/ui/blocks/ui_widget_list.c:848
+msgid "Please select element for rename"
+msgstr ""
+
+#: src/ui/blocks/ui_widget_list.c:1043
+msgid "Selected part is currently on top of the list"
+msgstr ""
+
+#: src/ui/blocks/ui_widget_list.c:1052
+msgid "Selected part is currently on bottom of the list"
+msgstr ""
+
+#: src/ui/workspace/ui_workspace.c:221
+msgid "Undo"
+msgstr "Malfari"
+
+#: src/ui/workspace/ui_workspace.c:223
+msgid "Redo"
+msgstr "Refari"
+
+#: src/ui/workspace/ui_workspace.c:228
+msgid "Rulers enabled"
+msgstr ""
+
+#: src/ui/workspace/ui_workspace.c:236
+msgid "Zoom"
+msgstr "Zomi"
+
+#: src/ui/workspace/ui_workspace.c:242
+msgid "Fit"
+msgstr ""
+
+#: src/ui/workspace/ui_workspace.c:245
+msgid "20%"
+msgstr "20%"
+
+#: src/ui/workspace/ui_workspace.c:247
+msgid "100%"
+msgstr "100%"
+
+#: src/ui/workspace/ui_workspace.c:249
+msgid "500%"
+msgstr "500%"
+
+#: src/ui/workspace/ui_workspace.c:253
+msgid "Normal mode"
+msgstr "Normala reĝimo"
+
+#: src/ui/workspace/ui_workspace.c:256
+msgid "Separate mode"
+msgstr "Apartiga reĝimo"
+
+#: src/ui/workspace/ui_workspace.c:259
+msgid "Settings..."
+msgstr "Agordoj..."
+
+#: src/ui/live_view/live_view.c:108
+msgid "Widget isn't implemented yet!"
+msgstr ""
+
+#: src/ui/live_view/live_view.c:116
+msgid "Outdated version of EDJ file! Should be 110"
+msgstr ""
+
+#: src/main.c:31
+msgid ""
+"This application was written for Enlightenment, to use EFL\n"
+"and design to a create and modify a Elementary widgets style.\n"
+msgstr ""
+
+#: src/main.c:35
+msgid "open EDJ file"
+msgstr "Malfermi EDJ-dosieron"
