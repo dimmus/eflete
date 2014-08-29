@@ -349,6 +349,8 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    if (IS_DISABLED) \
      { \
        elm_check_state_set(transition.checkbox, false); \
+       elm_object_part_text_set(transition.layout2, "elm.text", "param1"); \
+       elm_object_part_text_set(transition.layout3, "elm.text", "param2"); \
        ewe_entry_entry_set(transition.entry1, ""); \
        ewe_entry_entry_set(transition.entry2, ""); \
        ewe_entry_entry_set(transition.entry3, ""); \
@@ -603,6 +605,7 @@ _on_combobox_action_sel(void *data,
         ENTRY_UPDATE(transition.entry1, false, transition.layout1, NULL);
         ENTRY_UPDATE(transition.entry2, false, transition.layout2, "param1");
         ENTRY_UPDATE(transition.entry3, false, transition.layout3, "param2");
+        TRANS_ENTRIES_DEFAULT_SET(true);
      }
 
    _special_properties_hide(prog_edit);
