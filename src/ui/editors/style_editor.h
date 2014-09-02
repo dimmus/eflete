@@ -32,7 +32,6 @@
 #include "eflete.h"
 #include "modal_window.h"
 #include "widget_macro.h"
-#include "widget_macro.h"
 #include "string_macro.h"
 
 /**
