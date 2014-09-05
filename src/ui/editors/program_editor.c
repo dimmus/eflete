@@ -46,6 +46,7 @@ struct _Program_Editor
      struct {
         Evas_Object *item;
         Evas_Object *combobox;
+        Evas_Object *layout0, *checkbox;
         Evas_Object *layout1, *entry1;
         Evas_Object *layout2, *entry2;
         Evas_Object *layout3, *entry3;
@@ -135,13 +136,16 @@ _on_##sub##_##value##_change(void *data, \
 #define ITEM_1ENTRY_ADD(text, sub, value, regex) \
 static Evas_Object * \
 _prop_item_##sub##_##value##_add(Evas_Object *parent, \
-                                const char *tooltip) \
+                                 const char *tooltip, \
+                                 Evas_Smart_Cb callback, \
+                                 void* cb_data) \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
    EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
    REGEX_SET(entry, regex); \
    elm_object_tooltip_text_set(entry, tooltip); \
+   evas_object_smart_callback_add(entry, "changed,user", callback, cb_data); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -155,9 +159,6 @@ _prop_item_##sub##_##value##_update(Evas_Object *item, Program_Editor *prog_edit
    entry = elm_object_part_content_get(item, "elm.swallow.content"); \
    value = edje_edit_##sub##_##value##_get(prop.style->obj, prop.program); \
    ewe_entry_entry_set(entry, value); \
-   evas_object_smart_callback_del(entry, "changed,user", _on_##sub##_##value##_change); \
-   evas_object_smart_callback_add(entry, "changed,user", \
-                                  _on_##sub##_##value##_change, prog_edit); \
 }
 
 #define ITEM_1ENTRY_PROG_CREATE(text, sub, value, regex) \
@@ -175,6 +176,7 @@ static void _on_v2_active(void *data, Evas_Object *obj, void *ei);
 static void _on_state_active(void *data, Evas_Object *obj, void *ei);
 static void _on_value_active(void *data, Evas_Object *obj, void *ei);
 static void _on_value2_active(void *data, Evas_Object *obj, void *ei);
+static void _prop_progs_update(Program_Editor *prog_edit);
 
 ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
@@ -341,11 +343,15 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    if (TEXT) elm_object_part_text_set(LAYOUT, "elm.text", TEXT);
 
 #define TRANS_ENTRIES_DEFAULT_SET(IS_DISABLED) \
+   elm_object_disabled_set(transition.checkbox, IS_DISABLED); \
    elm_object_disabled_set(transition.entry1, IS_DISABLED); \
    elm_object_disabled_set(transition.entry2, IS_DISABLED); \
    elm_object_disabled_set(transition.entry3, IS_DISABLED); \
    if (IS_DISABLED) \
      { \
+       elm_check_state_set(transition.checkbox, false); \
+       elm_object_part_text_set(transition.layout2, "elm.text", "param1"); \
+       elm_object_part_text_set(transition.layout3, "elm.text", "param2"); \
        ewe_entry_entry_set(transition.entry1, ""); \
        ewe_entry_entry_set(transition.entry2, ""); \
        ewe_entry_entry_set(transition.entry3, ""); \
@@ -369,7 +375,7 @@ _trans_entries_set(Program_Editor *prog_edit,
    char buff[BUFF_MAX];
    double value;
 
-   switch (prop.trans_type)
+   switch (prop.trans_type & EDJE_TWEEN_MODE_MASK)
      {
       case EDJE_TWEEN_MODE_NONE:
         {
@@ -565,6 +571,7 @@ _on_combobox_trans_sel(void *data,
 
    edje_edit_program_transition_set(prop.style->obj, prop.program,
                                    (Edje_Tween_Mode)(combitem->index));
+   elm_check_state_set(transition.checkbox, false);
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
         prop.trans_type = EDJE_TWEEN_MODE_NONE;
@@ -599,10 +606,12 @@ _on_combobox_action_sel(void *data,
         ENTRY_UPDATE(transition.entry1, false, transition.layout1, NULL);
         ENTRY_UPDATE(transition.entry2, false, transition.layout2, "param1");
         ENTRY_UPDATE(transition.entry3, false, transition.layout3, "param2");
+        TRANS_ENTRIES_DEFAULT_SET(true);
      }
 
    _special_properties_hide(prog_edit);
    _action_entries_set(prog_edit, false);
+   _prop_progs_update(prog_edit);
 }
 
 static void
@@ -616,6 +625,23 @@ _on_transition_time_active(void *data,
    if (!edje_edit_program_transition_time_set(prop.style->obj, prop.program,
                                               atof(value)))
      NOTIFY_WARNING(_("The entered data is not valid!"));
+}
+
+static void
+_on_transition_opt_current_changed(void *data,
+                                   Evas_Object *obj,
+                                   void *ei __UNUSED__)
+{
+   Program_Editor *prog_edit = (Program_Editor*)data;
+   Ewe_Combobox_Item *combitem = ewe_combobox_select_item_get(transition.combobox);
+   Eina_Bool value;
+   Edje_Tween_Mode mode;
+   value = elm_check_state_get(obj);
+   if (value)
+     mode = (Edje_Tween_Mode)(combitem->index) | EDJE_TWEEN_MODE_OPT_FROM_CURRENT;
+   else
+     mode = (Edje_Tween_Mode)(combitem->index);
+   edje_edit_program_transition_set(prop.style->obj, prop.program, mode);
 }
 
 
@@ -899,12 +925,22 @@ _prop_item_program_transition_add(Evas_Object *parent,
    BOX_ADD(item, box, false, true)
    EWE_COMBOBOX_ADD(item, transition.combobox)
 
+   ITEM_ADD_(box, transition.layout0, _("from current"), "editor")
+   CHECK_ADD(transition.layout0, transition.checkbox, DEFAULT_STYLE)
+   elm_object_part_content_set(transition.layout0,
+                               "elm.swallow.content",
+                               transition.checkbox);
+   evas_object_smart_callback_add(transition.checkbox, "changed",
+                                  _on_transition_opt_current_changed, prog_edit);
+
    ITEM_ADD_(box, transition.layout1, _("length"), "editor");
    EWE_ENTRY_ADD(transition.layout1, transition.entry1, true, DEFAULT_STYLE)
    REGEX_SET(transition.entry1, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout1,
                                "elm.swallow.content",
                                transition.entry1);
+   evas_object_smart_callback_add(transition.entry1, "changed,user",
+                                  _on_transition_time_active, prog_edit);
 
    ITEM_ADD_(box, transition.layout2, _("param1"), "editor");
    EWE_ENTRY_ADD(transition.layout2, transition.entry2, true, DEFAULT_STYLE)
@@ -912,6 +948,8 @@ _prop_item_program_transition_add(Evas_Object *parent,
    elm_object_part_content_set(transition.layout2,
                                "elm.swallow.content",
                                transition.entry2);
+   evas_object_smart_callback_add(transition.entry2, "changed,user", _on_v1_active,
+                                  prog_edit);
 
    ITEM_ADD_(box, transition.layout3, _("param2"), "editor");
    EWE_ENTRY_ADD(transition.layout3, transition.entry3, true, DEFAULT_STYLE)
@@ -919,6 +957,8 @@ _prop_item_program_transition_add(Evas_Object *parent,
    elm_object_part_content_set(transition.layout3,
                                "elm.swallow.content",
                                transition.entry3);
+   evas_object_smart_callback_add(transition.entry3, "changed,user", _on_v1_active,
+                                  prog_edit);
 
    for (i = 0; i < TRANSITIONS_COUNT; i++)
      ewe_combobox_item_add(transition.combobox, transition_type[i]);
@@ -926,6 +966,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
                                   _on_combobox_trans_sel, prog_edit);
 
    elm_box_pack_end(box, transition.combobox);
+   elm_box_pack_end(box, transition.layout0);
    elm_box_pack_end(box, transition.layout1);
    elm_box_pack_end(box, transition.layout2);
    elm_box_pack_end(box, transition.layout3);
@@ -945,7 +986,8 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      prop.trans_type = EDJE_TWEEN_MODE_NONE;
-   ewe_combobox_select_item_set(transition.combobox, (int)prop.trans_type);
+   ewe_combobox_select_item_set(transition.combobox, (int)(prop.trans_type & EDJE_TWEEN_MODE_MASK));
+   elm_check_state_set(transition.checkbox, !!(prop.trans_type & EDJE_TWEEN_MODE_OPT_FROM_CURRENT));
    if (prop.trans_type == EDJE_TWEEN_MODE_NONE)
      {
         TRANS_ENTRIES_DEFAULT_SET(true);
@@ -953,10 +995,6 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
      }
 
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
-   evas_object_smart_callback_del(transition.entry1, "changed,user",
-                                  _on_transition_time_active);
-   evas_object_smart_callback_add(transition.entry1, "changed,user",
-                                  _on_transition_time_active, prog_edit);
 
    snprintf(buff, sizeof(buff), "%1.2f", value);
    ewe_entry_entry_set(transition.entry1, buff);
@@ -1146,23 +1184,18 @@ _prop_item_program_in_update(Program_Editor *prog_edit)
    entry = eina_list_nth(childs, 0);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "changed,user", _on_in_from_change);
-   evas_object_smart_callback_add(entry, "changed,user",
-                                  _on_in_from_change, prog_edit);
    range = edje_edit_program_in_range_get(prop.style->obj,
                                           prop.program);
    entry = eina_list_nth(childs, 1);
    snprintf(instr, sizeof(instr), "%2.3f", range);
    ewe_entry_entry_set(entry, instr);
-   evas_object_smart_callback_del(entry, "changed,user", _on_in_range_change);
-   evas_object_smart_callback_add(entry, "changed,user",
-                                  _on_in_range_change, prog_edit);
    eina_list_free(childs);
 }
 
 static Evas_Object *
 _prop_item_program_in_add(Evas_Object *parent,
-                     const char *tooltip __UNUSED__)
+                          const char *tooltip __UNUSED__,
+                          void* cb_data)
 {
    Evas_Object *item, *sub_item, *box;
    Evas_Object *entry1, *entry2;
@@ -1176,12 +1209,16 @@ _prop_item_program_in_add(Evas_Object *parent,
    EWE_ENTRY_ADD(sub_item, entry1, true, DEFAULT_STYLE)
    REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(sub_item, "elm.swallow.content", entry1);
+   evas_object_smart_callback_add(entry1, "changed,user",
+                                  _on_in_from_change, cb_data);
    elm_box_pack_end(box, sub_item);
 
    ITEM_ADD_(box, sub_item, _("from"), "editor");
    EWE_ENTRY_ADD(sub_item, entry2, true, DEFAULT_STYLE)
    REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(sub_item, "elm.swallow.content", entry2);
+   evas_object_smart_callback_add(entry2, "changed,user",
+                                  _on_in_range_change, cb_data);
    elm_box_pack_end(box, sub_item);
 
    elm_object_part_content_set(item, "elm.swallow.content", box);
@@ -1195,9 +1232,6 @@ _prop_item_program_name_update(Program_Editor *prog_edit)
                                                     "elm.swallow.content");
 
    ewe_entry_entry_set(entry, prop.program);
-   evas_object_smart_callback_del(entry, "changed,user", _on_program_name_change);
-   evas_object_smart_callback_add(entry, "changed,user", _on_program_name_change,
-                                  prog_edit);
 }
 
 static Evas_Object *
@@ -1208,10 +1242,10 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    BOX_ADD(parent, box, false, false)
    evas_object_size_hint_align_set(box, 0.5, 0);
 
-   prop.name = _prop_item_program_name_add(box, _("Unique name of program "));
-   prop.signal = _prop_item_program_signal_add(box, _("signal"));
-   prop.source = _prop_item_program_source_add(box, _("source"));
-   prop.in = _prop_item_program_in_add(box, _("in"));
+   prop.name = _prop_item_program_name_add(box, _("Unique name of program "), _on_program_name_change, prog_edit);
+   prop.signal = _prop_item_program_signal_add(box, _("signal"), _on_program_signal_change, prog_edit);
+   prop.source = _prop_item_program_source_add(box, _("source"), _on_program_source_change, prog_edit);
+   prop.in = _prop_item_program_in_add(box, _("in"), prog_edit);
    action.item = _prop_item_program_action_add(box, prog_edit, _("action"));
    transition.item = _prop_item_program_transition_add(box, prog_edit, _("transition"));
    prop.afters = _prop_item_program_after_add(box, prog_edit, _("afters"));

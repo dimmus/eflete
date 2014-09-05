@@ -31,6 +31,7 @@ struct _Item
 {
    int id;
    const char* image_name;
+   Edje_Edit_Image_Comp comp_type;
 };
 
 struct _Image_Editor
@@ -38,14 +39,31 @@ struct _Image_Editor
    Project *pr;
    Evas_Object *win;
    Evas_Object *gengrid;
+   Evas_Object *layout;
    Evas_Object *legend;
+   struct {
+      Evas_Object *layout;
+      Evas_Object *image;
+      Evas_Object *file_name;
+      Evas_Object *location;
+      Evas_Object *type;
+      Evas_Object *comp;
+      Evas_Object *quality;
+      Evas_Object *width;
+      Evas_Object *height;
+   } image_data_fields;
    struct {
       Evas_Smart_Cb choose_func;
       void *data;
    } func_data;
+   struct {
+      Elm_Object_Item *included;
+      Elm_Object_Item *linked;
+   } group_items;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL;
+static void _image_info_reset(Image_Editor *img_edit);
 
 static char *
 _grid_label_get(void *data,
@@ -60,15 +78,19 @@ static void
 _image_editor_del(Image_Editor *img_edit)
 {
    img_edit->pr = NULL;
+   elm_gengrid_item_class_free(gic);
+   gic = NULL;
    evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
    evas_object_del(img_edit->legend);
    evas_object_del(img_edit->gengrid);
    evas_object_del(img_edit->win);
+   _image_info_reset(img_edit);
    free(img_edit);
 }
 
 /* icon fetching callback */
+#define MAX_ICON_SIZE 16
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -85,12 +107,19 @@ _grid_content_get(void *data,
         image = elm_image_add(grid);
         snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
         elm_image_file_set(image, img_edit->pr->swapfile, buf);
-        evas_object_size_hint_aspect_set(image, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+
+        int w, h;
+        elm_image_object_size_get(image, &w, &h);
+        if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
+          evas_object_size_hint_max_set(image, MAX_ICON_SIZE, MAX_ICON_SIZE);
+        else
+          elm_image_resizable_set(image, false, true);
         evas_object_show(image);
         return image;
-   }
+     }
    return NULL;
 }
+#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
@@ -102,86 +131,161 @@ _grid_del(void *data,
    free(it);
 }
 
+static void
+_image_info_reset(Image_Editor *img_edit)
+{
+   if (!img_edit->image_data_fields.image)
+     return;
+
+   elm_object_part_content_unset(img_edit->image_data_fields.layout,
+                                 "eflete.swallow.image");
+   evas_object_del(img_edit->image_data_fields.image);
+   img_edit->image_data_fields.image = NULL;
+
+   ewe_combobox_select_item_set(img_edit->image_data_fields.comp, 0);
+   elm_entry_entry_set(img_edit->image_data_fields.file_name, "");
+   elm_entry_entry_set(img_edit->image_data_fields.location, "");
+   elm_entry_entry_set(img_edit->image_data_fields.type, "");
+   elm_entry_entry_set(img_edit->image_data_fields.width, "");
+   elm_entry_entry_set(img_edit->image_data_fields.height, "");
+}
+
+static void
+_image_info_type_setup(Evas_Object *entry,
+                       const char *image_name)
+{
+  char buf[BUFF_MAX];
+   const char *dot = strrchr(image_name, '.');
+   if ((!dot) || (dot == image_name))
+     {
+        elm_entry_entry_set(entry, "Unknown");
+        return;
+     }
+
+   if (eina_str_has_extension(image_name, ".png"))
+     snprintf(buf, BUFF_MAX, "PNG image (%s)", dot);
+   else if (eina_str_has_extension(image_name, ".gif"))
+     snprintf(buf, BUFF_MAX, "GIF image (%s)", dot);
+   else if (eina_str_has_extension(image_name, ".jpeg") ||
+            eina_str_has_extension(image_name, ".jpg") ||
+            eina_str_has_extension(image_name, ".jif") ||
+            eina_str_has_extension(image_name, ".jfif"))
+     snprintf(buf, BUFF_MAX, "JPEG image (%s)", dot);
+   else if (eina_str_has_extension(image_name, ".bmp"))
+     snprintf(buf, BUFF_MAX, "BMP image (%s)", dot);
+   else if (eina_str_has_extension(image_name, ".tif") ||
+            eina_str_has_extension(image_name, ".tiff"))
+     snprintf(buf, BUFF_MAX, "TIFF image (%s)", dot);
+   else
+     {
+        elm_entry_entry_set(entry, "Unknown");
+        return;
+     }
+   elm_entry_entry_set(entry, buf);
+}
+
+static void
+_image_info_location_setup(Image_Editor *img_edit,
+                           const char *image_name)
+{
+   const char *file_name = strrchr(image_name, '/');
+   if (!file_name) file_name = image_name;
+   else file_name++;
+   elm_entry_entry_set(img_edit->image_data_fields.file_name, file_name);
+   char buf[BUFF_MAX];
+   strncpy(buf, image_name, (strlen(image_name) - strlen(file_name) - 1));
+   elm_entry_entry_set(img_edit->image_data_fields.location, buf);
+}
+
+static void
+_image_info_setup(Image_Editor *img_edit,
+                  const Item* it)
+{
+   Evas_Object *edje_edit_obj = NULL;
+   char buf[BUFF_MAX];
+   GET_OBJ(img_edit->pr, edje_edit_obj);
+
+   _image_info_reset(img_edit);
+
+   Evas_Object *image = elm_image_add(img_edit->layout);
+   snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
+   elm_image_file_set(image, img_edit->pr->swapfile, buf);
+   evas_object_image_smooth_scale_set(image, false);
+   elm_object_part_content_set(img_edit->image_data_fields.layout,
+                               "eflete.swallow.image", image);
+   img_edit->image_data_fields.image = image;
+   evas_object_show(image);
+
+   Edje_Edit_Image_Comp comp =
+      edje_edit_image_compression_type_get(edje_edit_obj, it->image_name);
+
+   if (comp != EDJE_EDIT_IMAGE_COMP_USER)
+     {
+        elm_entry_entry_set(img_edit->image_data_fields.location, buf);
+        elm_entry_entry_set(img_edit->image_data_fields.file_name, it->image_name);
+     }
+   else
+     _image_info_location_setup(img_edit, it->image_name);
+
+   ewe_combobox_select_item_set(img_edit->image_data_fields.comp, comp + 1);
+
+   if (comp == EDJE_EDIT_IMAGE_COMP_LOSSY)
+     {
+        int quality = edje_edit_image_compression_rate_get(edje_edit_obj,
+                                                           it->image_name);
+        elm_spinner_value_set(img_edit->image_data_fields.quality, quality);
+     }
+   else
+      elm_spinner_value_set(img_edit->image_data_fields.quality, 0);
+
+   int w, h;
+   elm_image_object_size_get(image, &w, &h);
+   snprintf(buf, BUFF_MAX, "%d", w);
+   elm_entry_entry_set(img_edit->image_data_fields.width, buf);
+   snprintf(buf, BUFF_MAX, "%d", h);
+   elm_entry_entry_set(img_edit->image_data_fields.height, buf);
+   _image_info_type_setup(img_edit->image_data_fields.type, it->image_name);
+}
+
 /* item selection change callback */
 static void
 _grid_sel(void *data,
           Evas_Object *obj __UNUSED__,
-          void *event_info)
+          void *event_info __UNUSED__)
 {
    char buf[BUFF_MAX];
-   Edje_Edit_Image_Comp comp;
-
-   const char* comp_str = NULL;
-   Evas_Object *edje_edit_obj = NULL;
-   Evas_Object *image = NULL;
-
-   int comp_rate = -2;
-   int w = 0;
-   int h = 0;
 
    Image_Editor *img_edit = (Image_Editor *)data;
-   const Item* it = elm_object_item_data_get(event_info);
    const Eina_List* sel_list = elm_gengrid_selected_items_get(img_edit->gengrid);
    int selected_images_count = eina_list_count(sel_list);
 
-   GET_OBJ(img_edit->pr, edje_edit_obj);
-
-   switch (selected_images_count)
+   if (!selected_images_count)
+     elm_object_text_set(img_edit->legend, _("No images selected"));
+   else
      {
-      case 0:
-         elm_object_text_set(img_edit->legend, _("No images selected<br><br>"));
-         break;
-      case 1:
-         image = elm_image_add(img_edit->gengrid);
-         snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
-         elm_image_file_set(image, img_edit->pr->swapfile, buf);
-         elm_image_object_size_get(image, &w, &h);
-         comp = edje_edit_image_compression_type_get(edje_edit_obj,
-                                                     it->image_name);
-         switch(comp)
-           {
-            case EDJE_EDIT_IMAGE_COMP_RAW:
-               comp_str = _("RAW");
-               break;
-            case EDJE_EDIT_IMAGE_COMP_USER:
-               comp_str = _("USER");
-               break;
-            case EDJE_EDIT_IMAGE_COMP_COMP:
-               comp_str = _("COMP");
-               break;
-            case EDJE_EDIT_IMAGE_COMP_LOSSY:
-               comp_str = _("LOSSY");
-               comp_rate = edje_edit_image_compression_rate_get(edje_edit_obj,
-                                                                 it->image_name);
-               break;
-            default:
-               comp_str = _("Unknown compression type");
-               ERR("Unknown compression type");
-               break;
-           }
-         if (comp_rate > 0)
-           {
-              snprintf(buf, BUFF_MAX,
-                       _("Selected image: %s<br>size: %dx%d<br>Compression"
-                       " type:%s rate:%d"), it->image_name, w, h, comp_str,
-                       comp_rate);
-           }
-         else
-           {
-              snprintf(buf, BUFF_MAX,
-                      _("Selected image: %s<br>size: %dx%d<br>Compression type: %s"),
-                      it->image_name, w, h, comp_str);
-           }
-         elm_object_text_set(img_edit->legend, buf);
-         evas_object_del(image);
-         break;
-      default:
-         snprintf(buf, BUFF_MAX, ngettext("%d image selected<br><br>",
-                                          "%d images selected<br><br>",
-                                          selected_images_count),
-                  selected_images_count);
-         elm_object_text_set(img_edit->legend, buf);
+        snprintf(buf, BUFF_MAX, ngettext("%d image selected",
+                                         "%d images selected",
+                                         selected_images_count),
+                 selected_images_count);
+        elm_object_text_set(img_edit->legend, buf);
      }
+
+   if (selected_images_count == 1)
+     _image_info_setup(img_edit, elm_object_item_data_get(eina_list_data_get(sel_list)));
+   else
+     _image_info_reset(img_edit);
+}
+
+static inline Item *
+_image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
+                                       const char *image_name)
+{
+   Item *it = (Item *)mem_malloc(sizeof(Item));
+   it->image_name = eina_stringshare_add(image_name);
+   it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
+   it->comp_type = edje_edit_image_compression_type_get(edje_edit_obj,
+                                                        it->image_name);
+   return it;
 }
 
 static void
@@ -215,10 +319,11 @@ _on_image_done(void *data,
           }
         else
           {
-             it = (Item *)mem_malloc(sizeof(Item));
-             it->image_name = eina_stringshare_add(ecore_file_file_get(selected));
-             it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
-             elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+             it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+                                                         ecore_file_file_get(selected));
+             elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+                                            img_edit->group_items.linked,
+                                            _grid_sel, img_edit);
              pm_project_changed(app_data_get()->project);
           }
      }
@@ -403,6 +508,141 @@ _on_button_cancel_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
+void
+_grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
+{
+   if (data)
+     eina_stringshare_del(data);
+}
+
+static char *
+_grid_group_item_label_get(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           const char  *part __UNUSED__)
+{
+   return strdup(data);
+}
+
+static void
+_image_editor_gengrid_group_items_add(Image_Editor *img_edit)
+{
+   Elm_Gengrid_Item_Class *ggic = elm_gengrid_item_class_new();
+
+   ggic->item_style = "group_index";
+   ggic->func.text_get = _grid_group_item_label_get;
+   ggic->func.content_get = NULL;
+   ggic->func.state_get = NULL;
+   ggic->func.del = _grid_group_item_del;
+
+   img_edit->group_items.included =
+      elm_gengrid_item_append(img_edit->gengrid, ggic,
+      eina_stringshare_add("Include"), NULL, NULL);
+   img_edit->group_items.linked =
+      elm_gengrid_item_append(img_edit->gengrid, ggic,
+      eina_stringshare_add("Linked"), NULL, NULL);
+   //TODO: Add View group with images that are not included to the edj-file yet.
+
+   elm_gengrid_item_class_free(ggic);
+}
+
+static Evas_Object *
+_image_info_entry_add(Evas_Object *box,
+                      const char *label)
+{
+   Evas_Object *item = NULL;
+   Evas_Object *entry = NULL;
+
+   ITEM_ADD(box, item, label, "eflete/image_editor/item/default");
+   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE);
+   elm_entry_editable_set(entry, false);
+   elm_object_part_content_set(item, "elm.swallow.content", entry);
+   elm_box_pack_end(box, item);
+   return entry;
+}
+
+static Evas_Object *
+_image_info_box_create(Image_Editor *img_edit, Evas_Object *parent)
+{
+   Evas_Object *item = NULL;
+   Evas_Object *box = NULL;
+   Evas_Object *groups_box = NULL;
+
+   BOX_ADD(parent, box, false, false);
+   elm_box_align_set(box, 0.0, 0.0);
+
+   img_edit->image_data_fields.file_name =
+      _image_info_entry_add(box, _("file name"));
+   img_edit->image_data_fields.location =
+      _image_info_entry_add(box, _("location"));
+   img_edit->image_data_fields.type =
+      _image_info_entry_add(box, _("type"));
+   // TODO: Add field with file size info.
+
+   //image compression
+   Evas_Object *item_quality = NULL;
+
+   ITEM_ADD(box, item, _("compression"), "eflete/image_editor/item/default");
+   BOX_ADD(box, groups_box, true, true);
+   EWE_COMBOBOX_ADD(groups_box, img_edit->image_data_fields.comp);
+   ewe_combobox_item_add(img_edit->image_data_fields.comp, "NONE");
+   ewe_combobox_item_add(img_edit->image_data_fields.comp, "RAW");
+   ewe_combobox_item_add(img_edit->image_data_fields.comp, "USER");
+   ewe_combobox_item_add(img_edit->image_data_fields.comp, "COMP");
+   ewe_combobox_item_add(img_edit->image_data_fields.comp, "LOSSY");
+   elm_object_disabled_set(img_edit->image_data_fields.comp, true);
+   elm_box_pack_end(groups_box, img_edit->image_data_fields.comp);
+
+   ITEM_ADD(item, item_quality, _("quality"), "eflete/image_editor/item/default");
+   SPINNER_ADD(groups_box, img_edit->image_data_fields.quality,
+               0, 100, 1, false, DEFAULT_STYLE);
+   elm_object_disabled_set(img_edit->image_data_fields.quality, true);
+   elm_object_part_content_set(item_quality, "elm.swallow.content",
+                               img_edit->image_data_fields.quality);
+   elm_box_pack_end(groups_box, item_quality);
+   elm_object_part_content_set(item, "elm.swallow.content", groups_box);
+   elm_box_pack_end(box, item);
+
+   // Image size
+   ITEM_ADD(box, item, _("image"), "eflete/image_editor/item/default");
+   BOX_ADD(box, groups_box, true, true);
+   img_edit->image_data_fields.width =
+      _image_info_entry_add(groups_box, _("width"));
+   img_edit->image_data_fields.height =
+      _image_info_entry_add(groups_box, _("height"));
+   elm_object_part_content_set(item, "elm.swallow.content", groups_box);
+   elm_box_pack_end(box, item);
+
+   return box;
+}
+
+
+static void
+_image_info_initiate(Image_Editor *img_edit)
+{
+   Evas_Object *scroller = NULL;
+   Evas_Object *box = NULL;
+
+   SCROLLER_ADD(img_edit->layout, scroller);
+   evas_object_size_hint_weight_set(scroller,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.image_info", scroller);
+
+   BOX_ADD(scroller, box, false, false);
+   elm_object_content_set(scroller, box);
+   elm_box_align_set(box, 0.5, 0.0);
+
+   img_edit->image_data_fields.layout = elm_layout_add(box);
+   elm_layout_file_set(img_edit->image_data_fields.layout, EFLETE_EDJ,
+                       "eflete/image_editor/image_preview");
+   evas_object_size_hint_weight_set(img_edit->image_data_fields.layout,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(img_edit->image_data_fields.layout);
+
+   elm_box_pack_end(box, img_edit->image_data_fields.layout);
+   elm_box_pack_end(box, _image_info_box_create(img_edit, scroller));
+   evas_object_show(box);
+}
 
 Eina_Bool
 _image_editor_init(Image_Editor *img_edit)
@@ -416,6 +656,8 @@ _image_editor_init(Image_Editor *img_edit)
 
    if (!img_edit) return false;
    GET_OBJ(img_edit->pr, edje_edit_obj);
+
+   _image_editor_gengrid_group_items_add(img_edit);
    images = edje_edit_images_list_get(edje_edit_obj);
 
    if (images)
@@ -428,10 +670,15 @@ _image_editor_init(Image_Editor *img_edit)
                    ERR("name not found for image #%d",counter);
                    continue;
                 }
-              it = (Item *)mem_malloc(sizeof(Item));
-              it->image_name = eina_stringshare_add(image_name);
-              it->id = edje_edit_image_id_get(edje_edit_obj, it->image_name);
-              elm_gengrid_item_append(img_edit->gengrid, gic, it, _grid_sel, img_edit);
+              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
+                                                          image_name);
+              if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+                elm_gengrid_item_append(img_edit->gengrid, gic, it,
+                                        _grid_sel, img_edit);
+              else
+                elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+                                               img_edit->group_items.linked,
+                                               _grid_sel, img_edit);
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
@@ -456,8 +703,8 @@ Evas_Object *
 image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
    Evas_Object *button;
-   Evas_Object *box, *bottom_box, *panel_box;
    Evas_Object *_bg = NULL;
+   Evas_Object *icon = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
@@ -470,15 +717,15 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add(_on_button_cancel_clicked_cb, img_edit);
+   img_edit->win = mw_add(NULL, img_edit);
    mw_title_set(img_edit->win, _("Image editor"));
 
-   BOX_ADD(img_edit->win, box, false, false);
-   elm_win_inwin_content_set(img_edit->win, box);
-
-   img_edit->gengrid = elm_gengrid_add(box);
+   img_edit->layout = elm_layout_add(img_edit->win);
+   elm_layout_file_set(img_edit->layout, EFLETE_EDJ, "eflete/image_editor/default");
+   elm_win_inwin_content_set(img_edit->win, img_edit->layout);
+   img_edit->gengrid = elm_gengrid_add(img_edit->layout);
    elm_object_style_set(img_edit->gengrid, DEFAULT_STYLE);
-   elm_box_pack_end(box, img_edit->gengrid);
+   elm_object_part_content_set(img_edit->layout, "eflete.swallow.grid", img_edit->gengrid);
    elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(img_edit->gengrid, 0.5, 0.0);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
@@ -498,57 +745,47 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      elm_gengrid_multi_select_set(img_edit->gengrid, true);
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   evas_object_size_hint_weight_set(img_edit->gengrid, EVAS_HINT_EXPAND,
-                                                            EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(img_edit->gengrid, EVAS_HINT_FILL,
-                                                                EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(img_edit->gengrid,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(img_edit->gengrid,
+                                   EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_smart_callback_add(img_edit->gengrid, "unselected", _grid_sel,
                                   img_edit);
    evas_object_show(img_edit->gengrid);
 
-   BOX_ADD(box, panel_box, true, false);
-   elm_box_pack_end(box, panel_box);
+   BUTTON_ADD(img_edit->layout, button, NULL);
+   ICON_ADD(button, icon, true, "icon-add");
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add(button, "clicked",
+                                  _on_button_add_clicked_cb, img_edit);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.add_btn", button);
 
-   BOX_ADD(panel_box, bottom_box, true, false);
-   evas_object_size_hint_align_set(bottom_box, 0, 0.5);
-   elm_box_pack_end(panel_box, bottom_box);
+   BUTTON_ADD(img_edit->layout, button, NULL);
+   ICON_ADD(button, icon, true, "icon-remove");
+   elm_object_part_content_set(button, NULL, icon);
+   evas_object_smart_callback_add(button, "clicked",
+                                  _on_button_delete_clicked_cb, img_edit);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.del_btn", button);
 
-   BUTTON_ADD(bottom_box, button, _("Add image"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_add_clicked_cb,
-                                   img_edit);
-   evas_object_size_hint_max_set(button, 80, 25);
-   evas_object_size_hint_min_set(button, 80, 25);
-   elm_box_pack_end(bottom_box, button);
+   LABEL_ADD(img_edit->layout, img_edit->legend, _("No images selected"))
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.label", img_edit->legend);
 
-   BUTTON_ADD(bottom_box, button, _("Delete image"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_delete_clicked_cb,
-                                   img_edit);
-   evas_object_size_hint_max_set(button, 100, 25);
-   evas_object_size_hint_min_set(button, 100, 25);
-   elm_box_pack_end(bottom_box, button);
-
-   LABEL_ADD(bottom_box, img_edit->legend, _("No images selected<br><br>"))
-   elm_box_pack_end(bottom_box,img_edit->legend);
-   evas_object_size_hint_align_set(img_edit->legend, -1.0,-1.0);
-   elm_label_ellipsis_set(img_edit->legend, true);
-
-   BOX_ADD(panel_box, bottom_box, true, false);
-   evas_object_size_hint_align_set(bottom_box, 1, 0.5);
-   elm_box_pack_end(panel_box, bottom_box);
-
-   BUTTON_ADD(bottom_box, button, _("Ok"));
+   BUTTON_ADD(img_edit->layout, button, _("Ok"));
    evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
                                   img_edit);
-   evas_object_size_hint_max_set(button, 80, 25);
-   evas_object_size_hint_min_set(button, 80, 25);
-   elm_box_pack_end(bottom_box, button);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.OK_btn", button);
 
-   BUTTON_ADD(bottom_box, button, _("Cancel"));
+   BUTTON_ADD(img_edit->layout, button, _("Cancel"));
    evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked_cb,
-                                   img_edit);
-   evas_object_size_hint_max_set(button, 80, 25);
-   evas_object_size_hint_min_set(button, 80, 25);
-   elm_box_pack_end(bottom_box, button);
+                                  img_edit);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.Cancel_btn", button);
+
+   _image_info_initiate(img_edit);
 
    if (!gic)
      {
@@ -601,6 +838,14 @@ image_editor_file_choose(Evas_Object *win, const char *selected)
 
    while(grid_item)
      {
+        const char* item_style =
+           elm_gengrid_item_item_class_get(grid_item)->item_style;
+        if (!strcmp(item_style, "group_index"))
+          {
+             grid_item = elm_gengrid_item_next_get(grid_item);
+             continue;
+          }
+
         it = elm_object_item_data_get(grid_item);
         if (!it) return false;
         if (!strcmp(it->image_name, selected))
