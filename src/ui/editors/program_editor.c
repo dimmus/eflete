@@ -176,6 +176,7 @@ static void _on_v2_active(void *data, Evas_Object *obj, void *ei);
 static void _on_state_active(void *data, Evas_Object *obj, void *ei);
 static void _on_value_active(void *data, Evas_Object *obj, void *ei);
 static void _on_value2_active(void *data, Evas_Object *obj, void *ei);
+static void _prop_progs_update(Program_Editor *prog_edit);
 
 ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
@@ -610,6 +611,7 @@ _on_combobox_action_sel(void *data,
 
    _special_properties_hide(prog_edit);
    _action_entries_set(prog_edit, false);
+   _prop_progs_update(prog_edit);
 }
 
 static void
