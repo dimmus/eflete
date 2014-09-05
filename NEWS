@@ -1,6 +1,24 @@
 ============
-Eflete 0.3.0
+Eflete 0.3.1
 ============
+
+Changes since 0.3.0
+-------------------
+
+Feature:
+   * Image Editor: groups of images (included into edj, linked);
+   * Image Editor: set size of icons in genlist based on original size of image;
+   * Image Editor: new image editor window;
+   * Image Editor: displaying image information;
+   * Program editor: support FROM_CURRENT option of transition.
+
+Fixes:
+   * Program editor: fixing transition fields blocking;
+   * Program editor: fixing labels reset after action type change;
+   * Program editor: fixing callbacks update;
+   * Program editor: moving entry callbacks to object creation;
+   * Property: fixing tween frame style;
+   * Notify: removing ellipsis.
 
 Changes since 0.2.9
 -------------------
