@@ -20,6 +20,7 @@
 #include <ui_workspace.h>
 #include "highlight.h"
 #include "groupedit.h"
+#include "container.h"
 #include "eflete.h"
 
 struct _Ws_Menu
@@ -81,6 +82,7 @@ struct _Ws_Smart_Data
    char scroll_flag;             /**< Needed for control drag bar's in scroller*/
    Evas_Object *groupedit;       /**< A groupedit smart object, \
                                    needed for view and edit style.*/
+   Evas_Object *container;       /**< Container that contains groupedit.*/
    Evas_Object *layout;          /**< A elementary layout object, \
                                    which markup with workspace.edc file.*/
    struct {
@@ -873,6 +875,17 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
      }
    else groupedit_edit_object_unset(sd->groupedit);
+
+   if (!sd->container)
+     {
+        sd->container = container_add(sd->scroller);
+     }
+   else container_content_unset(sd->container);
+
+   container_content_set(sd->container, sd->groupedit);
+
+   evas_object_focus_set(sd->groupedit, true);
+
    sd->style = style;
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");
@@ -888,7 +901,8 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
                                   _ws_ruler_rel_zero_move_cb, obj);
    groupedit_bg_set(sd->groupedit, sd->background);
-   elm_object_content_set(sd->scroller, sd->groupedit);
+   elm_object_content_set(sd->scroller, sd->container);
+   evas_object_show(sd->container);
    evas_object_show(sd->groupedit);
 
    /* Create highlights for object and relative space */
@@ -927,9 +941,12 @@ workspace_edit_object_unset(Evas_Object *obj)
    if (!sd->groupedit) return false;
 
    if (groupedit_edit_object_unset(sd->groupedit)) is_unset = true;
+   container_content_unset(sd->container);
    elm_object_content_unset(sd->scroller);
    evas_object_del(sd->groupedit);
+   evas_object_del(sd->container);
    sd->groupedit = NULL;
+   sd->container = NULL;
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, true);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, true);
