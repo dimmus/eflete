@@ -5,6 +5,7 @@ collections {
    #include "edje/workspace.edc"
    #include "edje/live_view.edc"
    #include "edje/image_editor.edc"
+   #include "edje/sound_editor.edc"
    #include "edje/main_window.edc"
    #include "edje/cursor.edc"
    #include "edje/textstyle.edc"
