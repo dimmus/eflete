@@ -38,17 +38,6 @@
 
 #include "eflete.h"
 
-struct _Geom{
-   int x, y, w, h;
-};
-
-/**
- * Container geometry of the Container object.
- *
- * @ingroup Container
- */
-typedef struct _Geom Container_Geom;
-
 /**
  * Add new Container object to parent object.
  * To delete Container object use evas_object_del.

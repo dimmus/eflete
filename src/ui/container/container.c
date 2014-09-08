@@ -36,6 +36,11 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {NULL, NULL}
 };
 
+struct _Geom {
+   int x, y, w, h;
+};
+typedef struct _Geom Container_Geom;
+
 struct _Container_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
