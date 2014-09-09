@@ -198,6 +198,8 @@ _object_state_reset(Program_Editor *prog_edit)
 {
    Part *part;
 
+   edje_edit_program_stop_all(prog_edit->live->object);
+
    EINA_INLIST_FOREACH(prop.style->parts, part)
      edje_edit_part_selected_state_set(prog_edit->live->object, part->name, part->curr_state, part->curr_state_value);
 }
@@ -211,6 +213,15 @@ _on_program_reset(void *data,
 }
 
 static void
+_on_object_load(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *em __UNUSED__,
+                const char *src __UNUSED__)
+{
+   _object_state_reset(data);
+}
+
+static void
 _on_program_play(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
@@ -219,7 +230,6 @@ _on_program_play(void *data,
 
    edje_edit_program_run(prog_edit->live->object, prop.program);
 }
-
 
 static int
 _sort_cb(const void *d1, const void *d2)
@@ -1566,7 +1576,8 @@ program_editor_window_add(Style *style)
 
    prog_edit->live = live_view_add(window_layout, true);
    live_view_widget_style_set(prog_edit->live, ap->project, style);
-   _object_state_reset(prog_edit);
+   edje_object_signal_callback_add(prog_edit->live->object, "show", "",
+                                   _on_object_load, prog_edit);
 
    top_layout = elm_layout_add(window_layout);
    elm_layout_file_set(top_layout, EFLETE_EDJ, "eflete/program_editor/live_view");
