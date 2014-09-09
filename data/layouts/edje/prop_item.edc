@@ -542,6 +542,20 @@ group {
    }
 }
 
+group {
+   name: "eflete/style/color";
+   inherit: "eflete/prop/color";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 20 20;
+            max: 50 20;
+         }
+      }
+   }
+}
+
 group { name: "eflete/prop/container/1label";
    parts {
       part { name: "eflete.text.start";
@@ -579,6 +593,30 @@ group { name: "eflete/prop/container/1label";
                to_x: "content_left_padding";
             }
             align: 0.0 0.5;
+         }
+      }
+   }
+}
+
+group { name: "eflete/style/container/1label";
+   inherit: "eflete/prop/container/1label";
+   parts {
+      part { name: "content.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "content_left_padding";
+            }
+            rel2.relative: 0.5 1.0;
+         }
+      }
+      part { name: "eflete.content";
+         description { state: "default" 0.0;
+            rel1.to_y: "content.area";
+            rel2.to: "content.area";
          }
       }
    }

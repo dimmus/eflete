@@ -103,6 +103,12 @@
    evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_show(COMBOBOX);
 
+#define SEGMENT_CONTROL_ADD(PARENT, SC) \
+   SC = elm_segment_control_add(PARENT); \
+   evas_object_size_hint_weight_set(SC, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(SC, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_show(SC);
+
 #define CHECK_ADD(PARENT, CHECK, STYLE) \
    CHECK = elm_check_add(PARENT); \
    elm_object_style_set(CHECK, STYLE); \

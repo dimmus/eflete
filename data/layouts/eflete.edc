@@ -8,12 +8,12 @@ collections {
    #include "edje/sound_editor.edc"
    #include "edje/main_window.edc"
    #include "edje/cursor.edc"
+   #include "edje/prop_item.edc"
    #include "edje/textstyle.edc"
    #include "edje/groupedit.edc"
    #include "edje/container.edc"
    #include "edje/notify.edc"
    #include "edje/colorclass_editor.edc"
-   #include "edje/prop_item.edc"
    #include "edje/highlight.edc"
    #include "edje/compile.edc"
 }

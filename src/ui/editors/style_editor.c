@@ -574,7 +574,7 @@ _change_bg_cb(void *data,
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
 {
-   Evas_Object *layout, *btn;
+   Evas_Object *layout;
    Evas_Object *box_bg = NULL;
    Evas_Object *image_bg = NULL;
    Evas_Object *radio_group = NULL;
@@ -584,17 +584,6 @@ _form_right_side(Style_Editor *style_edit)
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/property");
    evas_object_show(layout);
-
-   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_tag, true, DEFAULT_STYLE);
-   elm_object_part_content_set(layout, "swallow/tag_entry", style_edit->entry_tag);
-
-   EWE_ENTRY_ADD(style_edit->mwin, style_edit->entry_prop, true, DEFAULT_STYLE);
-   elm_object_part_content_set(layout, "swallow/prop_entry", style_edit->entry_prop);
-
-   BUTTON_ADD(style_edit->mwin, btn, _("Close viewer"));
-   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, style_edit);
-   elm_object_part_content_set(layout, "swallow/button_close", btn);
-   evas_object_show(btn);
 
    BOX_ADD(style_edit->mwin, box_bg, true, false);
    elm_box_padding_set(box_bg, 10, 0);
@@ -644,6 +633,7 @@ Evas_Object *
 style_editor_window_add(Project *project)
 {
    Evas_Object *panes, *panes_h;
+   Evas_Object *window_layout, *button_box, *btn;
    Evas_Object *layout_left, *layout_right;
    Evas_Object *bg = NULL;
    Evas *canvas = NULL;
@@ -667,13 +657,16 @@ style_editor_window_add(Project *project)
    mw_title_set(style_edit->mwin, _("Textblock style editor"));
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);
+   window_layout = elm_layout_add(style_edit->mwin);
+   elm_layout_file_set(window_layout, EFLETE_EDJ, "eflete/editor/default");
+   elm_win_inwin_content_set(style_edit->mwin, window_layout);
 
    panes = elm_panes_add(style_edit->mwin);
    elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
-   elm_win_inwin_content_set(style_edit->mwin, panes);
+   elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
    evas_object_show(panes);
 
    layout_left = _form_left_side(style_edit);
@@ -715,6 +708,17 @@ style_editor_window_add(Project *project)
    layout_right = _form_right_side(style_edit);
    elm_object_part_content_set(panes_h, "right", layout_right);
    evas_object_show(layout_right);
+
+   BOX_ADD(window_layout, button_box, true, false)
+   elm_box_align_set(button_box, 1.0, 0.5);
+
+   BUTTON_ADD(style_edit->mwin, btn, _("Close viewer"));
+   evas_object_smart_callback_add(btn, "clicked", _on_viewer_exit, style_edit);
+   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
+   evas_object_size_hint_min_set(btn, 100, 30);
+   evas_object_show(btn);
+   elm_box_pack_end(button_box, btn);
+   elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
    ui_menu_locked_set(ap->menu_hash, true);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
