@@ -23,6 +23,7 @@
 struct _Program_Editor
 {
    Evas_Object *mwin;
+   Live_View *live;
    Evas_Object *gl_progs;
    Elm_Object_Item *sel;
    struct {
@@ -187,6 +188,15 @@ static void _prop_progs_update(Program_Editor *prog_edit);
 ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
 ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
+
+static void
+_object_state_reset(Program_Editor *prog_edit)
+{
+   Part *part;
+
+   EINA_INLIST_FOREACH(prop.style->parts, part)
+     edje_edit_part_selected_state_set(prog_edit->live->object, part->name, part->curr_state, part->curr_state_value);
+}
 
 static int
 _sort_cb(const void *d1, const void *d2)
@@ -1497,6 +1507,7 @@ Evas_Object *
 program_editor_window_add(Style *style)
 {
    Evas_Object *window_layout;
+   Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
    Evas_Object *bt, *program_list_box, *button_box;
@@ -1521,6 +1532,17 @@ program_editor_window_add(Style *style)
    window_layout = elm_layout_add(prog_edit->mwin);
    elm_layout_file_set(window_layout, EFLETE_EDJ, "eflete/editor/default");
    elm_win_inwin_content_set(prog_edit->mwin, window_layout);
+
+   panes = elm_panes_add(window_layout);
+   elm_object_style_set(panes, DEFAULT_STYLE);
+   evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panes_horizontal_set(panes, true);
+   evas_object_show(panes);
+
+   prog_edit->live = live_view_add(window_layout, true);
+   live_view_widget_style_set(prog_edit->live, ap->project, style);
+   _object_state_reset(prog_edit);
 
    bottom_panes = elm_panes_add(window_layout);
    elm_object_style_set(bottom_panes, DEFAULT_STYLE);
@@ -1571,7 +1593,9 @@ program_editor_window_add(Style *style)
                                   prog_edit->mwin);
    elm_box_pack_end(button_box, bt);
 
-   elm_object_part_content_set(window_layout, "eflete.swallow.content", bottom_panes);
+   elm_object_part_content_set(panes, "top", prog_edit->live->layout);
+   elm_object_part_content_set(panes, "bottom", bottom_panes);
+   elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
    ui_menu_locked_set(ap->menu_hash, true);
