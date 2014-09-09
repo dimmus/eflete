@@ -46,6 +46,7 @@ ui/workspace/highlight.c \
 ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
 ui/live_view/live_widget.c \
+ui/live_view/live_prog_edit.c \
 ui/live_view/elementary/live_widget_common.c \
 ui/live_view/elementary/live_custom_layout.c \
 ui/live_view/elementary/live_actionslider.c \

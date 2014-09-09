@@ -49,6 +49,7 @@ struct _Live_View
    Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
    Evas_Object *property; /**< Live View properties */
+   Eina_Bool in_prog_edit; /**< Flag is this liveview in program editor */
 };
 typedef struct _Live_View Live_View;
 
@@ -60,12 +61,13 @@ typedef struct _Live_View Live_View;
  * and also it contains groupspace (for showing widget example).
  *
  * @paramram parent The parent Evas_Object.
+ * @paramram in_prog_edit Is this live_view for program_editor.
  * @returnturn Pointer to live_view structure.
  *
  * @ingroup Live_View
  */
 Live_View *
-live_view_add(Evas_Object *parent);
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit);
 
 /**
  * Set and show given widget and apply the style to it for showing the view of

@@ -27,7 +27,7 @@
 #define SWALLOW_MENU "eflete.swallow.menu"
 
 Live_View *
-live_view_add(Evas_Object *parent)
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 {
    Live_View *live;
    Evas_Object *bg;
@@ -35,6 +35,8 @@ live_view_add(Evas_Object *parent)
    if (!parent) return NULL;
 
    live = mem_calloc(1, sizeof(Live_View));
+
+   live->in_prog_edit = in_prog_edit;
 
    live->layout = elm_layout_add(parent);
    elm_layout_file_set(live->layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");
@@ -44,7 +46,7 @@ live_view_add(Evas_Object *parent)
 
    live->live_view = container_add(parent);
    live->panel = elm_panel_add(parent);
-   live->property = live_view_property_add(live->panel);
+   live->property = live_view_property_add(live->panel, in_prog_edit);
    elm_object_content_set(live->panel, live->property);
    elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
    elm_panel_hidden_set(live->panel, true);
@@ -83,7 +85,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    live_view_widget_style_unset(live);
    live_view_property_style_unset(live->property);
 
-   if (style->__type != LAYOUT)
+   if ((style->__type != LAYOUT) && (!live->in_prog_edit))
      {
         if (strstr(style->full_group_name, "gengrid"))
           {
@@ -137,11 +139,20 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
    else
      {
-        live->object = layout_custom_create(live->live_view);
-        elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
+        if (!live->in_prog_edit)
+          {
+             live->object = layout_custom_create(live->live_view);
+             elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
+             elm_object_style_set(live->object, style->full_group_name);
+          }
+        else
+          {
+             live->object = layout_prog_edit_create(live->live_view);
+             edje_object_file_set(live->object, project->swapfile, style->full_group_name);
+             evas_object_freeze_events_set(live->object, true);
+          }
         container_content_set(live->live_view, live->object);
         live_view_theme_update(live, project);
-        elm_object_style_set(live->object, style->full_group_name);
         live_view_property_style_set(live->property, live->object, style, "layout");
      }
 

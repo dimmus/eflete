@@ -66,7 +66,7 @@ EFLETE_TEST(live_view_property_style_set_test_p)
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/live_view_property_style_set.edj");
-   live_view_prop = live_view_property_add(parent);
+   live_view_prop = live_view_property_add(parent, false);
 
    res = live_view_property_style_set(live_view_prop, parent, style, "win");
    ck_assert_msg(res == EINA_TRUE, "Failed to set style into live view prop.");
@@ -157,7 +157,7 @@ EFLETE_TEST(live_view_property_style_set_test_n2)
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   live_view_prop = live_view_property_add(parent);
+   live_view_prop = live_view_property_add(parent, false);
 
    res = live_view_property_style_set(live_view_prop, parent, style, "win");
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop.");
@@ -207,7 +207,7 @@ EFLETE_TEST(live_view_property_style_set_test_n3)
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   live_view_prop = live_view_property_add(parent);
+   live_view_prop = live_view_property_add(parent, false);
 
    res = live_view_property_style_set(NULL, parent, style, "win");
    ck_assert_msg(res == EINA_FALSE, "Style was set into live view prop with live_view_prop = NULL.");

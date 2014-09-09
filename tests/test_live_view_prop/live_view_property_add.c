@@ -59,7 +59,7 @@ EFLETE_TEST(live_view_property_add_test_p)
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   live = live_view_property_add(parent);
+   live = live_view_property_add(parent, false);
    ck_assert_msg(live != NULL, "Failed to create live view property object.");
 
    evas_object_del(parent);
@@ -94,7 +94,7 @@ EFLETE_TEST(live_view_property_add_test_n)
 
    elm_init(0, 0);
 
-   live = live_view_property_add(NULL);
+   live = live_view_property_add(NULL, false);
    ck_assert_msg(live == NULL, "Live view property object was created "
                                "with NULL pointer parent");
 

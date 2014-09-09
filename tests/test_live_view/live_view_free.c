@@ -60,7 +60,7 @@ EFLETE_TEST(live_view_free_test_p)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
 
    ret = live_view_free(live);
    ck_assert_msg(ret == EINA_TRUE, "Failed freeing live view object");

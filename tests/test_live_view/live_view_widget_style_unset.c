@@ -75,7 +75,7 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/live_view_widget_style_unset.edj");
    project->current_style = style;
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, style);
 
    res = live_view_widget_style_unset(live);
@@ -121,7 +121,7 @@ EFLETE_TEST(live_view_widget_style_unset_test_n1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
 
    res = live_view_widget_style_unset(live);
    ck_assert_msg(res == EINA_FALSE, "Unset style from live view without object.");

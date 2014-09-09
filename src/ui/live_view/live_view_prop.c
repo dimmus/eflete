@@ -49,6 +49,7 @@ struct _Prop_Data
       Evas_Object *signals;
    } prop_signal;
    Eina_List *signals;
+   Eina_Bool in_prog_edit;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -189,7 +190,7 @@ live_view_property_style_set(Evas_Object *property,
      }
 
    /* Signals UI setting*/
-   if (!pd->prop_signal.signals)
+   if ((!pd->in_prog_edit) && (!pd->prop_signal.signals))
      {
         FRAME_ADD(property, pd->prop_signal.frame, true, _("Signals"));
         elm_object_style_set(pd->prop_signal.frame, "eflete/default");
@@ -291,7 +292,7 @@ live_view_property_style_set(Evas_Object *property,
 }
 
 Evas_Object *
-live_view_property_add(Evas_Object *parent)
+live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 {
    Evas_Object *box, *scroller, *_bg;
    Prop_Data *pd;
@@ -300,6 +301,7 @@ live_view_property_add(Evas_Object *parent)
 
    pd = mem_calloc(1, sizeof(Prop_Data));
 
+   pd->in_prog_edit = in_prog_edit;
    SCROLLER_ADD(parent, scroller);
    BOX_ADD(scroller, box, false, false);
    elm_box_align_set(box, 0.5, 0.0);

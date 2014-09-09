@@ -155,7 +155,7 @@ ui_main_window_add(App_Data *ap)
 
    ui_block_ws_set(ap, ap->workspace);
    evas_object_show(ap->workspace);
-   ap->live_view = live_view_add(ap->block.bottom_right);
+   ap->live_view = live_view_add(ap->block.bottom_right, false);
    if (!ap->live_view)
      MARK_TO_SHUTDOWN("Failed create live view")
    else
