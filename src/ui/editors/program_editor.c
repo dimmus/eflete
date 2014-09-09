@@ -24,6 +24,10 @@ struct _Program_Editor
 {
    Evas_Object *mwin;
    Live_View *live;
+   struct {
+      Evas_Object *play;
+      Evas_Object *reset;
+   } program_controls;
    Evas_Object *gl_progs;
    Elm_Object_Item *sel;
    struct {
@@ -197,6 +201,25 @@ _object_state_reset(Program_Editor *prog_edit)
    EINA_INLIST_FOREACH(prop.style->parts, part)
      edje_edit_part_selected_state_set(prog_edit->live->object, part->name, part->curr_state, part->curr_state_value);
 }
+
+static void
+_on_program_reset(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   _object_state_reset(data);
+}
+
+static void
+_on_program_play(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+
+   edje_edit_program_run(prog_edit->live->object, prop.program);
+}
+
 
 static int
 _sort_cb(const void *d1, const void *d2)
@@ -1507,6 +1530,7 @@ Evas_Object *
 program_editor_window_add(Style *style)
 {
    Evas_Object *window_layout;
+   Evas_Object *top_layout;
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
@@ -1543,6 +1567,25 @@ program_editor_window_add(Style *style)
    prog_edit->live = live_view_add(window_layout, true);
    live_view_widget_style_set(prog_edit->live, ap->project, style);
    _object_state_reset(prog_edit);
+
+   top_layout = elm_layout_add(window_layout);
+   elm_layout_file_set(top_layout, EFLETE_EDJ, "eflete/program_editor/live_view");
+   elm_layout_content_set(top_layout, "swallow.content", prog_edit->live->layout);
+   evas_object_show(top_layout);
+
+   BUTTON_ADD(top_layout, bt, _("Play"));
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_size_hint_min_set(bt, 100, 30);
+   evas_object_smart_callback_add(bt, "clicked", _on_program_play, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.button.play", bt);
+   prog_edit->program_controls.play = bt;
+
+   BUTTON_ADD(top_layout, bt, _("Reset"));
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_size_hint_min_set(bt, 100, 30);
+   evas_object_smart_callback_add(bt, "clicked", _on_program_reset, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.button.reset", bt);
+   prog_edit->program_controls.reset = bt;
 
    bottom_panes = elm_panes_add(window_layout);
    elm_object_style_set(bottom_panes, DEFAULT_STYLE);
@@ -1593,7 +1636,7 @@ program_editor_window_add(Style *style)
                                   prog_edit->mwin);
    elm_box_pack_end(button_box, bt);
 
-   elm_object_part_content_set(panes, "top", prog_edit->live->layout);
+   elm_object_part_content_set(panes, "top", top_layout);
    elm_object_part_content_set(panes, "bottom", bottom_panes);
    elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);

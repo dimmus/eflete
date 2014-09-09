@@ -1,0 +1,143 @@
+#define BUTTON_PADDING 5
+#define BUTTON_W 100
+#define BUTTON_H 30
+group { name: "eflete/program_editor/live_view";
+   parts {
+      part { name: "area.content";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "padding.0";
+            }
+         }
+      }
+      part { name: "swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 30;
+            rel1.to: "area.content";
+            rel2.to: "area.content";
+         }
+      }
+      part { name: "padding.0";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 1;
+            max: -1 1;
+            fixed: 0 1;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "area.controls";
+            }
+         }
+      }
+      part { name: "area.controls";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 BUTTON_H;
+            max: -1 BUTTON_H;
+            fixed: 0 1;
+         }
+      }
+      part { name: "swallow.button.play";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_W 0;
+            max: BUTTON_W -1;
+            fixed: 1 0;
+            rel1.to: "area.controls";
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "padding.1";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_PADDING 0;
+            max: BUTTON_PADDING -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "swallow.button.play";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "swallow.button.reset";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_W 0;
+            max: BUTTON_W -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding.1";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "padding.2";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_PADDING 0;
+            max: BUTTON_PADDING -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "swallow.button.reset";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "swallow.button.cycled";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_W 0;
+            max: BUTTON_W -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding.2";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "padding.3";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: BUTTON_PADDING 0;
+            max: BUTTON_PADDING -1;
+            fixed: 1 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "swallow.button.cycled";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+      part { name: "swallow.slider";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding.3";
+            }
+            rel2.to: "area.controls";
+         }
+      }
+   }
+}
+#undef BUTTON_PADDING
+#undef BUTTON_W
+#undef BUTTON_H
