@@ -365,7 +365,7 @@ _container_smart_add(Evas_Object *o)
    priv->con_size_min.h = 0;
    priv->con_size_max.w = -1;
    priv->con_size_max.h = -1;
-   priv->con_current_size = (Container_Geom *)malloc(sizeof(Container_Geom));
+   priv->con_current_size = (Container_Geom *)mem_calloc(1, sizeof(Container_Geom));
    priv->handler_TL_pressed = false;
    priv->handler_BR_pressed = false;
    priv->confine.obj = NULL;

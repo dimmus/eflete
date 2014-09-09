@@ -1400,7 +1400,7 @@ prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
    Evas_Object *combobox;
 
    _text_effect_callback_data *callback_data = (_text_effect_callback_data *)
-                                   malloc(sizeof(_text_effect_callback_data));
+                                   mem_malloc(sizeof(_text_effect_callback_data));
    if (!callback_data)
      return NULL;
 
