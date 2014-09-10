@@ -34,7 +34,7 @@ live_view_add(Evas_Object *parent)
 
    if (!parent) return NULL;
 
-   live = mem_malloc(sizeof(Live_View));
+   live = mem_calloc(1, sizeof(Live_View));
 
    live->layout = elm_layout_add(parent);
    elm_layout_file_set(live->layout, EFLETE_EDJ, "eflete/live_view/toolbar/default");

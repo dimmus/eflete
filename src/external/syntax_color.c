@@ -168,7 +168,7 @@ color_table_init(color_data *cd)
                   eina_hash_add(cd->color_hash, tmp, inarray);
                }
 
-             tuple = malloc(sizeof(color_tuple));
+             tuple = mem_malloc(sizeof(color_tuple));
              tuple->col = cd->cols[i];
              tuple->key = eina_stringshare_add(key);
              //free(key);
@@ -201,7 +201,7 @@ macro_key_push(color_data *cd, char *str, int len __UNUSED__)
         eina_hash_add(cd->color_hash, tmp, inarray);
      }
 
-   color_tuple *tuple = malloc(sizeof(color_tuple));
+   color_tuple *tuple = mem_malloc(sizeof(color_tuple));
    tuple->col = cd->col_macro;
    tuple->key = eina_stringshare_add(key);
    eina_inarray_push(inarray, tuple);
@@ -228,7 +228,7 @@ init_thread_blocking(void *data, Ecore_Thread *thread EINA_UNUSED)
 color_data *
 color_init(Eina_Strbuf *strbuf)
 {
-   color_data *cd = malloc(sizeof(color_data));
+   color_data *cd = mem_calloc(1, sizeof(color_data));
    cd->strbuf = strbuf;
    cd->cachebuf = eina_strbuf_new();
    cd->thread = ecore_thread_run(init_thread_blocking, NULL, NULL, cd);

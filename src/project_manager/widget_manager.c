@@ -227,7 +227,7 @@ wm_part_add(Style *style, const char *part)
    if (!edje_edit_part_exist(style->obj, part))
      return NULL;
 
-   result = (Part *)mem_malloc(sizeof(Part));
+   result = (Part *)mem_calloc(1, sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part);
@@ -339,7 +339,7 @@ wm_style_add(const char* style_name, const char* full_group_name,
 
    if ((!full_group_name) || (!style_name)) return NULL;
    if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
-   style_edje = (Style *)mem_malloc(sizeof(Style));
+   style_edje = (Style *)mem_calloc(1, sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
    style_edje->obj = NULL;
@@ -702,7 +702,7 @@ wm_class_add(const char *class_name, Eina_List *styles, Widget *parent)
 
    if ((!class_name) || (!styles)) return NULL;
 
-   class_edje = (Class *)mem_malloc(sizeof(Class));
+   class_edje = (Class *)mem_calloc(1, sizeof(Class));
    class_edje->name = eina_stringshare_add(class_name);
    class_edje->styles = NULL;
    class_edje->__type = CLASS;
@@ -757,7 +757,7 @@ wm_widget_add(const char *widget_name, Eina_List *styles)
 
    if ((!widget_name) || (!styles)) return NULL;
 
-   _widget = (Widget *)mem_malloc(sizeof(Widget));
+   _widget = (Widget *)mem_calloc(1, sizeof(Widget));
    _widget->name = eina_stringshare_add(widget_name);
    _widget->classes = NULL;
    _widget->__type = WIDGET;
