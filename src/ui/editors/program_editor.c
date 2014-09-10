@@ -27,6 +27,8 @@ struct _Program_Editor
    struct {
       Evas_Object *play;
       Evas_Object *reset;
+      Evas_Object *cycle;
+      Evas_Object *slider;
    } program_controls;
    Evas_Object *gl_progs;
    Elm_Object_Item *sel;
@@ -67,6 +69,17 @@ struct _Program_Editor
      Evas_Object *prop_scroller;
      Evas_Object *prop_box;
    } prop_view;
+   struct {
+     Ecore_Timer *timer;
+     double last_callback_time;
+     double program_time;
+     double start_delay;
+     double total_time;
+     Eina_Bool is_played : 1;
+     Eina_Bool is_paused : 1;
+     Eina_Bool is_in_seek : 1;
+     Eina_Bool is_cycled : 1;
+   } playback;
 };
 
 static const char *transition_type[] = {
@@ -201,7 +214,58 @@ _object_state_reset(Program_Editor *prog_edit)
    edje_edit_program_stop_all(prog_edit->live->object);
 
    EINA_INLIST_FOREACH(prop.style->parts, part)
-     edje_edit_part_selected_state_set(prog_edit->live->object, part->name, part->curr_state, part->curr_state_value);
+     edje_edit_part_selected_state_set(prog_edit->live->object,
+                                       part->name,
+                                       part->curr_state,
+                                       part->curr_state_value);
+}
+
+static Eina_Bool
+_timer_cb(void *data)
+{
+   Program_Editor *prog_edit = data;
+
+   double pos;
+   double time = ecore_loop_time_get();
+   double delta = time - prog_edit->playback.last_callback_time;
+   prog_edit->playback.last_callback_time = time;
+   if (prog_edit->playback.is_in_seek) return prog_edit->playback.is_played;
+
+   prog_edit->playback.program_time += delta;
+   if (prog_edit->playback.program_time > prog_edit->playback.total_time)
+     {
+        prog_edit->playback.program_time = 0;
+        if (!prog_edit->playback.is_cycled)
+          {
+             prog_edit->playback.is_played = false;
+             elm_object_text_set(prog_edit->program_controls.play, _("Play"));
+          }
+     }
+   pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) /
+              (prog_edit->playback.total_time - prog_edit->playback.start_delay);
+   elm_slider_value_set(prog_edit->program_controls.slider, prog_edit->playback.program_time);
+
+   edje_edit_program_transition_state_set(prog_edit->live->object, prop.program, pos);
+
+   return prog_edit->playback.is_played;
+}
+
+static void
+_program_reset(Program_Editor *prog_edit)
+{
+   _object_state_reset(prog_edit);
+   prog_edit->playback.program_time = 0;
+   elm_slider_value_set(prog_edit->program_controls.slider, 0);
+   prog_edit->playback.is_played = false;
+   prog_edit->playback.is_paused = false;
+   ecore_timer_del(prog_edit->playback.timer);
+   prog_edit->playback.timer = NULL;
+   prog_edit->playback.start_delay = edje_edit_program_in_from_get(prop.style->obj, prop.program);
+   prog_edit->playback.total_time = prog_edit->playback.start_delay +
+      edje_edit_program_transition_time_get(prop.style->obj, prop.program);
+   prog_edit->playback.last_callback_time = ecore_loop_time_get();
+   elm_slider_min_max_set(prog_edit->program_controls.slider, 0.0, prog_edit->playback.total_time);
+   elm_object_text_set(prog_edit->program_controls.play, _("Play"));
 }
 
 static void
@@ -209,7 +273,7 @@ _on_program_reset(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
-   _object_state_reset(data);
+   _program_reset(data);
 }
 
 static void
@@ -228,7 +292,71 @@ _on_program_play(void *data,
 {
    Program_Editor *prog_edit = data;
 
-   edje_edit_program_run(prog_edit->live->object, prop.program);
+   if (!prog_edit->playback.is_played)
+     {
+        if (!prog_edit->playback.is_paused)
+          _program_reset(prog_edit);
+        prog_edit->playback.is_played = true;
+        prog_edit->playback.is_paused = false;
+        if (!prog_edit->playback.timer)
+          prog_edit->playback.timer = ecore_timer_add(1.0/60.0, _timer_cb, prog_edit);
+        elm_object_text_set(prog_edit->program_controls.play, _("Pause"));
+     }
+   else
+     {
+        ecore_timer_del(prog_edit->playback.timer);
+        prog_edit->playback.timer = NULL;
+        prog_edit->playback.is_played = false;
+        prog_edit->playback.is_paused = true;
+        elm_object_text_set(prog_edit->program_controls.play, _("Play"));
+     }
+}
+
+static void
+_on_program_cycle(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+
+   prog_edit->playback.is_cycled = !prog_edit->playback.is_cycled;
+   if (prog_edit->playback.is_cycled)
+      elm_object_text_set(prog_edit->program_controls.cycle, _("Cycled"));
+   else
+      elm_object_text_set(prog_edit->program_controls.cycle, _("Not cycled"));
+}
+
+static void
+_slider_seek_start_cb(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+   prog_edit->playback.is_in_seek = true;
+}
+
+static void
+_slider_seek_stop_cb(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+   prog_edit->playback.is_in_seek = false;
+}
+
+static void
+_slider_changed_cb(void *data,
+                   Evas_Object *obj,
+                   void *event_info __UNUSED__)
+{
+   double pos;
+   Program_Editor *prog_edit = data;
+
+   prog_edit->playback.program_time = elm_slider_value_get(obj);
+
+   pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) /
+             (prog_edit->playback.total_time - prog_edit->playback.start_delay);
+   edje_edit_program_transition_state_set(prog_edit->live->object, prop.program, pos);
 }
 
 static int
@@ -1309,6 +1437,7 @@ _prop_progs_update(Program_Editor *prog_edit)
    _prop_item_program_in_update(prog_edit);
    _prop_item_program_transition_update(prog_edit);
    _prop_item_program_after_update(prog_edit);
+   _program_reset(prog_edit);
 }
 
 static void
@@ -1544,7 +1673,7 @@ program_editor_window_add(Style *style)
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
-   Evas_Object *bt, *program_list_box, *button_box;
+   Evas_Object *bt, *sl, *program_list_box, *button_box;
    Program_Editor *prog_edit = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
@@ -1586,17 +1715,36 @@ program_editor_window_add(Style *style)
 
    BUTTON_ADD(top_layout, bt, _("Play"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
-   evas_object_size_hint_min_set(bt, 100, 30);
    evas_object_smart_callback_add(bt, "clicked", _on_program_play, prog_edit);
    elm_layout_content_set(top_layout, "swallow.button.play", bt);
    prog_edit->program_controls.play = bt;
 
    BUTTON_ADD(top_layout, bt, _("Reset"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
-   evas_object_size_hint_min_set(bt, 100, 30);
    evas_object_smart_callback_add(bt, "clicked", _on_program_reset, prog_edit);
    elm_layout_content_set(top_layout, "swallow.button.reset", bt);
    prog_edit->program_controls.reset = bt;
+
+   BUTTON_ADD(top_layout, bt, _("Cycled"));
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _on_program_cycle, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.button.cycled", bt);
+   prog_edit->program_controls.cycle = bt;
+
+   prog_edit->playback.is_cycled = true;
+
+   sl = elm_slider_add(top_layout);
+   elm_slider_indicator_format_set(sl, "%1.2f");
+   elm_slider_min_max_set(sl, 0.0, 1.0);
+   elm_slider_indicator_show_set(sl, true);
+   evas_object_size_hint_align_set(sl, EVAS_HINT_FILL, 0.5);
+   evas_object_size_hint_weight_set(sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_smart_callback_add(sl, "changed", _slider_changed_cb, prog_edit);
+   evas_object_smart_callback_add(sl, "slider,drag,start", _slider_seek_start_cb, prog_edit);
+   evas_object_smart_callback_add(sl, "slider,drag,stop", _slider_seek_stop_cb, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.slider", sl);
+   evas_object_show(sl);
+   prog_edit->program_controls.slider = sl;
 
    bottom_panes = elm_panes_add(window_layout);
    elm_object_style_set(bottom_panes, DEFAULT_STYLE);
