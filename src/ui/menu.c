@@ -37,7 +37,8 @@ struct _menu_event
       EXPORT_EDC,
       SAVE_EDJ,
       SAVE_AS_EDJ,
-      NEW_THEME
+      NEW_THEME,
+      MENU_EXIT
    } type;
 };
 
@@ -95,6 +96,10 @@ _menu_event_handler_cb(void *data __UNUSED__,
            new_theme_create(menu_event->ap);
            break;
         }
+      case MENU_EXIT:
+        {
+           ui_main_window_del(menu_event->ap);
+        }
      }
    ui_menu_locked_set(menu_event->ap->menu_hash, false);
    return ECORE_CALLBACK_DONE;
@@ -118,17 +123,9 @@ DELAYED_CB(_on_edj_open_menu, OPEN_EDJ);
 DELAYED_CB(_on_save_menu, SAVE_EDJ);
 DELAYED_CB(_on_save_as_menu, SAVE_AS_EDJ);
 DELAYED_CB(_on_export_edc_menu, EXPORT_EDC);
+DELAYED_CB(_on_exit_menu, MENU_EXIT);
 
 #undef DELAYED_CB
-
-static void
-_on_exit_menu(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_main_window_del(ap);
-}
 
 static void
 _on_view_separate(void *data,

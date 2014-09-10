@@ -30,14 +30,7 @@ _on_done(void *data,
          void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   if (!ui_close_project_request(ap,
-                                 _("You want to close Eflete, but now you have<br/>"
-                                   "opened project. If you dont save opened project<br/>"
-                                   "all your changes will be lost!")))
-     return;
    ui_main_window_del(ap);
-
-   ecore_main_loop_quit();
 }
 
 Eina_Bool
@@ -48,6 +41,12 @@ ui_main_window_del(App_Data *ap)
         ERR("ap is NULL");
          return false;
      }
+   if (!ui_close_project_request(ap,
+                                 _("You want to close Eflete, but now you have<br/>"
+                                   "opened project. If you dont save opened project<br/>"
+                                   "all your changes will be lost!")))
+     return false;
+
    eina_hash_free(ap->menu_hash);
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
