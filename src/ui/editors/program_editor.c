@@ -106,6 +106,8 @@ _prop_item_program_targets_update(Program_Editor *prog_edit);
 static Evas_Object *
 _prop_item_program_target_add(Evas_Object *parent, Program_Editor *prog_edit, const char *tooltip);
 
+#define CALLBACK_KEY "callback.key"
+
 #define prop prog_edit->prop_view
 #define action prog_edit->prop_view.action
 #define transition prog_edit->prop_view.transition
@@ -351,41 +353,35 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    elm_object_disabled_set(transition.entry1, IS_DISABLED); \
    elm_object_disabled_set(transition.entry2, IS_DISABLED); \
    elm_object_disabled_set(transition.entry3, IS_DISABLED); \
-   if (IS_DISABLED) \
-     { \
-       elm_check_state_set(transition.checkbox, false); \
-       elm_object_part_text_set(transition.layout2, "elm.text", "param1"); \
-       elm_object_part_text_set(transition.layout3, "elm.text", "param2"); \
-       ewe_entry_entry_set(transition.entry1, ""); \
-       ewe_entry_entry_set(transition.entry2, ""); \
-       ewe_entry_entry_set(transition.entry3, ""); \
-     }
+   elm_check_state_set(transition.checkbox, false); \
+   elm_object_part_text_set(transition.layout2, "elm.text", "param1"); \
+   elm_object_part_text_set(transition.layout3, "elm.text", "param2"); \
+   ewe_entry_entry_set(transition.entry1, ""); \
+   ewe_entry_entry_set(transition.entry2, ""); \
+   ewe_entry_entry_set(transition.entry3, "");
 
-#define TRANS_VAL_GET(_val_num, _entry) \
-   value = edje_edit_program_transition_value##_val_num##_get(prop.style->obj, \
+#define TRANS_VAL_UPDATE(_val_, _entry) \
+   value = edje_edit_program_transition_##_val_##_get(prop.style->obj, \
               prop.program); \
    snprintf(buff, sizeof(buff), "%1.2f", value); \
    ewe_entry_entry_set(_entry, buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
-        evas_object_smart_callback_del(_entry, "changed,user", _activated_cb); \
+        evas_object_smart_callback_del(_entry, "changed,user", \
+                                       evas_object_data_get(_entry, CALLBACK_KEY)); \
+        evas_object_data_set(_entry, CALLBACK_KEY, _activated_cb); \
         evas_object_smart_callback_add(_entry, "changed,user", _activated_cb, \
                                        prog_edit);
 
 static void
-_trans_entries_set(Program_Editor *prog_edit,
-                   Eina_Bool is_update)
+_trans_entries_set(Program_Editor *prog_edit)
 {
    char buff[BUFF_MAX];
    double value;
 
    switch (prop.trans_type & EDJE_TWEEN_MODE_MASK)
      {
-      case EDJE_TWEEN_MODE_NONE:
-        {
-           TRANS_ENTRIES_DEFAULT_SET(true);
-           break;
-        }
+
       case EDJE_TWEEN_MODE_LINEAR:
       case EDJE_TWEEN_MODE_SINUSOIDAL:
       case EDJE_TWEEN_MODE_ACCELERATE:
@@ -393,6 +389,7 @@ _trans_entries_set(Program_Editor *prog_edit,
         {
            ENTRY_UPDATE(transition.entry2, true, transition.layout2, NULL);
            ENTRY_UPDATE(transition.entry3, true, transition.layout3, NULL);
+           TRANS_VAL_UPDATE(time, transition.entry1);
            break;
         }
       case EDJE_TWEEN_MODE_ACCELERATE_FACTOR:
@@ -401,55 +398,50 @@ _trans_entries_set(Program_Editor *prog_edit,
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "factor");
            ENTRY_UPDATE(transition.entry3, true, transition.layout3, NULL);
-           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
-           if (is_update)
-             {
-                TRANS_VAL_GET(1, transition.entry2);
-             }
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2);
+           TRANS_VAL_UPDATE(time, transition.entry1);
+           TRANS_VAL_UPDATE(value1, transition.entry2);
            break;
         }
       case EDJE_TWEEN_MODE_DIVISOR_INTERP:
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "gradient");
            ENTRY_UPDATE(transition.entry3, false, transition.layout3, "factor");
-           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
-           CALLBACK_UPDATE(_on_v2_active, transition.entry3)
-           if (is_update)
-             {
-                TRANS_VAL_GET(1, transition.entry2);
-                TRANS_VAL_GET(2, transition.entry3);
-             }
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2);
+           CALLBACK_UPDATE(_on_v2_active, transition.entry3);
+           TRANS_VAL_UPDATE(time, transition.entry1);
+           TRANS_VAL_UPDATE(value1, transition.entry2);
+           TRANS_VAL_UPDATE(value2, transition.entry3);
            break;
         }
       case EDJE_TWEEN_MODE_BOUNCE:
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "decay");
            ENTRY_UPDATE(transition.entry3, false, transition.layout3, "bounces");
-           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
-           CALLBACK_UPDATE(_on_v2_active, transition.entry3)
-           if (is_update)
-             {
-                TRANS_VAL_GET(1, transition.entry2);
-                TRANS_VAL_GET(2, transition.entry3);
-             }
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2);
+           CALLBACK_UPDATE(_on_v2_active, transition.entry3);
+           TRANS_VAL_UPDATE(time, transition.entry1);
+           TRANS_VAL_UPDATE(value1, transition.entry2);
+           TRANS_VAL_UPDATE(value2, transition.entry3);
            break;
         }
       case EDJE_TWEEN_MODE_SPRING:
         {
            ENTRY_UPDATE(transition.entry2, false, transition.layout2, "decay");
            ENTRY_UPDATE(transition.entry3, false, transition.layout3, "swings");
-           CALLBACK_UPDATE(_on_v1_active, transition.entry2)
-           CALLBACK_UPDATE(_on_v2_active, transition.entry3)
-           if (is_update)
-             {
-                TRANS_VAL_GET(1, transition.entry2);
-                TRANS_VAL_GET(2, transition.entry3);
-             }
+           CALLBACK_UPDATE(_on_v1_active, transition.entry2);
+           CALLBACK_UPDATE(_on_v2_active, transition.entry3);
+           TRANS_VAL_UPDATE(time, transition.entry1);
+           TRANS_VAL_UPDATE(value1, transition.entry2);
+           TRANS_VAL_UPDATE(value2, transition.entry3);
            break;
         }
       case EDJE_TWEEN_MODE_CUBIC_BEZIER: // TODO: implement
+      case EDJE_TWEEN_MODE_NONE:
       default:
-        break;
+        {
+           TRANS_ENTRIES_DEFAULT_SET(true);
+        }
      }
 }
 
@@ -587,7 +579,7 @@ _on_combobox_trans_sel(void *data,
 
    TRANS_ENTRIES_DEFAULT_SET(false);
    prop.trans_type = (Edje_Tween_Mode)combitem->index;
-   _trans_entries_set(prog_edit, false);
+   _trans_entries_set(prog_edit);
 }
 
 static void
@@ -952,8 +944,6 @@ _prop_item_program_transition_add(Evas_Object *parent,
    elm_object_part_content_set(transition.layout2,
                                "elm.swallow.content",
                                transition.entry2);
-   evas_object_smart_callback_add(transition.entry2, "changed,user", _on_v1_active,
-                                  prog_edit);
 
    ITEM_ADD_(box, transition.layout3, _("param2"), "editor");
    EWE_ENTRY_ADD(transition.layout3, transition.entry3, true, DEFAULT_STYLE)
@@ -961,8 +951,6 @@ _prop_item_program_transition_add(Evas_Object *parent,
    elm_object_part_content_set(transition.layout3,
                                "elm.swallow.content",
                                transition.entry3);
-   evas_object_smart_callback_add(transition.entry3, "changed,user", _on_v1_active,
-                                  prog_edit);
 
    for (i = 0; i < TRANSITIONS_COUNT; i++)
      ewe_combobox_item_add(transition.combobox, transition_type[i]);
@@ -1004,7 +992,7 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
    ewe_entry_entry_set(transition.entry1, buff);
    TRANS_ENTRIES_DEFAULT_SET(false);
 
-   _trans_entries_set(prog_edit, true);
+   _trans_entries_set(prog_edit);
 }
 
 static Evas_Object *
@@ -1595,5 +1583,5 @@ program_editor_window_add(Style *style)
 #undef ACTION_VAL_GET
 #undef CALLBACK_UPDATE
 #undef TRANS_ENTRIES_DEFAULT_SET
-#undef TRANS_VAL_GET
+#undef TRANS_VAL_UPDATE
 #undef REGEX_SET
