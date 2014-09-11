@@ -35,7 +35,11 @@ struct _Program_Editor
      Evas_Object *name;
      Evas_Object *signal;
      Evas_Object *source;
-     Evas_Object *in;
+     struct {
+        Evas_Object *item;
+        Evas_Object *item_from, *entry_from;
+        Evas_Object *item_range, *entry_range;
+     } in;
      struct {
         Evas_Object *item;
         Evas_Object *combobox;
@@ -1173,53 +1177,46 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
 static void
 _prop_item_program_in_update(Program_Editor *prog_edit)
 {
-   Evas_Object *box = elm_object_part_content_get(prop.in,
-                                                  "elm.swallow.content");
-   Evas_Object *entry = NULL;
-   Eina_List *childs = elm_box_children_get(box);
-   double range = 0;
-   char instr[BUFF_MAX];
+   double val = 0;
+   char text[BUFF_MAX];
 
-   range = edje_edit_program_in_from_get(prop.style->obj, prop.program);
-   entry = eina_list_nth(childs, 0);
-   snprintf(instr, sizeof(instr), "%2.3f", range);
-   ewe_entry_entry_set(entry, instr);
-   range = edje_edit_program_in_range_get(prop.style->obj,
-                                          prop.program);
-   entry = eina_list_nth(childs, 1);
-   snprintf(instr, sizeof(instr), "%2.3f", range);
-   ewe_entry_entry_set(entry, instr);
-   eina_list_free(childs);
+   val = edje_edit_program_in_from_get(prop.style->obj, prop.program);
+   snprintf(text, sizeof(text), "%2.3f", val);
+   ewe_entry_entry_set(prop.in.entry_from, text);
+
+   val = edje_edit_program_in_range_get(prop.style->obj, prop.program);
+   snprintf(text, sizeof(text), "%2.3f", val);
+   ewe_entry_entry_set(prop.in.entry_range, text);
 }
 
 static Evas_Object *
 _prop_item_program_in_add(Evas_Object *parent,
-                          const char *tooltip __UNUSED__,
-                          void* cb_data)
+                          Program_Editor *prog_edit,
+                          const char *tooltip __UNUSED__)
 {
-   Evas_Object *item, *sub_item, *box;
-   Evas_Object *entry1, *entry2;
+   Evas_Object *item, *box;
 
    if (!parent) return NULL;
 
    ITEM_ADD_(parent, item, _("in"), "editor");
 
    BOX_ADD(item, box, false, false);
-   ITEM_ADD_(box, sub_item, _("range"), "editor");
-   EWE_ENTRY_ADD(sub_item, entry1, true, DEFAULT_STYLE)
-   REGEX_SET(entry1, FLOAT_NUMBER_REGEX);
-   elm_object_part_content_set(sub_item, "elm.swallow.content", entry1);
-   evas_object_smart_callback_add(entry1, "changed,user",
-                                  _on_in_from_change, cb_data);
-   elm_box_pack_end(box, sub_item);
 
-   ITEM_ADD_(box, sub_item, _("from"), "editor");
-   EWE_ENTRY_ADD(sub_item, entry2, true, DEFAULT_STYLE)
-   REGEX_SET(entry2, FLOAT_NUMBER_REGEX);
-   elm_object_part_content_set(sub_item, "elm.swallow.content", entry2);
-   evas_object_smart_callback_add(entry2, "changed,user",
-                                  _on_in_range_change, cb_data);
-   elm_box_pack_end(box, sub_item);
+   ITEM_ADD_(box, prop.in.item_from, _("from"), "editor");
+   EWE_ENTRY_ADD(prop.in.item_from, prop.in.entry_from, true, DEFAULT_STYLE)
+   REGEX_SET(prop.in.entry_from, FLOAT_NUMBER_REGEX);
+   elm_object_part_content_set(prop.in.item_from, "elm.swallow.content", prop.in.entry_from);
+   evas_object_smart_callback_add(prop.in.entry_from, "changed,user",
+                                  _on_in_from_change, prog_edit);
+   elm_box_pack_end(box, prop.in.item_from);
+
+   ITEM_ADD_(box, prop.in.item_range, _("range"), "editor");
+   EWE_ENTRY_ADD(prop.in.item_range, prop.in.entry_range, true, DEFAULT_STYLE)
+   REGEX_SET(prop.in.entry_range, FLOAT_NUMBER_REGEX);
+   elm_object_part_content_set(prop.in.item_range, "elm.swallow.content", prop.in.entry_range);
+   evas_object_smart_callback_add(prop.in.entry_range, "changed,user",
+                                  _on_in_range_change, prog_edit);
+   elm_box_pack_end(box, prop.in.item_range);
 
    elm_object_part_content_set(item, "elm.swallow.content", box);
    return item;
@@ -1245,7 +1242,7 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    prop.name = _prop_item_program_name_add(box, _("Unique name of program "), _on_program_name_change, prog_edit);
    prop.signal = _prop_item_program_signal_add(box, _("signal"), _on_program_signal_change, prog_edit);
    prop.source = _prop_item_program_source_add(box, _("source"), _on_program_source_change, prog_edit);
-   prop.in = _prop_item_program_in_add(box, _("in"), prog_edit);
+   prop.in.item = _prop_item_program_in_add(box, prog_edit, _("in"));
    action.item = _prop_item_program_action_add(box, prog_edit, _("action"));
    transition.item = _prop_item_program_transition_add(box, prog_edit, _("transition"));
    prop.afters = _prop_item_program_after_add(box, prog_edit, _("afters"));
@@ -1253,7 +1250,7 @@ _prop_progs_add(Evas_Object *parent, Program_Editor *prog_edit)
    elm_box_pack_end(box, prop.name);
    elm_box_pack_end(box, prop.signal);
    elm_box_pack_end(box, prop.source);
-   elm_box_pack_end(box, prop.in);
+   elm_box_pack_end(box, prop.in.item);
    elm_box_pack_end(box, action.item);
    elm_box_pack_end(box, transition.item);
    elm_box_pack_end(box, prop.afters);
