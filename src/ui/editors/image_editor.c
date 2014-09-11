@@ -742,7 +742,11 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                       _on_button_ok_clicked_cb, img_edit);
      }
    else
-     elm_gengrid_multi_select_set(img_edit->gengrid, true);
+     {
+        elm_gengrid_multi_select_set(img_edit->gengrid, true);
+        elm_gengrid_multi_select_mode_set(img_edit->gengrid,
+                                          ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+     }
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_weight_set(img_edit->gengrid,
