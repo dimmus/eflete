@@ -354,8 +354,8 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    elm_object_disabled_set(transition.entry2, IS_DISABLED); \
    elm_object_disabled_set(transition.entry3, IS_DISABLED); \
    elm_check_state_set(transition.checkbox, false); \
-   elm_object_part_text_set(transition.layout2, "elm.text", "param1"); \
-   elm_object_part_text_set(transition.layout3, "elm.text", "param2"); \
+   elm_object_part_text_set(transition.layout2, "elm.text", _("param1")); \
+   elm_object_part_text_set(transition.layout3, "elm.text", _("param2")); \
    ewe_entry_entry_set(transition.entry1, ""); \
    ewe_entry_entry_set(transition.entry2, ""); \
    ewe_entry_entry_set(transition.entry3, "");
@@ -396,7 +396,7 @@ _trans_entries_set(Program_Editor *prog_edit)
       case EDJE_TWEEN_MODE_DECELERATE_FACTOR:
       case EDJE_TWEEN_MODE_SINUSOIDAL_FACTOR:
         {
-           ENTRY_UPDATE(transition.entry2, false, transition.layout2, "factor");
+           ENTRY_UPDATE(transition.entry2, false, transition.layout2, _("factor"));
            ENTRY_UPDATE(transition.entry3, true, transition.layout3, NULL);
            CALLBACK_UPDATE(_on_v1_active, transition.entry2);
            TRANS_VAL_UPDATE(time, transition.entry1);
@@ -405,8 +405,8 @@ _trans_entries_set(Program_Editor *prog_edit)
         }
       case EDJE_TWEEN_MODE_DIVISOR_INTERP:
         {
-           ENTRY_UPDATE(transition.entry2, false, transition.layout2, "gradient");
-           ENTRY_UPDATE(transition.entry3, false, transition.layout3, "factor");
+           ENTRY_UPDATE(transition.entry2, false, transition.layout2, _("gradient"));
+           ENTRY_UPDATE(transition.entry3, false, transition.layout3, _("factor"));
            CALLBACK_UPDATE(_on_v1_active, transition.entry2);
            CALLBACK_UPDATE(_on_v2_active, transition.entry3);
            TRANS_VAL_UPDATE(time, transition.entry1);
@@ -416,8 +416,8 @@ _trans_entries_set(Program_Editor *prog_edit)
         }
       case EDJE_TWEEN_MODE_BOUNCE:
         {
-           ENTRY_UPDATE(transition.entry2, false, transition.layout2, "decay");
-           ENTRY_UPDATE(transition.entry3, false, transition.layout3, "bounces");
+           ENTRY_UPDATE(transition.entry2, false, transition.layout2, _("decay"));
+           ENTRY_UPDATE(transition.entry3, false, transition.layout3, _("bounces"));
            CALLBACK_UPDATE(_on_v1_active, transition.entry2);
            CALLBACK_UPDATE(_on_v2_active, transition.entry3);
            TRANS_VAL_UPDATE(time, transition.entry1);
@@ -427,8 +427,8 @@ _trans_entries_set(Program_Editor *prog_edit)
         }
       case EDJE_TWEEN_MODE_SPRING:
         {
-           ENTRY_UPDATE(transition.entry2, false, transition.layout2, "decay");
-           ENTRY_UPDATE(transition.entry3, false, transition.layout3, "swings");
+           ENTRY_UPDATE(transition.entry2, false, transition.layout2, _("decay"));
+           ENTRY_UPDATE(transition.entry3, false, transition.layout3, _("swings"));
            CALLBACK_UPDATE(_on_v1_active, transition.entry2);
            CALLBACK_UPDATE(_on_v2_active, transition.entry3);
            TRANS_VAL_UPDATE(time, transition.entry1);
@@ -496,9 +496,9 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            _prop_item_program_targets_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
-           ENTRY_UPDATE(action.entry1, false, action.layout1, "state name");
+           ENTRY_UPDATE(action.entry1, false, action.layout1, _("state name"));
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
-           ENTRY_UPDATE(action.entry2, false, action.layout2, "state value");
+           ENTRY_UPDATE(action.entry2, false, action.layout2, _("state value"));
            REGEX_SET(action.entry2, FLOAT_NUMBER_0_1_REGEX);
            CALLBACK_UPDATE(_on_state_active, action.entry1);
            CALLBACK_UPDATE(_on_value_active, action.entry2);
@@ -515,9 +515,9 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            _prop_item_program_targets_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
-           ENTRY_UPDATE(action.entry1, false, action.layout1, "signal name");
+           ENTRY_UPDATE(action.entry1, false, action.layout1, _("signal name"));
            REGEX_SET(action.entry1, EDJE_NAME_REGEX);
-           ENTRY_UPDATE(action.entry2, false, action.layout2, "emitter");
+           ENTRY_UPDATE(action.entry2, false, action.layout2, _("emitter"));
            REGEX_SET(action.entry2, EDJE_NAME_REGEX);
            CALLBACK_UPDATE(_on_state_active, action.entry1);
            CALLBACK_UPDATE(_on_value_active, action.entry2);
@@ -536,9 +536,9 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
            _prop_item_program_targets_update(prog_edit);
            elm_box_pack_after(prop.prop_box, prop.targets, action.item);
 
-           ENTRY_UPDATE(action.entry1, false, action.layout1, "x");
+           ENTRY_UPDATE(action.entry1, false, action.layout1, _("x"));
            REGEX_SET(action.entry1, FLOAT_NUMBER_REGEX);
-           ENTRY_UPDATE(action.entry2, false, action.layout2, "y");
+           ENTRY_UPDATE(action.entry2, false, action.layout2, _("y"));
            REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
            CALLBACK_UPDATE(_on_value_active, action.entry1);
            CALLBACK_UPDATE(_on_value2_active, action.entry2);
@@ -600,8 +600,8 @@ _on_combobox_action_sel(void *data,
      {
         ewe_combobox_select_item_set(transition.combobox, 0);
         ENTRY_UPDATE(transition.entry1, false, transition.layout1, NULL);
-        ENTRY_UPDATE(transition.entry2, false, transition.layout2, "param1");
-        ENTRY_UPDATE(transition.entry3, false, transition.layout3, "param2");
+        ENTRY_UPDATE(transition.entry2, false, transition.layout2, _("param1"));
+        ENTRY_UPDATE(transition.entry3, false, transition.layout3, _("param2"));
         TRANS_ENTRIES_DEFAULT_SET(true);
      }
 
