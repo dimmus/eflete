@@ -405,9 +405,9 @@ _on_button_delete_clicked_cb(void *data,
      pm_project_changed(app_data_get()->project);
    if (notdeleted == 1)
      {
-        EINA_LIST_FOREACH(in_use, l, name)
-           used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
-        snprintf(buf, BUFF_MAX, _("Images is used in:"));
+        name = eina_list_nth(in_use, 0);
+        used_in = edje_edit_image_usage_list_get(edje_edit_obj, name, false);
+        snprintf(buf, BUFF_MAX, _("Image is used in:"));
         symbs = strlen(buf);
         EINA_LIST_FOREACH(used_in, l, item)
           {
