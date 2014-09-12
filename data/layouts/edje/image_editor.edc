@@ -141,12 +141,36 @@ group { name: "eflete/image_editor/default";
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 1.0 0.0;
-            min: 200 40;
+            min: 40 40;
             max: -1 40;
             rel1.to: "eflete_images_template_area";
             rel2 {
                to: "eflete_images_template_area";
                relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "eflete_search_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            MARGIN_SPACERS_SIZE_SET;
+            rel1.to: "eflete_edit_area";
+            rel2 {
+               to: "eflete.swallow.add_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.search_area";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            max: 600 30;
+            rel1.to: "eflete_edit_area";
+            rel2 {
+               to: "eflete_search_spacer";
+               relative: 0.0 1.0;
             }
          }
       }
