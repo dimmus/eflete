@@ -903,6 +903,18 @@ group { name: "elm/genlist/item/eflete/level3/default";
    }
 }
 
+group { name: "elm/genlist/item/eflete/usage_state/default";
+    inherit:"elm/genlist/item/eflete/level3/default";
+   parts {
+      part { name: "left_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(40 15, 40 15);
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/eflete/level4/default";
    inherit:"elm/genlist/item/eflete/default/default";
    parts {
