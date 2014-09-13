@@ -160,6 +160,22 @@ _grid_content_get(void *data,
         evas_object_show(image);
         return image;
      }
+   else if (!strcmp(part, "elm.swallow.end") &&
+            (it->comp_type != EDJE_EDIT_IMAGE_COMP_USER))
+     {
+        Eina_List *used_in;
+        Evas_Object *edje_edit_obj;
+
+        GET_OBJ(img_edit->pr, edje_edit_obj);
+        used_in = edje_edit_image_usage_list_get(edje_edit_obj,
+                                                 it->image_name, false);
+        if (eina_list_count(used_in) == 0)
+          {
+             ICON_ADD(grid, image, true, "no_image_warning");
+          }
+        edje_edit_image_usage_list_free(used_in);
+        return image;
+     }
    return NULL;
 }
 #undef MAX_ICON_SIZE

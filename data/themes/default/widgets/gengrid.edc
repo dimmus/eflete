@@ -124,16 +124,14 @@ group { name: "elm/gengrid/item/eflete/default/default";
             align: 1.0 0.0;
             aspect: 1.0 1.0;
             aspect_preference: HORIZONTAL;
+            max: 24 24;
             rel1 {
-               relative: 0.0 1.0;
-               to_y: "spacer1";
-               to_x: "spacer2";
-               offset: -5 -5;
+               to: "spacer_border_top";
+               relative: 1.0 1.0;
             }
             rel2 {
+               to: "spacer_border_bottom";
                relative: 0.0 0.0;
-               to: "spacer2";
-               offset: 5 5;
             }
          }
       }
