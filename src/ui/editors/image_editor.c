@@ -669,9 +669,9 @@ _on_button_ok_clicked_cb(void *data,
 }
 
 static void
-_on_button_cancel_clicked_cb(void *data,
-                             Evas_Object *obj __UNUSED__,
-                             void *event_info __UNUSED__)
+_on_button_close_clicked_cb(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = (Image_Editor *)data;
    _image_editor_del(img_edit);
@@ -972,7 +972,10 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    img_edit->pr = project;
 
    img_edit->win = mw_add(NULL, img_edit);
-   mw_title_set(img_edit->win, _("Image editor"));
+   if (mode == SINGLE)
+     mw_title_set(img_edit->win, _("Image editor: choose image"));
+   else
+     mw_title_set(img_edit->win, _("Image editor"));
 
    img_edit->layout = elm_layout_add(img_edit->win);
    elm_layout_file_set(img_edit->layout, EFLETE_EDJ, "eflete/image_editor/default");
@@ -1031,17 +1034,20 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.label", img_edit->legend);
 
-   BUTTON_ADD(img_edit->layout, button, _("Ok"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
-                                  img_edit);
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.OK_btn", button);
+   if (mode == SINGLE)
+     {
+        BUTTON_ADD(img_edit->layout, button, _("Ok"));
+        evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
+                                       img_edit);
+        elm_object_part_content_set(img_edit->layout,
+                                    "eflete.swallow.ok_btn", button);
+     }
 
-   BUTTON_ADD(img_edit->layout, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_cancel_clicked_cb,
+   BUTTON_ADD(img_edit->layout, button, _("Close"));
+   evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
                                   img_edit);
    elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.Cancel_btn", button);
+                               "eflete.swallow.close_btn", button);
 
    // Search line add
    ENTRY_ADD(img_edit->layout, search_entry, true, DEFAULT_STYLE);
