@@ -57,6 +57,8 @@ collections {
    ADD_PNG_LIM_SIZE("styles-preview-bg-transparent", 24, 24)
    ADD_PNG_LIM_SIZE("styles-preview-bg-white", 24, 24)
 
+   ADD_PNG_LIM_SIZE("no_image_warning", 72, 72)
+
    ADD_PNG_LIM_SIZE("eye_open", 72, 72)
    ADD_PNG_LIM_SIZE("eye_close", 72, 72)
 

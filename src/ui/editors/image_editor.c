@@ -110,6 +110,30 @@ _image_editor_del(Image_Editor *img_edit)
    free(img_edit);
 }
 
+static inline Evas_Object *
+_image_editor_image_create(Evas_Object *parent,
+                           Image_Editor *img_edit,
+                           const Item *it)
+{
+   Evas_Object *image = elm_image_add(parent);
+   Eina_Stringshare *str;
+
+   if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
+     {
+        if (ecore_file_exists(it->image_name))
+          evas_object_image_file_set(image, it->image_name, NULL);
+        else
+          elm_image_file_set(image, EFLETE_RESOURCES, "no_image_warning");
+     }
+   else
+     {
+        str = eina_stringshare_printf("edje/images/%i", it->id);
+        elm_image_file_set(image, img_edit->pr->swapfile, str);
+        eina_stringshare_del(str);
+     }
+   return image;
+}
+
 /* icon fetching callback */
 #define MAX_ICON_SIZE 16
 static Evas_Object *
@@ -120,14 +144,11 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *grid = (Evas_Object *)obj;
    Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
-   char buf[BUFF_MAX];
    Evas_Object *image = NULL;
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        image = elm_image_add(grid);
-        snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
-        elm_image_file_set(image, img_edit->pr->swapfile, buf);
+        image = _image_editor_image_create(grid, img_edit, it);
 
         int w, h;
         elm_image_object_size_get(image, &w, &h);
@@ -352,28 +373,32 @@ _image_info_setup(Image_Editor *img_edit,
                   const Item* it)
 {
    Evas_Object *edje_edit_obj = NULL;
-   char buf[BUFF_MAX];
+   Eina_Stringshare *str;
+   Evas_Object *image;
+   Edje_Edit_Image_Comp comp;
+   Eina_List *usage_list;
+   int w, h;
+
    GET_OBJ(img_edit->pr, edje_edit_obj);
 
    _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
 
-   Evas_Object *image = elm_image_add(img_edit->layout);
-   snprintf(buf, BUFF_MAX, "edje/images/%i", it->id);
-   elm_image_file_set(image, img_edit->pr->swapfile, buf);
+   image =_image_editor_image_create(img_edit->layout, img_edit, it);
    evas_object_image_smooth_scale_set(image, false);
    elm_object_part_content_set(img_edit->image_data_fields.layout,
                                "eflete.swallow.image", image);
    img_edit->image_data_fields.image = image;
    evas_object_show(image);
 
-   Edje_Edit_Image_Comp comp =
-      edje_edit_image_compression_type_get(edje_edit_obj, it->image_name);
+   comp =  edje_edit_image_compression_type_get(edje_edit_obj, it->image_name);
 
    if (comp != EDJE_EDIT_IMAGE_COMP_USER)
      {
-        elm_entry_entry_set(img_edit->image_data_fields.location, buf);
+        str = eina_stringshare_printf("edje/images/%i", it->id);
+        elm_entry_entry_set(img_edit->image_data_fields.location, str);
         elm_entry_entry_set(img_edit->image_data_fields.file_name, it->image_name);
+        eina_stringshare_del(str);
      }
    else
      _image_info_location_setup(img_edit, it->image_name);
@@ -389,15 +414,16 @@ _image_info_setup(Image_Editor *img_edit,
    else
       elm_spinner_value_set(img_edit->image_data_fields.quality, 0);
 
-   int w, h;
    elm_image_object_size_get(image, &w, &h);
-   snprintf(buf, BUFF_MAX, "%d", w);
-   elm_entry_entry_set(img_edit->image_data_fields.width, buf);
-   snprintf(buf, BUFF_MAX, "%d", h);
-   elm_entry_entry_set(img_edit->image_data_fields.height, buf);
+   str = eina_stringshare_printf("%d", w);
+   elm_entry_entry_set(img_edit->image_data_fields.width, str);
+   eina_stringshare_del(str);
+   str = eina_stringshare_printf("%d", h);
+   elm_entry_entry_set(img_edit->image_data_fields.height, str);
+   eina_stringshare_del(str);
+
    _image_info_type_setup(img_edit->image_data_fields.type, it->image_name);
 
-   Eina_List *usage_list;
    usage_list = edje_edit_image_usage_list_get(edje_edit_obj,
                                                it->image_name, false);
    _image_info_update_usage_info(img_edit, eina_list_count(usage_list));
