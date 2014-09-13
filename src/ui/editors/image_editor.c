@@ -48,6 +48,7 @@ struct _Image_Editor
    Evas_Object *gengrid;
    Evas_Object *layout;
    Search_Data image_search_data;
+   Search_Data usage_search_data;
    Evas_Object *tabs;
    struct {
       Ewe_Tabs_Item *tab;
@@ -181,6 +182,11 @@ _image_info_update_usage_info(Image_Editor *img_edit, int list_count)
      title = eina_stringshare_printf(_("Usage (%d)"), list_count);
    else
      title = eina_stringshare_add(_("Usage ( - )"));
+
+   elm_object_disabled_set(img_edit->usage_search_data.search_entry,
+                           !list_count);
+   elm_entry_entry_set(img_edit->usage_search_data.search_entry, "");
+   img_edit->usage_search_data.last_item_found = NULL;
 
    ewe_tabs_item_title_set(img_edit->tabs,
                            img_edit->image_usage_fields.tab, title);
@@ -436,8 +442,8 @@ _search_reset_cb(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Image_Editor *img_edit = data;
-   img_edit->image_search_data.last_item_found = NULL;
+   Search_Data *search_data = data;
+   search_data->last_item_found = NULL;
 }
 
 /* item selection change callback */
@@ -689,42 +695,87 @@ _on_button_close_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
-static void
-_gengrid_item_search(Evas_Object *obj,
-                     Search_Data *search_data,
-                     Elm_Object_Item *start_from)
-{
-   Eina_Stringshare *str;
-   Elm_Object_Item *last_item_found;
-
-   if (elm_entry_is_empty(search_data->search_entry)) return;
-   str = eina_stringshare_printf("*%s*",
-                                 elm_entry_entry_get(search_data->search_entry));
-
-   last_item_found = elm_gengrid_search_by_text_item_get(obj, start_from,
-                                                         NULL, str, 0);
-   eina_stringshare_del(str);
-
-   if (search_data->last_item_found)
-     elm_gengrid_item_selected_set(search_data->last_item_found, false);
-   if (last_item_found)
-     {
-        elm_gengrid_item_selected_set(last_item_found, true);
-        elm_gengrid_item_bring_in(last_item_found,
-                                  ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-        elm_object_focus_set(search_data->search_entry, true);
-     }
-   search_data->last_item_found = last_item_found;
+#define ITEM_SEARCH_FUNC(_gen) \
+static void \
+_##_gen##_item_search(Evas_Object *obj, \
+                      Search_Data *search_data, \
+                      Elm_Object_Item *start_from) \
+{ \
+   Eina_Stringshare *str; \
+   Elm_Object_Item *last_item_found; \
+ \
+   if (elm_entry_is_empty(search_data->search_entry)) \
+     { \
+        if (search_data->last_item_found) \
+          { \
+             elm_##_gen##_item_selected_set(search_data->last_item_found, \
+                                            false); \
+             search_data->last_item_found = NULL; \
+          } \
+        return; \
+     } \
+ \
+   str = eina_stringshare_printf("*%s*", \
+                                 elm_entry_entry_get(search_data->search_entry)); \
+ \
+   last_item_found = elm_##_gen##_search_by_text_item_get(obj,start_from, \
+                                                          NULL, str, 0); \
+   if (search_data->last_item_found == last_item_found) return; \
+ \
+   if (search_data->last_item_found) \
+      elm_##_gen##_item_selected_set(search_data->last_item_found, false); \
+   if (last_item_found) \
+     { \
+        elm_##_gen##_item_selected_set(last_item_found, true); \
+        elm_##_gen##_item_bring_in(last_item_found, \
+                                  ELM_GENLIST_ITEM_SCROLLTO_MIDDLE); \
+        elm_object_focus_set(search_data->search_entry, true); \
+     } \
+   search_data->last_item_found = last_item_found; \
 }
 
+ITEM_SEARCH_FUNC(genlist)
+ITEM_SEARCH_FUNC(gengrid)
+
+#undef ITEM_SEARCH_FUNC
+
 static void
-_on_search_entry_changed_cb(void *data,
-                            Evas_Object *obj __UNUSED__,
-                            void *event_info __UNUSED__)
+_on_images_search_entry_changed_cb(void *data,
+                                   Evas_Object *obj __UNUSED__,
+                                   void *event_info __UNUSED__)
 {
    Image_Editor *img_edit = data;
    _gengrid_item_search(img_edit->gengrid, &(img_edit->image_search_data),
                         img_edit->image_search_data.last_item_found);
+}
+
+static void
+_on_usage_search_entry_changed_cb(void *data,
+                                  Evas_Object *obj __UNUSED__,
+                                  void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = data;
+   _genlist_item_search(img_edit->image_usage_fields.genlist,
+                        &(img_edit->usage_search_data),
+                        img_edit->usage_search_data.last_item_found);
+}
+
+static void
+_search_next_genlist_item_cb(void *data,
+                             Evas_Object *obj __UNUSED__,
+                             void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = data;
+   Elm_Object_Item *start_from = NULL;
+
+   if (img_edit->usage_search_data.last_item_found)
+     {
+        start_from =
+           elm_genlist_item_next_get(img_edit->usage_search_data.last_item_found);
+     }
+
+   _genlist_item_search(img_edit->image_usage_fields.genlist,
+                        &(img_edit->usage_search_data), start_from);
 }
 
 static void
@@ -858,6 +909,17 @@ _image_info_box_create(Image_Editor *img_edit)
    return scroller;
 }
 
+static inline Evas_Object *
+_image_editor_search_field_create(Evas_Object *parent)
+{
+   Evas_Object *entry, *icon;
+   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE);
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_ADD(entry, icon, true, "icon-search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   return entry;
+}
+
 static Evas_Object *
 _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
 {
@@ -879,11 +941,17 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
    elm_object_part_content_set(layout, "eflete.swallow.genlist", genlist);
    img_edit->image_usage_fields.genlist = genlist;
 
-   EWE_ENTRY_ADD(layout, entry, true, DEFAULT_STYLE);
+   entry = _image_editor_search_field_create(layout);
    elm_object_part_content_set(layout, "eflete.swallow.search_line", entry);
-   elm_object_part_text_set(entry, "guide", _("Search"));
-   elm_object_disabled_set(entry, true);
-   // TODO: implement search in genlist
+   evas_object_smart_callback_add(entry, "changed",
+                                  _on_usage_search_entry_changed_cb, img_edit);
+   evas_object_smart_callback_add(entry, "activated",
+                                  _search_next_genlist_item_cb, img_edit);
+   evas_object_smart_callback_add(img_edit->image_usage_fields.genlist,
+                                  "pressed", _search_reset_cb,
+                                  &(img_edit->usage_search_data));
+   img_edit->usage_search_data.search_entry = entry;
+   img_edit->usage_search_data.last_item_found = NULL;
    return layout;
 }
 
@@ -1058,18 +1126,15 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                "eflete.swallow.close_btn", button);
 
    // Search line add
-   ENTRY_ADD(img_edit->layout, search_entry, true, DEFAULT_STYLE);
-   elm_object_part_text_set(search_entry, "guide", _("Search"));
+   search_entry = _image_editor_search_field_create(img_edit->layout);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.search_area", search_entry);
-   ICON_ADD(search_entry, icon, true, "icon-search");
-   elm_object_part_content_set(search_entry, "elm.swallow.end", icon);
    evas_object_smart_callback_add(search_entry, "changed",
-                                  _on_search_entry_changed_cb, img_edit);
+                                  _on_images_search_entry_changed_cb, img_edit);
    evas_object_smart_callback_add(search_entry, "activated",
                                   _search_next_gengrid_item_cb, img_edit);
-   evas_object_smart_callback_add(img_edit->gengrid, "pressed",
-                                  _search_reset_cb, img_edit);
+   evas_object_smart_callback_add(img_edit->gengrid, "pressed", _search_reset_cb,
+                                  &(img_edit->image_search_data));
    img_edit->image_search_data.search_entry = search_entry;
    img_edit->image_search_data.last_item_found = NULL;
 
