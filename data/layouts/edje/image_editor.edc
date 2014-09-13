@@ -9,65 +9,11 @@ group { name: "eflete/image_editor/default";
       image: "separator-horizontal.png" COMP;
    }
    parts{
-      part { name: "eflete_btns_area";
+      part { name: "image_editor_bottom_padding";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            max: -1 40;
-         }
-      }
-      part { name: "eflete_btns_area_decoration_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            MARGIN_SPACERS_SIZE_SET;
-            rel1.to: "eflete_btns_area";
-            rel2.to: "eflete_btns_area";
-         }
-      }
-      part { name: "eflete_btns_area_decoration";
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            max: -1 2;
-            image.normal: "separator-horizontal.png";
-            rel1 {
-               to: "eflete_btns_area_decoration_spacer";
-               relative: 0.0 1.0;
-            }
-            rel2.to: "eflete_btns_area";
-         }
-      }
-      part { name: "eflete.swallow.close_btn";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            BTNS_LARGE_SIZE_SET;
-            rel1.to: "eflete_btns_area";
-            rel2.to: "eflete_btns_area";
-         }
-      }
-      part { name: "eflete_ok_btn_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            MARGIN_SPACERS_SIZE_SET;
-            rel1.to: "eflete_btns_area";
-            rel2 {
-               to: "eflete.swallow.close_btn";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "eflete.swallow.ok_btn";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            BTNS_LARGE_SIZE_SET;
-            rel1.to: "eflete_btns_area";
-            rel2 {
-               to: "eflete_ok_btn_spacer";
-               relative: 0.0 1.0;
-            }
+            SET_SIZE(10, 10);
          }
       }
       part { name: "eflete_image_info_area";
@@ -77,7 +23,7 @@ group { name: "eflete/image_editor/default";
             min: 400 400;
             max: 400 -1;
             rel2 {
-               to: "eflete_btns_area";
+               to_y: "image_editor_bottom_padding";
                relative: 1.0 0.0;
             }
          }
@@ -106,8 +52,8 @@ group { name: "eflete/image_editor/default";
          type: SPACER;
          description { state: "default" 0.0;
             rel2 {
-               to_y: "eflete_btns_area";
                to_x: "eflete_image_info_area";
+               to_y: "image_editor_bottom_padding";
                relative: 0.0 0.0;
             }
          }
@@ -310,6 +256,41 @@ group { name: "eflete/image_editor/image_preview";
       }
    }
 }
+
+group { name: "eflete/image_editor/buttons_box";
+   parts{
+      part { name: "eflete.swallow.close_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            BTNS_LARGE_SIZE_SET;
+         }
+      }
+      part { name: "eflete_ok_btn_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            MARGIN_SPACERS_SIZE_SET;
+            rel2 {
+               to: "eflete.swallow.close_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.ok_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            BTNS_LARGE_SIZE_SET;
+            rel2 {
+               to: "eflete_ok_btn_spacer";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+   }
+}
+
 #undef MARGIN_SPACERS_SIZE
 #undef BTNS_LARGE_SIZE
 #undef BTNS_SMALL_SIZE

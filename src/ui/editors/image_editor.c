@@ -1035,10 +1035,11 @@ _on_mwin_del(void * data,
 Evas_Object *
 image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
-   Evas_Object *button;
+   Evas_Object *button, *btns_layout;
    Evas_Object *_bg = NULL;
    Evas_Object *icon = NULL;
    Evas_Object *search_entry = NULL;
+   Evas_Object *base_layout = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
@@ -1057,12 +1058,20 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    else
      mw_title_set(img_edit->win, _("Image editor"));
 
-   img_edit->layout = elm_layout_add(img_edit->win);
-   elm_layout_file_set(img_edit->layout, EFLETE_EDJ, "eflete/image_editor/default");
-   elm_win_inwin_content_set(img_edit->win, img_edit->layout);
+   base_layout = elm_layout_add(img_edit->win);
+   elm_layout_file_set(base_layout, EFLETE_EDJ, "eflete/editor/default");
+   elm_win_inwin_content_set(img_edit->win, base_layout);
+
+   img_edit->layout = elm_layout_add(base_layout);
+   elm_layout_file_set(img_edit->layout,
+                       EFLETE_EDJ, "eflete/image_editor/default");
+   elm_object_part_content_set(base_layout,
+                               "eflete.swallow.content", img_edit->layout);
+
    img_edit->gengrid = elm_gengrid_add(img_edit->layout);
    elm_object_style_set(img_edit->gengrid, DEFAULT_STYLE);
-   elm_object_part_content_set(img_edit->layout, "eflete.swallow.grid", img_edit->gengrid);
+   elm_object_part_content_set(img_edit->layout,
+                               "eflete.swallow.grid", img_edit->gengrid);
    elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
    elm_gengrid_align_set(img_edit->gengrid, 0.5, 0.0);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
@@ -1110,21 +1119,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.del_btn", button);
 
-   if (mode == SINGLE)
-     {
-        BUTTON_ADD(img_edit->layout, button, _("Ok"));
-        evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
-                                       img_edit);
-        elm_object_part_content_set(img_edit->layout,
-                                    "eflete.swallow.ok_btn", button);
-     }
-
-   BUTTON_ADD(img_edit->layout, button, _("Close"));
-   evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
-                                  img_edit);
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.close_btn", button);
-
    // Search line add
    search_entry = _image_editor_search_field_create(img_edit->layout);
    elm_object_part_content_set(img_edit->layout,
@@ -1139,6 +1133,27 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    img_edit->image_search_data.last_item_found = NULL;
 
    _image_info_initiate(img_edit);
+
+   btns_layout = elm_layout_add(img_edit->win);
+   elm_layout_file_set(btns_layout, EFLETE_EDJ,
+                       "eflete/image_editor/buttons_box");
+   if (mode == SINGLE)
+     {
+        BUTTON_ADD(btns_layout, button, _("Ok"));
+        evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,
+                                       img_edit);
+        elm_object_part_content_set(btns_layout,
+                                    "eflete.swallow.ok_btn", button);
+     }
+
+   BUTTON_ADD(img_edit->layout, button, _("Close"));
+   evas_object_smart_callback_add(button, "clicked", _on_button_close_clicked_cb,
+                                  img_edit);
+   elm_object_part_content_set(btns_layout,
+                               "eflete.swallow.close_btn", button);
+
+   elm_object_part_content_set(base_layout,
+                               "eflete.swallow.button_box", btns_layout);
 
    if (!gic)
      {
