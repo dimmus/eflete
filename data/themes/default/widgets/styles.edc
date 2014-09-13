@@ -69,6 +69,11 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "em" "+ font_style=Oblique";
       tag:  "hilight" "+ font_weight=Bold";
    }
+   style { name: "eflete_text_search_guide_style";
+      base: "font="FN" font_size=12 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      tag:  "em" "+ font_style=Oblique";
+      tag:  "hilight" "+ font_weight=Bold";
+   }
    style { name: "eflete_textblock_style";
       base: "font="FN" font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
       tag:  "hilight" "+ font_weight=Bold";

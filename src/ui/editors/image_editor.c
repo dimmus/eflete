@@ -929,7 +929,7 @@ static inline Evas_Object *
 _image_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
-   ENTRY_ADD(parent, entry, true, DEFAULT_STYLE);
+   ENTRY_ADD(parent, entry, true, "eflete/search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);

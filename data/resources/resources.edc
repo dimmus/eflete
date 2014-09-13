@@ -48,7 +48,7 @@ collections {
    ADD_PNG_LIM_SIZE("icon_offset", 15, 15)
    ADD_PNG_LIM_SIZE("icon-separate", 16, 16)
 
-   ADD_PNG_LIM_SIZE("icon-search", 12, 12)
+   ADD_PNG_LIM_SIZE("icon-search", 16, 16)
 
    ADD_PNG_LIM_SIZE("mw_button_close", 22, 22)
    ADD_PNG_LIM_SIZE("mw_button_info", 22, 22)
