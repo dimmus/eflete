@@ -47,7 +47,6 @@ struct _Image_Editor
    Evas_Object *win;
    Evas_Object *gengrid;
    Evas_Object *layout;
-   Evas_Object *legend;
    Search_Data image_search_data;
    Evas_Object *tabs;
    struct {
@@ -105,7 +104,6 @@ _image_editor_del(Image_Editor *img_edit)
    _itc_state = NULL;
    evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
-   evas_object_del(img_edit->legend);
    evas_object_del(img_edit->gengrid);
    evas_object_del(img_edit->win);
    _image_info_reset(img_edit);
@@ -422,25 +420,13 @@ _grid_sel(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
-   char buf[BUFF_MAX];
-
    Image_Editor *img_edit = (Image_Editor *)data;
    const Eina_List* sel_list = elm_gengrid_selected_items_get(img_edit->gengrid);
    int selected_images_count = eina_list_count(sel_list);
 
-   if (!selected_images_count)
-     elm_object_text_set(img_edit->legend, _("No images selected"));
-   else
-     {
-        snprintf(buf, BUFF_MAX, ngettext("%d image selected",
-                                         "%d images selected",
-                                         selected_images_count),
-                 selected_images_count);
-        elm_object_text_set(img_edit->legend, buf);
-     }
-
    if (selected_images_count == 1)
-     _image_info_setup(img_edit, elm_object_item_data_get(eina_list_data_get(sel_list)));
+     _image_info_setup(img_edit,
+                       elm_object_item_data_get(eina_list_data_get(sel_list)));
    else
      _image_info_reset(img_edit);
 }
@@ -1029,10 +1015,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                   _on_button_delete_clicked_cb, img_edit);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.del_btn", button);
-
-   LABEL_ADD(img_edit->layout, img_edit->legend, _("No images selected"))
-   elm_object_part_content_set(img_edit->layout,
-                               "eflete.swallow.label", img_edit->legend);
 
    if (mode == SINGLE)
      {

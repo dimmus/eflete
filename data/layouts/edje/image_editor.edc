@@ -70,30 +70,6 @@ group { name: "eflete/image_editor/default";
             }
          }
       }
-      part { name: "eflete_label_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            MARGIN_SPACERS_SIZE_SET;
-            rel1.to: "eflete_btns_area";
-            rel2 {
-               to: "eflete.swallow.ok_btn";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "eflete.swallow.label";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 0.0 1.0;
-            max: -1 25;
-            rel1.to: "eflete_btns_area";
-            rel2 {
-               to: "eflete_label_spacer";
-               relative: 0.0 1.0;
-            }
-         }
-      }
       part { name: "eflete_image_info_area";
          type: SPACER;
          description { state: "default" 0.0;
