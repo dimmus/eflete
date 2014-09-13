@@ -226,10 +226,10 @@ _image_info_reset(Image_Editor *img_edit)
 
    ewe_combobox_select_item_set(img_edit->image_data_fields.comp, 0);
    elm_entry_entry_set(img_edit->image_data_fields.file_name, "");
-   elm_entry_entry_set(img_edit->image_data_fields.location, "");
-   elm_entry_entry_set(img_edit->image_data_fields.type, "");
-   elm_entry_entry_set(img_edit->image_data_fields.width, "");
-   elm_entry_entry_set(img_edit->image_data_fields.height, "");
+   elm_object_text_set(img_edit->image_data_fields.location, " - ");
+   elm_object_text_set(img_edit->image_data_fields.type, " - ");
+   elm_object_text_set(img_edit->image_data_fields.width, " - ");
+   elm_object_text_set(img_edit->image_data_fields.height, " - ");
 }
 
 static void
@@ -263,7 +263,7 @@ _image_info_type_setup(Evas_Object *entry,
         elm_entry_entry_set(entry, _("Unknown"));
         return;
      }
-   elm_entry_entry_set(entry, buf);
+   elm_object_text_set(entry, buf);
 }
 
 static void
@@ -276,7 +276,7 @@ _image_info_location_setup(Image_Editor *img_edit,
    elm_entry_entry_set(img_edit->image_data_fields.file_name, file_name);
    char buf[BUFF_MAX];
    strncpy(buf, image_name, (strlen(image_name) - strlen(file_name) - 1));
-   elm_entry_entry_set(img_edit->image_data_fields.location, buf);
+   elm_object_text_set(img_edit->image_data_fields.location, buf);
 }
 
 void
@@ -418,7 +418,7 @@ _image_info_setup(Image_Editor *img_edit,
    if (comp != EDJE_EDIT_IMAGE_COMP_USER)
      {
         str = eina_stringshare_printf("edje/images/%i", it->id);
-        elm_entry_entry_set(img_edit->image_data_fields.location, str);
+        elm_object_text_set(img_edit->image_data_fields.location, str);
         elm_entry_entry_set(img_edit->image_data_fields.file_name, it->image_name);
         eina_stringshare_del(str);
      }
@@ -438,10 +438,10 @@ _image_info_setup(Image_Editor *img_edit,
 
    elm_image_object_size_get(image, &w, &h);
    str = eina_stringshare_printf("%d", w);
-   elm_entry_entry_set(img_edit->image_data_fields.width, str);
+   elm_object_text_set(img_edit->image_data_fields.width, str);
    eina_stringshare_del(str);
    str = eina_stringshare_printf("%d", h);
-   elm_entry_entry_set(img_edit->image_data_fields.height, str);
+   elm_object_text_set(img_edit->image_data_fields.height, str);
    eina_stringshare_del(str);
 
    _image_info_type_setup(img_edit->image_data_fields.type, it->image_name);
@@ -834,19 +834,19 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
    elm_gengrid_item_class_free(ggic);
 }
 
-static Evas_Object *
-_image_info_entry_add(Evas_Object *box,
-                      const char *label)
+static inline Evas_Object *
+_image_info_label_add(Evas_Object *box,
+                      const char *item_label)
 {
    Evas_Object *item = NULL;
-   Evas_Object *entry = NULL;
+   Evas_Object *label = NULL;
 
-   ITEM_ADD(box, item, label, "eflete/image_editor/item/default");
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE);
-   elm_entry_editable_set(entry, false);
-   elm_object_part_content_set(item, "elm.swallow.content", entry);
+   ITEM_ADD(box, item, item_label, "eflete/image_editor/item/default");
+   LABEL_ADD(item, label, " - ");
+   elm_object_style_set(label, "eflete/editor");
+   elm_object_part_content_set(item, "elm.swallow.content", label);
    elm_box_pack_end(box, item);
-   return entry;
+   return label;
 }
 
 static Evas_Object *
@@ -878,18 +878,24 @@ _image_info_box_create(Image_Editor *img_edit)
    BOX_ADD(scroller, box, false, false);
    elm_box_align_set(box, 0.0, 0.0);
 
-   img_edit->image_data_fields.file_name =
-      _image_info_entry_add(box, _("file name"));
+   ITEM_ADD(box, item, _("file name:"), "eflete/image_editor/item/default");
+   EWE_ENTRY_ADD(item, img_edit->image_data_fields.file_name,
+                 true, DEFAULT_STYLE);
+   elm_entry_editable_set(img_edit->image_data_fields.file_name, false);
+   elm_object_part_content_set(item, "elm.swallow.content",
+                               img_edit->image_data_fields.file_name);
+   elm_box_pack_end(box, item);
+
    img_edit->image_data_fields.location =
-      _image_info_entry_add(box, _("location"));
+      _image_info_label_add(box, _("location:"));
    img_edit->image_data_fields.type =
-      _image_info_entry_add(box, _("type"));
+      _image_info_label_add(box, _("type:"));
    // TODO: Add field with file size info.
 
    //image compression
    Evas_Object *item_quality = NULL;
 
-   ITEM_ADD(box, item, _("compression"), "eflete/image_editor/item/default");
+   ITEM_ADD(box, item, _("compression:"), "eflete/image_editor/item/default");
    BOX_ADD(box, groups_box, true, true);
    EWE_COMBOBOX_ADD(groups_box, img_edit->image_data_fields.comp);
    ewe_combobox_item_add(img_edit->image_data_fields.comp, "NONE");
@@ -900,7 +906,8 @@ _image_info_box_create(Image_Editor *img_edit)
    elm_object_disabled_set(img_edit->image_data_fields.comp, true);
    elm_box_pack_end(groups_box, img_edit->image_data_fields.comp);
 
-   ITEM_ADD(item, item_quality, _("quality"), "eflete/image_editor/item/default");
+   ITEM_ADD(item, item_quality, _("quality:"),
+            "eflete/image_editor/item/default");
    SPINNER_ADD(groups_box, img_edit->image_data_fields.quality,
                0, 100, 1, false, DEFAULT_STYLE);
    elm_object_disabled_set(img_edit->image_data_fields.quality, true);
@@ -911,12 +918,12 @@ _image_info_box_create(Image_Editor *img_edit)
    elm_box_pack_end(box, item);
 
    // Image size
-   ITEM_ADD(box, item, _("image"), "eflete/image_editor/item/default");
+   ITEM_ADD(box, item, _("image: "), "eflete/image_editor/item/default");
    BOX_ADD(box, groups_box, true, true);
    img_edit->image_data_fields.width =
-      _image_info_entry_add(groups_box, _("width"));
+      _image_info_label_add(groups_box, _("width:"));
    img_edit->image_data_fields.height =
-      _image_info_entry_add(groups_box, _("height"));
+      _image_info_label_add(groups_box, _("height:"));
    elm_object_part_content_set(item, "elm.swallow.content", groups_box);
    elm_box_pack_end(box, item);
 

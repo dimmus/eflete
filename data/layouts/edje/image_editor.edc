@@ -303,12 +303,22 @@ group { name: "eflete/image_editor/item/default";
        }
    }
    parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 40 30;
+            max: -1 30;
+         }
+      }
       part { name: "margin_top_left";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
             PADDING_SPACERS_SIZE_SET;
             align: 0.0 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
          }
       }
       part { name: "margin_bottom_right";
@@ -317,6 +327,8 @@ group { name: "eflete/image_editor/item/default";
          description { state: "default" 0.0;
             PADDING_SPACERS_SIZE_SET;
             align: 1.0 1.0;
+            rel1.to: "base";
+            rel2.to: "base";
          }
       }
       part { name: "item.area";
@@ -344,6 +356,19 @@ group { name: "eflete/image_editor/item/default";
             }
          }
       }
+      part { name: "label.area.spacer";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            PADDING_SPACERS_SIZE_SET
+            align: 0.0 0.0;
+            rel1 {
+               to: "label.area";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "item.area";
+         }
+      }
       part { name: "elm.text";
          type: TEXTBLOCK;
          scale: 1;
@@ -365,7 +390,8 @@ group { name: "eflete/image_editor/item/default";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               to: "label.area";
+               to_x: "label.area.spacer";
+               to_y: "item.area";
                relative: 1.0 0.0;
             }
             rel2.to: "item.area";
@@ -374,4 +400,4 @@ group { name: "eflete/image_editor/item/default";
    }
 }
 
-#undef PADDING_SPACERS_SIZE
+#undef PADDING_SPACERS_SIZE_SET
