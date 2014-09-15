@@ -222,6 +222,61 @@ group { name: "eflete/image_editor/default";
    }
 }
 
+group { name: "eflete/image_editor/usage_info";
+   parts {
+      part { name: "eflete.swallow.search_line";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 80 30;
+            rel2 {
+               to_x: "search_line_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "search_line_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            PADDING_SPACERS_SIZE_SET;
+            rel1 {
+               to_y: "eflete.swallow.search_line";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.genlist";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               to_y: "search_line_padding";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "search_line_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "genlist_decorations";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            color: DARK_GREY_BG_COLOR;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+            rel1.to: "eflete.swallow.genlist";
+            rel2.to: "eflete.swallow.genlist";
+         }
+      }
+   }
+}
+
 group { name: "eflete/image_editor/image_preview";
    parts {
       part { name: "base";
@@ -239,6 +294,7 @@ group { name: "eflete/image_editor/image_preview";
             image {
                normal: "focus-outer-glow.png";
                border: 3 3 3 3;
+               middle: NONE;
             }
             color: DARK_GREY_BG_COLOR;
             rel1.to: "base";
