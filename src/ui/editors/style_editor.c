@@ -137,6 +137,23 @@ static const char *style_table[][2] = {{"font", NULL},
                                        {"underline_dash_gap", NULL},
                                        {NULL, NULL}};
 
+//TODO: <number>, <number>% for align
+static const char *font_horizontal_align[] = { N_("auto"),
+                                               N_("center"),
+                                               N_("middle"),
+                                               N_("left"),
+                                               N_("right"),
+                                               NULL};
+
+//TODO: <number>, <number>% for align
+static const char *font_horizontal_valign[] = { N_("top"),
+                                                N_("bottom"),
+                                                N_("middle"),
+                                                N_("center"),
+                                                N_("baseline"),
+                                                N_("base"),
+                                                NULL};
+
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = BANNED_SYMBOLS
@@ -149,6 +166,9 @@ static Elm_Entry_Filter_Accept_Set accept_value = {
 
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
+
+static void
+_format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
 
 static void
 _on_popup_bt_cancel(void *data,
@@ -186,12 +206,14 @@ _on_glit_selected(void *data,
 {
    Eina_List *tags = NULL;
    Eina_List *l = NULL;
+   Eina_List *tabs_list = NULL, *tab = NULL;
    Evas_Object *edje_edit_obj = NULL;
 
    const char *style_name = NULL;
    const char *tag, *value = NULL;
    Evas_Textblock_Style *ts = NULL;
    Ewe_Tabs_Item *it;
+   int count = 0;
 
    Eina_Strbuf *style = eina_strbuf_new();
    eina_strbuf_append(style, FONT_DEFAULT);
@@ -225,9 +247,26 @@ _on_glit_selected(void *data,
    CURRENT.st_name = style_name;
    CURRENT.st_tag = tag;
    CURRENT.stvalue = eina_stringshare_add(value);
-   it = ewe_tabs_active_item_get(style_edit->tabs);
-   if (!strcmp(ewe_tabs_item_title_get(style_edit->tabs, it), _("Text")))
-     _text_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs);
+   EINA_LIST_FOREACH(tabs_list, tab, it)
+     {
+        switch (count)
+          {
+           case 0:
+             {
+                _text_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                break;
+             }
+           case 1:
+             {
+                _format_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                break;
+             }
+           default:
+             break;
+          }
+        count++;
+     }
 
    elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
    eina_strbuf_append(style, "'");
@@ -697,10 +736,12 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
      }
    for (k = 0; style_table[k][0] != NULL; k++)
      {
-        if(!strcmp(style_table[k][0], text))
+        if (!strcmp(style_table[k][0], text))
           {
              eina_stringshare_del(style_table[k][1]);
-             style_table[k][1] = eina_stringshare_add(value);
+             if ((!strcmp(style_table[k][0], "ellipsis")) && (strstr(value, "-")))
+               style_table[k][1] = NULL;
+             else style_table[k][1] = eina_stringshare_add(value);
           }
      }
    eina_strbuf_append(tag, "+ ");
@@ -740,11 +781,24 @@ if (!ei) \
      value = eina_stringshare_printf("%f", elm_spinner_value_get(obj)); \
   }
 
+#define PERCENT_SPINNER_VALUE \
+const char *value = NULL; \
+if (!ei) \
+  { \
+     value = eina_stringshare_printf("%f", elm_spinner_value_get(obj)/100); \
+  }
+
+#define CHECK_VALUE \
+Evas_Object *check = obj; \
+const char *value = NULL; \
+if (elm_check_state_get(check)) value = eina_stringshare_add("on"); \
+else value = eina_stringshare_add("off");
+
 #define CHANGE_CALLBACK(VALUE, TEXT, WIDGET) \
 static void \
 _on_##VALUE##_change(void *data, \
                      Evas_Object *obj EINA_UNUSED, \
-                     void *ei) \
+                     void *ei EINA_UNUSED) \
 { \
    Style_Editor *style_edit = (Style_Editor *)data; \
    WIDGET##_VALUE \
@@ -753,7 +807,7 @@ _on_##VALUE##_change(void *data, \
    eina_stringshare_del(value); \
 }
 
-#define ITEM_COLOR_ADD(VALUE) \
+#define ITEM_COLOR_ADD(VALUE, TEXT) \
 static void \
 _on_##VALUE##_change(void *data, \
                      Evas_Object *obj, \
@@ -766,7 +820,7 @@ _on_##VALUE##_change(void *data, \
    color = evas_object_data_get(obj, "color"); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
    value = eina_stringshare_printf("#%02x%02x%02x%02x", r, g, b, a); \
-   _tag_parse(style_edit, value, "color"); \
+   _tag_parse(style_edit, value, TEXT); \
    rect = elm_object_part_content_get(color, "elm.swallow.content"); \
    evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a); \
    _style_edit_update(style_edit); \
@@ -827,19 +881,32 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
    return rect; \
 }
 
+#define MIN_SP - 1.0
+#define MAX_SP 9999.0
+#define MAX_PERCENT 100.0
+#define STEP_SP 1.0
+
 #define COMBO_ADD(VALUE) \
 EWE_COMBOBOX_ADD(layout, widget); \
 evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_edit);
-
-#define SIZE_ADD(VALUE) \
-SPINNER_ADD(layout, widget, 0, 9999, 1, true, DEFAULT_STYLE); \
-evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define STYLE_ADD(VALUE) \
 int i = 0; \
 SEGMENT_CONTROL_ADD(layout, widget); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define SPIN_ADD(VALUE) \
+SPINNER_ADD(layout, widget, MIN_SP, MAX_SP, STEP_SP, true, DEFAULT_STYLE); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define CHK_ADD(VALUE) \
+CHECK_ADD(layout, widget, DEFAULT_STYLE); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define ELLIPSIS_ADD(VALUE) \
+SPINNER_ADD(layout, widget, MIN_SP, MAX_PERCENT, STEP_SP, true, DEFAULT_STYLE); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define ITEM_TEXT_ADD(SWALLOW, VALUE, WIDGET) \
@@ -948,13 +1015,34 @@ CHANGE_CALLBACK(font_size, "font_size", SPINNER)
 CHANGE_CALLBACK(font_style, "font_style", SEGMENT)
 CHANGE_CALLBACK(font_width, "font_width", COMBOBOX)
 CHANGE_CALLBACK(font_weight, "font_weight", COMBOBOX)
+CHANGE_CALLBACK(font_align, "align", COMBOBOX)
+CHANGE_CALLBACK(lmargin, "left_margin", SPINNER)
+CHANGE_CALLBACK(font_valign, "valign", COMBOBOX)
+CHANGE_CALLBACK(rmargin, "right_margin", SPINNER)
+CHANGE_CALLBACK(text_tabstops, "tabstops", SPINNER)
+CHANGE_CALLBACK(line_size, "linesize", SPINNER)
+CHANGE_CALLBACK(rel_size, "linerelsize", SPINNER)
+CHANGE_CALLBACK(font_password, "password", CHECK)
+CHANGE_CALLBACK(font_background, "backing", CHECK)
+CHANGE_CALLBACK(font_ellipsis, "ellipsis", PERCENT_SPINNER)
 
 ITEM_TEXT_ADD("font", fonts_list, COMBO)
-ITEM_TEXT_ADD("size", font_size, SIZE)
+ITEM_TEXT_ADD("size", font_size, SPIN)
 ITEM_TEXT_ADD("width", font_width, COMBO)
 ITEM_TEXT_ADD("style", font_style, STYLE)
 ITEM_TEXT_ADD("weight", font_weight, COMBO)
-ITEM_COLOR_ADD(text_color)
+ITEM_COLOR_ADD(text_color, "color")
+ITEM_TEXT_ADD("align", font_align, COMBO)
+ITEM_TEXT_ADD("lmargin", lmargin, SPIN)
+ITEM_TEXT_ADD("valign", font_valign, COMBO)
+ITEM_TEXT_ADD("rmargin", rmargin, SPIN)
+ITEM_TEXT_ADD("tabstops", text_tabstops, SPIN)
+ITEM_TEXT_ADD("line_size", line_size, SPIN)
+ITEM_TEXT_ADD("rel_size", rel_size, SPIN)
+ITEM_TEXT_ADD("password", font_password, CHK)
+ITEM_TEXT_ADD("background", font_background, CHK)
+ITEM_COLOR_ADD(font_backcolor, "backing_color")
+ITEM_TEXT_ADD("ellipsis", font_ellipsis, ELLIPSIS)
 
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
@@ -1031,15 +1119,151 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         eina_stringshare_del(color);
      }
 }
-#undef _COMBOBOX_VALUE
-#undef _SEGMENT_VALUE
-#undef _SPINNER_VALUE
+
+static void
+_format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
+{
+   Evas_Object *edje_edit_obj = NULL;
+   Evas_Object *box_frames, *frame1, *frame2, *layout1, *layout2;
+   Evas_Object *font_align, *font_lmargin, *font_valign,  *font_rmargin;
+   Evas_Object *text_tabstops, *line_size, *rel_size;
+   Evas_Object *font_password, *font_background, *font_backcolor, *font_ellipsis;
+   Eina_Bool pass, bg;
+   int r, g, b, a;
+   unsigned int i = 0;
+
+   Evas_Object *scr;
+   SCROLLER_ADD(style_edit->mwin, scr);
+   elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+   BOX_ADD(scr, box_frames, EINA_FALSE, EINA_FALSE)
+   elm_box_align_set(box_frames, 0.5, 0.0);
+   elm_object_content_set(scr, box_frames);
+   GET_OBJ(style_edit->pr, edje_edit_obj);
+
+   FRAME_ADD(box_frames, frame1, false, _("Positioning option"))
+   evas_object_size_hint_weight_set(frame1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(frame1, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   layout1 = elm_layout_add(frame1);
+   elm_layout_file_set(layout1, EFLETE_EDJ, "elm/layout/style_editor/format1");
+   evas_object_size_hint_weight_set(layout1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(layout1, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(layout1);
+   elm_object_content_set(frame1, layout1);
+
+   elm_object_part_text_set(layout1, "label.align", _("Horizontal align:"));
+   elm_object_part_text_set(layout1, "label.valign", _("Vertical align:"));
+   elm_object_part_text_set(layout1, "label.after1", _("%"));
+   elm_object_part_text_set(layout1, "label.after2", _("%"));
+   elm_object_part_text_set(layout1, "label.start1", _("Margin:"));
+   elm_object_part_text_set(layout1, "label.left1", _("left"));
+   elm_object_part_text_set(layout1, "label.left2", _("right"));
+   elm_object_part_text_set(layout1, "label.end1", _("px"));
+   elm_object_part_text_set(layout1, "label.end2", _("px"));
+
+   font_align = _style_item_font_align_add(layout1, style_edit);
+   font_lmargin = _style_item_lmargin_add(layout1, style_edit);
+   font_valign = _style_item_font_valign_add(layout1, style_edit);
+   font_rmargin = _style_item_rmargin_add(layout1, style_edit);
+
+   if (value)
+     {
+        const char* align = _tag_value_get(value, "align");
+        if (!align) align = _("auto");
+        const char* lmargin = _tag_value_get(value, "left_margin");
+        if (!lmargin) lmargin = "0";
+        const char* valign = _tag_value_get(value, "valign");
+        if (!valign) valign = _("baseline");
+        const char* rmargin = _tag_value_get(value, "right_margin");
+        if (!rmargin) rmargin = "0";
+
+        ewe_combobox_text_set(font_align, align);
+        for (i = 0; font_horizontal_align[i] != NULL; i++)
+          ewe_combobox_item_add(font_align, font_horizontal_align[i]);
+        elm_spinner_value_set(font_lmargin, atof(lmargin));
+
+        ewe_combobox_text_set(font_valign, valign);
+        for (i = 0; font_horizontal_valign[i] != NULL; i++)
+          ewe_combobox_item_add(font_valign, font_horizontal_valign[i]);
+        elm_spinner_value_set(font_rmargin, atof(rmargin));
+     }
+
+   FRAME_ADD(tabs, frame2, false, _("Text format"))
+   layout2 = elm_layout_add(frame2);
+   evas_object_size_hint_weight_set(layout2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(layout2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(layout2, EFLETE_EDJ, "elm/layout/style_editor/format2");
+   evas_object_show(layout2);
+   elm_object_content_set(frame2, layout2);
+
+   elm_object_part_text_set(layout2, "label.tabstops", _("Text tabstops:"));
+   elm_object_part_text_set(layout2, "label.line_size", _("Line size:"));
+   elm_object_part_text_set(layout2, "label.left1", _("Line relative size:"));
+   elm_object_part_text_set(layout2, "label.end1", _("px"));
+   elm_object_part_text_set(layout2, "label.right", _("px"));
+   elm_object_part_text_set(layout2, "label.end2", _("px"));
+   elm_object_part_text_set(layout2, "label.password", _("Password field"));
+   elm_object_part_text_set(layout2, "label.background", _("Background color"));
+   elm_object_part_text_set(layout2, "label.ellipsis", _("Replace overflow characters with ellipsis"));
+
+   text_tabstops = _style_item_text_tabstops_add(layout2, style_edit);
+   line_size = _style_item_line_size_add(layout2, style_edit);
+   rel_size = _style_item_rel_size_add(layout2, style_edit);
+   font_password = _style_item_font_password_add(layout2, style_edit);
+   font_ellipsis = _style_item_font_ellipsis_add(layout2, style_edit);
+   font_background = _style_item_font_background_add(layout2, style_edit);
+   font_backcolor = _style_item_font_backcolor_add(layout2, style_edit);
+
+   if (value)
+     {
+        const char* tabstops = _tag_value_get(value, "tabstops");
+        if (!tabstops) tabstops = "0";
+        const char* linesize = _tag_value_get(value, "linesize");
+        if (!linesize) linesize = "0";
+        const char* linerelsize = _tag_value_get(value, "linerelsize");
+        if (!linerelsize) linerelsize = "0";
+        const char* password = _tag_value_get(value, "password");
+        if ((!password) || (!strcmp(password, "off"))) pass = EINA_FALSE;
+        else pass = EINA_TRUE;
+        const char* ellipsis = _tag_value_get(value, "ellipsis");
+        if (!ellipsis) ellipsis = "0";
+        const char* bground = _tag_value_get(value, "backing");
+        if ((!bground) || (!strcmp(bground, "off"))) bg = EINA_FALSE;
+        else bg = EINA_TRUE;
+        const char* bcolor = _tag_value_get(value, "backing_color");
+        if (!bcolor) bcolor = "#FFF";
+
+        elm_spinner_value_set(text_tabstops, atof(tabstops));
+        elm_spinner_value_set(line_size, atof(linesize));
+        elm_spinner_value_set(rel_size, atof(linerelsize));
+        elm_check_state_set(font_password, pass);
+        elm_check_state_set(font_background, bg);
+        _hex_to_rgb(bcolor, &r, &g, &b, &a);
+        evas_object_color_set(font_backcolor, r*a/255, g*a/255, b*a/255, a);
+        elm_spinner_value_set(font_ellipsis, atof(ellipsis));
+     }
+
+   elm_box_pack_end(box_frames, frame1);
+   elm_box_pack_end(box_frames, frame2);
+   ewe_tabs_item_content_set(tabs, it, scr);
+}
+#undef COMBOBOX_VALUE
+#undef SEGMENT_VALUE
+#undef SPINNER_VALUE
+#undef PERCENT_SPINNER_VALUE
+#undef CHECK_VALUE
 #undef CHANGE_CALLBACK
 #undef ITEM_COLOR_ADD
-#undef ITEM_TEXT_ADD
 #undef COMBO_ADD
-#undef SIZE_ADD
 #undef STYLE_ADD
+#undef ITEM1_TEXT_ADD
+#undef SPIN_ADD
+#undef ELLIPSIS_ADD
+#undef CHK_ADD
+#undef ITEM_TEXT_ADD
+#undef MIN_SP
+#undef MAX_SP
+#undef MAX_PERCENT
+#undef STEP_SP
 
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
