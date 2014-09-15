@@ -240,27 +240,27 @@ _image_info_type_setup(Evas_Object *entry,
    const char *dot = strrchr(image_name, '.');
    if ((!dot) || (dot == image_name))
      {
-        elm_entry_entry_set(entry, "Unknown");
+        elm_entry_entry_set(entry, _("Unknown"));
         return;
      }
 
    if (eina_str_has_extension(image_name, ".png"))
-     snprintf(buf, BUFF_MAX, "PNG image (%s)", dot);
+     snprintf(buf, BUFF_MAX, _("PNG image (%s)"), dot);
    else if (eina_str_has_extension(image_name, ".gif"))
-     snprintf(buf, BUFF_MAX, "GIF image (%s)", dot);
+     snprintf(buf, BUFF_MAX, _("GIF image (%s)"), dot);
    else if (eina_str_has_extension(image_name, ".jpeg") ||
             eina_str_has_extension(image_name, ".jpg") ||
             eina_str_has_extension(image_name, ".jif") ||
             eina_str_has_extension(image_name, ".jfif"))
-     snprintf(buf, BUFF_MAX, "JPEG image (%s)", dot);
+     snprintf(buf, BUFF_MAX, _("JPEG image (%s)"), dot);
    else if (eina_str_has_extension(image_name, ".bmp"))
-     snprintf(buf, BUFF_MAX, "BMP image (%s)", dot);
+     snprintf(buf, BUFF_MAX, _("BMP image (%s)"), dot);
    else if (eina_str_has_extension(image_name, ".tif") ||
             eina_str_has_extension(image_name, ".tiff"))
-     snprintf(buf, BUFF_MAX, "TIFF image (%s)", dot);
+     snprintf(buf, BUFF_MAX, _("TIFF image (%s)"), dot);
    else
      {
-        elm_entry_entry_set(entry, "Unknown");
+        elm_entry_entry_set(entry, _("Unknown"));
         return;
      }
    elm_entry_entry_set(entry, buf);
@@ -825,10 +825,10 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
 
    img_edit->group_items.included =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
-      eina_stringshare_add("Include"), NULL, NULL);
+      eina_stringshare_add(_("Include")), NULL, NULL);
    img_edit->group_items.linked =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
-      eina_stringshare_add("Linked"), NULL, NULL);
+      eina_stringshare_add(_("Linked")), NULL, NULL);
    //TODO: Add View group with images that are not included to the edj-file yet.
 
    elm_gengrid_item_class_free(ggic);
