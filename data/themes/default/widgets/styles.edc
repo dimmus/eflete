@@ -95,4 +95,8 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "br" "\n";
       tag:  "a" "+ color=#5893c6ff underline=on underline_color=#5893c6ff";
    }
+   style { name: "eflete_header_textblock_style";
+      base: "font="FN" font_size=16 color=#FFFFFF text_class=label left_margin=2 right_margin=2";
+      tag:  "b" "+ font_weight=Bold";
+   }
 }

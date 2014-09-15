@@ -825,10 +825,10 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
 
    img_edit->group_items.included =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
-      eina_stringshare_add(_("Include")), NULL, NULL);
+      eina_stringshare_add(_("<b>Include</b>")), NULL, NULL);
    img_edit->group_items.linked =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
-      eina_stringshare_add(_("Linked")), NULL, NULL);
+      eina_stringshare_add(_("<b>Linked</b>")), NULL, NULL);
    //TODO: Add View group with images that are not included to the edj-file yet.
 
    elm_gengrid_item_class_free(ggic);
