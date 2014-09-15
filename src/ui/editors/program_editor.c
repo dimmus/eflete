@@ -363,8 +363,9 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 #define TRANS_VAL_UPDATE(_val_, _entry) \
    value = edje_edit_program_transition_##_val_##_get(prop.style->obj, \
               prop.program); \
-   snprintf(buff, sizeof(buff), "%1.2f", value); \
-   ewe_entry_entry_set(_entry, buff);
+   buff = eina_stringshare_printf("%1.2f", value); \
+   ewe_entry_entry_set(_entry, buff); \
+   eina_stringshare_del(buff);
 
 #define CALLBACK_UPDATE(_activated_cb, _entry) \
         evas_object_smart_callback_del(_entry, "changed,user", \
@@ -376,7 +377,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 static void
 _trans_entries_set(Program_Editor *prog_edit)
 {
-   char buff[BUFF_MAX];
+   Eina_Stringshare *buff = NULL;
    double value;
 
    switch (prop.trans_type & EDJE_TWEEN_MODE_MASK)
@@ -452,15 +453,16 @@ _trans_entries_set(Program_Editor *prog_edit)
 
 #define ACTION_VAL_GET(_val_get, _entry) \
          value = _val_get(prop.style->obj, prop.program); \
-         sprintf(buff, "%1.2f", value); \
-         ewe_entry_entry_set(_entry, buff);
+         buff = eina_stringshare_printf("%1.2f", value); \
+         ewe_entry_entry_set(_entry, buff); \
+         eina_stringshare_del(buff);
 
 static void
 _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
 {
    Eina_Stringshare *str = NULL;
    double value;
-   char buff[BUFF_MAX];
+   Eina_Stringshare *buff = NULL;
 
    switch (prop.act_type)
      {
@@ -971,7 +973,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
 static void
 _prop_item_program_transition_update(Program_Editor *prog_edit)
 {
-   char buff[BUFF_MAX];
+   Eina_Stringshare *buff = NULL;
    double value;
    if (!transition.item) return;
    prop.trans_type = edje_edit_program_transition_get(prop.style->obj, prop.program);
@@ -988,8 +990,9 @@ _prop_item_program_transition_update(Program_Editor *prog_edit)
 
    value = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
 
-   snprintf(buff, sizeof(buff), "%1.2f", value);
+   buff = eina_stringshare_printf("%1.2f", value);
    ewe_entry_entry_set(transition.entry1, buff);
+   eina_stringshare_del(buff);
    TRANS_ENTRIES_DEFAULT_SET(false);
 
    _trans_entries_set(prog_edit);
@@ -1166,15 +1169,17 @@ static void
 _prop_item_program_in_update(Program_Editor *prog_edit)
 {
    double val = 0;
-   char text[BUFF_MAX];
+   Eina_Stringshare *text = NULL;
 
    val = edje_edit_program_in_from_get(prop.style->obj, prop.program);
-   snprintf(text, sizeof(text), "%2.3f", val);
+   text = eina_stringshare_printf("%2.3f", val);
    ewe_entry_entry_set(prop.in.entry_from, text);
+   eina_stringshare_del(text);
 
    val = edje_edit_program_in_range_get(prop.style->obj, prop.program);
-   snprintf(text, sizeof(text), "%2.3f", val);
+   text = eina_stringshare_printf("%2.3f", val);
    ewe_entry_entry_set(prop.in.entry_range, text);
+   eina_stringshare_del(text);
 }
 
 static Evas_Object *
