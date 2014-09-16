@@ -25,6 +25,7 @@
 #define SND_EDIT_KEY "sound_editor_key"
 
 typedef struct _Sound_Editor Sound_Editor;
+typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
 
 struct _Item
@@ -32,6 +33,12 @@ struct _Item
    const char* sound_name;
    Edje_Edit_Sound_Comp comp;
    int tone_frq;
+};
+
+struct _Search_Data
+{
+   Evas_Object *search_entry;
+   Elm_Object_Item *last_item_found;
 };
 
 struct _Sound_Editor
@@ -43,6 +50,7 @@ struct _Sound_Editor
    Evas_Object *sample_box;
    Evas_Object *tone_box;
    Evas_Object *markup;
+   Search_Data sound_search_data;
    struct {
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
@@ -355,11 +363,65 @@ _create_gengrid(Evas_Object *parent,
    evas_object_show(editor->gengrid);
 }
 
+static inline Evas_Object *
+_sound_editor_search_field_create(Evas_Object *parent)
+{
+   Evas_Object *entry, *icon;
+   ENTRY_ADD(parent, entry, true, "eflete/search_field");
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_ADD(entry, icon, true, "icon-search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   return entry;
+}
+
+
+/*It will be implemented*/
+static void
+_on_add_clicked_cb(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+
+}
+
+static void
+_on_delete_clicked_cb(void *data __UNUSED__,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+
+}
+
+static void
+_on_srh_cnd_cb(void *data __UNUSED__,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+
+}
+
+static void
+_srh_nxt_gd_item_cb(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+
+}
+
+static void
+_search_reset_cb(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+
+}
+
 Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
-   Evas_Object *wlayout, *btn_box, *btn;
+
+   Evas_Object *wlayout, *btn_box, *btn, *icon, *search;
 
    if (!project)
      {
@@ -401,6 +463,27 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    elm_box_pack_end(btn_box, btn);
    elm_object_part_content_set(wlayout, "eflete.swallow.button_box", btn_box);
    evas_object_show(btn);
+
+   BUTTON_ADD(edit->markup, btn, NULL);
+   ICON_ADD(btn, icon, true, "icon-add");
+   elm_object_content_set(btn, icon);
+   evas_object_smart_callback_add(btn, "clicked", _on_add_clicked_cb, edit);
+   elm_object_part_content_set(edit->markup, "swallow.add_btn", btn);
+
+   BUTTON_ADD(edit->markup, btn, NULL);
+   ICON_ADD(btn, icon, true, "icon-remove");
+   elm_object_content_set(btn, icon);
+   evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
+   elm_object_part_content_set(edit->markup, "swallow.del_btn", btn);
+
+   search = _sound_editor_search_field_create(edit->markup);
+   elm_object_part_content_set(edit->markup, "swallow.search_area", search);
+   evas_object_smart_callback_add(search, "changed", _on_srh_cnd_cb, edit);
+   evas_object_smart_callback_add(search, "activated", _srh_nxt_gd_item_cb, edit);
+   evas_object_smart_callback_add(edit->gengrid, "pressed", _search_reset_cb,
+                                  &(edit->sound_search_data));
+   edit->sound_search_data.search_entry = search;
+   edit->sound_search_data.last_item_found = NULL;
 
    _create_gengrid(edit->markup, edit, mode);
    elm_object_part_content_set(edit->markup, "gengrid", edit->gengrid);
