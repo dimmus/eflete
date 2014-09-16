@@ -236,11 +236,16 @@ _timer_cb(void *data)
    prog_edit->playback.program_time += delta;
    if (prog_edit->playback.program_time > prog_edit->playback.total_time)
      {
-        prog_edit->playback.program_time = 0;
         if (!prog_edit->playback.is_cycled)
           {
              prog_edit->playback.is_played = false;
              elm_object_text_set(prog_edit->program_controls.play, _("Play"));
+             prog_edit->playback.program_time = prog_edit->playback.total_time;
+          }
+        else
+          {
+             prog_edit->playback.program_time = 0;
+             _object_state_reset(prog_edit);
           }
      }
    pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) /
