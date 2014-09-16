@@ -16,6 +16,10 @@ group { name: "eflete/container/base/default";
             rel1.offset: -2 -2;
             rel2.offset: 1 1;
          }
+         description { state: "hidden" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
       }
       part { name: "eflete.swallow.container";
          type: SWALLOW;
@@ -61,6 +65,18 @@ group { name: "eflete/container/base/default";
          source: "eflete";
          action: STATE_SET "default" 0.0;
          target: "eflete.size.tooltip";
+      }
+      program { name: "layout_hide";
+         signal: "container,hide";
+         source: "eflete";
+         action: STATE_SET "hidden" 0.0;
+         target: "border";
+      }
+      program { name: "layout_show";
+         signal: "container,show";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "border";
       }
    }
 }

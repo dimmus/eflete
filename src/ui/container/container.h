@@ -231,5 +231,31 @@ container_confine_set(Evas_Object *obj, Evas_Object *confine);
 Eina_Bool
 container_confine_unset(Evas_Object *obj);
 
+/**
+ * Hiding container (handlers and borders) of the Container object but not hiding
+ * setted content.
+ *
+ * @param obj The Container object.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_border_hide(Evas_Object *obj);
+
+/**
+ * Showing container (handlers and borders) of the Container object but not
+ * showing setted content.
+ *
+ * @param obj The Container object.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_border_show(Evas_Object *obj);
+
 
 #endif /* CONTAINER_H */

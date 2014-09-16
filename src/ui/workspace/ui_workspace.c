@@ -388,19 +388,30 @@ _ws_smart_mouse_move_cb(void *data, Evas *e,
 
 static void
 _separate_smart_on_click(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
 {
+   Evas_Coord w, h;
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    if (!sd->style) return;
    Eina_Bool sep = groupedit_edit_object_parts_separated_is(sd->groupedit);
+
    /* FIXME: stub until set mode api remake */
    if (!sep)
-      _separate_mode_click(sd, NULL, NULL);
+     {
+        container_border_hide(sd->container);
+        _separate_mode_click(sd, NULL, NULL);
+     }
    else
-      _normal_mode_click(sd, NULL, NULL);
+     {
+        container_border_show(sd->container);
+        _normal_mode_click(sd, NULL, NULL);
+     }
+
+   evas_object_geometry_get(sd->groupedit, NULL, NULL, &w, &h);
+   evas_object_resize(sd->container, w, h);
 }
 
 static void

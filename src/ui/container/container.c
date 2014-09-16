@@ -676,6 +676,36 @@ container_confine_unset(Evas_Object *obj)
    return true;
 }
 
+Eina_Bool
+container_border_hide(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (sd->handler_TL.obj)
+     evas_object_hide(sd->handler_TL.obj);
+   if (sd->handler_BR.obj)
+     evas_object_hide(sd->handler_BR.obj);
+   if (sd->container)
+     edje_object_signal_emit(sd->container, "container,hide", "eflete");
+
+   return true;
+}
+
+Eina_Bool
+container_border_show(Evas_Object *obj)
+{
+   CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   if (sd->handler_TL.obj)
+     evas_object_show(sd->handler_TL.obj);
+   if (sd->handler_BR.obj)
+     evas_object_show(sd->handler_BR.obj);
+   if (sd->container)
+     edje_object_signal_emit(sd->container, "container,show", "eflete");
+
+   return true;
+}
+
 #undef MY_CLASS_NAME
 #undef CONTAINER_DATA_GET
 #undef CONTAINER_DATA_GET_OR_RETURN_VAL
