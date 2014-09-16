@@ -125,6 +125,7 @@ static Evas_Object *
 _prop_item_program_target_add(Evas_Object *parent, Program_Editor *prog_edit, const char *tooltip);
 
 #define CALLBACK_KEY "callback.key"
+#define LITTLE_TIME 0.0005
 
 #define prop prog_edit->prop_view
 #define action prog_edit->prop_view.action
@@ -227,6 +228,7 @@ _timer_cb(void *data)
 
    double pos;
    double time = ecore_loop_time_get();
+   double transition_time = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
    double delta = time - prog_edit->playback.last_callback_time;
    prog_edit->playback.last_callback_time = time;
    if (prog_edit->playback.is_in_seek) return prog_edit->playback.is_played;
@@ -243,6 +245,7 @@ _timer_cb(void *data)
      }
    pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) /
               (prog_edit->playback.total_time - prog_edit->playback.start_delay);
+   if (transition_time == 0) pos = pos > 0;
    elm_slider_value_set(prog_edit->program_controls.slider, prog_edit->playback.program_time);
 
    edje_edit_program_transition_state_set(prog_edit->live->object, prop.program, pos);
@@ -261,10 +264,13 @@ _program_reset(Program_Editor *prog_edit)
    ecore_timer_del(prog_edit->playback.timer);
    prog_edit->playback.timer = NULL;
    prog_edit->playback.start_delay = edje_edit_program_in_from_get(prop.style->obj, prop.program);
-   prog_edit->playback.total_time = prog_edit->playback.start_delay +
-      edje_edit_program_transition_time_get(prop.style->obj, prop.program);
+   double transition_time = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
+   prog_edit->playback.total_time = prog_edit->playback.start_delay + transition_time;
    prog_edit->playback.last_callback_time = ecore_loop_time_get();
-   elm_slider_min_max_set(prog_edit->program_controls.slider, 0.0, prog_edit->playback.total_time);
+   if (transition_time == 0)
+     elm_slider_min_max_set(prog_edit->program_controls.slider, 0.0, prog_edit->playback.total_time + LITTLE_TIME);
+   else
+     elm_slider_min_max_set(prog_edit->program_controls.slider, 0.0, prog_edit->playback.total_time);
    elm_object_text_set(prog_edit->program_controls.play, _("Play"));
 }
 
@@ -349,13 +355,15 @@ _slider_changed_cb(void *data,
                    Evas_Object *obj,
                    void *event_info __UNUSED__)
 {
-   double pos;
+   double pos, transition_time;
    Program_Editor *prog_edit = data;
 
    prog_edit->playback.program_time = elm_slider_value_get(obj);
-
-   pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) /
-             (prog_edit->playback.total_time - prog_edit->playback.start_delay);
+   transition_time = prog_edit->playback.total_time - prog_edit->playback.start_delay;
+   if (transition_time == 0)
+     pos = prog_edit->playback.program_time > prog_edit->playback.start_delay;
+   else
+     pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) / transition_time;
    edje_edit_program_transition_state_set(prog_edit->live->object, prop.program, pos);
 }
 
