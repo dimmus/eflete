@@ -28,6 +28,11 @@ typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
 
+static Elm_Entry_Filter_Accept_Set accept_value = {
+   .accepted = "0123456789.",
+   .rejected = NULL
+};
+
 struct _Item
 {
    const char* sound_name;
@@ -44,12 +49,16 @@ struct _Search_Data
 struct _Sound_Editor
 {
    Project *pr;
+   Evas_Object *popup;
+   Evas_Object *cmb;
    Evas_Object *win;
+   Evas_Object *tone_entry, *frq_entry;
    Evas_Object *gengrid;
    Evas_Object *player;
    Evas_Object *sample_box;
    Evas_Object *tone_box;
    Evas_Object *markup;
+   Elm_Object_Item *tone;
    Search_Data sound_search_data;
    struct {
       Evas_Object *tone_name;
@@ -80,8 +89,9 @@ _sound_editor_del(Sound_Editor *edit)
    elm_gengrid_item_class_free(gic);
    elm_gengrid_item_class_free(ggic);
    evas_object_del(edit->win);
-   evas_object_del(edit->gengrid);
    evas_object_del(edit->markup);
+   evas_object_del(edit->tone_entry);
+   evas_object_del(edit->frq_entry);
    free(edit);
 }
 
@@ -95,12 +105,14 @@ _on_quit_cb(void *data,
 }
 
 static void
-_on_ok_cb(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+_on_ok_cb(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
 {
-  // Sound_Editor *edit = (Sound_Editor *)data;
-   /*It will be implemented*/
+   Evas_Object *edje_edit_obj;
+   Sound_Editor *edit = (Sound_Editor *)data;
+   GET_OBJ(edit->pr, edje_edit_obj);
+   edje_edit_without_source_save(edje_edit_obj, true);
 }
 
 static Evas_Object *
@@ -301,7 +313,7 @@ _sound_content_init(Sound_Editor *edit)
 
    it = (Item *)mem_malloc(sizeof(Item));
    it->sound_name = eina_stringshare_add(_("Sound Tones"));
-   elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, edit);
+   edit->tone = elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, edit);
 
    if (tones)
      {
@@ -312,6 +324,7 @@ _sound_content_init(Sound_Editor *edit)
              it->tone_frq = edje_edit_sound_tone_frequency_get(edje_edit_obj, sound_name);
              elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
           }
+        eina_list_free(tones);
      }
 
    return true;
@@ -374,14 +387,192 @@ _sound_editor_search_field_create(Evas_Object *parent)
    return entry;
 }
 
-
-/*It will be implemented*/
 static void
-_on_add_clicked_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_on_sample_done(void *data,
+                Evas_Object *obj,
+                void *event_info)
 {
+   Item *it = NULL;
+   Evas_Object *edje_edit_obj = NULL;
+   const char *selected = event_info;
+   const char *sound_name;
+   Elm_Object_Item *new_item;
 
+   if ((!data) || (!selected) || (!strcmp(selected, "")))
+     {
+        ecore_main_loop_quit();
+        return;
+     }
+
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   GET_OBJ(edit->pr, edje_edit_obj);
+
+   if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
+     {
+        sound_name = ecore_file_file_get(selected);
+        if (!edje_edit_sound_sample_add(edje_edit_obj, sound_name, selected))
+          {
+             WIN_NOTIFY_ERROR(obj,
+                              _("Error while loading file.<br>"
+                                "Please check if file is sound"
+                                "or/and file is accessible."));
+             return;
+          }
+        else
+          {
+             it = (Item *)mem_malloc(sizeof(Item));
+             it->sound_name = eina_stringshare_add(sound_name);
+             it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
+             new_item = elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
+                                                       _grid_sel_sample, edit);
+             elm_gengrid_item_selected_set(new_item, EINA_TRUE);
+             pm_project_changed(app_data_get()->project);
+          }
+     }
+   else
+     {
+        WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
+        return;
+     }
+
+   ecore_main_loop_quit();
+}
+
+static void
+_cancel_clicked(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   evas_object_del(data);
+}
+
+static void
+_popup_close(void *data)
+{
+   evas_object_del(data);
+}
+
+static void
+_add_ok_clicked(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   Evas_Object *edje_edit_obj;
+   Item *it;
+   const char *str_name, *str_value;
+   Elm_Object_Item *new_item;
+   int frq;
+
+   Sound_Editor *edit = (Sound_Editor *)data;
+   if (elm_entry_is_empty(edit->tone_entry))
+     {
+        NOTIFY_WARNING(_("Tone name can not be empty!"))
+        return;
+     }
+   if (!ewe_entry_regex_check(edit->frq_entry))
+     {
+        NOTIFY_WARNING(_("Frequency value is not correct!"));
+        return;
+     }
+
+   str_name = elm_entry_entry_get(edit->tone_entry);
+   str_value = elm_entry_entry_get(edit->frq_entry);
+   frq = atoi(str_value);
+
+   GET_OBJ(edit->pr, edje_edit_obj);
+
+   if (!edje_edit_sound_tone_add(edje_edit_obj, str_name, frq))
+     {
+        WIN_NOTIFY_ERROR(obj, _("Error while add new tone<br>"));
+        ecore_job_add(_popup_close, edit->popup);
+        return;
+     }
+   else
+     {
+        it = (Item *)mem_malloc(sizeof(Item));
+        it->sound_name = eina_stringshare_add(str_name);
+        it->tone_frq = frq;
+        new_item = elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
+        elm_gengrid_item_selected_set(new_item, EINA_TRUE);
+        pm_project_changed(app_data_get()->project);
+     }
+
+   ecore_job_add(_popup_close, edit->popup);
+}
+
+static void
+_on_cmb_sel(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info)
+{
+   Sound_Editor *edit = data;
+   Ewe_Combobox_Item *selected_item = event_info;
+
+   if (!selected_item->index)
+     {
+        Evas_Object *bg, *fs, *win;
+        MODAL_WINDOW_ADD(win, main_window_get(), _("Add sound to library"),
+                         _on_sample_done, NULL);
+        bg = elm_bg_add(win);
+        evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_show(bg);
+        elm_win_resize_object_add(win, bg);
+
+        FILESELECTOR_ADD(fs, win, _on_sample_done, data);
+        elm_win_resize_object_add(win, fs);
+
+        ecore_main_loop_begin();
+        evas_object_del(win);
+        ewe_combobox_text_set(edit->cmb, "+");
+
+        return;
+     }
+   else
+     {
+        Evas_Object *popup, *box, *item, *bt_yes, *bt_no;
+        Eina_Stringshare *title;
+        popup = elm_popup_add(edit->win);
+        elm_object_style_set(popup, "eflete");
+        title = eina_stringshare_add(_("Add new tone to the project"));
+        elm_object_part_text_set(popup, "title,text", title);
+        elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+        edit->popup = popup;
+
+        BOX_ADD(popup, box, false, false);
+        elm_object_content_set(popup, box);
+        ITEM_ADD(box, item, _("tone name:"), "eflete/image_editor/item/default");
+        EWE_ENTRY_ADD(item, edit->tone_entry, true, DEFAULT_STYLE);
+        elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
+        elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
+        elm_box_pack_end(box, item);
+
+        ITEM_ADD(box, item, _("frequency:"), "eflete/image_editor/item/default");
+        EWE_ENTRY_ADD(item, edit->frq_entry, true, DEFAULT_STYLE);
+        elm_entry_markup_filter_append(edit->frq_entry, elm_entry_filter_accept_set,
+                                       &accept_value);
+        elm_object_part_text_set(edit->frq_entry, "guide",
+                                 _("Type a frequency (20 - 20000)"));
+        ewe_entry_regex_set(edit->frq_entry, FLOAT_NUMBER_REGEX, EWE_REG_EXTENDED);
+        ewe_entry_regex_autocheck_set(edit->frq_entry, true);
+        ewe_entry_regex_glow_set(edit->frq_entry, true);
+        elm_object_part_content_set(item, "elm.swallow.content", edit->frq_entry);
+        elm_box_pack_end(box, item);
+
+        BUTTON_ADD(popup, bt_yes, _("Add"));
+        evas_object_smart_callback_add (bt_yes, "clicked", _add_ok_clicked, edit);
+        elm_object_part_content_set(popup, "button1", bt_yes);
+
+        BUTTON_ADD(popup, bt_no, _("Cancel"));
+        evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
+        elm_object_part_content_set(popup, "button2", bt_no);
+
+        ewe_combobox_text_set(edit->cmb, "+");
+        evas_object_show(popup);
+        eina_stringshare_del(title);
+
+        return;
+     }
 }
 
 static void
@@ -453,7 +644,6 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    evas_object_size_hint_min_set(btn, 100, 30);
    elm_box_pack_end(btn_box, btn);
    elm_object_part_content_set(wlayout, "eflete.swallow.button_box", btn_box);
-   elm_object_disabled_set(btn, true);
    evas_object_show(btn);
 
    BUTTON_ADD(edit->win, btn, _("Close"));
@@ -464,11 +654,13 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    elm_object_part_content_set(wlayout, "eflete.swallow.button_box", btn_box);
    evas_object_show(btn);
 
-   BUTTON_ADD(edit->markup, btn, NULL);
-   ICON_ADD(btn, icon, true, "icon-add");
-   elm_object_content_set(btn, icon);
-   evas_object_smart_callback_add(btn, "clicked", _on_add_clicked_cb, edit);
-   elm_object_part_content_set(edit->markup, "swallow.add_btn", btn);
+   EWE_COMBOBOX_ADD(edit->markup, edit->cmb);
+   ewe_combobox_style_set(edit->cmb, "small/default");
+   ewe_combobox_item_add(edit->cmb, _("Sample"));
+   ewe_combobox_item_add(edit->cmb, _("Tone"));
+   ewe_combobox_text_set(edit->cmb, "+");
+   evas_object_smart_callback_add(edit->cmb, "selected", _on_cmb_sel, edit);
+   elm_object_part_content_set(edit->markup, "swallow.add_btn", edit->cmb);
 
    BUTTON_ADD(edit->markup, btn, NULL);
    ICON_ADD(btn, icon, true, "icon-remove");
