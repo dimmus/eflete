@@ -49,7 +49,6 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    live->property = live_view_property_add(live->panel, in_prog_edit);
    elm_object_content_set(live->panel, live->property);
    elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
-   elm_panel_hidden_set(live->panel, true);
    evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(live->panel);
