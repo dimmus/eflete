@@ -33,6 +33,7 @@
 
 #define TEXT_FUNC "text_func"
 #define SWALLOW_FUNC "swallow_func"
+#define SWALLOW_CLEAN_FUNC "swallow_clean_func"
 #define SIGNAL_FUNC "signal_func"
 #define SWALLOW_LIST "swallow_list"
 #define TEXT_LIST "part_list"
@@ -42,6 +43,8 @@
 #define COLOR_BLUE_LIGHT 57, 102, 147, 255
 #define COLOR_BLUE_DARK 58, 92, 126, 255
 #define ELEMENTS_COUNT 16
+
+typedef void (* Swallow_Clean_Func)(const char *, Evas_Object *);
 
 /**
  * Special "widget" for program editor. Privat API

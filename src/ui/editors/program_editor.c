@@ -1626,11 +1626,12 @@ _gl_progs_add(Program_Editor *prog_edit)
 
 static void
 _on_program_editor_close(void *data,
-                        Evas *e __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
+                         Evas *e __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+   live_view_free(prog_edit->live);
    free(prog_edit);
 }
 
@@ -1806,7 +1807,7 @@ program_editor_window_add(Style *style)
    prop.style = style;
    prog_edit->mwin = mw_add(NULL, NULL);
    mw_title_set(prog_edit->mwin, _("Program editor"));
-   evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_FREE,
+   evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_DEL,
                                   _on_program_editor_close, prog_edit);
 
    window_layout = elm_layout_add(prog_edit->mwin);

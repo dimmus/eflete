@@ -82,7 +82,6 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
 
    live_view_widget_style_unset(live);
-   live_view_property_style_unset(live->property);
 
    if ((style->__type != LAYOUT) && (!live->in_prog_edit))
      {
@@ -196,7 +195,6 @@ live_view_theme_update(Live_View *live, Project *project)
      {
         WARN("Could'nt apply the empty style to live view.");
         live_view_widget_style_unset(live);
-        live_view_property_style_unset(live->property);
         return false;
      }
    Elm_Theme *theme = elm_theme_new();
@@ -210,11 +208,7 @@ live_view_theme_update(Live_View *live, Project *project)
 Eina_Bool
 live_view_free(Live_View *live)
 {
-   if (live)
-     {
-        live_view_widget_style_unset(live);
-        live_view_property_style_unset(live->property);
-     }
+   if (live) live_view_widget_style_unset(live);
    else return false;
 
    free(live);
