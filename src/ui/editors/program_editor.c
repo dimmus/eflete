@@ -477,6 +477,7 @@ _on_in_from_change(void *data,
                          Evas_Object *obj,
                          void *ei __UNUSED__)
 {
+   Eina_Bool was_playing;
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_in_from_set(prop.style->obj, prop.program,
@@ -486,6 +487,10 @@ _on_in_from_change(void *data,
         NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
+
+   was_playing = prog_edit->playback.is_played;
+   _program_reset(prog_edit);
+   if (was_playing) _on_program_play(prog_edit, NULL, NULL);
 }
 
 static void
@@ -835,15 +840,24 @@ _on_combobox_action_sel(void *data,
 
 static void
 _on_transition_time_active(void *data,
-                 Evas_Object *obj,
-                 void *ei __UNUSED__)
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
 {
+   Eina_Bool was_playing;
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
-   if (!edje_edit_program_transition_time_set(prop.style->obj, prop.program,
-                                              atof(value)))
-     NOTIFY_WARNING(_("The entered data is not valid!"));
+   Eina_Bool res = edje_edit_program_transition_time_set(prop.style->obj,
+                                                         prop.program, atof(value));
+   if (!res)
+     {
+        NOTIFY_WARNING(_("The entered data is not valid!"));
+        return;
+     }
+
+   was_playing = prog_edit->playback.is_played;
+   _program_reset(prog_edit);
+   if (was_playing) _on_program_play(prog_edit, NULL, NULL);
 }
 
 static void
