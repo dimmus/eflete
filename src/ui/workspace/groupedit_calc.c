@@ -500,6 +500,9 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
+        offset_x = i * SEP_ITEM_PAD_X;
+        offset_y = i * SEP_ITEM_PAD_Y;
+
         if (sd->separated)
           {
              i++;
@@ -534,9 +537,6 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                   gp->item = NULL;
                }
           }
-
-        offset_x = i * SEP_ITEM_PAD_X;
-        offset_y = i * SEP_ITEM_PAD_Y;
 
         ept = edje_edit_part_type_get(sd->edit_obj, gp->name);
         switch (ept)
