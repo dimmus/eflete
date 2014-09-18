@@ -43,14 +43,10 @@
  * @step 1 Call function pm_open_project_edj(name, path).
  * @step 2 Check returned value.
  * @step 3 Check project's name.
- * @step 4 Check edc path.
- * @step 5 Check edj path.
- * @step 6 Check swap path.
- * @step 7 Check image directory.
- * @step 8 Check font directory.
- * @step 9 Check sound directory.
+ * @step 4 Check edj path.
+ * @step 5 Check swap path.
  * </td>
- * <td>(const char *)name = "radio_test", (const char *)path = "./edj_build/pm_open_project_edj.edj"</td>
+ * <td>(const char *)path = "./edj_build/pm_open_project_edj.edj"</td>
  * <td>All checks passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -60,19 +56,13 @@
 EFLETE_TEST (pm_open_project_edj_test_p)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_open_project_edj.edj";
 
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
    ck_assert_msg(pro != NULL, "failure: cannot open project from edj-file");
-   ck_assert_msg(!strcmp(pro->name, "radio_test"), "project name is incorrect");
-   ck_assert_msg(!strcmp(pro->edc, "./edj_build/pm_open_project_edj.edc"), "edc path is incorrect");
    ck_assert_msg(!strcmp(pro->edj, "./edj_build/pm_open_project_edj.edj"), "edj path is incorrect");
    ck_assert_msg(!strcmp(pro->swapfile, "./edj_build/pm_open_project_edj.edj.swap"), "swapfile path is incorrect");
-   ck_assert_msg(pro->image_directory == NULL, "image dir is incorrect");
-   ck_assert_msg(pro->font_directory == NULL, "font dir is incorrect");
-   ck_assert_msg(pro->sound_directory == NULL, "sound dir is incorrect");
 
    pm_project_close(pro);
    elm_shutdown();
@@ -91,15 +81,11 @@ END_TEST
  * @step 1 initialized elm
  *
  * @procedure
- * @step 1 Call function pm_open_project_edj(NULL, NULL).
+ * @step 1 Call function pm_open_project_edj(NULL).
  * @step 2 Check returned value.
- * @step 3 Call function pm_open_project_edj(name, NULL).
- * @step 4 Check returned value.
- * @step 5 Call function pm_open_project_edj(NULL, path).
- * @step 6 Check returned value.
  * </td>
- * <td>NULL, NULL</td>
- * <td>All checks passed</td>
+ * <td>NULL</td>
+ * <td>NULL</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
@@ -108,13 +94,8 @@ END_TEST
 EFLETE_TEST (pm_open_project_edj_test_n1)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
-   path = "./edj_build/pm_open_project_edj.edj";
 
-   ck_assert_msg(pm_open_project_edj(NULL, NULL) == NULL, "Project created without path");
-   ck_assert_msg(pm_open_project_edj(name, NULL) == NULL, "Project created without path");
-   ck_assert_msg(pm_open_project_edj(NULL, path) == NULL, "Project created without name");
+   ck_assert_msg(pm_open_project_edj(NULL) == NULL, "Project created without path");
 
    elm_shutdown();
 }
@@ -131,14 +112,14 @@ END_TEST
  * @step 1 initialized elm
  *
  * @procedure
- * @step 1 Call function pm_open_project_edj(name, path1).
+ * @step 1 Call function pm_open_project_edj(path1).
  * @step 2 Check returned value.
- * @step 3 Call function pm_open_project_edj(name, path2).
+ * @step 3 Call function pm_open_project_edj(path2).
  * @step 4 Check returned value.
- * @step 5 Call function pm_open_project_edj(name, path3).
+ * @step 5 Call function pm_open_project_edj(path3).
  * @step 6 Check returned value.
  * </td>
- * <td>(const char *)name = "radio_test", (const char *)path</td>
+ * <td>(const char *)path</td>
  * <td>All checks passed</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -148,15 +129,14 @@ END_TEST
 EFLETE_TEST (pm_open_project_edj_test_n2)
 {
    elm_init(0,0);
-   char *name, *path1, *path2, *path3;
-   name = "radio_test";
+   char *path1, *path2, *path3;
    path1 = "_totally_wrong_path_project_manager_probably_going_to_ignore! >;3";
    path2 = "./edj_build/Makefile";
    path3 = "./edj_build/radio.png";
 
-   ck_assert_msg(pm_open_project_edj(name, path1) == NULL, "Project created with path that is not exist.");
-   ck_assert_msg(pm_open_project_edj(name, path2) == NULL, "Project created with file that doesn't have any extensions");
-   ck_assert_msg(pm_open_project_edj(name, path3) == NULL, "Project created with wrong file");
+   ck_assert_msg(pm_open_project_edj(path1) == NULL, "Project created with path that is not exist.");
+   ck_assert_msg(pm_open_project_edj(path2) == NULL, "Project created with file that doesn't have any extensions");
+   ck_assert_msg(pm_open_project_edj(path3) == NULL, "Project created with wrong file");
 
    elm_shutdown();
 }

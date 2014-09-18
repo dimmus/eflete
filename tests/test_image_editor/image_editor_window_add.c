@@ -62,7 +62,7 @@ EFLETE_TEST (image_editor_window_add_test_p1)
    Evas_Object *images;
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
+   app->project = pm_open_project_edj("./edj_build/image_editor_window_add.edj");
 
    images = image_editor_window_add(app->project, SINGLE);
    ck_assert_msg(images != NULL,
@@ -108,7 +108,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
 
    app = app_data_get();
    ui_main_window_add(app);
-   Project *project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
+   Project *project = pm_open_project_edj("./edj_build/image_editor_window_add.edj");
 
    images = image_editor_window_add(project, MULTIPLE);
    ck_assert_msg(images != NULL,

@@ -54,10 +54,9 @@
 EFLETE_TEST (pm_project_close_test_p1)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_project_close.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_project_close(pro) == EINA_TRUE, "Can't close project!");
 
@@ -94,10 +93,9 @@ END_TEST
 EFLETE_TEST (pm_project_close_test_p2)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_project_close.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
    Style *style = wm_style_object_find(pro->widgets, "elm/radio/base/def");
    style->isModify = true;
    pm_save_project_to_swap(pro);

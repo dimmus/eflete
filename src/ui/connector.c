@@ -722,7 +722,7 @@ ui_edj_load(App_Data* ap, const char *selected_file)
 Eina_Bool
 new_theme_create(App_Data *ap)
 {
-   if (!ap) return false;
+   if ((!ap) || (!ap->win)) return false;
    if (!ui_close_project_request(ap,
                                  _("You want to create a new theme, but now you have<br/>"
                                    "opened project. If you dont save opened project<br/>"

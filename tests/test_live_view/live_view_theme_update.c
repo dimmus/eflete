@@ -70,7 +70,7 @@ EFLETE_TEST(live_view_theme_update_test_p1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_open_project_edj("./edj_build/live_view_theme_update.edj");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/live_view_theme_update.edj");
@@ -130,7 +130,7 @@ EFLETE_TEST(live_view_theme_update_test_p2)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_open_project_edj("./edj_build/live_view_theme_update.edj");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
    wm_style_data_load(layout, e, "./edj_build/live_view_theme_update.edj");
@@ -187,7 +187,7 @@ EFLETE_TEST(live_view_theme_update_test_n1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_open_project_edj("./edj_build/live_view_theme_update.edj");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/live_view_theme_update.edj");
@@ -285,7 +285,7 @@ EFLETE_TEST(live_view_theme_update_test_n3)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_open_project_edj("./edj_build/live_view_theme_update.edj");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
    wm_style_data_load(layout, e, "./edj_build/live_view_theme_update.edj");

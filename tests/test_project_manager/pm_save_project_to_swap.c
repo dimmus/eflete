@@ -54,10 +54,9 @@
 EFLETE_TEST (pm_save_project_to_swap_test_p1)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_save_project_to_swap.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_save_project_to_swap(pro) == EINA_TRUE, "Can't save project to swap");
 
@@ -93,10 +92,9 @@ END_TEST
 EFLETE_TEST (pm_save_project_to_swap_test_p2)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_project_close.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
    Style *style = wm_style_object_find(pro->widgets, "elm/radio/base/def");
    style->isModify = true;
 

@@ -72,14 +72,13 @@ EFLETE_TEST (state_dialog_state_del_test_p)
    Style *style = NULL;
    Part *part = NULL;
    Elm_Object_Item *eoi;
-   const char *name, *path;
+   const char *path;
 
-   name = "UTC";
    path = "./edj_build/state_dialog_state_del.edj";
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   app_data->project = pm_open_project_edj(name, path);
+   app_data->project = pm_open_project_edj(path);
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, canvas, path);
