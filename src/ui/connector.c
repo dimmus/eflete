@@ -653,7 +653,7 @@ static Eina_Bool
 _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 {
    Evas_Object *wd_list = NULL;
-   char *name, *selected;
+   char *selected;
 
    if ((!ap) || (!selected_file)) return false;
 
@@ -674,11 +674,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
    selected = eina_file_path_sanitize(selected_file);
    INFO("Selected file: %s", selected);
 
-   if (is_new) name = strdup("Untitled.edj");
-   else GET_NAME_FROM_PATH(name, selected);
-
-   ap->project = pm_open_project_edj(name, selected);
-   free(name);
+   ap->project = pm_open_project_edj(selected);
 
    if (!ap->project)
      {

@@ -40,8 +40,9 @@
  */
 struct _Project
 {
-   /** name of project */
-   char *name;
+   /** name of project, read this name from field 'theme/name' from edj file,
+    *  if this field is empty, take a file name */
+   Eina_Stringshare *name;
    /** path to edj file(open/save) */
    char *edj;
    /** path to swap(work) file */
@@ -70,7 +71,6 @@ typedef struct _Project Project;
 /**
  * Open project from edj-file.
  *
- * @param name The name of a project;
  * @param path Path to edj-file.
  *
  * @return The Project object.
@@ -78,8 +78,7 @@ typedef struct _Project Project;
  * @ingroup ProjectManager
  */
 Project *
-pm_open_project_edj(const char *name,
-                    const char *path);
+pm_open_project_edj(const char *path);
 
 /**
  * Close the project. Swap file will be deleted.

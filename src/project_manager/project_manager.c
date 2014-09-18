@@ -34,6 +34,7 @@ _on_copy_done_cb(void *data,
    ecore_main_loop_quit();
 }
 
+/*TODO: should be reorganizeted to save 'realese' project */
 static void
 _on_copy_done_save_as_cb(void *data,
                          Eio_File *handler __UNUSED__)
@@ -42,7 +43,11 @@ _on_copy_done_save_as_cb(void *data,
    if (project->edj)
      free(project->edj);
    project->edj = strdup(dst_path);
-   if (project->name) free(project->name);
+   if (project->name)
+     {
+        eina_stringshare_del(project->name);
+        project->name = NULL;
+     }
    GET_NAME_FROM_PATH(project->name, project->edj);
    DBG("Copy file '%s' is finished!", project->edj);
    dst_path = NULL;
@@ -67,9 +72,11 @@ _on_unlink_done_cb(void *data,
                    Eio_File *handler __UNUSED__)
 {
    Project *project = (Project *)data;
+
    if (project->edj) free(project->edj);
    INFO ("Closed project: %s", project->name);
-   free(project->name);
+   eina_stringshare_del(project->name);
+   project->name = NULL;
    wm_widget_list_free(project->widgets);
 
    free(project);
@@ -90,25 +97,28 @@ _on_unlink_error_cb(void *data,
 }
 
 static Project *
-_pm_project_add(const char *name,
-                const char *path)
+_pm_project_add(const char *path)
 {
+   Eet_File *ef;
    Project *pro;
+   char *name;
 
-   if (!name)
+   ef = eet_open(path, EET_FILE_MODE_READ);
+   if (!ef)
      {
-        ERR("Project name is NULL");
+        ERR("File [%s] can not be opened.", path);
+        eet_close(ef);
         return NULL;
      }
-   if (!path)
-     {
-        ERR("Path is NULL");
-        return NULL;
-     }
-   if (!ecore_file_exists(path)) return NULL;
+   eet_close(ef);
 
    pro = mem_calloc(1, sizeof(Project));
-   pro->name = strdup(name);
+
+   name = edje_file_data_get(path, "theme/name");
+   if (!name)
+     GET_NAME_FROM_PATH(name, path);
+   pro->name = eina_stringshare_add(name);
+   free(name);
    DBG ("Project name: '%s'", pro->name);
 
    /* set path to edj */
@@ -142,8 +152,7 @@ pm_export_to_edc(Project *project,
 }
 
 Project *
-pm_open_project_edj(const char *name,
-                    const char *path)
+pm_open_project_edj(const char *path)
 {
    Project *project;
 
@@ -154,7 +163,7 @@ pm_open_project_edj(const char *name,
      }
 
    INFO("Open project! Path to project: '%s'.", path);
-   project = _pm_project_add(name, path);
+   project = _pm_project_add(path);
 
    if (!project) return NULL;
 
