@@ -42,18 +42,10 @@ struct _Project
 {
    /** name of project */
    char *name;
-   /** path to edc file(open/save) */
-   char *edc;
    /** path to edj file(open/save) */
    char *edj;
    /** path to swap(work) file */
    char *swapfile;
-   /** path to image directory, for compile */
-   char *image_directory;
-   /** path to font directory, for compile */
-   char *font_directory;
-   /** path to sound direcory, for compile */
-   char *sound_directory;
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
    Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */

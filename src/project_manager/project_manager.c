@@ -67,11 +67,7 @@ _on_unlink_done_cb(void *data,
                    Eio_File *handler __UNUSED__)
 {
    Project *project = (Project *)data;
-   if (project->edc) free(project->edc);
    if (project->edj) free(project->edj);
-   if (project->image_directory) free(project->image_directory);
-   if (project->font_directory) free(project->font_directory);
-   if (project->sound_directory) free(project->sound_directory);
    INFO ("Closed project: %s", project->name);
    free(project->name);
    wm_widget_list_free(project->widgets);
@@ -95,14 +91,9 @@ _on_unlink_error_cb(void *data,
 
 static Project *
 _pm_project_add(const char *name,
-               const char *path,
-               const char *id, /* image directory */
-               const char *fd, /* font directory */
-               const char *sd  /* sound directory */)
+                const char *path)
 {
    Project *pro;
-   char *tmp = NULL;
-   int len;
 
    if (!name)
      {
@@ -120,37 +111,9 @@ _pm_project_add(const char *name,
    pro->name = strdup(name);
    DBG ("Project name: '%s'", pro->name);
 
-   /* set path to edc */
-   pro->edc = strdup(path);
-
-   len = strlen(pro->edc);
-   if (len > 4) // 4 == strlen(".edj")
-     {
-        tmp = pro->edc + len - 4;
-        if (!strcmp(tmp, ".edj")) strncpy(tmp, ".edc", 4);
-        if (strcmp(tmp, ".edc"))
-          {
-             free(pro->name);
-             free(pro->edc);
-             free(pro);
-             return NULL;
-          }
-     }
-   else
-     {
-        free(pro->name);
-        free(pro->edc);
-        free(pro);
-        return NULL;
-     }
-
    /* set path to edj */
    pro->edj = strdup(path);
 
-   tmp = pro->edj + len - 4;
-   if (!strcmp(tmp, ".edc")) strncpy(tmp, ".edj", 4);
-
-   DBG ("Path to edc-file: '%s'", pro->edc);
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
@@ -158,18 +121,6 @@ _pm_project_add(const char *name,
    strcpy(pro->swapfile, pro->edj);
    strncat(pro->swapfile, ".swap", 5);
    DBG ("Path to swap file: '%s'", pro->swapfile);
-
-   /* set path to image directory */
-   pro->image_directory = id ? strdup(id) : NULL;
-   DBG ("Path to image direcotory: '%s'", pro->image_directory);
-
-   /* set path to font directory */
-   pro->font_directory = fd ? strdup(fd) : NULL;
-   DBG("Path to font direcotory: '%s'", pro->font_directory);
-
-   /* set default path to sound directory */
-   pro->sound_directory = sd ? strdup(sd) : NULL;
-   DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
 
    pro->close_request = false;
 
@@ -203,7 +154,7 @@ pm_open_project_edj(const char *name,
      }
 
    INFO("Open project! Path to project: '%s'.", path);
-   project = _pm_project_add(name, path, NULL, NULL, NULL);
+   project = _pm_project_add(name, path);
 
    if (!project) return NULL;
 
