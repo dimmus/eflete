@@ -1,3 +1,5 @@
+#define SWALLOW_HEIGHT 20
+#define ITEM_HEIGHT 26
 group {
    name: "ui/style_viewer_window/preview";
    parts {
@@ -262,6 +264,368 @@ group {
                to: "bg_menu";
             }
             rel2.relative: 1.0 1.0;
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/style_editor/text";
+   images {
+      image: "bg_demo.png" COMP;
+      image: "corners.png" COMP;
+   }
+   parts {
+      part { name: "padding.right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            min: 20 0;
+            max: 20 -1;
+            rel1.relative: 0.6 0;
+         }
+      }
+      part { name: "padding.left_offset";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0 0;
+            SET_SIZE(6, 16)
+         }
+      }
+      part { name: "padding.right_offset";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1 1;
+            SET_SIZE(6, 6)
+         }
+      }
+      part { name: "padding.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.1 0.5;
+            min: 10 0;
+            max: 10 -1;
+         }
+      }
+      part { name: "area.font";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0;
+            min: 0 ITEM_HEIGHT;
+            max: -1 ITEM_HEIGHT;
+            rel1 {
+               relative: 1 1;
+               to: "padding.left_offset";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "label.font";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               font: "FN";
+               size: 12;
+               align: 1 0.5;
+               ellipsis: 0.1;
+            }
+            rel1.to: "area.font";
+            rel2 {
+               offset: 0 0;
+               to: "area.font";
+            }
+         }
+      }
+      part { name: "area.style";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0;
+            min: 0 ITEM_HEIGHT;
+            max: -1 ITEM_HEIGHT;
+            rel1 {
+               relative: 0 1;
+               to: "area.font";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "label.style";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               font: "FN";
+               size: 12;
+               align: 1 0.5;
+               ellipsis: 0.1;
+            }
+            rel1.to: "area.style";
+            rel2.to: "area.style";
+         }
+      }
+      part { name: "area.weight";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0;
+            min: 0 ITEM_HEIGHT;
+            max: -1 ITEM_HEIGHT;
+            rel1 {
+               relative: 0 1;
+               to: "area.style";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "label.weight";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               font: "FN";
+               size: 12;
+               align: 1 0.5;
+               ellipsis: 0.1;
+            }
+            rel1.to: "area.weight";
+            rel2.to: "area.weight";
+         }
+      }
+      part { name: "area.color";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0;
+            min: 0 ITEM_HEIGHT;
+            max: -1 ITEM_HEIGHT;
+            rel1 {
+               relative: 0 1;
+               to: "area.weight";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "label.color";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               font: "FN";
+               size: 12;
+               align: 1 0.5;
+               ellipsis: 0.1;
+            }
+            rel1.to: "area.color";
+            rel2.to: "area.color";
+         }
+      }
+      part { name: "swallow.font";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SWALLOW_HEIGHT;
+            max: -1 SWALLOW_HEIGHT;
+            rel1 {
+               relative: 1 0;
+               to_x: "padding.left";
+               to_y: "area.font";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.right";
+               to_y: "area.font";
+            }
+         }
+      }
+      part { name: "area.size";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SWALLOW_HEIGHT;
+            max: -1 SWALLOW_HEIGHT;
+            rel1 {
+               relative: 1 0;
+               offset: 0 -1;
+               to_x: "padding.right";
+               to_y: "area.font";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.right_offset";
+               to_y: "area.font";
+            }
+         }
+      }
+      part { name: "content_left_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            max: 4 -1;
+            rel1 {
+               relative: 0.1 0;
+               to: "area.size";
+            }
+            rel2.to_y: "area.size";
+         }
+      }
+      part { name: "label.start";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            text {
+               font: "FN";
+               size: 12;
+               align: 1 0.5;
+               ellipsis: 0.1;
+            }
+            rel1.to: "area.size";
+            rel2 {
+               relative: 0 1;
+               to_x: "content_left_padding";
+               to_y: "area.size";
+            }
+         }
+      }
+      part { name: "swallow.size";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            min: 0 SWALLOW_HEIGHT;
+            rel1 {
+               relative: 1 0;
+               to_x: "content_left_padding";
+               to_y: "area.size";
+            }
+            rel2 {
+               relative: 0.3 1;
+               to: "area.size";
+            }
+         }
+      }
+      part { name: "content_right_padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            max: 4 -1;
+            rel1 {
+               relative: 1 0;
+               to_x: "swallow.size";
+               to_y: "area.size";
+            }
+            rel2.to: "area.size";
+         }
+      }
+      part { name: "label.end";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0.5;
+            text {
+               font: "FN";
+               size: 12;
+               align: 0 0.5;
+               ellipsis: 0.1;
+            }
+            rel1 {
+               relative: 1 0;
+               to_x: "content_right_padding";
+               to_y: "area.size";
+            }
+            rel2.to: "area.size";
+         }
+      }
+      part { name: "swallow.style";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SWALLOW_HEIGHT;
+            max: -1 SWALLOW_HEIGHT;
+            fixed: 1 1;
+            rel1 {
+               relative: 1 0;
+               to_x: "padding.right";
+               to_y: "area.style";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.right_offset";
+               to_y: "area.style";
+            }
+         }
+      }
+      part { name: "swallow.width";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SWALLOW_HEIGHT;
+            max: -1 SWALLOW_HEIGHT;
+            rel1 {
+               relative: 1 0;
+               offset: 0 -1;
+               to_x: "padding.left";
+               to_y: "area.style";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.right";
+               to_y: "area.style";
+            }
+         }
+      }
+      part { name: "swallow.weight";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SWALLOW_HEIGHT;
+            max: -1 SWALLOW_HEIGHT;
+            rel1 {
+               relative: 1 0;
+               offset: 0 -1;
+               to_x: "padding.left";
+               to_y: "area.weight";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.right";
+               to_y: "area.weight";
+            }
+         }
+      }
+      part { name: "swallow.color";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 SWALLOW_HEIGHT;
+            max: -1 SWALLOW_HEIGHT;
+            rel1 {
+               relative: 1 0;
+               offset: 0 -1;
+               to_x: "padding.left";
+               to_y: "area.color";
+            }
+            rel2 {
+               relative: 0 1;
+               to_x: "padding.right";
+               to_y: "area.color";
+            }
          }
       }
    }

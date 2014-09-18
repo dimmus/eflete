@@ -723,7 +723,37 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
    eina_strbuf_free(tag);
 }
 
-#define ITEM_COLOR_CALLBACK(VALUE) \
+#define COMBOBOX_VALUE \
+Ewe_Combobox_Item *item = ei; \
+const char *value; \
+value = eina_stringshare_add(item->title);
+
+#define SEGMENT_VALUE \
+Elm_Object_Item *item = ei; \
+const char *value; \
+value = eina_stringshare_add(elm_object_item_part_text_get(item, "elm.text"));
+
+#define SPINNER_VALUE \
+const char *value = NULL; \
+if (!ei) \
+  { \
+     value = eina_stringshare_printf("%f", elm_spinner_value_get(obj)); \
+  }
+
+#define CHANGE_CALLBACK(VALUE, TEXT, WIDGET) \
+static void \
+_on_##VALUE##_change(void *data, \
+                     Evas_Object *obj EINA_UNUSED, \
+                     void *ei) \
+{ \
+   Style_Editor *style_edit = (Style_Editor *)data; \
+   WIDGET##_VALUE \
+   _tag_parse(style_edit, value, TEXT); \
+   _style_edit_update(style_edit); \
+   eina_stringshare_del(value); \
+}
+
+#define ITEM_COLOR_ADD(VALUE) \
 static void \
 _on_##VALUE##_change(void *data, \
                      Evas_Object *obj, \
@@ -779,135 +809,49 @@ _on_##VALUE##_clicked(void *data, \
    evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y); \
    evas_object_move(colorsel, x, y); \
    evas_object_show(colorsel); \
-}
-
-#define COMBOBOX_VALUE \
-Ewe_Combobox_Item *item = ei; \
-const char *value; \
-value = eina_stringshare_add(item->title);
-
-#define SEGMENT_VALUE \
-Elm_Object_Item *item = ei; \
-const char *value; \
-value = eina_stringshare_add(elm_object_item_part_text_get(item, "elm.text"));
-
-#define SPINNER_VALUE \
-const char *value = NULL; \
-if (!ei) \
-  { \
-     value = eina_stringshare_printf("%f", elm_spinner_value_get(obj)); \
-  }
-
-#define CHANGE_CALLBACK(VALUE, TEXT, WIDGET) \
-static void \
-_on_##VALUE##_change(void *data, \
-                     Evas_Object *obj EINA_UNUSED, \
-                     void *ei) \
-{ \
-   Style_Editor *style_edit = (Style_Editor *)data; \
-   WIDGET##_VALUE \
-   _tag_parse(style_edit, value, TEXT); \
-   _style_edit_update(style_edit); \
-   eina_stringshare_del(value); \
-}
-
-#define ITEM_CONTEINER_1LABEL_ADD(PARENT, ITEM, TEXT1, LAYOUT) \
-   ITEM = elm_layout_add(PARENT); \
-   evas_object_size_hint_weight_set(ITEM, 1.0, 0.0); \
-   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(ITEM, EFLETE_EDJ, "eflete/"LAYOUT"/container/1label"); \
-   elm_object_part_text_set(ITEM, "eflete.text.start", TEXT1); \
-   evas_object_show(ITEM);
-
-#define ITEM_CONTEINER_2LABEL_ADD(PARENT, ITEM, TEXT1, TEXT2) \
-   ITEM = elm_layout_add(PARENT); \
-   evas_object_size_hint_weight_set(ITEM, 1.0, 0.0); \
-   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
-   elm_layout_file_set(ITEM, EFLETE_EDJ, "eflete/prop/container/2label"); \
-   elm_object_part_text_set(ITEM, "eflete.text.start", TEXT1); \
-   elm_object_part_text_set(ITEM, "eflete.text.end", TEXT2); \
-   evas_object_show(ITEM);
-
-//TODO: ITEM2_TEXT_ADD macros need refactoring
-#define ITEM2_TEXT_ADD(TEXT, VALUE1, VALUE2, TEXT2) \
+} \
 static Evas_Object * \
-_style_item_##VALUE1##_##VALUE2##_add(Evas_Object *frame_box, Style_Editor *style_edit) \
+_style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 { \
-   Evas_Object *item, *box, *layout1, *layout2, *combobox, *widget; \
-   int i = 0; \
-   ITEM_ADD(frame_box, item, TEXT":", "ui/style_viewer_window/item/default") \
-   BOX_ADD(item, box, true, true) \
-   elm_box_padding_set(box, 30.0, 0.0); \
-   ITEM_CONTEINER_1LABEL_ADD(box, layout1, "", "prop"); \
-   EWE_COMBOBOX_ADD(layout1, combobox); \
-   elm_object_part_content_set(layout1, "eflete.content", combobox); \
-   evas_object_smart_callback_add(combobox, "selected", _on_##VALUE1##_change, style_edit); \
-   if (!strcmp(TEXT2, "spinner")) \
-     { \
-        ITEM_CONTEINER_2LABEL_ADD(box, layout2, "size", "pt"); \
-        SPINNER_ADD(layout2, widget, 0, 9999, 1, true, DEFAULT_STYLE); \
-        elm_object_part_content_set(layout2, "eflete.content", widget); \
-        evas_object_smart_callback_add(widget, "changed", _on_font_size_change, style_edit); \
-     } \
-   if (!strcmp(TEXT2, "sc")) \
-     { \
-        ITEM_CONTEINER_2LABEL_ADD(box, layout2, "", ""); \
-        SEGMENT_CONTROL_ADD(layout2, widget); \
-        elm_object_part_content_set(layout2, "eflete.content", widget); \
-        for (i = 0; font_styles[i] != NULL; i++) \
-          elm_segment_control_item_add(widget, NULL, font_styles[i]); \
-        evas_object_smart_callback_add(widget, "changed", _on_font_style_change, style_edit); \
-     } \
-   evas_object_data_set(item, ITEM1, combobox); \
-   evas_object_data_set(item, ITEM2, widget); \
-   elm_box_pack_end(box, layout1); \
-   elm_box_pack_end(box, layout2); \
-   elm_object_part_content_set(item, "elm.swallow.content", box); \
-   return item; \
-}
-
-#define ITEM_COLOR_ADD(TEXT, VALUE) \
-static Evas_Object * \
-_style_item_##VALUE##_add(Evas_Object *frame_box, Style_Editor *style_edit) \
-{ \
-   Evas_Object *item, *color, *rect; \
-   ITEM_ADD(frame_box, item, TEXT, "ui/style_viewer_window/item/default") \
-   color = elm_layout_add(item); \
+   Evas_Object *color, *rect; \
+   color = elm_layout_add(layout); \
    elm_layout_file_set(color, EFLETE_EDJ, "eflete/style/color"); \
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(color, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   rect = evas_object_rectangle_add(evas_object_evas_get(frame_box)); \
+   rect = evas_object_rectangle_add(evas_object_evas_get(layout)); \
    evas_object_event_callback_add(color, EVAS_CALLBACK_MOUSE_DOWN, \
                                   _on_##VALUE##_clicked, style_edit); \
    evas_object_color_set(rect, 0, 0, 0, 255); \
-   evas_object_data_set(item, ITEM1, rect); \
    elm_object_part_content_set(color, "elm.swallow.content", rect); \
-   elm_object_part_content_set(item, "elm.swallow.content", color); \
-   return item; \
+   elm_object_part_content_set(layout, "swallow.color", color); \
+   return rect; \
 }
 
-/*#define _EMBED_ADD(VALUE) \
-ITEM_CONTEINER_2LABEL_ADD(item, layout, "", "Embed font"); \
-CHECK_ADD(layout, widget, DEFAULT_STYLE); \*/
-
-#define WEIGHT_ADD(VALUE) \
-ITEM_CONTEINER_1LABEL_ADD(item, layout, "", "style"); \
+#define COMBO_ADD(VALUE) \
 EWE_COMBOBOX_ADD(layout, widget); \
 evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_edit);
 
-#define ITEM1_TEXT_ADD(TEXT, VALUE, WIDGET) \
+#define SIZE_ADD(VALUE) \
+SPINNER_ADD(layout, widget, 0, 9999, 1, true, DEFAULT_STYLE); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define STYLE_ADD(VALUE) \
+int i = 0; \
+SEGMENT_CONTROL_ADD(layout, widget); \
+for (i = 0; font_styles[i] != NULL; i++) \
+elm_segment_control_item_add(widget, NULL, font_styles[i]); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define ITEM_TEXT_ADD(SWALLOW, VALUE, WIDGET) \
 static Evas_Object * \
-_style_item_##VALUE##_add(Evas_Object *frame_box, Style_Editor *style_edit) \
+_style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 { \
-   Evas_Object *item, *layout, *widget; \
-   ITEM_ADD(frame_box, item, TEXT, "ui/style_viewer_window/item/default") \
+   Evas_Object *widget; \
 \
    WIDGET##_ADD(VALUE) \
 \
-   elm_object_part_content_set(layout, "eflete.content", widget); \
-   evas_object_data_set(item, ITEM1, widget); \
-   elm_object_part_content_set(item, "elm.swallow.content", layout); \
-   return item; \
+   elm_object_part_content_set(layout, "swallow."SWALLOW, widget); \
+   return widget; \
 }
 
 static const char*
@@ -1000,52 +944,56 @@ _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
 }
 
 CHANGE_CALLBACK(fonts_list, "font", COMBOBOX)
-CHANGE_CALLBACK(font, "font_width", COMBOBOX)
-CHANGE_CALLBACK(weight_list, "font_weight", COMBOBOX)
-CHANGE_CALLBACK(font_style, "font_style", SEGMENT)
 CHANGE_CALLBACK(font_size, "font_size", SPINNER)
-ITEM_COLOR_CALLBACK(text_color)
+CHANGE_CALLBACK(font_style, "font_style", SEGMENT)
+CHANGE_CALLBACK(font_width, "font_width", COMBOBOX)
+CHANGE_CALLBACK(font_weight, "font_weight", COMBOBOX)
 
-ITEM2_TEXT_ADD(N_("Font name"), fonts_list, font_size, "spinner")
-ITEM2_TEXT_ADD(N_("Font style"), font, style, "sc")
-ITEM1_TEXT_ADD(NULL, weight_list, WEIGHT)
-//ITEM1_TEXT_ADD(NULL, font_check, EMBED)
-ITEM_COLOR_ADD(N_("Color"), text_color)
+ITEM_TEXT_ADD("font", fonts_list, COMBO)
+ITEM_TEXT_ADD("size", font_size, SIZE)
+ITEM_TEXT_ADD("width", font_width, COMBO)
+ITEM_TEXT_ADD("style", font_style, STYLE)
+ITEM_TEXT_ADD("weight", font_weight, COMBO)
+ITEM_COLOR_ADD(text_color)
 
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
 {
    Evas_Object *edje_edit_obj = NULL;
-   Evas_Object *frame, *frame_box;
-   Evas_Object *fonts_list, *combobox, *spinner;
-   Evas_Object *font_style, *combobox2, *sc;
-   Evas_Object *font_weight, *combobox3;
-   Evas_Object *text_color, *rect;
-   //Evas_Object *font_check;
+   Evas_Object *layout;
+   Evas_Object *fonts_list, *font_size;
+   Evas_Object *font_weight;
+   Evas_Object *font_width, *font_style;
+   Evas_Object *text_color;
    Elm_Object_Item *sc_item;
    int r, g, b, a;
    unsigned int i = 0;
+   Evas_Object *scr;
 
+   SCROLLER_ADD(style_edit->mwin, scr);
+   elm_scroller_policy_set(scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
-   FRAME_ADD(style_edit->mwin, frame, false, _("Text styles"))
-   BOX_ADD(frame, frame_box, EINA_FALSE, EINA_FALSE)
-   elm_box_align_set(frame_box, 0.5, 0.0);
-   elm_object_content_set(frame, frame_box);
-   ewe_tabs_item_content_set(tabs, it, frame);
+   layout = elm_layout_add(style_edit->mwin);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/style_editor/text");
+   evas_object_show(layout);
+   elm_object_content_set(scr, layout);
 
-   fonts_list = _style_item_fonts_list_font_size_add(frame_box, style_edit);
-   font_style = _style_item_font_style_add(frame_box, style_edit);
-   font_weight = _style_item_weight_list_add(frame_box, style_edit);
-   text_color = _style_item_text_color_add(frame_box, style_edit);
-   //font_check = _style_item_font_check_add(frame_box, style_edit);
+   ewe_tabs_item_content_set(tabs, it, scr);
 
-   combobox = evas_object_data_get(fonts_list, ITEM1);
-   spinner = evas_object_data_get(fonts_list, ITEM2);
-   combobox2 = evas_object_data_get(font_style, ITEM1);
-   sc = evas_object_data_get(font_style, ITEM2);
-   combobox3 = evas_object_data_get(font_weight, ITEM1);
-   rect = evas_object_data_get(text_color, ITEM1);
+   elm_object_part_text_set(layout, "label.font", _("Font name:"));
+   elm_object_part_text_set(layout, "label.style", _("Font style:"));
+   elm_object_part_text_set(layout, "label.color", _("Color:"));
+   elm_object_part_text_set(layout, "label.start", _("size"));
+   elm_object_part_text_set(layout, "label.end", _("px"));
+   fonts_list = _style_item_fonts_list_add(layout, style_edit);
+   font_size = _style_item_font_size_add(layout, style_edit);
+   font_style = _style_item_font_style_add(layout, style_edit);
+   font_weight = _style_item_font_weight_add(layout, style_edit);
+   font_width = _style_item_font_width_add(layout, style_edit);
+   text_color = _style_item_text_color_add(layout, style_edit);
+
    if (value)
      {
         const char* font = _tag_value_get(value, "font");
@@ -1058,48 +1006,40 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         if (!style) style = "Normal";
         const char* color = _tag_value_get(value, "color");
 
-        ewe_combobox_text_set(combobox, font);
-        elm_object_disabled_set(combobox, true);
-        elm_spinner_value_set(spinner, atof(spin_val));
-        ewe_combobox_text_set(combobox2, width);
+        ewe_combobox_text_set(fonts_list, font);
+        elm_object_disabled_set(fonts_list, true);
+        elm_spinner_value_set(font_size, atof(spin_val));
+        ewe_combobox_text_set(font_width, width);
         for (i = 0; font_width_list[i] != NULL; i++)
-          ewe_combobox_item_add(combobox2, font_width_list[i]);
-        ewe_combobox_text_set(combobox3, weight);
+          ewe_combobox_item_add(font_width, font_width_list[i]);
+        ewe_combobox_text_set(font_weight, weight);
         for (i = 0; font_weight_list[i] != NULL; i++)
-          ewe_combobox_item_add(combobox3, font_weight_list[i]);
+          ewe_combobox_item_add(font_weight, font_weight_list[i]);
         for (i = 0; font_styles[i] != NULL; i++)
           {
-             if (!strcmp(elm_segment_control_item_label_get(sc, i), style))
+             if (!strcmp(elm_segment_control_item_label_get(font_style, i), style))
                {
-                  sc_item = elm_segment_control_item_get(sc, i);
+                  sc_item = elm_segment_control_item_get(font_style, i);
                   elm_segment_control_item_selected_set(sc_item, true);
                }
           }
         _hex_to_rgb(color, &r, &g, &b, &a);
-        evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a);
+        evas_object_color_set(text_color, r*a/255, g*a/255, b*a/255, a);
 
         eina_stringshare_del(font);
         eina_stringshare_del(spin_val);
         eina_stringshare_del(color);
      }
-
-   elm_box_pack_end(frame_box, fonts_list);
-   elm_box_pack_end(frame_box, font_style);
-   elm_box_pack_end(frame_box, font_weight);
-   elm_box_pack_end(frame_box, text_color);
-   //elm_box_pack_end(frame_box, font_check);
 }
-#undef ITEM_CONTEINER_1LABEL_ADD
-#undef ITEM_CONTEINER_2LABEL_ADD
 #undef _COMBOBOX_VALUE
 #undef _SEGMENT_VALUE
 #undef _SPINNER_VALUE
 #undef CHANGE_CALLBACK
-#undef ITEM2_TEXT_ADD
 #undef ITEM_COLOR_ADD
-#undef ITEM1_TEXT_ADD
-#undef WEIGHT_ADD
-#undef EMBED_ADD
+#undef ITEM_TEXT_ADD
+#undef COMBO_ADD
+#undef SIZE_ADD
+#undef STYLE_ADD
 
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
