@@ -37,7 +37,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 };
 
 struct _Geom {
-   int x, y, w, h;
+   int x, y, w, h, dx, dy;
 };
 typedef struct _Geom Container_Geom;
 
@@ -240,6 +240,8 @@ _mouse_move_hTL_cb(void *data,
    evas_object_resize(o, nw, nh);
    evas_object_move(o, nx, ny);
 
+   sd->con_current_size->dx = dx;
+   sd->con_current_size->dy = dy;
    evas_object_smart_changed(o);
 
    sd->downx = ev->cur.canvas.x;
@@ -297,6 +299,8 @@ _mouse_move_hBR_cb(void *data,
      }
    evas_object_resize(o, nw, nh);
 
+   sd->con_current_size->dx = dx;
+   sd->con_current_size->dy = dy;
    evas_object_smart_changed(o);
 
    sd->downx = ev->cur.canvas.x;
