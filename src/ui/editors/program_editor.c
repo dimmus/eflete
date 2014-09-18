@@ -774,12 +774,66 @@ _on_combobox_trans_sel(void *data,
 }
 
 static void
+_cancel_cb(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = false;
+   ecore_main_loop_quit();
+}
+
+static void
+_continue_cb(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = true;
+   ecore_main_loop_quit();
+}
+
+static void
 _on_combobox_action_sel(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    Ewe_Combobox_Item *combitem = ei;
+   Eina_List *targets_list;
+   Eina_Bool result = false;
+   Evas_Object *popup, *label, *btn;
+
+   targets_list = edje_edit_program_targets_get(prop.style->obj, prop.program);
+   if (targets_list)
+     {
+        edje_edit_string_list_free(targets_list);
+
+        popup = elm_popup_add(prog_edit->mwin);
+        elm_object_style_set(popup, "eflete");
+        elm_object_part_text_set(popup, "title,text", _("Warning"));
+        LABEL_ADD(popup, label, _("This program has targets. If you change action"
+                                  "type all target would be deleted"));
+        elm_object_content_set(popup, label);
+        BUTTON_ADD(popup, btn, _("Continue"));
+        evas_object_smart_callback_add(btn, "clicked", _continue_cb, &result);
+        elm_object_part_content_set(popup, "button1", btn);
+        BUTTON_ADD(popup, btn, _("Cancel"));
+        evas_object_smart_callback_add(btn, "clicked", _cancel_cb, &result);
+        elm_object_part_content_set(popup, "button2", btn);
+        evas_object_show(popup);
+
+        ecore_main_loop_begin();
+
+        evas_object_del(popup);
+
+        if (!result)
+          {
+             ewe_combobox_select_item_set(action.combobox, (int)prop.act_type);
+             return;
+          }
+     }
+
    ewe_entry_entry_set(action.entry1, "");
    ewe_entry_entry_set(action.entry2, "");
 
@@ -1360,7 +1414,7 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
    EINA_LIST_FOREACH(targets_list, l, target_name)
      _target_item_add(prog_edit, target_name);
    eina_list_free(childs);
-   eina_list_free(targets_list);
+   edje_edit_string_list_free(targets_list);
 }
 
 static void
