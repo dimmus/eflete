@@ -1662,6 +1662,7 @@ _on_add_popup_bt_add(void *data,
                       void *ei __UNUSED__)
 {
    Elm_Object_Item *glit_prog = NULL;
+   App_Data *ap = app_data_get();
    Program_Editor *prog_edit = (Program_Editor*)data;
    Eina_Stringshare *name = elm_entry_entry_get(prog_edit->popup.entry);
 
@@ -1682,6 +1683,10 @@ _on_add_popup_bt_add(void *data,
    evas_object_del(prog_edit->popup.popup);
    prog_edit->popup.popup = NULL;
    prog_edit->popup.entry = NULL;
+
+   live_view_widget_style_set(prog_edit->live, ap->project, prop.style);
+   edje_object_signal_callback_add(prog_edit->live->object, "show", "",
+                                   _on_object_load, prog_edit);
 }
 
 static void
