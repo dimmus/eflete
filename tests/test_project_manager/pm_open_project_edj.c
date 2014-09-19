@@ -62,7 +62,7 @@ EFLETE_TEST (pm_open_project_edj_test_p)
    Project* pro = pm_open_project_edj(path);
    ck_assert_msg(pro != NULL, "failure: cannot open project from edj-file");
    ck_assert_msg(!strcmp(pro->edj, "./edj_build/pm_open_project_edj.edj"), "edj path is incorrect");
-   ck_assert_msg(!strcmp(pro->swapfile, "./edj_build/pm_open_project_edj.edj.swap"), "swapfile path is incorrect");
+   ck_assert_msg(!strcmp(pro->dev, "./edj_build/pm_open_project_edj.edj.dev"), "dev path is incorrect");
 
    pm_project_close(pro);
    elm_shutdown();

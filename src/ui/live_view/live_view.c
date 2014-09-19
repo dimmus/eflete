@@ -140,13 +140,13 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         if (!live->in_prog_edit)
           {
              live->object = layout_custom_create(live->live_view);
-             elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
+             elm_layout_file_set(live->object, project->dev, style->full_group_name);
              elm_object_style_set(live->object, style->full_group_name);
           }
         else
           {
              live->object = layout_prog_edit_create(live->live_view);
-             edje_object_file_set(live->object, project->swapfile, style->full_group_name);
+             edje_object_file_set(live->object, project->dev, style->full_group_name);
              evas_object_freeze_events_set(live->object, true);
           }
         container_content_set(live->live_view, live->object);
@@ -186,7 +186,7 @@ live_view_theme_update(Live_View *live, Project *project)
    if ((!live) || (!project) || (!live->object)) return false;
    if ((project->current_style) && (project->current_style->__type == LAYOUT))
      {
-        elm_layout_file_set(live->object, project->swapfile,
+        elm_layout_file_set(live->object, project->dev,
                             project->current_style->full_group_name);
         return true;
      }
@@ -198,7 +198,7 @@ live_view_theme_update(Live_View *live, Project *project)
         return false;
      }
    Elm_Theme *theme = elm_theme_new();
-   elm_theme_set(theme, project->swapfile);
+   elm_theme_set(theme, project->dev);
    elm_object_theme_set(live->object, theme);
    elm_theme_free(theme);
 

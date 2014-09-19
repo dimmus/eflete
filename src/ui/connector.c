@@ -357,7 +357,7 @@ _add_layout_cb(void *data,
                                              EINA_INLIST_GET(layout));
 
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
-                      ap->project->swapfile);
+                      ap->project->dev);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
    return;
@@ -388,7 +388,7 @@ _part_name_change(void *data, Evas_Object *obj, void *event_info)
    App_Data *ap = (App_Data *)data;
 
    ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
-   workspace_edit_object_set(obj, ap->project->current_style, ap->project->swapfile);
+   workspace_edit_object_set(obj, ap->project->current_style, ap->project->dev);
    evas_object_smart_callback_call(ui_block_widget_list_get(ap), "wl,part,select", part);
 }
 
@@ -618,7 +618,7 @@ ui_style_clicked(App_Data *ap, Style *style)
 
    evas_object_smart_callback_add(gl_signals, "sl,signal,select", _signal_select, ap);
 
-   workspace_edit_object_set(ap->workspace, _style, ap->project->swapfile);
+   workspace_edit_object_set(ap->workspace, _style, ap->project->dev);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
    evas_object_smart_callback_add(ap->workspace, "ws,part,unselected",

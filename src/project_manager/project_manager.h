@@ -43,10 +43,11 @@ struct _Project
    /** name of project, read this name from field 'theme/name' from edj file,
     *  if this field is empty, take a file name */
    Eina_Stringshare *name;
+   /** a edited file of project. all changes come here, on save this file copied
+    *  to place which used selected. */
+   Eina_Stringshare *dev;
    /** path to edj file(open/save) */
    char *edj;
-   /** path to swap(work) file */
-   char *swapfile;
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
    Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */

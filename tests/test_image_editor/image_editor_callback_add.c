@@ -74,7 +74,7 @@ EFLETE_TEST (image_editor_callback_add_test_p1)
    app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(images, _cb, NULL) == EINA_TRUE,
@@ -126,7 +126,7 @@ EFLETE_TEST (image_editor_callback_add_test_p2)
    app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(images, _cb, app) == EINA_TRUE,
@@ -178,7 +178,7 @@ EFLETE_TEST (image_editor_callback_add_test_n1)
    app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(NULL, _cb, app) == EINA_FALSE,
@@ -230,7 +230,7 @@ EFLETE_TEST (image_editor_callback_add_test_n2)
    app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(images, NULL, app) == EINA_FALSE,

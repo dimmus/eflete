@@ -76,7 +76,9 @@ _on_unlink_done_cb(void *data,
    if (project->edj) free(project->edj);
    INFO ("Closed project: %s", project->name);
    eina_stringshare_del(project->name);
+   eina_stringshare_del(project->dev);
    project->name = NULL;
+   project->dev = NULL;
    wm_widget_list_free(project->widgets);
 
    free(project);
@@ -127,10 +129,8 @@ _pm_project_add(const char *path)
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
-   pro->swapfile = mem_malloc((strlen(pro->edj) + 6) * sizeof(char));
-   strcpy(pro->swapfile, pro->edj);
-   strncat(pro->swapfile, ".swap", 5);
-   DBG ("Path to swap file: '%s'", pro->swapfile);
+   pro->dev = eina_stringshare_printf("%s.dev", pro->name);
+   DBG ("Path to swap file: '%s'", pro->dev);
 
    pro->close_request = false;
 
@@ -148,7 +148,7 @@ pm_export_to_edc(Project *project,
         return false;
      }
 
-   return !decompile(project->swapfile, edc_dir, log_cb);
+   return !decompile(project->dev, edc_dir, log_cb);
 }
 
 Project *
@@ -168,16 +168,16 @@ pm_open_project_edj(const char *path)
    if (!project) return NULL;
 
    copy_success = false;
-   eio_file_copy(project->edj, project->swapfile, NULL,
-                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   eio_file_copy(project->edj, project->dev, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->dev);
    ecore_main_loop_begin();
    if (!copy_success)
      {
         _on_unlink_done_cb(project, NULL); /* TODO: separate pm_free from unlink callback */
         return NULL;
      }
-   project->widgets = wm_widget_list_new(project->swapfile);
-   project->layouts = wm_widget_list_layouts_load(project->swapfile);
+   project->widgets = wm_widget_list_new(project->dev);
+   project->layouts = wm_widget_list_layouts_load(project->dev);
    project->is_saved = true;
    INFO("Project '%s' is open!", project->name);
 
@@ -189,7 +189,7 @@ pm_project_close(Project *project)
 {
    if (!project) return false;
 
-   eio_file_unlink(project->swapfile, _on_unlink_done_cb,
+   eio_file_unlink(project->dev, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
    ecore_main_loop_begin();
 
@@ -201,8 +201,8 @@ pm_save_project_edj(Project *project)
 {
    if (!project) return false;
    copy_success = false;
-   eio_file_copy(project->swapfile, project->edj, NULL,
-                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   eio_file_copy(project->dev, project->edj, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->dev);
    ecore_main_loop_begin();
    if (!copy_success) return false;
    project->is_saved = true;
@@ -217,7 +217,7 @@ pm_save_as_project_edj(Project *project, const char *path)
 
    dst_path = path;
    copy_success = false;
-   eio_file_copy(project->swapfile, path, NULL,
+   eio_file_copy(project->dev, path, NULL,
                  _on_copy_done_save_as_cb, _on_copy_error_cb, project);
    ecore_main_loop_begin();
    if (!copy_success) return false;

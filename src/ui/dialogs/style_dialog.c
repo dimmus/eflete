@@ -249,9 +249,9 @@ _on_popup_btn_yes(void *data,
    if (dest_style->isAlias) dest_style = dest_style->main_group;
    /* call method, which copy all parts and their params into new style */
    if (wm_style_copy(dest_style->obj, source_style->obj, full_name,
-                     ap->project->swapfile, style))
+                     ap->project->dev, style))
      {
-        wm_style_data_load(style, canvas, ap->project->swapfile);
+        wm_style_data_load(style, canvas, ap->project->dev);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
      }

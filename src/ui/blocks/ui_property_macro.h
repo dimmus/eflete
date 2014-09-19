@@ -206,7 +206,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
-                   collections = edje_file_collection_list(ap->project->swapfile); \
+                   collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       ewe_combobox_item_add(combobox, group); \
@@ -263,7 +263,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
-                   collections = edje_file_collection_list(ap->project->swapfile); \
+                   collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       ewe_combobox_item_add(combobox, group); \

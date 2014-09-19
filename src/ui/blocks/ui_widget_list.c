@@ -918,7 +918,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    wm_widget_list_objects_load(widget_list,
                                evas_object_evas_get(gl_widgets),
-                               project->swapfile);
+                               project->dev);
    EINA_INLIST_FOREACH(widget_list, _widget)
      {
         eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget,
@@ -929,7 +929,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    wm_layouts_list_objects_load(project->layouts,
                                evas_object_evas_get(gl_widgets),
-                               project->swapfile);
+                               project->dev);
 
    EINA_INLIST_FOREACH(project->layouts, _layout)
      {

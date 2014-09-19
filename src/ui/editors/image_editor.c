@@ -129,7 +129,7 @@ _image_editor_image_create(Evas_Object *parent,
    else
      {
         str = eina_stringshare_printf("edje/images/%i", it->id);
-        elm_image_file_set(image, img_edit->pr->swapfile, str);
+        elm_image_file_set(image, img_edit->pr->dev, str);
         eina_stringshare_del(str);
      }
    return image;
