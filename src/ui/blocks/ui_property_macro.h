@@ -920,10 +920,6 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    ewe_combobox_item_add(combobox, _("None")); \
    if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
-        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
-                                        pd->part->name, \
-                                        pd->part->curr_state, \
-                                        pd->part->curr_state_value, value); \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
@@ -967,10 +963,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_item_add(combobox, _("None")); \
    if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
-        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
-                                        pd->part->name, \
-                                        pd->part->curr_state, \
-                                        pd->part->curr_state_value, value); \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
