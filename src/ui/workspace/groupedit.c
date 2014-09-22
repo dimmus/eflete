@@ -314,15 +314,6 @@ _key_up(void *data __UNUSED__,
 }
 
 static void
-_focus_set(void *data __UNUSED__,
-           Evas *e __UNUSED__,
-           Evas_Object *obj,
-           void *event_info __UNUSED__)
-{
-   evas_object_focus_set(obj, true);
-}
-
-static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -349,6 +340,7 @@ _unselect_part(void *data,
 static void
 _groupedit_smart_add(Evas_Object *o)
 {
+   Evas_Modifier_Mask mask;
    EVAS_SMART_DATA_ALLOC(o, Ws_Groupedit_Smart_Data)
 
    _groupedit_parent_sc->add(o);
@@ -382,8 +374,19 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);
 
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,
-                                  _focus_set, NULL);
+   mask = evas_key_modifier_mask_get(evas_object_evas_get(o), "Alt");
+   /* we need to set key grabber with and without modifier mask because on keyup
+      Alt is considered an active modifier, but on keydown it is still not ative */
+   if (evas_object_key_grab(o, "Alt_L", 0, 0, false))
+     {
+        if (!evas_object_key_grab(o, "Alt_L", mask, 0, false))
+          evas_object_key_ungrab(o, "Alt_L", 0, 0); /* Removing keydown grab if we can't grab this key for KeyUp event */
+     }
+   if (evas_object_key_grab(o, "Alt_R", 0, 0, false))
+     {
+        if (!evas_object_key_grab(o, "Alt_R", mask, 0, false))
+          evas_object_key_ungrab(o, "Alt_R", 0, 0);
+     }
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
                                   _key_down, NULL);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP,
@@ -597,7 +600,6 @@ _groupedit_smart_calculate(Evas_Object *o)
 
    _parts_recalc(priv);
 
-   evas_object_focus_set(o, true);
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
 }
 
