@@ -2105,7 +2105,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    BUTTON_ADD(tween_frame, button, NULL)
    ICON_ADD(button, icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add(button, "unpressed", _add_tween_image,
+   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
                                   tween_list);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(tween_frame, "elm.swallow.add", button);

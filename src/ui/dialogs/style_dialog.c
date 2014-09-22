@@ -67,6 +67,22 @@ _sort_class_add_cb(const void *data1, const void *data2)
    return 0;
 }
 
+static void
+_job_popup_close(void *data)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   ap->popup = NULL;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
+static void
+_popup_close_cb(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   ecore_job_add(_job_popup_close, data);
+}
 
 static void
 _on_popup_btn_yes(void *data,
@@ -142,7 +158,7 @@ _on_popup_btn_yes(void *data,
    if (!source_wdg)
      {
         NOTIFY_ERROR(_("Sorry, there are no templates for [%s]"), widget->name);
-        evas_object_smart_callback_call(obj, "close,popup", NULL);
+        ecore_job_add(_job_popup_close, ap);
         STRING_CLEAR;
         eina_stringshare_del(full_name);
         return;
@@ -261,20 +277,9 @@ _on_popup_btn_yes(void *data,
 
    STRING_CLEAR;
    eina_stringshare_del(full_name);
-   evas_object_smart_callback_call(obj, "close,popup", NULL);
+   ecore_job_add(_job_popup_close, ap);
 #undef STRING_CLEAR
 }
-
-static void
-_popup_close(void *data,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
-   ui_menu_locked_set(ap->menu_hash, false);
-}
-
 
 /* FIXME: change name to class_dialog_add */
 Eina_Bool
@@ -320,12 +325,11 @@ style_dialog_add(App_Data *ap)
    elm_object_content_set(ap->popup, box);
 
    BUTTON_ADD(ap->popup, button, _("Add"));
-   evas_object_smart_callback_add(button, "close,popup", _popup_close, ap);
-   evas_object_smart_callback_add(button, "pressed", _on_popup_btn_yes, ap);
+   evas_object_smart_callback_add(button, "clicked", _on_popup_btn_yes, ap);
    elm_object_part_content_set(ap->popup, "button1", button);
 
    BUTTON_ADD(ap->popup, button, _("Cancel"));
-   evas_object_smart_callback_add(button, "clicked", _popup_close, ap);
+   evas_object_smart_callback_add(button, "clicked", _popup_close_cb, ap);
    elm_object_part_content_set(ap->popup, "button2", button);
 
    ui_menu_locked_set(ap->menu_hash, true);
