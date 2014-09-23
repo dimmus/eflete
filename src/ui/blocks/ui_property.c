@@ -591,6 +591,66 @@ ui_property_style_unset(Evas_Object *property)
 }
 #undef pd_group
 
+static void
+_on_part_name_unfocus(void *data,
+                      Evas_Object *obj,
+                      void *ei __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+
+   const char *value = elm_entry_entry_get(obj);
+
+   if (strcmp(value, pd->part->name))
+     elm_entry_entry_set(obj, pd->part->name);
+}
+
+static void
+_on_part_name_change(void *data,
+                     Evas_Object *obj,
+                     void *ei __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   int pos;
+   const char *value;
+
+   if (elm_entry_is_empty(obj)) return;
+
+   value = elm_entry_entry_get(obj);
+   if (!edje_edit_part_name_set(pd->style->obj, pd->part->name, value))
+     {
+        NOTIFY_INFO(5, "Wrong input value for name field");
+        return;
+     }
+
+   pm_project_changed(app_data_get()->project);
+   pd->part->name = value;
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+   pos = elm_entry_cursor_pos_get(obj);
+   evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part);
+   elm_object_focus_set(obj, true);
+   elm_entry_cursor_pos_set(obj, pos);
+}
+
+static Evas_Object *
+prop_item_part_name_add(Evas_Object *parent,
+                        Prop_Data *pd,
+                        const char *tooltip)
+{
+   Evas_Object *item, *entry;
+
+   ITEM_ADD(parent, item, _("name"), "eflete/property/item/default");
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop);
+   ewe_entry_entry_set(entry, pd->part->name);
+   elm_object_tooltip_text_set(entry, tooltip);
+   evas_object_smart_callback_add(entry, "changed,user", _on_part_name_change, pd);
+   evas_object_smart_callback_add(entry, "unfocused", _on_part_name_unfocus, pd);
+   elm_object_part_content_set(item, "elm.swallow.content", entry);
+   evas_object_data_set(item, ITEM1, entry);
+   return item;
+}
+
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
    ITEM_1CHEACK_PART_ADD(TEXT, SUB, VALUE) \
@@ -600,10 +660,6 @@ ui_property_style_unset(Evas_Object *property)
    ITEM_STRING_PART_CALLBACK(SUB, VALUE) \
    ITEM_1ENTRY_PART_ADD(TEXT, SUB, VALUE) \
    ITEM_1ENTRY_PART_UPDATE(SUB, VALUE)
-
-#define ITEM_1ENTRY_PART_NAME_CREATE(TEXT, SUB, VALUE) \
-   ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
-   ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
@@ -625,7 +681,6 @@ ui_property_style_unset(Evas_Object *property)
 #define ITEM_1COMBOBOX_PART_PROPERTY_CREATE ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE
 
 /* part property */
-ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
