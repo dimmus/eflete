@@ -123,25 +123,6 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, Prop_Data *pd)
 }
 
 /* part */
-#define ITEM_STRING_PART_CALLBACK(SUB, VALUE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   const char *value = elm_entry_entry_get(obj); \
-   if (strcmp(value, "") == 0) value = NULL; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, value)) \
-   { \
-      NOTIFY_INFO(5, "Wrong input value for "#VALUE" field"); \
-      return; \
-   } \
-   pm_project_changed(app_data_get()->project); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->style->isModify = true; \
-}
-
 #define ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
@@ -170,37 +151,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
-}
-
-#define ITEM_1ENTRY_PART_ADD(text, SUB, VALUE) \
-static Evas_Object * \
-prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                                Prop_Data *pd, \
-                                const char *tooltip) \
-{ \
-   Evas_Object *item, *entry; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
-   ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
-   elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", entry); \
-   evas_object_data_set(item, ITEM1, entry); \
-   return item; \
-}
-
-#define ITEM_1ENTRY_PART_UPDATE(SUB, VALUE) \
-static void \
-prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
-                                   Prop_Data *pd) \
-{ \
-   Evas_Object *entry; \
-   entry = evas_object_data_get(item, ITEM1); \
-   ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
-   evas_object_smart_callback_del_full(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 /* combobox */
