@@ -35,7 +35,7 @@ static Elm_Entry_Filter_Accept_Set accept_value = {
 
 struct _Item
 {
-   const char* sound_name;
+   const char *sound_name;
    Edje_Edit_Sound_Comp comp;
    int tone_frq;
 };
@@ -295,7 +295,7 @@ _sound_content_init(Sound_Editor *edit)
    sounds = edje_edit_sound_samples_list_get(edje_edit_obj);
    tones = edje_edit_sound_tones_list_get(edje_edit_obj);
 
-   it = (Item *)mem_malloc(sizeof(Item));
+   it = (Item *)mem_calloc(1, sizeof(Item));
    it->sound_name = eina_stringshare_add(_("Sound Samples"));
    elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, edit);
 
@@ -303,7 +303,7 @@ _sound_content_init(Sound_Editor *edit)
      {
         EINA_LIST_FOREACH(sounds, l, sound_name)
           {
-             it = (Item *)mem_malloc(sizeof(Item));
+             it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
              elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
@@ -311,7 +311,7 @@ _sound_content_init(Sound_Editor *edit)
         eina_list_free(sounds);
      }
 
-   it = (Item *)mem_malloc(sizeof(Item));
+   it = (Item *)mem_calloc(1, sizeof(Item));
    it->sound_name = eina_stringshare_add(_("Sound Tones"));
    edit->tone = elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, edit);
 
@@ -319,7 +319,7 @@ _sound_content_init(Sound_Editor *edit)
      {
         EINA_LIST_FOREACH(tones, l, sound_name)
           {
-             it = (Item *)mem_malloc(sizeof(Item));
+             it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
              it->tone_frq = edje_edit_sound_tone_frequency_get(edje_edit_obj, sound_name);
              elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
@@ -421,7 +421,7 @@ _on_sample_done(void *data,
           }
         else
           {
-             it = (Item *)mem_malloc(sizeof(Item));
+             it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
              new_item = elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
@@ -490,7 +490,7 @@ _add_ok_clicked(void *data,
      }
    else
      {
-        it = (Item *)mem_malloc(sizeof(Item));
+        it = (Item *)mem_calloc(1, sizeof(Item));
         it->sound_name = eina_stringshare_add(str_name);
         it->tone_frq = frq;
         new_item = elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
@@ -576,11 +576,51 @@ _on_cmb_sel(void *data,
 }
 
 static void
-_on_delete_clicked_cb(void *data __UNUSED__,
+_on_delete_clicked_cb(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info __UNUSED__)
 {
+   Evas_Object *edje_edit_obj;
+   Elm_Object_Item *grid_it;
+   Item *item;
+   Eina_List *list, *l, *l_next;
+   int selected, deleted = 0;
+   Sound_Editor *edit = (Sound_Editor *)data;
 
+   GET_OBJ(edit->pr, edje_edit_obj);
+
+   list = (Eina_List *)elm_gengrid_selected_items_get(edit->gengrid);
+   selected = eina_list_count(list);
+
+   if ((!list) || (!selected))
+     {
+        NOTIFY_WARNING("No selected items");
+        return;
+     }
+
+   EINA_LIST_FOREACH_SAFE(list, l, l_next, grid_it)
+     {
+        item = elm_object_item_data_get(grid_it);
+        if (!item->tone_frq)
+          {
+             if (edje_edit_sound_sample_del(edje_edit_obj, item->sound_name))
+               {
+                  elm_object_item_del(grid_it);
+                  deleted++;
+               }
+          }
+        else
+          {
+             if (edje_edit_sound_tone_del(edje_edit_obj, item->sound_name))
+               {
+                  elm_object_item_del(grid_it);
+                  deleted++;
+               }
+          }
+   }
+
+   if (deleted)
+     pm_project_changed(app_data_get()->project);
 }
 
 static void
