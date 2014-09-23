@@ -711,49 +711,8 @@ _on_button_close_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
-#define ITEM_SEARCH_FUNC(_gen) \
-static void \
-_##_gen##_item_search(Evas_Object *obj, \
-                      Search_Data *search_data, \
-                      Elm_Object_Item *start_from) \
-{ \
-   Eina_Stringshare *str; \
-   Elm_Object_Item *last_item_found; \
- \
-   if (elm_entry_is_empty(search_data->search_entry)) \
-     { \
-        if (search_data->last_item_found) \
-          { \
-             elm_##_gen##_item_selected_set(search_data->last_item_found, \
-                                            false); \
-             search_data->last_item_found = NULL; \
-          } \
-        return; \
-     } \
- \
-   str = eina_stringshare_printf("*%s*", \
-                                 elm_entry_entry_get(search_data->search_entry)); \
- \
-   last_item_found = elm_##_gen##_search_by_text_item_get(obj,start_from, \
-                                                          NULL, str, 0); \
-   if (search_data->last_item_found == last_item_found) return; \
- \
-   if (search_data->last_item_found) \
-      elm_##_gen##_item_selected_set(search_data->last_item_found, false); \
-   if (last_item_found) \
-     { \
-        elm_##_gen##_item_selected_set(last_item_found, true); \
-        elm_##_gen##_item_bring_in(last_item_found, \
-                                  ELM_GENLIST_ITEM_SCROLLTO_MIDDLE); \
-        elm_object_focus_set(search_data->search_entry, true); \
-     } \
-   search_data->last_item_found = last_item_found; \
-}
-
 ITEM_SEARCH_FUNC(genlist)
 ITEM_SEARCH_FUNC(gengrid)
-
-#undef ITEM_SEARCH_FUNC
 
 static void
 _on_images_search_entry_changed_cb(void *data,
