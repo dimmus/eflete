@@ -265,8 +265,13 @@ _groupedit_smart_calculate(Evas_Object *o)
      }
 
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);
-   evas_object_move(priv->edit_obj, x, y);
-   evas_object_resize(priv->edit_obj, w, h);
+   if (!priv->separated)
+     {
+        evas_object_move(priv->edit_obj, priv->con_current_size->x,
+                                         priv->con_current_size->y);
+     }
+   evas_object_resize(priv->edit_obj, priv->con_current_size->w,
+                                      priv->con_current_size->h);
 
    _parts_recalc(priv);
 

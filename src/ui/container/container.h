@@ -41,6 +41,7 @@
 struct _Container_Geom {
    int x, y, w, h, dx, dy;
 };
+
 typedef struct _Container_Geom Container_Geom;
 
 /**

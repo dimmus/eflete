@@ -82,7 +82,16 @@ struct _Ws_Smart_Data
    char scroll_flag;             /**< Needed for control drag bar's in scroller*/
    Evas_Object *groupedit;       /**< A groupedit smart object, \
                                    needed for view and edit style.*/
-   Evas_Object *container;       /**< Container that contains groupedit.*/
+
+   struct {
+        Evas_Object *obj;        /**< Container that contains groupedit.*/
+        Evas_Coord prev_w;       /**< Container's width before separated mode.*/
+        Evas_Coord prev_h;       /**< Container's height before separated mode.*/
+        Evas_Coord dx;           /**< Groupedit's horizontal shift inside of \
+                                   the container (for separate mode purpose). */
+        Evas_Coord dy;           /**< Groupedit's vertical shift inside of the
+                                   container (for separate mode purpose). */
+   } container;
    Evas_Object *layout;          /**< A elementary layout object, \
                                    which markup with workspace.edc file.*/
    struct {
@@ -391,7 +400,6 @@ _separate_smart_on_click(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
 {
-   Evas_Coord w, h;
    Evas_Object *o = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
@@ -400,18 +408,9 @@ _separate_smart_on_click(void *data,
 
    /* FIXME: stub until set mode api remake */
    if (!sep)
-     {
-        container_border_hide(sd->container);
-        _separate_mode_click(sd, NULL, NULL);
-     }
+     _separate_mode_click(sd, NULL, NULL);
    else
-     {
-        container_border_show(sd->container);
-        _normal_mode_click(sd, NULL, NULL);
-     }
-
-   evas_object_geometry_get(sd->groupedit, NULL, NULL, &w, &h);
-   evas_object_resize(sd->container, w, h);
+     _normal_mode_click(sd, NULL, NULL);
 }
 
 static void
@@ -429,7 +428,7 @@ _sc_smart_drag_y_cb(void *data ,
      {
         elm_scroller_region_get(sd->scroller, NULL, &y, &w, &h);
         elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
-        container_container_size_get(sd->groupedit, &w_cont, NULL);
+        container_container_size_get(sd->container.obj, &w_cont, NULL);
 
         x = ceil((y * ((double)w_ge / h_ge)));
         if (y >=  (h_ge - h)) x += w_cont;
@@ -452,7 +451,7 @@ _sc_smart_drag_x_cb(void *data ,
      {
         elm_scroller_region_get(sd->scroller, &x, NULL, &w, &h);
         elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
-        container_container_size_get(sd->groupedit, NULL, &h_cont);
+        container_container_size_get(sd->container.obj, NULL, &h_cont);
 
         y = ceil((x * ((double)h_ge / w_ge)));
         if (x >=  (w_ge - w)) y += h_cont;
@@ -472,7 +471,6 @@ _sc_smart_move_cb(void *data,
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    if (!sd->style) return;
-
 
    Evas_Object *object_area = groupedit_part_object_area_get(sd->groupedit);
 
@@ -876,15 +874,20 @@ _on_container_TL_move(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
-   Evas_Object *scroller = (Evas_Object *)data;
+   Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
    Container_Geom *geom = (Container_Geom *)event_info;
 
    Evas_Coord x, y, w, h;
-   elm_scroller_region_get(scroller, &x, &y, &w, &h);
+   elm_scroller_region_get(sd->scroller, &x, &y, &w, &h);
    if (geom->dx < 0) x -= geom->dx;
    if (geom->dy < 0) y -= geom->dy;
-   elm_scroller_region_show(scroller, x, y, w, h);
+   elm_scroller_region_show(sd->scroller, x, y, w, h);
+
+   sd->container.dx += geom->dx;
+   sd->container.dy += geom->dy;
 }
+
+#define PADDING_SIZE 40
 
 Eina_Bool
 workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
@@ -901,17 +904,20 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
      }
    else groupedit_edit_object_unset(sd->groupedit);
 
-   if (!sd->container)
+   if (!sd->container.obj)
      {
-        sd->container = container_add(sd->scroller);
-        evas_object_smart_callback_add(sd->container, "container,changed",
-                                       _on_container_TL_move, sd->scroller);
-        container_padding_size_set(sd->container, 40, 40, 40, 40);
-        container_style_set(sd->container, "scroller");
+        sd->container.obj = container_add(sd->scroller);
+        evas_object_smart_callback_add(sd->container.obj, "handler,TL,moved",
+                                       _on_container_TL_move, sd);
+        container_padding_size_set(sd->container.obj, PADDING_SIZE,
+                                                      PADDING_SIZE,
+                                                      PADDING_SIZE,
+                                                      PADDING_SIZE);
+        container_style_set(sd->container.obj, "scroller");
      }
-   else container_content_unset(sd->container);
+   else container_content_unset(sd->container.obj);
 
-   container_content_set(sd->container, sd->groupedit);
+   container_content_set(sd->container.obj, sd->groupedit);
 
    evas_object_focus_set(sd->groupedit, true);
 
@@ -920,7 +926,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
                                EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
    if (!groupedit_edit_object_set(sd->groupedit, style->obj, file)) return false;
-   container_handler_size_set(sd->container, 8, 8, 8, 8);
+   container_handler_size_set(sd->container.obj, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
    evas_object_smart_callback_add(sd->groupedit, "part,unselected",
@@ -930,8 +936,8 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    evas_object_smart_callback_add(sd->groupedit, "object,area,changed",
                                   _ws_ruler_rel_zero_move_cb, obj);
    groupedit_bg_set(sd->groupedit, sd->background);
-   elm_object_content_set(sd->scroller, sd->container);
-   evas_object_show(sd->container);
+   elm_object_content_set(sd->scroller, sd->container.obj);
+   evas_object_show(sd->container.obj);
    evas_object_show(sd->groupedit);
 
    /* Create highlights for object and relative space */
@@ -970,12 +976,12 @@ workspace_edit_object_unset(Evas_Object *obj)
    if (!sd->groupedit) return false;
 
    if (groupedit_edit_object_unset(sd->groupedit)) is_unset = true;
-   container_content_unset(sd->container);
+   container_content_unset(sd->container.obj);
    elm_object_content_unset(sd->scroller);
    evas_object_del(sd->groupedit);
-   evas_object_del(sd->container);
+   evas_object_del(sd->container.obj);
    sd->groupedit = NULL;
-   sd->container = NULL;
+   sd->container.obj = NULL;
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, true);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, true);
@@ -1169,7 +1175,8 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         evas_object_hide(sd->highlight.space_hl);
         evas_object_hide(sd->highlight.highlight);
 
-        elm_menu_item_icon_name_set(sd->menu.items.mode_separate, EFLETE_IMG_PATH"context_menu-bullet.png");
+        elm_menu_item_icon_name_set(sd->menu.items.mode_separate,
+                                    EFLETE_IMG_PATH"context_menu-bullet.png");
         elm_menu_item_icon_name_set(sd->menu.items.mode_normal, "");
      }
    else
@@ -1185,13 +1192,41 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         if (sd->highlight.part)
           evas_object_show(sd->highlight.highlight);
 
-        elm_menu_item_icon_name_set(sd->menu.items.mode_normal, EFLETE_IMG_PATH"context_menu-bullet.png");
+        elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
+                                    EFLETE_IMG_PATH"context_menu-bullet.png");
         elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
      }
 
    groupedit_edit_object_parts_separated(sd->groupedit, separate);
+
+   /* the code below is really important to be here, because after function that
+      was called before groupedit changed it's size, so we can deal with container
+      now (setting him propriate size and such stuff). */
+   if (separate)
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(sd->container.obj, NULL, NULL,
+                                 &sd->container.prev_w,
+                                 &sd->container.prev_h);
+        container_border_hide(sd->container.obj);
+
+        evas_object_geometry_get(sd->groupedit, &x, &y, &w, &h);
+        evas_object_resize(sd->container.obj,
+                           w + sd->container.dx + PADDING_SIZE * 2,
+                           h + sd->container.dy + PADDING_SIZE * 2);
+     }
+   else
+     {
+        evas_object_resize(sd->container.obj,
+                           sd->container.prev_w,
+                           sd->container.prev_h);
+        container_border_show(sd->container.obj);
+     }
+
    return true;
 }
+
+#undef PADDING_SIZE
 
 Eina_Bool
 workspace_separate_mode_get(Evas_Object *obj)

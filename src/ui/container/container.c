@@ -27,12 +27,16 @@
 typedef struct _Container_Smart_Data Container_Smart_Data;
 
 static const char SIG_CHANGED[] = "container,changed";
+static const char SIG_HANDLER_TL_MOVE[] = "handler,TL,moved";
+static const char SIG_HANDLER_BR_MOVE[] = "handler,RB,moved";
 
 static const char TEXT_TOOLTIP[] = "eflete.size.tooltip";
 static const char SWALLOW[] = "eflete.swallow.container";
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, "(iiii)"},
+   {SIG_HANDLER_TL_MOVE, "(ii)"},
+   {SIG_HANDLER_BR_MOVE, "(ii)"},
    {NULL, NULL}
 };
 
@@ -272,6 +276,10 @@ _mouse_move_hTL_cb(void *data,
 
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
+
+   sd->size->dx = dx;
+   sd->size->dy = dy;
+   evas_object_smart_callback_call(o, SIG_HANDLER_TL_MOVE, (void *)sd->size);
 }
 
 static void
@@ -331,6 +339,10 @@ _mouse_move_hBR_cb(void *data,
 
    sd->downx = ev->cur.canvas.x;
    sd->downy = ev->cur.canvas.y;
+
+   sd->size->dx = dx;
+   sd->size->dy = dy;
+   evas_object_smart_callback_call(o, SIG_HANDLER_BR_MOVE, (void *)sd->size);
 }
 
 static void
