@@ -247,6 +247,10 @@ test_container/container_handler_size_set.c \
 test_container/container_handler_size_get.c \
 test_container/container_style_get.c \
 test_container/container_style_set.c \
+test_container/container_border_hide.c \
+test_container/container_border_show.c \
+test_container/container_padding_size_set.c \
+test_container/container_padding_size_get.c \
 test_container/container_content_set.c \
 test_container/container_content_unset.c
 container_test_CFLAGS = ${FLAGS}
