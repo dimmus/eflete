@@ -709,7 +709,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
    type = edje_edit_part_type_get(pd->style->obj, part->name);
    prop_box = elm_object_content_get(pd->visual);
 
-   elm_box_unpack(prop_box, pd->prop_part.frame);
    elm_box_unpack(prop_box, pd->prop_part_drag.frame);
 
    if (!pd_part.frame)
@@ -851,7 +850,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
               pd_part.cursor_mode = NULL;
               pd_part.multiline = NULL;
            }
-         elm_box_pack_after(prop_box, pd_part.frame, pd->prop_group.frame);
          evas_object_show(pd_part.frame);
      }
    if (!pd_part_drag.frame)
@@ -905,11 +903,26 @@ ui_property_part_unset(Evas_Object *property)
    PROP_DATA_GET()
 
    prop_box = elm_object_content_get(pd->visual);
-   evas_object_hide(pd->prop_part.frame);
-   evas_object_hide(pd->prop_part_drag.frame);
-   elm_box_unpack(prop_box, pd->prop_part.frame);
-   elm_box_unpack(prop_box, pd->prop_part_drag.frame);
-   elm_box_unpack(prop_box, pd->prop_state.frame);
+
+   if (pd->prop_part.frame)
+     {
+        elm_box_unpack(prop_box, pd->prop_part.frame);
+        evas_object_del(pd->prop_part.frame);
+        pd->prop_part.frame = NULL;
+     }
+   if (pd->prop_part_drag.frame)
+     {
+        elm_box_unpack(prop_box, pd->prop_part_drag.frame);
+        evas_object_del(pd->prop_part_drag.frame);
+        pd->prop_part_drag.frame = NULL;
+     }
+
+   if (pd->prop_state.frame)
+     {
+        elm_box_unpack(prop_box, pd->prop_state.frame);
+        evas_object_del(pd->prop_state.frame);
+        pd->prop_state.frame = NULL;
+     }
 
    ui_property_state_unset(property);
 }
