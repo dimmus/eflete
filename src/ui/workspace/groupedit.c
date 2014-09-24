@@ -457,6 +457,7 @@ groupedit_edit_object_set(Evas_Object *obj,
                           Evas_Object *edit_obj,
                           const char *file)
 {
+   Evas_Coord x, y;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    /* check input edit_obj, if it not a edje object return false */
@@ -476,6 +477,8 @@ groupedit_edit_object_set(Evas_Object *obj,
    /*TODO: set the state for all parts to default 0.0 */
    sd->edit_obj = edit_obj;
    evas_object_smart_member_add(sd->edit_obj, obj);
+   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+   evas_object_move(sd->edit_obj, x, y);
    sd->edit_obj_file = file;
    sd->con_size_min.w = edje_edit_group_min_w_get(edit_obj);
    sd->con_size_min.h = edje_edit_group_min_h_get(edit_obj);

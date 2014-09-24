@@ -386,7 +386,7 @@ _ws_smart_mouse_move_cb(void *data, Evas *e,
    ewe_ruler_marker_absolute_set(sd->ruler_ver, sd->pointer_ver, y - dy);
 }
 
-static void
+static void __UNUSED__
 _separate_smart_on_click(void *data,
                          Evas_Object *obj __UNUSED__,
                          void *event_info __UNUSED__)
@@ -688,7 +688,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                   _separate_smart_on_click, o);
    evas_object_smart_member_add(priv->button_separate, o);
 
-
    /* Add members of workspace into scroller markup field''s*/
    elm_object_part_content_set(priv->scroller, "elm.swallow.background",
                                priv->background);
@@ -864,12 +863,27 @@ _on_part_select(void *data,
 
 static void
 _on_part_unselect(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info)
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info)
 {
    Evas_Object *workspace = (Evas_Object *)data;
    evas_object_smart_callback_call(workspace, SIG_PART_UNSELECTED, event_info);
    workspace_highlight_unset(workspace);
+}
+
+static void
+_on_TL_move(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info)
+{
+   Evas_Object *scroller = (Evas_Object *)data;
+   Move_Delta *delta = (Move_Delta *)event_info;
+
+   Evas_Coord x, y, w, h;
+   elm_scroller_region_get(scroller, &x, &y, &w, &h);
+   if (delta->dx < 0) x -= delta->dx;
+   if (delta->dx < 0) y -= delta->dy;
+   elm_scroller_region_show(scroller, x, y, w, h);
 }
 
 Eina_Bool
@@ -890,6 +904,9 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    if (!sd->container)
      {
         sd->container = container_add(sd->scroller);
+        evas_object_smart_callback_add(sd->container, "handler,TL,moved",
+                                       _on_TL_move, sd->scroller);
+        container_padding_size_set(sd->container, 40, 40, 40, 40);
      }
    else container_content_unset(sd->container);
 
