@@ -417,8 +417,6 @@ _on_ws_part_select(void *data,
    const char *part = (const char *)event_info;
    if (part)
      ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
-
-   evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 }
 
 Widget *
@@ -575,9 +573,6 @@ ui_part_select(App_Data *ap, Part* part)
    workspace_highlight_set(ap->workspace, part);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
-
-   /* set the focus to groupedit, that the hotkeys is work */
-   evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 
    return gl_states;
 }
