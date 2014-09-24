@@ -80,6 +80,11 @@ group { name: "eflete/container/base/default";
       }
    }
 }
+group { name: "eflete/container/base/scroller";
+   inherit_only: 1;
+   inherit: "eflete/container/base/default";
+   part_remove: "clipper";
+}
 group { name: "eflete/container/handler_TL/default";
    parts{
       part { name: "bg";

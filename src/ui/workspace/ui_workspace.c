@@ -907,6 +907,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         evas_object_smart_callback_add(sd->container, "container,changed",
                                        _on_container_TL_move, sd->scroller);
         container_padding_size_set(sd->container, 40, 40, 40, 40);
+        container_style_set(sd->container, "scroller");
      }
    else container_content_unset(sd->container);
 
