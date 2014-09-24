@@ -623,20 +623,34 @@ _on_delete_clicked_cb(void *data,
      pm_project_changed(app_data_get()->project);
 }
 
+ITEM_SEARCH_FUNC(gengrid)
+
 static void
-_on_srh_cnd_cb(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
+_search_changed(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
 {
+   Sound_Editor *edit = data;
+   _gengrid_item_search(edit->gengrid, &(edit->sound_search_data),
+                           edit->sound_search_data.last_item_found);
 
 }
 
 static void
-_srh_nxt_gd_item_cb(void *data __UNUSED__,
+_search_nxt_gd_item(void *data __UNUSED__,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
+   Sound_Editor *edit = data;
+   Elm_Object_Item *start_from = NULL;
 
+   if (edit->sound_search_data.last_item_found)
+     {
+        start_from =
+           elm_gengrid_item_next_get(edit->sound_search_data.last_item_found);
+     }
+
+   _gengrid_item_search(edit->gengrid, &(edit->sound_search_data), start_from);
 }
 
 static void
@@ -644,7 +658,8 @@ _search_reset_cb(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-
+   Search_Data *search_data = data;
+   search_data->last_item_found = NULL;
 }
 
 Evas_Object *
@@ -710,8 +725,8 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 
    search = _sound_editor_search_field_create(edit->markup);
    elm_object_part_content_set(edit->markup, "swallow.search_area", search);
-   evas_object_smart_callback_add(search, "changed", _on_srh_cnd_cb, edit);
-   evas_object_smart_callback_add(search, "activated", _srh_nxt_gd_item_cb, edit);
+   evas_object_smart_callback_add(search, "changed", _search_changed, edit);
+   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, edit);
    evas_object_smart_callback_add(edit->gengrid, "pressed", _search_reset_cb,
                                   &(edit->sound_search_data));
    edit->sound_search_data.search_entry = search;
