@@ -375,8 +375,6 @@ test_groupedit/test_groupedit.c \
 test_groupedit/groupedit_add.c \
 test_groupedit/groupedit_bg_set.c \
 test_groupedit/groupedit_bg_unset.c \
-test_groupedit/groupedit_container_size_get.c \
-test_groupedit/groupedit_container_size_set.c \
 test_groupedit/groupedit_edit_object_part_above.c \
 test_groupedit/groupedit_edit_object_part_add.c \
 test_groupedit/groupedit_edit_object_part_below.c \
@@ -391,16 +389,10 @@ test_groupedit/groupedit_edit_object_parts_separated_is.c \
 test_groupedit/groupedit_edit_object_recalc_all.c \
 test_groupedit/groupedit_edit_object_set.c \
 test_groupedit/groupedit_edit_object_unset.c \
-test_groupedit/groupedit_handler_size_get.c \
-test_groupedit/groupedit_handler_size_set.c \
-test_groupedit/groupedit_max_size_set.c \
-test_groupedit/groupedit_min_size_set.c \
 test_groupedit/groupedit_part_object_area_get.c \
 test_groupedit/groupedit_part_object_area_visible_get.c \
 test_groupedit/groupedit_part_object_area_visible_set.c \
-test_groupedit/groupedit_part_visible_set.c \
-test_groupedit/groupedit_style_get.c \
-test_groupedit/groupedit_style_set.c
+test_groupedit/groupedit_part_visible_set.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
 

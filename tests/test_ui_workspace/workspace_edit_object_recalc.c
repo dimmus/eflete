@@ -73,7 +73,10 @@ EFLETE_TEST (workspace_edit_object_recalc_test_p)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_recalc.edj");
    ret = workspace_edit_object_recalc(workspace);
    ck_assert_msg(ret == EINA_TRUE, "Fail recalc edit object in workspace");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -116,6 +119,9 @@ EFLETE_TEST (workspace_edit_object_recalc_test_n)
    ret = workspace_edit_object_recalc(workspace);
    ck_assert_msg(ret == EINA_FALSE, "Recalc edit object in workspace, "
                                     "without prevision set edit object");
+
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

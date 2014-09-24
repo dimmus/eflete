@@ -93,6 +93,8 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
                  "Setted state value is not equal to value in edje edit object");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -200,6 +202,8 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n1)
    ck_assert_msg(res == EINA_FALSE, "Set state for NULL pointer of part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -259,6 +263,8 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    ck_assert_msg(res == EINA_FALSE, "Set non exist state for part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

@@ -77,7 +77,10 @@ EFLETE_TEST (workspace_edit_object_part_del_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed delete part from edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "bg") == EINA_FALSE,
                  "Part exist after delete");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -128,7 +131,10 @@ EFLETE_TEST (workspace_edit_object_part_del_test_n)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, "b_g");
    ck_assert_msg(ret == EINA_FALSE, "Delete non exist part from edit object ");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -211,7 +217,10 @@ EFLETE_TEST (workspace_edit_object_part_del_test_n2)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Delete part without name");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

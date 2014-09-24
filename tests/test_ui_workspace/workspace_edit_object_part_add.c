@@ -77,7 +77,10 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed add new part into edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "new_part") == EINA_TRUE,
                  "New part didn't exist in edit object");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -132,7 +135,10 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p1)
    ck_assert_msg(ret == EINA_TRUE, "Failed add new part into edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "new_part") == EINA_TRUE,
                  "New part didn't exist in edit object");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -185,7 +191,10 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n)
                                         EDJE_PART_TYPE_RECTANGLE, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Add new part into edit object, "
                                     "where part with curent name already exist");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -270,7 +279,10 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n2)
    ret = workspace_edit_object_part_add(workspace, NULL,
                                         EDJE_PART_TYPE_RECTANGLE, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Add new part into without name");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -324,7 +336,10 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n3)
    ck_assert_msg(ret == EINA_FALSE, "Add new part into with invalid type");
    ck_assert_msg(edje_edit_part_exist(style->obj, "new_part") == EINA_FALSE,
                  "New part created with invalid type");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
