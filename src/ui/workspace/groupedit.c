@@ -22,29 +22,29 @@
 
 #define MY_CLASS_NAME "Ws_Groupedit"
 
-#define H_WIGTH (sd->handler_TL.w + sd->handler_BR.w)
-#define H_HEIGHT (sd->handler_TL.h + sd->handler_BR.h)
-
-#define PADDING_INIT 50
-
 /* here we create and define some functions for creating our groupedit smart
   object that is inherited from general Smart Object. */
 EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupedit,
                         Evas_Smart_Class, Evas_Smart_Class,
                         evas_object_smart_clipped_class_get, _smart_callbacks);
 
-static Eina_Bool
-_user_size_calc(Evas_Object *o)
+static void
+_style_set(Evas_Object *o, const char *style)
 {
-   int nw, nh;
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, false)
+   char group[512]; /* FIXME: change 512 to BUFF_MAX */
+   WS_GROUPEDIT_DATA_GET(o, sd)
 
-   nw = sd->con_current_size->w + H_WIGTH;
-   nh = sd->con_current_size->h + H_HEIGHT;
+   #define GROUP_NAME(item, style) \
+      sprintf(group, "eflete/groupedit/%s/%s", item, style);
 
-   evas_object_resize(o, nw, nh);
+   GROUP_NAME("object_area", style)
+   if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
+     {
+        GROUP_NAME("object_area", "default")
+        edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group);
+     }
 
-   return true;
+   #undef GROUP_NAME
 }
 
 static void
@@ -143,30 +143,22 @@ _groupedit_smart_add(Evas_Object *o)
                                   _key_up, NULL);
 
    priv->obj = o;
-   priv->con_size_min.w = 0;
-   priv->con_size_min.h = 0;
-   priv->con_size_max.w = -1;
-   priv->con_size_max.h = -1;
-   priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
+   priv->con_current_size = (Groupedit_Geom *)mem_malloc(sizeof(Groupedit_Geom));
    priv->edit_obj = NULL;
    priv->parts = NULL;
-   priv->handler_TL_pressed = false;
-   priv->handler_BR_pressed = false;
    priv->obj_area.obj = edje_object_add(priv->e);
    evas_object_repeat_events_set(priv->obj_area.obj, true);
    priv->obj_area.visible = false;
    priv->obj_area.show_now = false;
-   priv->obj_area.geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
+   priv->obj_area.geom = (Groupedit_Geom *)mem_malloc(sizeof(Groupedit_Geom));
    priv->separated = false;
    priv->selected = NULL;
    priv->to_select = NULL;
 
-   priv->paddings.t_left = PADDING_INIT;
-   priv->paddings.t_top = PADDING_INIT;
-   priv->paddings.bottom = PADDING_INIT;
-
    evas_object_smart_member_add(priv->obj_area.obj, o);
    evas_object_smart_member_add(priv->event, o);
+
+   _style_set(o, "default");
 }
 
 static void
@@ -206,13 +198,6 @@ _groupedit_smart_hide(Evas_Object *o)
 }
 
 static void
-_groupedit_smart_color_set(Evas_Object *o, int r __UNUSED__, int g __UNUSED__, int b __UNUSED__, int a __UNUSED__)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
-}
-
-
-static void
 _groupedit_smart_move(Evas_Object *o,
                       Evas_Coord x,
                       Evas_Coord y)
@@ -249,12 +234,6 @@ _groupedit_smart_resize(Evas_Object *o,
 
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
-   /* FIXME: uncomment it, when the paddings logic will be removed
-   if (w > sd->con_size_max.w + H_WIGTH) w = sd->con_size_max.w + H_WIGTH;
-   if (w < sd->con_size_min.w + H_WIGTH) w = sd->con_size_min.w + H_WIGTH;
-   if (h > sd->con_size_max.h + H_HEIGHT) h = sd->con_size_max.h + H_HEIGHT;
-   if (h < sd->con_size_min.h + H_HEIGHT) h = sd->con_size_min.h + H_HEIGHT;
-   */
 
    evas_object_smart_changed(o);
 }
@@ -264,9 +243,7 @@ static void
 _groupedit_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord cw, ch, pw, ph, ow, oh;
-   int htl_w, htl_h;
-   int hrb_w, hrb_h;
+   Evas_Coord pw, ph, ow, oh;
    char buff[16];
 
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
@@ -277,25 +254,13 @@ _groupedit_smart_calculate(Evas_Object *o)
    evas_object_resize(priv->event, ow, oh);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
-   htl_w = priv->handler_TL.w;
-   htl_h = priv->handler_TL.h;
-   hrb_w = priv->handler_BR.w;
-   hrb_h = priv->handler_BR.h;
-
-   cw = w - (htl_w + hrb_w) - (priv->paddings.t_left + priv->paddings.bottom);
-   ch = h - (htl_h + hrb_h) - (priv->paddings.t_top + priv->paddings.bottom);
-
-   if ((cw < 0)) cw = 0; if ((ch < 0)) ch = 0;
-
-   x += priv->paddings.t_left;
-   y += priv->paddings.t_top;
 
    if (!priv->separated)
      {
-        priv->con_current_size->x = priv->paddings.t_left + htl_w;
-        priv->con_current_size->y = priv->paddings.t_top + htl_h;
-        priv->con_current_size->w = cw;
-        priv->con_current_size->h = ch;
+        priv->con_current_size->x = x;
+        priv->con_current_size->y = y;
+        priv->con_current_size->w = w;
+        priv->con_current_size->h = h;
         sprintf(buff, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
      }
 
@@ -318,7 +283,7 @@ _groupedit_smart_set_user(Evas_Smart_Class *sc)
    sc->del = _groupedit_smart_del;
    sc->show = _groupedit_smart_show;
    sc->hide = _groupedit_smart_hide;
-   sc->color_set = _groupedit_smart_color_set;
+   sc->color_set = NULL;
 
    /* clipped smart object has no hook on resizes or calculations */
    sc->move = _groupedit_smart_move;
@@ -343,101 +308,13 @@ groupedit_add(Evas_Object *parent)
 }
 
 Eina_Bool
-groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hbr_w, int hbr_h)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-
-   if (htl_w < 5) sd->handler_TL.w = 5;
-   else sd->handler_TL.w = htl_w;
-   if (htl_h < 5) sd->handler_TL.h = 5;
-   else sd->handler_TL.h = htl_h;
-   if (hbr_w < 5) sd->handler_BR.w = 5;
-   else sd->handler_BR.w = hbr_w;
-   if (hbr_h < 5) sd->handler_BR.h = 5;
-   else sd->handler_BR.h = hbr_h;
-
-   return true;
-}
-
-void
-groupedit_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-
-   if (htl_w) *htl_w = sd->handler_TL.w;
-   if (htl_h) *htl_h = sd->handler_TL.h;
-   if (hbr_w) *hbr_w = sd->handler_BR.w;
-   if (hbr_h) *hbr_h = sd->handler_BR.h;
-}
-
-Eina_Bool
-groupedit_min_size_set(Evas_Object *obj, int w, int h)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-
-   if (w < 0) sd->con_size_min.w = 0;
-   else sd->con_size_min.w = w;
-   if (h < 0) sd->con_size_min.h = 0;
-   else sd->con_size_min.h = h;
-
-   return true;
-}
-
-Eina_Bool
-groupedit_max_size_set(Evas_Object *obj, int w, int h)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-
-   if (w < 0) sd->con_size_max.w = -1;
-   else sd->con_size_max.w = w;
-   if (h < 0) sd->con_size_max.h = -1;
-   else sd->con_size_max.h = h;
-
-   return true;
-}
-
-Eina_Bool
-groupedit_container_size_set(Evas_Object *obj, int w, int h)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-
-   if (w <= sd->con_size_min.w) sd->con_current_size->w = sd->con_size_min.w;
-   else
-     {
-        if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
-          sd->con_current_size->w = sd->con_size_max.w;
-        else sd->con_current_size->w = w;
-     }
-
-   if (h <= sd->con_size_min.h) sd->con_current_size->h = sd->con_size_min.h;
-   else
-     {
-        if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
-          sd->con_current_size->h = sd->con_size_max.h;
-        else sd->con_current_size->h = h;
-     }
-
-   return _user_size_calc(obj);
-}
-
-Eina_Bool
-groupedit_container_size_get(Evas_Object *obj, int *w, int *h)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-
-   if (w) *w = sd->con_current_size->w;
-   if (h) *h = sd->con_current_size->h;
-
-   return true;
-}
-
-Eina_Bool
 groupedit_style_set(Evas_Object *obj, const char *style)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if (!style) return false;
    if (!strcmp(sd->style, style)) return true;
+   _style_set(obj, style);
 
    return true;
 }
@@ -457,7 +334,6 @@ groupedit_edit_object_set(Evas_Object *obj,
                           Evas_Object *edit_obj,
                           const char *file)
 {
-   Evas_Coord x, y;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    /* check input edit_obj, if it not a edje object return false */
@@ -477,20 +353,7 @@ groupedit_edit_object_set(Evas_Object *obj,
    /*TODO: set the state for all parts to default 0.0 */
    sd->edit_obj = edit_obj;
    evas_object_smart_member_add(sd->edit_obj, obj);
-   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
-   evas_object_move(sd->edit_obj, x, y);
    sd->edit_obj_file = file;
-   sd->con_size_min.w = edje_edit_group_min_w_get(edit_obj);
-   sd->con_size_min.h = edje_edit_group_min_h_get(edit_obj);
-   /*  */
-   if (edje_edit_group_max_w_get(edit_obj) == 0)
-     sd->con_size_max.w = -1;
-   else
-     sd->con_size_max.w = edje_edit_group_max_w_get(edit_obj);
-   if (edje_edit_group_max_h_get(edit_obj) == 0)
-     sd->con_size_max.h = -1;
-   else
-     sd->con_size_max.h = edje_edit_group_max_h_get(edit_obj);
 
    _edit_object_load(sd);
    if (sd->parts) _parts_list_free(sd);
@@ -512,13 +375,7 @@ groupedit_edit_object_unset(Evas_Object *obj)
    _parts_list_free(sd);
    ret = sd->edit_obj;
    evas_object_smart_member_del(sd->edit_obj);
-   evas_object_color_set(sd->edit_obj, 255, 255, 255, 255);
    sd->edit_obj = NULL;
-
-   sd->con_size_min.w = 0;
-   sd->con_size_min.h = 0;
-   sd->con_size_max.w = -1;
-   sd->con_size_max.h = -1;
 
    return ret;
 }
@@ -804,5 +661,3 @@ groupedit_bg_unset(Evas_Object *obj)
 #undef MY_CLASS_NAME
 #undef WS_GROUPSPACE_DATA_GET
 #undef WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL
-#undef H_WIGTH
-#undef H_HEIGHT

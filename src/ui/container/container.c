@@ -36,11 +36,6 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {NULL, NULL}
 };
 
-struct _Geom {
-   int x, y, w, h, dx, dy;
-};
-typedef struct _Geom Container_Geom;
-
 struct _Container_Smart_Data
 {
    Evas_Object_Smart_Clipped_Data base;
@@ -197,12 +192,14 @@ _mouse_move_hTL_cb(void *data,
 
    if (!sd->handler_TL_pressed) return;
 
-   if ((x2 - (x1 + w1 + dx) < sd->con_size_min.w) ||
-       ((sd->con_size_max.w != -1) && (x2 - (x1 + w1 + dx) > sd->con_size_max.w)))
+   Evas_Coord container_width = x2 - (x1 + w1 + dx);
+   Evas_Coord container_height = y2 - (y1 + h1 + dy);
+   if ((container_width < sd->con_size_min.w) ||
+       ((sd->con_size_max.w != -1) && (container_width > sd->con_size_max.w)))
      dx = 0;
 
-   if ((y2 - (y1 + h1 + dy) < sd->con_size_min.h) ||
-       ((sd->con_size_max.h != -1) && (y2 - (y1 + h1 + dy) > sd->con_size_max.h)))
+   if ((container_height < sd->con_size_min.h) ||
+       ((sd->con_size_max.h != -1) && (container_height > sd->con_size_max.h)))
      dy = 0;
 
    sd->dx += dx;
@@ -269,8 +266,8 @@ _mouse_move_hTL_cb(void *data,
    evas_object_resize(o, nw, nh);
    evas_object_move(o, nx, ny);
 
-   sd->con_current_size->dx = dx;
-   sd->con_current_size->dy = dy;
+   sd->size->dx = dx;
+   sd->size->dy = dy;
    evas_object_smart_changed(o);
 
    sd->downx = ev->cur.canvas.x;
@@ -328,8 +325,8 @@ _mouse_move_hBR_cb(void *data,
      }
    evas_object_resize(o, nw, nh);
 
-   sd->con_current_size->dx = dx;
-   sd->con_current_size->dy = dy;
+   sd->size->dx = dx;
+   sd->size->dy = dy;
    evas_object_smart_changed(o);
 
    sd->downx = ev->cur.canvas.x;

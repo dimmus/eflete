@@ -429,7 +429,7 @@ _sc_smart_drag_y_cb(void *data ,
      {
         elm_scroller_region_get(sd->scroller, NULL, &y, &w, &h);
         elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
-        groupedit_container_size_get(sd->groupedit, &w_cont, NULL);
+        container_container_size_get(sd->groupedit, &w_cont, NULL);
 
         x = ceil((y * ((double)w_ge / h_ge)));
         if (y >=  (h_ge - h)) x += w_cont;
@@ -452,7 +452,7 @@ _sc_smart_drag_x_cb(void *data ,
      {
         elm_scroller_region_get(sd->scroller, &x, NULL, &w, &h);
         elm_scroller_child_size_get(sd->scroller, &w_ge, &h_ge);
-        groupedit_container_size_get(sd->groupedit, NULL, &h_cont);
+        container_container_size_get(sd->groupedit, NULL, &h_cont);
 
         y = ceil((x * ((double)h_ge / w_ge)));
         if (x >=  (w_ge - w)) y += h_cont;
@@ -872,17 +872,17 @@ _on_part_unselect(void *data,
 }
 
 static void
-_on_TL_move(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info)
+_on_container_TL_move(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
 {
    Evas_Object *scroller = (Evas_Object *)data;
-   Move_Delta *delta = (Move_Delta *)event_info;
+   Container_Geom *geom = (Container_Geom *)event_info;
 
    Evas_Coord x, y, w, h;
    elm_scroller_region_get(scroller, &x, &y, &w, &h);
-   if (delta->dx < 0) x -= delta->dx;
-   if (delta->dx < 0) y -= delta->dy;
+   if (geom->dx < 0) x -= geom->dx;
+   if (geom->dy < 0) y -= geom->dy;
    elm_scroller_region_show(scroller, x, y, w, h);
 }
 
@@ -904,8 +904,8 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    if (!sd->container)
      {
         sd->container = container_add(sd->scroller);
-        evas_object_smart_callback_add(sd->container, "handler,TL,moved",
-                                       _on_TL_move, sd->scroller);
+        evas_object_smart_callback_add(sd->container, "container,changed",
+                                       _on_container_TL_move, sd->scroller);
         container_padding_size_set(sd->container, 40, 40, 40, 40);
      }
    else container_content_unset(sd->container);
@@ -919,7 +919,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
                                EFLETE_IMG_PATH"context_menu-bullet.png");
    elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
    if (!groupedit_edit_object_set(sd->groupedit, style->obj, file)) return false;
-   groupedit_handler_size_set(sd->groupedit, 8, 8, 8, 8);
+   container_handler_size_set(sd->container, 8, 8, 8, 8);
    evas_object_smart_callback_add(sd->groupedit, "part,selected",
                                   _on_part_select, obj);
    evas_object_smart_callback_add(sd->groupedit, "part,unselected",

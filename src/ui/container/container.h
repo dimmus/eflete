@@ -38,6 +38,11 @@
 
 #include "eflete.h"
 
+struct _Container_Geom {
+   int x, y, w, h, dx, dy;
+};
+typedef struct _Container_Geom Container_Geom;
+
 /**
  * Add new Container object to parent object.
  * To delete Container object use evas_object_del.
