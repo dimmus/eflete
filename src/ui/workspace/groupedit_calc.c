@@ -1020,8 +1020,6 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
         evas_object_stack_below(sd->obj_area.obj, sd->selected->draw);
 
         PART_STATE_FREE
-
-        x -= xc; y -= yc;
      }
 
    if (sd->obj_area.visible) evas_object_show(sd->obj_area.obj);

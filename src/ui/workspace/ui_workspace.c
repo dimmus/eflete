@@ -335,11 +335,12 @@ _ws_ruler_abs_zero_move_cb(void *data,
    Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
    WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
 
-   int cross_size = 0;
+   Evas_Coord cross_size = 0, bg_x = 0, bg_y = 0;
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &cross_size);
+   evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
 
-   ewe_ruler_zero_offset_set(sd->ruler_hor, NULL, ge_geom->x - cross_size);
-   ewe_ruler_zero_offset_set(sd->ruler_ver, NULL, ge_geom->y - cross_size);
+   ewe_ruler_zero_offset_set(sd->ruler_hor, NULL, ge_geom->x - cross_size - bg_x);
+   ewe_ruler_zero_offset_set(sd->ruler_ver, NULL, ge_geom->y - cross_size - bg_y);
 }
 
 static void
@@ -351,14 +352,15 @@ _ws_ruler_rel_zero_move_cb(void *data,
    Groupedit_Geom *ge_geom = (Groupedit_Geom *)event_info;
    WS_DATA_GET_OR_RETURN_VAL(workspace, sd, RETURN_VOID)
 
-   int cross_size = 0;
+   Evas_Coord cross_size = 0, bg_x = 0, bg_y = 0;
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &cross_size);
+   evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
 
-   ewe_ruler_zero_offset_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->x - cross_size);
+   ewe_ruler_zero_offset_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->x - cross_size - bg_x);
    /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
    ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->w / 2);
 
-   ewe_ruler_zero_offset_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->y - cross_size);
+   ewe_ruler_zero_offset_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->y - cross_size - bg_y);
    /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
    ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->h / 2);
 }
