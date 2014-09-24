@@ -385,7 +385,7 @@ _container_smart_add(Evas_Object *o)
 static void
 _container_smart_del(Evas_Object *o)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, )
+   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    evas_object_smart_member_del(sd->container);
    evas_object_smart_member_del(sd->handler_TL.obj);
@@ -397,7 +397,7 @@ _container_smart_del(Evas_Object *o)
 static void
 _container_smart_show(Evas_Object *o)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, );
+   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
    if (sd->handler_TL.obj) evas_object_show(sd->handler_TL.obj);
    if (sd->handler_BR.obj) evas_object_show(sd->handler_BR.obj);
@@ -409,7 +409,7 @@ _container_smart_show(Evas_Object *o)
 static void
 _container_smart_hide(Evas_Object *o)
 {
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, )
+   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    if (sd->handler_TL.obj) evas_object_hide(sd->handler_TL.obj);
    if (sd->handler_BR.obj) evas_object_hide(sd->handler_BR.obj);
@@ -420,12 +420,16 @@ _container_smart_hide(Evas_Object *o)
 
 static void
 _container_smart_resize(Evas_Object *o,
-                            Evas_Coord w,
-                            Evas_Coord h)
+                        Evas_Coord w,
+                        Evas_Coord h)
 {
    Evas_Coord ow, oh;
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
+
+   CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+   if (!sd->confine.obj)
+     evas_object_size_hint_min_set(o, w, h);
 
    evas_object_smart_changed(o);
 }
@@ -439,7 +443,7 @@ _container_smart_calculate(Evas_Object *o)
    int hrb_w, hrb_h;
    char buff[16];
 
-   CONTAINER_DATA_GET_OR_RETURN_VAL(o, priv, )
+   CONTAINER_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
    evas_object_geometry_get(o, &x, &y, &w, &h);
    htl_w = priv->handler_TL.w; htl_h = priv->handler_TL.h;
    hrb_w = priv->handler_BR.w; hrb_h = priv->handler_BR.h;

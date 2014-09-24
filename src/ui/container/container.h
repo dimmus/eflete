@@ -212,6 +212,10 @@ container_content_unset(Evas_Object *obj);
  * @param obj The Container object.
  * @param confine The confine object.
  *
+ * @warning If you are setting container into swallow or layout, please, use
+ *          use this function as well, because otherwise container won't work at
+ *          all.
+ *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Container
