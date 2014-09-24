@@ -54,7 +54,7 @@ _del_part(void *data,
    Style *style = ap->project->current_style;
    Eina_List *programs = NULL;
    Eina_List *l = NULL;
-   Evas_Object *gl_signals, *property;
+   Evas_Object *gl_signals;
    char *program_name = NULL;
    char *part_name = NULL;
    if (!style) return;
@@ -72,6 +72,7 @@ _del_part(void *data,
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
    style->isModify = true;
 
+
    /* If deleted all parts in style, also should deleted all programs*/
    if (!style->parts)
      {
@@ -85,12 +86,13 @@ _del_part(void *data,
         gl_signals = ui_block_signal_list_get(ap);
         ui_signal_list_data_unset(gl_signals);
         _on_ws_part_unselect(ap, ap->workspace, part_name);
-        property = ui_block_property_get(ap);
-        ui_property_style_set(property, style, ap->workspace);
         workspace_highlight_unset(ap->workspace);
-    }
+     }
+   else
+     {
+        live_view_widget_style_set(ap->live_view, ap->project, style);
+     }
    free(part_name);
-   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void

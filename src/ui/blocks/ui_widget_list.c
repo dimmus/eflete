@@ -1006,7 +1006,7 @@ ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
 
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
-   elm_genlist_item_selected_set(next_eoi, true);
+   if (next_eoi) elm_genlist_item_selected_set(next_eoi, true);
    elm_object_item_del(eoi);
 
    return true;
