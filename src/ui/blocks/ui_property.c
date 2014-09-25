@@ -246,6 +246,16 @@ ui_property_state_fill_unset(Evas_Object *property);
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
+_on_spinner_mouse_wheel(void *data __UNUSED__,
+                        Evas *e __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Evas_Event_Mouse_Wheel *mev = event_info;
+   mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+}
+
+static void
 _del_prop_data(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
