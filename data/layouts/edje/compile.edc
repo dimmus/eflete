@@ -46,6 +46,7 @@ group { name: "compile_dialog";
       part { name: "window_area";
          type: SPACER;
          description { state: "default" 0.0;
+            min: 500 400;
             rel1.offset: 20 20;
             rel2.offset: -20 -20;
          }

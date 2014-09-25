@@ -1,3 +1,4 @@
+#define BORDER_PADDING 5 5
 group { name: "elm/gengrid/item/eflete/default/default";
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
@@ -71,13 +72,31 @@ group { name: "elm/gengrid/item/eflete/default/default";
                middle: 0;
             }
             rel1 {
-               to: "elm.swallow.icon";
-               offset: -1 -1;
+               relative: 1.0 1.0;
+               to: "spacer1";
             }
             rel2 {
-               to: "elm.swallow.icon";
-               offset: 1 1;
+               relative: 1.0 0.0;
+               to_y: "elm.text";
             }
+         }
+      }
+      part { name: "spacer_border_top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(BORDER_PADDING, BORDER_PADDING);
+            rel1.to: "icon_border";
+            rel2.to: "icon_border";
+         }
+      }
+      part { name: "spacer_border_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(BORDER_PADDING, BORDER_PADDING);
+            rel1.to: "icon_border";
+            rel2.to: "icon_border";
          }
       }
       part { name: "elm.swallow.icon";
@@ -88,15 +107,12 @@ group { name: "elm/gengrid/item/eflete/default/default";
             fixed: 1 0;
             align: 0.5 0.5;
             rel1 {
-               relative: 1.0  1.0;
-               to: "spacer1";
-               offset: -1 4;
+               to: "spacer_border_top";
+               relative: 1.0 1.0;
             }
             rel2 {
-               to_y: "elm.swallow.pad";
-               relative: 0.0  0.0;
-               to_x: "spacer2";
-               offset: -1 0;
+               to: "spacer_border_bottom";
+               relative: 0.0 0.0;
             }
          }
       }
@@ -108,16 +124,14 @@ group { name: "elm/gengrid/item/eflete/default/default";
             align: 1.0 0.0;
             aspect: 1.0 1.0;
             aspect_preference: HORIZONTAL;
+            max: 24 24;
             rel1 {
-               relative: 0.0 1.0;
-               to_y: "spacer1";
-               to_x: "spacer2";
-               offset: -5 -5;
+               to: "spacer_border_top";
+               relative: 1.0 1.0;
             }
             rel2 {
+               to: "spacer_border_bottom";
                relative: 0.0 0.0;
-               to: "spacer2";
-               offset: 5 5;
             }
          }
       }
@@ -130,13 +144,13 @@ group { name: "elm/gengrid/item/eflete/default/default";
             align: 1.0 1.0;
             rel1 {
                relative: 0.0  0.0;
-               to_x: "elm.swallow.icon";
+               to_x: "icon_border";
                to_y: "text_bottom";
                offset: 2 0;
             }
             rel2 {
                relative: 1.0  0.0;
-               to_x: "elm.swallow.icon";
+               to_x: "icon_border";
                to_y: "text_bottom";
                offset: -2 0;
             }
@@ -241,6 +255,102 @@ group { name: "elm/gengrid/item/eflete/default/default";
       }
    }
 }
+#undef BORDER_PADDING
+#define GROUP_INDEX_H 25
+#define GROUP_INDEX_COLOR 9 130 194 255
+#define GROUP_INDEX_BG_COLOR 48 48 48 180
+
+group { "elm/gengrid/item/group_index/eflete/default";
+   images.image: "group_index_decoration.png" COMP;
+   data.item: "texts" "elm.text";
+   parts {
+      part { name: "left_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(4, GROUP_INDEX_H);
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "right_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(4, GROUP_INDEX_H);
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "base_bar";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: GROUP_INDEX_BG_COLOR;
+            min: 5 GROUP_INDEX_H;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "left_spacer";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to: "right_spacer";
+            }
+         }
+      }
+      part { name: "left_deco";
+         description { state: "default" 0.0;
+            color: GROUP_INDEX_COLOR;
+            image.normal: "group_index_decoration.png";
+            align: 0.0 0.5;
+            SET_SIZE(GROUP_INDEX_H, 2);
+            rel1.to: "base_bar";
+            rel2.to: "base_bar";
+         }
+      }
+      part { name: "left_text_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            SET_SIZE(5, 2);
+            rel1 {
+               relative: 1.0 0.0;
+               to: "left_deco";
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: GROUP_INDEX_COLOR;
+            align: 0.0 0.5;
+            max: 70 20;
+            text {
+               align: 0.0 0.5;
+               style: "eflete_header_textblock_style";
+            }
+            rel1 {
+               to_x: "left_text_spacer";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "right_deco";
+         description { state: "default" 0.0;
+            color: GROUP_INDEX_COLOR;
+            image.normal: "group_index_decoration.png";
+            align: 1.0 0.5;
+            min: GROUP_INDEX_H 2;
+            max: -1 2;
+            rel1 {
+               to_x: "elm.text";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "base_bar";
+         }
+      }
+   }
+}
+
+#undef GROUP_INDEX_H
+#undef GROUP_INDEX_COLOR
+#undef GROUP_INDEX_BG_COLOR
 
 group { name: "elm/gengrid/base/eflete/default";
    images {

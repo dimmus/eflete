@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "widget_manager.h"
@@ -158,15 +157,48 @@ _wm_part_free(Part *part)
 Eina_Bool
 wm_part_del(Style *style, Part *part)
 {
-   Eina_Inlist *tmp = NULL;
+   Eina_Inlist *tmp_list = NULL;
 
    if ((!style) || (!part)) return false;
 
-   tmp = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   if (!tmp) return false;
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   if (!tmp_list) return false;
 
-   style->parts = eina_inlist_remove(style->parts, tmp);
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
 
+   return true;
+}
+
+Eina_Bool
+wm_style_current_state_parts_update(Style *style)
+{
+   Part *part = NULL;
+   double val = 0;
+   const char *state = NULL;
+   if (!style) return false;
+
+   EINA_INLIST_FOREACH(style->parts, part)
+     {
+        state = edje_edit_part_selected_state_get(style->obj, part->name, &val);
+        eina_stringshare_replace(&part->curr_state, state);
+        part->curr_state_value = val;
+     }
+   return true;
+}
+
+Eina_Bool
+wm_style_state_parts_reset(Style *style)
+{
+   Part *part = NULL;
+   if (!style) return false;
+
+   EINA_INLIST_FOREACH(style->parts, part)
+     {
+        eina_stringshare_replace(&part->curr_state, "default");
+        part->curr_state_value = 0.0;
+        edje_edit_part_selected_state_set(style->obj, part->name,
+                                          part->curr_state, part->curr_state_value);
+     }
    return true;
 }
 
@@ -195,7 +227,7 @@ wm_part_add(Style *style, const char *part)
    if (!edje_edit_part_exist(style->obj, part))
      return NULL;
 
-   result = (Part *)mem_malloc(sizeof(Part));
+   result = (Part *)mem_calloc(1, sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part);
@@ -214,7 +246,8 @@ wm_program_signals_list_get(Style *style)
 {
    Eina_List *result = NULL;
    Eina_List *progs, *l;
-   Eina_Stringshare *prog_name, *sig_name;
+   Eina_Stringshare *prog_name, *sig_name, *source_name;
+   Signal *sig = NULL;
 
    if ((!style) || (!style->obj)) return NULL;
 
@@ -222,8 +255,19 @@ wm_program_signals_list_get(Style *style)
    EINA_LIST_FOREACH(progs, l, prog_name)
      {
         sig_name = edje_edit_program_signal_get(style->obj, prog_name);
+        source_name = edje_edit_program_source_get(style->obj, prog_name);
         if (sig_name)
-          result = eina_list_append(result, sig_name);
+          {
+             sig = (Signal *)mem_malloc(sizeof(Signal));
+             sig->name = eina_stringshare_add(sig_name);
+             if (!source_name)
+               sig->source = eina_stringshare_add("");
+             else
+               sig->source = eina_stringshare_add(source_name);
+             sig->program = eina_stringshare_add(prog_name);
+             sig->style = style;
+             result = eina_list_append(result, sig);
+          }
      }
    edje_edit_string_list_free(progs);
 
@@ -233,11 +277,17 @@ wm_program_signals_list_get(Style *style)
 Eina_Bool
 wm_program_signals_list_free(Eina_List *signals)
 {
-   Eina_Stringshare *sig;
+   Signal *sig;
    if (!signals) return false;
 
    EINA_LIST_FREE(signals, sig)
-     edje_edit_string_free(sig);
+     {
+        eina_stringshare_del(sig->program);
+        eina_stringshare_del(sig->source);
+        eina_stringshare_del(sig->name);
+        sig->style = NULL;
+        free(sig);
+     }
 
    eina_list_free(signals);
    signals = NULL;
@@ -283,13 +333,13 @@ wm_style_data_load(Style *style, Evas *e, const char *edj)
 
 Style *
 wm_style_add(const char* style_name, const char* full_group_name,
-             type style_type, Class *parent)
+             Type style_type, Class *parent)
 {
    Style *style_edje = NULL;
 
    if ((!full_group_name) || (!style_name)) return NULL;
    if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
-   style_edje = (Style *)mem_malloc(sizeof(Style));
+   style_edje = (Style *)mem_calloc(1, sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
    style_edje->obj = NULL;
@@ -652,7 +702,7 @@ wm_class_add(const char *class_name, Eina_List *styles, Widget *parent)
 
    if ((!class_name) || (!styles)) return NULL;
 
-   class_edje = (Class *)mem_malloc(sizeof(Class));
+   class_edje = (Class *)mem_calloc(1, sizeof(Class));
    class_edje->name = eina_stringshare_add(class_name);
    class_edje->styles = NULL;
    class_edje->__type = CLASS;
@@ -707,7 +757,7 @@ wm_widget_add(const char *widget_name, Eina_List *styles)
 
    if ((!widget_name) || (!styles)) return NULL;
 
-   _widget = (Widget *)mem_malloc(sizeof(Widget));
+   _widget = (Widget *)mem_calloc(1, sizeof(Widget));
    _widget->name = eina_stringshare_add(widget_name);
    _widget->classes = NULL;
    _widget->__type = WIDGET;
@@ -1042,10 +1092,10 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
 }
 
 const char *
-wm_part_type_get(Edje_Part_Type type)
+wm_part_type_get(Edje_Part_Type part_type)
 {
-   if (type > part_types_count) return NULL;
-   return part_types[type];
+   if (part_type > part_types_count) return NULL;
+   return part_types[part_type];
 }
 
 #undef WM_WIDGET_NAME_GET

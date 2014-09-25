@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "ui_states_list.h"
@@ -144,14 +143,14 @@ ui_states_list_data_set(Evas_Object *object,
    elm_object_style_set(button, "eflete/simple");
    evas_object_smart_callback_add(button, "clicked", _add_state_cb, object);
    evas_object_show(button);
-   ICON_ADD(button, icon, EINA_TRUE, EFLETE_IMG_PATH"icon-add.png")
+   ICON_ADD(button, icon, EINA_TRUE, "icon-add")
    elm_object_part_content_set(button, NULL, icon);
    elm_box_pack_end(box, button);
    button = elm_button_add(box);
    elm_object_style_set(button, "eflete/simple");
    evas_object_smart_callback_add(button, "clicked", _del_state_cb, object);
    evas_object_show(button);
-   ICON_ADD(button, icon, EINA_TRUE, EFLETE_IMG_PATH"icon-remove.png")
+   ICON_ADD(button, icon, EINA_TRUE, "icon-remove")
    elm_object_part_content_set(button, NULL, icon);
    elm_box_pack_end(box, button);
    elm_object_part_content_set(parent, "elm.swallow.title", box);

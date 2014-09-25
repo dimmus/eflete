@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "cursor.h"
@@ -141,7 +140,7 @@ cursor_main_set(Evas_Object *win, Cursor_Type type)
    _ecore_evas_cursor_set(ee, cur_obj);
 
    cursor = ecore_evas_data_get(ee, CURSOR_KEY);
-   if (!cursor) cursor = mem_malloc(sizeof(Cursor *));
+   if (!cursor) cursor = mem_malloc(sizeof(Cursor));
    cursor->type = type;
    cursor->ee = ee;
    ecore_evas_data_set(ee, CURSOR_KEY, cursor);
@@ -178,7 +177,7 @@ cursor_type_set(Evas_Object *obj, Cursor_Type type)
    if (!obj) return false;
 
    cursor = evas_object_data_get(obj, CURSOR_KEY);
-   if (!cursor) cursor = mem_malloc(sizeof(Cursor *));
+   if (!cursor) cursor = mem_malloc(sizeof(Cursor));
 
    e = evas_object_evas_get(obj);
    ee = ecore_evas_ecore_evas_get(e);

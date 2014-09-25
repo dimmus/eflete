@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef UI_NOTIFY_HEADER_H
@@ -38,12 +37,7 @@
  * @ingroup Notify
  */
 #define NOTIFY_ERROR(fmt, ...) \
-{ \
-   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
-   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-   noti_error_show(win_layout_get(), msg); \
-   free(msg); \
-}
+   WIN_NOTIFY_ERROR(win_layout_get(), fmt, ##__VA_ARGS__)
 
 /**
  * Show Warning Notification with formated message
@@ -51,12 +45,7 @@
  * @ingroup Notify
  */
 #define NOTIFY_WARNING(fmt, ...) \
-{ \
-   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
-   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-   noti_warning_show(win_layout_get(), msg); \
-   free(msg); \
-}
+   WIN_NOTIFY_WARNING(win_layout_get(), fmt, ##__VA_ARGS__)
 
 /**
  * Show Information Notification with formated message
@@ -64,12 +53,47 @@
  * @ingroup Notify
  */
 #define NOTIFY_INFO(time, fmt, ...) \
+   WIN_NOTIFY_INFO(win_layout_get(), time, fmt, ##__VA_ARGS__)
+
+/**
+ * Show Error Notification with formated message in given window
+ *
+ * @ingroup Notify
+ */
+#define WIN_NOTIFY_ERROR(win, fmt, ...) \
 { \
    char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
    snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
-   noti_info_show(win_layout_get(), msg, time); \
+   noti_error_show(win, msg); \
    free(msg); \
 }
+
+/**
+ * Show Warning Notification with formated message in given window
+ *
+ * @ingroup Notify
+ */
+#define WIN_NOTIFY_WARNING(win, fmt, ...) \
+{ \
+   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+   noti_warning_show(win, msg); \
+   free(msg); \
+}
+
+/**
+ * Show Information Notification with formated message in given window
+ *
+ * @ingroup Notify
+ */
+#define WIN_NOTIFY_INFO(win, time, fmt, ...) \
+{ \
+   char *msg = mem_malloc(BUFF_MAX * sizeof(char)); \
+   snprintf(msg, BUFF_MAX, fmt, ##__VA_ARGS__); \
+   noti_info_show(win, msg, time); \
+   free(msg); \
+}
+
 
 /**
  * Show notification with some 'error' related message.

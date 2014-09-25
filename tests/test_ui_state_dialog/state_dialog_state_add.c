@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_ui_state_dialog.h"
@@ -45,10 +44,11 @@
  * @step 5 open edj project
  * @step 6 get a canvas form win
  * @step 7 add and load data of style to the project structure
- * @step 8 get the firs part from style
- * @step 9 add state list to app data
- * @step 10 set state list with data from edj project
- * @step 11 set block state list with data from state_list
+ * @step 8 set style as current
+ * @step 9 get the first part from style
+ * @step 10 add state list to app data
+ * @step 11 set state list with data from edj project
+ * @step 12 set block state list with data from state_list
  *
  * @procedure
  * @step 1 Call function state_dialog_state_add(app_data).
@@ -69,17 +69,17 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    Evas_Object *popup, *state_list;
    Style *style = NULL;
    Part *part = NULL;
-   const char *name, *path;
+   const char *path;
 
-   name = "UTC";
    path = "./edj_build/state_dialog_state_add.edj";
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   app_data->project = pm_open_project_edj(name, path);
+   app_data->project = pm_open_project_edj(path);
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, canvas, path);
+   app_data->project->current_style = style;
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);
    ui_states_list_data_set(state_list, style, part);
@@ -123,7 +123,7 @@ EFLETE_TEST (state_dialog_state_add_test_n1)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    popup = state_dialog_state_add(app_data);
    ck_assert_msg(popup == NULL, "It create popup with 'state dialog' without creating main window");
@@ -196,7 +196,7 @@ EFLETE_TEST (state_dialog_state_add_test_n3)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    popup = state_dialog_state_add(app_data);

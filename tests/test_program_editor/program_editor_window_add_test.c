@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_program_editor.h"
@@ -64,7 +63,7 @@ EFLETE_TEST (program_editor_window_add_test_p)
    Style *style;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
    e = evas_object_evas_get(win);
@@ -82,7 +81,7 @@ EFLETE_TEST (program_editor_window_add_test_p)
 END_TEST
 
 /**
- * @addtogroup program_editor_window
+ * @addtogroup program_editor_window_add
  * @{
  * <tr>
  * <td>program_editor_window_add</td>
@@ -114,7 +113,7 @@ EFLETE_TEST (program_editor_window_add_test_n1)
    Style *style;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
@@ -128,10 +127,10 @@ EFLETE_TEST (program_editor_window_add_test_n1)
 END_TEST
 
 /**
- * @addtogroup program_editor_window
+ * @addtogroup program_editor_window_add
  * @{
  * <tr>
- * <td>program_editor_window</td>
+ * <td>program_editor_window_add</td>
  * <td>program_editor_window_add_test_n2</td>
  * <td>
  * @precondition
@@ -156,7 +155,7 @@ EFLETE_TEST (program_editor_window_add_test_n2)
    App_Data *app;
 
    app_init();
-   app = app_create();
+   app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
 
@@ -169,7 +168,7 @@ EFLETE_TEST (program_editor_window_add_test_n2)
 END_TEST
 
 /**
- * @addtogroup program_editor_window
+ * @addtogroup program_editor_window_add
  * @{
  * </TABLE>
  * @}

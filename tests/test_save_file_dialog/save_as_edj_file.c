@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_save_file_dialog.h"
@@ -61,7 +60,7 @@ EFLETE_TEST (save_as_edj_file_test_n1)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    result = save_as_edj_file(app_data);
@@ -104,8 +103,8 @@ EFLETE_TEST (save_as_edj_file_test_n2)
    const char *path = "./edj_build/save_as_edj_file.edj";
 
    app_init();
-   app_data = app_create();
-   ui_edj_load_done(app_data, path);
+   app_data = app_data_get();
+   ui_edj_load(app_data, path);
 
    result = save_as_edj_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Save as edj' dialog was created");

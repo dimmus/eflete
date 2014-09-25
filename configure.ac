@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [2], [0])
+EFLETE_VERSION([0], [3], [99], [dev])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -8,12 +8,12 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
-AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests])
+AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
-m4_define([efl_version], [1.10.0])
-m4_define([elm_version], [1.10.0])
-m4_define([ewe_version], [0.1.0])
+m4_define([efl_version], [1.11.0])
+m4_define([elm_version], [1.11.0])
+m4_define([ewe_version], [0.2.0])
 
 EFLETE_INIT
 AC_CONFIG_HEADERS([eflete_config.h])
@@ -97,7 +97,7 @@ AM_COND_IF([CHECK_FOUND],
 
 #Usage: EFLETE_WITH_BIN(package, binary, default_value). See eflete_binary.m4
 EFLETE_WITH_BIN([edje], [edje_cc], [edje_cc])
-
+EFLETE_WITH_BIN([eet], [eet-eet], [eet])
 dnl locale, gettext
 AM_GNU_GETTEXT_VERSION(0.18.1)
 AM_GNU_GETTEXT([external])
@@ -131,6 +131,7 @@ EFLETE_DEFINE=" -DEFLETE_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
+EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/resources.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SWAP_PATH=\\\"${HOME}/.eflete/swap/\\\" "
 AC_SUBST([EFLETE_DEFINE])
@@ -179,8 +180,7 @@ echo "  run tests......: ${run_test}"
 echo ""
 echo "Debug output.....: ${want_eflete_debug}"
 echo ""
-echo "Installation.....: cd build"
-echo "                   make install (as root if needed, with 'su' or 'sudo')"
+echo "Installation.....: make install (as root if needed, with 'su' or 'sudo')"
 echo "  CFLAGS.........: ${CFLAGS}"
 echo "  LDFLAGS........: ${LDFLAGS}"
 echo "  prefix.........: ${prefix}"

@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_project_manager.h"
@@ -55,10 +54,9 @@
 EFLETE_TEST (pm_save_project_to_swap_test_p1)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_save_project_to_swap.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_save_project_to_swap(pro) == EINA_TRUE, "Can't save project to swap");
 
@@ -94,10 +92,9 @@ END_TEST
 EFLETE_TEST (pm_save_project_to_swap_test_p2)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_project_close.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
    Style *style = wm_style_object_find(pro->widgets, "elm/radio/base/def");
    style->isModify = true;
 

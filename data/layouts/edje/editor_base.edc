@@ -1,0 +1,37 @@
+group { name: "eflete/editor/default";
+   images {
+      image: "separator-horizontal.png" COMP;
+   }
+   parts {
+      part { name: "eflete.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel2 {
+               to_y: "editor.button_box.separator";
+               offset: -1 -5;
+            }
+         }
+      }
+      part { name: "editor.button_box.separator";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            max: -1 2;
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -5;
+               to_y: "eflete.swallow.button_box";
+            }
+            image.normal: "separator-horizontal.png";
+         }
+      }
+      part { name: "eflete.swallow.button_box";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 27;
+            max: -1 27;
+         }
+      }
+   }
+}

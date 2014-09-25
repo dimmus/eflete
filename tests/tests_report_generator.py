@@ -75,6 +75,8 @@ def gen_report(logs_dir, output_file):
 										i = i + 1
 									tmp_split = tmp_lines[i].split("</td><td>", 5)
 									for j in range(log_start, len(lines)):
+										result = "NOT RAN";
+										passed = '<td bgcolor="#FFFF00">Not ran</td>'
 										if test_id in lines[j]:
 											log_split = lines[j].split(':', 7)
 											if log_split[2] == 'P':
@@ -98,6 +100,7 @@ def gen_report(logs_dir, output_file):
 									i = i + 3
 							except IndexError:
 								print "Incorrect doc structure in \"" + tmp_file + "\""
+								print "  last test_id: " + test_id
 							out.write('<tr><td> </td></tr>')
 				except IOError:
 					print "There is no test log for \"" + tmp_file + "\""
@@ -109,6 +112,7 @@ def main():
 	parser.add_argument('html', help='path to the tests documentation directory')
 	parser.add_argument('log', help='path to the tests log directory')
 	parser.add_argument('-c', '--clean', action='store_true', help='removes all *.tmp files from current directory before processing')
+	parser.add_argument('-t', '--tmp', action='store_true', help='do not remove *.tmp files from current directory after processing')
 	parser.add_argument('-o', '--output', default='report.html', help='output file name. Default name: report.html')
 	args = parser.parse_args()
 	
@@ -127,9 +131,10 @@ def main():
 		return
 	walk_dirs(args.html)
 	gen_report(args.log, args.output)
-	for f in os.listdir('.'):
-		if not os.path.isdir(f) and f.endswith('.tmp'):
-			os.remove(f)
+	if not args.tmp:
+		for f in os.listdir('.'):
+			if not os.path.isdir(f) and f.endswith('.tmp'):
+				os.remove(f)
 
 if __name__ == '__main__':
 	main()

@@ -5,21 +5,20 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "colorclass_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
@@ -164,6 +163,7 @@ _on_ccl_editor_close(void *data,
      {
         GET_STYLE(ccl_edit->pr, style);
         if (style) style->isModify = true;
+        pm_project_changed(app_data_get()->project);
      }
 
    evas_object_del(ccl_edit->rect_color1);
@@ -222,6 +222,7 @@ _on_add_popup_btn_add(void *data,
    Colorclass_Item *it = NULL;
    Elm_Object_Item *glit_ccl = NULL;
    Evas_Object *edje_edit_obj = NULL;
+   App_Data *ap = app_data_get();
 
    it = (Colorclass_Item *)mem_calloc(1, sizeof(Colorclass_Item));
    it->name = elm_entry_entry_get(ccl_edit->entry);
@@ -244,6 +245,10 @@ _on_add_popup_btn_add(void *data,
    glit_ccl = elm_genlist_item_append(ccl_edit->genlist, _itc_ccl, it, NULL,
                                     ELM_GENLIST_ITEM_NONE, NULL, NULL);
    elm_genlist_item_selected_set(glit_ccl, EINA_TRUE);
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
    evas_object_del(ccl_edit->popup);
    ccl_edit->popup = NULL;
    _disable(EINA_FALSE, ccl_edit);
@@ -392,11 +397,17 @@ _on_btn_del(void *data,
 {
    Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
    Evas_Object *edje_edit_obj;
+   App_Data *ap = app_data_get();
    if (!ccl_edit->current_ccl) return;
    GET_OBJ(ccl_edit->pr, edje_edit_obj);
    edje_edit_color_class_del(edje_edit_obj, ccl_edit->current_ccl->name);
    Elm_Object_Item *it = elm_genlist_selected_item_get(ccl_edit->genlist);
    Elm_Object_Item *next = elm_genlist_item_next_get(it);
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
+
    if (!next) next = elm_genlist_item_prev_get(it);
    if (next)
       elm_genlist_item_selected_set(next, EINA_TRUE);
@@ -475,7 +486,7 @@ colorclass_viewer_add(Project *project)
    Evas_Object *scroller = NULL;
    Colorclasses_Editor *ccl_edit = NULL;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    if (!project)
      {

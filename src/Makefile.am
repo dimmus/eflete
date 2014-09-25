@@ -13,17 +13,19 @@ project_manager/widget_manager.c \
 project_manager/project_manager.c \
 logger/logger.c \
 config/config.c \
+external/syntax_color.c \
 ui/cursor.c \
-ui/ui_panes.c \
-ui/ui_menu.c \
-ui/ui_main_window.c \
-ui/ui_connector.c \
+ui/panes.c \
+ui/menu.c \
+ui/main_window.c \
+ui/connector.c \
 ui/container/container.c \
 ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
 ui/editors/colorclass_editor.c \
 ui/editors/program_editor.c \
+ui/dialogs/compile_dialog.c \
 ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
 ui/dialogs/part_dialog.c \
@@ -37,18 +39,43 @@ ui/blocks/ui_property.c \
 ui/blocks/ui_widget_list.c \
 ui/blocks/ui_signal_list.c \
 ui/blocks/ui_states_list.c \
-ui/workspace/ui_ruler.c \
 ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
 ui/workspace/highlight.c \
+ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
+ui/live_view/live_widget.c \
+ui/live_view/live_prog_edit.c \
+ui/live_view/elementary/live_widget_common.c \
+ui/live_view/elementary/live_custom_layout.c \
+ui/live_view/elementary/live_actionslider.c \
+ui/live_view/elementary/live_bg.c \
+ui/live_view/elementary/live_bubble.c \
+ui/live_view/elementary/live_button.c \
+ui/live_view/elementary/live_calendar.c \
+ui/live_view/elementary/live_check.c \
+ui/live_view/elementary/live_clock.c \
+ui/live_view/elementary/live_gengrid.c \
+ui/live_view/elementary/live_genlist.c \
+ui/live_view/elementary/live_label.c \
+ui/live_view/elementary/live_list.c \
+ui/live_view/elementary/live_notify.c \
+ui/live_view/elementary/live_panel.c \
+ui/live_view/elementary/live_panes.c \
+ui/live_view/elementary/live_radio.c \
+ui/live_view/elementary/live_scroller.c \
+ui/live_view/elementary/live_separator.c \
+ui/live_view/elementary/live_spinner.c \
+ui/live_view/elementary/live_toolbar.c \
+ui/live_view/elementary/live_naviframe.c \
 ui/notification/notify.c
 
 eflete_SOURCES  = main.c
 
 eflete_CPPFLAGS = \
 -I${top_srcdir}/src/alloc \
+-I${top_srcdir}/src/external \
 -I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
@@ -63,6 +90,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/notification \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/live_view \
+-I${top_srcdir}/src/ui/live_view/elementary \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @EWE_CFLAGS@ \

@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "groupedit_private.h"
@@ -315,15 +314,6 @@ _key_up(void *data __UNUSED__,
 }
 
 static void
-_focus_set(void *data __UNUSED__,
-           Evas *e __UNUSED__,
-           Evas_Object *obj,
-           void *event_info __UNUSED__)
-{
-   evas_object_focus_set(obj, true);
-}
-
-static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -350,6 +340,7 @@ _unselect_part(void *data,
 static void
 _groupedit_smart_add(Evas_Object *o)
 {
+   Evas_Modifier_Mask mask;
    EVAS_SMART_DATA_ALLOC(o, Ws_Groupedit_Smart_Data)
 
    _groupedit_parent_sc->add(o);
@@ -383,8 +374,19 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);
 
-   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN,
-                                  _focus_set, NULL);
+   mask = evas_key_modifier_mask_get(evas_object_evas_get(o), "Alt");
+   /* we need to set key grabber with and without modifier mask because on keyup
+      Alt is considered an active modifier, but on keydown it is still not ative */
+   if (evas_object_key_grab(o, "Alt_L", 0, 0, false))
+     {
+        if (!evas_object_key_grab(o, "Alt_L", mask, 0, false))
+          evas_object_key_ungrab(o, "Alt_L", 0, 0); /* Removing keydown grab if we can't grab this key for KeyUp event */
+     }
+   if (evas_object_key_grab(o, "Alt_R", 0, 0, false))
+     {
+        if (!evas_object_key_grab(o, "Alt_R", mask, 0, false))
+          evas_object_key_ungrab(o, "Alt_R", 0, 0);
+     }
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
                                   _key_down, NULL);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP,
@@ -395,7 +397,7 @@ _groupedit_smart_add(Evas_Object *o)
    priv->con_size_min.h = 0;
    priv->con_size_max.w = -1;
    priv->con_size_max.h = -1;
-   priv->con_current_size = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
+   priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->edit_obj = NULL;
    priv->parts = NULL;
    priv->handler_TL_pressed = false;
@@ -404,7 +406,7 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_repeat_events_set(priv->obj_area.obj, true);
    priv->obj_area.visible = false;
    priv->obj_area.show_now = false;
-   priv->obj_area.geom = (Groupedit_Geom *)malloc(sizeof(Groupedit_Geom));
+   priv->obj_area.geom = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->separated = false;
    priv->selected = NULL;
    priv->to_select = NULL;
@@ -440,6 +442,8 @@ _groupedit_smart_del(Evas_Object *o)
 static void
 _groupedit_smart_show(Evas_Object *o)
 {
+   if (evas_object_visible_get(o)) return;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
    if (sd->separated)
@@ -462,6 +466,8 @@ _groupedit_smart_show(Evas_Object *o)
 static void
 _groupedit_smart_hide(Evas_Object *o)
 {
+   if (!evas_object_visible_get(o)) return;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    evas_object_hide(sd->handler_TL.obj);
@@ -480,6 +486,34 @@ _groupedit_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
    evas_object_color_set(sd->container, r, g, b, a);
    evas_object_color_set(sd->handler_TL.obj, r, g, b, a);
    evas_object_color_set(sd->handler_BR.obj, r, g, b, a);
+}
+
+
+static void
+_groupedit_smart_move(Evas_Object *o,
+                      Evas_Coord x,
+                      Evas_Coord y)
+{
+   Evas_Coord ox, oy;
+   Evas_Object *bg;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   _groupedit_parent_sc->move(o, x, y);
+
+   evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
+   if ((ox == x) && (oy == y)) return;
+
+   if (sd->separated)
+     {
+        bg = evas_object_image_source_get(sd->bg);
+        evas_object_geometry_get(bg, &ox, &oy, NULL, NULL);
+        evas_object_move(sd->bg, ox, oy);
+        if (sd->selected)
+          {
+             evas_object_geometry_get(sd->selected->item, &ox, &oy, NULL, NULL);
+             evas_object_move(sd->clipper, ox, oy);
+          }
+     }
 }
 
 static void
@@ -508,14 +542,17 @@ static void
 _groupedit_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord cw, ch, pw, ph;
+   Evas_Coord cw, ch, pw, ph, ow, oh;
    int htl_w, htl_h;
    int hrb_w, hrb_h;
    char buff[16];
 
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
+   evas_object_geometry_get(priv->obj, NULL, NULL, &ow, &oh);
    evas_object_geometry_get(priv->parent, NULL, NULL, &pw, &ph);
-   evas_object_resize(priv->event, pw, ph);
+   if (ow < pw) ow = pw;
+   if (oh < ph) oh = ph;
+   evas_object_resize(priv->event, ow, oh);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
    htl_w = priv->handler_TL.w;
@@ -563,7 +600,6 @@ _groupedit_smart_calculate(Evas_Object *o)
 
    _parts_recalc(priv);
 
-   evas_object_focus_set(o, true);
    evas_object_smart_callback_call(o, SIG_CHANGED, (void *)priv->con_current_size);
 }
 
@@ -580,6 +616,7 @@ _groupedit_smart_set_user(Evas_Smart_Class *sc)
    sc->color_set = _groupedit_smart_color_set;
 
    /* clipped smart object has no hook on resizes or calculations */
+   sc->move = _groupedit_smart_move;
    sc->resize = _groupedit_smart_resize;
    sc->calculate = _groupedit_smart_calculate;
 }
@@ -833,6 +870,24 @@ groupedit_edit_object_part_below(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
+groupedit_edit_object_part_move_above(Evas_Object *obj,
+                                      const char *part,
+                                      const char *above)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return _edit_object_part_restack_above(sd, part, above);
+}
+
+Eina_Bool
+groupedit_edit_object_part_move_below(Evas_Object *obj,
+                                      const char *part,
+                                      const char *below)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return _edit_object_part_restack_below(sd, part, below);
+}
+
+Eina_Bool
 groupedit_edit_object_part_state_set(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
@@ -850,11 +905,34 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
                                      const char *state, double value)
 {
    Eina_Bool ret;
+   const char *img = NULL;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if ((!part) || (!state)) return false;
 
    ret = edje_edit_state_add(sd->edit_obj, part, state, value);
    ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state, value);
+   img = edje_edit_state_image_get(sd->edit_obj, part, "default", 0.0);
+   edje_edit_state_image_set(sd->edit_obj, part, state, value, img);
+
+   if (ret) evas_object_smart_changed(sd->obj);
+   return ret;
+}
+
+Eina_Bool
+groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
+                                      const char *state_from, double value_from,
+                                      const char *state_to, double value_to)
+{
+   Eina_Bool ret;
+   const char *img = NULL;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state_from) || (!state_to)) return false;
+
+   ret = edje_edit_state_copy(sd->edit_obj, part, state_from, value_from,
+                              state_to, value_to);
+   ret &= edje_edit_part_selected_state_set(sd->edit_obj, part, state_to, value_to);
+   img = edje_edit_state_image_get(sd->edit_obj, part, state_from, value_from);
+   edje_edit_state_image_set(sd->edit_obj, part, state_to, value_to, img);
 
    if (ret) evas_object_smart_changed(sd->obj);
    return ret;
@@ -924,7 +1002,6 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
              sd->to_select = sd->selected;
              sd->selected = NULL;
           }
-        _select_item_move_to_top(sd);
      }
    else
      {
@@ -932,7 +1009,8 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
         /* emit the signal that the groupedit returned to the normal mode.
            send the name of selected item(part), for hilight and widget list
            events. */
-        DBG("%s", sd->selected ? sd->selected->name : NULL);
+        DBG("Separate mod off; selected part is %s",
+            sd->selected ? sd->selected->name : NULL);
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE, NULL);
         _selected_item_return_to_place(sd);
      }
@@ -983,10 +1061,21 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
 Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {
+   int w, h;
+
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!bg) return false;
 
-   sd->bg = bg;
+   sd->bg = evas_object_image_filled_add(sd->e);
+   sd->clipper = evas_object_rectangle_add(sd->e);
+
+   evas_object_geometry_get(bg, NULL, NULL, &w, &h);
+   evas_object_image_source_set(sd->bg, bg);
+   evas_object_resize(sd->bg, w, h);
+
+   evas_object_smart_member_add(sd->bg, obj);
+   evas_object_smart_member_add(sd->clipper, obj);
+
    return true;
 }
 
@@ -996,7 +1085,8 @@ groupedit_bg_unset(Evas_Object *obj)
    Evas_Object *bg;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
-   bg = sd->bg;
+   bg = evas_object_image_source_get(sd->bg);
+   evas_object_del(sd->bg);
    sd->bg = NULL;
 
    return bg;

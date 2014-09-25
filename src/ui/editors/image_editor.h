@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef IMAGE_EDITOR_H
@@ -77,6 +76,13 @@ image_editor_file_choose(Evas_Object *win, const char *selected);
  * @param data Data that will be passed into given function.
  *
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @note In callback function will be passed different types of data, in depends
+ *   of selection mode which set for image editor. For SINGLE mode in event_info
+ *   param of callback function will be send (const char *) string with name of
+ *   selected image. In case when image editor was created with MULTIPLE mode,
+ *   in event info will be passed (Eina_List *) names list of selected images.
+ *   User  should free received list with eina_list_free, after using.
  *
  * @ingroup ImageEditor
  */

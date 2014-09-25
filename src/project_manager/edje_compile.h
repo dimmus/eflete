@@ -1,21 +1,21 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef EDJE_COMPILE_H
@@ -33,17 +33,29 @@
 #include <Ecore.h>
 #include "logger.h"
 
-typedef void (*Edje_Compile_Log_Cb)(time_t, Eina_Stringshare*, int type);
+/**
+ * @typedef Edje_Compile_Log_Cb
+ *
+ * @param time_t Time stamp of log message;
+ * @param Eina_Stringshare The message string;
+ * @param type The result type.
+ *
+ * @ingroup ProjectManager
+ */
+typedef void (* Edje_Compile_Log_Cb)(time_t, Eina_Stringshare*, int type);
 
 /**
  * Compile a edc file.
  *
- * @param edc Path to input edc file. returns -1 if param is NULL or ""
- * @param edj Path to output edj file. returns -2 if param is NULL or ""
- * @param image_directory Path to a image directory of a project.
- * @param font_directory Path to a font directory of a project.
- * @param sound_direcotory Path to a sound directory of a project.
- * @return edje_cc exit code
+ * @param edc Path to input edc file. returns -1 if param is NULL or "";
+ * @param edj Path to output edj file. returns -2 if param is NULL or "";
+ * @param image_directory Path to a image directory of a project;
+ * @param font_directory Path to a font directory of a project;
+ * @param sound_direcotory Path to a sound directory of a project;
+ * @param log_cb This callback will be called after every line returned from
+ *        edje_cc.
+ *
+ * @return edje_cc exit code.
  *
  * @ingroup EdjeCompile
  */
@@ -58,9 +70,12 @@ compile(const char *edc,
 /**
  * Decompile a edj file.
  *
- * @param edj Path to input edj file. returns -1 if param is NULL or ""
- * @param edc Path to output folder. returns -2 if param is NULL or ""
- * @return edje_cc exit code
+ * @param edj Path to input edj file. returns -1 if param is NULL or "";
+ * @param edc Path to output folder. returns -2 if param is NULL or "";
+ * @param log_cb This callback will be called after every line returned from
+ *        edje_dec.
+ *
+ * @return edje_cc exit code.
  *
  * @ingroup EdjeCompile
  */

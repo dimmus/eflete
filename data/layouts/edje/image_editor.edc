@@ -1,0 +1,403 @@
+#define MARGIN_SPACERS_SIZE_SET SET_SIZE(5, 5)
+#define PADDING_SPACERS_SIZE_SET SET_SIZE(5, 5)
+#define BTNS_LARGE_SIZE_SET SET_SIZE(80, 25)
+#define BTNS_SMALL_SIZE_SET SET_SIZE(25, 25)
+
+group { name: "eflete/image_editor/default";
+   images {
+      image: "focus-outer-glow.png" COMP;
+      image: "separator-horizontal.png" COMP;
+   }
+   parts{
+      part { name: "image_editor_bottom_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(10, 10);
+         }
+      }
+      part { name: "eflete_image_info_area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 400 400;
+            max: 400 -1;
+            rel2 {
+               to_y: "image_editor_bottom_padding";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "image_info_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(16, 10);
+            rel1.to: "eflete_image_info_area";
+            rel2.to: "eflete_image_info_area";
+         }
+      }
+      part { name: "eflete.swallow.image_info";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: 400 -1;
+            rel1 {
+               to: "image_info_padding";
+               relative: 1.0 1.0;
+            }
+            rel2.to: "eflete_image_info_area";
+         }
+      }
+      part { name: "eflete_images_template_area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel2 {
+               to_x: "eflete_image_info_area";
+               to_y: "image_editor_bottom_padding";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "eflete_edit_area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 0.0;
+            min: 40 40;
+            max: -1 40;
+            rel1.to: "eflete_images_template_area";
+            rel2 {
+               to: "eflete_images_template_area";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "eflete_search_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            MARGIN_SPACERS_SIZE_SET;
+            rel1.to: "eflete_edit_area";
+            rel2 {
+               to: "eflete.swallow.add_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.search_area";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            max: 600 30;
+            rel1.to: "eflete_edit_area";
+            rel2 {
+               to: "eflete_search_spacer";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.del_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            BTNS_SMALL_SIZE_SET;
+            rel1.to: "eflete_edit_area";
+            rel2.to: "eflete_edit_area";
+         }
+      }
+      part { name: "eflete_edit_btns_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            PADDING_SPACERS_SIZE_SET;
+            rel1.to: "eflete_edit_area";
+            rel2 {
+               to: "eflete.swallow.del_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.add_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            BTNS_SMALL_SIZE_SET;
+            rel1.to: "eflete_edit_area";
+            rel2 {
+               to: "eflete_edit_btns_spacer";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.grid";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_y: "eflete_edit_area";
+               to_x: "eflete_images_template_area";
+               relative: 0.0 1.0;
+            }
+            rel2.to: "eflete_images_template_area";
+         }
+      }
+   }
+}
+
+group { name: "eflete/image_editor/usage_info";
+   parts {
+      part { name: "eflete.swallow.search_line";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 80 30;
+            rel2 {
+               to_x: "search_line_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "search_line_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            PADDING_SPACERS_SIZE_SET;
+            rel1 {
+               to_y: "eflete.swallow.search_line";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.genlist";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               to_y: "search_line_padding";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "search_line_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "genlist_decorations";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            color: DARK_GREY_BG_COLOR;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+            rel1.to: "eflete.swallow.genlist";
+            rel2.to: "eflete.swallow.genlist";
+         }
+      }
+   }
+}
+
+group { name: "eflete/image_editor/image_preview";
+   parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(360, 360);
+         }
+      }
+      part { name: "image_decoration";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.0;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            image {
+               normal: "focus-outer-glow.png";
+               border: 3 3 3 3;
+               middle: NONE;
+            }
+            color: DARK_GREY_BG_COLOR;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "image_padding_top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            PADDING_SPACERS_SIZE_SET;
+            rel1.to: "image_decoration";
+            rel2.to: "image_decoration";
+         }
+      }
+      part { name: "image_padding_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            PADDING_SPACERS_SIZE_SET;
+            rel1.to: "image_decoration";
+            rel2.to: "image_decoration";
+         }
+      }
+      part { name: "eflete.swallow.image";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "image_padding_top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "image_padding_bottom";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+   }
+}
+
+group { name: "eflete/image_editor/buttons_box";
+   parts{
+      part { name: "eflete.swallow.close_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            BTNS_LARGE_SIZE_SET;
+         }
+      }
+      part { name: "eflete_ok_btn_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            MARGIN_SPACERS_SIZE_SET;
+            rel2 {
+               to: "eflete.swallow.close_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.ok_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            BTNS_LARGE_SIZE_SET;
+            rel2 {
+               to: "eflete_ok_btn_spacer";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+   }
+}
+
+#undef MARGIN_SPACERS_SIZE
+#undef BTNS_LARGE_SIZE
+#undef BTNS_SMALL_SIZE
+
+group { name: "eflete/image_editor/item/default";
+   styles {
+      style {
+         name: "image_editor_label";
+         base: "font="FN" font_size=12 color=#dfdbd2 align=left";
+       }
+   }
+   parts {
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 40 30;
+            max: -1 30;
+         }
+      }
+      part { name: "margin_top_left";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            PADDING_SPACERS_SIZE_SET;
+            align: 0.0 0.0;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "margin_bottom_right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            PADDING_SPACERS_SIZE_SET;
+            align: 1.0 1.0;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "item.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "margin_top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "margin_bottom_right";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      /* Label area: swallow for image/icon and textblock */
+      part { name: "label.area";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "item.area";
+            rel2 {
+               to: "item.area";
+               relative: 0.3 1.0;
+            }
+         }
+      }
+      part { name: "label.area.spacer";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            PADDING_SPACERS_SIZE_SET
+            align: 0.0 0.0;
+            rel1 {
+               to: "label.area";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "item.area";
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            text {
+               style: "prop_item_label";
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1.to: "item.area";
+            rel2.to: "item.area";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "label.area.spacer";
+               to_y: "item.area";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "item.area";
+         }
+      }
+   }
+}
+
+#undef PADDING_SPACERS_SIZE_SET

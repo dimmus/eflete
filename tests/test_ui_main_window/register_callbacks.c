@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_ui_main_window.h"
@@ -69,9 +68,9 @@ EFLETE_TEST (register_callbacks_test_p)
    const char *edj_path = "./edj_build/register_callbacks.edj";
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   project = pm_open_project_edj("UTC", edj_path);
+   project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(app_data->win);
    ui_widget_list_data_set(widget_list, project);
    ui_block_widget_list_set(app_data, widget_list);
@@ -117,7 +116,7 @@ EFLETE_TEST (register_callbacks_test_n1)
    Eina_Bool result = EINA_FALSE;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    result = register_callbacks(app_data);
    ck_assert_msg(result == EINA_FALSE, "Callbacks were registered!");

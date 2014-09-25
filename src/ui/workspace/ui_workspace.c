@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include <ui_workspace.h>
@@ -69,10 +68,14 @@ struct _Ws_Smart_Data
                                    like mouse move or mouse click. */
    Evas_Object *background;      /**< A backround image, \
                                    which swallowed into scroller.*/
-   Evas_Object *ruler_hor;       /**< A ruler object, which created and \
-                                   managed with ui_ruler API. Horizontal.*/
-   Evas_Object *ruler_ver;       /**< A ruler object, which created and \
-                                   managed with ui_ruler API. Vertical.*/
+   Evas_Object *ruler_hor;       /**< A ruler object, Horizontal.*/
+   Ewe_Ruler_Scale *scale_rel_hor;/** <Pointer to relative scale of horizontal \
+                                    ruler. */
+   Ewe_Ruler_Marker *pointer_hor;/** <Pointer to marker on horizontal ruler */
+   Evas_Object *ruler_ver;       /**< A ruler object, Vertical.*/
+   Ewe_Ruler_Scale *scale_rel_ver;/** <Pointer to relative scale of vertical \
+                                    ruler. */
+   Ewe_Ruler_Marker *pointer_ver;/** <Pointer to marker on vertical ruler */
    Evas_Object *scroller;        /**< A scroler with 'eflete/workspace' style. \
                                    Implement scrollable interface.*/
    char scroll_flag;             /**< Needed for control drag bar's in scroller*/
@@ -259,55 +262,51 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
 
 static void
 _ws_ruler_toggle_cb(void *data __UNUSED__,
-               Evas_Object *obj,
-               void *event_info)
+                    Evas_Object *obj,
+                    void *event_info)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
    char *data_info = (char *)event_info;
 
    if (!strcmp(data_info, "rulers"))
      {
-        if (ui_ruler_visible_get(sd->ruler_hor))
+        if (evas_object_visible_get(sd->ruler_hor))
           {
-             elm_layout_signal_emit(sd->scroller, "rulers,hide", "eflete");
              elm_menu_item_icon_name_set(sd->menu.items.rulers_enable, "");
-             ui_ruler_hide(sd->ruler_hor);
-             ui_ruler_hide(sd->ruler_ver);
+             elm_layout_signal_emit(sd->scroller, "rulers,hide", "eflete");
           }
         else
           {
-             ui_ruler_show(sd->ruler_hor);
-             ui_ruler_show(sd->ruler_ver);
              elm_menu_item_icon_name_set(sd->menu.items.rulers_enable, EFLETE_IMG_PATH"context_menu-check.png");
              elm_layout_signal_emit(sd->scroller, "rulers,show", "eflete");
           }
      }
    else if (!strcmp(data_info, "abs"))
      {
-        ui_ruler_scale_absolute_visible_set(sd->ruler_hor, true);
-        ui_ruler_scale_absolute_visible_set(sd->ruler_ver, true);
-        ui_ruler_scale_relative_visible_set(sd->ruler_hor, false);
-        ui_ruler_scale_relative_visible_set(sd->ruler_ver, false);
+        ewe_ruler_scale_visible_set(sd->ruler_hor, NULL, true);
+        ewe_ruler_scale_visible_set(sd->ruler_ver, NULL, true);
+        ewe_ruler_scale_visible_set(sd->ruler_hor, sd->scale_rel_hor, false);
+        ewe_ruler_scale_visible_set(sd->ruler_ver, sd->scale_rel_ver, false);
         elm_menu_item_icon_name_set(sd->menu.items.rulers_abs, EFLETE_IMG_PATH"context_menu-bullet.png");
         elm_menu_item_icon_name_set(sd->menu.items.rulers_rel, "");
         elm_menu_item_icon_name_set(sd->menu.items.rulers_both, "");
      }
    else if (!strcmp(data_info, "rel"))
      {
-        ui_ruler_scale_absolute_visible_set(sd->ruler_hor, false);
-        ui_ruler_scale_absolute_visible_set(sd->ruler_ver, false);
-        ui_ruler_scale_relative_visible_set(sd->ruler_hor, true);
-        ui_ruler_scale_relative_visible_set(sd->ruler_ver, true);
+        ewe_ruler_scale_visible_set(sd->ruler_hor, NULL, false);
+        ewe_ruler_scale_visible_set(sd->ruler_ver, NULL, false);
+        ewe_ruler_scale_visible_set(sd->ruler_hor, sd->scale_rel_hor, true);
+        ewe_ruler_scale_visible_set(sd->ruler_ver, sd->scale_rel_ver, true);
         elm_menu_item_icon_name_set(sd->menu.items.rulers_abs, "");
         elm_menu_item_icon_name_set(sd->menu.items.rulers_rel, EFLETE_IMG_PATH"context_menu-bullet.png");
         elm_menu_item_icon_name_set(sd->menu.items.rulers_both, "");
      }
    else if (!strcmp(data_info, "abs&rel"))
      {
-        ui_ruler_scale_absolute_visible_set(sd->ruler_hor, true);
-        ui_ruler_scale_absolute_visible_set(sd->ruler_ver, true);
-        ui_ruler_scale_relative_visible_set(sd->ruler_hor, true);
-        ui_ruler_scale_relative_visible_set(sd->ruler_ver, true);
+        ewe_ruler_scale_visible_set(sd->ruler_hor, NULL, true);
+        ewe_ruler_scale_visible_set(sd->ruler_ver, NULL, true);
+        ewe_ruler_scale_visible_set(sd->ruler_hor, sd->scale_rel_hor, true);
+        ewe_ruler_scale_visible_set(sd->ruler_ver, sd->scale_rel_ver, true);
         elm_menu_item_icon_name_set(sd->menu.items.rulers_abs, "");
         elm_menu_item_icon_name_set(sd->menu.items.rulers_rel, "");
         elm_menu_item_icon_name_set(sd->menu.items.rulers_both, EFLETE_IMG_PATH"context_menu-bullet.png");
@@ -328,11 +327,8 @@ _ws_ruler_abs_zero_move_cb(void *data,
    int cross_size = 0;
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &cross_size);
 
-   ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, ge_geom->x - cross_size);
-   ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, ge_geom->y - cross_size);
-
-   ui_ruler_redraw(sd->ruler_hor);
-   ui_ruler_redraw(sd->ruler_ver);
+   ewe_ruler_zero_offset_set(sd->ruler_hor, NULL, ge_geom->x - cross_size);
+   ewe_ruler_zero_offset_set(sd->ruler_ver, NULL, ge_geom->y - cross_size);
 }
 
 static void
@@ -347,14 +343,13 @@ _ws_ruler_rel_zero_move_cb(void *data,
    int cross_size = 0;
    evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &cross_size);
 
+   ewe_ruler_zero_offset_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->x - cross_size);
+   /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
+   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->w / 2);
 
-   ui_ruler_scale_relative_position_set(sd->ruler_hor, ge_geom->x - cross_size,
-                                        ge_geom->x + ge_geom->w - cross_size);
-   ui_ruler_scale_relative_position_set(sd->ruler_ver, ge_geom->y - cross_size,
-                                        ge_geom->y + ge_geom->h - cross_size);
-
-   ui_ruler_redraw(sd->ruler_hor);
-   ui_ruler_redraw(sd->ruler_ver);
+   ewe_ruler_zero_offset_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->y - cross_size);
+   /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
+   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->h / 2);
 }
 
 static void
@@ -379,11 +374,14 @@ _ws_smart_mouse_move_cb(void *data, Evas *e,
                   void *event_info __UNUSED__)
 {
    int x, y;
+   int dx, dy;
    Evas_Object *ws = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(ws, sd, RETURN_VOID)
    evas_pointer_output_xy_get(e, &x, &y);
-   ui_ruler_pointer_pos_set(sd->ruler_hor, x);
-   ui_ruler_pointer_pos_set(sd->ruler_ver, y);
+   evas_object_geometry_get(sd->ruler_hor, &dx, NULL, NULL, NULL);
+   evas_object_geometry_get(sd->ruler_ver, NULL, &dy, NULL, NULL);
+   ewe_ruler_marker_absolute_set(sd->ruler_hor, sd->pointer_hor, x - dx);
+   ewe_ruler_marker_absolute_set(sd->ruler_ver, sd->pointer_ver, y - dy);
 }
 
 static void
@@ -469,10 +467,8 @@ _sc_smart_move_cb(void *data,
    evas_object_geometry_get(sd->background, &bg_x, &bg_y, NULL, NULL);
    evas_object_geometry_get(sd->style->obj, &gs_x, &gs_y, &gs_w, &gs_h);
    cross_size -= bg_x;
-   ui_ruler_scale_absolute_position_zero_set(sd->ruler_hor, gs_x - bg_x - cross_size);
-   ui_ruler_scale_absolute_position_zero_set(sd->ruler_ver, gs_y - bg_y - cross_size);
-
-
+   ewe_ruler_zero_offset_set(sd->ruler_hor, NULL, gs_x - bg_x - cross_size);
+   ewe_ruler_zero_offset_set(sd->ruler_ver, NULL, gs_y - bg_y - cross_size);
 
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit))
        && (sd->scroll_flag < 2))
@@ -482,34 +478,14 @@ _sc_smart_move_cb(void *data,
    sd->scroll_flag = 0;
 
    evas_object_geometry_get(object_area, &gs_x, &gs_y, &gs_w, &gs_h);
-   ui_ruler_scale_relative_position_set(sd->ruler_hor, gs_x - bg_x - cross_size,
-                                        gs_x + gs_w - bg_x - cross_size);
-   ui_ruler_scale_relative_position_set(sd->ruler_ver, gs_y - bg_y - cross_size,
-                                        gs_y + gs_h - bg_y - cross_size);
-   ui_ruler_redraw(sd->ruler_hor);
-   ui_ruler_redraw(sd->ruler_ver);
 
-}
+   ewe_ruler_zero_offset_set(sd->ruler_hor, sd->scale_rel_hor, gs_x - bg_x - cross_size);
+   /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
+   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, gs_w / 2);
 
-static Eina_Bool
-_background_load(Evas_Object *image, const char *path)
-{
-   Evas_Load_Error err;
-   int w, h;
-   evas_object_image_file_set(image, path, NULL);
-   err = evas_object_image_load_error_get(image);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     {
-        ERR("Could not load image [%s]. Error is \"%s\"", path,
-            evas_load_error_str(err));
-        /* Load default background*/
-        evas_object_image_file_set(image, EFLETE_IMG_PATH"bg_demo.png", NULL);
-        return false;
-     }
-   evas_object_image_size_get(image, &w, &h);
-   evas_object_image_filled_set(image, false);
-   evas_object_image_fill_set(image, 0, 0, w, h);
-   return true;
+   ewe_ruler_zero_offset_set(sd->ruler_ver, sd->scale_rel_ver, gs_y - bg_y - cross_size);
+   /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
+   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, gs_h / 2);
 }
 
 static Eina_Bool
@@ -538,28 +514,20 @@ workspace_zoom_factor_get(Evas_Object *obj)
    return sd->zoom.factor;
 }
 
-Eina_Bool
-workspace_background_image_set(Evas_Object *obj, const char *path)
-{
-   if (!path) return false;
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
-
-   if (!sd->background) return false;
-   if (!_background_load(sd->background, path)) return false;
-   return true;
-}
-
 static void
 _ws_mouse_move_cb(void *data, Evas *e,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
    int x, y;
+   int dx, dy;
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
    evas_pointer_output_xy_get (e, &x, &y);
-   ui_ruler_pointer_pos_set(sd->ruler_hor, x);
-   ui_ruler_pointer_pos_set(sd->ruler_ver, y);
+   evas_object_geometry_get(sd->ruler_hor, &dx, NULL, NULL, NULL);
+   evas_object_geometry_get(sd->ruler_ver, NULL, &dy, NULL, NULL);
+   ewe_ruler_marker_absolute_set(sd->ruler_hor, sd->pointer_hor, x - dx);
+   ewe_ruler_marker_absolute_set(sd->ruler_ver, sd->pointer_ver, y - dy);
 }
 
 static void
@@ -666,8 +634,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    evas_object_smart_member_add(priv->layout, o);
 
    /* Here create evas image, whitch will be background for workspace*/
-   priv->background = evas_object_image_filled_add(e);
-   _background_load(priv->background, EFLETE_IMG_PATH"bg_demo.png");
+   GET_IMAGE(priv->background, e, "bg_demo");
    evas_object_smart_member_add(priv->background, o);
 
    /* Clipper needed for check mouse events*/
@@ -702,9 +669,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
    elm_object_style_set(priv->button_separate, "eflete/simple");
-   icon = elm_icon_add(priv->scroller);
-   elm_image_file_set(icon, EFLETE_IMG_PATH"icon-separate.png", NULL);
-   elm_image_no_scale_set(icon, true);
+   GET_IMAGE(icon, priv->scroller, "icon-separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
                                   _separate_smart_on_click, o);
@@ -719,19 +684,24 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_object_part_content_set(priv->scroller, "cross.swallow",
                                priv->button_separate);
 
-   /* create rulers, using ui_ruler.h API*/
-   priv->ruler_hor = ui_ruler_add(priv->scroller);
-   elm_object_part_content_set(priv->scroller, "ruler.swallow.hor", priv->ruler_hor);
+   /* create rulers*/
+#define RULER(RUL, SCAL, POINT, SWALL) \
+   RUL = ewe_ruler_add(priv->scroller); \
+   SCAL = ewe_ruler_scale_add(RUL, "relative"); \
+   ewe_ruler_format_set(RUL, SCAL, "%.1f"); \
+   ewe_ruler_scale_visible_set(RUL, SCAL, false); \
+   ewe_ruler_value_step_set(RUL, SCAL, 0.5); \
+   POINT = ewe_ruler_marker_add(RUL, "pointer"); \
+   elm_object_part_content_set(priv->scroller, SWALL, RUL); \
+   evas_object_smart_member_add(RUL, o);
+
+   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "ruler.swallow.hor");
+   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "ruler.swallow.ver");
+   ewe_ruler_horizontal_set(priv->ruler_ver, false);
    evas_object_smart_callback_add(o, "ruler,toggle",
                                   _ws_ruler_toggle_cb, NULL);
-   evas_object_smart_member_add(priv->ruler_hor, o);
 
-
-   priv->ruler_ver = ui_ruler_add(priv->scroller);
-   ui_ruler_orient_set(priv->ruler_ver, VERTICAL);
-   elm_object_part_content_set(priv->scroller, "ruler.swallow.ver", priv->ruler_ver);
-   evas_object_smart_member_add(priv->ruler_ver, o);
-
+#undef RULER
    /* init context menu */
    _init_ctx_menu(priv, parent);
    evas_object_smart_member_add(priv->menu.obj, o);
@@ -771,6 +741,8 @@ _workspace_smart_del(Evas_Object *o)
 static void
 _workspace_smart_show(Evas_Object *o)
 {
+   if (evas_object_visible_get(o)) return;
+
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    evas_object_show(sd->button_separate);
@@ -780,9 +752,9 @@ _workspace_smart_show(Evas_Object *o)
    if (sd->groupedit)
      evas_object_show(sd->groupedit);
    if (sd->ruler_hor)
-     ui_ruler_show(sd->ruler_hor);
+     evas_object_show(sd->ruler_hor);
    if (sd->ruler_ver)
-     ui_ruler_show(sd->ruler_ver);
+     evas_object_show(sd->ruler_ver);
 
    evas_object_show(sd->background);
    _workspace_parent_sc->show(o);
@@ -791,11 +763,13 @@ _workspace_smart_show(Evas_Object *o)
 static void
 _workspace_smart_hide(Evas_Object *o)
 {
+   if (!evas_object_visible_get(o)) return;
+
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
    if (sd->groupedit) evas_object_hide(sd->groupedit);
-   if (sd->ruler_hor) ui_ruler_hide(sd->ruler_hor);
-   if (sd->ruler_ver) ui_ruler_hide(sd->ruler_ver);
+   if (sd->ruler_hor) evas_object_hide(sd->ruler_hor);
+   if (sd->ruler_ver) evas_object_hide(sd->ruler_ver);
 
    evas_object_hide(sd->button_separate);
    evas_object_hide(sd->scroller);
@@ -899,7 +873,6 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         evas_object_color_set(sd->groupedit, 0, 0, 0, 255);
      }
    else groupedit_edit_object_unset(sd->groupedit);
-   evas_object_focus_set(sd->groupedit, true);
    sd->style = style;
    elm_menu_item_icon_name_set(sd->menu.items.mode_normal,
                                EFLETE_IMG_PATH"context_menu-bullet.png");
@@ -1064,6 +1037,39 @@ workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
      }
 
    return groupedit_edit_object_part_state_add(sd->groupedit, part, state, value);
+}
+
+Eina_Bool
+workspace_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *rel_part,
+                                   Eina_Bool direct)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!part || !rel_part)
+     {
+        ERR("Input arguments wrong: part[%s] rel_part[%s]", part, rel_part);
+        return false;
+     }
+
+   if (!direct)
+      return groupedit_edit_object_part_move_above(sd->groupedit, part, rel_part);
+   else
+      return groupedit_edit_object_part_move_below(sd->groupedit, part, rel_part);
+}
+
+
+Eina_Bool
+workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
+                                     const char *state_from, double value_from,
+                                     const char *state_to, double value_to)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!state_from) || (!state_to))
+     return false;
+
+   return groupedit_edit_object_part_state_copy(sd->groupedit, part, state_from,
+                                               value_from, state_to, value_to);
 }
 
 Eina_Bool

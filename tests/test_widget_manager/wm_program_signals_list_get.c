@@ -5,24 +5,23 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_widget_manager.h"
 /**
  * @addtogroup widget_manager_test
  * @{
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * widget_manager
  * <TABLE>
@@ -30,10 +29,10 @@
  */
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_p1</td>
  * <td>
  * @precondition
@@ -45,7 +44,8 @@
  * @procedure
  * @step 1 Call function wm_program_signals_list_get(style).
  * @step 2 Check returned Signal List.
- * @step 3 Check Signal List's information.
+ * @step 3 Get second Signal from list.
+ * @step 4 Check Signal List's information.
  * </td>
  * <td>Style *style</td>
  * <td>All check's passed</td>
@@ -64,6 +64,7 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    Eina_List *sig_list;
+   Signal *sig = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
@@ -71,7 +72,11 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
    wm_style_data_load(style, e, edj);
    sig_list = wm_program_signals_list_get(style);
    ck_assert_msg(sig_list != NULL, "Signals list isn't exist.");
-   ck_assert_str_eq((char *)sig_list->next->data, "elm,state,radio,on");
+
+   sig = (Signal *)sig_list->next->data;
+   ck_assert_str_eq(sig->name, "elm,state,radio,on");
+   ck_assert_str_eq(sig->source, "elm");
+   ck_assert_str_eq(sig->program, "radio_on");
 
    wm_program_signals_list_free(sig_list);
    wm_style_free(style);
@@ -80,10 +85,10 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_p2</td>
  * <td>
  * @precondition
@@ -125,10 +130,10 @@ EFLETE_TEST (wm_program_signals_list_get_test_p2)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_n1</td>
  * <td>
  * @precondition
@@ -162,10 +167,10 @@ EFLETE_TEST (wm_program_signals_list_get_test_n1)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_get
+ * @addtogroup wm_program_signals_list_get
  * @{
  * <tr>
- * <td>wm_program_signal_list_get</td>
+ * <td>wm_program_signals_list_get</td>
  * <td>wm_program_signals_list_get_test_n2</td>
  * <td>
  * @precondition

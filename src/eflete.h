@@ -1,33 +1,32 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef EFLETE_H
 #define EFLETE_H
 
 /**
- * @defgroup ELM_MAIN ELM_MAIN
- * @ingroup EFLETE
+ * @defgroup Eflete EFL Edje Theme Editor
  *
  * The begging point of the programm
  * (contain starting function like main and
- *some functions that free/init base required components)
+ * some functions that free/init base required components)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -55,7 +54,7 @@
 #include <Eet.h>
 #include <Efreet.h>
 #include <Elementary.h>
-#include <ewe.h>
+#include <Ewe.h>
 #include "alloc.h"
 #include "logger.h"
 #include "project_manager.h"
@@ -73,7 +72,6 @@ struct _App_Data
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
-   Eina_Bool is_new;
    struct {
       Evas_Object *left;
       Evas_Object *right;
@@ -110,7 +108,7 @@ EAPI_MAIN int elm_main();
  * @return EINA_TRUE all libraries initialized succesfully.
  * EINA_FALSE one of the libraries was failed to inti.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Eina_Bool
 app_init(void);
@@ -123,7 +121,7 @@ app_init(void);
  * @return EINA_TRUE all libraries initialized succesfully.
  * EINA_FALSE one of the libraries was failed to inti.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Eina_Bool
 app_shutdown(void);
@@ -135,7 +133,7 @@ app_shutdown(void);
  *
  * @return win_layout if exist, NULL if not exist.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Evas_Object *
 win_layout_get(void);
@@ -145,29 +143,27 @@ win_layout_get(void);
  *
  * @return link to created empty App_Data.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 App_Data *
-app_create(void);
+app_data_get(void);
 
 /**
  * This function will free allocated memory used for App_Data.
  *
- * @param ap - App_Data of this program for removing before program shutdown.
- *
  * @return EINA_TRUE application data freed succesfully.
  * EINA_FALSE failed to free application data.
  *
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Eina_Bool
-app_free(App_Data *ap);
+app_free();
 
 /**
  * This function get pointer to main window of application.
  *
  * @return pointer to main window Evas_Object.
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Evas_Object *
 main_window_get(void);
@@ -177,9 +173,17 @@ main_window_get(void);
  * The colorselector one for the entire application.
  *
  * @return pointer to colorselector.
- * @ingroup EFLETE
+ * @ingroup Eflete
  */
 Evas_Object *
 colorselector_get(void);
+
+
+#define GET_IMAGE(IMG, PARENT, NAME) \
+{ \
+   IMG = edje_object_add(PARENT); \
+   if (!edje_object_file_set(IMG, EFLETE_RESOURCES, NAME)) \
+     ERR("Image with name \"%s\" was not found in resources\n", NAME); \
+}
 
 #endif /* EFLETE_H */

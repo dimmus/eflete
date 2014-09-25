@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef UI_WORKSPACE_H
@@ -35,8 +34,8 @@
 
 #include <Evas.h>
 #include <Elementary.h>
+#include <Ewe.h>
 #include "widget_manager.h"
-#include "ui_ruler.h"
 
 /**
  * Create a new Workspace object to the parent.
@@ -49,21 +48,6 @@
  */
 Evas_Object *
 workspace_add(Evas_Object *parent);
-
-/**
- * Set background image for workspace. If image file corrupt or have invalid
- * image format or extenstion, then will be set default background image
- * (transparency style). Background image will be tiled automaticaly.
- *
- * @param obj The workspace object.
- * @param path The path to the image file load from.
- *
- * @return EINA_TRUE, on success or EINA_FALSE, on errors.
- *
- * @ingroup Workspace
- */
-Eina_Bool
-workspace_background_image_set(Evas_Object *obj, const char *path);
 
 /**
  * Get the groupedit object, which loaded into workspace.
@@ -185,6 +169,23 @@ workspace_edit_object_part_above(Evas_Object *obj, const char *part);
 Eina_Bool
 workspace_edit_object_part_below(Evas_Object *obj, const char *part);
 
+/** Move the given part relative the next one.
+ *
+ * @param obj The workspace object.
+ * @param part Name of part, which will reordered.
+ * @param rel_part Name of part, which will be relative to reordering 'part'.
+ * @param direct If EINA_TRUE, part will restack below, otherwise part will
+ *   restack above rel_part.
+ *
+ * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
+ */
+
+Eina_Bool
+workspace_edit_object_part_restack(Evas_Object *obj,
+                                   const char *part,
+                                   const char *rel_part,
+                                   Eina_Bool direct);
+
 /**
  *
  */
@@ -194,6 +195,24 @@ workspace_edit_object_part_state_set(Evas_Object *obj, Part *part);
 Eina_Bool
 workspace_edit_object_part_state_add(Evas_Object *obj, const char *part,
                                      const char *state, double value);
+/**
+ * Copy new state for the give part, from another state of this part.
+ *
+ * @param obj The groupedit object,
+ * @param part Part that contain state.
+ * @param state_from to copy from (not including state value).
+ * @param value_from The value of the state to copy from.
+ * @param state_to copy into (not including state value).
+ * @param value_to The value of the state to copy into.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_part_state_copy(Evas_Object *obj, const char *part,
+                                     const char *state_from, double value_from,
+                                     const char *state_to, double value_to);
 
 Eina_Bool
 workspace_edit_object_part_state_del(Evas_Object *obj, const char *part,

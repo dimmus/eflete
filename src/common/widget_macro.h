@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef WIDGET_MACRO_H
@@ -26,7 +25,6 @@
 /* TODO: (refactoring) Style param in every widget define is needed. */
 #define DEFAULT_STYLE "eflete/default"
 
-#define FS_INWIN "fs_inwin"
 #define FS_TITLE "fs_title"
 
 #define ITEM_ADD(PARENT, ITEM, TEXT, STYLE) \
@@ -105,6 +103,12 @@
    evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_show(COMBOBOX);
 
+#define SEGMENT_CONTROL_ADD(PARENT, SC) \
+   SC = elm_segment_control_add(PARENT); \
+   evas_object_size_hint_weight_set(SC, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(SC, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_show(SC);
+
 #define CHECK_ADD(PARENT, CHECK, STYLE) \
    CHECK = elm_check_add(PARENT); \
    elm_object_style_set(CHECK, STYLE); \
@@ -112,9 +116,8 @@
    evas_object_size_hint_weight_set(CHECK, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(CHECK);
 
-#define IMAGE_ADD(PARENT, IMAGE, PATH) \
-   IMAGE = elm_image_add(PARENT); \
-   elm_image_file_set(IMAGE, PATH, NULL); \
+#define IMAGE_ADD(PARENT, IMAGE, NAME) \
+   GET_IMAGE(IMAGE, PARENT, NAME); \
    evas_object_size_hint_align_set(IMAGE, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(IMAGE, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(IMAGE);
@@ -133,10 +136,8 @@
    elm_image_no_scale_set(ICON, NOSCALE);\
    evas_object_show(ICON);
 
-#define ICON_ADD(PARENT, ICON, NOSCALE, FILE_NAME) \
-   ICON = elm_icon_add (PARENT);\
-   elm_image_file_set(ICON, FILE_NAME, NULL);\
-   elm_image_no_scale_set(ICON, NOSCALE);\
+#define ICON_ADD(PARENT, ICON, NOSCALE, NAME) \
+   GET_IMAGE(ICON, PARENT, NAME);\
    evas_object_show(ICON);
 
 #define HOVERSEL_ADD(PARENT, HOVERSEL, ISHORIZONTAL) \
@@ -146,18 +147,23 @@
    elm_hoversel_horizontal_set(HOVERSEL, ISHORIZONTAL); \
    evas_object_show(HOVERSEL);
 
-#define OPEN_DIALOG_ADD(INWIN, FILESELECTOR, DIALOGTITLE) \
-   mw_title_set(INWIN, DIALOGTITLE); \
-   evas_object_focus_set(INWIN, EINA_TRUE); \
-   FILESELECTOR = elm_fileselector_add(INWIN); \
-   evas_object_data_set(FILESELECTOR, FS_INWIN, INWIN); \
+#define MODAL_WINDOW_ADD(WIN, PARENT, TITLE, DEL_CB, CB_DATA) \
+   WIN = elm_win_add(PARENT, NULL, ELM_WIN_DIALOG_BASIC); \
+   elm_win_modal_set(WIN, true); \
+   elm_win_title_set(WIN, TITLE); \
+   evas_object_resize(WIN, 800, 600); \
+   evas_object_smart_callback_add(WIN, "delete,request", DEL_CB, CB_DATA); \
+   evas_object_show(WIN);
+
+#define FILESELECTOR_ADD(FILESELECTOR, PARENT, CALLBACK, DATA) \
+   FILESELECTOR = elm_fileselector_add(PARENT); \
    evas_object_size_hint_weight_set(FILESELECTOR, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(FILESELECTOR, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_fileselector_path_set(FILESELECTOR, getenv("HOME")); \
-   elm_fileselector_buttons_ok_cancel_set(FILESELECTOR, EINA_TRUE); \
-   elm_fileselector_expandable_set(FILESELECTOR, EINA_FALSE); \
+   elm_fileselector_buttons_ok_cancel_set(FILESELECTOR, true); \
+   elm_fileselector_expandable_set(FILESELECTOR, false); \
    elm_fileselector_mode_set(FILESELECTOR, ELM_FILESELECTOR_LIST); \
-   elm_win_inwin_content_set(INWIN, FILESELECTOR); \
+   evas_object_smart_callback_add(FILESELECTOR, "done", CALLBACK, DATA); \
+   evas_object_smart_callback_add(FILESELECTOR, "activated", CALLBACK, DATA); \
    evas_object_show(FILESELECTOR);
 
 #define RADIO_ADD(PARENT, RADIO, STATE, TEXT) \

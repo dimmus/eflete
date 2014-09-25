@@ -1,21 +1,21 @@
-/**
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef WIDGET_MANAGER_B_H
@@ -52,10 +52,10 @@
 #include "logger.h"
 
 /**
- * @enum _type
+ * @enum _Type
  * @ingroup WidgetManager
  */
-enum _type
+enum _Type
 {
     WIDGET = 0,
     CLASS,
@@ -65,10 +65,10 @@ enum _type
 };
 
 /**
- * @typedef type
+ * @typedef Type
  * @ingroup WidgetManager
  */
-typedef enum _type type;
+typedef enum _Type Type;
 
 /**
  * @typedef Part
@@ -111,7 +111,7 @@ struct _Part
     double curr_state_value; /**< Current selected part state value */
     Eina_Bool show; /**< Flag indicate current visibly part evas primitive */
     int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
-    type __type; /**< PART from enum @_type */
+    Type __type; /**< PART from enum @_type */
 };
 
 /**
@@ -136,7 +136,7 @@ struct _Style
     Eina_Inlist *parts;  /**< The list of a style parts data. */
     Eina_List *aliasses; /**< The list of pointer Style structures which aliased to this style */
     Class *parent; /**< Pointer to class, which contain this style */
-    type __type; /**< STYLE from enum @_type */
+    Type __type; /**< STYLE from enum @_type */
 };
 
 /**
@@ -152,7 +152,7 @@ struct _Class
     Eina_Stringshare *name; /**< The name of a class. */
     Eina_Inlist *styles;    /**<The list of styles that make up the class. */
     Widget *parent; /**< Pointer to widget, which contain this class*/
-    type __type; /**< CLASS from enum @_type */
+    Type __type; /**< CLASS from enum @_type */
 };
 
 /**
@@ -167,9 +167,26 @@ struct _Widget
     EINA_INLIST;
     Eina_Stringshare *name; /**< The name of a widget. */
     Eina_Inlist *classes; /**< The list of a widget classes. */
-    type __type; /**< WIDGET from enum @_type */
+    Type __type; /**< WIDGET from enum @_type */
 };
 
+/**
+ * @struct _Signal
+ *
+ * @brief This struct is designed to store a signal data. I.e. program name
+ *        where this signal is used, source name (emitter) of this signal and
+ *        pointer to @Style which using this signal.
+ *
+ * @ingroup WidgetManager
+ */
+struct _Signal
+{
+    Eina_Stringshare *name; /**< text name of signal */
+    Eina_Stringshare *source; /**< emitter name */
+    Eina_Stringshare *program; /**< program, where this signal is used */
+    Style *style; /**< pointer to style, where this signal is used */
+};
+typedef struct _Signal Signal;
 /**
  * Delete a Part from the @Style object
  *
@@ -196,6 +213,30 @@ wm_part_del(Style *style, Part *part);
  */
 Eina_Bool
 wm_part_current_state_set(Part *part, const char *state);
+
+/**
+ * Fill current states for all parts structures, which exist in style.
+ *
+ * @param style A @Style object being editing
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_current_state_parts_update(Style *style);
+
+/**
+ * Set "default" 0.0 state for all parts, which exist in style.
+ *
+ * @param style A @Style object being editing
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_state_parts_reset(Style *style);
 
 /**
  * Create a new Part object
@@ -261,7 +302,7 @@ wm_style_data_load(Style *style, Evas *e, const char *edj);
  */
 Style *
 wm_style_add(const char* style_name, const char* full_group_name,
-             type style_type, Class *parent);
+             Type style_type, Class *parent);
 
 /**
  * Free a @Style object.

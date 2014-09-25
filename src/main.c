@@ -5,23 +5,22 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include <Ecore_Getopt.h>
 #include "eflete.h"
 #include "config.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
@@ -75,7 +74,7 @@ elm_main(int argc, char **argv)
         CRIT("Could not find 'eflete_config.h'");
 #endif
 
-        App_Data *ap = app_create();
+        App_Data *ap = app_data_get();
         if (!ui_main_window_add(ap))
           {
              app_shutdown();
@@ -87,9 +86,7 @@ elm_main(int argc, char **argv)
           {
              if (eina_str_has_suffix(edj, ".edj"))
                {
-                  Evas_Object *wd_list = ui_edj_load_done(ap, edj);
-                  if (wd_list)
-                    add_callbacks_wd(wd_list, ap);
+                  ui_edj_load(ap, edj);
                }
           }
         elm_run();

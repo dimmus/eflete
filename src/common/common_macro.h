@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef COMMON_MACRO_H
@@ -99,4 +98,45 @@
        _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
        STYLE = _style;\
      }
+
+#define ITEM_SEARCH_FUNC(_gen) \
+static void \
+_##_gen##_item_search(Evas_Object *obj, \
+                      Search_Data *search_data, \
+                      Elm_Object_Item *start_from) \
+{ \
+   Eina_Stringshare *str; \
+   Elm_Object_Item *last_item_found; \
+ \
+   if (elm_entry_is_empty(search_data->search_entry)) \
+     { \
+        if (search_data->last_item_found) \
+          { \
+             elm_##_gen##_item_selected_set(search_data->last_item_found, \
+                                            false); \
+             search_data->last_item_found = NULL; \
+          } \
+        return; \
+     } \
+ \
+   str = eina_stringshare_printf("*%s*", \
+                                 elm_entry_entry_get(search_data->search_entry)); \
+ \
+   last_item_found = elm_##_gen##_search_by_text_item_get(obj,start_from, \
+                                                          NULL, str, 0); \
+   if (search_data->last_item_found == last_item_found) return; \
+ \
+   if (search_data->last_item_found) \
+      elm_##_gen##_item_selected_set(search_data->last_item_found, false); \
+   if (last_item_found) \
+     { \
+        elm_##_gen##_item_selected_set(last_item_found, true); \
+        elm_##_gen##_item_bring_in(last_item_found, \
+                                  ELM_GENLIST_ITEM_SCROLLTO_MIDDLE); \
+        elm_object_focus_set(search_data->search_entry, true); \
+     } \
+   search_data->last_item_found = last_item_found; \
+}
+
+
 #endif /* COMMON_MACRO_H */

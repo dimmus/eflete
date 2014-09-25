@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 
@@ -80,7 +79,7 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p1)
    Class *class = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/ui_widget_list_data_reload.edj");
+   project = pm_open_project_edj("./edj_build/ui_widget_list_data_reload.edj");
    widget_list = ui_widget_list_add(parent);
    result = ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain classes and styles********/

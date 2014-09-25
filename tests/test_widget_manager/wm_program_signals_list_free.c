@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_widget_manager.h"
@@ -23,7 +22,7 @@
 /**
  * @addtogroup widget_manager_test
  * @{
- * @addtogroup wm_program_signal_list_free
+ * @addtogroup wm_program_signals_list_free
  * @{
  * widget_manager
  * <TABLE>
@@ -31,10 +30,10 @@
  */
 
 /**
- * @addtogroup wm_program_signal_list_free
+ * @addtogroup wm_program_signals_list_free
  * @{
  * <tr>
- * <td>wm_program_signal_list_free</td>
+ * <td>wm_program_signals_list_free</td>
  * <td>wm_program_signals_list_free_test_p</td>
  * <td>
  * @precondition
@@ -45,7 +44,7 @@
  * @step 5 Signal List.
  *
  * @procedure
- * @step 1 Call function wm_program_signals_list_free(signal_list).
+ * @step 1 Call function wm_program_signals_list_free(signals_list).
  * @step 2 Check returned value.
  * </td>
  * <td>Eina_List *sig_list</td>
@@ -79,10 +78,10 @@ EFLETE_TEST (wm_program_signals_list_free_test_p)
 END_TEST
 
 /**
- * @addtogroup wm_program_signal_list_free
+ * @addtogroup wm_program_signals_list_free
  * @{
  * <tr>
- * <td>wm_program_signal_list_free</td>
+ * <td>wm_program_signals_list_free</td>
  * <td>wm_program_signals_list_free_test_n</td>
  * <td>
  * @precondition

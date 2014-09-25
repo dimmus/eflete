@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_ui_state_dialog.h"
@@ -73,14 +72,13 @@ EFLETE_TEST (state_dialog_state_del_test_p)
    Style *style = NULL;
    Part *part = NULL;
    Elm_Object_Item *eoi;
-   const char *name, *path;
+   const char *path;
 
-   name = "UTC";
    path = "./edj_build/state_dialog_state_del.edj";
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
-   app_data->project = pm_open_project_edj(name, path);
+   app_data->project = pm_open_project_edj(path);
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, canvas, path);
@@ -130,7 +128,7 @@ EFLETE_TEST (state_dialog_state_del_test_n1)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    popup = state_dialog_state_del(app_data);
    ck_assert_msg(popup == NULL, "It delete part's state without creating main window");
@@ -203,7 +201,7 @@ EFLETE_TEST (state_dialog_state_del_test_n3)
    Evas_Object *popup;
 
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    popup = state_dialog_state_del(app_data);

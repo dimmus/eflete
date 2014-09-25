@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "test_ui_main_window.h"
@@ -35,7 +34,7 @@
  * @{
  * <tr>
  * <td>new_theme_create</td>
- * <td>new_theme_create_test_p1</td>
+ * <td>new_theme_create_test_p</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -54,14 +53,14 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(new_theme_create_test_p1)
+EFLETE_TEST(new_theme_create_test_p)
 {
    App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
    ui_main_window_add(app_data);
 
    ret = new_theme_create(app_data);
@@ -77,7 +76,7 @@ END_TEST
  * @{
  * <tr>
  * <td>new_theme_create</td>
- * <td>new_theme_create_test_p2</td>
+ * <td>new_theme_create_test_n1</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -96,17 +95,17 @@ END_TEST
  * @}
  */
 
-EFLETE_TEST(new_theme_create_test_p2)
+EFLETE_TEST(new_theme_create_test_n1)
 {
    App_Data *app_data = NULL;
-   Eina_Bool ret = EINA_FALSE;
+   Eina_Bool ret;
 
    elm_init(0, 0);
    app_init();
-   app_data = app_create();
+   app_data = app_data_get();
 
    ret = new_theme_create(app_data);
-   ck_assert_msg(ret == EINA_TRUE, "Failed to create new theme and open project");
+   ck_assert_msg(ret == EINA_FALSE, "New theme is created without main window!");
 
    app_shutdown();
    elm_shutdown();
@@ -118,7 +117,7 @@ END_TEST
  * @{
  * <tr>
  * <td>new_theme_create</td>
- * <td>new_theme_create_test_n</td>
+ * <td>new_theme_create_test_n2</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -135,7 +134,7 @@ END_TEST
  * @}
  */
 
-EFLETE_TEST(new_theme_create_test_n)
+EFLETE_TEST(new_theme_create_test_n2)
 {
    elm_init(0, 0);
    Eina_Bool ret = EINA_FALSE;

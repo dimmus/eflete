@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef SAVE_FILE_DIALOG_H
@@ -26,7 +25,7 @@
 #include "alloc.h"
 #include "modal_window.h"
 #include "widget_macro.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 /**
  * @defgroup SaveFileDialog Save file dialog
  * The widget provide a save project functionality.
@@ -47,6 +46,17 @@
  */
 Eina_Bool
 save_as_edj_file(App_Data *ap);
+
+/**
+ * Save current project. If project is new save dialog will be shown(@see save_as_edj_file).
+ *
+ * @param ap The Application data.
+ * @return EINA_TRUE if a project saved, else EINA_FALSE.
+ *
+ * @ingroup SaveFileDialog
+ */
+Eina_Bool
+save_edj_file(App_Data *ap);
 
 /**
  * Create and show a dialog for save project into a edc file.

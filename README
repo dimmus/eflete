@@ -8,12 +8,12 @@ towards theme editor and UI design, and not GUI over the edc syntax.
 Requirements:
 -------------
 
-   * efl (= 1.9.2)
-   * elementary (= 1.9.2)
-   * ewe (>= 0.0.1)
+   * efl (>= 1.10.1)
+   * elementary (= 1.10.1)
+   * ewe (>= 0.1.1)
 
 Please note that some features may not quite function correctly or
-completely on EFL 1.9.2.
+completely on EFL 1.10.1.
 
 Please see http://www.enlightenment.org for information on these.
 
@@ -23,7 +23,6 @@ Compiling:
 Once you have met requirements, compiling and installing is simple:
 
    ./autogen.sh
-   cd build
    make
    make install
 

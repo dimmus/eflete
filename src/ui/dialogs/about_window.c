@@ -5,21 +5,20 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "style_editor.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 static void
 _on_mwin_del(void * data,
@@ -38,7 +37,7 @@ about_window_add()
    mw_title_set(mwin, _("About"));
    Evas_Object *label;
    /* temporary solution, while it not moved to modal window */
-   App_Data *ap = app_create();
+   App_Data *ap = app_data_get();
 
    label = elm_label_add(mwin);
    elm_object_text_set(label,

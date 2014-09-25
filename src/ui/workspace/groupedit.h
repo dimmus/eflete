@@ -5,17 +5,16 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #ifndef GROUPEDIT_H
@@ -323,6 +322,24 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
                                      const char *state, double value);
 
 /**
+ * Copy new state for the give part, from another state of this part.
+ *
+ * @param obj The groupedit object,
+ * @param part Part that contain state.
+ * @param state_from to copy from (not including state value).
+ * @param value_from The value of the state to copy from.
+ * @param state_to copy into (not including state value).
+ * @param value_to The value of the state to copy into.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
+                                     const char *state_from, double value_from,
+                                     const char *state_to, double value_to);
+/**
  * Delete the given part state from the edje edit object.
  *
  * @param obj The groupedit object,
@@ -443,6 +460,38 @@ groupedit_bg_unset(Evas_Object *obj);
  */
 Eina_Bool
 groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible);
+
+/**
+ * Restack part above another part in groupedit module.
+ *
+ * @param obj The groupedit object.
+ * @param part The name of part, which need above above.
+ * @param above Name of part for which will be moved 'part'.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_move_above(Evas_Object *obj,
+                                      const char *part,
+                                      const char *above);
+
+/**
+ * Restack part below another part in groupedit module.
+ *
+ * @param obj The groupedit object.
+ * @param part The name of part, which need above above.
+ * @param below Name of part for which will be moved 'part'.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_move_below(Evas_Object *obj,
+                                      const char *part,
+                                      const char *below);
 
 /**
  * Stack part above above in groupedit module.

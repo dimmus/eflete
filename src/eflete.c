@@ -5,21 +5,20 @@
  * This file is part of Edje Theme Editor.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
 #include "eflete.h"
-#include "ui_main_window.h"
+#include "main_window.h"
 
 #define CHECK_AP(RET) \
 if (!ap) \
@@ -40,7 +39,7 @@ win_layout_get(void)
 }
 
 App_Data *
-app_create(void)
+app_data_get(void)
 {
    if (!ap)
      ap = mem_calloc(1, sizeof (App_Data));
@@ -63,9 +62,9 @@ colorselector_get(void)
 }
 
 Eina_Bool
-app_free(App_Data *ap)
+app_free()
 {
-   if (!ap) return false;
+   CHECK_AP(false)
    /*TODO: here need delete all created objects from ap! */
    free(ap);
    return true;
@@ -143,7 +142,7 @@ app_shutdown()
    edje_shutdown();
    logger_shutdown();
    ewe_shutdown();
-   if (!app_free(ap))
+   if (!app_free())
      {
         CRIT("Can't free application data.");
         return false;
