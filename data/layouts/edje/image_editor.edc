@@ -389,6 +389,7 @@ group { name: "eflete/image_editor/item/default";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
+            fixed: 1 1;
             rel1 {
                to_x: "label.area.spacer";
                to_y: "item.area";
