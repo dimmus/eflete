@@ -104,6 +104,7 @@ _pm_project_add(const char *path)
    Eet_File *ef;
    Project *pro;
    char *name;
+   char *dir_name;
 
    ef = eet_open(path, EET_FILE_MODE_READ);
    if (!ef)
@@ -129,8 +130,10 @@ _pm_project_add(const char *path)
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
-   pro->dev = eina_stringshare_printf("%s.dev", pro->name);
+   dir_name = ecore_file_dir_get(pro->edj);
+   pro->dev = eina_stringshare_printf("%s/%s.dev", dir_name, pro->name);
    DBG ("Path to swap file: '%s'", pro->dev);
+   free(dir_name);
 
    pro->close_request = false;
 
