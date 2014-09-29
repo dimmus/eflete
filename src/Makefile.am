@@ -19,6 +19,7 @@ ui/panes.c \
 ui/menu.c \
 ui/main_window.c \
 ui/connector.c \
+ui/shortcuts/shortcuts.c \
 ui/container/container.c \
 ui/preference/preference.c \
 ui/editors/style_editor.c \
@@ -83,6 +84,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
+-I${top_srcdir}/src/ui/shortcuts \
 -I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
