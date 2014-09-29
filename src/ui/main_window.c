@@ -22,6 +22,7 @@
 #endif /* include eflete_config.h */
 
 #include "main_window.h"
+#include "shortcuts.h"
 #include "cursor.h"
 
 static void
@@ -102,7 +103,7 @@ ui_main_window_add(App_Data *ap)
         ERR("Can't create the window. App_Data is NULL");
         return EINA_FALSE;
      }
-   config_load();
+   config_load(ap);
    config = config_get();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);

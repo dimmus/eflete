@@ -28,9 +28,23 @@
  * window. Currently shortcuts are available for different windows such as main
  * window, opened project (groupedit/workspace) and editors (sound, image,
  * colorclasses, styles and programs).
+ *
+ * How to use it.
+ * 1.) Call shortcuts_init();
+ *     When that function is being called it generates hash table, where
+ *     key is string (description of function) and data is pointer to function.
+ *     For example string "new_theme" is key used for getting pointer to function
+ *     that will create new theme.
+ * 2.) Load user's profile.
+ *     User's Profile that contain Eina_List of user's Shortcuts.
+ * 3.) Call shortcuts_profile_load(App_Data *ap, Profile *profile);
+ *     This function will create hash table. Key for that hash table is a
+ *     structure with modifiers and keycode (two keys). According to those two
+ *     value it will return pointer to function.
  */
 
 #include "eflete.h"
+#include "config.h"
 
 /**
  * Set up shortcuts for main window.
@@ -56,5 +70,43 @@ shortcuts_main_add(App_Data *ap);
 Eina_Bool
 shortcuts_main_del(App_Data *ap);
 
+/**
+ * Setting shortcuts from user's profile.
+ *
+ * @param ap Application Data.
+ * @param profile Currently loaded user's profile.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Shortcuts
+ */
+Eina_Bool
+shortcuts_profile_load(App_Data *ap, Profile *profile);
+
+/**
+ * Initialize shortcut module.
+ *
+ * This function will prepare module to be used. For example, it will create
+ * hash of functions that can be used for finding according to pressed keys.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Shortcuts
+ */
+Eina_Bool
+shortcuts_init(void);
+
+/**
+ * Initialize shortcut module.
+ *
+ * This function will free all created structures and hashes inside of this
+ * module.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Shortcuts
+ */
+Eina_Bool
+shortcuts_shutdown(void);
 
 #endif /* SHORTCUTS_H */

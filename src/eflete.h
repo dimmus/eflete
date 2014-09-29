@@ -93,6 +93,9 @@ struct _App_Data
    Evas_Object *workspace;
    Live_View *live_view;
    Project *project;
+   Ecore_Event_Handler *shortcuts_handler; /**< handler for catching key presses\
+                                                for shortcuts */
+   Eina_Hash *shortcut_functions; /**< list of user's shortcuts */
 };
 
 /**

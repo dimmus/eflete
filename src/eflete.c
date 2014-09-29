@@ -19,6 +19,7 @@
 
 #include "eflete.h"
 #include "main_window.h"
+#include "shortcuts.h"
 
 #define CHECK_AP(RET) \
 if (!ap) \
@@ -134,7 +135,7 @@ app_init()
 Eina_Bool
 app_shutdown()
 {
-   config_shutdown();
+   config_shutdown(ap);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    eina_shutdown();
    efreet_shutdown();
