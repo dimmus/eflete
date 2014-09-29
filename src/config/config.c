@@ -220,11 +220,14 @@ _default_shortcuts_get()
    ADD_SHORTCUT("n", 57, CTRL, "new_theme");
    ADD_SHORTCUT("o", 32, CTRL, "open_edj");
    ADD_SHORTCUT("s", 39, CTRL, "save");
+   ADD_SHORTCUT("e", 26, CTRL, "export");
    ADD_SHORTCUT("q", 24, CTRL, "quit");
 
    /* Ctrl-Shift- */
    ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc");
    ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as");
+   ADD_SHORTCUT("v", 55, CTRL + SHIFT, "property.visual_tab");
+   ADD_SHORTCUT("c", 54, CTRL + SHIFT, "property.code_tab");
 
 #undef ADD_SHORTCUT
    return shortcuts;

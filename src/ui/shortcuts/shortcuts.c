@@ -18,49 +18,99 @@
  */
 
 #include "shortcuts.h"
+#include "main_window.h"
+#include "compile_dialog.h"
+#include "open_file_dialog.h"
+#include "save_file_dialog.h"
 
 /*========================================================*/
 /*               SHORTCUTS CB FUNCTION                    */
 /*========================================================*/
 Eina_Bool
-_new_theme_cb(App_Data *app __UNUSED__)
+_new_theme_cb(App_Data *app)
 {
-   printf("New Theme\n");
+   new_theme_create(app);
    return true;
 }
 
 Eina_Bool
-_open_edc_cb(App_Data *app __UNUSED__)
+_open_edc_cb(App_Data *app)
 {
-   printf("Open Edc\n");
+   compile_dialog(app);
    return true;
 }
 
 Eina_Bool
-_open_edj_cb(App_Data *app __UNUSED__)
+_open_edj_cb(App_Data *app)
 {
-   printf("Open Edj\n");
+   open_edj_file(app);
    return true;
 }
 
 Eina_Bool
-_save_cb(App_Data *app __UNUSED__)
+_save_cb(App_Data *app)
 {
-   printf("Save\n");
+   Evas_Object *nf;
+   if (save_edj_file(app))
+     {
+        nf = ui_block_widget_list_get(app);
+        ui_widget_list_title_set(nf, app->project->name);
+        STATUSBAR_PROJECT_PATH(app, app->project->edj);
+     }
    return true;
 }
 
 Eina_Bool
-_save_as_cb(App_Data *app __UNUSED__)
+_save_as_cb(App_Data *app)
 {
-   printf("Save As...\n");
+   Evas_Object *nf;
+   if (save_as_edj_file(app))
+     {
+        nf = ui_block_widget_list_get(app);
+        ui_widget_list_title_set(nf, app->project->name);
+        STATUSBAR_PROJECT_PATH(app, app->project->edj);
+     }
    return true;
 }
 
 Eina_Bool
-_quit_cb(App_Data *app __UNUSED__)
+_export_cb(App_Data *app)
 {
-   printf("QUIT!\n");
+   save_as_edc_file(app);
+   return true;
+}
+
+Eina_Bool
+_visual_tab_cb(App_Data *app)
+{
+   const Eina_List *tabs;
+   Evas_Object *nf;
+
+   nf = ui_block_property_get(app);
+   tabs = ewe_tabs_items_list_get(nf);
+   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
+
+   return true;
+}
+
+Eina_Bool
+_code_tab_cb(App_Data *app)
+{
+   const Eina_List *tabs;
+   Evas_Object *nf;
+
+   nf = ui_block_property_get(app);
+   tabs = ewe_tabs_items_list_get(nf);
+   tabs = eina_list_next(tabs);
+   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
+
+   return true;
+}
+
+Eina_Bool
+_quit_cb(App_Data *app)
+{
+   ui_main_window_del(app);
    return true;
 }
 
@@ -118,6 +168,9 @@ static Function_Set _sc_func_set_init[] =
      {"open_edj", _open_edj_cb},
      {"save", _save_cb},
      {"save_as", _save_as_cb},
+     {"export", _export_cb},
+     {"property.visual_tab", _visual_tab_cb},
+     {"property.code_tab", _code_tab_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };
