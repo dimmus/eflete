@@ -877,6 +877,8 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
    else
       class_st = elm_object_item_data_get(eoi);
 
+   if (class_st->__type != CLASS) return false;
+
    /* Search edje edit object, which willn't delete now. This object needed
       for manipulate with group in *.edj file*/
    EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, widget_work)
