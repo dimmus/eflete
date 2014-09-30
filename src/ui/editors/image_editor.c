@@ -1027,7 +1027,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    if (!project)
      {
-        ERR("Project doesn't opened");
+        ERR("Project isn't opened");
         return NULL;
      }
 

@@ -22,6 +22,10 @@
 #include "compile_dialog.h"
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
+#include "style_editor.h"
+#include "image_editor.h"
+#include "sound_editor.h"
+#include "program_editor.h"
 
 static void
 _random_name_generate(char *part_name, unsigned int length)
@@ -72,7 +76,6 @@ PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 Eina_Bool
 _item_delete_cb(App_Data *app)
 {
-
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
    Evas_Object *nf = NULL;
@@ -275,6 +278,47 @@ _quit_cb(App_Data *app)
    return true;
 }
 
+Eina_Bool
+_style_editor_open_cb(App_Data *app)
+{
+   style_editor_window_add(app->project);
+   return true;
+}
+
+Eina_Bool
+_image_editor_open_cb(App_Data *app)
+{
+   image_editor_window_add(app->project, MULTIPLE);
+   return true;
+}
+
+Eina_Bool
+_sound_editor_open_cb(App_Data *app)
+{
+   sound_editor_window_add(app->project, SOUND_EDITOR_SINGLE);
+   return true;
+}
+
+Eina_Bool
+_colorclass_viewer_open_cb(App_Data *app)
+{
+   colorclass_viewer_add(app->project);
+   return true;
+}
+
+Eina_Bool
+_program_editor_open_cb(App_Data *app)
+{
+   Style *style = NULL;
+
+   if (app->project)
+     style = app->project->current_style;
+
+   program_editor_window_add(style);
+
+   return true;
+}
+
 /*========================================================*/
 /*                 HELPFULL STRUCTURES                    */
 /*========================================================*/
@@ -341,6 +385,11 @@ static Function_Set _sc_func_set_init[] =
      {"item.delete", _item_delete_cb},
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},
+     {"style_editor", _style_editor_open_cb},
+     {"image_editor", _image_editor_open_cb},
+     {"sound_editor", _sound_editor_open_cb},
+     {"colorclass_viewer", _colorclass_viewer_open_cb},
+     {"program_editor", _program_editor_open_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };

@@ -490,7 +490,7 @@ colorclass_viewer_add(Project *project)
 
    if (!project)
      {
-        NOTIFY_ERROR(_("EDJ/EDC file is not loaded"));
+        ERR("Project isn't opened");
         return NULL;
      }
 

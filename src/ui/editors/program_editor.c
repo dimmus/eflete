@@ -1765,9 +1765,9 @@ program_editor_window_add(Style *style)
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if ((!style) || (!style->obj))
+   if ((!style) || (!style->obj) || (!ap->project))
      {
-        ERR("Failed create program editor for current style");
+        ERR("Style or project doesn't opened");
         return NULL;
      }
 

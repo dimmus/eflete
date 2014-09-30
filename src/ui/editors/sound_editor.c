@@ -425,7 +425,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 
    if (!project)
      {
-        ERR("Project is not opened");
+        ERR("Project isn't opened");
         return NULL;
      }
 

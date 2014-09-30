@@ -1184,7 +1184,7 @@ style_editor_window_add(Project *project)
 
    if (!project)
      {
-        ERR("Failed create style editor for non opened project");
+        ERR("Project isn't opened");
         return NULL;
      }
 
