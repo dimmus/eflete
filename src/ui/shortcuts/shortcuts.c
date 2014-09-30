@@ -94,6 +94,37 @@ _separate_mode_change_cb(App_Data *app)
 }
 
 Eina_Bool
+_new_style_create_cb(App_Data *app)
+{
+   Elm_Object_Item *glit = NULL;
+   Style *_style = NULL;
+   Evas_Object *nf = ui_block_widget_list_get(app);
+   Ewe_Tabs_Item *selected = ewe_tabs_active_item_get(nf);
+
+   if (!app->project) return false;
+
+   if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
+       ((!app->project->current_style) ||
+        (app->project->current_style->__type != LAYOUT)))
+     {
+        evas_object_smart_callback_call(app->block.left_top, "wl,layout,add", nf);
+     }
+   if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
+       ((!app->project->current_style) ||
+        (app->project->current_style->__type != STYLE)))
+     {
+        nf = evas_object_data_get(nf, "nf_widgets");
+        nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
+                                              "elm.swallow.content");
+        glit = elm_genlist_selected_item_get(nf);
+        _style = elm_object_item_data_get(glit);
+        if (_style->__type != WIDGET)
+          evas_object_smart_callback_call(app->block.left_top, "wl,style,add", NULL);
+     }
+   return true;
+}
+
+Eina_Bool
 _new_theme_cb(App_Data *app)
 {
    new_theme_create(app);
@@ -246,6 +277,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.spacer", _spacer_part_add_cb},
      {"item.delete", _item_delete_cb},
      {"separate_mode", _separate_mode_change_cb},
+     {"style.create", _new_style_create_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };

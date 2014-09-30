@@ -203,7 +203,7 @@ _on_popup_btn_yes(void *data,
                                                     Class);
         source_style = EINA_INLIST_CONTAINER_GET(source_class->styles,
                                                     Style);
-        if (!source_style)
+        if ((!source_style) || (source_style->isAlias))
           {
              STRING_CLEAR;
              eina_stringshare_del(full_name);
@@ -285,10 +285,25 @@ style_dialog_add(App_Data *ap)
    Class *class_st = NULL;
    Eina_Stringshare *title = NULL;
    Eina_Stringshare *entry_text = NULL;
+   Elm_Object_Item *glit = NULL;
+   Style *_style = NULL;
+   Evas_Object *nf = NULL;
 
    if (!ap) return false;
    widget = ui_widget_from_ap_get(ap);
    if (!widget) return false;
+
+   /* Checking if the source style is an alias.
+      We can't clone aliases right now, it need lots of difficult code for that.
+   */
+   nf = ui_block_widget_list_get(ap);
+   nf = evas_object_data_get(nf, "nf_widgets");
+   nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
+                                         "elm.swallow.content");
+   glit = elm_genlist_selected_item_get(nf);
+   _style = elm_object_item_data_get(glit);
+   if (_style->isAlias) return false;
+
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
    ap->popup = elm_popup_add(ap->win_layout);

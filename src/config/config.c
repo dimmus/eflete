@@ -238,6 +238,7 @@ _default_shortcuts_get()
    /* Ctrl-Shift- */
    ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc");
    ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as");
+   ADD_SHORTCUT("l", 46, CTRL + SHIFT, "style.create");
 
 #undef ADD_SHORTCUT
    return shortcuts;
