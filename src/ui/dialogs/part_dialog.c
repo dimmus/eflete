@@ -41,13 +41,19 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static void
-_cancel_clicked(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
+_job_popup_del(void *data)
 {
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
    ui_menu_locked_set(ap->menu_hash, false);
+}
+
+static void
+_cancel_clicked(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   ecore_job_add(_job_popup_del, data);
 }
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
