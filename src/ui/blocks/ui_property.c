@@ -443,7 +443,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    evas_object_show(property);
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->workspace = workspace;
    pd->style = style;
@@ -596,7 +596,7 @@ ui_property_style_unset(Evas_Object *property)
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
-   elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_hide(property);
 }
 #undef pd_group
@@ -713,6 +713,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if ((!property) || (!part)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
+
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->part = part;
 
@@ -912,6 +914,7 @@ ui_property_part_unset(Evas_Object *property)
    if (!property) return;
    PROP_DATA_GET()
 
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    prop_box = elm_object_content_get(pd->visual);
 
    if (pd->prop_part.frame)
