@@ -23,9 +23,51 @@
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
 
+static void
+_random_name_generate(char *part_name, unsigned int length)
+{
+   unsigned int i = 0;
+
+   static const char CHARS[] =
+      "0123456789"
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "abcdefghijklmnopqrstuvwxyz";
+
+   for (i = 0; i < length; ++i)
+     part_name[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
+
+   part_name[length] = 0;
+}
+
 /*========================================================*/
 /*               SHORTCUTS CB FUNCTION                    */
 /*========================================================*/
+#define PART_ADD(TYPE, FUNC) \
+Eina_Bool \
+_##FUNC##_part_add_cb(App_Data *ap) \
+{ \
+   Evas_Object *workspace = ap->workspace; \
+   Evas_Object *widget_list = ui_block_widget_list_get(ap); \
+   Style *style = workspace_edit_object_get(workspace); \
+   char name[9]; \
+   _random_name_generate(name, 9); \
+   if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
+     { \
+       ui_widget_list_part_add(widget_list, style, name); \
+       style->isModify = true; \
+     } \
+   live_view_widget_style_set(ap->live_view, ap->project, style); \
+   return true; \
+}
+
+/* Adding New Parts */
+PART_ADD(EDJE_PART_TYPE_SWALLOW, swallow)
+PART_ADD(EDJE_PART_TYPE_TEXTBLOCK, textblock)
+PART_ADD(EDJE_PART_TYPE_SPACER, spacer)
+PART_ADD(EDJE_PART_TYPE_TEXT, text)
+PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
+PART_ADD(EDJE_PART_TYPE_IMAGE, image)
+
 Eina_Bool
 _new_theme_cb(App_Data *app)
 {
@@ -171,6 +213,12 @@ static Function_Set _sc_func_set_init[] =
      {"export", _export_cb},
      {"property.visual_tab", _visual_tab_cb},
      {"property.code_tab", _code_tab_cb},
+     {"part.add.swallow", _swallow_part_add_cb},
+     {"part.add.textblock", _textblock_part_add_cb},
+     {"part.add.text", _text_part_add_cb},
+     {"part.add.rectangle", _rectangle_part_add_cb},
+     {"part.add.image", _image_part_add_cb},
+     {"part.add.spacer", _spacer_part_add_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };
@@ -231,6 +279,8 @@ _eina_hash_free(void *data)
 /*=============================================*/
 /*               PUBLIC API                    */
 /*=============================================*/
+
+#undef PART_ADD
 
 Eina_Bool
 shortcuts_main_add(App_Data *ap)

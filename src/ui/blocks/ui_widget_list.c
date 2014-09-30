@@ -971,7 +971,21 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    part = wm_part_add(style, name);
 
    if (!part) return false;
-   nf = _current_naviframe_get(object);
+
+   if (style->__type == STYLE)
+     {
+        nf = evas_object_data_get(object, WIDGETS_NAVIFRAME_DATA_KEY);
+     }
+   else if (style->__type == LAYOUT)
+     {
+        nf = evas_object_data_get(object, LAYOUTS_NAVIFRAME_DATA_KEY);
+     }
+   else
+     {
+        wm_part_del(style, part);
+        return false;
+     }
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(nf),
                                                "elm.swallow.content");
    eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,

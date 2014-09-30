@@ -223,6 +223,14 @@ _default_shortcuts_get()
    ADD_SHORTCUT("e", 26, CTRL, "export");
    ADD_SHORTCUT("q", 24, CTRL, "quit");
 
+   /* Alt- */
+   ADD_SHORTCUT("w", 25, ALT, "part.add.swallow");
+   ADD_SHORTCUT("b", 56, ALT, "part.add.textblock");
+   ADD_SHORTCUT("t", 28, ALT, "part.add.text");
+   ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle");
+   ADD_SHORTCUT("i", 31, ALT, "part.add.image");
+   ADD_SHORTCUT("s", 39, ALT, "part.add.spacer");
+
    /* Ctrl-Shift- */
    ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc");
    ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as");
