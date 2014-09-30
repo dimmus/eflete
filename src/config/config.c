@@ -220,6 +220,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("Delete", 119, 0, "item.delete");
 
    /* Ctrl- */
+   ADD_SHORTCUT("slash", 61, CTRL, "separate_mode");
    ADD_SHORTCUT("n", 57, CTRL, "new_theme");
    ADD_SHORTCUT("o", 32, CTRL, "open_edj");
    ADD_SHORTCUT("s", 39, CTRL, "save");

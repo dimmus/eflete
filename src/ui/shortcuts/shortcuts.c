@@ -85,6 +85,15 @@ _item_delete_cb(App_Data *app)
 }
 
 Eina_Bool
+_separate_mode_change_cb(App_Data *app)
+{
+
+   Eina_Bool sep = workspace_separate_mode_get(app->workspace);
+   workspace_separate_mode_set(app->workspace, !sep);
+   return true;
+}
+
+Eina_Bool
 _new_theme_cb(App_Data *app)
 {
    new_theme_create(app);
@@ -236,6 +245,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.image", _image_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
      {"item.delete", _item_delete_cb},
+     {"separate_mode", _separate_mode_change_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };
