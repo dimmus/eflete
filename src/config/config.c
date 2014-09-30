@@ -216,6 +216,9 @@ _default_shortcuts_get()
    shortcut->description = eina_stringshare_add_length(Descr, strlen(Descr));\
    shortcuts = eina_list_append(shortcuts, shortcut);
 
+   /* No modifiers */
+   ADD_SHORTCUT("Delete", 119, 0, "part.del");
+
    /* Ctrl- */
    ADD_SHORTCUT("n", 57, CTRL, "new_theme");
    ADD_SHORTCUT("o", 32, CTRL, "open_edj");
@@ -234,8 +237,6 @@ _default_shortcuts_get()
    /* Ctrl-Shift- */
    ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc");
    ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as");
-   ADD_SHORTCUT("v", 55, CTRL + SHIFT, "property.visual_tab");
-   ADD_SHORTCUT("c", 54, CTRL + SHIFT, "property.code_tab");
 
 #undef ADD_SHORTCUT
    return shortcuts;

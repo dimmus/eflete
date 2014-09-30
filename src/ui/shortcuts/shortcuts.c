@@ -69,6 +69,16 @@ PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 
 Eina_Bool
+_part_delete_cb(App_Data *app)
+{
+
+   Evas_Object *nf = ui_block_widget_list_get(app);
+   if (elm_object_focus_get(nf))
+     evas_object_smart_callback_call(nf, "wl,part,del", NULL);
+   return true;
+}
+
+Eina_Bool
 _new_theme_cb(App_Data *app)
 {
    new_theme_create(app);
@@ -219,6 +229,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.rectangle", _rectangle_part_add_cb},
      {"part.add.image", _image_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
+     {"part.del", _part_delete_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };

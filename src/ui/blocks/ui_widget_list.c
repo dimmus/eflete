@@ -1070,6 +1070,9 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
           }
      }
    part = elm_object_item_data_get(eoi);
+
+   if (part->__type != PART) return false;
+
    new_eoi = (move_up) ? elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
                          prev_eoi, elm_genlist_item_type_get(eoi), _on_part_select, nf):
                          elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
@@ -1120,8 +1123,8 @@ ui_widget_list_selected_part_get(Evas_Object *object)
                                                "elm.swallow.content");
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi) return NULL;
-   part = (Part *)elm_object_item_data_get(eoi);
-   if (!part) return NULL;
+   part = (Part *) elm_object_item_data_get(eoi);
+   if ((!part) || (part->__type != PART)) return NULL;
 
    return part;
 }
