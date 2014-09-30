@@ -68,13 +68,19 @@ PART_ADD(EDJE_PART_TYPE_TEXT, text)
 PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 
+/* this one will delete part or style or layout or state */
 Eina_Bool
-_part_delete_cb(App_Data *app)
+_item_delete_cb(App_Data *app)
 {
 
-   Evas_Object *nf = ui_block_widget_list_get(app);
+   Evas_Object *nf;
+   nf = ui_block_widget_list_get(app);
    if (elm_object_focus_get(nf))
      evas_object_smart_callback_call(nf, "wl,part,del", NULL);
+
+   nf = ui_block_state_list_get(app);
+   if ((nf) && (elm_object_focus_get(nf)))
+     evas_object_smart_callback_call(nf, "stl,state,del", NULL);
    return true;
 }
 
@@ -229,7 +235,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.rectangle", _rectangle_part_add_cb},
      {"part.add.image", _image_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
-     {"part.del", _part_delete_cb},
+     {"item.delete", _item_delete_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };

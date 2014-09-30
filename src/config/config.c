@@ -217,7 +217,7 @@ _default_shortcuts_get()
    shortcuts = eina_list_append(shortcuts, shortcut);
 
    /* No modifiers */
-   ADD_SHORTCUT("Delete", 119, 0, "part.del");
+   ADD_SHORTCUT("Delete", 119, 0, "item.delete");
 
    /* Ctrl- */
    ADD_SHORTCUT("n", 57, CTRL, "new_theme");
