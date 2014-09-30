@@ -1,147 +1,130 @@
 group { name: "eflete/sound_editor/default";
+   min: 640 480;
    parts {
-      part { name: "spacer_ver";
+      part { name: "area.player";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 1 0;
+            align: 1.0 0.0;
             min: 400 200;
             max: 400 -1;
-            rel2.offset: 0 0;
+            rel2.relative: 1.0 0.5;
          }
       }
-      part { name: "spacer_hor";
+      part { name: "area.info";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 1 0.5;
-            min: 0 1;
-            max: -1 1;
-            rel1.to_x: "spacer_ver";
-            rel2.relative: 1.0 0.5;
+            align: 1.0 1.0;
+            min: 400 0;
+            max: 400 -1;
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "area.player";
+            }
+         }
+      }
+      part { name: "area.edit";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 240 40;
+            max: -1 40;
+            rel2 {
+               relative: 0.0 1.0;
+               offset: -5 -1;
+               to_x: "area.player";
+            }
          }
       }
       part { name: "gengrid";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
+            align: 0.0 1.0;
+            min: 240 350;
             rel1 {
                relative: 0.0 1.0;
-               to_y: "edit_area";
+               offset: 0 5;
+               to_y: "area.edit";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: 0 -1;
-               to_x: "spacer_ver";
+               offset: -5 -1;
+               to_x: "area.player";
             }
          }
       }
       part { name: "player";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            rel1 {
-               offset: 5 0;
-               to_x: "spacer_ver";
-            }
-            rel2 {
-               relative: 1.0 0.0;
-               offset: -1 -5;
-               to_y: "spacer_hor";
-            }
+            rel1.to: "area.player";
+            rel2.to: "area.player";
          }
       }
       part { name: "sound_info";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.5;
-               offset: 5 0;
-               to_x: "spacer_ver";
-               to_y: "spacer_hor";
-            }
-         }
-      }
-      part { name: "edit_area";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0 0;
-            min: 40 40;
-            max: -1 40;
-            rel2 {
-               relative: 0.0 1.0;
-               offset: 0 0;
-               to_x: "spacer_ver";
-            }
+            align: 1.0 1.0;
+            rel1.to: "area.info";
+            rel2.to: "area.info";
          }
       }
       part { name: "swallow.search_area";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 0 1;
+            align: 0.0 0.5;
+            min: 0 30;
             max: 600 30;
-            rel1.to: "edit_area";
+            rel1.to: "area.edit";
             rel2 {
-               relative: 0.0 1.0;
-               offset: 0 -5;
-               to_x: "search_spacer";
-               to_y: "edit_area";
-            }
-         }
-      }
-      part { name: "search_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1 1;
-            min: 5 5;
-            max: 5 5;
-            rel1.to: "edit_area";
-            rel2 {
-               relative: 0.0 1.0;
-               to_x: "swallow.add_btn";
-               to_y: "edit_area";
+               relative: 0.6 1.0;
+               to: "area.edit";
             }
          }
       }
       part { name: "swallow.add_btn";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            align: 1 1;
-            min: 25 25;
-            max: 25 25;
-            rel1.to: "edit_area";
-            rel2 {
-               relative: 0.0 0.0;
-               to: "btn_spacer";
-            }
+            align: 1.0 0.5;
+            FIXED_SIZE(30, 30);
+            rel1.to_y: "area.edit";
+            rel2.to: "area.edit";
          }
       }
       part { name: "btn_spacer";
          type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            align: 1 1;
-            min: 5 5;
-            max: 5 5;
-            rel1.to: "edit_area";
+            align: 1.0 1.0;
+            FIXED_SIZE(5, 5);
             rel2 {
                relative: 0.0 1.0;
-               to_x: "swallow.del_btn";
-               to_y: "edit_area";
+               to: "swallow.add_btn";
             }
          }
       }
       part { name: "swallow.del_btn";
          type: SWALLOW;
+         scale: 1;
          description { state: "default" 0.0;
-            fixed: 1 1;
-            align: 1 1;
-            min: 25 25;
-            max: 25 25;
+            align: 1.0 0.5;
+            FIXED_SIZE(30, 30);
             rel1 {
                relative: 1.0 0.0;
-               to: "edit_area";
+               offset: 10 0;
+               to_x: "swallow.search_area";
+               to_y: "area.edit";
             }
             rel2 {
-               relative: 1.0 0.0;
-               to_x: "edit_area";
-               to_y: "search_spacer";
+               relative: 0.0 1.0;
+               to_x: "btn_spacer";
+               to_y: "area.edit";
             }
          }
       }
