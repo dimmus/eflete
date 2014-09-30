@@ -99,7 +99,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             live->object = live_widget_create(widget, type, style_name, live->live_view);
+             live->object = live_widget_create(widget, type, style_name, live->layout);
              container_content_set(live->live_view, live->object);
           }
 
@@ -119,7 +119,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           }
         if (!ret)
           {
-             live->object = elm_label_add(live->live_view);
+             live->object = elm_label_add(live->layout);
              elm_object_text_set(live->object, fail_message);
              container_content_set(live->live_view, live->object);
           }
@@ -139,13 +139,13 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      {
         if (!live->in_prog_edit)
           {
-             live->object = layout_custom_create(live->live_view);
+             live->object = layout_custom_create(live->layout);
              elm_layout_file_set(live->object, project->dev, style->full_group_name);
              elm_object_style_set(live->object, style->full_group_name);
           }
         else
           {
-             live->object = layout_prog_edit_create(live->live_view);
+             live->object = layout_prog_edit_create(live->layout);
              edje_object_file_set(live->object, project->dev, style->full_group_name);
              evas_object_freeze_events_set(live->object, true);
           }
@@ -160,7 +160,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
-   edje_object_part_drag_value_set(elm_layout_edje_get(live->live_view),
+   edje_object_part_drag_value_set(elm_layout_edje_get(live->layout),
                                    "bottom_pad", x, y);
 
    return ret;
