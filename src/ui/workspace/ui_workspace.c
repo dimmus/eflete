@@ -531,22 +531,54 @@ _ws_mouse_move_cb(void *data, Evas *e,
 }
 
 static void
-_on_resize(void *data,
-            Evas_Object * obj __UNUSED__,
-            void *ei)
+_highlight_changed_cb(void *data,
+                      Evas_Object * obj __UNUSED__,
+                      void *ei)
 {
    Highlight_Events *events = (Highlight_Events *)ei;
+
    Evas_Object *ws_obj = (Evas_Object *)data;
    WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
 
    Part *part = sd->highlight.part;
    if ((!sd->style) && (!part)) return;
-   edje_edit_state_max_w_set(sd->style->obj, part->name,
-                             part->curr_state, part->curr_state_value,
-                             events->w);
-   edje_edit_state_max_h_set(sd->style->obj, part->name,
-                             part->curr_state, part->curr_state_value,
-                             events->h);
+
+   if (events->descr != MIDDLE)
+     {
+        Evas_Object *obj_area = groupedit_part_object_area_get(sd->groupedit);
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(obj_area, &x, &y, &w, &h);
+
+        edje_edit_state_max_w_set(sd->style->obj, part->name,
+                                  part->curr_state, part->curr_state_value,
+                                  events->w);
+        edje_edit_state_max_h_set(sd->style->obj, part->name,
+                                  part->curr_state, part->curr_state_value,
+                                  events->h);
+     }
+   else
+     {
+        Evas_Object *obj_area = groupedit_part_object_area_get(sd->groupedit);
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(obj_area, &x, &y, &w, &h);
+
+        double align_x = (double)(events->x - x) / (double)(w - events->w);
+        double align_y = (double)(events->y - y) / (double)(h - events->h);
+
+        if ((w == events->w) || (align_x < 0)) align_x = 0;
+        if ((h == events->h) || (align_y < 0)) align_y = 0;
+
+        if (align_x > 1.0) align_x = 1.0;
+        if (align_y > 1.0) align_y = 1.0;
+
+        edje_edit_state_align_x_set(sd->style->obj, part->name,
+                                    part->curr_state, part->curr_state_value,
+                                    align_x);
+        edje_edit_state_align_y_set(sd->style->obj, part->name,
+                                    part->curr_state, part->curr_state_value,
+                                    align_y);
+     }
+
    if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
@@ -583,8 +615,8 @@ workspace_highlight_set(Evas_Object *obj, Part *part)
         evas_object_event_callback_add(sd->highlight.highlight,
                                        EVAS_CALLBACK_MOUSE_MOVE,
                                        _ws_mouse_move_cb, obj);
-        evas_object_smart_callback_add(sd->highlight.highlight, "hl,resize",
-                                       _on_resize, obj);
+        evas_object_smart_callback_add(sd->highlight.highlight, "hl,changed",
+                                       _highlight_changed_cb, obj);
      }
    return true;
 }
@@ -604,8 +636,8 @@ workspace_highlight_unset(Evas_Object *obj)
    evas_object_event_callback_del(sd->highlight.highlight,
                                   EVAS_CALLBACK_MOUSE_MOVE,
                                   _ws_mouse_move_cb);
-   evas_object_smart_callback_del(sd->highlight.highlight, "hl,resize",
-                                  _on_resize);
+   evas_object_smart_callback_del(sd->highlight.highlight, "hl,changed",
+                                  _highlight_changed_cb);
    return true;
 }
 
@@ -859,6 +891,54 @@ _on_part_unselect(void *data,
    workspace_highlight_unset(workspace);
 }
 
+static void
+_key_down(void *data,
+          Evas *e,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+   Evas_Object *hl = (Evas_Object *)data;
+   const Evas_Modifier *mods;
+   mods = evas_key_modifier_get(e);
+
+   if (evas_key_modifier_is_set(mods, "Control"))
+     {
+        if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
+          highlight_handler_middle_show(hl);
+     }
+
+   if (evas_key_modifier_is_set(mods, "Alt"))
+     {
+        if ((!strcmp(ev->keyname, "Control_L")) || (!strcmp(ev->keyname, "Control_R")))
+          highlight_handler_middle_show(hl);
+     }
+}
+
+static void
+_key_up(void *data,
+        Evas *e,
+        Evas_Object *obj __UNUSED__,
+        void *event_info)
+{
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+   Evas_Object *hl = (Evas_Object *)data;
+   const Evas_Modifier *mods;
+   mods = evas_key_modifier_get(e);
+
+   if (evas_key_modifier_is_set(mods, "Control"))
+     {
+        if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
+          highlight_handler_middle_hide(hl);
+     }
+
+   if (evas_key_modifier_is_set(mods, "Alt"))
+     {
+        if ((!strcmp(ev->keyname, "Control_L")) || (!strcmp(ev->keyname, "Control_R")))
+          highlight_handler_middle_hide(hl);
+     }
+}
+
 Eina_Bool
 workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 {
@@ -909,6 +989,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         sd->highlight.highlight = highlight_add(sd->scroller);
         evas_object_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
         evas_object_smart_member_add(sd->highlight.highlight, obj);
+
+        evas_object_event_callback_add(sd->groupedit, EVAS_CALLBACK_KEY_DOWN,
+                                       _key_down, sd->highlight.highlight);
+        evas_object_event_callback_add(sd->groupedit, EVAS_CALLBACK_KEY_UP,
+                                       _key_up, sd->highlight.highlight);
      }
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, false);

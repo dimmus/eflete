@@ -340,7 +340,7 @@ _unselect_part(void *data,
 static void
 _groupedit_smart_add(Evas_Object *o)
 {
-   Evas_Modifier_Mask mask;
+   Evas_Modifier_Mask mask_alt, mask_control;
    EVAS_SMART_DATA_ALLOC(o, Ws_Groupedit_Smart_Data)
 
    _groupedit_parent_sc->add(o);
@@ -374,19 +374,30 @@ _groupedit_smart_add(Evas_Object *o)
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);
 
-   mask = evas_key_modifier_mask_get(evas_object_evas_get(o), "Alt");
+   mask_alt = evas_key_modifier_mask_get(evas_object_evas_get(o), "Alt");
+   mask_control = evas_key_modifier_mask_get(evas_object_evas_get(o), "Control");
+
    /* we need to set key grabber with and without modifier mask because on keyup
       Alt is considered an active modifier, but on keydown it is still not ative */
-   if (evas_object_key_grab(o, "Alt_L", 0, 0, false))
-     {
-        if (!evas_object_key_grab(o, "Alt_L", mask, 0, false))
-          evas_object_key_ungrab(o, "Alt_L", 0, 0); /* Removing keydown grab if we can't grab this key for KeyUp event */
+#define KEY_GRAB(KEY_NAME, MASK) \
+   if (evas_object_key_grab(o, KEY_NAME, 0, 0, false)) \
+     { \
+        if (!evas_object_key_grab(o, KEY_NAME, MASK, 0, false)) \
+          /* Removing keydown grab if we can't grab this key for KeyUp event */ \
+          evas_object_key_ungrab(o, KEY_NAME, 0, 0); \
      }
-   if (evas_object_key_grab(o, "Alt_R", 0, 0, false))
-     {
-        if (!evas_object_key_grab(o, "Alt_R", mask, 0, false))
-          evas_object_key_ungrab(o, "Alt_R", 0, 0);
-     }
+
+   KEY_GRAB("Alt_L", mask_alt);
+   KEY_GRAB("Alt_R", mask_alt);
+   KEY_GRAB("Alt_L", mask_control);
+   KEY_GRAB("Alt_R", mask_control);
+   KEY_GRAB("Control_L", mask_alt);
+   KEY_GRAB("Control_R", mask_alt);
+   KEY_GRAB("Control_L", mask_control);
+   KEY_GRAB("Control_R", mask_control);
+
+#undef KEY_GRAB
+
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
                                   _key_down, NULL);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP,

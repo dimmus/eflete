@@ -104,15 +104,58 @@
  * By using handlers user can resize and move selected part.
  */
 
+/**
+ * @enum _Handler_Type
+ *
+ * @brief Type of the handler (RB - Right Bottom, TL - Top Left, etc)
+ *
+ * @ingroup WidgetManager
+ */
+enum _Handler_Type {
+   RB,
+   RT,
+   LB,
+   LT,
+   MIDDLE
+};
+
+/**
+ * @typedef Handler_Type
+ * @ingroup Highlight
+ */
+typedef enum _Handler_Type Handler_Type;
+
+/**
+ * @struct _Highlight_Events
+ *
+ * @brief This struct designed to send in it's signal ("hl,changed") a new size
+ * of highlight and send the type of handler (@see Handler_Type) that was used
+ * to change it's size.
+ *
+ * @ingroup WidgetManager
+ */
 struct _Highlight_Events
 {
-   Evas_Coord x;
-   Evas_Coord y;
-   Evas_Coord w;
-   Evas_Coord h;
+   Evas_Coord x; /**< new X position of highlight */
+   Evas_Coord y; /**< new Y position of highlight */
+   Evas_Coord w; /**< new width of highlight */
+   Evas_Coord h; /**< new height of highlight */
+   Handler_Type descr; /**< type of handler that was using to change size and
+                         position of highlight */
 };
+/**
+ * @typedef Highlight_Events
+ * @ingroup Highlight
+ */
 typedef struct _Highlight_Events Highlight_Events;
 
+/**
+ * @enum Highlight_Mode
+ *
+ * @brief Behaviour of Highlight handers.
+ *
+ * @ingroup Highlight
+ */
 typedef enum
 {
    HIGHLIGHT_STATIC_HANDLERS,
@@ -154,6 +197,28 @@ highlight_add(Evas_Object *parent);
  */
 Eina_Bool
 highlight_object_set(Evas_Object *hl, Evas_Object *obj);
+
+/**
+ * Hide middle handler and doesn't show in any way!
+ *
+ * @param highlight The smart object that is represent a highlight.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
+ *
+ * @ingroup Highlight
+ */
+Eina_Bool
+highlight_handler_middle_hide(Evas_Object *hl);
+
+/**
+ * Show middle handler and doesn't show in any way!
+ *
+ * @param highlight The smart object that is represent a highlight.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
+ *
+ * @ingroup Highlight
+ */
+Eina_Bool
+highlight_handler_middle_show(Evas_Object *hl);
 
 /**
  * Disabled handlers of the highlight.
