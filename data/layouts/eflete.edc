@@ -17,4 +17,5 @@ collections {
    #include "edje/colorclass_editor.edc"
    #include "edje/highlight.edc"
    #include "edje/compile.edc"
+   #include "edje/wizard.edc"
 }
