@@ -227,12 +227,14 @@ _default_shortcuts_get()
    ADD_SHORTCUT("e", 26, CTRL, "export");
    ADD_SHORTCUT("q", 24, CTRL, "quit");
 
-
    ADD_SHORTCUT("1", 10, CTRL, "style_editor");
    ADD_SHORTCUT("2", 11, CTRL, "image_editor");
    ADD_SHORTCUT("3", 12, CTRL, "sound_editor");
    ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer");
    ADD_SHORTCUT("5", 14, CTRL, "program_editor");
+
+   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style");
+   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout");
 
    /* Alt- */
    ADD_SHORTCUT("w", 25, ALT, "part.add.swallow");

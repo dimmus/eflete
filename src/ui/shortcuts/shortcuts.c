@@ -118,6 +118,27 @@ _item_delete_cb(App_Data *app)
 }
 
 Eina_Bool
+_widget_manager_layout_switch_cb(App_Data *app)
+{
+   const Eina_List *tabs;
+   Evas_Object *nf = ui_block_widget_list_get(app);
+   tabs = ewe_tabs_items_list_get(nf);
+   tabs = eina_list_next(tabs);
+   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
+   return true;
+}
+
+Eina_Bool
+_widget_manager_style_switch_cb(App_Data *app)
+{
+   const Eina_List *tabs;
+   Evas_Object *nf = ui_block_widget_list_get(app);
+   tabs = ewe_tabs_items_list_get(nf);
+   ewe_tabs_active_item_set(nf, eina_list_data_get(tabs));
+   return true;
+}
+
+Eina_Bool
 _separate_mode_change_cb(App_Data *app)
 {
 
@@ -390,6 +411,8 @@ static Function_Set _sc_func_set_init[] =
      {"sound_editor", _sound_editor_open_cb},
      {"colorclass_viewer", _colorclass_viewer_open_cb},
      {"program_editor", _program_editor_open_cb},
+     {"widget_manager.layout", _widget_manager_layout_switch_cb},
+     {"widget_manager.style", _widget_manager_style_switch_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };
