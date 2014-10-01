@@ -182,6 +182,10 @@ static const char *direction_list[] = { N_("bottom_left"),
                                         N_("top_right"),
                                         NULL};
 
+static const char *underl_styles[] = { N_("single"),
+                                       N_("double"),
+                                       NULL};
+
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = BANNED_SYMBOLS
@@ -200,6 +204,9 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
 
 static void
 _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
+
+static void
+_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
 
 static void
 _on_popup_bt_cancel(void *data,
@@ -230,18 +237,22 @@ _style_edit_update(Style_Editor *style_edit)
    evas_textblock_style_free(ts);
 }
 
-static void
-_format_update(Style_Editor *style_edit)
-{
-   Eina_List *tabs_list = NULL, *tab = NULL;
-   Ewe_Tabs_Item *it;
-   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs);
-   EINA_LIST_FOREACH(tabs_list, tab, it)
-     {
-        if (!strcmp(ewe_tabs_item_title_get(style_edit->tabs, it), _("Glow & Shadow")))
-          _glow_tab_update(style_edit, style_edit->tabs, it, CURRENT.stvalue);
-     }
+#define TAB_UPDATE(VALUE, TEXT) \
+static void \
+_##VALUE##_update(Style_Editor *style_edit) \
+{ \
+   Eina_List *tabs_list = NULL, *tab = NULL; \
+   Ewe_Tabs_Item *it; \
+   tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs); \
+   EINA_LIST_FOREACH(tabs_list, tab, it) \
+     { \
+        if (!strcmp(ewe_tabs_item_title_get(style_edit->tabs, it), TEXT)) \
+          _##VALUE##_tab_update(style_edit, style_edit->tabs, it, CURRENT.stvalue); \
+     } \
 }
+
+TAB_UPDATE(glow, _("Glow & Shadow"))
+TAB_UPDATE(lines, _("Lines"))
 
 static void
 _on_glit_selected(void *data,
@@ -309,6 +320,11 @@ _on_glit_selected(void *data,
            case 2:
              {
                 _glow_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                break;
+             }
+           case 3:
+             {
+                _lines_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
                 break;
              }
            default:
@@ -880,7 +896,9 @@ _on_##VALUE##_change(void *data, \
    WIDGET##_VALUE \
    _tag_parse(style_edit, value, TEXT); \
    if (!strcmp("style", TEXT)) \
-     _format_update(style_edit); \
+     _glow_update(style_edit); \
+   if (!strcmp("underline", TEXT)) \
+     _lines_update(style_edit); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
 }
@@ -974,6 +992,14 @@ SEGMENT_CONTROL_ADD(layout, widget); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define UNDERLINE_ADD(VALUE) \
+int i = 0; \
+SEGMENT_CONTROL_ADD(layout, widget); \
+for (i = 0; underl_styles[i] != NULL; i++) \
+elm_segment_control_item_add(widget, NULL, underl_styles[i]); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit); \
+evas_object_smart_callback_del(widget, "changed", _on_##VALUE##_change);
 
 #define SPIN_ADD(VALUE) \
 SPINNER_ADD(layout, widget, MIN_SP, MAX_SP, STEP_SP, true, DEFAULT_STYLE); \
@@ -1136,6 +1162,9 @@ CHANGE_CALLBACK(font_password, "password", CHECK)
 CHANGE_CALLBACK(font_background, "backing", CHECK)
 CHANGE_CALLBACK(font_ellipsis, "ellipsis", PERCENT_SPINNER)
 CHANGE_CALLBACK(style, "style", COMBOBOX)
+CHANGE_CALLBACK(strikethrough, "strikethrough", CHECK)
+CHANGE_CALLBACK(underline, "underline", CHECK)
+CHANGE_CALLBACK(underline_style, "underline", SEGMENT)
 
 ITEM_TEXT_ADD("font", fonts_list, COMBO)
 ITEM_TEXT_ADD("size", font_size, SPIN)
@@ -1158,6 +1187,12 @@ ITEM_TEXT_ADD("style", style, COMBO)
 ITEM_COLOR_ADD(inner_glow, "glow_color", "glow_color")
 ITEM_COLOR_ADD(outer_glow, "glow2_color", "glow2_color")
 ITEM_COLOR_ADD(shadow_color, "shadow_color", "glow_color")
+ITEM_TEXT_ADD("strikethru", strikethrough, CHK)
+ITEM_TEXT_ADD("underl", underline, CHK)
+ITEM_TEXT_ADD("underline", underline_style, UNDERLINE)
+ITEM_COLOR_ADD(strikethrough_color, "strikethrough_color", "strikethrough")
+ITEM_COLOR_ADD(underline_color, "underline_color", "underline_color")
+ITEM_COLOR_ADD(underline2_color, "underline2_color", "underline2_color")
 
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
@@ -1481,6 +1516,85 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         eina_stringshare_del(style);
      }
 }
+
+static void
+_lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value)
+{
+   Evas_Object *edje_edit_obj = NULL;
+   Evas_Object *layout;
+   Evas_Object *font_strikethrough, *strikethrough_color;
+   Evas_Object *font_underline, *underline_style, *underline_color, *underline2_color;
+   Elm_Object_Item *sc_item;
+   Eina_Bool strikethr, underl;
+   int r, g, b, a;
+   unsigned int i = 0;
+
+   Evas_Object *scr;
+   SCROLLER_ADD(style_edit->mwin, scr);
+   GET_OBJ(style_edit->pr, edje_edit_obj);
+
+   layout = elm_layout_add(style_edit->mwin);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/lines");
+   evas_object_show(layout);
+   elm_object_content_set(scr, layout);
+
+   ewe_tabs_item_content_set(tabs, it, scr);
+
+   elm_object_part_text_set(layout, "label.strikethrough", _("Strikethrough color"));
+   elm_object_part_text_set(layout, "label.underline", _("Underline"));
+   elm_object_part_text_set(layout, "label.underline_color", _("Color"));
+
+   font_strikethrough = _style_item_strikethrough_add(layout, style_edit);
+   strikethrough_color = _style_item_strikethrough_color_add(layout, style_edit);
+   font_underline = _style_item_underline_add(layout, style_edit);
+   underline_style = _style_item_underline_style_add(layout, style_edit);
+   underline_color = _style_item_underline_color_add(layout, style_edit);
+   underline2_color = _style_item_underline2_color_add(layout, style_edit);
+
+   if (value)
+     {
+        const char* strikethrough = _tag_value_get(value, "strikethrough");
+        if ((!strikethrough) || (!strcmp(strikethrough, "off"))) strikethr = EINA_FALSE;
+        else strikethr = EINA_TRUE;
+        const char* strikethru_color = _tag_value_get(value, "strikethrough_color");
+        if (!strikethru_color) strikethru_color = "#FFF";
+        const char *seg_item = NULL;
+        const char* underline = _tag_value_get(value, "underline");
+        if ((!underline) || (!strcmp(underline, "off"))) underl = EINA_FALSE;
+        else
+          {
+             underl = EINA_TRUE;
+             if (!strcmp(underline, "double")) seg_item = eina_stringshare_add("double");
+             else seg_item = eina_stringshare_add("single");
+             for (i = 0; underl_styles[i] != NULL; i++)
+               {
+                  if (!strcmp(elm_segment_control_item_label_get(underline_style, i), seg_item))
+                    {
+                       sc_item = elm_segment_control_item_get(underline_style, i);
+                       elm_segment_control_item_selected_set(sc_item, true);
+                    }
+               }
+          }
+        const char* underl_color = _tag_value_get(value, "underline_color");
+        if (!underl_color) underl_color = "#FFF";
+        const char* underl2_color = _tag_value_get(value, "underline2_color");
+        if (!underl2_color) underl2_color = "#FFF";
+
+        elm_check_state_set(font_strikethrough, strikethr);
+        elm_check_state_set(font_underline, underl);
+        _hex_to_rgb(strikethru_color, &r, &g, &b, &a);
+        evas_object_color_set(strikethrough_color, r*a/255, g*a/255, b*a/255, a);
+        _hex_to_rgb(underl_color, &r, &g, &b, &a);
+        evas_object_color_set(underline_color, r*a/255, g*a/255, b*a/255, a);
+        _hex_to_rgb(underl2_color, &r, &g, &b, &a);
+        evas_object_color_set(underline2_color, r*a/255, g*a/255, b*a/255, a);
+
+        evas_object_smart_callback_add(underline_style, "changed", _on_underline_style_change, style_edit);
+
+        if (!seg_item) eina_stringshare_del(seg_item);
+     }
+}
 #undef COMBOBOX_VALUE
 #undef SEGMENT_VALUE
 #undef SPINNER_VALUE
@@ -1520,6 +1634,7 @@ _form_right_side(Style_Editor *style_edit)
    ewe_tabs_item_append(style_edit->tabs, NULL, _("Text"), NULL);
    ewe_tabs_item_append(style_edit->tabs, NULL, _("Format"), NULL);
    ewe_tabs_item_append(style_edit->tabs, NULL, _("Glow & Shadow"), NULL);
+   ewe_tabs_item_append(style_edit->tabs, NULL, _("Lines"), NULL);
    ewe_tabs_orient_horizontal_set(style_edit->tabs, EINA_FALSE);
    evas_object_show(style_edit->tabs);
 
