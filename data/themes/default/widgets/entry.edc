@@ -971,8 +971,8 @@ group { name: "elm/entry/cursor/eflete/default";
          description { state: "default" 0.0;
             min: 9 10;
             color: 255 255 255 0;
-            rel1.offset: -4 -4;
-            rel2.offset: 3 3;
+            rel1.offset: -2 -2;
+            rel2.offset: 1 1;
             image {
                normal: "white_bar_vert_glow.png";
                border: 4 4 4 4;
