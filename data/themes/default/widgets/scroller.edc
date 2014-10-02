@@ -1,8 +1,8 @@
 group { name: "elm/scroller/base/eflete/default";
    images {
-      image: "scroll-indicator.png" COMP;
-      image: "scroll-area-dark.png" COMP;
-      image: "section-item-bg.png" COMP;
+      image: "scroll-bar.png" COMP;
+      image: "scroll-runner-vbar.png" COMP;
+      image: "scroll-runner-hbar.png" COMP;
    }
    data.item: "focus_highlight" "on";
 
@@ -15,15 +15,18 @@ group { name: "elm/scroller/base/eflete/default";
          }
       }
 // vert bar ////////////////////////////////////////////////////////////////
-      part { name: "sb_vbar_show";
-         type: RECT;
-         scale: 1;
+      part { name: "base";
+         type: SPACER;
          description { state: "default" 0.0;
-            rel1.offset: -11 -11;
-            rel2.offset: 10 10;
          }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
+      }
+      part { name: "bg";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            /* background the image will watch
+             * used here because no mater scroller
+             * didn't have default */
+            image.normal: "scroll-bar.png";
             visible: 0;
          }
       }
@@ -33,15 +36,12 @@ group { name: "elm/scroller/base/eflete/default";
          description { state: "default" 0.0;
             fixed: 1 0;
             min: 8 8;
+            max: 8 -1;
             align: 1.0 0.0;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: -1 0;
-            }
             rel2 {
-               relative: 1.0 0.0;
+               to_x: "base";
                to_y: "sb_hbar";
-               offset: -1 -1;
+               relative: 1.0 0.0;
             }
          }
          description { state: "hidden" 0.0;
@@ -50,36 +50,6 @@ group { name: "elm/scroller/base/eflete/default";
             max: 0 -1;
          }
       }
-      part { name: "cross";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 57 57 57 255;
-            rel1 {
-               to_x: "sb_vbar";
-               to_y: "sb_hbar";
-            }
-            rel2 {
-               to_x: "sb_vbar";
-               to_y: "sb_hbar";
-            }
-         }
-      }
-      part { name: "sb_vbar_base";
-         type: RECT;
-         clip_to: "sb_vbar";
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "sb_vbar";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "sb_vbar";
-            }
-         }
-      }
-
       part { name: "sb_vbar_p1";
          type: RECT;
          clip_to: "sb_vbar";
@@ -120,33 +90,21 @@ group { name: "elm/scroller/base/eflete/default";
             max: 8 -1;
             rel1 {
                relative: 0.5  0.5;
-               to: "sb_vbar_base";
+               to: "sb_vbar";
             }
             rel2 {
                relative: 0.5  0.5;
-               to: "sb_vbar_base";
+               to: "sb_vbar";
             }
             color: 0 0 0 0;
          }
          dragable {
             x: 0 0 0;
             y: 1 1 0;
-            confine: "sb_vbar_base";
+            confine: "sb_vbar";
          }
       }
 // horiz bar /////////////////////////////////////////////////////////////
-      part { name: "sb_hbar_show";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            rel1.offset: -11 -11;
-            rel2.offset: 10 10;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
       part { name: "sb_hbar";
          type: RECT;
          mouse_events: 0;
@@ -154,37 +112,18 @@ group { name: "elm/scroller/base/eflete/default";
          description { state: "default" 0.0;
             fixed: 0 1;
             min: 8 8;
+            max: -1 8;
             align: 0.0 1.0;
-            rel1 {
-               relative: 0.0 1.0;
-               offset: 0 -2;
-            }
             rel2 {
-               relative: 0.0 1.0;
                to_x: "sb_vbar";
-               offset: -1 -2;
+               to_y: "base";
+               relative: 0.0 1.0;
             }
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
             min: 0 0;
             max: -1 0;
-         }
-      }
-      part { name: "sb_hbar_base";
-         type: RECT;
-         clip_to: "sb_hbar";
-         description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               relative: 0.0 0.0;
-               to: "sb_hbar";
-               offset: -1 -1;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               to: "sb_hbar";
-            }
          }
       }
       part { name: "sb_hbar_p1";
@@ -229,53 +168,40 @@ group { name: "elm/scroller/base/eflete/default";
             color: 0 0 0 0;
             rel1 {
                relative: 0.5  0.5;
-               to: "sb_hbar_base";
+               to: "sb_hbar";
             }
             rel2 {
                relative: 0.5  0.5;
-               to: "sb_hbar_base";
+               to: "sb_hbar";
             }
          }
          dragable {
             x: 1 1 0;
             y: 0 0 0;
-            confine: "sb_hbar_base";
-         }
-      }
-      part { name: "bg";
-         type: IMAGE;
-         description { state: "default" 0.0;
-            image.normal: "section-item-bg.png";
-            image.border: 0 0 2 2;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
-            color: 64 64 64 0;
+            confine: "sb_hbar";
          }
       }
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
+      /* it's a background for scrolled content */
       part { name: "elm.swallow.background";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 0 1;
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "sb_vbar";
-               to_y: "sb_hbar";
-            }
+            rel1.to: "elm.swallow.content";
+            rel2.to: "elm.swallow.content";
          }
       }
      part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 0 1;
+            rel1.to: "base";
             rel2 {
                relative: 0.0 0.0;
                to_x: "sb_vbar";
@@ -291,90 +217,81 @@ group { name: "elm/scroller/base/eflete/default";
             rel2.to: "elm.swallow.content";
          }
       }
-/* FIXME: make bg fo bar is area-dark.png */
       part { name: "runner_vbar";
          mouse_events: 0;
-         clip_to: "sb_vbar_show";
+         clip_to: "sb_vbar";
          description { state: "default" 0.0;
             fixed: 1 1;
             image {
-               normal: "scroll-area-dark.png";
-               border: 2 2 2 2;
+               normal: "scroll-runner-vbar.png";
+               border: 3 3 3 3;
             }
             fill.smooth: 0;
             min: 8 8;
             max: 8 -1;
-            rel1.to: "sb_vbar_base";
-            rel2 {
-               to: "sb_vbar_base";
-               offset: 0 0;
-            }
+            rel1.to: "sb_vbar";
+            rel2.to: "sb_vbar";
         }
       }
       part { name: "runner_hbar";
          mouse_events: 0;
-         clip_to: "sb_hbar_show";
+         clip_to: "sb_hbar";
          description { state: "default" 0.0;
             fixed: 1 1;
             image {
-               normal: "scroll-area-dark.png";
+               normal: "scroll-runner-hbar.png";
                border: 2 2 2 2;
             }
             fill.smooth: 0;
             min: 8 8;
             max: -1 8;
+            rel1.to: "sb_hbar";
+            rel2.to: "sb_hbar";
+        }
+      }
+      part { name: "cross";
+         type: SPACER;
+         description { state: "default" 0.0;
             rel1 {
-               to: "sb_hbar_base";
-               offset: 0 -1;
+               to_x: "sb_vbar";
+               to_y: "sb_hbar";
             }
             rel2 {
-               to: "sb_hbar_base";
-               offset: 1 0;
+               to_x: "sb_vbar";
+               to_y: "sb_hbar";
             }
-        }
+         }
       }
       part { name: "base_vbar";
          mouse_events: 0;
-         clip_to: "sb_vbar_show";
+         clip_to: "sb_vbar";
          description { state: "default" 0.0;
             fixed: 1 0;
             min: 8 8;
             max: 8 -1;
             image {
-               normal: "scroll-indicator.png";
+               normal: "scroll-bar.png";
                border: 2 2 2 2;
             }
             fill.smooth: 0;
-            rel1 {
-               offset: 0 0;
-               to: "elm.dragable.vbar";
-            }
-            rel2 {
-               offset: 0 -1;
-               to: "elm.dragable.vbar";
-            }
+            rel1.to: "elm.dragable.vbar";
+            rel2.to: "elm.dragable.vbar";
          }
       }
       part { name: "base_hbar";
          mouse_events: 0;
-         clip_to: "sb_hbar_show";
+         clip_to: "sb_hbar";
          description { state: "default" 0.0;
             fixed: 0 1;
             image {
-               normal: "scroll-indicator.png";
+               normal: "scroll-bar.png";
                border: 2 2 2 2;
             }
             fill.smooth: 0;
             min: 8 8;
             max: -1 8;
-            rel1 {
-               offset: 0 0;
-               to: "elm.dragable.hbar";
-            }
-            rel2 {
-               offset: 0 -1;
-               to: "elm.dragable.hbar";
-            }
+            rel1.to: "elm.dragable.hbar";
+            rel2.to: "elm.dragable.hbar";
          }
       }
    }
@@ -405,7 +322,6 @@ group { name: "elm/scroller/base/eflete/default";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "sb_hbar";
-         target: "sb_hbar_show";
       }
       program {
          name: "hide_horizontal_scroll";
@@ -413,7 +329,6 @@ group { name: "elm/scroller/base/eflete/default";
          source: "elm";
          action: STATE_SET "hidden" 0.0;
          target: "sb_hbar";
-         target: "sb_hbar_show";
       }
       program {
          name: "horizontal_scroll_down";
@@ -435,7 +350,6 @@ group { name: "elm/scroller/base/eflete/default";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "sb_vbar";
-         target: "sb_vbar_show";
       }
       program {
          name: "hide_vertical_scroll";
@@ -443,7 +357,6 @@ group { name: "elm/scroller/base/eflete/default";
          source: "elm";
          action: STATE_SET "hidden" 0.0;
          target: "sb_vbar";
-         target: "sb_vbar_show";
       }
       program {
          name: "vertical_scroll_down";
