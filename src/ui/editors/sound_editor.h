@@ -27,16 +27,12 @@
  * Show sounds and tones, which are used in project.
  */
 
-#include "eflete.h"
 #include "modal_window.h"
-#include "widget_macro.h"
-#include "string_macro.h"
 
 typedef enum {
    SOUND_EDITOR_SINGLE,
    SOUND_EDITOR_MULTIPLE
 } Sound_Editor_Mode;
-
 
 /**
  * Show the whole inwin window by using some data

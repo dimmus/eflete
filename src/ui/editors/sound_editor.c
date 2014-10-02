@@ -22,7 +22,6 @@
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
-#define SND_EDIT_KEY "sound_editor_key"
 
 typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
@@ -49,6 +48,7 @@ struct _Search_Data
 struct _Sound_Editor
 {
    Project *pr;
+   Evas_Object *player_layout;
    Evas_Object *popup;
    Evas_Object *cmb;
    Evas_Object *win;
@@ -60,6 +60,8 @@ struct _Sound_Editor
    Evas_Object *markup;
    Elm_Object_Item *tone;
    Search_Data sound_search_data;
+   Evas_Object *check;
+   const char  *selected;
    struct {
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
@@ -90,8 +92,7 @@ _sound_editor_del(Sound_Editor *edit)
    elm_gengrid_item_class_free(ggic);
    evas_object_del(edit->win);
    evas_object_del(edit->markup);
-   evas_object_del(edit->tone_entry);
-   evas_object_del(edit->frq_entry);
+   eina_stringshare_del(edit->selected);
    free(edit);
 }
 
@@ -114,6 +115,48 @@ _on_ok_cb(void *data,
    GET_OBJ(edit->pr, edje_edit_obj);
    edje_edit_without_source_save(edje_edit_obj, true);
 }
+
+#define BT_ADD(PARENT, OBJ, ICON, TEXT) \
+   OBJ = elm_button_add(PARENT); \
+   evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   ICON_ADD(OBJ, ICON, NULL, "icon_"TEXT) \
+   elm_object_style_set(OBJ, "eflete/simple"); \
+   evas_object_show(OBJ); \
+   elm_object_part_content_set(OBJ, NULL, ICON); \
+   elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
+
+static void
+_sound_player_create(Evas_Object *parent, Sound_Editor *edit)
+{
+   Evas_Object *bt, *sl, *icon, *item;
+
+   if (!parent) return;
+
+   edit->player_layout = elm_layout_add(parent);
+   elm_layout_file_set(edit->player_layout, EFLETE_EDJ, "eflete/sound_editor/player");
+   evas_object_size_hint_weight_set(edit->player_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(edit->player_layout);
+   elm_object_part_content_set(parent, "player", edit->player_layout);
+
+   ITEM_ADD(parent, item, _("Play on select"), "eflete/image_editor/item/default");
+   CHECK_ADD(item, edit->check, DEFAULT_STYLE);
+   elm_object_part_content_set(item, "elm.swallow.content", edit->check);
+   elm_object_part_content_set(edit->player_layout, "eflete.swallow.check", item);
+
+   sl = elm_slider_add(edit->player_layout);
+   elm_slider_unit_format_set(sl, "%1.0f");
+   elm_slider_min_max_set(sl, 0, 1000);
+   evas_object_size_hint_align_set(sl, EVAS_HINT_FILL, 0.5);
+   evas_object_size_hint_weight_set(sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(sl);
+   elm_object_part_content_set(edit->player_layout, "eflete.swallow.fast", sl);
+
+   BT_ADD(edit->player_layout, bt, icon, "prev");
+   BT_ADD(edit->player_layout, bt, icon, "play");
+   BT_ADD(edit->player_layout, bt, icon, "next");
+ }
+
+#undef BT_ADD
 
 static Evas_Object *
 _grid_content_get(void *data __UNUSED__,
@@ -158,7 +201,7 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
 {
    Evas_Object *comp_info_box, *item, *quality;
    BOX_ADD(parent, edit->sample_box, false, false);
-   elm_box_align_set(edit->sample_box, 0.5, 0.0);
+   elm_box_align_set(edit->sample_box, 0.5, 0.5);
 
    edit->snd_data.file_name = _sound_info_entry_add(edit->sample_box, _("file name"));
    edit->snd_data.type = _sound_info_entry_add(edit->sample_box, _("type"));
@@ -191,11 +234,11 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
    Evas_Object *item;
 
    BOX_ADD(parent, edit->tone_box, false, false);
-   elm_box_align_set(edit->tone_box, 0.5, 0.0);
+   elm_box_align_set(edit->tone_box, 0.5, 0.5);
 
    edit->snd_data.tone_name = _sound_info_entry_add(edit->tone_box, _("name"));
 
-   ITEM_ADD(edit->tone_box, item, "frequancy", "eflete/image_editor/item/default");
+   ITEM_ADD(edit->tone_box, item, "frequency", "eflete/image_editor/item/default");
    SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false, DEFAULT_STYLE);
    elm_object_disabled_set(edit->snd_data.tone_frq, true);
    elm_object_part_content_set(item, "elm.swallow.content", edit->snd_data.tone_frq);
@@ -260,6 +303,7 @@ _grid_sel_sample(void *data,
    if (count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
+        edit->selected = eina_stringshare_add(item->sound_name);
         _sample_info_setup(edit, item);
      }
 }
@@ -278,6 +322,7 @@ _grid_sel_tone(void *data,
    if (count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
+        edit->selected = eina_stringshare_add(item->sound_name);
         _tone_info_setup(edit, item);
      }
 }
@@ -736,6 +781,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    elm_object_part_content_set(edit->markup, "gengrid", edit->gengrid);
 
    _sound_info_create(edit->markup, edit);
+   _sound_player_create(edit->markup, edit);
 
    evas_object_show(edit->win);
    return edit->win;
