@@ -962,3 +962,16 @@ group { name: "elm/button/base/eflete/elipsis";
       }
    }
 }
+
+group { name: "elm/button/base/eflete/btn";
+   inherit: "elm/button/base/eflete/default";
+   parts {
+      part { name: "elm.text";
+         description { state: "visible" 0.0;
+            text {
+               min: 0 0;
+            }
+         }
+      }
+   }
+}

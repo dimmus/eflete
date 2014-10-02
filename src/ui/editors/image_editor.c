@@ -1086,6 +1086,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_show(img_edit->gengrid);
 
    BUTTON_ADD(img_edit->layout, button, NULL);
+   elm_object_style_set(button, "eflete/btn");
    ICON_ADD(button, icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked",
@@ -1094,6 +1095,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                "eflete.swallow.add_btn", button);
 
    BUTTON_ADD(img_edit->layout, button, NULL);
+   elm_object_style_set(button, "eflete/btn");
    ICON_ADD(button, icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked",

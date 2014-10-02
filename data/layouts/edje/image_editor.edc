@@ -1,7 +1,7 @@
 #define MARGIN_SPACERS_SIZE_SET SET_SIZE(5, 5)
 #define PADDING_SPACERS_SIZE_SET SET_SIZE(5, 5)
 #define BTNS_LARGE_SIZE_SET SET_SIZE(80, 25)
-#define BTNS_SMALL_SIZE_SET SET_SIZE(25, 25)
+#define BTNS_SMALL_SIZE_SET SET_SIZE(30, 22)
 
 group { name: "eflete/image_editor/default";
    images {
