@@ -443,6 +443,9 @@ group { name: "elm/entry/base/eflete/default";
          description { state: "default" 0.0;
             text {
                style: "eflete_text_style";
+               min: 1 1;
+               align: 0.0 0.0;
+               elipsis: -1;
             }
          }
          description { state: "disabled" 0.0;
@@ -491,9 +494,7 @@ group { name: "elm/scroller/entry/eflete/default";
    alias: "elm/scroller/entry/eflete/search_field";
    inherit: "elm/scroller/base/eflete/default";
    images {
-      image: "input-text-bg.png" COMP;
-      image: "input-text-bg-focus.png" COMP;
-      image: "input-text-bg-error.png" COMP;
+      image: "input-text-bg1.png" COMP;
    }
    data {
       item: "focus_highlight" "on";
@@ -510,7 +511,7 @@ group { name: "elm/scroller/entry/eflete/default";
                to_y: "sb_hbar";
             }
             image {
-               normal: "input-text-bg.png";
+               normal: "input-text-bg1.png";
                border: 5 5 5 5;
                middle: DEFAULT;
             }
