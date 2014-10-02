@@ -62,7 +62,12 @@ collections {
    ADD_PNG_LIM_SIZE("eye_open", 72, 72)
    ADD_PNG_LIM_SIZE("eye_close", 72, 72)
 
-   ADD_PNG_LIM_SIZE("sound", 100, 100)
+   ADD_PNG_LIM_SIZE("sound", 50, 50)
+
+   ADD_PNG_LIM_SIZE("icon_prev", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_play", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_next", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_pause", 10, 10)
 
    ADD_IMAGE("section-item-bg", "section-item-bg.png", -1, -1, 0 0 0 2, SCALE, SOLID)
    ADD_IMAGE("gallery-bg", "gallery-bg.png", -1, -1, 2 2 2 6, SCALE, SOLID)

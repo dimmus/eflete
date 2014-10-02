@@ -6,8 +6,9 @@ group { name: "eflete/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 400 200;
-            max: 400 -1;
+            min: 100 0;
+            max: 400 620;
+            rel1.offset: 0 5;
             rel2.relative: 1.0 0.5;
          }
       }
@@ -16,11 +17,12 @@ group { name: "eflete/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            min: 400 0;
+            min: 100 0;
             max: 400 -1;
             rel1 {
                relative: 0.0 1.0;
                to_y: "area.player";
+               offset: 0 40;
             }
          }
       }
@@ -28,7 +30,7 @@ group { name: "eflete/sound_editor/default";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
+            align: 1.0 0.0;
             min: 240 40;
             max: -1 40;
             rel2 {
@@ -43,7 +45,7 @@ group { name: "eflete/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 1.0;
-            min: 240 350;
+            min: 120 0;
             rel1 {
                relative: 0.0 1.0;
                offset: 0 5;
@@ -130,3 +132,157 @@ group { name: "eflete/sound_editor/default";
       }
    }
 }
+
+group { name: "eflete/sound_editor/player";
+   parts {
+      part { name: "area.base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 100 100;
+            rel2.relative: 1.0 0.9;
+         }
+      }
+      part { name: "sound_decoration";
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.5 0.0;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            image {
+               normal: "focus-outer-glow.png";
+               border: 3 3 3 3;
+               middle: NONE;
+            }
+            color: DARK_GREY_BG_COLOR;
+            rel1.to: "area.base";
+            rel2.to: "area.base";
+         }
+      }
+      part { name: "padding.top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1.to: "sound_decoration";
+            rel2.to: "sound_decoration";
+         }
+      }
+      part { name: "padding.bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(5, 5);
+            rel1.to: "sound_decoration";
+            rel2.to: "sound_decoration";
+         }
+      }
+      part { name: "eflete.swallow.teg";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            fixed: 1 1;
+            rel1 {
+               to: "padding.top";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.bottom";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.fast";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 10;
+            max: -1 10;
+            rel1 {
+               to_x: "padding.top";
+               to_y: "padding.bottom";
+               relative: 1.0 1.0;
+               offset: 0 15;
+            }
+            rel2 {
+               to_x: "padding.bottom";
+               to_y: "area.base";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "swallow.button.prev";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            FIXED_SIZE(10, 10);
+            rel1 {
+               to_x: "area.base";
+               to_y: "eflete.swallow.fast";
+               relative: 0.0 1.0;
+               offset: 0 5;
+            }
+            rel2 {
+               to_x: "area.base";
+               to_y: "area.base";
+               relative: 0.4 1.0;
+            }
+         }
+      }
+      part { name: "swallow.button.play";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            FIXED_SIZE(10, 10);
+            rel1 {
+               to_x: "area.base";
+               to_y: "eflete.swallow.fast";
+               relative: 0.0 1.0;
+               offset: 0 5;
+            }
+            rel2 {
+               to_x: "area.base";
+               to_y: "area.base";
+               relative: 1.0 1.0;
+            }
+         }
+      }
+      part { name: "swallow.button.next";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            FIXED_SIZE(10, 10);
+            rel1 {
+               to_x: "area.base";
+               to_y: "eflete.swallow.fast";
+               relative: 0.6 1.0;
+               offset: 0 5;
+            }
+            rel2 {
+               to_x: "area.base";
+               to_y: "area.base";
+               relative: 1.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.check";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 10;
+            max: -1 10;
+            rel1 {
+               to_x: "padding.top";
+               to_y: "swallow.button.next";
+               relative: 1.0 1.0;
+               offset: 0 10;
+            }
+            rel2 {
+               to_x: "padding.bottom";
+               to_y: "area.base";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+   }
+}
+
