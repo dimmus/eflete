@@ -69,6 +69,7 @@ PKG_CHECK_MODULES([EFL],
     eo >= efl_version
     ecore-imf >= efl_version
     ecore-con >= efl_version
+    ecore-audio >= efl_version
     eio >= efl_version
     eldbus >= efl_version
     efreet >= efl_version

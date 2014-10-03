@@ -17,6 +17,9 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#define EFL_BETA_API_SUPPORT
+#include <Ecore_Audio.h>
+
 #include "sound_editor.h"
 #include "main_window.h"
 
@@ -62,6 +65,11 @@ struct _Sound_Editor
    Search_Data sound_search_data;
    Evas_Object *check;
    const char  *selected;
+   struct {
+        int offset, length;
+        const void *data;
+        Ecore_Audio_Vio vio;
+   } io;
    struct {
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
@@ -116,6 +124,134 @@ _on_ok_cb(void *data,
    edje_edit_without_source_save(edje_edit_obj, true);
 }
 
+static int
+_snd_file_seek(void *data, Eo *eo_obj EINA_UNUSED, int offset, int whence)
+{
+   Sound_Editor *vf = data;
+
+   switch (whence)
+      {
+      case SEEK_SET:
+        vf->io.offset = offset;
+         break;
+      case SEEK_CUR:
+        vf->io.offset += offset;
+        break;
+      case SEEK_END:
+        vf->io.offset = vf->io.length + offset;
+         break;
+       default:
+         break;
+      }
+   return vf->io.offset;
+}
+
+static int
+_snd_file_read(void *data, Eo *eo_obj EINA_UNUSED, void *buffer, int len)
+{
+   Sound_Editor *vf = data;
+
+   if ((vf->io.offset + len) > vf->io.length)
+     len = vf->io.length - vf->io.offset;
+   memcpy(buffer, vf->io.data + vf->io.offset, len);
+   vf->io.offset += len;
+   return len;
+}
+
+static int
+_snd_file_get_length(void *data, Eo *eo_obj EINA_UNUSED)
+{
+   Sound_Editor *vf = data;
+   return vf->io.length;
+}
+
+static int
+_snd_file_tell(void *data, Eo *eo_obj EINA_UNUSED)
+{
+   Sound_Editor *vf = data;
+   return vf->io.offset;
+}
+
+static Eina_Bool
+_play_finished_cb(void *data EINA_UNUSED,
+                  Eo *in EINA_UNUSED,
+                  const Eo_Event_Description *desc EINA_UNUSED,
+                  void *event_info EINA_UNUSED)
+{
+   ecore_main_loop_quit();
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_out_fail(void *data EINA_UNUSED,
+          Eo *output,
+          const Eo_Event_Description *desc EINA_UNUSED,
+          void *event_info EINA_UNUSED)
+{
+   eo_del(output);
+   return EINA_TRUE;
+}
+
+static void
+_on_play_cb(void *data,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   Sound_Editor *edit = (Sound_Editor *)data;
+   Eina_Bool ret = EINA_FALSE;
+   Eo *in, *out;
+   Evas_Object *edje_edit_obj;
+   Eina_Binbuf *buffer;
+
+   ecore_audio_init();
+
+   GET_OBJ(edit->pr, edje_edit_obj);
+   buffer = edje_edit_sound_samplebuffer_get(edje_edit_obj, edit->selected);
+
+   edit->io.vio.get_length = _snd_file_get_length;
+   edit->io.vio.seek = _snd_file_seek;
+   edit->io.vio.read = _snd_file_read;
+   edit->io.vio.tell = _snd_file_tell;
+   edit->io.data = eina_binbuf_string_get(buffer);
+   edit->io.length = eina_binbuf_length_get(buffer);
+   edit->io.offset = 0;
+
+   in = eo_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL,
+               ecore_audio_obj_name_set(edit->selected),
+               ecore_audio_obj_vio_set(&edit->io.vio, edit, NULL));
+   if (!in)
+     {
+        ERR("Input stream was't create!");
+        goto end;
+     }
+
+   out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL);
+   eo_do(out, eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+                                    _out_fail, NULL));
+
+   eo_do(in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
+                                   _play_finished_cb, NULL));
+
+   if (!out)
+     {
+        ERR("Output stream was't create!");
+        goto end;
+     }
+
+   eo_do(out, ret = ecore_audio_obj_out_input_attach(in));
+   if (!ret)
+     {
+        ERR("Couldn't attach input and output!");
+        goto end;
+     }
+
+   ecore_main_loop_begin();
+
+end:
+   ecore_audio_shutdown();
+   eo_del(in);
+}
+
 #define BT_ADD(PARENT, OBJ, ICON, TEXT) \
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -152,7 +288,10 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(edit->player_layout, "eflete.swallow.fast", sl);
 
    BT_ADD(edit->player_layout, bt, icon, "prev");
+
    BT_ADD(edit->player_layout, bt, icon, "play");
+   evas_object_smart_callback_add(bt, "clicked", _on_play_cb, edit);
+
    BT_ADD(edit->player_layout, bt, icon, "next");
  }
 
@@ -781,6 +920,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    elm_object_part_content_set(edit->markup, "gengrid", edit->gengrid);
 
    _sound_info_create(edit->markup, edit);
+
    _sound_player_create(edit->markup, edit);
 
    evas_object_show(edit->win);
