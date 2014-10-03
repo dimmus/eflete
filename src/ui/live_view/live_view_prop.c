@@ -309,7 +309,7 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    elm_object_content_set(scroller, box);
 
    _bg = elm_bg_add(parent);
-   elm_bg_file_set(_bg, EFLETE_IMG_PATH"section-item-bg.png", NULL);
+   elm_bg_file_set(_bg, EFLETE_RESOURCES, "section-item-bg");
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
    evas_object_show(_bg);
    evas_object_show(scroller);
