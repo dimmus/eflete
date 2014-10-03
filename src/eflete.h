@@ -47,13 +47,6 @@
 #define PATH_MAX 4096
 #define BUFF_MAX 512
 
-#include <Eina.h>
-#include <Ecore.h>
-#include <Evas.h>
-#include <Ecore_File.h>
-#include <Eet.h>
-#include <Efreet.h>
-#include <Elementary.h>
 #include <Ewe.h>
 #include "alloc.h"
 #include "logger.h"
