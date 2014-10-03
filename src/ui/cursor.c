@@ -36,7 +36,7 @@ static const char *cursor_string[CURSOR_LAST] = {
    "top_left_corner",
    "top_right_corner",
    "crosshair",
-   "fluer",
+   "fleur",
    "sizing",
    "hand1"
 };
