@@ -713,7 +713,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                priv->background);
    elm_object_part_content_set(priv->scroller, "elm.swallow.overlay",
                                priv->events);
-   elm_object_part_content_set(priv->scroller, "cross.swallow",
+   elm_object_part_content_set(priv->scroller, "elm.swallow.button",
                                priv->button_separate);
 
    /* create rulers*/
@@ -727,8 +727,8 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_object_part_content_set(priv->scroller, SWALL, RUL); \
    evas_object_smart_member_add(RUL, o);
 
-   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "ruler.swallow.hor");
-   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "ruler.swallow.ver");
+   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "elm.swallow.hruler");
+   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "elm.swallow.vruler");
    ewe_ruler_horizontal_set(priv->ruler_ver, false);
    evas_object_smart_callback_add(o, "ruler,toggle",
                                   _ws_ruler_toggle_cb, NULL);

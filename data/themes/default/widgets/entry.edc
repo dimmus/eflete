@@ -539,6 +539,18 @@ group { name: "elm/scroller/entry/eflete/default";
             }
          }
       }
+      part { name: "sb_vbar";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "";
+         }
+      }
+      part { name: "sb_hbar";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "";
+         }
+      }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
          clip_to: "clipper";
