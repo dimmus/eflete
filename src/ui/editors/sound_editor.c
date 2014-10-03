@@ -193,11 +193,8 @@ _out_fail(void *data EINA_UNUSED,
 }
 
 static void
-_on_play_cb(void *data,
-            Evas_Object *obj EINA_UNUSED,
-            void *event_info EINA_UNUSED)
+_play_sound(Sound_Editor *edit)
 {
-   Sound_Editor *edit = (Sound_Editor *)data;
    Eina_Bool ret = EINA_FALSE;
    Eo *in, *out;
    Evas_Object *edje_edit_obj;
@@ -250,6 +247,14 @@ _on_play_cb(void *data,
 end:
    ecore_audio_shutdown();
    eo_del(in);
+}
+
+static void
+_on_play_cb(void *data,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   _play_sound(data);
 }
 
 #define BT_ADD(PARENT, OBJ, ICON, TEXT) \
@@ -403,6 +408,7 @@ _sample_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_hide(content);
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
+
    elm_entry_entry_set(edit->snd_data.file_name, it->sound_name);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
@@ -444,6 +450,8 @@ _grid_sel_sample(void *data,
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
         _sample_info_setup(edit, item);
+        if (elm_check_state_get(edit->check))
+          _play_sound(edit);
      }
 }
 
