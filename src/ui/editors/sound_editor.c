@@ -71,6 +71,7 @@ struct _Sound_Editor
         Ecore_Audio_Vio vio;
    } io;
    struct {
+      Evas_Object *teg;
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
       Evas_Object *file_name;
@@ -275,9 +276,18 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 
    edit->player_layout = elm_layout_add(parent);
    elm_layout_file_set(edit->player_layout, EFLETE_EDJ, "eflete/sound_editor/player");
-   evas_object_size_hint_weight_set(edit->player_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(edit->player_layout,
+                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->player_layout);
    elm_object_part_content_set(parent, "player", edit->player_layout);
+
+   edit->snd_data.teg = elm_image_add(edit->player_layout);
+   evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
+   evas_object_show(edit->snd_data.teg);
+   evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(edit->snd_data.teg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_object_part_content_set(edit->player_layout, "eflete.swallow.teg",
+                               edit->snd_data.teg);
 
    ITEM_ADD(parent, item, _("Play on select"), "eflete/image_editor/item/default");
    CHECK_ADD(item, edit->check, DEFAULT_STYLE);
@@ -407,6 +417,8 @@ _sample_info_setup(Sound_Editor *edit, const Item *it)
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
+   evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
+
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
    elm_entry_entry_set(edit->snd_data.file_name, it->sound_name);
@@ -427,6 +439,8 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    GET_OBJ(edit->pr, edje_edit_obj);
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
+
+   evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
    elm_entry_entry_set(edit->snd_data.tone_name, it->sound_name);
