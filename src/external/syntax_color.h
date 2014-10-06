@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright notice for Enventor:
  *
  * Copyright (C) 2013-2014 ChunEon Park and various contributors (see AUTHORS)
