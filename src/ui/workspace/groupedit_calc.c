@@ -447,6 +447,31 @@ _part_select(void *data,
    evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
    evas_object_move(gp->item, xe + offset_x, ye + offset_y);
 
+#define GP_REAL_GEOMETRY_CALC \
+   Evas_Coord part_x = x + xe + offset_x; \
+   Evas_Coord part_y = y + ye + offset_y; \
+   Evas_Coord abs_x = abs(sd->real_size->x - part_x); \
+   Evas_Coord abs_y = abs(sd->real_size->y - part_y); \
+   if (part_x > sd->real_size->x) \
+     w += abs_x; \
+   else \
+     { \
+        sd->real_size->w += abs_x; \
+        sd->real_size->x = part_x; \
+     } \
+   if (part_y > sd->real_size->y) \
+     h += abs_y; \
+   else \
+     { \
+        sd->real_size->h += abs_y; \
+        sd->real_size->y = part_y; \
+     } \
+   if (sd->real_size->w < w) \
+     sd->real_size->w = w; \
+   if (sd->real_size->h < h) \
+     sd->real_size->h = h;
+
+
 static void
 _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                         Groupedit_Part *gp,
@@ -466,6 +491,8 @@ _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_move(gp->draw, ro_x + offset_x, ro_y + offset_y);
 
    GP_GEOMETRY_SET
+
+   GP_REAL_GEOMETRY_CALC
 }
 
 static void
@@ -484,9 +511,12 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_move(gp->draw, x + xe + offset_x, y + ye + offset_y);
 
    GP_GEOMETRY_SET
+
+   GP_REAL_GEOMETRY_CALC
 }
 
 #undef GP_GEOMETRY_SET
+#undef GP_REAL_GEOMETRY_CALC
 
 Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd)
@@ -497,6 +527,11 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
    int i = 0, offset_x, offset_y;
 
    if (!sd->parts) return false;
+
+   evas_object_geometry_get(sd->obj, &sd->real_size->x,
+                                     &sd->real_size->y,
+                                     &sd->real_size->w,
+                                     &sd->real_size->h);
 
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
@@ -590,6 +625,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           evas_object_hide(sd->obj_area.obj);
           evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
        }
+
+   evas_object_smart_callback_call(sd->obj, SIG_GEOMETRY_CHANGED, (void *)sd->real_size);
 
    return true;
 }

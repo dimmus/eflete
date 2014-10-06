@@ -143,7 +143,8 @@ _groupedit_smart_add(Evas_Object *o)
                                   _key_up, NULL);
 
    priv->obj = o;
-   priv->con_current_size = (Groupedit_Geom *)mem_malloc(sizeof(Groupedit_Geom));
+   priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
+   priv->real_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->edit_obj = NULL;
    priv->parts = NULL;
    priv->obj_area.obj = edje_object_add(priv->e);

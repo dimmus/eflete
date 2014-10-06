@@ -38,6 +38,7 @@ static const char SIG_PART_SEPARETE_CLOSE[] = "parts,separete,close";
 static const char SIG_PART_SELECTED[] = "part,selected";
 static const char SIG_PART_UNSELECTED[] = "part,unselected";
 static const char SIG_OBJ_AREA_CHANGED[] = "object,area,changed";
+static const char SIG_GEOMETRY_CHANGED[] = "geometry,changed";
 static const char TEXT_TOOLTIP[] = "gs.current.size.tooltip";
 static const char SWALLOW_FOR_EDIT[] = "gs.swallow.edit";
 
@@ -51,6 +52,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_PART_SELECTED, "s"},
    {SIG_PART_UNSELECTED, "s"},
    {SIG_OBJ_AREA_CHANGED, "(iiii)"},
+   {SIG_GEOMETRY_CHANGED, "(iiii)"},
    {NULL, NULL}
 };
 
@@ -80,6 +82,7 @@ struct _Ws_Groupedit_Smart_Data
       int h; /* default: -1, size is not limited */
    } con_size_max;
    Groupedit_Geom *con_current_size;
+   Groupedit_Geom *real_size;
    struct {
       Evas_Object *obj;
       int w, h;
