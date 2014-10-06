@@ -83,8 +83,25 @@ group {
                relative: 0.0 1.0;
             }
          }
+         description { state: "hidden" 0.0;
+            visible: 0;
+         }
       }
       programs {
+         program {
+            name: "block_content_hide";
+            signal: "content,hide";
+            source: "eflete";
+            action: STATE_SET "hidden" 0.0;
+            target: "elm.swallow.content";
+         }
+         program {
+            name: "block_content_show";
+            signal: "content,show";
+            source: "eflete";
+            action: STATE_SET "default" 0.0;
+            target: "elm.swallow.content";
+         }
          program {
             name: "block_title_show";
             signal: "title,show";

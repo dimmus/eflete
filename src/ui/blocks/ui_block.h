@@ -53,6 +53,18 @@ Eina_Bool
 ui_block_title_visible(Evas_Object *block, Eina_Bool vis);
 
 /**
+ * Show/Hide a content of block
+ *
+ * @param block the block object
+ * @param vis if EINA_TRUE - content show, EINA_FALSE - content hide
+ * @return EINA_TRUE if succesfull, EINA_FALSE - otherwise
+ *
+ * @ingroup Block
+ */
+Eina_Bool
+ui_block_content_visible(Evas_Object *block, Eina_Bool vis);
+
+/**
  * Set the title of the block
  *
  * @param block the block object
