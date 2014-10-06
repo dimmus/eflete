@@ -566,6 +566,7 @@ _create_gengrid(Evas_Object *parent,
      }
 
    evas_object_show(editor->gengrid);
+   elm_object_part_content_set(editor->markup, "gengrid", editor->gengrid);
 }
 
 static inline Evas_Object *
@@ -852,35 +853,18 @@ _search_reset_cb(void *data __UNUSED__,
    search_data->last_item_found = NULL;
 }
 
-Evas_Object *
-sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
+static void
+_sound_editor_main_markup_create(Evas_Object *parent, Sound_Editor *edit)
 {
-   Sound_Editor *edit;
-
-   Evas_Object *wlayout, *btn_box, *btn, *icon, *search;
-
-   if (!project)
-     {
-        ERR("Project is not opened");
-        return NULL;
-     }
-
-   edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
-   edit->pr = project;
-   edit->win = mw_add(_on_quit_cb, edit);
-   mw_title_set(edit->win, _("Sound editor"));
-
-   wlayout = elm_layout_add(edit->win);
-   elm_layout_file_set(wlayout, EFLETE_EDJ, "eflete/editor/default");
-   elm_win_inwin_content_set(edit->win, wlayout);
+   Evas_Object *btn_box, *btn, *icon, *search;
 
    edit->markup = elm_layout_add(edit->win);
    elm_layout_file_set(edit->markup, EFLETE_EDJ, "eflete/sound_editor/default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_part_content_set(wlayout, "eflete.swallow.content", edit->markup);
+   elm_object_part_content_set(parent, "eflete.swallow.content", edit->markup);
    evas_object_show(edit->markup);
 
-   BOX_ADD(wlayout, btn_box, true, false)
+   BOX_ADD(parent, btn_box, true, false)
    elm_box_align_set(btn_box, 1.0, 0.5);
 
    BUTTON_ADD(edit->win, btn, _("Apply"));
@@ -888,7 +872,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_size_hint_min_set(btn, 100, 30);
    elm_box_pack_end(btn_box, btn);
-   elm_object_part_content_set(wlayout, "eflete.swallow.button_box", btn_box);
+   elm_object_part_content_set(parent, "eflete.swallow.button_box", btn_box);
    evas_object_show(btn);
 
    BUTTON_ADD(edit->win, btn, _("Close"));
@@ -896,7 +880,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_size_hint_min_set(btn, 100, 30);
    elm_box_pack_end(btn_box, btn);
-   elm_object_part_content_set(wlayout, "eflete.swallow.button_box", btn_box);
+   elm_object_part_content_set(parent, "eflete.swallow.button_box", btn_box);
    evas_object_show(btn);
 
    EWE_COMBOBOX_ADD(edit->markup, edit->cmb);
@@ -921,9 +905,33 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
                                   &(edit->sound_search_data));
    edit->sound_search_data.search_entry = search;
    edit->sound_search_data.last_item_found = NULL;
+}
+
+Evas_Object *
+sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
+{
+   Sound_Editor *edit;
+
+   Evas_Object *wlayout;
+
+   if (!project)
+     {
+        ERR("Project is not opened");
+        return NULL;
+     }
+
+   edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
+   edit->pr = project;
+   edit->win = mw_add(_on_quit_cb, edit);
+   mw_title_set(edit->win, _("Sound editor"));
+
+   wlayout = elm_layout_add(edit->win);
+   elm_layout_file_set(wlayout, EFLETE_EDJ, "eflete/editor/default");
+   elm_win_inwin_content_set(edit->win, wlayout);
+
+   _sound_editor_main_markup_create(wlayout, edit);
 
    _create_gengrid(edit->markup, edit, mode);
-   elm_object_part_content_set(edit->markup, "gengrid", edit->gengrid);
 
    _sound_info_create(edit->markup, edit);
 
