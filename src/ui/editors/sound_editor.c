@@ -716,7 +716,6 @@ _on_cmb_sel(void *data,
 
         ecore_main_loop_begin();
         evas_object_del(win);
-        ewe_combobox_text_set(edit->cmb, "+");
 
         return;
      }
@@ -759,7 +758,6 @@ _on_cmb_sel(void *data,
         evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
         elm_object_part_content_set(popup, "button2", bt_no);
 
-        ewe_combobox_text_set(edit->cmb, "+");
         evas_object_show(popup);
         eina_stringshare_del(title);
 
@@ -905,13 +903,13 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    ewe_combobox_style_set(edit->cmb, "small/default");
    ewe_combobox_item_add(edit->cmb, _("Sample"));
    ewe_combobox_item_add(edit->cmb, _("Tone"));
-   ewe_combobox_text_set(edit->cmb, "+");
    evas_object_smart_callback_add(edit->cmb, "selected", _on_cmb_sel, edit);
    elm_object_part_content_set(edit->markup, "swallow.add_btn", edit->cmb);
 
    BUTTON_ADD(edit->markup, btn, NULL);
    ICON_ADD(btn, icon, true, "icon-remove");
    elm_object_content_set(btn, icon);
+   evas_object_size_hint_min_set(btn, 31, 21);
    evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
    elm_object_part_content_set(edit->markup, "swallow.del_btn", btn);
 

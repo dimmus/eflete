@@ -94,7 +94,7 @@ group { name: "eflete/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            FIXED_SIZE(30, 30);
+            FIXED_SIZE(31, 21);
             rel1.to_y: "area.edit";
             rel2.to: "area.edit";
          }
@@ -116,7 +116,7 @@ group { name: "eflete/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            FIXED_SIZE(30, 30);
+            FIXED_SIZE(31, 21);
             rel1 {
                relative: 1.0 0.0;
                offset: 10 0;
