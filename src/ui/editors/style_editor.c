@@ -1062,14 +1062,14 @@ evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_e
 
 #define STYLE_ADD(VALUE) \
 int i = 0; \
-SEGMENT_CONTROL_ADD(layout, widget); \
+SEGMENT_CONTROL_ADD(layout, widget, "eflete/style_editor"); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define UNDERLINE_ADD(VALUE) \
 int i = 0; \
-SEGMENT_CONTROL_ADD(layout, widget); \
+SEGMENT_CONTROL_ADD(layout, widget, "eflete/style_editor"); \
 for (i = 0; underl_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, underl_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit); \
