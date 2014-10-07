@@ -290,9 +290,9 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(edit->player_layout, "eflete.swallow.teg",
                                edit->snd_data.teg);
 
-   ITEM_ADD(parent, item, _("Play on select"), "eflete/image_editor/item/default");
+   ITEM_ADD(parent, item, _("Play on select:"), "eflete/sound_editor/item/default");
    CHECK_ADD(item, edit->check, DEFAULT_STYLE);
-   elm_object_part_content_set(item, "elm.swallow.content", edit->check);
+   elm_object_part_content_set(item, "swallow.second", edit->check);
    elm_object_part_content_set(edit->player_layout, "eflete.swallow.check", item);
 
    sl = elm_slider_add(edit->player_layout);
@@ -351,7 +351,7 @@ _sound_info_label_add(Evas_Object *box,
 static void
 _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
 {
-   Evas_Object *comp_info_box, *item, *quality;
+   Evas_Object *item;
    BOX_ADD(parent, edit->sample_box, false, false);
    elm_box_align_set(edit->sample_box, 0.5, 0.5);
 
@@ -359,25 +359,25 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
    edit->snd_data.location = _sound_info_label_add(edit->sample_box, _("location:"));
    edit->snd_data.type = _sound_info_label_add(edit->sample_box, _("type:"));
    edit->snd_data.size = _sound_info_label_add(edit->sample_box, _("size:"));
-   // TODO: Add field with file size info.
-   ITEM_ADD(edit->sample_box, item, _("compression:"), "eflete/image_editor/item/default");
 
-   BOX_ADD(edit->sample_box, comp_info_box, true, true);
-   EWE_COMBOBOX_ADD(comp_info_box, edit->snd_data.comp);
+   // TODO: Add field with file size info.
+
+   ITEM_ADD(edit->sample_box, item, _("compression:"), "eflete/sound_editor/item/default");
+
+   EWE_COMBOBOX_ADD(item, edit->snd_data.comp);
    ewe_combobox_item_add(edit->snd_data.comp, "NONE");
    ewe_combobox_item_add(edit->snd_data.comp, "RAW");
    ewe_combobox_item_add(edit->snd_data.comp, "COMP");
    ewe_combobox_item_add(edit->snd_data.comp, "LOSSY");
    ewe_combobox_item_add(edit->snd_data.comp, "AS_IS");
    elm_object_disabled_set(edit->snd_data.comp, true);
-   elm_box_pack_end(comp_info_box, edit->snd_data.comp);
 
-   ITEM_ADD(item, quality, _("quality:"), "eflete/image_editor/item/default");
-   SPINNER_ADD(comp_info_box, edit->snd_data.quality, 45, 1000, 1, false, DEFAULT_STYLE);
+   elm_object_part_text_set(item, "label.property", _("quality:"));
+   SPINNER_ADD(item, edit->snd_data.quality, 45, 1000, 1, false, DEFAULT_STYLE);
    elm_object_disabled_set(edit->snd_data.quality, true);
-   elm_object_part_content_set(quality, "elm.swallow.content", edit->snd_data.quality);
-   elm_box_pack_end(comp_info_box, quality);
-   elm_object_part_content_set(item, "elm.swallow.content", comp_info_box);
+   elm_object_part_content_set(item, "swallow.first", edit->snd_data.comp);
+   elm_object_part_content_set(item, "swallow.second", edit->snd_data.quality);
+
    elm_box_pack_end(edit->sample_box, item);
    evas_object_hide(edit->sample_box);
 }
@@ -390,12 +390,12 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
    BOX_ADD(parent, edit->tone_box, false, false);
    elm_box_align_set(edit->tone_box, 0.5, 0.5);
 
-   edit->snd_data.tone_name = _sound_info_label_add(edit->tone_box, _("name"));
+   edit->snd_data.tone_name = _sound_info_label_add(edit->tone_box, _("name:"));
 
-   ITEM_ADD(edit->tone_box, item, "frequency:", "eflete/image_editor/item/default");
+   ITEM_ADD(edit->tone_box, item, "frequency:", "eflete/sound_editor/item/default");
    SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false, DEFAULT_STYLE);
    elm_object_disabled_set(edit->snd_data.tone_frq, true);
-   elm_object_part_content_set(item, "elm.swallow.content", edit->snd_data.tone_frq);
+   elm_object_part_content_set(item, "swallow.first", edit->snd_data.tone_frq);
    elm_box_pack_end(edit->tone_box, item);
    evas_object_hide(edit->tone_box);
 }
@@ -421,7 +421,7 @@ _sample_info_setup(Sound_Editor *edit, const Item *it)
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
-   elm_object_part_text_set(edit->snd_data.file_name, "elm.text.property", it->sound_name);
+   elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
    elm_spinner_value_set(edit->snd_data.quality, rate);
@@ -443,7 +443,8 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
-   elm_object_part_text_set(edit->snd_data.tone_name, "elm.text.property", it->sound_name);
+
+   elm_object_part_text_set(edit->snd_data.tone_name, "label.value", it->sound_name);
    elm_spinner_value_set(edit->snd_data.tone_frq, it->tone_frq);
    evas_object_show(edit->tone_box);
 }
