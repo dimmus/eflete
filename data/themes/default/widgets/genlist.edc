@@ -24,6 +24,7 @@ group { name: "elm/genlist/item/eflete/default/default";
          mouse_events: 0;
          description { state: "default" 0.0;
             color: LIGHT_GREY_BG_COLOR;
+            rel2.to:"bg";
          }
       }
       part { name: "bg";
@@ -210,6 +211,17 @@ group { name: "elm/genlist/item/eflete/default/default";
          source:  "elm";
          action:  STATE_SET "default" 0.0;
          target:  "disclip";
+      }
+   }
+}
+
+group { name: "elm/genlist/item/eflete/program_after/default";
+   inherit: "elm/genlist/item/eflete/default/default";
+   parts{
+      part { name: "base";
+         description { state: "default" 0.0;
+            color: 52 70 84 255;
+         }
       }
    }
 }
