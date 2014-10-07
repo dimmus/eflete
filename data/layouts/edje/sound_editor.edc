@@ -286,3 +286,198 @@ group { name: "eflete/sound_editor/player";
    }
 }
 
+group { name: "eflete/sound_editor/item/default";
+   parts {
+      part { name: "area.base";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 40 30;
+            max: -1 30;
+         }
+      }
+      part { name: "padding.top_left";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(5, 5);
+            align: 0.0 0.0;
+            rel1.to: "area.base";
+            rel2.to: "area.base";
+         }
+      }
+      part { name: "padding.bottom_right";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(5, 5);
+            align: 1.0 1.0;
+            rel1.to: "area.base";
+            rel2.to: "area.base";
+         }
+      }
+      part { name: "area.item";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "padding.top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.bottom_right";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "padding.label1";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(5, 5);
+            align: 0.0 0.0;
+            rel1 {
+               to: "area.item";
+               relative: 0.25 0.0;
+            }
+            rel2.to: "area.item";
+         }
+      }
+      part { name: "area.label1";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "area.item";
+            rel2 {
+               to_x: "padding.label1";
+               to_y: "area.item";
+            }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            color: 223 219 210 255;
+            text {
+               align: 0.0 0.5;
+               elipsis: -1;
+               font: FN;
+               size: 12;
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1.to: "area.label1";
+            rel2.to: "area.label1";
+         }
+      }
+      part { name: "swallow.first";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 0.5;
+            fixed: 1 1;
+            rel1 {
+               to_x: "padding.label1";
+               to_y: "area.item";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "area.item";
+               relative: 0.5 1.0;
+            }
+         }
+      }
+      part { name: "label.value";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            color: 223 219 210 255;
+            text {
+               align: 0.0 0.5;
+               elipsis: -1;
+               font: FN;
+               size: 12;
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1.to: "swallow.first";
+            rel2.to: "swallow.first";
+         }
+      }
+      part { name: "area.value.spacer";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            SET_SIZE(30, 5);
+            align: 0.0 0.0;
+            rel1 {
+               to: "swallow.first";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "area.item";
+         }
+      }
+      part { name: "area.value.spacer2";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x: "area.value.spacer";
+               to_y: "area.item";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "area.item";
+               relative: 0.7 1.0;
+            }
+         }
+      }
+      part { name: "label.property";
+         type: TEXT;
+         scale: 1;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            color: 223 219 210 255;
+            fixed: 1 0;
+            text {
+               align: 0.0 0.5;
+               elipsis: -1;
+               font: FN;
+               size: 12;
+               min: 0 0;
+               max: 1 1;
+            }
+            rel1 {
+               to_x: "area.value.spacer2";
+               to_y: "area.item";
+            }
+            rel2 {
+               to_x: "area.value.spacer2";
+               to_y: "area.item";
+            }
+         }
+      }
+      part { name: "swallow.second";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               to: "area.value.spacer2";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "area.item";
+         }
+      }
+   }
+}
+
+

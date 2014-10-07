@@ -75,6 +75,7 @@ struct _Sound_Editor
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
       Evas_Object *file_name;
+      Evas_Object *location;
       Evas_Object *type;
       Evas_Object *size;
       Evas_Object *comp;
@@ -338,16 +339,13 @@ _grid_del(void *data,
 }
 
 static Evas_Object *
-_sound_info_entry_add(Evas_Object *box,
+_sound_info_label_add(Evas_Object *box,
                       const char *label)
 {
-   Evas_Object *item, *entry;
-   ITEM_ADD(box, item, label, "eflete/image_editor/item/default");
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE);
-   elm_entry_editable_set(entry, false);
-   elm_object_part_content_set(item, "elm.swallow.content", entry);
+   Evas_Object *item;
+   ITEM_ADD(box, item, label, "eflete/sound_editor/item/default");
    elm_box_pack_end(box, item);
-   return entry;
+   return item;
 }
 
 static void
@@ -357,10 +355,12 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
    BOX_ADD(parent, edit->sample_box, false, false);
    elm_box_align_set(edit->sample_box, 0.5, 0.5);
 
-   edit->snd_data.file_name = _sound_info_entry_add(edit->sample_box, _("file name"));
-   edit->snd_data.type = _sound_info_entry_add(edit->sample_box, _("type"));
+   edit->snd_data.file_name = _sound_info_label_add(edit->sample_box, _("file name:"));
+   edit->snd_data.location = _sound_info_label_add(edit->sample_box, _("location:"));
+   edit->snd_data.type = _sound_info_label_add(edit->sample_box, _("type:"));
+   edit->snd_data.size = _sound_info_label_add(edit->sample_box, _("size:"));
    // TODO: Add field with file size info.
-   ITEM_ADD(edit->sample_box, item, _("compression"), "eflete/image_editor/item/default");
+   ITEM_ADD(edit->sample_box, item, _("compression:"), "eflete/image_editor/item/default");
 
    BOX_ADD(edit->sample_box, comp_info_box, true, true);
    EWE_COMBOBOX_ADD(comp_info_box, edit->snd_data.comp);
@@ -372,7 +372,7 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_disabled_set(edit->snd_data.comp, true);
    elm_box_pack_end(comp_info_box, edit->snd_data.comp);
 
-   ITEM_ADD(item, quality, _("quality"), "eflete/image_editor/item/default");
+   ITEM_ADD(item, quality, _("quality:"), "eflete/image_editor/item/default");
    SPINNER_ADD(comp_info_box, edit->snd_data.quality, 45, 1000, 1, false, DEFAULT_STYLE);
    elm_object_disabled_set(edit->snd_data.quality, true);
    elm_object_part_content_set(quality, "elm.swallow.content", edit->snd_data.quality);
@@ -390,9 +390,9 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
    BOX_ADD(parent, edit->tone_box, false, false);
    elm_box_align_set(edit->tone_box, 0.5, 0.5);
 
-   edit->snd_data.tone_name = _sound_info_entry_add(edit->tone_box, _("name"));
+   edit->snd_data.tone_name = _sound_info_label_add(edit->tone_box, _("name"));
 
-   ITEM_ADD(edit->tone_box, item, "frequency", "eflete/image_editor/item/default");
+   ITEM_ADD(edit->tone_box, item, "frequency:", "eflete/image_editor/item/default");
    SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false, DEFAULT_STYLE);
    elm_object_disabled_set(edit->snd_data.tone_frq, true);
    elm_object_part_content_set(item, "elm.swallow.content", edit->snd_data.tone_frq);
@@ -421,7 +421,7 @@ _sample_info_setup(Sound_Editor *edit, const Item *it)
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
-   elm_entry_entry_set(edit->snd_data.file_name, it->sound_name);
+   elm_object_part_text_set(edit->snd_data.file_name, "elm.text.property", it->sound_name);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
    elm_spinner_value_set(edit->snd_data.quality, rate);
@@ -443,7 +443,7 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
-   elm_entry_entry_set(edit->snd_data.tone_name, it->sound_name);
+   elm_object_part_text_set(edit->snd_data.tone_name, "elm.text.property", it->sound_name);
    elm_spinner_value_set(edit->snd_data.tone_frq, it->tone_frq);
    evas_object_show(edit->tone_box);
 }
