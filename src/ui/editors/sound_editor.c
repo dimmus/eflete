@@ -51,13 +51,11 @@ struct _Search_Data
 struct _Sound_Editor
 {
    Project *pr;
-   Evas_Object *player_layout;
    Evas_Object *popup;
    Evas_Object *cmb;
    Evas_Object *win;
    Evas_Object *tone_entry, *frq_entry;
    Evas_Object *gengrid;
-   Evas_Object *player;
    Evas_Object *sample_box;
    Evas_Object *tone_box;
    Evas_Object *markup;
@@ -271,44 +269,44 @@ _on_play_cb(void *data,
 static void
 _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 {
-   Evas_Object *bt, *sl, *icon, *item;
+   Evas_Object *bt, *sl, *icon, *item, *player_layout;
 
    if (!parent) return;
 
-   edit->player_layout = elm_layout_add(parent);
-   elm_layout_file_set(edit->player_layout, EFLETE_EDJ, "eflete/sound_editor/player");
-   evas_object_size_hint_weight_set(edit->player_layout,
+   player_layout = elm_layout_add(parent);
+   elm_layout_file_set(player_layout, EFLETE_EDJ, "eflete/sound_editor/player");
+   evas_object_size_hint_weight_set(player_layout,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(edit->player_layout);
-   elm_object_part_content_set(parent, "player", edit->player_layout);
+   evas_object_show(player_layout);
+   elm_object_part_content_set(parent, "player", player_layout);
 
-   edit->snd_data.teg = elm_image_add(edit->player_layout);
+   edit->snd_data.teg = elm_image_add(player_layout);
    evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
    evas_object_show(edit->snd_data.teg);
    evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(edit->snd_data.teg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_part_content_set(edit->player_layout, "eflete.swallow.teg",
+   elm_object_part_content_set(player_layout, "eflete.swallow.teg",
                                edit->snd_data.teg);
 
    ITEM_ADD(parent, item, _("Play on select:"), "eflete/sound_editor/item/default");
    CHECK_ADD(item, edit->check, DEFAULT_STYLE);
    elm_object_part_content_set(item, "swallow.second", edit->check);
-   elm_object_part_content_set(edit->player_layout, "eflete.swallow.check", item);
+   elm_object_part_content_set(player_layout, "eflete.swallow.check", item);
 
-   sl = elm_slider_add(edit->player_layout);
+   sl = elm_slider_add(player_layout);
    elm_slider_unit_format_set(sl, "%1.0f");
    elm_slider_min_max_set(sl, 0, 1000);
    evas_object_size_hint_align_set(sl, EVAS_HINT_FILL, 0.5);
    evas_object_size_hint_weight_set(sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(sl);
-   elm_object_part_content_set(edit->player_layout, "eflete.swallow.fast", sl);
+   elm_object_part_content_set(player_layout, "eflete.swallow.fast", sl);
 
-   BT_ADD(edit->player_layout, bt, icon, "prev");
+   BT_ADD(player_layout, bt, icon, "prev");
 
-   BT_ADD(edit->player_layout, bt, icon, "play");
+   BT_ADD(player_layout, bt, icon, "play");
    evas_object_smart_callback_add(bt, "clicked", _on_play_cb, edit);
 
-   BT_ADD(edit->player_layout, bt, icon, "next");
+   BT_ADD(player_layout, bt, icon, "next");
  }
 
 #undef BT_ADD
