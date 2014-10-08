@@ -60,6 +60,7 @@ struct _Sound_Editor
    Evas_Object *sample_box;
    Evas_Object *tone_box;
    Evas_Object *markup;
+   Evas_Object *player_markup;
    Elm_Object_Item *tone;
    Search_Data sound_search_data;
    Evas_Object *check;
@@ -85,6 +86,8 @@ struct _Sound_Editor
 
    Ecore_Timer *timer;
    Evas_Object *rewind;
+   Evas_Object *play;
+   Evas_Object *pause;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
@@ -202,12 +205,18 @@ static Eina_Bool
 _rewind_cb(void *data)
 {
    double value, max;
-   value = elm_slider_value_get(data);
-   elm_slider_min_max_get(data, NULL, &max);
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   value = elm_slider_value_get(edit->rewind);
+   elm_slider_min_max_get(edit->rewind, NULL, &max);
 
    if (max == value)
      {
-        elm_slider_value_set(data, 0.0);
+        elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
+        evas_object_hide(edit->pause);
+        elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->play);
+        evas_object_show(edit->play);
+        elm_slider_value_set(edit->rewind, 0.0);
         return ECORE_CALLBACK_CANCEL;
      }
 
@@ -221,8 +230,13 @@ _play_sound(Sound_Editor *edit)
    double len;
    Eina_Bool ret = EINA_FALSE;
    Eo *in, *out;
-   Evas_Object *edje_edit_obj;
+   Evas_Object *edje_edit_obj, *bt;
    Eina_Binbuf *buffer;
+
+   bt = elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
+   evas_object_hide(bt);
+   elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->pause);
+   evas_object_show(edit->pause);
 
    ecore_audio_init();
 
@@ -251,7 +265,7 @@ _play_sound(Sound_Editor *edit)
                                     _out_fail, NULL));
 
    eo_do(in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
-                                   _play_finished_cb, edit));
+                                   _play_finished_cb, NULL));
 
    if (!out)
      {
@@ -297,43 +311,49 @@ _on_play_cb(void *data,
 static void
 _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 {
-   Evas_Object *bt, *icon, *item, *player_layout;
+   Evas_Object *bt, *icon, *item;
 
    if (!parent) return;
 
-   player_layout = elm_layout_add(parent);
-   elm_layout_file_set(player_layout, EFLETE_EDJ, "eflete/sound_editor/player");
-   evas_object_size_hint_weight_set(player_layout,
+   edit->player_markup = elm_layout_add(parent);
+   elm_layout_file_set(edit->player_markup, EFLETE_EDJ, "eflete/sound_editor/player");
+   evas_object_size_hint_weight_set(edit->player_markup,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(player_layout);
-   elm_object_part_content_set(parent, "player", player_layout);
+   evas_object_show(edit->player_markup);
+   elm_object_part_content_set(parent, "player", edit->player_markup);
 
-   edit->snd_data.teg = elm_image_add(player_layout);
+   edit->snd_data.teg = elm_image_add(edit->player_markup);
    evas_object_image_smooth_scale_set(edit->snd_data.teg, false);
    evas_object_show(edit->snd_data.teg);
    evas_object_size_hint_fill_set(edit->snd_data.teg, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(edit->snd_data.teg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_part_content_set(player_layout, "eflete.swallow.teg",
+   elm_object_part_content_set(edit->player_markup, "eflete.swallow.teg",
                                edit->snd_data.teg);
 
    ITEM_ADD(parent, item, _("Play on select:"), "eflete/sound_editor/item/default");
    CHECK_ADD(item, edit->check, DEFAULT_STYLE);
    elm_object_part_content_set(item, "swallow.second", edit->check);
-   elm_object_part_content_set(player_layout, "eflete.swallow.check", item);
+   elm_object_part_content_set(edit->player_markup, "eflete.swallow.check", item);
 
-   edit->rewind = elm_slider_add(player_layout);
+   edit->rewind = elm_slider_add(edit->player_markup);
    elm_slider_unit_format_set(edit->rewind, "%1.0f");
    evas_object_size_hint_align_set(edit->rewind, EVAS_HINT_FILL, 0.5);
    evas_object_size_hint_weight_set(edit->rewind, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->rewind);
-   elm_object_part_content_set(player_layout, "eflete.swallow.fast", edit->rewind);
+   elm_object_part_content_set(edit->player_markup, "eflete.swallow.fast", edit->rewind);
 
-   BT_ADD(player_layout, bt, icon, "prev");
+   BT_ADD(edit->player_markup, bt, icon, "prev");
 
-   BT_ADD(player_layout, bt, icon, "play");
-   evas_object_smart_callback_add(bt, "clicked", _on_play_cb, edit);
+   BT_ADD(edit->player_markup, edit->play, icon, "play");
+   evas_object_smart_callback_add(edit->play, "clicked", _on_play_cb, edit);
 
-   BT_ADD(player_layout, bt, icon, "next");
+   BT_ADD(edit->player_markup, bt, icon, "next");
+
+   edit->pause = elm_button_add(edit->player_markup);
+   evas_object_size_hint_align_set(edit->pause, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   ICON_ADD(edit->pause, icon, NULL, "icon_pause")
+   elm_object_style_set(edit->pause, "eflete/simple");
+   elm_object_part_content_set(edit->pause, NULL, icon);
  }
 
 #undef BT_ADD
