@@ -25,6 +25,7 @@
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
+#define UPDATE_FREQUENCY 1.0 / 30.0
 
 typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
@@ -63,11 +64,13 @@ struct _Sound_Editor
    Search_Data sound_search_data;
    Evas_Object *check;
    const char  *selected;
+
    struct {
         int offset, length;
         const void *data;
         Ecore_Audio_Vio vio;
    } io;
+
    struct {
       Evas_Object *teg;
       Evas_Object *tone_name;
@@ -79,6 +82,9 @@ struct _Sound_Editor
       Evas_Object *comp;
       Evas_Object *quality;
    } snd_data;
+
+   Ecore_Timer *timer;
+   Evas_Object *rewind;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
@@ -192,9 +198,27 @@ _out_fail(void *data EINA_UNUSED,
    return EINA_TRUE;
 }
 
+static Eina_Bool
+_rewind_cb(void *data)
+{
+   double value, max;
+   value = elm_slider_value_get(data);
+   elm_slider_min_max_get(data, NULL, &max);
+
+   if (max == value)
+     {
+        elm_slider_value_set(data, 0.0);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   elm_slider_value_set(data, elm_slider_value_get(data) + UPDATE_FREQUENCY);
+   return ECORE_CALLBACK_RENEW;
+}
+
 static void
 _play_sound(Sound_Editor *edit)
 {
+   double len;
    Eina_Bool ret = EINA_FALSE;
    Eo *in, *out;
    Evas_Object *edje_edit_obj;
@@ -227,13 +251,17 @@ _play_sound(Sound_Editor *edit)
                                     _out_fail, NULL));
 
    eo_do(in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
-                                   _play_finished_cb, NULL));
+                                   _play_finished_cb, edit));
 
    if (!out)
      {
         ERR("Output stream was't create!");
         goto end;
      }
+
+   eo_do(in, len = ecore_audio_obj_in_length_get());
+   elm_slider_min_max_set(edit->rewind, 0, len);
+   edit->timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit->rewind);
 
    eo_do(out, ret = ecore_audio_obj_out_input_attach(in));
    if (!ret)
@@ -269,7 +297,7 @@ _on_play_cb(void *data,
 static void
 _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 {
-   Evas_Object *bt, *sl, *icon, *item, *player_layout;
+   Evas_Object *bt, *icon, *item, *player_layout;
 
    if (!parent) return;
 
@@ -293,13 +321,12 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(item, "swallow.second", edit->check);
    elm_object_part_content_set(player_layout, "eflete.swallow.check", item);
 
-   sl = elm_slider_add(player_layout);
-   elm_slider_unit_format_set(sl, "%1.0f");
-   elm_slider_min_max_set(sl, 0, 1000);
-   evas_object_size_hint_align_set(sl, EVAS_HINT_FILL, 0.5);
-   evas_object_size_hint_weight_set(sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(sl);
-   elm_object_part_content_set(player_layout, "eflete.swallow.fast", sl);
+   edit->rewind = elm_slider_add(player_layout);
+   elm_slider_unit_format_set(edit->rewind, "%1.0f");
+   evas_object_size_hint_align_set(edit->rewind, EVAS_HINT_FILL, 0.5);
+   evas_object_size_hint_weight_set(edit->rewind, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(edit->rewind);
+   elm_object_part_content_set(player_layout, "eflete.swallow.fast", edit->rewind);
 
    BT_ADD(player_layout, bt, icon, "prev");
 
