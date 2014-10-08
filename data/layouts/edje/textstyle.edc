@@ -1,5 +1,7 @@
 #define SWALLOW_HEIGHT 20
 #define ITEM_HEIGHT 26
+#define PADDING_SIZE FIXED_SIZE(30, 22)
+#define SEARCH_AREA_HEIGHT 22
 group {
    name: "ui/style_viewer_window/preview";
    parts {
@@ -49,113 +51,68 @@ group {
 group {
    name: "ui/style_viewer_window/list";
    parts {
-      part {
-         name: "offset_left";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 20 20;
-            max: 20 20;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-            align: 0.0 1.0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "offset_list";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 20 20;
-            max: 20 20;
-            rel1.relative: 0.0 0.0;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "swallow/button_add_style";
-            }
-            align: 1.0 1.0;
-            color: 0 0 0 0;
-         }
-      }
-      part {
-         name: "swallow/button_rm_tag";
+      part { name: "swallow.rm_btn";
          type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            min: 0 40;
-            max: 999999 40;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "offset_left";
-            }
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            PADDING_SIZE
+         }
+      }
+      part { name: "padding.btn";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            FIXED_SIZE(5, SEARCH_AREA_HEIGHT)
             rel2 {
                relative: 0.0 0.0;
-               to_x: "offset_list";
-               to_y: "offset_left";
+               to: "swallow.rm_btn";
             }
-            align: 1.0 1.0;
          }
       }
-      part {
-         name: "swallow/button_add_tag";
+      part { name: "swallow.add_btn";
          type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            min: 0 40;
-            max: 999999 40;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "offset_left";
-            }
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            PADDING_SIZE
             rel2 {
-               relative: 0.0 0.0;
-               to_y: "swallow/button_rm_tag";
-               to_x: "offset_list";
-               offset: 0 -20;
+               relative: 0.0 1.0;
+               to: "padding.btn";
             }
-            align: 1.0 1.0;
          }
       }
-      part {
-         name: "swallow/button_rm_style";
-         type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            min: 0 40;
-            max: 999999 40;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "offset_left";
-            }
+      part { name: "padding.btn_s";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            FIXED_SIZE(10, SEARCH_AREA_HEIGHT)
             rel2 {
                relative: 0.0 0.0;
-               to_y: "swallow/button_add_tag";
-               to_x: "offset_list";
-               offset: 0 -20;
+               to: "swallow.add_btn";
             }
-            align: 1.0 1.0;
          }
       }
-      part {
-         name: "swallow/button_add_style";
+      part { name: "swallow.search_area";
          type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            min: 0 40;
-            max: 999999 40;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "offset_left";
-            }
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            max: 220 SEARCH_AREA_HEIGHT;
+            rel1.to_y: "padding.btn_s";
             rel2 {
-               relative: 0.0 0.0;
-               to_y: "swallow/button_rm_style";
-               to_x: "offset_list";
-               offset: 0 -20;
+               relative: 0.0 1.0;
+               to: "padding.btn_s";
             }
-            color: 0 0 255 255;
-            align: 1.0 1.0;
+         }
+      }
+      part { name: "padding.search";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5)
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "swallow.search_area";
+               to_y: "padding.btn_s";
+            }
          }
       }
       part {
@@ -163,10 +120,9 @@ group {
          type: SWALLOW;
          description {
             state: "default" 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2 {
-               relative: 1.0 0.0;
-               to_y: "offset_list";
+            rel1 {
+               relative: 0.0 1.0;
+               to: "padding.search";
             }
          }
       }

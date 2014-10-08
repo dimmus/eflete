@@ -29,6 +29,13 @@
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
 typedef struct _Style_entries Style_Entries;
 typedef struct _Style_Editor Style_Editor;
+typedef struct _Search_Data Search_Data;
+
+struct _Search_Data
+{
+   Evas_Object *search_entry;
+   Elm_Object_Item *last_item_found;
+};
 
 struct _Style_Editor
 {
@@ -38,6 +45,7 @@ struct _Style_Editor
    Evas_Object *textblock_style;
    Evas_Object *entry_prev;
    Evas_Object *tabs;
+   Search_Data style_search_data;
    struct {
         const char *st_name;
         const char *st_tag;
@@ -458,12 +466,9 @@ _on_tag_add_bt_ok(void *data,
 }
 
 static void
-_on_bt_style_add(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
+_on_bt_style_add(Style_Editor *style_edit)
 {
    Evas_Object *box, *item, *button;
-   Style_Editor *style_edit = (Style_Editor *)data;
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
    elm_object_style_set(POPUP.dialog, "eflete");
@@ -505,13 +510,10 @@ _on_bt_style_add(void *data,
 }
 
 static void
-_on_bt_tag_add(void *data,
-              Evas_Object *obj __UNUSED__,
-              void *event_info __UNUSED__)
+_on_bt_tag_add(Style_Editor *style_edit)
 {
    Evas_Object *box, *item, *button;
 
-   Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
    const char *style_name;
@@ -586,6 +588,7 @@ _on_bt_del(void *data,
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
+   if (!glit_parent) return;
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if (!glit_parent)
@@ -656,12 +659,74 @@ _on_viewer_exit(void *data,
    evas_object_del(style_edit->mwin);
 }
 
+static inline Evas_Object *
+_style_editor_search_field_create(Evas_Object *parent)
+{
+   Evas_Object *entry, *icon;
+   ENTRY_ADD(parent, entry, true, "eflete/search_field");
+   elm_object_part_text_set(entry, "guide", _("Search"));
+   ICON_ADD(entry, icon, true, "icon-search");
+   elm_object_part_content_set(entry, "elm.swallow.end", icon);
+   return entry;
+}
+
+static void
+_on_bt_add(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+   Ewe_Combobox_Item *selected_item = event_info;
+
+   if (!selected_item->index) _on_bt_style_add(style_edit);
+   else _on_bt_tag_add(style_edit);
+}
+
+ITEM_SEARCH_FUNC(genlist)
+
+static void
+_search_changed(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Style_Editor *style_edit = data;
+   _genlist_item_search(style_edit->glist, &(style_edit->style_search_data),
+                           style_edit->style_search_data.last_item_found);
+
+}
+
+static void
+_search_nxt_gd_item(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+   Style_Editor *style_edit = data;
+   Elm_Object_Item *start_from = NULL;
+
+   if (style_edit->style_search_data.last_item_found)
+     {
+        start_from =
+           elm_genlist_item_next_get(style_edit->style_search_data.last_item_found);
+     }
+
+   _genlist_item_search(style_edit->glist, &(style_edit->style_search_data), start_from);
+}
+
+static void
+_search_reset_cb(void *data __UNUSED__,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Search_Data *search_data = data;
+   search_data->last_item_found = NULL;
+}
+
 /* Creating the view of the mwin!!! */
 Evas_Object *
 _form_left_side(Style_Editor *style_edit)
 {
    Elm_Object_Item *glit_style, *glit_tag;
-   Evas_Object *box, *btn;
+   Evas_Object *layout, *btn, *combobox, *search;
    Eina_List *styles, *tags, *l_st, *l_tg;
    char *style, *tag;
    Evas_Object *edje_edit_obj = NULL;
@@ -686,11 +751,23 @@ _form_left_side(Style_Editor *style_edit)
         _itc_tags->func.del = NULL;
      }
 
-   BOX_ADD(style_edit->mwin, box, false, false);
+   layout = elm_layout_add(style_edit->mwin);
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/list");
+   evas_object_show(layout);
 
-   style_edit->glist = elm_genlist_add(box);
+   search = _style_editor_search_field_create(layout);
+   elm_object_part_content_set(layout, "swallow.search_area", search);
+   evas_object_smart_callback_add(search, "changed", _search_changed, style_edit);
+   evas_object_smart_callback_add(search, "activated", _search_nxt_gd_item, style_edit);
+   evas_object_smart_callback_add(style_edit->glist, "pressed", _search_reset_cb,
+                                  &(style_edit->style_search_data));
+   style_edit->style_search_data.search_entry = search;
+   style_edit->style_search_data.last_item_found = NULL;
+
+   style_edit->glist = elm_genlist_add(layout);
    elm_object_style_set(style_edit->glist, DEFAULT_STYLE);
-   elm_box_pack_end(box, style_edit->glist);
+   elm_object_part_content_set(layout, "swallow/genlist", style_edit->glist);
    evas_object_show(style_edit->glist);
 
    evas_object_size_hint_align_set(style_edit->glist, EVAS_HINT_FILL,
@@ -720,22 +797,20 @@ _form_left_side(Style_Editor *style_edit)
      }
    eina_list_free(styles);
 
-   BUTTON_ADD(style_edit->mwin, btn, _("New style"));
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-   evas_object_smart_callback_add(btn, "clicked", _on_bt_style_add, style_edit);
-   elm_box_pack_end(box, btn);
+   EWE_COMBOBOX_ADD(layout, combobox);
+   ewe_combobox_style_set(combobox, "small/default");
+   ewe_combobox_item_add(combobox, _("New style"));
+   ewe_combobox_item_add(combobox, _("New tag"));
+   evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
+   elm_object_part_content_set(layout, "swallow.add_btn", combobox);
 
-   BUTTON_ADD(style_edit->mwin, btn, _("New tag"));
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-   evas_object_smart_callback_add(btn, "clicked", _on_bt_tag_add, style_edit);
-   elm_box_pack_end(box, btn);
-
-   BUTTON_ADD(style_edit->mwin, btn, _("Delete"));
+   BUTTON_ADD(style_edit->mwin, btn, _("-"));
+   elm_object_style_set(btn, "eflete/btn");
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
-   elm_box_pack_end(box, btn);
+   elm_object_part_content_set(layout, "swallow.rm_btn", btn);
 
-   return box;
+   return layout;
 }
 
 static void
