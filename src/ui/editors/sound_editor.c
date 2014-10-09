@@ -70,7 +70,8 @@ struct _Sound_Editor
         int offset, length;
         const void *data;
         Ecore_Audio_Vio vio;
-        Eo *in;
+        Eo *in, *out;
+        Eina_Binbuf *buf;
    } io;
 
    struct {
@@ -89,6 +90,7 @@ struct _Sound_Editor
    Evas_Object *rewind;
    Evas_Object *play;
    Evas_Object *pause;
+   Eina_Bool switched;
 };
 
 static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
@@ -221,12 +223,12 @@ _rewind_cb(void *data)
         return ECORE_CALLBACK_CANCEL;
      }
 
-   elm_slider_value_set(data, elm_slider_value_get(data) + UPDATE_FREQUENCY);
+   elm_slider_value_set(edit->rewind, value + UPDATE_FREQUENCY);
    return ECORE_CALLBACK_RENEW;
 }
 
 static void
-initialize_io_data(Sound_Editor *edit, Eina_Binbuf *buffer)
+_initialize_io_data(Sound_Editor *edit, Eina_Binbuf *buffer)
 {
    edit->io.vio.get_length = _snd_file_get_length;
    edit->io.vio.seek = _snd_file_seek;
@@ -238,13 +240,22 @@ initialize_io_data(Sound_Editor *edit, Eina_Binbuf *buffer)
 }
 
 static void
+_playing_shutdown(Sound_Editor *edit)
+{
+   ecore_audio_shutdown();
+   if (edit->io.buf)
+     eina_binbuf_free(edit->io.buf);
+   eo_del(edit->io.in);
+   edit->io.in = NULL;
+   edit->io.buf = NULL;
+}
+
+static void
 _play_sound(Sound_Editor *edit)
 {
    double len, value;
    Eina_Bool ret = EINA_FALSE;
    Evas_Object *edje_edit_obj, *bt;
-   Eina_Binbuf *buffer = NULL;
-   Eo *out;
 
    bt = elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
    evas_object_hide(bt);
@@ -261,9 +272,9 @@ _play_sound(Sound_Editor *edit)
    ecore_audio_init();
 
    GET_OBJ(edit->pr, edje_edit_obj);
-   buffer = edje_edit_sound_samplebuffer_get(edje_edit_obj, edit->selected);
+   edit->io.buf = edje_edit_sound_samplebuffer_get(edje_edit_obj, edit->selected);
 
-   initialize_io_data(edit, buffer);
+   _initialize_io_data(edit, edit->io.buf);
 
    edit->io.in = eo_add(ECORE_AUDIO_IN_SNDFILE_CLASS, NULL,
                         ecore_audio_obj_name_set(edit->selected),
@@ -274,14 +285,14 @@ _play_sound(Sound_Editor *edit)
         goto end;
      }
 
-   out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL);
-   eo_do(out, eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+   edit->io.out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL);
+   eo_do(edit->io.out, eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
                                     _out_fail, NULL));
 
    eo_do(edit->io.in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
                                             _play_finished_cb, NULL));
 
-   if (!out)
+   if (!edit->io.out)
      {
         ERR("Output stream was't create!");
         goto end;
@@ -289,9 +300,9 @@ _play_sound(Sound_Editor *edit)
 
    eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
    elm_slider_min_max_set(edit->rewind, 0, len);
-   edit->timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit->rewind);
+   edit->timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
 
-   eo_do(out, ret = ecore_audio_obj_out_input_attach(edit->io.in));
+   eo_do(edit->io.out, ret = ecore_audio_obj_out_input_attach(edit->io.in));
    if (!ret)
      {
         ERR("Couldn't attach input and output!");
@@ -302,13 +313,23 @@ _play_sound(Sound_Editor *edit)
 
 end:
    eo_do(edit->io.in, value = ecore_audio_obj_in_remaining_get());
-   if (value > 0)
-     return;
-   ecore_audio_shutdown();
-   if (buffer)
-     eina_binbuf_free(buffer);
-   eo_del(edit->io.in);
-   edit->io.in = NULL;
+   if (!value)
+     _playing_shutdown(edit);
+}
+
+static void
+_interrupt_playing(Sound_Editor *edit)
+{
+   Eina_Bool ret;
+   eo_do(edit->io.out, ret = ecore_audio_obj_out_input_detach(edit->io.in));
+   if (!ret)
+     ERR("Could not detach input");
+   eo_del(edit->io.out);
+   edit->io.out = NULL;
+   ecore_timer_del(edit->timer);
+   elm_slider_value_set(edit->rewind, 0.0);
+   ecore_main_loop_quit();
+   _playing_shutdown(edit);
 }
 
 static void
@@ -333,6 +354,33 @@ _on_pause_cb(void *data,
    evas_object_hide(edit->pause);
    elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->play);
    evas_object_show(edit->play);
+}
+
+static void
+_on_next_cb(void *data,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   Elm_Object_Item *it, *first, *last;
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   edit->switched = true;
+   first = elm_gengrid_first_item_get(edit->gengrid);
+   last = elm_gengrid_last_item_get(edit->gengrid);
+   it = elm_gengrid_selected_item_get(edit->gengrid);
+   it = elm_gengrid_item_next_get(it);
+
+   if (!it)
+     it = elm_gengrid_item_next_get(first);
+   else if (it == edit->tone)
+     {
+        if (edit->tone == last)
+          it = elm_gengrid_item_next_get(first);
+        else
+          it = elm_gengrid_item_next_get(edit->tone);
+     }
+
+   elm_gengrid_item_selected_set(it, true);
 }
 
 static void
@@ -395,6 +443,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    evas_object_smart_callback_add(edit->play, "clicked", _on_play_cb, edit);
 
    BT_ADD(edit->player_markup, bt, icon, "next");
+   evas_object_smart_callback_add(bt, "clicked", _on_next_cb, edit);
 
    edit->pause = elm_button_add(edit->player_markup);
    evas_object_size_hint_align_set(edit->pause, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -558,8 +607,30 @@ _grid_sel_sample(void *data,
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
         _sample_info_setup(edit, item);
+
+        if (edit->switched)
+          {
+             if (!edit->io.in)
+               {
+                  edit->switched = false;
+                  _play_sound(edit);
+                  return;
+               }
+             else
+               {
+                  edit->switched = false;
+                  _interrupt_playing(edit);
+                  _play_sound(edit);
+                  return;
+               }
+          }
+
         if (elm_check_state_get(edit->check))
-          _play_sound(edit);
+          {
+             if (!edit->io.in)
+               _interrupt_playing(edit);
+             _play_sound(edit);
+          }
      }
 }
 
@@ -727,7 +798,7 @@ _on_sample_done(void *data,
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
              new_item = elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
                                                        _grid_sel_sample, edit);
-             elm_gengrid_item_selected_set(new_item, EINA_TRUE);
+             elm_gengrid_item_selected_set(new_item, true);
              pm_project_changed(app_data_get()->project);
           }
      }
@@ -795,7 +866,7 @@ _add_ok_clicked(void *data,
         it->sound_name = eina_stringshare_add(str_name);
         it->tone_frq = frq;
         new_item = elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
-        elm_gengrid_item_selected_set(new_item, EINA_TRUE);
+        elm_gengrid_item_selected_set(new_item, true);
         pm_project_changed(app_data_get()->project);
      }
 
