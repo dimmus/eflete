@@ -877,7 +877,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
                                   _on_##VALUE##_clicked, style_edit); \
    evas_object_color_set(rect, 0, 0, 0, 255); \
    elm_object_part_content_set(color, "elm.swallow.content", rect); \
-   elm_object_part_content_set(layout, "swallow.color", color); \
+   elm_object_part_content_set(layout, "swallow."TEXT, color); \
    return rect; \
 }
 
