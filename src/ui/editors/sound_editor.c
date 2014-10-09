@@ -335,6 +335,16 @@ _on_pause_cb(void *data,
    evas_object_show(edit->play);
 }
 
+static void
+_on_rewind_cb(void *data,
+           Evas_Object *obj EINA_UNUSED,
+           void *event_info EINA_UNUSED)
+{
+   Sound_Editor *edit = (Sound_Editor *)data;
+   double value = elm_slider_value_get(edit->rewind);
+   eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
+}
+
 #define BT_ADD(PARENT, OBJ, ICON, TEXT) \
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -377,6 +387,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    evas_object_size_hint_weight_set(edit->rewind, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->rewind);
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.fast", edit->rewind);
+   evas_object_smart_callback_add(edit->rewind, "changed", _on_rewind_cb, edit);
 
    BT_ADD(edit->player_markup, bt, icon, "prev");
 
