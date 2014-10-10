@@ -1,4 +1,7 @@
 group { name: "eflete/sound_editor/default";
+   images {
+      image: "focus-outer-glow.png" COMP;
+   }
    min: 640 480;
    parts {
       part { name: "area.player";
