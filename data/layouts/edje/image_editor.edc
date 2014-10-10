@@ -7,12 +7,44 @@ group { name: "elm/layout/image_editor/default";
       image: "focus-outer-glow.png" COMP;
       image: "separator-horizontal.png" COMP;
    }
-   parts{
+   parts {
+      part { name: "area.image_editor_base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel2 {
+               to_y: "button_box.decoration";
+               offset: -1 -5;
+            }
+         }
+      }
+      part { name: "button_box.decoration";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            max: -1 2;
+            image.normal: "separator-horizontal.png";
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -1 -5;
+               to_y: "area.button_box";
+            }
+         }
+      }
+      part { name: "area.button_box";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 27;
+            max: -1 27;
+         }
+      }
       part { name: "padding.bottom";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             SET_SIZE(10, 10);
+            rel1.to: "area.image_editor_base";
+            rel2.to: "area.image_editor_base";
          }
       }
       part { name: "area.image_info";
@@ -206,6 +238,41 @@ group { name: "elm/layout/image_editor/default";
             rel2.to: "area.images_templates";
          }
       }
+      part { name: "eflete.swallow.close_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            BTNS_LARGE_SIZE_SET;
+            rel1.to: "area.button_box";
+            rel2.to: "area.button_box";
+         }
+      }
+      part { name: "padding.ok_btn";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            PADDING_SIZE_SET;
+            rel1.to: "area.button_box";
+            rel2 {
+               to: "eflete.swallow.close_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "eflete.swallow.ok_btn";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 1.0;
+            BTNS_LARGE_SIZE_SET;
+            rel1.to: "area.button_box";
+            rel2 {
+               to: "padding.ok_btn";
+               relative: 0.0 1.0;
+            }
+         }
+      }
    }
 }
 
@@ -259,40 +326,6 @@ group { name: "elm/layout/image_editor/usage_info";
             }
             rel1.to: "eflete.swallow.genlist";
             rel2.to: "eflete.swallow.genlist";
-         }
-      }
-   }
-}
-
-group { name: "elm/layout/image_editor/buttons_box";
-   parts{
-      part { name: "eflete.swallow.close_btn";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            BTNS_LARGE_SIZE_SET;
-         }
-      }
-      part { name: "eflete_ok_btn_spacer";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            PADDING_SIZE_SET;
-            rel2 {
-               to: "eflete.swallow.close_btn";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "eflete.swallow.ok_btn";
-         type: SWALLOW;
-         description { state: "default" 0.0;
-            align: 1.0 1.0;
-            BTNS_LARGE_SIZE_SET;
-            rel2 {
-               to: "eflete_ok_btn_spacer";
-               relative: 0.0 1.0;
-            }
          }
       }
    }
