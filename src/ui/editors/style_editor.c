@@ -691,12 +691,11 @@ _search_changed(void *data,
 {
    Style_Editor *style_edit = data;
    _genlist_item_search(style_edit->glist, &(style_edit->style_search_data),
-                           style_edit->style_search_data.last_item_found);
-
+                        style_edit->style_search_data.last_item_found);
 }
 
 static void
-_search_nxt_gd_item(void *data __UNUSED__,
+_search_nxt_gd_item(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
 {
@@ -713,7 +712,7 @@ _search_nxt_gd_item(void *data __UNUSED__,
 }
 
 static void
-_search_reset_cb(void *data __UNUSED__,
+_search_reset_cb(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
