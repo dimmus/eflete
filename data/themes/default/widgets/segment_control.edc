@@ -48,7 +48,7 @@ group { name: "elm/segment_control/item/eflete/style_editor";
             MIN_MAX;
             image {
                normal: "Button_v3_left.png";
-               border:  4 1 3 5;
+               border:  4 4 3 5;
                middle: SOLID;
             }
          }
@@ -58,7 +58,7 @@ group { name: "elm/segment_control/item/eflete/style_editor";
             MIN_MAX;
             image {
                normal: "Button_v3_right.png";
-               border: 1 4 3 5;
+               border: 4 4 3 5;
                middle: SOLID;
             }
          }
@@ -78,7 +78,7 @@ group { name: "elm/segment_control/item/eflete/style_editor";
             MIN_MAX;
             image {
                normal: "button_v3_left_hover.png";
-               border:  4 1 3 5;
+               border:  4 4 3 5;
                middle: SOLID;
             }
          }
@@ -88,7 +88,7 @@ group { name: "elm/segment_control/item/eflete/style_editor";
             MIN_MAX;
             image {
                normal: "Button_v3_right_hover.png";
-               border: 1 4 3 5;
+               border: 4 4 3 5;
                middle: SOLID;
             }
          }
@@ -108,7 +108,7 @@ group { name: "elm/segment_control/item/eflete/style_editor";
             MIN_MAX;
             image {
                normal: "button_v3_left_pressed.png";
-               border:  4 1 3 5;
+               border:  4 4 3 5;
                middle: SOLID;
             }
          }
@@ -118,7 +118,7 @@ group { name: "elm/segment_control/item/eflete/style_editor";
             MIN_MAX;
             image {
                normal: "Button_v3_right_pressed.png";
-               border: 1 4 3 5;
+               border: 4 4 3 5;
                middle: SOLID;
             }
          }
