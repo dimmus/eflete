@@ -489,6 +489,7 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(st_list, "sl,signal,select", _signal_select, ap);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_property_style_unset(ui_block_property_get(ap));
+   ui_block_content_visible(ap->block.right_bottom, false);
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
@@ -635,6 +636,9 @@ ui_style_clicked(App_Data *ap, Style *style)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
+   else
+     ui_block_content_visible(ap->block.right_bottom, true);
+
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;

@@ -262,6 +262,7 @@ test_ui_block/ui_block_signal_list.c \
 test_ui_block/ui_block_state_list.c \
 test_ui_block/ui_block_title_text.c \
 test_ui_block/ui_block_title_visible.c \
+test_ui_block/ui_block_content_visible.c \
 test_ui_block/ui_block_widget_list.c \
 test_ui_block/ui_block_ws_set.c
 ui_block_test_CFLAGS = ${FLAGS}
