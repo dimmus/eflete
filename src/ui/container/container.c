@@ -486,6 +486,9 @@ _container_smart_resize(Evas_Object *o,
    if (!sd->confine.obj)
      evas_object_size_hint_min_set(o, w, h);
 
+   evas_object_resize(o, w + sd->pad_right_bottom.w + sd->pad_left_top.w,
+                         h + sd->pad_right_bottom.h + sd->pad_left_top.h);
+
    evas_object_smart_changed(o);
 }
 
@@ -804,6 +807,15 @@ container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int r
 {
    CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
+   Evas_Coord x, y, w, h;
+   Evas_Coord tlw, tlh, rbw, rbh;
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+
+   tlw = sd->pad_left_top.w;
+   tlh = sd->pad_left_top.h;
+   rbw = sd->pad_right_bottom.w;
+   rbh = sd->pad_right_bottom.h;
+
    if (tl_w < 0) sd->pad_left_top.w = 0;
    else sd->pad_left_top.w = tl_w;
    if (tl_h < 0) sd->pad_left_top.h = 0;
@@ -812,6 +824,9 @@ container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int r
    else sd->pad_right_bottom.w = rb_w;
    if (rb_h < 0) sd->pad_right_bottom.h = 0;
    else sd->pad_right_bottom.h = rb_h;
+
+   evas_object_resize(obj, w + (rb_w - rbw) + (tl_w - tlw),
+                           h + (rb_h - rbh) + (tl_h - tlh));
 
    evas_object_smart_changed(obj);
 
