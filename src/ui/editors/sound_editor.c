@@ -385,6 +385,32 @@ _on_next_cb(void *data,
 }
 
 static void
+_on_prev_cb(void *data,
+            Evas_Object *obj EINA_UNUSED,
+            void *event_info EINA_UNUSED)
+{
+   Elm_Object_Item *it, *first, *last;
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   edit->swiched = true;
+   first = elm_gengrid_first_item_get(edit->gengrid);
+   last = elm_gengrid_last_item_get(edit->gengrid);
+   it = elm_gengrid_selected_item_get(edit->gengrid);
+   it = elm_gengrid_item_prev_get(it);
+
+   if (it == first)
+     {
+        it = last;
+        if (last == edit->tone)
+          it = elm_gengrid_item_prev_get(edit->tone);
+     }
+   else if (it == edit->tone)
+     it = elm_gengrid_item_prev_get(edit->tone);
+
+   elm_gengrid_item_selected_set(it, EINA_TRUE);
+}
+
+static void
 _on_rewind_cb(void *data,
            Evas_Object *obj EINA_UNUSED,
            void *event_info EINA_UNUSED)
@@ -439,6 +465,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    evas_object_smart_callback_add(edit->rewind, "changed", _on_rewind_cb, edit);
 
    BT_ADD(edit->player_markup, bt, icon, "prev");
+   evas_object_smart_callback_add(bt, "clicked", _on_prev_cb, edit);
 
    BT_ADD(edit->player_markup, edit->play, icon, "play");
    evas_object_smart_callback_add(edit->play, "clicked", _on_play_cb, edit);
@@ -634,7 +661,7 @@ _grid_sel_sample(void *data,
 
         if (elm_check_state_get(edit->check))
           {
-             if (!edit->io.in)
+             if (edit->io.in)
                _interrupt_playing(edit);
              _play_sound(edit);
           }
