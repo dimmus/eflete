@@ -86,6 +86,7 @@ struct _Sound_Editor
       Evas_Object *quality;
    } snd_data;
 
+   Eina_Bool decoration;
    Ecore_Timer *timer;
    Evas_Object *rewind;
    Evas_Object *play;
@@ -602,6 +603,12 @@ _grid_sel_sample(void *data,
    const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
    int count = eina_list_count(sel_list);
 
+   if (!edit->decoration)
+     {
+        elm_layout_signal_emit(edit->markup, "eflete,sound,clicked", "eflete");
+        edit->decoration = true;
+     }
+
    if (count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
@@ -644,6 +651,12 @@ _grid_sel_tone(void *data,
 
    const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
    int count = eina_list_count(sel_list);
+
+   if (!edit->decoration)
+     {
+        elm_layout_signal_emit(edit->markup, "eflete,sound,clicked", "eflete");
+        edit->decoration = true;
+     }
 
    if (count == 1)
      {
@@ -1032,49 +1045,42 @@ _search_reset_cb(void *data __UNUSED__,
    search_data->last_item_found = NULL;
 }
 
+#define ADD_BUTTON(PARENT, OBJ, TEXT, CLB) \
+   OBJ = elm_button_add(PARENT); \
+   evas_object_size_hint_weight_set(OBJ, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_style_set(OBJ, "eflete/btn"); \
+   elm_object_text_set(OBJ, TEXT); \
+   evas_object_show(OBJ); \
+   elm_object_part_content_set(PARENT, "swallow.btn."TEXT, OBJ); \
+   evas_object_smart_callback_add(OBJ, "clicked", CLB, edit);
+
 static void
-_sound_editor_main_markup_create(Evas_Object *parent, Sound_Editor *edit)
+_sound_editor_main_markup_create(Sound_Editor *edit)
 {
-   Evas_Object *btn_box, *btn, *icon, *search;
+   Evas_Object *btn, *icon, *search;
 
    edit->markup = elm_layout_add(edit->win);
    elm_layout_file_set(edit->markup, EFLETE_EDJ, "eflete/sound_editor/default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_object_part_content_set(parent, "eflete.swallow.content", edit->markup);
    evas_object_show(edit->markup);
+   elm_win_inwin_content_set(edit->win, edit->markup);
 
-   BOX_ADD(parent, btn_box, true, false)
-   elm_box_align_set(btn_box, 1.0, 0.5);
+   ADD_BUTTON(edit->markup, btn, "Apply", _on_ok_cb);
 
-   BUTTON_ADD(edit->win, btn, _("Apply"));
-   evas_object_smart_callback_add(btn, "clicked", _on_ok_cb, edit);
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-   evas_object_size_hint_min_set(btn, 100, 30);
-   elm_box_pack_end(btn_box, btn);
-   elm_object_part_content_set(parent, "eflete.swallow.button_box", btn_box);
-   evas_object_show(btn);
+   ADD_BUTTON(edit->markup, btn, "Close", _on_quit_cb);
 
-   BUTTON_ADD(edit->win, btn, _("Close"));
-   evas_object_smart_callback_add(btn, "clicked", _on_quit_cb, edit);
-   evas_object_size_hint_weight_set(btn, 0.0, 0.0);
-   evas_object_size_hint_min_set(btn, 100, 30);
-   elm_box_pack_end(btn_box, btn);
-   elm_object_part_content_set(parent, "eflete.swallow.button_box", btn_box);
-   evas_object_show(btn);
+   ADD_BUTTON(edit->markup, btn, "del", _on_delete_clicked_cb);
+   ICON_ADD(btn, icon, true, "icon-remove");
+   elm_object_content_set(btn, icon);
+   elm_object_text_set(btn, NULL);
 
    EWE_COMBOBOX_ADD(edit->markup, edit->cmb);
    ewe_combobox_style_set(edit->cmb, "small/default");
    ewe_combobox_item_add(edit->cmb, _("Sample"));
    ewe_combobox_item_add(edit->cmb, _("Tone"));
    evas_object_smart_callback_add(edit->cmb, "selected", _on_cmb_sel, edit);
-   elm_object_part_content_set(edit->markup, "swallow.add_btn", edit->cmb);
-
-   BUTTON_ADD(edit->markup, btn, NULL);
-   ICON_ADD(btn, icon, true, "icon-remove");
-   elm_object_content_set(btn, icon);
-   evas_object_size_hint_min_set(btn, 31, 21);
-   evas_object_smart_callback_add(btn, "clicked", _on_delete_clicked_cb, edit);
-   elm_object_part_content_set(edit->markup, "swallow.del_btn", btn);
+   elm_object_part_content_set(edit->markup, "swallow.btn.add", edit->cmb);
 
    search = _sound_editor_search_field_create(edit->markup);
    elm_object_part_content_set(edit->markup, "swallow.search_area", search);
@@ -1086,12 +1092,12 @@ _sound_editor_main_markup_create(Evas_Object *parent, Sound_Editor *edit)
    edit->sound_search_data.last_item_found = NULL;
 }
 
+#undef ADD_BUTTON
+
 Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
-
-   Evas_Object *wlayout;
 
    if (!project)
      {
@@ -1104,11 +1110,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit->win = mw_add(_on_quit_cb, edit);
    mw_title_set(edit->win, _("Sound editor"));
 
-   wlayout = elm_layout_add(edit->win);
-   elm_layout_file_set(wlayout, EFLETE_EDJ, "eflete/editor/default");
-   elm_win_inwin_content_set(edit->win, wlayout);
-
-   _sound_editor_main_markup_create(wlayout, edit);
+   _sound_editor_main_markup_create(edit);
 
    _create_gengrid(edit->markup, edit, mode);
 
