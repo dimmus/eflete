@@ -31,6 +31,7 @@ ui/editors/sound_editor.c \
 ui/editors/colorclass_editor.c \
 ui/editors/animator.c \
 ui/editors/animator_program_editor.c \
+ui/editors/animator_program_sequence.c \
 ui/dialogs/compile_dialog.c \
 ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
