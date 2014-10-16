@@ -992,7 +992,9 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    img_edit->win = mw_add(NULL, img_edit);
    if (mode == SINGLE)
      mw_title_set(img_edit->win, _("Image editor: choose image"));
-   else
+   else if (mode == TWEENS)
+     mw_title_set(img_edit->win, _("Image editor: select tween images"));
+   else if (mode == MULTIPLE)
      mw_title_set(img_edit->win, _("Image editor"));
 
    img_edit->layout = elm_layout_add(img_edit->win);
@@ -1019,11 +1021,19 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
        evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
                                       _on_button_ok_clicked_cb, img_edit);
      }
-   else
+   else if (mode == MULTIPLE)
      {
         elm_gengrid_multi_select_set(img_edit->gengrid, true);
         elm_gengrid_multi_select_mode_set(img_edit->gengrid,
                                           ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+     }
+   else if (mode == TWEENS)
+     {
+        elm_gengrid_multi_select_set(img_edit->gengrid, true);
+        elm_gengrid_multi_select_mode_set(img_edit->gengrid,
+                                          ELM_OBJECT_MULTI_SELECT_MODE_WITH_CONTROL);
+        evas_object_smart_callback_add(img_edit->gengrid, "clicked,double",
+                                       _on_button_ok_clicked_cb, img_edit);
      }
 
    elm_gengrid_select_mode_set(img_edit->gengrid, ELM_OBJECT_SELECT_MODE_ALWAYS);
@@ -1068,7 +1078,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    _image_info_initiate(img_edit);
 
-   if (mode == SINGLE)
+   if (mode != MULTIPLE)
      {
         BUTTON_ADD(img_edit->layout, button, _("Ok"));
         evas_object_smart_callback_add(button, "clicked", _on_button_ok_clicked_cb,

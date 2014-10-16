@@ -34,7 +34,8 @@
 
 typedef enum {
    SINGLE,
-   MULTIPLE
+   MULTIPLE,
+   TWEENS
 } Image_Editor_Mode;
 
 /**
