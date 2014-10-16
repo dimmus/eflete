@@ -192,7 +192,7 @@ _play_finished_cb(void *data,
    edit->io.in = NULL;
    edit->playing = false;
    ecore_main_loop_quit();
-   return EINA_TRUE;
+   return true;
 }
 
 static Eina_Bool
@@ -202,7 +202,7 @@ _out_fail(void *data EINA_UNUSED,
           void *event_info EINA_UNUSED)
 {
    eo_del(output);
-   return EINA_TRUE;
+   return true;
 }
 
 static Eina_Bool
@@ -268,7 +268,7 @@ static void
 _play_sound(Sound_Editor *edit)
 {
    double value;
-   Eina_Bool ret = EINA_FALSE;
+   Eina_Bool ret = false;
 
    if (!elm_gengrid_selected_item_get(edit->gengrid))
      {
@@ -283,7 +283,7 @@ _play_sound(Sound_Editor *edit)
 
    if (edit->stopped)
      {
-        eo_do(edit->io.in, ecore_audio_obj_paused_set(EINA_FALSE));
+        eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
         ecore_timer_thaw(edit->timer);
         edit->stopped = false;
         return;
@@ -367,7 +367,7 @@ _on_pause_cb(void *data,
    Sound_Editor *edit = (Sound_Editor *)data;
 
    edit->stopped = true;
-   eo_do(edit->io.in, ecore_audio_obj_paused_set(EINA_TRUE));
+   eo_do(edit->io.in, ecore_audio_obj_paused_set(true));
 
    ecore_timer_freeze(edit->timer);
    elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
@@ -426,7 +426,7 @@ _on_prev_cb(void *data,
    else if (it == edit->tone)
      it = elm_gengrid_item_prev_get(edit->tone);
 
-   elm_gengrid_item_selected_set(it, EINA_TRUE);
+   elm_gengrid_item_selected_set(it, true);
 }
 
 static void
