@@ -41,6 +41,7 @@ struct _Item
    const char *sound_name;
    Edje_Edit_Sound_Comp comp;
    int tone_frq;
+   double rate;
 };
 
 struct _Search_Data
@@ -603,33 +604,32 @@ _sound_info_create(Evas_Object *parent, Sound_Editor *edit)
 static void
 _sample_info_setup(Sound_Editor *edit, const Item *it)
 {
-   Evas_Object *edje_edit_obj, *content;
-   double rate;
+   Eina_Stringshare *size;
+   Evas_Object *content;
 
-   GET_OBJ(edit->pr, edje_edit_obj);
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
+
+   size = eina_stringshare_printf("%.2f KB", edit->io.length / 1024.0);
 
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
 
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
    elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
+   elm_object_part_text_set(edit->snd_data.size, "label.value", size);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
-   rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
-   elm_spinner_value_set(edit->snd_data.quality, rate);
+   elm_spinner_value_set(edit->snd_data.quality, it->rate);
    evas_object_show(edit->sample_box);
 
-   /* Format audio will be determined at the stage of creating the audio stream
-   */
+   eina_stringshare_del(size);
 }
 
 static void
 _tone_info_setup(Sound_Editor *edit, const Item *it)
 {
-   Evas_Object *edje_edit_obj, *content;
+   Evas_Object *content;
 
-   GET_OBJ(edit->pr, edje_edit_obj);
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
@@ -747,6 +747,7 @@ _sound_content_init(Sound_Editor *edit)
              it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
+             it->rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
              elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
           }
         eina_list_free(sounds);
