@@ -66,6 +66,7 @@ struct _Program_Editor
      Evas_Object *afters;
      Edje_Action_Type act_type;
      Edje_Tween_Mode trans_type;
+     Evas_Object *program_area_layout;
      Evas_Object *prop_scroller;
      Evas_Object *prop_box;
    } prop_view;
@@ -1791,6 +1792,15 @@ _on_bt_prog_add(void *data,
 }
 
 static void
+_on_bt_mode_change(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   // Program_Editor *prog_edit = (Program_Editor*)data;
+   /* TODO: add switch between edit and sequnce modes */
+}
+
+static void
 _on_mwin_del(void * data,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
@@ -1808,6 +1818,7 @@ program_editor_window_add(Style *style)
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
+   Evas_Object *icon;
    Evas_Object *bt, *sl, *program_list_box, *button_box;
    Program_Editor *prog_edit = NULL;
    /* temporary solution, while it not moved to modal window */
@@ -1910,8 +1921,21 @@ program_editor_window_add(Style *style)
    elm_box_pack_end(program_list_box, bt);
    elm_object_part_content_set(bottom_panes, "left", program_list_box);
 
-   SCROLLER_ADD(bottom_panes, scroller);
-   elm_object_part_content_set(bottom_panes, "right", scroller);
+   prop.program_area_layout = elm_layout_add(bottom_panes);
+   elm_layout_file_set(prop.program_area_layout, EFLETE_EDJ, "eflete/program_editor/program_area");
+   elm_object_part_content_set(bottom_panes, "right", prop.program_area_layout);
+   evas_object_show(prop.program_area_layout);
+
+   BUTTON_ADD(prop.program_area_layout, bt, "");
+   elm_object_part_content_set(prop.program_area_layout, "swallow.button", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, ap);
+   ICON_ADD(bt, icon, false, "icon-back");
+   elm_layout_content_set(bt, "icon", icon);
+   elm_object_style_set(bt, "eflete/simple");
+
+   SCROLLER_ADD(prop.program_area_layout, scroller);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_object_part_content_set(prop.program_area_layout, "swallow.content", scroller);
    prop.prop_scroller = scroller;
 
    BOX_ADD(window_layout, button_box, true, false);
