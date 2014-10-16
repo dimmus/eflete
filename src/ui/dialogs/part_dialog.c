@@ -106,6 +106,14 @@ _spacer_add_on_click(void *data,
    WORKSPACE_PART_ADD(EDJE_PART_TYPE_SPACER, NULL)
 }
 
+static void
+_proxy_add_on_click(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   WORKSPACE_PART_ADD(EDJE_PART_TYPE_PROXY, NULL)
+}
+
 
 static void
 _txt_add_on_click(void *data,
@@ -195,6 +203,10 @@ part_dialog_add(App_Data *ap)
 */
    BUTTON_ADD(box, button, _("Spacer"));
    evas_object_smart_callback_add(button, "clicked", _spacer_add_on_click, ap);
+   elm_box_pack_end(box, button);
+
+   BUTTON_ADD(box, button, _("Proxy"));
+   evas_object_smart_callback_add(button, "clicked", _proxy_add_on_click, ap);
    elm_box_pack_end(box, button);
 
    elm_object_content_set(ap->popup, box);
