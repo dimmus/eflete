@@ -74,6 +74,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *state;
+      Evas_Object *proxy_source;
       Evas_Object *visible;
       Evas_Object *min;
       Evas_Object *max;
@@ -242,6 +243,9 @@ ui_property_state_fill_set(Evas_Object *property);
 
 static void
 ui_property_state_fill_unset(Evas_Object *property);
+
+static void
+prop_item_state_text_update(Evas_Object *item, Prop_Data *pd);
 
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
@@ -985,6 +989,12 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE, TYPE) \
    ITEM_1COMBOBOX_STATE_PART_UPDATE(TEXT, SUB, VALUE, TYPE)
 
+#define ITEM_1COMBOBOX_STATE_PROXY_CREATE(TEXT, SUB, VALUE) \
+   ITEM_COMBOBOX_STATE_CALLBACK(-1, TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE)
+
+ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
 ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
 ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
@@ -1026,6 +1036,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.state = prop_item_label_add(box, _("state"), state);
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
+        pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
+                                  _("Causes the part to use another part content as"
+                                  "the content of this part. Only work with PROXY part."));
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
                           0.0, 9999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
@@ -1073,6 +1086,15 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.aspect_pref);
         elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
+        if (type == EDJE_PART_TYPE_PROXY)
+          {
+            elm_box_pack_end(box, pd_state.proxy_source);
+          }
+        else
+          {
+             evas_object_hide(pd_state.proxy_source);
+             elm_box_unpack(box, pd_state.proxy_source);
+          }
         if (type == EDJE_PART_TYPE_SPACER)
           {
              evas_object_hide(pd_state.color);
@@ -1088,8 +1110,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
         box = elm_object_content_get(pd_state.frame);
         /* unpack item for part color, because we don't know whether it is necessary */
         elm_box_unpack(box, pd_state.color);
+        elm_box_unpack(box, pd_state.proxy_source);
         prop_item_label_update(pd_state.state, state);
         prop_item_state_visible_update(pd_state.visible, pd);
+
         prop_item_state_min_w_h_update(pd_state.min, pd, false);
         prop_item_state_max_w_h_update(pd_state.max, pd,false);
         prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
@@ -1097,6 +1121,13 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
+        if (type == EDJE_PART_TYPE_PROXY)
+          {
+            prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
+            evas_object_show(pd_state.proxy_source);
+            elm_box_pack_end(box, pd_state.proxy_source);
+          }
+        else evas_object_hide(pd_state.proxy_source);
         if (type != EDJE_PART_TYPE_SPACER)
           {
              prop_item_state_color_update(pd_state.color, pd);
