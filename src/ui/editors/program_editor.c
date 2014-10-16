@@ -113,7 +113,7 @@ static const char *action_type[] = {N_("NONE"),
                                     N_("SOUND_TONE")};
 
 typedef struct _Program_Editor Program_Editor;
-static Elm_Genlist_Item_Class *_itc_prog;
+static Elm_Genlist_Item_Class *_itc_prog, *_itc_prog_after;
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = EDITORS_BANNED_SYMBOLS
@@ -1527,11 +1527,48 @@ _on_gen_prog_sel(void *data,
                  void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Elm_Object_Item *glit = (Elm_Object_Item *)ei;
+   Elm_Object_Item *glit = (Elm_Object_Item *)ei, *it;
+   Eina_List *queue = NULL;
+   Eina_List *prog_afters = NULL, *l;
+   Eina_List *afters = NULL;
+   Eina_Stringshare *program;
 
    prog_edit->sel = glit;
-   Eina_Stringshare *program = elm_object_item_data_get(glit);
+   program = elm_object_item_data_get(glit);
    prop.program = program;
+
+   queue = eina_list_append(queue, eina_stringshare_add(program));
+   while (queue)
+     {
+        program = eina_list_data_get(queue);
+        queue = eina_list_remove_list(queue, queue);
+
+        if (!eina_list_data_find_list(afters, program))
+          {
+             afters = eina_list_append(afters, program);
+
+             prog_afters = edje_edit_program_afters_get(prop.style->obj, program);
+             EINA_LIST_FOREACH(prog_afters, l, program)
+               queue = eina_list_append(queue, eina_stringshare_add(program));
+             edje_edit_string_list_free(prog_afters);
+          }
+        else
+          eina_stringshare_del(program);
+     }
+
+   it = elm_genlist_first_item_get(prog_edit->gl_progs);
+   while (it)
+     {
+        program = eina_stringshare_add(elm_object_item_data_get(it));
+        if (eina_list_data_find(afters, program))
+          elm_genlist_item_item_class_update(it, _itc_prog_after);
+        else
+          elm_genlist_item_item_class_update(it, _itc_prog);
+        eina_stringshare_del(program);
+        it = elm_genlist_item_next_get(it);
+     }
+   EINA_LIST_FREE(afters, program)
+     eina_stringshare_del(program);
    _prop_progs_update(prog_edit);
 }
 
@@ -1564,6 +1601,17 @@ _gl_progs_add(Program_Editor *prog_edit)
         _itc_prog->func.state_get = NULL;
         _itc_prog->func.del = _item_prog_del;
      }
+
+   if (!_itc_prog_after)
+     {
+        _itc_prog_after = elm_genlist_item_class_new();
+        _itc_prog_after->item_style = "eflete/program_after";
+        _itc_prog_after->func.text_get = _item_prog_label_get;
+        _itc_prog_after->func.content_get = NULL;
+        _itc_prog_after->func.state_get = NULL;
+        _itc_prog_after->func.del = _item_prog_del;
+     }
+
 
    gl_progs = elm_genlist_add(prog_edit->mwin);
    elm_object_style_set(gl_progs, DEFAULT_STYLE);
