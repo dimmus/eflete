@@ -48,6 +48,7 @@ ui_main_window_del(App_Data *ap)
      return false;
 
    eina_hash_free(ap->menu_hash);
+   ap->menu_hash = NULL;
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    if (ap->project)
