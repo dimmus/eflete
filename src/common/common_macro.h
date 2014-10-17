@@ -43,7 +43,7 @@
    Eina_Inlist *_styles, *_classes, *_widgets = NULL; \
    Widget *_widget; \
    Class *_class; \
-   Style *_style; \
+   Style *_style = NULL; \
    _widgets = PROJECT->widgets; \
    if (!_widgets) EDJE_OBJECT = NULL; \
    else\
@@ -67,7 +67,9 @@
      { \
        _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
        EDJE_OBJECT = _style->obj;\
-     }
+     } \
+   if (_style->isAlias) \
+     EDJE_OBJECT = _style->main_group->obj;
 
 #define GET_STYLE(PROJECT, STYLE) \
    Eina_Inlist *_styles, *_classes, *_widgets = NULL; \
