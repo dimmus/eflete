@@ -392,7 +392,7 @@ _on_prev_cb(void *data,
    Elm_Object_Item *it, *first, *last;
    Sound_Editor *edit = (Sound_Editor *)data;
 
-   edit->swiched = true;
+   edit->switched = true;
    first = elm_gengrid_first_item_get(edit->gengrid);
    last = elm_gengrid_last_item_get(edit->gengrid);
    it = elm_gengrid_selected_item_get(edit->gengrid);
