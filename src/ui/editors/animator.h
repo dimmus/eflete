@@ -51,6 +51,6 @@
  * @ingroup ProgramEditor
  */
 Evas_Object *
-program_editor_window_add(Style *style);
+animator_window_add(Style *style);
 
 #endif /* PROGRAM_EDITOR_H */

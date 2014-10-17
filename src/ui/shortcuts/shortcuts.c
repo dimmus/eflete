@@ -25,7 +25,7 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
-#include "program_editor.h"
+#include "animator.h"
 
 struct _Shortcut_Module
 {
@@ -340,14 +340,14 @@ _colorclass_viewer_open_cb(App_Data *app)
 }
 
 Eina_Bool
-_program_editor_open_cb(App_Data *app)
+_animator_open_cb(App_Data *app)
 {
    Style *style = NULL;
 
    if (app->project)
      style = app->project->current_style;
 
-   program_editor_window_add(style);
+   animator_window_add(style);
 
    return true;
 }
@@ -458,7 +458,7 @@ static Function_Set _sc_func_set_init[] =
      {"image_editor", _image_editor_open_cb},
      {"sound_editor", _sound_editor_open_cb},
      {"colorclass_viewer", _colorclass_viewer_open_cb},
-     {"program_editor", _program_editor_open_cb},
+     {"animator", _animator_open_cb},
      {"widget_manager.layout", _widget_manager_layout_switch_cb},
      {"widget_manager.style", _widget_manager_style_switch_cb},
      {"highlight.align.show", _highlight_align_show_switch_cb},

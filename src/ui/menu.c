@@ -25,7 +25,7 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
-#include "program_editor.h"
+#include "animator.h"
 #include "about_window.h"
 
 static int _menu_delayed_event = 0;
@@ -258,7 +258,7 @@ _on_prog_editor_menu(void *data __UNUSED__,
    if (!ap->project->current_style)
      NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
    else
-     program_editor_window_add(ap->project->current_style);
+     animator_window_add(ap->project->current_style);
 }
 
 static void

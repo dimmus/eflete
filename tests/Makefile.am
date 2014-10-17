@@ -32,7 +32,7 @@ ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
 widget_manager_test \
-program_editor_test \
+animator_test \
 live_view_test \
 live_view_prop_test \
 live_widget_test \
@@ -422,11 +422,11 @@ test_groupedit/groupedit_part_visible_set.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
 
-program_editor_test_SOURCES = \
-test_program_editor/test_program_editor.c \
-test_program_editor/program_editor_window_add_test.c
-program_editor_test_CFLAGS = ${FLAGS}
-program_editor_test_LDADD = ${LD}
+animator_test_SOURCES = \
+test_animator/test_animator.c \
+test_animator/animator_window_add_test.c
+animator_test_CFLAGS = ${FLAGS}
+animator_test_LDADD = ${LD}
 
 live_view_test_SOURCES = \
 test_live_view/test_live_view.c \

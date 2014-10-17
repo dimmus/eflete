@@ -31,7 +31,7 @@ tests/settings_test
 tests/style_editor_test
 tests/groupedit_test
 tests/part_dialog_test
-tests/program_editor_test
+tests/animator_test
 tests/ui_block_test
 tests/ui_highlight_test
 tests/ui_main_window_test
