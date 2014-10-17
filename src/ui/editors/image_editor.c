@@ -76,7 +76,9 @@ static Elm_Gengrid_Item_Class *gic = NULL;
 static Elm_Genlist_Item_Class *_itc_group = NULL;
 static Elm_Genlist_Item_Class *_itc_part = NULL;
 static Elm_Genlist_Item_Class *_itc_state = NULL;
+
 static void _image_info_reset(Image_Editor *img_edit);
+static void _image_editor_del(Image_Editor *img_edit);
 
 static char *
 _grid_label_get(void *data,
@@ -88,8 +90,23 @@ _grid_label_get(void *data,
 }
 
 static void
+_on_mwin_del(void * data,
+             Evas *e __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   Image_Editor *img_edit = (Image_Editor *)data;
+   _image_editor_del(img_edit);
+}
+
+static void
 _image_editor_del(Image_Editor *img_edit)
 {
+   App_Data *ap = app_data_get();
+   ui_menu_locked_set(ap->menu_hash, false);
+
+   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
+
    img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_genlist_item_class_free(_itc_group);
@@ -960,16 +977,6 @@ _image_editor_init(Image_Editor *img_edit)
    return true;
 }
 
-static void
-_on_mwin_del(void * data,
-             Evas *e __UNUSED__,
-             Evas_Object *obj __UNUSED__,
-             void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_menu_locked_set(ap->menu_hash, false);
-}
-
 Evas_Object *
 image_editor_window_add(Project *project, Image_Editor_Mode mode)
 {
@@ -1113,7 +1120,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
 
    ui_menu_locked_set(ap->menu_hash, true);
-   evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
+   evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
    return img_edit->win;
 }
