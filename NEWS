@@ -1,0 +1,156 @@
+============
+Eflete 0.3.1
+============
+
+Changes since 0.3.0
+-------------------
+
+Feature:
+   * Image Editor: groups of images (included into edj, linked);
+   * Image Editor: set size of icons in genlist based on original size of image;
+   * Image Editor: new image editor window;
+   * Image Editor: displaying image information;
+   * Program editor: support FROM_CURRENT option of transition.
+
+Fixes:
+   * Program editor: fixing transition fields blocking;
+   * Program editor: fixing labels reset after action type change;
+   * Program editor: fixing callbacks update;
+   * Program editor: moving entry callbacks to object creation;
+   * Property: fixing tween frame style;
+   * Notify: removing ellipsis.
+
+Changes since 0.2.9
+-------------------
+
+Fixes:
+   * Project Manager: export to edc with latest changes in project;
+   * Project Manager: fixing wrong behavior on file access issues;
+   * Property: fix update border value in property;
+   * Save File Dialog: fixing SEGFAULT on edc export;
+   * Program Editor: fixing wrong names of new programs;
+   * Panes: fixed min size for right part (property block).
+
+Changes since 0.2.8
+-------------------
+
+Feature:
+   * Property: add turn option on/off ellipsis attribute;
+   * Image editor: choose a image on double click.
+
+Fixes:
+   * Fix warning window shown;
+   * Program editor: fix a bug with delete 'target' and 'after' fields;
+   * Program editor: fix extra warnings;
+   * Program editor: add label to 'Add program' window;
+   * Property: reset a image border after image change;
+   * Property: fix a sequence of parts in the combobox after part reorder in the
+     'Widget List'.
+
+Changes since 0.2.7
+-------------------
+
+Features:
+   * Live View: adding notify;
+   * Live View: adding naviframe.
+
+Fixes:
+   * UTC: fix report generation;
+   * UTC: fix failing tests;
+   * Colorclasses: updating property after adding new colorclass or removing old;
+   * Property: fix GLOW effect;
+   * Live View: fix code style;
+   * Groupedit: fix segfault when scroll down;
+   * Groupedit: fix restack of items when in separated mode;
+   * Groupedit: fix unselect after scroll down.
+
+Changes since 0.2.6
+-------------------
+
+Features:
+   * Dialogs: open and save files dialogs now moved from inwin to modal windows.
+
+Fixes:
+   * Dialogs: refactoring;
+   * Program Editor: changing program properties without pressing Enter;
+   * Program Editor: applying changes to signal list after adding new signal;
+   * Live View: empty container is shown even when part's list is empty;
+   * Property: fixing "clip_to" wrong list of items;
+   * Property: scroller doesn't scroll when anything of parts isn't selected;
+   * Fix -Wshadow errors.
+
+Changes since 0.2.5
+-------------------
+
+Fixes:
+   * Groupedit: remake a separate mode, delete unnecessary objects;
+   * Fix documentation.
+
+Changes since 0.2.4
+-------------------
+
+Fixes:
+   * Live View refactoring;
+   * Groupedit: remake bg in the separate mode;
+   * Workspace: move to ewe_ruler.
+
+Changes since 0.2.3
+-------------------
+
+Features:
+   * Live View property: setting swallows blocks into live view object;
+   * Live View property: setting texts blocks into live view object;
+   * Live View property: sending signals into live view object;
+   * Part property: add border_fill combobox for IMAGE part;
+   * Part property: add tweens for IMAGE part;
+   * Part property: add effect for TEXT part;
+   * Styles: add reorder mode for genlist of parts of loaded style.
+
+Fixes:
+   * packing images into resources.edj file (refactoring);
+   * fixing UTC compile;
+
+Changes since 0.2.2
+-------------------
+
+Features:
+   * Part property: add styles list to the textblock;
+   * Part property: add field chooser ignore flags.
+
+Fixes:
+   * fix ewe version depends;
+   * update images parts fill block params on groupedit.
+
+Changes since 0.2.1
+-------------------
+
+Features:
+   * Part property: add the fill property for image part type;
+   * Part property: multiline mode for textblock part;
+   * Part property: cursor mode for textblock part;
+   * Part property: pointer mode for textblock part;
+   * Part property: entry mode for textblock part;
+   * Part property: select mode for textblock part;
+   * Part property: source [1-6] for textblock part;
+   * Duplicate part state.
+
+Fixes:
+   * Add Container to the live view;
+   * Small fixes in live view module.
+
+Changes since 0.2.0
+-------------------
+
+Features:
+   * Signal list: change states of the group parts accordingly to selected
+     signal.
+
+Fixes:
+   * delete the build target folder.
+   * fix bug with STATE_SET after creating new program.
+   * update the default value in the rel1_to (x/y) fields from "None" to
+     "Layout".
+   * fix the bug with closing file dialog in the image editor, if image not be
+     selected.
+   * in the field "text" of TEXT and TEXTBLOCK part property may type all
+     symbols.

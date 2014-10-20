@@ -1,0 +1,48 @@
+group {
+   images {
+      image: "highlight.png" COMP;
+   }
+   name: "eflete/highlight/border/default";
+   parts {
+      part {
+         name: "border";
+         type: IMAGE;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            image {
+               normal: "highlight.png";
+               border: 1 1 1 1;
+               middle: NONE;
+            }
+         }
+      }
+   }
+}
+group {
+   images {
+      image: "handler.png" COMP;
+   }
+   name: "eflete/highlight/handler_RB/default";
+   alias: "eflete/highlight/handler_RT/default";
+   alias: "eflete/highlight/handler_LB/default";
+   alias: "eflete/highlight/handler_LT/default";
+   alias: "eflete/highlight/handler_MIDDLE/default";
+   parts {
+      part {
+         name: "border";
+         type: IMAGE;
+         mouse_events: 1;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            image {
+               normal: "handler.png";
+               border: 2 2 2 2;
+               middle: NONE;
+            }
+         }
+      }
+   }
+}

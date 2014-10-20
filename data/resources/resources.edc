@@ -1,0 +1,80 @@
+#define ADD_IMAGE(NAME, IMG, MAX_X, MAX_Y, BORDER, FILL, MID) \
+   group { name: NAME; \
+      images.image: IMG COMP; \
+      parts { \
+         part { name: "image"; \
+            type: IMAGE; \
+            description { state: "default" 0.0; \
+               max: MAX_X MAX_Y; \
+               image { \
+                  normal: IMG; \
+                  border: BORDER; \
+                  middle: MID; \
+               } \
+               fill.type: FILL; \
+            } \
+         } \
+      } \
+   }
+
+#define ADD_PNG_LIM_SIZE(NAME, MAX_X, MAX_Y) ADD_IMAGE(NAME, NAME".png", MAX_X, MAX_Y, 0 0 0 0, SCALE, SOLID)
+
+#define ADD_PNG(NAME) ADD_PNG_LIM_SIZE(NAME, -1, -1)
+
+collections {
+   ADD_PNG_LIM_SIZE("icon-rectangle", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-image", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-spacer", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-swallow", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-text", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-textblock", 12, 12)
+   ADD_PNG_LIM_SIZE("icon-group", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-proxy", 12, 11)
+   ADD_PNG_LIM_SIZE("icon-table", 12, 12)
+   ADD_PNG_LIM_SIZE("icon-box", 12, 12)
+   ADD_PNG_LIM_SIZE("icon-external", 12, 12)
+
+   ADD_PNG_LIM_SIZE("icon-back", 32, 32)
+   ADD_PNG_LIM_SIZE("icon-add", 16, 16)
+   ADD_PNG_LIM_SIZE("icon-remove", 16, 16)
+   ADD_PNG_LIM_SIZE("icon-slideup", 6, 4)
+   ADD_PNG_LIM_SIZE("icon-slidedown", 6, 6)
+   ADD_PNG_LIM_SIZE("alias_link", 16, 16)
+
+   ADD_PNG_LIM_SIZE("icon-notification", 14, 14)
+   ADD_PNG_LIM_SIZE("icon_start-point", 12, 12)
+   ADD_PNG_LIM_SIZE("icon_end-point", 12, 12)
+   ADD_PNG_LIM_SIZE("icon_align", 15, 15)
+   ADD_PNG_LIM_SIZE("icon_offset", 15, 15)
+   ADD_PNG_LIM_SIZE("icon-separate", 16, 16)
+
+   ADD_PNG_LIM_SIZE("icon-search", 16, 16)
+
+   ADD_PNG_LIM_SIZE("mw_button_close", 22, 22)
+   ADD_PNG_LIM_SIZE("mw_button_info", 22, 22)
+
+   ADD_PNG_LIM_SIZE("styles-preview-bg-black", 24, 24)
+   ADD_PNG_LIM_SIZE("styles-preview-bg-transparent", 24, 24)
+   ADD_PNG_LIM_SIZE("styles-preview-bg-white", 24, 24)
+
+   ADD_PNG_LIM_SIZE("no_image_warning", 72, 72)
+
+   ADD_PNG_LIM_SIZE("eye_open", 72, 72)
+   ADD_PNG_LIM_SIZE("eye_close", 72, 72)
+
+   ADD_PNG_LIM_SIZE("sound", 50, 50)
+
+   ADD_PNG_LIM_SIZE("icon_prev", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_play", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_next", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_pause", 10, 10)
+
+   ADD_IMAGE("section-item-bg", "section-item-bg.png", -1, -1, 0 0 0 2, SCALE, SOLID)
+   ADD_IMAGE("gallery-bg", "gallery-bg.png", -1, -1, 2 2 2 6, SCALE, SOLID)
+
+   ADD_IMAGE("bg_demo", "bg_demo.png", -1, -1, 0 0 0 0, TILE, SOLID)
+
+   ADD_IMAGE("part_swallow_bg", "part_swallow_bg.png", -1, -1, 0 0 0 0, TILE, SOLID)
+   ADD_IMAGE("part_spacer_bg", "part_spacer_bg.png", -1, -1, 0 0 0 0, TILE, SOLID)
+   ADD_IMAGE("border_part", "border_part.png", -1, -1, 1 1 1 1, SCALE, NONE)
+}

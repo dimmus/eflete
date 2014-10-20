@@ -1,0 +1,151 @@
+/**
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
+#include "test_project_manager.h"
+
+/**
+ * @addtogroup project_manager_test
+ * @{
+ * @addtogroup pm_open_project_edj
+ * @{
+ * project_manager
+ * <TABLE>
+ * @}
+ */
+
+/**
+ * @addtogroup pm_open_project_edj
+ * @{
+ * <tr>
+ * <td>pm_open_project_edj</td>
+ * <td>pm_open_project_edj_test_p</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call function pm_open_project_edj(name, path).
+ * @step 2 Check returned value.
+ * @step 3 Check project's name.
+ * @step 4 Check edj path.
+ * @step 5 Check swap path.
+ * </td>
+ * <td>(const char *)path = "./edj_build/pm_open_project_edj.edj"</td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (pm_open_project_edj_test_p)
+{
+   elm_init(0,0);
+   char *path;
+   path = "./edj_build/pm_open_project_edj.edj";
+
+   Project* pro = pm_open_project_edj(path);
+   ck_assert_msg(pro != NULL, "failure: cannot open project from edj-file");
+   ck_assert_msg(!strcmp(pro->edj, "./edj_build/pm_open_project_edj.edj"), "edj path is incorrect");
+   ck_assert_msg(!strcmp(pro->dev, "./edj_build/pm_open_project_edj.edj.dev"), "dev path is incorrect");
+
+   pm_project_close(pro);
+   elm_shutdown();
+}
+END_TEST
+
+
+/**
+ * @addtogroup pm_open_project_edj
+ * @{
+ * <tr>
+ * <td>pm_open_project_edj</td>
+ * <td>pm_open_project_edj_test_n1</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call function pm_open_project_edj(NULL).
+ * @step 2 Check returned value.
+ * </td>
+ * <td>NULL</td>
+ * <td>NULL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (pm_open_project_edj_test_n1)
+{
+   elm_init(0,0);
+
+   ck_assert_msg(pm_open_project_edj(NULL) == NULL, "Project created without path");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_open_project_edj
+ * @{
+ * <tr>
+ * <td>pm_open_project_edj</td>
+ * <td>pm_open_project_edj_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialized elm
+ *
+ * @procedure
+ * @step 1 Call function pm_open_project_edj(path1).
+ * @step 2 Check returned value.
+ * @step 3 Call function pm_open_project_edj(path2).
+ * @step 4 Check returned value.
+ * @step 5 Call function pm_open_project_edj(path3).
+ * @step 6 Check returned value.
+ * </td>
+ * <td>(const char *)path</td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (pm_open_project_edj_test_n2)
+{
+   elm_init(0,0);
+   char *path1, *path2, *path3;
+   path1 = "_totally_wrong_path_project_manager_probably_going_to_ignore! >;3";
+   path2 = "./edj_build/Makefile";
+   path3 = "./edj_build/radio.png";
+
+   ck_assert_msg(pm_open_project_edj(path1) == NULL, "Project created with path that is not exist.");
+   ck_assert_msg(pm_open_project_edj(path2) == NULL, "Project created with file that doesn't have any extensions");
+   ck_assert_msg(pm_open_project_edj(path3) == NULL, "Project created with wrong file");
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_open_project_edj
+ * @{
+ * </TABLE>
+ * @}
+ * @}
+ */

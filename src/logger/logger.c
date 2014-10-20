@@ -1,193 +1,60 @@
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013-2014 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
+
 #include "logger.h"
 
-static FILE *log_file;
-static char *log_file_name;
+#ifdef HAVE_CONFIG_H
+   #include "eflete_config.h"
+#endif /* include eflete_config.h */
 
-static int _tet_log_dom_crit = -1;
-static int _tet_log_dom_err  = -1;
-static int _tet_log_dom_warn = -1;
-static int _tet_log_dom_info = -1;
-static int _tet_log_dom_dbg  = -1;
-
-char *
-log_file_name_get(void)
-{
-	char prefix[] = "tet_log_";
-	time_t timer;
-
-	time(&timer);
-	log_file_name = calloc(1, sizeof(prefix) + 16);
-	sprintf(log_file_name, "%s%lld.log", prefix, (long long)timer);
-
-	return log_file_name;
-}
-
-void
-tet_log_cb(const Eina_Log_Domain *domain,
-				Eina_Log_Level level,
-				const char *file,
-				const char *fnc,
-				int line,
-				const char *fmt,
-				void *data,
-				va_list args)
-{
-	FILE *output;
-
-	if(data)
-	{
-		output = data;
-		fprintf(output, "%s:%s:%s (%d): ",
-				domain->name, file, fnc, line);
-		vfprintf(output, fmt, args);
-		putc('\n', output);
-	}
-
-	if(level > EINA_LOG_LEVEL_ERR)
-	{
-		output = stdout;
-	}
-	else
-	{
-		output = stderr;
-	}
-
-	/* Maybe need to use basename() fuction  */
-	fprintf(output, "%s:%s:%s (%d): ",
-			domain->domain_str, file, fnc, line);
-	vfprintf(output, fmt, args);
-	putc('\n', output);
-}
+int _eflete_lod_dom = -1;
 
 Eina_Bool
 logger_init(void)
 {
+   if (!eina_init()) return false;
 
-	if(!eina_init())
-	{
-		return EINA_FALSE;
-	}
+#ifdef HAVE_EFLETE_DEBUG
+   eina_log_level_set(EINA_LOG_LEVEL_DBG);
+#else
+   eina_log_level_set(EINA_LOG_LEVEL_ERR);
+#endif
 
-	eina_log_level_set(TET_LOG_DEFAULT_LEVEL);
-
-	if(_tet_log_dom_crit < 0)
-	{
-		_tet_log_dom_crit = eina_log_domain_register("TET CRIT", EINA_COLOR_RED);
-		if(_tet_log_dom_crit < 0)
-		{
-			EINA_LOG_CRIT("Could not register log domain 'TET CRIT'");
-			return EINA_FALSE;
-		}
-	}
-	if(_tet_log_dom_err < 0)
-	{
-		_tet_log_dom_err = eina_log_domain_register("TET ERR ", EINA_COLOR_LIGHTRED);
-		if(_tet_log_dom_err < 0)
-		{
-			EINA_LOG_CRIT("Could not register log domain 'TET ERR'");
-			return EINA_FALSE;
-		}
-	}
-	if(_tet_log_dom_warn < 0)
-	{
-		_tet_log_dom_warn = eina_log_domain_register("TET WARN", EINA_COLOR_YELLOW);
-		if(_tet_log_dom_warn < 0)
-		{
-			EINA_LOG_CRIT("Could not register log domain 'TET WARN'");
-			return EINA_FALSE;
-		}
-	}
-	if(_tet_log_dom_info < 0)
-	{
-		_tet_log_dom_info = eina_log_domain_register("TET INFO", EINA_COLOR_GREEN);
-		if(_tet_log_dom_info < 0)
-		{
-			EINA_LOG_CRIT("Could not register log domain 'TET INFO'");
-			return EINA_FALSE;
-		}
-	}
-	if(_tet_log_dom_dbg < 0)
-	{
-		_tet_log_dom_dbg = eina_log_domain_register("TET DBG ", EINA_COLOR_LIGHTBLUE);
-		if(_tet_log_dom_dbg < 0)
-		{
-			EINA_LOG_CRIT("Could not register log domain 'TET DBG'");
-			return EINA_FALSE;
-		}
-	}
-
-	log_file_name = log_file_name_get();
-	log_file = fopen(log_file_name, "a+");
-	if(!log_file)
-	{
-		EINA_LOG_CRIT("Could not create log file %s", log_file_name);
-	}
-
-	eina_log_print_cb_set(tet_log_cb, log_file);
-
-	return EINA_TRUE;
+   if(_eflete_lod_dom < 0)
+     {
+        _eflete_lod_dom = eina_log_domain_register(PACKAGE, EINA_COLOR_LIGHTBLUE);
+        if(_eflete_lod_dom < 0)
+          {
+             EINA_LOG_CRIT("Could not register log domain "PACKAGE);
+             return false;
+          }
+     }
+   return true;
 }
 
-void
+int
 logger_shutdown(void)
 {
-	eina_log_print_cb_set(NULL, NULL);
-	fclose(log_file);
-	free(log_file_name);
-
-	if(_tet_log_dom_crit >= 0)
-	{
-		eina_log_domain_unregister(_tet_log_dom_crit);
-		_tet_log_dom_crit = -1;
-	}
-	if(_tet_log_dom_err  >= 0)
-	{
-		eina_log_domain_unregister(_tet_log_dom_err);
-		_tet_log_dom_err = -1;
-	}
-	if(_tet_log_dom_warn >= 0)
-	{
-		eina_log_domain_unregister(_tet_log_dom_warn);
-		_tet_log_dom_warn = -1;
-	}
-	if(_tet_log_dom_info >= 0)
-	{
-		eina_log_domain_unregister(_tet_log_dom_info);
-		_tet_log_dom_info = -1;
-	}
-	if(_tet_log_dom_dbg  >= 0)
-	{
-		eina_log_domain_unregister(_tet_log_dom_dbg);
-		_tet_log_dom_dbg = -1;
-	}
-}
-
-int
-dom_crit_get(void)
-{
-	return _tet_log_dom_crit;
-}
-
-int
-dom_err_get(void)
-{
-	return _tet_log_dom_err;
-}
-
-int
-dom_warn_get(void)
-{
-	return _tet_log_dom_warn;
-}
-
-int
-dom_info_get(void)
-{
-	return _tet_log_dom_info;
-}
-
-int
-dom_dbg_get(void)
-{
-	return _tet_log_dom_dbg;
+   if(_eflete_lod_dom >= 0)
+     {
+        eina_log_domain_unregister(_eflete_lod_dom);
+        _eflete_lod_dom = -1;
+     }
+   return _eflete_lod_dom;
 }
