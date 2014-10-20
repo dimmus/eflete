@@ -138,6 +138,28 @@ group { name: "eflete/program_editor/live_view";
       }
    }
 }
+
+group { name: "eflete/program_editor/program_area";
+   parts {
+      part { name: "swallow.button";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 15 15;
+            max: 15 -1;
+         }
+      }
+      part { name: "swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "swallow.button";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+   }
+}
 #undef BUTTON_PADDING
 #undef BUTTON_W
 #undef BUTTON_H
