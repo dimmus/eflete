@@ -469,6 +469,7 @@ _image_info_setup(Image_Editor *img_edit,
    _image_info_update_usage_info(img_edit, eina_list_count(usage_list));
    _image_info_usage_update(img_edit);
    edje_edit_image_usage_list_free(usage_list);
+   evas_object_smart_calculate(img_edit->image_data_fields.layout);
 }
 
 static void
@@ -826,10 +827,12 @@ _image_info_label_add(Evas_Object *box,
    return label;
 }
 
-static void
+static Evas_Object *
 _image_info_box_create(Image_Editor *img_edit)
 {
-   Evas_Object *layout = elm_layout_add(img_edit->layout);
+   Evas_Object *scroller;
+   SCROLLER_ADD(img_edit->layout, scroller);
+   Evas_Object *layout = elm_layout_add(scroller);
    elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/image_editor/image_info");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -857,8 +860,10 @@ _image_info_box_create(Image_Editor *img_edit)
    elm_object_part_content_set(layout, "eflete.swallow.compression_quality",
                                img_edit->image_data_fields.quality);
 
+   elm_object_content_set(scroller, layout);
    img_edit->image_data_fields.layout = layout;
    _image_info_reset(img_edit);
+   return scroller;
 }
 
 static inline Evas_Object *
@@ -917,9 +922,8 @@ _image_info_initiate(Image_Editor *img_edit)
    elm_object_style_set(img_edit->tabs, "bookmark");
 
    it = ewe_tabs_item_append(img_edit->tabs, NULL, "Image Info", "bookmark");
-   _image_info_box_create(img_edit);
    ewe_tabs_item_content_set(img_edit->tabs, it,
-                             img_edit->image_data_fields.layout);
+                             _image_info_box_create(img_edit));
    it = ewe_tabs_item_append(img_edit->tabs, NULL, "", "bookmark");
    ewe_tabs_item_content_set(img_edit->tabs, it,
                              _image_usage_layout_create(img_edit,
