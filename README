@@ -1,0 +1,33 @@
+
+
+EFL Edje Theme Editor (eflete)
+
+This is a EFL theme editor with some convenient functions. Eflete oriented
+towards theme editor and UI design, and not GUI over the edc syntax.
+
+Requirements:
+-------------
+
+   * efl (>= 1.10.1)
+   * elementary (= 1.10.1)
+   * ewe (>= 0.1.1)
+
+Please note that some features may not quite function correctly or
+completely on EFL 1.10.1.
+
+Please see http://www.enlightenment.org for information on these.
+
+Compiling:
+----------
+
+Once you have met requirements, compiling and installing is simple:
+
+   ./autogen.sh
+   make
+   make install
+
+To install program to specified directory use --prefix option on configure step:
+
+   ./autogen.sh --prefix=/full/path/to/some/dir
+
+

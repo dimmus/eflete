@@ -1,6 +1,0 @@
-styles {
-   style {
-      name: "prop_item_label";
-      base: "font=Sans font_size=10 color=#000 align=left";
-   }
-}
