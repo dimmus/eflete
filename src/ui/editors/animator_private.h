@@ -43,6 +43,8 @@ void program_editor_program_reset(Evas_Object *obj);
 
 void program_editor_program_play(Evas_Object *obj);
 
+void program_editor_program_stop(Evas_Object *obj);
+
 void program_editor_cycled_set(Evas_Object *obj, Eina_Bool cycled);
 
 void program_editor_free(Evas_Object * obj);

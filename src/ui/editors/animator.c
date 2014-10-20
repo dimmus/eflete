@@ -151,8 +151,11 @@ _on_animator_close(void *data,
                    void *event_info __UNUSED__)
 {
    Animator *animator = (Animator*)data;
+
    program_editor_free(animator->program_editor);
+
    live_view_free(animator->live);
+
    free(animator);
 }
 

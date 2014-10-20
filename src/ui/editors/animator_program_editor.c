@@ -203,6 +203,15 @@ program_editor_program_reset(Evas_Object *obj)
 }
 
 void
+program_editor_program_stop(Evas_Object *obj)
+{
+   Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
+
+   if (prog_edit->playback.timer)
+     ecore_timer_del(prog_edit->playback.timer);
+}
+
+void
 program_editor_program_play(Evas_Object *obj)
 {
    Program_Editor *prog_edit = evas_object_data_get(obj, DATA_KEY);
@@ -1556,9 +1565,7 @@ void program_editor_free(Evas_Object * obj)
 
    if (prog_edit)
      {
-        if (prog_edit->playback.timer)
-          ecore_timer_del(prog_edit->playback.timer);
-
+        program_editor_program_stop(obj);
         free(prog_edit);
      }
    evas_object_del(obj);
