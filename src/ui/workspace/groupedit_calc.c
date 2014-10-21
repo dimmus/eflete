@@ -723,7 +723,7 @@ static void
 _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 {
    Evas_Load_Error err;
-   const char *image_normal;
+   const char *image_normal, *proxy_source;
    const char *buf = NULL;
    int r, g, b, a;
    int id;
@@ -733,6 +733,8 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    double fill_w, fill_h, fill_x, fill_y;
    int fill_origin_offset_x, fill_origin_offset_y, fill_size_offset_x, fill_size_offset_y;
    unsigned char middle;
+   Ws_Groupedit_Smart_Data *sd;
+   Groupedit_Part *source;
 
    PART_STATE_GET(edit_obj, gp->name)
 
@@ -740,27 +742,38 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
    evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
 
-   image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
-   if (!image_normal) return;
-   id = edje_edit_image_id_get(edit_obj, image_normal);
-   buf = eina_stringshare_printf("edje/images/%i", id);
-   evas_object_image_file_set(gp->draw, file, buf);
-   err = evas_object_image_load_error_get(gp->draw);
-   if (err != EVAS_LOAD_ERROR_NONE)
-     WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
+   proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->name, state, value);
 
-   edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
-                                    &bl, &br, &bt, &bb);
-   evas_object_image_border_set(gp->draw, bl, br, bt, bb);
+   if (proxy_source)
+     {
+        sd = evas_object_data_get(gp->border, "sd");
+        source = _parts_list_find(sd->parts, proxy_source);
+        evas_object_image_source_set(gp->draw, source->draw);
+     }
+   else
+     {
+        image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
+        if (!image_normal) return;
+        id = edje_edit_image_id_get(edit_obj, image_normal);
+        buf = eina_stringshare_printf("edje/images/%i", id);
+        evas_object_image_file_set(gp->draw, file, buf);
+        err = evas_object_image_load_error_get(gp->draw);
+        if (err != EVAS_LOAD_ERROR_NONE)
+          WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
+        edje_edit_string_free(image_normal);
 
-   middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
-   if (middle == 0)
-     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_NONE);
-   else if (middle == 1)
-     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_DEFAULT);
-   else if (middle == 2)
-     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_SOLID);
+        edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
+                                         &bl, &br, &bt, &bb);
+        evas_object_image_border_set(gp->draw, bl, br, bt, bb);
 
+        middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
+        if (middle == 0)
+          evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_NONE);
+        else if (middle == 1)
+          evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_DEFAULT);
+        else if (middle == 2)
+          evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_SOLID);
+     }
    /* setups settings from filled block  into evas image object*/
    evas_object_image_smooth_scale_set(gp->draw,
             edje_edit_state_fill_smooth_get(edit_obj, gp->name, state, value));
@@ -805,7 +818,6 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 
    PART_STATE_FREE
    eina_stringshare_del(buf);
-   edje_edit_string_free(image_normal);
 }
 
 static void
