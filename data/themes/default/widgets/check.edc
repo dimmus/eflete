@@ -1,6 +1,6 @@
 group { name: "elm/check/base/eflete/toggle";
    images {
-      image: "input-text-bg1.png" COMP;
+      image: "input-text-bg.png" COMP;
       image: "toggle-on.png" COMP;
       image: "toggle-off.png" COMP;
    }
@@ -89,7 +89,7 @@ group { name: "elm/check/base/eflete/toggle";
          clip_to: "tog_clip";
          description { state: "default" 0.0;
             image {
-               normal: "input-text-bg1.png";
+               normal: "input-text-bg.png";
                border: 5 5 5 5;
             }
             rel1 {
@@ -483,7 +483,7 @@ group { name: "elm/check/base/eflete/toggle";
 
 group { name: "elm/check/base/eflete/default";
    images {
-      image: "input-text-bg1.png" COMP;
+      image: "input-text-bg.png" COMP;
       image: "checkbox-white.png" COMP;
    }
    parts {
@@ -503,7 +503,7 @@ group { name: "elm/check/base/eflete/default";
                offset: 1 -2;
             }
             image {
-               normal: "input-text-bg1.png";
+               normal: "input-text-bg.png";
                border: 5 5 5 5;
             }
          }
@@ -787,7 +787,7 @@ group { name: "elm/check/base/eflete/live_view";
                offset: 1 -2;
             }
             image {
-               normal: "input-text-bg1.png";
+               normal: "input-text-bg.png";
                border: 5 5 5 5;
             }
          }

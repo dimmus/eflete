@@ -494,7 +494,7 @@ group { name: "elm/scroller/entry/eflete/default";
    alias: "elm/scroller/entry/eflete/search_field";
    inherit: "elm/scroller/base/eflete/default";
    images {
-      image: "input-text-bg1.png" COMP;
+      image: "input-text-bg.png" COMP;
    }
    data {
       item: "focus_highlight" "on";
@@ -511,7 +511,7 @@ group { name: "elm/scroller/entry/eflete/default";
                to_y: "sb_hbar";
             }
             image {
-               normal: "input-text-bg1.png";
+               normal: "input-text-bg.png";
                border: 5 5 5 5;
                middle: DEFAULT;
             }
@@ -654,7 +654,7 @@ group { name: "elm/scroller/entry/eflete/default";
 group { name: "elm/scroller/entry_single/eflete/default";
    alias: "elm/scroller/entry_single/eflete/search_field";
    images {
-      image: "input-text-bg1.png" COMP;
+      image: "input-text-bg.png" COMP;
    }
    data {
       item: "focus_highlight" "on";
@@ -739,7 +739,7 @@ group { name: "elm/scroller/entry_single/eflete/default";
             rel1.to: "base";
             rel2.to: "base";
             image {
-               normal: "input-text-bg1.png";
+               normal: "input-text-bg.png";
                border: 5 5 5 5;
                middle: DEFAULT;
             }
