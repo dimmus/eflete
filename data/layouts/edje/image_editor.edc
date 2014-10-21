@@ -51,24 +51,35 @@ group { name: "elm/layout/image_editor/default";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 400 400;
             max: 400 -1;
-            rel2 {
-               to_y: "padding.bottom";
-               relative: 1.0 0.0;
+            rel1 {
+               to: "area.image_editor_base";
+               relative: 0.66 0.0;
             }
+            rel2.to: "area.image_editor_base";
+         }
+      }
+      part { name: "padding.image_info.top_left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(10, 10);
+            rel1.to: "area.image_info";
+            rel2.to: "area.image_info";
          }
       }
       part { name: "area.image_preview";
          type: SPACER;
          description { state: "default" 0.0;
-            SET_SIZE(380, 380);
             align: 0.5 0.0;
             rel1 {
-               to_y: "eflete.swallow.del_btn";
-               to_x: "area.image_info";
+               to: "padding.image_info.top_left";
+               relative: 1.0 1.0;
             }
-            rel2.to: "area.image_info";
+            rel2 {
+               to: "padding.bottom";
+               relative: 0.0 0.0;
+            }
          }
       }
       part { name: "image_preview_decoration";
@@ -122,8 +133,8 @@ group { name: "elm/layout/image_editor/default";
                relative: 0.0 1.0;
             }
             rel2 {
-               to_y: "area.image_info";
-               to_x: "area.image_preview";
+               to: "padding.bottom";
+               relative: 0.0 0.0;
             }
          }
       }
