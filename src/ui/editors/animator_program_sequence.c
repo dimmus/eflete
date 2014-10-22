@@ -62,6 +62,7 @@ struct _Prog_Sequence_Smart_Data
    Evas_Object_Smart_Clipped_Data base;
    Evas *e;
    Evas_Object *obj;
+   Evas_Object *ruler;
    Evas_Object *bg;
    Evas_Object *labels_bg;
    Evas_Object *parent;
@@ -93,7 +94,7 @@ static void _prog_sequence_smart_hide(Evas_Object *o);
 static void _prog_sequence_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void _prog_sequence_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _prog_sequence_smart_calculate(Evas_Object *o);
-static void _labels_move(Prog_Sequence_Smart_Data *sd, int y);
+static void _overlay_move(Prog_Sequence_Smart_Data *sd, int x, int y);
 
 EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _prog_sequence,
                         Evas_Smart_Class, Evas_Smart_Class,
@@ -132,6 +133,13 @@ _prog_sequence_smart_add(Evas_Object *o)
    evas_object_color_set(priv->labels_bg, 20, 20, 20, 20);
    evas_object_smart_member_add(priv->labels_bg, o);
 
+   priv->ruler = ewe_ruler_add(o);
+   ewe_ruler_step_set(priv->ruler, NULL, PIX_PER_SEC);
+   ewe_ruler_value_step_set(priv->ruler, NULL, 1);
+   ewe_ruler_scale_middle_mark_set(priv->ruler, NULL, true);
+   ewe_ruler_format_set(priv->ruler, NULL, "%.1f");
+   evas_object_smart_member_add(priv->ruler, o);
+
    priv->obj = o;
 }
 
@@ -142,6 +150,7 @@ _prog_sequence_smart_del(Evas_Object *o)
 
    evas_object_smart_member_del(sd->bg);
    evas_object_smart_member_del(sd->labels_bg);
+   evas_object_smart_member_del(sd->ruler);
 
    _prog_sequence_parent_sc->del(o);
 }
@@ -155,6 +164,7 @@ _prog_sequence_smart_show(Evas_Object *o)
 
    evas_object_show(sd->bg);
    evas_object_show(sd->labels_bg);
+   evas_object_show(sd->ruler);
 
    _prog_sequence_parent_sc->show(o);
 }
@@ -168,6 +178,7 @@ _prog_sequence_smart_hide(Evas_Object *o)
 
    evas_object_hide(sd->bg);
    evas_object_hide(sd->labels_bg);
+   evas_object_hide(sd->ruler);
 
    _prog_sequence_parent_sc->hide(o);
 }
@@ -184,7 +195,7 @@ _prog_sequence_smart_move(Evas_Object *o,
    if ((ox == x) && (oy == y)) return;
 
    _prog_sequence_parent_sc->move(o, x, y);
-   _labels_move(sd, y);
+   _overlay_move(sd, x, y);
 }
 
 static void
@@ -215,12 +226,13 @@ _prog_sequence_smart_calculate(Evas_Object *o)
    evas_object_geometry_get(sd->obj, NULL, NULL, &ow, &oh);
    evas_object_resize(sd->bg, ow, oh);
    evas_object_resize(sd->labels_bg, LABELS_W, oh);
+   evas_object_resize(sd->ruler, ow - LABELS_W, LABELS_H);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
-   evas_object_size_hint_min_set(o, sd->max_time * PIX_PER_SEC,
-                                 eina_list_count(sd->program_list) * PIX_PER_LINE);
+   evas_object_size_hint_min_set(o, sd->max_time * PIX_PER_SEC + 2 * LABELS_W,
+                                 eina_list_count(sd->program_list) * PIX_PER_LINE + LABELS_H);
 
-   _labels_move(sd, y);
+   _overlay_move(sd, x, y);
 
    EINA_LIST_FOREACH(sd->timeline, l, rp)
      {
@@ -235,8 +247,8 @@ _prog_sequence_smart_calculate(Evas_Object *o)
 
         /* TODO: simplify after replacing rectangles with secialized objects */
         evas_object_geometry_set(rp->obj,
-                                 x + rp->start_time * PIX_PER_SEC,
-                                 y + ((rp->time?0.1:0.25) + line_num) * PIX_PER_LINE,
+                                 x + rp->start_time * PIX_PER_SEC + LABELS_W,
+                                 y + ((rp->time?0.1:0.25) + line_num) * PIX_PER_LINE + LABELS_H,
                                  (rp->time?rp->time:.1) * PIX_PER_SEC,
                                  (rp->time?.9:.5) * PIX_PER_LINE);
      }
@@ -244,25 +256,26 @@ _prog_sequence_smart_calculate(Evas_Object *o)
 /***************** program sequence custom ************************************/
 
 static void
-_labels_move(Prog_Sequence_Smart_Data *sd, int y)
+_overlay_move(Prog_Sequence_Smart_Data *sd, int x, int y)
 {
    Evas_Object *label;
-   Evas_Coord px;
+   Evas_Coord px, py;
    Eina_List *l;
    int line_num = 0;
 
    /* assuming that parent is scroller and its x-coord is starting point of viewport.
       labels block shouldn't scroll along X-axis.
       labels in list are sorted by y-coord */
-   evas_object_geometry_get(sd->parent, &px, NULL, NULL, NULL);
+   evas_object_geometry_get(sd->parent, &px, &py, NULL, NULL);
    EINA_LIST_FOREACH(sd->labels, l, label)
      {
          evas_object_move(label,
                           px,
-                          y + (0.25 + line_num) * PIX_PER_LINE);
+                          y + (0.25 + line_num) * PIX_PER_LINE + LABELS_H);
          line_num++;
      }
    evas_object_move(sd->labels_bg, px, y);
+   evas_object_move(sd->ruler, x + LABELS_W, py);
 }
 
 static int
@@ -441,6 +454,7 @@ prog_sequence_program_set(Evas_Object *obj,
         sd->labels = eina_list_append(sd->labels, label);
      }
    evas_object_stack_below(sd->labels_bg, eina_list_data_get(sd->labels));
+   evas_object_raise(sd->ruler);
 
    evas_object_smart_changed(obj);
    return true;

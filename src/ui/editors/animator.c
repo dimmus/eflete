@@ -592,7 +592,7 @@ animator_window_add(Style *style)
    elm_object_style_set(bt, "eflete/simple");
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
-   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    elm_object_part_content_set(animator->program_area_layout, "swallow.content",
                                scroller);
    animator->prop_scroller = scroller;
