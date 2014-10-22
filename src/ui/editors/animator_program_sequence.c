@@ -27,6 +27,8 @@
 #define PIX_PER_LINE 40
 #define PROGRAM_COLOR 52, 70, 84, 255
 #define PROGRAM_SELECTED_COLOR 58, 110, 155, 255
+#define BG_COLOR 50, 53, 54, 255
+#define LABELS_BG_COLOR 20, 20, 20, 20
 
 struct _Part_State
 {
@@ -124,21 +126,6 @@ _prog_sequence_smart_add(Evas_Object *o)
 
    _prog_sequence_parent_sc->add(o);
    priv->e = evas_object_evas_get(o);
-
-   priv->bg = evas_object_rectangle_add(priv->e);
-   evas_object_color_set(priv->bg, 50, 53, 54, 255);
-   evas_object_smart_member_add(priv->bg, o);
-
-   priv->labels_bg = evas_object_rectangle_add(priv->e);
-   evas_object_color_set(priv->labels_bg, 20, 20, 20, 20);
-   evas_object_smart_member_add(priv->labels_bg, o);
-
-   priv->ruler = ewe_ruler_add(o);
-   ewe_ruler_step_set(priv->ruler, NULL, PIX_PER_SEC);
-   ewe_ruler_value_step_set(priv->ruler, NULL, 1);
-   ewe_ruler_scale_middle_mark_set(priv->ruler, NULL, true);
-   ewe_ruler_format_set(priv->ruler, NULL, "%.1f");
-   evas_object_smart_member_add(priv->ruler, o);
 
    priv->obj = o;
 }
@@ -419,6 +406,21 @@ prog_sequence_add(Evas_Object *parent, Style *style, Live_View *live)
    sd->parent = parent;
    sd->live = live;
    sd->style = style;
+
+   sd->bg = evas_object_rectangle_add(sd->e);
+   evas_object_color_set(sd->bg, BG_COLOR);
+   evas_object_smart_member_add(sd->bg, obj);
+
+   sd->labels_bg = evas_object_rectangle_add(sd->e);
+   evas_object_color_set(sd->labels_bg, LABELS_BG_COLOR);
+   evas_object_smart_member_add(sd->labels_bg, obj);
+
+   sd->ruler = ewe_ruler_add(parent);
+   ewe_ruler_step_set(sd->ruler, NULL, PIX_PER_SEC);
+   ewe_ruler_value_step_set(sd->ruler, NULL, 1);
+   ewe_ruler_scale_middle_mark_set(sd->ruler, NULL, true);
+   ewe_ruler_format_set(sd->ruler, NULL, "%.1f");
+   evas_object_smart_member_add(sd->ruler, obj);
 
    return obj;
 }
