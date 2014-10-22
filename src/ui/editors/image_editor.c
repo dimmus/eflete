@@ -173,8 +173,7 @@ _grid_content_get(void *data,
         evas_object_show(image);
         return image;
      }
-   else if (!strcmp(part, "elm.swallow.end") &&
-            (it->comp_type != EDJE_EDIT_IMAGE_COMP_USER))
+   else if (!strcmp(part, "elm.swallow.end"))
      {
         Eina_List *used_in;
         Evas_Object *edje_edit_obj;
