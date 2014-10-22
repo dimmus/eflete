@@ -208,7 +208,8 @@ live_view_theme_update(Live_View *live, Project *project)
      }
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->dev);
-   elm_object_theme_set(live->object, theme);
+   if (!live->in_prog_edit)
+     elm_object_theme_set(live->object, theme);
    elm_theme_free(theme);
 
    return true;
