@@ -322,10 +322,14 @@ _interrupt_playing(Sound_Editor *edit)
    eina_binbuf_free(edit->io.buf);
    edit->io.buf = NULL;
    edit->playing = false;
-   edit->stopped = false;
 
-   ecore_timer_del(edit->timer);
-   edit->timer = NULL;
+   if (!edit->stopped)
+     {
+        ecore_timer_del(edit->timer);
+        edit->timer = NULL;
+     }
+
+   edit->stopped = false;
    ecore_main_loop_quit();
 
    elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
