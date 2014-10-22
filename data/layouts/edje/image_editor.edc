@@ -227,7 +227,11 @@ group { name: "elm/layout/image_editor/default";
             align: 1.0 1.0;
             BTNS_LARGE_SIZE_SET;
             rel1.to: "area.button_box";
-            rel2.to: "area.button_box";
+            rel2 {
+               to_x: "padding.bottom";
+               to_y: "area.button_box";
+               relative: 0.0 1.0;
+            }
          }
       }
       part { name: "padding.ok_btn";
