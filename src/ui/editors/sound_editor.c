@@ -202,6 +202,7 @@ _out_fail(void *data EINA_UNUSED,
           void *event_info EINA_UNUSED)
 {
    eo_del(output);
+   ecore_main_loop_quit();
    return true;
 }
 
