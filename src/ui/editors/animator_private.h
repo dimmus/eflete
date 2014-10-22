@@ -33,6 +33,11 @@ Evas_Object *prog_sequence_add(Evas_Object *parent, Style *style, Live_View *liv
 
 Eina_Bool prog_sequence_program_set(Evas_Object *obj, const char* program_name, Eina_List *program_list);
 
+void prog_sequence_program_reset(Evas_Object *obj);
+
+void prog_sequence_program_play(Evas_Object *obj);
+
+void prog_sequence_cycled_set(Evas_Object *obj, Eina_Bool cycled);
 
 /* program editor */
 Evas_Object * program_editor_add(Evas_Object *parent, Style *style, Live_View *live);

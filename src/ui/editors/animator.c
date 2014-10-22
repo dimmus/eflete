@@ -116,7 +116,10 @@ _on_program_reset(void *data,
 {
    Animator *animator = data;
 
-   program_editor_program_reset(animator->program_editor);
+   if (animator->sequence_mode)
+     prog_sequence_program_reset(animator->program_sequence);
+   else
+     program_editor_program_reset(animator->program_editor);
 }
 
 static void
@@ -126,7 +129,10 @@ _on_program_play(void *data,
 {
    Animator *animator = data;
 
-   program_editor_program_play(animator->program_editor);
+   if (animator->sequence_mode)
+     prog_sequence_program_play(animator->program_sequence);
+   else
+     program_editor_program_play(animator->program_editor);
 }
 
 static void
@@ -141,7 +147,9 @@ _on_program_cycle(void *data,
      elm_object_text_set(animator->program_controls.cycle, _("Cycled"));
    else
      elm_object_text_set(animator->program_controls.cycle, _("Not cycled"));
+
    program_editor_cycled_set(animator->program_editor, animator->is_cycled);
+   prog_sequence_cycled_set(animator->program_sequence, animator->is_cycled);
 }
 
 static void

@@ -462,3 +462,20 @@ prog_sequence_program_set(Evas_Object *obj,
    return true;
 }
 
+void
+prog_sequence_program_reset(Evas_Object *obj __UNUSED__)
+{
+   printf("program reset stub\n");
+}
+
+void
+prog_sequence_program_play(Evas_Object *obj __UNUSED__)
+{
+   printf("program play stub\n");
+}
+
+void
+prog_sequence_cycled_set(Evas_Object *obj __UNUSED__, Eina_Bool cycled __UNUSED__)
+{
+   printf("program cycled stub\n");
+}
