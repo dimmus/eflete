@@ -17,8 +17,6 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-typedef struct _History History;
-
 /**
  * @defgroup History History module
  * @ingroup Eflete
@@ -106,6 +104,25 @@ typedef struct _History History;
  * this change is impossible.
  *
  */
+
+/**
+ * @typedef History
+ * @ingroup History
+ */
+typedef struct _History History;
+
+/**
+ * Clear all changes from all modules, that was registered in history module.
+ * And unregister all modules.
+ *
+ * @param history The main history object.
+ *
+ * @return EINA_TRUE if history cleared succesfull, EINA_FALSE in otherwise.
+ *
+ * @ingroup History
+ */
+Eina_Bool
+history_clear(History *history);
 
 /**
  * Initialize history module. Create general history structure, where can be

@@ -30,3 +30,6 @@ void history_init_test_p(int);
 void history_term_test_p(int);
 void history_term_test_n(int);
 
+void history_clear_test_p(int);
+void history_clear_test_n(int);
+

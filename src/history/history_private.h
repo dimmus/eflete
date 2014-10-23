@@ -17,33 +17,27 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#ifndef UNDOREDO_PRIVATE_H
+#define UNDOREDO_PRIVATE_H
 
 #include "eflete.h"
 #include "main_window.h"
-#include "history.h"
-#include "history_private.h"
 
-Eina_Bool
-history_clear(History *history __UNUSED__)
+/**
+ * @struct _History
+ *
+ * @brief This struct designed to storage list of modules, that can generatre
+ * changes.
+ * Also here present main UI control for history feature.
+ *
+ * @ingroup History
+ */
+struct _History
 {
-   return false;
-}
+   Eina_List *modules; /**< List of registered modules. */
+   Evas_Object *genlist; /**< Genlist, that provide visual navigation in history. */
+   Ecore_Timer *timer; /**< Using for merge the changes, folowing one by one
+                            and changes the same parameter in the same module. */
+};
 
-History *
-history_init(void)
-{
-   History *history;
-
-   history = (History*)mem_calloc(1, sizeof(History));
-   return history;
-}
-
-Eina_Bool
-history_term(History *history __UNUSED__)
-{
-   if (!history) return false;
-
-   history_clear(history);
-   free(history);
-   return true;
-}
+#endif /* UNDOREDO_PRIVATE_H */

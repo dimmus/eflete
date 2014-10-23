@@ -25,6 +25,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, history_init_test_p);
    tcase_add_test(tcase, history_term_test_p);
    tcase_add_test(tcase, history_term_test_n);
+
+   tcase_add_test(tcase, history_clear_test_p);
+   tcase_add_test(tcase, history_clear_test_n);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
