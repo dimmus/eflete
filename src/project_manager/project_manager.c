@@ -190,10 +190,14 @@ pm_open_project_edj(const char *path)
 Eina_Bool
 pm_project_close(Project *project)
 {
+   const char* snd;
    if (!project) return false;
 
    eio_file_unlink(project->dev, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
+   EINA_LIST_FREE(project->added_sounds, snd)
+     eina_stringshare_del(snd);
+   project->added_sounds = NULL;
    ecore_main_loop_begin();
 
    return true;
