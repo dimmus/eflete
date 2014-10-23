@@ -23,6 +23,8 @@
 #include "eflete.h"
 #include "main_window.h"
 
+#define HISTORY_MODULE_KEY "history_module_key"
+
 /**
  * @typedef Module
  * @ingroup History

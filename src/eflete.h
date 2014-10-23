@@ -53,6 +53,7 @@
 #include "ui_workspace.h"
 #include "live_view.h"
 #include "notify.h"
+#include "history.h"
 
 struct _App_Data
 {
@@ -85,6 +86,7 @@ struct _App_Data
    Evas_Object *workspace;
    Live_View *live_view;
    Project *project;
+   History *history;
 };
 
 /**
@@ -170,6 +172,15 @@ main_window_get(void);
 Evas_Object *
 colorselector_get(void);
 
+/**
+ * Get the history object pointer.
+ * The history one for the entire application.
+ *
+ * @return pointer to history.
+ * @ingroup Eflete
+ */
+History *
+history_get(void);
 
 #define GET_IMAGE(IMG, PARENT, NAME) \
 { \

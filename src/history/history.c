@@ -54,15 +54,51 @@ history_clear(History *history)
 }
 
 Eina_Bool
-history_module_add(Evas_Object *source __UNUSED__)
+history_module_add(Evas_Object *source)
 {
-   return false;
+   History *history = NULL;
+   Module *module = NULL;
+
+   if (!source) return false;
+   history = history_get();
+   if (!history) return false;
+
+   module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+   if (module) return true;
+
+   module = (Module *)mem_calloc(1, sizeof(Module));
+   module->target = source;
+   evas_object_data_set(module->target, HISTORY_MODULE_KEY, module);
+   history->modules = eina_list_append(history->modules, module);
+
+   return true;
 }
 
 Eina_Bool
-history_module_del(Evas_Object *source __UNUSED__)
+history_module_del(Evas_Object *source)
 {
-   return false;
+   History *history = NULL;
+   Module *module = NULL;
+   Eina_List *module_list_node = NULL;
+
+   if (!source) return false;
+   history = history_get();
+   if (!history) return false;
+
+   module = evas_object_data_del(source, HISTORY_MODULE_KEY);
+   if (!module) return false;
+
+   if (!_module_changes_clear(module))
+     {
+        ERR("Didn't cleared history for module %p", module->target);
+        return false;
+     }
+
+   module_list_node = eina_list_data_find_list(history->modules, module);
+   history->modules = eina_list_remove_list(history->modules, module_list_node);
+   free(module);
+
+   return true;
 }
 
 History *

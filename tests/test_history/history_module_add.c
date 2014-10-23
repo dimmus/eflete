@@ -38,9 +38,10 @@
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Initialize history module.
- * @step 3 Create canvas, that needed for creating source object.
- * @step 4 Create Evas_Object, that will be source of changes.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create Evas_Object, that will be source of changes.
  *
  * @procedure
  * @step 1 Call history_module_add.
@@ -55,21 +56,24 @@
  */
 EFLETE_TEST(history_module_add_test_p1)
 {
-   History *history = NULL;
+   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
 
    elm_init(0, 0);
-   history = history_init();
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
    canvas = evas_new();
    source = evas_object_rectangle_add(canvas);
 
    result = history_module_add(source);
    ck_assert_msg(result, "Failed to add new module in history.");
 
-   history_term(history);
+   history_term(app->history);
    evas_free(canvas);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -83,12 +87,13 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Initialize history module.
- * @step 3 Create canvas, that needed for creating source object.
- * @step 4 Create Evas_Object, that will be source of changes.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create Evas_Object, that will be source of changes.
  *
  * @procedure
- * @step 1 Call history_module_add with source object from step 4.
+ * @step 1 Call history_module_add with source object from step 5.
  * @step 2 Check returned value.
  * @step 3 Call history_module_add again with the same object.
  * @step 4 Check returned value.
@@ -102,13 +107,15 @@ END_TEST
  */
 EFLETE_TEST(history_module_add_test_p2)
 {
-   History *history = NULL;
+   App_Data *app = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
 
    elm_init(0, 0);
-   history = history_init();
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
    canvas = evas_new();
    source = evas_object_rectangle_add(canvas);
 
@@ -117,8 +124,9 @@ EFLETE_TEST(history_module_add_test_p2)
    result = history_module_add(source);
    ck_assert_msg(result, "Already initilized module didn't confirmed.");
 
-   history_term(history);
+   history_term(app->history);
    evas_free(canvas);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -173,7 +181,8 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Initialize history module.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
  *
  * @procedure
  * @step 1 Call history_module_add.
@@ -188,16 +197,19 @@ END_TEST
  */
 EFLETE_TEST(history_module_add_test_n2)
 {
-   History *history = NULL;
+   App_Data *app = NULL;
    Eina_Bool result = EINA_TRUE;
 
    elm_init(0, 0);
-   history = history_init();
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
 
    result = history_module_add(NULL);
    ck_assert_msg(!result, "Add NULL pointer as new module in history.");
 
-   history_term(history);
+   history_term(app->history);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
