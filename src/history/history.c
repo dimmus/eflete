@@ -24,6 +24,33 @@
 #include "history_private.h"
 
 /*
+ * All changes that stored below rel_change in the list of changes will be freed.
+ */
+static Eina_List *
+_clear_untracked_changes(Eina_List *changes __UNUSED__,
+                         Diff *rel_change __UNUSED__)
+{
+   return NULL;
+}
+
+/*
+ * This function manage adding new diff into the history of module.
+ */
+static Eina_Bool
+_change_save(Module *module, Diff *change)
+{
+   if (!change) return false;
+
+   module->changes = _clear_untracked_changes(module->changes,
+                                              module->current_change);
+
+   module->changes = eina_list_append(module->changes, change);
+   module->current_change = change;
+
+   return true;
+}
+
+/*
  * This function clear all changes, that was happens with module.
  */
 static Eina_Bool
@@ -121,8 +148,32 @@ history_term(History *history __UNUSED__)
 }
 
 Eina_Bool
-history_diff_add(Evas_Object *source __UNUSED__, Target target __UNUSED__, ...)
+history_diff_add(Evas_Object *source, Target target, ...)
 {
-   return false;
+   History *history = NULL;
+   Module *module = NULL;
+   Diff *change = NULL;
+   va_list list;
+
+   if (!source) return false;
+   history = history_get();
+   if (!history) return false;
+   module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+   if (!module) return false;
+
+   va_start(list, target);
+
+   switch (target)
+     {
+      case PROPERTY:
+      break;
+      default:
+         ERR("Unsupported target");
+         va_end(list);
+         return false;
+     }
+   va_end(list);
+
+   return _change_save(module, change);
 }
 

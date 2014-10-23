@@ -66,6 +66,7 @@ struct _Module
    Evas_Object *target; /**< Target object. Can be any Evas_Object with lifetime
                              equale to lifetime of module*/
    Eina_List *changes; /**< List of structures, that contain diff info about change */
+   Diff *current_change; /**< Current diff for module.*/
 };
 
 /**
