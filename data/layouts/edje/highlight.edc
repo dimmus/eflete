@@ -28,6 +28,7 @@ group {
    alias: "eflete/highlight/handler_RT/default";
    alias: "eflete/highlight/handler_LB/default";
    alias: "eflete/highlight/handler_LT/default";
+   alias: "eflete/highlight/handler_MIDDLE/default";
    parts {
       part {
          name: "border";

@@ -143,7 +143,7 @@ EFLETE_TEST (ui_style_clicked_test_n1)
    app_init();
    app_data = app_data_get();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", path);
+   project = pm_open_project_edj(path);
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/

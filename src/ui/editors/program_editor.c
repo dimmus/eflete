@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -23,6 +23,13 @@
 struct _Program_Editor
 {
    Evas_Object *mwin;
+   Live_View *live;
+   struct {
+      Evas_Object *play;
+      Evas_Object *reset;
+      Evas_Object *cycle;
+      Evas_Object *slider;
+   } program_controls;
    Evas_Object *gl_progs;
    Elm_Object_Item *sel;
    struct {
@@ -59,9 +66,21 @@ struct _Program_Editor
      Evas_Object *afters;
      Edje_Action_Type act_type;
      Edje_Tween_Mode trans_type;
+     Evas_Object *program_area_layout;
      Evas_Object *prop_scroller;
      Evas_Object *prop_box;
    } prop_view;
+   struct {
+     Ecore_Timer *timer;
+     double last_callback_time;
+     double program_time;
+     double start_delay;
+     double total_time;
+     Eina_Bool is_played : 1;
+     Eina_Bool is_paused : 1;
+     Eina_Bool is_in_seek : 1;
+     Eina_Bool is_cycled : 1;
+   } playback;
 };
 
 static const char *transition_type[] = {
@@ -95,7 +114,7 @@ static const char *action_type[] = {N_("NONE"),
                                     N_("SOUND_TONE")};
 
 typedef struct _Program_Editor Program_Editor;
-static Elm_Genlist_Item_Class *_itc_prog;
+static Elm_Genlist_Item_Class *_itc_prog, *_itc_prog_after;
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = EDITORS_BANNED_SYMBOLS
@@ -107,6 +126,7 @@ static Evas_Object *
 _prop_item_program_target_add(Evas_Object *parent, Program_Editor *prog_edit, const char *tooltip);
 
 #define CALLBACK_KEY "callback.key"
+#define LITTLE_TIME 0.0005
 
 #define prop prog_edit->prop_view
 #define action prog_edit->prop_view.action
@@ -188,6 +208,171 @@ ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
 ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
 
+static void
+_object_state_reset(Program_Editor *prog_edit)
+{
+   Part *part;
+
+   edje_edit_program_stop_all(prog_edit->live->object);
+
+   EINA_INLIST_FOREACH(prop.style->parts, part)
+     edje_edit_part_selected_state_set(prog_edit->live->object,
+                                       part->name,
+                                       part->curr_state,
+                                       part->curr_state_value);
+}
+
+static Eina_Bool
+_timer_cb(void *data)
+{
+   Program_Editor *prog_edit = data;
+
+   double pos;
+   double time = ecore_loop_time_get();
+   double transition_time = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
+   double delta = time - prog_edit->playback.last_callback_time;
+   prog_edit->playback.last_callback_time = time;
+   if (prog_edit->playback.is_in_seek) return prog_edit->playback.is_played;
+
+   prog_edit->playback.program_time += delta;
+   if (prog_edit->playback.program_time > prog_edit->playback.total_time)
+     {
+        if (!prog_edit->playback.is_cycled)
+          {
+             prog_edit->playback.is_played = false;
+             elm_object_text_set(prog_edit->program_controls.play, _("Play"));
+             prog_edit->playback.program_time = prog_edit->playback.total_time;
+          }
+        else
+          {
+             prog_edit->playback.program_time = 0;
+             _object_state_reset(prog_edit);
+          }
+     }
+   pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) /
+              (prog_edit->playback.total_time - prog_edit->playback.start_delay);
+   if (transition_time == 0) pos = pos > 0;
+   elm_slider_value_set(prog_edit->program_controls.slider, prog_edit->playback.program_time);
+
+   edje_edit_program_transition_state_set(prog_edit->live->object, prop.program, pos);
+
+   return prog_edit->playback.is_played;
+}
+
+static void
+_program_reset(Program_Editor *prog_edit)
+{
+   _object_state_reset(prog_edit);
+   prog_edit->playback.program_time = 0;
+   elm_slider_value_set(prog_edit->program_controls.slider, 0);
+   prog_edit->playback.is_played = false;
+   prog_edit->playback.is_paused = false;
+   ecore_timer_del(prog_edit->playback.timer);
+   prog_edit->playback.timer = NULL;
+   prog_edit->playback.start_delay = edje_edit_program_in_from_get(prop.style->obj, prop.program);
+   double transition_time = edje_edit_program_transition_time_get(prop.style->obj, prop.program);
+   prog_edit->playback.total_time = prog_edit->playback.start_delay + transition_time;
+   prog_edit->playback.last_callback_time = ecore_loop_time_get();
+   if (transition_time == 0)
+     elm_slider_min_max_set(prog_edit->program_controls.slider, 0.0, prog_edit->playback.total_time + LITTLE_TIME);
+   else
+     elm_slider_min_max_set(prog_edit->program_controls.slider, 0.0, prog_edit->playback.total_time);
+   elm_object_text_set(prog_edit->program_controls.play, _("Play"));
+}
+
+static void
+_on_program_reset(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   _program_reset(data);
+}
+
+static void
+_on_object_load(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *em __UNUSED__,
+                const char *src __UNUSED__)
+{
+   _object_state_reset(data);
+}
+
+static void
+_on_program_play(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+
+   if (!prog_edit->playback.is_played)
+     {
+        if (!prog_edit->playback.is_paused)
+          _program_reset(prog_edit);
+        prog_edit->playback.is_played = true;
+        prog_edit->playback.is_paused = false;
+        if (!prog_edit->playback.timer)
+          prog_edit->playback.timer = ecore_timer_add(1.0/60.0, _timer_cb, prog_edit);
+        elm_object_text_set(prog_edit->program_controls.play, _("Pause"));
+     }
+   else
+     {
+        ecore_timer_del(prog_edit->playback.timer);
+        prog_edit->playback.timer = NULL;
+        prog_edit->playback.is_played = false;
+        prog_edit->playback.is_paused = true;
+        elm_object_text_set(prog_edit->program_controls.play, _("Play"));
+     }
+}
+
+static void
+_on_program_cycle(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+
+   prog_edit->playback.is_cycled = !prog_edit->playback.is_cycled;
+   if (prog_edit->playback.is_cycled)
+      elm_object_text_set(prog_edit->program_controls.cycle, _("Cycled"));
+   else
+      elm_object_text_set(prog_edit->program_controls.cycle, _("Not cycled"));
+}
+
+static void
+_slider_seek_start_cb(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+   prog_edit->playback.is_in_seek = true;
+}
+
+static void
+_slider_seek_stop_cb(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+   prog_edit->playback.is_in_seek = false;
+}
+
+static void
+_slider_changed_cb(void *data,
+                   Evas_Object *obj,
+                   void *event_info __UNUSED__)
+{
+   double pos, transition_time;
+   Program_Editor *prog_edit = data;
+
+   prog_edit->playback.program_time = elm_slider_value_get(obj);
+   transition_time = prog_edit->playback.total_time - prog_edit->playback.start_delay;
+   if (transition_time == 0)
+     pos = prog_edit->playback.program_time > prog_edit->playback.start_delay;
+   else
+     pos = (prog_edit->playback.program_time - prog_edit->playback.start_delay) / transition_time;
+   edje_edit_program_transition_state_set(prog_edit->live->object, prop.program, pos);
+}
+
 static int
 _sort_cb(const void *d1, const void *d2)
 {
@@ -256,6 +441,7 @@ _on_in_from_change(void *data,
                          Evas_Object *obj,
                          void *ei __UNUSED__)
 {
+   Eina_Bool was_playing;
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value = elm_entry_entry_get(obj);
    Eina_Bool res = edje_edit_program_in_from_set(prop.style->obj, prop.program,
@@ -265,6 +451,10 @@ _on_in_from_change(void *data,
         NOTIFY_WARNING(_("The entered data is not valid!"))
         return;
      }
+
+   was_playing = prog_edit->playback.is_played;
+   _program_reset(prog_edit);
+   if (was_playing) _on_program_play(prog_edit, NULL, NULL);
 }
 
 static void
@@ -585,12 +775,66 @@ _on_combobox_trans_sel(void *data,
 }
 
 static void
+_cancel_cb(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = false;
+   ecore_main_loop_quit();
+}
+
+static void
+_continue_cb(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = true;
+   ecore_main_loop_quit();
+}
+
+static void
 _on_combobox_action_sel(void *data,
                         Evas_Object *obj __UNUSED__,
                         void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    Ewe_Combobox_Item *combitem = ei;
+   Eina_List *targets_list;
+   Eina_Bool result = false;
+   Evas_Object *popup, *label, *btn;
+
+   targets_list = edje_edit_program_targets_get(prop.style->obj, prop.program);
+   if (targets_list)
+     {
+        edje_edit_string_list_free(targets_list);
+
+        popup = elm_popup_add(prog_edit->mwin);
+        elm_object_style_set(popup, "eflete");
+        elm_object_part_text_set(popup, "title,text", _("Warning"));
+        LABEL_ADD(popup, label, _("This program has targets. If you change action"
+                                  "type all target would be deleted"));
+        elm_object_content_set(popup, label);
+        BUTTON_ADD(popup, btn, _("Continue"));
+        evas_object_smart_callback_add(btn, "clicked", _continue_cb, &result);
+        elm_object_part_content_set(popup, "button1", btn);
+        BUTTON_ADD(popup, btn, _("Cancel"));
+        evas_object_smart_callback_add(btn, "clicked", _cancel_cb, &result);
+        elm_object_part_content_set(popup, "button2", btn);
+        evas_object_show(popup);
+
+        ecore_main_loop_begin();
+
+        evas_object_del(popup);
+
+        if (!result)
+          {
+             ewe_combobox_select_item_set(action.combobox, (int)prop.act_type);
+             return;
+          }
+     }
+
    ewe_entry_entry_set(action.entry1, "");
    ewe_entry_entry_set(action.entry2, "");
 
@@ -614,15 +858,24 @@ _on_combobox_action_sel(void *data,
 
 static void
 _on_transition_time_active(void *data,
-                 Evas_Object *obj,
-                 void *ei __UNUSED__)
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
 {
+   Eina_Bool was_playing;
    Program_Editor *prog_edit = (Program_Editor*)data;
    const char *value;
    value = elm_entry_entry_get(obj);
-   if (!edje_edit_program_transition_time_set(prop.style->obj, prop.program,
-                                              atof(value)))
-     NOTIFY_WARNING(_("The entered data is not valid!"));
+   Eina_Bool res = edje_edit_program_transition_time_set(prop.style->obj,
+                                                         prop.program, atof(value));
+   if (!res)
+     {
+        NOTIFY_WARNING(_("The entered data is not valid!"));
+        return;
+     }
+
+   was_playing = prog_edit->playback.is_played;
+   _program_reset(prog_edit);
+   if (was_playing) _on_program_play(prog_edit, NULL, NULL);
 }
 
 static void
@@ -1162,7 +1415,7 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
    EINA_LIST_FOREACH(targets_list, l, target_name)
      _target_item_add(prog_edit, target_name);
    eina_list_free(childs);
-   eina_list_free(targets_list);
+   edje_edit_string_list_free(targets_list);
 }
 
 static void
@@ -1266,6 +1519,7 @@ _prop_progs_update(Program_Editor *prog_edit)
    _prop_item_program_in_update(prog_edit);
    _prop_item_program_transition_update(prog_edit);
    _prop_item_program_after_update(prog_edit);
+   _program_reset(prog_edit);
 }
 
 static void
@@ -1274,11 +1528,48 @@ _on_gen_prog_sel(void *data,
                  void *ei)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
-   Elm_Object_Item *glit = (Elm_Object_Item *)ei;
+   Elm_Object_Item *glit = (Elm_Object_Item *)ei, *it;
+   Eina_List *queue = NULL;
+   Eina_List *prog_afters = NULL, *l;
+   Eina_List *afters = NULL;
+   Eina_Stringshare *program;
 
    prog_edit->sel = glit;
-   Eina_Stringshare *program = elm_object_item_data_get(glit);
+   program = elm_object_item_data_get(glit);
    prop.program = program;
+
+   queue = eina_list_append(queue, eina_stringshare_add(program));
+   while (queue)
+     {
+        program = eina_list_data_get(queue);
+        queue = eina_list_remove_list(queue, queue);
+
+        if (!eina_list_data_find_list(afters, program))
+          {
+             afters = eina_list_append(afters, program);
+
+             prog_afters = edje_edit_program_afters_get(prop.style->obj, program);
+             EINA_LIST_FOREACH(prog_afters, l, program)
+               queue = eina_list_append(queue, eina_stringshare_add(program));
+             edje_edit_string_list_free(prog_afters);
+          }
+        else
+          eina_stringshare_del(program);
+     }
+
+   it = elm_genlist_first_item_get(prog_edit->gl_progs);
+   while (it)
+     {
+        program = eina_stringshare_add(elm_object_item_data_get(it));
+        if (eina_list_data_find(afters, program))
+          elm_genlist_item_item_class_update(it, _itc_prog_after);
+        else
+          elm_genlist_item_item_class_update(it, _itc_prog);
+        eina_stringshare_del(program);
+        it = elm_genlist_item_next_get(it);
+     }
+   EINA_LIST_FREE(afters, program)
+     eina_stringshare_del(program);
    _prop_progs_update(prog_edit);
 }
 
@@ -1312,6 +1603,17 @@ _gl_progs_add(Program_Editor *prog_edit)
         _itc_prog->func.del = _item_prog_del;
      }
 
+   if (!_itc_prog_after)
+     {
+        _itc_prog_after = elm_genlist_item_class_new();
+        _itc_prog_after->item_style = "eflete/program_after";
+        _itc_prog_after->func.text_get = _item_prog_label_get;
+        _itc_prog_after->func.content_get = NULL;
+        _itc_prog_after->func.state_get = NULL;
+        _itc_prog_after->func.del = _item_prog_del;
+     }
+
+
    gl_progs = elm_genlist_add(prog_edit->mwin);
    elm_object_style_set(gl_progs, DEFAULT_STYLE);
    evas_object_size_hint_align_set(gl_progs, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1342,11 +1644,12 @@ _gl_progs_add(Program_Editor *prog_edit)
 
 static void
 _on_program_editor_close(void *data,
-                        Evas *e __UNUSED__,
-                        Evas_Object *obj __UNUSED__,
-                        void *event_info __UNUSED__)
+                         Evas *e __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info __UNUSED__)
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
+   live_view_free(prog_edit->live);
    free(prog_edit);
 }
 
@@ -1378,6 +1681,7 @@ _on_add_popup_bt_add(void *data,
                       void *ei __UNUSED__)
 {
    Elm_Object_Item *glit_prog = NULL;
+   App_Data *ap = app_data_get();
    Program_Editor *prog_edit = (Program_Editor*)data;
    Eina_Stringshare *name = elm_entry_entry_get(prog_edit->popup.entry);
 
@@ -1398,6 +1702,10 @@ _on_add_popup_bt_add(void *data,
    evas_object_del(prog_edit->popup.popup);
    prog_edit->popup.popup = NULL;
    prog_edit->popup.entry = NULL;
+
+   live_view_widget_style_set(prog_edit->live, ap->project, prop.style);
+   edje_object_signal_callback_add(prog_edit->live->object, "show", "",
+                                   _on_object_load, prog_edit);
 }
 
 static void
@@ -1484,6 +1792,15 @@ _on_bt_prog_add(void *data,
 }
 
 static void
+_on_bt_mode_change(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   // Program_Editor *prog_edit = (Program_Editor*)data;
+   /* TODO: add switch between edit and sequnce modes */
+}
+
+static void
 _on_mwin_del(void * data,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
@@ -1497,9 +1814,12 @@ Evas_Object *
 program_editor_window_add(Style *style)
 {
    Evas_Object *window_layout;
+   Evas_Object *top_layout;
+   Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
-   Evas_Object *bt, *program_list_box, *button_box;
+   Evas_Object *icon;
+   Evas_Object *bt, *sl, *program_list_box, *button_box;
    Program_Editor *prog_edit = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
@@ -1515,12 +1835,62 @@ program_editor_window_add(Style *style)
    prop.style = style;
    prog_edit->mwin = mw_add(NULL, NULL);
    mw_title_set(prog_edit->mwin, _("Program editor"));
-   evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_FREE,
+   evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_DEL,
                                   _on_program_editor_close, prog_edit);
 
    window_layout = elm_layout_add(prog_edit->mwin);
    elm_layout_file_set(window_layout, EFLETE_EDJ, "eflete/editor/default");
    elm_win_inwin_content_set(prog_edit->mwin, window_layout);
+
+   panes = elm_panes_add(window_layout);
+   elm_object_style_set(panes, DEFAULT_STYLE);
+   evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panes_horizontal_set(panes, true);
+   evas_object_show(panes);
+
+   prog_edit->live = live_view_add(window_layout, true);
+   live_view_widget_style_set(prog_edit->live, ap->project, style);
+   edje_object_signal_callback_add(prog_edit->live->object, "show", "",
+                                   _on_object_load, prog_edit);
+
+   top_layout = elm_layout_add(window_layout);
+   elm_layout_file_set(top_layout, EFLETE_EDJ, "eflete/program_editor/live_view");
+   elm_layout_content_set(top_layout, "swallow.content", prog_edit->live->layout);
+   evas_object_show(top_layout);
+
+   BUTTON_ADD(top_layout, bt, _("Play"));
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _on_program_play, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.button.play", bt);
+   prog_edit->program_controls.play = bt;
+
+   BUTTON_ADD(top_layout, bt, _("Reset"));
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _on_program_reset, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.button.reset", bt);
+   prog_edit->program_controls.reset = bt;
+
+   BUTTON_ADD(top_layout, bt, _("Cycled"));
+   evas_object_size_hint_weight_set(bt, 0.0, 0.0);
+   evas_object_smart_callback_add(bt, "clicked", _on_program_cycle, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.button.cycled", bt);
+   prog_edit->program_controls.cycle = bt;
+
+   prog_edit->playback.is_cycled = true;
+
+   sl = elm_slider_add(top_layout);
+   elm_slider_indicator_format_set(sl, "%1.2f");
+   elm_slider_min_max_set(sl, 0.0, 1.0);
+   elm_slider_indicator_show_set(sl, true);
+   evas_object_size_hint_align_set(sl, EVAS_HINT_FILL, 0.5);
+   evas_object_size_hint_weight_set(sl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_smart_callback_add(sl, "changed", _slider_changed_cb, prog_edit);
+   evas_object_smart_callback_add(sl, "slider,drag,start", _slider_seek_start_cb, prog_edit);
+   evas_object_smart_callback_add(sl, "slider,drag,stop", _slider_seek_stop_cb, prog_edit);
+   elm_layout_content_set(top_layout, "swallow.slider", sl);
+   evas_object_show(sl);
+   prog_edit->program_controls.slider = sl;
 
    bottom_panes = elm_panes_add(window_layout);
    elm_object_style_set(bottom_panes, DEFAULT_STYLE);
@@ -1551,8 +1921,21 @@ program_editor_window_add(Style *style)
    elm_box_pack_end(program_list_box, bt);
    elm_object_part_content_set(bottom_panes, "left", program_list_box);
 
-   SCROLLER_ADD(bottom_panes, scroller);
-   elm_object_part_content_set(bottom_panes, "right", scroller);
+   prop.program_area_layout = elm_layout_add(bottom_panes);
+   elm_layout_file_set(prop.program_area_layout, EFLETE_EDJ, "eflete/program_editor/program_area");
+   elm_object_part_content_set(bottom_panes, "right", prop.program_area_layout);
+   evas_object_show(prop.program_area_layout);
+
+   BUTTON_ADD(prop.program_area_layout, bt, "");
+   elm_object_part_content_set(prop.program_area_layout, "swallow.button", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, ap);
+   ICON_ADD(bt, icon, false, "icon-back");
+   elm_layout_content_set(bt, "icon", icon);
+   elm_object_style_set(bt, "eflete/simple");
+
+   SCROLLER_ADD(prop.program_area_layout, scroller);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_object_part_content_set(prop.program_area_layout, "swallow.content", scroller);
    prop.prop_scroller = scroller;
 
    BOX_ADD(window_layout, button_box, true, false);
@@ -1571,7 +1954,9 @@ program_editor_window_add(Style *style)
                                   prog_edit->mwin);
    elm_box_pack_end(button_box, bt);
 
-   elm_object_part_content_set(window_layout, "eflete.swallow.content", bottom_panes);
+   elm_object_part_content_set(panes, "top", top_layout);
+   elm_object_part_content_set(panes, "bottom", bottom_panes);
+   elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
    ui_menu_locked_set(ap->menu_hash, true);

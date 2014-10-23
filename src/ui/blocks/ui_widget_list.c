@@ -1,20 +1,21 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with this program; If not, see www.gnu.org/licenses/lgpl.html.
-*/
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 
 #include "ui_widget_list.h"
 #include "widget_manager.h"
@@ -284,18 +285,18 @@ _unset_cur_style(void *data,
 }
 
 static void
-_add_style_unpress(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_add_style_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
    evas_object_smart_callback_call(block, "wl,style,add", NULL);
 }
 
 static void
-_del_style_unpress(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
+_del_style_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
 {
    Evas_Object *block =  elm_object_parent_widget_get(evas_object_data_get((Evas_Object *)data, TABS_DATA_KEY));
    evas_object_smart_callback_call(block, "wl,style,del", NULL);
@@ -592,7 +593,7 @@ _on_widget_clicked_double(void *data,
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "unpressed", _del_style_unpress, nf);
+   evas_object_smart_callback_add (button, "clicked", _del_style_cb, nf);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 
@@ -600,7 +601,7 @@ _on_widget_clicked_double(void *data,
    ICON_ADD(button, _icon, true, "icon-add");
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
-   evas_object_smart_callback_add (button, "unpressed", _add_style_unpress, obj);
+   evas_object_smart_callback_add (button, "clicked", _add_style_cb, obj);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
    evas_object_show(gl_class);
@@ -918,7 +919,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    wm_widget_list_objects_load(widget_list,
                                evas_object_evas_get(gl_widgets),
-                               project->swapfile);
+                               project->dev);
    EINA_INLIST_FOREACH(widget_list, _widget)
      {
         eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget,
@@ -929,7 +930,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
 
    wm_layouts_list_objects_load(project->layouts,
                                evas_object_evas_get(gl_widgets),
-                               project->swapfile);
+                               project->dev);
 
    EINA_INLIST_FOREACH(project->layouts, _layout)
      {
@@ -1006,7 +1007,7 @@ ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
 
    next_eoi = elm_genlist_item_next_get(eoi);
    if (!next_eoi) next_eoi = elm_genlist_item_prev_get(eoi);
-   elm_genlist_item_selected_set(next_eoi, true);
+   if (next_eoi) elm_genlist_item_selected_set(next_eoi, true);
    elm_object_item_del(eoi);
 
    return true;

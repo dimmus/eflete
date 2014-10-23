@@ -65,11 +65,10 @@ static void log_decc_cb (time_t time __UNUSED__,
 EFLETE_TEST (pm_export_to_edc_test_p1)
 {
    elm_init(0,0);
-   char *name, *path, *dest;
-   name = "radio_test";
+   char *path, *dest;
    path = "./edj_build/pm_export_to_edc.edj";
    dest = "./edj_build/RADIO_DECC";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_export_to_edc(pro, dest, NULL) == EINA_TRUE, "something is wrong");
 
@@ -105,11 +104,10 @@ END_TEST
 EFLETE_TEST (pm_export_to_edc_test_p2)
 {
    elm_init(0,0);
-   char *name, *path, *dest;
-   name = "radio_test";
+   char *path, *dest;
    path = "./edj_build/pm_export_to_edc.edj";
    dest = "./edj_build/RADIO_DECC";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_export_to_edc(pro, dest, log_decc_cb) == EINA_TRUE, "something is wrong");
    ck_assert_msg(cb_flag == 1, "Wrong callback output");
@@ -148,10 +146,9 @@ END_TEST
 EFLETE_TEST (pm_export_to_edc_test_n)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_export_to_edc.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_export_to_edc(pro, NULL, log_decc_cb) == EINA_FALSE, "something is wrong");
    ck_assert_msg(pm_export_to_edc(NULL, NULL, log_decc_cb) == EINA_FALSE, "something is wrong");

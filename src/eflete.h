@@ -1,4 +1,4 @@
-/*I{
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- *}
  */
 
 #ifndef EFLETE_H
@@ -47,13 +46,6 @@
 #define PATH_MAX 4096
 #define BUFF_MAX 512
 
-#include <Eina.h>
-#include <Ecore.h>
-#include <Evas.h>
-#include <Ecore_File.h>
-#include <Eet.h>
-#include <Efreet.h>
-#include <Elementary.h>
 #include <Ewe.h>
 #include "alloc.h"
 #include "logger.h"

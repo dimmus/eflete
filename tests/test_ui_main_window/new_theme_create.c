@@ -34,7 +34,7 @@
  * @{
  * <tr>
  * <td>new_theme_create</td>
- * <td>new_theme_create_test_p1</td>
+ * <td>new_theme_create_test_p</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -53,7 +53,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(new_theme_create_test_p1)
+EFLETE_TEST(new_theme_create_test_p)
 {
    App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
@@ -76,7 +76,7 @@ END_TEST
  * @{
  * <tr>
  * <td>new_theme_create</td>
- * <td>new_theme_create_test_p2</td>
+ * <td>new_theme_create_test_n1</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -95,17 +95,17 @@ END_TEST
  * @}
  */
 
-EFLETE_TEST(new_theme_create_test_p2)
+EFLETE_TEST(new_theme_create_test_n1)
 {
    App_Data *app_data = NULL;
-   Eina_Bool ret = EINA_FALSE;
+   Eina_Bool ret;
 
    elm_init(0, 0);
    app_init();
    app_data = app_data_get();
 
    ret = new_theme_create(app_data);
-   ck_assert_msg(ret == EINA_TRUE, "Failed to create new theme and open project");
+   ck_assert_msg(ret == EINA_FALSE, "New theme is created without main window!");
 
    app_shutdown();
    elm_shutdown();
@@ -117,7 +117,7 @@ END_TEST
  * @{
  * <tr>
  * <td>new_theme_create</td>
- * <td>new_theme_create_test_n</td>
+ * <td>new_theme_create_test_n2</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -134,7 +134,7 @@ END_TEST
  * @}
  */
 
-EFLETE_TEST(new_theme_create_test_n)
+EFLETE_TEST(new_theme_create_test_n2)
 {
    elm_init(0, 0);
    Eina_Bool ret = EINA_FALSE;

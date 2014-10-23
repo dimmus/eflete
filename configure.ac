@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [3], [1])
+EFLETE_VERSION([0], [3], [99], [dev])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -69,6 +69,7 @@ PKG_CHECK_MODULES([EFL],
     eo >= efl_version
     ecore-imf >= efl_version
     ecore-con >= efl_version
+    ecore-audio >= efl_version
     eio >= efl_version
     eldbus >= efl_version
     efreet >= efl_version

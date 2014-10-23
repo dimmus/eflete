@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -614,7 +614,7 @@ container_content_unset(Evas_Object *obj)
    CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
    ret = edje_object_part_swallow_get(sd->container, SWALLOW);
-   edje_object_part_unswallow(obj, ret);
+   edje_object_part_unswallow(sd->container, ret);
    return ret;
 }
 

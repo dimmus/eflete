@@ -76,7 +76,7 @@ EFLETE_TEST (ui_widget_list_part_selected_set_test_p)
    const char *edj_path = "./edj_build/ui_widget_list_part_selected_set.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", edj_path);
+   project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -138,7 +138,7 @@ EFLETE_TEST (ui_widget_list_part_selected_set_test_n1)
    const char *edj_path = "./edj_build/ui_widget_list_part_selected_set.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", edj_path);
+   project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -200,7 +200,7 @@ EFLETE_TEST (ui_widget_list_part_selected_set_test_n2)
    const char *edj_path = "./edj_build/ui_widget_list_part_selected_set.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", edj_path);
+   project = pm_open_project_edj( edj_path);
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/

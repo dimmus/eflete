@@ -23,6 +23,7 @@ ui/container/container.c \
 ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
+ui/editors/sound_editor.c \
 ui/editors/colorclass_editor.c \
 ui/editors/program_editor.c \
 ui/dialogs/compile_dialog.c \

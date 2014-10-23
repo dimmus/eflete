@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -48,6 +48,7 @@ ui_main_window_del(App_Data *ap)
      return false;
 
    eina_hash_free(ap->menu_hash);
+   ap->menu_hash = NULL;
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    if (ap->project)
@@ -130,6 +131,7 @@ ui_main_window_add(App_Data *ap)
 
    bg = elm_bg_add(ap->win);
    elm_win_resize_object_add(ap->win, bg);
+   evas_object_size_hint_min_set(bg, 1366, 768);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_focus_highlight_enabled_set(ap->win, false);
    evas_object_show(bg);

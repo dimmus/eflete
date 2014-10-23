@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -57,12 +57,23 @@ _on_text_check(void *data,
      edje_object_part_text_set(object, part_name, "");
 }
 
+static void
+_on_swallow_clean(const char *part_name, Evas_Object *object)
+{
+   Evas_Object *rect = NULL;
+
+   rect = edje_object_part_swallow_get(object, part_name);
+   edje_object_part_unswallow(object, rect);
+   evas_object_del(rect);
+}
+
 Evas_Object *
 layout_prog_edit_create(Evas_Object *parent)
 {
    Evas_Object *object = edje_edit_object_add(parent);
 
    evas_object_data_set(object, SWALLOW_FUNC, _on_swallow_check);
+   evas_object_data_set(object, SWALLOW_CLEAN_FUNC, _on_swallow_clean);
    evas_object_data_set(object, TEXT_FUNC, _on_text_check);
 
    return object;

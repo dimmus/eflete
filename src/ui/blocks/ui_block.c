@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -61,6 +61,19 @@ ui_block_title_visible(Evas_Object *block, Eina_Bool vis)
      }
    if (vis) elm_object_signal_emit(block, "title,show", "eflete");
    else elm_object_signal_emit(block, "title,hide", "eflete");
+   return true;
+}
+
+Eina_Bool
+ui_block_content_visible(Evas_Object *block, Eina_Bool vis)
+{
+   if (!block)
+     {
+        ERR("Could not show/hide content, because a block is NULL.");
+        return false;
+     }
+   if (vis) elm_object_signal_emit(block, "content,show", "eflete");
+   else elm_object_signal_emit(block, "content,hide", "eflete");
    return true;
 }
 

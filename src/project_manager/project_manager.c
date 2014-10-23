@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -34,6 +34,7 @@ _on_copy_done_cb(void *data,
    ecore_main_loop_quit();
 }
 
+/*TODO: should be reorganizeted to save 'realese' project */
 static void
 _on_copy_done_save_as_cb(void *data,
                          Eio_File *handler __UNUSED__)
@@ -42,7 +43,11 @@ _on_copy_done_save_as_cb(void *data,
    if (project->edj)
      free(project->edj);
    project->edj = strdup(dst_path);
-   if (project->name) free(project->name);
+   if (project->name)
+     {
+        eina_stringshare_del(project->name);
+        project->name = NULL;
+     }
    GET_NAME_FROM_PATH(project->name, project->edj);
    DBG("Copy file '%s' is finished!", project->edj);
    dst_path = NULL;
@@ -67,13 +72,13 @@ _on_unlink_done_cb(void *data,
                    Eio_File *handler __UNUSED__)
 {
    Project *project = (Project *)data;
-   if (project->edc) free(project->edc);
+
    if (project->edj) free(project->edj);
-   if (project->image_directory) free(project->image_directory);
-   if (project->font_directory) free(project->font_directory);
-   if (project->sound_directory) free(project->sound_directory);
    INFO ("Closed project: %s", project->name);
-   free(project->name);
+   eina_stringshare_del(project->name);
+   eina_stringshare_del(project->dev);
+   project->name = NULL;
+   project->dev = NULL;
    wm_widget_list_free(project->widgets);
 
    free(project);
@@ -94,82 +99,41 @@ _on_unlink_error_cb(void *data,
 }
 
 static Project *
-_pm_project_add(const char *name,
-               const char *path,
-               const char *id, /* image directory */
-               const char *fd, /* font directory */
-               const char *sd  /* sound directory */)
+_pm_project_add(const char *path)
 {
+   Eet_File *ef;
    Project *pro;
-   char *tmp = NULL;
-   int len;
+   char *name;
+   char *dir_name;
 
-   if (!name)
+   ef = eet_open(path, EET_FILE_MODE_READ);
+   if (!ef)
      {
-        ERR("Project name is NULL");
+        ERR("File [%s] can not be opened.", path);
+        eet_close(ef);
         return NULL;
      }
-   if (!path)
-     {
-        ERR("Path is NULL");
-        return NULL;
-     }
-   if (!ecore_file_exists(path)) return NULL;
+   eet_close(ef);
 
    pro = mem_calloc(1, sizeof(Project));
-   pro->name = strdup(name);
+
+   name = edje_file_data_get(path, "theme/name");
+   if (!name)
+     GET_NAME_FROM_PATH(name, path);
+   pro->name = eina_stringshare_add(name);
+   free(name);
    DBG ("Project name: '%s'", pro->name);
-
-   /* set path to edc */
-   pro->edc = strdup(path);
-
-   len = strlen(pro->edc);
-   if (len > 4) // 4 == strlen(".edj")
-     {
-        tmp = pro->edc + len - 4;
-        if (!strcmp(tmp, ".edj")) strncpy(tmp, ".edc", 4);
-        if (strcmp(tmp, ".edc"))
-          {
-             free(pro->name);
-             free(pro->edc);
-             free(pro);
-             return NULL;
-          }
-     }
-   else
-     {
-        free(pro->name);
-        free(pro->edc);
-        free(pro);
-        return NULL;
-     }
 
    /* set path to edj */
    pro->edj = strdup(path);
 
-   tmp = pro->edj + len - 4;
-   if (!strcmp(tmp, ".edc")) strncpy(tmp, ".edj", 4);
-
-   DBG ("Path to edc-file: '%s'", pro->edc);
    DBG ("Path to edj-file: '%s'", pro->edj);
 
    /* set path to swap file */
-   pro->swapfile = mem_malloc((strlen(pro->edj) + 6) * sizeof(char));
-   strcpy(pro->swapfile, pro->edj);
-   strncat(pro->swapfile, ".swap", 5);
-   DBG ("Path to swap file: '%s'", pro->swapfile);
-
-   /* set path to image directory */
-   pro->image_directory = id ? strdup(id) : NULL;
-   DBG ("Path to image direcotory: '%s'", pro->image_directory);
-
-   /* set path to font directory */
-   pro->font_directory = fd ? strdup(fd) : NULL;
-   DBG("Path to font direcotory: '%s'", pro->font_directory);
-
-   /* set default path to sound directory */
-   pro->sound_directory = sd ? strdup(sd) : NULL;
-   DBG ("Path to sound direcotory: '%s'", pro->sound_directory);
+   dir_name = ecore_file_dir_get(pro->edj);
+   pro->dev = eina_stringshare_printf("%s/%s.dev", dir_name, pro->name);
+   DBG ("Path to swap file: '%s'", pro->dev);
+   free(dir_name);
 
    pro->close_request = false;
 
@@ -187,12 +151,11 @@ pm_export_to_edc(Project *project,
         return false;
      }
 
-   return !decompile(project->swapfile, edc_dir, log_cb);
+   return !decompile(project->dev, edc_dir, log_cb);
 }
 
 Project *
-pm_open_project_edj(const char *name,
-                    const char *path)
+pm_open_project_edj(const char *path)
 {
    Project *project;
 
@@ -203,21 +166,21 @@ pm_open_project_edj(const char *name,
      }
 
    INFO("Open project! Path to project: '%s'.", path);
-   project = _pm_project_add(name, path, NULL, NULL, NULL);
+   project = _pm_project_add(path);
 
    if (!project) return NULL;
 
    copy_success = false;
-   eio_file_copy(project->edj, project->swapfile, NULL,
-                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   eio_file_copy(project->edj, project->dev, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->dev);
    ecore_main_loop_begin();
    if (!copy_success)
      {
         _on_unlink_done_cb(project, NULL); /* TODO: separate pm_free from unlink callback */
         return NULL;
      }
-   project->widgets = wm_widget_list_new(project->swapfile);
-   project->layouts = wm_widget_list_layouts_load(project->swapfile);
+   project->widgets = wm_widget_list_new(project->dev);
+   project->layouts = wm_widget_list_layouts_load(project->dev);
    project->is_saved = true;
    INFO("Project '%s' is open!", project->name);
 
@@ -229,7 +192,7 @@ pm_project_close(Project *project)
 {
    if (!project) return false;
 
-   eio_file_unlink(project->swapfile, _on_unlink_done_cb,
+   eio_file_unlink(project->dev, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
    ecore_main_loop_begin();
 
@@ -241,8 +204,8 @@ pm_save_project_edj(Project *project)
 {
    if (!project) return false;
    copy_success = false;
-   eio_file_copy(project->swapfile, project->edj, NULL,
-                 _on_copy_done_cb, _on_copy_error_cb, project->swapfile);
+   eio_file_copy(project->dev, project->edj, NULL,
+                 _on_copy_done_cb, _on_copy_error_cb, project->dev);
    ecore_main_loop_begin();
    if (!copy_success) return false;
    project->is_saved = true;
@@ -257,7 +220,7 @@ pm_save_as_project_edj(Project *project, const char *path)
 
    dst_path = path;
    copy_success = false;
-   eio_file_copy(project->swapfile, path, NULL,
+   eio_file_copy(project->dev, path, NULL,
                  _on_copy_done_save_as_cb, _on_copy_error_cb, project);
    ecore_main_loop_begin();
    if (!copy_success) return false;

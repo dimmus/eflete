@@ -65,10 +65,10 @@ EFLETE_TEST (image_editor_file_choose_test_p)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
+   app->project = pm_open_project_edj("./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "radio.png") == EINA_TRUE,
@@ -116,10 +116,10 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
+   app->project = pm_open_project_edj("./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "not_correct_image_name") == EINA_FALSE,
@@ -167,10 +167,10 @@ EFLETE_TEST (image_editor_file_choose_test_n2)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
+   app->project = pm_open_project_edj("./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(NULL, "not_correct_image_name") == EINA_FALSE,
@@ -218,10 +218,10 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/image_editor_file_choose.edj");
+   app->project = pm_open_project_edj("./edj_build/image_editor_file_choose.edj");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->swapfile);
+                               app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, NULL) == EINA_FALSE, "Selected image that not exist");

@@ -79,7 +79,7 @@ EFLETE_TEST (part_dialog_add_test_p)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("UTC", edj_path);
+   app->project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(app->win);
    ui_widget_list_data_set(widget_list, app->project);
    ui_block_widget_list_set(app, widget_list);
@@ -145,7 +145,7 @@ EFLETE_TEST (part_dialog_add_test_n1)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("UTC", edj_path);
+   app->project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(app->win);
    ui_widget_list_data_set(widget_list, app->project);
    /********Choosing widget, so widget list contain parts********/
@@ -211,7 +211,7 @@ EFLETE_TEST (part_dialog_add_test_n2)
    app_init();
    app = app_data_get();
    app->win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   app->project = pm_open_project_edj("UTC", edj_path);
+   app->project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(app->win);
    ui_widget_list_data_set(widget_list, app->project);
    ui_block_widget_list_set(app, widget_list);

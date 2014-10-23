@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -45,19 +45,11 @@
    if ((b < 0) || (b > 255)) return false; \
    if ((a < 0) || (a > 255)) return false; \
 
-/**
-  * TODO: add some comments.
-  */
-enum _Handler_Corner {
-     RB, RT, LB, LT
-};
-
-typedef enum _Handler_Corner Handler_Corner;
 typedef struct _Highlight Highlight;
 
 struct _Handler {
    Evas_Object *border; /* border layout for showing handler's border image. */
-   Handler_Corner descr; /* type of the handler (which corner). */
+   Handler_Type descr; /* type of the handler (which corner). */
    Highlight *highlight;
    int x, y, w, h, dx, dy;
 };
@@ -68,11 +60,13 @@ struct _Highlight
    Evas_Object_Smart_Clipped_Data data;
    Evas_Object *border; /* border layout for showing handler's border image. */
    Evas_Object *parent; /* need to know parent object for knowing about bounds */
-   Evas_Object *object; /* ojbect that is being highlighted. */
+   Evas_Object *object; /* object that is being highlighted. */
    Handler *handler_RB;
    Handler *handler_RT;
    Handler *handler_LB;
    Handler *handler_LT;
+   Handler *handler_MIDDLE;
+   Eina_Bool middle_show; /* its TRUE, when middle is have to be shown. */
    Eina_Bool clicked; /* its TRUE, when user click his mouse on any handler. */
    Eina_Bool outside; /* its TRUE, when highlight in small mode (handlers are
                          outside of the highlighted part) */
@@ -135,6 +129,8 @@ _handler_size_recalc(Highlight *highlight)
         (highlight->handler_LB)->h = SIZE;
         (highlight->handler_LT)->w = SIZE;
         (highlight->handler_LT)->h = SIZE;
+        (highlight->handler_MIDDLE)->w = w;
+        (highlight->handler_MIDDLE)->h = h;
      }
    else
      {
@@ -151,6 +147,8 @@ _handler_size_recalc(Highlight *highlight)
         (highlight->handler_LB)->h = newsizeH;
         (highlight->handler_LT)->w = newsizeW;
         (highlight->handler_LT)->h = newsizeH;
+        (highlight->handler_MIDDLE)->w = w - newsizeW * 2;
+        (highlight->handler_MIDDLE)->h = h - newsizeH * 2;
      }
 }
 /*
@@ -187,6 +185,9 @@ _handler_pos_recalc(Highlight *highlight)
 
         highlight->handler_LT->x = x - highlight->handler_LB->w;
         highlight->handler_LT->y = y - highlight->handler_RT->h;
+
+        highlight->handler_MIDDLE->x = x;
+        highlight->handler_MIDDLE->y = y;
      }
    else
      {
@@ -201,12 +202,16 @@ _handler_pos_recalc(Highlight *highlight)
 
         highlight->handler_LT->x = x;
         highlight->handler_LT->y = y;
+
+        highlight->handler_MIDDLE->x = x + highlight->handler_LT->w;
+        highlight->handler_MIDDLE->y = y + highlight->handler_LT->h;
      }
 
    _apply_changes(highlight->handler_RB);
    _apply_changes(highlight->handler_RT);
    _apply_changes(highlight->handler_LB);
    _apply_changes(highlight->handler_LT);
+   _apply_changes(highlight->handler_MIDDLE);
 }
 
 static void
@@ -370,10 +375,24 @@ _handler_move_cb(void *data,
                   ypos = y + h - 1;
                }
           }
+        else if (handler->descr == MIDDLE)
+          {
+             if ((!highlight->outside) && (highlight->mode != HIGHLIGHT_STATIC_HANDLERS))
+               {
+                  xpos = handler->x - highlight->handler_LT->w;
+                  ypos = handler->y - highlight->handler_LT->h;
+               }
+             else
+               {
+                  xpos = handler->x;
+                  ypos = handler->y;
+               }
+          }
         events->x = xpos;
         events->y = ypos;
         events->w = width;
         events->h = height;
+        events->descr = handler->descr;
 
         evas_object_smart_changed(handler->highlight->smart_object);
      }
@@ -416,6 +435,7 @@ _handler_mouse_in_cb(void *data,
    evas_object_hide(highlight->handler_RT->border);
    evas_object_hide(highlight->handler_LB->border);
    evas_object_hide(highlight->handler_LT->border);
+   evas_object_hide(highlight->handler_MIDDLE->border);
    evas_object_show(obj);
 }
 
@@ -438,6 +458,8 @@ _handler_mouse_out_cb(void *data,
    evas_object_show(highlight->handler_RT->border);
    evas_object_show(highlight->handler_LB->border);
    evas_object_show(highlight->handler_LT->border);
+   if (highlight->middle_show)
+     evas_object_show(highlight->handler_MIDDLE->border);
 }
 
 
@@ -445,7 +467,7 @@ _handler_mouse_out_cb(void *data,
 Handler *
 _handler_object_add(Evas_Object *parent,
                     Highlight *highlight,
-                    Handler_Corner descr,
+                    Handler_Type descr,
                     const char *style)
 {
    Handler *handler;
@@ -467,10 +489,13 @@ _handler_object_add(Evas_Object *parent,
    evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_UP,
                                   _handler_up_cb, handler);
 
-   evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_IN,
-                                  _handler_mouse_in_cb, highlight);
-   evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_OUT,
-                                  _handler_mouse_out_cb, highlight);
+   if (descr != MIDDLE)
+     {
+        evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_IN,
+                                       _handler_mouse_in_cb, highlight);
+        evas_object_event_callback_add(border, EVAS_CALLBACK_MOUSE_OUT,
+                                       _handler_mouse_out_cb, highlight);
+     }
    switch (descr)
      {
       case RB:
@@ -484,6 +509,9 @@ _handler_object_add(Evas_Object *parent,
          break;
       case LT:
          cursor_type_set(border, CURSOR_TOP_LEFT_CORNER);
+         break;
+      case MIDDLE:
+         cursor_type_set(border, CURSOR_FLEUR);
          break;
       default:
          break;
@@ -509,7 +537,7 @@ _smart_calc(Evas_Object *obj)
 
    if (highlight->clicked)
      evas_object_smart_callback_call(highlight->smart_object,
-                                     "hl,resize", highlight->events);
+                                     "hl,changed", highlight->events);
 }
 
 /* create and setup a new example smart object's internals */
@@ -528,10 +556,17 @@ _smart_add(Evas_Object *parent)
    priv->border = border;
    evas_object_smart_member_add(border, parent);
 
-   priv->handler_RB = _handler_object_add(parent, priv, RB, "eflete/highlight/handler_RB/default");
-   priv->handler_RT = _handler_object_add(parent, priv, RT, "eflete/highlight/handler_RT/default");
-   priv->handler_LB = _handler_object_add(parent, priv, LB, "eflete/highlight/handler_LB/default");
-   priv->handler_LT = _handler_object_add(parent, priv, LT, "eflete/highlight/handler_LT/default");
+   priv->handler_RB = _handler_object_add(parent, priv, RB,
+                                          "eflete/highlight/handler_RB/default");
+   priv->handler_RT = _handler_object_add(parent, priv, RT,
+                                          "eflete/highlight/handler_RT/default");
+   priv->handler_LB = _handler_object_add(parent, priv, LB,
+                                          "eflete/highlight/handler_LB/default");
+   priv->handler_LT = _handler_object_add(parent, priv, LT,
+                                          "eflete/highlight/handler_LT/default");
+   priv->handler_MIDDLE = _handler_object_add(parent, priv, MIDDLE,
+                                              "eflete/highlight/handler_MIDDLE/default");
+
    priv->outside = false;
    priv->clicked = false;
    priv->events = (Highlight_Events *)mem_calloc(1, sizeof(Highlight_Events));
@@ -550,17 +585,19 @@ _smart_del(Evas_Object *obj)
    evas_object_smart_member_del(highlight->handler_RT->border);
    evas_object_smart_member_del(highlight->handler_LB->border);
    evas_object_smart_member_del(highlight->handler_LT->border);
+   evas_object_smart_member_del(highlight->handler_MIDDLE->border);
 
    evas_object_del(highlight->border);
    evas_object_del(highlight->handler_RB->border);
    evas_object_del(highlight->handler_RT->border);
    evas_object_del(highlight->handler_LB->border);
-   evas_object_del(highlight->handler_LT->border);
+   evas_object_del(highlight->handler_MIDDLE->border);
 
    free(highlight->handler_RB);
    free(highlight->handler_RT);
    free(highlight->handler_LB);
    free(highlight->handler_LT);
+   free(highlight->handler_MIDDLE);
 
   _highlight_parent_sc->del(obj);
 }
@@ -578,6 +615,8 @@ _smart_show(Evas_Object *obj)
         evas_object_show(highlight->handler_RT->border);
         evas_object_show(highlight->handler_LB->border);
         evas_object_show(highlight->handler_LT->border);
+        if (highlight->middle_show)
+          evas_object_show(highlight->handler_MIDDLE->border);
      }
 
    _highlight_parent_sc->show(obj);
@@ -596,6 +635,7 @@ _smart_hide(Evas_Object *obj)
         evas_object_hide(highlight->handler_RT->border);
         evas_object_hide(highlight->handler_LB->border);
         evas_object_hide(highlight->handler_LT->border);
+        evas_object_hide(highlight->handler_MIDDLE->border);
      }
 
    _highlight_parent_sc->hide(obj);
@@ -633,6 +673,7 @@ _smart_color_set(Evas_Object *o, int r, int g, int b, int a)
    evas_object_color_set(highlight->handler_RT->border, r, g, b, a);
    evas_object_color_set(highlight->handler_LB->border, r, g, b, a);
    evas_object_color_set(highlight->handler_LT->border, r, g, b, a);
+   evas_object_color_set(highlight->handler_MIDDLE->border, r, g, b, a);
 }
 
 static void
@@ -671,6 +712,40 @@ highlight_add(Evas_Object *parent)
 }
 
 Eina_Bool
+highlight_handler_middle_show(Evas_Object *hl)
+{
+   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   if (highlight->handlers_disabled) return false;
+
+   highlight->middle_show = true;
+
+   /* If any of the handlers are hidden then probably mouse is corrently over
+      the one of them and all other handlers (including Middle one) should be
+      hidden aswell.
+      In case if mode of the highlight is STATIC then we don't care about
+      handler's visibility. */
+   if ((highlight->mode == HIGHLIGHT_STATIC_HANDLERS) ||
+       ((evas_object_visible_get(highlight->handler_RB->border)) &&
+        (evas_object_visible_get(highlight->handler_RT->border)) &&
+        (evas_object_visible_get(highlight->handler_LB->border)) &&
+        (evas_object_visible_get(highlight->handler_LT->border))))
+     evas_object_show(highlight->handler_MIDDLE->border);
+
+   return true;
+}
+
+Eina_Bool
+highlight_handler_middle_hide(Evas_Object *hl)
+{
+   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+
+   highlight->middle_show = false;
+   evas_object_hide(highlight->handler_MIDDLE->border);
+
+   return true;
+}
+
+Eina_Bool
 highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
 {
    if (!hl) return false;
@@ -683,6 +758,7 @@ highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
         evas_object_hide(highlight->handler_RT->border);
         evas_object_hide(highlight->handler_LB->border);
         evas_object_hide(highlight->handler_LT->border);
+        evas_object_hide(highlight->handler_MIDDLE->border);
      }
    else
      {
@@ -690,6 +766,8 @@ highlight_handler_disabled_set(Evas_Object *hl, Eina_Bool disabled)
         evas_object_show(highlight->handler_RT->border);
         evas_object_show(highlight->handler_LB->border);
         evas_object_show(highlight->handler_LT->border);
+        if (highlight->middle_show)
+          evas_object_show(highlight->handler_MIDDLE->border);
      }
    return true;
 }

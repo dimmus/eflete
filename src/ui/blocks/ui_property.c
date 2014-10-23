@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -74,6 +74,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *state;
+      Evas_Object *proxy_source;
       Evas_Object *visible;
       Evas_Object *min;
       Evas_Object *max;
@@ -243,7 +244,20 @@ ui_property_state_fill_set(Evas_Object *property);
 static void
 ui_property_state_fill_unset(Evas_Object *property);
 
+static void
+prop_item_state_text_update(Evas_Object *item, Prop_Data *pd);
+
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
+
+static void
+_on_spinner_mouse_wheel(void *data __UNUSED__,
+                        Evas *e __UNUSED__,
+                        Evas_Object *obj __UNUSED__,
+                        void *event_info)
+{
+   Evas_Event_Mouse_Wheel *mev = event_info;
+   mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+}
 
 static void
 _del_prop_data(void *data,
@@ -299,6 +313,7 @@ ui_property_add(Evas_Object *parent)
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
    evas_object_show(_bg);
    pd->visual = scroller;
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
 
@@ -433,7 +448,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    evas_object_show(property);
 
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
 
    pd->workspace = workspace;
    pd->style = style;
@@ -586,24 +601,75 @@ ui_property_style_unset(Evas_Object *property)
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
-   elm_scroller_policy_set(property, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_hide(property);
 }
 #undef pd_group
+
+static void
+_on_part_name_unfocus(void *data,
+                      Evas_Object *obj,
+                      void *ei __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+
+   const char *value = elm_entry_entry_get(obj);
+
+   if (strcmp(value, pd->part->name))
+     elm_entry_entry_set(obj, pd->part->name);
+}
+
+static void
+_on_part_name_change(void *data,
+                     Evas_Object *obj,
+                     void *ei __UNUSED__)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   int pos;
+   const char *value;
+
+   if (elm_entry_is_empty(obj)) return;
+
+   value = elm_entry_entry_get(obj);
+   if (!edje_edit_part_name_set(pd->style->obj, pd->part->name, value))
+     {
+        NOTIFY_INFO(5, "Wrong input value for name field");
+        return;
+     }
+
+   pm_project_changed(app_data_get()->project);
+   pd->part->name = value;
+   workspace_edit_object_recalc(pd->workspace);
+   pd->style->isModify = true;
+   pos = elm_entry_cursor_pos_get(obj);
+   evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part);
+   elm_object_focus_set(obj, true);
+   elm_entry_cursor_pos_set(obj, pos);
+}
+
+static Evas_Object *
+prop_item_part_name_add(Evas_Object *parent,
+                        Prop_Data *pd,
+                        const char *tooltip)
+{
+   Evas_Object *item, *entry;
+
+   ITEM_ADD(parent, item, _("name"), "eflete/property/item/default");
+   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop);
+   ewe_entry_entry_set(entry, pd->part->name);
+   elm_object_tooltip_text_set(entry, tooltip);
+   evas_object_smart_callback_add(entry, "changed,user", _on_part_name_change, pd);
+   evas_object_smart_callback_add(entry, "unfocused", _on_part_name_unfocus, pd);
+   elm_object_part_content_set(item, "elm.swallow.content", entry);
+   evas_object_data_set(item, ITEM1, entry);
+   return item;
+}
 
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
    ITEM_1CHEACK_PART_ADD(TEXT, SUB, VALUE) \
    ITEM_1CHEACK_PART_UPDATE(SUB, VALUE)
-
-#define ITEM_1ENTRY_PART_CREATE(TEXT, SUB, VALUE) \
-   ITEM_STRING_PART_CALLBACK(SUB, VALUE) \
-   ITEM_1ENTRY_PART_ADD(TEXT, SUB, VALUE) \
-   ITEM_1ENTRY_PART_UPDATE(SUB, VALUE)
-
-#define ITEM_1ENTRY_PART_NAME_CREATE(TEXT, SUB, VALUE) \
-   ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
-   ITEM_1ENTRY_PART_NAME_ADD(TEXT, SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
@@ -625,7 +691,6 @@ ui_property_style_unset(Evas_Object *property)
 #define ITEM_1COMBOBOX_PART_PROPERTY_CREATE ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE
 
 /* part property */
-ITEM_1ENTRY_PART_NAME_CREATE(_("name"), part, name)
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
@@ -654,12 +719,13 @@ ui_property_part_set(Evas_Object *property, Part *part)
    if ((!property) || (!part)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
 
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+
    pd->part = part;
 
    type = edje_edit_part_type_get(pd->style->obj, part->name);
    prop_box = elm_object_content_get(pd->visual);
 
-   elm_box_unpack(prop_box, pd->prop_part.frame);
    elm_box_unpack(prop_box, pd->prop_part_drag.frame);
 
    if (!pd_part.frame)
@@ -801,7 +867,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
               pd_part.cursor_mode = NULL;
               pd_part.multiline = NULL;
            }
-         elm_box_pack_after(prop_box, pd_part.frame, pd->prop_group.frame);
          evas_object_show(pd_part.frame);
      }
    if (!pd_part_drag.frame)
@@ -854,12 +919,28 @@ ui_property_part_unset(Evas_Object *property)
    if (!property) return;
    PROP_DATA_GET()
 
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    prop_box = elm_object_content_get(pd->visual);
-   evas_object_hide(pd->prop_part.frame);
-   evas_object_hide(pd->prop_part_drag.frame);
-   elm_box_unpack(prop_box, pd->prop_part.frame);
-   elm_box_unpack(prop_box, pd->prop_part_drag.frame);
-   elm_box_unpack(prop_box, pd->prop_state.frame);
+
+   if (pd->prop_part.frame)
+     {
+        elm_box_unpack(prop_box, pd->prop_part.frame);
+        evas_object_del(pd->prop_part.frame);
+        pd->prop_part.frame = NULL;
+     }
+   if (pd->prop_part_drag.frame)
+     {
+        elm_box_unpack(prop_box, pd->prop_part_drag.frame);
+        evas_object_del(pd->prop_part_drag.frame);
+        pd->prop_part_drag.frame = NULL;
+     }
+
+   if (pd->prop_state.frame)
+     {
+        elm_box_unpack(prop_box, pd->prop_state.frame);
+        evas_object_del(pd->prop_state.frame);
+        pd->prop_state.frame = NULL;
+     }
 
    ui_property_state_unset(property);
 }
@@ -908,6 +989,12 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE, TYPE) \
    ITEM_1COMBOBOX_STATE_PART_UPDATE(TEXT, SUB, VALUE, TYPE)
 
+#define ITEM_1COMBOBOX_STATE_PROXY_CREATE(TEXT, SUB, VALUE) \
+   ITEM_COMBOBOX_STATE_CALLBACK(-1, TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE)
+
+ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
 ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
 ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
@@ -949,6 +1036,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.state = prop_item_label_add(box, _("state"), state);
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
+        pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
+                                  _("Causes the part to use another part content as"
+                                  "the content of this part. Only work with PROXY part."));
         pd_state.min = prop_item_state_min_w_h_add(box, pd,
                           0.0, 9999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
@@ -996,6 +1086,15 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.aspect_pref);
         elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
+        if (type == EDJE_PART_TYPE_PROXY)
+          {
+            elm_box_pack_end(box, pd_state.proxy_source);
+          }
+        else
+          {
+             evas_object_hide(pd_state.proxy_source);
+             elm_box_unpack(box, pd_state.proxy_source);
+          }
         if (type == EDJE_PART_TYPE_SPACER)
           {
              evas_object_hide(pd_state.color);
@@ -1011,8 +1110,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
         box = elm_object_content_get(pd_state.frame);
         /* unpack item for part color, because we don't know whether it is necessary */
         elm_box_unpack(box, pd_state.color);
+        elm_box_unpack(box, pd_state.proxy_source);
         prop_item_label_update(pd_state.state, state);
         prop_item_state_visible_update(pd_state.visible, pd);
+
         prop_item_state_min_w_h_update(pd_state.min, pd, false);
         prop_item_state_max_w_h_update(pd_state.max, pd,false);
         prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
@@ -1020,6 +1121,13 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
+        if (type == EDJE_PART_TYPE_PROXY)
+          {
+            prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
+            evas_object_show(pd_state.proxy_source);
+            elm_box_pack_end(box, pd_state.proxy_source);
+          }
+        else evas_object_hide(pd_state.proxy_source);
         if (type != EDJE_PART_TYPE_SPACER)
           {
              prop_item_state_color_update(pd_state.color, pd);
@@ -1048,6 +1156,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    colorized_code = color_apply(pd->color_data, markup_code,
                                 strlen(markup_code), NULL, NULL);
    if (colorized_code) elm_object_text_set(pd->code, colorized_code);
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
 
    #undef pd_state
    return true;
@@ -1817,9 +1926,9 @@ _on_image_editor_done(void *data,
 
    if (strcmp(value, selected) == 0) return;
    ewe_entry_entry_set(image_entry, selected);
-   evas_object_smart_callback_call(image_entry, "activated", NULL);
+   evas_object_smart_callback_call(image_entry, "changed,user", NULL);
    ewe_entry_entry_set(border_entry, NULL);
-   evas_object_smart_callback_call(border_entry, "activated", NULL);
+   evas_object_smart_callback_call(border_entry, "changed,user", NULL);
 }
 
 static void
@@ -1899,7 +2008,7 @@ _add_tween_image(void *data,
 
    App_Data *ap = app_data_get();
 
-   img_edit = image_editor_window_add(ap->project, MULTIPLE);
+   img_edit = image_editor_window_add(ap->project, TWEENS);
    image_editor_callback_add(img_edit, _on_image_editor_tween_done, tween_list);
 
    return;
@@ -2032,7 +2141,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    BUTTON_ADD(tween_frame, button, NULL)
    ICON_ADD(button, icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, icon);
-   evas_object_smart_callback_add(button, "unpressed", _add_tween_image,
+   evas_object_smart_callback_add(button, "clicked", _add_tween_image,
                                   tween_list);
    elm_object_style_set(button, "eflete/simple");
    elm_object_part_content_set(tween_frame, "elm.swallow.add", button);

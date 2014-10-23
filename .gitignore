@@ -14,7 +14,7 @@ src/eflete
 *.dirstamp
 *.log
 *.trs
-*.swap
+*.dev
 *.eet
 tests/addpart_test
 tests/alloc_test

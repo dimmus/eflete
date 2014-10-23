@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -23,6 +23,7 @@
 #include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
+#include "sound_editor.h"
 #include "program_editor.h"
 #include "about_window.h"
 
@@ -221,6 +222,15 @@ _on_image_editor_menu(void *data,
 }
 
 static void
+_on_sound_editor_menu(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   sound_editor_window_add(ap->project, SOUND_EDITOR_SINGLE);
+}
+
+static void
 _on_ccl_viewer_menu(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *event_info __UNUSED__)
@@ -298,6 +308,7 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, NULL, NULL, _("Editors"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Styles"), _on_style_window_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Images"), _on_image_editor_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Sounds"), _on_sound_editor_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Colorclasses"), _on_ccl_viewer_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Programs"), _on_prog_editor_menu, ap, it);
    elm_object_item_disabled_set(it, true);
@@ -375,6 +386,7 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result = ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Styles"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Images"), flag) && result;
+   result = ui_menu_disable_set(menu_hash, _("Sounds"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Colorclasses"), flag) && result;
    return result;
 }

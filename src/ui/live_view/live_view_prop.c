@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -126,6 +126,7 @@ live_view_property_style_set(Evas_Object *property,
    if ((!property) || (!object) || (!style) || (!widget) || (!style->obj))
      return false;
    PROP_DATA_GET(false)
+   pd->style = style;
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_ON);
 
@@ -308,7 +309,7 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    elm_object_content_set(scroller, box);
 
    _bg = elm_bg_add(parent);
-   elm_bg_file_set(_bg, EFLETE_IMG_PATH"section-item-bg.png", NULL);
+   elm_bg_file_set(_bg, EFLETE_RESOURCES, "section-item-bg");
    elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
    evas_object_show(_bg);
    evas_object_show(scroller);
@@ -327,6 +328,8 @@ live_view_property_style_unset(Evas_Object *property)
    Evas_Object *prop_box, *item = NULL, *check = NULL, *button = NULL;
    Eina_List *part_list = NULL, *part = NULL;
    Eina_List *signal_list = NULL, *signal = NULL;
+   Edje_Part_Type part_type;
+   const char *part_name = NULL;
    const char *string = NULL;
 
    if (!property) return false;
@@ -346,12 +349,20 @@ live_view_property_style_unset(Evas_Object *property)
    EINA_LIST_FOREACH(part_list, part, item)
      {
         check = elm_object_part_content_unset(item, "info");
+        part_name = evas_object_data_get(check, PART_NAME);
+        part_type = edje_edit_part_type_get(pd->style->obj, part_name);
         evas_object_smart_callback_del_full(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
                                             pd->live_object);
 
-        string = evas_object_data_get(check, PART_NAME);
-        eina_stringshare_del(string);
+        if (part_type == EDJE_PART_TYPE_SWALLOW)
+          {
+             Swallow_Clean_Func clean = (Swallow_Clean_Func)evas_object_data_get(pd->live_object,
+                                                                                 SWALLOW_CLEAN_FUNC);
+             if (clean) clean(part_name, pd->live_object);
+          }
+
+        eina_stringshare_del(part_name);
         evas_object_data_del(check, PART_NAME);
 
         evas_object_del(check);

@@ -54,10 +54,9 @@
 EFLETE_TEST (pm_save_project_edj_test_p)
 {
    elm_init(0,0);
-   char *name, *path;
-   name = "radio_test";
+   char *path;
    path = "./edj_build/pm_save_project_edj.edj";
-   Project* pro = pm_open_project_edj(name, path);
+   Project* pro = pm_open_project_edj(path);
 
    ck_assert_msg(pm_save_project_edj(pro) == EINA_TRUE, "Can't save project to edj");
 

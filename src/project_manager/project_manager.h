@@ -1,4 +1,4 @@
-/*I{
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- *}
  */
 
 #ifndef PROJECT_MANAGER_H
@@ -40,20 +39,14 @@
  */
 struct _Project
 {
-   /** name of project */
-   char *name;
-   /** path to edc file(open/save) */
-   char *edc;
+   /** name of project, read this name from field 'theme/name' from edj file,
+    *  if this field is empty, take a file name */
+   Eina_Stringshare *name;
+   /** a edited file of project. all changes come here, on save this file copied
+    *  to place which used selected. */
+   Eina_Stringshare *dev;
    /** path to edj file(open/save) */
    char *edj;
-   /** path to swap(work) file */
-   char *swapfile;
-   /** path to image directory, for compile */
-   char *image_directory;
-   /** path to font directory, for compile */
-   char *font_directory;
-   /** path to sound direcory, for compile */
-   char *sound_directory;
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
    Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */
@@ -78,7 +71,6 @@ typedef struct _Project Project;
 /**
  * Open project from edj-file.
  *
- * @param name The name of a project;
  * @param path Path to edj-file.
  *
  * @return The Project object.
@@ -86,8 +78,7 @@ typedef struct _Project Project;
  * @ingroup ProjectManager
  */
 Project *
-pm_open_project_edj(const char *name,
-                    const char *path);
+pm_open_project_edj(const char *path);
 
 /**
  * Close the project. Swap file will be deleted.

@@ -70,7 +70,7 @@ EFLETE_TEST (register_callbacks_test_p)
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   project = pm_open_project_edj("UTC", edj_path);
+   project = pm_open_project_edj(edj_path);
    widget_list = ui_widget_list_add(app_data->win);
    ui_widget_list_data_set(widget_list, project);
    ui_block_widget_list_set(app_data, widget_list);

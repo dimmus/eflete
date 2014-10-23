@@ -28,6 +28,14 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, highlight_handler_disabled_set_test_p2);
    tcase_add_test(tcase, highlight_handler_disabled_set_test_n1);
    tcase_add_test(tcase, highlight_handler_disabled_set_test_n2);
+   tcase_add_test(tcase, highlight_handler_middle_hide_test_p1);
+   tcase_add_test(tcase, highlight_handler_middle_hide_test_p2);
+   tcase_add_test(tcase, highlight_handler_middle_hide_test_n1);
+   tcase_add_test(tcase, highlight_handler_middle_hide_test_n2);
+   tcase_add_test(tcase, highlight_handler_middle_show_test_p1);
+   tcase_add_test(tcase, highlight_handler_middle_show_test_p2);
+   tcase_add_test(tcase, highlight_handler_middle_show_test_n1);
+   tcase_add_test(tcase, highlight_handler_middle_show_test_n2);
    tcase_add_test(tcase, highlight_handler_mode_set_test_p);
    tcase_add_test(tcase, highlight_handler_mode_set_test_n1);
    tcase_add_test(tcase, highlight_handler_mode_set_test_n2);

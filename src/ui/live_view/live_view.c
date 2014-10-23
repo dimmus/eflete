@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -49,7 +49,6 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    live->property = live_view_property_add(live->panel, in_prog_edit);
    elm_object_content_set(live->panel, live->property);
    elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
-   elm_panel_hidden_set(live->panel, true);
    evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(live->panel);
@@ -83,7 +82,6 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      }
 
    live_view_widget_style_unset(live);
-   live_view_property_style_unset(live->property);
 
    if ((style->__type != LAYOUT) && (!live->in_prog_edit))
      {
@@ -101,7 +99,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             live->object = live_widget_create(widget, type, style_name, live->live_view);
+             live->object = live_widget_create(widget, type, style_name, live->layout);
              container_content_set(live->live_view, live->object);
           }
 
@@ -121,7 +119,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           }
         if (!ret)
           {
-             live->object = elm_label_add(live->live_view);
+             live->object = elm_label_add(live->layout);
              elm_object_text_set(live->object, fail_message);
              container_content_set(live->live_view, live->object);
           }
@@ -141,14 +139,14 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
      {
         if (!live->in_prog_edit)
           {
-             live->object = layout_custom_create(live->live_view);
-             elm_layout_file_set(live->object, project->swapfile, style->full_group_name);
+             live->object = layout_custom_create(live->layout);
+             elm_layout_file_set(live->object, project->dev, style->full_group_name);
              elm_object_style_set(live->object, style->full_group_name);
           }
         else
           {
-             live->object = layout_prog_edit_create(live->live_view);
-             edje_object_file_set(live->object, project->swapfile, style->full_group_name);
+             live->object = layout_prog_edit_create(live->layout);
+             edje_object_file_set(live->object, project->dev, style->full_group_name);
              evas_object_freeze_events_set(live->object, true);
           }
         container_content_set(live->live_view, live->object);
@@ -162,7 +160,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
    evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
-   edje_object_part_drag_value_set(elm_layout_edje_get(live->live_view),
+   edje_object_part_drag_value_set(elm_layout_edje_get(live->layout),
                                    "bottom_pad", x, y);
 
    return ret;
@@ -188,7 +186,7 @@ live_view_theme_update(Live_View *live, Project *project)
    if ((!live) || (!project) || (!live->object)) return false;
    if ((project->current_style) && (project->current_style->__type == LAYOUT))
      {
-        elm_layout_file_set(live->object, project->swapfile,
+        elm_layout_file_set(live->object, project->dev,
                             project->current_style->full_group_name);
         return true;
      }
@@ -197,11 +195,10 @@ live_view_theme_update(Live_View *live, Project *project)
      {
         WARN("Could'nt apply the empty style to live view.");
         live_view_widget_style_unset(live);
-        live_view_property_style_unset(live->property);
         return false;
      }
    Elm_Theme *theme = elm_theme_new();
-   elm_theme_set(theme, project->swapfile);
+   elm_theme_set(theme, project->dev);
    elm_object_theme_set(live->object, theme);
    elm_theme_free(theme);
 
@@ -211,11 +208,7 @@ live_view_theme_update(Live_View *live, Project *project)
 Eina_Bool
 live_view_free(Live_View *live)
 {
-   if (live)
-     {
-        live_view_widget_style_unset(live);
-        live_view_property_style_unset(live->property);
-     }
+   if (live) live_view_widget_style_unset(live);
    else return false;
 
    free(live);

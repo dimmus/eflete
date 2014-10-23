@@ -262,6 +262,7 @@ test_ui_block/ui_block_signal_list.c \
 test_ui_block/ui_block_state_list.c \
 test_ui_block/ui_block_title_text.c \
 test_ui_block/ui_block_title_visible.c \
+test_ui_block/ui_block_content_visible.c \
 test_ui_block/ui_block_widget_list.c \
 test_ui_block/ui_block_ws_set.c
 ui_block_test_CFLAGS = ${FLAGS}
@@ -271,6 +272,8 @@ highlight_test_SOURCES = \
 test_highlight/test_highlight.c \
 test_highlight/highlight_add.c \
 test_highlight/highlight_handler_disabled_set.c \
+test_highlight/highlight_handler_middle_hide.c \
+test_highlight/highlight_handler_middle_show.c \
 test_highlight/highlight_handler_mode_set.c \
 test_highlight/highlight_object_follow.c \
 test_highlight/highlight_object_unfollow.c

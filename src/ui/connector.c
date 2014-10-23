@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -54,7 +54,7 @@ _del_part(void *data,
    Style *style = ap->project->current_style;
    Eina_List *programs = NULL;
    Eina_List *l = NULL;
-   Evas_Object *gl_signals, *property;
+   Evas_Object *gl_signals;
    char *program_name = NULL;
    char *part_name = NULL;
    if (!style) return;
@@ -72,6 +72,7 @@ _del_part(void *data,
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
    style->isModify = true;
 
+
    /* If deleted all parts in style, also should deleted all programs*/
    if (!style->parts)
      {
@@ -85,12 +86,13 @@ _del_part(void *data,
         gl_signals = ui_block_signal_list_get(ap);
         ui_signal_list_data_unset(gl_signals);
         _on_ws_part_unselect(ap, ap->workspace, part_name);
-        property = ui_block_property_get(ap);
-        ui_property_style_set(property, style, ap->workspace);
         workspace_highlight_unset(ap->workspace);
-    }
+     }
+   else
+     {
+        live_view_widget_style_set(ap->live_view, ap->project, style);
+     }
    free(part_name);
-   live_view_widget_style_set(ap->live_view, ap->project, style);
 }
 
 static void
@@ -357,7 +359,7 @@ _add_layout_cb(void *data,
                                              EINA_INLIST_GET(layout));
 
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
-                      ap->project->swapfile);
+                      ap->project->dev);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
    return;
@@ -388,7 +390,7 @@ _part_name_change(void *data, Evas_Object *obj, void *event_info)
    App_Data *ap = (App_Data *)data;
 
    ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
-   workspace_edit_object_set(obj, ap->project->current_style, ap->project->swapfile);
+   workspace_edit_object_set(obj, ap->project->current_style, ap->project->dev);
    evas_object_smart_callback_call(ui_block_widget_list_get(ap), "wl,part,select", part);
 }
 
@@ -417,8 +419,6 @@ _on_ws_part_select(void *data,
    const char *part = (const char *)event_info;
    if (part)
      ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, true);
-
-   evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
 }
 
 Widget *
@@ -489,6 +489,7 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(st_list, "sl,signal,select", _signal_select, ap);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_property_style_unset(ui_block_property_get(ap));
+   ui_block_content_visible(ap->block.right_bottom, false);
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
@@ -576,9 +577,6 @@ ui_part_select(App_Data *ap, Part* part)
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    evas_object_smart_callback_add(ap->workspace, "part,changed", _property_change, ap);
 
-   /* set the focus to groupedit, that the hotkeys is work */
-   evas_object_focus_set(ws_groupedit_get(ap->workspace), true);
-
    return gl_states;
 }
 
@@ -623,7 +621,7 @@ ui_style_clicked(App_Data *ap, Style *style)
 
    evas_object_smart_callback_add(gl_signals, "sl,signal,select", _signal_select, ap);
 
-   workspace_edit_object_set(ap->workspace, _style, ap->project->swapfile);
+   workspace_edit_object_set(ap->workspace, _style, ap->project->dev);
    evas_object_smart_callback_add(ap->workspace, "ws,part,selected",
                                   _on_ws_part_select, ap);
    evas_object_smart_callback_add(ap->workspace, "ws,part,unselected",
@@ -638,6 +636,9 @@ ui_style_clicked(App_Data *ap, Style *style)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
+   else
+     ui_block_content_visible(ap->block.right_bottom, true);
+
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;
@@ -653,7 +654,7 @@ static Eina_Bool
 _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 {
    Evas_Object *wd_list = NULL;
-   char *name, *selected;
+   char *selected;
 
    if ((!ap) || (!selected_file)) return false;
 
@@ -674,11 +675,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
    selected = eina_file_path_sanitize(selected_file);
    INFO("Selected file: %s", selected);
 
-   if (is_new) name = strdup("Untitled.edj");
-   else GET_NAME_FROM_PATH(name, selected);
-
-   ap->project = pm_open_project_edj(name, selected);
-   free(name);
+   ap->project = pm_open_project_edj(selected);
 
    if (!ap->project)
      {
@@ -726,7 +723,7 @@ ui_edj_load(App_Data* ap, const char *selected_file)
 Eina_Bool
 new_theme_create(App_Data *ap)
 {
-   if (!ap) return false;
+   if ((!ap) || (!ap->win)) return false;
    if (!ui_close_project_request(ap,
                                  _("You want to create a new theme, but now you have<br/>"
                                    "opened project. If you dont save opened project<br/>"
@@ -811,6 +808,7 @@ ui_close_project_request(App_Data *ap, const char *msg)
 
    ecore_main_loop_begin();
 
+   ui_menu_locked_set(ap->menu_hash, false);
    ap->project->close_request = false;
    evas_object_del(ap->popup);
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -257,8 +257,7 @@ config_save(App_Data *ap)
 
    if (!ap) return false;
 
-   evas_object_geometry_get(ap->win, NULL, NULL, &w, &h);
-   elm_win_screen_position_get(ap->win, &x, &y);
+   evas_object_geometry_get(ap->win, &x, &y, &w, &h);
    config->window.x =            x;
    config->window.y =            y;
    config->window.w =            w;
