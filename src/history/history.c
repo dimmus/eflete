@@ -23,6 +23,21 @@
 #include "history.h"
 #include "history_private.h"
 
+static Eina_Bool
+_diff_free(Diff *diff)
+{
+   switch (diff->module_type)
+     {
+      case PROPERTY:
+         _attribute_change_free((Attribute_Diff *)diff);
+      break;
+      default:
+         ERR("Unsupported module type in diff attributes. This should never happens");
+         return false;
+     }
+   return true;
+}
+
 /*
  * All changes that stored below rel_change in the list of changes will be freed.
  */
@@ -54,9 +69,18 @@ _change_save(Module *module, Diff *change)
  * This function clear all changes, that was happens with module.
  */
 static Eina_Bool
-_module_changes_clear(Module *module __UNUSED__)
+_module_changes_clear(Module *module)
 {
-   return false;
+   Eina_List *l, *l_next;
+   Diff *diff = NULL;
+   Eina_Bool result = true;
+
+   EINA_LIST_FOREACH_SAFE(module->changes, l, l_next, diff)
+     {
+        result &= _diff_free(diff);
+     }
+
+   return result;
 }
 
 Eina_Bool
