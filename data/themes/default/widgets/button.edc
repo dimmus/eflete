@@ -3,7 +3,6 @@ group { name: "elm/button/base/eflete/default";
    images{
       image: "button-bg.png" COMP;
       image: "button-click-bg.png" COMP;
-      image: "button-hover-bg.png" COMP;
       image: "button-disabled-bg.png" COMP;
       image: "focus-outer-glow.png" COMP;
    }
@@ -117,24 +116,6 @@ group { name: "elm/button/base/eflete/default";
             visible: 0;
          }
       }
-      part { name: "over3";
-         mouse_events: 1;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            image {
-               normal: "button-hover-bg.png";
-               border: 4 4 13 13;
-            }
-            fill.smooth : 0;
-         }
-         description { state: "clicked" 0.0;
-            inherit:  "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
       part { name: "disabler";
          type: RECT;
          description { state: "default" 0.0;
@@ -215,23 +196,9 @@ group { name: "elm/button/base/eflete/default";
          source: "elm";
          action: STATE_SET "clicked" 0.00;
          target: "button_image";
-         target: "over3";
          after: "button_unpressed_anim";
       }
-      program { name: "button_click2";
-         signal: "mouse,down,1";
-         source: "over3";
-         action: STATE_SET "clicked" 0.00;
-         target: "over3";
-      }
       program { name: "button_unclick2";
-         signal: "mouse,up,1";
-         source: "over3";
-         action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.50000;
-         target: "over3";
-      }
-      program { name: "button_unclick3";
          signal: "mouse,clicked,1";
          source: "over2";
          action: SIGNAL_EMIT "elm,action,click" "";
@@ -335,7 +302,6 @@ group { name: "elm/button/base/eflete/default";
          action: STATE_SET "default" 0.00;
          transition: DECELERATE 0.50000;
          target: "button_image";
-         target: "over3";
       }
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.00;
@@ -348,7 +314,6 @@ group { name: "elm/button/base/eflete/simple";
    images{
       image: "button-bg.png" COMP;
       image: "button-click-bg.png" COMP;
-      image: "button-hover-bg.png" COMP;
       image: "button-disabled-bg.png" COMP;
       image: "focus-outer-glow.png" COMP;
    }
@@ -469,24 +434,6 @@ group { name: "elm/button/base/eflete/simple";
             visible: 0;
          }
       }
-      part { name: "over3";
-         mouse_events: 1;
-         repeat_events: 1;
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            image {
-               normal: "button-hover-bg.png";
-               border: 4 4 13 13;
-            }
-            fill.smooth : 0;
-         }
-         description { state: "clicked" 0.0;
-            inherit:  "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
       part { name: "disabler";
          type: RECT;
          description { state: "default" 0.0;
@@ -553,23 +500,9 @@ group { name: "elm/button/base/eflete/simple";
          source: "elm";
          action: STATE_SET "clicked" 0.00;
          target: "button_image";
-         target: "over3";
          after: "button_unpressed_anim";
       }
-      program { name: "button_click2";
-         signal: "mouse,down,1";
-         source: "over3";
-         action: STATE_SET "clicked" 0.00;
-         target: "over3";
-      }
       program { name: "button_unclick2";
-         signal: "mouse,up,1";
-         source: "over3";
-         action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.50000;
-         target: "over3";
-      }
-      program { name: "button_unclick3";
          signal: "mouse,clicked,1";
          source: "over2";
          action: SIGNAL_EMIT "elm,action,click" "";
@@ -673,7 +606,6 @@ group { name: "elm/button/base/eflete/simple";
          action: STATE_SET "default" 0.00;
          transition: DECELERATE 0.50000;
          target: "button_image";
-         target: "over3";
       }
       program { name: "button_unclick_anim";
          action: STATE_SET "default" 0.00;
