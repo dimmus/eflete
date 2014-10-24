@@ -26,6 +26,7 @@
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
 #define UPDATE_FREQUENCY 1.0 / 30.0
+#define TONE_PLAYING_DURATION 2.0
 
 typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
@@ -268,6 +269,56 @@ _initialize_io_data(Sound_Editor *edit)
 }
 
 static void
+_tone_play(Sound_Editor *edit, int tone_frq)
+{
+   double value;
+   Eina_Bool ret = false;
+
+   elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
+   evas_object_hide(edit->play);
+   elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->pause);
+   evas_object_show(edit->pause);
+
+   if (edit->stopped)
+     {
+        eo_do(edit->io.in, ecore_audio_obj_paused_set(false));
+        ecore_timer_thaw(edit->timer);
+        edit->stopped = false;
+        return;
+     }
+
+   if (!edit->io.in)
+     {
+        edit->io.in = eo_add(ECORE_AUDIO_IN_TONE_CLASS, NULL);
+        eo_do(edit->io.in, ecore_audio_obj_name_set(edit->selected));
+        eo_do(edit->io.in, eo_key_data_set(ECORE_AUDIO_ATTR_TONE_FREQ, &tone_frq, NULL));
+        eo_do(edit->io.in, ecore_audio_obj_in_length_set(TONE_PLAYING_DURATION));
+        eo_do(edit->io.in, eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED,
+                                                 _play_finished_cb, edit));
+     }
+
+   if (!edit->io.out)
+     edit->io.out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
+                           eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL,
+                                                 _out_fail, NULL));
+
+   eo_do(edit->io.out, ret = ecore_audio_obj_out_input_attach(edit->io.in));
+   if (!ret)
+     {
+        ERR("Couldn't attach input and output!");
+        return;
+     }
+
+   value = elm_slider_value_get(edit->rewind);
+   if (value)
+     eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
+
+   edit->playing = true;
+   edit->timer = ecore_timer_add(UPDATE_FREQUENCY, _rewind_cb, edit);
+   ecore_main_loop_begin();
+}
+
+static void
 _add_sound_play(Sound_Editor *edit)
 {
    double value;
@@ -327,8 +378,11 @@ _play_sound(Sound_Editor *edit)
 {
    double value;
    Eina_Bool ret = false;
+   Elm_Object_Item *g_item;
+   const Item *item;
 
-   if (!elm_gengrid_selected_item_get(edit->gengrid))
+   g_item = elm_gengrid_selected_item_get(edit->gengrid);
+   if (!g_item)
      {
         ERR("Can't play sound! Item is not selected.");
         return;
@@ -338,6 +392,13 @@ _play_sound(Sound_Editor *edit)
      {
         _add_sound_play(edit);
         return;
+     }
+
+   item = elm_object_item_data_get(g_item);
+   if (item->tone_frq)
+     {
+      _tone_play(edit, item->tone_frq);
+      return;
      }
 
    elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
@@ -829,11 +890,25 @@ _grid_sel_tone(void *data,
         edit->decoration = true;
      }
 
+   _interrupt_playing(edit);
+
    if (count == 1)
      {
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
+
+        elm_slider_min_max_set(edit->rewind, 0.0, TONE_PLAYING_DURATION);
+        elm_slider_value_set(edit->rewind, 0.0);
+
         _tone_info_setup(edit, item);
+        if (edit->switched)
+          {
+             edit->switched = false;
+             _tone_play(edit, item->tone_frq);
+             return;
+          }
+        if (elm_check_state_get(edit->check))
+          _tone_play(edit, item->tone_frq);
      }
 }
 
@@ -1099,13 +1174,13 @@ _on_cmb_sel(void *data,
 
         BOX_ADD(popup, box, false, false);
         elm_object_content_set(popup, box);
-        ITEM_ADD(box, item, _("tone name:"), "eflete/image_editor/item/default");
+        ITEM_ADD(box, item, _("tone name:"), "property/item/editor");
         EWE_ENTRY_ADD(item, edit->tone_entry, true, DEFAULT_STYLE);
         elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
         elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
         elm_box_pack_end(box, item);
 
-        ITEM_ADD(box, item, _("frequency:"), "eflete/image_editor/item/default");
+        ITEM_ADD(box, item, _("frequency:"), "property/item/editor");
         EWE_ENTRY_ADD(item, edit->frq_entry, true, DEFAULT_STYLE);
         elm_entry_markup_filter_append(edit->frq_entry, elm_entry_filter_accept_set,
                                        &accept_value);
