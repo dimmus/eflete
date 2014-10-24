@@ -80,8 +80,9 @@ struct _Sound_Editor
       Evas_Object *teg;
       Evas_Object *tone_name;
       Evas_Object *tone_frq;
+      Evas_Object *tone_duration;
       Evas_Object *file_name;
-      Evas_Object *location;
+      Evas_Object *duration;
       Evas_Object *type;
       Evas_Object *size;
       Evas_Object *comp;
@@ -692,7 +693,7 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
    elm_box_align_set(edit->sample_box, 0.5, 0.5);
 
    edit->snd_data.file_name = _sound_info_label_add(edit->sample_box, _("file name:"));
-   edit->snd_data.location = _sound_info_label_add(edit->sample_box, _("location:"));
+   edit->snd_data.duration = _sound_info_label_add(edit->sample_box, _("duration:"));
    edit->snd_data.type = _sound_info_label_add(edit->sample_box, _("type:"));
    edit->snd_data.size = _sound_info_label_add(edit->sample_box, _("size:"));
 
@@ -732,6 +733,8 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
    SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false, DEFAULT_STYLE);
    elm_object_disabled_set(edit->snd_data.tone_frq, true);
    elm_object_part_content_set(item, "swallow.first", edit->snd_data.tone_frq);
+
+   edit->snd_data.tone_duration = _sound_info_label_add(edit->tone_box, _("duration:"));
    elm_box_pack_end(edit->tone_box, item);
    evas_object_hide(edit->tone_box);
 }
@@ -746,24 +749,27 @@ _sound_info_create(Evas_Object *parent, Sound_Editor *edit)
 static void
 _sample_info_setup(Sound_Editor *edit, const Item *it)
 {
-   Eina_Stringshare *size;
+   double len;
+   Eina_Stringshare *size, *duration;
    Evas_Object *content;
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
+   eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
+   duration = eina_stringshare_printf("%.2f s", len);
    size = eina_stringshare_printf("%.2f KB", edit->io.length / 1024.0);
-
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
-
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
    elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
+   elm_object_part_text_set(edit->snd_data.duration, "label.value", duration);
    elm_object_part_text_set(edit->snd_data.size, "label.value", size);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    elm_spinner_value_set(edit->snd_data.quality, it->rate);
    evas_object_show(edit->sample_box);
 
+   eina_stringshare_del(duration);
    eina_stringshare_del(size);
 }
 
@@ -771,17 +777,20 @@ static void
 _tone_info_setup(Sound_Editor *edit, const Item *it)
 {
    Evas_Object *content;
+   Eina_Stringshare *duration;
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
+   duration = eina_stringshare_printf("%.1f s", TONE_PLAYING_DURATION);
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
-
    elm_object_part_content_set(edit->markup, "sound_info", edit->tone_box);
 
    elm_object_part_text_set(edit->snd_data.tone_name, "label.value", it->sound_name);
    elm_spinner_value_set(edit->snd_data.tone_frq, it->tone_frq);
+   elm_object_part_text_set(edit->snd_data.tone_duration, "label.value", duration);
    evas_object_show(edit->tone_box);
+   eina_stringshare_del(duration);
 }
 
 static void
