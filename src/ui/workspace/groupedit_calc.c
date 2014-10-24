@@ -670,7 +670,19 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 
 #define BORDER_ADD(R, G, B, A) \
    GET_IMAGE(gp->border, sd->e, BORDER_IMG); \
-   evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A); \
+   evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A);
+
+#define IMAGE_PART_GROUP "eflete/groupedit/image/default"
+
+static void
+_image_delete(void *data __UNUSED__,
+              Evas *e __UNUSED__,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *image = edje_object_part_swallow_get(obj, "swallow.image");
+   if (image) evas_object_del(image);
+}
 
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
@@ -695,7 +707,13 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
       case EDJE_PART_TYPE_IMAGE:
       case EDJE_PART_TYPE_PROXY: // it part like image
-         gp->draw = evas_object_image_add(sd->e);
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+         Evas_Object *o = evas_object_image_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", o);
          BORDER_ADD(0, 0, 0, 0)
          break;
       case EDJE_PART_TYPE_SWALLOW:
@@ -735,6 +753,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 }
 
 #undef BORDER_ADD
+#undef IMAGE_PART_GROUP
 
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
@@ -811,31 +830,33 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 
    state = edje_edit_part_selected_state_get(edit_obj, gp->name, &value);
    edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
-   evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
+
+   Evas_Object *image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
 
    image_normal = edje_edit_state_image_get(edit_obj, gp->name, state, value);
    if (!image_normal) return;
    id = edje_edit_image_id_get(edit_obj, image_normal);
    buf = eina_stringshare_printf("edje/images/%i", id);
-   evas_object_image_file_set(gp->draw, file, buf);
-   err = evas_object_image_load_error_get(gp->draw);
+   evas_object_image_file_set(image, file, buf);
+   err = evas_object_image_load_error_get(image);
    if (err != EVAS_LOAD_ERROR_NONE)
      WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
 
    edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
                                     &bl, &br, &bt, &bb);
-   evas_object_image_border_set(gp->draw, bl, br, bt, bb);
+   evas_object_image_border_set(image, bl, br, bt, bb);
 
    middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
    if (middle == 0)
-     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_NONE);
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
    else if (middle == 1)
-     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_DEFAULT);
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
    else if (middle == 2)
-     evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_SOLID);
+     evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
 
    /* setups settings from filled block  into evas image object*/
-   evas_object_image_smooth_scale_set(gp->draw,
+   evas_object_image_smooth_scale_set(image,
             edje_edit_state_fill_smooth_get(edit_obj, gp->name, state, value));
 
    /* take fill params here, because need to know is default params set*/
@@ -850,13 +871,13 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    if (edje_edit_state_fill_type_get(edit_obj, gp->name, state, value))
      {
         /* If image tiled, set fill param to evas image object */
-        evas_object_image_size_get(gp->draw, &img_w, &img_h);
+        evas_object_image_size_get(image, &img_w, &img_h);
         x = (int)(img_w * fill_x) + fill_origin_offset_x;
         y = (int)(img_h * fill_y) + fill_origin_offset_y;
         w = (int)(img_w * fill_w) + fill_size_offset_x;
         h = (int)(img_h * fill_h) + fill_size_offset_y;
-        evas_object_image_filled_set(gp->draw, false);
-        evas_object_image_fill_set(gp->draw, x, y, w, h);
+        evas_object_image_filled_set(image, false);
+        evas_object_image_fill_set(image, x, y, w, h);
      }
    else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
             fill_origin_offset_x || fill_origin_offset_y ||
@@ -864,17 +885,17 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
          {
            /* If image fill is scale and params are non default values, set
               this params to evas image object */
-            evas_object_geometry_get(gp->draw, NULL, NULL, &img_w, &img_h);
+            evas_object_geometry_get(image, NULL, NULL, &img_w, &img_h);
             x = (int)(img_w * fill_x) + fill_origin_offset_x;
             y = (int)(img_h * fill_y) + fill_origin_offset_y;
             w = (int)(img_w * fill_w) + fill_size_offset_x;
             h = (int)(img_h * fill_h) + fill_size_offset_y;
-            evas_object_image_filled_set(gp->draw, false);
-            evas_object_image_fill_set(gp->draw, x, y, w, h);
+            evas_object_image_filled_set(image, false);
+            evas_object_image_fill_set(image, x, y, w, h);
          }
        else
          /* If image fill is scale with default params. */
-         evas_object_image_filled_set(gp->draw, true);
+         evas_object_image_filled_set(image, true);
 
    PART_STATE_FREE
    eina_stringshare_del(buf);

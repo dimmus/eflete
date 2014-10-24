@@ -214,3 +214,20 @@ group { name: "eflete/groupedit/object_area/default";
       }
    }
 }
+
+/*
+  This is CRUTCH used for ZOOM,
+  because Map doesn't work with Images right,
+  so we need to set itinto edje and then zoom edje object.
+*/
+group { name: "eflete/groupedit/image/default";
+   parts {
+      part { name: "swallow.image";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+}
