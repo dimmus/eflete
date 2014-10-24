@@ -1,0 +1,172 @@
+group{ name: "elm/layout/preferences/general";
+   parts {
+      part { name: "padding.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 10 0;
+            max: 10 -1;
+            rel1.relative: 0.2 0.0;
+         }
+      }
+      part { name: "padding.right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 10 -1;
+            rel1.relative: 0.5 0;
+         }
+      }
+      part { name: "area.general";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 100 40;
+         }
+      }
+      part { name: "area.profile";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: -1 26;
+            rel1 {
+               relative: 0.5 1.0;
+               to: "area.general";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.left";
+            }
+         }
+      }
+      part { name: "label.general";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            rel1.to: "area.general";
+            rel2.to: "area.general";
+            text {
+               text: "General";
+               font: FN;
+               size: 22;
+            }
+         }
+      }
+      part { name: "label.profile";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            align: 1.0 0.5;
+            rel1.to: "area.profile";
+            rel2.to: "area.profile";
+            text {
+               text: "Profile:";
+               font: FN;
+               size: 12;
+            }
+         }
+      }
+      part { name: "swallow.profile";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+               to_y: "area.profile";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.profile";
+            }
+         }
+      }
+      part { name: "area.home";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 100 26;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.profile";
+            }
+         }
+      }
+      part { name: "area.swap";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            max: 100 26;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "area.home";
+            }
+         }
+      }
+      part { name: "label.home";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            align: 0.0 0.5;
+            rel1.to: "area.home";
+            rel2.to: "area.home";
+            text {
+               text: "home";
+               font: FN;
+               size: 12;
+            }
+         }
+      }
+      part { name: "label.swap";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            align: 0.0 0.5;
+            rel1.to: "area.swap";
+            rel2.to: "area.swap";
+            text {
+               text: "swap";
+               font: FN;
+               size: 12;
+            }
+         }
+      }
+      part { name: "swallow.home";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+               to_y: "area.home";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.home";
+            }
+         }
+      }
+      part { name: "swallow.swap";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left";
+               to_y: "area.swap";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right";
+               to_y: "area.swap";
+            }
+         }
+      }
+   }
