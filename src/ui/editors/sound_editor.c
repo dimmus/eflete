@@ -746,11 +746,29 @@ _sound_info_create(Evas_Object *parent, Sound_Editor *edit)
    _tone_info_create(parent, edit);
 }
 
+Eina_Stringshare *
+_sound_info_type_setup(Eina_Stringshare *snd_src)
+{
+   Eina_Stringshare *type;
+   char *dot, *up;
+
+   dot = strrchr(snd_src, '.');
+   if (!dot)
+     return type = eina_stringshare_add(_("Unknow Format Sound"));
+
+   dot++;
+   up = strdup(dot);
+   eina_str_toupper(&up);
+   type = eina_stringshare_printf(_("%s Format Sound (.%s)"), up, dot);
+   free(up);
+   return type;
+}
+
 static void
-_sample_info_setup(Sound_Editor *edit, const Item *it)
+_sample_info_setup(Sound_Editor *edit, const Item *it, Eina_Stringshare *snd_src)
 {
    double len;
-   Eina_Stringshare *size, *duration;
+   Eina_Stringshare *size, *duration, *type;
    Evas_Object *content;
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
@@ -762,14 +780,18 @@ _sample_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
+   type = _sound_info_type_setup(snd_src);
+
    elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
    elm_object_part_text_set(edit->snd_data.duration, "label.value", duration);
+   elm_object_part_text_set(edit->snd_data.type, "label.value", type);
    elm_object_part_text_set(edit->snd_data.size, "label.value", size);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    elm_spinner_value_set(edit->snd_data.quality, it->rate);
    evas_object_show(edit->sample_box);
 
    eina_stringshare_del(duration);
+   eina_stringshare_del(type);
    eina_stringshare_del(size);
 }
 
@@ -840,6 +862,7 @@ _grid_sel_sample(void *data,
         item = elm_object_item_data_get(eina_list_data_get(sel_list));
         edit->selected = eina_stringshare_add(item->sound_name);
         GET_OBJ(edit->pr, edje_edit_obj);
+        snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, edit->selected);
 
         if ((edit->pr->added_sounds))
           {
@@ -847,9 +870,8 @@ _grid_sel_sample(void *data,
                {
                   if (!strcmp(snd, edit->selected))
                     {
-                       snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, snd);
                        _added_sample_src_info_setup(edit, snd_src);
-                       _sample_info_setup(edit, item);
+                       _sample_info_setup(edit, item, snd_src);
                        edit->added = true;
                        if ((edit->switched) || (auto_play))
                          _add_sound_play(edit);
@@ -868,7 +890,8 @@ _grid_sel_sample(void *data,
         elm_slider_min_max_set(edit->rewind, 0, len);
         elm_slider_value_set(edit->rewind, 0.0);
 
-        _sample_info_setup(edit, item);
+        _sample_info_setup(edit, item, snd_src);
+        eina_stringshare_del(snd_src);
 
         if (edit->switched)
           {
