@@ -145,6 +145,7 @@ _groupedit_smart_add(Evas_Object *o)
    priv->obj = o;
    priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
    priv->real_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));
+   priv->zoom_factor = 1.0;
    priv->edit_obj = NULL;
    priv->parts = NULL;
    priv->obj_area.obj = edje_object_add(priv->e);
@@ -662,6 +663,16 @@ groupedit_bg_unset(Evas_Object *obj)
    sd->bg = NULL;
 
    return bg;
+}
+
+Eina_Bool
+groupedit_zoom_factor_set(Evas_Object *obj, double factor)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   sd->zoom_factor = factor;
+
+   return true;
 }
 
 #undef MY_CLASS_NAME

@@ -110,6 +110,7 @@ struct _Ws_Groupedit_Smart_Data
                          enother groupedit part. */
    Evas_Object *clipper;      /**< The background clipper, need to draw item bg
                                    in the separete mode.*/
+   double zoom_factor; /**< current zoom factor. */
    Evas_Coord downx;
    Evas_Coord downy;
 };

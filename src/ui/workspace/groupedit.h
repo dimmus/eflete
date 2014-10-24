@@ -421,4 +421,18 @@ groupedit_edit_object_part_above(Evas_Object *obj, const char *part);
 Eina_Bool
 groupedit_edit_object_part_below(Evas_Object *obj, const char *part);
 
+/**
+ * Set zoom factor for view zoommed style in groupedit object.
+ *
+ * @param obj The groupedit object.
+ * @param factor A factor for scale. Where value 1.0 = 100% scale (not zoom
+ * object). Minimum is 0.01, maximum is 20. (from 1% to 2000% zoom).
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_zoom_factor_set(Evas_Object *obj, double factor);
+
 #endif /* GROUPEDIT_H */

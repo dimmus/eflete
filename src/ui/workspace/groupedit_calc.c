@@ -442,8 +442,9 @@ _part_select(void *data,
 }
 
 #define GP_GEOMETRY_SET \
-   evas_object_resize(gp->border, w, h); \
-   evas_object_move(gp->border, x + xe + offset_x, y + ye + offset_y); \
+   evas_object_resize(gp->border, w * sd->zoom_factor, h * sd->zoom_factor); \
+   evas_object_move(gp->border, x * sd->zoom_factor + xe + offset_x, \
+                                y * sd->zoom_factor + ye + offset_y); \
    evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
    evas_object_move(gp->item, xe + offset_x, ye + offset_y);
 
@@ -471,6 +472,24 @@ _part_select(void *data,
    if (sd->real_size->h < h) \
      sd->real_size->h = h;
 
+#define ZOOM_APPLY(OBJECT) \
+   if (fabs(sd->zoom_factor - 1.0) > 0.00001) \
+     { \
+        evas_object_geometry_get(OBJECT, &x, &y, NULL, NULL); \
+        Evas_Map *m = evas_map_new(4); \
+        evas_map_smooth_set(m, false); \
+        evas_map_util_points_populate_from_object_full(m, OBJECT, 0); \
+        evas_map_util_zoom(m, sd->zoom_factor, sd->zoom_factor, x, y); \
+        evas_object_map_set(OBJECT, m); \
+        evas_object_map_enable_set(OBJECT, true); \
+        evas_map_free(m); \
+        evas_object_repeat_events_set(OBJECT, true); \
+     } \
+   else \
+     { \
+        evas_object_map_enable_set(OBJECT, false); \
+        evas_object_repeat_events_set(OBJECT, false); \
+     }
 
 static void
 _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
@@ -487,12 +506,18 @@ _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    ro = edje_object_part_object_get(sd->edit_obj, gp->name);
    evas_object_geometry_get(ro, &ro_x, &ro_y, &ro_w, &ro_h);
 
+   /* all of it because of fucking text and textblock >:C */
+   ro_x = xe + offset_x + (ro_x - xe - offset_x) * sd->zoom_factor;
+   ro_y = ye + offset_y + (ro_y - ye - offset_y) * sd->zoom_factor;
+
    evas_object_resize(gp->draw, ro_w, ro_h);
    evas_object_move(gp->draw, ro_x + offset_x, ro_y + offset_y);
 
    GP_GEOMETRY_SET
 
    GP_REAL_GEOMETRY_CALC
+
+   ZOOM_APPLY(gp->draw)
 }
 
 static void
@@ -508,11 +533,14 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
 
    evas_object_resize(gp->draw, w, h);
-   evas_object_move(gp->draw, x + xe + offset_x, y + ye + offset_y);
+   evas_object_move(gp->draw, (x * sd->zoom_factor + xe + offset_x),
+                              (y * sd->zoom_factor + ye + offset_y));
 
    GP_GEOMETRY_SET
 
    GP_REAL_GEOMETRY_CALC
+
+   ZOOM_APPLY(gp->draw)
 }
 
 #undef GP_GEOMETRY_SET
@@ -626,10 +654,19 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
        }
 
+   sd->real_size->x += sd->real_size->w * (1 - sd->zoom_factor) / 2;
+   sd->real_size->y += sd->real_size->h * (1 - sd->zoom_factor) / 2;
+   sd->real_size->w *= sd->zoom_factor;
+   sd->real_size->h *= sd->zoom_factor;
    evas_object_smart_callback_call(sd->obj, SIG_GEOMETRY_CHANGED, (void *)sd->real_size);
+
+   Evas_Coord x, y;
+   ZOOM_APPLY(sd->obj_area.obj);
 
    return true;
 }
+
+#undef ZOOM_APPLY
 
 #define BORDER_ADD(R, G, B, A) \
    GET_IMAGE(gp->border, sd->e, BORDER_IMG); \

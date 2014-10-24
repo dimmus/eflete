@@ -91,11 +91,38 @@ _statusbar_init(Evas_Object *obj)
       return false; \
    } \
 
+/* TODO: move to shortcuts */
+static void
+_key_down(void *data,
+          Evas *e,
+          Evas_Object *obj __UNUSED__,
+          void *event_info)
+{
+   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
+   App_Data *ap = (App_Data *)data;
+   const Evas_Modifier *mods;
+
+   mods = evas_key_modifier_get(e);
+   if (evas_key_modifier_is_set(mods, "Control"))
+     {
+        if (!strcmp(ev->key, "equal"))
+          {
+             double current_factor = workspace_zoom_factor_get(ap->workspace);
+             workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
+          }
+        else if (!strcmp(ev->key, "minus"))
+          {
+             double current_factor = workspace_zoom_factor_get(ap->workspace);
+             workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
+          }
+     }
+}
 Eina_Bool
 ui_main_window_add(App_Data *ap)
 {
    Config *config;
    Evas_Object *bg;
+   Evas_Modifier_Mask mask;
 
    if (!ap)
      {
@@ -171,6 +198,22 @@ ui_main_window_add(App_Data *ap)
    ap->statusbar = _statusbar_init(ap->win_layout);
    if (!ap->statusbar)
      MARK_TO_SHUTDOWN("Can't create a statusbar.")
+
+   /* those shortcuts will be moved to shortcut module,
+      when it will be merged, so...
+      TODO: move to shortcuts. */
+   mask = evas_key_modifier_mask_get(evas_object_evas_get(ap->win), "Control");
+
+   if (!evas_object_key_grab(ap->win, "Control", 0, 0, false))
+     evas_object_key_ungrab(ap->win, "Control", 0, 0);
+   if (!evas_object_key_grab(ap->win, "minus", mask, 0, false))
+     evas_object_key_ungrab(ap->win, "minus", mask, 0);
+   if (!evas_object_key_grab(ap->win, "equal", mask, 0, false))
+     evas_object_key_ungrab(ap->win, "equal", mask, 0);
+
+   evas_object_event_callback_add(ap->win, EVAS_CALLBACK_KEY_DOWN,
+                                  _key_down, ap);
+   /**************************************************/
 
    return true;
 }

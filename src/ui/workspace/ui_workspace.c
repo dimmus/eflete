@@ -18,6 +18,7 @@
  */
 
 #include <ui_workspace.h>
+#include "main_window.h"
 #include "highlight.h"
 #include "groupedit.h"
 #include "container.h"
@@ -222,6 +223,51 @@ _normal_mode_click(void *data,
 }
 
 static void
+_zoom_factor_50(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Evas_Object *ws = (Evas_Object *)data;
+   workspace_zoom_factor_set(ws, 0.5);
+}
+
+static void
+_zoom_factor_100(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *ws = (Evas_Object *)data;
+   workspace_zoom_factor_set(ws, 1.0);
+}
+
+static void
+_zoom_factor_200(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Evas_Object *ws = (Evas_Object *)data;
+   workspace_zoom_factor_set(ws, 2.0);
+}
+
+static void
+_zoom_factor_in(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
+{
+   Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+   workspace_zoom_factor_set(ws->obj, ws->zoom.factor + 0.1);
+}
+
+static void
+_zoom_factor_out(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info __UNUSED__)
+{
+   Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+   workspace_zoom_factor_set(ws->obj, ws->zoom.factor - 0.1);
+}
+
+static void
 _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
 {
    Evas_Object *menu;
@@ -245,20 +291,15 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    items->rulers_both = elm_menu_item_add(menu, items->rulers, NULL, _("Both"), _menu_rulers_both_cb, ws->obj);
 
    items->zoom = elm_menu_item_add(menu, NULL, NULL, _("Zoom"), NULL, NULL);
-   items->zoom_in = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom in"), NULL, NULL);
-   elm_object_item_disabled_set(items->zoom_in, true);
-   items->zoom_out = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom out"), NULL, NULL);
-   elm_object_item_disabled_set(items->zoom_out, true);
+   items->zoom_in = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom in"), _zoom_factor_in, ws);
+   items->zoom_out = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom out"), _zoom_factor_out, ws);
    elm_menu_item_separator_add(menu, items->zoom);
    items->zoom_fit = elm_menu_item_add(menu, items->zoom, NULL, _("Fit"), NULL, NULL);
    elm_object_item_disabled_set(items->zoom_fit, true);
    elm_menu_item_separator_add(menu, items->zoom);
-   items->zoom_far = elm_menu_item_add(menu, items->zoom, NULL, _("20%"), NULL, NULL);
-   elm_object_item_disabled_set(items->zoom_far, true);
-   items->zoom_normal = elm_menu_item_add(menu, items->zoom, NULL, _("100%"), NULL, NULL);
-   elm_object_item_disabled_set(items->zoom_normal, true);
-   items->zoom_near = elm_menu_item_add(menu, items->zoom, NULL, _("500%"), NULL, NULL);
-   elm_object_item_disabled_set(items->zoom_near, true);
+   items->zoom_far = elm_menu_item_add(menu, items->zoom, NULL, _("50%"), _zoom_factor_50, ws->obj);
+   items->zoom_normal = elm_menu_item_add(menu, items->zoom, NULL, _("100%"), _zoom_factor_100, ws->obj);
+   items->zoom_near = elm_menu_item_add(menu, items->zoom, NULL, _("200%"), _zoom_factor_200, ws->obj);
    elm_menu_item_separator_add(menu, NULL);
 
    items->mode_normal = elm_menu_item_add(menu, NULL, NULL, _("Normal mode"), _normal_mode_click, ws);
@@ -358,11 +399,11 @@ _ws_ruler_rel_zero_move_cb(void *data,
 
    ewe_ruler_zero_offset_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->x - cross_size - bg_x);
    /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
-   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, ge_geom->w / 2);
+   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, (ge_geom->w / 2) * sd->zoom.factor);
 
    ewe_ruler_zero_offset_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->y - cross_size - bg_y);
    /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
-   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, ge_geom->h / 2);
+   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, (ge_geom->h / 2) * sd->zoom.factor);
 }
 
 static void
@@ -494,31 +535,70 @@ _sc_smart_move_cb(void *data,
 
    ewe_ruler_zero_offset_set(sd->ruler_hor, sd->scale_rel_hor, gs_x - bg_x - cross_size);
    /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
-   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, gs_w / 2);
+   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, (gs_w / 2) * sd->zoom.factor);
 
    ewe_ruler_zero_offset_set(sd->ruler_ver, sd->scale_rel_ver, gs_y - bg_y - cross_size);
    /* placing 3 marks on relative scale along object's side: 0.0, 0.5, 1.0 */
-   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, gs_h / 2);
+   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, (gs_h / 2) * sd->zoom.factor);
 }
 
-static Eina_Bool
-_zoom_factor_update(Evas_Object *obj, double factor)
-{
-   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
-   sd->zoom.factor = factor;
-   /*
-    * TODO:
-    * Create method, which update current zoom in groupedit and workspace
-    */
-   return true;
-}
+#define DEFAULT_STEP 50
 
 Eina_Bool
 workspace_zoom_factor_set(Evas_Object *obj, double factor)
 {
-   if ((factor < 0.01) || (factor > 20 )) return false;
-   return _zoom_factor_update(obj, factor);
+   if ((factor < 0.01) || (factor > 20)) return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   if (sd->zoom.factor == factor) return false;
+   sd->zoom.factor = factor;
+
+   groupedit_zoom_factor_set(sd->groupedit, factor);
+
+   /* calculate step for VERTICAL RELATIVE */
+   ewe_ruler_step_set(sd->ruler_ver, sd->scale_rel_ver, DEFAULT_STEP * sd->zoom.factor);
+
+   /* calculate step for VERTICAL ABSOLUTE */
+   ewe_ruler_step_set(sd->ruler_ver, NULL, DEFAULT_STEP * sd->zoom.factor);
+
+   /* calculate step for VERTICAL RELATIVE */
+   ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, DEFAULT_STEP * sd->zoom.factor);
+
+   /* calculate step for VERTICAL ABSOLUTE */
+   ewe_ruler_step_set(sd->ruler_hor, NULL, DEFAULT_STEP * sd->zoom.factor);
+
+   if (fabs(factor - 1.0) > 0.00001)
+     {
+        container_border_hide(sd->container.obj);
+
+        App_Data *app = app_data_get();
+        ui_menu_disable_set(app->menu_hash, _("Separate"), true);
+
+        Ws_Menu *items = &sd->menu.items;
+        elm_object_item_disabled_set(items->mode_normal, true);
+        elm_object_item_disabled_set(items->mode_separate, true);
+        elm_object_disabled_set(sd->button_separate, true);
+     }
+   else
+     {
+        container_border_show(sd->container.obj);
+
+        App_Data *app = app_data_get();
+        ui_menu_disable_set(app->menu_hash, _("Separate"), false);
+
+        Ws_Menu *items = &sd->menu.items;
+        elm_object_item_disabled_set(items->mode_normal, false);
+        elm_object_item_disabled_set(items->mode_separate, false);
+        elm_object_disabled_set(sd->button_separate, false);
+     }
+
+   workspace_edit_object_recalc(obj);
+   evas_object_smart_changed(sd->groupedit);
+
+   return true;
 }
+
+#undef DEFAULT_STEP
 
 double
 workspace_zoom_factor_get(Evas_Object *obj)
@@ -556,10 +636,10 @@ _on_resize(void *data,
    if ((!sd->style) && (!part)) return;
    edje_edit_state_max_w_set(sd->style->obj, part->name,
                              part->curr_state, part->curr_state_value,
-                             events->w);
+                             events->w / sd->zoom.factor);
    edje_edit_state_max_h_set(sd->style->obj, part->name,
                              part->curr_state, part->curr_state_value,
-                             events->h);
+                             events->h / sd->zoom.factor);
    if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
@@ -664,6 +744,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* using scroller in workspace, with special style*/
    priv->scroll_flag = 0;
+   priv->zoom.factor = 1.0;
    priv->scroller = elm_scroller_add(priv->layout);
    elm_object_style_set(priv->scroller, "eflete/workspace");
    elm_scroller_policy_set(priv->scroller, ELM_SCROLLER_POLICY_ON,
@@ -905,8 +986,8 @@ _on_groupedit_geometry_changed(void *data,
    container_padding_size_set(sd->container.obj,
                               PADDING_SIZE + abs(geom->x - x),
                               PADDING_SIZE + abs(geom->y - y),
-                              PADDING_SIZE + abs((geom->x + geom->w) - (x + w)),
-                              PADDING_SIZE + abs((geom->y + geom->h) - (y + h)));
+                              PADDING_SIZE + abs((geom->x + geom->w) - (x + w)) * sd->zoom.factor,
+                              PADDING_SIZE + abs((geom->y + geom->h) - (y + h)) * sd->zoom.factor);
 }
 
 Eina_Bool
@@ -986,6 +1067,8 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    evas_object_resize(sd->container.obj, w - PADDING_SIZE * 2, h - PADDING_SIZE * 2);
    elm_scroller_region_get(sd->container.obj, &x, &y, &w, &h);
    elm_scroller_region_show(sd->container.obj, x / 2, y / 2, w, h);
+
+   workspace_zoom_factor_set(obj, 1.0);
 
    return true;
 }
