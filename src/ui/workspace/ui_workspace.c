@@ -703,6 +703,26 @@ workspace_highlight_unset(Evas_Object *obj)
 }
 
 static void
+_sc_wheel_move(void *data,
+            Evas *e __UNUSED__,
+            Evas_Object *obj __UNUSED__,
+            void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev = (Evas_Event_Mouse_Wheel *)event_info;
+   Evas_Object *workspace = (Evas_Object *)data;
+   const Evas_Modifier *mods;
+
+   mods = evas_key_modifier_get(e);
+   if (evas_key_modifier_is_set(mods, "Control") && (ev->direction == 0))
+     {
+        /* if wheel goes up (zoom in), but Evas Event returns -1
+           if wheel goes down (zoom out), but Evas Event returns +1 */
+        double factor = workspace_zoom_factor_get(workspace);
+        workspace_zoom_factor_set(workspace, factor - ev->z * 0.1);
+     }
+}
+
+static void
 _workspace_smart_add(Evas_Object *o)
 {
    /* Allocate memory for workspace smart data*/
@@ -752,6 +772,8 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_scroller_content_min_limit(priv->scroller, false, false);
    elm_layout_content_set(priv->layout, "groupspace", priv->scroller);
 
+   evas_object_event_callback_add(priv->scroller, EVAS_CALLBACK_MOUSE_WHEEL,
+                                  _sc_wheel_move, o);
    evas_object_smart_callback_add(priv->scroller, "scroll",
                                   _sc_smart_move_cb, o);
    evas_object_smart_callback_add(priv->scroller, "vbar,drag",
