@@ -90,12 +90,12 @@ Diff *
 _attribute_change_new(va_list list)
 {
    Attribute_Diff *change = NULL;
+   char *string = NULL;
 
    change = (Attribute_Diff *)mem_calloc(1, sizeof(Attribute_Diff));
    change->diff.module_type = PROPERTY;
    change->diff.action_type = va_arg(list, Action);
-
-   change->param_type = va_arg(list, Value_Type);
+   change->param_type = (Value_Type)va_arg(list, Value_Type);
    switch(change->param_type)
      {
       case ONE:
@@ -109,8 +109,11 @@ _attribute_change_new(va_list list)
       break;
       case RENAME:
       case STRING:
-         change->string.old = eina_stringshare_add((char *)va_arg(list, char *));
-         change->string.new = eina_stringshare_add((char *)va_arg(list, char *));
+         string = (char *)va_arg(list, char *);
+         if (!string) string = "";
+         change->string.old = eina_stringshare_add(string);
+         if (!string) string = "";
+         change->string.new = eina_stringshare_add(string);
       break;
       case FOUR:
          change->four.old_1 = (int)va_arg(list, int);
@@ -139,10 +142,9 @@ _attribute_change_new(va_list list)
           change->state_value = (double)va_arg(list, double);
      }
 
-    return (Diff *)change;
+   return (Diff *)change;
 
 error:
    _attribute_change_free(change);
    return NULL;
-
 }
