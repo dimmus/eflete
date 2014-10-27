@@ -18,9 +18,8 @@
  */
 
 #include "utc_common.h"
-#include "main_window.h"
+#include "eflete.h"
 #include "history.h"
-
 /**
  * @defgroup history_test
  */
@@ -56,4 +55,9 @@ void history_diff_add_test_n3(int);
 void history_diff_add_test_n4(int);
 void history_diff_add_test_n5(int);
 void history_diff_add_test_n6(int);
+
+void history_undo_test_p1(int);
+void history_undo_test_n1(int);
+void history_undo_test_n2(int);
+void history_undo_test_n3(int);
 

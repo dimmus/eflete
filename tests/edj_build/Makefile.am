@@ -93,6 +93,7 @@ check: Makefile
 	$(builddir)/state_dialog_state_add.edj \
 	$(builddir)/state_dialog_state_del.edj \
 	$(builddir)/history_diff_add.edj \
+ 	$(builddir)/history_undo.edj \
    ;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

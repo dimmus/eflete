@@ -307,4 +307,20 @@ history_module_del(Evas_Object *source);
 Eina_Bool
 history_diff_add(Evas_Object *source, Target target, ...);
 
+/**
+ * Make undo n-count of changes for given source. Source should be initialized
+ * in history module with using @c history_module_add. In case when amount of
+ * the changes that can be canceled is less than inputted value - all changes
+ * will  be reverted.
+ *
+ * @param source The object, that have history of changes.
+ * @param count Qantity of changes that will be reverted.
+ *
+ * @return EINA_TRUE if change(s) undo successfuly, EINA_FALSE in otherwise.
+ *
+ * @ingroup History
+ */
+Eina_Bool
+history_undo(Evas_Object *source, unsigned int count);
+
 #endif /* HISTORY_H */

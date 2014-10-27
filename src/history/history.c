@@ -17,7 +17,6 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-
 #include "eflete.h"
 #include "main_window.h"
 #include "history.h"
@@ -81,6 +80,12 @@ _module_changes_clear(Module *module)
      }
 
    return result;
+}
+
+Eina_Bool
+history_undo(Evas_Object *source __UNUSED__, unsigned int count __UNUSED__)
+{
+   return false;
 }
 
 Eina_Bool
@@ -201,4 +206,5 @@ history_diff_add(Evas_Object *source, Target target, ...)
 
    return _change_save(module, change);
 }
+
 
