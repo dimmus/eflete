@@ -66,8 +66,10 @@ struct _Ws_Smart_Data
                                              In future clip rulers, for \
                                              increase efficiency of EFLETE */
    Evas_Object *obj;             /**< Self-reference to workspace */
-   Evas_Object *events;         /**< Needed for processing common events,\
+   Evas_Object *events;          /**< Needed for processing common events,\
                                    like mouse move or mouse click. */
+   Evas_Object *clipper;         /**< Needed for hiding all additional object on
+                                      scroller.*/
    Evas_Object *background;      /**< A backround image, \
                                    which swallowed into scroller.*/
    Evas_Object *ruler_hor;       /**< A ruler object, Horizontal.*/
@@ -799,6 +801,9 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_object_part_content_set(priv->scroller, "cross.swallow",
                                priv->button_separate);
 
+   Evas_Object *edje = elm_layout_edje_get(priv->scroller);
+   priv->clipper = (Evas_Object *) edje_object_part_object_get(edje, "clipper");
+
    /* create rulers*/
 #define RULER(RUL, SCAL, POINT, SWALL) \
    RUL = ewe_ruler_add(priv->scroller); \
@@ -1073,6 +1078,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         evas_object_smart_member_add(sd->highlight.space_hl, obj);
         evas_object_smart_callback_add(obj, "highlight,visible",
                                        _obj_area_visible_change, sd->highlight.space_hl);
+        evas_object_clip_set(sd->highlight.space_hl, sd->clipper);
      }
 
    if (!sd->highlight.highlight)
@@ -1080,6 +1086,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         sd->highlight.highlight = highlight_add(sd->scroller);
         evas_object_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
         evas_object_smart_member_add(sd->highlight.highlight, obj);
+        evas_object_clip_set(sd->highlight.highlight, sd->clipper);
      }
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
