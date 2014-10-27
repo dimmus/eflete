@@ -18,6 +18,7 @@
  */
 
 #include "container.h"
+#include "cursor.h"
 
 #define MY_CLASS_NAME "Container"
 
@@ -397,6 +398,7 @@ _container_smart_add(Evas_Object *o)
                                   _mouse_up_hTL_cb, o);
    evas_object_event_callback_add(priv->handler_TL.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_hTL_cb, o);
+   cursor_type_set(priv->handler_TL.obj, CURSOR_SIZING);
 
    priv->handler_BR.obj = edje_object_add(priv->e);
    priv->handler_BR.w = priv->handler_BR.h = 5;
@@ -406,6 +408,7 @@ _container_smart_add(Evas_Object *o)
                                   _mouse_up_hRB_cb, o);
    evas_object_event_callback_add(priv->handler_BR.obj, EVAS_CALLBACK_MOUSE_MOVE,
                                   _mouse_move_hBR_cb, o);
+   cursor_type_set(priv->handler_BR.obj, CURSOR_SIZING);
 
    priv->bg = evas_object_rectangle_add(priv->e);
    evas_object_color_set(priv->bg, 0, 0, 0, 0);
