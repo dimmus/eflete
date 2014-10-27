@@ -1,4 +1,4 @@
-/*
+/*I{
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,6 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ *}
  */
 
 #ifndef PROJECT_MANAGER_H
@@ -59,12 +60,6 @@ struct _Project
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
-
-   Eina_Inlist *widgets;
-   Eina_Inlist *layouts;
-
-   Eina_Bool is_saved;
-
    /** current editing group */
    Style *current_style;
 };
@@ -82,18 +77,7 @@ enum _Build
    BUILD_DEVELOP,
    /** resulting file is optimizated, all unused data excluted from file */
    BUILD_RELEASE,
-   BUILD_LAST
-};
-
-/**
- * @enum PM_Project_Status
- * @ingroup ProjectManager
- */
-enum _PM_Project_Status
-{
-   PM_PROJECT_ERROR,
-   PM_PROJECT_SUCCESS,
-   PM_PROJECT_LAST
+   LAST
 };
 
 /**
@@ -109,44 +93,6 @@ typedef struct _Project Project;
 typedef enum _Build Build;
 
 /**
- * @typedef PM_Project_Status
- * @ingroup ProjectManager
- */
-typedef enum _PM_Project_Status PM_Project_Status;
-
-/**
- * @typedef PM_Project_Thread
- * @ingroup ProjectManager
- */
-typedef Ecore_Thread PM_Project_Thread;
-
-/**
- * @typedef PM_Project_Progress_Cb
- * @ingroup ProjectManager
- */
-typedef Eina_Bool
-(* PM_Project_Progress_Cb)(void *data,
-                           Eina_Stringshare *progress_string,
-                           Eina_Stringshare *progress_substring);
-
-/**
- * @typedef PM_Project_Cb
- * @ingroup ProjectManager
- */
-typedef Eina_Bool
-(* PM_Project_Cb)(void *data,
-                  PM_Project_Status status,
-                  Project *project);
-
-/**
- * Stop project process.
- *
- * @ingroup ProjectManager
- */
-Eina_Bool
-pm_project_job_stop(PM_Project_Thread *pm_process);
-
-/**
  * Create a new project which based on the imported edj file.
  *
  * @param name The name of new project,
@@ -156,18 +102,12 @@ pm_project_job_stop(PM_Project_Thread *pm_process);
  *
  * @return The new #Project object, othewise NULL.
  *
- * @note You must sure that by path no folder with 'name'. If folder 'name' is
- *       there project files will be rewriten.
- *
  * @ingroup ProjectManager
  */
-PM_Project_Thread *
+Project *
 pm_project_import_edj(const char *name,
                       const char *path,
-                      const char *edj,
-                      PM_Project_Progress_Cb func_progress,
-                      PM_Project_Cb func_end,
-                      void *data);
+                      const char *edj);
 
 /**
  * Create a new project which base on the imported edc file.
