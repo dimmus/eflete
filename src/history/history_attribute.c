@@ -98,6 +98,34 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
                         change->state_value, change->integer.old) :
            change->func(source, change->part, change->integer.old);
      break;
+     case DOUBLE:
+        if (change->state)
+          change->func(source, change->part, change->state,
+                       change->state_value, change->doubl.old);
+        else
+           return false;
+     break;
+     case STRING:
+        change->state ?
+           change->func(source, change->part, change->state,
+                        change->state_value, change->string.old) :
+           change->func(source, change->part, change->string.old);
+     break;
+     case FOUR:
+        if (change->state)
+          change->func(source, change->part, change->state,
+                       change->state_value, change->four.old_1,
+                       change->four.old_2, change->four.old_3,
+                       change->four.old_4);
+        else
+           return false;
+     break;
+     case ONE:
+        if (!change->state)
+          change->func(source, change->integer.old);
+        else
+          return false;
+     break;
      default:
        ERR("Unsupported module type, that store diff");
        return false;
@@ -148,9 +176,8 @@ _attribute_change_new(va_list list)
       case RENAME:
       case STRING:
          string = (char *)va_arg(list, char *);
-         if (!string) string = "";
          change->string.old = eina_stringshare_add(string);
-         if (!string) string = "";
+         string = (char *)va_arg(list, char *);
          change->string.new = eina_stringshare_add(string);
       break;
       case FOUR:

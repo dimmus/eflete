@@ -349,6 +349,380 @@ END_TEST
  * @{
  * <tr>
  * <td>history_undo</td>
+ * <td>history_undo_test_p5</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Save current value of  aspect max param of "bg" part.
+ * @step 8 Set new value [0.4] for aspect param of "bg" part.
+ * @step 9 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 5 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of aspect max param of part "bg" with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) source, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p5)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Ecore_Evas *ee = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   double old_value = -1;
+   double new_value = 0.4;
+   double check_value = -5;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+   old_value = edje_edit_state_aspect_max_get(source, "bg", "default", 0.0);
+   edje_edit_state_aspect_max_set(source, "bg", "default", 0.0, new_value);
+   history_diff_add(source, PROPERTY, MODIFY, DOUBLE, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_state_aspect_max_set,
+                    "Min h", "bg", "default", 0.0);
+
+   result = history_undo(source, 1);
+   ck_assert_msg(result, "Failed to undo diff with DOUBLE value type.");
+   check_value = edje_edit_state_aspect_max_get(source, "bg", "default", 0.0);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   history_term(app->history);
+   ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p6</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Save current value of clip to param of "bg" part.
+ * @step 8 Set new value [events] for clip to param of "bg" part.
+ * @step 9 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 5 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of clip to param of part "bg" with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) source, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p6)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Ecore_Evas *ee = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Eina_Stringshare *old_value = NULL;
+   Eina_Stringshare *new_value =  NULL;
+   Eina_Stringshare *check_value = NULL;
+   const char *tmp;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   new_value = eina_stringshare_add("events");
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+   tmp = edje_edit_part_clip_to_get(source, "bg");
+   old_value = eina_stringshare_add(tmp);
+   edje_edit_part_clip_to_set(source, "bg", new_value);
+   history_diff_add(source, PROPERTY, MODIFY, STRING, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_part_clip_to_set,
+                    "clip to", "bg", NULL, 0.0);
+
+   result = history_undo(source, 1);
+   ck_assert_msg(result, "Failed to undo diff with STRING value type.");
+   tmp = edje_edit_part_clip_to_get(source, "bg");
+   check_value = eina_stringshare_add(tmp);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   eina_stringshare_del(new_value);
+   eina_stringshare_del(old_value);
+   eina_stringshare_del(check_value);
+   history_term(app->history);
+   ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p7</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Save current value of rel1 to x param of "radio" part.
+ * @step 8 Set new value [events] for rel1 to x param of "radio" part.
+ * @step 9 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 5 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of rel1 to x param of part "radio" with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) source, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p7)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Ecore_Evas *ee = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Eina_Stringshare *old_value = NULL;
+   Eina_Stringshare *new_value = NULL;
+   Eina_Stringshare *check_value = NULL;
+   const char *tmp;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   new_value = eina_stringshare_add("events");
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+   tmp = edje_edit_state_rel1_to_x_get(source, "radio", "default", 0.0);
+   old_value = eina_stringshare_add(tmp);
+   edje_edit_state_rel1_to_x_set(source, "radio", "default", 0.0, new_value);
+   history_diff_add(source, PROPERTY, MODIFY, STRING, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
+                    "clip to", "radio", "default", 0.0);
+
+   result = history_undo(source, 1);
+   ck_assert_msg(result, "Failed to undo diff with STRING value type.");
+   tmp = edje_edit_state_rel1_to_x_get(source, "radio", "default", 0.0);
+   check_value = eina_stringshare_add(tmp);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   eina_stringshare_del(new_value);
+   eina_stringshare_del(old_value);
+   eina_stringshare_del(check_value);
+   history_term(app->history);
+   ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p8</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Save current value of color param of "bg" part.
+ * @step 8 Set new value [80;90;100;120] for color param of "bg" part.
+ * @step 9 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 5 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of color param of part "bg" with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) source, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p8)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Ecore_Evas *ee = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   int oldr, oldg, oldb, olda;
+   int newr = 80, newg = 90, newb = 100, newa = 120;
+   int checkr, checkg, checkb, checka;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+   edje_edit_state_color_get(source, "radio", "default", 0.0, &oldr, &oldg,
+                             &oldb, &olda);
+   edje_edit_state_color_set(source, "radio", "default", 0.0, newr, newg,
+                             newb, newa);
+   history_diff_add(source, PROPERTY, MODIFY, FOUR, oldr, oldg, oldb, olda,
+                    newr, newg, newb, newa, "elm/radio/base/def",
+                    (void *)edje_edit_state_color_set,
+                    "clip to", "radio", "default", 0.0);
+
+   result = history_undo(source, 1);
+   ck_assert_msg(result, "Failed to undo diff with FOUR value type.");
+   edje_edit_state_color_get(source, "radio", "default", 0.0, &checkr, &checkg,
+                             &checkb, &checka);
+   ck_assert_msg(((checkr == oldr) && (checkg == oldg) && (checkb == oldb) &&
+                  (checka == olda )), "Canceled action doesn't change value");
+
+   history_term(app->history);
+   ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p9</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Save current value of  max height param of group.
+ * @step 8 Set new value [10] for max height param of group.
+ * @step 9 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 5 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of max height param of group with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) source, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p9)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Ecore_Evas *ee = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   int old_value = -1;
+   int new_value = 10;
+   int check_value = -15;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+   old_value = edje_edit_group_max_h_get(source);
+   edje_edit_group_max_h_set(source, new_value);
+   history_diff_add(source, PROPERTY, MODIFY, ONE, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
+                    "Min h", NULL, NULL, 0.0);
+
+   result = history_undo(source, 1);
+   ck_assert_msg(result, "Failed to undo diff with ONE value type.");
+   check_value = edje_edit_group_max_h_get(source);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   history_term(app->history);
+   ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
  * <td>history_undo_test_n1</td>
  * <td>
  * @precondition
