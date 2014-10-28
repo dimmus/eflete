@@ -88,7 +88,9 @@ static void
 _general_form(Preferences *preference)
 {
    Evas_Object *panes, *layout, *profile;
-   Evas_Object *entry_home, *entry_swap;
+   Evas_Object *entry_home, *entry_swap, *autosave_frame, *store_frame;
+   Evas_Object *autosave_layout, *store_layout;
+   Evas_Object *autosave_ck, *period_sp, *storeui_ck, *winpos_ck;
    Profile *pr;
    /*
     * Eina_List *prof_list, *l;
@@ -127,6 +129,42 @@ _general_form(Preferences *preference)
    EWE_ENTRY_ADD(pref_layout.general, entry_swap, true, DEFAULT_STYLE);
    elm_object_part_text_set(entry_swap, "elm.text", prof_general.swap_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.swap", entry_swap);
+
+   FRAME_ADD(pref_layout.general, autosave_frame, false, _("Autosave"))
+   elm_object_part_content_set(pref_layout.general, "swallow.autosave", autosave_frame);
+   autosave_layout = elm_layout_add(autosave_frame);
+   evas_object_size_hint_weight_set(autosave_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(autosave_layout, EFLETE_EDJ, "elm/layout/preferences/frame");
+   evas_object_show(autosave_layout);
+   elm_object_content_set(autosave_frame, autosave_layout);
+   elm_object_part_text_set(autosave_layout, "label.first", _("autosave"));
+   elm_object_part_text_set(autosave_layout, "label.second", _("period"));
+
+   CHECK_ADD(autosave_layout, autosave_ck, DEFAULT_STYLE);
+   elm_check_state_set(autosave_ck, prof_general.autosave.autosave);
+   elm_object_part_content_set(autosave_layout, "swallow.first", autosave_ck);
+
+   SPINNER_ADD(autosave_layout, period_sp, 0.0, 9999.0, 1.0, true, DEFAULT_STYLE);
+   elm_spinner_value_set(period_sp, prof_general.autosave.period);
+   elm_object_part_content_set(autosave_layout, "swallow.second", period_sp);
+
+   FRAME_ADD(pref_layout.general, store_frame, false, _("UI"))
+   elm_object_part_content_set(pref_layout.general, "swallow.uistore", store_frame);
+   store_layout = elm_layout_add(store_frame);
+   evas_object_size_hint_weight_set(store_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_file_set(store_layout, EFLETE_EDJ, "elm/layout/preferences/frame");
+   evas_object_show(store_layout);
+   elm_object_content_set(store_frame, store_layout);
+   elm_object_part_text_set(store_layout, "label.first", _("UI store on exit"));
+   elm_object_part_text_set(store_layout, "label.second", _("store window position"));
+
+   CHECK_ADD(store_layout, storeui_ck, DEFAULT_STYLE);
+   elm_check_state_set(storeui_ck, prof_general.save_ui);
+   elm_object_part_content_set(store_layout, "swallow.first", storeui_ck);
+
+   CHECK_ADD(store_layout, winpos_ck, DEFAULT_STYLE);
+   elm_check_state_set(winpos_ck, prof_general.save_win_pos);
+   elm_object_part_content_set(store_layout, "swallow.second", winpos_ck);
 }
 
 static void
