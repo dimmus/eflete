@@ -64,3 +64,11 @@ void history_undo_test_n1(int);
 void history_undo_test_n2(int);
 void history_undo_test_n3(int);
 
+void history_redo_test_p1(int);
+void history_redo_test_p2(int);
+void history_redo_test_p3(int);
+void history_redo_test_p4(int);
+void history_redo_test_n1(int);
+void history_redo_test_n2(int);
+void history_redo_test_n3(int);
+

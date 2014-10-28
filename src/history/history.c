@@ -105,6 +105,12 @@ _module_changes_clear(Module *module)
 }
 
 Eina_Bool
+history_redo(Evas_Object *source __UNUSED__, int count __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
 history_undo(Evas_Object *source, int count)
 {
    if ((count <= 0 ) || (!source)) return false;

@@ -323,4 +323,20 @@ history_diff_add(Evas_Object *source, Target target, ...);
 Eina_Bool
 history_undo(Evas_Object *source, int count);
 
+/**
+ * Make redo n-count of changes for given source. Source should be initialized
+ * in history module with using @c history_module_add. In case when amount of
+ * the changes that can be restored is less than inputted value - all changes
+ * will be recovered.
+ *
+ * @param source The object, that have history of changes.
+ * @param count Qantity of changes that will be restored.
+ *
+ * @return EINA_TRUE if change(s) undo successfuly, EINA_FALSE in otherwise.
+ *
+ * @ingroup History
+ */
+Eina_Bool
+history_redo(Evas_Object *source, int count);
+
 #endif /* HISTORY_H */
