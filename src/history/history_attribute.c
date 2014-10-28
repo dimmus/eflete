@@ -69,9 +69,22 @@ struct _Attribute_Diff
 };
 
 Eina_Bool
-_attribute_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+_attribute_redo(Evas_Object *source, Attribute_Diff *change)
 {
-   return false;
+   switch(change->param_type)
+    {
+     case INT:
+        change->state ?
+           change->func(source, change->part, change->state,
+                        change->state_value, change->integer.new) :
+           change->func(source, change->part, change->integer.new);
+     break;
+     default:
+       ERR("Unsupported param type");
+       return false;
+     break;
+    }
+   return true;
 }
 
 Eina_Bool
