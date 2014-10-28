@@ -1,4 +1,4 @@
-/*I{
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,16 +15,18 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- *}
  */
 
 #include "project_manager_new.h"
 #include "alloc.h"
 
-Project *
+Project_Worker *
 pm_project_import_edj(const char *name __UNUSED__,
                       const char *path __UNUSED__,
-                      const char *edj __UNUSED__)
+                      const char *edj __UNUSED__,
+                      PM_Project_Progress_Cb func_progress __UNUSED__,
+                      PM_Project_End_Cb func_end __UNUSED__,
+                      void * data __UNUSED__)
 {
    return NULL;
 }

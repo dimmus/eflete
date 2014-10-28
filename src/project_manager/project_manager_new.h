@@ -1,4 +1,4 @@
-/*I{
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- *}
  */
 
 #ifndef PROJECT_MANAGER_H
@@ -81,6 +80,22 @@ enum _Build
 };
 
 /**
+ * @enum _PM_Project_Result
+ *
+ * The Project process result, it's means result of all project process: import,
+ * new project creation, save, etc.
+ *
+ * @ingroup ProjectManager
+ */
+enum _PM_Project_Result
+{
+   PM_PROJECT_SUCCESS,
+   PM_PROJECT_CANCEL,
+   PM_PROJECT_ERROR,
+   PM_PROJECT_LAST
+};
+
+/**
  * @typedef Project
  * @ingroup ProjectManager
  */
@@ -93,21 +108,93 @@ typedef struct _Project Project;
 typedef enum _Build Build;
 
 /**
- * Create a new project which based on the imported edj file.
+ * @typedef PM_Project_Status
+ * @ingroup ProjectManager
+ */
+typedef enum _PM_Project_Result PM_Project_Result;
+
+/**
+ * @typedef Project_Worker
+ * @ingroup ProjectManager
+ */
+typedef struct _Project_Worker Project_Worker;
+
+/**
+ * @typedef PM_Project_Progress_Cb
  *
- * @param name The name of new project,
- * @param path The path of new project, by this path will be created a project
- *             folder,
- * @param edj The path to the edj file wich will imported.
+ * The Project process callback, this callback be called to receive the progress
+ * data (string).
  *
- * @return The new #Project object, othewise NULL.
+ * @param data The user data;
+ * @param progress_string The progress string from running Project thread.
+ *
+ * @return EINA_TRUE if callback done success, otherwise EINA_FALSE.
+ *
+ * @note If callback return EINA_FALSE the Project thread will be stoped.
  *
  * @ingroup ProjectManager
  */
-Project *
+typedef Eina_Bool
+(* PM_Project_Progress_Cb)(void *data, Eina_Stringshare *progress_string);
+
+/**
+ * @typedef PM_Project_End_Cb
+ *
+ * This callback be called on the end of Project process.
+ *
+ * @param data The user data;
+ * @param result The project pro.
+ *
+ * @ingroup ProjectManager
+ */
+typedef void
+(* PM_Project_End_Cb)(void *data, PM_Project_Result result);
+
+/**
+ * @struct _Project_Worker
+ *
+ * A handler for Project process
+ *
+ * @ingroup ProjectManager
+ */
+struct _Project_Worker
+{
+   /** The handler of Project thread */
+   Eina_Thread thread;
+   /** The progress callback. See #PM_Project_Progress_Cb  */
+   PM_Project_Progress_Cb func_progress;
+   /** The end callback. See #PM_Project_End_Cb */
+   PM_Project_End_Cb func_end;
+   /** The project process result */
+   PM_Project_Result result;
+   /** The new project, was created in the Project process. This pointer will be
+    * NULL until the Project process finished it's job.*/
+   Project *project;
+};
+
+/**
+ * Create a new project which based on the imported edj file.
+ *
+ * @param name The name of new project;
+ * @param path The path of new project, by this path will be created a project
+ *             folder;
+ * @param edj The path to the edj file wich will imported;
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
+ *
+ * @return The new #Project_Worker object, othewise NULL.
+ *
+ * @ingroup ProjectManager
+ */
+Project_Worker *
 pm_project_import_edj(const char *name,
                       const char *path,
-                      const char *edj);
+                      const char *edj,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end,
+                      void * data);
 
 /**
  * Create a new project which base on the imported edc file.
