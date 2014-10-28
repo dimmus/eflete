@@ -245,15 +245,13 @@ static void
 _groupedit_smart_calculate(Evas_Object *o)
 {
    Evas_Coord x, y, w, h;
-   Evas_Coord pw, ph, ow, oh;
+   Evas_Coord px, py, pw, ph;
    char buff[16];
 
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(o, priv, RETURN_VOID)
-   evas_object_geometry_get(priv->obj, NULL, NULL, &ow, &oh);
-   evas_object_geometry_get(priv->parent, NULL, NULL, &pw, &ph);
-   if (ow < pw) ow = pw;
-   if (oh < ph) oh = ph;
-   evas_object_resize(priv->event, ow, oh);
+   evas_object_geometry_get(priv->parent, &px, &py, &pw, &ph);
+   evas_object_resize(priv->event, pw, ph);
+   evas_object_move(priv->event, px, py);
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
 
