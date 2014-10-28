@@ -1064,6 +1064,11 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
                                   _ws_ruler_rel_zero_move_cb, obj);
    groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->container.obj);
+   container_padding_size_set(sd->container.obj,
+                              PADDING_SIZE,
+                              PADDING_SIZE,
+                              PADDING_SIZE,
+                              PADDING_SIZE);
    evas_object_show(sd->container.obj);
    evas_object_show(sd->groupedit);
 
@@ -1296,7 +1301,7 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
 {
    Evas_Object *follow;
    const char *name = NULL;
-   Eina_Bool sep;
+   Eina_Bool sep, success;
 
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
@@ -1333,7 +1338,8 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         elm_menu_item_icon_name_set(sd->menu.items.mode_separate, "");
      }
 
-   groupedit_edit_object_parts_separated(sd->groupedit, separate);
+   success = groupedit_edit_object_parts_separated(sd->groupedit, separate);
+   if (!success) return false;
 
    /* the code below is really important to be here, because after function that
       was called before groupedit changed it's size, so we can deal with container

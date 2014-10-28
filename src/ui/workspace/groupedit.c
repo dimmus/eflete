@@ -552,14 +552,14 @@ groupedit_part_object_area_visible_get(Evas_Object *obj)
    return sd->obj_area.visible;
 }
 
-void
+Eina_Bool
 groupedit_edit_object_parts_separated(Evas_Object *obj,
                                       Eina_Bool separated)
 {
    int w, h, count;
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID);
-   if ((!sd->edit_obj) || (!sd->parts)) return;
-   if (sd->separated == separated) return;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!sd->edit_obj) || (!sd->parts)) return false;
+   if (sd->separated == separated) return true;
 
    sd->separated = separated;
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
@@ -587,6 +587,7 @@ groupedit_edit_object_parts_separated(Evas_Object *obj,
         evas_object_smart_callback_call(obj, SIG_PART_SEPARETE_CLOSE, NULL);
         _selected_item_return_to_place(sd);
      }
+   return true;
 }
 
 Eina_Bool

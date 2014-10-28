@@ -297,9 +297,11 @@ groupedit_part_object_area_visible_get(Evas_Object *obj);
  * @param obj The groupedit object,
  * @param separated ON/OFF (true/false) the separate mode,
  *
+ * @return EINA_TRUE when success, EINA_FALSE otherwise.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_edit_object_parts_separated(Evas_Object *obj,
                                       Eina_Bool separated);
 
