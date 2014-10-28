@@ -181,7 +181,7 @@ history_undo(Evas_Object *source, int count)
    if (!prev) module->current_change = NULL;
    else module->current_change = eina_list_data_get(prev);
 
-   if (count > 1) history_undo(source, --count);
+   if (count > 1) result = history_undo(source, --count);
 
    return result;
 }

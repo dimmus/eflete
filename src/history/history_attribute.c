@@ -79,6 +79,34 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
                         change->state_value, change->integer.new) :
            change->func(source, change->part, change->integer.new);
      break;
+     case DOUBLE:
+        if (change->state)
+           change->func(source, change->part, change->state,
+                        change->state_value, change->doubl.new);
+        else
+          return false;
+     break;
+     case STRING:
+        change->state ?
+           change->func(source, change->part, change->state,
+                        change->state_value, change->string.new) :
+           change->func(source, change->part, change->string.new);
+     break;
+     case FOUR:
+        if (change->state)
+           change->func(source, change->part, change->state,
+                        change->state_value, change->four.new_1,
+                        change->four.new_2, change->four.new_3,
+                        change->four.new_4);
+        else
+          return false;
+     break;
+     case ONE:
+        if (!change->state)
+           change->func(source, change->integer.new);
+        else
+          return false;
+     break;
      default:
        ERR("Unsupported param type");
        return false;
