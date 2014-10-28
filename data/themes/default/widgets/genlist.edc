@@ -1542,6 +1542,19 @@ group { name: "elm/genlist/base/eflete/dark";
       }
    }
 }
+
+group { name: "elm/genlist/base/eflete/usage_list";
+   inherit: "elm/genlist/base/eflete/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 46 48 49 255;
+         }
+      }
+   }
+}
+
 #undef ITEM_HEIGHT
 #ungef BORDER_COLOR
 #undef LIST_BORDER_COLOR

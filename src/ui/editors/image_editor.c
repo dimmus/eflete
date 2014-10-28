@@ -886,7 +886,7 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
    evas_object_show(layout);
 
    genlist = elm_genlist_add(layout);
-   elm_object_style_set(genlist, "eflete/default");
+   elm_object_style_set(genlist, "eflete/usage_list");
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
@@ -914,11 +914,13 @@ _image_info_initiate(Image_Editor *img_edit)
    Ewe_Tabs_Item *it = NULL;
 
    img_edit->tabs = ewe_tabs_add(img_edit->layout);
-   it = ewe_tabs_item_append(img_edit->tabs, NULL, "Image Info", NULL);
+   elm_object_style_set(img_edit->tabs, "bookmark");
+
+   it = ewe_tabs_item_append(img_edit->tabs, NULL, "Image Info", "bookmark");
    _image_info_box_create(img_edit);
    ewe_tabs_item_content_set(img_edit->tabs, it,
                              img_edit->image_data_fields.layout);
-   it = ewe_tabs_item_append(img_edit->tabs, NULL, "", NULL);
+   it = ewe_tabs_item_append(img_edit->tabs, NULL, "", "bookmark");
    ewe_tabs_item_content_set(img_edit->tabs, it,
                              _image_usage_layout_create(img_edit,
                                                         img_edit->layout));
