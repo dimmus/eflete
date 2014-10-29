@@ -107,6 +107,15 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
         else
           return false;
      break;
+     case RENAME:
+        if (!change->state)
+          {
+             change->func(source, change->part, change->string.new);
+             change->part = change->string.new;
+          }
+        else
+          return false;
+     break;
      default:
        ERR("Unsupported param type");
        return false;
