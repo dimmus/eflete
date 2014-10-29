@@ -154,6 +154,14 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
         else
           return false;
      break;
+     case RENAME:
+        if (!change->state)
+          {
+             change->func(source, change->part, change->string.old);
+             change->part = change->string.old;
+          }
+        else return false;
+     break;
      default:
        ERR("Unsupported module type, that store diff");
        return false;

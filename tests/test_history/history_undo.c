@@ -723,6 +723,73 @@ END_TEST
  * @{
  * <tr>
  * <td>history_undo</td>
+ * <td>history_undo_test_p10</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Set new name [new] for part "bg".
+ * @step 8 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 5 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check is exist part "bg" in group.
+ * </td>
+ * <td>(Evas_Object *) source, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p10)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Ecore_Evas *ee = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   char *old_value = "bg";
+   char *new_value = "new";
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+   edje_edit_part_name_set(source, old_value, new_value);
+   history_diff_add(source, PROPERTY, MODIFY, RENAME, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_part_name_set,
+                    "Rename", new_value, NULL, 0.0);
+
+   result = history_undo(source, 1);
+   ck_assert_msg(result, "Failed to undo diff with RENAME value type.");
+   result = edje_edit_part_exist(source, old_value);
+   ck_assert_msg(result, "Canceled action doesn't change value");
+
+   history_term(app->history);
+   ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
  * <td>history_undo_test_n1</td>
  * <td>
  * @precondition
