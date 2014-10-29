@@ -591,14 +591,13 @@ group { name: "eflete/sound_editor/item/default";
             color: 223 219 210 255;
             text {
                align: 0.0 0.5;
-               elipsis: -1;
                font: FN;
                size: 12;
                min: 0 0;
                max: 1 1;
             }
             rel1.to: "swallow.first";
-            rel2.to: "swallow.first";
+            rel2.to: "swallow.second";
          }
       }
       part { name: "area.value.spacer";
@@ -640,7 +639,6 @@ group { name: "eflete/sound_editor/item/default";
             fixed: 1 0;
             text {
                align: 0.0 0.5;
-               elipsis: -1;
                font: FN;
                size: 12;
                min: 0 0;
@@ -651,7 +649,7 @@ group { name: "eflete/sound_editor/item/default";
                to_y: "area.item";
             }
             rel2 {
-               to_x: "area.value.spacer2";
+               to_x: "swallow.second";
                to_y: "area.item";
             }
          }
