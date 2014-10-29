@@ -155,7 +155,8 @@ test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
 test_widget_manager/wm_widget_list_layouts_load.c \
 test_widget_manager/wm_layouts_list_objects_load.c \
-test_widget_manager/wm_widget_list_objects_load.c
+test_widget_manager/wm_widget_list_objects_load.c \
+test_widget_manager/wm_part_by_name_find.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 

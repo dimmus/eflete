@@ -66,6 +66,7 @@ check: Makefile
 	$(builddir)/wm_style_free.edj \
 	$(builddir)/wm_part_del.edj \
 	$(builddir)/wm_part_add.edj \
+	$(builddir)/wm_part_by_name_find.edj \
 	$(builddir)/ui_widget_list_data_set.edj \
 	$(builddir)/ui_widget_list_data_reload.edj \
 	$(builddir)/ui_widget_list_layout_reload.edj \
