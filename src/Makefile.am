@@ -92,6 +92,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
+-I${top_srcdir}/src/ui/preference \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @EWE_CFLAGS@ \
