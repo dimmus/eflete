@@ -156,4 +156,29 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change);
 Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change);
 
+/* INTERNAL FUNCTIONS FOR HISTORY_UI SUBMODULE */
+/**
+ * @defgroup History_UI History ui module
+ * @ingroup History
+ *
+ * This submodule manage UI view of history changes. Create main genlist,
+ * manage styles for items (select item in "inactive mode", show color marks
+ * for different types of actions). Manage user input on history genlist.
+ *
+ * @note This is private submodule for history module.
+ *
+ */
+
+/**
+ * Create main genlist and item classes, that needed for view changes on UI.
+ *
+ * @param parent The Evas_Object, that will be parent for genlis.
+ *
+ * @return Evas_Object, that represent genlist widget.
+ *
+ * @ingroup History_UI
+ */
+Evas_Object *
+_history_ui_add(Evas_Object *parent);
+
 #endif /* HISTORY_PRIVATE_H */

@@ -84,3 +84,8 @@ void history_redo_test_n1(int);
 void history_redo_test_n2(int);
 void history_redo_test_n3(int);
 
+void history_genlist_get_test_p1(int);
+void history_genlist_get_test_p2(int);
+void history_genlist_get_test_n1(int);
+void history_genlist_get_test_n2(int);
+

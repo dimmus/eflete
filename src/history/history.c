@@ -255,6 +255,19 @@ history_module_del(Evas_Object *source)
    return true;
 }
 
+Evas_Object *
+history_genlist_get(History *history, Evas_Object *parent)
+{
+   if (!history) return NULL;
+
+   if (history->genlist) return history->genlist;
+
+   if (!parent) return NULL;
+   history->genlist = _history_ui_add(parent);
+
+   return history->genlist;
+}
+
 History *
 history_init(void)
 {

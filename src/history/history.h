@@ -339,4 +339,21 @@ history_undo(Evas_Object *source, int count);
 Eina_Bool
 history_redo(Evas_Object *source, int count);
 
+/**
+ * If genlist for history submodule wasn't created, will be returned newly
+ * created genlist. In case when genlist is already created it will be returned.
+ *
+ * @param history A History object, that was created wirt using @c history_init.
+ * @param parent A Evas_Object, that can be a parent. This param can be NULL if
+ *               genlist for history is already created.
+ *
+ * @return A const Evas_Object, that represent genlist from history module.
+ *
+ * @note returned object shoud be changed only in history module.
+ *
+ * @ingroup History.
+ */
+Evas_Object *
+history_genlist_get(History *history, Evas_Object *parent);
+
 #endif /* HISTORY_H */
