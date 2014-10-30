@@ -29,7 +29,7 @@
    worker = (Project_Thread *)mem_malloc(sizeof(Project_Thread)); \
    worker->func_progress = FUNC_PROGRESS; \
    worker->func_end = FUNC_END; \
-   worker->data = DATA; \
+   worker->data = (void *)DATA; \
    worker->project = NULL; \
    worker->name = eina_stringshare_add(NAME); \
    worker->path = eina_stringshare_add(PATH); \
@@ -51,6 +51,26 @@
 
 #define WORKER_LOCK_TAKE            eina_lock_take(&worker->mutex)
 #define WORKER_LOCK_RELEASE         eina_lock_release(&worker->mutex)
+
+#define PROGRESS_SEND(FMT, ...) \
+{ \
+   if (worker->func_progress) \
+      { \
+         WORKER_LOCK_TAKE; \
+            worker->message = eina_stringshare_printf(FMT, ## __VA_ARGS__); \
+         WORKER_LOCK_RELEASE; \
+         ecore_main_loop_thread_safe_call_async(_progress_send, worker); \
+      } \
+}
+
+#define END_SEND(STATUS) \
+{ \
+   if (worker->func_end) \
+      { \
+         worker->result = STATUS; \
+         ecore_main_loop_thread_safe_call_async(_end_send, worker); \
+      } \
+}
 
 static Eet_Data_Descriptor *eed_project = NULL;
 
@@ -89,6 +109,43 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
 
    eet_close(ef);
    return ok;
+}
+
+static void
+_progress_send(void *data)
+{
+   Project_Thread *worker;
+   PM_Project_Progress_Cb func;
+   Eina_Stringshare *message;
+   void *udata;
+
+   worker = (Project_Thread *)data;
+   /** Copy the links to callback and meesage, to fast release worker resource. */
+   WORKER_LOCK_TAKE;
+      func = worker->func_progress;
+      message = eina_stringshare_ref(worker->message);
+      udata = worker->data;
+   WORKER_LOCK_RELEASE;
+   func(udata, message);
+   eina_stringshare_del(message);
+}
+
+static void
+_end_send(void *data)
+{
+   Project_Thread *worker;
+   PM_Project_End_Cb func;
+   PM_Project_Result result;
+   void *udata;
+
+   worker = (Project_Thread *)data;
+   /** Copy the links to callback and meesage, to fast release worker resource. */
+   WORKER_LOCK_TAKE;
+      func = worker->func_end;
+      result = worker->result;
+      udata = worker->data;
+   WORKER_LOCK_RELEASE;
+   func(udata, result);
 }
 
 static Project *
@@ -138,17 +195,37 @@ _project_files_create(Project_Thread *worker)
 }
 
 static Eina_Bool
+_copy_file_progress_cb(void *data,
+                       unsigned long long done,
+                       unsigned long long total)
+{
+   short int percentage;
+   Project_Thread *worker;
+
+   worker = (Project_Thread *)data;
+   percentage = (short int)(done / total) * 100;
+   PROGRESS_SEND(_("Importing... %u"), percentage);
+
+   return true;
+}
+
+static Eina_Bool
 _project_dev_file_copy(Project_Thread *worker)
 {
+   Eina_Stringshare *src, *dst;
    Eina_Bool result;
 
    WORKER_LOCK_TAKE;
-      result = eina_file_copy(worker->edj, worker->project->dev,
-                              EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
-                              NULL, NULL);
+      src = eina_stringshare_ref(worker->edj);
+      dst = eina_stringshare_ref(worker->project->dev);
    WORKER_LOCK_RELEASE;
+      result = eina_file_copy(src, dst,
+                              EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                              _copy_file_progress_cb, worker);
 
    DBG("Copy the .dev file to project folder.");
+   eina_stringshare_del(src);
+   eina_stringshare_del(dst);
    return result;
 }
 
@@ -167,11 +244,15 @@ _project_import_edj(void *data,
    worker = (Project_Thread *)data;
 
    THREAD_TESTCANCEL;
+   PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
    THREAD_TESTCANCEL;
+   PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
 
-   return worker;
+   END_SEND(PM_PROJECT_SUCCESS);
+
+   return NULL;
 }
 
 

@@ -168,7 +168,7 @@ struct _Project_Thread
    /** The project process result. */
    PM_Project_Result result;
    /** The user data. */
-   const void *data;
+   void *data;
    /** The new project, was created in the Project process. This pointer will be
     * NULL until the Project process finished it's job.*/
    Project *project;
@@ -180,6 +180,8 @@ struct _Project_Thread
    const char *edj;
    /** edje_cc options. Used for 'new project' and 'import from edc'. */
    const char *build_options;
+   /** Message string */
+   Eina_Stringshare *message;
    /** Mutex, I say no more then. */
    Eina_Lock mutex;
 };

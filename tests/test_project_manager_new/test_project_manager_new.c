@@ -24,6 +24,8 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, pm_project_import_edj_test_p);
+   tcase_add_test(tcase, pm_project_import_edj_test_p1);
+   tcase_add_test(tcase, pm_project_import_edj_test_p2);
 
    suite_add_tcase(suite, tcase);
    return suite;
