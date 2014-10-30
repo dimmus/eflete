@@ -196,6 +196,7 @@ ui_panes_add(App_Data *ap)
    ap->block.left_bottom = block;
 
    block = ui_block_add(ap->win_layout);
+   ui_block_title_text_set(block, _("History of changes"));
    elm_object_part_content_set(panes_right_hor, "left", block);
    evas_object_show(block);
    ap->block.right_top = block;
