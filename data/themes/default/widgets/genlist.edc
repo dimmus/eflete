@@ -3,6 +3,7 @@
 #define LIGHT_BORDER_COLOR 70 72 73 255
 #define LIST_BORDER_COLOR 45 46 47 255
 #define LIST_ITEM_SELECTED_COLOR 58 110 155 255
+#define LIST_ITEM_INACTIVE_COLOR 23 34 43 255
 #define BG_COLOR 39 42 43 255
 #define LIST_ITEM_REORDERED_COLOR 200 150 0 255
 
@@ -1056,6 +1057,484 @@ group { name: "elm/genlist/item/eflete/mode/default";
    }
 }
 
+group { name: "elm/genlist/item/eflete/history/default";
+   data {
+      item: "texts" "elm.text.source elm.text.message elm.text.new elm.text.old \
+             elm.text.state";
+      item: "treesize" "15";
+      item: "stacking" "above";
+      item: "selectraise" "on";
+   }
+   parts {
+      part { name: "event";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "bg";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         clip_to: "disclip";
+         description { state: "default" 0.0;
+            color: LIGHT_GREY_BG_COLOR;
+            rel2.offset: 0 -2;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: LIST_ITEM_SELECTED_COLOR;
+         }
+         description { state: "inactive" 0.0;
+            inherit: "default" 0.0;
+            color: LIST_ITEM_INACTIVE_COLOR;
+         }
+      }
+      part { name: "disclip";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 125;
+         }
+      }
+      part { name: "left_pad";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(6, 6);
+         }
+      }
+      part { name: "right_pad";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(6, 6);
+         }
+      }
+      part { name: "pad.indicator";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0 0;
+            SET_SIZE(5, 5);
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "left_pad";
+            }
+         }
+      }
+      part { name: "text_arrea";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "pad.indicator";
+               to_y: "left_pad";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "right_pad";
+            }
+         }
+      }
+      part { name: "elm.text.source";
+         type: TEXT;
+         mouse_events: 0;
+         scale: 1;
+         clip_to: "disclip";
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color: FN_COL_DEFAULT;
+            rel1.to: "text_arrea";
+            rel2.to: "text_arrea";
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+               align: 0.0 0.0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "base_border_top";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 1 1;
+            color: LIGHT_BORDER_COLOR;
+            rel1 {
+               relative: 0.5 0.0;
+               offset: 0 -1;
+               to_x: "left_pad";
+            }
+            rel2 {
+               relative: 0.5 0.0;
+               offset: 0 -1;
+               to_x: "right_pad";
+            }
+         }
+      }
+      part { name: "base_border_bot";
+         type: RECT;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 1 1;
+            fixed: 1 1;
+            color: LIGHT_BORDER_COLOR;
+            rel1 {
+               relative: 0.5 1.0;
+               to_x: "left_pad";
+            }
+            rel2 {
+               relative: 0.5 1.0;
+               to_x: "right_pad";
+            }
+         }
+      }
+      part { name: "pad.texts";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "elm.text.source";
+               to_y: "text_arrea";
+            }
+            rel2 {
+               to: "text_arrea";
+            }
+         }
+      }
+      part { name: "elm.text.new";
+         type: TEXT;
+         mouse_events: 0;
+         scale: 1;
+         clip_to: "disclip";
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            color: FN_COL_DEFAULT;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "pad.new";
+               to_y: "label.new";
+            }
+            rel2 {
+               offset: -1 0;
+               to_x: "pad.texts.middle";
+               to_y: "label.new";
+            }
+            text {
+               font: FN;
+               size: 12;
+               min: 1 1;
+               max: 1 0;
+               align: 1.0 0.0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "label.new";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            fixed: 1 1;
+            color: FN_COL_DEFAULT;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "pad.message";
+               to_y: "elm.text.message";
+            }
+            rel2 {
+               offset: -1 0;
+               to: "elm.text.message";
+            }
+            text {
+               text: "to";
+               font: FN;
+               size: 12;
+               min: 1 0;
+               max: 1 0;
+               align: 1.0 0.0;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "label.old";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color: FN_COL_GREY;
+            rel1 {
+               relative: 1.0 1.0;
+               to_x: "pad.message";
+               to_y: "pad.message.bottom";
+            }
+            rel2 {
+               offset: -1 0;
+               to: "text_arrea";
+            }
+            text {
+               text: "from";
+               font: FN;
+               size: 10;
+               min: 1 1;
+               max: 1 1;
+               align: 0.0 0.5;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "elm.text.old";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color: FN_COL_GREY;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "pad.old";
+               to_y: "label.old";
+            }
+            rel2 {
+               offset: -1 0;
+               to_x: "pad.texts.middle";
+               to_y: "label.old";
+            }
+            text {
+               font: FN;
+               size: 10;
+               min: 1 1;
+               max: 1 1;
+               align: 1.0 0.5;
+               ellipsis: -1;
+            }
+         }
+      }
+      part { name: "pad.texts.middle";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            SET_SIZE(5, 5);
+            rel1.to: "text_arrea";
+            rel2.to: "text_arrea";
+         }
+      }
+      part { name: "pad.texts.top";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            SET_SIZE(5, 5);
+            rel1.to: "text_arrea";
+            rel2.to: "text_arrea";
+         }
+      }
+      part { name: "indicator";
+         type: RECT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            max: 5 -1;
+            color: WHITE_INVISIBLE_COLOR;
+            rel1 {
+               to: "left_pad";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "left_pad";
+               to_y: "right_pad";
+               relative: 1.0 0.0;
+            }
+         }
+         description { state: "delete" 0.0;
+            inherit: "default" 0.0;
+            color: 175 80 80 255;
+         }
+         description { state: "add" 0.0;
+            inherit: "default" 0.0;
+            color: 50 108 50 255;
+         }
+         description { state: "change" 0.0;
+            inherit: "default" 0.0;
+            color: 62 71 177 255;
+         }
+         description { state: "restack" 0.0;
+            inherit: "default" 0.0;
+            color: 218 118 64 255;
+          }
+      }
+      part { name: "elm.text.state";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            color: FN_COL_GREY;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "text_arrea";
+               to_y: "pad.message.bottom";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "pad.message";
+               to_y: "text_arrea";
+            }
+            text {
+               font: FN;
+               size: 10;
+               min: 0 1;
+               max: 0 1;
+               align: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.text.message";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            color: FN_COL_DEFAULT;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "pad.texts";
+               to_y: "elm.text.source";
+            }
+            rel2.to_y: "elm.text.source";
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "pad.message";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1 {
+               relative: 1.0 0.0;
+               to: "elm.text.message";
+            }
+         }
+      }
+      part { name: "pad.new";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1 {
+               relative: 1.0 0.0;
+               to: "label.new";
+            }
+         }
+      }
+      part { name: "pad.message.bottom";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1 {
+               relative: 0.0 1.0;
+               to: "elm.text.message";
+            }
+         }
+      }
+      part { name: "pad.old";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1 {
+               relative: 1.0 0.0;
+               to: "label.old";
+            }
+         }
+      }
+   }
+   programs {
+      program { name: "go_disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "disclip";
+      }
+      program { name: "go_enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "disclip";
+      }
+      program { name: "go_active";
+         signal: "elm,state,selected";
+         source: "elm";
+         action: STATE_SET "selected" 0.0;
+         target: "bg";
+         target: "elm.text.source";
+         target: "elm.text.new";
+      }
+      program { name: "go_passive";
+         signal: "elm,state,unselected";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.10000;
+         target: "bg";
+         target: "elm.text.source";
+         target: "elm.text.new";
+      }
+      program { name: "ind_delete";
+         signal: "eflete,state,delete";
+         source: "eflete";
+         action: STATE_SET "delete" 0.0;
+         target: "indicator";
+      }
+      program { name: "ind_add";
+         signal: "eflete,state,add";
+         source: "eflete";
+         action: STATE_SET "add" 0.00;
+         target: "indicator";
+      }
+      program { name: "ind_change";
+         signal: "eflete,state,change";
+         source: "eflete";
+         action: STATE_SET "change" 0.0;
+         target: "indicator";
+      }
+      program { name: "ind_restack";
+         signal: "eflete,state,restack";
+         source: "eflete";
+         action: STATE_SET "restack" 0.0;
+         target: "indicator";
+      }
+      program { name: "go_inactive";
+         signal: "eflete,state,inactive";
+         source: "eflete";
+         action: STATE_SET "inactive" 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+      }
+   }
+}
 
 group { name: "elm/genlist/base/eflete/default";
    images {
