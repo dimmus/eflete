@@ -114,10 +114,10 @@ typedef enum _Build Build;
 typedef enum _PM_Project_Result PM_Project_Result;
 
 /**
- * @typedef Project_Worker
+ * @typedef Project_Thread
  * @ingroup ProjectManager
  */
-typedef struct _Project_Worker Project_Worker;
+typedef struct _Project_Thread Project_Thread;
 
 /**
  * @typedef PM_Project_Progress_Cb
@@ -151,25 +151,37 @@ typedef void
 (* PM_Project_End_Cb)(void *data, PM_Project_Result result);
 
 /**
- * @struct _Project_Worker
+ * @struct _Project_Thread
  *
- * A handler for Project process
+ * A handler for Project process.
  *
  * @ingroup ProjectManager
  */
-struct _Project_Worker
+struct _Project_Thread
 {
-   /** The handler of Project thread */
+   /** The handler of Project thread. */
    Eina_Thread thread;
-   /** The progress callback. See #PM_Project_Progress_Cb  */
+   /** The progress callback. See #PM_Project_Progress_Cb.*/
    PM_Project_Progress_Cb func_progress;
-   /** The end callback. See #PM_Project_End_Cb */
+   /** The end callback. See #PM_Project_End_Cb. */
    PM_Project_End_Cb func_end;
-   /** The project process result */
+   /** The project process result. */
    PM_Project_Result result;
+   /** The user data. */
+   const void *data;
    /** The new project, was created in the Project process. This pointer will be
     * NULL until the Project process finished it's job.*/
    Project *project;
+   /** Name of project what must be created. */
+   const char *name;
+   /** Path to new project. */
+   const char *path;
+   /** Path to imported edj file. */
+   const char *edj;
+   /** edje_cc options. Used for 'new project' and 'import from edc'. */
+   const char *build_options;
+   /** Mutex, I say no more then. */
+   Eina_Lock mutex;
 };
 
 /**
@@ -184,17 +196,17 @@ struct _Project_Worker
  *        Project progress;
  * @param data The user data.
  *
- * @return The new #Project_Worker object, othewise NULL.
+ * @return The new #Project_Thread object, othewise NULL.
  *
  * @ingroup ProjectManager
  */
-Project_Worker *
+Project_Thread *
 pm_project_import_edj(const char *name,
                       const char *path,
                       const char *edj,
                       PM_Project_Progress_Cb func_progress,
                       PM_Project_End_Cb func_end,
-                      void * data);
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * Create a new project which base on the imported edc file.
