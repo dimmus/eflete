@@ -111,7 +111,7 @@ ui_main_window_add(App_Data *ap)
 
    if (ap->win == NULL)
      {
-        ERR("Failrue create main window.");
+        ERR("Failed to create main window.");
         return false;
      }
    evas_object_resize(ap->win, config->window.w, config->window.h);
@@ -137,7 +137,7 @@ ui_main_window_add(App_Data *ap)
    evas_object_show(bg);
 
    ap->win_layout = elm_layout_add(ap->win);
-   if (!ap->win_layout) MARK_TO_SHUTDOWN("Failrue create layout main window.")
+   if (!ap->win_layout) MARK_TO_SHUTDOWN("Failed to create layout main window.")
    evas_object_size_hint_weight_set(ap->win_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    elm_win_resize_object_add(ap->win, ap->win_layout);
@@ -146,20 +146,20 @@ ui_main_window_add(App_Data *ap)
 
    ap->main_menu = ui_menu_add(ap);
    if (!ap->main_menu)
-     MARK_TO_SHUTDOWN("Failrue add menu on main window.")
+     MARK_TO_SHUTDOWN("Failed to add menu on main window.")
 
    if (!ui_panes_add(ap))
-     MARK_TO_SHUTDOWN("Failrue add panes on main window.")
+     MARK_TO_SHUTDOWN("Failed to add panes on main window.")
 
    ap->workspace = workspace_add(ap->block.canvas);
    if (!ap->workspace)
-     MARK_TO_SHUTDOWN("Failrue create workspace in main window.")
+     MARK_TO_SHUTDOWN("Failed to create workspace in main window.")
 
    ui_block_ws_set(ap, ap->workspace);
    evas_object_show(ap->workspace);
    ap->live_view = live_view_add(ap->block.bottom_right, false);
    if (!ap->live_view)
-     MARK_TO_SHUTDOWN("Failed create live view")
+     MARK_TO_SHUTDOWN("Failed to create live view")
    else
      ui_block_live_view_set(ap, ap->live_view->layout);
 
@@ -168,7 +168,7 @@ ui_main_window_add(App_Data *ap)
      MARK_TO_SHUTDOWN("Can't create a colorselector.")
 
    if (!register_callbacks(ap))
-     MARK_TO_SHUTDOWN("Failed register callbacks");
+     MARK_TO_SHUTDOWN("Failed to register callbacks");
 
    ap->statusbar = _statusbar_init(ap->win_layout);
    if (!ap->statusbar)
