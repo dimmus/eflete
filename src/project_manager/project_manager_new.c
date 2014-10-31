@@ -66,10 +66,12 @@
 #define END_SEND(STATUS) \
 { \
    if (worker->func_end) \
-      { \
-         worker->result = STATUS; \
+     { \
+         WORKER_LOCK_TAKE; \
+            worker->result = STATUS; \
+         WORKER_LOCK_RELEASE; \
          ecore_main_loop_thread_safe_call_async(_end_send, worker); \
-      } \
+     } \
 }
 
 static Eet_Data_Descriptor *eed_project = NULL;
@@ -291,12 +293,28 @@ pm_project_import_edc(const char *name __UNUSED__,
 Eina_Bool
 pm_project_thread_cancel(Project_Thread *worker)
 {
-   if (pthread_cancel(worker->thread))
+   int ret;
+
+   WORKER_LOCK_TAKE;
+      ret = pthread_cancel(worker->thread);
+   WORKER_LOCK_RELEASE;
+   if (ret)
      return false;
 
    END_SEND(PM_PROJECT_CANCEL);
    DBG("Project Thread %p stoped by user!", worker);
    return true;
+}
+
+Eina_Bool
+pm_project_thread_free(Project_Thread *worker)
+{
+   if (worker->result == 0)
+     {
+        WORKER_FREE();
+        return true;
+     }
+   return false;
 }
 
 Project *

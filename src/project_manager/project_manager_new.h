@@ -187,6 +187,18 @@ struct _Project_Thread
 };
 
 /**
+ * Free the Project Thread object.
+ *
+ * @param worker The Project thread.
+ *
+ * @return EINA_TRUE on success, EINA_FALSE if thread running.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_thread_free(Project_Thread *worker) EINA_ARG_NONNULL(1);
+
+/**
  * Create a new project which based on the imported edj file.
  *
  * @param name The name of new project;

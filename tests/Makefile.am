@@ -206,7 +206,8 @@ project_manager_test_LDADD = ${LD}
 project_manager_new_test_SOURCES = \
 test_project_manager_new/test_project_manager_new.c \
 test_project_manager_new/pm_project_import_edj.c \
-test_project_manager_new/pm_project_thread_cancel.c
+test_project_manager_new/pm_project_thread_cancel.c \
+test_project_manager_new/pm_project_thread_free.c
 project_manager_new_test_CFLAGS = ${FLAGS}
 project_manager_new_test_LDADD = ${LD}
 
