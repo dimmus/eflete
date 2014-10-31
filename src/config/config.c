@@ -210,8 +210,8 @@ _config_default_new(void)
    conf = mem_malloc(sizeof(Config));
    conf->window.x =           0;
    conf->window.y =           0;
-   conf->window.w =           800;
-   conf->window.h =           600;
+   conf->window.w =           1366;
+   conf->window.h =           768;
    conf->panes.left =         0.2;
    conf->panes.right =        0.75;
    conf->panes.left_hor =     0.7;
@@ -258,16 +258,22 @@ config_save(App_Data *ap)
    if (!ap) return false;
 
    evas_object_geometry_get(ap->win, &x, &y, &w, &h);
-   config->window.x =            x;
-   config->window.y =            y;
-   config->window.w =            w;
-   config->window.h =            h;
-   config->panes.left =          elm_panes_content_left_size_get(ap->panes.left);
-   config->panes.right =         elm_panes_content_left_size_get(ap->panes.right);
-   config->panes.left_hor =      elm_panes_content_left_size_get(ap->panes.left_hor);
-   config->panes.right_hor =     elm_panes_content_left_size_get(ap->panes.right_hor);
-   config->panes.center =        elm_panes_content_left_size_get(ap->panes.center);
-   config->panes.center_down =   elm_panes_content_left_size_get(ap->panes.center_down);
+   if (profile->general.save_win_pos)
+     {
+        config->window.x =            x;
+        config->window.y =            y;
+        config->window.w =            w;
+        config->window.h =            h;
+     }
+   if (profile->general.save_ui)
+     {
+        config->panes.left =          elm_panes_content_left_size_get(ap->panes.left);
+        config->panes.right =         elm_panes_content_left_size_get(ap->panes.right);
+        config->panes.left_hor =      elm_panes_content_left_size_get(ap->panes.left_hor);
+        config->panes.right_hor =     elm_panes_content_left_size_get(ap->panes.right_hor);
+        config->panes.center =        elm_panes_content_left_size_get(ap->panes.center);
+        config->panes.center_down =   elm_panes_content_left_size_get(ap->panes.center_down);
+     }
 
    profile_save(config->profile);
 
