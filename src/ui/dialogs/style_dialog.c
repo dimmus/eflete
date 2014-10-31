@@ -272,6 +272,7 @@ _popup_close(void *data,
 {
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
    ui_menu_locked_set(ap->menu_hash, false);
 }
 

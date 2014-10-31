@@ -28,6 +28,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 }
 
 Evas_Object *
@@ -72,5 +73,6 @@ about_window_add()
    evas_object_event_callback_add(mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(mwin);
+   ap->modal_editor = true;
    return mwin;
 }

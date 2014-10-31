@@ -91,7 +91,9 @@ _on_quit_cb(void *data,
             void *event_info __UNUSED__)
 {
    Sound_Editor *edit = (Sound_Editor *)data;
+   App_Data *ap = app_data_get();
    _sound_editor_del(edit);
+   ap->modal_editor = false;
 }
 
 static void
@@ -420,6 +422,7 @@ Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 {
    Sound_Editor *edit;
+   App_Data *ap = app_data_get();
 
    Evas_Object *wlayout, *btn_box, *btn, *icon, *search;
 
@@ -491,6 +494,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    _sound_info_create(edit->markup, edit);
 
    evas_object_show(edit->win);
+   ap->modal_editor = true;
    return edit->win;
 }
 

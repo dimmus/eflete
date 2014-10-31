@@ -106,6 +106,7 @@ _add_ok_close_clicked(void *data,
 
    if (!to_close) return;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
    ui_menu_locked_set(ap->menu_hash, false);
 }
 
@@ -116,6 +117,7 @@ _cancel_clicked(void *data,
 {
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
    ui_menu_locked_set(ap->menu_hash, false);
 }
 

@@ -805,6 +805,7 @@ ui_close_project_request(App_Data *ap, const char *msg)
    ui_menu_locked_set(ap->menu_hash, false);
    ap->project->close_request = false;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
 
    return result;
 }

@@ -1012,6 +1012,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 }
 
 Evas_Object *
@@ -1159,6 +1160,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    ui_menu_locked_set(ap->menu_hash, true);
    evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
+   ap->modal_editor = true;
    return img_edit->win;
 }
 

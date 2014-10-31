@@ -426,17 +426,20 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
    Shortcut_Function *sc_func;
    Key_Pair *key = malloc(sizeof(Key_Pair));
 
-   /*
-    *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
-    *  so if Caps Lock is clicked, then with SHIFT it will return not 1, but 257.
-    *  So we need to set a mask for real modifiers (Ctrl, Shift, Alt etc)
-    */
-   key->modifiers = ev->modifiers & 255;
-   key->keycode = ev->keycode;
+   if ((!ap->popup) && (!ap->modal_editor))
+     {
+        /*
+         *  (ev->modifiers && 255) because modifiers contain both locks and modifs,
+         *  so if Caps Lock is clicked, then with SHIFT it will return not 1, but 257.
+         *  So we need to set a mask for real modifiers (Ctrl, Shift, Alt etc)
+         */
+        key->modifiers = ev->modifiers & 255;
+        key->keycode = ev->keycode;
 
-   sc_func = eina_hash_find(ap->shortcut_functions, key);
-   if (sc_func)
-     sc_func->function(ap);
+        sc_func = eina_hash_find(ap->shortcut_functions, key);
+        if (sc_func)
+          sc_func->function(ap);
+     }
 
    return ECORE_CALLBACK_PASS_ON;
 }
