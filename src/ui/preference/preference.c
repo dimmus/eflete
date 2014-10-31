@@ -61,6 +61,8 @@ _on_preferences_close(void *data,
                       void *event_info __UNUSED__)
 {
    Preferences *preference = (Preferences *)data;
+   Config *cf = config_get();
+   profile_save(cf->profile);
    free(preference);
 }
 
@@ -81,6 +83,76 @@ _item_label_get(void *data,
 
 #define pref_layout preference->layout
 #define prof_general pr->general
+
+#define COMBOBOX_VALUE \
+Ewe_Combobox_Item *item = ei; \
+value = eina_stringshare_add(item->title);
+
+#define SPINNER_VALUE \
+value = elm_spinner_value_get(obj);
+
+#define CHECK_VALUE \
+Evas_Object *check = obj; \
+value = elm_check_state_get(check);
+
+#define CHANGE_CALLBACK(VALUE, NUM, WIDGET, TYPE) \
+static void \
+_on_##VALUE##_change(void *data, \
+                     Evas_Object *obj __UNUSED__, \
+                     void *ei __UNUSED__) \
+{ \
+   Profile *pr = (Profile *)data; \
+   TYPE value; \
+   WIDGET##_VALUE \
+   switch (NUM) \
+     { \
+      case (1): \
+        prof_general.autosave.period = value; \
+        break; \
+      case (2): \
+        prof_general.autosave.autosave = value; \
+        break; \
+      case (3): \
+        prof_general.save_ui = value; \
+        break; \
+      case (4): \
+        prof_general.save_win_pos = value; \
+        break; \
+     } \
+}
+
+#define CHANGE_ENTRY_CALLBACK(VALUE, NUM) \
+static void \
+_on_##VALUE##_change(void *data, \
+                     Evas_Object *obj, \
+                     void *ei __UNUSED__) \
+{ \
+   Profile *pr = (Profile *)data; \
+   const char *value; \
+   value = elm_entry_entry_get(obj); \
+   switch (NUM) \
+     { \
+      case (5): \
+        prof_general.home_folder = strdup(value); \
+        break; \
+      case (6): \
+        prof_general.swap_folder = strdup(value); \
+        break; \
+     } \
+}
+
+CHANGE_CALLBACK(autosave_period, 1, SPINNER, double)
+CHANGE_CALLBACK(autosave_autosave, 2, CHECK, Eina_Bool)
+CHANGE_CALLBACK(save_ui, 3, CHECK, Eina_Bool)
+CHANGE_CALLBACK(save_win_pos, 4, CHECK, Eina_Bool)
+CHANGE_ENTRY_CALLBACK(home, 5)
+CHANGE_ENTRY_CALLBACK(swap, 6)
+
+#undef COMBOBOX_VALUE
+#undef SPINNER_VALUE
+#undef CHECK_VALUE
+#undef CHANGE_ENTRY_CALLBACK
+#undef CHANGE_CALLBACK
 
 /* TODO: add field name into Profile struct  */
 
@@ -126,9 +198,11 @@ _general_form(Preferences *preference)
    EWE_ENTRY_ADD(pref_layout.general, entry_home, true, DEFAULT_STYLE);
    elm_object_part_text_set(entry_home, "elm.text", prof_general.home_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
+   evas_object_smart_callback_add(entry_home, "changed", _on_home_change, pr);
    EWE_ENTRY_ADD(pref_layout.general, entry_swap, true, DEFAULT_STYLE);
    elm_object_part_text_set(entry_swap, "elm.text", prof_general.swap_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.swap", entry_swap);
+   evas_object_smart_callback_add(entry_swap, "changed", _on_swap_change, pr);
 
    FRAME_ADD(pref_layout.general, autosave_frame, false, _("Autosave"))
    elm_object_part_content_set(pref_layout.general, "swallow.autosave", autosave_frame);
@@ -143,10 +217,12 @@ _general_form(Preferences *preference)
    CHECK_ADD(autosave_layout, autosave_ck, DEFAULT_STYLE);
    elm_check_state_set(autosave_ck, prof_general.autosave.autosave);
    elm_object_part_content_set(autosave_layout, "swallow.first", autosave_ck);
+   evas_object_smart_callback_add(autosave_ck, "changed", _on_autosave_autosave_change, pr);
 
    SPINNER_ADD(autosave_layout, period_sp, 0.0, 9999.0, 1.0, true, DEFAULT_STYLE);
    elm_spinner_value_set(period_sp, prof_general.autosave.period);
    elm_object_part_content_set(autosave_layout, "swallow.second", period_sp);
+   evas_object_smart_callback_add(period_sp, "changed", _on_autosave_period_change, pr);
 
    FRAME_ADD(pref_layout.general, store_frame, false, _("UI"))
    elm_object_part_content_set(pref_layout.general, "swallow.uistore", store_frame);
@@ -161,10 +237,12 @@ _general_form(Preferences *preference)
    CHECK_ADD(store_layout, storeui_ck, DEFAULT_STYLE);
    elm_check_state_set(storeui_ck, prof_general.save_ui);
    elm_object_part_content_set(store_layout, "swallow.first", storeui_ck);
+   evas_object_smart_callback_add(storeui_ck, "changed", _on_save_ui_change, pr);
 
    CHECK_ADD(store_layout, winpos_ck, DEFAULT_STYLE);
    elm_check_state_set(winpos_ck, prof_general.save_win_pos);
    elm_object_part_content_set(store_layout, "swallow.second", winpos_ck);
+   evas_object_smart_callback_add(winpos_ck, "changed", _on_save_win_pos_change, pr);
 }
 
 static void
