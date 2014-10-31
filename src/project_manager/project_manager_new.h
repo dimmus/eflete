@@ -268,6 +268,19 @@ Eina_Bool
 pm_project_save(Project *project);
 
 /**
+ * Cancel the Project thread, and called func_end.
+ *
+ * @param worker The Project thread.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_thread_cancel(Project_Thread *worker) EINA_ARG_NONNULL(1);
+
+
+/**
  * Save a current opened Style source code by the path. Backup file will created
  * after success project save.
  *

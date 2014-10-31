@@ -288,6 +288,17 @@ pm_project_import_edc(const char *name __UNUSED__,
                       const char *data_directory __UNUSED__,
                       const char *vibration_directory __UNUSED__);
 
+Eina_Bool
+pm_project_thread_cancel(Project_Thread *worker)
+{
+   if (pthread_cancel(worker->thread))
+     return false;
+
+   END_SEND(PM_PROJECT_CANCEL);
+   DBG("Project Thread %p stoped by user!", worker);
+   return true;
+}
+
 Project *
 pm_project_open(const char *path __UNUSED__)
 {

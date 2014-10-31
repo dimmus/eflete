@@ -27,6 +27,8 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, pm_project_import_edj_test_p1);
    tcase_add_test(tcase, pm_project_import_edj_test_p2);
 
+   tcase_add_test(tcase, pm_project_thread_cancel_test_p);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
