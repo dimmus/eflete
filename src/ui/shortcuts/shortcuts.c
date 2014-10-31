@@ -512,7 +512,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
    Shortcut_Function *sc_func;
    Eina_List *l;
    Key_Pair *key;
-   if ((!ap) || (!profile)) return false;
+   if ((!ap) || (!profile) || (!profile->shortcuts)) return false;
 
    if (ap->shortcut_functions)
      eina_hash_free(ap->shortcut_functions);
@@ -567,6 +567,7 @@ shortcuts_shutdown()
    if (!_sc_functions) return false;
 
    eina_hash_free(_sc_functions);
+   _sc_functions = NULL;
 
    return true;
 }

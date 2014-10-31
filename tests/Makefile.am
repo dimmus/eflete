@@ -36,7 +36,8 @@ live_view_test \
 live_view_prop_test \
 live_widget_test \
 about_window_test \
-colorselector_test
+colorselector_test \
+shortcuts_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -63,6 +64,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
 -I${top_srcdir}/src/ui/signal_list \
+-I${top_srcdir}/src/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
@@ -447,6 +449,16 @@ test_ui_state_dialog/state_dialog_state_add.c \
 test_ui_state_dialog/state_dialog_state_del.c
 ui_state_dialog_test_CFLAGS = ${FLAGS}
 ui_state_dialog_test_LDADD = ${LD}
+
+shortcuts_test_SOURCES = \
+test_shortcuts/test_shortcuts.c \
+test_shortcuts/shortcuts_init.c \
+test_shortcuts/shortcuts_shutdown.c \
+test_shortcuts/shortcuts_profile_load.c \
+test_shortcuts/shortcuts_main_add.c \
+test_shortcuts/shortcuts_main_del.c
+shortcuts_test_CFLAGS = ${FLAGS}
+shortcuts_test_LDADD = ${LD}
 
 colorselector_test_SOURCES = \
 test_colorselector/test_colorselector.c \

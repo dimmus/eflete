@@ -38,7 +38,6 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
  *
  * @procedure
  * @step 1 call config_get
@@ -53,7 +52,6 @@
 EFLETE_TEST(config_get_test_p1)
 {
    elm_init(0,0);
-   config_init();
 
    ck_assert_msg(config_get() == NULL, "Config not NULL");
 
@@ -70,7 +68,7 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
+ * @step 2 initialize application data
  * @step 3 load config
  *
  * @procedure
@@ -86,8 +84,8 @@ END_TEST
 EFLETE_TEST(config_get_test_p2)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
+   app_init();
+   config_load(app_data_get());
 
    ck_assert_msg(config_get() != NULL, "Config not loaded.");
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -17,52 +17,28 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_config.h"
+#include "utc_common.h"
+#include "shortcuts.h"
+#include "main_window.h"
+#include "config.h"
 
-/**
- * @addtogroup config_test
- * @{
- * @addtogroup config_init
- * @{
- * Config
- * <TABLE>
- * @}
- */
+void shortcuts_init_test_p1(int);
+void shortcuts_init_test_p2(int);
+void shortcuts_init_test_n(int);
 
-/**
- * @addtogroup config_init
- * @{
- * <tr>
- * <td>config_init</td>
- * <td>config_init_test_p</td>
- * <td>
- * @precondition
- * @step 1 initialize elementary library
- *
- * @procedure
- * @step 1 call config_init
- * </td>
- * <td>App_Data *data</td>
- * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(config_init_test_p)
-{
-   elm_init(0,0);
+void shortcuts_shutdown_test_p1(int);
+void shortcuts_shutdown_test_p2(int);
+void shortcuts_shutdown_test_n1(int);
+void shortcuts_shutdown_test_n2(int);
 
-   ck_assert_msg(config_init(), "Config not initialized.");
+void shortcuts_profile_load_test_p(int);
+void shortcuts_profile_load_test_n1(int);
+void shortcuts_profile_load_test_n2(int);
 
-   elm_shutdown();
-}
-END_TEST
+void shortcuts_main_add_test_p(int);
+void shortcuts_main_add_test_n1(int);
+void shortcuts_main_add_test_n2(int);
 
-/**
- * @addtogroup config_init
- * @{
- * </TABLE>
- * @}
- * @}
- */
+void shortcuts_main_del_test_p(int);
+void shortcuts_main_del_test_n1(int);
+void shortcuts_main_del_test_n2(int);
