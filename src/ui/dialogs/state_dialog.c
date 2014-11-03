@@ -96,7 +96,7 @@ _add_ok_clicked(void *data,
    if (result)
      {
         ap->project->current_style->isModify = true;
-        state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
+        state = eina_stringshare_printf("%s %g", str_name, atof(str_value));
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
      }
@@ -178,7 +178,7 @@ state_dialog_state_add(App_Data *ap)
    EWE_ENTRY_ADD(item, entry_value, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
-   ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX, EWE_REG_EXTENDED);
+   ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX_2_SYMBOLS, EWE_REG_EXTENDED);
    ewe_entry_regex_autocheck_set(entry_value, true);
    ewe_entry_regex_glow_set(entry_value, true);
    elm_object_part_content_set(item, "elm.swallow.content", entry_value);
