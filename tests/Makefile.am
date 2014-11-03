@@ -378,6 +378,7 @@ test_ui_workspace/workspace_edit_object_part_state_add.c \
 test_ui_workspace/workspace_edit_object_part_state_del.c \
 test_ui_workspace/workspace_edit_object_part_state_set.c \
 test_ui_workspace/workspace_edit_object_recalc.c \
+test_ui_workspace/workspace_edit_object_part_rename.c \
 test_ui_workspace/workspace_edit_object_set.c \
 test_ui_workspace/workspace_edit_object_unset.c \
 test_ui_workspace/workspace_edit_object_visible_set.c \

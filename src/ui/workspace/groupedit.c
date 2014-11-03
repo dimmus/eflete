@@ -347,7 +347,24 @@ groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part)
 
    gp = _parts_list_find(sd->parts, part);
 
+   if (!gp) return NULL;
    return gp->border;
+}
+
+Eina_Bool
+groupedit_edit_object_part_rename(Evas_Object *obj,
+                                  const char *part_old_name,
+                                  const char *part_new_name)
+{
+   Groupedit_Part *gp;
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false)
+
+   gp = _parts_list_find(sd->parts, part_old_name);
+   if (!gp) return false;
+
+   eina_stringshare_replace(&gp->name, part_new_name);
+
+   return true;
 }
 
 Eina_Bool

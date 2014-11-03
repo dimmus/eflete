@@ -713,13 +713,14 @@ _on_part_name_change(void *data,
      }
 
    pm_project_changed(app_data_get()->project);
+   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value);
    pd->part->name = value;
-   workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
    pos = elm_entry_cursor_pos_get(obj);
    evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part);
    elm_object_focus_set(obj, true);
    elm_entry_cursor_pos_set(obj, pos);
+   workspace_edit_object_recalc(pd->workspace);
 }
 
 static Evas_Object *

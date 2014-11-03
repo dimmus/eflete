@@ -113,6 +113,26 @@ Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj);
 
 /**
+ * Renaming the part object with new name.
+ *
+ * This renaming function doesn't accept any names like "" or NULL.
+ * Also if part with new name is already exist, or part with old name is not
+ * exist it will return false (EINA_FALSE).
+ *
+ * @param obj The workspace object,
+ * @param part_old_name Old name of the part that is going to be renamed with new name.
+ * @param part_new_name New name of the part that is going to be setted.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_part_rename(Evas_Object *obj,
+                                  const char *old_name,
+                                  const char *new_name);
+
+/**
  * Add new part into style, which currently loaded into workspace.
  *
  * @param obj The workspace object.

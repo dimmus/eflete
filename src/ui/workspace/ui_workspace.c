@@ -1178,6 +1178,25 @@ workspace_edit_object_recalc(Evas_Object *obj)
 }
 
 Eina_Bool
+workspace_edit_object_part_rename(Evas_Object *obj,
+                                  const char *old_name,
+                                  const char *new_name)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if ((!old_name) || (!new_name))
+     return false;
+   if (!strcmp(old_name, "") || (!strcmp(new_name, "")))
+     return false;
+   if (!strcmp(old_name, new_name))
+     return false;
+   if (groupedit_edit_object_part_draw_get(sd->groupedit, new_name))
+     return false;
+
+   return groupedit_edit_object_part_rename(sd->groupedit, old_name, new_name);
+}
+
+Eina_Bool
 workspace_edit_object_part_add(Evas_Object *obj, const char *part,
                                Edje_Part_Type type, const char *data)
 {

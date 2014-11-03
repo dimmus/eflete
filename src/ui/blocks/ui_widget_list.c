@@ -62,7 +62,7 @@ _genlist_find_item_by_name(Evas_Object *obj, const char *name)
    while (item)
      {
         part = elm_object_item_data_get(item);
-        if (strncmp(part->name, name, strlen(name)) == 0)
+        if (strcmp(part->name, name) == 0)
           break;
         item = elm_genlist_item_next_get(item);
      }
