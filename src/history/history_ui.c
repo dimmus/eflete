@@ -24,10 +24,32 @@ static  Elm_Genlist_Item_Class *_itc_module = NULL;
 static  Elm_Genlist_Item_Class *_itc_change = NULL;
 
 static void
-_on_change_selected(void *data __UNUSED__,
+_on_change_selected(void *data,
                     Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
+                    void *event_info)
 {
+   Module *module = (Module *)data;
+   int delta = 0;
+
+   if (!module) return;
+
+   int index_curr = 0, index_selected = 0;
+
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Diff *change = (Diff *)elm_object_item_data_get(glit);
+   index_selected = elm_genlist_item_index_get(change->ui_item);
+
+   if (module->current_change)
+     index_curr = elm_genlist_item_index_get(module->current_change->ui_item);
+
+   if (!index_curr) index_curr++;
+
+   delta = index_curr - index_selected;
+   if (delta > 0)
+     history_undo(module->target, delta);
+   else if (delta < 0)
+     history_redo(module->target, abs(delta));
+   return;
 }
 
 static char *
@@ -139,4 +161,35 @@ _history_ui_item_add(Diff *change, Module *module)
    _history_ui_item_update(change, true, true);
 }
 
+void
+_history_ui_list_reload(History *history, Module *module)
+{
+   Eina_List *l, *l_next;
+   Diff *data = NULL;
+   Eina_Bool canceled = false;
+
+   elm_genlist_clear(history->genlist);
+
+   if (!module->current_change) canceled = true;
+
+   EINA_LIST_FOREACH_SAFE(module->changes, l, l_next, data)
+     {
+        data->ui_item = elm_genlist_item_append(history->genlist, _itc_change,
+                                                data, NULL, ELM_GENLIST_ITEM_NONE,
+                                                _on_change_selected, module);
+
+        elm_object_item_data_set(data->ui_item, data);
+
+        if (canceled)
+          elm_object_item_signal_emit(data->ui_item, "eflete,state,inactive",
+                                      "eflete");
+
+        if (data == module->current_change)
+          {
+             elm_genlist_item_selected_set(data->ui_item, true);
+             canceled = true;
+          }
+     }
+   return;
+}
 

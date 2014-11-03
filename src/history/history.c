@@ -229,7 +229,11 @@ history_module_add(Evas_Object *source)
    if (!history) return false;
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
-   if (module) return true;
+   if (module)
+     {
+        _history_ui_list_reload(history, module);
+        return true;
+     }
 
    module = (Module *)mem_calloc(1, sizeof(Module));
    module->target = source;

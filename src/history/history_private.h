@@ -213,4 +213,15 @@ _history_ui_item_add(Diff *change, Module *module);
 void
 _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current);
 
+/**
+ * Reload all items in the history genlist, accordingly to the given module.
+ *
+ * @param history A History object, that was created wirt using @c history_init.
+ * @param module The Module, that needed to reload diffs view.
+ *
+ * @ingroup History_UI
+ */
+void
+_history_ui_list_reload(History *history, Module *module);
+
 #endif /* HISTORY_PRIVATE_H */
