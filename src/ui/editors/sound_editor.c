@@ -591,6 +591,21 @@ _on_rewind_cb(void *data,
    elm_object_part_content_set(OBJ, NULL, ICON); \
    elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
 
+static char *
+_player_units_format(double val)
+{
+   char *units = malloc(sizeof(char) * 16);
+   int tmp = (int)val;
+   snprintf(units, 16, "%02.0f:%02.0f", (double)(tmp / 60), (double)(tmp % 60));
+   return units;
+}
+
+static void
+_player_units_free(char *str)
+{
+   free(str);
+}
+
 static void
 _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 {
@@ -619,7 +634,9 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.check", item);
 
    edit->rewind = elm_slider_add(edit->player_markup);
-   elm_slider_unit_format_set(edit->rewind, "%1.0f");
+   elm_slider_unit_format_set(edit->rewind, "%2.0f");
+   elm_slider_units_format_function_set(edit->rewind, _player_units_format,
+                                        _player_units_free);
    evas_object_size_hint_align_set(edit->rewind, EVAS_HINT_FILL, 0.5);
    evas_object_size_hint_weight_set(edit->rewind, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->rewind);
