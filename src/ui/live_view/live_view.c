@@ -119,6 +119,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           }
         if (!ret)
           {
+             if (live->object)
+               live_widget_del(live->object);
              live->object = elm_label_add(live->layout);
              elm_object_text_set(live->object, fail_message);
              container_content_set(live->live_view, live->object);
