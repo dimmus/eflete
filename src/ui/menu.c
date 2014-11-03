@@ -411,6 +411,7 @@ ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag)
 
    Eina_Bool result = true;
    result = ui_menu_disable_set(menu_hash, _("File"), flag) && result;
+   result = ui_menu_disable_set(menu_hash, _("Edit"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("View"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Editors"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Help"), flag) && result;
