@@ -90,6 +90,12 @@ struct _Diff
    Target module_type; /**< Type of module, that produced this change*/
    Action action_type; /**< Type of change. Adding something new, or deleting, etc.. */
    Eina_Stringshare *description; /**<Description, that will be shown on UI */
+   Eina_Stringshare *new; /**< New value, that will be shown on UI */
+   Eina_Stringshare *old; /**< Old value, that will be shown on UI */
+   Eina_Stringshare *source; /**< Source name, that will be shown on UI */
+   Eina_Stringshare *state; /**< State name, that will be shown on UI */
+
+   Elm_Object_Item *ui_item; /**< This item uses for showing description of the change on ui */
 };
 
 /* INTERNAL FUNCTIONS FOR HISTORY_ATTRIBUTE SUBMODULE */

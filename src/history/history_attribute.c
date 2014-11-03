@@ -188,6 +188,12 @@ _attribute_change_free(Attribute_Diff *change)
    eina_stringshare_del(change->part);
    eina_stringshare_del(change->state);
 
+   eina_stringshare_del(change->diff.description);
+   eina_stringshare_del(change->diff.source);
+   eina_stringshare_del(change->diff.state);
+   eina_stringshare_del(change->diff.new);
+   eina_stringshare_del(change->diff.old);
+
    if (change->param_type == STRING)
      {
         eina_stringshare_del(change->string.old);
@@ -213,10 +219,14 @@ _attribute_change_new(va_list list)
       case INT:
          change->integer.old = (int)va_arg(list, int);
          change->integer.new = (int)va_arg(list, int);
+         change->diff.new = eina_stringshare_printf("%d", change->integer.new);
+         change->diff.old = eina_stringshare_printf("%d", change->integer.old);
       break;
       case DOUBLE:
          change->doubl.old = (double)va_arg(list, double);
          change->doubl.new = (double)va_arg(list, double);
+         change->diff.new = eina_stringshare_printf("%.3f", change->doubl.new);
+         change->diff.old = eina_stringshare_printf("%.3f", change->doubl.old);
       break;
       case RENAME:
       case STRING:
@@ -224,6 +234,8 @@ _attribute_change_new(va_list list)
          change->string.old = eina_stringshare_add(string);
          string = (char *)va_arg(list, char *);
          change->string.new = eina_stringshare_add(string);
+         change->diff.new = eina_stringshare_add(change->string.new);
+         change->diff.old = eina_stringshare_add(change->string.old);
       break;
       case FOUR:
          change->four.old_1 = (int)va_arg(list, int);
@@ -234,6 +246,15 @@ _attribute_change_new(va_list list)
          change->four.new_2 = (int)va_arg(list, int);
          change->four.new_3 = (int)va_arg(list, int);
          change->four.new_4 = (int)va_arg(list, int);
+
+         change->diff.new = eina_stringshare_printf("%d %d %d %d",
+                              change->four.new_1, change->four.new_2,
+                              change->four.new_3, change->four.new_4);
+
+         change->diff.old = eina_stringshare_printf("%d %d %d %d",
+                              change->four.old_1, change->four.old_2,
+                              change->four.old_3, change->four.old_4);
+
       break;
       default:
           ERR("Unsupported value type.");
@@ -248,10 +269,18 @@ _attribute_change_new(va_list list)
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
    if (change->part)
      {
+        change->diff.source = eina_stringshare_add(change->part);
         change->state = eina_stringshare_add((char *)va_arg(list, char *));
         if (change->state)
-          change->state_value = (double)va_arg(list, double);
+          {
+             change->state_value = (double)va_arg(list, double);
+             change->diff.state = eina_stringshare_printf("%s %.2f",
+                                                          change->state,
+                                                          change->state_value);
+          }
      }
+   else
+     change->diff.source = eina_stringshare_add("Group");
 
    return (Diff *)change;
 
