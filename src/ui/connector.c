@@ -464,7 +464,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *wl_list, *groupedit, *st_list;
+   Evas_Object *wl_list, *groupedit, *st_list, *history_list;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -477,6 +477,8 @@ ui_part_back(App_Data *ap)
                                        _restack_part_above, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,moved,down",
                                        _restack_part_below, ap);
+   history_list = ui_block_history_get(ap);
+   elm_genlist_clear(history_list);
 
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
@@ -588,6 +590,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
    Evas_Object *groupedit = NULL;
+   Evas_Object *history_list = NULL;
    Eina_List *signals = NULL;
    Style *_style = NULL, *_alias_style = NULL;
 
@@ -642,6 +645,11 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;
+
+   history_list = history_genlist_get(ap->history, ap->block.right_top);
+   history_module_add(_style->obj);
+   ui_block_history_set(ap, history_list);
+
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
    ui_menu_disable_set(ap->menu_hash, _("Separate"), false);
@@ -663,6 +671,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
         ui_property_style_unset(ui_block_property_get(ap));
         ui_states_list_data_unset(ui_block_state_list_get(ap));
         ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+        history_clear(ap->history);
         pm_project_close(ap->project);
      }
    if (ap->live_view) live_view_widget_style_unset(ap->live_view);

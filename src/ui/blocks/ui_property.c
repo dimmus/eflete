@@ -1548,12 +1548,21 @@ _on_state_text_ellipsis_change(void *data,
 {
    Prop_Data *pd = (Prop_Data *)data;
    double value = elm_spinner_value_get(obj);
+   double old_value = edje_edit_state_text_elipsis_get(pd->style->obj,
+                                                       pd->part->name,
+                                                       pd->part->curr_state,
+                                                       pd->part->curr_state_value);
    if (!edje_edit_state_text_elipsis_set(pd->style->obj,
                                          pd->part->name,
                                          pd->part->curr_state,
                                          pd->part->curr_state_value,
                                          value))
      return;
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, DOUBLE, old_value, value,
+                    pd->style->full_group_name,
+                    (void*)edje_edit_state_text_elipsis_set, "elipsis",
+                    pd->part->name, pd->part->curr_state,
+                    pd->part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
    pm_project_changed(app_data_get()->project);
@@ -1569,6 +1578,10 @@ _on_state_text_ellipsis_toggle_change(void *data,
    Eina_Bool state = elm_check_state_get(obj);
    Evas_Object *spinner = evas_object_data_get(pd_text.ellipsis, ITEM2);
    double value = 0.0;
+   double old_value = edje_edit_state_text_elipsis_get(pd->style->obj,
+                                         pd->part->name,
+                                         pd->part->curr_state,
+                                         pd->part->curr_state_value);
 
    if (state)
      {
@@ -1585,6 +1598,11 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                     pd->part->curr_state,
                                     pd->part->curr_state_value,
                                     value);
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, DOUBLE, old_value, value,
+                    pd->style->full_group_name,
+                    (void*)edje_edit_state_text_elipsis_set, "elipsis",
+                    pd->part->name, pd->part->curr_state,
+                    pd->part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
    pm_project_changed(app_data_get()->project);
