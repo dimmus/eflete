@@ -887,17 +887,19 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 
    /* Search edje edit object, which willn't delete now. This object needed
       for manipulate with group in *.edj file*/
-   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, widget_work)
+   EINA_INLIST_FOREACH(ap->project->widgets, widget_work)
      {
         if (!strcmp(widget->name, widget_work->name)) continue;
-        EINA_INLIST_FOREACH_SAFE(widget_work->classes, l, class_work)
+        EINA_INLIST_FOREACH(widget_work->classes, class_work)
           {
-             EINA_INLIST_FOREACH_SAFE(class_work->styles, l, style_work)
+             EINA_INLIST_FOREACH(class_work->styles, style_work)
               {
-                 if (!style_work->isAlias) break;
+                 if (!style_work->isAlias) goto found;
               }
           }
      }
+
+found:
    if (!style_work)
      {
         ERR("Failed search style object from another class");
