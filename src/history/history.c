@@ -83,6 +83,8 @@ _change_save(Module *module, Diff *change)
    module->changes = eina_list_append(module->changes, change);
    module->current_change = change;
 
+   _history_ui_item_add(change, module);
+
    return true;
 }
 
@@ -144,6 +146,7 @@ history_redo(Evas_Object *source, int count)
      }
 
    module->current_change = diff;
+   _history_ui_item_update(module->current_change, true, true);
 
    if (count > 1) result = history_redo(source, --count);
 
@@ -178,8 +181,16 @@ history_undo(Evas_Object *source, int count)
      }
 
    prev = eina_list_prev(eina_list_data_find_list(module->changes, diff));
-   if (!prev) module->current_change = NULL;
-   else module->current_change = eina_list_data_get(prev);
+   if (!prev)
+     {
+        _history_ui_item_update(module->current_change, false, false);
+        module->current_change = NULL;
+     }
+   else
+     {
+        module->current_change = eina_list_data_get(prev);
+        _history_ui_item_update(module->current_change, true, true);
+     }
 
    if (count > 1) result = history_undo(source, --count);
 

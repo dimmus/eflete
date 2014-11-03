@@ -187,4 +187,30 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change);
 Evas_Object *
 _history_ui_add(Evas_Object *parent);
 
+/**
+ * Create new genlist item, that showing description of the change in the history
+ * genlist. This item provide functionality to manage changes with using ui.
+ *
+ * @param change The Diff that was created with using history_diff_add.
+ * @param module The Module, that contain diff.
+ *
+ * @ingroup History_UI
+ */
+void
+_history_ui_item_add(Diff *change, Module *module);
+
+/**
+ * Update current view of ui item, accordinly to the current state of change.
+ * Is change active, or already canceled. What type of the change action this
+ * diff present ADD, DEL or MODIFY.
+ *
+ * @param change The Diff that was created with using history_diff_add.
+ * @param active If this diff already canceled EINA_FALSE, or EINA_TRUE in otherwise.
+ * @param current If this diff shoud be selected EINA_TRUE, or EINA_FALSE in therwise.
+ *
+ * @ingroup History_UI
+ */
+void
+_history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current);
+
 #endif /* HISTORY_PRIVATE_H */

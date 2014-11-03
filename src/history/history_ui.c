@@ -23,6 +23,13 @@
 static  Elm_Genlist_Item_Class *_itc_module = NULL;
 static  Elm_Genlist_Item_Class *_itc_change = NULL;
 
+static void
+_on_change_selected(void *data __UNUSED__,
+                    Evas_Object *obj __UNUSED__,
+                    void *event_info __UNUSED__)
+{
+}
+
 static char *
 _module_item_label_get(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
@@ -32,10 +39,36 @@ _module_item_label_get(void *data __UNUSED__,
 }
 
 static char *
-_item_label_get(void *data __UNUSED__,
+_item_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
                 const char *part __UNUSED__)
 {
+   Diff *diff = (Diff *)data;
+
+   if (!strcmp(part, "elm.text.message"))
+     {
+        return strdup(diff->description);
+     }
+
+   if ((!strcmp(part, "elm.text.state")) && (diff->state))
+     {
+        return strdup(diff->state);
+     }
+
+   if (!strcmp(part, "elm.text.source"))
+     {
+        return strdup(diff->source);
+     }
+
+   if (!strcmp(part, "elm.text.new"))
+     {
+        return strdup(diff->new);
+     }
+
+   if (!strcmp(part, "elm.text.old"))
+     {
+        return strdup(diff->old);
+     }
    return strdup(" ");
 }
 
@@ -72,4 +105,38 @@ _history_ui_add(Evas_Object *parent)
 
    return genlist;
 }
+
+void
+_history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
+{
+   if (!active)
+     elm_object_item_signal_emit(change->ui_item, "eflete,state,inactive", "eflete");
+
+   switch(change->action_type)
+     {
+      case MODIFY:
+         elm_object_item_signal_emit(change->ui_item, "eflete,state,change", "eflete");
+      break;
+      default:
+      break;
+     }
+
+   if (current)
+     elm_genlist_item_bring_in(change->ui_item, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   elm_genlist_item_selected_set(change->ui_item, current);
+}
+
+void
+_history_ui_item_add(Diff *change, Module *module)
+{
+   History *history = history_get();
+   if ((!history) || (!history->genlist)) return;
+
+   change->ui_item = elm_genlist_item_append(history->genlist, _itc_change,
+                                             change, NULL, ELM_GENLIST_ITEM_NONE,
+                                             _on_change_selected, module);
+   elm_object_item_data_set(change->ui_item, change);
+   _history_ui_item_update(change, true, true);
+}
+
 

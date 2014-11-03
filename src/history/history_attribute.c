@@ -194,6 +194,9 @@ _attribute_change_free(Attribute_Diff *change)
    eina_stringshare_del(change->diff.new);
    eina_stringshare_del(change->diff.old);
 
+   if (change->diff.ui_item)
+     elm_object_item_del(change->diff.ui_item);
+
    if (change->param_type == STRING)
      {
         eina_stringshare_del(change->string.old);

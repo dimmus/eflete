@@ -49,6 +49,7 @@ void history_diff_add_test_p3(int);
 void history_diff_add_test_p4(int);
 void history_diff_add_test_p5(int);
 void history_diff_add_test_p6(int);
+void history_diff_add_test_p7(int);
 void history_diff_add_test_n1(int);
 void history_diff_add_test_n2(int);
 void history_diff_add_test_n3(int);
