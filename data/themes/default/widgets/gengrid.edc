@@ -306,7 +306,7 @@ group { "elm/gengrid/item/group_index/eflete/default";
       part { name: "left_text_spacer";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0.0 0.5;
+            align: 0.0 0.0;
             SET_SIZE(5, 2);
             rel1 {
                relative: 1.0 0.0;
@@ -324,6 +324,7 @@ group { "elm/gengrid/item/group_index/eflete/default";
             text {
                align: 0.0 0.5;
                style: "eflete_header_textblock_style";
+               max: 1 1;
             }
             rel1 {
                to_x: "left_text_spacer";
@@ -331,6 +332,18 @@ group { "elm/gengrid/item/group_index/eflete/default";
             }
          }
       }
+      part { name: "right_text_spacer";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 2);
+            rel1 {
+               relative: 1.0 0.0;
+               to: "elm.text";
+            }
+         }
+      }
+
       part { name: "right_deco";
          description { state: "default" 0.0;
             color: GROUP_INDEX_COLOR;
@@ -339,7 +352,7 @@ group { "elm/gengrid/item/group_index/eflete/default";
             min: GROUP_INDEX_H 2;
             max: -1 2;
             rel1 {
-               to_x: "elm.text";
+               to_x: "right_text_spacer";
                relative: 1.0 0.0;
             }
             rel2.to: "base_bar";
