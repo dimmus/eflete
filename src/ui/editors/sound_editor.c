@@ -958,8 +958,8 @@ _sound_content_init(Sound_Editor *edit)
    tones = edje_edit_sound_tones_list_get(edje_edit_obj);
 
    it = (Item *)mem_calloc(1, sizeof(Item));
-   it->sound_name = eina_stringshare_add(_("Sound Samples"));
-   elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, edit);
+   it->sound_name = eina_stringshare_add(_("<b>Sound Samples</b>"));
+   elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
 
    if (sounds)
      {
@@ -975,8 +975,8 @@ _sound_content_init(Sound_Editor *edit)
      }
 
    it = (Item *)mem_calloc(1, sizeof(Item));
-   it->sound_name = eina_stringshare_add(_("Sound Tones"));
-   edit->tone = elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, edit);
+   it->sound_name = eina_stringshare_add(_("<b>Sound Tones</b>"));
+   edit->tone = elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
 
    if (tones)
      {
@@ -1015,6 +1015,7 @@ _create_gengrid(Evas_Object *parent,
    else
      elm_gengrid_multi_select_set(editor->gengrid, true);
 
+   elm_object_style_set(editor->gengrid, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(editor->gengrid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(editor->gengrid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
