@@ -93,6 +93,7 @@ struct _Sound_Editor
    Evas_Object *rewind;
    Evas_Object *play;
    Evas_Object *pause;
+   Evas_Object *fs_win;
    Eina_Bool decoration : 1;
    Eina_Bool playing : 1;
    Eina_Bool stopped : 1;
@@ -1070,7 +1071,22 @@ _sound_editor_search_field_create(Evas_Object *parent)
 }
 
 static void
-_on_sample_done(void *data,
+_fs_del(void *data)
+{
+   Elm_Object_Item *it;
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   if (edit->fs_win)
+     {
+        evas_object_del(edit->fs_win);
+        edit->fs_win = NULL;
+        it = elm_gengrid_item_prev_get(edit->tone);
+        elm_gengrid_item_selected_set(it, true);
+     }
+}
+
+static void
+_add_sample_done(void *data,
                 Evas_Object *obj,
                 void *event_info)
 {
@@ -1078,15 +1094,11 @@ _on_sample_done(void *data,
    Evas_Object *edje_edit_obj = NULL;
    const char *selected = event_info;
    const char *sound_name;
-   Elm_Object_Item *new_item;
-
-   if ((!data) || (!selected) || (!strcmp(selected, "")))
-     {
-        ecore_main_loop_quit();
-        return;
-     }
 
    Sound_Editor *edit = (Sound_Editor *)data;
+
+   if ((!selected) || (!strcmp(selected, "")))
+     goto del;
 
    GET_OBJ(edit->pr, edje_edit_obj);
 
@@ -1099,32 +1111,29 @@ _on_sample_done(void *data,
                               _("Error while loading file.<br>"
                                 "Please check if file is sound"
                                 "or/and file is accessible."));
-             return;
+             goto del;
           }
         else
           {
              it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
-             new_item = elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
-                                                       _grid_sel_sample, edit);
+             elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
+                                            _grid_sel_sample, edit);
              edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds,
                                                        eina_stringshare_add(sound_name));
-             elm_gengrid_item_selected_set(new_item, true);
              pm_project_changed(edit->pr);
           }
      }
    else
-     {
-        WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
-        return;
-     }
+     WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
 
-   ecore_main_loop_quit();
+del:
+   ecore_job_add(_fs_del, edit);
 }
 
 static void
-_cancel_clicked(void *data,
+_add_tone_cancel(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
@@ -1134,18 +1143,20 @@ _cancel_clicked(void *data,
 static void
 _popup_close(void *data)
 {
-   evas_object_del(data);
+   Sound_Editor *edit = (Sound_Editor *)data;
+
+   evas_object_del(edit->popup);
+   elm_gengrid_item_selected_set(elm_gengrid_last_item_get(edit->gengrid), true);
 }
 
 static void
-_add_ok_clicked(void *data,
+_add_tone_done(void *data,
                 Evas_Object *obj,
                 void *event_info __UNUSED__)
 {
    Evas_Object *edje_edit_obj;
    Item *it;
    const char *str_name, *str_value;
-   Elm_Object_Item *new_item;
    int frq;
 
    Sound_Editor *edit = (Sound_Editor *)data;
@@ -1169,20 +1180,17 @@ _add_ok_clicked(void *data,
    if (!edje_edit_sound_tone_add(edje_edit_obj, str_name, frq))
      {
         WIN_NOTIFY_ERROR(obj, _("Error while add new tone<br>"));
-        ecore_job_add(_popup_close, edit->popup);
-        return;
      }
    else
      {
         it = (Item *)mem_calloc(1, sizeof(Item));
         it->sound_name = eina_stringshare_add(str_name);
         it->tone_frq = frq;
-        new_item = elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
-        elm_gengrid_item_selected_set(new_item, true);
+        elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
         pm_project_changed(app_data_get()->project);
      }
 
-   ecore_job_add(_popup_close, edit->popup);
+   ecore_job_add(_popup_close, edit);
 }
 
 static void
@@ -1195,21 +1203,17 @@ _on_cmb_sel(void *data,
 
    if (!selected_item->index)
      {
-        Evas_Object *bg, *fs, *win;
-        MODAL_WINDOW_ADD(win, main_window_get(), _("Add sound to library"),
-                         _on_sample_done, NULL);
-        bg = elm_bg_add(win);
+        Evas_Object *bg, *fs;
+
+        MODAL_WINDOW_ADD(edit->fs_win, main_window_get(), _("Add sound to the library"),
+                         _add_sample_done, data);
+        bg = elm_bg_add(edit->fs_win);
         evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         evas_object_show(bg);
-        elm_win_resize_object_add(win, bg);
+        elm_win_resize_object_add(edit->fs_win, bg);
 
-        FILESELECTOR_ADD(fs, win, _on_sample_done, data);
-        elm_win_resize_object_add(win, fs);
-
-        ecore_main_loop_begin();
-        evas_object_del(win);
-
-        return;
+        FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
+        elm_win_resize_object_add(edit->fs_win, fs);
      }
    else
      {
@@ -1243,17 +1247,15 @@ _on_cmb_sel(void *data,
         elm_box_pack_end(box, item);
 
         BUTTON_ADD(popup, bt_yes, _("Add"));
-        evas_object_smart_callback_add (bt_yes, "clicked", _add_ok_clicked, edit);
+        evas_object_smart_callback_add (bt_yes, "clicked", _add_tone_done, edit);
         elm_object_part_content_set(popup, "button1", bt_yes);
 
         BUTTON_ADD(popup, bt_no, _("Cancel"));
-        evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, popup);
+        evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, popup);
         elm_object_part_content_set(popup, "button2", bt_no);
 
         evas_object_show(popup);
         eina_stringshare_del(title);
-
-        return;
      }
 }
 
