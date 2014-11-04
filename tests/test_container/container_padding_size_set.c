@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_padding_size_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */

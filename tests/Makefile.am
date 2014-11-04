@@ -252,7 +252,9 @@ test_container/container_border_show.c \
 test_container/container_padding_size_set.c \
 test_container/container_padding_size_get.c \
 test_container/container_content_set.c \
-test_container/container_content_unset.c
+test_container/container_content_unset.c \
+test_container/container_confine_set.c \
+test_container/container_confine_unset.c
 container_test_CFLAGS = ${FLAGS}
 container_test_LDADD = ${LD}
 

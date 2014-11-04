@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_handler_size_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */

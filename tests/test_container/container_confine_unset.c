@@ -22,7 +22,7 @@
 /**
  * @addtogroup container_test
  * @{
- * @addtogroup container_border_show
+ * @addtogroup container_confine_unset
  * @{
  * Container
  * <TABLE>
@@ -30,19 +30,21 @@
  */
 
 /**
- * @addtogroup container_border_show
+ * @addtogroup container_confine_unset
  * @{
  * <tr>
- * <td>container_border_show</td>
- * <td>container_border_show_test_p</td>
+ * <td>container_confine_unset</td>
+ * <td>container_confine_unset_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create parent window
  * @step 3 create a container
+ * @step 4 create rectangle
+ * @step 5 confine the current container to the rectangle object
  *
  * @procedure
- * @step 1 show layout of the container.
+ * @step 1 try to unconfine rectangle object from the container
  * @step 2 check returned value
  * </td>
  * <td>(Evas_Object *) container</td>
@@ -52,18 +54,19 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(container_border_show_test_p)
+EFLETE_TEST(container_confine_unset_test_p)
 {
-   Evas_Object *parent, *container;
+   Evas_Object *parent, *container, *rect;
 
    elm_init(0, 0);
-
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    container = container_add(parent);
-   ck_assert_msg(container_border_show(container) == EINA_TRUE,
-                 "Failed to show layout of the container.");
+   rect = evas_object_rectangle_add(evas_object_evas_get(parent));
+   container_confine_set(container, rect);
 
-   evas_object_del(container);
+   ck_assert_msg(container_confine_unset(container) == EINA_TRUE,
+                 "Can't unset the confining object from the container.");
+
    evas_object_del(parent);
 
    elm_shutdown();
@@ -71,36 +74,38 @@ EFLETE_TEST(container_border_show_test_p)
 END_TEST
 
 /**
- * @addtogroup container_border_show
+ * @addtogroup container_confine_unset
  * @{
  * <tr>
- * <td>container_border_show</td>
- * <td>container_border_show_test_n1</td>
+ * <td>container_confine_unset</td>
+ * <td>container_confine_unset_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create parent window
+ * @step 3 create a container
  *
  * @procedure
- * @step 1 show layout of the different object that is not container.
+ * @step 1 try to unconfine object from the container
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *)win</td>
+ * <td>(Evas_Object *) container</td>
  * <td>EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_border_show_test_n1)
+EFLETE_TEST(container_confine_unset_test_n1)
 {
-   Evas_Object *parent;
+   Evas_Object *parent, *container;
 
    elm_init(0, 0);
-
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   ck_assert_msg(container_border_show(parent) == EINA_FALSE,
-                 "Given object is not container but function was successfull anyway.");
+   container = container_add(parent);
+
+   ck_assert_msg(container_confine_unset(container) == EINA_FALSE,
+                 "Container wasn't confined, but function works as it was.");
 
    evas_object_del(parent);
 
@@ -109,17 +114,17 @@ EFLETE_TEST(container_border_show_test_n1)
 END_TEST
 
 /**
- * @addtogroup container_border_show
+ * @addtogroup container_confine_unset
  * @{
  * <tr>
- * <td>container_border_show</td>
- * <td>container_border_show_test_n2</td>
+ * <td>container_confine_unset</td>
+ * <td>container_confine_unset_test_n2</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 show layout of the NULL object.
+ * @step 1 try to unconfine object from NULL
  * @step 2 check returned value
  * </td>
  * <td>NULL</td>
@@ -129,19 +134,19 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(container_border_show_test_n2)
+EFLETE_TEST(container_confine_unset_test_n2)
 {
    elm_init(0, 0);
 
-   ck_assert_msg(!container_border_show(NULL),
-                 "Showing layout of the NULL object.");
+   ck_assert_msg(container_confine_unset(NULL) == EINA_FALSE,
+                 "Unconfining NULL object was successful.");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup container_border_show
+ * @addtogroup container_confine_unset
  * @{
  * </TABLE>
  * @}

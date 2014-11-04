@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_border_hide
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */
