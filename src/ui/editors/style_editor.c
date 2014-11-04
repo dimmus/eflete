@@ -1777,6 +1777,11 @@ style_editor_window_add(Project *project)
         ERR("Failed create style editor for non opened project");
         return NULL;
      }
+   if (!ap->win)
+     {
+        ERR("Failed create style editor without main window.");
+        return NULL;
+     }
 
    style_edit = (Style_Editor *)mem_calloc(1, sizeof(Style_Editor));
 
