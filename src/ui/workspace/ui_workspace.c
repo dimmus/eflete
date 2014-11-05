@@ -685,8 +685,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->scroll_flag = 0;
    priv->scroller = elm_scroller_add(priv->layout);
    elm_object_style_set(priv->scroller, "eflete/workspace");
-   elm_scroller_policy_set(priv->scroller, ELM_SCROLLER_POLICY_ON,
-                           ELM_SCROLLER_POLICY_ON);
    elm_scroller_content_min_limit(priv->scroller, false, false);
    elm_layout_content_set(priv->layout, "groupspace", priv->scroller);
 
@@ -971,6 +969,9 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    elm_object_content_set(sd->scroller, sd->groupedit);
    evas_object_show(sd->groupedit);
 
+   elm_scroller_policy_set(sd->scroller, ELM_SCROLLER_POLICY_AUTO,
+                           ELM_SCROLLER_POLICY_AUTO);
+
    /* Create highlights for object and relative space */
    /*TODO: remake scroller and layout with rulers etc.
            because highlight work wrong because of that */
@@ -1018,6 +1019,9 @@ workspace_edit_object_unset(Evas_Object *obj)
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, true);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, true);
+
+   elm_scroller_policy_set(sd->scroller, ELM_SCROLLER_POLICY_OFF,
+                           ELM_SCROLLER_POLICY_OFF);
 
    return is_unset;
 }
