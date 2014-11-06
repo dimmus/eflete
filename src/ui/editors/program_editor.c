@@ -1651,6 +1651,8 @@ _on_program_editor_close(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    live_view_free(prog_edit->live);
+   if (prog_edit->playback.timer)
+     ecore_timer_del(prog_edit->playback.timer);
    free(prog_edit);
 }
 
