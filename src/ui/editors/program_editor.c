@@ -1537,6 +1537,7 @@ _on_gen_prog_sel(void *data,
    prog_edit->sel = glit;
    program = elm_object_item_data_get(glit);
    prop.program = program;
+   elm_object_disabled_set(prog_edit->program_controls.play, false);
 
    queue = eina_list_append(queue, eina_stringshare_add(program));
    while (queue)
@@ -1860,6 +1861,7 @@ program_editor_window_add(Style *style)
    evas_object_show(top_layout);
 
    BUTTON_ADD(top_layout, bt, _("Play"));
+   elm_object_disabled_set(bt, true);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_program_play, prog_edit);
    elm_layout_content_set(top_layout, "swallow.button.play", bt);
