@@ -33,3 +33,14 @@ void history_term_test_n(int);
 void history_clear_test_p(int);
 void history_clear_test_n(int);
 
+void history_module_add_test_p1(int);
+void history_module_add_test_p2(int);
+void history_module_add_test_n1(int);
+void history_module_add_test_n2(int);
+
+void history_module_del_test_p1(int);
+void history_module_del_test_p2(int);
+void history_module_del_test_n1(int);
+void history_module_del_test_n2(int);
+void history_module_del_test_n3(int);
+

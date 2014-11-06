@@ -149,3 +149,44 @@ history_init(void);
 Eina_Bool
 history_term(History *history);
 
+/**
+ * Add module for create history of changes. All changes that will generate
+ * with this source will stored in separete history. This function creates the
+ * history if this source wasn't initiated before. If this module was initiated
+ * early will returned EINA_TRUE.
+ *
+ * @param source The object with lifetime equale to lifetime of module, that
+ *                will generate changes.
+ *
+ * @return EINA_TRUE if new history created and assigned to a given target or if
+ *         source already initialised with this function, EINA_FALSE in otherwise.
+ * @note Code example
+   @verbatim
+   Evas_Object *source = evas_object_rectangle_add(canvas);
+   History *history = history_init();
+   if(!history_module_add(source)) return;
+   ... here add changes ...
+   history_module_del(source);
+   history_term(history);
+   @endverbatim
+ * @ingroup History
+ */
+Eina_Bool
+history_module_add(Evas_Object *source);
+
+/**
+ * Delete history from given source, that was initialized by @c history_module_add.
+ * Clear all entries of changes in history of given source. And delete source
+ * from list of the watched modules.
+ *
+ * @param source Smart object, that present module.
+ *
+ * @return EINA_TRUE if history delete succesfull, or EINA_FALSE in otherwise.
+ *
+ * @see history_module_add
+ *
+ * @ingroup History
+ */
+Eina_Bool
+history_module_del(Evas_Object *source);
+

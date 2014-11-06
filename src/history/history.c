@@ -53,6 +53,18 @@ history_clear(History *history)
    return true;
 }
 
+Eina_Bool
+history_module_add(Evas_Object *source __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
+history_module_del(Evas_Object *source __UNUSED__)
+{
+   return false;
+}
+
 History *
 history_init(void)
 {
