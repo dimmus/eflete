@@ -43,6 +43,7 @@ check: Makefile
 	$(builddir)/test_project_manager.edj \
 	$(builddir)/compile.edj \
 	$(builddir)/decompile.edj \
+	$(builddir)/sound_editor_window_add.edj \
 	$(builddir)/image_editor_window_add.edj \
 	$(builddir)/image_editor_callback_add.edj \
 	$(builddir)/image_editor_file_choose.edj \

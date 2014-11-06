@@ -11,6 +11,7 @@ open_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
 edje_compile_test \
+sound_editor_test \
 image_editor_test \
 logger_test \
 container_test \
@@ -156,6 +157,12 @@ test_widget_manager/wm_layouts_list_objects_load.c \
 test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
+
+sound_editor_test_SOURCES = \
+test_sound_editor/test_sound_editor.c \
+test_sound_editor/sound_editor_window_add.c
+sound_editor_test_CFLAGS = ${FLAGS}
+sound_editor_test_LDADD = ${LD}
 
 image_editor_test_SOURCES = \
 test_image_editor/test_image_editor.c \

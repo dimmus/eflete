@@ -1,7 +1,15 @@
 data.item: "version" "110";
 
 collections {
-color_classes {
+   sounds {
+      sample {
+         name: "key-tap" AS_IS;
+         source: "kbd-tap.wav";
+      }
+      tone: "tone-1" 20000;
+      tone: "tone-2" 2200;
+   }
+   color_classes {
    color_class {
       name: "border_top";
       color: 255 255 255 255;
