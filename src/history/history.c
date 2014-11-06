@@ -23,10 +23,34 @@
 #include "history.h"
 #include "history_private.h"
 
-Eina_Bool
-history_clear(History *history __UNUSED__)
+/*
+ * This function clear all changes, that was happens with module.
+ */
+static Eina_Bool
+_module_changes_clear(Module *module __UNUSED__)
 {
    return false;
+}
+
+Eina_Bool
+history_clear(History *history)
+{
+   Eina_List *l, *l_next;
+   Module *module;
+
+   if (!history) return false;
+
+   EINA_LIST_FOREACH_SAFE(history->modules, l, l_next, module)
+     {
+        if (!_module_changes_clear(module))
+          {
+             ERR("Didn't cleared history for module %p", module->target);
+             return false;
+          }
+       free(module);
+     }
+
+   return true;
 }
 
 History *

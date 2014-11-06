@@ -24,6 +24,13 @@
 #include "main_window.h"
 
 /**
+ * @typedef Module
+ * @ingroup History
+ */
+typedef struct _Module Module;
+
+
+/**
  * @struct _History
  *
  * @brief This struct designed to storage list of modules, that can generatre
@@ -39,5 +46,20 @@ struct _History
    Ecore_Timer *timer; /**< Using for merge the changes, folowing one by one
                             and changes the same parameter in the same module. */
 };
+
+/**
+ * @struct _Module
+ *
+ * @brief This struct contain list of changes for one module.
+ *
+ * @ingroup History
+ */
+struct _Module
+{
+   Evas_Object *target; /**< Target object. Can be any Evas_Object with lifetime
+                             equale to lifetime of module*/
+   Eina_List *changes; /**< List of structures, that contain diff info about change */
+};
+
 
 #endif /* UNDOREDO_PRIVATE_H */
