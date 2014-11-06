@@ -36,6 +36,7 @@ live_view_test \
 live_view_prop_test \
 live_widget_test \
 about_window_test \
+history_test \
 colorselector_test
 
 check_PROGRAMS = ${TESTS}
@@ -51,6 +52,7 @@ FLAGS = \
 -I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
+-I${top_srcdir}/src/history \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
@@ -457,6 +459,14 @@ test_colorselector/colorselector_add.c \
 test_colorselector/colorselector_color_get.c
 colorselector_test_CFLAGS = ${FLAGS}
 colorselector_test_LDADD = ${LD}
+
+history_test_SOURCES = \
+test_history/test_history.c \
+test_history/history_init.c \
+test_history/history_term.c
+history_test_CFLAGS = ${FLAGS}
+history_test_LDADD = ${LD}
+
 
 coverage:
 	echo "<html><body>" > ../coverage.html
