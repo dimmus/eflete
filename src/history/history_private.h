@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#ifndef UNDOREDO_PRIVATE_H
-#define UNDOREDO_PRIVATE_H
+#ifndef HISTORY_PRIVATE_H
+#define HISTORY_PRIVATE_H
 
 #include "eflete.h"
 #include "main_window.h"
@@ -36,6 +36,12 @@ typedef struct _Module Module;
  * @ingroup History
  */
 typedef struct _Diff Diff;
+
+/**
+ * @typedef Attribute_Diff
+ * @ingroup History
+ */
+typedef struct _Attribute_Diff Attribute_Diff;
 
 /**
  * @struct _History
@@ -85,4 +91,40 @@ struct _Diff
    Action action_type; /**< Type of change. Adding something new, or deleting, etc.. */
 };
 
-#endif /* UNDOREDO_PRIVATE_H */
+/* INTERNAL FUNCTIONS FOR HISTORY_ATTRIBUTE SUBMODULE */
+/**
+ * @defgroup History_Attribute History attributes
+ * @ingroup History
+ *
+ * This submodule manage changes of the attributes. Parse changes with module
+ * type PROPERTY. Manage undo/redo actions with that changes.
+ *
+ * @note This is private submodule for history module.
+ *
+ */
+/**
+ * Create right diff, from input data list. Parse input list of parameters and
+ * fill internal structure Attribute_Diff.
+ *
+ * @param list The list of params. For detail description of this params
+ *             please see history_diff_add.
+ *
+ * @return Pointer to filled structure, that casted to the Diff in successful
+ *         case or NULL if something went wrong.
+ *
+ * @ingroup History_Attribute
+ */
+Diff *
+_attribute_change_new(va_list list);
+
+/**
+ * Freed memory, that was allocated in attribute_change_new.
+ *
+ * @param change The diff, that was created with using _attribute_change_new.
+ *
+ * @ingroup History_Attribute
+ */
+void
+_attribute_change_free(Attribute_Diff *change);
+
+#endif /* HISTORY_PRIVATE_H */

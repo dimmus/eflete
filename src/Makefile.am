@@ -15,6 +15,7 @@ logger/logger.c \
 config/config.c \
 external/syntax_color.c \
 history/history.c \
+history/history_attribute.c \
 ui/cursor.c \
 ui/panes.c \
 ui/menu.c \

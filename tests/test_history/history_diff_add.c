@@ -48,9 +48,9 @@
  * @step 1 Call history_diff_add  with correct data for value type RENAME.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, RENAME, int 10, int 15,
- *     (const char *) "elm/radio/base/def", (void *)edje_edit_part_name_set,
- *     "Rename", "bg", NULL, 0 </td>
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, RENAME, (const char*) "bg",
+ *     (const char *) "new_bg", (const char *) "elm/radio/base/def",
+ *     (void *)edje_edit_part_name_set, "Rename", "bg", NULL, 0 </td>
  * <td>EINA_TRUE value returned</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -75,7 +75,7 @@ EFLETE_TEST(history_diff_add_test_p1)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, RENAME, 10, 15,
+   result = history_diff_add(source, PROPERTY, MODIFY, RENAME, "bg", "new_bg",
                              "elm/radio/base/def", (void *)edje_edit_part_name_set,
                              "Rename", "bg", NULL, 0 );
    ck_assert_msg(result, "Failed to add new diff with RENAME value type in the"

@@ -20,6 +20,9 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
+#include <Eina.h>
+#include <Evas.h>
+
 /**
  * @defgroup History History module
  * @ingroup Eflete
