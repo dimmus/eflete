@@ -466,7 +466,8 @@ test_history/history_init.c \
 test_history/history_term.c \
 test_history/history_clear.c \
 test_history/history_module_del.c \
-test_history/history_module_add.c
+test_history/history_module_add.c \
+test_history/history_diff_add.c
 history_test_CFLAGS = ${FLAGS}
 history_test_LDADD = ${LD}
 

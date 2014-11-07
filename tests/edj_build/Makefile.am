@@ -92,6 +92,7 @@ check: Makefile
 	$(builddir)/style_dialog_add.edj \
 	$(builddir)/state_dialog_state_add.edj \
 	$(builddir)/state_dialog_state_del.edj \
-	;do cp $(builddir)/radio.edj $$i; done
+	$(builddir)/history_diff_add.edj \
+   ;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

@@ -119,3 +119,10 @@ history_term(History *history __UNUSED__)
    free(history);
    return true;
 }
+
+Eina_Bool
+history_diff_add(Evas_Object *source __UNUSED__, Target target __UNUSED__, ...)
+{
+   return false;
+}
+

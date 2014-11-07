@@ -31,6 +31,11 @@
  */
 typedef struct _Module Module;
 
+/**
+ * @typedef Diff
+ * @ingroup History
+ */
+typedef struct _Diff Diff;
 
 /**
  * @struct _History
@@ -63,5 +68,20 @@ struct _Module
    Eina_List *changes; /**< List of structures, that contain diff info about change */
 };
 
+/**
+ * @struct _Diff
+ *
+ * @brief This structure is common to all types of changes (i.e. Attributes,
+ * States, Parts). The information stored in this structure identifies changes
+ * to the membership of a particular type of module. Data about the action of a
+ * change allow properly handle undo/redo.
+ *
+ * @ingroup History
+ */
+struct _Diff
+{
+   Target module_type; /**< Type of module, that produced this change*/
+   Action action_type; /**< Type of change. Adding something new, or deleting, etc.. */
+};
 
 #endif /* UNDOREDO_PRIVATE_H */

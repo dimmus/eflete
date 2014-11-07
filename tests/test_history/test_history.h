@@ -44,3 +44,16 @@ void history_module_del_test_n1(int);
 void history_module_del_test_n2(int);
 void history_module_del_test_n3(int);
 
+void history_diff_add_test_p1(int);
+void history_diff_add_test_p2(int);
+void history_diff_add_test_p3(int);
+void history_diff_add_test_p4(int);
+void history_diff_add_test_p5(int);
+void history_diff_add_test_p6(int);
+void history_diff_add_test_n1(int);
+void history_diff_add_test_n2(int);
+void history_diff_add_test_n3(int);
+void history_diff_add_test_n4(int);
+void history_diff_add_test_n5(int);
+void history_diff_add_test_n6(int);
+
