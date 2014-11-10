@@ -68,6 +68,25 @@ struct _Attribute_Diff
    };
 };
 
+Eina_Bool
+_attribute_undo(Evas_Object *source, Attribute_Diff *change)
+{
+   switch(change->param_type)
+    {
+     case INT:
+        change->state ?
+           change->func(source, change->part, change->state,
+                        change->state_value, change->integer.old) :
+           change->func(source, change->part, change->integer.old);
+     break;
+     default:
+       ERR("Unsupported module type, that store diff");
+       return false;
+     break;
+    }
+   return true;
+}
+
 void
 _attribute_change_free(Attribute_Diff *change)
 {
@@ -133,8 +152,9 @@ _attribute_change_new(va_list list)
    if (!change->style) goto error;
    change->func = (void *)va_arg(list, void *);
    if (!change->func) goto error;
-   change->part = eina_stringshare_add((char *)va_arg(list, char *));
+   change->diff.description = eina_stringshare_add((char *)va_arg(list, char *));
 
+   change->part = eina_stringshare_add((char *)va_arg(list, char *));
    if (change->part)
      {
         change->state = eina_stringshare_add((char *)va_arg(list, char *));

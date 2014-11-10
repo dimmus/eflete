@@ -89,6 +89,7 @@ struct _Diff
 {
    Target module_type; /**< Type of module, that produced this change*/
    Action action_type; /**< Type of change. Adding something new, or deleting, etc.. */
+   Eina_Stringshare *description; /**<Description, that will be shown on UI */
 };
 
 /* INTERNAL FUNCTIONS FOR HISTORY_ATTRIBUTE SUBMODULE */
@@ -126,5 +127,19 @@ _attribute_change_new(va_list list);
  */
 void
 _attribute_change_free(Attribute_Diff *change);
+
+/**
+ * This function cancel given diff.
+ *
+ * @source The object, that present module and can be changed with functions,
+ *  that saved in a @c Attribute_Diff structure.
+ * @param change The diff, that was created with using _attribute_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_Attribute
+ */
+Eina_Bool
+_attribute_undo(Evas_Object *source, Attribute_Diff *change);
 
 #endif /* HISTORY_PRIVATE_H */

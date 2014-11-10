@@ -321,6 +321,6 @@ history_diff_add(Evas_Object *source, Target target, ...);
  * @ingroup History
  */
 Eina_Bool
-history_undo(Evas_Object *source, unsigned int count);
+history_undo(Evas_Object *source, int count);
 
 #endif /* HISTORY_H */

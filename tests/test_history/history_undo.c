@@ -82,6 +82,7 @@ EFLETE_TEST(history_undo_test_p1)
    canvas = ecore_evas_get(ee);
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
    old_value = edje_edit_state_min_h_get(source, "bg", "default", 0.0);
    edje_edit_state_min_h_set(source, "bg", "default", 0.0, new_value);
    history_diff_add(source, PROPERTY, MODIFY, INT, old_value, new_value,
@@ -198,6 +199,7 @@ EFLETE_TEST(history_undo_test_n2)
    canvas = ecore_evas_get(ee);
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
    old_value = edje_edit_state_min_h_get(source, "bg", "default", 0.0);
    edje_edit_state_min_h_set(source, "bg", "default", 0.0, new_value);
    history_diff_add(source, PROPERTY, MODIFY, INT, old_value, new_value,
