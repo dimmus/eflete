@@ -524,7 +524,7 @@ ui_state_select(App_Data *ap,
    Part *part = NULL;
    Evas_Object *prop_view;
 
-   if ((!ap) && (!obj))
+   if ((!ap) || (!obj))
      {
         ERR("App Data or State list is missing!");
         return;
