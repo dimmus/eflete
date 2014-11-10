@@ -543,7 +543,7 @@ ui_part_select(App_Data *ap, Part* part)
    Evas_Object *prop;
    Evas_Object *gl_states;
 
-   if ((!ap) && (!part))
+   if ((!ap) || (!part))
      {
         ERR("App Data or part is missing!");
         return NULL;
