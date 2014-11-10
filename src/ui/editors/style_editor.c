@@ -587,8 +587,8 @@ _on_bt_del(void *data,
 
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
+   if (!glit) return;
    Elm_Object_Item *glit_parent = elm_genlist_item_parent_get(glit);
-   if (!glit_parent) return;
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if (!glit_parent)
