@@ -56,7 +56,8 @@ static Eina_Bool res;
  * @}
  */
 static void
-_test_end_cb(void *data, PM_Project_Result result)
+_test_end_cb(void *data __UNUSED__,
+             PM_Project_Result result)
 {
    if (result == PM_PROJECT_CANCEL)
      res = EINA_TRUE;

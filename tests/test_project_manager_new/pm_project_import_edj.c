@@ -95,7 +95,8 @@ END_TEST
  * @}
  */
 static Eina_Bool
-_test_progress_cb(void *data, Eina_Stringshare *message)
+_test_progress_cb(void *data __UNUSED__,
+                  Eina_Stringshare *message __UNUSED__)
 {
    res = EINA_TRUE;
 
@@ -147,7 +148,8 @@ END_TEST
  * @}
  */
 static void
-_test_end_cb(void *data, PM_Project_Result result)
+_test_end_cb(void *data __UNUSED__,
+             PM_Project_Result result)
 {
    if (result == PM_PROJECT_SUCCESS)
      res = EINA_TRUE;
