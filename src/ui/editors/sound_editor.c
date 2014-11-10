@@ -784,16 +784,17 @@ _sound_info_type_setup(Eina_Stringshare *snd_src)
 }
 
 static void
-_sample_info_setup(Sound_Editor *edit, const Item *it, Eina_Stringshare *snd_src)
+_sample_info_setup(Sound_Editor *edit,
+                   const Item *it,
+                   Eina_Stringshare *snd_src,
+                   double len)
 {
-   double len;
    Eina_Stringshare *size, *duration, *type;
    Evas_Object *content;
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
-   eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
    duration = eina_stringshare_printf("%.2f s", len);
    size = eina_stringshare_printf("%.2f KB", edit->io.length / 1024.0);
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
@@ -835,18 +836,19 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
 }
 
 static void
-_added_sample_src_info_setup(Sound_Editor *edit, const char *snd_src)
+_added_sample_src_info_setup(Sound_Editor *edit,
+                             const char *snd_src,
+                             double *len)
 {
    Eina_Bool ret;
-   double len;
 
    _create_io_stream(edit);
    eo_do(edit->io.in, ecore_audio_obj_name_set(snd_src));
    eo_do(edit->io.in, ret = ecore_audio_obj_source_set(snd_src));
    if (!ret)
      ERR("Can not set source obj for added sample");
-   eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
-   elm_slider_min_max_set(edit->rewind, 0, len);
+   eo_do(edit->io.in, *len = ecore_audio_obj_in_length_get());
+   elm_slider_min_max_set(edit->rewind, 0, *len);
    elm_slider_value_set(edit->rewind, 0.0);
    edit->io.length = ecore_file_size(snd_src);
 }
@@ -889,8 +891,8 @@ _grid_sel_sample(void *data,
                {
                   if (!strcmp(snd, edit->selected))
                     {
-                       _added_sample_src_info_setup(edit, snd_src);
-                       _sample_info_setup(edit, item, snd_src);
+                       _added_sample_src_info_setup(edit, snd_src, &len);
+                       _sample_info_setup(edit, item, snd_src, len);
                        edit->added = true;
                        if ((edit->switched) || (auto_play))
                          _add_sound_play(edit);
@@ -909,7 +911,7 @@ _grid_sel_sample(void *data,
         elm_slider_min_max_set(edit->rewind, 0, len);
         elm_slider_value_set(edit->rewind, 0.0);
 
-        _sample_info_setup(edit, item, snd_src);
+        _sample_info_setup(edit, item, snd_src, len);
         eina_stringshare_del(snd_src);
 
         if (edit->switched)
