@@ -87,7 +87,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/pm_open_project_edj.edj",
- * _test_progress_cb, NULL, NULL </td>
+ * "_test_progress_cb", NULL, NULL </td>
  * <td>Static variable 'res' must be EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -103,7 +103,6 @@ _test_progress_cb(void *data __UNUSED__,
    ecore_main_loop_quit();
    return EINA_TRUE;
 }
-
 
 EFLETE_TEST (pm_project_import_edj_test_p1)
 {
@@ -142,7 +141,7 @@ END_TEST
  * @step 2 Check returned value.
  * </td>
  * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/pm_open_project_edj.edj",
- * NULL, _test_end_cb, NULL </td>
+ * NULL, "_test_end_cb", NULL </td>
  * <td>Static variable 'res' must be EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -158,7 +157,6 @@ _test_end_cb(void *data __UNUSED__,
 
    ecore_main_loop_quit();
 }
-
 
 EFLETE_TEST (pm_project_import_edj_test_p2)
 {
