@@ -115,6 +115,8 @@ EFLETE_TEST (pm_project_import_edj_test_p1)
    res = EINA_FALSE;
    thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
                                   _test_progress_cb, NULL, NULL);
+   if (!thread)
+     ck_abort_msg("Project thread is not runned!");
    ecore_main_loop_begin();
    ck_assert_msg(res, "Progress callback did't called!");
 
@@ -168,6 +170,8 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
    res = EINA_FALSE;
    thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
                                   NULL, _test_end_cb, NULL);
+   if (!thread)
+     ck_abort_msg("Project thread is not runned!");
    ecore_main_loop_begin();
    ck_assert_msg(res, "End callback did't called!");
 
