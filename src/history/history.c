@@ -41,10 +41,32 @@ _diff_free(Diff *diff)
  * All changes that stored below rel_change in the list of changes will be freed.
  */
 static Eina_List *
-_clear_untracked_changes(Eina_List *changes __UNUSED__,
-                         Diff *rel_change __UNUSED__)
+_clear_untracked_changes(Eina_List *changes,
+                         Diff *rel_change)
 {
-   return NULL;
+   Eina_List *l, *l_prev;
+   Diff *diff;
+
+   if (!changes) return NULL;
+   if (!rel_change)
+     {
+        EINA_LIST_FREE(changes, diff)
+           {
+              _diff_free(diff);
+           }
+        return NULL;
+     }
+
+   EINA_LIST_REVERSE_FOREACH_SAFE(changes, l, l_prev, diff)
+     {
+        if (rel_change != diff)
+          {
+             _diff_free(diff);
+             changes = eina_list_remove_list(changes, l);
+          }
+        else break;
+     }
+   return changes;
 }
 
 /*
