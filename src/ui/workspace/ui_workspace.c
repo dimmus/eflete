@@ -541,7 +541,7 @@ _highlight_changed_cb(void *data,
    WS_DATA_GET_OR_RETURN_VAL(ws_obj, sd, RETURN_VOID)
 
    Part *part = sd->highlight.part;
-   if ((!sd->style) && (!part)) return;
+   if ((!sd->style) || (!part)) return;
 
    if (events->descr != MIDDLE)
      {
