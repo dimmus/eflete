@@ -1380,17 +1380,22 @@ ITEM_1COMBOBOX_STATE_CREATE(SOURCE, _("source"), state_text, source, styles)
 ITEM_1COMBOBOX_STATE_CREATE(TEXT_SOURCE, _("text source"), state_text, text_source, styles)
 
 
-static void
+static Eina_Bool
 _text_effect_get(Prop_Data *pd, int *type, int *direction)
 {
    Edje_Text_Effect edje_effect = edje_edit_part_effect_get(pd->style->obj,
                                                             pd->part->name);
-   if (type)
+
+   if ((!type) || (!direction))
+     return false;
+
      *type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
-   if ((direction) && (*type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) &&
+   if ((*type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) &&
        (*type != EDJE_TEXT_EFFECT_GLOW))
      *direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
    else *direction = 0;
+
+   return true;
 }
 
 typedef struct {
@@ -1417,7 +1422,11 @@ prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
 {
    int type, direction;
    Evas_Object *combobox;
-   _text_effect_get(pd, &type, &direction);
+   if (!_text_effect_get(pd, &type, &direction))
+     {
+        ERR("Please, contact DEVS! This error should never appear!");
+        return;
+     }
    combobox = evas_object_data_get(item, ITEM1);
    ewe_combobox_select_item_set(combobox, type);
    combobox = evas_object_data_get(item, ITEM2);
