@@ -280,16 +280,17 @@ pm_project_import_edj(const char *name,
    return worker;
 }
 
-Project *
+Project_Thread *
 pm_project_import_edc(const char *name __UNUSED__,
                       const char *path __UNUSED__,
                       const char *edc __UNUSED__,
-                      const char *image_directory __UNUSED__,
-                      const char *sound_directory __UNUSED__,
-                      const char *font_directory __UNUSED__,
-                      const char *data_directory __UNUSED__,
-                      const char *vibration_directory __UNUSED__);
-
+                      const char *import_options __UNUSED__,
+                      PM_Project_Progress_Cb func_progress __UNUSED__,
+                      PM_Project_End_Cb func_end __UNUSED__,
+                      const void *data __UNUSED__)
+{
+   return NULL;
+}
 Eina_Bool
 pm_project_thread_cancel(Project_Thread *worker)
 {

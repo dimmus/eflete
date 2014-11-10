@@ -231,29 +231,28 @@ pm_project_import_edj(const char *name,
  * @param path The path of new project, by this path will be created a project
  *             folder,
  * @param edc The path to the edc file wich will imported,
- * @param image_directory Directory to look in for relative path images,
- * @param sound_directory Directory to look in for relative path sounds samples,
- * @param font_directory Directory to look in for relative path fonts,
- * @param data_directory Directory to look in for relative path data.file
- *                       entries,
- * @param vibration_directory Directory to look in for relative path vibration
- *                            samples.
+ * @param import_options The import oprions, it's mean the addtional options for
+ *                       edje_cc, like '-id' - image directory, '-fd', '-sd',
+ *                       etc.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
  *
- * @return The new #Project object, otherwise NULL.
+ * @return The new #Project_Thread object, othewise NULL.
  *
  * @note Function will not check a edc file, and directories.
  *
  * @ingroup ProjectManager
  */
-Project *
+Project_Thread *
 pm_project_import_edc(const char *name,
                       const char *path,
                       const char *edc,
-                      const char *image_directory,
-                      const char *sound_directory,
-                      const char *font_directory,
-                      const char *data_directory,
-                      const char *vibration_directory);
+                      const char *import_options,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end,
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT;
 
 /**
  * Open Eflete project.
