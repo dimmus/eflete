@@ -118,7 +118,7 @@ EFLETE_TEST (pm_project_thread_free_test_n)
                                   NULL, _test_end_cb, NULL);
 
    res = pm_project_thread_free(worker);
-   ck_assert_msg(!res, "Project thread freed, while this threa is running! ");
+   ck_assert_msg(!res, "Project thread freed, while this thread is running! ");
 
    app_shutdown();
    elm_shutdown();
