@@ -195,18 +195,6 @@ Eina_Bool
 ui_edj_load(App_Data* ap, const char *selected_file);
 
 /**
- * Delete selected state from current part.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param ap The App_Data structure pointer.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_part_state_delete(App_Data *ap);
-
-/**
  * Delete selected style/class/layout from current widget
  *
  * @param ap The App_Data structure pointer.

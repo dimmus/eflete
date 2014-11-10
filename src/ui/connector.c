@@ -968,65 +968,6 @@ ui_group_delete(App_Data *ap, Type group_type)
 }
 
 Eina_Bool
-ui_part_state_delete(App_Data *ap)
-{
-   Evas_Object *state_list = NULL;
-   Part *part = NULL;
-   Style *style = NULL;
-   Elm_Object_Item *eoi = NULL;
-   char **arr = NULL;
-   Eina_Stringshare *full_state_name = NULL;
-   Eina_Stringshare *state_name = NULL;
-   Eina_Stringshare *state_value = NULL;
-   double value = 0;
-
-#define CLEAR_STRINGS \
-        eina_stringshare_del(state_name); \
-        eina_stringshare_del(state_value); \
-        eina_stringshare_del(full_state_name); \
-        free(arr[0]); \
-        free(arr);
-
-   if ((!ap) && (!ap->workspace)) return false;
-
-   state_list = ui_block_state_list_get(ap);
-   part = ui_states_list_part_get(state_list);
-   if (!part) return false;
-
-   eoi = elm_genlist_selected_item_get(state_list);
-   if (!eoi)
-     {
-        NOTIFY_INFO(3, _("Please select part state"));
-        return false;
-     }
-
-   full_state_name = eina_stringshare_add(elm_object_item_data_get(eoi));
-   if (!full_state_name) return false;
-
-   arr = eina_str_split(full_state_name, " ", 3);
-   state_name = eina_stringshare_add(arr[0]);
-   state_value = eina_stringshare_add(arr[1]);
-   value = atof(state_value);
-
-   if (!edje_edit_state_del(style->obj, part->name, state_name, value))
-     {
-        if ((!strcmp(state_name, "default")) && (value == 0))
-          {
-             NOTIFY_WARNING(_("Couldn't delete default state"));
-          }
-        else
-          NOTIFY_WARNING(_("Failed delete state \n[%s %3.2f]"), state_name, value);
-        CLEAR_STRINGS;
-        return false;
-     }
-  elm_object_item_del(eoi);
-  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), true);
-  CLEAR_STRINGS;
-#undef CLEAR_STRINGS
-  return true;
-}
-
-Eina_Bool
 register_callbacks(App_Data *ap)
 {
    if ((!ap) || (!ap->block.left_top)) return false;
