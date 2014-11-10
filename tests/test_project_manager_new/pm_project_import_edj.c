@@ -35,8 +35,8 @@ static Eina_Bool res;
  * @addtogroup pm_project_import_edj
  * @{
  * <tr>
- * <td>pm_project_importedj</td>
- * <td>pm_project_importedj_test_p</td>
+ * <td>pm_project_import_edj</td>
+ * <td>pm_project_import_edj_test_p</td>
  * <td>
  * This test check that the thread is ran.
  * @precondition
@@ -74,8 +74,8 @@ END_TEST
  * @addtogroup pm_project_import_edj
  * @{
  * <tr>
- * <td>pm_project_importedj</td>
- * <td>pm_project_importedj_test_p1</td>
+ * <td>pm_project_import_edj</td>
+ * <td>pm_project_import_edj_test_p1</td>
  * <td>
  * This test check feedback from thread.
  * @precondition
@@ -129,8 +129,8 @@ END_TEST
  * @addtogroup pm_project_import_edj
  * @{
  * <tr>
- * <td>pm_project_importedj</td>
- * <td>pm_project_importedj_test_p2</td>
+ * <td>pm_project_import_edj</td>
+ * <td>pm_project_import_edj_test_p2</td>
  * <td>
  * This test check callback of end event from thread.
  * @precondition
