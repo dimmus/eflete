@@ -105,9 +105,49 @@ _module_changes_clear(Module *module)
 }
 
 Eina_Bool
-history_redo(Evas_Object *source __UNUSED__, int count __UNUSED__)
+history_redo(Evas_Object *source, int count)
 {
-   return false;
+   if ((count <= 0 ) || (!source)) return false;
+
+   Diff *diff = NULL;
+   Eina_List *next = NULL;
+   Module *module = NULL;
+   Eina_Bool result = false;
+
+   module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+
+   if ((module) && (module->changes))
+     {
+        diff = module->current_change;
+        if (!diff) diff = eina_list_data_get(module->changes);
+        else
+          {
+             next = eina_list_next(eina_list_data_find_list(module->changes, diff));
+             if (next) diff = eina_list_data_get(next);
+             else
+               return false;
+          }
+        if (!diff)
+          return false;
+     }
+   else
+     return false;
+
+   switch (diff->module_type)
+     {
+      case PROPERTY:
+         result = _attribute_redo(module->target, (Attribute_Diff *)diff);
+      break;
+      default:
+         ERR("Unsupported module type, that store diff");
+         return false;
+     }
+
+   module->current_change = diff;
+
+   if (count > 1) result = history_redo(source, --count);
+
+   return result;
 }
 
 Eina_Bool

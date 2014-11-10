@@ -69,6 +69,12 @@ struct _Attribute_Diff
 };
 
 Eina_Bool
+_attribute_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
 _attribute_undo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)

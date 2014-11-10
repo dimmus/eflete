@@ -142,4 +142,18 @@ _attribute_change_free(Attribute_Diff *change);
 Eina_Bool
 _attribute_undo(Evas_Object *source, Attribute_Diff *change);
 
+/**
+ * This function restore given diff.
+ *
+ * @param source The object, that present module and can be changed with
+ * functions, that saved in a @c Attribute_Diff structure.
+ * @param change The diff, that was created with using _attribute_change_new.
+ *
+ * @return EINA_TRUE if diff restored successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_Attribute
+ */
+Eina_Bool
+_attribute_redo(Evas_Object *source, Attribute_Diff *change);
+
 #endif /* HISTORY_PRIVATE_H */
