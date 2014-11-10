@@ -191,11 +191,9 @@ _play_finished_cb(void *data,
                   void *event_info EINA_UNUSED)
 {
    Sound_Editor *edit = (Sound_Editor *) data;
-
    eo_del(edit->io.in);
    edit->io.in = NULL;
    edit->playing = false;
-   edit->added = false;
    ecore_main_loop_quit();
    return true;
 }
@@ -323,6 +321,8 @@ _tone_play(Sound_Editor *edit, int tone_frq)
 static void
 _add_sound_play(Sound_Editor *edit)
 {
+   Evas_Object *edje_edit_obj;
+   const char *snd_src;
    double value;
    Eina_Bool ret = false;
 
@@ -341,12 +341,14 @@ _add_sound_play(Sound_Editor *edit)
 
    if (!edit->io.in)
      {
+        GET_OBJ(edit->pr, edje_edit_obj);
+        snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, edit->selected);
         _create_io_stream(edit);
-        eo_do(edit->io.in, ecore_audio_obj_name_set(edit->selected));
-        eo_do(edit->io.in, ret = ecore_audio_obj_source_set(edit->selected));
+        eo_do(edit->io.in, ecore_audio_obj_name_set(snd_src));
+        eo_do(edit->io.in, ret = ecore_audio_obj_source_set(snd_src));
         if (!ret)
           {
-             ERR("Could not play the added sound");
+             ERR("Can not set source obj for added sample");
              elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
              evas_object_hide(edit->pause);
              elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->play);
@@ -454,7 +456,6 @@ _interrupt_playing(Sound_Editor *edit)
              edit->timer = NULL;
           }
         ecore_main_loop_quit();
-
         elm_object_part_content_unset(edit->player_markup, "swallow.button.play");
         evas_object_hide(edit->pause);
         elm_object_part_content_set(edit->player_markup, "swallow.button.play", edit->play);
