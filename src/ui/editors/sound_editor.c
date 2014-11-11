@@ -1154,7 +1154,7 @@ _popup_close(void *data)
 
 static void
 _add_tone_done(void *data,
-                Evas_Object *obj,
+                Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
    Evas_Object *edje_edit_obj;
@@ -1182,7 +1182,8 @@ _add_tone_done(void *data,
 
    if (!edje_edit_sound_tone_add(edje_edit_obj, str_name, frq))
      {
-        WIN_NOTIFY_ERROR(obj, _("Error while add new tone<br>"));
+        NOTIFY_WARNING(_("Tone exist!"));
+        return;
      }
    else
      {
