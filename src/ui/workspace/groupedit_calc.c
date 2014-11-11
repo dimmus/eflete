@@ -738,7 +738,6 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 
    PART_STATE_GET(edit_obj, gp->name)
 
-   state = edje_edit_part_selected_state_get(edit_obj, gp->name, &value);
    edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
    evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
 
@@ -832,8 +831,6 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    Evas_Text_Style_Type style;
    Edje_Text_Effect effect;
    PART_STATE_GET(edit_obj, gp->name)
-
-   state = edje_edit_part_selected_state_get(edit_obj, gp->name, &value);
 
    font = edje_edit_state_font_get(edit_obj, gp->name, state, value);
    text_size = edje_edit_state_text_size_get(edit_obj, gp->name, state, value);
