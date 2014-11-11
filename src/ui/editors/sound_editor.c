@@ -1073,6 +1073,17 @@ _sound_editor_search_field_create(Evas_Object *parent)
    return entry;
 }
 
+static Eina_Bool
+_check_extension(const char *name)
+{
+   if (eina_str_has_extension(name, ".wav") ||
+       eina_str_has_extension(name, ".ogg") ||
+       eina_str_has_extension(name, ".flac"))
+     return true;
+   else
+     return false;
+}
+
 static void
 _fs_del(void *data)
 {
@@ -1109,6 +1120,14 @@ _add_sample_done(void *data,
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
         sound_name = ecore_file_file_get(selected);
+        if (!_check_extension(sound_name))
+          {
+             WIN_NOTIFY_WARNING(obj, _("There are supported only files "
+                                       "with extensions:<br>"
+                                       "*.wav *.ogg *.flac"))
+             return;
+          }
+
         new_item = elm_gengrid_search_by_text_item_get(edit->gengrid, NULL,
                                                        NULL, sound_name, 0);
         if (new_item)
