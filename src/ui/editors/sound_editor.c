@@ -1095,6 +1095,7 @@ _add_sample_done(void *data,
 {
    Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
+   Elm_Object_Item *new_item = NULL;
    const char *selected = event_info;
    const char *sound_name;
 
@@ -1108,6 +1109,14 @@ _add_sample_done(void *data,
    if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
      {
         sound_name = ecore_file_file_get(selected);
+        new_item = elm_gengrid_search_by_text_item_get(edit->gengrid, NULL,
+                                                       NULL, sound_name, 0);
+        if (new_item)
+          {
+             WIN_NOTIFY_WARNING(obj, _("Sample has been already added!"))
+             return;
+          }
+
         if (!edje_edit_sound_sample_add(edje_edit_obj, sound_name, selected))
           {
              WIN_NOTIFY_ERROR(obj,
