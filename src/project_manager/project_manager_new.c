@@ -351,10 +351,12 @@ _project_import_edc(void *data,
                                     worker->build_options,
                                     worker->edc,
                                     worker->edj);
+      THREAD_TESTCANCEL;
    WORKER_LOCK_RELEASE;
    DBG("Run command for compile: %s", cmd);
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
+   THREAD_TESTCANCEL;
    /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
     * function what provide wait end of forked process.*/
    waitpid(exe_pid, NULL, 0);
@@ -365,6 +367,13 @@ _project_import_edc(void *data,
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
      }
+
+   THREAD_TESTCANCEL;
+   PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
+   worker->project = _project_files_create(worker);
+   THREAD_TESTCANCEL;
+   PROGRESS_SEND("%s", _("Importing..."));
+   _project_dev_file_copy(worker);
 
    END_SEND(PM_PROJECT_SUCCESS)
    return NULL;

@@ -34,7 +34,7 @@
  * @{
  * <tr>
  * <td>pm_project_import_edc</td>
- * <td>pm_project_import_edc_test_p</td>
+ * <td>pm_project_import_edc_test_p1</td>
  * <td>
  * This test check that the thread is ran.
  * @precondition
@@ -55,13 +55,13 @@
  * @}
  */
 static void
-_test_end_cb(void *data __UNUSED__,
-             PM_Project_Result result __UNUSED__)
+_test_end_p1_cb(void *data __UNUSED__,
+                PM_Project_Result result __UNUSED__)
 {
    ecore_main_loop_quit();
 }
 
-EFLETE_TEST (pm_project_import_edc_test_p)
+EFLETE_TEST (pm_project_import_edc_test_p1)
 {
    Project_Thread *thread;
 
@@ -70,7 +70,7 @@ EFLETE_TEST (pm_project_import_edc_test_p)
 
    thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
                                   "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
-                                  NULL, _test_end_cb, NULL);
+                                  NULL, _test_end_p1_cb, NULL);
    ecore_main_loop_begin();
 
    ck_assert_msg(thread != NULL, "Thread for import radio.edc to new project not started!");
@@ -79,6 +79,64 @@ EFLETE_TEST (pm_project_import_edc_test_p)
    elm_shutdown();
 }
 END_TEST
+
+/**
+ * @addtogroup pm_project_import_edc
+ * @{
+ * <tr>
+ * <td>pm_project_import_edc</td>
+ * <td>pm_project_import_edc_test_p2</td>
+ * <td>
+ * This test check that all specific file are created.
+ * @precondition
+ * @step 1 initialized elm;
+ * @step 2 initialized eflete, need for logger.
+ *
+ * @procedure
+ * @step 1 Call pm_project_import_edc;
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(char *)"UTC", (char *)".", (char *)"radio.edc",
+ * (char *)"-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
+ * NULL, "_test_end_p2_cb", NULL </td>
+ * <td>Specific files must be created</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+static void
+_test_end_p2_cb(void *data __UNUSED__,
+                PM_Project_Result result __UNUSED__)
+{
+   ecore_main_loop_quit();
+}
+
+EFLETE_TEST (pm_project_import_edc_test_p2)
+{
+   Project_Thread *thread;
+   Eina_Bool res;
+
+   elm_init(0,0);
+   app_init();
+
+   thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
+                                  "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
+                                  NULL, _test_end_p2_cb, NULL);
+   if (!thread)
+     ck_abort_msg("Project htread not started!");
+   ecore_main_loop_begin();
+
+   res = ecore_file_exists("./UTC/UTC.pro");
+   res |= ecore_file_exists("./UTC/UTC.dev");
+   ck_assert_msg(thread != EINA_FALSE, "Specific project file not created.");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+
 
 /**
  * @addtogroup pm_project_import_edc
