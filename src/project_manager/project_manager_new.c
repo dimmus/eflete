@@ -19,12 +19,13 @@
 #define _GNU_SOURCE
 #include "project_manager_new.h"
 #include "alloc.h"
+#include <sys/wait.h>
 
 #define PROJECT_FILE_KEY      "project"
 #define THREAD_TESTCANCEL pthread_testcancel()
 
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, \
-                      NAME, PATH, EDJ, BUILD_OPTIONS) \
+                      NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
 { \
    worker = (Project_Thread *)mem_malloc(sizeof(Project_Thread)); \
    worker->func_progress = FUNC_PROGRESS; \
@@ -34,6 +35,7 @@
    worker->name = eina_stringshare_add(NAME); \
    worker->path = eina_stringshare_add(PATH); \
    worker->edj = eina_stringshare_add(EDJ); \
+   worker->edc = eina_stringshare_add(EDC); \
    worker->build_options = eina_stringshare_add(BUILD_OPTIONS); \
    eina_lock_new(&worker->mutex); \
 }
@@ -257,7 +259,6 @@ _project_import_edj(void *data,
    return NULL;
 }
 
-
 Project_Thread *
 pm_project_import_edj(const char *name,
                       const char *path,
@@ -270,7 +271,7 @@ pm_project_import_edj(const char *name,
    Eina_Bool result;
 
    WORKER_CREATE(func_progress, func_end, data,
-                 name, path, edj, NULL);
+                 name, path, edj, NULL, NULL);
 
    result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
                                (void *)_project_import_edj, worker);
@@ -280,17 +281,118 @@ pm_project_import_edj(const char *name,
    return worker;
 }
 
-Project_Thread *
-pm_project_import_edc(const char *name __UNUSED__,
-                      const char *path __UNUSED__,
-                      const char *edc __UNUSED__,
-                      const char *import_options __UNUSED__,
-                      PM_Project_Progress_Cb func_progress __UNUSED__,
-                      PM_Project_End_Cb func_end __UNUSED__,
-                      const void *data __UNUSED__)
+static Eina_Bool
+_exe_exit(void *data,
+          int type __UNUSED__,
+          void *event)
 {
+   Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)event;
+   Project_Thread *worker = (Project_Thread *)data;
+
+   if (e->exit_code)
+     END_SEND(PM_PROJECT_ERROR);
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_exe_data(void *data,
+          int type __UNUSED__,
+          void *event)
+{
+   int i;
+   Ecore_Exe_Event_Data *ev = event;
+   Project_Thread *worker = (Project_Thread *)data;
+
+   if (ev->lines)
+     {
+        for (i = 0; ev->lines[i].line; i++)
+          {
+             PROGRESS_SEND("%s", ev->lines[i].line);
+          }
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static void *
+_project_import_edc(void *data,
+                    Eina_Thread *thread)
+{
+   Project_Thread *worker;
+   pthread_attr_t attr;
+   Ecore_Event_Handler *cb_exit = NULL,
+                       *cb_msg_stdout = NULL,
+                       *cb_msg_stderr = NULL;
+   Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
+                            ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                            ECORE_EXE_PIPE_ERROR |
+                            ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+   Eina_Stringshare *cmd;
+   Ecore_Exe *exe_cmd;
+   pid_t exe_pid;
+
+   /** try to change the detach state */
+   if (!pthread_getattr_np(*thread, &attr))
+     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+   pthread_attr_destroy(&attr);
+
+   worker = (Project_Thread *)data;
+
+   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, worker);
+   WORKER_LOCK_TAKE;
+      if (worker->func_progress)
+        {
+           cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
+           cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
+        }
+      worker->edj = eina_stringshare_printf("/tmp/build_%ld.edj", time(NULL));
+      cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
+                                    worker->build_options,
+                                    worker->edc,
+                                    worker->edj);
+   WORKER_LOCK_RELEASE;
+   DBG("Run command for compile: %s", cmd);
+   exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
+   exe_pid = ecore_exe_pid_get(exe_cmd);
+   /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
+    * function what provide wait end of forked process.*/
+   waitpid(exe_pid, NULL, 0);
+
+   ecore_event_handler_del(cb_exit);
+   if (worker->func_progress)
+     {
+        ecore_event_handler_del(cb_msg_stdout);
+        ecore_event_handler_del(cb_msg_stderr);
+     }
+
+   END_SEND(PM_PROJECT_SUCCESS)
    return NULL;
 }
+
+Project_Thread *
+pm_project_import_edc(const char *name,
+                      const char *path,
+                      const char *edc,
+                      const char *import_options,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end,
+                      const void *data)
+{
+   Project_Thread *worker;
+   Eina_Bool result;
+
+   WORKER_CREATE(func_progress, func_end, data,
+                 name, path, NULL, edc, import_options);
+
+   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                               (void *)_project_import_edc, worker);
+   if (!result)
+     WORKER_FREE();
+
+   return worker;
+}
+
 Eina_Bool
 pm_project_thread_cancel(Project_Thread *worker)
 {

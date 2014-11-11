@@ -178,6 +178,8 @@ struct _Project_Thread
    const char *path;
    /** Path to imported edj file. */
    const char *edj;
+   /** Path to imported edc file. */
+   const char *edc;
    /** edje_cc options. Used for 'new project' and 'import from edc'. */
    const char *build_options;
    /** Message string */
