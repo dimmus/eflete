@@ -940,6 +940,9 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    if ((!widget_list) || (!style_full_name)) return NULL;
 
    WM_WIDGET_NAME_GET(widget_name, style_full_name);
+   if (!widget_name)
+     return NULL;
+
    if (widget_name [0] <= 'm')
      EINA_INLIST_FOREACH(widget_list, _widget)
        {
