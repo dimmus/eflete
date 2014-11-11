@@ -299,7 +299,6 @@ _on_btn_add(void *data,
    evas_object_size_hint_align_set(ccl_box, EVAS_HINT_FILL, 0.0);
    evas_object_show(ccl_box);
 
-   ccl_label = elm_label_add(ccl_box);
    LABEL_ADD(ccl_box, ccl_label, _("Color class name: "))
    elm_box_pack_end(ccl_box, ccl_label);
 
