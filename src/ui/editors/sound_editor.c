@@ -1222,6 +1222,7 @@ _on_cmb_sel(void *data,
      {
         Evas_Object *popup, *box, *item, *bt_yes, *bt_no;
         Eina_Stringshare *title;
+
         popup = elm_popup_add(edit->win);
         elm_object_style_set(popup, "eflete");
         title = eina_stringshare_add(_("Add new tone to the project"));
@@ -1243,7 +1244,7 @@ _on_cmb_sel(void *data,
                                        &accept_value);
         elm_object_part_text_set(edit->frq_entry, "guide",
                                  _("Type a frequency (20 - 20000)"));
-        ewe_entry_regex_set(edit->frq_entry, FLOAT_NUMBER_REGEX, EWE_REG_EXTENDED);
+        ewe_entry_regex_set(edit->frq_entry, TONE_FRQ_REGEX, EWE_REG_EXTENDED);
         ewe_entry_regex_autocheck_set(edit->frq_entry, true);
         ewe_entry_regex_glow_set(edit->frq_entry, true);
         elm_object_part_content_set(item, "elm.swallow.content", edit->frq_entry);

@@ -32,6 +32,7 @@
 #define FLOAT_NUMBER_REGEX "^[0-9]*(\\.[0-9]+)?$"
 #define FLOAT_NUMBER_0_1_REGEX "^(0?(\\.[0-9]+)?|1|1\\.0)?$"
 #define EDJE_NAME_REGEX "^[^\\\"]*$"
+#define TONE_FRQ_REGEX "^([2-9][0-9]|[1-9][0-9]{2,3}|1[0-9]{4}|20000)$"
 
 #define STATUSBAR_PROJECT_PATH(AP, TEXT) \
    Evas_Object *label = ewe_statusbar_item_content_get( \
