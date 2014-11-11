@@ -19,6 +19,7 @@
 
 
 #include "test_history.h"
+#include "main_window.h"
 
 /**
  * @addtogroup history_test
@@ -780,6 +781,222 @@ EFLETE_TEST(history_undo_test_p10)
 
    history_term(app->history);
    ecore_evas_free(ee);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p11</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Save current value of  drag x param of "bg" part.
+ * @step 10 Set new value [1] for drag x param of "bg" part.
+ * @step 11 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for style object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of max height param of group with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p11)
+{
+   App_Data *app = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Style *style = NULL;
+   int old_value = -1;
+   int new_value = 10;
+   int check_value = -15;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   old_value = edje_edit_part_drag_x_get(style->obj, "bg");
+   edje_edit_part_drag_x_set(style->obj, "bg", new_value);
+   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_part_drag_x_set,
+                    "Drag x", "bg", NULL, 0.0);
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with INT value type.");
+   check_value = edje_edit_part_drag_x_get(style->obj, "bg");
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p12</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Save current value of  drag x param of "bg" part.
+ * @step 10 Set new value [1] for drag x param of "bg" part.
+ * @step 11 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for style object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of max height param of group with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p12)
+{
+   App_Data *app = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Style *style = NULL;
+   int old_value = -1;
+   int new_value = 10;
+   int check_value = -15;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
+   edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
+   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
+                    "Min h", "bg", "default", 0.0);
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with INT value type.");
+   check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p13</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Save current value of  max height param of group.
+ * @step 10 Set new value [10] for max height param of group.
+ * @step 11 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for style object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of max height param of group with the
+ *         value, that was saved at step 7 of precondition.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p13)
+{
+   App_Data *app = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Style *style = NULL;
+   int old_value = -1;
+   int new_value = 10;
+   int check_value = -15;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   old_value = edje_edit_group_max_h_get(style->obj);
+   edje_edit_group_max_h_set(style->obj, new_value);
+   history_diff_add(style->obj, PROPERTY, MODIFY, ONE, old_value, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
+                    "Min h", NULL, NULL, 0.0);
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with ONE value type.");
+   check_value = edje_edit_group_max_h_get(style->obj);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   history_term(app->history);
    app_shutdown();
    elm_shutdown();
 }

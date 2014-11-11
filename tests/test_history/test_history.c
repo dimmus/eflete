@@ -64,6 +64,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, history_undo_test_p8);
    tcase_add_test(tcase, history_undo_test_p9);
    tcase_add_test(tcase, history_undo_test_p10);
+   tcase_add_test(tcase, history_undo_test_p11);
+   tcase_add_test(tcase, history_undo_test_p12);
+   tcase_add_test(tcase, history_undo_test_p13);
    tcase_add_test(tcase, history_undo_test_n1);
    tcase_add_test(tcase, history_undo_test_n2);
    tcase_add_test(tcase, history_undo_test_n3);

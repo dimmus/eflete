@@ -68,6 +68,61 @@ struct _Attribute_Diff
    };
 };
 
+/*
+ * This function updates EFLETE ui accordingly to the given change.
+ * It's placed here, because needed access to fields of the Attribute_Diff
+ * structure.
+ */
+static void
+_history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
+{
+   Style *style = NULL;
+   Part *part = NULL;
+
+   App_Data *app = app_data_get();
+   if (!app->project) return;
+   style = app->project->current_style;
+   if ((!style) || (style->obj != source)) return;
+
+   Evas_Object *prop = ui_block_property_get(app);
+   Evas_Object *state_list = ui_block_state_list_get(app);
+
+   if (change->part)
+     {
+        /* this case mean, that change have action with part attributes */
+        part = wm_part_by_name_find(style, change->part);
+        if (!part) return;
+        if (change->state)
+          {
+             part->curr_state = change->state;
+             part->curr_state_value = change->state_value;
+             ui_states_list_data_set(state_list, style, part);
+          }
+        else if (change->param_type == RENAME)
+          evas_object_smart_callback_call(app->workspace, "part,name,changed", part);
+        evas_object_smart_callback_call(app->workspace, "part,changed", part);
+        evas_object_smart_callback_call(app->workspace, "ws,part,selected",
+                                        (void *)change->part);
+        workspace_edit_object_part_state_set(app->workspace, part);
+        ui_property_part_set(prop, part);
+     }
+   else
+     {
+        /* next lines of code update UI of EFLETE for group params change */
+        part = ui_widget_list_selected_part_get(
+                                 ui_block_widget_list_get(app));
+        if (part)
+          {
+             evas_object_smart_callback_call(app->workspace, "ws,part,unselected",
+                                             (void *)part->name);
+             workspace_highlight_unset(app->workspace);
+          }
+        ui_property_part_unset(prop);
+        ui_property_style_unset(prop);
+        ui_property_style_set(prop, style, app->workspace);
+     }
+}
+
 Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change)
 {
@@ -121,6 +176,8 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
        return false;
      break;
     }
+
+   _history_ui_attribute_update(source, change);
    return true;
 }
 
@@ -176,6 +233,8 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
        return false;
      break;
     }
+
+   _history_ui_attribute_update(source, change);
    return true;
 }
 

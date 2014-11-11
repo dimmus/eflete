@@ -200,12 +200,12 @@ history_undo(Evas_Object *source, int count)
 Eina_Bool
 history_clear(History *history)
 {
-   Eina_List *l, *l_next;
    Module *module;
 
    if (!history) return false;
 
-   EINA_LIST_FOREACH_SAFE(history->modules, l, l_next, module)
+
+   EINA_LIST_FREE(history->modules, module)
      {
         if (!_module_changes_clear(module))
           {
@@ -214,6 +214,7 @@ history_clear(History *history)
           }
        free(module);
      }
+   elm_genlist_clear(history->genlist);
 
    return true;
 }
