@@ -92,7 +92,7 @@ static unsigned int part_types_count = 12;
  */
 #define WM_STYLE_NAME_GET(style_name, class_name, full_group_name) \
    arr = eina_str_split(full_group_name, "/", 0); \
-   strcpy(tmp, arr[3]); \
+   eina_strlcpy(tmp, arr[3], sizeof(tmp)); \
    for (size = 4; arr[size]; size++) \
      { \
         if (strcmp(arr[size], class_name)) \
