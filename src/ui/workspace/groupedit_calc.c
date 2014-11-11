@@ -507,7 +507,8 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
              if (!gp->item)
                {
                   gp->item = edje_object_add(sd->e);
-                  edje_object_file_set(gp->item, EFLETE_EDJ, "eflete/group/item/default");
+                  if (!edje_object_file_set(gp->item, EFLETE_EDJ, "eflete/group/item/default"))
+                    ERR("Could not load style of part's item!");
                   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_DOWN,
                                                  _part_separete_mod_mouse_click_cb, gp);
                   evas_object_event_callback_add(gp->item, EVAS_CALLBACK_MOUSE_IN,
