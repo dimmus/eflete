@@ -860,7 +860,6 @@ wm_widget_list_new(const char *file)
                   widget_list = eina_inlist_append(widget_list,
                                                    EINA_INLIST_GET(widget));
                   widget_styles = eina_list_free(widget_styles);
-                  widget_styles = NULL;
                }
              if (widget_name)
                free(widget_name);
