@@ -19,9 +19,16 @@
 
 #include "test_project_manager_new.h"
 
+void teardown(void)
+{
+   ecore_file_recursive_rm("./UTC");
+}
+
 Suite* test_suite (void) {
    Suite *suite = suite_create("project_manager_new_test");
    TCase *tcase = tcase_create("TCase");
+
+   tcase_add_checked_fixture(tcase, NULL, teardown);
 
    tcase_add_test(tcase, pm_project_import_edj_test_p);
    tcase_add_test(tcase, pm_project_import_edj_test_p1);
