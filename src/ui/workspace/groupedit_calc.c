@@ -953,8 +953,6 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    double valign;
    PART_STATE_GET(edit_obj, gp->name)
 
-   state = edje_edit_part_selected_state_get(edit_obj, gp->name, &value);
-
    get_style = edje_object_part_object_get(edit_obj, gp->name);
    obj_style = evas_object_textblock_style_get(get_style);
    text = evas_textblock_style_get(obj_style);
