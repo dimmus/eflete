@@ -31,6 +31,7 @@ void pm_project_import_edj_test_p2(int);
 
 void pm_project_import_edc_test_p1(int);
 void pm_project_import_edc_test_p2(int);
+void pm_project_import_edc_test_p3(int);
 
 void pm_project_thread_cancel_test_p(int);
 

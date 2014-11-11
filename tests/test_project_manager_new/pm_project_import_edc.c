@@ -115,7 +115,7 @@ _test_end_p2_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_import_edc_test_p2)
 {
    Project_Thread *thread;
-   Eina_Bool res;
+   Eina_Bool files_is;
 
    elm_init(0,0);
    app_init();
@@ -124,17 +124,75 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
                                   "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
                                   NULL, _test_end_p2_cb, NULL);
    if (!thread)
-     ck_abort_msg("Project htread not started!");
+     ck_abort_msg("Project thread not started!");
    ecore_main_loop_begin();
 
-   res = ecore_file_exists("./UTC/UTC.pro");
-   res |= ecore_file_exists("./UTC/UTC.dev");
-   ck_assert_msg(thread != EINA_FALSE, "Specific project file not created.");
+   files_is = ecore_file_exists("./UTC/UTC.pro");
+   files_is |= ecore_file_exists("./UTC/UTC.dev");
+   ck_assert_msg(files_is != EINA_FALSE, "Specific project file not created.");
 
    app_shutdown();
    elm_shutdown();
 }
 END_TEST
+
+/**
+ * @addtogroup pm_project_import_edc
+ * @{
+ * <tr>
+ * <td>pm_project_import_edc</td>
+ * <td>pm_project_import_edc_test_p3</td
+ * <td>
+ * This test check the progress message from import edc thread.
+ * @precondition
+ * @step 1 initialized elm;
+ * @step 2 initialized eflete, need for logger.
+ *
+ * @procedure
+ * @step 1 Call pm_project_import_edc;
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(char *)"UTC", (char *)".", (char *)"radio.edc",
+ * (char *)"-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
+ * "_test_progress_cb", NULL, NULL </td>
+ * <td>Specific files must be created</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+static Eina_Bool
+_test_progress_cb(void *data __UNUSED__,
+                  Eina_Stringshare *message __UNUSED__)
+{
+   res = EINA_TRUE;
+
+   ecore_main_loop_quit();
+   return EINA_TRUE;
+}
+
+EFLETE_TEST (pm_project_import_edc_test_p3)
+{
+   Project_Thread *thread;
+
+   elm_init(0,0);
+   app_init();
+
+   res = EINA_FALSE;
+   thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
+                                  "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
+                                  _test_progress_cb, NULL, NULL);
+   if (!thread)
+     ck_abort_msg("Project thread not started!");
+   ecore_main_loop_begin();
+
+   ck_assert_msg(res, "Progress callback did't called!");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
 
 
 

@@ -36,6 +36,7 @@ Suite* test_suite (void) {
 
    tcase_add_test(tcase, pm_project_import_edc_test_p1);
    tcase_add_test(tcase, pm_project_import_edc_test_p2);
+   tcase_add_test(tcase, pm_project_import_edc_test_p3);
 
    tcase_add_test(tcase, pm_project_thread_cancel_test_p);
 
