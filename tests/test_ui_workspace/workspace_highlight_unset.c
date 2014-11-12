@@ -82,6 +82,8 @@ EFLETE_TEST(workspace_highlight_unset_test_p)
    ck_assert_msg(res == EINA_TRUE, "Failed unset highlight from workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -127,6 +129,7 @@ EFLETE_TEST(workspace_highlight_unset_test_n)
    ck_assert_msg(res == EINA_FALSE, "Unset highlight from workspace without "
                                     "prevision set.");
 
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

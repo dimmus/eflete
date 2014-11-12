@@ -721,7 +721,10 @@ group { name: "elm/scroller/base/eflete/workspace";
       part { name: "clipper";
          type: RECT;
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.content";
+            rel1 {
+               to: "cross_spacer";
+               relative: 1.0 1.0;
+            }
             rel2.to: "elm.swallow.content";
          }
       }

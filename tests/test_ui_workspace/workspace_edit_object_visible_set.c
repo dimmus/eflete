@@ -75,6 +75,8 @@ EFLETE_TEST(workspace_edit_object_visible_set_test_p)
    ck_assert_msg(res == EINA_TRUE, "Failed set visibily part object, loaded into workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -127,6 +129,8 @@ EFLETE_TEST(workspace_edit_object_visible_set_test_n)
    ck_assert_msg(res == EINA_FALSE, "Set visibily for non exist part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

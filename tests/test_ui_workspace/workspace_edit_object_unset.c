@@ -73,7 +73,9 @@ EFLETE_TEST (workspace_edit_object_unset_test_p)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_unset.edj");
    res = workspace_edit_object_unset(workspace);
    ck_assert_msg(res == EINA_TRUE, "Fail unset edit object from workspace");
+
    wm_style_free(style);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -115,6 +117,8 @@ EFLETE_TEST (workspace_edit_object_unset_test_n)
    workspace = workspace_add(parent);
    res = workspace_edit_object_unset(workspace);
    ck_assert_msg(res == EINA_FALSE, "Unset edit object from workspace without load");
+
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
