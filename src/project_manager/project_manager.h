@@ -89,8 +89,8 @@ pm_open_project_edj(const char *path);
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
-pm_project_close(Project *project);
+//Eina_Bool
+//pm_project_close(Project *project);
 
 /**
  * Save project into edc.

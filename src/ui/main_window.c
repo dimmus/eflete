@@ -51,8 +51,10 @@ ui_main_window_del(App_Data *ap)
    ap->menu_hash = NULL;
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
+   /*
    if (ap->project)
      pm_project_close(ap->project);
+   */
    /* FIXME: remove it from here */
    live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */

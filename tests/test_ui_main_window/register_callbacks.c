@@ -78,7 +78,7 @@ EFLETE_TEST (register_callbacks_test_p)
    result = register_callbacks(app_data);
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(app_data->win);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

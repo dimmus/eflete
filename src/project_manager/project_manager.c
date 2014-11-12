@@ -87,6 +87,7 @@ _on_unlink_done_cb(void *data,
    ecore_main_loop_quit();
 }
 
+/*
 static void
 _on_unlink_error_cb(void *data,
                     Eio_File *handler __UNUSED__,
@@ -97,6 +98,7 @@ _on_unlink_error_cb(void *data,
        file_name, strerror(error));
    ecore_main_loop_quit();
 }
+*/
 
 static Project *
 _pm_project_add(const char *path)
@@ -187,6 +189,7 @@ pm_open_project_edj(const char *path)
    return project;
 }
 
+/*
 Eina_Bool
 pm_project_close(Project *project)
 {
@@ -198,6 +201,7 @@ pm_project_close(Project *project)
 
    return true;
 }
+*/
 
 Eina_Bool
 pm_save_project_edj(Project *project)

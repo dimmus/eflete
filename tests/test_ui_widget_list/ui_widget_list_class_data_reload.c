@@ -102,7 +102,7 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p1)
    result = ui_widget_list_class_data_reload(glist, _widget->classes);
    ck_assert_msg(result, "Failed to reload data into widget list");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

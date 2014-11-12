@@ -97,7 +97,7 @@ EFLETE_TEST (ui_widget_list_part_add_test_p)
    result = ui_widget_list_part_add(widget_list, _style, "absolutely_new_part");
    ck_assert_msg(result, "Failed to add new part");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -162,7 +162,7 @@ EFLETE_TEST (ui_widget_list_part_add_test_n1)
    result = ui_widget_list_part_add(widget_list, _style, "absolutely_new_part");
    ck_assert_msg(!result, "New part added successfully.");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -230,7 +230,7 @@ EFLETE_TEST (ui_widget_list_part_add_test_n2)
    result = ui_widget_list_part_add(widget_list, _style, NULL);
    ck_assert_msg(!result, "New part added successfully.");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -295,7 +295,7 @@ EFLETE_TEST (ui_widget_list_part_add_test_n3)
    result = ui_widget_list_part_add(widget_list, NULL, "absolutely_new_part");
    ck_assert_msg(!result, "New part added successfully.");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

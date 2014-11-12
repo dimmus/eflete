@@ -197,7 +197,8 @@ test_project_manager_new/pm_project_import_edj.c \
 test_project_manager_new/pm_project_import_edc.c \
 test_project_manager_new/pm_project_thread_cancel.c \
 test_project_manager_new/pm_project_thread_free.c \
-test_project_manager_new/pm_project_open.c
+test_project_manager_new/pm_project_open.c \
+test_project_manager_new/pm_project_close.c
 project_manager_new_test_CFLAGS = ${FLAGS}
 project_manager_new_test_LDADD = ${LD}
 

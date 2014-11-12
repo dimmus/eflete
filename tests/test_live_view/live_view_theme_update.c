@@ -83,7 +83,7 @@ EFLETE_TEST(live_view_theme_update_test_p1)
 
    live_view_free(live);
    wm_style_free(style);
-   pm_project_close(project);
+   ///pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -143,7 +143,7 @@ EFLETE_TEST(live_view_theme_update_test_p2)
 
    live_view_free(live);
    wm_style_free(layout);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -197,7 +197,7 @@ EFLETE_TEST(live_view_theme_update_test_n1)
    ck_assert_msg(res == EINA_FALSE, "Update style in NULL pointer live view.");
 
    wm_style_free(style);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -297,7 +297,7 @@ EFLETE_TEST(live_view_theme_update_test_n3)
 
    live_view_free(live);
    wm_style_free(layout);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }

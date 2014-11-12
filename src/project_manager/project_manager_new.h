@@ -335,7 +335,7 @@ pm_project_build(Project *project, Build build_profile);
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_close(Project *project);
+pm_project_close(Project *project) EINA_ARG_NONNULL(1);
 
 /**
  * Get a meta data from Project.

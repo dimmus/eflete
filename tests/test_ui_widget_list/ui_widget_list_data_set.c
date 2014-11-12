@@ -68,7 +68,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p1)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -121,7 +121,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p2)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -173,7 +173,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p3)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -235,7 +235,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p4)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -313,7 +313,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_n2)
    result = ui_widget_list_data_set(NULL, project);
 
    ck_assert_msg(!result, "Data loaded with NULL widget list object");
-   pm_project_close(project);
+   //pm_project_close(project);
    elm_shutdown();
 }
 END_TEST

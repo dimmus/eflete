@@ -473,9 +473,17 @@ pm_project_build(Project *project __UNUSED__, Build build_profile __UNUSED__)
 }
 
 Eina_Bool
-pm_project_close(Project *project __UNUSED__)
+pm_project_close(Project *project)
 {
-   return false;
+   eina_stringshare_del(project->dev);
+   eina_stringshare_del(project->develop_path);
+   eina_stringshare_del(project->release_path);
+   eina_stringshare_del(project->release_options);
+
+   wm_widget_list_free(project->widgets);
+   wm_widget_list_free(project->layouts);
+
+   return true;
 }
 
 void

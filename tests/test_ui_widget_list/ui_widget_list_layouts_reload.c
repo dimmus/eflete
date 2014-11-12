@@ -82,7 +82,7 @@ EFLETE_TEST (ui_widget_list_layouts_reload_test_p)
    result = ui_widget_list_layouts_reload(glist, project);
    ck_assert_msg(result, "Failed to reload layouts data into widget list");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -128,7 +128,7 @@ EFLETE_TEST (ui_widget_list_layouts_reload_test_n1)
    result = ui_widget_list_layouts_reload(NULL, project);
    ck_assert_msg(!result, "Layouts data was reloaded in widget list");
 
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

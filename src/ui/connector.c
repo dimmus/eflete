@@ -663,7 +663,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
         ui_property_style_unset(ui_block_property_get(ap));
         ui_states_list_data_unset(ui_block_state_list_get(ap));
         ui_signal_list_data_unset(ui_block_signal_list_get(ap));
-        pm_project_close(ap->project);
+        //pm_project_close(ap->project);
      }
    if (ap->live_view) live_view_widget_style_unset(ap->live_view);
    if (ap->workspace)

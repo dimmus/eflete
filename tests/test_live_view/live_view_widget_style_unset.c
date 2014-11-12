@@ -84,7 +84,7 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
 
    live_view_free(live);
    wm_style_free(style);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }

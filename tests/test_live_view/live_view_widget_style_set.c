@@ -91,7 +91,7 @@ EFLETE_TEST(live_view_widget_style_set_test_p1)
 
    live_view_free(live);
    wm_style_free(style);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -159,7 +159,7 @@ EFLETE_TEST(live_view_widget_style_set_test_p2)
 
    live_view_free(live);
    wm_style_free(layout);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -213,7 +213,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n1)
    ck_assert_msg(res == EINA_FALSE, "Set style into NULL pointer of live view.");
 
    wm_style_free(style);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -261,7 +261,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n2)
    ck_assert_msg(res == EINA_FALSE, "Set NULL pointer style into live view.");
 
    live_view_free(live);
-   pm_project_close(project);
+   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
