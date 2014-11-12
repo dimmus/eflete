@@ -1188,18 +1188,33 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                                     pd->part->name, pd->part->curr_state, \
+                                     pd->part->curr_state_value); \
+   const char *value = item->title; \
    if (strcmp(item->title, _("Layout"))) \
      edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                      pd->part->curr_state, pd->part->curr_state_value, \
                                      item->title); \
-   else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+   else \
+     { \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         NULL); \
-  int temp = edje_edit_state_min_w_get(pd->style->obj, pd->part->name, \
+        value = NULL; \
+     } \
+   int temp = edje_edit_state_min_w_get(pd->style->obj, pd->part->name, \
                                        pd->part->curr_state, pd->part->curr_state_value); \
-  edje_edit_state_min_w_set(pd->style->obj, pd->part->name, \
-                            pd->part->curr_state, \
-                            pd->part->curr_state_value, temp); \
+   edje_edit_state_min_w_set(pd->style->obj, pd->part->name, \
+                             pd->part->curr_state, \
+                             pd->part->curr_state_value, temp); \
+   const char *text = eina_stringshare_printf("%s_%s", #SUB, #VALUE); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, value, \
+                    pd->style->full_group_name, \
+                    (void*)edje_edit_##SUB##_##VALUE##_set, text, \
+                    pd->part->name, pd->part->curr_state, \
+                    pd->part->curr_state_value); \
+   eina_stringshare_del(text); \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \

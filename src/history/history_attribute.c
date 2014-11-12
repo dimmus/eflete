@@ -296,8 +296,14 @@ _attribute_change_new(va_list list)
          change->string.old = eina_stringshare_add(string);
          string = (char *)va_arg(list, char *);
          change->string.new = eina_stringshare_add(string);
-         change->diff.new = eina_stringshare_add(change->string.new);
-         change->diff.old = eina_stringshare_add(change->string.old);
+         if (change->string.new)
+           change->diff.new = eina_stringshare_add(change->string.new);
+         else
+           change->diff.new = eina_stringshare_add("None");
+         if (change->string.old)
+           change->diff.old = eina_stringshare_add(change->string.old);
+         else
+           change->diff.old = eina_stringshare_add("None");
       break;
       case FOUR:
          change->four.old_1 = (int)va_arg(list, int);
