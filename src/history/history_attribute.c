@@ -126,6 +126,14 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
 Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change)
 {
+   Style *style = NULL;
+   Part *part = NULL;
+
+   App_Data *app = app_data_get();
+   if (!app->project) return false;
+   style = app->project->current_style;
+   if ((!style) || (style->obj != source)) return false;
+
    switch(change->param_type)
     {
      case INT:
@@ -165,8 +173,12 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
      case RENAME:
         if (!change->state)
           {
+             part = wm_part_by_name_find(style, change->part);
+             if (!part) return false;
+
              change->func(source, change->part, change->string.new);
              change->part = change->string.new;
+             part->name = change->string.new;
           }
         else
           return false;
@@ -184,6 +196,14 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
 Eina_Bool
 _attribute_undo(Evas_Object *source, Attribute_Diff *change)
 {
+   Style *style = NULL;
+   Part *part = NULL;
+
+   App_Data *app = app_data_get();
+   if (!app->project) return false;
+   style = app->project->current_style;
+   if ((!style) || (style->obj != source)) return false;
+
    switch(change->param_type)
     {
      case INT:
@@ -223,8 +243,12 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
      case RENAME:
         if (!change->state)
           {
+             part =   wm_part_by_name_find(style, change->part);
+             if (!part) return false;
+
              change->func(source, change->part, change->string.old);
              change->part = change->string.old;
+             part->name = change->string.old;
           }
         else return false;
      break;

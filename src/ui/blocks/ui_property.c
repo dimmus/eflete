@@ -627,6 +627,7 @@ _on_part_name_change(void *data,
    Prop_Data *pd = (Prop_Data *)data;
    int pos;
    const char *value;
+   const char *old_value = pd->part->name;
 
    if (elm_entry_is_empty(obj)) return;
 
@@ -643,6 +644,10 @@ _on_part_name_change(void *data,
    pd->style->isModify = true;
    pos = elm_entry_cursor_pos_get(obj);
    evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part);
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, RENAME, old_value, value,
+                      pd->style->full_group_name,
+                      (void*)edje_edit_part_name_set, "rename",
+                      pd->part->name, NULL, 0.0);
    elm_object_focus_set(obj, true);
    elm_entry_cursor_pos_set(obj, pos);
 }
