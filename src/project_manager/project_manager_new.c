@@ -99,6 +99,7 @@ static void
 _pm_project_descriptor_shutdown(void)
 {
    eet_data_descriptor_free(eed_project);
+   eed_project = NULL;
 }
 
 static Eina_Bool
@@ -430,9 +431,27 @@ pm_project_thread_free(Project_Thread *worker)
 }
 
 Project *
-pm_project_open(const char *path __UNUSED__)
+pm_project_open(const char *path)
 {
-   return NULL;
+   Eet_File *ef;
+   Project *project = NULL;
+
+   _project_descriptor_init();
+
+   ef = eet_open(path, EET_FILE_MODE_READ);
+   if (!ef)
+     goto error;
+
+   project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
+   eet_close(ef);
+   _pm_project_descriptor_shutdown();
+
+   if (!project) goto error;
+   project->widgets = wm_widget_list_new(project->dev);
+   project->layouts = wm_widget_list_layouts_load(project->dev);
+
+error:
+   return project;
 }
 
 Eina_Bool

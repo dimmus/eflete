@@ -37,3 +37,5 @@ void pm_project_thread_cancel_test_p(int);
 
 void pm_project_thread_free_test_p(int);
 void pm_project_thread_free_test_n(int);
+
+void pm_project_open_test_p(int);

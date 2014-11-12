@@ -61,6 +61,10 @@ struct _Project
 
    /** current editing group */
    Style *current_style;
+   /** list of widgets and they styles in that theme */
+   Eina_Inlist *widgets;
+   /**< list of custom layouts int loaded theme */
+   Eina_Inlist *layouts;
 };
 
 /**
@@ -266,7 +270,7 @@ pm_project_import_edc(const char *name,
  * @ingroup ProjectManager
  */
 Project *
-pm_project_open(const char *path);
+pm_project_open(const char *path) EINA_ARG_NONNULL(1);
 
 /**
  * Save all changes in current project to the dev file.
