@@ -24,14 +24,14 @@
 #define PROJECT_FILE_KEY      "project"
 #define THREAD_TESTCANCEL pthread_testcancel()
 
-#define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, \
+#define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
 { \
    worker = (Project_Thread *)mem_malloc(sizeof(Project_Thread)); \
    worker->func_progress = FUNC_PROGRESS; \
    worker->func_end = FUNC_END; \
    worker->data = (void *)DATA; \
-   worker->project = NULL; \
+   worker->project = PROJECT; \
    worker->name = eina_stringshare_add(NAME); \
    worker->path = eina_stringshare_add(PATH); \
    worker->edj = eina_stringshare_add(EDJ); \
@@ -271,7 +271,7 @@ pm_project_import_edj(const char *name,
    Project_Thread *worker;
    Eina_Bool result;
 
-   WORKER_CREATE(func_progress, func_end, data,
+   WORKER_CREATE(func_progress, func_end, data, NULL,
                  name, path, edj, NULL, NULL);
 
    result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
@@ -392,7 +392,7 @@ pm_project_import_edc(const char *name,
    Project_Thread *worker;
    Eina_Bool result;
 
-   WORKER_CREATE(func_progress, func_end, data,
+   WORKER_CREATE(func_progress, func_end, data, NULL,
                  name, path, NULL, edc, import_options);
 
    result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
@@ -454,10 +454,112 @@ error:
    return project;
 }
 
-Eina_Bool
-pm_project_save(Project *project __UNUSED__)
+static Eina_Bool
+_backup_progress_cb(void *data,
+                    unsigned long long done,
+                    unsigned long long total)
 {
-   return false;
+   Project_Thread *worker;
+   short int percentage;
+
+   worker = (Project_Thread *)data;
+
+   percentage = (short int)(done / total) * 100;
+   PROGRESS_SEND(_("Backuping... %u"), percentage);
+
+   return true;
+}
+
+static Eina_Bool
+_project_backup(Project_Thread *worker)
+{
+   Eina_Bool result;
+   Eina_Stringshare *src, *dst;
+
+   WORKER_LOCK_TAKE;
+      src = worker->project->dev;
+   WORKER_LOCK_RELEASE;
+   dst = eina_stringshare_printf("%s.backup", worker->project->dev);
+   result = eina_file_copy(src, dst,
+                           EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                           _backup_progress_cb, worker);
+
+   DBG("Make the backup");
+   eina_stringshare_del(dst);
+   return result;
+}
+
+
+static void *
+_project_save(void *data,
+              Eina_Thread *thread)
+{
+   pthread_attr_t attr;
+   Project_Thread *worker;
+   Widget *widget;
+   Style *style;
+   Class *class_st;
+
+   /** try to change the detach state */
+   if (!pthread_getattr_np(*thread, &attr))
+     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+   pthread_attr_destroy(&attr);
+
+   worker = (Project_Thread *)data;
+
+   PROGRESS_SEND("Saving...");
+   WORKER_LOCK_TAKE;
+      EINA_INLIST_FOREACH(worker->project->widgets, widget)
+        {
+           EINA_INLIST_FOREACH(widget->classes, class_st)
+             {
+                EINA_INLIST_FOREACH(class_st->styles, style)
+                  {
+                     if (style->isModify)
+                       {
+                          style->isModify = false;
+                          edje_edit_without_source_save(style->obj, true);
+                       }
+                  }
+             }
+        }
+
+      EINA_INLIST_FOREACH(worker->project->layouts, style)
+        {
+           if (style->isModify)
+             {
+                style->isModify = false;
+                edje_edit_without_source_save(style->obj, true);
+             }
+        }
+   WORKER_LOCK_RELEASE;
+
+   PROGRESS_SEND("Making the project backup...");
+   _project_backup(worker);
+
+   PROGRESS_SEND("Saved.");
+   END_SEND(PM_PROJECT_SUCCESS);
+   return NULL;
+}
+
+Project_Thread *
+pm_project_save(Project *project,
+                PM_Project_Progress_Cb func_progress,
+                PM_Project_End_Cb func_end,
+                const void *data)
+{
+   Project_Thread *worker;
+   Eina_Bool result;
+
+   WORKER_CREATE(func_progress, func_end, data, project,
+                 NULL, NULL, NULL, NULL, NULL);
+
+   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                               (void *)_project_save, worker);
+   if (!result)
+     WORKER_FREE();
+
+   return worker;
 }
 
 Eina_Bool

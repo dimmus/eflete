@@ -276,13 +276,20 @@ pm_project_open(const char *path) EINA_ARG_NONNULL(1);
  * Save all changes in current project to the dev file.
  *
  * @param project The project what should be saved.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
  *
- * @param EINA_TRUE if project saved, otherwise EINA_FALSE.
+ * @return The new #Project_Thread object, othewise NULL.
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
-pm_project_save(Project *project);
+Project_Thread *
+pm_project_save(Project *project,
+                PM_Project_Progress_Cb func_progress,
+                PM_Project_End_Cb func_end,
+                const void *data) EINA_ARG_NONNULL(1);
 
 /**
  * Cancel the Project thread, and called func_end.
