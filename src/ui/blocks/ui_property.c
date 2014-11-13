@@ -22,6 +22,10 @@
 #include "common_macro.h"
 #include "image_editor.h"
 
+#ifdef HAVE_ENVENTOR
+#include "main_window.h"
+#endif
+
 #define PROP_DATA "prop_data"
 
 #define PROP_DATA_GET(ret) \
@@ -293,6 +297,19 @@ prop_item_label_update(Evas_Object *item,
    elm_object_text_set(label, text);
 }
 
+#ifdef HAVE_ENVENTOR
+static void
+_on_tab_activated(void *data __UNUSED__,
+                  Evas_Object *obj,
+                  void *event_info)
+{
+   Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
+   Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
+   if (item_name)
+     code_edit_mode_switch(app_data_get(), !strcmp(item_name, "Code"));
+}
+#endif
+
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
@@ -331,6 +348,11 @@ ui_property_add(Evas_Object *parent)
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
+
+#ifdef HAVE_ENVENTOR
+   evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
+                                  _on_tab_activated, NULL);
+#endif
 
    return tabs;
 }

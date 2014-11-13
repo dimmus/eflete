@@ -90,6 +90,14 @@ PKG_CHECK_MODULES([EWE], [ewe >= ewe_version],
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
    [have_check="${RED}no${RESET}"])
+
+PKG_CHECK_MODULES([ENVENTOR], [enventor],
+   [have_enventor="${GREEN}yes${RESET}"],
+   [have_enventor="${RED}no${RESET}"])
+
+AM_CONDITIONAL([ENVENTOR_FOUND], [test "x$have_enventor" = "x${GREEN}yes${RESET}"])
+AM_COND_IF([ENVENTOR_FOUND], [AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])])
+
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "x${GREEN}yes${RESET}"])
 AC_SUBST([CHECK_FOUND])
 AM_COND_IF([CHECK_FOUND],
@@ -173,6 +181,9 @@ echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
 echo "  ewe............: ${have_ewe}"
+echo ""
+echo "Features:"
+echo "  enventor.......: ${have_enventor}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo

@@ -48,6 +48,10 @@ ui_main_window_del(App_Data *ap)
                                    "all your changes will be lost!")))
      return false;
 
+#ifdef HAVE_ENVENTOR
+   code_edit_mode_switch(ap, false);
+#endif
+
    eina_hash_free(ap->menu_hash);
    ap->menu_hash = NULL;
    config_save(ap);
