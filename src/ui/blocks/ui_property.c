@@ -1423,12 +1423,19 @@ static void
 _text_effect_value_update(_text_effect_callback_data *effect_data)
 {
    Edje_Text_Effect edje_effect;
+   Edje_Text_Effect old_value = edje_edit_part_effect_get(effect_data->pd->style->obj,
+                             effect_data->pd->part->name);
    edje_effect = ewe_combobox_select_item_get(effect_data->type_combobox)->index;
    edje_effect |= ewe_combobox_select_item_get(effect_data->direction_combobox)->index << 4;
    edje_edit_part_effect_set(effect_data->pd->style->obj,
                              effect_data->pd->part->name, edje_effect);
 
    workspace_edit_object_recalc(effect_data->pd->workspace);
+   history_diff_add(effect_data->pd->style->obj, PROPERTY, MODIFY, INT,
+                    old_value, edje_effect,
+                    effect_data->pd->style->full_group_name,
+                    (void*)edje_edit_part_effect_set, "text effect",
+                    effect_data->pd->part->name, NULL, 0);
    effect_data->pd->style->isModify = true;
 }
 
