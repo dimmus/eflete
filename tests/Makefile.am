@@ -220,7 +220,8 @@ test_config/profile_get.c \
 test_config/profiles_get.c \
 test_config/config_save.c \
 test_config/config_load.c \
-test_config/config_get.c
+test_config/config_get.c \
+test_config/config_panes_sizes_data_update.c
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
 

@@ -244,6 +244,18 @@ Config *
 config_get(void);
 
 /**
+ * Update data about sizes of Panes in configuration WITHOUT saving the Eflete config.
+ *
+ * @param ap The App_Data structure pointer.
+ *
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ *
+ * @ingroup Config
+ */
+Eina_Bool
+config_panes_sizes_data_update(App_Data *ap);
+
+/**
  * Load the Eflete profile by name.
  *
  * @param name The name of profile.

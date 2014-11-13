@@ -362,6 +362,28 @@ config_load(App_Data *ap)
 }
 
 Eina_Bool
+config_panes_sizes_data_update(App_Data *ap)
+{
+   if (!config) return false;
+
+   config->panes.left =
+     elm_panes_content_left_size_get(ap->panes.left);
+   config->panes.right =
+     elm_panes_content_left_size_get(ap->panes.right);
+   config->panes.left_hor =
+     elm_panes_content_left_size_get(ap->panes.left_hor);
+   config->panes.right_hor =
+     elm_panes_content_left_size_get(ap->panes.right_hor);
+   config->panes.center =
+     elm_panes_content_left_size_get(ap->panes.center);
+   config->panes.center_down =
+     elm_panes_content_left_size_get(ap->panes.center_down);
+
+   return true;
+}
+
+
+Eina_Bool
 config_save(App_Data *ap)
 {
    int x, y, w, h;
@@ -385,14 +407,7 @@ config_save(App_Data *ap)
         config->window.h =            h;
      }
    if (profile->general.save_ui)
-     {
-        config->panes.left =          elm_panes_content_left_size_get(ap->panes.left);
-        config->panes.right =         elm_panes_content_left_size_get(ap->panes.right);
-        config->panes.left_hor =      elm_panes_content_left_size_get(ap->panes.left_hor);
-        config->panes.right_hor =     elm_panes_content_left_size_get(ap->panes.right_hor);
-        config->panes.center =        elm_panes_content_left_size_get(ap->panes.center);
-        config->panes.center_down =   elm_panes_content_left_size_get(ap->panes.center_down);
-     }
+     config_panes_sizes_data_update(ap);
 
    profile_save(config->profile);
 

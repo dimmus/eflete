@@ -39,3 +39,7 @@ void config_save_test_p(int);
 void config_load_test_p(int);
 void config_get_test_p1(int);
 void config_get_test_p2(int);
+
+void config_panes_sizes_data_update_test_p(int);
+void config_panes_sizes_data_update_test_n(int);
+
