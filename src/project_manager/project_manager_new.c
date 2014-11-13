@@ -577,6 +577,11 @@ pm_project_build(Project *project __UNUSED__, Build build_profile __UNUSED__)
 Eina_Bool
 pm_project_close(Project *project)
 {
+   Eina_Stringshare *backup;
+
+   backup = eina_stringshare_printf("%s.backup", project->dev);
+   ecore_file_remove(backup);
+
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
    eina_stringshare_del(project->release_path);
@@ -584,6 +589,8 @@ pm_project_close(Project *project)
 
    wm_widget_list_free(project->widgets);
    wm_widget_list_free(project->layouts);
+
+   eina_stringshare_del(backup);
 
    return true;
 }
