@@ -63,7 +63,7 @@ group { name: "eflete/sound_editor/default";
             }
          }
       }
-      part { name: "swallow.btn.Apply";
+      part { name: "swallow.btn.Ok";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;

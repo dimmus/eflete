@@ -20,6 +20,7 @@
 #include "project_manager.h"
 #include "string_macro.h"
 #include "alloc.h"
+#include "sound_editor.h"
 
 static const char *dst_path;
 static Eina_Bool copy_success;
@@ -190,14 +191,12 @@ pm_open_project_edj(const char *path)
 Eina_Bool
 pm_project_close(Project *project)
 {
-   const char* snd;
    if (!project) return false;
 
    eio_file_unlink(project->dev, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
-   EINA_LIST_FREE(project->added_sounds, snd)
-     eina_stringshare_del(snd);
-   project->added_sounds = NULL;
+   if (project->added_sounds)
+     sound_editor_added_sounds_free(project->added_sounds);
    ecore_main_loop_begin();
 
    return true;

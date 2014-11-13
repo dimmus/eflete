@@ -31,10 +31,18 @@
 typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
+typedef struct _Sound Sound;
 
 static Elm_Entry_Filter_Accept_Set accept_value = {
    .accepted = "0123456789.",
    .rejected = NULL
+};
+
+struct _Sound
+{
+   Eina_Stringshare *name;
+   Eina_Bool is_saved : 1;
+   Eina_Bool is_sample : 1;
 };
 
 struct _Item
@@ -123,17 +131,6 @@ _sound_editor_del(Sound_Editor *edit)
    evas_object_del(edit->markup);
    eina_stringshare_del(edit->selected);
    free(edit);
-}
-
-static void
-_on_ok_cb(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
-{
-   Evas_Object *edje_edit_obj;
-   Sound_Editor *edit = (Sound_Editor *)data;
-   GET_OBJ(edit->pr, edje_edit_obj);
-   edje_edit_without_source_save(edje_edit_obj, true);
 }
 
 static int
@@ -480,26 +477,7 @@ _interrupt_playing(Sound_Editor *edit)
 }
 
 static void
-_on_quit_cb(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Sound_Editor *edit = (Sound_Editor *)data;
-   if (edit->playing)
-     _interrupt_playing(edit);
-   else if (edit->io.in)
-     {
-        eo_del(edit->io.in);
-        eo_del(edit->io.out);
-        eina_binbuf_free(edit->io.buf);
-     }
-   App_Data *ap = app_data_get();
-   _sound_editor_del(edit);
-   ap->modal_editor = false;
-}
-
-static void
-_on_play_cb(void *data,
+   _on_play_cb(void *data,
             Evas_Object *obj EINA_UNUSED,
             void *event_info EINA_UNUSED)
 {
@@ -584,6 +562,76 @@ _on_rewind_cb(void *data,
    Sound_Editor *edit = (Sound_Editor *)data;
    double value = elm_slider_value_get(edit->rewind);
    eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
+}
+
+static void
+_sound_editor_quit(Sound_Editor *edit)
+{
+   if (edit->playing)
+     _interrupt_playing(edit);
+   else if (edit->io.in)
+     {
+        eo_del(edit->io.in);
+        eo_del(edit->io.out);
+        eina_binbuf_free(edit->io.buf);
+     }
+   _sound_editor_del(edit);
+}
+
+static void
+_on_quit_cb(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Evas_Object *edje_edit_obj;
+   Eina_List *l, *l_next;
+   Sound *snd;
+
+   Sound_Editor *edit = (Sound_Editor *)data;
+   if (edit->pr->added_sounds)
+     {
+        GET_OBJ(edit->pr, edje_edit_obj);
+        EINA_LIST_REVERSE_FOREACH_SAFE(edit->pr->added_sounds, l, l_next, snd)
+          {
+             if (!snd->is_saved)
+               {
+                  edit->pr->added_sounds = eina_list_remove_list(edit->pr->added_sounds, l);
+                  if (snd->is_sample)
+                    edje_edit_sound_sample_del(edje_edit_obj, snd->name);
+                  else
+                    edje_edit_sound_tone_del(edje_edit_obj, snd->name);
+                  eina_stringshare_del(snd->name);
+                  free(snd);
+               }
+             else break;
+          }
+        if (!eina_list_count(edit->pr->added_sounds))
+          edit->pr->added_sounds = NULL;
+     }
+
+   _sound_editor_quit(edit);
+}
+
+static void
+_on_ok_cb(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   Evas_Object *edje_edit_obj;
+   Eina_List *l;
+   Sound *snd;
+
+   Sound_Editor *edit = (Sound_Editor *)data;
+   GET_OBJ(edit->pr, edje_edit_obj);
+
+   if (edit->pr->added_sounds)
+     {
+        EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
+           snd->is_saved = true;
+     }
+
+   edje_edit_without_source_save(edje_edit_obj, true);
+   _sound_editor_quit(edit);
 }
 
 #define BT_ADD(PARENT, OBJ, ICON, TEXT) \
@@ -862,7 +910,8 @@ _grid_sel_sample(void *data,
 {
    Eina_Bool auto_play;
    Eina_List *l;
-   const char *snd_src, *snd;
+   Sound *snd;
+   const char *snd_src;
    Evas_Object *edje_edit_obj;
    double len;
    const Item *item;
@@ -891,7 +940,7 @@ _grid_sel_sample(void *data,
           {
              EINA_LIST_FOREACH(edit->pr->added_sounds, l, snd)
                {
-                  if (!strcmp(snd, edit->selected))
+                  if (!strcmp(snd->name, edit->selected) && (snd->is_sample))
                     {
                        _added_sample_src_info_setup(edit, snd_src, &len);
                        _sample_info_setup(edit, item, snd_src, len);
@@ -1106,12 +1155,13 @@ _add_sample_done(void *data,
                 Evas_Object *obj,
                 void *event_info)
 {
-   Item *it = NULL;
-   Evas_Object *edje_edit_obj = NULL;
-   Elm_Object_Item *new_item = NULL;
-   const char *selected = event_info;
+   Item *it;
+   Sound *snd;
+   Evas_Object *edje_edit_obj;
+   Elm_Object_Item *new_item;
    const char *sound_name;
 
+   const char *selected = event_info;
    Sound_Editor *edit = (Sound_Editor *)data;
 
    if ((!selected) || (!strcmp(selected, "")))
@@ -1149,12 +1199,15 @@ _add_sample_done(void *data,
         else
           {
              it = (Item *)mem_calloc(1, sizeof(Item));
+             snd = (Sound *)mem_calloc(1, sizeof(Sound));
              it->sound_name = eina_stringshare_add(sound_name);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
              elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
                                             _grid_sel_sample, edit);
-             edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds,
-                                                       eina_stringshare_add(sound_name));
+             snd->name = eina_stringshare_add(sound_name);
+             snd->is_saved = false;
+             snd->is_sample = true;
+             edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
              pm_project_changed(edit->pr);
           }
      }
@@ -1189,6 +1242,7 @@ _add_tone_done(void *data,
 {
    Evas_Object *edje_edit_obj;
    Item *it;
+   Sound *snd;
    const char *str_name, *str_value;
    int frq;
 
@@ -1218,9 +1272,13 @@ _add_tone_done(void *data,
    else
      {
         it = (Item *)mem_calloc(1, sizeof(Item));
+        snd = (Sound *)mem_calloc(1, sizeof(Sound));
         it->sound_name = eina_stringshare_add(str_name);
         it->tone_frq = frq;
         elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
+        snd->name = eina_stringshare_add(str_name);
+        snd->is_saved = false;
+        edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
         pm_project_changed(app_data_get()->project);
      }
 
@@ -1402,7 +1460,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    evas_object_show(edit->markup);
    elm_win_inwin_content_set(edit->win, edit->markup);
 
-   ADD_BUTTON(edit->markup, btn, "Apply", _on_ok_cb);
+   ADD_BUTTON(edit->markup, btn, "Ok", _on_ok_cb);
 
    ADD_BUTTON(edit->markup, btn, "Close", _on_quit_cb);
 
@@ -1460,6 +1518,18 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    App_Data *ap = app_data_get();
    ap->modal_editor = true;
    return edit->win;
+}
+
+void sound_editor_added_sounds_free(Eina_List *add_snd)
+{
+   Sound *data;
+
+   EINA_LIST_FREE(add_snd, data)
+     {
+        eina_stringshare_del(data->name);
+        free(data);
+     }
+   add_snd = NULL;
 }
 
 #undef ITEM_WIDTH

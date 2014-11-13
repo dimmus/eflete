@@ -35,6 +35,16 @@ typedef enum {
 } Sound_Editor_Mode;
 
 /**
+ * Delete added sounds from list
+ *
+ * @param add_snd list with data
+ *
+ * @ingroup Sound_Editor
+ */
+void
+sound_editor_added_sounds_free(Eina_List *add_snd);
+
+/**
  * Show the whole inwin window by using some data
  * about loaded project (edj file)
  *
