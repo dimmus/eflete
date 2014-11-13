@@ -1052,3 +1052,45 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
 
    return true;
 }
+
+static void
+_panes_pos_setup(Evas_Object *panes, double value, Eina_Bool disabled)
+{
+   if (!panes) return;
+
+   elm_panes_content_left_size_set(panes, value);
+   elm_object_disabled_set(panes, disabled);
+}
+
+Eina_Bool
+code_edit_mode_switch(App_Data *ap, Eina_Bool is_on)
+{
+   Config *config;
+   double center = 0.0,
+          center_down = 0.0,
+          left = 0.0,
+          right_hor = 0.0;
+
+    if (is_on)
+      {
+         if (!config_panes_sizes_data_update(ap)) return false;
+      }
+    else
+      {
+         config = config_get();
+         if (!config) return false;
+
+         center = config->panes.center;
+         center_down = config->panes.center_down;
+         left = config->panes.left;
+         right_hor = config->panes.right_hor;
+      }
+
+   _panes_pos_setup(ap->panes.center, center, is_on);
+   _panes_pos_setup(ap->panes.center_down, center_down, is_on);
+   _panes_pos_setup(ap->panes.left, left, is_on);
+   _panes_pos_setup(ap->panes.right_hor, right_hor, is_on);
+   ui_panes_left_panes_min_size_toggle(ap, !is_on);
+
+   return true;
+}

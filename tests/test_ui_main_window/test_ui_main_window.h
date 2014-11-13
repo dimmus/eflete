@@ -79,3 +79,6 @@ void add_callbacks_wd_test_p1(int);
 void add_callbacks_wd_test_p2(int);
 void add_callbacks_wd_test_n(int);
 
+void code_edit_mode_switch_test_p(int);
+void code_edit_mode_switch_test_n(int);
+

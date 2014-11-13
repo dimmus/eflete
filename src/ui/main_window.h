@@ -311,4 +311,19 @@ register_callbacks(App_Data *ap);
 Eina_Bool
 add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
 
+/**
+ * Switch code editing mode ON or OFF.
+ * The Code Editing mode means that Workspace, States, History and Signals
+ * blocks are hidden and only Widget List, Life Wiew and Code tab are available
+ * for user.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param is_on value to toggle Code Editing mode ON/OFF.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
+
 #endif /* UI_MAIN_WINDOW_H */

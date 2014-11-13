@@ -73,6 +73,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, add_callbacks_wd_test_p2);
    tcase_add_test(tcase, add_callbacks_wd_test_n);
 
+   tcase_add_test(tcase, code_edit_mode_switch_test_p);
+   tcase_add_test(tcase, code_edit_mode_switch_test_n);
+
 /* tcase_add_test(tcase, ui_style_clicked_test_p);
    tcase_add_test(tcase, ui_style_clicked_test_n1);
    tcase_add_test(tcase, ui_style_clicked_test_n2);   TODO: separate functional tests*/
