@@ -2427,6 +2427,10 @@ _on_state_color_class_change(void *data,
    int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
    r = g = b = a = r1 = g1 = b1 = a1 = r2 = g2 = b2 = a2 = 0;
 
+   const char *old_value = NULL, *value = NULL;
+   old_value =  edje_edit_state_color_class_get(pd->style->obj, pd->part->name,
+                                                pd->part->curr_state,
+                                                pd->part->curr_state_value);
    Ewe_Combobox_Item *item = event_info;
    if (strcmp(item->title, "None"))
      {
@@ -2449,11 +2453,18 @@ _on_state_color_class_change(void *data,
         prop_item_state_color_update(pd->prop_state.color, pd);
         prop_item_state_color2_update(pd->prop_state_text.color2, pd);
         prop_item_state_color3_update(pd->prop_state_text.color3, pd);
+        value = item->title;
      }
    else edje_edit_state_color_class_set(pd->style->obj, pd->part->name,
                                         pd->part->curr_state,
                                         pd->part->curr_state_value,
                                         NULL);
+
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, value,
+                      pd->style->full_group_name,
+                      (void*)edje_edit_state_color_class_set, "colorclass",
+                      pd->part->name, pd->part->curr_state,
+                      pd->part->curr_state_value);
 
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
