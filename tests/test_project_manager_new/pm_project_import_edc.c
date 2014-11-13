@@ -127,8 +127,8 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
      ck_abort_msg("Project thread not started!");
    ecore_main_loop_begin();
 
-   files_is = ecore_file_exists("./UTC/UTC.pro");
-   files_is |= ecore_file_exists("./UTC/UTC.dev");
+   files_is = ecore_file_exists(ecore_file_realpath("./UTC/UTC.pro"));
+   files_is &= ecore_file_exists(ecore_file_realpath("./UTC/UTC.dev"));
    ck_assert_msg(files_is != EINA_FALSE, "Specific project file not created.");
 
    app_shutdown();
