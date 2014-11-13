@@ -41,6 +41,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_panes_hide_test_n1);
    tcase_add_test(tcase, ui_panes_hide_test_n2);
 
+   tcase_add_test(tcase, ui_panes_left_panes_min_size_toggle_test_p);
+   tcase_add_test(tcase, ui_panes_left_panes_min_size_toggle_test_n);
+
    tcase_add_test(tcase, ui_menu_add_test_p);
    tcase_add_test(tcase, ui_menu_add_test_n1);
    tcase_add_test(tcase, ui_menu_add_test_n2);

@@ -47,6 +47,9 @@ void ui_menu_add_test_p(int);
 void ui_menu_add_test_n1(int);
 void ui_menu_add_test_n2(int);
 
+void ui_panes_left_panes_min_size_toggle_test_p(int);
+void ui_panes_left_panes_min_size_toggle_test_n(int);
+
 void new_theme_create_test_p(int);
 void new_theme_create_test_n1(int);
 void new_theme_create_test_n2(int);
@@ -75,3 +78,4 @@ void ui_style_clicked_test_n2(int);
 void add_callbacks_wd_test_p1(int);
 void add_callbacks_wd_test_p2(int);
 void add_callbacks_wd_test_n(int);
+

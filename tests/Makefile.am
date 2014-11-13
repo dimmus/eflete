@@ -311,6 +311,7 @@ test_ui_main_window/ui_menu_locked_set.c \
 test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
 test_ui_main_window/ui_panes_show.c \
+test_ui_main_window/ui_panes_left_panes_min_size_toggle.c \
 test_ui_main_window/ui_part_back.c \
 test_ui_main_window/ui_part_select.c \
 test_ui_main_window/ui_state_select.c \

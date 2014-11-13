@@ -83,6 +83,18 @@ Eina_Bool
 ui_panes_add(App_Data *ap);
 
 /**
+ * Toggles min sizes for left Pane.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param is_on value to toggle min sizes for left Pane ON/OFF.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on);
+
+/**
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
  * @param ap The App_Data structure pointer.
