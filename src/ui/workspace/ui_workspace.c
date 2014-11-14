@@ -1005,54 +1005,6 @@ _on_part_unselect(void *data,
    workspace_highlight_unset(workspace);
 }
 
-static void
-_key_down(void *data,
-          Evas *e,
-          Evas_Object *obj __UNUSED__,
-          void *event_info)
-{
-   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
-   Evas_Object *hl = (Evas_Object *)data;
-   const Evas_Modifier *mods;
-   mods = evas_key_modifier_get(e);
-
-   if (evas_key_modifier_is_set(mods, "Control"))
-     {
-        if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
-          highlight_handler_align_show(hl);
-     }
-
-   if (evas_key_modifier_is_set(mods, "Alt"))
-     {
-        if ((!strcmp(ev->keyname, "Control_L")) || (!strcmp(ev->keyname, "Control_R")))
-          highlight_handler_align_show(hl);
-     }
-}
-
-static void
-_key_up(void *data,
-        Evas *e,
-        Evas_Object *obj __UNUSED__,
-        void *event_info)
-{
-   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
-   Evas_Object *hl = (Evas_Object *)data;
-   const Evas_Modifier *mods;
-   mods = evas_key_modifier_get(e);
-
-   if (evas_key_modifier_is_set(mods, "Control"))
-     {
-        if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
-          highlight_handler_align_hide(hl);
-     }
-
-   if (evas_key_modifier_is_set(mods, "Alt"))
-     {
-        if ((!strcmp(ev->keyname, "Control_L")) || (!strcmp(ev->keyname, "Control_R")))
-          highlight_handler_align_hide(hl);
-     }
-}
-
 #define PADDING_SIZE 40
 
 static void
@@ -1168,11 +1120,6 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
         sd->highlight.highlight = highlight_add(sd->scroller);
         evas_object_color_set(sd->highlight.highlight, HIGHLIGHT_COLOR);
         evas_object_smart_member_add(sd->highlight.highlight, obj);
-
-        evas_object_event_callback_add(sd->groupedit, EVAS_CALLBACK_KEY_DOWN,
-                                       _key_down, sd->highlight.highlight);
-        evas_object_event_callback_add(sd->groupedit, EVAS_CALLBACK_KEY_UP,
-                                       _key_up, sd->highlight.highlight);
         evas_object_clip_set(sd->highlight.highlight, sd->clipper);
      }
 
@@ -1469,26 +1416,35 @@ workspace_separate_mode_get(Evas_Object *obj)
 }
 
 Eina_Bool
-workspace_highlight_align_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+workspace_highlight_align_visible_set(Evas_Object *obj, Eina_Bool flag)
 {
-   return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (flag)
+     highlight_handler_align_show(sd->highlight.highlight);
+   else
+     highlight_handler_align_hide(sd->highlight.highlight);
+   return true;
 }
 
 Eina_Bool
-workspace_highlight_align_visible_get(Evas_Object *obj __UNUSED__)
+workspace_highlight_align_visible_get(Evas_Object *obj)
 {
-   return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if (!sd->highlight.highlight) return false;
+   return highlight_handler_align_visible_get(sd->highlight.highlight);
 }
 
 Eina_Bool
-workspace_object_area_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag)
 {
-   return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   groupedit_part_object_area_visible_set(sd->groupedit, flag);
+   return true;
 }
 
 Eina_Bool
-workspace_object_area_visible_get(Evas_Object *obj __UNUSED__)
+workspace_object_area_visible_get(Evas_Object *obj)
 {
-   return false;
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   return groupedit_part_object_area_visible_get(sd->groupedit);
 }
-

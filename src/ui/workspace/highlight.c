@@ -742,9 +742,10 @@ highlight_handler_align_hide(Evas_Object *hl)
 }
 
 Eina_Bool
-highlight_handler_align_visible_get(Evas_Object *hl __UNUSED__)
+highlight_handler_align_visible_get(Evas_Object *hl)
 {
-   return false;
+   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   return highlight->middle_show;
 }
 
 Eina_Bool

@@ -48,43 +48,6 @@ _style_set(Evas_Object *o, const char *style)
 }
 
 static void
-_key_down(void *data __UNUSED__,
-          Evas *e __UNUSED__,
-          Evas_Object *obj,
-          void *event_info)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
-   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
-
-   if (sd->obj_area.visible) return;
-   if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
-     {
-        if (sd->selected)
-          {
-             evas_object_show(sd->obj_area.obj);
-             sd->obj_area.show_now = true;
-          }
-     }
-}
-
-static void
-_key_up(void *data __UNUSED__,
-        Evas *e __UNUSED__,
-        Evas_Object *obj,
-        void *event_info)
-{
-   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, RETURN_VOID)
-   Evas_Event_Key_Down *ev = (Evas_Event_Key_Down *)event_info;
-
-   if (sd->obj_area.visible) return;
-   if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
-     {
-        evas_object_hide(sd->obj_area.obj);
-        sd->obj_area.show_now = false;
-     }
-}
-
-static void
 _unselect_part(void *data,
                Evas *e __UNUSED__,
                Evas_Object *obj __UNUSED__,
@@ -111,7 +74,6 @@ _unselect_part(void *data,
 static void
 _groupedit_smart_add(Evas_Object *o)
 {
-   Evas_Modifier_Mask mask_alt, mask_control;
    EVAS_SMART_DATA_ALLOC(o, Ws_Groupedit_Smart_Data)
 
    _groupedit_parent_sc->add(o);
@@ -123,35 +85,6 @@ _groupedit_smart_add(Evas_Object *o)
 
    evas_object_event_callback_add(priv->event, EVAS_CALLBACK_MOUSE_UP,
                                   _unselect_part, o);
-
-   mask_alt = evas_key_modifier_mask_get(evas_object_evas_get(o), "Alt");
-   mask_control = evas_key_modifier_mask_get(evas_object_evas_get(o), "Control");
-
-   /* we need to set key grabber with and without modifier mask because on keyup
-      Alt is considered an active modifier, but on keydown it is still not ative */
-#define KEY_GRAB(KEY_NAME, MASK) \
-   if (evas_object_key_grab(o, KEY_NAME, 0, 0, false)) \
-     { \
-        if (!evas_object_key_grab(o, KEY_NAME, MASK, 0, false)) \
-          /* Removing keydown grab if we can't grab this key for KeyUp event */ \
-          evas_object_key_ungrab(o, KEY_NAME, 0, 0); \
-     }
-
-   KEY_GRAB("Alt_L", mask_alt);
-   KEY_GRAB("Alt_R", mask_alt);
-   KEY_GRAB("Alt_L", mask_control);
-   KEY_GRAB("Alt_R", mask_control);
-   KEY_GRAB("Control_L", mask_alt);
-   KEY_GRAB("Control_R", mask_alt);
-   KEY_GRAB("Control_L", mask_control);
-   KEY_GRAB("Control_R", mask_control);
-
-#undef KEY_GRAB
-
-   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN,
-                                  _key_down, NULL);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP,
-                                  _key_up, NULL);
 
    priv->obj = o;
    priv->con_current_size = (Groupedit_Geom *)mem_calloc(1, sizeof(Groupedit_Geom));

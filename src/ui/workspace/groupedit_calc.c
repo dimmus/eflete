@@ -1151,7 +1151,7 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    sd->obj_area.geom->x = x; sd->obj_area.geom->y = y;
    sd->obj_area.geom->w = w; sd->obj_area.geom->h = h;
 
-   if ((sd->selected) && ((sd->obj_area.visible) || (sd->obj_area.show_now)))
+   if ((sd->selected) && ((sd->obj_area.visible)))
      evas_object_show(sd->obj_area.obj);
    else
      evas_object_hide(sd->obj_area.obj);
