@@ -18,6 +18,7 @@
  */
 
 #include "config.h"
+#include "shortcuts.h"
 
 #define CONFIG_FILE        EFLETE_SETT_PATH"eflete.cfg"
 #define CONFIG_FILE_TMP    CONFIG_FILE".tmp"
@@ -32,6 +33,7 @@ Profile *profile;
 
 static Eet_Data_Descriptor *edd_base = NULL;
 static Eet_Data_Descriptor *edd_profile = NULL;
+static Eet_Data_Descriptor *edd_keys = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
 
 static void
@@ -44,10 +46,20 @@ _config_free(void)
 static void
 _profile_free(void)
 {
+   Shortcuts *sc;
+
    free((char *)profile->general.home_folder);
    free((char *)profile->general.swap_folder);
    free((char *)profile->workspace.bg_image);
    free((char *)profile->liveview.bg_image);
+
+   EINA_LIST_FREE(profile->shortcuts, sc)
+     {
+        eina_stringshare_del(sc->description);
+        free(sc);
+     }
+   eina_list_free(profile->shortcuts);
+
    free(profile);
    profile = NULL;
 }
@@ -56,6 +68,7 @@ Eina_Bool
 config_init(void)
 {
    Eet_Data_Descriptor_Class eddc;
+   Eet_Data_Descriptor_Class eddkc;
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -130,7 +143,28 @@ config_init(void)
    EET_DATA_DESCRIPTOR_ADD_ARRAY
       (edd_profile, Profile, "colors",                            colors, edd_color);
 
+   /* shortcuts */
+   eet_eina_stream_data_descriptor_class_set(&eddkc, sizeof(eddkc), "Shortcuts", sizeof(Shortcuts));
+   edd_keys = eet_data_descriptor_stream_new(&eddkc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "keyname",       keyname, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "keycode",       keycode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "modifiers",     modifiers, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "description",   description, EET_T_STRING);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST
+     (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
+
    if (!edd_profile) return false;
+   if (!shortcuts_init())
+     {
+        CRIT("Can't initialize the shortcut module");
+        return false;
+     }
 
    config = NULL;
    profile = NULL;
@@ -139,7 +173,7 @@ config_init(void)
 }
 
 void
-config_shutdown(void)
+config_shutdown(App_Data *ap)
 {
    if (edd_base)
      {
@@ -156,7 +190,67 @@ config_shutdown(void)
         eet_data_descriptor_free(edd_profile);
         edd_profile = NULL;
      }
+   if (edd_keys)
+     {
+        eet_data_descriptor_free(edd_keys);
+        edd_keys = NULL;
+     }
    if (config) _config_free();
+   shortcuts_shutdown();
+
+   if (!ap)
+     shortcuts_main_del(ap);
+}
+
+static Eina_List *
+_default_shortcuts_get()
+{
+   Eina_List *shortcuts = NULL;
+   Shortcuts *shortcut;
+#define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr)                        \
+   shortcut = calloc(1, sizeof(Shortcuts));                                  \
+   if (!shortcut) return shortcuts;                                          \
+   shortcut->keyname = eina_stringshare_add_length(Name, strlen(Name));      \
+   shortcut->keycode = Keycode;                                              \
+   shortcut->modifiers = Modifiers;                                          \
+   shortcut->description = eina_stringshare_add_length(Descr, strlen(Descr));\
+   shortcuts = eina_list_append(shortcuts, shortcut);
+
+   /* No modifiers */
+   ADD_SHORTCUT("Delete", 119, 0, "item.delete");
+
+   /* Ctrl- */
+   ADD_SHORTCUT("slash", 61, CTRL, "separate_mode");
+   ADD_SHORTCUT("n", 57, CTRL, "new_theme");
+   ADD_SHORTCUT("o", 32, CTRL, "open_edj");
+   ADD_SHORTCUT("s", 39, CTRL, "save");
+   ADD_SHORTCUT("e", 26, CTRL, "export");
+   ADD_SHORTCUT("q", 24, CTRL, "quit");
+
+   ADD_SHORTCUT("1", 10, CTRL, "style_editor");
+   ADD_SHORTCUT("2", 11, CTRL, "image_editor");
+   ADD_SHORTCUT("3", 12, CTRL, "sound_editor");
+   ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer");
+   ADD_SHORTCUT("5", 14, CTRL, "program_editor");
+
+   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style");
+   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout");
+
+   /* Alt- */
+   ADD_SHORTCUT("w", 25, ALT, "part.add.swallow");
+   ADD_SHORTCUT("b", 56, ALT, "part.add.textblock");
+   ADD_SHORTCUT("t", 28, ALT, "part.add.text");
+   ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle");
+   ADD_SHORTCUT("i", 31, ALT, "part.add.image");
+   ADD_SHORTCUT("s", 39, ALT, "part.add.spacer");
+
+   /* Ctrl-Shift- */
+   ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc");
+   ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as");
+   ADD_SHORTCUT("l", 46, CTRL + SHIFT, "style.create");
+
+#undef ADD_SHORTCUT
+   return shortcuts;
 }
 
 static Profile *
@@ -199,6 +293,9 @@ _profile_default_new(void)
    prof->colors[HIGHLIGHT].g           = 100;
    prof->colors[HIGHLIGHT].b           = 155;
    prof->colors[HIGHLIGHT].a           = 255;
+
+   prof->shortcuts = NULL;
+
    return prof;
 }
 
@@ -224,7 +321,7 @@ _config_default_new(void)
 }
 
 void
-config_load(void)
+config_load(App_Data *ap)
 {
    Eet_File *ef;
 
@@ -240,6 +337,9 @@ config_load(void)
      config = _config_default_new();
 
    profile_load(config->profile);
+
+   shortcuts_profile_load(ap, profile_get());
+   shortcuts_main_add(ap);
 }
 
 Eina_Bool
@@ -311,7 +411,10 @@ profile_load(const char *name)
         eet_close(ef);
      }
    else
-     profile = _profile_default_new();
+     {
+        profile = _profile_default_new();
+        profile->shortcuts = _default_shortcuts_get();
+     }
 
    eina_stringshare_del(path);
 }

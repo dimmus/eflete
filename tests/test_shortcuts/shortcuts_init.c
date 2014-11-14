@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -17,135 +17,122 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_config.h"
+#include "test_shortcuts.h"
 
 /**
- * @addtogroup config_test
+ * @addtogroup shortcuts_test
  * @{
- * @addtogroup profile_load
+ * @addtogroup shortcuts_init
  * @{
- * Config
+ * Shortcuts
  * <TABLE>
  * @}
  */
 
 /**
- * @addtogroup profile_load
+ * @addtogroup shortcuts_init
  * @{
  * <tr>
- * <td>profile_load</td>
- * <td>profile_load_test_p1</td>
+ * <td>shortcuts_init</td>
+ * <td>shortcuts_init_test_p1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize application data
  *
  * @procedure
- * @step 1 call profile_load
+ * @step 1 call shortcuts_init
  * </td>
- * <td>(const char *)"default"</td>
- * <td>Profile will be loaded</td>
+ * <td>void</td>
+ * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_load_test_p1)
+EFLETE_TEST(shortcuts_init_test_p1)
 {
-   Profile *profile;
-
    elm_init(0,0);
-   app_init();
 
-   profile_load("default");
-   profile = profile_get();
-   ck_assert_msg(profile != NULL, "Profile not been loaded.");
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized.");
 
-   config_shutdown(app_data_get());
+   shortcuts_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup profile_load
+ * @addtogroup shortcuts_init
  * @{
  * <tr>
- * <td>profile_load</td>
- * <td>profile_load_test_p2</td>
+ * <td>shortcuts_init</td>
+ * <td>shortcuts_init_test_p2</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize application data
  *
  * @procedure
- * @step 1 call profile_load
+ * @step 1 call shortcuts_init
+ * @step 2 call shortcuts_shutdown
+ * @step 3 call shortcuts_init
  * </td>
- * <td>(const char *)"not_valid_name"</td>
- * <td>Profile will be created</td>
+ * <td>void</td>
+ * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_load_test_p2)
+EFLETE_TEST(shortcuts_init_test_p2)
 {
-   Profile *profile;
-
    elm_init(0,0);
-   app_init();
 
-   profile_load("not_valid_name");
-   profile = profile_get();
-   ck_assert_msg(profile != NULL, "Profile not been loaded.");
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at first time.");
+   shortcuts_shutdown();
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at second time.");
 
-   config_shutdown(app_data_get());
+   shortcuts_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup profile_load
+ * @addtogroup shortcuts_init
  * @{
  * <tr>
- * <td>profile_load</td>
- * <td>profile_load_test_n</td>
+ * <td>shortcuts_init</td>
+ * <td>shortcuts_init_test_n</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize application data
  *
  * @procedure
- * @step 1 call profile_load
+ * @step 1 call shortcuts_init
+ * @step 2 call shortcuts_init
  * </td>
- * <td>NULL</td>
- * <td>NULL</td>
+ * <td>void</td>
+ * <td>EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(profile_load_test_n)
+EFLETE_TEST(shortcuts_init_test_n)
 {
-   Profile *profile;
-
    elm_init(0,0);
-   app_init();
 
-   profile_load(NULL);
-   profile = profile_get();
-   ck_assert_msg(profile == NULL, "Profile is loaded.");
+   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at first time.");
+   ck_assert_msg(!shortcuts_init(), "Shortcuts initialized after it was already initialized.");
 
-   config_shutdown(app_data_get());
+   shortcuts_shutdown();
    elm_shutdown();
 }
 END_TEST
 
-
-
 /**
- * @addtogroup profile_load
+ * @addtogroup shortcuts_init
  * @{
  * </TABLE>
  * @}
  * @}
  */
+

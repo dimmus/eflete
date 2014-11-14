@@ -493,7 +493,9 @@ _on_quit_cb(void *data,
         eo_del(edit->io.out);
         eina_binbuf_free(edit->io.buf);
      }
+   App_Data *ap = app_data_get();
    _sound_editor_del(edit);
+   ap->modal_editor = false;
 }
 
 static void
@@ -1455,6 +1457,8 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    _sound_player_create(edit->markup, edit);
 
    evas_object_show(edit->win);
+   App_Data *ap = app_data_get();
+   ap->modal_editor = true;
    return edit->win;
 }
 

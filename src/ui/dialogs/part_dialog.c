@@ -45,6 +45,7 @@ _job_popup_del(void *data)
 {
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
    ui_menu_locked_set(ap->menu_hash, false);
 }
 
@@ -69,6 +70,7 @@ _cancel_clicked(void *data,
        style->isModify = true; \
      } \
    evas_object_del(ap->popup); \
+   ap->popup = NULL; \
    ui_menu_locked_set(ap->menu_hash, false); \
    live_view_widget_style_set(ap->live_view, ap->project, style);
 

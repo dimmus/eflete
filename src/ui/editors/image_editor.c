@@ -104,6 +104,7 @@ _image_editor_del(Image_Editor *img_edit)
 {
    App_Data *ap = app_data_get();
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 
    evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
 
@@ -994,7 +995,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
 
    if (!project)
      {
-        ERR("Project doesn't opened");
+        ERR("Project isn't opened");
         return NULL;
      }
 
@@ -1127,6 +1128,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    ui_menu_locked_set(ap->menu_hash, true);
    evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
+   ap->modal_editor = true;
    return img_edit->win;
 }
 

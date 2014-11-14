@@ -1755,6 +1755,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 }
 
 Evas_Object *
@@ -1774,7 +1775,7 @@ style_editor_window_add(Project *project)
 
    if (!project)
      {
-        ERR("Failed create style editor for non opened project");
+        ERR("Project isn't opened");
         return NULL;
      }
    if (!ap->win)
@@ -1858,6 +1859,7 @@ style_editor_window_add(Project *project)
 
    evas_object_show(style_edit->mwin);
    evas_textblock_style_free(ts);
+   ap->modal_editor = true;
    return style_edit->mwin;
 }
 

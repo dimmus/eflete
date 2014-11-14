@@ -813,6 +813,7 @@ ui_close_project_request(App_Data *ap, const char *msg)
    ui_menu_locked_set(ap->menu_hash, false);
    ap->project->close_request = false;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
 
    return result;
 }
@@ -884,6 +885,8 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
      }
    else
       class_st = elm_object_item_data_get(eoi);
+
+   if (class_st->__type != CLASS) return false;
 
    /* Search edje edit object, which willn't delete now. This object needed
       for manipulate with group in *.edj file*/

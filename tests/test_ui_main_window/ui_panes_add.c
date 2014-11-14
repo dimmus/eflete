@@ -40,8 +40,8 @@
  * @step 1 Initialize elementary library
  * @step 2 Initialize requred libraries
  * @step 3 Config init
- * @step 4 Config load
- * @step 5 Create application data structure
+ * @step 4 Create application data structure
+ * @step 5 Config load
  * @step 6 Create window, which setted into (App_Data)->win
  * @step 7 Create layout, which setted into (App_Data)->win_layout.
  *
@@ -72,8 +72,8 @@ EFLETE_TEST(ui_panes_add_test_p)
    elm_init(0, 0);
    app_init();
    config_init();
-   config_load();
    app_data = app_data_get();
+   config_load(app_data);
 
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
@@ -95,7 +95,6 @@ EFLETE_TEST(ui_panes_add_test_p)
    ck_assert_msg(app_data->block.canvas != NULL,
                  "Failed to create canvas block");
 
-   config_shutdown();
    app_shutdown();
    elm_shutdown();
 }

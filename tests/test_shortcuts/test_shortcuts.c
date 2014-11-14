@@ -17,28 +17,33 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_config.h"
+#include "test_shortcuts.h"
 
 Suite* test_suite (void) {
-   Suite *suite = suite_create("config_test");
+   Suite *suite = suite_create("shortcuts_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, config_init_test_p);
-   tcase_add_test(tcase, config_shutdown_test_p);
+   tcase_add_test(tcase, shortcuts_init_test_p1);
+   tcase_add_test(tcase, shortcuts_init_test_p2);
+   tcase_add_test(tcase, shortcuts_init_test_n);
 
-   tcase_add_test(tcase, profile_load_test_p1);
-   tcase_add_test(tcase, profile_load_test_p2);
-   tcase_add_test(tcase, profile_load_test_n);
-   tcase_add_test(tcase, profile_save_test_p);
-   tcase_add_test(tcase, profile_save_test_n);
-   tcase_add_test(tcase, profile_get_test_p1);
-   tcase_add_test(tcase, profile_get_test_p2);
-   tcase_add_test(tcase, profiles_get_test_p);
+   tcase_add_test(tcase, shortcuts_shutdown_test_p1);
+   tcase_add_test(tcase, shortcuts_shutdown_test_p2);
+   tcase_add_test(tcase, shortcuts_shutdown_test_n1);
+   tcase_add_test(tcase, shortcuts_shutdown_test_n2);
 
-   tcase_add_test(tcase, config_save_test_p);
-   tcase_add_test(tcase, config_load_test_p);
-   tcase_add_test(tcase, config_get_test_p1);
-   tcase_add_test(tcase, config_get_test_p2);
+   tcase_add_test(tcase, shortcuts_profile_load_test_p);
+   tcase_add_test(tcase, shortcuts_profile_load_test_n1);
+   tcase_add_test(tcase, shortcuts_profile_load_test_n2);
+
+   tcase_add_test(tcase, shortcuts_main_add_test_p);
+   tcase_add_test(tcase, shortcuts_main_add_test_n1);
+   tcase_add_test(tcase, shortcuts_main_add_test_n2);
+
+   tcase_add_test(tcase, shortcuts_main_del_test_p);
+   tcase_add_test(tcase, shortcuts_main_del_test_n1);
+   tcase_add_test(tcase, shortcuts_main_del_test_n2);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }
@@ -47,7 +52,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_config.xml");
+   srunner_set_xml (runner, "test_shortcuts.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

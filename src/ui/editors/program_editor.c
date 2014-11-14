@@ -1811,6 +1811,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 }
 
 Evas_Object *
@@ -1827,9 +1828,9 @@ program_editor_window_add(Style *style)
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if ((!style) || (!style->obj))
+   if ((!style) || (!style->obj) || (!ap->project))
      {
-        ERR("Failed create program editor for current style");
+        ERR("Style or project doesn't opened");
         return NULL;
      }
 
@@ -1967,6 +1968,7 @@ program_editor_window_add(Style *style)
    evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(prog_edit->mwin);
+   ap->modal_editor = true;
    return prog_edit->mwin;
 }
 
