@@ -48,6 +48,7 @@ struct _Sound
 struct _Item
 {
    const char *sound_name;
+   const char *format;
    Edje_Edit_Sound_Comp comp;
    int tone_frq;
    double rate;
@@ -114,10 +115,17 @@ static Elm_Gengrid_Item_Class *gic = NULL, *ggic = NULL;
 static char *
 _grid_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
-                const char  *part __UNUSED__)
+                const char  *part)
 {
    const Item *it = data;
-   return strdup(it->sound_name);
+   if (!part)
+     return NULL;
+
+   if (!strcmp(part, "elm.text.type"))
+     return strdup(it->format);
+   else if (!strcmp(part, "elm.text"))
+     return strdup(it->sound_name);
+   return NULL;
 }
 
 static void
@@ -719,28 +727,13 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
 
 #undef BT_ADD
 
-static Evas_Object *
-_grid_content_get(void *data __UNUSED__,
-                  Evas_Object *obj,
-                  const char  *part)
-{
-   Evas_Object *image = NULL;
-
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-        GET_IMAGE(image, obj, "sound");
-        evas_object_show(image);
-        return image;
-     }
-   return NULL;
-}
-
 static void
 _grid_del(void *data,
           Evas_Object *obj __UNUSED__)
 {
    Item *it = data;
    eina_stringshare_del(it->sound_name);
+   eina_stringshare_del(it->format);
    free(it);
 }
 
@@ -816,19 +809,19 @@ _sound_info_create(Evas_Object *parent, Sound_Editor *edit)
 }
 
 Eina_Stringshare *
-_sound_info_type_setup(Eina_Stringshare *snd_src)
+_sound_format_get(Eina_Stringshare *snd_src)
 {
    Eina_Stringshare *type;
    char *dot, *up;
 
    dot = strrchr(snd_src, '.');
    if (!dot)
-     return eina_stringshare_add(_("Unknow Format Sound"));
+     return eina_stringshare_add(_("UNKNOWN"));
 
    dot++;
    up = strdup(dot);
    eina_str_toupper(&up);
-   type = eina_stringshare_printf(_("%s Format Sound (.%s)"), up, dot);
+   type = eina_stringshare_add((const char *)up);
    free(up);
    return type;
 }
@@ -839,7 +832,7 @@ _sample_info_setup(Sound_Editor *edit,
                    Eina_Stringshare *snd_src,
                    double len)
 {
-   Eina_Stringshare *size, *duration, *type;
+   Eina_Stringshare *size, *duration, *type, *type_show;
    Evas_Object *content;
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
@@ -850,11 +843,12 @@ _sample_info_setup(Sound_Editor *edit,
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
-   type = _sound_info_type_setup(snd_src);
+   type = _sound_format_get(snd_src);
+   type_show = eina_stringshare_printf(_("%s Format Sound (.%s)"), it->format, type);
 
    elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
    elm_object_part_text_set(edit->snd_data.duration, "label.value", duration);
-   elm_object_part_text_set(edit->snd_data.type, "label.value", type);
+   elm_object_part_text_set(edit->snd_data.type, "label.value", type_show);
    elm_object_part_text_set(edit->snd_data.size, "label.value", size);
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    elm_spinner_value_set(edit->snd_data.quality, it->rate);
@@ -862,6 +856,7 @@ _sample_info_setup(Sound_Editor *edit,
 
    eina_stringshare_del(duration);
    eina_stringshare_del(type);
+   eina_stringshare_del(type_show);
    eina_stringshare_del(size);
 }
 
@@ -1016,13 +1011,13 @@ _grid_sel_tone(void *data,
      }
 }
 
-static Eina_Bool
-_sound_content_init(Sound_Editor *edit)
+static void
+_gengrid_content_fill(Sound_Editor *edit)
 {
-   Eina_List *sounds = NULL, *tones, *l = NULL;
-   Item *it = NULL;
-   const char* sound_name = NULL;
-   Evas_Object *edje_edit_obj = NULL;
+   Eina_List *sounds, *tones, *l;
+   Item *it;
+   const char* sound_name, *snd_src;
+   Evas_Object *edje_edit_obj;
 
    GET_OBJ(edit->pr, edje_edit_obj);
 
@@ -1030,6 +1025,7 @@ _sound_content_init(Sound_Editor *edit)
    tones = edje_edit_sound_tones_list_get(edje_edit_obj);
 
    it = (Item *)mem_calloc(1, sizeof(Item));
+
    it->sound_name = eina_stringshare_add(_("<b>Sound Samples</b>"));
    elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
 
@@ -1039,6 +1035,8 @@ _sound_content_init(Sound_Editor *edit)
           {
              it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
+             snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, sound_name);
+             it->format = _sound_format_get(snd_src);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
              it->rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
              elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
@@ -1057,12 +1055,11 @@ _sound_content_init(Sound_Editor *edit)
              it = (Item *)mem_calloc(1, sizeof(Item));
              it->sound_name = eina_stringshare_add(sound_name);
              it->tone_frq = edje_edit_sound_tone_frequency_get(edje_edit_obj, sound_name);
+             it->format = eina_stringshare_printf("%d", it->tone_frq);
              elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
           }
         eina_list_free(tones);
      }
-
-   return true;
 }
 
 static void
@@ -1092,9 +1089,9 @@ _create_gengrid(Evas_Object *parent,
    evas_object_size_hint_align_set(editor->gengrid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    gic = elm_gengrid_item_class_new();
-   gic->item_style = DEFAULT_STYLE;
+   gic->item_style = "eflete/sound_editor";
    gic->func.text_get = _grid_label_get;
-   gic->func.content_get = _grid_content_get;
+   gic->func.content_get = NULL;
    gic->func.del = _grid_del;
 
    ggic = elm_gengrid_item_class_new();
@@ -1103,11 +1100,7 @@ _create_gengrid(Evas_Object *parent,
    ggic->func.content_get = NULL;
    ggic->func.del = NULL;
 
-   if (!_sound_content_init(editor))
-     {
-        _sound_editor_del(editor);
-        ERR("Filed initialize sound editor");
-     }
+   _gengrid_content_fill(editor);
 
    evas_object_show(editor->gengrid);
    elm_object_part_content_set(editor->markup, "gengrid", editor->gengrid);
@@ -1201,6 +1194,7 @@ _add_sample_done(void *data,
              it = (Item *)mem_calloc(1, sizeof(Item));
              snd = (Sound *)mem_calloc(1, sizeof(Sound));
              it->sound_name = eina_stringshare_add(sound_name);
+             it->format = _sound_format_get(selected);
              it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
              elm_gengrid_item_insert_before(edit->gengrid, gic, it, edit->tone,
                                             _grid_sel_sample, edit);
@@ -1275,6 +1269,7 @@ _add_tone_done(void *data,
         snd = (Sound *)mem_calloc(1, sizeof(Sound));
         it->sound_name = eina_stringshare_add(str_name);
         it->tone_frq = frq;
+        it->format = eina_stringshare_printf("%d", it->tone_frq);
         elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
         snd->name = eina_stringshare_add(str_name);
         snd->is_saved = false;
