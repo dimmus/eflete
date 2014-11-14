@@ -359,19 +359,22 @@ _style_set(Evas_Object *o, const char *style)
    if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
      {
         GROUP_NAME("base", "default")
-        edje_object_file_set(sd->container, EFLETE_EDJ, group);
+        if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
+          ERR("Couldn't load default style for base border of container.");
      }
    GROUP_NAME("handler_TL", style)
    if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("handler_TL", "default")
-        edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group);
+        if (!edje_object_file_set(sd->handler_TL.obj, EFLETE_EDJ, group))
+          ERR("Couldn't load default style for top-left handler of container.");
      }
    GROUP_NAME("handler_BR", style)
    if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("handler_BR", "default")
-        edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group);
+        if (!edje_object_file_set(sd->handler_BR.obj, EFLETE_EDJ, group))
+          ERR("Couldn't load default style for bottom-right handler of container.");
      }
 
    if (sd->style) free((void *)sd->style);
