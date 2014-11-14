@@ -5,7 +5,7 @@ AM_V_EDJ = $(am__v_EDJ)
 am__v_EDJ = @echo "  EDJ   " $@;
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -id $(builddir) -fd $(builddir)
+EDJE_FLAGS = -id $(builddir) -fd $(builddir) -l license.txt
 
 check: Makefile
 	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_FLAGS) \
