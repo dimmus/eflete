@@ -87,6 +87,7 @@ void history_redo_test_p7(int);
 void history_redo_test_p8(int);
 void history_redo_test_p9(int);
 void history_redo_test_p10(int);
+void history_redo_test_p11(int);
 void history_redo_test_n1(int);
 void history_redo_test_n2(int);
 void history_redo_test_n3(int);
