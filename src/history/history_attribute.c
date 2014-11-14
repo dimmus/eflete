@@ -196,9 +196,22 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_add_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+_attribute_add_redo(Evas_Object *source, Attribute_Diff *change)
 {
-   return false;
+   switch(change->param_type)
+    {
+     case STRING:
+        if (change->state)
+          change->func(source, change->part, change->state,
+                       change->state_value, change->string.old);
+        else return false;
+     break;
+     default:
+       ERR("Unsupported module type, that store diff");
+       return false;
+    }
+
+   return true;
 }
 
 static Eina_Bool
@@ -301,9 +314,22 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_add_undo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+_attribute_add_undo(Evas_Object *source, Attribute_Diff *change)
 {
-   return false;
+   switch(change->param_type)
+    {
+     case STRING:
+        if (change->state)
+          change->func_revert(source, change->part, change->state,
+                              change->state_value, change->string.old);
+        else return false;
+     break;
+     default:
+       ERR("Unsupported module type, that store diff");
+       return false;
+    }
+
+   return true;
 }
 
 static Eina_Bool
@@ -427,9 +453,26 @@ _attribute_modify_parse(va_list list, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_add_parse(va_list list __UNUSED__)
+_attribute_add_parse(va_list list, Attribute_Diff *change)
 {
-   return false;
+   switch(change->param_type)
+     {
+      case STRING:
+         change->string.old = eina_stringshare_add((char *)va_arg(list, char *));
+         if (change->string.old)
+           change->diff.new = eina_stringshare_add(change->string.old);
+         else
+           change->diff.new = eina_stringshare_add("None");
+         change->diff.old = eina_stringshare_add("-");
+      break;
+      default:
+          ERR("Unsupported value type.");
+          return false;
+     }
+   change->func_revert = (void *)va_arg(list, void *);
+   if (!change->func_revert) return false;
+
+   return true;
 }
 
 static Eina_Bool
@@ -455,7 +498,7 @@ _attribute_change_new(va_list list)
          parse = _attribute_modify_parse(list, change);
       break;
       case ADD:
-         parse = _attribute_add_parse(list);
+         parse = _attribute_add_parse(list, change);
       break;
       case DEL:
          parse = _attribute_del_parse(list);

@@ -1010,6 +1010,75 @@ END_TEST
  * @{
  * <tr>
  * <td>history_undo</td>
+ * <td>history_undo_test_p14</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Add new  tween image ["radio.png"] to the "bg" part.
+ * @step 10 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check count of entries in list of tween images. [should be 0])
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p14)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *name = "radio.png";
+   char *path;
+   Eina_List *tween_list = NULL;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
+   history_diff_add(style->obj, PROPERTY, ADD, STRING, name,
+                    (void *)edje_edit_state_tween_del, "elm/radio/base/def",
+                    (void *)edje_edit_state_aspect_max_set,
+                    "tween add", "bg", "default", 0.0);
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with ADD action and STRING value type.");
+   tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
+   ck_assert_msg(eina_list_count(tween_list) == 0,
+                 "Canceled action doesn't change value");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
  * <td>history_undo_test_n1</td>
  * <td>
  * @precondition
