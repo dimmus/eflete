@@ -368,6 +368,22 @@ _object_area_show_switch_cb(App_Data *app)
    return true;
 }
 
+Eina_Bool
+_zoom_in_cb(App_Data *app)
+{
+   double current_factor = workspace_zoom_factor_get(app->workspace);
+   workspace_zoom_factor_set(app->workspace, current_factor + 0.1);
+   return true;
+}
+
+Eina_Bool
+_zoom_out_cb(App_Data *app)
+{
+   double current_factor = workspace_zoom_factor_get(app->workspace);
+   workspace_zoom_factor_set(app->workspace, current_factor - 0.1);
+   return true;
+}
+
 /*========================================================*/
 /*                 HELPFULL STRUCTURES                    */
 /*========================================================*/
@@ -445,6 +461,8 @@ static Function_Set _sc_func_set_init[] =
      {"widget_manager.style", _widget_manager_style_switch_cb},
      {"highlight.align.show", _highlight_align_show_switch_cb},
      {"object_area.show", _object_area_show_switch_cb},
+     {"zoom.in", _zoom_in_cb},
+     {"zoom.out", _zoom_out_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };

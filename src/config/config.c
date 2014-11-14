@@ -246,6 +246,9 @@ _default_shortcuts_get()
    ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
    ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
 
+   ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
+   ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
+
    /* Alt- */
    ADD_SHORTCUT("w", 25, ALT, "part.add.swallow", false);
    ADD_SHORTCUT("b", 56, ALT, "part.add.textblock", false);
