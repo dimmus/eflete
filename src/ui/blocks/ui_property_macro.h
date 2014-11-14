@@ -159,8 +159,14 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int drag = elm_spinner_value_get(obj); \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                                                   pd->part->name);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, drag)) \
      return; \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    drag, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, NULL, 0.0); \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
