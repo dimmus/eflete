@@ -474,7 +474,7 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
    Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
    App_Data *ap = (App_Data *)data;
    Shortcut_Function *sc_func;
-   Key_Pair *key = malloc(sizeof(Key_Pair));
+   Key_Pair *key = mem_malloc(sizeof(Key_Pair));
 
    if ((!ap->popup) && (!ap->modal_editor))
      {
@@ -521,6 +521,7 @@ _key_unpress_event_cb(void *data, int type __UNUSED__, void *event)
           }
      }
 
+   free(key);
    return ECORE_CALLBACK_PASS_ON;
 }
 
