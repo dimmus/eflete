@@ -319,4 +319,54 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate);
 Eina_Bool
 workspace_separate_mode_get(Evas_Object *obj);
 
+/**
+ * Turn on/off the middle border of highlight (align) visibility.
+ *
+ * @param obj The workspace object,
+ * @param separated ON/OFF (true/false) the middle border (align) visibility,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_highlight_align_visible_set(Evas_Object *obj, Eina_Bool flag);
+
+/**
+ * Returns if middle border of highlight (align) is visible
+ *
+ * @param obj The workspace object,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_highlight_align_visible_get(Evas_Object *obj);
+
+/**
+ * Turn on/off the object area visibility.
+ *
+ * @param obj The workspace object,
+ * @param separated ON/OFF (true/false) the object area visibility,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
+
+/**
+ * Returns if the object area is visible
+ *
+ * @param obj The workspace object,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_object_area_visible_get(Evas_Object *obj);
+
 #endif /* UI_WORKSPACE_H */

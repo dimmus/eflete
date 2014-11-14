@@ -287,8 +287,9 @@ highlight_test_SOURCES = \
 test_highlight/test_highlight.c \
 test_highlight/highlight_add.c \
 test_highlight/highlight_handler_disabled_set.c \
-test_highlight/highlight_handler_middle_hide.c \
-test_highlight/highlight_handler_middle_show.c \
+test_highlight/highlight_handler_align_hide.c \
+test_highlight/highlight_handler_align_show.c \
+test_highlight/highlight_handler_align_visible_get.c \
 test_highlight/highlight_handler_mode_set.c \
 test_highlight/highlight_object_follow.c \
 test_highlight/highlight_object_unfollow.c
@@ -383,7 +384,11 @@ test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c \
 test_ui_workspace/workspace_separate_mode_set.c \
 test_ui_workspace/workspace_separate_mode_get.c \
-test_ui_workspace/workspace_edit_object_part_restack.c
+test_ui_workspace/workspace_edit_object_part_restack.c \
+test_ui_workspace/workspace_highlight_align_visible_get.c \
+test_ui_workspace/workspace_highlight_align_visible_set.c \
+test_ui_workspace/workspace_object_area_visible_get.c \
+test_ui_workspace/workspace_object_area_visible_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 

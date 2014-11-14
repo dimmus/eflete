@@ -708,7 +708,7 @@ highlight_add(Evas_Object *parent)
 }
 
 Eina_Bool
-highlight_handler_middle_show(Evas_Object *hl)
+highlight_handler_align_show(Evas_Object *hl)
 {
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    if (highlight->handlers_disabled) return false;
@@ -731,7 +731,7 @@ highlight_handler_middle_show(Evas_Object *hl)
 }
 
 Eina_Bool
-highlight_handler_middle_hide(Evas_Object *hl)
+highlight_handler_align_hide(Evas_Object *hl)
 {
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
 
@@ -739,6 +739,12 @@ highlight_handler_middle_hide(Evas_Object *hl)
    evas_object_hide(highlight->handler_MIDDLE->border);
 
    return true;
+}
+
+Eina_Bool
+highlight_handler_align_visible_get(Evas_Object *hl __UNUSED__)
+{
+   return false;
 }
 
 Eina_Bool

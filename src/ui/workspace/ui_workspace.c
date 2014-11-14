@@ -1019,13 +1019,13 @@ _key_down(void *data,
    if (evas_key_modifier_is_set(mods, "Control"))
      {
         if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
-          highlight_handler_middle_show(hl);
+          highlight_handler_align_show(hl);
      }
 
    if (evas_key_modifier_is_set(mods, "Alt"))
      {
         if ((!strcmp(ev->keyname, "Control_L")) || (!strcmp(ev->keyname, "Control_R")))
-          highlight_handler_middle_show(hl);
+          highlight_handler_align_show(hl);
      }
 }
 
@@ -1043,13 +1043,13 @@ _key_up(void *data,
    if (evas_key_modifier_is_set(mods, "Control"))
      {
         if ((!strcmp(ev->keyname, "Alt_L")) || (!strcmp(ev->keyname, "Alt_R")))
-          highlight_handler_middle_hide(hl);
+          highlight_handler_align_hide(hl);
      }
 
    if (evas_key_modifier_is_set(mods, "Alt"))
      {
         if ((!strcmp(ev->keyname, "Control_L")) || (!strcmp(ev->keyname, "Control_R")))
-          highlight_handler_middle_hide(hl);
+          highlight_handler_align_hide(hl);
      }
 }
 
@@ -1467,3 +1467,28 @@ workspace_separate_mode_get(Evas_Object *obj)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
    return groupedit_edit_object_parts_separated_is(sd->groupedit);
 }
+
+Eina_Bool
+workspace_highlight_align_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
+workspace_highlight_align_visible_get(Evas_Object *obj __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
+workspace_object_area_visible_set(Evas_Object *obj __UNUSED__, Eina_Bool flag __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
+workspace_object_area_visible_get(Evas_Object *obj __UNUSED__)
+{
+   return false;
+}
+

@@ -30,6 +30,10 @@ check: Makefile
 	$(builddir)/workspace_edit_object_part_del.edj \
 	$(builddir)/workspace_edit_object_part_state_set.edj \
 	$(builddir)/workspace_edit_object_visible_set.edj \
+	$(builddir)/workspace_highlight_align_visible_get.edj \
+	$(builddir)/workspace_highlight_align_visible_set.edj \
+	$(builddir)/workspace_object_area_visible_get.edj \
+	$(builddir)/workspace_object_area_visible_set.edj \
 	$(builddir)/groupedit_edit_object_unset.edj \
 	$(builddir)/groupedit_edit_object_set.edj \
 	$(builddir)/live_view_widget_style_set.edj \
