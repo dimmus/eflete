@@ -181,8 +181,20 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (item->index != 0) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, item->title); \
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                                                   pd->part->name);\
+   const char *value = NULL; \
+   if (item->index != 0) \
+     { \
+       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
+                                       pd->part->name, item->title); \
+       value = item->title; \
+     } \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, NULL); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, NULL, 0.0); \
    pm_project_changed(app_data_get()->project); \
 }
 
