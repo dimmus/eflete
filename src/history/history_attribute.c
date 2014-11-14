@@ -40,6 +40,9 @@ struct _Attribute_Diff
    double state_value; /**< State value, uses only with field state*/
    void (*func)(Evas_Object *obj, ...); /**< Function that provide change
                                           attribute in edit object*/
+   void (*func_revert)(Evas_Object *obj, ...); /**< Function that provide
+                                                 revert change attribute in
+                                                 edit object. Needed for ADD/DEL*/
    Value_Type param_type; /**< Helper, that make faster search needed
                                struct in union */
    union {
@@ -193,8 +196,8 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
    return true;
 }
 
-Eina_Bool
-_attribute_undo(Evas_Object *source, Attribute_Diff *change)
+static Eina_Bool
+_attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
 {
    Style *style = NULL;
    Part *part = NULL;
@@ -258,8 +261,44 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
      break;
     }
 
-   _history_ui_attribute_update(source, change);
    return true;
+}
+
+static Eina_Bool
+_attribute_add_undo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_attribute_del_undo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
+_attribute_undo(Evas_Object *source, Attribute_Diff *change)
+{
+   Eina_Bool undo = false;
+
+   switch(change->diff.action_type)
+     {
+      case MODIFY:
+         undo = _attribute_modify_undo(source, change);
+      break;
+      case ADD:
+         undo = _attribute_add_undo(source, change);
+      break;
+      case DEL:
+         undo = _attribute_del_undo(source, change);
+      break;
+      default:
+          ERR("Unsupported action type[%d]", change->diff.action_type);
+     }
+
+   if (undo)
+     _history_ui_attribute_update(source, change);
+   return undo;
 }
 
 void
