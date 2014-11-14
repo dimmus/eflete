@@ -41,7 +41,8 @@ _style_set(Evas_Object *o, const char *style)
    if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
      {
         GROUP_NAME("object_area", "default")
-        edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group);
+        if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
+          ERR("Could not set up default theme for object area!");
      }
 
    #undef GROUP_NAME
