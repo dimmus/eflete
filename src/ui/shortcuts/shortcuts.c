@@ -497,6 +497,7 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
           }
      }
 
+   free(key);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -521,7 +522,6 @@ _key_unpress_event_cb(void *data, int type __UNUSED__, void *event)
           }
      }
 
-   free(key);
    return ECORE_CALLBACK_PASS_ON;
 }
 
