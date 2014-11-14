@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
+*/
 
 #include "config.h"
 #include "shortcuts.h"
@@ -65,10 +65,12 @@ _profile_free(void)
 }
 
 Eina_Bool
-config_init(void)
+config_init(App_Data *ap)
 {
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor_Class eddkc;
+
+   if (!ap) return false;
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -155,12 +157,14 @@ config_init(void)
      (edd_keys, Shortcuts, "modifiers",     modifiers, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC
      (edd_keys, Shortcuts, "description",   description, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "holdable",      holdable, EET_T_UCHAR);
 
    EET_DATA_DESCRIPTOR_ADD_LIST
      (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
 
    if (!edd_profile) return false;
-   if (!shortcuts_init())
+   if (!shortcuts_init(ap))
      {
         CRIT("Can't initialize the shortcut module");
         return false;
@@ -172,9 +176,11 @@ config_init(void)
    return true;
 }
 
-void
+Eina_Bool
 config_shutdown(App_Data *ap)
 {
+   if (!ap) return false;
+
    if (edd_base)
      {
         eet_data_descriptor_free(edd_base);
@@ -196,10 +202,12 @@ config_shutdown(App_Data *ap)
         edd_keys = NULL;
      }
    if (config) _config_free();
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
 
    if (!ap)
      shortcuts_main_del(ap);
+
+   return true;
 }
 
 static Eina_List *
@@ -207,47 +215,55 @@ _default_shortcuts_get()
 {
    Eina_List *shortcuts = NULL;
    Shortcuts *shortcut;
-#define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr)                        \
+
+#define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr, Holdable)              \
    shortcut = calloc(1, sizeof(Shortcuts));                                  \
    if (!shortcut) return shortcuts;                                          \
    shortcut->keyname = eina_stringshare_add_length(Name, strlen(Name));      \
    shortcut->keycode = Keycode;                                              \
    shortcut->modifiers = Modifiers;                                          \
    shortcut->description = eina_stringshare_add_length(Descr, strlen(Descr));\
+   shortcut->holdable = Holdable;                                             \
    shortcuts = eina_list_append(shortcuts, shortcut);
 
    /* No modifiers */
-   ADD_SHORTCUT("Delete", 119, 0, "item.delete");
+   ADD_SHORTCUT("Delete", 119, 0, "item.delete", false);
 
    /* Ctrl- */
-   ADD_SHORTCUT("slash", 61, CTRL, "separate_mode");
-   ADD_SHORTCUT("n", 57, CTRL, "new_theme");
-   ADD_SHORTCUT("o", 32, CTRL, "open_edj");
-   ADD_SHORTCUT("s", 39, CTRL, "save");
-   ADD_SHORTCUT("e", 26, CTRL, "export");
-   ADD_SHORTCUT("q", 24, CTRL, "quit");
+   ADD_SHORTCUT("slash", 61, CTRL, "separate_mode", false);
+   ADD_SHORTCUT("n", 57, CTRL, "new_theme", false);
+   ADD_SHORTCUT("o", 32, CTRL, "open_edj", false);
+   ADD_SHORTCUT("s", 39, CTRL, "save", false);
+   ADD_SHORTCUT("e", 26, CTRL, "export", false);
+   ADD_SHORTCUT("q", 24, CTRL, "quit", false);
 
-   ADD_SHORTCUT("1", 10, CTRL, "style_editor");
-   ADD_SHORTCUT("2", 11, CTRL, "image_editor");
-   ADD_SHORTCUT("3", 12, CTRL, "sound_editor");
-   ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer");
-   ADD_SHORTCUT("5", 14, CTRL, "program_editor");
+   ADD_SHORTCUT("1", 10, CTRL, "style_editor", false);
+   ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
+   ADD_SHORTCUT("3", 12, CTRL, "sound_editor", false);
+   ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer", false);
+   ADD_SHORTCUT("5", 14, CTRL, "program_editor", false);
 
-   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style");
-   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout");
+   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
+   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
 
    /* Alt- */
-   ADD_SHORTCUT("w", 25, ALT, "part.add.swallow");
-   ADD_SHORTCUT("b", 56, ALT, "part.add.textblock");
-   ADD_SHORTCUT("t", 28, ALT, "part.add.text");
-   ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle");
-   ADD_SHORTCUT("i", 31, ALT, "part.add.image");
-   ADD_SHORTCUT("s", 39, ALT, "part.add.spacer");
+   ADD_SHORTCUT("w", 25, ALT, "part.add.swallow", false);
+   ADD_SHORTCUT("b", 56, ALT, "part.add.textblock", false);
+   ADD_SHORTCUT("t", 28, ALT, "part.add.text", false);
+   ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle", false);
+   ADD_SHORTCUT("i", 31, ALT, "part.add.image", false);
+   ADD_SHORTCUT("s", 39, ALT, "part.add.spacer", false);
 
    /* Ctrl-Shift- */
-   ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc");
-   ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as");
-   ADD_SHORTCUT("l", 46, CTRL + SHIFT, "style.create");
+   ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc", false);
+   ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as", false);
+   ADD_SHORTCUT("v", 55, CTRL + SHIFT, "property.visual_tab", false);
+   ADD_SHORTCUT("c", 54, CTRL + SHIFT, "property.code_tab", false);
+   ADD_SHORTCUT("l", 46, CTRL + SHIFT, "style.create", false);
+
+   /* Holdable keys. */
+   ADD_SHORTCUT("Alt_L", 64, CTRL, "highlight.align.show", true);
+   ADD_SHORTCUT("Alt_L", 64, 0, "object_area.show", true);
 
 #undef ADD_SHORTCUT
    return shortcuts;

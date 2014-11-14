@@ -31,7 +31,8 @@ void win_layout_get_test_p(int);
 void win_layout_get_test_n1(int);
 void win_layout_get_test_n2(int);
 
-void app_shutdown_test_p(int);
+void app_shutdown_test_p1(int);
+void app_shutdown_test_p2(int);
 void app_shutdown_test_n(int);
 
 void app_data_get_test_p1(int);

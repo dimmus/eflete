@@ -71,8 +71,8 @@ EFLETE_TEST(ui_panes_add_test_p)
 
    elm_init(0, 0);
    app_init();
-   config_init();
    app_data = app_data_get();
+   config_init(app_data);
    config_load(app_data);
 
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);

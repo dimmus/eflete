@@ -67,7 +67,7 @@ EFLETE_TEST(shortcuts_main_del_test_p)
 
    ck_assert_msg(shortcuts_main_del(ap), "Main shortcut's callback function was removed.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    app_shutdown();
    elm_shutdown();
 }
@@ -109,7 +109,7 @@ EFLETE_TEST(shortcuts_main_del_test_n1)
 
    ck_assert_msg(!shortcuts_main_del(ap), "Cant set main shortcut's callback function.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    app_shutdown();
    elm_shutdown();
 }

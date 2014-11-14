@@ -63,7 +63,7 @@ EFLETE_TEST(shortcuts_profile_load_test_p)
 
    ck_assert_msg(shortcuts_profile_load(ap, profile_get()), "Cant load profile.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    app_shutdown();
    elm_shutdown();
 }
@@ -103,7 +103,7 @@ EFLETE_TEST(shortcuts_profile_load_test_n1)
 
    ck_assert_msg(!shortcuts_profile_load(ap, prof), "Shortcuts were loaded.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    app_shutdown();
    elm_shutdown();
 }
@@ -146,7 +146,7 @@ EFLETE_TEST(shortcuts_profile_load_test_n2)
    ck_assert_msg(!shortcuts_profile_load(NULL, profile_get()), "Shortcuts were loaded.");
    ck_assert_msg(!shortcuts_profile_load(app, NULL), "Shortcuts were loaded.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(app);
    app_shutdown();
    elm_shutdown();
 }

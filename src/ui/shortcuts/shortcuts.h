@@ -89,12 +89,13 @@ shortcuts_profile_load(App_Data *ap, Profile *profile);
  * This function will prepare module to be used. For example, it will create
  * hash of functions that can be used for finding according to pressed keys.
  *
+ * @param ap App Data containing important information.
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_init(void);
+shortcuts_init(App_Data *ap);
 
 /**
  * Initialize shortcut module.
@@ -102,11 +103,12 @@ shortcuts_init(void);
  * This function will free all created structures and hashes inside of this
  * module.
  *
+ * @param ap App Data containing important information.
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Shortcuts
  */
 Eina_Bool
-shortcuts_shutdown(void);
+shortcuts_shutdown(App_Data *ap);
 
 #endif /* SHORTCUTS_H */

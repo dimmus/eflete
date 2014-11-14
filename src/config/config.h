@@ -180,7 +180,10 @@ struct _Shortcuts
    const char       *description; /**< description of the shortcut. According to
                                        description there is a function will be
                                        called after using shortcut. */
+   Eina_Bool        holdable; /**< Shows if shortcut function working only when
+                                  key is being holded. */
 };
+
 /**
  * @typedef Shortcuts
  * @ingroup Config
@@ -190,21 +193,23 @@ typedef struct _Shortcuts Shortcuts;
 /**
  * Initialisation config module.
  *
+ * @param ap App Data containing important information.
  * @return EINA_TRUE if init complete successful. EINA_FALSE overwise.
  *
  * @ingroup Config
  */
 Eina_Bool
-config_init(void);
+config_init(App_Data *ap);
 
 /**
  * Release the config module.
  *
  * @param ap App Data containing important information.
+ * @return EINA_TRUE if init complete successful. EINA_FALSE overwise.
  *
  * @ingroup Config
  */
-void
+Eina_Bool
 config_shutdown(App_Data *ap);
 
 /**

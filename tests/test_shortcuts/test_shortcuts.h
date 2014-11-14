@@ -24,12 +24,14 @@
 
 void shortcuts_init_test_p1(int);
 void shortcuts_init_test_p2(int);
-void shortcuts_init_test_n(int);
+void shortcuts_init_test_n1(int);
+void shortcuts_init_test_n2(int);
 
 void shortcuts_shutdown_test_p1(int);
 void shortcuts_shutdown_test_p2(int);
 void shortcuts_shutdown_test_n1(int);
 void shortcuts_shutdown_test_n2(int);
+void shortcuts_shutdown_test_n3(int);
 
 void shortcuts_profile_load_test_p(int);
 void shortcuts_profile_load_test_n1(int);

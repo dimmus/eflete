@@ -27,6 +27,17 @@
 #include "sound_editor.h"
 #include "program_editor.h"
 
+struct _Shortcut_Module
+{
+   Ecore_Event_Handler *shortcuts_handler; /**< handler for catching key presses\
+                                                for shortcuts */
+   Ecore_Event_Handler *shortcuts_handler_unpress; /**< handler for catching key
+                                                        unpressing for
+                                                        shortcuts */
+   Eina_Hash *shortcut_functions; /**< list of user's shortcuts */
+   Eina_List *holded_functions; /**< list of functions that is being held */
+};
+
 static void
 _random_name_generate(char *part_name, unsigned int length)
 {
@@ -340,6 +351,23 @@ _program_editor_open_cb(App_Data *app)
    return true;
 }
 
+Eina_Bool
+_highlight_align_show_switch_cb(App_Data *app)
+{
+   Eina_Bool flag = workspace_highlight_align_visible_get(app->workspace);
+   workspace_highlight_align_visible_set(app->workspace, !flag);
+   workspace_object_area_visible_set(app->workspace, !flag);
+   return true;
+}
+
+Eina_Bool
+_object_area_show_switch_cb(App_Data *app)
+{
+   Eina_Bool flag = workspace_object_area_visible_get(app->workspace);
+   workspace_object_area_visible_set(app->workspace, !flag);
+   return true;
+}
+
 /*========================================================*/
 /*                 HELPFULL STRUCTURES                    */
 /*========================================================*/
@@ -353,6 +381,8 @@ struct _Shortcut_Function
    const char           *keyname;
    unsigned int          keycode;
    unsigned int          modifiers;
+   Eina_Bool             holdable;
+   Eina_Bool             held;
    const char           *description;
    Shortcut_Function_Cb  function;
 };
@@ -413,6 +443,8 @@ static Function_Set _sc_func_set_init[] =
      {"program_editor", _program_editor_open_cb},
      {"widget_manager.layout", _widget_manager_layout_switch_cb},
      {"widget_manager.style", _widget_manager_style_switch_cb},
+     {"highlight.align.show", _highlight_align_show_switch_cb},
+     {"object_area.show", _object_area_show_switch_cb},
      {"quit", _quit_cb},
      {NULL, NULL}
 };
@@ -436,9 +468,39 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
         key->modifiers = ev->modifiers & 255;
         key->keycode = ev->keycode;
 
-        sc_func = eina_hash_find(ap->shortcut_functions, key);
-        if (sc_func)
+        sc_func = eina_hash_find(ap->shortcuts->shortcut_functions, key);
+        if ((sc_func) && (!sc_func->holdable))
           sc_func->function(ap);
+        else if ((sc_func) && (sc_func->holdable) && (!sc_func->held))
+          {
+             sc_func->held = true;
+             ap->shortcuts->holded_functions = eina_list_append(ap->shortcuts->holded_functions, sc_func);
+             sc_func->function(ap);
+          }
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_key_unpress_event_cb(void *data, int type __UNUSED__, void *event)
+{
+   Ecore_Event_Key *ev = (Ecore_Event_Key *)event;
+   App_Data *ap = (App_Data *)data;
+   Shortcut_Function *sc_func;
+   Eina_List *l;
+
+   if ((!ap->popup) && (!ap->modal_editor))
+     {
+        EINA_LIST_FOREACH(ap->shortcuts->holded_functions, l, sc_func)
+          {
+             if (ev->keycode == sc_func->keycode)
+               {
+                  sc_func->held = false;
+                  ap->shortcuts->holded_functions = eina_list_remove(ap->shortcuts->holded_functions, sc_func);
+                  sc_func->function(ap);
+               }
+          }
      }
 
    return ECORE_CALLBACK_PASS_ON;
@@ -482,25 +544,30 @@ _eina_hash_free(void *data)
 Eina_Bool
 shortcuts_main_add(App_Data *ap)
 {
-   if ((!ap) || (ap->shortcuts_handler))
+   if ((!ap) || (ap->shortcuts->shortcuts_handler))
      return false;
 
-   ap->shortcuts_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
+   ap->shortcuts->shortcuts_handler = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
                                                    _key_press_event_cb,
                                                    ap);
+   ap->shortcuts->shortcuts_handler_unpress = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
+                                                                      _key_unpress_event_cb,
+                                                                      ap);
    return true;
 }
 
 Eina_Bool
 shortcuts_main_del(App_Data *ap)
 {
-   if ((!ap) || (!ap->shortcuts_handler))
+   if ((!ap) || (!ap->shortcuts->shortcuts_handler))
      return false;
 
-   ecore_event_handler_del(ap->shortcuts_handler);
-   ap->shortcuts_handler = NULL;
-   eina_hash_free(ap->shortcut_functions);
-   ap->shortcut_functions = NULL;
+   ecore_event_handler_del(ap->shortcuts->shortcuts_handler);
+   ap->shortcuts->shortcuts_handler = NULL;
+   ecore_event_handler_del(ap->shortcuts->shortcuts_handler_unpress);
+   ap->shortcuts->shortcuts_handler_unpress = NULL;
+   eina_hash_free(ap->shortcuts->shortcut_functions);
+   ap->shortcuts->shortcut_functions = NULL;
 
    return true;
 }
@@ -512,15 +579,16 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
    Shortcut_Function *sc_func;
    Eina_List *l;
    Key_Pair *key;
-   if ((!ap) || (!profile) || (!profile->shortcuts)) return false;
+   if ((!ap) || (!profile) || (!profile->shortcuts) || (!ap->shortcuts))
+     return false;
 
-   if (ap->shortcut_functions)
-     eina_hash_free(ap->shortcut_functions);
-   ap->shortcut_functions = eina_hash_new(EINA_KEY_LENGTH(_eina_int_key_length),
-                                          EINA_KEY_CMP(_eina_int_key_cmp),
-                                          EINA_KEY_HASH(eina_hash_int32),
-                                          _eina_hash_free,
-                                          8);
+   if (ap->shortcuts->shortcut_functions)
+     eina_hash_free(ap->shortcuts->shortcut_functions);
+   ap->shortcuts->shortcut_functions = eina_hash_new(EINA_KEY_LENGTH(_eina_int_key_length),
+                                                     EINA_KEY_CMP(_eina_int_key_cmp),
+                                                     EINA_KEY_HASH(eina_hash_int32),
+                                                     _eina_hash_free,
+                                                     8);
 
    EINA_LIST_FOREACH(profile->shortcuts, l, sc)
      {
@@ -532,10 +600,12 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
         sc_func->keyname = sc->keyname;
         sc_func->keycode = sc->keycode;
         sc_func->modifiers = sc->modifiers;
+        sc_func->holdable = sc->holdable;
+        sc_func->held = false;
         sc_func->description = sc->description;
         sc_func->function = eina_hash_find(_sc_functions, sc->description);
-        if (eina_hash_find(ap->shortcut_functions, key) ||
-            (!eina_hash_direct_add(ap->shortcut_functions, key, sc_func)))
+        if (eina_hash_find(ap->shortcuts->shortcut_functions, key) ||
+            (!eina_hash_direct_add(ap->shortcuts->shortcut_functions, key, sc_func)))
           {
              free(sc_func);
              return false;
@@ -546,9 +616,12 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
 }
 
 Eina_Bool
-shortcuts_init()
+shortcuts_init(App_Data *ap)
 {
-   if (_sc_functions) return false;
+   if ((_sc_functions) || (!ap) || (ap->shortcuts))
+     return false;
+
+   ap->shortcuts = mem_calloc(1, sizeof(Shortcut_Module));
 
    Function_Set *_sc_func_set = _sc_func_set_init;
    _sc_functions = eina_hash_string_superfast_new(NULL);
@@ -562,9 +635,13 @@ shortcuts_init()
 }
 
 Eina_Bool
-shortcuts_shutdown()
+shortcuts_shutdown(App_Data *ap)
 {
-   if (!_sc_functions) return false;
+   if ((!_sc_functions) || (!ap) || (!ap->shortcuts))
+     return false;
+
+   free(ap->shortcuts);
+   ap->shortcuts = NULL;
 
    eina_hash_free(_sc_functions);
    _sc_functions = NULL;

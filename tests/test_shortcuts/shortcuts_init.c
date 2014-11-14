@@ -38,11 +38,12 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
+ * @step 2 create App_Data
  *
  * @procedure
  * @step 1 call shortcuts_init
  * </td>
- * <td>void</td>
+ * <td>App_Data *ap</td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -51,11 +52,14 @@
  */
 EFLETE_TEST(shortcuts_init_test_p1)
 {
+   App_Data *ap;
+
    elm_init(0,0);
+   ap = app_data_get();
 
-   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized.");
+   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    elm_shutdown();
 }
 END_TEST
@@ -69,13 +73,14 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
+ * @step 2 create App_Data
  *
  * @procedure
  * @step 1 call shortcuts_init
  * @step 2 call shortcuts_shutdown
  * @step 3 call shortcuts_init
  * </td>
- * <td>void</td>
+ * <td>App_Data</td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -84,13 +89,16 @@ END_TEST
  */
 EFLETE_TEST(shortcuts_init_test_p2)
 {
+   App_Data *ap;
+
    elm_init(0,0);
+   ap = app_data_get();
 
-   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at first time.");
-   shortcuts_shutdown();
-   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at second time.");
+   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized at first time.");
+   shortcuts_shutdown(ap);
+   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized at second time.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    elm_shutdown();
 }
 END_TEST
@@ -100,30 +108,65 @@ END_TEST
  * @{
  * <tr>
  * <td>shortcuts_init</td>
- * <td>shortcuts_init_test_n</td>
+ * <td>shortcuts_init_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
+ * @step 2 create App_Data
  *
  * @procedure
  * @step 1 call shortcuts_init
  * @step 2 call shortcuts_init
  * </td>
- * <td>void</td>
+ * <td>App_Data *ap</td>
  * <td>EINA_FALSE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(shortcuts_init_test_n)
+EFLETE_TEST(shortcuts_init_test_n1)
+{
+   App_Data *ap;
+
+   elm_init(0,0);
+   ap = app_data_get();
+
+   ck_assert_msg(shortcuts_init(ap), "Shortcuts not initialized at first time.");
+   ck_assert_msg(!shortcuts_init(ap), "Shortcuts initialized after it was already initialized.");
+
+   shortcuts_shutdown(ap);
+   elm_shutdown();
+}
+END_TEST
+
+
+/**
+ * @addtogroup shortcuts_init
+ * @{
+ * <tr>
+ * <td>shortcuts_init</td>
+ * <td>shortcuts_init_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call shortcuts_init
+ * </td>
+ * <td>NULL</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(shortcuts_init_test_n2)
 {
    elm_init(0,0);
 
-   ck_assert_msg(shortcuts_init(), "Shortcuts not initialized at first time.");
-   ck_assert_msg(!shortcuts_init(), "Shortcuts initialized after it was already initialized.");
+   ck_assert_msg(!shortcuts_init(NULL), "Shortcuts initialized without application data.");
 
-   shortcuts_shutdown();
    elm_shutdown();
 }
 END_TEST

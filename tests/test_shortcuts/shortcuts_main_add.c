@@ -65,7 +65,7 @@ EFLETE_TEST(shortcuts_main_add_test_p)
    shortcuts_profile_load(ap, profile_get());
    ck_assert_msg(shortcuts_main_add(ap), "Cant set main shortcut's callback function.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    app_shutdown();
    elm_shutdown();
 }
@@ -109,7 +109,7 @@ EFLETE_TEST(shortcuts_main_add_test_n1)
    ck_assert_msg(shortcuts_main_add(ap), "Cant set main shortcut's callback function.");
    ck_assert_msg(!shortcuts_main_add(ap), "Main shortcut's callback function was set again.");
 
-   shortcuts_shutdown();
+   shortcuts_shutdown(ap);
    app_shutdown();
    elm_shutdown();
 }

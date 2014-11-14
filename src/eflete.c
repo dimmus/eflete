@@ -117,7 +117,9 @@ app_init()
    swap_path = eina_stringshare_add(EFLETE_SWAP_PATH);
    if (!ecore_file_exists(swap_path)) ecore_file_mkdir(swap_path);
 
-   if (!config_init()) return false;
+   app_data_get();
+
+   if (!config_init(ap)) return false;
 
    if (!ewe_init(0, 0))
      {

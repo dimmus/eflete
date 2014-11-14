@@ -22,6 +22,8 @@
 #include "main_window.h"
 
 void config_init_test_p(int);
+void config_init_test_n(int);
+
 void config_shutdown_test_p(int);
 
 void profile_load_test_p1(int);

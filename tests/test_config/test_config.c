@@ -24,6 +24,8 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, config_init_test_p);
+   tcase_add_test(tcase, config_init_test_n);
+
    tcase_add_test(tcase, config_shutdown_test_p);
 
    tcase_add_test(tcase, profile_load_test_p1);
