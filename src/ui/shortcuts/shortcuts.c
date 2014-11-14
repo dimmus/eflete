@@ -48,10 +48,10 @@ _random_name_generate(char *part_name, unsigned int length)
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
       "abcdefghijklmnopqrstuvwxyz";
 
-   for (i = 0; i < length; ++i)
+   for (i = 0; i < length - 1; ++i)
      part_name[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
 
-   part_name[length] = 0;
+   part_name[length - 1] = 0;
 }
 
 /*========================================================*/
