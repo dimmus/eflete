@@ -443,10 +443,54 @@ _part_select(void *data,
 }
 
 #define GP_GEOMETRY_SET \
-   evas_object_resize(gp->border, w, h); \
-   evas_object_move(gp->border, x + xe + offset_x, y + ye + offset_y); \
+   evas_object_resize(gp->border, w * sd->zoom_factor, h * sd->zoom_factor); \
+   evas_object_move(gp->border, x * sd->zoom_factor + xe + offset_x, \
+                                y * sd->zoom_factor + ye + offset_y); \
    evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
    evas_object_move(gp->item, xe + offset_x, ye + offset_y);
+
+#define GP_REAL_GEOMETRY_CALC \
+   Evas_Coord part_x = x + xe + offset_x; \
+   Evas_Coord part_y = y + ye + offset_y; \
+   Evas_Coord abs_x = abs(sd->real_size->x - part_x); \
+   Evas_Coord abs_y = abs(sd->real_size->y - part_y); \
+   if (part_x > sd->real_size->x) \
+     w += abs_x; \
+   else \
+     { \
+        sd->real_size->w += abs_x; \
+        sd->real_size->x = part_x; \
+     } \
+   if (part_y > sd->real_size->y) \
+     h += abs_y; \
+   else \
+     { \
+        sd->real_size->h += abs_y; \
+        sd->real_size->y = part_y; \
+     } \
+   if (sd->real_size->w < w) \
+     sd->real_size->w = w; \
+   if (sd->real_size->h < h) \
+     sd->real_size->h = h;
+
+#define ZOOM_APPLY(OBJECT) \
+   if (fabs(sd->zoom_factor - 1.0) > 0.00001) \
+     { \
+        evas_object_geometry_get(OBJECT, &x, &y, NULL, NULL); \
+        Evas_Map *m = evas_map_new(4); \
+        evas_map_smooth_set(m, false); \
+        evas_map_util_points_populate_from_object_full(m, OBJECT, 0); \
+        evas_map_util_zoom(m, sd->zoom_factor, sd->zoom_factor, x, y); \
+        evas_object_map_set(OBJECT, m); \
+        evas_object_map_enable_set(OBJECT, true); \
+        evas_map_free(m); \
+        evas_object_repeat_events_set(OBJECT, true); \
+     } \
+   else \
+     { \
+        evas_object_map_enable_set(OBJECT, false); \
+        evas_object_repeat_events_set(OBJECT, false); \
+     }
 
 static void
 _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
@@ -463,10 +507,18 @@ _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    ro = edje_object_part_object_get(sd->edit_obj, gp->name);
    evas_object_geometry_get(ro, &ro_x, &ro_y, &ro_w, &ro_h);
 
+   /* all of it because of text and textblock >:C */
+   ro_x = xe + offset_x + (ro_x - xe - offset_x) * sd->zoom_factor;
+   ro_y = ye + offset_y + (ro_y - ye - offset_y) * sd->zoom_factor;
+
    evas_object_resize(gp->draw, ro_w, ro_h);
    evas_object_move(gp->draw, ro_x + offset_x, ro_y + offset_y);
 
    GP_GEOMETRY_SET
+
+   GP_REAL_GEOMETRY_CALC
+
+   ZOOM_APPLY(gp->draw)
 }
 
 static void
@@ -482,12 +534,19 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
 
    evas_object_resize(gp->draw, w, h);
-   evas_object_move(gp->draw, x + xe + offset_x, y + ye + offset_y);
+   evas_object_move(gp->draw, (x * sd->zoom_factor + xe + offset_x),
+                              (y * sd->zoom_factor + ye + offset_y));
 
    GP_GEOMETRY_SET
+
+   GP_REAL_GEOMETRY_CALC
+
+   ZOOM_APPLY(gp->draw)
 }
 
 #undef GP_GEOMETRY_SET
+#undef GP_REAL_GEOMETRY_CALC
+#undef ZOOM_APPLY
 
 Eina_Bool
 _parts_recalc(Ws_Groupedit_Smart_Data *sd)
@@ -499,8 +558,16 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
 
    if (!sd->parts) return false;
 
+   evas_object_geometry_get(sd->obj, &sd->real_size->x,
+                                     &sd->real_size->y,
+                                     &sd->real_size->w,
+                                     &sd->real_size->h);
+
    EINA_LIST_FOREACH(sd->parts, l, gp)
      {
+        offset_x = i * SEP_ITEM_PAD_X;
+        offset_y = i * SEP_ITEM_PAD_Y;
+
         if (sd->separated)
           {
              i++;
@@ -536,9 +603,6 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
                   gp->item = NULL;
                }
           }
-
-        offset_x = i * SEP_ITEM_PAD_X;
-        offset_y = i * SEP_ITEM_PAD_Y;
 
         ept = edje_edit_part_type_get(sd->edit_obj, gp->name);
         switch (ept)
@@ -593,12 +657,29 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
        }
 
+   sd->real_size->x += sd->real_size->w * (1 - sd->zoom_factor) / 2;
+   sd->real_size->y += sd->real_size->h * (1 - sd->zoom_factor) / 2;
+   sd->real_size->w *= sd->zoom_factor;
+   sd->real_size->h *= sd->zoom_factor;
+   evas_object_smart_callback_call(sd->obj, SIG_GEOMETRY_CHANGED, (void *)sd->real_size);
+
    return true;
 }
-
 #define BORDER_ADD(R, G, B, A) \
    GET_IMAGE(gp->border, sd->e, BORDER_IMG); \
-   evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A); \
+   evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A);
+
+#define IMAGE_PART_GROUP "eflete/groupedit/image/default"
+
+static void
+_image_delete(void *data __UNUSED__,
+              Evas *e __UNUSED__,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *image = edje_object_part_swallow_get(obj, "swallow.image");
+   if (image) evas_object_del(image);
+}
 
 static Groupedit_Part *
 _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type type)
@@ -623,7 +704,13 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
       case EDJE_PART_TYPE_IMAGE:
       case EDJE_PART_TYPE_PROXY: // it part like image
-         gp->draw = evas_object_image_add(sd->e);
+         gp->draw = edje_object_add(sd->e);
+         if (!edje_object_file_set(gp->draw, EFLETE_EDJ, IMAGE_PART_GROUP))
+           ERR("Image can't be loaded.\n");
+         evas_object_event_callback_add(gp->draw, EVAS_CALLBACK_DEL,
+                                        _image_delete, NULL);
+         Evas_Object *o = evas_object_image_add(sd->e);
+         edje_object_part_swallow(gp->draw, "swallow.image", o);
          BORDER_ADD(0, 0, 0, 0)
          break;
       case EDJE_PART_TYPE_SWALLOW:
@@ -663,6 +750,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 }
 
 #undef BORDER_ADD
+#undef IMAGE_PART_GROUP
 
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
@@ -724,6 +812,7 @@ static void
 _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 {
    Evas_Load_Error err;
+   Evas_Object *image, *source_image = NULL;
    const char *image_normal, *proxy_source;
    const char *buf = NULL;
    int r, g, b, a;
@@ -740,15 +829,20 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    PART_STATE_GET(edit_obj, gp->name)
 
    edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
-   evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
+
+   image = edje_object_part_swallow_get(gp->draw, "swallow.image");
+   evas_object_color_set(image, r*a/255, g*a/255, b*a/255, a);
 
    proxy_source = edje_edit_state_proxy_source_get(edit_obj, gp->name, state, value);
-
    if (proxy_source)
      {
         sd = evas_object_data_get(gp->border, "sd");
         source = _parts_list_find(sd->parts, proxy_source);
-        evas_object_image_source_set(gp->draw, source->draw);
+
+        source_image = edje_object_part_swallow_get(source->draw, "swallow.image");
+        if (!source_image)
+          source_image = source->draw;
+        evas_object_image_source_set(image, source_image);
      }
    else
      {
@@ -756,26 +850,26 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
         if (!image_normal) return;
         id = edje_edit_image_id_get(edit_obj, image_normal);
         buf = eina_stringshare_printf("edje/images/%i", id);
-        evas_object_image_file_set(gp->draw, file, buf);
-        err = evas_object_image_load_error_get(gp->draw);
+        evas_object_image_file_set(image, file, buf);
+        err = evas_object_image_load_error_get(image);
         if (err != EVAS_LOAD_ERROR_NONE)
           WARN("Could not update image:\"%s\"\n",  evas_load_error_str(err));
         edje_edit_string_free(image_normal);
 
         edje_edit_state_image_border_get(edit_obj, gp->name, state, value,
                                          &bl, &br, &bt, &bb);
-        evas_object_image_border_set(gp->draw, bl, br, bt, bb);
+        evas_object_image_border_set(image, bl, br, bt, bb);
 
         middle  = edje_edit_state_image_border_fill_get(edit_obj, gp->name, state, value);
         if (middle == 0)
-          evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_NONE);
+          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_NONE);
         else if (middle == 1)
-          evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_DEFAULT);
+          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_DEFAULT);
         else if (middle == 2)
-          evas_object_image_border_center_fill_set(gp->draw, EVAS_BORDER_FILL_SOLID);
+          evas_object_image_border_center_fill_set(image, EVAS_BORDER_FILL_SOLID);
      }
    /* setups settings from filled block  into evas image object*/
-   evas_object_image_smooth_scale_set(gp->draw,
+   evas_object_image_smooth_scale_set(image,
             edje_edit_state_fill_smooth_get(edit_obj, gp->name, state, value));
 
    /* take fill params here, because need to know is default params set*/
@@ -790,13 +884,13 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
    if (edje_edit_state_fill_type_get(edit_obj, gp->name, state, value))
      {
         /* If image tiled, set fill param to evas image object */
-        evas_object_image_size_get(gp->draw, &img_w, &img_h);
+        evas_object_image_size_get(image, &img_w, &img_h);
         x = (int)(img_w * fill_x) + fill_origin_offset_x;
         y = (int)(img_h * fill_y) + fill_origin_offset_y;
         w = (int)(img_w * fill_w) + fill_size_offset_x;
         h = (int)(img_h * fill_h) + fill_size_offset_y;
-        evas_object_image_filled_set(gp->draw, false);
-        evas_object_image_fill_set(gp->draw, x, y, w, h);
+        evas_object_image_filled_set(image, false);
+        evas_object_image_fill_set(image, x, y, w, h);
      }
    else if (fill_x || fill_y || (fill_w != 1) || (fill_h != 1) ||
             fill_origin_offset_x || fill_origin_offset_y ||
@@ -804,17 +898,17 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
          {
            /* If image fill is scale and params are non default values, set
               this params to evas image object */
-            evas_object_geometry_get(gp->draw, NULL, NULL, &img_w, &img_h);
+            evas_object_geometry_get(image, NULL, NULL, &img_w, &img_h);
             x = (int)(img_w * fill_x) + fill_origin_offset_x;
             y = (int)(img_h * fill_y) + fill_origin_offset_y;
             w = (int)(img_w * fill_w) + fill_size_offset_x;
             h = (int)(img_h * fill_h) + fill_size_offset_y;
-            evas_object_image_filled_set(gp->draw, false);
-            evas_object_image_fill_set(gp->draw, x, y, w, h);
+            evas_object_image_filled_set(image, false);
+            evas_object_image_fill_set(image, x, y, w, h);
          }
        else
          /* If image fill is scale with default params. */
-         evas_object_image_filled_set(gp->draw, true);
+         evas_object_image_filled_set(image, true);
 
    PART_STATE_FREE
    eina_stringshare_del(buf);
@@ -979,8 +1073,10 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    Eina_Stringshare *rel_to;
    int xc, yc, wc, hc;
    int xg, yg, wg, hg; // groupedit geometry
-   int x, w, y, h;
+   int x = 0, w = 0, y = 0, h = 0;
    double relative;
+
+   Groupedit_Part *rel_part = NULL;
 
    if (!sd->selected)
      {
@@ -994,32 +1090,50 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
 
         evas_object_geometry_get(sd->edit_obj, &xg, &yg, &wg, &hg);
 
-        xc = wc = 0;
+        xc = xg;
+        wc = wg;
         rel_to = edje_edit_state_rel1_to_x_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
-        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
-        x = xg + (xc + (int)(wc * relative));
+        if (rel_to)
+          {
+             rel_part = _parts_list_find(sd->parts, rel_to);
+             evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
+          }
+        x = (xc + (int)(wc * relative * sd->zoom_factor));
         edje_edit_string_free(rel_to);
 
-        yc = hc = 0;
+        yc = yg;
+        hc = hg;
         rel_to = edje_edit_state_rel1_to_y_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel1_relative_y_get(sd->edit_obj, name, state, value);
-        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
-        y = yg + (yc + (int)(hc * relative));
+        if (rel_to)
+          {
+             rel_part = _parts_list_find(sd->parts, rel_to);
+             evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
+          }
+        y = (yc + (int)(hc * relative * sd->zoom_factor));
         edje_edit_string_free(rel_to);
 
-        xc = 0; wc = sd->con_current_size->w;
+        xc = xg; wc = sd->con_current_size->w;
         rel_to = edje_edit_state_rel2_to_x_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel2_relative_x_get(sd->edit_obj, name, state, value);
-        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, &xc, NULL, &wc, NULL);
-        w = xg + (xc + (int)(wc * relative)) - x;
+        if (rel_to)
+          {
+             rel_part = _parts_list_find(sd->parts, rel_to);
+             evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
+          }
+        w = ((xc - x) + (int)(wc * relative * sd->zoom_factor));
         edje_edit_string_free(rel_to);
 
-        yc = 0; hc = sd->con_current_size->h;
+        yc = yg; hc = sd->con_current_size->h;
         rel_to = edje_edit_state_rel2_to_y_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel2_relative_y_get(sd->edit_obj, name, state, value);
-        if (rel_to) edje_object_part_geometry_get(sd->edit_obj, rel_to, NULL, &yc, NULL, &hc);
-        h = yg + (yc + (int)(hc * relative)) - y;
+        if (rel_to)
+          {
+             rel_part = _parts_list_find(sd->parts, rel_to);
+             evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
+          }
+        h = ((yc - y) + (int)(hc * relative * sd->zoom_factor));
         edje_edit_string_free(rel_to);
 
         evas_object_geometry_get(sd->obj, &xc, &yc, NULL, NULL);
@@ -1029,8 +1143,6 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
         evas_object_stack_below(sd->obj_area.obj, sd->selected->draw);
 
         PART_STATE_FREE
-
-        x -= xc; y -= yc;
      }
 
    if (sd->obj_area.visible) evas_object_show(sd->obj_area.obj);

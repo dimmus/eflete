@@ -75,7 +75,10 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed above part");
    ret = workspace_edit_object_part_above(workspace, "radio");
    ck_assert_msg(ret == EINA_FALSE, "Already top part above again");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -125,7 +128,10 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "non_exist");
    ck_assert_msg(ret == EINA_FALSE, "Non exist part is above");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -175,8 +181,11 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n1)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "NULL named part is above");
-   wm_style_free(style);
+
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
+   wm_style_free(style);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
 }

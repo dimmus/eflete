@@ -78,6 +78,8 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_p)
    ck_assert_msg(res == EINA_FALSE, "Deleted state still exist in edje edit object");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -137,6 +139,8 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_p1)
    ck_assert_msg(res == EINA_FALSE, "Delete state still exist in edje edit object");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -190,6 +194,8 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n)
    ck_assert_msg(res == EINA_FALSE, "Delete state for non exist part.");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -242,6 +248,8 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n1)
    ck_assert_msg(res == EINA_FALSE, "Delete non exist state for part.");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -330,6 +338,8 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n3)
    ck_assert_msg(res == EINA_FALSE, "Delete state without name");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -383,6 +393,8 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n4)
    ck_assert_msg(res == EINA_FALSE, "Delete state from part without name");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

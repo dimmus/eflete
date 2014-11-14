@@ -22,7 +22,7 @@
 /**
  * @addtogroup container_test
  * @{
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * Container
  * <TABLE>
@@ -30,11 +30,11 @@
  */
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * <tr>
- * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_p</td>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -42,7 +42,7 @@
  * @step 3 create a container
  *
  * @procedure
- * @step 1 set the new size for container handlers
+ * @step 1 set the new size for container paddings
  * @step 2 check returned value
  * </td>
  * <td>(Evas_Object *) container, 9, 9, 9, 9</td>
@@ -52,7 +52,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(container_handler_size_set_test_p)
+EFLETE_TEST(container_padding_size_set_test_p)
 {
    Evas_Object *parent, *container;
 
@@ -61,9 +61,10 @@ EFLETE_TEST(container_handler_size_set_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    container = container_add(parent);
-   ck_assert_msg(container_handler_size_set(container, 9, 9, 9, 9),
+   ck_assert_msg(container_padding_size_set(container, 9, 9, 9, 9),
                  "Failed to set the container handlers size.");
 
+   evas_object_del(container);
    evas_object_del(parent);
 
    elm_shutdown();
@@ -71,17 +72,17 @@ EFLETE_TEST(container_handler_size_set_test_p)
 END_TEST
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * <tr>
- * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_n1</td>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
  *
  * @procedure
- * @step 1 set the new size for container handlers
+ * @step 1 set the new size for container paddings
  * @step 2 check returned value
  * </td>
  * <td>NULL, 9, 9, 9, 9</td>
@@ -91,23 +92,61 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST(container_handler_size_set_test_n1)
+EFLETE_TEST(container_padding_size_set_test_n1)
 {
    elm_init(0, 0);
 
-   ck_assert_msg(!container_handler_size_set(NULL, 9, 9, 9, 9),
-                 "Failed to set the container handlers size.");
+   ck_assert_msg(!container_padding_size_set(NULL, 9, 9, 9, 9),
+                 "Paddings were set for object that is not container.");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * <tr>
- * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_n2</td>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_n2</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 set the new size for container paddings
+ * @step 2 check returned value
+ * </td>
+ * <td>NULL, 9, 9, 9, 9</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(container_padding_size_set_test_n2)
+{
+   Evas_Object *parent;
+
+   elm_init(0, 0);
+
+   parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+
+   ck_assert_msg(!container_padding_size_set(parent, 9, 9, 9, 9),
+                 "Paddings were set for object that is not container.");
+
+   evas_object_del(parent);
+
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup container_padding_size_set
+ * @{
+ * <tr>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_n3</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -118,14 +157,14 @@ END_TEST
  * @step 1 set the new size for container handlers
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *)container, 0, 9, 9, 9</td>
- * <td>EINA_TRUE (5, 9, 9, 9)</td>
+ * <td>(Evas_Object *)container, -79, 9, 9, 9</td>
+ * <td>EINA_TRUE (0, 9, 9, 9)</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_handler_size_set_test_n2)
+EFLETE_TEST(container_padding_size_set_test_n3)
 {
    Evas_Object *parent, *container;
    int lt_w, lt_h, br_w, br_h;
@@ -137,12 +176,13 @@ EFLETE_TEST(container_handler_size_set_test_n2)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    container = container_add(parent);
-   res = container_handler_size_set(container, 0, 9, 9, 9);
+   res = container_padding_size_set(container, -79, 9, 9, 9);
    if (res)
-     container_handler_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
-   ck_assert_msg(((!res) || (lt_w == 5) || (lt_h == 9) || (br_w == 9) || (br_h == 9)),
+     container_padding_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
+   ck_assert_msg(((!res) || (lt_w == 0) || (lt_h == 9) || (br_w == 9) || (br_h == 9)),
                  "Failed to set the container handlers size.");
 
+   evas_object_del(container);
    evas_object_del(parent);
 
    elm_shutdown();
@@ -150,11 +190,11 @@ EFLETE_TEST(container_handler_size_set_test_n2)
 END_TEST
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * <tr>
- * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_n3</td>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_n4</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -165,14 +205,14 @@ END_TEST
  * @step 1 set the new size for container handlers
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *)container, 9, 0, 9, 9</td>
- * <td>EINA_TRUE (9, 5, 9, 9)</td>
+ * <td>(Evas_Object *)container, 9, -16, 9, 9</td>
+ * <td>EINA_TRUE (9, 0, 9, 9)</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_handler_size_set_test_n3)
+EFLETE_TEST(container_padding_size_set_test_n4)
 {
    Evas_Object *parent, *container;
    int lt_w, lt_h, br_w, br_h;
@@ -184,10 +224,10 @@ EFLETE_TEST(container_handler_size_set_test_n3)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    container = container_add(parent);
-   res = container_handler_size_set(container, 9, 0, 9, 9);
+   res = container_padding_size_set(container, 9, -16, 9, 9);
    if (res)
-     container_handler_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
-   ck_assert_msg(((!res) || (lt_w == 9) || (lt_h == 5) || (br_w == 9) || (br_h == 9)),
+     container_padding_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
+   ck_assert_msg(((!res) || (lt_w == 9) || (lt_h == 0) || (br_w == 9) || (br_h == 9)),
                  "Failed to set the container handlers size.");
 
    evas_object_del(parent);
@@ -197,11 +237,11 @@ EFLETE_TEST(container_handler_size_set_test_n3)
 END_TEST
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * <tr>
- * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_n4</td>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_n5</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -212,14 +252,14 @@ END_TEST
  * @step 1 set the new size for container handlers
  * @step 2 check return value
  * </td>
- * <td>(Evas_Object *)container, 9, 9, 0, 9</td>
- * <td>EINA_TRUE (9, 9, 5, 9)</td>
+ * <td>(Evas_Object *)container, 9, 9, -333, 9</td>
+ * <td>EINA_TRUE (9, 9, 0, 9)</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_handler_size_set_test_n4)
+EFLETE_TEST(container_padding_size_set_test_n5)
 {
    Evas_Object *parent, *container;
    int lt_w, lt_h, br_w, br_h;
@@ -231,10 +271,10 @@ EFLETE_TEST(container_handler_size_set_test_n4)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    container = container_add(parent);
-   res = container_handler_size_set(container, 9, 9, 0, 9);
+   res = container_padding_size_set(container, 9, 9, -333, 9);
    if (res)
-     container_handler_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
-   ck_assert_msg(((!res) || (lt_w == 9) || (lt_h == 9) || (br_w == 5) || (br_h == 9)),
+     container_padding_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
+   ck_assert_msg(((!res) || (lt_w == 9) || (lt_h == 9) || (br_w == 0) || (br_h == 9)),
                  "Failed to set the container handlers size.");
 
    evas_object_del(parent);
@@ -244,11 +284,11 @@ EFLETE_TEST(container_handler_size_set_test_n4)
 END_TEST
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * <tr>
- * <td>container_handler_size_set</td>
- * <td>container_handler_size_set_test_n5</td>
+ * <td>container_padding_size_set</td>
+ * <td>container_padding_size_set_test_n6</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
@@ -259,14 +299,14 @@ END_TEST
  * @step 1 set the new size for container handlers
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *)container, 9, 9, 9, 0</td>
- * <td>EINA_TRUE (9, 9, 9, 5)</td>
+ * <td>(Evas_Object *)container, 9, 9, 9, -1</td>
+ * <td>EINA_TRUE (9, 9, 9, 0)</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(container_handler_size_set_test_n5)
+EFLETE_TEST(container_padding_size_set_test_n6)
 {
    Evas_Object *parent, *container;
    int lt_w, lt_h, br_w, br_h;
@@ -278,10 +318,10 @@ EFLETE_TEST(container_handler_size_set_test_n5)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    container = container_add(parent);
-   res = container_handler_size_set(container, 9, 9, 9, 0);
+   res = container_padding_size_set(container, 9, 9, 9, -1);
    if (res)
-     container_handler_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
-   ck_assert_msg(((!res) || (lt_w == 9) || (lt_h == 9) || (br_w == 9) || (br_h == 5)),
+     container_padding_size_get(container, &lt_w, &lt_h, &br_w, &br_h);
+   ck_assert_msg(((!res) || (lt_w == 9) || (lt_h == 9) || (br_w == 9) || (br_h == 0)),
                  "Failed to set the container handlers size.");
 
    evas_object_del(parent);
@@ -291,7 +331,7 @@ EFLETE_TEST(container_handler_size_set_test_n5)
 END_TEST
 
 /**
- * @addtogroup container_handler_size_set
+ * @addtogroup container_padding_size_set
  * @{
  * </TABLE>
  * @}

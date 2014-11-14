@@ -38,16 +38,11 @@
 
 #include "eflete.h"
 
-struct _Geom{
-   int x, y, w, h;
+struct _Container_Geom {
+   int x, y, w, h, dx, dy;
 };
 
-/**
- * Container geometry of the Container object.
- *
- * @ingroup Container
- */
-typedef struct _Geom Container_Geom;
+typedef struct _Container_Geom Container_Geom;
 
 /**
  * Add new Container object to parent object.
@@ -223,6 +218,10 @@ container_content_unset(Evas_Object *obj);
  * @param obj The Container object.
  * @param confine The confine object.
  *
+ * @warning If you are setting container into swallow or layout, please, use
+ *          use this function as well, because otherwise container won't work at
+ *          all.
+ *
  * @return EINA_TRUE on success or EINA_FALSE, on errors.
  *
  * @ingroup Container
@@ -241,6 +240,75 @@ container_confine_set(Evas_Object *obj, Evas_Object *confine);
  */
 Eina_Bool
 container_confine_unset(Evas_Object *obj);
+
+/**
+ * Hiding container (handlers and borders) of the Container object but not hiding
+ * setted content.
+ *
+ * @param obj The Container object.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_border_hide(Evas_Object *obj);
+
+/**
+ * Showing container (handlers and borders) of the Container object but not
+ * showing setted content.
+ *
+ * @param obj The Container object.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_border_show(Evas_Object *obj);
+
+/**
+ * Set the size of paddings before top left handler and after bottom right
+ * handler.
+ *
+ * @param obj The Container object,
+ * @param htl_w wigth of top-left padding,
+ * @param htl_h height of top-left padding,
+ * @param hbr_w wigth of bottom-right padding,
+ * @param hbr_h height of bottom-tight padding.
+ *
+ * @warning Container will be having unexpected behaviour when paddings are way
+ *          bigger than the size of Container.
+ *          For example, it might happen when:
+ *          (left top padding + right bottom padding) > (size of object).
+ *          In previous case that is (15 + 15 > 20).
+ *
+ * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 0.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors and if paddings are
+ *         bigger than container object.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_padding_size_set(Evas_Object *obj, int tl_w, int tl_h, int rb_w, int rb_h);
+
+/**
+ * Get the size of paddings before top left handler and after bottom right
+ * handler.
+ *
+ * @param obj The Container object,
+ * @param htl_w pointer of int width of top-left padding,
+ * @param htl_h pointer of int height of top-left padding,
+ * @param hbr_w pointer of int width of bottom-right padding,
+ * @param hbr_h pointer of int height of bottom-tight padding.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Container
+ */
+Eina_Bool
+container_padding_size_get(Evas_Object *obj, int *tl_w, int *tl_h, int *br_w, int *br_h);
 
 
 #endif /* CONTAINER_H */
