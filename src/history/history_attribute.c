@@ -126,8 +126,8 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
      }
 }
 
-Eina_Bool
-_attribute_redo(Evas_Object *source, Attribute_Diff *change)
+static Eina_Bool
+_attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
 {
    Style *style = NULL;
    Part *part = NULL;
@@ -192,8 +192,44 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
      break;
     }
 
-   _history_ui_attribute_update(source, change);
    return true;
+}
+
+static Eina_Bool
+_attribute_add_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_attribute_del_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
+_attribute_redo(Evas_Object *source, Attribute_Diff *change)
+{
+   Eina_Bool redo = false;
+
+   switch(change->diff.action_type)
+     {
+      case MODIFY:
+         redo = _attribute_modify_redo(source, change);
+      break;
+      case ADD:
+         redo = _attribute_add_redo(source, change);
+      break;
+      case DEL:
+         redo = _attribute_del_redo(source, change);
+      break;
+      default:
+          ERR("Unsupported action type[%d]", change->diff.action_type);
+     }
+
+   if (redo)
+     _history_ui_attribute_update(source, change);
+   return redo;
 }
 
 static Eina_Bool
