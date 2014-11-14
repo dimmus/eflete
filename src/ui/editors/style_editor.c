@@ -1159,9 +1159,12 @@ _tag_value_get(const char* text_style, char* a_tag)
    return result;
 }
 
-static void
+static Eina_Bool
 _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
 {
+   if ((!hex) || (!r) || (!g) || (!b) || (!a))
+     return false;
+
    unsigned long val;
    char *end;
    int length = (int)strlen(hex);
@@ -1218,6 +1221,7 @@ _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
            *a = 255;
         }
      }
+   return true;
 }
 
 CHANGE_CALLBACK(fonts_list, "font", COMBOBOX)
@@ -1335,7 +1339,8 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
                   elm_segment_control_item_selected_set(sc_item, true);
                }
           }
-        _hex_to_rgb(color, &r, &g, &b, &a);
+        if (!_hex_to_rgb(color, &r, &g, &b, &a))
+          ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(text_color, r*a/255, g*a/255, b*a/255, a);
 
         eina_stringshare_del(font);
@@ -1461,7 +1466,8 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
         elm_spinner_value_set(rel_size, atof(linerelsize));
         elm_check_state_set(font_password, pass);
         elm_check_state_set(font_background, bg);
-        _hex_to_rgb(bcolor, &r, &g, &b, &a);
+        if (!_hex_to_rgb(bcolor, &r, &g, &b, &a))
+          ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(font_backcolor, r*a/255, g*a/255, b*a/255, a);
         elm_spinner_value_set(font_ellipsis, atof(ellipsis));
      }
@@ -1542,7 +1548,8 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
              if (elm_object_part_content_get(layout, "swallow.glow_color"))
                elm_object_part_content_unset(layout, "swallow.glow_color");
              shadow_color = _style_item_shadow_color_add(layout, style_edit);
-             _hex_to_rgb(shadow, &r, &g, &b, &a);
+             if (!_hex_to_rgb(shadow, &r, &g, &b, &a))
+               ERR("This error should not happen in style editor... Contact devs please!");
              evas_object_color_set(shadow_color, r*a/255, g*a/255, b*a/255, a);
 
              style_edit->direction[0] = _direction_item_bl_add(item, style_edit);
@@ -1577,9 +1584,11 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
              if (elm_object_part_content_get(layout, "swallow.glow2_color"))
                elm_object_part_content_unset(layout, "swallow.glow2_color");
              outer_glow = _style_item_outer_glow_add(layout, style_edit);
-             _hex_to_rgb(inner, &r, &g, &b, &a);
+             if (!_hex_to_rgb(inner, &r, &g, &b, &a))
+               ERR("This error should not happen in style editor... Contact devs please!");
              evas_object_color_set(inner_glow, r*a/255, g*a/255, b*a/255, a);
-             _hex_to_rgb(outer, &r, &g, &b, &a);
+             if (!_hex_to_rgb(outer, &r, &g, &b, &a))
+               ERR("This error should not happen in style editor... Contact devs please!");
              evas_object_color_set(outer_glow, r*a/255, g*a/255, b*a/255, a);
           }
 
@@ -1657,11 +1666,14 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 
         elm_check_state_set(font_strikethrough, strikethr);
         elm_check_state_set(font_underline, underl);
-        _hex_to_rgb(strikethru_color, &r, &g, &b, &a);
+        if (!_hex_to_rgb(strikethru_color, &r, &g, &b, &a))
+          ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(strikethrough_color, r*a/255, g*a/255, b*a/255, a);
-        _hex_to_rgb(underl_color, &r, &g, &b, &a);
+        if (!_hex_to_rgb(underl_color, &r, &g, &b, &a))
+          ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(underline_color, r*a/255, g*a/255, b*a/255, a);
-        _hex_to_rgb(underl2_color, &r, &g, &b, &a);
+        if (!_hex_to_rgb(underl2_color, &r, &g, &b, &a))
+          ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(underline2_color, r*a/255, g*a/255, b*a/255, a);
 
         evas_object_smart_callback_add(underline_style, "changed", _on_underline_style_change, style_edit);
