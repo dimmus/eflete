@@ -775,7 +775,7 @@ _sound_info_type_setup(Eina_Stringshare *snd_src)
 
    dot = strrchr(snd_src, '.');
    if (!dot)
-     return type = eina_stringshare_add(_("Unknow Format Sound"));
+     return eina_stringshare_add(_("Unknow Format Sound"));
 
    dot++;
    up = strdup(dot);
