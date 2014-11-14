@@ -2010,6 +2010,12 @@ _del_tween_image(void *data,
      {
         elm_object_item_del(it);
         pd->style->isModify = true;
+        history_diff_add(pd->style->obj, PROPERTY, DEL, STRING,
+                         selected, edje_edit_state_tween_add,
+                         pd->style->full_group_name,
+                         (void*)edje_edit_state_tween_del, "tween image",
+                         pd->part->name, pd->part->curr_state,
+                         pd->part->curr_state_value);
         pm_project_changed(app_data_get()->project);
      }
 }
@@ -2036,6 +2042,12 @@ _on_image_editor_tween_done(void *data,
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
              pd->style->isModify = true;
+             history_diff_add(pd->style->obj, PROPERTY, ADD, STRING,
+                              name, edje_edit_state_tween_del,
+                              pd->style->full_group_name,
+                              (void*)edje_edit_state_tween_add, "tween image",
+                              pd->part->name, pd->part->curr_state,
+                              pd->part->curr_state_value);
              pm_project_changed(app_data_get()->project);
           }
      }

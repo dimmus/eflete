@@ -196,7 +196,7 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_add_redo(Evas_Object *source, Attribute_Diff *change)
+_attribute_curd_redo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
@@ -214,12 +214,6 @@ _attribute_add_redo(Evas_Object *source, Attribute_Diff *change)
    return true;
 }
 
-static Eina_Bool
-_attribute_del_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
-{
-   return false;
-}
-
 Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change)
 {
@@ -230,11 +224,9 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
       case MODIFY:
          redo = _attribute_modify_redo(source, change);
       break;
-      case ADD:
-         redo = _attribute_add_redo(source, change);
-      break;
       case DEL:
-         redo = _attribute_del_redo(source, change);
+      case ADD:
+         redo = _attribute_curd_redo(source, change);
       break;
       default:
           ERR("Unsupported action type[%d]", change->diff.action_type);
@@ -314,7 +306,7 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_add_undo(Evas_Object *source, Attribute_Diff *change)
+_attribute_curd_undo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
@@ -332,12 +324,6 @@ _attribute_add_undo(Evas_Object *source, Attribute_Diff *change)
    return true;
 }
 
-static Eina_Bool
-_attribute_del_undo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
-{
-   return false;
-}
-
 Eina_Bool
 _attribute_undo(Evas_Object *source, Attribute_Diff *change)
 {
@@ -348,11 +334,9 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
       case MODIFY:
          undo = _attribute_modify_undo(source, change);
       break;
-      case ADD:
-         undo = _attribute_add_undo(source, change);
-      break;
       case DEL:
-         undo = _attribute_del_undo(source, change);
+      case ADD:
+         undo = _attribute_curd_undo(source, change);
       break;
       default:
           ERR("Unsupported action type[%d]", change->diff.action_type);
@@ -453,7 +437,7 @@ _attribute_modify_parse(va_list list, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_add_parse(va_list list, Attribute_Diff *change)
+_attribute_curd_parse(va_list list, Attribute_Diff *change)
 {
    switch(change->param_type)
      {
@@ -475,12 +459,6 @@ _attribute_add_parse(va_list list, Attribute_Diff *change)
    return true;
 }
 
-static Eina_Bool
-_attribute_del_parse(va_list list __UNUSED__)
-{
-   return false;
-}
-
 Diff *
 _attribute_change_new(va_list list)
 {
@@ -497,11 +475,9 @@ _attribute_change_new(va_list list)
       case MODIFY:
          parse = _attribute_modify_parse(list, change);
       break;
-      case ADD:
-         parse = _attribute_add_parse(list, change);
-      break;
       case DEL:
-         parse = _attribute_del_parse(list);
+      case ADD:
+         parse = _attribute_curd_parse(list, change); /**this parse add and del actions*/
       break;
       default:
           ERR("Unsupported action type.");
