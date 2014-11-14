@@ -559,8 +559,10 @@ colorclass_viewer_add(Project *project)
    elm_object_content_set(scroller, scr_box);
 
    ccl_edit->label = edje_object_add(evas_object_evas_get(ccl_edit->mwin));
-   edje_object_file_set(ccl_edit->label, EFLETE_EDJ,
-                                        "base/colorclass_editor/text_example");
+   if (!edje_object_file_set(ccl_edit->label,
+                             EFLETE_EDJ,
+                             "base/colorclass_editor/text_example"))
+     ERR("Couldn't load layout for text example field!");
    edje_object_part_text_set(ccl_edit->label, "text_example", _("EXAMPLE"));
    evas_object_size_hint_align_set(ccl_edit->label, -1, -1);
    evas_object_show(ccl_edit->label);
