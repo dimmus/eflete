@@ -289,16 +289,11 @@ _attribute_change_free(Attribute_Diff *change)
    change = NULL;
 }
 
-Diff *
-_attribute_change_new(va_list list)
+static Eina_Bool
+_attribute_modify_parse(va_list list, Attribute_Diff *change)
 {
-   Attribute_Diff *change = NULL;
-   char *string = NULL;
+   Eina_Stringshare *string = NULL;
 
-   change = (Attribute_Diff *)mem_calloc(1, sizeof(Attribute_Diff));
-   change->diff.module_type = PROPERTY;
-   change->diff.action_type = va_arg(list, Action);
-   change->param_type = (Value_Type)va_arg(list, Value_Type);
    switch(change->param_type)
      {
       case ONE:
@@ -350,8 +345,52 @@ _attribute_change_new(va_list list)
       break;
       default:
           ERR("Unsupported value type.");
+          return false;
+     }
+
+   return true;
+}
+
+static Eina_Bool
+_attribute_add_parse(va_list list __UNUSED__)
+{
+   return false;
+}
+
+static Eina_Bool
+_attribute_del_parse(va_list list __UNUSED__)
+{
+   return false;
+}
+
+Diff *
+_attribute_change_new(va_list list)
+{
+   Attribute_Diff *change = NULL;
+   Eina_Bool parse = false;
+
+   change = (Attribute_Diff *)mem_calloc(1, sizeof(Attribute_Diff));
+   change->diff.module_type = PROPERTY;
+   change->diff.action_type = va_arg(list, Action);
+   change->param_type = (Value_Type)va_arg(list, Value_Type);
+
+   switch(change->diff.action_type)
+     {
+      case MODIFY:
+         parse = _attribute_modify_parse(list, change);
+      break;
+      case ADD:
+         parse = _attribute_add_parse(list);
+      break;
+      case DEL:
+         parse = _attribute_del_parse(list);
+      break;
+      default:
+          ERR("Unsupported action type.");
           goto error;
      }
+   if (!parse) goto error;
+
    change->style = eina_stringshare_add((char *)va_arg(list, char *));
    if (!change->style) goto error;
    change->func = (void *)va_arg(list, void *);
