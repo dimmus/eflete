@@ -29,6 +29,8 @@
  * @}
  */
 
+Eina_Bool res;
+
 /**
  * @addtogroup pm_project_import_edc
  * @{

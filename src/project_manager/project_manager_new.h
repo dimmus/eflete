@@ -264,6 +264,19 @@ pm_project_import_edc(const char *name,
                       const void *data) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * Get the Project object from thread. If thread not finished, function will
+ * return NULL.
+ *
+ * @param worker The Project thread.
+ *
+ * @return Project object, or NULL if thread not finished or finished with error.
+ *
+ * @ingroup ProjectManager
+ */
+inline Project *
+pm_project_thread_project_get(Project_Thread *worker);
+
+/**
  * Open Eflete project.
  *
  * @param path The path to the Eflete project file.
@@ -361,13 +374,13 @@ pm_project_close(Project *project) EINA_ARG_NONNULL(1);
  *
  * @ingroup ProjectManager
  */
-void
+Eina_Bool
 pm_project_meta_data_get(Project *project,
-                         char *name,
-                         char *authors,
-                         char *version,
-                         char *license,
-                         char *comment);
+                         const char **name,
+                         const char **authors,
+                         const char **version,
+                         const char **license,
+                         const char **comment);
 
 /**
  * Set a new meta data to the project.
