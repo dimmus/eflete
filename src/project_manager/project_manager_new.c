@@ -105,14 +105,12 @@ _pm_project_descriptor_shutdown(void)
 static Eina_Bool
 _pm_project_descriptor_data_write(const char *path, Project *project)
 {
-   Eet_File *ef;
    Eina_Bool ok = false;
 
-   ef = eet_open(path, EET_FILE_MODE_WRITE);
-   if (ef)
-     ok = eet_data_write(ef, eed_project, PROJECT_FILE_KEY, project, 1);
+   project->pro = eet_open(path, EET_FILE_MODE_WRITE);
+   if (project->pro)
+     ok = eet_data_write(project->pro, eed_project, PROJECT_FILE_KEY, project, 1);
 
-   eet_close(ef);
    return ok;
 }
 
@@ -282,6 +280,12 @@ pm_project_import_edj(const char *name,
    return worker;
 }
 
+Project *
+pm_project_thread_project_get(Project_Thread *worker)
+{
+   return worker->project;
+}
+
 static Eina_Bool
 _exe_exit(void *data,
           int type __UNUSED__,
@@ -443,10 +447,10 @@ pm_project_open(const char *path)
      goto error;
 
    project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
-   eet_close(ef);
    _pm_project_descriptor_shutdown();
 
    if (!project) goto error;
+   project->pro = ef;
    project->widgets = wm_widget_list_new(project->dev);
    project->layouts = wm_widget_list_layouts_load(project->dev);
 
@@ -582,6 +586,7 @@ pm_project_close(Project *project)
    backup = eina_stringshare_printf("%s.backup", project->dev);
    ecore_file_remove(backup);
 
+   eet_close(project->pro);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
    eina_stringshare_del(project->release_path);

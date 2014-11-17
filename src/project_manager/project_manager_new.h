@@ -36,6 +36,7 @@
 #include "edje_compile.h"
 #include "widget_manager.h"
 #include "logger.h"
+#include <Eet.h>
 
 /**
  * @struct _Project
@@ -49,6 +50,8 @@
  */
 struct _Project
 {
+   /** Eet_File descriptior of specific project file. */
+   Eet_File *pro;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
 
