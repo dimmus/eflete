@@ -221,6 +221,36 @@ _copy_file_progress_cb(void *data,
    return true;
 }
 
+static void
+_copy_meta_data_to_pro(Project_Thread *worker)
+{
+   Eet_File *ef;
+   char *name, *authors, *version, *license, *comment;
+
+   WORKER_LOCK_TAKE;
+      ef = eet_open(worker->edj);
+   WORKER_LOCK_RELEASE;
+
+   name    = eet_read(ef, PROJECT_KEY_NAME, NULL);
+   authors = eet_read(ef, PROJECT_KEY_AUTHORS, NULL);
+   version = eet_read(ef, PROJECT_KEY_FILE_VERSION, NULL);
+   license = eet_read(ef, PROJECT_KEY_LICENSE, NULL);
+   comment = eet_read(ef, PROJECT_KEY_COMMENT, NULL);
+
+   eet_close(ef);
+
+   WORKER_LOCK_TAKE;
+      pm_project_meta_data_set(worker->pro, name, authors,
+                               license, version, comment);
+   WORKER_LOCK_RELEASE;
+
+   if (name) free(name);
+   if (authors) free(authors);
+   if (version) free(version);
+   if (license) free(license);
+   if (comment) free(comment);
+}
+
 static Eina_Bool
 _project_dev_file_copy(Project_Thread *worker)
 {
@@ -261,6 +291,7 @@ _project_import_edj(void *data,
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
+   _copy_meta_data_to_pro(worker);
 
    END_SEND(PM_PROJECT_SUCCESS);
 
@@ -388,6 +419,7 @@ _project_import_edc(void *data,
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
+   _copy_meta_data_to_pro(worker);
 
    END_SEND(PM_PROJECT_SUCCESS)
    return NULL;
@@ -632,7 +664,6 @@ pm_project_meta_data_set(Project *project,
    Eina_Bool res;
 
    res = true;
-   fprintf(stdout, "%s\n", project->dev);
 
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
