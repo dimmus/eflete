@@ -520,14 +520,26 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   int pos; \
    const char *value = elm_entry_entry_get(obj); \
+   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                               pd->part->name, pd->part->curr_state, \
+                               pd->part->curr_state_value); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        value)) \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, value)) \
      { \
         NOTIFY_INFO(5, "Wrong input value for "#VALUE" field."); \
         return; \
      } \
+   pos = elm_entry_cursor_pos_get(obj); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, \
+                    pd->part->curr_state_value); \
+   elm_object_focus_set(obj, true); \
+   elm_entry_cursor_pos_set(obj, pos); \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
