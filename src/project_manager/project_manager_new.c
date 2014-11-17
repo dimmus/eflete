@@ -228,7 +228,7 @@ _copy_meta_data_to_pro(Project_Thread *worker)
    char *name, *authors, *version, *license, *comment;
 
    WORKER_LOCK_TAKE;
-      ef = eet_open(worker->edj);
+      ef = eet_open(worker->edj, EET_FILE_MODE_READ_WRITE);
    WORKER_LOCK_RELEASE;
 
    name    = eet_read(ef, PROJECT_KEY_NAME, NULL);
@@ -240,7 +240,7 @@ _copy_meta_data_to_pro(Project_Thread *worker)
    eet_close(ef);
 
    WORKER_LOCK_TAKE;
-      pm_project_meta_data_set(worker->pro, name, authors,
+      pm_project_meta_data_set(worker->project, name, authors,
                                license, version, comment);
    WORKER_LOCK_RELEASE;
 
