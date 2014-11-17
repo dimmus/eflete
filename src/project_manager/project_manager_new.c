@@ -29,6 +29,8 @@
 #define PROJECT_KEY_LICENSE      "edje/license"
 #define PROJECT_KEY_COMMENT      "edje/comment"
 
+static Eet_Compression compess_level = EET_COMPRESSION_HI;
+
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
 { \
@@ -115,7 +117,8 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
 
    project->pro = eet_open(path, EET_FILE_MODE_WRITE);
    if (project->pro)
-     ok = eet_data_write(project->pro, eed_project, PROJECT_FILE_KEY, project, 1);
+     ok = eet_data_write(project->pro, eed_project, PROJECT_FILE_KEY,
+                         project, compess_level);
 
    return ok;
 }
@@ -634,7 +637,8 @@ pm_project_meta_data_set(Project *project,
    if (name)
      {
         size = eina_stringshare_strlen(name) * sizeof(char);
-        bytes = eet_write(project->pro, PROJECT_KEY_NAME, name, size, 1);
+        bytes = eet_write(project->pro, PROJECT_KEY_NAME, name,
+                          size, compess_level);
 
         if (bytes <= 0 ) res = false;
      }
