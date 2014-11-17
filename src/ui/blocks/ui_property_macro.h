@@ -670,12 +670,19 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    double value = elm_spinner_value_get(obj); \
+   double old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name,\
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value); \
    value /= 100; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
                                         pd->part->curr_state, \
                                         pd->part->curr_state_value, \
                                         value)) \
      return; \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, DOUBLE, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
