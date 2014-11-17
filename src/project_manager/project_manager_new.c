@@ -623,10 +623,10 @@ pm_project_meta_data_get(Project *project __UNUSED__,
 Eina_Bool
 pm_project_meta_data_set(Project *project,
                          const char *name,
-                         const char *authors __UNUSED__,
-                         const char *version __UNUSED__,
-                         const char *license __UNUSED__,
-                         const char *comment __UNUSED__)
+                         const char *authors,
+                         const char *version,
+                         const char *license,
+                         const char *comment)
 {
    int bytes, size;
    Eina_Bool res;
@@ -634,14 +634,20 @@ pm_project_meta_data_set(Project *project,
    res = true;
    fprintf(stdout, "%s\n", project->dev);
 
-   if (name)
-     {
-        size = eina_stringshare_strlen(name) * sizeof(char);
-        bytes = eet_write(project->pro, PROJECT_KEY_NAME, name,
-                          size, compess_level);
-
-        if (bytes <= 0 ) res = false;
+#define DATA_WRITE(DATA, KEY) \
+   if (DATA) \
+     { \
+        size = strlen(DATA) * sizeof(char); \
+        bytes = eet_write(project->pro, KEY, DATA, size, compess_level); \
+        if (bytes <= 0 ) res = false; \
      }
 
+   DATA_WRITE(name,    PROJECT_KEY_NAME);
+   DATA_WRITE(authors, PROJECT_KEY_AUTHORS);
+   DATA_WRITE(version, PROJECT_KEY_FILE_VERSION);
+   DATA_WRITE(license, PROJECT_KEY_LICENSE);
+   DATA_WRITE(comment, PROJECT_KEY_COMMENT);
+
+#undef DATA_WRITE
    return res;
 }

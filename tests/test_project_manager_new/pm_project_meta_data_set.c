@@ -46,7 +46,8 @@
  * @step 1 Call pm_project_meta_data_set;
  * @step 2 Check returned value.
  * </td>
- * <td>(Project *) pro, (cahr *)"UTC", NULL, NULL, NULL, NULL</td>
+ * <td>(Project *) pro, (char *)"UTC", (char *)"authors", (char *)"version",
+ * (char *)"license", (char *)"comment"</td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -79,7 +80,7 @@ EFLETE_TEST (pm_project_meta_data_set_test_p)
    if (!pro)
      ck_abort_msg("Project thread not returned the Project. Maybe thread not finished yet.");
 
-   ret = pm_project_meta_data_set(pro, "UTC", NULL, NULL, NULL, NULL);
+   ret = pm_project_meta_data_set(pro, "UTC", "authors", "version", "license", "comment");
    ck_assert_msg(ret, "Meta data not setted to project.");
 
    app_shutdown();
