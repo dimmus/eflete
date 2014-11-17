@@ -1021,8 +1021,8 @@ _on_groupedit_geometry_changed(void *data,
    container_padding_size_set(sd->container.obj,
                               PADDING_SIZE + abs(geom->x - x),
                               PADDING_SIZE + abs(geom->y - y),
-                              PADDING_SIZE + abs((geom->x + geom->w) - (x + w)) * sd->zoom.factor,
-                              PADDING_SIZE + abs((geom->y + geom->h) - (y + h)) * sd->zoom.factor);
+                              PADDING_SIZE + abs((geom->x + geom->w) - (x + w)),
+                              PADDING_SIZE + abs((geom->y + geom->h) - (y + h)));
 }
 
 static void
