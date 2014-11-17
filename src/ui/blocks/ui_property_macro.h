@@ -797,14 +797,26 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    unsigned int tok_elm; \
    char **c = NULL; \
+   int pos; \
+   int lb = 0, rb = 0, tb = 0, bb = 0;\
+   int old_lb, old_rb, old_tb, old_bb;\
    Prop_Data *pd = (Prop_Data *)data; \
    const char *value = elm_entry_entry_get(obj); \
+   edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                   pd->part->curr_state, \
+                                   pd->part->curr_state_value, \
+                                   &old_lb, &old_rb, &old_tb, &old_bb); \
    if (!value || !strcmp(value, "")) \
      { \
         elm_object_part_text_set(obj, "elm.guide", "left right top bottom"); \
         edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                            pd->part->curr_state, pd->part->curr_state_value, \
                            0, 0, 0, 0); \
+        history_diff_add(pd->style->obj, PROPERTY, MODIFY, FOUR, old_lb, old_rb, \
+                         old_tb, old_bb, 0, 0, 0, 0, pd->style->full_group_name, \
+                         (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                         pd->part->name, pd->part->curr_state, \
+                         pd->part->curr_state_value); \
      } \
    else \
      { \
@@ -813,15 +825,23 @@ _on_##SUB##_##VALUE##_change(void *data, \
           { \
              free(c[0]); \
              free(c); \
-             NOTIFY_ERROR ("Please input correct border data: l r t b, " \
-                           "where l - left, r - right, t - top, b - bottom borders") \
              return; \
           } \
+        lb = atoi(c[0]); rb = atoi(c[1]); tb = atoi(c[2]); bb = atoi(c[3]);\
         edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
-       free(c[0]); \
-       free(c); \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        lb, rb, tb, bb);\
+        free(c[0]); \
+        free(c); \
+        pos = elm_entry_cursor_pos_get(obj); \
+        history_diff_add(pd->style->obj, PROPERTY, MODIFY, FOUR, old_lb, old_rb, \
+                         old_tb, old_bb, lb, rb, tb, bb, pd->style->full_group_name, \
+                         (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                         pd->part->name, pd->part->curr_state, \
+                         pd->part->curr_state_value); \
+        elm_object_focus_set(obj, true); \
+        elm_entry_cursor_pos_set(obj, pos); \
      } \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
