@@ -613,14 +613,25 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (item->index != 0) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        item->title); \
+   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value); \
+   const char *value = NULL; \
+   if (item->index != 0) \
+     { \
+       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                       pd->part->curr_state, pd->part->curr_state_value, \
+                                       item->title); \
+       value = item->title; \
+    } \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         NULL); \
    if (TYPE != TEXT_STYLE) \
      prop_item_state_text_update(pd->prop_state_text.text, pd); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
@@ -952,6 +963,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
              if (!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
                ewe_combobox_item_add(combobox, part->name); \
+             evas_object_smart_callback_del(combobox, "selected", _on_##SUB##_##VALUE##_change); \
              evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
           } \
      } \
@@ -960,6 +972,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         Eina_List *l = edje_edit_##LIST##_list_get(pd->style->obj); \
         EINA_LIST_FOREACH(l, list, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
+        evas_object_smart_callback_del(combobox, "selected", func_cb); \
         evas_object_smart_callback_add(combobox, "selected", func_cb, pd); \
      } \
    elm_object_part_content_set(item, "elm.swallow.content", combobox); \
