@@ -41,7 +41,7 @@
  * @step 1 initialized elm;
  * @step 2 initialized eflete, need for logger.
  * @step 3 import pm_open_project_edj, so create a new project.
- * @step 4 open the created project
+ * @step 4 get the created project from thread.
  *
  * @procedure
  * @step 1 Call pm_project_close;
@@ -76,7 +76,7 @@ EFLETE_TEST (pm_project_close_test_p)
      ck_abort_msg("Project thread is not runned!");
    ecore_main_loop_begin();
 
-   pro = pm_project_open("./UTC/UTC.pro");
+   pro = pm_project_thread_project_get(thread);
    if (!pro)
      ck_abort_msg("Project not created!");
 
