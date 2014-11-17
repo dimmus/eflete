@@ -22,7 +22,12 @@
 #include <sys/wait.h>
 
 #define PROJECT_FILE_KEY      "project"
-#define THREAD_TESTCANCEL pthread_testcancel()
+
+#define PROJECT_KEY_NAME         "edje/name"
+#define PROJECT_KEY_AUTHORS      "edje/authors"
+#define PROJECT_KEY_FILE_VERSION "edje/file_version"
+#define PROJECT_KEY_LICENSE      "edje/license"
+#define PROJECT_KEY_COMMENT      "edje/comment"
 
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
@@ -53,6 +58,7 @@
 
 #define WORKER_LOCK_TAKE            eina_lock_take(&worker->mutex)
 #define WORKER_LOCK_RELEASE         eina_lock_release(&worker->mutex)
+#define THREAD_TESTCANCEL pthread_testcancel()
 
 #define PROGRESS_SEND(FMT, ...) \
 { \
@@ -602,22 +608,36 @@ pm_project_close(Project *project)
 
 void
 pm_project_meta_data_get(Project *project __UNUSED__,
-                         char *name __UNUSED__,
-                         char *authors __UNUSED__,
-                         char *version __UNUSED__,
-                         char *license __UNUSED__,
-                         char *comment __UNUSED__)
+                         char **name __UNUSED__,
+                         char **authors __UNUSED__,
+                         char **version __UNUSED__,
+                         char **license __UNUSED__,
+                         char **comment __UNUSED__)
 {
 
 }
 
 Eina_Bool
-pm_project_meta_data_set(Project *project __UNUSED__,
-                         const char *name __UNUSED__,
+pm_project_meta_data_set(Project *project,
+                         const char *name,
                          const char *authors __UNUSED__,
                          const char *version __UNUSED__,
                          const char *license __UNUSED__,
                          const char *comment __UNUSED__)
 {
-   return false;
+   int bytes, size;
+   Eina_Bool res;
+
+   res = true;
+   fprintf(stdout, "%s\n", project->dev);
+
+   if (name)
+     {
+        size = eina_stringshare_strlen(name) * sizeof(char);
+        bytes = eet_write(project->pro, PROJECT_KEY_NAME, name, size, 1);
+
+        if (bytes <= 0 ) res = false;
+     }
+
+   return res;
 }

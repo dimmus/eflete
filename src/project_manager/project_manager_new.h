@@ -374,13 +374,13 @@ pm_project_close(Project *project) EINA_ARG_NONNULL(1);
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
+void
 pm_project_meta_data_get(Project *project,
-                         const char **name,
-                         const char **authors,
-                         const char **version,
-                         const char **license,
-                         const char **comment);
+                         char **name,
+                         char **authors,
+                         char **version,
+                         char **license,
+                         char **comment);
 
 /**
  * Set a new meta data to the project.
