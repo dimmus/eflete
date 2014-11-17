@@ -695,8 +695,13 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              void *ei __UNUSED__) \
 { \
    int r, g, b, a; \
+   int old_r, old_g, old_b, old_a; \
    Prop_Data *pd = (Prop_Data *)data; \
    Evas_Object *color, *rect; \
+   edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        &old_r, &old_g, &old_b, &old_a); \
    color = evas_object_data_get(obj, "color"); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
@@ -710,6 +715,12 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                    pd->part->curr_state, \
                                    pd->part->curr_state_value, NULL); \
    prop_item_state_color_class_update(pd->prop_state.color_class, pd); \
+   if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
+     history_diff_add(pd->style->obj, PROPERTY, MODIFY, FOUR, old_r, old_g, old_b, \
+                      old_a, r, g, b, a, pd->style->full_group_name, \
+                      (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                      pd->part->name, pd->part->curr_state, \
+                      pd->part->curr_state_value); \
    pm_project_changed(app_data_get()->project); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
