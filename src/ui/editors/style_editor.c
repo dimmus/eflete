@@ -1313,7 +1313,9 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
    if (value)
      {
         const char* font = _tag_value_get(value, "font");
+        if (!font) font = "";
         const char* spin_val = _tag_value_get(value, "font_size");
+        if (!spin_val) spin_val = "";
         const char* weight = _tag_value_get(value, "font_weight");
         if (!weight) weight = "Normal";
         const char* width = _tag_value_get(value, "font_width");
