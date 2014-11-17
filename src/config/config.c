@@ -255,6 +255,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("t", 28, ALT, "part.add.text", false);
    ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle", false);
    ADD_SHORTCUT("i", 31, ALT, "part.add.image", false);
+   ADD_SHORTCUT("p", 33, ALT, "part.add.proxy", false);
    ADD_SHORTCUT("s", 39, ALT, "part.add.spacer", false);
 
    /* Ctrl-Shift- */

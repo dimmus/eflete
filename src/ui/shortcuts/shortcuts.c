@@ -82,6 +82,7 @@ PART_ADD(EDJE_PART_TYPE_SPACER, spacer)
 PART_ADD(EDJE_PART_TYPE_TEXT, text)
 PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_IMAGE, image)
+PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 
 /* this one will delete part or style or layout or state */
 Eina_Bool
@@ -448,6 +449,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.text", _text_part_add_cb},
      {"part.add.rectangle", _rectangle_part_add_cb},
      {"part.add.image", _image_part_add_cb},
+     {"part.add.proxy", _proxy_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
      {"item.delete", _item_delete_cb},
      {"separate_mode", _separate_mode_change_cb},
