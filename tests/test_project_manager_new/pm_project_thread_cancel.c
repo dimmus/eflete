@@ -73,7 +73,7 @@ EFLETE_TEST (pm_project_thread_cancel_test_p)
    app_init();
 
    res = EINA_FALSE;
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
    pm_project_thread_cancel(thread);
    ecore_main_loop_begin();

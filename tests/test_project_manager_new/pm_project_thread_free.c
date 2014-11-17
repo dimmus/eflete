@@ -69,7 +69,7 @@ EFLETE_TEST (pm_project_thread_free_test_p)
    elm_init(0,0);
    app_init();
 
-   worker = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
+   worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
    ecore_main_loop_begin();
    pm_project_thread_cancel(worker);
@@ -114,7 +114,7 @@ EFLETE_TEST (pm_project_thread_free_test_n)
    elm_init(0,0);
    app_init();
 
-   worker = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
+   worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
 
    res = pm_project_thread_free(worker);

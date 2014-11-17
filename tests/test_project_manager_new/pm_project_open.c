@@ -40,7 +40,7 @@
  * @precondition
  * @step 1 initialized elm;
  * @step 2 initialized eflete, need for logger.
- * @step 3 import pm_open_project_edj, so create a new project.
+ * @step 3 import test_project_manager, so create a new project.
  *
  * @procedure
  * @step 1 Call pm_project_open;
@@ -68,7 +68,7 @@ EFLETE_TEST (pm_project_open_test_p)
    elm_init(0,0);
    app_init();
 
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread is not runned!");
