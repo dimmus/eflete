@@ -204,9 +204,6 @@ config_shutdown(App_Data *ap)
    if (config) _config_free();
    shortcuts_shutdown(ap);
 
-   if (!ap)
-     shortcuts_main_del(ap);
-
    return true;
 }
 
