@@ -37,7 +37,7 @@ group { name: "eflete/sound_editor/default";
             image.normal: "separator-horizontal.png";
          }
       }
-      part { name: "swallow.btn.Close";
+      part { name: "swallow.btn.Cancel";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
@@ -59,7 +59,7 @@ group { name: "eflete/sound_editor/default";
             FIXED_SIZE(17, 5);
             rel2 {
                relative: 0.0 1.0;
-               to: "swallow.btn.Close";
+               to: "swallow.btn.Cancel";
             }
          }
       }
