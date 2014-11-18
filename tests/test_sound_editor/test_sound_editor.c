@@ -32,6 +32,7 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, sound_editor_file_choose_test_n2);
    tcase_add_test(tcase, sound_editor_file_choose_test_n3);
    tcase_add_test(tcase, sound_editor_file_choose_test_n4);
+   tcase_add_test(tcase, sound_editor_added_sounds_free_test_n);
    suite_add_tcase(suite, tcase);
    return suite;
 }
