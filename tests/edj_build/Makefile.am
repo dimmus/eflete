@@ -97,6 +97,7 @@ check: Makefile
  	$(builddir)/history_undo.edj \
  	$(builddir)/history_redo.edj \
  	$(builddir)/history_module_depth_set.edj \
+ 	$(builddir)/history_module_depth_get.edj \
    ;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj
