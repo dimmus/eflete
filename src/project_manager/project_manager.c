@@ -142,20 +142,6 @@ _pm_project_add(const char *path)
    return pro;
 }
 
-Eina_Bool
-pm_export_to_edc(Project *project,
-                 Eina_Stringshare *edc_dir,
-                 Edje_Compile_Log_Cb log_cb)
-{
-   if (!project)
-     {
-        WARN("Project is missing. Please open one.");
-        return false;
-     }
-
-   return !decompile(project->dev, edc_dir, log_cb);
-}
-
 Project *
 pm_open_project_edj(const char *path)
 {

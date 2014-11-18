@@ -29,7 +29,6 @@
  * custom layouts.
  */
 
-#include "edje_compile.h"
 #include "widget_manager.h"
 #include "logger.h"
 #include <Eio.h>
@@ -91,28 +90,6 @@ pm_open_project_edj(const char *path);
  */
 //Eina_Bool
 //pm_project_close(Project *project);
-
-/**
- * Save project into edc.
- *
- * This function actually decompile the resulted and changed by user EDC file.
- *
- * @param project A Project structure;
- * @param edc_dir Output directory;
- * @param log_cb This callback will be called after every line returned from
- *        edje_decc.
- *
- * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
- *
- * @see Project
- * @see Edje_Compile_Log_Cb
- *
- * @ingroup ProjectManager
- */
-Eina_Bool
-pm_export_to_edc(Project *project,
-                 Eina_Stringshare *edc_dir,
-                 Edje_Compile_Log_Cb log_cb);
 
 /**
  * Save opened EDJ-project.

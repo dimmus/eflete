@@ -85,6 +85,7 @@ _on_open_edj_cb(void *data,
      }
 }
 
+/*
 static void
 _log_cb(time_t time,
        Eina_Stringshare* msg,
@@ -94,13 +95,14 @@ _log_cb(time_t time,
    static char buf[BUFF_MAX];
    struct tm *timeinfo;
    timeinfo = localtime(&time);
-   if (type == 14) /* stderr (almost all output from edje_cc) */
+   if (type == 14)
       snprintf(buf, BUFF_MAX, "<br> %02d:%02d:%02d:    %s",
                timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec, msg);
-   else /* stdout (SUMMARY) */
+   else
       snprintf(buf, BUFF_MAX, "<br>     <b>%s</b>", msg);
    elm_entry_entry_insert(fs_ent->log, buf);
 }
+*/
 
 static void
 _on_compile_cb(void *data,
@@ -111,9 +113,11 @@ _on_compile_cb(void *data,
 
    const char *path_edc = elm_object_text_get(fs_ent->edc);
    const char *path_edj = elm_object_text_get(fs_ent->edj);
+   /*
    const char *path_id = elm_object_text_get(fs_ent->id);
    const char *path_sd = elm_object_text_get(fs_ent->sd);
    const char *path_fd = elm_object_text_get(fs_ent->fd);
+   */
 
    if (!eina_str_has_suffix(path_edc, ".edc"))
      {
@@ -130,7 +134,7 @@ _on_compile_cb(void *data,
 
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, _("<b>Compilation started...</b>"));
-   int exit_code = compile(path_edc, path_edj, path_id, path_fd, path_sd, _log_cb);
+   int exit_code = -1; //compile(path_edc, path_edj, path_id, path_fd, path_sd, _log_cb);
    elm_entry_cursor_end_set(fs_ent->log);
    elm_entry_entry_insert(fs_ent->log, "<br><br>");
    elm_object_disabled_set(obj, false);

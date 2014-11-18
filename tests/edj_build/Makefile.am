@@ -41,8 +41,6 @@ check: Makefile
 	$(builddir)/program_editor_window_add_test.edj \
 	$(builddir)/style_editor_window_add.edj \
 	$(builddir)/test_project_manager.edj \
-	$(builddir)/compile.edj \
-	$(builddir)/decompile.edj \
 	$(builddir)/image_editor_window_add.edj \
 	$(builddir)/image_editor_callback_add.edj \
 	$(builddir)/image_editor_file_choose.edj \

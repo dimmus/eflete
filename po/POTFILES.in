@@ -1,7 +1,6 @@
 # List of source files which contain translatable strings.
 src/eflete.c
 src/alloc/alloc.c
-src/project_manager/edje_compile.c
 src/project_manager/widget_manager.c
 src/project_manager/project_manager.c
 src/logger/logger.c

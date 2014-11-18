@@ -8,7 +8,6 @@ noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
 alloc/alloc.c \
-project_manager/edje_compile.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
 project_manager/project_manager_new.c \

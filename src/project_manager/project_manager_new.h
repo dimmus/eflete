@@ -33,7 +33,6 @@
  * information about project in the current folder.
  */
 
-#include "edje_compile.h"
 #include "widget_manager.h"
 #include "logger.h"
 #include <Eet.h>

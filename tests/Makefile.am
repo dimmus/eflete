@@ -10,7 +10,6 @@ save_file_dialog_test \
 open_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
-edje_compile_test \
 image_editor_test \
 logger_test \
 container_test \
@@ -126,13 +125,6 @@ test_colorclass_editor/test_colorclass_editor.c \
 test_colorclass_editor/colorclass_viewer_add.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
-
-edje_compile_test_SOURCES = \
-test_edje_compile/test_edje_compile.c \
-test_edje_compile/compile.c \
-test_edje_compile/decompile.c
-edje_compile_test_CFLAGS = ${FLAGS}
-edje_compile_test_LDADD = ${LD}
 
 widget_manager_test_SOURCES = \
 test_widget_manager/test_widget_manager.c \
