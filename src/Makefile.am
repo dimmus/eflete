@@ -10,7 +10,6 @@ eflete.c \
 alloc/alloc.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
-project_manager/project_manager_new.c \
 logger/logger.c \
 config/config.c \
 external/syntax_color.c \

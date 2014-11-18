@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_project_manager_new.h"
+#include "test_project_manager.h"
 
 void teardown(void)
 {
@@ -25,7 +25,7 @@ void teardown(void)
 }
 
 Suite* test_suite (void) {
-   Suite *suite = suite_create("project_manager_new_test");
+   Suite *suite = suite_create("project_manager_test");
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_checked_fixture(tcase, NULL, teardown);
@@ -61,7 +61,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_project_manager_new.xml");
+   srunner_set_xml (runner, "test_project_manager.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);

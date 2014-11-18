@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_project_manager_new.h"
+#include "test_project_manager.h"
 
 /**
  * @addtogroup project_manager_test

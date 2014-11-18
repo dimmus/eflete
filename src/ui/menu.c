@@ -56,7 +56,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
    Menu_Event *menu_event = (Menu_Event *)event;
    ui_menu_locked_set(menu_event->ap->menu_hash, true);
 
-   Evas_Object *nf;
+   //Evas_Object *nf;
 
    switch (menu_event->type)
      {
@@ -78,17 +78,21 @@ _menu_event_handler_cb(void *data __UNUSED__,
       case SAVE_EDJ:
          if (save_edj_file(menu_event->ap))
            {
+              /*
               nf = ui_block_widget_list_get(menu_event->ap);
               ui_widget_list_title_set(nf, menu_event->ap->project->name);
               STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
+              */
            }
          break;
       case SAVE_AS_EDJ:
          if (save_as_edj_file(menu_event->ap))
            {
+              /*
               nf = ui_block_widget_list_get(menu_event->ap);
               ui_widget_list_title_set(nf, menu_event->ap->project->name);
               STATUSBAR_PROJECT_PATH(menu_event->ap, menu_event->ap->project->edj);
+              */
            }
          break;
       case NEW_THEME:

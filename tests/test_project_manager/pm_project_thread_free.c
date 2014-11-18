@@ -17,22 +17,20 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_project_manager_new.h"
+#include "test_project_manager.h"
 
 /**
  * @addtogroup project_manager_test
  * @{
- * @addtogroup pm_project_thread_cancel
+ * @addtogroup pm_project_thread_free
  * @{
  * project_manager
  * <TABLE>
  * @}
  */
 
-static Eina_Bool res;
-
 /**
- * @addtogroup pm_project_thread_cancel
+ * @addtogroup pm_project_thread_free
  * @{
  * <tr>
  * <td>pm_project_importedj</td>
@@ -43,9 +41,10 @@ static Eina_Bool res;
  * @step 1 initialized elm;
  * @step 2 initialized eflete, need for logger.
  * @step 3 start a some Project thread
+ * @step 4 cancel the thread.
  *
  * @procedure
- * @step 1 Call pm_project_thread_cancel;
+ * @step 1 Call pm_project_thread_free;
  * @step 2 Check returned value.
  * </td>
  * <td>(Project_Thread *)worker</td>
@@ -57,27 +56,25 @@ static Eina_Bool res;
  */
 static void
 _test_end_cb(void *data __UNUSED__,
-             PM_Project_Result result)
+             PM_Project_Result result __UNUSED__)
 {
-   if (result == PM_PROJECT_CANCEL)
-     res = EINA_TRUE;
-
    ecore_main_loop_quit();
 }
 
-EFLETE_TEST (pm_project_thread_cancel_test_p)
+EFLETE_TEST (pm_project_thread_free_test_p)
 {
-   Project_Thread *thread;
+   Project_Thread *worker;
+   Eina_Bool res;
 
    elm_init(0,0);
    app_init();
 
-   res = EINA_FALSE;
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+   worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
-   pm_project_thread_cancel(thread);
    ecore_main_loop_begin();
+   pm_project_thread_cancel(worker);
 
+   res = pm_project_thread_free(worker);
    ck_assert_msg(res, "Project thread did't canceled!");
 
    app_shutdown();
@@ -86,7 +83,50 @@ EFLETE_TEST (pm_project_thread_cancel_test_p)
 END_TEST
 
 /**
- * @addtogroup pm_project_thread_cancel
+ * @addtogroup pm_project_thread_free
+ * @{
+ * <tr>
+ * <td>pm_project_importedj</td>
+ * <td>pm_project_importedj_test_n</td>
+ * <td>
+ * This test check that the thread is ran.
+ * @precondition
+ * @step 1 initialized elm;
+ * @step 2 initialized eflete, need for logger.
+ * @step 3 start a some Project thread
+ *
+ * @procedure
+ * @step 1 Call pm_project_thread_free;
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Project_Thread *)worker</td>
+ * <td>The and func must be called with param PM_PROJECT_CANCEL</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (pm_project_thread_free_test_n)
+{
+   Project_Thread *worker;
+   Eina_Bool res;
+
+   elm_init(0,0);
+   app_init();
+
+   worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+                                  NULL, _test_end_cb, NULL);
+
+   res = pm_project_thread_free(worker);
+   ck_assert_msg(!res, "Project thread freed, while this thread is running! ");
+
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup pm_project_thread_free
  * @{
  * </TABLE>
  * @}

@@ -675,7 +675,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
    selected = eina_file_path_sanitize(selected_file);
    INFO("Selected file: %s", selected);
 
-   ap->project = pm_open_project_edj(selected);
+   //ap->project = pm_open_project_edj(selected);
 
    if (!ap->project)
      {
@@ -684,23 +684,23 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
      }
 
    wd_list = ui_widget_list_add(ap->block.left_top);
-   ui_widget_list_title_set(wd_list, ap->project->name);
+   //ui_widget_list_title_set(wd_list, ap->project->name);
    ui_widget_list_data_set(wd_list, ap->project);
    ui_block_widget_list_set(ap, wd_list);
    add_callbacks_wd(wd_list, ap);
    evas_object_show(wd_list);
    ui_panes_show(ap);
 
-   ap->project->is_new = is_new;
+   //ap->project->is_new = is_new;
    if (is_new)
      {
         NOTIFY_INFO(3, _("New theme created"))
         STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
-        ap->project->edj = NULL;
+        //ap->project->edj = NULL;
      }
    else
      {
-        STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
+        //STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
         NOTIFY_INFO(3, _("Selected file: %s"), selected)
      }
 
@@ -738,6 +738,7 @@ new_theme_create(App_Data *ap)
    return _ui_edj_load_internal(ap, EFLETE_SWAP_PATH"Untitled.edj", true);
 }
 
+/*
 static void
 _discard_cb(void *data,
             Evas_Object *obj __UNUSED__,
@@ -770,28 +771,31 @@ _save_cb(void *data,
         ecore_main_loop_quit();
      }
 }
+*/
 
 Eina_Bool
-ui_close_project_request(App_Data *ap, const char *msg)
+ui_close_project_request(App_Data *ap __UNUSED__,
+                         const char *msg __UNUSED__)
 {
+   /*
    if (!ap) return false;
 
    if (!msg)
       msg = _("If you dont save the open project<br/>"
             "all your unsaved changes will be lost!");
 
-   if ((!ap->project) || (ap->project->is_saved)) return true;
-   if (ap->project->close_request) return false;
-   ap->project->close_request = true;
+   if ((!ap->project) || ap->project->is_saved)) return true;
+   //if (ap->project->close_request) return false;
+   //ap->project->close_request = true;
 
    Eina_Bool result = false;
    Evas_Object *btn, *label;
-   Eina_Stringshare *title;
+   //Eina_Stringshare *title;
    ui_menu_locked_set(ap->menu_hash, true);
-   title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
+   //title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
    ap->popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(ap->popup, "eflete");
-   elm_object_part_text_set(ap->popup, "title,text", title);
+   //elm_object_part_text_set(ap->popup, "title,text", title);
    LABEL_ADD(ap->popup, label, msg);
    elm_object_content_set(ap->popup, label);
    BUTTON_ADD(ap->popup, btn, _("Save"));
@@ -809,10 +813,12 @@ ui_close_project_request(App_Data *ap, const char *msg)
    ecore_main_loop_begin();
 
    ui_menu_locked_set(ap->menu_hash, false);
-   ap->project->close_request = false;
+   //ap->project->close_request = false;
    evas_object_del(ap->popup);
 
    return result;
+   */
+   return false;
 }
 
 static Eina_Bool

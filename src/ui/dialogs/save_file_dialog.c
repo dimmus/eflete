@@ -30,8 +30,10 @@ struct _cb_data
 typedef struct _cb_data cb_data;
 
 static Eina_Bool
-_save_internal(Project *project, const char *path)
+_save_internal(Project *project __UNUSED__,
+               const char *path __UNUSED__)
 {
+   /*
    if (pm_save_project_to_swap(project))
      {
         if (path)
@@ -53,6 +55,7 @@ _save_internal(Project *project, const char *path)
              else NOTIFY_ERROR(_("Theme can not be saved"))
           }
      }
+   */
    return false;
 }
 
@@ -209,11 +212,14 @@ save_as_edc_file(App_Data *ap)
 }
 
 Eina_Bool
-save_edj_file(App_Data *ap)
+save_edj_file(App_Data *ap __UNUSED__)
 {
+   /*
    if (!ap) return false;
    if (ap->project->is_new)
      return _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
    else
      return _save_internal(ap->project, NULL);
+   */
+   return false;
 }
