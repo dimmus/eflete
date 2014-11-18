@@ -840,6 +840,7 @@ _image_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
         if (!source_image)
           source_image = source->draw;
         evas_object_image_source_set(image, source_image);
+        evas_object_image_source_clip_set(image, false);
      }
    else
      {
