@@ -641,6 +641,11 @@ pm_project_close(Project *project)
    return true;
 }
 
+pm_project_changed(Project *project __UNUSED__)
+{
+   //project->is_saved = false;
+}
+
 void
 pm_project_meta_data_get(Project *project,
                          Eina_Stringshare **name,
