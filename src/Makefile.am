@@ -97,6 +97,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/preference \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@ENVENTOR_CFLAGS@ \
 @EWE_CFLAGS@ \
 @EFLETE_DEFINE@
 
@@ -107,5 +108,6 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
+@ENVENTOR_LIBS@ \
 @EWE_LIBS@ \
 @LTLIBINTL@

@@ -23,7 +23,11 @@
 #include "image_editor.h"
 
 #ifdef HAVE_ENVENTOR
+#define ENVENTOR_BETA_API_SUPPORT
+#include "Enventor.h"
 #include "main_window.h"
+#else
+#include "syntax_color.h"
 #endif
 
 #define PROP_DATA "prop_data"
@@ -43,7 +47,9 @@ struct _Prop_Data
    Part *part;
    Evas_Object *visual;
    Evas_Object *code;
+#ifndef HAVE_ENVENTOR
    color_data *color_data;
+#endif
    struct {
       Evas_Object *frame;
       Evas_Object *info;
@@ -270,7 +276,9 @@ _del_prop_data(void *data,
                void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+#ifndef HAVE_ENVENTOR
    color_term(pd->color_data);
+#endif
    free(pd);
 }
 
@@ -298,16 +306,62 @@ prop_item_label_update(Evas_Object *item,
 }
 
 #ifdef HAVE_ENVENTOR
+static Eina_Stringshare *
+_on_code_mode_activated_file_create(Prop_Data *pd)
+{
+   const char *code = edje_edit_source_generate(pd->style->obj);
+   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"tmp.edc");
+
+   FILE *fp = fopen(path, "w");
+   if (!fp)
+     {
+        EINA_LOG_ERR("Failed to open file \"%s\"", path);
+        eina_stringshare_del(path);
+        return NULL;
+     }
+
+   fputs(code, fp);
+   fclose(fp);
+   return path;
+}
+
 static void
-_on_tab_activated(void *data __UNUSED__,
+_on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
 {
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
+   Prop_Data *pd = (Prop_Data *)data;
    Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
-   if (item_name)
-     code_edit_mode_switch(app_data_get(), !strcmp(item_name, "Code"));
+   Eina_Stringshare *path;
+
+   if (!item_name) return;
+
+   if (!strcmp(item_name, "Code"))
+     {
+        code_edit_mode_switch(app_data_get(), true);
+        path = _on_code_mode_activated_file_create(pd);
+        enventor_object_file_set(pd->code, path);
+        eina_stringshare_del(path);
+     }
+   else
+     code_edit_mode_switch(app_data_get(), false);
 }
+
+#else
+
+static void
+_code_of_group_setup(Prop_Data *pd)
+{
+   char *markup_code;
+   const char *colorized_code;
+   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
+   colorized_code = color_apply(pd->color_data, markup_code,
+                                strlen(markup_code), NULL, NULL);
+   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
+   free(markup_code);
+}
+
 #endif
 
 Evas_Object *
@@ -334,6 +388,11 @@ ui_property_add(Evas_Object *parent)
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
 
+#ifdef HAVE_ENVENTOR
+   pd->code = enventor_object_add(tabs);
+   evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
+                                  _on_tab_activated, pd);
+#else
    pd->code = elm_entry_add(tabs);
    elm_object_style_set(pd->code, DEFAULT_STYLE);
    elm_entry_single_line_set(pd->code, false);
@@ -341,18 +400,15 @@ ui_property_add(Evas_Object *parent)
    evas_object_size_hint_weight_set(pd->code, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(pd->code, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_scrollable_set(pd->code, true);
-   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
-   ewe_tabs_item_content_set(tabs, it, pd->code);
    elm_entry_editable_set(pd->code, false);
    pd->color_data = color_init(eina_strbuf_new());
+#endif
+
+   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
+   ewe_tabs_item_content_set(tabs, it, pd->code);
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
-
-#ifdef HAVE_ENVENTOR
-   evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
-                                  _on_tab_activated, NULL);
-#endif
 
    return tabs;
 }
@@ -462,8 +518,6 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    int aliases_count = 0;
    char *list_data;
    Eina_Strbuf *text_ctx = NULL;
-   char *markup_code;
-   const char *colorized_code;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -482,10 +536,9 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         return false;
      }
 
-   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
-   colorized_code = color_apply(pd->color_data, markup_code,
-                                strlen(markup_code), NULL, NULL);
-   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
+#ifndef HAVE_ENVENTOR
+   _code_of_group_setup(pd);
+#endif
 
    prop_box = elm_object_content_get(pd->visual);
    aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
@@ -1033,8 +1086,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
    Evas_Object *state_frame, *box, *prop_box;
    Edje_Part_Type type;
    char state[BUFF_MAX];
-   char *markup_code;
-   const char *colorized_code;
 
    if ((!property) || (!part)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -1174,12 +1225,11 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_unset(property);
 
-   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
-   colorized_code = color_apply(pd->color_data, markup_code,
-                                strlen(markup_code), NULL, NULL);
-   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+#ifndef HAVE_ENVENTOR
+   _code_of_group_setup(pd);
+#endif
 
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    #undef pd_state
    return true;
 }

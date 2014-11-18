@@ -27,7 +27,9 @@
  * This widget designed for show group and part details.
  */
 
+#ifndef HAVE_ENVENTOR
 #include "syntax_color.h"
+#endif
 #include "widget_manager.h"
 #include "ui_workspace.h"
 
