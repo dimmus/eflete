@@ -5,7 +5,6 @@ ACLOCAL_AMFLAGS = -I m4
 TESTS = \
 eflete_test \
 part_dialog_test \
-compile_dialog_test \
 save_file_dialog_test \
 open_file_dialog_test \
 alloc_test \
@@ -100,12 +99,6 @@ test_save_file_dialog/save_as_edc_file.c \
 test_save_file_dialog/save_as_edj_file.c
 save_file_dialog_test_CFLAGS = ${FLAGS}
 save_file_dialog_test_LDADD = ${LD}
-
-compile_dialog_test_SOURCES = \
-test_compile_dialog/test_compile_dialog.c \
-test_compile_dialog/compile_dialog.c
-compile_dialog_test_CFLAGS = ${FLAGS}
-compile_dialog_test_LDADD = ${LD}
 
 open_file_dialog_test_SOURCES = \
 test_open_file_dialog/test_open_file_dialog.c \

@@ -18,7 +18,6 @@
  */
 
 #include "main_window.h"
-#include "compile_dialog.h"
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"
@@ -63,7 +62,7 @@ _menu_event_handler_cb(void *data __UNUSED__,
      {
       case OPEN_EDC:
         {
-           compile_dialog(menu_event->ap);
+           //compile_dialog(menu_event->ap);
            break;
         }
       case OPEN_EDJ:

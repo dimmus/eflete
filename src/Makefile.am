@@ -26,7 +26,6 @@ ui/editors/image_editor.c \
 ui/editors/sound_editor.c \
 ui/editors/colorclass_editor.c \
 ui/editors/program_editor.c \
-ui/dialogs/compile_dialog.c \
 ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
 ui/dialogs/part_dialog.c \
