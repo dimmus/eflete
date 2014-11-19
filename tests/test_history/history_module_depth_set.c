@@ -18,6 +18,7 @@
  */
 
 #include "test_history.h"
+#include "main_window.h"
 
 /**
  * @addtogroup history_test
@@ -34,7 +35,7 @@
  * @{
  * <tr>
  * <td>history_module_depth_set</td>
- * <td>history_module_depth_set_test_p</td>
+ * <td>history_module_depth_set_test_p1</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -56,7 +57,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST(history_module_depth_set_test_p)
+EFLETE_TEST(history_module_depth_set_test_p1)
 {
    App_Data *app = NULL;
    Evas *canvas = NULL;
@@ -82,6 +83,92 @@ EFLETE_TEST(history_module_depth_set_test_p)
 
    history_term(app->history);
    evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_module_depth_set
+ * @{
+ * <tr>
+ * <td>history_module_depth_set</td>
+ * <td>history_module_depth_set_test_p2</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Set module depth equal 3.
+ * @step 10 Set new value [10] for max height param of group.
+ * @step 11 Store diff with using history_diff_add function.
+ * @step 12 Set new value [80;90;100;120] for color param of "bg" part.
+ * @step 13 Store diff with using history_diff_add function.
+ * @step 14 Set new value [events] for rel1 to x param of "radio" part.
+ * @step 15 Store diff with using history_diff_add function.
+ * @step 16 Set new value [0.4] for aspect param of "bg" part.
+ * @step 17 Store diff with using history_diff_add function.
+ * @step 18 Call history_undo with count 4.
+ *
+ * @procedure
+ * @step 1 Compare current value of max height param of group with the
+ *         value, that was setted at step 10 of precondition. It should be equal.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 3 </td>
+ * <td>First change does not canceled</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_module_depth_set_test_p2)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   int new_value = 10;
+   int check_value = 0;
+   char *path;
+
+   path = "./edj_build/history_module_depth_set.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   history_module_depth_set(style->obj, 3);
+   edje_edit_group_max_h_set(style->obj, new_value);
+   history_diff_add(style->obj, PROPERTY, MODIFY, ONE, 0, new_value,
+                    "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
+                    "Min h", NULL, NULL, 0.0);
+   edje_edit_state_color_set(style->obj, "radio", "default", 0.0, 80, 90, 100, 120);
+   history_diff_add(style->obj, PROPERTY, MODIFY, FOUR, 0, 0, 0, 0,
+                    80, 90, 100, 120, "elm/radio/base/def",
+                    (void *)edje_edit_state_color_set,
+                    "color", "radio", "default", 0.0);
+   edje_edit_state_rel1_to_x_set(style->obj, "radio", "default", 0.0, "events");
+   history_diff_add(style->obj, PROPERTY, MODIFY, STRING, "bg", "events",
+                    "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
+                    "clip to", "radio", "default", 0.0);
+   edje_edit_state_aspect_max_set(style->obj, "bg", "default", 0.0, 0.4);
+   history_diff_add(style->obj, PROPERTY, MODIFY, DOUBLE, 0.0, 0.4,
+                    "elm/radio/base/def", (void *)edje_edit_state_aspect_max_set,
+                    "aspect max", "bg", "default", 0.0);
+   history_undo(style->obj, 4);
+
+   check_value = edje_edit_group_max_h_get(style->obj);
+   ck_assert_msg(check_value == new_value, "Cancel diff, that outside of depth");
+
+   history_term(app->history);
    app_shutdown();
    elm_shutdown();
 }

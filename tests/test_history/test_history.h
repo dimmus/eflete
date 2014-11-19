@@ -101,7 +101,8 @@ void history_genlist_get_test_p2(int);
 void history_genlist_get_test_n1(int);
 void history_genlist_get_test_n2(int);
 
-void history_module_depth_set_test_p(int);
+void history_module_depth_set_test_p1(int);
+void history_module_depth_set_test_p2(int);
 void history_module_depth_set_test_n1(int);
 void history_module_depth_set_test_n2(int);
 

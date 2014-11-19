@@ -98,7 +98,8 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, history_genlist_get_test_n1);
    tcase_add_test(tcase, history_genlist_get_test_n2);
 
-   tcase_add_test(tcase, history_module_depth_set_test_p);
+   tcase_add_test(tcase, history_module_depth_set_test_p1);
+   tcase_add_test(tcase, history_module_depth_set_test_p2);
    tcase_add_test(tcase, history_module_depth_set_test_n1);
    tcase_add_test(tcase, history_module_depth_set_test_n2);
 
