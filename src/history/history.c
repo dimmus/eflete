@@ -334,4 +334,15 @@ history_diff_add(Evas_Object *source, Target target, ...)
    return _change_save(module, change);
 }
 
+Eina_Bool
+history_module_depth_set(Evas_Object *source __UNUSED__, unsigned int depth __UNUSED__)
+{
+   return false;
+}
+
+int
+history_module_depth_get(Evas_Object *source __UNUSED__)
+{
+   return -1;
+}
 

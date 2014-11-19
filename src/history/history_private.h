@@ -73,6 +73,7 @@ struct _Module
                              equale to lifetime of module*/
    Eina_List *changes; /**< List of structures, that contain diff info about change */
    Diff *current_change; /**< Current diff for module.*/
+   unsigned int depth; /**< Maximum count of stored changes */
 };
 
 /**

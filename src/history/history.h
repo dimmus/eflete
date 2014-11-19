@@ -356,4 +356,32 @@ history_redo(Evas_Object *source, int count);
 Evas_Object *
 history_genlist_get(History *history, Evas_Object *parent);
 
+/**
+ * Set maximum count of the changes in the history of given module.
+ * By default this value equal 0, it mean that depth of history is unlimited.
+ *
+ * @param source The object, that have history of changes.
+ * @param count Maximum count of stored changes in the history. If 0 - size of
+ *        the history is unlimited.
+ *
+ * @return EINA_TRUE if depth setted succesful , EINA_FALSE in otherwise.
+ *
+ * @ingroup History
+ */
+Eina_Bool
+history_module_depth_set(Evas_Object *source, unsigned int depth);
+
+/**
+ * Get maximum depth value of the changes in the history of given module.
+ *
+ * @param source The object, that have history of changes.
+ *
+ * @return Maximum count of stored changes in the history. If 0 - size of
+ *        the history is unlimited. If returned negative value something went wrong
+ *
+ * @ingroup History
+ */
+int
+history_module_depth_get(Evas_Object *source);
+
 #endif /* HISTORY_H */
