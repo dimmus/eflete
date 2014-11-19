@@ -138,6 +138,59 @@ void
 _attribute_change_free(Attribute_Diff *change);
 
 /**
+ * This function provide functionality for merging given change with previous
+ * diff. In case when the same attribute changed twice in successions this
+ * diffs can be merged in single diff.
+ * For example: renaming part 'elm' to 'efl'
+ * <pre>
+ * default flow:
+ * |Action     | Current name | Diffs list                                     |
+ * |---------------------------------------------------------------------------|
+ * |delete 'm' |    "el"      | [RENAME 'el']                                  |
+ * |delete 'l' |    "e"       | [RENAME 'el']->[RENAME 'e']                    |
+ * |add    'f' |    "ef"      | [RENAME 'el']->[RENAME 'e']->[RENAME 'ef']     |
+ * |add    'l' |    "efl"     | [RENAME 'el']->[RENAME 'e']->[RENAME 'ef']->   |
+ * |           |              | ->[RENAME 'efl']                               |
+ * |---------------------------------------------------------------------------|
+ * For undo renaming this part need to call _attribute_undo 5 times.
+ *
+ * merge diffs flow:
+ * |Action     | Current name | Diffs list                                     |
+ * |---------------------------------------------------------------------------|
+ * |delete 'm' |    "el"      | [RENAME 'el']                                  |
+ * |delete 'l' |    "e"       | [RENAME 'e']                                   |
+ * |add    'f' |    "ef"      | [RENAME 'ef']                                  |
+ * |add    'l' |    "efl"     | [RENAME 'efl']                                 |
+ * |---------------------------------------------------------------------------|
+ * For undo renaming part with using merge need to call _attribute_undo one time.
+ * </pre>
+ * In case when previous diff contain info about change another attribute,
+ * given attribute will not merge.
+ * <pre>
+ * |Action            |  Diffs list                                            |
+ * |---------------------------------------------------------------------------|
+ * |delete 'm'        |  [RENAME 'el']                                         |
+ * |delete 'l'        |  [RENAME 'e']                                          |
+ * |change 'visible'  |  [RENAME 'e']->[MODIFY 'visible']                      |
+ * |add    'f'        |  [RENAME 'e']->[MODIFY 'visible']->[RENAME 'ef']       |
+ * |---------------------------------------------------------------------------|
+ * </pre>
+ *
+ * @param change The diff, that was created with using _attribute_change_new.
+ * @param module The module, that contain given diff.
+ *
+ * @return If change can be merged with previous diff will returned NULL, because
+ * given change is merged into previous, if merge is impossible will return pointer
+ * to the given change.
+ *
+ * @note this function support merging only for diffs with action_type MODIFY.
+ *
+ * @ingroup History_Attribute
+ */
+Diff *
+_attribute_change_merge(Attribute_Diff *change, Module *module);
+
+/**
  * This function cancel given diff.
  *
  * @source The object, that present module and can be changed with functions,

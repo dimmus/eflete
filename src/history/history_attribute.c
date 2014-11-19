@@ -374,6 +374,53 @@ _attribute_change_free(Attribute_Diff *change)
    change = NULL;
 }
 
+Diff *
+_attribute_change_merge(Attribute_Diff *change, Module *module)
+{
+   Diff *prev_general = NULL;
+   Attribute_Diff *previous = NULL;
+
+   if (module->current_change)
+      prev_general = module->current_change;
+   else
+     return (Diff *)change;
+
+   if ((change->diff.action_type == MODIFY) &&
+       (prev_general->action_type == change->diff.action_type))
+     previous = (Attribute_Diff *)prev_general;
+   else
+     return (Diff *)change;
+
+   if ((previous->func == change->func) &&
+       ((!previous->part && !change->part) ||
+        (!strcmp(previous->part, change->part)) ||
+        (!change->state && change->param_type == RENAME)))
+     {
+        switch(previous->param_type)
+         {
+          case ONE:
+          case INT:
+             previous->integer.new = change->integer.new;
+          break;
+          case DOUBLE:
+             previous->doubl.new = change->doubl.new;
+          break;
+          case RENAME:
+             eina_stringshare_replace(&previous->part, change->string.new);
+          case STRING:
+             eina_stringshare_replace(&previous->string.new, change->string.new);
+          break;
+          default:
+          break;
+         }
+        eina_stringshare_replace(&previous->diff.new, change->diff.new);
+        elm_genlist_item_update(previous->diff.ui_item);
+        _attribute_change_free(change);
+        return NULL;
+     }
+   return (Diff *)change;
+}
+
 static Eina_Bool
 _attribute_modify_parse(va_list list, Attribute_Diff *change)
 {
