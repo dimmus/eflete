@@ -570,9 +570,11 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    if ((factor < 0.01) || (factor > 20)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
-   if (sd->zoom.factor == factor) return false;
-   sd->zoom.factor = factor;
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit)) ||
+       (fabs(sd->zoom.factor - factor) <= 0.001))
+     return false;
 
+   sd->zoom.factor = factor;
    groupedit_zoom_factor_set(sd->groupedit, factor);
 
    /* calculate step for VERTICAL RELATIVE */
@@ -581,13 +583,13 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    /* calculate step for VERTICAL ABSOLUTE */
    ewe_ruler_step_set(sd->ruler_ver, NULL, DEFAULT_STEP * sd->zoom.factor);
 
-   /* calculate step for VERTICAL RELATIVE */
+   /* calculate step for HORIZONTAL RELATIVE */
    ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, DEFAULT_STEP * sd->zoom.factor);
 
-   /* calculate step for VERTICAL ABSOLUTE */
+   /* calculate step for HORIZONTAL ABSOLUTE */
    ewe_ruler_step_set(sd->ruler_hor, NULL, DEFAULT_STEP * sd->zoom.factor);
 
-   if (fabs(factor - 1.0) > 0.00001)
+   if (fabs(factor - 1.0) > 0.001)
      {
         container_border_hide(sd->container.obj);
 
