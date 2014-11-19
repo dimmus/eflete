@@ -69,20 +69,43 @@ _clear_untracked_changes(Eina_List *changes,
    return changes;
 }
 
+static void
+_changes_index_update(Eina_List *changes)
+{
+   Eina_List *l = NULL;
+   Diff *data = NULL;
+   int index = 0;
+
+   EINA_LIST_FOREACH(changes, l, data)
+     {
+        data->index = index;
+        index++;
+     }
+}
+
 /*
  * This function manage adding new diff into the history of module.
  */
 static Eina_Bool
 _change_save(Module *module, Diff *change)
 {
+   Diff *data = NULL;
    if (!change) return false;
 
    module->changes = _clear_untracked_changes(module->changes,
                                               module->current_change);
-
    module->changes = eina_list_append(module->changes, change);
+   change->index = eina_list_count(module->changes);
+
    module->current_change = change;
 
+   if ((module->depth > 0) && (eina_list_count(module->changes) > module->depth))
+     {
+        data = eina_list_data_get(module->changes);
+        _diff_free(data);
+        module->changes = eina_list_remove_list(module->changes, module->changes);
+        _changes_index_update(module->changes);
+     }
    _history_ui_item_add(change, module);
 
    return true;
@@ -335,14 +358,31 @@ history_diff_add(Evas_Object *source, Target target, ...)
 }
 
 Eina_Bool
-history_module_depth_set(Evas_Object *source __UNUSED__, unsigned int depth __UNUSED__)
+history_module_depth_set(Evas_Object *source, unsigned int depth)
 {
+   Module *module = NULL;
+
+   if (source)
+     {
+        module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+        if (!module) return false;
+        module->depth = depth;
+        return true;
+     }
    return false;
 }
 
 int
-history_module_depth_get(Evas_Object *source __UNUSED__)
+history_module_depth_get(Evas_Object *source)
 {
+   Module *module = NULL;
+
+   if (source)
+     {
+        module = evas_object_data_get(source, HISTORY_MODULE_KEY);
+        if (!module) return -1;
+        return (int)module->depth;
+     }
    return -1;
 }
 

@@ -25,26 +25,25 @@ static  Elm_Genlist_Item_Class *_itc_change = NULL;
 
 static void
 _on_change_selected(void *data,
-                    Evas_Object *obj __UNUSED__,
+                    Evas_Object *obj  __UNUSED__,
                     void *event_info)
 {
    Module *module = (Module *)data;
+   Diff *selected = NULL;
    int delta = 0;
 
    if (!module) return;
 
-   int index_curr = 0, index_selected = 0;
+   int index_curr = 0;
 
    Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
-   Diff *change = (Diff *)elm_object_item_data_get(glit);
-   index_selected = elm_genlist_item_index_get(change->ui_item);
+   selected = elm_object_item_data_get(glit);
+   if (!selected) return;
 
    if (module->current_change)
-     index_curr = elm_genlist_item_index_get(module->current_change->ui_item);
+     index_curr = module->current_change->index;
 
-   if (!index_curr) index_curr++;
-
-   delta = index_curr - index_selected;
+   delta = index_curr - selected->index;
    if (delta > 0)
      history_undo(module->target, delta);
    else if (delta < 0)

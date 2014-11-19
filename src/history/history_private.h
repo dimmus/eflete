@@ -97,6 +97,8 @@ struct _Diff
    Eina_Stringshare *state; /**< State name, that will be shown on UI */
 
    Elm_Object_Item *ui_item; /**< This item uses for showing description of the change on ui */
+   unsigned int index; /**< Position in changes, this field needed for
+                            calculate delta beetwen changes*/
 };
 
 /* INTERNAL FUNCTIONS FOR HISTORY_ATTRIBUTE SUBMODULE */
