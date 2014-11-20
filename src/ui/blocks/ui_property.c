@@ -388,10 +388,19 @@ ui_property_add(Evas_Object *parent)
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
 
+   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
+
 #ifdef HAVE_ENVENTOR
-   pd->code = enventor_object_add(tabs);
+   Evas_Object *code_bg;
+   code_bg = elm_bg_add(tabs);
+   elm_bg_color_set(code_bg, ENVENTOR_CODE_BG_COLOR);
+
+   pd->code = enventor_object_add(code_bg);
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
                                   _on_tab_activated, pd);
+
+   elm_object_content_set(code_bg, pd->code);
+   ewe_tabs_item_content_set(tabs, it, code_bg);
 #else
    pd->code = elm_entry_add(tabs);
    elm_object_style_set(pd->code, DEFAULT_STYLE);
@@ -402,10 +411,8 @@ ui_property_add(Evas_Object *parent)
    elm_entry_scrollable_set(pd->code, true);
    elm_entry_editable_set(pd->code, false);
    pd->color_data = color_init(eina_strbuf_new());
-#endif
-
-   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->code);
+#endif
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);

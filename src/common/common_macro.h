@@ -25,6 +25,10 @@
 #define OBG_AREA_BG_COLOR 64,64,64,64
 #define OBG_AREA_COLOR 0,0,0,255
 
+#ifdef HAVE_ENVENTOR
+#define ENVENTOR_CODE_BG_COLOR 20,20,20
+#endif
+
 #define true EINA_TRUE
 #define false EINA_FALSE
 #define RETURN_VOID
