@@ -730,8 +730,8 @@ _on_button_close_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
-ITEM_SEARCH_FUNC(genlist)
-ITEM_SEARCH_FUNC(gengrid)
+ITEM_SEARCH_FUNC(genlist, NULL)
+ITEM_SEARCH_FUNC(gengrid, NULL)
 
 static void
 _on_images_search_entry_changed_cb(void *data,

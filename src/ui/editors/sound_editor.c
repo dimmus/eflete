@@ -127,9 +127,8 @@ _grid_label_get(void *data,
 
    if (!strcmp(part, "elm.text.type"))
      return strdup(it->format);
-   else if (!strcmp(part, "elm.text"))
+   else
      return strdup(it->sound_name);
-   return NULL;
 }
 
 static void
@@ -1384,7 +1383,7 @@ _on_delete_clicked_cb(void *data,
      pm_project_changed(app_data_get()->project);
 }
 
-ITEM_SEARCH_FUNC(gengrid)
+ITEM_SEARCH_FUNC(gengrid, "elm.text")
 
 static void
 _search_changed(void *data,

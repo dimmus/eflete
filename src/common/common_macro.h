@@ -107,7 +107,7 @@
        STYLE = _style;\
      }
 
-#define ITEM_SEARCH_FUNC(_gen) \
+#define ITEM_SEARCH_FUNC(_gen, PART_NAME) \
 static void \
 _##_gen##_item_search(Evas_Object *obj, \
                       Search_Data *search_data, \
@@ -130,8 +130,8 @@ _##_gen##_item_search(Evas_Object *obj, \
    str = eina_stringshare_printf("*%s*", \
                                  elm_entry_entry_get(search_data->search_entry)); \
  \
-   last_item_found = elm_##_gen##_search_by_text_item_get(obj,start_from, \
-                                                          NULL, str, 0); \
+   last_item_found = elm_##_gen##_search_by_text_item_get(obj, start_from, \
+                                                          PART_NAME, str, 0); \
    if (search_data->last_item_found == last_item_found) return; \
  \
    if (search_data->last_item_found) \
