@@ -713,6 +713,8 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 
    free(selected);
 
+   code_edit_mode_switch(ap, false);
+
    return true;
 }
 
