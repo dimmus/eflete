@@ -75,7 +75,7 @@ check: Makefile
 	$(builddir)/ui_widget_list_part_selected_set.edj \
 	$(builddir)/ui_widget_list_title_set.edj \
 	$(builddir)/ui_widget_list_selected_parts_get.edj \
-	$(builddir)/part_dialog_add.edj \
+	$(builddir)/part_dialog.edj \
 	$(builddir)/register_callbacks.edj \
 	$(builddir)/ui_edj_load.edj \
 	$(builddir)/save_as_edj_file.edj \

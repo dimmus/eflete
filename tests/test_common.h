@@ -17,18 +17,34 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "utc_common.h"
-#include "main_window.h"
-#include "part_dialog.h"
+static void
+_test_end_cb(void *data __UNUSED__,
+      PM_Project_Result result __UNUSED__)
+{
+   ecore_main_loop_quit();
+}
 
-/**
- * @defgroup test_part_dialog
- */
+   static void
+teardown(const char *path)
+{
+   ecore_file_recursive_rm(path);
+}
 
-#define TEST_NAME "part_dialog"
+   static void
+setup(const char *name)
+{
+   Project_Thread *thread;
+   Project *pro;
 
-void part_dialog_add_test_p(int);
-void part_dialog_add_test_n1(int);
-void part_dialog_add_test_n2(int);
-void part_dialog_add_test_n3(int);
-void part_dialog_add_test_n4(int);
+   thread = pm_project_import_edj(name, ".", "./edj_build/"TEST_NAME".edj",
+         NULL, _test_end_cb, NULL);
+   if (!thread)
+      ck_abort_msg("Setup is failed! Project import not started.");
+   ecore_main_loop_begin();
+
+   pro = pm_project_thread_project_get(thread);
+   if (!pro)
+      ck_abort_msg("Setup is failed! Project not imported");
+
+   pm_project_thread_free(thread);
+}

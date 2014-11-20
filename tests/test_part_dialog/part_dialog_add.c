@@ -18,6 +18,7 @@
  */
 
 #include "test_part_dialog.h"
+#include "test_common.h"
 
 #define _BEFORE_DOUBLE_CLICK \
    eoi = elm_naviframe_top_item_get(widget_list); \
@@ -70,16 +71,17 @@
 EFLETE_TEST (part_dialog_add_test_p)
 {
    elm_init(0, 0);
+   setup("part_dialog_add_test_p");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app = NULL;
    Evas_Object *widget_list, *dialog, *glist;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(edj_path);
+   app->project = pm_project_open("./part_dialog_add_test_p/part_dialog_add_test_p.pro");
    widget_list = ui_widget_list_add(app->win);
    ui_widget_list_data_set(widget_list, app->project);
    ui_block_widget_list_set(app, widget_list);
@@ -92,12 +94,13 @@ EFLETE_TEST (part_dialog_add_test_p)
    Style *style = elm_object_item_data_get(glit);
    evas_object_smart_callback_call(glist, "clicked,double", glit);
    /*************************************************************/
-   workspace_edit_object_set(app->workspace, style, edj_path);
+   workspace_edit_object_set(app->workspace, style, app->project->dev);
 
    dialog = part_dialog_add(app);
    ck_assert_msg(dialog != NULL, "Creating part dialog failed.");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./part_dialog_add_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -136,16 +139,17 @@ END_TEST
 EFLETE_TEST (part_dialog_add_test_n1)
 {
    elm_init(0, 0);
+   setup("part_dialog_add_test_n1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app = NULL;
    Evas_Object *widget_list, *dialog, *glist;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(edj_path);
+   app->project = pm_project_open("./part_dialog_add_test_n1/part_dialog_add_test_n1.pro");
    widget_list = ui_widget_list_add(app->win);
    ui_widget_list_data_set(widget_list, app->project);
    /********Choosing widget, so widget list contain parts********/
@@ -157,12 +161,13 @@ EFLETE_TEST (part_dialog_add_test_n1)
    Style *style = elm_object_item_data_get(glit);
    evas_object_smart_callback_call(glist, "clicked,double", glit);
    /*************************************************************/
-   workspace_edit_object_set(app->workspace, style, edj_path);
+   workspace_edit_object_set(app->workspace, style, app->project->dev);
 
    dialog = part_dialog_add(app);
    ck_assert_msg(dialog == NULL, "Part dialog was created.");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./part_dialog_add_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -202,16 +207,17 @@ END_TEST
 EFLETE_TEST (part_dialog_add_test_n2)
 {
    elm_init(0, 0);
+   setup("part_dialog_add_test_n2");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app = NULL;
    Evas_Object *widget_list, *dialog, *glist;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/part_dialog_add.edj";
 
    app_init();
    app = app_data_get();
    app->win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   app->project = pm_open_project_edj(edj_path);
+   app->project = pm_project_open("./part_dialog_add_test_n2/part_dialog_add_test_n2.pro");
    widget_list = ui_widget_list_add(app->win);
    ui_widget_list_data_set(widget_list, app->project);
    ui_block_widget_list_set(app, widget_list);
@@ -224,12 +230,13 @@ EFLETE_TEST (part_dialog_add_test_n2)
    Style *style = elm_object_item_data_get(glit);
    evas_object_smart_callback_call(glist, "clicked,double", glit);
    /*************************************************************/
-   workspace_edit_object_set(app->workspace, style, edj_path);
+   workspace_edit_object_set(app->workspace, style, app->project->dev);
 
    dialog = part_dialog_add(app);
    ck_assert_msg(dialog == NULL, "Part dialog was created.");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./part_dialog_add_test_n2");
    elm_shutdown();
 }
 END_TEST
@@ -270,7 +277,7 @@ EFLETE_TEST (part_dialog_add_test_n3)
    App_Data *app = NULL;
    Evas_Object *widget_list, *dialog, *glist;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/part_dialog_add.edj";
+   const char *edj_path = "./edj_build/part_dialog.edj";
 
    app_init();
    app = app_data_get();
