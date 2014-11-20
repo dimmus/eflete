@@ -330,7 +330,8 @@ ui_main_window_test_LDADD = ${LD}
 
 preference_test_SOURCES = \
 test_preference/test_preference.c \
-test_preference/preference_add.c
+test_preference/preference_add.c \
+test_preference/preferences_project_autosave_update.c
 preference_test_CFLAGS = ${FLAGS}
 preference_test_LDADD = ${LD}
 

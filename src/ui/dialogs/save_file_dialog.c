@@ -18,6 +18,7 @@
  */
 
 #include "save_file_dialog.h"
+#include "preference.h"
 
 struct _cb_data
 {
@@ -190,6 +191,9 @@ _save_as_edx_file(App_Data *ap,
    ecore_main_loop_begin();
 
    evas_object_del(win);
+
+   ap->project->is_new = false;
+   preferences_project_autosave_update(ap->project);
 
    return !cancel;
 }

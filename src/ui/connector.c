@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "preference.h"
 
 static void
 _add_part_dialog(void *data,
@@ -715,6 +716,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 
    free(selected);
 
+   preferences_project_autosave_update(ap->project);
    code_edit_mode_switch(ap, false);
 
    return true;

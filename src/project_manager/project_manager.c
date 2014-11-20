@@ -192,6 +192,11 @@ Eina_Bool
 pm_project_close(Project *project)
 {
    if (!project) return false;
+   if (project->autosave_timer)
+     {
+        ecore_timer_del(project->autosave_timer);
+        project->autosave_timer = NULL;
+     }
 
    eio_file_unlink(project->dev, _on_unlink_done_cb,
                    _on_unlink_error_cb, project);
