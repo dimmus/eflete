@@ -45,3 +45,5 @@ void pm_project_save_test_p(int);
 void pm_project_close_test_p(int);
 
 void pm_project_meta_data_set_test_p(int);
+
+void pm_project_meta_data_get_test_p(int);

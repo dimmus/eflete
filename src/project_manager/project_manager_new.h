@@ -376,11 +376,11 @@ pm_project_close(Project *project) EINA_ARG_NONNULL(1);
  */
 void
 pm_project_meta_data_get(Project *project,
-                         char **name,
-                         char **authors,
-                         char **version,
-                         char **license,
-                         char **comment);
+                         Eina_Stringshare **name,
+                         Eina_Stringshare **authors,
+                         Eina_Stringshare **version,
+                         Eina_Stringshare **license,
+                         Eina_Stringshare **comment) EINA_ARG_NONNULL(1);
 
 /**
  * Set a new meta data to the project.
@@ -402,6 +402,6 @@ pm_project_meta_data_set(Project *project,
                          const char *authors,
                          const char *version,
                          const char *license,
-                         const char *comment);
+                         const char *comment) EINA_ARG_NONNULL(1);
 
 #endif /* PROJECT_MANAGER_H */

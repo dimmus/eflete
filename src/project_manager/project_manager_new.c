@@ -642,14 +642,30 @@ pm_project_close(Project *project)
 }
 
 void
-pm_project_meta_data_get(Project *project __UNUSED__,
-                         char **name __UNUSED__,
-                         char **authors __UNUSED__,
-                         char **version __UNUSED__,
-                         char **license __UNUSED__,
-                         char **comment __UNUSED__)
+pm_project_meta_data_get(Project *project,
+                         Eina_Stringshare **name,
+                         Eina_Stringshare **authors,
+                         Eina_Stringshare **version,
+                         Eina_Stringshare **license,
+                         Eina_Stringshare **comment)
 {
+   char *tmp;
 
+#define DATA_READ(DATA, KEY) \
+   if (DATA) \
+     { \
+        tmp = eet_read(project->pro, KEY, NULL); \
+        *DATA = eina_stringshare_add(tmp); \
+        free(tmp); \
+     }
+
+   DATA_READ(name,    PROJECT_KEY_NAME);
+   DATA_READ(authors, PROJECT_KEY_AUTHORS);
+   DATA_READ(version, PROJECT_KEY_FILE_VERSION);
+   DATA_READ(license, PROJECT_KEY_LICENSE);
+   DATA_READ(comment, PROJECT_KEY_COMMENT);
+
+#undef DATA_READ
 }
 
 Eina_Bool
