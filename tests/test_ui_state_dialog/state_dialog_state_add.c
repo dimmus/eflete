@@ -18,6 +18,7 @@
  */
 
 #include "test_ui_state_dialog.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_state_dialog_test
@@ -64,21 +65,21 @@
 EFLETE_TEST (state_dialog_state_add_test_p)
 {
    elm_init(0, 0);
+   setup("state_dialog_state_add_test_p");
+
    App_Data *app_data;
    Evas *canvas;
    Evas_Object *popup, *state_list;
    Style *style = NULL;
    Part *part = NULL;
-   const char *path;
 
-   path = "./edj_build/state_dialog_state_add.edj";
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   app_data->project = pm_open_project_edj(path);
+   app_data->project = pm_project_open("./state_dialog_state_add_test_p/state_dialog_state_add_test_p.pro");
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, canvas, path);
+   wm_style_data_load(style, canvas, app_data->project->dev);
    app_data->project->current_style = style;
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);
@@ -88,6 +89,7 @@ EFLETE_TEST (state_dialog_state_add_test_p)
    popup = state_dialog_state_add(app_data);
    ck_assert_msg(popup != NULL, "Failed to create state dialog");
 
+   teardown("./state_dialog_state_add_test_p");
    app_shutdown();
    elm_shutdown();
 }
