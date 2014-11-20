@@ -18,6 +18,7 @@
  */
 
 #include "test_image_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup image_editor_test
@@ -65,13 +66,15 @@ _cb (void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUS
 EFLETE_TEST (image_editor_callback_add_test_p1)
 {
    elm_init(0,0);
+   setup("image_editor_callback_add_test_p1");
+
    App_Data *app;
    app_init();
    Evas_Object *images;
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
+   app->project = pm_project_open("./image_editor_callback_add_test_p1/image_editor_callback_add_test_p1.pro");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
                                app->project->dev);
@@ -82,6 +85,7 @@ EFLETE_TEST (image_editor_callback_add_test_p1)
 
    evas_object_del(images);
    app_shutdown();
+   teardown("./image_editor_callback_add_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -117,13 +121,15 @@ END_TEST
 EFLETE_TEST (image_editor_callback_add_test_p2)
 {
    elm_init(0,0);
+   setup("image_editor_callback_add_test_p2");
+
    App_Data *app;
    app_init();
    Evas_Object *images;
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
+   app->project = pm_project_open("./image_editor_callback_add_test_p2/image_editor_callback_add_test_p2.pro");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
                                app->project->dev);
@@ -134,6 +140,7 @@ EFLETE_TEST (image_editor_callback_add_test_p2)
 
    evas_object_del(images);
    app_shutdown();
+   teardown("image_editor_callback_add_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -169,13 +176,15 @@ END_TEST
 EFLETE_TEST (image_editor_callback_add_test_n1)
 {
    elm_init(0,0);
+   setup("image_editor_callback_add_test_n1");
+
    App_Data *app;
    app_init();
    Evas_Object *images;
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
+   app->project = pm_project_open("./image_editor_callback_add_test_n1/image_editor_callback_add_test_n1.pro");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
                                app->project->dev);
@@ -186,6 +195,7 @@ EFLETE_TEST (image_editor_callback_add_test_n1)
 
    evas_object_del(images);
    app_shutdown();
+   teardown("image_editor_callback_add_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -221,13 +231,15 @@ END_TEST
 EFLETE_TEST (image_editor_callback_add_test_n2)
 {
    elm_init(0,0);
+   setup("image_editor_callback_add_test_n2");
+
    App_Data *app;
    app_init();
    Evas_Object *images;
 
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("./edj_build/image_editor_callback_add.edj");
+   app->project = pm_project_open("./image_editor_callback_add_test_n2/image_editor_callback_add_test_n2.pro");
    wm_widget_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
                                app->project->dev);
@@ -238,6 +250,7 @@ EFLETE_TEST (image_editor_callback_add_test_n2)
 
    evas_object_del(images);
    app_shutdown();
+   teardown("./image_editor_callback_add_test_n2");
    elm_shutdown();
 }
 END_TEST

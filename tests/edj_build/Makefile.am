@@ -41,9 +41,7 @@ check: Makefile
 	$(builddir)/program_editor_window_add_test.edj \
 	$(builddir)/style_editor_window_add.edj \
 	$(builddir)/test_project_manager.edj \
-	$(builddir)/image_editor_window_add.edj \
-	$(builddir)/image_editor_callback_add.edj \
-	$(builddir)/image_editor_file_choose.edj \
+	$(builddir)/image_editor.edj \
 	$(builddir)/ui_states_list_data_set.edj \
 	$(builddir)/ui_states_list_part_get.edj \
 	$(builddir)/ui_states_list_selected_state_get.edj \
