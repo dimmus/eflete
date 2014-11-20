@@ -166,7 +166,9 @@ widget_manager_test_LDADD = ${LD}
 
 sound_editor_test_SOURCES = \
 test_sound_editor/test_sound_editor.c \
-test_sound_editor/sound_editor_window_add.c
+test_sound_editor/sound_editor_window_add.c\
+test_sound_editor/sound_editor_file_choose.c
+
 sound_editor_test_CFLAGS = ${FLAGS}
 sound_editor_test_LDADD = ${LD}
 

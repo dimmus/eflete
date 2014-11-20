@@ -27,6 +27,7 @@
 #define ITEM_HEIGHT 115
 #define UPDATE_FREQUENCY 1.0 / 30.0
 #define TONE_PLAYING_DURATION 2.0
+#define SND_EDIT_KEY "sound_editor_key"
 
 typedef struct _Sound_Editor Sound_Editor;
 typedef struct _Search_Data Search_Data;
@@ -138,6 +139,7 @@ _sound_editor_del(Sound_Editor *edit)
    edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_gengrid_item_class_free(ggic);
+   evas_object_data_del(edit->win, SND_EDIT_KEY);
    evas_object_del(edit->win);
    evas_object_del(edit->markup);
    eina_stringshare_del(edit->selected);
@@ -1488,6 +1490,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit->pr = project;
    edit->win = mw_add(_on_quit_cb, edit);
    mw_title_set(edit->win, _("Sound editor"));
+   evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
 
    _sound_editor_main_markup_create(edit);
 
@@ -1515,6 +1518,37 @@ void sound_editor_added_sounds_free(Eina_List *add_snd)
      }
    add_snd = NULL;
 }
+
+Eina_Bool
+sound_editor_file_choose(Evas_Object *win, const char *selected)
+{
+   Elm_Object_Item *grid_item;
+   Sound_Editor *snd_edit;
+
+   if (!selected) return false;
+   if (!win)
+     {
+        ERR("Expecting sound editor window.");
+        return false;
+     }
+
+   snd_edit = evas_object_data_get(win, SND_EDIT_KEY);
+   if (!snd_edit)
+     {
+        ERR("Expecting sound editor object.");
+        return false;
+     }
+   grid_item = elm_gengrid_search_by_text_item_get(snd_edit->gengrid, NULL,
+                                                   "elm.text", selected, 0);
+   if (grid_item)
+     {
+        elm_gengrid_item_selected_set(grid_item, true);
+        elm_gengrid_item_bring_in(grid_item, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE);
+        return true;
+     }
+   return false;
+}
+
 #undef ITEM_WIDTH
 #undef ITEM_HEIGHT
 
