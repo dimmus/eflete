@@ -62,17 +62,9 @@ check: Makefile
 	$(builddir)/wm_style_free.edj \
 	$(builddir)/wm_part_del.edj \
 	$(builddir)/wm_part_add.edj \
-	$(builddir)/ui_widget_list_data_set.edj \
-	$(builddir)/ui_widget_list_data_reload.edj \
-	$(builddir)/ui_widget_list_layout_reload.edj \
+	$(builddir)/widget_list.edj \
 	$(builddir)/ui_widget_list_part_add.edj \
-	$(builddir)/ui_widget_list_selected_part_above.edj \
-	$(builddir)/ui_widget_list_selected_part_below.edj \
-	$(builddir)/ui_widget_list_selected_part_del.edj \
-	$(builddir)/ui_widget_list_selected_part_get.edj \
-	$(builddir)/ui_widget_list_part_selected_set.edj \
 	$(builddir)/ui_widget_list_title_set.edj \
-	$(builddir)/ui_widget_list_selected_parts_get.edj \
 	$(builddir)/part_dialog.edj \
 	$(builddir)/main_window.edj \
 	$(builddir)/ui_edj_load.edj \

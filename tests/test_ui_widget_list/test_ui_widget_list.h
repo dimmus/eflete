@@ -24,6 +24,8 @@
  * @defgroup test_ui_widget_list
  */
 
+#define TEST_NAME "widgtet_list"
+
 void ui_widget_list_add_test_p(int);
 void ui_widget_list_add_test_n(int);
 

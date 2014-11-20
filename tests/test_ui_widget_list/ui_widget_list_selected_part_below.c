@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-
 #include "test_ui_widget_list.h"
+#include "test_common.h"
 
 #define _BEFORE_DOUBLE_CLICK \
    eoi = elm_naviframe_top_item_get(widget_list); \
@@ -70,15 +70,16 @@
 EFLETE_TEST (ui_widget_list_selected_part_below_test_p)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_selected_part_below_test_p");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent, *widget_list, *glist;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_below.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj(edj_path);
+   project = pm_project_open("./ui_widget_list_selected_part_below_test_p/ui_widget_list_selected_part_below_test_p.pro");
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -100,6 +101,7 @@ EFLETE_TEST (ui_widget_list_selected_part_below_test_p)
 
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_widget_list_selected_part_below_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -138,15 +140,16 @@ END_TEST
 EFLETE_TEST (ui_widget_list_selected_part_below_test_n1)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_selected_part_below_test_n1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent, *widget_list, *glist;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_below.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj(edj_path);
+   project = pm_project_open("./ui_widget_list_selected_part_below_test_n1/ui_widget_list_selected_part_below_test_n1.pro");
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -167,6 +170,7 @@ EFLETE_TEST (ui_widget_list_selected_part_below_test_n1)
 
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("_widget_list_selected_part_below_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -205,15 +209,16 @@ END_TEST
 EFLETE_TEST (ui_widget_list_selected_part_below_test_n2)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_selected_part_below_test_n2");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent, *widget_list, *glist;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_below.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj(edj_path);
+   project = pm_project_open("./ui_widget_list_selected_part_below_test_n2/ui_widget_list_selected_part_below_test_n2.pro");
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -237,6 +242,7 @@ EFLETE_TEST (ui_widget_list_selected_part_below_test_n2)
 
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_widget_list_selected_part_below_test_n2");
    elm_shutdown();
 }
 END_TEST
@@ -274,15 +280,16 @@ END_TEST
 EFLETE_TEST (ui_widget_list_selected_part_below_test_n3)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_selected_part_below_test_n3");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent, *widget_list, *glist;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *edj_path = "./edj_build/ui_widget_list_selected_part_below.edj";
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj(edj_path);
+   project = pm_project_open("./ui_widget_list_selected_part_below_test_n3/ui_widget_list_selected_part_below_test_n3.pro");
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -305,6 +312,7 @@ EFLETE_TEST (ui_widget_list_selected_part_below_test_n3)
 
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_widget_list_selected_part_below_test_n3");
    elm_shutdown();
 }
 END_TEST

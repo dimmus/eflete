@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-
 #include "test_ui_widget_list.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_widget_list_test
@@ -58,18 +58,21 @@
 EFLETE_TEST (ui_widget_list_data_set_test_p1)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_data_set_test_p1");
+
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_data_set.edj");
+   project = pm_project_open("./ui_widget_list_data_set_test_p1/ui_widget_list_data_set_test_p1.pro");
    widget_list = ui_widget_list_add(parent);
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   //pm_project_close(project);
+
    evas_object_del(parent);
+   teardown("./ui_widget_list_data_set_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -102,13 +105,15 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_p2)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_data_set_test_p2");
+
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_data_set.edj");
+   project = pm_project_open("./ui_widget_list_data_set_test_p2/ui_widget_list_data_set_test_p2.pro");
    project->layouts = NULL;
    while (project->layouts)
      {
@@ -121,8 +126,9 @@ EFLETE_TEST (ui_widget_list_data_set_test_p2)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   //pm_project_close(project);
+
    evas_object_del(parent);
+   teardown("./ui_widget_list_data_set_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -155,13 +161,15 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_p3)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_data_set_test_p3");
+
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
    Widget *widget = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_data_set.edj");
+   project = pm_project_open("ui_widget_list_data_set_test_p3");
    while (project->widgets)
      {
         widget = EINA_INLIST_CONTAINER_GET(project->widgets, Widget);
@@ -173,8 +181,9 @@ EFLETE_TEST (ui_widget_list_data_set_test_p3)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   //pm_project_close(project);
+
    evas_object_del(parent);
+   teardown("./ui_widget_list_data_set_test_p3");
    elm_shutdown();
 }
 END_TEST
@@ -207,6 +216,8 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_p4)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_data_set_test_p4");
+
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -214,7 +225,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p4)
    Style *layout = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_data_set.edj");
+   project = pm_project_open("./ui_widget_list_data_set_test_p4/ui_widget_list_data_set_test_p4.pro");
    project->widgets = NULL;
    project->layouts = NULL;
    while (project->layouts)
@@ -235,8 +246,9 @@ EFLETE_TEST (ui_widget_list_data_set_test_p4)
 
    result = ui_widget_list_data_set(widget_list, project);
    ck_assert_msg(result, "Failed load data into widget list");
-   //pm_project_close(project);
+
    evas_object_del(parent);
+   teardown("./ui_widget_list_data_set_test_p4");
    elm_shutdown();
 }
 END_TEST
@@ -306,14 +318,17 @@ END_TEST
 EFLETE_TEST (ui_widget_list_data_set_test_n2)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_data_set_test_n2");
+
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
-   project = pm_open_project_edj("./edj_build/ui_widget_list_data_set.edj");
+   project = pm_project_open("./ui_widget_list_data_set_test_n2/ui_widget_list_data_set_test_n2.pro");
    result = ui_widget_list_data_set(NULL, project);
 
    ck_assert_msg(!result, "Data loaded with NULL widget list object");
-   //pm_project_close(project);
+
+   teardown("./ui_widget_list_data_set_test_n2");
    elm_shutdown();
 }
 END_TEST

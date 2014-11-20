@@ -18,6 +18,7 @@
  */
 
 #include "test_ui_widget_list.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_widget_list_test
@@ -62,6 +63,8 @@
 EFLETE_TEST (ui_widget_list_layouts_reload_test_p)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_layouts_reload_test_p");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent, *widget_list, *glist;
    Project *project = NULL;
@@ -70,7 +73,7 @@ EFLETE_TEST (ui_widget_list_layouts_reload_test_p)
    Elm_Object_Item *eoi;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_layout_reload.edj");
+   project = pm_project_open("./ui_widget_list_layouts_reload_test_p/ui_widget_list_layouts_reload_test_p.pro");
    widget_list = ui_widget_list_add(parent);
    result = ui_widget_list_data_set(widget_list, project);
    layout = wm_style_add("newstyle", "newstyle", LAYOUT, NULL);
@@ -82,9 +85,9 @@ EFLETE_TEST (ui_widget_list_layouts_reload_test_p)
    result = ui_widget_list_layouts_reload(glist, project);
    ck_assert_msg(result, "Failed to reload layouts data into widget list");
 
-   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("ui_widget_list_layouts_reload_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -117,20 +120,23 @@ END_TEST
 EFLETE_TEST (ui_widget_list_layouts_reload_test_n1)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_layouts_reload_test_n1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_layout_reload.edj");
+   project = pm_project_open("./ui_widget_list_layouts_reload_test_n1/ui_widget_list_layouts_reload_test_n1.pro");
 
    result = ui_widget_list_layouts_reload(NULL, project);
    ck_assert_msg(!result, "Layouts data was reloaded in widget list");
 
-   //pm_project_close(project);
+
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_widget_list_layouts_reload_test_n1");
    elm_shutdown();
 }
 END_TEST

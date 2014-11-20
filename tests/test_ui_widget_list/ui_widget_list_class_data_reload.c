@@ -17,8 +17,8 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-
 #include "test_ui_widget_list.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_widget_list_test
@@ -71,6 +71,8 @@
 EFLETE_TEST (ui_widget_list_class_data_reload_test_p1)
 {
    elm_init(0, 0);
+   setup("ui_widget_list_class_data_reload_test_p1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *parent, *widget_list;
    Project *project = NULL;
@@ -79,7 +81,7 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p1)
    Class *class = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/ui_widget_list_data_reload.edj");
+   project = pm_project_open("./ui_widget_list_class_data_reload_test_p1/ui_widget_list_class_data_reload_test_p1.pro");
    widget_list = ui_widget_list_add(parent);
    result = ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain classes and styles********/
@@ -102,9 +104,9 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p1)
    result = ui_widget_list_class_data_reload(glist, _widget->classes);
    ck_assert_msg(result, "Failed to reload data into widget list");
 
-   //pm_project_close(project);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_widget_list_class_data_reload_test_p1");
    elm_shutdown();
 }
 END_TEST
