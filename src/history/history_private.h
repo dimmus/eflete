@@ -73,6 +73,7 @@ struct _Module
                              equale to lifetime of module*/
    Eina_List *changes; /**< List of structures, that contain diff info about change */
    Diff *current_change; /**< Current diff for module.*/
+   Elm_Object_Item *ui_item; /**< Genlist item, that provide discard all changes*/
    unsigned int depth; /**< Maximum count of stored changes */
 };
 
@@ -280,4 +281,15 @@ _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current);
 void
 _history_ui_list_reload(History *history, Module *module);
 
+/**
+ * Create new genlist item, that provide discard all changes from history
+ * of the given module. This item always first in genlist.
+ *
+ * @param module The module, that will manage by this item.
+ * @param module The History structure.
+ *
+ * @ingroup History_UI
+ */
+void
+_history_module_ui_item_add(History *history, Module *module);
 #endif /* HISTORY_PRIVATE_H */

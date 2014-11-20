@@ -263,7 +263,7 @@ history_module_add(Evas_Object *source)
    module->target = source;
    evas_object_data_set(module->target, HISTORY_MODULE_KEY, module);
    history->modules = eina_list_append(history->modules, module);
-
+   _history_module_ui_item_add(history, module);
    return true;
 }
 
@@ -286,7 +286,7 @@ history_module_del(Evas_Object *source)
         ERR("Didn't cleared history for module %p", module->target);
         return false;
      }
-
+   elm_object_item_del(module->ui_item);
    module_list_node = eina_list_data_find_list(history->modules, module);
    history->modules = eina_list_remove_list(history->modules, module_list_node);
    free(module);

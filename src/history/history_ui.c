@@ -51,6 +51,22 @@ _on_change_selected(void *data,
    return;
 }
 
+static void
+_on_discard_changes_selected(void *data,
+                           Evas_Object *obj __UNUSED__,
+                           void *event_info __UNUSED__)
+{
+   Module *module = (Module *)data;
+
+   int index_curr = 0;
+
+   if (module->current_change)
+     index_curr = module->current_change->index;
+
+   history_undo(module->target, index_curr);
+}
+
+
 static char *
 _module_item_label_get(void *data __UNUSED__,
                 Evas_Object *obj __UNUSED__,
@@ -161,6 +177,14 @@ _history_ui_item_add(Diff *change, Module *module)
 }
 
 void
+_history_module_ui_item_add(History *history, Module *module)
+{
+   module->ui_item = elm_genlist_item_append(history->genlist, _itc_module,
+                                             NULL, NULL, ELM_GENLIST_ITEM_NONE,
+                                             _on_discard_changes_selected, module);
+}
+
+void
 _history_ui_list_reload(History *history, Module *module)
 {
    Eina_List *l, *l_next;
@@ -168,6 +192,7 @@ _history_ui_list_reload(History *history, Module *module)
    Eina_Bool canceled = false;
 
    elm_genlist_clear(history->genlist);
+   _history_module_ui_item_add(history, module);
 
    if (!module->current_change) canceled = true;
 
