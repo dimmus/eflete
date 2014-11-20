@@ -14,7 +14,7 @@ logger_test \
 container_test \
 modal_window_test \
 notify_test \
-project_manager_new_test \
+project_manager_test \
 config_test \
 cursor_test \
 style_editor_test \
@@ -48,7 +48,6 @@ FLAGS = \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/project_manager_new \
 -I${top_srcdir}/src/config \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/container \
@@ -176,19 +175,19 @@ test_notify/noti_info_show_test.c
 notify_test_CFLAGS = ${FLAGS}
 notify_test_LDADD = ${LD}
 
-project_manager_new_test_SOURCES = \
-test_project_manager_new/test_project_manager_new.c \
-test_project_manager_new/pm_project_import_edj.c \
-test_project_manager_new/pm_project_import_edc.c \
-test_project_manager_new/pm_project_thread_cancel.c \
-test_project_manager_new/pm_project_thread_free.c \
-test_project_manager_new/pm_project_open.c \
-test_project_manager_new/pm_project_save.c \
-test_project_manager_new/pm_project_close.c \
-test_project_manager_new/pm_project_meta_data_set.c \
-test_project_manager_new/pm_project_meta_data_get.c
-project_manager_new_test_CFLAGS = ${FLAGS}
-project_manager_new_test_LDADD = ${LD}
+project_manager_test_SOURCES = \
+test_project_manager/test_project_manager.c \
+test_project_manager/pm_project_import_edj.c \
+test_project_manager/pm_project_import_edc.c \
+test_project_manager/pm_project_thread_cancel.c \
+test_project_manager/pm_project_thread_free.c \
+test_project_manager/pm_project_open.c \
+test_project_manager/pm_project_save.c \
+test_project_manager/pm_project_close.c \
+test_project_manager/pm_project_meta_data_set.c \
+test_project_manager/pm_project_meta_data_get.c
+project_manager_test_CFLAGS = ${FLAGS}
+project_manager_test_LDADD = ${LD}
 
 config_test_SOURCES = \
 test_config/test_config.c \
