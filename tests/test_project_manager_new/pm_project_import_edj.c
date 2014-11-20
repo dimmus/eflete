@@ -47,7 +47,7 @@ static Eina_Bool res;
  * @step 1 Call pm_project_import_edj;
  * @step 2 Check returned value.
  * </td>
- * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/pm_open_project_edj.edj",
+ * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/test_project_manager.edj",
  * NULL, NULL, NULL </td>
  * <td>Project_Thead object must be created</td>
  * <td>_REAL_RESULT_</td>
@@ -62,8 +62,8 @@ EFLETE_TEST (pm_project_import_edj_test_p)
    elm_init(0,0);
    app_init();
 
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj", NULL, NULL, NULL);
-   ck_assert_msg(thread != NULL, "Thread for import pm_open_project_edj.edj to new project not started!");
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj", NULL, NULL, NULL);
+   ck_assert_msg(thread != NULL, "Thread for import test_project_manager.edj to new project not started!");
 
    app_shutdown();
    elm_shutdown();
@@ -86,7 +86,7 @@ END_TEST
  * @step 1 Call pm_project_import_edj;
  * @step 2 Check returned value.
  * </td>
- * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/pm_open_project_edj.edj",
+ * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/test_project_manager.edj",
  * "_test_progress_cb", NULL, NULL </td>
  * <td>Static variable 'res' must be EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
@@ -112,7 +112,7 @@ EFLETE_TEST (pm_project_import_edj_test_p1)
    app_init();
 
    res = EINA_FALSE;
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   _test_progress_cb, NULL, NULL);
    if (!thread)
      ck_abort_msg("Project thread is not runned!");
@@ -140,7 +140,7 @@ END_TEST
  * @step 1 Call pm_project_import_edj;
  * @step 2 Check returned value.
  * </td>
- * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/pm_open_project_edj.edj",
+ * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/test_project_manager.edj",
  * NULL, "_test_end_cb", NULL </td>
  * <td>Static variable 'res' must be EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
@@ -166,7 +166,7 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
    app_init();
 
    res = EINA_FALSE;
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/pm_open_project_edj.edj",
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
                                   NULL, _test_end_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread is not runned!");
