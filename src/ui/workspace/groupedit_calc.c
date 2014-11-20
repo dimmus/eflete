@@ -450,8 +450,9 @@ _part_select(void *data,
    evas_object_move(gp->item, xe + offset_x, ye + offset_y);
 
 #define GP_REAL_GEOMETRY_CALC \
-   Evas_Coord part_x = x + xe + offset_x; \
-   Evas_Coord part_y = y + ye + offset_y; \
+   w *= sd->zoom_factor; h *= sd->zoom_factor; \
+   Evas_Coord part_x = x * sd->zoom_factor + xe + offset_x; \
+   Evas_Coord part_y = y * sd->zoom_factor + ye + offset_y; \
    Evas_Coord abs_x = abs(sd->real_size->x - part_x); \
    Evas_Coord abs_y = abs(sd->real_size->y - part_y); \
    if (part_x > sd->real_size->x) \
@@ -657,10 +658,6 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           evas_object_smart_callback_call(sd->obj, SIG_OBJ_AREA_CHANGED, sd->obj_area.geom);
        }
 
-   sd->real_size->x += sd->real_size->w * (1 - sd->zoom_factor) / 2;
-   sd->real_size->y += sd->real_size->h * (1 - sd->zoom_factor) / 2;
-   sd->real_size->w *= sd->zoom_factor;
-   sd->real_size->h *= sd->zoom_factor;
    evas_object_smart_callback_call(sd->obj, SIG_GEOMETRY_CHANGED, (void *)sd->real_size);
 
    return true;
