@@ -22,6 +22,7 @@
 
 static  Elm_Genlist_Item_Class *_itc_module = NULL;
 static  Elm_Genlist_Item_Class *_itc_change = NULL;
+static  Elm_Genlist_Item_Class *_itc_change_inactive = NULL;
 
 static void
 _on_change_selected(void *data,
@@ -75,6 +76,21 @@ _module_item_label_get(void *data __UNUSED__,
    return strdup("Discard all changes");
 }
 
+Eina_Bool
+_item_state_get(void *data,
+                Evas_Object *obj __UNUSED__,
+                const char *part)
+{
+   Diff *diff = (Diff *)data;
+
+   if ((diff->action_type == MODIFY) && ((!strcmp(part, "modify"))))
+       return true;
+   if ((diff->action_type == ADD) && ((!strcmp(part, "add"))))
+       return true;
+   if ((diff->action_type == DEL) && ((!strcmp(part, "delete"))))
+       return true;
+   return false;
+}
 static char *
 _item_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
@@ -130,8 +146,18 @@ _history_ui_add(Evas_Object *parent)
         _itc_change->item_style = "eflete/history";
         _itc_change->func.text_get = _item_label_get;
         _itc_change->func.content_get = NULL;
-        _itc_change->func.state_get = NULL;
+        _itc_change->func.state_get = _item_state_get;
         _itc_change->func.del = NULL;
+     }
+
+   if (!_itc_change_inactive)
+     {
+        _itc_change_inactive = elm_genlist_item_class_new();
+        _itc_change_inactive->item_style = "eflete/history_inactive";
+        _itc_change_inactive->func.text_get = _item_label_get;
+        _itc_change_inactive->func.content_get = NULL;
+        _itc_change_inactive->func.state_get = _item_state_get;
+        _itc_change_inactive->func.del = NULL;
      }
 
    genlist = elm_genlist_add(parent);
@@ -146,21 +172,24 @@ _history_ui_add(Evas_Object *parent)
 void
 _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
 {
-   if (!active)
-     elm_object_item_signal_emit(change->ui_item, "eflete,state,inactive", "eflete");
-
-   switch(change->action_type)
+   if (active)
      {
-      case MODIFY:
-         elm_object_item_signal_emit(change->ui_item, "eflete,state,change", "eflete");
-      break;
-      default:
-      break;
+        elm_genlist_item_item_class_update(change->ui_item, _itc_change);
+        elm_genlist_item_class_ref(_itc_change);
+        elm_genlist_item_class_unref(_itc_change_inactive);
+     }
+   else
+     {
+        elm_genlist_item_item_class_update(change->ui_item, _itc_change_inactive);
+        elm_genlist_item_class_ref(_itc_change_inactive);
+        elm_genlist_item_class_unref(_itc_change);
      }
 
    if (current)
-     elm_genlist_item_bring_in(change->ui_item, ELM_GENLIST_ITEM_SCROLLTO_IN);
-   elm_genlist_item_selected_set(change->ui_item, current);
+     {
+        elm_genlist_item_bring_in(change->ui_item, ELM_GENLIST_ITEM_SCROLLTO_IN);
+        elm_genlist_item_selected_set(change->ui_item, current);
+     }
 }
 
 void
@@ -205,12 +234,11 @@ _history_ui_list_reload(History *history, Module *module)
         elm_object_item_data_set(data->ui_item, data);
 
         if (canceled)
-          elm_object_item_signal_emit(data->ui_item, "eflete,state,inactive",
-                                      "eflete");
+          _history_ui_item_update(data, !canceled, false);
 
         if (data == module->current_change)
           {
-             elm_genlist_item_selected_set(data->ui_item, true);
+             _history_ui_item_update(data, true, true);
              canceled = true;
           }
      }
