@@ -18,6 +18,7 @@
  */
 
 #include "test_ui_main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_main_window_test
@@ -73,7 +74,7 @@ EFLETE_TEST (ui_style_clicked_test_p)
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *path = "./edj_build/ui_style_clicked.edj";
+   const char *path = "./edj_build/main_window.edj";
 
    app_init();
    app_data = app_data_get();
@@ -132,18 +133,19 @@ END_TEST
 EFLETE_TEST (ui_style_clicked_test_n1)
 {
    elm_init(0, 0);
+   setup("ui_style_clicked_test_n1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list, *glist, *parent;
    App_Data *app_data;
    Project *project;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *path = "./edj_build/ui_style_clicked.edj";
 
    app_init();
    app_data = app_data_get();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj(path);
+   project = pm_project_open("./ui_style_clicked_test_n1/ui_style_clicked_test_n1.pro");
    widget_list = ui_widget_list_add(parent);
    ui_widget_list_data_set(widget_list, project);
    /********Choosing widget, so widget list contain parts********/
@@ -159,6 +161,7 @@ EFLETE_TEST (ui_style_clicked_test_n1)
    ck_assert_msg(result == EINA_FALSE, "Function succeed but shouldn't");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_style_clicked_test_n1");
    elm_shutdown();
 }
 END_TEST
