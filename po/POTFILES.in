@@ -30,5 +30,7 @@ src/ui/workspace/groupedit_calc.c
 src/ui/workspace/groupedit.c
 src/ui/workspace/highlight.c
 src/ui/live_view/live_view.c
+src/ui/preference/preference.c
 src/ui/notification/notify.c
+src/ui/shortcuts/shortcuts.c
 src/main.c

@@ -51,24 +51,35 @@ group { name: "elm/layout/image_editor/default";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            min: 400 400;
             max: 400 -1;
-            rel2 {
-               to_y: "padding.bottom";
-               relative: 1.0 0.0;
+            rel1 {
+               to: "area.image_editor_base";
+               relative: 0.66 0.0;
             }
+            rel2.to: "area.image_editor_base";
+         }
+      }
+      part { name: "padding.image_info.top_left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(10, 10);
+            rel1.to: "area.image_info";
+            rel2.to: "area.image_info";
          }
       }
       part { name: "area.image_preview";
          type: SPACER;
          description { state: "default" 0.0;
-            SET_SIZE(380, 380);
             align: 0.5 0.0;
             rel1 {
-               to_y: "eflete.swallow.del_btn";
-               to_x: "area.image_info";
+               to: "padding.image_info.top_left";
+               relative: 1.0 1.0;
             }
-            rel2.to: "area.image_info";
+            rel2 {
+               to: "padding.bottom";
+               relative: 0.0 0.0;
+            }
          }
       }
       part { name: "image_preview_decoration";
@@ -122,8 +133,8 @@ group { name: "elm/layout/image_editor/default";
                relative: 0.0 1.0;
             }
             rel2 {
-               to_y: "area.image_info";
-               to_x: "area.image_preview";
+               to: "padding.bottom";
+               relative: 0.0 0.0;
             }
          }
       }
@@ -227,7 +238,11 @@ group { name: "elm/layout/image_editor/default";
             align: 1.0 1.0;
             BTNS_LARGE_SIZE_SET;
             rel1.to: "area.button_box";
-            rel2.to: "area.button_box";
+            rel2 {
+               to_x: "padding.bottom";
+               to_y: "area.button_box";
+               relative: 0.0 1.0;
+            }
          }
       }
       part { name: "padding.ok_btn";
@@ -260,18 +275,43 @@ group { name: "elm/layout/image_editor/default";
 
 group { name: "elm/layout/image_editor/usage_info";
    parts {
+      part { name: "padding.top.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            PADDING_SIZE_SET;
+         }
+      }
+      part { name: "padding.bottom.right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            PADDING_SIZE_SET;
+         }
+      }
+      part { name: "area.usage_info";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "padding.top.left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.bottom.right";
+               relative: 0.0 0.0;
+            }
+         }
+      }
       part { name: "eflete.swallow.search_line";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 80 30;
-            rel2 {
-               to_x: "search_line_padding";
-               relative: 0.0 1.0;
-            }
+            rel1.to: "area.usage_info";
+            rel2.to: "area.usage_info";
          }
       }
-      part { name: "search_line_padding";
+      part { name: "padding.genlist";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 0.0;
@@ -287,27 +327,11 @@ group { name: "elm/layout/image_editor/usage_info";
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1 {
-               to_y: "search_line_padding";
+               to_y: "padding.genlist";
+               to_x: "area.usage_info";
                relative: 0.0 1.0;
             }
-            rel2 {
-               to_x: "search_line_padding";
-               relative: 0.0 1.0;
-            }
-         }
-      }
-      part { name: "genlist_decorations";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            align: 1.0 0.0;
-            color: DARK_GREY_BG_COLOR;
-            image {
-               normal: "border_1.png";
-               border: 1 1 1 1;
-               middle: NONE;
-            }
-            rel1.to: "eflete.swallow.genlist";
-            rel2.to: "eflete.swallow.genlist";
+            rel2.to: "area.usage_info";
          }
       }
    }

@@ -22,7 +22,7 @@
 /**
  * @addtogroup highlight_test
  * @{
- * @addtogroup highlight_handler_middle_show
+ * @addtogroup highlight_handler_align_hide
  * @{
  * highlight
  * <TABLE>
@@ -30,11 +30,11 @@
  */
 
 /**
- * @addtogroup highlight_handler_middle_show
+ * @addtogroup highlight_handler_align_hide
  * @{
  * <tr>
- * <td>highlight_handler_middle_show</td>
- * <td>highlight_handler_middle_show_test_p1</td>
+ * <td>highlight_handler_align_hide</td>
+ * <td>highlight_handler_align_hide_test_p1</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
@@ -42,9 +42,8 @@
  * @step 3 highlight created.
  *
  * @procedure
- * @step 1 Call function highlight_handler_middle_show(highlight).
- * @step 1 Call function highlight_handler_middle_hide(highlight).
- * @step 2 Call function highlight_handler_middle_show(highlight).
+ * @step 1 Call function highlight_handler_align_show(highlight).
+ * @step 2 Call function highlight_handler_align_hide(highlight).
  * @step 3 Check returned value.
  * </td>
  * <td>Evas_Object *highlight</td>
@@ -54,7 +53,7 @@
  * </tr>
  * @}
  */
-EFLETE_TEST (highlight_handler_middle_show_test_p1)
+EFLETE_TEST (highlight_handler_align_hide_test_p1)
 {
    Evas_Object *parent, *highlight;
 
@@ -62,20 +61,19 @@ EFLETE_TEST (highlight_handler_middle_show_test_p1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    highlight = highlight_add(parent);
 
-   highlight_handler_middle_show(highlight);
-   highlight_handler_middle_hide(highlight);
-   ck_assert_msg(highlight_handler_middle_show(highlight), "Showing middle handler was failed.");
+   highlight_handler_align_show(highlight);
+   ck_assert_msg(highlight_handler_align_hide(highlight), "Hiding middle handler was failed.");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup highlight_handler_middle_show
+ * @addtogroup highlight_handler_align_hide
  * @{
  * <tr>
- * <td>highlight_handler_middle_show</td>
- * <td>highlight_handler_middle_show_test_p2</td>
+ * <td>highlight_handler_align_hide</td>
+ * <td>highlight_handler_align_hide_test_p2</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
@@ -83,9 +81,9 @@ END_TEST
  * @step 3 highlight created.
  *
  * @procedure
- * @step 1 Call function highlight_handler_middle_show(highlight).
+ * @step 1 Call function highlight_handler_align_hide(highlight).
  * @step 2 Check returned value.
- * @step 3 Call function highlight_handler_middle_show(highlight).
+ * @step 3 Call function highlight_handler_align_hide(highlight).
  * @step 4 Check returned value.
  * </td>
  * <td>Evas_Object *highlight</td>
@@ -95,7 +93,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (highlight_handler_middle_show_test_p2)
+EFLETE_TEST (highlight_handler_align_hide_test_p2)
 {
    Evas_Object *parent, *highlight;
 
@@ -103,19 +101,19 @@ EFLETE_TEST (highlight_handler_middle_show_test_p2)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    highlight = highlight_add(parent);
 
-   ck_assert_msg(highlight_handler_middle_show(highlight), "Showing middle handler was failed.");
-   ck_assert_msg(highlight_handler_middle_show(highlight), "Showing middle handler was failed.");
+   ck_assert_msg(highlight_handler_align_hide(highlight), "Hiding middle handler was failed.");
+   ck_assert_msg(highlight_handler_align_hide(highlight), "Hiding middle handler was failed.");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup highlight_handler_middle_show
+ * @addtogroup highlight_handler_align_hide
  * @{
  * <tr>
- * <td>highlight_handler_middle_show</td>
- * <td>highlight_handler_middle_show_test_n1</td>
+ * <td>highlight_handler_align_hide</td>
+ * <td>highlight_handler_align_hide_test_n1</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
@@ -123,7 +121,7 @@ END_TEST
  * @step 3 another Evas_Object created (Not highlight).
  *
  * @procedure
- * @step 1 Call function highlight_handler_middle_show(bg).
+ * @step 1 Call function highlight_handler_align_hide(bg).
  * @step 2 Check returned value.
  * </td>
  * <td>Evas_Object *bg</td>
@@ -133,7 +131,7 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (highlight_handler_middle_show_test_n1)
+EFLETE_TEST (highlight_handler_align_hide_test_n1)
 {
    Evas_Object *parent, *bg;
 
@@ -141,24 +139,24 @@ EFLETE_TEST (highlight_handler_middle_show_test_n1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    bg = elm_bg_add(parent);
 
-   ck_assert_msg(!highlight_handler_middle_show(bg), "Showing middle handler of not-highlight object.");
+   ck_assert_msg(!highlight_handler_align_hide(bg), "Hiding middle handler of not-highlight object.");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup highlight_handler_middle_show
+ * @addtogroup highlight_handler_align_hide
  * @{
  * <tr>
- * <td>highlight_handler_middle_show</td>
- * <td>highlight_handler_middle_show_test_n2</td>
+ * <td>highlight_handler_align_hide</td>
+ * <td>highlight_handler_align_hide_test_n2</td>
  * <td>
  * @precondition
  * @step 1 initialized elm
  *
  * @procedure
- * @step 1 Call function highlight_handler_middle_show(NULL).
+ * @step 1 Call function highlight_handler_align_hide(NULL).
  * @step 2 Check returned value.
  * </td>
  * <td>NULL</td>
@@ -168,18 +166,18 @@ END_TEST
  * </tr>
  * @}
  */
-EFLETE_TEST (highlight_handler_middle_show_test_n2)
+EFLETE_TEST (highlight_handler_align_hide_test_n2)
 {
    elm_init(0, 0);
 
-   ck_assert_msg(!highlight_handler_middle_show(NULL), "Showing middle handler of NULL object.");
+   ck_assert_msg(!highlight_handler_align_hide(NULL), "Hiding middle handler of NULL object.");
 
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup highlight_handler_middle_show
+ * @addtogroup highlight_handler_align_hide
  * @{
  * </TABLE>
  * @}

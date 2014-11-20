@@ -285,6 +285,59 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    pm_project_changed(app_data_get()->project); \
 }
 
+#define ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
+static Evas_Object * \
+prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                                Prop_Data *pd, \
+                                const char *tooltip) \
+{ \
+   Evas_Object *item, *combobox; \
+   Part *part; \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
+   EWE_COMBOBOX_ADD(parent, combobox) \
+   const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                      pd->part->curr_state, pd->part->curr_state_value); \
+   if (value) \
+     ewe_combobox_text_set(combobox, value); \
+   else \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
+   EINA_INLIST_FOREACH(pd->style->parts, part) \
+     { \
+         if (strcmp(pd->part->name, part->name)) \
+         ewe_combobox_item_add(combobox, part->name); \
+     } \
+   elm_object_tooltip_text_set(combobox, tooltip); \
+   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", combobox); \
+   evas_object_data_set(item, ITEM1, combobox); \
+   return item; \
+}
+
+#define ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE) \
+static void \
+prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
+                                   Prop_Data *pd) \
+{ \
+   Evas_Object *combobox; \
+   Part *part; \
+   combobox = evas_object_data_get(item, ITEM1); \
+   ewe_combobox_items_list_free(combobox, true); \
+   const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                               pd->part->curr_state, pd->part->curr_state_value); \
+   if (value) \
+     ewe_combobox_text_set(combobox, value); \
+   else \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
+   EINA_INLIST_FOREACH(pd->style->parts, part) \
+     { \
+        if (strcmp(pd->part->name, part->name)) \
+        ewe_combobox_item_add(combobox, part->name); \
+     } \
+   pm_project_changed(app_data_get()->project); \
+}
+
 #define ITEM_1COMBOBOX_PART_TEXTBLOCK_CALLBACK(SUB, VALUE, TYPE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \

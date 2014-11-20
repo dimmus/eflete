@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -22,6 +22,8 @@
 #include "main_window.h"
 
 void config_init_test_p(int);
+void config_init_test_n(int);
+
 void config_shutdown_test_p(int);
 
 void profile_load_test_p1(int);
@@ -37,3 +39,7 @@ void config_save_test_p(int);
 void config_load_test_p(int);
 void config_get_test_p1(int);
 void config_get_test_p2(int);
+
+void config_panes_sizes_data_update_test_p(int);
+void config_panes_sizes_data_update_test_n(int);
+

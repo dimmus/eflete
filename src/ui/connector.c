@@ -384,13 +384,14 @@ _add_style_dailog(void *data,
 }
 
 static void
-_part_name_change(void *data, Evas_Object *obj, void *event_info)
+_part_name_change(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Part *part = (Part*)event_info;
    App_Data *ap = (App_Data *)data;
 
    ui_widget_list_part_update(ui_block_widget_list_get(ap), part->name);
-   workspace_edit_object_set(obj, ap->project->current_style, ap->project->dev);
+   live_view_widget_style_unset(ap->live_view);
+   live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
    evas_object_smart_callback_call(ui_block_widget_list_get(ap), "wl,part,select", part);
 }
 
@@ -522,7 +523,7 @@ ui_state_select(App_Data *ap,
    Part *part = NULL;
    Evas_Object *prop_view;
 
-   if ((!ap) && (!obj))
+   if ((!ap) || (!obj))
      {
         ERR("App Data or State list is missing!");
         return;
@@ -541,7 +542,7 @@ ui_part_select(App_Data *ap, Part* part)
    Evas_Object *prop;
    Evas_Object *gl_states;
 
-   if ((!ap) && (!part))
+   if ((!ap) || (!part))
      {
         ERR("App Data or part is missing!");
         return NULL;
@@ -711,6 +712,8 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 
    free(selected);
 
+   code_edit_mode_switch(ap, false);
+
    return true;
 }
 
@@ -815,6 +818,7 @@ ui_close_project_request(App_Data *ap __UNUSED__,
    ui_menu_locked_set(ap->menu_hash, false);
    //ap->project->close_request = false;
    evas_object_del(ap->popup);
+   ap->popup = NULL;
 
    return result;
    */
@@ -889,19 +893,23 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
    else
       class_st = elm_object_item_data_get(eoi);
 
+   if (class_st->__type != CLASS) return false;
+
    /* Search edje edit object, which willn't delete now. This object needed
       for manipulate with group in *.edj file*/
-   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, widget_work)
+   EINA_INLIST_FOREACH(ap->project->widgets, widget_work)
      {
         if (!strcmp(widget->name, widget_work->name)) continue;
-        EINA_INLIST_FOREACH_SAFE(widget_work->classes, l, class_work)
+        EINA_INLIST_FOREACH(widget_work->classes, class_work)
           {
-             EINA_INLIST_FOREACH_SAFE(class_work->styles, l, style_work)
+             EINA_INLIST_FOREACH(class_work->styles, style_work)
               {
-                 if (!style_work->isAlias) break;
+                 if (!style_work->isAlias) goto found;
               }
           }
      }
+
+found:
    if (!style_work)
      {
         ERR("Failed search style object from another class");
@@ -967,65 +975,6 @@ ui_group_delete(App_Data *ap, Type group_type)
    else
      return _selected_layout_delete(gl_groups, ap);
    return true;
-}
-
-Eina_Bool
-ui_part_state_delete(App_Data *ap)
-{
-   Evas_Object *state_list = NULL;
-   Part *part = NULL;
-   Style *style = NULL;
-   Elm_Object_Item *eoi = NULL;
-   char **arr = NULL;
-   Eina_Stringshare *full_state_name = NULL;
-   Eina_Stringshare *state_name = NULL;
-   Eina_Stringshare *state_value = NULL;
-   double value = 0;
-
-#define CLEAR_STRINGS \
-        eina_stringshare_del(state_name); \
-        eina_stringshare_del(state_value); \
-        eina_stringshare_del(full_state_name); \
-        free(arr[0]); \
-        free(arr);
-
-   if ((!ap) && (!ap->workspace)) return false;
-
-   state_list = ui_block_state_list_get(ap);
-   part = ui_states_list_part_get(state_list);
-   if (!part) return false;
-
-   eoi = elm_genlist_selected_item_get(state_list);
-   if (!eoi)
-     {
-        NOTIFY_INFO(3, _("Please select part state"));
-        return false;
-     }
-
-   full_state_name = eina_stringshare_add(elm_object_item_data_get(eoi));
-   if (!full_state_name) return false;
-
-   arr = eina_str_split(full_state_name, " ", 3);
-   state_name = eina_stringshare_add(arr[0]);
-   state_value = eina_stringshare_add(arr[1]);
-   value = atof(state_value);
-
-   if (!edje_edit_state_del(style->obj, part->name, state_name, value))
-     {
-        if ((!strcmp(state_name, "default")) && (value == 0))
-          {
-             NOTIFY_WARNING(_("Couldn't delete default state"));
-          }
-        else
-          NOTIFY_WARNING(_("Failed delete state \n[%s %3.2f]"), state_name, value);
-        CLEAR_STRINGS;
-        return false;
-     }
-  elm_object_item_del(eoi);
-  elm_genlist_item_selected_set(elm_genlist_first_item_get(state_list), true);
-  CLEAR_STRINGS;
-#undef CLEAR_STRINGS
-  return true;
 }
 
 Eina_Bool
@@ -1107,6 +1056,48 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
    evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, ap);
+
+   return true;
+}
+
+static void
+_panes_pos_setup(Evas_Object *panes, double value, Eina_Bool disabled)
+{
+   if (!panes) return;
+
+   elm_panes_content_left_size_set(panes, value);
+   elm_object_disabled_set(panes, disabled);
+}
+
+Eina_Bool
+code_edit_mode_switch(App_Data *ap, Eina_Bool is_on)
+{
+   Config *config;
+   double center = 0.0,
+          center_down = 0.0,
+          left = 0.0,
+          right_hor = 0.0;
+
+    if (is_on)
+      {
+         if (!config_panes_sizes_data_update(ap)) return false;
+      }
+    else
+      {
+         config = config_get();
+         if (!config) return false;
+
+         center = config->panes.center;
+         center_down = config->panes.center_down;
+         left = config->panes.left;
+         right_hor = config->panes.right_hor;
+      }
+
+   _panes_pos_setup(ap->panes.center, center, is_on);
+   _panes_pos_setup(ap->panes.center_down, center_down, is_on);
+   _panes_pos_setup(ap->panes.left, left, is_on);
+   _panes_pos_setup(ap->panes.right_hor, right_hor, is_on);
+   ui_panes_left_panes_min_size_toggle(ap, !is_on);
 
    return true;
 }

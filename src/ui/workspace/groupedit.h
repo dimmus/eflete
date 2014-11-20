@@ -68,107 +68,9 @@ typedef struct _Geom Groupedit_Geom;
 Evas_Object *
 groupedit_add(Evas_Object *parent);
 
-/**
- * Set the size of groupedit handlers.
- *
- * @param obj The groupedit object,
- * @param htl_w wigth of top-left handler,
- * @param htl_h height of top-left handler,
- * @param hbr_w wigth of bottom-right handler,
- * @param hbr_h height of bottom-tight handler.
- *
- * @note if trying to set the htl_w, htl_h, hbr_w, hbr_h < 0, will be set 5.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_handler_size_set(Evas_Object *obj, int htl_w, int htl_h, int hbr_w, int hbr_h);
-
-/**
- * Get the size of groupedit handlers.
- *
- * @param obj The groupedit object,
- * @param htl_w pointer of int width of top-left handler,
- * @param htl_h pointer of int height of top-left handler,
- * @param hbr_w pointer of int width of bottom-right handler,
- * @param hbr_h pointer of int height of bottom-tight handler.
- *
- * @ingroup Groupedit
- */
-void
-groupedit_handler_size_get(Evas_Object *obj, int *htl_w, int *htl_h, int *hbr_w, int *hbr_h);
-
-/**
- * Set the minimal size of container.
- *
- * @param obj The groupedit object,
- * @param w minimal width of container,
- * @param h minimal height of container.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @note if tring to set the w or h < 0, will be set 0
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_min_size_set(Evas_Object *obj, int w, int h);
-
-/**
- * Set the maximum size of container.
- *
- * @param obj The groupedit object,
- * @param w maximum width of container,
- * @param h maximum height of container.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @note if tring to set the w or h < 0, will be set -1
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_max_size_set(Evas_Object *obj, int w, int h);
-
-/**
- * Set the size of container.
- *
- * @param obj The groupedit object,
- * @param w The new width of container,
- * @param h The new height of container.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @note if w over the maximum weight will be set maximum width of container;
- *       if h over the maximum height will be set maximum height of container;
- *       if w less the minimum weight will be set minimum width of container;
- *       if h less the minimum height will be set minimum height of container.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_container_size_set(Evas_Object *obj, int w, int h);
-
-/**
- * Get the size of container.
- *
- * @param obj The groupedit object,
- * @param w The int pointer where width will be set,
- * @param h The int pointer where height will be set.
- *
- * @return EINA_TRUE on success or EINA_FALSE, on errors.
- *
- * @ingroup Groupedit
- */
-Eina_Bool
-groupedit_container_size_get(Evas_Object *obj, int *w, int *h);
-
 /*TODO: aspect for groupedit */
 //Eina_Bool
 //ws_groupedit_aspect_set(Evas_Object *obj, double x, double y);
-
 
 /**
  * Set the new style to groupedit object.
@@ -258,6 +160,22 @@ groupedit_edit_object_recalc_all(Evas_Object *obj);
  */
 Evas_Object *
 groupedit_edit_object_part_draw_get(Evas_Object *obj, const char *part);
+
+/**
+ * Renaming the part object with new name.
+ *
+ * @param obj The groupedit object,
+ * @param part_old_name Old name of the part that is going to be renamed with new name.
+ * @param part_new_name New name of the part that is going to be setted.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_rename(Evas_Object *obj,
+                                  const char *part_old_name,
+                                  const char *part_new_name);
 
 /**
  * Add to groupedit a new part. The function add part to edje edit object and
@@ -395,9 +313,11 @@ groupedit_part_object_area_visible_get(Evas_Object *obj);
  * @param obj The groupedit object,
  * @param separated ON/OFF (true/false) the separate mode,
  *
+ * @return EINA_TRUE when success, EINA_FALSE otherwise.
+ *
  * @ingroup Groupedit
  */
-void
+Eina_Bool
 groupedit_edit_object_parts_separated(Evas_Object *obj,
                                       Eina_Bool separated);
 
@@ -518,5 +438,19 @@ groupedit_edit_object_part_above(Evas_Object *obj, const char *part);
  */
 Eina_Bool
 groupedit_edit_object_part_below(Evas_Object *obj, const char *part);
+
+/**
+ * Set zoom factor for view zoommed style in groupedit object.
+ *
+ * @param obj The groupedit object.
+ * @param factor A factor for scale. Where value 1.0 = 100% scale (not zoom
+ * object). Minimum is 0.01, maximum is 20. (from 1% to 2000% zoom).
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_zoom_factor_set(Evas_Object *obj, double factor);
 
 #endif /* GROUPEDIT_H */

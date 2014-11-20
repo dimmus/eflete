@@ -92,7 +92,7 @@ static unsigned int part_types_count = 12;
  */
 #define WM_STYLE_NAME_GET(style_name, class_name, full_group_name) \
    arr = eina_str_split(full_group_name, "/", 0); \
-   strcpy(tmp, arr[3]); \
+   eina_strlcpy(tmp, arr[3], sizeof(tmp)); \
    for (size = 4; arr[size]; size++) \
      { \
         if (strcmp(arr[size], class_name)) \
@@ -860,7 +860,6 @@ wm_widget_list_new(const char *file)
                   widget_list = eina_inlist_append(widget_list,
                                                    EINA_INLIST_GET(widget));
                   widget_styles = eina_list_free(widget_styles);
-                  widget_styles = NULL;
                }
              if (widget_name)
                free(widget_name);
@@ -940,6 +939,9 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    if ((!widget_list) || (!style_full_name)) return NULL;
 
    WM_WIDGET_NAME_GET(widget_name, style_full_name);
+   if (!widget_name)
+     return NULL;
+
    if (widget_name [0] <= 'm')
      EINA_INLIST_FOREACH(widget_list, _widget)
        {

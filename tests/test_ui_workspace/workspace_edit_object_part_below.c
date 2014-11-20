@@ -78,6 +78,8 @@ EFLETE_TEST(workspace_edit_object_part_below_test_p)
    ck_assert_msg(ret == EINA_FALSE, "Part already at bottom was below again");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -130,6 +132,8 @@ EFLETE_TEST(workspace_edit_object_part_below_test_n)
    ck_assert_msg(ret == EINA_FALSE, "Below non exist part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -182,6 +186,8 @@ EFLETE_TEST(workspace_edit_object_part_below_test_n1)
    ck_assert_msg(ret == EINA_FALSE, "Below NULL named part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

@@ -62,7 +62,7 @@ _genlist_find_item_by_name(Evas_Object *obj, const char *name)
    while (item)
      {
         part = elm_object_item_data_get(item);
-        if (strncmp(part->name, name, strlen(name)) == 0)
+        if (strcmp(part->name, name) == 0)
           break;
         item = elm_genlist_item_next_get(item);
      }
@@ -972,7 +972,21 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
    part = wm_part_add(style, name);
 
    if (!part) return false;
-   nf = _current_naviframe_get(object);
+
+   if (style->__type == STYLE)
+     {
+        nf = evas_object_data_get(object, WIDGETS_NAVIFRAME_DATA_KEY);
+     }
+   else if (style->__type == LAYOUT)
+     {
+        nf = evas_object_data_get(object, LAYOUTS_NAVIFRAME_DATA_KEY);
+     }
+   else
+     {
+        wm_part_del(style, part);
+        return false;
+     }
+
    gl_parts = elm_object_item_part_content_get(_widget_list_get(nf),
                                                "elm.swallow.content");
    eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
@@ -1057,6 +1071,9 @@ _selected_part_move(Evas_Object *object, Style *style, Eina_Bool move_up)
           }
      }
    part = elm_object_item_data_get(eoi);
+
+   if (part->__type != PART) return false;
+
    new_eoi = (move_up) ? elm_genlist_item_insert_before(gl_parts, _itc_part, part, NULL,
                          prev_eoi, elm_genlist_item_type_get(eoi), _on_part_select, nf):
                          elm_genlist_item_insert_after(gl_parts, _itc_part, part, NULL,
@@ -1107,8 +1124,8 @@ ui_widget_list_selected_part_get(Evas_Object *object)
                                                "elm.swallow.content");
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi) return NULL;
-   part = (Part *)elm_object_item_data_get(eoi);
-   if (!part) return NULL;
+   part = (Part *) elm_object_item_data_get(eoi);
+   if ((!part) || (part->__type != PART)) return NULL;
 
    return part;
 }

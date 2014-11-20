@@ -2,6 +2,8 @@
 #define ITEM_HEIGHT 26
 #define PADDING_SIZE FIXED_SIZE(30, 22)
 #define SEARCH_AREA_HEIGHT 22
+#define DIRECTION_COLOR_MAX 50 40
+#define SIZE_LABEL_MIN_MAX SET_SIZE(25, 26)
 group {
    name: "ui/style_viewer_window/preview";
    parts {
@@ -234,23 +236,23 @@ group { name: "elm/layout/style_editor/text";
       part { name: "padding.right";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 20 0;
             max: 20 -1;
-            rel1.relative: 0.6 0;
+            rel1.relative: 0.4 0.0;
          }
       }
       part { name: "padding.left_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             SET_SIZE(6, 16)
          }
       }
       part { name: "padding.right_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 1 1;
+            align: 1.0 1.0;
             SET_SIZE(6, 6)
          }
       }
@@ -266,15 +268,15 @@ group { name: "elm/layout/style_editor/text";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 1 1;
+               relative: 1.0 1.0;
                to: "padding.left_offset";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -286,28 +288,25 @@ group { name: "elm/layout/style_editor/text";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.font";
-            rel2 {
-               offset: 0 0;
-               to: "area.font";
-            }
+            rel2.to: "area.font";
          }
       }
       part { name: "area.style";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.font";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -319,7 +318,7 @@ group { name: "elm/layout/style_editor/text";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.style";
             rel2.to: "area.style";
@@ -329,15 +328,15 @@ group { name: "elm/layout/style_editor/text";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.style";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -349,8 +348,7 @@ group { name: "elm/layout/style_editor/text";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
-               ellipsis: 0.1;
+               align: 1.0 0.5;
             }
             rel1.to: "area.weight";
             rel2.to: "area.weight";
@@ -360,15 +358,15 @@ group { name: "elm/layout/style_editor/text";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.weight";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -380,8 +378,7 @@ group { name: "elm/layout/style_editor/text";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
-               ellipsis: 0.1;
+               align: 1.0 0.5;
             }
             rel1.to: "area.color";
             rel2.to: "area.color";
@@ -394,114 +391,85 @@ group { name: "elm/layout/style_editor/text";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.font";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.font";
             }
          }
       }
-      part { name: "area.size";
+      part { name: "area.start";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            min: 0 SWALLOW_HEIGHT;
-            max: -1 SWALLOW_HEIGHT;
+            align: 0.0 0.0;
+            SIZE_LABEL_MIN_MAX;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                offset: 0 -1;
                to_x: "padding.right";
                to_y: "area.font";
             }
-            rel2 {
-               relative: 0 1;
-               to_x: "padding.right_offset";
-               to_y: "area.font";
-            }
-         }
-      }
-      part { name: "content_left_padding";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0 0.5;
-            max: 4 -1;
-            rel1 {
-               relative: 0.1 0;
-               to: "area.size";
-            }
-            rel2.to_y: "area.size";
+            rel2.to_y: "area.font";
          }
       }
       part { name: "label.start";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 0.0 0.5;
             }
-            rel1.to: "area.size";
-            rel2 {
-               relative: 0 1;
-               to_x: "content_left_padding";
-               to_y: "area.size";
-            }
+            rel1.to: "area.start";
+            rel2.to: "area.start";
          }
       }
       part { name: "swallow.size";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
-            min: 0 SWALLOW_HEIGHT;
+            align: 0.0 0.5;
+            SET_SIZE(70, SWALLOW_HEIGHT);
             rel1 {
-               relative: 1 0;
-               to_x: "content_left_padding";
-               to_y: "area.size";
+               relative: 1.0 0.0;
+               to: "area.start";
             }
-            rel2 {
-               relative: 0.3 1;
-               to: "area.size";
-            }
+            rel2.to_y: "area.start";
          }
       }
-      part { name: "content_right_padding";
+      part { name: "area.end";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
-            max: 4 -1;
+            align: 0.0 0.5;
+            SIZE_LABEL_MIN_MAX;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "swallow.size";
-               to_y: "area.size";
+               to_y: "area.start";
             }
-            rel2.to: "area.size";
+            rel2.to_y: "area.start";
          }
       }
       part { name: "label.end";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
-            rel1 {
-               relative: 1 0;
-               to_x: "content_right_padding";
-               to_y: "area.size";
-            }
-            rel2.to: "area.size";
+            rel1.to: "area.end";
+            rel2.to: "area.end";
          }
       }
       part { name: "swallow.style";
@@ -512,13 +480,12 @@ group { name: "elm/layout/style_editor/text";
             max: -1 SWALLOW_HEIGHT;
             fixed: 1 1;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.right";
                to_y: "area.style";
             }
             rel2 {
-               relative: 0 1;
-               to_x: "padding.right_offset";
+               relative: 0.8 1;
                to_y: "area.style";
             }
          }
@@ -530,13 +497,13 @@ group { name: "elm/layout/style_editor/text";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                offset: 0 -1;
                to_x: "padding.left";
                to_y: "area.style";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.style";
             }
@@ -549,13 +516,13 @@ group { name: "elm/layout/style_editor/text";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                offset: 0 -1;
                to_x: "padding.left";
                to_y: "area.weight";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.weight";
             }
@@ -568,13 +535,13 @@ group { name: "elm/layout/style_editor/text";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                offset: 0 -1;
                to_x: "padding.left";
                to_y: "area.color";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.color";
             }
@@ -610,7 +577,7 @@ group { name: "elm/layout/style_editor/format1";
       part { name: "padding.right";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 20 0;
             max: 20 -1;
             rel1.relative: 0.6 0;
@@ -619,21 +586,21 @@ group { name: "elm/layout/style_editor/format1";
       part { name: "padding.left_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             SET_SIZE(16, 6)
          }
       }
       part { name: "padding.right_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 1 0;
+            align: 1.0 0;
             SET_SIZE(6, 6)
          }
       }
       part { name: "padding.left";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 10 0;
             max: 10 -1;
             rel1.relative: 0.15 0;
@@ -643,15 +610,15 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 1 1;
+               relative: 1.0 1.0;
                to: "padding.left_offset";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -665,8 +632,8 @@ group { name: "elm/layout/style_editor/format1";
             text {
                font: FN;
                size: 12;
-               min: "0" "1";
-               align: 1 0;
+               min: 0 1;
+               align: 1.0 0;
             }
          }
       }
@@ -674,11 +641,11 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.align";
             }
             rel2.to_x: "area.align";
@@ -688,14 +655,14 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 1 0;
+            align: 1.0 0;
             rel1.to: "area.valign";
             rel2.to: "area.valign";
             text {
                font: FN;
                size: 12;
-               min: "0" "1";
-               align: 1 0;
+               min: 0 1;
+               align: 1.0 0;
             }
          }
       }
@@ -703,13 +670,13 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             rel1 {
                relative: 0.5 0;
                to_y: "area.align";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.align";
             }
@@ -719,13 +686,13 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1.to: "area.after1";
             rel2.to: "area.after1";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
          }
       }
@@ -736,12 +703,12 @@ group { name: "elm/layout/style_editor/format1";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.align";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "area.after1";
                to_y: "area.align";
             }
@@ -753,13 +720,12 @@ group { name: "elm/layout/style_editor/format1";
          description { state: "default" 0.0;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
-               offset: 0 -1;
+               relative: 1.0 0.0;
                to_x: "padding.right";
                to_y: "area.align";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right_offset";
                to_y: "area.align";
             }
@@ -769,7 +735,7 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
                relative: 0.2 0;
                to: "area.lmargin";
@@ -786,7 +752,7 @@ group { name: "elm/layout/style_editor/format1";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.left1";
             rel2.to: "area.left1";
@@ -796,14 +762,14 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
             }
             rel1.to: "area.lmargin";
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "area.left1";
                to_y: "area.lmargin";
             }
@@ -813,14 +779,14 @@ group { name: "elm/layout/style_editor/format1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "area.left1";
                to_y: "area.lmargin";
             }
             rel2 {
-               relative: 0.5 1;
+               relative: 0.5 1.0;
                to: "area.lmargin";
             }
          }
@@ -829,9 +795,9 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "swallow.lmargin";
                to_y: "area.lmargin";
             }
@@ -842,11 +808,11 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.right1";
             rel2.to: "area.right1";
@@ -859,12 +825,12 @@ group { name: "elm/layout/style_editor/format1";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.valign";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "area.after2";
                to_y: "area.valign";
             }
@@ -875,11 +841,11 @@ group { name: "elm/layout/style_editor/format1";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.5 0;
+               relative: 0.5 0.0;
                to_y: "area.valign";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.valign";
             }
@@ -892,7 +858,7 @@ group { name: "elm/layout/style_editor/format1";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.after2";
             rel2.to: "area.after2";
@@ -904,13 +870,12 @@ group { name: "elm/layout/style_editor/format1";
          description { state: "default" 0.0;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
-               offset: 0 -1;
+               relative: 1.0 0.0;
                to_x: "padding.right";
                to_y: "area.valign";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right_offset";
                to_y: "area.valign";
             }
@@ -920,13 +885,13 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 0.2 0;
+               relative: 0.2 0.0;
                to: "area.rmargin";
             }
             rel2 {
-               relative: 0.3 1;
+               relative: 0.3 1.0;
                to: "area.rmargin";
             }
          }
@@ -938,7 +903,7 @@ group { name: "elm/layout/style_editor/format1";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.left2";
             rel2.to: "area.left2";
@@ -948,7 +913,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
@@ -957,7 +922,7 @@ group { name: "elm/layout/style_editor/format1";
                to: "area.rmargin";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "area.left2";
                to_y: "area.rmargin";
             }
@@ -967,14 +932,14 @@ group { name: "elm/layout/style_editor/format1";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "area.left2";
                to_y: "area.rmargin";
             }
             rel2 {
-               relative: 0.5 1;
+               relative: 0.5 1.0;
                to: "area.rmargin";
             }
          }
@@ -983,9 +948,9 @@ group { name: "elm/layout/style_editor/format1";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "swallow.rmargin";
                to_y: "area.rmargin";
             }
@@ -996,11 +961,11 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.right2";
             rel2.to: "area.right2";
@@ -1014,49 +979,49 @@ group { name: "elm/layout/style_editor/format2";
       part { name: "padding.right";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 20 0;
             max: 20 -1;
-            rel1.relative: 0.6 0;
+            rel1.relative: 0.6 0.0;
          }
       }
       part { name: "padding.left_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             SET_SIZE(16, 6)
          }
       }
       part { name: "padding.right_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 1 1;
+            align: 1.0 1.0;
             SET_SIZE(6, 6)
          }
       }
       part { name: "padding.left";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 10 0;
             max: 10 -1;
-            rel1.relative: 0.15 0;
+            rel1.relative: 0.15 0.0;
          }
       }
       part { name: "area.tabstops";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 1 0;
             max: -1 ITEM_HEIGHT;
-            aspect: 0.01 0;
+            aspect: 0.01 0.0;
             rel1 {
-               relative: 1 1;
+               relative: 1.0 1.0;
                to: "padding.left_offset";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -1065,10 +1030,10 @@ group { name: "elm/layout/style_editor/format2";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.tabstops";
             }
             rel2.to_x: "area.tabstops";
@@ -1079,18 +1044,15 @@ group { name: "elm/layout/style_editor/format2";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             max: -1 ITEM_HEIGHT;
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.tabstops";
-            rel2 {
-               offset: 0 0;
-               to: "area.tabstops";
-            }
+            rel2.to: "area.tabstops";
          }
       }
       part { name: "label.line_size";
@@ -1100,28 +1062,25 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.line_size";
-            rel2 {
-               offset: 0 0;
-               to: "area.line_size";
-            }
+            rel2.to: "area.line_size";
          }
       }
       part { name: "swallow.tabstops";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.tabstops";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "area.end1";
                to_y: "area.tabstops";
             }
@@ -1132,11 +1091,11 @@ group { name: "elm/layout/style_editor/format2";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.25 0;
+               relative: 0.25 0.0;
                to_y: "area.tabstops";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.tabstops";
             }
@@ -1147,11 +1106,11 @@ group { name: "elm/layout/style_editor/format2";
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.25 0;
+               relative: 0.25 0.0;
                to_y: "area.line_size";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.line_size";
             }
@@ -1161,15 +1120,15 @@ group { name: "elm/layout/style_editor/format2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.line_size";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "area.end2";
                to_y: "area.line_size";
             }
@@ -1181,13 +1140,12 @@ group { name: "elm/layout/style_editor/format2";
          description { state: "default" 0.0;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
-               offset: 0 -1;
+               relative: 1.0 0.0;
                to_x: "padding.right";
                to_y: "label.line_size";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right_offset";
                to_y: "label.line_size";
             }
@@ -1197,10 +1155,13 @@ group { name: "elm/layout/style_editor/format2";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 1 0.5;
-            rel1.to: "area.rel_size";
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "padding.right";
+               to_y: "area.rel_size";
+            }
             rel2 {
-               relative: 0.3 1;
+               relative: 0.3 1.0;
                to: "area.rel_size";
             }
          }
@@ -1212,7 +1173,7 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
+               align: 1.0 0.5;
             }
             rel1.to: "area.left1";
             rel2.to: "area.left1";
@@ -1222,14 +1183,14 @@ group { name: "elm/layout/style_editor/format2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "area.left1";
                to_y: "area.rel_size";
             }
             rel2 {
-               relative: 0.5 1;
+               relative: 0.5 1.0;
                to: "area.rel_size";
             }
          }
@@ -1238,9 +1199,9 @@ group { name: "elm/layout/style_editor/format2";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "swallow.rel_size";
                to_y: "area.rel_size";
             }
@@ -1251,11 +1212,11 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.right";
             rel2.to: "area.right";
@@ -1265,15 +1226,15 @@ group { name: "elm/layout/style_editor/format2";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0.25 1;
+               relative: 0.25 1.0;
                to_y: "label.line_size";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
             }
          }
@@ -1282,24 +1243,24 @@ group { name: "elm/layout/style_editor/format2";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0.25 1;
+               relative: 0.25 1.0;
                to_y: "area.password";
             }
-            rel2.relative: 0.4 1;
+            rel2.relative: 0.4 1.0;
          }
       }
       part { name: "area.ellipsis";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 ITEM_HEIGHT;
             max: -1 ITEM_HEIGHT;
             rel1 {
-               relative: 0.25 1;
+               relative: 0.25 1.0;
                to_y: "area.background";
             }
          }
@@ -1311,7 +1272,7 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.password";
             rel2.to: "area.password";
@@ -1324,7 +1285,7 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.background";
             rel2.to: "area.background";
@@ -1337,7 +1298,7 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.ellipsis";
             rel2.to: "area.ellipsis";
@@ -1350,12 +1311,12 @@ group { name: "elm/layout/style_editor/format2";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 3 0;
+               relative: 3.0 0.0;
                to_x: "padding.left";
                to_y: "area.password";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.password";
             }
          }
@@ -1367,12 +1328,12 @@ group { name: "elm/layout/style_editor/format2";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 3 0;
+               relative: 3.0 0.0;
                to_x: "padding.left";
                to_y: "area.background";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.background";
             }
          }
@@ -1384,12 +1345,12 @@ group { name: "elm/layout/style_editor/format2";
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.ellipsis";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.ellipsis";
             }
          }
@@ -1398,11 +1359,11 @@ group { name: "elm/layout/style_editor/format2";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 0 SWALLOW_HEIGHT;
             max: -1 SWALLOW_HEIGHT;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to: "area.background";
             }
             rel2.to_y: "area.background";
@@ -1415,7 +1376,7 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.end1";
             rel2.to: "area.end1";
@@ -1427,7 +1388,7 @@ group { name: "elm/layout/style_editor/format2";
             text {
                font: FN;
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
             rel1.to: "area.end2";
             rel2.to: "area.end2";
@@ -1445,30 +1406,30 @@ group { name: "elm/layout/style_editor/glow";
       part { name: "padding.right";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 20 0;
             max: 20 -1;
-            rel1.relative: 0.3 0;
+            rel1.relative: 0.4 0.0;
          }
       }
       part { name: "padding.left_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             SET_SIZE(6, 16)
          }
       }
       part { name: "padding.right_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 1 1;
+            align: 1.0 1.0;
             SET_SIZE(6, 6)
          }
       }
       part { name: "padding.left";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0.15 0.5;
+            align: 0.2 0.5;
             min: 10 0;
             max: 10 -1;
          }
@@ -1477,15 +1438,15 @@ group { name: "elm/layout/style_editor/glow";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 26;
             max: -1 26;
             rel1 {
-               relative: 1 1;
+               relative: 1.0 1.0;
                to: "padding.left_offset";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -1495,15 +1456,11 @@ group { name: "elm/layout/style_editor/glow";
          scale: 1;
          description { state: "default" 0.0;
             rel1.to: "area.style";
-            rel2 {
-               offset: 0 0;
-               to: "area.style";
-            }
+            rel2.to: "area.style";
             text {
                font: FN;
                size: 12;
-               align: 1 0.5;
-               ellipsis: 0.1;
+               align: 1.0 0.5;
             }
          }
       }
@@ -1511,15 +1468,15 @@ group { name: "elm/layout/style_editor/glow";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 26;
             max: -1 26;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.style";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -1533,8 +1490,7 @@ group { name: "elm/layout/style_editor/glow";
             text {
                font: "FN";
                size: 12;
-               align: 1 0.5;
-               ellipsis: 0.1;
+               align: 1.0 0.5;
             }
          }
       }
@@ -1542,15 +1498,15 @@ group { name: "elm/layout/style_editor/glow";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 46;
             max: -1 46;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.glow_color";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -1564,14 +1520,13 @@ group { name: "elm/layout/style_editor/glow";
             text {
                font: "FN";
                size: 12;
-               align: 1 0.5;
-               ellipsis: 0.1;
+               align: 1.0 0.5;
             }
          }
          description { state: "align" 0.0;
             inherit: "default" 0.0;
             text {
-               align: 1 0.0;
+               align: 1.0 0.0;
             }
          }
       }
@@ -1582,12 +1537,12 @@ group { name: "elm/layout/style_editor/glow";
             min: 0 20;
             max: -1 20;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.style";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.style";
             }
@@ -1600,12 +1555,12 @@ group { name: "elm/layout/style_editor/glow";
             min: 0 20;
             max: -1 20;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.glow_color";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.glow_color";
             }
@@ -1615,16 +1570,16 @@ group { name: "elm/layout/style_editor/glow";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 0 40;
-            max: 40 40;
+            max: DIRECTION_COLOR_MAX;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.glow2_color";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.glow2_color";
             }
@@ -1665,7 +1620,7 @@ group { name: "ui/style_viewer_window/item/direction";
                to: "area.bg";
             }
             rel2 {
-               relative: 0.67 1;
+               relative: 0.67 1.0;
                to: "area.bg";
             }
          }
@@ -1678,7 +1633,7 @@ group { name: "ui/style_viewer_window/item/direction";
                to: "area.bg";
             }
             rel2 {
-               relative: 0.33 1;
+               relative: 0.33 1.0;
                to: "area.bg";
             }
          }
@@ -1697,7 +1652,7 @@ group { name: "ui/style_viewer_window/item/direction";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0 0.33;
+               relative: 0.0 0.33;
                to: "area.bg";
             }
             rel2 {
@@ -1714,7 +1669,7 @@ group { name: "ui/style_viewer_window/item/direction";
                to: "area.bg";
             }
             rel2 {
-               relative: 1 0.67;
+               relative: 1.0 0.67;
                to: "area.bg";
             }
          }
@@ -1723,7 +1678,7 @@ group { name: "ui/style_viewer_window/item/direction";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.33 0;
+               relative: 0.33 0.0;
                to: "area.bg";
             }
             rel2 {
@@ -1746,11 +1701,11 @@ group { name: "ui/style_viewer_window/item/direction";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
-               relative: 0.67 0;
+               relative: 0.67 0.0;
                to: "area.bg";
             }
             rel2 {
-               relative: 1 0.33;
+               relative: 1.0 0.33;
                to: "area.bg";
             }
          }
@@ -1763,7 +1718,7 @@ group { name: "ui/style_viewer_window/lines";
       part { name: "padding.right";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0.5;
+            align: 0.0 0.5;
             min: 10 0;
             max: 10 -1;
             rel1.relative: 0.4 0;
@@ -1772,21 +1727,21 @@ group { name: "ui/style_viewer_window/lines";
       part { name: "padding.left_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             SET_SIZE(20, 16)
          }
       }
       part { name: "padding.right_offset";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0 1;
+            align: 0.0 1.0;
             SET_SIZE(6, 6)
          }
       }
       part { name: "padding.left";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0.17 0.5;
+            align: 0.2 0.5;
             min: 10 0;
             max: 10 -1;
          }
@@ -1803,15 +1758,15 @@ group { name: "ui/style_viewer_window/lines";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 26;
             max: -1 26;
             rel1 {
-               relative: 0.05 1;
+               relative: 0.05 1.0;
                to_y: "padding.left_offset";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -1828,7 +1783,7 @@ group { name: "ui/style_viewer_window/lines";
             text {
                font: "FN";
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
          }
       }
@@ -1836,15 +1791,15 @@ group { name: "ui/style_viewer_window/lines";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             min: 0 26;
             max: -1 26;
             rel1 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.strikethroug";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.left";
             }
          }
@@ -1858,7 +1813,7 @@ group { name: "ui/style_viewer_window/lines";
             text {
                font: "FN";
                size: 12;
-               align: 0 0.5;
+               align: 0.0 0.5;
             }
          }
       }
@@ -1866,15 +1821,15 @@ group { name: "ui/style_viewer_window/lines";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
-            align: 0 0;
+            align: 0.0 0.0;
             FIXED_SIZE(60, 26)
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.right";
                to_y: "area.underline";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right_offset";
             }
          }
@@ -1899,12 +1854,12 @@ group { name: "ui/style_viewer_window/lines";
             min: 0 20;
             max: -1 20;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.strikethroug";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.strikethroug";
             }
@@ -1917,12 +1872,12 @@ group { name: "ui/style_viewer_window/lines";
             min: 0 20;
             max: -1 20;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "area.underline_color";
                to_y: "area.underline";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.color";
                to_y: "area.underline";
             }
@@ -1936,13 +1891,12 @@ group { name: "ui/style_viewer_window/lines";
             max: -1 20;
             fixed: 1 1;
             rel1 {
-               relative: 1 0;
-               offset: 0 -1;
+               relative: 1.0 0.0;
                to_x: "padding.left";
                to_y: "area.underline";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.underline";
             }
@@ -1953,14 +1907,14 @@ group { name: "ui/style_viewer_window/lines";
          scale: 1;
          description { state: "default" 0.0;
             FIXED_SIZE(60, 20)
-            align: 0 0.5;
+            align: 0.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.color";
                to_y: "area.underline_color";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to_x: "padding.right_offset";
                to_y: "area.underline_color";
             }
@@ -1972,14 +1926,14 @@ group { name: "ui/style_viewer_window/lines";
          description { state: "default" 0.0;
             min: 0 20;
             max: -1 20;
-            align: 1 0.5;
+            align: 1.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left_offset";
                to_y: "area.strikethroug";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.strikethroug";
             }
          }
@@ -1990,17 +1944,23 @@ group { name: "ui/style_viewer_window/lines";
          description { state: "default" 0.0;
             min: 0 20;
             max: -1 20;
-            align: 1 0.5;
+            align: 1.0 0.5;
             rel1 {
-               relative: 1 0;
+               relative: 1.0 0.0;
                to_x: "padding.left_offset";
                to_y: "area.underline";
             }
             rel2 {
-               relative: 0 1;
+               relative: 0.0 1.0;
                to: "area.underline";
             }
          }
       }
    }
 }
+#undef SWALLOW_HEIGHT
+#undef ITEM_HEIGHT
+#undef PADDING_SIZE
+#undef SEARCH_AREA_HEIGHT
+#undef DIRECTION_COLOR_MAX
+#undef SIZE_LABEL_MIN_MAX

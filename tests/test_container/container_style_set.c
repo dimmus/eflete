@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_style_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */

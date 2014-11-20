@@ -19,6 +19,7 @@
 
 #include "eflete.h"
 #include "main_window.h"
+#include "shortcuts.h"
 
 #define CHECK_AP(RET) \
 if (!ap) \
@@ -116,7 +117,9 @@ app_init()
    swap_path = eina_stringshare_add(EFLETE_SWAP_PATH);
    if (!ecore_file_exists(swap_path)) ecore_file_mkdir(swap_path);
 
-   if (!config_init()) return false;
+   app_data_get();
+
+   if (!config_init(ap)) return false;
 
    if (!ewe_init(0, 0))
      {
@@ -134,7 +137,7 @@ app_init()
 Eina_Bool
 app_shutdown()
 {
-   config_shutdown();
+   config_shutdown(ap);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    eina_shutdown();
    efreet_shutdown();

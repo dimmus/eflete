@@ -83,6 +83,18 @@ Eina_Bool
 ui_panes_add(App_Data *ap);
 
 /**
+ * Toggles min sizes for left Pane.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param is_on value to toggle min sizes for left Pane ON/OFF.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on);
+
+/**
  * Adds toolbar with menu and buttons to the given Elementary layout.
  *
  * @param ap The App_Data structure pointer.
@@ -195,18 +207,6 @@ Eina_Bool
 ui_edj_load(App_Data* ap, const char *selected_file);
 
 /**
- * Delete selected state from current part.
- * Moved to own method for the separation of the interaction between the blocks.
- *
- * @param ap The App_Data structure pointer.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @ingroup Window
- */
-Eina_Bool
-ui_part_state_delete(App_Data *ap);
-
-/**
  * Delete selected style/class/layout from current widget
  *
  * @param ap The App_Data structure pointer.
@@ -310,5 +310,20 @@ register_callbacks(App_Data *ap);
  */
 Eina_Bool
 add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
+
+/**
+ * Switch code editing mode ON or OFF.
+ * The Code Editing mode means that Workspace, States, History and Signals
+ * blocks are hidden and only Widget List, Life Wiew and Code tab are available
+ * for user.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param is_on value to toggle Code Editing mode ON/OFF.
+ * @return EINA_TRUE if succeed, EINA_FALSE otherwise.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
 
 #endif /* UI_MAIN_WINDOW_H */

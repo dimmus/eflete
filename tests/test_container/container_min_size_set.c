@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_min_size_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */

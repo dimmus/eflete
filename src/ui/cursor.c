@@ -54,7 +54,8 @@ _cursor_object_get(Evas_Object *obj, Cursor_Type type)
    cur_name = eina_stringshare_printf("eflete/cursor/%s/default",
                                       cursor_string[type]);
    cur_obj = edje_object_add(e);
-   edje_object_file_set(cur_obj, EFLETE_EDJ, cur_name);
+   if (!edje_object_file_set(cur_obj, EFLETE_EDJ, cur_name))
+     ERR("Could not load cursor with current type [%s]", cursor_string[type]);
    edje_object_size_min_get(cur_obj, &x, &y);
    edje_object_size_min_restricted_calc(cur_obj, &x, &y, x, y);
    evas_object_resize(cur_obj, x, y);

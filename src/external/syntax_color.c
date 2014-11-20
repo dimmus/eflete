@@ -118,7 +118,7 @@ static void
 color_load(color_data *cd __UNUSED__)
 {
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), EFLETE_EDJ_PATH"color.eet");
+   snprintf(buf, sizeof(buf), EFLETE_EDJ_PATH"color/color.eet");
 
    Eet_File *ef = eet_open(buf, EET_FILE_MODE_READ);
    if (ef)

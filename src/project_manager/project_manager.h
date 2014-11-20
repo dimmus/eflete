@@ -49,6 +49,8 @@
  */
 struct _Project
 {
+   /** The project name */
+   Eina_Stringshare *name;
    /** Eet_File descriptior of specific project file. */
    Eet_File *pro;
    /** this is worrking file, all changes are happened in this file. */
@@ -67,6 +69,8 @@ struct _Project
    Eina_Inlist *widgets;
    /**< list of custom layouts int loaded theme */
    Eina_Inlist *layouts;
+
+   Eina_List *added_sounds;
 };
 
 /**

@@ -71,7 +71,10 @@ EFLETE_TEST (workspace_edit_object_set_test_p)
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
    res = workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_TRUE, "Fail add edit object into workspace");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -121,7 +124,10 @@ EFLETE_TEST (workspace_edit_object_set_test_n)
    res = workspace_edit_object_set(workspace, style,
                                    "./edj_build/invalid.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object with invalid file path");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -166,6 +172,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n1)
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
    res = workspace_edit_object_set(NULL, style, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object to workspace NULL object");
+
    wm_style_free(style);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
@@ -208,6 +215,8 @@ EFLETE_TEST (workspace_edit_object_set_test_n2)
    workspace = workspace_add(parent);
    res = workspace_edit_object_set(workspace, NULL, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object to workspace without style");
+
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -256,7 +265,10 @@ EFLETE_TEST (workspace_edit_object_set_test_n3)
    wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
    res = workspace_edit_object_set(workspace, style, NULL);
    ck_assert_msg(res == EINA_FALSE, "Add edit object with NULL file path");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

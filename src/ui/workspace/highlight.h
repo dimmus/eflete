@@ -207,7 +207,7 @@ highlight_object_set(Evas_Object *hl, Evas_Object *obj);
  * @ingroup Highlight
  */
 Eina_Bool
-highlight_handler_middle_hide(Evas_Object *hl);
+highlight_handler_align_hide(Evas_Object *hl);
 
 /**
  * Show middle handler and doesn't show in any way!
@@ -218,7 +218,18 @@ highlight_handler_middle_hide(Evas_Object *hl);
  * @ingroup Highlight
  */
 Eina_Bool
-highlight_handler_middle_show(Evas_Object *hl);
+highlight_handler_align_show(Evas_Object *hl);
+
+/**
+ * Get middle handler's visibility!
+ *
+ * @param highlight The smart object that is represent a highlight.
+ * @return EINA_TRUE - successfull, EINA_FALSE - otherwise.
+ *
+ * @ingroup Highlight
+ */
+Eina_Bool
+highlight_handler_align_visible_get(Evas_Object *hl);
 
 /**
  * Disabled handlers of the highlight.

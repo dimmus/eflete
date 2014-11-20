@@ -66,6 +66,7 @@ struct _Program_Editor
      Evas_Object *afters;
      Edje_Action_Type act_type;
      Edje_Tween_Mode trans_type;
+     Evas_Object *program_area_layout;
      Evas_Object *prop_scroller;
      Evas_Object *prop_box;
    } prop_view;
@@ -1536,6 +1537,7 @@ _on_gen_prog_sel(void *data,
    prog_edit->sel = glit;
    program = elm_object_item_data_get(glit);
    prop.program = program;
+   elm_object_disabled_set(prog_edit->program_controls.play, false);
 
    queue = eina_list_append(queue, eina_stringshare_add(program));
    while (queue)
@@ -1649,6 +1651,8 @@ _on_program_editor_close(void *data,
 {
    Program_Editor *prog_edit = (Program_Editor*)data;
    live_view_free(prog_edit->live);
+   if (prog_edit->playback.timer)
+     ecore_timer_del(prog_edit->playback.timer);
    free(prog_edit);
 }
 
@@ -1791,6 +1795,15 @@ _on_bt_prog_add(void *data,
 }
 
 static void
+_on_bt_mode_change(void *data __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
+{
+   // Program_Editor *prog_edit = (Program_Editor*)data;
+   /* TODO: add switch between edit and sequnce modes */
+}
+
+static void
 _on_mwin_del(void * data,
              Evas *e __UNUSED__,
              Evas_Object *obj __UNUSED__,
@@ -1798,6 +1811,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 }
 
 Evas_Object *
@@ -1808,14 +1822,15 @@ program_editor_window_add(Style *style)
    Evas_Object *panes;
    Evas_Object *bottom_panes;
    Evas_Object *scroller;
+   Evas_Object *icon;
    Evas_Object *bt, *sl, *program_list_box, *button_box;
    Program_Editor *prog_edit = NULL;
    /* temporary solution, while it not moved to modal window */
    App_Data *ap = app_data_get();
 
-   if ((!style) || (!style->obj))
+   if ((!style) || (!style->obj) || (!ap->project))
      {
-        ERR("Failed create program editor for current style");
+        ERR("Style or project doesn't opened");
         return NULL;
      }
 
@@ -1849,6 +1864,7 @@ program_editor_window_add(Style *style)
    evas_object_show(top_layout);
 
    BUTTON_ADD(top_layout, bt, _("Play"));
+   elm_object_disabled_set(bt, true);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _on_program_play, prog_edit);
    elm_layout_content_set(top_layout, "swallow.button.play", bt);
@@ -1910,8 +1926,21 @@ program_editor_window_add(Style *style)
    elm_box_pack_end(program_list_box, bt);
    elm_object_part_content_set(bottom_panes, "left", program_list_box);
 
-   SCROLLER_ADD(bottom_panes, scroller);
-   elm_object_part_content_set(bottom_panes, "right", scroller);
+   prop.program_area_layout = elm_layout_add(bottom_panes);
+   elm_layout_file_set(prop.program_area_layout, EFLETE_EDJ, "eflete/program_editor/program_area");
+   elm_object_part_content_set(bottom_panes, "right", prop.program_area_layout);
+   evas_object_show(prop.program_area_layout);
+
+   BUTTON_ADD(prop.program_area_layout, bt, "");
+   elm_object_part_content_set(prop.program_area_layout, "swallow.button", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, ap);
+   ICON_ADD(bt, icon, false, "icon-back");
+   elm_layout_content_set(bt, "icon", icon);
+   elm_object_style_set(bt, "eflete/simple");
+
+   SCROLLER_ADD(prop.program_area_layout, scroller);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_object_part_content_set(prop.program_area_layout, "swallow.content", scroller);
    prop.prop_scroller = scroller;
 
    BOX_ADD(window_layout, button_box, true, false);
@@ -1939,6 +1968,7 @@ program_editor_window_add(Style *style)
    evas_object_event_callback_add(prog_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(prog_edit->mwin);
+   ap->modal_editor = true;
    return prog_edit->mwin;
 }
 

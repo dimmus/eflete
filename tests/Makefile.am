@@ -9,6 +9,7 @@ save_file_dialog_test \
 open_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
+sound_editor_test \
 image_editor_test \
 logger_test \
 container_test \
@@ -34,7 +35,8 @@ live_view_test \
 live_view_prop_test \
 live_widget_test \
 about_window_test \
-colorselector_test
+colorselector_test \
+shortcuts_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -61,6 +63,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
 -I${top_srcdir}/src/ui/signal_list \
+-I${top_srcdir}/src/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
@@ -142,6 +145,12 @@ test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
+sound_editor_test_SOURCES = \
+test_sound_editor/test_sound_editor.c \
+test_sound_editor/sound_editor_window_add.c
+sound_editor_test_CFLAGS = ${FLAGS}
+sound_editor_test_LDADD = ${LD}
+
 image_editor_test_SOURCES = \
 test_image_editor/test_image_editor.c \
 test_image_editor/image_editor_callback_add.c \
@@ -199,7 +208,8 @@ test_config/profile_get.c \
 test_config/profiles_get.c \
 test_config/config_save.c \
 test_config/config_load.c \
-test_config/config_get.c
+test_config/config_get.c \
+test_config/config_panes_sizes_data_update.c
 config_test_CFLAGS = ${FLAGS}
 config_test_LDADD = ${LD}
 
@@ -235,8 +245,14 @@ test_container/container_handler_size_set.c \
 test_container/container_handler_size_get.c \
 test_container/container_style_get.c \
 test_container/container_style_set.c \
+test_container/container_border_hide.c \
+test_container/container_border_show.c \
+test_container/container_padding_size_set.c \
+test_container/container_padding_size_get.c \
 test_container/container_content_set.c \
-test_container/container_content_unset.c
+test_container/container_content_unset.c \
+test_container/container_confine_set.c \
+test_container/container_confine_unset.c
 container_test_CFLAGS = ${FLAGS}
 container_test_LDADD = ${LD}
 
@@ -260,8 +276,9 @@ highlight_test_SOURCES = \
 test_highlight/test_highlight.c \
 test_highlight/highlight_add.c \
 test_highlight/highlight_handler_disabled_set.c \
-test_highlight/highlight_handler_middle_hide.c \
-test_highlight/highlight_handler_middle_show.c \
+test_highlight/highlight_handler_align_hide.c \
+test_highlight/highlight_handler_align_show.c \
+test_highlight/highlight_handler_align_visible_get.c \
 test_highlight/highlight_handler_mode_set.c \
 test_highlight/highlight_object_follow.c \
 test_highlight/highlight_object_unfollow.c
@@ -282,14 +299,15 @@ test_ui_main_window/ui_menu_locked_set.c \
 test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
 test_ui_main_window/ui_panes_show.c \
+test_ui_main_window/ui_panes_left_panes_min_size_toggle.c \
 test_ui_main_window/ui_part_back.c \
 test_ui_main_window/ui_part_select.c \
-test_ui_main_window/ui_part_state_delete.c \
 test_ui_main_window/ui_state_select.c \
 test_ui_main_window/ui_style_back.c \
 test_ui_main_window/ui_style_clicked.c \
 test_ui_main_window/ui_style_delete.c \
-test_ui_main_window/add_callbacks_wd.c
+test_ui_main_window/add_callbacks_wd.c \
+test_ui_main_window/code_edit_mode_switch.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
@@ -348,6 +366,7 @@ test_ui_workspace/workspace_edit_object_part_state_add.c \
 test_ui_workspace/workspace_edit_object_part_state_del.c \
 test_ui_workspace/workspace_edit_object_part_state_set.c \
 test_ui_workspace/workspace_edit_object_recalc.c \
+test_ui_workspace/workspace_edit_object_part_rename.c \
 test_ui_workspace/workspace_edit_object_set.c \
 test_ui_workspace/workspace_edit_object_unset.c \
 test_ui_workspace/workspace_edit_object_visible_set.c \
@@ -357,7 +376,11 @@ test_ui_workspace/workspace_zoom_factor_get.c \
 test_ui_workspace/workspace_zoom_factor_set.c \
 test_ui_workspace/workspace_separate_mode_set.c \
 test_ui_workspace/workspace_separate_mode_get.c \
-test_ui_workspace/workspace_edit_object_part_restack.c
+test_ui_workspace/workspace_edit_object_part_restack.c \
+test_ui_workspace/workspace_highlight_align_visible_get.c \
+test_ui_workspace/workspace_highlight_align_visible_set.c \
+test_ui_workspace/workspace_object_area_visible_get.c \
+test_ui_workspace/workspace_object_area_visible_set.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 
@@ -366,8 +389,6 @@ test_groupedit/test_groupedit.c \
 test_groupedit/groupedit_add.c \
 test_groupedit/groupedit_bg_set.c \
 test_groupedit/groupedit_bg_unset.c \
-test_groupedit/groupedit_container_size_get.c \
-test_groupedit/groupedit_container_size_set.c \
 test_groupedit/groupedit_edit_object_part_above.c \
 test_groupedit/groupedit_edit_object_part_add.c \
 test_groupedit/groupedit_edit_object_part_below.c \
@@ -382,16 +403,10 @@ test_groupedit/groupedit_edit_object_parts_separated_is.c \
 test_groupedit/groupedit_edit_object_recalc_all.c \
 test_groupedit/groupedit_edit_object_set.c \
 test_groupedit/groupedit_edit_object_unset.c \
-test_groupedit/groupedit_handler_size_get.c \
-test_groupedit/groupedit_handler_size_set.c \
-test_groupedit/groupedit_max_size_set.c \
-test_groupedit/groupedit_min_size_set.c \
 test_groupedit/groupedit_part_object_area_get.c \
 test_groupedit/groupedit_part_object_area_visible_get.c \
 test_groupedit/groupedit_part_object_area_visible_set.c \
-test_groupedit/groupedit_part_visible_set.c \
-test_groupedit/groupedit_style_get.c \
-test_groupedit/groupedit_style_set.c
+test_groupedit/groupedit_part_visible_set.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
 
@@ -438,6 +453,16 @@ test_ui_state_dialog/state_dialog_state_add.c \
 test_ui_state_dialog/state_dialog_state_del.c
 ui_state_dialog_test_CFLAGS = ${FLAGS}
 ui_state_dialog_test_LDADD = ${LD}
+
+shortcuts_test_SOURCES = \
+test_shortcuts/test_shortcuts.c \
+test_shortcuts/shortcuts_init.c \
+test_shortcuts/shortcuts_shutdown.c \
+test_shortcuts/shortcuts_profile_load.c \
+test_shortcuts/shortcuts_main_add.c \
+test_shortcuts/shortcuts_main_del.c
+shortcuts_test_CFLAGS = ${FLAGS}
+shortcuts_test_LDADD = ${LD}
 
 colorselector_test_SOURCES = \
 test_colorselector/test_colorselector.c \

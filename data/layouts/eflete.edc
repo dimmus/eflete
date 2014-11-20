@@ -18,4 +18,5 @@ collections {
    #include "edje/highlight.edc"
    #include "edje/compile.edc"
    #include "edje/wizard.edc"
+   #include "edje/preferences.edc"
 }

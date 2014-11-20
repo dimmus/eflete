@@ -20,6 +20,7 @@
 #include "main_window.h"
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
+#include "preference.h"
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
@@ -130,6 +131,15 @@ DELAYED_CB(_on_export_edc_menu, EXPORT_EDC);
 DELAYED_CB(_on_exit_menu, MENU_EXIT);
 
 #undef DELAYED_CB
+
+static void
+_on_preferences_window_menu(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+   preferences_window_add(ap->project);
+}
 
 static void
 _on_view_separate(void *data,
@@ -294,6 +304,9 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Exit"), _on_exit_menu, ap, it);
 
+   ITEM_MENU_ADD(menu, NULL, NULL, _("Edit"), NULL, NULL, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Preferences"), _on_preferences_window_menu, ap, it);
+
    ITEM_MENU_ADD(menu, NULL, NULL, _("View"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Workspace"), NULL, NULL, sub_menu);
    ITEM_MENU_ADD(menu, sub_menu, NULL, _("Zoom in"), _on_view_zoom_in, ap, it);
@@ -401,6 +414,7 @@ ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag)
 
    Eina_Bool result = true;
    result = ui_menu_disable_set(menu_hash, _("File"), flag) && result;
+   result = ui_menu_disable_set(menu_hash, _("Edit"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("View"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Editors"), flag) && result;
    result = ui_menu_disable_set(menu_hash, _("Help"), flag) && result;

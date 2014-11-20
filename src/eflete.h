@@ -54,6 +54,14 @@
 #include "live_view.h"
 #include "notify.h"
 
+/**
+ * @typedef Shortcut_Module
+ * Private Structure, using for Shortcuts module, containing important
+ * information for it.
+ * @ingroup Eflete
+ */
+typedef struct _Shortcut_Module Shortcut_Module;
+
 struct _App_Data
 {
    Evas_Object *win;
@@ -64,6 +72,7 @@ struct _App_Data
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
+   Eina_Bool modal_editor; /**< it's true if any editor is being showed */
    struct {
       Evas_Object *left;
       Evas_Object *right;
@@ -85,6 +94,7 @@ struct _App_Data
    Evas_Object *workspace;
    Live_View *live_view;
    Project *project;
+   Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 };
 
 /**

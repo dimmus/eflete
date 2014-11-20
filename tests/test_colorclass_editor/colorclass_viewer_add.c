@@ -70,7 +70,7 @@ END_TEST
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 initialize application data
- * @step 3 create empty Project
+ * @step 3 create and open Project
  * @step 4 create main window
  *
  * @procedure
@@ -92,7 +92,8 @@ EFLETE_TEST (colorclass_viewer_add_test_p)
 
    app_init();
    app = app_data_get();
-   app->project = calloc(1, sizeof(Project));
+   app->project = pm_open_project_edj("./edj_build/colorclass_viewer_add.edj");
+;
    ui_main_window_add(app);
 
    colorclass  = colorclass_viewer_add(app->project);

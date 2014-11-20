@@ -119,6 +119,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           }
         if (!ret)
           {
+             if (live->object)
+               live_widget_del(live->object);
              live->object = elm_label_add(live->layout);
              elm_object_text_set(live->object, fail_message);
              container_content_set(live->live_view, live->object);
@@ -146,7 +148,14 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         else
           {
              live->object = layout_prog_edit_create(live->layout);
-             edje_object_file_set(live->object, project->dev, style->full_group_name);
+             if (!edje_object_file_set(live->object, project->dev, style->full_group_name))
+               {
+                  evas_object_del(live->object);
+                  live->object = elm_label_add(live->layout);
+                  fail_message = _("Loading live view object was failed");
+                  elm_object_text_set(live->object, fail_message);
+                  ret = false;
+               }
              evas_object_freeze_events_set(live->object, true);
           }
         container_content_set(live->live_view, live->object);

@@ -17,22 +17,17 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_ui_main_window.h"
+#include "utc_common.h"
+#include "sound_editor.h"
+#include "main_window.h"
 
 /**
- * @addtogroup ui_main_window_test
- * @{
- * @addtogroup ui_part_state_delete
- * @{
- * ui_main_window
- * <TABLE>
- * @}
+ * @defgroup sound_editor_test
  */
 
-/**
- * @addtogroup ui_part_state_delete
- * @{
- * </TABLE>
- * @}
- * @}
- */
+void sound_editor_window_add_test_p1(int);
+void sound_editor_window_add_test_p2(int);
+void sound_editor_window_add_test_n1(int);
+void sound_editor_window_add_test_n2(int);
+void sound_editor_window_add_test_n3(int);
+

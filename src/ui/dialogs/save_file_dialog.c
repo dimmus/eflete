@@ -215,7 +215,7 @@ Eina_Bool
 save_edj_file(App_Data *ap __UNUSED__)
 {
    /*
-   if (!ap) return false;
+   if ((!ap) || (!ap->project)) return false;
    if (ap->project->is_new)
      return _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
    else

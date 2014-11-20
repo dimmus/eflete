@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_max_size_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */
