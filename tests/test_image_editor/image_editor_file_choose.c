@@ -18,7 +18,7 @@
  */
 
 #include "test_image_editor.h"
-#include "test_common.h";
+#include "test_common.h"
 
 /**
  * @addtogroup image_editor_test
