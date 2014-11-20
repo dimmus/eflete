@@ -32,11 +32,7 @@ check: Makefile
 	$(builddir)/workspace_edit_object_visible_set.edj \
 	$(builddir)/groupedit_edit_object_unset.edj \
 	$(builddir)/groupedit_edit_object_set.edj \
-	$(builddir)/live_view_widget_style_set.edj \
-	$(builddir)/live_view_widget_style_unset.edj \
-	$(builddir)/live_view_theme_update.edj \
-	$(builddir)/live_view_property_style_set.edj \
-	$(builddir)/live_view_property_style_unset.edj \
+	$(builddir)/live_view.edj \
 	$(builddir)/mw_icon_set.edj \
 	$(builddir)/program_editor_window_add_test.edj \
 	$(builddir)/style_editor_window_add.edj \

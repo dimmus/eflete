@@ -18,6 +18,7 @@
  */
 
 #include "test_live_view.h"
+#include "test_common.h"
 
 /**
  * @addtogroup live_view_test
@@ -53,7 +54,8 @@
  * @step 3 Check style name, which was set to object into live view.
  * @step 4 Check object type, which created in live_view. Here type will be Elm_Box,
  *         because 3 radio widgets are packed into elementary box.
- * </td>
+ * </tdhutdown();
+ *
  * <td>(Live_View *)live, (Project *)project, (Style *)style</td>
  * <td>All check passed</td>
  * <td>_REAL_RESULT_</td>
@@ -72,27 +74,31 @@ EFLETE_TEST(live_view_widget_style_set_test_p1)
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
+   setup("live_view_widget_style_set_test_p1");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/live_view_widget_style_set.edj");
+   project = pm_project_open("./live_view_widget_style_set_test_p1/live_view_widget_style_set_test_p1.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_set.edj");
+   wm_style_data_load(style, e, project->dev);
    project->current_style = style;
    live = live_view_add(parent, false);
 
    res = live_view_widget_style_set(live, project, style);
    ck_assert_msg(res == EINA_TRUE, "Failed set style into live view.");
+
    style_set = elm_object_style_get(live->object);
    ck_assert_msg(strcmp(style_set, "def") == 0, "Style setted for object in "
                  " live view not equal with style name loaded in project");
+
    style_set = elm_object_widget_type_get(live->object);
    ck_assert_msg(strcmp(style_set, "Elm_Box") == 0, "Object created into "
                  " live view not equal Elm_Box");
 
    live_view_free(live);
    wm_style_free(style);
-   //pm_project_close(project);
    evas_object_del(parent);
+   teardown("./live_view_widget_style_set_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -140,11 +146,13 @@ EFLETE_TEST(live_view_widget_style_set_test_p2)
    const char *style_set = NULL;
 
    elm_init(0, 0);
+   setup("live_view_widget_style_set_test_p2");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/live_view_widget_style_set.edj");
+   project = pm_project_open("./live_view_widget_style_set_test_p2/live_view_widget_style_set_test_p2.pro");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
-   wm_style_data_load(layout, e, "./edj_build/live_view_widget_style_set.edj");
+   wm_style_data_load(layout, e, project->dev);
    project->current_style = layout;
    live = live_view_add(parent, false);
 
@@ -159,8 +167,9 @@ EFLETE_TEST(live_view_widget_style_set_test_p2)
 
    live_view_free(live);
    wm_style_free(layout);
-   //pm_project_close(project);
    evas_object_del(parent);
+
+   teardown("./live_view_widget_style_set_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -203,17 +212,16 @@ EFLETE_TEST(live_view_widget_style_set_test_n1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/live_view_widget_style_set.edj");
+   project = pm_project_open("./"TEST_NAME"/"TEST_NAME".pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_set.edj");
+   wm_style_data_load(style, e, project->dev);
    project->current_style = style;
 
    res = live_view_widget_style_set(NULL, project, style);
    ck_assert_msg(res == EINA_FALSE, "Set style into NULL pointer of live view.");
 
    wm_style_free(style);
-   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -254,14 +262,13 @@ EFLETE_TEST(live_view_widget_style_set_test_n2)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("./edj_build/live_view_widget_style_set.edj");
+   project = pm_project_open("./"TEST_NAME"/"TEST_NAME".pro");
    live = live_view_add(parent, false);
 
    res = live_view_widget_style_set(live, project, NULL);
    ck_assert_msg(res == EINA_FALSE, "Set NULL pointer style into live view.");
 
    live_view_free(live);
-   //pm_project_close(project);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -306,7 +313,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n3)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_set.edj");
+   wm_style_data_load(style, e, "./edj_build/"TEST_NAME".edj");
    live = live_view_add(parent, false);
 
    res = live_view_widget_style_set(live, NULL, style);
