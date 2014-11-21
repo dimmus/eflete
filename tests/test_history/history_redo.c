@@ -957,6 +957,167 @@ EFLETE_TEST(history_redo_test_p12)
    elm_shutdown();
 }
 END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
+ * <td>history_redo_test_p13</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Set new value [10] for max height param of "bg" part.
+ * @step 10 Set new value [99] for max weight param of "bg" part.
+ * @step 11 Store diff with using history_diff_add function.
+ * @step 12 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_redo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of the max height param with value, that was
+ *         setted at the step 9 of precondition.
+ * @step 4 Compare current value of the max weight param with value, that was
+ *         setted at the step 10 of the precondition.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p13)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   int old_value_1 = -10, old_value_2 = -10;
+   int new_value_1 = 10, new_value_2 = 99;
+   int check_value = -999;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   old_value_1 = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
+   old_value_2 = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
+   edje_edit_state_max_h_set(style->obj, "bg", "default", 0.0, new_value_1);
+   edje_edit_state_max_w_set(style->obj, "bg", "default", 0.0, new_value_2);
+   history_diff_add(style->obj, PROPERTY, HLIGHT, INT, new_value_1, old_value_1,
+                    new_value_2, old_value_2, (void *)edje_edit_state_max_h_set,
+                    "elm/radio/base/def", (void *)edje_edit_state_max_w_set,
+                    "max size", "bg", "default", 0.0);
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to restore diff with HLIGHT action and INT value type.");
+   check_value = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
+   ck_assert_msg(check_value == new_value_1, "Max height didn't restored");
+   check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
+   ck_assert_msg(check_value == new_value_2, "Max weight didn't restored");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
+ * <td>history_redo_test_p14</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Set new value [0.7] for align x param of "bg" part.
+ * @step 10 Set new value [0.3] for align y param of "bg" part.
+ * @step 11 Store diff with using history_diff_add function.
+ * @step 12 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Compare current value of the align x param with value, that was
+ *         setted at the step 9 of precondition.
+ * @step 4 Compare current value of the align y param with value, that was
+ *         setted at the step 10 of precondition.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p14)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   double old_value_1 = -1.0, old_value_2 = -1.0;
+   double new_value_1 = 0.7, new_value_2 = 0.3;
+   double check_value = -1.0;
+   char *path;
+
+   path = "./edj_build/history_undo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   old_value_1 = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
+   old_value_2 = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
+   edje_edit_state_align_x_set(style->obj, "bg", "default", 0.0, new_value_1);
+   edje_edit_state_align_y_set(style->obj, "bg", "default", 0.0, new_value_2);
+   history_diff_add(style->obj, PROPERTY, HLIGHT, DOUBLE, new_value_1, old_value_1,
+                    new_value_2, old_value_2, (void *)edje_edit_state_align_x_set,
+                    "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
+                    "align", "bg", "default", 0.0);
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to restore diff with HLIGHT action, DOUBLE value type.");
+   check_value = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
+   ck_assert_msg(check_value == new_value_1, "Align x didn't restored");
+   check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
+   ck_assert_msg(check_value == new_value_2, "Align y didn't restored");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
 /**
  * @addtogroup history_redo
  * @{
