@@ -52,6 +52,8 @@ void history_diff_add_test_p6(int);
 void history_diff_add_test_p7(int);
 void history_diff_add_test_p8(int);
 void history_diff_add_test_p9(int);
+void history_diff_add_test_p10(int);
+void history_diff_add_test_p11(int);
 void history_diff_add_test_n1(int);
 void history_diff_add_test_n2(int);
 void history_diff_add_test_n3(int);
@@ -60,6 +62,7 @@ void history_diff_add_test_n5(int);
 void history_diff_add_test_n6(int);
 void history_diff_add_test_n7(int);
 void history_diff_add_test_n8(int);
+void history_diff_add_test_n9(int);
 
 void history_undo_test_p1(int);
 void history_undo_test_p2(int);

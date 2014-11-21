@@ -586,6 +586,128 @@ END_TEST
  * @{
  * <tr>
  * <td>history_diff_add</td>
+ * <td>history_diff_add_test_p10</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add  with correct data for action HLIGHT with type INT.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PROPERTY, HLIGHT, INT, (int) 5, (int) 10,
+ *     (int) 20, (int) 8, (void *)edje_edit_state_max_w_set,
+ *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
+ *     "max size", "bg", "default", 0.0 </td>
+ * <td>EINA_TRUE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_p10)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PROPERTY, HLIGHT, INT, 5, 10, 20, 8,
+                            (void *)edje_edit_state_max_w_set, "elm/radio/base/def",
+                            (void *)edje_edit_state_max_h_set, "max size", "bg",
+                            "default", 0.0);
+   ck_assert_msg(result, "Failed to add new diff from highlight with INT value"
+                         " type in the history of module.");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
+ * <td>history_diff_add_test_p11</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add  with correct data for action HLIGHT with type INT.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PROPERTY, HLIGHT, DOUBLE, (double) 0.2, (double) 1.0,
+ *     (double) 0.7, (double) 0.0, (void *)edje_edit_state_align_x_set,
+ *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
+ *     "align", "bg", "default", 0.0 </td>
+ * <td>EINA_TRUE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_p11)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PROPERTY, HLIGHT, DOUBLE, 0.2, 1.0, 0.7, 0.0,
+                            (void *)edje_edit_state_align_x_set, "elm/radio/base/def",
+                            (void *)edje_edit_state_align_y_set, "align", "bg",
+                            "default", 0.0);
+   ck_assert_msg(result, "Failed to add new diff from highlight with DOUBLE value"
+                         " type in the history of module.");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
  * <td>history_diff_add_test_n1</td>
  * <td>
  * @precondition
@@ -1040,6 +1162,66 @@ EFLETE_TEST(history_diff_add_test_n8)
 }
 END_TEST
 
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
+ * <td>history_diff_add_test_n9</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add  with first function pointer.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PROPERTY, HLIGHT, INT, (int) 5, (int) 10,
+ *     (int) 20, (int) 8, NULL,
+ *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
+ *     "max size", "bg", "default", 0.0 </td>
+ * <td>EINA_FALSE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_n9)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_TRUE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PROPERTY, HLIGHT, INT, 5, 10, 20, 8,
+                             NULL, "elm/radio/base/def",
+                            (void *)edje_edit_state_max_h_set, "max size", "bg",
+                            "default", 0.0);
+   ck_assert_msg(!result, "Added new diff from highlight with INT value type, but"
+                          " without the pointer of function, that change first param");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
 
 /**
  * @addtogroup history_diff_add
