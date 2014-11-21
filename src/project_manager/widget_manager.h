@@ -395,7 +395,7 @@ wm_widget_free(Widget *widget);
  * @ingroup WidgetManager
  */
 Eina_Inlist *
-wm_widget_list_new(const char *file);
+wm_widgets_list_new(const char *file);
 
 /**
  * Load list of custom layouts, which stored in file.
@@ -406,7 +406,7 @@ wm_widget_list_new(const char *file);
  * @ingroup WidgetManager
  */
 Eina_Inlist *
-wm_widget_list_layouts_load(const char *file);
+wm_layouts_list_new(const char *file);
 
 /**
  * Free a generic Eina_Inlist of widgets, allocated by \ref wm_widget_list_new.
@@ -417,7 +417,7 @@ wm_widget_list_layouts_load(const char *file);
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_widget_list_free(Eina_Inlist *widget_list);
+wm_widgets_list_free(Eina_Inlist *widget_list);
 
 /**
  * Find style object in widget list. Use full name of style.
@@ -443,7 +443,7 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name);
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_widget_list_objects_load(Eina_Inlist *widget_list,
+wm_widgets_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path);
 

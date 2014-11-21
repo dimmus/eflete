@@ -917,7 +917,7 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
    elm_genlist_select_mode_set(gl_layouts, ELM_OBJECT_SELECT_MODE_ALWAYS);
 
 
-   wm_widget_list_objects_load(widget_list,
+   wm_widgets_list_objects_load(widget_list,
                                evas_object_evas_get(gl_widgets),
                                project->dev);
    EINA_INLIST_FOREACH(widget_list, _widget)

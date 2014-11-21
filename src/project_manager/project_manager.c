@@ -39,6 +39,7 @@ static Eet_Compression compess_level = EET_COMPRESSION_HI;
    worker->func_end = FUNC_END; \
    worker->data = (void *)DATA; \
    worker->project = PROJECT; \
+   worker->result = PM_PROJECT_LAST; \
    worker->name = eina_stringshare_add(NAME); \
    worker->path = eina_stringshare_add(PATH); \
    worker->edj = eina_stringshare_add(EDJ); \
@@ -115,7 +116,7 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
 {
    Eina_Bool ok = false;
 
-   project->pro = eet_open(path, EET_FILE_MODE_WRITE);
+   project->pro = eet_open(path, EET_FILE_MODE_READ_WRITE);
    if (project->pro)
      ok = eet_data_write(project->pro, eed_project, PROJECT_FILE_KEY,
                          project, compess_level);
@@ -483,7 +484,7 @@ pm_project_open(const char *path)
 
    _project_descriptor_init();
 
-   ef = eet_open(path, EET_FILE_MODE_READ);
+   ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      goto error;
 
@@ -492,8 +493,8 @@ pm_project_open(const char *path)
 
    if (!project) goto error;
    project->pro = ef;
-   project->widgets = wm_widget_list_new(project->dev);
-   project->layouts = wm_widget_list_layouts_load(project->dev);
+   project->widgets = wm_widgets_list_new(project->dev);
+   project->layouts = wm_layouts_list_new(project->dev);
 
 error:
    return project;
@@ -633,10 +634,11 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->release_path);
    eina_stringshare_del(project->release_options);
 
-   wm_widget_list_free(project->widgets);
-   wm_widget_list_free(project->layouts);
+   wm_widgets_list_free(project->widgets);
+   //wm_widget_list_free(project->layouts);
 
    eina_stringshare_del(backup);
+   free(project);
 
    return true;
 }

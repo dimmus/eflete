@@ -814,7 +814,7 @@ wm_widget_free(Widget *widget)
 }
 
 Eina_Inlist *
-wm_widget_list_new(const char *file)
+wm_widgets_list_new(const char *file)
 {
    Widget *widget;
    Eina_List *collection, *l, *l_next;
@@ -873,7 +873,7 @@ wm_widget_list_new(const char *file)
 }
 
 Eina_Inlist *
-wm_widget_list_layouts_load(const char *file)
+wm_layouts_list_new(const char *file)
 {
    Style *layout;
    Eina_List *collection, *l;
@@ -910,7 +910,7 @@ wm_widget_list_layouts_load(const char *file)
 }
 
 Eina_Bool
-wm_widget_list_free(Eina_Inlist *widget_list)
+wm_widgets_list_free(Eina_Inlist *widget_list)
 {
    Widget *widget = NULL;
 
@@ -1024,7 +1024,7 @@ _layout_object_find(Eina_Inlist *layout_list, const char *style_full_name)
 }
 
 Eina_Bool
-wm_widget_list_objects_load(Eina_Inlist *widget_list,
+wm_widgets_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path)
 {
