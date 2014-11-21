@@ -306,8 +306,11 @@ style_dialog_add(App_Data *ap)
    nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
                                          "elm.swallow.content");
    glit = elm_genlist_selected_item_get(nf);
-   _style = elm_object_item_data_get(glit);
-   if (_style->isAlias) return false;
+   if (glit)
+     {
+        _style = elm_object_item_data_get(glit);
+        if (_style->isAlias) return false;
+     }
 
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);
