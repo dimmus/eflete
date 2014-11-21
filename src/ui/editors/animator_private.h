@@ -20,6 +20,7 @@
 #define PLAY_CB "play_cb"
 #define PAUSE_CB "pause_cb"
 #define NAME_CHANGED_CB "name_changed_cb"
+#define SCROLL_CB "scroll_cb"
 
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
 #include "eflete.h"
@@ -36,6 +37,8 @@ Eina_Bool prog_sequence_program_set(Evas_Object *obj, const char* program_name, 
 void prog_sequence_program_reset(Evas_Object *obj);
 
 void prog_sequence_program_play(Evas_Object *obj);
+
+void prog_sequence_program_stop(Evas_Object *obj);
 
 void prog_sequence_cycled_set(Evas_Object *obj, Eina_Bool cycled);
 

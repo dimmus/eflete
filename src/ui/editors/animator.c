@@ -108,6 +108,19 @@ _on_program_name_change_cb(void *data,
    elm_genlist_item_update(animator->sel);
 }
 
+static void
+_on_program_scroll_cb(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   Animator *animator = data;
+   Evas_Coord x = * (int *) event_info;
+   Evas_Coord y, w, h;
+
+   elm_scroller_region_get(animator->prop_scroller, NULL, &y, &w, &h);
+   elm_scroller_region_show(animator->prop_scroller, x, y, w, h);
+}
+
 /********************* ui callbacks *******************************************/
 static void
 _on_program_reset(void *data,
@@ -319,6 +332,7 @@ _on_bt_mode_change(void *data,
      {
         ICON_ADD(bt, icon, false, "animator_arrow_left");
         elm_layout_content_set(bt, "icon", icon);
+        program_editor_program_stop(animator->program_editor);
         evas_object_hide(animator->program_editor);
         evas_object_show(animator->program_sequence);
         elm_object_content_set(animator->prop_scroller, animator->program_sequence);
@@ -328,6 +342,7 @@ _on_bt_mode_change(void *data,
      {
         ICON_ADD(bt, icon, false, "animator_arrow_right");
         elm_layout_content_set(bt, "icon", icon);
+        prog_sequence_program_stop(animator->program_sequence);
         evas_object_hide(animator->program_sequence);
         evas_object_show(animator->program_editor);
         elm_object_content_set(animator->prop_scroller, animator->program_editor);
@@ -625,6 +640,13 @@ animator_window_add(Style *style)
                                   _on_program_pause_cb, animator);
    evas_object_smart_callback_add(animator->program_editor, NAME_CHANGED_CB,
                                   _on_program_name_change_cb, animator);
+
+   evas_object_smart_callback_add(animator->program_sequence, PLAY_CB,
+                                  _on_program_play_cb, animator);
+   evas_object_smart_callback_add(animator->program_sequence, PAUSE_CB,
+                                  _on_program_pause_cb, animator);
+   evas_object_smart_callback_add(animator->program_sequence, SCROLL_CB,
+                                  _on_program_scroll_cb, animator);
 
    BOX_ADD(window_layout, button_box, true, false);
    elm_box_align_set(button_box, 1.0, 0.5);

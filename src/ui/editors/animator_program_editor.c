@@ -209,6 +209,7 @@ program_editor_program_stop(Evas_Object *obj)
 
    if (prog_edit->playback.timer)
      ecore_timer_del(prog_edit->playback.timer);
+   prog_edit->playback.timer = NULL;
 }
 
 void
