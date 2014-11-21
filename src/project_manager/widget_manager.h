@@ -409,7 +409,7 @@ Eina_Inlist *
 wm_layouts_list_new(const char *file);
 
 /**
- * Free a generic Eina_Inlist of widgets, allocated by \ref wm_widget_list_new.
+ * Free a generic Eina_Inlist of widgets, allocated by \ref wm_widgets_list_new.
  *
  * @param widget_list A list of widgets to free.
  * @return EINA_TRUE if a list os deleted.
@@ -418,6 +418,17 @@ wm_layouts_list_new(const char *file);
  */
 Eina_Bool
 wm_widgets_list_free(Eina_Inlist *widget_list);
+
+/**
+ * Free a generic Eina_Inlist of widgets, allocated by \ref wm_layouts_list_new.
+ *
+ * @param widget_list A list of widgets to free.
+ * @return EINA_TRUE if a list os deleted.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_layouts_list_free(Eina_Inlist *widget_list);
 
 /**
  * Find style object in widget list. Use full name of style.

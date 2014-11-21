@@ -926,6 +926,24 @@ wm_widgets_list_free(Eina_Inlist *widget_list)
    return true;
 }
 
+Eina_Bool
+wm_layouts_list_free(Eina_Inlist *widget_list)
+{
+   Style *style = NULL;
+
+   if (!widget_list) return false;
+
+   while (widget_list)
+     {
+        style = EINA_INLIST_CONTAINER_GET(widget_list, Style);
+        widget_list = eina_inlist_remove(widget_list, widget_list);
+        wm_style_free(style);
+     }
+
+   return true;
+}
+
+
 Style *
 wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
 {
