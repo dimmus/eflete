@@ -39,7 +39,8 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test
+shortcuts_test \
+preference_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -48,7 +49,6 @@ FLAGS = \
 -I${top_builddir}/src \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/external \
--I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
@@ -62,6 +62,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/editors \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
+-I${top_srcdir}/src/ui/preference \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
@@ -327,11 +328,11 @@ test_ui_main_window/code_edit_mode_switch.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
-#preference_test_SOURCES = \
-#test_preference/test_preference.c \
-#test_preference/preference_add_test.c
-#preference_test_CFLAGS = ${FLAGS}
-#preference_test_LDADD = ${LD}
+preference_test_SOURCES = \
+test_preference/test_preference.c \
+test_preference/preference_add.c
+preference_test_CFLAGS = ${FLAGS}
+preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \

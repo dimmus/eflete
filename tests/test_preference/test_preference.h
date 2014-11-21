@@ -19,10 +19,11 @@
 
 #include "utc_common.h"
 #include "preference.h"
+#include "main_window.h"
 
 /**
  * @defgroup test_preference
  */
 
-void preference_add_test_p(int);
-void preference_add_test_n(int);
+void preferences_window_add_test_p1(int);
+void preferences_window_add_test_p2(int);
