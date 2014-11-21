@@ -117,7 +117,8 @@ _test_end_p2_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_import_edc_test_p2)
 {
    Project_Thread *thread;
-   Eina_Bool files_is;
+   Eina_Bool files_is = EINA_FALSE;
+   Eet_File *ef;
 
    elm_init(0,0);
    app_init();
@@ -129,8 +130,12 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
      ck_abort_msg("Project thread not started!");
    ecore_main_loop_begin();
 
-   files_is = ecore_file_exists(ecore_file_realpath("./UTC/UTC.pro"));
-   files_is &= ecore_file_exists(ecore_file_realpath("./UTC/UTC.dev"));
+   ef = eet_open("./UTC/UTC.pro", EET_FILE_MODE_READ_WRITE);
+   if (ef) files_is = EINA_TRUE;
+   eet_close(ef);
+   ef = eet_open("./UTC/UTC.dev", EET_FILE_MODE_READ_WRITE);
+   if (ef) files_is &= EINA_TRUE;
+   eet_close(ef);
    ck_assert_msg(files_is != EINA_FALSE, "Specific project file not created.");
 
    app_shutdown();
