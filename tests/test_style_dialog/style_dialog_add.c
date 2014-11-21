@@ -18,6 +18,7 @@
  */
 
 #include "test_style_dialog.h"
+#include "test_common.h"
 
 /**
  * @addtogroup style_dialog_test
@@ -67,17 +68,18 @@
 EFLETE_TEST (style_dialog_add_test_p1)
 {
    elm_init(0, 0);
+   setup("style_dialog_add_test_p1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list, *glist;
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   ui_edj_load(app_data, path);
+   app_data->project = pm_project_open("./style_dialog_add_test_p1/style_dialog_add_test_p1.pro");
    widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
@@ -91,6 +93,7 @@ EFLETE_TEST (style_dialog_add_test_p1)
    ck_assert_msg(result == EINA_FALSE, "Style dialog wasn't created");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./style_dialog_add_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -126,17 +129,18 @@ END_TEST
 EFLETE_TEST (style_dialog_add_test_p2)
 {
    elm_init(0, 0);
+   setup("style_dialog_add_test_p2");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list, *glist;
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   ui_edj_load(app_data, path);
+   app_data->project = pm_project_open("./style_dialog_add_test_p2/style_dialog_add_test_p2.pro");
    widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
@@ -149,6 +153,7 @@ EFLETE_TEST (style_dialog_add_test_p2)
    ck_assert_msg(result == EINA_FALSE, "Style dialog wasn't created");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./style_dialog_add_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -183,20 +188,22 @@ END_TEST
 EFLETE_TEST (style_dialog_add_test_n1)
 {
    elm_init(0, 0);
+   setup("style_dialog_add_test_n1");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
-   const char *path = "./edj_build/style_dialog_add.edj";
 
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   ui_edj_load(app_data, path);
+   app_data->project = pm_project_open("./style_dialog_add_test_n1/style_dialog_add_test_n1.pro");
 
    result = style_dialog_add(app_data);
    ck_assert_msg(result == EINA_FALSE, "Style dialog was added");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("style_dialog_add_test_n1");
    elm_shutdown();
 }
 END_TEST

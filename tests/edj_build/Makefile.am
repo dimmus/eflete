@@ -40,7 +40,7 @@ check: Makefile
 	$(builddir)/live_view.edj \
 	$(builddir)/mw_icon_set.edj \
 	$(builddir)/program_editor_window_add_test.edj \
-	$(builddir)/style_editor_window_add.edj \
+	$(builddir)/style_editor.edj \
 	$(builddir)/test_project_manager.edj \
 	$(builddir)/image_editor.edj \
 	$(builddir)/ui_states_list_data_set.edj \
@@ -69,12 +69,12 @@ check: Makefile
 	$(builddir)/part_dialog.edj \
 	$(builddir)/main_window.edj \
 	$(builddir)/ui_edj_load.edj \
-	$(builddir)/save_as_edj_file.edj \
-	$(builddir)/save_as_edc_file.edj \
+	$(builddir)/save_file_dialog.edj \
 	$(builddir)/ui_style_clicked.edj \
-	$(builddir)/style_dialog_add.edj \
+	$(builddir)/style_dialog.edj \
 	$(builddir)/state_dialog.edj \
 	$(builddir)/colorclass_editor.edj \
+	$(builddir)/sound_editor.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

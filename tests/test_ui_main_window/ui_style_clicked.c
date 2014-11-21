@@ -69,17 +69,18 @@
 EFLETE_TEST (ui_style_clicked_test_p)
 {
    elm_init(0, 0);
+   setup("ui_style_clicked_test_p");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list, *glist;
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *path = "./edj_build/main_window.edj";
 
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   ui_edj_load(app_data, path);
+   app_data->project = pm_project_open("./ui_style_clicked_test_p/ui_style_clicked_test_p.pro");
    widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
@@ -95,6 +96,7 @@ EFLETE_TEST (ui_style_clicked_test_p)
    ck_assert_msg(result == EINA_TRUE, "Function failed");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_style_clicked_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -203,17 +205,18 @@ END_TEST
 EFLETE_TEST (ui_style_clicked_test_n2)
 {
    elm_init(0, 0);
+   setup("ui_style_clicked_test_n2");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list, *glist;
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
    Elm_Object_Item *glit, *eoi;
-   const char *path = "./edj_build/ui_style_clicked.edj";
 
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   ui_edj_load(app_data, path);
+   app_data->project = pm_project_open("./ui_style_clicked_test_n2/ui_style_clicked_test_n2.pro");
    widget_list = ui_block_widget_list_get(app_data);
 
    /********Choosing widget, so widget list contain parts********/
@@ -233,6 +236,7 @@ EFLETE_TEST (ui_style_clicked_test_n2)
    ck_assert_msg(result == EINA_FALSE, "Function succeed but shouldn't");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./ui_style_clicked_test_n2");
    elm_shutdown();
 }
 END_TEST

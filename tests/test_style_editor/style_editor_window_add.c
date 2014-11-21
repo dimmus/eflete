@@ -18,6 +18,7 @@
  */
 
 #include "test_style_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup style_editor_test
@@ -54,15 +55,21 @@
  */
 EFLETE_TEST(style_editor_window_add_test_p)
 {
-   elm_init(0,0);
    App_Data *app = NULL;
+
+   elm_init(0,0);
+   setup("style_editor_window_add_test_p");
+
    app_init();
    app = app_data_get();
+   app->project = pm_project_open("./style_editor_window_add_test_p/style_editor_window_add_test_p.pro");
+
    ui_main_window_add(app);
-   ui_edj_load(app, "./edj_build/style_editor_window_add.edj");
    ck_assert_msg(style_editor_window_add(app->project) != NULL,
-                 "Style_edtor not added");
+                 "Unable to create style editor");
+
    elm_shutdown();
+   teardown("./style_editor_window_add_test_p");
    app_shutdown();
 }
 END_TEST
@@ -122,14 +129,23 @@ END_TEST
  */
 EFLETE_TEST(style_editor_window_add_test_n2)
 {
-   elm_init(0,0);
    App_Data *app = NULL;
+
+   elm_init(0,0);
+   setup("style_editor_window_add_test_n2");
+
    app_init();
    app = app_data_get();
-   ui_edj_load(app, "./edj_build/style_editor_window_add.edj");
+   app->project = pm_project_open("./style_editor_window_add_test_n2/style_editor_window_add_test_n2.pro");
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->dev);
+
    ck_assert_msg(style_editor_window_add(app->project) == NULL,
                  "Style_edtor added to non-existing window");
+
    elm_shutdown();
+   teardown("./style_editor_window_add_test_n2");
    app_shutdown();
 }
 END_TEST

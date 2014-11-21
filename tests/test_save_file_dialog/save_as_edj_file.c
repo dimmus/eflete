@@ -18,6 +18,7 @@
  */
 
 #include "test_save_file_dialog.h"
+#include "test_common.h"
 
 /**
  * @addtogroup save_file_dialog_test
@@ -97,19 +98,21 @@ END_TEST
  */
 EFLETE_TEST (save_as_edj_file_test_n2)
 {
-   elm_init(0, 0);
    App_Data *app_data;
    Eina_Bool result = EINA_FALSE;
-   const char *path = "./edj_build/save_as_edj_file.edj";
+
+   elm_init(0, 0);
+   setup("save_as_edj_file_test_n2");
 
    app_init();
    app_data = app_data_get();
-   ui_edj_load(app_data, path);
+   app_data->project = pm_project_open("./save_as_edj_file_test_n2/save_as_edj_file_test_n2.pro");
 
    result = save_as_edj_file(app_data);
    ck_assert_msg(result == EINA_FALSE, "'Save as edj' dialog was created");
 
    app_shutdown();
+   teardown("./save_as_edj_file_test_n2");
    elm_shutdown();
 }
 END_TEST

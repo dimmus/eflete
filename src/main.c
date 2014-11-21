@@ -97,7 +97,7 @@ elm_main(int argc, char **argv)
           {
              if (eina_str_has_suffix(edj, ".edj"))
                {
-                  ui_edj_load(ap, edj);
+                  //ui_edj_load(ap, edj);
                }
           }
         elm_run();

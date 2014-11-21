@@ -20,8 +20,11 @@
 #include "open_file_dialog.h"
 
 static void
-_on_edj_done(void *data, Evas_Object *obj, void *event_info)
+_on_edj_done(void *data __UNUSED__,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
 {
+   /*
    const char *selected = (const char *)event_info;
    App_Data *ap = (App_Data *)data;
 
@@ -39,6 +42,7 @@ _on_edj_done(void *data, Evas_Object *obj, void *event_info)
              return;
           }
      }
+     */
 
    ecore_main_loop_quit();
 }

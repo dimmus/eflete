@@ -25,6 +25,8 @@
  * @defgroup style_editor_test
  */
 
+#define TEST_NAME "style_editor"
+
 void style_editor_window_add_test_p(int);
 void style_editor_window_add_test_n1(int);
 void style_editor_window_add_test_n2(int);

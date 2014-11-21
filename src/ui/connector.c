@@ -651,6 +651,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    return true;
 }
 
+/*
 static Eina_Bool
 _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 {
@@ -722,10 +723,12 @@ ui_edj_load(App_Data* ap, const char *selected_file)
 {
    return _ui_edj_load_internal(ap, selected_file, false);
 }
+*/
 
 Eina_Bool
-new_theme_create(App_Data *ap)
+new_theme_create(App_Data *ap __UNUSED__)
 {
+   /*
    if ((!ap) || (!ap->win)) return false;
    if (!ui_close_project_request(ap,
                                  _("You want to create a new theme, but now you have<br/>"
@@ -739,6 +742,8 @@ new_theme_create(App_Data *ap)
      }
 
    return _ui_edj_load_internal(ap, EFLETE_SWAP_PATH"Untitled.edj", true);
+   */
+   return false;
 }
 
 /*

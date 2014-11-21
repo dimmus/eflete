@@ -211,8 +211,10 @@ EFLETE_TEST(live_view_widget_style_set_test_n1)
    Eina_Bool res = EINA_TRUE;
 
    elm_init(0, 0);
+   setup("live_view_widget_style_set_test_n1");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./"TEST_NAME"/"TEST_NAME".pro");
+   project = pm_project_open("./live_view_widget_style_set_test_n1/live_view_widget_style_set_test_n1.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, project->dev);
@@ -223,6 +225,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n1)
 
    wm_style_free(style);
    evas_object_del(parent);
+   teardown("./live_view_widget_style_set_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -261,8 +264,9 @@ EFLETE_TEST(live_view_widget_style_set_test_n2)
    Eina_Bool res = EINA_TRUE;
 
    elm_init(0, 0);
+   setup("live_view_widget_style_set_test_n2");
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("./"TEST_NAME"/"TEST_NAME".pro");
+   project = pm_project_open("./live_view_widget_style_set_test_n2/live_view_widget_style_set_test_n2.pro");
    live = live_view_add(parent, false);
 
    res = live_view_widget_style_set(live, project, NULL);
@@ -270,6 +274,7 @@ EFLETE_TEST(live_view_widget_style_set_test_n2)
 
    live_view_free(live);
    evas_object_del(parent);
+   teardown("live_view_widget_style_set_test_n2");
    elm_shutdown();
 }
 END_TEST

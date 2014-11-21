@@ -18,6 +18,7 @@
  */
 
 #include "test_sound_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup sound_editor_test
@@ -56,13 +57,18 @@
 EFLETE_TEST(sound_editor_window_add_test_p1)
 {
    elm_init(0,0);
+   setup("sound_editor_window_add_test_p1");
+
    Evas_Object *sounds;
    App_Data *app = NULL;
 
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
-   ui_edj_load(app, "./edj_build/sound_editor_window_add.edj");
+   app->project = pm_project_open("./sound_editor_window_add_test_p1/sound_editor_window_add_test_p1.pro");
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->dev);
 
    sounds = sound_editor_window_add(app->project, SINGLE);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SINGLE mode");
@@ -70,6 +76,7 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
    evas_object_del(sounds);
    ui_main_window_del(app);
    app_shutdown();
+   teardown("./sound_editor_window_add_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -102,13 +109,18 @@ END_TEST
 EFLETE_TEST (sound_editor_window_add_test_p2)
 {
    elm_init(0,0);
+   setup("sound_editor_window_add_test_p2");
+
    App_Data *app;
    app_init();
    Evas_Object *sounds;
 
    app = app_data_get();
+   app->project = pm_project_open("./sound_editor_window_add_test_p2/sound_editor_window_add_test_p2.pro");
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->dev);
    ui_main_window_add(app);
-   ui_edj_load(app, "./edj_build/sound_editor_window_add.edj");
 
    sounds = sound_editor_window_add(app->project, MULTIPLE);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in MULTIPLE mode");
@@ -116,6 +128,7 @@ EFLETE_TEST (sound_editor_window_add_test_p2)
    evas_object_del(sounds);
    ui_main_window_del(app);
    app_shutdown();
+   teardown("./sound_editor_window_add_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -234,10 +247,16 @@ EFLETE_TEST (sound_editor_window_add_test_n3)
 {
    App_Data *app;
    Evas_Object *sounds;
+
    elm_init(0,0);
+   setup("sound_editor_window_add_test_n3");
    app_init();
+
    app = app_data_get();
-   ui_edj_load(app, "./edj_build/sound_editor_window_add.edj");
+   app->project = pm_project_open("./sound_editor_window_add_test_n3/sound_editor_window_add_test_n3.pro");
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->dev);
 
    sounds = sound_editor_window_add(app->project, SINGLE);
    ck_assert_msg(sounds == NULL,
@@ -245,6 +264,7 @@ EFLETE_TEST (sound_editor_window_add_test_n3)
 
    evas_object_del(sounds);
    app_shutdown();
+   teardown("./sound_editor_window_add_test_n3");
    elm_shutdown();
 }
 END_TEST
