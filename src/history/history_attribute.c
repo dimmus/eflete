@@ -456,23 +456,9 @@ _attribute_change_free(Attribute_Diff *change)
    change = NULL;
 }
 
-Diff *
-_attribute_change_merge(Attribute_Diff *change, Module *module)
+static Attribute_Diff *
+_attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
-   Diff *prev_general = NULL;
-   Attribute_Diff *previous = NULL;
-
-   if (module->current_change)
-      prev_general = module->current_change;
-   else
-     return (Diff *)change;
-
-   if ((change->diff.action_type == MODIFY) &&
-       (prev_general->action_type == change->diff.action_type))
-     previous = (Attribute_Diff *)prev_general;
-   else
-     return (Diff *)change;
-
    if ((previous->func == change->func) &&
        ((!previous->part && !change->part) ||
         (!strcmp(previous->part, change->part)) ||
@@ -493,13 +479,72 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
              eina_stringshare_replace(&previous->string.new, change->string.new);
           break;
           default:
-          break;
+             return change;
          }
         eina_stringshare_replace(&previous->diff.new, change->diff.new);
         elm_genlist_item_update(previous->diff.ui_item);
         _attribute_change_free(change);
         return NULL;
      }
+   return change;
+}
+
+static Attribute_Diff *
+_attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
+{
+   if ((previous->func == change->func) &&
+       (previous->func_revert == change->func_revert) &&
+       ((!previous->part && !change->part) || (!strcmp(previous->part, change->part))))
+     {
+        switch(previous->param_type)
+         {
+          case INT:
+             previous->twice_int.new_1 = change->twice_int.new_1;
+             previous->twice_int.new_2 = change->twice_int.new_2;
+          break;
+          case DOUBLE:
+             previous->twice_double.new_1 = change->twice_double.new_1;
+             previous->twice_double.new_2 = change->twice_double.new_2;
+          break;
+          default:
+             return change;
+         }
+        eina_stringshare_replace(&previous->diff.new, change->diff.new);
+        elm_genlist_item_update(previous->diff.ui_item);
+        _attribute_change_free(change);
+        return NULL;
+     }
+   return change;
+}
+
+Diff *
+_attribute_change_merge(Attribute_Diff *change, Module *module)
+{
+   Diff *prev_general = NULL;
+   Attribute_Diff *previous = NULL;
+
+   if (module->current_change)
+      prev_general = module->current_change;
+   else
+     return (Diff *)change;
+
+   if (prev_general->action_type == change->diff.action_type)
+     previous = (Attribute_Diff *)prev_general;
+   else
+     return (Diff *)change;
+
+   switch (previous->diff.action_type)
+     {
+      case MODIFY:
+         return (Diff *)_attribute_modify_merge(previous, change);
+      break;
+      case HLIGHT:
+         return (Diff *)_attribute_highlight_merge(previous, change);
+      break;
+      default:
+        return (Diff *)change;
+     }
+
    return (Diff *)change;
 }
 
