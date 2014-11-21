@@ -346,9 +346,35 @@ _attribute_curd_undo(Evas_Object *source, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_highlight_undo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+_attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
 {
-   return false;
+   switch(change->param_type)
+    {
+     case INT:
+        if (change->state)
+          {
+             change->func_revert(source, change->part, change->state,
+                                 change->state_value, change->twice_int.old_1);
+             change->func(source, change->part, change->state,
+                          change->state_value, change->twice_int.old_2);
+          }
+        else return false;
+     break;
+     case DOUBLE:
+        if (change->state)
+          {
+             change->func_revert(source, change->part, change->state,
+                                 change->state_value, change->twice_double.old_1);
+             change->func(source, change->part, change->state,
+                          change->state_value, change->twice_double.old_2);
+          }
+        else return false;
+     break;
+     default:
+       ERR("Unsupported value type, in the given diff");
+       return false;
+    }
+   return true;
 }
 
 Eina_Bool
