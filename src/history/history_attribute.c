@@ -68,6 +68,18 @@ struct _Attribute_Diff
          int new_3;
          int new_4;
       } four; /**< Save diffs for four int values. Usually being used for store colors.*/
+      struct {
+         double old_1;
+         double old_2;
+         double new_1;
+         double new_2;
+      } twice_double; /**< Save diffs for two double values. Used for highlight changes */
+      struct {
+         int old_1;
+         int old_2;
+         int new_1;
+         int new_2;
+      } twice_int; /**< Save diffs for two int values. Used for highlight changes */
    };
 };
 
@@ -214,6 +226,12 @@ _attribute_curd_redo(Evas_Object *source, Attribute_Diff *change)
    return true;
 }
 
+static Eina_Bool
+_attribute_highlight_redo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
 Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change)
 {
@@ -227,6 +245,9 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
       case DEL:
       case ADD:
          redo = _attribute_curd_redo(source, change);
+      break;
+      case HLIGHT:
+         redo = _attribute_highlight_redo(source, change);
       break;
       default:
           ERR("Unsupported action type[%d]", change->diff.action_type);
@@ -324,6 +345,12 @@ _attribute_curd_undo(Evas_Object *source, Attribute_Diff *change)
    return true;
 }
 
+static Eina_Bool
+_attribute_highlight_undo(Evas_Object *source __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
 Eina_Bool
 _attribute_undo(Evas_Object *source, Attribute_Diff *change)
 {
@@ -337,6 +364,9 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
       case DEL:
       case ADD:
          undo = _attribute_curd_undo(source, change);
+      break;
+      case HLIGHT:
+         undo = _attribute_highlight_undo(source, change);
       break;
       default:
           ERR("Unsupported action type[%d]", change->diff.action_type);
@@ -506,6 +536,12 @@ _attribute_curd_parse(va_list list, Attribute_Diff *change)
    return true;
 }
 
+static Eina_Bool
+_attribute_highlight_parse(va_list list __UNUSED__, Attribute_Diff *change __UNUSED__)
+{
+   return false;
+}
+
 Diff *
 _attribute_change_new(va_list list)
 {
@@ -525,6 +561,10 @@ _attribute_change_new(va_list list)
       case DEL:
       case ADD:
          parse = _attribute_curd_parse(list, change); /**this parse add and del actions*/
+      break;
+      case HLIGHT:
+         parse = _attribute_highlight_parse(list, change);/* here parse cases like change
+                                                           align x and y in one time */
       break;
       default:
           ERR("Unsupported action type.");

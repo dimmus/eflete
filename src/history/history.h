@@ -147,6 +147,8 @@ enum _Action
    ADD = 0, /**< Adding something new, like adding new state in part. */
    DEL,     /**< Deleting, like delete part from style. */
    MODIFY,  /**< Usaly it indicate that modifing attributes of part or state. */
+   HLIGHT, /**< This action mean, that changed two params, whith using differents
+                   function. For this case needed special logic to manage changes*/
    LAST_ACTION
 };
 
@@ -276,30 +278,92 @@ history_module_del(Evas_Object *source);
  *
  * @brief  How to use this function with different types of modules showed below.
  *
- ** - In case when you want to add change from module with type PROPERTY.
- **   Parameters of function shoud be next:
+ * In case when you want to add change from module with type PROPERTY.
  *
- *   history_diff_add(source, Target, Action, Value_Type, VALUES([old, new],
+ *   For simple modify attribute:
+ *
+ *   history_diff_add(source, Target, MODIFY, Value_Type, VALUES([old, new],
  *                      [old_1, old_2, old_3, old_4, new_1, new_2, new_3, new_4]),
  *                      Style name, Func pointer, description, Part name,
  *                      State name, State value);
  *
  *  For example:
- *  @verbatim
-     ...
-     History *history = history_init();
-     if (!history_module_add(style->obj)) return;
-      ...
-     const char *old_value = part->name;
-     value = elm_entry_entry_get(obj);
-     if (!edje_edit_part_name_set(style->obj, part->name, value)) return;
-     pm_project_changed(app_data_get()->project);
-     part->name = value;
-     style->isModify = true;
-     history_diff_add(style->obj, PROPERTY, MODIFY, RENAME, old_value, value,
-                      style->full_group_name, (void*)edje_edit_part_name_set,
-                      "Rename", part->name, NULL, 0);
-     @endverbatim
+ *  <pre>
+ *   ...
+ *   History *history = history_init();
+ *   if (!history_module_add(style->obj)) return;
+ *    ...
+ *   const char *old_value = part->name;
+ *   value = elm_entry_entry_get(obj);
+ *   if (!edje_edit_part_name_set(style->obj, part->name, value)) return;
+ *   pm_project_changed(app_data_get()->project);
+ *   part->name = value;
+ *   style->isModify = true;
+ *   history_diff_add(style->obj, PROPERTY, MODIFY, RENAME, old_value, value,
+ *                    style->full_group_name, (void*)edje_edit_part_name_set,
+ *                    "Rename", part->name, NULL, 0);
+ *   </pre>
+ *
+ *   For ADD/DEL actions:
+ *
+ *   history_diff_add(source, Target, [ADD, DEL], Value_Type, new_value,
+ *                    revert function pointer, Style name, Func pointer,
+ *                    description, Part name, State name, State value);
+ *
+ *  Example of code shown case, when add new image into tween list:
+ *  <pre>
+ *   ...
+ *   History *history = history_init();
+ *   if (!history_module_add(style->obj)) return;
+ *    ...
+ *   if (edje_edit_state_tween_add(style->obj, part->name,
+ *                                 part->curr_state,
+ *                                 part->curr_state_value, name))
+ *   {
+ *      history_diff_add(style->obj, PROPERTY, ADD, STRING,
+ *                       name, edje_edit_state_tween_del,
+ *                       style->full_group_name,
+ *                       (void*)edje_edit_state_tween_add, "tween image",
+ *                       part->name, part->curr_state,
+ *                       part->curr_state_value);
+ *   }
+ *  ...
+ *   </pre>
+ *
+ *   For actions, that change params with highlight from workspace:
+ *
+ *   history_diff_add(source, Target, HLIGHT, Value_Type, new_value_1,
+ *                    old_value_1, new_value_2, old_value_2
+ *                    Func_1 pointer, Style name, Func_2 pointer,
+ *                    description, Part name, State name, State value);
+ *
+ *  Example of code shown case, when add new image into tween list:
+ *  <pre>
+ *   ...
+ *   History *history = history_init();
+ *   if (!history_module_add(style->obj)) return;
+ *    ...
+ *   Eina_Bool result = false;
+ *   old_value_1 = edje_edit_state_max_w_get(sd->style->obj, part->name,
+ *                                           part->curr_state,
+ *                                           part->curr_state_value);
+ *   old_value_2 = edje_edit_state_max_h_get(sd->style->obj, part->name,
+ *                                           part->curr_state,
+ *                                           part->curr_state_value);
+ *   result = edje_edit_state_max_w_set(sd->style->obj, part->name,
+ *                                      part->curr_state, part->curr_state_value,
+ *                                      events->w);
+ *   result &= edje_edit_state_max_h_set(sd->style->obj, part->name,
+ *                                       part->curr_state, part->curr_state_value,
+ *                                       events->h);
+ *  if (result)
+ *    history_diff_add(style->obj, PROPERTY, HLIGHT, INT, events->w, old_value_1,
+ *                     events->h, old_value_2, (void *)edje_edit_state_max_w_set,
+ *                     style->full_group_name, (void *)edje_edit_state_max_h_set,
+ *                     "max size", part->name, part->curr_state,
+ *                     part->curr_state_value);
+ *  ...
+ *   </pre>
  **
  *
  * @ingroup History
