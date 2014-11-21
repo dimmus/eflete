@@ -67,14 +67,14 @@ EFLETE_TEST (program_editor_window_add_test_p)
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    style = wm_style_object_find(widget_list, full_style_name);
 
    manager = program_editor_window_add(style);
    ck_assert_msg(manager != NULL, "cannot create new Program Editor");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    app_shutdown();
    elm_shutdown();
 }

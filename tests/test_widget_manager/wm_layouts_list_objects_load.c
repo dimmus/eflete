@@ -62,7 +62,7 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_p)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   layouts_list = wm_widget_list_layouts_load(file);
+   layouts_list = wm_layouts_list_new(file);
    ck_assert_msg(wm_layouts_list_objects_load(layouts_list, e, file), "Failed load layout.");
 
    elm_shutdown();
@@ -134,7 +134,7 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_n2)
    const char *file = "./edj_build/wm_layouts_list_objects_load.edj";
    Eina_Inlist *layouts_list = NULL;
 
-   layouts_list = wm_widget_list_layouts_load(file);
+   layouts_list = wm_layouts_list_new(file);
    ck_assert_msg(!wm_layouts_list_objects_load(layouts_list, NULL, file), "Layouts list loaded without canvas pointer.");
 
    elm_shutdown();
@@ -173,7 +173,7 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_n3)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   layouts_list = wm_widget_list_layouts_load(file);
+   layouts_list = wm_layouts_list_new(file);
    ck_assert_msg(!wm_layouts_list_objects_load(layouts_list, e, NULL), "Layouts List loaded without file name.");
 
    elm_shutdown();

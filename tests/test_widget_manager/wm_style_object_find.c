@@ -64,11 +64,11 @@ EFLETE_TEST (wm_style_object_find_test_p1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    ck_assert_msg(wm_style_object_find(widget_list, full_style_name) != NULL, "Group wasn't found");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -108,11 +108,11 @@ EFLETE_TEST (wm_style_object_find_test_p2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    ck_assert_msg(wm_style_object_find(widget_list, full_style_name) == NULL, "Unexisted Group was found");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -180,11 +180,11 @@ EFLETE_TEST (wm_style_object_find_test_n2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    ck_assert_msg(wm_style_object_find(widget_list, NULL) == NULL, "NULL was found");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST

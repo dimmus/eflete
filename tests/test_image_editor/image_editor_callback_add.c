@@ -48,7 +48,7 @@ _cb (void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUS
  * @step 3 create app
  * @step 4 create main window
  * @step 5 load project
- * @step 6 call wm_widget_list_objects_load
+ * @step 6 call wm_widgets_list_objects_load
  * @step 7 add image editor
  *
  * @procedure
@@ -75,9 +75,9 @@ EFLETE_TEST (image_editor_callback_add_test_p1)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_callback_add_test_p1/image_editor_callback_add_test_p1.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(images, _cb, NULL) == EINA_TRUE,
@@ -103,7 +103,7 @@ END_TEST
  * @step 3 create app
  * @step 4 create main window
  * @step 5 load project
- * @step 6 call wm_widget_list_objects_load
+ * @step 6 call wm_widgets_list_objects_load
  * @step 7 add image editor
  *
  * @procedure
@@ -130,9 +130,9 @@ EFLETE_TEST (image_editor_callback_add_test_p2)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_callback_add_test_p2/image_editor_callback_add_test_p2.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(images, _cb, app) == EINA_TRUE,
@@ -158,7 +158,7 @@ END_TEST
  * @step 3 create app
  * @step 4 create main window
  * @step 5 load project
- * @step 6 call wm_widget_list_objects_load
+ * @step 6 call wm_widgets_list_objects_load
  * @step 7 add image editor
  *
  * @procedure
@@ -185,9 +185,9 @@ EFLETE_TEST (image_editor_callback_add_test_n1)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_callback_add_test_n1/image_editor_callback_add_test_n1.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(NULL, _cb, app) == EINA_FALSE,
@@ -213,7 +213,7 @@ END_TEST
  * @step 3 create app
  * @step 4 create main window
  * @step 5 load project
- * @step 6 call wm_widget_list_objects_load
+ * @step 6 call wm_widgets_list_objects_load
  * @step 7 add image editor
  *
  * @procedure
@@ -240,9 +240,9 @@ EFLETE_TEST (image_editor_callback_add_test_n2)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_callback_add_test_n2/image_editor_callback_add_test_n2.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_callback_add(images, NULL, app) == EINA_FALSE,

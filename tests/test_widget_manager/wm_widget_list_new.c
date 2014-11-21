@@ -60,12 +60,12 @@ EFLETE_TEST (wm_widget_list_new_test_p)
    Eina_Inlist *widget_list = NULL;
    Widget *widget = NULL;
 
-   widget_list = wm_widget_list_new(file);
+   widget_list = wm_widgets_list_new(file);
    ck_assert_msg(widget_list != NULL, "Widget List is not created.");
    widget = EINA_INLIST_CONTAINER_GET(widget_list, Widget);
    ck_assert_str_eq(widget->name, widget_name);
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -94,7 +94,7 @@ END_TEST
 EFLETE_TEST (wm_widget_list_new_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_list_new(NULL) == NULL, "new widget list was created");
+   ck_assert_msg(wm_widgets_list_new(NULL) == NULL, "new widget list was created");
    elm_shutdown();
 }
 END_TEST

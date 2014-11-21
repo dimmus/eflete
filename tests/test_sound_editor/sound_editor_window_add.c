@@ -66,9 +66,9 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./sound_editor_window_add_test_p1/sound_editor_window_add_test_p1.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
 
    sounds = sound_editor_window_add(app->project, SINGLE);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SINGLE mode");
@@ -117,7 +117,7 @@ EFLETE_TEST (sound_editor_window_add_test_p2)
 
    app = app_data_get();
    app->project = pm_project_open("./sound_editor_window_add_test_p2/sound_editor_window_add_test_p2.pro");
-   wm_widget_list_objects_load(app->project->widgets,
+   wm_widgets_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
                                app->project->dev);
    ui_main_window_add(app);
@@ -254,9 +254,9 @@ EFLETE_TEST (sound_editor_window_add_test_n3)
 
    app = app_data_get();
    app->project = pm_project_open("./sound_editor_window_add_test_n3/sound_editor_window_add_test_n3.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
 
    sounds = sound_editor_window_add(app->project, SINGLE);
    ck_assert_msg(sounds == NULL,

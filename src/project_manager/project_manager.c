@@ -635,7 +635,7 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->release_options);
 
    wm_widgets_list_free(project->widgets);
-   //wm_widget_list_free(project->layouts);
+   wm_layouts_list_free(project->layouts);
 
    eina_stringshare_del(backup);
    free(project);

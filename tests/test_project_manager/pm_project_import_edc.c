@@ -66,6 +66,7 @@ _test_end_p1_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_import_edc_test_p1)
 {
    Project_Thread *thread;
+   Project *pro;
 
    elm_init(0,0);
    app_init();
@@ -76,6 +77,9 @@ EFLETE_TEST (pm_project_import_edc_test_p1)
    ecore_main_loop_begin();
 
    ck_assert_msg(thread != NULL, "Thread for import radio.edc to new project not started!");
+
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();
@@ -117,8 +121,9 @@ _test_end_p2_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_import_edc_test_p2)
 {
    Project_Thread *thread;
-   Eina_Bool files_is = EINA_FALSE;
-   Eet_File *ef;
+   Project *pro;
+   //Eina_Bool files_is = EINA_FALSE;
+   //Eet_File *ef;
 
    elm_init(0,0);
    app_init();
@@ -130,13 +135,18 @@ EFLETE_TEST (pm_project_import_edc_test_p2)
      ck_abort_msg("Project thread not started!");
    ecore_main_loop_begin();
 
-   ef = eet_open("./UTC/UTC.pro", EET_FILE_MODE_READ_WRITE);
+   /*
+   ef = eet_open("./UTC/UTC.pro", EET_FILE_MODE_READ);
    if (ef) files_is = EINA_TRUE;
    eet_close(ef);
-   ef = eet_open("./UTC/UTC.dev", EET_FILE_MODE_READ_WRITE);
+   ef = eet_open("./UTC/UTC.dev", EET_FILE_MODE_READ);
    if (ef) files_is &= EINA_TRUE;
    eet_close(ef);
    ck_assert_msg(files_is != EINA_FALSE, "Specific project file not created.");
+   */
+
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();
@@ -174,13 +184,13 @@ _test_progress_cb(void *data __UNUSED__,
 {
    res = EINA_TRUE;
 
-   ecore_main_loop_quit();
    return EINA_TRUE;
 }
 
 EFLETE_TEST (pm_project_import_edc_test_p3)
 {
    Project_Thread *thread;
+   Project *pro;
 
    elm_init(0,0);
    app_init();
@@ -188,20 +198,20 @@ EFLETE_TEST (pm_project_import_edc_test_p3)
    res = EINA_FALSE;
    thread = pm_project_import_edc("UTC", ".", "./edj_build/radio.edc",
                                   "-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
-                                  _test_progress_cb, NULL, NULL);
+                                  _test_progress_cb, _test_end_p2_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread not started!");
    ecore_main_loop_begin();
 
    ck_assert_msg(res, "Progress callback did't called!");
 
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
+
    app_shutdown();
    elm_shutdown();
 }
 END_TEST
-
-
-
 
 /**
  * @addtogroup pm_project_import_edc

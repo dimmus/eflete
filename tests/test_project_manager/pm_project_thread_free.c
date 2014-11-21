@@ -64,6 +64,7 @@ _test_end_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_thread_free_test_p)
 {
    Project_Thread *worker;
+   Project *pro;
    Eina_Bool res;
 
    elm_init(0,0);
@@ -76,6 +77,9 @@ EFLETE_TEST (pm_project_thread_free_test_p)
 
    res = pm_project_thread_free(worker);
    ck_assert_msg(res, "Project thread did't canceled!");
+
+   pro = pm_project_thread_project_get(worker);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();
@@ -106,19 +110,31 @@ END_TEST
  * </tr>
  * @}
  */
+static void
+_test_end_n_cb(void *data __UNUSED__,
+               PM_Project_Result result __UNUSED__)
+{
+   ecore_main_loop_quit();
+}
+
 EFLETE_TEST (pm_project_thread_free_test_n)
 {
    Project_Thread *worker;
+   Project *pro;
    Eina_Bool res;
 
    elm_init(0,0);
    app_init();
 
    worker = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  NULL, _test_end_cb, NULL);
+                                  NULL, _test_end_n_cb, NULL);
 
    res = pm_project_thread_free(worker);
+   ecore_main_loop_begin();
    ck_assert_msg(!res, "Project thread freed, while this thread is running! ");
+
+   pro = pm_project_thread_project_get(worker);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();

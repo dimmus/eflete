@@ -55,15 +55,29 @@ static Eina_Bool res;
  * </tr>
  * @}
  */
+
+static void
+_end_cb(void *data __UNUSED__,
+        PM_Project_Result result __UNUSED__)
+{
+   ecore_main_loop_quit();
+}
+
 EFLETE_TEST (pm_project_import_edj_test_p)
 {
    Project_Thread *thread;
+   Project *pro;
 
    elm_init(0,0);
    app_init();
 
-   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj", NULL, NULL, NULL);
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+                                  NULL, _end_cb, NULL);
    ck_assert_msg(thread != NULL, "Thread for import test_project_manager.edj to new project not started!");
+   ecore_main_loop_begin();
+
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();
@@ -100,24 +114,27 @@ _test_progress_cb(void *data __UNUSED__,
 {
    res = EINA_TRUE;
 
-   ecore_main_loop_quit();
    return EINA_TRUE;
 }
 
 EFLETE_TEST (pm_project_import_edj_test_p1)
 {
    Project_Thread *thread;
+   Project *pro;
 
    elm_init(0,0);
    app_init();
 
    res = EINA_FALSE;
    thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
-                                  _test_progress_cb, NULL, NULL);
+                                  _test_progress_cb, _end_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread is not runned!");
    ecore_main_loop_begin();
    ck_assert_msg(res, "Progress callback did't called!");
+
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();
@@ -161,6 +178,7 @@ _test_end_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_import_edj_test_p2)
 {
    Project_Thread *thread;
+   Project *pro;
 
    elm_init(0,0);
    app_init();
@@ -172,6 +190,9 @@ EFLETE_TEST (pm_project_import_edj_test_p2)
      ck_abort_msg("Project thread is not runned!");
    ecore_main_loop_begin();
    ck_assert_msg(res, "End callback did't called!");
+
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();

@@ -55,7 +55,7 @@ check: Makefile
 	$(builddir)/wm_widget_list_new.edj \
 	$(builddir)/wm_style_copy.edj \
 	$(builddir)/wm_program_signals_list_free.edj \
-	$(builddir)/wm_widget_list_layouts_load.edj \
+	$(builddir)/wm_layouts_list_new.edj \
 	$(builddir)/wm_widget_list_free.edj \
 	$(builddir)/wm_program_signals_list_get.edj \
 	$(builddir)/wm_part_current_state_set.edj \

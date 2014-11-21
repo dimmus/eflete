@@ -74,8 +74,13 @@ EFLETE_TEST (pm_project_open_test_p)
      ck_abort_msg("Project thread is not runned!");
    ecore_main_loop_begin();
 
+   pro = pm_project_thread_project_get(thread);
+   pm_project_close(pro);
+   pro = NULL;
+
    pro = pm_project_open("./UTC/UTC.pro");
-   ck_assert_msg(pro != NULL, "Project is not opened!");
+   ck_assert_msg(pro != NULL, "Project does't opened.");
+   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();

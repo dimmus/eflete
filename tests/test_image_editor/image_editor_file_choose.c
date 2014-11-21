@@ -42,7 +42,7 @@
  * @step 2 init app
  * @step 3 create main window
  * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
+ * @step 5 call wm_widgets_list_objects_load
  * @step 6 add image editor
  *
  * @procedure
@@ -69,9 +69,9 @@ EFLETE_TEST (image_editor_file_choose_test_p)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_file_choose_test_p/image_editor_file_choose_test_p.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "radio.png") == EINA_TRUE,
@@ -96,7 +96,7 @@ END_TEST
  * @step 2 init app
  * @step 3 create main window
  * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
+ * @step 5 call wm_widgets_list_objects_load
  * @step 6 add image editor
  *
  * @procedure
@@ -123,9 +123,9 @@ EFLETE_TEST (image_editor_file_choose_test_n1)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_file_choose_test_n1/image_editor_file_choose_test_n1.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, "not_correct_image_name") == EINA_FALSE,
@@ -150,7 +150,7 @@ END_TEST
  * @step 2 init app
  * @step 3 create main window
  * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
+ * @step 5 call wm_widgets_list_objects_load
  * @step 6 add image editor
  *
  * @procedure
@@ -177,9 +177,9 @@ EFLETE_TEST (image_editor_file_choose_test_n2)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_file_choose_test_n2/image_editor_file_choose_test_n2.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(NULL, "not_correct_image_name") == EINA_FALSE,
@@ -204,7 +204,7 @@ END_TEST
  * @step 2 init app
  * @step 3 create main window
  * @step 4 load project
- * @step 5 call wm_widget_list_objects_load
+ * @step 5 call wm_widgets_list_objects_load
  * @step 6 add image editor
  *
  * @procedure
@@ -231,9 +231,9 @@ EFLETE_TEST (image_editor_file_choose_test_n3)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./image_editor_file_choose_test_n3/image_editor_file_choose_test_n3.pro");
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win),
-                               app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    images = image_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(image_editor_file_choose(images, NULL) == EINA_FALSE, "Selected image that not exist");

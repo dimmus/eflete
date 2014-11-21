@@ -98,9 +98,9 @@ EFLETE_TEST (colorclass_viewer_add_test_p)
    app->project = pm_project_open("./colorclass_viewer_add_test_p/colorclass_viewer_add_test_p.pro");
 
    ui_main_window_add(app);
-   wm_widget_list_objects_load(app->project->widgets,
-                                     evas_object_evas_get(app->win),
-                                     app->project->dev);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
 
    colorclass  = colorclass_viewer_add(app->project);
    ck_assert_msg(colorclass != NULL, "Unable to create image editor window");

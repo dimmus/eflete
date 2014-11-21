@@ -139,7 +139,7 @@ test_widget_manager/wm_widget_add.c \
 test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
-test_widget_manager/wm_widget_list_layouts_load.c \
+test_widget_manager/wm_layouts_list_new.c \
 test_widget_manager/wm_layouts_list_objects_load.c \
 test_widget_manager/wm_widget_list_objects_load.c
 widget_manager_test_CFLAGS = ${FLAGS}

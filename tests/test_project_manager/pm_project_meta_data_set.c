@@ -83,6 +83,7 @@ EFLETE_TEST (pm_project_meta_data_set_test_p)
    ret = pm_project_meta_data_set(pro, "UTC", "authors", "version", "license", "comment");
    ck_assert_msg(ret, "Meta data not setted to project.");
 
+   pm_project_close(pro);
    app_shutdown();
    elm_shutdown();
 }

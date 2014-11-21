@@ -106,6 +106,8 @@ EFLETE_TEST (pm_project_save_test_p)
    ck_assert_msg(ef != NULL, "Project not saved!");
 
    eet_close(ef);
+   pm_project_close(pro);
+
    app_shutdown();
    elm_shutdown();
 }
