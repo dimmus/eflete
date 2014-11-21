@@ -18,6 +18,7 @@
  */
 
 #include "test_colorclass_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup colorclass_editor_test
@@ -87,20 +88,26 @@ END_TEST
 EFLETE_TEST (colorclass_viewer_add_test_p)
 {
    elm_init(0,0);
+   setup("colorclass_viewer_add_test_p");
+
    App_Data *app;
    Evas_Object *colorclass;
 
    app_init();
    app = app_data_get();
-   app->project = pm_open_project_edj("./edj_build/colorclass_viewer_add.edj");
-;
+   app->project = pm_project_open("./colorclass_viewer_add_test_p/colorclass_viewer_add_test_p.pro");
+
    ui_main_window_add(app);
+   wm_widget_list_objects_load(app->project->widgets,
+                                     evas_object_evas_get(app->win),
+                                     app->project->dev);
 
    colorclass  = colorclass_viewer_add(app->project);
-   ck_assert_msg(colorclass != NULL, "failure: cannot create image editor window");
+   ck_assert_msg(colorclass != NULL, "Unable to create image editor window");
 
    evas_object_del(colorclass);
    app_shutdown();
+   teardown("./colorclass_viewer_add_test_p");
    elm_shutdown();
 }
 END_TEST

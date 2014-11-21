@@ -74,6 +74,7 @@ check: Makefile
 	$(builddir)/ui_style_clicked.edj \
 	$(builddir)/style_dialog_add.edj \
 	$(builddir)/state_dialog.edj \
+	$(builddir)/colorclass_editor.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

@@ -534,7 +534,6 @@ colorclass_viewer_add(Project *project)
         _itc_ccl->func.del = _item_ccl_del;
      }
 
-
    BOX_ADD(panes, bottom_box, true, false)
    elm_box_pack_end(box, bottom_box);
 
@@ -598,7 +597,6 @@ colorclass_viewer_add(Project *project)
 
    BOX_ADD(scr_box, param_box, false, true);
 
-
    elm_box_pack_start(param_box, ccl_edit->label);
    _COLOR_ADD(ccl_edit->rect_color1,_("Object color"), param_box)
    _SPINNER_ADD(ccl_edit->obj_r,_("R:%3.0f"), param_box)
@@ -625,6 +623,7 @@ colorclass_viewer_add(Project *project)
 
 #undef _SPINNER_ADD
 #undef _COLOR_ADD
+
    if (!_colorclass_viewer_init(ccl_edit))
      {
         NOTIFY_ERROR(_("Failed initialize colorclasses editor"));
@@ -637,5 +636,6 @@ colorclass_viewer_add(Project *project)
 
    evas_object_show(ccl_edit->mwin);
    ap->modal_editor = true;
+
    return ccl_edit->mwin;
 }

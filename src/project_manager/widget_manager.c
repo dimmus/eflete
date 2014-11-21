@@ -827,7 +827,7 @@ wm_widget_list_new(const char *file)
 
    if (!file) return NULL;
 
-   DBG("Start to parse the edje group collection.");
+   DBG("Start to parse the edje group collection. From file %s", file);
    collection = edje_file_collection_list(file);
    if (!collection)
      {
