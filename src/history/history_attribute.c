@@ -537,9 +537,37 @@ _attribute_curd_parse(va_list list, Attribute_Diff *change)
 }
 
 static Eina_Bool
-_attribute_highlight_parse(va_list list __UNUSED__, Attribute_Diff *change __UNUSED__)
+_attribute_highlight_parse(va_list list, Attribute_Diff *change)
 {
-   return false;
+   switch(change->param_type)
+     {
+      case INT:
+         change->twice_int.old_1 = (int)va_arg(list, int);
+         change->twice_int.new_1 = (int)va_arg(list, int);
+         change->twice_int.old_2 = (int)va_arg(list, int);
+         change->twice_int.new_2 = (int)va_arg(list, int);
+         change->diff.new = eina_stringshare_printf("%d %d",
+                              change->twice_int.new_1, change->twice_int.new_2);
+         change->diff.old = eina_stringshare_printf("%d %d",
+                              change->twice_int.old_1, change->twice_int.old_2);
+      break;
+      case DOUBLE:
+         change->twice_double.old_1 = (double)va_arg(list, double);
+         change->twice_double.new_1 = (double)va_arg(list, double);
+         change->twice_double.old_2 = (double)va_arg(list, double);
+         change->twice_double.new_2 = (double)va_arg(list, double);
+         change->diff.new = eina_stringshare_printf("%.3f %.3f",
+                              change->twice_double.new_1, change->twice_double.new_2);
+         change->diff.old = eina_stringshare_printf("%.3f %.3f",
+                              change->twice_double.old_1, change->twice_double.old_2);
+      break;
+      default:
+          ERR("Unsupported value type.");
+          return false;
+     }
+   change->func_revert = (void *)va_arg(list, void *);
+   if (!change->func_revert) return false;
+   return true;
 }
 
 Diff *
