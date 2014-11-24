@@ -42,24 +42,25 @@ ui_main_window_del(App_Data *ap)
         ERR("ap is NULL");
          return false;
      }
+   /*
    if (!ui_close_project_request(ap,
                                  _("You want to close Eflete, but now you have<br/>"
                                    "opened project. If you dont save opened project<br/>"
                                    "all your changes will be lost!")))
      return false;
+   */
 
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(ap, false);
 #endif
 
+   if (ap->project)
+     pm_project_close(ap->project);
+
    eina_hash_free(ap->menu_hash);
    ap->menu_hash = NULL;
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
-   /*
-   if (ap->project)
-     pm_project_close(ap->project);
-   */
    /* FIXME: remove it from here */
    live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */
