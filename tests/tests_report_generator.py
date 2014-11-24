@@ -97,7 +97,9 @@ def gen_report(logs_dir, output_file):
 									out.write(tmp_split[2] + '</td><td>')
 									out.write(result + '</td>')
 									out.write(passed + '</tr>')
-									i = i + 3
+									while not '</tr>' in tmp_lines[i]:
+										i = i + 1
+									i = i + 1
 							except IndexError:
 								print "Incorrect doc structure in \"" + tmp_file + "\""
 								print "  last test_id: " + test_id
