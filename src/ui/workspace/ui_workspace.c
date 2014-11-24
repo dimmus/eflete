@@ -270,6 +270,26 @@ _zoom_factor_out(void *data,
 }
 
 static void
+_menu_undo_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+   if (!ws->style) return;
+   history_undo(ws->style->obj, 1);
+}
+
+static void
+_menu_redo_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info __UNUSED__)
+{
+   Ws_Smart_Data *ws = (Ws_Smart_Data *)data;
+   if (!ws->style) return;
+   history_redo(ws->style->obj, 1);
+}
+
+static void
 _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
 {
    Evas_Object *menu;
@@ -277,10 +297,8 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    ws->menu.obj = menu = elm_menu_add(elm_object_top_widget_get (parent));
    elm_object_style_set(menu, "eflete/default");
 
-   items->undo = elm_menu_item_add(menu, NULL, NULL, _("Undo"), NULL, NULL);
-   elm_object_item_disabled_set(items->undo, true);
-   items->redo = elm_menu_item_add(menu, NULL, NULL, _("Redo"), NULL, NULL);
-   elm_object_item_disabled_set(items->redo, true);
+   items->undo = elm_menu_item_add(menu, NULL, NULL, _("Undo"), _menu_undo_cb, ws);
+   items->redo = elm_menu_item_add(menu, NULL, NULL, _("Redo"), _menu_redo_cb, ws);
    elm_menu_item_separator_add(menu, NULL);
 
    items->rulers = elm_menu_item_add(menu, NULL, NULL, _("Rulers"), NULL, NULL);
