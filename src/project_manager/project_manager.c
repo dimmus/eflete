@@ -189,7 +189,8 @@ _project_files_create(Project_Thread *worker)
    if (!_pm_project_descriptor_data_write(pro_path, pro))
      error = true;
 
-   DBG("Create a specific project file '%s'", pro_path);
+   DBG("Create a specific project file '%s': %s", pro_path,
+       error ? "failsed" : "success");
    THREAD_TESTCANCEL;
    _pm_project_descriptor_shutdown();
    eina_stringshare_del(folder_path);
@@ -242,7 +243,7 @@ _copy_meta_data_to_pro(Project_Thread *worker)
 
    WORKER_LOCK_TAKE;
       pm_project_meta_data_set(worker->project, name, authors,
-                               license, version, comment);
+                               version, license, comment);
    WORKER_LOCK_RELEASE;
 
    if (name) free(name);
