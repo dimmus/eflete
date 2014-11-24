@@ -212,6 +212,11 @@ history_undo(Evas_Object *source, int count)
    _history_ui_item_update(diff, false, false);
    if (count > 1) result = history_undo(source, --count);
 
+   if (module->current_change)
+     _history_ui_item_update(module->current_change, true, true);
+   else
+     elm_genlist_item_selected_set(module->ui_item, true);
+
    return result;
 }
 

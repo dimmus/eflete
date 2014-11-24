@@ -173,6 +173,12 @@ _history_ui_add(Evas_Object *parent)
 void
 _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
 {
+   if (current)
+     {
+        elm_genlist_item_bring_in(change->ui_item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+        elm_genlist_item_selected_set(change->ui_item, current);
+     }
+
    if (active)
      {
         elm_genlist_item_item_class_update(change->ui_item, _itc_change);
@@ -184,12 +190,6 @@ _history_ui_item_update(Diff *change, Eina_Bool active, Eina_Bool current)
         elm_genlist_item_item_class_update(change->ui_item, _itc_change_inactive);
         elm_genlist_item_class_ref(_itc_change_inactive);
         elm_genlist_item_class_unref(_itc_change);
-     }
-
-   if (current)
-     {
-        elm_genlist_item_bring_in(change->ui_item, ELM_GENLIST_ITEM_SCROLLTO_IN);
-        elm_genlist_item_selected_set(change->ui_item, current);
      }
 }
 
