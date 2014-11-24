@@ -169,7 +169,7 @@ EFLETE_TEST (ui_widget_list_data_set_test_p3)
    Widget *widget = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_project_open("ui_widget_list_data_set_test_p3");
+   project = pm_project_open("./ui_widget_list_data_set_test_p3/ui_widget_list_data_set_test_p3.pro");
    while (project->widgets)
      {
         widget = EINA_INLIST_CONTAINER_GET(project->widgets, Widget);
