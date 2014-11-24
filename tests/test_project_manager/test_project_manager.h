@@ -22,7 +22,7 @@
 #include "eflete.h"
 
 /**
- * @defgroup test_project_manager
+ * @defgroup project_manager_test
  */
 
 void pm_project_import_edj_test_p(int);
