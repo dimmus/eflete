@@ -306,9 +306,12 @@ _grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
 static char *
 _grid_group_item_label_get(void *data,
                            Evas_Object *obj __UNUSED__,
-                           const char  *part __UNUSED__)
+                           const char  *part)
 {
-   return strdup(data);
+   if ((part) && (!strcmp(part, "elm.text")))
+     return strdup(data);
+   else
+     return NULL;
 }
 
 static inline void
