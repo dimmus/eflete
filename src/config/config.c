@@ -441,10 +441,10 @@ profile_load(const char *name)
    if (ef)
      {
         profile = eet_data_read(ef, edd_profile, PROFILE_FILE_KEY);
-        if (!profile) profile = _profile_default_new();
         eet_close(ef);
      }
-   else
+
+   if (!profile)
      {
         profile = _profile_default_new();
         profile->shortcuts = _default_shortcuts_get();
