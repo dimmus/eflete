@@ -91,6 +91,7 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    elm_object_part_text_set(layout, "label.meta_comment", _("Comment:"));
    ENTRY_ADD(layout, wiew->meta_comment, false, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.meta_comment", wiew->meta_comment);
+   elm_entry_entry_set(wiew->meta_comment, _("Created with Eflete!"));
 
    evas_object_show(mwin);
    return mwin;
