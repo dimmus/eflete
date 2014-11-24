@@ -20,7 +20,7 @@
 #include "test_ui_workspace.h"
 
 /**
- * @addtogroup workspace_test
+ * @addtogroup ui_workspace_test
  * @{
  * @addtogroup workspace_edit_object_part_rename
  * @{
