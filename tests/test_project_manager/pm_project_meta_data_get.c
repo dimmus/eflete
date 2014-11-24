@@ -48,8 +48,6 @@
  * </td>
  * <td>(Project *) pro, NULL, NULL, NULL, (char *)"license", NULL</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

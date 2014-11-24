@@ -62,8 +62,6 @@
  * </td>
  * <td>(Evas_Object *) widget_list</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -131,8 +129,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) widget_list</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -187,8 +183,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

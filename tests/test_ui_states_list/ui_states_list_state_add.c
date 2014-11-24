@@ -52,8 +52,6 @@
  * </td>
  * <td>(Evas_Object *) gl_states, (const char *) state = "new_state"</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -112,8 +110,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states, (const char *) state = "new_state"</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -158,8 +154,6 @@ END_TEST
  * </td>
  * <td>NULL, (const char *) state = "new_state"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -199,8 +193,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states, NULL</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

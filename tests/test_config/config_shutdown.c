@@ -44,8 +44,6 @@
  * </td>
  * <td>void</td>
  * <td>config is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

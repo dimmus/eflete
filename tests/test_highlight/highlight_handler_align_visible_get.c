@@ -50,8 +50,6 @@
  * </td>
  * <td>Evas_Object *highlight</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -91,8 +89,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *highlight</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -129,8 +125,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *bg</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -164,8 +158,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

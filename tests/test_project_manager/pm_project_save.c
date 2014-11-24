@@ -50,8 +50,6 @@
  * </td>
  * <td>(Project *)project</td>
  * <td>Project must be saved</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

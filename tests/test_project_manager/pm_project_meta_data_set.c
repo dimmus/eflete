@@ -49,8 +49,6 @@
  * <td>(Project *) pro, (char *)"UTC", (char *)"authors", (char *)"version",
  * (char *)"license", (char *)"comment"</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -47,8 +47,6 @@
  * </td>
  * <td>char *file = "./edj_build/wm_widget_list_new.edj"</td>
  * <td>All Checks was successfuly passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -86,8 +84,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

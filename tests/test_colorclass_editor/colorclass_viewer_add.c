@@ -46,8 +46,6 @@
  * </td>
  * <td>NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -80,8 +78,6 @@ END_TEST
  * </td>
  * <td>(Project *)project</td>
  * <td>Evas_Object returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

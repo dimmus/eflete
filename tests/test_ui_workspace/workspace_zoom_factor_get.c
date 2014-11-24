@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned (double) 1.5</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -90,8 +88,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>Returned 0</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

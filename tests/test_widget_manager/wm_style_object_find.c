@@ -48,8 +48,6 @@
  * </td>
  * <td>Eina_Inlist *widget_list; char *full_style_name = "elm/radio/base/test"</td>
  * <td>Not NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -92,8 +90,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list; char *full_style_name = "elm/widget/base/test"</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -133,8 +129,6 @@ END_TEST
  * </td>
  * <td>NULL, char *full_style_name = "elm/widget/base/test"</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -165,8 +159,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -205,8 +197,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -53,8 +53,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (Part *) part</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -121,8 +119,6 @@ END_TEST
  * </td>
  * <td>NULL, (Part *) part</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -177,8 +173,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -232,8 +226,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (Part *) part</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

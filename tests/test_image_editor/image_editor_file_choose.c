@@ -52,8 +52,6 @@
  * </td>
  * <td>image_editor, "radio.png"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -106,8 +104,6 @@ END_TEST
  * </td>
  * <td>image_editor, "not_correct_image_name"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -160,8 +156,6 @@ END_TEST
  * </td>
  * <td>NULL, "not_correct_image_name"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -214,8 +208,6 @@ END_TEST
  * </td>
  * <td>image_editor, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

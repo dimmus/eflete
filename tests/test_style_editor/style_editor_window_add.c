@@ -48,8 +48,6 @@
  * </td>
  * <td>Project *project</td>
  * <td>returned pointer is not NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -90,8 +88,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>returned pointer is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -122,8 +118,6 @@ END_TEST
  * </td>
  * <td>Project *project</td>
  * <td>returned pointer is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -168,8 +162,6 @@ END_TEST
  * </td>
  * <td>Project *project</td>
  * <td>returned pointer is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

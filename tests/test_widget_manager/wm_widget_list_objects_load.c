@@ -52,8 +52,6 @@
  * </td>
  * <td>Eina_Inlist *widget_list, Evas *e, char *file = "./edj_build/wm_widget_list_objects_load.edj"</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -99,8 +97,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas *e, char *file = "./edj_build/wm_widget_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -136,8 +132,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list, NULL, char *file = "./edj_build/wm_widget_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -172,8 +166,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list, Evas *e, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

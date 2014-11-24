@@ -50,8 +50,6 @@
  * </td>
  * <td>Style *style, const char *part_name = "elm.swallow.content"</td>
  * <td>All check's passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -99,8 +97,6 @@ END_TEST
  * </td>
  * <td>Style *style, const char *part_name = "eflete.part"</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -146,8 +142,6 @@ END_TEST
  * </td>
  * <td>Style *style, NULL</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -189,8 +183,6 @@ END_TEST
  * </td>
  * <td>NULL, const char *part = "elm.swallow.content"</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -219,8 +211,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

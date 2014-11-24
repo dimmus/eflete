@@ -45,8 +45,6 @@
  * </td>
  * <td>Evas_Object *parent</td>
  * <td>Not NULL returned value</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -76,8 +74,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL returned value</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

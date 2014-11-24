@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) container</td>
  * <td>Not NULL pointer</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -91,8 +89,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) container</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -129,8 +125,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -47,8 +47,6 @@
  * </td>
  * <td>Eina_Inlist *layouts_list, Evas *e, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
  * <td>Returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -86,8 +84,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas *e, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -123,8 +119,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *layouts_list, NULL, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -158,8 +152,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *layouts_list, Evas *e, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

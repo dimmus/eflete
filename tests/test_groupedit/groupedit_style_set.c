@@ -47,8 +47,6 @@
  * </td>
  * <td>(Evas_Object *) groupedit, "default"</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -86,8 +84,6 @@ END_TEST
  * </td>
  * <td>NULL, "default"</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -120,8 +116,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) groupedit, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

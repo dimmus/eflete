@@ -51,8 +51,6 @@ Eina_Bool res;
  * (char *)"-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
  * NULL, NULL, NULL </td>
  * <td>Project_Thead object must be created</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -106,8 +104,6 @@ END_TEST
  * (char *)"-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
  * NULL, "_test_end_p2_cb", NULL </td>
  * <td>Specific files must be created</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -173,8 +169,6 @@ END_TEST
  * (char *)"-id ./edj_build/ -fd ./edj_build/fnt -sd ./edj_build/snd",
  * "_test_progress_cb", NULL, NULL </td>
  * <td>Specific files must be created</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

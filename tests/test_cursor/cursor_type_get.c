@@ -46,8 +46,6 @@
  * </td>
  * <td>(Evas_Object *)obj</td>
  * <td>CURSOR_FLEUR</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -82,8 +80,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>CURSOR_LAST</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

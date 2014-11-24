@@ -62,8 +62,6 @@
  * </td>
  * <td>(Evas_Object *) widget_list, (Style *) style</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -132,8 +130,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) widget_list, (Style *) style</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -198,8 +194,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) widget_list, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -259,8 +253,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

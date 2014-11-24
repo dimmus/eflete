@@ -55,8 +55,6 @@
  * </td>
  * <td>(Live_View *)live</td>
  * <td>All check passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -111,8 +109,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -151,8 +147,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

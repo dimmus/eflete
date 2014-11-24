@@ -69,11 +69,16 @@ def gen_report(logs_dir, output_file):
 							i = 2
 							try:
 								while i < len(tmp_lines):
-									test_id = tmp_lines[i + 1].split("</td><td>", 3)[1][:-1]
-									while not '_REAL_RESULT_' in tmp_lines[i]:
+									i = i + 1
+									test_id = tmp_lines[i].split("</td><td>", 3)[1][:-1]
+									out.write("<tr>")
+									out.write(tmp_lines[i])
+									i = i + 1
+									while not '</td><td>' in tmp_lines[i]:
 										out.write(tmp_lines[i])
 										i = i + 1
-									tmp_split = tmp_lines[i].split("</td><td>", 5)
+									tmp_split = tmp_lines[i].split("</tr>")[0]
+									tmp_split = tmp_split.split("</td><td>", 3)
 									for j in range(log_start, len(lines)):
 										result = "UNKNOWN";
 										passed = '<td bgcolor="#FFFF00">Result not found</td>'

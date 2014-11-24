@@ -61,8 +61,6 @@
  * </td>
  * <td>(Evas_Object *) widget_list, (const char *) part = "bg", EINA_TRUE</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -125,8 +123,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) widget_list, (const char *) part = "part_name_here", EINA_TRUE</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -189,8 +185,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) widget_list, NULL, EINA_TRUE</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -245,8 +239,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL, EINA_TRUE</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

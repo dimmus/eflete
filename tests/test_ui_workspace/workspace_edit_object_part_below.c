@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"events"</td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -107,8 +105,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"non_exist"</td>
  * <td>Function return EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -161,8 +157,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL</td>
  * <td>Function return EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -209,8 +203,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *)"events"</td>
  * <td>Function return EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

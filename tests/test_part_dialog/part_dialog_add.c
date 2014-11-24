@@ -63,8 +63,6 @@
  * </td>
  * <td>App_Data *app</td>
  * <td>Not NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -131,8 +129,6 @@ END_TEST
  * </td>
  * <td>App_Data *app</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -199,8 +195,6 @@ END_TEST
  * </td>
  * <td>App_Data *app</td>
  * <td>Not NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -265,8 +259,6 @@ END_TEST
  * </td>
  * <td>App_Data *app</td>
  * <td>Not NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -318,8 +310,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

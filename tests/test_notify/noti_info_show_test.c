@@ -48,8 +48,6 @@
  * </td>
  * <td>Evas_Object *win_layout, "text"/NULL, 1</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -88,8 +86,6 @@ END_TEST
  * </td>
  * <td>NULL, "text"/NULL, 1</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -128,8 +124,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *win_layout, "text"/NULL, -1</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

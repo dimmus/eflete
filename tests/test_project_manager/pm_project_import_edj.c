@@ -50,8 +50,6 @@ static Eina_Bool res;
  * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/test_project_manager.edj",
  * NULL, NULL, NULL </td>
  * <td>Project_Thead object must be created</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -103,8 +101,6 @@ END_TEST
  * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/test_project_manager.edj",
  * "_test_progress_cb", NULL, NULL </td>
  * <td>Static variable 'res' must be EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -160,8 +156,6 @@ END_TEST
  * <td>(char *)"UTC", (char *)".", (char *)"./edj_build/test_project_manager.edj",
  * NULL, "_test_end_cb", NULL </td>
  * <td>Static variable 'res' must be EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -50,8 +50,6 @@
  * </td>
  * <td>Evas_Object *workspace, Style *style, char *</td>
  * <td>Returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -102,8 +100,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *workspace, Style *style, char *</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -153,8 +149,6 @@ END_TEST
  * </td>
  * <td>NULL, Style *style, char *</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -199,8 +193,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *workspace, NULL, char *</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -244,8 +236,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *workspace, Style *style, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

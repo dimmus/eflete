@@ -53,8 +53,6 @@
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/undef", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -123,8 +121,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>EINA_FALSE return</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -189,8 +185,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>EINA_FALSE return</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

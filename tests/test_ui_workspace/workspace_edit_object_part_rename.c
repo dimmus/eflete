@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (const char *) old_name = "radio", (const char *) new_name = "NEW_radio"</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -97,8 +95,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (const char *) old_name = "radio", (const char *) new_name = "NEW_radio"</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -147,8 +143,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (const char *) old_name = "qqqqq", (const char *) new_name = "NEW_radio"</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -195,8 +189,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (const char *) old_name = "radio", (const char *) new_name = "bg"</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -243,8 +235,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (const char *) old_name = "radio", (const char *) new_name = "radio"</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -295,8 +285,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL, NULL</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -58,8 +58,6 @@
  *
  * <td>(Live_View *)live, (Project *)project, (Style *)style</td>
  * <td>All check passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -130,8 +128,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live, (Project *)project, (Style *)style</td>
  * <td>All checks are passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -197,8 +193,6 @@ END_TEST
  * </td>
  * <td>NULL, (Project *)project, (Style *)style</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -251,8 +245,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live, (Project *)project, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -301,8 +293,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live, NULL, (Style *)style</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

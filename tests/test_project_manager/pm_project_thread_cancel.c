@@ -50,8 +50,6 @@ static Eina_Bool res;
  * </td>
  * <td>(Project_Thread *)worker</td>
  * <td>The and func must be called with param PM_PROJECT_CANCEL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

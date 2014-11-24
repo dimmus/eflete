@@ -59,8 +59,6 @@
  * </td>
  * <td>App_Data *app_data</td>
  * <td>Evas_Object *popup</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -118,8 +116,6 @@ END_TEST
  * </td>
  * <td>App_Data *app_data</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -155,8 +151,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -191,8 +185,6 @@ END_TEST
  * </td>
  * <td>App_Data *app_data</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

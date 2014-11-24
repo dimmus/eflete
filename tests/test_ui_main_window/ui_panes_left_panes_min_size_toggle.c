@@ -50,8 +50,6 @@
  * </td>
  * <td>App_Data *app_data, Eina_Bool is_on</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -98,8 +96,6 @@ END_TEST
  * </td>
  * <td>App_Data *app_data, Eina_Bool is_on</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

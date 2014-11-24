@@ -63,8 +63,6 @@
  * </td>
  * <td>(Evas_Object *) genlist, (Eina_List *) classes</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -134,8 +132,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) genlist, (Eina_List *) classes</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -191,8 +187,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) genlist, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -237,8 +231,6 @@ END_TEST
  * </td>
  * <td>NULL, (Eina_List *) classes</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -281,8 +273,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

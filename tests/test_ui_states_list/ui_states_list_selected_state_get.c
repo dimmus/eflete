@@ -52,8 +52,6 @@
  * </td>
  * <td>(Evas_Object *) gl_states</td>
  * <td>"disabled 0.00" returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -113,8 +111,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states</td>
  * <td>"default 0.00" returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -166,8 +162,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) window</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -201,8 +195,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

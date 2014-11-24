@@ -48,8 +48,6 @@
  * </td>
  * <td>(char *)"./UTC/UTC.pro"</td>
  * <td>Project object</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

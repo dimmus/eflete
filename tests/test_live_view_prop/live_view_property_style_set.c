@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -97,8 +95,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -143,8 +139,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -193,8 +187,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL, NULL, NULL</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

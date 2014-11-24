@@ -58,8 +58,6 @@ _cb (void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUS
  * </td>
  * <td>Evas_Object *image_editor, Evas_Smart_Cb callback, NULL</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -113,8 +111,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *image_editor, Evas_Smart_Cb callback, valid pointer</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -168,8 +164,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas_Smart_Cb callback, valid pointer</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -223,8 +217,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *image editor, NULL, valid pointer</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
