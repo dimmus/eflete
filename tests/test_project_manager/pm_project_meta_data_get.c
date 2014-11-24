@@ -69,7 +69,7 @@ EFLETE_TEST (pm_project_meta_data_get_test_p)
    elm_init(0,0);
    app_init();
 
-   thread = pm_project_import_edj("pm_project_meta_data_get_test_p", ".", "./edj_build/radio.edj",
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/radio.edj",
                                   NULL, _test_end_cb, NULL);
    if (!thread)
      ck_abort_msg("Project thread is not runned!");
