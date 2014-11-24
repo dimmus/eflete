@@ -75,8 +75,8 @@ def gen_report(logs_dir, output_file):
 										i = i + 1
 									tmp_split = tmp_lines[i].split("</td><td>", 5)
 									for j in range(log_start, len(lines)):
-										result = "NOT RAN";
-										passed = '<td bgcolor="#FFFF00">Not ran</td>'
+										result = "UNKNOWN";
+										passed = '<td bgcolor="#FFFF00">Result not found</td>'
 										if test_id in lines[j]:
 											log_split = lines[j].split(':', 7)
 											if log_split[2] == 'P':
