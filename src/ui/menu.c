@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "wizard.h"
 #include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "preference.h"
@@ -46,11 +47,12 @@ _on_open_project(void *data __UNUSED__,
 }
 
 static void
-_on_import_edj(void *data __UNUSED__,
+_on_import_edj(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-
+   App_Data *ap = (App_Data *)data;
+   wizard_import_edj_add(ap);
 }
 
 static void
