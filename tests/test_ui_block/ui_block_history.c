@@ -22,17 +22,17 @@
 /**
  * @addtogroup ui_block_test
  * @{
- * @addtogroup ui_block_graph_vision
+ * @addtogroup ui_block_history
  * @{
  * ui_block
  * <TABLE>
  * @}
  */
 
-TEST_UI_BLOCK_CONTENT(ui_block_graph_vision, right_top)
+TEST_UI_BLOCK_CONTENT(ui_block_history, right_top)
 
 /**
- * @addtogroup ui_block_graph_vision
+ * @addtogroup ui_block_history
  * @{
  * </TABLE>
  * @}

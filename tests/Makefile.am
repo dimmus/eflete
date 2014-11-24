@@ -37,6 +37,7 @@ live_view_test \
 live_view_prop_test \
 live_widget_test \
 about_window_test \
+history_test \
 colorselector_test \
 shortcuts_test
 
@@ -53,6 +54,7 @@ FLAGS = \
 -I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
+-I${top_srcdir}/src/history \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
@@ -156,7 +158,8 @@ test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
 test_widget_manager/wm_widget_list_layouts_load.c \
 test_widget_manager/wm_layouts_list_objects_load.c \
-test_widget_manager/wm_widget_list_objects_load.c
+test_widget_manager/wm_widget_list_objects_load.c \
+test_widget_manager/wm_part_by_name_find.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
@@ -271,7 +274,7 @@ container_test_LDADD = ${LD}
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \
 test_ui_block/ui_block_add.c \
-test_ui_block/ui_block_graph_vision.c \
+test_ui_block/ui_block_history.c \
 test_ui_block/ui_block_live_view.c \
 test_ui_block/ui_block_property.c \
 test_ui_block/ui_block_signal_list.c \
@@ -482,6 +485,23 @@ test_colorselector/colorselector_add.c \
 test_colorselector/colorselector_color_get.c
 colorselector_test_CFLAGS = ${FLAGS}
 colorselector_test_LDADD = ${LD}
+
+history_test_SOURCES = \
+test_history/test_history.c \
+test_history/history_init.c \
+test_history/history_term.c \
+test_history/history_clear.c \
+test_history/history_module_del.c \
+test_history/history_module_add.c \
+test_history/history_diff_add.c \
+test_history/history_undo.c \
+test_history/history_redo.c \
+test_history/history_genlist_get.c \
+test_history/history_module_depth_set.c \
+test_history/history_module_depth_get.c
+history_test_CFLAGS = ${FLAGS}
+history_test_LDADD = ${LD}
+
 
 coverage:
 	echo "<html><body>" > ../coverage.html

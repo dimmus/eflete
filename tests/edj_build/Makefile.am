@@ -72,6 +72,7 @@ check: Makefile
 	$(builddir)/wm_style_free.edj \
 	$(builddir)/wm_part_del.edj \
 	$(builddir)/wm_part_add.edj \
+	$(builddir)/wm_part_by_name_find.edj \
 	$(builddir)/ui_widget_list_data_set.edj \
 	$(builddir)/ui_widget_list_data_reload.edj \
 	$(builddir)/ui_widget_list_layout_reload.edj \
@@ -98,6 +99,11 @@ check: Makefile
 	$(builddir)/style_dialog_add.edj \
 	$(builddir)/state_dialog_state_add.edj \
 	$(builddir)/state_dialog_state_del.edj \
+	$(builddir)/history_diff_add.edj \
+ 	$(builddir)/history_undo.edj \
+ 	$(builddir)/history_redo.edj \
+ 	$(builddir)/history_module_depth_set.edj \
+ 	$(builddir)/history_module_depth_get.edj \
 	$(builddir)/colorclass_viewer_add.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:

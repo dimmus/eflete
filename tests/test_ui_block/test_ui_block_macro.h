@@ -18,7 +18,7 @@
  */
 
 #define TEST_UI_BLOCK_CONTENT_TC(_func_,tst,bl,block_obj,cont,result,pass_cond) \
-EFLETE_TEST (_func_ ## _test_ ## tst) \
+EFLETE_TEST (_func_##_test_##tst) \
 { \
    elm_init(0, 0); \
    Evas_Object *parent, *content; \
@@ -26,8 +26,8 @@ EFLETE_TEST (_func_ ## _test_ ## tst) \
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC); \
    apd.block.bl = block_obj; \
    content = cont; \
-   ck_assert_msg(_func_ ## _set(&apd, content) == pass_cond, "Function is not working right"); \
-   ck_assert_msg(_func_ ## _get(&apd) == result,"Content isn't set or returned properly"); \
+   ck_assert_msg(_func_##_set(&apd, content) == pass_cond, "Function is not working right"); \
+   ck_assert_msg(_func_##_get(&apd) == result,"Content isn't set or returned properly"); \
    elm_shutdown(); \
 } \
 END_TEST
@@ -37,8 +37,8 @@ END_TEST
  * @addtogroup _func_\
  * @{ \
  * <tr> \
- * <td> ## _func_ ## </td> \
- * <td> ## _func_ ## _test_p</td> \
+ * <td> ##_func_## </td> \
+ * <td> ##_func_##_test_p</td> \
  * <td> \
  * @precondition \
  * @step 1 initialized elm \
@@ -47,8 +47,8 @@ END_TEST
  * \
  * @procedure \
  * @step 1 Create content to set. \
- * @step 2 Call _func_ ## _set(app_data, content) \
- * @step 3 Call _func_ ## _get(app_data) \
+ * @step 2 Call _func_##_set(app_data, content) \
+ * @step 3 Call _func_##_get(app_data) \
  * </td> \
  * <td>App_Data *app_data, Evas_Object *content</td> \
  * <td>all checks passed</td> \
@@ -62,8 +62,8 @@ TEST_UI_BLOCK_CONTENT_TC(_func_,p,_block_,ui_block_add(parent),ui_block_add(pare
  * @addtogroup _func_\
  * @{ \
  * <tr> \
- * <td> ## _func_ ## </td> \
- * <td> ## _func_ ## _test_n1</td> \
+ * <td> ## _func_## </td> \
+ * <td> ## _func_##_test_n1</td> \
  * <td> \
  * @precondition \
  * @step 1 initialized elm \
@@ -72,8 +72,8 @@ TEST_UI_BLOCK_CONTENT_TC(_func_,p,_block_,ui_block_add(parent),ui_block_add(pare
  * \
  * @procedure \
  * @step 1 Create content to set. \
- * @step 2 Call _func_ ## _set(app_data, content) \
- * @step 3 Call _func_ ## _get(app_data) \
+ * @step 2 Call _func_##_set(app_data, content) \
+ * @step 3 Call _func_##_get(app_data) \
  * </td> \
  * <td>App_Data *app_data, Evas_Object *content</td> \
  * <td>all checks passed</td> \
@@ -87,8 +87,8 @@ TEST_UI_BLOCK_CONTENT_TC(_func_,n1,_block_,NULL,ui_block_add(parent),NULL,EINA_F
  * @addtogroup _func_\
  * @{ \
  * <tr> \
- * <td> ## _func_ ## </td> \
- * <td> ## _func_ ## _test_n2</td> \
+ * <td> ##_func_## </td> \
+ * <td> ##_func_##_test_n2</td> \
  * <td> \
  * @precondition \
  * @step 1 initialized elm \
@@ -96,8 +96,8 @@ TEST_UI_BLOCK_CONTENT_TC(_func_,n1,_block_,NULL,ui_block_add(parent),NULL,EINA_F
  * @step 3 Created block object. \
  * \
  * @procedure \
- * @step 1 Call _func_ ## _set(app_data, NULL) \
- * @step 2 Call _func_ ## _get(app_data) \
+ * @step 1 Call _func_##_set(app_data, NULL) \
+ * @step 2 Call _func_##_get(app_data) \
  * </td> \
  * <td>App_Data *app_data, NULL</td> \
  * <td>all checks passed</td> \

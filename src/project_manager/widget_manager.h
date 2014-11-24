@@ -473,5 +473,20 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
 const char *
 wm_part_type_get(Edje_Part_Type type);
 
+/**
+ * Find Part structure in style.
+ *
+ * @param Style The group structure, in which shoud be stored part.
+ * @param part_name The name of a part.
+ *
+ * @return if successful Part structure, NULL in otherwise.
+ *
+ * @note Input params shoud be Eina_Stringshare value, that creates with using
+ * eina_stringshare_add or eina_stringshare_printf.
+ *
+ * @ingroup WidgetManager
+ */
+Part *
+wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
 #endif /* WIDGET_MANAGER_B_H*/
 

@@ -48,6 +48,8 @@ ui_main_window_del(App_Data *ap)
                                    "all your changes will be lost!")))
      return false;
 
+   if (!history_term(ap->history))
+     WARN("Failed terminate history module");
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(ap, false);
 #endif
@@ -178,6 +180,10 @@ ui_main_window_add(App_Data *ap)
    ap->statusbar = _statusbar_init(ap->win_layout);
    if (!ap->statusbar)
      MARK_TO_SHUTDOWN("Can't create a statusbar.")
+
+   ap->history = history_init();
+   if (!ap->history)
+     MARK_TO_SHUTDOWN("Failed initialize history module.")
 
    return true;
 }

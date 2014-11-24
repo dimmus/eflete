@@ -644,23 +644,43 @@ _highlight_changed_cb(void *data,
 
    if (events->descr != MIDDLE)
      {
+        int old_max_w = 0, old_max_h = 0;
+        old_max_w = edje_edit_state_max_w_get(sd->style->obj, part->name,
+                                              part->curr_state,
+                                              part->curr_state_value);
+        old_max_h = edje_edit_state_max_h_get(sd->style->obj, part->name,
+                                              part->curr_state,
+                                              part->curr_state_value);
+
         edje_edit_state_max_w_set(sd->style->obj, part->name,
                                   part->curr_state, part->curr_state_value,
                                   events->w / sd->zoom.factor);
         edje_edit_state_max_h_set(sd->style->obj, part->name,
                                   part->curr_state, part->curr_state_value,
                                   events->h / sd->zoom.factor);
+        history_diff_add(sd->style->obj, PROPERTY, HLIGHT, INT, old_max_w, events->w,
+                         old_max_h, events->h, (void *)edje_edit_state_max_w_set,
+                         sd->style->full_group_name,
+                         (void *)edje_edit_state_max_h_set, "max size",
+                         part->name, part->curr_state, part->curr_state_value);
      }
    else
      {
         double align_x = (double)(events->x - x) / (double)(w - events->w);
         double align_y = (double)(events->y - y) / (double)(h - events->h);
+        double old_align_x, old_align_y;
 
         if ((w == events->w) || (align_x < 0)) align_x = 0;
         if ((h == events->h) || (align_y < 0)) align_y = 0;
 
         if (align_x > 1.0) align_x = 1.0;
         if (align_y > 1.0) align_y = 1.0;
+        old_align_x = edje_edit_state_align_x_get(sd->style->obj, part->name,
+                                                  part->curr_state,
+                                                  part->curr_state_value);
+        old_align_y = edje_edit_state_align_y_get(sd->style->obj, part->name,
+                                                  part->curr_state,
+                                                  part->curr_state_value);
 
         edje_edit_state_align_x_set(sd->style->obj, part->name,
                                     part->curr_state, part->curr_state_value,
@@ -668,6 +688,12 @@ _highlight_changed_cb(void *data,
         edje_edit_state_align_y_set(sd->style->obj, part->name,
                                     part->curr_state, part->curr_state_value,
                                     align_y);
+        history_diff_add(sd->style->obj, PROPERTY, HLIGHT, DOUBLE, old_align_x,
+                         align_x, old_align_y, align_y,
+                         (void *)edje_edit_state_align_x_set,
+                         sd->style->full_group_name,
+                         (void *)edje_edit_state_align_y_set, "align",
+                         part->name, part->curr_state, part->curr_state_value);
      }
 
    if (!sd->style->isModify) sd->style->isModify = true;
