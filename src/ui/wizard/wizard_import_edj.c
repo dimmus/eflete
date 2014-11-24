@@ -34,6 +34,19 @@ struct _Wizard_Import_Edj_Win
 
 typedef struct _Wizard_Import_Edj_Win Wizard_Import_Edj_Win;
 
+
+static void
+_on_cancel(void *data,
+           Evas_Object *obj __UNUSED__,
+           void *event_info __UNUSED__)
+{
+   Wizard_Import_Edj_Win *wiew;
+   wiew = (Wizard_Import_Edj_Win *)data;
+
+   evas_object_del(wiew->win);
+   free(wiew);
+}
+
 Evas_Object *
 wizard_import_edj_add(App_Data *ap __UNUSED__)
 {
@@ -41,11 +54,11 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    Evas_Object *bt;
    Wizard_Import_Edj_Win *wiew;
 
-   mwin = mw_add(NULL, NULL);
+   wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
+
+   mwin = mw_add(_on_cancel, wiew);
    if (!mwin) return NULL;
    mw_title_set(mwin, _("Wizard: import edj"));
-
-   wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
    wiew->win = mwin;
 
    layout = elm_layout_add(mwin);
@@ -57,6 +70,7 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    elm_object_part_content_set(layout, "swallow.button1", bt);
    BUTTON_ADD(layout, bt, _("Cancel"))
    elm_object_part_content_set(layout, "swallow.button2", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_cancel, wiew);
 
    //label.name
    elm_object_part_text_set(layout, "label.name", _("Project name:"));
