@@ -33,8 +33,8 @@
  * @addtogroup pm_project_thread_free
  * @{
  * <tr>
- * <td>pm_project_importedj</td>
- * <td>pm_project_importedj_test_p</td>
+ * <td>pm_project_thread_free</td>
+ * <td>pm_project_thread_free_test_p</td>
  * <td>
  * This test check that the thread is ran.
  * @precondition
@@ -90,8 +90,8 @@ END_TEST
  * @addtogroup pm_project_thread_free
  * @{
  * <tr>
- * <td>pm_project_importedj</td>
- * <td>pm_project_importedj_test_n</td>
+ * <td>pm_project_thread_free</td>
+ * <td>pm_project_thread_free_test_n</td>
  * <td>
  * This test check that the thread is ran.
  * @precondition
