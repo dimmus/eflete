@@ -342,7 +342,7 @@ group { name: "elm/layout/wizard/import";
             }
          }
       }
-      part { name: "area.meta_licences";
+      part { name: "area.meta_licenses";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
@@ -360,39 +360,39 @@ group { name: "elm/layout/wizard/import";
             }
          }
       }
-      part { name: "padding.rel1.meta_licences";
+      part { name: "padding.rel1.meta_licenses";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 3 3;
             max: 3 3;
-            rel1.to: "area.meta_licences";
-            rel2.to: "area.meta_licences";
+            rel1.to: "area.meta_licenses";
+            rel2.to: "area.meta_licenses";
          }
       }
-      part { name: "padding.rel2.meta_licences";
+      part { name: "padding.rel2.meta_licenses";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 1.0;
             min: 3 3;
             max: 3 3;
-            rel1.to: "area.meta_licences";
-            rel2.to: "area.meta_licences";
+            rel1.to: "area.meta_licenses";
+            rel2.to: "area.meta_licenses";
          }
       }
-      part { name: "label.meta_licences";
+      part { name: "label.meta_licenses";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel1 {
                relative: 0.0 1.0;
-               to_x: "area.meta_licences";
-               to_y: "padding.rel1.meta_licences";
+               to_x: "area.meta_licenses";
+               to_y: "padding.rel1.meta_licenses";
             }
             rel2 {
                relative: 0.3 1.0;
-               to: "area.meta_licences";
+               to: "area.meta_licenses";
             }
             text {
                font: FN;
@@ -401,19 +401,19 @@ group { name: "elm/layout/wizard/import";
             }
          }
       }
-      part { name: "swallow.meta_licences";
+      part { name: "swallow.meta_licenses";
          type: SWALLOW;
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
                relative: 0.3 1.0;
-               to_x: "area.meta_licences";
-               to_y: "padding.rel1.meta_licences";
+               to_x: "area.meta_licenses";
+               to_y: "padding.rel1.meta_licenses";
             }
             rel2 {
                relative: 1.0 0.0;
-               to_x: "area.meta_licences";
-               to_y: "padding.rel2.meta_licences";
+               to_x: "area.meta_licenses";
+               to_y: "padding.rel2.meta_licenses";
             }
          }
       }
@@ -426,7 +426,7 @@ group { name: "elm/layout/wizard/import";
             rel1 {
                relative: 0.0 1.0;
                to_x: "area.big_fields";
-               to_y: "area.meta_licences";
+               to_y: "area.meta_licenses";
             }
             rel2.to: "area.big_fields";
          }
