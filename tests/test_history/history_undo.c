@@ -1207,8 +1207,8 @@ EFLETE_TEST(history_undo_test_p16)
    old_value_2 = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_max_h_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_max_w_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, HLIGHT, INT, new_value_1, old_value_1,
-                    new_value_2, old_value_2, (void *)edje_edit_state_max_h_set,
+   history_diff_add(style->obj, PROPERTY, HLIGHT, INT, old_value_1, new_value_1,
+                    old_value_2, new_value_2, (void *)edje_edit_state_max_h_set,
                     "elm/radio/base/def", (void *)edje_edit_state_max_w_set,
                     "max size", "bg", "default", 0.0);
 
@@ -1287,8 +1287,8 @@ EFLETE_TEST(history_undo_test_p17)
    old_value_2 = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_align_x_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_align_y_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, HLIGHT, DOUBLE, new_value_1, old_value_1,
-                    new_value_2, old_value_2, (void *)edje_edit_state_align_x_set,
+   history_diff_add(style->obj, PROPERTY, HLIGHT, DOUBLE, old_value_1, new_value_1,
+                    old_value_2, new_value_2, (void *)edje_edit_state_align_x_set,
                     "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
                     "align", "bg", "default", 0.0);
 

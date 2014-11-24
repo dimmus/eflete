@@ -332,8 +332,8 @@ history_module_del(Evas_Object *source);
  *
  *   For actions, that change params with highlight from workspace:
  *
- *   history_diff_add(source, Target, HLIGHT, Value_Type, new_value_1,
- *                    old_value_1, new_value_2, old_value_2
+ *   history_diff_add(source, Target, HLIGHT, Value_Type, old_value_1,
+ *                    new_value_1, old_value_2, new_value_2
  *                    Func_1 pointer, Style name, Func_2 pointer,
  *                    description, Part name, State name, State value);
  *
@@ -357,8 +357,8 @@ history_module_del(Evas_Object *source);
  *                                       part->curr_state, part->curr_state_value,
  *                                       events->h);
  *  if (result)
- *    history_diff_add(style->obj, PROPERTY, HLIGHT, INT, events->w, old_value_1,
- *                     events->h, old_value_2, (void *)edje_edit_state_max_w_set,
+ *    history_diff_add(style->obj, PROPERTY, HLIGHT, INT, old_value_1, events->w,
+ *                     old_value_2, events->h, (void *)edje_edit_state_max_w_set,
  *                     style->full_group_name, (void *)edje_edit_state_max_h_set,
  *                     "max size", part->name, part->curr_state,
  *                     part->curr_state_value);
