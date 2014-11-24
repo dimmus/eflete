@@ -29,10 +29,7 @@ group { name: "elm/layout/wizard/import";
                to: "area.separator1";
             }
             rel2.to: "area.separator1";
-            image {
-               normal: "separator-vertical.png";
-               middle: NONE;
-            }
+            image.normal: "separator-vertical.png";
          }
       }
       part { name: "area.name";
@@ -488,6 +485,7 @@ group { name: "elm/layout/wizard/import";
             align: 1.0 0.5;
             min: 72 0;
             max: 72 -1;
+            fixed: 1 1;
             rel1.to: "area.buttons";
             rel2 {
                relative: 0.0 1.0;
@@ -516,6 +514,7 @@ group { name: "elm/layout/wizard/import";
             align: 1.0 0.5;
             min: 72 0;
             max: 72 -1;
+            fixed: 1 1;
             rel1.to: "area.buttons";
             rel2.to: "area.buttons";
          }
