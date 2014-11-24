@@ -367,7 +367,7 @@ _code_of_group_setup(Prop_Data *pd)
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
-   Evas_Object *box, *scroller, *_bg, *tabs;
+   Evas_Object *box, *scroller, *tabs;
    Ewe_Tabs_Item *it;
    Prop_Data *pd;
 
@@ -380,9 +380,6 @@ ui_property_add(Evas_Object *parent)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   GET_IMAGE(_bg, parent, "section-item-bg");
-   elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
-   evas_object_show(_bg);
    pd->visual = scroller;
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
