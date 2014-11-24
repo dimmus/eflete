@@ -18,6 +18,7 @@ ui/panes.c \
 ui/menu.c \
 ui/main_window.c \
 ui/connector.c \
+ui/wizard/wizard_import_edj.c \
 ui/shortcuts/shortcuts.c \
 ui/container/container.c \
 ui/preference/preference.c \
@@ -93,6 +94,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
 -I${top_srcdir}/src/ui/preference \
+-I${top_srcdir}/src/ui/wizard \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @ENVENTOR_CFLAGS@ \
