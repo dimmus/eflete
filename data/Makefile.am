@@ -32,7 +32,7 @@ shortcut_DATA = eflete.desktop
 icondir = $(datadir)/icons
 icon_DATA = ${srcdir}/images/eflete.svg
 
-colorsdir = $(datadir)/eflete/themes/default
+colorsdir = $(datadir)/eflete/themes/default/color
 colors_DATA = color.eet
 
 eflete.edj: Makefile

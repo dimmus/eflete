@@ -22,13 +22,15 @@ ui/panes.c \
 ui/menu.c \
 ui/main_window.c \
 ui/connector.c \
+ui/shortcuts/shortcuts.c \
 ui/container/container.c \
 ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
 ui/editors/sound_editor.c \
 ui/editors/colorclass_editor.c \
-ui/editors/program_editor.c \
+ui/editors/animator.c \
+ui/editors/animator_program_editor.c \
 ui/dialogs/compile_dialog.c \
 ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
@@ -87,6 +89,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/config \
 -I${top_srcdir}/src/history \
 -I${top_srcdir}/src/ui \
+-I${top_srcdir}/src/ui/shortcuts \
 -I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
@@ -96,8 +99,10 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
+-I${top_srcdir}/src/ui/preference \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@ENVENTOR_CFLAGS@ \
 @EWE_CFLAGS@ \
 @EFLETE_DEFINE@
 
@@ -108,5 +113,6 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
+@ENVENTOR_LIBS@ \
 @EWE_LIBS@ \
 @LTLIBINTL@

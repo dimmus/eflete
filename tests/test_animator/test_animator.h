@@ -18,12 +18,12 @@
  */
 
 #include "utc_common.h"
-#include "program_editor.h"
+#include "animator.h"
 
 /**
- * @defgroup test_program_editor
+ * @defgroup test_animator
  */
 
-void program_editor_window_add_test_p(int);
-void program_editor_window_add_test_n1(int);
-void program_editor_window_add_test_n2(int);
+void animator_window_add_test_p(int);
+void animator_window_add_test_n1(int);
+void animator_window_add_test_n2(int);

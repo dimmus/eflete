@@ -21,6 +21,7 @@ check: Makefile
 	$(builddir)/workspace_highlight_set.edj \
 	$(builddir)/workspace_separate_mode_set.edj \
 	$(builddir)/workspace_separate_mode_get.edj \
+	$(builddir)/workspace_edit_object_part_rename.edj \
 	$(builddir)/workspace_edit_object_part_above.edj \
 	$(builddir)/workspace_edit_object_part_restack.edj \
 	$(builddir)/workspace_edit_object_set.edj \
@@ -30,6 +31,10 @@ check: Makefile
 	$(builddir)/workspace_edit_object_part_del.edj \
 	$(builddir)/workspace_edit_object_part_state_set.edj \
 	$(builddir)/workspace_edit_object_visible_set.edj \
+	$(builddir)/workspace_highlight_align_visible_get.edj \
+	$(builddir)/workspace_highlight_align_visible_set.edj \
+	$(builddir)/workspace_object_area_visible_get.edj \
+	$(builddir)/workspace_object_area_visible_set.edj \
 	$(builddir)/groupedit_edit_object_unset.edj \
 	$(builddir)/groupedit_edit_object_set.edj \
 	$(builddir)/live_view_widget_style_set.edj \
@@ -43,6 +48,7 @@ check: Makefile
 	$(builddir)/test_project_manager.edj \
 	$(builddir)/compile.edj \
 	$(builddir)/decompile.edj \
+	$(builddir)/sound_editor_window_add.edj \
 	$(builddir)/image_editor_window_add.edj \
 	$(builddir)/image_editor_callback_add.edj \
 	$(builddir)/image_editor_file_choose.edj \
@@ -98,6 +104,7 @@ check: Makefile
  	$(builddir)/history_redo.edj \
  	$(builddir)/history_module_depth_set.edj \
  	$(builddir)/history_module_depth_get.edj \
-   ;do cp $(builddir)/radio.edj $$i; done
+	$(builddir)/colorclass_viewer_add.edj \
+	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

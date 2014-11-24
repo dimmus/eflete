@@ -80,6 +80,8 @@ EFLETE_TEST(workspace_separate_mode_get_test_p1)
    ck_assert_msg(res == EINA_TRUE, "Failed get separate mode for workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -135,6 +137,8 @@ EFLETE_TEST(workspace_separate_mode_get_test_p2)
    ck_assert_msg(res == EINA_FALSE, "Failed get separate mode for workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -219,6 +223,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_n2)
    res = workspace_separate_mode_get(workspace);
    ck_assert_msg(res == EINA_FALSE, "Failed get separate mode for workspace");
 
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

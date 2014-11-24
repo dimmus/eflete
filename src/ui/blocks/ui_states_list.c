@@ -119,7 +119,7 @@ ui_states_list_data_set(Evas_Object *object,
 
    states = edje_edit_part_states_list_get(style->obj, part->name);
    evas_object_data_set(object, STLIST_PART_KEY, part);
-   curr_state = eina_stringshare_printf("%s %.2f",
+   curr_state = eina_stringshare_printf("%s %g",
                                         part->curr_state,
                                         part->curr_state_value);
    EINA_LIST_FOREACH(states, l, state_name)

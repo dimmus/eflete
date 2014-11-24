@@ -38,11 +38,12 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
+ * @step 2 initialize application data
  *
  * @procedure
  * @step 1 call config_init
  * </td>
- * <td>void</td>
+ * <td>(App_Data *)ap</td>
  * <td>EINA_TRUE</td>
  * <td>_REAL_RESULT_</td>
  * <td>_PASSED_</td>
@@ -52,10 +53,41 @@
 EFLETE_TEST(config_init_test_p)
 {
    elm_init(0,0);
+   App_Data *app = app_data_get();
 
-   ck_assert_msg(config_init(), "Config not initialized.");
+   ck_assert_msg(config_init(app), "Config not initialized.");
 
-   config_shutdown();
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup config_init
+ * @{
+ * <tr>
+ * <td>config_init</td>
+ * <td>config_init_test_n</td>
+ * <td>
+ * @precondition
+ * @step 1 initialize elementary library
+ *
+ * @procedure
+ * @step 1 call config_init
+ * </td>
+ * <td>NULL</td>
+ * <td>EINA_FALSE</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(config_init_test_n)
+{
+   elm_init(0,0);
+
+   ck_assert_msg(!config_init(NULL), "Config was initialized.");
+
    elm_shutdown();
 }
 END_TEST

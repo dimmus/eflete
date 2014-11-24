@@ -475,7 +475,8 @@ _handler_object_add(Evas_Object *parent,
    Evas_Object *border;
 
    border = edje_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(border, EFLETE_EDJ, style);
+   if (!edje_object_file_set(border, EFLETE_EDJ, style))
+     ERR("Could not load style for handler's border!");
    evas_object_smart_member_add(border, parent);
 
    handler->descr = descr;
@@ -550,7 +551,8 @@ _smart_add(Evas_Object *parent)
    _highlight_parent_sc->add(parent);
 
    border = edje_object_add(evas_object_evas_get(parent));
-   edje_object_file_set(border, EFLETE_EDJ, "eflete/highlight/border/default");
+   if (!edje_object_file_set(border, EFLETE_EDJ, "eflete/highlight/border/default"))
+     ERR("Could not load style for main border!");
    evas_object_repeat_events_set(border, true);
 
    priv->border = border;
@@ -692,12 +694,6 @@ _highlight_smart_set_user(Evas_Smart_Class *sc)
 Evas_Object *
 highlight_add(Evas_Object *parent)
 {
-   if (!parent)
-   {
-      ERR("parent is NULL");
-      return NULL;
-   }
-
    Evas *e;
    Evas_Object *obj;
 
@@ -712,7 +708,7 @@ highlight_add(Evas_Object *parent)
 }
 
 Eina_Bool
-highlight_handler_middle_show(Evas_Object *hl)
+highlight_handler_align_show(Evas_Object *hl)
 {
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
    if (highlight->handlers_disabled) return false;
@@ -735,7 +731,7 @@ highlight_handler_middle_show(Evas_Object *hl)
 }
 
 Eina_Bool
-highlight_handler_middle_hide(Evas_Object *hl)
+highlight_handler_align_hide(Evas_Object *hl)
 {
    HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
 
@@ -743,6 +739,13 @@ highlight_handler_middle_hide(Evas_Object *hl)
    evas_object_hide(highlight->handler_MIDDLE->border);
 
    return true;
+}
+
+Eina_Bool
+highlight_handler_align_visible_get(Evas_Object *hl)
+{
+   HIGHLIGHT_DATA_GET_OR_RETURN_VAL(hl, highlight, false)
+   return highlight->middle_show;
 }
 
 Eina_Bool

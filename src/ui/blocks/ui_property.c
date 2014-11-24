@@ -22,6 +22,14 @@
 #include "common_macro.h"
 #include "image_editor.h"
 
+#ifdef HAVE_ENVENTOR
+#define ENVENTOR_BETA_API_SUPPORT
+#include "Enventor.h"
+#include "main_window.h"
+#else
+#include "syntax_color.h"
+#endif
+
 #define PROP_DATA "prop_data"
 
 #define PROP_DATA_GET(ret) \
@@ -39,7 +47,9 @@ struct _Prop_Data
    Part *part;
    Evas_Object *visual;
    Evas_Object *code;
+#ifndef HAVE_ENVENTOR
    color_data *color_data;
+#endif
    struct {
       Evas_Object *frame;
       Evas_Object *info;
@@ -266,7 +276,9 @@ _del_prop_data(void *data,
                void *ei __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
+#ifndef HAVE_ENVENTOR
    color_term(pd->color_data);
+#endif
    free(pd);
 }
 
@@ -293,6 +305,65 @@ prop_item_label_update(Evas_Object *item,
    elm_object_text_set(label, text);
 }
 
+#ifdef HAVE_ENVENTOR
+static Eina_Stringshare *
+_on_code_mode_activated_file_create(Prop_Data *pd)
+{
+   const char *code = edje_edit_source_generate(pd->style->obj);
+   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"tmp.edc");
+
+   FILE *fp = fopen(path, "w");
+   if (!fp)
+     {
+        EINA_LOG_ERR("Failed to open file \"%s\"", path);
+        eina_stringshare_del(path);
+        return NULL;
+     }
+
+   fputs(code, fp);
+   fclose(fp);
+   return path;
+}
+
+static void
+_on_tab_activated(void *data,
+                  Evas_Object *obj,
+                  void *event_info)
+{
+   Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
+   Prop_Data *pd = (Prop_Data *)data;
+   Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
+   Eina_Stringshare *path;
+
+   if (!item_name) return;
+
+   if (!strcmp(item_name, "Code"))
+     {
+        code_edit_mode_switch(app_data_get(), true);
+        path = _on_code_mode_activated_file_create(pd);
+        enventor_object_file_set(pd->code, path);
+        eina_stringshare_del(path);
+     }
+   else
+     code_edit_mode_switch(app_data_get(), false);
+}
+
+#else
+
+static void
+_code_of_group_setup(Prop_Data *pd)
+{
+   char *markup_code;
+   const char *colorized_code;
+   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
+   colorized_code = color_apply(pd->color_data, markup_code,
+                                strlen(markup_code), NULL, NULL);
+   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
+   free(markup_code);
+}
+
+#endif
+
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
@@ -317,6 +388,20 @@ ui_property_add(Evas_Object *parent)
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
 
+   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
+
+#ifdef HAVE_ENVENTOR
+   Evas_Object *code_bg;
+   code_bg = elm_bg_add(tabs);
+   elm_bg_color_set(code_bg, ENVENTOR_CODE_BG_COLOR);
+
+   pd->code = enventor_object_add(code_bg);
+   evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
+                                  _on_tab_activated, pd);
+
+   elm_object_content_set(code_bg, pd->code);
+   ewe_tabs_item_content_set(tabs, it, code_bg);
+#else
    pd->code = elm_entry_add(tabs);
    elm_object_style_set(pd->code, DEFAULT_STYLE);
    elm_entry_single_line_set(pd->code, false);
@@ -324,10 +409,10 @@ ui_property_add(Evas_Object *parent)
    evas_object_size_hint_weight_set(pd->code, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(pd->code, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_scrollable_set(pd->code, true);
-   it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
-   ewe_tabs_item_content_set(tabs, it, pd->code);
    elm_entry_editable_set(pd->code, false);
    pd->color_data = color_init(eina_strbuf_new());
+   ewe_tabs_item_content_set(tabs, it, pd->code);
+#endif
 
    evas_object_data_set(tabs, PROP_DATA, pd);
    evas_object_event_callback_add(tabs, EVAS_CALLBACK_DEL, _del_prop_data, pd);
@@ -440,8 +525,6 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    int aliases_count = 0;
    char *list_data;
    Eina_Strbuf *text_ctx = NULL;
-   char *markup_code;
-   const char *colorized_code;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -460,10 +543,9 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         return false;
      }
 
-   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
-   colorized_code = color_apply(pd->color_data, markup_code,
-                                strlen(markup_code), NULL, NULL);
-   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
+#ifndef HAVE_ENVENTOR
+   _code_of_group_setup(pd);
+#endif
 
    prop_box = elm_object_content_get(pd->visual);
    aliases = edje_edit_group_aliases_get(style->obj, style->full_group_name);
@@ -639,8 +721,8 @@ _on_part_name_change(void *data,
      }
 
    pm_project_changed(app_data_get()->project);
+   workspace_edit_object_part_rename(pd->workspace, pd->part->name, value);
    pd->part->name = value;
-   workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
    pos = elm_entry_cursor_pos_get(obj);
    evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part);
@@ -650,6 +732,7 @@ _on_part_name_change(void *data,
                       pd->part->name, NULL, 0.0);
    elm_object_focus_set(obj, true);
    elm_entry_cursor_pos_set(obj, pos);
+   workspace_edit_object_recalc(pd->workspace);
 }
 
 static Evas_Object *
@@ -1016,8 +1099,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
    Evas_Object *state_frame, *box, *prop_box;
    Edje_Part_Type type;
    char state[BUFF_MAX];
-   char *markup_code;
-   const char *colorized_code;
 
    if ((!property) || (!part)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
@@ -1026,7 +1107,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    #define pd_state pd->prop_state
 
    type = edje_edit_part_type_get(pd->style->obj, part->name);
-   sprintf(state, "%s %1.2f", part->curr_state, part->curr_state_value);
+   sprintf(state, "%s %g", part->curr_state, part->curr_state_value);
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_state.frame);
@@ -1157,12 +1238,11 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_unset(property);
 
-   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
-   colorized_code = color_apply(pd->color_data, markup_code,
-                                strlen(markup_code), NULL, NULL);
-   if (colorized_code) elm_object_text_set(pd->code, colorized_code);
-   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
+#ifndef HAVE_ENVENTOR
+   _code_of_group_setup(pd);
+#endif
 
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    #undef pd_state
    return true;
 }
@@ -1400,17 +1480,22 @@ ITEM_1COMBOBOX_STATE_CREATE(SOURCE, _("source"), state_text, source, styles)
 ITEM_1COMBOBOX_STATE_CREATE(TEXT_SOURCE, _("text source"), state_text, text_source, styles)
 
 
-static void
+static Eina_Bool
 _text_effect_get(Prop_Data *pd, int *type, int *direction)
 {
    Edje_Text_Effect edje_effect = edje_edit_part_effect_get(pd->style->obj,
                                                             pd->part->name);
-   if (type)
+
+   if ((!type) || (!direction))
+     return false;
+
      *type = edje_effect & EDJE_TEXT_EFFECT_MASK_BASIC;
-   if ((direction) && (*type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) &&
+   if ((*type >= EDJE_TEXT_EFFECT_SOFT_OUTLINE) &&
        (*type != EDJE_TEXT_EFFECT_GLOW))
      *direction = (edje_effect & EDJE_TEXT_EFFECT_MASK_SHADOW_DIRECTION) >> 4;
    else *direction = 0;
+
+   return true;
 }
 
 typedef struct {
@@ -1444,7 +1529,11 @@ prop_item_state_effect_update(Evas_Object *item, Prop_Data *pd)
 {
    int type, direction;
    Evas_Object *combobox;
-   _text_effect_get(pd, &type, &direction);
+   if (!_text_effect_get(pd, &type, &direction))
+     {
+        ERR("Please, contact DEVS! This error should never appear!");
+        return;
+     }
    combobox = evas_object_data_get(item, ITEM1);
    ewe_combobox_select_item_set(combobox, type);
    combobox = evas_object_data_get(item, ITEM2);

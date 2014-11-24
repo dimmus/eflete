@@ -105,6 +105,7 @@ END_TEST
  * @step 5 created States List
  * @step 6 Part which states will be shown and set.
  * @step 7 Part was set into states list.
+ * @step 8 Select first element of states list.
  *
  * @procedure
  * @step 1 Call function ui_states_list_selected_state_get(gl_states).
@@ -123,6 +124,7 @@ EFLETE_TEST(ui_states_list_selected_state_get_test_p2)
    Evas *e;
    Style *style;
    Part *part;
+   Elm_Object_Item *eoi;
    const char *edj = "./edj_build/ui_states_list_selected_state_get.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
@@ -137,6 +139,8 @@ EFLETE_TEST(ui_states_list_selected_state_get_test_p2)
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    ui_states_list_data_set(gl_states, style, part);
 
+   eoi = elm_genlist_first_item_get(gl_states);
+   elm_genlist_item_selected_set(eoi, EINA_TRUE);
    ck_assert_str_eq(ui_states_list_selected_state_get(gl_states), "default 0.00");
 
    elm_theme_extension_del(NULL, EFLETE_THEME);

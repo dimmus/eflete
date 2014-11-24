@@ -299,7 +299,6 @@ _on_btn_add(void *data,
    evas_object_size_hint_align_set(ccl_box, EVAS_HINT_FILL, 0.0);
    evas_object_show(ccl_box);
 
-   ccl_label = elm_label_add(ccl_box);
    LABEL_ADD(ccl_box, ccl_label, _("Color class name: "))
    elm_box_pack_end(ccl_box, ccl_label);
 
@@ -475,6 +474,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
 }
 
 Evas_Object *
@@ -490,7 +490,7 @@ colorclass_viewer_add(Project *project)
 
    if (!project)
      {
-        NOTIFY_ERROR(_("EDJ/EDC file is not loaded"));
+        ERR("Project isn't opened");
         return NULL;
      }
 
@@ -559,8 +559,10 @@ colorclass_viewer_add(Project *project)
    elm_object_content_set(scroller, scr_box);
 
    ccl_edit->label = edje_object_add(evas_object_evas_get(ccl_edit->mwin));
-   edje_object_file_set(ccl_edit->label, EFLETE_EDJ,
-                                        "base/colorclass_editor/text_example");
+   if (!edje_object_file_set(ccl_edit->label,
+                             EFLETE_EDJ,
+                             "base/colorclass_editor/text_example"))
+     ERR("Couldn't load layout for text example field!");
    edje_object_part_text_set(ccl_edit->label, "text_example", _("EXAMPLE"));
    evas_object_size_hint_align_set(ccl_edit->label, -1, -1);
    evas_object_show(ccl_edit->label);
@@ -583,7 +585,8 @@ colorclass_viewer_add(Project *project)
    elm_box_pack_end(box, label); \
    color = edje_object_add(evas_object_evas_get(ccl_edit->mwin)); \
    rect = evas_object_rectangle_add(evas_object_evas_get(ccl_edit->mwin)); \
-   edje_object_file_set(color, EFLETE_EDJ, "base/colorclass_editor/color_example"); \
+   if (!edje_object_file_set(color, EFLETE_EDJ, "base/colorclass_editor/color_example")) \
+     ERR("Could not set style for color example!"); \
    edje_object_part_swallow(color, "color_example", rect); \
    evas_object_size_hint_weight_set(color, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_min_set(color, 150, 35); \
@@ -633,5 +636,6 @@ colorclass_viewer_add(Project *project)
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(ccl_edit->mwin);
+   ap->modal_editor = true;
    return ccl_edit->mwin;
 }

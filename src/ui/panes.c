@@ -87,6 +87,24 @@ _double_click_center_panes_down_cb(void * data __UNUSED__,
      }
 }
 
+#define PANES_MIN_SIZE_LEFT  300
+#define PANES_MIN_SIZE_RIGHT 385
+
+Eina_Bool
+ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on)
+{
+   if (!ap->panes.left) return false;
+
+   elm_panes_content_left_min_size_set(ap->panes.left,
+                                       is_on ? PANES_MIN_SIZE_LEFT : 0);
+   elm_panes_content_right_min_size_set(ap->panes.left,
+                                        is_on ? PANES_MIN_SIZE_RIGHT : 0);
+   return true;
+}
+
+#undef PANES_MIN_SIZE_LEFT
+#undef PANES_MIN_SIZE_RIGHT
+
 Eina_Bool
 ui_panes_add(App_Data *ap)
 {
@@ -107,8 +125,6 @@ ui_panes_add(App_Data *ap)
    evas_object_size_hint_weight_set(panes_left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_left, config->panes.left);
-   elm_panes_content_left_min_size_set(panes_left, 300);
-   elm_panes_content_right_min_size_set(panes_left, 385);
    elm_object_part_content_set(ap->win_layout, "eflete.swallow.panes", panes_left);
    panes = panes_left;
 
@@ -157,6 +173,8 @@ ui_panes_add(App_Data *ap)
    ap->panes.right_hor = panes_right_hor;
    ap->panes.center = panes_center;
    ap->panes.center_down = panes_center_down;
+
+   ui_panes_left_panes_min_size_toggle(ap, true);
 
    evas_object_smart_callback_add(panes_right_hor, "clicked,double",
                                   _double_click_up_cb, NULL);

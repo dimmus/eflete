@@ -22,6 +22,11 @@
 #include "config.h"
 #include "main_window.h"
 
+#ifdef HAVE_ENVENTOR
+#define ENVENTOR_BETA_API_SUPPORT
+#include "Enventor.h"
+#endif
+
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
    "%prog [options]",
@@ -59,6 +64,12 @@ elm_main(int argc, char **argv)
 
    if (!app_init()) return -1;
 
+#ifdef HAVE_ENVENTOR
+   elm_app_compile_data_dir_set(EFLETE_EDJ_PATH);
+   elm_app_info_set(NULL, EFLETE_EDJ_PATH, NULL);
+   enventor_init(argc, argv);
+#endif
+
    args = ecore_getopt_parse(&options, values, argc, argv);
    if (args < 0)
      {
@@ -92,6 +103,9 @@ elm_main(int argc, char **argv)
         elm_run();
         elm_shutdown();
         app_shutdown();
+#ifdef HAVE_ENVENTOR
+        enventor_shutdown();
+#endif
      }
 
    return 0;

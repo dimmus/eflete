@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -17,25 +17,20 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_program_editor.h"
+#define PLAY_CB "play_cb"
+#define PAUSE_CB "pause_cb"
+#define NAME_CHANGED_CB "name_changed_cb"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("program_editor_test");
-   TCase *tcase = tcase_create("TCase");
-//   tcase_add_test(tcase, program_editor_window_add_test_p);
-   tcase_add_test(tcase, program_editor_window_add_test_n1);
-   tcase_add_test(tcase, program_editor_window_add_test_n2);
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_program_editor.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+
+Evas_Object * program_editor_add(Evas_Object *parent, Style *style, Live_View *live);
+
+Eina_Bool prog_editor_program_set(Evas_Object *obj, const char* program_name);
+
+void program_editor_program_reset(Evas_Object *obj);
+
+void program_editor_program_play(Evas_Object *obj);
+
+void program_editor_cycled_set(Evas_Object *obj, Eina_Bool cycled);
+
+void program_editor_free(Evas_Object * obj);

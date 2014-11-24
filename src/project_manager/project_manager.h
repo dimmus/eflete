@@ -52,6 +52,7 @@ struct _Project
    Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */
    /** opened group */
    Style *current_style;
+   Eina_List *added_sounds;
    Eina_Bool is_saved : 1;
    Eina_Bool is_new : 1;
    Eina_Bool close_request : 1;

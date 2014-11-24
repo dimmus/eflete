@@ -25,26 +25,19 @@
  */
 
 #include "eflete.h"
-
-enum _Preference_Item
-{
-   PREFERENCE_GENERAL = 0,
-   PREFERENCE_WORKSPACE,
-   PREFERENCE_LIVEVIEW,
-   PREFERENCE_NONE
-};
-typedef enum _Preference_Item Preference_Item;
+#include "modal_window.h"
+#include "widget_macro.h"
+#include "string_macro.h"
 
 /**
- * Create a preference window. It window consist UI view of Eflete config.
- * Gives the opportunity to change the Eflete config.
+ * Show the whole inwin window by using some data
+ * about loaded project (edj file)
  *
- * @param item The Preference_Item, it means what the frame need to show. To show
- * default view set the PREFERENCE_NONE.
+ * @param project -currently opened project
  *
- * @return The Preference window object, or NULL overwise.
+ * @return Pointer to the inwin object that contain preferences
  *
  * @ingroup Preference
  */
 Evas_Object *
-preference_add(Preference_Item item);
+preferences_window_add(Project *project);

@@ -105,12 +105,12 @@ typedef struct _Widget Widget;
 struct _Part
 {
     EINA_INLIST;
+    Type __type; /**< PART from enum @_type */
     Eina_Stringshare *name; /**< Part name in style */
     Eina_Stringshare *curr_state; /**< Current selected part state name */
     double curr_state_value; /**< Current selected part state value */
     Eina_Bool show; /**< Flag indicate current visibly part evas primitive */
     int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
-    Type __type; /**< PART from enum @_type */
 };
 
 /**
@@ -124,6 +124,7 @@ struct _Part
 struct _Style
 {
     EINA_INLIST;
+    Type __type; /**< STYLE from enum @_type */
     Eina_Stringshare *name; /**< The name of style. */
     Eina_Stringshare *full_group_name; /**< The name of a block 'group' in edc. */
     Evas_Object *obj; /** Edje edit object, which loaded form theme file. */
@@ -135,7 +136,6 @@ struct _Style
     Eina_Inlist *parts;  /**< The list of a style parts data. */
     Eina_List *aliasses; /**< The list of pointer Style structures which aliased to this style */
     Class *parent; /**< Pointer to class, which contain this style */
-    Type __type; /**< STYLE from enum @_type */
 };
 
 /**
@@ -148,10 +148,10 @@ struct _Style
 struct _Class
 {
     EINA_INLIST;
+    Type __type; /**< CLASS from enum @_type */
     Eina_Stringshare *name; /**< The name of a class. */
     Eina_Inlist *styles;    /**<The list of styles that make up the class. */
     Widget *parent; /**< Pointer to widget, which contain this class*/
-    Type __type; /**< CLASS from enum @_type */
 };
 
 /**
@@ -164,9 +164,9 @@ struct _Class
 struct _Widget
 {
     EINA_INLIST;
+    Type __type; /**< WIDGET from enum @_type */
     Eina_Stringshare *name; /**< The name of a widget. */
     Eina_Inlist *classes; /**< The list of a widget classes. */
-    Type __type; /**< WIDGET from enum @_type */
 };
 
 /**

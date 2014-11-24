@@ -75,6 +75,8 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_p1)
    ck_assert_msg(ret == EINA_TRUE, "Failed below part \"elm.swallow.content\" relative to \"elm.text\"");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -127,6 +129,8 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_p2)
    ck_assert_msg(ret == EINA_TRUE, "Failed below part \"elm.swallow.content\" relative to \"bg\"");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -179,6 +183,8 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n1)
    ck_assert_msg(ret == EINA_FALSE, "Non exist part is reordered");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -231,6 +237,8 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n2)
    ck_assert_msg(ret == EINA_FALSE, "Part is reordered relative to non exist part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -283,6 +291,8 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n3)
    ck_assert_msg(ret == EINA_FALSE, "NULL named part is reordered");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -335,6 +345,8 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n4)
    ck_assert_msg(ret == EINA_FALSE, "Part reordered relative to NULL named part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();

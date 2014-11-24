@@ -1,7 +1,7 @@
 #define BUTTON_PADDING 5
 #define BUTTON_W 100
 #define BUTTON_H 30
-group { name: "eflete/program_editor/live_view";
+group { name: "eflete/animator/live_view";
    parts {
       part { name: "area.content";
          type: SPACER;
@@ -112,34 +112,32 @@ group { name: "eflete/program_editor/live_view";
             rel2.to: "area.controls";
          }
       }
-      part { name: "padding.3";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            min: BUTTON_PADDING 0;
-            max: BUTTON_PADDING -1;
-            fixed: 1 0;
-            rel1 {
-               relative: 1.0 0.0;
-               to: "swallow.button.cycled";
-            }
-            rel2.to: "area.controls";
-         }
-      }
+   }
+}
+
+group { name: "eflete/animator/program_editor";
+   parts {
       part { name: "swallow.slider";
          type: SWALLOW;
          description { state: "default" 0.0;
+            align: 0.5 0.0;
+            min: 0 30;
+            max: -1 30;
+         }
+      }
+      part { name: "swallow.edit";
+         type: SWALLOW;
+         description { state: "default" 0.0;
             rel1 {
-               relative: 1.0 0.0;
-               to: "padding.3";
+               to: "swallow.slider";
+               relative: 0.0 1.0;
             }
-            rel2.to: "area.controls";
          }
       }
    }
 }
 
-group { name: "eflete/program_editor/program_area";
+group { name: "eflete/animator/program_area";
    parts {
       part { name: "swallow.button";
          type: SWALLOW;

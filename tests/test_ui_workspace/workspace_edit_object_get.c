@@ -72,7 +72,10 @@ EFLETE_TEST (workspace_edit_object_get_test_p)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_get.edj");
    style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style == style_ret, "Setted and getted style objects are not equals");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
@@ -115,6 +118,8 @@ EFLETE_TEST (workspace_edit_object_get_test_p1)
    style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style_ret == NULL, "Get edit object from workspace, "
                                 "whithout prevision set");
+
+   evas_object_del(workspace);
    evas_object_del(parent);
    elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
