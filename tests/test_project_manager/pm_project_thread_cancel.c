@@ -68,7 +68,6 @@ _test_end_cb(void *data __UNUSED__,
 EFLETE_TEST (pm_project_thread_cancel_test_p)
 {
    Project_Thread *thread;
-   Project *pro;
 
    elm_init(0,0);
    app_init();
@@ -80,9 +79,6 @@ EFLETE_TEST (pm_project_thread_cancel_test_p)
    ecore_main_loop_begin();
 
    ck_assert_msg(res, "Project thread did't canceled!");
-
-   pro = pm_project_thread_project_get(thread);
-   pm_project_close(pro);
 
    app_shutdown();
    elm_shutdown();
