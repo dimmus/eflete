@@ -158,8 +158,23 @@ _state_undo(Evas_Object *source __UNUSED__, State_Diff *change __UNUSED__)
 }
 
 void
-_state_change_free(State_Diff *change __UNUSED__)
+_state_change_free(State_Diff *change)
 {
+   eina_stringshare_del(change->style);
+   eina_stringshare_del(change->part);
+
+   eina_stringshare_del(change->diff.description);
+   eina_stringshare_del(change->diff.source);
+   eina_stringshare_del(change->diff.state);
+
+   if (change->diff.ui_item)
+     elm_object_item_del(change->diff.ui_item);
+
+   if (change->state)
+     eina_stringshare_del(change->state->name);
+
+   free(change->state);
+   free(change);
    return;
 }
 
