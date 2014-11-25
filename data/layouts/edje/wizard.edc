@@ -169,7 +169,7 @@ group { name: "elm/layout/wizard/import";
             rel2.to: "area.edj";
          }
       }
-      part { name: "area.meta_name";
+      part { name: "area.meta_version";
          type: SPACER;
          scale: 1;
          description { state: "default" 0.0;
@@ -179,50 +179,6 @@ group { name: "elm/layout/wizard/import";
             rel1 {
                relative: 1.0 0.0;
                to_x: "area.separator1";
-            }
-         }
-      }
-      part { name: "label.meta_name";
-         type: TEXT;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            rel1.to: "area.meta_name";
-            rel2 {
-               relative: 0.3 1.0;
-               to: "area.meta_name";
-            }
-            text {
-               font: FN;
-               size: 12;
-               max: 1 1;
-            }
-         }
-      }
-      part { name: "swallow.meta_name";
-         type: SWALLOW;
-         scale: 1;
-         description { state: "default" 0.0;
-            min: 0 20;
-            max: -1 20;
-            rel1 {
-               relative: 0.3 0.0;
-               to: "area.meta_name";
-            }
-            rel2.to: "area.meta_name";
-         }
-      }
-      part { name: "area.meta_version";
-         type: SPACER;
-         scale: 1;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 0 26;
-            max: -1 26;
-            rel1 {
-               relative: 1 1;
-               to_x: "area.separator1";
-               to_y: "area.meta_name";
             }
          }
       }

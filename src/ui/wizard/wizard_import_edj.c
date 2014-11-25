@@ -25,7 +25,6 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *name;
    Evas_Object *path;
    Evas_Object *edj;
-   Evas_Object *meta_name;
    Evas_Object *meta_version;
    Evas_Object *meta_authors;
    Evas_Object *meta_licenses;
@@ -85,16 +84,12 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    ENTRY_ADD(layout, wiew->edj, true, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.edj", wiew->edj);
 
-   //label.meta_name
-   elm_object_part_text_set(layout, "label.meta_name", _("Project name:"));
-   ENTRY_ADD(layout, wiew->meta_name, true, DEFAULT_STYLE)
-   elm_object_part_content_set(layout, "swallow.meta_name", wiew->meta_name);
    //label.meta_version
    elm_object_part_text_set(layout, "label.meta_version", _("Version of file:"));
    ENTRY_ADD(layout, wiew->meta_version, true, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.meta_version", wiew->meta_version);
    //label.meta_authors
-   elm_object_part_text_set(layout, "label.meta_author", _("Authors:"));
+   elm_object_part_text_set(layout, "label.meta_authors", _("Authors:"));
    ENTRY_ADD(layout, wiew->meta_authors, false, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.meta_authors", wiew->meta_authors);
    //label.meta_licenses
