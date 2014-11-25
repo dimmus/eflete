@@ -55,7 +55,7 @@ _fs_close(void *data __UNUSED__,
    evas_object_del(obj);
 }
 
-#define FILESELCTOR_WINDOW(FUNC, TITLE, FOLDER_ONLY, FIELD) \
+#define FILESELCTOR_WINDOW(FUNC, TITLE, FOLDER_ONLY, FILTER, FIELD) \
 static void \
 FUNC##_done(void *data, \
             Evas_Object *obj __UNUSED__, \
@@ -79,6 +79,7 @@ FUNC(void *data, \
 { \
    Evas_Object *bg, *fs; \
    Wizard_Import_Edj_Win *wiew; \
+   const char *path; \
 \
    wiew = (Wizard_Import_Edj_Win *)data; \
 \
@@ -89,11 +90,14 @@ FUNC(void *data, \
    elm_win_resize_object_add(wiew->fs, bg); \
    FILESELECTOR_ADD(fs, wiew->fs, FUNC##_done, data); \
    elm_fileselector_folder_only_set(fs, FOLDER_ONLY); \
+   path = elm_entry_entry_get(wiew->FIELD); \
+   if ((path) && (ecore_file_is_dir(path))) elm_fileselector_path_set(fs, path); \
+   if (FILTER) elm_fileselector_mime_types_filter_append(fs, "binary", "Edje Files"); \
    elm_win_resize_object_add(wiew->fs, fs); \
 } \
 
-FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, path)
-FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, edj)
+FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, false, path)
+FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, true, edj)
 
 Evas_Object *
 wizard_import_edj_add(App_Data *ap __UNUSED__)
