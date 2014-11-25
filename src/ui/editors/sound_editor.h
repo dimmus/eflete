@@ -29,6 +29,8 @@
 
 #include "modal_window.h"
 
+#define SIG_SOUND_SELECTED "sound_selected"
+
 typedef enum {
    SOUND_EDITOR_SINGLE,
    SOUND_EDITOR_MULTIPLE
