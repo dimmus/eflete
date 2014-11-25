@@ -295,12 +295,19 @@ ui_menu_add(App_Data *ap)
    eina_hash_add(menu_elms_hash, label, ret);
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("File"), NULL, NULL, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("New theme"), _on_new_theme_menu, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Open edc-file"), _on_edc_open_menu, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Open edj-file"), _on_edj_open_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("New project"), NULL/*_on_new_theme_menu*/, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Open project"), NULL, ap, it);
+   elm_menu_item_separator_add(menu, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Import edj-file"), _on_edj_open_menu, ap, it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Import edc-file"), _on_edc_open_menu, ap, it);
+   elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Save"), _on_save_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Save as..."), _on_save_as_menu, ap, it);
+   elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Export to edc..."), _on_export_edc_menu, ap, it);
+   elm_menu_item_separator_add(menu, menu_it);
+   ITEM_MENU_ADD(menu, menu_it, NULL, _("Close project"), NULL, ap, it);
+   elm_object_item_disabled_set(it, true);
    elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Exit"), _on_exit_menu, ap, it);
 
