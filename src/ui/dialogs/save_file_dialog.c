@@ -76,6 +76,8 @@ _ok_cb(void *data,
 
    *cbdata->cancel = !_save_internal(cbdata->project, cbdata->path);
 
+   save_time_info_update(app_data_get(), false);
+
    evas_object_del(cbdata->popup);
    free(cbdata);
    ecore_main_loop_quit();
@@ -215,9 +217,13 @@ save_as_edc_file(App_Data *ap)
 Eina_Bool
 save_edj_file(App_Data *ap)
 {
+   Eina_Bool res = true;
    if ((!ap) || (!ap->project)) return false;
    if (ap->project->is_new)
-     return _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
+     res = _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
    else
-     return _save_internal(ap->project, NULL);
+     res = _save_internal(ap->project, NULL);
+
+   save_time_info_update(app_data_get(), false);
+   return res;
 }

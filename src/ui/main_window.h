@@ -337,4 +337,17 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
 Eina_Bool
 code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
 
+/**
+ * Update Statusbar field that contains time of last save of current
+ * project file.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param is_autosave flag to inform if the function is called by
+ *                    'autosave' functionality.
+ *
+ * @ingroup Window
+ */
+void
+save_time_info_update(App_Data *ap, Eina_Bool is_autosave);
+
 #endif /* UI_MAIN_WINDOW_H */

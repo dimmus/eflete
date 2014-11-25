@@ -80,8 +80,17 @@ _statusbar_init(Evas_Object *obj)
    elm_object_part_content_set(obj, "eflete.swallow.statusbar",
                                statusbar);
    evas_object_show(statusbar);
-   LABEL_ADD(statusbar, label, "the project didn't opened");
 
+   LABEL_ADD(statusbar, label, _("NONE"));
+   item = ewe_statusbar_item_append(statusbar, label,
+                                    EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
+   ewe_statusbar_item_label_set(item, _("Last saved: "));
+   /* MAGIC number 500 is width of item, which display path to currently open
+      project. It will be fixed in ewe_statusbar module from ewe library. Currently
+      width param "-1"(unlimited width) work incorrect. */
+   ewe_statusbar_item_width_set(item, 500);
+
+   LABEL_ADD(statusbar, label, _("the project is not opened"));
    item = ewe_statusbar_item_append(statusbar, label,
                                     EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
    ewe_statusbar_item_label_set(item, _("Project path: "));

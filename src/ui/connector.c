@@ -656,6 +656,34 @@ ui_style_clicked(App_Data *ap, Style *style)
    return true;
 }
 
+void
+save_time_info_update(App_Data *ap, Eina_Bool is_autosave)
+{
+   long long mod_timestamp = 0;
+   char res[32];
+
+   Ewe_Statusbar_Item *it =
+      eina_list_data_get(ewe_statusbar_items_list_get(ap->statusbar));
+   Evas_Object *label = ewe_statusbar_item_content_get(it);
+
+   if (ap->project->edj)
+     {
+        mod_timestamp = ecore_file_mod_time(ap->project->edj);
+        if (!mod_timestamp) return;
+
+        strftime(res, 100,
+                 is_autosave ? _("%F %T (autosave)") : _("%F %T"),
+                 localtime((const time_t *)&mod_timestamp));
+
+        elm_object_text_set(label, res);
+     }
+   else if (!ap->project->edj)
+     elm_object_text_set(label, is_autosave ?
+                         _("Autosave failed. Please select path for saving.") :
+                         _("NONE"));
+}
+
+
 static Eina_Bool
 _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
 {
@@ -710,6 +738,8 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
         STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
         NOTIFY_INFO(3, _("Selected file: %s"), selected)
      }
+
+   save_time_info_update(ap, false);
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
    ui_menu_style_options_disabled_set(ap->menu_hash, true);
