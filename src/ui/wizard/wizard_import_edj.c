@@ -29,6 +29,7 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *meta_authors;
    Evas_Object *meta_licenses;
    Evas_Object *meta_comment;
+   Evas_Object *fs;
 };
 
 typedef struct _Wizard_Import_Edj_Win Wizard_Import_Edj_Win;
@@ -44,6 +45,53 @@ _on_cancel(void *data,
 
    evas_object_del(wiew->win);
    free(wiew);
+}
+
+static void
+_fs_close(void *data __UNUSED__,
+          Evas_Object *obj,
+          void *event_info __UNUSED__)
+{
+   evas_object_del(obj);
+}
+
+static void
+_on_fs_done(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info)
+{
+   Wizard_Import_Edj_Win *wiew;
+   const char *selected;
+
+   selected = event_info;
+   wiew = (Wizard_Import_Edj_Win *)data;
+
+   if ((!selected) || (!strcmp(selected, ""))) goto close;
+
+   elm_entry_entry_set(wiew->path, selected);
+
+close:
+   _fs_close(NULL, wiew->fs, NULL);
+}
+
+static void
+_on_path_bt(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *event_info __UNUSED__)
+{
+   Evas_Object *bg, *fs;
+   Wizard_Import_Edj_Win *wiew;
+
+   wiew = (Wizard_Import_Edj_Win *)data;
+
+   MODAL_WINDOW_ADD(wiew->fs, main_window_get(), _("Select path to new project"), _fs_close, NULL);
+   bg = elm_bg_add(wiew->fs);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(wiew->fs, bg);
+   FILESELECTOR_ADD(fs, wiew->fs, _on_fs_done, data);
+   elm_fileselector_folder_only_set(fs, true);
+   elm_win_resize_object_add(wiew->fs, fs);
 }
 
 Evas_Object *
@@ -79,6 +127,13 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));
    ENTRY_ADD(layout, wiew->path, true, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.path", wiew->path);
+
+   bt = elm_button_add(layout);
+   elm_object_style_set(bt, "eflete/elipsis");
+   evas_object_show(bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_path_bt, wiew);
+   elm_object_part_content_set(wiew->path, "elm.swallow.end", bt);
+
    //label.edj
    elm_object_part_text_set(layout, "label.edj", _("Path to edj file:"));
    ENTRY_ADD(layout, wiew->edj, true, DEFAULT_STYLE)
