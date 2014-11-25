@@ -55,44 +55,45 @@ _fs_close(void *data __UNUSED__,
    evas_object_del(obj);
 }
 
-static void
-_on_fs_done(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info)
-{
-   Wizard_Import_Edj_Win *wiew;
-   const char *selected;
+#define FILESELCTOR_WINDOW(FUNC, TITLE, FOLDER_ONLY, FIELD) \
+static void \
+FUNC##_done(void *data, \
+            Evas_Object *obj __UNUSED__, \
+            void *event_info) \
+{ \
+   Wizard_Import_Edj_Win *wiew; \
+   const char *selected; \
+\
+   selected = event_info; \
+   wiew = (Wizard_Import_Edj_Win *)data; \
+   if ((!selected) || (!strcmp(selected, ""))) goto close; \
+   elm_entry_entry_set(wiew->FIELD, selected); \
+close: \
+   _fs_close(NULL, wiew->fs, NULL); \
+} \
+\
+static void \
+FUNC(void *data, \
+     Evas_Object *obj __UNUSED__, \
+     void *event_info __UNUSED__) \
+{ \
+   Evas_Object *bg, *fs; \
+   Wizard_Import_Edj_Win *wiew; \
+\
+   wiew = (Wizard_Import_Edj_Win *)data; \
+\
+   MODAL_WINDOW_ADD(wiew->fs, main_window_get(), TITLE, _fs_close, NULL); \
+   bg = elm_bg_add(wiew->fs); \
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_show(bg); \
+   elm_win_resize_object_add(wiew->fs, bg); \
+   FILESELECTOR_ADD(fs, wiew->fs, FUNC##_done, data); \
+   elm_fileselector_folder_only_set(fs, FOLDER_ONLY); \
+   elm_win_resize_object_add(wiew->fs, fs); \
+} \
 
-   selected = event_info;
-   wiew = (Wizard_Import_Edj_Win *)data;
-
-   if ((!selected) || (!strcmp(selected, ""))) goto close;
-
-   elm_entry_entry_set(wiew->path, selected);
-
-close:
-   _fs_close(NULL, wiew->fs, NULL);
-}
-
-static void
-_on_path_bt(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-   Evas_Object *bg, *fs;
-   Wizard_Import_Edj_Win *wiew;
-
-   wiew = (Wizard_Import_Edj_Win *)data;
-
-   MODAL_WINDOW_ADD(wiew->fs, main_window_get(), _("Select path to new project"), _fs_close, NULL);
-   bg = elm_bg_add(wiew->fs);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(wiew->fs, bg);
-   FILESELECTOR_ADD(fs, wiew->fs, _on_fs_done, data);
-   elm_fileselector_folder_only_set(fs, true);
-   elm_win_resize_object_add(wiew->fs, fs);
-}
+FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, path)
+FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, edj)
 
 Evas_Object *
 wizard_import_edj_add(App_Data *ap __UNUSED__)
@@ -139,6 +140,12 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    ENTRY_ADD(layout, wiew->edj, true, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.edj", wiew->edj);
 
+   bt = elm_button_add(layout);
+   elm_object_style_set(bt, "eflete/elipsis");
+   evas_object_show(bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_edj_bt, wiew);
+   elm_object_part_content_set(wiew->edj, "elm.swallow.end", bt);
+
    //label.meta_version
    elm_object_part_text_set(layout, "label.meta_version", _("Version of file:"));
    ENTRY_ADD(layout, wiew->meta_version, true, DEFAULT_STYLE)
@@ -160,3 +167,5 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    evas_object_show(mwin);
    return mwin;
 }
+
+#undef FILESELCTOR_WINDOW
