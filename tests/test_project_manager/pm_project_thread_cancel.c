@@ -35,8 +35,8 @@ static Eina_Bool res;
  * @addtogroup pm_project_thread_cancel
  * @{
  * <tr>
- * <td>pm_project_importedj</td>
- * <td>pm_project_importedj_test_p</td>
+ * <td>pm_project_thread_cancel</td>
+ * <td>pm_project_thread_cancel_test_p</td>
  * <td>
  * This test check that the thread is ran.
  * @precondition

@@ -158,7 +158,7 @@ END_TEST
  * @{
  * <tr>
  * <td>pm_project_import_edc</td>
- * <td>pm_project_import_edc_test_p3</td
+ * <td>pm_project_import_edc_test_p3</td>
  * <td>
  * This test check the progress message from import edc thread.
  * @precondition
