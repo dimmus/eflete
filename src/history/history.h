@@ -164,6 +164,8 @@ enum _Target
    PROPERTY = 0, /**< This type of module generate changes, that modify attributes
                       of states, parts or style. For example min/max values for
                       state in part*/
+   STATE_TARGET, /**< This type of change happens with state of part.
+                      It can be add new state, or delete already exists state.*/
    LAST_TARGET
 };
 

@@ -30,6 +30,9 @@ _diff_free(Diff *diff)
       case PROPERTY:
          _attribute_change_free((Attribute_Diff *)diff);
       break;
+      case STATE_TARGET:
+         _state_change_free((State_Diff *)diff);
+      break;
       default:
          ERR("Unsupported module type in diff attributes. This should never happens");
          return false;
@@ -163,6 +166,9 @@ history_redo(Evas_Object *source, int count)
       case PROPERTY:
          result = _attribute_redo(module->target, (Attribute_Diff *)diff);
       break;
+      case STATE_TARGET:
+         result = _state_redo(module->target, (State_Diff *)diff);
+      break;
       default:
          ERR("Unsupported module type, that store diff");
          return false;
@@ -197,6 +203,9 @@ history_undo(Evas_Object *source, int count)
      {
       case PROPERTY:
          result = _attribute_undo(module->target, (Attribute_Diff *)diff);
+      break;
+      case STATE_TARGET:
+         result = _state_undo(module->target, (State_Diff *)diff);
       break;
       default:
          ERR("Unsupported module type: %d", diff->module_type);
@@ -347,6 +356,9 @@ history_diff_add(Evas_Object *source, Target target, ...)
       case PROPERTY:
          change = _attribute_change_new(list);
          change = _attribute_change_merge((Attribute_Diff *)change, module);
+      break;
+      case STATE_TARGET:
+         change = _state_change_new(list);
       break;
       default:
          ERR("Unsupported target");

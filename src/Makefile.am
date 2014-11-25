@@ -16,6 +16,7 @@ config/config.c \
 external/syntax_color.c \
 history/history.c \
 history/history_attribute.c \
+history/history_state.c \
 history/history_ui.c \
 ui/cursor.c \
 ui/panes.c \
