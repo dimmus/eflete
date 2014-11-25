@@ -128,6 +128,7 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));
    ENTRY_ADD(layout, wiew->path, true, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.path", wiew->path);
+   elm_entry_entry_set(wiew->path, getenv("HOME"));
 
    bt = elm_button_add(layout);
    elm_object_style_set(bt, "eflete/elipsis");
