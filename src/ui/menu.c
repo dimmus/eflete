@@ -324,7 +324,6 @@ ui_menu_add(App_Data *ap)
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Sounds"), _on_sound_editor_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Colorclasses"), _on_ccl_viewer_menu, ap, it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Programs"), _on_prog_editor_menu, ap, it);
-   elm_object_item_disabled_set(it, true);
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("Help"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("About"), _on_about_window_menu , ap, it);
@@ -346,15 +345,19 @@ ui_menu_add(App_Data *ap)
    ret = elm_toolbar_item_append(toolbar_obj, icon, label, callback, data); \
    eina_hash_add(menu_elms_hash, label, ret);
 
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_theme_menu, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_edj_open_menu, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save_menu, ap, it);
-
-   elm_object_item_disabled_set(it, true);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New Project"), _on_new_theme_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open Project"), _on_edj_open_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-save.png", _("Save Project"), _on_save_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-animator.png", _("Animator"), _on_prog_editor_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-image.png", _("Image editor"), _on_image_editor_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-sound.png", _("Sound editor"), _on_sound_editor_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-color.png", _("Color class editor"), _on_ccl_viewer_menu, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-text.png", _("Textblock style editor"), _on_style_window_menu, ap, it);
 
 #undef ITEM_TB_ADD
    ap->menu_hash = menu_elms_hash;
    ui_menu_base_disabled_set(ap->menu_hash, true);
+   ui_menu_style_options_disabled_set(ap->menu_hash, true);
 
    return menu;
 }
@@ -390,17 +393,38 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    if (!menu_hash) return false;
 
    Eina_Bool result = true;
-   result = ui_menu_disable_set(menu_hash, _("Save"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Save as..."), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Export to edc..."), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Workspace"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Separate"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Rulers"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Styles"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Images"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Sounds"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Colorclasses"), flag) && result;
+   result &= ui_menu_disable_set(menu_hash, _("Save"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Save as..."), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Export to edc..."), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Workspace"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Separate"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Rulers"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Styles"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Images"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Sounds"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Colorclasses"), flag);
+
+   result &= ui_menu_disable_set(menu_hash, _("Save Project"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Image editor"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Sound editor"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Color class editor"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Textblock style editor"), flag);
+
+   return result;
+}
+
+Eina_Bool
+ui_menu_style_options_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
+{
+   if (!menu_hash) return false;
+
+   Eina_Bool result = true;
+   result &= ui_menu_disable_set(menu_hash, _("Programs"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Animator"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Separate"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag);
+
    return result;
 }
 
