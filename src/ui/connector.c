@@ -497,9 +497,7 @@ ui_part_back(App_Data *ap)
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
 
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+   ui_menu_style_options_disabled_set(ap->menu_hash, true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -652,9 +650,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_block_history_set(ap, history_list);
 
    live_view_widget_style_set(ap->live_view, ap->project, _style);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), false);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), false);
+   ui_menu_style_options_disabled_set(ap->menu_hash, false);
 
    return true;
 }
@@ -715,9 +711,7 @@ _ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
      }
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+   ui_menu_style_options_disabled_set(ap->menu_hash, true);
 
    free(selected);
 
