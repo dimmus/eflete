@@ -717,6 +717,7 @@ END_TEST
  * @step 4 Create canvas, that needed for creating source object.
  * @step 5 Create edje edit object, that will be source of changes.
  * @step 6 Register in history object created at step 5, as module.
+ * @step 7 Add new state with name "new_state" and value 0.0 to part "bg";
  *
  * @procedure
  * @step 1 Call history_diff_add with correct data for target type STATE_TARGET and
@@ -749,6 +750,7 @@ EFLETE_TEST(history_diff_add_test_p12)
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
+   edje_edit_state_add(source, "bg", "new_state", 0.0);
 
    result = history_diff_add(source, STATE_TARGET, ADD, "elm/radio/base/def",
                              "bg", "new_state", 0.0, "create state");

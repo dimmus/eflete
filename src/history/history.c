@@ -358,7 +358,7 @@ history_diff_add(Evas_Object *source, Target target, ...)
          change = _attribute_change_merge((Attribute_Diff *)change, module);
       break;
       case STATE_TARGET:
-         change = _state_change_new(list);
+         change = _state_change_new(list, module->target);
       break;
       default:
          ERR("Unsupported target");

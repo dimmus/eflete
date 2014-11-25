@@ -243,6 +243,7 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change);
  *
  * @param list The list of params. For detail description of this params
  *             please see history_diff_add.
+ * @source The object, that represent module.
  *
  * @return Pointer to filled structure, that casted to the Diff in successful
  *         case or NULL if something went wrong.
@@ -250,7 +251,7 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change);
  * @ingroup History_State
  */
 Diff *
-_state_change_new(va_list list);
+_state_change_new(va_list list, Evas_Object *source);
 
 /**
  * Freed memory, that was allocated in _state_change_new.
