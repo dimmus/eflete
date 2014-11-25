@@ -1235,9 +1235,9 @@ EFLETE_TEST(history_redo_test_p16)
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
-   edje_edit_state_del(style->obj, "elm.text", "visible", 0.0);
    history_diff_add(style->obj, STATE_TARGET, DEL, "elm/radio/base/def",
                     "elm.text", "visible", 0.0, "delete state");
+   edje_edit_state_del(style->obj, "elm.text", "visible", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);

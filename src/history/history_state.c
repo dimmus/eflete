@@ -228,8 +228,22 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
 }
 
 Eina_Bool
-_state_redo(Evas_Object *source __UNUSED__, State_Diff *change __UNUSED__)
+_state_redo(Evas_Object *source, State_Diff *change)
 {
+   switch(change->diff.action_type)
+     {
+      case ADD:
+         return _state_param_restore(source, change->part, change->state,
+                                     change->type);
+      break;
+      case DEL:
+         return edje_edit_state_del(source, change->part, change->state->name,
+                                    change->state->value);
+      break;
+      default:
+        return false;
+      break;
+     }
    return false;
 }
 
