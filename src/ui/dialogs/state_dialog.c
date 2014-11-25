@@ -269,6 +269,12 @@ state_dialog_state_del(App_Data *ap)
    if (!part) return NULL;
    state = ui_states_list_selected_state_get(state_list);
 
+   if (!state)
+     {
+        NOTIFY_WARNING(_("Something is wrong. State is not selected"));
+        return NULL;
+     }
+
    if (!strcmp(state, "default 0.00"))
      {
         NOTIFY_WARNING(_("Can't delete the default state."));
