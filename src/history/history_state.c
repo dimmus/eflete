@@ -80,6 +80,42 @@ struct _State_Params
    } rel1, rel2;
 };
 
+static void
+_history_ui_state_update(Evas_Object *source, State_Diff *change)
+{
+   Style *style = NULL;
+   Part *part = NULL;
+
+   App_Data *app = app_data_get();
+   if (!app->project) return;
+   style = app->project->current_style;
+   if ((!style) || (style->obj != source)) return;
+
+   Evas_Object *prop_view = ui_block_property_get(app);
+   part = wm_part_by_name_find(style, change->part);
+   ui_property_state_unset(prop_view);
+   ui_widget_list_part_selected_set(ui_block_widget_list_get(app),
+                                    change->part, false);
+   if (part)
+     {
+        if (edje_edit_state_exist(style->obj, change->part, change->state->name,
+                                  change->state->value))
+          {
+             eina_stringshare_replace(&part->curr_state, change->state->name);
+             part->curr_state_value = change->state->value;
+          }
+        else
+          {
+             eina_stringshare_replace(&part->curr_state, "default");
+             part->curr_state_value = 0.0;
+          }
+        workspace_edit_object_part_state_set(app->workspace, part);
+        ui_property_state_set(prop_view, part);
+     }
+   ui_widget_list_part_selected_set(ui_block_widget_list_get(app), change->part,
+                                    true);
+}
+
 /* argument 'type' will be used in future, for store special part types data */
 static State_Params *
 _state_params_save(Evas_Object *obj, const char *part, const char *state,
@@ -230,41 +266,48 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
 Eina_Bool
 _state_redo(Evas_Object *source, State_Diff *change)
 {
+   Eina_Bool result = false;
+
    switch(change->diff.action_type)
      {
       case ADD:
-         return _state_param_restore(source, change->part, change->state,
-                                     change->type);
+         result = _state_param_restore(source, change->part, change->state,
+                                       change->type);
       break;
       case DEL:
-         return edje_edit_state_del(source, change->part, change->state->name,
-                                    change->state->value);
+         result = edje_edit_state_del(source, change->part, change->state->name,
+                                      change->state->value);
       break;
       default:
         return false;
       break;
      }
-   return false;
+   if (result) _history_ui_state_update(source, change);
+   return result;
 }
 
 Eina_Bool
 _state_undo(Evas_Object *source, State_Diff *change)
 {
+   Eina_Bool result = false;
+
    switch(change->diff.action_type)
      {
       case ADD:
-         return edje_edit_state_del(source, change->part, change->state->name,
-                                    change->state->value);
+         result = edje_edit_state_del(source, change->part, change->state->name,
+                                      change->state->value);
       break;
       case DEL:
-         return _state_param_restore(source, change->part, change->state,
-                                     change->type);
+         result = _state_param_restore(source, change->part, change->state,
+                                       change->type);
       break;
       default:
          return false;
       break;
      }
-   return false;
+
+   if (result) _history_ui_state_update(source, change);
+   return result;
 }
 
 void
