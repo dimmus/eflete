@@ -104,6 +104,8 @@ void history_redo_test_p11(int);
 void history_redo_test_p12(int);
 void history_redo_test_p13(int);
 void history_redo_test_p14(int);
+void history_redo_test_p15(int);
+void history_redo_test_p16(int);
 void history_redo_test_n1(int);
 void history_redo_test_n2(int);
 void history_redo_test_n3(int);

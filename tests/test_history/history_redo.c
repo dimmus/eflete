@@ -1123,6 +1123,140 @@ END_TEST
  * @{
  * <tr>
  * <td>history_redo</td>
+ * <td>history_redo_test_p15</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Add new state with name "new_state" and value 0.1 to the part "bg".
+ * @step 10 Store diff with using history_diff_add function.
+ * @step 11 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_redo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that state "new_state" with value 0.1 for part "bg" is exist.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p15)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   char *path;
+
+   path = "./edj_build/history_redo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   edje_edit_state_add(style->obj, "bg", "new_state", 0.1);
+   history_diff_add(style->obj, STATE_TARGET, ADD, "elm/radio/base/def",
+                    "bg", "new_state", 0.1, "create state");
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to redo diff with target type STATE_TARGET"
+                 " with ADD action.");
+   result = edje_edit_state_exist(style->obj, "bg", "new_state", 0.1);
+   ck_assert_msg(result, "Adding new state didn't restored");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
+ * <td>history_redo_test_p16</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Delete state with name "visible" and value 0.0 from the part "elm.text".
+ * @step 10 Store diff with using history_diff_add function.
+ * @step 11 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_redo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that state "visible" with value 0.0 for part "elm.text" didn't exist.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p16)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   char *path;
+
+   path = "./edj_build/history_redo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   edje_edit_state_del(style->obj, "elm.text", "visible", 0.0);
+   history_diff_add(style->obj, STATE_TARGET, DEL, "elm/radio/base/def",
+                    "elm.text", "visible", 0.0, "delete state");
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to redo diff with target type STATE_TARGET"
+                 " with DEL action.");
+   result = edje_edit_state_exist(style->obj, "elm.text", "visible", 0.0);
+   ck_assert_msg(!result, "Deleting state didn't restored");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
  * <td>history_redo_test_n1</td>
  * <td>
  * @precondition
