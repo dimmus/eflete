@@ -50,7 +50,7 @@ def walk_dirs(prefix):
 					if html.endswith('.html'):
 						parse_doc(html)
 
-def gen_report(logs_dir, output_file):
+def gen_report(logs_dir, output_file, ignorepassed):
 	with open(output_file, 'w') as out:
 		out.write('<html><body><table border="1">\n')
 		for tmp_file in os.listdir('.'):
@@ -58,6 +58,8 @@ def gen_report(logs_dir, output_file):
 				try:
 					with open(os.path.join(logs_dir, tmp_file[:-4].lower() + '.log')) as log:
 						lines = list(log)
+						if len(lines) == 1:
+							continue
 						for i in range(0, len(lines)):
 							if ('Checks:' in lines[i]) and ('Failures:' in lines[i]) and ('Errors:' in lines[i]):
 								log_start = i + 1
@@ -69,13 +71,15 @@ def gen_report(logs_dir, output_file):
 							i = 2
 							try:
 								while i < len(tmp_lines):
+									passed_flag = False
+									tmp_out = ""
 									i = i + 1
 									test_id = tmp_lines[i].split("</td><td>", 3)[1][:-1]
-									out.write("<tr>")
-									out.write(tmp_lines[i])
+									tmp_out = tmp_out + "<tr>"
+									tmp_out = tmp_out + tmp_lines[i]
 									i = i + 1
 									while not '</td><td>' in tmp_lines[i]:
-										out.write(tmp_lines[i])
+										tmp_out = tmp_out + tmp_lines[i]
 										i = i + 1
 									tmp_split = tmp_lines[i].split("</tr>")[0]
 									tmp_split = tmp_split.split("</td><td>", 3)
@@ -85,6 +89,7 @@ def gen_report(logs_dir, output_file):
 										if test_id in lines[j]:
 											log_split = lines[j].split(':', 7)
 											if log_split[2] == 'P':
+												passed_flag = True
 												result = tmp_split[2]
 												passed = '<td bgcolor="#00FF00">Pass</td>'
 											elif log_split[2] == 'F':
@@ -97,11 +102,13 @@ def gen_report(logs_dir, output_file):
 													result = log_split[6]
 												passed = '<td bgcolor="#FF0000">Fail</td>'
 											break
-									out.write(tmp_split[0] + '</td><td>')
-									out.write(tmp_split[1] + '</td><td>')
-									out.write(tmp_split[2] + '</td><td>')
-									out.write(result + '</td>')
-									out.write(passed + '</tr>')
+									tmp_out = tmp_out + tmp_split[0] + '</td><td>'
+									tmp_out = tmp_out + tmp_split[1] + '</td><td>'
+									tmp_out = tmp_out + tmp_split[2] + '</td><td>'
+									tmp_out = tmp_out + result + '</td>'
+									tmp_out = tmp_out + passed + '</tr>'
+									if not passed_flag or not ignorepassed:
+										out.write(tmp_out)
 									while not '</tr>' in tmp_lines[i]:
 										i = i + 1
 									i = i + 1
@@ -119,6 +126,7 @@ def main():
 	parser.add_argument('html', help='path to the tests documentation directory')
 	parser.add_argument('log', help='path to the tests log directory')
 	parser.add_argument('-c', '--clean', action='store_true', help='removes all *.tmp files from current directory before processing')
+	parser.add_argument('-i', '--ignorepassed', action='store_true', help='do not add passed test to output')
 	parser.add_argument('-t', '--tmp', action='store_true', help='do not remove *.tmp files from current directory after processing')
 	parser.add_argument('-o', '--output', default='report.html', help='output file name. Default name: report.html')
 	args = parser.parse_args()
@@ -137,7 +145,7 @@ def main():
 		print 'ERROR: "{}" is not directory'.format(args.log)
 		return
 	walk_dirs(args.html)
-	gen_report(args.log, args.output)
+	gen_report(args.log, args.output, args.ignorepassed)
 	if not args.tmp:
 		for f in os.listdir('.'):
 			if not os.path.isdir(f) and f.endswith('.tmp'):

@@ -18,6 +18,12 @@ report:
 	cd tests && doxygen Doxyfile && cd ..
 	${top_srcdir}/tests/tests_report_generator.py -o report.html ${top_builddir}/tests/html/ ${top_builddir}/tests/
 
+report_failed:
+	echo "Cleaning report files..." && rm -rf tests/*.log tests/html/* *.tmp report.html
+	$(MAKE) $(AM_MAKEFLAGS) check || true
+	cd tests && doxygen Doxyfile && cd ..
+	${top_srcdir}/tests/tests_report_generator.py -i -o report.html ${top_builddir}/tests/html/ ${top_builddir}/tests/
+
 report_debug:
 	echo "Cleaning report files..." && rm -rf tests/*.log tests/html/* *.tmp report.html
 	$(MAKE) $(AM_MAKEFLAGS) check || true
