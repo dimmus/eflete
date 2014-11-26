@@ -271,6 +271,7 @@ _on_glit_selected(void *data,
    Eina_List *l = NULL;
    Eina_List *tabs_list = NULL, *tab = NULL;
    Evas_Object *edje_edit_obj = NULL;
+   Evas_Object *tab_content;
 
    const char *style_name = NULL;
    const char *tag, *value = NULL;
@@ -311,45 +312,58 @@ _on_glit_selected(void *data,
    CURRENT.st_tag = tag;
    CURRENT.stvalue = eina_stringshare_add(value);
    tabs_list = (Eina_List *)ewe_tabs_items_list_get(style_edit->tabs);
-   EINA_LIST_FOREACH(tabs_list, tab, it)
+   if (!glit_parent)
      {
-        switch (count)
+        EINA_LIST_FOREACH(tabs_list, tab, it)
           {
-           case 0:
-             {
-                _text_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
-                break;
-             }
-           case 1:
-             {
-                _format_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
-                break;
-             }
-           case 2:
-             {
-                _glow_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
-                break;
-             }
-           case 3:
-             {
-                _lines_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
-                break;
-             }
-           default:
-             break;
+            tab_content = ewe_tabs_item_content_unset(style_edit->tabs, it);
+            evas_object_del(tab_content);
+            count++;
           }
-        count++;
+        elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");
      }
+   else
+     {
+        EINA_LIST_FOREACH(tabs_list, tab, it)
+          {
+             switch (count)
+               {
+                case 0:
+                   {
+                      _text_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      break;
+                   }
+                case 1:
+                   {
+                      _format_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      break;
+                   }
+                case 2:
+                   {
+                      _glow_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      break;
+                   }
+                case 3:
+                   {
+                      _lines_tab_update(style_edit, style_edit->tabs, it, eina_strbuf_string_get(style));
+                      break;
+                   }
+                default:
+                   break;
+               }
+             count++;
+          }
 
-   elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
-   eina_strbuf_append(style, "'");
-   ts = evas_textblock_style_new();
-   evas_textblock_style_set(ts, eina_strbuf_string_get(style));
-   evas_object_textblock_style_set(style_edit->textblock_style, ts);
-   evas_object_size_hint_max_set(style_edit->textblock_style, EVAS_HINT_FILL,
-                                 EVAS_HINT_FILL);
+        elm_object_signal_emit(style_edit->entry_prev, "entry,show", "eflete");
+        eina_strbuf_append(style, "'");
+        ts = evas_textblock_style_new();
+        evas_textblock_style_set(ts, eina_strbuf_string_get(style));
+        evas_object_textblock_style_set(style_edit->textblock_style, ts);
+        evas_object_size_hint_max_set(style_edit->textblock_style, EVAS_HINT_FILL,
+                                      EVAS_HINT_FILL);
+        evas_textblock_style_free(ts);
+     }
    eina_strbuf_free(style);
-   evas_textblock_style_free(ts);
 }
 
 static void
