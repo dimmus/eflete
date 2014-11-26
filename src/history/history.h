@@ -366,6 +366,32 @@ history_module_del(Evas_Object *source);
  *                     part->curr_state_value);
  *  ...
  *   </pre>
+ * --------------------------------------------------------------------------
+ * In case when you want to add change for module with type STATE_TARGET.
+ *
+ *   Case when new state is added:
+ *
+ *   history_diff_add(source, STATE_TARGET, ADD, full style name, part name,
+ *                    state name, state value, description);
+ *
+ *   Case when state is deleted:
+ *
+ *   history_diff_add(source, STATE_TARGET, DEL, full style name, part name,
+ *                    state name, state value, description);
+ *
+ * Example of code that shows case of adding new state:
+ * <pre>
+ *   ...
+ *   History *history = history_init();
+ *   if (!history_module_add(style->obj)) return;
+ *    ...
+ *   Eina_Bool ret = EINA_FALSE;
+ *   ret = edje_edit_state_add(style->obj, "elm.text", "selected", 0.0);
+ *   if (!ret) return;
+ *   history_diff_add(style->obj, STATE_TARGET, ADD, "elm/button/base/default",
+ *                    "elm.text", "selected", 0.0, "create state");
+ *    ...
+ * </pre>
  **
  *
  * @ingroup History
