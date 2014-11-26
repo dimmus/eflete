@@ -46,6 +46,7 @@ struct _Run_Prog
    double delay;
    double length;
    Evas_Object *obj;
+   Evas_Object *delay_obj;
 };
 typedef struct _Run_Prog Run_Prog;
 
@@ -261,6 +262,11 @@ _prog_sequence_smart_calculate(Evas_Object *o)
                                  y + ((rp->length?0.1:0.25) + line_num) * PIX_PER_LINE + LABELS_H,
                                  (rp->length?rp->length:.1) * PIX_PER_SEC,
                                  (rp->length?.9:.5) * PIX_PER_LINE);
+        evas_object_geometry_set(rp->delay_obj,
+                                 x + (rp->start_time) * PIX_PER_SEC + LABELS_W,
+                                 y + (0.45 + line_num) * PIX_PER_LINE + LABELS_H,
+                                 rp->delay * PIX_PER_SEC,
+                                 0.1 * PIX_PER_LINE);
      }
 }
 /***************** program sequence custom ************************************/
@@ -313,11 +319,21 @@ _item_create(Prog_Sequence_Smart_Data *sd, const char* program, double time)
    evas_object_smart_member_add(rp->obj, sd->obj);
    evas_object_show(rp->obj);
 
+   rp->delay_obj = evas_object_rectangle_add(sd->e);
+   evas_object_smart_member_add(rp->delay_obj, sd->obj);
+   evas_object_show(rp->delay_obj);
+
    /* selected program should be highlighted */
    if (rp->name == sd->program)
-     evas_object_color_set(rp->obj, PROGRAM_SELECTED_COLOR);
+     {
+        evas_object_color_set(rp->obj, PROGRAM_SELECTED_COLOR);
+        evas_object_color_set(rp->delay_obj, PROGRAM_SELECTED_COLOR);
+     }
    else
-     evas_object_color_set(rp->obj, PROGRAM_COLOR);
+     {
+        evas_object_color_set(rp->obj, PROGRAM_COLOR);
+        evas_object_color_set(rp->delay_obj, PROGRAM_COLOR);
+     }
    return rp;
 }
 
@@ -326,6 +342,7 @@ _item_free(Run_Prog *rp)
 {
    eina_stringshare_del(rp->name);
    evas_object_del(rp->obj);
+   evas_object_del(rp->delay_obj);
    free(rp);
 }
 
