@@ -145,6 +145,88 @@ _state_params_save(Evas_Object *obj, const char *part, const char *state,
    return state_diff;
 }
 
+/* argument 'type' will be used in future, for restore special part types data */
+static Eina_Bool
+_state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
+                     State_Params *state_diff, Edje_Part_Type type __UNUSED__)
+{
+   if ((!part) || (!state_diff)) return false;
+
+   if (!edje_edit_state_exist(obj, part, state_diff->name, state_diff->value))
+     edje_edit_state_add(obj, part, state_diff->name, state_diff->value);
+
+
+   edje_edit_state_visible_set(obj, part, state_diff->name,
+                               state_diff->value, state_diff->visible);
+   edje_edit_state_min_w_set(obj, part, state_diff->name,
+                             state_diff->value, state_diff->min.w);
+   edje_edit_state_min_h_set(obj, part, state_diff->name,
+                             state_diff->value, state_diff->min.h);
+   edje_edit_state_max_w_set(obj, part,state_diff->name,
+                             state_diff->value, state_diff->max.w);
+   edje_edit_state_max_h_set(obj, part,state_diff->name,
+                             state_diff->value, state_diff->max.h);
+   edje_edit_state_align_x_set(obj, part, state_diff->name,
+                               state_diff->value, state_diff->align.x);
+   edje_edit_state_align_y_set(obj, part, state_diff->name,
+                               state_diff->value, state_diff->align.y);
+   edje_edit_state_fixed_w_set(obj, part, state_diff->name,
+                               state_diff->value, state_diff->fixed.w);
+   edje_edit_state_fixed_h_set(obj, part, state_diff->name,
+                               state_diff->value, state_diff->fixed.h);
+
+   edje_edit_state_aspect_min_set(obj, part, state_diff->name,
+                                  state_diff->value, state_diff->aspect.w);
+   edje_edit_state_aspect_max_set(obj, part, state_diff->name,
+                                  state_diff->value,  state_diff->aspect.h);
+   edje_edit_state_aspect_pref_set(obj, part, state_diff->name,
+                                   state_diff->value, state_diff->aspect.param);
+
+   edje_edit_state_color_class_set(obj, part, state_diff->name,
+                                   state_diff->value, state_diff->color_class);
+   edje_edit_state_color_set(obj, part, state_diff->name, state_diff->value,
+                             state_diff->color.r, state_diff->color.g,
+                             state_diff->color.b, state_diff->color.a);
+   edje_edit_state_color2_set(obj, part, state_diff->name, state_diff->value,
+                             state_diff->color2.r, state_diff->color2.g,
+                             state_diff->color2.b, state_diff->color2.a);
+
+   edje_edit_state_rel1_to_x_set(obj, part, state_diff->name,
+                                 state_diff->value, state_diff->rel1.to_x);
+   edje_edit_state_rel1_to_y_set(obj, part, state_diff->name,
+                                 state_diff->value, state_diff->rel1.to_y);
+   edje_edit_state_rel1_offset_x_set(obj, part, state_diff->name,
+                                     state_diff->value,
+                                     state_diff->rel1.offset_x);
+   edje_edit_state_rel1_offset_y_set(obj, part, state_diff->name,
+                                     state_diff->value,
+                                     state_diff->rel1.offset_y);
+   edje_edit_state_rel1_relative_x_set(obj, part, state_diff->name,
+                                       state_diff->value,
+                                       state_diff->rel1.relative_x);
+   edje_edit_state_rel1_relative_y_set(obj, part, state_diff->name,
+                                       state_diff->value,
+                                       state_diff->rel1.relative_y);
+
+   edje_edit_state_rel2_to_x_set(obj, part, state_diff->name,
+                                 state_diff->value, state_diff->rel2.to_x );
+   edje_edit_state_rel2_to_y_set(obj, part, state_diff->name,
+                                 state_diff->value, state_diff->rel2.to_y);
+   edje_edit_state_rel2_offset_x_set(obj, part, state_diff->name,
+                                     state_diff->value,
+                                     state_diff->rel2.offset_x );
+   edje_edit_state_rel2_offset_y_set(obj, part, state_diff->name,
+                                     state_diff->value,
+                                     state_diff->rel2.offset_y);
+   edje_edit_state_rel2_relative_x_set(obj, part, state_diff->name,
+                                       state_diff->value,
+                                       state_diff->rel2.relative_x);
+   edje_edit_state_rel2_relative_y_set(obj, part, state_diff->name,
+                                       state_diff->value,
+                                       state_diff->rel2.relative_y);
+   return true;
+}
+
 Eina_Bool
 _state_redo(Evas_Object *source __UNUSED__, State_Diff *change __UNUSED__)
 {
@@ -152,8 +234,22 @@ _state_redo(Evas_Object *source __UNUSED__, State_Diff *change __UNUSED__)
 }
 
 Eina_Bool
-_state_undo(Evas_Object *source __UNUSED__, State_Diff *change __UNUSED__)
+_state_undo(Evas_Object *source, State_Diff *change)
 {
+   switch(change->diff.action_type)
+     {
+      case ADD:
+         return edje_edit_state_del(source, change->part, change->state->name,
+                                    change->state->value);
+      break;
+      case DEL:
+         return _state_param_restore(source, change->part, change->state,
+                                     change->type);
+      break;
+      default:
+         return false;
+      break;
+     }
    return false;
 }
 
@@ -203,6 +299,8 @@ _state_change_new(va_list list, Evas_Object *source)
    change->diff.source = eina_stringshare_add(change->part);
    change->diff.state = eina_stringshare_printf("%s %.2f", change->state->name,
                                                  change->state->value);
+   change->diff.new = eina_stringshare_add(" ");
+   change->diff.old = eina_stringshare_add(" ");
 
    return (Diff *)change;
 
