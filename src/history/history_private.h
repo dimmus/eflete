@@ -50,6 +50,12 @@ typedef struct _Attribute_Diff Attribute_Diff;
 typedef struct _State_Diff State_Diff;
 
 /**
+ * @typedef Part_Diff
+ * @ingroup History
+ */
+typedef struct _Part_Diff Part_Diff;
+
+/**
  * @struct _History
  *
  * @brief This struct designed to storage list of modules, that can generatre
@@ -288,6 +294,70 @@ _state_undo(Evas_Object *source, State_Diff *change);
  */
 Eina_Bool
 _state_redo(Evas_Object *source, State_Diff *change);
+
+/* INTERNAL FUNCTIONS FOR HISTORY_PART SUBMODULE */
+/**
+ * @defgroup History_Part History part
+ * @ingroup History
+ *
+ * This submodule manage changes of the parts. Parse changes with module
+ * type PART_TARGET. Manage undo/redo actions with that changes.
+ *
+ * @note This is private submodule for history module.
+ *
+ */
+
+/**
+ * Create right diff, from input data list. Parse input list of parameters and
+ * fill internal structure Part_Diff.
+ *
+ * @param list The list of params. For detail description of this params
+ *             please see history_diff_add.
+ * @source The object, that represent module.
+ *
+ * @return Pointer to filled structure, that casted to the Diff in successful
+ *         case or NULL if something went wrong.
+ *
+ * @ingroup History_Part
+ */
+Diff *
+_part_change_new(va_list list, Evas_Object *source);
+
+/**
+ * Freed memory, that was allocated in _part_change_new.
+ *
+ * @param change The diff, that was created with using _part_change_new.
+ *
+ * @ingroup History_Part
+ */
+void
+_part_change_free(Part_Diff *change);
+
+/**
+ * This function cancel given diff.
+ *
+ * @source The object, that represent module.
+ * @param change The diff, that was created with using _part_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_Part
+ */
+Eina_Bool
+_part_undo(Evas_Object *source, Part_Diff *change);
+
+/**
+ * This function restore given diff.
+ *
+ * @source The object, that represent module.
+ * @param change The diff, that was created with using _part_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_Part
+ */
+Eina_Bool
+_part_redo(Evas_Object *source, Part_Diff *change);
 
 /* INTERNAL FUNCTIONS FOR HISTORY_UI SUBMODULE */
 /**
