@@ -966,7 +966,7 @@ const char *value = NULL; \
 if (elm_check_state_get(check)) value = eina_stringshare_add("on"); \
 else value = eina_stringshare_add("off");
 
-#define CHANGE_CALLBACK(VALUE, TEXT, WIDGET) \
+#define CHANGE_CALLBACK(VALUE, TEXT, WIDGET, FUNC) \
 static void \
 _on_##VALUE##_change(void *data, \
                      Evas_Object *obj EINA_UNUSED, \
@@ -975,8 +975,7 @@ _on_##VALUE##_change(void *data, \
    Style_Editor *style_edit = (Style_Editor *)data; \
    WIDGET##_VALUE \
    _tag_parse(style_edit, value, TEXT); \
-   if (!strcmp("style", TEXT)) \
-     _glow_update(style_edit); \
+   FUNC; \
    _lines_colors_update(style_edit, TEXT); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
@@ -1234,25 +1233,25 @@ _hex_to_rgb(const char *hex, int *r, int *g, int *b, int *a)
    return true;
 }
 
-CHANGE_CALLBACK(fonts_list, "font", COMBOBOX)
-CHANGE_CALLBACK(font_size, "font_size", SPINNER)
-CHANGE_CALLBACK(font_style, "font_style", SEGMENT)
-CHANGE_CALLBACK(font_width, "font_width", COMBOBOX)
-CHANGE_CALLBACK(font_weight, "font_weight", COMBOBOX)
-CHANGE_CALLBACK(font_align, "align", COMBOBOX)
-CHANGE_CALLBACK(lmargin, "left_margin", SPINNER)
-CHANGE_CALLBACK(font_valign, "valign", COMBOBOX)
-CHANGE_CALLBACK(rmargin, "right_margin", SPINNER)
-CHANGE_CALLBACK(text_tabstops, "tabstops", SPINNER)
-CHANGE_CALLBACK(line_size, "linesize", SPINNER)
-CHANGE_CALLBACK(rel_size, "linerelsize", SPINNER)
-CHANGE_CALLBACK(font_password, "password", CHECK)
-CHANGE_CALLBACK(font_background, "backing", CHECK)
-CHANGE_CALLBACK(font_ellipsis, "ellipsis", PERCENT_SPINNER)
-CHANGE_CALLBACK(style, "style", COMBOBOX)
-CHANGE_CALLBACK(strikethrough, "strikethrough", CHECK)
-CHANGE_CALLBACK(underline, "underline", CHECK)
-CHANGE_CALLBACK(underline_style, "underline", SEGMENT)
+CHANGE_CALLBACK(fonts_list, "font", COMBOBOX, NULL)
+CHANGE_CALLBACK(font_size, "font_size", SPINNER, NULL)
+CHANGE_CALLBACK(font_style, "font_style", SEGMENT, NULL)
+CHANGE_CALLBACK(font_width, "font_width", COMBOBOX, NULL)
+CHANGE_CALLBACK(font_weight, "font_weight", COMBOBOX, NULL)
+CHANGE_CALLBACK(font_align, "align", COMBOBOX, NULL)
+CHANGE_CALLBACK(lmargin, "left_margin", SPINNER, NULL)
+CHANGE_CALLBACK(font_valign, "valign", COMBOBOX, NULL)
+CHANGE_CALLBACK(rmargin, "right_margin", SPINNER, NULL)
+CHANGE_CALLBACK(text_tabstops, "tabstops", SPINNER, NULL)
+CHANGE_CALLBACK(line_size, "linesize", SPINNER, NULL)
+CHANGE_CALLBACK(rel_size, "linerelsize", SPINNER, NULL)
+CHANGE_CALLBACK(font_password, "password", CHECK, NULL)
+CHANGE_CALLBACK(font_background, "backing", CHECK, NULL)
+CHANGE_CALLBACK(font_ellipsis, "ellipsis", PERCENT_SPINNER, NULL)
+CHANGE_CALLBACK(style, "style", COMBOBOX, _glow_update(style_edit))
+CHANGE_CALLBACK(strikethrough, "strikethrough", CHECK, NULL)
+CHANGE_CALLBACK(underline, "underline", CHECK, NULL)
+CHANGE_CALLBACK(underline_style, "underline", SEGMENT, NULL)
 
 ITEM_TEXT_ADD("font", fonts_list, COMBO)
 ITEM_TEXT_ADD("size", font_size, SPIN)
