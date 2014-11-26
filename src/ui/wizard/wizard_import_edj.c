@@ -101,6 +101,18 @@ FUNC(void *data, \
 FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, false, path)
 FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, true, edj)
 
+static Eina_Bool
+_setup(void *data __UNUSED__)
+{
+   return true;
+}
+
+static Eina_Bool
+_teardown(void *data __UNUSED__)
+{
+   return true;
+}
+
 static void
 _on_apply(void *data,
           Evas_Object *obj __UNUSED__,
@@ -111,7 +123,7 @@ _on_apply(void *data,
 
    ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
-   wiew->splash = splash_add(ap->win, NULL, NULL, NULL);
+   wiew->splash = splash_add(ap->win, _setup, _teardown, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
 }

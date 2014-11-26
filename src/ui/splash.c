@@ -32,11 +32,31 @@ typedef struct _Splash_Data Splash_Data;
 Splash_Data sdata;
 
 static void
+_on_teardown(void *data __UNUSED__,
+             Evas_Object *obj,
+             const char *emission __UNUSED__,
+             const char *source __UNUSED__)
+{
+   fprintf(stdout, "%s %s\n", emission, source);
+   if (sdata.teardown) sdata.teardown(sdata.data);
+   evas_object_del(obj);
+}
+
+static void
 _on_splash_close(void *data __UNUSED__,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   evas_object_del(sdata.win);
+   elm_layout_signal_emit(sdata.win, "end", "eflete");
+}
+
+static void
+_on_setup(void *data __UNUSED__,
+          Evas_Object *obj __UNUSED__,
+          const char *emission __UNUSED__,
+          const char *source __UNUSED__)
+{
+   if (sdata.setup) sdata.setup(sdata.data);
 }
 
 Evas_Object *
@@ -54,6 +74,9 @@ splash_add(Evas_Object *parent, Splash_Cb setup, Splash_Cb teardown, void *data)
    BUTTON_ADD(sdata.win, bt, "Cancel");
    elm_object_content_set(sdata.win, bt);
    evas_object_smart_callback_add(bt, "clicked", _on_splash_close, NULL);
+
+   elm_layout_signal_callback_add(sdata.win, "setup", "eflete", _on_setup, NULL);
+   elm_layout_signal_callback_add(sdata.win, "teardown", "eflete", _on_teardown, NULL);
 
    return sdata.win;
 }

@@ -591,6 +591,7 @@ group { name: "elm/win/inwin/splash";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             max: 72 -1;
+            fixed: 1 1;
             rel1.to: "area.info";
             rel2.to: "area.info";
          }
@@ -599,6 +600,7 @@ group { name: "elm/win/inwin/splash";
          type: TEXT;
          description { state: "default" 0.0;
             visible: 0;
+            fixed: 1 1;
             rel1.to: "area.info";
             rel2 {
                relative: 0.0 1.0;
@@ -876,10 +878,10 @@ group { name: "elm/win/inwin/splash";
          after: "emit_start";
       }
       program { name: "emit_start";
-         action: SIGNAL_EMIT "start" "eflete";
+         action: SIGNAL_EMIT "setup" "eflete";
       }
       program { name: "teardown";
-         signal: "teardown";
+         signal: "end";
          source: "eflete";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.3;

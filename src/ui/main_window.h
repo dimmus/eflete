@@ -342,6 +342,7 @@ code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
  * @ingroup Window
  */
 Evas_Object *
-splash_add(Evas_Object *parent, Splash_Cb setup, Splash_Cb teardown, void *data);
+splash_add(Evas_Object *parent, Splash_Cb setup,
+           Splash_Cb teardown, void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 #endif /* UI_MAIN_WINDOW_H */
