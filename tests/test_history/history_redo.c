@@ -1257,6 +1257,207 @@ END_TEST
  * @{
  * <tr>
  * <td>history_redo</td>
+ * <td>history_redo_test_p17</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Store diff with using history_diff_add function.
+ * @step 10 Delete part with name "elm.text".
+ * @step 11 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_redo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that part "elm.text" not exist.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p17)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   char *path;
+
+   path = "./edj_build/history_redo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   history_diff_add(style->obj, PART_TARGET, DEL, "elm.text");
+   edje_edit_part_del(style->obj, "elm.text");
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to restore diff with target type PART_TARGET"
+                 " with DEL action.");
+   result = edje_edit_part_exist(style->obj, "elm.text");
+   ck_assert_msg(!result, "Deleting part didn't repeated");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
+ * <td>history_redo_test_p18</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 ADD part with name "part_add" with type RECT.
+ * @step 10 Store diff with using history_diff_add function.
+ * @step 11 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_redo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that part "part_add" is exist.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p18)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   char *path;
+
+   path = "./edj_build/history_redo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   edje_edit_part_add(style->obj, "part_add", EDJE_PART_TYPE_RECTANGLE);
+   history_diff_add(style->obj, PART_TARGET, ADD, "part_add");
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to restore diff with target type PART_TARGET"
+                 " with ADD action.");
+   result = edje_edit_part_exist(style->obj, "part_add");
+   ck_assert_msg(result, "Adding part didn't restored");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
+ * <td>history_redo_test_p19</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Store diff with using history_diff_add function.
+ * @step 10 Restack below part with name "radio".
+ * @step 11 Store part name, that below part "radio".
+ * @step 12 Cancel change with history_undo function.
+ *
+ * @procedure
+ * @step 1 Call history_redo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that part "radio" is below part, name of that was stored at step 11.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_redo_test_p19)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Eina_Stringshare *below = NULL, *check = NULL;
+   char *path;
+
+   path = "./edj_build/history_redo.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_open_project_edj(path);
+   wm_widget_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win), path);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   history_diff_add(style->obj, PART_TARGET, RESTACK, "radio");
+   edje_edit_part_restack_below(style->obj, "part_add");
+   below = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
+   history_undo(style->obj, 1);
+
+   result = history_redo(style->obj, 1);
+   ck_assert_msg(result, "Failed to restore diff with target type PART_TARGET"
+                 " with RESTACK action.");
+   check = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
+   ck_assert_msg(check == below, "Restack part didn't restored");
+
+   history_term(app->history);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_redo
+ * @{
+ * <tr>
+ * <td>history_redo</td>
  * <td>history_redo_test_n1</td>
  * <td>
  * @precondition
