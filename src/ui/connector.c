@@ -651,79 +651,27 @@ ui_style_clicked(App_Data *ap, Style *style)
    return true;
 }
 
-/*
-static Eina_Bool
-_ui_edj_load_internal(App_Data* ap, const char *selected_file, Eina_Bool is_new)
+Eina_Bool
+blocks_show(App_Data *ap)
 {
-   Evas_Object *wd_list = NULL;
-   char *selected;
-
-   if ((!ap) || (!selected_file)) return false;
-
-   if (ap->project)
-     {
-        ui_property_style_unset(ui_block_property_get(ap));
-        ui_states_list_data_unset(ui_block_state_list_get(ap));
-        ui_signal_list_data_unset(ui_block_signal_list_get(ap));
-        //pm_project_close(ap->project);
-     }
-   if (ap->live_view) live_view_widget_style_unset(ap->live_view);
-   if (ap->workspace)
-     {
-        workspace_edit_object_unset(ap->workspace);
-        workspace_highlight_unset(ap->workspace);
-     }
-
-   selected = eina_file_path_sanitize(selected_file);
-   INFO("Selected file: %s", selected);
-
-   //ap->project = pm_open_project_edj(selected);
-
-   if (!ap->project)
-     {
-        NOTIFY_ERROR(_("Can't open file: %s"), selected);
-        return false;
-     }
+   Evas_Object *wd_list;
 
    wd_list = ui_widget_list_add(ap->block.left_top);
-   //ui_widget_list_title_set(wd_list, ap->project->name);
+   ui_widget_list_title_set(wd_list, ap->project->name);
    ui_widget_list_data_set(wd_list, ap->project);
    ui_block_widget_list_set(ap, wd_list);
    add_callbacks_wd(wd_list, ap);
-   evas_object_show(wd_list);
    ui_panes_show(ap);
-
-   //ap->project->is_new = is_new;
-   if (is_new)
-     {
-        NOTIFY_INFO(3, _("New theme created"))
-        STATUSBAR_PROJECT_PATH(ap, _("Unsaved project"));
-        //ap->project->edj = NULL;
-     }
-   else
-     {
-        //STATUSBAR_PROJECT_PATH(ap, ap->project->edj);
-        NOTIFY_INFO(3, _("Selected file: %s"), selected)
-     }
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
    ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
    ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
    ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
 
-   free(selected);
-
    code_edit_mode_switch(ap, false);
 
    return true;
 }
-
-Eina_Bool
-ui_edj_load(App_Data* ap, const char *selected_file)
-{
-   return _ui_edj_load_internal(ap, selected_file, false);
-}
-*/
 
 Eina_Bool
 new_theme_create(App_Data *ap __UNUSED__)

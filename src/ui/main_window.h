@@ -355,4 +355,16 @@ splash_add(Evas_Object *parent, Splash_Cb setup,
 void
 splash_del(Evas_Object *obj);
 
+/**
+ * Show the main layout blocks.
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+blocks_show(App_Data *ap);
+
 #endif /* UI_MAIN_WINDOW_H */
