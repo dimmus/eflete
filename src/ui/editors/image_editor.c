@@ -1019,7 +1019,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.grid", img_edit->gengrid);
    elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_align_set(img_edit->gengrid, 0.5, 0.0);
+   elm_gengrid_align_set(img_edit->gengrid, 0.0, 0.0);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
 
