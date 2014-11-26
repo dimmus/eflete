@@ -179,6 +179,7 @@ _project_files_create(Project_Thread *worker)
    THREAD_TESTCANCEL;
    pro = (Project *)mem_malloc(sizeof(Project));
    WORKER_LOCK_TAKE;
+      pro->name = eina_stringshare_add(worker->name);
       pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker->name);
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
       pro->release_path = eina_stringshare_printf("%s/release", folder_path);
@@ -198,6 +199,7 @@ _project_files_create(Project_Thread *worker)
    if (error)
      {
         ERR("Could't create a .pro file! ")
+        eina_stringshare_del(pro->name);
         eina_stringshare_del(pro->dev);
         eina_stringshare_del(pro->develop_path);
         eina_stringshare_del(pro->release_path);
@@ -638,6 +640,7 @@ pm_project_close(Project *project)
    ecore_file_remove(backup);
 
    eet_close(project->pro);
+   eina_stringshare_del(project->name);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
    eina_stringshare_del(project->release_path);
