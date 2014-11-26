@@ -88,11 +88,20 @@ _on_export_to_edc(void *data __UNUSED__,
 }
 
 static void
-_on_close_project(void *data __UNUSED__,
+_on_close_project(void *data,
                   Evas_Object *obj __UNUSED__,
                   void *event_info __UNUSED__)
 {
+   App_Data *ap;
 
+   ap = (App_Data *)data;
+   if (!ap->project) return;
+
+   pm_project_close(ap->project);
+   blocks_hide(ap);
+   ui_menu_base_disabled_set(ap->menu_hash, true);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
+   ui_menu_disable_set(ap->menu_hash, _("Close project"), true);
 }
 
 static void
