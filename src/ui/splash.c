@@ -80,3 +80,9 @@ splash_add(Evas_Object *parent, Splash_Cb setup, Splash_Cb teardown, void *data)
 
    return sdata.win;
 }
+
+void
+splash_del(Evas_Object *obj)
+{
+   elm_layout_signal_emit(obj, "end", "eflete");
+}

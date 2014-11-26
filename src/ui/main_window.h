@@ -345,4 +345,14 @@ Evas_Object *
 splash_add(Evas_Object *parent, Splash_Cb setup,
            Splash_Cb teardown, void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
+/**
+ * Delete the splash window. Before delete will be played the close animation.
+ *
+ * @param obj The splash object.
+ *
+ * @ingroup Window
+ */
+void
+splash_del(Evas_Object *obj);
+
 #endif /* UI_MAIN_WINDOW_H */
