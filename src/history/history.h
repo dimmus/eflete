@@ -166,6 +166,8 @@ enum _Target
                       state in part*/
    STATE_TARGET, /**< This type of change happens with state of part.
                       It can be add new state, or delete already exists state.*/
+   PART_TARGET, /**< This type of change happens with part. It can be add new
+                     part, or delete already exist, or restack.*/
    LAST_TARGET
 };
 
@@ -392,7 +394,20 @@ history_module_del(Evas_Object *source);
  *                    "elm.text", "selected", 0.0, "create state");
  *    ...
  * </pre>
- **
+ * --------------------------------------------------------------------------
+ * In case when you want to add change for module with type PART_TARGET.
+ *
+ *   Case when new part is added:
+ *
+ *   history_diff_add(source, PART_TARGET, ADD, part name);
+ *
+ *   Case when part is deleted:
+ *
+ *   history_diff_add(source, PART_TARGET, DEL, part name);
+ *
+ *   Case when part is restacked:
+ *
+ *   history_diff_add(source, PART_TARGET, RESTACK, part name);
  *
  * @ingroup History
  */
