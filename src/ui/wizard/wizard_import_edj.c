@@ -18,10 +18,12 @@
  */
 
 #include "wizard.h"
+#include "main_window.h"
 
 struct _Wizard_Import_Edj_Win
 {
    Evas_Object *win;
+   Evas_Object *splash;
    Evas_Object *name;
    Evas_Object *path;
    Evas_Object *edj;
@@ -99,6 +101,21 @@ FUNC(void *data, \
 FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, false, path)
 FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, true, edj)
 
+static void
+_on_apply(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   App_Data *ap;
+   Wizard_Import_Edj_Win *wiew;
+
+   ap = app_data_get();
+   wiew = (Wizard_Import_Edj_Win *)data;
+   wiew->splash = splash_add(ap->win, NULL, NULL, NULL);
+   evas_object_focus_set(wiew->splash, true);
+   evas_object_show(wiew->splash);
+}
+
 Evas_Object *
 wizard_import_edj_add(App_Data *ap __UNUSED__)
 {
@@ -120,6 +137,7 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
 
    BUTTON_ADD(layout, bt, _("Apply"))
    elm_object_part_content_set(layout, "swallow.button1", bt);
+   evas_object_smart_callback_add(bt, "clicked", _on_apply, wiew);
    BUTTON_ADD(layout, bt, _("Cancel"))
    elm_object_part_content_set(layout, "swallow.button2", bt);
    evas_object_smart_callback_add(bt, "clicked", _on_cancel, wiew);

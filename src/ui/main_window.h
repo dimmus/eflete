@@ -48,6 +48,9 @@
 #include "style_dialog.h"
 #include "colorsel.h"
 
+typedef Eina_Bool
+(* Splash_Cb)(void *data);
+
 /**
  * Adds main window object for Edje tool development.
  *
@@ -325,5 +328,20 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap);
  */
 Eina_Bool
 code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
+
+/**
+ * The splash window with animation and info line.
+ *
+ * @param parent The parent widget, MUST be a window;
+ * @param setup Callback will be be called on splash window show;
+ * @param teardown Callback will be called on "Cancel" button click;
+ * @param data User data.
+ *
+ * @return The splash window object.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+splash_add(Evas_Object *parent, Splash_Cb setup, Splash_Cb teardown, void *data);
 
 #endif /* UI_MAIN_WINDOW_H */
