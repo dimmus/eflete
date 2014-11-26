@@ -33,6 +33,9 @@ _diff_free(Diff *diff)
       case STATE_TARGET:
          _state_change_free((State_Diff *)diff);
       break;
+      case PART_TARGET:
+         _part_change_free((Part_Diff *)diff);
+      break;
       default:
          ERR("Unsupported module type in diff attributes. This should never happens");
          return false;
@@ -169,6 +172,9 @@ history_redo(Evas_Object *source, int count)
       case STATE_TARGET:
          result = _state_redo(module->target, (State_Diff *)diff);
       break;
+      case PART_TARGET:
+         result = _part_redo(module->target, (Part_Diff *)diff);
+      break;
       default:
          ERR("Unsupported module type, that store diff");
          return false;
@@ -206,6 +212,9 @@ history_undo(Evas_Object *source, int count)
       break;
       case STATE_TARGET:
          result = _state_undo(module->target, (State_Diff *)diff);
+      break;
+      case PART_TARGET:
+         result = _part_undo(module->target, (Part_Diff *)diff);
       break;
       default:
          ERR("Unsupported module type: %d", diff->module_type);
