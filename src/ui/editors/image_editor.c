@@ -517,33 +517,33 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
 static void
 _on_image_done(void *data,
                Evas_Object *obj,
-               void *event_info)
+               void *event_info __UNUSED__)
 {
    Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
-   const char *selected = event_info;
-
-   if ((!data) || (!selected) || (!strcmp(selected, "")))
-     {
-        ecore_main_loop_quit();
-        return;
-     }
+   const Eina_List *images, *l;
+   const char *selected;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
+   images = elm_fileselector_selected_paths_get(obj);
 
-   if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
+   EINA_LIST_FOREACH(images, l, selected)
      {
-        if (!edje_edit_image_add(edje_edit_obj, selected))
+        fprintf(stdout, "selected %s\n", selected);
+        if (!ecore_file_exists(selected))
           {
-             WIN_NOTIFY_ERROR(obj,
-                              _("Error while loading file.<br>"
-                                "Please check if file is image"
-                                "or/and file is accessible."));
-             return;
+             WIN_NOTIFY_ERROR(obj, _("File not exist"));
+             continue;
           }
-        else
+        if (ecore_file_is_dir(selected))
+          {
+             WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
+             continue;
+          }
+        fprintf(stdout, "selected %s\n", selected);
+        if (edje_edit_image_add(edje_edit_obj, selected))
           {
              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
                                                          ecore_file_file_get(selected));
@@ -552,11 +552,6 @@ _on_image_done(void *data,
                                             _grid_sel, img_edit);
              pm_project_changed(app_data_get()->project);
           }
-     }
-   else
-     {
-        WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
-        return;
      }
 
    ecore_main_loop_quit();
@@ -576,6 +571,7 @@ _on_button_add_clicked_cb(void *data,
    elm_win_resize_object_add(win, bg);
 
    FILESELECTOR_ADD(fs, win, _on_image_done, data);
+   elm_fileselector_multi_select_set(fs, true);
    elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
