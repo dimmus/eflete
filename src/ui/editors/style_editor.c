@@ -1051,7 +1051,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 #define STEP_SP 1.0
 
 #define COMBO_ADD(VALUE) \
-EWE_COMBOBOX_ADD(layout, widget); \
+EWE_COMBOBOX_ADD(style_edit->mwin, widget); \
 evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_edit);
 
 #define STYLE_ADD(VALUE) \
