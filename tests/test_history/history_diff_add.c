@@ -828,6 +828,174 @@ END_TEST
  * @{
  * <tr>
  * <td>history_diff_add</td>
+ * <td>history_diff_add_test_p14</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add with correct data for target type PART_TARGET and
+ *         action type ADD.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PART_TARGET, ADD, (const char *)"new_part"</td>
+ * <td>EINA_TRUE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_p14)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PART_TARGET, ADD, "new_part");
+   ck_assert_msg(result, "Failed to add new diff from PART_TARGET module with"
+                         " action type ADD in the history of module.");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
+ * <td>history_diff_add_test_p15</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add with correct data for target type PART_TARGET and
+ *         action type DEL.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PART_TARGET, DEL, (const char *)"bg"</td>
+ * <td>EINA_TRUE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_p15)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PART_TARGET, DEL, "bg");
+   ck_assert_msg(result, "Failed to add new diff from PART_TARGET module with"
+                         " action type DEL in the history of module.");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
+ * <td>history_diff_add_test_p16</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add with correct data for target type PART_TARGET and
+ *         action type RESTACK.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PART_TARGET, RESTACK, (const char *)"bg"</td>
+ * <td>EINA_TRUE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_p16)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PART_TARGET, RESTACK, "bg");
+   ck_assert_msg(result, "Failed to add new diff from PART_TARGET module with"
+                         " action type RESTACK in the history of module.");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
  * <td>history_diff_add_test_n1</td>
  * <td>
  * @precondition
@@ -1394,6 +1562,62 @@ EFLETE_TEST(history_diff_add_test_n10)
                              "bg", "new_state", 0.0, "create state");
    ck_assert_msg(!result, "Added new diff from STATE_TARGET module with"
                          " action type RENAME in the history of module.");
+
+   history_term(app->history);
+   evas_free(canvas);
+   app_shutdown();
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_diff_add
+ * @{
+ * <tr>
+ * <td>history_diff_add</td>
+ * <td>history_diff_add_test_n11</td>
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize history module.
+ * @step 4 Create canvas, that needed for creating source object.
+ * @step 5 Create edje edit object, that will be source of changes.
+ * @step 6 Register in history object created at step 5, as module.
+ *
+ * @procedure
+ * @step 1 Call history_diff_add with wrong action type (MODIFY) for
+ *         target type PART_TARGET.
+ * @step 2 Check returned value.
+ * </td>
+ * <td>(Evas_Object *) source, PART_TARGET, MODIFY, (const char *)"bg"</td>
+ * <td>EINA_FALSE value returned</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_diff_add_test_n11)
+{
+   App_Data *app = NULL;
+   Evas *canvas = NULL;
+   Evas_Object *source = NULL;
+   Eina_Bool result = EINA_FALSE;
+   const char *path;
+
+   path = "./edj_build/history_diff_add.edj";
+   elm_init(0, 0);
+   app_init();
+   app = app_data_get();
+   app->history = history_init();
+   canvas = evas_new();
+   source = edje_edit_object_add(canvas);
+   edje_object_file_set(source, path, "elm/radio/base/def");
+   history_module_add(source);
+
+   result = history_diff_add(source, PART_TARGET, MODIFY, "bg");
+   ck_assert_msg(!result, "Add new diff for PART_TARGET module with"
+                         " action type MODIFY in the history of module.");
 
    history_term(app->history);
    evas_free(canvas);
