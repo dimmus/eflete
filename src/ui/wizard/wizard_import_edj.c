@@ -57,6 +57,18 @@ _fs_close(void *data __UNUSED__,
    evas_object_del(obj);
 }
 
+static Eina_Bool
+_edje_filter(const char *path,
+             Eina_Bool dir,
+             void *data __UNUSED__)
+{
+   if (dir) return true;
+
+   if (eina_str_has_extension(path, ".edj"))
+     return true;
+   return false;
+}
+
 #define FILESELCTOR_WINDOW(FUNC, TITLE, FOLDER_ONLY, FILTER, FIELD) \
 static void \
 FUNC##_done(void *data, \
@@ -94,7 +106,7 @@ FUNC(void *data, \
    elm_fileselector_folder_only_set(fs, FOLDER_ONLY); \
    path = elm_entry_entry_get(wiew->FIELD); \
    if ((path) && (ecore_file_is_dir(path))) elm_fileselector_path_set(fs, path); \
-   if (FILTER) elm_fileselector_mime_types_filter_append(fs, "binary", "Edje Files"); \
+   if (FILTER) elm_fileselector_custom_filter_append(fs, _edje_filter, NULL, "Edje Files"); \
    elm_win_resize_object_add(wiew->fs, fs); \
 } \
 
