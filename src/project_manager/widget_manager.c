@@ -357,8 +357,9 @@ wm_style_add(const char* style_name, const char* full_group_name,
 Eina_Bool
 wm_style_free(Style *style)
 {
-   Part *part = NULL;
-   Eina_List *alias_node = NULL;
+   Style *aliassed;
+   Part *part;
+   Eina_List *alias_node, *ll;
    Eina_Inlist *l = NULL;
 
    if (!style) return false;
@@ -367,12 +368,22 @@ wm_style_free(Style *style)
      style->parent->styles = eina_inlist_remove(style->parent->styles,
                                               EINA_INLIST_GET(style));
 
+   if (style->aliasses)
+     {
+         EINA_LIST_FOREACH(style->aliasses, ll, aliassed)
+           {
+              aliassed->main_group = NULL;
+           }
+     }
+
    if (style->isAlias)
      {
-         alias_node = eina_list_data_find_list(style->main_group->aliasses, style);
-         if (alias_node)
-           style->main_group->aliasses = eina_list_remove_list(
-                             style->main_group->aliasses, alias_node);
+        if (style->main_group)
+          {
+             alias_node = eina_list_data_find_list(style->main_group->aliasses, style);
+             if (alias_node)
+               style->main_group->aliasses = eina_list_remove_list(style->main_group->aliasses, alias_node);
+          }
      }
 
    EINA_INLIST_FOREACH_SAFE(style->parts, l, part)
