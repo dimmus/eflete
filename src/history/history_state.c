@@ -24,6 +24,7 @@ typedef struct _State_Params State_Params;
 typedef struct _Description_Fill Description_Fill;
 typedef struct _Description_Image Description_Image;
 typedef struct _Description_Text Description_Text;
+typedef struct _Description_Textblock Description_Textblock;
 /**
  * @struct _State_Diff
  *
@@ -99,6 +100,17 @@ struct _Description_Text
    int            size_range_max; /* -1 means, no bound. */
 };
 
+struct _Description_Textblock
+{
+   Eina_Stringshare *text;
+   Eina_Stringshare *style; /*current used textblock style*/
+
+   unsigned char  min_x; /* if textblock size should be part min size */
+   unsigned char  min_y; /* if textblock size should be part min size */
+   unsigned char  max_x; /* if textblock size should be part max size */
+   unsigned char  max_y; /* if textblock size should be part max size */
+};
+
 struct _State_Params
 {
    Eina_Stringshare *name; /* the named state if any */
@@ -138,6 +150,7 @@ struct _State_Params
    } rel1, rel2;
    union {
       Description_Text text;
+      Description_Textblock textblock;
       Description_Image image;
    };
 };
@@ -319,6 +332,20 @@ _state_params_save(Evas_Object *obj, const char *part, const char *state,
          state_diff->text.max_y =
             edje_edit_state_text_max_y_get(obj, part, state, value);
 
+      break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         state_diff->textblock.text =
+            eina_stringshare_add(edje_edit_state_text_get(obj, part, state, value));
+         state_diff->textblock.style =
+            edje_edit_state_text_style_get(obj, part, state, value);
+         state_diff->textblock.min_x =
+            edje_edit_state_text_min_x_get(obj, part, state, value);
+         state_diff->textblock.min_y =
+            edje_edit_state_text_min_y_get(obj, part, state, value);
+         state_diff->textblock.max_x =
+            edje_edit_state_text_max_x_get(obj, part, state, value);
+         state_diff->textblock.max_y =
+            edje_edit_state_text_max_y_get(obj, part, state, value);
       break;
       default:
       break;
@@ -513,6 +540,25 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
          edje_edit_state_text_max_y_set(obj, part, state_diff->name,
                                         state_diff->value,
                                         state_diff->text.max_y);
+      break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         edje_edit_state_text_set(obj, part, state_diff->name,
+                                  state_diff->value, state_diff->textblock.text);
+         edje_edit_state_text_style_set(obj, part, state_diff->name,
+                                        state_diff->value,
+                                        state_diff->textblock.style);
+         edje_edit_state_text_min_x_set(obj, part, state_diff->name,
+                                        state_diff->value,
+                                        state_diff->textblock.min_x);
+         edje_edit_state_text_min_y_set(obj, part, state_diff->name,
+                                        state_diff->value,
+                                        state_diff->textblock.min_y);
+         edje_edit_state_text_max_x_set(obj, part, state_diff->name,
+                                        state_diff->value,
+                                        state_diff->textblock.max_x);
+         edje_edit_state_text_max_y_set(obj, part, state_diff->name,
+                                        state_diff->value,
+                                        state_diff->textblock.max_y);
       break;
       default:
       break;
