@@ -32,6 +32,7 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *meta_licenses;
    Evas_Object *meta_comment;
    Evas_Object *fs;
+   Project_Thread *thread;
 };
 
 typedef struct _Wizard_Import_Edj_Win Wizard_Import_Edj_Win;
@@ -113,17 +114,67 @@ FUNC(void *data, \
 FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, false, path)
 FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, true, edj)
 
+/************************** Project import functions **************************/
+
 static Eina_Bool
-_setup(void *data __UNUSED__)
+_progress_print(void *data, Eina_Stringshare *progress_string)
 {
+   Wizard_Import_Edj_Win *wiew;
+
+   wiew = (Wizard_Import_Edj_Win *)data;
+   elm_object_text_set(wiew->splash, progress_string);
+
+   return true;
+}
+
+static void
+_progress_end(void *data, PM_Project_Result result)
+{
+   Wizard_Import_Edj_Win *wiew;
+   Project *pro;
+   App_Data *ap;
+
+   wiew = (Wizard_Import_Edj_Win *)data;
+   ap = app_data_get();
+
+   if (result != PM_PROJECT_SUCCESS) goto close;
+
+   pro = pm_project_thread_project_get(wiew->thread);
+   ap->project = pro;
+   blocks_show(ap);
+
+close:
+   splash_del(wiew->splash);
+}
+
+static Eina_Bool
+_setup_splash(void *data __UNUSED__)
+{
+   Wizard_Import_Edj_Win *wiew;
+
+   wiew = (Wizard_Import_Edj_Win *)data;
+   wiew->thread = pm_project_import_edj(elm_entry_entry_get(wiew->name),
+                                        elm_entry_entry_get(wiew->path),
+                                        elm_entry_entry_get(wiew->edj),
+                                        _progress_print,
+                                        _progress_end,
+                                        wiew);
+
    return true;
 }
 
 static Eina_Bool
-_teardown(void *data __UNUSED__)
+_teardown_splash(void *data __UNUSED__)
 {
+   Wizard_Import_Edj_Win *wiew;
+
+   wiew = (Wizard_Import_Edj_Win *)data;
+   evas_object_del(wiew->win);
+
    return true;
 }
+
+/******************************************************************************/
 
 static void
 _on_apply(void *data,
@@ -135,7 +186,7 @@ _on_apply(void *data,
 
    ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
-   wiew->splash = splash_add(ap->win, _setup, _teardown, wiew);
+   wiew->splash = splash_add(ap->win, _setup_splash, _teardown_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
 }

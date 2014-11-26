@@ -294,6 +294,10 @@ _project_import_edj(void *data,
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
    _copy_meta_data_to_pro(worker);
+   WORKER_LOCK_TAKE;
+      worker->project->widgets = wm_widgets_list_new(worker->project->dev);
+      worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+   WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
 
@@ -422,6 +426,10 @@ _project_import_edc(void *data,
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
    _copy_meta_data_to_pro(worker);
+   WORKER_LOCK_TAKE;
+      worker->project->widgets = wm_widgets_list_new(worker->project->dev);
+      worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+   WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
    return NULL;
