@@ -149,6 +149,7 @@ enum _Action
    MODIFY,  /**< Usaly it indicate that modifing attributes of part or state. */
    HLIGHT, /**< This action mean, that changed two params, whith using differents
                    function. For this case needed special logic to manage changes*/
+   RESTACK, /**< This action needed for manage parts restack */
    LAST_ACTION
 };
 

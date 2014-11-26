@@ -360,6 +360,9 @@ history_diff_add(Evas_Object *source, Target target, ...)
       case STATE_TARGET:
          change = _state_change_new(list, module->target);
       break;
+      case PART_TARGET:
+         change = _part_change_new(list, module->target);
+      break;
       default:
          ERR("Unsupported target");
          va_end(list);
