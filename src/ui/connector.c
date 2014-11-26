@@ -674,6 +674,12 @@ blocks_show(App_Data *ap)
 }
 
 Eina_Bool
+blocks_hide(App_Data *ap)
+{
+   return ui_panes_hide(ap);
+}
+
+Eina_Bool
 new_theme_create(App_Data *ap __UNUSED__)
 {
    /*

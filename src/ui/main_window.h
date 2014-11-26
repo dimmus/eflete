@@ -367,4 +367,17 @@ splash_del(Evas_Object *obj);
 Eina_Bool
 blocks_show(App_Data *ap);
 
+/**
+ * Hide the main layout blocks.
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+blocks_hide(App_Data *ap);
+
+
 #endif /* UI_MAIN_WINDOW_H */
