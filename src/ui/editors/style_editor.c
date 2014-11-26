@@ -422,22 +422,11 @@ _on_tag_add_bt_ok(void *data,
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name = elm_object_item_data_get(style_edit->tag);
    const char *tag_name = elm_entry_entry_get(POPUP.name);
-   const char *tag_value = elm_entry_entry_get(POPUP.value);
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if ((!tag_name) || (strcmp(tag_name, "") == 0))
      {
         NOTIFY_WARNING(_("Tag name can not be empty!"));
-        return;
-     }
-   if ((!tag_value) || (strcmp(tag_value, "") == 0))
-     {
-        NOTIFY_WARNING(_("Tag value can not be empty!"));
-        return;
-     }
-   if (!((isalpha(tag_value[0])) || (tag_value[0] == '+')))
-     {
-        NOTIFY_WARNING(_("Tag value must begin from + or alphabetic symbol"));
         return;
      }
    if (!edje_edit_style_tag_add(edje_edit_obj, style_name, tag_name))
@@ -446,8 +435,7 @@ _on_tag_add_bt_ok(void *data,
         return;
      }
    else
-     if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, tag_name,
-                                        tag_value))
+     if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, tag_name, ""))
        {
           NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag_name);
@@ -549,15 +537,6 @@ _on_bt_tag_add(Style_Editor *style_edit)
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
-   elm_box_pack_end(box, item);
-
-   ITEM_ADD(box, item, "Tag value:", "eflete/property/item/default")
-   EWE_ENTRY_ADD(box, POPUP.value, true, DEFAULT_STYLE);
-   elm_object_part_text_set(POPUP.value, "guide",
-                            _("Type tag with be using as default."));
-   elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
-                                  &accept_value);
-   elm_object_part_content_set(item, "elm.swallow.content", POPUP.value);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(POPUP.dialog, box);
