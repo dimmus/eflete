@@ -447,7 +447,12 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
    img = edje_edit_state_image_get(sd->edit_obj, part, "default", 0.0);
    edje_edit_state_image_set(sd->edit_obj, part, state, value, img);
 
-   if (ret) evas_object_smart_changed(sd->obj);
+   if (ret)
+     {
+        evas_object_smart_changed(sd->obj);
+        history_diff_add(sd->edit_obj, STATE_TARGET, ADD, "unsued", part, state,
+                         value, "state");
+     }
    return ret;
 }
 
@@ -467,7 +472,13 @@ groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
    img = edje_edit_state_image_get(sd->edit_obj, part, state_from, value_from);
    edje_edit_state_image_set(sd->edit_obj, part, state_to, value_to, img);
 
-   if (ret) evas_object_smart_changed(sd->obj);
+   if (ret)
+     {
+        evas_object_smart_changed(sd->obj);
+        history_diff_add(sd->edit_obj, STATE_TARGET, ADD, "unused", part, state_to,
+                         value_to, "state");
+     }
+
    return ret;
 }
 
@@ -479,6 +490,8 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if ((!part) || (!state)) return false;
 
+   history_diff_add(sd->edit_obj, STATE_TARGET, DEL, "unused", part, state, value,
+                    "state");
    ret = edje_edit_state_del(sd->edit_obj, part, state, value);
 
    evas_object_smart_changed(sd->obj);
