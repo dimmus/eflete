@@ -184,6 +184,7 @@ _project_files_create(Project_Thread *worker)
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
       pro->release_path = eina_stringshare_printf("%s/release", folder_path);
       pro->release_options = NULL;
+      pro->changed = false;
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
    WORKER_LOCK_RELEASE;
@@ -501,6 +502,7 @@ pm_project_open(const char *path)
 
    project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
+   project->changed = false;
 
    if (!project) goto error;
    project->pro = ef;
@@ -656,9 +658,9 @@ pm_project_close(Project *project)
 }
 
 void
-pm_project_changed(Project *project __UNUSED__)
+pm_project_changed(Project *project)
 {
-   //project->is_saved = false;
+   project->changed = true;
 }
 
 void

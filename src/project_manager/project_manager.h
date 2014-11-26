@@ -71,6 +71,8 @@ struct _Project
    Eina_Inlist *layouts;
 
    Eina_List *added_sounds;
+
+   Eina_Bool changed;
 };
 
 /**
