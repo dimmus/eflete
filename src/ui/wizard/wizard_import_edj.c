@@ -194,11 +194,18 @@ _on_apply(void *data,
 }
 
 Evas_Object *
-wizard_import_edj_add(App_Data *ap __UNUSED__)
+wizard_import_edj_add(App_Data *ap)
 {
    Evas_Object *mwin, *layout;
    Evas_Object *bt;
    Wizard_Import_Edj_Win *wiew;
+
+   if ((ap->project) && (!project_close_request(ap,
+                              _("You want to import edj as project, but now you have<br/>"
+                                "opened project. If you dont save opened project<br/>"
+                                "all your changes will be lost!"))))
+     return NULL;
+
 
    wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
 

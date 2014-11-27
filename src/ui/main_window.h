@@ -414,4 +414,17 @@ project_save();
 void
 project_changed(void);
 
+/**
+ * Dialog with qustion what do with openned project.
+ *
+ * @param ap The Eflete App_Data.
+ * @param msg The message.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+project_close_request(App_Data *ap, const char *msg);
+
 #endif /* UI_MAIN_WINDOW_H */

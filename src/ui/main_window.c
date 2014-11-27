@@ -37,18 +37,11 @@ _on_done(void *data,
 Eina_Bool
 ui_main_window_del(App_Data *ap)
 {
-   if (!ap)
-     {
-        ERR("ap is NULL");
-         return false;
-     }
-   /*
-   if (!ui_close_project_request(ap,
+   if ((ap->project) && (!project_close_request(ap,
                                  _("You want to close Eflete, but now you have<br/>"
                                    "opened project. If you dont save opened project<br/>"
-                                   "all your changes will be lost!")))
+                                   "all your changes will be lost!"))))
      return false;
-   */
 
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(ap, false);

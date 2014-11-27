@@ -741,6 +741,15 @@ void
 project_open(void)
 {
    Evas_Object *win, *fs, *bg;
+   App_Data *ap;
+
+   ap = app_data_get();
+   if ((ap->project) && (!project_close_request(ap,
+                              _("You want to open a project, but now you have<br/>"
+                                "opened project. If you dont save opened project<br/>"
+                                "all your changes will be lost!"))))
+     return;
+
 
    MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, NULL);
    bg = elm_bg_add(win);
@@ -893,16 +902,13 @@ _save_cb(void *data,
          void *ei __UNUSED__)
 {
    Eina_Bool *res = data;
-   if (save_edj_file(app_data_get()))
-     {
-        *res = true;
-        ecore_main_loop_quit();
-     }
+   project_save();
+   *res = true;
+   ecore_main_loop_quit();
 }
 
 Eina_Bool
-project_close_request(App_Data *ap __UNUSED__,
-                      const char *msg __UNUSED__)
+project_close_request(App_Data *ap, const char *msg)
 {
    if (!msg)
       msg = _("If you dont save the open project<br/>"
