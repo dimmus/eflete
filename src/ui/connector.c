@@ -664,7 +664,7 @@ blocks_show(App_Data *ap)
    ui_panes_show(ap);
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
    ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
    ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
    ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
@@ -813,9 +813,22 @@ project_save(void)
    ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
 }
 
 /******************************************************************************/
+
+void
+project_changed(void)
+{
+   App_Data *ap;
+
+   ap = app_data_get();
+
+   if (ap->project->changed) return;
+   pm_project_changed(ap->project);
+   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
+}
 
 Eina_Bool
 new_theme_create(App_Data *ap __UNUSED__)

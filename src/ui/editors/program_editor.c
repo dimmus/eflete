@@ -1666,7 +1666,7 @@ _on_editor_save(void *data,
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
    edje_edit_without_source_save(style->obj, true);
-   pm_project_changed(ap->project);
+   project_changed();
 }
 
 static void

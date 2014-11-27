@@ -547,7 +547,7 @@ _on_image_done(void *data,
              elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
-             pm_project_changed(app_data_get()->project);
+             project_changed();
           }
      }
    else
@@ -625,7 +625,7 @@ _on_button_delete_clicked_cb(void *data,
           }
      }
    if (notdeleted < images_to_del)
-     pm_project_changed(app_data_get()->project);
+     project_changed();
    if (notdeleted == 1)
      {
         name = eina_list_nth(in_use, 0);

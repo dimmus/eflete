@@ -1274,7 +1274,7 @@ _add_tone_done(void *data,
         snd->name = eina_stringshare_add(str_name);
         snd->is_saved = false;
         edit->pr->added_sounds = eina_list_append(edit->pr->added_sounds, snd);
-        pm_project_changed(app_data_get()->project);
+        project_changed();
      }
 
    ecore_job_add(_popup_close, edit);
@@ -1392,7 +1392,7 @@ _on_delete_clicked_cb(void *data,
    }
 
    if (deleted)
-     pm_project_changed(app_data_get()->project);
+     project_changed();
 }
 
 ITEM_SEARCH_FUNC(gengrid)

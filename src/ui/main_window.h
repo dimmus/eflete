@@ -395,5 +395,12 @@ project_open();
 void
 project_save();
 
+/**
+ * Mark the opened project as changed, and activate "Save project" button.
+ *
+ * @ingroup Window
+ */
+void
+project_changed(void);
 
 #endif /* UI_MAIN_WINDOW_H */
