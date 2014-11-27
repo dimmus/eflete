@@ -173,6 +173,10 @@ _teardown_splash(void *data __UNUSED__)
    wiew = (Wizard_Import_Edj_Win *)data;
    evas_object_del(wiew->win);
 
+   NOTIFY_INFO(3, _("File '%s' imported as project '%s'"),
+               elm_entry_entry_get(wiew->edj),
+               elm_entry_entry_get(wiew->name));
+
    return true;
 }
 

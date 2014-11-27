@@ -735,6 +735,7 @@ _on_open_done(void *data,
    blocks_show(ap);
 
    evas_object_del(win);
+   NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
 }
 
 void
