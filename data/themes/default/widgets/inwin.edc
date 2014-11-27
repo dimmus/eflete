@@ -581,13 +581,26 @@ group { name: "elm/win/inwin/splash";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 1.0;
-            max: -1 26;
+            max: -1 30;
             rel1.to: "area.content";
             rel2.to: "area.content";
          }
       }
+      part { name: "clipper.area.info";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "area.info";
+            rel2.to: "area.info";
+            max: 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            max: -1 -1;
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "clipper.area.info";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             max: 72 -1;
@@ -598,6 +611,7 @@ group { name: "elm/win/inwin/splash";
       }
       part { name: "elm.text";
          type: TEXT;
+         clip_to: "clipper.area.info";
          description { state: "default" 0.0;
             visible: 0;
             fixed: 1 1;
@@ -874,6 +888,7 @@ group { name: "elm/win/inwin/splash";
          transition: LINEAR 0.3;
          target: "bg";
          target: "elm.text";
+         target: "clipper.area.info";
          after: "anim";
          after: "emit_start";
       }
@@ -887,6 +902,7 @@ group { name: "elm/win/inwin/splash";
          transition: LINEAR 0.3;
          target: "bg";
          target: "elm.text";
+         target: "clipper.area.info";
          after: "emit_teardown";
       }
       program { name: "emit_teardown";
