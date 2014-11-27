@@ -240,7 +240,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
    ADD_SHORTCUT("3", 12, CTRL, "sound_editor", false);
    ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer", false);
-   ADD_SHORTCUT("5", 14, CTRL, "program_editor", false);
+   ADD_SHORTCUT("5", 14, CTRL, "animator", false);
 
    ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
    ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
