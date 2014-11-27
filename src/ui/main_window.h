@@ -39,7 +39,6 @@
 #include "ui_block.h"
 #include "colorclass_editor.h"
 #include "notify.h"
-#include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "string_macro.h"
 

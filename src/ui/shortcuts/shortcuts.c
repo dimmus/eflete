@@ -19,7 +19,6 @@
 
 #include "shortcuts.h"
 #include "main_window.h"
-#include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
@@ -239,9 +238,9 @@ _open_edc_cb(App_Data *app)
 */
 
 Eina_Bool
-_open_edj_cb(App_Data *app)
+_open_edj_cb(App_Data *app __UNUSED__)
 {
-   open_edj_file(app);
+   //open_edj_file(app);
    return true;
 }
 

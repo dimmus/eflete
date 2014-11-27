@@ -19,7 +19,6 @@
 
 #include "main_window.h"
 #include "wizard.h"
-#include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "preference.h"
 #include "style_editor.h"

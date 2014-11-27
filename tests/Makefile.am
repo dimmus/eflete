@@ -6,7 +6,6 @@ TESTS = \
 eflete_test \
 part_dialog_test \
 save_file_dialog_test \
-open_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
 sound_editor_test \
@@ -101,12 +100,6 @@ test_save_file_dialog/save_as_edc_file.c \
 test_save_file_dialog/save_as_edj_file.c
 save_file_dialog_test_CFLAGS = ${FLAGS}
 save_file_dialog_test_LDADD = ${LD}
-
-open_file_dialog_test_SOURCES = \
-test_open_file_dialog/test_open_file_dialog.c \
-test_open_file_dialog/open_edj_file.c
-open_file_dialog_test_CFLAGS = ${FLAGS}
-open_file_dialog_test_LDADD = ${LD}
 
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \

@@ -12,7 +12,6 @@ src/ui/editors/style_editor.c
 src/ui/editors/image_editor.c
 src/ui/editors/colorclass_editor.c
 src/ui/editors/program_editor.c
-src/ui/dialogs/open_file_dialog.c
 src/ui/dialogs/save_file_dialog.c
 src/ui/dialogs/part_dialog.c
 src/ui/dialogs/state_dialog.c
