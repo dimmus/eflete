@@ -141,6 +141,7 @@ _progress_end(void *data, PM_Project_Result result)
 
    pro = pm_project_thread_project_get(wiew->thread);
    ap->project = pro;
+   blocks_data_unset(ap);
    blocks_show(ap);
    ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
 

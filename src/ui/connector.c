@@ -680,6 +680,19 @@ blocks_hide(App_Data *ap)
    return ui_panes_hide(ap);
 }
 
+Eina_Bool
+blocks_data_unset(App_Data *ap)
+{
+   ui_property_style_unset(ui_block_property_get(ap));
+   ui_property_style_unset(ui_block_property_get(ap));
+   ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+   workspace_edit_object_unset(ap->workspace);
+   workspace_highlight_unset(ap->workspace);
+   live_view_widget_style_unset(ap->live_view);
+
+   return true;
+}
+
 static Eina_Bool
 _eflete_filter(const char *path,
                Eina_Bool dir,
@@ -718,6 +731,7 @@ _on_open_done(void *data,
    ap->project = pm_project_open(selected);
    if (!ap->project) return;
 
+   blocks_data_unset(ap);
    blocks_show(ap);
 
    evas_object_del(win);
