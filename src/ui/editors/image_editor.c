@@ -63,10 +63,6 @@ struct _Image_Editor
       Evas_Object *quality;
    } image_data_fields;
    struct {
-      Evas_Smart_Cb choose_func;
-      void *data;
-   } func_data;
-   struct {
       Elm_Object_Item *included;
       Elm_Object_Item *linked;
    } group_items;
@@ -671,6 +667,7 @@ _on_button_ok_clicked_cb(void *data,
    Eina_List *l, *names = NULL;
    Elm_Object_Item *it;
    const Item *item = NULL;
+   char *ei;
 
    if (!img_edit->gengrid)
      {
@@ -700,23 +697,22 @@ _on_button_ok_clicked_cb(void *data,
           }
         item = elm_object_item_data_get(it);
         if (!item)
-         {
-            _image_editor_del(img_edit);
-            return;
-         }
+          {
+             _image_editor_del(img_edit);
+             return;
+          }
      }
 
-   if (img_edit->func_data.choose_func)
+   if (!multiselect)
      {
-        if (!multiselect)
-          img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
-                                        (char *)item->image_name);
-        else
-          img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
-                                        (Eina_List *)names);
-        img_edit->func_data.choose_func = NULL;
-        img_edit->func_data.data = NULL;
+        ei = strdup(item->image_name);
+        evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
+        free(ei);
      }
+   else
+     evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
+                                     (Eina_List *) names);
+
    _image_editor_del(img_edit);
 
 }
@@ -1177,38 +1173,4 @@ image_editor_file_choose(Evas_Object *win, const char *selected)
         grid_item = elm_gengrid_item_next_get(grid_item);
      }
    return false;
-}
-
-Eina_Bool
-image_editor_callback_add(Evas_Object *win, Evas_Smart_Cb func, void *data)
-{
-   Image_Editor *img_edit = NULL;
-
-   if (!win)
-     {
-        ERR("Expecting image editor window.");
-        return false;
-     }
-   img_edit = evas_object_data_get(win, IMG_EDIT_KEY);
-   if (!img_edit)
-     {
-        ERR("Image editor does'nt exist");
-        return false;
-     }
-
-   if (!func)
-     {
-        ERR("Expecting function.");
-        return false;
-     }
-
-   //if (!data)
-   //  {
-   //     ERR("Function's data is missing.");
-   //     return false;
-   //  }
-
-   img_edit->func_data.choose_func = func;
-   img_edit->func_data.data = data;
-   return true;
 }

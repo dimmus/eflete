@@ -50,7 +50,6 @@ check: Makefile
 	$(builddir)/decompile.edj \
 	$(builddir)/sound_editor_window_add.edj \
 	$(builddir)/image_editor_window_add.edj \
-	$(builddir)/image_editor_callback_add.edj \
 	$(builddir)/image_editor_file_choose.edj \
 	$(builddir)/ui_states_list_data_set.edj \
 	$(builddir)/ui_states_list_part_get.edj \

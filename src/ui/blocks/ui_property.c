@@ -2076,7 +2076,7 @@ _on_state_image_choose(void *data,
 
    img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_file_choose(img_edit, selected);
-   image_editor_callback_add(img_edit, _on_image_editor_done, pd);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, pd);
 }
 
 static void
@@ -2152,7 +2152,8 @@ _add_tween_image(void *data,
    App_Data *ap = app_data_get();
 
    img_edit = image_editor_window_add(ap->project, TWEENS);
-   image_editor_callback_add(img_edit, _on_image_editor_tween_done, tween_list);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED,
+                                  _on_image_editor_tween_done, tween_list);
 
    return;
 }
