@@ -98,16 +98,34 @@ group { name: "elm/layout/image_editor/default";
             rel2.to: "area.image_preview";
          }
       }
+      part { name: "padding.image_preview.top_left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(2, 2);
+            rel1.to: "image_preview_decoration";
+            rel2.to: "image_preview_decoration";
+         }
+      }
+      part { name: "padding.image_preview.bottom_right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(2, 2);
+            rel1.to: "image_preview_decoration";
+            rel2.to: "image_preview_decoration";
+         }
+      }
       part { name: "eflete.swallow.image";
          type: SWALLOW;
          description { state: "default" 0.0;
             rel1 {
-               to: "image_preview_decoration";
-               offset: 1 1;
+               to: "padding.image_preview.top_left";
+               relative: 1.0 1.0;
             }
             rel2 {
-               to: "image_preview_decoration";
-               offset: -2 -2;
+               to: "padding.image_preview.bottom_right";
+               relative: 0.0 0.0;
             }
          }
       }
