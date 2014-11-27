@@ -72,7 +72,8 @@ struct _Project
 
    Eina_List *added_sounds;
 
-   Eina_Bool changed;
+   Eina_Bool changed : 1;
+   Eina_Bool close_request : 1;
 };
 
 /**

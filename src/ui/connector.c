@@ -865,7 +865,8 @@ new_theme_create(App_Data *ap __UNUSED__)
    return false;
 }
 
-/*
+/*************************** Close request popup ******************************/
+/*TODO: I think, this functionality need move to dialogs */
 static void
 _discard_cb(void *data,
             Evas_Object *obj __UNUSED__,
@@ -898,31 +899,27 @@ _save_cb(void *data,
         ecore_main_loop_quit();
      }
 }
-*/
 
 Eina_Bool
-ui_close_project_request(App_Data *ap __UNUSED__,
-                         const char *msg __UNUSED__)
+project_close_request(App_Data *ap __UNUSED__,
+                      const char *msg __UNUSED__)
 {
-   /*
-   if (!ap) return false;
-
    if (!msg)
       msg = _("If you dont save the open project<br/>"
             "all your unsaved changes will be lost!");
 
-   if ((!ap->project) || ap->project->is_saved)) return true;
-   //if (ap->project->close_request) return false;
-   //ap->project->close_request = true;
+   if (!ap->project->changed) return true;
+   if (ap->project->close_request) return false;
+   ap->project->close_request = true;
 
    Eina_Bool result = false;
    Evas_Object *btn, *label;
-   //Eina_Stringshare *title;
+   Eina_Stringshare *title;
    ui_menu_locked_set(ap->menu_hash, true);
-   //title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
+   title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
    ap->popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(ap->popup, "eflete");
-   //elm_object_part_text_set(ap->popup, "title,text", title);
+   elm_object_part_text_set(ap->popup, "title,text", title);
    LABEL_ADD(ap->popup, label, msg);
    elm_object_content_set(ap->popup, label);
    BUTTON_ADD(ap->popup, btn, _("Save"));
@@ -940,14 +937,14 @@ ui_close_project_request(App_Data *ap __UNUSED__,
    ecore_main_loop_begin();
 
    ui_menu_locked_set(ap->menu_hash, false);
-   //ap->project->close_request = false;
+   ap->project->close_request = false;
    evas_object_del(ap->popup);
    ap->popup = NULL;
 
    return result;
-   */
-   return false;
 }
+
+/******************************************************************************/
 
 static Eina_Bool
 _selected_layout_delete(Evas_Object *genlist, App_Data *ap)

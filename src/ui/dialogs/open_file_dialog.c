@@ -55,11 +55,13 @@ open_edj_file(App_Data *ap)
    if ((!ap) || (!ap->win)) return EINA_FALSE;
 
 
+   /*
    if (!ui_close_project_request(ap,
                                  _("You want to open new theme, but now you have<br/>"
                                    "opened project. If you dont save opened project<br/>"
                                    "all your changes will be lost!")))
      return false;
+   */
 
    MODAL_WINDOW_ADD(win, ap->win, _("Open EDJ file dialog"), _on_edj_done, ap);
    bg = elm_bg_add(win);
