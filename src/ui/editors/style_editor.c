@@ -25,6 +25,7 @@
 #define ITEM2 "item2"
 #define DIRECTION_NUM 39
 #define DEFAULT_DIRECTION 2
+#define WHITE_COLOR "#FFF"
 
 typedef struct _Style_Tag_Entries Style_Tag_Entries;
 typedef struct _Style_entries Style_Entries;
@@ -203,6 +204,9 @@ static Elm_Entry_Filter_Accept_Set accept_value = {
    .accepted = NULL,
    .rejected = EDITORS_BANNED_SYMBOLS
 };
+
+static const char*
+_tag_value_get(const char* text_style, char* a_tag);
 
 static void
 _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it, const char *value);
@@ -935,6 +939,26 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
    eina_strbuf_free(tag);
 }
 
+static void
+_lines_colors_update(Style_Editor *style_edit, const char *param)
+{
+   const char *style = style_edit->current_style.stvalue;
+
+   if (!strcmp(param, "underline"))
+     {
+        _lines_update(style_edit);
+        if (!_tag_value_get(style, "underline_color"))
+          _tag_parse(style_edit, WHITE_COLOR, "underline_color");
+        if (!_tag_value_get(style, "underline2_color"))
+          _tag_parse(style_edit, WHITE_COLOR, "underline2_color");
+     }
+   else if (!strcmp(param, "strikethrough"))
+     {
+        if (!_tag_value_get(style, "strikethrough_color"))
+          _tag_parse(style_edit, WHITE_COLOR, "strikethrough_color");
+     }
+}
+
 #define COMBOBOX_VALUE \
 Ewe_Combobox_Item *item = ei; \
 const char *value; \
@@ -976,8 +1000,7 @@ _on_##VALUE##_change(void *data, \
    _tag_parse(style_edit, value, TEXT); \
    if (!strcmp("style", TEXT)) \
      _glow_update(style_edit); \
-   if (!strcmp("underline", TEXT)) \
-     _lines_update(style_edit); \
+   _lines_colors_update(style_edit, TEXT); \
    _style_edit_update(style_edit); \
    eina_stringshare_del(value); \
 }
@@ -1471,7 +1494,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
         if ((!bground) || (!strcmp(bground, "off"))) bg = EINA_FALSE;
         else bg = EINA_TRUE;
         const char* bcolor = _tag_value_get(value, "backing_color");
-        if (!bcolor) bcolor = "#FFF";
+        if (!bcolor) bcolor = WHITE_COLOR;
 
         elm_spinner_value_set(text_tabstops, atof(tabstops));
         elm_spinner_value_set(line_size, atof(linesize));
@@ -1522,11 +1545,11 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         const char* style = _tag_value_get(value, "style");
         if (!style) style = N_("none");
         const char* inner = _tag_value_get(value, "glow_color");
-        if (!inner) inner = "#FFF";
+        if (!inner) inner = WHITE_COLOR;
         const char* outer = _tag_value_get(value, "glow2_color");
-        if (!outer) outer = "#FFF";
+        if (!outer) outer = WHITE_COLOR;
         const char* shadow = _tag_value_get(value, "shadow_color");
-        if (!shadow) shadow = "#FFF";
+        if (!shadow) shadow = WHITE_COLOR;
 
         style_copy = mem_malloc(strlen(style) + 1);
         strcpy(style_copy, style);
@@ -1654,7 +1677,7 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
         if ((!strikethrough) || (!strcmp(strikethrough, "off"))) strikethr = EINA_FALSE;
         else strikethr = EINA_TRUE;
         const char* strikethru_color = _tag_value_get(value, "strikethrough_color");
-        if (!strikethru_color) strikethru_color = "#FFF";
+        if (!strikethru_color) strikethru_color = WHITE_COLOR;
         const char *seg_item = NULL;
         const char* underline = _tag_value_get(value, "underline");
         if ((!underline) || (!strcmp(underline, "off"))) underl = EINA_FALSE;
@@ -1673,9 +1696,9 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
                }
           }
         const char* underl_color = _tag_value_get(value, "underline_color");
-        if (!underl_color) underl_color = "#FFF";
+        if (!underl_color) underl_color = WHITE_COLOR;
         const char* underl2_color = _tag_value_get(value, "underline2_color");
-        if (!underl2_color) underl2_color = "#FFF";
+        if (!underl2_color) underl2_color = WHITE_COLOR;
 
         elm_check_state_set(font_strikethrough, strikethr);
         elm_check_state_set(font_underline, underl);
@@ -1715,6 +1738,7 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 #undef MAX_PERCENT
 #undef STEP_SP
 #undef DIRECT_ADD
+#undef WHITE_COLOR
 
 Evas_Object*
 _form_right_side(Style_Editor *style_edit)
