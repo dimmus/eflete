@@ -300,6 +300,8 @@ _project_import_edj(void *data,
    WORKER_LOCK_TAKE;
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+      pm_project_meta_data_set(worker->project, worker->project->name,
+                               NULL, NULL, NULL, NULL);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
@@ -505,6 +507,8 @@ pm_project_open(const char *path)
    project->changed = false;
 
    if (!project) goto error;
+   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
+   if (!project->name) project->name = eina_stringshare_add(_("No title"));
    project->pro = ef;
    project->widgets = wm_widgets_list_new(project->dev);
    project->layouts = wm_layouts_list_new(project->dev);
