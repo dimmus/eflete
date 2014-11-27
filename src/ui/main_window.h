@@ -379,5 +379,12 @@ blocks_show(App_Data *ap);
 Eina_Bool
 blocks_hide(App_Data *ap);
 
+/**
+ * Open existing project.
+ *
+ * @ingroup Window
+ */
+void
+project_open();
 
 #endif /* UI_MAIN_WINDOW_H */

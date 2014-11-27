@@ -665,6 +665,7 @@ blocks_show(App_Data *ap)
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
    ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
+   ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
    ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
    ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
 
@@ -677,6 +678,64 @@ Eina_Bool
 blocks_hide(App_Data *ap)
 {
    return ui_panes_hide(ap);
+}
+
+static Eina_Bool
+_eflete_filter(const char *path,
+               Eina_Bool dir,
+               void *data __UNUSED__)
+{
+   if (dir) return true;
+
+   if (eina_str_has_extension(path, ".pro"))
+     return true;
+   return false;
+}
+
+static void
+_fs_close(void *data __UNUSED__,
+          Evas_Object *obj,
+          void *event_info __UNUSED__)
+{
+   evas_object_del(obj);
+}
+
+static void
+_on_open_done(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info)
+{
+   Evas_Object *win;
+   const char *selected;
+   App_Data *ap;
+
+   win = (Evas_Object *)data;
+   selected = (const char *)event_info;
+
+   if (!selected) _fs_close(NULL, win, NULL);
+
+   ap = app_data_get();
+   ap->project = pm_project_open(selected);
+   if (!ap->project) return;
+
+   blocks_show(ap);
+
+   evas_object_del(win);
+}
+
+void
+project_open(void)
+{
+   Evas_Object *win, *fs, *bg;
+
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+   FILESELECTOR_ADD(fs, win, _on_open_done, win);
+   elm_fileselector_custom_filter_append(fs, _eflete_filter, NULL, "Eflete Files");
+   elm_win_resize_object_add(win, fs);
 }
 
 Eina_Bool
