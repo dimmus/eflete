@@ -287,6 +287,7 @@ _project_import_edj(void *data,
    if (!pthread_getattr_np(*thread, &attr))
      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
    pthread_attr_destroy(&attr);
+   sleep(1);
 
    worker = (Project_Thread *)data;
 
@@ -392,6 +393,7 @@ _project_import_edc(void *data,
    if (!pthread_getattr_np(*thread, &attr))
      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
    pthread_attr_destroy(&attr);
+   sleep(1);
 
    worker = (Project_Thread *)data;
 
@@ -567,6 +569,7 @@ _project_save(void *data,
    if (!pthread_getattr_np(*thread, &attr))
      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
    pthread_attr_destroy(&attr);
+   sleep(1);
 
    worker = (Project_Thread *)data;
 
