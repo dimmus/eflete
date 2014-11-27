@@ -843,6 +843,15 @@ _change_bg_cb(void *data,
 }
 
 static void
+_entry_repch_update(Style_Editor *style_edit, Eina_Bool password)
+{
+   if (password)
+     evas_object_textblock_replace_char_set(style_edit->textblock_style, "*");
+   else
+     evas_object_textblock_replace_char_set(style_edit->textblock_style, NULL);
+}
+
+static void
 _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
 {
    Evas_Object *edje_edit_obj = NULL;
@@ -875,6 +884,9 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
         token= strtok(0, " =+");
         i++;
      }
+   if (!strcmp(text, "password"))
+     _entry_repch_update(style_edit, !strcmp(value, "on"));
+
    if (!strcmp(text, "direction"))
      {
         if (style_table[DIRECTION_NUM][1]) eina_stringshare_del(style_table[DIRECTION_NUM][1]);
@@ -1466,6 +1478,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
         elm_spinner_value_set(rel_size, atof(linerelsize));
         elm_check_state_set(font_password, pass);
         elm_check_state_set(font_background, bg);
+        _entry_repch_update(style_edit, pass);
         if (!_hex_to_rgb(bcolor, &r, &g, &b, &a))
           ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(font_backcolor, r*a/255, g*a/255, b*a/255, a);
