@@ -1052,6 +1052,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 }
 
 #define MIN_SP - 1.0
+#define MARGIN_MIN_SP -9999.0
 #define MAX_SP 9999.0
 #define MAX_PERCENT 100.0
 #define STEP_SP 1.0
@@ -1077,6 +1078,10 @@ evas_object_smart_callback_del(widget, "changed", _on_##VALUE##_change);
 
 #define SPIN_ADD(VALUE) \
 SPINNER_ADD(layout, widget, MIN_SP, MAX_SP, STEP_SP, true, DEFAULT_STYLE); \
+evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
+
+#define MARGIN_SPIN_ADD(VALUE) \
+SPINNER_ADD(layout, widget, MARGIN_MIN_SP, MAX_SP, STEP_SP, true, DEFAULT_STYLE); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define CHK_ADD(VALUE) \
@@ -1251,9 +1256,9 @@ ITEM_TEXT_ADD("style", font_style, STYLE)
 ITEM_TEXT_ADD("weight", font_weight, COMBO)
 ITEM_COLOR_ADD(text_color, "color", "color")
 ITEM_TEXT_ADD("align", font_align, COMBO)
-ITEM_TEXT_ADD("lmargin", lmargin, SPIN)
+ITEM_TEXT_ADD("lmargin", lmargin, MARGIN_SPIN)
 ITEM_TEXT_ADD("valign", font_valign, COMBO)
-ITEM_TEXT_ADD("rmargin", rmargin, SPIN)
+ITEM_TEXT_ADD("rmargin", rmargin, MARGIN_SPIN)
 ITEM_TEXT_ADD("tabstops", text_tabstops, SPIN)
 ITEM_TEXT_ADD("line_size", line_size, SPIN)
 ITEM_TEXT_ADD("rel_size", rel_size, SPIN)
@@ -1694,9 +1699,11 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 #undef STYLE_ADD
 #undef ITEM1_TEXT_ADD
 #undef SPIN_ADD
+#undef MARGIN_SPIN_ADD
 #undef ELLIPSIS_ADD
 #undef CHK_ADD
 #undef ITEM_TEXT_ADD
+#undef MARGIN_MIN_SP
 #undef MIN_SP
 #undef MAX_SP
 #undef MAX_PERCENT
