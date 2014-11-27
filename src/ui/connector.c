@@ -738,6 +738,85 @@ project_open(void)
    elm_win_resize_object_add(win, fs);
 }
 
+/****************************** Project save **********************************/
+
+static Eina_Bool
+_progress_print(void *data, Eina_Stringshare *progress_string)
+{
+   App_Data *ap;
+
+   ap = (App_Data *)data;
+   elm_object_text_set(ap->splash, progress_string);
+
+   return true;
+}
+
+static void
+_progress_end(void *data, PM_Project_Result result)
+{
+   App_Data *ap;
+
+   ap = (App_Data *)data;
+   switch (result)
+     {
+      case PM_PROJECT_ERROR:
+        {
+           NOTIFY_INFO(3, _("Error: project not saved."));
+           break;
+        }
+      case PM_PROJECT_CANCEL:
+        {
+           NOTIFY_INFO(3, _("Saving canceled."));
+           break;
+        }
+      case PM_PROJECT_SUCCESS:
+        {
+           ap->project->changed = false;
+           break;
+        }
+      case PM_PROJECT_LAST: break;
+     }
+
+   splash_del(ap->splash);
+   ap->splash = NULL;
+}
+
+static Eina_Bool
+_setup_save_splash(void *data)
+{
+   App_Data *ap;
+   Project_Thread *thread;
+
+   ap = (App_Data *)data;
+   thread = pm_project_save(ap->project,
+                            _progress_print,
+                            _progress_end,
+                            data);
+   if (!thread) return false;
+
+   return true;
+}
+
+static Eina_Bool
+_teardown_save_splash(void *data __UNUSED__)
+{
+   return true;
+}
+
+void
+project_save(void)
+{
+   App_Data *ap;
+
+   ap = app_data_get();
+   if (ap->splash) return;
+   ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, ap);
+   evas_object_focus_set(ap->splash, true);
+   evas_object_show(ap->splash);
+}
+
+/******************************************************************************/
+
 Eina_Bool
 new_theme_create(App_Data *ap __UNUSED__)
 {

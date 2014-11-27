@@ -387,4 +387,13 @@ blocks_hide(App_Data *ap);
 void
 project_open();
 
+/**
+ * Save opened project.
+ *
+ * @ingroup Window
+ */
+void
+project_save();
+
+
 #endif /* UI_MAIN_WINDOW_H */

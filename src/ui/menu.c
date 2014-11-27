@@ -68,7 +68,7 @@ _on_save(void *data __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void *event_info __UNUSED__)
 {
-
+   project_save();
 }
 
 static void
