@@ -1190,3 +1190,30 @@ ui_widget_list_selected_parts_get(Evas_Object *object)
 
    return parts;
 }
+
+void
+ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
+{
+   Part *_part = NULL;
+   Elm_Object_Item *eoi = NULL;
+   Evas_Object *nf = NULL, *gl_parts = NULL;
+
+   if ((!object) || (!style)) return;
+
+   gl_parts = elm_object_item_part_content_get(
+                              _widget_list_get(_current_naviframe_get(object)),
+                              "elm.swallow.content");
+
+   nf = evas_object_data_get(gl_parts, NAVIFRAME_DATA_KEY);
+
+   elm_genlist_clear(gl_parts);
+
+   EINA_INLIST_FOREACH(style->parts, _part)
+     {
+        eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
+                                      NULL, ELM_GENLIST_ITEM_NONE,
+                                      _on_part_select, nf);
+        elm_object_item_data_set(eoi, _part);
+     }
+}
+
