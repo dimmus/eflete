@@ -125,9 +125,64 @@ _part_params_restore(Evas_Object *obj, Eina_Stringshare *part,
 }
 
 Eina_Bool
-_part_redo(Evas_Object *source __UNUSED__, Part_Diff *change __UNUSED__)
+_part_redo(Evas_Object *source, Part_Diff *change)
 {
-   return false;
+   Eina_Bool last = false;
+   Eina_Stringshare *above = NULL;
+
+   App_Data *app = app_data_get();
+   Style *style = app->project->current_style;
+   if ((!style) || (style->obj != source)) return false;
+
+   Evas_Object *prop = ui_block_property_get(app);
+   Evas_Object *widget_list = ui_block_widget_list_get(app);
+
+   switch (change->diff.action_type)
+     {
+      case ADD:
+         workspace_edit_object_part_add(app->workspace, change->part,
+                                         change->params->type, NULL);
+         ui_widget_list_part_add(widget_list, style, change->part);
+
+         ui_widget_list_part_selected_set(widget_list, change->part, true);
+      break;
+      case DEL:
+         ui_widget_list_part_selected_set(widget_list, change->part, true);
+         ui_widget_list_selected_part_del(widget_list, style);
+         evas_object_smart_callback_call(app->workspace, "ws,part,unselected",
+                                         (void *)change->part);
+         workspace_highlight_unset(app->workspace);
+         ui_property_part_unset(prop);
+         ui_property_style_unset(prop);
+         ui_property_style_set(prop, style, app->workspace);
+
+         workspace_edit_object_part_del(app->workspace, change->part);
+         ui_widget_list_style_parts_reload(widget_list, style);
+      break;
+      case RESTACK:
+         wm_style_parts_restack(style, change->part, change->params->above,
+                                change->params->last);
+         above = edje_edit_part_above_get(style->obj, change->part);
+         if (!above)
+           {
+             above = edje_edit_part_below_get(style->obj, change->part);
+             last = true;
+           }
+         workspace_edit_object_part_restack(app->workspace, change->part,
+                                            change->params->above,
+                                            change->params->last);
+         change->params->last = last;
+         change->params->above = above;
+
+         ui_widget_list_style_parts_reload(widget_list, style);
+         ui_widget_list_part_selected_set(widget_list, change->part, true);
+         live_view_widget_style_set(app->live_view, app->project, style);
+      break;
+      default:
+         return false;
+      break;
+     }
+   return true;
 }
 
 Eina_Bool
@@ -213,6 +268,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
          live_view_widget_style_set(app->live_view, app->project, style);
       break;
       default:
+         return false;
       break;
      }
    return true;
