@@ -71,6 +71,7 @@ _##FUNC##_part_add_cb(App_Data *ap) \
        ui_widget_list_part_add(widget_list, style, name); \
        style->isModify = true; \
      } \
+   history_diff_add(style->obj, PART_TARGET, ADD, name); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
    return true; \
 }

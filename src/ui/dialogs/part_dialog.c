@@ -70,6 +70,7 @@ _cancel_clicked(void *data,
        style->isModify = true; \
      } \
    evas_object_del(ap->popup); \
+   history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap->popup = NULL; \
    ui_menu_locked_set(ap->menu_hash, false); \
    live_view_widget_style_set(ap->live_view, ap->project, style);

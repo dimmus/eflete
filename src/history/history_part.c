@@ -129,6 +129,8 @@ _part_redo(Evas_Object *source, Part_Diff *change)
 {
    Eina_Bool last = false;
    Eina_Stringshare *above = NULL;
+   Eina_List *l = NULL, *l_next = NULL;
+   State_Params *state = NULL;
 
    App_Data *app = app_data_get();
    Style *style = app->project->current_style;
@@ -136,12 +138,21 @@ _part_redo(Evas_Object *source, Part_Diff *change)
 
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
+   live_view_widget_style_unset(app->live_view);
 
    switch (change->diff.action_type)
      {
       case ADD:
          workspace_edit_object_part_add(app->workspace, change->part,
                                          change->params->type, NULL);
+         if (change->params->type == EDJE_PART_TYPE_IMAGE)
+           {
+              EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
+                 {
+                    _state_param_restore(source, change->part, state,
+                                         change->params->type);
+                 }
+           }
          ui_widget_list_part_add(widget_list, style, change->part);
 
          ui_widget_list_part_selected_set(widget_list, change->part, true);
@@ -176,12 +187,12 @@ _part_redo(Evas_Object *source, Part_Diff *change)
 
          ui_widget_list_style_parts_reload(widget_list, style);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
-         live_view_widget_style_set(app->live_view, app->project, style);
       break;
       default:
          return false;
       break;
      }
+   live_view_widget_style_set(app->live_view, app->project, style);
    return true;
 }
 
@@ -192,7 +203,6 @@ _part_undo(Evas_Object *source, Part_Diff *change)
    State_Params *state = NULL;
    Eina_Bool last = false;
    Eina_Stringshare *above = NULL;
-   Part *part = NULL;
 
    App_Data *app = app_data_get();
    Style *style = app->project->current_style;
@@ -201,47 +211,34 @@ _part_undo(Evas_Object *source, Part_Diff *change)
    Evas_Object *prop = ui_block_property_get(app);
    Evas_Object *widget_list = ui_block_widget_list_get(app);
 
+   live_view_widget_style_unset(app->live_view);
+
    switch (change->diff.action_type)
      {
       case ADD:
-        workspace_edit_object_part_del(app->workspace, change->part);
-        ui_widget_list_selected_part_del(widget_list, style);
-        part = ui_widget_list_selected_part_get(widget_list);
-        if (part)
-           {
-              evas_object_smart_callback_call(app->workspace, "ws,part,unselected",
-                                              (void *)part->name);
-              workspace_highlight_unset(app->workspace);
-           }
-        ui_property_part_unset(prop);
-        ui_property_style_unset(prop);
-        ui_property_style_set(prop, style, app->workspace);
+         ui_property_style_unset(prop);
+         workspace_edit_object_part_del(app->workspace, change->part);
+         ui_widget_list_part_selected_set(widget_list, change->part, true);
+         ui_widget_list_selected_part_del(widget_list, style);
+
+         ui_property_style_set(prop, style, app->workspace);
+         ui_widget_list_style_parts_reload(widget_list, style);
       break;
       case DEL:
-        workspace_edit_object_part_add(app->workspace, change->part,
-                                       change->params->type, NULL);
-        _part_params_restore(source, change->part, change->params);
-        EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
-          {
-            _state_param_restore(source, change->part, state,
+         workspace_edit_object_part_add(app->workspace, change->part,
+                                        change->params->type, NULL);
+         _part_params_restore(source, change->part, change->params);
+         EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
+           {
+             _state_param_restore(source, change->part, state,
                                   change->params->type);
-          }
-        ui_widget_list_part_add(widget_list, style, change->part);
-        if (!change->params->last)
-          {
-             wm_style_parts_restack(style, change->part, change->params->above,
-                                    false);
-             workspace_edit_object_part_restack(app->workspace, change->part,
-                                                change->params->above, false);
-          }
-        else
-          {
-             wm_style_parts_restack(style, change->part, change->params->above,
-                                    true);
-             workspace_edit_object_part_restack(app->workspace, change->part,
-                                                change->params->above, true);
-
-          }
+           }
+         ui_widget_list_part_add(widget_list, style, change->part);
+         wm_style_parts_restack(style, change->part, change->params->above,
+                                change->params->last);
+         workspace_edit_object_part_restack(app->workspace, change->part,
+                                            change->params->above,
+                                            change->params->last);
 
          ui_widget_list_style_parts_reload(widget_list, style);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
@@ -265,12 +262,12 @@ _part_undo(Evas_Object *source, Part_Diff *change)
 
          ui_widget_list_style_parts_reload(widget_list, style);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
-         live_view_widget_style_set(app->live_view, app->project, style);
       break;
       default:
          return false;
       break;
      }
+   live_view_widget_style_set(app->live_view, app->project, style);
    return true;
 }
 
@@ -283,6 +280,8 @@ _part_change_free(Part_Diff *change)
 
    EINA_LIST_FREE(change->states, state)
      free(state);
+   if (change->diff.ui_item)
+     elm_object_item_del(change->diff.ui_item);
 
    eina_stringshare_del(change->params->dragable.confine);
    eina_stringshare_del(change->params->dragable.threshold);
