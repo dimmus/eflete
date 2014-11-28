@@ -178,6 +178,7 @@ group {
          type: TEXT;
          description {
             state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                text: "Styles";
                font: FN;
@@ -285,6 +286,7 @@ group { name: "elm/layout/style_editor/text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -315,6 +317,7 @@ group { name: "elm/layout/style_editor/text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -345,6 +348,7 @@ group { name: "elm/layout/style_editor/text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -375,6 +379,7 @@ group { name: "elm/layout/style_editor/text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -421,6 +426,7 @@ group { name: "elm/layout/style_editor/text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -462,6 +468,7 @@ group { name: "elm/layout/style_editor/text";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -627,6 +634,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.align";
             rel2.to: "area.align";
             text {
@@ -655,6 +663,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 1.0 0;
             rel1.to: "area.valign";
             rel2.to: "area.valign";
@@ -686,6 +695,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             rel1.to: "area.after1";
             rel2.to: "area.after1";
@@ -749,6 +759,7 @@ group { name: "elm/layout/style_editor/format1";
       part { name: "label.left1";
          type: TEXT;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -762,6 +773,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -808,6 +820,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -855,6 +868,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -900,6 +914,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -913,6 +928,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -961,6 +977,7 @@ group { name: "elm/layout/style_editor/format1";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -1044,6 +1061,7 @@ group { name: "elm/layout/style_editor/format2";
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.0;
             max: -1 ITEM_HEIGHT;
             text {
@@ -1059,6 +1077,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1170,6 +1189,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1212,6 +1232,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             align: 0.0 0.5;
             text {
                font: FN;
@@ -1269,6 +1290,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1282,6 +1304,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1295,6 +1318,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1373,6 +1397,7 @@ group { name: "elm/layout/style_editor/format2";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1385,6 +1410,7 @@ group { name: "elm/layout/style_editor/format2";
       part { name: "label.end2";
          type: TEXT;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             text {
                font: FN;
                size: 12;
@@ -1455,6 +1481,7 @@ group { name: "elm/layout/style_editor/glow";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.style";
             rel2.to: "area.style";
             text {
@@ -1485,6 +1512,7 @@ group { name: "elm/layout/style_editor/glow";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.glow_color";
             rel2.to: "area.glow_color";
             text {
@@ -1515,6 +1543,7 @@ group { name: "elm/layout/style_editor/glow";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.glow2_color";
             rel2.to: "area.glow2_color";
             text {
@@ -1775,6 +1804,7 @@ group { name: "ui/style_viewer_window/lines";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.strikethroug";
             rel2 {
                offset: 0 0;
@@ -1808,6 +1838,7 @@ group { name: "ui/style_viewer_window/lines";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.underline";
             rel2.to: "area.underline";
             text {
@@ -1838,6 +1869,7 @@ group { name: "ui/style_viewer_window/lines";
          type: TEXT;
          scale: 1;
          description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
             rel1.to: "area.underline_color";
             rel2.to: "area.underline_color";
             text {
