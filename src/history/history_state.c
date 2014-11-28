@@ -291,6 +291,7 @@ _state_params_save(Evas_Object *obj, const char *part, const char *state,
       case EDJE_PART_TYPE_TEXT:
          state_diff->text.text =
             eina_stringshare_add(edje_edit_state_text_get(obj, part, state, value));
+         if (!state_diff->text.text) state_diff->text.text = "";
          state_diff->text.font =
             eina_stringshare_add(edje_edit_state_font_get(obj, part, state, value));
          state_diff->text.text_source_part =
@@ -487,8 +488,6 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
                                    state_diff->value, state_diff->image.normal);
       break;
       case EDJE_PART_TYPE_TEXT:
-         edje_edit_state_text_set(obj, part, state_diff->name,
-                                  state_diff->value, state_diff->text.text);
          edje_edit_state_font_set(obj, part, state_diff->name,
                                   state_diff->value, state_diff->text.font);
          edje_edit_state_text_text_source_set(obj, part, state_diff->name,
@@ -537,6 +536,8 @@ _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
          edje_edit_state_text_max_y_set(obj, part, state_diff->name,
                                         state_diff->value,
                                         state_diff->text.max_y);
+         edje_edit_state_text_set(obj, part, state_diff->name,
+                                    state_diff->value, state_diff->text.text);
       break;
       case EDJE_PART_TYPE_TEXTBLOCK:
          edje_edit_state_text_set(obj, part, state_diff->name,
