@@ -460,9 +460,9 @@ static Attribute_Diff *
 _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
-       ((!previous->part && !change->part) ||
-        (!strcmp(previous->part, change->part)) ||
-        (!change->state && change->param_type == RENAME)))
+       ((!previous->part && !change->part) || /* if this change for group. */
+        ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
+        (change->param_type == RENAME))))
      {
         switch(previous->param_type)
          {
@@ -500,7 +500,7 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
        (previous->func_revert == change->func_revert) &&
-       ((!previous->part && !change->part) || (!strcmp(previous->part, change->part))))
+       (previous->part == change->part))
      {
         switch(previous->param_type)
          {
