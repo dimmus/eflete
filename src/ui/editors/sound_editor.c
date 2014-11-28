@@ -1188,7 +1188,7 @@ _add_sample_done(void *data,
           }
 
         new_item = elm_gengrid_search_by_text_item_get(edit->gengrid, NULL,
-                                                       NULL, sound_name, 0);
+                                                       "elm.text", sound_name, 0);
         if (new_item)
           {
              WIN_NOTIFY_WARNING(obj, _("Sample has been already added!"))
