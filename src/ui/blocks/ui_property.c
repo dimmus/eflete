@@ -1104,7 +1104,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    #define pd_state pd->prop_state
 
    type = edje_edit_part_type_get(pd->style->obj, part->name);
-   sprintf(state, "%s %g", part->curr_state, part->curr_state_value);
+   sprintf(state, "%s %.2f", part->curr_state, part->curr_state_value);
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_state.frame);
