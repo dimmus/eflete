@@ -30,11 +30,12 @@
 static int _menu_delayed_event = 0;
 
 static void
-_on_new_project(void *data __UNUSED__,
+_on_new_project(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-
+   App_Data *ap = (App_Data *)data;
+   wizard_new_project_add(ap);
 }
 
 static void

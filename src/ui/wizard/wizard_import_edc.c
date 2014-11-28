@@ -30,6 +30,64 @@ struct _Item_Mod_Callback_Data
 
 typedef struct _Item_Mod_Callback_Data Item_Mod_Callback_Data;
 
+static const char *widget_names_list[] = { N_("access"),
+                                           N_("actionslider"),
+                                           N_("bg"),
+                                           N_("border"),
+                                           N_("bubble"),
+                                           N_("button"),
+                                           N_("calendar"),
+                                           N_("check"),
+                                           N_("clock"),
+                                           N_("colorselector"),
+                                           N_("conformant"),
+                                           N_("ctxpopup"),
+                                           N_("cursor"),
+                                           N_("datetime"),
+                                           N_("dayselector"),
+                                           N_("diskselector"),
+                                           N_("entry"),
+                                           N_("ews"),
+                                           N_("fileselector"),
+                                           N_("fileselector_entry"),
+                                           N_("flipselector"),
+                                           N_("focus_hithlight"),
+                                           N_("frame"),
+                                           N_("gengrid"),
+                                           N_("genlist"),
+                                           N_("genscroller"),
+                                           N_("hover"),
+                                           N_("icon"),
+                                           N_("index"),
+                                           N_("label"),
+                                           N_("leyout"),
+                                           N_("list"),
+                                           N_("map"),
+                                           N_("menu"),
+                                           N_("multibuttonentry"),
+                                           N_("naviframe"),
+                                           N_("notify"),
+                                           N_("panel"),
+                                           N_("panes"),
+                                           N_("photo"),
+                                           N_("photocam"),
+                                           N_("player"),
+                                           N_("pointer"),
+                                           N_("popup"),
+                                           N_("progressbar"),
+                                           N_("radio"),
+                                           N_("scroller"),
+                                           N_("segment_controll"),
+                                           N_("separator"),
+                                           N_("slider"),
+                                           N_("slideshow"),
+                                           N_("spinner"),
+                                           N_("thumb"),
+                                           N_("toolbar"),
+                                           N_("tooltip"),
+                                           N_("video"),
+                                           NULL};
+
 static void
 _on_button_add_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 
@@ -235,6 +293,82 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
    elm_object_disabled_set(btn, true);
 
    wiew->splash_setup_func = _setup_splash;
+
+   return wiew->win;
+}
+
+static char *
+_genlist_label_get(void *data,
+                   Evas_Object *obj __UNUSED__,
+                   const char  *part __UNUSED__)
+{
+   return strdup(data);
+}
+
+static Evas_Object *
+_genlist_content_get(void *data __UNUSED__,
+                     Evas_Object *obj,
+                     const char *part)
+{
+   Evas_Object *check;
+   if (strcmp(part, "elm.swallow.icon"))
+     return NULL;
+
+   CHECK_ADD(obj, check, "eflete/live_view");
+   elm_object_focus_allow_set(check, false);
+   return check;
+}
+
+static Evas_Object *
+_wizart_widget_list_add(Evas_Object *parent)
+{
+   Evas_Object *genlist;
+   Elm_Genlist_Item_Class *itc = NULL;
+   const char **widget_names_list_iterator = widget_names_list;
+
+   genlist = elm_genlist_add(parent);
+   elm_object_style_set(genlist, "eflete/dark");
+
+   itc = elm_genlist_item_class_new();
+   itc->item_style = "eflete/level1";
+   itc->func.text_get = _genlist_label_get;
+   itc->func.content_get = _genlist_content_get;
+   itc->func.state_get = NULL;
+   itc->func.del = NULL;
+
+   while (*widget_names_list_iterator)
+     {
+        elm_genlist_item_append(genlist, itc,
+                                *widget_names_list_iterator,
+                                NULL, ELM_GENLIST_ITEM_NONE,
+                                NULL, NULL);
+        widget_names_list_iterator++;
+     }
+
+   elm_genlist_item_class_free(itc);
+   return genlist;
+}
+
+Evas_Object *
+wizard_new_project_add(App_Data *ap __UNUSED__)
+{
+   Wizard_Import_Edj_Win *wiew;
+   Evas_Object *btn;
+   wiew = wizard_import_common_add("elm/layout/wizard/new_project");
+   if (!wiew) return NULL;
+
+   mw_title_set(wiew->win, _("Wizard: new project"));
+
+   elm_object_part_text_set(wiew->layout, "label.widgets", _("Widgets:"));
+
+   elm_object_part_content_set(wiew->layout, "swallow.widgets",
+                               _wizart_widget_list_add(wiew->layout));
+
+   // to be deleted during further implementation
+   btn = elm_object_part_content_get(wiew->layout, "swallow.button1");
+   elm_object_disabled_set(btn, true);
+
+   wiew->splash_setup_func = NULL;
 
    return wiew->win;
 }
