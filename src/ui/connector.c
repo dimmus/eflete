@@ -736,6 +736,7 @@ _on_open_done(void *data,
 
    evas_object_del(win);
    NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
+   STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
 }
 
 void

@@ -97,6 +97,7 @@ _on_close_project(void *data,
    if (!ap->project) return;
 
    pm_project_close(ap->project);
+   STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
    blocks_hide(ap);
    ui_menu_base_disabled_set(ap->menu_hash, true);
    ui_menu_disable_set(ap->menu_hash, _("Save project"), true);

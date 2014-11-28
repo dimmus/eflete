@@ -74,7 +74,7 @@ _statusbar_init(Evas_Object *obj)
    elm_object_part_content_set(obj, "eflete.swallow.statusbar",
                                statusbar);
    evas_object_show(statusbar);
-   LABEL_ADD(statusbar, label, "the project didn't opened");
+   LABEL_ADD(statusbar, label, _("No project opened"));
 
    item = ewe_statusbar_item_append(statusbar, label,
                                     EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);

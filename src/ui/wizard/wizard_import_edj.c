@@ -169,14 +169,17 @@ static Eina_Bool
 _teardown_splash(void *data __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
+   App_Data *ap;
 
    wiew = (Wizard_Import_Edj_Win *)data;
-   evas_object_del(wiew->win);
+   ap = app_data_get();
 
    NOTIFY_INFO(3, _("File '%s' imported as project '%s'"),
                elm_entry_entry_get(wiew->edj),
                elm_entry_entry_get(wiew->name));
 
+   STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+   evas_object_del(wiew->win);
    return true;
 }
 
