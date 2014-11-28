@@ -47,8 +47,6 @@
  * </td>
  * <td>(History *) history, (Evas_Object *) win</td>
  * <td>Not NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -89,8 +87,6 @@ END_TEST
  * </td>
  * <td>(History *) history, NULL</td>
  * <td>Not NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -130,8 +126,6 @@ END_TEST
  * </td>
  * <td>(History *) history, NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -168,8 +162,6 @@ END_TEST
  * </td>
  * <td>NULL, (Evas_Object *)win</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

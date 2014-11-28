@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *) sound_editor, (const char *) "key-tap"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -101,8 +99,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) sound_editor, (const char *) "not_correct_sound_name"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -148,8 +144,6 @@ END_TEST
  * </td>
  * <td>NULL, (const char *) "not_correct_sound_name"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -187,8 +181,6 @@ END_TEST
  * </td>
  * <td>sound_editor, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -236,8 +228,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) not_correct_object, (const char *) "key-tap"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -50,8 +50,6 @@
  * </td>
  * <td>Project *project</td>
  * <td>Not NULL Pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -97,8 +95,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL Pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

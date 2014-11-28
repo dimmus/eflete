@@ -53,8 +53,6 @@
  * </td>
  * <td>(Evas_Object *) source, (int) 2 </td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -122,8 +120,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) style->obj, (int) 3 </td>
  * <td>First change does not canceled</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -195,8 +191,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source, (int) 2 </td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -244,8 +238,6 @@ END_TEST
  * </td>
  * <td>NULL, (int) 2 </td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

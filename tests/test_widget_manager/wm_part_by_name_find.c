@@ -50,8 +50,6 @@
  * </td>
  * <td>(Style *) style, (Eina_Stringshare *) "elm.text"</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -106,8 +104,6 @@ END_TEST
  * </td>
  * <td>(Style *) style, (Eina_Stringshare *) "wrong"</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -162,8 +158,6 @@ END_TEST
  * </td>
  * <td>Style *style, NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -210,8 +204,6 @@ END_TEST
  * </td>
  * <td>NULL, (Eina_Stringshare *) "elm.text"</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -251,8 +243,6 @@ END_TEST
  * </td>
  * <td>Style *style, (Eina_Stringshare *) "elm.text"</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
