@@ -206,10 +206,32 @@ live_view_theme_update(Live_View *live, Project *project)
         live_view_widget_style_unset(live);
         return false;
      }
+
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, project->dev);
-   elm_object_theme_set(live->object, theme);
+   if (!live->in_prog_edit)
+     elm_object_theme_set(live->object, theme);
    elm_theme_free(theme);
+
+   /**
+    * CAUTION! do not touch this file set function please as it is actually need
+    * to make everything work in live view.
+    * > There was a huge deffect/bug where live view was working only before
+    * first save of project. After saving the project, it doesn't update live
+    * object on every change, only after next save.
+    *
+    * So the only way to fix it, probably, just refresh/reload edje edit object that
+    * refers to project dev file.
+    * TODO: dig into edje, eet or eina_file module to find out how to refresh
+    * all links to saved file.
+    */
+   if (!edje_object_file_set(project->current_style->obj,
+                             project->dev,
+                             project->current_style->full_group_name))
+     {
+        ERR("Something bad happened with live view or opened project file! \n");
+        return false;
+     }
 
    return true;
 }

@@ -18,6 +18,7 @@
  */
 
 #include "save_file_dialog.h"
+#include "preference.h"
 
 struct _cb_data
 {
@@ -77,6 +78,8 @@ _ok_cb(void *data,
    cb_data *cbdata = (cb_data *)data;
 
    *cbdata->cancel = !_save_internal(cbdata->project, cbdata->path);
+
+   //save_time_info_update(app_data_get(), false);
 
    evas_object_del(cbdata->popup);
    free(cbdata);
@@ -194,6 +197,9 @@ _save_as_edx_file(App_Data *ap,
 
    evas_object_del(win);
 
+   //ap->project->is_new = false;
+   preferences_project_autosave_update(ap->project);
+
    return !cancel;
 }
 
@@ -215,11 +221,15 @@ Eina_Bool
 save_edj_file(App_Data *ap __UNUSED__)
 {
    /*
+   Eina_Bool res = true;
    if ((!ap) || (!ap->project)) return false;
    if (ap->project->is_new)
-     return _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
+     res = _save_as_edx_file(ap, _("Save as EDJ file"), _on_edj_done, false);
    else
-     return _save_internal(ap->project, NULL);
+     res = _save_internal(ap->project, NULL);
+
+   save_time_info_update(app_data_get(), false);
+   return res;
    */
    return false;
 }

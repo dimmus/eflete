@@ -1129,6 +1129,20 @@ wm_part_type_get(Edje_Part_Type part_type)
    return part_types[part_type];
 }
 
+Part *
+wm_part_by_name_find(Style *style, Eina_Stringshare *part_name)
+{
+   Part *data = NULL;
+
+   if ((!style) || (!part_name)) return NULL;
+
+   EINA_INLIST_FOREACH(style->parts, data)
+     {
+        if (data->name == part_name) return data;
+     }
+   return NULL;
+}
+
 #undef WM_WIDGET_NAME_GET
 #undef WM_CLASS_NAME_GET
 #undef WM_STYLE_NAME_GET

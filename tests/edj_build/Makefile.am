@@ -65,6 +65,7 @@ check: Makefile
 	$(builddir)/wm_part_del.edj \
 	$(builddir)/wm_part_add.edj \
 	$(builddir)/widget_list.edj \
+	$(builddir)/wm_part_by_name_find.edj \
 	$(builddir)/ui_widget_list_part_add.edj \
 	$(builddir)/ui_widget_list_title_set.edj \
 	$(builddir)/part_dialog.edj \
@@ -76,6 +77,8 @@ check: Makefile
 	$(builddir)/state_dialog.edj \
 	$(builddir)/colorclass_editor.edj \
 	$(builddir)/sound_editor.edj \
+	$(builddir)/history.edj \
+	$(builddir)/preference.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

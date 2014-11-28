@@ -18,6 +18,7 @@
  */
 
 #include "main_window.h"
+#include "preference.h"
 
 static void
 _add_part_dialog(void *data,
@@ -465,7 +466,7 @@ ui_part_back(App_Data *ap)
 {
    if (!ap) return;
 
-   Evas_Object *wl_list, *groupedit, *st_list;
+   Evas_Object *wl_list, *groupedit, *st_list, *history_list;
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
@@ -478,6 +479,8 @@ ui_part_back(App_Data *ap)
                                        _restack_part_above, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,moved,down",
                                        _restack_part_below, ap);
+   history_list = ui_block_history_get(ap);
+   elm_genlist_clear(history_list);
 
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
@@ -495,9 +498,7 @@ ui_part_back(App_Data *ap)
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
 
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+   ui_menu_style_options_disabled_set(ap->menu_hash, true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -589,6 +590,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *gl_signals = NULL;
    Evas_Object *prop = NULL;
    Evas_Object *groupedit = NULL;
+   Evas_Object *history_list = NULL;
    Eina_List *signals = NULL;
    Style *_style = NULL, *_alias_style = NULL;
 
@@ -643,10 +645,13 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;
+
+   history_list = history_genlist_get(ap->history, ap->block.right_top);
+   history_module_add(_style->obj);
+   ui_block_history_set(ap, history_list);
+
    live_view_widget_style_set(ap->live_view, ap->project, _style);
-   ui_menu_disable_set(ap->menu_hash, _("Programs"), false);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), false);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), false);
+   ui_menu_style_options_disabled_set(ap->menu_hash, false);
 
    return true;
 }

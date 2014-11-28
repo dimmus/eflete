@@ -21,7 +21,8 @@ alayouts_DATA = eflete.edj
 
 aimagesdir = $(datadir)/eflete/images
 aimages_DATA = \
-   ${srcdir}/images/*.png
+   ${srcdir}/images/*.png \
+   ${srcdir}/images/toolbar_icons/*.png
 
 aresourcesdir = $(datadir)/eflete/
 aresources_DATA = resources.edj

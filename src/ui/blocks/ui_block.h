@@ -143,15 +143,15 @@ Evas_Object *
 ui_block_property_get(App_Data *ap);
 
 /**
- * Get the graph vision object
+ * Get the history object
  *
  * @param ap the application data
- * @return the graph vision object
+ * @return the graph history object
  *
  * @ingroup Block
  */
 Evas_Object *
-ui_block_graph_vision_get(App_Data *ap);
+ui_block_history_get(App_Data *ap);
 
 /**
  * Get the live view object
@@ -230,7 +230,7 @@ Eina_Bool
 ui_block_property_set(App_Data *ap, Evas_Object *content);
 
 /**
- * Set the content in to the graph vision block
+ * Set the content in to the history block
  *
  * @param ap the application data
  * @param content the content object
@@ -240,7 +240,7 @@ ui_block_property_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_graph_vision_set(App_Data *ap, Evas_Object *content);
+ui_block_history_set(App_Data *ap, Evas_Object *content);
 
 /**
  * Set the content in to the live view block

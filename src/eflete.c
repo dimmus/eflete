@@ -62,6 +62,13 @@ colorselector_get(void)
    return ap->colorsel;
 }
 
+History *
+history_get(void)
+{
+   CHECK_AP(NULL)
+   return ap->history;
+}
+
 Eina_Bool
 app_free()
 {

@@ -1,4 +1,3 @@
-
 /**
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
@@ -28,6 +27,11 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, sound_editor_window_add_test_n1);
    tcase_add_test(tcase, sound_editor_window_add_test_n2);
    tcase_add_test(tcase, sound_editor_window_add_test_n3);
+   tcase_add_test(tcase, sound_editor_file_choose_test_p);
+   tcase_add_test(tcase, sound_editor_file_choose_test_n1);
+   tcase_add_test(tcase, sound_editor_file_choose_test_n2);
+   tcase_add_test(tcase, sound_editor_file_choose_test_n3);
+   tcase_add_test(tcase, sound_editor_file_choose_test_n4);
    suite_add_tcase(suite, tcase);
    return suite;
 }

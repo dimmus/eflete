@@ -96,7 +96,7 @@ _add_ok_clicked(void *data,
    if (result)
      {
         ap->project->current_style->isModify = true;
-        state = eina_stringshare_printf("%s %g", str_name, atof(str_value));
+        state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
      }
@@ -268,6 +268,12 @@ state_dialog_state_del(App_Data *ap)
    part = ui_states_list_part_get(state_list);
    if (!part) return NULL;
    state = ui_states_list_selected_state_get(state_list);
+
+   if (!state)
+     {
+        NOTIFY_WARNING(_("Something is wrong. State is not selected"));
+        return NULL;
+     }
 
    if (!strcmp(state, "default 0.00"))
      {

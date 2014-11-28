@@ -29,13 +29,15 @@ ui_widget_list_test \
 groupedit_test \
 ui_workspace_test \
 widget_manager_test \
-program_editor_test \
+animator_test \
 live_view_test \
 live_view_prop_test \
 live_widget_test \
 about_window_test \
+history_test \
 colorselector_test \
-shortcuts_test
+shortcuts_test \
+preference_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -44,12 +46,12 @@ FLAGS = \
 -I${top_builddir}/src \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/external \
--I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
+-I${top_srcdir}/src/history \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
@@ -57,6 +59,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/editors \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
+-I${top_srcdir}/src/ui/preference \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
@@ -134,19 +137,21 @@ test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
 test_widget_manager/wm_layouts_list_new.c \
 test_widget_manager/wm_layouts_list_objects_load.c \
-test_widget_manager/wm_widget_list_objects_load.c
+test_widget_manager/wm_widget_list_objects_load.c \
+test_widget_manager/wm_part_by_name_find.c
 widget_manager_test_CFLAGS = ${FLAGS}
 widget_manager_test_LDADD = ${LD}
 
 sound_editor_test_SOURCES = \
 test_sound_editor/test_sound_editor.c \
-test_sound_editor/sound_editor_window_add.c
+test_sound_editor/sound_editor_window_add.c\
+test_sound_editor/sound_editor_file_choose.c
+
 sound_editor_test_CFLAGS = ${FLAGS}
 sound_editor_test_LDADD = ${LD}
 
 image_editor_test_SOURCES = \
 test_image_editor/test_image_editor.c \
-test_image_editor/image_editor_callback_add.c \
 test_image_editor/image_editor_file_choose.c \
 test_image_editor/image_editor_window_add.c
 image_editor_test_CFLAGS = ${FLAGS}
@@ -252,7 +257,7 @@ container_test_LDADD = ${LD}
 ui_block_test_SOURCES = \
 test_ui_block/test_ui_block.c \
 test_ui_block/ui_block_add.c \
-test_ui_block/ui_block_graph_vision.c \
+test_ui_block/ui_block_history.c \
 test_ui_block/ui_block_live_view.c \
 test_ui_block/ui_block_property.c \
 test_ui_block/ui_block_signal_list.c \
@@ -286,6 +291,7 @@ test_ui_main_window/ui_main_window_add.c \
 test_ui_main_window/ui_main_window_del.c \
 test_ui_main_window/ui_menu_add.c \
 test_ui_main_window/ui_menu_base_disabled_set.c \
+test_ui_main_window/ui_menu_style_options_disabled_set.c \
 test_ui_main_window/ui_menu_disable_set.c \
 test_ui_main_window/ui_menu_locked_set.c \
 test_ui_main_window/ui_panes_add.c \
@@ -303,11 +309,12 @@ test_ui_main_window/code_edit_mode_switch.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
-#preference_test_SOURCES = \
-#test_preference/test_preference.c \
-#test_preference/preference_add_test.c
-#preference_test_CFLAGS = ${FLAGS}
-#preference_test_LDADD = ${LD}
+preference_test_SOURCES = \
+test_preference/test_preference.c \
+test_preference/preference_add.c \
+test_preference/preferences_project_autosave_update.c
+preference_test_CFLAGS = ${FLAGS}
+preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
@@ -402,11 +409,11 @@ test_groupedit/groupedit_part_visible_set.c
 groupedit_test_CFLAGS = ${FLAGS}
 groupedit_test_LDADD = ${LD}
 
-program_editor_test_SOURCES = \
-test_program_editor/test_program_editor.c \
-test_program_editor/program_editor_window_add_test.c
-program_editor_test_CFLAGS = ${FLAGS}
-program_editor_test_LDADD = ${LD}
+animator_test_SOURCES = \
+test_animator/test_animator.c \
+test_animator/animator_window_add_test.c
+animator_test_CFLAGS = ${FLAGS}
+animator_test_LDADD = ${LD}
 
 live_view_test_SOURCES = \
 test_live_view/test_live_view.c \
@@ -462,6 +469,23 @@ test_colorselector/colorselector_add.c \
 test_colorselector/colorselector_color_get.c
 colorselector_test_CFLAGS = ${FLAGS}
 colorselector_test_LDADD = ${LD}
+
+history_test_SOURCES = \
+test_history/test_history.c \
+test_history/history_init.c \
+test_history/history_term.c \
+test_history/history_clear.c \
+test_history/history_module_del.c \
+test_history/history_module_add.c \
+test_history/history_diff_add.c \
+test_history/history_undo.c \
+test_history/history_redo.c \
+test_history/history_genlist_get.c \
+test_history/history_module_depth_set.c \
+test_history/history_module_depth_get.c
+history_test_CFLAGS = ${FLAGS}
+history_test_LDADD = ${LD}
+
 
 coverage:
 	echo "<html><body>" > ../coverage.html

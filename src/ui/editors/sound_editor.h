@@ -29,6 +29,8 @@
 
 #include "modal_window.h"
 
+#define SIG_SOUND_SELECTED "sound_selected"
+
 typedef enum {
    SOUND_EDITOR_SINGLE,
    SOUND_EDITOR_MULTIPLE
@@ -58,5 +60,21 @@ sound_editor_added_sounds_free(Eina_List *add_snd);
  */
 Evas_Object *
 sound_editor_window_add(Project *project, Sound_Editor_Mode mode);
+
+/**
+ * This function will select the sound item by it's name. It is very useful
+ * with sound property (setting another sound).
+ *
+ * @param win Pointer to inwin object, which was created with
+ * sound_editor_window_add function.
+ * @param selected Name of selected sound. If selected param is NULL, this
+ * function do nothing.
+ *
+ * @return EINA_TRUE if successful or EINA_FALSE otherwise.
+ *
+ * @ingroup Sound_Editor
+ */
+Eina_Bool
+sound_editor_file_choose(Evas_Object *win, const char *selected);
 
 #endif  /* SOUND_EDITOR_DIALOG_H */

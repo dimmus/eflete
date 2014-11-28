@@ -23,7 +23,7 @@
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
-#include "program_editor.h"
+#include "animator.h"
 
 struct _Shortcut_Module
 {
@@ -151,9 +151,13 @@ _widget_manager_style_switch_cb(App_Data *app)
 Eina_Bool
 _separate_mode_change_cb(App_Data *app)
 {
+   double factor = workspace_zoom_factor_get(app->workspace);
+   if (fabs(factor - 1.0) > 0.001)
+     return false;
 
    Eina_Bool sep = workspace_separate_mode_get(app->workspace);
    workspace_separate_mode_set(app->workspace, !sep);
+
    return true;
 }
 
@@ -334,14 +338,14 @@ _colorclass_viewer_open_cb(App_Data *app)
 }
 
 Eina_Bool
-_program_editor_open_cb(App_Data *app)
+_animator_open_cb(App_Data *app)
 {
    Style *style = NULL;
 
    if (app->project)
      style = app->project->current_style;
 
-   program_editor_window_add(style);
+   animator_window_add(style);
 
    return true;
 }
@@ -376,6 +380,22 @@ _zoom_out_cb(App_Data *app)
 {
    double current_factor = workspace_zoom_factor_get(app->workspace);
    workspace_zoom_factor_set(app->workspace, current_factor - 0.1);
+   return true;
+}
+
+Eina_Bool
+_undo_cb(App_Data *app)
+{
+   if ((app->project) && (app->project->current_style))
+     history_undo(app->project->current_style->obj, 1);
+   return true;
+}
+
+Eina_Bool
+_redo_cb(App_Data *app)
+{
+   if ((app->project) && (app->project->current_style))
+     history_redo(app->project->current_style->obj, 1);
    return true;
 }
 
@@ -452,7 +472,7 @@ static Function_Set _sc_func_set_init[] =
      {"image_editor", _image_editor_open_cb},
      {"sound_editor", _sound_editor_open_cb},
      {"colorclass_viewer", _colorclass_viewer_open_cb},
-     {"program_editor", _program_editor_open_cb},
+     {"animator", _animator_open_cb},
      {"widget_manager.layout", _widget_manager_layout_switch_cb},
      {"widget_manager.style", _widget_manager_style_switch_cb},
      {"highlight.align.show", _highlight_align_show_switch_cb},
@@ -460,6 +480,8 @@ static Function_Set _sc_func_set_init[] =
      {"zoom.in", _zoom_in_cb},
      {"zoom.out", _zoom_out_cb},
      {"quit", _quit_cb},
+     {"undo", _undo_cb},
+     {"redo", _redo_cb},
      {NULL, NULL}
 };
 static Eina_Hash *_sc_functions = NULL;
@@ -619,10 +641,17 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
         sc_func->held = false;
         sc_func->description = sc->description;
         sc_func->function = eina_hash_find(_sc_functions, sc->description);
+        if (!sc_func->function)
+          {
+             free(sc_func);
+             free(key);
+             continue;
+          }
         if (eina_hash_find(ap->shortcuts->shortcut_functions, key) ||
             (!eina_hash_direct_add(ap->shortcuts->shortcut_functions, key, sc_func)))
           {
              free(sc_func);
+             free(key);
              return false;
           }
      }

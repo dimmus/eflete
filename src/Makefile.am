@@ -13,6 +13,9 @@ project_manager/project_manager.c \
 logger/logger.c \
 config/config.c \
 external/syntax_color.c \
+history/history.c \
+history/history_attribute.c \
+history/history_ui.c \
 ui/cursor.c \
 ui/panes.c \
 ui/menu.c \
@@ -27,7 +30,9 @@ ui/editors/style_editor.c \
 ui/editors/image_editor.c \
 ui/editors/sound_editor.c \
 ui/editors/colorclass_editor.c \
-ui/editors/program_editor.c \
+ui/editors/animator.c \
+ui/editors/animator_program_editor.c \
+ui/editors/animator_program_sequence.c \
 ui/dialogs/save_file_dialog.c \
 ui/dialogs/part_dialog.c \
 ui/dialogs/state_dialog.c \
@@ -82,6 +87,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
+-I${top_srcdir}/src/history \
 -I${top_srcdir}/src/ui \
 -I${top_srcdir}/src/ui/shortcuts \
 -I${top_srcdir}/src/ui/container \

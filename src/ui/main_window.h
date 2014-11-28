@@ -249,7 +249,7 @@ ui_close_project_request(App_Data *ap, const char *msg);
  * If flag is EINA_TRUE - an item will be disabled, othervise - enabled, so it
  * can be used, clicked or anything like that.
  *
- * @param ap The App_Data structure pointer.
+ * @param menu_hash hash that contains menu items and toolbar buttons
  * @param name Menu item's title.
  * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
@@ -258,9 +258,9 @@ Eina_Bool
 ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag);
 
 /**
- * Disable or enable base menus (Editors, Saves, Separate..)
+ * Disable or enable base menus (Editors, Saves, Separate..) and toolbar buttons.
  *
- * @param ap The App_Data structure pointer.
+ * @param menu_hash hash that contains menu items and toolbar buttons
  * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  */
@@ -268,9 +268,20 @@ Eina_Bool
 ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
 
 /**
+ * Disable or enable toolbar buttons and menu items that are specific for
+ * editing of style.
+ *
+ * @param menu_hash hash that contains menu items and toolbar buttons
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ */
+Eina_Bool
+ui_menu_style_options_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
+
+/**
  * Disable or enable all menus.
  *
- * @param ap The App_Data structure pointer.
+ * @param menu_hash hash that contains menu items and toolbar buttons
  * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
  * @return EINA_TRUE if successful, EINA_FALSE otherwise.
  */
@@ -426,5 +437,17 @@ project_changed(void);
  */
 Eina_Bool
 project_close_request(App_Data *ap, const char *msg);
+
+/**
+ * Update Statusbar field that contains time of last save of current
+ * project file.
+ *
+ * @param ap The App_Data structure pointer.
+ * @param is_autosave flag to inform if the function is called by
+ *                    'autosave' functionality.
+ * @ingroup Window
+ */
+void
+save_time_info_update(App_Data *ap, Eina_Bool is_autosave);
 
 #endif /* UI_MAIN_WINDOW_H */

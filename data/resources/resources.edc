@@ -69,7 +69,9 @@ collections {
    ADD_PNG_LIM_SIZE("icon_next", 10, 10)
    ADD_PNG_LIM_SIZE("icon_pause", 10, 10)
 
-   ADD_IMAGE("section-item-bg", "section-item-bg.png", -1, -1, 0 0 0 2, SCALE, SOLID)
+   ADD_PNG_LIM_SIZE("animator_arrow_left", 13, 19)
+   ADD_PNG_LIM_SIZE("animator_arrow_right", 13, 19)
+
    ADD_IMAGE("gallery-bg", "gallery-bg.png", -1, -1, 2 2 2 6, SCALE, SOLID)
 
    ADD_IMAGE("bg_demo", "bg_demo.png", -1, -1, 0 0 0 0, TILE, SOLID)

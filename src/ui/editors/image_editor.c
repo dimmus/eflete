@@ -63,10 +63,6 @@ struct _Image_Editor
       Evas_Object *quality;
    } image_data_fields;
    struct {
-      Evas_Smart_Cb choose_func;
-      void *data;
-   } func_data;
-   struct {
       Elm_Object_Item *included;
       Elm_Object_Item *linked;
    } group_items;
@@ -306,9 +302,12 @@ _grid_group_item_del(void *data, Evas_Object *obj __UNUSED__)
 static char *
 _grid_group_item_label_get(void *data,
                            Evas_Object *obj __UNUSED__,
-                           const char  *part __UNUSED__)
+                           const char  *part)
 {
-   return strdup(data);
+   if ((part) && (!strcmp(part, "elm.text")))
+     return strdup(data);
+   else
+     return NULL;
 }
 
 static inline void
@@ -514,33 +513,33 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
 static void
 _on_image_done(void *data,
                Evas_Object *obj,
-               void *event_info)
+               void *event_info __UNUSED__)
 {
    Item *it = NULL;
    Evas_Object *edje_edit_obj = NULL;
-   const char *selected = event_info;
-
-   if ((!data) || (!selected) || (!strcmp(selected, "")))
-     {
-        ecore_main_loop_quit();
-        return;
-     }
+   const Eina_List *images, *l;
+   const char *selected;
 
    Image_Editor *img_edit = (Image_Editor *)data;
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
+   images = elm_fileselector_selected_paths_get(obj);
 
-   if ((ecore_file_exists(selected)) && (!ecore_file_is_dir(selected)))
+   EINA_LIST_FOREACH(images, l, selected)
      {
-        if (!edje_edit_image_add(edje_edit_obj, selected))
+        fprintf(stdout, "selected %s\n", selected);
+        if (!ecore_file_exists(selected))
           {
-             WIN_NOTIFY_ERROR(obj,
-                              _("Error while loading file.<br>"
-                                "Please check if file is image"
-                                "or/and file is accessible."));
-             return;
+             WIN_NOTIFY_ERROR(obj, _("File not exist"));
+             continue;
           }
-        else
+        if (ecore_file_is_dir(selected))
+          {
+             WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
+             continue;
+          }
+        fprintf(stdout, "selected %s\n", selected);
+        if (edje_edit_image_add(edje_edit_obj, selected))
           {
              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
                                                          ecore_file_file_get(selected));
@@ -549,11 +548,6 @@ _on_image_done(void *data,
                                             _grid_sel, img_edit);
              project_changed();
           }
-     }
-   else
-     {
-        WIN_NOTIFY_ERROR(obj, _("Error while loading file.<br>File is not exist"));
-        return;
      }
 
    ecore_main_loop_quit();
@@ -573,6 +567,7 @@ _on_button_add_clicked_cb(void *data,
    elm_win_resize_object_add(win, bg);
 
    FILESELECTOR_ADD(fs, win, _on_image_done, data);
+   elm_fileselector_multi_select_set(fs, true);
    elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();
@@ -672,6 +667,7 @@ _on_button_ok_clicked_cb(void *data,
    Eina_List *l, *names = NULL;
    Elm_Object_Item *it;
    const Item *item = NULL;
+   char *ei;
 
    if (!img_edit->gengrid)
      {
@@ -701,23 +697,22 @@ _on_button_ok_clicked_cb(void *data,
           }
         item = elm_object_item_data_get(it);
         if (!item)
-         {
-            _image_editor_del(img_edit);
-            return;
-         }
+          {
+             _image_editor_del(img_edit);
+             return;
+          }
      }
 
-   if (img_edit->func_data.choose_func)
+   if (!multiselect)
      {
-        if (!multiselect)
-          img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
-                                        (char *)item->image_name);
-        else
-          img_edit->func_data.choose_func(img_edit->func_data.data, img_edit->win,
-                                        (Eina_List *)names);
-        img_edit->func_data.choose_func = NULL;
-        img_edit->func_data.data = NULL;
+        ei = strdup(item->image_name);
+        evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED, ei);
+        free(ei);
      }
+   else
+     evas_object_smart_callback_call(img_edit->win, SIG_IMAGE_SELECTED,
+                                     (Eina_List *) names);
+
    _image_editor_del(img_edit);
 
 }
@@ -731,8 +726,8 @@ _on_button_close_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
-ITEM_SEARCH_FUNC(genlist)
-ITEM_SEARCH_FUNC(gengrid)
+ITEM_SEARCH_FUNC(genlist, NULL)
+ITEM_SEARCH_FUNC(gengrid, NULL)
 
 static void
 _on_images_search_entry_changed_cb(void *data,
@@ -1020,7 +1015,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.grid", img_edit->gengrid);
    elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
-   elm_gengrid_align_set(img_edit->gengrid, 0.5, 0.0);
+   elm_gengrid_align_set(img_edit->gengrid, 0.0, 0.0);
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
 
@@ -1178,38 +1173,4 @@ image_editor_file_choose(Evas_Object *win, const char *selected)
         grid_item = elm_gengrid_item_next_get(grid_item);
      }
    return false;
-}
-
-Eina_Bool
-image_editor_callback_add(Evas_Object *win, Evas_Smart_Cb func, void *data)
-{
-   Image_Editor *img_edit = NULL;
-
-   if (!win)
-     {
-        ERR("Expecting image editor window.");
-        return false;
-     }
-   img_edit = evas_object_data_get(win, IMG_EDIT_KEY);
-   if (!img_edit)
-     {
-        ERR("Image editor does'nt exist");
-        return false;
-     }
-
-   if (!func)
-     {
-        ERR("Expecting function.");
-        return false;
-     }
-
-   //if (!data)
-   //  {
-   //     ERR("Function's data is missing.");
-   //     return false;
-   //  }
-
-   img_edit->func_data.choose_func = func;
-   img_edit->func_data.data = data;
-   return true;
 }

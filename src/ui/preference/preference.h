@@ -41,3 +41,15 @@
  */
 Evas_Object *
 preferences_window_add(Project *project);
+
+/**
+ * Function for toggling autosaving of edj_file by period of ecore_timer
+ * accordingly to the profile settings.
+ *
+ * @param project -currently opened project
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ *
+ * @ingroup Preference
+ */
+Eina_Bool
+preferences_project_autosave_update(Project *project);

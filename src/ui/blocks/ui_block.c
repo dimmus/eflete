@@ -133,7 +133,7 @@ ui_block_property_get(App_Data *ap)
 }
 
 Evas_Object *
-ui_block_graph_vision_get(App_Data *ap)
+ui_block_history_get(App_Data *ap)
 {
    return ui_block_content_get(ap->block.right_top);
 }
@@ -175,7 +175,7 @@ ui_block_property_set(App_Data *ap, Evas_Object *content)
 }
 
 Eina_Bool
-ui_block_graph_vision_set(App_Data *ap, Evas_Object *content)
+ui_block_history_set(App_Data *ap, Evas_Object *content)
 {
    return ui_block_content_set(ap->block.right_top, content);
 }

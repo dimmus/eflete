@@ -17,25 +17,13 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "test_program_editor.h"
+#include "utc_common.h"
+#include "animator.h"
 
-Suite* test_suite (void) {
-   Suite *suite = suite_create("program_editor_test");
-   TCase *tcase = tcase_create("TCase");
-//   tcase_add_test(tcase, program_editor_window_add_test_p);
-   tcase_add_test(tcase, program_editor_window_add_test_n1);
-   tcase_add_test(tcase, program_editor_window_add_test_n2);
-   suite_add_tcase(suite, tcase);
-   return suite;
-}
+/**
+ * @defgroup test_animator
+ */
 
-int main(void) {
-   int number_failed;
-   Suite *suite = test_suite();
-   SRunner *runner = srunner_create(suite);
-   srunner_set_xml (runner, "test_program_editor.xml");
-   srunner_run_all(runner, CK_VERBOSE);
-   number_failed = srunner_ntests_failed(runner);
-   srunner_free(runner);
-   return number_failed;
-}
+void animator_window_add_test_p(int);
+void animator_window_add_test_n1(int);
+void animator_window_add_test_n2(int);

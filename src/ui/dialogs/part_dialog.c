@@ -153,7 +153,7 @@ _on_state_image_choose(void *data,
    ENTRY_IS_EMPTY
    evas_object_hide(ap->popup); /* popup is delete in WORKSPACE_PART_ADD */
    img_edit = image_editor_window_add(ap->project, SINGLE);
-   image_editor_callback_add(img_edit, _on_image_editor_done, ap);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, ap);
 }
 
 Evas_Object *

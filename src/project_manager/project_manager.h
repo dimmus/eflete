@@ -74,6 +74,7 @@ struct _Project
 
    Eina_Bool changed : 1;
    Eina_Bool close_request : 1;
+   //Ecore_Timer *autosave_timer;
 };
 
 /**

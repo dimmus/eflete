@@ -43,6 +43,8 @@ ui_main_window_del(App_Data *ap)
                                    "all your changes will be lost!"))))
      return false;
 
+   if (!history_term(ap->history))
+     WARN("Failed terminate history module");
 #ifdef HAVE_ENVENTOR
    code_edit_mode_switch(ap, false);
 #endif
@@ -76,6 +78,15 @@ _statusbar_init(Evas_Object *obj)
    evas_object_show(statusbar);
    LABEL_ADD(statusbar, label, _("No project opened"));
 
+   item = ewe_statusbar_item_append(statusbar, label,
+                                    EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
+   ewe_statusbar_item_label_set(item, _("Last saved: "));
+   /* MAGIC number 500 is width of item, which display path to currently open
+      project. It will be fixed in ewe_statusbar module from ewe library. Currently
+      width param "-1"(unlimited width) work incorrect. */
+   ewe_statusbar_item_width_set(item, 500);
+
+   LABEL_ADD(statusbar, label, _("the project is not opened"));
    item = ewe_statusbar_item_append(statusbar, label,
                                     EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
    ewe_statusbar_item_label_set(item, _("Project path: "));
@@ -174,6 +185,10 @@ ui_main_window_add(App_Data *ap)
    ap->statusbar = _statusbar_init(ap->win_layout);
    if (!ap->statusbar)
      MARK_TO_SHUTDOWN("Can't create a statusbar.")
+
+   ap->history = history_init();
+   if (!ap->history)
+     MARK_TO_SHUTDOWN("Failed initialize history module.")
 
    return true;
 }

@@ -152,7 +152,7 @@ live_view_property_style_set(Evas_Object *property,
    spinner = evas_object_data_get(pd->scale_spinner, ITEM);
    elm_spinner_value_set(spinner, 100);
    pd->current_scale = 1.0;
-   elm_object_scale_set(pd->live_object, pd->current_scale);
+   evas_object_scale_set(pd->live_object, pd->current_scale);
    elm_box_pack_start(prop_box, pd->scale_spinner);
    evas_object_show(pd->scale_spinner);
 
@@ -245,7 +245,8 @@ live_view_property_style_set(Evas_Object *property,
    edje_edit_string_list_free(part_list);
 
    /* setting all signals for current widget or style except mouse-like ones */
-   pd->signals = wm_program_signals_list_get(style);
+   if (!pd->in_prog_edit)
+     pd->signals = wm_program_signals_list_get(style);
 
    EINA_LIST_FOREACH(pd->signals, l, sig)
      {
