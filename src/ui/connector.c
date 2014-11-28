@@ -834,7 +834,10 @@ project_save(void)
    App_Data *ap;
 
    ap = app_data_get();
+   if (!ap->project) return;
+   if (!ap->project->changed) return;
    if (ap->splash) return;
+
    ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);

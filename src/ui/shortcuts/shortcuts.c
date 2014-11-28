@@ -245,15 +245,9 @@ _open_edj_cb(App_Data *app __UNUSED__)
 }
 
 Eina_Bool
-_save_cb(App_Data *app)
+_save_cb(App_Data *app __UNUSED__)
 {
-   Evas_Object *nf;
-   if (save_edj_file(app))
-     {
-        nf = ui_block_widget_list_get(app);
-        ui_widget_list_title_set(nf, app->project->name);
-        //STATUSBAR_PROJECT_PATH(app, app->project->edj);
-     }
+   project_save();
    return true;
 }
 
