@@ -1494,7 +1494,11 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
         if ((!bground) || (!strcmp(bground, "off"))) bg = EINA_FALSE;
         else bg = EINA_TRUE;
         const char* bcolor = _tag_value_get(value, "backing_color");
-        if (!bcolor) bcolor = WHITE_COLOR;
+        if (!bcolor)
+          {
+             bcolor = WHITE_COLOR;
+             _tag_parse(style_edit, WHITE_COLOR, "backing_color");
+          }
 
         elm_spinner_value_set(text_tabstops, atof(tabstops));
         elm_spinner_value_set(line_size, atof(linesize));
@@ -1545,11 +1549,23 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         const char* style = _tag_value_get(value, "style");
         if (!style) style = N_("none");
         const char* inner = _tag_value_get(value, "glow_color");
-        if (!inner) inner = WHITE_COLOR;
+        if (!inner)
+          {
+             inner = WHITE_COLOR;
+             _tag_parse(style_edit, WHITE_COLOR, "glow_color");
+          }
         const char* outer = _tag_value_get(value, "glow2_color");
-        if (!outer) outer = WHITE_COLOR;
+        if (!outer)
+          {
+              outer = WHITE_COLOR;
+             _tag_parse(style_edit, WHITE_COLOR, "glow2_color");
+          }
         const char* shadow = _tag_value_get(value, "shadow_color");
-        if (!shadow) shadow = WHITE_COLOR;
+        if (!shadow)
+          {
+             shadow = WHITE_COLOR;
+             _tag_parse(style_edit, WHITE_COLOR, "shadow_color");
+          }
 
         style_copy = mem_malloc(strlen(style) + 1);
         strcpy(style_copy, style);
