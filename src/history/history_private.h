@@ -56,6 +56,12 @@ typedef struct _State_Diff State_Diff;
 typedef struct _Part_Diff Part_Diff;
 
 /**
+ * @typedef State_Params
+ * @ingroup History_State
+ */
+typedef struct _State_Params State_Params;
+
+/**
  * @struct _History
  *
  * @brief This struct designed to storage list of modules, that can generatre
@@ -249,7 +255,7 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change);
  *
  * @param list The list of params. For detail description of this params
  *             please see history_diff_add.
- * @source The object, that represent module.
+ * @param source The object, that represent module.
  *
  * @return Pointer to filled structure, that casted to the Diff in successful
  *         case or NULL if something went wrong.
@@ -272,7 +278,7 @@ _state_change_free(State_Diff *change);
 /**
  * This function cancel given diff.
  *
- * @source The object, that represent module.
+ * @param source The object, that represent module.
  * @param change The diff, that was created with using _state_change_new.
  *
  * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
@@ -285,7 +291,7 @@ _state_undo(Evas_Object *source, State_Diff *change);
 /**
  * This function restore given diff.
  *
- * @source The object, that represent module.
+ * @param source The object, that represent module.
  * @param change The diff, that was created with using _state_change_new.
  *
  * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
@@ -294,6 +300,39 @@ _state_undo(Evas_Object *source, State_Diff *change);
  */
 Eina_Bool
 _state_redo(Evas_Object *source, State_Diff *change);
+
+/**
+ * Save current values of state into State_Param structure.
+ *
+ * @param source The object, that represent module.
+ * @param part The name of part, which contain state.
+ * @param state The name of state, which params should be saved.
+ * @param value The state value.
+ * @param type The type of part. Needed for save special params.
+ *
+ * @return Filled structure State_Params if successful, or NULL in otherwise.
+ *
+ * @ingroup History_State
+ */
+State_Params *
+_state_params_save(Evas_Object *obj, const char *part, const char *state,
+                   double value, Edje_Part_Type type);
+
+/**
+ * Restore values of saved state from State_Param structure into edje_edit object.
+ *
+ * @param source The object, that represent module.
+ * @param part The name of part, which contain state.
+ * @param state_diff The stored params.
+ * @param type The type of part. Needed for restore special params.
+ *
+ * @return EINA_TRUE if params restored successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_State
+ */
+Eina_Bool
+_state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
+                     State_Params *state_diff, Edje_Part_Type type);
 
 /* INTERNAL FUNCTIONS FOR HISTORY_PART SUBMODULE */
 /**

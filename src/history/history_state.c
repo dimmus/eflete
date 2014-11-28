@@ -20,7 +20,6 @@
 #include "history.h"
 #include "history_private.h"
 
-typedef struct _State_Params State_Params;
 typedef struct _Description_Fill Description_Fill;
 typedef struct _Description_Image Description_Image;
 typedef struct _Description_Text Description_Text;
@@ -191,8 +190,7 @@ _history_ui_state_update(Evas_Object *source, State_Diff *change)
                                     true);
 }
 
-/* argument 'type' will be used in future, for store special part types data */
-static State_Params *
+State_Params *
 _state_params_save(Evas_Object *obj, const char *part, const char *state,
                    double value, Edje_Part_Type type)
 {
@@ -354,8 +352,7 @@ _state_params_save(Evas_Object *obj, const char *part, const char *state,
    return state_diff;
 }
 
-/* argument 'type' will be used in future, for restore special part types data */
-static Eina_Bool
+Eina_Bool
 _state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
                      State_Params *state_diff, Edje_Part_Type type)
 {
