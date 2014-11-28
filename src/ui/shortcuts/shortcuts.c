@@ -648,11 +648,16 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
         sc_func->description = sc->description;
         sc_func->function = eina_hash_find(_sc_functions, sc->description);
         if (!sc_func->function)
-          continue;
+          {
+             free(sc_func);
+             free(key);
+             continue;
+          }
         if (eina_hash_find(ap->shortcuts->shortcut_functions, key) ||
             (!eina_hash_direct_add(ap->shortcuts->shortcut_functions, key, sc_func)))
           {
              free(sc_func);
+             free(key);
              return false;
           }
      }
