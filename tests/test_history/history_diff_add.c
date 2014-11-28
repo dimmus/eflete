@@ -853,6 +853,7 @@ END_TEST
 EFLETE_TEST(history_diff_add_test_p14)
 {
    App_Data *app = NULL;
+   Ecore_Evas *ee = NULL;
    Evas *canvas = NULL;
    Evas_Object *source = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -863,9 +864,11 @@ EFLETE_TEST(history_diff_add_test_p14)
    app_init();
    app = app_data_get();
    app->history = history_init();
-   canvas = evas_new();
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   canvas = ecore_evas_get(ee);
    source = edje_edit_object_add(canvas);
    edje_object_file_set(source, path, "elm/radio/base/def");
+   edje_edit_part_add(source, "new_part", EDJE_PART_TYPE_RECTANGLE);
    history_module_add(source);
 
    result = history_diff_add(source, PART_TARGET, ADD, "new_part");
@@ -873,7 +876,7 @@ EFLETE_TEST(history_diff_add_test_p14)
                          " action type ADD in the history of module.");
 
    history_term(app->history);
-   evas_free(canvas);
+   ecore_evas_free(ee);
    app_shutdown();
    elm_shutdown();
 }

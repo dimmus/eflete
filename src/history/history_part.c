@@ -283,10 +283,13 @@ _part_change_free(Part_Diff *change)
    if (change->diff.ui_item)
      elm_object_item_del(change->diff.ui_item);
 
-   eina_stringshare_del(change->params->dragable.confine);
-   eina_stringshare_del(change->params->dragable.threshold);
-   eina_stringshare_del(change->params->above);
-   free(change->params);
+   if (change->params)
+     {
+        eina_stringshare_del(change->params->dragable.confine);
+        eina_stringshare_del(change->params->dragable.threshold);
+        eina_stringshare_del(change->params->above);
+        free(change->params);
+     }
    free(change);
    return;
 }
