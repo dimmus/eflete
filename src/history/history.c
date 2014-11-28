@@ -378,7 +378,6 @@ history_diff_add(Evas_Object *source, Target target, ...)
          return false;
      }
    va_end(list);
-
    return _change_save(module, change);
 }
 

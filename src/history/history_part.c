@@ -131,9 +131,91 @@ _part_redo(Evas_Object *source __UNUSED__, Part_Diff *change __UNUSED__)
 }
 
 Eina_Bool
-_part_undo(Evas_Object *source __UNUSED__, Part_Diff *change __UNUSED__)
+_part_undo(Evas_Object *source, Part_Diff *change)
 {
-   return false;
+   Eina_List *l = NULL, *l_next = NULL;
+   State_Params *state = NULL;
+   Eina_Bool last = false;
+   Eina_Stringshare *above = NULL;
+   Part *part = NULL;
+
+   App_Data *app = app_data_get();
+   Style *style = app->project->current_style;
+   if ((!style) || (style->obj != source)) return false;
+
+   Evas_Object *prop = ui_block_property_get(app);
+   Evas_Object *widget_list = ui_block_widget_list_get(app);
+
+   switch (change->diff.action_type)
+     {
+      case ADD:
+        workspace_edit_object_part_del(app->workspace, change->part);
+        ui_widget_list_selected_part_del(widget_list, style);
+        part = ui_widget_list_selected_part_get(widget_list);
+        if (part)
+           {
+              evas_object_smart_callback_call(app->workspace, "ws,part,unselected",
+                                              (void *)part->name);
+              workspace_highlight_unset(app->workspace);
+           }
+        ui_property_part_unset(prop);
+        ui_property_style_unset(prop);
+        ui_property_style_set(prop, style, app->workspace);
+      break;
+      case DEL:
+        workspace_edit_object_part_add(app->workspace, change->part,
+                                       change->params->type, NULL);
+        _part_params_restore(source, change->part, change->params);
+        EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
+          {
+            _state_param_restore(source, change->part, state,
+                                  change->params->type);
+          }
+        ui_widget_list_part_add(widget_list, style, change->part);
+        if (!change->params->last)
+          {
+             wm_style_parts_restack(style, change->part, change->params->above,
+                                    false);
+             workspace_edit_object_part_restack(app->workspace, change->part,
+                                                change->params->above, false);
+          }
+        else
+          {
+             wm_style_parts_restack(style, change->part, change->params->above,
+                                    true);
+             workspace_edit_object_part_restack(app->workspace, change->part,
+                                                change->params->above, true);
+
+          }
+
+         ui_widget_list_style_parts_reload(widget_list, style);
+         ui_widget_list_part_selected_set(widget_list, change->part, true);
+      break;
+      case RESTACK:
+         /*Save current position in parts stack*/
+         above = edje_edit_part_above_get(source, change->part);
+         if (!above)
+           {
+             above = edje_edit_part_below_get(source, change->part);
+             last = true;
+           }
+
+         wm_style_parts_restack(style, change->part, change->params->above,
+                                change->params->last);
+         workspace_edit_object_part_restack(app->workspace, change->part,
+                                            change->params->above,
+                                            change->params->last);
+         change->params->last = last;
+         change->params->above = above;
+
+         ui_widget_list_style_parts_reload(widget_list, style);
+         ui_widget_list_part_selected_set(widget_list, change->part, true);
+         live_view_widget_style_set(app->live_view, app->project, style);
+      break;
+      default:
+      break;
+     }
+   return true;
 }
 
 void
@@ -166,10 +248,12 @@ _part_change_new(va_list list, Evas_Object *source)
 
    change->diff.module_type = PART_TARGET;
    change->diff.action_type = va_arg(list, Action);
+
    if ((change->diff.action_type != ADD) &&
        (change->diff.action_type != DEL) &&
        (change->diff.action_type != RESTACK))
      goto error;
+
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
    if (!change->part) goto error;
 
