@@ -398,7 +398,7 @@ ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
    result &= ui_menu_disable_set(menu_hash, _("Sounds"), flag);
    result &= ui_menu_disable_set(menu_hash, _("Colorclasses"), flag);
 
-   result &= ui_menu_disable_set(menu_hash, _("Save Project"), flag);
+   result &= ui_menu_disable_set(menu_hash, _("Save project"), flag);
    result &= ui_menu_disable_set(menu_hash, _("Image editor"), flag);
    result &= ui_menu_disable_set(menu_hash, _("Sound editor"), flag);
    result &= ui_menu_disable_set(menu_hash, _("Color class editor"), flag);

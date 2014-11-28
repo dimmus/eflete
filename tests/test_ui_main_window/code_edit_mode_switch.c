@@ -58,7 +58,6 @@ EFLETE_TEST (code_edit_mode_switch_test_p)
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
-   Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
@@ -70,7 +69,6 @@ EFLETE_TEST (code_edit_mode_switch_test_p)
    result = code_edit_mode_switch(app_data, false);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Code Edit mode OFF!");
 
-   pm_project_close(project);
    evas_object_del(app_data->win);
    elm_shutdown();
 }

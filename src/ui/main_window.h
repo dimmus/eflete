@@ -70,7 +70,7 @@ ui_main_window_add(App_Data *ap);
  * @ingroup Window
  */
 Eina_Bool
-ui_main_window_del(App_Data *ap);
+ui_main_window_del(App_Data *ap) EINA_ARG_NONNULL(1);
 
 /**
  * Adds marked panes to the given Elementary layout.
