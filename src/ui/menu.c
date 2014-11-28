@@ -274,6 +274,8 @@ ui_menu_add(App_Data *ap)
    //ecore_event_handler_add(_menu_delayed_event, _menu_event_handler_cb, NULL);
    menu = elm_win_main_menu_get(ap->win);
    menu_elms_hash = eina_hash_string_small_new(NULL);
+   elm_object_style_set(menu, DEFAULT_STYLE);
+
 
 #define ITEM_MENU_ADD(menu_obj, parent_menu, icon, label, callback, data, ret) \
    ret = elm_menu_item_add(menu_obj, parent_menu, icon, label, callback, data); \
