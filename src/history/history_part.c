@@ -312,7 +312,8 @@ _part_change_new(va_list list, Evas_Object *source)
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
    if (!change->part) goto error;
 
-   change->diff.source = eina_stringshare_add(change->part);
+   /*This strings needed for UI elements. Will change later. */
+   change->diff.new = eina_stringshare_add(change->part);
 
    change->params = _part_params_save(source, change->part);
    if (!change->params) goto error;

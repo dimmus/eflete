@@ -90,40 +90,42 @@ _item_state_get(void *data,
        return true;
    if ((diff->action_type == DEL) && ((!strcmp(part, "delete"))))
        return true;
+   if ((diff->action_type == RESTACK) && ((!strcmp(part, "restack"))))
+       return true;
    return false;
 }
 static char *
 _item_label_get(void *data,
                 Evas_Object *obj __UNUSED__,
-                const char *part __UNUSED__)
+                const char *part)
 {
    Diff *diff = (Diff *)data;
 
-   if (!strcmp(part, "elm.text.message"))
+   if ((diff->description) && (!strcmp(part, "elm.text.message")))
      {
         return strdup(diff->description);
      }
 
-   if ((!strcmp(part, "elm.text.state")) && (diff->state))
+   if ((diff->state) && (!strcmp(part, "elm.text.state")))
      {
         return strdup(diff->state);
      }
 
-   if (!strcmp(part, "elm.text.source"))
+   if ((diff->source) && (!strcmp(part, "elm.text.source")))
      {
         return strdup(diff->source);
      }
 
-   if (!strcmp(part, "elm.text.new"))
+   if ((diff->new) && (!strcmp(part, "elm.text.new")))
      {
         return strdup(diff->new);
      }
 
-   if (!strcmp(part, "elm.text.old"))
+   if ((diff->old) && (!strcmp(part, "elm.text.old")))
      {
         return strdup(diff->old);
      }
-   return strdup(" ");
+   return NULL;
 }
 
 Evas_Object *
