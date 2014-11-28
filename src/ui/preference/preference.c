@@ -144,19 +144,19 @@ _on_##VALUE##_change(void *data, \
      } \
 }
 
+/*
 static Eina_Bool
 _autosave_timer_cb()
 {
-   /*
    App_Data *ap = app_data_get();
    if (!ap->project->is_new)
      save_edj_file(ap);
 
    save_time_info_update(ap, true);
    return  ECORE_CALLBACK_RENEW;
-   */
    return false;
 }
+*/
 
 Eina_Bool
 preferences_project_autosave_update(Project *project __UNUSED__)
