@@ -45,6 +45,7 @@ setup(const char *name)
    pro = pm_project_thread_project_get(thread);
    if (!pro)
       ck_abort_msg("Setup is failed! Project not imported");
+   pm_project_close(pro);
 
    pm_project_thread_free(thread);
 }
