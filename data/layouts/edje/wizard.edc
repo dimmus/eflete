@@ -678,7 +678,8 @@ group { name: "elm/layout/wizard/directories_item";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            SET_SIZE(28, 20)
+            SET_SIZE(28, 20);
+            fixed: 1 1;
             rel1 {
                to: "padding.buttons_top_left";
                relative: 1.0 1.0;
@@ -693,7 +694,8 @@ group { name: "elm/layout/wizard/directories_item";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            SET_SIZE(28, 20)
+            SET_SIZE(28, 20);
+            fixed: 1 1;
             rel1 {
                to: "padding.buttons_top_left";
                relative: 1.0 1.0;

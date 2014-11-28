@@ -55,11 +55,12 @@ _on_import_edj(void *data,
 }
 
 static void
-_on_import_edc(void *data __UNUSED__,
+_on_import_edc(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-
+   App_Data *ap = (App_Data *)data;
+   wizard_import_edc_add(ap);
 }
 
 static void

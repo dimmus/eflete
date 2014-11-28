@@ -37,11 +37,23 @@
  *
  * @param ap The App_Data of Eflete.
  *
- * @return The wizard object, overwise NULL;
+ * @return If successful the wizard object, overwise NULL;
  *
  * @ingroup Wizard
  */
 Evas_Object *
 wizard_import_edj_add(App_Data *ap) EINA_ARG_NONNULL(1);
+
+/**
+ * Create a wizard for import edc file to Eflete as new project.
+ *
+ * @param ap The App_Data of Eflete.
+ *
+ * @return If successful the wizard object, overwise NULL;
+ *
+ * @ingroup Wizard
+ */
+Evas_Object *
+wizard_import_edc_add(App_Data *ap) EINA_ARG_NONNULL(1);
 
 #endif /* WIZARD_H */
