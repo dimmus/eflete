@@ -66,6 +66,7 @@ EFLETE_TEST (sound_editor_file_choose_test_p)
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./sound_editor_file_choose_test_p/sound_editor_file_choose_test_p.pro");
+   wm_widgets_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->dev);
    sound_editor = sound_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, "key-tap") == EINA_TRUE,
