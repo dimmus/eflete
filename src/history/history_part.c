@@ -54,9 +54,10 @@ struct _Part_Diff
    Diff diff;
    Eina_Stringshare *part;
    Eina_List *states;
+   Part_Params *params;
 };
 
-Part_Params *
+static Part_Params *
 _part_params_save(Evas_Object *obj, Eina_Stringshare *part)
 {
    Part_Params *params_diff = NULL;
@@ -136,13 +137,65 @@ _part_undo(Evas_Object *source __UNUSED__, Part_Diff *change __UNUSED__)
 }
 
 void
-_part_change_free(Part_Diff *change __UNUSED__)
+_part_change_free(Part_Diff *change)
 {
+   State_Params *state = NULL;
+
+   eina_stringshare_del(change->part);
+
+   EINA_LIST_FREE(change->states, state)
+     free(state);
+
+   eina_stringshare_del(change->params->dragable.confine);
+   eina_stringshare_del(change->params->dragable.threshold);
+   eina_stringshare_del(change->params->above);
+   free(change->params);
+   free(change);
    return;
 }
 
 Diff *
-_part_change_new(va_list list __UNUSED__, Evas_Object *source __UNUSED__)
+_part_change_new(va_list list, Evas_Object *source)
 {
+   Eina_List *states, *l, *l_next;
+   Eina_Stringshare *state_name;
+   char **split = NULL;
+   State_Params *state = NULL;
+
+   Part_Diff *change = (Part_Diff *)mem_calloc(1, sizeof(Part_Diff));
+
+   change->diff.module_type = PART_TARGET;
+   change->diff.action_type = va_arg(list, Action);
+   if ((change->diff.action_type != ADD) &&
+       (change->diff.action_type != DEL) &&
+       (change->diff.action_type != RESTACK))
+     goto error;
+   change->part = eina_stringshare_add((char *)va_arg(list, char *));
+   if (!change->part) goto error;
+
+   change->diff.source = eina_stringshare_add(change->part);
+
+   change->params = _part_params_save(source, change->part);
+   if (!change->params) goto error;
+
+   if (change->diff.action_type == RESTACK)
+     return (Diff *)change;
+
+   states = edje_edit_part_states_list_get(source, change->part);
+   EINA_LIST_FOREACH_SAFE(states, l, l_next, state_name)
+       {
+          split = eina_str_split(state_name, " ", 2);
+          state = _state_params_save(source, change->part, split[0],
+                                     atof(split[1]), change->params->type);
+          change->states = eina_list_append(change->states, state);
+          free(split[0]);
+          free(split);
+       }
+   edje_edit_string_list_free(states);
+   if (!change->states) goto error;
+
+   return (Diff *)change;
+error:
+   _part_change_free(change);
    return NULL;
 }
