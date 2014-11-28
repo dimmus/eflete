@@ -626,8 +626,6 @@ _on_ok_cb(void *data,
    Evas_Object *edje_edit_obj;
    Eina_List *l;
    Sound *snd;
-   Elm_Object_Item *grid_item;
-   const Item *item;
    Eina_Bool multiselect;
    char *ei;
 
@@ -650,11 +648,9 @@ _on_ok_cb(void *data,
    _sound_editor_quit(edit);
 
    multiselect = elm_gengrid_multi_select_get(edit->gengrid);
-   if (!multiselect)
+   if ((!multiselect) && (edit->selected))
      {
-        grid_item = elm_gengrid_selected_item_get(edit->gengrid);
-        item = elm_object_item_data_get(grid_item);
-        ei = strdup(item->sound_name);
+        ei = strdup(edit->selected);
         evas_object_smart_callback_call(edit->win, SIG_SOUND_SELECTED, ei);
         free(ei);
      }
