@@ -37,7 +37,7 @@ static const Ecore_Getopt options = {
    "and design to a create and modify a Elementary widgets style.\n"),
    EINA_TRUE,
    {
-      ECORE_GETOPT_STORE_STR('o', "open", N_("open EDJ file")),
+      ECORE_GETOPT_STORE_STR('o', "open", N_("Eflete project file")),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
       ECORE_GETOPT_LICENSE  ('l', "license"),
@@ -49,12 +49,12 @@ static const Ecore_Getopt options = {
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
-   char *edj = NULL;
+   char *open = NULL;
    Eina_Bool info_only = false;
    int args;
 
    Ecore_Getopt_Value values[] = {
-     ECORE_GETOPT_VALUE_STR(edj),
+     ECORE_GETOPT_VALUE_STR(open),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -93,11 +93,17 @@ elm_main(int argc, char **argv)
           }
         evas_object_show(ap->win);
 
-        if (edj)
+        if (open)
           {
-             if (eina_str_has_suffix(edj, ".edj"))
+             if (eina_str_has_suffix(open, ".pro"))
                {
-                  //ui_edj_load(ap, edj);
+                  ap->project = pm_project_open(open);
+                  blocks_show(ap);
+               }
+             else
+               {
+                  ERR(_("Can not open file '%s'. Maybe this file not Eflete project."), open);
+                  return 1;
                }
           }
         elm_run();
