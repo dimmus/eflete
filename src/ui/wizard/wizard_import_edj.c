@@ -222,7 +222,7 @@ wizard_import_edj_add(App_Data *ap)
    wiew->win = mwin;
 
    layout = elm_layout_add(mwin);
-   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/wizard/import");
+   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/wizard/import_edj");
    elm_object_content_set(mwin, layout);
    evas_object_show(layout);
 
