@@ -66,7 +66,6 @@
  */
 EFLETE_TEST(history_redo_test_p1)
 {
-   setup("history_redo_test_p1");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -76,6 +75,8 @@ EFLETE_TEST(history_redo_test_p1)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p1");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p1/history_redo_test_p1.pro");
@@ -137,7 +138,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p2)
 {
-   setup("history_redo_test_p2");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -149,6 +149,8 @@ EFLETE_TEST(history_redo_test_p2)
    app_init();
    app = app_data_get();
    ui_main_window_add(app);
+   setup("history_redo_test_p2");
+
    app->project = pm_project_open("./history_redo_test_p2/history_redo_test_p2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->dev);
@@ -213,7 +215,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p3)
 {
-   setup("history_redo_test_p3");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -226,6 +227,8 @@ EFLETE_TEST(history_redo_test_p3)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p3");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p3/history_redo_test_p3.pro");
@@ -301,7 +304,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p4)
 {
-   setup("history_redo_test_p4");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -314,6 +316,8 @@ EFLETE_TEST(history_redo_test_p4)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p4");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p4/history_redo_test_p4.pro");
@@ -382,7 +386,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p5)
 {
-   setup("history_redo_test_p5");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -392,6 +395,8 @@ EFLETE_TEST(history_redo_test_p5)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p5");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p5/history_redo_test_p5.pro");
@@ -453,7 +458,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p6)
 {
-   setup("history_redo_test_p6");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -464,6 +468,8 @@ EFLETE_TEST(history_redo_test_p6)
 
    new_value = eina_stringshare_add("events");
    app_init();
+   setup("history_redo_test_p6");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p6/history_redo_test_p6.pro");
@@ -530,7 +536,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p7)
 {
-   setup("history_redo_test_p7");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -540,8 +545,10 @@ EFLETE_TEST(history_redo_test_p7)
    const char *tmp;
 
    elm_init(0, 0);
-   new_value = eina_stringshare_add("events");
    app_init();
+   setup("history_redo_test_p7");
+
+   new_value = eina_stringshare_add("events");
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p7/history_redo_test_p7.pro");
@@ -609,7 +616,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p8)
 {
-   setup("history_redo_test_p8");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -619,6 +625,8 @@ EFLETE_TEST(history_redo_test_p8)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p8");
+
    app = app_data_get();
    app->history = history_init();
    ui_main_window_add(app);
@@ -686,7 +694,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p9)
 {
-   setup("history_redo_test_p9");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -696,6 +703,8 @@ EFLETE_TEST(history_redo_test_p9)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p9");
+
    app = app_data_get();
    app = app_data_get();
    ui_main_window_add(app);
@@ -757,7 +766,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p10)
 {
-   setup("history_redo_test_p10");
    App_Data *app = NULL;
    Style *style = NULL;
    Part *part = NULL;
@@ -767,6 +775,8 @@ EFLETE_TEST(history_redo_test_p10)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p10");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p10/history_redo_test_p10.pro");
@@ -827,7 +837,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p11)
 {
-   setup("history_redo_test_p11");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -836,6 +845,8 @@ EFLETE_TEST(history_redo_test_p11)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p11");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p11/history_redo_test_p11.pro");
@@ -897,7 +908,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p12)
 {
-   setup("history_redo_test_p12");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -906,6 +916,8 @@ EFLETE_TEST(history_redo_test_p12)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p12");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p12/history_redo_test_p12.pro");
@@ -971,7 +983,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p13)
 {
-   setup("history_redo_test_p13");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -981,6 +992,8 @@ EFLETE_TEST(history_redo_test_p13)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p13");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p13/history_redo_test_p13.pro");
@@ -1049,7 +1062,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_p14)
 {
-   setup("history_redo_test_p14");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1059,6 +1071,8 @@ EFLETE_TEST(history_redo_test_p14)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_p14");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p14/history_redo_test_p14.pro");
@@ -1116,7 +1130,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_n1)
 {
-   setup("history_redo_test_n1");
    Evas *canvas = NULL;
    Ecore_Evas *ee = NULL;
    Evas_Object *source = NULL;
@@ -1125,6 +1138,8 @@ EFLETE_TEST(history_redo_test_n1)
 
    edj = "./edj_build/history.edj";
    elm_init(0, 0);
+   setup("history_redo_test_n1");
+
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
    source = edje_edit_object_add(canvas);
@@ -1170,7 +1185,6 @@ END_TEST
  */
 EFLETE_TEST(history_redo_test_n2)
 {
-   setup("");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1179,9 +1193,11 @@ EFLETE_TEST(history_redo_test_n2)
 
    elm_init(0, 0);
    app_init();
+   setup("history_redo_test_n2");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_project_open("./history_redo_test_n1/history_redo_test_n1.pro");
+   app->project = pm_project_open("./history_redo_test_n2/history_redo_test_n2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win), app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");

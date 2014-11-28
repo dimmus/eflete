@@ -65,7 +65,6 @@
  */
 EFLETE_TEST(history_undo_test_p1)
 {
-   setup("history_undo_test_p1");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -75,6 +74,8 @@ EFLETE_TEST(history_undo_test_p1)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p1");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p1/history_undo_test_p1.pro");
@@ -134,7 +135,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p2)
 {
-   setup("history_undo_test_p2");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -144,6 +144,8 @@ EFLETE_TEST(history_undo_test_p2)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p2");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p2/history_undo_test_p2.pro");
@@ -208,7 +210,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p3)
 {
-   setup("history_undo_test_p3");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -221,6 +222,8 @@ EFLETE_TEST(history_undo_test_p3)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p3");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p3/history_undo_test_p3.pro");
@@ -292,7 +295,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p4)
 {
-   setup("history_undo_test_p4");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -305,6 +307,8 @@ EFLETE_TEST(history_undo_test_p4)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p4");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p4/history_undo_test_p4.pro");
@@ -371,7 +375,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p5)
 {
-   setup("history_undo_test_p5");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -381,6 +384,8 @@ EFLETE_TEST(history_undo_test_p5)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p5");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p5/history_undo_test_p5.pro");
@@ -440,7 +445,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p6)
 {
-   setup("history_undo_test_p6");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -450,8 +454,10 @@ EFLETE_TEST(history_undo_test_p6)
    const char *tmp;
 
    elm_init(0, 0);
-   new_value = eina_stringshare_add("events");
    app_init();
+   setup("history_undo_test_p6");
+
+   new_value = eina_stringshare_add("events");
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p6/history_undo_test_p6.pro");
@@ -516,7 +522,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p7)
 {
-   setup("history_undo_test_p7");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -526,8 +531,10 @@ EFLETE_TEST(history_undo_test_p7)
    const char *tmp;
 
    elm_init(0, 0);
-   new_value = eina_stringshare_add("events");
    app_init();
+   setup("history_undo_test_p7");
+
+   new_value = eina_stringshare_add("events");
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p7/history_undo_test_p7.pro");
@@ -592,7 +599,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p8)
 {
-   setup("history_undo_test_p8");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -602,6 +608,8 @@ EFLETE_TEST(history_undo_test_p8)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p8");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p8/history_undo_test_p8.pro");
@@ -666,7 +674,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p9)
 {
-   setup("history_undo_test_p9");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -676,6 +683,8 @@ EFLETE_TEST(history_undo_test_p9)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p9");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p9/history_undo_test_p9.pro");
@@ -733,7 +742,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p10)
 {
-   setup("history_undo_test_p10");
    App_Data *app = NULL;
    Style *style = NULL;
    Part *part = NULL;
@@ -743,6 +751,8 @@ EFLETE_TEST(history_undo_test_p10)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p10");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p10/history_undo_test_p10.pro");
@@ -803,7 +813,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p11)
 {
-   setup("history_undo_test_p11");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -813,6 +822,8 @@ EFLETE_TEST(history_undo_test_p11)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p11");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p11/history_undo_test_p11.pro");
@@ -873,7 +884,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p12)
 {
-   setup("history_undo_test_p12");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -883,6 +893,8 @@ EFLETE_TEST(history_undo_test_p12)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p12");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p12/history_undo_test_p12.pro");
@@ -943,7 +955,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p13)
 {
-   setup("history_undo_test_p13");
    App_Data *app = NULL;
    Eina_Bool result = EINA_FALSE;
    Style *style = NULL;
@@ -953,6 +964,8 @@ EFLETE_TEST(history_undo_test_p13)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p13");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p13/history_undo_test_p13.pro");
@@ -1011,7 +1024,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p14)
 {
-   setup("history_undo_test_p14");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1020,6 +1032,8 @@ EFLETE_TEST(history_undo_test_p14)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p14");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p14/history_undo_test_p14.pro");
@@ -1079,7 +1093,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p15)
 {
-   setup("history_undo_test_p15");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1088,6 +1101,8 @@ EFLETE_TEST(history_undo_test_p15)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p15");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p15/history_undo_test_p15.pro");
@@ -1153,7 +1168,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p16)
 {
-   setup("history_undo_test_p16");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1163,6 +1177,8 @@ EFLETE_TEST(history_undo_test_p16)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p16");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p16/history_undo_test_p16.pro");
@@ -1231,7 +1247,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_p17)
 {
-   setup("history_undo_test_p17");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1241,6 +1256,8 @@ EFLETE_TEST(history_undo_test_p17)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p17");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p17/history_undo_test_p17.pro");
@@ -1350,7 +1367,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_n2)
 {
-   setup("history_undo_test_n2");
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
@@ -1359,6 +1375,8 @@ EFLETE_TEST(history_undo_test_n2)
 
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_n2");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_n2/history_undo_test_n2.pro");
@@ -1405,7 +1423,6 @@ END_TEST
  */
 EFLETE_TEST(history_undo_test_n3)
 {
-   setup("");
    Eina_Bool result = EINA_FALSE;
 
    elm_init(0, 0);
