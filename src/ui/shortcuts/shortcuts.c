@@ -240,7 +240,7 @@ _open_edc_cb(App_Data *app)
 Eina_Bool
 _open_edj_cb(App_Data *app __UNUSED__)
 {
-   //open_edj_file(app);
+   project_open();
    return true;
 }
 
