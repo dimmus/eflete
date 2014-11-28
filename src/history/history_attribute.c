@@ -478,6 +478,12 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
           case STRING:
              eina_stringshare_replace(&previous->string.new, change->string.new);
           break;
+          case FOUR:
+             previous->four.new_1 = change->four.new_1;
+             previous->four.new_2 = change->four.new_2;
+             previous->four.new_3 = change->four.new_3;
+             previous->four.new_4 = change->four.new_4;
+          break;
           default:
              return change;
          }
