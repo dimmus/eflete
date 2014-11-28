@@ -54,7 +54,6 @@ struct _Style_Editor
    } current_style;
    struct {
         Evas_Object *name;
-        Evas_Object *value;
         Evas_Object *dialog;
    } popup;
    Elm_Object_Item *tag;
@@ -198,11 +197,6 @@ static const char *underl_styles[] = { N_("single"),
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
    .rejected = BANNED_SYMBOLS
-};
-
-static Elm_Entry_Filter_Accept_Set accept_value = {
-   .accepted = NULL,
-   .rejected = EDITORS_BANNED_SYMBOLS
 };
 
 static const char*
@@ -379,19 +373,12 @@ _on_st_add_bt_ok(void *data,
    Evas_Object *edje_edit_obj = NULL;
    Style_Editor *style_edit = (Style_Editor *)data;
    const char *style_name = elm_entry_entry_get(POPUP.name);
-   const char *default_tags = elm_entry_entry_get(POPUP.value);
 
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
    if ((!style_name) || (strcmp(style_name, "") == 0))
      {
         NOTIFY_WARNING(_("Style name can not be empty!"));
-        return;
-     }
-   if (!((isalpha(default_tags[0])) || (default_tags[0] == '+')
-         || (!strcmp(default_tags, ""))))
-     {
-        NOTIFY_WARNING(_("The default tag must begin from + or alphabetic symbol"));
         return;
      }
    if (!edje_edit_style_add(edje_edit_obj, style_name))
@@ -401,8 +388,7 @@ _on_st_add_bt_ok(void *data,
      }
    if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
      {
-        if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, "DEFAULT",
-                                        default_tags))
+        if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, "DEFAULT", ""))
           {
              NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
              edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
@@ -488,15 +474,6 @@ _on_bt_style_add(Style_Editor *style_edit)
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", POPUP.name);
-   elm_box_pack_end(box, item);
-
-   ITEM_ADD(box, item, "Default tags:", "eflete/property/item/default")
-   EWE_ENTRY_ADD(box, POPUP.value, true, DEFAULT_STYLE);
-   elm_object_part_text_set(POPUP.value, "guide",
-                            _("Type tag which will be used as default."));
-   elm_entry_markup_filter_append(POPUP.value, elm_entry_filter_accept_set,
-                                  &accept_value);
-   elm_object_part_content_set(item, "elm.swallow.content", POPUP.value);
    elm_box_pack_end(box, item);
 
    elm_object_content_set(POPUP.dialog, box);
