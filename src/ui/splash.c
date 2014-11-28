@@ -37,7 +37,6 @@ _on_teardown(void *data __UNUSED__,
              const char *emission __UNUSED__,
              const char *source __UNUSED__)
 {
-   fprintf(stdout, "%s %s\n", emission, source);
    if (sdata.teardown) sdata.teardown(sdata.data);
    evas_object_del(obj);
 }
