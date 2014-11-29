@@ -58,6 +58,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p1)
    Style *style = calloc(1, sizeof(Style));
 
    elm_init(0, 0);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
@@ -70,6 +71,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p1)
 
    evas_object_del(parent);
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -104,6 +106,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p2)
    Style *style = calloc(1, sizeof(Style));
 
    elm_init(0, 0);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
@@ -119,6 +122,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_p2)
 
    evas_object_del(parent);
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -152,6 +156,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n1)
    Style *style = calloc(1, sizeof(Style));
 
    elm_init(0, 0);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
@@ -165,6 +170,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n1)
 
    evas_object_del(parent);
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -198,6 +204,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n2)
    Style *style = calloc(1, sizeof(Style));
 
    elm_init(0, 0);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
@@ -211,6 +218,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n2)
 
    evas_object_del(parent);
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -244,6 +252,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n3)
    Style *style = calloc(1, sizeof(Style));
 
    elm_init(0, 0);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
@@ -257,6 +266,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n3)
 
    evas_object_del(parent);
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -294,6 +304,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n4)
    Style *style = calloc(1, sizeof(Style));
 
    elm_init(0, 0);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    edje_edit = edje_edit_object_add(evas_object_evas_get(parent));
@@ -314,6 +325,7 @@ EFLETE_TEST(workspace_edit_object_part_rename_test_n4)
 
    evas_object_del(parent);
 
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

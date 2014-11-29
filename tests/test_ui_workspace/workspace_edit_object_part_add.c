@@ -58,7 +58,7 @@
 EFLETE_TEST (workspace_edit_object_part_add_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
@@ -80,7 +80,7 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -114,7 +114,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_part_add_test_p1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
@@ -136,7 +136,7 @@ EFLETE_TEST (workspace_edit_object_part_add_test_p1)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -169,7 +169,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_part_add_test_n)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -190,7 +190,7 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -254,7 +254,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_part_add_test_n2)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -274,7 +274,7 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n2)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -308,7 +308,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_part_add_test_n3)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -329,7 +329,7 @@ EFLETE_TEST (workspace_edit_object_part_add_test_n3)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

@@ -68,7 +68,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
 
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -94,7 +94,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_p)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -131,7 +131,6 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
@@ -147,7 +146,6 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n)
 
    wm_style_free(style);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
 }
 END_TEST
@@ -184,7 +182,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n1)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -199,7 +197,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n1)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -238,7 +236,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -258,7 +256,7 @@ EFLETE_TEST(workspace_edit_object_part_state_set_test_n2)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

@@ -17,6 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "eflete.h"
 #include "ui_workspace.h"
 #include "utc_common.h"
 

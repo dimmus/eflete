@@ -55,7 +55,7 @@
 EFLETE_TEST (workspace_zoom_factor_get_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    double res = -1;
    Evas_Object *parent, *workspace;
 
@@ -67,7 +67,7 @@ EFLETE_TEST (workspace_zoom_factor_get_test_p)
 
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
