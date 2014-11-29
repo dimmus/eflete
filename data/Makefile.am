@@ -16,7 +16,11 @@ filesdir = $(datadir)/eflete/themes/default
 files_DATA = default.edj
 
 template_edcdir = $(datadir)/eflete/themes/default/template/edc
-template_edc_DATA = $(top_srcdir)/data/template/widgets/*.edc
+template_edc_DATA = \
+   $(top_srcdir)/data/template/widgets/*.edc \
+   $(top_srcdir)/data/template/macros.edc \
+   $(top_srcdir)/data/template/fonts.edc \
+   $(top_srcdir)/data/template/colorclasses.edc
 
 template_imgdir = $(datadir)/eflete/themes/default/template/images
 template_img_DATA = $(top_srcdir)/data/template/images/*

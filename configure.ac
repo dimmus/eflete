@@ -142,6 +142,9 @@ EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/resources.edj\\\" "
+EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDC_PATH=\\\"${datadir}/eflete/themes/default/template/edc\\\" "
+EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_IMAGES_PATH=\\\"${datadir}/eflete/themes/default/template/images\\\" "
+EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_SOUNDS_PATH=\\\"${datadir}/eflete/themes/default/template/sounds\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SWAP_PATH=\\\"${HOME}/.eflete/swap/\\\" "
 AC_SUBST([EFLETE_DEFINE])
