@@ -78,6 +78,7 @@ check: Makefile
 	$(builddir)/colorclass_editor.edj \
 	$(builddir)/sound_editor.edj \
 	$(builddir)/history.edj \
+	$(builddir)/history_diff_add.edj \
 	$(builddir)/preference.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
