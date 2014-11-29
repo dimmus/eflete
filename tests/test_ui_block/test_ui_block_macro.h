@@ -52,8 +52,6 @@ END_TEST
  * </td> \
  * <td>App_Data *app_data, Evas_Object *content</td> \
  * <td>all checks passed</td> \
- * <td>_REAL_RESULT_</td> \
- * <td>_PASSED_</td> \
  * </tr> \
  * @} \
  */ \
@@ -77,8 +75,6 @@ TEST_UI_BLOCK_CONTENT_TC(_func_,p,_block_,ui_block_add(parent),ui_block_add(pare
  * </td> \
  * <td>App_Data *app_data, Evas_Object *content</td> \
  * <td>all checks passed</td> \
- * <td>_REAL_RESULT_</td> \
- * <td>_PASSED_</td> \
  * </tr> \
  * @} \
  */ \
@@ -101,8 +97,6 @@ TEST_UI_BLOCK_CONTENT_TC(_func_,n1,_block_,NULL,ui_block_add(parent),NULL,EINA_F
  * </td> \
  * <td>App_Data *app_data, NULL</td> \
  * <td>all checks passed</td> \
- * <td>_REAL_RESULT_</td> \
- * <td>_PASSED_</td> \
  * </tr> \
  * @} \
  */ \
