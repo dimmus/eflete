@@ -466,10 +466,11 @@ EFLETE_TEST(history_redo_test_p6)
    Eina_Stringshare *check_value = NULL;
    const char *tmp;
 
-   new_value = eina_stringshare_add("events");
+   elm_init(0, 0);
    app_init();
    setup("history_redo_test_p6");
 
+   new_value = eina_stringshare_add("events");
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p6/history_redo_test_p6.pro");

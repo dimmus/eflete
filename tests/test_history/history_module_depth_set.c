@@ -125,7 +125,6 @@ END_TEST
  */
 EFLETE_TEST(history_module_depth_set_test_p2)
 {
-   setup("history_module_depth_set_test_p2");
    App_Data *app = NULL;
    Style *style = NULL;
    int new_value = 10;
@@ -133,6 +132,8 @@ EFLETE_TEST(history_module_depth_set_test_p2)
 
    elm_init(0, 0);
    app_init();
+   setup("history_module_depth_set_test_p2");
+
    app = app_data_get();
    ui_main_window_add(app);
    app->project = pm_project_open("./history_module_depth_set_test_p2/history_module_depth_set_test_p2.pro");
