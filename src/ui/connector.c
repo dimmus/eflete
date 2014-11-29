@@ -95,6 +95,7 @@ _del_part(void *data,
         live_view_widget_style_set(ap->live_view, ap->project, style);
      }
    free(part_name);
+   project_changed();
 }
 
 static void
@@ -115,6 +116,7 @@ _above_part(void *data,
      }
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
+   project_changed();
 }
 
 static void
@@ -135,6 +137,7 @@ _below_part(void *data,
      }
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
+   project_changed();
 }
 
 static void
@@ -156,6 +159,7 @@ _restack_part_above(void *data,
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
+   project_changed();
    if (!tmp_list) return;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
@@ -181,6 +185,7 @@ _restack_part_below(void *data,
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel));
+   project_changed();
    if (!tmp_list) return;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);

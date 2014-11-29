@@ -73,7 +73,8 @@ _cancel_clicked(void *data,
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap->popup = NULL; \
    ui_menu_locked_set(ap->menu_hash, false); \
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   live_view_widget_style_set(ap->live_view, ap->project, style); \
+   project_changed();
 
 static void
 _swallow_add_on_click(void *data,

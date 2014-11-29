@@ -71,6 +71,7 @@ _##FUNC##_part_add_cb(App_Data *ap) \
      } \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
+   project_changed(); \
    return true; \
 }
 
