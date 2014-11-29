@@ -107,11 +107,10 @@ elm_main(int argc, char **argv)
                }
           }
         elm_run();
-        elm_shutdown();
-        app_shutdown();
 #ifdef HAVE_ENVENTOR
         enventor_shutdown();
 #endif
+        app_shutdown();
      }
 
    return 0;
