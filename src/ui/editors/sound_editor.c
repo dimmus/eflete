@@ -135,6 +135,10 @@ _grid_label_get(void *data,
 static void
 _sound_editor_del(Sound_Editor *edit)
 {
+   App_Data *ap = app_data_get();
+   ui_menu_locked_set(ap->menu_hash, false);
+   ap->modal_editor = false;
+
    ecore_audio_shutdown();
    edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
@@ -1511,7 +1515,9 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    _sound_player_create(edit->markup, edit);
 
    evas_object_show(edit->win);
+
    App_Data *ap = app_data_get();
+   ui_menu_locked_set(ap->menu_hash, true);
    ap->modal_editor = true;
    return edit->win;
 }
