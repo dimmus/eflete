@@ -113,6 +113,7 @@ _on_exit(void *data,
    ui_main_window_del(ap);
 }
 
+/*
 static void
 _on_preference(void *data,
                Evas_Object *obj __UNUSED__,
@@ -121,6 +122,7 @@ _on_preference(void *data,
    App_Data *ap = (App_Data *)data;
    preferences_window_add(ap->project);
 }
+*/
 
 static void
 _on_view_separate(void *data,
@@ -292,8 +294,10 @@ ui_menu_add(App_Data *ap)
    elm_menu_item_separator_add(menu, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Exit"), _on_exit, ap, it);
 
+/*
    ITEM_MENU_ADD(menu, NULL, NULL, _("Edit"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Preference"), _on_preference, ap, it);
+*/
 
    ITEM_MENU_ADD(menu, NULL, NULL, _("View"), NULL, NULL, menu_it);
    ITEM_MENU_ADD(menu, menu_it, NULL, _("Workspace"), NULL, NULL, sub_menu);
