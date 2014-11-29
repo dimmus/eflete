@@ -671,7 +671,6 @@ _highlight_changed_cb(void *data,
         old_max_h = edje_edit_state_max_h_get(sd->style->obj, part->name,
                                               part->curr_state,
                                               part->curr_state_value);
-
         edje_edit_state_max_w_set(sd->style->obj, part->name,
                                   part->curr_state, part->curr_state_value,
                                   events->w / sd->zoom.factor);
@@ -719,6 +718,7 @@ _highlight_changed_cb(void *data,
    if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
+   project_changed();
 }
 
 Eina_Bool

@@ -798,15 +798,16 @@ highlight_object_follow(Evas_Object *hl, Evas_Object *object)
         evas_object_event_callback_del_full(highlight->object, EVAS_CALLBACK_MOVE,
                                             _object_changed, hl);
      }
+   evas_object_geometry_get(object, &x, &y, &w, &h);
+   evas_object_resize(hl, w, h);
+   evas_object_move(hl, x, y);
+
    highlight->object = object;
    evas_object_event_callback_add(object, EVAS_CALLBACK_RESIZE,
                                   _object_changed, hl);
    evas_object_event_callback_add(object, EVAS_CALLBACK_MOVE,
                                   _object_changed, hl);
 
-   evas_object_geometry_get(object, &x, &y, &w, &h);
-   evas_object_resize(hl, w, h);
-   evas_object_move(hl, x, y);
 
    return true;
 }
