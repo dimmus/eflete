@@ -75,7 +75,7 @@
          image: "spinner-horizontal-up.png" COMP;
          image: "spinner-horizontal-up-clicked.png" COMP;
          image: "focus-outer-glow.png" COMP;
-         image: "input-text-bg1.png" COMP;
+         image: "input-text-bg.png" COMP;
       }
       parts {
          part { name: "base";
@@ -90,7 +90,7 @@
             description {state: "default" 0.0;
                fixed: 1 1;
                image {
-                   normal: "input-text-bg1.png";
+                   normal: "input-text-bg.png";
                   border: 5 5 5 5;
                }
                rel1.to: "base";

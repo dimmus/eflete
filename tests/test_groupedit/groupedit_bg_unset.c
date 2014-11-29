@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) groupedit</td>
  * <td>Image pointer equal to setted image pointer</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -92,8 +90,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

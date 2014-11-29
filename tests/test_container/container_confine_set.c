@@ -48,8 +48,6 @@
  * </td>
  * <td>(Evas_Object *) container, (Evas_Object *)rect</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -90,8 +88,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)win, (Evas_Object *)rect</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -135,8 +131,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -50,8 +50,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", (Eina_Bool) EINA_TRUE</td>
  * <td>EINA_TRUE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -104,8 +102,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "non_exist", (Eina_Bool) EINA_TRUE </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -153,8 +149,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *) "bg", (Eina_Bool) EINA_TRUE </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

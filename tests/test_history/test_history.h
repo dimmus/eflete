@@ -24,6 +24,8 @@
  * @defgroup history_test
  */
 
+#define TEST_NAME "history"
+
 void history_init_test_p(int);
 
 void history_term_test_p(int);

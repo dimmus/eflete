@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -34,112 +34,60 @@
  * @{
  * <tr>
  * <td>pm_project_close</td>
- * <td>pm_project_close_test_p1</td>
+ * <td>pm_project_close_test_p</td>
  * <td>
+ * This test check the close project procedure.<br>
  * @precondition
- * @step 1 initialize elm.
- * @step 2 Open edj project.
+ * @step 1 initialized elm;
+ * @step 2 initialized eflete, need for logger.
+ * @step 3 import test_project_manager.edj, so create a new project.
+ * @step 4 get the created project from thread.
  *
  * @procedure
- * @step 1 Call function pm_project_close(project).
+ * @step 1 Call pm_project_close;
  * @step 2 Check returned value.
  * </td>
- * <td>Project *project</td>
+ * <td>(Project *)Project</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
-EFLETE_TEST (pm_project_close_test_p1)
+static void
+_test_end_cb(void *data __UNUSED__,
+             PM_Project_Result result __UNUSED__)
 {
+   ecore_main_loop_quit();
+}
+
+EFLETE_TEST (pm_project_close_test_p)
+{
+   Project_Thread *thread;
+   Project *pro;
+   Eina_Bool res;
+
    elm_init(0,0);
-   char *path;
-   path = "./edj_build/pm_project_close.edj";
-   Project* pro = pm_open_project_edj(path);
+   app_init();
 
-   ck_assert_msg(pm_project_close(pro) == EINA_TRUE, "Can't close project!");
+   thread = pm_project_import_edj("UTC", ".", "./edj_build/test_project_manager.edj",
+                                  NULL, _test_end_cb, NULL);
+   if (!thread)
+     ck_abort_msg("Project thread is not runned!");
+   ecore_main_loop_begin();
 
+   pro = pm_project_thread_project_get(thread);
+   if (!pro)
+     ck_abort_msg("Project not created!");
+
+   res = pm_project_close(pro);
+   ck_assert_msg(res, "Project is not closed!");
+
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup pm_project_close
- * @{
- * <tr>
- * <td>pm_project_close</td>
- * <td>pm_project_close_test_p2</td>
- * <td>
- * @precondition
- * @step 1 initialize elm.
- * @step 2 Open edj project.
- * @step 3 Get style for modifying.
- * @step 4 Set style flag into 'modified'
- * @step 5 Save project into swap file
- * @step 6 Save project
- *
- * @procedure
- * @step 1 Call function pm_project_close(project).
- * @step 2 Check returned value.
- * </td>
- * <td>Project *project</td>
- * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (pm_project_close_test_p2)
-{
-   elm_init(0,0);
-   char *path;
-   path = "./edj_build/pm_project_close.edj";
-   Project* pro = pm_open_project_edj(path);
-   Style *style = wm_style_object_find(pro->widgets, "elm/radio/base/def");
-   style->isModify = true;
-   pm_save_project_to_swap(pro);
-   pm_save_project_edj(pro);
-
-   ck_assert_msg(pm_project_close(pro) == EINA_TRUE, "Can't close project!");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup pm_project_close
- * @{
- * <tr>
- * <td>pm_project_close</td>
- * <td>pm_project_close_test_n</td>
- * <td>
- * @precondition
- * @step 1 initialize elm.
- *
- * @procedure
- * @step 1 Call function pm_project_close(project).
- * @step 2 Check returned value.
- * </td>
- * <td>Project *project</td>
- * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST (pm_project_close_test_n)
-{
-   elm_init(0,0);
-
-   ck_assert_msg(pm_project_close(NULL) == EINA_FALSE, "NULL project deleted");
-
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup pm_project_close
+ * @addtogroup pm_project_import_edj
  * @{
  * </TABLE>
  * @}

@@ -53,8 +53,6 @@
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/undef", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -75,8 +73,8 @@ EFLETE_TEST (wm_style_copy_test_p)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    style = wm_style_object_find(widget_list, group_name);
 
    /* before copy we need to do something with new style */
@@ -98,7 +96,7 @@ EFLETE_TEST (wm_style_copy_test_p)
    sig_list = wm_program_signals_list_get(new_style);
    ck_assert_str_eq((char *)sig_list->next->data, (char *)sig_new_list->next->data);
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -123,8 +121,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>EINA_FALSE return</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -144,8 +140,8 @@ EFLETE_TEST (wm_style_copy_test_n1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    style = wm_style_object_find(widget_list, group_name);
 
    /* before copy we need to do something with new style */
@@ -161,7 +157,7 @@ EFLETE_TEST (wm_style_copy_test_n1)
    /* ---------------------------------------- */
    ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, copy_name, file, new_style), "Copied. Error.");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -189,8 +185,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *edje_edit_obj, char *group_name = "elm/radio/base/aliased", char *file = "./edj_build/wm_style_copy.edj", Style *style</td>
  * <td>EINA_FALSE return</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -210,8 +204,8 @@ EFLETE_TEST (wm_style_copy_test_n2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    style = wm_style_object_find(widget_list, group_name);
 
    /* before copy we need to do something with new style */
@@ -232,7 +226,7 @@ EFLETE_TEST (wm_style_copy_test_n2)
    ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, copy_name, NULL, new_style), "Copied. Error.");
    ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, copy_name, file, NULL), "Copied. Error.");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST

@@ -45,8 +45,6 @@
  * </td>
  * <td>void</td>
  * <td>Not NULL object</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -75,8 +73,6 @@ END_TEST
  * </td>
  * <td>void</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

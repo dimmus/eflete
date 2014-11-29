@@ -45,8 +45,6 @@
  * </td>
  * <td>void</td>
  * <td> -1 </td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

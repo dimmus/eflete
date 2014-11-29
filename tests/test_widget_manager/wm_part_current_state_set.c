@@ -52,8 +52,6 @@
  * </td>
  * <td>Part *part, "visible 0.0"</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -101,8 +99,6 @@ END_TEST
  * </td>
  * <td>Part *part, "visible 0.0"</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -145,8 +141,6 @@ END_TEST
  * </td>
  * <td>Part *part, "notvisible fhtagn"</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -199,8 +193,6 @@ END_TEST
  * </td>
  * <td>Part *part, NULL</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -252,8 +244,6 @@ END_TEST
  * </td>
  * <td>Part *part, NULL</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -299,8 +289,6 @@ END_TEST
  * </td>
  * <td>NULL, "visible 0.0"</td>
  * <td>false returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

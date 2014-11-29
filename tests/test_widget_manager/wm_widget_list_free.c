@@ -46,8 +46,6 @@
  * </td>
  * <td>Eina_Inlist *widget_list</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -57,8 +55,8 @@ EFLETE_TEST (wm_widget_list_free_test_p)
    const char *file = "./edj_build/wm_widget_list_free.edj";
    Eina_Inlist *widget_list = NULL;
 
-   widget_list = wm_widget_list_new(file);
-   ck_assert_msg(wm_widget_list_free(widget_list) == EINA_TRUE, "widget list wasn't deleted.");
+   widget_list = wm_widgets_list_new(file);
+   ck_assert_msg(wm_widgets_list_free(widget_list) == EINA_TRUE, "widget list wasn't deleted.");
    elm_shutdown();
 }
 END_TEST
@@ -79,15 +77,13 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (wm_widget_list_free_test_n)
 {
    elm_init(0,0);
-   ck_assert_msg(wm_widget_list_free(NULL) == EINA_FALSE, "NULL parameter was deleted as widget list.");
+   ck_assert_msg(wm_widgets_list_free(NULL) == EINA_FALSE, "NULL parameter was deleted as widget list.");
    elm_shutdown();
 }
 END_TEST

@@ -25,6 +25,8 @@
  * @defgroup style_editor_test
  */
 
+#define TEST_NAME "image_editor"
+
 void image_editor_window_add_test_p1(int);
 void image_editor_window_add_test_p2(int);
 void image_editor_window_add_test_n1(int);

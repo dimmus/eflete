@@ -50,8 +50,6 @@
  * </td>
  * <td>(Evas_Object *)workspace, (const char *)"elm.swallow.content", (const char*)"elm.text", (Eina_Bool) EINA_FALSE</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -104,8 +102,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (const char *)"elm.swallow.content", (const char*)"bg", (Eina_Bool) EINA_TRUE</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -158,8 +154,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"non_exist,  (const char*)"bg", (Eina_Bool) EINA_TRUE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -212,8 +206,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (const char*)"bg", (const char *)"non_exist", (Eina_Bool) EINA_TRUE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -266,8 +258,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, NULL, (const char *)"bg", EINA_FALSE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -320,8 +310,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (const char *)"bg", NULL, EINA_FALSE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -368,8 +356,6 @@ END_TEST
  * </td>
  * <td>NULL, (const char*)"bg", (const char *)"elm.text", (Eina_Bool) EINA_TRUE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -46,8 +46,6 @@
  * </td>
  * <td>(const char *)"default"</td>
  * <td>Profile will be loaded</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -81,8 +79,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

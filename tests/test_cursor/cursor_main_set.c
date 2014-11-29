@@ -46,8 +46,6 @@
  * </td>
  * <td>(Evas_Object *) win, (Cursor_Type) CURSOR_ARROW</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -81,8 +79,6 @@ END_TEST
  * </td>
  * <td>NULL, (Cursor_Type) CURSOR_SYSTEM</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -115,8 +111,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) win, (Cursor_Type) 338</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -149,8 +143,6 @@ END_TEST
  * </td>
  * <td>NULL, (Cursor_Type) CURSOR_ARROW</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

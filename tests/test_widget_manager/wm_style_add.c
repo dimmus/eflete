@@ -45,8 +45,6 @@
  * </td>
  * <td>char *style_name = "testclass"; char *full_style_name = "eflete/testclass/testgroup", type = STYLE, NULL</td>
  * <td>All check's passed.</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -83,8 +81,6 @@ END_TEST
  * </td>
  * <td>char *style_name = "testclass"; char *full_style_name = "eflete/testclass/testgroup", type = LAYOUT, NULL</td>
  * <td>All check's passed.</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -121,8 +117,6 @@ END_TEST
  * </td>
  * <td>char *style_name = NULL; char *full_style_name = "eflete/testclass/testgroup", type = STYLE, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -151,8 +145,6 @@ END_TEST
  * </td>
  * <td>char *style_name = "testclass"; char *full_style_name = NULL, type = STYLE, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -181,8 +173,6 @@ END_TEST
  * </td>
  * <td>char *style_name = NULL; char *full_style_name = NULL, type = STYLE, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -210,8 +200,6 @@ END_TEST
  * </td>
  * <td>char *style_name = "testclass"; char *full_style_name = "eflete/testclass/testgroup", type = -1, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -241,8 +229,6 @@ END_TEST
  * </td>
  * <td>char *style_name = "testclass"; char *full_style_name = "eflete/testclass/testgroup", type = WIDGET, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

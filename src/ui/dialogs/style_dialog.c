@@ -149,7 +149,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
-   source_widgets = wm_widget_list_new(source_file);
+   source_widgets = wm_widgets_list_new(source_file);
    EINA_INLIST_FOREACH_SAFE(source_widgets, l, source_wdg)
      {
         if (!strcmp(source_wdg->name, widget->name)) break;
@@ -272,7 +272,7 @@ _on_popup_btn_yes(void *data,
         style->isModify = true;
      }
 
-   if (!wm_widget_list_free(source_widgets))
+   if (!wm_widgets_list_free(source_widgets))
      ERR("Failed free template widget list");
 
    STRING_CLEAR;

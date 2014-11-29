@@ -18,6 +18,7 @@
  */
 
 #include "test_preference.h"
+#include "test_common.h"
 
 /**
  * @addtogroup preference_test
@@ -49,25 +50,26 @@
  * </td>
  * <td>Project *project</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (preferences_project_autosave_update_test_p)
 {
    elm_init(0,0);
+   app_init();
+   setup("preferences_project_autosave_update_test_p");
+
    Eina_Bool result;
    App_Data *app;
-   app_init();
    app = app_data_get();
    profile_load("default");
-   app->project = pm_open_project_edj("./edj_build/pm_open_project_edj.edj");
+   app->project = pm_project_open("./preferences_project_autosave_update_test_p/preferences_project_autosave_update_test_p.pro");
 
    result = preferences_project_autosave_update(app->project);
    ck_assert_msg(result == EINA_TRUE, "Can not register autosave callback");
 
    app_shutdown();
+   teardown("./preferences_project_autosave_update_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -90,8 +92,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -129,8 +129,6 @@ END_TEST
  * </td>
  * <td>Project *project</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -138,13 +136,19 @@ END_TEST
 EFLETE_TEST (preferences_project_autosave_update_test_n2)
 {
    elm_init(0,0);
-   Eina_Bool result;
-   Project *project = pm_open_project_edj("./edj_build/pm_open_project_edj.edj");
+   app_init();
+   setup("preferences_project_autosave_update_test_n2");
 
+   Eina_Bool result;
+   Project *project;
+
+   project= pm_project_open("./preferences_project_autosave_update_test_n2/preferences_project_autosave_update_test_n2.pro");
    result = preferences_project_autosave_update(project);
    ck_assert_msg(result == EINA_FALSE, "The autosave should not be registered"
                                        "if profile is not loaded");
 
+   app_shutdown();
+   teardown("./preferences_project_autosave_update_test_n2");
    elm_shutdown();
 }
 END_TEST

@@ -8,7 +8,6 @@ noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
 alloc/alloc.c \
-project_manager/edje_compile.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
 logger/logger.c \
@@ -22,6 +21,8 @@ ui/panes.c \
 ui/menu.c \
 ui/main_window.c \
 ui/connector.c \
+ui/splash.c \
+ui/wizard/wizard_import_edj.c \
 ui/shortcuts/shortcuts.c \
 ui/container/container.c \
 ui/preference/preference.c \
@@ -32,8 +33,6 @@ ui/editors/colorclass_editor.c \
 ui/editors/animator.c \
 ui/editors/animator_program_editor.c \
 ui/editors/animator_program_sequence.c \
-ui/dialogs/compile_dialog.c \
-ui/dialogs/open_file_dialog.c \
 ui/dialogs/save_file_dialog.c \
 ui/dialogs/part_dialog.c \
 ui/dialogs/state_dialog.c \
@@ -101,6 +100,7 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
 -I${top_srcdir}/src/ui/preference \
+-I${top_srcdir}/src/ui/wizard \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @ENVENTOR_CFLAGS@ \

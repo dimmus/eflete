@@ -19,6 +19,7 @@
 
 #include "test_history.h"
 #include "main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup history_test
@@ -52,8 +53,6 @@
  * </td>
  * <td>(Evas_Object *) source, (int) 2 </td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -121,8 +120,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) style->obj, (int) 3 </td>
  * <td>First change does not canceled</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -132,16 +129,16 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    Style *style = NULL;
    int new_value = 10;
    int check_value = 0;
-   char *path;
 
-   path = "./edj_build/history_module_depth_set.edj";
    elm_init(0, 0);
    app_init();
+   setup("history_module_depth_set_test_p2");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(path);
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win), path);
+   app->project = pm_project_open("./history_module_depth_set_test_p2/history_module_depth_set_test_p2.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win), app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -168,8 +165,12 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Cancel diff, that outside of depth");
 
-   history_term(app->history);
+   pm_project_close(app->project);
+   app->project = NULL;
+
+   ui_main_window_del(app);
    app_shutdown();
+   teardown("./history_module_depth_set_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -194,8 +195,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source, (int) 2 </td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -243,8 +242,6 @@ END_TEST
  * </td>
  * <td>NULL, (int) 2 </td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

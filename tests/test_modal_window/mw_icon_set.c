@@ -48,8 +48,6 @@
  * </td>
  * <td>Evas_Object *modal_window, Evas_Object *icon</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -91,8 +89,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *modal_window, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -133,8 +129,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas_Object *icon</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -47,8 +47,6 @@
  * </td>
  * <td>(Live_View *)live</td>
  * <td>function returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -87,8 +85,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>function returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

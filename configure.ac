@@ -166,6 +166,7 @@ AC_CONFIG_COMMANDS( [cp], [cp ${srcdir}/tests/edj_build/radio.png ./tests/edj_bu
 AC_CONFIG_COMMANDS( [cp1], [cp ${srcdir}/tests/edj_build/radio2.png ./tests/edj_build/radio2.png])
 AC_CONFIG_COMMANDS( [cp2], [cp ${srcdir}/tests/edj_build/radio_base.png ./tests/edj_build/radio_base.png])
 AC_CONFIG_COMMANDS( [cp3], [cp ${srcdir}/tests/edj_build/kbd-tap.wav ./tests/edj_build/kbd-tap.wav])
+AC_CONFIG_COMMANDS( [cp4], [cp ${srcdir}/tests/edj_build/license.txt ./tests/edj_build/license.txt])
 
 AC_OUTPUT
 

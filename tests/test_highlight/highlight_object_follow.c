@@ -53,8 +53,6 @@
  * </td>
  * <td>Evas_Object *highlight, Evas_Object *object</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -115,8 +113,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *highlight, Evas_Object *object</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -174,8 +170,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *bg, Evas_Object *object</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -214,8 +208,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *highlight, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -252,8 +244,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas_Object *object</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -287,8 +277,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

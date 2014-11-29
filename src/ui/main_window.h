@@ -39,7 +39,6 @@
 #include "ui_block.h"
 #include "colorclass_editor.h"
 #include "notify.h"
-#include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "string_macro.h"
 
@@ -47,6 +46,9 @@
 #include "state_dialog.h"
 #include "style_dialog.h"
 #include "colorsel.h"
+
+typedef Eina_Bool
+(* Splash_Cb)(void *data);
 
 /**
  * Adds main window object for Edje tool development.
@@ -68,7 +70,7 @@ ui_main_window_add(App_Data *ap);
  * @ingroup Window
  */
 Eina_Bool
-ui_main_window_del(App_Data *ap);
+ui_main_window_del(App_Data *ap) EINA_ARG_NONNULL(1);
 
 /**
  * Adds marked panes to the given Elementary layout.
@@ -338,13 +340,111 @@ Eina_Bool
 code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
 
 /**
+ * The splash window with animation and info line.
+ *
+ * @param parent The parent widget, MUST be a window;
+ * @param setup Callback will be be called on splash window show;
+ * @param teardown Callback will be called on "Cancel" button click;
+ * @param data User data.
+ *
+ * @return The splash window object.
+ *
+ * @ingroup Window
+ */
+Evas_Object *
+splash_add(Evas_Object *parent, Splash_Cb setup,
+           Splash_Cb teardown, void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+
+/**
+ * Delete the splash window. Before delete will be played the close animation.
+ *
+ * @param obj The splash object.
+ *
+ * @ingroup Window
+ */
+void
+splash_del(Evas_Object *obj);
+
+/**
+ * Show the main layout blocks.
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+blocks_show(App_Data *ap);
+
+/**
+ * Hide the main layout blocks.
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+blocks_hide(App_Data *ap);
+
+/**
+ * Unset data from all ui blocks.
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+blocks_data_unset(App_Data *ap);
+
+/**
+ * Open existing project.
+ *
+ * @ingroup Window
+ */
+void
+project_open();
+
+/**
+ * Save opened project.
+ *
+ * @ingroup Window
+ */
+void
+project_save();
+
+/**
+ * Mark the opened project as changed, and activate "Save project" button.
+ *
+ * @ingroup Window
+ */
+void
+project_changed(void);
+
+/**
+ * Dialog with qustion what do with openned project.
+ *
+ * @param ap The Eflete App_Data.
+ * @param msg The message.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+project_close_request(App_Data *ap, const char *msg);
+
+/**
  * Update Statusbar field that contains time of last save of current
  * project file.
  *
  * @param ap The App_Data structure pointer.
  * @param is_autosave flag to inform if the function is called by
  *                    'autosave' functionality.
- *
  * @ingroup Window
  */
 void

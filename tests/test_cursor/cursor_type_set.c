@@ -46,8 +46,6 @@
  * </td>
  * <td>(Evas_Object *)obj, CURSOR_FLUER</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -82,8 +80,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)obj, (Cursor_Type)-10000</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -117,8 +113,6 @@ END_TEST
  * </td>
  * <td>NULL, (Cursor_Type)10</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

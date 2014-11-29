@@ -46,8 +46,6 @@
  * </td>
  * <td>(Evas_Object *) window</td>
  * <td>Returned pointer not NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -82,8 +80,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>Returned pointer is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

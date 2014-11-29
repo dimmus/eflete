@@ -858,7 +858,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
-   elm_object_style_set(priv->button_separate, "eflete/simple");
+   elm_object_style_set(priv->button_separate, "separate");
    GET_IMAGE(icon, priv->scroller, "icon-separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
@@ -870,7 +870,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                priv->background);
    elm_object_part_content_set(priv->scroller, "elm.swallow.overlay",
                                priv->events);
-   elm_object_part_content_set(priv->scroller, "cross.swallow",
+   elm_object_part_content_set(priv->scroller, "elm.swallow.button",
                                priv->button_separate);
 
    Evas_Object *edje = elm_layout_edje_get(priv->scroller);
@@ -887,8 +887,8 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_object_part_content_set(priv->scroller, SWALL, RUL); \
    evas_object_smart_member_add(RUL, o);
 
-   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "ruler.swallow.hor");
-   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "ruler.swallow.ver");
+   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "elm.swallow.hruler");
+   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "elm.swallow.vruler");
    ewe_ruler_horizontal_set(priv->ruler_ver, false);
    evas_object_smart_callback_add(o, "ruler,toggle",
                                   _ws_ruler_toggle_cb, NULL);
@@ -913,19 +913,6 @@ static void
 _workspace_smart_del(Evas_Object *o)
 {
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
-
-   evas_object_smart_member_del(sd->ruler_hor);
-   evas_object_smart_member_del(sd->ruler_ver);
-   evas_object_smart_member_del(sd->layout);
-   evas_object_smart_member_del(sd->background);
-   evas_object_smart_member_del(sd->button_separate);
-   evas_object_smart_member_del(sd->scroller);
-   evas_object_smart_member_del(sd->events);
-   evas_object_smart_member_del(sd->highlight.highlight);
-   evas_object_smart_member_del(sd->highlight.space_hl);
-   evas_object_smart_member_del(sd->menu.obj);
-   if (sd->groupedit)
-     evas_object_smart_member_del(sd->groupedit);
 
    _workspace_parent_sc->del(o);
 }

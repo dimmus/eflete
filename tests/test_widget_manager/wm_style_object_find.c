@@ -48,8 +48,6 @@
  * </td>
  * <td>Eina_Inlist *widget_list; char *full_style_name = "elm/radio/base/test"</td>
  * <td>Not NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -64,11 +62,11 @@ EFLETE_TEST (wm_style_object_find_test_p1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    ck_assert_msg(wm_style_object_find(widget_list, full_style_name) != NULL, "Group wasn't found");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -92,8 +90,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list; char *full_style_name = "elm/widget/base/test"</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -108,11 +104,11 @@ EFLETE_TEST (wm_style_object_find_test_p2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    ck_assert_msg(wm_style_object_find(widget_list, full_style_name) == NULL, "Unexisted Group was found");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -133,8 +129,6 @@ END_TEST
  * </td>
  * <td>NULL, char *full_style_name = "elm/widget/base/test"</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -165,8 +159,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -180,11 +172,11 @@ EFLETE_TEST (wm_style_object_find_test_n2)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, e, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, e, file);
    ck_assert_msg(wm_style_object_find(widget_list, NULL) == NULL, "NULL was found");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -205,8 +197,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

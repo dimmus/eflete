@@ -49,7 +49,7 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "tab" "\t";
    }
    style { name: "eflete_text_style";
-      base: "font="FN" font_size=12 color=#B6B6B6 wrap=word text_class=entry left_margin=2 right_margin=2";
+      base: "font="FN" font_size=12 color=#B6B6B6 wrap=word text_class=entry";
       tag:  "em" "+ font_style=Oblique";
       tag:  "link" "+ color=#B6B6B6 underline=on underline_color=#8008";
       tag:  "hilight" "+ font_weight=Bold";

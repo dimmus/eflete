@@ -629,7 +629,7 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
-   pm_project_changed(app_data_get()->project);
+   project_changed();
    evas_object_del(style_edit->mwin);
 }
 

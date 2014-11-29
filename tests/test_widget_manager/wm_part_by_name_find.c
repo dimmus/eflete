@@ -39,7 +39,7 @@
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widget_list_new.
+ * @step 3 Create new widget list with using wm_widgets_list_new.
  * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
  * @step 5 Find Style structure
  *
@@ -50,8 +50,6 @@
  * </td>
  * <td>(Style *) style, (Eina_Stringshare *) "elm.text"</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -71,15 +69,15 @@ EFLETE_TEST (wm_part_by_name_find_test_p1)
    part_name = eina_stringshare_add("elm.text");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, canvas, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, canvas, file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, part_name);
    ck_assert_msg(part != NULL, "Part wasn't found");
    ck_assert_msg(part->name == part_name, "Founded strucutre isn't searching part");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    eina_stringshare_del(group_name);
    eina_stringshare_del(part_name);
    elm_shutdown();
@@ -96,7 +94,7 @@ END_TEST
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widget_list_new.
+ * @step 3 Create new widget list with using wm_widgets_list_new.
  * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
  * @step 5 Find Style structure
  *
@@ -106,8 +104,6 @@ END_TEST
  * </td>
  * <td>(Style *) style, (Eina_Stringshare *) "wrong"</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -127,14 +123,14 @@ EFLETE_TEST (wm_part_by_name_find_test_n1)
    part_name = eina_stringshare_add("wrong");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, canvas, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, canvas, file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, part_name);
    ck_assert_msg(!part, "Founded part, that not exists in group");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    eina_stringshare_del(group_name);
    eina_stringshare_del(part_name);
    elm_shutdown();
@@ -152,7 +148,7 @@ END_TEST
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widget_list_new.
+ * @step 3 Create new widget list with using wm_widgets_list_new.
  * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
  * @step 5 Find Style structure
  *
@@ -162,8 +158,6 @@ END_TEST
  * </td>
  * <td>Style *style, NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -181,14 +175,14 @@ EFLETE_TEST (wm_part_by_name_find_test_n2)
    group_name = eina_stringshare_add("elm/radio/base/def");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, canvas, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, canvas, file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, NULL);
    ck_assert_msg(!part, "Founded part with NULL part param.");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    eina_stringshare_del(group_name);
    elm_shutdown();
 }
@@ -210,8 +204,6 @@ END_TEST
  * </td>
  * <td>NULL, (Eina_Stringshare *) "elm.text"</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -241,7 +233,7 @@ END_TEST
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widget_list_new.
+ * @step 3 Create new widget list with using wm_widgets_list_new.
  * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
  * @step 5 Find Style structure, that does not have part with name "elm.text"
  *
@@ -251,8 +243,6 @@ END_TEST
  * </td>
  * <td>Style *style, (Eina_Stringshare *) "elm.text"</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -272,14 +262,14 @@ EFLETE_TEST (wm_part_by_name_find_test_n4)
    part_name = eina_stringshare_add("elm.text");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
-   widget_list = wm_widget_list_new(file);
-   wm_widget_list_objects_load(widget_list, canvas, file);
+   widget_list = wm_widgets_list_new(file);
+   wm_widgets_list_objects_load(widget_list, canvas, file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, part_name);
    ck_assert_msg(!part, "Founded part in group, that doesn't have part sith same name.");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    eina_stringshare_del(group_name);
    eina_stringshare_del(part_name);
    elm_shutdown();

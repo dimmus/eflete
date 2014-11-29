@@ -49,8 +49,6 @@
  * </td>
  * <td>Evas_Object *widget_list, App_Data *app_data</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -94,8 +92,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *widget_list, NULL</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -135,8 +131,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *widget_list, NULL</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

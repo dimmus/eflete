@@ -47,8 +47,6 @@
  * </td>
  * <td>Evas_Object *, int *, int *, int *</td>
  * <td>values not changed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -92,8 +90,6 @@ END_TEST
  * </td>
  * <td>NULL, int *, int *, int *</td>
  * <td>values not changed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -138,8 +134,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *, int *, int *, int *</td>
  * <td>values set changed successfully</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

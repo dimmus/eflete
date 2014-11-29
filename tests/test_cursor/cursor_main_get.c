@@ -47,8 +47,6 @@
  * </td>
  * <td>(Evas_Object *) win</td>
  * <td>(Cursor_Type) CURSOR_ARROW</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -84,8 +82,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) win</td>
  * <td>CURSOR_SYSTEM</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -119,8 +115,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>CURSOR_SYSTEM</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

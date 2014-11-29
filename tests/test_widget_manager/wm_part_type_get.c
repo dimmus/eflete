@@ -46,8 +46,6 @@
  * </td>
  * <td>Edje_Part_Type type = EDJE_PART_TYPE_TEXT</td>
  * <td>"TEXT" string returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -77,8 +75,6 @@ END_TEST
  * </td>
  * <td>Edje_Part_Type type = EDJE_PART_TYPE_NONE</td>
  * <td>"NONE" string returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -108,8 +104,6 @@ END_TEST
  * </td>
  * <td>Edje_Part_Type type = 55</td>
  * <td>NULL string returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -139,8 +133,6 @@ END_TEST
  * </td>
  * <td>Edje_Part_Type type = -13</td>
  * <td>NULL string returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

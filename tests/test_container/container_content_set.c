@@ -46,10 +46,8 @@
  * @step 1 set to the container the elm_buttom object
  * @step 2 check returned value
  * </td>
- * <td>(Evas_Object *) container, (Evas_Object) *content<td>
+ * <td>(Evas_Object *) container, (Evas_Object) *content</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -89,8 +87,6 @@ END_TEST
  * </td>
  * <td>NULL, (Evas_Object) *content</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -129,8 +125,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) container, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

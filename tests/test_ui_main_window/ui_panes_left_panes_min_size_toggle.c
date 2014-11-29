@@ -50,8 +50,6 @@
  * </td>
  * <td>App_Data *app_data, Eina_Bool is_on</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -60,7 +58,6 @@ EFLETE_TEST (ui_panes_left_panes_min_size_toggle_test_p)
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
-   Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
@@ -72,7 +69,6 @@ EFLETE_TEST (ui_panes_left_panes_min_size_toggle_test_p)
    result = ui_panes_left_panes_min_size_toggle(app_data, false);
    ck_assert_msg(result == EINA_TRUE, "Could not switch Panes min sizes OFF!");
 
-   pm_project_close(project);
    evas_object_del(app_data->win);
    elm_shutdown();
 }
@@ -98,8 +94,6 @@ END_TEST
  * </td>
  * <td>App_Data *app_data, Eina_Bool is_on</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -108,7 +102,6 @@ EFLETE_TEST (ui_panes_left_panes_min_size_toggle_test_n)
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
-   Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
@@ -119,7 +112,6 @@ EFLETE_TEST (ui_panes_left_panes_min_size_toggle_test_n)
    result = ui_panes_left_panes_min_size_toggle(app_data, false);
    ck_assert_msg(result == EINA_FALSE, "Should not switch Panes min sizes OFF!");
 
-   pm_project_close(project);
    evas_object_del(app_data->win);
    elm_shutdown();
 }

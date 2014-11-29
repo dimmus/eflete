@@ -25,6 +25,8 @@
  * @defgroup test_preference
  */
 
+#define TEST_NAME "preference"
+
 void preferences_window_add_test_p1(int);
 void preferences_window_add_test_p2(int);
 

@@ -1,4 +1,3 @@
-
 /**
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.

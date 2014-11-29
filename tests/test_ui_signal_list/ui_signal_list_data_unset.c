@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) gl_signals</td>
  * <td>Returned pointer must much with setted.</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -100,8 +98,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -138,8 +134,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

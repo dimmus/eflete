@@ -144,6 +144,7 @@ _on_##VALUE##_change(void *data, \
      } \
 }
 
+/*
 static Eina_Bool
 _autosave_timer_cb()
 {
@@ -152,13 +153,15 @@ _autosave_timer_cb()
      save_edj_file(ap);
 
    save_time_info_update(ap, true);
-
    return  ECORE_CALLBACK_RENEW;
+   return false;
 }
+*/
 
 Eina_Bool
-preferences_project_autosave_update(Project *project)
+preferences_project_autosave_update(Project *project __UNUSED__)
 {
+   /*
    Profile *profile = profile_get();
    if ((!profile) || (!project)) return false;
 
@@ -176,6 +179,8 @@ preferences_project_autosave_update(Project *project)
      }
 
    return true;
+   */
+   return false;
 }
 
 CHANGE_CALLBACK(autosave_period, 1, SPINNER, double)

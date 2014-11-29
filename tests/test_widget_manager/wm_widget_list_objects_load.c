@@ -52,8 +52,6 @@
  * </td>
  * <td>Eina_Inlist *widget_list, Evas *e, char *file = "./edj_build/wm_widget_list_objects_load.edj"</td>
  * <td>All Checks passed successfuly</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -70,14 +68,14 @@ EFLETE_TEST (wm_widget_list_objects_load_test_p)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   ck_assert_msg(wm_widget_list_objects_load(widget_list, e, file), "Cannot load.");
+   widget_list = wm_widgets_list_new(file);
+   ck_assert_msg(wm_widgets_list_objects_load(widget_list, e, file), "Cannot load.");
    style = wm_style_object_find(widget_list, full_alias_name);
    ck_assert_str_eq(style->full_group_name, full_alias_name);
    ck_assert_msg(style->isAlias, "This group was loaded as not alias, but it actually is alias.");
    ck_assert_str_eq(style->main_group->full_group_name, main_group_name);
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -99,8 +97,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas *e, char *file = "./edj_build/wm_widget_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -113,7 +109,7 @@ EFLETE_TEST (wm_widget_list_objects_load_test_n1)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   ck_assert_msg(!wm_widget_list_objects_load(NULL, e, file), "Widget List loaded.");
+   ck_assert_msg(!wm_widgets_list_objects_load(NULL, e, file), "Widget List loaded.");
 
    elm_shutdown();
 }
@@ -136,8 +132,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list, NULL, char *file = "./edj_build/wm_widget_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -147,10 +141,10 @@ EFLETE_TEST (wm_widget_list_objects_load_test_n2)
    const char *file = "./edj_build/wm_widget_list_objects_load.edj";
    Eina_Inlist *widget_list = NULL;
 
-   widget_list = wm_widget_list_new(file);
-   ck_assert_msg(!wm_widget_list_objects_load(widget_list, NULL, file), "Widget List loaded.");
+   widget_list = wm_widgets_list_new(file);
+   ck_assert_msg(!wm_widgets_list_objects_load(widget_list, NULL, file), "Widget List loaded.");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST
@@ -172,8 +166,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *widget_list, Evas *e, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -187,10 +179,10 @@ EFLETE_TEST (wm_widget_list_objects_load_test_n3)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   widget_list = wm_widget_list_new(file);
-   ck_assert_msg(!wm_widget_list_objects_load(widget_list, e, NULL), "Widget List loaded.");
+   widget_list = wm_widgets_list_new(file);
+   ck_assert_msg(!wm_widgets_list_objects_load(widget_list, e, NULL), "Widget List loaded.");
 
-   wm_widget_list_free(widget_list);
+   wm_widgets_list_free(widget_list);
    elm_shutdown();
 }
 END_TEST

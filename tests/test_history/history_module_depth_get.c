@@ -50,8 +50,6 @@
  * </td>
  * <td>(Evas_Object *) source</td>
  * <td>0 returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -105,8 +103,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source</td>
  * <td> 2 returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -159,8 +155,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source</td>
  * <td>-1 returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -208,8 +202,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

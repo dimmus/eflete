@@ -18,6 +18,7 @@
  */
 
 #include "test_ui_main_window.h"
+#include "test_common.h"
 
 /**
  * @addtogroup ui_main_window_test
@@ -52,25 +53,24 @@
  * </td>
  * <td>App_Data *app_data</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (register_callbacks_test_p)
 {
    elm_init(0, 0);
+   setup("register_callbacks_test_p");
+
    elm_theme_extension_add(NULL, EFLETE_THEME);
    Evas_Object *widget_list;
    App_Data *app_data;
    Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
-   const char *edj_path = "./edj_build/register_callbacks.edj";
 
    app_init();
    app_data = app_data_get();
    ui_main_window_add(app_data);
-   project = pm_open_project_edj(edj_path);
+   project = pm_project_open("./register_callbacks_test_p/register_callbacks_test_p.pro");
    widget_list = ui_widget_list_add(app_data->win);
    ui_widget_list_data_set(widget_list, project);
    ui_block_widget_list_set(app_data, widget_list);
@@ -78,9 +78,9 @@ EFLETE_TEST (register_callbacks_test_p)
    result = register_callbacks(app_data);
    ck_assert_msg(result == EINA_TRUE, "Could not register callbacks!");
 
-   pm_project_close(project);
    evas_object_del(app_data->win);
    elm_theme_extension_del(NULL, EFLETE_THEME);
+   teardown("./register_callbacks_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -104,8 +104,6 @@ END_TEST
  * </td>
  * <td>App_Data *app_data</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -142,8 +140,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

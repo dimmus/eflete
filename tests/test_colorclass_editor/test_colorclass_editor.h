@@ -21,5 +21,7 @@
 #include "main_window.h"
 #include "utc_common.h"
 
+#define TEST_NAME "colorclass_editor"
+
 void colorclass_viewer_add_test_n(int);
 void colorclass_viewer_add_test_p(int);

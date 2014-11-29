@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) gl_signals, (Style *) style</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -98,8 +96,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals, (Style *) style</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -148,8 +144,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals, (Style *) style</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -202,8 +196,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals, (Style *) style</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -256,8 +248,6 @@ END_TEST
  * </td>
  * <td>NULL, (Style *) style</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -304,8 +294,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -341,8 +329,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -376,8 +362,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals, (Style *) style</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -423,8 +407,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_signals, (Style *) style</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

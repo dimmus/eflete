@@ -18,6 +18,7 @@
  */
 
 #include "test_sound_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup sound_editor_test
@@ -50,21 +51,22 @@
  * </td>
  * <td>(Evas_Object *) sound_editor, (const char *) "key-tap"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (sound_editor_file_choose_test_p)
 {
    elm_init(0,0);
+   setup("sound_editor_file_choose_test_p");
+
    App_Data *app;
    app_init();
    Evas_Object *sound_editor;
 
    app = app_data_get();
    ui_main_window_add(app);
-   ui_edj_load(app, "edj_build/sound_editor_file_choose.edj");
+   app->project = pm_project_open("./sound_editor_file_choose_test_p/sound_editor_file_choose_test_p.pro");
+   wm_widgets_list_objects_load(app->project->widgets, evas_object_evas_get(app->win), app->project->dev);
    sound_editor = sound_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, "key-tap") == EINA_TRUE,
@@ -72,6 +74,7 @@ EFLETE_TEST (sound_editor_file_choose_test_p)
 
    evas_object_del(sound_editor);
    app_shutdown();
+   teardown("./sound_editor_file_choose_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -97,21 +100,21 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) sound_editor, (const char *) "not_correct_sound_name"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (sound_editor_file_choose_test_n1)
 {
    elm_init(0,0);
+   setup("sound_editor_file_choose_test_n1");
+
    App_Data *app;
    app_init();
    Evas_Object *sound_editor;
 
    app = app_data_get();
    ui_main_window_add(app);
-   ui_edj_load(app, "./edj_build/sound_editor_file_choose.edj");
+   app->project = pm_project_open("./sound_editor_file_choose_test_n1/sound_editor_file_choose_test_n1.pro");
    sound_editor = sound_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, "not_correct_sound_name") == EINA_FALSE,
@@ -119,6 +122,7 @@ EFLETE_TEST (sound_editor_file_choose_test_n1)
 
    evas_object_del(sound_editor);
    app_shutdown();
+   teardown("./sound_editor_file_choose_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -141,8 +145,6 @@ END_TEST
  * </td>
  * <td>NULL, (const char *) "not_correct_sound_name"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -180,27 +182,28 @@ END_TEST
  * </td>
  * <td>sound_editor, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (sound_editor_file_choose_test_n3)
 {
    elm_init(0,0);
+   setup("sound_editor_file_choose_test_n3");
+
    App_Data *app;
    app_init();
    Evas_Object *sound_editor;
 
    app = app_data_get();
    ui_main_window_add(app);
-   ui_edj_load(app, "./edj_build/sound_editor_file_choose.edj");
+   app->project = pm_project_open("./sound_editor_file_choose_test_n3/sound_editor_file_choose_test_n3.pro");
    sound_editor = sound_editor_window_add(app->project, SINGLE);
 
    ck_assert_msg(sound_editor_file_choose(sound_editor, NULL) == EINA_FALSE, "Selected sound that not exist");
 
    evas_object_del(sound_editor);
    app_shutdown();
+   teardown("./sound_editor_file_choose_test_n3");
    elm_shutdown();
 }
 END_TEST
@@ -226,21 +229,21 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) not_correct_object, (const char *) "key-tap"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (sound_editor_file_choose_test_n4)
 {
    elm_init(0,0);
+   setup("sound_editor_file_choose_test_n4");
+
    App_Data *app;
    app_init();
    Evas_Object *not_corect_object;
 
    app = app_data_get();
    ui_main_window_add(app);
-   ui_edj_load(app, "./edj_build/sound_editor_file_choose.edj");
+   app->project = pm_project_open("./sound_editor_file_choose_test_n4/sound_editor_file_choose_test_n4.pro");
    not_corect_object = elm_button_add(app->win);
 
    ck_assert_msg(sound_editor_file_choose(not_corect_object, "not_correct_sound_name") == EINA_FALSE,
@@ -248,6 +251,7 @@ EFLETE_TEST (sound_editor_file_choose_test_n4)
 
    evas_object_del(not_corect_object);
    app_shutdown();
+   teardown("./sound_editor_file_choose_test_n4");
    elm_shutdown();
 }
 END_TEST

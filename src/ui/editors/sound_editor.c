@@ -1396,7 +1396,7 @@ _on_delete_clicked_cb(void *data,
      }
 
    if (deleted)
-     pm_project_changed(app_data_get()->project);
+     project_changed();
 }
 
 ITEM_SEARCH_FUNC(gengrid, "elm.text")

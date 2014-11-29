@@ -27,7 +27,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, ui_main_window_add_test_n);
 
    tcase_add_test(tcase, ui_main_window_del_test_p);
-   tcase_add_test(tcase, ui_main_window_del_test_n);
 
    tcase_add_test(tcase, ui_panes_add_test_p);
    tcase_add_test(tcase, ui_panes_add_test_n1);
@@ -55,9 +54,6 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, register_callbacks_test_p);
    tcase_add_test(tcase, register_callbacks_test_n1);
    tcase_add_test(tcase, register_callbacks_test_n2);
-
-   tcase_add_test(tcase, ui_edj_load_test_p);
-   tcase_add_test(tcase, ui_edj_load_test_n);
 
    tcase_add_test(tcase, ui_menu_base_disabled_set_test_p);
    tcase_add_test(tcase, ui_menu_base_disabled_set_test_n);
@@ -92,9 +88,12 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
+
    srunner_set_xml (runner, "test_ui_main_window.xml");
    srunner_run_all(runner, CK_VERBOSE);
+
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
+
    return number_failed;
 }

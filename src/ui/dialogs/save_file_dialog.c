@@ -31,8 +31,10 @@ struct _cb_data
 typedef struct _cb_data cb_data;
 
 static Eina_Bool
-_save_internal(Project *project, const char *path)
+_save_internal(Project *project __UNUSED__,
+               const char *path __UNUSED__)
 {
+   /*
    if (pm_save_project_to_swap(project))
      {
         if (path)
@@ -54,6 +56,7 @@ _save_internal(Project *project, const char *path)
              else NOTIFY_ERROR(_("Theme can not be saved"))
           }
      }
+   */
    return false;
 }
 
@@ -76,7 +79,7 @@ _ok_cb(void *data,
 
    *cbdata->cancel = !_save_internal(cbdata->project, cbdata->path);
 
-   save_time_info_update(app_data_get(), false);
+   //save_time_info_update(app_data_get(), false);
 
    evas_object_del(cbdata->popup);
    free(cbdata);
@@ -155,15 +158,15 @@ _on_edc_done(void *data,
              Evas_Object *obj __UNUSED__,
              void *event_info)
 {
-   App_Data *ap = app_data_get();
-   Eina_Bool *cancel = data;
+   //App_Data *ap = app_data_get();
+   //Eina_Bool *cancel = data;
    const char *selected = (const char *)event_info;
    if ((!data) || (!selected) || (!strcmp(selected, "")))
      {
         ecore_main_loop_quit();
         return;
      }
-   *cancel = !pm_export_to_edc(ap->project, selected, NULL);
+   //*cancel = !pm_export_to_edc(ap->project, selected, NULL);
    ecore_main_loop_quit();
 }
 
@@ -194,7 +197,7 @@ _save_as_edx_file(App_Data *ap,
 
    evas_object_del(win);
 
-   ap->project->is_new = false;
+   //ap->project->is_new = false;
    preferences_project_autosave_update(ap->project);
 
    return !cancel;
@@ -215,8 +218,9 @@ save_as_edc_file(App_Data *ap)
 }
 
 Eina_Bool
-save_edj_file(App_Data *ap)
+save_edj_file(App_Data *ap __UNUSED__)
 {
+   /*
    Eina_Bool res = true;
    if ((!ap) || (!ap->project)) return false;
    if (ap->project->is_new)
@@ -226,4 +230,6 @@ save_edj_file(App_Data *ap)
 
    save_time_info_update(app_data_get(), false);
    return res;
+   */
+   return false;
 }

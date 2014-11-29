@@ -46,8 +46,6 @@
  * </td>
  * <td>void</td>
  * <td>Config  will be loaded</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
