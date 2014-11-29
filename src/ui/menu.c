@@ -96,7 +96,10 @@ _on_close_project(void *data,
    App_Data *ap;
 
    ap = (App_Data *)data;
-   if (!ap->project) return;
+   if (!project_close_request(ap,
+                              _("You want to close project. <br/>"
+                                "If you dont save opened project<br/>"
+                                "all your changes will be lost!")))
 
    pm_project_close(ap->project);
    STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
