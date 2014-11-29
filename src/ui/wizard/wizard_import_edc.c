@@ -132,9 +132,72 @@ _on_directory_bt_done(void *data,
    _fs_close(NULL, c_data->wiew->fs, NULL);
 }
 
-static Eina_Bool
-_setup_splash(void *data __UNUSED__)
+static inline const char *
+item_entry_entry_get(Evas_Object *item)
 {
+   Evas_Object *entry = elm_object_part_content_get(item, "swallow.entry");
+   return elm_entry_entry_get(entry);
+}
+
+static void
+_directories_include_flags_build(Evas_Object *box,
+                                 const char *dir_name,
+                                 Eina_Strbuf *str)
+{
+   Eina_List *box_items, *l;
+   Evas_Object *item;
+   const char *path;
+
+   box_items = elm_box_children_get(box);
+   EINA_LIST_FOREACH(box_items, l, item)
+     {
+        path = item_entry_entry_get(item);
+        if (path)
+          eina_strbuf_append_printf(str, "-%s \"%s\" ", dir_name, path);
+     }
+}
+
+static inline Evas_Object *
+_directories_box_get(Evas_Object *layout, const char *part_name)
+{
+   Evas_Object *scr = elm_object_part_content_get(layout, part_name);
+   return elm_object_content_get(scr);
+}
+
+static Eina_Strbuf *
+_edje_cc_flags_create(Wizard_Import_Edj_Win *wiew)
+{
+   Eina_Strbuf *flags = eina_strbuf_new();
+
+   _directories_include_flags_build(_directories_box_get(wiew->layout,
+                                    "swallow.directories_img"), "id", flags);
+   _directories_include_flags_build(_directories_box_get(wiew->layout,
+                                    "swallow.directories_fnt"), "fd", flags);
+   _directories_include_flags_build(_directories_box_get(wiew->layout,
+                                    "swallow.directories_snd"), "sd", flags);
+   _directories_include_flags_build(_directories_box_get(wiew->layout,
+                                    "swallow.directories_vbr"), "vd", flags);
+   _directories_include_flags_build(_directories_box_get(wiew->layout,
+                                    "swallow.directories_data"), "dd", flags);
+
+   eina_strbuf_append(flags, "-v");
+   return flags;
+}
+
+static Eina_Bool
+_setup_splash(void *data)
+{
+   Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
+   Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
+   wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
+                                        elm_entry_entry_get(wiew->path),
+                                        elm_entry_entry_get(wiew->edj),
+                                        eina_strbuf_string_get(flags),
+                                        _progress_print,
+                                        _progress_end,
+                                        wiew);
+
+   eina_strbuf_free(flags);
    return false;
 }
 
@@ -262,7 +325,6 @@ _directories_box_add(Wizard_Import_Edj_Win *wiew)
 Evas_Object *
 wizard_import_edc_add(App_Data *ap __UNUSED__)
 {
-   Evas_Object *btn;
    Wizard_Import_Edj_Win *wiew;
    wiew = wizard_import_common_add("elm/layout/wizard/import_edc");
    if (!wiew) return NULL;
@@ -287,10 +349,6 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
                                _directories_box_add(wiew));
    elm_object_part_content_set(wiew->layout, "swallow.directories_data",
                                _directories_box_add(wiew));
-
-   // to be deleted during further implementation
-   btn = elm_object_part_content_get(wiew->layout, "swallow.button1");
-   elm_object_disabled_set(btn, true);
 
    wiew->splash_setup_func = _setup_splash;
 
