@@ -165,7 +165,7 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Cancel diff, that outside of depth");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_module_depth_set_test_p2");
    elm_shutdown();

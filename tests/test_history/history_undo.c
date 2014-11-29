@@ -95,7 +95,7 @@ EFLETE_TEST(history_undo_test_p1)
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p1");
    elm_shutdown();
@@ -165,7 +165,7 @@ EFLETE_TEST(history_undo_test_p2)
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p2");
    elm_shutdown();
@@ -250,7 +250,7 @@ EFLETE_TEST(history_undo_test_p3)
    check_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
    ck_assert_msg(check_value_drag_y == new_value_drag_y, "Canceled all actions");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p3");
    elm_shutdown();
@@ -335,7 +335,7 @@ EFLETE_TEST(history_undo_test_p4)
    check_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value_drag_x == old_value_drag_x, "Canceled not all actions");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p4");
    elm_shutdown();
@@ -405,7 +405,7 @@ EFLETE_TEST(history_undo_test_p5)
    check_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p5");
    elm_shutdown();
@@ -482,7 +482,7 @@ EFLETE_TEST(history_undo_test_p6)
    eina_stringshare_del(new_value);
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p6");
    elm_shutdown();
@@ -559,7 +559,7 @@ EFLETE_TEST(history_undo_test_p7)
    eina_stringshare_del(new_value);
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p7");
    elm_shutdown();
@@ -634,7 +634,7 @@ EFLETE_TEST(history_undo_test_p8)
    ck_assert_msg(((checkr == oldr) && (checkg == oldg) && (checkb == oldb) &&
                   (checka == olda )), "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p8");
    elm_shutdown();
@@ -703,7 +703,7 @@ EFLETE_TEST(history_undo_test_p9)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p9");
    elm_shutdown();
@@ -773,7 +773,7 @@ EFLETE_TEST(history_undo_test_p10)
    result = edje_edit_part_exist(style->obj, old_value);
    ck_assert_msg(result, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p10");
    elm_shutdown();
@@ -844,7 +844,7 @@ EFLETE_TEST(history_undo_test_p11)
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p11");
    elm_shutdown();
@@ -915,7 +915,7 @@ EFLETE_TEST(history_undo_test_p12)
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p12");
    elm_shutdown();
@@ -986,7 +986,7 @@ EFLETE_TEST(history_undo_test_p13)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p13");
    elm_shutdown();
@@ -1054,7 +1054,7 @@ EFLETE_TEST(history_undo_test_p14)
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p14");
    elm_shutdown();
@@ -1124,7 +1124,7 @@ EFLETE_TEST(history_undo_test_p15)
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Canceled action doesn't change value");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p15");
    elm_shutdown();
@@ -1203,7 +1203,7 @@ EFLETE_TEST(history_undo_test_p16)
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Max weight didn't canceled");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p16");
    elm_shutdown();
@@ -1282,7 +1282,7 @@ EFLETE_TEST(history_undo_test_p17)
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Align y didn't canceled");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p17");
    elm_shutdown();
@@ -1394,7 +1394,7 @@ EFLETE_TEST(history_undo_test_n2)
    result = history_undo(style->obj, -1);
    ck_assert_msg(!result, "Undo diff with quantity of changes  '-1' .");
 
-   history_term(app->history);
+   ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_n2");
    elm_shutdown();
