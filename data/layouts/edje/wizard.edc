@@ -3,7 +3,7 @@ images {
    image: "separator-horizontal.png" COMP;
 }
 
-group { name: "elm/layout/wizard/import";
+group { name: "elm/layout/wizard/import_edj";
    broadcast_signal: 0;
    parts {
       part { name: "area.separator1";
@@ -497,6 +497,210 @@ group { name: "elm/layout/wizard/import";
             image {
                normal: "separator-horizontal.png";
                middle: DEFAULT;
+            }
+         }
+      }
+   }
+}
+
+group { name: "elm/layout/wizard/import_edc";
+   inherit: "elm/layout/wizard/import_edj";
+   parts {
+      part { name: "padding.directories_top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 15 15;
+            max: -1 15;
+            align: 0.0 0.0;
+            rel1 {
+               to: "area.edj";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "area.separator1";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "area.directories";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               to:"padding.directories_top";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "area.separator1";
+               to_y: "area.separator2";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+#define SEPARATOR_ADD(_name, _from, _to, _rel_to) \
+      part { name: "separator."#_name; \
+         type: SPACER; \
+         description { state: "default" 0.0; \
+            align: 0.5 1.0; \
+            min: 10 10; \
+            max: -1 10; \
+            rel1 { \
+               to: _rel_to; \
+               relative: 0.0 _from; \
+            } \
+            rel2 { \
+               to: _rel_to; \
+               relative: 1.0 _to; \
+            } \
+         } \
+      } \
+      part { name: #_name; \
+         type: IMAGE; \
+         description { state: "default" 0.0; \
+            align: 0.5 0.5; \
+            min: 2 2; \
+            max: -1 2; \
+            rel1.to: "separator."#_name; \
+            rel2.to: "separator."#_name; \
+            image { \
+               normal: "separator-horizontal.png"; \
+               middle: DEFAULT; \
+            } \
+         } \
+      }
+
+      SEPARATOR_ADD(directories_img,  0.0, 1.0, "padding.directories_top");
+      SEPARATOR_ADD(directories_fnt,  0.0, 0.2, "area.directories");
+      SEPARATOR_ADD(directories_snd,  0.2, 0.4, "area.directories");
+      SEPARATOR_ADD(directories_vbr,  0.4, 0.6, "area.directories");
+      SEPARATOR_ADD(directories_data, 0.6, 0.8, "area.directories");
+
+#undef SEPARATOR_ADD
+
+#define SWALLOW_ADD(_name, _to, _relative) \
+      part { name: "area."#_name; \
+         type: SWALLOW; \
+         description { state: "default" 0.0; \
+            rel1 { \
+               to: "separator."#_name; \
+               relative: 0.0 1.0; \
+            } \
+            rel2 { \
+               to: _to; \
+               relative: 1.0 _relative; \
+            } \
+         } \
+      } \
+      part { name: "label."#_name; \
+         type: TEXT; \
+         scale: 1; \
+         description { state: "default" 0.0; \
+            align: 0.0 0.0; \
+            rel1.to: "area."#_name; \
+            rel2 { \
+               relative: 0.3 1.0; \
+               to: "area."#_name; \
+            } \
+            text { \
+               font: FN; \
+               size: 12; \
+               max: 1 1; \
+            } \
+         } \
+      } \
+      part { name: "swallow."#_name; \
+         type: SWALLOW; \
+         description { state: "default" 0.0; \
+            rel1 { \
+               relative: 0.3 0.0; \
+               to: "area."#_name; \
+            } \
+            rel2.to: "area."#_name; \
+         } \
+      }
+
+      SWALLOW_ADD(directories_img,  "separator.directories_fnt", 0.0);
+      SWALLOW_ADD(directories_fnt,  "separator.directories_snd", 0.0);
+      SWALLOW_ADD(directories_snd,  "separator.directories_vbr", 0.0);
+      SWALLOW_ADD(directories_vbr,  "separator.directories_data", 0.0);
+      SWALLOW_ADD(directories_data, "area.directories", 1.0);
+
+#undef SWALLOW_ADD
+   }
+}
+
+group { name: "elm/layout/wizard/directories_item";
+   parts {
+      part { name: "area.base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 26;
+            max: -1 26;
+         }
+      }
+      part { name: "area.buttons";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            SET_SIZE(70, 26);
+            rel1.to: "area.base";
+            rel2.to: "area.base";
+         }
+      }
+      part { name: "swallow.entry";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "area.base";
+            rel2 {
+               to: "area.buttons";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "padding.buttons_top_left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(6, 3);
+            rel1.to: "area.buttons";
+            rel2.to: "area.buttons";
+         }
+      }
+      part { name: "padding.buttons_right_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(6, 3);
+            rel1.to: "area.buttons";
+            rel2.to: "area.buttons";
+         }
+      }
+      part { name: "swallow.button_del";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            SET_SIZE(28, 20)
+            rel1 {
+               to: "padding.buttons_top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.buttons_right_bottom";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "swallow.button_add";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(28, 20)
+            rel1 {
+               to: "padding.buttons_top_left";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "padding.buttons_right_bottom";
+               relative: 0.0 0.0;
             }
          }
       }
