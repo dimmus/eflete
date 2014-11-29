@@ -36,8 +36,7 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test \
-preference_test
+shortcuts_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -309,12 +308,12 @@ test_ui_main_window/code_edit_mode_switch.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
-preference_test_SOURCES = \
-test_preference/test_preference.c \
-test_preference/preference_add.c \
-test_preference/preferences_project_autosave_update.c
-preference_test_CFLAGS = ${FLAGS}
-preference_test_LDADD = ${LD}
+#preference_test_SOURCES = \
+#test_preference/test_preference.c \
+#test_preference/preference_add.c \
+#test_preference/preferences_project_autosave_update.c
+#preference_test_CFLAGS = ${FLAGS}
+#preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
