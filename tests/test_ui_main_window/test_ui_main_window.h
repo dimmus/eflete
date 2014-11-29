@@ -50,10 +50,6 @@ void ui_menu_add_test_n2(int);
 void ui_panes_left_panes_min_size_toggle_test_p(int);
 void ui_panes_left_panes_min_size_toggle_test_n(int);
 
-void new_theme_create_test_p(int);
-void new_theme_create_test_n1(int);
-void new_theme_create_test_n2(int);
-
 void register_callbacks_test_p(int);
 void register_callbacks_test_n1(int);
 void register_callbacks_test_n2(int);
