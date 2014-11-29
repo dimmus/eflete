@@ -499,5 +499,25 @@ wm_part_type_get(Edje_Part_Type type);
  */
 Part *
 wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
+
+/**
+ * Restack Part structure position in style.
+ *
+ * @param Style The group structure.
+ * @param part_name The name of a part, that should be restacked
+ * @param rel_name The name of a relative part.
+ * @param direct If EINA_TRUE structure part with 'part_name' will restacked above
+ *               above struture Part with name 'rel_name'.'
+ *
+ * @return EINA_TRUE if successful or EINA_FALSE in otherwise.
+ *
+ * @note Input params shoud be Eina_Stringshare value, that creates with using
+ * eina_stringshare_add or eina_stringshare_printf.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
+                       Eina_Stringshare *rel_name, Eina_Bool direct);
 #endif /* WIDGET_MANAGER_B_H*/
 

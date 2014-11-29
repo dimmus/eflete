@@ -149,6 +149,7 @@ enum _Action
    MODIFY,  /**< Usaly it indicate that modifing attributes of part or state. */
    HLIGHT, /**< This action mean, that changed two params, whith using differents
                    function. For this case needed special logic to manage changes*/
+   RESTACK, /**< This action needed for manage parts restack */
    LAST_ACTION
 };
 
@@ -164,6 +165,10 @@ enum _Target
    PROPERTY = 0, /**< This type of module generate changes, that modify attributes
                       of states, parts or style. For example min/max values for
                       state in part*/
+   STATE_TARGET, /**< This type of change happens with state of part.
+                      It can be add new state, or delete already exists state.*/
+   PART_TARGET, /**< This type of change happens with part. It can be add new
+                     part, or delete already exist, or restack.*/
    LAST_TARGET
 };
 
@@ -364,7 +369,46 @@ history_module_del(Evas_Object *source);
  *                     part->curr_state_value);
  *  ...
  *   </pre>
- **
+ * --------------------------------------------------------------------------
+ * In case when you want to add change for module with type STATE_TARGET.
+ *
+ *   Case when new state is added:
+ *
+ *   history_diff_add(source, STATE_TARGET, ADD, full style name, part name,
+ *                    state name, state value, description);
+ *
+ *   Case when state is deleted:
+ *
+ *   history_diff_add(source, STATE_TARGET, DEL, full style name, part name,
+ *                    state name, state value, description);
+ *
+ * Example of code that shows case of adding new state:
+ * <pre>
+ *   ...
+ *   History *history = history_init();
+ *   if (!history_module_add(style->obj)) return;
+ *    ...
+ *   Eina_Bool ret = EINA_FALSE;
+ *   ret = edje_edit_state_add(style->obj, "elm.text", "selected", 0.0);
+ *   if (!ret) return;
+ *   history_diff_add(style->obj, STATE_TARGET, ADD, "elm/button/base/default",
+ *                    "elm.text", "selected", 0.0, "create state");
+ *    ...
+ * </pre>
+ * --------------------------------------------------------------------------
+ * In case when you want to add change for module with type PART_TARGET.
+ *
+ *   Case when new part is added:
+ *
+ *   history_diff_add(source, PART_TARGET, ADD, part name);
+ *
+ *   Case when part is deleted:
+ *
+ *   history_diff_add(source, PART_TARGET, DEL, part name);
+ *
+ *   Case when part is restacked:
+ *
+ *   history_diff_add(source, PART_TARGET, RESTACK, part name);
  *
  * @ingroup History
  */

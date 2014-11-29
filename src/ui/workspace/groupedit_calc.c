@@ -755,6 +755,7 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
    Groupedit_Part *gp;
 
    gp = _parts_list_find(sd->parts, part);
+   if (!gp) return;
    _groupedit_part_free(gp);
    sd->parts = eina_list_remove(sd->parts, gp);
 }

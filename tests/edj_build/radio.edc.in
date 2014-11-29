@@ -135,6 +135,11 @@ group { name: "elm/radio/base/def";
             visible: 1;
             text.min: 1 1;
          }
+         description { state: "test_state" 0.2;
+            inherit: "default" 0.0;
+            visible: 1;
+            text.min: 1 1;
+         }
          description { state: "disabled" 0.0;
             inherit: "default" 0.0;
             color: 0 0 0 128;

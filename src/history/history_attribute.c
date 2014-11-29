@@ -460,9 +460,9 @@ static Attribute_Diff *
 _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
-       ((!previous->part && !change->part) ||
-        (!strcmp(previous->part, change->part)) ||
-        (!change->state && change->param_type == RENAME)))
+       ((!previous->part && !change->part) || /* if this change for group. */
+        ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
+        (change->param_type == RENAME))))
      {
         switch(previous->param_type)
          {
@@ -477,6 +477,12 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
              eina_stringshare_replace(&previous->part, change->string.new);
           case STRING:
              eina_stringshare_replace(&previous->string.new, change->string.new);
+          break;
+          case FOUR:
+             previous->four.new_1 = change->four.new_1;
+             previous->four.new_2 = change->four.new_2;
+             previous->four.new_3 = change->four.new_3;
+             previous->four.new_4 = change->four.new_4;
           break;
           default:
              return change;
@@ -494,7 +500,7 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
        (previous->func_revert == change->func_revert) &&
-       ((!previous->part && !change->part) || (!strcmp(previous->part, change->part))))
+       (previous->part == change->part))
      {
         switch(previous->param_type)
          {

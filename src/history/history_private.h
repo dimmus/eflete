@@ -44,6 +44,24 @@ typedef struct _Diff Diff;
 typedef struct _Attribute_Diff Attribute_Diff;
 
 /**
+ * @typedef State_Diff
+ * @ingroup History
+ */
+typedef struct _State_Diff State_Diff;
+
+/**
+ * @typedef Part_Diff
+ * @ingroup History
+ */
+typedef struct _Part_Diff Part_Diff;
+
+/**
+ * @typedef State_Params
+ * @ingroup History_State
+ */
+typedef struct _State_Params State_Params;
+
+/**
  * @struct _History
  *
  * @brief This struct designed to storage list of modules, that can generatre
@@ -218,6 +236,167 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change);
  */
 Eina_Bool
 _attribute_redo(Evas_Object *source, Attribute_Diff *change);
+
+/* INTERNAL FUNCTIONS FOR HISTORY_STATE SUBMODULE */
+/**
+ * @defgroup History_State History states
+ * @ingroup History
+ *
+ * This submodule manage changes of the states of parts. Parse changes with module
+ * type STATE_TARGET. Manage undo/redo actions with that changes.
+ *
+ * @note This is private submodule for history module.
+ *
+ */
+
+/**
+ * Create right diff, from input data list. Parse input list of parameters and
+ * fill internal structure State_Diff.
+ *
+ * @param list The list of params. For detail description of this params
+ *             please see history_diff_add.
+ * @param source The object, that represent module.
+ *
+ * @return Pointer to filled structure, that casted to the Diff in successful
+ *         case or NULL if something went wrong.
+ *
+ * @ingroup History_State
+ */
+Diff *
+_state_change_new(va_list list, Evas_Object *source);
+
+/**
+ * Freed memory, that was allocated in _state_change_new.
+ *
+ * @param change The diff, that was created with using _state_change_new.
+ *
+ * @ingroup History_State
+ */
+void
+_state_change_free(State_Diff *change);
+
+/**
+ * This function cancel given diff.
+ *
+ * @param source The object, that represent module.
+ * @param change The diff, that was created with using _state_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_State
+ */
+Eina_Bool
+_state_undo(Evas_Object *source, State_Diff *change);
+
+/**
+ * This function restore given diff.
+ *
+ * @param source The object, that represent module.
+ * @param change The diff, that was created with using _state_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_State
+ */
+Eina_Bool
+_state_redo(Evas_Object *source, State_Diff *change);
+
+/**
+ * Save current values of state into State_Param structure.
+ *
+ * @param source The object, that represent module.
+ * @param part The name of part, which contain state.
+ * @param state The name of state, which params should be saved.
+ * @param value The state value.
+ * @param type The type of part. Needed for save special params.
+ *
+ * @return Filled structure State_Params if successful, or NULL in otherwise.
+ *
+ * @ingroup History_State
+ */
+State_Params *
+_state_params_save(Evas_Object *obj, const char *part, const char *state,
+                   double value, Edje_Part_Type type);
+
+/**
+ * Restore values of saved state from State_Param structure into edje_edit object.
+ *
+ * @param source The object, that represent module.
+ * @param part The name of part, which contain state.
+ * @param state_diff The stored params.
+ * @param type The type of part. Needed for restore special params.
+ *
+ * @return EINA_TRUE if params restored successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_State
+ */
+Eina_Bool
+_state_param_restore(Evas_Object *obj, Eina_Stringshare *part,
+                     State_Params *state_diff, Edje_Part_Type type);
+
+/* INTERNAL FUNCTIONS FOR HISTORY_PART SUBMODULE */
+/**
+ * @defgroup History_Part History part
+ * @ingroup History
+ *
+ * This submodule manage changes of the parts. Parse changes with module
+ * type PART_TARGET. Manage undo/redo actions with that changes.
+ *
+ * @note This is private submodule for history module.
+ *
+ */
+
+/**
+ * Create right diff, from input data list. Parse input list of parameters and
+ * fill internal structure Part_Diff.
+ *
+ * @param list The list of params. For detail description of this params
+ *             please see history_diff_add.
+ * @source The object, that represent module.
+ *
+ * @return Pointer to filled structure, that casted to the Diff in successful
+ *         case or NULL if something went wrong.
+ *
+ * @ingroup History_Part
+ */
+Diff *
+_part_change_new(va_list list, Evas_Object *source);
+
+/**
+ * Freed memory, that was allocated in _part_change_new.
+ *
+ * @param change The diff, that was created with using _part_change_new.
+ *
+ * @ingroup History_Part
+ */
+void
+_part_change_free(Part_Diff *change);
+
+/**
+ * This function cancel given diff.
+ *
+ * @source The object, that represent module.
+ * @param change The diff, that was created with using _part_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_Part
+ */
+Eina_Bool
+_part_undo(Evas_Object *source, Part_Diff *change);
+
+/**
+ * This function restore given diff.
+ *
+ * @source The object, that represent module.
+ * @param change The diff, that was created with using _part_change_new.
+ *
+ * @return EINA_TRUE if diff canceled successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup History_Part
+ */
+Eina_Bool
+_part_redo(Evas_Object *source, Part_Diff *change);
 
 /* INTERNAL FUNCTIONS FOR HISTORY_UI SUBMODULE */
 /**

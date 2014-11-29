@@ -69,6 +69,7 @@ _del_part(void *data,
    /* In case when deleting part which is dragable area for another part,
       reloading style into liveview crash application */
    live_view_widget_style_unset(ap->live_view);
+   history_diff_add(style->obj, PART_TARGET, DEL, part_name);
    if (workspace_edit_object_part_del(ap->workspace, part->name))
      ui_widget_list_selected_part_del(ui_block_widget_list_get(ap), style);
    style->isModify = true;
@@ -106,6 +107,7 @@ _above_part(void *data,
    if (!ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style))
       return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    if ((!part) || (!workspace_edit_object_part_above(ap->workspace, part->name)))
      {
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
@@ -125,6 +127,7 @@ _below_part(void *data,
    if (!ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style))
       return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    if ((!part) || (!workspace_edit_object_part_below(ap->workspace, part->name)))
      {
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
@@ -146,6 +149,7 @@ _restack_part_above(void *data,
    Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
    if ((!part) || (!style)) return;
+   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, false);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);
@@ -170,6 +174,7 @@ _restack_part_below(void *data,
    Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
 
    if ((!part) || (!style)) return;
+   history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
    workspace_edit_object_part_restack(ap->workspace, part->name, rel->name, true);
    style->isModify = true;
    live_view_widget_style_set(ap->live_view, ap->project, style);

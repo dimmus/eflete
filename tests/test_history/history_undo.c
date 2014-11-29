@@ -1063,6 +1063,8 @@ EFLETE_TEST(history_undo_test_p14)
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Canceled action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p14");
@@ -1133,6 +1135,8 @@ EFLETE_TEST(history_undo_test_p15)
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Canceled action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p15");
@@ -1212,6 +1216,8 @@ EFLETE_TEST(history_undo_test_p16)
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Max weight didn't canceled");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p16");
@@ -1291,11 +1297,370 @@ EFLETE_TEST(history_undo_test_p17)
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Align y didn't canceled");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p17");
    elm_shutdown();
 }
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p18</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Add new state with name "new_state" and value 0.1 to the part "bg".
+ * @step 10 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that state "new_state" with value 0.1 for part "bg" does not exists.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p18)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+
+   elm_init(0, 0);
+   app_init();
+   setup("history_undo_test_p18");
+
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./history_undo_test_p18/history_undo_test_p18.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   edje_edit_state_add(style->obj, "bg", "new_state", 0.1);
+   history_diff_add(style->obj, STATE_TARGET, ADD, "elm/radio/base/def",
+                    "bg", "new_state", 0.1, "create state");
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with target type STATE_TARGET"
+                 " with ADD action.");
+   result = edje_edit_state_exist(style->obj, "bg", "new_state", 0.1);
+   ck_assert_msg(!result, "Adding new state didn't canceled'");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("history_undo_test_p18");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p19</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Delete state with name "test_state" and value 0.2 from the part "elm.text".
+ * @step 10 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that state "test_state" with value 0.2 for part "elm.text" is exists.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p19)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+
+   elm_init(0, 0);
+   app_init();
+   setup("history_undo_test_p19");
+
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./history_undo_test_p19/history_undo_test_p19.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   history_diff_add(style->obj, STATE_TARGET, DEL, "elm/radio/base/def",
+                    "elm.text", "test_state", 0.2, "delete state");
+   edje_edit_state_del(style->obj, "elm.text", "test_state", 0.2);
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with target type STATE_TARGET"
+                 " with DEL action.");
+   result = edje_edit_state_exist(style->obj, "elm.text", "test_state", 0.2);
+   ck_assert_msg(result, "Deleting state didn't canceled'");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("history_undo_test_p19");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p20</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Store list of states from part "elm.text".
+ * @step 10 Store diff with using history_diff_add function.
+ * @step 11 Delete part with name "elm.text".
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that part "elm.text" exist.
+ * @step 4 Check, that all states of part "elm.text" restored.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p20)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Eina_List *states = NULL, *l = NULL, *check_states = NULL;
+   Eina_Stringshare *state = NULL;
+
+   elm_init(0, 0);
+   app_init();
+   setup("history_undo_test_p20");
+
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./history_undo_test_p20/history_undo_test_p20.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   states = edje_edit_part_states_list_get(style->obj, "elm.text");
+   history_diff_add(style->obj, PART_TARGET, DEL, "elm.text");
+   edje_edit_part_del(style->obj, "elm.text");
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with target type PART_TARGET"
+                 " with DEL action.");
+   result = edje_edit_part_exist(style->obj, "elm.text");
+   ck_assert_msg(result, "Deleting part didn't canceled");
+   check_states = edje_edit_part_states_list_get(style->obj, "elm.text");
+   result = true;
+   EINA_LIST_FOREACH(states, l, state)
+     {
+        if (!eina_list_data_find_list(check_states, state))
+          result = false;
+     }
+   ck_assert_msg(result, "Not all states are restored");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("history_undo_test_p20");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p21</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 ADD part with name "part_add" with type RECT.
+ * @step 10 Store diff with using history_diff_add function.
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that part "part_add" not exist.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p21)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+
+   elm_init(0, 0);
+   app_init();
+   setup("history_undo_test_p21");
+
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./history_undo_test_p21/history_undo_test_p21.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   edje_edit_part_add(style->obj, "part_add", EDJE_PART_TYPE_RECTANGLE);
+   history_diff_add(style->obj, PART_TARGET, ADD, "part_add");
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with target type PART_TARGET"
+                 " with ADD action.");
+   result = edje_edit_part_exist(style->obj, "part_add");
+   ck_assert_msg(!result, "Adding part didn't canceled");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("history_undo_test_p21");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup history_undo
+ * @{
+ * <tr>
+ * <td>history_undo</td>
+ * <td>history_undo_test_p22</td>:
+ * <td>
+ * @precondition
+ * @step 1 Initialize elementary library.
+ * @step 2 Initialize Application Data structure.
+ * @step 3 Initialize main window.
+ * @step 4 Open project.
+ * @step 5 Fill widget inlist with data.
+ * @step 6 Find style that represent the group "elm/radio/base/def"
+ * @step 7 Load style into project.
+ * @step 8 Register in history style object, that finded at step 6, as module.
+ * @step 9 Store part name, that below part "radio".
+ * @step 10 Store diff with using history_diff_add function.
+ * @step 11 Restack below part with name "radio".
+ *
+ * @procedure
+ * @step 1 Call history_undo for object from step 6 of precondition.
+ * @step 2 Check returned value.
+ * @step 3 Check that part "radio" is below part, name of that was stored at step 9.
+ * </td>
+ * <td>(Evas_Object *) style->obj, (int) 1 </td>
+ * <td>All checks passed</td>
+ * <td>_REAL_RESULT_</td>
+ * <td>_PASSED_</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST(history_undo_test_p22)
+{
+   App_Data *app = NULL;
+   Style *style = NULL;
+   Eina_Bool result = EINA_FALSE;
+   Eina_Stringshare *below = NULL, *check = NULL;
+
+   elm_init(0, 0);
+   app_init();
+   setup("history_undo_test_p22");
+
+   app = app_data_get();
+   ui_main_window_add(app);
+   app->project = pm_project_open("./history_undo_test_p22/history_undo_test_p22.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
+   style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
+   ui_style_clicked(app, style);
+   history_module_add(style->obj);
+   history_diff_add(style->obj, PART_TARGET, RESTACK, "radio");
+   below = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
+   edje_edit_part_restack_below(style->obj, "part_add");
+
+   result = history_undo(style->obj, 1);
+   ck_assert_msg(result, "Failed to undo diff with target type PART_TARGET"
+                 " with RESTACK action.");
+   check = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
+   ck_assert_msg(check == below, "Restack part didn't canceled");
+
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("history_undo_test_p22");
+   elm_shutdown();}
 END_TEST
 
 /**
