@@ -706,8 +706,6 @@ END_TEST
  *     (const char *)"bg", (const char *)"new_state", (double) 0.0,
  *     (const char *) "create state"</td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -766,8 +764,6 @@ END_TEST
  *     (const char *)"elm.swallow.content", (const char *)"disable", (double) 0.0,
  *     (const char *) "delete state"</td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -823,8 +819,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source, PART_TARGET, ADD, (const char *)"new_part"</td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -882,8 +876,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source, PART_TARGET, DEL, (const char *)"bg"</td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -938,8 +930,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source, PART_TARGET, RESTACK, (const char *)"bg"</td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1498,8 +1488,6 @@ END_TEST
  *     (const char *)"bg", (const char *)"new_state", (double) 0.0,
  *     (const char *) "create state"</td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1555,8 +1543,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) source, PART_TARGET, MODIFY, (const char *)"bg"</td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
