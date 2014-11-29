@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -41,12 +41,13 @@
  *
  * @param parent The parent widget.
  * @param live_view Live View structure.
+ * @param in_prog_edit Is this live_view for program_editor.
  * @return A new 'property' widget handler or NULL, on errors
  *
  * @ingroup Live_View_Property
  */
 Evas_Object *
-live_view_property_add(Evas_Object *parent);
+live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit);
 
 /**
  * Set new style's property to Live View Property widget.

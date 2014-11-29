@@ -50,8 +50,6 @@
  * </td>
  * <td>Eina_Hash *menu_hash, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -92,8 +90,6 @@ END_TEST
  * </td>
  * <td>NULL, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

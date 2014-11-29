@@ -1,5 +1,5 @@
-EFLETE_VERSION([0], [3], [1])
-AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
+EFLETE_VERSION([0], [4], [0], [release])
+AC_INIT([eflete], [eflete_version-alpha], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -13,6 +13,7 @@ AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.11.0])
 m4_define([elm_version], [1.11.0])
+m4_define([enventor_version], [0.4.1])
 m4_define([ewe_version], [0.2.0])
 
 EFLETE_INIT
@@ -69,6 +70,7 @@ PKG_CHECK_MODULES([EFL],
     eo >= efl_version
     ecore-imf >= efl_version
     ecore-con >= efl_version
+    ecore-audio >= efl_version
     eio >= efl_version
     eldbus >= efl_version
     efreet >= efl_version
@@ -89,6 +91,14 @@ PKG_CHECK_MODULES([EWE], [ewe >= ewe_version],
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
    [have_check="${RED}no${RESET}"])
+
+PKG_CHECK_MODULES([ENVENTOR], [enventor >= enventor_version],
+   [have_enventor="${GREEN}yes${RESET}"],
+   [have_enventor="${RED}no${RESET} (version < enventor_version)"])
+
+AM_CONDITIONAL([ENVENTOR_FOUND], [test "x$have_enventor" = "x${GREEN}yes${RESET}"])
+AM_COND_IF([ENVENTOR_FOUND], [AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])])
+
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "x${GREEN}yes${RESET}"])
 AC_SUBST([CHECK_FOUND])
 AM_COND_IF([CHECK_FOUND],
@@ -132,6 +142,9 @@ EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/resources.edj\\\" "
+EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDC_PATH=\\\"${datadir}/eflete/themes/default/template/edc\\\" "
+EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_IMAGES_PATH=\\\"${datadir}/eflete/themes/default/template/images\\\" "
+EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_SOUNDS_PATH=\\\"${datadir}/eflete/themes/default/template/sounds\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SWAP_PATH=\\\"${HOME}/.eflete/swap/\\\" "
 AC_SUBST([EFLETE_DEFINE])
@@ -155,6 +168,8 @@ doc/Makefile
 AC_CONFIG_COMMANDS( [cp], [cp ${srcdir}/tests/edj_build/radio.png ./tests/edj_build/radio.png])
 AC_CONFIG_COMMANDS( [cp1], [cp ${srcdir}/tests/edj_build/radio2.png ./tests/edj_build/radio2.png])
 AC_CONFIG_COMMANDS( [cp2], [cp ${srcdir}/tests/edj_build/radio_base.png ./tests/edj_build/radio_base.png])
+AC_CONFIG_COMMANDS( [cp3], [cp ${srcdir}/tests/edj_build/kbd-tap.wav ./tests/edj_build/kbd-tap.wav])
+AC_CONFIG_COMMANDS( [cp4], [cp ${srcdir}/tests/edj_build/license.txt ./tests/edj_build/license.txt])
 
 AC_OUTPUT
 
@@ -171,6 +186,9 @@ echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
 echo "  ewe............: ${have_ewe}"
+echo ""
+echo "Features:"
+echo "  enventor.......: ${have_enventor}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo

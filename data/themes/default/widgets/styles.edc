@@ -49,7 +49,7 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "tab" "\t";
    }
    style { name: "eflete_text_style";
-      base: "font="FN" font_size=12 color=#B6B6B6 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=1.0";
+      base: "font="FN" font_size=12 color=#B6B6B6 wrap=word text_class=entry";
       tag:  "em" "+ font_style=Oblique";
       tag:  "link" "+ color=#B6B6B6 underline=on underline_color=#8008";
       tag:  "hilight" "+ font_weight=Bold";
@@ -69,8 +69,20 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "em" "+ font_style=Oblique";
       tag:  "hilight" "+ font_weight=Bold";
    }
+   style { name: "eflete_text_search_guide_style";
+      base: "font="FN" font_size=12 color=#555555 wrap=word text_class=entry left_margin=2 right_margin=2 ellipsis=0.0";
+      tag:  "em" "+ font_style=Oblique";
+      tag:  "hilight" "+ font_weight=Bold";
+   }
    style { name: "eflete_textblock_style";
       base: "font="FN" font_size=11 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
+      tag:  "hilight" "+ font_weight=Bold";
+      tag:  "b" "+ font_weight=Bold";
+      tag:  "br" "\n";
+      tag:  "a" "+ color=#00000080 underline=on underline_color=#00000080";
+   }
+   style { name: "eflete_editor_textblock_style";
+      base: "font="FN" font_size=12 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
       tag:  "hilight" "+ font_weight=Bold";
       tag:  "b" "+ font_weight=Bold";
       tag:  "br" "\n";
@@ -82,5 +94,9 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "b" "+ font_weight=Bold";
       tag:  "br" "\n";
       tag:  "a" "+ color=#5893c6ff underline=on underline_color=#5893c6ff";
+   }
+   style { name: "eflete_header_textblock_style";
+      base: "font="FN" font_size=16 color=#FFFFFF text_class=label left_margin=2 right_margin=2";
+      tag:  "b" "+ font_weight=Bold";
    }
 }

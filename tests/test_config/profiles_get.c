@@ -37,7 +37,7 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
+ * @step 2 initializeapplication data
  * @step 3 load config
  *
  * @procedure
@@ -45,8 +45,6 @@
  * </td>
  * <td>void</td>
  * <td>not NULL pointer</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -55,14 +53,14 @@ EFLETE_TEST(profiles_get_test_p)
    Eina_List *profiles;
 
    elm_init(0,0);
-   config_init();
-   config_load();
+   app_init();
+   config_load(app_data_get());
 
    profiles = profiles_get();
    ck_assert_msg(profiles != NULL, "Config not loaded.");
 
    EINA_LIST_STRINGSHARE_FREE(profiles);
-   config_shutdown();
+   config_shutdown(app_data_get());
    elm_shutdown();
 }
 END_TEST

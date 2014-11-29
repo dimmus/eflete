@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -24,6 +24,8 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
 
    tcase_add_test(tcase, config_init_test_p);
+   tcase_add_test(tcase, config_init_test_n);
+
    tcase_add_test(tcase, config_shutdown_test_p);
 
    tcase_add_test(tcase, profile_load_test_p1);
@@ -39,6 +41,10 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, config_load_test_p);
    tcase_add_test(tcase, config_get_test_p1);
    tcase_add_test(tcase, config_get_test_p2);
+
+   tcase_add_test(tcase, config_panes_sizes_data_update_test_p);
+   tcase_add_test(tcase, config_panes_sizes_data_update_test_n);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

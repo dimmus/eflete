@@ -49,8 +49,6 @@
  * </td>
  * <td>Style *style, "elm.swallow.content"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -98,8 +96,6 @@ END_TEST
  * </td>
  * <td>Style *style, "elm.double.eflete"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -147,8 +143,6 @@ END_TEST
  * </td>
  * <td>NULL, "elm.double.eflete"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -194,8 +188,6 @@ END_TEST
  * </td>
  * <td>Style *style, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -235,8 +227,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

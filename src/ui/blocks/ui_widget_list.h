@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -217,5 +217,16 @@ ui_widget_list_layouts_reload(Evas_Object *obj, Project *project);
  */
 Eina_Bool
 ui_widget_list_part_update(Evas_Object *object, const char *part);
+
+/**
+ * Reload all items, that represent parts in widget list.
+ *
+ * @param object A widget list object.
+ * @param style The struct @Style of current loaded group from theme.
+ *
+ * @ingroup WidgetList
+ */
+void
+ui_widget_list_style_parts_reload(Evas_Object *object, Style *style);
 
 #endif /* UI_WIDGET_LIST_H */

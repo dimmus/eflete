@@ -1,4 +1,4 @@
-/*I{
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- *}
  */
 
 #ifndef WIDGET_MANAGER_B_H
@@ -106,12 +105,12 @@ typedef struct _Widget Widget;
 struct _Part
 {
     EINA_INLIST;
+    Type __type; /**< PART from enum @_type */
     Eina_Stringshare *name; /**< Part name in style */
     Eina_Stringshare *curr_state; /**< Current selected part state name */
     double curr_state_value; /**< Current selected part state value */
     Eina_Bool show; /**< Flag indicate current visibly part evas primitive */
     int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
-    Type __type; /**< PART from enum @_type */
 };
 
 /**
@@ -125,6 +124,7 @@ struct _Part
 struct _Style
 {
     EINA_INLIST;
+    Type __type; /**< STYLE from enum @_type */
     Eina_Stringshare *name; /**< The name of style. */
     Eina_Stringshare *full_group_name; /**< The name of a block 'group' in edc. */
     Evas_Object *obj; /** Edje edit object, which loaded form theme file. */
@@ -136,7 +136,6 @@ struct _Style
     Eina_Inlist *parts;  /**< The list of a style parts data. */
     Eina_List *aliasses; /**< The list of pointer Style structures which aliased to this style */
     Class *parent; /**< Pointer to class, which contain this style */
-    Type __type; /**< STYLE from enum @_type */
 };
 
 /**
@@ -149,10 +148,10 @@ struct _Style
 struct _Class
 {
     EINA_INLIST;
+    Type __type; /**< CLASS from enum @_type */
     Eina_Stringshare *name; /**< The name of a class. */
     Eina_Inlist *styles;    /**<The list of styles that make up the class. */
     Widget *parent; /**< Pointer to widget, which contain this class*/
-    Type __type; /**< CLASS from enum @_type */
 };
 
 /**
@@ -165,9 +164,9 @@ struct _Class
 struct _Widget
 {
     EINA_INLIST;
+    Type __type; /**< WIDGET from enum @_type */
     Eina_Stringshare *name; /**< The name of a widget. */
     Eina_Inlist *classes; /**< The list of a widget classes. */
-    Type __type; /**< WIDGET from enum @_type */
 };
 
 /**
@@ -396,7 +395,7 @@ wm_widget_free(Widget *widget);
  * @ingroup WidgetManager
  */
 Eina_Inlist *
-wm_widget_list_new(const char *file);
+wm_widgets_list_new(const char *file);
 
 /**
  * Load list of custom layouts, which stored in file.
@@ -407,10 +406,10 @@ wm_widget_list_new(const char *file);
  * @ingroup WidgetManager
  */
 Eina_Inlist *
-wm_widget_list_layouts_load(const char *file);
+wm_layouts_list_new(const char *file);
 
 /**
- * Free a generic Eina_Inlist of widgets, allocated by \ref wm_widget_list_new.
+ * Free a generic Eina_Inlist of widgets, allocated by \ref wm_widgets_list_new.
  *
  * @param widget_list A list of widgets to free.
  * @return EINA_TRUE if a list os deleted.
@@ -418,7 +417,18 @@ wm_widget_list_layouts_load(const char *file);
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_widget_list_free(Eina_Inlist *widget_list);
+wm_widgets_list_free(Eina_Inlist *widget_list);
+
+/**
+ * Free a generic Eina_Inlist of widgets, allocated by \ref wm_layouts_list_new.
+ *
+ * @param widget_list A list of widgets to free.
+ * @return EINA_TRUE if a list os deleted.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_layouts_list_free(Eina_Inlist *widget_list);
 
 /**
  * Find style object in widget list. Use full name of style.
@@ -444,7 +454,7 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name);
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_widget_list_objects_load(Eina_Inlist *widget_list,
+wm_widgets_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path);
 
@@ -474,5 +484,40 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
 const char *
 wm_part_type_get(Edje_Part_Type type);
 
+/**
+ * Find Part structure in style.
+ *
+ * @param Style The group structure, in which shoud be stored part.
+ * @param part_name The name of a part.
+ *
+ * @return if successful Part structure, NULL in otherwise.
+ *
+ * @note Input params shoud be Eina_Stringshare value, that creates with using
+ * eina_stringshare_add or eina_stringshare_printf.
+ *
+ * @ingroup WidgetManager
+ */
+Part *
+wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
+
+/**
+ * Restack Part structure position in style.
+ *
+ * @param Style The group structure.
+ * @param part_name The name of a part, that should be restacked
+ * @param rel_name The name of a relative part.
+ * @param direct If EINA_TRUE structure part with 'part_name' will restacked above
+ *               above struture Part with name 'rel_name'.'
+ *
+ * @return EINA_TRUE if successful or EINA_FALSE in otherwise.
+ *
+ * @note Input params shoud be Eina_Stringshare value, that creates with using
+ * eina_stringshare_add or eina_stringshare_printf.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
+                       Eina_Stringshare *rel_name, Eina_Bool direct);
 #endif /* WIDGET_MANAGER_B_H*/
 

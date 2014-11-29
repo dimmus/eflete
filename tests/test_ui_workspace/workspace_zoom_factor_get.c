@@ -49,24 +49,25 @@
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned (double) 1.5</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_zoom_factor_get_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    double res = -1;
    Evas_Object *parent, *workspace;
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    workspace_zoom_factor_set(workspace, 1.5);
    res = workspace_zoom_factor_get(workspace);
    ck_assert_msg(res == 1.5, "Failed get zoom factor");
+
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -87,8 +88,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>Returned 0</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -18,6 +18,7 @@
  */
 
 #include "test_image_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup image_editor_test
@@ -49,20 +50,20 @@
  * </td>
  * <td>project, SINGLE</td>
  * <td>Not NULL Pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (image_editor_window_add_test_p1)
 {
    elm_init(0,0);
+   setup("image_editor_window_add_test_p1");
+
    App_Data *app;
    app_init();
    Evas_Object *images;
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
+   app->project = pm_project_open("./image_editor_window_add_test_p1/image_editor_window_add_test_p1.pro");
 
    images = image_editor_window_add(app->project, SINGLE);
    ck_assert_msg(images != NULL,
@@ -70,6 +71,7 @@ EFLETE_TEST (image_editor_window_add_test_p1)
 
    evas_object_del(images);
    app_shutdown();
+   teardown("image_editor_window_add_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -94,21 +96,21 @@ END_TEST
  * </td>
  * <td>project, MULTIPLE</td>
  * <td>Not NULL Pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (image_editor_window_add_test_p2)
 {
    elm_init(0,0);
+   setup("image_editor_window_add_test_p2");
+
    App_Data *app;
    app_init();
    Evas_Object *images;
 
    app = app_data_get();
    ui_main_window_add(app);
-   Project *project = pm_open_project_edj("test", "./edj_build/image_editor_window_add.edj");
+   Project *project = pm_project_open("./image_editor_window_add_test_p2/image_editor_window_add_test_p2.pro");
 
    images = image_editor_window_add(project, MULTIPLE);
    ck_assert_msg(images != NULL,
@@ -116,6 +118,7 @@ EFLETE_TEST (image_editor_window_add_test_p2)
 
    evas_object_del(images);
    app_shutdown();
+   teardown("./image_editor_window_add_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -139,8 +142,6 @@ END_TEST
  * </td>
  * <td>NULL, SINGLE</td>
  * <td>NULL Pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -179,8 +180,6 @@ END_TEST
  * </td>
  * <td>NULL, MULTIPLE</td>
  * <td>NULL Pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

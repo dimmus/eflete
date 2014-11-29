@@ -38,24 +38,21 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
  *
  * @procedure
  * @step 1 call config_shutdown
  * </td>
  * <td>void</td>
  * <td>config is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST(config_shutdown_test_p)
 {
    elm_init(0,0);
-   config_init();
+   app_init();
 
-   config_shutdown();
+   config_shutdown(app_data_get());
    ck_assert_msg(config_get() == NULL, "Config not initialized.");
 
    elm_shutdown();

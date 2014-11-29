@@ -49,8 +49,6 @@
  * </td>
  * <td>Evas_Object *highlight, Eina_Bool flag = EINA_TRUE</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -89,8 +87,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *highlight, Eina_Bool flag = EINA_TRUE</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -127,8 +123,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *bg, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -162,8 +156,6 @@ END_TEST
  * </td>
  * <td>NULL, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

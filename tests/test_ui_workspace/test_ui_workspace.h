@@ -17,6 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "eflete.h"
 #include "ui_workspace.h"
 #include "utc_common.h"
 
@@ -96,6 +97,13 @@ void workspace_edit_object_part_state_del_test_n2(int);
 void workspace_edit_object_part_state_del_test_n3(int);
 void workspace_edit_object_part_state_del_test_n4(int);
 
+void workspace_edit_object_part_rename_test_p1(int);
+void workspace_edit_object_part_rename_test_p2(int);
+void workspace_edit_object_part_rename_test_n1(int);
+void workspace_edit_object_part_rename_test_n2(int);
+void workspace_edit_object_part_rename_test_n3(int);
+void workspace_edit_object_part_rename_test_n4(int);
+
 void workspace_edit_object_visible_set_test_p(int);
 void workspace_edit_object_visible_set_test_n(int);
 void workspace_edit_object_visible_set_test_n1(int);
@@ -127,3 +135,21 @@ void workspace_edit_object_part_restack_test_n2(int);
 void workspace_edit_object_part_restack_test_n3(int);
 void workspace_edit_object_part_restack_test_n4(int);
 void workspace_edit_object_part_restack_test_n5(int);
+
+void workspace_highlight_align_visible_get_test_p1(int);
+void workspace_highlight_align_visible_get_test_p2(int);
+void workspace_highlight_align_visible_get_test_n1(int);
+void workspace_highlight_align_visible_get_test_n2(int);
+
+void workspace_highlight_align_visible_set_test_p1(int);
+void workspace_highlight_align_visible_set_test_p2(int);
+void workspace_highlight_align_visible_set_test_n(int);
+
+void workspace_object_area_visible_get_test_p1(int);
+void workspace_object_area_visible_get_test_p2(int);
+void workspace_object_area_visible_get_test_n1(int);
+void workspace_object_area_visible_get_test_n2(int);
+
+void workspace_object_area_visible_set_test_p1(int);
+void workspace_object_area_visible_set_test_p2(int);
+void workspace_object_area_visible_set_test_n(int);

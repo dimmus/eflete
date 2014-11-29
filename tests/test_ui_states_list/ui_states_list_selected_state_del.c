@@ -53,8 +53,6 @@
  * </td>
  * <td>(Evas_Object *) gl_states</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -115,8 +113,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -151,8 +147,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

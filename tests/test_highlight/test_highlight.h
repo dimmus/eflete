@@ -33,6 +33,21 @@ void highlight_handler_disabled_set_test_p2(int);
 void highlight_handler_disabled_set_test_n1(int);
 void highlight_handler_disabled_set_test_n2(int);
 
+void highlight_handler_align_hide_test_p1(int);
+void highlight_handler_align_hide_test_p2(int);
+void highlight_handler_align_hide_test_n1(int);
+void highlight_handler_align_hide_test_n2(int);
+
+void highlight_handler_align_show_test_p1(int);
+void highlight_handler_align_show_test_p2(int);
+void highlight_handler_align_show_test_n1(int);
+void highlight_handler_align_show_test_n2(int);
+
+void highlight_handler_align_visible_get_test_p1(int);
+void highlight_handler_align_visible_get_test_p2(int);
+void highlight_handler_align_visible_get_test_n1(int);
+void highlight_handler_align_visible_get_test_n2(int);
+
 void highlight_handler_mode_set_test_p(int);
 void highlight_handler_mode_set_test_n1(int);
 void highlight_handler_mode_set_test_n2(int);

@@ -50,15 +50,13 @@
  * </td>
  * <td>(Evas_Object *)workspace, (const char *)"elm.swallow.content", (const char*)"elm.text", (Eina_Bool) EINA_FALSE</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_restack_test_p1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
@@ -75,8 +73,10 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_p1)
    ck_assert_msg(ret == EINA_TRUE, "Failed below part \"elm.swallow.content\" relative to \"elm.text\"");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -102,15 +102,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (const char *)"elm.swallow.content", (const char*)"bg", (Eina_Bool) EINA_TRUE</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_restack_test_p2)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
@@ -127,8 +125,10 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_p2)
    ck_assert_msg(ret == EINA_TRUE, "Failed below part \"elm.swallow.content\" relative to \"bg\"");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -154,15 +154,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"non_exist,  (const char*)"bg", (Eina_Bool) EINA_TRUE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_restack_test_n1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -179,8 +177,10 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n1)
    ck_assert_msg(ret == EINA_FALSE, "Non exist part is reordered");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -206,15 +206,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (const char*)"bg", (const char *)"non_exist", (Eina_Bool) EINA_TRUE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_restack_test_n2)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -231,8 +229,10 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n2)
    ck_assert_msg(ret == EINA_FALSE, "Part is reordered relative to non exist part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -258,15 +258,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, NULL, (const char *)"bg", EINA_FALSE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_restack_test_n3)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -283,8 +281,10 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n3)
    ck_assert_msg(ret == EINA_FALSE, "NULL named part is reordered");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -310,15 +310,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (const char *)"bg", NULL, EINA_FALSE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_restack_test_n4)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -335,8 +333,10 @@ EFLETE_TEST (workspace_edit_object_part_restack_test_n4)
    ck_assert_msg(ret == EINA_FALSE, "Part reordered relative to NULL named part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -356,8 +356,6 @@ END_TEST
  * </td>
  * <td>NULL, (const char*)"bg", (const char *)"elm.text", (Eina_Bool) EINA_TRUE</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

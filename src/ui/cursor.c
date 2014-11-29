@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -36,7 +36,7 @@ static const char *cursor_string[CURSOR_LAST] = {
    "top_left_corner",
    "top_right_corner",
    "crosshair",
-   "fluer",
+   "fleur",
    "sizing",
    "hand1"
 };
@@ -54,7 +54,8 @@ _cursor_object_get(Evas_Object *obj, Cursor_Type type)
    cur_name = eina_stringshare_printf("eflete/cursor/%s/default",
                                       cursor_string[type]);
    cur_obj = edje_object_add(e);
-   edje_object_file_set(cur_obj, EFLETE_EDJ, cur_name);
+   if (!edje_object_file_set(cur_obj, EFLETE_EDJ, cur_name))
+     ERR("Could not load cursor with current type [%s]", cursor_string[type]);
    edje_object_size_min_get(cur_obj, &x, &y);
    edje_object_size_min_restricted_calc(cur_obj, &x, &y, x, y);
    evas_object_resize(cur_obj, x, y);
@@ -140,7 +141,7 @@ cursor_main_set(Evas_Object *win, Cursor_Type type)
    _ecore_evas_cursor_set(ee, cur_obj);
 
    cursor = ecore_evas_data_get(ee, CURSOR_KEY);
-   if (!cursor) cursor = mem_malloc(sizeof(Cursor *));
+   if (!cursor) cursor = mem_malloc(sizeof(Cursor));
    cursor->type = type;
    cursor->ee = ee;
    ecore_evas_data_set(ee, CURSOR_KEY, cursor);
@@ -177,7 +178,7 @@ cursor_type_set(Evas_Object *obj, Cursor_Type type)
    if (!obj) return false;
 
    cursor = evas_object_data_get(obj, CURSOR_KEY);
-   if (!cursor) cursor = mem_malloc(sizeof(Cursor *));
+   if (!cursor) cursor = mem_malloc(sizeof(Cursor));
 
    e = evas_object_evas_get(obj);
    ee = ecore_evas_ecore_evas_get(e);

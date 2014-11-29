@@ -25,6 +25,8 @@
  * @defgroup test_part_dialog
  */
 
+#define TEST_NAME "part_dialog"
+
 void part_dialog_add_test_p(int);
 void part_dialog_add_test_n1(int);
 void part_dialog_add_test_n2(int);

@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -27,31 +27,8 @@
  * This folder mostly contains only Elementary Widgets
  */
 
-#include "eflete_config.h"
-#include "eflete.h"
-#include <Evas.h>
+#include "live_widgets.h"
 #include <Elementary.h>
-
-/*****************************************************
- ************** COMMON MACRO AND FUNCTIONS************
- *****************************************************/
-
-#define ITEM "item"
-#define PART_NAME "part_name"
-#define SIGNAL_NAME "signal_data_name"
-#define SIGNAL_SOURCE "signal_data_source"
-
-#define TEXT_FUNC "text_func"
-#define SWALLOW_FUNC "swallow_func"
-#define SIGNAL_FUNC "signal_func"
-#define SWALLOW_LIST "swallow_list"
-#define TEXT_LIST "part_list"
-
-#define RECT_COLOR 136, 24, 242, 255
-
-#define COLOR_BLUE_LIGHT 57, 102, 147, 255
-#define COLOR_BLUE_DARK 58, 92, 126, 255
-#define ELEMENTS_COUNT 16
 
 /**
  * Common Swallow callback that is used in most of simple widgets.

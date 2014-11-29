@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -64,7 +62,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_p1)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -80,8 +78,10 @@ EFLETE_TEST(workspace_separate_mode_get_test_p1)
    ck_assert_msg(res == EINA_TRUE, "Failed get separate mode for workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -107,8 +107,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -120,7 +118,7 @@ EFLETE_TEST(workspace_separate_mode_get_test_p2)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -135,8 +133,10 @@ EFLETE_TEST(workspace_separate_mode_get_test_p2)
    ck_assert_msg(res == EINA_FALSE, "Failed get separate mode for workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -159,8 +159,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -170,14 +168,12 @@ EFLETE_TEST(workspace_separate_mode_get_test_n1)
    Evas_Object *parent;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
    res = workspace_separate_mode_get(NULL);
    ck_assert_msg(res == EINA_FALSE, "Failed get separate mode for workspace");
 
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
 }
 END_TEST
@@ -201,8 +197,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -212,15 +206,16 @@ EFLETE_TEST(workspace_separate_mode_get_test_n2)
    Evas_Object *parent, *workspace;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
 
    res = workspace_separate_mode_get(workspace);
    ck_assert_msg(res == EINA_FALSE, "Failed get separate mode for workspace");
 
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

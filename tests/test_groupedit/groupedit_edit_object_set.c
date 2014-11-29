@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *) groupedit, (Evas_Object) *edje_edit, (const char *) file</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -92,8 +90,6 @@ END_TEST
  * </td>
  * <td>NULL, (Evas_Object) *edje_edit, (const char *) file</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -133,8 +129,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) groupedit, NULL, (const char *) file</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -175,8 +169,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) groupedit, (Evas_Object) *edje_edit, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

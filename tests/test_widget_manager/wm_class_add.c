@@ -47,8 +47,6 @@
  * </td>
  * <td>char* class_name = "notbase", Eina_List *groups, NULL</td>
  * <td>All check's are passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -90,8 +88,6 @@ END_TEST
  * </td>
  * <td>NULL, Eina_List *groups</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -122,8 +118,6 @@ END_TEST
  * </td>
  * <td>char* class_name = "test"; NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -152,8 +146,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>NULL object pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

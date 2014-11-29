@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_handler_size_get
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */
@@ -47,8 +47,6 @@
  * </td>
  * <td>(Evas_Object *) container</td>
  * <td>5, 5, 5, 5</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -90,8 +88,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>0, 0, 0, 0</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

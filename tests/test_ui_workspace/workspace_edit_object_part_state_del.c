@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "radio", (char *) "visible", (double) 0.0 </td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -64,7 +62,7 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_p)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -78,8 +76,10 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_p)
    ck_assert_msg(res == EINA_FALSE, "Deleted state still exist in edje edit object");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -109,8 +109,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "radio", (char *) "default", (double) 0.5 </td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -122,7 +120,7 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_p1)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -137,8 +135,10 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_p1)
    ck_assert_msg(res == EINA_FALSE, "Delete state still exist in edje edit object");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -165,8 +165,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "non_exist", (char *) "test", (double) 1.0 </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -178,7 +176,7 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -190,8 +188,10 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n)
    ck_assert_msg(res == EINA_FALSE, "Delete state for non exist part.");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -217,8 +217,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", (char *) "non_exist", (double) 0.0 </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -230,7 +228,7 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n1)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -242,8 +240,10 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n1)
    ck_assert_msg(res == EINA_FALSE, "Delete non exist state for part.");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -265,8 +265,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *) "bg", (char *) "default", (double) 0.0 </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -305,8 +303,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", NULL, (double) 0.0 </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -318,7 +314,7 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n3)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -330,8 +326,10 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n3)
    ck_assert_msg(res == EINA_FALSE, "Delete state without name");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -358,8 +356,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL, (char *) "default", (double) 0.0 </td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -371,7 +367,7 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n4)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -383,8 +379,10 @@ EFLETE_TEST(workspace_edit_object_part_state_del_test_n4)
    ck_assert_msg(res == EINA_FALSE, "Delete state from part without name");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

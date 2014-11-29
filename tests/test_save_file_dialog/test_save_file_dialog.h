@@ -25,6 +25,8 @@
  * @defgroup test_save_file_dialog
  */
 
+#define TEST_NAME "save_file_dialog"
+
 void save_as_edj_file_test_n1(int);
 void save_as_edj_file_test_n2(int);
 void save_as_edj_file_test_n3(int);

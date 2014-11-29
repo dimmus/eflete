@@ -24,7 +24,7 @@
  * @{
  * @addtogroup container_handler_size_set
  * @{
- * Groupedit
+ * Container
  * <TABLE>
  * @}
  */
@@ -47,8 +47,6 @@
  * </td>
  * <td>(Evas_Object *) container, 9, 9, 9, 9</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -86,8 +84,6 @@ END_TEST
  * </td>
  * <td>NULL, 9, 9, 9, 9</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -120,8 +116,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)container, 0, 9, 9, 9</td>
  * <td>EINA_TRUE (5, 9, 9, 9)</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -167,8 +161,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)container, 9, 0, 9, 9</td>
  * <td>EINA_TRUE (9, 5, 9, 9)</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -214,8 +206,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)container, 9, 9, 0, 9</td>
  * <td>EINA_TRUE (9, 9, 5, 9)</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -261,8 +251,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)container, 9, 9, 9, 0</td>
  * <td>EINA_TRUE (9, 9, 9, 5)</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

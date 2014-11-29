@@ -47,8 +47,6 @@
  * </td>
  * <td>(Live_View *)live</td>
  * <td>function returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -60,7 +58,7 @@ EFLETE_TEST(live_view_free_test_p)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
 
    ret = live_view_free(live);
    ck_assert_msg(ret == EINA_TRUE, "Failed freeing live view object");
@@ -87,8 +85,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>function returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

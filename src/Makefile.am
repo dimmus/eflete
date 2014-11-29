@@ -8,25 +8,35 @@ noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
 alloc/alloc.c \
-project_manager/edje_compile.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \
 logger/logger.c \
 config/config.c \
 external/syntax_color.c \
+history/history.c \
+history/history_attribute.c \
+history/history_state.c \
+history/history_part.c \
+history/history_ui.c \
 ui/cursor.c \
 ui/panes.c \
 ui/menu.c \
 ui/main_window.c \
 ui/connector.c \
+ui/splash.c \
+ui/wizard/wizard_common.c \
+ui/wizard/wizard_import_edj.c \
+ui/wizard/wizard_import_edc.c \
+ui/shortcuts/shortcuts.c \
 ui/container/container.c \
 ui/preference/preference.c \
 ui/editors/style_editor.c \
 ui/editors/image_editor.c \
+ui/editors/sound_editor.c \
 ui/editors/colorclass_editor.c \
-ui/editors/program_editor.c \
-ui/dialogs/compile_dialog.c \
-ui/dialogs/open_file_dialog.c \
+ui/editors/animator.c \
+ui/editors/animator_program_editor.c \
+ui/editors/animator_program_sequence.c \
 ui/dialogs/save_file_dialog.c \
 ui/dialogs/part_dialog.c \
 ui/dialogs/state_dialog.c \
@@ -46,6 +56,7 @@ ui/workspace/highlight.c \
 ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \
 ui/live_view/live_widget.c \
+ui/live_view/live_prog_edit.c \
 ui/live_view/elementary/live_widget_common.c \
 ui/live_view/elementary/live_custom_layout.c \
 ui/live_view/elementary/live_actionslider.c \
@@ -80,7 +91,9 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/project_manager \
 -I${top_srcdir}/src/config \
+-I${top_srcdir}/src/history \
 -I${top_srcdir}/src/ui \
+-I${top_srcdir}/src/ui/shortcuts \
 -I${top_srcdir}/src/ui/container \
 -I${top_srcdir}/src/ui/blocks \
 -I${top_srcdir}/src/ui/dialogs \
@@ -90,8 +103,11 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/live_view \
 -I${top_srcdir}/src/ui/live_view/elementary \
+-I${top_srcdir}/src/ui/preference \
+-I${top_srcdir}/src/ui/wizard \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@ENVENTOR_CFLAGS@ \
 @EWE_CFLAGS@ \
 @EFLETE_DEFINE@
 
@@ -102,5 +118,6 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
+@ENVENTOR_LIBS@ \
 @EWE_LIBS@ \
 @LTLIBINTL@

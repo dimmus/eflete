@@ -50,8 +50,6 @@
  * </td>
  * <td>(Evas_Object *) gl_states, (Style *) style, (Part *) part</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -103,8 +101,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states, (Style *) style, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -155,8 +151,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states, NULL, (Part *) part</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -208,8 +202,6 @@ END_TEST
  * </td>
  * <td>NULL, (Style *) style, (Part *) part</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -256,8 +248,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL, NULL</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -293,8 +283,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) window, (Style *) style, (Part *) part</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -348,8 +336,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) gl_states, (Style *) style, (Part *) part</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

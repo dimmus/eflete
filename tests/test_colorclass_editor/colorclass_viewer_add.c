@@ -18,6 +18,7 @@
  */
 
 #include "test_colorclass_editor.h"
+#include "test_common.h"
 
 /**
  * @addtogroup colorclass_editor_test
@@ -45,8 +46,6 @@
  * </td>
  * <td>NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -70,7 +69,7 @@ END_TEST
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 initialize application data
- * @step 3 create empty Project
+ * @step 3 create and open Project
  * @step 4 create main window
  *
  * @procedure
@@ -79,27 +78,32 @@ END_TEST
  * </td>
  * <td>(Project *)project</td>
  * <td>Evas_Object returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (colorclass_viewer_add_test_p)
 {
    elm_init(0,0);
+   setup("colorclass_viewer_add_test_p");
+
    App_Data *app;
    Evas_Object *colorclass;
 
    app_init();
    app = app_data_get();
-   app->project = calloc(1, sizeof(Project));
+   app->project = pm_project_open("./colorclass_viewer_add_test_p/colorclass_viewer_add_test_p.pro");
+
    ui_main_window_add(app);
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
 
    colorclass  = colorclass_viewer_add(app->project);
-   ck_assert_msg(colorclass != NULL, "failure: cannot create image editor window");
+   ck_assert_msg(colorclass != NULL, "Unable to create image editor window");
 
    evas_object_del(colorclass);
    app_shutdown();
+   teardown("./colorclass_viewer_add_test_p");
    elm_shutdown();
 }
 END_TEST

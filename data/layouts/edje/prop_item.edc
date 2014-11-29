@@ -542,6 +542,20 @@ group {
    }
 }
 
+group {
+   name: "eflete/style/color";
+   inherit: "eflete/prop/color";
+   parts {
+      part { name: "bg";
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 20 20;
+            max: 50 20;
+         }
+      }
+   }
+}
+
 group { name: "eflete/prop/container/1label";
    parts {
       part { name: "eflete.text.start";

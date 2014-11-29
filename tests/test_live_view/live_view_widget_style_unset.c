@@ -18,6 +18,7 @@
  */
 
 #include "test_live_view.h"
+#include "test_common.h"
 
 /**
  * @addtogroup live_view_test
@@ -54,8 +55,6 @@
  * </td>
  * <td>(Live_View *)live</td>
  * <td>All check passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -69,13 +68,15 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
+   setup("live_view_widget_style_unset_test_p");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_widget_style_unset.edj");
+   project = pm_project_open("./live_view_widget_style_unset_test_p/live_view_widget_style_unset_test_p.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_widget_style_unset.edj");
+   wm_style_data_load(style, e, project->dev);
    project->current_style = style;
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, style);
 
    res = live_view_widget_style_unset(live);
@@ -84,8 +85,8 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
 
    live_view_free(live);
    wm_style_free(style);
-   pm_project_close(project);
    evas_object_del(parent);
+   teardown("./live_view_widget_style_unset_test_p");
    elm_shutdown();
 }
 END_TEST
@@ -108,8 +109,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -121,7 +120,7 @@ EFLETE_TEST(live_view_widget_style_unset_test_n1)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
 
    res = live_view_widget_style_unset(live);
    ck_assert_msg(res == EINA_FALSE, "Unset style from live view without object.");
@@ -148,8 +147,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

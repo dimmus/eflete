@@ -98,6 +98,13 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n3);
    tcase_add_test(tcase, workspace_edit_object_part_state_del_test_n4);
 
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_p2);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n3);
+   tcase_add_test(tcase, workspace_edit_object_part_rename_test_n4);
+
    tcase_add_test(tcase, workspace_edit_object_visible_set_test_p);
    tcase_add_test(tcase, workspace_edit_object_visible_set_test_n);
    tcase_add_test(tcase, workspace_edit_object_visible_set_test_n1);
@@ -121,6 +128,24 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_separate_mode_get_test_p2);
    tcase_add_test(tcase, workspace_separate_mode_get_test_n1);
    tcase_add_test(tcase, workspace_separate_mode_get_test_n2);
+
+   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_p1);
+   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_p2);
+   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_n1);
+   tcase_add_test(tcase, workspace_highlight_align_visible_get_test_n2);
+
+   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_p1);
+   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_p2);
+   tcase_add_test(tcase, workspace_highlight_align_visible_set_test_n);
+
+   tcase_add_test(tcase, workspace_object_area_visible_get_test_p1);
+   tcase_add_test(tcase, workspace_object_area_visible_get_test_p2);
+   tcase_add_test(tcase, workspace_object_area_visible_get_test_n1);
+   tcase_add_test(tcase, workspace_object_area_visible_get_test_n2);
+
+   tcase_add_test(tcase, workspace_object_area_visible_set_test_p1);
+   tcase_add_test(tcase, workspace_object_area_visible_set_test_p2);
+   tcase_add_test(tcase, workspace_object_area_visible_set_test_n);
 
    suite_add_tcase(suite, tcase);
    return suite;

@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -25,7 +25,6 @@
 
 static Evas_Object *entry_name;
 static Evas_Object *entry_value;
-static Eina_Bool to_close;
 
 static const char *state_from;
 static double value_from;
@@ -44,9 +43,19 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static void
+_job_popup_close(void *data)
+{
+   App_Data *ap = (App_Data *)data;
+
+   evas_object_del(ap->popup);
+   ap->popup = NULL;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
+static void
 _add_ok_clicked(void *data,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    Evas_Object *workspace = ap->workspace;
@@ -59,13 +68,11 @@ _add_ok_clicked(void *data,
    if (elm_entry_is_empty(entry_name))
      {
         NOTIFY_WARNING(_("State name can not be empty!"))
-        to_close = false;
         return;
      }
    if (!ewe_entry_regex_check(entry_value))
      {
         NOTIFY_WARNING(_("State value is not correct!"));
-        to_close = false;
         return;
      }
 
@@ -75,7 +82,6 @@ _add_ok_clicked(void *data,
                              str_name, atof(str_value)))
      {
         NOTIFY_WARNING(_("State is exist!"))
-        to_close = false;
         return;
      }
 
@@ -94,19 +100,7 @@ _add_ok_clicked(void *data,
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
      }
-   to_close = true;
-}
-
-static void
-_add_ok_close_clicked(void *data,
-                      Evas_Object *obj __UNUSED__,
-                      void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-
-   if (!to_close) return;
-   evas_object_del(ap->popup);
-   ui_menu_locked_set(ap->menu_hash, false);
+   ecore_job_add(_job_popup_close, ap);
 }
 
 static void
@@ -114,9 +108,7 @@ _cancel_clicked(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
-   ui_menu_locked_set(ap->menu_hash, false);
+   ecore_job_add(_job_popup_close, data);
 }
 
 static void
@@ -186,7 +178,7 @@ state_dialog_state_add(App_Data *ap)
    EWE_ENTRY_ADD(item, entry_value, true, DEFAULT_STYLE);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
-   ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX, EWE_REG_EXTENDED);
+   ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX_2_SYMBOLS, EWE_REG_EXTENDED);
    ewe_entry_regex_autocheck_set(entry_value, true);
    ewe_entry_regex_glow_set(entry_value, true);
    elm_object_part_content_set(item, "elm.swallow.content", entry_value);
@@ -212,8 +204,7 @@ state_dialog_state_add(App_Data *ap)
    elm_object_content_set(ap->popup, box);
 
    BUTTON_ADD(ap->popup, bt_yes, _("Add"));
-   evas_object_smart_callback_add (bt_yes, "pressed", _add_ok_clicked, ap);
-   evas_object_smart_callback_add (bt_yes, "unpressed", _add_ok_close_clicked, ap);
+   evas_object_smart_callback_add (bt_yes, "clicked", _add_ok_clicked, ap);
    elm_object_part_content_set(ap->popup, "button1", bt_yes);
 
    BUTTON_ADD(ap->popup, bt_no, _("Cancel"));
@@ -256,6 +247,7 @@ _del_ok_clicked(void *data,
    ui_menu_locked_set(ap->menu_hash, false);
    free(arr[0]);
    free(arr);
+   ecore_job_add(_job_popup_close, data);
 }
 
 Evas_Object *
@@ -276,6 +268,12 @@ state_dialog_state_del(App_Data *ap)
    part = ui_states_list_part_get(state_list);
    if (!part) return NULL;
    state = ui_states_list_selected_state_get(state_list);
+
+   if (!state)
+     {
+        NOTIFY_WARNING(_("Something is wrong. State is not selected"));
+        return NULL;
+     }
 
    if (!strcmp(state, "default 0.00"))
      {
@@ -298,8 +296,7 @@ state_dialog_state_del(App_Data *ap)
    elm_object_content_set(ap->popup, label);
 
    BUTTON_ADD(ap->popup, bt_yes, _("Delete"));
-   evas_object_smart_callback_add (bt_yes, "pressed", _del_ok_clicked, ap);
-   evas_object_smart_callback_add (bt_yes, "unpressed", _cancel_clicked, ap);
+   evas_object_smart_callback_add (bt_yes, "clicked", _del_ok_clicked, ap);
    elm_object_part_content_set(ap->popup, "button1", bt_yes);
 
    BUTTON_ADD(ap->popup, bt_no, _("Cancel"));

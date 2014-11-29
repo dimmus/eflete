@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -41,13 +41,20 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static void
+_job_popup_del(void *data)
+{
+   App_Data *ap = (App_Data *)data;
+   evas_object_del(ap->popup);
+   ap->popup = NULL;
+   ui_menu_locked_set(ap->menu_hash, false);
+}
+
+static void
 _cancel_clicked(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   evas_object_del(ap->popup);
-   ui_menu_locked_set(ap->menu_hash, false);
+   ecore_job_add(_job_popup_del, data);
 }
 
 #define WORKSPACE_PART_ADD(TYPE, DATA) \
@@ -63,8 +70,11 @@ _cancel_clicked(void *data,
        style->isModify = true; \
      } \
    evas_object_del(ap->popup); \
+   history_diff_add(style->obj, PART_TARGET, ADD, name); \
+   ap->popup = NULL; \
    ui_menu_locked_set(ap->menu_hash, false); \
-   live_view_widget_style_set(ap->live_view, ap->project, style);
+   live_view_widget_style_set(ap->live_view, ap->project, style); \
+   project_changed();
 
 static void
 _swallow_add_on_click(void *data,
@@ -98,6 +108,14 @@ _spacer_add_on_click(void *data,
                      void *event_info __UNUSED__)
 {
    WORKSPACE_PART_ADD(EDJE_PART_TYPE_SPACER, NULL)
+}
+
+static void
+_proxy_add_on_click(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   WORKSPACE_PART_ADD(EDJE_PART_TYPE_PROXY, NULL)
 }
 
 
@@ -137,7 +155,7 @@ _on_state_image_choose(void *data,
    ENTRY_IS_EMPTY
    evas_object_hide(ap->popup); /* popup is delete in WORKSPACE_PART_ADD */
    img_edit = image_editor_window_add(ap->project, SINGLE);
-   image_editor_callback_add(img_edit, _on_image_editor_done, ap);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, ap);
 }
 
 Evas_Object *
@@ -189,6 +207,10 @@ part_dialog_add(App_Data *ap)
 */
    BUTTON_ADD(box, button, _("Spacer"));
    evas_object_smart_callback_add(button, "clicked", _spacer_add_on_click, ap);
+   elm_box_pack_end(box, button);
+
+   BUTTON_ADD(box, button, _("Proxy"));
+   evas_object_smart_callback_add(button, "clicked", _proxy_add_on_click, ap);
    elm_box_pack_end(box, button);
 
    elm_object_content_set(ap->popup, box);

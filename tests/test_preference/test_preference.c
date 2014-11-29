@@ -22,8 +22,11 @@
 Suite* test_suite (void) {
    Suite *suite = suite_create("preference_test");
    TCase *tcase = tcase_create("TCase");
-   tcase_add_test(tcase, preference_add_test_p);
-   tcase_add_test(tcase, preference_add_test_n);
+   tcase_add_test(tcase, preferences_window_add_test_p1);
+   tcase_add_test(tcase, preferences_window_add_test_p2);
+   tcase_add_test(tcase, preferences_project_autosave_update_test_p);
+   tcase_add_test(tcase, preferences_project_autosave_update_test_n1);
+   tcase_add_test(tcase, preferences_project_autosave_update_test_n2);
    suite_add_tcase(suite, tcase);
    return suite;
 }

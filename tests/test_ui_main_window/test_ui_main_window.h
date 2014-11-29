@@ -24,12 +24,12 @@
  * @defgroup test_ui_main_window
  */
 
+#define TEST_NAME "main_window"
 
 void ui_main_window_add_test_p(int);
 void ui_main_window_add_test_n(int);
 
 void ui_main_window_del_test_p(int);
-void ui_main_window_del_test_n(int);
 
 void ui_panes_add_test_p(int);
 void ui_panes_add_test_n1(int);
@@ -47,9 +47,8 @@ void ui_menu_add_test_p(int);
 void ui_menu_add_test_n1(int);
 void ui_menu_add_test_n2(int);
 
-void new_theme_create_test_p1(int);
-void new_theme_create_test_p2(int);
-void new_theme_create_test_n(int);
+void ui_panes_left_panes_min_size_toggle_test_p(int);
+void ui_panes_left_panes_min_size_toggle_test_n(int);
 
 void register_callbacks_test_p(int);
 void register_callbacks_test_n1(int);
@@ -60,6 +59,9 @@ void ui_edj_load_test_n(int);
 
 void ui_menu_base_disabled_set_test_p(int);
 void ui_menu_base_disabled_set_test_n(int);
+
+void ui_menu_style_options_disabled_set_test_p(int);
+void ui_menu_style_options_disabled_set_test_n(int);
 
 void ui_menu_disable_set_test_p(int);
 void ui_menu_disable_set_test_n1(int);
@@ -75,3 +77,7 @@ void ui_style_clicked_test_n2(int);
 void add_callbacks_wd_test_p1(int);
 void add_callbacks_wd_test_p2(int);
 void add_callbacks_wd_test_n(int);
+
+void code_edit_mode_switch_test_p(int);
+void code_edit_mode_switch_test_n(int);
+

@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -62,7 +62,6 @@ noti_error_show(Evas_Object *obj, const char *message)
    //2.4. show this layout with everything
    evas_object_show (layout);
    elm_object_content_set(notify, layout);
-   elm_object_focus_set(btn, EINA_TRUE);
    evas_object_show (notify);
    return true;
 }

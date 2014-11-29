@@ -53,15 +53,13 @@
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"bg"</td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_del_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
@@ -77,9 +75,12 @@ EFLETE_TEST (workspace_edit_object_part_del_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed delete part from edit object ");
    ck_assert_msg(edje_edit_part_exist(style->obj, "bg") == EINA_FALSE,
                  "Part exist after delete");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -106,15 +107,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"b_g"</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_del_test_n)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -128,9 +127,12 @@ EFLETE_TEST (workspace_edit_object_part_del_test_n)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, "b_g");
    ck_assert_msg(ret == EINA_FALSE, "Delete non exist part from edit object ");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -151,8 +153,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *)"bg"</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -189,15 +189,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_del_test_n2)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -211,9 +209,12 @@ EFLETE_TEST (workspace_edit_object_part_del_test_n2)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_del.edj");
    ret = workspace_edit_object_part_del(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "Delete part without name");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

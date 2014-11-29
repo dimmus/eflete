@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (Part *) part</td>
  * <td>Returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -65,7 +63,7 @@ EFLETE_TEST(workspace_highlight_set_test_p)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -80,8 +78,10 @@ EFLETE_TEST(workspace_highlight_set_test_p)
    ck_assert_msg(res == EINA_TRUE, "Failed set highlight for workspace");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -108,8 +108,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (Part *) part</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -122,7 +120,7 @@ EFLETE_TEST(workspace_highlight_set_test_n)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -137,8 +135,10 @@ EFLETE_TEST(workspace_highlight_set_test_n)
    ck_assert_msg(res == EINA_FALSE, "Set highlight for workspace to non exist part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -164,8 +164,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -177,7 +175,7 @@ EFLETE_TEST(workspace_highlight_set_test_n1)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -191,8 +189,10 @@ EFLETE_TEST(workspace_highlight_set_test_n1)
    ck_assert_msg(res == EINA_FALSE, "Set highlight for workspace to non exist part");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -218,8 +218,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (Part *) part</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -232,7 +230,7 @@ EFLETE_TEST(workspace_highlight_set_test_n2)
    Evas *e = NULL;
 
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
@@ -247,8 +245,10 @@ EFLETE_TEST(workspace_highlight_set_test_n2)
                                     "groupedit object");
 
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -272,8 +272,6 @@ END_TEST
  * </td>
  * <td>NULL, (Part *) part</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

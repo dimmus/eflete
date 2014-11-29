@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -19,31 +19,39 @@
 
 #include "test_project_manager.h"
 
+void teardown(void)
+{
+   ecore_file_recursive_rm("./UTC");
+}
+
 Suite* test_suite (void) {
    Suite *suite = suite_create("project_manager_test");
    TCase *tcase = tcase_create("TCase");
 
-   tcase_add_test(tcase, pm_open_project_edj_test_p);
-   tcase_add_test(tcase, pm_open_project_edj_test_n1);
-   tcase_add_test(tcase, pm_open_project_edj_test_n2);
+   tcase_add_checked_fixture(tcase, NULL, teardown);
 
-   tcase_add_test(tcase, pm_project_close_test_p1);
-   tcase_add_test(tcase, pm_project_close_test_p2);
-   tcase_add_test(tcase, pm_project_close_test_n);
+   tcase_add_test(tcase, pm_project_import_edj_test_p);
+   tcase_add_test(tcase, pm_project_import_edj_test_p1);
+   tcase_add_test(tcase, pm_project_import_edj_test_p2);
 
-   tcase_add_test(tcase, pm_save_project_edj_test_p);
-   tcase_add_test(tcase, pm_save_project_edj_test_n);
+   tcase_add_test(tcase, pm_project_import_edc_test_p1);
+   tcase_add_test(tcase, pm_project_import_edc_test_p2);
+   tcase_add_test(tcase, pm_project_import_edc_test_p3);
 
-   tcase_add_test(tcase, pm_save_project_to_swap_test_p1);
-   tcase_add_test(tcase, pm_save_project_to_swap_test_p2);
-   tcase_add_test(tcase, pm_save_project_to_swap_test_n);
+   tcase_add_test(tcase, pm_project_thread_cancel_test_p);
 
-   tcase_add_test(tcase, pm_export_to_edc_test_p1);
-   //tcase_add_test(tcase, pm_export_to_edc_test_p2);
-   tcase_add_test(tcase, pm_export_to_edc_test_n);
+   tcase_add_test(tcase, pm_project_thread_free_test_p);
+   tcase_add_test(tcase, pm_project_thread_free_test_n);
 
-   tcase_add_test(tcase, pm_save_as_project_edj_test_p);
-   tcase_add_test(tcase, pm_save_as_project_edj_test_n);
+   tcase_add_test(tcase, pm_project_open_test_p);
+
+   tcase_add_test(tcase, pm_project_save_test_p);
+
+   tcase_add_test(tcase, pm_project_close_test_p);
+
+   tcase_add_test(tcase, pm_project_meta_data_set_test_p);
+
+   tcase_add_test(tcase, pm_project_meta_data_get_test_p);
 
    suite_add_tcase(suite, tcase);
    return suite;

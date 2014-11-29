@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -111,6 +111,26 @@ workspace_edit_object_get(Evas_Object *obj);
  */
 Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj);
+
+/**
+ * Renaming the part object with new name.
+ *
+ * This renaming function doesn't accept any names like "" or NULL.
+ * Also if part with new name is already exist, or part with old name is not
+ * exist it will return false (EINA_FALSE).
+ *
+ * @param obj The workspace object,
+ * @param part_old_name Old name of the part that is going to be renamed with new name.
+ * @param part_new_name New name of the part that is going to be setted.
+ *
+ * @return EINA_TRUE on success or EINA_FALSE, on errors.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_part_rename(Evas_Object *obj,
+                                  const char *old_name,
+                                  const char *new_name);
 
 /**
  * Add new part into style, which currently loaded into workspace.
@@ -318,5 +338,55 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate);
  */
 Eina_Bool
 workspace_separate_mode_get(Evas_Object *obj);
+
+/**
+ * Turn on/off the middle border of highlight (align) visibility.
+ *
+ * @param obj The workspace object,
+ * @param separated ON/OFF (true/false) the middle border (align) visibility,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_highlight_align_visible_set(Evas_Object *obj, Eina_Bool flag);
+
+/**
+ * Returns if middle border of highlight (align) is visible
+ *
+ * @param obj The workspace object,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_highlight_align_visible_get(Evas_Object *obj);
+
+/**
+ * Turn on/off the object area visibility.
+ *
+ * @param obj The workspace object,
+ * @param separated ON/OFF (true/false) the object area visibility,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
+
+/**
+ * Returns if the object area is visible
+ *
+ * @param obj The workspace object,
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_object_area_visible_get(Evas_Object *obj);
 
 #endif /* UI_WORKSPACE_H */

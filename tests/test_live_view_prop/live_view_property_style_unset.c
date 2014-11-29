@@ -50,8 +50,6 @@
  * </td>
  * <td>(Evas_Object *)live_view_prop</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -67,7 +65,7 @@ EFLETE_TEST(live_view_property_style_unset_test_p)
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, "./edj_build/live_view_property_style_unset.edj");
-   live_view_prop = live_view_property_add(parent);
+   live_view_prop = live_view_property_add(parent, false);
    live_view_property_style_set(live_view_prop, parent, style, "win");
 
    res = live_view_property_style_unset(live_view_prop);
@@ -100,8 +98,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)live_view_prop</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -145,8 +141,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -49,6 +49,7 @@ struct _Live_View
    Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
    Evas_Object *property; /**< Live View properties */
+   Eina_Bool in_prog_edit; /**< Flag is this liveview in program editor */
 };
 typedef struct _Live_View Live_View;
 
@@ -59,13 +60,14 @@ typedef struct _Live_View Live_View;
  * It uses layout that contain spinner for scaling widget,
  * and also it contains groupspace (for showing widget example).
  *
- * @paramram parent The parent Evas_Object.
- * @returnturn Pointer to live_view structure.
+ * @param parent The parent Evas_Object.
+ * @param in_prog_edit Is this live_view for program_editor.
+ * @return Pointer to live_view structure.
  *
  * @ingroup Live_View
  */
 Live_View *
-live_view_add(Evas_Object *parent);
+live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit);
 
 /**
  * Set and show given widget and apply the style to it for showing the view of
@@ -75,10 +77,10 @@ live_view_add(Evas_Object *parent);
  * and create new theme for applying changed style to widget.
  * This function also will hide the scaling spinner.
  *
- * @paramram live live_view structure.
- * @paramram project project structure that contain path to swap file.
- * @paramram style style that contain current style name is being showed.
- * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @param live live_view structure.
+ * @param project project structure that contain path to swap file.
+ * @param style style that contain current style name is being showed.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
@@ -91,8 +93,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style);
  * This function will delete and unset all previously created widgets from live
  view and then hide live view and scaling spinner.
  *
- * @paramram live live_view structure.
- * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @param live live_view structure.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
@@ -105,9 +107,9 @@ live_view_widget_style_unset(Live_View *live);
  * This function will update the widget inside of the live view.
  * If previously loaded theme was changed it will update the widget aswell.
  *
- * @paramram live live_view structure.
- * @paramram project project structure that contain path to swap file.
- * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @param live live_view structure.
+ * @param project project structure that contain path to swap file.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */
@@ -120,9 +122,9 @@ live_view_theme_update(Live_View *live, Project *project);
  * This function will free and delete the structure that contain all
  * information about live view.
  *
- * @paramram live live_view structure.
+ * @param live live_view structure.
  *
- * @returnturn EINA_TRUE if successful, EINA_FALSE otherwise;
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise;
  *
  * @ingroup Live_View
  */

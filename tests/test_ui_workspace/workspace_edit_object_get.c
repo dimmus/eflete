@@ -51,15 +51,13 @@
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned and stored pointers are equals</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_get_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Style *style = NULL, *style_ret = NULL;
    Evas *e = NULL;
@@ -72,9 +70,12 @@ EFLETE_TEST (workspace_edit_object_get_test_p)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_get.edj");
    style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style == style_ret, "Setted and getted style objects are not equals");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -98,15 +99,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_get_test_p1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Style *style_ret = NULL;
 
@@ -115,8 +114,10 @@ EFLETE_TEST (workspace_edit_object_get_test_p1)
    style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style_ret == NULL, "Get edit object from workspace, "
                                 "whithout prevision set");
+
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -137,18 +138,18 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_get_test_n)
 {
    elm_init(0, 0);
+   app_init();
    Style *style_ret = NULL;
 
    style_ret = workspace_edit_object_get(NULL);
    ck_assert_msg(style_ret == NULL, "Get edit object from NULL object");
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

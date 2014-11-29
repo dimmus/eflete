@@ -65,8 +65,8 @@ void wm_widget_free_test_p(int);
 void wm_widget_free_test_n(int);
 void wm_widget_list_new_test_p(int);
 void wm_widget_list_new_test_n(int);
-void wm_widget_list_layouts_load_test_p(int);
-void wm_widget_list_layouts_load_test_n(int);
+void wm_layouts_list_new_test_p(int);
+void wm_layouts_list_new_test_n(int);
 void wm_widget_list_free_test_p(int);
 void wm_widget_list_free_test_n(int);
 void wm_style_object_find_test_p1(int);
@@ -95,3 +95,10 @@ void wm_layouts_list_objects_load_test_n3(int);
 void wm_style_copy_test_p(int);
 void wm_style_copy_test_n1(int);
 void wm_style_copy_test_n2(int);
+
+void wm_part_by_name_find_test_p1(int);
+void wm_part_by_name_find_test_n1(int);
+void wm_part_by_name_find_test_n2(int);
+void wm_part_by_name_find_test_n3(int);
+void wm_part_by_name_find_test_n4(int);
+

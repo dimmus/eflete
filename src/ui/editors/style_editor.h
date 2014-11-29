@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -31,7 +31,6 @@
 
 #include "eflete.h"
 #include "modal_window.h"
-#include "widget_macro.h"
 #include "widget_macro.h"
 #include "string_macro.h"
 

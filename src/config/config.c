@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,9 +15,10 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- */
+*/
 
 #include "config.h"
+#include "shortcuts.h"
 
 #define CONFIG_FILE        EFLETE_SETT_PATH"eflete.cfg"
 #define CONFIG_FILE_TMP    CONFIG_FILE".tmp"
@@ -32,6 +33,7 @@ Profile *profile;
 
 static Eet_Data_Descriptor *edd_base = NULL;
 static Eet_Data_Descriptor *edd_profile = NULL;
+static Eet_Data_Descriptor *edd_keys = NULL;
 static Eet_Data_Descriptor *edd_color = NULL;
 
 static void
@@ -44,18 +46,31 @@ _config_free(void)
 static void
 _profile_free(void)
 {
+   Shortcuts *sc;
+
    free((char *)profile->general.home_folder);
    free((char *)profile->general.swap_folder);
    free((char *)profile->workspace.bg_image);
    free((char *)profile->liveview.bg_image);
+
+   EINA_LIST_FREE(profile->shortcuts, sc)
+     {
+        eina_stringshare_del(sc->description);
+        free(sc);
+     }
+   eina_list_free(profile->shortcuts);
+
    free(profile);
    profile = NULL;
 }
 
 Eina_Bool
-config_init(void)
+config_init(App_Data *ap)
 {
    Eet_Data_Descriptor_Class eddc;
+   Eet_Data_Descriptor_Class eddkc;
+
+   if (!ap) return false;
 
    /* Config descriptor */
    eet_eina_stream_data_descriptor_class_set(&eddc, sizeof(eddc), "Config", sizeof(Config));
@@ -130,7 +145,30 @@ config_init(void)
    EET_DATA_DESCRIPTOR_ADD_ARRAY
       (edd_profile, Profile, "colors",                            colors, edd_color);
 
+   /* shortcuts */
+   eet_eina_stream_data_descriptor_class_set(&eddkc, sizeof(eddkc), "Shortcuts", sizeof(Shortcuts));
+   edd_keys = eet_data_descriptor_stream_new(&eddkc);
+
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "keyname",       keyname, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "keycode",       keycode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "modifiers",     modifiers, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "description",   description, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+     (edd_keys, Shortcuts, "holdable",      holdable, EET_T_UCHAR);
+
+   EET_DATA_DESCRIPTOR_ADD_LIST
+     (edd_profile, Profile, "shortcuts",    shortcuts, edd_keys);
+
    if (!edd_profile) return false;
+   if (!shortcuts_init(ap))
+     {
+        CRIT("Can't initialize the shortcut module");
+        return false;
+     }
 
    config = NULL;
    profile = NULL;
@@ -138,9 +176,11 @@ config_init(void)
    return true;
 }
 
-void
-config_shutdown(void)
+Eina_Bool
+config_shutdown(App_Data *ap)
 {
+   if (!ap) return false;
+
    if (edd_base)
      {
         eet_data_descriptor_free(edd_base);
@@ -156,7 +196,80 @@ config_shutdown(void)
         eet_data_descriptor_free(edd_profile);
         edd_profile = NULL;
      }
+   if (edd_keys)
+     {
+        eet_data_descriptor_free(edd_keys);
+        edd_keys = NULL;
+     }
    if (config) _config_free();
+   shortcuts_shutdown(ap);
+
+   return true;
+}
+
+static Eina_List *
+_default_shortcuts_get()
+{
+   Eina_List *shortcuts = NULL;
+   Shortcuts *shortcut;
+
+#define ADD_SHORTCUT(Name, Keycode, Modifiers, Descr, Holdable)              \
+   shortcut = calloc(1, sizeof(Shortcuts));                                  \
+   if (!shortcut) return shortcuts;                                          \
+   shortcut->keyname = eina_stringshare_add_length(Name, strlen(Name));      \
+   shortcut->keycode = Keycode;                                              \
+   shortcut->modifiers = Modifiers;                                          \
+   shortcut->description = eina_stringshare_add_length(Descr, strlen(Descr));\
+   shortcut->holdable = Holdable;                                             \
+   shortcuts = eina_list_append(shortcuts, shortcut);
+
+   /* No modifiers */
+   ADD_SHORTCUT("Delete", 119, 0, "item.delete", false);
+
+   /* Ctrl- */
+   ADD_SHORTCUT("slash", 61, CTRL, "separate_mode", false);
+   ADD_SHORTCUT("n", 57, CTRL, "new_theme", false);
+   ADD_SHORTCUT("o", 32, CTRL, "open_edj", false);
+   ADD_SHORTCUT("s", 39, CTRL, "save", false);
+   ADD_SHORTCUT("e", 26, CTRL, "export", false);
+   ADD_SHORTCUT("q", 24, CTRL, "quit", false);
+   ADD_SHORTCUT("z", 52, CTRL, "undo", false);
+   ADD_SHORTCUT("u", 30, CTRL, "redo", false);
+
+   ADD_SHORTCUT("1", 10, CTRL, "animator", false);
+   ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
+   ADD_SHORTCUT("3", 12, CTRL, "sound_editor", false);
+   ADD_SHORTCUT("4", 13, CTRL, "colorclass_viewer", false);
+   ADD_SHORTCUT("5", 14, CTRL, "style_editor", false);
+
+   ADD_SHORTCUT("Left", 113, CTRL, "widget_manager.style", false);
+   ADD_SHORTCUT("Right", 114, CTRL, "widget_manager.layout", false);
+
+   ADD_SHORTCUT("equal", 21, CTRL, "zoom.in", false);
+   ADD_SHORTCUT("minus", 20, CTRL, "zoom.out", false);
+
+   /* Alt- */
+   ADD_SHORTCUT("w", 25, ALT, "part.add.swallow", false);
+   ADD_SHORTCUT("b", 56, ALT, "part.add.textblock", false);
+   ADD_SHORTCUT("t", 28, ALT, "part.add.text", false);
+   ADD_SHORTCUT("r", 27, ALT, "part.add.rectangle", false);
+   ADD_SHORTCUT("i", 31, ALT, "part.add.image", false);
+   ADD_SHORTCUT("p", 33, ALT, "part.add.proxy", false);
+   ADD_SHORTCUT("s", 39, ALT, "part.add.spacer", false);
+
+   /* Ctrl-Shift- */
+   ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc", false);
+   ADD_SHORTCUT("s", 39, CTRL + SHIFT, "save_as", false);
+   ADD_SHORTCUT("v", 55, CTRL + SHIFT, "property.visual_tab", false);
+   ADD_SHORTCUT("c", 54, CTRL + SHIFT, "property.code_tab", false);
+   ADD_SHORTCUT("l", 46, CTRL + SHIFT, "style.create", false);
+
+   /* Holdable keys. */
+   ADD_SHORTCUT("Alt_L", 64, CTRL, "highlight.align.show", true);
+   ADD_SHORTCUT("Alt_L", 64, 0, "object_area.show", true);
+
+#undef ADD_SHORTCUT
+   return shortcuts;
 }
 
 static Profile *
@@ -199,6 +312,9 @@ _profile_default_new(void)
    prof->colors[HIGHLIGHT].g           = 100;
    prof->colors[HIGHLIGHT].b           = 155;
    prof->colors[HIGHLIGHT].a           = 255;
+
+   prof->shortcuts = NULL;
+
    return prof;
 }
 
@@ -210,8 +326,8 @@ _config_default_new(void)
    conf = mem_malloc(sizeof(Config));
    conf->window.x =           0;
    conf->window.y =           0;
-   conf->window.w =           800;
-   conf->window.h =           600;
+   conf->window.w =           1366;
+   conf->window.h =           768;
    conf->panes.left =         0.2;
    conf->panes.right =        0.75;
    conf->panes.left_hor =     0.7;
@@ -224,7 +340,7 @@ _config_default_new(void)
 }
 
 void
-config_load(void)
+config_load(App_Data *ap)
 {
    Eet_File *ef;
 
@@ -240,7 +356,32 @@ config_load(void)
      config = _config_default_new();
 
    profile_load(config->profile);
+
+   shortcuts_profile_load(ap, profile_get());
+   shortcuts_main_add(ap);
 }
+
+Eina_Bool
+config_panes_sizes_data_update(App_Data *ap)
+{
+   if (!config) return false;
+
+   config->panes.left =
+     elm_panes_content_left_size_get(ap->panes.left);
+   config->panes.right =
+     elm_panes_content_left_size_get(ap->panes.right);
+   config->panes.left_hor =
+     elm_panes_content_left_size_get(ap->panes.left_hor);
+   config->panes.right_hor =
+     elm_panes_content_left_size_get(ap->panes.right_hor);
+   config->panes.center =
+     elm_panes_content_left_size_get(ap->panes.center);
+   config->panes.center_down =
+     elm_panes_content_left_size_get(ap->panes.center_down);
+
+   return true;
+}
+
 
 Eina_Bool
 config_save(App_Data *ap)
@@ -257,18 +398,16 @@ config_save(App_Data *ap)
 
    if (!ap) return false;
 
-   evas_object_geometry_get(ap->win, NULL, NULL, &w, &h);
-   elm_win_screen_position_get(ap->win, &x, &y);
-   config->window.x =            x;
-   config->window.y =            y;
-   config->window.w =            w;
-   config->window.h =            h;
-   config->panes.left =          elm_panes_content_left_size_get(ap->panes.left);
-   config->panes.right =         elm_panes_content_left_size_get(ap->panes.right);
-   config->panes.left_hor =      elm_panes_content_left_size_get(ap->panes.left_hor);
-   config->panes.right_hor =     elm_panes_content_left_size_get(ap->panes.right_hor);
-   config->panes.center =        elm_panes_content_left_size_get(ap->panes.center);
-   config->panes.center_down =   elm_panes_content_left_size_get(ap->panes.center_down);
+   evas_object_geometry_get(ap->win, &x, &y, &w, &h);
+   if (profile->general.save_win_pos)
+     {
+        config->window.x =            x;
+        config->window.y =            y;
+        config->window.w =            w;
+        config->window.h =            h;
+     }
+   if (profile->general.save_ui)
+     config_panes_sizes_data_update(ap);
 
    profile_save(config->profile);
 
@@ -302,11 +441,14 @@ profile_load(const char *name)
    if (ef)
      {
         profile = eet_data_read(ef, edd_profile, PROFILE_FILE_KEY);
-        if (!profile) profile = _profile_default_new();
         eet_close(ef);
      }
-   else
-     profile = _profile_default_new();
+
+   if (!profile)
+     {
+        profile = _profile_default_new();
+        profile->shortcuts = _default_shortcuts_get();
+     }
 
    eina_stringshare_del(path);
 }

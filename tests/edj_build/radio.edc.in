@@ -1,7 +1,15 @@
 data.item: "version" "110";
 
 collections {
-color_classes {
+   sounds {
+      sample {
+         name: "key-tap" AS_IS;
+         source: "kbd-tap.wav";
+      }
+      tone: "tone-1" 20000;
+      tone: "tone-2" 2200;
+   }
+   color_classes {
    color_class {
       name: "border_top";
       color: 255 255 255 255;
@@ -123,6 +131,11 @@ group { name: "elm/radio/base/def";
             }
          }
          description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text.min: 1 1;
+         }
+         description { state: "test_state" 0.2;
             inherit: "default" 0.0;
             visible: 1;
             text.min: 1 1;

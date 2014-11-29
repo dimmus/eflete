@@ -1,20 +1,21 @@
-/* Edje Theme Editor
-* Copyright (C) 2013 Samsung Electronics.
-*
-* This file is part of Edje Theme Editor.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with this program; If not, see www.gnu.org/licenses/lgpl.html.
-*/
+/*
+ * Edje Theme Editor
+ * Copyright (C) 2013 Samsung Electronics.
+ *
+ * This file is part of Edje Theme Editor.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
+ */
 
 #include "string_macro.h"
 #include "colorsel.h"
@@ -63,9 +64,14 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = (int)elm_spinner_value_get(obj); \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, value)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, ONE, old_value, value, \
+                    pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    NULL, NULL, 0); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -92,6 +98,9 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_content_set(layout, "eflete.content", spinner1); \
    elm_box_pack_end(box, layout); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, "h:", "px"); \
    SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
@@ -100,6 +109,9 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_content_set(layout, "eflete.content", spinner2); \
    elm_box_pack_end(box, layout); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    evas_object_data_set(item, ITEM1, spinner1); \
    evas_object_data_set(item, ITEM2, spinner2); \
@@ -119,29 +131,9 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, Prop_Data *pd)
    elm_spinner_value_set(spinner2, edje_edit_##SUB##_##VALUE2##_get(pd->style->obj)); \
    evas_object_smart_callback_del_full(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 /* part */
-#define ITEM_STRING_PART_CALLBACK(SUB, VALUE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   const char *value = elm_entry_entry_get(obj); \
-   if (strcmp(value, "") == 0) value = NULL; \
-     if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, value)) \
-       { \
-         NOTIFY_INFO(5, "Wrong input value for "#VALUE" field"); \
-         return; \
-       } \
-   pm_project_changed(app_data_get()->project); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->style->isModify = true; \
-}
-
 #define ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
@@ -150,10 +142,16 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                                                         pd->part->name);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, value)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                     pd->part->name, NULL, 0.0); \
    workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
    pd->style->isModify = true; \
 }
 
@@ -165,81 +163,17 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int drag = elm_spinner_value_get(obj); \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                                                   pd->part->name);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, drag)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    drag, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, NULL, 0.0); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
-}
-
-#define ITEM_STRING_PART_NAME_CALLBACK(SUB, VALUE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   const char *value = elm_entry_entry_get(obj); \
-   if (strcmp(value, "") == 0) return; \
-     if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, value)) \
-       { \
-         NOTIFY_INFO(5, "Wrong input value for "#VALUE" field"); \
-         return; \
-       } \
-   pm_project_changed(app_data_get()->project); \
-   pd->part->name = value; \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->style->isModify = true; \
-   evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->part); \
-}
-
-#define ITEM_1ENTRY_PART_NAME_ADD(text, SUB, VALUE) \
-static Evas_Object * \
-prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                                Prop_Data *pd, \
-                                const char *tooltip) \
-{ \
-   Evas_Object *item, *entry; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
-   ewe_entry_entry_set(entry, pd->part->name); \
-   elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", entry); \
-   evas_object_data_set(item, ITEM1, entry); \
-   return item; \
-}
-
-#define ITEM_1ENTRY_PART_ADD(text, SUB, VALUE) \
-static Evas_Object * \
-prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                                Prop_Data *pd, \
-                                const char *tooltip) \
-{ \
-   Evas_Object *item, *entry; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop); \
-   ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
-   elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", entry); \
-   evas_object_data_set(item, ITEM1, entry); \
-   return item; \
-}
-
-#define ITEM_1ENTRY_PART_UPDATE(SUB, VALUE) \
-static void \
-prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
-                                   Prop_Data *pd) \
-{ \
-   Evas_Object *entry; \
-   entry = evas_object_data_get(item, ITEM1); \
-   ewe_entry_entry_set(entry, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
-   evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 /* combobox */
@@ -251,8 +185,21 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (item->index != 0) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, item->title); \
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                                                   pd->part->name);\
+   const char *value = NULL; \
+   if (item->index != 0) \
+     { \
+       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
+                                       pd->part->name, item->title); \
+       value = item->title; \
+     } \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, NULL); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, NULL, 0.0); \
+   project_changed(); \
    pm_project_changed(app_data_get()->project); \
 }
 
@@ -295,7 +242,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
-                   collections = edje_file_collection_list(ap->project->swapfile); \
+                   collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       ewe_combobox_item_add(combobox, group); \
@@ -352,7 +299,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
-                   collections = edje_file_collection_list(ap->project->swapfile); \
+                   collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       ewe_combobox_item_add(combobox, group); \
@@ -364,7 +311,58 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                    ewe_combobox_item_add(combobox, part->name); \
           } \
      } \
-   pm_project_changed(app_data_get()->project); \
+}
+
+#define ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
+static Evas_Object * \
+prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                                Prop_Data *pd, \
+                                const char *tooltip) \
+{ \
+   Evas_Object *item, *combobox; \
+   Part *part; \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
+   EWE_COMBOBOX_ADD(parent, combobox) \
+   const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                      pd->part->curr_state, pd->part->curr_state_value); \
+   if (value) \
+     ewe_combobox_text_set(combobox, value); \
+   else \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
+   EINA_INLIST_FOREACH(pd->style->parts, part) \
+     { \
+         if (strcmp(pd->part->name, part->name)) \
+         ewe_combobox_item_add(combobox, part->name); \
+     } \
+   elm_object_tooltip_text_set(combobox, tooltip); \
+   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", combobox); \
+   evas_object_data_set(item, ITEM1, combobox); \
+   return item; \
+}
+
+#define ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE) \
+static void \
+prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
+                                   Prop_Data *pd) \
+{ \
+   Evas_Object *combobox; \
+   Part *part; \
+   combobox = evas_object_data_get(item, ITEM1); \
+   ewe_combobox_items_list_free(combobox, true); \
+   const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                               pd->part->curr_state, pd->part->curr_state_value); \
+   if (value) \
+     ewe_combobox_text_set(combobox, value); \
+   else \
+     ewe_combobox_text_set(combobox, _("None")); \
+   ewe_combobox_item_add(combobox, _("None")); \
+   EINA_INLIST_FOREACH(pd->style->parts, part) \
+     { \
+        if (strcmp(pd->part->name, part->name)) \
+        ewe_combobox_item_add(combobox, part->name); \
+     } \
 }
 
 #define ITEM_1COMBOBOX_PART_TEXTBLOCK_CALLBACK(SUB, VALUE, TYPE) \
@@ -375,9 +373,15 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
+   int value = item->index; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, (TYPE)item->index)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, NULL, 0.0); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -415,7 +419,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    Evas_Object *combobox = elm_object_part_content_get(item, "elm.swallow.content"); \
    TYPE value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
    ewe_combobox_select_item_set(combobox, value); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_1CHEACK_PART_ADD(text, SUB, VALUE) \
@@ -447,7 +450,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    elm_check_state_set(check, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    evas_object_smart_callback_del_full(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_DRAG_PART_ADD(text, SUB, VALUE1, VALUE2) \
@@ -480,6 +482,9 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_spinner_value_set(spinner, st_value); \
    elm_object_tooltip_text_set(spinner, tooltip2); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   evas_object_event_callback_priority_add(spinner, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
    elm_object_part_content_set(layout, "eflete.content", spinner); \
    elm_box_pack_end(box, layout); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
@@ -505,7 +510,6 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    elm_spinner_value_set(spinner, st_value); \
    evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 /* state */
@@ -516,16 +520,28 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
+   int pos; \
    const char *value = elm_entry_entry_get(obj); \
-   if (strcmp(value, "") == 0) value = NULL; \
+   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                               pd->part->name, pd->part->curr_state, \
+                               pd->part->curr_state_value); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        value)) \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, value)) \
      { \
         NOTIFY_INFO(5, "Wrong input value for "#VALUE" field."); \
         return; \
      } \
+   pos = elm_entry_cursor_pos_get(obj); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, \
+                    pd->part->curr_state_value); \
+   elm_object_focus_set(obj, true); \
+   elm_entry_cursor_pos_set(obj, pos); \
    pm_project_changed(app_data_get()->project); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -539,9 +555,15 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                              pd->part->curr_state, pd->part->curr_state_value); \
    edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
      pd->part->curr_state, pd->part->curr_state_value, (TYPE)item->index); \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    (int)item->index, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -581,7 +603,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    TYPE value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
                   pd->part->curr_state, pd->part->curr_state_value); \
    ewe_combobox_select_item_set(combobox, value); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_COMBOBOX_STATE_CALLBACK(TYPE, TEXT, SUB, VALUE) \
@@ -592,15 +613,26 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (item->index != 0) edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        item->title); \
+   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, pd->part->curr_state_value); \
+   const char *value = NULL; \
+   if (item->index != 0) \
+     { \
+       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                       pd->part->curr_state, pd->part->curr_state_value, \
+                                       item->title); \
+       value = item->title; \
+    } \
    else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, pd->part->curr_state_value, \
                                         NULL); \
    if (TYPE != TEXT_STYLE) \
      prop_item_state_text_update(pd->prop_state_text.text, pd); \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -613,12 +645,19 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    int value = (int)elm_spinner_value_get(obj); \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name,\
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
                                         pd->part->curr_state, \
                                         pd->part->curr_state_value, \
                                         value)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -631,13 +670,20 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    double value = elm_spinner_value_get(obj); \
+   double old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name,\
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value); \
    value /= 100; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
                                         pd->part->curr_state, \
                                         pd->part->curr_state_value, \
                                         value)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, DOUBLE, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -649,8 +695,13 @@ _on_##SUB##_##VALUE##_change(void *data, \
                              void *ei __UNUSED__) \
 { \
    int r, g, b, a; \
+   int old_r, old_g, old_b, old_a; \
    Prop_Data *pd = (Prop_Data *)data; \
    Evas_Object *color, *rect; \
+   edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        &old_r, &old_g, &old_b, &old_a); \
    color = evas_object_data_get(obj, "color"); \
    colorselector_color_get(obj, &r, &g, &b, &a); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
@@ -664,7 +715,14 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                    pd->part->curr_state, \
                                    pd->part->curr_state_value, NULL); \
    prop_item_state_color_class_update(pd->prop_state.color_class, pd); \
+   if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
+     history_diff_add(pd->style->obj, PROPERTY, MODIFY, FOUR, old_r, old_g, old_b, \
+                      old_a, r, g, b, a, pd->style->full_group_name, \
+                      (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                      pd->part->name, pd->part->curr_state, \
+                      pd->part->curr_state_value); \
    pm_project_changed(app_data_get()->project); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 } \
@@ -715,12 +773,19 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
+                             pd->part->name, pd->part->curr_state, \
+                             pd->part->curr_state_value); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                                         pd->part->curr_state, \
                                         pd->part->curr_state_value, \
                                         value)) \
      return; \
-   pm_project_changed(app_data_get()->project); \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, INT, old_value, \
+                    value, pd->style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->part->name, pd->part->curr_state, pd->part->curr_state_value); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -733,14 +798,26 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    unsigned int tok_elm; \
    char **c = NULL; \
+   int pos; \
+   int lb = 0, rb = 0, tb = 0, bb = 0;\
+   int old_lb, old_rb, old_tb, old_bb;\
    Prop_Data *pd = (Prop_Data *)data; \
    const char *value = elm_entry_entry_get(obj); \
+   edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                   pd->part->curr_state, \
+                                   pd->part->curr_state_value, \
+                                   &old_lb, &old_rb, &old_tb, &old_bb); \
    if (!value || !strcmp(value, "")) \
      { \
         elm_object_part_text_set(obj, "elm.guide", "left right top bottom"); \
         edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
                            pd->part->curr_state, pd->part->curr_state_value, \
                            0, 0, 0, 0); \
+        history_diff_add(pd->style->obj, PROPERTY, MODIFY, FOUR, old_lb, old_rb, \
+                         old_tb, old_bb, 0, 0, 0, 0, pd->style->full_group_name, \
+                         (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                         pd->part->name, pd->part->curr_state, \
+                         pd->part->curr_state_value); \
      } \
    else \
      { \
@@ -749,17 +826,25 @@ _on_##SUB##_##VALUE##_change(void *data, \
           { \
              free(c[0]); \
              free(c); \
-             NOTIFY_ERROR ("Please input correct border data: l r t b, " \
-                           "where l - left, r - right, t - top, b - bottom borders") \
              return; \
           } \
+        lb = atoi(c[0]); rb = atoi(c[1]); tb = atoi(c[2]); bb = atoi(c[3]);\
         edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                        pd->part->curr_state, pd->part->curr_state_value, \
-                                        atoi(c[0]), atoi(c[1]), atoi(c[2]), atoi(c[3])); \
-       free(c[0]); \
-       free(c); \
+                                        pd->part->curr_state, \
+                                        pd->part->curr_state_value, \
+                                        lb, rb, tb, bb);\
+        free(c[0]); \
+        free(c); \
+        pos = elm_entry_cursor_pos_get(obj); \
+        history_diff_add(pd->style->obj, PROPERTY, MODIFY, FOUR, old_lb, old_rb, \
+                         old_tb, old_bb, lb, rb, tb, bb, pd->style->full_group_name, \
+                         (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                         pd->part->name, pd->part->curr_state, \
+                         pd->part->curr_state_value); \
+        elm_object_focus_set(obj, true); \
+        elm_entry_cursor_pos_set(obj, pos); \
      } \
-   pm_project_changed(app_data_get()->project); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -797,6 +882,9 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_box_pack_end(box, layout); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
    evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, sp2_lb_start, sp2_lb_end); \
    SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
    elm_spinner_label_format_set(spinner2, fmt); \
@@ -811,6 +899,9 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
    evas_object_smart_callback_add(spinner2, "changed", \
                                   _on_##SUB##_##VALUE2##_change, pd); \
+   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    evas_object_data_set(item, ITEM1, spinner1); \
    evas_object_data_set(item, ITEM2, spinner2); \
@@ -843,7 +934,6 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    elm_spinner_value_set(spinner2, value); \
    evas_object_smart_callback_del_full(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
@@ -873,7 +963,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
      } \
    ewe_entry_entry_set(entry, value); \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -889,9 +979,8 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                                                        pd->part->curr_state, \
                                                        pd->part->curr_state_value); \
    ewe_entry_entry_set(entry, value); \
-   evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
+   evas_object_smart_callback_del_full(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
 }
 
 #define ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
@@ -920,15 +1009,12 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    ewe_combobox_item_add(combobox, _("None")); \
    if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
-        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
-                                        pd->part->name, \
-                                        pd->part->curr_state, \
-                                        pd->part->curr_state_value, value); \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
              if (!strcmp(wm_part_type_get(type), "TEXT") && (strcmp(pd->part->name, part->name))) \
                ewe_combobox_item_add(combobox, part->name); \
+             evas_object_smart_callback_del(combobox, "selected", _on_##SUB##_##VALUE##_change); \
              evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
           } \
      } \
@@ -937,6 +1023,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         Eina_List *l = edje_edit_##LIST##_list_get(pd->style->obj); \
         EINA_LIST_FOREACH(l, list, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
+        evas_object_smart_callback_del(combobox, "selected", func_cb); \
         evas_object_smart_callback_add(combobox, "selected", func_cb, pd); \
      } \
    elm_object_part_content_set(item, "elm.swallow.content", combobox); \
@@ -967,10 +1054,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_item_add(combobox, _("None")); \
    if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
-        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
-                                        pd->part->name, \
-                                        pd->part->curr_state, \
-                                        pd->part->curr_state_value, value); \
         EINA_INLIST_FOREACH(pd->style->parts, part) \
           { \
              type = edje_edit_part_type_get(pd->style->obj, part->name); \
@@ -984,7 +1067,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
         EINA_LIST_FOREACH(cclist, list, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
      } \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_COLOR_STATE_ADD(text, SUB, VALUE) \
@@ -1030,7 +1112,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    evas_object_event_callback_add(color, EVAS_CALLBACK_MOUSE_DOWN, \
                                   _on_##SUB##_##VALUE##_clicked, pd); \
    evas_object_color_set(rect, r*a/255, g*a/255, b*a/255, a); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_2COMBOBOX_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
@@ -1135,7 +1216,6 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
         if (strcmp(pd->part->name, part->name)) \
           ewe_combobox_item_add(combobox, part->name); \
      } \
-   pm_project_changed(app_data_get()->project); \
    edje_edit_string_free(value); \
 }
 
@@ -1162,6 +1242,9 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    elm_spinner_value_set(spinner, value); \
    elm_object_tooltip_text_set(spinner, tooltip); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_event_callback_priority_add(spinner, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
    elm_object_part_content_set(layout, "eflete.content", spinner); \
    elm_object_part_content_set(item, "elm.swallow.content", layout); \
    evas_object_data_set(item, ITEM1, spinner); \
@@ -1183,7 +1266,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    elm_spinner_value_set(spinner, value); \
    evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_1CHEACK_STATE_ADD(TEXT, SUB, VALUE) \
@@ -1225,7 +1307,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    elm_check_state_set(check, value); \
    evas_object_smart_callback_del_full(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_2CHEACK_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
@@ -1290,7 +1371,6 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    elm_check_state_set(check2, value); \
    evas_object_smart_callback_del_full(check2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(check2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_IM_BORDER_STATE_ADD(TEXT, SUB, VALUE) \
@@ -1316,7 +1396,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         ewe_entry_entry_set(entry, buff); \
      } \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }
@@ -1340,8 +1420,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
         snprintf(buff, sizeof(buff), "%i %i %i %i", l, r, t, b); \
         ewe_entry_entry_set(entry, buff); \
      } \
-   evas_object_smart_callback_del_full(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(entry, "activated", _on_##SUB##_##VALUE##_change, pd); \
-   pm_project_changed(app_data_get()->project); \
+   evas_object_smart_callback_del_full(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
    return item; \
 }

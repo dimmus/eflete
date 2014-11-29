@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -51,6 +51,18 @@ ui_block_add(Evas_Object *parent);
  */
 Eina_Bool
 ui_block_title_visible(Evas_Object *block, Eina_Bool vis);
+
+/**
+ * Show/Hide a content of block
+ *
+ * @param block the block object
+ * @param vis if EINA_TRUE - content show, EINA_FALSE - content hide
+ * @return EINA_TRUE if succesfull, EINA_FALSE - otherwise
+ *
+ * @ingroup Block
+ */
+Eina_Bool
+ui_block_content_visible(Evas_Object *block, Eina_Bool vis);
 
 /**
  * Set the title of the block
@@ -131,15 +143,15 @@ Evas_Object *
 ui_block_property_get(App_Data *ap);
 
 /**
- * Get the graph vision object
+ * Get the history object
  *
  * @param ap the application data
- * @return the graph vision object
+ * @return the graph history object
  *
  * @ingroup Block
  */
 Evas_Object *
-ui_block_graph_vision_get(App_Data *ap);
+ui_block_history_get(App_Data *ap);
 
 /**
  * Get the live view object
@@ -218,7 +230,7 @@ Eina_Bool
 ui_block_property_set(App_Data *ap, Evas_Object *content);
 
 /**
- * Set the content in to the graph vision block
+ * Set the content in to the history block
  *
  * @param ap the application data
  * @param content the content object
@@ -228,7 +240,7 @@ ui_block_property_set(App_Data *ap, Evas_Object *content);
  * @ingroup Block
  */
 Eina_Bool
-ui_block_graph_vision_set(App_Data *ap, Evas_Object *content);
+ui_block_history_set(App_Data *ap, Evas_Object *content);
 
 /**
  * Set the content in to the live view block

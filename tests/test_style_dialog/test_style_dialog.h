@@ -25,6 +25,8 @@
  * @defgroup style_dialog_test
  */
 
+#define TEST_NAME "style_dialog"
+
 void style_dialog_add_test_p1(int);
 void style_dialog_add_test_p2(int);
 void style_dialog_add_test_n1(int);

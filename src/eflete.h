@@ -1,4 +1,4 @@
-/*I{
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
- *}
  */
 
 #ifndef EFLETE_H
@@ -47,13 +46,6 @@
 #define PATH_MAX 4096
 #define BUFF_MAX 512
 
-#include <Eina.h>
-#include <Ecore.h>
-#include <Evas.h>
-#include <Ecore_File.h>
-#include <Eet.h>
-#include <Efreet.h>
-#include <Elementary.h>
 #include <Ewe.h>
 #include "alloc.h"
 #include "logger.h"
@@ -61,6 +53,15 @@
 #include "ui_workspace.h"
 #include "live_view.h"
 #include "notify.h"
+#include "history.h"
+
+/**
+ * @typedef Shortcut_Module
+ * Private Structure, using for Shortcuts module, containing important
+ * information for it.
+ * @ingroup Eflete
+ */
+typedef struct _Shortcut_Module Shortcut_Module;
 
 struct _App_Data
 {
@@ -69,9 +70,11 @@ struct _App_Data
    Evas_Object *main_menu;
    Eina_Hash *menu_hash;
    Evas_Object *popup;
+   Evas_Object *splash;
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
+   Eina_Bool modal_editor; /**< it's true if any editor is being showed */
    struct {
       Evas_Object *left;
       Evas_Object *right;
@@ -93,6 +96,8 @@ struct _App_Data
    Evas_Object *workspace;
    Live_View *live_view;
    Project *project;
+   History *history;
+   Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 };
 
 /**
@@ -178,6 +183,15 @@ main_window_get(void);
 Evas_Object *
 colorselector_get(void);
 
+/**
+ * Get the history object pointer.
+ * The history one for the entire application.
+ *
+ * @return pointer to history.
+ * @ingroup Eflete
+ */
+History *
+history_get(void);
 
 #define GET_IMAGE(IMG, PARENT, NAME) \
 { \

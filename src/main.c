@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -22,6 +22,11 @@
 #include "config.h"
 #include "main_window.h"
 
+#ifdef HAVE_ENVENTOR
+#define ENVENTOR_BETA_API_SUPPORT
+#include "Enventor.h"
+#endif
+
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
    "%prog [options]",
@@ -32,7 +37,7 @@ static const Ecore_Getopt options = {
    "and design to a create and modify a Elementary widgets style.\n"),
    EINA_TRUE,
    {
-      ECORE_GETOPT_STORE_STR('o', "open", N_("open EDJ file")),
+      ECORE_GETOPT_STORE_STR('o', "open", N_("Eflete project file")),
       ECORE_GETOPT_VERSION  ('v', "version"),
       ECORE_GETOPT_COPYRIGHT('c', "copyright"),
       ECORE_GETOPT_LICENSE  ('l', "license"),
@@ -44,12 +49,12 @@ static const Ecore_Getopt options = {
 EAPI_MAIN int
 elm_main(int argc, char **argv)
 {
-   char *edj = NULL;
+   char *open = NULL;
    Eina_Bool info_only = false;
    int args;
 
    Ecore_Getopt_Value values[] = {
-     ECORE_GETOPT_VALUE_STR(edj),
+     ECORE_GETOPT_VALUE_STR(open),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
      ECORE_GETOPT_VALUE_BOOL(info_only),
@@ -58,6 +63,12 @@ elm_main(int argc, char **argv)
    };
 
    if (!app_init()) return -1;
+
+#ifdef HAVE_ENVENTOR
+   elm_app_compile_data_dir_set(EFLETE_EDJ_PATH);
+   elm_app_info_set(NULL, EFLETE_EDJ_PATH, NULL);
+   enventor_init(argc, argv);
+#endif
 
    args = ecore_getopt_parse(&options, values, argc, argv);
    if (args < 0)
@@ -82,15 +93,23 @@ elm_main(int argc, char **argv)
           }
         evas_object_show(ap->win);
 
-        if (edj)
+        if (open)
           {
-             if (eina_str_has_suffix(edj, ".edj"))
+             if (eina_str_has_suffix(open, ".pro"))
                {
-                  ui_edj_load(ap, edj);
+                  ap->project = pm_project_open(open);
+                  blocks_show(ap);
+               }
+             else
+               {
+                  ERR(_("Can not open file '%s'. Maybe this file not Eflete project."), open);
+                  return 1;
                }
           }
         elm_run();
-        elm_shutdown();
+#ifdef HAVE_ENVENTOR
+        enventor_shutdown();
+#endif
         app_shutdown();
      }
 

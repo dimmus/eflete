@@ -38,22 +38,23 @@
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
+ * @step 2 initialize application data
+ * @step 3 initialize config
  *
  * @procedure
  * @step 1 call profile_get
  * </td>
  * <td>void</td>
  * <td>NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST(profile_get_test_p1)
 {
    elm_init(0,0);
-   config_init();
+   app_init();
+   App_Data *app = app_data_get();
+   config_init(app);
 
    ck_assert_msg(profile_get() == NULL, "Profile not NULL");
 
@@ -70,7 +71,7 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 initialize elementary library
- * @step 2 initialize config
+ * @step 2 initialize application data
  * @step 3 load config
  *
  * @procedure
@@ -78,16 +79,15 @@ END_TEST
  * </td>
  * <td>void</td>
  * <td>not NULL pointer</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST(profile_get_test_p2)
 {
    elm_init(0,0);
-   config_init();
-   config_load();
+   app_init();
+   App_Data *app = app_data_get();
+   config_load(app);
 
    ck_assert_msg(profile_get() != NULL, "Profile not loaded.");
 

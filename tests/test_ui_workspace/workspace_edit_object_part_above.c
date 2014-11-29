@@ -51,15 +51,13 @@
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"radio"</td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_above_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
@@ -75,9 +73,12 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed above part");
    ret = workspace_edit_object_part_above(workspace, "radio");
    ck_assert_msg(ret == EINA_FALSE, "Already top part above again");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -103,15 +104,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"non_exist</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_above_test_n)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -125,9 +124,12 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "non_exist");
    ck_assert_msg(ret == EINA_FALSE, "Non exist part is above");
+
    wm_style_free(style);
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -153,15 +155,13 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_above_test_n1)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
@@ -175,9 +175,12 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n1)
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "NULL named part is above");
-   wm_style_free(style);
+
+   workspace_edit_object_unset(workspace);
+   evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   wm_style_free(style);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -197,18 +200,18 @@ END_TEST
  * </td>
  * <td>NULL, (char *)"bg"</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_edit_object_part_above_test_n2)
 {
    elm_init(0, 0);
+   app_init();
    Eina_Bool ret = EINA_TRUE;
 
    ret = workspace_edit_object_part_above(NULL, "bg");
    ck_assert_msg(ret == EINA_FALSE, "Above part in NULL object workspace");
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

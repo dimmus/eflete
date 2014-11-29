@@ -51,3 +51,26 @@ group { name: "elm/label/base/eflete/info";
       }
    }
 }
+group { name: "elm/label/base/eflete/editor";
+   parts {
+      part { name: "label.text.clip";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         clip_to: "label.text.clip";
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            text {
+               style: "eflete_editor_textblock_style";
+               min: 0 1;
+            }
+            rel1.relative: 0.0 0.0;
+            rel2.relative: 1.0 1.0;
+         }
+      }
+   }
+}

@@ -18,6 +18,7 @@
  */
 
 #include "test_live_view.h"
+#include "test_common.h"
 
 /**
  * @addtogroup live_view_test
@@ -54,8 +55,6 @@
  * </td>
  * <td>(Live_View *)live, (Project *)project</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -69,13 +68,15 @@ EFLETE_TEST(live_view_theme_update_test_p1)
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
+   setup("live_view_theme_update_test_p1");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_project_open("./live_view_theme_update_test_p1/live_view_theme_update_test_p1.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_theme_update.edj");
+   wm_style_data_load(style, e, project->dev);
    project->current_style = style;
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, style);
 
    res = live_view_theme_update(live, project);
@@ -83,8 +84,8 @@ EFLETE_TEST(live_view_theme_update_test_p1)
 
    live_view_free(live);
    wm_style_free(style);
-   pm_project_close(project);
    evas_object_del(parent);
+   teardown("./live_view_theme_update_test_p1");
    elm_shutdown();
 }
 END_TEST
@@ -114,8 +115,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live, (Project *)project</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -129,13 +128,15 @@ EFLETE_TEST(live_view_theme_update_test_p2)
    Eina_Bool res = EINA_FALSE;
 
    elm_init(0, 0);
+   setup("live_view_theme_update_test_p2");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_project_open("./live_view_theme_update_test_p2/live_view_theme_update_test_p2.pro");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
-   wm_style_data_load(layout, e, "./edj_build/live_view_theme_update.edj");
+   wm_style_data_load(layout, e, project->dev);
    project->current_style = layout;
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, layout);
 
    res = live_view_theme_update(live, project);
@@ -143,8 +144,8 @@ EFLETE_TEST(live_view_theme_update_test_p2)
 
    live_view_free(live);
    wm_style_free(layout);
-   pm_project_close(project);
    evas_object_del(parent);
+   teardown("./live_view_theme_update_test_p2");
    elm_shutdown();
 }
 END_TEST
@@ -172,8 +173,6 @@ END_TEST
  * </td>
  * <td>NULL, (Project *)project</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -186,19 +185,21 @@ EFLETE_TEST(live_view_theme_update_test_n1)
    Eina_Bool res = EINA_TRUE;
 
    elm_init(0, 0);
+   setup("live_view_theme_update_test_n1");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_project_open("./live_view_theme_update_test_n1/live_view_theme_update_test_n1.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_theme_update.edj");
+   wm_style_data_load(style, e, project->dev);
    project->current_style = style;
 
    res = live_view_theme_update(NULL, project);
    ck_assert_msg(res == EINA_FALSE, "Update style in NULL pointer live view.");
 
    wm_style_free(style);
-   pm_project_close(project);
    evas_object_del(parent);
+   teardown("./live_view_theme_update_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -222,8 +223,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -235,7 +234,7 @@ EFLETE_TEST(live_view_theme_update_test_n2)
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   live = live_view_add(parent);
+   live = live_view_add(parent, false);
 
    res = live_view_theme_update(live, NULL);
    ck_assert_msg(res == EINA_FALSE, "Update style, withoud load project.");
@@ -269,8 +268,6 @@ END_TEST
  * </td>
  * <td>(Live_View *)live, (Project *)project</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -284,12 +281,14 @@ EFLETE_TEST(live_view_theme_update_test_n3)
    Eina_Bool res = EINA_TRUE;
 
    elm_init(0, 0);
+   setup("live_view_theme_update_test_n3");
+
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-   project = pm_open_project_edj("UTC", "./edj_build/live_view_theme_update.edj");
+   project = pm_project_open("./live_view_theme_update_test_n3/live_view_theme_update_test_n3.pro");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
-   wm_style_data_load(layout, e, "./edj_build/live_view_theme_update.edj");
-   live = live_view_add(parent);
+   wm_style_data_load(layout, e, project->dev);
+   live = live_view_add(parent, false);
 
    res = live_view_theme_update(live, project);
    ck_assert_msg(res == EINA_FALSE, "Update style for layout in live view, "
@@ -297,8 +296,8 @@ EFLETE_TEST(live_view_theme_update_test_n3)
 
    live_view_free(live);
    wm_style_free(layout);
-   pm_project_close(project);
    evas_object_del(parent);
+   teardown("./live_view_theme_update_test_n3");
    elm_shutdown();
 }
 END_TEST

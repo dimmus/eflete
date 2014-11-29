@@ -48,6 +48,8 @@ collections {
    ADD_PNG_LIM_SIZE("icon_offset", 15, 15)
    ADD_PNG_LIM_SIZE("icon-separate", 16, 16)
 
+   ADD_PNG_LIM_SIZE("icon-search", 16, 16)
+
    ADD_PNG_LIM_SIZE("mw_button_close", 22, 22)
    ADD_PNG_LIM_SIZE("mw_button_info", 22, 22)
 
@@ -55,10 +57,21 @@ collections {
    ADD_PNG_LIM_SIZE("styles-preview-bg-transparent", 24, 24)
    ADD_PNG_LIM_SIZE("styles-preview-bg-white", 24, 24)
 
+   ADD_PNG_LIM_SIZE("no_image_warning", 72, 72)
+
    ADD_PNG_LIM_SIZE("eye_open", 72, 72)
    ADD_PNG_LIM_SIZE("eye_close", 72, 72)
 
-   ADD_IMAGE("section-item-bg", "section-item-bg.png", -1, -1, 0 0 0 2, SCALE, SOLID)
+   ADD_PNG_LIM_SIZE("sound", 50, 50)
+
+   ADD_PNG_LIM_SIZE("icon_prev", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_play", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_next", 10, 10)
+   ADD_PNG_LIM_SIZE("icon_pause", 10, 10)
+
+   ADD_PNG_LIM_SIZE("animator_arrow_left", 13, 19)
+   ADD_PNG_LIM_SIZE("animator_arrow_right", 13, 19)
+
    ADD_IMAGE("gallery-bg", "gallery-bg.png", -1, -1, 2 2 2 6, SCALE, SOLID)
 
    ADD_IMAGE("bg_demo", "bg_demo.png", -1, -1, 0 0 0 0, TILE, SOLID)

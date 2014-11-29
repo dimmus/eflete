@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -92,7 +92,7 @@ static unsigned int part_types_count = 12;
  */
 #define WM_STYLE_NAME_GET(style_name, class_name, full_group_name) \
    arr = eina_str_split(full_group_name, "/", 0); \
-   strcpy(tmp, arr[3]); \
+   eina_strlcpy(tmp, arr[3], sizeof(tmp)); \
    for (size = 4; arr[size]; size++) \
      { \
         if (strcmp(arr[size], class_name)) \
@@ -227,7 +227,7 @@ wm_part_add(Style *style, const char *part)
    if (!edje_edit_part_exist(style->obj, part))
      return NULL;
 
-   result = (Part *)mem_malloc(sizeof(Part));
+   result = (Part *)mem_calloc(1, sizeof(Part));
    result->__type = PART;
 
    result->name = eina_stringshare_add(part);
@@ -339,7 +339,7 @@ wm_style_add(const char* style_name, const char* full_group_name,
 
    if ((!full_group_name) || (!style_name)) return NULL;
    if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
-   style_edje = (Style *)mem_malloc(sizeof(Style));
+   style_edje = (Style *)mem_calloc(1, sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
    style_edje->obj = NULL;
@@ -357,8 +357,9 @@ wm_style_add(const char* style_name, const char* full_group_name,
 Eina_Bool
 wm_style_free(Style *style)
 {
-   Part *part = NULL;
-   Eina_List *alias_node = NULL;
+   Style *aliassed;
+   Part *part;
+   Eina_List *alias_node, *ll;
    Eina_Inlist *l = NULL;
 
    if (!style) return false;
@@ -367,12 +368,22 @@ wm_style_free(Style *style)
      style->parent->styles = eina_inlist_remove(style->parent->styles,
                                               EINA_INLIST_GET(style));
 
+   if (style->aliasses)
+     {
+         EINA_LIST_FOREACH(style->aliasses, ll, aliassed)
+           {
+              aliassed->main_group = NULL;
+           }
+     }
+
    if (style->isAlias)
      {
-         alias_node = eina_list_data_find_list(style->main_group->aliasses, style);
-         if (alias_node)
-           style->main_group->aliasses = eina_list_remove_list(
-                             style->main_group->aliasses, alias_node);
+        if (style->main_group)
+          {
+             alias_node = eina_list_data_find_list(style->main_group->aliasses, style);
+             if (alias_node)
+               style->main_group->aliasses = eina_list_remove_list(style->main_group->aliasses, alias_node);
+          }
      }
 
    EINA_INLIST_FOREACH_SAFE(style->parts, l, part)
@@ -702,7 +713,7 @@ wm_class_add(const char *class_name, Eina_List *styles, Widget *parent)
 
    if ((!class_name) || (!styles)) return NULL;
 
-   class_edje = (Class *)mem_malloc(sizeof(Class));
+   class_edje = (Class *)mem_calloc(1, sizeof(Class));
    class_edje->name = eina_stringshare_add(class_name);
    class_edje->styles = NULL;
    class_edje->__type = CLASS;
@@ -757,7 +768,7 @@ wm_widget_add(const char *widget_name, Eina_List *styles)
 
    if ((!widget_name) || (!styles)) return NULL;
 
-   _widget = (Widget *)mem_malloc(sizeof(Widget));
+   _widget = (Widget *)mem_calloc(1, sizeof(Widget));
    _widget->name = eina_stringshare_add(widget_name);
    _widget->classes = NULL;
    _widget->__type = WIDGET;
@@ -814,7 +825,7 @@ wm_widget_free(Widget *widget)
 }
 
 Eina_Inlist *
-wm_widget_list_new(const char *file)
+wm_widgets_list_new(const char *file)
 {
    Widget *widget;
    Eina_List *collection, *l, *l_next;
@@ -827,7 +838,7 @@ wm_widget_list_new(const char *file)
 
    if (!file) return NULL;
 
-   DBG("Start to parse the edje group collection.");
+   DBG("Start to parse the edje group collection. From file %s", file);
    collection = edje_file_collection_list(file);
    if (!collection)
      {
@@ -860,7 +871,6 @@ wm_widget_list_new(const char *file)
                   widget_list = eina_inlist_append(widget_list,
                                                    EINA_INLIST_GET(widget));
                   widget_styles = eina_list_free(widget_styles);
-                  widget_styles = NULL;
                }
              if (widget_name)
                free(widget_name);
@@ -874,7 +884,7 @@ wm_widget_list_new(const char *file)
 }
 
 Eina_Inlist *
-wm_widget_list_layouts_load(const char *file)
+wm_layouts_list_new(const char *file)
 {
    Style *layout;
    Eina_List *collection, *l;
@@ -911,7 +921,7 @@ wm_widget_list_layouts_load(const char *file)
 }
 
 Eina_Bool
-wm_widget_list_free(Eina_Inlist *widget_list)
+wm_widgets_list_free(Eina_Inlist *widget_list)
 {
    Widget *widget = NULL;
 
@@ -927,6 +937,24 @@ wm_widget_list_free(Eina_Inlist *widget_list)
    return true;
 }
 
+Eina_Bool
+wm_layouts_list_free(Eina_Inlist *widget_list)
+{
+   Style *style = NULL;
+
+   if (!widget_list) return false;
+
+   while (widget_list)
+     {
+        style = EINA_INLIST_CONTAINER_GET(widget_list, Style);
+        widget_list = eina_inlist_remove(widget_list, widget_list);
+        wm_style_free(style);
+     }
+
+   return true;
+}
+
+
 Style *
 wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
 {
@@ -940,6 +968,9 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
    if ((!widget_list) || (!style_full_name)) return NULL;
 
    WM_WIDGET_NAME_GET(widget_name, style_full_name);
+   if (!widget_name)
+     return NULL;
+
    if (widget_name [0] <= 'm')
      EINA_INLIST_FOREACH(widget_list, _widget)
        {
@@ -1022,7 +1053,7 @@ _layout_object_find(Eina_Inlist *layout_list, const char *style_full_name)
 }
 
 Eina_Bool
-wm_widget_list_objects_load(Eina_Inlist *widget_list,
+wm_widgets_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path)
 {
@@ -1097,6 +1128,54 @@ wm_part_type_get(Edje_Part_Type part_type)
    if (part_type > part_types_count) return NULL;
    return part_types[part_type];
 }
+
+Part *
+wm_part_by_name_find(Style *style, Eina_Stringshare *part_name)
+{
+   Part *data = NULL;
+
+   if ((!style) || (!part_name)) return NULL;
+
+   EINA_INLIST_FOREACH(style->parts, data)
+     {
+        if (data->name == part_name) return data;
+     }
+   return NULL;
+}
+
+Eina_Bool
+wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
+                       Eina_Stringshare *rel_name, Eina_Bool direct)
+{
+   Part *data = NULL;
+   Part *part = NULL;
+   Part *rel_part = NULL;
+   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
+   if ((!style) || (!part_name) || (!rel_name)) return false;
+
+   EINA_INLIST_FOREACH(style->parts, data)
+     {
+        if (data->name == part_name) part = data;
+        else if (data->name == rel_name)
+         rel_part = data;
+        if ((part) && (rel_part)) break;
+     }
+   if ((!part) || (!rel_part)) return false;
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
+   if (!tmp_list) return false;
+
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
+   if (direct)
+      style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
+   else
+      style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
+
+   style->isModify = true;
+   return true;
+}
+
 
 #undef WM_WIDGET_NAME_GET
 #undef WM_CLASS_NAME_GET

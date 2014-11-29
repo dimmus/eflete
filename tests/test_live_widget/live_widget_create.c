@@ -47,8 +47,6 @@
  * <td>(const char *)widget = "bubble", (const char *)class = "top_left",
  *     (const char *)style = "default", Evas_Object *parent</td>
  * <td>Not NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -89,8 +87,6 @@ END_TEST
  * <td>(const char *)widget = "fhtagn", (const char *)class = "lets_play",
  *     (const char *)style = "game_with_you", Evas_Object *parent</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -130,8 +126,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL, NULL, NULL</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

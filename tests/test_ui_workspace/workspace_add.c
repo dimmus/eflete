@@ -47,21 +47,19 @@
  * </td>
  * <td>(Evas_Object *) parent</td>
  * <td>Returned pointer not NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_add_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Evas_Object *parent, *workspace;
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    ck_assert_msg(workspace != NULL, "Failed create workspace object.");
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -82,16 +80,16 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) parent</td>
  * <td>Returned pointer is NULL</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
 EFLETE_TEST (workspace_add_test_n)
 {
    elm_init(0, 0);
+   app_init();
    Evas_Object *workspace = workspace_add(NULL);
    ck_assert_msg(workspace == NULL, "Returned pointer is not NULL");
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

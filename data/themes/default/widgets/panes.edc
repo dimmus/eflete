@@ -96,6 +96,11 @@ group { name: "elm/panes/vertical/eflete/default";
             rel1.relative: 0.0 0.5;
             rel2.relative: 1.0 0.5;
          }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            max: 0 -1;
+            min: 0 0;
+         }
       }
       part { name: "elm.swallow.event";
          type: SWALLOW;
@@ -120,6 +125,10 @@ group { name: "elm/panes/vertical/eflete/default";
                normal: "panes_bg_v.png";
                border: 1 1 0 0;
             }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
       }
       part { name: "glow1a";
@@ -283,6 +292,20 @@ group { name: "elm/panes/vertical/eflete/default";
          action: ACTION_STOP;
          target: "glow_highlight_in";
       }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
    }
 }
 
@@ -381,6 +404,11 @@ group { name: "elm/panes/horizontal/eflete/default";
             rel1.relative: 0.5 0.0;
             rel2.relative: 0.5 1.0;
          }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            max: -1 0;
+            min: 0 0;
+         }
       }
       part { name: "elm.swallow.event";
          type: SWALLOW;
@@ -405,6 +433,10 @@ group { name: "elm/panes/horizontal/eflete/default";
                normal: "panes_bg_h.png";
                border: 0 0 1 1;
             }
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
       }
       part { name: "glow1a";
@@ -565,6 +597,20 @@ group { name: "elm/panes/horizontal/eflete/default";
          source: "bar_*";
          action: ACTION_STOP;
          target: "glow_highlight_in";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.bar";
+         target: "bar";
       }
    }
 }
