@@ -335,6 +335,9 @@ EFLETE_TEST(history_undo_test_p4)
    check_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value_drag_x == old_value_drag_x, "Canceled not all actions");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p4");
@@ -703,6 +706,9 @@ EFLETE_TEST(history_undo_test_p9)
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_undo_test_p9");
@@ -985,6 +991,9 @@ EFLETE_TEST(history_undo_test_p13)
    ck_assert_msg(result, "Failed to undo diff with ONE value type.");
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();

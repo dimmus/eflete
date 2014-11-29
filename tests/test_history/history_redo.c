@@ -97,6 +97,9 @@ EFLETE_TEST(history_redo_test_p1)
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value, "Value didn't restore");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p1");
@@ -168,6 +171,9 @@ EFLETE_TEST(history_redo_test_p2)
    ck_assert_msg(result, "Failed to redo diff with INT value type, setted without state");
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == new_value, "Value didn't restore");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();
@@ -258,6 +264,9 @@ EFLETE_TEST(history_redo_test_p3)
    check_value_min_w = edje_edit_state_min_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value_min_w == old_value_min_w, "Restored all changes");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p3");
@@ -345,6 +354,9 @@ EFLETE_TEST(history_redo_test_p4)
    check_value_min_h = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value_min_h == new_value_min_h, "Not all changes are restored");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p4");
@@ -416,6 +428,9 @@ EFLETE_TEST(history_redo_test_p5)
    ck_assert_msg(result, "Failed to recover diff with DOUBLE value type.");
    check_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value, "Action doesn't change value");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();
@@ -496,6 +511,10 @@ EFLETE_TEST(history_redo_test_p6)
    eina_stringshare_del(new_value);
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
+
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p6");
@@ -575,6 +594,10 @@ EFLETE_TEST(history_redo_test_p7)
    eina_stringshare_del(new_value);
    eina_stringshare_del(old_value);
    eina_stringshare_del(check_value);
+
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p7");
@@ -654,6 +677,9 @@ EFLETE_TEST(history_redo_test_p8)
    ck_assert_msg(((checkr == newr) && (checkg == newg) && (checkb == newb) &&
                   (checka == newa )), "Recovered action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p8");
@@ -727,6 +753,9 @@ EFLETE_TEST(history_redo_test_p9)
    check_value = edje_edit_group_min_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Recovered action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p9");
@@ -799,6 +828,9 @@ EFLETE_TEST(history_redo_test_p10)
    result = edje_edit_part_exist(style->obj, new_value);
    ck_assert_msg(result, "Recover action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p10");
@@ -868,6 +900,9 @@ EFLETE_TEST(history_redo_test_p11)
    tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Restored action doesn't change value");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();
@@ -940,6 +975,9 @@ EFLETE_TEST(history_redo_test_p12)
    tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Restored action doesn't change value");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();
@@ -1020,6 +1058,9 @@ EFLETE_TEST(history_redo_test_p13)
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value_2, "Max weight didn't restored");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    ui_main_window_del(app);
    app_shutdown();
    teardown("./history_redo_test_p13");
@@ -1098,6 +1139,9 @@ EFLETE_TEST(history_redo_test_p14)
    ck_assert_msg(check_value == new_value_1, "Align x didn't restored");
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value_2, "Align y didn't restored");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();
@@ -1214,6 +1258,9 @@ EFLETE_TEST(history_redo_test_n2)
 
    result = history_redo(style->obj, -1);
    ck_assert_msg(!result, "Restore diff with quantity of changes  '-1' .");
+
+   pm_project_close(app->project);
+   app->project = NULL;
 
    ui_main_window_del(app);
    app_shutdown();
