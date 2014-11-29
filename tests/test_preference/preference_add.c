@@ -55,11 +55,11 @@
  */
 EFLETE_TEST (preferences_window_add_test_p1)
 {
+   elm_init(0,0);
+   app_init();
    setup("preferences_window_add_test_p1");
 
-   elm_init(0,0);
    App_Data *app;
-   app_init();
    Evas_Object *preferences;
    app = app_data_get();
    ui_main_window_add(app);
@@ -101,8 +101,9 @@ END_TEST
 EFLETE_TEST (preferences_window_add_test_p2)
 {
    elm_init(0,0);
-   App_Data *app;
    app_init();
+
+   App_Data *app;
    Evas_Object *preferences;
    app = app_data_get();
    ui_main_window_add(app);
