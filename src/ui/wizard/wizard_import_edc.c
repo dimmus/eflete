@@ -30,63 +30,71 @@ struct _Item_Mod_Callback_Data
 
 typedef struct _Item_Mod_Callback_Data Item_Mod_Callback_Data;
 
-static const char *widget_names_list[] = { N_("access"),
-                                           N_("actionslider"),
-                                           N_("bg"),
-                                           N_("border"),
-                                           N_("bubble"),
-                                           N_("button"),
-                                           N_("calendar"),
-                                           N_("check"),
-                                           N_("clock"),
-                                           N_("colorselector"),
-                                           N_("conformant"),
-                                           N_("ctxpopup"),
-                                           N_("cursor"),
-                                           N_("datetime"),
-                                           N_("dayselector"),
-                                           N_("diskselector"),
-                                           N_("entry"),
-                                           N_("ews"),
-                                           N_("fileselector"),
-                                           N_("fileselector_entry"),
-                                           N_("flipselector"),
-                                           N_("focus_hithlight"),
-                                           N_("frame"),
-                                           N_("gengrid"),
-                                           N_("genlist"),
-                                           N_("genscroller"),
-                                           N_("hover"),
-                                           N_("icon"),
-                                           N_("index"),
-                                           N_("label"),
-                                           N_("leyout"),
-                                           N_("list"),
-                                           N_("map"),
-                                           N_("menu"),
-                                           N_("multibuttonentry"),
-                                           N_("naviframe"),
-                                           N_("notify"),
-                                           N_("panel"),
-                                           N_("panes"),
-                                           N_("photo"),
-                                           N_("photocam"),
-                                           N_("player"),
-                                           N_("pointer"),
-                                           N_("popup"),
-                                           N_("progressbar"),
-                                           N_("radio"),
-                                           N_("scroller"),
-                                           N_("segment_controll"),
-                                           N_("separator"),
-                                           N_("slider"),
-                                           N_("slideshow"),
-                                           N_("spinner"),
-                                           N_("thumb"),
-                                           N_("toolbar"),
-                                           N_("tooltip"),
-                                           N_("video"),
-                                           NULL};
+struct _Widget_Item_Data
+{
+   const char *name;
+   Eina_Bool check;
+};
+
+typedef struct _Widget_Item_Data Widget_Item_Data;
+
+static Widget_Item_Data widget_item_data[] = { { N_("bg"),           false } ,
+                                               { N_("button"),       false },
+                                               { N_("scroller"),     false },
+                                               { N_("entry"),        false },
+                                               { N_("frame"),        false },
+                                               { N_("label"),        false },
+                                               { N_("separator"),    false },
+                                               { N_("check"),        false },
+                                               { N_("slider"),       false },
+                                               { N_("radio"),        false },
+                                               { N_("bubble"),       false },
+                                               { N_("panes"),        false },
+                                               { N_("toolbar"),      false },
+                                               { N_("genlist"),      false },
+                                               { N_("list"),         false },
+                                               { N_("conform"),      false },
+                                               { N_("icon"),         false },
+                                               { N_("video"),        false },
+                                               { N_("access"),       false },
+                                               { N_("photo"),        false },
+                                               { N_("focus"),        false },
+                                               { N_("datetime"),     false },
+                                               { N_("player"),       false },
+                                               { N_("thumb"),        false },
+                                               { N_("pointer"),      false },
+                                               { N_("fileselector"), false },
+                                               { N_("win"),          false },
+                                               { N_("inwin"),        false },
+                                               { N_("slideshow"),    false },
+                                               { N_("diskselector"), false },
+                                               { N_("ctxpopup"),     false },
+                                               { N_("multibuttonentry"), false },
+                                               { N_("dayselector"),  false },
+                                               { N_("actionslider"), false },
+                                               { N_("photocam"),     false },
+                                               { N_("tooltip"),      false },
+                                               { N_("colorsel"),     false },
+                                               { N_("segment_control"), false },
+                                               { N_("flipselector"), false },
+                                               { N_("notify"),       false },
+                                               { N_("map"),          false },
+                                               { N_("index"),        false },
+                                               { N_("calendar"),     false },
+                                               { N_("layout"),       false },
+                                               { N_("progress"),     false },
+                                               { N_("naviframe"),    false },
+                                               { N_("panel"),        false },
+                                               { N_("popup"),        false },
+                                               { N_("border"),       false },
+                                               { N_("spinner"),      false },
+                                               { N_("menu"),         false },
+                                               { N_("clock"),        false },
+                                               { N_("gengrid"),      false },
+                                               { N_("hover"),        false },
+                                               { N_("cursor"),       false },
+                                               { NULL,               false }
+                                             };
 
 static void
 _on_button_add_clicked_cb(void *data, Evas_Object *obj, void *event_info);
@@ -184,8 +192,75 @@ _edje_cc_flags_create(Wizard_Import_Edj_Win *wiew)
    return flags;
 }
 
+static void
+_file_to_swap_copy(const char *widget_name)
+{
+   Eina_Stringshare *path_to =
+      eina_stringshare_printf(EFLETE_SWAP_PATH"/%s.edc", widget_name);
+   Eina_Stringshare *path_from =
+      eina_stringshare_printf(EFLETE_TEMPLATE_EDC_PATH"/%s.edc", widget_name);
+   char ch;
+
+   FILE *fp_from = fopen(path_from, "r");
+   if (!fp_from)
+     {
+        ERR("Failed to open file \"%s\"", path_from);
+        eina_stringshare_del(path_to);
+        eina_stringshare_del(path_from);
+        return;
+     }
+   FILE *fp_to = fopen(path_to, "w");
+   if (!fp_to)
+     {
+        ERR("Failed to open file \"%s\"", path_to);
+        eina_stringshare_del(path_to);
+        eina_stringshare_del(path_from);
+        fclose(fp_from);
+        return;
+     }
+
+   while ((ch = fgetc(fp_from)) != EOF)
+     fputc(ch, fp_to);
+
+   fclose(fp_from);
+   fclose(fp_to);
+
+   eina_stringshare_del(path_to);
+   eina_stringshare_del(path_from);
+}
+
+static Eina_Strbuf *
+_edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
+{
+   Eina_Strbuf *edc = eina_strbuf_new();
+   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+
+   eina_strbuf_append(edc, "collections {\n");
+   eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
+   eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
+   eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
+
+   _file_to_swap_copy("fonts");
+   _file_to_swap_copy("colorclasses");
+   _file_to_swap_copy("macros");
+
+   while (widget_item_data_iterator->name)
+     {
+        if (widget_item_data_iterator->check)
+          {
+             eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
+                                       widget_item_data_iterator->name);
+             _file_to_swap_copy(widget_item_data_iterator->name);
+          }
+        widget_item_data_iterator++;
+     }
+
+   eina_strbuf_append(edc, "}\n");
+   return edc;
+}
+
 static Eina_Bool
-_setup_splash(void *data)
+_splash_setup_import_edc(void *data)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
@@ -198,6 +273,55 @@ _setup_splash(void *data)
                                         wiew);
 
    eina_strbuf_free(flags);
+   return false;
+}
+
+static Eina_Stringshare *
+_new_project_file_create(const char *edc)
+{
+   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"/new_project_tmp.edc");
+
+   FILE *fp = fopen(path, "w");
+   if (!fp)
+     {
+        ERR("Failed to open file \"%s\"", path);
+        eina_stringshare_del(path);
+        return NULL;
+     }
+
+   fputs(edc, fp);
+   fclose(fp);
+   return path;
+}
+
+static Eina_Bool
+_splash_setup_new_project(void *data)
+{
+   Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
+   Eina_Strbuf *edc;
+   Eina_Stringshare *path;
+   Eina_Strbuf *flags;
+
+   edc = _edc_code_generate(wiew);
+   path = _new_project_file_create(eina_strbuf_string_get(edc));
+   flags = eina_strbuf_new();
+
+   eina_strbuf_append_printf(flags, "-id \"%s\" -sd \"%s\" -v",
+                             EFLETE_TEMPLATE_IMAGES_PATH,
+                             EFLETE_TEMPLATE_SOUNDS_PATH);
+
+   wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
+                                        elm_entry_entry_get(wiew->path),
+                                        path,
+                                        eina_strbuf_string_get(flags),
+                                        _progress_print,
+                                        _progress_end,
+                                        wiew);
+
+   eina_stringshare_del(path);
+   eina_strbuf_free(edc);
+   eina_strbuf_free(flags);
+
    return false;
 }
 
@@ -350,7 +474,7 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
    elm_object_part_content_set(wiew->layout, "swallow.directories_data",
                                _directories_box_add(wiew));
 
-   wiew->splash_setup_func = _setup_splash;
+   wiew->splash_setup_func = _splash_setup_import_edc;
 
    return wiew->win;
 }
@@ -360,20 +484,34 @@ _genlist_label_get(void *data,
                    Evas_Object *obj __UNUSED__,
                    const char  *part __UNUSED__)
 {
-   return strdup(data);
+   Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+   return strdup(widget_data->name);
+}
+
+static void
+on_widget_include_check_changed(void *data,
+                                Evas_Object *obj,
+                                void *ei __UNUSED__)
+{
+   Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
+   widget_data->check = elm_check_state_get(obj);
 }
 
 static Evas_Object *
-_genlist_content_get(void *data __UNUSED__,
+_genlist_content_get(void *data,
                      Evas_Object *obj,
                      const char *part)
 {
    Evas_Object *check;
+   Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
    if (strcmp(part, "elm.swallow.icon"))
      return NULL;
 
    CHECK_ADD(obj, check, "eflete/live_view");
    elm_object_focus_allow_set(check, false);
+   elm_check_state_set(check, widget_data->check);
+   evas_object_smart_callback_add(check, "changed",
+                                  on_widget_include_check_changed, data);
    return check;
 }
 
@@ -382,7 +520,7 @@ _wizart_widget_list_add(Evas_Object *parent)
 {
    Evas_Object *genlist;
    Elm_Genlist_Item_Class *itc = NULL;
-   const char **widget_names_list_iterator = widget_names_list;
+   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
 
    genlist = elm_genlist_add(parent);
    elm_object_style_set(genlist, "eflete/dark");
@@ -394,13 +532,13 @@ _wizart_widget_list_add(Evas_Object *parent)
    itc->func.state_get = NULL;
    itc->func.del = NULL;
 
-   while (*widget_names_list_iterator)
+   while (widget_item_data_iterator->name)
      {
         elm_genlist_item_append(genlist, itc,
-                                *widget_names_list_iterator,
+                                widget_item_data_iterator,
                                 NULL, ELM_GENLIST_ITEM_NONE,
                                 NULL, NULL);
-        widget_names_list_iterator++;
+        widget_item_data_iterator++;
      }
 
    elm_genlist_item_class_free(itc);
@@ -411,7 +549,6 @@ Evas_Object *
 wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
-   Evas_Object *btn;
    wiew = wizard_import_common_add("elm/layout/wizard/new_project");
    if (!wiew) return NULL;
 
@@ -422,11 +559,7 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    elm_object_part_content_set(wiew->layout, "swallow.widgets",
                                _wizart_widget_list_add(wiew->layout));
 
-   // to be deleted during further implementation
-   btn = elm_object_part_content_get(wiew->layout, "swallow.button1");
-   elm_object_disabled_set(btn, true);
-
-   wiew->splash_setup_func = NULL;
+   wiew->splash_setup_func = _splash_setup_new_project;
 
    return wiew->win;
 }
