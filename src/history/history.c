@@ -253,6 +253,7 @@ history_clear(History *history)
              ERR("Didn't cleared history for module %p", module->target);
              return false;
           }
+       elm_object_item_del(module->ui_item);
        free(module);
      }
    elm_genlist_clear(history->genlist);
