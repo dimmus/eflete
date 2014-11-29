@@ -357,8 +357,9 @@ wm_style_add(const char* style_name, const char* full_group_name,
 Eina_Bool
 wm_style_free(Style *style)
 {
-   Part *part = NULL;
-   Eina_List *alias_node = NULL;
+   Style *aliassed;
+   Part *part;
+   Eina_List *alias_node, *ll;
    Eina_Inlist *l = NULL;
 
    if (!style) return false;
@@ -367,12 +368,22 @@ wm_style_free(Style *style)
      style->parent->styles = eina_inlist_remove(style->parent->styles,
                                               EINA_INLIST_GET(style));
 
+   if (style->aliasses)
+     {
+         EINA_LIST_FOREACH(style->aliasses, ll, aliassed)
+           {
+              aliassed->main_group = NULL;
+           }
+     }
+
    if (style->isAlias)
      {
-         alias_node = eina_list_data_find_list(style->main_group->aliasses, style);
-         if (alias_node)
-           style->main_group->aliasses = eina_list_remove_list(
-                             style->main_group->aliasses, alias_node);
+        if (style->main_group)
+          {
+             alias_node = eina_list_data_find_list(style->main_group->aliasses, style);
+             if (alias_node)
+               style->main_group->aliasses = eina_list_remove_list(style->main_group->aliasses, alias_node);
+          }
      }
 
    EINA_INLIST_FOREACH_SAFE(style->parts, l, part)
@@ -814,7 +825,7 @@ wm_widget_free(Widget *widget)
 }
 
 Eina_Inlist *
-wm_widget_list_new(const char *file)
+wm_widgets_list_new(const char *file)
 {
    Widget *widget;
    Eina_List *collection, *l, *l_next;
@@ -827,7 +838,7 @@ wm_widget_list_new(const char *file)
 
    if (!file) return NULL;
 
-   DBG("Start to parse the edje group collection.");
+   DBG("Start to parse the edje group collection. From file %s", file);
    collection = edje_file_collection_list(file);
    if (!collection)
      {
@@ -873,7 +884,7 @@ wm_widget_list_new(const char *file)
 }
 
 Eina_Inlist *
-wm_widget_list_layouts_load(const char *file)
+wm_layouts_list_new(const char *file)
 {
    Style *layout;
    Eina_List *collection, *l;
@@ -910,7 +921,7 @@ wm_widget_list_layouts_load(const char *file)
 }
 
 Eina_Bool
-wm_widget_list_free(Eina_Inlist *widget_list)
+wm_widgets_list_free(Eina_Inlist *widget_list)
 {
    Widget *widget = NULL;
 
@@ -925,6 +936,24 @@ wm_widget_list_free(Eina_Inlist *widget_list)
 
    return true;
 }
+
+Eina_Bool
+wm_layouts_list_free(Eina_Inlist *widget_list)
+{
+   Style *style = NULL;
+
+   if (!widget_list) return false;
+
+   while (widget_list)
+     {
+        style = EINA_INLIST_CONTAINER_GET(widget_list, Style);
+        widget_list = eina_inlist_remove(widget_list, widget_list);
+        wm_style_free(style);
+     }
+
+   return true;
+}
+
 
 Style *
 wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name)
@@ -1024,7 +1053,7 @@ _layout_object_find(Eina_Inlist *layout_list, const char *style_full_name)
 }
 
 Eina_Bool
-wm_widget_list_objects_load(Eina_Inlist *widget_list,
+wm_widgets_list_objects_load(Eina_Inlist *widget_list,
                             Evas *e,
                             const char *path)
 {

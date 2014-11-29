@@ -49,8 +49,6 @@
  * </td>
  * <td>Evas_Object *highlight, Highlight_Mode mode = HIGHLIGHT_STATIC_HANDLERS</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -87,8 +85,6 @@ END_TEST
  * </td>
  * <td>Evas_Object *bg, Highlight_Mode mode = HIGHLIGHT_STATIC_HANDLERS</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -124,8 +120,6 @@ END_TEST
  * </td>
  * <td>NULL, Highlight_Mode mode = HIGHLIGHT_STATIC_HANDLERS</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -37,15 +37,10 @@ _on_done(void *data,
 Eina_Bool
 ui_main_window_del(App_Data *ap)
 {
-   if (!ap)
-     {
-        ERR("ap is NULL");
-         return false;
-     }
-   if (!ui_close_project_request(ap,
+   if ((ap->project) && (!project_close_request(ap,
                                  _("You want to close Eflete, but now you have<br/>"
                                    "opened project. If you dont save opened project<br/>"
-                                   "all your changes will be lost!")))
+                                   "all your changes will be lost!"))))
      return false;
 
    if (!history_term(ap->history))
@@ -54,12 +49,13 @@ ui_main_window_del(App_Data *ap)
    code_edit_mode_switch(ap, false);
 #endif
 
+   if (ap->project)
+     pm_project_close(ap->project);
+
    eina_hash_free(ap->menu_hash);
    ap->menu_hash = NULL;
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
-   if (ap->project)
-     pm_project_close(ap->project);
    /* FIXME: remove it from here */
    live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */
@@ -80,8 +76,17 @@ _statusbar_init(Evas_Object *obj)
    elm_object_part_content_set(obj, "eflete.swallow.statusbar",
                                statusbar);
    evas_object_show(statusbar);
-   LABEL_ADD(statusbar, label, "the project didn't opened");
+   LABEL_ADD(statusbar, label, _("No project opened"));
 
+   item = ewe_statusbar_item_append(statusbar, label,
+                                    EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
+   ewe_statusbar_item_label_set(item, _("Last saved: "));
+   /* MAGIC number 500 is width of item, which display path to currently open
+      project. It will be fixed in ewe_statusbar module from ewe library. Currently
+      width param "-1"(unlimited width) work incorrect. */
+   ewe_statusbar_item_width_set(item, 500);
+
+   LABEL_ADD(statusbar, label, _("the project is not opened"));
    item = ewe_statusbar_item_append(statusbar, label,
                                     EWE_STATUSBAR_ITEM_TYPE_OBJECT, NULL, NULL);
    ewe_statusbar_item_label_set(item, _("Project path: "));

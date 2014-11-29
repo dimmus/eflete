@@ -46,8 +46,6 @@
  * </td>
  * <td>sizeof(int)*1024</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -24,133 +24,348 @@
  * @defgroup ProjectManager Project Manager
  * @ingroup Eflete
  *
- * Project manager object consist a information about opened project.
- * Project manager object consist the list of widgets styles and list of
- * custom layouts.
+ * Project manager is module management the Projects of Eflete. Main task of
+ * this module is a maintained work with Edje files, as binary, it's mean all
+ * edj files, and with raw, edc files, make from edc a binary files.
+ *
+ * Project manager managed a Eflete project, it's a folder with specific files.
+ * Of these files is .pro file, main Eflete project file. This file consist all
+ * information about project in the current folder.
  */
 
-#include "edje_compile.h"
 #include "widget_manager.h"
 #include "logger.h"
-#include <Eio.h>
+#include <Eet.h>
 
 /**
  * @struct _Project
+ *
+ * Main struct of 'Project' in the Eflete. It struct consist a data of a opened
+ * project.
+ * Eflete project term - it's a eet file with extension '.pro', which consist
+ * all techical information about project.
+ *
+ * @ingroup ProjectManager
  */
 struct _Project
 {
-   /** name of project, read this name from field 'theme/name' from edj file,
-    *  if this field is empty, take a file name */
+   /** The project name */
    Eina_Stringshare *name;
-   /** a edited file of project. all changes come here, on save this file copied
-    *  to place which used selected. */
+   /** Eet_File descriptior of specific project file. */
+   Eet_File *pro;
+   /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
-   /** path to edj file(open/save) */
-   char *edj;
+
+   /** path where will be saved the develop edj file */
+   Eina_Stringshare *develop_path;
+   /** path where will be compiled the release edj file */
+   Eina_Stringshare *release_path;
+   /** compile options for release edj file. see edje_cc reference */
+   Eina_Stringshare *release_options;
+
+   /** current editing group */
+   Style *current_style;
    /** list of widgets and they styles in that theme */
    Eina_Inlist *widgets;
-   Eina_Inlist *layouts; /**< list of custom layouts int loaded theme */
-   /** opened group */
-   Style *current_style;
+   /**< list of custom layouts int loaded theme */
+   Eina_Inlist *layouts;
+
    Eina_List *added_sounds;
-   Eina_Bool is_saved : 1;
-   Eina_Bool is_new : 1;
+
+   Eina_Bool changed : 1;
    Eina_Bool close_request : 1;
+   //Ecore_Timer *autosave_timer;
+};
+
+/**
+ * @enum _Build
+ *
+ * The build options.
+ *
+ * @ingroup ProjectManager
+ */
+enum _Build
+{
+   /** all unsed data will be saved in the resulting file. */
+   BUILD_DEVELOP,
+   /** resulting file is optimizated, all unused data excluted from file */
+   BUILD_RELEASE,
+   BUILD_LAST
+};
+
+/**
+ * @enum _PM_Project_Result
+ *
+ * The Project process result, it's means result of all project process: import,
+ * new project creation, save, etc.
+ *
+ * @ingroup ProjectManager
+ */
+enum _PM_Project_Result
+{
+   PM_PROJECT_SUCCESS,
+   PM_PROJECT_CANCEL,
+   PM_PROJECT_ERROR,
+   PM_PROJECT_LAST
 };
 
 /**
  * @typedef Project
- *
- * Main struct of 'Project' in the Eflete. It struct consist a data of a opened
- * project.
- * Under the 'Project' means edj or edc file which loaded in the Eflete.
- *
  * @ingroup ProjectManager
  */
 typedef struct _Project Project;
 
 /**
- * Open project from edj-file.
+ * @typedef Build
+ * @ingroup ProjectManager
+ */
+typedef enum _Build Build;
+
+/**
+ * @typedef PM_Project_Status
+ * @ingroup ProjectManager
+ */
+typedef enum _PM_Project_Result PM_Project_Result;
+
+/**
+ * @typedef Project_Thread
+ * @ingroup ProjectManager
+ */
+typedef struct _Project_Thread Project_Thread;
+
+/**
+ * @typedef PM_Project_Progress_Cb
  *
- * @param path Path to edj-file.
+ * The Project process callback, this callback be called to receive the progress
+ * data (string).
  *
- * @return The Project object.
+ * @param data The user data;
+ * @param progress_string The progress string from running Project thread.
+ *
+ * @return EINA_TRUE if callback done success, otherwise EINA_FALSE.
+ *
+ * @note If callback return EINA_FALSE the Project thread will be stoped.
+ *
+ * @ingroup ProjectManager
+ */
+typedef Eina_Bool
+(* PM_Project_Progress_Cb)(void *data, Eina_Stringshare *progress_string);
+
+/**
+ * @typedef PM_Project_End_Cb
+ *
+ * This callback be called on the end of Project process.
+ *
+ * @param data The user data;
+ * @param result The project pro.
+ *
+ * @ingroup ProjectManager
+ */
+typedef void
+(* PM_Project_End_Cb)(void *data, PM_Project_Result result);
+
+/**
+ * @struct _Project_Thread
+ *
+ * A handler for Project process.
+ *
+ * @ingroup ProjectManager
+ */
+struct _Project_Thread
+{
+   /** The handler of Project thread. */
+   Eina_Thread thread;
+   /** The progress callback. See #PM_Project_Progress_Cb.*/
+   PM_Project_Progress_Cb func_progress;
+   /** The end callback. See #PM_Project_End_Cb. */
+   PM_Project_End_Cb func_end;
+   /** The project process result. */
+   PM_Project_Result result;
+   /** The user data. */
+   void *data;
+   /** The new project, was created in the Project process. This pointer will be
+    * NULL until the Project process finished it's job.*/
+   Project *project;
+   /** Name of project what must be created. */
+   const char *name;
+   /** Path to new project. */
+   const char *path;
+   /** Path to imported edj file. */
+   const char *edj;
+   /** Path to imported edc file. */
+   const char *edc;
+   /** edje_cc options. Used for 'new project' and 'import from edc'. */
+   const char *build_options;
+   /** Message string */
+   Eina_Stringshare *message;
+   /** Mutex, I say no more then. */
+   Eina_Lock mutex;
+};
+
+/**
+ * Free the Project Thread object.
+ *
+ * @param worker The Project thread.
+ *
+ * @return EINA_TRUE on success, EINA_FALSE if thread running.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_thread_free(Project_Thread *worker) EINA_ARG_NONNULL(1);
+
+/**
+ * Create a new project which based on the imported edj file.
+ *
+ * @param name The name of new project;
+ * @param path The path of new project, by this path will be created a project
+ *             folder;
+ * @param edj The path to the edj file wich will imported;
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
+ *
+ * @return The new #Project_Thread object, othewise NULL.
+ *
+ * @ingroup ProjectManager
+ */
+Project_Thread *
+pm_project_import_edj(const char *name,
+                      const char *path,
+                      const char *edj,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end,
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+
+/**
+ * Create a new project which base on the imported edc file.
+ * This function try to compile a current edc file, if copilation success,
+ * object Project will be returned.
+ *
+ * @param name The name of new project,
+ * @param path The path of new project, by this path will be created a project
+ *             folder,
+ * @param edc The path to the edc file wich will imported,
+ * @param import_options The import oprions, it's mean the addtional options for
+ *                       edje_cc, like '-id' - image directory, '-fd', '-sd',
+ *                       etc.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
+ *
+ * @return The new #Project_Thread object, othewise NULL.
+ *
+ * @note Function will not check a edc file, and directories.
+ *
+ * @ingroup ProjectManager
+ */
+Project_Thread *
+pm_project_import_edc(const char *name,
+                      const char *path,
+                      const char *edc,
+                      const char *import_options,
+                      PM_Project_Progress_Cb func_progress,
+                      PM_Project_End_Cb func_end,
+                      const void *data) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT;
+
+/**
+ * Get the Project object from thread. If thread not finished, function will
+ * return NULL.
+ *
+ * @param worker The Project thread.
+ *
+ * @return Project object, or NULL if thread not finished or finished with error.
+ *
+ * @ingroup ProjectManager
+ */
+inline Project *
+pm_project_thread_project_get(Project_Thread *worker);
+
+/**
+ * Open Eflete project.
+ *
+ * @param path The path to the Eflete project file.
+ *
+ * @return The #Project object, otherwise NULL.
  *
  * @ingroup ProjectManager
  */
 Project *
-pm_open_project_edj(const char *path);
+pm_project_open(const char *path) EINA_ARG_NONNULL(1);
 
 /**
- * Close the project. Swap file will be deleted.
+ * Save all changes in current project to the dev file.
  *
- * @param project The project will be closed.
+ * @param project The project what should be saved.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
  *
- * @return EINA_TRUE if close successfully, overwise EINA_FALSE.
+ * @return The new #Project_Thread object, othewise NULL.
+ *
+ * @ingroup ProjectManager
+ */
+Project_Thread *
+pm_project_save(Project *project,
+                PM_Project_Progress_Cb func_progress,
+                PM_Project_End_Cb func_end,
+                const void *data) EINA_ARG_NONNULL(1);
+
+/**
+ * Cancel the Project thread, and called func_end.
+ *
+ * @param worker The Project thread.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_project_close(Project *project);
+pm_project_thread_cancel(Project_Thread *worker) EINA_ARG_NONNULL(1);
+
 
 /**
- * Save project into edc.
+ * Save a current opened Style source code by the path. Backup file will created
+ * after success project save.
  *
- * This function actually decompile the resulted and changed by user EDC file.
+ * @param project The current opened project,
+ * @param file The path to text file where will be saved a source code.
  *
- * @param project A Project structure;
- * @param edc_dir Output directory;
- * @param log_cb This callback will be called after every line returned from
- *        edje_decc.
- *
- * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
- *
- * @see Project
- * @see Edje_Compile_Log_Cb
+ * @return EINA_TRUE if file is saved, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_export_to_edc(Project *project,
-                 Eina_Stringshare *edc_dir,
-                 Edje_Compile_Log_Cb log_cb);
+pm_project_style_save_as(Project *project, const char *file);
 
 /**
- * Save opened EDJ-project.
+ * Build the current project by one of profile #Build.
  *
- * @param project A Project structure;
- * @param edc_dir Path to the directory where been the source code of @ref Project;
- * @param log_cb The logger function.
+ * @param project The current opened project,
+ * @param build_profile The #Build profile.
  *
- * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
- *
- * @see Project
+ * @return EINA_TRUE if project build succesful, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_save_project_edj(Project *project);
+pm_project_build(Project *project, Build build_profile);
 
 /**
- * Save project into specific edj-file that is in another location.
+ * Close the current project. Information about the project will be updated in
+ * the '.pro' file and delete backup file.
  *
- * @param project A Project structure;
- * @param path Path to edj-file.
+ * @param project The current opened project.
  *
- * @return EINA_TRUE if saved successfully, overise EINA_FALSE.
- *
- * @see Project
+ * @return EINA_TRUE if project save succesful, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager
  */
 Eina_Bool
-pm_save_as_project_edj(Project *project, const char *path);
-
-/**
- *
- */
-Eina_Bool
-pm_save_project_to_swap(Project *project);
+pm_project_close(Project *project) EINA_ARG_NONNULL(1);
 
 /**
  * Mark project as changed
@@ -162,28 +377,51 @@ pm_save_project_to_swap(Project *project);
  *
  * @ingroup ProjectManager
  */
-Eina_Bool
-pm_project_changed(Project *project);
+void
+pm_project_changed(Project *project) EINA_ARG_NONNULL(1);
 
 /**
+ * Get a meta data from Project.
  *
- */
-/* Eina_Bool pm_save_group_to_swap(Group *group); */
-
-/**
+ * @param project The project object.
+ * @param name A pointer to variable where to store the project name,
+ * @param authors A pointer to variable where to store the project authors,
+ * @param version A pointer to variable where to store the project version,
+ * @param license A pointer to variable where to store the project license,
+ * @param comment A pointer to variable where to store the project comment.
  *
- */
-/*TODO: Add new project, template project. pm_project_new(void) */
-
-/**
- * Delete the Project object
- *
- * @param project the given Project object
- * @return EINA_TRUE - object deleted, EINA_FALSE - can not delete object
+ * @note Use NULL pointers on the meta data you are not intrested.
  *
  * @ingroup ProjectManager
  */
-//Eina_Bool
-//pm_free(Project *project);
+void
+pm_project_meta_data_get(Project *project,
+                         Eina_Stringshare **name,
+                         Eina_Stringshare **authors,
+                         Eina_Stringshare **version,
+                         Eina_Stringshare **license,
+                         Eina_Stringshare **comment) EINA_ARG_NONNULL(1);
+
+/**
+ * Set a new meta data to the project.
+ *
+ * @param project The project object.
+ * @param name A new project name,
+ * @param authors A new project authors,
+ * @param version A new project version,
+ * @param license A new project license,
+ * @param comment A new project comment.
+ *
+ * @return EINA_TRUE data is set, otherwise EINA_FALSE.
+ *
+ * @ingroup ProjectManager
+ */
+Eina_Bool
+pm_project_meta_data_set(Project *project,
+                         const char *name,
+                         const char *authors,
+                         const char *version,
+                         const char *license,
+                         const char *comment) EINA_ARG_NONNULL(1);
 
 #endif /* PROJECT_MANAGER_H */

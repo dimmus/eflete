@@ -49,8 +49,6 @@
  * </td>
  * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -65,7 +63,7 @@ EFLETE_TEST(live_view_property_style_set_test_p)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_property_style_set.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_property.edj");
    live_view_prop = live_view_property_add(parent, false);
 
    res = live_view_property_style_set(live_view_prop, parent, style, "win");
@@ -97,8 +95,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -113,7 +109,7 @@ EFLETE_TEST(live_view_property_style_set_test_n1)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/live_view_property_style_set.edj");
+   wm_style_data_load(style, e, "./edj_build/live_view_property.edj");
 
    res = live_view_property_style_set(parent, parent, style, "win");
    ck_assert_msg(res == EINA_FALSE, "Given, not live view prop, object contain live view prop data in it.");
@@ -143,8 +139,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)live_view_prop, (Evas_Object *)object, (Style *)style, (const char *) widget = "win"</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -193,8 +187,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL, NULL, NULL</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -47,8 +47,6 @@
  * </td>
  * <td>Eina_Inlist *layouts_list, Evas *e, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
  * <td>Returned EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -62,7 +60,7 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_p)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   layouts_list = wm_widget_list_layouts_load(file);
+   layouts_list = wm_layouts_list_new(file);
    ck_assert_msg(wm_layouts_list_objects_load(layouts_list, e, file), "Failed load layout.");
 
    elm_shutdown();
@@ -86,8 +84,6 @@ END_TEST
  * </td>
  * <td>NULL, Evas *e, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -123,8 +119,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *layouts_list, NULL, char *file = "./edj_build/wm_layouts_list_objects_load.edj"</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -134,7 +128,7 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_n2)
    const char *file = "./edj_build/wm_layouts_list_objects_load.edj";
    Eina_Inlist *layouts_list = NULL;
 
-   layouts_list = wm_widget_list_layouts_load(file);
+   layouts_list = wm_layouts_list_new(file);
    ck_assert_msg(!wm_layouts_list_objects_load(layouts_list, NULL, file), "Layouts list loaded without canvas pointer.");
 
    elm_shutdown();
@@ -158,8 +152,6 @@ END_TEST
  * </td>
  * <td>Eina_Inlist *layouts_list, Evas *e, NULL</td>
  * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -173,7 +165,7 @@ EFLETE_TEST(wm_layouts_list_objects_load_test_n3)
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
-   layouts_list = wm_widget_list_layouts_load(file);
+   layouts_list = wm_layouts_list_new(file);
    ck_assert_msg(!wm_layouts_list_objects_load(layouts_list, e, NULL), "Layouts List loaded without file name.");
 
    elm_shutdown();

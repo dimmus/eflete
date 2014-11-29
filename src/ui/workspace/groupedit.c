@@ -115,8 +115,6 @@ _groupedit_smart_del(Evas_Object *o)
 
    _parts_list_free(sd);
 
-   evas_object_smart_member_del(sd->event);
-
    _groupedit_parent_sc->del(o);
 }
 

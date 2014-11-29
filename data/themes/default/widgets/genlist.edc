@@ -1905,7 +1905,6 @@ group { name: "elm/genlist/base/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 0 1;
             rel2 {
                relative: 0.0 0.0;
                to_x: "sb_vbar";
@@ -1917,12 +1916,8 @@ group { name: "elm/genlist/base/eflete/default";
          type: SWALLOW;
          clip_to: "clipper";
          description { state: "default" 0.0;
-            rel1.offset: 0 1;
-            rel2 {
-               relative: 0.0 0.0;
-               to_x: "sb_vbar";
-               to_y: "sb_hbar";
-            }
+            rel1.to: "elm.swallow.background";
+            rel2.to: "elm.swallow.background";
          }
       }
       part { name: "elm.swallow.overlay";
@@ -2039,42 +2034,28 @@ group { name: "elm/genlist/base/eflete/dark";
       inherit: "elm/genlist/base/eflete/default";
    images {
       image: "treemenu-background.png" COMP;
+      image: "border_1.png" COMP;
    }
    parts {
       part { name: "bg";
          description { state: "default" 0.0;
-            rel1.to: "elm.swallow.background";
-            rel2.to: "elm.swallow.background";
-            image { normal: "treemenu-background.png";
+            image {
+               normal: "treemenu-background.png";
                border: 2 2 2 2;
             }
+            rel1.to: "elm.swallow.background";
+            rel2.to: "elm.swallow.background";
          }
       }
-      part { name: "top_border";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 1 1;
-            max: -1 1;
-            color: LIST_BORDER_COLOR;
-         }
-      }
-      part { name: "left_border";
-         type: RECT;
-         description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min: 1 1;
-            max: 1 -1;
-            color: LIST_BORDER_COLOR;
-         }
-      }
-      part { name: "elm.swallow.background";
-         description { state: "default" 0.0;
-            rel1 {
-               relative: 1.0 1.0;
-               to_x: "left_border";
-               to_y: "top_border";
+      part { name: "content_border";
+         mouse_events: 0;
+         description {
+            align: 1.0 1.0;
+            image {
+               normal: "border_1.png";
+               border: 1 1 1 1;
             }
+            color: LIST_BORDER_COLOR;
          }
       }
    }

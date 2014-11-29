@@ -50,8 +50,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", (char *) "test", (double) 1.0</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -107,8 +105,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", (char *) "default", (double) 0.5</td>
  * <td>All checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -162,8 +158,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "non_exist", (char *) "test", (double) 1.0</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -216,8 +210,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", (char *) "default", (double) 0.0</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -265,8 +257,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *) "bg", (char *) "new", (double) 0.0</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -304,8 +294,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *) "bg", NULL, (double) 0.0</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -358,8 +346,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL, (char *) "new", (double) 0.0</td>
  * <td>EINA_FALSE returned from function</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

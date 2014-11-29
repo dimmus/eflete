@@ -5,12 +5,9 @@ ACLOCAL_AMFLAGS = -I m4
 TESTS = \
 eflete_test \
 part_dialog_test \
-compile_dialog_test \
 save_file_dialog_test \
-open_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
-edje_compile_test \
 sound_editor_test \
 image_editor_test \
 logger_test \
@@ -39,7 +36,8 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test
+shortcuts_test \
+preference_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -48,7 +46,6 @@ FLAGS = \
 -I${top_builddir}/src \
 -I${top_srcdir}/src/alloc \
 -I${top_srcdir}/src/external \
--I${top_srcdir}/src/preference \
 -I${top_srcdir}/src/common \
 -I${top_srcdir}/src/logger \
 -I${top_srcdir}/src/loop_manager \
@@ -62,6 +59,7 @@ FLAGS = \
 -I${top_srcdir}/src/ui/editors \
 -I${top_srcdir}/src/ui/modal_window \
 -I${top_srcdir}/src/ui/notification \
+-I${top_srcdir}/src/ui/preference \
 -I${top_srcdir}/src/ui/workspace \
 -I${top_srcdir}/src/ui/workspace/groupedit \
 -I${top_srcdir}/src/ui/live_view \
@@ -106,18 +104,6 @@ test_save_file_dialog/save_as_edj_file.c
 save_file_dialog_test_CFLAGS = ${FLAGS}
 save_file_dialog_test_LDADD = ${LD}
 
-compile_dialog_test_SOURCES = \
-test_compile_dialog/test_compile_dialog.c \
-test_compile_dialog/compile_dialog.c
-compile_dialog_test_CFLAGS = ${FLAGS}
-compile_dialog_test_LDADD = ${LD}
-
-open_file_dialog_test_SOURCES = \
-test_open_file_dialog/test_open_file_dialog.c \
-test_open_file_dialog/open_edj_file.c
-open_file_dialog_test_CFLAGS = ${FLAGS}
-open_file_dialog_test_LDADD = ${LD}
-
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \
 test_alloc/mem_malloc.c \
@@ -130,13 +116,6 @@ test_colorclass_editor/test_colorclass_editor.c \
 test_colorclass_editor/colorclass_viewer_add.c
 colorclass_editor_test_CFLAGS = ${FLAGS}
 colorclass_editor_test_LDADD = ${LD}
-
-edje_compile_test_SOURCES = \
-test_edje_compile/test_edje_compile.c \
-test_edje_compile/compile.c \
-test_edje_compile/decompile.c
-edje_compile_test_CFLAGS = ${FLAGS}
-edje_compile_test_LDADD = ${LD}
 
 widget_manager_test_SOURCES = \
 test_widget_manager/test_widget_manager.c \
@@ -156,7 +135,7 @@ test_widget_manager/wm_widget_add.c \
 test_widget_manager/wm_widget_free.c \
 test_widget_manager/wm_widget_list_free.c \
 test_widget_manager/wm_widget_list_new.c \
-test_widget_manager/wm_widget_list_layouts_load.c \
+test_widget_manager/wm_layouts_list_new.c \
 test_widget_manager/wm_layouts_list_objects_load.c \
 test_widget_manager/wm_widget_list_objects_load.c \
 test_widget_manager/wm_part_by_name_find.c
@@ -165,13 +144,14 @@ widget_manager_test_LDADD = ${LD}
 
 sound_editor_test_SOURCES = \
 test_sound_editor/test_sound_editor.c \
-test_sound_editor/sound_editor_window_add.c
+test_sound_editor/sound_editor_window_add.c\
+test_sound_editor/sound_editor_file_choose.c
+
 sound_editor_test_CFLAGS = ${FLAGS}
 sound_editor_test_LDADD = ${LD}
 
 image_editor_test_SOURCES = \
 test_image_editor/test_image_editor.c \
-test_image_editor/image_editor_callback_add.c \
 test_image_editor/image_editor_file_choose.c \
 test_image_editor/image_editor_window_add.c
 image_editor_test_CFLAGS = ${FLAGS}
@@ -204,12 +184,15 @@ notify_test_LDADD = ${LD}
 
 project_manager_test_SOURCES = \
 test_project_manager/test_project_manager.c \
-test_project_manager/pm_export_to_edc.c \
-test_project_manager/pm_open_project_edj.c \
+test_project_manager/pm_project_import_edj.c \
+test_project_manager/pm_project_import_edc.c \
+test_project_manager/pm_project_thread_cancel.c \
+test_project_manager/pm_project_thread_free.c \
+test_project_manager/pm_project_open.c \
+test_project_manager/pm_project_save.c \
 test_project_manager/pm_project_close.c \
-test_project_manager/pm_save_as_project_edj.c \
-test_project_manager/pm_save_project_edj.c \
-test_project_manager/pm_save_project_to_swap.c
+test_project_manager/pm_project_meta_data_set.c \
+test_project_manager/pm_project_meta_data_get.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
@@ -304,11 +287,11 @@ ui_main_window_test_SOURCES = \
 test_ui_main_window/test_ui_main_window.c \
 test_ui_main_window/new_theme_create.c \
 test_ui_main_window/register_callbacks.c \
-test_ui_main_window/ui_edj_load.c \
 test_ui_main_window/ui_main_window_add.c \
 test_ui_main_window/ui_main_window_del.c \
 test_ui_main_window/ui_menu_add.c \
 test_ui_main_window/ui_menu_base_disabled_set.c \
+test_ui_main_window/ui_menu_style_options_disabled_set.c \
 test_ui_main_window/ui_menu_disable_set.c \
 test_ui_main_window/ui_menu_locked_set.c \
 test_ui_main_window/ui_panes_add.c \
@@ -326,11 +309,12 @@ test_ui_main_window/code_edit_mode_switch.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
-#preference_test_SOURCES = \
-#test_preference/test_preference.c \
-#test_preference/preference_add_test.c
-#preference_test_CFLAGS = ${FLAGS}
-#preference_test_LDADD = ${LD}
+preference_test_SOURCES = \
+test_preference/test_preference.c \
+test_preference/preference_add.c \
+test_preference/preferences_project_autosave_update.c
+preference_test_CFLAGS = ${FLAGS}
+preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \

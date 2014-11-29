@@ -149,7 +149,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
-   source_widgets = wm_widget_list_new(source_file);
+   source_widgets = wm_widgets_list_new(source_file);
    EINA_INLIST_FOREACH_SAFE(source_widgets, l, source_wdg)
      {
         if (!strcmp(source_wdg->name, widget->name)) break;
@@ -272,7 +272,7 @@ _on_popup_btn_yes(void *data,
         style->isModify = true;
      }
 
-   if (!wm_widget_list_free(source_widgets))
+   if (!wm_widgets_list_free(source_widgets))
      ERR("Failed free template widget list");
 
    STRING_CLEAR;
@@ -306,8 +306,11 @@ style_dialog_add(App_Data *ap)
    nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
                                          "elm.swallow.content");
    glit = elm_genlist_selected_item_get(nf);
-   _style = elm_object_item_data_get(glit);
-   if (_style->isAlias) return false;
+   if (glit)
+     {
+        _style = elm_object_item_data_get(glit);
+        if (_style->isAlias) return false;
+     }
 
    title = eina_stringshare_printf(_("Add style/class for \"%s\" widget"),
                                    widget->name);

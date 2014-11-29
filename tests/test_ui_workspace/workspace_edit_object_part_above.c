@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"radio"</td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -106,8 +104,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, (char *)"non_exist</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -159,8 +155,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)workspace, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -206,8 +200,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *)"bg"</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

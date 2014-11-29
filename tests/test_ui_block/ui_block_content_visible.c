@@ -48,8 +48,6 @@
  * </td>
  * <td>Evas_Object *block, Eina_Bool</td>
  * <td>all checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -82,8 +80,6 @@ END_TEST
  * </td>
  * <td>NULL, EINA_TRUE</td>
  * <td>all checks passed</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -1,9 +1,8 @@
 # List of source files which contain translatable strings.
 src/eflete.c
 src/alloc/alloc.c
-src/project_manager/edje_compile.c
-src/project_manager/widget_manager.c
 src/project_manager/project_manager.c
+src/project_manager/widget_manager.c
 src/logger/logger.c
 src/config/config.c
 src/ui/panes.c
@@ -15,7 +14,6 @@ src/ui/editors/image_editor.c
 src/ui/editors/colorclass_editor.c
 src/ui/editors/animator.c
 src/ui/editors/animator_program_editor.c
-src/ui/dialogs/open_file_dialog.c
 src/ui/dialogs/save_file_dialog.c
 src/ui/dialogs/part_dialog.c
 src/ui/dialogs/state_dialog.c

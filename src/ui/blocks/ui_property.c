@@ -19,8 +19,7 @@
 
 #include "ui_property.h"
 #include "ui_property_macro.h"
-#include "common_macro.h"
-#include "image_editor.h"
+#include "main_window.h"
 
 #ifdef HAVE_ENVENTOR
 #define ENVENTOR_BETA_API_SUPPORT
@@ -367,7 +366,7 @@ _code_of_group_setup(Prop_Data *pd)
 Evas_Object *
 ui_property_add(Evas_Object *parent)
 {
-   Evas_Object *box, *scroller, *_bg, *tabs;
+   Evas_Object *box, *scroller, *tabs;
    Ewe_Tabs_Item *it;
    Prop_Data *pd;
 
@@ -380,9 +379,6 @@ ui_property_add(Evas_Object *parent)
    elm_box_align_set(box, 0.5, 0.0);
    elm_object_content_set(scroller, box);
 
-   GET_IMAGE(_bg, parent, "section-item-bg");
-   elm_object_part_content_set(scroller, "elm.swallow.background", _bg);
-   evas_object_show(_bg);
    pd->visual = scroller;
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
@@ -720,7 +716,7 @@ _on_part_name_change(void *data,
         return;
      }
 
-   pm_project_changed(app_data_get()->project);
+   project_changed();
    workspace_edit_object_part_rename(pd->workspace, pd->part->name, value);
    pd->part->name = value;
    pd->style->isModify = true;
@@ -1107,7 +1103,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    #define pd_state pd->prop_state
 
    type = edje_edit_part_type_get(pd->style->obj, part->name);
-   sprintf(state, "%s %g", part->curr_state, part->curr_state_value);
+   sprintf(state, "%s %.2f", part->curr_state, part->curr_state_value);
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_state.frame);
@@ -1300,7 +1296,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                     pd->part->name, pd->part->curr_state, \
                     pd->part->curr_state_value); \
    eina_stringshare_del(text); \
-   pm_project_changed(app_data_get()->project); \
+   project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
 }
@@ -1580,7 +1576,7 @@ _on_text_effect_type_change(void *data,
         }
      }
    _text_effect_value_update(effect_data);
-   pm_project_changed(app_data_get()->project);
+   project_changed();
 }
 
 static void
@@ -1589,7 +1585,7 @@ _on_text_effect_direction_change(void *data,
                                  void *event_info EINA_UNUSED)
 {
    _text_effect_value_update(data);
-   pm_project_changed(app_data_get()->project);
+   project_changed();
 }
 
 static void
@@ -1600,7 +1596,7 @@ _del_text_effect_callback_data(void *data,
 {
    _text_effect_callback_data *data_to_del = (_text_effect_callback_data *)data;
    free(data_to_del);
-   pm_project_changed(app_data_get()->project);
+   project_changed();
 }
 
 #define ADD_TEXT_EFFECT_COMBOBOX(_prop_name, _prop_callback, _prop_names_array) \
@@ -1681,8 +1677,7 @@ _on_state_text_ellipsis_change(void *data,
                     pd->part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
-   pm_project_changed(app_data_get()->project);
-   /*TODO: app_data_get()->project AGRRRRRR!!!!! need a define project in the pd */
+   project_changed();
 }
 
 static void
@@ -1721,7 +1716,7 @@ _on_state_text_ellipsis_toggle_change(void *data,
                     pd->part->curr_state_value);
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
-   pm_project_changed(app_data_get()->project);
+   project_changed();
 }
 
 static Evas_Object *
@@ -2079,7 +2074,7 @@ _on_state_image_choose(void *data,
 
    img_edit = image_editor_window_add(ap->project, SINGLE);
    image_editor_file_choose(img_edit, selected);
-   image_editor_callback_add(img_edit, _on_image_editor_done, pd);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED, _on_image_editor_done, pd);
 }
 
 static void
@@ -2105,7 +2100,7 @@ _del_tween_image(void *data,
                          (void*)edje_edit_state_tween_del, "tween image",
                          pd->part->name, pd->part->curr_state,
                          pd->part->curr_state_value);
-        pm_project_changed(app_data_get()->project);
+        project_changed();
      }
 }
 
@@ -2137,7 +2132,7 @@ _on_image_editor_tween_done(void *data,
                               (void*)edje_edit_state_tween_add, "tween image",
                               pd->part->name, pd->part->curr_state,
                               pd->part->curr_state_value);
-             pm_project_changed(app_data_get()->project);
+             project_changed();
           }
      }
    elm_frame_collapse_go(pd->prop_state_image.tween, false);
@@ -2155,7 +2150,8 @@ _add_tween_image(void *data,
    App_Data *ap = app_data_get();
 
    img_edit = image_editor_window_add(ap->project, TWEENS);
-   image_editor_callback_add(img_edit, _on_image_editor_tween_done, tween_list);
+   evas_object_smart_callback_add(img_edit, SIG_IMAGE_SELECTED,
+                                  _on_image_editor_tween_done, tween_list);
 
    return;
 }
@@ -2240,7 +2236,7 @@ _tween_image_moved(Evas_Object *data,
                                   image_name);
         next = elm_genlist_item_next_get(next);
      }
-   pm_project_changed(app_data_get()->project);
+   project_changed();
 }
 
 Evas_Object *

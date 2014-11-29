@@ -48,8 +48,6 @@
  * </td>
  * <td>(Evas_Object *) groupedit, (Evas_Object *) image</td>
  * <td>Returned value is EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -91,8 +89,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) groupedit, NULL</td>
  * <td>Returned value is EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -130,8 +126,6 @@ END_TEST
  * </td>
  * <td>NULL, NULL</td>
  * <td>Returned value is EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

@@ -570,9 +570,11 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    if ((factor < 0.01) || (factor > 20)) return false;
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
-   if (sd->zoom.factor == factor) return false;
-   sd->zoom.factor = factor;
+   if ((groupedit_edit_object_parts_separated_is(sd->groupedit)) ||
+       (fabs(sd->zoom.factor - factor) <= 0.001))
+     return false;
 
+   sd->zoom.factor = factor;
    groupedit_zoom_factor_set(sd->groupedit, factor);
 
    /* calculate step for VERTICAL RELATIVE */
@@ -581,13 +583,13 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    /* calculate step for VERTICAL ABSOLUTE */
    ewe_ruler_step_set(sd->ruler_ver, NULL, DEFAULT_STEP * sd->zoom.factor);
 
-   /* calculate step for VERTICAL RELATIVE */
+   /* calculate step for HORIZONTAL RELATIVE */
    ewe_ruler_step_set(sd->ruler_hor, sd->scale_rel_hor, DEFAULT_STEP * sd->zoom.factor);
 
-   /* calculate step for VERTICAL ABSOLUTE */
+   /* calculate step for HORIZONTAL ABSOLUTE */
    ewe_ruler_step_set(sd->ruler_hor, NULL, DEFAULT_STEP * sd->zoom.factor);
 
-   if (fabs(factor - 1.0) > 0.00001)
+   if (fabs(factor - 1.0) > 0.001)
      {
         container_border_hide(sd->container.obj);
 
@@ -856,7 +858,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
 
    /* button for switch mode of view: separated or normal*/
    priv->button_separate = elm_button_add(priv->scroller);
-   elm_object_style_set(priv->button_separate, "eflete/simple");
+   elm_object_style_set(priv->button_separate, "separate");
    GET_IMAGE(icon, priv->scroller, "icon-separate");
    elm_object_part_content_set(priv->button_separate, NULL, icon);
    evas_object_smart_callback_add(priv->button_separate, "clicked",
@@ -868,7 +870,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
                                priv->background);
    elm_object_part_content_set(priv->scroller, "elm.swallow.overlay",
                                priv->events);
-   elm_object_part_content_set(priv->scroller, "cross.swallow",
+   elm_object_part_content_set(priv->scroller, "elm.swallow.button",
                                priv->button_separate);
 
    Evas_Object *edje = elm_layout_edje_get(priv->scroller);
@@ -885,8 +887,8 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    elm_object_part_content_set(priv->scroller, SWALL, RUL); \
    evas_object_smart_member_add(RUL, o);
 
-   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "ruler.swallow.hor");
-   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "ruler.swallow.ver");
+   RULER(priv->ruler_hor, priv->scale_rel_hor, priv->pointer_hor, "elm.swallow.hruler");
+   RULER(priv->ruler_ver, priv->scale_rel_ver, priv->pointer_ver, "elm.swallow.vruler");
    ewe_ruler_horizontal_set(priv->ruler_ver, false);
    evas_object_smart_callback_add(o, "ruler,toggle",
                                   _ws_ruler_toggle_cb, NULL);
@@ -911,19 +913,6 @@ static void
 _workspace_smart_del(Evas_Object *o)
 {
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
-
-   evas_object_smart_member_del(sd->ruler_hor);
-   evas_object_smart_member_del(sd->ruler_ver);
-   evas_object_smart_member_del(sd->layout);
-   evas_object_smart_member_del(sd->background);
-   evas_object_smart_member_del(sd->button_separate);
-   evas_object_smart_member_del(sd->scroller);
-   evas_object_smart_member_del(sd->events);
-   evas_object_smart_member_del(sd->highlight.highlight);
-   evas_object_smart_member_del(sd->highlight.space_hl);
-   evas_object_smart_member_del(sd->menu.obj);
-   if (sd->groupedit)
-     evas_object_smart_member_del(sd->groupedit);
 
    _workspace_parent_sc->del(o);
 }
@@ -1054,19 +1043,42 @@ _on_part_unselect(void *data,
 static void
 _on_groupedit_geometry_changed(void *data,
                                Evas_Object *obj __UNUSED__,
-                               void *event_info)
+                               void *event_info __UNUSED__)
 {
-   Ws_Smart_Data *sd = (Ws_Smart_Data *)data;
-   Container_Geom *geom = (Container_Geom *)event_info;
+   Ws_Smart_Data *sd __UNUSED__= (Ws_Smart_Data *)data;
+   Container_Geom *geom __UNUSED__ = (Container_Geom *)event_info;
 
-   Evas_Coord x, y, w, h;
+   Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+
+   /* getting size of rulers and handlers of container. Bottom and Left paddings
+      are calculating according to them
+      (PADDING_SIZE - ruler_size - handler_size).
+   */
    evas_object_geometry_get(sd->groupedit, &x, &y, &w, &h);
+   evas_object_geometry_get(sd->ruler_ver, NULL, NULL, &ruler_ver_w, NULL);
+   evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &ruler_hor_h);
+   container_handler_size_get(sd->container.obj, NULL, NULL, &hrb_w, &hrb_h);
 
-   container_padding_size_set(sd->container.obj,
-                              PADDING_SIZE + abs(geom->x - x),
-                              PADDING_SIZE + abs(geom->y - y),
-                              PADDING_SIZE + abs((geom->x + geom->w) - (x + w)),
-                              PADDING_SIZE + abs((geom->y + geom->h) - (y + h)));
+   /* !!doing some padding calculation, so we could show real size of groupedit!!
+      =====================================================================
+      Real size of groupedit is being used here as additional for paddings.
+
+      >  For top and left padding it's default size of padding + difference
+      between x/y position of groupedit and real x/y position of the most left
+      part (it's pad_x/pad_y).
+
+      >  For right and bottom padding we need to calculate different value.
+      it is actually difference between size of groupedit ((x + w) or (y + h))
+      and real size of groupedit (all of that including position of it).
+      Also we should compensate additional size of padding and ruler size
+      (ruler covers most of top/left pads). */
+   Evas_Coord pad_x, pad_y, pad_w, pad_h;
+   pad_x = PADDING_SIZE + abs(geom->x - x);
+   pad_y = PADDING_SIZE + abs(geom->y - y);
+   pad_w = PADDING_SIZE + abs((geom->x + geom->w) - (x + w)) - ruler_ver_w - hrb_w;
+   pad_h = PADDING_SIZE + abs((geom->y + geom->h) - (y + h)) - ruler_hor_h - hrb_h;
+
+   container_padding_size_set(sd->container.obj, pad_x, pad_y, pad_w, pad_h);
 }
 
 static void
@@ -1090,7 +1102,8 @@ _on_container_TL_move(void *data,
 Eina_Bool
 workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 {
-   Evas_Coord x, y, w, h;
+   Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
    if ((!style) || (!file)) return false;
@@ -1134,13 +1147,19 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
                                   _ws_ruler_rel_zero_move_cb, obj);
    groupedit_bg_set(sd->groupedit, sd->background);
    elm_object_content_set(sd->scroller, sd->container.obj);
+
+   /* getting size of rulers and handlers of container. Bottom and Left paddings
+      are calculating according to them
+      (PADDING_SIZE - ruler_size - handler_size)
+   */
+   evas_object_geometry_get(sd->ruler_ver, NULL, NULL, &ruler_ver_w, NULL);
+   evas_object_geometry_get(sd->ruler_hor, NULL, NULL, NULL, &ruler_hor_h);
+   container_handler_size_get(sd->container.obj, NULL, NULL, &hrb_w, &hrb_h);
    container_padding_size_set(sd->container.obj,
                               PADDING_SIZE,
                               PADDING_SIZE,
-                              PADDING_SIZE,
-                              PADDING_SIZE);
-   evas_object_show(sd->container.obj);
-   evas_object_show(sd->groupedit);
+                              PADDING_SIZE - ruler_ver_w - hrb_w,
+                              PADDING_SIZE - ruler_hor_h - hrb_h);
 
    elm_scroller_policy_set(sd->scroller, ELM_SCROLLER_POLICY_AUTO,
                            ELM_SCROLLER_POLICY_AUTO);
@@ -1170,10 +1189,8 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
 
-   evas_object_geometry_get(sd->container.obj, &x, &y, &w, &h);
-   evas_object_resize(sd->container.obj, w - PADDING_SIZE * 2, h - PADDING_SIZE * 2);
-   elm_scroller_region_get(sd->container.obj, &x, &y, &w, &h);
-   elm_scroller_region_show(sd->container.obj, x / 2, y / 2, w, h);
+   evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
+   evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
 
    workspace_zoom_factor_set(obj, 1.0);
 

@@ -31,8 +31,10 @@ struct _Animator
    Evas_Object *prop_scroller;
    Evas_Object *gl_progs;
    Elm_Object_Item *sel;
+   Eina_List *afters;
 
    Evas_Object *program_editor;
+   Evas_Object *program_sequence;
 
    struct {
         Evas_Object *popup;
@@ -44,6 +46,7 @@ struct _Animator
         Evas_Object *cycle;
    } program_controls;
    Eina_Bool is_cycled : 1;
+   Eina_Bool sequence_mode : 1;
 };
 
 typedef struct _Animator Animator;
@@ -105,6 +108,19 @@ _on_program_name_change_cb(void *data,
    elm_genlist_item_update(animator->sel);
 }
 
+static void
+_on_program_scroll_cb(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
+{
+   Animator *animator = data;
+   Evas_Coord x = * (int *) event_info;
+   Evas_Coord y, w, h;
+
+   elm_scroller_region_get(animator->prop_scroller, NULL, &y, &w, &h);
+   elm_scroller_region_show(animator->prop_scroller, x, y, w, h);
+}
+
 /********************* ui callbacks *******************************************/
 static void
 _on_program_reset(void *data,
@@ -113,7 +129,10 @@ _on_program_reset(void *data,
 {
    Animator *animator = data;
 
-   program_editor_program_reset(animator->program_editor);
+   if (animator->sequence_mode)
+     prog_sequence_program_reset(animator->program_sequence);
+   else
+     program_editor_program_reset(animator->program_editor);
 }
 
 static void
@@ -123,7 +142,10 @@ _on_program_play(void *data,
 {
    Animator *animator = data;
 
-   program_editor_program_play(animator->program_editor);
+   if (animator->sequence_mode)
+     prog_sequence_program_play(animator->program_sequence);
+   else
+     program_editor_program_play(animator->program_editor);
 }
 
 static void
@@ -138,7 +160,9 @@ _on_program_cycle(void *data,
      elm_object_text_set(animator->program_controls.cycle, _("Cycled"));
    else
      elm_object_text_set(animator->program_controls.cycle, _("Not cycled"));
+
    program_editor_cycled_set(animator->program_editor, animator->is_cycled);
+   prog_sequence_cycled_set(animator->program_sequence, animator->is_cycled);
 }
 
 static void
@@ -148,8 +172,11 @@ _on_animator_close(void *data,
                    void *event_info __UNUSED__)
 {
    Animator *animator = (Animator*)data;
+
    program_editor_free(animator->program_editor);
+
    live_view_free(animator->live);
+
    free(animator);
 }
 
@@ -242,7 +269,7 @@ _on_bt_prog_del(void *data,
      {
         if (elm_genlist_items_count(animator->gl_progs) == 1)
           {
-             elm_object_content_set(animator->prop_scroller, NULL);
+             elm_layout_signal_emit(animator->program_area_layout, "eflete,content,hide", "eflete");
           }
         else
           {
@@ -291,12 +318,36 @@ _on_bt_prog_add(void *data,
 }
 
 static void
-_on_bt_mode_change(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
+_on_bt_mode_change(void *data,
+                   Evas_Object *bt,
                    void *event_info __UNUSED__)
 {
-   // Animator *animator = (Animator*)data;
-   /* TODO: add switch between edit and sequnce modes */
+   Evas_Object *icon;
+   Animator *animator = (Animator*)data;
+
+   animator->sequence_mode = !animator->sequence_mode;
+
+   elm_object_content_unset(animator->prop_scroller);
+   if (animator->sequence_mode)
+     {
+        ICON_ADD(bt, icon, false, "animator_arrow_left");
+        elm_layout_content_set(bt, "icon", icon);
+        program_editor_program_stop(animator->program_editor);
+        evas_object_hide(animator->program_editor);
+        evas_object_show(animator->program_sequence);
+        elm_object_content_set(animator->prop_scroller, animator->program_sequence);
+        prog_sequence_program_set(animator->program_sequence, animator->program, animator->afters);
+     }
+   else
+     {
+        ICON_ADD(bt, icon, false, "animator_arrow_right");
+        elm_layout_content_set(bt, "icon", icon);
+        prog_sequence_program_stop(animator->program_sequence);
+        evas_object_hide(animator->program_sequence);
+        evas_object_show(animator->program_editor);
+        elm_object_content_set(animator->prop_scroller, animator->program_editor);
+        prog_editor_program_set(animator->program_editor, animator->program);
+     }
 }
 
 static void
@@ -327,23 +378,27 @@ _on_gen_prog_sel(void *data,
    Elm_Object_Item *glit = (Elm_Object_Item *)ei, *it;
    Eina_List *queue = NULL;
    Eina_List *prog_afters = NULL, *l;
-   Eina_List *afters = NULL;
    Eina_Stringshare *program;
 
+   elm_layout_signal_emit(animator->program_area_layout, "eflete,content,show", "eflete");
    animator->sel = glit;
    program = elm_object_item_data_get(glit);
    animator->program = program;
 
    /* highlighting afters */
-   queue = eina_list_append(queue, eina_stringshare_add(program));
+   EINA_LIST_FREE(animator->afters, program)
+     eina_stringshare_del(program);
+
+   queue = eina_list_append(queue, eina_stringshare_add(animator->program));
    while (queue)
      {
         program = eina_list_data_get(queue);
         queue = eina_list_remove_list(queue, queue);
 
-        if (!eina_list_data_find_list(afters, program))
+        if (!eina_list_data_find_list(animator->afters, program))
           {
-             afters = eina_list_append(afters, program);
+             animator->afters = eina_list_append(animator->afters,
+                                                 eina_stringshare_add(program));
 
              prog_afters = edje_edit_program_afters_get(animator->style->obj,
                                                         program);
@@ -359,18 +414,23 @@ _on_gen_prog_sel(void *data,
    while (it)
      {
         program = eina_stringshare_add(elm_object_item_data_get(it));
-        if (eina_list_data_find(afters, program))
-          elm_genlist_item_item_class_update(it, _itc_prog_after);
+        if (!!(l = eina_list_data_find_list(animator->afters, program)))
+          {
+             animator->afters = eina_list_remove_list(animator->afters, l);
+             animator->afters = eina_list_append(animator->afters, program);
+             elm_genlist_item_item_class_update(it, _itc_prog_after);
+          }
         else
           elm_genlist_item_item_class_update(it, _itc_prog);
         eina_stringshare_del(program);
         it = elm_genlist_item_next_get(it);
      }
-   EINA_LIST_FREE(afters, program)
-     eina_stringshare_del(program);
 
    /* updating submodule view */
-   prog_editor_program_set(animator->program_editor, animator->program);
+   if (animator->sequence_mode)
+     prog_sequence_program_set(animator->program_sequence, animator->program, animator->afters);
+   else
+     prog_editor_program_set(animator->program_editor, animator->program);
 }
 
 static char *
@@ -545,25 +605,34 @@ animator_window_add(Style *style)
                        "eflete/animator/program_area");
    elm_object_part_content_set(bottom_panes, "right", animator->program_area_layout);
    evas_object_show(animator->program_area_layout);
+   elm_layout_signal_emit(animator->program_area_layout, "eflete,content,hide", "eflete");
 
    BUTTON_ADD(animator->program_area_layout, bt, "");
    elm_object_part_content_set(animator->program_area_layout, "swallow.button", bt);
-   evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, ap);
-   ICON_ADD(bt, icon, false, "icon-back");
+   evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, animator);
+   ICON_ADD(bt, icon, false, "animator_arrow_right");
    elm_layout_content_set(bt, "icon", icon);
    elm_object_style_set(bt, "eflete/simple");
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
-   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+   elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
    elm_object_part_content_set(animator->program_area_layout, "swallow.content",
                                scroller);
    animator->prop_scroller = scroller;
 
    animator->program_editor = program_editor_add(animator->mwin, style,
                                                  animator->live);
-   elm_object_part_content_set(animator->program_area_layout, "swallow.content",
-                               animator->program_editor);
+   elm_object_content_set(animator->prop_scroller, animator->program_editor);
+   evas_object_size_hint_weight_set(animator->program_editor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(animator->program_editor, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(animator->program_editor);
+
+   animator->program_sequence = prog_sequence_add(animator->prop_scroller, style,
+                                                  animator->live);
+   evas_object_size_hint_weight_set(animator->program_sequence, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(animator->program_sequence, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   animator->sequence_mode = false;
 
    evas_object_smart_callback_add(animator->program_editor, PLAY_CB,
                                   _on_program_play_cb, animator);
@@ -571,6 +640,13 @@ animator_window_add(Style *style)
                                   _on_program_pause_cb, animator);
    evas_object_smart_callback_add(animator->program_editor, NAME_CHANGED_CB,
                                   _on_program_name_change_cb, animator);
+
+   evas_object_smart_callback_add(animator->program_sequence, PLAY_CB,
+                                  _on_program_play_cb, animator);
+   evas_object_smart_callback_add(animator->program_sequence, PAUSE_CB,
+                                  _on_program_pause_cb, animator);
+   evas_object_smart_callback_add(animator->program_sequence, SCROLL_CB,
+                                  _on_program_scroll_cb, animator);
 
    BOX_ADD(window_layout, button_box, true, false);
    elm_box_align_set(button_box, 1.0, 0.5);

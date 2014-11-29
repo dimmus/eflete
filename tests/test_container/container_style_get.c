@@ -48,8 +48,6 @@
  * </td>
  * <td>(Evas_Object *) container, "default"</td>
  * <td>EINA_TRUE, "default"</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -88,8 +86,6 @@ END_TEST
  * </td>
  * <td>NULL, "default"</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

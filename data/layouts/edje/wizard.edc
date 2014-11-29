@@ -1,0 +1,504 @@
+images {
+   image: "separator-vertical.png" COMP;
+   image: "separator-horizontal.png" COMP;
+}
+
+group { name: "elm/layout/wizard/import";
+   broadcast_signal: 0;
+   parts {
+      part { name: "area.separator1";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 10 0;
+            max: 10 -1;
+            rel1.relative: 0.5 0;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "area.separator2";
+            }
+         }
+      }
+      part { name: "separator1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 2 0;
+            max: 2 -1;
+            rel1 {
+               relative: 0.0 0.0;
+               to: "area.separator1";
+            }
+            rel2.to: "area.separator1";
+            image.normal: "separator-vertical.png";
+         }
+      }
+      part { name: "area.name";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            max: -1 26;
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "area.separator1";
+            }
+         }
+      }
+      part { name: "label.name";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.to: "area.name";
+            rel2 {
+               relative: 0.3 1;
+               to: "area.name";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.name";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 0.3 0.0;
+               to: "area.name";
+            }
+            rel2.to: "area.name";
+         }
+      }
+      part { name: "area.path";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            max: -1 26;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "area.name";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "area.separator1";
+            }
+         }
+      }
+      part { name: "label.path";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.to: "area.path";
+            rel2 {
+               relative: 0.3 1.0;
+               to: "area.path";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.path";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 0.3 0.0;
+               to: "area.path";
+            }
+            rel2.to: "area.path";
+         }
+      }
+      part { name: "area.edj";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            max: -1 26;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "area.path";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "area.separator1";
+            }
+         }
+      }
+      part { name: "label.edj";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.to: "area.edj";
+            rel2 {
+               relative: 0.3 1.0;
+               to: "area.edj";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.edj";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 0.3 0.0;
+               to: "area.edj";
+            }
+            rel2.to: "area.edj";
+         }
+      }
+      part { name: "area.meta_version";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            max: -1 26;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "area.separator1";
+            }
+         }
+      }
+      part { name: "label.meta_version";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1.to: "area.meta_version";
+            rel2 {
+               relative: 0.3 1.0;
+               to: "area.meta_version";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.meta_version";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
+            min: 0 20;
+            max: -1 20;
+            rel1 {
+               relative: 0.3 0.0;
+               to: "area.meta_version";
+            }
+            rel2.to: "area.meta_version";
+         }
+      }
+      part { name: "area.big_fields";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "area.meta_version";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "area.separator2";
+            }
+         }
+      }
+      part { name: "area.meta_authors";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            rel1.to: "area.big_fields";
+            rel2 {
+               relative: 1 0.33;
+               to: "area.big_fields";
+            }
+         }
+      }
+      part { name: "padding.rel1.meta_authors";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 3 3;
+            max: 3 3;
+            rel1.to: "area.meta_authors";
+            rel2.to: "area.meta_authors";
+         }
+      }
+      part { name: "padding.rel2.meta_authors";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 3 3;
+            max: 3 3;
+            rel1.to: "area.meta_authors";
+            rel2.to: "area.meta_authors";
+         }
+      }
+      part { name: "label.meta_authors";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to: "padding.rel1.meta_authors";
+            }
+            rel2 {
+               relative: 0.3 1.0;
+               to: "area.meta_authors";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.meta_authors";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.3 1.0;
+               to_x: "area.meta_authors";
+               to_y: "padding.rel1.meta_authors";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to: "padding.rel2.meta_authors";
+            }
+         }
+      }
+      part { name: "area.meta_licenses";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "area.big_fields";
+               to_y: "area.meta_authors";
+            }
+            rel2 {
+               relative: 1.0 2.0;
+               to_x: "area.big_fields";
+               to_y: "area.meta_authors";
+            }
+         }
+      }
+      part { name: "padding.rel1.meta_licenses";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 3 3;
+            max: 3 3;
+            rel1.to: "area.meta_licenses";
+            rel2.to: "area.meta_licenses";
+         }
+      }
+      part { name: "padding.rel2.meta_licenses";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 3 3;
+            max: 3 3;
+            rel1.to: "area.meta_licenses";
+            rel2.to: "area.meta_licenses";
+         }
+      }
+      part { name: "label.meta_licenses";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "area.meta_licenses";
+               to_y: "padding.rel1.meta_licenses";
+            }
+            rel2 {
+               relative: 0.3 1.0;
+               to: "area.meta_licenses";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.meta_licenses";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.3 1.0;
+               to_x: "area.meta_licenses";
+               to_y: "padding.rel1.meta_licenses";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               to_x: "area.meta_licenses";
+               to_y: "padding.rel2.meta_licenses";
+            }
+         }
+      }
+      part { name: "area.meta_comment";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 0 26;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "area.big_fields";
+               to_y: "area.meta_licenses";
+            }
+            rel2.to: "area.big_fields";
+         }
+      }
+      part { name: "padding.rel1.meta_comment";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 3 3;
+            max: 3 3;
+            rel1.to: "area.meta_comment";
+            rel2.to: "area.meta_comment";
+         }
+      }
+      part { name: "label.meta_comment";
+         type: TEXT;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               to_x: "area.meta_comment";
+               to_y: "padding.rel1.meta_comment";
+            }
+            rel2 {
+               relative: 0.3 1.0;
+               to: "area.meta_comment";
+            }
+            text {
+               font: FN;
+               size: 12;
+               max: 1 1;
+            }
+         }
+      }
+      part { name: "swallow.meta_comment";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.3 1.0;
+               to_x: "area.meta_comment";
+               to_y: "padding.rel1.meta_comment";
+            }
+            rel2.to: "area.meta_comment";
+         }
+      }
+      part { name: "area.buttons";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 26;
+            max: -1 26;
+         }
+      }
+      part { name: "swallow.button1";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 72 0;
+            max: 72 -1;
+            fixed: 1 1;
+            rel1.to: "area.buttons";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.buttons";
+               to_y: "area.buttons";
+            }
+         }
+      }
+      part { name: "padding.buttons";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 4 0;
+            max: 4 -1;
+            rel1.to: "area.buttons";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "swallow.button2";
+               to_y: "area.buttons";
+            }
+         }
+      }
+      part { name: "swallow.button2";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            min: 72 0;
+            max: 72 -1;
+            fixed: 1 1;
+            rel1.to: "area.buttons";
+            rel2.to: "area.buttons";
+         }
+      }
+      part { name: "area.separator2";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            min: 0 10;
+            max: -1 10;
+            rel2 {
+               relative: 1.0 0.0;
+               to_y: "area.buttons";
+            }
+         }
+      }
+      part { name: "separator2";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: -1 2;
+            rel1.to: "area.separator2";
+            rel2.to: "area.separator2";
+            image {
+               normal: "separator-horizontal.png";
+               middle: DEFAULT;
+            }
+         }
+      }
+   }
+}

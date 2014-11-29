@@ -445,11 +445,6 @@ _container_smart_del(Evas_Object *o)
 {
    CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   evas_object_smart_member_del(sd->bg);
-   evas_object_smart_member_del(sd->container);
-   evas_object_smart_member_del(sd->handler_TL.obj);
-   evas_object_smart_member_del(sd->handler_BR.obj);
-
    _container_parent_sc->del(o);
 }
 

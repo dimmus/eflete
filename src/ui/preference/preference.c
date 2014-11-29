@@ -62,6 +62,9 @@ _on_preferences_close(void *data,
 {
    Preferences *preference = (Preferences *)data;
    Config *cf = config_get();
+
+   preferences_project_autosave_update(preference->pr);
+
    profile_save(cf->profile);
    free(preference);
 }
@@ -82,7 +85,7 @@ _item_label_get(void *data,
 }
 
 #define pref_layout preference->layout
-#define prof_general pr->general
+#define prof_general prof->general
 
 #define COMBOBOX_VALUE \
 Ewe_Combobox_Item *item = ei; \
@@ -101,7 +104,7 @@ _on_##VALUE##_change(void *data, \
                      Evas_Object *obj __UNUSED__, \
                      void *ei __UNUSED__) \
 { \
-   Profile *pr = (Profile *)data; \
+   Profile *prof = (Profile *)data; \
    TYPE value; \
    WIDGET##_VALUE \
    switch (NUM) \
@@ -127,7 +130,7 @@ _on_##VALUE##_change(void *data, \
                      Evas_Object *obj, \
                      void *ei __UNUSED__) \
 { \
-   Profile *pr = (Profile *)data; \
+   Profile *prof = (Profile *)data; \
    const char *value; \
    value = elm_entry_entry_get(obj); \
    switch (NUM) \
@@ -139,6 +142,45 @@ _on_##VALUE##_change(void *data, \
         prof_general.swap_folder = strdup(value); \
         break; \
      } \
+}
+
+/*
+static Eina_Bool
+_autosave_timer_cb()
+{
+   App_Data *ap = app_data_get();
+   if (!ap->project->is_new)
+     save_edj_file(ap);
+
+   save_time_info_update(ap, true);
+   return  ECORE_CALLBACK_RENEW;
+   return false;
+}
+*/
+
+Eina_Bool
+preferences_project_autosave_update(Project *project __UNUSED__)
+{
+   /*
+   Profile *profile = profile_get();
+   if ((!profile) || (!project)) return false;
+
+   if (project->autosave_timer)
+     {
+        ecore_timer_del(project->autosave_timer);
+        project->autosave_timer = NULL;
+     }
+
+   if (profile->general.autosave.autosave)
+     {
+        project->autosave_timer = ecore_timer_add(profile->general.autosave.period,
+                                         _autosave_timer_cb, NULL);
+        return !!project->autosave_timer;
+     }
+
+   return true;
+   */
+   return false;
 }
 
 CHANGE_CALLBACK(autosave_period, 1, SPINNER, double)
@@ -163,13 +205,13 @@ _general_form(Preferences *preference)
    Evas_Object *entry_home, *entry_swap, *autosave_frame, *store_frame;
    Evas_Object *autosave_layout, *store_layout;
    Evas_Object *autosave_ck, *period_sp, *storeui_ck, *winpos_ck;
-   Profile *pr;
+   Profile *prof;
    /*
     * Eina_List *prof_list, *l;
     * const char *version;
     * prof_list = profiles_get();
     */
-   pr = profile_get();
+   prof = profile_get();
    panes = evas_object_data_get(preference->mwin, "panes");
    layout = elm_object_part_content_get(panes, "right");
    if (layout)
@@ -198,11 +240,11 @@ _general_form(Preferences *preference)
    EWE_ENTRY_ADD(pref_layout.general, entry_home, true, DEFAULT_STYLE);
    elm_object_part_text_set(entry_home, "elm.text", prof_general.home_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
-   evas_object_smart_callback_add(entry_home, "changed", _on_home_change, pr);
+   evas_object_smart_callback_add(entry_home, "changed", _on_home_change, prof);
    EWE_ENTRY_ADD(pref_layout.general, entry_swap, true, DEFAULT_STYLE);
    elm_object_part_text_set(entry_swap, "elm.text", prof_general.swap_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.swap", entry_swap);
-   evas_object_smart_callback_add(entry_swap, "changed", _on_swap_change, pr);
+   evas_object_smart_callback_add(entry_swap, "changed", _on_swap_change, prof);
 
    FRAME_ADD(pref_layout.general, autosave_frame, false, _("Autosave"))
    elm_object_part_content_set(pref_layout.general, "swallow.autosave", autosave_frame);
@@ -217,12 +259,12 @@ _general_form(Preferences *preference)
    CHECK_ADD(autosave_layout, autosave_ck, DEFAULT_STYLE);
    elm_check_state_set(autosave_ck, prof_general.autosave.autosave);
    elm_object_part_content_set(autosave_layout, "swallow.first", autosave_ck);
-   evas_object_smart_callback_add(autosave_ck, "changed", _on_autosave_autosave_change, pr);
+   evas_object_smart_callback_add(autosave_ck, "changed", _on_autosave_autosave_change, prof);
 
-   SPINNER_ADD(autosave_layout, period_sp, 0.0, 9999.0, 1.0, true, DEFAULT_STYLE);
+   SPINNER_ADD(autosave_layout, period_sp, 1.0, 9999.0, 1.0, true, DEFAULT_STYLE);
    elm_spinner_value_set(period_sp, prof_general.autosave.period);
    elm_object_part_content_set(autosave_layout, "swallow.second", period_sp);
-   evas_object_smart_callback_add(period_sp, "changed", _on_autosave_period_change, pr);
+   evas_object_smart_callback_add(period_sp, "changed", _on_autosave_period_change, prof);
 
    FRAME_ADD(pref_layout.general, store_frame, false, _("UI"))
    elm_object_part_content_set(pref_layout.general, "swallow.uistore", store_frame);
@@ -237,12 +279,12 @@ _general_form(Preferences *preference)
    CHECK_ADD(store_layout, storeui_ck, DEFAULT_STYLE);
    elm_check_state_set(storeui_ck, prof_general.save_ui);
    elm_object_part_content_set(store_layout, "swallow.first", storeui_ck);
-   evas_object_smart_callback_add(storeui_ck, "changed", _on_save_ui_change, pr);
+   evas_object_smart_callback_add(storeui_ck, "changed", _on_save_ui_change, prof);
 
    CHECK_ADD(store_layout, winpos_ck, DEFAULT_STYLE);
    elm_check_state_set(winpos_ck, prof_general.save_win_pos);
    elm_object_part_content_set(store_layout, "swallow.second", winpos_ck);
-   evas_object_smart_callback_add(winpos_ck, "changed", _on_save_win_pos_change, pr);
+   evas_object_smart_callback_add(winpos_ck, "changed", _on_save_win_pos_change, prof);
 }
 
 static void

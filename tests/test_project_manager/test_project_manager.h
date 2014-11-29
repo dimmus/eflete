@@ -1,4 +1,4 @@
-/**
+/*
  * Edje Theme Editor
  * Copyright (C) 2013-2014 Samsung Electronics.
  *
@@ -22,27 +22,28 @@
 #include "eflete.h"
 
 /**
- * @defgroup test_project_manager
+ * @defgroup project_manager_test
  */
 
-void pm_open_project_edj_test_p(int);
-void pm_open_project_edj_test_n1(int);
-void pm_open_project_edj_test_n2(int);
+void pm_project_import_edj_test_p(int);
+void pm_project_import_edj_test_p1(int);
+void pm_project_import_edj_test_p2(int);
 
-void pm_project_close_test_p1(int);
-void pm_project_close_test_p2(int);
-void pm_project_close_test_n(int);
+void pm_project_import_edc_test_p1(int);
+void pm_project_import_edc_test_p2(int);
+void pm_project_import_edc_test_p3(int);
 
-void pm_save_project_edj_test_p(int);
-void pm_save_project_edj_test_n(int);
+void pm_project_thread_cancel_test_p(int);
 
-void pm_save_project_to_swap_test_p1(int);
-void pm_save_project_to_swap_test_p2(int);
-void pm_save_project_to_swap_test_n(int);
+void pm_project_thread_free_test_p(int);
+void pm_project_thread_free_test_n(int);
 
-void pm_export_to_edc_test_p1(int);
-void pm_export_to_edc_test_p2(int);
-void pm_export_to_edc_test_n(int);
+void pm_project_open_test_p(int);
 
-void pm_save_as_project_edj_test_p(int);
-void pm_save_as_project_edj_test_n(int);
+void pm_project_save_test_p(int);
+
+void pm_project_close_test_p(int);
+
+void pm_project_meta_data_set_test_p(int);
+
+void pm_project_meta_data_get_test_p(int);

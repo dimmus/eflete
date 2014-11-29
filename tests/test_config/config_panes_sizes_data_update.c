@@ -48,8 +48,6 @@
  * </td>
  * <td>App_Data *app_data</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -58,7 +56,6 @@ EFLETE_TEST (config_panes_sizes_data_update_test_p)
    elm_init(0, 0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    App_Data *app_data;
-   Project *project = NULL;
    Eina_Bool result = EINA_FALSE;
 
    app_init();
@@ -68,7 +65,6 @@ EFLETE_TEST (config_panes_sizes_data_update_test_p)
    result = config_panes_sizes_data_update(app_data);
    ck_assert_msg(result == EINA_TRUE, "Could not update Panes sizes data");
 
-   pm_project_close(project);
    evas_object_del(app_data->win);
    elm_shutdown();
 }
@@ -92,8 +88,6 @@ END_TEST
  * </td>
  * <td>App_Data *app_data</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

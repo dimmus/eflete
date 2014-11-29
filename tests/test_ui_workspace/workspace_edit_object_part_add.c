@@ -52,8 +52,6 @@
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"new_part", EDJE_PART_TYPE_RECTANGLE, NULL</td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -110,8 +108,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"new_part", EDJE_PART_TYPE_IMAGE, (char *)"radio_base.png"</td>
  * <td>All check's passed'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -167,8 +163,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"bg", EDJE_PART_TYPE_RECTANGLE, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -217,8 +211,6 @@ END_TEST
  * </td>
  * <td>NULL, (char *)"new_part", EDJE_PART_TYPE_RECTANGLE, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -256,8 +248,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, NULL, EDJE_PART_TYPE_RECTANGLE, NULL</td>
  * <td>Returned EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -312,8 +302,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace, (char *)"new_part", 105, NULL</td>
  * <td>Returned EINA_FALSE in both check's'</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

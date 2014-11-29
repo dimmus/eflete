@@ -32,6 +32,8 @@
 #include "widget_manager.h"
 #include "widget_macro.h"
 
+#define SIG_IMAGE_SELECTED "image_selected"
+
 typedef enum {
    SINGLE,
    MULTIPLE,
@@ -67,27 +69,5 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode);
  */
 Eina_Bool
 image_editor_file_choose(Evas_Object *win, const char *selected);
-
-/**
- * Callback function. Registering function for sending the result back.
- *
- * @param win Pointer to inwin object, which was created with
- * image_editor_add function.
- * @param func Function that will be called after clicking on "ok" button.
- * @param data Data that will be passed into given function.
- *
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- *
- * @note In callback function will be passed different types of data, in depends
- *   of selection mode which set for image editor. For SINGLE mode in event_info
- *   param of callback function will be send (const char *) string with name of
- *   selected image. In case when image editor was created with MULTIPLE mode,
- *   in event info will be passed (Eina_List *) names list of selected images.
- *   User  should free received list with eina_list_free, after using.
- *
- * @ingroup ImageEditor
- */
-Eina_Bool
-image_editor_callback_add(Evas_Object *win, Evas_Smart_Cb func, void *data);
 
 #endif /*IMAGE_EDITOR_H*/

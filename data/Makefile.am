@@ -9,7 +9,7 @@ am__v_EET = @echo "  EET   " $@;
 EET_EET = @eet_eet@
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -id $(top_srcdir)/data/layouts/images -fd $(top_srcdir)/data/fonts
-EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -fd $(top_srcdir)/data/fonts
+EDJE_FLAGS_DEFAULT = -id $(top_srcdir)/data/themes/default/images -id $(top_srcdir)/data/themes/default/images/splash -fd $(top_srcdir)/data/fonts
 EDJE_FLAGS_TEMPLATE = -id $(top_srcdir)/data/template/images -fd $(top_srcdir)/data/themes -sd $(top_srcdir)/data/template/sounds
 EDJE_FLAGS_RESOURCES = -id $(top_srcdir)/data/resources/images
 
@@ -21,7 +21,8 @@ alayouts_DATA = eflete.edj
 
 aimagesdir = $(datadir)/eflete/images
 aimages_DATA = \
-   ${srcdir}/images/*.png
+   ${srcdir}/images/*.png \
+   ${srcdir}/images/toolbar_icons/*.png
 
 aresourcesdir = $(datadir)/eflete/
 aresources_DATA = resources.edj

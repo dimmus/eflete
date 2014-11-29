@@ -45,8 +45,6 @@
  * </td>
  * <td>void</td>
  * <td>Not NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

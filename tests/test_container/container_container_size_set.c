@@ -47,8 +47,6 @@
  * </td>
  * <td>(Evas_Object *) container, 100, 100</td>
  * <td>EINA_TRUE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -88,8 +86,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)container, 0, 100</td>
  * <td>EINA_TRUE (0, 100)</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -136,8 +132,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *)container, 100, 0</td>
  * <td>EINA_TRUE (100, 0)</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -184,8 +178,6 @@ END_TEST
  * </td>
  * <td>NULL, 100, 100</td>
  * <td>EINA_FALSE</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

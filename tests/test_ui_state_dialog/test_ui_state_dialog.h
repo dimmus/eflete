@@ -25,6 +25,8 @@
  * @defgroup test_state_dialog
  */
 
+#define TEST_NAME "state_dialog"
+
 void state_dialog_state_add_test_n1(int);
 void state_dialog_state_add_test_n2(int);
 void state_dialog_state_add_test_n3(int);

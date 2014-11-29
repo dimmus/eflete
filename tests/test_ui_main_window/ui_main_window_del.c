@@ -48,8 +48,6 @@
  * </td>
  * <td>(App_Data *) app_data</td>
  * <td>EINA_TRUE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -65,43 +63,6 @@ EFLETE_TEST(ui_main_window_del_test_p)
 
    ret = ui_main_window_del(app_data);
    ck_assert_msg(ret == EINA_TRUE, "Failed to delete main window");
-
-   app_shutdown();
-   elm_shutdown();
-}
-END_TEST
-
-/**
- * @addtogroup ui_main_window_del
- * @{
- * <tr>
- * <td>ui_main_window_del</td>
- * <td>ui_main_window_del_test_n</td>
- * <td>
- * @precondition
- * @step 1 Initialize elementary library.
- * @step 2 Initialize requred libraries.
- *
- * @procedure
- * @step 1 Call ui_main_window_del.
- * @step 2 Check returned value.
- * </td>
- * <td>NULL</td>
- * <td>EINA_FALSE returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
- * </tr>
- * @}
- */
-EFLETE_TEST(ui_main_window_del_test_n)
-{
-   Eina_Bool ret = EINA_TRUE;
-
-   elm_init(0, 0);
-   app_init();
-
-   ret = ui_main_window_del(NULL);
-   ck_assert_msg(ret == EINA_FALSE, "Deleted main window with NULL pointer param");
 
    app_shutdown();
    elm_shutdown();

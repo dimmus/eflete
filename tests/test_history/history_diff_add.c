@@ -52,8 +52,6 @@
  *     (const char *) "new_bg", (const char *) "elm/radio/base/def",
  *     (void *)edje_edit_part_name_set, "Rename", "bg", NULL, 0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -111,8 +109,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
  *     "Rel1 to x", "bg", (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -172,8 +168,6 @@ END_TEST
  *     (void *)edje_edit_state_align_x_set, "align x", "bg",
  *     (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -233,8 +227,6 @@ END_TEST
  *     (void *)edje_edit_state_rel1_offset_x_set, "Rel1 offset x", "bg",
  *     (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -293,8 +285,6 @@ END_TEST
  *     (int) 20, (const char *) "elm/radio/base/def",
  *     (void *)edje_edit_group_min_w_set, "Group min w"</td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -354,8 +344,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_color_set,
  *     "Color", "bg", (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -417,8 +405,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_color_set,
  *     "Color", "bg", (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -482,8 +468,6 @@ END_TEST
  *     (void *)edje_edit_state_tween_add, "tween add", "bg",
  *     (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -544,8 +528,6 @@ END_TEST
  *     (void *)edje_edit_state_tween_del, "tween del", "bg",
  *     (const char *) "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -605,8 +587,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
  *     "max size", "bg", "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -666,8 +646,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
  *     "align", "bg", "default", 0.0 </td>
  * <td>EINA_TRUE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1012,8 +990,6 @@ END_TEST
  * </td>
  * <td>NULL, PROPERTY</td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1059,8 +1035,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_part_name_set,
  *     "Rename", "bg", NULL, 0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1117,8 +1091,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_part_name_set,
  *     "Rename", "bg", NULL, 0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1175,8 +1147,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_color_set,
  *     "Color", "bg", "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1234,8 +1204,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", NULL, "Group min w", "bg",
  *     "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1293,8 +1261,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", NULL, 11, "bg",
  *     555, 0.0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1354,8 +1320,6 @@ END_TEST
  *     (void *)edje_edit_state_tween_add, "tween add", "bg",
  *     (const char *) "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1416,8 +1380,6 @@ END_TEST
  *     (void *)edje_edit_state_tween_del, "tween add", "bg",
  *     (const char *) "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -1477,8 +1439,6 @@ END_TEST
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
  *     "max size", "bg", "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

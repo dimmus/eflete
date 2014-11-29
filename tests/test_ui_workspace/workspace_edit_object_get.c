@@ -51,8 +51,6 @@
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>Returned and stored pointers are equals</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -101,8 +99,6 @@ END_TEST
  * </td>
  * <td>(Evas_Object *) workspace</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */
@@ -142,8 +138,6 @@ END_TEST
  * </td>
  * <td>NULL</td>
  * <td>NULL pointer returned</td>
- * <td>_REAL_RESULT_</td>
- * <td>_PASSED_</td>
  * </tr>
  * @}
  */

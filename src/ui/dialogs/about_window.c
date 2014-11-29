@@ -54,6 +54,7 @@ about_window_add()
      "Mykyta Biliavskyi (m.biliavskyi@samsung.com)<br>"
      "Vitalii Vorobiov (vi.vorobiov@samsung.com)<br>"
      "Andrii Kroitor (an.kroitor@samsung.com)<br>"
+     "Igor Gala (i.gala@samsung.com)<br>"
      "Kateryna Fesyna (k.fesyna@samsung.com)<br>"
      "Maksym Volodin (m.volodin@samsung.com)<br>"
      "Artem Popov (artem.popov@samsung.com)<br>"

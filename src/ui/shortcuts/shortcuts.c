@@ -19,8 +19,6 @@
 
 #include "shortcuts.h"
 #include "main_window.h"
-#include "compile_dialog.h"
-#include "open_file_dialog.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
@@ -154,9 +152,13 @@ _widget_manager_style_switch_cb(App_Data *app)
 Eina_Bool
 _separate_mode_change_cb(App_Data *app)
 {
+   double factor = workspace_zoom_factor_get(app->workspace);
+   if (fabs(factor - 1.0) > 0.001)
+     return false;
 
    Eina_Bool sep = workspace_separate_mode_get(app->workspace);
    workspace_separate_mode_set(app->workspace, !sep);
+
    return true;
 }
 
@@ -231,30 +233,26 @@ _new_theme_cb(App_Data *app)
    return true;
 }
 
+/*
 Eina_Bool
 _open_edc_cb(App_Data *app)
 {
    compile_dialog(app);
    return true;
 }
+*/
 
 Eina_Bool
-_open_edj_cb(App_Data *app)
+_open_edj_cb(App_Data *app __UNUSED__)
 {
-   open_edj_file(app);
+   project_open();
    return true;
 }
 
 Eina_Bool
-_save_cb(App_Data *app)
+_save_cb(App_Data *app __UNUSED__)
 {
-   Evas_Object *nf;
-   if (save_edj_file(app))
-     {
-        nf = ui_block_widget_list_get(app);
-        ui_widget_list_title_set(nf, app->project->name);
-        STATUSBAR_PROJECT_PATH(app, app->project->edj);
-     }
+   project_save();
    return true;
 }
 
@@ -266,7 +264,7 @@ _save_as_cb(App_Data *app)
      {
         nf = ui_block_widget_list_get(app);
         ui_widget_list_title_set(nf, app->project->name);
-        STATUSBAR_PROJECT_PATH(app, app->project->edj);
+        //STATUSBAR_PROJECT_PATH(app, app->project->edj);
      }
    return true;
 }
@@ -454,7 +452,7 @@ typedef struct _Function_Set Function_Set;
 static Function_Set _sc_func_set_init[] =
 {
      {"new_theme", _new_theme_cb},
-     {"open_edc", _open_edc_cb},
+//     {"open_edc", _open_edc_cb},
      {"open_edj", _open_edj_cb},
      {"save", _save_cb},
      {"save_as", _save_as_cb},
@@ -644,10 +642,17 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
         sc_func->held = false;
         sc_func->description = sc->description;
         sc_func->function = eina_hash_find(_sc_functions, sc->description);
+        if (!sc_func->function)
+          {
+             free(sc_func);
+             free(key);
+             continue;
+          }
         if (eina_hash_find(ap->shortcuts->shortcut_functions, key) ||
             (!eina_hash_direct_add(ap->shortcuts->shortcut_functions, key, sc_func)))
           {
              free(sc_func);
+             free(key);
              return false;
           }
      }
