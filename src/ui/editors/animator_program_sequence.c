@@ -152,11 +152,6 @@ _prog_sequence_smart_del(Evas_Object *o)
 {
    PROG_SEQUENCE_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
-   evas_object_smart_member_del(sd->bg);
-   evas_object_smart_member_del(sd->labels_bg);
-   evas_object_smart_member_del(sd->timemark_line);
-   evas_object_smart_member_del(sd->ruler);
-
    if (sd->playback.timer)
      ecore_timer_del(sd->playback.timer);
 

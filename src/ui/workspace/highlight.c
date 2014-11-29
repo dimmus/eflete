@@ -582,19 +582,6 @@ _smart_del(Evas_Object *obj)
 {
    HIGHLIGHT_DATA_GET(obj, highlight)
 
-   evas_object_smart_member_del(highlight->border);
-   evas_object_smart_member_del(highlight->handler_RB->border);
-   evas_object_smart_member_del(highlight->handler_RT->border);
-   evas_object_smart_member_del(highlight->handler_LB->border);
-   evas_object_smart_member_del(highlight->handler_LT->border);
-   evas_object_smart_member_del(highlight->handler_MIDDLE->border);
-
-   evas_object_del(highlight->border);
-   evas_object_del(highlight->handler_RB->border);
-   evas_object_del(highlight->handler_RT->border);
-   evas_object_del(highlight->handler_LB->border);
-   evas_object_del(highlight->handler_MIDDLE->border);
-
    free(highlight->handler_RB);
    free(highlight->handler_RT);
    free(highlight->handler_LB);
