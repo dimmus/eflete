@@ -914,19 +914,6 @@ _workspace_smart_del(Evas_Object *o)
 {
    WS_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID);
 
-   evas_object_smart_member_del(sd->ruler_hor);
-   evas_object_smart_member_del(sd->ruler_ver);
-   evas_object_smart_member_del(sd->layout);
-   evas_object_smart_member_del(sd->background);
-   evas_object_smart_member_del(sd->button_separate);
-   evas_object_smart_member_del(sd->scroller);
-   evas_object_smart_member_del(sd->events);
-   evas_object_smart_member_del(sd->highlight.highlight);
-   evas_object_smart_member_del(sd->highlight.space_hl);
-   evas_object_smart_member_del(sd->menu.obj);
-   if (sd->groupedit)
-     evas_object_smart_member_del(sd->groupedit);
-
    _workspace_parent_sc->del(o);
 }
 
