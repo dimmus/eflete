@@ -1063,6 +1063,8 @@ EFLETE_TEST(history_undo_test_p14)
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Canceled action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p14");
@@ -1133,6 +1135,8 @@ EFLETE_TEST(history_undo_test_p15)
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Canceled action doesn't change value");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p15");
@@ -1212,6 +1216,8 @@ EFLETE_TEST(history_undo_test_p16)
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Max weight didn't canceled");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p16");
@@ -1291,6 +1297,8 @@ EFLETE_TEST(history_undo_test_p17)
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_2, "Align y didn't canceled");
 
+   pm_project_close(app->project);
+   app->project = NULL;
    ui_main_window_del(app);
    app_shutdown();
    teardown("history_undo_test_p17");
@@ -1334,16 +1342,17 @@ EFLETE_TEST(history_undo_test_p18)
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
-   char *path;
 
-   path = "./edj_build/history_undo.edj";
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p18");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(path);
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win), path);
+   app->project = pm_project_open("./history_undo_test_p18/history_undo_test_p18.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1357,8 +1366,11 @@ EFLETE_TEST(history_undo_test_p18)
    result = edje_edit_state_exist(style->obj, "bg", "new_state", 0.1);
    ck_assert_msg(!result, "Adding new state didn't canceled'");
 
-   history_term(app->history);
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
+   teardown("history_undo_test_p18");
    elm_shutdown();
 }
 END_TEST
@@ -1399,16 +1411,17 @@ EFLETE_TEST(history_undo_test_p19)
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
-   char *path;
 
-   path = "./edj_build/history_undo.edj";
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p19");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(path);
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win), path);
+   app->project = pm_project_open("./history_undo_test_p19/history_undo_test_p19.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1422,8 +1435,11 @@ EFLETE_TEST(history_undo_test_p19)
    result = edje_edit_state_exist(style->obj, "elm.text", "test_state", 0.2);
    ck_assert_msg(result, "Deleting state didn't canceled'");
 
-   history_term(app->history);
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
+   teardown("history_undo_test_p19");
    elm_shutdown();
 }
 END_TEST
@@ -1468,16 +1484,17 @@ EFLETE_TEST(history_undo_test_p20)
    Eina_Bool result = EINA_FALSE;
    Eina_List *states = NULL, *l = NULL, *check_states = NULL;
    Eina_Stringshare *state = NULL;
-   char *path;
 
-   path = "./edj_build/history_undo.edj";
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p20");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(path);
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win), path);
+   app->project = pm_project_open("./history_undo_test_p20/history_undo_test_p20.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1499,8 +1516,11 @@ EFLETE_TEST(history_undo_test_p20)
      }
    ck_assert_msg(result, "Not all states are restored");
 
-   history_term(app->history);
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
+   teardown("history_undo_test_p20");
    elm_shutdown();
 }
 END_TEST
@@ -1541,16 +1561,17 @@ EFLETE_TEST(history_undo_test_p21)
    App_Data *app = NULL;
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
-   char *path;
 
-   path = "./edj_build/history_undo.edj";
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p21");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(path);
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win), path);
+   app->project = pm_project_open("./history_undo_test_p21/history_undo_test_p21.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1563,8 +1584,11 @@ EFLETE_TEST(history_undo_test_p21)
    result = edje_edit_part_exist(style->obj, "part_add");
    ck_assert_msg(!result, "Adding part didn't canceled");
 
-   history_term(app->history);
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
+   teardown("history_undo_test_p21");
    elm_shutdown();
 }
 END_TEST
@@ -1607,16 +1631,17 @@ EFLETE_TEST(history_undo_test_p22)
    Style *style = NULL;
    Eina_Bool result = EINA_FALSE;
    Eina_Stringshare *below = NULL, *check = NULL;
-   char *path;
 
-   path = "./edj_build/history_undo.edj";
    elm_init(0, 0);
    app_init();
+   setup("history_undo_test_p22");
+
    app = app_data_get();
    ui_main_window_add(app);
-   app->project = pm_open_project_edj(path);
-   wm_widget_list_objects_load(app->project->widgets,
-                               evas_object_evas_get(app->win), path);
+   app->project = pm_project_open("./history_undo_test_p22/history_undo_test_p22.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                                evas_object_evas_get(app->win),
+                                app->project->dev);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1630,10 +1655,12 @@ EFLETE_TEST(history_undo_test_p22)
    check = eina_stringshare_add(edje_edit_part_below_get(style->obj, "radio"));
    ck_assert_msg(check == below, "Restack part didn't canceled");
 
-   history_term(app->history);
+   pm_project_close(app->project);
+   app->project = NULL;
+   ui_main_window_del(app);
    app_shutdown();
-   elm_shutdown();
-}
+   teardown("history_undo_test_p22");
+   elm_shutdown();}
 END_TEST
 
 /**
