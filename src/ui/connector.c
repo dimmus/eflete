@@ -687,6 +687,7 @@ blocks_show(App_Data *ap)
 Eina_Bool
 blocks_hide(App_Data *ap)
 {
+   history_clear(ap->history);
    return ui_panes_hide(ap);
 }
 
