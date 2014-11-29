@@ -120,6 +120,7 @@ _pm_project_descriptor_data_write(const char *path, Project *project)
    if (project->pro)
      ok = eet_data_write(project->pro, eed_project, PROJECT_FILE_KEY,
                          project, compess_level);
+   eet_close(project->pro);
 
    return ok;
 }
@@ -282,6 +283,7 @@ _project_import_edj(void *data,
 {
    Project_Thread *worker;
    pthread_attr_t attr;
+   Eina_Stringshare *path_pro;
 
    /** try to change the detach state */
    if (!pthread_getattr_np(*thread, &attr))
@@ -295,6 +297,11 @@ _project_import_edj(void *data,
    PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
    THREAD_TESTCANCEL;
+   path_pro = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
+   WORKER_LOCK_TAKE;
+      worker->project->pro = eet_open(path_pro, EET_FILE_MODE_READ_WRITE);
+   WORKER_LOCK_RELEASE;
+   THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
    _copy_meta_data_to_pro(worker);
@@ -303,9 +310,11 @@ _project_import_edj(void *data,
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
       pm_project_meta_data_set(worker->project, worker->project->name,
                                NULL, NULL, NULL, NULL);
+
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
+   eina_stringshare_del(path_pro);
 
    return NULL;
 }
@@ -378,6 +387,7 @@ _project_import_edc(void *data,
 {
    Project_Thread *worker;
    pthread_attr_t attr;
+   Eina_Stringshare *path_pro;
    Ecore_Event_Handler *cb_exit = NULL,
                        *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
@@ -430,6 +440,10 @@ _project_import_edc(void *data,
    PROGRESS_SEND("%s", _("Creating a specifiec file and folders..."));
    worker->project = _project_files_create(worker);
    THREAD_TESTCANCEL;
+   path_pro = eina_stringshare_printf("%s/%s/%s.pro", worker->path, worker->name, worker->name);
+   WORKER_LOCK_TAKE;
+      worker->project->pro = eet_open(path_pro, EET_FILE_MODE_READ_WRITE);
+   WORKER_LOCK_RELEASE;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
    _copy_meta_data_to_pro(worker);
@@ -439,6 +453,8 @@ _project_import_edc(void *data,
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
+   eina_stringshare_del(path_pro);
+
    return NULL;
 }
 
