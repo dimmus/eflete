@@ -700,7 +700,6 @@ Eina_Bool
 blocks_data_unset(App_Data *ap)
 {
    ui_property_style_unset(ui_block_property_get(ap));
-   ui_property_style_unset(ui_block_property_get(ap));
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    workspace_edit_object_unset(ap->workspace);
    workspace_highlight_unset(ap->workspace);
