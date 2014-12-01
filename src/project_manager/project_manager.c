@@ -760,7 +760,10 @@ pm_project_resource_export(Project *pro)
    const char *name;
    Evas_Object *im;
    Eina_Strbuf *strbuf;
-   int id;
+   int id, size;
+   void *data;
+   Eet_File *ef;
+   FILE *f;
 
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    e = ecore_evas_get(ee);
@@ -772,11 +775,11 @@ pm_project_resource_export(Project *pro)
         return false;
      }
    edje_edit_string_list_free(list);
+   strbuf = eina_strbuf_new();
 
+   /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
    if (!list) return false;
-
-   strbuf = eina_strbuf_new();
    EINA_LIST_FOREACH(list, l, name)
      {
         im = evas_object_image_add(evas_object_evas_get(edje_edit_obj));
@@ -789,6 +792,33 @@ pm_project_resource_export(Project *pro)
         eina_strbuf_reset(strbuf);
         evas_object_del(im);
      }
+   edje_edit_string_list_free(list);
+
+   /* export fonts */
+   list = edje_edit_fonts_list_get(edje_edit_obj);
+   if (!list ) return false;
+   ef = eet_open(pro->dev, EET_FILE_MODE_READ);
+   if (!ef) return false;
+   EINA_LIST_FOREACH(list, l, name)
+     {
+        eina_strbuf_append_printf(strbuf, "edje/fonts/%s", name);
+        fprintf(stdout, "%s\n", eina_strbuf_string_get(strbuf));
+        data = eet_read(ef, eina_strbuf_string_get(strbuf), &size);
+        eina_strbuf_reset(strbuf);
+        if (!data) continue;
+        eina_strbuf_append_printf(strbuf, "%s/fonts/%s.ttf", pro->develop_path, name);
+        if (!(f = fopen(eina_strbuf_string_get(strbuf), "wb")))
+          {
+             ERR("Could not open file: %s", eina_strbuf_string_get(strbuf));
+             continue;
+          }
+        eina_strbuf_reset(strbuf);
+        if (fwrite(data, size, 1, f) != 1)
+          ERR("Could not write font: %s", strerror(errno));
+        if (f) fclose(f);
+        free(data);
+     }
+   eet_close(ef);
    edje_edit_string_list_free(list);
 
    eina_strbuf_free(strbuf);
