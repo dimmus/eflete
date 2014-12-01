@@ -188,6 +188,8 @@ _project_files_create(Project_Thread *worker)
       pro->changed = false;
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
+      ecore_file_mkdir(pro->develop_path);
+      ecore_file_mkdir(pro->release_path);
    WORKER_LOCK_RELEASE;
    if (!_pm_project_descriptor_data_write(pro_path, pro))
      error = true;
