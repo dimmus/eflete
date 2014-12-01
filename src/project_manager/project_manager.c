@@ -161,11 +161,16 @@ _end_send(void *data)
    func(udata, result);
 }
 
+#define MKDIR(NAME) \
+   tmp = eina_stringshare_printf("%s/"NAME, pro->develop_path); \
+   ecore_file_mkdir(tmp); \
+   eina_stringshare_del(tmp)
+
 static Project *
 _project_files_create(Project_Thread *worker)
 {
    Project *pro;
-   Eina_Stringshare *folder_path, *pro_path;
+   Eina_Stringshare *folder_path, *pro_path, *tmp;
    Eina_Bool error = false;
 
    _project_descriptor_init();
@@ -187,6 +192,10 @@ _project_files_create(Project_Thread *worker)
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
       ecore_file_mkdir(pro->develop_path);
+      MKDIR("images");
+      MKDIR("sounds");
+      MKDIR("fonts");
+      MKDIR("data");
    WORKER_LOCK_RELEASE;
    if (!_pm_project_descriptor_data_write(pro_path, pro))
      error = true;
@@ -208,6 +217,8 @@ _project_files_create(Project_Thread *worker)
      }
    return pro;
 }
+
+#undef MKDIR
 
 static Eina_Bool
 _copy_file_progress_cb(void *data,
