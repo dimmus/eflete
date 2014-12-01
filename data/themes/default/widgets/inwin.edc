@@ -609,7 +609,7 @@ group { name: "elm/win/inwin/splash";
             rel2.to: "area.info";
          }
       }
-      part { name: "elm.text";
+      part { name: "label.info";
          type: TEXT;
          clip_to: "clipper.area.info";
          description { state: "default" 0.0;
@@ -887,7 +887,7 @@ group { name: "elm/win/inwin/splash";
          action: STATE_SET "visible" 0.0;
          transition: LINEAR 0.3;
          target: "bg";
-         target: "elm.text";
+         target: "label.info";
          target: "clipper.area.info";
          after: "anim";
          after: "emit_start";
@@ -901,7 +901,7 @@ group { name: "elm/win/inwin/splash";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.3;
          target: "bg";
-         target: "elm.text";
+         target: "label.info";
          target: "clipper.area.info";
          after: "emit_teardown";
       }

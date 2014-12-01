@@ -787,7 +787,7 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
    App_Data *ap;
 
    ap = (App_Data *)data;
-   elm_object_text_set(ap->splash, progress_string);
+   elm_object_part_text_set(ap->splash, "label.info", progress_string);
 
    return true;
 }
