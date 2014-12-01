@@ -472,6 +472,7 @@ group { name: "elm/layout/image_editor/image_info";
       part { name: "eflete.swallow.image_info.name";
          type: SWALLOW;
          description { state: "default" 0.0;
+            fixed: 0 1;
             rel1.to: "area.name_content";
             rel2.to: "area.name_content";
          }
