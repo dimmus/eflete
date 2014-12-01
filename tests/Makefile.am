@@ -348,7 +348,8 @@ test_ui_widget_list/ui_widget_list_selected_part_del.c \
 test_ui_widget_list/ui_widget_list_selected_part_get.c \
 test_ui_widget_list/ui_widget_list_part_selected_set.c \
 test_ui_widget_list/ui_widget_list_selected_parts_get.c \
-test_ui_widget_list/ui_widget_list_title_set.c
+test_ui_widget_list/ui_widget_list_title_set.c \
+test_ui_widget_list/ui_widget_list_tab_activate.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
 ui_widget_list_test_LDADD = ${LD}
 

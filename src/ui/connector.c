@@ -666,6 +666,13 @@ ui_style_clicked(App_Data *ap, Style *style)
    return true;
 }
 
+static inline void
+_widget_list_layouts_tab_activate(App_Data *ap)
+{
+   if (!eina_inlist_count(ap->project->widgets))
+     ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
+}
+
 Eina_Bool
 blocks_show(App_Data *ap)
 {
@@ -676,6 +683,9 @@ blocks_show(App_Data *ap)
    ui_widget_list_data_set(wd_list, ap->project);
    ui_block_widget_list_set(ap, wd_list);
    add_callbacks_wd(wd_list, ap);
+
+   _widget_list_layouts_tab_activate(ap);
+
    ui_panes_show(ap);
 
    ui_menu_base_disabled_set(ap->menu_hash, false);
@@ -759,6 +769,8 @@ _on_open_done(void *data,
    evas_object_del(win);
    NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
    STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+
+   _widget_list_layouts_tab_activate(ap);
 }
 
 void

@@ -229,4 +229,15 @@ ui_widget_list_part_update(Evas_Object *object, const char *part);
 void
 ui_widget_list_style_parts_reload(Evas_Object *object, Style *style);
 
+/**
+ * Activates n-th tab of Widget list block
+ *
+ * @param object A widget list object.
+ * @param tab_index index of item to be activated
+ * @return EINA_TRUE on success, otherwise EINA_FALSE
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index);
+
 #endif /* UI_WIDGET_LIST_H */
