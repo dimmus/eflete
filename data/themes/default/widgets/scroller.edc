@@ -407,11 +407,11 @@ group { name: "elm/scroller/base/eflete/workspace";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            max: 25 25;
+            SET_SIZE(25, 25);
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
-            max: 0 0;
+            SET_SIZE(0, 0);
          }
       }
       part { name: "elm.swallow.button";
