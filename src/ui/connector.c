@@ -747,6 +747,13 @@ _on_open_done(void *data,
    ap->project = pm_project_open(selected);
    if (!ap->project) return;
 
+   wm_widgets_list_objects_load(ap->project->widgets,
+                                evas_object_evas_get(ap->win),
+                                ap->project->dev);
+   wm_layouts_list_objects_load(ap->project->layouts,
+                                evas_object_evas_get(ap->win),
+                                ap->project->dev);
+
    blocks_data_unset(ap);
    blocks_show(ap);
 

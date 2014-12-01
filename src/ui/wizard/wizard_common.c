@@ -68,6 +68,14 @@ _progress_end(void *data, PM_Project_Result result)
      {
         pro = pm_project_thread_project_get(wiew->thread);
         ap->project = pro;
+
+        wm_widgets_list_objects_load(pro->widgets,
+                                     evas_object_evas_get(ap->win),
+                                     pro->dev);
+        wm_layouts_list_objects_load(pro->layouts,
+                                     evas_object_evas_get(ap->win),
+                                     pro->dev);
+
         blocks_show(ap);
         ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
      }
