@@ -422,4 +422,19 @@ pm_project_meta_data_set(Project *project,
                          const char *license,
                          const char *comment) EINA_ARG_NONNULL(1);
 
+/**
+ * Export opened project resource. Export images, sounds, fonts and data from
+ * opened project to specific folder-container.
+ * This data will be used on compile debug and release edj file. Also Enventor
+ * used this data.
+ *
+ * @param pro The opened project.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup ProjectManager.
+ */
+Eina_Bool
+pm_project_resource_export(Project *pro);
+
 #endif /* PROJECT_MANAGER_H */
