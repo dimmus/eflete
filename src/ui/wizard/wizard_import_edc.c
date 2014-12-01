@@ -235,6 +235,7 @@ _edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
    Eina_Strbuf *edc = eina_strbuf_new();
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
 
+   eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
    eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
    eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
