@@ -317,9 +317,6 @@ _project_import_edj(void *data,
    WORKER_LOCK_TAKE;
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
-      pm_project_meta_data_set(worker->project, worker->project->name,
-                               NULL, NULL, NULL, NULL);
-
       pm_project_resource_export(worker->project);
    WORKER_LOCK_RELEASE;
 
