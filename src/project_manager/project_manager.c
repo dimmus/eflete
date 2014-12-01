@@ -100,7 +100,6 @@ _project_descriptor_init(void)
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "dev", dev, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "develop_path", develop_path, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "release_path", release_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "release_options", release_options, EET_T_STRING);
 }
 
@@ -183,13 +182,11 @@ _project_files_create(Project_Thread *worker)
       pro->name = eina_stringshare_add(worker->name);
       pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker->name);
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
-      pro->release_path = eina_stringshare_printf("%s/release", folder_path);
       pro->release_options = NULL;
       pro->changed = false;
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
       ecore_file_mkdir(pro->develop_path);
-      ecore_file_mkdir(pro->release_path);
    WORKER_LOCK_RELEASE;
    if (!_pm_project_descriptor_data_write(pro_path, pro))
      error = true;
@@ -206,8 +203,6 @@ _project_files_create(Project_Thread *worker)
         eina_stringshare_del(pro->name);
         eina_stringshare_del(pro->dev);
         eina_stringshare_del(pro->develop_path);
-        eina_stringshare_del(pro->release_path);
-        eina_stringshare_del(pro->release_options);
         free(pro);
         pro = NULL;
      }
@@ -670,8 +665,6 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->name);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
-   eina_stringshare_del(project->release_path);
-   eina_stringshare_del(project->release_options);
 
    wm_widgets_list_free(project->widgets);
    wm_layouts_list_free(project->layouts);

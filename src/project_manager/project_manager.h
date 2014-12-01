@@ -58,8 +58,6 @@ struct _Project
 
    /** path where will be saved the develop edj file */
    Eina_Stringshare *develop_path;
-   /** path where will be compiled the release edj file */
-   Eina_Stringshare *release_path;
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
