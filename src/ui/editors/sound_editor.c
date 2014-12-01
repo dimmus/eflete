@@ -649,8 +649,6 @@ _on_ok_cb(void *data,
         edje_edit_without_source_save(edje_edit_obj, true);
      }
 
-   _sound_editor_quit(edit);
-
    multiselect = elm_gengrid_multi_select_get(edit->gengrid);
    if ((!multiselect) && (edit->selected))
      {
@@ -658,6 +656,8 @@ _on_ok_cb(void *data,
         evas_object_smart_callback_call(edit->win, SIG_SOUND_SELECTED, ei);
         free(ei);
      }
+
+   _sound_editor_quit(edit);
 }
 
 #define BT_ADD(PARENT, OBJ, ICON, TEXT) \
