@@ -228,9 +228,8 @@ _style_delete_cb(App_Data *app)
 }
 
 Eina_Bool
-_new_theme_cb(App_Data *app)
+_new_theme_cb(App_Data *app __UNUSED__)
 {
-   new_theme_create(app);
    return true;
 }
 

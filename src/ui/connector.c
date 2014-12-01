@@ -874,27 +874,6 @@ project_changed(void)
    ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
 }
 
-Eina_Bool
-new_theme_create(App_Data *ap __UNUSED__)
-{
-   /*
-   if ((!ap) || (!ap->win)) return false;
-   if (!ui_close_project_request(ap,
-                                 _("You want to create a new theme, but now you have<br/>"
-                                   "opened project. If you dont save opened project<br/>"
-                                   "all your changes will be lost!")))
-     return false;
-   if (!ecore_file_cp(EFLETE_EDJ_PATH"template.edj", EFLETE_SWAP_PATH"Untitled.edj"))
-     {
-        ERR("Couldn't copy theme template to cache");
-        return false;
-     }
-
-   return _ui_edj_load_internal(ap, EFLETE_SWAP_PATH"Untitled.edj", true);
-   */
-   return false;
-}
-
 /*************************** Close request popup ******************************/
 /*TODO: I think, this functionality need move to dialogs */
 static void
