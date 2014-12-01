@@ -817,19 +817,63 @@ group { name: "elm/layout/wizard/new_project";
             rel2.to_y: "separator.block";
          }
       }
-      part { name: "label.widgets";
-         type: TEXT;
+      part { name: "area.widgets_label";
+         type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             min: 0 26;
             max: -1 26;
+            rel1.to: "area.widgets_info";
+            rel2.to: "area.widgets_info";
+         }
+      }
+      part { name: "padding.all_widgets_check.left";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(9, 9);
+            rel1.to: "area.widgets_label";
+            rel2.to: "area.widgets_label";
+         }
+      }
+      part { name: "swallow.all_widgets_check";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            SET_SIZE(20, 20);
+            rel1 {
+               to_x: "padding.all_widgets_check.left";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "area.widgets_label";
+         }
+      }
+      part { name: "padding.all_widgets_check.right";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(5, 5);
+            rel1 {
+               to_x: "swallow.all_widgets_check";
+               relative: 1.0 0.0;
+            }
+            rel2.to: "area.widgets_label";
+         }
+      }
+      part { name: "label.widgets";
+         type: TEXT;
+         description { state: "default" 0.0;
+            align: 0.0 0.5;
             text {
                font: FN;
                size: 12;
                max: 1 1;
             }
-            rel1.to: "area.widgets_info";
-            rel2.to: "area.widgets_info";
+            rel1 {
+               to: "padding.all_widgets_check.right";
+               relative: 1.0 1.0;
+            }
+            rel2.to: "area.widgets_label";
          }
       }
       part { name: "padding.widgets_top_left";
@@ -838,7 +882,7 @@ group { name: "elm/layout/wizard/new_project";
             align: 0.0 0.0;
             SET_SIZE(3, 3);
             rel1 {
-               to: "label.widgets";
+               to: "area.widgets_label";
                relative: 0.0 1.0;
             }
             rel2.to: "area.widgets_info";
@@ -850,7 +894,7 @@ group { name: "elm/layout/wizard/new_project";
             align: 1.0 1.0;
             SET_SIZE(3, 3);
             rel1 {
-               to: "label.widgets";
+               to: "area.widgets_label";
                relative: 0.0 1.0;
             }
             rel2.to: "area.widgets_info";

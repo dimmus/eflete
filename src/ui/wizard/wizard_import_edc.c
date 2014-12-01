@@ -103,6 +103,25 @@ static void
 _on_button_del_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void
+_widget_item_data_array_checks_set(Evas_Object *genlist, Eina_Bool check_val)
+{
+   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Eina_Bool is_changed = false;
+
+   while (widget_item_data_iterator->name)
+     {
+        if (widget_item_data_iterator->check != check_val)
+          {
+             is_changed = true;
+             widget_item_data_iterator->check = check_val;
+          }
+        widget_item_data_iterator++;
+     }
+   if ((is_changed) && (genlist))
+     elm_genlist_realized_items_update(genlist);
+}
+
+static void
 _del_item_callback_data(void * data,
                         Evas *e __UNUSED__,
                         Evas_Object *obj __UNUSED__,
@@ -499,12 +518,21 @@ _genlist_label_get(void *data,
 }
 
 static void
-on_widget_include_check_changed(void *data,
-                                Evas_Object *obj,
-                                void *ei __UNUSED__)
+_on_widget_include_check_changed(void *data,
+                                 Evas_Object *obj,
+                                 void *ei __UNUSED__)
 {
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
    widget_data->check = elm_check_state_get(obj);
+}
+
+static void
+_on_widget_include_all_check_changed(void *data,
+                                     Evas_Object *obj,
+                                     void *ei __UNUSED__)
+{
+   Evas_Object *genlist = (Evas_Object *)data;
+   _widget_item_data_array_checks_set(genlist, elm_check_state_get(obj));
 }
 
 static Evas_Object *
@@ -521,7 +549,7 @@ _genlist_content_get(void *data,
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
    evas_object_smart_callback_add(check, "changed",
-                                  on_widget_include_check_changed, data);
+                                  _on_widget_include_check_changed, data);
    return check;
 }
 
@@ -559,6 +587,7 @@ Evas_Object *
 wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
+   Evas_Object *genlist, *check;
    wiew = wizard_import_common_add("elm/layout/wizard/new_project");
    if (!wiew) return NULL;
 
@@ -566,8 +595,17 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
 
    elm_object_part_text_set(wiew->layout, "label.widgets", _("Widgets:"));
 
-   elm_object_part_content_set(wiew->layout, "swallow.widgets",
-                               _wizart_widget_list_add(wiew->layout));
+   _widget_item_data_array_checks_set(NULL, false);
+
+   genlist = _wizart_widget_list_add(wiew->layout);
+   elm_object_part_content_set(wiew->layout, "swallow.widgets", genlist);
+
+   CHECK_ADD(wiew->layout, check, "eflete/live_view");
+   evas_object_smart_callback_add(check, "changed",
+                                  _on_widget_include_all_check_changed,
+                                  genlist);
+   elm_object_part_content_set(wiew->layout,
+                               "swallow.all_widgets_check", check);
 
    wiew->splash_setup_func = _splash_setup_new_project;
 
