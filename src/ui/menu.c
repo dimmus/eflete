@@ -350,7 +350,7 @@ ui_menu_add(App_Data *ap)
 
    ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_project, ap, it);
    ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_open_project, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save, ap, it);
+   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-save.png", _("Save project"), _on_save, ap, it);
    elm_object_item_disabled_set(it, true);
    ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-animator.png", _("Animator"), _on_prog_editor, ap, it);
    ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-image.png", _("Image editor"), _on_image_editor, ap, it);
