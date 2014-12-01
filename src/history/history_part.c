@@ -143,8 +143,9 @@ _part_redo(Evas_Object *source, Part_Diff *change)
    switch (change->diff.action_type)
      {
       case ADD:
-         workspace_edit_object_part_add(app->workspace, change->part,
-                                         change->params->type, NULL);
+         if (!workspace_edit_object_part_add(app->workspace, change->part,
+                                             change->params->type, NULL))
+           return false;
          if (change->params->type == EDJE_PART_TYPE_IMAGE)
            {
               EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
@@ -225,8 +226,9 @@ _part_undo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_style_parts_reload(widget_list, style);
       break;
       case DEL:
-         workspace_edit_object_part_add(app->workspace, change->part,
-                                        change->params->type, NULL);
+         if (!workspace_edit_object_part_add(app->workspace, change->part,
+                                             change->params->type, NULL))
+           return false;
          _part_params_restore(source, change->part, change->params);
          EINA_LIST_FOREACH_SAFE(change->states, l, l_next, state)
            {
