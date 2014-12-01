@@ -189,6 +189,7 @@ _project_files_create(Project_Thread *worker)
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
       pro->release_options = NULL;
       pro->changed = false;
+      pro->added_sounds = NULL;
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
       ecore_file_mkdir(pro->develop_path);
