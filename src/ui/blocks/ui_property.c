@@ -306,32 +306,17 @@ prop_item_label_update(Evas_Object *item,
 }
 
 #ifdef HAVE_ENVENTOR
-static Eina_Stringshare *
-_on_code_mode_activated_file_create(Prop_Data *pd)
-{
-   const char *code = edje_edit_source_generate(pd->style->obj);
-   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"tmp.edc");
-
-   FILE *fp = fopen(path, "w");
-   if (!fp)
-     {
-        EINA_LOG_ERR("Failed to open file \"%s\"", path);
-        eina_stringshare_del(path);
-        return NULL;
-     }
-
-   fputs(code, fp);
-   fclose(fp);
-   return path;
-}
-
 static void
 _on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
 {
+   App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Prop_Data *pd = (Prop_Data *)data;
+
+   ap = app_data_get();
+
    Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
    Eina_Stringshare *path;
 
@@ -339,8 +324,9 @@ _on_tab_activated(void *data,
 
    if (!strcmp(item_name, "Code"))
      {
-        code_edit_mode_switch(app_data_get(), true);
-        path = _on_code_mode_activated_file_create(pd);
+        code_edit_mode_switch(ap, true);
+        path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
+        eina_stringshare_del(pm_project_style_source_code_export(ap->project, pd->style, NULL));
         enventor_object_file_set(pd->code, path);
         eina_stringshare_del(path);
      }
@@ -355,11 +341,17 @@ _code_of_group_setup(Prop_Data *pd)
 {
    char *markup_code;
    const char *colorized_code;
-   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
+   Eina_Stringshare *code;
+   App_Data *ap;
+
+   ap = app_data_get();
+   code = pm_project_style_source_code_export(ap->project, pd->style, NULL);
+   markup_code = elm_entry_utf8_to_markup(code);
    colorized_code = color_apply(pd->color_data, markup_code,
                                 strlen(markup_code), NULL, NULL);
    if (colorized_code) elm_object_text_set(pd->code, colorized_code);
    free(markup_code);
+   eina_stringshare_del(code);
 }
 
 #endif
