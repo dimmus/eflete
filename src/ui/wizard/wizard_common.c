@@ -164,23 +164,30 @@ _on_apply(void *data,
    evas_object_show(wiew->splash);
 }
 
+static void
+_elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
+{
+   Evas_Object *bt;
+
+   bt = elm_button_add(entry);
+   elm_object_style_set(bt, "eflete/elipsis");
+   elm_object_focus_allow_set(bt, false);
+   evas_object_show(bt);
+   evas_object_smart_callback_add(bt, "clicked", cb_func, data);
+   elm_object_part_content_set(entry, "elm.swallow.end", bt);
+}
+
 void
 project_path_item_add(Wizard_Import_Edj_Win *wiew,
                       const char *label,
                       Evas_Smart_Cb cb_func)
 {
-   Evas_Object *bt;
-
    elm_object_part_text_set(wiew->layout, "label.edj", label);
 
    ENTRY_ADD(wiew->layout, wiew->edj, true, DEFAULT_STYLE)
    elm_object_part_content_set(wiew->layout, "swallow.edj", wiew->edj);
 
-   bt = elm_button_add(wiew->layout);
-   elm_object_style_set(bt, "eflete/elipsis");
-   evas_object_show(bt);
-   evas_object_smart_callback_add(bt, "clicked", cb_func, wiew);
-   elm_object_part_content_set(wiew->edj, "elm.swallow.end", bt);
+   _elipsis_btn_add(wiew->edj, cb_func, wiew);
 }
 
 Wizard_Import_Edj_Win *
@@ -220,11 +227,7 @@ wizard_import_common_add(const char *layout_name)
    elm_object_part_content_set(layout, "swallow.path", wiew->path);
    elm_entry_entry_set(wiew->path, getenv("HOME"));
 
-   bt = elm_button_add(layout);
-   elm_object_style_set(bt, "eflete/elipsis");
-   evas_object_show(bt);
-   evas_object_smart_callback_add(bt, "clicked", _on_path_bt, wiew);
-   elm_object_part_content_set(wiew->path, "elm.swallow.end", bt);
+   _elipsis_btn_add(wiew->path, _on_path_bt, wiew);
 
    //label.meta_version
    elm_object_part_text_set(layout, "label.meta_version", _("Version of file:"));
