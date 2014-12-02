@@ -661,6 +661,14 @@ _genlist_content_get(void *data,
    return check;
 }
 
+static int
+_genlist_items_cmp_func(const void *data1, const void *data2)
+{
+   Widget_Item_Data *it1_data = elm_object_item_data_get(data1);
+   Widget_Item_Data *it2_data = elm_object_item_data_get(data2);
+   return strcmp(it1_data->name, it2_data->name);
+}
+
 static Evas_Object *
 _wizart_widget_list_add(Evas_Object *parent)
 {
@@ -680,10 +688,11 @@ _wizart_widget_list_add(Evas_Object *parent)
 
    while (widget_item_data_iterator->name)
      {
-        elm_genlist_item_append(genlist, itc,
-                                widget_item_data_iterator,
-                                NULL, ELM_GENLIST_ITEM_NONE,
-                                NULL, NULL);
+        elm_genlist_item_sorted_insert(genlist, itc,
+                                       widget_item_data_iterator,
+                                       NULL, ELM_GENLIST_ITEM_NONE,
+                                       _genlist_items_cmp_func,
+                                       NULL, NULL);
         widget_item_data_iterator++;
      }
 
