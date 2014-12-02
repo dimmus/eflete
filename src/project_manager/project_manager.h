@@ -437,4 +437,20 @@ pm_project_meta_data_set(Project *project,
 Eina_Bool
 pm_project_resource_export(Project *pro);
 
+/**
+ * Export the source code of Style (edje object) to file.
+ * If file is NULL, file will be saved to develop folder of project by name
+ * "tmp.edc"
+ *
+ * @param pro The opened project;
+ * @param style The style to save the source code;
+ * @param file The file for save.
+ *
+ * @return The source code on success or NULL otherwise.
+ *
+ * @ingroup ProjectManager.
+ */
+Eina_Stringshare *
+pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
+
 #endif /* PROJECT_MANAGER_H */

@@ -842,3 +842,30 @@ pm_project_resource_export(Project *pro)
    ecore_evas_free(ee);
    return true;
 }
+
+Eina_Stringshare *
+pm_project_style_source_code_export(Project *pro, Style *style, const char *file)
+{
+   Eina_Stringshare *code = NULL;
+   Eina_Stringshare *path;
+   FILE *f;
+
+   if (!style->obj) goto exit;
+   code = edje_edit_source_generate(style->obj);
+
+   if (file) path = eina_stringshare_add(file);
+   else path = eina_stringshare_printf("%s/tmp.edc", pro->develop_path);
+   f = fopen(path, "w");
+   if (!f)
+     {
+        ERR("Could't open file '%s'", path);
+        code = NULL;
+        goto exit;
+     }
+   fputs(code, f);
+   fclose(f);
+
+exit:
+   eina_stringshare_del(path);
+   return code;
+}
