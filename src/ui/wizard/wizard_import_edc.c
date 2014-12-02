@@ -608,6 +608,7 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
                                "swallow.all_widgets_check", check);
 
    wiew->splash_setup_func = _splash_setup_new_project;
+   wiew->edj = NULL;
 
    return wiew->win;
 }

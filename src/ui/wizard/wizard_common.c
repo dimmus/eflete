@@ -111,6 +111,39 @@ _teardown_splash(void *data)
 
 /******************************************************************************/
 
+static Eina_Bool
+_required_fields_check(Wizard_Import_Edj_Win *wiew)
+{
+   if (elm_entry_is_empty(wiew->name))
+     {
+        NOTIFY_WARNING(_("Please enter the name of the project"));
+        return false;
+     }
+   if ((wiew->edj) && (elm_entry_is_empty(wiew->edj)))
+     {
+        NOTIFY_WARNING(_("Please enter the name of the file for exporting"));
+        return false;
+     }
+   if (elm_entry_is_empty(wiew->path))
+     {
+        NOTIFY_WARNING(_("Please enter the path to the project"));
+        return false;
+     }
+   if ((wiew->edj) && !ecore_file_exists(elm_entry_entry_get(wiew->edj)))
+     {
+        NOTIFY_WARNING(_("The path to file for importing does not exist!"));
+        return false;
+     }
+   if (!ecore_file_is_dir(elm_entry_entry_get(wiew->path)))
+     {
+        //TODO: create folder for project if user entered path that does not exist yet
+        NOTIFY_WARNING(_("Wrong path to the project!<br>"
+                         "Please path to existing folder."));
+        return false;
+     }
+   return true;
+}
+
 static void
 _on_apply(void *data,
           Evas_Object *obj __UNUSED__,
@@ -122,7 +155,8 @@ _on_apply(void *data,
    ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
 
-   if (!wiew->splash_setup_func) return;
+   if ((!_required_fields_check(wiew)) || (!wiew->splash_setup_func))
+     return;
 
    wiew->splash = splash_add(ap->win, wiew->splash_setup_func, _teardown_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
