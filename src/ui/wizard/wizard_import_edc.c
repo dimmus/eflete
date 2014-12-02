@@ -680,7 +680,7 @@ _wizart_widget_list_add(Evas_Object *parent)
    elm_object_style_set(genlist, "eflete/dark");
 
    itc = elm_genlist_item_class_new();
-   itc->item_style = "eflete/level1";
+   itc->item_style = "eflete/wizard_widgetlist";
    itc->func.text_get = _genlist_label_get;
    itc->func.content_get = _genlist_content_get;
    itc->func.state_get = NULL;

@@ -972,6 +972,17 @@ group { name: "elm/genlist/item/eflete/level4/default";
 
 }
 
+group { name: "elm/genlist/item/eflete/wizard_widgetlist/default";
+    inherit:"elm/genlist/item/eflete/level4/default";
+   parts {
+      part { name: "base";
+         description { state: "default" 0.0;
+            color: 46 48 49 255;
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/eflete/mode/default";
    alias: "elm/genlist/item_odd/eflete/mode/default";
    data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
