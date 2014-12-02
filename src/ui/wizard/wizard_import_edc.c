@@ -234,6 +234,7 @@ _edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
 {
    Eina_Strbuf *edc = eina_strbuf_new();
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Eina_Bool are_widgets_included = false;
 
    eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
@@ -252,8 +253,16 @@ _edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
              eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
                                        widget_item_data_iterator->name);
              _file_to_swap_copy(widget_item_data_iterator->name);
+             are_widgets_included = true;
           }
         widget_item_data_iterator++;
+     }
+
+   if (!are_widgets_included)
+     {
+        eina_strbuf_append(edc, "   group {\n");
+        eina_strbuf_append(edc, "      name: \"new/layout/0\";\n");
+        eina_strbuf_append(edc, "   }\n");
      }
 
    eina_strbuf_append(edc, "}\n");
