@@ -757,13 +757,14 @@ pm_project_resource_export(Project *pro)
    Evas_Object *edje_edit_obj;
    Ecore_Evas *ee;
    Evas *e;
-   const char *name;
+   const char *name, *snd_name;
    Evas_Object *im;
    Eina_Strbuf *strbuf;
    int id, size;
    void *data;
    Eet_File *ef;
    FILE *f;
+   Eina_Binbuf *buf;
 
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    e = ecore_evas_get(ee);
@@ -779,7 +780,6 @@ pm_project_resource_export(Project *pro)
 
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
-   if (!list) return false;
    EINA_LIST_FOREACH(list, l, name)
      {
         im = evas_object_image_add(evas_object_evas_get(edje_edit_obj));
@@ -796,13 +796,10 @@ pm_project_resource_export(Project *pro)
 
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
-   if (!list ) return false;
    ef = eet_open(pro->dev, EET_FILE_MODE_READ);
-   if (!ef) return false;
    EINA_LIST_FOREACH(list, l, name)
      {
         eina_strbuf_append_printf(strbuf, "edje/fonts/%s", name);
-        fprintf(stdout, "%s\n", eina_strbuf_string_get(strbuf));
         data = eet_read(ef, eina_strbuf_string_get(strbuf), &size);
         eina_strbuf_reset(strbuf);
         if (!data) continue;
@@ -819,6 +816,26 @@ pm_project_resource_export(Project *pro)
         free(data);
      }
    eet_close(ef);
+   edje_edit_string_list_free(list);
+
+   /* export sounds */
+   list = edje_edit_sound_samples_list_get(edje_edit_obj);
+   EINA_LIST_FOREACH(list, l, name)
+     {
+        snd_name = edje_edit_sound_samplesource_get(edje_edit_obj, name);
+        buf = edje_edit_sound_samplebuffer_get(edje_edit_obj, name);
+        eina_strbuf_append_printf(strbuf, "%s/sounds/%s", pro->develop_path, snd_name);
+        if (!(f = fopen(eina_strbuf_string_get(strbuf), "wb")))
+          {
+             ERR("Could not open file: %s", eina_strbuf_string_get(strbuf));
+             continue;
+          }
+        eina_strbuf_reset(strbuf);
+        if (fwrite(eina_binbuf_string_get(buf), eina_binbuf_length_get(buf), 1, f) != 1)
+          ERR("Could not write font: %s", strerror(errno));
+        if (f) fclose(f);
+        eina_binbuf_free(buf);
+     }
    edje_edit_string_list_free(list);
 
    eina_strbuf_free(strbuf);
