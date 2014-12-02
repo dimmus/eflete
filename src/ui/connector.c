@@ -315,6 +315,7 @@ _add_layout_cb(void *data,
    Style *layout = NULL;
    unsigned int i = 0;
    const char *name = NULL;
+   Evas_Object *group_obj;
 
    layout = EINA_INLIST_CONTAINER_GET(ap->project->layouts, Style);
    if (!layout)
@@ -337,10 +338,14 @@ _add_layout_cb(void *data,
           }
         else return;
      }
+
+   /* Using aliased group, if the group we've found is alias. */
+   group_obj = (layout->isAlias) ? layout->main_group->obj : layout->obj;
+
    for (i = 0; i < 999; i++)
      {
         name = eina_stringshare_printf("new/layout/%d", i);
-        if (!edje_edit_group_exist(layout->obj, name))
+        if (!edje_edit_group_exist(group_obj, name))
           {
              nameExist = false;
              break;
@@ -355,7 +360,7 @@ _add_layout_cb(void *data,
         return;
      }
 
-   if (!edje_edit_group_add(layout->obj, name))
+   if (!edje_edit_group_add(group_obj, name))
      {
         NOTIFY_INFO(3, _("Failed create new layout."));
         ERR("Failed create new layout: edje edit group add fail");
@@ -363,7 +368,7 @@ _add_layout_cb(void *data,
         return;
      }
 
-   edje_edit_save_all(layout->obj);
+   edje_edit_save_all(group_obj);
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
