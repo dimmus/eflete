@@ -247,12 +247,114 @@ _file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
    eina_stringshare_del(path_from);
 }
 
+#define BTN_WD       (widget_item_data + 1)
+#define SCROLLER_WD  (widget_item_data + 2)
+#define ENTRY_WD     (widget_item_data + 3)
+#define LABEL_WD     (widget_item_data + 5)
+#define GENLIST_WD   (widget_item_data + 13)
+#define LIST_WD      (widget_item_data + 14)
+#define PHOTOCAM_WD  (widget_item_data + 33)
+#define NOTIFY_WD    (widget_item_data + 38)
+#define MAP_WD       (widget_item_data + 39)
+#define POPUP_WD     (widget_item_data + 46)
+#define GENGRID_WD   (widget_item_data + 51)
+
+static int
+_widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
+{
+   int ret;
+   if (item->name)
+     ret = _widgets_dependencies_setup(item + 1, dep_message);
+   else
+     return 0;
+
+   if (!item->check)
+     return ret;
+
+   if ((item == ENTRY_WD) || (item == GENLIST_WD) ||
+       (item == PHOTOCAM_WD) || (item == LIST_WD))
+     {
+        if (!SCROLLER_WD->check)
+          {
+             SCROLLER_WD->check = true;
+             eina_strbuf_append(dep_message, _("Scroller<br>"));
+             ret++;
+          }
+     }
+   else if ((item == MAP_WD) && (!PHOTOCAM_WD->check))
+     {
+        PHOTOCAM_WD->check = true;
+        eina_strbuf_append(dep_message, _("Photocam<br>"));
+        ret++;
+     }
+   else if ((item == GENGRID_WD) && (!GENLIST_WD->check))
+     {
+        GENLIST_WD->check = true;
+        eina_strbuf_append(dep_message, _("Genlist<br>"));
+        ret++;
+     }
+   else if (item == POPUP_WD)
+     {
+        if (!NOTIFY_WD->check)
+          {
+             NOTIFY_WD->check = true;
+             eina_strbuf_append(dep_message, _("Notify<br>"));
+             ret++;
+          }
+        if (!BTN_WD->check)
+          {
+             BTN_WD->check = true;
+             eina_strbuf_append(dep_message, _("Button<br>"));
+             ret++;
+          }
+        if (!LIST_WD->check)
+          {
+             LIST_WD->check = true;
+             eina_strbuf_append(dep_message, _("List<br>"));
+             ret++;
+          }
+        if (!LABEL_WD->check)
+          {
+             LABEL_WD->check = true;
+             eina_strbuf_append(dep_message, _("Label<br>"));
+             ret++;
+          }
+     }
+
+   return ret;
+}
+
+#undef BTN_WD
+#undef SCROLLER_WD
+#undef ENTRY_WD
+#undef LABEL_WD
+#undef GENLIST_WD
+#undef LIST_WD
+#undef PHOTOCAM_WD
+#undef NOTIFY_WD
+#undef MAP_WD
+#undef POPUP_WD
+#undef GENGRID_WD
+
 static Eina_Strbuf *
 _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED__)
 {
    Eina_Strbuf *edc = eina_strbuf_new();
+   Eina_Strbuf *dep_message = eina_strbuf_new();
+   int deps_count;
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
    Eina_Bool are_widgets_included = false;
+   deps_count = _widgets_dependencies_setup(widget_item_data, dep_message);
+
+   if (deps_count)
+     {
+        eina_strbuf_prepend_printf(dep_message,
+                                   ngettext("%d widget included due to dependencies:<br><br>",
+                                            "%d widgets included due to dependencies:<br><br>",
+                                            deps_count), deps_count);
+
+        NOTIFY_INFO(3, "%s", eina_strbuf_string_get(dep_message));
+     }
 
    eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
