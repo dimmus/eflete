@@ -63,12 +63,13 @@
  */
 typedef struct _Shortcut_Module Shortcut_Module;
 
+typedef struct _Menu Menu;
+
 struct _App_Data
 {
    Evas_Object *win;
    Evas_Object *win_layout;
-   Evas_Object *main_menu;
-   Eina_Hash *menu_hash;
+   Menu *menu;
    Evas_Object *popup;
    Evas_Object *splash;
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for

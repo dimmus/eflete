@@ -35,14 +35,101 @@
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
 #include "ui_block.h"
-#include "colorclass_editor.h"
-#include "save_file_dialog.h"
+#include "notify.h"
 #include "string_macro.h"
 
 #include "part_dialog.h"
 #include "state_dialog.h"
 #include "style_dialog.h"
 #include "colorsel.h"
+#include "colorclass_editor.h"
+
+enum Menu_Item
+{
+   /* Needed as parent for top level menu items and as end mark in items lists */
+   MENU_NULL,
+
+   MENU_FILE,
+      MENU_FILE_NEW_PROJECT,
+      MENU_FILE_OPEN_PROJECT,
+      MENU_FILE_IMPORT_EDJ,
+      MENU_FILE_IMPORT_EDC,
+      MENU_FILE_SAVE,
+      MENU_FILE_SAVE_AS,
+      MENU_FILE_EXPORT_EDC,
+      MENU_FILE_CLOSE_PROJECT,
+      MENU_FILE_EXIT,
+   MENU_EDIT,
+      MENU_EDIT_PREFERENCE,
+   MENU_VIEW,
+      MENU_VIEW_WORKSPACE,
+         MENU_VIEW_WORKSPACE_ZOOM_IN,
+         MENU_VIEW_WORKSPACE_ZOOM_OUT,
+         MENU_VIEW_WORKSPACE_SEPARATE,
+         MENU_VIEW_WORKSPACE_OBJECT_AREA,
+      MENU_VIEW_RULERS,
+         MENU_VIEW_RULERS_SHOW,
+         MENU_VIEW_RULERS_ABS,
+         MENU_VIEW_RULERS_REL,
+         MENU_VIEW_RULERS_BOTH,
+   MENU_EDITORS,
+      MENU_EDITORS_ANIMATOR,
+      MENU_EDITORS_IMAGE,
+      MENU_EDITORS_SOUND,
+      MENU_EDITORS_COLORCLASS,
+      MENU_EDITORS_TEXT_STYLE,
+   MENU_HELP,
+      MENU_HELP_ABOUT,
+
+   /* Needed for menu array init */
+   MENU_ITEMS_COUNT
+};
+
+extern int MENU_ITEMS_LIST_BASE[];
+extern int MENU_ITEMS_LIST_STYLE_ONLY[];
+extern int MENU_ITEMS_LIST_MAIN[];
+
+/**
+ * Adds toolbar with menu and buttons to the given Elementary layout.
+ *
+ * @param ap The App_Data structure pointer.
+ *
+ * @return menu Menu object if successful, or NULL elthewhere.
+ *
+ * @ingroup Window
+ */
+Menu *
+ui_menu_add(App_Data *ap);
+
+/**
+ * Disable or enable menu item
+ *
+ * If flag is EINA_TRUE - an item will be disabled, othervise - enabled, so it
+ * can be used, clicked or anything like that.
+ *
+ * @param menu object
+ * @param mid Menu item's ID.
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ */
+Eina_Bool
+ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag);
+
+/**
+ * Disable or enable list of menu items
+ *
+ * If flag is EINA_TRUE - an item will be disabled, othervise - enabled, so it
+ * can be used, clicked or anything like that.
+ *
+ * @param menu object
+ * @param list Array of menu items ID. Last item should always be MENU_NULL.
+ * see default lists (MENU_ITEMS_LIST_BASE, MENU_ITEMS_LIST_STYLE_ONLY,
+ * MENU_ITEMS_LIST_MAIN)
+ * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
+ * @return EINA_TRUE if successful, EINA_FALSE otherwise.
+ */
+Eina_Bool
+ui_menu_items_list_disable_set(Menu *menu, int *list, Eina_Bool flag);
 
 typedef Eina_Bool
 (* Splash_Cb)(void *data);
@@ -92,18 +179,6 @@ ui_panes_add(App_Data *ap);
  */
 Eina_Bool
 ui_panes_left_panes_min_size_toggle(App_Data *ap, Eina_Bool is_on);
-
-/**
- * Adds toolbar with menu and buttons to the given Elementary layout.
- *
- * @param ap The App_Data structure pointer.
- *
- * @return menu Evas_Object if successful, or NULL elthewhere.
- *
- * @ingroup Window
- */
-Evas_Object *
-ui_menu_add(App_Data *ap);
 
 /**
  * Show panes element on main window
@@ -239,51 +314,6 @@ new_theme_create(App_Data *ap);
  */
 Eina_Bool
 ui_close_project_request(App_Data *ap, const char *msg);
-
-/**
- * Disable or enable menu item by it's name.'
- *
- * If flag is EINA_TRUE - an item will be disabled, othervise - enabled, so it
- * can be used, clicked or anything like that.
- *
- * @param menu_hash hash that contains menu items and toolbar buttons
- * @param name Menu item's title.
- * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag);
-
-/**
- * Disable or enable base menus (Editors, Saves, Separate..) and toolbar buttons.
- *
- * @param menu_hash hash that contains menu items and toolbar buttons
- * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
-
-/**
- * Disable or enable toolbar buttons and menu items that are specific for
- * editing of style.
- *
- * @param menu_hash hash that contains menu items and toolbar buttons
- * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_menu_style_options_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag);
-
-/**
- * Disable or enable all menus.
- *
- * @param menu_hash hash that contains menu items and toolbar buttons
- * @param flag for disabling - EINA_TRUE, for enabling - EINA_FALSE.
- * @return EINA_TRUE if successful, EINA_FALSE otherwise.
- */
-Eina_Bool
-ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag);
 
 /**
  * Get data of widget user currently works with.

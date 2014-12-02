@@ -52,8 +52,8 @@ ui_main_window_del(App_Data *ap)
    if (ap->project)
      pm_project_close(ap->project);
 
-   eina_hash_free(ap->menu_hash);
-   ap->menu_hash = NULL;
+   free(ap->menu);
+   ap->menu = NULL;
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    /* FIXME: remove it from here */
@@ -156,8 +156,8 @@ ui_main_window_add(App_Data *ap)
    elm_layout_file_set(ap->win_layout, EFLETE_EDJ, "eflete/main_window/base/default");
    evas_object_show(ap->win_layout);
 
-   ap->main_menu = ui_menu_add(ap);
-   if (!ap->main_menu)
+   ap->menu = ui_menu_add(ap);
+   if (!ap->menu)
      MARK_TO_SHUTDOWN("Failed to add menu on main window.")
 
    if (!ui_panes_add(ap))

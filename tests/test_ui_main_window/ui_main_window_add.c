@@ -70,7 +70,7 @@ EFLETE_TEST(ui_main_window_add_test_p)
    ck_assert_msg(ret == EINA_TRUE, "Failed to create main window");
    ck_assert_msg(app_data->win != NULL, "Failed to create window object");
    ck_assert_msg(app_data->win_layout != NULL, "Failed to create window layout");
-   ck_assert_msg(app_data->main_menu != NULL, "Failed to create window menu");
+   ck_assert_msg(app_data->menu != NULL, "Failed to create window menu");
    ck_assert_msg(app_data->workspace != NULL, "Failed to create workspace object");
    ck_assert_msg(app_data->live_view != NULL, "Failed to create live view object");
    ck_assert_msg(app_data->colorsel != NULL, "Failed to create color selector object");

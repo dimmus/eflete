@@ -289,10 +289,8 @@ test_ui_main_window/register_callbacks.c \
 test_ui_main_window/ui_main_window_add.c \
 test_ui_main_window/ui_main_window_del.c \
 test_ui_main_window/ui_menu_add.c \
-test_ui_main_window/ui_menu_base_disabled_set.c \
-test_ui_main_window/ui_menu_style_options_disabled_set.c \
 test_ui_main_window/ui_menu_disable_set.c \
-test_ui_main_window/ui_menu_locked_set.c \
+test_ui_main_window/ui_menu_items_list_disable_set.c \
 test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
 test_ui_main_window/ui_panes_show.c \

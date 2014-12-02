@@ -77,8 +77,8 @@ _progress_end(void *data, PM_Project_Result result)
                                      pro->dev);
 
         blocks_show(ap);
-        ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
 
+        ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
      }

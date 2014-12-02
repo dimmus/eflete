@@ -46,7 +46,7 @@ _job_popup_del(void *data)
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
    ap->popup = NULL;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -72,7 +72,7 @@ _cancel_clicked(void *data,
    evas_object_del(ap->popup); \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
    ap->popup = NULL; \
-   ui_menu_locked_set(ap->menu_hash, false); \
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
    project_changed();
 
@@ -218,7 +218,7 @@ part_dialog_add(App_Data *ap)
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, ap);
    elm_object_part_content_set(ap->popup, "button1", bt_no);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    evas_object_show(ap->popup);
    eina_stringshare_del(title);

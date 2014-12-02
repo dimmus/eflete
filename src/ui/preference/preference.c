@@ -51,7 +51,7 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -415,7 +415,7 @@ preferences_window_add(Project *project)
    elm_box_pack_end(button_box, btn);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(preference->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(preference->mwin);

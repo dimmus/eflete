@@ -22,7 +22,7 @@
 /**
  * @addtogroup ui_main_window_test
  * @{
- * @addtogroup ui_menu_disable_set
+ * @addtogroup ui_menu_items_list_disable_set
  * @{
  * ui_main_window
  * <TABLE>
@@ -30,11 +30,11 @@
  */
 
 /**
- * @addtogroup ui_menu_disable_set
+ * @addtogroup ui_menu_items_list_disable_set
  * @{
  * <tr>
- * <td>ui_menu_disable_set</td>
- * <td>ui_menu_disable_set_test_p</td>
+ * <td>ui_menu_items_list_disable_set</td>
+ * <td>ui_menu_items_list_disable_set_test_p</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -45,15 +45,15 @@
  * @step 6 Add new menu
  *
  * @procedure
- * @step 1 Call function ui_menu_disable_set.
+ * @step 1 Call function ui_menu_items_list_disable_set.
  * @step 2 Check returned value.
  * </td>
- * <td>Menu *menu, MENU_FILE_SAVE, Eina_Bool flag = EINA_TRUE</td>
+ * <td>Menu *menu, MENU_ITEMS_LIST_BASE, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_TRUE</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_menu_disable_set_test_p)
+EFLETE_TEST(ui_menu_items_list_disable_set_test_p)
 {
    App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
@@ -65,20 +65,19 @@ EFLETE_TEST(ui_menu_disable_set_test_p)
    app_data->win_layout = elm_layout_add(app_data->win);
    Menu *menu = ui_menu_add(app_data);
 
-   ret = ui_menu_disable_set(menu, MENU_FILE_SAVE, EINA_TRUE);
-   ck_assert_msg(ret == EINA_TRUE, "Failed to disable Save menu item");
-
+   ret = ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, EINA_TRUE);
+   ck_assert_msg(ret == EINA_TRUE, "Failed to disable base items list");
    app_shutdown();
    elm_shutdown();
 }
 END_TEST
 
 /**
- * @addtogroup ui_menu_disable_set
+ * @addtogroup ui_menu_items_list_disable_set
  * @{
  * <tr>
- * <td>ui_menu_disable_set</td>
- * <td>ui_menu_disable_set_test_n1</td>
+ * <td>ui_menu_items_list_disable_set</td>
+ * <td>ui_menu_items_list_disable_set_test_n1</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -87,17 +86,18 @@ END_TEST
  * @step 4 Create window, which was set into (App_Data)->win
  * @step 5 Create layout, which was set into (App_Data)->win_layout
  * @step 6 Add new menu
+ * @step 7 Create -terminated items list with incorrect items.
  *
  * @procedure
- * @step 1 Call function ui_menu_disable_set.
+ * @step 1 Call function ui_menu_items_list_disable_set.
  * @step 2 Check returned value.
  * </td>
- * <td>Menu *menu, MENU_COUNT + 1, Eina_Bool flag = EINA_TRUE</td>
+ * <td>Menu *menu, int *list, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_TRUE</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_menu_disable_set_test_n1)
+EFLETE_TEST(ui_menu_items_list_disable_set_test_n1)
 {
    App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
@@ -108,8 +108,9 @@ EFLETE_TEST(ui_menu_disable_set_test_n1)
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
    Menu *menu = ui_menu_add(app_data);
+   int list[] = {MENU_FILE_SAVE, MENU_ITEMS_COUNT + 1, 0};
 
-   ret = ui_menu_disable_set(menu, MENU_ITEMS_COUNT + 1, EINA_TRUE);
+   ret = ui_menu_items_list_disable_set(menu, list, EINA_TRUE);
    ck_assert_msg(ret == EINA_FALSE, "Unexisted menu item was disabled");
 
    app_shutdown();
@@ -118,11 +119,11 @@ EFLETE_TEST(ui_menu_disable_set_test_n1)
 END_TEST
 
 /**
- * @addtogroup ui_menu_disable_set
+ * @addtogroup ui_menu_items_list_disable_set
  * @{
  * <tr>
- * <td>ui_menu_disable_set</td>
- * <td>ui_menu_disable_set_test_n2</td>
+ * <td>ui_menu_items_list_disable_set</td>
+ * <td>ui_menu_items_list_disable_set_test_n2</td>
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
@@ -132,15 +133,15 @@ END_TEST
  * @step 5 Create layout, which was set into (App_Data)->win_layout
  *
  * @procedure
- * @step 1 Call function ui_menu_disable_set.
+ * @step 1 Call function ui_menu_items_list_disable_set.
  * @step 2 Check returned value.
  * </td>
- * <td>NULL, MENU_FILE_SAVE, Eina_Bool flag = EINA_TRUE</td>
+ * <td>NULL, MENU_ITEMS_LIST_BASE, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_FALSE</td>
  * </tr>
  * @}
  */
-EFLETE_TEST(ui_menu_disable_set_test_n2)
+EFLETE_TEST(ui_menu_items_list_disable_set_test_n2)
 {
    App_Data *app_data = NULL;
    Eina_Bool ret = EINA_FALSE;
@@ -151,7 +152,7 @@ EFLETE_TEST(ui_menu_disable_set_test_n2)
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
 
-   ret = ui_menu_disable_set(NULL, MENU_FILE_SAVE, EINA_TRUE);
+   ret = ui_menu_items_list_disable_set(NULL, MENU_ITEMS_LIST_BASE, EINA_TRUE);
    ck_assert_msg(ret == EINA_FALSE, "Menu item was disabled");
 
    elm_shutdown();
@@ -159,7 +160,7 @@ EFLETE_TEST(ui_menu_disable_set_test_n2)
 END_TEST
 
 /**
- * @addtogroup ui_menu_disable_set
+ * @addtogroup ui_menu_items_list_disable_set
  * @{
  * </TABLE>
  * @}

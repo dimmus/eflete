@@ -73,7 +73,7 @@ _job_popup_close(void *data)
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
    ap->popup = NULL;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -350,7 +350,7 @@ style_dialog_add(App_Data *ap)
    evas_object_smart_callback_add(button, "clicked", _popup_close_cb, ap);
    elm_object_part_content_set(ap->popup, "button2", button);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    evas_object_show(ap->popup);
    eina_stringshare_del(title);
