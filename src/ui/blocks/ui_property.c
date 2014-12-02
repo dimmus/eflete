@@ -44,6 +44,7 @@ struct _Prop_Data
    Evas_Object *workspace;
    Style *style;
    Part *part;
+   Ewe_Tabs_Item *visual_tab;
    Evas_Object *visual;
    Evas_Object *code;
 #ifndef HAVE_ENVENTOR
@@ -383,6 +384,7 @@ ui_property_add(Evas_Object *parent)
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
+   pd->visual_tab = it;
 
    it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
 
@@ -528,6 +530,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    evas_object_show(property);
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+
+   ewe_tabs_active_item_set(property, pd->visual_tab);
 
    pd->workspace = workspace;
    pd->style = style;
