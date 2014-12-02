@@ -1209,3 +1209,18 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
      }
 }
 
+Eina_Bool
+ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
+{
+   Ewe_Tabs_Item * tab_item;
+   const Eina_List *tabs_list;
+
+   if (!object) return false;
+
+   tabs_list = ewe_tabs_items_list_get(object);
+   tab_item = eina_list_nth(tabs_list, tab_index);
+   if (!tab_item) return false;
+
+   ewe_tabs_active_item_set(object, tab_item);
+   return true;
+}

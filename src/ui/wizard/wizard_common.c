@@ -78,6 +78,9 @@ _progress_end(void *data, PM_Project_Result result)
 
         blocks_show(ap);
         ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
+
+        if (!eina_inlist_count(ap->project->widgets))
+          ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
      }
    splash_del(wiew->splash);
 }
