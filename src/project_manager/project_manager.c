@@ -530,9 +530,9 @@ pm_project_open(const char *path)
 
    project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
+   if (!project) goto error;
    project->changed = false;
 
-   if (!project) goto error;
    pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
    if (!project->name) project->name = eina_stringshare_add(_("No title"));
    project->pro = ef;
