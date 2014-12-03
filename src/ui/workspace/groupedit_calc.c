@@ -129,6 +129,30 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
    return true;
 }
 
+static void
+_part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
+                           Groupedit_Part *ge_part,
+                           Groupedit_Part *ge_part_to,
+                           Eina_Bool mode)
+{
+   if (mode)
+     {
+        evas_object_stack_below(sd->bg, ge_part_to->draw);
+        evas_object_stack_below(sd->clipper, ge_part_to->draw);
+        evas_object_stack_below(ge_part->draw, ge_part_to->draw);
+        evas_object_stack_below(ge_part->border, ge_part_to->draw);
+        evas_object_stack_below(ge_part->item, ge_part_to->draw);
+     }
+   else
+     {
+        evas_object_stack_above(sd->bg, ge_part_to->border);
+        evas_object_stack_above(sd->clipper, ge_part_to->border);
+        evas_object_stack_above(ge_part->item, ge_part_to->border);
+        evas_object_stack_above(ge_part->border, ge_part_to->border);
+        evas_object_stack_above(ge_part->draw, ge_part_to->border);
+     }
+}
+
 /**
   * Internal function, which provide restack parts at parts list and restack
   * part primitives at canvas.
@@ -179,33 +203,16 @@ _part_restack(Ws_Groupedit_Smart_Data *sd,
    sd->parts = eina_list_remove(sd->parts, ge_part);
 
    if (mode)
-     {
-        sd->parts = eina_list_prepend_relative(sd->parts, ge_part, ge_part_to);
-        if (sd->separated)
-          {
-             _select_item_move_to_top(sd);
-             return true;
-          }
-        evas_object_stack_below(sd->bg, ge_part_to->draw);
-        evas_object_stack_below(sd->clipper, ge_part_to->draw);
-        evas_object_stack_below(ge_part->draw, ge_part_to->draw);
-        evas_object_stack_below(ge_part->border, ge_part_to->draw);
-        evas_object_stack_below(ge_part->item, ge_part_to->draw);
-     }
+     sd->parts = eina_list_prepend_relative(sd->parts, ge_part, ge_part_to);
    else
+     sd->parts = eina_list_append_relative(sd->parts, ge_part, ge_part_to);
+
+   if (sd->separated)
      {
-        sd->parts = eina_list_append_relative(sd->parts, ge_part, ge_part_to);
-        if (sd->separated)
-          {
-             _select_item_move_to_top(sd);
-             return true;
-          }
-        evas_object_stack_above(sd->bg, ge_part_to->draw);
-        evas_object_stack_above(sd->clipper, ge_part_to->draw);
-        evas_object_stack_above(ge_part->item, ge_part_to->item);
-        evas_object_stack_above(ge_part->border, ge_part_to->item);
-        evas_object_stack_above(ge_part->draw, ge_part_to->item);
+        _select_item_move_to_top(sd);
+        return true;
      }
+   _part_parts_layouts_update(sd, ge_part, ge_part_to, mode);
 
    return true;
 }
@@ -323,32 +330,24 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd)
 {
    Groupedit_Part *gp;
    Eina_List *l, *ln;
+   Eina_Bool is_below = false;
 
    if (!sd->selected) return;
    l = eina_list_data_find_list(sd->parts, sd->selected);
+
    ln = eina_list_prev(l);
    if (!ln)
      {
         ln = eina_list_next(l);
         if (!ln) return;
-        gp = (Groupedit_Part *)eina_list_data_get(ln);
-        evas_object_stack_below(sd->bg, gp->draw);
-        evas_object_stack_below(sd->clipper, gp->draw);
-        evas_object_stack_below(sd->selected->draw, gp->draw);
-        evas_object_stack_below(sd->selected->border, gp->draw);
-        evas_object_stack_below(sd->selected->item, gp->draw);
-        DBG("Separete mode, return to place part %s. Restack below the part %s", sd->selected->name, gp->name);
+        is_below = true;
      }
-   else
-     {
-        gp = (Groupedit_Part *)eina_list_data_get(ln);
-        evas_object_stack_above(sd->bg, gp->border);
-        evas_object_stack_above(sd->clipper, gp->border);
-        evas_object_stack_above(sd->selected->item, gp->border);
-        evas_object_stack_above(sd->selected->border, gp->border);
-        evas_object_stack_above(sd->selected->draw, gp->border);
-        DBG("Separete mode, return to place part %s. Restack above the part %s", sd->selected->name, gp->name);
-     }
+
+   gp = (Groupedit_Part *)eina_list_data_get(ln);
+   _part_parts_layouts_update(sd, sd->selected, gp, is_below);
+   DBG("Separete mode, return to place part %s. Restack %s the part %s",
+       (is_below) ? "belove" : "above", sd->selected->name, gp->name);
+
    evas_object_hide(sd->clipper);
    evas_object_clip_unset(sd->bg);
    evas_object_hide(sd->bg);
