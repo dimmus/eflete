@@ -177,13 +177,23 @@ _project_files_create(Project_Thread *worker)
 
    WORKER_LOCK_TAKE;
       folder_path = eina_stringshare_printf("%s/%s", worker->path, worker->name);
-      ecore_file_mkdir(folder_path);
-      DBG("Create the folder '%s' for new project '%s'", folder_path, worker->name);
+      if (ecore_file_mkdir(folder_path))
+        {
+           DBG("Create the folder '%s' for new project '%s'", folder_path, worker->name);
+        }
+      else
+        {
+           ERR("Could't create a project folder!");
+           error = true;
+        }
+      eina_stringshare_del(folder_path);
    WORKER_LOCK_RELEASE;
+   if (error) return NULL;
 
    THREAD_TESTCANCEL;
    pro = (Project *)mem_malloc(sizeof(Project));
    WORKER_LOCK_TAKE;
+      folder_path = eina_stringshare_printf("%s/%s", worker->path, worker->name);
       pro->name = eina_stringshare_add(worker->name);
       pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker->name);
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
@@ -197,6 +207,7 @@ _project_files_create(Project_Thread *worker)
       MKDIR("sounds");
       MKDIR("fonts");
       MKDIR("data");
+      eina_stringshare_del(folder_path);
    WORKER_LOCK_RELEASE;
    if (!_pm_project_descriptor_data_write(pro_path, pro))
      error = true;
@@ -205,7 +216,6 @@ _project_files_create(Project_Thread *worker)
        error ? "failsed" : "success");
    THREAD_TESTCANCEL;
    _pm_project_descriptor_shutdown();
-   eina_stringshare_del(folder_path);
    eina_stringshare_del(pro_path);
    if (error)
      {
