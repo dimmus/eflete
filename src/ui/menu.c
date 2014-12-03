@@ -28,7 +28,6 @@
 
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
-   MENU_FILE_SAVE_AS,
    MENU_FILE_EXPORT_EDC,
    MENU_VIEW_WORKSPACE,
    MENU_VIEW_WORKSPACE_ZOOM_IN,
@@ -100,9 +99,6 @@ _menu_cb(void *data,
       break;
       case MENU_FILE_SAVE:
          project_save();
-      break;
-      case MENU_FILE_SAVE_AS:
-         /* TODO: add implementation here */
       break;
       case MENU_FILE_EXPORT_EDC:
          /* TODO: add implementation here */
@@ -224,7 +220,6 @@ ui_menu_add(App_Data *ap)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file..."))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, NULL, _("Save"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE_AS, NULL, _("Save as..."))
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc..."))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"))
