@@ -515,7 +515,7 @@ ui_part_back(App_Data *ap)
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
 
-   ui_menu_style_options_disabled_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    evas_object_smart_callback_del_full(ap->workspace, "ws,part,selected",
                                        _on_ws_part_select, ap);
@@ -668,7 +668,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_block_history_set(ap, history_list);
 
    live_view_widget_style_set(ap->live_view, ap->project, _style);
-   ui_menu_style_options_disabled_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
 
    return true;
 }
@@ -695,11 +695,11 @@ blocks_show(App_Data *ap)
 
    ui_panes_show(ap);
 
-   ui_menu_base_disabled_set(ap->menu_hash, false);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Close project"), false);
-   ui_menu_disable_set(ap->menu_hash, _("Separate"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Show/Hide object area"), true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, false);
+   ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
+   ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
+   ui_menu_disable_set(ap->menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
+   ui_menu_disable_set(ap->menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    code_edit_mode_switch(ap, false);
 
@@ -882,7 +882,7 @@ project_save(void)
    ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
+   ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
 }
 
 /******************************************************************************/
@@ -896,7 +896,7 @@ project_changed(void)
 
    if (ap->project->changed) return;
    pm_project_changed(ap->project);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), false);
+   ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
 }
 
 /*************************** Close request popup ******************************/
@@ -946,7 +946,7 @@ project_close_request(App_Data *ap, const char *msg)
    Eina_Bool result = false;
    Evas_Object *btn, *label;
    Eina_Stringshare *title;
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
    ap->popup = elm_popup_add(ap->win_layout);
    elm_object_style_set(ap->popup, "eflete");
@@ -967,7 +967,7 @@ project_close_request(App_Data *ap, const char *msg)
 
    ecore_main_loop_begin();
 
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->project->close_request = false;
    evas_object_del(ap->popup);
    ap->popup = NULL;

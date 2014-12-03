@@ -99,7 +99,7 @@ static void
 _image_editor_del(Image_Editor *img_edit)
 {
    App_Data *ap = app_data_get();
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor = false;
 
    evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
@@ -1120,7 +1120,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_data_set(img_edit->gengrid, IMG_EDIT_KEY, img_edit);
    evas_object_data_set(img_edit->win, IMG_EDIT_KEY, img_edit);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
    ap->modal_editor = true;
