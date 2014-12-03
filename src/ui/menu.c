@@ -84,107 +84,107 @@ _menu_cb(void *data,
    App_Data *ap = app_data_get();
 
    switch (mid)
-   {
+     {
       case MENU_FILE_NEW_PROJECT:
          wizard_new_project_add(ap);
-      break;
+         break;
       case MENU_FILE_OPEN_PROJECT:
          project_open();
-      break;
+         break;
       case MENU_FILE_IMPORT_EDJ:
          wizard_import_edj_add(ap);
-      break;
+         break;
       case MENU_FILE_IMPORT_EDC:
          wizard_import_edc_add(ap);
-      break;
+         break;
       case MENU_FILE_SAVE:
          project_save();
-      break;
+         break;
       case MENU_FILE_EXPORT_EDC:
          /* TODO: add implementation here */
-      break;
+         break;
       case MENU_FILE_CLOSE_PROJECT:
-         {
-            if (!project_close_request(ap,
-                                       _("You want to close project. <br/>"
-                                         "If you dont save opened project<br/>"
-                                         "all your changes will be lost!")))
+           {
+              if (!project_close_request(ap,
+                                         _("You want to close project. <br/>"
+                                           "If you dont save opened project<br/>"
+                                           "all your changes will be lost!")))
 
-            pm_project_close(ap->project);
-            STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-            blocks_hide(ap);
-            ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
-            ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-            ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
-            ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, true);
-         }
-      break;
+                pm_project_close(ap->project);
+              STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
+              blocks_hide(ap);
+              ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+              ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+              ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
+              ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, true);
+           }
+         break;
       case MENU_FILE_EXIT:
          ui_main_window_del(ap);
-      break;
+         break;
       case MENU_EDIT_PREFERENCE:
          /* preferences_window_add(ap->project); */
-      break;
+         break;
       case MENU_VIEW_WORKSPACE_ZOOM_IN:
-         {
-            double current_factor = workspace_zoom_factor_get(ap->workspace);
-            workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
-         }
-      break;
+           {
+              double current_factor = workspace_zoom_factor_get(ap->workspace);
+              workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
+           }
+         break;
       case MENU_VIEW_WORKSPACE_ZOOM_OUT:
-         {
-            double current_factor = workspace_zoom_factor_get(ap->workspace);
-            workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
-         }
-      break;
+           {
+              double current_factor = workspace_zoom_factor_get(ap->workspace);
+              workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
+           }
+         break;
       case MENU_VIEW_WORKSPACE_SEPARATE:
-         {
-            Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
-            workspace_separate_mode_set(ap->workspace, !sep);
-         }
-      break;
+           {
+              Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
+              workspace_separate_mode_set(ap->workspace, !sep);
+           }
+         break;
       case MENU_VIEW_RULERS_SHOW:
          evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rulers"));
-      break;
+         break;
       case MENU_VIEW_RULERS_ABS:
          evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs"));
-      break;
+         break;
       case MENU_VIEW_RULERS_REL:
          evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rel"));
-      break;
+         break;
       case MENU_VIEW_RULERS_BOTH:
          evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs&rel"));
-      break;
+         break;
       case MENU_VIEW_WORKSPACE_OBJECT_AREA:
          evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
-      break;
+         break;
       case MENU_EDITORS_ANIMATOR:
-         {
-            if (!ap->project->current_style)
-              NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
-            else
-              animator_window_add(ap->project->current_style);
-         }
-      break;
+           {
+              if (!ap->project->current_style)
+                NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
+              else
+                animator_window_add(ap->project->current_style);
+           }
+         break;
       case MENU_EDITORS_IMAGE:
          image_editor_window_add(ap->project, MULTIPLE);
-      break;
+         break;
       case MENU_EDITORS_SOUND:
          sound_editor_window_add(ap->project, SOUND_EDITOR_SINGLE);
-      break;
+         break;
       case MENU_EDITORS_COLORCLASS:
          colorclass_viewer_add(ap->project);
-      break;
+         break;
       case MENU_EDITORS_TEXT_STYLE:
          style_editor_window_add(ap->project);
-      break;
+         break;
       case MENU_HELP_ABOUT:
          about_window_add();
-      break;
+         break;
       default:
          ERR("unknown menu id");
-      break;
-   }
+         break;
+     }
 }
 
 Menu *
