@@ -34,11 +34,8 @@
 #include "common_macro.h"
 #include "ui_widget_list.h"
 #include "ui_signal_list.h"
-#include "ui_workspace.h"
-#include "live_view.h"
 #include "ui_block.h"
 #include "colorclass_editor.h"
-#include "notify.h"
 #include "save_file_dialog.h"
 #include "string_macro.h"
 
