@@ -317,6 +317,9 @@ _project_import_edj(void *data,
    WORKER_LOCK_TAKE;
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+   WORKER_LOCK_RELEASE;
+   THREAD_TESTCANCEL;
+   WORKER_LOCK_TAKE;
       pm_project_resource_export(worker->project);
    WORKER_LOCK_RELEASE;
 
@@ -755,7 +758,6 @@ pm_project_resource_export(Project *pro)
 {
    Eina_List *list, *l;
    Evas_Object *edje_edit_obj;
-   Ecore_Evas *ee;
    Evas *e;
    const char *name, *snd_name;
    Evas_Object *im;
@@ -766,7 +768,7 @@ pm_project_resource_export(Project *pro)
    FILE *f;
    Eina_Binbuf *buf;
 
-   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
    list = edje_file_collection_list(pro->dev);
    edje_edit_obj = edje_edit_object_add(e);
@@ -840,6 +842,7 @@ pm_project_resource_export(Project *pro)
 
    eina_strbuf_free(strbuf);
    ecore_evas_free(ee);
+
    return true;
 }
 
