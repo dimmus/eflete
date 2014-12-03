@@ -96,14 +96,12 @@ _on_mwin_del(void * data,
 }
 
 static void
-_image_editor_del(Image_Editor *img_edit)
+_after_animation_close(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       const char *emission __UNUSED__,
+                       const char *source __UNUSED__)
 {
-   App_Data *ap = app_data_get();
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
-
-   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
-
+   Image_Editor *img_edit = (Image_Editor *)data;
    img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_genlist_item_class_free(_itc_group);
@@ -119,6 +117,18 @@ _image_editor_del(Image_Editor *img_edit)
    evas_object_del(img_edit->win);
    _image_info_reset(img_edit);
    free(img_edit);
+}
+static void
+_image_editor_del(Image_Editor *img_edit)
+{
+   App_Data *ap = app_data_get();
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ap->modal_editor = false;
+
+   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
+
+   elm_layout_signal_emit(img_edit->win, "hide", "eflete");
+   elm_layout_signal_callback_add(img_edit->win, "teardown", "eflete", _after_animation_close, img_edit);
 }
 
 static inline Evas_Object *
@@ -1111,6 +1121,8 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      }
 
    evas_object_show(img_edit->win);
+   elm_layout_signal_emit(img_edit->win, "show", "eflete");
+
    if (!_image_editor_init(img_edit))
      {
         _image_editor_del(img_edit);
