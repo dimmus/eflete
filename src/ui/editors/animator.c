@@ -194,12 +194,21 @@ _on_animator_save(void *data,
 }
 
 static void
+_after_animation_close(void *data __UNUSED__,
+                       Evas_Object *obj,
+                       const char *emission __UNUSED__,
+                       const char *source __UNUSED__)
+{
+   evas_object_del(obj);
+}
+static void
 _on_animator_cancel(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei __UNUSED__)
 {
    Evas_Object *mwin = (Evas_Object *)data;
-   evas_object_del(mwin);
+   elm_layout_signal_emit(mwin, "hide", "eflete");
+   elm_layout_signal_callback_add(mwin, "teardown", "eflete", _after_animation_close, NULL);
 }
 
 static void
@@ -673,6 +682,8 @@ animator_window_add(Style *style)
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(animator->mwin);
+   elm_layout_signal_emit(animator->mwin, "show", "eflete");
+
    ap->modal_editor = true;
    return animator->mwin;
 }
