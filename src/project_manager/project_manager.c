@@ -320,6 +320,7 @@ _project_import_edj(void *data,
       pm_project_meta_data_set(worker->project, worker->project->name,
                                NULL, NULL, NULL, NULL);
 
+      pm_project_resource_export(worker->project);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
@@ -459,6 +460,7 @@ _project_import_edc(void *data,
    WORKER_LOCK_TAKE;
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
+      pm_project_resource_export(worker->project);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
@@ -749,4 +751,50 @@ pm_project_meta_data_set(Project *project,
 
 #undef DATA_WRITE
    return res;
+}
+
+Eina_Bool
+pm_project_resource_export(Project *pro)
+{
+   Eina_List *list, *l;
+   Evas_Object *edje_edit_obj;
+   Ecore_Evas *ee;
+   Evas *e;
+   const char *name;
+   Evas_Object *im;
+   Eina_Strbuf *strbuf;
+   int id;
+
+   ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
+   e = ecore_evas_get(ee);
+   list = edje_file_collection_list(pro->dev);
+   edje_edit_obj = edje_edit_object_add(e);
+   if (!edje_object_file_set(edje_edit_obj, pro->dev, eina_list_data_get(list)))
+     {
+        evas_object_del(edje_edit_obj);
+        return false;
+     }
+   edje_edit_string_list_free(list);
+
+   list = edje_edit_images_list_get(edje_edit_obj);
+   if (!list) return false;
+
+   strbuf = eina_strbuf_new();
+   EINA_LIST_FOREACH(list, l, name)
+     {
+        im = evas_object_image_add(evas_object_evas_get(edje_edit_obj));
+        id = edje_edit_image_id_get(edje_edit_obj, name);
+        eina_strbuf_append_printf(strbuf, "edje/images/%i", id);
+        evas_object_image_file_set(im, pro->dev, eina_strbuf_string_get(strbuf));
+        eina_strbuf_reset(strbuf);
+        eina_strbuf_append_printf(strbuf, "%s/images/%s", pro->develop_path, name);
+        evas_object_image_save(im, eina_strbuf_string_get(strbuf), NULL, NULL);
+        eina_strbuf_reset(strbuf);
+        evas_object_del(im);
+     }
+   edje_edit_string_list_free(list);
+
+   eina_strbuf_free(strbuf);
+   ecore_evas_free(ee);
+   return true;
 }
