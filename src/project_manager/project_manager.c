@@ -882,3 +882,57 @@ exit:
    eina_stringshare_del(path);
    return code;
 }
+
+static void *
+_develop_export(void *data,
+                Eina_Thread *thread)
+{
+   pthread_attr_t attr;
+   Project_Thread *worker;
+   Evas_Object *edje_edit_obj;
+
+   if (!pthread_getattr_np(*thread, &attr))
+     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+   pthread_attr_destroy(&attr);
+   sleep(1);
+
+   worker = (Project_Thread *)data;
+
+   PROGRESS_SEND(_("Export edj..."));
+   WORKER_LOCK_TAKE;
+      if (worker->project->changed)
+        _project_backup(worker);
+
+      GET_OBJ(worker->project, edje_edit_obj);
+      edje_edit_save_all(edje_edit_obj);
+      eina_file_copy(worker->project->dev, worker->edj,
+                     EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                     NULL, NULL);
+
+   WORKER_LOCK_RELEASE;
+
+   PROGRESS_SEND("Saved.");
+   END_SEND(PM_PROJECT_SUCCESS);
+   return NULL;
+}
+
+Project_Thread *
+pm_projec_develop_export(Project *project,
+                         const char *path,
+                         PM_Project_Progress_Cb func_progress,
+                         PM_Project_End_Cb func_end,
+                         const void *data)
+{
+   Project_Thread *worker;
+   Eina_Bool result;
+
+   WORKER_CREATE(func_progress, func_end, data, project,
+                 NULL, NULL, path, NULL, data);
+
+   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                               (void *)_develop_export, worker);
+   if (!result)
+     WORKER_FREE();
+
+   return worker;
+}

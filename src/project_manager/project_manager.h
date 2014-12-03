@@ -453,4 +453,26 @@ pm_project_resource_export(Project *pro);
 Eina_Stringshare *
 pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
 
+/**
+ * Export the edj develop file from current project. The develop edj file
+ * include unused images, sounds, fonts and data files.
+ *
+ * @param pro The opened project;
+ * @param path Path to save the edj file.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
+ *
+ * @return The new #Project_Thread object, othewise NULL.
+ *
+ * @ingroup ProjectManager.
+ */
+Project_Thread *
+pm_project_develop_export(Project *pro,
+                          const char *path,
+                          PM_Project_Progress_Cb func_progress,
+                          PM_Project_End_Cb func_end,
+                          const void *data) EINA_ARG_NONNULL(1, 2);
+
 #endif /* PROJECT_MANAGER_H */
