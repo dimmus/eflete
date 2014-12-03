@@ -38,7 +38,10 @@ FUNC(void *data, \
    path = elm_entry_entry_get(wiew->FIELD); \
    if ((path) && (ecore_file_is_dir(path))) elm_fileselector_path_set(fs, path); \
    if (FILTER) \
-     elm_fileselector_custom_filter_append(fs, FILTER_CB, NULL, "Edje Files"); \
+     { \
+        elm_fileselector_custom_filter_append(fs, FILTER_CB, NULL, "Edje Files"); \
+        elm_fileselector_mime_types_filter_append(fs, "*", "All Files"); \
+     } \
    elm_win_resize_object_add(wiew->fs, fs); \
 }
 
