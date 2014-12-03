@@ -847,7 +847,7 @@ Eina_Stringshare *
 pm_project_style_source_code_export(Project *pro, Style *style, const char *file)
 {
    Eina_Stringshare *code = NULL;
-   Eina_Stringshare *path;
+   Eina_Stringshare *path = NULL;
    FILE *f;
 
    if (!style->obj) goto exit;
