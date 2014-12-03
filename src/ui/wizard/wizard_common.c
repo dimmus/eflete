@@ -94,6 +94,7 @@ _progress_end(void *data, PM_Project_Result result)
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
      }
+   ecore_file_recursive_rm(wiew->tmp_dir_path);
    splash_del(wiew->splash);
 }
 

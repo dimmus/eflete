@@ -212,10 +212,10 @@ _edje_cc_flags_create(Wizard_Import_Edj_Win *wiew)
 }
 
 static void
-_file_to_swap_copy(const char *widget_name)
+_file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
 {
    Eina_Stringshare *path_to =
-      eina_stringshare_printf(EFLETE_SWAP_PATH"/%s.edc", widget_name);
+      eina_stringshare_printf("%s/%s.edc", path, widget_name);
    Eina_Stringshare *path_from =
       eina_stringshare_printf(EFLETE_TEMPLATE_EDC_PATH"/%s.edc", widget_name);
    int ch;
@@ -249,7 +249,7 @@ _file_to_swap_copy(const char *widget_name)
 }
 
 static Eina_Strbuf *
-_edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
+_edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED__)
 {
    Eina_Strbuf *edc = eina_strbuf_new();
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
@@ -261,9 +261,9 @@ _edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
    eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
    eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
 
-   _file_to_swap_copy("fonts");
-   _file_to_swap_copy("colorclasses");
-   _file_to_swap_copy("macros");
+   _file_to_swap_copy(path, "fonts");
+   _file_to_swap_copy(path, "colorclasses");
+   _file_to_swap_copy(path, "macros");
 
    while (widget_item_data_iterator->name)
      {
@@ -271,7 +271,7 @@ _edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
           {
              eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
                                        widget_item_data_iterator->name);
-             _file_to_swap_copy(widget_item_data_iterator->name);
+             _file_to_swap_copy(path, widget_item_data_iterator->name);
              are_widgets_included = true;
           }
         widget_item_data_iterator++;
@@ -305,22 +305,19 @@ _splash_setup_import_edc(void *data)
    return false;
 }
 
-static Eina_Stringshare *
-_new_project_file_create(const char *edc)
+Eina_Bool
+_new_project_file_create(Eina_Stringshare *path, const char *edc)
 {
-   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"/new_project_tmp.edc");
-
    FILE *fp = fopen(path, "w");
    if (!fp)
      {
         ERR("Failed to open file \"%s\"", path);
-        eina_stringshare_del(path);
-        return NULL;
+        return false;
      }
 
    fputs(edc, fp);
    fclose(fp);
-   return path;
+   return true;
 }
 
 static Eina_Bool
@@ -328,11 +325,21 @@ _splash_setup_new_project(void *data)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *edc;
-   Eina_Stringshare *path;
    Eina_Strbuf *flags;
+   Eina_Tmpstr *tmp_dir;
+   Eina_Stringshare *edc_path;
+   if (!eina_file_mkdtemp("eflete_project_XXXXXX", &tmp_dir))
+     {
+        ERR("can not create tmp dir");
+        return false;
+     }
+   wiew->tmp_dir_path = eina_stringshare_add(tmp_dir);
+   eina_tmpstr_del(tmp_dir);
 
-   edc = _edc_code_generate(wiew);
-   path = _new_project_file_create(eina_strbuf_string_get(edc));
+   edc_path = eina_stringshare_printf("%s/new_project_tmp.edc", wiew->tmp_dir_path);
+   edc = _edc_code_generate(wiew->tmp_dir_path, wiew);
+   _new_project_file_create(edc_path, eina_strbuf_string_get(edc));
+
    flags = eina_strbuf_new();
 
    eina_strbuf_append_printf(flags, "-id \"%s\" -sd \"%s\" -v",
@@ -341,15 +348,15 @@ _splash_setup_new_project(void *data)
 
    wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
                                         elm_entry_entry_get(wiew->path),
-                                        path,
+                                        edc_path,
                                         eina_strbuf_string_get(flags),
                                         _progress_print,
                                         _progress_end,
                                         wiew);
 
-   eina_stringshare_del(path);
    eina_strbuf_free(edc);
    eina_strbuf_free(flags);
+   eina_stringshare_del(edc_path);
 
    return false;
 }

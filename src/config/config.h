@@ -128,7 +128,6 @@ struct _Profile
    int        version;
    struct {
       const char     *home_folder;
-      const char     *swap_folder;
       Eina_Bool      save_ui;
       Eina_Bool      save_win_pos;
       struct {

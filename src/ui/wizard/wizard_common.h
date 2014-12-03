@@ -50,6 +50,7 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *splash;
    Evas_Object *name;
    Evas_Object *path;
+   Eina_Stringshare *tmp_dir_path;
    Evas_Object *edj;
    Evas_Object *meta_version;
    Evas_Object *meta_authors;

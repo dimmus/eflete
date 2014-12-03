@@ -138,9 +138,6 @@ _on_##VALUE##_change(void *data, \
       case (5): \
         prof_general.home_folder = strdup(value); \
         break; \
-      case (6): \
-        prof_general.swap_folder = strdup(value); \
-        break; \
      } \
 }
 
@@ -188,7 +185,6 @@ CHANGE_CALLBACK(autosave_autosave, 2, CHECK, Eina_Bool)
 CHANGE_CALLBACK(save_ui, 3, CHECK, Eina_Bool)
 CHANGE_CALLBACK(save_win_pos, 4, CHECK, Eina_Bool)
 CHANGE_ENTRY_CALLBACK(home, 5)
-CHANGE_ENTRY_CALLBACK(swap, 6)
 
 #undef COMBOBOX_VALUE
 #undef SPINNER_VALUE
@@ -202,7 +198,7 @@ static void
 _general_form(Preferences *preference)
 {
    Evas_Object *panes, *layout, *profile;
-   Evas_Object *entry_home, *entry_swap, *autosave_frame, *store_frame;
+   Evas_Object *entry_home, *autosave_frame, *store_frame;
    Evas_Object *autosave_layout, *store_layout;
    Evas_Object *autosave_ck, *period_sp, *storeui_ck, *winpos_ck;
    Profile *prof;
@@ -241,10 +237,6 @@ _general_form(Preferences *preference)
    elm_object_part_text_set(entry_home, "elm.text", prof_general.home_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
    evas_object_smart_callback_add(entry_home, "changed", _on_home_change, prof);
-   EWE_ENTRY_ADD(pref_layout.general, entry_swap, true, DEFAULT_STYLE);
-   elm_object_part_text_set(entry_swap, "elm.text", prof_general.swap_folder);
-   elm_object_part_content_set(pref_layout.general, "swallow.swap", entry_swap);
-   evas_object_smart_callback_add(entry_swap, "changed", _on_swap_change, prof);
 
    FRAME_ADD(pref_layout.general, autosave_frame, false, _("Autosave"))
    elm_object_part_content_set(pref_layout.general, "swallow.autosave", autosave_frame);
