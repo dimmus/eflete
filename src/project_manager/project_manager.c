@@ -256,12 +256,11 @@ _copy_meta_data_to_pro(Project_Thread *worker)
       ef = eet_open(worker->edj, EET_FILE_MODE_READ_WRITE);
    WORKER_LOCK_RELEASE;
 
-   name    = eet_read(ef, PROJECT_KEY_NAME, NULL);
+   name = strdup(worker->name);
    authors = eet_read(ef, PROJECT_KEY_AUTHORS, NULL);
    version = eet_read(ef, PROJECT_KEY_FILE_VERSION, NULL);
    license = eet_read(ef, PROJECT_KEY_LICENSE, NULL);
    comment = eet_read(ef, PROJECT_KEY_COMMENT, NULL);
-
    eet_close(ef);
 
    WORKER_LOCK_TAKE;
@@ -544,13 +543,14 @@ pm_project_open(const char *path)
    project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
    if (!project) goto error;
-   project->changed = false;
 
-   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
-   if (!project->name) project->name = eina_stringshare_add(_("No title"));
+
+   project->changed = false;
    project->pro = ef;
    project->widgets = wm_widgets_list_new(project->dev);
    project->layouts = wm_layouts_list_new(project->dev);
+   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
+   if (!project->name) project->name = eina_stringshare_add(_("No title"));
 
 error:
    return project;
