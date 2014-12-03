@@ -218,7 +218,7 @@ _file_to_swap_copy(const char *widget_name)
       eina_stringshare_printf(EFLETE_SWAP_PATH"/%s.edc", widget_name);
    Eina_Stringshare *path_from =
       eina_stringshare_printf(EFLETE_TEMPLATE_EDC_PATH"/%s.edc", widget_name);
-   char ch;
+   int ch;
 
    FILE *fp_from = fopen(path_from, "r");
    if (!fp_from)
