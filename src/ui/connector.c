@@ -108,8 +108,9 @@ _above_part(void *data,
    if (!ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style))
       return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   if (!part) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
-   if ((!part) || (!workspace_edit_object_part_above(ap->workspace, part->name)))
+   if (!workspace_edit_object_part_above(ap->workspace, part->name))
      {
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style);
@@ -129,8 +130,9 @@ _below_part(void *data,
    if (!ui_widget_list_selected_part_below(ui_block_widget_list_get(ap), style))
       return;
    Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   if (!part) return;
    history_diff_add(style->obj, PART_TARGET, RESTACK, part->name);
-   if ((!part) || (!workspace_edit_object_part_below(ap->workspace, part->name)))
+   if (!workspace_edit_object_part_below(ap->workspace, part->name))
      {
         NOTIFY_ERROR(_("Internal edje error occurred on part move"));
         ui_widget_list_selected_part_above(ui_block_widget_list_get(ap), style);
