@@ -869,12 +869,6 @@ _setup_save_splash(void *data)
    return true;
 }
 
-static Eina_Bool
-_teardown_save_splash(void *data __UNUSED__)
-{
-   return true;
-}
-
 void
 project_save(void)
 {
@@ -885,7 +879,7 @@ project_save(void)
    if (!ap->project->changed) return;
    if (ap->splash) return;
 
-   ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, ap);
+   ap->splash = splash_add(ap->win, _setup_save_splash, NULL, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
