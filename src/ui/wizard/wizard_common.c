@@ -134,6 +134,62 @@ _teardown_splash(void *data)
 }
 
 /******************************************************************************/
+static Eina_Strbuf *
+_path_to_project_build(Wizard_Import_Edj_Win *wiew)
+{
+   Eina_Strbuf *path_to_project = eina_strbuf_new();
+
+   // remove trailing slashes
+   char *path = strdup(elm_entry_entry_get(wiew->path));
+   char *path_end = path + strlen(path) -1;
+   while (*path_end == '/')
+     {
+        *path_end = '\0';
+        path_end--;
+     }
+
+   eina_strbuf_append_printf(path_to_project, "%s/%s",
+                             path, elm_entry_entry_get(wiew->name));
+
+   free(path);
+   return path_to_project;
+}
+
+static Eina_Bool
+_project_directory_check(Wizard_Import_Edj_Win *wiew)
+{
+   Eina_Strbuf *path_to_project = _path_to_project_build(wiew);
+   Eina_Strbuf *request_str = NULL;
+   Eina_Bool ret = true;
+
+   if ((ecore_file_exists(eina_strbuf_string_get(path_to_project))) &&
+       (ecore_file_is_dir(eina_strbuf_string_get(path_to_project))))
+     {
+        request_str = eina_strbuf_new();
+        eina_strbuf_append_printf(request_str,
+                                  _("The <color=#80BFFF>'%s'</color> directory "
+                                    "already exists.<br>Do you want to "
+                                    "<b><color=#FFBF80>delete all</color></b>"
+                                    " contents of this folder and create"
+                                    "new project in it?"),
+                                  eina_strbuf_string_get(path_to_project));
+
+        ret = export_replace_request(wiew->win,
+                                     eina_strbuf_string_get(request_str));
+
+        if (ret)
+          {
+             ret = ecore_file_recursive_rm(eina_strbuf_string_get(path_to_project));
+             if (!ret) NOTIFY_ERROR(_("Can not delete folder %s!"),
+                                    eina_strbuf_string_get(path_to_project));
+          }
+     }
+   if (request_str)
+     eina_strbuf_free(request_str);
+   eina_strbuf_free(path_to_project);
+
+   return ret;
+}
 
 static Eina_Bool
 _required_fields_check(Wizard_Import_Edj_Win *wiew)
@@ -179,7 +235,8 @@ _on_apply(void *data,
    ap = app_data_get();
    wiew = (Wizard_Import_Edj_Win *)data;
 
-   if ((!_required_fields_check(wiew)) || (!wiew->splash_setup_func))
+   if ((!_required_fields_check(wiew)) || (!wiew->splash_setup_func) ||
+       (!wiew->splash_setup_func) || (!_project_directory_check(wiew)))
      return;
 
    wiew->splash = splash_add(ap->win, wiew->splash_setup_func, _teardown_splash, wiew);

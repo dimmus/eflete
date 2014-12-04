@@ -487,4 +487,16 @@ project_export_develop(void);
 void
 save_time_info_update(App_Data *ap, Eina_Bool is_autosave);
 
+/**
+ * Call dialog window for request
+ *
+ * @param parent Parent object
+ * @param msg Request message.
+ * @return EINA_FALSE if user has rejected request or EINA_TRUE if user has accepted request
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+export_replace_request(Evas_Object *parent, const char *msg);
+
 #endif /* UI_MAIN_WINDOW_H */
