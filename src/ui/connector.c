@@ -849,6 +849,7 @@ _progress_end(void *data, PM_Project_Result result)
       case PM_PROJECT_LAST: break;
      }
 
+   live_view_theme_update(ap->live_view, ap->project);
    splash_del(ap->splash);
    ap->splash = NULL;
 }
@@ -861,23 +862,35 @@ _setup_save_splash(void *data)
 
    ap = (App_Data *)data;
 #ifdef HAVE_ENVENTOR
-   Eina_Stringshare *code = NULL;
    Eina_Stringshare *path = NULL;
+   char *code;
+   long f_size;
+   size_t code_s;
    FILE *f;
 
    if (ap->enventor_mode)
      {
         path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
-        code = enventor_object_text_get(ap->enventor);
-        f = fopen(path, "w");
+        enventor_object_save(ap->enventor, path);
+
+        f = fopen(path, "r+");
         if (!f)
           {
-             ERR("Could't open file '%s'", path);
+             ERR("Failed set the Elementary version support to '%s'", path);
              return false;
           }
+        fseek(f, 0, SEEK_END);
+        f_size = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        code_s = sizeof(char) * f_size;
+        code = mem_malloc(code_s);
+        fread(code, 1, f_size, f);
+        fseek(f, 0, SEEK_SET);
+
+        fputs("data.item: \"version\" \"110\";\n\n", f);
         fputs(code, f);
         fclose(f);
-        eina_stringshare_del(path);
+        free(code);
         thread = pm_project_enventor_save(ap->project,
                                           _progress_print,
                                           _progress_end,
