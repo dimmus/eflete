@@ -98,6 +98,15 @@ elm_main(int argc, char **argv)
                {
                   ap->project = pm_project_open(open);
                   blocks_show(ap);
+                  wm_widgets_list_objects_load(ap->project->widgets,
+                                               evas_object_evas_get(ap->win),
+                                               ap->project->dev);
+                  wm_layouts_list_objects_load(ap->project->layouts,
+                                               evas_object_evas_get(ap->win),
+                                               ap->project->dev);
+
+                  if (!eina_inlist_count(ap->project->widgets))
+                    ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
                }
              else
                {
