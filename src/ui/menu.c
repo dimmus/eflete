@@ -182,7 +182,7 @@ _menu_cb(void *data,
          about_window_add();
          break;
       default:
-         ERR("unknown menu id");
+         DBG("unknown menu id: %d", mid);
          break;
      }
 }
