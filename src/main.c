@@ -18,8 +18,6 @@
  */
 
 #include <Ecore_Getopt.h>
-#include "eflete.h"
-#include "config.h"
 #include "main_window.h"
 
 #ifdef HAVE_ENVENTOR
@@ -34,7 +32,7 @@ static const Ecore_Getopt options = {
    "(C) 2013-2014 Samsung Electronics.",
    "GNU Library General Public License version 2",
    N_("This application was written for Enlightenment, to use EFL\n"
-   "and design to a create and modify a Elementary widgets style.\n"),
+   "and design to create and modify Elementary widgets styles.\n"),
    EINA_TRUE,
    {
       ECORE_GETOPT_STORE_STR('o', "open", N_("Eflete project file")),
