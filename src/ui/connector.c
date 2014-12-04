@@ -380,6 +380,7 @@ _add_layout_cb(void *data,
                       ap->project->dev);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
+   project_changed();
    return;
 }
 
@@ -1017,6 +1018,7 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
    ap->project->layouts = eina_inlist_remove(ap->project->layouts,
                                              EINA_INLIST_GET(style));
    ui_widget_list_layouts_reload(genlist, ap->project);
+   project_changed();
    return true;
 }
 
@@ -1116,6 +1118,7 @@ found:
         wm_class_free(class_st);
      }
    style_work->isModify = true;
+   project_changed();
    ui_widget_list_class_data_reload(genlist, widget->classes);
    return true;
 }

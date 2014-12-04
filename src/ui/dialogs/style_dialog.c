@@ -275,6 +275,8 @@ _on_popup_btn_yes(void *data,
    if (!wm_widgets_list_free(source_widgets))
      ERR("Failed free template widget list");
 
+   project_changed();
+
    STRING_CLEAR;
    eina_stringshare_del(full_name);
    ecore_job_add(_job_popup_close, ap);
