@@ -99,6 +99,10 @@ struct _App_Data
    Project *project;
    History *history;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
+#ifdef HAVE_ENVENTOR
+   Eina_Bool enventor_mode : 1;
+#else
+#endif /* HAVE_ENVENTOR */
 };
 
 /**

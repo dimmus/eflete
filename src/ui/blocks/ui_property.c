@@ -332,6 +332,8 @@ _on_tab_activated(void *data,
      }
    else
      code_edit_mode_switch(app_data_get(), false);
+
+   ap->enventor_mode = !ap->enventor_mode;
 }
 
 #else
