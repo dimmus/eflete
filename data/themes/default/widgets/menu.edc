@@ -685,21 +685,13 @@ group { name: "elm/hover/base/main_menu/eflete/default";
             rel1.offset: -1 -2;
          }
       }
-      part { name: "base";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: MENU_HIGHLIGHT_COLOR;
-            rel1.to_y: "bottom";
-            rel2.to_y: "bottom";
-         }
-      }
       part { name: "bevel";
          mouse_events: 0;
          type: RECT;
          description { state: "default" 0.0;
             color: 59 61 62 255;
-            rel1.to: "base";
-            rel2.to: "base";
+            rel1.to_y: "bottom";
+            rel2.to_y: "bottom";
          }
       }
       part { name: "bottom";
@@ -747,14 +739,16 @@ group { name: "elm/hover/base/main_menu/eflete/default";
 
 group { name: "elm/hover/base/main_menu_submenu/eflete/default";
    parts {
-      part { name: "base"; type: RECT; repeat_events: 1;
+      part { name: "base";
+         type: RECT;
+         repeat_events: 1;
          description { state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
       part { name: "elm.swallow.offset";
          type: SWALLOW;
-         repeat_events:1;
+         repeat_events: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             rel2.relative: 0.0 0.0;
@@ -782,7 +776,7 @@ group { name: "elm/hover/base/main_menu_submenu/eflete/default";
          }
       }
       part { name: "bg";
-         type: RECT; mouse_events: 0;
+         type: RECT; mouse_events: 1;
          clip_to: "bottomclip";
          description { state: "default" 0.0;
          rel1 {
@@ -844,17 +838,20 @@ group { name: "elm/hover/base/main_menu_submenu/eflete/default";
    }
    programs {
       program { name: "end";
-         signal: "mouse,up,1"; source: "base";
+         signal: "mouse,up,1";
+         source: "base";
          action: SIGNAL_EMIT "elm,action,dismiss" "elm";
       }
       program { name: "bottomshow";
-         signal: "elm,action,slot,bottom,show"; source: "elm";
+         signal: "elm,action,slot,bottom,show";
+         source: "elm";
          action: STATE_SET "visible" 0.0;
          transition: DECELERATE 0.3;
          target: "elm.swallow.slot.bottom";
       }
       program { name: "bottomhide";
-         signal: "elm,action,slot,bottom,hide"; source: "elm";
+         signal: "elm,action,slot,bottom,hide";
+         source: "elm";
          action: STATE_SET "default" 0.0;
          transition: DECELERATE 0.5;
          target: "elm.swallow.slot.bottom";
