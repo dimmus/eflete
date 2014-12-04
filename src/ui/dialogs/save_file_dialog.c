@@ -190,7 +190,7 @@ _save_as_edx_file(App_Data *ap,
    FILESELECTOR_ADD(fs, win, done_cb, &cancel);
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_folder_only_set(fs, folder_only);
-   elm_fileselector_path_set(fs, getenv("HOME"));
+   elm_fileselector_path_set(fs, profile_get()->general.projects_folder);
    elm_win_resize_object_add(win, fs);
 
    ecore_main_loop_begin();

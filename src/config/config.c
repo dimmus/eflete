@@ -48,7 +48,7 @@ _profile_free(void)
 {
    Shortcuts *sc;
 
-   free((char *)profile->general.home_folder);
+   free((char *)profile->general.projects_folder);
    free((char *)profile->workspace.bg_image);
    free((char *)profile->liveview.bg_image);
 
@@ -110,7 +110,7 @@ config_init(App_Data *ap)
 
    /* general */
    EET_DATA_DESCRIPTOR_ADD_BASIC
-      (edd_profile, Profile, "general.home_folder",               general.home_folder, EET_T_STRING);
+      (edd_profile, Profile, "general.projects_folder",           general.projects_folder, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC
       (edd_profile, Profile, "general.save_ui",                   general.save_ui, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC
@@ -276,7 +276,9 @@ _profile_default_new(void)
 
    prof = mem_malloc(sizeof(Profile));
    prof->version                             = PROFILE_VERSION;
-   prof->general.home_folder                 = strdup("HOME");
+   prof->general.projects_folder             = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
+                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
+                                                strdup(getenv("HOME"));
    prof->general.save_ui                     = true;
    prof->general.save_win_pos                = true;
    prof->general.autosave.autosave           = false;

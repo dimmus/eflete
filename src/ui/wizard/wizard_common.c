@@ -225,7 +225,7 @@ wizard_import_common_add(const char *layout_name)
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));
    ENTRY_ADD(layout, wiew->path, true, DEFAULT_STYLE)
    elm_object_part_content_set(layout, "swallow.path", wiew->path);
-   elm_entry_entry_set(wiew->path, getenv("HOME"));
+   elm_entry_entry_set(wiew->path, profile_get()->general.projects_folder);
 
    _elipsis_btn_add(wiew->path, _on_path_bt, wiew);
 

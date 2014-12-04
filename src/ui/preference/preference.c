@@ -136,7 +136,7 @@ _on_##VALUE##_change(void *data, \
    switch (NUM) \
      { \
       case (5): \
-        prof_general.home_folder = strdup(value); \
+        prof_general.projects_folder = strdup(value); \
         break; \
      } \
 }
@@ -234,7 +234,7 @@ _general_form(Preferences *preference)
     *    }
     */
    EWE_ENTRY_ADD(pref_layout.general, entry_home, true, DEFAULT_STYLE);
-   elm_object_part_text_set(entry_home, "elm.text", prof_general.home_folder);
+   elm_object_part_text_set(entry_home, "elm.text", prof_general.projects_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
    evas_object_smart_callback_add(entry_home, "changed", _on_home_change, prof);
 
