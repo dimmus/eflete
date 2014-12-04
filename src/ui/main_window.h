@@ -56,6 +56,9 @@ enum Menu_Item
       MENU_FILE_IMPORT_EDC,
       MENU_FILE_SAVE,
       MENU_FILE_EXPORT_EDC,
+      MENU_FILE_EXPORT,
+         MENU_FILE_EXPORT_DEVELOP,
+         MENU_FILE_EXPORT_RELEASE,
       MENU_FILE_CLOSE_PROJECT,
       MENU_FILE_EXIT,
    MENU_EDIT,
@@ -463,6 +466,14 @@ project_changed(void);
  */
 Eina_Bool
 project_close_request(App_Data *ap, const char *msg);
+
+/**
+ * Export project as develop edj file.
+ *
+ * @ingroup Window
+ */
+void
+project_export_develop(void);
 
 /**
  * Update Statusbar field that contains time of last save of current

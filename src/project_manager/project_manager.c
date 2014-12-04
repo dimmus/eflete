@@ -929,11 +929,11 @@ _develop_export(void *data,
 }
 
 Project_Thread *
-pm_projec_develop_export(Project *project,
-                         const char *path,
-                         PM_Project_Progress_Cb func_progress,
-                         PM_Project_End_Cb func_end,
-                         const void *data)
+pm_project_develop_export(Project *project,
+                          const char *path,
+                          PM_Project_Progress_Cb func_progress,
+                          PM_Project_End_Cb func_end,
+                          const void *data)
 {
    Project_Thread *worker;
    Eina_Bool result;

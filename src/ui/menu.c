@@ -29,6 +29,9 @@
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
    MENU_FILE_EXPORT_EDC,
+   MENU_FILE_EXPORT,
+   MENU_FILE_EXPORT_DEVELOP,
+   MENU_FILE_EXPORT_RELEASE,
    MENU_VIEW_WORKSPACE,
    MENU_VIEW_WORKSPACE_ZOOM_IN,
    MENU_VIEW_WORKSPACE_ZOOM_OUT,
@@ -102,6 +105,9 @@ _menu_cb(void *data,
          break;
       case MENU_FILE_EXPORT_EDC:
          /* TODO: add implementation here */
+         break;
+      case MENU_FILE_EXPORT_DEVELOP:
+         project_export_develop();
          break;
       case MENU_FILE_CLOSE_PROJECT:
            {
@@ -221,6 +227,9 @@ ui_menu_add(App_Data *ap)
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, NULL, _("Save"))
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as..."))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);

@@ -905,6 +905,143 @@ project_changed(void)
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
 }
 
+/******************************************************************************/
+
+/*TODO: I think, this functionality need move to dialogs */
+static void
+_replace_cb(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = true;
+   ecore_main_loop_quit();
+}
+
+static void
+_ecancel_cb(void *data,
+            Evas_Object *obj __UNUSED__,
+            void *ei __UNUSED__)
+{
+   Eina_Bool *res = data;
+   *res = false;
+   ecore_main_loop_quit();
+}
+
+
+Eina_Bool
+export_replace_request(Evas_Object *parent, const char *msg)
+{
+   Eina_Bool result = false;
+   Evas_Object *popup, *btn, *label;
+   Eina_Stringshare *title;
+
+   title = eina_stringshare_printf(_("Export project"));
+   popup = elm_popup_add(parent);
+   elm_object_style_set(popup, "eflete");
+   elm_object_part_text_set(popup, "title,text", title);
+   LABEL_ADD(popup, label, msg);
+   elm_object_content_set(popup, label);
+   BUTTON_ADD(popup, btn, _("Replace"));
+   evas_object_smart_callback_add(btn, "clicked", _replace_cb, &result);
+   elm_object_part_content_set(popup, "button1", btn);
+   BUTTON_ADD(popup, btn, _("Cancel"));
+   evas_object_smart_callback_add(btn, "clicked", _ecancel_cb, &result);
+   elm_object_part_content_set(popup, "button2", btn);
+   evas_object_show(popup);
+   eina_stringshare_del(title);
+
+   ecore_main_loop_begin();
+
+   evas_object_del(popup);
+
+   return result;
+}
+
+
+static Eina_Bool
+_export_splash_setup(void *data)
+{
+   App_Data *ap;
+   Project_Thread *thread;
+   const char *path;
+
+   ap = app_data_get();
+   path = (const char *)data;
+   thread = pm_project_develop_export(ap->project, path,
+                                      _progress_print, _progress_end,
+                                      ap);
+   if (!thread) return false;
+
+   return true;
+}
+
+static Eina_Bool
+_export_splash_teardown(void *data)
+{
+   eina_stringshare_del(data);
+   return true;
+}
+
+static void
+_on_export_done(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *event_info)
+{
+   const char *selected;
+   Eet_File *ef;
+   Evas_Object *win;
+   App_Data *ap;
+
+   ap = app_data_get();
+   win = (Evas_Object *)data;
+   selected = (const char *)event_info;
+   if (!selected) goto close;
+   fprintf(stdout, "selected file: '%s'\n", selected);
+   /* check the existing file */
+   ef = eet_open(selected, EET_FILE_MODE_READ);
+   if (ef)
+     {
+        eet_close(ef);
+        if (!export_replace_request(win, _("The file already exists.  Replacing it will overwrite its contents.")))
+          return;
+     }
+   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown, (void *)eina_stringshare_add(selected));
+   evas_object_focus_set(ap->splash, true);
+   evas_object_show(ap->splash);
+
+close:
+   evas_object_del(win);
+}
+
+static Eina_Bool
+_edje_filter(const char *path,
+             Eina_Bool dir,
+             void *data __UNUSED__)
+{
+   if (dir) return true;
+
+   if (eina_str_has_extension(path, ".edj"))
+     return true;
+   return false;
+}
+
+void
+project_export_develop(void)
+{
+   Evas_Object *win, *bg, *fs;
+
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edj file (develop)"), _fs_close, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+   FILESELECTOR_ADD(fs, win, _on_export_done, win);
+   elm_fileselector_is_save_set(fs, true);
+   elm_fileselector_custom_filter_append(fs, _edje_filter, NULL, "Edje Files");
+   elm_win_resize_object_add(win, fs);
+}
+
 /*************************** Close request popup ******************************/
 /*TODO: I think, this functionality need move to dialogs */
 static void
