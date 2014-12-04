@@ -532,7 +532,14 @@ Project *
 pm_project_open(const char *path)
 {
    Eet_File *ef;
-   Project *project = NULL;
+   Project *pro = NULL;
+   struct _Project_Lock
+     {
+       Project *project;
+       Eina_Lock mutex;
+     };
+   struct _Project_Lock *pro_lock = mem_calloc(1, sizeof(struct _Project_Lock));
+   eina_lock_new(&pro_lock->mutex);
 
    _project_descriptor_init();
 
@@ -540,20 +547,25 @@ pm_project_open(const char *path)
    if (!ef)
      goto error;
 
-   project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
+   pro_lock->project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
-   if (!project) goto error;
+   if (!pro_lock->project) goto error;
 
+   eina_lock_take(&pro_lock->mutex);
 
-   project->changed = false;
-   project->pro = ef;
-   project->widgets = wm_widgets_list_new(project->dev);
-   project->layouts = wm_layouts_list_new(project->dev);
-   pm_project_meta_data_get(project, &project->name, NULL, NULL, NULL, NULL);
-   if (!project->name) project->name = eina_stringshare_add(_("No title"));
+   pro_lock->project->changed = false;
+   pro_lock->project->pro = ef;
+   pro_lock->project->widgets = wm_widgets_list_new(pro_lock->project->dev);
+   pro_lock->project->layouts = wm_layouts_list_new(pro_lock->project->dev);
+   pm_project_meta_data_get(pro_lock->project, &pro_lock->project->name, NULL, NULL, NULL, NULL);
+   if (!pro_lock->project->name) pro_lock->project->name = eina_stringshare_add(_("No title"));
+   eina_lock_release(&pro_lock->mutex);
 
 error:
-   return project;
+   eina_lock_free(&pro_lock->mutex);
+   pro = pro_lock->project;
+   free(pro_lock);
+   return pro;
 }
 
 static Eina_Bool
