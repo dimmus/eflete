@@ -948,3 +948,87 @@ pm_project_develop_export(Project *project,
 
    return worker;
 }
+
+static void *
+_enventor_save(void *data,
+               Eina_Thread *thread)
+{
+   Project_Thread *worker;
+   pthread_attr_t attr;
+   Ecore_Event_Handler *cb_exit = NULL,
+                       *cb_msg_stdout = NULL,
+                       *cb_msg_stderr = NULL;
+   Ecore_Exe_Flags flags  = ECORE_EXE_PIPE_READ |
+                            ECORE_EXE_PIPE_READ_LINE_BUFFERED |
+                            ECORE_EXE_PIPE_ERROR |
+                            ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
+   Eina_Stringshare *cmd, *edc, *edj, *options;
+   Ecore_Exe *exe_cmd;
+   pid_t exe_pid;
+
+   /** try to change the detach state */
+   if (!pthread_getattr_np(*thread, &attr))
+     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+   pthread_attr_destroy(&attr);
+   sleep(1);
+
+   worker = (Project_Thread *)data;
+
+   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, worker);
+   WORKER_LOCK_TAKE;
+      if (worker->func_progress)
+        {
+           cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
+           cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
+        }
+      edc = eina_stringshare_printf("%s/tmp.edc", worker->project->develop_path);
+      edj = eina_stringshare_printf("%s/tmp.edj", worker->project->develop_path);
+      options = eina_stringshare_printf("-id %s/images -fd %s/fonts -sd %s/sounds -dd %s/data",
+                                        worker->project->develop_path,
+                                        worker->project->develop_path,
+                                        worker->project->develop_path,
+                                        worker->project->develop_path);
+      cmd = eina_stringshare_printf("edje_cc -v %s %s %s", options, edc, edj);
+      THREAD_TESTCANCEL;
+   WORKER_LOCK_RELEASE;
+   DBG("Run command for compile: %s", cmd);
+   exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
+   exe_pid = ecore_exe_pid_get(exe_cmd);
+   THREAD_TESTCANCEL;
+   /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
+    * function what provide wait end of forked process.*/
+   waitpid(exe_pid, NULL, 0);
+
+   ecore_event_handler_del(cb_exit);
+   if (worker->func_progress)
+     {
+        ecore_event_handler_del(cb_msg_stdout);
+        ecore_event_handler_del(cb_msg_stderr);
+     }
+
+   THREAD_TESTCANCEL;
+
+   END_SEND(PM_PROJECT_SUCCESS)
+
+   return NULL;
+}
+
+Project_Thread *
+pm_project_enventor_save(Project *project,
+                         PM_Project_Progress_Cb func_progress,
+                         PM_Project_End_Cb func_end,
+                         const void *data)
+{
+   Project_Thread *worker;
+   Eina_Bool result;
+
+   WORKER_CREATE(func_progress, func_end, data, project,
+                 NULL, NULL, NULL, NULL, NULL);
+
+   result = eina_thread_create(&worker->thread, EINA_THREAD_URGENT, -1,
+                               (void *)_enventor_save, worker);
+   if (!result)
+     WORKER_FREE();
+
+   return worker;
+}
