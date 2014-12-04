@@ -19,6 +19,11 @@
 
 #include "wizard_common.h"
 
+static Elm_Entry_Filter_Accept_Set accept_name = {
+   .accepted = NULL,
+   .rejected = STYLE_NAME_BANNED_SYMBOLS
+};
+
 static void
 _after_animation_close(void *data,
                        Evas_Object *obj __UNUSED__,
@@ -299,7 +304,9 @@ wizard_import_common_add(const char *layout_name)
 
    //label.name
    elm_object_part_text_set(layout, "label.name", _("Project name:"));
-   ENTRY_ADD(layout, wiew->name, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(layout, wiew->name, true, DEFAULT_STYLE)
+   elm_entry_markup_filter_append(wiew->name,
+                                  elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(layout, "swallow.name", wiew->name);
    //label.path
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));
