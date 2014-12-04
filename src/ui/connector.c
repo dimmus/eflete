@@ -757,7 +757,11 @@ _on_open_done(void *data,
    win = (Evas_Object *)data;
    selected = (const char *)event_info;
 
-   if (!selected) _fs_close(NULL, win, NULL);
+   if (!selected)
+     {
+        _fs_close(NULL, win, NULL);
+        return;
+     }
 
    ap = app_data_get();
    ap->project = pm_project_open(selected);
