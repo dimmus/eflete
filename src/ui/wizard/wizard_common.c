@@ -61,7 +61,7 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
    Wizard_Import_Edj_Win *wiew;
 
    wiew = (Wizard_Import_Edj_Win *)data;
-   elm_object_text_set(wiew->splash, progress_string);
+   elm_object_part_text_set(wiew->splash, "label.info", progress_string);
 
    return true;
 }
