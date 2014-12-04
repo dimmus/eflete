@@ -860,10 +860,39 @@ _setup_save_splash(void *data)
    Project_Thread *thread;
 
    ap = (App_Data *)data;
-   thread = pm_project_save(ap->project,
-                            _progress_print,
-                            _progress_end,
-                            data);
+#ifdef HAVE_ENVENTOR
+   Eina_Stringshare *code = NULL;
+   Eina_Stringshare *path = NULL;
+   FILE *f;
+
+   if (ap->enventor_mode)
+     {
+        path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
+        code = enventor_object_text_get(ap->enventor);
+        f = fopen(path, "w");
+        if (!f)
+          {
+             ERR("Could't open file '%s'", path);
+             return false;
+          }
+        fputs(code, f);
+        fclose(f);
+        eina_stringshare_del(path);
+        thread = pm_project_enventor_save(ap->project,
+                                          _progress_print,
+                                          _progress_end,
+                                          data);
+     }
+   else
+     {
+#endif /* HAVE_ENVENTOR */
+         thread = pm_project_save(ap->project,
+                                  _progress_print,
+                                  _progress_end,
+                                  data);
+#ifdef HAVE_ENVENTOR
+     }
+#endif /* HAVE_ENVENTOR */
    if (!thread) return false;
 
    return true;

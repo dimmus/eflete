@@ -100,6 +100,7 @@ struct _App_Data
    History *history;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
 #ifdef HAVE_ENVENTOR
+   Evas_Object *enventor;
    Eina_Bool enventor_mode : 1;
 #else
 #endif /* HAVE_ENVENTOR */

@@ -328,6 +328,7 @@ _on_tab_activated(void *data,
         path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
         eina_stringshare_del(pm_project_style_source_code_export(ap->project, pd->style, NULL));
         enventor_object_file_set(pd->code, path);
+        enventor_object_focus_set(pd->code, true);
         eina_stringshare_del(path);
      }
    else
@@ -384,14 +385,17 @@ ui_property_add(Evas_Object *parent)
 
 #ifdef HAVE_ENVENTOR
    Evas_Object *code_bg;
+
    code_bg = elm_bg_add(tabs);
    elm_bg_color_set(code_bg, ENVENTOR_CODE_BG_COLOR);
 
    pd->code = enventor_object_add(code_bg);
+   (app_data_get())->enventor = pd->code;
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
                                   _on_tab_activated, pd);
 
    elm_object_content_set(code_bg, pd->code);
+
    ewe_tabs_item_content_set(tabs, it, code_bg);
 #else
    pd->code = elm_entry_add(tabs);
