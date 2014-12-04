@@ -417,6 +417,7 @@ _project_import_edc(void *data,
    Eina_Stringshare *cmd;
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
+   int edje_cc_res = 0, waitpid_res = 0;
 
    /** try to change the detach state */
    if (!pthread_getattr_np(*thread, &attr))
@@ -446,13 +447,20 @@ _project_import_edc(void *data,
    THREAD_TESTCANCEL;
    /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
     * function what provide wait end of forked process.*/
-   waitpid(exe_pid, NULL, 0);
+   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
 
    ecore_event_handler_del(cb_exit);
    if (worker->func_progress)
      {
         ecore_event_handler_del(cb_msg_stdout);
         ecore_event_handler_del(cb_msg_stderr);
+     }
+
+   if ((waitpid_res == -1) ||
+       (WIFEXITED(edje_cc_res) && WEXITSTATUS(edje_cc_res) != 0 ))
+     {
+        END_SEND(PM_PROJECT_ERROR);
+        return NULL;
      }
 
    THREAD_TESTCANCEL;

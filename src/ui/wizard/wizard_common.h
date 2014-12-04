@@ -62,6 +62,8 @@ struct _Wizard_Import_Edj_Win
    Evas_Object *fs;
    Project_Thread *thread;
    Splash_Cb splash_setup_func;
+
+   Eina_Strbuf *progress_log;
 };
 
 typedef struct _Wizard_Import_Edj_Win Wizard_Import_Edj_Win;

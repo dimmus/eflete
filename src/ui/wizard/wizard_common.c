@@ -59,10 +59,12 @@ Eina_Bool
 _progress_print(void *data, Eina_Stringshare *progress_string)
 {
    Wizard_Import_Edj_Win *wiew;
-
    wiew = (Wizard_Import_Edj_Win *)data;
    elm_object_part_text_set(wiew->splash, "label.info", progress_string);
 
+   if (wiew->progress_log)
+     eina_strbuf_append_printf(wiew->progress_log,
+                               " > %s<br>", progress_string);
    return true;
 }
 
@@ -94,8 +96,29 @@ _progress_end(void *data, PM_Project_Result result)
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
      }
+
    ecore_file_recursive_rm(wiew->tmp_dir_path);
+
    splash_del(wiew->splash);
+
+   if (result != PM_PROJECT_SUCCESS)
+     {
+        if (wiew->progress_log)
+          {
+             NOTIFY_WARNING(_("Errors occured on importing: <br>%s"),
+                            eina_strbuf_string_get(wiew->progress_log));
+          }
+        else
+          {
+             NOTIFY_WARNING(_("Errors occured on importing."));
+          }
+     }
+
+   if (wiew->progress_log)
+     {
+        eina_strbuf_free(wiew->progress_log);
+        wiew->progress_log = NULL;
+     }
 }
 
 static Eina_Bool

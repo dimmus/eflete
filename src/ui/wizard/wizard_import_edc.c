@@ -394,6 +394,8 @@ _splash_setup_import_edc(void *data)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
+   wiew->progress_log = eina_strbuf_new();
+
    wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
                                         elm_entry_entry_get(wiew->path),
                                         elm_entry_entry_get(wiew->edj),
@@ -454,6 +456,7 @@ _splash_setup_new_project(void *data)
                                         _progress_print,
                                         _progress_end,
                                         wiew);
+   wiew->progress_log = eina_strbuf_new();
 
    eina_strbuf_free(edc);
    eina_strbuf_free(flags);
