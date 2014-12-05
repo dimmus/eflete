@@ -507,7 +507,8 @@ ui_part_back(App_Data *ap)
    elm_genlist_clear(history_list);
 
    groupedit = ws_groupedit_get(ap->workspace);
-   evas_object_smart_callback_add(groupedit, "object,area,changed", _live_view_update, ap);
+   evas_object_smart_callback_del_full(groupedit, "object,area,changed",
+                                       _live_view_update, ap);
    evas_object_smart_callback_del_full(ap->workspace, "part,name,changed",
                                        _part_name_change, ap);
 
