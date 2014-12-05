@@ -1326,9 +1326,24 @@ found:
           }
         wm_class_free(class_st);
      }
+
    style_work->isModify = true;
    project_changed();
    ui_widget_list_class_data_reload(genlist, widget->classes);
+
+   /* deleting widget */
+   if (elm_genlist_items_count(genlist) == 0)
+     {
+        Evas_Object *widget_list = ui_block_widget_list_get(ap);
+        Evas_Object *naviframe = evas_object_data_get(widget_list, "nf_widgets");
+        Elm_Object_Item *item_gl_widgets = elm_naviframe_item_pop(naviframe);
+        elm_naviframe_item_pop_to(item_gl_widgets);
+        genlist = elm_object_item_part_content_get(elm_naviframe_top_item_get(naviframe),
+                                                   "elm.swallow.content");
+        eoi = elm_genlist_selected_item_get(genlist);
+        elm_object_item_del(eoi);
+     }
+
    return true;
 }
 
