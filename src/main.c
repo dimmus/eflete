@@ -95,14 +95,15 @@ elm_main(int argc, char **argv)
 
         if (open)
           {
-             if (eina_str_has_suffix(open, ".pro"))
+             if ((eina_str_has_suffix(open, ".pro")) &&
+                 (ecore_file_exists(open)))
                {
                   ap->project = pm_project_open(open);
                   blocks_show(ap);
                }
              else
                {
-                  ERR(_("Can not open file '%s'. Maybe this file not Eflete project."), open);
+                  ERR(_("Can not open file '%s'. Wrong path or file format."), open);
                   return 1;
                }
           }
