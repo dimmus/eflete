@@ -89,7 +89,7 @@ EFLETE_TEST (wm_style_copy_test_p)
    wm_style_data_load(style, e, file);
    /* ---------------------------------------- */
 
-   ck_assert_msg(wm_style_copy(new_style->obj, style->obj, copy_name, file, new_style), "Cannot copy.");
+   ck_assert_msg(wm_style_copy(new_style->obj, group_name, copy_name, file, new_style), "Cannot copy.");
    ck_assert_msg(edje_edit_group_exist(new_style->obj, copy_name), "Group is not exist.");
    wm_style_data_load(new_style, e, file);
    sig_new_list = wm_program_signals_list_get(new_style);
@@ -155,7 +155,7 @@ EFLETE_TEST (wm_style_copy_test_n1)
    new_style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
    wm_style_data_load(style, e, file);
    /* ---------------------------------------- */
-   ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, copy_name, file, new_style), "Copied. Error.");
+   ck_assert_msg(!wm_style_copy(new_style->obj, group_name, copy_name, file, new_style), "Copied. Error.");
 
    wm_widgets_list_free(widget_list);
    elm_shutdown();
@@ -222,9 +222,9 @@ EFLETE_TEST (wm_style_copy_test_n2)
    wm_style_data_load(style, e, file);
 
    ck_assert_msg(!wm_style_copy(NULL, NULL, copy_name, file, new_style), "Copied. Error.");
-   ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, NULL, file, new_style), "Copied. Error.");
-   ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, copy_name, NULL, new_style), "Copied. Error.");
-   ck_assert_msg(!wm_style_copy(new_style->obj, style->obj, copy_name, file, NULL), "Copied. Error.");
+   ck_assert_msg(!wm_style_copy(new_style->obj, group_name, NULL, file, new_style), "Copied. Error.");
+   ck_assert_msg(!wm_style_copy(new_style->obj, group_name, copy_name, NULL, new_style), "Copied. Error.");
+   ck_assert_msg(!wm_style_copy(new_style->obj, group_name, copy_name, file, NULL), "Copied. Error.");
 
    wm_widgets_list_free(widget_list);
    elm_shutdown();

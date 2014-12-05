@@ -107,7 +107,6 @@ _on_popup_btn_yes(void *data,
 
    Eina_Inlist *l =NULL;
    Eina_List *styles = NULL;
-   Evas *canvas = NULL;
 
 #define STRING_CLEAR\
         eina_stringshare_del(style_name);\
@@ -169,8 +168,6 @@ _on_popup_btn_yes(void *data,
         eina_stringshare_del(full_name);
         return;
      }
-
-   canvas = evas_object_evas_get(ap->workspace);
 
    /* Trying search same class in template with default style */
    EINA_INLIST_FOREACH_SAFE(source_wdg->classes, l, source_class)
@@ -256,10 +253,12 @@ _on_popup_btn_yes(void *data,
 
    if (dest_style->isAlias) dest_style = dest_style->main_group;
    /* call method, which copy all parts and their params into new style */
-   if (wm_style_copy(dest_style->obj, source_style->obj, full_name,
+   if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
                      ap->project->dev, style))
      {
-        wm_style_data_load(style, canvas, ap->project->dev);
+        wm_widgets_list_objects_load(ap->project->widgets,
+                                     evas_object_evas_get(ap->win),
+                                     ap->project->dev);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
      }
