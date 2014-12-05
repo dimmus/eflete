@@ -194,24 +194,18 @@ live_view_theme_update(Live_View *live, Project *project)
 {
    Eina_Stringshare *path;
 
+   if ((!live) || (!project) || (!live->object)) return false;
 #ifdef HAVE_ENVENTOR
    if ((app_data_get())->enventor_mode)
      path = eina_stringshare_printf("%s/tmp.edj", (app_data_get())->project->develop_path);
    else
 #endif /* HAVE_ENVENTOR */
      path = eina_stringshare_add(project->dev);
-   if ((!live) || (!project) || (!live->object)) return false;
-   if ((project->current_style) && (project->current_style->__type == LAYOUT))
-     {
-        elm_layout_file_set(live->object, path,
-                            project->current_style->full_group_name);
-        return true;
-     }
-
    if ((!project->current_style) || (!project->current_style->parts))
      {
         WARN("Could'nt apply the empty style to live view.");
         live_view_widget_style_unset(live);
+        eina_stringshare_del(path);
         return false;
      }
 
@@ -238,7 +232,16 @@ live_view_theme_update(Live_View *live, Project *project)
                              project->current_style->full_group_name))
      {
         ERR("Something bad happened with live view or opened project file! \n");
+        eina_stringshare_del(path);
         return false;
+     }
+
+   if (project->current_style->__type == LAYOUT)
+     {
+        elm_layout_file_set(live->object, path,
+                            project->current_style->full_group_name);
+        eina_stringshare_del(path);
+        return true;
      }
 
    eina_stringshare_del(path);
