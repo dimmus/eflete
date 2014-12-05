@@ -1002,6 +1002,10 @@ _enventor_save(void *data,
    DBG("Run command for compile: %s", cmd);
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
+   eina_stringshare_del(cmd);
+   eina_stringshare_del(edc);
+   eina_stringshare_del(edj);
+   eina_stringshare_del(options);
    THREAD_TESTCANCEL;
    /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
     * function what provide wait end of forked process.*/
@@ -1015,6 +1019,7 @@ _enventor_save(void *data,
      }
 
    THREAD_TESTCANCEL;
+
 
    END_SEND(PM_PROJECT_SUCCESS)
 
