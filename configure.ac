@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.11.0])
 m4_define([elm_version], [1.11.0])
-m4_define([enventor_version], [0.4.1])
+m4_define([enventor_version], [0.4.0])
 m4_define([ewe_version], [0.2.0])
 
 EFLETE_INIT
