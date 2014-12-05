@@ -20,6 +20,12 @@
 #include "main_window.h"
 #include "preference.h"
 
+#ifdef HAVE_ENVENTOR
+#define ENVENTOR_BETA_API_SUPPORT
+#include "Enventor.h"
+#include "main_window.h"
+#endif
+
 static void
 _add_part_dialog(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -864,7 +870,7 @@ _setup_save_splash(void *data)
 #ifdef HAVE_ENVENTOR
    Eina_Stringshare *path = NULL;
    char *code;
-   long f_size;
+   size_t f_size;
    size_t code_s;
    FILE *f;
 
@@ -884,7 +890,13 @@ _setup_save_splash(void *data)
         fseek(f, 0, SEEK_SET);
         code_s = sizeof(char) * f_size;
         code = mem_malloc(code_s);
-        fread(code, 1, f_size, f);
+        if (fread(code, 1, f_size, f) != f_size)
+          {
+             ERR("Failed to read from file'%s'", path);
+             fclose(f);
+             free(code);
+             return false;
+          }
         fseek(f, 0, SEEK_SET);
 
         fputs("data.item: \"version\" \"110\";\n\n", f);
