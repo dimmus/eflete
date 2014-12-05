@@ -1066,7 +1066,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 }
 
 #define MIN_SP - 1.0
-#define MARGIN_MIN_SP -9999.0
+#define MARGIN_MIN_SP 0.0
 #define MAX_SP 9999.0
 #define MAX_PERCENT 100.0
 #define STEP_SP 1.0
