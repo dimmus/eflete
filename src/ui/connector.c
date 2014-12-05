@@ -1394,12 +1394,12 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
 }
 
 static void
-_panes_pos_setup(Evas_Object *panes, double value, Eina_Bool disabled)
+_panes_pos_setup(Evas_Object *panes, double value, Eina_Bool fixed)
 {
    if (!panes) return;
 
    elm_panes_content_left_size_set(panes, value);
-   elm_object_disabled_set(panes, disabled);
+   elm_panes_fixed_set(panes, fixed);
 }
 
 Eina_Bool
