@@ -1,5 +1,5 @@
 EFLETE_VERSION([0], [4], [0], [release])
-AC_INIT([eflete], [eflete_version-alpha], [enlightenment-devel@lists.sourceforge.net],
+AC_INIT([eflete], [eflete_version-beta], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
