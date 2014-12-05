@@ -46,7 +46,6 @@
  * @procedure
  * @step 1 Call ui_menu_add.
  * @step 2 Check returned value.
- * @step 3 Check (App_Data)->menu_hash.
  * </td>
  * <td>(App_Data *) app_data</td>
  * <td>All checks are passed</td>
@@ -57,7 +56,7 @@
 EFLETE_TEST(ui_menu_add_test_p)
 {
    App_Data *app_data = NULL;
-   Evas_Object *ret = NULL;
+   Menu *ret = NULL;
 
    elm_init(0, 0);
    app_init();
@@ -68,7 +67,6 @@ EFLETE_TEST(ui_menu_add_test_p)
 
    ret = ui_menu_add(app_data);
    ck_assert_msg(ret != NULL, "Failed to create menu");
-   ck_assert_msg(app_data->menu_hash != NULL, "Failed to create hash of menu items");
 
    app_shutdown();
    elm_shutdown();
@@ -98,7 +96,7 @@ END_TEST
  */
 EFLETE_TEST(ui_menu_add_test_n1)
 {
-   Evas_Object *ret = NULL;
+   Menu *ret = NULL;
 
    elm_init(0, 0);
    app_init();
@@ -134,7 +132,7 @@ END_TEST
 EFLETE_TEST(ui_menu_add_test_n2)
 {
    App_Data *app_data = NULL;
-   Evas_Object *ret = NULL;
+   Menu *ret = NULL;
 
    elm_init(0, 0);
    app_init();

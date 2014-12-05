@@ -81,7 +81,7 @@ app_free()
 Eina_Bool
 app_init()
 {
-   Eina_Stringshare *config_path, *swap_path;
+   Eina_Stringshare *config_path;
 
    setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
@@ -121,8 +121,6 @@ app_init()
 
    config_path = eina_stringshare_add(EFLETE_SETT_PATH);
    if (!ecore_file_exists(config_path)) ecore_file_mkdir(config_path);
-   swap_path = eina_stringshare_add(EFLETE_SWAP_PATH);
-   if (!ecore_file_exists(swap_path)) ecore_file_mkdir(swap_path);
 
    app_data_get();
 
@@ -137,7 +135,6 @@ app_init()
    elm_theme_extension_add(NULL, EFLETE_THEME);
 
    eina_stringshare_del(config_path);
-   eina_stringshare_del(swap_path);
    return true;
 }
 

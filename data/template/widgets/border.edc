@@ -39,7 +39,7 @@ group { name: "elm/ews/decoration/default";
    images.image: "sym_up_dark_selected.png" COMP;
    images.image: "sym_up_light_normal.png" COMP;
    images.image: "sym_up_light_selected.png" COMP;
-   images.image: "glow_round_corners_small.png" COMP;
+   images.image: "glow_round_corners.png" COMP;
    images.image: "knob_round_small_busy.png" COMP;
    parts {
       part { name: "shadow"; mouse_events: 0;
@@ -792,7 +792,7 @@ group { name: "elm/border/base/default";
    images.image: "sym_up_dark_selected.png" COMP;
    images.image: "sym_up_light_normal.png" COMP;
    images.image: "sym_up_light_selected.png" COMP;
-   images.image: "glow_round_corners_small.png" COMP;
+   images.image: "glow_round_corners.png" COMP;
    images.image: "knob_round_small_busy.png" COMP;
 
    // XXX: trhis is UNTESTED!!! need wl to test!

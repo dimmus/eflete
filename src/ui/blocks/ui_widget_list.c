@@ -916,10 +916,6 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
                                                  "elm.swallow.content");
    elm_genlist_select_mode_set(gl_layouts, ELM_OBJECT_SELECT_MODE_ALWAYS);
 
-
-   wm_widgets_list_objects_load(widget_list,
-                               evas_object_evas_get(gl_widgets),
-                               project->dev);
    EINA_INLIST_FOREACH(widget_list, _widget)
      {
         eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget,
@@ -927,10 +923,6 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
                                       _wl_item_selected, NULL);
         elm_object_item_data_set(eoi, _widget);
      }
-
-   wm_layouts_list_objects_load(project->layouts,
-                               evas_object_evas_get(gl_widgets),
-                               project->dev);
 
    EINA_INLIST_FOREACH(project->layouts, _layout)
      {
@@ -1217,3 +1209,18 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style)
      }
 }
 
+Eina_Bool
+ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
+{
+   Ewe_Tabs_Item * tab_item;
+   const Eina_List *tabs_list;
+
+   if (!object) return false;
+
+   tabs_list = ewe_tabs_items_list_get(object);
+   tab_item = eina_list_nth(tabs_list, tab_index);
+   if (!tab_item) return false;
+
+   ewe_tabs_active_item_set(object, tab_item);
+   return true;
+}

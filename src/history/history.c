@@ -144,6 +144,7 @@ history_redo(Evas_Object *source, int count)
    Eina_List *next = NULL;
    Module *module = NULL;
    Eina_Bool result = false;
+   App_Data *ap = NULL;
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
 
@@ -185,6 +186,9 @@ history_redo(Evas_Object *source, int count)
 
    if (count > 1) result = history_redo(source, --count);
 
+   ap = app_data_get();
+   pm_project_changed(ap->project);
+
    return result;
 }
 
@@ -197,6 +201,7 @@ history_undo(Evas_Object *source, int count)
    Eina_List *prev = NULL;
    Eina_Bool result = false;
    Module *module = NULL;
+   App_Data *ap = NULL;
 
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
 
@@ -234,6 +239,9 @@ history_undo(Evas_Object *source, int count)
      _history_ui_item_update(module->current_change, true, true);
    else
      elm_genlist_item_selected_set(module->ui_item, true);
+
+   ap = app_data_get();
+   pm_project_changed(ap->project);
 
    return result;
 }

@@ -8,41 +8,61 @@ group { name: "elm/win/inwin/eflete/default";
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            color: 255 0 0 0;
+            visible: 0;
+            color: 0 0 0 50;
          }
          description { state: "clicked" 0.0;
-            inherit: "default" 0.0;
+            visible: 1;
             color: 255 0 0 50;
+         }
+         description { state: "visible" 0.0;
+            visible: 1;
+            color: 0 0 0 50;
          }
       }
       part { name: "pop";
          type: IMAGE;
+         clip_to: "inwin_window_clipper";
          description { state: "default" 0.0;
+            align: 0.5 0.0;
+            rel1.relative: 0.05 -0.05;
+            rel2.relative: 0.95 0.95;
             image {
                normal: "popup-bg.png";
                border: 34 34 34 34;
+               middle: DEFAULT;
             }
+         }
+         description { state: "visible" 0.0;
+            max: 9999 9999;
             rel1.relative: 0.1 0.1;
             rel2.relative: 0.9 0.9;
+            image {
+               normal: "popup-bg.png";
+               border: 34 34 34 34;
+               middle: DEFAULT;
+            }
          }
       }
       part { name: "header";
          type: IMAGE;
+         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
+            align: 0.5 0.0;
             min: 0 39;
             max: 9999 39;
-            align: 0.5 0.0;
-            image {
-               normal: "popup-header-bg.png";
-               border: 11 11 0 0;
-            }
             rel1 {
                to: "pop";
                offset: BORDER_PADDING BORDER_PADDING;
             }
-            rel2
+            rel2 {
                to: "pop";
                offset: -BORDER_PADDING -BORDER_PADDING;
+            }
+            image {
+               normal: "popup-header-bg.png";
+               border: 11 11 0 0;
+               middle: DEFAULT;
             }
          }
       }
@@ -82,6 +102,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
+         clip_to: "inwin_content_clipper";
          description { state: "deafult" 0.0;
             align: 0.0 0.5;
             aspect: 1 1;
@@ -92,6 +113,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.close";
          type: SWALLOW;
+         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 1.0 0.5;
@@ -116,6 +138,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.info";
          type: SWALLOW;
+         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 1.0 0.5;
@@ -130,6 +153,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.text.title";
          type: TEXT;
+         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             color: FN_COL_DEFAULT;
             text {
@@ -181,6 +205,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
+         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             rel1 {
                to: "content_rel1_padding";
@@ -190,6 +215,30 @@ group { name: "elm/win/inwin/eflete/default";
                to: "content_rel2_padding";
                relative: 0.0 0.0;
             }
+         }
+      }
+      part { name: "inwin_window_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1.to: "pop";
+            rel2.to: "pop";
+         }
+         description { state: "visible" 0.0;
+            rel1.to: "pop";
+            rel2.to: "pop";
+         }
+      }
+      part { name: "inwin_content_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1.to: "header_space_rel1_padding";
+            rel2.to: "content_rel2_padding";
+         }
+         description { state: "visible" 0.0;
+            rel1.to: "header_space_rel1_padding";
+            rel2.to: "content_rel2_padding";
          }
       }
    }
@@ -204,38 +253,238 @@ group { name: "elm/win/inwin/eflete/default";
          name: "deeper_block_color";
          action: STATE_SET "clicked" 0.0;
          target: "block_events";
-         transition: LINEAR 0.2;
+         transition: LINEAR 0.0;
          after: "default_block_color";
       }
       program {
          name: "default_block_color";
+         action: STATE_SET "visible" 0.0;
+         target: "block_events";
+         transition: LINEAR 0.0;
+      }
+      program {
+         name: "showing";
+         signal: "show";
+         source: "eflete";
+         action: STATE_SET "visible" 0.0;
+         target: "block_events";
+         target: "inwin_content_clipper";
+         target: "inwin_window_clipper";
+         target: "pop";
+         transition: LINEAR 0.2;
+      }
+      program {
+         name: "hiding";
+         signal: "hide";
+         source: "eflete";
          action: STATE_SET "default" 0.0;
          target: "block_events";
-         transition: LINEAR 0.2;
+         target: "inwin_content_clipper";
+         target: "inwin_window_clipper";
+         target: "pop";
+         transition: LINEAR 0.1;
+         after: "hiding_teardown";
+      }
+      program {
+         name: "hiding_teardown";
+         signal: "teardown";
+         source: "inwin";
+         action: SIGNAL_EMIT "teardown" "eflete";
       }
    }
 }
-#undef BORDER_PADDING
 #define ABOUT_WINDOW_SIZE 400 300
 #define SCROLL_TIME 8.0
 
 group { name: "elm/win/inwin/about_window";
-   inherit: "elm/win/inwin/eflete/default";
    parts {
+      part { name: "block_events";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 0 0 0;
+         }
+         description { state: "clicked" 0.0;
+            color: 255 0 0 50;
+         }
+      }
       part { name: "pop";
+         type: IMAGE;
          description { state: "default" 0.0;
             min: ABOUT_WINDOW_SIZE;
             max: ABOUT_WINDOW_SIZE;
+            rel1.relative: 0.1 0.1;
+            rel2.relative: 0.9 0.9;
+            image {
+               normal: "popup-bg.png";
+               border: 34 34 34 34;
+               middle: DEFAULT;
+            }
          }
       }
-      part { name: "content_clipper";
-         type: RECT;
+      part { name: "header";
+         type: IMAGE;
          description { state: "default" 0.0;
-            rel1 { relative: 0.1 0.22;
+            align: 0.5 0.0;
+            min: 0 39;
+            max: -1 39;
+            rel1 {
+               offset: BORDER_PADDING BORDER_PADDING;
                to: "pop";
             }
-            rel2 { relative: 0.9 0.9;
+            rel2 {
+               offset: -BORDER_PADDING -BORDER_PADDING;
                to: "pop";
+            }
+            image {
+               normal: "popup-header-bg.png";
+               border: 11 11 0 0;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "header_space_rel1_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(4, 4);
+            align: 0.0 0.0;
+            rel1.to: "header";
+            rel2.to: "header";
+         }
+      }
+      part { name: "header_space_rel2_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(4, 4);
+            align: 1.0 1.0;
+            rel1.to: "header";
+            rel2.to: "header";
+         }
+      }
+      part { name: "header_space";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 {
+               to: "header_space_rel1_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "header_space_rel2_padding";
+               relative: 0.0 0.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         description { state: "deafult" 0.0;
+            align: 0.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1.to: "header_space";
+            rel2.to: "header_space";
+         }
+      }
+      part { name: "elm.swallow.close";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1.to: "header_space";
+            rel2.to: "header_space";
+         }
+      }
+      part { name: "button_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 8 0;
+            max: 8 -1;
+            align: 1.0 0.5;
+            rel1.to: "header_space";
+            rel2 {
+               to: "elm.swallow.close";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "elm.swallow.info";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1.to: "header_space";
+            rel2 {
+               to: "button_padding";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "elm.text.title";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: FN_COL_DEFAULT;
+            text {
+               font: FN_B;
+               size: 15;
+               ellipsis: 1.0;
+            }
+            rel1 {
+               to: "elm.swallow.icon";
+               relative: 1.0 0.0;
+            }
+            rel2 {
+               to: "elm.swallow.info";
+               relative: 0.0 1.0;
+            }
+         }
+      }
+      part { name: "content_rel1_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            SET_SIZE(4, 0);
+            rel1 {
+               to: "header";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               relative: 1.0 2.5;
+               offset: -BORDER_PADDING -BORDER_PADDING;
+               to_x: "pop";
+               to_y: "content_clipper";
+            }
+         }
+         description { state: "full" 0.0;
+            align: 0.0 0.0;
+            SET_SIZE(4, 0);
+            rel1 {
+               relative: 0.0 -2.5;
+               to_x: "header";
+               to_y: "content_clipper";
+            }
+            rel2 {
+               relative: 1.0 2.5;
+               offset: -BORDER_PADDING -BORDER_PADDING;
+               to_x: "pop";
+               to_y: "content_clipper";
+            }
+         }
+      }
+      part { name: "content_rel2_padding";
+         type: SPACER;
+         description { state: "default" 0.0;
+            SET_SIZE(4, 0);
+            align: 1.0 1.0;
+            rel1 {
+               to: "header";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to: "pop";
+               offset: -BORDER_PADDING -BORDER_PADDING;
             }
          }
       }
@@ -243,26 +492,28 @@ group { name: "elm/win/inwin/about_window";
          type: SWALLOW;
          clip_to: "content_clipper";
          description { state: "default" 0.0;
-            fixed: 1 1;
             max: ABOUT_WINDOW_SIZE;
-         }
-      }
-      part { name: "content_rel1_padding";
-         type: SPACER;
-         description { state: "default" 0.0;
-            min: 4 0;
-            max: 4 0;
-            align: 0.0 1.0;
-            rel1.to: "header";
-            rel2 { to_y: "content_clipper";
-               relative: 1.0 2.5;
+            fixed: 1 1;
+            rel1 {
+               to: "content_rel1_padding";
+               relative: 1.0 1.0;
+            }
+            rel2 {
+               to: "content_rel2_padding";
+               relative: 0.0 0.0;
             }
          }
-         description { state: "full" 0.0;
-            inherit: "default" 0.0;
-            align: 0.0 0.0;
-            rel1 { to_y: "content_clipper";
-               relative: 0.0 -2.5;
+      }
+      part { name: "content_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.1 0.22;
+               to: "pop";
+            }
+            rel2 {
+               relative: 0.9 0.9;
+               to: "pop";
             }
          }
       }
@@ -271,6 +522,9 @@ group { name: "elm/win/inwin/about_window";
       program { name: "init";
          signal: "load";
          source: "";
+         action: STATE_SET "visible" 0.0;
+         target: "block_events";
+         target: "pop";
          after: "animate_step_1";
       }
       program { name: "animate_step_1";
@@ -284,8 +538,15 @@ group { name: "elm/win/inwin/about_window";
          target: "content_rel1_padding";
          after: "animate_step_1";
       }
+      program {
+         name: "hiding";
+         signal: "hide";
+         source: "eflete";
+         action: SIGNAL_EMIT "teardown" "eflete";
+      }
    }
 }
+#undef BORDER_PADDING
 #undef ABOUT_WINDOW_SIZE
 #undef SCROLL_TIME
 
@@ -609,7 +870,7 @@ group { name: "elm/win/inwin/splash";
             rel2.to: "area.info";
          }
       }
-      part { name: "elm.text";
+      part { name: "label.info";
          type: TEXT;
          clip_to: "clipper.area.info";
          description { state: "default" 0.0;
@@ -887,7 +1148,7 @@ group { name: "elm/win/inwin/splash";
          action: STATE_SET "visible" 0.0;
          transition: LINEAR 0.3;
          target: "bg";
-         target: "elm.text";
+         target: "label.info";
          target: "clipper.area.info";
          after: "anim";
          after: "emit_start";
@@ -901,7 +1162,7 @@ group { name: "elm/win/inwin/splash";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.3;
          target: "bg";
-         target: "elm.text";
+         target: "label.info";
          target: "clipper.area.info";
          after: "emit_teardown";
       }

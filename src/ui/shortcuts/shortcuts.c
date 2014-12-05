@@ -19,6 +19,7 @@
 
 #include "shortcuts.h"
 #include "main_window.h"
+#include "wizard.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
@@ -230,7 +231,7 @@ _style_delete_cb(App_Data *app)
 Eina_Bool
 _new_theme_cb(App_Data *app)
 {
-   new_theme_create(app);
+   wizard_new_project_add(app);
    return true;
 }
 

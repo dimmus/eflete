@@ -1,5 +1,5 @@
 EFLETE_VERSION([0], [4], [0], [release])
-AC_INIT([eflete], [eflete_version-alpha], [enlightenment-devel@lists.sourceforge.net],
+AC_INIT([eflete], [eflete_version-beta], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.11.0])
 m4_define([elm_version], [1.11.0])
-m4_define([enventor_version], [0.4.1])
+m4_define([enventor_version], [0.4.0])
 m4_define([ewe_version], [0.2.0])
 
 EFLETE_INIT
@@ -146,7 +146,6 @@ EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDC_PATH=\\\"${datadir}/eflete/themes/default
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_IMAGES_PATH=\\\"${datadir}/eflete/themes/default/template/images\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_SOUNDS_PATH=\\\"${datadir}/eflete/themes/default/template/sounds\\\" "
 EFLETE_DEFINE+=" -DEFLETE_SETT_PATH=\\\"${HOME}/.eflete/\\\" "
-EFLETE_DEFINE+=" -DEFLETE_SWAP_PATH=\\\"${HOME}/.eflete/swap/\\\" "
 AC_SUBST([EFLETE_DEFINE])
 
 AM_PROG_CC_C_O

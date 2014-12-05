@@ -18,8 +18,6 @@
  */
 
 #include <Ecore_Getopt.h>
-#include "eflete.h"
-#include "config.h"
 #include "main_window.h"
 
 #ifdef HAVE_ENVENTOR
@@ -34,7 +32,7 @@ static const Ecore_Getopt options = {
    "(C) 2013-2014 Samsung Electronics.",
    "GNU Library General Public License version 2",
    N_("This application was written for Enlightenment, to use EFL\n"
-   "and design to a create and modify a Elementary widgets style.\n"),
+   "and design to create and modify Elementary widgets styles.\n"),
    EINA_TRUE,
    {
       ECORE_GETOPT_STORE_STR('o', "open", N_("Eflete project file")),
@@ -95,14 +93,24 @@ elm_main(int argc, char **argv)
 
         if (open)
           {
-             if (eina_str_has_suffix(open, ".pro"))
+             if ((eina_str_has_suffix(open, ".pro")) &&
+                 (ecore_file_exists(open)))
                {
                   ap->project = pm_project_open(open);
                   blocks_show(ap);
+                  wm_widgets_list_objects_load(ap->project->widgets,
+                                               evas_object_evas_get(ap->win),
+                                               ap->project->dev);
+                  wm_layouts_list_objects_load(ap->project->layouts,
+                                               evas_object_evas_get(ap->win),
+                                               ap->project->dev);
+
+                  if (!eina_inlist_count(ap->project->widgets))
+                    ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
                }
              else
                {
-                  ERR(_("Can not open file '%s'. Maybe this file not Eflete project."), open);
+                  ERR(_("Can not open file '%s'. Wrong path or file format."), open);
                   return 1;
                }
           }

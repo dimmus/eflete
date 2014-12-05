@@ -44,6 +44,7 @@ struct _Prop_Data
    Evas_Object *workspace;
    Style *style;
    Part *part;
+   Ewe_Tabs_Item *visual_tab;
    Evas_Object *visual;
    Evas_Object *code;
 #ifndef HAVE_ENVENTOR
@@ -305,32 +306,17 @@ prop_item_label_update(Evas_Object *item,
 }
 
 #ifdef HAVE_ENVENTOR
-static Eina_Stringshare *
-_on_code_mode_activated_file_create(Prop_Data *pd)
-{
-   const char *code = edje_edit_source_generate(pd->style->obj);
-   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"tmp.edc");
-
-   FILE *fp = fopen(path, "w");
-   if (!fp)
-     {
-        EINA_LOG_ERR("Failed to open file \"%s\"", path);
-        eina_stringshare_del(path);
-        return NULL;
-     }
-
-   fputs(code, fp);
-   fclose(fp);
-   return path;
-}
-
 static void
 _on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
 {
+   App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Prop_Data *pd = (Prop_Data *)data;
+
+   ap = app_data_get();
+
    Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
    Eina_Stringshare *path;
 
@@ -338,13 +324,17 @@ _on_tab_activated(void *data,
 
    if (!strcmp(item_name, "Code"))
      {
-        code_edit_mode_switch(app_data_get(), true);
-        path = _on_code_mode_activated_file_create(pd);
+        code_edit_mode_switch(ap, true);
+        path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
+        eina_stringshare_del(pm_project_style_source_code_export(ap->project, pd->style, NULL));
         enventor_object_file_set(pd->code, path);
+        enventor_object_focus_set(pd->code, true);
         eina_stringshare_del(path);
      }
    else
      code_edit_mode_switch(app_data_get(), false);
+
+   ap->enventor_mode = !ap->enventor_mode;
 }
 
 #else
@@ -354,11 +344,17 @@ _code_of_group_setup(Prop_Data *pd)
 {
    char *markup_code;
    const char *colorized_code;
-   markup_code = elm_entry_utf8_to_markup(edje_edit_source_generate(pd->style->obj));
+   Eina_Stringshare *code;
+   App_Data *ap;
+
+   ap = app_data_get();
+   code = pm_project_style_source_code_export(ap->project, pd->style, NULL);
+   markup_code = elm_entry_utf8_to_markup(code);
    colorized_code = color_apply(pd->color_data, markup_code,
                                 strlen(markup_code), NULL, NULL);
    if (colorized_code) elm_object_text_set(pd->code, colorized_code);
    free(markup_code);
+   eina_stringshare_del(code);
 }
 
 #endif
@@ -383,19 +379,23 @@ ui_property_add(Evas_Object *parent)
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    it = ewe_tabs_item_append(tabs, NULL, _("Visual"), NULL);
    ewe_tabs_item_content_set(tabs, it, pd->visual);
+   pd->visual_tab = it;
 
    it = ewe_tabs_item_append(tabs, it, _("Code"), NULL);
 
 #ifdef HAVE_ENVENTOR
    Evas_Object *code_bg;
+
    code_bg = elm_bg_add(tabs);
    elm_bg_color_set(code_bg, ENVENTOR_CODE_BG_COLOR);
 
    pd->code = enventor_object_add(code_bg);
+   (app_data_get())->enventor = pd->code;
    evas_object_smart_callback_add(tabs, "ewe,tabs,item,activated",
                                   _on_tab_activated, pd);
 
    elm_object_content_set(code_bg, pd->code);
+
    ewe_tabs_item_content_set(tabs, it, code_bg);
 #else
    pd->code = elm_entry_add(tabs);
@@ -528,6 +528,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    evas_object_show(property);
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
+
+   ewe_tabs_active_item_set(property, pd->visual_tab);
 
    pd->workspace = workspace;
    pd->style = style;

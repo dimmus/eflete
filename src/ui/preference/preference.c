@@ -51,7 +51,7 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -136,10 +136,7 @@ _on_##VALUE##_change(void *data, \
    switch (NUM) \
      { \
       case (5): \
-        prof_general.home_folder = strdup(value); \
-        break; \
-      case (6): \
-        prof_general.swap_folder = strdup(value); \
+        prof_general.projects_folder = strdup(value); \
         break; \
      } \
 }
@@ -188,7 +185,6 @@ CHANGE_CALLBACK(autosave_autosave, 2, CHECK, Eina_Bool)
 CHANGE_CALLBACK(save_ui, 3, CHECK, Eina_Bool)
 CHANGE_CALLBACK(save_win_pos, 4, CHECK, Eina_Bool)
 CHANGE_ENTRY_CALLBACK(home, 5)
-CHANGE_ENTRY_CALLBACK(swap, 6)
 
 #undef COMBOBOX_VALUE
 #undef SPINNER_VALUE
@@ -202,7 +198,7 @@ static void
 _general_form(Preferences *preference)
 {
    Evas_Object *panes, *layout, *profile;
-   Evas_Object *entry_home, *entry_swap, *autosave_frame, *store_frame;
+   Evas_Object *entry_home, *autosave_frame, *store_frame;
    Evas_Object *autosave_layout, *store_layout;
    Evas_Object *autosave_ck, *period_sp, *storeui_ck, *winpos_ck;
    Profile *prof;
@@ -238,13 +234,9 @@ _general_form(Preferences *preference)
     *    }
     */
    EWE_ENTRY_ADD(pref_layout.general, entry_home, true, DEFAULT_STYLE);
-   elm_object_part_text_set(entry_home, "elm.text", prof_general.home_folder);
+   elm_object_part_text_set(entry_home, "elm.text", prof_general.projects_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
    evas_object_smart_callback_add(entry_home, "changed", _on_home_change, prof);
-   EWE_ENTRY_ADD(pref_layout.general, entry_swap, true, DEFAULT_STYLE);
-   elm_object_part_text_set(entry_swap, "elm.text", prof_general.swap_folder);
-   elm_object_part_content_set(pref_layout.general, "swallow.swap", entry_swap);
-   evas_object_smart_callback_add(entry_swap, "changed", _on_swap_change, prof);
 
    FRAME_ADD(pref_layout.general, autosave_frame, false, _("Autosave"))
    elm_object_part_content_set(pref_layout.general, "swallow.autosave", autosave_frame);
@@ -415,7 +407,7 @@ preferences_window_add(Project *project)
    elm_box_pack_end(button_box, btn);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(preference->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(preference->mwin);

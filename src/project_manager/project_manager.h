@@ -58,8 +58,6 @@ struct _Project
 
    /** path where will be saved the develop edj file */
    Eina_Stringshare *develop_path;
-   /** path where will be compiled the release edj file */
-   Eina_Stringshare *release_path;
    /** compile options for release edj file. see edje_cc reference */
    Eina_Stringshare *release_options;
 
@@ -423,5 +421,79 @@ pm_project_meta_data_set(Project *project,
                          const char *version,
                          const char *license,
                          const char *comment) EINA_ARG_NONNULL(1);
+
+/**
+ * Export opened project resource. Export images, sounds, fonts and data from
+ * opened project to specific folder-container.
+ * This data will be used on compile debug and release edj file. Also Enventor
+ * used this data.
+ *
+ * @param pro The opened project.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup ProjectManager.
+ */
+Eina_Bool
+pm_project_resource_export(Project *pro);
+
+/**
+ * Export the source code of Style (edje object) to file.
+ * If file is NULL, file will be saved to develop folder of project by name
+ * "tmp.edc"
+ *
+ * @param pro The opened project;
+ * @param style The style to save the source code;
+ * @param file The file for save.
+ *
+ * @return The source code on success or NULL otherwise.
+ *
+ * @ingroup ProjectManager.
+ */
+Eina_Stringshare *
+pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
+
+/**
+ * Export the edj develop file from current project. The develop edj file
+ * include unused images, sounds, fonts and data files.
+ *
+ * @param pro The opened project;
+ * @param path Path to save the edj file.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
+ *
+ * @return The new #Project_Thread object, othewise NULL.
+ *
+ * @ingroup ProjectManager.
+ */
+Project_Thread *
+pm_project_develop_export(Project *pro,
+                          const char *path,
+                          PM_Project_Progress_Cb func_progress,
+                          PM_Project_End_Cb func_end,
+                          const void *data) EINA_ARG_NONNULL(1, 2);
+
+/**
+ * Save the current editing style as edj file.
+ *
+ * @param project The project what should be saved.
+ * @param func_progress The progress callback;
+ * @param func_end The end callback, this callback be called on the end of
+ *        Project progress;
+ * @param data The user data.
+ *
+ * @return The new #Project_Thread object, othewise NULL.
+ *
+ * @warning Use only in enventor mode.
+ *
+ * @ingroup ProjectManager
+ */
+Project_Thread *
+pm_project_enventor_save(Project *project,
+                         PM_Project_Progress_Cb func_progress,
+                         PM_Project_End_Cb func_end,
+                         const void *data) EINA_ARG_NONNULL(1);
 
 #endif /* PROJECT_MANAGER_H */

@@ -44,68 +44,86 @@
          eina_list_nth(ewe_statusbar_items_list_get(AP->statusbar), 1)); \
    elm_object_text_set(label, TEXT);
 
+#define STATUSBAR_PROJECT_SAVE_TIME_UPDATE(AP) \
+   char date[100]; \
+   Ewe_Statusbar_Item *item; \
+   Evas_Object *lb; \
+   long long tm = ecore_file_mod_time(AP->project->dev); \
+   item = eina_list_data_get(ewe_statusbar_items_list_get(AP->statusbar)); \
+   lb = ewe_statusbar_item_content_get(item); \
+   strftime(date, 100, "%d %b %Y %R", localtime((const time_t *)&tm)); \
+   elm_object_text_set(lb, date);
+
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \
    Eina_Inlist *_styles, *_classes, *_widgets = NULL; \
    Widget *_widget; \
    Class *_class; \
    Style *_style = NULL; \
-   _widgets = PROJECT->widgets; \
-   if (!_widgets) EDJE_OBJECT = NULL; \
-   else\
+   if (PROJECT->current_style) EDJE_OBJECT = PROJECT->current_style->obj; \
+   else \
      { \
-         _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
-         _classes = _widget->classes; \
-         if (!_classes) EDJE_OBJECT = NULL; \
-         else \
-           { \
-               _class = EINA_INLIST_CONTAINER_GET(_classes, Class); \
-               _styles = _class->styles; \
-               if (!_styles) EDJE_OBJECT = NULL; \
-               else\
-                 { \
-                     _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
-                     EDJE_OBJECT = _style->obj; \
-                 } \
-           } \
-     } \
-   if ((!EDJE_OBJECT) && (PROJECT->layouts)) \
-     { \
-       _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
-       EDJE_OBJECT = _style->obj;\
-     } \
-   if (_style->isAlias) \
-     EDJE_OBJECT = _style->main_group->obj;
+        _widgets = PROJECT->widgets; \
+        if (!_widgets) EDJE_OBJECT = NULL; \
+        else\
+          { \
+              _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
+              _classes = _widget->classes; \
+              if (!_classes) EDJE_OBJECT = NULL; \
+              else \
+                { \
+                    _class = EINA_INLIST_CONTAINER_GET(_classes, Class); \
+                    _styles = _class->styles; \
+                    if (!_styles) EDJE_OBJECT = NULL; \
+                    else\
+                      { \
+                          _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
+                          EDJE_OBJECT = _style->obj; \
+                      } \
+                } \
+          } \
+        if ((!EDJE_OBJECT) && (PROJECT->layouts)) \
+          { \
+            _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
+            EDJE_OBJECT = _style->obj;\
+          } \
+        if (_style->isAlias) \
+          EDJE_OBJECT = _style->main_group->obj; \
+     }
 
 #define GET_STYLE(PROJECT, STYLE) \
    Eina_Inlist *_styles, *_classes, *_widgets = NULL; \
    Widget *_widget; \
    Class *_class; \
    Style *_style; \
-   _widgets = PROJECT->widgets; \
-   if (!_widgets) STYLE = NULL; \
-   else\
+   if (PROJECT->current_style) STYLE = PROJECT->current_style; \
+   else \
+   { \
+     _widgets = PROJECT->widgets; \
+     if (!_widgets) STYLE = NULL; \
+     else\
      { \
-         _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
-         _classes = _widget->classes; \
-         if (!_classes) STYLE = NULL; \
-         else \
+        _widget = EINA_INLIST_CONTAINER_GET(_widgets, Widget); \
+        _classes = _widget->classes; \
+        if (!_classes) STYLE = NULL; \
+        else \
+        { \
+           _class = EINA_INLIST_CONTAINER_GET(_classes, Class); \
+           _styles = _class->styles; \
+           if (!_styles) STYLE = NULL; \
+           else \
            { \
-               _class = EINA_INLIST_CONTAINER_GET(_classes, Class); \
-               _styles = _class->styles; \
-               if (!_styles) STYLE = NULL; \
-               else\
-                 { \
-                     _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
-                     STYLE = _style; \
-                 } \
+              _style = EINA_INLIST_CONTAINER_GET(_styles, Style); \
+              STYLE = _style; \
            } \
+        } \
      } \
-   if ((!STYLE) && (PROJECT->layouts)) \
+     if ((!STYLE) && (PROJECT->layouts)) \
      { \
-       _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
-       STYLE = _style;\
-     }
+        _style = EINA_INLIST_CONTAINER_GET(PROJECT->layouts, Style); \
+        STYLE = _style;\
+     } \
+   }
 
 #define ITEM_SEARCH_FUNC(_gen, PART_NAME) \
 static void \

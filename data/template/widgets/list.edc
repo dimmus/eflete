@@ -95,6 +95,11 @@
       } \
    }
 
+group { name: "elm/list/base/default";
+   inherit: "elm/scroller/base/default";
+}
+
+
 group { name: "elm/list/item/default";
    data.item: "selectraise" "on";
    data.item: "focusraise" "on";

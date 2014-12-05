@@ -57,18 +57,13 @@ void register_callbacks_test_n2(int);
 void ui_edj_load_test_p(int);
 void ui_edj_load_test_n(int);
 
-void ui_menu_base_disabled_set_test_p(int);
-void ui_menu_base_disabled_set_test_n(int);
-
-void ui_menu_style_options_disabled_set_test_p(int);
-void ui_menu_style_options_disabled_set_test_n(int);
-
 void ui_menu_disable_set_test_p(int);
 void ui_menu_disable_set_test_n1(int);
 void ui_menu_disable_set_test_n2(int);
 
-void ui_menu_locked_set_test_p(int);
-void ui_menu_locked_set_test_n(int);
+void ui_menu_items_list_disable_set_test_p(int);
+void ui_menu_items_list_disable_set_test_n1(int);
+void ui_menu_items_list_disable_set_test_n2(int);
 
 void ui_style_clicked_test_p(int);
 void ui_style_clicked_test_n1(int);

@@ -65,7 +65,6 @@ static Widget_Item_Data widget_item_data[] = { { N_("bg"),           false } ,
                                                { N_("pointer"),      false },
                                                { N_("fileselector"), false },
                                                { N_("win"),          false },
-                                               { N_("inwin"),        false },
                                                { N_("slideshow"),    false },
                                                { N_("diskselector"), false },
                                                { N_("ctxpopup"),     false },
@@ -101,6 +100,25 @@ _on_button_add_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void
 _on_button_del_clicked_cb(void *data, Evas_Object *obj, void *event_info);
+
+static void
+_widget_item_data_array_checks_set(Evas_Object *genlist, Eina_Bool check_val)
+{
+   Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Eina_Bool is_changed = false;
+
+   while (widget_item_data_iterator->name)
+     {
+        if (widget_item_data_iterator->check != check_val)
+          {
+             is_changed = true;
+             widget_item_data_iterator->check = check_val;
+          }
+        widget_item_data_iterator++;
+     }
+   if ((is_changed) && (genlist))
+     elm_genlist_realized_items_update(genlist);
+}
 
 static void
 _del_item_callback_data(void * data,
@@ -193,13 +211,13 @@ _edje_cc_flags_create(Wizard_Import_Edj_Win *wiew)
 }
 
 static void
-_file_to_swap_copy(const char *widget_name)
+_file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
 {
    Eina_Stringshare *path_to =
-      eina_stringshare_printf(EFLETE_SWAP_PATH"/%s.edc", widget_name);
+      eina_stringshare_printf("%s/%s.edc", path, widget_name);
    Eina_Stringshare *path_from =
       eina_stringshare_printf(EFLETE_TEMPLATE_EDC_PATH"/%s.edc", widget_name);
-   char ch;
+   int ch;
 
    FILE *fp_from = fopen(path_from, "r");
    if (!fp_from)
@@ -229,20 +247,124 @@ _file_to_swap_copy(const char *widget_name)
    eina_stringshare_del(path_from);
 }
 
+#define BTN_WD       (widget_item_data + 1)
+#define SCROLLER_WD  (widget_item_data + 2)
+#define ENTRY_WD     (widget_item_data + 3)
+#define LABEL_WD     (widget_item_data + 5)
+#define GENLIST_WD   (widget_item_data + 13)
+#define LIST_WD      (widget_item_data + 14)
+#define PHOTOCAM_WD  (widget_item_data + 33)
+#define NOTIFY_WD    (widget_item_data + 38)
+#define MAP_WD       (widget_item_data + 39)
+#define POPUP_WD     (widget_item_data + 46)
+#define GENGRID_WD   (widget_item_data + 51)
+
+static int
+_widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
+{
+   int ret;
+   if (item->name)
+     ret = _widgets_dependencies_setup(item + 1, dep_message);
+   else
+     return 0;
+
+   if (!item->check)
+     return ret;
+
+   if ((item == ENTRY_WD) || (item == GENLIST_WD) ||
+       (item == PHOTOCAM_WD) || (item == LIST_WD))
+     {
+        if (!SCROLLER_WD->check)
+          {
+             SCROLLER_WD->check = true;
+             eina_strbuf_append(dep_message, _("Scroller<br>"));
+             ret++;
+          }
+     }
+   else if ((item == MAP_WD) && (!PHOTOCAM_WD->check))
+     {
+        PHOTOCAM_WD->check = true;
+        eina_strbuf_append(dep_message, _("Photocam<br>"));
+        ret++;
+     }
+   else if ((item == GENGRID_WD) && (!GENLIST_WD->check))
+     {
+        GENLIST_WD->check = true;
+        eina_strbuf_append(dep_message, _("Genlist<br>"));
+        ret++;
+     }
+   else if (item == POPUP_WD)
+     {
+        if (!NOTIFY_WD->check)
+          {
+             NOTIFY_WD->check = true;
+             eina_strbuf_append(dep_message, _("Notify<br>"));
+             ret++;
+          }
+        if (!BTN_WD->check)
+          {
+             BTN_WD->check = true;
+             eina_strbuf_append(dep_message, _("Button<br>"));
+             ret++;
+          }
+        if (!LIST_WD->check)
+          {
+             LIST_WD->check = true;
+             eina_strbuf_append(dep_message, _("List<br>"));
+             ret++;
+          }
+        if (!LABEL_WD->check)
+          {
+             LABEL_WD->check = true;
+             eina_strbuf_append(dep_message, _("Label<br>"));
+             ret++;
+          }
+     }
+
+   return ret;
+}
+
+#undef BTN_WD
+#undef SCROLLER_WD
+#undef ENTRY_WD
+#undef LABEL_WD
+#undef GENLIST_WD
+#undef LIST_WD
+#undef PHOTOCAM_WD
+#undef NOTIFY_WD
+#undef MAP_WD
+#undef POPUP_WD
+#undef GENGRID_WD
+
 static Eina_Strbuf *
-_edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
+_edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED__)
 {
    Eina_Strbuf *edc = eina_strbuf_new();
+   Eina_Strbuf *dep_message = eina_strbuf_new();
+   int deps_count;
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
+   Eina_Bool are_widgets_included = false;
+   deps_count = _widgets_dependencies_setup(widget_item_data, dep_message);
 
+   if (deps_count)
+     {
+        eina_strbuf_prepend_printf(dep_message,
+                                   ngettext("%d widget included due to dependencies:<br><br>",
+                                            "%d widgets included due to dependencies:<br><br>",
+                                            deps_count), deps_count);
+
+        NOTIFY_INFO(3, "%s", eina_strbuf_string_get(dep_message));
+     }
+
+   eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
    eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
    eina_strbuf_append(edc, "   #include \"colorclasses.edc\"\n");
    eina_strbuf_append(edc, "   #include \"macros.edc\"\n");
 
-   _file_to_swap_copy("fonts");
-   _file_to_swap_copy("colorclasses");
-   _file_to_swap_copy("macros");
+   _file_to_swap_copy(path, "fonts");
+   _file_to_swap_copy(path, "colorclasses");
+   _file_to_swap_copy(path, "macros");
 
    while (widget_item_data_iterator->name)
      {
@@ -250,9 +372,17 @@ _edc_code_generate(Wizard_Import_Edj_Win *wiew __UNUSED__)
           {
              eina_strbuf_append_printf(edc, "   #include \"%s.edc\"\n",
                                        widget_item_data_iterator->name);
-             _file_to_swap_copy(widget_item_data_iterator->name);
+             _file_to_swap_copy(path, widget_item_data_iterator->name);
+             are_widgets_included = true;
           }
         widget_item_data_iterator++;
+     }
+
+   if (!are_widgets_included)
+     {
+        eina_strbuf_append(edc, "   group {\n");
+        eina_strbuf_append(edc, "      name: \"new/layout/0\";\n");
+        eina_strbuf_append(edc, "   }\n");
      }
 
    eina_strbuf_append(edc, "}\n");
@@ -264,6 +394,8 @@ _splash_setup_import_edc(void *data)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
+   wiew->progress_log = eina_strbuf_new();
+
    wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
                                         elm_entry_entry_get(wiew->path),
                                         elm_entry_entry_get(wiew->edj),
@@ -276,22 +408,19 @@ _splash_setup_import_edc(void *data)
    return false;
 }
 
-static Eina_Stringshare *
-_new_project_file_create(const char *edc)
+Eina_Bool
+_new_project_file_create(Eina_Stringshare *path, const char *edc)
 {
-   Eina_Stringshare *path = eina_stringshare_add(EFLETE_SWAP_PATH"/new_project_tmp.edc");
-
    FILE *fp = fopen(path, "w");
    if (!fp)
      {
         ERR("Failed to open file \"%s\"", path);
-        eina_stringshare_del(path);
-        return NULL;
+        return false;
      }
 
    fputs(edc, fp);
    fclose(fp);
-   return path;
+   return true;
 }
 
 static Eina_Bool
@@ -299,11 +428,21 @@ _splash_setup_new_project(void *data)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *edc;
-   Eina_Stringshare *path;
    Eina_Strbuf *flags;
+   Eina_Tmpstr *tmp_dir;
+   Eina_Stringshare *edc_path;
+   if (!eina_file_mkdtemp("eflete_project_XXXXXX", &tmp_dir))
+     {
+        ERR("can not create tmp dir");
+        return false;
+     }
+   wiew->tmp_dir_path = eina_stringshare_add(tmp_dir);
+   eina_tmpstr_del(tmp_dir);
 
-   edc = _edc_code_generate(wiew);
-   path = _new_project_file_create(eina_strbuf_string_get(edc));
+   edc_path = eina_stringshare_printf("%s/new_project_tmp.edc", wiew->tmp_dir_path);
+   edc = _edc_code_generate(wiew->tmp_dir_path, wiew);
+   _new_project_file_create(edc_path, eina_strbuf_string_get(edc));
+
    flags = eina_strbuf_new();
 
    eina_strbuf_append_printf(flags, "-id \"%s\" -sd \"%s\" -v",
@@ -312,15 +451,16 @@ _splash_setup_new_project(void *data)
 
    wiew->thread = pm_project_import_edc(elm_entry_entry_get(wiew->name),
                                         elm_entry_entry_get(wiew->path),
-                                        path,
+                                        edc_path,
                                         eina_strbuf_string_get(flags),
                                         _progress_print,
                                         _progress_end,
                                         wiew);
+   wiew->progress_log = eina_strbuf_new();
 
-   eina_stringshare_del(path);
    eina_strbuf_free(edc);
    eina_strbuf_free(flags);
+   eina_stringshare_del(edc_path);
 
    return false;
 }
@@ -489,12 +629,21 @@ _genlist_label_get(void *data,
 }
 
 static void
-on_widget_include_check_changed(void *data,
-                                Evas_Object *obj,
-                                void *ei __UNUSED__)
+_on_widget_include_check_changed(void *data,
+                                 Evas_Object *obj,
+                                 void *ei __UNUSED__)
 {
    Widget_Item_Data *widget_data = (Widget_Item_Data *)data;
    widget_data->check = elm_check_state_get(obj);
+}
+
+static void
+_on_widget_include_all_check_changed(void *data,
+                                     Evas_Object *obj,
+                                     void *ei __UNUSED__)
+{
+   Evas_Object *genlist = (Evas_Object *)data;
+   _widget_item_data_array_checks_set(genlist, elm_check_state_get(obj));
 }
 
 static Evas_Object *
@@ -511,8 +660,16 @@ _genlist_content_get(void *data,
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
    evas_object_smart_callback_add(check, "changed",
-                                  on_widget_include_check_changed, data);
+                                  _on_widget_include_check_changed, data);
    return check;
+}
+
+static int
+_genlist_items_cmp_func(const void *data1, const void *data2)
+{
+   Widget_Item_Data *it1_data = elm_object_item_data_get(data1);
+   Widget_Item_Data *it2_data = elm_object_item_data_get(data2);
+   return strcmp(it1_data->name, it2_data->name);
 }
 
 static Evas_Object *
@@ -526,7 +683,7 @@ _wizart_widget_list_add(Evas_Object *parent)
    elm_object_style_set(genlist, "eflete/dark");
 
    itc = elm_genlist_item_class_new();
-   itc->item_style = "eflete/level1";
+   itc->item_style = "eflete/wizard_widgetlist";
    itc->func.text_get = _genlist_label_get;
    itc->func.content_get = _genlist_content_get;
    itc->func.state_get = NULL;
@@ -534,10 +691,11 @@ _wizart_widget_list_add(Evas_Object *parent)
 
    while (widget_item_data_iterator->name)
      {
-        elm_genlist_item_append(genlist, itc,
-                                widget_item_data_iterator,
-                                NULL, ELM_GENLIST_ITEM_NONE,
-                                NULL, NULL);
+        elm_genlist_item_sorted_insert(genlist, itc,
+                                       widget_item_data_iterator,
+                                       NULL, ELM_GENLIST_ITEM_NONE,
+                                       _genlist_items_cmp_func,
+                                       NULL, NULL);
         widget_item_data_iterator++;
      }
 
@@ -549,6 +707,7 @@ Evas_Object *
 wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
+   Evas_Object *genlist, *check;
    wiew = wizard_import_common_add("elm/layout/wizard/new_project");
    if (!wiew) return NULL;
 
@@ -556,10 +715,20 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
 
    elm_object_part_text_set(wiew->layout, "label.widgets", _("Widgets:"));
 
-   elm_object_part_content_set(wiew->layout, "swallow.widgets",
-                               _wizart_widget_list_add(wiew->layout));
+   _widget_item_data_array_checks_set(NULL, false);
+
+   genlist = _wizart_widget_list_add(wiew->layout);
+   elm_object_part_content_set(wiew->layout, "swallow.widgets", genlist);
+
+   CHECK_ADD(wiew->layout, check, "eflete/live_view");
+   evas_object_smart_callback_add(check, "changed",
+                                  _on_widget_include_all_check_changed,
+                                  genlist);
+   elm_object_part_content_set(wiew->layout,
+                               "swallow.all_widgets_check", check);
 
    wiew->splash_setup_func = _splash_setup_new_project;
+   wiew->edj = NULL;
 
    return wiew->win;
 }

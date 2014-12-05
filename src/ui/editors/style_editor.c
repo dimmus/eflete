@@ -623,6 +623,15 @@ _item_style_label_get(void *data,
 }
 
 static void
+_after_animation_close(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       const char *emission __UNUSED__,
+                       const char *source __UNUSED__)
+{
+   Style_Editor *style_edit = (Style_Editor *)data;
+   evas_object_del(style_edit->mwin);
+}
+static void
 _on_viewer_exit(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
@@ -630,7 +639,8 @@ _on_viewer_exit(void *data,
    Style_Editor *style_edit = (Style_Editor *)data;
 
    project_changed();
-   evas_object_del(style_edit->mwin);
+   elm_layout_signal_emit(style_edit->mwin, "hide", "eflete");
+   elm_layout_signal_callback_add(style_edit->mwin, "teardown", "eflete", _after_animation_close, style_edit);
 }
 
 static inline Evas_Object *
@@ -1056,7 +1066,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 }
 
 #define MIN_SP - 1.0
-#define MARGIN_MIN_SP -9999.0
+#define MARGIN_MIN_SP 0.0
 #define MAX_SP 9999.0
 #define MAX_PERCENT 100.0
 #define STEP_SP 1.0
@@ -1797,7 +1807,7 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor = false;
 }
 
@@ -1897,10 +1907,12 @@ style_editor_window_add(Project *project)
    elm_box_pack_end(button_box, btn);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
+   elm_layout_signal_emit(style_edit->mwin, "show", "eflete");
+
    evas_textblock_style_free(ts);
    ap->modal_editor = true;
    return style_edit->mwin;

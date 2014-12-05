@@ -58,6 +58,7 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    mw_title_set(wiew->win, _("Wizard: import edj"));
    wiew->splash_setup_func = _setup_splash;
    project_path_item_add(wiew, _("Path to edj file:"), _on_edj_bt);
+   wiew->progress_log = NULL;
 
    return wiew->win;
 }

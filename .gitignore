@@ -57,6 +57,9 @@ tests/compile_dialog_test
 tests/container_test
 tests/live_view_prop_test
 tests/live_widget_test
+tests/history_test
+tests/shortcuts_test
+tests/sound_editor_test
 tests/edj_build/RADIO_DECC/
 report.html
 tests/html/

@@ -73,7 +73,7 @@ _job_popup_close(void *data)
    App_Data *ap = (App_Data *)data;
    evas_object_del(ap->popup);
    ap->popup = NULL;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -92,7 +92,6 @@ _on_popup_btn_yes(void *data,
    App_Data *ap = (App_Data *)data;
    Eina_Stringshare *style_name = NULL;
    Eina_Stringshare *class_name = NULL;
-   Eina_Stringshare *source_file = NULL;
    Eina_Stringshare *full_name = NULL;
 
    Widget *dest_wdg = NULL;
@@ -107,19 +106,16 @@ _on_popup_btn_yes(void *data,
    Style *style = NULL;
 
    Eina_Inlist *l =NULL;
-   Eina_Inlist *source_widgets = NULL;
    Eina_List *styles = NULL;
    Evas *canvas = NULL;
 
 #define STRING_CLEAR\
-        eina_stringshare_del(source_file);\
         eina_stringshare_del(style_name);\
         eina_stringshare_del(class_name);\
 
 
    widget = ui_widget_from_ap_get(ap);
    if (!widget) return;
-   source_file = eina_stringshare_add(EFLETE_EDJ_PATH"template.edj");
    style_name = eina_stringshare_add(elm_entry_entry_get(entry_style));
    class_name = eina_stringshare_add(elm_entry_entry_get(entry_class));
 
@@ -149,8 +145,7 @@ _on_popup_btn_yes(void *data,
         return;
      }
 
-   source_widgets = wm_widgets_list_new(source_file);
-   EINA_INLIST_FOREACH_SAFE(source_widgets, l, source_wdg)
+   EINA_INLIST_FOREACH_SAFE(ap->project->widgets, l, source_wdg)
      {
         if (!strcmp(source_wdg->name, widget->name)) break;
      }
@@ -259,9 +254,6 @@ _on_popup_btn_yes(void *data,
        dest_style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
 
 
-   /* Load data into source style, for copy this params into destination style*/
-   wm_style_data_load(source_style, canvas, source_file);
-
    if (dest_style->isAlias) dest_style = dest_style->main_group;
    /* call method, which copy all parts and their params into new style */
    if (wm_style_copy(dest_style->obj, source_style->obj, full_name,
@@ -272,8 +264,7 @@ _on_popup_btn_yes(void *data,
         style->isModify = true;
      }
 
-   if (!wm_widgets_list_free(source_widgets))
-     ERR("Failed free template widget list");
+   project_changed();
 
    STRING_CLEAR;
    eina_stringshare_del(full_name);
@@ -350,7 +341,7 @@ style_dialog_add(App_Data *ap)
    evas_object_smart_callback_add(button, "clicked", _popup_close_cb, ap);
    elm_object_part_content_set(ap->popup, "button2", button);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    evas_object_show(ap->popup);
    eina_stringshare_del(title);
