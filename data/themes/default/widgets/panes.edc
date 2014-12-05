@@ -306,6 +306,20 @@ group { name: "elm/panes/vertical/eflete/default";
          target: "elm.bar";
          target: "bar";
       }
+      program { name: "fixed";
+         signal: "elm,panes,fixed";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
+      program { name: "unfixed";
+         signal: "elm,panes,unfixed";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
    }
 }
 
@@ -607,6 +621,20 @@ group { name: "elm/panes/horizontal/eflete/default";
       }
       program { name: "enable";
          signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
+      program { name: "fixed";
+         signal: "elm.panes.fixed";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "elm.bar";
+         target: "bar";
+      }
+      program { name: "unfixed";
+         signal: "elm.panes.unfixed";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.bar";
