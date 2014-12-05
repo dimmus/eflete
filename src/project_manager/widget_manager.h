@@ -519,5 +519,8 @@ wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
 Eina_Bool
 wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
                        Eina_Stringshare *rel_name, Eina_Bool direct);
-#endif /* WIDGET_MANAGER_B_H*/
 
+Eina_Bool
+wm_widgets_list_objects_del(Eina_Inlist *widget_list);
+
+#endif /* WIDGET_MANAGER_B_H*/

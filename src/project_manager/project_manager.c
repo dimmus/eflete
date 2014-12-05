@@ -393,6 +393,7 @@ _exe_data(void *data,
      {
         for (i = 0; ev->lines[i].line; i++)
           {
+             DBG("%s", ev->lines[i].line);
              PROGRESS_SEND("%s", ev->lines[i].line);
           }
      }
@@ -1031,8 +1032,6 @@ _enventor_save(void *data,
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
-   /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
-    * function what provide wait end of forked process.*/
    waitpid(exe_pid, NULL, 0);
 
    ecore_event_handler_del(cb_exit);
@@ -1046,15 +1045,6 @@ _enventor_save(void *data,
       eina_file_copy(worker->edj, worker->project->dev,
                      EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                      NULL, NULL);
-   WORKER_LOCK_RELEASE;
-
-   THREAD_TESTCANCEL;
-   WORKER_LOCK_TAKE;
-      /* reset the data from file to edje_edit obj */
-      edje_object_file_set(worker->project->current_style->obj,
-                           worker->project->dev,
-                           worker->project->current_style->full_group_name);
-      edje_edit_data_add(worker->project->current_style->obj, "version", "110");
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)

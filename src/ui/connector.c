@@ -19,6 +19,10 @@
 
 #include "main_window.h"
 #include "preference.h"
+#ifdef HAVE_ENVENTOR
+   #define ENVENTOR_BETA_API_SUPPORT
+   #include "Enventor.h"
+#endif /* HAVE_ENVENTOR */
 
 #ifdef HAVE_ENVENTOR
 #define ENVENTOR_BETA_API_SUPPORT
@@ -675,6 +679,11 @@ ui_style_clicked(App_Data *ap, Style *style)
    history_module_add(_style->obj);
    ui_block_history_set(ap, history_list);
 
+#ifdef HAVE_ENVENTOR
+   edje_object_file_set(ap->project->current_style->obj,
+                        ap->project->dev,
+                        ap->project->current_style->full_group_name);
+#endif /* HAVE_ENVENTOR */
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
 
@@ -857,7 +866,15 @@ _progress_end(void *data, PM_Project_Result result)
       case PM_PROJECT_LAST: break;
      }
 
-   live_view_theme_update(ap->live_view, ap->project);
+#ifdef HAVE_ENVENTOR
+   if (ap->enventor_mode)
+     wm_widgets_list_objects_load(ap->project->widgets,
+                                  evas_object_evas_get(ap->win),
+                                  ap->project->dev);
+#endif /* HAVE_ENVENTOR */
+
+   live_view_widget_style_unset(ap->live_view);
+   live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
    splash_del(ap->splash);
    ap->splash = NULL;
 }
@@ -872,8 +889,8 @@ _setup_save_splash(void *data)
 #ifdef HAVE_ENVENTOR
    Eina_Stringshare *path = NULL;
    char *code;
-   size_t f_size;
-   size_t code_s;
+   long f_size;
+   size_t code_s, code_r;
    FILE *f;
 
    if (ap->enventor_mode)
@@ -892,19 +909,16 @@ _setup_save_splash(void *data)
         fseek(f, 0, SEEK_SET);
         code_s = sizeof(char) * f_size;
         code = mem_malloc(code_s);
-        if (fread(code, 1, f_size, f) != f_size)
-          {
-             ERR("Failed to read from file'%s'", path);
-             fclose(f);
-             free(code);
-             return false;
-          }
+        code_r = fread(code, 1, f_size, f);
+        if (code_r == 0) return false;
         fseek(f, 0, SEEK_SET);
 
         fputs("data.item: \"version\" \"110\";\n\n", f);
         fputs(code, f);
         fclose(f);
         free(code);
+
+        wm_widgets_list_objects_del(ap->project->widgets);
         thread = pm_project_enventor_save(ap->project,
                                           _progress_print,
                                           _progress_end,
@@ -1456,3 +1470,4 @@ code_edit_mode_switch(App_Data *ap, Eina_Bool is_on)
 
    return true;
 }
+

@@ -303,6 +303,7 @@ wm_style_data_load(Style *style, Evas *e, const char *edj)
    char *part_name = NULL;
 
    if ((!style) || (!e) || (!edj)) return false;
+   if (style->obj) evas_object_del(style->obj);
 
    edje_edit_obj = edje_edit_object_add(e);
 
@@ -1089,6 +1090,30 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
    eina_list_free(alias_list);
    return true;
 }
+
+Eina_Bool
+wm_widgets_list_objects_del(Eina_Inlist *widget_list)
+{
+   Widget *widget = NULL;
+   Class *class_st = NULL;
+   Style *style = NULL;
+
+   if (!widget_list) return false;
+
+   EINA_INLIST_FOREACH(widget_list, widget)
+     {
+        EINA_INLIST_FOREACH(widget->classes, class_st)
+          {
+             EINA_INLIST_FOREACH(class_st->styles, style)
+               {
+                  evas_object_del(style->obj);
+               }
+          }
+     }
+
+   return true;
+}
+
 
 Eina_Bool
 wm_layouts_list_objects_load(Eina_Inlist *layouts_list,

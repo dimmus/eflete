@@ -496,7 +496,4 @@ pm_project_enventor_save(Project *project,
                          PM_Project_End_Cb func_end,
                          const void *data) EINA_ARG_NONNULL(1);
 
-
-
-
 #endif /* PROJECT_MANAGER_H */
