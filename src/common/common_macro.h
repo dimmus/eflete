@@ -44,6 +44,16 @@
          eina_list_nth(ewe_statusbar_items_list_get(AP->statusbar), 1)); \
    elm_object_text_set(label, TEXT);
 
+#define STATUSBAR_PROJECT_SAVE_TIME_UPDATE(AP) \
+   char date[100]; \
+   Ewe_Statusbar_Item *item; \
+   Evas_Object *lb; \
+   long long tm = ecore_file_mod_time(AP->project->dev); \
+   item = eina_list_data_get(ewe_statusbar_items_list_get(AP->statusbar)); \
+   lb = ewe_statusbar_item_content_get(item); \
+   strftime(date, 100, "%d %b %Y %R", localtime((const time_t *)&tm)); \
+   elm_object_text_set(lb, date);
+
 /* Getting first object from project. Needed to access top-level blocks */
 #define GET_OBJ(PROJECT, EDJE_OBJECT) \
    Eina_Inlist *_styles, *_classes, *_widgets = NULL; \

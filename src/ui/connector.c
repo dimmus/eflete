@@ -788,6 +788,7 @@ _on_open_done(void *data,
    evas_object_del(win);
    NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
    STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
    _widget_list_layouts_tab_activate(ap);
 }
@@ -924,6 +925,14 @@ _setup_save_splash(void *data)
    return true;
 }
 
+static Eina_Bool
+_update_save_time(void *data)
+{
+   App_Data *ap = (App_Data *) data;
+   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+   return true;
+}
+
 void
 project_save(void)
 {
@@ -934,7 +943,7 @@ project_save(void)
    if (!ap->project->changed) return;
    if (ap->splash) return;
 
-   ap->splash = splash_add(ap->win, _setup_save_splash, NULL, ap);
+   ap->splash = splash_add(ap->win, _setup_save_splash, _update_save_time, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
