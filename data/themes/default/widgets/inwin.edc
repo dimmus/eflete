@@ -8,18 +8,15 @@ group { name: "elm/win/inwin/eflete/default";
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
-            rel1 {
-               to: "inwin_content_clipper";
-            }
-            rel2 {
-               to: "inwin_content_clipper";
-            }
+            visible: 0;
+            color: 0 0 0 50;
          }
          description { state: "clicked" 0.0;
+            visible: 1;
             color: 255 0 0 50;
          }
          description { state: "visible" 0.0;
+            visible: 1;
             color: 0 0 0 50;
          }
       }
@@ -256,14 +253,14 @@ group { name: "elm/win/inwin/eflete/default";
          name: "deeper_block_color";
          action: STATE_SET "clicked" 0.0;
          target: "block_events";
-         transition: LINEAR 0.2;
+         transition: LINEAR 0.0;
          after: "default_block_color";
       }
       program {
          name: "default_block_color";
          action: STATE_SET "visible" 0.0;
          target: "block_events";
-         transition: LINEAR 0.2;
+         transition: LINEAR 0.0;
       }
       program {
          name: "showing";
@@ -274,7 +271,7 @@ group { name: "elm/win/inwin/eflete/default";
          target: "inwin_content_clipper";
          target: "inwin_window_clipper";
          target: "pop";
-         transition: LINEAR 0.3;
+         transition: LINEAR 0.2;
       }
       program {
          name: "hiding";
@@ -285,7 +282,7 @@ group { name: "elm/win/inwin/eflete/default";
          target: "inwin_content_clipper";
          target: "inwin_window_clipper";
          target: "pop";
-         transition: LINEAR 0.3;
+         transition: LINEAR 0.1;
          after: "hiding_teardown";
       }
       program {
