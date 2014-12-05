@@ -1188,6 +1188,14 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
 
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(sd->style->obj);
+   min_h = edje_edit_group_min_h_get(sd->style->obj);
+   max_w = edje_edit_group_max_w_get(sd->style->obj);
+   max_h = edje_edit_group_max_h_get(sd->style->obj);
+   container_min_size_set(sd->container.obj, min_w, min_h);
+   container_max_size_set(sd->container.obj, max_w, max_h);
+
    evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
    evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
 
@@ -1234,6 +1242,17 @@ Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+printf("Calculationg \n");
+
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(sd->style->obj);
+   min_h = edje_edit_group_min_h_get(sd->style->obj);
+   max_w = edje_edit_group_max_w_get(sd->style->obj);
+   max_h = edje_edit_group_max_h_get(sd->style->obj);
+   container_min_size_set(sd->container.obj, min_w, min_h);
+   container_max_size_set(sd->container.obj, max_w, max_h);
+
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 

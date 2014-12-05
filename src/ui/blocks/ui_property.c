@@ -416,15 +416,45 @@ ui_property_add(Evas_Object *parent)
    return tabs;
 }
 
-#define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_SPINNER_INT_CALLBACK(SUB, VALUE1) \
-   ITEM_SPINNER_INT_CALLBACK(SUB, VALUE2) \
-   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2)
+#define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
+   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE1, ITEM1, CHECK) \
+   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE2, ITEM2, CHECK) \
+   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB1, VALUE1, VALUE2) \
+   ITEM_2SPINNER_GROUP_UPDATE(SUB1, VALUE1, VALUE2)
 
-/* group property */
-ITEM_2SPINNER_GROUP_CREATE(_("min"), group_min, w, h)
-ITEM_2SPINNER_GROUP_CREATE(_("max"), group_max, w, h)
+/* ! Group property !
+
+   This macro is used to generate callback and static functions for creating,
+   updating and other stuff of group's attributes called 'min' and 'max'
+
+   The behaviour of these attributes (which are being represented by spinners)
+   is next: when we change 'min' value and it is becoming higher than 'max' then
+   value 'max' should be changed also (min can't be higher than max).
+
+   That's why we have to check if 'min' is higher (>) than 'max' in all callbacks
+   for 'min', for both w and h parameter.
+   Second macro require to check if 'max' is lower then 'min' (because 'max'
+   can't be lower than 'min', so we need update is so 'min' would be equal to
+   'max').
+   So we need to check if 'max' is lower (<) than 'min'.
+
+   > First argument of macro - label/name of parameter.
+   > Second argument of macro - main parametr that is being checked
+   > Third argument of macro - parameter that should be checked and updated if
+   second one is getting higher/lower. Inside of callback functions it will be
+   something like:
+   {
+     if second argument {higher/lower} than third -> update third
+   }
+   > Fourth and Fifth argument of macro - made to show different parameters
+   (Width or Height for max or min)
+   > Last argument of macro - shows the way Second and Third argument will be
+   compared.
+   If Min compared to Max, then it is >
+   if Max compared to Min, then it is <
+ */
+ITEM_2SPINNER_GROUP_CREATE(_("min"), min, max, w, h, >)
+ITEM_2SPINNER_GROUP_CREATE(_("max"), max, min, w, h, <)
 
 #define pd_group pd->prop_group
 
@@ -634,7 +664,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                           _("Minimum group width in pixels."),
                           _("Minimum group height in pixels."));
         pd_group.max = prop_item_group_max_w_h_add(box, pd,
-                          -1.0, 9999.0, 1.0,
+                          0.0, 9999.0, 1.0,
                           _("Maximum group width in pixels."),
                           _("Maximum group height in pixels."));
         elm_box_pack_end(box, pd_group.min);

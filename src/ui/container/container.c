@@ -111,8 +111,8 @@ _user_size_calc(Evas_Object *o)
    int nw, nh;
    CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, false)
 
-   nw = sd->size->w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
-   nh = sd->size->h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h;
+   nw = sd->size->w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
+   nh = sd->size->h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
 
    evas_object_resize(o, nw, nh);
 
@@ -200,11 +200,11 @@ _mouse_move_hTL_cb(void *data,
    Evas_Coord container_width = x2 - (x1 + w1 + dx);
    Evas_Coord container_height = y2 - (y1 + h1 + dy);
    if ((container_width < sd->con_size_min.w) ||
-       ((sd->con_size_max.w != -1) && (container_width > sd->con_size_max.w)))
+       ((sd->con_size_max.w != 0) && (container_width > sd->con_size_max.w)))
      dx = 0;
 
    if ((container_height < sd->con_size_min.h) ||
-       ((sd->con_size_max.h != -1) && (container_height > sd->con_size_max.h)))
+       ((sd->con_size_max.h != 0) && (container_height > sd->con_size_max.h)))
      dy = 0;
 
    sd->dx += dx;
@@ -221,7 +221,7 @@ _mouse_move_hTL_cb(void *data,
           }
         else
           {
-             if ((sd->con_size_max.w != -1)
+             if ((sd->con_size_max.w != 0)
                  && (nw >= sd->con_size_max.w + H_WIGTH))
                {
                   nw = sd->con_size_max.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
@@ -250,7 +250,7 @@ _mouse_move_hTL_cb(void *data,
           }
         else
           {
-             if ((sd->con_size_max.h != -1)
+             if ((sd->con_size_max.h != 0)
                  && (nh >= sd->con_size_max.h + H_HEIGHT))
                {
                   nh = sd->con_size_max.h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h;
@@ -309,7 +309,7 @@ _mouse_move_hBR_cb(void *data,
      nw = sd->con_size_min.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;
    else
      {
-        if ((sd->con_size_max.w != -1)
+        if ((sd->con_size_max.w != 0)
             && (sd->size->w + H_WIGTH + dx >= sd->con_size_max.w + H_WIGTH))
           nw = sd->con_size_max.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;
         else nw = w + dx;
@@ -320,7 +320,7 @@ _mouse_move_hBR_cb(void *data,
      nh = sd->con_size_min.h + H_HEIGHT + sd->dy + sd->pad_left_top.h + sd->pad_right_bottom.h;
    else
      {
-        if ((sd->con_size_max.h != -1)
+        if ((sd->con_size_max.h != 0)
             && (sd->size->h + H_HEIGHT + dy >= sd->con_size_max.h + H_HEIGHT))
           nh = sd->con_size_max.h + H_HEIGHT + sd->dy + sd->pad_left_top.h + sd->pad_right_bottom.h;
         else nh = h + dy;
@@ -419,8 +419,8 @@ _container_smart_add(Evas_Object *o)
    priv->obj = o;
    priv->con_size_min.w = 0;
    priv->con_size_min.h = 0;
-   priv->con_size_max.w = -1;
-   priv->con_size_max.h = -1;
+   priv->con_size_max.w = 0;
+   priv->con_size_max.h = 0;
    priv->pad_left_top.w = 0;
    priv->pad_left_top.h = 0;
    priv->pad_right_bottom.w = 0;
@@ -479,7 +479,7 @@ _container_smart_resize(Evas_Object *o,
                         Evas_Coord w,
                         Evas_Coord h)
 {
-   Evas_Coord ow, oh;
+   Evas_Coord ow, oh, nw, nh;
    evas_object_geometry_get(o, NULL, NULL, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
 
@@ -487,8 +487,10 @@ _container_smart_resize(Evas_Object *o,
    if (!sd->confine.obj)
      evas_object_size_hint_min_set(o, w, h);
 
-   evas_object_resize(o, w + sd->pad_right_bottom.w + sd->pad_left_top.w,
-                         h + sd->pad_right_bottom.h + sd->pad_left_top.h);
+   nw = w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w + sd->dx;
+   nh = h + H_HEIGHT + sd->pad_left_top.h + sd->pad_right_bottom.h + sd->dy;
+
+   evas_object_resize(o, nw, nh);
 
    evas_object_smart_changed(o);
 }
@@ -516,23 +518,22 @@ _container_smart_calculate(Evas_Object *o)
    ch = h - (htl_h + hrb_h + priv->pad_left_top.h + priv->pad_right_bottom.h + priv->dy);
    cx = x + priv->pad_left_top.w + htl_w + priv->dx;
    cy = y + priv->pad_left_top.h + htl_h + priv->dy;
+
+   /* calculating min and max of groups */
+   if ((priv->con_size_min.w > cw) && (priv->con_size_min.w != 0))
+     cw = priv->con_size_min.w;
+   if ((priv->con_size_max.w < cw) && (priv->con_size_max.w != 0))
+     cw = priv->con_size_max.w;
+   if ((priv->con_size_min.h > ch) && (priv->con_size_min.h != 0))
+     ch = priv->con_size_min.h;
+   if ((priv->con_size_max.h < ch) && (priv->con_size_max.h != 0))
+     ch = priv->con_size_max.h;
+
    htl_x = x + priv->pad_left_top.w + priv->dx;
    htl_y = y + priv->pad_left_top.h + priv->dy;
-   hrb_x = x + priv->pad_left_top.w + cw + htl_w + priv->dx;
-   hrb_y = y + priv->pad_left_top.h + ch + htl_h + priv->dy;
+   hrb_x = htl_x + htl_w + cw;
+   hrb_y = htl_y + htl_h + ch;
 
-   if (htl_x + htl_w + priv->con_size_min.w > hrb_x)
-     {
-         htl_x = hrb_x - htl_w - priv->con_size_min.w;
-         cw = priv->con_size_min.w;
-         cx = hrb_x - priv->con_size_min.w;
-     }
-   if (htl_y + htl_h + priv->con_size_min.h > hrb_y)
-     {
-         htl_y = hrb_y - htl_h - priv->con_size_min.h;
-         ch = priv->con_size_min.h;
-         cy = hrb_y - priv->con_size_min.h;
-     }
    evas_object_resize(priv->container, cw, ch);
    evas_object_move(priv->container, cx, cy);
 
@@ -632,14 +633,14 @@ container_max_size_set(Evas_Object *obj, int w, int h)
 {
    CONTAINER_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-   if (w < 0) sd->con_size_max.w = -1;
+   if (w < 0) sd->con_size_max.w = 0;
    else sd->con_size_max.w = w;
-   if (h < 0) sd->con_size_max.h = -1;
+   if (h < 0) sd->con_size_max.h = 0;
    else sd->con_size_max.h = h;
 
-   if ((w != -1) && (sd->size->w > w))
+   if ((w != 0) && (sd->size->w > w))
      sd->size->w = w;
-   if ((h != -1) && (sd->size->h > h))
+   if ((h != 0) && (sd->size->h > h))
      sd->size->h = h;
 
    return _user_size_calc(obj);
@@ -653,7 +654,7 @@ container_container_size_set(Evas_Object *obj, int w, int h)
    if (w <= sd->con_size_min.w) sd->size->w = sd->con_size_min.w;
    else
      {
-        if ((sd->con_size_max.w != -1) && (w > sd->con_size_max.w))
+        if ((sd->con_size_max.w != 0) && (w > sd->con_size_max.w))
           sd->size->w = sd->con_size_max.w;
         else sd->size->w = w;
      }
@@ -661,7 +662,7 @@ container_container_size_set(Evas_Object *obj, int w, int h)
    if (h <= sd->con_size_min.h) sd->size->h = sd->con_size_min.h;
    else
      {
-        if ((sd->con_size_max.h != -1) && (h > sd->con_size_max.h))
+        if ((sd->con_size_max.h != 0) && (h > sd->con_size_max.h))
           sd->size->h = sd->con_size_max.h;
         else sd->size->h = h;
      }
