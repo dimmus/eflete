@@ -113,6 +113,7 @@ _progress_end(void *data, PM_Project_Result result)
         wiew->progress_log = NULL;
      }
    STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 }
 
 static Eina_Bool
