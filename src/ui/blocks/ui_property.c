@@ -1095,7 +1095,7 @@ Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
 {
    Evas_Object *state_frame, *box, *prop_box;
-   Edje_Part_Type type;
+   int type;
    char state[BUFF_MAX];
 
    if ((!property) || (!part)) return EINA_FALSE;
@@ -1170,21 +1170,26 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.aspect_pref);
         elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
-        if (type == EDJE_PART_TYPE_PROXY)
+
+        evas_object_hide(pd_state.proxy_source);
+        elm_box_unpack(box, pd_state.proxy_source);
+        elm_box_pack_end(box, pd_state.color);
+        switch (type)
           {
-            elm_box_pack_end(box, pd_state.proxy_source);
+           case EDJE_PART_TYPE_PROXY:
+             {
+                evas_object_show(pd_state.proxy_source);
+                elm_box_pack_end(box, pd_state.proxy_source);
+                break;
+             }
+           case EDJE_PART_TYPE_SPACER:
+           case EDJE_PART_TYPE_TEXTBLOCK:
+             {
+                evas_object_hide(pd_state.color);
+                elm_box_unpack(box, pd_state.color);
+             }
           }
-        else
-          {
-             evas_object_hide(pd_state.proxy_source);
-             elm_box_unpack(box, pd_state.proxy_source);
-          }
-        if (type == EDJE_PART_TYPE_SPACER)
-          {
-             evas_object_hide(pd_state.color);
-             elm_box_unpack(box, pd_state.color);
-          }
-        else elm_box_pack_end(box, pd_state.color);
+
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_after(prop_box, state_frame, pd->prop_part_drag.frame);
         pd_state.frame = state_frame;
@@ -1205,20 +1210,27 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
-        if (type == EDJE_PART_TYPE_PROXY)
+
+        evas_object_hide(pd_state.proxy_source);
+        prop_item_state_color_update(pd_state.color, pd);
+        evas_object_show(pd_state.color);
+        elm_box_pack_end(box, pd_state.color);
+        switch (type)
           {
-            prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
-            evas_object_show(pd_state.proxy_source);
-            elm_box_pack_end(box, pd_state.proxy_source);
+           case EDJE_PART_TYPE_PROXY:
+             {
+                prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
+                evas_object_show(pd_state.proxy_source);
+                elm_box_pack_end(box, pd_state.proxy_source);
+             }
+           case EDJE_PART_TYPE_SPACER:
+           case EDJE_PART_TYPE_TEXTBLOCK:
+             {
+                evas_object_hide(pd_state.color);
+                elm_box_unpack(box, pd_state.color);
+             }
           }
-        else evas_object_hide(pd_state.proxy_source);
-        if (type != EDJE_PART_TYPE_SPACER)
-          {
-             prop_item_state_color_update(pd_state.color, pd);
-             evas_object_show(pd_state.color);
-             elm_box_pack_end(box, pd_state.color);
-          }
-        else evas_object_hide(pd_state.color);
+
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
         evas_object_show(pd_state.frame);
