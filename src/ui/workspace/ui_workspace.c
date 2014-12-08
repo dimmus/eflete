@@ -1488,10 +1488,6 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
         evas_object_resize(sd->container.obj,
                            w + sd->container.dx + xpad + wpad,
                            h + sd->container.dy + ypad + hpad);
-
-        /* padding compensation */
-        sd->container.prev_w -= xpad + wpad - PADDING_SIZE * 2;
-        sd->container.prev_h -= ypad + hpad - PADDING_SIZE * 2;
      }
    else
      {
