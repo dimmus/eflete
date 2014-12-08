@@ -891,15 +891,19 @@ _progress_end(void *data, PM_Project_Result result)
 
 #ifdef HAVE_ENVENTOR
    if (ap->enventor_mode)
-     wm_widgets_list_objects_load(ap->project->widgets,
-                                  evas_object_evas_get(ap->win),
-                                  ap->project->dev);
+     {
+        wm_widgets_list_objects_load(ap->project->widgets,
+                                     evas_object_evas_get(ap->win),
+                                     ap->project->dev);
+        pm_project_changed(ap->project);
+     }
 #endif /* HAVE_ENVENTOR */
 
    live_view_widget_style_unset(ap->live_view);
    live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
    splash_del(ap->splash);
    ap->splash = NULL;
+
 }
 
 static Eina_Bool
@@ -946,6 +950,7 @@ _setup_save_splash(void *data)
                                           _progress_print,
                                           _progress_end,
                                           data);
+        pm_project_changed(ap->project);
      }
    else
      {
@@ -983,7 +988,11 @@ project_save(void)
    ap->splash = splash_add(ap->win, _setup_save_splash, _update_save_time, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
-   ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
+
+#ifdef HAVE_ENVENTOR
+   if (!ap->enventor_mode)
+#endif /* HAVE_ENVENTOR */
+     ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
 }
 
 /******************************************************************************/
