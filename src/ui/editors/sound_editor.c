@@ -128,10 +128,25 @@ _grid_label_get(void *data,
    if (!part)
      return NULL;
 
-   if (!strcmp(part, "elm.text.type"))
+   if (!strcmp(part, "elm.label.type"))
      return strdup(it->format);
    else
      return strdup(it->sound_name);
+}
+
+static char *
+_grid_group_label_get(void *data,
+                      Evas_Object *obj __UNUSED__,
+                      const char  *part)
+{
+   const Item *it = data;
+   if (!part)
+     return NULL;
+
+   if (!strcmp(part, "elm.text"))
+     return strdup(it->sound_name);
+
+   return NULL;
 }
 
 static void
@@ -1138,7 +1153,7 @@ _create_gengrid(Evas_Object *parent,
 
    ggic = elm_gengrid_item_class_new();
    ggic->item_style = "group_index";
-   ggic->func.text_get = _grid_label_get;
+   ggic->func.text_get = _grid_group_label_get;
    ggic->func.content_get = NULL;
    ggic->func.del = NULL;
 
@@ -1439,7 +1454,7 @@ _on_delete_clicked_cb(void *data,
      project_changed();
 }
 
-ITEM_SEARCH_FUNC(gengrid, "elm.text")
+ITEM_SEARCH_FUNC(gengrid, "elm.label")
 
 static void
 _search_changed(void *data,
