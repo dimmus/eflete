@@ -199,6 +199,7 @@ _project_files_create(Project_Thread *worker)
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
       pro->release_options = NULL;
       pro->changed = false;
+      pro->close_request = false;
       pro->added_sounds = NULL;
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
@@ -563,6 +564,7 @@ pm_project_open(const char *path)
    eina_lock_take(&pro_lock->mutex);
 
    pro_lock->project->changed = false;
+   pro_lock->project->close_request = false;
    pro_lock->project->pro = ef;
    pro_lock->project->widgets = wm_widgets_list_new(pro_lock->project->dev);
    pro_lock->project->layouts = wm_layouts_list_new(pro_lock->project->dev);
