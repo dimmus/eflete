@@ -646,6 +646,17 @@ _on_widget_include_all_check_changed(void *data,
    _widget_item_data_array_checks_set(genlist, elm_check_state_get(obj));
 }
 
+static void
+_on_genlist_item_activated(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *ei)
+{
+   Elm_Object_Item *it = (Elm_Object_Item *)ei;
+   Widget_Item_Data *widget_data = elm_object_item_data_get(it);
+   widget_data->check = !widget_data->check;
+   elm_genlist_item_update(it);
+}
+
 static Evas_Object *
 _genlist_content_get(void *data,
                      Evas_Object *obj,
@@ -724,6 +735,9 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    evas_object_smart_callback_add(check, "changed",
                                   _on_widget_include_all_check_changed,
                                   genlist);
+   evas_object_smart_callback_add(genlist, "activated",
+                                  _on_genlist_item_activated,
+                                  NULL);
    elm_object_part_content_set(wiew->layout,
                                "swallow.all_widgets_check", check);
 
