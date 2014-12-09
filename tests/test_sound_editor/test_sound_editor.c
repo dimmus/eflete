@@ -24,6 +24,7 @@ Suite* test_suite (void) {
    TCase *tcase = tcase_create("TCase");
    tcase_add_test(tcase, sound_editor_window_add_test_p1);
    tcase_add_test(tcase, sound_editor_window_add_test_p2);
+   tcase_add_test(tcase, sound_editor_window_add_test_p3);
    tcase_add_test(tcase, sound_editor_window_add_test_n1);
    tcase_add_test(tcase, sound_editor_window_add_test_n2);
    tcase_add_test(tcase, sound_editor_window_add_test_n3);

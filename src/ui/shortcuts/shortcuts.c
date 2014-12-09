@@ -329,7 +329,7 @@ _image_editor_open_cb(App_Data *app)
 Eina_Bool
 _sound_editor_open_cb(App_Data *app)
 {
-   sound_editor_window_add(app->project, SOUND_EDITOR_SINGLE);
+   sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
    return true;
 }
 

@@ -176,7 +176,7 @@ _menu_cb(void *data,
          image_editor_window_add(ap->project, MULTIPLE);
          break;
       case MENU_EDITORS_SOUND:
-         sound_editor_window_add(ap->project, SOUND_EDITOR_SINGLE);
+         sound_editor_window_add(ap->project, SOUND_EDITOR_EDIT);
          break;
       case MENU_EDITORS_COLORCLASS:
          colorclass_viewer_add(ap->project);

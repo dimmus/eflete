@@ -66,8 +66,10 @@ struct _Search_Data
 struct _Sound_Editor
 {
    Project *pr;
+   Sound_Editor_Mode mode;
    Evas_Object *popup;
-   Evas_Object *cmb;
+   Evas_Object *add_cmb;
+   Evas_Object *add_btn;
    Evas_Object *win;
    Evas_Object *tone_entry, *frq_entry;
    Evas_Object *gengrid;
@@ -1063,48 +1065,53 @@ _gengrid_content_fill(Sound_Editor *edit)
    sounds = edje_edit_sound_samples_list_get(edje_edit_obj);
    tones = edje_edit_sound_tones_list_get(edje_edit_obj);
 
-   it = (Item *)mem_calloc(1, sizeof(Item));
-
-   it->sound_name = eina_stringshare_add(_("<b>Sound Samples</b>"));
-   elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
-
-   if (sounds)
+   if (edit->mode != SOUND_EDITOR_TONE_SELECT)
      {
-        EINA_LIST_FOREACH(sounds, l, sound_name)
+        it = (Item *)mem_calloc(1, sizeof(Item));
+
+        it->sound_name = eina_stringshare_add(_("<b>Sound Samples</b>"));
+        elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
+
+        if (sounds)
           {
-             it = (Item *)mem_calloc(1, sizeof(Item));
-             it->sound_name = eina_stringshare_add(sound_name);
-             snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, sound_name);
-             it->format = _sound_format_get(snd_src);
-             it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
-             it->rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
-             elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
+             EINA_LIST_FOREACH(sounds, l, sound_name)
+               {
+                  it = (Item *)mem_calloc(1, sizeof(Item));
+                  it->sound_name = eina_stringshare_add(sound_name);
+                  snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, sound_name);
+                  it->format = _sound_format_get(snd_src);
+                  it->comp = edje_edit_sound_compression_type_get(edje_edit_obj, it->sound_name);
+                  it->rate = edje_edit_sound_compression_rate_get(edje_edit_obj, it->sound_name);
+                  elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_sample, edit);
+               }
+             eina_list_free(sounds);
           }
-        eina_list_free(sounds);
      }
 
-   it = (Item *)mem_calloc(1, sizeof(Item));
-   it->sound_name = eina_stringshare_add(_("<b>Sound Tones</b>"));
-   edit->tone = elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
-
-   if (tones)
+   if (edit->mode != SOUND_EDITOR_SAMPLE_SELECT)
      {
-        EINA_LIST_FOREACH(tones, l, sound_name)
+        it = (Item *)mem_calloc(1, sizeof(Item));
+        it->sound_name = eina_stringshare_add(_("<b>Sound Tones</b>"));
+        edit->tone = elm_gengrid_item_append(edit->gengrid, ggic, it, NULL, NULL);
+
+        if (tones)
           {
-             it = (Item *)mem_calloc(1, sizeof(Item));
-             it->sound_name = eina_stringshare_add(sound_name);
-             it->tone_frq = edje_edit_sound_tone_frequency_get(edje_edit_obj, sound_name);
-             it->format = eina_stringshare_printf("%d", it->tone_frq);
-             elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
+             EINA_LIST_FOREACH(tones, l, sound_name)
+               {
+                  it = (Item *)mem_calloc(1, sizeof(Item));
+                  it->sound_name = eina_stringshare_add(sound_name);
+                  it->tone_frq = edje_edit_sound_tone_frequency_get(edje_edit_obj, sound_name);
+                  it->format = eina_stringshare_printf("%d", it->tone_frq);
+                  elm_gengrid_item_append(edit->gengrid, gic, it, _grid_sel_tone, edit);
+               }
+             eina_list_free(tones);
           }
-        eina_list_free(tones);
      }
 }
 
 static void
 _create_gengrid(Evas_Object *parent,
-                Sound_Editor *editor,
-                Sound_Editor_Mode mode)
+                Sound_Editor *editor)
 {
    Evas_Object *bg;
 
@@ -1118,10 +1125,7 @@ _create_gengrid(Evas_Object *parent,
    elm_object_part_content_set(editor->gengrid, "elm.swallow.background", bg);
    evas_object_show(bg);
 
-   if (mode == SOUND_EDITOR_SINGLE)
-     elm_gengrid_multi_select_set(editor->gengrid, false);
-   else
-     elm_gengrid_multi_select_set(editor->gengrid, true);
+   elm_gengrid_multi_select_set(editor->gengrid, false);
 
    elm_object_style_set(editor->gengrid, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(editor->gengrid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1298,70 +1302,85 @@ _add_tone_done(void *data,
 }
 
 static void
+_sample_add_cb(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Sound_Editor *edit = data;
+
+   Evas_Object *bg, *fs;
+
+   MODAL_WINDOW_ADD(edit->fs_win, main_window_get(), _("Add sound to the library"),
+                    _add_sample_done, data);
+   bg = elm_bg_add(edit->fs_win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(edit->fs_win, bg);
+
+   FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
+   elm_win_resize_object_add(edit->fs_win, fs);
+}
+
+static void
+_tone_add_cb(void *data,
+             Evas_Object *obj __UNUSED__,
+             void *event_info __UNUSED__)
+{
+   Sound_Editor *edit = data;
+
+   Evas_Object *popup, *box, *item, *bt_yes, *bt_no;
+   Eina_Stringshare *title;
+
+   popup = elm_popup_add(edit->win);
+   elm_object_style_set(popup, "eflete");
+   title = eina_stringshare_add(_("Add new tone to the project"));
+   elm_object_part_text_set(popup, "title,text", title);
+   elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
+   edit->popup = popup;
+
+   BOX_ADD(popup, box, false, false);
+   elm_object_content_set(popup, box);
+   ITEM_ADD(box, item, _("tone name:"), "property/item/editor");
+   EWE_ENTRY_ADD(item, edit->tone_entry, true, DEFAULT_STYLE);
+   elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
+   elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
+   elm_box_pack_end(box, item);
+
+   ITEM_ADD(box, item, _("frequency:"), "property/item/editor");
+   EWE_ENTRY_ADD(item, edit->frq_entry, true, DEFAULT_STYLE);
+   elm_entry_markup_filter_append(edit->frq_entry, elm_entry_filter_accept_set,
+                                  &accept_value);
+   elm_object_part_text_set(edit->frq_entry, "guide",
+                            _("Type a frequency (20 - 20000)"));
+   ewe_entry_regex_set(edit->frq_entry, TONE_FRQ_REGEX, EWE_REG_EXTENDED);
+   ewe_entry_regex_autocheck_set(edit->frq_entry, true);
+   ewe_entry_regex_glow_set(edit->frq_entry, true);
+   elm_object_part_content_set(item, "elm.swallow.content", edit->frq_entry);
+   elm_box_pack_end(box, item);
+
+   BUTTON_ADD(popup, bt_yes, _("Add"));
+   evas_object_smart_callback_add (bt_yes, "clicked", _add_tone_done, edit);
+   elm_object_part_content_set(popup, "button1", bt_yes);
+
+   BUTTON_ADD(popup, bt_no, _("Cancel"));
+   evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, popup);
+   elm_object_part_content_set(popup, "button2", bt_no);
+
+   evas_object_show(popup);
+   eina_stringshare_del(title);
+}
+
+static void
 _on_cmb_sel(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info)
 {
-   Sound_Editor *edit = data;
    Ewe_Combobox_Item *selected_item = event_info;
 
    if (!selected_item->index)
-     {
-        Evas_Object *bg, *fs;
-
-        MODAL_WINDOW_ADD(edit->fs_win, main_window_get(), _("Add sound to the library"),
-                         _add_sample_done, data);
-        bg = elm_bg_add(edit->fs_win);
-        evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        evas_object_show(bg);
-        elm_win_resize_object_add(edit->fs_win, bg);
-
-        FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
-        elm_win_resize_object_add(edit->fs_win, fs);
-     }
+     _sample_add_cb(data, NULL, NULL);
    else
-     {
-        Evas_Object *popup, *box, *item, *bt_yes, *bt_no;
-        Eina_Stringshare *title;
-
-        popup = elm_popup_add(edit->win);
-        elm_object_style_set(popup, "eflete");
-        title = eina_stringshare_add(_("Add new tone to the project"));
-        elm_object_part_text_set(popup, "title,text", title);
-        elm_popup_orient_set(popup, ELM_POPUP_ORIENT_CENTER);
-        edit->popup = popup;
-
-        BOX_ADD(popup, box, false, false);
-        elm_object_content_set(popup, box);
-        ITEM_ADD(box, item, _("tone name:"), "property/item/editor");
-        EWE_ENTRY_ADD(item, edit->tone_entry, true, DEFAULT_STYLE);
-        elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
-        elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
-        elm_box_pack_end(box, item);
-
-        ITEM_ADD(box, item, _("frequency:"), "property/item/editor");
-        EWE_ENTRY_ADD(item, edit->frq_entry, true, DEFAULT_STYLE);
-        elm_entry_markup_filter_append(edit->frq_entry, elm_entry_filter_accept_set,
-                                       &accept_value);
-        elm_object_part_text_set(edit->frq_entry, "guide",
-                                 _("Type a frequency (20 - 20000)"));
-        ewe_entry_regex_set(edit->frq_entry, TONE_FRQ_REGEX, EWE_REG_EXTENDED);
-        ewe_entry_regex_autocheck_set(edit->frq_entry, true);
-        ewe_entry_regex_glow_set(edit->frq_entry, true);
-        elm_object_part_content_set(item, "elm.swallow.content", edit->frq_entry);
-        elm_box_pack_end(box, item);
-
-        BUTTON_ADD(popup, bt_yes, _("Add"));
-        evas_object_smart_callback_add (bt_yes, "clicked", _add_tone_done, edit);
-        elm_object_part_content_set(popup, "button1", bt_yes);
-
-        BUTTON_ADD(popup, bt_no, _("Cancel"));
-        evas_object_smart_callback_add (bt_no, "clicked", _add_tone_cancel, popup);
-        elm_object_part_content_set(popup, "button2", bt_no);
-
-        evas_object_show(popup);
-        eina_stringshare_del(title);
-     }
+     _tone_add_cb(data, NULL, NULL);
 }
 
 static void
@@ -1460,14 +1479,14 @@ _search_reset_cb(void *data __UNUSED__,
    search_data->last_item_found = NULL;
 }
 
-#define ADD_BUTTON(PARENT, OBJ, TEXT, CLB) \
+#define ADD_BUTTON(PARENT, OBJ, TEXT, PART, CLB) \
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_weight_set(OBJ, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_object_style_set(OBJ, "eflete/btn"); \
    elm_object_text_set(OBJ, TEXT); \
    evas_object_show(OBJ); \
-   elm_object_part_content_set(PARENT, "swallow.btn."TEXT, OBJ); \
+   elm_object_part_content_set(PARENT, "swallow.btn."PART, OBJ); \
    evas_object_smart_callback_add(OBJ, "clicked", CLB, edit);
 
 static void
@@ -1481,22 +1500,44 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    evas_object_show(edit->markup);
    elm_win_inwin_content_set(edit->win, edit->markup);
 
-   ADD_BUTTON(edit->markup, btn, "Ok", _on_ok_cb);
+   ADD_BUTTON(edit->markup, btn, _("Ok"), "Ok", _on_ok_cb);
 
-   ADD_BUTTON(edit->markup, btn, "Cancel", _on_quit_cb);
+   ADD_BUTTON(edit->markup, btn, _("Cancel"), "Cancel", _on_quit_cb);
 
-   ADD_BUTTON(edit->markup, btn, "del", _on_delete_clicked_cb);
+   ADD_BUTTON(edit->markup, btn, "", "del", _on_delete_clicked_cb);
    ICON_ADD(btn, icon, true, "icon-remove");
    elm_object_content_set(btn, icon);
    elm_object_text_set(btn, NULL);
 
-   EWE_COMBOBOX_ADD(edit->markup, edit->cmb);
-   ewe_combobox_style_set(edit->cmb, "small/default");
-   ewe_combobox_item_add(edit->cmb, _("Sample"));
-   ewe_combobox_item_add(edit->cmb, _("Tone"));
-   evas_object_smart_callback_add(edit->cmb, "selected", _on_cmb_sel, edit);
-   elm_object_part_content_set(edit->markup, "swallow.btn.add", edit->cmb);
-
+   switch (edit->mode)
+     {
+      case SOUND_EDITOR_EDIT:
+        {
+           EWE_COMBOBOX_ADD(edit->markup, edit->add_cmb);
+           ewe_combobox_style_set(edit->add_cmb, "small/default");
+           ewe_combobox_item_add(edit->add_cmb, _("Sample"));
+           ewe_combobox_item_add(edit->add_cmb, _("Tone"));
+           evas_object_smart_callback_add(edit->add_cmb, "selected", _on_cmb_sel, edit);
+           elm_object_part_content_set(edit->markup, "swallow.btn.add", edit->add_cmb);
+        }
+      break;
+      case SOUND_EDITOR_SAMPLE_SELECT:
+        {
+           ADD_BUTTON(edit->markup, edit->add_btn, "", "add", _sample_add_cb);
+           ICON_ADD(edit->add_btn, icon, true, "icon-add");
+           elm_object_content_set(edit->add_btn, icon);
+           elm_object_text_set(edit->add_btn, NULL);
+        }
+      break;
+      case SOUND_EDITOR_TONE_SELECT:
+        {
+           ADD_BUTTON(edit->markup, edit->add_btn, "", "add", _tone_add_cb);
+           ICON_ADD(edit->add_btn, icon, true, "icon-add");
+           elm_object_content_set(edit->add_btn, icon);
+           elm_object_text_set(edit->add_btn, NULL);
+        }
+      break;
+     }
    search = _sound_editor_search_field_create(edit->markup);
    elm_object_part_content_set(edit->markup, "swallow.search_area", search);
    evas_object_smart_callback_add(search, "changed", _search_changed, edit);
@@ -1523,6 +1564,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    ecore_audio_init();
 
    edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
+   edit->mode = mode;
    edit->pr = project;
    edit->win = mw_add(_on_quit_cb, edit);
    mw_title_set(edit->win, _("Sound editor"));
@@ -1530,7 +1572,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 
    _sound_editor_main_markup_create(edit);
 
-   _create_gengrid(edit->markup, edit, mode);
+   _create_gengrid(edit->markup, edit);
 
    _sound_info_create(edit->markup, edit);
 

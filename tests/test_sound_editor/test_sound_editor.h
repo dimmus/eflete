@@ -29,6 +29,7 @@
 
 void sound_editor_window_add_test_p1(int);
 void sound_editor_window_add_test_p2(int);
+void sound_editor_window_add_test_p3(int);
 void sound_editor_window_add_test_n1(int);
 void sound_editor_window_add_test_n2(int);
 void sound_editor_window_add_test_n3(int);
