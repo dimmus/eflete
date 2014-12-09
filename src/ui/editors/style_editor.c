@@ -1798,7 +1798,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 }
 
 Evas_Object *
@@ -1902,7 +1902,7 @@ style_editor_window_add(Project *project)
 
    evas_object_show(style_edit->mwin);
    evas_textblock_style_free(ts);
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return style_edit->mwin;
 }
 

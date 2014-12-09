@@ -1123,7 +1123,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return img_edit->win;
 }
 

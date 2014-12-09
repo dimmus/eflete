@@ -474,7 +474,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 }
 
 Evas_Object *
@@ -635,7 +635,8 @@ colorclass_viewer_add(Project *project)
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(ccl_edit->mwin);
-   ap->modal_editor = true;
+
+   ap->modal_editor++;
 
    return ccl_edit->mwin;
 }

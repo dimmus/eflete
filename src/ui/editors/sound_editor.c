@@ -139,7 +139,7 @@ _sound_editor_del(Sound_Editor *edit)
 {
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 
    ecore_audio_shutdown();
    edit->pr = NULL;
@@ -1582,7 +1582,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return edit->win;
 }
 

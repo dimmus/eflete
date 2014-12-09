@@ -358,7 +358,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 }
 
 /********************* genlist callbacks **************************************/
@@ -673,7 +673,8 @@ animator_window_add(Style *style)
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(animator->mwin);
-   ap->modal_editor = true;
+
+   ap->modal_editor++;
    return animator->mwin;
 }
 
