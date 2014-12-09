@@ -907,7 +907,7 @@ _progress_end(void *data, PM_Project_Result result)
 }
 
 static Eina_Bool
-_setup_save_splash(void *data)
+_setup_save_splash(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
    Project_Thread *thread;
@@ -968,10 +968,13 @@ _setup_save_splash(void *data)
 }
 
 static Eina_Bool
-_update_save_time(void *data)
+_teardown_save_splash(void *data, Splash_Status status)
 {
    App_Data *ap = (App_Data *) data;
-   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
+   if (status == SPLASH_SUCCESS)
+     STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
    return true;
 }
 
@@ -985,7 +988,7 @@ project_save(void)
    if (!ap->project->changed) return;
    if (ap->splash) return;
 
-   ap->splash = splash_add(ap->win, _setup_save_splash, _update_save_time, ap);
+   ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, NULL, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 
@@ -1064,7 +1067,7 @@ export_replace_request(Evas_Object *parent, const char *msg)
 
 
 static Eina_Bool
-_export_splash_setup(void *data)
+_export_splash_setup(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
    Project_Thread *thread;
@@ -1081,7 +1084,7 @@ _export_splash_setup(void *data)
 }
 
 static Eina_Bool
-_export_splash_teardown(void *data)
+_export_splash_teardown(void *data, Splash_Status status __UNUSED__)
 {
    eina_stringshare_del(data);
    return true;
@@ -1110,7 +1113,7 @@ _on_export_done(void *data,
         if (!export_replace_request(win, _("The file already exists.  Replacing it will overwrite its contents.")))
           return;
      }
-   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown, (void *)eina_stringshare_add(selected));
+   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown, NULL, (void *)eina_stringshare_add(selected));
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 

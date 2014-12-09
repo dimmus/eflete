@@ -20,7 +20,7 @@
 #include "wizard_common.h"
 
 static Eina_Bool
-_setup_splash(void *data)
+_setup_splash(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
 
