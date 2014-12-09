@@ -33,6 +33,7 @@ static const Edje_Action_Type combobox_action[] =
    EDJE_ACTION_TYPE_SCRIPT,
    EDJE_ACTION_TYPE_FOCUS_SET,
    EDJE_ACTION_TYPE_FOCUS_OBJECT,
+   EDJE_ACTION_TYPE_SOUND_SAMPLE,
    EDJE_ACTION_TYPE_SOUND_TONE,
 
    EDJE_ACTION_TYPE_LAST
@@ -58,9 +59,11 @@ struct _Program_Editor
       } in;
       struct {
          Evas_Object *item;
+         Evas_Object *box;
          Evas_Object *combobox;
          Evas_Object *layout1, *entry1, *btn1;
          Evas_Object *layout2, *entry2;
+         Evas_Object *layout3, *combobox3;
       } action;
       Evas_Object *script;
       struct {
@@ -118,7 +121,7 @@ static const char *action_type[] = {N_("NONE"),
                                     N_("FOCUS_OBJECT"),
                                     N_("[NOT SUPPORTED] PARAM_COPY"),
                                     N_("[NOT SUPPORTED] PARAM_SET"),
-                                    N_("[NOT SUPPORTED] SOUND_SAMPLE"),
+                                    N_("SOUND_SAMPLE"),
                                     N_("SOUND_TONE"),
                                     N_("[NOT SUPPORTED] PHYSICS_IMPULSE"),
                                     N_("[NOT SUPPORTED] PHYSICS_TORQUE_IMPULSE"),
@@ -131,6 +134,15 @@ static const char *action_type[] = {N_("NONE"),
                                     N_("[NOT SUPPORTED] PHYSICS_ROT_SET"),
                                     N_("[NOT SUPPORTED] VIBRATION_SAMPLE")};
 
+
+static const char *sound_channel[] = {N_("EFFECT"),
+                                      N_("BACKGROUND"),
+                                      N_("MUSIC"),
+                                      N_("FOREGROUND"),
+                                      N_("INTERFACE"),
+                                      N_("INPUT"),
+                                      N_("ALERT"),
+                                      N_("ALL")};
 
 static void
 _prop_item_program_targets_update(Program_Editor *prog_edit);
@@ -419,6 +431,11 @@ _special_properties_hide(Program_Editor *prog_edit)
         evas_object_del(action.btn1);
         action.btn1 = NULL;
      }
+   if (action.layout3)
+     {
+        evas_object_del(action.layout3);
+        action.layout3 = NULL;
+     }
 }
 
 static void
@@ -653,6 +670,50 @@ _trans_entries_set(Program_Editor *prog_edit)
          eina_stringshare_del(buff);
 
 static void
+_on_sample_select_done(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info)
+{
+   Program_Editor *prog_edit = data;
+   const char *value;
+   const char *selected = (const char *)event_info;
+
+   value = elm_entry_entry_get(action.entry1);
+   if ((strcmp(selected, "")) && (strcmp(value, selected)))
+   {
+      elm_entry_entry_set(action.entry1, selected);
+      edje_edit_program_sample_name_set(prop.style->obj, prop.program, selected);
+   }
+}
+
+static void
+_on_sample_select(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *ei __UNUSED__)
+{
+   Program_Editor *prog_edit = data;
+   App_Data *ap = app_data_get();
+   Evas_Object *snd_edit;
+   const char *selected = elm_entry_entry_get(action.entry1);
+
+   snd_edit = sound_editor_window_add(ap->project, SOUND_EDITOR_SAMPLE_SELECT);
+   sound_editor_file_choose(snd_edit, selected);
+   evas_object_smart_callback_add(snd_edit, SIG_SOUND_SELECTED, _on_sample_select_done, data);
+}
+
+static void
+_on_combobox_channel_sel(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *ei)
+{
+   Program_Editor *prog_edit = (Program_Editor *) data;
+   Ewe_Combobox_Item *combitem = ei;
+
+   edje_edit_program_channel_set(prop.style->obj, prop.program,
+                                 (Edje_Channel)(combitem->index));
+}
+
+static void
 _on_tone_select_done(void *data,
                      Evas_Object *obj __UNUSED__,
                      void *event_info)
@@ -775,6 +836,48 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
              {
                 ACTION_VAL_GET(edje_edit_program_value_get, action.entry1);
                 ACTION_VAL_GET(edje_edit_program_value2_get, action.entry2);
+             }
+           break;
+        }
+      case EDJE_ACTION_TYPE_SOUND_SAMPLE:
+        {
+           int i;
+           ENTRY_UPDATE(action.entry1, true, action.layout1, _("sample name"));
+           action.btn1 = elm_button_add(action.entry1);
+           elm_object_style_set(action.btn1, "eflete/elipsis");
+           evas_object_show(action.btn1);
+           evas_object_smart_callback_add(action.btn1, "clicked", _on_sample_select, prog_edit);
+           elm_object_part_content_set(action.entry1, "elm.swallow.end", action.btn1);
+           elm_object_tooltip_text_set(action.btn1, _("Select sample"));
+
+           ENTRY_UPDATE(action.entry2, false, action.layout2, _("speed"));
+           REGEX_SET(action.entry2, FLOAT_NUMBER_REGEX);
+           CALLBACK_UPDATE(_on_value2_active, action.entry2);
+
+           ITEM_ADD_(action.box, action.layout3, _("channel"), "editor");
+           EWE_COMBOBOX_ADD(action.box, action.combobox3);
+           elm_object_part_content_set(action.layout3,
+                                       "elm.swallow.content",
+                                       action.combobox3);
+           elm_box_pack_end(action.box, action.layout3);
+           evas_object_smart_callback_add(action.combobox3, "selected",
+                                          _on_combobox_channel_sel, prog_edit);
+
+           /* EDJE_CHANNEL_ALL is absent at doc so we skip it */
+           for (i = 0; i < EDJE_CHANNEL_ALL; i++)
+             ewe_combobox_item_add(action.combobox3, sound_channel[i]);
+
+           if (is_update)
+             {
+                Eina_Stringshare *sample_name =
+                  edje_edit_program_sample_name_get(prop.style->obj, prop.program);
+                ewe_entry_entry_set(action.entry1, sample_name);
+                eina_stringshare_del(sample_name);
+
+                ACTION_VAL_GET(edje_edit_program_sample_speed_get, action.entry2);
+
+                i = edje_edit_program_channel_get(prop.style->obj, prop.program);
+                ewe_combobox_select_item_set(action.combobox3, i);
              }
            break;
         }
@@ -993,6 +1096,13 @@ _on_value2_active(void *data,
         {
            if (!edje_edit_program_value2_set(prop.style->obj, prop.program,
                                              atof(value)))
+             NOTIFY_WARNING(_("The entered data is not valid!"));
+           break;
+        }
+      case EDJE_ACTION_TYPE_SOUND_SAMPLE:
+        {
+           if (!edje_edit_program_sample_speed_set(prop.style->obj, prop.program,
+                                                   atof(value)))
              NOTIFY_WARNING(_("The entered data is not valid!"));
            break;
         }
@@ -1353,6 +1463,7 @@ _prop_item_program_action_add(Evas_Object *parent,
    elm_box_pack_end(box, action.layout2);
 
    elm_object_part_content_set(item, "elm.swallow.content", box);
+   action.box = box;
 
    return item;
 }
