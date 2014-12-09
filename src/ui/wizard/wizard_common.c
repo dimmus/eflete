@@ -124,6 +124,7 @@ _progress_end(void *data, PM_Project_Result result)
         eina_strbuf_free(wiew->progress_log);
         wiew->progress_log = NULL;
      }
+   STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
 }
 
 static Eina_Bool
