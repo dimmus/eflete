@@ -1476,20 +1476,20 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
    if (separate)
      {
         Evas_Coord x, y, w, h;
-        evas_object_geometry_get(sd->container.obj, NULL, NULL,
+        container_container_size_get(sd->container.obj,
                                  &sd->container.prev_w,
                                  &sd->container.prev_h);
         container_border_hide(sd->container.obj);
 
         evas_object_geometry_get(sd->groupedit, &x, &y, &w, &h);
         container_padding_size_get(sd->container.obj, &xpad, &ypad, &wpad, &hpad);
-        evas_object_resize(sd->container.obj,
+        container_container_size_set(sd->container.obj,
                            w + sd->container.dx + xpad + wpad,
                            h + sd->container.dy + ypad + hpad);
      }
    else
      {
-        evas_object_resize(sd->container.obj,
+        container_container_size_set(sd->container.obj,
                            sd->container.prev_w,
                            sd->container.prev_h);
         container_border_show(sd->container.obj);
