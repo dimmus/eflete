@@ -2613,6 +2613,7 @@ _on_state_color_class_change(void *data,
                       (void*)edje_edit_state_color_class_set, "colorclass",
                       pd->part->name, pd->part->curr_state,
                       pd->part->curr_state_value);
+   project_changed();
 
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;
