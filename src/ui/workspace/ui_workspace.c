@@ -1243,8 +1243,6 @@ workspace_edit_object_recalc(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
-printf("Calculationg \n");
-
    Evas_Coord min_w, max_w, min_h, max_h;
    min_w = edje_edit_group_min_w_get(sd->style->obj);
    min_h = edje_edit_group_min_h_get(sd->style->obj);
