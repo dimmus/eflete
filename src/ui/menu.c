@@ -89,15 +89,21 @@ _menu_cb(void *data,
    switch (mid)
      {
       case MENU_FILE_NEW_PROJECT:
+         if (!project_close(ap))
+           return;
          wizard_new_project_add(ap);
          break;
       case MENU_FILE_OPEN_PROJECT:
          project_open();
          break;
       case MENU_FILE_IMPORT_EDJ:
+         if (!project_close(ap))
+           return;
          wizard_import_edj_add(ap);
          break;
       case MENU_FILE_IMPORT_EDC:
+         if (!project_close(ap))
+           return;
          wizard_import_edc_add(ap);
          break;
       case MENU_FILE_SAVE:

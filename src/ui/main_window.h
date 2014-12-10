@@ -455,6 +455,21 @@ void
 project_changed(void);
 
 /**
+ * Requesting to change project (need to close it, to hide blocks, unset data,
+ * etc).
+ * This function will ask user what to do with opened project
+ * (if it is changed).
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+project_close(App_Data *ap);
+
+/**
  * Dialog with qustion what do with openned project.
  *
  * @param ap The Eflete App_Data.

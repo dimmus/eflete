@@ -804,6 +804,29 @@ _on_open_done(void *data,
    _widget_list_layouts_tab_activate(ap);
 }
 
+#define PROJECT_CLOSE_MSG _("Do you want to save changes?")
+
+Eina_Bool
+project_close(App_Data *ap)
+{
+   if ((ap->project) && (ap->project->changed))
+     {
+        if (!project_close_request(ap, PROJECT_CLOSE_MSG))
+          {
+             return false;
+          }
+        else
+          {
+             ap->project->changed = false;
+             STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
+             blocks_hide(ap);
+             blocks_data_unset(ap);
+          }
+     }
+   return true;
+}
+#undef PROJECT_CLOSE_MSG
+
 void
 project_open(void)
 {
@@ -812,9 +835,7 @@ project_open(void)
 
    ap = app_data_get();
    if ((ap->project) && (!project_close_request(ap,
-                              _("You want to open a project, but now you have<br/>"
-                                "opened project. If you dont save opened project<br/>"
-                                "all your changes will be lost!"))))
+                              _("Do you want to save changes?"))))
      return;
 
 
