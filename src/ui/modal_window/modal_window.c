@@ -20,21 +20,12 @@
 #include "modal_window.h"
 
 static void
-_after_animation_close(void *data __UNUSED__,
-                       Evas_Object *obj,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   evas_object_del(obj);
-}
-static void
 _mw_close(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
 {
    Evas_Object *mwin = (Evas_Object *)data;
-   elm_layout_signal_emit(mwin, "hide", "eflete");
-   elm_layout_signal_callback_add(mwin, "teardown", "eflete", _after_animation_close, NULL);
+   evas_object_del(mwin);
 }
 
 static void
