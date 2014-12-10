@@ -1118,3 +1118,65 @@ group { name: "elm/win/inwin/splash";
       }
    }
 }
+
+group { name: "elm/layout/inwin/anim/helper";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+         }
+         description { state: "flip" 0.0;
+            rel1.relative: -0.15 -0.15;
+            rel2.relative: 1.15 1.15;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "flip" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "before_show";
+         signal: "show";
+         source: "eflete";
+         action: STATE_SET "flip" 0.0;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "show_anim";
+      }
+      program { name: "show_anim";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.15;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "show_anim_finish";
+      }
+      program { name: "show_anim_finish";
+         action: SIGNAL_EMIT "show,anim,finished" "eflete";
+      }
+      program { name: "before_hide";
+         signal: "hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "hide_anim";
+      }
+      program { name: "hide_anim";
+         action: STATE_SET "flip" 0.0;
+         transition: LINEAR 0.15;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "hide_anim_finish";
+      }
+      program { name: "hide_anim_finish";
+         action: SIGNAL_EMIT "hide,anim,finished" "eflete";
+      }
+   }
+}
