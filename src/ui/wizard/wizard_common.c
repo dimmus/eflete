@@ -25,18 +25,6 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static void
-_after_animation_close(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   Wizard_Import_Edj_Win *wiew;
-   wiew = (Wizard_Import_Edj_Win *)data;
-
-   evas_object_del(wiew->win);
-   free(wiew);
-}
-static void
 _on_cancel(void *data,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
@@ -44,8 +32,8 @@ _on_cancel(void *data,
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
 
-   elm_layout_signal_emit(wiew->win, "hide", "eflete");
-   elm_layout_signal_callback_add(wiew->win, "teardown", "eflete", _after_animation_close, wiew);
+   evas_object_del(wiew->win);
+   free(wiew);
 }
 
 void
@@ -131,10 +119,9 @@ static Eina_Bool
 _teardown_splash(void *data)
 {
    Wizard_Import_Edj_Win *wiew;
-   wiew = (Wizard_Import_Edj_Win *)data;
 
-   elm_layout_signal_emit(wiew->win, "hide", "eflete");
-   elm_layout_signal_callback_add(wiew->win, "teardown", "eflete", _after_animation_close, wiew);
+   wiew = (Wizard_Import_Edj_Win *)data;
+   evas_object_del(wiew->win);
 
    return true;
 }
@@ -338,7 +325,6 @@ wizard_import_common_add(const char *layout_name)
    wiew->layout = layout;
 
    evas_object_show(mwin);
-   elm_layout_signal_emit(mwin, "show", "eflete");
 
    return wiew;
 }
