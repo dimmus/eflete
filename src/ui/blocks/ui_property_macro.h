@@ -212,7 +212,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->part->name, NULL, 0.0); \
    project_changed(); \
-   pm_project_changed(app_data_get()->project); \
 }
 
 #define ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \
@@ -552,7 +551,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     pd->part->curr_state_value); \
    elm_object_focus_set(obj, true); \
    elm_entry_cursor_pos_set(obj, pos); \
-   pm_project_changed(app_data_get()->project); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
@@ -733,7 +731,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
                       (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
                       pd->part->name, pd->part->curr_state, \
                       pd->part->curr_state_value); \
-   pm_project_changed(app_data_get()->project); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
