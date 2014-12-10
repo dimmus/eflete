@@ -265,23 +265,14 @@ _on_add_popup_btn_cancel(void *data,
    ccl_edit->popup = NULL;
 }
 
-/* Colorclass editor buttons callbacks */
-static void
-_after_animation_close(void *data __UNUSED__,
-                       Evas_Object *obj,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   evas_object_del(obj);
-}
+/*Colorclass editor buttons callbacks*/
 static void
 _on_btn_cancel(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
    Evas_Object *mwin = (Evas_Object *)data;
-   elm_layout_signal_emit(mwin, "hide", "eflete");
-   elm_layout_signal_callback_add(mwin, "teardown", "eflete", _after_animation_close, NULL);
+   evas_object_del(mwin);
 }
 
 static void
@@ -644,8 +635,6 @@ colorclass_viewer_add(Project *project)
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(ccl_edit->mwin);
-   elm_layout_signal_emit(ccl_edit->mwin, "show", "eflete");
-
    ap->modal_editor = true;
 
    return ccl_edit->mwin;
