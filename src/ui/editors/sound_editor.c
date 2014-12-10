@@ -578,15 +578,6 @@ _on_rewind_cb(void *data,
 }
 
 static void
-_after_animation_close(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   Sound_Editor *edit = (Sound_Editor *)data;
-   _sound_editor_del(edit);
-}
-static void
 _sound_editor_quit(Sound_Editor *edit)
 {
    if (edit->playing)
@@ -597,9 +588,9 @@ _sound_editor_quit(Sound_Editor *edit)
         eo_del(edit->io.out);
         eina_binbuf_free(edit->io.buf);
      }
-   elm_layout_signal_emit(edit->win, "hide", "eflete");
-   elm_layout_signal_callback_add(edit->win, "teardown", "eflete", _after_animation_close, edit);
+   _sound_editor_del(edit);
 }
+
 static void
 _on_quit_cb(void *data,
             Evas_Object *obj __UNUSED__,
@@ -1546,7 +1537,6 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    _sound_player_create(edit->markup, edit);
 
    evas_object_show(edit->win);
-   elm_layout_signal_emit(edit->win, "show", "eflete");
 
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
