@@ -99,6 +99,7 @@ _add_ok_clicked(void *data,
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
+        project_changed();
      }
    ecore_job_add(_job_popup_close, ap);
 }
@@ -242,6 +243,7 @@ _del_ok_clicked(void *data,
      {
         ap->project->current_style->isModify = true;
         ui_states_list_selected_state_del(state_list);
+        project_changed();
      }
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
