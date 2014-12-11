@@ -26,6 +26,8 @@
 #include "animator.h"
 #include "about_window.h"
 
+static int _menu_delayed_event = 0;
+
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
    MENU_FILE_EXPORT_EDC,
@@ -78,19 +80,25 @@ struct _Menu
    Evas_Object *toolbar;
 };
 
-static void
-_menu_cb(void *data,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
+struct _menu_event
 {
-   int mid = * (int *)data;
+   int mid;
+};
+typedef struct _menu_event Menu_Event;
+
+static Eina_Bool
+_menu_cb(void *data __UNUSED__,
+         int type __UNUSED__,
+         void *event)
+{
+   Menu_Event *menu_event = (Menu_Event *)event;
    App_Data *ap = app_data_get();
 
-   switch (mid)
+   switch (menu_event->mid)
      {
       case MENU_FILE_NEW_PROJECT:
          if (!project_close(ap))
-           return;
+           return ECORE_CALLBACK_DONE;
          wizard_new_project_add(ap);
          break;
       case MENU_FILE_OPEN_PROJECT:
@@ -98,12 +106,12 @@ _menu_cb(void *data,
          break;
       case MENU_FILE_IMPORT_EDJ:
          if (!project_close(ap))
-           return;
+           return ECORE_CALLBACK_DONE;
          wizard_import_edj_add(ap);
          break;
       case MENU_FILE_IMPORT_EDC:
          if (!project_close(ap))
-           return;
+           return ECORE_CALLBACK_DONE;
          wizard_import_edc_add(ap);
          break;
       case MENU_FILE_SAVE:
@@ -194,9 +202,20 @@ _menu_cb(void *data,
          about_window_add();
          break;
       default:
-         DBG("unknown menu id: %d", mid);
+         DBG("unknown menu id: %d", menu_event->mid);
          break;
      }
+   return ECORE_CALLBACK_DONE;
+}
+
+static void
+_delay_menu_cb(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info __UNUSED__)
+{
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->mid = * (int *)data;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
 Menu *
@@ -211,6 +230,9 @@ ui_menu_add(App_Data *ap)
         return NULL;
      }
    if ((!ap->win) || (!ap->win_layout)) return NULL;
+   _menu_delayed_event = ecore_event_type_new();
+
+   ecore_event_handler_add(_menu_delayed_event, _menu_cb, NULL);
 
    menu = mem_calloc(1, sizeof(Menu));
 
@@ -223,7 +245,7 @@ ui_menu_add(App_Data *ap)
 
 
 #define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL) \
-   menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _menu_cb, &sad_callback_data[ID]);
+   menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
 
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"))
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, NULL, _("New project..."))
@@ -279,7 +301,7 @@ ui_menu_add(App_Data *ap)
    evas_object_show(toolbar);
 
 #define ITEM_TB_ADD(ID, ICON, LABEL) \
-   menu->toolbar_items[ID] = elm_toolbar_item_append(toolbar, ICON, LABEL, _menu_cb, &sad_callback_data[ID]);
+   menu->toolbar_items[ID] = elm_toolbar_item_append(toolbar, ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
 
    ITEM_TB_ADD(MENU_FILE_NEW_PROJECT, EFLETE_IMG_PATH"icon-new_project.png", _("New project"));
    ITEM_TB_ADD(MENU_FILE_OPEN_PROJECT, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"));
