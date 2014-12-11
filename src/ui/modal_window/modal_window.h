@@ -46,6 +46,9 @@
  * @param data Additional data that will be passed to callback.
  * @return The new modal window or NULL if it cannot be created.
  *
+ * @note Do not use evas_object_del for this object if you want to play hide
+ * animation.
+ *
  * @ingroup ModalWindow
  */
 Evas_Object *
