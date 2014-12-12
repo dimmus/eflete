@@ -231,6 +231,8 @@ _style_delete_cb(App_Data *app)
 Eina_Bool
 _new_theme_cb(App_Data *app)
 {
+   if (!project_close(app))
+     return false;
    wizard_new_project_add(app);
    return true;
 }
@@ -239,6 +241,8 @@ _new_theme_cb(App_Data *app)
 Eina_Bool
 _open_edc_cb(App_Data *app)
 {
+   if (!project_close(app))
+     return false;
    compile_dialog(app);
    return true;
 }
