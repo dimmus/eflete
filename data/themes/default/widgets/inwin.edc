@@ -82,7 +82,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         description { state: "deafult" 0.0;
+         description { state: "default" 0.0;
             align: 0.0 0.5;
             aspect: 1 1;
             aspect_preference: VERTICAL;
@@ -298,7 +298,7 @@ group { name: "elm/win/inwin/about_window";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         description { state: "deafult" 0.0;
+         description { state: "default" 0.0;
             align: 0.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
