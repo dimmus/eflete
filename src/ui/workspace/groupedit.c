@@ -603,6 +603,18 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    return true;
 }
 
+static void
+_bg_changed(void *data,
+                Evas *evas __UNUSED__,
+                Evas_Object *o,
+                void *einfo __UNUSED__)
+{
+   int w, h;
+   Evas_Object *bg = (Evas_Object *)data;
+   evas_object_geometry_get(o, NULL, NULL, &w, &h);
+   evas_object_resize(bg, w, h);
+}
+
 Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {
@@ -611,12 +623,23 @@ groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!bg) return false;
 
+   if (!bg)
+     {
+        Evas_Object *old_bg = evas_object_image_source_get(sd->bg);
+        evas_object_event_callback_del_full(old_bg,
+                                            EVAS_CALLBACK_RESIZE,
+                                            _bg_changed, sd->bg);
+     }
+
    sd->bg = evas_object_image_filled_add(sd->e);
    sd->clipper = evas_object_rectangle_add(sd->e);
 
    evas_object_geometry_get(bg, NULL, NULL, &w, &h);
    evas_object_image_source_set(sd->bg, bg);
    evas_object_resize(sd->bg, w, h);
+   evas_object_event_callback_add(bg,
+                                  EVAS_CALLBACK_RESIZE,
+                                  _bg_changed, sd->bg);
 
    evas_object_smart_member_add(sd->bg, obj);
    evas_object_smart_member_add(sd->clipper, obj);
