@@ -143,7 +143,13 @@ _mw_close(void *data,
    func_data = evas_object_data_get(mw, FUNC_DATA);
    func = evas_object_data_get(mw, FUNC_CLOSE);
    if (func) func(func_data, mw, NULL);
+   else _anim_hide(elm_object_parent_widget_get(mw),
+                   evas_object_evas_get(mw), mw, NULL);
+}
 
+void
+mw_del(Evas_Object *mw)
+{
    _anim_hide(elm_object_parent_widget_get(mw),
               evas_object_evas_get(mw), mw, NULL);
 }

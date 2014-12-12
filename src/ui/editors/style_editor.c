@@ -629,8 +629,7 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
-   project_changed();
-   evas_object_del(style_edit->mwin);
+   mw_del(style_edit->mwin);
 }
 
 static inline Evas_Object *

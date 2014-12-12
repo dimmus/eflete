@@ -115,8 +115,8 @@ _image_editor_del(Image_Editor *img_edit)
    _itc_state = NULL;
    evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
-   evas_object_del(img_edit->gengrid);
-   evas_object_del(img_edit->win);
+   //evas_object_del(img_edit->gengrid);
+   mw_del(img_edit->win);
    _image_info_reset(img_edit);
    free(img_edit);
 }
@@ -997,7 +997,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add(NULL, img_edit);
+   img_edit->win = mw_add(_on_button_close_clicked_cb, img_edit);
    if (mode == SINGLE)
      mw_title_set(img_edit->win, _("Image editor: choose image"));
    else if (mode == TWEENS)

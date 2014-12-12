@@ -146,8 +146,7 @@ _sound_editor_del(Sound_Editor *edit)
    elm_gengrid_item_class_free(gic);
    elm_gengrid_item_class_free(ggic);
    evas_object_data_del(edit->win, SND_EDIT_KEY);
-   evas_object_del(edit->win);
-   evas_object_del(edit->markup);
+   mw_del(edit->win);
    eina_stringshare_del(edit->selected);
    free(edit);
 }

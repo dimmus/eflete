@@ -114,4 +114,7 @@ mw_icon_set(Evas_Object *object, Evas_Object *icon);
 Eina_Bool
 mw_info_text_set(Evas_Object *object, const char *text);
 
+void
+mw_del(Evas_Object *mw);
+
 #endif /* MODAL_WINDOW_H */

@@ -198,8 +198,9 @@ _on_animator_cancel(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei __UNUSED__)
 {
-   Evas_Object *mwin = (Evas_Object *)data;
-   evas_object_del(mwin);
+   Animator *animator = (Animator *)data;
+
+   mw_del(animator->mwin);
 }
 
 static void
@@ -525,7 +526,7 @@ animator_window_add(Style *style)
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
    animator->style = style;
-   animator->mwin = mw_add(NULL, NULL);
+   animator->mwin = mw_add(_on_animator_cancel, animator);
    animator->is_cycled = true;
 
    mw_title_set(animator->mwin, _("Program editor"));
@@ -660,8 +661,7 @@ animator_window_add(Style *style)
    BUTTON_ADD(button_box, bt, _("Close"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_size_hint_min_set(bt, 100, 30);
-   evas_object_smart_callback_add(bt, "clicked", _on_animator_cancel,
-                                  animator->mwin);
+   evas_object_smart_callback_add(bt, "clicked", _on_animator_cancel, animator);
    elm_box_pack_end(button_box, bt);
 
    elm_object_part_content_set(panes, "top", top_layout);

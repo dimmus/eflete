@@ -32,7 +32,7 @@ _on_cancel(void *data,
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
 
-   evas_object_del(wiew->win);
+   mw_del(wiew->win);
    free(wiew);
 }
 
@@ -122,7 +122,7 @@ _teardown_splash(void *data)
    Wizard_Import_Edj_Win *wiew;
 
    wiew = (Wizard_Import_Edj_Win *)data;
-   evas_object_del(wiew->win);
+   mw_del(wiew->win);
 
    return true;
 }
