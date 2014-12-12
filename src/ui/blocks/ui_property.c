@@ -330,6 +330,8 @@ _on_tab_activated(void *data,
         enventor_object_file_set(pd->code, path);
         enventor_object_focus_set(pd->code, true);
         eina_stringshare_del(path);
+        ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
+        pm_project_changed(ap->project);
      }
    else
      code_edit_mode_switch(app_data_get(), false);
@@ -356,7 +358,6 @@ _code_of_group_setup(Prop_Data *pd)
    free(markup_code);
    eina_stringshare_del(code);
 }
-
 #endif
 
 Evas_Object *
