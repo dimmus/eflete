@@ -19,14 +19,8 @@
 
 #include "modal_window.h"
 
-static void
-_mw_close(void *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
-{
-   Evas_Object *mwin = (Evas_Object *)data;
-   evas_object_del(mwin);
-}
+#define FUNC_CLOSE "func_close"
+#define FUNC_DATA "func_data"
 
 static void
 _response_cb(void *data,
@@ -73,6 +67,87 @@ _on_key_down(void *data,
 }
 */
 
+static void
+_anim_show_finish(void *data,
+                  Evas_Object *obj,
+                  const char *emission __UNUSED__,
+                  const char *source __UNUSED__)
+{
+   Evas_Object *img, *mw;
+
+   mw = (Evas_Object *)data;
+   evas_object_smart_callback_call(mw, "show,anim,finished", "eflete");
+
+   img = elm_layout_content_get(obj, "elm.swallow.content");
+   evas_object_image_source_visible_set(img, true);
+   evas_object_del(obj);
+}
+
+static void
+_anim_hide_finish(void *data,
+                  Evas_Object *obj,
+                  const char *emission __UNUSED__,
+                  const char *source __UNUSED__)
+{
+   Evas_Object *img, *mw;
+
+   mw = (Evas_Object *)data;
+   evas_object_smart_callback_call(mw, "hide,anim,finished", "eflete");
+
+   img = elm_layout_content_get(obj, "elm.swallow.content");
+   evas_object_image_source_visible_set(img, true);
+   evas_object_del(obj);
+   evas_object_del(mw);
+}
+
+#define ANIM_ACTION(NAME) \
+static void \
+_anim_##NAME(void *data, \
+             Evas *e, \
+             Evas_Object *obj, \
+             void *event_info __UNUSED__) \
+{ \
+   Evas_Object *parent, *helper, *img; \
+   parent = (Evas_Object *)data; \
+   helper = elm_layout_add(parent); \
+   elm_layout_theme_set(helper, "layout", "inwin", "anim/helper"); \
+   evas_object_size_hint_weight_set(helper, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(helper, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_win_resize_object_add(parent, helper); \
+   evas_object_show(helper); \
+   elm_layout_signal_callback_add(helper, #NAME",anim,finished", \
+                                  "eflete", _anim_##NAME##_finish, obj); \
+   img = evas_object_image_filled_add(e); \
+   evas_object_image_source_set(img, obj); \
+   evas_object_image_source_visible_set(img, false); \
+   evas_object_size_hint_weight_set(img, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(img, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   evas_object_show(img); \
+   elm_layout_content_set(helper, "elm.swallow.content", img); \
+   elm_layout_signal_emit(helper, #NAME, "eflete"); \
+}
+
+ANIM_ACTION(show)
+ANIM_ACTION(hide)
+
+static void
+_mw_close(void *data,
+          Evas_Object *obj __UNUSED__,
+          void *event_info __UNUSED__)
+{
+   Evas_Smart_Cb func;
+   void *func_data;
+   Evas_Object *mw;
+
+   mw = (Evas_Object *)data;
+   func_data = evas_object_data_get(mw, FUNC_DATA);
+   func = evas_object_data_get(mw, FUNC_CLOSE);
+   if (func) func(func_data, mw, NULL);
+
+   _anim_hide(elm_object_parent_widget_get(mw),
+              evas_object_evas_get(mw), mw, NULL);
+}
+
 Evas_Object *
 _mw_create(Evas_Object *parent,
            const char *style_name,
@@ -91,13 +166,16 @@ _mw_create(Evas_Object *parent,
      evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
                                     _on_key_down, bt_close);
    */
-   if (func)
-      evas_object_smart_callback_add(bt_close, "clicked", func, data);
-   else
-      evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
+
+   evas_object_data_set(mw, FUNC_CLOSE, func);
+   evas_object_data_set(mw, FUNC_DATA, data);
+   evas_object_smart_callback_add(bt_close, "clicked", _mw_close, mw);
+
    GET_IMAGE(ic_close, bt_close, "mw_button_close");
    elm_layout_content_set(bt_close, "icon", ic_close);
    elm_layout_content_set(mw, "elm.swallow.close", bt_close);
+
+   evas_object_event_callback_add(mw, EVAS_CALLBACK_SHOW, _anim_show, parent);
 
    return mw;
 }
