@@ -265,23 +265,14 @@ _on_add_popup_btn_cancel(void *data,
    ccl_edit->popup = NULL;
 }
 
-/* Colorclass editor buttons callbacks */
-static void
-_after_animation_close(void *data __UNUSED__,
-                       Evas_Object *obj,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   evas_object_del(obj);
-}
+/*Colorclass editor buttons callbacks*/
 static void
 _on_btn_cancel(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Evas_Object *mwin = (Evas_Object *)data;
-   elm_layout_signal_emit(mwin, "hide", "eflete");
-   elm_layout_signal_callback_add(mwin, "teardown", "eflete", _after_animation_close, NULL);
+   Colorclasses_Editor *ccl_edit = (Colorclasses_Editor *)data;
+   mw_del(ccl_edit->mwin);
 }
 
 static void
@@ -483,7 +474,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 }
 
 Evas_Object *
@@ -506,7 +497,7 @@ colorclass_viewer_add(Project *project)
    ccl_edit = (Colorclasses_Editor *)mem_calloc(1, sizeof(Colorclasses_Editor));
    ccl_edit->changed = false;
    ccl_edit->pr = project;
-   ccl_edit->mwin = mw_add(NULL, NULL);
+   ccl_edit->mwin = mw_add(_on_btn_cancel, ccl_edit);
    mw_title_set(ccl_edit->mwin, _("Color class editor"));
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_ccl_editor_close, ccl_edit);
@@ -555,7 +546,7 @@ colorclass_viewer_add(Project *project)
    elm_box_pack_end(bottom_box, button);
 
    BUTTON_ADD(ccl_edit->mwin, button, _("Close"));
-   evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, ccl_edit->mwin);
+   evas_object_smart_callback_add(button, "clicked", _on_btn_cancel, ccl_edit);
    elm_box_pack_end(bottom_box, button);
 
    SCROLLER_ADD(panes, scroller);
@@ -644,9 +635,8 @@ colorclass_viewer_add(Project *project)
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(ccl_edit->mwin);
-   elm_layout_signal_emit(ccl_edit->mwin, "show", "eflete");
 
-   ap->modal_editor = true;
+   ap->modal_editor++;
 
    return ccl_edit->mwin;
 }

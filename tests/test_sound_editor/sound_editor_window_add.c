@@ -47,7 +47,7 @@
  * @step 1 Call sound_editor_window_add()
  * @step 2 Check returned pointer
  * </td>
- * <td>(Project *) project, SINGLE</td>
+ * <td>(Project *) project, SOUND_EDITOR_EDIT</td>
  * <td>returned pointer is not NULL</td>
  * </tr>
  * @}
@@ -68,8 +68,8 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
                                 evas_object_evas_get(app->win),
                                 app->project->dev);
 
-   sounds = sound_editor_window_add(app->project, SINGLE);
-   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SINGLE mode");
+   sounds = sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
+   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_EDIT mode");
 
    evas_object_del(sounds);
    ui_main_window_del(app);
@@ -97,7 +97,7 @@ END_TEST
  * @step 2 check returned value
  *
  * </td>
- * <td>(Project *) project, MULTIPLE</td>
+ * <td>(Project *) project, SOUND_EDITOR_SAMPLE_SELECT</td>
  * <td>Not NULL Pointer returned</td>
  * </tr>
  * @}
@@ -118,13 +118,63 @@ EFLETE_TEST (sound_editor_window_add_test_p2)
                                app->project->dev);
    ui_main_window_add(app);
 
-   sounds = sound_editor_window_add(app->project, MULTIPLE);
-   ck_assert_msg(sounds != NULL, "cannot create sound editor window in MULTIPLE mode");
+   sounds = sound_editor_window_add(app->project, SOUND_EDITOR_SAMPLE_SELECT);
+   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_SAMPLE_SELECT mode");
 
    evas_object_del(sounds);
    ui_main_window_del(app);
    app_shutdown();
    teardown("./sound_editor_window_add_test_p2");
+   elm_shutdown();
+}
+END_TEST
+
+/**
+ * @addtogroup sound_editor_window_add
+ * @{
+ * <tr>
+ * <td>sound_editor_window_add</td>
+ * <td>sound_editor_window_add_test_p3</td>
+ * <td>
+ * @precondition
+ * @step 1 init elemantary
+ * @step 2 init app
+ * @step 3 create main window
+ * @step 4 load project
+ *
+ * @procedure
+ * @step 1 call sound_editor_window_add
+ * @step 2 check returned value
+ *
+ * </td>
+ * <td>(Project *) project, SOUND_EDITOR_TONE_SELECT</td>
+ * <td>Not NULL Pointer returned</td>
+ * </tr>
+ * @}
+ */
+EFLETE_TEST (sound_editor_window_add_test_p3)
+{
+   elm_init(0,0);
+   setup("sound_editor_window_add_test_p3");
+
+   App_Data *app;
+   app_init();
+   Evas_Object *sounds;
+
+   app = app_data_get();
+   app->project = pm_project_open("./sound_editor_window_add_test_p3/sound_editor_window_add_test_p3.pro");
+   wm_widgets_list_objects_load(app->project->widgets,
+                               evas_object_evas_get(app->win),
+                               app->project->dev);
+   ui_main_window_add(app);
+
+   sounds = sound_editor_window_add(app->project, SOUND_EDITOR_TONE_SELECT);
+   ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_TONE_SELECT mode");
+
+   evas_object_del(sounds);
+   ui_main_window_del(app);
+   app_shutdown();
+   teardown("./sound_editor_window_add_test_p3");
    elm_shutdown();
 }
 END_TEST

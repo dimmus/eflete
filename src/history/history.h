@@ -301,7 +301,7 @@ history_module_del(Evas_Object *source);
  *   const char *old_value = part->name;
  *   value = elm_entry_entry_get(obj);
  *   if (!edje_edit_part_name_set(style->obj, part->name, value)) return;
- *   pm_project_changed(app_data_get()->project);
+ *   project_changed();
  *   part->name = value;
  *   style->isModify = true;
  *   history_diff_add(style->obj, PROPERTY, MODIFY, RENAME, old_value, value,

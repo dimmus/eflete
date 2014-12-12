@@ -390,7 +390,7 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
 }
 
 static Eina_Bool
-_splash_setup_import_edc(void *data)
+_splash_setup_import_edc(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *flags = _edje_cc_flags_create(wiew);
@@ -424,7 +424,7 @@ _new_project_file_create(Eina_Stringshare *path, const char *edc)
 }
 
 static Eina_Bool
-_splash_setup_new_project(void *data)
+_splash_setup_new_project(void *data, Splash_Status status __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew = (Wizard_Import_Edj_Win *)data;
    Eina_Strbuf *edc;
@@ -458,8 +458,8 @@ _splash_setup_new_project(void *data)
                                         wiew);
    wiew->progress_log = eina_strbuf_new();
 
-   eina_strbuf_free(edc);
-   eina_strbuf_free(flags);
+   //eina_strbuf_free(edc);
+   //eina_strbuf_free(flags);
    eina_stringshare_del(edc_path);
 
    return false;
@@ -646,6 +646,17 @@ _on_widget_include_all_check_changed(void *data,
    _widget_item_data_array_checks_set(genlist, elm_check_state_get(obj));
 }
 
+static void
+_on_genlist_item_activated(void *data __UNUSED__,
+                          Evas_Object *obj __UNUSED__,
+                          void *ei)
+{
+   Elm_Object_Item *it = (Elm_Object_Item *)ei;
+   Widget_Item_Data *widget_data = elm_object_item_data_get(it);
+   widget_data->check = !widget_data->check;
+   elm_genlist_item_update(it);
+}
+
 static Evas_Object *
 _genlist_content_get(void *data,
                      Evas_Object *obj,
@@ -724,6 +735,9 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    evas_object_smart_callback_add(check, "changed",
                                   _on_widget_include_all_check_changed,
                                   genlist);
+   evas_object_smart_callback_add(genlist, "activated",
+                                  _on_genlist_item_activated,
+                                  NULL);
    elm_object_part_content_set(wiew->layout,
                                "swallow.all_widgets_check", check);
 

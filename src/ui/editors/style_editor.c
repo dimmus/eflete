@@ -623,24 +623,13 @@ _item_style_label_get(void *data,
 }
 
 static void
-_after_animation_close(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   Style_Editor *style_edit = (Style_Editor *)data;
-   evas_object_del(style_edit->mwin);
-}
-static void
 _on_viewer_exit(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
-   project_changed();
-   elm_layout_signal_emit(style_edit->mwin, "hide", "eflete");
-   elm_layout_signal_callback_add(style_edit->mwin, "teardown", "eflete", _after_animation_close, style_edit);
+   mw_del(style_edit->mwin);
 }
 
 static inline Evas_Object *
@@ -1808,7 +1797,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 }
 
 Evas_Object *
@@ -1911,10 +1900,8 @@ style_editor_window_add(Project *project)
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
-   elm_layout_signal_emit(style_edit->mwin, "show", "eflete");
-
    evas_textblock_style_free(ts);
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return style_edit->mwin;
 }
 

@@ -330,6 +330,8 @@ _on_tab_activated(void *data,
         enventor_object_file_set(pd->code, path);
         enventor_object_focus_set(pd->code, true);
         eina_stringshare_del(path);
+        ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
+        pm_project_changed(ap->project);
      }
    else
      code_edit_mode_switch(app_data_get(), false);
@@ -356,7 +358,6 @@ _code_of_group_setup(Prop_Data *pd)
    free(markup_code);
    eina_stringshare_del(code);
 }
-
 #endif
 
 Evas_Object *
@@ -416,15 +417,45 @@ ui_property_add(Evas_Object *parent)
    return tabs;
 }
 
-#define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_SPINNER_INT_CALLBACK(SUB, VALUE1) \
-   ITEM_SPINNER_INT_CALLBACK(SUB, VALUE2) \
-   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2)
+#define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
+   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE1, ITEM1, CHECK) \
+   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE2, ITEM2, CHECK) \
+   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB1, VALUE1, VALUE2) \
+   ITEM_2SPINNER_GROUP_UPDATE(SUB1, VALUE1, VALUE2)
 
-/* group property */
-ITEM_2SPINNER_GROUP_CREATE(_("min"), group_min, w, h)
-ITEM_2SPINNER_GROUP_CREATE(_("max"), group_max, w, h)
+/* ! Group property !
+
+   This macro is used to generate callback and static functions for creating,
+   updating and other stuff of group's attributes called 'min' and 'max'
+
+   The behaviour of these attributes (which are being represented by spinners)
+   is next: when we change 'min' value and it is becoming higher than 'max' then
+   value 'max' should be changed also (min can't be higher than max).
+
+   That's why we have to check if 'min' is higher (>) than 'max' in all callbacks
+   for 'min', for both w and h parameter.
+   Second macro require to check if 'max' is lower then 'min' (because 'max'
+   can't be lower than 'min', so we need update is so 'min' would be equal to
+   'max').
+   So we need to check if 'max' is lower (<) than 'min'.
+
+   > First argument of macro - label/name of parameter.
+   > Second argument of macro - main parametr that is being checked
+   > Third argument of macro - parameter that should be checked and updated if
+   second one is getting higher/lower. Inside of callback functions it will be
+   something like:
+   {
+     if second argument {higher/lower} than third -> update third
+   }
+   > Fourth and Fifth argument of macro - made to show different parameters
+   (Width or Height for max or min)
+   > Last argument of macro - shows the way Second and Third argument will be
+   compared.
+   If Min compared to Max, then it is >
+   if Max compared to Min, then it is <
+ */
+ITEM_2SPINNER_GROUP_CREATE(_("min"), min, max, w, h, >)
+ITEM_2SPINNER_GROUP_CREATE(_("max"), max, min, w, h, <)
 
 #define pd_group pd->prop_group
 
@@ -634,7 +665,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                           _("Minimum group width in pixels."),
                           _("Minimum group height in pixels."));
         pd_group.max = prop_item_group_max_w_h_add(box, pd,
-                          -1.0, 9999.0, 1.0,
+                          0.0, 9999.0, 1.0,
                           _("Maximum group width in pixels."),
                           _("Maximum group height in pixels."));
         elm_box_pack_end(box, pd_group.min);
@@ -1095,7 +1126,7 @@ Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
 {
    Evas_Object *state_frame, *box, *prop_box;
-   Edje_Part_Type type;
+   int type;
    char state[BUFF_MAX];
 
    if ((!property) || (!part)) return EINA_FALSE;
@@ -1170,21 +1201,26 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.aspect_pref);
         elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
-        if (type == EDJE_PART_TYPE_PROXY)
+
+        evas_object_hide(pd_state.proxy_source);
+        elm_box_unpack(box, pd_state.proxy_source);
+        elm_box_pack_end(box, pd_state.color);
+        switch (type)
           {
-            elm_box_pack_end(box, pd_state.proxy_source);
+           case EDJE_PART_TYPE_PROXY:
+             {
+                evas_object_show(pd_state.proxy_source);
+                elm_box_pack_end(box, pd_state.proxy_source);
+                break;
+             }
+           case EDJE_PART_TYPE_SPACER:
+           case EDJE_PART_TYPE_TEXTBLOCK:
+             {
+                evas_object_hide(pd_state.color);
+                elm_box_unpack(box, pd_state.color);
+             }
           }
-        else
-          {
-             evas_object_hide(pd_state.proxy_source);
-             elm_box_unpack(box, pd_state.proxy_source);
-          }
-        if (type == EDJE_PART_TYPE_SPACER)
-          {
-             evas_object_hide(pd_state.color);
-             elm_box_unpack(box, pd_state.color);
-          }
-        else elm_box_pack_end(box, pd_state.color);
+
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_after(prop_box, state_frame, pd->prop_part_drag.frame);
         pd_state.frame = state_frame;
@@ -1205,20 +1241,27 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
-        if (type == EDJE_PART_TYPE_PROXY)
+
+        evas_object_hide(pd_state.proxy_source);
+        prop_item_state_color_update(pd_state.color, pd);
+        evas_object_show(pd_state.color);
+        elm_box_pack_end(box, pd_state.color);
+        switch (type)
           {
-            prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
-            evas_object_show(pd_state.proxy_source);
-            elm_box_pack_end(box, pd_state.proxy_source);
+           case EDJE_PART_TYPE_PROXY:
+             {
+                prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
+                evas_object_show(pd_state.proxy_source);
+                elm_box_pack_end(box, pd_state.proxy_source);
+             }
+           case EDJE_PART_TYPE_SPACER:
+           case EDJE_PART_TYPE_TEXTBLOCK:
+             {
+                evas_object_hide(pd_state.color);
+                elm_box_unpack(box, pd_state.color);
+             }
           }
-        else evas_object_hide(pd_state.proxy_source);
-        if (type != EDJE_PART_TYPE_SPACER)
-          {
-             prop_item_state_color_update(pd_state.color, pd);
-             evas_object_show(pd_state.color);
-             elm_box_pack_end(box, pd_state.color);
-          }
-        else evas_object_hide(pd_state.color);
+
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
         evas_object_show(pd_state.frame);
@@ -2571,6 +2614,7 @@ _on_state_color_class_change(void *data,
                       (void*)edje_edit_state_color_class_set, "colorclass",
                       pd->part->name, pd->part->curr_state,
                       pd->part->curr_state_value);
+   project_changed();
 
    workspace_edit_object_recalc(pd->workspace);
    pd->style->isModify = true;

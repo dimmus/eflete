@@ -20,6 +20,22 @@
 #include "animator.h"
 #include "animator_private.h"
 
+static const Edje_Action_Type combobox_action[] =
+{
+   EDJE_ACTION_TYPE_NONE,
+   EDJE_ACTION_TYPE_STATE_SET,
+   EDJE_ACTION_TYPE_ACTION_STOP,
+   EDJE_ACTION_TYPE_SIGNAL_EMIT,
+   EDJE_ACTION_TYPE_DRAG_VAL_SET,
+   EDJE_ACTION_TYPE_DRAG_VAL_STEP,
+   EDJE_ACTION_TYPE_DRAG_VAL_PAGE,
+   EDJE_ACTION_TYPE_SCRIPT,
+   EDJE_ACTION_TYPE_FOCUS_SET,
+   EDJE_ACTION_TYPE_FOCUS_OBJECT,
+
+   EDJE_ACTION_TYPE_LAST
+};
+
 typedef struct _Program_Editor Program_Editor;
 struct _Program_Editor
 {
@@ -96,12 +112,23 @@ static const char *action_type[] = {N_("NONE"),
                                     N_("DRAG_VAL_PAGE"),
                                     N_("SCRIPT"),
                                     N_("FOCUS_SET"),
-                                    N_("RESERVED00"),
+                                    N_("[NOT SUPPORTED] RESERVED00"),
                                     N_("FOCUS_OBJECT"),
-                                    N_("PARAM_COPY"),
-                                    N_("PARAM_SET"),
-                                    N_("SOUND_SAMPLE"),
-                                    N_("SOUND_TONE")};
+                                    N_("[NOT SUPPORTED] PARAM_COPY"),
+                                    N_("[NOT SUPPORTED] PARAM_SET"),
+                                    N_("[NOT SUPPORTED] SOUND_SAMPLE"),
+                                    N_("[NOT SUPPORTED] SOUND_TONE"),
+                                    N_("[NOT SUPPORTED] PHYSICS_IMPULSE"),
+                                    N_("[NOT SUPPORTED] PHYSICS_TORQUE_IMPULSE"),
+                                    N_("[NOT SUPPORTED] PHYSICS_FORCE"),
+                                    N_("[NOT SUPPORTED] PHYSICS_TORQUE"),
+                                    N_("[NOT SUPPORTED] PHYSICS_FORCES_CLEAR"),
+                                    N_("[NOT SUPPORTED] PHYSICS_VEL_SET"),
+                                    N_("[NOT SUPPORTED] PHYSICS_ANG_VEL_SET"),
+                                    N_("[NOT SUPPORTED] PHYSICS_STOP"),
+                                    N_("[NOT SUPPORTED] PHYSICS_ROT_SET"),
+                                    N_("[NOT SUPPORTED] VIBRATION_SAMPLE")};
+
 
 static void
 _prop_item_program_targets_update(Program_Editor *prog_edit);
@@ -810,8 +837,8 @@ _on_combobox_action_sel(void *data,
    ewe_entry_entry_set(action.entry2, "");
 
    edje_edit_program_action_set(prop.style->obj, prop.program,
-                                (Edje_Action_Type)combitem->index);
-   prop.act_type = (Edje_Action_Type)((combitem->index < 9) ? combitem->index : combitem->index + 1);
+                                combobox_action[combitem->index]);
+   prop.act_type = combobox_action[combitem->index];
 
    if (prop.act_type != EDJE_ACTION_TYPE_STATE_SET)
      {
@@ -1244,12 +1271,8 @@ _prop_item_program_action_add(Evas_Object *parent,
                                "elm.swallow.content",
                                action.entry2);
 
-   for (i = 0; i < ACTIONS_COUNT; i++)
-     {
-        /*9th action state is reserved, can't be an item*/
-        if (i == 9) continue;
-        ewe_combobox_item_add(action.combobox, _(action_type[i]));
-     }
+   for (i = 0; combobox_action[i] != EDJE_ACTION_TYPE_LAST; i++)
+     ewe_combobox_item_add(action.combobox, _(action_type[combobox_action[i]]));
    evas_object_smart_callback_add(action.combobox, "selected",
                                   _on_combobox_action_sel, prog_edit);
 
@@ -1266,14 +1289,28 @@ _prop_item_program_action_add(Evas_Object *parent,
 static void
 _prop_item_program_action_update(Program_Editor *prog_edit)
 {
+   int act_type_item;
    prop.act_type = edje_edit_program_action_get(prop.style->obj, prop.program);
    ewe_entry_entry_set(action.entry1, "");
    ewe_entry_entry_set(action.entry2, "");
    elm_object_disabled_set(action.entry1, true);
    elm_object_disabled_set(action.entry2, true);
 
-   ewe_combobox_select_item_set(action.combobox, (int)prop.act_type);
+   for (act_type_item = 0; combobox_action[act_type_item] != EDJE_ACTION_TYPE_LAST; act_type_item++)
+     if (combobox_action[act_type_item] == prop.act_type)
+       break;
 
+   if (combobox_action[act_type_item] == EDJE_ACTION_TYPE_LAST)
+     {
+        ERR("Oops, not supported action type");
+        ewe_combobox_text_set(action.combobox, action_type[prop.act_type]);
+        elm_object_disabled_set(action.combobox, true);
+     }
+   else
+     {
+        ewe_combobox_select_item_set(action.combobox, act_type_item);
+        elm_object_disabled_set(action.combobox, false);
+     }
    _special_properties_hide(prog_edit);
 
    _action_entries_set(prog_edit, true);

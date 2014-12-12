@@ -46,6 +46,9 @@
  * @param data Additional data that will be passed to callback.
  * @return The new modal window or NULL if it cannot be created.
  *
+ * @note Do not use evas_object_del for this object if you want to play hide
+ * animation.
+ *
  * @ingroup ModalWindow
  */
 Evas_Object *
@@ -110,5 +113,8 @@ mw_icon_set(Evas_Object *object, Evas_Object *icon);
  */
 Eina_Bool
 mw_info_text_set(Evas_Object *object, const char *text);
+
+void
+mw_del(Evas_Object *mw);
 
 #endif /* MODAL_WINDOW_H */

@@ -25,18 +25,6 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
 };
 
 static void
-_after_animation_close(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   Wizard_Import_Edj_Win *wiew;
-   wiew = (Wizard_Import_Edj_Win *)data;
-
-   evas_object_del(wiew->win);
-   free(wiew);
-}
-static void
 _on_cancel(void *data,
            Evas_Object *obj __UNUSED__,
            void *event_info __UNUSED__)
@@ -44,8 +32,8 @@ _on_cancel(void *data,
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
 
-   elm_layout_signal_emit(wiew->win, "hide", "eflete");
-   elm_layout_signal_callback_add(wiew->win, "teardown", "eflete", _after_animation_close, wiew);
+   mw_del(wiew->win);
+   free(wiew);
 }
 
 void
@@ -100,40 +88,30 @@ _progress_end(void *data, PM_Project_Result result)
         ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
         if (!eina_inlist_count(ap->project->widgets))
           ui_widget_list_tab_activate(ui_block_widget_list_get(ap), 1);
+
+        STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
      }
 
    ecore_file_recursive_rm(wiew->tmp_dir_path);
 
+   if (result == PM_PROJECT_CANCEL)
+     {
+       DBG("Canceled by user! 'thread: %p'", wiew->thread);
+     }
+
    splash_del(wiew->splash);
-
-   if (result != PM_PROJECT_SUCCESS)
-     {
-        if (wiew->progress_log)
-          {
-             NOTIFY_WARNING(_("Errors occured on importing: <br>%s"),
-                            eina_strbuf_string_get(wiew->progress_log));
-          }
-        else
-          {
-             NOTIFY_WARNING(_("Errors occured on importing."));
-          }
-     }
-
-   if (wiew->progress_log)
-     {
-        eina_strbuf_free(wiew->progress_log);
-        wiew->progress_log = NULL;
-     }
 }
 
 static Eina_Bool
-_teardown_splash(void *data)
+_teardown_splash(void *data, Splash_Status status)
 {
    Wizard_Import_Edj_Win *wiew;
-   wiew = (Wizard_Import_Edj_Win *)data;
 
-   elm_layout_signal_emit(wiew->win, "hide", "eflete");
-   elm_layout_signal_callback_add(wiew->win, "teardown", "eflete", _after_animation_close, wiew);
+   wiew = (Wizard_Import_Edj_Win *)data;
+   if (status == SPLASH_SUCCESS)
+     mw_del(wiew->win);
 
    return true;
 }
@@ -229,6 +207,15 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
    return true;
 }
 
+static Eina_Bool
+_cancel_splash(void *data, Splash_Status status __UNUSED__)
+{
+   Wizard_Import_Edj_Win *wiew;
+
+   wiew = (Wizard_Import_Edj_Win *)data;
+   return pm_project_thread_cancel(wiew->thread);
+}
+
 static void
 _on_apply(void *data,
           Evas_Object *obj __UNUSED__,
@@ -244,7 +231,8 @@ _on_apply(void *data,
        (!wiew->splash_setup_func) || (!_project_directory_check(wiew)))
      return;
 
-   wiew->splash = splash_add(ap->win, wiew->splash_setup_func, _teardown_splash, wiew);
+   wiew->splash = splash_add(ap->win, wiew->splash_setup_func,
+                             _teardown_splash, _cancel_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
 }
@@ -337,7 +325,6 @@ wizard_import_common_add(const char *layout_name)
    wiew->layout = layout;
 
    evas_object_show(mwin);
-   elm_layout_signal_emit(mwin, "show", "eflete");
 
    return wiew;
 }

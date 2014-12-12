@@ -135,6 +135,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
         ui_property_part_unset(prop);
         ui_property_style_unset(prop);
         ui_property_style_set(prop, style, app->workspace);
+        workspace_edit_object_recalc(app->workspace);
      }
 }
 

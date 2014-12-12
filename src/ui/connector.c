@@ -735,6 +735,8 @@ blocks_data_unset(App_Data *ap)
 {
    ui_property_style_unset(ui_block_property_get(ap));
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
+   ui_states_list_data_unset(ui_block_state_list_get(ap));
+   history_clear(ap->history);
    workspace_edit_object_unset(ap->workspace);
    workspace_highlight_unset(ap->workspace);
    live_view_widget_style_unset(ap->live_view);
@@ -802,6 +804,29 @@ _on_open_done(void *data,
    _widget_list_layouts_tab_activate(ap);
 }
 
+#define PROJECT_CLOSE_MSG _("Do you want to save changes?")
+
+Eina_Bool
+project_close(App_Data *ap)
+{
+   if ((ap->project) && (ap->project->changed))
+     {
+        if (!project_close_request(ap, PROJECT_CLOSE_MSG))
+          {
+             return false;
+          }
+        else
+          {
+             ap->project->changed = false;
+             STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
+             blocks_hide(ap);
+             blocks_data_unset(ap);
+          }
+     }
+   return true;
+}
+#undef PROJECT_CLOSE_MSG
+
 void
 project_open(void)
 {
@@ -810,9 +835,7 @@ project_open(void)
 
    ap = app_data_get();
    if ((ap->project) && (!project_close_request(ap,
-                              _("You want to open a project, but now you have<br/>"
-                                "opened project. If you dont save opened project<br/>"
-                                "all your changes will be lost!"))))
+                              _("Do you want to save changes?"))))
      return;
 
 
@@ -868,19 +891,23 @@ _progress_end(void *data, PM_Project_Result result)
 
 #ifdef HAVE_ENVENTOR
    if (ap->enventor_mode)
-     wm_widgets_list_objects_load(ap->project->widgets,
-                                  evas_object_evas_get(ap->win),
-                                  ap->project->dev);
+     {
+        wm_widgets_list_objects_load(ap->project->widgets,
+                                     evas_object_evas_get(ap->win),
+                                     ap->project->dev);
+        pm_project_changed(ap->project);
+     }
 #endif /* HAVE_ENVENTOR */
 
    live_view_widget_style_unset(ap->live_view);
    live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
    splash_del(ap->splash);
    ap->splash = NULL;
+
 }
 
 static Eina_Bool
-_setup_save_splash(void *data)
+_setup_save_splash(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
    Project_Thread *thread;
@@ -923,6 +950,7 @@ _setup_save_splash(void *data)
                                           _progress_print,
                                           _progress_end,
                                           data);
+        pm_project_changed(ap->project);
      }
    else
      {
@@ -940,10 +968,13 @@ _setup_save_splash(void *data)
 }
 
 static Eina_Bool
-_update_save_time(void *data)
+_teardown_save_splash(void *data, Splash_Status status)
 {
    App_Data *ap = (App_Data *) data;
-   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
+   if (status == SPLASH_SUCCESS)
+     STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
    return true;
 }
 
@@ -957,10 +988,14 @@ project_save(void)
    if (!ap->project->changed) return;
    if (ap->splash) return;
 
-   ap->splash = splash_add(ap->win, _setup_save_splash, _update_save_time, ap);
+   ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, NULL, ap);
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
-   ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
+
+#ifdef HAVE_ENVENTOR
+   if (!ap->enventor_mode)
+#endif /* HAVE_ENVENTOR */
+     ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
 }
 
 /******************************************************************************/
@@ -1032,7 +1067,7 @@ export_replace_request(Evas_Object *parent, const char *msg)
 
 
 static Eina_Bool
-_export_splash_setup(void *data)
+_export_splash_setup(void *data, Splash_Status status __UNUSED__)
 {
    App_Data *ap;
    Project_Thread *thread;
@@ -1049,7 +1084,7 @@ _export_splash_setup(void *data)
 }
 
 static Eina_Bool
-_export_splash_teardown(void *data)
+_export_splash_teardown(void *data, Splash_Status status __UNUSED__)
 {
    eina_stringshare_del(data);
    return true;
@@ -1078,7 +1113,7 @@ _on_export_done(void *data,
         if (!export_replace_request(win, _("The file already exists.  Replacing it will overwrite its contents.")))
           return;
      }
-   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown, (void *)eina_stringshare_add(selected));
+   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown, NULL, (void *)eina_stringshare_add(selected));
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 
@@ -1326,9 +1361,24 @@ found:
           }
         wm_class_free(class_st);
      }
+
    style_work->isModify = true;
    project_changed();
    ui_widget_list_class_data_reload(genlist, widget->classes);
+
+   /* deleting widget */
+   if (elm_genlist_items_count(genlist) == 0)
+     {
+        Evas_Object *widget_list = ui_block_widget_list_get(ap);
+        Evas_Object *naviframe = evas_object_data_get(widget_list, "nf_widgets");
+        Elm_Object_Item *item_gl_widgets = elm_naviframe_item_pop(naviframe);
+        elm_naviframe_item_pop_to(item_gl_widgets);
+        genlist = elm_object_item_part_content_get(elm_naviframe_top_item_get(naviframe),
+                                                   "elm.swallow.content");
+        eoi = elm_genlist_selected_item_get(genlist);
+        elm_object_item_del(eoi);
+     }
+
    return true;
 }
 

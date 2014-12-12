@@ -190,25 +190,17 @@ _on_animator_save(void *data,
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
    edje_edit_without_source_save(style->obj, true);
-   pm_project_changed(ap->project);
+   project_changed();
 }
 
-static void
-_after_animation_close(void *data __UNUSED__,
-                       Evas_Object *obj,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
-{
-   evas_object_del(obj);
-}
 static void
 _on_animator_cancel(void *data,
                     Evas_Object *obj __UNUSED__,
                     void *ei __UNUSED__)
 {
-   Evas_Object *mwin = (Evas_Object *)data;
-   elm_layout_signal_emit(mwin, "hide", "eflete");
-   elm_layout_signal_callback_add(mwin, "teardown", "eflete", _after_animation_close, NULL);
+   Animator *animator = (Animator *)data;
+
+   mw_del(animator->mwin);
 }
 
 static void
@@ -367,7 +359,7 @@ _on_mwin_del(void * data,
 {
    App_Data *ap = (App_Data *)data;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 }
 
 /********************* genlist callbacks **************************************/
@@ -534,7 +526,7 @@ animator_window_add(Style *style)
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
    animator->style = style;
-   animator->mwin = mw_add(NULL, NULL);
+   animator->mwin = mw_add(_on_animator_cancel, animator);
    animator->is_cycled = true;
 
    mw_title_set(animator->mwin, _("Program editor"));
@@ -669,8 +661,7 @@ animator_window_add(Style *style)
    BUTTON_ADD(button_box, bt, _("Close"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_size_hint_min_set(bt, 100, 30);
-   evas_object_smart_callback_add(bt, "clicked", _on_animator_cancel,
-                                  animator->mwin);
+   evas_object_smart_callback_add(bt, "clicked", _on_animator_cancel, animator);
    elm_box_pack_end(button_box, bt);
 
    elm_object_part_content_set(panes, "top", top_layout);
@@ -682,9 +673,8 @@ animator_window_add(Style *style)
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(animator->mwin);
-   elm_layout_signal_emit(animator->mwin, "show", "eflete");
 
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return animator->mwin;
 }
 

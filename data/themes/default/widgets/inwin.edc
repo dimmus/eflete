@@ -8,61 +8,41 @@ group { name: "elm/win/inwin/eflete/default";
       part { name: "block_events";
          type: RECT;
          description { state: "default" 0.0;
-            visible: 0;
-            color: 0 0 0 50;
+            color: 255 0 0 0;
          }
          description { state: "clicked" 0.0;
-            visible: 1;
+            inherit: "default" 0.0;
             color: 255 0 0 50;
-         }
-         description { state: "visible" 0.0;
-            visible: 1;
-            color: 0 0 0 50;
          }
       }
       part { name: "pop";
          type: IMAGE;
-         clip_to: "inwin_window_clipper";
          description { state: "default" 0.0;
-            align: 0.5 0.0;
-            rel1.relative: 0.05 -0.05;
-            rel2.relative: 0.95 0.95;
             image {
                normal: "popup-bg.png";
                border: 34 34 34 34;
-               middle: DEFAULT;
             }
-         }
-         description { state: "visible" 0.0;
-            max: 9999 9999;
             rel1.relative: 0.1 0.1;
             rel2.relative: 0.9 0.9;
-            image {
-               normal: "popup-bg.png";
-               border: 34 34 34 34;
-               middle: DEFAULT;
-            }
          }
       }
       part { name: "header";
          type: IMAGE;
-         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
-            align: 0.5 0.0;
             min: 0 39;
             max: 9999 39;
+            align: 0.5 0.0;
+            image {
+               normal: "popup-header-bg.png";
+               border: 11 11 0 0;
+            }
             rel1 {
                to: "pop";
                offset: BORDER_PADDING BORDER_PADDING;
             }
-            rel2 {
+            rel2
                to: "pop";
                offset: -BORDER_PADDING -BORDER_PADDING;
-            }
-            image {
-               normal: "popup-header-bg.png";
-               border: 11 11 0 0;
-               middle: DEFAULT;
             }
          }
       }
@@ -102,8 +82,7 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         clip_to: "inwin_content_clipper";
-         description { state: "deafult" 0.0;
+         description { state: "default" 0.0;
             align: 0.0 0.5;
             aspect: 1 1;
             aspect_preference: VERTICAL;
@@ -113,7 +92,6 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.close";
          type: SWALLOW;
-         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 1.0 0.5;
@@ -138,7 +116,6 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.info";
          type: SWALLOW;
-         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 1.0 0.5;
@@ -153,7 +130,6 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.text.title";
          type: TEXT;
-         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             color: FN_COL_DEFAULT;
             text {
@@ -205,7 +181,6 @@ group { name: "elm/win/inwin/eflete/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "inwin_content_clipper";
          description { state: "default" 0.0;
             rel1 {
                to: "content_rel1_padding";
@@ -215,30 +190,6 @@ group { name: "elm/win/inwin/eflete/default";
                to: "content_rel2_padding";
                relative: 0.0 0.0;
             }
-         }
-      }
-      part { name: "inwin_window_clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-            rel1.to: "pop";
-            rel2.to: "pop";
-         }
-         description { state: "visible" 0.0;
-            rel1.to: "pop";
-            rel2.to: "pop";
-         }
-      }
-      part { name: "inwin_content_clipper";
-         type: RECT;
-         description { state: "default" 0.0;
-            color: 255 255 255 0;
-            rel1.to: "header_space_rel1_padding";
-            rel2.to: "content_rel2_padding";
-         }
-         description { state: "visible" 0.0;
-            rel1.to: "header_space_rel1_padding";
-            rel2.to: "content_rel2_padding";
          }
       }
    }
@@ -258,38 +209,9 @@ group { name: "elm/win/inwin/eflete/default";
       }
       program {
          name: "default_block_color";
-         action: STATE_SET "visible" 0.0;
-         target: "block_events";
-         transition: LINEAR 0.0;
-      }
-      program {
-         name: "showing";
-         signal: "show";
-         source: "eflete";
-         action: STATE_SET "visible" 0.0;
-         target: "block_events";
-         target: "inwin_content_clipper";
-         target: "inwin_window_clipper";
-         target: "pop";
-         transition: LINEAR 0.2;
-      }
-      program {
-         name: "hiding";
-         signal: "hide";
-         source: "eflete";
          action: STATE_SET "default" 0.0;
          target: "block_events";
-         target: "inwin_content_clipper";
-         target: "inwin_window_clipper";
-         target: "pop";
-         transition: LINEAR 0.1;
-         after: "hiding_teardown";
-      }
-      program {
-         name: "hiding_teardown";
-         signal: "teardown";
-         source: "inwin";
-         action: SIGNAL_EMIT "teardown" "eflete";
+         transition: LINEAR 0.2;
       }
    }
 }
@@ -376,7 +298,7 @@ group { name: "elm/win/inwin/about_window";
       }
       part { name: "elm.swallow.icon";
          type: SWALLOW;
-         description { state: "deafult" 0.0;
+         description { state: "default" 0.0;
             align: 0.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
@@ -1193,6 +1115,68 @@ group { name: "elm/win/inwin/splash";
          action: STATE_SET "default" 0.0;
          target: "block_events";
          transition: LINEAR 0.2;
+      }
+   }
+}
+
+group { name: "elm/layout/inwin/anim/helper";
+   parts {
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         clip_to: "clipper";
+         description { state: "default" 0.0;
+         }
+         description { state: "flip" 0.0;
+            rel1.relative: -0.15 -0.15;
+            rel2.relative: 1.15 1.15;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "flip" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+   }
+   programs {
+      program { name: "before_show";
+         signal: "show";
+         source: "eflete";
+         action: STATE_SET "flip" 0.0;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "show_anim";
+      }
+      program { name: "show_anim";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.15;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "show_anim_finish";
+      }
+      program { name: "show_anim_finish";
+         action: SIGNAL_EMIT "show,anim,finished" "eflete";
+      }
+      program { name: "before_hide";
+         signal: "hide";
+         source: "eflete";
+         action: STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "hide_anim";
+      }
+      program { name: "hide_anim";
+         action: STATE_SET "flip" 0.0;
+         transition: LINEAR 0.15;
+         target: "elm.swallow.content";
+         target: "clipper";
+         after: "hide_anim_finish";
+      }
+      program { name: "hide_anim_finish";
+         action: SIGNAL_EMIT "hide,anim,finished" "eflete";
       }
    }
 }

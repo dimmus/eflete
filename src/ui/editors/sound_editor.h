@@ -32,8 +32,9 @@
 #define SIG_SOUND_SELECTED "sound_selected"
 
 typedef enum {
-   SOUND_EDITOR_SINGLE,
-   SOUND_EDITOR_MULTIPLE
+   SOUND_EDITOR_EDIT,
+   SOUND_EDITOR_SAMPLE_SELECT,
+   SOUND_EDITOR_TONE_SELECT
 } Sound_Editor_Mode;
 
 /**
@@ -51,8 +52,10 @@ sound_editor_added_sounds_free(Eina_List *add_snd);
  * about loaded project (edj file)
  *
  * @param project currently opened project
- * @param mode its enumerate: SOUND_EDITOR_SINGLE if single-selection mode,
- *             SOUND_EDITOR_MULTIPLE if multi-selection mode.
+ * @param mode one of the following values:
+ * @li SOUND_EDITOR_EDIT editor mode;
+ * @li SOUND_EDITOR_SAMPLE_SELECT sample selector mode;
+ * @li SOUND_EDITOR_TONE_SELECT tone selector mode.
  *
  * @return the inwin object that contain sound viewer
  *

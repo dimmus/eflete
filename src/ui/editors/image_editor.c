@@ -96,12 +96,14 @@ _on_mwin_del(void * data,
 }
 
 static void
-_after_animation_close(void *data,
-                       Evas_Object *obj __UNUSED__,
-                       const char *emission __UNUSED__,
-                       const char *source __UNUSED__)
+_image_editor_del(Image_Editor *img_edit)
 {
-   Image_Editor *img_edit = (Image_Editor *)data;
+   App_Data *ap = app_data_get();
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ap->modal_editor = false;
+
+   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
+
    img_edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_genlist_item_class_free(_itc_group);
@@ -113,22 +115,10 @@ _after_animation_close(void *data,
    _itc_state = NULL;
    evas_object_data_del(img_edit->win, IMG_EDIT_KEY);
    evas_object_data_del(img_edit->gengrid, IMG_EDIT_KEY);
-   evas_object_del(img_edit->gengrid);
-   evas_object_del(img_edit->win);
+   //evas_object_del(img_edit->gengrid);
+   mw_del(img_edit->win);
    _image_info_reset(img_edit);
    free(img_edit);
-}
-static void
-_image_editor_del(Image_Editor *img_edit)
-{
-   App_Data *ap = app_data_get();
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
-
-   evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
-
-   elm_layout_signal_emit(img_edit->win, "hide", "eflete");
-   elm_layout_signal_callback_add(img_edit->win, "teardown", "eflete", _after_animation_close, img_edit);
 }
 
 static inline Evas_Object *
@@ -1007,7 +997,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    Image_Editor *img_edit = (Image_Editor *)mem_calloc(1, sizeof(Image_Editor));
    img_edit->pr = project;
 
-   img_edit->win = mw_add(NULL, img_edit);
+   img_edit->win = mw_add(_on_button_close_clicked_cb, img_edit);
    if (mode == SINGLE)
      mw_title_set(img_edit->win, _("Image editor: choose image"));
    else if (mode == TWEENS)
@@ -1121,8 +1111,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      }
 
    evas_object_show(img_edit->win);
-   elm_layout_signal_emit(img_edit->win, "show", "eflete");
-
    if (!_image_editor_init(img_edit))
      {
         _image_editor_del(img_edit);
@@ -1135,7 +1123,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del, img_edit);
 
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return img_edit->win;
 }
 

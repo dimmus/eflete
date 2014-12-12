@@ -133,8 +133,17 @@ ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag);
 Eina_Bool
 ui_menu_items_list_disable_set(Menu *menu, int *list, Eina_Bool flag);
 
+enum _Splash_Status
+{
+   SPLASH_NONE,
+   SPLASH_SUCCESS,
+   SPLASH_CANCEL,
+   SPLASH_LAST
+};
+typedef enum _Splash_Status Splash_Status;
+
 typedef Eina_Bool
-(* Splash_Cb)(void *data);
+(* Splash_Cb)(void *data, Splash_Status status);
 
 /**
  * Adds main window object for Edje tool development.
@@ -373,7 +382,8 @@ code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
  *
  * @param parent The parent widget, MUST be a window;
  * @param setup Callback will be be called on splash window show;
- * @param teardown Callback will be called on "Cancel" button click;
+ * @param teardown Callback will be called on splash delete event;
+ * @param cancel Callback will be called on "Cancel" button click;
  * @param data User data.
  *
  * @return The splash window object.
@@ -381,8 +391,11 @@ code_edit_mode_switch(App_Data *ap, Eina_Bool is_on);
  * @ingroup Window
  */
 Evas_Object *
-splash_add(Evas_Object *parent, Splash_Cb setup,
-           Splash_Cb teardown, void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+splash_add(Evas_Object *parent,
+           Splash_Cb setup,
+           Splash_Cb teardown,
+           Splash_Cb cancel,
+           void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * Delete the splash window. Before delete will be played the close animation.
@@ -453,6 +466,21 @@ project_save();
  */
 void
 project_changed(void);
+
+/**
+ * Requesting to change project (need to close it, to hide blocks, unset data,
+ * etc).
+ * This function will ask user what to do with opened project
+ * (if it is changed).
+ *
+ * @param ap The Eflete App_Data.
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup Window
+ */
+Eina_Bool
+project_close(App_Data *ap);
 
 /**
  * Dialog with qustion what do with openned project.

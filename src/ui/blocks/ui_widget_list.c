@@ -763,68 +763,6 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
    return true;
 }
 
-static void
-_expand_request_cb(void *data __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info)
-{
-   Elm_Object_Item *glit = event_info;
-   elm_genlist_item_expanded_set(glit, true);
-}
-
-static void
-_contract_request_cb(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
-                     void *event_info)
-{
-   Elm_Object_Item *glit = event_info;
-   elm_genlist_item_expanded_set(glit, false);
-}
-
-static void
-_wl_expanded_cb(void *data, Evas_Object *obj, void *event_info)
-{
-   Style *_layout;
-   Widget *_widget;
-   Project *project = (Project *)data;
-   Elm_Object_Item *eoi;
-   Elm_Object_Item *tree_main = event_info;
-   Evas_Object *gl_widgets = obj;
-   char *type = NULL;
-
-   type = elm_object_item_data_get(tree_main);
-   if (!strcmp("Widgets", type))
-     {
-      EINA_INLIST_FOREACH(project->widgets, _widget)
-        {
-          eoi = elm_genlist_item_append(gl_widgets, _itc_widget, _widget,
-                                        tree_main, ELM_GENLIST_ITEM_NONE,
-                                        _wl_item_selected, NULL);
-          elm_object_item_data_set(eoi, _widget);
-        }
-     }
-   else
-    {
-       EINA_INLIST_FOREACH(project->layouts, _layout)
-         {
-            eoi = elm_genlist_item_append(gl_widgets, _itc_layout, _layout,
-                                          tree_main, ELM_GENLIST_ITEM_NONE,
-                                          _wl_item_selected, NULL);
-            elm_object_item_data_set(eoi, _layout);
-         }
-    }
-   elm_genlist_item_selected_set(tree_main, false);
-}
-
-static void
-_wl_contracted_cb(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info)
-{
-   Elm_Object_Item *glit = event_info;
-   elm_genlist_item_subitems_clear(glit);
-}
-
 /* TODO: fix renaming
 static void
 _wl_key_down_cb(void *data __UNUSED__,
@@ -933,14 +871,6 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
      }
 
 #define CALLBACKS(TYPE) \
-   evas_object_smart_callback_add(gl_##TYPE, "expand,request", \
-                                  _expand_request_cb, gl_##TYPE); \
-   evas_object_smart_callback_add(gl_widgets, "contract,request", \
-                                  _contract_request_cb, gl_##TYPE); \
-   evas_object_smart_callback_add(gl_##TYPE, "expanded", \
-                                  _wl_expanded_cb, project); \
-   evas_object_smart_callback_add(gl_##TYPE, "contracted", \
-                                  _wl_contracted_cb, gl_##TYPE); \
    evas_object_smart_callback_add(gl_##TYPE, "clicked,double", \
                                   _on_widget_clicked_double, project);
 

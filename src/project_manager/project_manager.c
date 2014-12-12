@@ -34,7 +34,7 @@ static Eet_Compression compess_level = EET_COMPRESSION_HI;
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
 { \
-   worker = (Project_Thread *)mem_malloc(sizeof(Project_Thread)); \
+   worker = (Project_Thread *)mem_calloc(1, sizeof(Project_Thread)); \
    worker->func_progress = FUNC_PROGRESS; \
    worker->func_end = FUNC_END; \
    worker->data = (void *)DATA; \
@@ -191,15 +191,12 @@ _project_files_create(Project_Thread *worker)
    if (error) return NULL;
 
    THREAD_TESTCANCEL;
-   pro = (Project *)mem_malloc(sizeof(Project));
+   pro = (Project *)mem_calloc(1, sizeof(Project));
    WORKER_LOCK_TAKE;
       folder_path = eina_stringshare_printf("%s/%s", worker->path, worker->name);
       pro->name = eina_stringshare_add(worker->name);
       pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker->name);
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
-      pro->release_options = NULL;
-      pro->changed = false;
-      pro->added_sounds = NULL;
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
       ecore_file_mkdir(pro->develop_path);
@@ -563,6 +560,7 @@ pm_project_open(const char *path)
    eina_lock_take(&pro_lock->mutex);
 
    pro_lock->project->changed = false;
+   pro_lock->project->close_request = false;
    pro_lock->project->pro = ef;
    pro_lock->project->widgets = wm_widgets_list_new(pro_lock->project->dev);
    pro_lock->project->layouts = wm_layouts_list_new(pro_lock->project->dev);
