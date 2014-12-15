@@ -68,6 +68,7 @@ FLAGS = \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@ENVENTOR_CFLAGS@ \
 @EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
@@ -76,7 +77,8 @@ LD = $(top_builddir)/src/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
 @EWE_LIBS@ \
-@ELEMENTARY_LIBS@
+@ELEMENTARY_LIBS@ \
+@ENVENTOR_LIBS@
 
 eflete_test_SOURCES = \
 test_eflete/test_eflete.c \

@@ -23,6 +23,11 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
+#ifdef HAVE_ENVENTOR
+#define ENVENTOR_BETA_API_SUPPORT
+#include "Enventor.h"
+#endif
+
 #define EFLETE_TEST(__testname) \
 void __testname (int _i CK_ATTRIBUTE_UNUSED) \
 { \
