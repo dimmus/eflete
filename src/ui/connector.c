@@ -817,7 +817,6 @@ project_close(App_Data *ap)
           }
         else
           {
-             ap->project->changed = false;
              STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
              blocks_hide(ap);
              blocks_data_unset(ap);
@@ -1219,6 +1218,8 @@ project_close_request(App_Data *ap, const char *msg)
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->project->close_request = false;
+   if (result)
+     ap->project->changed = false;
    evas_object_del(ap->popup);
    ap->popup = NULL;
 
