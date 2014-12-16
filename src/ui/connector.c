@@ -733,7 +733,12 @@ blocks_hide(App_Data *ap)
 Eina_Bool
 blocks_data_unset(App_Data *ap)
 {
-   ui_property_style_unset(ui_block_property_get(ap));
+   Evas_Object *property;
+   property = ui_block_property_get(ap);
+
+   ui_property_state_unset(property);
+   ui_property_part_unset(property);
+   ui_property_style_unset(property);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_states_list_data_unset(ui_block_state_list_get(ap));
    history_clear(ap->history);
