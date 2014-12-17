@@ -63,6 +63,7 @@ _##FUNC##_part_add_cb(App_Data *ap) \
    Evas_Object *workspace = ap->workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(ap); \
    Style *style = workspace_edit_object_get(workspace); \
+   if (!style) return false; \
    char name[9]; \
    _random_name_generate(name, 9); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
