@@ -814,22 +814,24 @@ _on_open_done(void *data,
 Eina_Bool
 project_close(App_Data *ap)
 {
-   if ((ap->project) && (ap->project->changed))
+   if ((ap->project))
      {
-        if (!project_close_request(ap, PROJECT_CLOSE_MSG))
+        if (ap->project->changed)
           {
-             return false;
+             if (!project_close_request(ap, PROJECT_CLOSE_MSG))
+               return false;
           }
         else
           {
-             STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-             blocks_hide(ap);
-             blocks_data_unset(ap);
+             pm_project_close(ap->project);
+             ap->project = NULL;
           }
+        STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
+        blocks_hide(ap);
+        blocks_data_unset(ap);
      }
    return true;
 }
-#undef PROJECT_CLOSE_MSG
 
 void
 project_open(void)
@@ -838,10 +840,16 @@ project_open(void)
    App_Data *ap;
 
    ap = app_data_get();
-   if ((ap->project) && (!project_close_request(ap,
-                              _("Do you want to save changes?"))))
-     return;
-
+   if ((ap->project))
+     {
+        if (ap->project->changed)
+          {
+             if (!project_close_request(ap, PROJECT_CLOSE_MSG))
+               return;
+          }
+        else
+          pm_project_close(ap->project);
+     }
 
    MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, NULL);
    bg = elm_bg_add(win);
@@ -854,6 +862,7 @@ project_open(void)
    elm_win_resize_object_add(win, fs);
 }
 
+#undef PROJECT_CLOSE_MSG
 /****************************** Project save **********************************/
 
 static Eina_Bool
@@ -979,6 +988,13 @@ _teardown_save_splash(void *data, Splash_Status status)
    if (status == SPLASH_SUCCESS)
      STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
+   ap->project->changed = false;
+   if (ap->project->close_request)
+     {
+        pm_project_close(ap->project);
+        ap->project->close_request = false;
+        ap->project = NULL;
+     }
    return true;
 }
 
@@ -1160,6 +1176,14 @@ _discard_cb(void *data,
             Evas_Object *obj __UNUSED__,
             void *ei __UNUSED__)
 {
+   App_Data *ap = app_data_get();
+   if (ap->project)
+     {
+        ap->project->changed = false;
+        pm_project_close(ap->project);
+        ap->project = NULL;
+     }
+
    Eina_Bool *res = data;
    *res = true;
    ecore_main_loop_quit();
@@ -1222,9 +1246,6 @@ project_close_request(App_Data *ap, const char *msg)
    ecore_main_loop_begin();
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->project->close_request = false;
-   if (result)
-     ap->project->changed = false;
    evas_object_del(ap->popup);
    ap->popup = NULL;
 

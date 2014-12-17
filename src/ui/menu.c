@@ -97,21 +97,18 @@ _menu_cb(void *data __UNUSED__,
    switch (menu_event->mid)
      {
       case MENU_FILE_NEW_PROJECT:
-         if (!project_close(ap))
-           return ECORE_CALLBACK_DONE;
+         if (!project_close(ap)) break;
          wizard_new_project_add(ap);
          break;
       case MENU_FILE_OPEN_PROJECT:
          project_open();
          break;
       case MENU_FILE_IMPORT_EDJ:
-         if (!project_close(ap))
-           return ECORE_CALLBACK_DONE;
+         if (!project_close(ap)) break;
          wizard_import_edj_add(ap);
          break;
       case MENU_FILE_IMPORT_EDC:
-         if (!project_close(ap))
-           return ECORE_CALLBACK_DONE;
+         if (!project_close(ap)) break;
          wizard_import_edc_add(ap);
          break;
       case MENU_FILE_SAVE:
@@ -125,14 +122,7 @@ _menu_cb(void *data __UNUSED__,
          break;
       case MENU_FILE_CLOSE_PROJECT:
            {
-              if (!project_close_request(ap,
-                                         _("You want to close project. <br/>"
-                                           "If you dont save opened project<br/>"
-                                           "all your changes will be lost!")))
-                pm_project_close(ap->project);
-              STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-              blocks_hide(ap);
-              blocks_data_unset(ap);
+              if (!project_close(ap)) break;
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
               ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
