@@ -124,6 +124,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *text;
       Evas_Object *style; /* not implemented in yet the edje  */
+      Evas_Object *align;
       Evas_Object *min;
       Evas_Object *max;
       Evas_Object *source;
@@ -1997,6 +1998,11 @@ ui_property_state_textblock_set(Evas_Object *property)
          pd_textblock.style = prop_item_state_text_style_add(box, pd,
                            _on_state_text_style_change,
                            _("Set the text style of part."));
+         pd_textblock.align = prop_item_state_text_align_x_y_add(box, pd,
+                             0, 100, 1, NULL, "x:", "%", "y:", "%",
+                             _("Text horizontal align. 0 = left  100 = right"),
+                             _("Text vertical align. 0 = top  100 = bottom"),
+                             true);
          pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -2033,6 +2039,7 @@ ui_property_state_textblock_set(Evas_Object *property)
 
          elm_box_pack_end(box, pd_textblock.text);
          elm_box_pack_end(box, pd_textblock.style);
+         elm_box_pack_end(box, pd_textblock.align);
          elm_box_pack_end(box, pd_textblock.min);
          elm_box_pack_end(box, pd_textblock.max);
          elm_box_pack_end(box, pd_textblock.source);
@@ -2049,6 +2056,7 @@ ui_property_state_textblock_set(Evas_Object *property)
      {
         prop_item_state_text_update(pd_textblock.text, pd);
         prop_item_state_text_style_update(pd_textblock.style, pd);
+        prop_item_state_text_style_update(pd_textblock.align, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
         prop_item_part_source_update(pd_textblock.source, pd);
