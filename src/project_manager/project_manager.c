@@ -767,7 +767,7 @@ pm_project_meta_data_set(Project *project,
 #define DATA_WRITE(DATA, KEY) \
    if (DATA) \
      { \
-        size = strlen(DATA) * sizeof(char); \
+        size = (strlen(DATA) + 1) * sizeof(char); \
         bytes = eet_write(project->pro, KEY, DATA, size, compess_level); \
         if (bytes <= 0 ) res = false; \
      }
