@@ -373,6 +373,7 @@ _on_st_add_bt_ok(void *data,
    Evas_Object *edje_edit_obj = NULL;
    Style_Editor *style_edit = (Style_Editor *)data;
    const char *style_name = elm_entry_entry_get(POPUP.name);
+   App_Data *ap = app_data_get();
 
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
@@ -411,9 +412,16 @@ _on_st_add_bt_ok(void *data,
                            _on_glit_selected, style_edit);
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
+
+   //TODO: Need refactoring after callback logic for modal window
+   //      implementation
+
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
 }
 
 static void
@@ -558,6 +566,7 @@ _on_bt_del(void *data,
 {
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
+   App_Data *ap = app_data_get();
 
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
@@ -582,6 +591,10 @@ _on_bt_del(void *data,
         else
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
    elm_object_item_del(glit);
 }
 
