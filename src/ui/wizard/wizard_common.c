@@ -228,7 +228,7 @@ _on_apply(void *data,
    wiew = (Wizard_Import_Edj_Win *)data;
 
    if ((!_required_fields_check(wiew)) || (!wiew->splash_setup_func) ||
-       (!wiew->splash_setup_func) || (!_project_directory_check(wiew)))
+       (!_project_directory_check(wiew)))
      return;
 
    wiew->splash = splash_add(ap->win, wiew->splash_setup_func,
