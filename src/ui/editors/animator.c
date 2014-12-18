@@ -329,6 +329,7 @@ _on_bt_mode_change(void *data,
 {
    Evas_Object *icon;
    Animator *animator = (Animator*)data;
+   if (!animator->program) return;
 
    animator->sequence_mode = !animator->sequence_mode;
 
