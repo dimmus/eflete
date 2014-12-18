@@ -230,7 +230,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("e", 26, CTRL, "export", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
-   ADD_SHORTCUT("u", 30, CTRL, "redo", false);
+   ADD_SHORTCUT("y", 30, CTRL, "redo", false);
 
    ADD_SHORTCUT("1", 10, CTRL, "animator", false);
    ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
