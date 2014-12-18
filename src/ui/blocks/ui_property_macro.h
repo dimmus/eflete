@@ -973,12 +973,15 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
         elm_object_style_set(btn, "eflete/elipsis"); \
         evas_object_show(btn); \
         evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd); \
+        evas_object_smart_callback_add(entry, "clicked", btn_func_cb, pd); \
         elm_object_part_content_set(entry, "elm.swallow.end", btn); \
         elm_object_tooltip_text_set(btn, btn_tooltip); \
+        elm_entry_editable_set(entry, false); \
      } \
+   else \
+     evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
    ewe_entry_entry_set(entry, value); \
    elm_object_tooltip_text_set(entry, tooltip); \
-   evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", entry); \
    return item; \
 }

@@ -2395,9 +2395,6 @@ ui_property_state_image_set(Evas_Object *property)
                              _("Current image name"),
                              _("Change image"));
         Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
-        ewe_entry_regex_set(entry, IMAGE_NAME_REGEX, EWE_REG_ICASE | EWE_REG_EXTENDED);
-        ewe_entry_regex_autocheck_set(entry, true);
-        ewe_entry_regex_glow_set(entry, true);
         pd_image.border = prop_item_state_image_border_add(box, pd,
                              _("Image's border value"));
         entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");

@@ -557,6 +557,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 }
 
 #define ENTRY_UPDATE(ENTRY, IS_DISABLED, LAYOUT, TEXT) \
+   elm_entry_editable_set(ENTRY, true); \
    elm_object_disabled_set(ENTRY, IS_DISABLED); \
    if (TEXT) elm_object_part_text_set(LAYOUT, "elm.text", TEXT);
 
@@ -752,6 +753,9 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
    double value;
    Eina_Stringshare *buff = NULL;
 
+   evas_object_smart_callback_del(action.entry1, "clicked", _on_sample_select);
+   evas_object_smart_callback_del(action.entry1, "clicked", _on_tone_select);
+
    switch (prop.act_type)
      {
       case EDJE_ACTION_TYPE_NONE:
@@ -842,11 +846,13 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
       case EDJE_ACTION_TYPE_SOUND_SAMPLE:
         {
            int i;
-           ENTRY_UPDATE(action.entry1, true, action.layout1, _("sample name"));
+           ENTRY_UPDATE(action.entry1, false, action.layout1, _("sample name"));
+           elm_entry_editable_set(action.entry1, false);
            action.btn1 = elm_button_add(action.entry1);
            elm_object_style_set(action.btn1, "eflete/elipsis");
            evas_object_show(action.btn1);
            evas_object_smart_callback_add(action.btn1, "clicked", _on_sample_select, prog_edit);
+           evas_object_smart_callback_add(action.entry1, "clicked", _on_sample_select, prog_edit);
            elm_object_part_content_set(action.entry1, "elm.swallow.end", action.btn1);
            elm_object_tooltip_text_set(action.btn1, _("Select sample"));
 
@@ -883,11 +889,13 @@ _action_entries_set(Program_Editor *prog_edit, Eina_Bool is_update)
         }
       case EDJE_ACTION_TYPE_SOUND_TONE:
         {
-           ENTRY_UPDATE(action.entry1, true, action.layout1, _("tone name"));
+           ENTRY_UPDATE(action.entry1, false, action.layout1, _("tone name"));
+           elm_entry_editable_set(action.entry1, false);
            action.btn1 = elm_button_add(action.entry1);
            elm_object_style_set(action.btn1, "eflete/elipsis");
            evas_object_show(action.btn1);
            evas_object_smart_callback_add(action.btn1, "clicked", _on_tone_select, prog_edit);
+           evas_object_smart_callback_add(action.entry1, "clicked", _on_tone_select, prog_edit);
            elm_object_part_content_set(action.entry1, "elm.swallow.end", action.btn1);
            elm_object_tooltip_text_set(action.btn1, _("Select tone"));
 
