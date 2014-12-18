@@ -27,12 +27,20 @@
 typedef struct _Image_Editor Image_Editor;
 typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
+typedef struct _Content_Init_Data Content_Init_Data;
 
 struct _Item
 {
    int id;
    const char* image_name;
    Edje_Edit_Image_Comp comp_type;
+};
+
+struct _Content_Init_Data
+{
+   Image_Editor *image_editor;
+   Item *item_data;
+   Evas_Object *image_obj;
 };
 
 struct _Search_Data
@@ -121,12 +129,11 @@ _image_editor_del(Image_Editor *img_edit)
    free(img_edit);
 }
 
-static inline Evas_Object *
-_image_editor_image_create(Evas_Object *parent,
-                           Image_Editor *img_edit,
-                           const Item *it)
+static void
+_image_editor_image_setup(Evas_Object *image,
+                          Image_Editor *img_edit,
+                          const Item *it)
 {
-   Evas_Object *image = elm_image_add(parent);
    Eina_Stringshare *str;
 
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
@@ -142,11 +149,66 @@ _image_editor_image_create(Evas_Object *parent,
         elm_image_file_set(image, img_edit->pr->dev, str);
         eina_stringshare_del(str);
      }
+}
+
+static inline Evas_Object *
+_image_editor_image_create(Evas_Object *parent,
+                           Image_Editor *img_edit,
+                           const Item *it)
+{
+   Evas_Object *image = elm_image_add(parent);
+   _image_editor_image_setup(image, img_edit, it);
    return image;
 }
 
-/* icon fetching callback */
+/* functions for deferred creation of gengrid icons */
 #define MAX_ICON_SIZE 16
+static void
+_image_content_setup(void *data)
+{
+   int w, h;
+   Content_Init_Data *image_init_data = data;
+
+   _image_editor_image_setup(image_init_data->image_obj,
+                             image_init_data->image_editor,
+                             image_init_data->item_data);
+
+   elm_image_object_size_get(image_init_data->image_obj, &w, &h);
+   if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
+     evas_object_size_hint_max_set(image_init_data->image_obj,
+                                   MAX_ICON_SIZE, MAX_ICON_SIZE);
+   else
+     elm_image_resizable_set(image_init_data->image_obj, false, true);
+   evas_object_show(image_init_data->image_obj);
+
+   free(image_init_data);
+}
+#undef MAX_ICON_SIZE
+
+static void
+_image_usage_icon_setup(void *data)
+{
+   Eina_List *used_in;
+   Evas_Object *edje_edit_obj;
+   Content_Init_Data *image_init_data = data;
+
+   GET_OBJ(image_init_data->image_editor->pr, edje_edit_obj);
+   used_in = edje_edit_image_usage_list_get(edje_edit_obj,
+                                            image_init_data->item_data->image_name,
+                                            false);
+   if (eina_list_count(used_in) == 0)
+     {
+        elm_image_file_set(image_init_data->image_obj,
+                           EFLETE_RESOURCES, "no_image_warning");
+        elm_image_no_scale_set(image_init_data->image_obj, true);
+        evas_object_show(image_init_data->image_obj);
+     }
+   edje_edit_image_usage_list_free(used_in);
+
+   free(image_init_data);
+}
+
+/* icon fetching callback */
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -155,39 +217,24 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *grid = (Evas_Object *)obj;
    Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
-   Evas_Object *image = NULL;
+
+   Content_Init_Data *image_init_data = mem_malloc(sizeof(Content_Init_Data));
+   image_init_data->item_data = it;
+   image_init_data->image_editor = img_edit;
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        image = _image_editor_image_create(grid, img_edit, it);
-
-        int w, h;
-        elm_image_object_size_get(image, &w, &h);
-        if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
-          evas_object_size_hint_max_set(image, MAX_ICON_SIZE, MAX_ICON_SIZE);
-        else
-          elm_image_resizable_set(image, false, true);
-        evas_object_show(image);
-        return image;
+        image_init_data->image_obj = elm_image_add(grid);
+        ecore_job_add(_image_content_setup, image_init_data);
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        Eina_List *used_in;
-        Evas_Object *edje_edit_obj;
-
-        GET_OBJ(img_edit->pr, edje_edit_obj);
-        used_in = edje_edit_image_usage_list_get(edje_edit_obj,
-                                                 it->image_name, false);
-        if (eina_list_count(used_in) == 0)
-          {
-             ICON_ADD(grid, image, true, "no_image_warning");
-          }
-        edje_edit_image_usage_list_free(used_in);
-        return image;
+        image_init_data->image_obj = elm_icon_add(grid);
+        ecore_job_add(_image_usage_icon_setup, image_init_data);
      }
-   return NULL;
+
+   return image_init_data->image_obj;
 }
-#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
@@ -422,7 +469,7 @@ _image_info_setup(Image_Editor *img_edit,
    _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
 
-   image =_image_editor_image_create(img_edit->layout, img_edit, it);
+   image = _image_editor_image_create(img_edit->layout, img_edit, it);
    evas_object_image_smooth_scale_set(image, false);
    elm_object_part_content_set(img_edit->layout, "eflete.swallow.image", image);
    img_edit->image_data_fields.image = image;
