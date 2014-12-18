@@ -326,12 +326,12 @@ _config_default_new(void)
    conf->window.y =           0;
    conf->window.w =           1366;
    conf->window.h =           768;
-   conf->panes.left =         0.2;
-   conf->panes.right =        0.75;
+   conf->panes.left =         0.0;
+   conf->panes.right =        1.0;
    conf->panes.left_hor =     0.7;
    conf->panes.right_hor =    0.3;
    conf->panes.center =       0.65;
-   conf->panes.center_down =  0.4;
+   conf->panes.center_down =  0.2;
    conf->profile = strdup("default");
 
    return conf;
