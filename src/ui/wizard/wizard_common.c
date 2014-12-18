@@ -108,10 +108,14 @@ static Eina_Bool
 _teardown_splash(void *data, Splash_Status status)
 {
    Wizard_Import_Edj_Win *wiew;
-
    wiew = (Wizard_Import_Edj_Win *)data;
+   App_Data *app = app_data_get();
+
    if (status == SPLASH_SUCCESS)
      mw_del(wiew->win);
+
+   STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
+   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
 
    return true;
 }
