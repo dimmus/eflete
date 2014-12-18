@@ -19,10 +19,14 @@ def parse_doc(html_file):
 		for i in range (i, len(lines)):
 			l = lines[i]
 			if '<p>' in l:
-				MODULE_NAME = l[3:-6]# len('<p>'), len(' </p>\n')
+				MODULE_NAME = l.split("</p>")[0]
+				MODULE_NAME = MODULE_NAME[3:-1]# len('<p>')
 				break
-		j = i + 2
-		for j in range (i + 2, len(lines)):
+		for i in range (i, len(lines)):
+			if "<table" in lines[i]:
+				break
+		j = i + 1
+		for j in range (i + 1, len(lines)):
 			if '</table>' in lines[j]:
 				break
 		file_name = "./" + TEST_MODULE_NAME + ".tmp"
@@ -35,7 +39,7 @@ def parse_doc(html_file):
 							  '<td>Test Case Description</td><td>Input</td>' +
 							  '<td>Expected Result</td><td>Execution Result</td>' +
 							  '<td>Pass/Fail</td></tr>\n')
-				for i in range (i + 2, j):
+				for i in range (i + 1, j):
 					out.write(lines[i])
 		except IOError:
 			print "Incorrect test doc: \"" + html_file + "\""
