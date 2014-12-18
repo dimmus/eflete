@@ -223,6 +223,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *combobox; \
    Part *part; \
    Edje_Part_Type type; \
+   Eina_Inlist *list_n = NULL; \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_COMBOBOX_ADD(parent, combobox) \
    const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
@@ -231,7 +232,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    else \
      ewe_combobox_text_set(combobox, _("None")); \
    ewe_combobox_item_add(combobox, _("None")); \
-   EINA_INLIST_FOREACH(pd->style->parts, part) \
+   EINA_INLIST_FOREACH_SAFE(pd->style->parts, list_n, part) \
      { \
         type = edje_edit_part_type_get(pd->style->obj, part->name); \
         switch(TYPE) \
@@ -253,10 +254,12 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
+                   list_n = NULL; \
                    collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
-                      ewe_combobox_item_add(combobox, group); \
+                      if (strcmp(group, ap->project->current_style->full_group_name)) \
+                        ewe_combobox_item_add(combobox, group); \
                    } \
                 } \
                 break; \
@@ -280,6 +283,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    Evas_Object *combobox; \
    Part *part; \
    Edje_Part_Type type; \
+   Eina_Inlist *list_n = NULL; \
    combobox = evas_object_data_get(item, ITEM1); \
    ewe_combobox_items_list_free(combobox, true); \
    const char *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name); \
@@ -288,7 +292,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    else \
      ewe_combobox_text_set(combobox, _("None")); \
    ewe_combobox_item_add(combobox, _("None")); \
-   EINA_INLIST_FOREACH(pd->style->parts, part) \
+   EINA_INLIST_FOREACH_SAFE(pd->style->parts, list_n, part) \
      { \
         type = edje_edit_part_type_get(pd->style->obj, part->name); \
         switch(TYPE) \
@@ -310,10 +314,12 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
+                   list_n = NULL; \
                    collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
-                      ewe_combobox_item_add(combobox, group); \
+                      if (strcmp(group, ap->project->current_style->full_group_name)) \
+                        ewe_combobox_item_add(combobox, group); \
                    } \
                 } \
                 break; \
