@@ -169,26 +169,35 @@ _project_directory_check(Wizard_Import_Edj_Win *wiew)
    Eina_Strbuf *request_str = NULL;
    Eina_Bool ret = true;
 
-   if ((ecore_file_exists(eina_strbuf_string_get(path_to_project))) &&
-       (ecore_file_is_dir(eina_strbuf_string_get(path_to_project))))
+   if (ecore_file_exists(eina_strbuf_string_get(path_to_project)))
      {
-        request_str = eina_strbuf_new();
-        eina_strbuf_append_printf(request_str,
-                                  _("The <color=#80BFFF>'%s'</color> directory "
-                                    "already exists.<br>Do you want to "
-                                    "<b><color=#FFBF80>delete all</color></b>"
-                                    " contents of this folder and create"
-                                    "new project in it?"),
-                                  eina_strbuf_string_get(path_to_project));
+        if (ecore_file_is_dir(eina_strbuf_string_get(path_to_project)))
+           {
+           request_str = eina_strbuf_new();
+           eina_strbuf_append_printf(request_str,
+                                     _("The <path>'%s'</path> directory "
+                                       "already exists.<br>Do you want to "
+                                       "<b><orange>delete all</orange></b>"
+                                       " contents of this folder and create "
+                                       "new project in it?"),
+                                     eina_strbuf_string_get(path_to_project));
 
-        ret = export_replace_request(wiew->win,
-                                     eina_strbuf_string_get(request_str));
+           ret = export_replace_request(wiew->win,
+                                        eina_strbuf_string_get(request_str));
 
-        if (ret)
+           if (ret)
+             {
+                ret = ecore_file_recursive_rm(eina_strbuf_string_get(path_to_project));
+                if (!ret) NOTIFY_ERROR(_("Can not delete folder %s!"),
+                                       eina_strbuf_string_get(path_to_project));
+             }
+           }
+        else
           {
-             ret = ecore_file_recursive_rm(eina_strbuf_string_get(path_to_project));
-             if (!ret) NOTIFY_ERROR(_("Can not delete folder %s!"),
-                                    eina_strbuf_string_get(path_to_project));
+             NOTIFY_ERROR(_("The name <path>'%s'</path> is "
+                            "already used at this location."),
+                          eina_strbuf_string_get(path_to_project));
+             ret = false;
           }
      }
    if (request_str)

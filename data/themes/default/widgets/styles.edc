@@ -80,6 +80,8 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       tag:  "b" "+ font_weight=Bold";
       tag:  "br" "\n";
       tag:  "a" "+ color=#00000080 underline=on underline_color=#00000080";
+      tag: "path" "+ color=#80BFFF";
+      tag: "orange" "+ color=#FFBF80";
    }
    style { name: "eflete_editor_textblock_style";
       base: "font="FN" font_size=12 color=#B6B6B6 text_class=label left_margin=2 right_margin=2";
