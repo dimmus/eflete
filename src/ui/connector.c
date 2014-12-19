@@ -1325,16 +1325,28 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
 
    if (class_st->__type != CLASS) return false;
 
+
+   /* try to find layout. */
+   EINA_INLIST_FOREACH(ap->project->layouts, style_work)
+     {
+        if (!style_work->isAlias)
+          goto found;
+     }
    /* Search edje edit object, which willn't delete now. This object needed
       for manipulate with group in *.edj file*/
    EINA_INLIST_FOREACH(ap->project->widgets, widget_work)
      {
-        if (!strcmp(widget->name, widget_work->name)) continue;
         EINA_INLIST_FOREACH(widget_work->classes, class_work)
           {
              EINA_INLIST_FOREACH(class_work->styles, style_work)
               {
-                 if (!style_work->isAlias) goto found;
+                 if (!strcmp(style_work->full_group_name, style->full_group_name))
+                   continue;
+                 else
+                   {
+                      if (!style_work->isAlias)
+                        goto found;
+                   }
               }
           }
      }
