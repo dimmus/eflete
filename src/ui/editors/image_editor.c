@@ -1018,7 +1018,7 @@ _image_editor_init(Image_Editor *img_edit)
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
-         eina_list_free(images);
+         edje_edit_string_list_free(images);
      }
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
