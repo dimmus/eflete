@@ -57,7 +57,6 @@ _profile_free(void)
         eina_stringshare_del(sc->description);
         free(sc);
      }
-   eina_list_free(profile->shortcuts);
 
    free(profile);
    profile = NULL;
@@ -269,6 +268,21 @@ _default_shortcuts_get()
    return shortcuts;
 }
 
+static void
+_profile_update(Profile *prof)
+{
+   if (prof->version > PROFILE_VERSION)
+     return;
+
+   prof->version                             = PROFILE_VERSION;
+   if (!prof->general.projects_folder)
+     prof->general.projects_folder           = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
+                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
+                                                strdup(getenv("HOME"));
+   if (!prof->shortcuts)
+     prof->shortcuts                         = _default_shortcuts_get();
+}
+
 static Profile *
 _profile_default_new(void)
 {
@@ -276,9 +290,6 @@ _profile_default_new(void)
 
    prof = mem_malloc(sizeof(Profile));
    prof->version                             = PROFILE_VERSION;
-   prof->general.projects_folder             = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
-                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
-                                                strdup(getenv("HOME"));
    prof->general.save_ui                     = true;
    prof->general.save_win_pos                = true;
    prof->general.autosave.autosave           = false;
@@ -443,10 +454,9 @@ profile_load(const char *name)
      }
 
    if (!profile)
-     {
-        profile = _profile_default_new();
-        profile->shortcuts = _default_shortcuts_get();
-     }
+     profile = _profile_default_new();
+
+   _profile_update(profile);
 
    eina_stringshare_del(path);
 }
