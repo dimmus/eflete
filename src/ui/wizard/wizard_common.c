@@ -57,7 +57,7 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
 
    if (wiew->progress_log)
      eina_strbuf_append_printf(wiew->progress_log,
-                               " > %s<br>", progress_string);
+                               "%s<br>", progress_string);
    return true;
 }
 
@@ -99,6 +99,25 @@ _progress_end(void *data, PM_Project_Result result)
    if (result == PM_PROJECT_CANCEL)
      {
        DBG("Canceled by user! 'thread: %p'", wiew->thread);
+     }
+   else if (result == PM_PROJECT_ERROR)
+     {
+        if (wiew->progress_log)
+          {
+             // TODO: add new style of notify with align to the left and smth like "IMPORT ERROR" header
+             NOTIFY_ERROR(_("Errors occured on importing: <br><br>%s"),
+                          eina_strbuf_string_get(wiew->progress_log));
+          }
+        else
+          {
+             NOTIFY_ERROR(_("Errors occured on importing."));
+          }
+     }
+
+   if (wiew->progress_log)
+     {
+        eina_strbuf_free(wiew->progress_log);
+        wiew->progress_log = NULL;
      }
 
    splash_del(wiew->splash);
