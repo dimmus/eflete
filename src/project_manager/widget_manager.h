@@ -277,14 +277,14 @@ wm_program_signals_list_free(Eina_List *signals);
  *
  * @param style A @Style object pointer, in wich must be loaded data.
  * @param e A Evas, parent object.
- * @param edj Path to theme file (.edj).
+ * @param mmap_file A mmap of edj file, that provide data for style.
  *
  * @return EINA_TRUE if successful, EINA_FALSE if not.
  *
  * @ingroup WidgetManager
  */
 Eina_Bool
-wm_style_data_load(Style *style, Evas *e, const char *edj);
+wm_style_data_load(Style *style, Evas *e, Eina_File *mmap_file);
 
 /**
  * Create a new @Style object.
@@ -444,29 +444,30 @@ wm_style_object_find(Eina_Inlist *widget_list, const char *style_full_name);
  *
  * @param widget_list A list of widget to load data.
  * @param e A Evas, parent object.
- * @param path Path to theme file (.edj).
+ * @param mmap_file A mmap of the edj file.
  * @return EINA_TRUE if a list os deleted.
  *
  * @ingroup WidgetManager
  */
 Eina_Bool
 wm_widgets_list_objects_load(Eina_Inlist *widget_list,
-                            Evas *e,
-                            const char *path);
+                             Evas *e,
+                             Eina_File *mmap_file);
 
 /**
  * Create edje edit object and load data from edj-file for custom layouts only.
  *
  * @param layouts_list A list of layouts, which stored in file.
  * @param e A Evas object.
- * @param path Path to theme file (.edj).
+ * @param mmap_file A mmap of the edj file.
  * @return EINA_TRUE if a list os deleted.
  *
  * @ingroup WidgetManager
  */
 Eina_Bool
 wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
-                             Evas *e, const char *path);
+                             Evas *e,
+                             Eina_File *mmap_file);
 
 /**
  * Return the string with the name of the part type by the giving id (int).

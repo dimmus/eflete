@@ -68,6 +68,8 @@ struct _Project
    /**< list of custom layouts int loaded theme */
    Eina_Inlist *layouts;
 
+   Eina_File *mmap_file; /**< mmaped dev file*/
+
    Eina_List *added_sounds;
 
    Eina_Bool changed : 1;

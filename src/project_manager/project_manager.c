@@ -321,6 +321,7 @@ _project_import_edj(void *data,
    _project_dev_file_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
+      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
    WORKER_LOCK_RELEASE;
@@ -473,6 +474,7 @@ _project_import_edc(void *data,
    _project_dev_file_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
+      worker->project->mmap_file = eina_file_open(worker->project->dev, false);
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
       pm_project_resource_export(worker->project);
@@ -557,6 +559,7 @@ pm_project_open(const char *path)
    _pm_project_descriptor_shutdown();
    if (!pro_lock->project) goto error;
 
+   pro_lock->project->mmap_file = eina_file_open(pro_lock->project->dev, false);
    eina_lock_take(&pro_lock->mutex);
 
    pro_lock->project->changed = false;
@@ -654,6 +657,15 @@ _project_save(void *data,
                 edje_edit_without_source_save(style->obj, true);
              }
         }
+   eina_file_close(worker->project->mmap_file);
+   worker->project->mmap_file = eina_file_open(worker->project->dev, false);
+   if (worker->project->current_style)
+     {
+        edje_object_mmap_set(worker->project->current_style->obj,
+                             worker->project->mmap_file,
+                             worker->project->current_style->full_group_name);
+     }
+
    WORKER_LOCK_RELEASE;
 
    PROGRESS_SEND("Making the project backup...");
@@ -705,6 +717,7 @@ pm_project_close(Project *project)
    ecore_file_remove(backup);
 
    eet_close(project->pro);
+   eina_file_close(project->mmap_file);
    eina_stringshare_del(project->name);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
@@ -721,6 +734,15 @@ pm_project_close(Project *project)
 void
 pm_project_changed(Project *project)
 {
+   eina_file_close(project->mmap_file);
+   project->mmap_file = eina_file_open(project->dev, false);
+   if (project->current_style)
+     {
+        eina_file_map_free(project->mmap_file, project->current_style->obj);
+        edje_object_mmap_set(project->current_style->obj,
+                             project->mmap_file,
+                             project->current_style->full_group_name);
+     }
    project->changed = true;
 }
 
@@ -801,7 +823,7 @@ pm_project_resource_export(Project *pro)
    e = ecore_evas_get(ee);
    list = edje_file_collection_list(pro->dev);
    edje_edit_obj = edje_edit_object_add(e);
-   if (!edje_object_file_set(edje_edit_obj, pro->dev, eina_list_data_get(list)))
+   if (!edje_object_mmap_set(edje_edit_obj, pro->mmap_file, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
         return false;

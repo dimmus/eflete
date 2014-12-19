@@ -357,7 +357,7 @@ _add_layout_cb(void *data,
    for (i = 0; i < 999; i++)
      {
         name = eina_stringshare_printf("new/layout/%d", i);
-        if (!edje_edit_group_exist(group_obj, name))
+        if (!edje_mmap_group_exists(ap->project->mmap_file, name))
           {
              nameExist = false;
              break;
@@ -380,14 +380,14 @@ _add_layout_cb(void *data,
         return;
      }
 
-   edje_edit_save_all(group_obj);
+   edje_edit_without_source_save(group_obj, false);
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
 
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
-                      ap->project->dev);
+                      ap->project->mmap_file);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
    project_changed();
@@ -680,8 +680,8 @@ ui_style_clicked(App_Data *ap, Style *style)
    ui_block_history_set(ap, history_list);
 
 #ifdef HAVE_ENVENTOR
-   edje_object_file_set(ap->project->current_style->obj,
-                        ap->project->dev,
+   edje_object_mmap_set(ap->project->current_style->obj,
+                        ap->project->mmap_file,
                         ap->project->current_style->full_group_name);
 #endif /* HAVE_ENVENTOR */
    live_view_widget_style_set(ap->live_view, ap->project, _style);
@@ -793,10 +793,10 @@ _on_open_done(void *data,
 
    wm_widgets_list_objects_load(ap->project->widgets,
                                 evas_object_evas_get(ap->win),
-                                ap->project->dev);
+                                ap->project->mmap_file);
    wm_layouts_list_objects_load(ap->project->layouts,
                                 evas_object_evas_get(ap->win),
-                                ap->project->dev);
+                                ap->project->mmap_file);
 
    blocks_data_unset(ap);
    blocks_show(ap);
@@ -907,7 +907,7 @@ _progress_end(void *data, PM_Project_Result result)
      {
         wm_widgets_list_objects_load(ap->project->widgets,
                                      evas_object_evas_get(ap->win),
-                                     ap->project->dev);
+                                     ap->project->mmap_file);
         pm_project_changed(ap->project);
      }
 #endif /* HAVE_ENVENTOR */

@@ -258,7 +258,7 @@ _on_popup_btn_yes(void *data,
      {
         wm_widgets_list_objects_load(ap->project->widgets,
                                      evas_object_evas_get(ap->win),
-                                     ap->project->dev);
+                                     ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
      }

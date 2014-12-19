@@ -2111,6 +2111,7 @@ _on_image_editor_done(void *data,
    evas_object_smart_callback_call(image_entry, "changed,user", NULL);
    ewe_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
+   project_changed();
 }
 
 static void

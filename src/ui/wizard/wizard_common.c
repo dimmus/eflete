@@ -78,10 +78,10 @@ _progress_end(void *data, PM_Project_Result result)
 
         wm_widgets_list_objects_load(pro->widgets,
                                      evas_object_evas_get(ap->win),
-                                     pro->dev);
+                                     pro->mmap_file);
         wm_layouts_list_objects_load(pro->layouts,
                                      evas_object_evas_get(ap->win),
-                                     pro->dev);
+                                     pro->mmap_file);
 
         blocks_show(ap);
 

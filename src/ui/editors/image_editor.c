@@ -574,7 +574,6 @@ _on_image_done(void *data,
 
    EINA_LIST_FOREACH(images, l, selected)
      {
-        fprintf(stdout, "selected %s\n", selected);
         if (!ecore_file_exists(selected))
           {
              WIN_NOTIFY_ERROR(obj, _("File not exist"));
@@ -585,15 +584,14 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
-        fprintf(stdout, "selected %s\n", selected);
         if (edje_edit_image_add(edje_edit_obj, selected))
           {
+             edje_edit_without_source_save(edje_edit_obj, true);
              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
                                                          ecore_file_file_get(selected));
              elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
-             project_changed();
           }
      }
 
@@ -620,7 +618,7 @@ _on_button_add_clicked_cb(void *data,
    ecore_main_loop_begin();
 
    evas_object_del(win);
-
+   project_changed();
    return;
 }
 
@@ -650,11 +648,14 @@ _on_button_delete_clicked_cb(void *data,
    if (!grid_list) return;
    images_to_del = eina_list_count(grid_list);
 
+
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
         if (edje_edit_image_del(edje_edit_obj, it->image_name))
           {
+             edje_edit_without_source_save(edje_edit_obj, false);
+             project_changed();
              deleted++;
              elm_object_item_del(grid_item);
           }

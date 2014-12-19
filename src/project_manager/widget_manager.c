@@ -296,18 +296,21 @@ wm_program_signals_list_free(Eina_List *signals)
 }
 
 Eina_Bool
-wm_style_data_load(Style *style, Evas *e, const char *edj)
+wm_style_data_load(Style *style, Evas *e, Eina_File *mmap_file)
 {
    Evas_Object *edje_edit_obj;
    Eina_List *parts_list = NULL, *l = NULL;
    char *part_name = NULL;
 
-   if ((!style) || (!e) || (!edj)) return false;
-   if (style->obj) evas_object_del(style->obj);
+   if ((!style) || (!e)) return false;
+   if (style->obj)
+     {
+        eina_file_map_free(mmap_file, style->obj);
+        evas_object_del(style->obj);
+     }
 
    edje_edit_obj = edje_edit_object_add(e);
-
-   if (!edje_object_file_set(edje_edit_obj, edj, style->full_group_name))
+   if (!edje_object_mmap_set(edje_edit_obj, mmap_file, style->full_group_name))
      {
         evas_object_del(edje_edit_obj);
         return false;
@@ -397,7 +400,8 @@ wm_style_free(Style *style)
 
    eina_stringshare_del(style->full_group_name);
 
-   if (style->obj) evas_object_del(style->obj);
+   if (style->obj)
+     evas_object_del(style->obj);
 
    free(style);
    style = NULL;
@@ -790,8 +794,8 @@ _layout_object_find(Eina_Inlist *layout_list, const char *style_full_name)
 
 Eina_Bool
 wm_widgets_list_objects_load(Eina_Inlist *widget_list,
-                            Evas *e,
-                            const char *path)
+                             Evas *e,
+                             Eina_File *mmap_file)
 {
    Widget *widget = NULL;
    Class *class_st = NULL;
@@ -799,7 +803,7 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
    Eina_List *alias_list = NULL, *l = NULL;
    const char *main_name;
 
-   if ((!widget_list) || (!e) || (!path)) return false;
+   if ((!widget_list) || (!e) || (!mmap_file)) return false;
 
    EINA_INLIST_FOREACH(widget_list, widget)
      {
@@ -807,7 +811,7 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
           {
              EINA_INLIST_FOREACH(class_st->styles, style)
                {
-                  wm_style_data_load(style, e, path);
+                  wm_style_data_load(style, e, mmap_file);
                   if (style->isAlias)
                     alias_list = eina_list_append(alias_list, style);
                }
@@ -853,17 +857,17 @@ wm_widgets_list_objects_del(Eina_Inlist *widget_list)
 Eina_Bool
 wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
                             Evas *e,
-                            const char *path)
+                            Eina_File *mmap_file)
 {
    Style *layout = NULL, *alias = NULL;
    Eina_List *alias_list = NULL, *l = NULL;
    const char *main_name;
 
-   if ((!layouts_list) || (!e) || (!path)) return false;
+   if ((!layouts_list) || (!e) || (!mmap_file)) return false;
 
    EINA_INLIST_FOREACH(layouts_list, layout)
      {
-         wm_style_data_load(layout, e, path);
+         wm_style_data_load(layout, e, mmap_file);
          if (layout->isAlias)
            alias_list = eina_list_append(alias_list, layout);
      }
