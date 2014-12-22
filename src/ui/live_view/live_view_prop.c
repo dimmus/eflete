@@ -423,6 +423,7 @@ live_view_property_style_unset(Evas_Object *property)
         evas_object_del(button);
         evas_object_del(item);
      }
+   eina_list_free(signal_list);
 
    pd->live_object = NULL;
 
