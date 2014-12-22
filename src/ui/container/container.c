@@ -446,6 +446,7 @@ _container_smart_del(Evas_Object *o)
    CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
 
    eina_stringshare_del(sd->style);
+   free(sd->size);
 
    _container_parent_sc->del(o);
 }
