@@ -77,7 +77,7 @@ struct _Container_Smart_Data
    } handler_BR;
    Eina_Bool handler_TL_pressed : 1;
    Eina_Bool handler_BR_pressed : 1;
-   const char *style;
+   Eina_Stringshare *style;
    Evas_Coord downx;
    Evas_Coord downy;
    struct {
@@ -377,8 +377,8 @@ _style_set(Evas_Object *o, const char *style)
           ERR("Couldn't load default style for bottom-right handler of container.");
      }
 
-   if (sd->style) free((void *)sd->style);
-   sd->style = strdup(style);
+   eina_stringshare_del(sd->style);
+   sd->style = eina_stringshare_add(style);
 
    #undef GROUP_NAME
 }
@@ -444,6 +444,8 @@ static void
 _container_smart_del(Evas_Object *o)
 {
    CONTAINER_DATA_GET_OR_RETURN_VAL(o, sd, RETURN_VOID)
+
+   eina_stringshare_del(sd->style);
 
    _container_parent_sc->del(o);
 }
