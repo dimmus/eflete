@@ -589,7 +589,6 @@ wm_widgets_list_new(const char *file)
      {
         if (eina_str_has_prefix(group, prefix))
           {
-             free(widget_name_next);
              WM_WIDGET_NAME_GET(widget_name, group);
              if (l_next)
                {
@@ -609,6 +608,10 @@ wm_widgets_list_new(const char *file)
                }
              if (widget_name)
                free(widget_name);
+
+             /* TODO: change logic here on refactor to make this check unnecessary!! */
+             if (widget_name_next != &empty)
+               free(widget_name_next);
           }
      }
    edje_file_collection_list_free(collection);
