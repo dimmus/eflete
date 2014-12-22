@@ -39,9 +39,10 @@
  * @precondition
  * @step 1 initialized elm.
  * @step 2 created Window.
- * @step 3 Style filled with data. (style contain programs and signals)
- * @step 4 created Signal List
- * @step 5 set the Style to the Signal List
+ * @step 3 Mmap edj file.
+ * @step 4 Style filled with data. (style contain programs and signals)
+ * @step 5 created Signal List
+ * @step 6 set the Style to the Signal List
  *
  * @procedure
  * @step 1 Call function ui_signal_list_data_unset.
@@ -60,13 +61,15 @@ EFLETE_TEST(ui_signal_list_data_unset_test_p1)
    const char *edj = "./edj_build/ui_signal_list_data_unset.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
+   Eina_File *mmap_file = NULL;
 
    elm_init(0,0);
 
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open(edj, EINA_FALSE);
    e = evas_object_evas_get(window);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-   wm_style_data_load(style, e, edj);
+   wm_style_data_load(style, e, mmap_file);
    gl_signals = ui_signal_list_add(window);
    ui_signal_list_data_set(gl_signals, style);
    ret_style = ui_signal_list_data_unset(gl_signals);
@@ -75,6 +78,7 @@ EFLETE_TEST(ui_signal_list_data_unset_test_p1)
 
    wm_style_free(style);
    evas_object_del(window);
+   eina_file_close(mmap_file);
    elm_shutdown();
 
 }

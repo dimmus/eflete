@@ -39,9 +39,10 @@
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas from created win.
- * @step 3 Style object, filled with data and containing Edje Edit object.
- * @step 4 Tested group contain programs and signals
- * @step 5 Signal List.
+ * @step 3 Mmap edj file.
+ * @step 4 Style object, filled with data and containing Edje Edit object.
+ * @step 5 Tested group contain programs and signals
+ * @step 6 Signal List.
  *
  * @procedure
  * @step 1 Call function wm_program_signals_list_free(signals_list).
@@ -62,15 +63,18 @@ EFLETE_TEST (wm_program_signals_list_free_test_p)
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
    Eina_List *sig_list = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open(edj, EINA_FALSE);
    e = evas_object_evas_get(win);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-   wm_style_data_load(style, e, edj);
+   wm_style_data_load(style, e, mmap_file);
    sig_list = wm_program_signals_list_get(style);
    ck_assert_msg(wm_program_signals_list_free(sig_list) == EINA_TRUE, "Cannot free signal list.");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST

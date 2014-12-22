@@ -66,7 +66,7 @@ EFLETE_TEST(sound_editor_window_add_test_p1)
    app->project = pm_project_open("./sound_editor_window_add_test_p1/sound_editor_window_add_test_p1.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
    ck_assert_msg(sounds != NULL, "cannot create sound editor window in SOUND_EDITOR_EDIT mode");
@@ -115,7 +115,7 @@ EFLETE_TEST (sound_editor_window_add_test_p2)
    app->project = pm_project_open("./sound_editor_window_add_test_p2/sound_editor_window_add_test_p2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->dev);
+                               app->project->mmap_file);
    ui_main_window_add(app);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_SAMPLE_SELECT);
@@ -165,7 +165,7 @@ EFLETE_TEST (sound_editor_window_add_test_p3)
    app->project = pm_project_open("./sound_editor_window_add_test_p3/sound_editor_window_add_test_p3.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                evas_object_evas_get(app->win),
-                               app->project->dev);
+                               app->project->mmap_file);
    ui_main_window_add(app);
 
    sounds = sound_editor_window_add(app->project, SOUND_EDITOR_TONE_SELECT);
@@ -296,7 +296,7 @@ EFLETE_TEST (sound_editor_window_add_test_n3)
    app->project = pm_project_open("./sound_editor_window_add_test_n3/sound_editor_window_add_test_n3.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
 
    sounds = sound_editor_window_add(app->project, SINGLE);
    ck_assert_msg(sounds == NULL,

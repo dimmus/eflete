@@ -38,8 +38,9 @@
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Style object, filled with data and containing Edje Edit object.
- * @step 4 Tested group contain few programs with different signals
+ * @step 3 Mmap edj file.
+ * @step 4 Style object, filled with data and containing Edje Edit object.
+ * @step 5 Tested group contain few programs with different signals
  *
  * @procedure
  * @step 1 Call function wm_program_signals_list_get(style).
@@ -63,21 +64,34 @@ EFLETE_TEST (wm_program_signals_list_get_test_p1)
    const char *full_style_name = "elm/radio/base/def";
    Eina_List *sig_list;
    Signal *sig = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(edj, EINA_FALSE);
+   fprintf(stderr, "Mmaped file have pointer: %p\n", mmap_file);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-   wm_style_data_load(style, e, edj);
+   wm_style_data_load(style, e, mmap_file);
+   fprintf(stderr, "after loading data into style\n");
    sig_list = wm_program_signals_list_get(style);
    ck_assert_msg(sig_list != NULL, "Signals list isn't exist.");
+   fprintf(stderr, "Point #0\n");
 
    sig = (Signal *)sig_list->next->data;
+   fprintf(stderr, "Point #1\n");
    ck_assert_str_eq(sig->name, "elm,state,radio,on");
+   fprintf(stderr, "Point #2\n");
    ck_assert_str_eq(sig->source, "elm");
+   fprintf(stderr, "Point #3\n");
    ck_assert_str_eq(sig->program, "radio_on");
+   fprintf(stderr, "Point #4\n");
 
    wm_program_signals_list_free(sig_list);
+   fprintf(stderr, "Point #5\n");
    wm_style_free(style);
+   fprintf(stderr, "Point #6\n");
+   eina_file_close(mmap_file);
+   fprintf(stderr, "Point #7\n");
    elm_shutdown();
 }
 END_TEST
@@ -92,8 +106,9 @@ END_TEST
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Empty Style object.
- * @step 4 Tested group doesn't contain any programs and signals
+ * @step 3 Mmap edj file.
+ * @step 4 Empty Style object.
+ * @step 5 Tested group doesn't contain any programs and signals
  *
  * @procedure
  * @step 1 Call function wm_program_signals_list_get(style).
@@ -113,14 +128,17 @@ EFLETE_TEST (wm_program_signals_list_get_test_p2)
    const char *edj = "./edj_build/wm_program_signals_list_get.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/notbase/test";
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(edj, EINA_FALSE);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-   wm_style_data_load(style, e, edj);
+   wm_style_data_load(style, e, mmap_file);
    ck_assert_msg(wm_program_signals_list_get(style) == NULL, "Style returned data that should don't exist.");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST

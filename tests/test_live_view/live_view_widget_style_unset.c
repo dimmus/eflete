@@ -74,7 +74,7 @@ EFLETE_TEST(live_view_widget_style_unset_test_p)
    project = pm_project_open("./live_view_widget_style_unset_test_p/live_view_widget_style_unset_test_p.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, project->dev);
+   wm_style_data_load(style, e, project->mmap_file);
    project->current_style = style;
    live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, style);

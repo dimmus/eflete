@@ -80,7 +80,7 @@ EFLETE_TEST (state_dialog_state_del_test_p)
    app_data->project = pm_project_open("./state_dialog_state_del_test_p/state_dialog_state_del_test_p.pro");
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("radio", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, canvas, app_data->project->dev);
+   wm_style_data_load(style, canvas, app_data->project->mmap_file);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    state_list = ui_states_list_add(app_data->win);
    ui_states_list_data_set(state_list, style, part);

@@ -39,9 +39,10 @@
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widgets_list_new.
- * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
- * @step 5 Find Style structure
+ * @step 3 Mmap edj file.
+ * @step 4 Create new widget list with using wm_widgets_list_new.
+ * @step 5 Fill widget list with data (Widgets, Classes, Styles, Parts).
+ * @step 6 Find Style structure
  *
  * @procedure
  * @step 1 Call function wm_part_by_name_find.
@@ -63,14 +64,16 @@ EFLETE_TEST (wm_part_by_name_find_test_p1)
    Evas *canvas = NULL;
    Part *part = NULL;
    Style *style = NULL;
+   Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    group_name = eina_stringshare_add("elm/radio/base/def");
    part_name = eina_stringshare_add("elm.text");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, canvas, file);
+   wm_widgets_list_objects_load(widget_list, canvas, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, part_name);
@@ -78,6 +81,7 @@ EFLETE_TEST (wm_part_by_name_find_test_p1)
    ck_assert_msg(part->name == part_name, "Founded strucutre isn't searching part");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    eina_stringshare_del(group_name);
    eina_stringshare_del(part_name);
    elm_shutdown();
@@ -94,9 +98,10 @@ END_TEST
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widgets_list_new.
- * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
- * @step 5 Find Style structure
+ * @step 3 Mmap edj file.
+ * @step 4 Create new widget list with using wm_widgets_list_new.
+ * @step 5 Fill widget list with data (Widgets, Classes, Styles, Parts).
+ * @step 6 Find Style structure
  *
  * @procedure
  * @step 1 Call function wm_part_by_name_find with wrong part name.
@@ -117,20 +122,23 @@ EFLETE_TEST (wm_part_by_name_find_test_n1)
    Evas *canvas = NULL;
    Part *part = NULL;
    Style *style = NULL;
+   Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    group_name = eina_stringshare_add("elm/radio/base/def");
    part_name = eina_stringshare_add("wrong");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, canvas, file);
+   wm_widgets_list_objects_load(widget_list, canvas, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, part_name);
    ck_assert_msg(!part, "Founded part, that not exists in group");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    eina_stringshare_del(group_name);
    eina_stringshare_del(part_name);
    elm_shutdown();
@@ -148,9 +156,10 @@ END_TEST
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widgets_list_new.
- * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
- * @step 5 Find Style structure
+ * @step 3 Mmap edj file.
+ * @step 4 Create new widget list with using wm_widgets_list_new.
+ * @step 5 Fill widget list with data (Widgets, Classes, Styles, Parts).
+ * @step 6 Find Style structure
  *
  * @procedure
  * @step 1 Call function wm_part_by_name_find withou part name.
@@ -170,19 +179,22 @@ EFLETE_TEST (wm_part_by_name_find_test_n2)
    Evas *canvas = NULL;
    Part *part = NULL;
    Style *style = NULL;
+   Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    group_name = eina_stringshare_add("elm/radio/base/def");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, canvas, file);
+   wm_widgets_list_objects_load(widget_list, canvas, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, NULL);
    ck_assert_msg(!part, "Founded part with NULL part param.");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    eina_stringshare_del(group_name);
    elm_shutdown();
 }
@@ -233,9 +245,10 @@ END_TEST
  * @precondition
  * @step 1 Initialize Elementary.
  * @step 2 Create  Evas canvas.
- * @step 3 Create new widget list with using wm_widgets_list_new.
- * @step 4 Fill widget list with data (Widgets, Classes, Styles, Parts).
- * @step 5 Find Style structure, that does not have part with name "elm.text"
+ * @step 3 Mmap edj file.
+ * @step 4 Create new widget list with using wm_widgets_list_new.
+ * @step 5 Fill widget list with data (Widgets, Classes, Styles, Parts).
+ * @step 6 Find Style structure, that does not have part with name "elm.text"
  *
  * @procedure
  * @step 1 Call function wm_part_by_name_find withou part name.
@@ -256,20 +269,23 @@ EFLETE_TEST (wm_part_by_name_find_test_n4)
    Evas *canvas = NULL;
    Part *part = NULL;
    Style *style = NULL;
+   Eina_File *mmap_file = NULL;
 
    elm_init(0, 0);
    group_name = eina_stringshare_add("elm/radio/base/test");
    part_name = eina_stringshare_add("elm.text");
    ee = ecore_evas_new(NULL, 0, 0, 10, 10, NULL);
    canvas = ecore_evas_get(ee);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, canvas, file);
+   wm_widgets_list_objects_load(widget_list, canvas, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    part = wm_part_by_name_find(style, part_name);
    ck_assert_msg(!part, "Founded part in group, that doesn't have part sith same name.");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    eina_stringshare_del(group_name);
    eina_stringshare_del(part_name);
    elm_shutdown();

@@ -39,9 +39,10 @@
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Widget list filled with data (Widgets, Classes, Styles etc).
- * @step 4 New group is not exists and Old Group is exists in edj.
- * @step 5 New Style structure with new name (for copied group).
+ * @step 3 Mmap edj file.
+ * @step 4 Widget list filled with data (Widgets, Classes, Styles etc).
+ * @step 5 New group is not exists and Old Group is exists in edj.
+ * @step 6 New Style structure with new name (for copied group).
  *
  * @procedure
  * @step 1 Add new style.
@@ -70,11 +71,13 @@ EFLETE_TEST (wm_style_copy_test_p)
    Evas *e = NULL;
    Style *style = NULL, *new_style = NULL;
    Class *dest_class = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
+   wm_widgets_list_objects_load(widget_list, e, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    /* before copy we need to do something with new style */
@@ -86,17 +89,18 @@ EFLETE_TEST (wm_style_copy_test_p)
                                            EINA_INLIST_GET(new_style));
 
    new_style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
-   wm_style_data_load(style, e, file);
+   wm_style_data_load(style, e, mmap_file);
    /* ---------------------------------------- */
 
    ck_assert_msg(wm_style_copy(new_style->obj, group_name, copy_name, file, new_style), "Cannot copy.");
    ck_assert_msg(edje_edit_group_exist(new_style->obj, copy_name), "Group is not exist.");
-   wm_style_data_load(new_style, e, file);
+   wm_style_data_load(new_style, e, mmap_file);
    sig_new_list = wm_program_signals_list_get(new_style);
    sig_list = wm_program_signals_list_get(new_style);
    ck_assert_str_eq((char *)sig_list->next->data, (char *)sig_new_list->next->data);
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST
@@ -111,9 +115,10 @@ END_TEST
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Widget list filled with data (Widgets, Classes, Styles etc).
- * @step 4 New and Old Group existing in edj.
- * @step 5 New Style structure with new name (for copied group).
+ * @step 3 Mmap edj file.
+ * @step 4 Widget list filled with data (Widgets, Classes, Styles etc).
+ * @step 5 New and Old Group existing in edj.
+ * @step 6 New Style structure with new name (for copied group).
  *
  * @procedure
  * @step 1 Add new style.
@@ -137,11 +142,13 @@ EFLETE_TEST (wm_style_copy_test_n1)
    Evas *e = NULL;
    Style *style = NULL, *new_style = NULL;
    Class *dest_class = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
+   wm_widgets_list_objects_load(widget_list, e, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    /* before copy we need to do something with new style */
@@ -153,11 +160,12 @@ EFLETE_TEST (wm_style_copy_test_n1)
                                            EINA_INLIST_GET(new_style));
 
    new_style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
-   wm_style_data_load(style, e, file);
+   wm_style_data_load(style, e, mmap_file);
    /* ---------------------------------------- */
    ck_assert_msg(!wm_style_copy(new_style->obj, group_name, copy_name, file, new_style), "Copied. Error.");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST
@@ -172,9 +180,10 @@ END_TEST
  * @precondition
  * @step 1 initialized elm
  * @step 2 Evas canvas created.
- * @step 3 Widget list filled with data (Widgets, Classes, Styles etc).
- * @step 4 New group is not exists and Old Group is exists in edj.
- * @step 5 New Style structure with new name (for copied group).
+ * @step 3 Mmap edj file.
+ * @step 4 Widget list filled with data (Widgets, Classes, Styles etc).
+ * @step 5 New group is not exists and Old Group is exists in edj.
+ * @step 6 New Style structure with new name (for copied group).
  *
  * @procedure
  * @step 1 Add new style.
@@ -201,11 +210,13 @@ EFLETE_TEST (wm_style_copy_test_n2)
    Evas *e = NULL;
    Style *new_style = NULL, *style = NULL;
    Class *dest_class = NULL;
+   Eina_File *mmap_file = NULL;
 
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
+   wm_widgets_list_objects_load(widget_list, e, mmap_file);
    style = wm_style_object_find(widget_list, group_name);
 
    /* before copy we need to do something with new style */
@@ -219,7 +230,7 @@ EFLETE_TEST (wm_style_copy_test_n2)
    new_style = EINA_INLIST_CONTAINER_GET(dest_class->styles, Style);
    /* ---------------------------------------- */
 
-   wm_style_data_load(style, e, file);
+   wm_style_data_load(style, e, mmap_file);
 
    ck_assert_msg(!wm_style_copy(NULL, NULL, copy_name, file, new_style), "Copied. Error.");
    ck_assert_msg(!wm_style_copy(new_style->obj, group_name, NULL, file, new_style), "Copied. Error.");
@@ -227,6 +238,7 @@ EFLETE_TEST (wm_style_copy_test_n2)
    ck_assert_msg(!wm_style_copy(new_style->obj, group_name, copy_name, file, NULL), "Copied. Error.");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST

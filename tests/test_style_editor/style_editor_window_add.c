@@ -133,7 +133,7 @@ EFLETE_TEST(style_editor_window_add_test_n2)
    app->project = pm_project_open("./style_editor_window_add_test_n2/style_editor_window_add_test_n2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
 
    ck_assert_msg(style_editor_window_add(app->project) == NULL,
                  "Style_edtor added to non-existing window");
