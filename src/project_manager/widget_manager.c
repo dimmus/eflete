@@ -303,6 +303,7 @@ wm_style_data_load(Style *style, Evas *e, const char *edj)
    char *part_name = NULL;
 
    if ((!style) || (!e) || (!edj)) return false;
+   if (style->obj) evas_object_del(style->obj);
 
    edje_edit_obj = edje_edit_object_add(e);
 
@@ -405,55 +406,14 @@ wm_style_free(Style *style)
 }
 
 Eina_Bool
-wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
+wm_style_copy(Evas_Object *dest_edje, Eina_Stringshare *source_full_name,
               Eina_Stringshare *full_name, Eina_Stringshare *dest_file,
               Style *style)
 {
-   Evas_Object *edje_edit_group = NULL;
-   Edje_Part_Type part_type;
-
    Evas *e = NULL;
 
-   Eina_List *list_parts = NULL;
-   Eina_List *list_states = NULL;
-   Eina_List *list_programs = NULL;
-   Eina_List *list_pr_targets = NULL;
-   Eina_List *list_pr_afters = NULL;
-   Eina_List *l_parts = NULL;
-   Eina_List *l_states = NULL;
-   Eina_List *l_programs = NULL;
-   Eina_List *l_pr_targets = NULL;
-   Eina_List *l_pr_afters = NULL;
-
-   char *part_name = NULL;
-   char *program_name = NULL;
-   char *pr_target_name = NULL;
-   char *pr_after_name = NULL;
-   char *state_full = NULL;
-   char *state_name = NULL;
-
-   char *script_source = NULL;
-   char **state_tok = NULL;
-   double state_val = 0;
-   int r, g, b, a;
-   int b_l, b_r, b_t, b_b;
-
-   if ((!source_edje) || (!full_name) || (!dest_file) || (!style))
+   if ((!full_name) || (!dest_file) || (!style))
      return false;
-
-#define STATE_COPY(param) \
-   edje_edit_state_##param##_set(edje_edit_group, part_name, \
-     state_name, state_val,\
-     edje_edit_state_##param##_get(source_edje,\
-     part_name, state_name, state_val));
-
-#define PART_COPY(param) \
-  edje_edit_part_##param##_set(edje_edit_group, part_name, \
-    edje_edit_part_##param##_get(source_edje, part_name));
-
-#define PROGRAM_COPY(param) \
-  edje_edit_program_##param##_set(edje_edit_group, program_name,\
-    edje_edit_program_##param##_get(source_edje, program_name));
 
    if (!dest_edje)
      {
@@ -473,234 +433,9 @@ wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
         NOTIFY_ERROR(_("Group [%s] exist"), full_name);
         return false;
      }
-
-   if (!edje_edit_group_add(dest_edje, full_name))
-     {
-        NOTIFY_ERROR(_("Failed create style [%s]"), full_name);
-        return false;
-     }
-
-   edje_edit_group = edje_edit_object_add(e);
-   if (!edje_edit_group)
-     {
-        ERR("Failed created edje_edit object");
-        return false;
-     }
-
-   if (!edje_object_file_set(edje_edit_group, dest_file, full_name))
-     {
-        NOTIFY_ERROR(_("Failed load created style to memory."));
-        ERR("\n\tFile: %s\n\tStyle name: %s\n\tEdje edit: %p",
-                     dest_file, full_name, edje_edit_group);
-        evas_object_del(edje_edit_group);
-        return false;
-     }
-   style->obj = edje_edit_group;
-   /* Copy group attributes. */
-   edje_edit_group_min_w_set(edje_edit_group,
-                             edje_edit_group_min_w_get(source_edje));
-   edje_edit_group_min_h_set(edje_edit_group,
-                             edje_edit_group_min_h_get(source_edje));
-   edje_edit_group_max_w_set(edje_edit_group,
-                             edje_edit_group_max_w_get(source_edje));
-   edje_edit_group_max_h_set(edje_edit_group,
-                             edje_edit_group_max_h_get(source_edje));
-
-   /*
-    * Copy parts with attributes and states from template
-    * to work edje edit object.
-    */
-   list_parts = edje_edit_parts_list_get(source_edje);
-   EINA_LIST_FOREACH(list_parts, l_parts, part_name)
-     {
-        part_type = edje_edit_part_type_get(source_edje, part_name);
-        if (!edje_edit_part_add(edje_edit_group, part_name, part_type))
-          CRIT("Failed copy part[%s] from template", part_name);
-        PART_COPY(clip_to);
-        PART_COPY(source);
-        PART_COPY(effect);
-        PART_COPY(mouse_events);
-        PART_COPY(repeat_events);
-        PART_COPY(ignore_flags);
-        PART_COPY(scale);
-
-        PART_COPY(drag_x);
-        PART_COPY(drag_y);
-        PART_COPY(drag_step_x);
-        PART_COPY(drag_step_y);
-        PART_COPY(drag_count_x);
-        PART_COPY(drag_count_y);
-        PART_COPY(drag_confine);
-     }
-   edje_edit_string_list_free(list_parts);
-   /*
-    *  Copying all states for parts.
-    */
-   list_parts = edje_edit_parts_list_get(source_edje);
-   EINA_LIST_FOREACH(list_parts, l_parts, part_name)
-     {
-       list_states = edje_edit_part_states_list_get(source_edje, part_name);
-       EINA_LIST_FOREACH(list_states, l_states, state_full)
-          {
-             state_tok = eina_str_split(state_full, " ", 0);
-             state_name = state_tok[0];
-             state_val = atof(state_tok[1]);
-             edje_edit_state_add(edje_edit_group, part_name, state_name, state_val);
-
-             STATE_COPY(rel1_to_x);
-             STATE_COPY(rel1_to_y);
-             STATE_COPY(rel2_to_x);
-             STATE_COPY(rel2_to_y);
-
-             STATE_COPY(rel1_relative_x);
-             STATE_COPY(rel1_relative_y);
-             STATE_COPY(rel2_relative_x);
-             STATE_COPY(rel2_relative_y);
-
-             STATE_COPY(rel1_offset_x);
-             STATE_COPY(rel1_offset_y);
-             STATE_COPY(rel2_offset_x);
-             STATE_COPY(rel2_offset_y);
-
-
-             edje_edit_state_color_get(source_edje, part_name, state_name,
-                                       state_val, &r, &g, &b, &a);
-             edje_edit_state_color_set(edje_edit_group, part_name, state_name,
-                                       state_val, r, g, b, a);
-             edje_edit_state_color2_get(source_edje, part_name, state_name,
-                                       state_val, &r, &g, &b, &a);
-             edje_edit_state_color2_set(edje_edit_group, part_name, state_name,
-                                       state_val, r, g, b, a);
-             edje_edit_state_color3_get(source_edje, part_name, state_name,
-                                       state_val, &r, &g, &b, &a);
-             edje_edit_state_color3_set(edje_edit_group, part_name, state_name,
-                                       state_val, r, g, b, a);
-             STATE_COPY(align_x);
-             STATE_COPY(align_y);
-
-             STATE_COPY(min_w);
-             STATE_COPY(min_h);
-             STATE_COPY(max_w);
-             STATE_COPY(max_h);
-             STATE_COPY(fixed_w);
-             STATE_COPY(fixed_h);
-
-             STATE_COPY(aspect_min);
-             STATE_COPY(aspect_max);
-             STATE_COPY(aspect_pref);
-
-             STATE_COPY(fill_origin_relative_x);
-             STATE_COPY(fill_origin_relative_y);
-             STATE_COPY(fill_origin_offset_x);
-             STATE_COPY(fill_origin_offset_y);
-             STATE_COPY(fill_size_relative_x);
-             STATE_COPY(fill_size_relative_y);
-             STATE_COPY(fill_size_offset_x);
-             STATE_COPY(fill_size_offset_y);
-
-             STATE_COPY(visible);
-             /* FIXME: if uncommemt it line we have segfault.
-                Maybe it issue related with patch to edje edit, with appling
-                new colors when setting new color class to the part state.
-                NEED CHECK IT, AND FIX */
-             //STATE_COPY(color_class);
-
-             part_type = edje_edit_part_type_get(source_edje, part_name);
-
-             if (part_type == EDJE_PART_TYPE_TEXT)
-               {
-                  STATE_COPY(text);
-                  STATE_COPY(font);
-                  STATE_COPY(text_size);
-                  STATE_COPY(text_align_x);
-                  STATE_COPY(text_align_y);
-                  STATE_COPY(text_elipsis);
-                  STATE_COPY(text_fit_x);
-                  STATE_COPY(text_fit_y);
-                  STATE_COPY(text_min_x);
-                  STATE_COPY(text_min_y);
-                  STATE_COPY(text_max_x);
-                  STATE_COPY(text_max_y);
-               }
-             if (part_type == EDJE_PART_TYPE_IMAGE)
-               {
-                  STATE_COPY(image);
-                  edje_edit_state_image_border_get(source_edje, part_name,
-                     state_name, state_val, &b_l, &b_r, &b_t, &b_b);
-                   edje_edit_state_image_border_set(edje_edit_group, part_name,
-                     state_name, state_val, b_l, b_r, b_t, b_b);
-                  STATE_COPY(image_border_fill);
-              }
-          }
-      edje_edit_string_list_free(list_states);
-     }
-  edje_edit_string_list_free(list_parts);
-  evas_object_hide(edje_edit_group);
-   /*
-    *  Copying programs that used in group.
-    */
-  list_programs = edje_edit_programs_list_get(source_edje);
-  EINA_LIST_FOREACH(list_programs, l_programs, program_name)
-     {
-        if (!edje_edit_program_add(edje_edit_group, program_name))
-          ERR("Failed add program[%s] to style[%s]", program_name, full_name);
-        PROGRAM_COPY(source);
-        PROGRAM_COPY(signal);
-        PROGRAM_COPY(in_from);
-        PROGRAM_COPY(in_range);
-        PROGRAM_COPY(action);
-        PROGRAM_COPY(filter_part);
-        PROGRAM_COPY(transition_time);
-        PROGRAM_COPY(transition);
-        PROGRAM_COPY(value);
-        PROGRAM_COPY(value2);
-        PROGRAM_COPY(state);
-        PROGRAM_COPY(state2);
-        PROGRAM_COPY(api_description);
-        PROGRAM_COPY(api_name);
-      }
-  edje_edit_string_list_free(list_programs);
-
-  list_programs = edje_edit_programs_list_get(source_edje);
-  EINA_LIST_FOREACH(list_programs, l_programs, program_name)
-    {
-       list_pr_targets = edje_edit_program_targets_get(source_edje,
-                              program_name);
-        EINA_LIST_FOREACH(list_pr_targets, l_pr_targets, pr_target_name)
-          {
-             if (!edje_edit_program_target_add(edje_edit_group, program_name,
-                                          pr_target_name))
-               ERR("Failed add target[%s] program[%s] to style[%s]",
-                   pr_target_name, program_name, full_name);
-          }
-        edje_edit_string_list_free(list_pr_targets);
-
-        list_pr_afters = edje_edit_program_afters_get(source_edje,
-                              program_name);
-        EINA_LIST_FOREACH(list_pr_afters, l_pr_afters, pr_after_name)
-          {
-             if (!edje_edit_program_after_add(edje_edit_group, program_name,
-                                          pr_after_name))
-               ERR("Failed add after[%s] program[%s] to group[%s]",
-                   pr_after_name, program_name, full_name);
-          }
-        edje_edit_string_list_free(list_pr_afters);
-        script_source = edje_edit_script_program_get(source_edje,
-                              program_name);
-        if (!script_source) continue;
-        edje_edit_script_program_set(source_edje,
-                              program_name, script_source);
-     }
-  edje_edit_string_list_free(list_programs);
-
-  script_source = edje_edit_script_get(source_edje);
-  if (script_source)
-    edje_edit_script_program_set(source_edje, program_name, script_source);
+   edje_edit_group_copy(dest_edje, source_full_name, full_name);
 
   return true;
-#undef PROGRAM_COPY
-#undef STATE_COPY
-#undef PART_COPY
 }
 
 Class *
@@ -1091,6 +826,30 @@ wm_widgets_list_objects_load(Eina_Inlist *widget_list,
 }
 
 Eina_Bool
+wm_widgets_list_objects_del(Eina_Inlist *widget_list)
+{
+   Widget *widget = NULL;
+   Class *class_st = NULL;
+   Style *style = NULL;
+
+   if (!widget_list) return false;
+
+   EINA_INLIST_FOREACH(widget_list, widget)
+     {
+        EINA_INLIST_FOREACH(widget->classes, class_st)
+          {
+             EINA_INLIST_FOREACH(class_st->styles, style)
+               {
+                  evas_object_del(style->obj);
+               }
+          }
+     }
+
+   return true;
+}
+
+
+Eina_Bool
 wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
                             Evas *e,
                             const char *path)
@@ -1142,6 +901,40 @@ wm_part_by_name_find(Style *style, Eina_Stringshare *part_name)
      }
    return NULL;
 }
+
+Eina_Bool
+wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
+                       Eina_Stringshare *rel_name, Eina_Bool direct)
+{
+   Part *data = NULL;
+   Part *part = NULL;
+   Part *rel_part = NULL;
+   Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
+   if ((!style) || (!part_name) || (!rel_name)) return false;
+
+   EINA_INLIST_FOREACH(style->parts, data)
+     {
+        if (data->name == part_name) part = data;
+        else if (data->name == rel_name)
+         rel_part = data;
+        if ((part) && (rel_part)) break;
+     }
+   if ((!part) || (!rel_part)) return false;
+
+   tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
+   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
+   if (!tmp_list) return false;
+
+   style->parts = eina_inlist_remove(style->parts, tmp_list);
+   if (direct)
+      style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
+   else
+      style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
+
+   style->isModify = true;
+   return true;
+}
+
 
 #undef WM_WIDGET_NAME_GET
 #undef WM_CLASS_NAME_GET

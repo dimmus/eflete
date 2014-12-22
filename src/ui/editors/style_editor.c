@@ -373,6 +373,7 @@ _on_st_add_bt_ok(void *data,
    Evas_Object *edje_edit_obj = NULL;
    Style_Editor *style_edit = (Style_Editor *)data;
    const char *style_name = elm_entry_entry_get(POPUP.name);
+   App_Data *ap = app_data_get();
 
    GET_OBJ(style_edit->pr, edje_edit_obj);
 
@@ -411,9 +412,16 @@ _on_st_add_bt_ok(void *data,
                            _on_glit_selected, style_edit);
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
+
+   //TODO: Need refactoring after callback logic for modal window
+   //      implementation
+
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
    elm_genlist_item_show(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
 }
 
 static void
@@ -558,6 +566,7 @@ _on_bt_del(void *data,
 {
    Evas_Object *edje_edit_obj = NULL;
    const char *style_name, *tag;
+   App_Data *ap = app_data_get();
 
    Style_Editor *style_edit = (Style_Editor *)data;
    Elm_Object_Item *glit = elm_genlist_selected_item_get(style_edit->glist);
@@ -582,6 +591,10 @@ _on_bt_del(void *data,
         else
           edje_edit_style_tag_del(edje_edit_obj, style_name, tag);
      }
+
+   Part *part = ui_widget_list_selected_part_get(ui_block_widget_list_get(ap));
+   ui_property_state_unset(ui_block_property_get(ap));
+   ui_property_state_set(ui_block_property_get(ap), part);
    elm_object_item_del(glit);
 }
 
@@ -629,8 +642,7 @@ _on_viewer_exit(void *data,
 {
    Style_Editor *style_edit = (Style_Editor *)data;
 
-   project_changed();
-   evas_object_del(style_edit->mwin);
+   mw_del(style_edit->mwin);
 }
 
 static inline Evas_Object *
@@ -1056,7 +1068,7 @@ _style_item_##VALUE##_add(Evas_Object *layout, Style_Editor *style_edit) \
 }
 
 #define MIN_SP - 1.0
-#define MARGIN_MIN_SP -9999.0
+#define MARGIN_MIN_SP 0.0
 #define MAX_SP 9999.0
 #define MAX_PERCENT 100.0
 #define STEP_SP 1.0
@@ -1797,8 +1809,8 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_locked_set(ap->menu_hash, false);
-   ap->modal_editor = false;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ap->modal_editor--;
 }
 
 Evas_Object *
@@ -1897,12 +1909,12 @@ style_editor_window_add(Project *project)
    elm_box_pack_end(button_box, btn);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(style_edit->mwin);
    evas_textblock_style_free(ts);
-   ap->modal_editor = true;
+   ap->modal_editor++;
    return style_edit->mwin;
 }
 

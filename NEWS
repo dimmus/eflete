@@ -1,6 +1,38 @@
 ============
-Eflete 0.3.1
+Eflete 0.4.0
 ============
+
+Changes since 0.3.1
+-------------------
+
+Feature:
+   * Sound editor: add, remove, search sounds and tones;
+   * Image Editor: show usage list of selected image (list of groups);
+   * Image Editor: icon for unused image in gengrid;
+   * Style editor: tabs for text, format, glow & shadow and lines for edit;
+   * Wizard: new project with different number of widgets;
+   * Wizard: import edj and edc;
+   * Program editor: show animator and programs sequence;
+   * Shortcuts: different hotkeys for working with eflete, workspace, project etc;
+   * History: undo/redo;
+   * Workspace: zoom in and out with hotkeys, mouse and by using eflete main menu;
+   * Support PROXY part type;
+   * Animations of editors and modal windows;
+   * Highlight: grabbing and moving part by holding "Ctrl+Alt";
+   * Enventor Integration: Use Enventor object for 'Code' tab;
+   * Main window: add new buttons for editors to toolbar;
+   * Splash: animation for saving, loading and compiling.
+
+Fixes:
+   * Program editor: fix in.from and in.range fields;
+   * Image editor: select multiple images by pressing on CTRL;
+   * Program editor: localization fix;
+   * Property: disable mouse wheel events for spinners;
+   * Groupedit: calculate real size of groupedit;
+   * Live View: fix Live View looks incorect when there is no "version: 110";
+   * Live View: fix Live View doesn't update part names when they are changing;
+   * Groupedit: fix wrong calculation of Object Area;
+   * Workspace: 'min' and 'max' for group.
 
 Changes since 0.3.0
 -------------------

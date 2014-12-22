@@ -19,7 +19,6 @@
 
 #include "main_window.h"
 #include "wizard.h"
-#include "save_file_dialog.h"
 #include "preference.h"
 #include "style_editor.h"
 #include "image_editor.h"
@@ -29,236 +28,192 @@
 
 static int _menu_delayed_event = 0;
 
-static void
-_on_new_project(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
+int MENU_ITEMS_LIST_BASE[] = {
+   MENU_FILE_SAVE,
+   MENU_FILE_EXPORT_EDC,
+   MENU_FILE_EXPORT,
+   MENU_FILE_EXPORT_DEVELOP,
+   MENU_FILE_EXPORT_RELEASE,
+   MENU_VIEW_WORKSPACE,
+   MENU_VIEW_WORKSPACE_ZOOM_IN,
+   MENU_VIEW_WORKSPACE_ZOOM_OUT,
+   MENU_VIEW_RULERS,
+   MENU_VIEW_RULERS_SHOW,
+   MENU_VIEW_RULERS_ABS,
+   MENU_VIEW_RULERS_REL,
+   MENU_VIEW_RULERS_BOTH,
+   MENU_VIEW_WORKSPACE_OBJECT_AREA,
+   MENU_EDITORS_IMAGE,
+   MENU_EDITORS_SOUND,
+   MENU_EDITORS_COLORCLASS,
+   MENU_EDITORS_TEXT_STYLE,
 
+   MENU_NULL
+};
+
+int MENU_ITEMS_LIST_STYLE_ONLY[] = {
+   MENU_EDITORS_ANIMATOR,
+   MENU_VIEW_WORKSPACE_SEPARATE,
+   MENU_VIEW_WORKSPACE_OBJECT_AREA,
+
+   MENU_NULL
+};
+
+int MENU_ITEMS_LIST_MAIN[] = {
+   MENU_FILE,
+   MENU_VIEW,
+   /*MENU_EDIT,*/
+   MENU_EDITORS,
+   MENU_HELP,
+
+   MENU_NULL
+};
+
+static int sad_callback_data[MENU_ITEMS_COUNT];
+
+struct _Menu
+{
+   Elm_Object_Item *menu_items[MENU_ITEMS_COUNT];
+   Elm_Object_Item *toolbar_items[MENU_ITEMS_COUNT];
+
+   Evas_Object *window_menu;
+   Evas_Object *toolbar;
+};
+
+struct _menu_event
+{
+   int mid;
+};
+typedef struct _menu_event Menu_Event;
+
+static Eina_Bool
+_menu_cb(void *data __UNUSED__,
+         int type __UNUSED__,
+         void *event)
+{
+   Menu_Event *menu_event = (Menu_Event *)event;
+   App_Data *ap = app_data_get();
+
+   switch (menu_event->mid)
+     {
+      case MENU_FILE_NEW_PROJECT:
+         if (!project_close(ap)) break;
+         wizard_new_project_add(ap);
+         break;
+      case MENU_FILE_OPEN_PROJECT:
+         project_open();
+         break;
+      case MENU_FILE_IMPORT_EDJ:
+         if (!project_close(ap)) break;
+         wizard_import_edj_add(ap);
+         break;
+      case MENU_FILE_IMPORT_EDC:
+         if (!project_close(ap)) break;
+         wizard_import_edc_add(ap);
+         break;
+      case MENU_FILE_SAVE:
+         project_save();
+         break;
+      case MENU_FILE_EXPORT_EDC:
+         /* TODO: add implementation here */
+         break;
+      case MENU_FILE_EXPORT_DEVELOP:
+         project_export_develop();
+         break;
+      case MENU_FILE_CLOSE_PROJECT:
+           {
+              if (!project_close(ap)) break;
+              ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+              ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+              ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
+              ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, true);
+           }
+         break;
+      case MENU_FILE_EXIT:
+         ui_main_window_del(ap);
+         break;
+      case MENU_EDIT_PREFERENCE:
+         /* preferences_window_add(ap->project); */
+         break;
+      case MENU_VIEW_WORKSPACE_ZOOM_IN:
+           {
+              double current_factor = workspace_zoom_factor_get(ap->workspace);
+              workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
+           }
+         break;
+      case MENU_VIEW_WORKSPACE_ZOOM_OUT:
+           {
+              double current_factor = workspace_zoom_factor_get(ap->workspace);
+              workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
+           }
+         break;
+      case MENU_VIEW_WORKSPACE_SEPARATE:
+           {
+              Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
+              workspace_separate_mode_set(ap->workspace, !sep);
+           }
+         break;
+      case MENU_VIEW_RULERS_SHOW:
+         evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rulers"));
+         break;
+      case MENU_VIEW_RULERS_ABS:
+         evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs"));
+         break;
+      case MENU_VIEW_RULERS_REL:
+         evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rel"));
+         break;
+      case MENU_VIEW_RULERS_BOTH:
+         evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs&rel"));
+         break;
+      case MENU_VIEW_WORKSPACE_OBJECT_AREA:
+         evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
+         break;
+      case MENU_EDITORS_ANIMATOR:
+           {
+              if (!ap->project->current_style)
+                NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
+              else
+                animator_window_add(ap->project->current_style);
+           }
+         break;
+      case MENU_EDITORS_IMAGE:
+         image_editor_window_add(ap->project, MULTIPLE);
+         break;
+      case MENU_EDITORS_SOUND:
+         sound_editor_window_add(ap->project, SOUND_EDITOR_EDIT);
+         break;
+      case MENU_EDITORS_COLORCLASS:
+         colorclass_viewer_add(ap->project);
+         break;
+      case MENU_EDITORS_TEXT_STYLE:
+         style_editor_window_add(ap->project);
+         break;
+      case MENU_HELP_ABOUT:
+         about_window_add();
+         break;
+      default:
+         DBG("unknown menu id: %d", menu_event->mid);
+         break;
+     }
+   return ECORE_CALLBACK_DONE;
 }
 
 static void
-_on_open_project(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   project_open();
-}
-
-static void
-_on_import_edj(void *data,
+_delay_menu_cb(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   App_Data *ap = (App_Data *)data;
-   wizard_import_edj_add(ap);
+   Menu_Event *menu_event = mem_malloc(sizeof(Menu_Event));
+   menu_event->mid = * (int *)data;
+   ecore_event_add(_menu_delayed_event, menu_event, NULL, NULL);
 }
 
-static void
-_on_import_edc(void *data __UNUSED__,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
-
-}
-
-static void
-_on_save(void *data __UNUSED__,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
-{
-   project_save();
-}
-
-static void
-_on_save_as(void *data __UNUSED__,
-            Evas_Object *obj __UNUSED__,
-            void *event_info __UNUSED__)
-{
-
-}
-
-static void
-_on_export_to_edc(void *data __UNUSED__,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-
-}
-
-static void
-_on_close_project(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap;
-
-   ap = (App_Data *)data;
-   if (!ap->project) return;
-
-   pm_project_close(ap->project);
-   STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-   blocks_hide(ap);
-   ui_menu_base_disabled_set(ap->menu_hash, true);
-   ui_menu_disable_set(ap->menu_hash, _("Save project"), true);
-   ui_menu_disable_set(ap->menu_hash, _("Close project"), true);
-}
-
-static void
-_on_exit(void *data,
-         Evas_Object *obj __UNUSED__,
-         void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   ui_main_window_del(ap);
-}
-
-static void
-_on_preference(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   preferences_window_add(ap->project);
-}
-
-static void
-_on_view_separate(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   Eina_Bool sep = workspace_separate_mode_get(ap->workspace);
-   workspace_separate_mode_set(ap->workspace, !sep);
-}
-
-static void
-_on_view_zoom_in(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   double current_factor = workspace_zoom_factor_get(ap->workspace);
-   workspace_zoom_factor_set(ap->workspace, current_factor + 0.1);
-}
-
-static void
-_on_view_zoom_out(void *data,
-                  Evas_Object *obj __UNUSED__,
-                  void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   double current_factor = workspace_zoom_factor_get(ap->workspace);
-   workspace_zoom_factor_set(ap->workspace, current_factor - 0.1);
-}
-
-static void
-_on_view_rulers(void *data,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rulers"));
-}
-
-static void
-_on_view_highlight(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "highlight,visible", NULL);
-}
-
-static void
-_on_view_ruler_rel(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("rel"));
-}
-
-static void
-_on_view_ruler_abs(void *data,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs"));
-}
-
-static void
-_on_view_ruler_both(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   evas_object_smart_callback_call(ap->workspace, "ruler,toggle", strdup("abs&rel"));
-}
-
-static void
-_on_style_window(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   style_editor_window_add(ap->project);
-}
-
-static void
-_on_image_editor(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   image_editor_window_add(ap->project, MULTIPLE);
-}
-
-static void
-_on_sound_editor(void *data,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   sound_editor_window_add(ap->project, SOUND_EDITOR_SINGLE);
-}
-
-static void
-_on_ccl_editor(void *data,
-               Evas_Object *obj __UNUSED__,
-               void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   colorclass_viewer_add(ap->project);
-}
-
-static void
-_on_prog_editor(void *data __UNUSED__,
-                Evas_Object *obj __UNUSED__,
-                void *event_info __UNUSED__)
-{
-   App_Data *ap = (App_Data *)data;
-   if (!ap->project->current_style)
-     NOTIFY_WARNING(_("Please open the widget style for editing style programs!"))
-   else
-     animator_window_add(ap->project->current_style);
-}
-
-static void
-_on_about_window(void *data __UNUSED__,
-                 Evas_Object *obj __UNUSED__,
-                 void *event_info __UNUSED__)
-{
-   about_window_add();
-}
-
-Evas_Object *
+Menu *
 ui_menu_add(App_Data *ap)
 {
-   Evas_Object *menu, *toolbar;
-   Elm_Object_Item *it, *menu_it, *sub_menu;
-   Eina_Hash *menu_elms_hash = NULL;
+   Evas_Object *window_menu, *toolbar;
+   Menu *menu;
+   int i = 0;
    if (!ap)
      {
         ERR("ap is NULL");
@@ -267,59 +222,61 @@ ui_menu_add(App_Data *ap)
    if ((!ap->win) || (!ap->win_layout)) return NULL;
    _menu_delayed_event = ecore_event_type_new();
 
-   //ecore_event_handler_add(_menu_delayed_event, _menu_event_handler_cb, NULL);
-   menu = elm_win_main_menu_get(ap->win);
-   menu_elms_hash = eina_hash_string_small_new(NULL);
+   ecore_event_handler_add(_menu_delayed_event, _menu_cb, NULL);
 
-#define ITEM_MENU_ADD(menu_obj, parent_menu, icon, label, callback, data, ret) \
-   ret = elm_menu_item_add(menu_obj, parent_menu, icon, label, callback, data); \
-   eina_hash_add(menu_elms_hash, label, ret);
+   menu = mem_calloc(1, sizeof(Menu));
 
-   ITEM_MENU_ADD(menu, NULL, NULL, _("File"), NULL, NULL, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("New project"), _on_new_project, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Open project"), _on_open_project, ap, it);
-   elm_menu_item_separator_add(menu, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Import edj-file"), _on_import_edj, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Import edc-file"), _on_import_edc, ap, it);
-   elm_menu_item_separator_add(menu, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Save"), _on_save, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Save as..."), _on_save_as, ap, it);
-   elm_menu_item_separator_add(menu, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Export to edc..."), _on_export_to_edc, ap, it);
-   elm_menu_item_separator_add(menu, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Close project"), _on_close_project, ap, it);
-   elm_object_item_disabled_set(it, true);
-   elm_menu_item_separator_add(menu, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Exit"), _on_exit, ap, it);
+   /* this array is needed to pass integers as data to callback */
+   for (i = 0; i < MENU_ITEMS_COUNT; i++)
+     sad_callback_data[i] = i;
 
-   ITEM_MENU_ADD(menu, NULL, NULL, _("Edit"), NULL, NULL, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Preference"), _on_preference, ap, it);
+   window_menu = elm_win_main_menu_get(ap->win);
+   elm_object_style_set(window_menu, DEFAULT_STYLE);
 
-   ITEM_MENU_ADD(menu, NULL, NULL, _("View"), NULL, NULL, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Workspace"), NULL, NULL, sub_menu);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Zoom in"), _on_view_zoom_in, ap, it);
-   elm_object_item_disabled_set(it, true);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Zoom out"), _on_view_zoom_out, ap, it);
-   elm_object_item_disabled_set(it, true);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Separate"), _on_view_separate, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Rulers"), NULL, NULL, sub_menu);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Show/Hide rulers"), _on_view_rulers, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Absolute scale"), _on_view_ruler_abs, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Relative scale"), _on_view_ruler_rel, ap, it);
-   ITEM_MENU_ADD(menu, sub_menu, NULL, _("Both"), _on_view_ruler_both, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Show/Hide object area"), _on_view_highlight, ap, it);
 
-   ITEM_MENU_ADD(menu, NULL, NULL, _("Editors"), NULL, NULL, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Styles"), _on_style_window, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Images"), _on_image_editor, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Sounds"), _on_sound_editor, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Colorclasses"), _on_ccl_editor, ap, it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("Programs"), _on_prog_editor, ap, it);
-   elm_object_item_disabled_set(it, true);
+#define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL) \
+   menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
 
-   ITEM_MENU_ADD(menu, NULL, NULL, _("Help"), NULL, NULL, menu_it);
-   ITEM_MENU_ADD(menu, menu_it, NULL, _("About"), _on_about_window, ap, it);
+   ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, NULL, _("New project..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, NULL, _("Open project..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file..."))
+      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, NULL, _("Save"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as..."))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
+      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_CLOSE_PROJECT, NULL, _("Close project"))
+      elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Exit"))
+/* ITEM_MENU_ADD(NULL, MENU_EDIT, NULL, _("Edit"))
+      ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
+   ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"))
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_WORKSPACE, NULL, _("Workspace"))
+         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_IN, NULL, _("Zoom in"))
+         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_ZOOM_OUT, NULL, _("Zoom out"))
+         elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_WORKSPACE]);
+         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_SEPARATE, NULL, _("Separate"))
+         ITEM_MENU_ADD(MENU_VIEW_WORKSPACE, MENU_VIEW_WORKSPACE_OBJECT_AREA, NULL, _("Show/Hide object area"))
+      ITEM_MENU_ADD(MENU_VIEW, MENU_VIEW_RULERS, NULL, _("Rulers"))
+         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_SHOW, NULL, _("Show/Hide rulers"))
+         elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_VIEW_RULERS]);
+         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
+         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
+         ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
+   ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Editors"))
+      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_ANIMATOR, NULL, _("Animator"))
+      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE, NULL, _("Images"))
+      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_SOUND, NULL, _("Sound"))
+      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS, NULL, _("Colorclasses"))
+      ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_TEXT_STYLE, NULL, _("Text styles"))
+   ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
+      ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"))
 
+   elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE_IMPORT_EDC]);
 #undef ITEM_MENU_ADD
 
    toolbar = elm_toolbar_add(ap->win);
@@ -333,104 +290,59 @@ ui_menu_add(App_Data *ap)
    elm_object_part_content_set(ap->win_layout, "eflete.swallow.toolbar", toolbar);
    evas_object_show(toolbar);
 
-#define ITEM_TB_ADD(toolbar_obj, icon, label, callback, data, ret) \
-   ret = elm_toolbar_item_append(toolbar_obj, icon, label, callback, data); \
-   eina_hash_add(menu_elms_hash, label, ret);
+#define ITEM_TB_ADD(ID, ICON, LABEL) \
+   menu->toolbar_items[ID] = elm_toolbar_item_append(toolbar, ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
 
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-new_project.png", _("New project"), _on_new_project, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"), _on_open_project, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon_save.png", _("Save project"), _on_save, ap, it);
-   elm_object_item_disabled_set(it, true);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-animator.png", _("Animator"), _on_prog_editor, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-image.png", _("Image editor"), _on_image_editor, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-sound.png", _("Sound editor"), _on_sound_editor, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-color.png", _("Color class editor"), _on_ccl_editor, ap, it);
-   ITEM_TB_ADD(toolbar, EFLETE_IMG_PATH"icon-text.png", _("Textblock style editor"), _on_style_window, ap, it);
+   ITEM_TB_ADD(MENU_FILE_NEW_PROJECT, EFLETE_IMG_PATH"icon-new_project.png", _("New project"));
+   ITEM_TB_ADD(MENU_FILE_OPEN_PROJECT, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"));
+   ITEM_TB_ADD(MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save project"));
+   ITEM_TB_ADD(MENU_EDITORS_ANIMATOR, EFLETE_IMG_PATH"icon-animator.png", _("Animator"));
+   ITEM_TB_ADD(MENU_EDITORS_IMAGE, EFLETE_IMG_PATH"icon-image.png", _("Image editor"));
+   ITEM_TB_ADD(MENU_EDITORS_SOUND, EFLETE_IMG_PATH"icon-sound.png", _("Sound editor"));
+   ITEM_TB_ADD(MENU_EDITORS_COLORCLASS, EFLETE_IMG_PATH"icon-color.png", _("Color class editor"));
+   ITEM_TB_ADD(MENU_EDITORS_TEXT_STYLE, EFLETE_IMG_PATH"icon-text.png", _("Textblock style editor"));
 
 #undef ITEM_TB_ADD
-   ap->menu_hash = menu_elms_hash;
-   ui_menu_base_disabled_set(ap->menu_hash, true);
-   ui_menu_style_options_disabled_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
+   ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
+   ui_menu_disable_set(menu, MENU_FILE_CLOSE_PROJECT, true);
+
+   menu->window_menu = window_menu;
+   menu->toolbar = toolbar;
    return menu;
 }
 
 Eina_Bool
-ui_menu_disable_set(Eina_Hash *menu_hash, const char *name, Eina_Bool flag)
+ui_menu_disable_set(Menu *menu, int mid, Eina_Bool flag)
 {
-   Elm_Object_Item *item = NULL;
+   if (!menu)
+     {
+        ERR("Menu is NULL");
+        return false;
+     }
+   if ((mid <= MENU_NULL) || (mid >= MENU_ITEMS_COUNT))
+     {
+        ERR("Wrond menu item id: %d", mid);
+        return false;
+     }
+   elm_object_item_disabled_set(menu->menu_items[mid], flag);
+   elm_object_item_disabled_set(menu->toolbar_items[mid], flag);
 
-   if (!name)
-     {
-        ERR("Name is NULL");
-        return false;
-     }
-   if (!menu_hash)
-     {
-        ERR("Hash is NULL");
-        return false;
-     }
-   item = eina_hash_find(menu_hash, name);
-   if (!item)
-     {
-        WARN("Coud'nt find menu item [%s] in hash", name);
-        return false;
-     }
-   elm_object_item_disabled_set(item, flag);
-   return  elm_object_item_disabled_get(item) == flag;
+   return true;
 }
 
 Eina_Bool
-ui_menu_base_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
+ui_menu_items_list_disable_set(Menu *menu, int *list, Eina_Bool flag)
 {
-   if (!menu_hash) return false;
+   if ((!menu) || (!list)) return false;
 
    Eina_Bool result = true;
-   result &= ui_menu_disable_set(menu_hash, _("Save"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Save as..."), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Export to edc..."), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Workspace"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Separate"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Rulers"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Styles"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Images"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Sounds"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Colorclasses"), flag);
-
-   result &= ui_menu_disable_set(menu_hash, _("Save project"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Image editor"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Sound editor"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Color class editor"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Textblock style editor"), flag);
-
-   return result;
-}
-
-Eina_Bool
-ui_menu_style_options_disabled_set(Eina_Hash *menu_hash, Eina_Bool flag)
-{
-   if (!menu_hash) return false;
-
-   Eina_Bool result = true;
-   result &= ui_menu_disable_set(menu_hash, _("Programs"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Animator"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Separate"), flag);
-   result &= ui_menu_disable_set(menu_hash, _("Show/Hide object area"), flag);
-
-   return result;
-}
-
-Eina_Bool
-ui_menu_locked_set(Eina_Hash *menu_hash, Eina_Bool flag)
-{
-   if (!menu_hash) return false;
-
-   Eina_Bool result = true;
-   result = ui_menu_disable_set(menu_hash, _("File"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Edit"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("View"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Editors"), flag) && result;
-   result = ui_menu_disable_set(menu_hash, _("Help"), flag) && result;
+   int i = 0;
+   while (list[i] != 0)
+     {
+        result &= ui_menu_disable_set(menu, list[i], flag);
+        i++;
+     }
    return result;
 }

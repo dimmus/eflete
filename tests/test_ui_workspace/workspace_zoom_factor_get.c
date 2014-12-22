@@ -41,7 +41,10 @@
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
  * @step 4 create workspace object
- * @step 5 Set zoom factor equal 1.5
+ * @step 5 create style
+ * @step 6 load data into created style from edj file
+ * @step 7 set loaded object into workspace
+ * @step 8 Set zoom factor equal 1.5
  *
  * @procedure
  * @step 1 call workspace_zoom_factor_get
@@ -55,19 +58,27 @@
 EFLETE_TEST (workspace_zoom_factor_get_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    double res = -1;
    Evas_Object *parent, *workspace;
+   Style *style = NULL;
+   Evas *e = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
+   e = evas_object_evas_get(parent);
+   style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
+   wm_style_data_load(style, e, "./edj_build/workspace_zoom_factor_get.edj");
+   workspace_edit_object_set(workspace, style, "./edj_build/workspace_zoom_factor_get.edj");
    workspace_zoom_factor_set(workspace, 1.5);
    res = workspace_zoom_factor_get(workspace);
    ck_assert_msg(res == 1.5, "Failed get zoom factor");
 
+   wm_style_free(style);
+   workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

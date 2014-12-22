@@ -2,6 +2,10 @@ group { name: "elm/gengrid/item/group_index/default";
    inherit: "elm/genlist/item/group_index/default";
 }
 
+group { name: "elm/gengrid/base/default";
+   inherit: "elm/scroller/base/default";
+}
+
 group { name: "elm/gengrid/item/default/default";
    data.item: "selectraise" "on";
    data.item: "focusraise" "on";

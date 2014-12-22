@@ -49,7 +49,7 @@ _job_popup_close(void *data)
 
    evas_object_del(ap->popup);
    ap->popup = NULL;
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -99,6 +99,7 @@ _add_ok_clicked(void *data,
         state = eina_stringshare_printf("%s %.2f", str_name, atof(str_value));
         ui_states_list_state_add(glist, state);
         eina_stringshare_del(state);
+        project_changed();
      }
    ecore_job_add(_job_popup_close, ap);
 }
@@ -211,7 +212,7 @@ state_dialog_state_add(App_Data *ap)
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, ap);
    elm_object_part_content_set(ap->popup, "button2", bt_no);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_show(ap->popup);
    eina_stringshare_del(title);
    return ap->popup;
@@ -242,9 +243,10 @@ _del_ok_clicked(void *data,
      {
         ap->project->current_style->isModify = true;
         ui_states_list_selected_state_del(state_list);
+        project_changed();
      }
 
-   ui_menu_locked_set(ap->menu_hash, false);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    free(arr[0]);
    free(arr);
    ecore_job_add(_job_popup_close, data);
@@ -303,7 +305,7 @@ state_dialog_state_del(App_Data *ap)
    evas_object_smart_callback_add (bt_no, "clicked", _cancel_clicked, ap);
    elm_object_part_content_set(ap->popup, "button2", bt_no);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    evas_object_show(ap->popup);
    eina_stringshare_del(state);

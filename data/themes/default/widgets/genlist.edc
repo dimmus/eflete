@@ -972,6 +972,17 @@ group { name: "elm/genlist/item/eflete/level4/default";
 
 }
 
+group { name: "elm/genlist/item/eflete/wizard_widgetlist/default";
+    inherit:"elm/genlist/item/eflete/level4/default";
+   parts {
+      part { name: "base";
+         description { state: "default" 0.0;
+            color: 46 48 49 255;
+         }
+      }
+   }
+}
+
 group { name: "elm/genlist/item/eflete/mode/default";
    alias: "elm/genlist/item_odd/eflete/mode/default";
    data.item: "contents" "elm.swallow.modeicon elm.swallow.container";
@@ -1278,6 +1289,10 @@ group { name: "elm/genlist/item/eflete/history/default";
             inherit: "default" 0.0;
             text.text: "delete";
          }
+        description { state: "restack" 0.0;
+            inherit: "default" 0.0;
+            text.text: "restack";
+         }
       }
       part { name: "label.old";
          type: TEXT;
@@ -1312,6 +1327,10 @@ group { name: "elm/genlist/item/eflete/history/default";
             inherit: "default" 0.0;
             visible: 0;
          }
+         description { state: "restack" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
       }
       part { name: "elm.text.old";
          type: TEXT;
@@ -1337,6 +1356,10 @@ group { name: "elm/genlist/item/eflete/history/default";
                align: 1.0 0.5;
                ellipsis: -1;
             }
+         }
+         description { state: "restack" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
          }
          description { state: "add" 0.0;
             inherit: "default" 0.0;
@@ -1553,6 +1576,9 @@ group { name: "elm/genlist/item/eflete/history/default";
          source: "elm";
          action: STATE_SET "restack" 0.0;
          target: "indicator";
+         target: "label.new";
+         target: "label.old";
+         target: "elm.text.old";
       }
       program { name: "go_inactive";
          signal: "eflete,state,inactive";
@@ -2039,6 +2065,7 @@ group { name: "elm/genlist/base/eflete/dark";
             image {
                normal: "border_1.png";
                border: 1 1 1 1;
+               middle: NONE;
             }
             color: LIST_BORDER_COLOR;
          }

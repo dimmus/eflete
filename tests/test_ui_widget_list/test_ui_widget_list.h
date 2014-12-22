@@ -86,3 +86,7 @@ void ui_widget_list_title_set_test_n2(int);
 void ui_widget_list_selected_parts_get_test_p(int);
 void ui_widget_list_selected_parts_get_test_n1(int);
 void ui_widget_list_selected_parts_get_test_n2(int);
+
+void ui_widget_list_tab_activate_test_p(int);
+void ui_widget_list_tab_activate_test_n1(int);
+void ui_widget_list_tab_activate_test_n2(int);

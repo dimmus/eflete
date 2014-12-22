@@ -115,6 +115,14 @@
 
 #define TREEPAD 19
 
+group { name: "elm/genlist/base/default";
+   inherit: "elm/scroller/base/default";
+}
+
+group { name: "elm/genscroller/base/default";
+   inherit: "elm/scroller/base/default";
+}
+
 group { "elm/genlist/item/group_index/default"; nomouse; program_source: "elm";
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";

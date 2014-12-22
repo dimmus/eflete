@@ -135,6 +135,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
         ui_property_part_unset(prop);
         ui_property_style_unset(prop);
         ui_property_style_set(prop, style, app->workspace);
+        workspace_edit_object_recalc(app->workspace);
      }
 }
 
@@ -460,9 +461,9 @@ static Attribute_Diff *
 _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
-       ((!previous->part && !change->part) ||
-        (!strcmp(previous->part, change->part)) ||
-        (!change->state && change->param_type == RENAME)))
+       ((!previous->part && !change->part) || /* if this change for group. */
+        ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
+        (change->param_type == RENAME))))
      {
         switch(previous->param_type)
          {
@@ -477,6 +478,12 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
              eina_stringshare_replace(&previous->part, change->string.new);
           case STRING:
              eina_stringshare_replace(&previous->string.new, change->string.new);
+          break;
+          case FOUR:
+             previous->four.new_1 = change->four.new_1;
+             previous->four.new_2 = change->four.new_2;
+             previous->four.new_3 = change->four.new_3;
+             previous->four.new_4 = change->four.new_4;
           break;
           default:
              return change;
@@ -494,7 +501,7 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
        (previous->func_revert == change->func_revert) &&
-       ((!previous->part && !change->part) || (!strcmp(previous->part, change->part))))
+       (previous->part == change->part))
      {
         switch(previous->param_type)
          {
@@ -548,123 +555,123 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
    return (Diff *)change;
 }
 
-static Eina_Bool
-_attribute_modify_parse(va_list list, Attribute_Diff *change)
-{
-   Eina_Stringshare *string = NULL;
+#define _attribute_modify_parse(ret, list, change) \
+{ \
+   Eina_Stringshare *string = NULL; \
+ \
+   switch(change->param_type) \
+     { \
+      case ONE: \
+      case INT: \
+         change->integer.old = (int)va_arg(list, int); \
+         change->integer.new = (int)va_arg(list, int); \
+         change->diff.new = eina_stringshare_printf("%d", change->integer.new); \
+         change->diff.old = eina_stringshare_printf("%d", change->integer.old); \
+         ret = true; \
+      break; \
+      case DOUBLE: \
+         change->doubl.old = (double)va_arg(list, double); \
+         change->doubl.new = (double)va_arg(list, double); \
+         change->diff.new = eina_stringshare_printf("%.3f", change->doubl.new); \
+         change->diff.old = eina_stringshare_printf("%.3f", change->doubl.old); \
+         ret = true; \
+      break; \
+      case RENAME: \
+      case STRING: \
+         string = (char *)va_arg(list, char *); \
+         change->string.old = eina_stringshare_add(string); \
+         string = (char *)va_arg(list, char *); \
+         change->string.new = eina_stringshare_add(string); \
+         if (change->string.new) \
+           change->diff.new = eina_stringshare_add(change->string.new); \
+         else \
+           change->diff.new = eina_stringshare_add("None"); \
+         if (change->string.old) \
+           change->diff.old = eina_stringshare_add(change->string.old); \
+         else \
+           change->diff.old = eina_stringshare_add("None"); \
+         ret = true; \
+      break; \
+      case FOUR: \
+         change->four.old_1 = (int)va_arg(list, int); \
+         change->four.old_2 = (int)va_arg(list, int); \
+         change->four.old_3 = (int)va_arg(list, int); \
+         change->four.old_4 = (int)va_arg(list, int); \
+         change->four.new_1 = (int)va_arg(list, int); \
+         change->four.new_2 = (int)va_arg(list, int); \
+         change->four.new_3 = (int)va_arg(list, int); \
+         change->four.new_4 = (int)va_arg(list, int); \
+ \
+         change->diff.new = eina_stringshare_printf("%d %d %d %d", \
+                              change->four.new_1, change->four.new_2, \
+                              change->four.new_3, change->four.new_4); \
+ \
+         change->diff.old = eina_stringshare_printf("%d %d %d %d", \
+                              change->four.old_1, change->four.old_2, \
+                              change->four.old_3, change->four.old_4); \
+ \
+         ret = true; \
+      break; \
+      default: \
+         ERR("Unsupported value type."); \
+         ret = false; \
+     } \
+} \
 
-   switch(change->param_type)
-     {
-      case ONE:
-      case INT:
-         change->integer.old = (int)va_arg(list, int);
-         change->integer.new = (int)va_arg(list, int);
-         change->diff.new = eina_stringshare_printf("%d", change->integer.new);
-         change->diff.old = eina_stringshare_printf("%d", change->integer.old);
-      break;
-      case DOUBLE:
-         change->doubl.old = (double)va_arg(list, double);
-         change->doubl.new = (double)va_arg(list, double);
-         change->diff.new = eina_stringshare_printf("%.3f", change->doubl.new);
-         change->diff.old = eina_stringshare_printf("%.3f", change->doubl.old);
-      break;
-      case RENAME:
-      case STRING:
-         string = (char *)va_arg(list, char *);
-         change->string.old = eina_stringshare_add(string);
-         string = (char *)va_arg(list, char *);
-         change->string.new = eina_stringshare_add(string);
-         if (change->string.new)
-           change->diff.new = eina_stringshare_add(change->string.new);
-         else
-           change->diff.new = eina_stringshare_add("None");
-         if (change->string.old)
-           change->diff.old = eina_stringshare_add(change->string.old);
-         else
-           change->diff.old = eina_stringshare_add("None");
-      break;
-      case FOUR:
-         change->four.old_1 = (int)va_arg(list, int);
-         change->four.old_2 = (int)va_arg(list, int);
-         change->four.old_3 = (int)va_arg(list, int);
-         change->four.old_4 = (int)va_arg(list, int);
-         change->four.new_1 = (int)va_arg(list, int);
-         change->four.new_2 = (int)va_arg(list, int);
-         change->four.new_3 = (int)va_arg(list, int);
-         change->four.new_4 = (int)va_arg(list, int);
-
-         change->diff.new = eina_stringshare_printf("%d %d %d %d",
-                              change->four.new_1, change->four.new_2,
-                              change->four.new_3, change->four.new_4);
-
-         change->diff.old = eina_stringshare_printf("%d %d %d %d",
-                              change->four.old_1, change->four.old_2,
-                              change->four.old_3, change->four.old_4);
-
-      break;
-      default:
-          ERR("Unsupported value type.");
-          return false;
-     }
-
-   return true;
+#define _attribute_curd_parse(ret, list, change) \
+{ \
+   switch(change->param_type) \
+     { \
+      case STRING: \
+         change->string.old = eina_stringshare_add((char *)va_arg(list, char *)); \
+         if (change->string.old) \
+           change->diff.new = eina_stringshare_add(change->string.old); \
+         else \
+           change->diff.new = eina_stringshare_add("None"); \
+         change->diff.old = eina_stringshare_add("-"); \
+         change->func_revert = (void *)va_arg(list, void *); \
+         ret = true; \
+      break; \
+      default: \
+         ERR("Unsupported value type."); \
+         ret = false; \
+     } \
+   if (!change->func_revert) ret = false; \
 }
 
-static Eina_Bool
-_attribute_curd_parse(va_list list, Attribute_Diff *change)
-{
-   switch(change->param_type)
-     {
-      case STRING:
-         change->string.old = eina_stringshare_add((char *)va_arg(list, char *));
-         if (change->string.old)
-           change->diff.new = eina_stringshare_add(change->string.old);
-         else
-           change->diff.new = eina_stringshare_add("None");
-         change->diff.old = eina_stringshare_add("-");
-      break;
-      default:
-          ERR("Unsupported value type.");
-          return false;
-     }
-   change->func_revert = (void *)va_arg(list, void *);
-   if (!change->func_revert) return false;
-
-   return true;
-}
-
-static Eina_Bool
-_attribute_highlight_parse(va_list list, Attribute_Diff *change)
-{
-   switch(change->param_type)
-     {
-      case INT:
-         change->twice_int.old_1 = (int)va_arg(list, int);
-         change->twice_int.new_1 = (int)va_arg(list, int);
-         change->twice_int.old_2 = (int)va_arg(list, int);
-         change->twice_int.new_2 = (int)va_arg(list, int);
-         change->diff.new = eina_stringshare_printf("%d %d",
-                              change->twice_int.new_1, change->twice_int.new_2);
-         change->diff.old = eina_stringshare_printf("%d %d",
-                              change->twice_int.old_1, change->twice_int.old_2);
-      break;
-      case DOUBLE:
-         change->twice_double.old_1 = (double)va_arg(list, double);
-         change->twice_double.new_1 = (double)va_arg(list, double);
-         change->twice_double.old_2 = (double)va_arg(list, double);
-         change->twice_double.new_2 = (double)va_arg(list, double);
-         change->diff.new = eina_stringshare_printf("%.3f %.3f",
-                              change->twice_double.new_1, change->twice_double.new_2);
-         change->diff.old = eina_stringshare_printf("%.3f %.3f",
-                              change->twice_double.old_1, change->twice_double.old_2);
-      break;
-      default:
-          ERR("Unsupported value type.");
-          return false;
-     }
-   change->func_revert = (void *)va_arg(list, void *);
-   if (!change->func_revert) return false;
-   return true;
+#define _attribute_highlight_parse(ret, list, change) \
+{ \
+   switch(change->param_type) \
+     { \
+      case INT: \
+         change->twice_int.old_1 = (int)va_arg(list, int); \
+         change->twice_int.new_1 = (int)va_arg(list, int); \
+         change->twice_int.old_2 = (int)va_arg(list, int); \
+         change->twice_int.new_2 = (int)va_arg(list, int); \
+         change->diff.new = eina_stringshare_printf("%d %d", \
+                              change->twice_int.new_1, change->twice_int.new_2); \
+         change->diff.old = eina_stringshare_printf("%d %d", \
+                              change->twice_int.old_1, change->twice_int.old_2); \
+         change->func_revert = (void *)va_arg(list, void *); \
+         ret = true; \
+      break; \
+      case DOUBLE: \
+         change->twice_double.old_1 = (double)va_arg(list, double); \
+         change->twice_double.new_1 = (double)va_arg(list, double); \
+         change->twice_double.old_2 = (double)va_arg(list, double); \
+         change->twice_double.new_2 = (double)va_arg(list, double); \
+         change->diff.new = eina_stringshare_printf("%.3f %.3f", \
+                              change->twice_double.new_1, change->twice_double.new_2); \
+         change->diff.old = eina_stringshare_printf("%.3f %.3f", \
+                              change->twice_double.old_1, change->twice_double.old_2); \
+         change->func_revert = (void *)va_arg(list, void *); \
+         ret = true; \
+      break; \
+      default: \
+         ERR("Unsupported value type."); \
+         ret = false; \
+     } \
+   if (!change->func_revert) ret = false; \
 }
 
 Diff *
@@ -681,15 +688,15 @@ _attribute_change_new(va_list list)
    switch(change->diff.action_type)
      {
       case MODIFY:
-         parse = _attribute_modify_parse(list, change);
+         _attribute_modify_parse(parse, list, change);
       break;
       case DEL:
       case ADD:
-         parse = _attribute_curd_parse(list, change); /**this parse add and del actions*/
+         _attribute_curd_parse(parse, list, change); /**this parse add and del actions*/
       break;
       case HLIGHT:
-         parse = _attribute_highlight_parse(list, change);/* here parse cases like change
-                                                           align x and y in one time */
+         _attribute_highlight_parse(parse, list, change);/* here parse cases like change
+                                                            align x and y in one time */
       break;
       default:
           ERR("Unsupported action type.");

@@ -316,17 +316,13 @@ Eina_Bool
 wm_style_free(Style *style);
 
 /**
- * Copy all parms of style from one edje_edit object to another. Before call
- * this function need prepare pointer to edje edit object, which contain
- * source style. Also need pointer to edje_edit object where new style will
- * created.
+ * Copy all parms of style from one edje_edit object to new style of the same object.
  * First of all copy main params of style, like min/max size. At second copy
  * all params of states of parts in style. Also copyes programms for style.
  *
  * @param dest_edje The edje_edit object, which provide access to edj file data.
  * in this object will copy new style.
- * @param source_edje The edje_edit object, which provide access to edj file data.
- * from this object will gave params for copying.
+ * @param source_full_name The string with full name of source style.
  * @param full_name The string with full name of new style.
  * @param dest_file The string path to edj file, where will copyed new style.
  * @param style The new @Style structure object with new style
@@ -335,7 +331,7 @@ wm_style_free(Style *style);
  *
  */
 Eina_Bool
-wm_style_copy(Evas_Object *dest_edje, Evas_Object *source_edje,
+wm_style_copy(Evas_Object *dest_edje, Eina_Stringshare *source_full_name,
               Eina_Stringshare *full_name, Eina_Stringshare *dest_file,
               Style *style);
 
@@ -499,5 +495,28 @@ wm_part_type_get(Edje_Part_Type type);
  */
 Part *
 wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
-#endif /* WIDGET_MANAGER_B_H*/
 
+/**
+ * Restack Part structure position in style.
+ *
+ * @param Style The group structure.
+ * @param part_name The name of a part, that should be restacked
+ * @param rel_name The name of a relative part.
+ * @param direct If EINA_TRUE structure part with 'part_name' will restacked above
+ *               above struture Part with name 'rel_name'.'
+ *
+ * @return EINA_TRUE if successful or EINA_FALSE in otherwise.
+ *
+ * @note Input params shoud be Eina_Stringshare value, that creates with using
+ * eina_stringshare_add or eina_stringshare_printf.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
+                       Eina_Stringshare *rel_name, Eina_Bool direct);
+
+Eina_Bool
+wm_widgets_list_objects_del(Eina_Inlist *widget_list);
+
+#endif /* WIDGET_MANAGER_B_H*/

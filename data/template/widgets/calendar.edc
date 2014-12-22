@@ -421,6 +421,7 @@ group { name: "elm/calendar/base/default";
    images.image: "icon_border_remember.png" COMP;
    images.image: "outline_glow.png" COMP;
    images.image: "diagonal_stripes.png" COMP;
+   images.image: "separator_horiz.png" COMP;
    script {
       public rtl;
    }

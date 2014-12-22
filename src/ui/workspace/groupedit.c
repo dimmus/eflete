@@ -445,7 +445,12 @@ groupedit_edit_object_part_state_add(Evas_Object *obj, const char *part,
    img = edje_edit_state_image_get(sd->edit_obj, part, "default", 0.0);
    edje_edit_state_image_set(sd->edit_obj, part, state, value, img);
 
-   if (ret) evas_object_smart_changed(sd->obj);
+   if (ret)
+     {
+        evas_object_smart_changed(sd->obj);
+        history_diff_add(sd->edit_obj, STATE_TARGET, ADD, "unsued", part, state,
+                         value, "state");
+     }
    return ret;
 }
 
@@ -465,7 +470,13 @@ groupedit_edit_object_part_state_copy(Evas_Object *obj, const char *part,
    img = edje_edit_state_image_get(sd->edit_obj, part, state_from, value_from);
    edje_edit_state_image_set(sd->edit_obj, part, state_to, value_to, img);
 
-   if (ret) evas_object_smart_changed(sd->obj);
+   if (ret)
+     {
+        evas_object_smart_changed(sd->obj);
+        history_diff_add(sd->edit_obj, STATE_TARGET, ADD, "unused", part, state_to,
+                         value_to, "state");
+     }
+
    return ret;
 }
 
@@ -477,6 +488,8 @@ groupedit_edit_object_part_state_del(Evas_Object *obj, const char *part,
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if ((!part) || (!state)) return false;
 
+   history_diff_add(sd->edit_obj, STATE_TARGET, DEL, "unused", part, state, value,
+                    "state");
    ret = edje_edit_state_del(sd->edit_obj, part, state, value);
 
    evas_object_smart_changed(sd->obj);
@@ -590,6 +603,18 @@ groupedit_part_visible_set(Evas_Object *obj, const char *part, Eina_Bool visible
    return true;
 }
 
+static void
+_bg_changed(void *data,
+                Evas *evas __UNUSED__,
+                Evas_Object *o,
+                void *einfo __UNUSED__)
+{
+   int w, h;
+   Evas_Object *bg = (Evas_Object *)data;
+   evas_object_geometry_get(o, NULL, NULL, &w, &h);
+   evas_object_resize(bg, w, h);
+}
+
 Eina_Bool
 groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
 {
@@ -598,12 +623,23 @@ groupedit_bg_set(Evas_Object *obj, Evas_Object *bg)
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    if (!bg) return false;
 
+   if (!bg)
+     {
+        Evas_Object *old_bg = evas_object_image_source_get(sd->bg);
+        evas_object_event_callback_del_full(old_bg,
+                                            EVAS_CALLBACK_RESIZE,
+                                            _bg_changed, sd->bg);
+     }
+
    sd->bg = evas_object_image_filled_add(sd->e);
    sd->clipper = evas_object_rectangle_add(sd->e);
 
    evas_object_geometry_get(bg, NULL, NULL, &w, &h);
    evas_object_image_source_set(sd->bg, bg);
    evas_object_resize(sd->bg, w, h);
+   evas_object_event_callback_add(bg,
+                                  EVAS_CALLBACK_RESIZE,
+                                  _bg_changed, sd->bg);
 
    evas_object_smart_member_add(sd->bg, obj);
    evas_object_smart_member_add(sd->clipper, obj);

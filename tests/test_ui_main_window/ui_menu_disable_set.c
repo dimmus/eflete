@@ -42,13 +42,13 @@
  * @step 3 Create application data structure.
  * @step 4 Create window, which was set into (App_Data)->win
  * @step 5 Create layout, which was set into (App_Data)->win_layout
- * @step 6 Add new menu_hash
+ * @step 6 Add new menu
  *
  * @procedure
  * @step 1 Call function ui_menu_disable_set.
  * @step 2 Check returned value.
  * </td>
- * <td>Eina_Hash *menu_hash, const char *name = "Save", Eina_Bool flag = EINA_TRUE</td>
+ * <td>Menu *menu, MENU_FILE_SAVE, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_TRUE</td>
  * </tr>
  * @}
@@ -63,9 +63,9 @@ EFLETE_TEST(ui_menu_disable_set_test_p)
    app_data = app_data_get();
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
-   ui_menu_add(app_data);
+   Menu *menu = ui_menu_add(app_data);
 
-   ret = ui_menu_disable_set(app_data->menu_hash, _("Save"), EINA_TRUE);
+   ret = ui_menu_disable_set(menu, MENU_FILE_SAVE, EINA_TRUE);
    ck_assert_msg(ret == EINA_TRUE, "Failed to disable Save menu item");
 
    app_shutdown();
@@ -86,13 +86,13 @@ END_TEST
  * @step 3 Create application data structure.
  * @step 4 Create window, which was set into (App_Data)->win
  * @step 5 Create layout, which was set into (App_Data)->win_layout
- * @step 6 Add new menu_hash
+ * @step 6 Add new menu
  *
  * @procedure
  * @step 1 Call function ui_menu_disable_set.
  * @step 2 Check returned value.
  * </td>
- * <td>Eina_Hash *menu_hash, const char *name = "Test", Eina_Bool flag = EINA_TRUE</td>
+ * <td>Menu *menu, MENU_COUNT + 1, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_TRUE</td>
  * </tr>
  * @}
@@ -107,9 +107,9 @@ EFLETE_TEST(ui_menu_disable_set_test_n1)
    app_data = app_data_get();
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
-   ui_menu_add(app_data);
+   Menu *menu = ui_menu_add(app_data);
 
-   ret = ui_menu_disable_set(app_data->menu_hash, _("Test"), EINA_TRUE);
+   ret = ui_menu_disable_set(menu, MENU_ITEMS_COUNT + 1, EINA_TRUE);
    ck_assert_msg(ret == EINA_FALSE, "Unexisted menu item was disabled");
 
    app_shutdown();
@@ -130,13 +130,12 @@ END_TEST
  * @step 3 Create application data structure.
  * @step 4 Create window, which was set into (App_Data)->win
  * @step 5 Create layout, which was set into (App_Data)->win_layout
- * @step 6 Add new menu_hash
  *
  * @procedure
  * @step 1 Call function ui_menu_disable_set.
  * @step 2 Check returned value.
  * </td>
- * <td>NULL, NULL, Eina_Bool flag = EINA_TRUE</td>
+ * <td>NULL, MENU_FILE_SAVE, Eina_Bool flag = EINA_TRUE</td>
  * <td>EINA_FALSE</td>
  * </tr>
  * @}
@@ -151,13 +150,8 @@ EFLETE_TEST(ui_menu_disable_set_test_n2)
    app_data = app_data_get();
    app_data->win = elm_win_add(NULL, "eflete", ELM_WIN_BASIC);
    app_data->win_layout = elm_layout_add(app_data->win);
-   ui_menu_add(app_data);
 
-   ret = ui_menu_disable_set(NULL, _("Menu"), EINA_TRUE);
-   ck_assert_msg(ret == EINA_FALSE, "Menu item was disabled");
-   ret = ui_menu_disable_set(app_data->menu_hash, NULL, EINA_TRUE);
-   ck_assert_msg(ret == EINA_FALSE, "Menu item was disabled");
-   ret = ui_menu_disable_set(NULL, NULL, EINA_TRUE);
+   ret = ui_menu_disable_set(NULL, MENU_FILE_SAVE, EINA_TRUE);
    ck_assert_msg(ret == EINA_FALSE, "Menu item was disabled");
 
    elm_shutdown();

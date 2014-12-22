@@ -15,6 +15,8 @@ config/config.c \
 external/syntax_color.c \
 history/history.c \
 history/history_attribute.c \
+history/history_state.c \
+history/history_part.c \
 history/history_ui.c \
 ui/cursor.c \
 ui/panes.c \
@@ -22,7 +24,9 @@ ui/menu.c \
 ui/main_window.c \
 ui/connector.c \
 ui/splash.c \
+ui/wizard/wizard_common.c \
 ui/wizard/wizard_import_edj.c \
+ui/wizard/wizard_import_edc.c \
 ui/shortcuts/shortcuts.c \
 ui/container/container.c \
 ui/preference/preference.c \

@@ -159,7 +159,7 @@
 #define FILESELECTOR_ADD(FILESELECTOR, PARENT, CALLBACK, DATA) \
    FILESELECTOR = elm_fileselector_add(PARENT); \
    evas_object_size_hint_weight_set(FILESELECTOR, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   elm_fileselector_path_set(FILESELECTOR, getenv("HOME")); \
+   elm_fileselector_path_set(FILESELECTOR, profile_get()->general.projects_folder); \
    elm_fileselector_buttons_ok_cancel_set(FILESELECTOR, true); \
    elm_fileselector_expandable_set(FILESELECTOR, false); \
    elm_fileselector_mode_set(FILESELECTOR, ELM_FILESELECTOR_LIST); \

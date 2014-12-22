@@ -63,18 +63,19 @@
  */
 typedef struct _Shortcut_Module Shortcut_Module;
 
+typedef struct _Menu Menu;
+
 struct _App_Data
 {
    Evas_Object *win;
    Evas_Object *win_layout;
-   Evas_Object *main_menu;
-   Eina_Hash *menu_hash;
+   Menu *menu;
    Evas_Object *popup;
    Evas_Object *splash;
    Evas_Object *colorsel; /**< global colorselector. the one colorselector for
                             application. */
    Evas_Object *statusbar; /**< The statusbar object, which contain some items */
-   Eina_Bool modal_editor; /**< it's true if any editor is being showed */
+   int modal_editor; /**< count of open editors */
    struct {
       Evas_Object *left;
       Evas_Object *right;
@@ -98,6 +99,11 @@ struct _App_Data
    Project *project;
    History *history;
    Shortcut_Module *shortcuts; /**< Structure with data from shortcuts module */
+#ifdef HAVE_ENVENTOR
+   Evas_Object *enventor;
+   Eina_Bool enventor_mode : 1;
+#else
+#endif /* HAVE_ENVENTOR */
 };
 
 /**

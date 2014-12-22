@@ -391,6 +391,16 @@ group { name: "elm/scroller/base/eflete/workspace";
             }
          }
       }
+      part { name: "clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "elm.swallow.button";
+               relative: 1.0 1.0;
+            }
+            rel2.to: "elm.swallow.content";
+         }
+      }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -407,11 +417,11 @@ group { name: "elm/scroller/base/eflete/workspace";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            max: 25 25;
+            SET_SIZE(25, 25);
          }
          description { state: "hidden" 0.0;
             inherit: "default" 0.0;
-            max: 0 0;
+            SET_SIZE(0, 0);
          }
       }
       part { name: "elm.swallow.button";

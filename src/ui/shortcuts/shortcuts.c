@@ -19,6 +19,7 @@
 
 #include "shortcuts.h"
 #include "main_window.h"
+#include "wizard.h"
 #include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
@@ -62,6 +63,7 @@ _##FUNC##_part_add_cb(App_Data *ap) \
    Evas_Object *workspace = ap->workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(ap); \
    Style *style = workspace_edit_object_get(workspace); \
+   if (!style) return false; \
    char name[9]; \
    _random_name_generate(name, 9); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
@@ -69,7 +71,9 @@ _##FUNC##_part_add_cb(App_Data *ap) \
        ui_widget_list_part_add(widget_list, style, name); \
        style->isModify = true; \
      } \
+   history_diff_add(style->obj, PART_TARGET, ADD, name); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
+   project_changed(); \
    return true; \
 }
 
@@ -228,7 +232,9 @@ _style_delete_cb(App_Data *app)
 Eina_Bool
 _new_theme_cb(App_Data *app)
 {
-   new_theme_create(app);
+   if (!project_close(app))
+     return false;
+   wizard_new_project_add(app);
    return true;
 }
 
@@ -236,6 +242,8 @@ _new_theme_cb(App_Data *app)
 Eina_Bool
 _open_edc_cb(App_Data *app)
 {
+   if (!project_close(app))
+     return false;
    compile_dialog(app);
    return true;
 }
@@ -326,7 +334,7 @@ _image_editor_open_cb(App_Data *app)
 Eina_Bool
 _sound_editor_open_cb(App_Data *app)
 {
-   sound_editor_window_add(app->project, SOUND_EDITOR_SINGLE);
+   sound_editor_window_add(app->project, SOUND_EDITOR_EDIT);
    return true;
 }
 

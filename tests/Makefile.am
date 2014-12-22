@@ -36,8 +36,7 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test \
-preference_test
+shortcuts_test
 
 check_PROGRAMS = ${TESTS}
 
@@ -69,6 +68,7 @@ FLAGS = \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@ENVENTOR_CFLAGS@ \
 @EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
@@ -77,7 +77,8 @@ LD = $(top_builddir)/src/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
 @EWE_LIBS@ \
-@ELEMENTARY_LIBS@
+@ELEMENTARY_LIBS@ \
+@ENVENTOR_LIBS@
 
 eflete_test_SOURCES = \
 test_eflete/test_eflete.c \
@@ -144,8 +145,9 @@ widget_manager_test_LDADD = ${LD}
 
 sound_editor_test_SOURCES = \
 test_sound_editor/test_sound_editor.c \
-test_sound_editor/sound_editor_window_add.c\
-test_sound_editor/sound_editor_file_choose.c
+test_sound_editor/sound_editor_window_add.c \
+test_sound_editor/sound_editor_file_choose.c \
+test_sound_editor/sound_editor_added_sounds_free.c
 
 sound_editor_test_CFLAGS = ${FLAGS}
 sound_editor_test_LDADD = ${LD}
@@ -285,15 +287,12 @@ highlight_test_LDADD = ${LD}
 
 ui_main_window_test_SOURCES = \
 test_ui_main_window/test_ui_main_window.c \
-test_ui_main_window/new_theme_create.c \
 test_ui_main_window/register_callbacks.c \
 test_ui_main_window/ui_main_window_add.c \
 test_ui_main_window/ui_main_window_del.c \
 test_ui_main_window/ui_menu_add.c \
-test_ui_main_window/ui_menu_base_disabled_set.c \
-test_ui_main_window/ui_menu_style_options_disabled_set.c \
 test_ui_main_window/ui_menu_disable_set.c \
-test_ui_main_window/ui_menu_locked_set.c \
+test_ui_main_window/ui_menu_items_list_disable_set.c \
 test_ui_main_window/ui_panes_add.c \
 test_ui_main_window/ui_panes_hide.c \
 test_ui_main_window/ui_panes_show.c \
@@ -309,12 +308,12 @@ test_ui_main_window/code_edit_mode_switch.c
 ui_main_window_test_CFLAGS = ${FLAGS}
 ui_main_window_test_LDADD = ${LD}
 
-preference_test_SOURCES = \
-test_preference/test_preference.c \
-test_preference/preference_add.c \
-test_preference/preferences_project_autosave_update.c
-preference_test_CFLAGS = ${FLAGS}
-preference_test_LDADD = ${LD}
+#preference_test_SOURCES = \
+#test_preference/test_preference.c \
+#test_preference/preference_add.c \
+#test_preference/preferences_project_autosave_update.c
+#preference_test_CFLAGS = ${FLAGS}
+#preference_test_LDADD = ${LD}
 
 ui_signal_list_test_SOURCES = \
 test_ui_signal_list/test_ui_signal_list.c \
@@ -349,7 +348,8 @@ test_ui_widget_list/ui_widget_list_selected_part_del.c \
 test_ui_widget_list/ui_widget_list_selected_part_get.c \
 test_ui_widget_list/ui_widget_list_part_selected_set.c \
 test_ui_widget_list/ui_widget_list_selected_parts_get.c \
-test_ui_widget_list/ui_widget_list_title_set.c
+test_ui_widget_list/ui_widget_list_title_set.c \
+test_ui_widget_list/ui_widget_list_tab_activate.c
 ui_widget_list_test_CFLAGS = ${FLAGS}
 ui_widget_list_test_LDADD = ${LD}
 

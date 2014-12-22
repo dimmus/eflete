@@ -56,7 +56,7 @@
 EFLETE_TEST (workspace_edit_object_set_test_p)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Eina_Bool res = EINA_FALSE;
    Evas_Object *parent, *workspace;
    Style *style = NULL;
@@ -74,7 +74,7 @@ EFLETE_TEST (workspace_edit_object_set_test_p)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -106,7 +106,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_set_test_n)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Eina_Bool res = EINA_TRUE;
    Evas_Object *parent, *workspace;
    Style *style = NULL;
@@ -125,7 +125,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -169,7 +169,6 @@ EFLETE_TEST (workspace_edit_object_set_test_n1)
 
    wm_style_free(style);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
    elm_shutdown();
 }
 END_TEST
@@ -199,7 +198,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_set_test_n2)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Eina_Bool res = EINA_TRUE;
    Evas_Object *parent, *workspace;
 
@@ -210,7 +209,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n2)
 
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST
@@ -242,7 +241,7 @@ END_TEST
 EFLETE_TEST (workspace_edit_object_set_test_n3)
 {
    elm_init(0, 0);
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   app_init();
    Eina_Bool res = EINA_TRUE;
    Evas_Object *parent, *workspace;
    Style *style = NULL;
@@ -260,7 +259,7 @@ EFLETE_TEST (workspace_edit_object_set_test_n3)
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   app_shutdown();
    elm_shutdown();
 }
 END_TEST

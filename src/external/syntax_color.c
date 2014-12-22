@@ -470,16 +470,17 @@ macro_apply(Eina_Strbuf *strbuf, const char **src, int length, char **cur,
    else
    {
      int macro_len = macro_end - macro_begin;
+     int index = macro_len;
      char *macro = alloca(macro_len);
      strncpy(macro, macro_begin, macro_len);
 
      //Check how many "(", ")" pairs are exists
      int bracket_inside = 0;
-     while (macro_len >= 0)
+     while ((index >= 0) && (index < macro_len))
        {
-          if (macro[macro_len] == '(') bracket_inside++;
-          else if (macro[macro_len] == ')') bracket_inside--;
-          macro_len--;
+          if (macro[index] == '(') bracket_inside++;
+          else if (macro[index] == ')') bracket_inside--;
+          index--;
        }
      if (bracket_inside > 0)
        {

@@ -594,8 +594,7 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
         container_border_hide(sd->container.obj);
 
         App_Data *app = app_data_get();
-        ui_menu_disable_set(app->menu_hash, _("Separate"), true);
-
+        ui_menu_disable_set(app->menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, true);
         elm_object_item_disabled_set(items->mode_separate, true);
@@ -606,7 +605,7 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
         container_border_show(sd->container.obj);
 
         App_Data *app = app_data_get();
-        ui_menu_disable_set(app->menu_hash, _("Separate"), false);
+        ui_menu_disable_set(app->menu, MENU_VIEW_WORKSPACE_SEPARATE, false);
 
         Ws_Menu *items = &sd->menu.items;
         elm_object_item_disabled_set(items->mode_normal, false);
@@ -671,7 +670,6 @@ _highlight_changed_cb(void *data,
         old_max_h = edje_edit_state_max_h_get(sd->style->obj, part->name,
                                               part->curr_state,
                                               part->curr_state_value);
-
         edje_edit_state_max_w_set(sd->style->obj, part->name,
                                   part->curr_state, part->curr_state_value,
                                   events->w / sd->zoom.factor);
@@ -719,6 +717,7 @@ _highlight_changed_cb(void *data,
    if (!sd->style->isModify) sd->style->isModify = true;
    workspace_edit_object_recalc(ws_obj);
    evas_object_smart_callback_call(ws_obj, "part,changed", part);
+   project_changed();
 }
 
 Eina_Bool
@@ -1189,6 +1188,14 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
 
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(sd->style->obj);
+   min_h = edje_edit_group_min_h_get(sd->style->obj);
+   max_w = edje_edit_group_max_w_get(sd->style->obj);
+   max_h = edje_edit_group_max_h_get(sd->style->obj);
+   container_min_size_set(sd->container.obj, min_w, min_h);
+   container_max_size_set(sd->container.obj, max_w, max_h);
+
    evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
    evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
 
@@ -1235,6 +1242,17 @@ Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!sd->groupedit) return false;
+
+   Evas_Coord min_w, max_w, min_h, max_h;
+   min_w = edje_edit_group_min_w_get(sd->style->obj);
+   min_h = edje_edit_group_min_h_get(sd->style->obj);
+   max_w = edje_edit_group_max_w_get(sd->style->obj);
+   max_h = edje_edit_group_max_h_get(sd->style->obj);
+   container_min_size_set(sd->container.obj, min_w, min_h);
+   container_max_size_set(sd->container.obj, max_w, max_h);
+
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
@@ -1460,24 +1478,20 @@ workspace_separate_mode_set(Evas_Object *obj, Eina_Bool separate)
    if (separate)
      {
         Evas_Coord x, y, w, h;
-        evas_object_geometry_get(sd->container.obj, NULL, NULL,
+        container_container_size_get(sd->container.obj,
                                  &sd->container.prev_w,
                                  &sd->container.prev_h);
         container_border_hide(sd->container.obj);
 
         evas_object_geometry_get(sd->groupedit, &x, &y, &w, &h);
         container_padding_size_get(sd->container.obj, &xpad, &ypad, &wpad, &hpad);
-        evas_object_resize(sd->container.obj,
+        container_container_size_set(sd->container.obj,
                            w + sd->container.dx + xpad + wpad,
                            h + sd->container.dy + ypad + hpad);
-
-        /* padding compensation */
-        sd->container.prev_w -= xpad + wpad - PADDING_SIZE * 2;
-        sd->container.prev_h -= ypad + hpad - PADDING_SIZE * 2;
      }
    else
      {
-        evas_object_resize(sd->container.obj,
+        container_container_size_set(sd->container.obj,
                            sd->container.prev_w,
                            sd->container.prev_h);
         container_border_show(sd->container.obj);

@@ -166,21 +166,6 @@ _on_program_cycle(void *data,
 }
 
 static void
-_on_animator_close(void *data,
-                   Evas *e __UNUSED__,
-                   Evas_Object *obj __UNUSED__,
-                   void *event_info __UNUSED__)
-{
-   Animator *animator = (Animator*)data;
-
-   program_editor_free(animator->program_editor);
-
-   live_view_free(animator->live);
-
-   free(animator);
-}
-
-static void
 _on_animator_save(void *data,
                   Evas_Object* obj __UNUSED__,
                   void *ei __UNUSED__)
@@ -190,16 +175,36 @@ _on_animator_save(void *data,
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_signal_list_data_set(ui_block_signal_list_get(ap), style);
    edje_edit_without_source_save(style->obj, true);
-   pm_project_changed(ap->project);
+   project_changed();
 }
 
 static void
-_on_animator_cancel(void *data,
-                    Evas_Object *obj __UNUSED__,
-                    void *ei __UNUSED__)
+_on_animator_close(void *data,
+                   Evas *e __UNUSED__,
+                   Evas_Object *obj __UNUSED__,
+                   void *event_info __UNUSED__)
 {
-   Evas_Object *mwin = (Evas_Object *)data;
-   evas_object_del(mwin);
+   App_Data *ap = app_data_get();
+   Animator *animator = (Animator*)data;
+
+   /* TODO: change this after discarding changes would be possible */
+   _on_animator_save(ap, NULL, NULL);
+
+   program_editor_free(animator->program_editor);
+
+   live_view_free(animator->live);
+
+   free(animator);
+}
+
+static void
+_on_animator_ok(void *data,
+                Evas_Object *obj __UNUSED__,
+                void *ei __UNUSED__)
+{
+   Animator *animator = (Animator *)data;
+
+   mw_del(animator->mwin);
 }
 
 static void
@@ -324,6 +329,7 @@ _on_bt_mode_change(void *data,
 {
    Evas_Object *icon;
    Animator *animator = (Animator*)data;
+   if (!animator->program) return;
 
    animator->sequence_mode = !animator->sequence_mode;
 
@@ -357,8 +363,8 @@ _on_mwin_del(void * data,
              void *event_info __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
-   ui_menu_locked_set(ap->menu_hash, false);
-   ap->modal_editor = false;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ap->modal_editor--;
 }
 
 /********************* genlist callbacks **************************************/
@@ -525,7 +531,7 @@ animator_window_add(Style *style)
    animator = (Animator *)mem_calloc(1, sizeof(Animator));
 
    animator->style = style;
-   animator->mwin = mw_add(NULL, NULL);
+   animator->mwin = mw_add(_on_animator_ok, animator);
    animator->is_cycled = true;
 
    mw_title_set(animator->mwin, _("Program editor"));
@@ -657,11 +663,10 @@ animator_window_add(Style *style)
    evas_object_smart_callback_add(bt, "clicked", _on_animator_save, ap);
    elm_box_pack_end(button_box, bt);
 
-   BUTTON_ADD(button_box, bt, _("Close"));
+   BUTTON_ADD(button_box, bt, _("Ok"));
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
    evas_object_size_hint_min_set(bt, 100, 30);
-   evas_object_smart_callback_add(bt, "clicked", _on_animator_cancel,
-                                  animator->mwin);
+   evas_object_smart_callback_add(bt, "clicked", _on_animator_ok, animator);
    elm_box_pack_end(button_box, bt);
 
    elm_object_part_content_set(panes, "top", top_layout);
@@ -669,11 +674,12 @@ animator_window_add(Style *style)
    elm_object_part_content_set(window_layout, "eflete.swallow.content", panes);
    elm_object_part_content_set(window_layout, "eflete.swallow.button_box", button_box);
 
-   ui_menu_locked_set(ap->menu_hash, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    evas_object_event_callback_add(animator->mwin, EVAS_CALLBACK_DEL, _on_mwin_del, ap);
 
    evas_object_show(animator->mwin);
-   ap->modal_editor = true;
+
+   ap->modal_editor++;
    return animator->mwin;
 }
 
