@@ -814,7 +814,7 @@ _on_open_done(void *data,
 Eina_Bool
 project_close(App_Data *ap)
 {
-   if ((ap->project))
+   if (ap->project)
      {
         if (ap->project->changed)
           {
@@ -840,16 +840,9 @@ project_open(void)
    App_Data *ap;
 
    ap = app_data_get();
-   if ((ap->project))
-     {
-        if (ap->project->changed)
-          {
-             if (!project_close_request(ap, PROJECT_CLOSE_MSG))
-               return;
-          }
-        else
-          pm_project_close(ap->project);
-     }
+
+   if (!project_close(ap))
+     return;
 
    MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, NULL);
    bg = elm_bg_add(win);
@@ -1194,8 +1187,10 @@ _cancel_cb(void *data,
            Evas_Object *obj __UNUSED__,
            void *ei __UNUSED__)
 {
+   App_Data *ap = app_data_get();
    Eina_Bool *res = data;
    *res = false;
+   ap->project->close_request = false;
    ecore_main_loop_quit();
 }
 
