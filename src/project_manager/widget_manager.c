@@ -459,10 +459,8 @@ wm_class_add(const char *class_name, Eina_List *styles, Widget *parent)
         style_edje = wm_style_add(style_name, style_name_full, STYLE, class_edje);
         class_edje->styles = eina_inlist_append(class_edje->styles,
                                                 EINA_INLIST_GET(style_edje));
+        free(style_name);
      }
-
-   free(style_name_full);
-   free(style_name);
 
    return class_edje;
 }
