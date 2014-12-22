@@ -131,11 +131,11 @@ _teardown_splash(void *data, Splash_Status status)
    App_Data *app = app_data_get();
 
    if (status == SPLASH_SUCCESS)
-     mw_del(wiew->win);
-
-   STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
-   STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
-
+     {
+        mw_del(wiew->win);
+        STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
+     }
    return true;
 }
 
