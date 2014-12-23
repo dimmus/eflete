@@ -503,8 +503,6 @@ wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
  * @param Style The group structure.
  * @param part_name The name of a part, that should be restacked
  * @param rel_name The name of a relative part.
- * @param direct If EINA_TRUE structure part with 'part_name' will restacked above
- *               above struture Part with name 'rel_name'.'
  *
  * @return EINA_TRUE if successful or EINA_FALSE in otherwise.
  *
@@ -515,7 +513,7 @@ wm_part_by_name_find(Style *style, Eina_Stringshare *part_name);
  */
 Eina_Bool
 wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
-                       Eina_Stringshare *rel_name, Eina_Bool direct);
+                       Eina_Stringshare *rel_name);
 
 Eina_Bool
 wm_widgets_list_objects_del(Eina_Inlist *widget_list);

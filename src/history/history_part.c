@@ -172,8 +172,7 @@ _part_redo(Evas_Object *source, Part_Diff *change)
          ui_widget_list_style_parts_reload(widget_list, style);
       break;
       case RESTACK:
-         wm_style_parts_restack(style, change->part, change->params->above,
-                                change->params->last);
+         wm_style_parts_restack(style, change->part, change->params->above);
          above = edje_edit_part_above_get(style->obj, change->part);
          if (!above)
            {
@@ -236,8 +235,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
                                   change->params->type);
            }
          ui_widget_list_part_add(widget_list, style, change->part);
-         wm_style_parts_restack(style, change->part, change->params->above,
-                                change->params->last);
+         wm_style_parts_restack(style, change->part, change->params->above);
          workspace_edit_object_part_restack(app->workspace, change->part,
                                             change->params->above,
                                             change->params->last);
@@ -254,8 +252,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
              last = true;
            }
 
-         wm_style_parts_restack(style, change->part, change->params->above,
-                                change->params->last);
+         wm_style_parts_restack(style, change->part, change->params->above);
          workspace_edit_object_part_restack(app->workspace, change->part,
                                             change->params->above,
                                             change->params->last);

@@ -909,29 +909,31 @@ wm_part_by_name_find(Style *style, Eina_Stringshare *part_name)
 
 Eina_Bool
 wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
-                       Eina_Stringshare *rel_name, Eina_Bool direct)
+                       Eina_Stringshare *rel_name)
 {
    Part *data = NULL;
    Part *part = NULL;
    Part *rel_part = NULL;
    Eina_Inlist *tmp_list = NULL, *tmp_prev = NULL;
-   if ((!style) || (!part_name) || (!rel_name)) return false;
+   if ((!style) || (!part_name)) return false;
 
    EINA_INLIST_FOREACH(style->parts, data)
      {
         if (data->name == part_name) part = data;
         else if (data->name == rel_name)
          rel_part = data;
-        if ((part) && (rel_part)) break;
+        if (part) break;
      }
-   if ((!part) || (!rel_part)) return false;
+   if (!part) return false;
 
    tmp_list = eina_inlist_find(style->parts, EINA_INLIST_GET(part));
-   tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
    if (!tmp_list) return false;
 
+   if (rel_part)
+    tmp_prev = eina_inlist_find(style->parts, EINA_INLIST_GET(rel_part));
+
    style->parts = eina_inlist_remove(style->parts, tmp_list);
-   if (direct)
+   if (!tmp_prev)
       style->parts = eina_inlist_append_relative(style->parts, tmp_list, tmp_prev);
    else
       style->parts = eina_inlist_prepend_relative(style->parts, tmp_list, tmp_prev);
