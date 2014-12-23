@@ -238,14 +238,14 @@ ui_menu_add(App_Data *ap)
    menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
 
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, NULL, _("New project..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, NULL, _("Open project..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, NULL, _("New project"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, NULL, _("Open project"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, NULL, _("Save"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
