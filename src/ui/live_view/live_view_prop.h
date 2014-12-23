@@ -50,6 +50,17 @@ Evas_Object *
 live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit);
 
 /**
+ * Free all data associated to 'property' widget.
+ *
+ * @param property The 'live view property' widget.
+ * @return @c EINA_TRUE - succesfull, EINA_FALSE - otherwise.
+ *
+ * @ingroup Live_View_Property
+ */
+Eina_Bool
+live_view_property_free(Evas_Object *property);
+
+/**
  * Set new style's property to Live View Property widget.
  *
  * @param property Live View Property widget.
