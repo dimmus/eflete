@@ -563,11 +563,13 @@ _on_image_done(void *data,
                void *event_info __UNUSED__)
 {
    Item *it = NULL;
+   Elm_Object_Item *item = NULL;
    Evas_Object *edje_edit_obj = NULL;
    const Eina_List *images, *l;
    const char *selected;
 
    Image_Editor *img_edit = (Image_Editor *)data;
+   elm_gengrid_multi_select_set(img_edit->gengrid, false);
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
    images = elm_fileselector_selected_paths_get(obj);
@@ -589,9 +591,12 @@ _on_image_done(void *data,
              edje_edit_without_source_save(edje_edit_obj, true);
              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
                                                          ecore_file_file_get(selected));
-             elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+             item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
+             elm_gengrid_item_selected_set(item, true);
+             if (!elm_gengrid_multi_select_get(img_edit->gengrid))
+               elm_gengrid_multi_select_set(img_edit->gengrid, true);
           }
      }
 
