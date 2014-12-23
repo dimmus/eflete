@@ -87,7 +87,9 @@ PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 
-/* this one will delete part or style or layout or state */
+/* this one will delete part or style or layout or state.
+   TODO: move this code or some of it's part to Connector,
+ */
 Eina_Bool
 _item_delete_cb(App_Data *app)
 {
@@ -100,14 +102,13 @@ _item_delete_cb(App_Data *app)
    if ((nf) && (elm_object_focus_get(nf)))
      {
         selected = ewe_tabs_active_item_get(nf);
-        /* try to delete part */
-        evas_object_smart_callback_call(nf, "wl,part,del", NULL);
         /* try to delete layout */
         if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
             ((!app->project->current_style) ||
              (app->project->current_style->__type != LAYOUT)))
           {
              evas_object_smart_callback_call(app->block.left_top, "wl,layout,del", nf);
+             return true;
           }
         /* try to delete style */
         else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
@@ -122,7 +123,10 @@ _item_delete_cb(App_Data *app)
                {
                   _style = elm_object_item_data_get(glit);
                   if (_style->__type != WIDGET)
-                    evas_object_smart_callback_call(app->block.left_top, "wl,style,del", NULL);
+                    {
+                       evas_object_smart_callback_call(app->block.left_top, "wl,style,del", NULL);
+                       return true;
+                    }
                }
           }
      }
@@ -130,7 +134,13 @@ _item_delete_cb(App_Data *app)
    /* if state list is in focus */
    nf = ui_block_state_list_get(app);
    if ((nf) && (elm_object_focus_get(nf)))
-     evas_object_smart_callback_call(nf, "stl,state,del", NULL);
+     {
+        evas_object_smart_callback_call(nf, "stl,state,del", NULL);
+        return true;
+     }
+
+   /* try to delete part */
+   evas_object_smart_callback_call(ui_block_widget_list_get(app), "wl,part,del", NULL);
 
    return true;
 }
