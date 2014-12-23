@@ -30,10 +30,10 @@ static int _menu_delayed_event = 0;
 
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
-   MENU_FILE_EXPORT_EDC,
+/* MENU_FILE_EXPORT_EDC,*/ /*TODO enable after implementation */
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
-   MENU_FILE_EXPORT_RELEASE,
+/* MENU_FILE_EXPORT_RELEASE,*/
    MENU_VIEW_WORKSPACE,
    MENU_VIEW_WORKSPACE_ZOOM_IN,
    MENU_VIEW_WORKSPACE_ZOOM_OUT,
@@ -307,6 +307,10 @@ ui_menu_add(App_Data *ap)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    ui_menu_disable_set(menu, MENU_FILE_CLOSE_PROJECT, true);
+
+   /*TODO remove both lines after implementation this features*/
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC, true);
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
 
    menu->window_menu = window_menu;
    menu->toolbar = toolbar;
