@@ -357,7 +357,7 @@ _add_layout_cb(void *data,
    for (i = 0; i < 999; i++)
      {
         name = eina_stringshare_printf("new/layout/%d", i);
-        if (!edje_mmap_group_exists(ap->project->mmap_file, name))
+        if (!edje_edit_group_exist(group_obj, name))
           {
              nameExist = false;
              break;
@@ -381,6 +381,7 @@ _add_layout_cb(void *data,
      }
 
    edje_edit_without_source_save(group_obj, false);
+   project_changed();
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
@@ -390,7 +391,6 @@ _add_layout_cb(void *data,
                       ap->project->mmap_file);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
-   project_changed();
    return;
 }
 
