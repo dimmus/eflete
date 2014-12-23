@@ -31,9 +31,10 @@ _on_cancel(void *data,
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
-
+   App_Data *ap = app_data_get();
    mw_del(wiew->win);
    free(wiew);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 void
@@ -268,6 +269,7 @@ _on_apply(void *data,
                              _teardown_splash, _cancel_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void

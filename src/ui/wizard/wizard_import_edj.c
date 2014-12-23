@@ -55,6 +55,7 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    wiew = wizard_import_common_add("elm/layout/wizard/import_edj");
    if (!wiew) return NULL;
 
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edj"));
    wiew->splash_setup_func = _setup_splash;
    project_path_item_add(wiew, _("Path to edj file:"), _on_edj_bt);
