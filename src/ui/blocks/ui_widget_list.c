@@ -396,6 +396,7 @@ _on_style_clicked_double(void *data,
    Part *_part;
    Evas_Object *button = NULL;
    Evas_Object *_icon = NULL;
+   Eina_List *naviframe_items = NULL;
 
    nf = evas_object_data_get(obj, NAVIFRAME_DATA_KEY);
    tabs = evas_object_data_get(nf, TABS_DATA_KEY);
@@ -405,10 +406,19 @@ _on_style_clicked_double(void *data,
 
    if ((_style->__type != STYLE) && (_style->__type != LAYOUT)) return;
 
-   if ((nf == nf_widgets) && (eina_list_count(elm_naviframe_items_get(nf_layouts)) == 2))
-      _navi_gl_parts_pop(nf_layouts, NULL, NULL);
-   else if ((nf == nf_layouts) && (eina_list_count(elm_naviframe_items_get(nf_widgets)) == 3))
-      _navi_gl_parts_pop(nf_widgets, NULL, NULL);
+   if (nf == nf_widgets)
+     {
+        naviframe_items = elm_naviframe_items_get(nf_layouts);
+        if (eina_list_count(naviframe_items) == 2)
+          _navi_gl_parts_pop(nf_layouts, NULL, NULL);
+     }
+   else if (nf == nf_layouts)
+     {
+        naviframe_items = elm_naviframe_items_get(nf_widgets);
+        if (eina_list_count(naviframe_items) == 3)
+          _navi_gl_parts_pop(nf_widgets, NULL, NULL);
+     }
+   eina_list_free(naviframe_items);
 
    clicked_style = _style;
    if (_style->isAlias)
