@@ -1325,6 +1325,8 @@ _target_item_add(Program_Editor *prog_edit, const char *name)
      ewe_combobox_item_add(combobox, target_name);
    ewe_combobox_text_set(combobox, name);
 
+   edje_edit_string_list_free(posible_targets_list);
+
    evas_object_data_set(combobox, TARGET_NAME_KEY, name);
    evas_object_data_set(combobox, DEL_BUTTON_KEY, button);
    evas_object_data_set(button, TARGET_NAME_KEY, name);

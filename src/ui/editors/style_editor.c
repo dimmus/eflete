@@ -849,12 +849,14 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
 {
    Evas_Object *edje_edit_obj = NULL;
    Eina_Strbuf *tag = eina_strbuf_new();
+   char *stolen_buf;
    char *token;
    int i = 0, k = 0, exist = 0, style_length = 0;
 
    eina_strbuf_append(tag, CURRENT.stvalue);
    GET_OBJ(style_edit->pr, edje_edit_obj);
-   token = strtok(eina_strbuf_string_steal(tag), " =+");
+   stolen_buf = eina_strbuf_string_steal(tag);
+   token = strtok(stolen_buf, " =+");
    while (token)
      {
         if ((i + 1) % 2 != 0)
@@ -874,9 +876,10 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
           {
              style_table[exist][1] = eina_stringshare_add(token);
           }
-        token= strtok(0, " =+");
+        token= strtok(NULL, " =+");
         i++;
      }
+   free(stolen_buf);
    if (!strcmp(text, "password"))
      _entry_repch_update(style_edit, !strcmp(value, "on"));
 
