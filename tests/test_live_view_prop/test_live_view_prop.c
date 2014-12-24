@@ -26,6 +26,9 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, live_view_property_add_test_p);
    tcase_add_test(tcase, live_view_property_add_test_n);
 
+   tcase_add_test(tcase, live_view_property_free_test_p);
+   tcase_add_test(tcase, live_view_property_free_test_n);
+
    tcase_add_test(tcase, live_view_property_style_set_test_p);
    tcase_add_test(tcase, live_view_property_style_set_test_n1);
    tcase_add_test(tcase, live_view_property_style_set_test_n2);

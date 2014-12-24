@@ -246,7 +246,11 @@ live_view_theme_update(Live_View *live, Project *project)
 Eina_Bool
 live_view_free(Live_View *live)
 {
-   if (live) live_view_widget_style_unset(live);
+   if (live)
+     {
+        live_view_widget_style_unset(live);
+        live_view_property_free(live->property);
+     }
    else return false;
 
    free(live);

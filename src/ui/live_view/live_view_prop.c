@@ -324,6 +324,19 @@ live_view_property_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 }
 
 Eina_Bool
+live_view_property_free(Evas_Object *property)
+{
+   if (!property)
+     return false;
+
+   Prop_Data *pd = evas_object_data_get(property, PROP_DATA);
+   free(pd);
+   evas_object_del(property);
+
+   return true;
+}
+
+Eina_Bool
 live_view_property_style_unset(Evas_Object *property)
 {
    Evas_Object *prop_box, *item = NULL, *check = NULL, *button = NULL;
