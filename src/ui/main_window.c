@@ -54,6 +54,8 @@ ui_main_window_del(App_Data *ap)
 
    free(ap->menu);
    ap->menu = NULL;
+   cursor_main_free();
+
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
    /* FIXME: remove it from here */
