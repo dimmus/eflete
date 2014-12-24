@@ -35,6 +35,7 @@ struct _Shortcut_Module
                                                         shortcuts */
    Eina_Hash *shortcut_functions; /**< list of user's shortcuts */
    Eina_List *holded_functions; /**< list of functions that is being held */
+   Eina_List *keys;             /* list of pointer to hash keys to be freed */
 };
 
 static void
@@ -662,6 +663,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
              free(key);
              return false;
           }
+        ap->shortcuts->keys = eina_list_append(ap->shortcuts->keys, key);
      }
 
    return true;
@@ -692,11 +694,18 @@ shortcuts_shutdown(App_Data *ap)
    if ((!_sc_functions) || (!ap) || (!ap->shortcuts))
      return false;
 
-   free(ap->shortcuts);
-   ap->shortcuts = NULL;
+   Key_Pair *key;
+
+   shortcuts_main_del(ap);
 
    eina_hash_free(_sc_functions);
    _sc_functions = NULL;
+
+   EINA_LIST_FREE(ap->shortcuts->keys, key)
+     free(key);
+
+   free(ap->shortcuts);
+   ap->shortcuts = NULL;
 
    return true;
 }
