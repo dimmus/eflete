@@ -49,6 +49,7 @@ struct _Prop_Data
    Evas_Object *code;
 #ifndef HAVE_ENVENTOR
    color_data *color_data;
+   Eina_Strbuf *strbuf;
 #endif
    struct {
       Evas_Object *frame;
@@ -279,6 +280,7 @@ _del_prop_data(void *data,
    Prop_Data *pd = (Prop_Data *)data;
 #ifndef HAVE_ENVENTOR
    color_term(pd->color_data);
+   eina_strbuf_free(pd->strbuf);
 #endif
    free(pd);
 }
@@ -408,7 +410,8 @@ ui_property_add(Evas_Object *parent)
    evas_object_size_hint_align_set(pd->code, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_scrollable_set(pd->code, true);
    elm_entry_editable_set(pd->code, false);
-   pd->color_data = color_init(eina_strbuf_new());
+   pd->strbuf = eina_strbuf_new();
+   pd->color_data = color_init(pd->strbuf);
    ewe_tabs_item_content_set(tabs, it, pd->code);
 #endif
 
