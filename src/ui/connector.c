@@ -762,10 +762,12 @@ _eflete_filter(const char *path,
 }
 
 static void
-_fs_close(void *data __UNUSED__,
+_fs_close(void *data,
           Evas_Object *obj,
           void *event_info __UNUSED__)
 {
+   App_Data *ap = (App_Data *)data;
+   ap->modal_editor--;
    evas_object_del(obj);
 }
 
@@ -776,18 +778,17 @@ _on_open_done(void *data,
 {
    Evas_Object *win;
    const char *selected;
-   App_Data *ap;
+   App_Data *ap = app_data_get();
 
    win = (Evas_Object *)data;
    selected = (const char *)event_info;
 
    if (!selected)
      {
-        _fs_close(NULL, win, NULL);
+        _fs_close(ap, win, NULL);
         return;
      }
 
-   ap = app_data_get();
    ap->project = pm_project_open(selected);
    if (!ap->project) return;
 
@@ -800,6 +801,7 @@ _on_open_done(void *data,
    blocks_show(ap);
 
    evas_object_del(win);
+   ap->modal_editor--;
    NOTIFY_INFO(3, _("Project '%s' is opened."), ap->project->name);
    STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
    STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
@@ -842,7 +844,8 @@ project_open(void)
    if (!project_close(ap))
      return;
 
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, NULL);
+   ap->modal_editor++;
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, ap);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
@@ -1148,8 +1151,10 @@ void
 project_export_develop(void)
 {
    Evas_Object *win, *bg, *fs;
+   App_Data *ap = app_data_get();
 
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edj file (develop)"), _fs_close, NULL);
+   ap->modal_editor++;
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edj file (develop)"), _fs_close, ap);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
