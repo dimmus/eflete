@@ -859,6 +859,55 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
   return true;
 }
 
+static Eina_Bool
+_sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
+                        Eina_Stringshare *source, Evas_Object *edje_edit)
+{
+  Eina_Stringshare *sound_name, *source_file, *dest_file;
+  Eina_List *l;
+  Eina_Binbuf *sound_bin;
+  FILE *f;
+
+  if (sounds)
+    {
+       if (!ecore_file_mkpath(destination))
+         {
+            ERR("Failed create path %s for export sounds", destination);
+            return false;
+         }
+    }
+  else return false;
+  EINA_LIST_FOREACH(sounds, l, sound_name)
+    {
+       source_file = eina_stringshare_printf("%s/%s", source,
+                                             ecore_file_file_get(sound_name));
+       dest_file = eina_stringshare_printf("%s/%s", destination, sound_name);
+       ecore_file_mkpath(ecore_file_dir_get(dest_file));
+       if ((source) && (ecore_file_exists(source_file)))
+         {
+            ecore_file_cp(source_file, dest_file);
+         }
+       else
+         {
+            sound_bin = edje_edit_sound_samplebuffer_get(edje_edit, sound_name);
+            if (!(f = fopen(dest_file, "wb")))
+              {
+                 ERR("Could not open file: %s", dest_file);
+                 continue;
+              }
+            if (fwrite(eina_binbuf_string_get(sound_bin),
+                       eina_binbuf_length_get(sound_bin), 1, f) != 1)
+              ERR("Could not write font: %s", strerror(errno));
+            if (f) fclose(f);
+            eina_binbuf_free(sound_bin);
+         }
+       eina_stringshare_del(source_file);
+       eina_stringshare_del(dest_file);
+    }
+
+  return true;
+}
+
 Eina_Bool
 pm_style_resource_export(Project *pro ,
                          Style *style,
@@ -944,13 +993,12 @@ pm_project_resource_export(Project *pro)
    Eina_List *list, *l;
    Evas_Object *edje_edit_obj;
    Evas *e;
-   const char *name, *snd_name;
+   const char *name;;
    Eina_Strbuf *strbuf;
    int size;
    void *data;
    Eet_File *ef;
    FILE *f;
-   Eina_Binbuf *buf;
    Eina_Stringshare *dest;
 
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
@@ -998,26 +1046,13 @@ pm_project_resource_export(Project *pro)
 
    /* export sounds */
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
-   EINA_LIST_FOREACH(list, l, name)
-     {
-        snd_name = edje_edit_sound_samplesource_get(edje_edit_obj, name);
-        buf = edje_edit_sound_samplebuffer_get(edje_edit_obj, name);
-        eina_strbuf_append_printf(strbuf, "%s/sounds/%s", pro->develop_path, snd_name);
-        if (!(f = fopen(eina_strbuf_string_get(strbuf), "wb")))
-          {
-             ERR("Could not open file: %s", eina_strbuf_string_get(strbuf));
-             continue;
-          }
-        eina_strbuf_reset(strbuf);
-        if (fwrite(eina_binbuf_string_get(buf), eina_binbuf_length_get(buf), 1, f) != 1)
-          ERR("Could not write font: %s", strerror(errno));
-        if (f) fclose(f);
-        eina_binbuf_free(buf);
-     }
+   dest = eina_stringshare_printf("%s/sounds", pro->develop_path);
+   _sound_resources_export(list, dest, NULL, edje_edit_obj);
    edje_edit_string_list_free(list);
+   eina_stringshare_del(dest);
 
-   eina_strbuf_free(strbuf);
    ecore_evas_free(ee);
+   eina_strbuf_free(strbuf);
 
    return true;
 }
