@@ -909,6 +909,61 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
   return true;
 }
 
+static Eina_Bool
+_font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
+                        Eina_Stringshare *source, Eina_Stringshare *dev,
+                        Evas_Object *edje_edit)
+{
+  Eet_File *ef;
+  Eina_List *l;
+  Eina_Stringshare *font_name, *source_file, *dest_file, *font_file;
+  void *font;
+  FILE *f;
+  int size;
+
+  if (fonts)
+    {
+       if (!ecore_file_mkpath(destination))
+         {
+            ERR("Failed create path %s for export fonts", destination);
+            return false;
+         }
+       ef = eet_open(dev, EET_FILE_MODE_READ);
+    }
+  else return false;
+  EINA_LIST_FOREACH(fonts, l, font_name)
+    {
+       font_file = edje_edit_font_path_get(edje_edit, font_name);
+       source_file = eina_stringshare_printf("%s/%s", source, font_file);
+       dest_file = eina_stringshare_printf("%s/%s", destination, font_file);
+       edje_edit_string_free(font_file);
+       if ((source) && (ecore_file_exists(source_file)))
+         {
+            ecore_file_cp(source_file, dest_file);
+         }
+       else
+         {
+             font_file = eina_stringshare_printf("edje/fonts/%s", font_name);
+             font = eet_read(ef, font_file, &size);
+             if (!font) continue;
+             if (!(f = fopen(dest_file, "wb")))
+               {
+                  ERR("Could not open file: %s", dest_file);
+                  continue;
+               }
+             if (fwrite(font, size, 1, f) != 1)
+               ERR("Could not write font: %s", strerror(errno));
+             if (f) fclose(f);
+             free(font);
+             eina_stringshare_del(font_file);
+         }
+       eina_stringshare_del(source_file);
+       eina_stringshare_del(dest_file);
+    }
+  eet_close(ef);
+  return true;
+}
+
 Eina_Bool
 pm_style_resource_export(Project *pro ,
                          Style *style,
@@ -1021,15 +1076,9 @@ error:
 Eina_Bool
 pm_project_resource_export(Project *pro)
 {
-   Eina_List *list, *l;
+   Eina_List *list;
    Evas_Object *edje_edit_obj;
    Evas *e;
-   const char *name;;
-   Eina_Strbuf *strbuf;
-   int size;
-   void *data;
-   Eet_File *ef;
-   FILE *f;
    Eina_Stringshare *dest;
 
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
@@ -1042,7 +1091,6 @@ pm_project_resource_export(Project *pro)
         return false;
      }
    edje_edit_string_list_free(list);
-   strbuf = eina_strbuf_new();
 
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
@@ -1053,27 +1101,10 @@ pm_project_resource_export(Project *pro)
 
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
-   ef = eet_open(pro->dev, EET_FILE_MODE_READ);
-   EINA_LIST_FOREACH(list, l, name)
-     {
-        eina_strbuf_append_printf(strbuf, "edje/fonts/%s", name);
-        data = eet_read(ef, eina_strbuf_string_get(strbuf), &size);
-        eina_strbuf_reset(strbuf);
-        if (!data) continue;
-        eina_strbuf_append_printf(strbuf, "%s/fonts/%s.ttf", pro->develop_path, name);
-        if (!(f = fopen(eina_strbuf_string_get(strbuf), "wb")))
-          {
-             ERR("Could not open file: %s", eina_strbuf_string_get(strbuf));
-             continue;
-          }
-        eina_strbuf_reset(strbuf);
-        if (fwrite(data, size, 1, f) != 1)
-          ERR("Could not write font: %s", strerror(errno));
-        if (f) fclose(f);
-        free(data);
-     }
-   eet_close(ef);
+   dest = eina_stringshare_printf("%s/fonts", pro->develop_path);
+   _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
+   eina_stringshare_del(dest);
 
    /* export sounds */
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
@@ -1083,7 +1114,6 @@ pm_project_resource_export(Project *pro)
    eina_stringshare_del(dest);
 
    ecore_evas_free(ee);
-   eina_strbuf_free(strbuf);
 
    return true;
 }
