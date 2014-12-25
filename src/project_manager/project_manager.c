@@ -805,11 +805,65 @@ pm_project_meta_data_set(Project *project,
 }
 
 Eina_Bool
-pm_style_resource_export(Project *pro __UNUSED__,
-                         Style *style __UNUSED__,
+pm_style_resource_export(Project *pro ,
+                         Style *style,
                          Eina_Stringshare *path __UNUSED__)
 {
-   return false;
+   Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
+
+   Eina_List *images = NULL;
+
+   const char *data_name, *state_name, *data;
+   const char *state = NULL; double value = 0; char **state_split;
+   Edje_Part_Type part_type = EDJE_PART_TYPE_NONE;
+
+   if ((!pro) || (!style) || (!style->obj) || (!path)) return false;
+
+   /* Collect lists with info needed resources */
+   parts = edje_edit_parts_list_get(style->obj);
+   EINA_LIST_FOREACH_SAFE(parts, l, l_next, data_name)
+     {
+        part_type = edje_edit_part_type_get(style->obj, data_name);
+        switch (part_type)
+          {
+           case EDJE_PART_TYPE_IMAGE:
+              state_list = edje_edit_part_states_list_get(style->obj, data_name);
+              EINA_LIST_FOREACH(state_list, l_states, state_name)
+                {
+                  state_split = eina_str_split(state_name, " ", 2);
+                  state = eina_stringshare_add(state_split[0]);
+                  value = atof(state_split[1]);
+                  free(state_split[0]);
+                  free(state_split);
+
+                  data = edje_edit_state_image_get(style->obj, data_name,
+                                                   state, value);
+                  if ((data) && (!eina_list_data_find(images, data)))
+                    images = eina_list_append(images, eina_stringshare_add(data));
+                  edje_edit_string_free(data);
+
+                  tween_list = edje_edit_state_tweens_list_get(style->obj,
+                                                               data_name,
+                                                               state, value);
+                  EINA_LIST_FOREACH(tween_list, l_tween, data)
+                    {
+                       if (!eina_list_data_find(images, data))
+                         images = eina_list_append(images, eina_stringshare_add(data));
+                    }
+                  edje_edit_string_list_free(tween_list);
+                }
+              edje_edit_string_list_free(state_list);
+           break;
+           default:
+           break;
+          }
+     }
+   edje_edit_string_list_free(parts);
+
+   EINA_LIST_FREE(images, data)
+     eina_stringshare_del(data);
+
+   return true;
 }
 
 Eina_Bool
