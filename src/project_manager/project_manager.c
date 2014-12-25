@@ -804,6 +804,61 @@ pm_project_meta_data_set(Project *project,
    return res;
 }
 
+static Eina_Bool
+_image_resources_export(Eina_List *images, Eina_Stringshare *destination,
+                        Eina_Stringshare *source, Eina_Stringshare *dev,
+                        Evas_Object *edje_edit)
+{
+  Eina_Stringshare *image_name, *source_file, *dest_file;
+  Eina_List *l;
+  Ecore_Evas *ee;
+  Evas *e;
+  Evas_Object *im;
+  int id;
+
+  if (images)
+    {
+       if (!ecore_file_mkpath(destination))
+         {
+            ERR("Failed create path %s for export images", destination);
+            return false;
+         }
+       ee = ecore_evas_buffer_new(0, 0);
+       e = ecore_evas_get(ee);
+    }
+  else return false;
+  EINA_LIST_FOREACH(images, l, image_name)
+    {
+       source_file = eina_stringshare_printf("%s/%s", source,
+                                             ecore_file_file_get(image_name));
+       dest_file = eina_stringshare_printf("%s/%s", destination, image_name);
+       ecore_file_mkpath(ecore_file_dir_get(dest_file));
+       if ((source) && (ecore_file_exists(source_file)))
+         {
+            ecore_file_cp(source_file, dest_file);
+         }
+       else
+         {
+            im = evas_object_image_add(e);
+            id = edje_edit_image_id_get(edje_edit, image_name);
+            if (id < 0)
+              {
+                 WARN("Image %s coudn't be exported", image_name);
+                 continue;
+              }
+            source_file = eina_stringshare_printf("edje/images/%i", id);
+            evas_object_image_file_set(im, dev, source_file);
+            evas_object_image_save(im, dest_file, NULL, NULL);
+            evas_object_del(im);
+         }
+       eina_stringshare_del(source_file);
+       eina_stringshare_del(dest_file);
+    }
+  ecore_evas_free(ee);
+
+  return true;
+}
+
 Eina_Bool
 pm_style_resource_export(Project *pro ,
                          Style *style,
@@ -873,13 +928,13 @@ pm_project_resource_export(Project *pro)
    Evas_Object *edje_edit_obj;
    Evas *e;
    const char *name, *snd_name;
-   Evas_Object *im;
    Eina_Strbuf *strbuf;
-   int id, size;
+   int size;
    void *data;
    Eet_File *ef;
    FILE *f;
    Eina_Binbuf *buf;
+   Eina_Stringshare *dest;
 
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
@@ -895,19 +950,10 @@ pm_project_resource_export(Project *pro)
 
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
-   EINA_LIST_FOREACH(list, l, name)
-     {
-        im = evas_object_image_add(evas_object_evas_get(edje_edit_obj));
-        id = edje_edit_image_id_get(edje_edit_obj, name);
-        eina_strbuf_append_printf(strbuf, "edje/images/%i", id);
-        evas_object_image_file_set(im, pro->dev, eina_strbuf_string_get(strbuf));
-        eina_strbuf_reset(strbuf);
-        eina_strbuf_append_printf(strbuf, "%s/images/%s", pro->develop_path, name);
-        evas_object_image_save(im, eina_strbuf_string_get(strbuf), NULL, NULL);
-        eina_strbuf_reset(strbuf);
-        evas_object_del(im);
-     }
+   dest = eina_stringshare_printf("%s/images", pro->develop_path);
+   _image_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
+   eina_stringshare_del(dest);
 
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
