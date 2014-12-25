@@ -1,5 +1,7 @@
 data.item: "version" "110";
-
+fonts {
+   font: "PTS55F.ttf" "PT";
+}
 collections {
    sounds {
       sample {
@@ -124,7 +126,7 @@ group { name: "elm/radio/base/def";
             }
             color: 0 0 0 255;
             text {
-               font: "Sans,Edje-Vera";
+               font: "PT";
                size: 15;
                min: 0 0;
                align: -1.0 0.5;
@@ -220,6 +222,10 @@ group { name: "elm/radio/base/def";
          action: STATE_SET "disabled" 0.0;
          target: "disabler";
          after: "disable_text";
+         after: "play";
+      }
+      program { name: "play";
+         action: PLAY_SAMPLE "key-tap" 1.0;
       }
       program { name: "disable_text";
          script {

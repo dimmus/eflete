@@ -194,7 +194,8 @@ test_project_manager/pm_project_open.c \
 test_project_manager/pm_project_save.c \
 test_project_manager/pm_project_close.c \
 test_project_manager/pm_project_meta_data_set.c \
-test_project_manager/pm_project_meta_data_get.c
+test_project_manager/pm_project_meta_data_get.c \
+test_project_manager/pm_style_resource_export.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
