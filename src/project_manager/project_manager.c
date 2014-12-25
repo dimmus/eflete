@@ -868,6 +868,7 @@ pm_style_resource_export(Project *pro ,
 
    Eina_List *images = NULL;
 
+   Eina_Stringshare *dest, *source;
    const char *data_name, *state_name, *data;
    const char *state = NULL; double value = 0; char **state_split;
    Edje_Part_Type part_type = EDJE_PART_TYPE_NONE;
@@ -915,10 +916,26 @@ pm_style_resource_export(Project *pro ,
      }
    edje_edit_string_list_free(parts);
 
+   source = eina_stringshare_printf("%s/images", pro->develop_path);
+   dest = eina_stringshare_printf("%s/images", path);
+
+   if (!_image_resources_export(images, dest, source, pro->dev, style->obj))
+     {
+        ERR("Failed export images");
+        goto error;
+     }
+   eina_stringshare_del(source);
+   eina_stringshare_del(dest);
    EINA_LIST_FREE(images, data)
      eina_stringshare_del(data);
-
    return true;
+
+error:
+   eina_stringshare_del(source);
+   eina_stringshare_del(dest);
+   EINA_LIST_FREE(images, data)
+     eina_stringshare_del(data);
+   return false;
 }
 
 Eina_Bool
