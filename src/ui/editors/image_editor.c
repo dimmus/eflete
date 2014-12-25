@@ -108,7 +108,7 @@ _image_editor_del(Image_Editor *img_edit)
 {
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 
    evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
 
