@@ -863,7 +863,7 @@ static Eina_Bool
 _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
                         Eina_Stringshare *source, Evas_Object *edje_edit)
 {
-  Eina_Stringshare *sound_name, *source_file, *dest_file;
+  Eina_Stringshare *sound_name, *source_file, *dest_file, *sound_file;
   Eina_List *l;
   Eina_Binbuf *sound_bin;
   FILE *f;
@@ -879,9 +879,9 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
   else return false;
   EINA_LIST_FOREACH(sounds, l, sound_name)
     {
-       source_file = eina_stringshare_printf("%s/%s", source,
-                                             ecore_file_file_get(sound_name));
-       dest_file = eina_stringshare_printf("%s/%s", destination, sound_name);
+       sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
+       source_file = eina_stringshare_printf("%s/%s", source, sound_file);
+       dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
        ecore_file_mkpath(ecore_file_dir_get(dest_file));
        if ((source) && (ecore_file_exists(source_file)))
          {
@@ -901,6 +901,7 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
             if (f) fclose(f);
             eina_binbuf_free(sound_bin);
          }
+       edje_edit_string_free(sound_file);
        eina_stringshare_del(source_file);
        eina_stringshare_del(dest_file);
     }
@@ -914,13 +915,15 @@ pm_style_resource_export(Project *pro ,
                          Eina_Stringshare *path __UNUSED__)
 {
    Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
+   Eina_List *programs;
 
-   Eina_List *images = NULL;
+   Eina_List *images = NULL, *sounds = NULL;
 
    Eina_Stringshare *dest, *source;
    const char *data_name, *state_name, *data;
    const char *state = NULL; double value = 0; char **state_split;
    Edje_Part_Type part_type = EDJE_PART_TYPE_NONE;
+   Edje_Action_Type action_type = EDJE_ACTION_TYPE_NONE;
 
    if ((!pro) || (!style) || (!style->obj) || (!path)) return false;
 
@@ -965,6 +968,19 @@ pm_style_resource_export(Project *pro ,
      }
    edje_edit_string_list_free(parts);
 
+   programs = edje_edit_programs_list_get(style->obj);
+   EINA_LIST_FOREACH_SAFE(programs, l, l_next, data_name)
+     {
+        action_type = edje_edit_program_action_get(style->obj, data_name);
+        if (action_type == EDJE_ACTION_TYPE_SOUND_SAMPLE)
+          {
+             data = edje_edit_program_sample_name_get(style->obj, data_name);
+             if ((data) && (!eina_list_data_find(sounds, data)))
+               sounds = eina_list_append(sounds, data);
+          }
+     }
+   edje_edit_string_list_free(programs);
+
    source = eina_stringshare_printf("%s/images", pro->develop_path);
    dest = eina_stringshare_printf("%s/images", path);
 
@@ -977,12 +993,27 @@ pm_style_resource_export(Project *pro ,
    eina_stringshare_del(dest);
    EINA_LIST_FREE(images, data)
      eina_stringshare_del(data);
+
+   source = eina_stringshare_printf("%s/sounds", pro->develop_path);
+   dest = eina_stringshare_printf("%s/sounds", path);
+   if (!_sound_resources_export(sounds, dest, source, style->obj))
+     {
+        ERR("Failed export sounds");
+        goto error;
+     }
+   eina_stringshare_del(source);
+   eina_stringshare_del(dest);
+   EINA_LIST_FREE(sounds, data)
+     eina_stringshare_del(data);
+
    return true;
 
 error:
    eina_stringshare_del(source);
    eina_stringshare_del(dest);
    EINA_LIST_FREE(images, data)
+     eina_stringshare_del(data);
+   EINA_LIST_FREE(sounds, data)
      eina_stringshare_del(data);
    return false;
 }
