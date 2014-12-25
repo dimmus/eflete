@@ -805,6 +805,14 @@ pm_project_meta_data_set(Project *project,
 }
 
 Eina_Bool
+pm_style_resource_export(Project *pro __UNUSED__,
+                         Style *style __UNUSED__,
+                         Eina_Stringshare *path __UNUSED__)
+{
+   return false;
+}
+
+Eina_Bool
 pm_project_resource_export(Project *pro)
 {
    Eina_List *list, *l;
