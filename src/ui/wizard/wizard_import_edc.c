@@ -355,7 +355,7 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
 
         NOTIFY_INFO(3, "%s", eina_strbuf_string_get(dep_message));
      }
-
+   eina_strbuf_free(dep_message);
    eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
    eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
@@ -458,8 +458,8 @@ _splash_setup_new_project(void *data, Splash_Status status __UNUSED__)
                                         wiew);
    wiew->progress_log = eina_strbuf_new();
 
-   //eina_strbuf_free(edc);
-   //eina_strbuf_free(flags);
+   eina_strbuf_free(edc);
+   eina_strbuf_free(flags);
    eina_stringshare_del(edc_path);
 
    return false;
