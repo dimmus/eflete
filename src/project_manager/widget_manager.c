@@ -378,6 +378,7 @@ wm_style_free(Style *style)
            {
               aliassed->main_group = NULL;
            }
+         eina_list_free(style->aliasses);
      }
 
    if (style->isAlias)
