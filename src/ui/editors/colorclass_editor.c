@@ -442,7 +442,7 @@ _colorclass_viewer_init(Colorclasses_Editor *ccl_edit)
                                      &r3, &g3, &b3, &a3))
           {
              free(it);
-             ERR("Coud'nt get color's from colorclass %s.", ccname);
+             ERR("Couldn`t get color's from colorclass %s.", ccname);
              continue;
           }
         it->r1 = r1; it->g1 = g1;

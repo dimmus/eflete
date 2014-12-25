@@ -175,7 +175,7 @@ enum _Target
 /**
  * @enum _Value_Type
  *
- * @brief Possible types of values, that coud be changed. This is say how to
+ * @brief Possible types of values, that could be changed. This is say how to
  * processed input parameters into function, that will revert or restore changes.
  *
  * @ingroup History
