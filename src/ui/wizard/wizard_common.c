@@ -91,7 +91,6 @@ _progress_end(void *data, PM_Project_Result result)
 
         STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
-
      }
 
    ecore_file_recursive_rm(wiew->tmp_dir_path);
@@ -130,7 +129,8 @@ _teardown_splash(void *data, Splash_Status status)
    wiew = (Wizard_Import_Edj_Win *)data;
    App_Data *app = app_data_get();
 
-   mw_del(wiew->win);
+   if (wiew->thread->result == PM_PROJECT_SUCCESS)
+     mw_del(wiew->win);
    if ((status == SPLASH_SUCCESS) && (app->project))
      {
         STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
