@@ -30,7 +30,8 @@ static int _menu_delayed_event = 0;
 
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
-/* MENU_FILE_EXPORT_EDC,*/ /*TODO enable after implementation */
+/*   MENU_FILE_EXPORT_EDC,*/
+/* MENU_FILE_EXPORT_EDC_PROJECT,*/ /*TODO enable after implementation*/
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
 /* MENU_FILE_EXPORT_RELEASE,*/
@@ -55,6 +56,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_EDITORS_ANIMATOR,
    MENU_VIEW_WORKSPACE_SEPARATE,
    MENU_VIEW_WORKSPACE_OBJECT_AREA,
+/*   MENU_FILE_EXPORT_EDC_GROUP, */ /*TODO enable after implementation */
 
    MENU_NULL
 };
@@ -114,9 +116,12 @@ _menu_cb(void *data __UNUSED__,
       case MENU_FILE_SAVE:
          project_save();
          break;
-      case MENU_FILE_EXPORT_EDC:
+      case MENU_FILE_EXPORT_EDC_GROUP:
          /* TODO: add implementation here */
          break;
+      case MENU_FILE_EXPORT_EDC_PROJECT:
+          /* TODO: add implementation here */
+          break;
       case MENU_FILE_EXPORT_DEVELOP:
          project_export_develop();
          break;
@@ -244,8 +249,10 @@ ui_menu_add(App_Data *ap)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, NULL, _("Save"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
