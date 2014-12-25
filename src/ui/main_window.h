@@ -420,30 +420,6 @@ Eina_Bool
 blocks_show(App_Data *ap);
 
 /**
- * Hide the main layout blocks.
- *
- * @param ap The Eflete App_Data.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-blocks_hide(App_Data *ap);
-
-/**
- * Unset data from all ui blocks.
- *
- * @param ap The Eflete App_Data.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-blocks_data_unset(App_Data *ap);
-
-/**
  * Open existing project.
  *
  * @ingroup Window

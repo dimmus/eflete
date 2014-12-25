@@ -723,15 +723,15 @@ blocks_show(App_Data *ap)
    return true;
 }
 
-Eina_Bool
-blocks_hide(App_Data *ap)
+static Eina_Bool
+_blocks_hide(App_Data *ap)
 {
    history_clear(ap->history);
    return ui_panes_hide(ap);
 }
 
-Eina_Bool
-blocks_data_unset(App_Data *ap)
+static Eina_Bool
+_blocks_data_unset(App_Data *ap)
 {
    Evas_Object *property;
    property = ui_block_property_get(ap);
@@ -797,8 +797,6 @@ _on_open_done(void *data,
    wm_layouts_list_objects_load(ap->project->layouts,
                                 evas_object_evas_get(ap->win),
                                 ap->project->mmap_file);
-
-   blocks_data_unset(ap);
    blocks_show(ap);
 
    evas_object_del(win);
@@ -827,8 +825,8 @@ project_close(App_Data *ap)
              ap->project = NULL;
           }
         STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-        blocks_hide(ap);
-        blocks_data_unset(ap);
+        _blocks_hide(ap);
+        _blocks_data_unset(ap);
      }
    return true;
 }
