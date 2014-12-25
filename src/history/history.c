@@ -96,10 +96,10 @@ static Eina_Bool
 _change_save(Module *module, Diff *change)
 {
    Diff *data = NULL;
-   if (!change) return false;
 
    module->changes = _clear_untracked_changes(module->changes,
                                               module->current_change);
+   if (!change) return false;
    module->changes = eina_list_append(module->changes, change);
    change->index = eina_list_count(module->changes);
 
