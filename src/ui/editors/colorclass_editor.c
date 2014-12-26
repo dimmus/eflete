@@ -166,14 +166,13 @@ _on_ccl_editor_close(void *data,
         project_changed();
      }
 
+   elm_genlist_item_class_free(_itc_ccl);
+   _itc_ccl = NULL;
    evas_object_del(ccl_edit->rect_color1);
    evas_object_del(ccl_edit->rect_color2);
    evas_object_del(ccl_edit->rect_color3);
    ccl_edit->current_ccl = NULL;
    ccl_edit->pr = NULL;
-   free(ccl_edit->old_ccl);
-   free(ccl_edit->current_ccl);
-   free(ccl_edit->next_ccl);
    free(ccl_edit);
 }
 
@@ -341,6 +340,8 @@ _item_ccl_del(void *data,
 {
    Colorclass_Item *ccl_it = (Colorclass_Item *)data;
    eina_stringshare_del(ccl_it->name);
+   free(ccl_it);
+   ccl_it = NULL;
 }
 
 
