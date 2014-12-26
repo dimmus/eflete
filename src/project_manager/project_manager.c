@@ -237,7 +237,7 @@ _copy_file_progress_cb(void *data,
    Project_Thread *worker;
 
    worker = (Project_Thread *)data;
-   percentage = (short int)(done / total) * 100;
+   percentage = (short int)((double)done / total) * 100;
    PROGRESS_SEND(_("Importing... %u"), percentage);
 
    return true;
