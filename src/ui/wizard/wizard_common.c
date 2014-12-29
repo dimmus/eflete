@@ -31,10 +31,12 @@ _on_cancel(void *data,
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
-   App_Data *ap = app_data_get();
+   App_Data *app = app_data_get();
+
    mw_del(wiew->win);
+   app->modal_editor--;
    free(wiew);
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 void
@@ -131,7 +133,10 @@ _teardown_splash(void *data, Splash_Status status)
    App_Data *app = app_data_get();
 
    if (wiew->thread->result == PM_PROJECT_SUCCESS)
-     mw_del(wiew->win);
+     {
+        mw_del(wiew->win);
+        app->modal_editor--;
+     }
    if ((status == SPLASH_SUCCESS) && (app->project))
      {
         STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
@@ -304,6 +309,7 @@ wizard_import_common_add(const char *layout_name)
    Evas_Object *mwin, *layout;
    Evas_Object *bt;
    Wizard_Import_Edj_Win *wiew;
+   App_Data *ap = app_data_get();
 
    wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
 
@@ -359,6 +365,7 @@ wizard_import_common_add(const char *layout_name)
 
    wiew->layout = layout;
 
+   ap->modal_editor++;
    evas_object_show(mwin);
 
    return wiew;
