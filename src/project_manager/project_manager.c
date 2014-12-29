@@ -972,7 +972,7 @@ pm_style_resource_export(Project *pro ,
    Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
    Eina_List *programs;
 
-   Eina_List *images = NULL, *sounds = NULL;
+   Eina_List *images = NULL, *sounds = NULL, *fonts = NULL;
 
    Eina_Stringshare *dest, *source;
    const char *data_name, *state_name, *data;
@@ -1017,6 +1017,26 @@ pm_style_resource_export(Project *pro ,
                 }
               edje_edit_string_list_free(state_list);
            break;
+           case EDJE_PART_TYPE_TEXT:
+              state_list = edje_edit_part_states_list_get(style->obj, data_name);
+              EINA_LIST_FOREACH(state_list, l_states, state_name)
+                {
+                  state_split = eina_str_split(state_name, " ", 2);
+                  state = eina_stringshare_add(state_split[0]);
+                  value = atof(state_split[1]);
+                  free(state_split[0]);
+                  free(state_split);
+
+                  data = edje_edit_state_font_get(style->obj, data_name,
+                                                  state, value);
+                  if ((data) && (!eina_list_data_find(fonts, data)))
+                    fonts = eina_list_append(fonts, eina_stringshare_add(data));
+                  edje_edit_string_free(data);
+                }
+              edje_edit_string_list_free(state_list);
+           break;
+           case EDJE_PART_TYPE_TEXTBLOCK:
+           break;
            default:
            break;
           }
@@ -1040,10 +1060,7 @@ pm_style_resource_export(Project *pro ,
    dest = eina_stringshare_printf("%s/images", path);
 
    if (!_image_resources_export(images, dest, source, pro->dev, style->obj))
-     {
-        ERR("Failed export images");
-        goto error;
-     }
+     WARN("Failed export images");
    eina_stringshare_del(source);
    eina_stringshare_del(dest);
    EINA_LIST_FREE(images, data)
@@ -1052,25 +1069,22 @@ pm_style_resource_export(Project *pro ,
    source = eina_stringshare_printf("%s/sounds", pro->develop_path);
    dest = eina_stringshare_printf("%s/sounds", path);
    if (!_sound_resources_export(sounds, dest, source, style->obj))
-     {
-        ERR("Failed export sounds");
-        goto error;
-     }
+     ERR("Failed export sounds");
    eina_stringshare_del(source);
    eina_stringshare_del(dest);
    EINA_LIST_FREE(sounds, data)
+     eina_stringshare_del(data);
+
+   source = eina_stringshare_printf("%s/fonts", pro->develop_path);
+   dest = eina_stringshare_printf("%s/fonts", path);
+   if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj))
+     WARN("Failed export fonts");
+   eina_stringshare_del(source);
+   eina_stringshare_del(dest);
+   EINA_LIST_FREE(fonts, data)
      eina_stringshare_del(data);
 
    return true;
-
-error:
-   eina_stringshare_del(source);
-   eina_stringshare_del(dest);
-   EINA_LIST_FREE(images, data)
-     eina_stringshare_del(data);
-   EINA_LIST_FREE(sounds, data)
-     eina_stringshare_del(data);
-   return false;
 }
 
 Eina_Bool
