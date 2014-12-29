@@ -505,4 +505,13 @@ save_time_info_update(App_Data *ap, Eina_Bool is_autosave);
 Eina_Bool
 export_replace_request(Evas_Object *parent, const char *msg);
 
+/**
+ * Export group as edc.
+ *
+ * @ingroup Window
+ */
+void
+project_export_edc_group(void);
+
+
 #endif /* UI_MAIN_WINDOW_H */

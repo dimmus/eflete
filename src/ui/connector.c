@@ -1165,6 +1165,67 @@ project_export_develop(void)
    elm_win_resize_object_add(win, fs);
 }
 
+static void
+_on_export_edc_group_done(void *data,
+                          Evas_Object *obj,
+                          void *event_info)
+{
+   const char *selected;
+   Evas_Object *win;
+   Eina_Stringshare *path = NULL;
+   Eina_Stringshare *dir_path = NULL;
+   App_Data *ap;
+   Style *style = NULL;
+
+   char **tmp;
+   unsigned int tokens_count, i;
+
+   ap = app_data_get();
+   win = (Evas_Object *)data;
+   selected = (const char *)event_info;
+   if (!selected) return;
+   style = ap->project->current_style;
+
+   Eina_Stringshare *file = NULL;
+
+   tmp = eina_str_split_full(style->full_group_name, "/", 0, &tokens_count);
+   if (!tmp[0]) return;
+   file = eina_stringshare_add(tmp[0]);
+
+   for (i = 1; tokens_count - 1 > 0; i++, tokens_count--)
+     file = eina_stringshare_printf("%s_%s", file, tmp[i]);
+   free(tmp[0]);
+   free(tmp);
+
+   dir_path = eina_stringshare_printf("%s/%s", elm_fileselector_path_get(obj), file);
+   if (!ecore_file_exists(dir_path))
+     ecore_file_mkdir(dir_path);
+   path = eina_stringshare_printf("%s/%s.edc", dir_path, file);
+   pm_project_style_source_code_export(ap->project, style, path);
+   pm_style_resource_export(ap->project, style, dir_path);
+
+   eina_stringshare_del(file);
+   eina_stringshare_del(path);
+   eina_stringshare_del(dir_path);
+   evas_object_del(win);
+}
+
+void
+project_export_edc_group(void)
+{
+   Evas_Object *win, *bg, *fs;
+
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edc file (group)"), _fs_close, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+   FILESELECTOR_ADD(fs, win, _on_export_edc_group_done, win);
+   elm_fileselector_is_save_set(fs, false);
+   elm_fileselector_folder_only_set(fs, true);
+   elm_win_resize_object_add(win, fs);
+}
+
 /*************************** Close request popup ******************************/
 /*TODO: I think, this functionality need move to dialogs */
 static void

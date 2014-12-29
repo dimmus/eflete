@@ -30,7 +30,7 @@ static int _menu_delayed_event = 0;
 
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
-/*   MENU_FILE_EXPORT_EDC,*/
+   MENU_FILE_EXPORT_EDC,
 /* MENU_FILE_EXPORT_EDC_PROJECT,*/ /*TODO enable after implementation*/
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
@@ -56,7 +56,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_EDITORS_ANIMATOR,
    MENU_VIEW_WORKSPACE_SEPARATE,
    MENU_VIEW_WORKSPACE_OBJECT_AREA,
-/*   MENU_FILE_EXPORT_EDC_GROUP, */ /*TODO enable after implementation */
+   MENU_FILE_EXPORT_EDC_GROUP,
 
    MENU_NULL
 };
@@ -117,7 +117,7 @@ _menu_cb(void *data __UNUSED__,
          project_save();
          break;
       case MENU_FILE_EXPORT_EDC_GROUP:
-         /* TODO: add implementation here */
+         project_export_edc_group();
          break;
       case MENU_FILE_EXPORT_EDC_PROJECT:
           /* TODO: add implementation here */
@@ -316,8 +316,8 @@ ui_menu_add(App_Data *ap)
    ui_menu_disable_set(menu, MENU_FILE_CLOSE_PROJECT, true);
 
    /*TODO remove both lines after implementation this features*/
-   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC, true);
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_PROJECT, true);
 
    menu->window_menu = window_menu;
    menu->toolbar = toolbar;
