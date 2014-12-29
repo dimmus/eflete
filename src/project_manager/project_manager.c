@@ -292,6 +292,77 @@ _project_dev_file_copy(Project_Thread *worker)
    return result;
 }
 
+static Eina_Bool
+_project_linked_images_copy(Project_Thread *worker)
+{
+   Eina_List *list, *l;
+   Evas_Object *edje_edit_obj;
+   Evas *e;
+   Ecore_Evas *ee;
+   const char *name;
+   const char *file_name;
+   Eina_Strbuf *strbuf_to = eina_strbuf_new();
+   Eina_Strbuf *strbuf_from = eina_strbuf_new();
+   Edje_Edit_Image_Comp comp;
+   Eina_Bool is_changed = false;
+
+   ee = ecore_evas_buffer_new(0, 0);
+   e = ecore_evas_get(ee);
+   list = edje_file_collection_list(worker->project->dev);
+   edje_edit_obj = edje_edit_object_add(e);
+   if (!edje_object_file_set(edje_edit_obj, worker->project->dev, eina_list_data_get(list)))
+     {
+        evas_object_del(edje_edit_obj);
+        return false;
+     }
+   edje_edit_string_list_free(list);
+
+   list = edje_edit_images_list_get(edje_edit_obj);
+   EINA_LIST_FOREACH(list, l, name)
+     {
+        /* for supporting themes that were compilled
+           with edje_cc version less than 1.10 */
+        if (!name) continue;
+
+        comp = edje_edit_image_compression_type_get(edje_edit_obj, name);
+        if (comp != EDJE_EDIT_IMAGE_COMP_USER)
+          continue;
+        is_changed = true;
+
+        eina_strbuf_reset(strbuf_to);
+        eina_strbuf_reset(strbuf_from);
+
+        if (name[0] == '/')
+          eina_strbuf_append(strbuf_from, name);
+        else
+          eina_strbuf_append_printf(strbuf_from, "%s/%s", worker->path, name);
+        if (!ecore_file_exists(eina_strbuf_string_get(strbuf_from)))
+          {
+             edje_edit_image_rename(edje_edit_obj,
+                                    name, eina_strbuf_string_get(strbuf_from));
+             continue;
+          }
+
+        file_name = ecore_file_file_get(name);
+
+        eina_strbuf_append_printf(strbuf_to, "%s/images/%s",
+                                  worker->project->develop_path, file_name);
+
+        eina_file_copy(eina_strbuf_string_get(strbuf_from),
+                       eina_strbuf_string_get(strbuf_to),
+                       EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
+                       NULL, NULL);
+        edje_edit_image_rename(edje_edit_obj,
+                               name, eina_strbuf_string_get(strbuf_to));
+     }
+   if (is_changed)
+     edje_edit_without_source_save(edje_edit_obj, false);
+   edje_edit_string_list_free(list);
+   eina_strbuf_free(strbuf_to);
+   eina_strbuf_free(strbuf_from);
+   return true;
+}
+
 static void *
 _project_import_edj(void *data,
                     Eina_Thread *thread)
@@ -328,6 +399,7 @@ _project_import_edj(void *data,
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
       pm_project_resource_export(worker->project);
+      _project_linked_images_copy(worker);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS);
@@ -472,6 +544,7 @@ _project_import_edc(void *data,
    WORKER_LOCK_RELEASE;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
+   _project_linked_images_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
       worker->project->mmap_file = eina_file_open(worker->project->dev, false);
