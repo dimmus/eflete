@@ -782,10 +782,13 @@ _on_open_done(void *data,
 
    win = (Evas_Object *)data;
    selected = (const char *)event_info;
+   ap = app_data_get();
 
    if (!selected)
      {
-        _fs_close(ap, win, NULL);
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+        _fs_close(NULL, win, NULL);
         return;
      }
 
