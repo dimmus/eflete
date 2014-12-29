@@ -387,6 +387,7 @@ _highlight_align_show_switch_cb(App_Data *app)
 Eina_Bool
 _object_area_show_switch_cb(App_Data *app)
 {
+   if ((!app->project) || (!app->project->current_style)) return false;
    Eina_Bool flag = workspace_object_area_visible_get(app->workspace);
    workspace_object_area_visible_set(app->workspace, !flag);
    return true;
