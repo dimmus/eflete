@@ -120,6 +120,24 @@ _eflete_object_cursor_del(void *data,
    free(cursor);
 }
 
+Eina_Bool
+cursor_main_free()
+{
+   Cursor *cursor;
+   Evas *e;
+   Ecore_Evas *ee;
+   App_Data *ap = app_data_get();
+
+   e = evas_object_evas_get(ap->win);
+   ee = ecore_evas_ecore_evas_get(e);
+   cursor = ecore_evas_data_get(ee, CURSOR_KEY);
+   if (cursor)
+     {
+        free(cursor);
+        return true;
+     }
+   else return false;
+}
 
 Eina_Bool
 cursor_main_set(Evas_Object *win, Cursor_Type type)
