@@ -56,6 +56,8 @@ enum Menu_Item
       MENU_FILE_IMPORT_EDC,
       MENU_FILE_SAVE,
       MENU_FILE_EXPORT_EDC,
+         MENU_FILE_EXPORT_EDC_PROJECT,
+         MENU_FILE_EXPORT_EDC_GROUP,
       MENU_FILE_EXPORT,
          MENU_FILE_EXPORT_DEVELOP,
          MENU_FILE_EXPORT_RELEASE,
@@ -420,30 +422,6 @@ Eina_Bool
 blocks_show(App_Data *ap);
 
 /**
- * Hide the main layout blocks.
- *
- * @param ap The Eflete App_Data.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-blocks_hide(App_Data *ap);
-
-/**
- * Unset data from all ui blocks.
- *
- * @param ap The Eflete App_Data.
- *
- * @return EINA_TRUE on success, otherwise EINA_FALSE.
- *
- * @ingroup Window
- */
-Eina_Bool
-blocks_data_unset(App_Data *ap);
-
-/**
  * Open existing project.
  *
  * @ingroup Window
@@ -526,5 +504,14 @@ save_time_info_update(App_Data *ap, Eina_Bool is_autosave);
  */
 Eina_Bool
 export_replace_request(Evas_Object *parent, const char *msg);
+
+/**
+ * Export group as edc.
+ *
+ * @ingroup Window
+ */
+void
+project_export_edc_group(void);
+
 
 #endif /* UI_MAIN_WINDOW_H */

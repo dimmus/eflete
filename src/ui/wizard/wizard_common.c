@@ -31,9 +31,12 @@ _on_cancel(void *data,
 {
    Wizard_Import_Edj_Win *wiew;
    wiew = (Wizard_Import_Edj_Win *)data;
+   App_Data *app = app_data_get();
 
    mw_del(wiew->win);
+   app->modal_editor--;
    free(wiew);
+   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 void
@@ -57,7 +60,7 @@ _progress_print(void *data, Eina_Stringshare *progress_string)
 
    if (wiew->progress_log)
      eina_strbuf_append_printf(wiew->progress_log,
-                               " > %s<br>", progress_string);
+                               "%s<br>", progress_string);
    return true;
 }
 
@@ -78,10 +81,10 @@ _progress_end(void *data, PM_Project_Result result)
 
         wm_widgets_list_objects_load(pro->widgets,
                                      evas_object_evas_get(ap->win),
-                                     pro->dev);
+                                     pro->mmap_file);
         wm_layouts_list_objects_load(pro->layouts,
                                      evas_object_evas_get(ap->win),
-                                     pro->dev);
+                                     pro->mmap_file);
 
         blocks_show(ap);
 
@@ -91,7 +94,6 @@ _progress_end(void *data, PM_Project_Result result)
 
         STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
-
      }
 
    ecore_file_recursive_rm(wiew->tmp_dir_path);
@@ -99,6 +101,25 @@ _progress_end(void *data, PM_Project_Result result)
    if (result == PM_PROJECT_CANCEL)
      {
        DBG("Canceled by user! 'thread: %p'", wiew->thread);
+     }
+   else if (result == PM_PROJECT_ERROR)
+     {
+        if (wiew->progress_log)
+          {
+             // TODO: add new style of notify with align to the left and smth like "IMPORT ERROR" header
+             NOTIFY_ERROR(_("Errors occured on importing: <br><br>%s"),
+                          eina_strbuf_string_get(wiew->progress_log));
+          }
+        else
+          {
+             NOTIFY_ERROR(_("Errors occured on importing."));
+          }
+     }
+
+   if (wiew->progress_log)
+     {
+        eina_strbuf_free(wiew->progress_log);
+        wiew->progress_log = NULL;
      }
 
    splash_del(wiew->splash);
@@ -108,11 +129,20 @@ static Eina_Bool
 _teardown_splash(void *data, Splash_Status status)
 {
    Wizard_Import_Edj_Win *wiew;
-
    wiew = (Wizard_Import_Edj_Win *)data;
-   if (status == SPLASH_SUCCESS)
-     mw_del(wiew->win);
+   App_Data *app = app_data_get();
 
+   if (wiew->thread->result == PM_PROJECT_SUCCESS)
+     {
+        mw_del(wiew->win);
+        app->modal_editor--;
+     }
+   if ((status == SPLASH_SUCCESS) && (app->project))
+     {
+        STATUSBAR_PROJECT_PATH(app, eet_file_get(app->project->pro));
+        STATUSBAR_PROJECT_SAVE_TIME_UPDATE(app);
+     }
+   else return false;
    return true;
 }
 
@@ -145,26 +175,35 @@ _project_directory_check(Wizard_Import_Edj_Win *wiew)
    Eina_Strbuf *request_str = NULL;
    Eina_Bool ret = true;
 
-   if ((ecore_file_exists(eina_strbuf_string_get(path_to_project))) &&
-       (ecore_file_is_dir(eina_strbuf_string_get(path_to_project))))
+   if (ecore_file_exists(eina_strbuf_string_get(path_to_project)))
      {
-        request_str = eina_strbuf_new();
-        eina_strbuf_append_printf(request_str,
-                                  _("The <color=#80BFFF>'%s'</color> directory "
-                                    "already exists.<br>Do you want to "
-                                    "<b><color=#FFBF80>delete all</color></b>"
-                                    " contents of this folder and create"
-                                    "new project in it?"),
-                                  eina_strbuf_string_get(path_to_project));
+        if (ecore_file_is_dir(eina_strbuf_string_get(path_to_project)))
+           {
+           request_str = eina_strbuf_new();
+           eina_strbuf_append_printf(request_str,
+                                     _("The <path>'%s'</path> directory "
+                                       "already exists.<br>Do you want to "
+                                       "<b><orange>delete all</orange></b>"
+                                       " contents of this folder and create "
+                                       "new project in it?"),
+                                     eina_strbuf_string_get(path_to_project));
 
-        ret = export_replace_request(wiew->win,
-                                     eina_strbuf_string_get(request_str));
+           ret = export_replace_request(wiew->win,
+                                        eina_strbuf_string_get(request_str));
 
-        if (ret)
+           if (ret)
+             {
+                ret = ecore_file_recursive_rm(eina_strbuf_string_get(path_to_project));
+                if (!ret) NOTIFY_ERROR(_("Can not delete folder %s!"),
+                                       eina_strbuf_string_get(path_to_project));
+             }
+           }
+        else
           {
-             ret = ecore_file_recursive_rm(eina_strbuf_string_get(path_to_project));
-             if (!ret) NOTIFY_ERROR(_("Can not delete folder %s!"),
-                                    eina_strbuf_string_get(path_to_project));
+             NOTIFY_ERROR(_("The name <path>'%s'</path> is "
+                            "already used at this location."),
+                          eina_strbuf_string_get(path_to_project));
+             ret = false;
           }
      }
    if (request_str)
@@ -228,13 +267,14 @@ _on_apply(void *data,
    wiew = (Wizard_Import_Edj_Win *)data;
 
    if ((!_required_fields_check(wiew)) || (!wiew->splash_setup_func) ||
-       (!wiew->splash_setup_func) || (!_project_directory_check(wiew)))
+       (!_project_directory_check(wiew)))
      return;
 
    wiew->splash = splash_add(ap->win, wiew->splash_setup_func,
                              _teardown_splash, _cancel_splash, wiew);
    evas_object_focus_set(wiew->splash, true);
    evas_object_show(wiew->splash);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
 
 static void
@@ -269,6 +309,7 @@ wizard_import_common_add(const char *layout_name)
    Evas_Object *mwin, *layout;
    Evas_Object *bt;
    Wizard_Import_Edj_Win *wiew;
+   App_Data *ap = app_data_get();
 
    wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
 
@@ -324,6 +365,7 @@ wizard_import_common_add(const char *layout_name)
 
    wiew->layout = layout;
 
+   ap->modal_editor++;
    evas_object_show(mwin);
 
    return wiew;

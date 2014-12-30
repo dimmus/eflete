@@ -57,7 +57,6 @@ _profile_free(void)
         eina_stringshare_del(sc->description);
         free(sc);
      }
-   eina_list_free(profile->shortcuts);
 
    free(profile);
    profile = NULL;
@@ -231,7 +230,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("e", 26, CTRL, "export", false);
    ADD_SHORTCUT("q", 24, CTRL, "quit", false);
    ADD_SHORTCUT("z", 52, CTRL, "undo", false);
-   ADD_SHORTCUT("u", 30, CTRL, "redo", false);
+   ADD_SHORTCUT("y", 30, CTRL, "redo", false);
 
    ADD_SHORTCUT("1", 10, CTRL, "animator", false);
    ADD_SHORTCUT("2", 11, CTRL, "image_editor", false);
@@ -269,6 +268,21 @@ _default_shortcuts_get()
    return shortcuts;
 }
 
+static void
+_profile_update(Profile *prof)
+{
+   if (prof->version > PROFILE_VERSION)
+     return;
+
+   prof->version                             = PROFILE_VERSION;
+   if (!prof->general.projects_folder)
+     prof->general.projects_folder           = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
+                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
+                                                strdup(getenv("HOME"));
+   if (!prof->shortcuts)
+     prof->shortcuts                         = _default_shortcuts_get();
+}
+
 static Profile *
 _profile_default_new(void)
 {
@@ -276,9 +290,6 @@ _profile_default_new(void)
 
    prof = mem_malloc(sizeof(Profile));
    prof->version                             = PROFILE_VERSION;
-   prof->general.projects_folder             = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
-                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
-                                                strdup(getenv("HOME"));
    prof->general.save_ui                     = true;
    prof->general.save_win_pos                = true;
    prof->general.autosave.autosave           = false;
@@ -326,12 +337,12 @@ _config_default_new(void)
    conf->window.y =           0;
    conf->window.w =           1366;
    conf->window.h =           768;
-   conf->panes.left =         0.2;
-   conf->panes.right =        0.75;
+   conf->panes.left =         0.0;
+   conf->panes.right =        1.0;
    conf->panes.left_hor =     0.7;
    conf->panes.right_hor =    0.3;
    conf->panes.center =       0.65;
-   conf->panes.center_down =  0.4;
+   conf->panes.center_down =  0.2;
    conf->profile = strdup("default");
 
    return conf;
@@ -443,10 +454,9 @@ profile_load(const char *name)
      }
 
    if (!profile)
-     {
-        profile = _profile_default_new();
-        profile->shortcuts = _default_shortcuts_get();
-     }
+     profile = _profile_default_new();
+
+   _profile_update(profile);
 
    eina_stringshare_del(path);
 }

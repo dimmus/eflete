@@ -240,7 +240,8 @@ group { name: "elm/menu/item_with_submenu/eflete/default";
    }
    parts {
       part { name: "arrow";
-         insert_after: "item_image_disabled";
+         insert_before: "disabler";
+         clip_to: "disabler";
          repeat_events: 1;
          description { state: "default" 0.0;
             max: 4 6;

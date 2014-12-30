@@ -307,7 +307,7 @@ _groupedit_part_free(Groupedit_Part *gp)
         evas_object_del(gp->item);
      }
 
-   //free(gp);
+   free(gp);
 }
 
 Groupedit_Part *

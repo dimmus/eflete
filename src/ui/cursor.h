@@ -58,7 +58,7 @@ typedef enum _Cursor_Type Cursor_Type;
  * @param win The window will be set the cursor.
  * @param type The cursor type
  *
- * @return EINA_TRUE if cursor setted or EINA_FALSE overwise.
+ * @return EINA_TRUE if cursor setted or EINA_FALSE otherwise.
  *
  * @note Use it for set the cursor for some global events, for example
  * application try to open the file, while file is not opened set the approprite
@@ -68,6 +68,16 @@ typedef enum _Cursor_Type Cursor_Type;
  */
 Eina_Bool
 cursor_main_set(Evas_Object *win, Cursor_Type type);
+
+/**
+ * Free the Eflete main cursor
+ *
+ * @return EINA_TRUE if cursor is freed or EINA_FALSE otherwise.
+ *
+ * @ingroup Cursor
+ */
+Eina_Bool
+cursor_main_free(void);
 
 /**
  * Get the currset main cursor type.
@@ -87,7 +97,7 @@ cursor_main_get(Evas_Object *win);
  * @param obj The object where will be setted new cursor.
  * @param type The cursor type.
  *
- * @return EINA_TRUE if cursor is setted, or EINA_FALSE overwise.
+ * @return EINA_TRUE if cursor is setted, or EINA_FALSE otherwise.
  *
  * @ingroup Cursor
  */

@@ -27,12 +27,20 @@
 typedef struct _Image_Editor Image_Editor;
 typedef struct _Search_Data Search_Data;
 typedef struct _Item Item;
+typedef struct _Content_Init_Data Content_Init_Data;
 
 struct _Item
 {
    int id;
    const char* image_name;
    Edje_Edit_Image_Comp comp_type;
+};
+
+struct _Content_Init_Data
+{
+   Image_Editor *image_editor;
+   Item *item_data;
+   Evas_Object *image_obj;
 };
 
 struct _Search_Data
@@ -100,7 +108,7 @@ _image_editor_del(Image_Editor *img_edit)
 {
    App_Data *ap = app_data_get();
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
-   ap->modal_editor = false;
+   ap->modal_editor--;
 
    evas_object_event_callback_del(img_edit->win, EVAS_CALLBACK_DEL, _on_mwin_del);
 
@@ -121,12 +129,11 @@ _image_editor_del(Image_Editor *img_edit)
    free(img_edit);
 }
 
-static inline Evas_Object *
-_image_editor_image_create(Evas_Object *parent,
-                           Image_Editor *img_edit,
-                           const Item *it)
+static void
+_image_editor_image_setup(Evas_Object *image,
+                          Image_Editor *img_edit,
+                          const Item *it)
 {
-   Evas_Object *image = elm_image_add(parent);
    Eina_Stringshare *str;
 
    if (it->comp_type == EDJE_EDIT_IMAGE_COMP_USER)
@@ -142,11 +149,66 @@ _image_editor_image_create(Evas_Object *parent,
         elm_image_file_set(image, img_edit->pr->dev, str);
         eina_stringshare_del(str);
      }
+}
+
+static inline Evas_Object *
+_image_editor_image_create(Evas_Object *parent,
+                           Image_Editor *img_edit,
+                           const Item *it)
+{
+   Evas_Object *image = elm_image_add(parent);
+   _image_editor_image_setup(image, img_edit, it);
    return image;
 }
 
-/* icon fetching callback */
+/* functions for deferred creation of gengrid icons */
 #define MAX_ICON_SIZE 16
+static void
+_image_content_setup(void *data)
+{
+   int w, h;
+   Content_Init_Data *image_init_data = data;
+
+   _image_editor_image_setup(image_init_data->image_obj,
+                             image_init_data->image_editor,
+                             image_init_data->item_data);
+
+   elm_image_object_size_get(image_init_data->image_obj, &w, &h);
+   if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
+     evas_object_size_hint_max_set(image_init_data->image_obj,
+                                   MAX_ICON_SIZE, MAX_ICON_SIZE);
+   else
+     elm_image_resizable_set(image_init_data->image_obj, false, true);
+   evas_object_show(image_init_data->image_obj);
+
+   free(image_init_data);
+}
+#undef MAX_ICON_SIZE
+
+static void
+_image_usage_icon_setup(void *data)
+{
+   Eina_List *used_in;
+   Evas_Object *edje_edit_obj;
+   Content_Init_Data *image_init_data = data;
+
+   GET_OBJ(image_init_data->image_editor->pr, edje_edit_obj);
+   used_in = edje_edit_image_usage_list_get(edje_edit_obj,
+                                            image_init_data->item_data->image_name,
+                                            false);
+   if (eina_list_count(used_in) == 0)
+     {
+        elm_image_file_set(image_init_data->image_obj,
+                           EFLETE_RESOURCES, "no_image_warning");
+        elm_image_no_scale_set(image_init_data->image_obj, true);
+        evas_object_show(image_init_data->image_obj);
+     }
+   edje_edit_image_usage_list_free(used_in);
+
+   free(image_init_data);
+}
+
+/* icon fetching callback */
 static Evas_Object *
 _grid_content_get(void *data,
                   Evas_Object *obj,
@@ -155,39 +217,24 @@ _grid_content_get(void *data,
    Item *it = data;
    Evas_Object *grid = (Evas_Object *)obj;
    Image_Editor *img_edit = evas_object_data_get(grid, IMG_EDIT_KEY);
-   Evas_Object *image = NULL;
+
+   Content_Init_Data *image_init_data = mem_malloc(sizeof(Content_Init_Data));
+   image_init_data->item_data = it;
+   image_init_data->image_editor = img_edit;
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        image = _image_editor_image_create(grid, img_edit, it);
-
-        int w, h;
-        elm_image_object_size_get(image, &w, &h);
-        if ((w < MAX_ICON_SIZE) && (h < MAX_ICON_SIZE))
-          evas_object_size_hint_max_set(image, MAX_ICON_SIZE, MAX_ICON_SIZE);
-        else
-          elm_image_resizable_set(image, false, true);
-        evas_object_show(image);
-        return image;
+        image_init_data->image_obj = elm_image_add(grid);
+        ecore_job_add(_image_content_setup, image_init_data);
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {
-        Eina_List *used_in;
-        Evas_Object *edje_edit_obj;
-
-        GET_OBJ(img_edit->pr, edje_edit_obj);
-        used_in = edje_edit_image_usage_list_get(edje_edit_obj,
-                                                 it->image_name, false);
-        if (eina_list_count(used_in) == 0)
-          {
-             ICON_ADD(grid, image, true, "no_image_warning");
-          }
-        edje_edit_image_usage_list_free(used_in);
-        return image;
+        image_init_data->image_obj = elm_icon_add(grid);
+        ecore_job_add(_image_usage_icon_setup, image_init_data);
      }
-   return NULL;
+
+   return image_init_data->image_obj;
 }
-#undef MAX_ICON_SIZE
 
 /* deletion callback */
 static void
@@ -285,11 +332,18 @@ _image_info_location_setup(Image_Editor *img_edit,
    const char *file_name = strrchr(image_name, '/');
    if (!file_name) file_name = image_name;
    else file_name++;
+
    elm_entry_entry_set(img_edit->image_data_fields.file_name, file_name);
    char buf[BUFF_MAX];
-   strncpy(buf, image_name, (strlen(image_name) - strlen(file_name) - 1));
-   elm_object_part_text_set(img_edit->image_data_fields.layout,
-                            "text.location", buf);
+   if (image_name == file_name)
+     elm_object_part_text_set(img_edit->image_data_fields.layout,
+                              "text.location", "-");
+   else
+     {
+        strncpy(buf, image_name, (strlen(image_name) - strlen(file_name) - 1));
+        elm_object_part_text_set(img_edit->image_data_fields.layout,
+                                 "text.location", buf);
+     }
 }
 
 void
@@ -422,7 +476,7 @@ _image_info_setup(Image_Editor *img_edit,
    _image_info_reset(img_edit);
    img_edit->image_data_fields.image_name = it->image_name;
 
-   image =_image_editor_image_create(img_edit->layout, img_edit, it);
+   image = _image_editor_image_create(img_edit->layout, img_edit, it);
    evas_object_image_smooth_scale_set(image, false);
    elm_object_part_content_set(img_edit->layout, "eflete.swallow.image", image);
    img_edit->image_data_fields.image = image;
@@ -516,18 +570,19 @@ _on_image_done(void *data,
                void *event_info __UNUSED__)
 {
    Item *it = NULL;
+   Elm_Object_Item *item = NULL;
    Evas_Object *edje_edit_obj = NULL;
    const Eina_List *images, *l;
    const char *selected;
 
    Image_Editor *img_edit = (Image_Editor *)data;
+   elm_gengrid_multi_select_set(img_edit->gengrid, false);
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
    images = elm_fileselector_selected_paths_get(obj);
 
    EINA_LIST_FOREACH(images, l, selected)
      {
-        fprintf(stdout, "selected %s\n", selected);
         if (!ecore_file_exists(selected))
           {
              WIN_NOTIFY_ERROR(obj, _("File not exist"));
@@ -538,15 +593,17 @@ _on_image_done(void *data,
              WIN_NOTIFY_ERROR(obj, _("Unable to add folder"))
              continue;
           }
-        fprintf(stdout, "selected %s\n", selected);
         if (edje_edit_image_add(edje_edit_obj, selected))
           {
+             edje_edit_without_source_save(edje_edit_obj, true);
              it = _image_editor_gengrid_item_data_create(edje_edit_obj,
                                                          ecore_file_file_get(selected));
-             elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
+             item = elm_gengrid_item_insert_before(img_edit->gengrid, gic, it,
                                             img_edit->group_items.linked,
                                             _grid_sel, img_edit);
-             project_changed();
+             elm_gengrid_item_selected_set(item, true);
+             if (!elm_gengrid_multi_select_get(img_edit->gengrid))
+               elm_gengrid_multi_select_set(img_edit->gengrid, true);
           }
      }
 
@@ -573,7 +630,7 @@ _on_button_add_clicked_cb(void *data,
    ecore_main_loop_begin();
 
    evas_object_del(win);
-
+   project_changed();
    return;
 }
 
@@ -603,11 +660,14 @@ _on_button_delete_clicked_cb(void *data,
    if (!grid_list) return;
    images_to_del = eina_list_count(grid_list);
 
+
    EINA_LIST_FOREACH_SAFE(grid_list, l, l2, grid_item)
      {
         it = elm_object_item_data_get(grid_item);
         if (edje_edit_image_del(edje_edit_obj, it->image_name))
           {
+             edje_edit_without_source_save(edje_edit_obj, false);
+             project_changed();
              deleted++;
              elm_object_item_del(grid_item);
           }
@@ -971,7 +1031,7 @@ _image_editor_init(Image_Editor *img_edit)
            }
          elm_gengrid_item_bring_in(elm_gengrid_first_item_get(img_edit->gengrid),
                                    ELM_GENGRID_ITEM_SCROLLTO_TOP);
-         eina_list_free(images);
+         edje_edit_string_list_free(images);
      }
    elm_scroller_policy_set(img_edit->gengrid, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);

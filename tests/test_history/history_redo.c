@@ -81,7 +81,7 @@ EFLETE_TEST(history_redo_test_p1)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p1/history_redo_test_p1.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -156,7 +156,7 @@ EFLETE_TEST(history_redo_test_p2)
 
    app->project = pm_project_open("./history_redo_test_p2/history_redo_test_p2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -239,7 +239,7 @@ EFLETE_TEST(history_redo_test_p3)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p3/history_redo_test_p3.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -331,7 +331,7 @@ EFLETE_TEST(history_redo_test_p4)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p4/history_redo_test_p4.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -413,7 +413,7 @@ EFLETE_TEST(history_redo_test_p5)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p5/history_redo_test_p5.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -490,7 +490,7 @@ EFLETE_TEST(history_redo_test_p6)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p6/history_redo_test_p6.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -573,7 +573,7 @@ EFLETE_TEST(history_redo_test_p7)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p7/history_redo_test_p7.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -656,7 +656,7 @@ EFLETE_TEST(history_redo_test_p8)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p8/history_redo_test_p8.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -737,7 +737,7 @@ EFLETE_TEST(history_redo_test_p9)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p9/history_redo_test_p9.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -811,7 +811,7 @@ EFLETE_TEST(history_redo_test_p10)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p10/history_redo_test_p10.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -884,7 +884,7 @@ EFLETE_TEST(history_redo_test_p11)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p11/history_redo_test_p11.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -958,7 +958,7 @@ EFLETE_TEST(history_redo_test_p12)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p12/history_redo_test_p12.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1037,7 +1037,7 @@ EFLETE_TEST(history_redo_test_p13)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p13/history_redo_test_p13.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1119,7 +1119,7 @@ EFLETE_TEST(history_redo_test_p14)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p14/history_redo_test_p14.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1194,7 +1194,7 @@ EFLETE_TEST(history_redo_test_p15)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p15/history_redo_test_p15.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1261,7 +1261,7 @@ EFLETE_TEST(history_redo_test_p16)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p16/history_redo_test_p16.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1328,7 +1328,7 @@ EFLETE_TEST(history_redo_test_p17)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p17/history_redo_test_p17.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1394,7 +1394,7 @@ EFLETE_TEST(history_redo_test_p18)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p18/history_redo_test_p18.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1463,7 +1463,7 @@ EFLETE_TEST(history_redo_test_p19)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_p19/history_redo_test_p19.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1581,11 +1581,11 @@ EFLETE_TEST(history_redo_test_n2)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_redo_test_n2/history_redo_test_n2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
-   edje_object_file_set(style->obj, app->project->dev, "elm/radio/base/def");
+   edje_object_mmap_set(style->obj, app->project->mmap_file, "elm/radio/base/def");
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);

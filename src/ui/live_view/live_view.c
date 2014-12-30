@@ -142,13 +142,14 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         if (!live->in_prog_edit)
           {
              live->object = layout_custom_create(live->layout);
-             elm_layout_file_set(live->object, project->dev, style->full_group_name);
-             elm_object_style_set(live->object, style->full_group_name);
+             edje_object_mmap_set(live->object, project->mmap_file,
+                                  style->full_group_name);
           }
         else
           {
              live->object = layout_prog_edit_create(live->layout);
-             if (!edje_object_file_set(live->object, project->dev, style->full_group_name))
+             if (!edje_object_mmap_set(live->object, project->mmap_file,
+                                       style->full_group_name))
                {
                   evas_object_del(live->object);
                   live->object = elm_label_add(live->layout);
@@ -197,7 +198,7 @@ live_view_theme_update(Live_View *live, Project *project)
    if ((!live) || (!project) || (!live->object)) return false;
 #ifdef HAVE_ENVENTOR
    if ((app_data_get())->enventor_mode)
-     path = eina_stringshare_printf("%s/tmp.edj", (app_data_get())->project->develop_path);
+     path = eina_stringshare_printf("%s/tmp.edj", project->develop_path);
    else
 #endif /* HAVE_ENVENTOR */
      path = eina_stringshare_add(project->dev);
@@ -208,6 +209,17 @@ live_view_theme_update(Live_View *live, Project *project)
         eina_stringshare_del(path);
         return false;
      }
+
+   if (project->current_style->__type == LAYOUT)
+     {
+        eina_file_map_free(project->mmap_file, live->object);
+        edje_object_mmap_set(live->object, project->mmap_file,
+                             project->current_style->full_group_name);
+        edje_object_calc_force(live->object);
+        eina_stringshare_del(path);
+        return true;
+     }
+
 
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, path);
@@ -227,23 +239,6 @@ live_view_theme_update(Live_View *live, Project *project)
     * TODO: dig into edje, eet or eina_file module to find out how to refresh
     * all links to saved file.
     */
-   if (!edje_object_file_set(project->current_style->obj,
-                             path,
-                             project->current_style->full_group_name))
-     {
-        ERR("Something bad happened with live view or opened project file! \n");
-        eina_stringshare_del(path);
-        return false;
-     }
-
-   if (project->current_style->__type == LAYOUT)
-     {
-        elm_layout_file_set(live->object, path,
-                            project->current_style->full_group_name);
-        eina_stringshare_del(path);
-        return true;
-     }
-
    eina_stringshare_del(path);
    return true;
 }
@@ -251,7 +246,11 @@ live_view_theme_update(Live_View *live, Project *project)
 Eina_Bool
 live_view_free(Live_View *live)
 {
-   if (live) live_view_widget_style_unset(live);
+   if (live)
+     {
+        live_view_widget_style_unset(live);
+        live_view_property_free(live->property);
+     }
    else return false;
 
    free(live);

@@ -30,4 +30,10 @@ To install program to specified directory use --prefix option on configure step:
 
    ./autogen.sh --prefix=/full/path/to/some/dir
 
+Apllying themes:
+----------------
 
+To apply created theme to elementary you should place exported .edj-file to
+elementary themes dir (default: /usr/local/share/elementary/themes). Note do not
+forget to add read permissions to copied file.
+After that theme will be available for selection from elementary_config.

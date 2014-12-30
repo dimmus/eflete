@@ -24,6 +24,7 @@
 /**
  * @defgroup project_manager_test
  */
+#define TEST_NAME "project_manager"
 
 void pm_project_import_edj_test_p(int);
 void pm_project_import_edj_test_p1(int);
@@ -47,3 +48,9 @@ void pm_project_close_test_p(int);
 void pm_project_meta_data_set_test_p(int);
 
 void pm_project_meta_data_get_test_p(int);
+
+void pm_style_resource_export_test_p(int);
+void pm_style_resource_export_test_n1(int);
+void pm_style_resource_export_test_n2(int);
+void pm_style_resource_export_test_n3(int);
+

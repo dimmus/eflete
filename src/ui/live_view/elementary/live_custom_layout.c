@@ -18,15 +18,65 @@
  */
 
 #include "live_elementary_widgets.h"
+void
+on_layout_swallow_check(void *data,
+                        Evas_Object *obj,
+                        void *ei __UNUSED__)
+{
+   Evas_Object *rect = NULL;
+
+   Evas_Object *object = (Evas_Object *)data;
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+
+   if (elm_check_state_get(obj))
+     {
+        rect = evas_object_rectangle_add(object);
+        evas_object_color_set(rect, RECT_COLOR);
+        edje_object_part_swallow(object, part_name, rect);
+     }
+   else
+     {
+        rect = edje_object_part_swallow_get(object, part_name);
+        edje_object_part_unswallow(object, rect);
+        evas_object_del(rect);
+     }
+}
+
+void
+on_layout_text_check(void *data,
+                     Evas_Object *obj,
+                     void *ei __UNUSED__)
+{
+   Evas_Object *object = (Evas_Object *)data;
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+
+   if (elm_check_state_get(obj))
+     edje_object_part_text_set(object, part_name,
+                               _("Look at it! This is absolutely and totally text"));
+   else
+     edje_object_part_text_set(object, part_name, "");
+}
+
+void
+send_layout_signal(void *data,
+                   Evas_Object *obj,
+                   void *ei __UNUSED__)
+{
+   Evas_Object *object = (Evas_Object *)data;
+   const char *name = evas_object_data_get(obj, SIGNAL_NAME);
+   const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
+
+   edje_object_signal_emit(object, name, source);
+}
 
 Evas_Object *
 layout_custom_create(Evas_Object *parent)
 {
-   Evas_Object *object = elm_layout_add(parent);
+   Evas_Object *object = edje_object_add(evas_object_evas_get(parent));
 
-   evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
-   evas_object_data_set(object, TEXT_FUNC, on_text_check);
-   evas_object_data_set(object, SIGNAL_FUNC, send_signal);
+   evas_object_data_set(object, SWALLOW_FUNC, on_layout_swallow_check);
+   evas_object_data_set(object, TEXT_FUNC, on_layout_text_check);
+   evas_object_data_set(object, SIGNAL_FUNC, send_layout_signal);
 
    return object;
 }

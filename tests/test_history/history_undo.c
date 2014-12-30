@@ -80,7 +80,7 @@ EFLETE_TEST(history_undo_test_p1)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p1/history_undo_test_p1.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -152,7 +152,7 @@ EFLETE_TEST(history_undo_test_p2)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p2/history_undo_test_p2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -232,7 +232,7 @@ EFLETE_TEST(history_undo_test_p3)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p3/history_undo_test_p3.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -319,7 +319,7 @@ EFLETE_TEST(history_undo_test_p4)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p4/history_undo_test_p4.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -399,7 +399,7 @@ EFLETE_TEST(history_undo_test_p5)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p5/history_undo_test_p5.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -473,7 +473,7 @@ EFLETE_TEST(history_undo_test_p6)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p6/history_undo_test_p6.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -552,7 +552,7 @@ EFLETE_TEST(history_undo_test_p7)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p7/history_undo_test_p7.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -629,7 +629,7 @@ EFLETE_TEST(history_undo_test_p8)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p8/history_undo_test_p8.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -706,7 +706,7 @@ EFLETE_TEST(history_undo_test_p9)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p9/history_undo_test_p9.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    old_value = edje_edit_group_max_h_get(style->obj);
@@ -777,7 +777,7 @@ EFLETE_TEST(history_undo_test_p10)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p10/history_undo_test_p10.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -851,7 +851,7 @@ EFLETE_TEST(history_undo_test_p11)
    app->project = pm_project_open("./history_undo_test_p11/history_undo_test_p11.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -924,7 +924,7 @@ EFLETE_TEST(history_undo_test_p12)
    app->project = pm_project_open("./history_undo_test_p12/history_undo_test_p12.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -997,7 +997,7 @@ EFLETE_TEST(history_undo_test_p13)
    app->project = pm_project_open("./history_undo_test_p13/history_undo_test_p13.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1067,7 +1067,7 @@ EFLETE_TEST(history_undo_test_p14)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p14/history_undo_test_p14.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1138,7 +1138,7 @@ EFLETE_TEST(history_undo_test_p15)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p15/history_undo_test_p15.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1216,7 +1216,7 @@ EFLETE_TEST(history_undo_test_p16)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p16/history_undo_test_p16.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1297,7 +1297,7 @@ EFLETE_TEST(history_undo_test_p17)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_p17/history_undo_test_p17.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1370,7 +1370,7 @@ EFLETE_TEST(history_undo_test_p18)
    app->project = pm_project_open("./history_undo_test_p18/history_undo_test_p18.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1437,7 +1437,7 @@ EFLETE_TEST(history_undo_test_p19)
    app->project = pm_project_open("./history_undo_test_p19/history_undo_test_p19.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1508,7 +1508,7 @@ EFLETE_TEST(history_undo_test_p20)
    app->project = pm_project_open("./history_undo_test_p20/history_undo_test_p20.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1583,7 +1583,7 @@ EFLETE_TEST(history_undo_test_p21)
    app->project = pm_project_open("./history_undo_test_p21/history_undo_test_p21.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1651,7 +1651,7 @@ EFLETE_TEST(history_undo_test_p22)
    app->project = pm_project_open("./history_undo_test_p22/history_undo_test_p22.pro");
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);
@@ -1765,7 +1765,7 @@ EFLETE_TEST(history_undo_test_n2)
    ui_main_window_add(app);
    app->project = pm_project_open("./history_undo_test_n2/history_undo_test_n2.pro");
    wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win), app->project->dev);
+                                evas_object_evas_get(app->win), app->project->mmap_file);
    style = wm_style_object_find(app->project->widgets, "elm/radio/base/def");
    ui_style_clicked(app, style);
    history_module_add(style->obj);

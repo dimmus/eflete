@@ -68,6 +68,7 @@ FLAGS = \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
+@ENVENTOR_CFLAGS@ \
 @EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
@@ -76,7 +77,8 @@ LD = $(top_builddir)/src/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
 @EWE_LIBS@ \
-@ELEMENTARY_LIBS@
+@ELEMENTARY_LIBS@ \
+@ENVENTOR_LIBS@
 
 eflete_test_SOURCES = \
 test_eflete/test_eflete.c \
@@ -192,7 +194,8 @@ test_project_manager/pm_project_open.c \
 test_project_manager/pm_project_save.c \
 test_project_manager/pm_project_close.c \
 test_project_manager/pm_project_meta_data_set.c \
-test_project_manager/pm_project_meta_data_get.c
+test_project_manager/pm_project_meta_data_get.c \
+test_project_manager/pm_style_resource_export.c
 project_manager_test_CFLAGS = ${FLAGS}
 project_manager_test_LDADD = ${LD}
 
@@ -426,6 +429,7 @@ live_view_test_LDADD = ${LD}
 live_view_prop_test_SOURCES = \
 test_live_view_prop/test_live_view_prop.c \
 test_live_view_prop/live_view_property_add.c \
+test_live_view_prop/live_view_property_free.c \
 test_live_view_prop/live_view_property_style_set.c \
 test_live_view_prop/live_view_property_style_unset.c
 live_view_prop_test_CFLAGS = ${FLAGS}

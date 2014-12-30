@@ -40,9 +40,10 @@
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
  *
  * @procedure
  * @step 1 call workspace_edit_object_set
@@ -61,16 +62,19 @@ EFLETE_TEST (workspace_edit_object_set_test_p)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_set.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
+   wm_style_data_load(style, e, mmap_file);
    res = workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_TRUE, "Fail add edit object into workspace");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
@@ -90,9 +94,10 @@ END_TEST
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
  *
  * @procedure
  * @step 1 call workspace_edit_object_set with invalid file path.
@@ -111,17 +116,20 @@ EFLETE_TEST (workspace_edit_object_set_test_n)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_set.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
+   wm_style_data_load(style, e, mmap_file);
    res = workspace_edit_object_set(workspace, style,
                                    "./edj_build/invalid.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object with invalid file path");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
@@ -140,8 +148,9 @@ END_TEST
  * @precondition
  * @step 1 initialize elementary library
  * @step 2 create parent window
- * @step 3 create style object
- * @step 4 load style data from edje file
+ * @step 3 Mmap edj file.
+ * @step 4 create style object
+ * @step 5 load style data from edje file
  *
  * @procedure
  * @step 1 call workspace_edit_object_set with invalid workspace param.
@@ -159,15 +168,18 @@ EFLETE_TEST (workspace_edit_object_set_test_n1)
    Evas_Object *parent;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_set.edj", EINA_FALSE);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
+   wm_style_data_load(style, e, mmap_file);
    res = workspace_edit_object_set(NULL, style, "./edj_build/workspace_edit_object_set.edj");
    ck_assert_msg(res == EINA_FALSE, "Add edit object to workspace NULL object");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -225,9 +237,10 @@ END_TEST
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
  *
  * @procedure
  * @step 1 call workspace_edit_object_set with NULL file path.
@@ -246,16 +259,19 @@ EFLETE_TEST (workspace_edit_object_set_test_n3)
    Evas_Object *parent, *workspace;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_set.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_set.edj");
+   wm_style_data_load(style, e, mmap_file);
    res = workspace_edit_object_set(workspace, style, NULL);
    ck_assert_msg(res == EINA_FALSE, "Add edit object with NULL file path");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);

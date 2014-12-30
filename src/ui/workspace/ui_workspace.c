@@ -1102,6 +1102,7 @@ Eina_Bool
 workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 {
    Evas_Coord x, y, w, h, ruler_ver_w, ruler_hor_h, hrb_w, hrb_h;
+   App_Data *app = app_data_get();
 
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
 
@@ -1195,6 +1196,13 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    max_h = edje_edit_group_max_h_get(sd->style->obj);
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
+   //TODO: need refactoring (All communications beetween submodules
+   //      should be implemented in ui_connector)
+   if (app->live_view)
+     {
+        container_min_size_set(app->live_view->live_view, min_w, min_h);
+        container_max_size_set(app->live_view->live_view, max_w, max_h);
+     }
 
    evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
    evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
@@ -1242,6 +1250,9 @@ Eina_Bool
 workspace_edit_object_recalc(Evas_Object *obj)
 {
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   App_Data *app = app_data_get();
+
+   if (!sd->groupedit) return false;
 
    Evas_Coord min_w, max_w, min_h, max_h;
    min_w = edje_edit_group_min_w_get(sd->style->obj);
@@ -1250,6 +1261,13 @@ workspace_edit_object_recalc(Evas_Object *obj)
    max_h = edje_edit_group_max_h_get(sd->style->obj);
    container_min_size_set(sd->container.obj, min_w, min_h);
    container_max_size_set(sd->container.obj, max_w, max_h);
+   //TODO: need refactoring (All communications beetween submodules
+   //      should be implemented in ui_connector)
+   if (app->live_view)
+     {
+        container_min_size_set(app->live_view->live_view, min_w, min_h);
+        container_max_size_set(app->live_view->live_view, max_w, max_h);
+     }
 
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }

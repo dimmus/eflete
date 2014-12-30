@@ -68,6 +68,8 @@ struct _Project
    /**< list of custom layouts int loaded theme */
    Eina_Inlist *layouts;
 
+   Eina_File *mmap_file; /**< mmaped dev file*/
+
    Eina_List *added_sounds;
 
    Eina_Bool changed : 1;
@@ -495,5 +497,27 @@ pm_project_enventor_save(Project *project,
                          PM_Project_Progress_Cb func_progress,
                          PM_Project_End_Cb func_end,
                          const void *data) EINA_ARG_NONNULL(1);
+
+/**
+ * Export the resources, that uses into given style.
+ *
+ * This function collect lists of the resources, that uses in tgiven style. It
+ * can be images, sounds or fonts.
+ * Export images into directory path/images, in case if image stored in edj
+ * have path (like: O/border.png) path will restored (path/images/O/border.png).
+ * Will exported all images for group, include images from tween lists.
+ * Export sounds, that uses in programs. Will saved into directory path/sounds
+ * Export fonts into directory path/fonts
+ *
+ * @param pro The opened project;
+ * @param style The style to save the source code;
+ * @param path The dir, where resources will stored.
+ *
+ * @return EINA_TRUE if resources exported successful or EINA_FALSE in otherwise.
+ *
+ * @ingroup ProjectManager.
+ */
+Eina_Bool
+pm_style_resource_export(Project *pro, Style *style, Eina_Stringshare *path);
 
 #endif /* PROJECT_MANAGER_H */

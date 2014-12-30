@@ -40,10 +40,11 @@
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file and store pointer in variable
- * @step 7 set edit object into workspace
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file and store pointer in variable
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 get style with workspace_edit_object_get
@@ -61,17 +62,20 @@ EFLETE_TEST (workspace_edit_object_get_test_p)
    Evas_Object *parent, *workspace;
    Style *style = NULL, *style_ret = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_get.edj", EINA_FALSE);
    style = wm_style_add("test", "elm/radio/base/test", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_get.edj");
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_get.edj");
    style_ret = workspace_edit_object_get(workspace);
    ck_assert_msg(style == style_ret, "Setted and getted style objects are not equals");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);

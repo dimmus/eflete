@@ -587,6 +587,7 @@ _smart_del(Evas_Object *obj)
    free(highlight->handler_LB);
    free(highlight->handler_LT);
    free(highlight->handler_MIDDLE);
+   free(highlight->events);
 
   _highlight_parent_sc->del(obj);
 }

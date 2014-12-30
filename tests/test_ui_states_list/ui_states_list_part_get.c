@@ -40,10 +40,11 @@
  * @step 1 initialized elm.
  * @step 2 add theme extension "eflete theme".
  * @step 3 created Window.
- * @step 4 Style filled with data.
- * @step 5 created States List
- * @step 6 Part which states will be shown and set.
- * @step 7 Part was set into states list.
+ * @step 4 Mmap edj file.
+ * @step 5 Style filled with data.
+ * @step 6 created States List
+ * @step 7 Part which states will be shown and set.
+ * @step 8 Part was set into states list.
  *
  * @procedure
  * @step 1 Call function ui_states_list_part_get(gl_states).
@@ -64,13 +65,15 @@ EFLETE_TEST(ui_states_list_part_get_test_p1)
    const char *edj = "./edj_build/ui_states_list_part_get.edj";
    const char *style_name = "def";
    const char *full_style_name = "elm/radio/base/def";
+   Eina_File *mmap_file = NULL;
 
    elm_init(0,0);
    elm_theme_extension_add(NULL, EFLETE_THEME);
    window = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open(edj, EINA_FALSE);
    e = evas_object_evas_get(window);
    style = wm_style_add(style_name, full_style_name, STYLE, NULL);
-   wm_style_data_load(style, e, edj);
+   wm_style_data_load(style, e, mmap_file);
    gl_states = ui_states_list_add(window);
    part = EINA_INLIST_CONTAINER_GET(style->parts, Part);
    ui_states_list_data_set(gl_states, style, part);
@@ -82,6 +85,7 @@ EFLETE_TEST(ui_states_list_part_get_test_p1)
 
    elm_theme_extension_del(NULL, EFLETE_THEME);
 
+   eina_file_close(mmap_file);
    elm_shutdown();
 }
 END_TEST

@@ -35,6 +35,7 @@ struct _Shortcut_Module
                                                         shortcuts */
    Eina_Hash *shortcut_functions; /**< list of user's shortcuts */
    Eina_List *holded_functions; /**< list of functions that is being held */
+   Eina_List *keys;             /* list of pointer to hash keys to be freed */
 };
 
 static void
@@ -63,6 +64,7 @@ _##FUNC##_part_add_cb(App_Data *ap) \
    Evas_Object *workspace = ap->workspace; \
    Evas_Object *widget_list = ui_block_widget_list_get(ap); \
    Style *style = workspace_edit_object_get(workspace); \
+   if (!style) return false; \
    char name[9]; \
    _random_name_generate(name, 9); \
    if (workspace_edit_object_part_add(workspace, name, TYPE, NULL)) \
@@ -85,7 +87,9 @@ PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 
-/* this one will delete part or style or layout or state */
+/* this one will delete part or style or layout or state.
+   TODO: move this code or some of it's part to Connector,
+ */
 Eina_Bool
 _item_delete_cb(App_Data *app)
 {
@@ -98,14 +102,13 @@ _item_delete_cb(App_Data *app)
    if ((nf) && (elm_object_focus_get(nf)))
      {
         selected = ewe_tabs_active_item_get(nf);
-        /* try to delete part */
-        evas_object_smart_callback_call(nf, "wl,part,del", NULL);
         /* try to delete layout */
         if ((evas_object_data_get(nf, "layouts_tab") == selected) &&
             ((!app->project->current_style) ||
              (app->project->current_style->__type != LAYOUT)))
           {
              evas_object_smart_callback_call(app->block.left_top, "wl,layout,del", nf);
+             return true;
           }
         /* try to delete style */
         else if ((evas_object_data_get(nf, "widgets_tab") == selected) &&
@@ -116,16 +119,28 @@ _item_delete_cb(App_Data *app)
              nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
                                                    "elm.swallow.content");
              glit = elm_genlist_selected_item_get(nf);
-             _style = elm_object_item_data_get(glit);
-             if (_style->__type != WIDGET)
-               evas_object_smart_callback_call(app->block.left_top, "wl,style,del", NULL);
+             if (glit)
+               {
+                  _style = elm_object_item_data_get(glit);
+                  if (_style->__type != WIDGET)
+                    {
+                       evas_object_smart_callback_call(app->block.left_top, "wl,style,del", NULL);
+                       return true;
+                    }
+               }
           }
      }
 
    /* if state list is in focus */
    nf = ui_block_state_list_get(app);
    if ((nf) && (elm_object_focus_get(nf)))
-     evas_object_smart_callback_call(nf, "stl,state,del", NULL);
+     {
+        evas_object_smart_callback_call(nf, "stl,state,del", NULL);
+        return true;
+     }
+
+   /* try to delete part */
+   evas_object_smart_callback_call(ui_block_widget_list_get(app), "wl,part,del", NULL);
 
    return true;
 }
@@ -189,9 +204,12 @@ _new_style_create_cb(App_Data *app)
         nf = elm_object_item_part_content_get(elm_naviframe_top_item_get(nf),
                                               "elm.swallow.content");
         glit = elm_genlist_selected_item_get(nf);
-        _style = elm_object_item_data_get(glit);
-        if (_style->__type != WIDGET)
-          evas_object_smart_callback_call(app->block.left_top, "wl,style,add", NULL);
+        if (glit)
+          {
+             _style = elm_object_item_data_get(glit);
+             if (_style->__type != WIDGET)
+               evas_object_smart_callback_call(app->block.left_top, "wl,style,add", NULL);
+          }
      }
    return true;
 }
@@ -369,6 +387,7 @@ _highlight_align_show_switch_cb(App_Data *app)
 Eina_Bool
 _object_area_show_switch_cb(App_Data *app)
 {
+   if ((!app->project) || (!app->project->current_style)) return false;
    Eina_Bool flag = workspace_object_area_visible_get(app->workspace);
    workspace_object_area_visible_set(app->workspace, !flag);
    return true;
@@ -661,6 +680,7 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
              free(key);
              return false;
           }
+        ap->shortcuts->keys = eina_list_append(ap->shortcuts->keys, key);
      }
 
    return true;
@@ -691,11 +711,18 @@ shortcuts_shutdown(App_Data *ap)
    if ((!_sc_functions) || (!ap) || (!ap->shortcuts))
      return false;
 
-   free(ap->shortcuts);
-   ap->shortcuts = NULL;
+   Key_Pair *key;
+
+   shortcuts_main_del(ap);
 
    eina_hash_free(_sc_functions);
    _sc_functions = NULL;
+
+   EINA_LIST_FREE(ap->shortcuts->keys, key)
+     free(key);
+
+   free(ap->shortcuts);
+   ap->shortcuts = NULL;
 
    return true;
 }

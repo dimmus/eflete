@@ -74,7 +74,7 @@ EFLETE_TEST(live_view_theme_update_test_p1)
    project = pm_project_open("./live_view_theme_update_test_p1/live_view_theme_update_test_p1.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, project->dev);
+   wm_style_data_load(style, e, project->mmap_file);
    project->current_style = style;
    live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, style);
@@ -134,7 +134,7 @@ EFLETE_TEST(live_view_theme_update_test_p2)
    project = pm_project_open("./live_view_theme_update_test_p2/live_view_theme_update_test_p2.pro");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
-   wm_style_data_load(layout, e, project->dev);
+   wm_style_data_load(layout, e, project->mmap_file);
    project->current_style = layout;
    live = live_view_add(parent, false);
    live_view_widget_style_set(live, project, layout);
@@ -191,7 +191,7 @@ EFLETE_TEST(live_view_theme_update_test_n1)
    project = pm_project_open("./live_view_theme_update_test_n1/live_view_theme_update_test_n1.pro");
    e = evas_object_evas_get(parent);
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, project->dev);
+   wm_style_data_load(style, e, project->mmap_file);
    project->current_style = style;
 
    res = live_view_theme_update(NULL, project);
@@ -287,7 +287,7 @@ EFLETE_TEST(live_view_theme_update_test_n3)
    project = pm_project_open("./live_view_theme_update_test_n3/live_view_theme_update_test_n3.pro");
    e = evas_object_evas_get(parent);
    layout = wm_style_add("load/layout/test", "load/layout/test", LAYOUT, NULL);
-   wm_style_data_load(layout, e, project->dev);
+   wm_style_data_load(layout, e, project->mmap_file);
    live = live_view_add(parent, false);
 
    res = live_view_theme_update(live, project);

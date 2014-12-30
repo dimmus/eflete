@@ -38,7 +38,8 @@
  * <td>
  * @step 1 initialized efl and app
  * @step 2 main_window created
- * @step 3 Style filled with parts
+ * @step 3 Mmap edj file.
+ * @step 4 Style filled with parts
  *
  * @procedure
  * @step 1 Call animator_window_add(Style)
@@ -59,20 +60,23 @@ EFLETE_TEST (animator_window_add_test_p)
    Eina_Inlist *widget_list = NULL;
    Evas *e = NULL;
    Style *style;
+   Eina_File *mmap_file = NULL;
 
    app_init();
    app = app_data_get();
    win = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    app->win = win;
    e = evas_object_evas_get(win);
+   mmap_file = eina_file_open(file, EINA_FALSE);
    widget_list = wm_widgets_list_new(file);
-   wm_widgets_list_objects_load(widget_list, e, file);
+   wm_widgets_list_objects_load(widget_list, e, mmap_file);
    style = wm_style_object_find(widget_list, full_style_name);
 
    manager = animator_window_add(style);
    ck_assert_msg(manager != NULL, "cannot create new Animator");
 
    wm_widgets_list_free(widget_list);
+   eina_file_close(mmap_file);
    app_shutdown();
    elm_shutdown();
 }

@@ -31,9 +31,10 @@ static int _menu_delayed_event = 0;
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
    MENU_FILE_EXPORT_EDC,
+/* MENU_FILE_EXPORT_EDC_PROJECT,*/ /*TODO enable after implementation*/
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
-   MENU_FILE_EXPORT_RELEASE,
+/* MENU_FILE_EXPORT_RELEASE,*/
    MENU_VIEW_WORKSPACE,
    MENU_VIEW_WORKSPACE_ZOOM_IN,
    MENU_VIEW_WORKSPACE_ZOOM_OUT,
@@ -55,6 +56,7 @@ int MENU_ITEMS_LIST_STYLE_ONLY[] = {
    MENU_EDITORS_ANIMATOR,
    MENU_VIEW_WORKSPACE_SEPARATE,
    MENU_VIEW_WORKSPACE_OBJECT_AREA,
+   MENU_FILE_EXPORT_EDC_GROUP,
 
    MENU_NULL
 };
@@ -97,42 +99,35 @@ _menu_cb(void *data __UNUSED__,
    switch (menu_event->mid)
      {
       case MENU_FILE_NEW_PROJECT:
-         if (!project_close(ap))
-           return ECORE_CALLBACK_DONE;
+         if (!project_close(ap)) break;
          wizard_new_project_add(ap);
          break;
       case MENU_FILE_OPEN_PROJECT:
          project_open();
          break;
       case MENU_FILE_IMPORT_EDJ:
-         if (!project_close(ap))
-           return ECORE_CALLBACK_DONE;
+         if (!project_close(ap)) break;
          wizard_import_edj_add(ap);
          break;
       case MENU_FILE_IMPORT_EDC:
-         if (!project_close(ap))
-           return ECORE_CALLBACK_DONE;
+         if (!project_close(ap)) break;
          wizard_import_edc_add(ap);
          break;
       case MENU_FILE_SAVE:
          project_save();
          break;
-      case MENU_FILE_EXPORT_EDC:
-         /* TODO: add implementation here */
+      case MENU_FILE_EXPORT_EDC_GROUP:
+         project_export_edc_group();
          break;
+      case MENU_FILE_EXPORT_EDC_PROJECT:
+          /* TODO: add implementation here */
+          break;
       case MENU_FILE_EXPORT_DEVELOP:
          project_export_develop();
          break;
       case MENU_FILE_CLOSE_PROJECT:
            {
-              if (!project_close_request(ap,
-                                         _("You want to close project. <br/>"
-                                           "If you dont save opened project<br/>"
-                                           "all your changes will be lost!")))
-
-                pm_project_close(ap->project);
-              STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-              blocks_hide(ap);
+              if (!project_close(ap)) break;
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
               ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
@@ -248,14 +243,16 @@ ui_menu_add(App_Data *ap)
    menu->menu_items[ID] = elm_menu_item_add(window_menu, menu->menu_items[PARENT_ID], ICON, LABEL, _delay_menu_cb, &sad_callback_data[ID]);
 
    ITEM_MENU_ADD(MENU_NULL, MENU_FILE, NULL, _("File"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, NULL, _("New project..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, NULL, _("Open project..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT, NULL, _("New project"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT, NULL, _("Open project"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, NULL, _("Save"))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export to edc..."))
-      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as..."))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"))
+         ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"))
+      ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT, NULL, _("Export as edj"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_DEVELOP, NULL, _("Develop"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT, MENU_FILE_EXPORT_RELEASE, NULL, _("Release"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
@@ -317,6 +314,10 @@ ui_menu_add(App_Data *ap)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    ui_menu_disable_set(menu, MENU_FILE_CLOSE_PROJECT, true);
+
+   /*TODO remove both lines after implementation this features*/
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
+   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_PROJECT, true);
 
    menu->window_menu = window_menu;
    menu->toolbar = toolbar;

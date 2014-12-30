@@ -96,7 +96,7 @@ EFLETE_TEST (colorclass_viewer_add_test_p)
    ui_main_window_add(app);
    wm_widgets_list_objects_load(app->project->widgets,
                                 evas_object_evas_get(app->win),
-                                app->project->dev);
+                                app->project->mmap_file);
 
    colorclass  = colorclass_viewer_add(app->project);
    ck_assert_msg(colorclass != NULL, "Unable to create image editor window");

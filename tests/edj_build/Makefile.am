@@ -35,6 +35,7 @@ check: Makefile
 	$(builddir)/workspace_highlight_align_visible_set.edj \
 	$(builddir)/workspace_object_area_visible_get.edj \
 	$(builddir)/workspace_object_area_visible_set.edj \
+	$(builddir)/workspace_zoom_factor_get.edj \
 	$(builddir)/groupedit_edit_object_unset.edj \
 	$(builddir)/groupedit_edit_object_set.edj \
 	$(builddir)/live_view.edj \
@@ -80,6 +81,7 @@ check: Makefile
 	$(builddir)/history.edj \
 	$(builddir)/history_diff_add.edj \
 	$(builddir)/preference.edj \
+	$(builddir)/project_manager.edj \
 	;do cp $(builddir)/radio.edj $$i; done
 clean-local:
 	rm -f *.edj

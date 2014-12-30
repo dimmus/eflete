@@ -49,6 +49,7 @@ struct _Prop_Data
    Evas_Object *code;
 #ifndef HAVE_ENVENTOR
    color_data *color_data;
+   Eina_Strbuf *strbuf;
 #endif
    struct {
       Evas_Object *frame;
@@ -124,6 +125,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *text;
       Evas_Object *style; /* not implemented in yet the edje  */
+      Evas_Object *align;
       Evas_Object *min;
       Evas_Object *max;
       Evas_Object *source;
@@ -278,6 +280,7 @@ _del_prop_data(void *data,
    Prop_Data *pd = (Prop_Data *)data;
 #ifndef HAVE_ENVENTOR
    color_term(pd->color_data);
+   eina_strbuf_free(pd->strbuf);
 #endif
    free(pd);
 }
@@ -407,7 +410,8 @@ ui_property_add(Evas_Object *parent)
    evas_object_size_hint_align_set(pd->code, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_entry_scrollable_set(pd->code, true);
    elm_entry_editable_set(pd->code, false);
-   pd->color_data = color_init(eina_strbuf_new());
+   pd->strbuf = eina_strbuf_new();
+   pd->color_data = color_init(pd->strbuf);
    ewe_tabs_item_content_set(tabs, it, pd->code);
 #endif
 
@@ -1997,6 +2001,11 @@ ui_property_state_textblock_set(Evas_Object *property)
          pd_textblock.style = prop_item_state_text_style_add(box, pd,
                            _on_state_text_style_change,
                            _("Set the text style of part."));
+         pd_textblock.align = prop_item_state_text_align_x_y_add(box, pd,
+                             0, 100, 1, NULL, "x:", "%", "y:", "%",
+                             _("Text horizontal align. 0 = left  100 = right"),
+                             _("Text vertical align. 0 = top  100 = bottom"),
+                             true);
          pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -2033,6 +2042,7 @@ ui_property_state_textblock_set(Evas_Object *property)
 
          elm_box_pack_end(box, pd_textblock.text);
          elm_box_pack_end(box, pd_textblock.style);
+         elm_box_pack_end(box, pd_textblock.align);
          elm_box_pack_end(box, pd_textblock.min);
          elm_box_pack_end(box, pd_textblock.max);
          elm_box_pack_end(box, pd_textblock.source);
@@ -2049,6 +2059,7 @@ ui_property_state_textblock_set(Evas_Object *property)
      {
         prop_item_state_text_update(pd_textblock.text, pd);
         prop_item_state_text_style_update(pd_textblock.style, pd);
+        prop_item_state_text_style_update(pd_textblock.align, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
         prop_item_part_source_update(pd_textblock.source, pd);
@@ -2103,6 +2114,7 @@ _on_image_editor_done(void *data,
    evas_object_smart_callback_call(image_entry, "changed,user", NULL);
    ewe_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
+   project_changed();
 }
 
 static void
@@ -2387,9 +2399,6 @@ ui_property_state_image_set(Evas_Object *property)
                              _("Current image name"),
                              _("Change image"));
         Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
-        ewe_entry_regex_set(entry, IMAGE_NAME_REGEX, EWE_REG_ICASE | EWE_REG_EXTENDED);
-        ewe_entry_regex_autocheck_set(entry, true);
-        ewe_entry_regex_glow_set(entry, true);
         pd_image.border = prop_item_state_image_border_add(box, pd,
                              _("Image's border value"));
         entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");

@@ -115,6 +115,10 @@ _groupedit_smart_del(Evas_Object *o)
 
    _parts_list_free(sd);
 
+   free(sd->real_size);
+   free(sd->con_current_size);
+   free(sd->obj_area.geom);
+
    _groupedit_parent_sc->del(o);
 }
 

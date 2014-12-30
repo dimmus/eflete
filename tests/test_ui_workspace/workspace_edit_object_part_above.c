@@ -40,10 +40,11 @@
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
- * @step 7 set edit object into workspace
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Above exist part. Here should returned EINA_TRUE.
@@ -62,12 +63,14 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    Eina_Bool ret = EINA_FALSE;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_above.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "radio");
    ck_assert_msg(ret == EINA_TRUE, "Failed above part");
@@ -75,6 +78,7 @@ EFLETE_TEST (workspace_edit_object_part_above_test_p)
    ck_assert_msg(ret == EINA_FALSE, "Already top part above again");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
@@ -94,10 +98,11 @@ END_TEST
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
- * @step 7 set edit object into workspace
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Above non exist part.
@@ -115,17 +120,20 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n)
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_above.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, "non_exist");
    ck_assert_msg(ret == EINA_FALSE, "Non exist part is above");
 
    wm_style_free(style);
+   eina_file_close(mmap_file);
    workspace_edit_object_unset(workspace);
    evas_object_del(workspace);
    evas_object_del(parent);
@@ -145,10 +153,11 @@ END_TEST
  * @step 1 initialize elementary library
  * @step 2 load extenstion theme from EFLETE_THEME file
  * @step 3 create parent window
- * @step 4 create workspace object
- * @step 5 create style object
- * @step 6 load style data from edje file
- * @step 7 set edit object into workspace
+ * @step 4 Mmap edj file.
+ * @step 5 create workspace object
+ * @step 6 create style object
+ * @step 7 load style data from edje file
+ * @step 8 set edit object into workspace
  *
  * @procedure
  * @step 1 Above part with NULL pointer string name.
@@ -166,17 +175,20 @@ EFLETE_TEST (workspace_edit_object_part_above_test_n1)
    Eina_Bool ret = EINA_TRUE;
    Style *style = NULL;
    Evas *e = NULL;
+   Eina_File *mmap_file = NULL;
 
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
+   mmap_file = eina_file_open("./edj_build/workspace_edit_object_part_above.edj", EINA_FALSE);
    workspace = workspace_add(parent);
    e = evas_object_evas_get(parent);
    style = wm_style_add("test", "elm/radio/base/def", STYLE, NULL);
-   wm_style_data_load(style, e, "./edj_build/workspace_edit_object_part_above.edj");
+   wm_style_data_load(style, e, mmap_file);
    workspace_edit_object_set(workspace, style, "./edj_build/workspace_edit_object_part_above.edj");
    ret = workspace_edit_object_part_above(workspace, NULL);
    ck_assert_msg(ret == EINA_FALSE, "NULL named part is above");
 
    workspace_edit_object_unset(workspace);
+   eina_file_close(mmap_file);
    evas_object_del(workspace);
    evas_object_del(parent);
    wm_style_free(style);

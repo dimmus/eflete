@@ -355,7 +355,7 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
 
         NOTIFY_INFO(3, "%s", eina_strbuf_string_get(dep_message));
      }
-
+   eina_strbuf_free(dep_message);
    eina_strbuf_append(edc, "data.item: \"version\" \"110\";\n\n");
    eina_strbuf_append(edc, "collections {\n");
    eina_strbuf_append(edc, "   #include \"fonts.edc\"\n");
@@ -458,8 +458,8 @@ _splash_setup_new_project(void *data, Splash_Status status __UNUSED__)
                                         wiew);
    wiew->progress_log = eina_strbuf_new();
 
-   //eina_strbuf_free(edc);
-   //eina_strbuf_free(flags);
+   eina_strbuf_free(edc);
+   eina_strbuf_free(flags);
    eina_stringshare_del(edc_path);
 
    return false;
@@ -593,6 +593,7 @@ wizard_import_edc_add(App_Data *ap __UNUSED__)
    wiew = wizard_import_common_add("elm/layout/wizard/import_edc");
    if (!wiew) return NULL;
 
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    mw_title_set(wiew->win, _("Wizard: import edc"));
    project_path_item_add(wiew, _("Path to edc file:"), _on_edc_bt);
 
@@ -719,6 +720,7 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
    Evas_Object *genlist, *check;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    wiew = wizard_import_common_add("elm/layout/wizard/new_project");
    if (!wiew) return NULL;
 
