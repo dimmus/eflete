@@ -546,11 +546,12 @@ pm_project_open(const char *path)
        Project *project;
        Eina_Lock mutex;
      };
+
+   edje_file_cache_flush();
    struct _Project_Lock *pro_lock = mem_calloc(1, sizeof(struct _Project_Lock));
    eina_lock_new(&pro_lock->mutex);
 
    _project_descriptor_init();
-
    ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      goto error;
