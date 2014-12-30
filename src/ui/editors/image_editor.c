@@ -332,11 +332,18 @@ _image_info_location_setup(Image_Editor *img_edit,
    const char *file_name = strrchr(image_name, '/');
    if (!file_name) file_name = image_name;
    else file_name++;
+
    elm_entry_entry_set(img_edit->image_data_fields.file_name, file_name);
    char buf[BUFF_MAX];
-   strncpy(buf, image_name, (strlen(image_name) - strlen(file_name) - 1));
-   elm_object_part_text_set(img_edit->image_data_fields.layout,
-                            "text.location", buf);
+   if (image_name == file_name)
+     elm_object_part_text_set(img_edit->image_data_fields.layout,
+                              "text.location", "-");
+   else
+     {
+        strncpy(buf, image_name, (strlen(image_name) - strlen(file_name) - 1));
+        elm_object_part_text_set(img_edit->image_data_fields.layout,
+                                 "text.location", buf);
+     }
 }
 
 void
