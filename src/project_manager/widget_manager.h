@@ -363,13 +363,13 @@ wm_class_free(Class *class_st);
  * Create a new Widget object.
  *
  * @param widget A name of a widget.
- * @param styles A list of styles in a current widget.
+ * @param styles A pointer to list of styles in a current widget.
  * @return A new Widget object.
  *
  * @ingroup WidgetManager
  */
 Widget *
-wm_widget_add(const char *widget_name, Eina_List *styles);
+wm_widget_add(const char *widget_name, Eina_List **styles);
 
 /**
  * Free a Widget object.

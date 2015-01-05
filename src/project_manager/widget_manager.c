@@ -495,7 +495,7 @@ wm_class_free(Class *class_st)
 }
 
 Widget *
-wm_widget_add(const char *widget_name, Eina_List *styles)
+wm_widget_add(const char *widget_name, Eina_List **styles)
 {
    Widget *_widget = NULL;
    Eina_List *l, *l_next;
@@ -504,18 +504,18 @@ wm_widget_add(const char *widget_name, Eina_List *styles)
    char *class_name = NULL, *class_name_next = NULL;
    char *full_style_name, *style_next;
 
-   if ((!widget_name) || (!styles)) return NULL;
+   if ((!widget_name) || (!styles) || (!*styles)) return NULL;
 
    _widget = (Widget *)mem_calloc(1, sizeof(Widget));
    _widget->name = eina_stringshare_add(widget_name);
    _widget->classes = NULL;
    _widget->__type = WIDGET;
 
-   styles = eina_list_sort(styles,
-                           eina_list_count(styles),
-                           _sort_class_cb);
+   *styles = eina_list_sort(*styles,
+                            eina_list_count(*styles),
+                            _sort_class_cb);
 
-   EINA_LIST_FOREACH_SAFE(styles, l, l_next, full_style_name)
+   EINA_LIST_FOREACH_SAFE(*styles, l, l_next, full_style_name)
      {
         free(class_name_next);
         WM_CLASS_NAME_GET(class_name, full_style_name);
@@ -596,15 +596,21 @@ wm_widgets_list_new(const char *file)
              if (l_next)
                {
                   group_next = eina_list_data_get(l_next);
-                  WM_WIDGET_NAME_GET(widget_name_next, group_next);
+                  if (eina_str_has_prefix(group_next, prefix))
+                    {
+                       WM_WIDGET_NAME_GET(widget_name_next, group_next);
+                    }
+                  else
+                    widget_name_next = &empty;
                }
              else
                widget_name_next = &empty;
+
              widget_styles = eina_list_append(widget_styles, group);
 
              if ((widget_name) && (widget_name_next) && (strcmp(widget_name, widget_name_next) != 0))
                {
-                  widget = wm_widget_add(widget_name, widget_styles);
+                  widget = wm_widget_add(widget_name, &widget_styles);
                   widget_list = eina_inlist_append(widget_list,
                                                    EINA_INLIST_GET(widget));
                   widget_styles = eina_list_free(widget_styles);

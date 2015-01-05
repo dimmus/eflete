@@ -58,7 +58,7 @@ EFLETE_TEST (wm_widget_free_test_p)
 
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
-   widget = wm_widget_add(widget_name, groups);
+   widget = wm_widget_add(widget_name, &groups);
    ck_assert_msg(wm_widget_free(widget) == EINA_TRUE, "cannot delete Widget.");
    elm_shutdown();
 }
