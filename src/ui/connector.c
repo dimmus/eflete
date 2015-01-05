@@ -342,8 +342,8 @@ _add_layout_cb(void *data,
                   layout = EINA_INLIST_CONTAINER_GET(class->styles, Style);
                   if (!layout)
                     {
-                       NOTIFY_INFO(3, _("Failed create new layout."));
-                       ERR("Failed create new layout: edje edit object not find");
+                       NOTIFY_INFO(3, _("Failed to create new layout."));
+                       ERR("Failed to create new layout: no edje edit object is found");
                        return;
                     }
                }
@@ -367,31 +367,30 @@ _add_layout_cb(void *data,
 
    if (nameExist)
      {
-        NOTIFY_INFO(3, _("Failed create new layout."));
-        ERR("Failed create new layout: all avalaible names is exists");
+        NOTIFY_INFO(3, _("Failed to create new layout."));
+        ERR("Failed to create new layout: all avalaible names are existing");
         eina_stringshare_del(name);
         return;
      }
 
    if (!edje_edit_group_add(group_obj, name))
      {
-        NOTIFY_INFO(3, _("Failed create new layout."));
-        ERR("Failed create new layout: edje edit group add fail");
+        NOTIFY_INFO(3, _("Failed to create new layout."));
+        ERR("Failed to create new layout: edje edit group add is failed");
         eina_stringshare_del(name);
         return;
      }
 
-   edje_edit_without_source_save(group_obj, false);
-   project_changed();
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
-
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
                       ap->project->mmap_file);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
+
+   project_changed();
    return;
 }
 
