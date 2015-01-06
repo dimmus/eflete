@@ -885,6 +885,7 @@ wm_layouts_list_objects_load(Eina_Inlist *layouts_list,
         alias->main_group = _layout_object_find(layouts_list, main_name);
         if (alias->main_group)
           {
+             alias->main_group->aliasses = eina_list_append(alias->main_group->aliasses, alias);
              evas_object_del(alias->obj);
              alias->obj = NULL;
           }
