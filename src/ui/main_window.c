@@ -49,6 +49,9 @@ ui_main_window_del(App_Data *ap)
    code_edit_mode_switch(ap, false);
 #endif
 
+   /* FIXME: remove it from here */
+   live_view_free(ap->live_view);
+
    if (ap->project)
      pm_project_close(ap->project);
 
@@ -58,8 +61,6 @@ ui_main_window_del(App_Data *ap)
 
    config_save(ap);
    INFO("%s %s - Finished...", PACKAGE_NAME, VERSION);
-   /* FIXME: remove it from here */
-   live_view_free(ap->live_view);
    /* FIXME: when be implemented multi workspace feature, remove this line */
    evas_object_del(ap->workspace);
    elm_exit();
