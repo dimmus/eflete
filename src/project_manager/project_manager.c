@@ -546,11 +546,12 @@ pm_project_open(const char *path)
        Project *project;
        Eina_Lock mutex;
      };
+
+   edje_file_cache_flush();
    struct _Project_Lock *pro_lock = mem_calloc(1, sizeof(struct _Project_Lock));
    eina_lock_new(&pro_lock->mutex);
 
    _project_descriptor_init();
-
    ef = eet_open(path, EET_FILE_MODE_READ_WRITE);
    if (!ef)
      goto error;
@@ -829,6 +830,9 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
   else return false;
   EINA_LIST_FOREACH(images, l, image_name)
     {
+       /* for supporting old themes, which were compilled
+        * with edje_cc version less than 1.10 */
+       if (!image_name) continue;
        source_file = eina_stringshare_printf("%s/%s", source,
                                              ecore_file_file_get(image_name));
        dest_file = eina_stringshare_printf("%s/%s", destination, image_name);

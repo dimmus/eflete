@@ -61,7 +61,7 @@ EFLETE_TEST (wm_widget_add_test_p)
 
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
-   widget = wm_widget_add(widget_name, groups);
+   widget = wm_widget_add(widget_name, &groups);
    ck_assert_msg(widget != NULL, "Widget is not created.");
    class = EINA_INLIST_CONTAINER_GET(widget->classes, Class);
    ck_assert_str_eq(class->name, class_name);
@@ -98,7 +98,7 @@ EFLETE_TEST (wm_widget_add_test_n1)
 
    groups = eina_list_append(groups, "elm/radio/base/test");
    groups = eina_list_append(groups, "elm/radio/notbase/test");
-   ck_assert_msg(wm_widget_add(NULL, groups) == NULL, "created new widget with NULL parameter");
+   ck_assert_msg(wm_widget_add(NULL, &groups) == NULL, "created new widget with NULL parameter");
    elm_shutdown();
 }
 END_TEST

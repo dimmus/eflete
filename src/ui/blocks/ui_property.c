@@ -497,7 +497,6 @@ _prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
 
    label = elm_object_part_content_get(pd_group.info, "elm.swallow.content");
    label_ctx = elm_object_content_get(pd_group.ctxpopup);
-   list = edje_edit_group_aliases_get(style->obj, style->full_group_name);
    if (style->isAlias)
      {
         text_info = eina_stringshare_add("This is alias of <a>%s</a>");
@@ -506,6 +505,7 @@ _prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
      }
    else
      {
+        list = edje_edit_group_aliases_get(style->obj, style->full_group_name);
         text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
         text_info = eina_stringshare_printf(text_info, aliases_count);
 
@@ -527,6 +527,7 @@ _prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
                                        _on__clicked, pd);
         elm_object_text_set(label_ctx, eina_strbuf_string_get(text_ctx));
         eina_strbuf_free(text_ctx);
+        edje_edit_string_list_free(list);
      }
 
    elm_object_text_set(label, text_info);
@@ -696,6 +697,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         evas_object_show(pd_group.info);
      }
    elm_box_pack_start(prop_box, pd_group.shared_check);
+
+   edje_edit_string_list_free(aliases);
 
    return true;
 }

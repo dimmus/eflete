@@ -288,7 +288,8 @@ _del_layout(void *data,
             Evas_Object *obj __UNUSED__,
             void *event_info __UNUSED__)
 {
-   ui_group_delete(data, LAYOUT);
+   App_Data *ap = (App_Data *)data;
+   ui_group_delete(ap, LAYOUT);
 }
 
 static Evas_Object *
@@ -341,8 +342,8 @@ _add_layout_cb(void *data,
                   layout = EINA_INLIST_CONTAINER_GET(class->styles, Style);
                   if (!layout)
                     {
-                       NOTIFY_INFO(3, _("Failed create new layout."));
-                       ERR("Failed create new layout: edje edit object not find");
+                       NOTIFY_INFO(3, _("Failed to create new layout."));
+                       ERR("Failed to create new layout: no edje edit object is found");
                        return;
                     }
                }
@@ -357,7 +358,7 @@ _add_layout_cb(void *data,
    for (i = 0; i < 999; i++)
      {
         name = eina_stringshare_printf("new/layout/%d", i);
-        if (!edje_mmap_group_exists(ap->project->mmap_file, name))
+        if (!edje_edit_group_exist(group_obj, name))
           {
              nameExist = false;
              break;
@@ -366,30 +367,29 @@ _add_layout_cb(void *data,
 
    if (nameExist)
      {
-        NOTIFY_INFO(3, _("Failed create new layout."));
-        ERR("Failed create new layout: all avalaible names is exists");
+        NOTIFY_INFO(3, _("Failed to create new layout."));
+        ERR("Failed to create new layout: all avalaible names are existing");
         eina_stringshare_del(name);
         return;
      }
 
    if (!edje_edit_group_add(group_obj, name))
      {
-        NOTIFY_INFO(3, _("Failed create new layout."));
-        ERR("Failed create new layout: edje edit group add fail");
+        NOTIFY_INFO(3, _("Failed to create new layout."));
+        ERR("Failed to create new layout: edje edit group add is failed");
         eina_stringshare_del(name);
         return;
      }
 
-   edje_edit_without_source_save(group_obj, false);
    layout = wm_style_add(name, name, LAYOUT, NULL);
    layout->isModify = true;
    ap->project->layouts = eina_inlist_append(ap->project->layouts,
                                              EINA_INLIST_GET(layout));
-
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
                       ap->project->mmap_file);
    ui_widget_list_layouts_reload(widget_list, ap->project);
    eina_stringshare_del(name);
+
    project_changed();
    return;
 }
@@ -1376,17 +1376,16 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
         return false;
      }
 
-   /* Check which type type of node selected: style or class */
+   /* Check which type of node is selected: style or class */
    if (elm_genlist_item_parent_get(eoi))
      {
         style = elm_object_item_data_get(eoi);
         class_st = style->parent;
      }
    else
-      class_st = elm_object_item_data_get(eoi);
+     class_st = elm_object_item_data_get(eoi);
 
    if (class_st->__type != CLASS) return false;
-
 
    /* try to find layout. */
    EINA_INLIST_FOREACH(ap->project->layouts, style_work)
@@ -1394,22 +1393,31 @@ _selected_style_delete(Evas_Object *genlist, App_Data *ap)
         if (!style_work->isAlias)
           goto found;
      }
-   /* Search edje edit object, which willn't delete now. This object needed
-      for manipulate with group in *.edj file*/
+   /* Search edje edit object, which wont be deleted now. This object is needed
+      for manipulation with group in *.edj file*/
    EINA_INLIST_FOREACH(ap->project->widgets, widget_work)
      {
         EINA_INLIST_FOREACH(widget_work->classes, class_work)
           {
-             EINA_INLIST_FOREACH(class_work->styles, style_work)
-              {
-                 if (!strcmp(style_work->full_group_name, style->full_group_name))
-                   continue;
-                 else
-                   {
-                      if (!style_work->isAlias)
-                        goto found;
-                   }
-              }
+             if (style == NULL)
+               {
+                  if (class_work->name != class_st->name)
+                    {
+                       EINA_INLIST_FOREACH(class_work->styles, style_work)
+                         goto found;
+                    }
+               }
+             else
+               EINA_INLIST_FOREACH(class_work->styles, style_work)
+                {
+                   if (style_work->full_group_name == style->full_group_name)
+                     continue;
+                   else
+                     {
+                        if (!style_work->isAlias)
+                          goto found;
+                     }
+                }
           }
      }
 
@@ -1458,7 +1466,7 @@ found:
              evas_object_del(style->obj);
              if (!edje_edit_group_del(style_work->obj, style->full_group_name))
                NOTIFY_INFO(3, _("Failed to delete style[%s] in class [%s]"),
-                              style->name, class_st->name);
+                           style->name, class_st->name);
           }
         wm_class_free(class_st);
      }

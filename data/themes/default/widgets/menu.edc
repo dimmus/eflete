@@ -171,6 +171,10 @@ group { name: "elm/menu/item/eflete/default";
          signal: "mouse,up,1";
          source: "event";
          action: SIGNAL_EMIT "elm,action,click" "elm";
+         after: "inactivate";
+      }
+      program { name: "inactivate";
+        action: SIGNAL_EMIT "elm,action,inactivate" "elm";
       }
       program { name: "text_show";
          signal: "elm,state,text,visible";

@@ -1,4 +1,4 @@
-EFLETE_VERSION([0], [4], [0], [release])
+EFLETE_VERSION([0], [4], [1], [release])
 AC_INIT([eflete], [eflete_version], [enlightenment-devel@lists.sourceforge.net],
         [eflete])
 AC_PREREQ([2.60])
@@ -11,8 +11,8 @@ AM_SILENT_RULES([yes])
 AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
 
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
-m4_define([efl_version], [1.12.2])
-m4_define([elm_version], [1.12.2])
+m4_define([efl_version], [1.12.99])
+m4_define([elm_version], [1.12.99])
 m4_define([enventor_version], [0.4.0])
 m4_define([ewe_version], [0.2.2])
 

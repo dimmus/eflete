@@ -246,7 +246,7 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_n2)
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
    groups = eina_list_append(groups, "elm/radio/qqqqq/test33");
    groups = eina_list_append(groups, "elm/radio/qqqqq/test55");
-   _widget = wm_widget_add("radio", groups);
+   _widget = wm_widget_add("radio", &groups);
 
    result = ui_widget_list_class_data_reload(NULL, _widget->classes);
    ck_assert_msg(result == EINA_FALSE, "Data in widget list was reloaded");
