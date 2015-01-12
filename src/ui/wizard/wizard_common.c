@@ -37,6 +37,9 @@ _on_cancel(void *data,
    app->modal_editor--;
    free(wiew);
    ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_MAIN, false);
+   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_BASE, true);
+   ui_menu_items_list_disable_set(app->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
+   ui_menu_disable_set(app->menu, MENU_FILE_CLOSE_PROJECT, true);
 }
 
 void
