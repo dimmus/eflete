@@ -889,6 +889,7 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
   Evas *e;
   Evas_Object *im;
   int id;
+  char *file_dir;
 
   if (images)
     {
@@ -909,7 +910,9 @@ _image_resources_export(Eina_List *images, Eina_Stringshare *destination,
        source_file = eina_stringshare_printf("%s/%s", source,
                                              ecore_file_file_get(image_name));
        dest_file = eina_stringshare_printf("%s/%s", destination, image_name);
-       ecore_file_mkpath(ecore_file_dir_get(dest_file));
+       file_dir = ecore_file_dir_get(dest_file);
+       ecore_file_mkpath(file_dir);
+       free(file_dir);
        if ((source) && (ecore_file_exists(source_file)))
          {
             ecore_file_cp(source_file, dest_file);
@@ -944,6 +947,7 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
   Eina_List *l;
   Eina_Binbuf *sound_bin;
   FILE *f;
+  char *file_dir;
 
   if (sounds)
     {
@@ -959,7 +963,9 @@ _sound_resources_export(Eina_List *sounds, Eina_Stringshare *destination,
        sound_file = edje_edit_sound_samplesource_get(edje_edit, sound_name);
        source_file = eina_stringshare_printf("%s/%s", source, sound_file);
        dest_file = eina_stringshare_printf("%s/%s", destination, sound_file);
-       ecore_file_mkpath(ecore_file_dir_get(dest_file));
+       file_dir = ecore_file_dir_get(dest_file);
+       ecore_file_mkpath(file_dir);
+       free(file_dir);
        if ((source) && (ecore_file_exists(source_file)))
          {
             ecore_file_cp(source_file, dest_file);
