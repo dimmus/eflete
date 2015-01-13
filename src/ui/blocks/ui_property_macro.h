@@ -254,13 +254,14 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
-                   list_n = NULL; \
+                   list_n = NULL; /* break from external loop */ \
                    collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       if (strcmp(group, ap->project->current_style->full_group_name)) \
                         ewe_combobox_item_add(combobox, group); \
                    } \
+                   edje_file_collection_list_free(collections); \
                 } \
                 break; \
              default: \
@@ -314,13 +315,14 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                    Eina_List *collections, *l; \
                    char *group; \
                    App_Data *ap = app_data_get(); \
-                   list_n = NULL; \
+                   list_n = NULL; /* break from external loop */ \
                    collections = edje_file_collection_list(ap->project->dev); \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       if (strcmp(group, ap->project->current_style->full_group_name)) \
                         ewe_combobox_item_add(combobox, group); \
                    } \
+                   edje_file_collection_list_free(collections); \
                 } \
                 break; \
              default: \
