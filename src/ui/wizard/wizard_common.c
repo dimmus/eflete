@@ -21,7 +21,7 @@
 
 static Elm_Entry_Filter_Accept_Set accept_name = {
    .accepted = NULL,
-   .rejected = STYLE_NAME_BANNED_SYMBOLS
+   .rejected = BANNED_SYMBOLS
 };
 
 static void
