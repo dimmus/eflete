@@ -173,6 +173,7 @@ color_table_init(color_data *cd)
              tuple->key = eina_stringshare_add(key);
              //free(key);
              eina_inarray_push(inarray, tuple);
+             free(tuple);
           }
         eina_list_free(scg->colors[i].keys);
      }
@@ -207,6 +208,7 @@ macro_key_push(color_data *cd, char *str, int len __UNUSED__)
    eina_inarray_push(inarray, tuple);
 
    cd->macros = eina_list_append(cd->macros, eina_stringshare_add(tuple->key));
+   free(tuple);
 
    if (cut) free(key);
 }
