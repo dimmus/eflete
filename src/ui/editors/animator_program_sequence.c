@@ -114,6 +114,8 @@ static void _prog_sequence_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y
 static void _prog_sequence_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _prog_sequence_smart_calculate(Evas_Object *o);
 static void _overlay_move(Prog_Sequence_Smart_Data *sd, int x, int y);
+static void _state_clean(Prog_Sequence_Smart_Data *sd, Playback_State *state);
+static void _timeline_free(Prog_Sequence_Smart_Data *sd);
 
 EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _prog_sequence,
                         Evas_Smart_Class, Evas_Smart_Class,
@@ -154,6 +156,11 @@ _prog_sequence_smart_del(Evas_Object *o)
 
    if (sd->playback.timer)
      ecore_timer_del(sd->playback.timer);
+
+   _state_clean(sd, &sd->playback.start_state);
+   _state_clean(sd, &sd->playback.current_state);
+   sd->labels = eina_list_free(sd->labels);
+   _timeline_free(sd);
 
    _prog_sequence_parent_sc->del(o);
 }
