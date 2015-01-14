@@ -1155,7 +1155,7 @@ _create_gengrid(Evas_Object *parent,
    ggic->item_style = "group_index";
    ggic->func.text_get = _grid_group_label_get;
    ggic->func.content_get = NULL;
-   ggic->func.del = NULL;
+   ggic->func.del = _grid_del;
 
    _gengrid_content_fill(editor);
 
