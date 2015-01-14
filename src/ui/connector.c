@@ -620,7 +620,6 @@ ui_style_clicked(App_Data *ap, Style *style)
    Evas_Object *prop = NULL;
    Evas_Object *groupedit = NULL;
    Evas_Object *history_list = NULL;
-   Eina_List *signals = NULL;
    Style *_style = NULL, *_alias_style = NULL;
 
    if ((!ap) || (!ap->project) || (!style))
@@ -648,7 +647,6 @@ ui_style_clicked(App_Data *ap, Style *style)
    /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);
    ui_signal_list_data_set(gl_signals, _style);
-   wm_program_signals_list_free(signals);
    ui_block_signal_list_set(ap, gl_signals);
 
    evas_object_smart_callback_add(gl_signals, "sl,signal,select", _signal_select, ap);

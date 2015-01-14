@@ -80,13 +80,9 @@ ui_signal_list_data_set(Evas_Object *object, Style *style)
 {
    Eina_List *signals, *l;
    Signal *sig = NULL;
-   Style *tmp;
    Elm_Object_Item *it = NULL;
 
    if ((!object) || (!style) || (!style->obj)) return false;
-
-   tmp = evas_object_data_get(object, STYLE);
-   if (tmp) evas_object_data_del(object, STYLE);
 
    signals = wm_program_signals_list_get(style);
    EINA_LIST_FOREACH(signals, l, sig)
