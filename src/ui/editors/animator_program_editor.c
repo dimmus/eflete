@@ -553,6 +553,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
    entry = eina_list_nth(childs, 0);
    script = elm_entry_utf8_to_markup(script);
    ewe_entry_entry_set(entry, script);
+   free(script);
    eina_list_free(childs);
 }
 
@@ -1253,6 +1254,7 @@ _after_item_add(Program_Editor *prog_edit, const char *name)
    EWE_COMBOBOX_ADD(element_box, combobox);
    EINA_LIST_FOREACH(posible_afters_list, l, after_name)
      ewe_combobox_item_add(combobox, after_name);
+   edje_edit_string_list_free(posible_afters_list);
    ewe_combobox_text_set(combobox, name);
 
    evas_object_data_set(combobox, AFTER_NAME_KEY, name);
