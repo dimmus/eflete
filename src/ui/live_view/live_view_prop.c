@@ -336,15 +336,19 @@ live_view_property_free(Evas_Object *property)
    return true;
 }
 
+#define UPDATE_PROPERTY_FRAME(BOX, FRAME, OBJ) \
+   elm_box_unpack(BOX, FRAME); \
+   evas_object_hide(FRAME); \
+   items_list = elm_box_children_get(OBJ); \
+   elm_box_unpack_all(OBJ);
+
 Eina_Bool
 live_view_property_style_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box, *item = NULL, *check = NULL, *button = NULL;
-   Eina_List *part_list = NULL, *part = NULL;
-   Eina_List *signal_list = NULL, *signal = NULL;
+   Evas_Object *prop_box, *data, *check, *button;
+   Eina_List *items_list = NULL, *l;
    Edje_Part_Type part_type;
-   const char *part_name = NULL;
-   const char *string = NULL;
+   Eina_Stringshare *part_name, *string;
 
    if (!property) return false;
    PROP_DATA_GET(false)
@@ -354,15 +358,16 @@ live_view_property_style_unset(Evas_Object *property)
    evas_object_hide(pd->scale_spinner);
 
    /* Swallows Clear */
-   elm_box_unpack(prop_box, pd->prop_swallow.frame);
-   evas_object_hide(pd->prop_swallow.frame);
-   part_list = elm_box_children_get(pd->prop_swallow.swallows);
-
-   elm_box_unpack_all(pd->prop_swallow.swallows);
-
-   EINA_LIST_FOREACH(part_list, part, item)
+   if (pd->prop_swallow.frame)
      {
-        check = elm_object_part_content_unset(item, "info");
+        UPDATE_PROPERTY_FRAME(prop_box, pd->prop_swallow.frame, pd->prop_swallow.swallows)
+        check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
+        elm_check_state_set(check, false);
+     }
+
+   EINA_LIST_FOREACH(items_list, l, data)
+     {
+        check = elm_object_part_content_unset(data, "info");
         part_name = evas_object_data_get(check, PART_NAME);
         part_type = edje_edit_part_type_get(pd->style->obj, part_name);
         evas_object_smart_callback_del_full(check, "changed",
@@ -380,22 +385,21 @@ live_view_property_style_unset(Evas_Object *property)
         evas_object_data_del(check, PART_NAME);
 
         evas_object_del(check);
-        evas_object_del(item);
+        evas_object_del(data);
      }
-   eina_list_free(part_list);
-
-   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
-   elm_check_state_set(check, false);
+   items_list = eina_list_free(items_list);
 
    /* Texts Clear */
-   elm_box_unpack(prop_box, pd->prop_text.frame);
-   evas_object_hide(pd->prop_text.frame);
-   part_list = elm_box_children_get(pd->prop_text.texts);
-   elm_box_unpack_all(pd->prop_text.texts);
-
-   EINA_LIST_FOREACH(part_list, part, item)
+   if (pd->prop_text.frame)
      {
-        check = elm_object_part_content_unset(item, "info");
+        UPDATE_PROPERTY_FRAME(prop_box, pd->prop_text.frame, pd->prop_text.texts)
+        check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
+        elm_check_state_set(check, false);
+     }
+
+   EINA_LIST_FOREACH(items_list, l, data)
+     {
+        check = elm_object_part_content_unset(data, "info");
         evas_object_smart_callback_del_full(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
                                             pd->live_object);
@@ -405,22 +409,19 @@ live_view_property_style_unset(Evas_Object *property)
         evas_object_data_del(check, PART_NAME);
 
         evas_object_del(check);
-        evas_object_del(item);
+        evas_object_del(data);
      }
-   eina_list_free(part_list);
-
-   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
-   elm_check_state_set(check, false);
+   items_list = eina_list_free(items_list);
 
    /* Signals Clear */
-   elm_box_unpack(prop_box, pd->prop_signal.frame);
-   evas_object_hide(pd->prop_signal.frame);
-   signal_list = elm_box_children_get(pd->prop_signal.signals);
-   elm_box_unpack_all(pd->prop_signal.signals);
-
-   EINA_LIST_FOREACH(signal_list, signal, item)
+   if (pd->prop_signal.frame)
      {
-        button = elm_object_part_content_unset(item, "elm.swallow.content");
+        UPDATE_PROPERTY_FRAME(prop_box, pd->prop_signal.frame, pd->prop_signal.signals)
+     }
+
+   EINA_LIST_FOREACH(items_list, l, data)
+     {
+        button = elm_object_part_content_unset(data, "elm.swallow.content");
         evas_object_smart_callback_del_full(button, "clicked",
                                             evas_object_data_get(pd->live_object, SIGNAL_FUNC),
                                             pd->live_object);
@@ -434,11 +435,14 @@ live_view_property_style_unset(Evas_Object *property)
         evas_object_data_del(button, SIGNAL_SOURCE);
 
         evas_object_del(button);
-        evas_object_del(item);
+        evas_object_del(data);
      }
-   eina_list_free(signal_list);
+   eina_list_free(items_list);
 
    pd->live_object = NULL;
 
    return true;
 }
+
+#undef UPDATE_PROPERTY_FRAME
+
