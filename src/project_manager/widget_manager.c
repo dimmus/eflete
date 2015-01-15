@@ -438,7 +438,12 @@ wm_style_copy(Evas_Object *dest_edje, Eina_Stringshare *source_full_name,
         NOTIFY_ERROR(_("Group [%s] exist"), full_name);
         return false;
      }
-   edje_edit_group_copy(dest_edje, source_full_name, full_name);
+   if (!edje_edit_group_copy(dest_edje, source_full_name, full_name))
+     {
+        NOTIFY_ERROR(_("Cannot copy group [%s]"), full_name);
+        return false;
+     }
+
 
   return true;
 }

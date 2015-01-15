@@ -252,13 +252,15 @@ _on_popup_btn_yes(void *data,
 
 
    if (dest_style->isAlias) dest_style = dest_style->main_group;
+
    /* call method, which copy all parts and their params into new style */
    if (wm_style_copy(dest_style->obj, source_style->full_group_name, full_name,
                      ap->project->dev, style))
      {
-        wm_widgets_list_objects_load(ap->project->widgets,
-                                     evas_object_evas_get(ap->win),
-                                     ap->project->mmap_file);
+        eina_file_close(ap->project->mmap_file);
+        ap->project->mmap_file = eina_file_open(ap->project->dev, false);
+        wm_style_data_load(style, evas_object_evas_get(ap->win),
+                           ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
      }
