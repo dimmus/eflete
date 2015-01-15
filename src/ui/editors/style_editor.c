@@ -934,19 +934,17 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
 static void
 _lines_colors_update(Style_Editor *style_edit, const char *param)
 {
-   const char *style = style_edit->current_style.stvalue;
-
    if (!strcmp(param, "underline"))
      {
         _lines_update(style_edit);
-        if (!_tag_value_get(style, "underline_color"))
+        if (!_tag_value_get(style_edit->current_style.stvalue, "underline_color"))
           _tag_parse(style_edit, WHITE_COLOR, "underline_color");
-        if (!_tag_value_get(style, "underline2_color"))
+        if (!_tag_value_get(style_edit->current_style.stvalue, "underline2_color"))
           _tag_parse(style_edit, WHITE_COLOR, "underline2_color");
      }
    else if (!strcmp(param, "strikethrough"))
      {
-        if (!_tag_value_get(style, "strikethrough_color"))
+        if (!_tag_value_get(style_edit->current_style.stvalue, "strikethrough_color"))
           _tag_parse(style_edit, WHITE_COLOR, "strikethrough_color");
      }
 }
