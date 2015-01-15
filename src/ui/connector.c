@@ -1182,7 +1182,11 @@ _on_export_edc_group_done(void *data,
    ap = app_data_get();
    win = (Evas_Object *)data;
    selected = (const char *)event_info;
-   if (!selected) return;
+   if (!selected)
+     {
+        evas_object_del(win);
+        return;
+     }
    style = ap->project->current_style;
 
    Eina_Stringshare *file = NULL;
@@ -1213,8 +1217,10 @@ void
 project_export_edc_group(void)
 {
    Evas_Object *win, *bg, *fs;
+   App_Data *ap = app_data_get();
 
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edc file (group)"), _fs_close, NULL);
+   ap->modal_editor++;
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edc file (group)"), _fs_close, ap);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
