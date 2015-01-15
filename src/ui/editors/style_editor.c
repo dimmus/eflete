@@ -199,7 +199,7 @@ static Elm_Entry_Filter_Accept_Set accept_name = {
    .rejected = BANNED_SYMBOLS
 };
 
-static const char*
+static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag);
 
 static void
@@ -934,18 +934,23 @@ _tag_parse(Style_Editor *style_edit, const char *value, const char *text)
 static void
 _lines_colors_update(Style_Editor *style_edit, const char *param)
 {
+   Eina_Tmpstr *val;
    if (!strcmp(param, "underline"))
      {
         _lines_update(style_edit);
-        if (!_tag_value_get(style_edit->current_style.stvalue, "underline_color"))
-          _tag_parse(style_edit, WHITE_COLOR, "underline_color");
-        if (!_tag_value_get(style_edit->current_style.stvalue, "underline2_color"))
-          _tag_parse(style_edit, WHITE_COLOR, "underline2_color");
+        val = _tag_value_get(style_edit->current_style.stvalue, "underline_color");
+        if (!val) _tag_parse(style_edit, WHITE_COLOR, "underline_color");
+        else eina_tmpstr_del(val);
+
+        val = _tag_value_get(style_edit->current_style.stvalue, "underline2_color");
+        if (!val) _tag_parse(style_edit, WHITE_COLOR, "underline2_color");
+        else eina_tmpstr_del(val);
      }
    else if (!strcmp(param, "strikethrough"))
      {
-        if (!_tag_value_get(style_edit->current_style.stvalue, "strikethrough_color"))
-          _tag_parse(style_edit, WHITE_COLOR, "strikethrough_color");
+        val = _tag_value_get(style_edit->current_style.stvalue, "strikethrough_color");
+        if (!val) _tag_parse(style_edit, WHITE_COLOR, "strikethrough_color");
+        else eina_tmpstr_del(val);
      }
 }
 
@@ -1153,11 +1158,11 @@ DIRECT_ADD(tl, "top_left", "tl", 5)
 DIRECT_ADD(t, "top", "t", 6)
 DIRECT_ADD(tr, "top_right", "tr", 7)
 
-static const char*
+static Eina_Tmpstr*
 _tag_value_get(const char* text_style, char* a_tag)
 {
    char *tag_list_copy = mem_malloc(strlen(text_style) + 1);
-   const char *result = NULL;
+   Eina_Tmpstr *result = NULL;
    char *token;
 
    strcpy(tag_list_copy, text_style);
@@ -1171,7 +1176,8 @@ _tag_value_get(const char* text_style, char* a_tag)
              if (!strcmp(token, a_tag))
                {
                   equals_sign++;
-                  result = eina_stringshare_add(equals_sign);
+                  result = eina_tmpstr_add(equals_sign);
+                  break;
                }
           }
         token = strtok(0, " ");
@@ -1334,17 +1340,17 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    if (value)
      {
-        const char* font = _tag_value_get(value, "font");
-        if (!font) font = "";
-        const char* spin_val = _tag_value_get(value, "font_size");
-        if (!spin_val) spin_val = "";
-        const char* weight = _tag_value_get(value, "font_weight");
-        if (!weight) weight = "Normal";
-        const char* width = _tag_value_get(value, "font_width");
-        if (!width) width = "Normal";
-        const char* style = _tag_value_get(value, "font_style");
-        if (!style) style = "Normal";
-        const char* color = _tag_value_get(value, "color");
+        Eina_Tmpstr *font = _tag_value_get(value, "font");
+        if (!font) font = eina_tmpstr_add("");
+        Eina_Tmpstr *spin_val = _tag_value_get(value, "font_size");
+        if (!spin_val) spin_val = eina_tmpstr_add("");
+        Eina_Tmpstr *weight = _tag_value_get(value, "font_weight");
+        if (!weight) weight = eina_tmpstr_add("Normal");
+        Eina_Tmpstr *width = _tag_value_get(value, "font_width");
+        if (!width) width = eina_tmpstr_add("Normal");
+        Eina_Tmpstr *style = _tag_value_get(value, "font_style");
+        if (!style) style = eina_tmpstr_add("Normal");
+        Eina_Tmpstr *color = _tag_value_get(value, "color");
 
         ewe_combobox_text_set(fonts_list, font);
         elm_object_disabled_set(fonts_list, true);
@@ -1367,9 +1373,12 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
           ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(text_color, r*a/255, g*a/255, b*a/255, a);
 
-        eina_stringshare_del(font);
-        eina_stringshare_del(spin_val);
-        eina_stringshare_del(color);
+        eina_tmpstr_del(font);
+        eina_tmpstr_del(spin_val);
+        eina_tmpstr_del(color);
+        eina_tmpstr_del(weight);
+        eina_tmpstr_del(width);
+        eina_tmpstr_del(style);
      }
 }
 
@@ -1420,14 +1429,14 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
 
    if (value)
      {
-        const char* align = _tag_value_get(value, "align");
-        if (!align) align = _("auto");
-        const char* lmargin = _tag_value_get(value, "left_margin");
-        if (!lmargin) lmargin = "0";
-        const char* valign = _tag_value_get(value, "valign");
-        if (!valign) valign = _("baseline");
-        const char* rmargin = _tag_value_get(value, "right_margin");
-        if (!rmargin) rmargin = "0";
+        Eina_Tmpstr *align = _tag_value_get(value, "align");
+        if (!align) align = eina_tmpstr_add("auto");
+        Eina_Tmpstr *lmargin = _tag_value_get(value, "left_margin");
+        if (!lmargin) lmargin = eina_tmpstr_add("0");
+        Eina_Tmpstr *valign = _tag_value_get(value, "valign");
+        if (!valign) valign = eina_tmpstr_add("baseline");
+        Eina_Tmpstr *rmargin = _tag_value_get(value, "right_margin");
+        if (!rmargin) rmargin = eina_tmpstr_add("0");
 
         ewe_combobox_text_set(font_align, align);
         for (i = 0; font_horizontal_align[i] != NULL; i++)
@@ -1438,6 +1447,10 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
         for (i = 0; font_horizontal_valign[i] != NULL; i++)
           ewe_combobox_item_add(font_valign, font_horizontal_valign[i]);
         elm_spinner_value_set(font_rmargin, atof(rmargin));
+        eina_tmpstr_del(align);
+        eina_tmpstr_del(lmargin);
+        eina_tmpstr_del(valign);
+        eina_tmpstr_del(rmargin);
      }
 
    FRAME_ADD(tabs, frame2, false, _("Text format"))
@@ -1468,24 +1481,24 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
 
    if (value)
      {
-        const char* tabstops = _tag_value_get(value, "tabstops");
-        if (!tabstops) tabstops = "0";
-        const char* linesize = _tag_value_get(value, "linesize");
-        if (!linesize) linesize = "0";
-        const char* linerelsize = _tag_value_get(value, "linerelsize");
-        if (!linerelsize) linerelsize = "0";
-        const char* password = _tag_value_get(value, "password");
+        Eina_Tmpstr *tabstops = _tag_value_get(value, "tabstops");
+        if (!tabstops) tabstops = eina_tmpstr_add("0");
+        Eina_Tmpstr *linesize = _tag_value_get(value, "linesize");
+        if (!linesize) linesize = eina_tmpstr_add("0");
+        Eina_Tmpstr *linerelsize = _tag_value_get(value, "linerelsize");
+        if (!linerelsize) linerelsize = eina_tmpstr_add("0");
+        Eina_Tmpstr *password = _tag_value_get(value, "password");
         if ((!password) || (!strcmp(password, "off"))) pass = EINA_FALSE;
         else pass = EINA_TRUE;
-        const char* ellipsis = _tag_value_get(value, "ellipsis");
-        if (!ellipsis) ellipsis = "0";
-        const char* bground = _tag_value_get(value, "backing");
+        Eina_Tmpstr *ellipsis = _tag_value_get(value, "ellipsis");
+        if (!ellipsis) ellipsis = eina_tmpstr_add("0");
+        Eina_Tmpstr *bground = _tag_value_get(value, "backing");
         if ((!bground) || (!strcmp(bground, "off"))) bg = EINA_FALSE;
         else bg = EINA_TRUE;
-        const char* bcolor = _tag_value_get(value, "backing_color");
+        Eina_Tmpstr *bcolor = _tag_value_get(value, "backing_color");
         if (!bcolor)
           {
-             bcolor = WHITE_COLOR;
+             bcolor = eina_tmpstr_add(WHITE_COLOR);
              _tag_parse(style_edit, WHITE_COLOR, "backing_color");
           }
 
@@ -1499,6 +1512,13 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
           ERR("This error should not happen in style editor... Contact devs please!");
         evas_object_color_set(font_backcolor, r*a/255, g*a/255, b*a/255, a);
         elm_spinner_value_set(font_ellipsis, atof(ellipsis));
+        eina_tmpstr_del(tabstops);
+        eina_tmpstr_del(linesize);
+        eina_tmpstr_del(linerelsize);
+        eina_tmpstr_del(password);
+        eina_tmpstr_del(ellipsis);
+        eina_tmpstr_del(bground);
+        eina_tmpstr_del(bcolor);
      }
 
    elm_box_pack_end(box_frames, frame1);
@@ -1535,35 +1555,37 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    if (value)
      {
-        const char* style = _tag_value_get(value, "style");
-        if (!style) style = N_("none");
-        const char* inner = _tag_value_get(value, "glow_color");
+        Eina_Tmpstr *style = _tag_value_get(value, "style");
+        if (!style) style = eina_tmpstr_add("none");
+        Eina_Tmpstr *inner = _tag_value_get(value, "glow_color");
         if (!inner)
           {
-             inner = WHITE_COLOR;
+             inner = eina_tmpstr_add(WHITE_COLOR);
              _tag_parse(style_edit, WHITE_COLOR, "glow_color");
           }
-        const char* outer = _tag_value_get(value, "glow2_color");
+        Eina_Tmpstr *outer = _tag_value_get(value, "glow2_color");
         if (!outer)
           {
-              outer = WHITE_COLOR;
+              outer = eina_tmpstr_add(WHITE_COLOR);
              _tag_parse(style_edit, WHITE_COLOR, "glow2_color");
           }
-        const char* shadow = _tag_value_get(value, "shadow_color");
+        Eina_Tmpstr *shadow = _tag_value_get(value, "shadow_color");
         if (!shadow)
           {
-             shadow = WHITE_COLOR;
+             shadow = eina_tmpstr_add(WHITE_COLOR);
              _tag_parse(style_edit, WHITE_COLOR, "shadow_color");
           }
 
         style_copy = mem_malloc(strlen(style) + 1);
         strcpy(style_copy, style);
         token = strtok(style_copy, ",");
+        /* TODO: replace with eina_str_split_full */
         while (token)
           {
              if (count == 0)
                {
-                  style = eina_stringshare_add(token);
+                  eina_tmpstr_del(style);
+                  style = eina_tmpstr_add(token);
                   count++;
                }
              else
@@ -1637,7 +1659,10 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         for (i = 0; font_glow_list[i] != NULL; i++)
           ewe_combobox_item_add(font_style, font_glow_list[i]);
 
-        eina_stringshare_del(style);
+        eina_tmpstr_del(style);
+        eina_tmpstr_del(inner);
+        eina_tmpstr_del(outer);
+        eina_tmpstr_del(shadow);
      }
 }
 
@@ -1678,19 +1703,19 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 
    if (value)
      {
-        const char* strikethrough = _tag_value_get(value, "strikethrough");
+        Eina_Tmpstr *strikethrough = _tag_value_get(value, "strikethrough");
         if ((!strikethrough) || (!strcmp(strikethrough, "off"))) strikethr = EINA_FALSE;
         else strikethr = EINA_TRUE;
-        const char* strikethru_color = _tag_value_get(value, "strikethrough_color");
-        if (!strikethru_color) strikethru_color = WHITE_COLOR;
-        const char *seg_item = NULL;
-        const char* underline = _tag_value_get(value, "underline");
+        Eina_Tmpstr *strikethru_color = _tag_value_get(value, "strikethrough_color");
+        if (!strikethru_color) strikethru_color = eina_tmpstr_add(WHITE_COLOR);
+        Eina_Tmpstr *seg_item = NULL;
+        Eina_Tmpstr *underline = _tag_value_get(value, "underline");
         if ((!underline) || (!strcmp(underline, "off"))) underl = EINA_FALSE;
         else
           {
              underl = EINA_TRUE;
-             if (!strcmp(underline, "double")) seg_item = eina_stringshare_add("double");
-             else seg_item = eina_stringshare_add("single");
+             if (!strcmp(underline, "double")) seg_item = eina_tmpstr_add("double");
+             else seg_item = eina_tmpstr_add("single");
              for (i = 0; underl_styles[i] != NULL; i++)
                {
                   if (!strcmp(elm_segment_control_item_label_get(underline_style, i), seg_item))
@@ -1700,10 +1725,10 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
                     }
                }
           }
-        const char* underl_color = _tag_value_get(value, "underline_color");
-        if (!underl_color) underl_color = WHITE_COLOR;
-        const char* underl2_color = _tag_value_get(value, "underline2_color");
-        if (!underl2_color) underl2_color = WHITE_COLOR;
+        Eina_Tmpstr *underl_color = _tag_value_get(value, "underline_color");
+        if (!underl_color) underl_color = eina_tmpstr_add(WHITE_COLOR);
+        Eina_Tmpstr *underl2_color = _tag_value_get(value, "underline2_color");
+        if (!underl2_color) underl2_color = eina_tmpstr_add(WHITE_COLOR);
 
         elm_check_state_set(font_strikethrough, strikethr);
         elm_check_state_set(font_underline, underl);
@@ -1719,7 +1744,12 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 
         evas_object_smart_callback_add(underline_style, "changed", _on_underline_style_change, style_edit);
 
-        if (!seg_item) eina_stringshare_del(seg_item);
+        eina_tmpstr_del(seg_item);
+        eina_tmpstr_del(strikethrough);
+        eina_tmpstr_del(strikethru_color);
+        eina_tmpstr_del(underline);
+        eina_tmpstr_del(underl_color);
+        eina_tmpstr_del(underl2_color);
      }
 }
 #undef COMBOBOX_VALUE
