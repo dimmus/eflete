@@ -165,6 +165,7 @@ wm_part_del(Style *style, Part *part)
    if (!tmp_list) return false;
 
    style->parts = eina_inlist_remove(style->parts, tmp_list);
+   _wm_part_free(part);
 
    return true;
 }
@@ -364,7 +365,6 @@ wm_style_free(Style *style)
    Style *aliassed;
    Part *part;
    Eina_List *alias_node, *ll;
-   Eina_Inlist *l = NULL;
 
    if (!style) return false;
 
@@ -391,8 +391,9 @@ wm_style_free(Style *style)
           }
      }
 
-   EINA_INLIST_FOREACH_SAFE(style->parts, l, part)
+   EINA_INLIST_FREE(style->parts, part)
      {
+        style->parts = eina_inlist_remove(style->parts, EINA_INLIST_GET(part));
         _wm_part_free(part);
      }
 
