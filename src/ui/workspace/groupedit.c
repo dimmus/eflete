@@ -322,6 +322,7 @@ groupedit_edit_object_unset(Evas_Object *obj)
    Evas_Object *ret;
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
+   groupedit_bg_unset(obj);
    if ((!sd->edit_obj) && (!sd->parts)) return NULL;
 
    _parts_list_free(sd);
@@ -658,6 +659,9 @@ groupedit_bg_unset(Evas_Object *obj)
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
    bg = evas_object_image_source_get(sd->bg);
+   evas_object_event_callback_del_full(bg,
+                                       EVAS_CALLBACK_RESIZE,
+                                       _bg_changed, sd->bg);
    evas_object_del(sd->bg);
    sd->bg = NULL;
 
