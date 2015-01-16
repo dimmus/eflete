@@ -123,11 +123,10 @@ _change_save(Module *module, Diff *change)
 static Eina_Bool
 _module_changes_clear(Module *module)
 {
-   Eina_List *l, *l_next;
    Diff *diff = NULL;
    Eina_Bool result = true;
 
-   EINA_LIST_FOREACH_SAFE(module->changes, l, l_next, diff)
+   EINA_LIST_FREE(module->changes, diff)
      {
         result &= _diff_free(diff);
      }
