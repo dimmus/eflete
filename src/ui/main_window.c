@@ -37,10 +37,7 @@ _on_done(void *data,
 Eina_Bool
 ui_main_window_del(App_Data *ap)
 {
-   if ((ap->project) && (!project_close_request(ap,
-                                 _("You want to close Eflete, but now you have<br/>"
-                                   "opened project. If you dont save opened project<br/>"
-                                   "all your changes will be lost!"))))
+   if (!project_close(ap))
      return false;
 
    if (!history_term(ap->history))
@@ -51,9 +48,6 @@ ui_main_window_del(App_Data *ap)
 
    /* FIXME: remove it from here */
    live_view_free(ap->live_view);
-
-   if (ap->project)
-     pm_project_close(ap->project);
 
    free(ap->menu);
    ap->menu = NULL;
