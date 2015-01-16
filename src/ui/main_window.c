@@ -128,12 +128,6 @@ ui_main_window_add(App_Data *ap)
 
    elm_win_title_set(ap->win, "EFL Edje Theme Editor");
 
-   /* FIXME: Magic that solves font issue with property item */
-   Evas_Object *N = elm_layout_add(ap->win);
-   elm_layout_file_set(N, EFLETE_EDJ, "eflete/property/item/default");
-   evas_object_resize(N, 1, 1);
-   /* End of magic */
-
    evas_object_smart_callback_add(ap->win, "delete,request", _on_done, ap);
    if (!cursor_main_set(ap->win, CURSOR_ARROW))
      ERR("Main cursor not setted.");
