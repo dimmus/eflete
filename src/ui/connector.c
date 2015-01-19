@@ -1321,15 +1321,28 @@ project_close_request(App_Data *ap, const char *msg)
 static Eina_Bool
 _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
 {
-   Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist);
+   Elm_Object_Item *item_to_del = elm_genlist_selected_item_get(genlist), *eoi;
    Style *style = elm_object_item_data_get(item_to_del);;
    Style *style_work = NULL;
    Eina_Inlist *l = NULL;
+   int i;
 
    if (!item_to_del)
      {
         NOTIFY_INFO(3, _("Select item to be deleted"));
         return false;
+     }
+
+   eoi = elm_genlist_item_next_get(item_to_del);
+   if (!eoi)
+     {
+        eoi = elm_genlist_item_prev_get(item_to_del);
+        i = elm_genlist_item_index_get(eoi);
+     }
+   else
+     {
+        i = elm_genlist_item_index_get(eoi);
+        i--;
      }
 
    EINA_INLIST_FOREACH_SAFE(ap->project->layouts, l, style_work)
@@ -1353,6 +1366,21 @@ _selected_layout_delete(Evas_Object *genlist, App_Data *ap)
    ap->project->layouts = eina_inlist_remove(ap->project->layouts,
                                              EINA_INLIST_GET(style));
    ui_widget_list_layouts_reload(genlist, ap->project);
+   genlist = _widgetlist_current_genlist_get(ap, LAYOUT);
+
+   for (eoi = elm_genlist_first_item_get(genlist);
+        eoi != elm_genlist_item_next_get(elm_genlist_last_item_get(genlist));
+        eoi = elm_genlist_item_next_get(eoi))
+     {
+        if (elm_genlist_item_index_get(eoi) == i)
+          {
+             style = elm_object_item_data_get(eoi);;
+             elm_genlist_item_selected_set(eoi, true);
+             style = elm_object_item_data_get(eoi);;
+             break;
+          }
+     }
+
    project_changed();
    return true;
 }
