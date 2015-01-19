@@ -608,15 +608,13 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         evas_object_hide(pd_group.ctxpopup);
 
         if (style->isAlias)
-          {
-             text_info = eina_stringshare_add("This is alias of <a>%s</a>");
-             text_info = eina_stringshare_printf(text_info,
-                                                 style->main_group->full_group_name);
-          }
+          text_info = eina_stringshare_printf("This is alias of <a>%s</a>",
+                                              style->main_group->full_group_name);
         else
           {
-             text_info = eina_stringshare_add("changes in this style will also affect <a>%d elements.</a>");
-             text_info = eina_stringshare_printf(text_info, aliases_count);
+             text_info = eina_stringshare_printf("changes in this style will also"
+                                                 "affect <a>%d elements.</a>",
+                                                 aliases_count);
              int count = 1;
              text_ctx = eina_strbuf_new();
 
@@ -630,12 +628,11 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                }
              evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
                                             _on__clicked, pd);
+             LABEL_ADD(property, label_ctx, eina_strbuf_string_get(text_ctx))
+             eina_strbuf_free(text_ctx);
+             elm_object_style_set(label_ctx, "eflete/info");
+             elm_object_content_set(pd_group.ctxpopup, label_ctx);
           }
-
-        LABEL_ADD(property, label_ctx, eina_strbuf_string_get(text_ctx))
-        eina_strbuf_free(text_ctx);
-        elm_object_style_set(label_ctx, "eflete/info");
-        elm_object_content_set(pd_group.ctxpopup, label_ctx);
 
         elm_object_text_set(info_en, text_info);
         elm_object_style_set(info_en, "eflete/info");
