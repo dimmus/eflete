@@ -1011,7 +1011,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *combobox; \
    Part *part; \
    Edje_Part_Type type; \
-   Eina_List *list = NULL; \
+   Eina_List *l = NULL; \
    const char *ccname = NULL; \
    Eina_Stringshare *value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                             pd->part->name, \
@@ -1038,9 +1038,10 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
      } \
    else \
      { \
-        Eina_List *l = edje_edit_##LIST##_list_get(pd->style->obj); \
-        EINA_LIST_FOREACH(l, list, ccname) \
+        Eina_List *list = edje_edit_##LIST##_list_get(pd->style->obj); \
+        EINA_LIST_FOREACH(list, l, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
+        edje_edit_string_list_free(list); \
         evas_object_smart_callback_del(combobox, "selected", func_cb); \
         evas_object_smart_callback_add(combobox, "selected", func_cb, pd); \
      } \
