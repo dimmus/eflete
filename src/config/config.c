@@ -286,21 +286,16 @@ _profile_update(Profile *prof)
 static Profile *
 _profile_default_new(void)
 {
-   Profile *prof = NULL;
+   Profile *prof;
 
-   prof = mem_malloc(sizeof(Profile));
+   prof = mem_calloc(1, sizeof(Profile));
    prof->version                             = PROFILE_VERSION;
    prof->general.save_ui                     = true;
    prof->general.save_win_pos                = true;
-   prof->general.autosave.autosave           = false;
    prof->general.autosave.period             = 300; /* 5 minutes */
-   prof->workspace.bg_image                  = NULL;
    prof->workspace.groupedit_handler_size    = 7;
    prof->workspace.rulers.visible            = true;
    prof->workspace.rulers.mode               = ABS_REL_SCALE;
-   prof->liveview.bg_image                   = NULL;
-   prof->liveview.auto_fill_text             = false;
-   prof->liveview.auto_fill_content          = false;
 
    prof->colors[WORKSPACE].r           = 255;
    prof->colors[WORKSPACE].g           = 255;
@@ -321,8 +316,6 @@ _profile_default_new(void)
    prof->colors[HIGHLIGHT].g           = 100;
    prof->colors[HIGHLIGHT].b           = 155;
    prof->colors[HIGHLIGHT].a           = 255;
-
-   prof->shortcuts = NULL;
 
    return prof;
 }
