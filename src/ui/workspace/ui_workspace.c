@@ -315,7 +315,6 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    items->zoom_out = elm_menu_item_add(menu, items->zoom, NULL, _("Zoom out"), _zoom_factor_out, ws);
    elm_menu_item_separator_add(menu, items->zoom);
    items->zoom_fit = elm_menu_item_add(menu, items->zoom, NULL, _("Fit"), NULL, NULL);
-   elm_object_item_disabled_set(items->zoom_fit, true);
    elm_menu_item_separator_add(menu, items->zoom);
    items->zoom_far = elm_menu_item_add(menu, items->zoom, NULL, _("50%"), _zoom_factor_50, ws->obj);
    items->zoom_normal = elm_menu_item_add(menu, items->zoom, NULL, _("100%"), _zoom_factor_100, ws->obj);
@@ -330,6 +329,8 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    elm_menu_item_separator_add(menu, NULL);
    items->settings = elm_menu_item_add(menu, NULL, NULL, _("Settings..."), NULL, NULL);
    elm_object_item_disabled_set(items->settings, true);
+
+   elm_object_item_disabled_set(items->zoom, true);
 }
 
 static void
@@ -571,7 +572,7 @@ workspace_zoom_factor_set(Evas_Object *obj, double factor)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false)
 
    if ((groupedit_edit_object_parts_separated_is(sd->groupedit)) ||
-       (fabs(sd->zoom.factor - factor) <= 0.001))
+       (fabs(sd->zoom.factor - factor) <= 0.001) || (!sd->style))
      return false;
 
    sd->zoom.factor = factor;
@@ -1188,6 +1189,7 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, false);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, false);
+   elm_object_item_disabled_set(sd->menu.items.zoom, false);
 
    Evas_Coord min_w, max_w, min_h, max_h;
    min_w = edje_edit_group_min_w_get(sd->style->obj);
@@ -1229,6 +1231,7 @@ workspace_edit_object_unset(Evas_Object *obj)
 
    elm_object_item_disabled_set(sd->menu.items.mode_normal, true);
    elm_object_item_disabled_set(sd->menu.items.mode_separate, true);
+   elm_object_item_disabled_set(sd->menu.items.zoom, true);
 
    elm_scroller_policy_set(sd->scroller, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_OFF);
