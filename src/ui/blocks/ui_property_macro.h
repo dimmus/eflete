@@ -1087,6 +1087,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
         Eina_List *cclist = edje_edit_##LIST##_list_get(pd->style->obj); \
         EINA_LIST_FOREACH(cclist, list, ccname) \
           ewe_combobox_item_add(combobox, ccname); \
+        edje_edit_string_list_free(cclist); \
      } \
 }
 
