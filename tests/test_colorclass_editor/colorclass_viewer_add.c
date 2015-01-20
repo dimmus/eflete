@@ -102,6 +102,8 @@ EFLETE_TEST (colorclass_viewer_add_test_p)
    ck_assert_msg(colorclass != NULL, "Unable to create image editor window");
 
    evas_object_del(colorclass);
+   pm_project_close(app->project);
+   app->project = NULL;
    app_shutdown();
    teardown("./colorclass_viewer_add_test_p");
    elm_shutdown();
