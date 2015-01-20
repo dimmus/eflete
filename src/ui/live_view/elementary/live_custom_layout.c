@@ -30,6 +30,8 @@ on_layout_swallow_check(void *data,
 
    if (elm_check_state_get(obj))
      {
+        if (edje_object_part_swallow_get(object, part_name))
+          return;
         rect = evas_object_rectangle_add(object);
         evas_object_color_set(rect, RECT_COLOR);
         edje_object_part_swallow(object, part_name, rect);
@@ -37,6 +39,7 @@ on_layout_swallow_check(void *data,
    else
      {
         rect = edje_object_part_swallow_get(object, part_name);
+        if (!rect) return;
         edje_object_part_unswallow(object, rect);
         evas_object_del(rect);
      }
