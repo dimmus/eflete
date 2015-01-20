@@ -396,6 +396,9 @@ _object_area_show_switch_cb(App_Data *app)
 Eina_Bool
 _zoom_in_cb(App_Data *app)
 {
+   if (!app->project->current_style)
+     return false;
+
    double current_factor = workspace_zoom_factor_get(app->workspace);
    workspace_zoom_factor_set(app->workspace, current_factor + 0.1);
    return true;
@@ -404,6 +407,9 @@ _zoom_in_cb(App_Data *app)
 Eina_Bool
 _zoom_out_cb(App_Data *app)
 {
+   if (!app->project->current_style)
+     return false;
+
    double current_factor = workspace_zoom_factor_get(app->workspace);
    workspace_zoom_factor_set(app->workspace, current_factor - 0.1);
    return true;
