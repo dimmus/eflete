@@ -713,8 +713,6 @@ blocks_show(App_Data *ap)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, false);
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
    ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
-   ui_menu_disable_set(ap->menu, MENU_VIEW_WORKSPACE_SEPARATE, true);
-   ui_menu_disable_set(ap->menu, MENU_VIEW_WORKSPACE_OBJECT_AREA, true);
 
    code_edit_mode_switch(ap, false);
 
