@@ -1207,8 +1207,6 @@ workspace_edit_object_set(Evas_Object *obj, Style *style, const char *file)
    evas_object_geometry_get(sd->scroller, &x, &y, &w, &h);
    evas_object_resize(sd->container.obj, w - hrb_w, h - hrb_h);
 
-   workspace_zoom_factor_set(obj, 1.0);
-
    return true;
 }
 

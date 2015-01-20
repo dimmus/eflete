@@ -1571,6 +1571,7 @@ _on_style_clicked(void *data,
 {
    App_Data *ap = (App_Data *)data;
    Style *_style = (Style *)event_data;
+   workspace_zoom_factor_set(ap->workspace, 1.0);
    ui_style_clicked(ap, _style);
 }
 
@@ -1593,6 +1594,7 @@ _on_part_back(void *data,
               void *event_data __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
+   workspace_zoom_factor_set(ap->workspace, 1.0);
    ui_part_back(ap);
 }
 
