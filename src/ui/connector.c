@@ -719,13 +719,7 @@ blocks_show(App_Data *ap)
    return true;
 }
 
-static Eina_Bool
-_blocks_hide(App_Data *ap)
-{
-   return ui_panes_hide(ap);
-}
-
-static Eina_Bool
+static void
 _blocks_data_unset(App_Data *ap)
 {
    Evas_Object *property;
@@ -739,8 +733,6 @@ _blocks_data_unset(App_Data *ap)
    workspace_edit_object_unset(ap->workspace);
    workspace_highlight_unset(ap->workspace);
    live_view_widget_style_unset(ap->live_view);
-
-   return true;
 }
 
 static Eina_Bool
@@ -813,19 +805,14 @@ project_close(App_Data *ap)
 {
    if (ap->project)
      {
-        if (ap->project->changed)
-          {
-             if (!project_close_request(ap, PROJECT_CLOSE_MSG))
-               return false;
-          }
-        else
-          {
-             pm_project_close(ap->project);
-             ap->project = NULL;
-          }
+        if ((ap->project->changed) && (!project_close_request(ap, PROJECT_CLOSE_MSG)))
+          return false;
+
         STATUSBAR_PROJECT_PATH(ap, _("No project opened"));
-        _blocks_hide(ap);
+        ui_panes_hide(ap);
         _blocks_data_unset(ap);
+        pm_project_close(ap->project);
+        ap->project = NULL;
      }
    return true;
 }
@@ -980,12 +967,8 @@ _teardown_save_splash(void *data, Splash_Status status)
      STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
    ap->project->changed = false;
-   if (ap->project->close_request)
-     {
-        pm_project_close(ap->project);
-        ap->project->close_request = false;
-        ap->project = NULL;
-     }
+
+   ecore_main_loop_quit();
    return true;
 }
 
@@ -1007,6 +990,7 @@ project_save(void)
    if (!ap->enventor_mode)
 #endif /* HAVE_ENVENTOR */
      ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
+     ecore_main_loop_begin();
 }
 
 /******************************************************************************/
@@ -1236,14 +1220,6 @@ _discard_cb(void *data,
             Evas_Object *obj __UNUSED__,
             void *ei __UNUSED__)
 {
-   App_Data *ap = app_data_get();
-   if (ap->project)
-     {
-        ap->project->changed = false;
-        pm_project_close(ap->project);
-        ap->project = NULL;
-     }
-
    Eina_Bool *res = data;
    *res = true;
    ecore_main_loop_quit();
@@ -1254,10 +1230,8 @@ _cancel_cb(void *data,
            Evas_Object *obj __UNUSED__,
            void *ei __UNUSED__)
 {
-   App_Data *ap = app_data_get();
    Eina_Bool *res = data;
    *res = false;
-   ap->project->close_request = false;
    ecore_main_loop_quit();
 }
 
@@ -1267,6 +1241,8 @@ _save_cb(void *data,
          void *ei __UNUSED__)
 {
    Eina_Bool *res = data;
+   App_Data *ap = app_data_get();
+   evas_object_hide(ap->popup);
    project_save();
    *res = true;
    ecore_main_loop_quit();
@@ -1307,6 +1283,7 @@ project_close_request(App_Data *ap, const char *msg)
 
    ecore_main_loop_begin();
 
+   ap->project->close_request = false;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    evas_object_del(ap->popup);
    ap->popup = NULL;

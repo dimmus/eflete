@@ -790,14 +790,14 @@ pm_project_close(Project *project)
    backup = eina_stringshare_printf("%s.backup", project->dev);
    ecore_file_remove(backup);
 
+   wm_widgets_list_free(project->widgets);
+   wm_layouts_list_free(project->layouts);
+
    eet_close(project->pro);
    eina_file_close(project->mmap_file);
    eina_stringshare_del(project->name);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
-
-   wm_widgets_list_free(project->widgets);
-   wm_layouts_list_free(project->layouts);
 
    eina_stringshare_del(backup);
    free(project);
