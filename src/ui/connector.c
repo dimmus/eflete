@@ -677,11 +677,6 @@ ui_style_clicked(App_Data *ap, Style *style)
    history_module_add(_style->obj);
    ui_block_history_set(ap, history_list);
 
-#ifdef HAVE_ENVENTOR
-   edje_object_mmap_set(ap->project->current_style->obj,
-                        ap->project->mmap_file,
-                        ap->project->current_style->full_group_name);
-#endif /* HAVE_ENVENTOR */
    live_view_widget_style_set(ap->live_view, ap->project, _style);
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, false);
 
