@@ -389,7 +389,7 @@ _on_st_add_bt_ok(void *data,
      }
    if (edje_edit_style_tag_add(edje_edit_obj, style_name, "DEFAULT"))
      {
-        if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, "DEFAULT", ""))
+        if (!edje_edit_style_tag_value_set(edje_edit_obj, style_name, "DEFAULT", "font=Sans"))
           {
              NOTIFY_WARNING(_("Failed to add tag value. Tag will be deleted"));
              edje_edit_style_tag_del(edje_edit_obj, style_name, "DEFAULT");
