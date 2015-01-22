@@ -905,36 +905,86 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 
    ap = (App_Data *)data;
 #ifdef HAVE_ENVENTOR
-   Eina_Stringshare *path = NULL;
-   char *code;
-   long f_size;
-   size_t code_s, code_r;
+   char *code, *new_code;
+   char *version_ptr, *search_ptr;
+   long long f_size;
+   size_t code_r;
    FILE *f;
+   long int concat_pos = 1;
+   char *data_str = "\"version\" \"110\";";
+   long int data_len = strlen(data_str);
 
    if (ap->enventor_mode)
      {
-        path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
-        enventor_object_save(ap->enventor, path);
+        enventor_object_save(ap->enventor, ap->project->enventor.file);
 
-        f = fopen(path, "r+");
+        f_size = ecore_file_size(ap->project->enventor.file);
+        f = fopen(ap->project->enventor.file, "r+");
         if (!f)
           {
-             ERR("Failed set the Elementary version support to '%s'", path);
+             ERR("Failed set the Elementary version support to '%s'",
+                 ap->project->enventor.file);
              return false;
           }
-        fseek(f, 0, SEEK_END);
-        f_size = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        code_s = sizeof(char) * f_size;
-        code = mem_malloc(code_s);
+        code = mem_calloc(1, f_size);
         code_r = fread(code, 1, f_size, f);
-        if (code_r == 0) return false;
-        fseek(f, 0, SEEK_SET);
+        if (code_r == 0)
+          {
+             free(code);
+             fclose(f);
+             return false;
+          }
+        version_ptr = strstr(code, "\"version\"");
+        if (!version_ptr)
+          {
+             rewind(f);
+             fputs("data.item: \"version\" \"110\";\n\n", f);
+             fputs(code, f);
+          }
+        else
+          {
+             fclose(f);
+             f = fopen(ap->project->enventor.file, "w");
 
-        fputs("data.item: \"version\" \"110\";\n\n", f);
-        fputs(code, f);
-        fclose(f);
+             /*Search position where item block ends.*/
+             for(search_ptr = version_ptr;
+                 ((!search_ptr) || (*search_ptr != ';'));
+                 search_ptr++, concat_pos++);
+
+             /*
+              * Position of the source code, where it should be merged
+              * into temporary buffer.
+              */
+              concat_pos += (version_ptr - code);
+
+              /*
+              * Copy data into temporary buffer with replacing
+              * "version" "value"; to "version" "110";
+              */
+             if (search_ptr)
+               {
+                  /*
+                   * Calculating new size:
+                   * size before "version" + size of new string + size of rest code
+                   */
+                  new_code = mem_calloc(1, (version_ptr - code) + data_len + strlen(code + concat_pos));
+
+                  /* Copying code, that was before "version" */
+                  memcpy(new_code, code, (version_ptr - code));
+
+                  /* Add string: "version" "110"; */
+                  memcpy(new_code + (version_ptr - code), data_str, data_len);
+
+                  /* Add rest of source code */
+                  memcpy(new_code + data_len + (version_ptr - code), code + concat_pos,
+                         strlen(code + concat_pos));
+
+                  fputs(new_code, f);
+                  free(new_code);
+               }
+          }
         free(code);
+        fclose(f);
 
         wm_widgets_list_objects_del(ap->project->widgets);
         thread = pm_project_enventor_save(ap->project,
@@ -980,7 +1030,10 @@ project_save(void)
 
    ap = app_data_get();
    if (!ap->project) return;
-   if (!ap->project->changed) return;
+#ifdef HAVE_ENVENTOR
+   if (!ap->enventor_mode)
+#endif /* HAVE_ENVENTOR */
+     if (!ap->project->changed) return;
    if (ap->splash) return;
 
    ap->splash = splash_add(ap->win, _setup_save_splash, _teardown_save_splash, NULL, ap);
