@@ -41,30 +41,29 @@ shortcuts_test
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
--I${top_srcdir}/src \
--I${top_builddir}/src \
--I${top_srcdir}/src/alloc \
--I${top_srcdir}/src/external \
--I${top_srcdir}/src/common \
--I${top_srcdir}/src/logger \
--I${top_srcdir}/src/loop_manager \
--I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/config \
--I${top_srcdir}/src/history \
--I${top_srcdir}/src/ui \
--I${top_srcdir}/src/ui/container \
--I${top_srcdir}/src/ui/blocks \
--I${top_srcdir}/src/ui/dialogs \
--I${top_srcdir}/src/ui/editors \
--I${top_srcdir}/src/ui/modal_window \
--I${top_srcdir}/src/ui/notification \
--I${top_srcdir}/src/ui/preference \
--I${top_srcdir}/src/ui/workspace \
--I${top_srcdir}/src/ui/workspace/groupedit \
--I${top_srcdir}/src/ui/live_view \
--I${top_srcdir}/src/ui/live_view/elementary \
--I${top_srcdir}/src/ui/signal_list \
--I${top_srcdir}/src/ui/shortcuts \
+-I${top_srcdir}/src/bin \
+-I${top_srcdir}/src/bin/alloc \
+-I${top_srcdir}/src/bin/external \
+-I${top_srcdir}/src/bin/common \
+-I${top_srcdir}/src/bin/logger \
+-I${top_srcdir}/src/bin/loop_manager \
+-I${top_srcdir}/src/bin/project_manager \
+-I${top_srcdir}/src/bin/config \
+-I${top_srcdir}/src/bin/history \
+-I${top_srcdir}/src/bin/ui \
+-I${top_srcdir}/src/bin/ui/container \
+-I${top_srcdir}/src/bin/ui/blocks \
+-I${top_srcdir}/src/bin/ui/dialogs \
+-I${top_srcdir}/src/bin/ui/editors \
+-I${top_srcdir}/src/bin/ui/modal_window \
+-I${top_srcdir}/src/bin/ui/notification \
+-I${top_srcdir}/src/bin/ui/preference \
+-I${top_srcdir}/src/bin/ui/workspace \
+-I${top_srcdir}/src/bin/ui/workspace/groupedit \
+-I${top_srcdir}/src/bin/ui/live_view \
+-I${top_srcdir}/src/bin/ui/live_view/elementary \
+-I${top_srcdir}/src/bin/ui/signal_list \
+-I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
@@ -73,7 +72,7 @@ FLAGS = \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
-LD = $(top_builddir)/src/libete.a \
+LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
 @EWE_LIBS@ \

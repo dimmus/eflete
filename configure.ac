@@ -155,7 +155,7 @@ AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile]) ])
 AC_CONFIG_FILES([
 po/Makefile.in
 Makefile
-src/Makefile
+src/bin/Makefile
 data/Makefile
 data/eflete.desktop
 tests/Makefile

@@ -10,7 +10,7 @@
 *.i
 *.s
 intl/
-src/eflete
+src/bin/eflete
 *.dirstamp
 *.log
 *.trs
@@ -72,7 +72,7 @@ Testing/*
 config.cache-env
 config/
 src/config.h
-!src/config/
+!src/bin/config
 build/*
 *Makefile
 !*.am

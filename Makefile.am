@@ -2,9 +2,9 @@ MAINTAINERCLEANFILES = Makefile.in
 
 ACLOCAL_AMFLAGS = -I m4
 if CHECK_FOUND
-SUBDIRS = src data doc . tests/edj_build tests po
+SUBDIRS = src/bin data doc . tests/edj_build tests po
 else
-SUBDIRS = src data doc . po
+SUBDIRS = src/bin data doc . po
 endif
 
 .PHONY: doc update-po report report_debug coverage
