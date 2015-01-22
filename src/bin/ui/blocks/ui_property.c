@@ -42,6 +42,14 @@
         return ret; \
      }
 
+/*
+ * Callback is added for frames at property box for correct scroller
+ * work while each frame would be expanded/collapsed
+ */
+#define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
+FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
+evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
+
 struct _Prop_Data
 {
    Evas_Object *workspace;
@@ -277,6 +285,34 @@ _on_spinner_mouse_wheel(void *data __UNUSED__,
    Evas_Event_Mouse_Wheel *mev = event_info;
    mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 }
+
+/* TODO: remove this hack after scroller would be fixed
+ * Hack start
+ */
+static void
+_on_frame_click(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   Evas_Object *scroller = (Evas_Object *)data;
+   Evas_Object *box, *frame_box;
+   int h_box, h_frame_box, h_scr, y_reg, h_reg, y_frame;
+   box = elm_object_content_get(scroller);
+   evas_object_geometry_get(scroller, NULL, NULL, NULL, &h_scr);
+   evas_object_geometry_get(box, NULL, NULL, NULL, &h_box);
+   frame_box = elm_object_content_get(obj);
+   evas_object_geometry_get(frame_box, NULL, &y_frame, NULL, &h_frame_box);
+   elm_scroller_region_get(scroller, NULL, &y_reg, NULL, &h_reg);
+   elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+   if (!elm_frame_collapse_get(obj))
+     {
+        if (h_box == h_scr + y_reg)
+          elm_scroller_region_show(scroller, 0.0, y_reg + h_frame_box, 0.0, h_reg);
+        else
+          elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+     }
+}
+/* Hack end */
 
 static void
 _del_prop_data(void *data,
@@ -698,7 +734,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    if (!pd_group.frame)
      {
-        FRAME_ADD(property, group_frame, true, _("Layout property"))
+        FRAME_PROPERTY_ADD(property, group_frame, true, _("Layout property"), pd->visual)
         BOX_ADD(group_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
@@ -902,7 +938,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if (!pd_part.frame)
      {
-        FRAME_ADD(pd->visual, part_frame, true, _("Part property"))
+        FRAME_PROPERTY_ADD(pd->visual, part_frame, true, _("Part property"), pd->visual)
         BOX_ADD(part_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_frame, box);
@@ -1070,7 +1106,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    if (!pd_part_drag.frame)
      {
-        FRAME_ADD(pd->visual, part_drag_frame, true, _("Part dragable property"))
+        FRAME_PROPERTY_ADD(pd->visual, part_drag_frame, true, _("Part dragable property"), pd->visual)
         BOX_ADD(part_drag_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_drag_frame, box);
@@ -1123,12 +1159,14 @@ ui_property_part_unset(Evas_Object *property)
 
    if (pd->prop_part.frame)
      {
+        evas_object_smart_callback_del(pd->prop_part.frame, "clicked", _on_frame_click);
         elm_box_unpack(prop_box, pd->prop_part.frame);
         evas_object_del(pd->prop_part.frame);
         pd->prop_part.frame = NULL;
      }
    if (pd->prop_part_drag.frame)
      {
+        evas_object_smart_callback_del(pd->prop_part_drag.frame, "clicked", _on_frame_click);
         elm_box_unpack(prop_box, pd->prop_part_drag.frame);
         evas_object_del(pd->prop_part_drag.frame);
         pd->prop_part_drag.frame = NULL;
@@ -1136,6 +1174,7 @@ ui_property_part_unset(Evas_Object *property)
 
    if (pd->prop_state.frame)
      {
+        evas_object_smart_callback_del(pd->prop_state.frame, "clicked", _on_frame_click);
         elm_box_unpack(prop_box, pd->prop_state.frame);
         evas_object_del(pd->prop_state.frame);
         pd->prop_state.frame = NULL;
@@ -1225,7 +1264,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
    if (!pd_state.frame)
      {
-        FRAME_ADD(property, state_frame, true, _("State"))
+        FRAME_PROPERTY_ADD(property, state_frame, true, _("State"), pd->visual)
         BOX_ADD(state_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(state_frame, box);
@@ -1454,7 +1493,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
    if (!pd_obj_area.frame)
      {
-        FRAME_ADD(property, obj_area_frame, true, _("Object area"))
+        FRAME_PROPERTY_ADD(property, obj_area_frame, true, _("Object area"), pd->visual)
         BOX_ADD(obj_area_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(obj_area_frame, box);
@@ -1942,7 +1981,7 @@ ui_property_state_text_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_text.frame)
      {
-         FRAME_ADD(property, text_frame, true, _("Text"))
+         FRAME_PROPERTY_ADD(property, text_frame, true, _("Text"), pd->visual)
          BOX_ADD(text_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
@@ -2066,7 +2105,7 @@ ui_property_state_textblock_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_textblock.frame)
      {
-         FRAME_ADD(property, textblock_frame, true, _("TextBlock"))
+         FRAME_PROPERTY_ADD(property, textblock_frame, true, _("TextBlock"), pd->visual)
          BOX_ADD(textblock_frame, box, EINA_FALSE, EINA_FALSE)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(textblock_frame, box);
@@ -2379,8 +2418,8 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    Eina_List *images_list, *l;
    char *image_name;
 
-   FRAME_ADD(box, tween_frame, true, _("Tweens"))
-   elm_object_style_set(tween_frame, "tween");
+   FRAME_PROPERTY_ADD(box, tween_frame, true, _("Tweens"), pd->visual)
+   elm_object_style_set(tween_frame, "eflete/tween");
 
    tween_list = elm_genlist_add(tween_frame);
    elm_genlist_longpress_timeout_set(tween_list, 0.2);
@@ -2465,7 +2504,7 @@ ui_property_state_image_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_image.frame)
      {
-        FRAME_ADD(property, image_frame, true, _("Image"))
+        FRAME_PROPERTY_ADD(property, image_frame, true, _("Image"), pd->visual)
         BOX_ADD(image_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
@@ -2538,7 +2577,7 @@ ui_property_state_fill_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_fill.frame)
      {
-        FRAME_ADD(property, fill_frame, true, _("Fill"))
+        FRAME_PROPERTY_ADD(property, fill_frame, true, _("Fill"), pd->visual)
         BOX_ADD(fill_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(fill_frame, box);
