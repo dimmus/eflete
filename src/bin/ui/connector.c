@@ -539,8 +539,12 @@ ui_part_back(App_Data *ap)
    workspace_highlight_unset(ap->workspace);
 #ifdef HAVE_ENVENTOR
    eina_stringshare_del(ap->project->enventor.file);
-   eina_stringshare_del(ap->project->enventor.path);
    ap->project->enventor.file = NULL;
+   if (ap->project->enventor.path)
+     {
+        ecore_file_recursive_rm(ap->project->enventor.path);
+        eina_stringshare_del(ap->project->enventor.path);
+     }
 #endif /* HAVE_ENVENTOR */
 }
 

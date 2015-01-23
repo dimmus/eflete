@@ -790,6 +790,16 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->develop_path);
 
    eina_stringshare_del(backup);
+
+#ifdef HAVE_ENVENTOR
+   eina_stringshare_del(project->enventor.file);
+   if (project->enventor.path)
+     {
+        ecore_file_recursive_rm(project->enventor.path);
+        eina_stringshare_del(project->enventor.path);
+     }
+#endif /* HAVE_ENVENTOR */
+
    free(project);
 
    return true;
