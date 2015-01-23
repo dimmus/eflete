@@ -28,6 +28,10 @@
         return ret; \
      }
 
+#define FRAME_LIVE_VIEW_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
+FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
+evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
+
 struct _Prop_Data
 {
    Evas_Object *live_object;
@@ -52,6 +56,34 @@ struct _Prop_Data
    Eina_Bool in_prog_edit;
 };
 typedef struct _Prop_Data Prop_Data;
+
+/* TODO: remove this hack after scroller would be fixed
+ * Hack start
+ */
+static void
+_on_frame_click(void *data,
+                Evas_Object *obj,
+                void *event_info __UNUSED__)
+{
+   Evas_Object *scroller = (Evas_Object *)data;
+   Evas_Object *box, *frame_box;
+   int h_box, h_frame_box, h_scr, y_reg, h_reg, y_frame;
+   box = elm_object_content_get(scroller);
+   evas_object_geometry_get(scroller, NULL, NULL, NULL, &h_scr);
+   evas_object_geometry_get(box, NULL, NULL, NULL, &h_box);
+   frame_box = elm_object_content_get(obj);
+   evas_object_geometry_get(frame_box, NULL, &y_frame, NULL, &h_frame_box);
+   elm_scroller_region_get(scroller, NULL, &y_reg, NULL, &h_reg);
+   elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+   if (!elm_frame_collapse_get(obj))
+     {
+        if (h_box == h_scr + y_reg)
+          elm_scroller_region_show(scroller, 0.0, y_reg + h_frame_box, 0.0, h_reg);
+        else
+          elm_scroller_region_bring_in(scroller, 0.0, y_reg + 1, 0.0, h_reg);
+     }
+}
+/* Hack end */
 
 static void
 _on_zoom_change(void *data,
@@ -159,7 +191,7 @@ live_view_property_style_set(Evas_Object *property,
    /* Swallows UI setting*/
    if (!pd->prop_swallow.swallows)
      {
-        FRAME_ADD(property, pd->prop_swallow.frame, true, _("Swallows"));
+        FRAME_LIVE_VIEW_ADD(property, pd->prop_swallow.frame, true, _("Swallows"), pd->visual);
         elm_object_style_set(pd->prop_swallow.frame, "eflete/live_view");
 
         CHECK_ADD(prop_box, check, "eflete/live_view");
@@ -176,7 +208,7 @@ live_view_property_style_set(Evas_Object *property,
    /* Texts UI setting*/
    if (!pd->prop_text.texts)
      {
-        FRAME_ADD(property, pd->prop_text.frame, true, _("Texts"));
+        FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Texts"), pd->visual);
         elm_object_style_set(pd->prop_text.frame, "eflete/live_view");
 
         CHECK_ADD(prop_box, check, "eflete/live_view");
@@ -193,7 +225,7 @@ live_view_property_style_set(Evas_Object *property,
    /* Signals UI setting*/
    if ((!pd->in_prog_edit) && (!pd->prop_signal.signals))
      {
-        FRAME_ADD(property, pd->prop_signal.frame, true, _("Signals"));
+        FRAME_LIVE_VIEW_ADD(property, pd->prop_signal.frame, true, _("Signals"), pd->visual);
         elm_object_style_set(pd->prop_signal.frame, "eflete/default");
 
         BOX_ADD(pd->prop_signal.frame, pd->prop_signal.signals, false, false)
