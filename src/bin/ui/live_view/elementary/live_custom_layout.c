@@ -17,16 +17,21 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_elementary_widgets.h"
+#include "live_view_prop.h"
+
 void
 on_layout_swallow_check(void *data,
                         Evas_Object *obj,
                         void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL;
+   Evas_Object *rect = NULL, *check = NULL, *item, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
 
-   Evas_Object *object = (Evas_Object *)data;
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
      {
@@ -35,6 +40,15 @@ on_layout_swallow_check(void *data,
         rect = evas_object_rectangle_add(object);
         evas_object_color_set(rect, RECT_COLOR);
         edje_object_part_swallow(object, part_name, rect);
+        item_list = elm_box_children_get(pd->prop_swallow.swallows);
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
      }
    else
      {
@@ -42,6 +56,7 @@ on_layout_swallow_check(void *data,
         if (!rect) return;
         edje_object_part_unswallow(object, rect);
         evas_object_del(rect);
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
 }
 
@@ -50,14 +65,35 @@ on_layout_text_check(void *data,
                      Evas_Object *obj,
                      void *ei __UNUSED__)
 {
-   Evas_Object *object = (Evas_Object *)data;
+   Evas_Object *check = NULL, *item, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
-     edje_object_part_text_set(object, part_name,
-                               _("Look at it! This is absolutely and totally text"));
+     {
+        edje_object_part_text_set(object, part_name,
+                                  _("Look at it! This is absolutely and totally text"));
+        item_list = elm_box_children_get(pd->prop_text.texts);
+
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+     }
    else
-     edje_object_part_text_set(object, part_name, "");
+     {
+        edje_object_part_text_set(object, part_name, "");
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
+     }
 }
 
 void

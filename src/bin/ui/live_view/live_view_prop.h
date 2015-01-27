@@ -36,6 +36,31 @@
 #include <Evas.h>
 #include <Elementary.h>
 
+struct _Prop_Data
+{
+   Evas_Object *live_object;
+   Evas_Object *visual;
+   Evas_Object *scale_spinner;
+   double current_scale;
+   const char *widget;
+   Style *style;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *swallows;
+   } prop_swallow;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *texts;
+   } prop_text;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *signals;
+   } prop_signal;
+   Eina_List *signals;
+   Eina_Bool in_prog_edit;
+};
+typedef struct _Prop_Data Prop_Data;
+
 /**
  * Add a new Live View Property widget.
  *

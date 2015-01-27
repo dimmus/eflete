@@ -32,31 +32,6 @@
 FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
 evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
 
-struct _Prop_Data
-{
-   Evas_Object *live_object;
-   Evas_Object *visual;
-   Evas_Object *scale_spinner;
-   double current_scale;
-   const char *widget;
-   Style *style;
-   struct {
-      Evas_Object *frame;
-      Evas_Object *swallows;
-   } prop_swallow;
-   struct {
-      Evas_Object *frame;
-      Evas_Object *texts;
-   } prop_text;
-   struct {
-      Evas_Object *frame;
-      Evas_Object *signals;
-   } prop_signal;
-   Eina_List *signals;
-   Eina_Bool in_prog_edit;
-};
-typedef struct _Prop_Data Prop_Data;
-
 /* TODO: remove this hack after scroller would be fixed
  * Hack start
  */
@@ -253,7 +228,7 @@ live_view_property_style_set(Evas_Object *property,
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
-                                            pd->live_object);
+                                            pd);
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
@@ -270,7 +245,7 @@ live_view_property_style_set(Evas_Object *property,
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
-                                            pd->live_object);
+                                            pd);
              evas_object_data_set(check, PART_NAME, eina_stringshare_add(part_name));
 
              elm_object_part_content_set(item, "info", check);
