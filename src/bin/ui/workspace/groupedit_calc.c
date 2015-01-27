@@ -61,6 +61,9 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 static void
 _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj);
 
+static void
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file);
+
 void
 _edit_object_load(Ws_Groupedit_Smart_Data *sd)
 {
@@ -622,15 +625,16 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
               _image_param_update(gp, sd->edit_obj, sd->edit_obj_file);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
-
            case EDJE_PART_TYPE_TEXTBLOCK:
               _textblock_param_update(gp, sd->edit_obj);
               _part_recalc_apply(sd, gp, offset_x, offset_y);
               break;
-
+           case EDJE_PART_TYPE_GROUP:
+              _group_param_update(gp, sd->edit_obj, sd->edit_obj_file);
+              _part_recalc_apply(sd, gp, offset_x, offset_y);
+              break;
            case EDJE_PART_TYPE_SPACER:
            case EDJE_PART_TYPE_SWALLOW:
-           case EDJE_PART_TYPE_GROUP:
            case EDJE_PART_TYPE_BOX:
            case EDJE_PART_TYPE_TABLE:
            case EDJE_PART_TYPE_EXTERNAL:
@@ -722,6 +726,9 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(101, 117, 133, 255)
          break;
       case EDJE_PART_TYPE_GROUP:
+         gp->draw = edje_object_add(sd->e);
+         BORDER_ADD(122, 122, 122, 255)
+         break;
       case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_TABLE:
       case EDJE_PART_TYPE_EXTERNAL:
@@ -1063,6 +1070,19 @@ _textblock_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
 
    PART_STATE_FREE
    edje_edit_string_free(text);
+}
+
+static void
+_group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
+{
+   Eina_Stringshare *source = edje_edit_part_source_get(edit_obj, gp->name);
+
+   if (!source) return;
+
+   if (!edje_object_file_set(gp->draw, file, source))
+     ERR("Image can't be loaded.\n");
+
+   edje_edit_string_free(source);
 }
 
 static void
