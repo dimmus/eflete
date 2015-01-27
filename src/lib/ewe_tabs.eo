@@ -1,0 +1,263 @@
+class Ewe_Tabs (Elm_Widget)
+{
+   eo_prefix: ewe_obj_tabs;
+   data: Ewe_Tabs_Smart_Data;
+   properties {
+      items_list {
+         get {
+         /*@
+          Get internal items list.
+
+          @param obj The tabs object
+          @return list of items on success, NULL otherwise
+          @ingroup tabs*/
+         }
+         values {
+            const(Eina_List) *items;
+         }
+      }
+      active_item {
+         set {
+         /*@
+          Activate tabs item.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         return: Eina_Bool;
+         }
+         get {
+         /*@
+          Get active item.
+
+          @param obj The tabs object
+          @return active item on success, NULL otherwise*/
+         }
+         values {
+            Ewe_Tabs_Item *item;
+         }
+      }
+      item_title {
+         set {
+         /*@
+          Set title of the tabs item.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         return: Eina_Bool;
+         }
+         get {
+         /*@
+          Get title of the tabs item.
+
+          @return items title on success, NULL otherwise
+
+          @ingroup tabs*/
+         }
+         keys {
+            Ewe_Tabs_Item *item @nonull;
+         }
+         values {
+            Eina_Stringshare *title;
+         }
+      }
+      item_disabled {
+         set {
+         /*@
+          Enables or disables tabs item.
+
+          Notes: user cannot switch to disabled tabs item.
+          If it is active allready or is activated from code
+          items content will be also rendered disabled.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         return: Eina_Bool;
+         }
+         get {
+         /*@
+          Get items disabled state.
+
+          @return EINA_TRUE if item is disabled, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         }
+         keys {
+            Ewe_Tabs_Item *item @nonull;
+         }
+         values {
+            Eina_Bool disabled;
+         }
+      }
+      orient_horizontal {
+         set {
+         /*@
+          Set horizontal or vertical orient for tabs.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         return: Eina_Bool;
+         }
+         get {
+         /*@
+          Get tabs orient.
+
+          @return EINA_TRUE if tabs are horizontal, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         }
+         values {
+            Eina_Bool orient;
+         }
+      }
+   }
+   methods {
+      item_append {
+         /*@
+          Add an item after specified item.
+          If no item specified adds as last.
+
+          @return The new tabs item object or NULL if it cannot be created
+
+          @ingroup tabs*/
+         return: Ewe_Tabs_Item *;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in Eina_Stringshare *title; /*@New items title*/
+            @in Eina_Stringshare *style; /*@New items style*/
+         }
+      }
+      item_prepend {
+         /*@
+          Add an item before specified item.
+          If no item specified adds as first.
+
+          @return The new tabs item object or NULL if it cannot be created
+
+          @ingroup tabs*/
+         return: Ewe_Tabs_Item *;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in Eina_Stringshare *title; /*@New items title*/
+            @in Eina_Stringshare *style; /*@New items style*/
+         }
+      }
+      item_del {
+         /*@
+          Delete tabs item.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup tabs*/
+         return: Eina_Bool;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+         }
+      }
+      item_content_set {
+        /*@
+         Set content to tabs item
+
+         @return EINA_TRUE on success, EINA_FALSE otherwise
+
+         @ingroup tabs*/
+         return: Eina_Bool;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in Evas_Object *content; /*@New items content*/
+         }
+      }
+      item_content_get {
+        /*@
+         Get content from tabs item
+
+         @return Evas_Object pointer to content of item on success, NULL otherwise
+
+         @ingroup tabs*/
+         return: const(Evas_Object) *;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+         }
+      }
+      item_content_unset {
+        /*@
+         Unset content from tabs item
+
+         @return Evas_Object *content
+
+         @ingroup tabs*/
+         return: Evas_Object *;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+         }
+      }
+      item_icon_set {
+        /*@
+         Set icon to tabs item
+
+         @return EINA_TRUE on success, EINA_FALSE otherwise
+
+         @ingroup tabs*/
+         return: Eina_Bool;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in Evas_Object *icon; /*@New items icon*/
+         }
+      }
+      item_icon_unset {
+        /*@
+         Unset icon from tabs item
+
+         @return Evas_Object *icon
+
+         @ingroup tabs*/
+         return: Evas_Object *;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+         }
+      }
+      item_button_set {
+        /*@
+         Set button to tabs item
+
+         @return EINA_TRUE on success, EINA_FALSE otherwise
+
+         @ingroup tabs*/
+         return: Eina_Bool;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+            @in Evas_Object *button; /*@New items button*/
+         }
+      }
+      item_button_unset {
+        /*@
+         Unset button from tabs item
+
+         @return Evas_Object *button
+
+         @ingroup tabs*/
+         return: Evas_Object *;
+         params {
+            @in Ewe_Tabs_Item *item; /*@The tabs item*/
+         }
+      }
+   }
+   implements {
+      class.constructor;
+      Eo.Base.constructor;
+      Evas.Object_Smart.del;
+      Evas.Object_Smart.add;
+      Evas.Object_Smart.resize;
+      Evas.Object_Smart.move;
+      Evas.Object_Smart.show;
+      Evas.Object_Smart.hide;
+      Elm_Widget.style;
+   }
+   events {
+      item,activated;
+      item,deactivated;
+   }
+}

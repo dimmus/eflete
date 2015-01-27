@@ -1,0 +1,164 @@
+class Ewe_Combobox (Elm_Widget)
+{
+   eo_prefix: ewe_obj_combobox;
+   data: Ewe_Combobox_Smart_Data;
+   properties {
+      items_list {
+         get {
+         /*@
+          Get internal items list.
+
+          @param obj The combobox object
+          @return list of items on success, NULL otherwise
+          @ingroup combobox*/
+         }
+         values {
+            const(Eina_List)* items;
+         }
+      }
+   }
+   methods {
+      item_add {
+         /*@
+          Add an item as last.
+
+          @return The new combobox item object or NULL if it cannot be created
+
+          @ingroup combobox*/
+         return: Ewe_Combobox_Item *;
+         params {
+            @in Eina_Stringshare *title; /*@New items title*/
+         }
+      }
+      item_del {
+         /*@
+          Delete combobox item.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in Ewe_Combobox_Item *item; /*@The combobox item*/
+         }
+      }
+      items_list_free {
+         /*@
+          Combobox items list free.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in Eina_Bool empty; /*@clear main part*/
+         }
+      }
+      item_title_set {
+         /*@
+          Set title of the combobox item.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in int index; /*@Combobox item index*/
+            @in Eina_Stringshare *title; /*@New items title*/
+         }
+      }
+      item_title_get {
+         /*@
+          Get title of the combobox item.
+
+          @return items title on success, NULL otherwise
+
+          @ingroup combobox*/
+         return: Eina_Stringshare *;
+         params {
+            @in const(int) index; /*@Combobox item index*/
+         }
+      }
+      select_item_set {
+        /*@
+         Set select to combobox item
+
+         @return EINA_TRUE on success, EINA_FALSE otherwise
+
+         @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in const(int) index; /*@New selected item index*/
+         }
+      }
+      select_item_get {
+        /*@
+         Get selected combobox item
+
+         @return  Ewe_Combobox_Item *item;
+
+         @ingroup combobox*/
+         return: Ewe_Combobox_Item *;
+      }
+      expanded_get {
+        /*@
+         Get if combobox expanded
+
+         @return EINA_TRUE on success, EINA_FALSE otherwise
+
+         @ingroup combobox*/
+         return: Eina_Bool;
+      }
+      text_set {
+         /*@
+          Set title of the combobox.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in Eina_Stringshare *title; /*@New items title*/
+         }
+      }
+      item_style_set {
+         /*@
+          Set style of the combobox item.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in Ewe_Combobox_Item *item; /*@The combobox item*/
+            @in Eina_Stringshare *style; /*@New items style*/
+         }
+      }
+      style_set {
+         /*@
+          Set style of the combobox.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in Eina_Stringshare *style; /*@New combobox style*/
+         }
+      }
+   }
+
+   implements {
+      class.constructor;
+      Eo.Base.constructor;
+      Evas.Object_Smart.del;
+      Evas.Object_Smart.add;
+      Evas.Object_Smart.resize;
+      Evas.Object_Smart.move;
+      Evas.Object_Smart.show;
+      Evas.Object_Smart.hide;
+      Elm_Widget.disable;
+   }
+   events {
+   }
+}

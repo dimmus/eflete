@@ -10,12 +10,14 @@ AC_PROG_RANLIB
 AM_SILENT_RULES([yes])
 AM_INIT_AUTOMAKE([1.13 dist-bzip2 subdir-objects color-tests foreign])
 
+LT_INIT([win32-dll disable-static pic-only])
+
 dnl m4_define([package], "EFL\ Edje\ Theme\ Editor")
 m4_define([efl_version], [1.12.99])
 m4_define([elm_version], [1.12.99])
 m4_define([enventor_version], [0.4.0])
-m4_define([ewe_version], [0.2.2])
 
+EWE_INIT
 EFLETE_INIT
 AC_CONFIG_HEADERS([eflete_config.h])
 AH_TOP([
@@ -55,6 +57,9 @@ case "$host_os" in
    ;;
 esac
 
+# Force the helper to try external eolian-gen
+AM_CONDITIONAL([HAVE_EOLIAN_GEN], [true])
+
 #===============================================================================
 
 PKG_PROG_PKG_CONFIG
@@ -84,10 +89,6 @@ PKG_CHECK_MODULES([ELEMENTARY], [elementary >= elm_version],
    [have_elm="${GREEN}yes${RESET}"],
    [have_elm="${RED}no${RESET} (version < elm_version)"])
 
-PKG_CHECK_MODULES([EWE], [ewe >= ewe_version],
-   [have_ewe="${GREEN}yes${RESET}"],
-   [have_ewe="${RED}no${RESET} (version < ewe_version)"])
-
 PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${GREEN}yes${RESET}"],
    [have_check="${RED}no${RESET}"])
@@ -108,6 +109,9 @@ AM_COND_IF([CHECK_FOUND],
 #Usage: EFLETE_WITH_BIN(package, binary, default_value). See eflete_binary.m4
 EFLETE_WITH_BIN([edje], [edje_cc], [edje_cc])
 EFLETE_WITH_BIN([eet], [eet-eet], [eet])
+EWE_WITH_BIN([edje], [edje_cc], [edje_cc])
+EWE_WITH_BIN([eolian], [eolian-gen], [eolian_gen])
+
 dnl locale, gettext
 AM_GNU_GETTEXT_VERSION(0.18.1)
 AM_GNU_GETTEXT([external])
@@ -137,11 +141,14 @@ fi
 AC_SUBST(LOCALE_DIR)
 #===============================================================================
 
+DEPS_EOLIAN_FLAGS=`${PKG_CONFIG} --variable=eolian_flags eo efl evas edje ecore elementary`
+AC_SUBST([DEPS_EOLIAN_FLAGS])
+
 EFLETE_DEFINE=" -DEFLETE_EDJ=\\\"${datadir}/eflete/layouts/eflete.edj\\\" "
-EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/default.edj\\\" "
+EFLETE_DEFINE+=" -DEFLETE_THEME=\\\"${datadir}/eflete/themes/default/eflete_elm.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_EDJ_PATH=\\\"${datadir}/eflete/themes/default/\\\" "
 EFLETE_DEFINE+=" -DEFLETE_IMG_PATH=\\\"${datadir}/eflete/images/\\\" "
-EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/resources.edj\\\" "
+EFLETE_DEFINE+=" -DEFLETE_RESOURCES=\\\"${datadir}/eflete/eflete_resources.edj\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_EDC_PATH=\\\"${datadir}/eflete/themes/default/template/edc\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_IMAGES_PATH=\\\"${datadir}/eflete/themes/default/template/images\\\" "
 EFLETE_DEFINE+=" -DEFLETE_TEMPLATE_SOUNDS_PATH=\\\"${datadir}/eflete/themes/default/template/sounds\\\" "
@@ -155,7 +162,9 @@ AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile]) ])
 AC_CONFIG_FILES([
 po/Makefile.in
 Makefile
+src/Makefile
 src/bin/Makefile
+src/lib/Makefile
 data/Makefile
 data/eflete.desktop
 tests/Makefile
@@ -185,13 +194,12 @@ echo "  os.............: ${host_os}"
 echo "                   ${os_remark}"
 echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
-echo "  ewe............: ${have_ewe}"
 echo ""
 echo "Features:"
 echo "  enventor.......: ${have_enventor}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
-echo
+echo ""
 echo "Testing:"
 echo "  check..........: ${have_check}"
 echo "  run tests......: ${run_test}"

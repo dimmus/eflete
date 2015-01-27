@@ -84,6 +84,7 @@ ui/notification/notify.c
 eflete_SOURCES  = main.c
 
 eflete_CPPFLAGS = \
+-I${top_srcdir}/src/lib \
 -I${top_srcdir}/src/bin/alloc \
 -I${top_srcdir}/src/bin/external \
 -I${top_srcdir}/src/bin/preference \
@@ -108,7 +109,6 @@ eflete_CPPFLAGS = \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @ENVENTOR_CFLAGS@ \
-@EWE_CFLAGS@ \
 @EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
@@ -118,6 +118,6 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
+${top_srcdir}/src/lib/libewe.la\
 @ENVENTOR_LIBS@ \
-@EWE_LIBS@ \
 @LTLIBINTL@

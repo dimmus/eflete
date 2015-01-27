@@ -9,6 +9,8 @@
 *.o
 *.i
 *.s
+*.eo.h
+*.eo.c
 intl/
 src/bin/eflete
 *.dirstamp
@@ -16,6 +18,9 @@ src/bin/eflete
 *.trs
 *.dev
 *.eet
+*.lo
+*.la
+*.libs
 tests/addpart_test
 tests/alloc_test
 tests/colorclass_editor_test
@@ -96,6 +101,8 @@ config.rpath
 m4/*
 !m4/eflete.m4
 !m4/eflete_binary.m4
+!m4/ewe.m4
+!m4/ewe_binary.m4
 !m4/ac_attribute.m4
 ABOUT-NLS
 INSTALL
@@ -114,6 +121,7 @@ eflete_config.h
 stamp-h1
 tests/Doxyfile
 tests/edj_build/radio.edc
+libtool
 
 
 #localization

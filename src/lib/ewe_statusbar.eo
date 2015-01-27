@@ -1,0 +1,172 @@
+class Ewe_Statusbar (Elm_Widget)
+{
+   eo_prefix: ewe_obj_statusbar;
+   data: Ewe_Statusbar_Smart_Data;
+   properties {
+      items_padding {
+         set {
+            /*@
+            Set the padding between the statusbar items.
+
+            Extra space in pixels that will be added between a statusbar items.
+            This padding is set for all items in the statusbar widget.
+
+            @ingroup Statusbar */
+         }
+         get {
+            /*@
+            Get the padding between the statusbar items.
+
+            @ingroup Statusbar */
+         }
+         values {
+            int padding; /*@ padding size in pixels between items.*/
+         }
+      }
+
+     items_align {
+         set {
+            /*@
+            Set the alignment of the whole bounding statusbar of items.
+
+            Sets how the bounding box containing all the items of the statusbar, after
+            their sizes and position has been calculated, will be aligned within
+            the space given for the whole statusbar widget.
+
+            @ingroup Statusbar */
+         }
+         get {
+            /*@
+            Get the alignment of the whole bounding statusbar of items.
+
+            @ingroup Statusbar */
+         }
+         values {
+           Ewe_Statusbar_Items_Align align; /*@The alignment of items. */
+         }
+      }
+   }
+   methods {
+     items_list_get {
+            /*@
+             Retrieve a list of the items, which exist into the statusbar.
+
+             @return Eina_List with a pointer to Ewe_Statusbar_Item in its nodes, NULL otherwise.
+             @ingroup Statusbar. */
+        return: const(Eina_List) *;
+      }
+      clear {
+         /*@
+          Remove all items from a given statusbar widget.
+
+          @return A new statusbar widget handle, or NULL, on errors.
+          @ingroup Statusbar */
+         return: Eina_Bool;
+      }
+      item_append {
+         /*@
+           Append a new item in a given statusbar widget.
+           This adds the new item to the end of the list childrens in statusbar widget.
+
+           @return A handle to the item added or NULL if not possible
+           @ingroup Statusbar */
+
+         return: Ewe_Statusbar_Item *;
+         params {
+            @in Evas_Object *content; /*@ The object, which will be set into statusbar item as content. Can be NULL.*/
+            @in Ewe_Statusbar_Items_Type type; /*@ Item type. */
+            @in Evas_Smart_Cb func; /*@ Convenience function called when the item is clicked.*/
+            @in void *func_data; /*@ Data passed to func above.*/
+         }
+      }
+
+      item_prepend {
+         /*@
+           Prepend a new item in a given statusbar widget.
+           This adds the new item to the beginnig of the list childrens in statusbar widget.
+
+           @return A handle to the item added or NULL if not possible
+           @ingroup Statusbar */
+
+         return: Ewe_Statusbar_Item *;
+         params {
+            @in Evas_Object *content; /*@ The object, which will be set into statusbar item as content. Can be NULL.*/
+            @in Ewe_Statusbar_Items_Type type; /*@ Item type. */
+            @in Evas_Smart_Cb func; /*@ Convenience function called when the item is clicked.*/
+            @in void *func_data; /*@ Data passed to func above.*/
+         }
+      }
+
+      item_insert_before {
+         /*@
+           Insert a existent item before another in a given statusbar widget.
+           This insert the existent item before another in the list childrens in statusbar widget.
+
+           @return EINA_TRUE if item inserted sucessful, or EINA_FALSE in otherwise.
+           @ingroup Statusbar */
+
+         return: Eina_Bool;
+         params {
+            @in Ewe_Statusbar_Item *item; /*@The item to place before another item. */
+            @in Ewe_Statusbar_Item *before; /*@The item to place this new one before. */
+         }
+      }
+
+      item_insert_after {
+         /*@
+           Insert a existent item after another in a given statusbar widget.
+           This insert the existent item after another in the list childrens in statusbar widget.
+
+           @return EINA_TRUE if item inserted sucessful, or EINA_FALSE in otherwise.
+           @ingroup Statusbar */
+
+         return: Eina_Bool;
+         params {
+            @in Ewe_Statusbar_Item *item; /*@The item to place after another item. */
+            @in Ewe_Statusbar_Item *after; /*@The item to place this new one after. */
+         }
+      }
+
+      items_swap {
+         /*@
+           Swap statusbar items positions into statusbar widgets.
+
+           @return EINA_TRUE if item inserted sucessful, or EINA_FALSE in otherwise.
+           @ingroup Statusbar */
+
+         return: Eina_Bool;
+         params {
+            @in Ewe_Statusbar_Item *item_first; /*@The item, which will be swapped. */
+            @in Ewe_Statusbar_Item *item_second; /*@The item, which will be swapped. */
+         }
+      }
+
+      item_remove {
+         /*@
+           Remove item from statusbar widget.
+
+           @return EINA_TRUE if item inserted sucessful, or EINA_FALSE in otherwise.
+           @ingroup Statusbar */
+
+         return: Eina_Bool;
+         params {
+            @in Ewe_Statusbar_Item *item; /*@The statusbar item. */
+         }
+      }
+   }
+
+   implements {
+      class.constructor;
+      Eo.Base.constructor;
+      Evas.Object_Smart.del;
+      Evas.Object_Smart.add;
+      Evas.Object_Smart.resize;
+      Evas.Object_Smart.move;
+      Evas.Object_Smart.show;
+      Evas.Object_Smart.hide;
+   }
+   events {
+      theme,changed;
+   }
+}
+
