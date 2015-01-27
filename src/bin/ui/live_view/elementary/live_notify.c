@@ -17,16 +17,23 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_elementary_widgets.h"
+#include "live_view_prop.h"
 
 static void
 _on_notify_swallow_check(void *data,
                          Evas_Object *obj,
                          void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *notify_obj = NULL;
-   Eina_List *notify_list = elm_box_children_get(data);
+   Evas_Object *rect = NULL, *notify_obj = NULL, *check = NULL, *item, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
+   Eina_List *notify_list = NULL;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
+   notify_list = elm_box_children_get(object);
    notify_obj = eina_list_nth(notify_list, 1);
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
      {
@@ -34,11 +41,23 @@ _on_notify_swallow_check(void *data,
         evas_object_color_set(rect, HIGHLIGHT_COLOR);
         evas_object_size_hint_min_set(rect, 25, 25);
         elm_object_content_set(notify_obj, rect);
+        item_list = elm_box_children_get(pd->prop_swallow.swallows);
+
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+        eina_list_free(item_list);
      }
    else
      {
         rect = elm_object_content_unset(notify_obj);
         evas_object_del(rect);
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
 
    eina_list_free(notify_list);
@@ -49,15 +68,38 @@ _on_notify_text_check(void *data,
                       Evas_Object *obj,
                       void *ei __UNUSED__)
 {
-   Evas_Object *notify_obj = NULL;
-   Eina_List *notify_list = elm_box_children_get(data);
-   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   Evas_Object *notify_obj = NULL, *check = NULL, *item, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
+   Eina_List *notify_list = NULL;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
+   notify_list = elm_box_children_get(object);
    notify_obj = eina_list_nth(notify_list, 1);
+   const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
-     elm_object_part_text_set(notify_obj, part_name, _("Text Example"));
+     {
+        elm_object_part_text_set(notify_obj, part_name, _("Text Example"));
+        item_list = elm_box_children_get(pd->prop_text.texts);
+
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+        eina_list_free(item_list);
+     }
    else
-     elm_object_part_text_set(notify_obj, part_name, "");
+     {
+        elm_object_part_text_set(notify_obj, part_name, "");
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
+     }
 
    eina_list_free(notify_list);
 }

@@ -17,17 +17,21 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_elementary_widgets.h"
+#include "live_view_prop.h"
 
 static void
 _on_scroller_swallow_check(void *data,
                         Evas_Object *obj,
                         void *ei __UNUSED__)
 {
-   Evas_Object *content = NULL;
+   Evas_Object *content = NULL, *check = NULL, *item, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
 
-   Evas_Object *object = (Evas_Object *)data;
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
      {
@@ -56,6 +60,17 @@ _on_scroller_swallow_check(void *data,
              evas_object_color_set(content, HIGHLIGHT_COLOR);
              elm_object_part_content_set(object, part_name, content);
           }
+        item_list = elm_box_children_get(pd->prop_swallow.swallows);
+
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+        eina_list_free(item_list);
      }
    else
      {
@@ -64,6 +79,7 @@ _on_scroller_swallow_check(void *data,
         else
           content = elm_object_part_content_unset(object, part_name);
         evas_object_del(content);
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
 }
 

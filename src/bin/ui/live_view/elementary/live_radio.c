@@ -17,17 +17,23 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_elementary_widgets.h"
+#include "live_view_prop.h"
 
 static void
 _on_radio_swallow_check(void *data,
                         Evas_Object *obj,
                         void *ei __UNUSED__)
 {
-   Evas_Object *rect = NULL, *radio_obj = NULL;
-   Eina_List* radio_list = elm_box_children_get(data);
+   Evas_Object *rect = NULL, *radio_obj = NULL, *check = NULL, *item, *ch;
+   Eina_List* radio_list = NULL, *item_list = NULL, *it;
    Eina_List *l = NULL;
+   Eina_Bool all_checks = true;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
+   radio_list = elm_box_children_get(object);
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
      {
@@ -37,6 +43,17 @@ _on_radio_swallow_check(void *data,
              evas_object_color_set(rect, HIGHLIGHT_COLOR);
              elm_object_part_content_set(radio_obj, part_name, rect);
           }
+        item_list = elm_box_children_get(pd->prop_swallow.swallows);
+
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+        eina_list_free(item_list);
      }
    else
      {
@@ -45,6 +62,7 @@ _on_radio_swallow_check(void *data,
              rect = elm_object_part_content_unset(radio_obj, part_name);
              evas_object_del(rect);
           }
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
    eina_list_free(radio_list);
 }
@@ -54,20 +72,38 @@ _on_radio_text_check(void *data,
                      Evas_Object *obj,
                      void *ei __UNUSED__)
 {
-   Evas_Object *radio_obj = NULL;
-   Eina_List* radio_list = elm_box_children_get(data);
+   Evas_Object *radio_obj = NULL, *check = NULL, *item, *ch;
+   Eina_List* radio_list = NULL, *item_list = NULL, *it;
    Eina_List *l = NULL;
+   Eina_Bool all_checks = true;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
+   radio_list = elm_box_children_get(object);
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj))
      {
         EINA_LIST_FOREACH(radio_list, l, radio_obj)
           elm_object_part_text_set(radio_obj, part_name, _("Text Example"));
+
+        item_list = elm_box_children_get(pd->prop_text.texts);
+        EINA_LIST_FOREACH(item_list, it, item)
+          {
+             ch = elm_object_part_content_get(item, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+        eina_list_free(item_list);
      }
    else
      {
         EINA_LIST_FOREACH(radio_list, l, radio_obj)
           elm_object_part_text_set(radio_obj, part_name, "");
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
      }
    eina_list_free(radio_list);
 }
