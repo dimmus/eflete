@@ -118,6 +118,6 @@ eflete_LDADD = \
 libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
-${top_srcdir}/src/lib/libewe.la \
+${top_builddir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@ \
 @LTLIBINTL@
