@@ -41,6 +41,7 @@ shortcuts_test
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
+-I${top_srcdir}/src/lib \
 -I${top_srcdir}/src/bin \
 -I${top_srcdir}/src/bin/alloc \
 -I${top_srcdir}/src/bin/external \
@@ -68,15 +69,14 @@ FLAGS = \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @ENVENTOR_CFLAGS@ \
-@EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
 LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
-@EWE_LIBS@ \
 @ELEMENTARY_LIBS@ \
+${top_srcdir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
 
 eflete_test_SOURCES = \
