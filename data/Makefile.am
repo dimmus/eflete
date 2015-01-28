@@ -48,8 +48,8 @@ icon_DATA = ${srcdir}/images/eflete.svg
 colorsdir = $(datadir)/eflete/themes/default/color
 colors_DATA = color.eet
 
-filesdir = $(datadir)/ewe/themes
-files_DATA = ewe.edj
+ewedir = $(datadir)/ewe/themes
+ewe_DATA = ewe.edj
 
 ewe.edj: Makefile
 	$(AM_V_EDJ)$(EDJE_CC) \
