@@ -43,7 +43,9 @@
 #endif /* localization */
 
 /* TODO: delete it, and remake all strings to eina_stringshare or eina_strbuff */
-#define PATH_MAX 4096
+#ifndef PATH_MAX
+   #define PATH_MAX 4096
+#endif
 #define BUFF_MAX 512
 
 #include <Ewe.h>
