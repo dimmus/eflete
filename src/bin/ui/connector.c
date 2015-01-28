@@ -320,7 +320,7 @@ _add_layout_cb(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
-   Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT);
+   Evas_Object *widget_list = _widgetlist_current_genlist_get(data, LAYOUT), *eoi;
    Eina_Bool nameExist = true;
    App_Data *ap = (App_Data *)data;
    Widget *widget = NULL;
@@ -388,6 +388,9 @@ _add_layout_cb(void *data,
    wm_style_data_load(layout, evas_object_evas_get(widget_list),
                       ap->project->mmap_file);
    ui_widget_list_layouts_reload(widget_list, ap->project);
+   widget_list = _widgetlist_current_genlist_get(ap, LAYOUT);
+   eoi = elm_genlist_last_item_get(widget_list);
+   elm_genlist_item_selected_set(eoi, true);
    eina_stringshare_del(name);
 
    project_changed();
