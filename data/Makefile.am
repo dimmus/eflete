@@ -51,32 +51,32 @@ colors_DATA = color.eet
 ewedir = $(datadir)/ewe/themes
 ewe_DATA = ewe.edj
 
-ewe.edj: Makefile
+ewe.edj: Makefile *.edc themes/ewe/*.edc themes/ewe/widgets/*.edc themes/ewe/widgets/images/*.png themes/ewe/fonts/*.ttf
 	$(AM_V_EDJ)$(EDJE_CC) \
 	-fd $(top_srcdir)/data/themes/ewe/fonts \
 	-id $(top_srcdir)/data/themes/ewe/widgets/images \
 	$(top_srcdir)/data/themes/ewe/default.edc \
 	$(top_builddir)/data/ewe.edj
 
-eflete.edj: Makefile
+eflete.edj: Makefile *.edc layouts/*.edc layouts/edje/*.edc layouts/images/*.png
 	$(AM_V_EDJ)$(EDJE_CC) \
 		$(EDJE_FLAGS) \
 	$(top_srcdir)/data/layouts/eflete.edc \
 	$(top_builddir)/data/eflete.edj
 
-eflete_resources.edj: Makefile
+eflete_resources.edj: Makefile *.edc resources/*.edc resources/images/*.png
 	$(AM_V_EDJ)$(EDJE_CC) \
 		$(EDJE_FLAGS_RESOURCES) \
 	$(top_srcdir)/data/resources/resources.edc \
 	$(top_builddir)/data/eflete_resources.edj
 
-eflete_elm.edj: Makefile
+eflete_elm.edj: Makefile *.edc themes/default/*.edc themes/default/widgets/*.edc themes/default/images/*.png themes/default/images/splash/*.png
 	$(AM_V_EDJ)$(EDJE_CC) \
 		$(EDJE_FLAGS_DEFAULT) \
 	$(top_srcdir)/data/themes/default/default.edc \
 	$(top_builddir)/data/eflete_elm.edj
 
-color.eet: Makefile
+color.eet: Makefile color/color.src
 	$(AM_V_EET)$(EET_EET) -e \
 	$(top_builddir)/data/color.eet color \
 	$(top_srcdir)/data/color/color.src 1
