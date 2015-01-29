@@ -94,11 +94,8 @@ PKG_CHECK_MODULES([CHECK], [check],
    [have_check="${RED}no${RESET}"])
 
 PKG_CHECK_MODULES([ENVENTOR], [enventor >= enventor_version],
-   [have_enventor="${GREEN}yes${RESET}"],
-   [have_enventor="${RED}no${RESET} (version < enventor_version)"])
-
-AM_CONDITIONAL([ENVENTOR_FOUND], [test "x$have_enventor" = "x${GREEN}yes${RESET}"])
-AM_COND_IF([ENVENTOR_FOUND], [AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])])
+   [have_enventor="yes"],
+   [have_enventor="no"])
 
 AM_CONDITIONAL([CHECK_FOUND], [test "x$have_check" = "x${GREEN}yes${RESET}"])
 AC_SUBST([CHECK_FOUND])
@@ -130,6 +127,27 @@ if test "x$want_eflete_debug" = "xyes"; then
    AC_DEFINE(HAVE_EFLETE_DEBUG, 1, [Eflete debug.])
    EFLETE_DEBUG_DEF="#define"
 fi
+
+dnl --enable-enventor/--disable-enventor
+HAVE_ENVENTOR_DEF="#undef"
+want_enventor="no"
+AC_ARG_ENABLE([enventor],
+   [AC_HELP_STRING([--enable-enventor], [enable the Enventor support in the Eflete. @<:@default=disabled@:>@])],
+   [want_enventor=$enableval], [])
+
+if test "x$have_enventor" = "xno"; then
+   summery_enventor="${RED}no${RESET} (version < enventor_version)"
+fi
+if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"; then
+   AC_DEFINE(HAVE_ENVENTOR, 1, [Enventor is installed])
+   HAVE_ENVENTOR_DEF="#define"
+   summery_enventor="${GREEN}yes${RESET}"
+fi
+if test "x$want_enventor" = "xno" -a "x$have_enventor" = "xyes"; then
+   summery_enventor="${RED}no${RESET}"
+fi
+
+
 AC_SUBST(EFLETE_DEBUG_DEF)
 
 #===============================================================================
@@ -196,7 +214,7 @@ echo "  efl............: ${have_efl}"
 echo "  elementary.....: ${have_elm}"
 echo ""
 echo "Features:"
-echo "  enventor.......: ${have_enventor}"
+echo "  enventor.......: ${summery_enventor}"
 echo ""
 echo "edje-cc path.....: ${edje_cc}"
 echo ""
@@ -211,3 +229,19 @@ echo "  CFLAGS.........: ${CFLAGS}"
 echo "  LDFLAGS........: ${LDFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""
+
+if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xno"; then
+   echo " __________________________________________"
+   echo "/ Enventor dependency is available on your \\"
+   echo "| system, but you are building without     |"
+   echo "| enventor support. Don't forget to        |"
+   echo "| --enable-enventor if you want Enventor   |"
+   echo "\\ integration for Eflete.                  /"
+   echo " ------------------------------------------"
+   echo "        \\   ^__^"
+   echo "         \\  (oo)\\_______"
+   echo "            (__)\\       )\\/\\"
+   echo "                ||----w |"
+   echo "                ||     ||"
+   echo ""
+fi
