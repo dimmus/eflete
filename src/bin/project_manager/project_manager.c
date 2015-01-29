@@ -1248,6 +1248,7 @@ _develop_export(void *data,
 {
    Project_Thread *worker;
    Evas_Object *edje_edit_obj;
+   Eina_Stringshare *str;
 
    sleep(1);
 
@@ -1260,6 +1261,12 @@ _develop_export(void *data,
 
       GET_OBJ(worker->project, edje_edit_obj);
       edje_edit_save_all(edje_edit_obj);
+      str = eina_stringshare_add(worker->edj);
+      if (!strstr(worker->edj, ".edj"))
+        {
+           str = eina_stringshare_printf("%s.edj", worker->edj);
+           worker->edj = str;
+        }
       eina_file_copy(worker->project->dev, worker->edj,
                      EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
                      NULL, NULL);
@@ -1268,6 +1275,7 @@ _develop_export(void *data,
 
    PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
+   eina_stringshare_del(str);
    return NULL;
 }
 
