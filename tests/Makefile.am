@@ -3,6 +3,12 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
+ewe_init_test \
+ewe_tabs_test \
+ewe_combobox_test \
+ewe_entry_test \
+ewe_ruler_test \
+ewe_statusbar_test \
 eflete_test \
 part_dialog_test \
 save_file_dialog_test \
@@ -78,6 +84,141 @@ LD = $(top_builddir)/src/bin/libete.a \
 @ELEMENTARY_LIBS@ \
 ${top_srcdir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
+
+ewe_init_test_SOURCES = \
+utc_common.h \
+test_ewe_init/test_ewe_init.c \
+test_ewe_init/test_ewe_init.h \
+test_ewe_init/ewe_init.c
+ewe_init_test_CFLAGS = ${FLAGS}
+ewe_init_test_LDADD = ${LD}
+
+ewe_entry_test_SOURCES = \
+utc_common.h \
+test_ewe_entry/test_ewe_entry.c \
+test_ewe_entry/test_ewe_entry.h \
+test_ewe_entry/ewe_entry_add.c \
+test_ewe_entry/ewe_entry_regex_check.c \
+test_ewe_entry/ewe_entry_regex_set.c \
+test_ewe_entry/ewe_entry_regex_unset.c \
+test_ewe_entry/ewe_entry_regex_glow.c \
+test_ewe_entry/ewe_entry_regex_error_get.c \
+test_ewe_entry/ewe_entry_regex_autocheck.c
+ewe_entry_test_CFLAGS = ${FLAGS}
+ewe_entry_test_LDADD = ${LD}
+
+ewe_ruler_test_SOURCES = \
+utc_common.h \
+test_ewe_ruler/test_ewe_ruler.c \
+test_ewe_ruler/test_ewe_ruler.h \
+test_ewe_ruler/ewe_ruler_add.c \
+test_ewe_ruler/ewe_ruler_scale_add.c \
+test_ewe_ruler/ewe_ruler_scale_del.c \
+test_ewe_ruler/ewe_ruler_scale_visible_get.c \
+test_ewe_ruler/ewe_ruler_scale_visible_set.c \
+test_ewe_ruler/ewe_ruler_scale_middle_mark_get.c \
+test_ewe_ruler/ewe_ruler_scale_middle_mark_set.c \
+test_ewe_ruler/ewe_ruler_horizontal_get.c \
+test_ewe_ruler/ewe_ruler_horizontal_set.c \
+test_ewe_ruler/ewe_ruler_step_set.c \
+test_ewe_ruler/ewe_ruler_step_get.c \
+test_ewe_ruler/ewe_ruler_value_step_set.c \
+test_ewe_ruler/ewe_ruler_value_step_get.c \
+test_ewe_ruler/ewe_ruler_zero_offset_set.c \
+test_ewe_ruler/ewe_ruler_zero_offset_get.c \
+test_ewe_ruler/ewe_ruler_format_get.c \
+test_ewe_ruler/ewe_ruler_format_set.c \
+test_ewe_ruler/ewe_ruler_style_get.c \
+test_ewe_ruler/ewe_ruler_style_set.c \
+test_ewe_ruler/ewe_ruler_marker_style_get.c \
+test_ewe_ruler/ewe_ruler_marker_style_set.c \
+test_ewe_ruler/ewe_ruler_marker_absolute_get.c \
+test_ewe_ruler/ewe_ruler_marker_absolute_set.c \
+test_ewe_ruler/ewe_ruler_marker_relative_get.c \
+test_ewe_ruler/ewe_ruler_marker_relative_set.c \
+test_ewe_ruler/ewe_ruler_marker_visible_get.c \
+test_ewe_ruler/ewe_ruler_marker_visible_set.c \
+test_ewe_ruler/ewe_ruler_marker_add.c \
+test_ewe_ruler/ewe_ruler_marker_del.c
+
+ewe_ruler_test_CFLAGS = ${FLAGS}
+ewe_ruler_test_LDADD = ${LD}
+
+ewe_combobox_test_SOURCES = \
+utc_common.h \
+test_ewe_combobox/test_ewe_combobox.c \
+test_ewe_combobox/test_ewe_combobox.h \
+test_ewe_combobox/ewe_combobox_add.c \
+test_ewe_combobox/ewe_combobox_item_add.c \
+test_ewe_combobox/ewe_combobox_item_del.c \
+test_ewe_combobox/ewe_combobox_item_title_get.c \
+test_ewe_combobox/ewe_combobox_item_title_set.c \
+test_ewe_combobox/ewe_combobox_items_list_get.c \
+test_ewe_combobox/ewe_combobox_select_item_get.c \
+test_ewe_combobox/ewe_combobox_select_item_set.c
+ewe_combobox_test_CFLAGS = ${FLAGS}
+ewe_combobox_test_LDADD = ${LD}
+
+ewe_tabs_test_SOURCES = \
+utc_common.h \
+test_ewe_tabs/test_ewe_tabs.c \
+test_ewe_tabs/test_ewe_tabs.h \
+test_ewe_tabs/ewe_tabs_item_append.c \
+test_ewe_tabs/ewe_tabs_item_prepend.c \
+test_ewe_tabs/ewe_tabs_items_list_get.c \
+test_ewe_tabs/ewe_tabs_add.c \
+test_ewe_tabs/ewe_tabs_item_content_set.c \
+test_ewe_tabs/ewe_tabs_item_content_unset.c \
+test_ewe_tabs/ewe_tabs_item_content_get.c \
+test_ewe_tabs/ewe_tabs_item_icon_set.c \
+test_ewe_tabs/ewe_tabs_item_icon_unset.c \
+test_ewe_tabs/ewe_tabs_item_button_set.c \
+test_ewe_tabs/ewe_tabs_item_button_unset.c \
+test_ewe_tabs/ewe_tabs_active_item_set.c \
+test_ewe_tabs/ewe_tabs_active_item_get.c \
+test_ewe_tabs/ewe_tabs_item_title_set.c \
+test_ewe_tabs/ewe_tabs_item_title_get.c \
+test_ewe_tabs/ewe_tabs_item_del.c \
+test_ewe_tabs/ewe_tabs_item_disabled_set.c \
+test_ewe_tabs/ewe_tabs_item_disabled_get.c \
+test_ewe_tabs/ewe_tabs_orient_horizontal_set.c \
+test_ewe_tabs/ewe_tabs_orient_horizontal_get.c \
+test_ewe_tabs/ewe_tabs_elm_widget_style_set.c \
+test_ewe_tabs/ewe_tabs_elm_widget_style_get.c
+ewe_tabs_test_CFLAGS = ${FLAGS}
+ewe_tabs_test_LDADD = ${LD}
+
+ewe_statusbar_test_SOURCES = \
+utc_common.h \
+test_ewe_statusbar/test_ewe_statusbar.c \
+test_ewe_statusbar/test_ewe_statusbar.h \
+test_ewe_statusbar/ewe_statusbar_add.c \
+test_ewe_statusbar/ewe_statusbar_clear.c \
+test_ewe_statusbar/ewe_statusbar_item_append.c \
+test_ewe_statusbar/ewe_statusbar_item_content_get.c \
+test_ewe_statusbar/ewe_statusbar_item_content_set.c \
+test_ewe_statusbar/ewe_statusbar_item_content_unset.c \
+test_ewe_statusbar/ewe_statusbar_item_id_get.c \
+test_ewe_statusbar/ewe_statusbar_item_insert_after.c \
+test_ewe_statusbar/ewe_statusbar_item_insert_before.c \
+test_ewe_statusbar/ewe_statusbar_item_label_get.c \
+test_ewe_statusbar/ewe_statusbar_item_label_set.c \
+test_ewe_statusbar/ewe_statusbar_item_prepend.c \
+test_ewe_statusbar/ewe_statusbar_item_remove.c \
+test_ewe_statusbar/ewe_statusbar_item_statusbar_get.c \
+test_ewe_statusbar/ewe_statusbar_item_width_get.c \
+test_ewe_statusbar/ewe_statusbar_item_width_set.c \
+test_ewe_statusbar/ewe_statusbar_items_align_get.c \
+test_ewe_statusbar/ewe_statusbar_items_align_set.c \
+test_ewe_statusbar/ewe_statusbar_items_list_get.c \
+test_ewe_statusbar/ewe_statusbar_items_padding_get.c \
+test_ewe_statusbar/ewe_statusbar_items_padding_set.c \
+test_ewe_statusbar/ewe_statusbar_items_swap.c
+ewe_statusbar_test_CFLAGS = ${FLAGS}
+ewe_statusbar_test_LDADD = ${LD}
+
+
+
 
 eflete_test_SOURCES = \
 test_eflete/test_eflete.c \

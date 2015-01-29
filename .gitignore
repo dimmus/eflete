@@ -21,6 +21,12 @@ src/bin/eflete
 *.lo
 *.la
 *.libs
+tests/ewe_combobox_test
+tests/ewe_entry_test
+tests/ewe_init_test
+tests/ewe_ruler_test
+tests/ewe_statusbar_test
+tests/ewe_tabs_test
 tests/addpart_test
 tests/alloc_test
 tests/colorclass_editor_test
