@@ -35,6 +35,7 @@ int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
 /* MENU_FILE_EXPORT_RELEASE,*/
+   MENU_FILE_CLOSE_PROJECT,
    MENU_VIEW_RULERS,
    MENU_VIEW_RULERS_SHOW,
    MENU_VIEW_RULERS_ABS,
@@ -127,7 +128,6 @@ _menu_cb(void *data __UNUSED__,
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
               ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
               ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
-              ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, true);
            }
          break;
       case MENU_FILE_EXIT:
@@ -308,8 +308,6 @@ ui_menu_add(App_Data *ap)
 #undef ITEM_TB_ADD
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
-
-   ui_menu_disable_set(menu, MENU_FILE_CLOSE_PROJECT, true);
 
    /*TODO remove both lines after implementation this features*/
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);

@@ -707,7 +707,6 @@ blocks_show(App_Data *ap)
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, false);
    ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, true);
-   ui_menu_disable_set(ap->menu, MENU_FILE_CLOSE_PROJECT, false);
 
    code_edit_mode_switch(ap, false);
 
@@ -719,6 +718,9 @@ _blocks_data_unset(App_Data *ap)
 {
    Evas_Object *property;
    property = ui_block_property_get(ap);
+
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
    ui_property_style_unset(property);
    ui_block_content_visible(ap->block.right_bottom, false);
@@ -824,6 +826,7 @@ project_open(void)
      return;
 
    ap->modal_editor++;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
    MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, ap);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
