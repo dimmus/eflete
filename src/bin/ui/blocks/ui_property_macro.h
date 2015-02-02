@@ -192,21 +192,33 @@ _on_##SUB##_##VALUE##_change(void *data, \
 #define ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
-                              Evas_Object *obj EINA_UNUSED, \
+                              Evas_Object *obj __UNUSED__, \
                               void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
    const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
-                                                   pd->part->name);\
+                                                           pd->part->name);\
    const char *value = NULL; \
    if (item->index != 0) \
      { \
-       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
-                                       pd->part->name, item->title); \
-       value = item->title; \
+        value = item->title; \
+        if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, \
+                                             pd->part->name, item->title)) \
+          { \
+             ewe_combobox_select_item_set(obj, pd->prop_part.previous_source); \
+             NOTIFY_ERROR(_("This source value will <br>" \
+                            "lead to Recursive Reference. <br>" \
+                            "Previous value restored.")); \
+             return; \
+          } \
+        pd->prop_part.previous_source = item->index; \
      } \
-   else edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, NULL); \
+   else \
+     { \
+        edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, NULL); \
+        pd->prop_part.previous_source = 0; \
+     } \
    history_diff_add(pd->style->obj, PROPERTY, MODIFY, STRING, old_value, \
                     value, pd->style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
@@ -258,10 +270,14 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                    App_Data *ap = app_data_get(); \
                    list_n = NULL; /* break from external loop */ \
                    collections = edje_file_collection_list(ap->project->dev); \
+                   unsigned int i = 0; \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       if (strcmp(group, ap->project->current_style->full_group_name)) \
                         ewe_combobox_item_add(combobox, group); \
+                      i++; \
+                      if ((value) && (!strcmp(group, value))) \
+                        pd->prop_part.previous_source = i; \
                    } \
                    edje_file_collection_list_free(collections); \
                 } \
@@ -319,10 +335,14 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
                    App_Data *ap = app_data_get(); \
                    list_n = NULL; /* break from external loop */ \
                    collections = edje_file_collection_list(ap->project->dev); \
+                   unsigned int i = 0; \
                    EINA_LIST_FOREACH(collections, l, group) \
                    { \
                       if (strcmp(group, ap->project->current_style->full_group_name)) \
                         ewe_combobox_item_add(combobox, group); \
+                      i++; \
+                      if ((value) && (!strcmp(group, value))) \
+                        pd->prop_part.previous_source = i; \
                    } \
                    edje_file_collection_list_free(collections); \
                 } \

@@ -71,6 +71,7 @@ struct _Prop_Data
       Evas_Object *repeat;
       Evas_Object *clip_to;
       Evas_Object *source;
+      int previous_source;
       Evas_Object *ignore_flags;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
