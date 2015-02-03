@@ -26,6 +26,14 @@
 #include "sound_editor.h"
 #include "animator.h"
 
+#ifdef HAVE_ENVENTOR
+   #define SKIP_IN_ENVENTOR_MODE \
+      if (app->enventor_mode) \
+        return false;
+#else
+   #define SKIP_IN_ENVENTOR_MODE
+#endif
+
 struct _Shortcut_Module
 {
    Ecore_Event_Handler *shortcuts_handler; /**< handler for catching key presses\
@@ -59,10 +67,11 @@ _random_name_generate(char *part_name, unsigned int length)
 /*========================================================*/
 #define PART_ADD(TYPE, FUNC) \
 Eina_Bool \
-_##FUNC##_part_add_cb(App_Data *ap) \
+_##FUNC##_part_add_cb(App_Data *app) \
 { \
-   Evas_Object *workspace = ap->workspace; \
-   Evas_Object *widget_list = ui_block_widget_list_get(ap); \
+   SKIP_IN_ENVENTOR_MODE \
+   Evas_Object *workspace = app->workspace; \
+   Evas_Object *widget_list = ui_block_widget_list_get(app); \
    Style *style = workspace_edit_object_get(workspace); \
    if (!style) return false; \
    char name[9]; \
@@ -73,7 +82,7 @@ _##FUNC##_part_add_cb(App_Data *ap) \
        style->isModify = true; \
      } \
    history_diff_add(style->obj, PART_TARGET, ADD, name); \
-   live_view_widget_style_set(ap->live_view, ap->project, style); \
+   live_view_widget_style_set(app->live_view, app->project, style); \
    project_changed(); \
    return true; \
 }
@@ -93,6 +102,7 @@ PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 Eina_Bool
 _item_delete_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
    Evas_Object *nf = NULL;
@@ -148,6 +158,7 @@ _item_delete_cb(App_Data *app)
 Eina_Bool
 _widget_manager_layout_switch_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
    Evas_Object *nf = ui_block_widget_list_get(app);
    tabs = ewe_tabs_items_list_get(nf);
@@ -159,6 +170,7 @@ _widget_manager_layout_switch_cb(App_Data *app)
 Eina_Bool
 _widget_manager_style_switch_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    const Eina_List *tabs;
    Evas_Object *nf = ui_block_widget_list_get(app);
    tabs = ewe_tabs_items_list_get(nf);
@@ -169,6 +181,7 @@ _widget_manager_style_switch_cb(App_Data *app)
 Eina_Bool
 _separate_mode_change_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    double factor = workspace_zoom_factor_get(app->workspace);
    if (fabs(factor - 1.0) > 0.001)
      return false;
@@ -182,6 +195,7 @@ _separate_mode_change_cb(App_Data *app)
 Eina_Bool
 _new_style_create_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
    Evas_Object *nf = ui_block_widget_list_get(app);
@@ -217,6 +231,7 @@ _new_style_create_cb(App_Data *app)
 Eina_Bool
 _style_delete_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    Elm_Object_Item *glit = NULL;
    Style *_style = NULL;
    Evas_Object *nf = ui_block_widget_list_get(app);
@@ -378,6 +393,7 @@ _animator_open_cb(App_Data *app)
 Eina_Bool
 _highlight_align_show_switch_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    Eina_Bool flag = workspace_highlight_align_visible_get(app->workspace);
    workspace_highlight_align_visible_set(app->workspace, !flag);
    workspace_object_area_visible_set(app->workspace, !flag);
@@ -387,6 +403,7 @@ _highlight_align_show_switch_cb(App_Data *app)
 Eina_Bool
 _object_area_show_switch_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    if ((!app->project) || (!app->project->current_style)) return false;
    Eina_Bool flag = workspace_object_area_visible_get(app->workspace);
    workspace_object_area_visible_set(app->workspace, !flag);
@@ -396,6 +413,7 @@ _object_area_show_switch_cb(App_Data *app)
 Eina_Bool
 _zoom_in_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    if (!app->project->current_style)
      return false;
 
@@ -407,6 +425,7 @@ _zoom_in_cb(App_Data *app)
 Eina_Bool
 _zoom_out_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    if (!app->project->current_style)
      return false;
 
@@ -418,6 +437,7 @@ _zoom_out_cb(App_Data *app)
 Eina_Bool
 _undo_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    if ((app->project) && (app->project->current_style))
      history_undo(app->project->current_style->obj, 1);
    return true;
@@ -426,6 +446,7 @@ _undo_cb(App_Data *app)
 Eina_Bool
 _redo_cb(App_Data *app)
 {
+   SKIP_IN_ENVENTOR_MODE
    if ((app->project) && (app->project->current_style))
      history_redo(app->project->current_style->obj, 1);
    return true;
