@@ -965,6 +965,7 @@ _teardown_save_splash(void *data, Splash_Status status)
      STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
 
    ap->project->changed = false;
+   workspace_edit_object_recalc(ap->workspace);
 
    ecore_main_loop_quit();
    return true;
