@@ -1142,6 +1142,7 @@ project_export_develop(void)
    FILESELECTOR_ADD(fs, win, _on_export_done, win);
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_custom_filter_append(fs, _edje_filter, NULL, "Edje Files");
+   elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
    elm_win_resize_object_add(win, fs);
 }
 
