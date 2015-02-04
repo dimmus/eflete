@@ -666,9 +666,8 @@ ui_style_clicked(App_Data *ap, Style *style)
         prop = ui_property_add(ap->win);
         ui_block_property_set(ap, prop);
      }
-   else
-     ui_block_content_visible(ap->block.right_bottom, true);
 
+   ui_block_content_visible(ap->block.right_bottom, true);
    ui_property_style_set(prop, _alias_style, ap->workspace);
    evas_object_show(prop);
    ap->project->current_style = _style;
