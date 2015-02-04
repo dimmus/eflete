@@ -86,8 +86,8 @@ _popup_close_cb(void *data,
 
 static void
 _on_popup_btn_yes(void *data,
-                         Evas_Object *obj __UNUSED__,
-                         void *ei __UNUSED__)
+                  Evas_Object *obj __UNUSED__,
+                  void *ei __UNUSED__)
 {
    App_Data *ap = (App_Data *)data;
    Eina_Stringshare *style_name = NULL;
@@ -107,6 +107,14 @@ _on_popup_btn_yes(void *data,
 
    Eina_Inlist *l =NULL;
    Eina_List *styles = NULL;
+
+   Evas_Object *widget_list = NULL, *eoi = NULL;
+   Style *_style_find = NULL;
+
+   Evas_Object *tabs = NULL;
+   const Evas_Object *nf = NULL;
+   Elm_Object_Item *nf_item = NULL;
+   Ewe_Tabs_Item *current_tab_item = NULL;
 
 #define STRING_CLEAR\
         eina_stringshare_del(style_name);\
@@ -263,6 +271,24 @@ _on_popup_btn_yes(void *data,
                            ap->project->mmap_file);
         _reload_classes(ap, dest_wdg->classes);
         style->isModify = true;
+
+        /* Selecting added style in genlist! */
+        tabs = ui_block_widget_list_get(ap);
+        current_tab_item = ewe_tabs_active_item_get(tabs);
+        nf = ewe_tabs_item_content_get(tabs, current_tab_item);
+        nf_item = elm_naviframe_top_item_get(nf);
+        widget_list  = elm_object_item_part_content_get(nf_item, NULL);
+
+        eoi = elm_genlist_first_item_get(widget_list);
+
+        _style_find = elm_object_item_data_get(eoi);
+        while (strcmp(_style_find->full_group_name, full_name) != 0)
+          {
+             eoi = elm_genlist_item_next_get(eoi);
+             _style_find = elm_object_item_data_get(eoi);
+          }
+
+        elm_genlist_item_selected_set(eoi, true);
      }
 
    project_changed();
