@@ -212,6 +212,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->part->name, NULL, 0.0); \
    project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
 }
 
 #define ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \

@@ -70,6 +70,7 @@ struct _Prop_Data
       Evas_Object *mouse;
       Evas_Object *repeat;
       Evas_Object *clip_to;
+      Evas_Object *source;
       Evas_Object *ignore_flags;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
@@ -826,6 +827,7 @@ ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
 ITEM_1COMBOBOX_PART_CREATE(CLIP_TO, _("clip to"), part, clip_to)
+ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source"), part, source)
 ITEM_1COMBOBOX_PART_PROPERTY_CREATE(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
@@ -889,6 +891,14 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_part.clip_to);
         elm_box_pack_end(box, pd_part.ignore_flags);
 
+        if (part->type == EDJE_PART_TYPE_GROUP)
+          {
+             pd_part.source = prop_item_part_source_add(box, pd,
+                              _("Used for the group to be loaded and used to "
+                              "display GROUP part."));
+             elm_box_pack_end(box, pd_part.source);
+          }
+
         if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
           {
              pd_part.select_mode = prop_item_part_select_mode_add(box, pd,
@@ -924,6 +934,25 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_repeat_events_update(pd_part.repeat, pd);
          prop_item_part_clip_to_update(pd_part.clip_to, pd);
          prop_item_part_ignore_flags_update(pd_part.ignore_flags, pd);
+         prop_item_part_source_update(pd_part.source, pd);
+         if (part->type == EDJE_PART_TYPE_GROUP)
+           {
+             box = elm_object_content_get(pd_part.frame);
+              if (!pd_part.source)
+                {
+                   pd_part.source = prop_item_part_source_add(box, pd,
+                                    _("Used for the group to be loaded and used to "
+                                    "display GROUP part."));
+                   elm_box_pack_after(box, pd_part.source, pd_part.ignore_flags);
+                }
+           }
+         else
+           {
+              box = elm_object_content_get(pd_part.frame);
+              elm_box_unpack(box, pd_part.source);
+              evas_object_del(pd_part.source);
+              pd_part.source = NULL;
+           }
          if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
            {
              box = elm_object_content_get(pd_part.frame);
@@ -1980,7 +2009,6 @@ ui_property_state_text_unset(Evas_Object *property)
 #undef pd_text
 
 #define pd_textblock pd->prop_state_textblock
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source (under selected text)"), part, source)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source2 (over selected text)"), part, source2)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source4 (over cursor)"), part, source4)
