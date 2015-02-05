@@ -1454,7 +1454,7 @@ _on_delete_clicked_cb(void *data,
      project_changed();
 }
 
-ITEM_SEARCH_FUNC(gengrid, "elm.label")
+ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, "elm.label")
 
 static void
 _search_changed(void *data,

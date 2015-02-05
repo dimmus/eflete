@@ -786,8 +786,8 @@ _on_button_close_clicked_cb(void *data,
    _image_editor_del(img_edit);
 }
 
-ITEM_SEARCH_FUNC(genlist, NULL)
-ITEM_SEARCH_FUNC(gengrid, NULL)
+ITEM_SEARCH_FUNC(genlist, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, NULL)
+ITEM_SEARCH_FUNC(gengrid, ELM_GENGRID_ITEM_SCROLLTO_MIDDLE, NULL)
 
 static void
 _on_images_search_entry_changed_cb(void *data,

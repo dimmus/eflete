@@ -127,7 +127,7 @@
      } \
    }
 
-#define ITEM_SEARCH_FUNC(_gen, PART_NAME) \
+#define ITEM_SEARCH_FUNC(_gen, _GEN_SCROLL, PART_NAME) \
 static void \
 _##_gen##_item_search(Evas_Object *obj, \
                       Search_Data *search_data, \
@@ -160,7 +160,7 @@ _##_gen##_item_search(Evas_Object *obj, \
      { \
         elm_##_gen##_item_selected_set(last_item_found, true); \
         elm_##_gen##_item_bring_in(last_item_found, \
-                                  ELM_GENLIST_ITEM_SCROLLTO_MIDDLE); \
+                                  _GEN_SCROLL); \
         elm_object_focus_set(search_data->search_entry, true); \
      } \
    search_data->last_item_found = last_item_found; \

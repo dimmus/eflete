@@ -671,7 +671,7 @@ _on_bt_add(void *data,
    else _on_bt_tag_add(style_edit);
 }
 
-ITEM_SEARCH_FUNC(genlist, "elm.text")
+ITEM_SEARCH_FUNC(genlist,ELM_GENLIST_ITEM_SCROLLTO_MIDDLE, "elm.text")
 
 static void
 _search_changed(void *data,
