@@ -29,8 +29,6 @@
  * overridden with the ELM_ENGINE environment variable for testing.
  **/
 
-#include "ewe_win_common.h"
-
 #ifdef EFL_EO_API_SUPPORT
 #include "ewe_win.eo.h"
 #endif
