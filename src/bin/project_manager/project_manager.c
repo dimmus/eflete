@@ -614,6 +614,8 @@ pm_project_open(const char *path)
 {
    Eet_File *ef;
    Project *pro = NULL;
+   char *dev;
+   int dev_len;
    struct _Project_Lock
      {
        Project *project;
@@ -632,6 +634,15 @@ pm_project_open(const char *path)
    pro_lock->project = eet_data_read(ef, eed_project, PROJECT_FILE_KEY);
    _pm_project_descriptor_shutdown();
    if (!pro_lock->project) goto error;
+
+   /* updating .dev file path */
+   dev = strdup(path);
+   dev_len = strlen(dev);
+   dev[dev_len - 3] = 'd';
+   dev[dev_len - 2] = 'e';
+   dev[dev_len - 1] = 'v';
+   eina_stringshare_replace(&pro_lock->project->dev, dev);
+   free(dev);
 
    pro_lock->project->mmap_file = eina_file_open(pro_lock->project->dev, false);
    eina_lock_take(&pro_lock->mutex);
