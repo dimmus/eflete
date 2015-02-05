@@ -18,7 +18,7 @@
  */
 
 #ifndef MODAL_WINDOW_H
-#define MADAL_WINDOW_H
+#define MODAL_WINDOW_H
 
 /**
  * @defgroup ModalWindow Modal Window
