@@ -128,6 +128,18 @@ if test "x$want_eflete_debug" = "xyes"; then
    EFLETE_DEBUG_DEF="#define"
 fi
 
+dnl --enable-audio/--disable-audio
+EFLETE_AUDIO_DEF="#undef"
+dont_want_eflete_audio="no"
+AC_ARG_ENABLE([audio],
+   [AC_HELP_STRING([--disable-audio], [enable Eflete audio support. @<:@default=enabled@:>@])],
+   [dont_want_eflete_audio="yes"], [dont_want_eflete_audio="no"])
+
+if test "x$dont_want_eflete_audio" = "xno"; then
+   AC_DEFINE(HAVE_AUDIO, 1, [Eflete audio.])
+   EFLETE_AUDIO_DEF="#define"
+fi
+
 dnl --enable-enventor/--disable-enventor
 HAVE_ENVENTOR_DEF="#undef"
 want_enventor="no"
@@ -229,6 +241,19 @@ echo "  CFLAGS.........: ${CFLAGS}"
 echo "  LDFLAGS........: ${LDFLAGS}"
 echo "  prefix.........: ${prefix}"
 echo ""
+if test "x$dont_want_eflete_audio" = "xyes"; then
+   echo " __________________________________________"
+   echo "/ Ouch! You have disabled audio support.   \\"
+   echo "| Some audio-related features are disabled |"
+   echo "\\ and sound editor is turned into pumpkin. /"
+   echo " ------------------------------------------"
+   echo "        \\   ~__~"
+   echo "         \\  (xX)\\_______"
+   echo "            (__)\\       )\\/\\"
+   echo "                ||----w |"
+   echo "                ||     ||"
+   echo ""
+fi
 
 if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xno"; then
    echo " __________________________________________"

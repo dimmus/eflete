@@ -18,10 +18,13 @@
  */
 
 #define EFL_BETA_API_SUPPORT
-#include <Ecore_Audio.h>
 
 #include "sound_editor.h"
 #include "main_window.h"
+
+#ifdef HAVE_AUDIO
+   #include <Ecore_Audio.h>
+#endif
 
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
@@ -83,6 +86,7 @@ struct _Sound_Editor
    const char  *selected;
    const char  *snd_src;
 
+#ifdef HAVE_AUDIO
    struct {
       int offset, length;
       const void *data;
@@ -90,7 +94,7 @@ struct _Sound_Editor
       Eo *in, *out;
       Eina_Binbuf *buf;
    } io;
-
+#endif
    struct {
       Evas_Object *teg;
       Evas_Object *tone_name;
@@ -156,7 +160,9 @@ _sound_editor_del(Sound_Editor *edit)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    ap->modal_editor--;
 
+#ifdef HAVE_AUDIO
    ecore_audio_shutdown();
+#endif
    edit->pr = NULL;
    elm_gengrid_item_class_free(gic);
    elm_gengrid_item_class_free(ggic);
@@ -166,6 +172,7 @@ _sound_editor_del(Sound_Editor *edit)
    free(edit);
 }
 
+#ifdef HAVE_AUDIO
 static int
 _snd_file_seek(void *data, Eo *eo_obj EINA_UNUSED, int offset, int whence)
 {
@@ -592,10 +599,12 @@ _on_rewind_cb(void *data,
    double value = elm_slider_value_get(edit->rewind);
    eo_do(edit->io.in, value = ecore_audio_obj_in_seek(value, SEEK_SET));
 }
+#endif
 
 static void
 _sound_editor_quit(Sound_Editor *edit)
 {
+#ifdef HAVE_AUDIO
    if (edit->playing)
      _interrupt_playing(edit);
    else if (edit->io.in)
@@ -604,6 +613,7 @@ _sound_editor_quit(Sound_Editor *edit)
         eo_del(edit->io.out);
         eina_binbuf_free(edit->io.buf);
      }
+#endif
    _sound_editor_del(edit);
 }
 
@@ -707,6 +717,7 @@ _on_ok_cb(void *data,
    elm_object_part_content_set(OBJ, NULL, ICON); \
    elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
 
+#ifdef HAVE_AUDIO
 static char *
 _player_units_format(double val)
 {
@@ -780,6 +791,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    edit->io.vio.read = _snd_file_read;
    edit->io.vio.tell = _snd_file_tell;
 }
+#endif
 
 #undef BT_ADD
 
@@ -888,14 +900,13 @@ _sample_info_setup(Sound_Editor *edit,
                    Eina_Stringshare *snd_src,
                    double len)
 {
-   Eina_Stringshare *size, *duration, *type, *type_show;
+   Eina_Stringshare *duration, *type, *type_show;
    Evas_Object *content;
 
    content = elm_object_part_content_unset(edit->markup, "sound_info");
    evas_object_hide(content);
 
    duration = eina_stringshare_printf("%.2f s", len);
-   size = eina_stringshare_printf("%.2f KB", edit->io.length / 1024.0);
    evas_object_image_file_set(edit->snd_data.teg, EFLETE_RESOURCES, "sound");
    elm_object_part_content_set(edit->markup, "sound_info", edit->sample_box);
 
@@ -905,7 +916,11 @@ _sample_info_setup(Sound_Editor *edit,
    elm_object_part_text_set(edit->snd_data.file_name, "label.value", it->sound_name);
    elm_object_part_text_set(edit->snd_data.duration, "label.value", duration);
    elm_object_part_text_set(edit->snd_data.type, "label.value", type_show);
+#ifdef HAVE_AUDIO
+   Eina_Stringshare *size = eina_stringshare_printf("%.2f KB", edit->io.length / 1024.0);
    elm_object_part_text_set(edit->snd_data.size, "label.value", size);
+   eina_stringshare_del(size);
+#endif
    ewe_combobox_select_item_set(edit->snd_data.comp, it->comp);
    elm_spinner_value_set(edit->snd_data.quality, it->rate);
    evas_object_show(edit->sample_box);
@@ -913,7 +928,6 @@ _sample_info_setup(Sound_Editor *edit,
    eina_stringshare_del(duration);
    eina_stringshare_del(type);
    eina_stringshare_del(type_show);
-   eina_stringshare_del(size);
 }
 
 static void
@@ -935,6 +949,7 @@ _tone_info_setup(Sound_Editor *edit, const Item *it)
    evas_object_show(edit->tone_box);
    eina_stringshare_del(duration);
 }
+#ifdef HAVE_AUDIO
 
 static void
 _added_sample_src_info_setup(Sound_Editor *edit,
@@ -952,24 +967,26 @@ _added_sample_src_info_setup(Sound_Editor *edit,
    elm_slider_value_set(edit->rewind, 0.0);
    edit->io.length = ecore_file_size(edit->snd_src);
 }
+#endif
 
 static void
 _grid_sel_sample(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Eina_Bool auto_play;
    Eina_List *l;
    Sound *snd;
    const char *snd_src;
    Evas_Object *edje_edit_obj;
-   double len;
+   double len = 0.0;
    const Item *item;
    Sound_Editor *edit = (Sound_Editor *)data;
 
    const Eina_List* sel_list = elm_gengrid_selected_items_get(edit->gengrid);
    int count = eina_list_count(sel_list);
-   auto_play = elm_check_state_get(edit->check);
+#ifdef HAVE_AUDIO
+   Eina_Bool auto_play = elm_check_state_get(edit->check);
+#endif
 
    if (!edit->decoration)
      {
@@ -977,7 +994,9 @@ _grid_sel_sample(void *data,
         edit->decoration = true;
      }
 
+#ifdef HAVE_AUDIO
    _interrupt_playing(edit);
+#endif
 
    if (count == 1)
      {
@@ -992,16 +1011,21 @@ _grid_sel_sample(void *data,
                   if (!strcmp(snd->name, edit->selected) && (!snd->tone_frq))
                     {
                        edit->snd_src = snd->src;
+#ifdef HAVE_AUDIO
                        _added_sample_src_info_setup(edit, &len);
+#endif
                        _sample_info_setup(edit, item, snd->src, len);
                        edit->added = true;
+#ifdef HAVE_AUDIO
                        if ((edit->switched) || (auto_play))
                          _add_sound_play(edit);
+#endif
                        return;
                     }
                }
           }
 
+#ifdef HAVE_AUDIO
         edit->io.buf = edje_edit_sound_samplebuffer_get(edje_edit_obj, edit->selected);
         edit->io.data = eina_binbuf_string_get(edit->io.buf);
         edit->io.length = eina_binbuf_length_get(edit->io.buf);
@@ -1010,11 +1034,12 @@ _grid_sel_sample(void *data,
         eo_do(edit->io.in, len = ecore_audio_obj_in_length_get());
         elm_slider_min_max_set(edit->rewind, 0, len);
         elm_slider_value_set(edit->rewind, 0.0);
-
+#endif
         snd_src = edje_edit_sound_samplesource_get(edje_edit_obj, edit->selected);
         _sample_info_setup(edit, item, snd_src, len);
         eina_stringshare_del(snd_src);
 
+#ifdef HAVE_AUDIO
         if (edit->switched)
           {
              edit->switched = false;
@@ -1024,6 +1049,7 @@ _grid_sel_sample(void *data,
 
         if (auto_play)
           _play_sound(edit);
+#endif
      }
 }
 
@@ -1044,7 +1070,9 @@ _grid_sel_tone(void *data,
         edit->decoration = true;
      }
 
+#ifdef HAVE_AUDIO
    _interrupt_playing(edit);
+#endif
 
    if (count == 1)
      {
@@ -1055,6 +1083,7 @@ _grid_sel_tone(void *data,
         elm_slider_value_set(edit->rewind, 0.0);
 
         _tone_info_setup(edit, item);
+#ifdef HAVE_AUDIO
         if (edit->switched)
           {
              edit->switched = false;
@@ -1063,6 +1092,7 @@ _grid_sel_tone(void *data,
           }
         if (elm_check_state_get(edit->check))
           _tone_play(edit, item->tone_frq);
+#endif
      }
 }
 
@@ -1575,7 +1605,9 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
         return NULL;
      }
 
+#ifdef HAVE_AUDIO
    ecore_audio_init();
+#endif
 
    edit = (Sound_Editor *)mem_calloc(1, sizeof(Sound_Editor));
    edit->mode = mode;
@@ -1590,7 +1622,9 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
 
    _sound_info_create(edit->markup, edit);
 
+#ifdef HAVE_AUDIO
    _sound_player_create(edit->markup, edit);
+#endif
 
    evas_object_show(edit->win);
 
