@@ -365,16 +365,11 @@ _project_linked_images_copy(Project_Thread *worker)
 
 static void *
 _project_import_edj(void *data,
-                    Eina_Thread *thread)
+                    Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   pthread_attr_t attr;
    Eina_Stringshare *path_pro;
 
-   /** try to change the detach state */
-   if (!pthread_getattr_np(*thread, &attr))
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-   pthread_attr_destroy(&attr);
    sleep(1);
 
    worker = (Project_Thread *)data;
@@ -467,10 +462,9 @@ _exe_data(void *data,
 
 static void *
 _project_import_edc(void *data,
-                    Eina_Thread *thread)
+                    Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   pthread_attr_t attr;
    Eina_Stringshare *path_pro;
    Ecore_Event_Handler *cb_exit = NULL,
                        *cb_msg_stdout = NULL,
@@ -484,10 +478,6 @@ _project_import_edc(void *data,
    pid_t exe_pid;
    int edje_cc_res = 0, waitpid_res = 0;
 
-   /** try to change the detach state */
-   if (!pthread_getattr_np(*thread, &attr))
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-   pthread_attr_destroy(&attr);
    sleep(1);
 
    worker = (Project_Thread *)data;
@@ -695,18 +685,13 @@ _project_backup(Project_Thread *worker)
 
 static void *
 _project_save(void *data,
-              Eina_Thread *thread)
+              Eina_Thread *thread __UNUSED__)
 {
-   pthread_attr_t attr;
    Project_Thread *worker;
    Widget *widget;
    Style *style;
    Class *class_st;
 
-   /** try to change the detach state */
-   if (!pthread_getattr_np(*thread, &attr))
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-   pthread_attr_destroy(&attr);
    sleep(1);
 
    worker = (Project_Thread *)data;
@@ -1249,15 +1234,11 @@ exit:
 
 static void *
 _develop_export(void *data,
-                Eina_Thread *thread)
+                Eina_Thread *thread __UNUSED__)
 {
-   pthread_attr_t attr;
    Project_Thread *worker;
    Evas_Object *edje_edit_obj;
 
-   if (!pthread_getattr_np(*thread, &attr))
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-   pthread_attr_destroy(&attr);
    sleep(1);
 
    worker = (Project_Thread *)data;
@@ -1303,10 +1284,9 @@ pm_project_develop_export(Project *project,
 
 static void *
 _enventor_save(void *data,
-               Eina_Thread *thread)
+               Eina_Thread *thread __UNUSED__)
 {
    Project_Thread *worker;
-   pthread_attr_t attr;
    Ecore_Event_Handler *cb_exit = NULL,
                        *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
@@ -1318,10 +1298,6 @@ _enventor_save(void *data,
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
 
-   /** try to change the detach state */
-   if (!pthread_getattr_np(*thread, &attr))
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-   pthread_attr_destroy(&attr);
    sleep(1);
 
    worker = (Project_Thread *)data;
