@@ -37,9 +37,11 @@
    #include <libintl.h>
    #define _(string) gettext(string)
    #define N_(string) string
+   #define NGETTEXT(single, plur, n) ngettext(single, plur, n)
 #else
    #define _(string) string
    #define N_(string) string
+   #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
 #endif /* localization */
 
 /* TODO: delete it, and remake all strings to eina_stringshare or eina_strbuff */

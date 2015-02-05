@@ -699,7 +699,7 @@ _on_button_delete_clicked_cb(void *data,
      }
    else if (notdeleted >1)
      {
-        snprintf(buf, BUFF_MAX, ngettext("%d image in use:",
+        snprintf(buf, BUFF_MAX, NGETTEXT("%d image in use:",
                                          "%d images in use:",
                                          notdeleted),
                  notdeleted);
