@@ -59,8 +59,7 @@ ewe_ruler_common.h \
 ewe_widget_ruler.h \
 ewe_win.h \
 ewe_win.eo.h \
-ewe_win_legacy.h \
-ewe_win_common.h
+ewe_win_legacy.h
 
 includesubdir = $(pkgincludedir)-@VMAJ@
 

@@ -20,7 +20,7 @@
 #include "ewe_private.h"
 
 EAPI Evas_Object *
-ewe_win_add(Evas_Object *parent, const char *name, Ewe_Win_Type type)
+ewe_win_add(Evas_Object *parent, const char *name, Elm_Win_Type type)
 {
    return elm_win_add(parent, name, type);
 }

@@ -26,13 +26,13 @@
  *
  * @param  parent Parent object to add the window to, or NULL
  * @param name The name of the window
- * @param type	The window type, one of Ewe_Win_Type.
+ * @param type	The window type, one of Elm_Win_Type.
  * @return The created object, or NULL on failure
  *
  * @ingroup Win
  */
 EAPI Evas_Object *
-ewe_win_add(Evas_Object *parent, const char *name, Ewe_Win_Type type);
+ewe_win_add(Evas_Object *parent, const char *name, Elm_Win_Type type);
 
 /**
  * Set the floating mode of a window.
