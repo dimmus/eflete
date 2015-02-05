@@ -350,7 +350,7 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
    if (deps_count)
      {
         eina_strbuf_prepend_printf(dep_message,
-                                   ngettext("%d widget included due to dependencies:<br><br>",
+                                   NGETTEXT("%d widget included due to dependencies:<br><br>",
                                             "%d widgets included due to dependencies:<br><br>",
                                             deps_count), deps_count);
 
