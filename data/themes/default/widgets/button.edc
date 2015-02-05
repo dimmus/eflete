@@ -1,5 +1,5 @@
 #define BUTTON_BORDER 6 6 13 13
-group { name: "elm/button/base/eflete/default";
+group { name: "elm/button/base/default";
    images{
       image: "button-bg.png" COMP;
       image: "button-click-bg.png" COMP;
@@ -913,7 +913,7 @@ group { name: "elm/button/base/eflete/elipsis";
 }
 
 group { name: "elm/button/base/eflete/btn";
-   inherit: "elm/button/base/eflete/default";
+   inherit: "elm/button/base/default";
    parts {
       part { name: "elm.text";
          description { state: "visible" 0.0;

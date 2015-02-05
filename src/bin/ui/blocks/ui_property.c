@@ -444,7 +444,6 @@ ui_property_add(Evas_Object *parent)
                                   _on_tab_activated, pd);
 #else
    pd->code = elm_entry_add(tabs);
-   elm_object_style_set(pd->code, DEFAULT_STYLE);
    elm_entry_single_line_set(pd->code, false);
    elm_scroller_policy_set(pd->code, ELM_SCROLLER_POLICY_ON, ELM_SCROLLER_POLICY_ON);
    evas_object_size_hint_weight_set(pd->code, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

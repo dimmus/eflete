@@ -165,7 +165,6 @@ _history_ui_add(Evas_Object *parent)
 
    genlist = elm_genlist_add(parent);
 
-   elm_object_style_set(genlist, "eflete/default");
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 

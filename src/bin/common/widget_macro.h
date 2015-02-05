@@ -23,7 +23,7 @@
 #include <Elementary.h>
 
 /* TODO: (refactoring) Style param in every widget define is needed. */
-#define DEFAULT_STYLE "eflete/default"
+#define DEFAULT_STYLE "default"
 
 #define FS_TITLE "fs_title"
 
@@ -47,14 +47,12 @@
    SCROLLER = elm_scroller_add(PARENT); \
    evas_object_size_hint_weight_set(SCROLLER, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(SCROLLER, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_style_set(SCROLLER, DEFAULT_STYLE); \
    elm_scroller_policy_set(SCROLLER, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF); \
    elm_scroller_policy_set(SCROLLER, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_AUTO); \
    evas_object_show(SCROLLER);
 
 #define LABEL_ADD(PARENT, LABEL, TEXT) \
    LABEL = elm_label_add(PARENT); \
-   elm_object_style_set(LABEL, DEFAULT_STYLE); \
    elm_object_text_set(LABEL, TEXT); \
    evas_object_show(LABEL);
 
@@ -63,7 +61,6 @@
    elm_frame_autocollapse_set(FRAME, AUTOCOLLAPSE); \
    evas_object_size_hint_fill_set(FRAME, EVAS_HINT_FILL, 0.0); \
    elm_object_text_set(FRAME, TITLE); \
-   elm_object_style_set(FRAME, DEFAULT_STYLE); \
    evas_object_show(FRAME);
 
 #define SPINNER_ADD(PARENT, SPINNER, MIN, MAX, STEP, ISEDIT, STYLE) \
@@ -128,7 +125,6 @@
    evas_object_size_hint_align_set(BUTTON, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(BUTTON, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    elm_object_text_set(BUTTON, TEXT); \
-   elm_object_style_set(BUTTON, DEFAULT_STYLE); \
    evas_object_show(BUTTON);
 
 #define ICON_STANDARD_ADD(PARENT, ICON, NOSCALE, ICON_NAME) \

@@ -1,4 +1,4 @@
-group { name: "elm/frame/base/eflete/default";
+group { name: "elm/frame/base/default";
    images {
       image: "icon-group-expand.png" COMP;
       image: "icon-group-minimize.png" COMP;

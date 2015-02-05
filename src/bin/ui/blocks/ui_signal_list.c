@@ -68,7 +68,6 @@ ui_signal_list_add(Evas_Object *parent)
      }
 
    gl_signals = elm_genlist_add(parent);
-   elm_object_style_set(gl_signals, "eflete/default");
    evas_object_size_hint_align_set(gl_signals, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_signals, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 

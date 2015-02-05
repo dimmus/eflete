@@ -754,7 +754,6 @@ _form_left_side(Style_Editor *style_edit)
    style_edit->style_search_data.last_item_found = NULL;
 
    style_edit->glist = elm_genlist_add(layout);
-   elm_object_style_set(style_edit->glist, DEFAULT_STYLE);
    elm_object_part_content_set(layout, "swallow/genlist", style_edit->glist);
    evas_object_show(style_edit->glist);
 
@@ -1885,7 +1884,6 @@ style_editor_window_add(Project *project)
    elm_win_inwin_content_set(style_edit->mwin, window_layout);
 
    panes = elm_panes_add(style_edit->mwin);
-   elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);
@@ -1897,7 +1895,6 @@ style_editor_window_add(Project *project)
    evas_object_show(layout_left);
 
    panes_h = elm_panes_add(style_edit->mwin);
-   elm_object_style_set(panes_h, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_h, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_h, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes_h, true);

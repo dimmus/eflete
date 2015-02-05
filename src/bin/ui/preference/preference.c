@@ -337,7 +337,6 @@ _form_left_side(Preferences *preference)
    preference->glist = elm_genlist_add(box);
 
    preference->glist = elm_genlist_add(box);
-   elm_object_style_set(preference->glist, DEFAULT_STYLE);
    elm_box_pack_end(box, preference->glist);
    evas_object_show(preference->glist);
 
@@ -382,7 +381,6 @@ preferences_window_add(Project *project)
    elm_win_inwin_content_set(preference->mwin, window_layout);
 
    panes = elm_panes_add(preference->mwin);
-   elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes, 0.2);

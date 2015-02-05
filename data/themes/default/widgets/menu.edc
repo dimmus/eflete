@@ -1,4 +1,4 @@
-group { name: "elm/menu/item/eflete/default";
+group { name: "elm/menu/item/default";
    script {
       public menu_text_visible; //0:hide (default), 1:visible
       public menu_disable; //0:enable, 1:disable
@@ -237,8 +237,8 @@ group { name: "elm/menu/item/eflete/default";
    }
 }
 
-group { name: "elm/menu/item_with_submenu/eflete/default";
-   inherit: "elm/menu/item/eflete/default";
+group { name: "elm/menu/item_with_submenu/default";
+   inherit: "elm/menu/item/default";
    images {
       image: "context_menu-arrow.png" COMP;
    }
@@ -264,7 +264,7 @@ group { name: "elm/menu/item_with_submenu/eflete/default";
    }
 }
 
-group { name: "elm/menu/separator/eflete/default";
+group { name: "elm/menu/separator/default";
    images {
       image: "context_menu-separator.png" COMP;
    }
@@ -281,7 +281,7 @@ group { name: "elm/menu/separator/eflete/default";
    }
 }
 
-group { name: "elm/menu/main_menu_submenu/eflete/default";
+group { name: "elm/menu/main_menu_submenu/default";
    parts {
       part { name: "base";
          mouse_events: 0;
@@ -447,7 +447,7 @@ group { name: "elm/menu/main_menu_submenu/eflete/default";
 
 //-------------------------hover----------------------------------------------//
 //In the hover used by the menu only the bottom part is used.
-group { name: "elm/hover/base/menu/eflete/default";
+group { name: "elm/hover/base/menu/default";
    parts {
       part { name: "elm.swallow.offset";
          type: SWALLOW;
@@ -645,8 +645,8 @@ group { name: "elm/hover/base/menu/eflete/default";
 
 //In the hover used by the submenu only the bottom part is used
 //and no part should interact except the bottom area
-group { name: "elm/hover/base/submenu/eflete/default";
-   inherit: "elm/hover/base/menu/eflete/default";
+group { name: "elm/hover/base/submenu/default";
+   inherit: "elm/hover/base/menu/default";
    parts {
       part { name: "elm.swallow.offset";
          repeat_events: 1;
@@ -666,7 +666,7 @@ group { name: "elm/hover/base/submenu/eflete/default";
    }
 }
 
-group { name: "elm/hover/base/main_menu/eflete/default";
+group { name: "elm/hover/base/main_menu/default";
    parts {
       part { name: "elm.swallow.offset";
          type: SWALLOW;
@@ -742,7 +742,7 @@ group { name: "elm/hover/base/main_menu/eflete/default";
    }
 }
 
-group { name: "elm/hover/base/main_menu_submenu/eflete/default";
+group { name: "elm/hover/base/main_menu_submenu/default";
    parts {
       part { name: "base";
          type: RECT;

@@ -7,7 +7,7 @@
 #define BG_COLOR 39 42 43 255
 #define LIST_ITEM_REORDERED_COLOR 200 150 0 255
 
-group { name: "elm/genlist/item/eflete/default/default";
+group { name: "elm/genlist/item/default/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
    data.item: "texts" "elm.text";
@@ -217,7 +217,7 @@ group { name: "elm/genlist/item/eflete/default/default";
 }
 
 group { name: "elm/genlist/item/eflete/program_after/default";
-   inherit: "elm/genlist/item/eflete/default/default";
+   inherit: "elm/genlist/item/default/default";
    parts{
       part { name: "base";
          description { state: "default" 0.0;
@@ -532,7 +532,7 @@ group { name: "elm/genlist/tree/eflete/tree/default";
 }
 
 group { name: "elm/genlist/item/eflete/signals/default";
-   inherit: "elm/genlist/item/eflete/default/default";
+   inherit: "elm/genlist/item/default/default";
    data.item: "texts" "elm.text elm.text.source elm.text.program";
    parts {
       part { name: "pad.texts";
@@ -733,7 +733,7 @@ group { name: "elm/genlist/item/eflete/signals/default";
 }
 
 group { name: "elm/genlist/item/eflete/tween/default";
-   inherit: "elm/genlist/item/eflete/default/default";
+   inherit: "elm/genlist/item/default/default";
    parts {
       part { name: "bg";
          type: RECT;
@@ -795,7 +795,7 @@ group { name: "elm/genlist/item/eflete/tween/default";
 }
 
 group { name: "elm/genlist/item/eflete/level1/default";
-    inherit:"elm/genlist/item/eflete/default/default";
+    inherit:"elm/genlist/item/default/default";
     images {
       image: "treemenu-lvl1-item-current-pressed.png" COMP;
       image: "treemenu-lvl1-item-current-bg.png" COMP;
@@ -842,7 +842,7 @@ group { name: "elm/genlist/item/eflete/level1/default";
 }
 
 group { name: "elm/genlist/item/eflete/level2/default";
-   inherit:"elm/genlist/item/eflete/default/default";
+   inherit:"elm/genlist/item/default/default";
    parts {
      part { name: "base";
          type: IMAGE;
@@ -876,7 +876,7 @@ group { name: "elm/genlist/item/eflete/level2/default";
 }
 
 group { name: "elm/genlist/item/eflete/level3/default";
-    inherit:"elm/genlist/item/eflete/default/default";
+    inherit:"elm/genlist/item/default/default";
    parts {
       part { name: "base";
          description { state: "default" 0.0;
@@ -929,7 +929,7 @@ group { name: "elm/genlist/item/eflete/usage_state/default";
 }
 
 group { name: "elm/genlist/item/eflete/level4/default";
-   inherit:"elm/genlist/item/eflete/default/default";
+   inherit:"elm/genlist/item/default/default";
    parts {
       part { name: "base";
          description { state: "default" 0.0;
@@ -1605,7 +1605,7 @@ group { name: "elm/genlist/item/eflete/history_inactive/default";
     }
 }
 
-group { name: "elm/genlist/base/eflete/default";
+group { name: "elm/genlist/base/default";
    images {
       image: "scroll-indicator.png" COMP;
       image: "scroll-area-dark.png" COMP;
@@ -2042,7 +2042,7 @@ group { name: "elm/genlist/base/eflete/default";
 }
 
 group { name: "elm/genlist/base/eflete/dark";
-      inherit: "elm/genlist/base/eflete/default";
+      inherit: "elm/genlist/base/default";
    images {
       image: "treemenu-background.png" COMP;
       image: "border_1.png" COMP;
@@ -2074,7 +2074,7 @@ group { name: "elm/genlist/base/eflete/dark";
 }
 
 group { name: "elm/genlist/base/eflete/usage_list";
-   inherit: "elm/genlist/base/eflete/default";
+   inherit: "elm/genlist/base/default";
    parts {
       part { name: "bg";
          type: RECT;

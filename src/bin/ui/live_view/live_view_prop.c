@@ -226,7 +226,6 @@ live_view_property_style_set(Evas_Object *property,
    if ((!pd->in_prog_edit) && (!pd->prop_signal.signals))
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_signal.frame, true, _("Signals"), pd->visual);
-        elm_object_style_set(pd->prop_signal.frame, "eflete/default");
 
         BOX_ADD(pd->prop_signal.frame, pd->prop_signal.signals, false, false)
         elm_box_align_set(pd->prop_signal.signals, 0.5, 0.0);

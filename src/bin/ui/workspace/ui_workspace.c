@@ -295,7 +295,6 @@ _init_ctx_menu(Ws_Smart_Data *ws, Evas_Object *parent)
    Evas_Object *menu;
    Ws_Menu *items = &ws->menu.items;
    ws->menu.obj = menu = elm_menu_add(elm_object_top_widget_get (parent));
-   elm_object_style_set(menu, "eflete/default");
 
    items->undo = elm_menu_item_add(menu, NULL, NULL, _("Undo"), _menu_undo_cb, ws);
    items->redo = elm_menu_item_add(menu, NULL, NULL, _("Redo"), _menu_redo_cb, ws);

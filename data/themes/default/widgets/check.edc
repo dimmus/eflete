@@ -481,7 +481,7 @@ group { name: "elm/check/base/eflete/toggle";
 #undef DISABLE
 }
 
-group { name: "elm/check/base/eflete/default";
+group { name: "elm/check/base/default";
    images {
       image: "input-text-bg.png" COMP;
       image: "checkbox-white.png" COMP;
@@ -746,7 +746,7 @@ group { name: "elm/check/base/eflete/widgetlist/default";
       image: "icon-treemenu-item-visibility.png" COMP;
       image: "treemenu-item-visibility-bg.png" COMP;
    }
-   inherit: "elm/check/base/eflete/default";
+   inherit: "elm/check/base/default";
    parts {
       part { name: "bg";
          description { state: "default" 0.0;
@@ -770,7 +770,7 @@ group { name: "elm/check/base/eflete/widgetlist/default";
 }
 
 group { name: "elm/check/base/eflete/live_view";
-   inherit: "elm/check/base/eflete/default";
+   inherit: "elm/check/base/default";
    parts {
       part { name: "bg";
          type: IMAGE;

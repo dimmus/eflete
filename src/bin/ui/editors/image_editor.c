@@ -1071,7 +1071,6 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    elm_win_inwin_content_set(img_edit->win, img_edit->layout);
 
    img_edit->gengrid = elm_gengrid_add(img_edit->layout);
-   elm_object_style_set(img_edit->gengrid, DEFAULT_STYLE);
    elm_object_part_content_set(img_edit->layout,
                                "eflete.swallow.grid", img_edit->gengrid);
    elm_gengrid_item_size_set(img_edit->gengrid, ITEM_WIDTH, ITEM_HEIGHT);
@@ -1164,7 +1163,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    if (!gic)
      {
         gic = elm_gengrid_item_class_new();
-        gic->item_style = DEFAULT_STYLE;
+        gic->item_style = "default";
         gic->func.text_get = _grid_label_get;
         gic->func.content_get = _grid_content_get;
         gic->func.del = _grid_del;

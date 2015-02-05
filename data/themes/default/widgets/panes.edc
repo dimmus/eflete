@@ -1,7 +1,7 @@
 #define PANEMIN  6
 #define PANEGLOW  4
 
-group { name: "elm/panes/vertical/eflete/default";
+group { name: "elm/panes/vertical/default";
    images {
       image: "downlight_glow_left.png" COMP;
       image: "downlight_glow_right.png" COMP;
@@ -323,7 +323,7 @@ group { name: "elm/panes/vertical/eflete/default";
    }
 }
 
-group { name: "elm/panes/horizontal/eflete/default";
+group { name: "elm/panes/horizontal/default";
    images {
       image: "downlight_glow.png" COMP;
       image: "downlight_glow_up.png" COMP;

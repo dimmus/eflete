@@ -68,7 +68,7 @@
       } \
    }
    group {
-      name: "elm/spinner/base/eflete/default";
+      name: "elm/spinner/base/default";
          images {
          image: "spinner-horizontal-down.png" COMP;
          image: "spinner-horizontal-down-clicked.png" COMP;

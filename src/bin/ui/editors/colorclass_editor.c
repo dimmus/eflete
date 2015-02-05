@@ -505,7 +505,6 @@ colorclass_viewer_add(Project *project)
 
 
    panes = elm_panes_add(ccl_edit->mwin);
-   elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_right_size_set(panes, 0.3);
@@ -516,7 +515,6 @@ colorclass_viewer_add(Project *project)
 
    ccl_edit->genlist = elm_genlist_add(box);
    elm_box_pack_end(box, ccl_edit->genlist);
-   elm_object_style_set(ccl_edit->genlist, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(ccl_edit->genlist, EVAS_HINT_EXPAND,
                                                             EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(ccl_edit->genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -528,7 +526,7 @@ colorclass_viewer_add(Project *project)
    if (!_itc_ccl)
      {
         _itc_ccl = elm_genlist_item_class_new();
-        _itc_ccl->item_style = DEFAULT_STYLE;
+        _itc_ccl->item_style = "default";
         _itc_ccl->func.text_get = _item_ccl_label_get;
         _itc_ccl->func.content_get = NULL;
         _itc_ccl->func.state_get = NULL;
@@ -569,7 +567,6 @@ colorclass_viewer_add(Project *project)
 
 #define _SPINNER_ADD(spinner, format, box) \
    spinner = elm_spinner_add(box); \
-   elm_object_style_set(spinner, DEFAULT_STYLE); \
    elm_spinner_min_max_set(spinner, 0, 255); \
    elm_spinner_interval_set(spinner, 0.4); \
    elm_spinner_label_format_set(spinner, format); \

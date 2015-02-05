@@ -1775,7 +1775,6 @@ program_editor_add(Evas_Object *parent, Style *style, Live_View *live)
    prog_edit->slider = sl;
 
    bottom_panes = elm_panes_add(editor_layout);
-   elm_object_style_set(bottom_panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(bottom_panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bottom_panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(bottom_panes, 0.2);

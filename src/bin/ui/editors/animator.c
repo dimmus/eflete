@@ -465,7 +465,7 @@ _gl_progs_add(Animator *animator)
    if (!_itc_prog)
      {
         _itc_prog = elm_genlist_item_class_new();
-        _itc_prog->item_style = DEFAULT_STYLE;
+        _itc_prog->item_style = "default";
         _itc_prog->func.text_get = _item_prog_label_get;
         _itc_prog->func.content_get = NULL;
         _itc_prog->func.state_get = NULL;
@@ -483,7 +483,6 @@ _gl_progs_add(Animator *animator)
      }
 
    gl_progs = elm_genlist_add(animator->mwin);
-   elm_object_style_set(gl_progs, DEFAULT_STYLE);
    evas_object_size_hint_align_set(gl_progs, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_progs, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
@@ -545,7 +544,6 @@ animator_window_add(Style *style)
    elm_win_inwin_content_set(animator->mwin, window_layout);
 
    panes = elm_panes_add(window_layout);
-   elm_object_style_set(panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_horizontal_set(panes, true);
@@ -580,7 +578,6 @@ animator_window_add(Style *style)
    animator->program_controls.cycle = bt;
 
    bottom_panes = elm_panes_add(window_layout);
-   elm_object_style_set(bottom_panes, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(bottom_panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bottom_panes, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(bottom_panes, 0.2);

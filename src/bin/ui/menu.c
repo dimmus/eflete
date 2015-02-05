@@ -232,7 +232,6 @@ ui_menu_add(App_Data *ap)
      sad_callback_data[i] = i;
 
    window_menu = elm_win_main_menu_get(ap->win);
-   elm_object_style_set(window_menu, DEFAULT_STYLE);
 
 
 #define ITEM_MENU_ADD(PARENT_ID, ID, ICON, LABEL) \
@@ -286,7 +285,6 @@ ui_menu_add(App_Data *ap)
    elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_MENU);
    /*TODO: for this select mode need new style */
    elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_NONE);
-   elm_object_style_set(toolbar, DEFAULT_STYLE);
    elm_toolbar_align_set(toolbar, 0.0);
    evas_object_size_hint_weight_set(toolbar, 0.0, 0.0);
    evas_object_size_hint_align_set(toolbar, EVAS_HINT_FILL, 0.0);

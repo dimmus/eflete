@@ -1,4 +1,4 @@
-group { name: "elm/label/base/eflete/default";
+group { name: "elm/label/base/default";
    data.item: "default_font_size" "11";
    data.item: "min_font_size" "6";
    data.item: "max_font_size" "60";

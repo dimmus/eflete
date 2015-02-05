@@ -67,7 +67,6 @@ ui_states_list_add(Evas_Object *parent)
    if (!parent) return NULL;
 
    gl_states = elm_genlist_add(parent);
-   elm_object_style_set(gl_states, "eflete/default");
    evas_object_size_hint_align_set(gl_states,
                                    EVAS_HINT_FILL,
                                    EVAS_HINT_FILL);
@@ -78,7 +77,7 @@ ui_states_list_add(Evas_Object *parent)
    if (!_itc_state)
      {
         _itc_state = elm_genlist_item_class_new();
-        _itc_state->item_style = "eflete/default";
+        _itc_state->item_style = "default";
         _itc_state->func.text_get = _item_state_label_get;
         _itc_state->func.content_get = NULL;
         _itc_state->func.state_get = NULL;

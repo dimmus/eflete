@@ -121,7 +121,6 @@ ui_panes_add(App_Data *ap)
    config = config_get();
 
    panes_left = elm_panes_add(ap->win_layout);
-   elm_object_style_set(panes_left, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_left, config->panes.left);
@@ -130,14 +129,12 @@ ui_panes_add(App_Data *ap)
 
    panes_left_hor = elm_panes_add(ap->win_layout);
    elm_panes_horizontal_set(panes_left_hor, true);
-   elm_object_style_set(panes_left_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_left_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_left_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_left_hor, config->panes.left_hor);
    elm_object_part_content_set(panes_left, "left", panes_left_hor);
 
    panes_right = elm_panes_add(ap->win_layout);
-   elm_object_style_set(panes_right, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_right, config->panes.right);
@@ -146,7 +143,6 @@ ui_panes_add(App_Data *ap)
 
    panes_right_hor = elm_panes_add(ap->win_layout);
    elm_panes_horizontal_set(panes_right_hor, true);
-   elm_object_style_set(panes_right_hor, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_right_hor, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_right_hor, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_right_hor, config->panes.right_hor);
@@ -154,14 +150,12 @@ ui_panes_add(App_Data *ap)
 
    panes_center = elm_panes_add(ap->win_layout);
    elm_panes_horizontal_set(panes_center, true);
-   elm_object_style_set(panes_center, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_center, config->panes.center);
    elm_object_part_content_set(panes_right, "left", panes_center);
 
    panes_center_down = elm_panes_add(ap->win_layout);
-   elm_object_style_set(panes_center_down, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(panes_center_down, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(panes_center_down, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_panes_content_left_size_set(panes_center_down, config->panes.center_down);

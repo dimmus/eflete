@@ -1141,7 +1141,6 @@ _create_gengrid(Evas_Object *parent,
 
    elm_gengrid_multi_select_set(editor->gengrid, false);
 
-   elm_object_style_set(editor->gengrid, DEFAULT_STYLE);
    evas_object_size_hint_weight_set(editor->gengrid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(editor->gengrid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
