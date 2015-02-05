@@ -81,8 +81,6 @@ app_free()
 Eina_Bool
 app_init()
 {
-   Eina_Stringshare *config_path;
-
    setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
    bindtextdomain(PACKAGE, LOCALE_DIR);
@@ -119,8 +117,8 @@ app_init()
         return false;
      }
 
-   config_path = eina_stringshare_add(EFLETE_SETT_PATH);
-   if (!ecore_file_exists(config_path)) ecore_file_mkdir(config_path);
+   if (!ecore_file_exists(EFLETE_SETT_PATH))
+     ecore_file_mkdir(EFLETE_SETT_PATH);
 
    app_data_get();
    if (!config_init(ap)) return false;
@@ -134,7 +132,6 @@ app_init()
    ap->theme = elm_theme_new();
    elm_theme_set(ap->theme, EFLETE_THEME);
 
-   eina_stringshare_del(config_path);
    return true;
 }
 
