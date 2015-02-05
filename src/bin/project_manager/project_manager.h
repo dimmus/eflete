@@ -280,8 +280,12 @@ pm_project_import_edc(const char *name,
  *
  * @ingroup ProjectManager
  */
-inline Project *
-pm_project_thread_project_get(Project_Thread *worker);
+static inline Project *
+pm_project_thread_project_get(Project_Thread *worker)
+{
+   return worker->project;
+}
+
 
 /**
  * Open Eflete project.
