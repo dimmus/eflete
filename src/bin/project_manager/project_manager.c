@@ -588,7 +588,7 @@ pm_project_thread_cancel(Project_Thread *worker)
    int ret;
 
    WORKER_LOCK_TAKE;
-      ret = pthread_cancel(worker->thread);
+      ret = pthread_cancel((pthread_t)worker->thread);
    WORKER_LOCK_RELEASE;
    if (ret)
      return false;
