@@ -260,6 +260,7 @@ history_clear(History *history)
        free(module);
      }
    elm_genlist_clear(history->genlist);
+   history->modules = NULL;
 
    return true;
 }
@@ -277,15 +278,18 @@ history_module_add(Evas_Object *source)
    module = evas_object_data_get(source, HISTORY_MODULE_KEY);
    if (module)
      {
+        elm_genlist_clear(history->genlist);
+        _history_module_ui_item_add(history, module);
         _history_ui_list_reload(history, module);
+        evas_object_show(history->genlist);
         return true;
      }
 
    module = (Module *)mem_calloc(1, sizeof(Module));
    module->target = source;
    evas_object_data_set(module->target, HISTORY_MODULE_KEY, module);
-   history->modules = eina_list_append(history->modules, module);
    _history_module_ui_item_add(history, module);
+   history->modules = eina_list_append(history->modules, module);
    return true;
 }
 
