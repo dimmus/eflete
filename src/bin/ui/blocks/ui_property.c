@@ -562,6 +562,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
    Eina_Strbuf *text_ctx = NULL;
 
    if ((!property) || (!workspace)) return EINA_FALSE;
+   ui_property_style_unset(property);
    PROP_DATA_GET(EINA_FALSE)
 
    evas_object_show(property);

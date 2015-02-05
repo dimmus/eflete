@@ -524,7 +524,6 @@ ui_part_back(App_Data *ap)
    ui_states_list_data_unset(st_list);
    evas_object_smart_callback_del_full(st_list, "sl,signal,select", _signal_select, ap);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
-   ui_property_style_unset(ui_block_property_get(ap));
    ui_block_content_visible(ap->block.right_bottom, false);
    /*TODO: in future it will be moved to block api. */
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
@@ -718,13 +717,9 @@ blocks_show(App_Data *ap)
 static void
 _blocks_data_unset(App_Data *ap)
 {
-   Evas_Object *property;
-   property = ui_block_property_get(ap);
-
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
-   ui_property_style_unset(property);
    ui_block_content_visible(ap->block.right_bottom, false);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_states_list_data_unset(ui_block_state_list_get(ap));
