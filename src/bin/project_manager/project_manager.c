@@ -430,12 +430,6 @@ pm_project_import_edj(const char *name,
    return worker;
 }
 
-Project *
-pm_project_thread_project_get(Project_Thread *worker)
-{
-   return worker->project;
-}
-
 static Eina_Bool
 _exe_exit(void *data,
           int type __UNUSED__,
