@@ -65,7 +65,7 @@ colorselector_add(Evas_Object *parent)
    if (!parent) return NULL;
 
    ctxpopup = elm_ctxpopup_add(parent);
-   elm_object_style_set(ctxpopup, "eflete/colorsel");
+   elm_object_style_set(ctxpopup, "colorsel");
    colorsel = elm_colorselector_add(ctxpopup);
    elm_colorselector_mode_set(colorsel, ELM_COLORSELECTOR_ALL);
    elm_object_content_set(ctxpopup, colorsel);

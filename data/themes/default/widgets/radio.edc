@@ -1,4 +1,4 @@
-group { name: "elm/radio/base/eflete/style_editor";
+group { name: "elm/radio/base/style_editor";
    images {
       image: "styles-preview-bg-current.png" COMP;
    }
@@ -224,7 +224,7 @@ group { name: "elm/radio/base/eflete/style_editor";
 }
 
 #define DIRECTION_ADD(DIRECT) \
-group { name: "elm/radio/base/eflete/"DIRECT; \
+group { name: "elm/radio/base/"DIRECT; \
    images{ \
       image: "direction-arrow-"DIRECT".png" COMP; \
       image: "direction-bg-"DIRECT".png" COMP; \

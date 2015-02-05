@@ -379,7 +379,7 @@ group { name: "elm/scroller/base/default";
    }
 }
 
-group { name: "elm/scroller/base/eflete/workspace";
+group { name: "elm/scroller/base/workspace";
    inherit: "elm/scroller/base/default";
    parts {
       part { name: "base";

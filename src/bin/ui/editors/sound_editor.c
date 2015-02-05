@@ -702,7 +702,7 @@ _on_ok_cb(void *data,
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    ICON_ADD(OBJ, ICON, NULL, "icon_"TEXT) \
-   elm_object_style_set(OBJ, "eflete/simple"); \
+   elm_object_style_set(OBJ, "simple"); \
    evas_object_show(OBJ); \
    elm_object_part_content_set(OBJ, NULL, ICON); \
    elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
@@ -771,7 +771,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    edit->pause = elm_button_add(edit->player_markup);
    evas_object_size_hint_align_set(edit->pause, EVAS_HINT_FILL, EVAS_HINT_FILL);
    ICON_ADD(edit->pause, icon, NULL, "icon_pause")
-   elm_object_style_set(edit->pause, "eflete/simple");
+   elm_object_style_set(edit->pause, "simple");
    elm_object_part_content_set(edit->pause, NULL, icon);
    evas_object_smart_callback_add(edit->pause, "clicked", _on_pause_cb, edit);
 
@@ -1145,7 +1145,7 @@ _create_gengrid(Evas_Object *parent,
    evas_object_size_hint_align_set(editor->gengrid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    gic = elm_gengrid_item_class_new();
-   gic->item_style = "eflete/sound_editor";
+   gic->item_style = "sound_editor";
    gic->func.text_get = _grid_label_get;
    gic->func.content_get = NULL;
    gic->func.del = _grid_del;
@@ -1166,7 +1166,7 @@ static inline Evas_Object *
 _sound_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
-   ENTRY_ADD(parent, entry, true, "eflete/search_field");
+   ENTRY_ADD(parent, entry, true, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -1496,7 +1496,7 @@ _search_reset_cb(void *data __UNUSED__,
    OBJ = elm_button_add(PARENT); \
    evas_object_size_hint_weight_set(OBJ, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(OBJ, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_style_set(OBJ, "eflete/btn"); \
+   elm_object_style_set(OBJ, "btn"); \
    elm_object_text_set(OBJ, TEXT); \
    evas_object_show(OBJ); \
    elm_object_part_content_set(PARENT, "swallow.btn."PART, OBJ); \

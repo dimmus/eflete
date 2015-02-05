@@ -475,7 +475,7 @@ _gl_progs_add(Animator *animator)
    if (!_itc_prog_after)
      {
         _itc_prog_after = elm_genlist_item_class_new();
-        _itc_prog_after->item_style = "eflete/program_after";
+        _itc_prog_after->item_style = "program_after";
         _itc_prog_after->func.text_get = _item_prog_label_get;
         _itc_prog_after->func.content_get = NULL;
         _itc_prog_after->func.state_get = NULL;
@@ -617,7 +617,7 @@ animator_window_add(Style *style)
    evas_object_smart_callback_add(bt, "clicked", _on_bt_mode_change, animator);
    ICON_ADD(bt, icon, false, "animator_arrow_right");
    elm_layout_content_set(bt, "icon", icon);
-   elm_object_style_set(bt, "eflete/simple");
+   elm_object_style_set(bt, "simple");
 
    SCROLLER_ADD(animator->program_area_layout, scroller);
    elm_scroller_policy_set(scroller, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);

@@ -841,7 +841,7 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    priv->scroll_flag = 0;
    priv->zoom.factor = 1.0;
    priv->scroller = elm_scroller_add(priv->layout);
-   elm_object_style_set(priv->scroller, "eflete/workspace");
+   elm_object_style_set(priv->scroller, "workspace");
    elm_scroller_content_min_limit(priv->scroller, false, false);
    elm_layout_content_set(priv->layout, "groupspace", priv->scroller);
 

@@ -119,7 +119,7 @@ _item_part_content_get(void *data,
           elm_check_state_set(check, true);
         else
            elm_check_state_set(check, false);
-        elm_object_style_set(check, "eflete/widgetlist/default");
+        elm_object_style_set(check, "widgetlist/default");
 
         evas_object_size_hint_aspect_set(check, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         evas_object_smart_callback_add(check, "changed", _on_check_click, _part);
@@ -375,7 +375,7 @@ _wl_item_selected(void *data __UNUSED__,
    dec_eoi = elm_genlist_decorated_item_get(obj);
    if (dec_eoi)
      {
-        elm_genlist_item_decorate_mode_set(dec_eoi, "eflete/mode", false);
+        elm_genlist_item_decorate_mode_set(dec_eoi, "mode", false);
         elm_genlist_item_update(dec_eoi);
      }
    elm_genlist_item_selected_set(eoi, true);
@@ -434,7 +434,7 @@ _on_style_clicked_double(void *data,
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "eflete/level4";
+        _itc_part->item_style = "level4";
         _itc_part->func.text_get = _item_part_label_get;
         _itc_part->func.content_get = _item_part_content_get;
         _itc_part->func.state_get = NULL;
@@ -445,7 +445,7 @@ _on_style_clicked_double(void *data,
    elm_genlist_longpress_timeout_set(gl_parts, 0.2);
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
-   elm_object_style_set(gl_parts, "eflete/dark");
+   elm_object_style_set(gl_parts, "dark");
    elm_genlist_reorder_mode_set(gl_parts, true);
    elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
    pr->current_style = _style;
@@ -469,7 +469,7 @@ _on_style_clicked_double(void *data,
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_parts_pop, nf);
-   elm_object_style_set(bt, "eflete/simple");
+   elm_object_style_set(bt, "simple");
    evas_object_show(gl_parts);
 
    elm_naviframe_item_push(nf, clicked_style->full_group_name, bt, NULL, gl_parts, NULL);
@@ -478,28 +478,28 @@ _on_style_clicked_double(void *data,
    ICON_ADD(button, _icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add(button, "clicked", _add_part_cb, nf);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(nf, "elm.swallow.bt3", button);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_part_cb, nf);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(nf, "elm.swallow.bt2", button);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, "icon-slideup");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _above_part_cb, nf);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
 
    BUTTON_ADD(nf, button, NULL)
    ICON_ADD(button, _icon, true, "icon-slidedown");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _past_part_cb, nf);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 }
 
@@ -550,7 +550,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "eflete/level2";
+        _itc_class->item_style = "level2";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -560,7 +560,7 @@ _on_widget_clicked_double(void *data,
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "eflete/level3";
+        _itc_style->item_style = "level3";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = _item_style_content_get;
         _itc_style->func.state_get = NULL;
@@ -569,7 +569,7 @@ _on_widget_clicked_double(void *data,
 
    gl_class = elm_genlist_add(nf);
    evas_object_data_set(gl_class, NAVIFRAME_DATA_KEY, nf);
-   elm_object_style_set(gl_class, "eflete/dark");
+   elm_object_style_set(gl_class, "dark");
    elm_genlist_select_mode_set(gl_class, ELM_OBJECT_SELECT_MODE_ALWAYS);
    evas_object_size_hint_align_set(gl_class, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl_class, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -596,7 +596,7 @@ _on_widget_clicked_double(void *data,
    bt = elm_button_add(nf);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "eflete/simple");
+   elm_object_style_set(bt, "simple");
    evas_object_smart_callback_add(bt, "clicked", _navi_gl_styles_pop, nf);
    elm_naviframe_item_push(nf, _widget->name, bt, NULL, gl_class, NULL);
 
@@ -604,7 +604,7 @@ _on_widget_clicked_double(void *data,
    ICON_ADD(button, _icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _del_style_cb, nf);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(nf, "elm.swallow.bt0", button);
 
    BUTTON_ADD(nf, button, NULL)
@@ -612,7 +612,7 @@ _on_widget_clicked_double(void *data,
    evas_object_size_hint_align_set(button, -1, EVAS_HINT_FILL);
    elm_object_part_content_set(button, NULL, _icon);
    evas_object_smart_callback_add (button, "clicked", _add_style_cb, obj);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(nf, "elm.swallow.bt1", button);
    evas_object_show(gl_class);
 }
@@ -633,7 +633,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_class)
      {
         _itc_class = elm_genlist_item_class_new();
-        _itc_class->item_style = "eflete/level2";
+        _itc_class->item_style = "level2";
         _itc_class->func.text_get = _item_class_label_get;
         _itc_class->func.content_get = NULL;
         _itc_class->func.state_get = NULL;
@@ -643,7 +643,7 @@ ui_widget_list_class_data_reload(Evas_Object *gl_classes, Eina_Inlist *classes)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "eflete/level3";
+        _itc_style->item_style = "level3";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -684,7 +684,7 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_widget)
      {
         _itc_widget = elm_genlist_item_class_new();
-        _itc_widget->item_style = "eflete/level1";
+        _itc_widget->item_style = "level1";
         _itc_widget->func.text_get = _item_widget_label_get;
         _itc_widget->func.content_get = NULL;
         _itc_widget->func.state_get = NULL;
@@ -693,8 +693,8 @@ ui_widget_list_add(Evas_Object *parent)
    if (!_itc_layout)
      {
         _itc_layout = elm_genlist_item_class_new();
-        _itc_layout->item_style = "eflete/level1";
-        _itc_layout->decorate_item_style = "eflete/mode";
+        _itc_layout->item_style = "level1";
+        _itc_layout->decorate_item_style = "mode";
         _itc_layout->func.text_get = _item_layout_label_get;
         _itc_layout->func.content_get = _item_style_content_get;
         _itc_layout->func.state_get = NULL;
@@ -712,7 +712,7 @@ ui_widget_list_add(Evas_Object *parent)
    elm_object_style_set(nf_##TYPE, "eflete"); \
     \
    gl_##TYPE = elm_genlist_add(nf_##TYPE); \
-   elm_object_style_set(gl_##TYPE, "eflete/dark"); \
+   elm_object_style_set(gl_##TYPE, "dark"); \
    evas_object_size_hint_align_set(gl_##TYPE, \
                                    EVAS_HINT_FILL, \
                                    EVAS_HINT_FILL); \
@@ -733,7 +733,7 @@ ui_widget_list_add(Evas_Object *parent)
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "eflete/simple");
+   elm_object_style_set(bt, "simple");
    evas_object_show(bt);
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_add_cb, parent);
@@ -742,7 +742,7 @@ ui_widget_list_add(Evas_Object *parent)
    bt = elm_button_add(nf_layouts);
    evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_layout_content_set(bt, "icon", ic);
-   elm_object_style_set(bt, "eflete/simple");
+   elm_object_style_set(bt, "simple");
    evas_object_show(bt);
    evas_object_data_set(bt, WIDGETLIST_DATA_KEY, tabs);
    evas_object_smart_callback_add (bt, "clicked", _layout_del_cb, parent);
@@ -803,17 +803,17 @@ _wl_key_down_cb(void *data __UNUSED__,
           {
              if (dec_eoi)
                {
-                  elm_genlist_item_decorate_mode_set(dec_eoi, "eflete/mode",
+                  elm_genlist_item_decorate_mode_set(dec_eoi, "mode",
                                                      false);
                   elm_genlist_item_update(dec_eoi);
                }
-             elm_genlist_item_decorate_mode_set(eoi, "eflete/mode", true);
+             elm_genlist_item_decorate_mode_set(eoi, "mode", true);
           }
         return;
      }
    if ((!strcmp(ev->key, "Escape")) && (dec_eoi))
      {
-        elm_genlist_item_decorate_mode_set(dec_eoi, "eflete/mode", false);
+        elm_genlist_item_decorate_mode_set(dec_eoi, "mode", false);
         elm_genlist_item_update(dec_eoi);
         elm_genlist_item_selected_set(dec_eoi, true);
         return;

@@ -1,4 +1,4 @@
-group { name: "elm/check/base/eflete/toggle";
+group { name: "elm/check/base/toggle";
    images {
       image: "input-text-bg.png" COMP;
       image: "toggle-on.png" COMP;
@@ -741,7 +741,7 @@ group { name: "elm/check/base/default";
    }
 }
 
-group { name: "elm/check/base/eflete/widgetlist/default";
+group { name: "elm/check/base/widgetlist/default";
    images {
       image: "icon-treemenu-item-visibility.png" COMP;
       image: "treemenu-item-visibility-bg.png" COMP;
@@ -769,7 +769,7 @@ group { name: "elm/check/base/eflete/widgetlist/default";
    }
 }
 
-group { name: "elm/check/base/eflete/live_view";
+group { name: "elm/check/base/live_view";
    inherit: "elm/check/base/default";
    parts {
       part { name: "bg";

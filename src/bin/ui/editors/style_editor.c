@@ -652,7 +652,7 @@ static inline Evas_Object *
 _style_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
-   ENTRY_ADD(parent, entry, true, "eflete/search_field");
+   ENTRY_ADD(parent, entry, true, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -723,7 +723,7 @@ _form_left_side(Style_Editor *style_edit)
    if (!_itc_style)
      {
         _itc_style = elm_genlist_item_class_new();
-        _itc_style->item_style = "eflete/level1";
+        _itc_style->item_style = "level1";
         _itc_style->func.text_get = _item_style_label_get;
         _itc_style->func.content_get = NULL;
         _itc_style->func.state_get = NULL;
@@ -732,7 +732,7 @@ _form_left_side(Style_Editor *style_edit)
    if (!_itc_tags)
      {
         _itc_tags= elm_genlist_item_class_new();
-        _itc_tags->item_style = "eflete/level3";
+        _itc_tags->item_style = "level3";
         _itc_tags->func.text_get = _item_tags_label_get;
         _itc_tags->func.content_get = NULL;
         _itc_tags->func.state_get = NULL;
@@ -792,7 +792,7 @@ _form_left_side(Style_Editor *style_edit)
    elm_object_part_content_set(layout, "swallow.add_btn", combobox);
 
    BUTTON_ADD(style_edit->mwin, btn, _("-"));
-   elm_object_style_set(btn, "eflete/btn");
+   elm_object_style_set(btn, "btn");
    evas_object_size_hint_weight_set(btn, 0.0, 0.0);
    evas_object_smart_callback_add(btn, "clicked", _on_bt_del, style_edit);
    elm_object_part_content_set(layout, "swallow.rm_btn", btn);
@@ -1087,14 +1087,14 @@ evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_e
 
 #define STYLE_ADD(VALUE) \
 int i = 0; \
-SEGMENT_CONTROL_ADD(layout, widget, "eflete/style_editor"); \
+SEGMENT_CONTROL_ADD(layout, widget, "style_editor"); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define UNDERLINE_ADD(VALUE) \
 int i = 0; \
-SEGMENT_CONTROL_ADD(layout, widget, "eflete/style_editor"); \
+SEGMENT_CONTROL_ADD(layout, widget, "style_editor"); \
 for (i = 0; underl_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, underl_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit); \
@@ -1145,7 +1145,7 @@ _direction_item_##VALUE##_add(Evas_Object *item, Style_Editor *style_edit) \
    Evas_Object *widget; \
 \
    RADIO_ADD(item, widget, VAL, ""); \
-   elm_object_style_set(widget, "eflete/"STYLE); \
+   elm_object_style_set(widget, STYLE); \
    elm_object_part_content_set(item, "swallow."TEXT, widget); \
    evas_object_smart_callback_add(widget, "focused", _on_##VALUE##_select_direction, style_edit); \
    return widget; \
@@ -1805,7 +1805,7 @@ _form_right_side(Style_Editor *style_edit)
 
 #define _RADIO_ADD(RADIO, VALUE, IMAGE) \
    RADIO = elm_radio_add(style_edit->mwin); \
-   elm_object_style_set(RADIO, "eflete/style_editor"); \
+   elm_object_style_set(RADIO, "style_editor"); \
    elm_radio_state_value_set(RADIO, VALUE); \
    evas_object_show(RADIO); \
    IMAGE_ADD(box_bg, image_bg, IMAGE); \

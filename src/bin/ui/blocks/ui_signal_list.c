@@ -60,7 +60,7 @@ ui_signal_list_add(Evas_Object *parent)
    if (!_itc_signal)
      {
         _itc_signal = elm_genlist_item_class_new();
-        _itc_signal->item_style = "eflete/signals";
+        _itc_signal->item_style = "signals";
         _itc_signal->func.text_get = _item_label_get;
         _itc_signal->func.content_get = NULL;
         _itc_signal->func.state_get = NULL;

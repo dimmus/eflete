@@ -138,14 +138,14 @@ ui_states_list_data_set(Evas_Object *object,
    BOX_ADD(parent, box, true, false)
    elm_box_align_set(box, 1.0, 0.5);
    button = elm_button_add(box);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    evas_object_smart_callback_add(button, "clicked", _add_state_cb, object);
    evas_object_show(button);
    ICON_ADD(button, icon, EINA_TRUE, "icon-add")
    elm_object_part_content_set(button, NULL, icon);
    elm_box_pack_end(box, button);
    button = elm_button_add(box);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    evas_object_smart_callback_add(button, "clicked", _del_state_cb, object);
    evas_object_show(button);
    ICON_ADD(button, icon, EINA_TRUE, "icon-remove")

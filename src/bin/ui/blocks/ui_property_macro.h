@@ -994,7 +994,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    if (btn_func_cb) \
      { \
         btn = elm_button_add(parent); \
-        elm_object_style_set(btn, "eflete/elipsis"); \
+        elm_object_style_set(btn, "elipsis"); \
         evas_object_show(btn); \
         evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd); \
         evas_object_smart_callback_add(entry, "clicked", btn_func_cb, pd); \

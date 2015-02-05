@@ -349,7 +349,7 @@
          }
       }
    }
-   group { name: "elm/spinner/base/eflete/live_view";
+   group { name: "elm/spinner/base/live_view";
       images {
          image: "scale-bg.png" COMP;
          image: "scale-zoom_in.png" COMP;

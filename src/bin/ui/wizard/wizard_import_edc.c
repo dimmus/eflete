@@ -508,7 +508,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    c_data->wiew = wiew;
 
    BUTTON_ADD(item, button, NULL);
-   elm_object_style_set(button, "eflete/btn");
+   elm_object_style_set(button, "btn");
    ICON_ADD(button, icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked",
@@ -517,7 +517,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    elm_object_part_content_set(item, "swallow.button_add", button);
 
    BUTTON_ADD(item, button, NULL);
-   elm_object_style_set(button, "eflete/btn");
+   elm_object_style_set(button, "btn");
    ICON_ADD(button, icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked",
@@ -527,7 +527,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
 
    ENTRY_ADD(item, entry, true, DEFAULT_STYLE)
    button = elm_button_add(item);
-   elm_object_style_set(button, "eflete/elipsis");
+   elm_object_style_set(button, "elipsis");
    evas_object_show(button);
    evas_object_smart_callback_add(button, "clicked", _on_directory_bt, c_data);
    elm_object_part_content_set(entry, "elm.swallow.end", button);
@@ -669,7 +669,7 @@ _genlist_content_get(void *data,
    if (strcmp(part, "elm.swallow.icon"))
      return NULL;
 
-   CHECK_ADD(obj, check, "eflete/live_view");
+   CHECK_ADD(obj, check, "live_view");
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
    evas_object_smart_callback_add(check, "changed",
@@ -685,10 +685,10 @@ _wizart_widget_list_add(Evas_Object *parent)
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
 
    genlist = elm_genlist_add(parent);
-   elm_object_style_set(genlist, "eflete/dark");
+   elm_object_style_set(genlist, "dark");
 
    itc = elm_genlist_item_class_new();
-   itc->item_style = "eflete/wizard_widgetlist";
+   itc->item_style = "wizard_widgetlist";
    itc->func.text_get = _genlist_label_get;
    itc->func.content_get = _genlist_content_get;
    itc->func.state_get = NULL;
@@ -726,7 +726,7 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    genlist = _wizart_widget_list_add(wiew->layout);
    elm_object_part_content_set(wiew->layout, "swallow.widgets", genlist);
 
-   CHECK_ADD(wiew->layout, check, "eflete/live_view");
+   CHECK_ADD(wiew->layout, check, "live_view");
    evas_object_smart_callback_add(check, "changed",
                                   _on_widget_include_all_check_changed,
                                   genlist);

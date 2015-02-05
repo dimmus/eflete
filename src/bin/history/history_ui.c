@@ -136,7 +136,7 @@ _history_ui_add(Evas_Object *parent)
    if (!_itc_module)
      {
         _itc_module = elm_genlist_item_class_new();
-        _itc_module->item_style = "eflete/level1";
+        _itc_module->item_style = "level1";
         _itc_module->func.text_get = _module_item_label_get;
         _itc_module->func.content_get = NULL;
         _itc_module->func.state_get = NULL;
@@ -146,7 +146,7 @@ _history_ui_add(Evas_Object *parent)
    if (!_itc_change)
      {
         _itc_change = elm_genlist_item_class_new();
-        _itc_change->item_style = "eflete/history";
+        _itc_change->item_style = "history";
         _itc_change->func.text_get = _item_label_get;
         _itc_change->func.content_get = NULL;
         _itc_change->func.state_get = _item_state_get;
@@ -156,7 +156,7 @@ _history_ui_add(Evas_Object *parent)
    if (!_itc_change_inactive)
      {
         _itc_change_inactive = elm_genlist_item_class_new();
-        _itc_change_inactive->item_style = "eflete/history_inactive";
+        _itc_change_inactive->item_style = "history_inactive";
         _itc_change_inactive->func.text_get = _item_label_get;
         _itc_change_inactive->func.content_get = NULL;
         _itc_change_inactive->func.state_get = _item_state_get;

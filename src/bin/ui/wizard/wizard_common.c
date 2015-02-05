@@ -286,7 +286,7 @@ _elipsis_btn_add(Evas_Object *entry, Evas_Smart_Cb cb_func, void *data)
    Evas_Object *bt;
 
    bt = elm_button_add(entry);
-   elm_object_style_set(bt, "eflete/elipsis");
+   elm_object_style_set(bt, "elipsis");
    elm_object_focus_allow_set(bt, false);
    evas_object_show(bt);
    evas_object_smart_callback_add(bt, "clicked", cb_func, data);

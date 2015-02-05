@@ -491,7 +491,7 @@ group { name: "elm/entry/base/default";
 }
 
 group { name: "elm/scroller/entry/default";
-   alias: "elm/scroller/entry/eflete/search_field";
+   alias: "elm/scroller/entry/search_field";
    inherit: "elm/scroller/base/default";
    images {
       image: "input-text-bg.png" COMP;
@@ -614,7 +614,7 @@ group { name: "elm/scroller/entry/default";
 }
 
 group { name: "elm/scroller/entry_single/default";
-   alias: "elm/scroller/entry_single/eflete/search_field";
+   alias: "elm/scroller/entry_single/search_field";
    images {
       image: "input-text-bg.png" COMP;
    }
@@ -831,7 +831,7 @@ group { name: "elm/scroller/entry_single/default";
    }
 }
 
-group { name: "elm/scroller/entry_single/eflete/search_field";
+group { name: "elm/scroller/entry_single/search_field";
    inherit: "elm/scroller/entry_single/default";
    parts {
       part { name: "base";
@@ -881,7 +881,7 @@ group { name: "elm/entry/base-single/default";
    }
 }
 
-group { name: "elm/entry/base-single/eflete/search_field";
+group { name: "elm/entry/base-single/search_field";
    inherit: "elm/entry/base-single/default";
    parts {
       part { name: "elm.guide";

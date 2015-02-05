@@ -644,7 +644,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                                             ELM_CTXPOPUP_DIRECTION_DOWN,
                                             ELM_CTXPOPUP_DIRECTION_DOWN,
                                             ELM_CTXPOPUP_DIRECTION_DOWN);
-        elm_object_style_set(pd_group.ctxpopup, "eflete/info");
+        elm_object_style_set(pd_group.ctxpopup, "info");
         evas_object_hide(pd_group.ctxpopup);
 
         if (style->isAlias)
@@ -670,12 +670,12 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                                             _on__clicked, pd);
              LABEL_ADD(property, label_ctx, eina_strbuf_string_get(text_ctx))
              eina_strbuf_free(text_ctx);
-             elm_object_style_set(label_ctx, "eflete/info");
+             elm_object_style_set(label_ctx, "info");
              elm_object_content_set(pd_group.ctxpopup, label_ctx);
           }
 
         elm_object_text_set(info_en, text_info);
-        elm_object_style_set(info_en, "eflete/info");
+        elm_object_style_set(info_en, "info");
         elm_object_part_content_set(pd_group.info, "elm.swallow.content", info_en);
         elm_object_part_content_set(pd_group.info, "info", info_image);
      }
@@ -1461,7 +1461,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
         separator = elm_separator_add(obj_area_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "eflete/property");
+        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("Start point"));
         ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
@@ -1500,7 +1500,7 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
         separator = elm_separator_add(obj_area_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "eflete/property");
+        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("End point"));
         ICON_ADD(separator, icon, false, "icon_end-point");
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
@@ -1859,7 +1859,7 @@ prop_item_state_text_ellipsis_add(Evas_Object *parent,
    ITEM_CONTEINER_2LABEL_ADD(box, layout, "turn", NULL);
    elm_object_tooltip_text_set(item, tooltip);
 
-   CHECK_ADD(layout, check, "eflete/toggle")
+   CHECK_ADD(layout, check, "toggle")
    elm_object_part_content_set(layout, "eflete.content", check);
    evas_object_smart_callback_add(check, "changed",
                                   _on_state_text_ellipsis_toggle_change, pd);
@@ -2331,7 +2331,7 @@ _item_content_get(void *data, Evas_Object *obj, const char *part)
        elm_object_part_content_set(button, NULL, image);
        evas_object_smart_callback_add(button, "clicked", _del_tween_image,
                                       (const char*)data);
-       elm_object_style_set(button, "eflete/simple");
+       elm_object_style_set(button, "simple");
        return button;
     }
     return NULL;
@@ -2381,18 +2381,18 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    char *image_name;
 
    FRAME_ADD(box, tween_frame, true, _("Tweens"))
-   elm_object_style_set(tween_frame, "eflete/tween");
+   elm_object_style_set(tween_frame, "tween");
 
    tween_list = elm_genlist_add(tween_frame);
    elm_genlist_longpress_timeout_set(tween_list, 0.2);
    elm_genlist_reorder_mode_set(tween_list, true);
    evas_object_data_set(tween_list, PROP_DATA, pd);
-   elm_object_style_set(tween_list, "eflete/default");
+   elm_object_style_set(tween_list, "default");
 
    if (!_itc_tween)
      {
         _itc_tween = elm_genlist_item_class_new();
-        _itc_tween->item_style = "eflete/tween";
+        _itc_tween->item_style = "tween";
         _itc_tween->func.text_get = _item_label_get;
         _itc_tween->func.content_get = _item_content_get;
         _itc_tween->func.state_get = NULL;
@@ -2418,7 +2418,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked", _add_tween_image,
                                   tween_list);
-   elm_object_style_set(button, "eflete/simple");
+   elm_object_style_set(button, "simple");
    elm_object_part_content_set(tween_frame, "elm.swallow.add", button);
    evas_object_smart_callback_add(tween_list, "moved",
                                   (Evas_Smart_Cb)_tween_image_moved, pd);
@@ -2557,7 +2557,7 @@ ui_property_state_fill_set(Evas_Object *property)
        /* origin subblock of fill block */
         separator = elm_separator_add(fill_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "eflete/property");
+        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("Origin"));
         ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
@@ -2591,7 +2591,7 @@ ui_property_state_fill_set(Evas_Object *property)
         /* size subblock of fill block */
         separator = elm_separator_add(fill_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "eflete/property");
+        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("Size"));
         ICON_ADD(separator, icon, false, "icon_end-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);

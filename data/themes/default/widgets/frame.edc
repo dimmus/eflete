@@ -280,7 +280,7 @@ group { name: "elm/frame/base/default";
    }
 }
 
-group { name: "elm/frame/base/eflete/live_view";
+group { name: "elm/frame/base/live_view";
    parts {
       part { name: "padding_top_left";
          type: SPACER;
@@ -584,7 +584,7 @@ group { name: "elm/frame/base/eflete/live_view";
    }
 }
 
-group { name: "elm/frame/base/eflete/tween";
+group { name: "elm/frame/base/tween";
    images {
       image: "icon-group-expand.png" COMP;
       image: "icon-group-minimize.png" COMP;

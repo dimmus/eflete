@@ -258,7 +258,7 @@ group { name: "elm/gengrid/item/default/default";
 
 #define SOUND_EDITOR_BG_COLOR 17 70 98 255
 #define SOUND_EDITOR_HIGHLIGHT_COLOR 6 130 134 255
-group { name: "elm/gengrid/item/eflete/sound_editor/default";
+group { name: "elm/gengrid/item/sound_editor/default";
    data.item: "contents" "elm.swallow.icon";
    data.item: "texts" "elm.label.type elm.label";
    images {

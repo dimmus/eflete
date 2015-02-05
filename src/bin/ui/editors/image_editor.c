@@ -370,7 +370,7 @@ genlist_item_classes_init()
    if (!_itc_group)
      {
         _itc_group = elm_genlist_item_class_new();
-        _itc_group->item_style = "eflete/level1";
+        _itc_group->item_style = "level1";
         _itc_group->func.text_get = _grid_group_item_label_get;
         _itc_group->func.content_get = NULL;
         _itc_group->func.state_get = NULL;
@@ -379,7 +379,7 @@ genlist_item_classes_init()
    if (!_itc_part)
      {
         _itc_part = elm_genlist_item_class_new();
-        _itc_part->item_style = "eflete/level3";
+        _itc_part->item_style = "level3";
         _itc_part->func.text_get = _grid_group_item_label_get;
         _itc_part->func.content_get = NULL;
         _itc_part->func.state_get = NULL;
@@ -388,7 +388,7 @@ genlist_item_classes_init()
    if (!_itc_state)
      {
         _itc_state = elm_genlist_item_class_new();
-        _itc_state->item_style = "eflete/usage_state";
+        _itc_state->item_style = "usage_state";
         _itc_state->func.text_get = _grid_group_item_label_get;
         _itc_state->func.content_get = NULL;
         _itc_state->func.state_get = NULL;
@@ -877,7 +877,7 @@ _image_info_label_add(Evas_Object *box,
 
    ITEM_ADD(box, item, item_label, "eflete/image_editor/item/default");
    LABEL_ADD(item, label, " - ");
-   elm_object_style_set(label, "eflete/editor");
+   elm_object_style_set(label, "editor");
    elm_object_part_content_set(item, "elm.swallow.content", label);
    elm_box_pack_end(box, item);
    return label;
@@ -947,7 +947,7 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
    evas_object_show(layout);
 
    genlist = elm_genlist_add(layout);
-   elm_object_style_set(genlist, "eflete/usage_list");
+   elm_object_style_set(genlist, "usage_list");
    evas_object_size_hint_weight_set(genlist, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(genlist, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(genlist);
@@ -1113,7 +1113,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
    evas_object_show(img_edit->gengrid);
 
    BUTTON_ADD(img_edit->layout, button, NULL);
-   elm_object_style_set(button, "eflete/btn");
+   elm_object_style_set(button, "btn");
    ICON_ADD(button, icon, true, "icon-add");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked",
@@ -1122,7 +1122,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
                                "eflete.swallow.add_btn", button);
 
    BUTTON_ADD(img_edit->layout, button, NULL);
-   elm_object_style_set(button, "eflete/btn");
+   elm_object_style_set(button, "btn");
    ICON_ADD(button, icon, true, "icon-remove");
    elm_object_part_content_set(button, NULL, icon);
    evas_object_smart_callback_add(button, "clicked",
