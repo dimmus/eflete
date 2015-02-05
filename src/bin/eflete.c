@@ -123,7 +123,6 @@ app_init()
    if (!ecore_file_exists(config_path)) ecore_file_mkdir(config_path);
 
    app_data_get();
-
    if (!config_init(ap)) return false;
 
    if (!ewe_init(0, 0))
@@ -132,7 +131,8 @@ app_init()
         return false;
      }
 
-   elm_theme_extension_add(NULL, EFLETE_THEME);
+   ap->theme = elm_theme_new();
+   elm_theme_set(ap->theme, EFLETE_THEME);
 
    eina_stringshare_del(config_path);
    return true;
@@ -142,7 +142,7 @@ Eina_Bool
 app_shutdown()
 {
    config_shutdown(ap);
-   elm_theme_extension_del(NULL, EFLETE_THEME);
+   elm_theme_free(ap->theme);
    eina_shutdown();
    efreet_shutdown();
    ecore_shutdown();

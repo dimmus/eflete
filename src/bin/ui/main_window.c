@@ -132,6 +132,8 @@ ui_main_window_add(App_Data *ap)
    if (!cursor_main_set(ap->win, CURSOR_ARROW))
      ERR("Main cursor not setted.");
 
+   elm_object_theme_set(ap->win, ap->theme);
+
    bg = elm_bg_add(ap->win);
    elm_win_resize_object_add(ap->win, bg);
    evas_object_size_hint_min_set(bg, 1366, 768);

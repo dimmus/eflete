@@ -71,6 +71,7 @@ typedef struct _Menu Menu;
 
 struct _App_Data
 {
+   Elm_Theme *theme;
    Evas_Object *win;
    Evas_Object *win_layout;
    Menu *menu;
