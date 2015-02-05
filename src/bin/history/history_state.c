@@ -635,6 +635,8 @@ _state_change_free(State_Diff *change)
 Diff *
 _state_change_new(va_list list, Evas_Object *source)
 {
+   char *state = NULL;
+   double state_value = 0.0;
    State_Diff *change = (State_Diff *)mem_calloc(1, sizeof(State_Diff));
 
    change->diff.module_type = STATE_TARGET;
@@ -646,11 +648,11 @@ _state_change_new(va_list list, Evas_Object *source)
    change->part = eina_stringshare_add((char *)va_arg(list, char *));
    if (!change->part) goto error;
 
+   state = (char *)va_arg(list, char *);
+   state_value = (double)va_arg(list, double);
    change->type = edje_edit_part_type_get(source, change->part);
-   change->state = _state_params_save(source, change->part,
-                                      (char *)va_arg(list, char *),
-                                      (double)va_arg(list, double),
-                                      change->type);
+   change->state = _state_params_save(source, change->part, state,
+                                      state_value, change->type);
    if (!change->state) goto error;
 
    change->diff.description = eina_stringshare_add((char *)va_arg(list, char *));
