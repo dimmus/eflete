@@ -1282,6 +1282,7 @@ pm_project_develop_export(Project *project,
    return worker;
 }
 
+#ifdef HAVE_ENVENTOR
 static void *
 _enventor_save(void *data,
                Eina_Thread *thread __UNUSED__)
@@ -1294,7 +1295,7 @@ _enventor_save(void *data,
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   Eina_Stringshare *cmd, *edc, *edj, *options;
+   Eina_Stringshare *cmd, *edj, *options;
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
 
@@ -1309,14 +1310,14 @@ _enventor_save(void *data,
            cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
            cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
         }
-      edc = eina_stringshare_printf("%s/tmp.edc", worker->project->develop_path);
-      edj = eina_stringshare_printf("%s/tmp.edj", worker->project->develop_path);
+      edj = eina_stringshare_printf("%s/build.edj", worker->project->enventor.path);
       options = eina_stringshare_printf("-id %s/images -fd %s/fonts -sd %s/sounds -dd %s/data",
-                                        worker->project->develop_path,
-                                        worker->project->develop_path,
-                                        worker->project->develop_path,
-                                        worker->project->develop_path);
-      cmd = eina_stringshare_printf("edje_cc -v %s %s %s", options, edc, edj);
+                                        worker->project->enventor.path,
+                                        worker->project->enventor.path,
+                                        worker->project->enventor.path,
+                                        worker->project->enventor.path);
+      cmd = eina_stringshare_printf("edje_cc -v %s %s %s", options,
+                                    worker->project->enventor.file, edj);
       THREAD_TESTCANCEL;
    WORKER_LOCK_RELEASE;
    DBG("Run command for compile: %s", cmd);
@@ -1334,13 +1335,13 @@ _enventor_save(void *data,
         ecore_event_handler_del(cb_msg_stderr);
      }
    eina_stringshare_del(cmd);
-   eina_stringshare_del(edc);
    eina_stringshare_del(options);
 
    THREAD_TESTCANCEL;
 
    WORKER_LOCK_TAKE;
-      worker->edj = eina_stringshare_printf("%s/enbuild.edj", worker->project->develop_path);
+      worker->edj = eina_stringshare_printf("%s/enbuild.edj",
+                                            worker->project->enventor.path);
       cmd = eina_stringshare_printf("edje_pick -o %s -a %s -i %s -g %s",
                                     worker->edj,
                                     worker->project->dev, edj,
@@ -1366,6 +1367,7 @@ _enventor_save(void *data,
                      NULL, NULL);
    WORKER_LOCK_RELEASE;
 
+   eina_stringshare_del(edj);
    END_SEND(PM_PROJECT_SUCCESS)
 
    return NULL;
@@ -1390,3 +1392,4 @@ pm_project_enventor_save(Project *project,
 
    return worker;
 }
+#endif /* HAVE_ENVENTOR */

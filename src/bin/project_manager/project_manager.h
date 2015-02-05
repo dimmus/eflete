@@ -20,6 +20,10 @@
 #ifndef PROJECT_MANAGER_H
 #define PROJECT_MANAGER_H
 
+#ifdef HAVE_CONFIG_H
+   #include "eflete_config.h"
+#endif /* include eflete_config.h */
+
 /**
  * @defgroup ProjectManager Project Manager
  * @ingroup Eflete
@@ -75,6 +79,13 @@ struct _Project
    Eina_Bool changed : 1;
    Eina_Bool close_request : 1;
    //Ecore_Timer *autosave_timer;
+#ifdef HAVE_ENVENTOR
+   struct
+   {
+      Eina_Stringshare *file; /**< exported edc file, which uses for enventor mode*/
+      Eina_Stringshare *path; /**< path to exported style project*/
+   } enventor;
+#endif
 };
 
 /**

@@ -16,7 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
-
+/*
+#ifdef HAVE_CONFIG_H
+   #include "eflete_config.h"
+#endif */
 #include "ui_property.h"
 #include "ui_property_macro.h"
 #include "main_window.h"
@@ -341,11 +344,46 @@ _on_tab_activated(void *data,
              ewe_tabs_item_content_set(obj, it, pd->code_bg);
           }
         code_edit_mode_switch(ap, true);
-        path = eina_stringshare_printf("%s/tmp.edc", ap->project->develop_path);
-        eina_stringshare_del(pm_project_style_source_code_export(ap->project, pd->style, NULL));
-        enventor_object_file_set(pd->code, path);
+
+        if (!ap->project->enventor.file)
+          {
+             /* Prepare edc file and resources for using in enventor mode.
+              * Project will created in temporary directory (linux: "/tmp";
+              * Windows: path of enviroment variables TEMP|TMP|USERPROFILE|WINDIR).
+              * Name of project directory compose by next rule: all terminants "/"
+              * will replaced with "_" and generate unieque id suffix.
+              * For example:
+              * elm/bubble/base/default -> /tmp/elm_bubble_base_default_fGhds1/
+              */
+             Eina_Stringshare *file = NULL;
+             Eina_Tmpstr *tmpstr = NULL;
+             char **tmp;
+             unsigned int i = 0, tokens_count = 0;
+             tmp = eina_str_split_full(pd->style->full_group_name, "/", 0,
+                                       &tokens_count);
+             if (!tmp[0]) return;
+             file = eina_stringshare_add(tmp[0]);
+             for (i = 1; tokens_count - 1 > 0; i++, tokens_count--)
+              file = eina_stringshare_printf("%s_%s", file, tmp[i]);
+             free(tmp[0]);
+             free(tmp);
+             path = eina_stringshare_printf("%s_XXXXXX", file);
+             eina_file_mkdtemp(path, &tmpstr);
+             ap->project->enventor.file = eina_stringshare_printf("%s/%s.edc",
+                                                                 tmpstr, file);
+             ap->project->enventor.path = eina_stringshare_add(tmpstr);
+             eina_stringshare_del(
+                pm_project_style_source_code_export(ap->project, pd->style,
+                                                    ap->project->enventor.file));
+             pm_style_resource_export(ap->project, pd->style, tmpstr);
+             eina_tmpstr_del(tmpstr);
+             eina_stringshare_del(path);
+
+          }
+        enventor_object_file_set(pd->code, ap->project->enventor.file);
         enventor_object_focus_set(pd->code, true);
-        eina_stringshare_del(path);
+        enventor_object_auto_complete_set(pd->code, true);
+
         ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
         pm_project_changed(ap->project);
      }

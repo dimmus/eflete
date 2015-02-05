@@ -537,6 +537,11 @@ ui_part_back(App_Data *ap)
                                        _on_ws_part_unselect, ap);
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    workspace_highlight_unset(ap->workspace);
+#ifdef HAVE_ENVENTOR
+   eina_stringshare_del(ap->project->enventor.file);
+   eina_stringshare_del(ap->project->enventor.path);
+   ap->project->enventor.file = NULL;
+#endif /* HAVE_ENVENTOR */
 }
 
 /**
