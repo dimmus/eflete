@@ -511,7 +511,7 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(wl_list, "wl,part,moved,down",
                                        _restack_part_below, ap);
    history_list = ui_block_history_get(ap);
-   elm_genlist_clear(history_list);
+   evas_object_hide(history_list);
 
    groupedit = ws_groupedit_get(ap->workspace);
    evas_object_smart_callback_del_full(groupedit, "object,area,changed",
