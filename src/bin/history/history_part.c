@@ -165,7 +165,6 @@ _part_redo(Evas_Object *source, Part_Diff *change)
                                          (void *)change->part);
          workspace_highlight_unset(app->workspace);
          ui_property_part_unset(prop);
-         ui_property_style_unset(prop);
          ui_property_style_set(prop, style, app->workspace);
 
          workspace_edit_object_part_del(app->workspace, change->part);
@@ -216,7 +215,6 @@ _part_undo(Evas_Object *source, Part_Diff *change)
    switch (change->diff.action_type)
      {
       case ADD:
-         ui_property_style_unset(prop);
          workspace_edit_object_part_del(app->workspace, change->part);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
          ui_widget_list_selected_part_del(widget_list, style);
