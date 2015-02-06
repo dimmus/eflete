@@ -103,7 +103,7 @@ prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    BOX_ADD(item, box, true, false); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, "w:", "px"); \
-   SPINNER_ADD(layout, spinner1, min, max, step, true, DEFAULT_STYLE) \
+   SPINNER_ADD(layout, spinner1, min, max, step, true) \
    elm_spinner_label_format_set(spinner1, "%.0f"); \
    elm_spinner_value_set(spinner1, edje_edit_group_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
@@ -114,7 +114,7 @@ prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, "h:", "px"); \
-   SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
+   SPINNER_ADD(layout, spinner2, min, max, step, true) \
    elm_spinner_value_set(spinner2, edje_edit_group_##SUB##_##VALUE2##_get(pd->style->obj)); \
    elm_spinner_label_format_set(spinner2, "%.0f"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
@@ -471,7 +471,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *item, *layout, *check; \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    ITEM_CONTEINER_1LABEL_ADD(item, layout, NULL); \
-   CHECK_ADD(layout, check, DEFAULT_STYLE) \
+   CHECK_ADD(layout, check) \
    elm_check_state_set(check, edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name)); \
    elm_object_tooltip_text_set(check, tooltip); \
    evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
@@ -509,7 +509,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text, "eflete/property/item/default") \
    BOX_ADD(item, box, true, true) \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, "turn", NULL); \
-   CHECK_ADD(layout, check, "eflete/toggle") \
+   CHECK_ADD(layout, check) \
+   elm_object_style_set(check, "toggle"); \
    ch_value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, pd->part->name); \
    elm_check_state_set(check, ch_value); \
    elm_object_tooltip_text_set(check, tooltip1); \
@@ -517,7 +518,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_content_set(layout, "eflete.content", check); \
    elm_box_pack_end(box, layout); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, "px"); \
-   SPINNER_ADD(box, spinner, min, max, step, true, DEFAULT_STYLE) \
+   SPINNER_ADD(box, spinner, min, max, step, true) \
    elm_spinner_label_format_set(spinner, fmt); \
    st_value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, pd->part->name); \
    elm_spinner_value_set(spinner, st_value); \
@@ -909,7 +910,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, text, STYLE) \
    BOX_ADD(item, box, true, true) \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, sp1_lb_start, sp1_lb_end); \
-   SPINNER_ADD(layout, spinner1, min, max, step, true, DEFAULT_STYLE) \
+   SPINNER_ADD(layout, spinner1, min, max, step, true) \
    elm_spinner_label_format_set(spinner1, fmt); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
@@ -925,7 +926,7 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, sp2_lb_start, sp2_lb_end); \
-   SPINNER_ADD(layout, spinner2, min, max, step, true, DEFAULT_STYLE) \
+   SPINNER_ADD(layout, spinner2, min, max, step, true) \
    elm_spinner_label_format_set(spinner2, fmt); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
@@ -989,7 +990,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                            pd->part->curr_state, \
                                            pd->part->curr_state_value); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(item, entry, true) \
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, FILTER); \
    if (btn_func_cb) \
      { \
@@ -1277,7 +1278,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    double value; \
    ITEM_ADD(parent, item, text , "eflete/property/item/default") \
    ITEM_CONTEINER_2LABEL_ADD(item, layout, NULL, NULL); \
-   SPINNER_ADD(layout, spinner, min, max, step, true, DEFAULT_STYLE) \
+   SPINNER_ADD(layout, spinner, min, max, step, true) \
    elm_spinner_label_format_set(spinner, fmt); \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
@@ -1322,7 +1323,8 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Eina_Bool value; \
    ITEM_ADD(parent, item, TEXT , "eflete/property/item/default") \
    ITEM_CONTEINER_2LABEL_ADD(item, layout, NULL, NULL); \
-   CHECK_ADD(layout, check, "eflete/toggle") \
+   CHECK_ADD(layout, check) \
+   elm_object_style_set(check, "toggle"); \
    value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, \
                                            pd->part->name, \
                                            pd->part->curr_state, \
@@ -1365,7 +1367,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    BOX_ADD(item, box, true, true) \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL); \
-   CHECK_ADD(layout, check1, "eflete/toggle") \
+   CHECK_ADD(layout, check1) \
+   elm_object_style_set(check1, "toggle"); \
    value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -1376,7 +1379,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_content_set(layout, "eflete.content", check1); \
    elm_box_pack_end(box, layout); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, NULL, NULL); \
-   CHECK_ADD(layout, check2, "eflete/toggle") \
+   CHECK_ADD(layout, check2) \
+   elm_object_style_set(check2, "toggle"); \
    value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
                                             pd->part->name, \
                                             pd->part->curr_state, \
@@ -1430,7 +1434,7 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                    pd->part->curr_state, pd->part->curr_state_value, \
                                    &l, &r, &t, &b); \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
-   EWE_ENTRY_ADD(item, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(item, entry, true) \
    elm_object_part_text_set(entry, "elm.guide", "left right top bottom"); \
    if (!l && !r && !t && !b) \
      ewe_entry_entry_set(entry, NULL); \

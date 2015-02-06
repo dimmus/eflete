@@ -340,7 +340,7 @@ style_dialog_add(App_Data *ap)
    BOX_ADD(ap->popup, box, false, false);
 
    ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
-   EWE_ENTRY_ADD(item, entry_style, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, entry_style, true);
    elm_entry_markup_filter_append(entry_style, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry_style, "guide", _("Type a new style name."));
    elm_object_part_content_set(item, "elm.swallow.content", entry_style);
@@ -351,7 +351,7 @@ style_dialog_add(App_Data *ap)
    entry_text = eina_stringshare_add(class_st->name);
 
    ITEM_ADD(box, item, "Class name:", "eflete/property/item/default")
-   EWE_ENTRY_ADD(box, entry_class, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(box, entry_class, true);
    elm_entry_markup_filter_append(entry_class, elm_entry_filter_accept_set, &accept_name);
    ewe_entry_entry_set(entry_class, entry_text);
    elm_object_part_text_set(entry_class, "guide", _("Type a new class name."));

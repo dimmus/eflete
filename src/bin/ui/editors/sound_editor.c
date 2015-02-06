@@ -745,7 +745,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
                                edit->snd_data.teg);
 
    ITEM_ADD(parent, item, _("Play on select:"), "eflete/sound_editor/item/default");
-   CHECK_ADD(item, edit->check, DEFAULT_STYLE);
+   CHECK_ADD(item, edit->check);
    elm_object_part_content_set(item, "swallow.second", edit->check);
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.check", item);
 
@@ -828,7 +828,7 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_disabled_set(edit->snd_data.comp, true);
 
    elm_object_part_text_set(item, "label.property", _("quality:"));
-   SPINNER_ADD(item, edit->snd_data.quality, 45, 1000, 1, false, DEFAULT_STYLE);
+   SPINNER_ADD(item, edit->snd_data.quality, 45, 1000, 1, false);
    elm_object_disabled_set(edit->snd_data.quality, true);
    elm_object_part_content_set(item, "swallow.first", edit->snd_data.comp);
    elm_object_part_content_set(item, "swallow.second", edit->snd_data.quality);
@@ -848,7 +848,7 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
    edit->snd_data.tone_name = _sound_info_label_add(edit->tone_box, _("name:"));
 
    ITEM_ADD(edit->tone_box, item, "frequency:", "eflete/sound_editor/item/default");
-   SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false, DEFAULT_STYLE);
+   SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false);
    elm_object_disabled_set(edit->snd_data.tone_frq, true);
    elm_object_part_content_set(item, "swallow.first", edit->snd_data.tone_frq);
 
@@ -1166,7 +1166,8 @@ static inline Evas_Object *
 _sound_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
-   ENTRY_ADD(parent, entry, true, "search_field");
+   ENTRY_ADD(parent, entry, true);
+   elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -1354,13 +1355,13 @@ _tone_add_cb(void *data,
    BOX_ADD(popup, box, false, false);
    elm_object_content_set(popup, box);
    ITEM_ADD(box, item, _("tone name:"), "property/item/editor");
-   EWE_ENTRY_ADD(item, edit->tone_entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, edit->tone_entry, true);
    elm_object_part_text_set(edit->tone_entry, "guide", _("Type a new tone name"));
    elm_object_part_content_set(item, "elm.swallow.content", edit->tone_entry);
    elm_box_pack_end(box, item);
 
    ITEM_ADD(box, item, _("frequency:"), "property/item/editor");
-   EWE_ENTRY_ADD(item, edit->frq_entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, edit->frq_entry, true);
    elm_entry_markup_filter_append(edit->frq_entry, elm_entry_filter_accept_set,
                                   &accept_value);
    elm_object_part_text_set(edit->frq_entry, "guide",

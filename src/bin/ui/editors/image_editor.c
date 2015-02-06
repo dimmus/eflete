@@ -894,8 +894,7 @@ _image_info_box_create(Image_Editor *img_edit)
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(layout);
 
-   EWE_ENTRY_ADD(layout, img_edit->image_data_fields.file_name,
-                 true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(layout, img_edit->image_data_fields.file_name, true);
    elm_entry_editable_set(img_edit->image_data_fields.file_name, false);
    elm_object_part_content_set(layout, "eflete.swallow.image_info.name",
                                img_edit->image_data_fields.file_name);
@@ -910,8 +909,7 @@ _image_info_box_create(Image_Editor *img_edit)
    elm_object_part_content_set(layout, "eflete.swallow.compression_type",
                                img_edit->image_data_fields.comp);
 
-   SPINNER_ADD(layout, img_edit->image_data_fields.quality,
-               0, 100, 1, false, DEFAULT_STYLE);
+   SPINNER_ADD(layout, img_edit->image_data_fields.quality, 0, 100, 1, false);
    elm_object_disabled_set(img_edit->image_data_fields.quality, true);
    elm_object_part_content_set(layout, "eflete.swallow.compression_quality",
                                img_edit->image_data_fields.quality);
@@ -926,7 +924,8 @@ static inline Evas_Object *
 _image_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
-   ENTRY_ADD(parent, entry, true, "eflete/search_field");
+   ENTRY_ADD(parent, entry, true);
+   elm_object_style_set(entry, "eflete/search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);

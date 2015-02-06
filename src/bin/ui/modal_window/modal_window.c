@@ -163,7 +163,8 @@ _mw_create(Evas_Object *parent,
    Evas_Object *mw, *bt_close, *ic_close;
 
    mw = elm_win_inwin_add(parent);
-   elm_object_style_set(mw, style_name);
+   if (style_name)
+     elm_object_style_set(mw, style_name);
 
    evas_object_focus_set(mw, EINA_TRUE);
 
@@ -198,7 +199,7 @@ mw_add(Evas_Smart_Cb func, void *data)
         return NULL;
      }
 
-   return _mw_create(win, DEFAULT_STYLE, func, data);
+   return _mw_create(win, NULL, func, data);
 }
 
 Evas_Object *

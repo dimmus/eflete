@@ -304,7 +304,7 @@ _on_bt_prog_add(void *data,
                             _("New program"));
 
    ITEM_ADD(animator->popup.popup, item, _("Program name:"), "eflete/property/item/default");
-   EWE_ENTRY_ADD(item, animator->popup.entry, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(item, animator->popup.entry, true)
    elm_entry_markup_filter_append(animator->popup.entry,
                                   elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(item, "elm.swallow.content", animator->popup.entry);

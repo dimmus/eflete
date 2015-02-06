@@ -480,7 +480,7 @@ _on_bt_style_add(Style_Editor *style_edit)
    BOX_ADD(POPUP.dialog, box, false, false);
    ITEM_ADD(box, item, "Style name:", "eflete/property/item/default")
 
-   EWE_ENTRY_ADD(item, POPUP.name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, POPUP.name, true);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new style name."));
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
@@ -538,7 +538,7 @@ _on_bt_tag_add(Style_Editor *style_edit)
    BOX_ADD(POPUP.dialog, box, false, false);
    ITEM_ADD(box, item, "Tag name:", "eflete/property/item/default")
 
-   EWE_ENTRY_ADD(item, POPUP.name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, POPUP.name, true);
    elm_object_part_text_set(POPUP.name, "guide", _("Type a new tag name."));
    elm_entry_markup_filter_append(POPUP.name, elm_entry_filter_accept_set,
                                   &accept_name);
@@ -652,7 +652,8 @@ static inline Evas_Object *
 _style_editor_search_field_create(Evas_Object *parent)
 {
    Evas_Object *entry, *icon;
-   ENTRY_ADD(parent, entry, true, "search_field");
+   ENTRY_ADD(parent, entry, true);
+   elm_object_style_set(entry, "search_field");
    elm_object_part_text_set(entry, "guide", _("Search"));
    ICON_ADD(entry, icon, true, "icon-search");
    elm_object_part_content_set(entry, "elm.swallow.end", icon);
@@ -1087,33 +1088,35 @@ evas_object_smart_callback_add(widget, "selected", _on_##VALUE##_change, style_e
 
 #define STYLE_ADD(VALUE) \
 int i = 0; \
-SEGMENT_CONTROL_ADD(layout, widget, "style_editor"); \
+SEGMENT_CONTROL_ADD(layout, widget); \
+elm_object_style_set(layout, "style_editor"); \
 for (i = 0; font_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, font_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define UNDERLINE_ADD(VALUE) \
 int i = 0; \
-SEGMENT_CONTROL_ADD(layout, widget, "style_editor"); \
+SEGMENT_CONTROL_ADD(layout, widget); \
+elm_object_style_set(layout, "style_editor"); \
 for (i = 0; underl_styles[i] != NULL; i++) \
 elm_segment_control_item_add(widget, NULL, underl_styles[i]); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit); \
 evas_object_smart_callback_del(widget, "changed", _on_##VALUE##_change);
 
 #define SPIN_ADD(VALUE) \
-SPINNER_ADD(layout, widget, MIN_SP, MAX_SP, STEP_SP, true, DEFAULT_STYLE); \
+SPINNER_ADD(layout, widget, MIN_SP, MAX_SP, STEP_SP, true); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define MARGIN_SPIN_ADD(VALUE) \
-SPINNER_ADD(layout, widget, MARGIN_MIN_SP, MAX_SP, STEP_SP, true, DEFAULT_STYLE); \
+SPINNER_ADD(layout, widget, MARGIN_MIN_SP, MAX_SP, STEP_SP, true); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define CHK_ADD(VALUE) \
-CHECK_ADD(layout, widget, DEFAULT_STYLE); \
+CHECK_ADD(layout, widget); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define ELLIPSIS_ADD(VALUE) \
-SPINNER_ADD(layout, widget, MIN_SP, MAX_PERCENT, STEP_SP, true, DEFAULT_STYLE); \
+SPINNER_ADD(layout, widget, MIN_SP, MAX_PERCENT, STEP_SP, true); \
 evas_object_smart_callback_add(widget, "changed", _on_##VALUE##_change, style_edit);
 
 #define ITEM_TEXT_ADD(SWALLOW, VALUE, WIDGET) \

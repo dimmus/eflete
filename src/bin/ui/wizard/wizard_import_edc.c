@@ -525,7 +525,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
 
    elm_object_part_content_set(item, "swallow.button_del", button);
 
-   ENTRY_ADD(item, entry, true, DEFAULT_STYLE)
+   ENTRY_ADD(item, entry, true)
    button = elm_button_add(item);
    elm_object_style_set(button, "elipsis");
    evas_object_show(button);
@@ -669,7 +669,8 @@ _genlist_content_get(void *data,
    if (strcmp(part, "elm.swallow.icon"))
      return NULL;
 
-   CHECK_ADD(obj, check, "live_view");
+   CHECK_ADD(obj, check);
+   elm_object_style_set(check, "live_view");
    elm_object_focus_allow_set(check, false);
    elm_check_state_set(check, widget_data->check);
    evas_object_smart_callback_add(check, "changed",
@@ -726,7 +727,8 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    genlist = _wizart_widget_list_add(wiew->layout);
    elm_object_part_content_set(wiew->layout, "swallow.widgets", genlist);
 
-   CHECK_ADD(wiew->layout, check, "live_view");
+   CHECK_ADD(wiew->layout, check);
+   elm_object_style_set(check, "live_view");
    evas_object_smart_callback_add(check, "changed",
                                   _on_widget_include_all_check_changed,
                                   genlist);

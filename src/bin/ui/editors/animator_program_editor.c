@@ -359,7 +359,7 @@ _prop_item_##sub##_##value##_add(Evas_Object *parent, \
 { \
    Evas_Object *item, *entry; \
    ITEM_ADD_(parent, item, text, "editor") \
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE) \
+   EWE_ENTRY_ADD(parent, entry, true) \
    REGEX_SET(entry, regex); \
    elm_object_tooltip_text_set(entry, tooltip); \
    evas_object_smart_callback_add(entry, "changed,user", callback, cb_data); \
@@ -530,7 +530,7 @@ _prop_item_program_script_add(Evas_Object *parent,
    ITEM_ADD_(parent, item, _("script"), "script");
 
    BOX_ADD(item, box, true, false);
-   EWE_ENTRY_ADD(item, entry, false, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, entry, false);
    elm_scroller_policy_set(entry, ELM_SCROLLER_POLICY_OFF,
                            ELM_SCROLLER_POLICY_AUTO);
    elm_entry_editable_set(entry, false);
@@ -1367,7 +1367,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
    EWE_COMBOBOX_ADD(item, transition.combobox);
 
    ITEM_ADD_(box, transition.layout0, _("from current"), "editor");
-   CHECK_ADD(transition.layout0, transition.checkbox, DEFAULT_STYLE);
+   CHECK_ADD(transition.layout0, transition.checkbox);
    elm_object_part_content_set(transition.layout0,
                                "elm.swallow.content",
                                transition.checkbox);
@@ -1375,7 +1375,7 @@ _prop_item_program_transition_add(Evas_Object *parent,
                                   _on_transition_opt_current_changed, prog_edit);
 
    ITEM_ADD_(box, transition.layout1, _("length"), "editor");
-   EWE_ENTRY_ADD(transition.layout1, transition.entry1, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(transition.layout1, transition.entry1, true);
    REGEX_SET(transition.entry1, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout1,
                                "elm.swallow.content",
@@ -1384,14 +1384,14 @@ _prop_item_program_transition_add(Evas_Object *parent,
                                   _on_transition_time_active, prog_edit);
 
    ITEM_ADD_(box, transition.layout2, _("param1"), "editor");
-   EWE_ENTRY_ADD(transition.layout2, transition.entry2, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(transition.layout2, transition.entry2, true);
    REGEX_SET(transition.entry2, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout2,
                                "elm.swallow.content",
                                transition.entry2);
 
    ITEM_ADD_(box, transition.layout3, _("param2"), "editor");
-   EWE_ENTRY_ADD(transition.layout3, transition.entry3, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(transition.layout3, transition.entry3, true);
    REGEX_SET(transition.entry3, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(transition.layout3,
                                "elm.swallow.content",
@@ -1453,13 +1453,13 @@ _prop_item_program_action_add(Evas_Object *parent,
    BOX_ADD(item, box, false, true);
    EWE_COMBOBOX_ADD(box, action.combobox);
    ITEM_ADD_(box, action.layout1, _("param1"), "editor");
-   EWE_ENTRY_ADD(action.layout1, action.entry1, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(action.layout1, action.entry1, true);
    elm_object_part_content_set(action.layout1,
                                "elm.swallow.content",
                                action.entry1);
 
    ITEM_ADD_(box, action.layout2, _("param2"), "editor");
-   EWE_ENTRY_ADD(action.layout2, action.entry2, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(action.layout2, action.entry2, true);
    elm_object_part_content_set(action.layout2,
                                "elm.swallow.content",
                                action.entry2);
@@ -1650,7 +1650,7 @@ _prop_item_program_in_add(Evas_Object *parent,
    BOX_ADD(item, box, false, false);
 
    ITEM_ADD_(box, prop.in.item_from, _("from"), "editor");
-   EWE_ENTRY_ADD(prop.in.item_from, prop.in.entry_from, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(prop.in.item_from, prop.in.entry_from, true);
    REGEX_SET(prop.in.entry_from, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(prop.in.item_from, "elm.swallow.content", prop.in.entry_from);
    evas_object_smart_callback_add(prop.in.entry_from, "changed,user",
@@ -1658,7 +1658,7 @@ _prop_item_program_in_add(Evas_Object *parent,
    elm_box_pack_end(box, prop.in.item_from);
 
    ITEM_ADD_(box, prop.in.item_range, _("range"), "editor");
-   EWE_ENTRY_ADD(prop.in.item_range, prop.in.entry_range, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(prop.in.item_range, prop.in.entry_range, true);
    REGEX_SET(prop.in.entry_range, FLOAT_NUMBER_REGEX);
    elm_object_part_content_set(prop.in.item_range, "elm.swallow.content", prop.in.entry_range);
    evas_object_smart_callback_add(prop.in.entry_range, "changed,user",

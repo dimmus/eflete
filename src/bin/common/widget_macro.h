@@ -22,9 +22,6 @@
 
 #include <Elementary.h>
 
-/* TODO: (refactoring) Style param in every widget define is needed. */
-#define DEFAULT_STYLE "default"
-
 #define FS_TITLE "fs_title"
 
 #define ITEM_ADD(PARENT, ITEM, TEXT, STYLE) \
@@ -63,19 +60,17 @@
    elm_object_text_set(FRAME, TITLE); \
    evas_object_show(FRAME);
 
-#define SPINNER_ADD(PARENT, SPINNER, MIN, MAX, STEP, ISEDIT, STYLE) \
+#define SPINNER_ADD(PARENT, SPINNER, MIN, MAX, STEP, ISEDIT) \
    SPINNER = elm_spinner_add(PARENT); \
    evas_object_size_hint_weight_set(SPINNER, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(SPINNER, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_spinner_min_max_set(SPINNER, MIN, MAX); \
    elm_spinner_step_set(SPINNER, STEP); \
    elm_spinner_editable_set(SPINNER, ISEDIT); \
-   elm_object_style_set(SPINNER, STYLE); \
    evas_object_show(SPINNER);
 
-#define ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE) \
+#define ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE) \
    ENTRY = elm_entry_add(PARENT); \
-   elm_object_style_set(ENTRY, STYLE); \
    evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_entry_single_line_set(ENTRY, ISSINGLELINE); \
@@ -84,7 +79,7 @@
                                   ELM_SCROLLER_POLICY_OFF); \
    evas_object_show(ENTRY);
 
-#define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE, STYLE) \
+#define EWE_ENTRY_ADD(PARENT, ENTRY, ISSINGLELINE) \
    ENTRY = ewe_entry_add(PARENT); \
    evas_object_size_hint_weight_set(ENTRY, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(ENTRY, EVAS_HINT_FILL, EVAS_HINT_FILL); \
@@ -100,16 +95,14 @@
    evas_object_size_hint_align_set(COMBOBOX, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_show(COMBOBOX);
 
-#define SEGMENT_CONTROL_ADD(PARENT, SC, STYLE) \
+#define SEGMENT_CONTROL_ADD(PARENT, SC) \
    SC = elm_segment_control_add(PARENT); \
-   elm_object_style_set(widget, STYLE); \
    evas_object_size_hint_weight_set(SC, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(SC, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_show(SC);
 
-#define CHECK_ADD(PARENT, CHECK, STYLE) \
+#define CHECK_ADD(PARENT, CHECK) \
    CHECK = elm_check_add(PARENT); \
-   elm_object_style_set(CHECK, STYLE); \
    evas_object_size_hint_align_set(CHECK, 0.0, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(CHECK, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_show(CHECK);

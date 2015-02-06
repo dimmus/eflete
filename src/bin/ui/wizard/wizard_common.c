@@ -300,7 +300,7 @@ project_path_item_add(Wizard_Import_Edj_Win *wiew,
 {
    elm_object_part_text_set(wiew->layout, "label.edj", label);
 
-   ENTRY_ADD(wiew->layout, wiew->edj, true, DEFAULT_STYLE)
+   ENTRY_ADD(wiew->layout, wiew->edj, true)
    elm_object_part_content_set(wiew->layout, "swallow.edj", wiew->edj);
 
    _elipsis_btn_add(wiew->edj, cb_func, wiew);
@@ -336,13 +336,13 @@ wizard_import_common_add(const char *layout_name)
 
    //label.name
    elm_object_part_text_set(layout, "label.name", _("Project name:"));
-   EWE_ENTRY_ADD(layout, wiew->name, true, DEFAULT_STYLE)
+   EWE_ENTRY_ADD(layout, wiew->name, true)
    elm_entry_markup_filter_append(wiew->name,
                                   elm_entry_filter_accept_set, &accept_name);
    elm_object_part_content_set(layout, "swallow.name", wiew->name);
    //label.path
    elm_object_part_text_set(layout, "label.path", _("Path to project:"));
-   ENTRY_ADD(layout, wiew->path, true, DEFAULT_STYLE)
+   ENTRY_ADD(layout, wiew->path, true)
    elm_object_part_content_set(layout, "swallow.path", wiew->path);
    elm_entry_entry_set(wiew->path, profile_get()->general.projects_folder);
 
@@ -350,19 +350,19 @@ wizard_import_common_add(const char *layout_name)
 
    //label.meta_version
    elm_object_part_text_set(layout, "label.meta_version", _("Version of file:"));
-   ENTRY_ADD(layout, wiew->meta_version, true, DEFAULT_STYLE)
+   ENTRY_ADD(layout, wiew->meta_version, true)
    elm_object_part_content_set(layout, "swallow.meta_version", wiew->meta_version);
    //label.meta_authors
    elm_object_part_text_set(layout, "label.meta_authors", _("Authors:"));
-   ENTRY_ADD(layout, wiew->meta_authors, false, DEFAULT_STYLE)
+   ENTRY_ADD(layout, wiew->meta_authors, false)
    elm_object_part_content_set(layout, "swallow.meta_authors", wiew->meta_authors);
    //label.meta_licenses
    elm_object_part_text_set(layout, "label.meta_licenses", _("Licenses:"));
-   ENTRY_ADD(layout, wiew->meta_licenses, false, DEFAULT_STYLE)
+   ENTRY_ADD(layout, wiew->meta_licenses, false)
    elm_object_part_content_set(layout, "swallow.meta_licenses", wiew->meta_licenses);
    //label.meta_comment
    elm_object_part_text_set(layout, "label.meta_comment", _("Comment:"));
-   ENTRY_ADD(layout, wiew->meta_comment, false, DEFAULT_STYLE)
+   ENTRY_ADD(layout, wiew->meta_comment, false)
    elm_object_part_content_set(layout, "swallow.meta_comment", wiew->meta_comment);
    elm_entry_entry_set(wiew->meta_comment, _("Created with Eflete!"));
 

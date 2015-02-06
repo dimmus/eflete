@@ -233,7 +233,7 @@ _general_form(Preferences *preference)
     *       ewe_combobox_item_add(profile, version);
     *    }
     */
-   EWE_ENTRY_ADD(pref_layout.general, entry_home, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(pref_layout.general, entry_home, true);
    elm_object_part_text_set(entry_home, "elm.text", prof_general.projects_folder);
    elm_object_part_content_set(pref_layout.general, "swallow.home", entry_home);
    evas_object_smart_callback_add(entry_home, "changed", _on_home_change, prof);
@@ -248,12 +248,12 @@ _general_form(Preferences *preference)
    elm_object_part_text_set(autosave_layout, "label.first", _("autosave"));
    elm_object_part_text_set(autosave_layout, "label.second", _("period"));
 
-   CHECK_ADD(autosave_layout, autosave_ck, DEFAULT_STYLE);
+   CHECK_ADD(autosave_layout, autosave_ck);
    elm_check_state_set(autosave_ck, prof_general.autosave.autosave);
    elm_object_part_content_set(autosave_layout, "swallow.first", autosave_ck);
    evas_object_smart_callback_add(autosave_ck, "changed", _on_autosave_autosave_change, prof);
 
-   SPINNER_ADD(autosave_layout, period_sp, 1.0, 9999.0, 1.0, true, DEFAULT_STYLE);
+   SPINNER_ADD(autosave_layout, period_sp, 1.0, 9999.0, 1.0, true);
    elm_spinner_value_set(period_sp, prof_general.autosave.period);
    elm_object_part_content_set(autosave_layout, "swallow.second", period_sp);
    evas_object_smart_callback_add(period_sp, "changed", _on_autosave_period_change, prof);
@@ -268,12 +268,12 @@ _general_form(Preferences *preference)
    elm_object_part_text_set(store_layout, "label.first", _("UI store on exit"));
    elm_object_part_text_set(store_layout, "label.second", _("store window position"));
 
-   CHECK_ADD(store_layout, storeui_ck, DEFAULT_STYLE);
+   CHECK_ADD(store_layout, storeui_ck);
    elm_check_state_set(storeui_ck, prof_general.save_ui);
    elm_object_part_content_set(store_layout, "swallow.first", storeui_ck);
    evas_object_smart_callback_add(storeui_ck, "changed", _on_save_ui_change, prof);
 
-   CHECK_ADD(store_layout, winpos_ck, DEFAULT_STYLE);
+   CHECK_ADD(store_layout, winpos_ck);
    elm_check_state_set(winpos_ck, prof_general.save_win_pos);
    elm_object_part_content_set(store_layout, "swallow.second", winpos_ck);
    evas_object_smart_callback_add(winpos_ck, "changed", _on_save_win_pos_change, prof);

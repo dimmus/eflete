@@ -682,7 +682,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
 
    if (!pd_group.shared_check)
      {
-        CHECK_ADD(property, check, DEFAULT_STYLE)
+        CHECK_ADD(property, check)
         elm_object_text_set(check, "Shared style");
         if (aliases_count > 0) elm_check_state_set(check, true);
         elm_object_disabled_set(check, true);
@@ -826,7 +826,7 @@ prop_item_part_name_add(Evas_Object *parent,
    Evas_Object *item, *entry;
 
    ITEM_ADD(parent, item, _("name"), "eflete/property/item/default");
-   EWE_ENTRY_ADD(parent, entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(parent, entry, true);
    elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop);
    ewe_entry_entry_set(entry, pd->part->name);
    elm_object_tooltip_text_set(entry, tooltip);
@@ -1859,12 +1859,13 @@ prop_item_state_text_ellipsis_add(Evas_Object *parent,
    ITEM_CONTEINER_2LABEL_ADD(box, layout, "turn", NULL);
    elm_object_tooltip_text_set(item, tooltip);
 
-   CHECK_ADD(layout, check, "toggle")
+   CHECK_ADD(layout, check)
+   elm_object_style_set(check, "toggle");
    elm_object_part_content_set(layout, "eflete.content", check);
    evas_object_smart_callback_add(check, "changed",
                                   _on_state_text_ellipsis_toggle_change, pd);
 
-   SPINNER_ADD(box, spinner, 0.0, 1.0, 0.1, true, DEFAULT_STYLE)
+   SPINNER_ADD(box, spinner, 0.0, 1.0, 0.1, true)
    elm_spinner_label_format_set(spinner, "%1.2f");
    value = edje_edit_state_text_elipsis_get(pd->style->obj,
                                             pd->part->name,

@@ -301,7 +301,7 @@ _on_btn_add(void *data,
    LABEL_ADD(ccl_box, ccl_label, _("Color class name: "))
    elm_box_pack_end(ccl_box, ccl_label);
 
-   EWE_ENTRY_ADD(ccl_box, ccl_edit->entry, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(ccl_box, ccl_edit->entry, true);
    elm_entry_markup_filter_append(ccl_edit->entry, elm_entry_filter_accept_set,
                                   &accept_name);
    elm_object_part_text_set(ccl_edit->entry, "guide",

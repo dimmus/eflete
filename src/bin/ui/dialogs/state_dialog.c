@@ -169,14 +169,14 @@ state_dialog_state_add(App_Data *ap)
    BOX_ADD(ap->popup, box, false, false);
 
    ITEM_ADD(box, item, _("Name:"), "eflete/property/item/default")
-   EWE_ENTRY_ADD(item, entry_name, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, entry_name, true);
    elm_entry_markup_filter_append(entry_name, elm_entry_filter_accept_set, &accept_name);
    elm_object_part_text_set(entry_name, "guide", _("Type a new state name."));
    elm_object_part_content_set(item, "elm.swallow.content", entry_name);
    elm_box_pack_end(box, item);
 
    ITEM_ADD(box, item, _("Value:"), "eflete/property/item/default")
-   EWE_ENTRY_ADD(item, entry_value, true, DEFAULT_STYLE);
+   EWE_ENTRY_ADD(item, entry_value, true);
    elm_entry_markup_filter_append(entry_value, elm_entry_filter_accept_set, &accept_value);
    elm_object_part_text_set(entry_value, "guide", _("Type a state value (0.0 - 1.0)."));
    ewe_entry_regex_set(entry_value, FLOAT_NUMBER_0_1_REGEX_2_SYMBOLS, EWE_REG_EXTENDED);
