@@ -30,7 +30,7 @@ group { name: "elm/button/base/default";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            fixed: 1 0;
+            fixed: 1 1;
             visible: 0;
             align: 0.0 0.5;
             rel1 {
@@ -44,13 +44,11 @@ group { name: "elm/button/base/default";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            fixed: 1 0;
             visible: 1;
             aspect: 1.0 1.0;
          }
          description { state: "icononly" 0.0;
             inherit: "default" 0.0;
-            fixed: 0 0;
             visible: 1;
          }
       }
