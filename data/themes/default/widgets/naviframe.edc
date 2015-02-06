@@ -1,4 +1,4 @@
-group { name: "elm/naviframe/item/basic/eflete";
+group { name: "elm/naviframe/item/basic/default";
    script {
       public noprev = 0;
       public notitle = 0;

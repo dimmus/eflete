@@ -709,7 +709,6 @@ ui_widget_list_add(Evas_Object *parent)
    ewe_tabs_item_content_set(tabs, TYPE##_tab, nf_##TYPE); \
    evas_object_size_hint_align_set(nf_##TYPE, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    evas_object_size_hint_weight_set(nf_##TYPE, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   elm_object_style_set(nf_##TYPE, "eflete"); \
     \
    gl_##TYPE = elm_genlist_add(nf_##TYPE); \
    elm_object_style_set(gl_##TYPE, "dark"); \
