@@ -1461,7 +1461,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
         separator = elm_separator_add(obj_area_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("Start point"));
         ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
@@ -1500,7 +1499,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
         separator = elm_separator_add(obj_area_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("End point"));
         ICON_ADD(separator, icon, false, "icon_end-point");
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
@@ -2558,7 +2556,6 @@ ui_property_state_fill_set(Evas_Object *property)
        /* origin subblock of fill block */
         separator = elm_separator_add(fill_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("Origin"));
         ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
@@ -2592,7 +2589,6 @@ ui_property_state_fill_set(Evas_Object *property)
         /* size subblock of fill block */
         separator = elm_separator_add(fill_frame);
         elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "property");
         elm_object_part_text_set(separator, "eflete.text", _("Size"));
         ICON_ADD(separator, icon, false, "icon_end-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
