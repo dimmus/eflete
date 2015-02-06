@@ -172,7 +172,6 @@ part_dialog_add(App_Data *ap)
 
    style = workspace_edit_object_get(workspace);
    ap->popup = elm_popup_add(ap->win);
-   elm_object_style_set(ap->popup, "eflete");
    title = eina_stringshare_printf(_("Add new part to group \"%s\""), style->name);
    elm_object_part_text_set(ap->popup, "title,text", title);
 

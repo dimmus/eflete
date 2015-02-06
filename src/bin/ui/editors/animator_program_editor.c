@@ -985,7 +985,6 @@ _on_combobox_action_sel(void *data,
         edje_edit_string_list_free(targets_list);
 
         popup = elm_popup_add(prog_edit->parent);
-        elm_object_style_set(popup, "eflete");
         elm_object_part_text_set(popup, "title,text", _("Warning"));
         LABEL_ADD(popup, label, _("This program has targets. If you change action"
                                   "type all target would be deleted"));

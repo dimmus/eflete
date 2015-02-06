@@ -474,7 +474,6 @@ _on_bt_style_add(Style_Editor *style_edit)
    Evas_Object *box, *item, *button;
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
-   elm_object_style_set(POPUP.dialog, "eflete");
    elm_object_part_text_set(POPUP.dialog, "title,text", _("Add textblock style"));
 
    BOX_ADD(POPUP.dialog, box, false, false);
@@ -531,7 +530,6 @@ _on_bt_tag_add(Style_Editor *style_edit)
      }
 
    POPUP.dialog = elm_popup_add(style_edit->mwin);
-   elm_object_style_set(POPUP.dialog, "eflete");
    buf = eina_stringshare_printf(_("Add tag to style: %s"), style_name);
    elm_object_part_text_set(POPUP.dialog, "title,text", buf);
 

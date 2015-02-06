@@ -125,7 +125,6 @@ _on_edj_done(void *data,
              Evas_Object *popup, *btn1, *btn2;
              Evas_Object *win = elm_object_parent_widget_get(obj);
              popup = elm_popup_add(win);
-             elm_object_style_set(popup, "eflete");
 
              d_data->popup = popup;
              d_data->path = event_info;

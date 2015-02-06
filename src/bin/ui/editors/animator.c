@@ -299,7 +299,6 @@ _on_bt_prog_add(void *data,
    Animator *animator = (Animator*)data;
 
    animator->popup.popup = elm_popup_add(animator->mwin);
-   elm_object_style_set(animator->popup.popup, "eflete");
    elm_object_part_text_set(animator->popup.popup, "title,text",
                             _("New program"));
 

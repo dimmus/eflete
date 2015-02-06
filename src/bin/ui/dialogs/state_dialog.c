@@ -161,7 +161,6 @@ state_dialog_state_add(App_Data *ap)
    state_copy = false;
 
    ap->popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(ap->popup, "eflete");
    title = eina_stringshare_printf(_("Add new state to part \"%s\""), part->name);
    elm_object_part_text_set(ap->popup, "title,text", title);
    elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);
@@ -284,7 +283,6 @@ state_dialog_state_del(App_Data *ap)
      }
 
    ap->popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(ap->popup, "eflete");
    title = eina_stringshare_printf(_("Delete the state from part"));
    elm_object_part_text_set(ap->popup, "title,text", title);
    elm_popup_orient_set(ap->popup, ELM_POPUP_ORIENT_CENTER);

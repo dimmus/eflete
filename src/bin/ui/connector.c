@@ -1098,7 +1098,6 @@ export_replace_request(Evas_Object *parent, const char *msg)
 
    title = eina_stringshare_printf(_("Export project"));
    popup = elm_popup_add(parent);
-   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", title);
    LABEL_ADD(popup, label, msg);
    elm_object_content_set(popup, label);
@@ -1324,7 +1323,6 @@ project_close_request(App_Data *ap, const char *msg)
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
    title = eina_stringshare_printf(_("Close project %s"), ap->project->name);
    ap->popup = elm_popup_add(ap->win_layout);
-   elm_object_style_set(ap->popup, "eflete");
    elm_object_part_text_set(ap->popup, "title,text", title);
    LABEL_ADD(ap->popup, label, msg);
    elm_object_content_set(ap->popup, label);

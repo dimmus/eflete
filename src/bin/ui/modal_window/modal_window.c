@@ -40,7 +40,6 @@ _mw_info(void *data,
    Evas_Object *mwin = elm_object_parent_widget_get(obj);
 
    popup = elm_popup_add(mwin);
-   elm_object_style_set(popup, "popup");
    elm_object_part_text_set(popup, "title,text", _("Title will be deleted"));
    LABEL_ADD(popup, content, info);
    evas_object_size_hint_weight_set(content, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
