@@ -35,6 +35,7 @@ static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_layout = NULL;
 static Elm_Genlist_Item_Class *_itc_part = NULL;
 static Elm_Genlist_Item_Class *_itc_container = NULL;
+static Elm_Genlist_Item_Class *_itc_part_item = NULL;
 
 static inline Elm_Object_Item *
 _widget_list_get(Evas_Object *naviframe)
@@ -89,6 +90,16 @@ _item_part_label_get(void *data,
    return "";
 }
 
+static char *
+_item_item_label_get(void *data,
+                     Evas_Object *obj __UNUSED__,
+                     const char *part __UNUSED__)
+{
+   Eina_Stringshare *item_name = (Eina_Stringshare *)data;
+   if (data) return strdup(item_name);
+   return strdup("Unknown");
+}
+
 static void
 _on_check_click(void *data,
                Evas_Object *obj,
@@ -109,6 +120,15 @@ _on_check_click(void *data,
 
 static void
 _on_item_add_clicked(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   /* TODO: not implemented yet */
+   return;
+}
+
+static void
+_on_item_del_clicked(void *data __UNUSED__,
                      Evas_Object *obj __UNUSED__,
                      void *event_info __UNUSED__)
 {
@@ -177,6 +197,29 @@ _item_part_content_get(void *data,
         elm_object_disabled_set(button, true);
         evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
         evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
+        return button;
+     }
+   return NULL;
+}
+
+static Evas_Object *
+_item_part_item_content_get(void *data,
+                       Evas_Object *obj,
+                       const char *part)
+{
+   Eina_Stringshare *item_name = (Eina_Stringshare *) data;
+   if (!strcmp(part, "elm.swallow.end"))
+     {
+        Evas_Object *button, *_icon;
+        BUTTON_ADD(obj, button, NULL)
+        ICON_ADD(button, _icon, true, "icon-remove");
+        elm_object_part_content_set(button, NULL, _icon);
+        elm_object_style_set(button, "simple");
+        /*Button will disabled until this functionality not implemented */
+        elm_object_disabled_set(button, true);
+
+        evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
+        evas_object_smart_callback_add(button, "clicked", _on_item_del_clicked, item_name);
         return button;
      }
    return NULL;
@@ -273,6 +316,15 @@ _on_part_select(void *data,
    Part *_part = elm_object_item_data_get(glit);
    Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
    evas_object_smart_callback_call(tabs, "wl,part,select", _part);
+}
+
+static void
+_on_part_item_select(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   /* TODO: not implemented yet */
+   return;
 }
 
 static void
@@ -389,6 +441,52 @@ _part_reordered(Evas_Object *data,
 }
 
 static void
+_part_items_expand(void *data,
+                   Evas_Object *obj,
+                   void *event_info)
+{
+   Evas_Object *nf = (Evas_Object *)data;
+   Elm_Object_Item *glit = event_info;
+   Part *_part = elm_object_item_data_get(glit);
+   Eina_List *l_items = NULL, *l_n_items = NULL;
+   Eina_Stringshare *item_name = NULL;
+
+   EINA_LIST_FOREACH_SAFE(_part->items, l_items, l_n_items, item_name)
+     {
+         elm_genlist_item_append(obj, _itc_part_item, item_name,
+                                 glit, ELM_GENLIST_ITEM_NONE,
+                                 _on_part_item_select, nf);
+     }
+}
+
+static void
+_part_items_contract(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
+}
+
+static void
+_part_items_expand_req(void *data __UNUSED__,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, true);
+}
+
+static void
+_part_items_contract_req(void *data __UNUSED__,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_info)
+{
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, false);
+}
+
+static void
 _wl_item_selected(void *data __UNUSED__,
                   Evas_Object *obj,
                   void *event_info __UNUSED__)
@@ -474,6 +572,16 @@ _on_style_clicked_double(void *data,
         _itc_container->func.del = NULL;
      }
 
+   if (!_itc_part_item)
+     {
+        _itc_part_item = elm_genlist_item_class_new();
+        _itc_part_item->item_style = "level5";
+        _itc_part_item->func.text_get = _item_item_label_get;
+        _itc_part_item->func.content_get = _item_part_item_content_get;
+        _itc_part_item->func.state_get = NULL;
+        _itc_part_item->func.del = NULL;
+     }
+
    gl_parts = elm_genlist_add(nf);
    elm_genlist_longpress_timeout_set(gl_parts, 0.2);
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
@@ -501,6 +609,13 @@ _on_style_clicked_double(void *data,
      }
    evas_object_smart_callback_add(gl_parts, "moved",
                                   (Evas_Smart_Cb)_part_reordered, nf);
+   evas_object_smart_callback_add(gl_parts, "expanded", _part_items_expand, nf);
+   evas_object_smart_callback_add(gl_parts, "contracted",
+                                  _part_items_contract, NULL);
+   evas_object_smart_callback_add(gl_parts, "expand,request",
+                                  _part_items_expand_req, NULL);
+   evas_object_smart_callback_add(gl_parts, "contract,request",
+                                  _part_items_contract_req, NULL);
 
    ICON_ADD(nf, ic, false, "icon-back");
 
