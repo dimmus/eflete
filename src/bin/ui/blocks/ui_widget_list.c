@@ -34,6 +34,7 @@ static Elm_Genlist_Item_Class *_itc_class = NULL;
 static Elm_Genlist_Item_Class *_itc_style = NULL;
 static Elm_Genlist_Item_Class *_itc_layout = NULL;
 static Elm_Genlist_Item_Class *_itc_part = NULL;
+static Elm_Genlist_Item_Class *_itc_container = NULL;
 
 static inline Elm_Object_Item *
 _widget_list_get(Evas_Object *naviframe)
@@ -106,6 +107,15 @@ _on_check_click(void *data,
      evas_object_smart_callback_call(tabs, "wl,part,hide", (void *)_part->name);
 }
 
+static void
+_on_item_add_clicked(void *data __UNUSED__,
+                     Evas_Object *obj __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   /* TODO: not implemented yet */
+   return;
+}
+
 static Evas_Object *
 _item_part_content_get(void *data,
                        Evas_Object *obj,
@@ -155,6 +165,19 @@ _item_part_content_get(void *data,
 
         evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         return icon;
+     }
+   if (!strcmp(part, "swallow.add"))
+     {
+        Evas_Object *button, *icon;
+        BUTTON_ADD(obj, button, NULL)
+        ICON_ADD(button, icon, true, "icon-add");
+        elm_object_part_content_set(button, NULL, icon);
+        elm_object_style_set(button, "simple");
+        /*Button will disabled until this functionality not implemented */
+        elm_object_disabled_set(button, true);
+        evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
+        evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
+        return button;
      }
    return NULL;
 }
@@ -441,6 +464,16 @@ _on_style_clicked_double(void *data,
         _itc_part->func.del = NULL;
      }
 
+   if (!_itc_container)
+     {
+        _itc_container = elm_genlist_item_class_new();
+        _itc_container->item_style = "container";
+        _itc_container->func.text_get = _item_part_label_get;
+        _itc_container->func.content_get = _item_part_content_get;
+        _itc_container->func.state_get = NULL;
+        _itc_container->func.del = NULL;
+     }
+
    gl_parts = elm_genlist_add(nf);
    elm_genlist_longpress_timeout_set(gl_parts, 0.2);
    evas_object_data_set(gl_parts, NAVIFRAME_DATA_KEY, nf);
@@ -455,9 +488,15 @@ _on_style_clicked_double(void *data,
 
    EINA_INLIST_FOREACH(parts, _part)
      {
-        eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
-                                      NULL, ELM_GENLIST_ITEM_NONE,
-                                      _on_part_select, nf);
+        if ((_part->type == EDJE_PART_TYPE_TABLE) ||
+            (_part->type == EDJE_PART_TYPE_BOX))
+          eoi = elm_genlist_item_append(gl_parts, _itc_container, _part,
+                                        NULL, ELM_GENLIST_ITEM_TREE,
+                                        _on_part_select, nf);
+        else
+          eoi = elm_genlist_item_append(gl_parts, _itc_part, _part,
+                                        NULL, ELM_GENLIST_ITEM_NONE,
+                                        _on_part_select, nf);
         elm_object_item_data_set(eoi, _part);
      }
    evas_object_smart_callback_add(gl_parts, "moved",
