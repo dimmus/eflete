@@ -34,6 +34,75 @@
    #define SKIP_IN_ENVENTOR_MODE
 #endif
 
+static inline unsigned int
+_keycode_convert(unsigned int keycode)
+{
+#ifdef __APPLE__
+#define KEY(mac, lin) case mac: return lin;
+   switch (keycode)
+   {
+      KEY(26, 10) /* 1 */
+      KEY(27, 11)
+      KEY(28, 12)
+      KEY(29, 13)
+      KEY(31, 14)
+      KEY(30, 15)
+      KEY(34, 16)
+      KEY(36, 17)
+      KEY(33, 18)
+      KEY(37, 19)
+      KEY(35, 20) /* - */
+      KEY(32, 21) /* = */
+
+      KEY(20, 24) /* q */
+      KEY(21, 25)
+      KEY(22, 26)
+      KEY(23, 27)
+      KEY(25, 28)
+      KEY(24, 29)
+      KEY(40, 30)
+      KEY(42, 31)
+      KEY(39, 32)
+      KEY(43, 33) /* p */
+      KEY(41, 34) /* [ */
+      KEY(38, 35) /* ] */
+      KEY(50, 51) /* \ */
+
+      KEY(8, 38) /* a */
+      KEY(9, 39)
+      KEY(10, 40)
+      KEY(11, 41)
+      KEY(13, 42)
+      KEY(12, 43)
+      KEY(46, 44)
+      KEY(48, 45)
+      KEY(45, 46)
+      KEY(49, 47) /* ; */
+      KEY(47, 48) /* ' */
+
+      KEY(14, 52) /* z */
+      KEY(15, 53)
+      KEY(16, 54)
+      KEY(17, 55)
+      KEY(19, 56)
+      KEY(53, 57)
+      KEY(54, 58)
+      KEY(51, 59)
+      KEY(55, 60)
+      KEY(52, 61) /* / */
+
+      KEY(56, 23) /* tab */
+
+      KEY(66, 64) /* Alt_L */
+
+      KEY(131, 113) /* left */
+      KEY(132, 114) /* right */
+   }
+   DBG("notconverted mac keycode: %d", keycode);
+#endif
+   return keycode;
+}
+
 struct _Shortcut_Module
 {
    Ecore_Event_Handler *shortcuts_handler; /**< handler for catching key presses\
@@ -557,7 +626,7 @@ _key_press_event_cb(void *data, int type __UNUSED__, void *event)
          *  So we need to set a mask for real modifiers (Ctrl, Shift, Alt etc)
          */
         key->modifiers = ev->modifiers & 255;
-        key->keycode = ev->keycode;
+        key->keycode = _keycode_convert(ev->keycode);
 
         sc_func = eina_hash_find(ap->shortcuts->shortcut_functions, key);
         if ((sc_func) && (!sc_func->holdable))
