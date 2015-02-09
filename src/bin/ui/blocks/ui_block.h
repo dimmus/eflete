@@ -65,29 +65,6 @@ Eina_Bool
 ui_block_content_visible(Evas_Object *block, Eina_Bool vis);
 
 /**
- * Set the title of the block
- *
- * @param block the block object
- * @param title the title to set
- * @return EINA_TRUE if succesfull, EINA_FALSE - otherwise
- *
- * @ingroup Block
- */
-Eina_Bool
-ui_block_title_text_set(Evas_Object *block, const char *title);
-
-/**
- * Get the title of the block
- *
- * @param block the block object
- * @return the title
- *
- * @ingroup Block
- */
-const char *
-ui_block_title_text_get(Evas_Object *block);
-
-/**
  * Get the widget list object
  *
  * @param ap the application data

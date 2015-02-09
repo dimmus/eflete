@@ -117,9 +117,8 @@ group { name: "elm/layout/block/default";
       part { name: "header_bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            max: -1 0;
+            max: -1 22;
             align: 0.5 0;
-            visible: 0;
             image {
                normal: "section-header-bg.png";
                border: 0 0 0 2;
@@ -127,20 +126,15 @@ group { name: "elm/layout/block/default";
          }
          description { state: "hide" 0.0;
             inherit: "default" 0.0;
+            max: -1 0;
             visible: 0;
          }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
-            max: -1 26;
-            visible: 1;
-         }
       }
-      part { name: "elm.text.title";
+      part { name: "elm.text";
          type: TEXT;
          description { state: "default" 0.0;
             fixed: 1 1;
             align: 0.0 0.5;
-            visible: 0;
             color: 223 219 210 255;
             rel1.offset: 6 0;
             rel2 {
@@ -157,27 +151,19 @@ group { name: "elm/layout/block/default";
             inherit: "default" 0.0;
             visible: 0;
          }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-         }
       }
       part { name: "elm.swallow.title";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
-               to: "elm.text.title";
+               to: "elm.text";
                relative: 1.0 0.0;
             }
             rel2 {
-               to_y: "elm.text.title";
+               to_y: "elm.text";
                relative: 1.0 1.0;
             }
-         }
-         description { state: "show" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
          }
          description { state: "hide" 0.0;
             inherit: "default" 0.0;
@@ -216,9 +202,9 @@ group { name: "elm/layout/block/default";
             name: "block_title_show";
             signal: "title,show";
             source: "eflete";
-            action: STATE_SET "show" 0.0;
+            action: STATE_SET "default" 0.0;
             target: "header_bg";
-            target: "elm.text.title";
+            target: "elm.text";
          }
          program {
             name: "block_title_hide";
@@ -226,7 +212,7 @@ group { name: "elm/layout/block/default";
             source: "eflete";
             action: STATE_SET "hide" 0.0;
             target: "header_bg";
-            target: "elm.text.title";
+            target: "elm.text";
          }
          program {
             name: "block_title_content_show";

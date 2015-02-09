@@ -179,42 +179,44 @@ ui_panes_add(App_Data *ap)
 
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, _("Part States"));
+   elm_layout_text_set(block, "elm.text", _("Part States"));
    elm_object_part_content_set(panes_center_down, "left", block);
 
    evas_object_show(block);
    ap->block.bottom_left = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, _("Live View"));
+   elm_layout_text_set(block, "elm.text", _("Live View"));
    elm_object_part_content_set(panes_center_down, "right", block);
    evas_object_show(block);
    ap->block.bottom_right = block;
 
    block = ui_block_add(ap->win_layout);
+   ui_block_title_visible(block, false);
    elm_object_part_content_set(panes_center, "left", block);
    evas_object_show(block);
    ap->block.canvas = block;
 
    block = ui_block_add(ap->win_layout);
+   ui_block_title_visible(block, false);
    elm_object_part_content_set(panes_left_hor, "left", block);
    evas_object_show(block);
    ap->block.left_top = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, _("Using Signals"));
+   elm_layout_text_set(block, "elm.text", _("Using Signals"));
    elm_object_part_content_set(panes_left_hor, "right", block);
    evas_object_show(block);
    ap->block.left_bottom = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, _("History of changes"));
+   elm_layout_text_set(block, "elm.text", _("History of changes"));
    elm_object_part_content_set(panes_right_hor, "left", block);
    evas_object_show(block);
    ap->block.right_top = block;
 
    block = ui_block_add(ap->win_layout);
-   ui_block_title_text_set(block, _("Property"));
+   elm_layout_text_set(block, "elm.text", _("Property"));
    elm_object_part_content_set(panes_right_hor, "right", block);
    evas_object_show(block);
    ap->block.right_bottom = block;

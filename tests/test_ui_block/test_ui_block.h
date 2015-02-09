@@ -31,8 +31,6 @@ void ui_block_title_visible_p(int);
 void ui_block_title_visible_n(int);
 void ui_block_content_visible_p(int);
 void ui_block_content_visible_n(int);
-void ui_block_title_text_p(int);
-void ui_block_title_text_n(int);
 void ui_block_widget_list_test_p(int);
 void ui_block_widget_list_test_n1(int);
 void ui_block_widget_list_test_n2(int);

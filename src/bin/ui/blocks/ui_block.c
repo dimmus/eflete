@@ -77,31 +77,6 @@ ui_block_content_visible(Evas_Object *block, Eina_Bool vis)
    return true;
 }
 
-Eina_Bool
-ui_block_title_text_set(Evas_Object *block, const char *title)
-{
-   if (!block)
-     {
-        ERR("Could not set title text, because a block is NULL.");
-        return false;
-     }
-   elm_object_part_text_set(block, "elm.text.title", title);
-   ui_block_title_visible(block, EINA_TRUE);
-   return true;
-}
-
-const char *
-ui_block_title_text_get(Evas_Object *block)
-{
-   if (!block)
-     {
-        ERR("Could not get title text, becouse a block is NULL");
-        return NULL;
-     }
-
-   return elm_object_part_text_get(block, "elm.text.title");
-}
-
 Evas_Object *
 ui_block_widget_list_get(App_Data *ap)
 {
