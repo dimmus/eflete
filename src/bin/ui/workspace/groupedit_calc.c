@@ -40,6 +40,12 @@ _move_border_to_top(Ws_Groupedit_Smart_Data *sd);
 static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part);
 
+static Groupedit_Item *
+_item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_Stringshare *item) __UNUSED__;
+
+static void
+_item_draw_del(Groupedit_Item *ge_item) __UNUSED__;
+
 static Evas_Object *
 _part_spacer_add(Evas *e);
 
@@ -764,6 +770,53 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
    if (!gp) return;
    _groupedit_part_free(gp);
    sd->parts = eina_list_remove(sd->parts, gp);
+}
+
+static Groupedit_Item *
+_item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
+               Eina_Stringshare *item)
+{
+   Groupedit_Item *ge_item = NULL;
+   Eina_Stringshare *item_source;
+
+   item_source = edje_edit_part_item_source_get(sd->edit_obj, part, item);
+   if (item_source)
+     {
+        ge_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
+        ge_item->name = eina_stringshare_add(item);
+
+        ge_item->draw = edje_object_add(sd->e);
+        edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
+        evas_object_show(ge_item->draw);
+
+        GET_IMAGE(ge_item->border, sd->e, BORDER_IMG);
+        evas_object_color_set(ge_item->border, 255, 155, 100, 255);
+        evas_object_show(ge_item->border);
+        evas_object_size_hint_min_set(ge_item->border,    EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_align_set(ge_item->border,  EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_weight_set(ge_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+        ge_item->highlight = evas_object_rectangle_add(sd->e);
+        evas_object_size_hint_min_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_align_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_weight_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_color_set(ge_item->highlight, 64, 64, 128, 160);
+     }
+   edje_edit_string_free(item_source);
+   return ge_item;
+}
+
+static void
+_item_draw_del(Groupedit_Item *ge_item)
+{
+   Evas_Object *spread_item = NULL;
+   EINA_LIST_FREE(ge_item->spread, spread_item)
+      evas_object_del(spread_item);
+   eina_stringshare_del(ge_item->name);
+   evas_object_del(ge_item->draw);
+   evas_object_del(ge_item->border);
+   evas_object_del(ge_item->highlight);
+   free(ge_item);
 }
 
 static void
