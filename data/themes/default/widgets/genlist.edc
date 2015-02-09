@@ -531,6 +531,154 @@ group { name: "elm/genlist/tree/tree/default";
    }
 }
 
+group { name: "elm/genlist/tree/container/default";
+   inherit:"elm/genlist/item/default/default";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end swallow.add";
+   images {
+      image: "icon-add.png" COMP;
+      image: "direction-arrow-r.png" COMP;
+      image: "direction-arrow-b.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         description { state: "default" 0.0;
+            color: BG_COLOR;
+         }
+      }
+      part { name: "bg";
+         description { state: "reordered" 0.0;
+            inherit: "default" 0.0;
+            color: LIST_ITEM_REORDERED_COLOR;
+            visible: 1;
+         }
+      }
+      part { name: "base_border_top";
+         description { state: "default" 0.0;
+            color: BORDER_COLOR;
+         }
+      }
+      part { name: "base_border_bot";
+         description { state: "default" 0.0;
+            color: BORDER_COLOR;
+         }
+      }
+      part { name: "text_arrea";
+         type: SPACER;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "icon_start_arrea";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "add.area";
+            }
+         }
+      }
+      part { name: "arrow.area";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            FIXED_SIZE(20, 19);
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "icon_end_arrea";
+            }
+         }
+      }
+      part { name: "arrow";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            FIXED_SIZE(7, 7);
+            rel1.to: "arrow.area";
+            rel2.to: "arrow.area";
+            image.normal: "direction-arrow-r.png";
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "direction-arrow-b.png";
+         }
+
+         part { name: "add.area";
+            type: SPACER;
+            description { state: "default" 0.0;
+               align: 1.0 0.5;
+               FIXED_SIZE(20, 19);
+               rel2 {
+                  relative: 0.0 1.0;
+                  to_x: "arrow.area";
+               }
+            }
+         }
+         part { name: "swallow.add";
+            type: SWALLOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               FIXED_SIZE(16, 16);
+               rel1.to: "add.area";
+               rel2.to: "add.area";
+            }
+         }
+    }
+    programs {
+       program {
+          name:    "reorder";
+          signal:  "elm,state,reorder,enabled";
+          source:  "elm";
+          action:  STATE_SET "reordered" 0.0;
+          target:  "bg";
+       }
+       program {
+          name:    "unreordered";
+          signal:  "elm,state,reorder,disabled";
+          source:  "elm";
+          after:   "go_active";
+       }
+       program { name: "expanded_sig";
+          signal: "mouse,up,1"; source: "arrow";
+          action: SIGNAL_EMIT "elm,action,expand,toggle" "elm";
+       }
+       program { name: "arrow_expand";
+          signal: "elm,state,expanded"; source: "elm";
+          action:  STATE_SET "selected" 0.0;
+          target: "arrow";
+          target:  "bg";
+       }
+       program { name: "arrow_conract";
+          signal: "elm,state,contracted"; source: "elm";
+          action:  STATE_SET "default" 0.0;
+          target: "arrow";
+          target:  "bg";
+       }
+       program { name: "go_active";
+          signal:  "elm,state,selected";
+          source:  "elm";
+          action:  STATE_SET "selected" 0.0;
+          target:  "elm.text";
+       }
+       program { name: "go_passive";
+          signal:  "elm,state,unselected";
+          source:  "elm";
+          action:  STATE_SET "default" 0.0;
+          target:  "elm.text";
+          transition: LINEAR 0.1;
+       }
+       program { name: "go_disabled";
+          signal:  "elm,state,disabled";
+          source:  "elm";
+          action:  STATE_SET "disabled" 0.0;
+          target:  "disclip";
+       }
+       program { name: "go_enabled";
+          signal:  "elm,state,enabled";
+          source:  "elm";
+          action:  STATE_SET "default" 0.0;
+          target:  "disclip";
+       }
+     }
+   }
+}
+
 group { name: "elm/genlist/item/signals/default";
    inherit: "elm/genlist/item/default/default";
    data.item: "texts" "elm.text elm.text.source elm.text.program";
