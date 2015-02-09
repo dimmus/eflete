@@ -143,9 +143,17 @@ _table_add_on_click(void *data,
 }
 
 static void
+_box_add_on_click(void *data,
+                  Evas_Object *obj __UNUSED__,
+                  void *event_info __UNUSED__)
+{
+   WORKSPACE_PART_ADD(EDJE_PART_TYPE_BOX, NULL)
+}
+
+static void
 _on_image_editor_done(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info)
+                      Evas_Object *obj __UNUSED__,
+                      void *event_info)
 {
    char *selected = (char *)event_info;
    if (!selected) return;
@@ -154,8 +162,8 @@ _on_image_editor_done(void *data __UNUSED__,
 
 static void
 _on_state_image_choose(void *data,
-                        Evas_Object *obj __UNUSED__,
-                        void *ei __UNUSED__)
+                       Evas_Object *obj __UNUSED__,
+                       void *ei __UNUSED__)
 {
    Evas_Object *img_edit;
    App_Data *ap = (App_Data *)data;
@@ -221,6 +229,10 @@ part_dialog_add(App_Data *ap)
 
    BUTTON_ADD(box, button, _("Table"));
    evas_object_smart_callback_add(button, "clicked", _table_add_on_click, ap);
+   elm_box_pack_end(box, button);
+
+   BUTTON_ADD(box, button, _("Box"));
+   evas_object_smart_callback_add(button, "clicked", _box_add_on_click, ap);
    elm_box_pack_end(box, button);
 
    elm_object_content_set(ap->popup, box);
