@@ -20,6 +20,15 @@
 #include "wizard.h"
 #include "wizard_common.h"
 
+/*
+                          TODO:
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ !!   This submodule required to be refactored ASAP,  !!
+ !!    after theme specification will be released.    !!
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*/
+
 struct _Item_Mod_Callback_Data
 {
    Evas_Object *obj;
@@ -248,24 +257,24 @@ _file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
    eina_stringshare_del(path_from);
 }
 
-#define BTN_WD       (widget_item_data + 1)
-#define SCROLLER_WD  (widget_item_data + 2)
-#define ENTRY_WD     (widget_item_data + 3)
-#define LABEL_WD     (widget_item_data + 5)
-#define GENLIST_WD   (widget_item_data + 13)
-#define LIST_WD      (widget_item_data + 14)
-#define PHOTOCAM_WD  (widget_item_data + 33)
-#define NOTIFY_WD    (widget_item_data + 38)
-#define MAP_WD       (widget_item_data + 39)
-#define POPUP_WD     (widget_item_data + 46)
-#define GENGRID_WD   (widget_item_data + 51)
+#define BTN_WD       (widget_item_data + 5)
+#define SCROLLER_WD  (widget_item_data + 43)
+#define ENTRY_WD     (widget_item_data + 16)
+#define LABEL_WD     (widget_item_data + 26)
+#define GENLIST_WD   (widget_item_data + 22)
+#define LIST_WD      (widget_item_data + 28)
+#define PHOTOCAM_WD  (widget_item_data + 37)
+#define NOTIFY_WD    (widget_item_data + 33)
+#define MAP_WD       (widget_item_data + 29)
+#define POPUP_WD     (widget_item_data + 40)
+#define GENGRID_WD   (widget_item_data + 21)
 
 static int
 _widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
 {
    int ret;
    if (item->name)
-     ret = _widgets_dependencies_setup(item + 1, dep_message);
+     ret += _widgets_dependencies_setup(item + 1, dep_message);
    else
      return 0;
 
@@ -280,6 +289,7 @@ _widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
              SCROLLER_WD->check = true;
              eina_strbuf_append(dep_message, _("Scroller<br>"));
              ret++;
+             ret += _widgets_dependencies_setup(SCROLLER_WD, dep_message);
           }
      }
    else if ((item == MAP_WD) && (!PHOTOCAM_WD->check))
@@ -287,12 +297,14 @@ _widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
         PHOTOCAM_WD->check = true;
         eina_strbuf_append(dep_message, _("Photocam<br>"));
         ret++;
+        ret += _widgets_dependencies_setup(PHOTOCAM_WD, dep_message);
      }
    else if ((item == GENGRID_WD) && (!GENLIST_WD->check))
      {
         GENLIST_WD->check = true;
         eina_strbuf_append(dep_message, _("Genlist<br>"));
         ret++;
+        ret += _widgets_dependencies_setup(GENLIST_WD, dep_message);
      }
    else if (item == POPUP_WD)
      {
@@ -301,29 +313,65 @@ _widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
              NOTIFY_WD->check = true;
              eina_strbuf_append(dep_message, _("Notify<br>"));
              ret++;
+             ret += _widgets_dependencies_setup(NOTIFY_WD, dep_message);
           }
         if (!BTN_WD->check)
           {
              BTN_WD->check = true;
              eina_strbuf_append(dep_message, _("Button<br>"));
              ret++;
+             ret += _widgets_dependencies_setup(BTN_WD, dep_message);
           }
         if (!LIST_WD->check)
           {
              LIST_WD->check = true;
              eina_strbuf_append(dep_message, _("List<br>"));
              ret++;
+             ret += _widgets_dependencies_setup(LIST_WD, dep_message);
           }
         if (!LABEL_WD->check)
           {
              LABEL_WD->check = true;
              eina_strbuf_append(dep_message, _("Label<br>"));
              ret++;
+             ret += _widgets_dependencies_setup(LABEL_WD, dep_message);
           }
      }
 
    return ret;
 }
+
+#define DEPENDENCE_INCLUDE(Widget) \
+   if (Widget->check) \
+     { \
+        Widget->check = false; \
+        eina_strbuf_append_printf(dep_edc, "   #include \"%s.edc\"\n", \
+                                  Widget->name); \
+        _file_to_swap_copy(path, Widget->name); \
+        are_widgets_included = true; \
+     }
+
+static Eina_Bool
+_widgets_dependencies_generate(Eina_Stringshare *path, Eina_Strbuf *dep_edc)
+{
+   Eina_Bool are_widgets_included = false;
+
+   DEPENDENCE_INCLUDE(BTN_WD);
+   DEPENDENCE_INCLUDE(SCROLLER_WD);
+   DEPENDENCE_INCLUDE(ENTRY_WD);
+   DEPENDENCE_INCLUDE(LABEL_WD);
+   DEPENDENCE_INCLUDE(GENLIST_WD);
+   DEPENDENCE_INCLUDE(LIST_WD);
+   DEPENDENCE_INCLUDE(PHOTOCAM_WD);
+   DEPENDENCE_INCLUDE(NOTIFY_WD);
+   DEPENDENCE_INCLUDE(MAP_WD);
+   DEPENDENCE_INCLUDE(POPUP_WD);
+   DEPENDENCE_INCLUDE(GENGRID_WD);
+
+   return are_widgets_included;
+}
+
+#undef DEPENDENCE_INCLUDE
 
 #undef BTN_WD
 #undef SCROLLER_WD
@@ -342,6 +390,7 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
 {
    Eina_Strbuf *edc = eina_strbuf_new();
    Eina_Strbuf *dep_message = eina_strbuf_new();
+   Eina_Strbuf *dep_edc = eina_strbuf_new();
    int deps_count;
    Widget_Item_Data *widget_item_data_iterator = widget_item_data;
    Eina_Bool are_widgets_included = false;
@@ -366,6 +415,10 @@ _edc_code_generate(Eina_Stringshare *path, Wizard_Import_Edj_Win *wiew __UNUSED_
    _file_to_swap_copy(path, "fonts");
    _file_to_swap_copy(path, "colorclasses");
    _file_to_swap_copy(path, "macros");
+
+   are_widgets_included = _widgets_dependencies_generate(path, dep_edc);
+   eina_strbuf_append(edc, eina_strbuf_string_get(dep_edc));
+   eina_strbuf_free(dep_edc);
 
    while (widget_item_data_iterator->name)
      {
