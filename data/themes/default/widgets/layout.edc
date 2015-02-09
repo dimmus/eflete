@@ -1,17 +1,8 @@
-group {
+group { name: "elm/layout/window/main";
    images {
       image: "logo.png" COMP;
    }
-   name: "eflete/main_window/base/default";
    parts {
-      part { name: "bg";
-         type: RECT;
-         scale: 1;
-         description { state: "default" 0.0;
-            color: 64 64 64 255;
-            fixed: 1 1;
-         }
-      }
       part { name: "eflete.swallow.panes";
          type: SWALLOW;
          scale: 1;

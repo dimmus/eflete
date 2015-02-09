@@ -142,11 +142,9 @@ ui_main_window_add(App_Data *ap)
    evas_object_show(bg);
 
    ap->win_layout = elm_layout_add(ap->win);
-   if (!ap->win_layout) MARK_TO_SHUTDOWN("Failed to create layout main window.")
+   elm_layout_theme_set(ap->win_layout, "layout", "window", "main");
    evas_object_size_hint_weight_set(ap->win_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
    elm_win_resize_object_add(ap->win, ap->win_layout);
-   elm_layout_file_set(ap->win_layout, EFLETE_EDJ, "eflete/main_window/base/default");
    evas_object_show(ap->win_layout);
 
    ap->menu = ui_menu_add(ap);

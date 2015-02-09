@@ -7,7 +7,6 @@ collections {
    #include "edje/image_editor.edc"
    #include "edje/program_editor.edc"
    #include "edje/sound_editor.edc"
-   #include "edje/main_window.edc"
    #include "edje/cursor.edc"
    #include "edje/prop_item.edc"
    #include "edje/textstyle.edc"
