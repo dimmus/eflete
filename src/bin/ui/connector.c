@@ -1117,6 +1117,32 @@ export_replace_request(Evas_Object *parent, const char *msg)
    return result;
 }
 
+Eina_Bool
+export_warning(Evas_Object *parent, const char *msg)
+{
+   Eina_Bool result = false;
+   Evas_Object *popup, *btn, *label;
+   Eina_Stringshare *title;
+
+   title = eina_stringshare_printf(_("Export project"));
+   popup = elm_popup_add(parent);
+   elm_object_style_set(popup, "eflete");
+   elm_object_part_text_set(popup, "title,text", title);
+   LABEL_ADD(popup, label, msg);
+   elm_object_content_set(popup, label);
+   BUTTON_ADD(popup, btn, _("Ok"));
+   evas_object_smart_callback_add(btn, "clicked", _ecancel_cb, &result);
+   elm_object_part_content_set(popup, "button1", btn);
+   evas_object_show(popup);
+   eina_stringshare_del(title);
+
+   ecore_main_loop_begin();
+
+   evas_object_del(popup);
+
+   return result;
+}
+
 
 static Eina_Bool
 _export_splash_setup(void *data, Splash_Status status __UNUSED__)
@@ -1147,7 +1173,7 @@ _on_export_done(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info)
 {
-   const char *selected;
+   const char *selected, *path;
    Eet_File *ef;
    Evas_Object *win;
    App_Data *ap;
@@ -1155,7 +1181,13 @@ _on_export_done(void *data,
    ap = app_data_get();
    win = (Evas_Object *)data;
    selected = (const char *)event_info;
+   path = elm_fileselector_path_get(obj);
    if (!selected) goto close;
+   if (!strcmp(selected, path))
+     {
+        export_warning (win, _("Name feild is empty! Please enter the name of export file."));
+        return;
+     }
    fprintf(stdout, "selected file: '%s'\n", selected);
    /* check the existing file */
    ef = eet_open(selected, EET_FILE_MODE_READ);
@@ -1198,6 +1230,7 @@ project_export_develop(void)
    evas_object_show(bg);
    elm_win_resize_object_add(win, bg);
    FILESELECTOR_ADD(fs, win, _on_export_done, win);
+   elm_object_text_set(fs, "Select a file");
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_custom_filter_append(fs, _edje_filter, NULL, "Edje Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
