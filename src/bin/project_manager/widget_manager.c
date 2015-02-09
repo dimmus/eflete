@@ -150,6 +150,8 @@ _wm_part_free(Part *part)
    eina_stringshare_del(part->name);
    eina_stringshare_del(part->curr_state);
 
+   if (part->items)
+     edje_edit_string_list_free(part->items);
    free(part);
    part = NULL;
 }
@@ -236,6 +238,9 @@ wm_part_add(Style *style, const char *part)
    result->curr_state = edje_edit_part_selected_state_get(style->obj, part, &value);
    result->curr_state_value = value;
    result->show = EINA_TRUE;
+
+   if ((result->type == EDJE_PART_TYPE_TABLE) || (result->type == EDJE_PART_TYPE_BOX))
+     result->items = edje_edit_part_items_list_get(style->obj, result->name);
 
    style->parts = eina_inlist_append(style->parts, EINA_INLIST_GET(result));
 

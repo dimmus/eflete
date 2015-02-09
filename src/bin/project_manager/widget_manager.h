@@ -111,6 +111,7 @@ struct _Part
     double curr_state_value; /**< Current selected part state value */
     Eina_Bool show; /**< Flag indicate current visibly part evas primitive */
     int type; /**< Id part type. Type value equal @Edje_Part_Type enum */
+    Eina_List *items; /**<List of the item names, uses for part types BOX or TABLE */
 };
 
 /**
