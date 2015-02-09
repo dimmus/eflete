@@ -41,7 +41,7 @@ static void
 _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part);
 
 static Groupedit_Item *
-_item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_Stringshare *item) __UNUSED__;
+_item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_Stringshare *item);
 
 static void
 _item_draw_del(Groupedit_Item *ge_item) __UNUSED__;
@@ -51,6 +51,9 @@ _part_spacer_add(Evas *e);
 
 static Evas_Object *
 _part_swallow_add(Evas *e);
+
+static Evas_Object *
+_part_table_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_List **items);
 
 static void
 _part_object_area_calc(Ws_Groupedit_Smart_Data *sd);
@@ -692,7 +695,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
 {
    Groupedit_Part *gp;
 
-   gp = mem_malloc(sizeof(Groupedit_Part));
+   gp = mem_calloc(1, sizeof(Groupedit_Part));
    gp->name = eina_stringshare_add(part);
    gp->visible = true;
    gp->border = NULL;
@@ -735,8 +738,11 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          gp->draw = edje_object_add(sd->e);
          BORDER_ADD(122, 122, 122, 255)
          break;
-      case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_TABLE:
+         gp->draw = _part_table_add(sd, part, &(gp->items));
+         BORDER_ADD(122, 255, 101, 255)
+         break;
+      case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_EXTERNAL:
       default:
          /* Temporary solution for type parts, which not implemented yet.
@@ -851,6 +857,30 @@ _part_swallow_add(Evas *e)
    evas_object_smart_calculate(swallow);
 
    return swallow;
+}
+
+static Evas_Object *
+_part_table_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_List **items)
+{
+   Evas_Object *table;
+   Eina_List *items_names = NULL, *l_items = NULL, *l_n_items = NULL;
+   Eina_Stringshare *item_name = NULL;
+   Groupedit_Item *ge_item = NULL;
+
+   table = evas_object_table_add(sd->e);
+   evas_object_show(table);
+
+   items_names = edje_edit_part_items_list_get(sd->edit_obj, part);
+   EINA_LIST_FOREACH_SAFE(items_names, l_items, l_n_items, item_name)
+     {
+        ge_item = _item_draw_add(sd, part, item_name);
+        *items = eina_list_append(*items, ge_item);
+     }
+
+   edje_edit_string_list_free(items_names);
+   evas_object_smart_calculate(table);
+
+   return table;
 }
 
 static void
