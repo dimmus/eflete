@@ -138,6 +138,7 @@ app_init()
 Eina_Bool
 app_shutdown()
 {
+   if (!ap) return false;
    config_shutdown(ap);
    elm_theme_free(ap->theme);
    eina_shutdown();
