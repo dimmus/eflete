@@ -2414,7 +2414,7 @@ prop_item_state_image_tween_add(Evas_Object *box, Prop_Data *pd)
    char *image_name;
 
    FRAME_PROPERTY_ADD(box, tween_frame, true, _("Tweens"), pd->visual)
-   elm_object_style_set(tween_frame, "eflete/tween");
+   elm_object_style_set(tween_frame, "tween");
 
    tween_list = elm_genlist_add(tween_frame);
    elm_genlist_longpress_timeout_set(tween_list, 0.2);
