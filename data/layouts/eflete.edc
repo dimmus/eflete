@@ -1,6 +1,5 @@
 collections {
    #include "../macros.edc"
-   #include "edje/block.edc"
    #include "edje/editor_base.edc"
    #include "edje/workspace.edc"
    #include "edje/live_view.edc"
