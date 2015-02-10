@@ -678,6 +678,14 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor)
    return true;
 }
 
+Eina_Bool
+groupedit_edit_object_part_item_selected_set(Evas_Object *obj __UNUSED__,
+                                             Eina_Stringshare *item_name __UNUSED__,
+                                             Eina_Bool selected __UNUSED__)
+{
+   return false;
+}
+
 #undef MY_CLASS_NAME
 #undef WS_GROUPSPACE_DATA_GET
 #undef WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL

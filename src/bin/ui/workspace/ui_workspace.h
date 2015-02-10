@@ -389,4 +389,21 @@ workspace_object_area_visible_set(Evas_Object *obj, Eina_Bool flag);
 Eina_Bool
 workspace_object_area_visible_get(Evas_Object *obj);
 
+/**
+ * Change selection state for given item on workspace. If item should be
+ * selected if will be highlighted, or unhighlighted in otherwise.
+ *
+ * @param obj The workspace object.
+ * @param item_name The name of item, which selection should be changed.
+ * @param selected If EINA_TRUE - item will be selected, otherwise unselected.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Workspace
+ */
+Eina_Bool
+workspace_edit_object_part_item_selected_set(Evas_Object *obj,
+                                             Eina_Stringshare *item_name,
+                                             Eina_Bool selected);
+
 #endif /* UI_WORKSPACE_H */

@@ -1550,3 +1550,20 @@ workspace_object_area_visible_get(Evas_Object *obj)
    WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
    return groupedit_part_object_area_visible_get(sd->groupedit);
 }
+
+Eina_Bool
+workspace_edit_object_part_item_selected_set(Evas_Object *obj,
+                                             Eina_Stringshare *item_name,
+                                             Eina_Bool selected)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   if (!item_name)
+     {
+        ERR("Can't change selection state of unnamed item");
+        return false;
+     }
+   return groupedit_edit_object_part_item_selected_set(sd->groupedit, item_name,
+                                                       selected);
+}
+
