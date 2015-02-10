@@ -1786,6 +1786,28 @@ _on_style_back(void *data,
    ui_style_back(ap);
 }
 
+static void
+_on_part_item_selected(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_data)
+{
+   App_Data *ap = (App_Data *)data;
+   Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
+   workspace_edit_object_part_item_selected_set(ap->workspace, item_name, true);
+   /*TODO: Add here load part item properties*/
+}
+
+static void
+_on_part_item_unselected(void *data,
+                         Evas_Object *obj __UNUSED__,
+                         void *event_data)
+{
+   App_Data *ap = (App_Data *)data;
+   Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
+   workspace_edit_object_part_item_selected_set(ap->workspace, item_name, false);
+   /*TODO: Add here unset part item properties*/
+}
+
 Eina_Bool
 add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
 {
@@ -1795,6 +1817,10 @@ add_callbacks_wd(Evas_Object *wd_list, App_Data *ap)
    evas_object_smart_callback_add(wd_list, "wl,part,select", _on_part_selected, ap);
    evas_object_smart_callback_add(wd_list, "wl,part,back", _on_part_back, ap);
    evas_object_smart_callback_add(wd_list, "wl,style,back", _on_style_back, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,item,select",
+                                  _on_part_item_selected, ap);
+   evas_object_smart_callback_add(wd_list, "wl,part,item,unselect",
+                                  _on_part_item_unselected, ap);
 
    return true;
 }

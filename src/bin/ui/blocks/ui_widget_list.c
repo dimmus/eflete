@@ -319,12 +319,33 @@ _on_part_select(void *data,
 }
 
 static void
-_on_part_item_select(void *data __UNUSED__,
+_on_part_item_select(void *data,
                      Evas_Object *obj __UNUSED__,
-                     void *event_info __UNUSED__)
+                     void *event_info)
 {
-   /* TODO: not implemented yet */
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Elm_Object_Item *parent = elm_genlist_item_parent_get(glit);
+   Part *part = elm_object_item_data_get(parent);
+   Evas_Object *nf = (Evas_Object *)data;
+   Eina_Stringshare *item_name = elm_object_item_data_get(glit);
+
+   Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+   evas_object_smart_callback_call(tabs, "wl,part,select", part);
+   evas_object_smart_callback_call(tabs, "wl,part,item,select", (char *)item_name);
    return;
+}
+
+static void
+_on_part_item_unselect(void *data,
+                       Evas_Object *obj __UNUSED__,
+                       void *event_info)
+{
+   Elm_Object_Item *glit = (Elm_Object_Item *)event_info;
+   Evas_Object *nf = (Evas_Object *)data;
+   if (!elm_genlist_item_parent_get(glit)) return;
+   Eina_Stringshare *item_name = elm_object_item_data_get(glit);
+   Evas_Object *tabs = evas_object_data_get(nf, TABS_DATA_KEY);
+   evas_object_smart_callback_call(tabs, "wl,part,item,unselect", (char *)item_name);
 }
 
 static void
@@ -616,6 +637,7 @@ _on_style_clicked_double(void *data,
                                   _part_items_expand_req, NULL);
    evas_object_smart_callback_add(gl_parts, "contract,request",
                                   _part_items_contract_req, NULL);
+   evas_object_smart_callback_add(gl_parts, "unselected", _on_part_item_unselect, nf);
 
    ICON_ADD(nf, ic, false, "icon-back");
 

@@ -679,10 +679,29 @@ groupedit_zoom_factor_set(Evas_Object *obj, double factor)
 }
 
 Eina_Bool
-groupedit_edit_object_part_item_selected_set(Evas_Object *obj __UNUSED__,
-                                             Eina_Stringshare *item_name __UNUSED__,
-                                             Eina_Bool selected __UNUSED__)
+groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
+                                             Eina_Stringshare *item_name,
+                                             Eina_Bool selected)
 {
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   Groupedit_Part *gp = sd->selected;
+   Eina_List *l, *l_n;
+   Groupedit_Item *ge_item = NULL;
+
+   if (!gp) return false;
+
+   EINA_LIST_FOREACH_SAFE(gp->items, l, l_n, ge_item)
+     {
+        if (ge_item->name == item_name)
+          {
+             if (selected)
+               evas_object_show(ge_item->highlight);
+             else
+               evas_object_hide(ge_item->highlight);
+             _parts_recalc(sd);
+             return true;
+          }
+     }
    return false;
 }
 
