@@ -54,7 +54,7 @@ EFLETE_TEST (wm_layouts_list_new_test_p)
 {
    elm_init(0,0);
    const char *file = "./edj_build/wm_layouts_list_new.edj";
-   const char *layout_name = "load/layout/test";
+   const char *layout_name = "layout/table";
    Eina_Inlist *layouts_list = NULL;
    Style *layout = NULL;
 
