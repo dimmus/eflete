@@ -1147,6 +1147,15 @@ ui_property_part_set(Evas_Object *property, Part *part)
    return true;
 }
 
+#define PROP_ITEM_UNSET(BOX, ITEM) \
+   if (ITEM) \
+     {\
+        evas_object_smart_callback_del(ITEM, "clicked", _on_frame_click); \
+        elm_box_unpack(BOX, ITEM); \
+        evas_object_del(ITEM); \
+        ITEM = NULL; \
+     }
+
 void
 ui_property_part_unset(Evas_Object *property)
 {
@@ -1157,31 +1166,17 @@ ui_property_part_unset(Evas_Object *property)
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    prop_box = elm_object_content_get(pd->visual);
 
-   if (pd->prop_part.frame)
-     {
-        evas_object_smart_callback_del(pd->prop_part.frame, "clicked", _on_frame_click);
-        elm_box_unpack(prop_box, pd->prop_part.frame);
-        evas_object_del(pd->prop_part.frame);
-        pd->prop_part.frame = NULL;
-     }
-   if (pd->prop_part_drag.frame)
-     {
-        evas_object_smart_callback_del(pd->prop_part_drag.frame, "clicked", _on_frame_click);
-        elm_box_unpack(prop_box, pd->prop_part_drag.frame);
-        evas_object_del(pd->prop_part_drag.frame);
-        pd->prop_part_drag.frame = NULL;
-     }
-
-   if (pd->prop_state.frame)
-     {
-        evas_object_smart_callback_del(pd->prop_state.frame, "clicked", _on_frame_click);
-        elm_box_unpack(prop_box, pd->prop_state.frame);
-        evas_object_del(pd->prop_state.frame);
-        pd->prop_state.frame = NULL;
-     }
-
-   ui_property_state_unset(property);
+   PROP_ITEM_UNSET(prop_box, pd->prop_part.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_part_drag.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_object_area.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_text.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_image.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_textblock.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_fill.frame)
 }
+
+#undef PROP_ITEM_UNSET
 #undef pd_part
 #undef pd_part_drag
 
