@@ -1530,9 +1530,18 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = (TYPE)elm_spinner_value_get(obj); \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
-                                        pd->item_name, value)) \
-     return; \
+   if (!strcmp(#TYPE, "double")) \
+     { \
+        if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
+                                          pd->item_name, (TYPE)(value / 100))) \
+          return; \
+     }\
+   else if (!strcmp(#TYPE, "int")) \
+     { \
+        if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
+                                             pd->item_name, (TYPE)value)) \
+          return; \
+     } \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \
@@ -1572,10 +1581,10 @@ _on_##SUB##_##VALUE##_change(void *data, \
    Evas_Object *item = evas_object_data_get(obj, ITEM1); \
    Evas_Object *spinner1 = evas_object_data_get(item, ITEM1); \
    Evas_Object *spinner2 = evas_object_data_get(item, ITEM2); \
-   TYPE value1 = (unsigned short int)elm_spinner_value_get(spinner1); \
-   TYPE value2 = (unsigned short int)elm_spinner_value_get(spinner2); \
+   TYPE value1 = (TYPE)elm_spinner_value_get(spinner1); \
+   TYPE value2 = (TYPE)elm_spinner_value_get(spinner2); \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
-                                        pd->item_name, value1, value2)) \
+                                        pd->item_name, (TYPE)value1, (TYPE)value2)) \
      return; \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \

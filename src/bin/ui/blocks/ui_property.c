@@ -2761,7 +2761,7 @@ _on_state_color_class_change(void *data,
    ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
    ITEM_COMBOBOX_PART_ITEM_ADD(TEXT, SUB, VALUE)
 
-#define ITEM_2_SPINNERS_ITEM_INT_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
+#define ITEM_2_SPINNERS_ITEM_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE1) \
    ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE2) \
    ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
@@ -2775,13 +2775,15 @@ _on_state_color_class_change(void *data,
 #define pd_item pd->prop_item
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
-ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
@@ -2837,6 +2839,18 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
                           "col", "", "row", "",
                           _("Sets how many columns this item will use."),
                           _("Sets how many rows this item will use."), false);
+        pd_item.align = prop_item_part_item_align_x_y_add(box, pd,
+                          -1, 100, 1, NULL,
+                          "x:", "%", "y:", "%",
+                          _("Sets the alignment hint by x axiss."),
+                          _("Sets the alignment hint by y axiss."),
+                          true);
+        pd_item.weight = prop_item_part_item_weight_x_y_add(box, pd,
+                          0.0, 999.0, 1.0, NULL,
+                          "x:", "%", "y:", "",
+                          _("Sets the weight hint by x axiss."),
+                          _("Sets the weight hint by y axiss."),
+                          false);
 
         elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
@@ -2853,6 +2867,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         elm_box_pack_end(box, pd_item.min);
         elm_box_pack_end(box, pd_item.max);
         elm_box_pack_end(box, pd_item.prefer);
+        elm_box_pack_end(box, pd_item.align);
+        elm_box_pack_end(box, pd_item.weight);
         elm_box_pack_end(box, pd_item.aspect);
         elm_box_pack_end(box, pd_item.spread);
         elm_box_pack_end(box, pd_item.span);
@@ -2865,6 +2881,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
         prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
         prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
+        prop_item_part_item_align_x_y_update(pd_item.align, pd, true);
+        prop_item_part_item_weight_x_y_update(pd_item.weight, pd, false);
         prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
         prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
         prop_item_part_item_span_suf_update(pd_item.span, pd, false);
