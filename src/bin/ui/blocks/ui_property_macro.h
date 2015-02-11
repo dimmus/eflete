@@ -889,7 +889,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-#define ITEM_2SPINNER_STATE_ADD(text, SUB, VALUE1, VALUE2, STYLE) \
+#define ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             Prop_Data *pd, \
@@ -906,45 +906,30 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                             Eina_Bool to_percent) \
 { \
    Evas_Object *item, *box, *layout, *spinner1, *spinner2; \
-   double value; \
-   ITEM_ADD(parent, item, text, STYLE) \
+   ITEM_ADD(parent, item, TEXT, STYLE) \
    BOX_ADD(item, box, true, true) \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, sp1_lb_start, sp1_lb_end); \
    SPINNER_ADD(layout, spinner1, min, max, step, true) \
    elm_spinner_label_format_set(spinner1, fmt); \
-   value = edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, \
-                                            pd->part->name, \
-                                            pd->part->curr_state, \
-                                            pd->part->curr_state_value); \
-   if (to_percent) value *= 100; \
-   elm_spinner_value_set(spinner1, value); \
    elm_object_part_content_set(layout, "eflete.content", spinner1); \
    elm_box_pack_end(box, layout); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
-   evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
    ITEM_CONTEINER_2LABEL_ADD(box, layout, sp2_lb_start, sp2_lb_end); \
    SPINNER_ADD(layout, spinner2, min, max, step, true) \
    elm_spinner_label_format_set(spinner2, fmt); \
-   value = edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, \
-                                            pd->part->name, \
-                                            pd->part->curr_state, \
-                                            pd->part->curr_state_value); \
-   if (to_percent) value *= 100; \
-   elm_spinner_value_set(spinner2, value); \
    elm_object_part_content_set(layout, "eflete.content", spinner2); \
    elm_box_pack_end(box, layout); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
-   evas_object_smart_callback_add(spinner2, "changed", \
-                                  _on_##SUB##_##VALUE2##_change, pd); \
-   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                           _on_spinner_mouse_wheel, NULL); \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    evas_object_data_set(item, ITEM1, spinner1); \
    evas_object_data_set(item, ITEM2, spinner2); \
+   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+   prop_item_##SUB##_##VALUE1##_##VALUE2##_update(item, pd, to_percent); \
    return item;\
 }
 
