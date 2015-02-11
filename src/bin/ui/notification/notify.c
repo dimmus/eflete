@@ -48,7 +48,7 @@ noti_error_show(Evas_Object *obj, const char *message)
    //2. start forming layout
    layout = elm_layout_add(obj);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "notify/content/default");
+   elm_layout_theme_set(layout, "layout", "notify", "default");
    elm_layout_signal_emit(layout, "notify,error", "eflete");
 
    //2.2 add not editable entry for information viewable
@@ -81,9 +81,8 @@ noti_warning_show(Evas_Object *obj, const char *message)
 
    //2. start forming layout
    layout = elm_layout_add(obj);
-   evas_object_size_hint_weight_set(layout,
-                                    EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "notify/content/default");
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_layout_theme_set(layout, "layout", "notify", "default");
    elm_layout_signal_emit(layout, "notify,warning", "eflete");
 
    //2.2 add not editable entry for information viewable
@@ -120,7 +119,7 @@ noti_info_show(Evas_Object *obj, const char *message, double time)
    //2. start forming layout
    layout = elm_layout_add(notify);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "notify/content/info");
+   elm_layout_theme_set(layout, "layout", "notify", "info");
 
    //2.2 add not editable entry for information viewable
    elm_object_part_text_set(layout, "information", message);

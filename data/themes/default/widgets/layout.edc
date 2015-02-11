@@ -1302,3 +1302,180 @@ ITEM_ADD(meta_comment)
 
 #undef ITEM_H
 #undef ITEM_ADD
+
+group { name: "elm/layout/notify/default";
+   max: 300 99999;
+   min: 200 156;
+   styles {
+      style { name: "warning_notify_title_style";
+         base: "font="FN" font_size=15 color=#c0c000ff wrap=none align=0.5 ellipsis=0.0 \
+                shadow_color=#d17c15ff  style=shadow,bottom_right";
+      }
+      style { name: "info_style";
+         base: "font="FN" font_size=10 color=#ffffffff wrap=word align=0.5 ellipsis=0.0";
+      }
+
+      style { name: "error_notify_title_style";
+         base: "font="FN" font_size=15 color=#f0c000ff wrap=none align=0.5 ellipsis=0.0 \
+                shadow_color=#d11515ff  style=shadow,bottom_right";
+      }
+   }
+
+   parts {
+      part { name: "pad_top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "pad_center";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "title.text";
+         scale: 1;
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            text {
+               min: 1 0;
+               ellipsis: -1;
+            }
+            min: 0 25;
+            max: -1 25;
+            align: 0.5 0.0;
+            visible: 0;
+         }
+         description { state: "warning" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text {
+               text: "Warning";
+               style: "warning_notify_title_style";
+               ellipsis: -1;
+               min: 1 1;
+            }
+         }
+         description { state: "error" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text {
+               text: "Error";
+               style: "error_notify_title_style";
+               ellipsis: -1;
+               min: 1 1;
+            }
+         }
+      }
+      part { name: "pad_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 20 20;
+            max: 20 20;
+            align: 1.0 1.0;
+         }
+      }
+      part { name: "information";
+         scale: 1;
+         type: TEXTBLOCK;
+         effect: SOFT_SHADOW;
+         description { state: "default" 0.0;
+            min: 135 84;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               align: 0.0 0.5;
+               style: "info_style";
+            }
+            rel1 {
+               to_x: "pad_top";
+               to_y: "title.text";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "pad_bottom";
+               to_y: "close_button";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+
+      part { name: "close_button";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            min: 100 32;
+            max: 100 32;
+            fixed: 1 1;
+            align: 0.5 1.0;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "warning";
+         signal: "notify,warning";
+         source: "eflete";
+         action: STATE_SET "warning" 0.0;
+         target: "title.text";
+      }
+      program {
+         name: "error";
+         signal: "notify,error";
+         source: "eflete";
+         action: STATE_SET "error" 0.0;
+         target: "title.text";
+      }
+   }
+}
+
+group { name: "elm/layout/notify/info";
+   inherit: "elm/layout/notify/default";
+   max: 999 999;
+   min: 100 56;
+
+   parts {
+      part { name: "information";
+         scale: 1;
+         type: TEXTBLOCK;
+         description { state: "default" 0.0;
+            min: 135 55;
+            align: 0.5 0.0;
+            text {
+               min: 1 1;
+               ellipsis: -1;
+               align: 0.0 0.0;
+               style: "info_style";
+            }
+            rel1 {
+               to_x: "pad_top";
+               to_y: "title.text";
+               relative: 0.0 1.0;
+            }
+            rel2 {
+               to_x: "pad_bottom";
+               to_y: "close_button";
+               relative: 1.0 0.0;
+            }
+         }
+      }
+      part { name: "pad_bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+      part { name: "close_button";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 0 0;
+            max: 0 0;
+         }
+      }
+   }
+}
