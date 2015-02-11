@@ -322,7 +322,7 @@ wizard_import_common_add(const char *layout_name)
    wiew->win = mwin;
 
    layout = elm_layout_add(mwin);
-   elm_layout_file_set(layout, EFLETE_EDJ, layout_name);
+   elm_layout_theme_set(layout, "layout", "wizard", layout_name);
 
    elm_object_content_set(mwin, layout);
    evas_object_show(layout);
