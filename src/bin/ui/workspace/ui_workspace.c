@@ -1259,8 +1259,8 @@ workspace_edit_object_recalc(Evas_Object *obj)
      {
         container_min_size_set(app->live_view->live_view, min_w, min_h);
         container_max_size_set(app->live_view->live_view, max_w, max_h);
+        live_view_widget_style_set(app->live_view, app->project, sd->style);
      }
-
    return groupedit_edit_object_recalc_all(sd->groupedit);
 }
 
