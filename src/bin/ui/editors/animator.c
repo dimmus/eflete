@@ -554,7 +554,7 @@ animator_window_add(Style *style)
                                    _on_object_load, animator);
 
    top_layout = elm_layout_add(window_layout);
-   elm_layout_file_set(top_layout, EFLETE_EDJ, "eflete/animator/live_view");
+   elm_layout_theme_set(top_layout, "layout", "animator", "live_view");
    elm_layout_content_set(top_layout, "swallow.content", animator->live->layout);
    evas_object_show(top_layout);
 
@@ -605,8 +605,7 @@ animator_window_add(Style *style)
    elm_object_part_content_set(bottom_panes, "left", program_list_box);
 
    animator->program_area_layout = elm_layout_add(bottom_panes);
-   elm_layout_file_set(animator->program_area_layout, EFLETE_EDJ,
-                       "eflete/animator/program_area");
+   elm_layout_theme_set(animator->program_area_layout, "layout", "animator", "program_area");
    elm_object_part_content_set(bottom_panes, "right", animator->program_area_layout);
    evas_object_show(animator->program_area_layout);
    elm_layout_signal_emit(animator->program_area_layout, "eflete,content,hide", "eflete");

@@ -1755,7 +1755,7 @@ program_editor_add(Evas_Object *parent, Style *style, Live_View *live)
    prop.style = style;
    prog_edit->live = live;
    editor_layout = elm_layout_add(parent);
-   elm_layout_file_set(editor_layout, EFLETE_EDJ, "eflete/animator/program_editor");
+   elm_layout_theme_set(editor_layout, "layout", "animator", "program_editor");
    prog_edit->editor_layout = editor_layout;
 
    prog_edit->playback.is_cycled = true;
