@@ -549,8 +549,7 @@ _dir_item_add(Evas_Object *parent, Wizard_Import_Edj_Win *wiew)
    if (!c_data) return NULL;
 
    item = elm_layout_add(parent);
-   elm_layout_file_set(item,
-                       EFLETE_EDJ, "elm/layout/wizard/directories_item");
+   elm_layout_theme_set(item, "layout", "wizard", "directories_item");
    evas_object_size_hint_align_set(item, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
@@ -644,7 +643,7 @@ Evas_Object *
 wizard_import_edc_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
-   wiew = wizard_import_common_add("elm/layout/wizard/import_edc");
+   wiew = wizard_import_common_add("import_edc");
    if (!wiew) return NULL;
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
@@ -768,7 +767,7 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    Wizard_Import_Edj_Win *wiew;
    Evas_Object *genlist, *check;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
-   wiew = wizard_import_common_add("elm/layout/wizard/new_project");
+   wiew = wizard_import_common_add("new_project");
    if (!wiew) return NULL;
 
    mw_title_set(wiew->win, _("Wizard: new project"));

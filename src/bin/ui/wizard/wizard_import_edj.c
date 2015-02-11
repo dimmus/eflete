@@ -52,7 +52,7 @@ Evas_Object *
 wizard_import_edj_add(App_Data *ap __UNUSED__)
 {
    Wizard_Import_Edj_Win *wiew;
-   wiew = wizard_import_common_add("elm/layout/wizard/import_edj");
+   wiew = wizard_import_common_add("import_edj");
    if (!wiew) return NULL;
 
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
