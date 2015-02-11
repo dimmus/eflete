@@ -619,21 +619,18 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 const char **entries) \
 { \
    Evas_Object *item, *combobox; \
-   TYPE value; \
    int i = 0; \
    ITEM_ADD(parent, item, TEXT, "eflete/property/item/default") \
    EWE_COMBOBOX_ADD(parent, combobox) \
-   value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
-             pd->part->curr_state, pd->part->curr_state_value); \
    while (entries[i]) \
     { \
        ewe_combobox_item_add(combobox, entries[i]); \
        i++; \
     } \
-   ewe_combobox_select_item_set(combobox, value); \
    elm_object_tooltip_text_set(combobox, tooltip); \
-   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_object_part_content_set(item, "elm.swallow.content", combobox); \
+   prop_item_##SUB##_##VALUE##_update(item, pd); \
+   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
    return item; \
 }
 
