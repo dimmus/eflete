@@ -888,7 +888,7 @@ _image_info_box_create(Image_Editor *img_edit)
    Evas_Object *scroller;
    SCROLLER_ADD(img_edit->layout, scroller);
    Evas_Object *layout = elm_layout_add(scroller);
-   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/image_editor/image_info");
+   elm_layout_theme_set(layout, "layout", "image_editor", "image_info");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(layout);
@@ -939,7 +939,7 @@ _image_usage_layout_create(Image_Editor *img_edit, Evas_Object *parent)
    Evas_Object *entry = NULL;
 
    layout = elm_layout_add(parent);
-   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/image_editor/usage_info");
+   elm_layout_theme_set(layout, "layout", "image_editor", "usage_info");
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(layout);
@@ -1064,8 +1064,7 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
      mw_title_set(img_edit->win, _("Image editor"));
 
    img_edit->layout = elm_layout_add(img_edit->win);
-   elm_layout_file_set(img_edit->layout,
-                       EFLETE_EDJ, "elm/layout/image_editor/default");
+   elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
    elm_win_inwin_content_set(img_edit->win, img_edit->layout);
 
    img_edit->gengrid = elm_gengrid_add(img_edit->layout);
