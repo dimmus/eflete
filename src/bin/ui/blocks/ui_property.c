@@ -2761,9 +2761,16 @@ _on_state_color_class_change(void *data,
    ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
    ITEM_COMBOBOX_PART_ITEM_ADD(TEXT, SUB, VALUE)
 
+#define ITEM_2_SPINNERS_ITEM_INT_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
+   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE1) \
+   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE2) \
+   ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
+
 #define pd_item pd->prop_item
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
+ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
@@ -2784,19 +2791,26 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         pd_item.name = prop_item_label_add(box, _("name"), pd->item_name);
         pd_item.source = prop_item_part_item_source_add(box, pd,
                                _("Sets the group this object will be made from."));
+        pd_item.min = prop_item_part_item_min_w_h_add(box, pd,
+                          0.0, 999.0, 1.0, "%.0f",
+                          "w:", "px", "h:", "px",
+                          _("Set the item  minimum hint width in pixels."),
+                          _("Set the item  minimum hint height in pixels."),
+                          false);
 
         elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
+        elm_box_pack_end(box, pd_item.min);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
      }
    else
      {
         prop_item_label_update(pd_item.name, item);
         prop_item_part_item_source_update(pd_item.source, pd);
+        prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
         evas_object_show(pd_item.frame);
      }
-
    return true;
 }
 

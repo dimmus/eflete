@@ -1519,3 +1519,44 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    edje_file_collection_list_free(collections); \
    edje_edit_string_free(value); \
 }
+
+#define ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   TYPE value = (TYPE)elm_spinner_value_get(obj); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
+                                        pd->item_name, value)) \
+     return; \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+#define ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
+static void \
+prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
+                                               Prop_Data *pd, \
+                                               Eina_Bool to_percent) \
+{ \
+   Evas_Object *spinner; \
+   TYPE value; \
+   spinner = evas_object_data_get(item, ITEM1); \
+   value = (TYPE)edje_edit_##SUB##_##VALUE1##_get(pd->style->obj, pd->part->name, \
+                                                  pd->item_name);\
+   if (to_percent) value *= 100; \
+   elm_spinner_value_set(spinner, value); \
+   evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   spinner = evas_object_data_get(item, ITEM2); \
+   value = (TYPE)edje_edit_##SUB##_##VALUE2##_get(pd->style->obj, pd->part->name, \
+                                                  pd->item_name); \
+   if (to_percent) value *= 100; \
+   elm_spinner_value_set(spinner, value); \
+   evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+}
+
