@@ -959,9 +959,14 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
 
    gl_parts = elm_object_item_part_content_get(_widget_list_get(nf),
                                                "elm.swallow.content");
-   eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
-                                 ELM_GENLIST_ITEM_NONE, _on_part_select,
-                                 nf);
+   if ((part->type == EDJE_PART_TYPE_TABLE) ||
+       (part->type == EDJE_PART_TYPE_BOX))
+     eoi = elm_genlist_item_append(gl_parts, _itc_container, part,
+                                   NULL, ELM_GENLIST_ITEM_TREE,
+                                   _on_part_select, nf);
+   else
+     eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
+                                   ELM_GENLIST_ITEM_NONE, _on_part_select, nf);
    elm_object_item_data_set(eoi, part);
    elm_genlist_item_selected_set(eoi, EINA_TRUE);
 
