@@ -35,6 +35,8 @@ _on_state_text_style_change(void *data,
                              void *event_info __UNUSED__);
 #define ITEM1 "item1"
 #define ITEM2 "item2"
+#define ITEM3 "item3"
+#define ITEM4 "item4"
 
 #define IMAGE_NAME_REGEX "^([a-z0-9\\._\\-]*\\.(png|jpg|jpeg|gif|tiff|tga|jp2k|bmp|svg))*$"
 #define IMAGE_BORDER_REGEX "^([0-9]+( [0-9]+){3}){0,1}$"

@@ -2756,6 +2756,133 @@ _on_state_color_class_change(void *data,
    pd->style->isModify = true;
 }
 
+#define ITEM_4SPINNER_ITEM_CALLBACK(VALUE) \
+static void \
+_on_part_item_padding_##VALUE##_change(void *data, \
+                                       Evas_Object *obj, \
+                                       void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Evas_Object *item = evas_object_data_get(obj, ITEM1); \
+   Evas_Object *spinner1 = evas_object_data_get(item, ITEM1); \
+   Evas_Object *spinner2 = evas_object_data_get(item, ITEM2); \
+   Evas_Object *spinner3 = evas_object_data_get(item, ITEM3); \
+   Evas_Object *spinner4 = evas_object_data_get(item, ITEM4); \
+   int l = (int)elm_spinner_value_get(spinner1); \
+   int r = (int)elm_spinner_value_get(spinner2); \
+   int t = (int)elm_spinner_value_get(spinner3); \
+   int b = (int)elm_spinner_value_get(spinner4); \
+   if (!edje_edit_part_item_padding_set(pd->style->obj, pd->part->name,\
+                                        pd->item_name, l, r, t, b)) \
+     return; \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+ITEM_4SPINNER_ITEM_CALLBACK(l);
+ITEM_4SPINNER_ITEM_CALLBACK(r);
+ITEM_4SPINNER_ITEM_CALLBACK(t);
+ITEM_4SPINNER_ITEM_CALLBACK(b);
+
+#define ITEM_SPINNER_ITEM_PADDING_UPDATE(KEY, VALUE) \
+   spinner = evas_object_data_get(item, KEY); \
+   elm_spinner_value_set(spinner, VALUE); \
+   evas_object_smart_callback_del_full(spinner, "changed", _on_part_item_padding_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(spinner, "changed", _on_part_item_padding_##VALUE##_change, pd);
+
+static void
+prop_item_part_item_padding_update(Evas_Object *item,
+                                   Prop_Data *pd)
+{
+   int l = 0, r = 0, t = 0, b = 0;
+   Evas_Object *spinner;
+
+   edje_edit_part_item_padding_get(pd->style->obj, pd->part->name, pd->item_name,
+                                   &l, &r, &t, &b);
+   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM1, l)
+   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM2, r)
+   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM3, t)
+   ITEM_SPINNER_ITEM_PADDING_UPDATE(ITEM4, b)
+}
+
+static Evas_Object *
+prop_item_part_item_padding_add(Evas_Object *parent,
+                                Prop_Data *pd,
+                                double min,
+                                double max,
+                                double step,
+                                const char *fmt,
+                                const char *sp1_lb_start,
+                                const char *sp2_lb_start,
+                                const char *sp3_lb_start,
+                                const char *sp4_lb_start)
+{
+   Evas_Object *item, *item2, *spinner1, *spinner2, *spinner3, *spinner4;
+   Evas_Object *box, *layout, *main_box;
+   BOX_ADD(parent, main_box, false, false)
+
+   ITEM_ADD(parent, item, _("Padding: "), "eflete/property/item/default")
+   BOX_ADD(item, box, true, false)
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp1_lb_start);
+   SPINNER_ADD(item, spinner1, min, max, step, true)
+   elm_spinner_label_format_set(spinner1, fmt);
+   elm_object_part_content_set(layout, "eflete.content", spinner1);
+   elm_box_pack_end(box, layout);
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL,
+                                           EVAS_CALLBACK_PRIORITY_BEFORE,
+                                           _on_spinner_mouse_wheel, NULL);
+
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp2_lb_start);
+   SPINNER_ADD(item, spinner2, min, max, step, true)
+   elm_spinner_label_format_set(spinner2, fmt);
+   elm_object_part_content_set(layout, "eflete.content", spinner2);
+   elm_box_pack_end(box, layout);
+   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL,
+                                           EVAS_CALLBACK_PRIORITY_BEFORE,
+                                           _on_spinner_mouse_wheel, NULL);
+   elm_object_part_content_set(item, "elm.swallow.content", box);
+   elm_box_pack_end(main_box, item);
+
+   ITEM_ADD(parent, item2, "", "eflete/property/item/default")
+   BOX_ADD(item2, box, true, true)
+   elm_object_part_content_set(item2, "elm.swallow.content", box);
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp3_lb_start);
+   SPINNER_ADD(item2, spinner3, min, max, step, true)
+   elm_spinner_label_format_set(spinner3, fmt);
+   elm_object_part_content_set(layout, "eflete.content", spinner3);
+   elm_box_pack_end(box, layout);
+   evas_object_event_callback_priority_add(spinner3, EVAS_CALLBACK_MOUSE_WHEEL,
+                                           EVAS_CALLBACK_PRIORITY_BEFORE,
+                                           _on_spinner_mouse_wheel, NULL);
+
+   ITEM_CONTEINER_1LABEL_ADD(box, layout, sp4_lb_start);
+   SPINNER_ADD(item2, spinner4, min, max, step, true)
+   elm_spinner_label_format_set(spinner4, fmt);
+   elm_object_part_content_set(layout, "eflete.content", spinner4);
+   elm_box_pack_end(box, layout);
+   evas_object_event_callback_priority_add(spinner4, EVAS_CALLBACK_MOUSE_WHEEL,
+                                           EVAS_CALLBACK_PRIORITY_BEFORE,
+                                           _on_spinner_mouse_wheel, NULL);
+   elm_object_part_content_set(item2, "elm.swallow.content", box);
+   elm_box_pack_end(main_box, item2);
+
+   evas_object_data_set(main_box, ITEM1, spinner1);
+   evas_object_data_set(main_box, ITEM2, spinner2);
+   evas_object_data_set(main_box, ITEM3, spinner3);
+   evas_object_data_set(main_box, ITEM4, spinner4);
+   evas_object_data_set(spinner1, ITEM1, main_box);
+   evas_object_data_set(spinner2, ITEM1, main_box);
+   evas_object_data_set(spinner3, ITEM1, main_box);
+   evas_object_data_set(spinner4, ITEM1, main_box);
+
+   prop_item_part_item_padding_update(main_box, pd);
+   return main_box;
+}
+#undef ITEM_SPINNER_ITEM_PADDING_UPDATE
+#undef ITEM_4SPINNER_ITEM_CALLBACK
+
 #define ITEM_COMBOBOX_PART_ITEM_CREATE(TEXT, SUB, VALUE) \
    ITEM_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
    ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
@@ -2851,6 +2978,9 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
                           _("Sets the weight hint by x axiss."),
                           _("Sets the weight hint by y axiss."),
                           false);
+        pd_item.padding =  prop_item_part_item_padding_add(box, pd,
+                             0.0, 999.0, 1.0, "%.0f",
+                            _("left:"), _("right:"), _("top:"), _("bottom:"));
 
         elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
@@ -2870,6 +3000,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         elm_box_pack_end(box, pd_item.align);
         elm_box_pack_end(box, pd_item.weight);
         elm_box_pack_end(box, pd_item.aspect);
+        elm_box_pack_end(box, pd_item.padding);
         elm_box_pack_end(box, pd_item.spread);
         elm_box_pack_end(box, pd_item.span);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
@@ -2888,6 +3019,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         prop_item_part_item_span_suf_update(pd_item.span, pd, false);
         if (pd->part->type == EDJE_PART_TYPE_TABLE)
           prop_item_part_item_position_suf_update(pd_item.position, pd, false);
+        prop_item_part_item_padding_update(pd_item.padding, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
         evas_object_show(pd_item.frame);
      }
