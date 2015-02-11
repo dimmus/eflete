@@ -741,7 +741,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    if (!parent) return;
 
    edit->player_markup = elm_layout_add(parent);
-   elm_layout_file_set(edit->player_markup, EFLETE_EDJ, "eflete/sound_editor/player");
+   elm_layout_theme_set(edit->player_markup, "layout", "sound_editor", "player");
    evas_object_size_hint_weight_set(edit->player_markup,
                                     EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->player_markup);
@@ -1538,7 +1538,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
    Evas_Object *btn, *icon, *search;
 
    edit->markup = elm_layout_add(edit->win);
-   elm_layout_file_set(edit->markup, EFLETE_EDJ, "eflete/sound_editor/default");
+   elm_layout_theme_set(edit->markup, "layout", "sound_editor", "default");
    evas_object_size_hint_weight_set(edit->markup, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(edit->markup);
    elm_win_inwin_content_set(edit->win, edit->markup);
