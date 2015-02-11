@@ -2756,9 +2756,15 @@ _on_state_color_class_change(void *data,
    pd->style->isModify = true;
 }
 
-
+#define ITEM_COMBOBOX_PART_ITEM_CREATE(TEXT, SUB, VALUE) \
+   ITEM_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
+   ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
+   ITEM_COMBOBOX_PART_ITEM_ADD(TEXT, SUB, VALUE)
 
 #define pd_item pd->prop_item
+
+ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
+
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
 {
@@ -2776,13 +2782,17 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         elm_object_content_set(pd_item.frame, box);
 
         pd_item.name = prop_item_label_add(box, _("name"), pd->item_name);
+        pd_item.source = prop_item_part_item_source_add(box, pd,
+                               _("Sets the group this object will be made from."));
 
         elm_box_pack_end(box, pd_item.name);
+        elm_box_pack_end(box, pd_item.source);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
      }
    else
      {
         prop_item_label_update(pd_item.name, item);
+        prop_item_part_item_source_update(pd_item.source, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
         evas_object_show(pd_item.frame);
      }

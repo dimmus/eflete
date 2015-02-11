@@ -1472,3 +1472,65 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    evas_object_smart_callback_add(entry, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
    return item; \
 }
+
+/* Part items UI controls macro functions */
+
+#define ITEM_COMBOBOX_PART_ITEM_ADD(TEXT, SUB, VALUE) \
+static Evas_Object * \
+prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                                Prop_Data *pd, \
+                                const char *tooltip) \
+{ \
+   Evas_Object *item, *combobox; \
+   ITEM_ADD(parent, item, TEXT, "eflete/property/item/default"); \
+   EWE_COMBOBOX_ADD(parent, combobox);\
+   elm_object_tooltip_text_set(combobox, tooltip); \
+   elm_object_part_content_set(item, "elm.swallow.content", combobox); \
+   evas_object_data_set(item, ITEM1, combobox); \
+   prop_item_##SUB##_##VALUE##_update(item, pd); \
+   evas_object_smart_callback_add(combobox, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   return item; \
+}
+
+#define ITEM_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj __UNUSED__, \
+                             void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   if (item->index) \
+       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                       pd->item_name, item->title); \
+   else return; \
+   workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
+}
+
+#define ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
+static void \
+prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
+                                   Prop_Data *pd) \
+{ \
+   Evas_Object *combobox; \
+   Eina_Stringshare *value; \
+   Eina_List *collections, *l; \
+   App_Data *ap = app_data_get(); \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                           pd->item_name); \
+   combobox = elm_object_part_content_get(item, "elm.swallow.content"); \
+   ewe_combobox_items_list_free(combobox, true); \
+   if (value) \
+     ewe_combobox_text_set(combobox, value); \
+   else \
+     ewe_combobox_text_set(combobox, _("ERROR")); \
+   collections = edje_file_collection_list(ap->project->dev); \
+   EINA_LIST_FOREACH(collections, l, value) \
+     { \
+        if (value != ap->project->current_style->full_group_name) \
+          ewe_combobox_item_add(combobox, value); \
+     } \
+   edje_file_collection_list_free(collections); \
+   edje_edit_string_free(value); \
+}
