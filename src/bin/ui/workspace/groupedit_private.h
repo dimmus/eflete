@@ -31,6 +31,7 @@
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
+typedef struct _Groupedit_Item Groupedit_Item;
 
 static const char SIG_CHANGED[] = "container,changed";
 static const char SIG_PART_SEPARETE_OPEN[] = "parts,separete,open";
