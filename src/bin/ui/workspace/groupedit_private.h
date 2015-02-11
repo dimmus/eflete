@@ -158,6 +158,16 @@ struct _Groupedit_Part
                                    case border has opacity 0. This object serves
                                    for show the edje part geometry. */
    Evas_Object *item;         /**< The object border in the separete mode */
+   Eina_List *items;          /**< The items, for TABLE, BOX part types */
+};
+
+struct _Groupedit_Item
+{
+   Eina_Stringshare *name;    /**< The item name.  */
+   Evas_Object *draw;         /**< The loaded edje object.*/
+   Evas_Object *border;       /**< The item border*/
+   Evas_Object *highlight;    /**< The item highlight */
+   Eina_List *spread;         /**< The spreaded items, only for TABLE */
 };
 
 void
