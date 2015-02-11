@@ -2771,6 +2771,10 @@ _on_state_color_class_change(void *data,
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
 ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
@@ -2794,13 +2798,41 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         pd_item.min = prop_item_part_item_min_w_h_add(box, pd,
                           0.0, 999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
-                          _("Set the item  minimum hint width in pixels."),
-                          _("Set the item  minimum hint height in pixels."),
+                          _("Set the item minimum size hint width in pixels."),
+                          _("Set the item minimum size hint height in pixels."),
+                          false);
+        pd_item.max = prop_item_part_item_max_w_h_add(box, pd,
+                          0.0, 999.0, 1.0, "%.0f",
+                          "w:", "px", "h:", "px",
+                          _("Set the item maximum size hint width in pixels."),
+                          _("Set the item maximum size hint height in pixels."),
+                          false);
+        pd_item.prefer = prop_item_part_item_prefer_w_h_add(box, pd,
+                          0.0, 999.0, 1.0, "%.0f",
+                          "w:", "px", "h:", "px",
+                          _("Set the item prefered size hint width in pixels."),
+                          _("Set the item prefered size hint height in pixels."),
+                          false);
+        pd_item.aspect = prop_item_part_item_aspect_w_h_add(box, pd,
+                          0, 999, 1, "%.0f",
+                          "x:", "", "y:", "",
+                          _("Set the item aspect width hint."),
+                          _("Set the item aspect height hint."),
+                          false);
+        pd_item.spread = prop_item_part_item_spread_w_h_add(box, pd,
+                          1.0, 255.0, 1.0, "%.0f",
+                          "col:", "", "row", "",
+                          _("Replicate the item in width, starting from the current position."),
+                          _("Replicate the item in height, starting from the current position."),
                           false);
 
         elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
         elm_box_pack_end(box, pd_item.min);
+        elm_box_pack_end(box, pd_item.max);
+        elm_box_pack_end(box, pd_item.prefer);
+        elm_box_pack_end(box, pd_item.aspect);
+        elm_box_pack_end(box, pd_item.spread);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
      }
    else
@@ -2808,6 +2840,10 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         prop_item_label_update(pd_item.name, item);
         prop_item_part_item_source_update(pd_item.source, pd);
         prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
+        prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
+        prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
+        prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
+        prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
         evas_object_show(pd_item.frame);
      }
