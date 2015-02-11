@@ -23,5 +23,6 @@ collections {
    #include "widgets/radio.edc"
    #include "widgets/menu.edc"
    #include "widgets/separator.edc"
+   #include "widgets/cursor.edc"
    #include "widgets/layout.edc"
 }

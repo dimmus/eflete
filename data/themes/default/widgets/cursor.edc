@@ -9,7 +9,7 @@
 #define HAND1                       "cursor-hand1.png"
 
 #define CURSOR(NAME, IMG, IMG_W, IMG_H, REL1, REL2)         \
-group { name: "eflete/cursor/"##NAME##"/default";           \
+group { name: "elm/cursor/"##NAME##"/default";              \
    images.image: IMG COMP;                                  \
    parts {                                                  \
       part { name: "base";                                  \
