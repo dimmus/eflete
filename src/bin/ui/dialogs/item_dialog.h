@@ -30,6 +30,9 @@
  */
 
 #include "eflete.h"
+#include "common_macro.h"
+#include "string_macro.h"
+#include "main_window.h"
 
 /**
  * Add new dialog for input params of creating item: name and value.
