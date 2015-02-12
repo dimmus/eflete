@@ -28,8 +28,15 @@ static void
 _job_popup_close(void *data)
 {
    App_Data *ap = (App_Data *)data;
+   Evas_Object *markup = elm_object_content_get(ap->popup);
+   Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
+   Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
 
+   eina_file_map_free(ap->project->mmap_file, group_preview);
+   evas_object_del(group_preview);
+   evas_object_del(proxy_preview);
    evas_object_del(ap->popup);
+
    ap->popup = NULL;
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
 }
@@ -51,11 +58,45 @@ _on_button_cancel_clicked(void *data,
 }
 
 static void
-_on_item_source_change(void *data __UNUSED__,
-                       Evas_Object *obj __UNUSED__,
-                       void *event_info __UNUSED__)
+_on_item_source_change(void *data,
+                       Evas_Object *obj,
+                       void *event_info)
 {
-   /*TODO: not implemented yet */
+   Evas_Object *markup = (Evas_Object *)data;
+   Ewe_Combobox_Item *item = (Ewe_Combobox_Item *)event_info;
+   Evas_Object *proxy_preview = elm_object_part_content_unset(markup, "preview.swallow");
+   Evas_Object *group_preview = elm_object_part_content_unset(markup, "origin.swallow");
+   App_Data *ap = app_data_get();
+
+   if (!group_preview)
+     group_preview =  edje_object_add(evas_object_evas_get(obj));
+   else
+     eina_file_map_free(ap->project->mmap_file, group_preview);
+
+   edje_object_mmap_set(group_preview, ap->project->mmap_file, item->title);
+   evas_object_size_hint_min_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_align_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_max_set(group_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_object_part_content_set(markup, "origin.swallow", group_preview);
+   evas_object_show(group_preview);
+   if (!proxy_preview)
+     {
+        proxy_preview = evas_object_image_filled_add(evas_object_evas_get(obj));
+        evas_object_size_hint_min_set(proxy_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_weight_set(proxy_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_max_set(proxy_preview, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_image_scale_hint_set(proxy_preview, EVAS_IMAGE_SCALE_HINT_STATIC);
+        evas_object_image_content_hint_set(proxy_preview, EVAS_IMAGE_CONTENT_HINT_STATIC);
+        elm_object_part_content_set(markup, "preview.swallow", proxy_preview);
+        evas_object_show(proxy_preview);
+     }
+   evas_object_image_source_set(proxy_preview, group_preview);
+   evas_object_image_smooth_scale_set(proxy_preview, true);
+   evas_object_image_source_visible_set(proxy_preview, false);
+   evas_object_image_source_clip_set(proxy_preview, false);
+
+   return;
 }
 
 Evas_Object *
