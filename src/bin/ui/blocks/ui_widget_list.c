@@ -119,12 +119,15 @@ _on_check_click(void *data,
 }
 
 static void
-_on_item_add_clicked(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
+_on_item_add_clicked(void *data,
+                     Evas_Object *obj,
                      void *event_info __UNUSED__)
 {
-   /* TODO: not implemented yet */
-   return;
+   Part *_part =  (Part* ) data;
+   Evas_Object *gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
+   Evas_Object *tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
+
+   evas_object_smart_callback_call(tabs, "wl,part,item,add", _part);
 }
 
 static void
@@ -193,8 +196,6 @@ _item_part_content_get(void *data,
         ICON_ADD(button, icon, true, "icon-add");
         elm_object_part_content_set(button, NULL, icon);
         elm_object_style_set(button, "simple");
-        /*Button will disabled until this functionality not implemented */
-        elm_object_disabled_set(button, true);
         evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
         evas_object_smart_callback_add(button, "clicked", _on_item_add_clicked, _part);
         return button;
