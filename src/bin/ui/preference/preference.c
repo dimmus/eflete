@@ -216,7 +216,7 @@ _general_form(Preferences *preference)
      {
         pref_layout.general = elm_layout_add(preference->mwin);
         evas_object_size_hint_weight_set(pref_layout.general, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        elm_layout_file_set(pref_layout.general, EFLETE_EDJ, "elm/layout/preferences/general");
+        elm_layout_theme_set(pref_layout.general, "layout", "preferences", "general");
         elm_object_part_content_set(panes, "right", pref_layout.general);
      }
    evas_object_show(pref_layout.general);
@@ -242,7 +242,7 @@ _general_form(Preferences *preference)
    elm_object_part_content_set(pref_layout.general, "swallow.autosave", autosave_frame);
    autosave_layout = elm_layout_add(autosave_frame);
    evas_object_size_hint_weight_set(autosave_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(autosave_layout, EFLETE_EDJ, "elm/layout/preferences/frame");
+   elm_layout_theme_set(autosave_layout, "layout", "preferences", "frame");
    evas_object_show(autosave_layout);
    elm_object_content_set(autosave_frame, autosave_layout);
    elm_object_part_text_set(autosave_layout, "label.first", _("autosave"));
@@ -262,7 +262,7 @@ _general_form(Preferences *preference)
    elm_object_part_content_set(pref_layout.general, "swallow.uistore", store_frame);
    store_layout = elm_layout_add(store_frame);
    evas_object_size_hint_weight_set(store_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(store_layout, EFLETE_EDJ, "elm/layout/preferences/frame");
+   elm_layout_theme_set(store_layout, "layout", "preferences", "frame");
    evas_object_show(store_layout);
    elm_object_content_set(store_frame, store_layout);
    elm_object_part_text_set(store_layout, "label.first", _("UI store on exit"));

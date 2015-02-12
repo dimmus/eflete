@@ -8,5 +8,4 @@ collections {
    #include "edje/container.edc"
    #include "edje/colorclass_editor.edc"
    #include "edje/highlight.edc"
-   #include "edje/preferences.edc"
 }
