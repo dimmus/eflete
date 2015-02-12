@@ -2,7 +2,6 @@ collections {
    #include "../macros.edc"
    #include "edje/editor_base.edc"
    #include "edje/prop_item.edc"
-   #include "edje/textstyle.edc"
    #include "edje/groupedit.edc"
    #include "edje/container.edc"
    #include "edje/colorclass_editor.edc"

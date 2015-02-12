@@ -740,7 +740,7 @@ _form_left_side(Style_Editor *style_edit)
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/list");
+   elm_layout_theme_set(layout, "layout", "style_editor", "list");
    evas_object_show(layout);
 
    search = _style_editor_search_field_create(layout);
@@ -1323,7 +1323,7 @@ _text_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/style_editor/text");
+   elm_layout_theme_set(layout, "layout", "style_editor", "text");
    evas_object_show(layout);
    elm_object_content_set(scr, layout);
 
@@ -1409,7 +1409,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
    evas_object_size_hint_weight_set(frame1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(frame1, EVAS_HINT_FILL, EVAS_HINT_FILL);
    layout1 = elm_layout_add(frame1);
-   elm_layout_file_set(layout1, EFLETE_EDJ, "elm/layout/style_editor/format1");
+   elm_layout_theme_set(layout1, "layout", "style_editor", "format1");
    evas_object_size_hint_weight_set(layout1, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(layout1, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(layout1);
@@ -1460,7 +1460,7 @@ _format_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *i
    layout2 = elm_layout_add(frame2);
    evas_object_size_hint_weight_set(layout2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_weight_set(layout2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout2, EFLETE_EDJ, "elm/layout/style_editor/format2");
+   elm_layout_theme_set(layout2, "layout","style_editor", "format2");
    evas_object_show(layout2);
    elm_object_content_set(frame2, layout2);
 
@@ -1547,7 +1547,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "elm/layout/style_editor/glow");
+   elm_layout_theme_set(layout, "layout", "style_editor", "glow");
    evas_object_show(layout);
    elm_object_content_set(scr, layout);
 
@@ -1608,7 +1608,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
              elm_object_signal_emit(layout, "center", "label.glow2_color");
              elm_object_part_text_set(layout, "label.glow2_color", _("Direction:"));
              item = elm_layout_add(layout);
-             elm_layout_file_set(item, EFLETE_EDJ, "ui/style_viewer_window/item/direction");
+             elm_layout_theme_set(item, "layout", "style_editor", "direction");
              evas_object_show(item);
 
              if (elm_object_part_content_get(layout, "swallow.glow_color"))
@@ -1687,7 +1687,7 @@ _lines_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/lines");
+   elm_layout_theme_set(layout, "layout", "style_editor", "lines");
    evas_object_show(layout);
    elm_object_content_set(scr, layout);
 
@@ -1789,7 +1789,7 @@ _form_right_side(Style_Editor *style_edit)
 
    layout = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_layout_file_set(layout, EFLETE_EDJ, "ui/style_viewer_window/property");
+   elm_layout_theme_set(layout, "layout", "style_editor", "property");
    evas_object_show(layout);
 
    style_edit->tabs = ewe_tabs_add(style_edit->mwin);
@@ -1905,8 +1905,7 @@ style_editor_window_add(Project *project)
    style_edit->entry_prev = elm_layout_add(style_edit->mwin);
    evas_object_size_hint_weight_set(style_edit->entry_prev, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
-   elm_layout_file_set(style_edit->entry_prev, EFLETE_EDJ,
-                       "ui/style_viewer_window/preview");
+   elm_layout_theme_set(style_edit->entry_prev, "layout", "style_editor", "preview");
    evas_object_show(style_edit->entry_prev);
    elm_object_part_content_set(panes_h, "left", style_edit->entry_prev);
    elm_object_signal_emit(style_edit->entry_prev, "entry,hide", "eflete");

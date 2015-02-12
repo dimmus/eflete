@@ -4,8 +4,7 @@
 #define SEARCH_AREA_HEIGHT 22
 #define DIRECTION_COLOR_MAX 50 40
 #define SIZE_LABEL_MIN_MAX SET_SIZE(25, 26)
-group {
-   name: "ui/style_viewer_window/preview";
+group { name: "elm/layout/style_editor/preview";
    parts {
       part {
          name: "background";
@@ -50,8 +49,7 @@ group {
    }
 }
 
-group {
-   name: "ui/style_viewer_window/list";
+group { name: "elm/layout/style_editor/list";
    parts {
       part { name: "swallow.rm_btn";
          type: SWALLOW;
@@ -131,8 +129,7 @@ group {
    }
 }
 
-group {
-   name: "ui/style_viewer_window/property";
+group { name: "elm/layout/style_editor/property";
    parts {
       part {
          name: "bg_menu";
@@ -551,28 +548,6 @@ group { name: "elm/layout/style_editor/text";
                relative: 0.0 1.0;
                to_x: "padding.right";
                to_y: "area.color";
-            }
-         }
-      }
-   }
-}
-
-group { name: "ui/style_viewer_window/item/default";
-   inherit: "eflete/property/item/default";
-   parts {
-      part { name: "label.area";
-         description { state: "default" 0.0;
-            rel2 {
-               to: "base";
-               relative: 0.1 1.0;
-            }
-         }
-      }
-      part { name: "content.area";
-         description { state: "default" 0.0;
-            rel1 {
-               to: "base";
-               relative: 0.1 0.0;
             }
          }
       }
@@ -1633,7 +1608,7 @@ group { name: "elm/layout/style_editor/glow";
    }
 }
 
-group { name: "ui/style_viewer_window/item/direction";
+group { name: "elm/layout/style_editor/direction";
    parts {
       part { name: "area.bg";
          type: SPACER;
@@ -1742,7 +1717,7 @@ group { name: "ui/style_viewer_window/item/direction";
    }
 }
 
-group { name: "ui/style_viewer_window/lines";
+group { name: "elm/layout/style_editor/lines";
    parts {
       part { name: "padding.right";
          type: SPACER;

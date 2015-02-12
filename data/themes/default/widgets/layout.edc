@@ -1,3 +1,5 @@
+#include "layouts/style_editor.edc"
+
 group { name: "elm/layout/window/main";
    images {
       image: "logo.png" COMP;
