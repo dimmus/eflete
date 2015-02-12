@@ -1345,3 +1345,48 @@ ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
    ewe_tabs_active_item_set(object, tab_item);
    return true;
 }
+
+Eina_Bool
+ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part)
+{
+   Elm_Object_Item *iterator = NULL;
+   Part *item_data = NULL;
+   Eina_List *l_items = NULL, *l_n_items = NULL;
+   Eina_Stringshare *item_name = NULL;
+   Evas_Object *nf = NULL;
+   Evas_Object *part_list = NULL;
+
+   if ((!obj) || (!part)) return false;
+   part_list = elm_object_item_part_content_get(
+                           _widget_list_get(_current_naviframe_get(obj)),
+                            "elm.swallow.content");
+
+   nf = evas_object_data_get(part_list, NAVIFRAME_DATA_KEY);
+   iterator = elm_genlist_first_item_get(part_list);
+   if (!iterator) return false;
+
+   while (iterator)
+     {
+        item_data = elm_object_item_data_get(iterator);
+        if ((!item_data) || (item_data->__type != PART))
+          {
+             ERR("Item data isn't presented or data isn't PART");
+             return false;
+          }
+        if (item_data == part)
+          {
+             if (!elm_genlist_item_expanded_get(iterator)) return true;
+             elm_genlist_item_subitems_clear(iterator);
+             EINA_LIST_FOREACH_SAFE(item_data->items, l_items, l_n_items, item_name)
+               {
+                   elm_genlist_item_append(part_list, _itc_part_item, item_name,
+                                           iterator, ELM_GENLIST_ITEM_NONE,
+                                           _on_part_item_select, nf);
+               }
+             return true;
+          }
+        iterator = elm_genlist_item_next_get(iterator);
+     }
+   return false;
+}
+

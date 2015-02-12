@@ -240,4 +240,18 @@ ui_widget_list_style_parts_reload(Evas_Object *object, Style *style);
 Eina_Bool
 ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index);
 
+/**
+ * Reload items for a container part (TABLE or BOX). This function create new
+ * subitems for part items.
+ *
+ * @param obj A widget list object.
+ * @param part A Part object with items, that need reload
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE
+ *
+ * @ingroup WidgetList
+ */
+Eina_Bool
+ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part);
+
 #endif /* UI_WIDGET_LIST_H */
