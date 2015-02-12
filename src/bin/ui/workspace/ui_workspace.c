@@ -95,8 +95,6 @@ struct _Ws_Smart_Data
         Evas_Coord dy;           /**< Groupedit's vertical shift inside of the
                                    container (for separate mode purpose). */
    } container;
-   Evas_Object *layout;          /**< A elementary layout object, \
-                                   which markup with workspace.edc file.*/
    struct {
         Evas_Object *obj;        /**< elm_menu object */
         Ws_Menu items;           /**< Context menu items structure*/
@@ -816,11 +814,6 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    Evas *e = evas_object_evas_get(o);
    Evas_Object *icon = NULL;
 
-   /* Load main markup layout into smart_data->layout*/
-   priv->layout = elm_layout_add(parent);
-   elm_layout_file_set(priv->layout, EFLETE_EDJ, "eflete/workspace/base/smart");
-   evas_object_smart_member_add(priv->layout, o);
-
    /* Here create evas image, whitch will be background for workspace*/
    GET_IMAGE(priv->background, e, "bg_demo");
    evas_object_smart_member_add(priv->background, o);
@@ -840,10 +833,9 @@ _workspace_child_create(Evas_Object *o, Evas_Object *parent)
    /* using scroller in workspace, with special style*/
    priv->scroll_flag = 0;
    priv->zoom.factor = 1.0;
-   priv->scroller = elm_scroller_add(priv->layout);
+   priv->scroller = elm_scroller_add(parent);
    elm_object_style_set(priv->scroller, "workspace");
    elm_scroller_content_min_limit(priv->scroller, false, false);
-   elm_layout_content_set(priv->layout, "groupspace", priv->scroller);
 
    evas_object_event_callback_add(priv->scroller, EVAS_CALLBACK_MOUSE_WHEEL,
                                   _sc_wheel_move, o);
@@ -966,7 +958,7 @@ _workspace_smart_resize(Evas_Object *o,
 
    evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
    if ((ow == w) && (oh == h)) return;
-   evas_object_resize(sd->layout, w, h);
+   evas_object_resize(sd->scroller, w, h);
    evas_object_smart_changed(o);
 }
 
