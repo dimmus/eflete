@@ -153,6 +153,14 @@ _edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd __UNUSED__,
    return false;
 }
 
+Eina_Bool
+_edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd __UNUSED__,
+                           Eina_Stringshare *part __UNUSED__,
+                           Eina_Stringshare *item __UNUSED__)
+{
+   return false;
+}
+
 static void
 _part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
                            Groupedit_Part *ge_part,
