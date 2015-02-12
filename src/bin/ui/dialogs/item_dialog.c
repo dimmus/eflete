@@ -42,11 +42,40 @@ _job_popup_close(void *data)
 }
 
 static void
-_on_button_add_clicked(void *data __UNUSED__,
+_on_button_add_clicked(void *data,
                        Evas_Object *obj __UNUSED__,
                        void *event_info __UNUSED__)
 {
-   /*TODO: not implemented yet*/
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *entry = evas_object_data_get(ap->popup, "ENTRY");
+   Evas_Object *combobox = evas_object_data_get(ap->popup, "COMBOBOX");
+   Part *part = evas_object_data_get(ap->popup, "PART");
+   const char *name = elm_entry_entry_get(entry);
+   Ewe_Combobox_Item *item = NULL;
+
+   if (elm_entry_is_empty(entry))
+     {
+        NOTIFY_WARNING(_("Item name can not be empty!"))
+        return;
+     }
+
+   item = ewe_combobox_select_item_get(combobox);
+
+   if(workspace_edit_object_part_item_add(ap->workspace, part->name, name, item->title))
+     {
+       edje_edit_string_list_free(part->items);
+       part->items = edje_edit_part_items_list_get(ap->project->current_style->obj, part->name);
+       ui_widget_list_part_items_refresh(ui_block_widget_list_get(ap), part);
+     }
+   else
+     {
+        NOTIFY_ERROR(_("Failed add new item"))
+        return;
+     }
+
+   workspace_edit_object_recalc(ap->workspace);
+   project_changed();
+   ecore_job_add(_job_popup_close, ap);
 }
 
 static void
