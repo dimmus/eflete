@@ -160,3 +160,12 @@ void workspace_edit_object_part_item_selected_set_test_n2(int);
 void workspace_edit_object_part_item_selected_set_test_n3(int);
 void workspace_edit_object_part_item_selected_set_test_n4(int);
 
+void workspace_edit_object_part_item_add_test_p1(int);
+void workspace_edit_object_part_item_add_test_n1(int);
+void workspace_edit_object_part_item_add_test_n2(int);
+void workspace_edit_object_part_item_add_test_n3(int);
+void workspace_edit_object_part_item_add_test_n4(int);
+void workspace_edit_object_part_item_add_test_n5(int);
+void workspace_edit_object_part_item_add_test_n6(int);
+void workspace_edit_object_part_item_add_test_n7(int);
+

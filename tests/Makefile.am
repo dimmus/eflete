@@ -522,7 +522,8 @@ test_ui_workspace/workspace_highlight_align_visible_get.c \
 test_ui_workspace/workspace_highlight_align_visible_set.c \
 test_ui_workspace/workspace_object_area_visible_get.c \
 test_ui_workspace/workspace_object_area_visible_set.c \
-test_ui_workspace/workspace_edit_object_part_item_selected_set.c
+test_ui_workspace/workspace_edit_object_part_item_selected_set.c \
+test_ui_workspace/workspace_edit_object_part_item_add.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 
