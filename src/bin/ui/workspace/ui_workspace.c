@@ -1567,3 +1567,19 @@ workspace_edit_object_part_item_selected_set(Evas_Object *obj,
                                                        selected);
 }
 
+Eina_Bool
+workspace_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
+                                    Eina_Stringshare *item,
+                                    Eina_Stringshare *source)
+{
+   WS_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+   if ((!part) || (!item) || (!source))
+     {
+        ERR("Can't add the item '%s' to the part '%s' in the group '%s'!",
+            item, part, sd->style->full_group_name)
+        return false;
+     }
+
+   return groupedit_edit_object_part_item_add(sd->groupedit, part, item, source);
+}
+

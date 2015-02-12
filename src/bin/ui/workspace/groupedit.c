@@ -390,6 +390,15 @@ groupedit_edit_object_part_del(Evas_Object *obj, const char *part)
 }
 
 Eina_Bool
+groupedit_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
+                                    Eina_Stringshare *item, Eina_Stringshare *source)
+{
+   WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
+
+   return _edit_object_part_item_add(sd, part, item, source);
+}
+
+Eina_Bool
 groupedit_edit_object_part_above(Evas_Object *obj, const char *part)
 {
    WS_GROUPEDIT_DATA_GET_OR_RETURN_VAL(obj, sd, false);
