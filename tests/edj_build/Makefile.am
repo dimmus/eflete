@@ -77,7 +77,7 @@ check: Makefile
 	$(builddir)/ui_style_clicked.edj \
 	$(builddir)/style_dialog.edj \
 	$(builddir)/state_dialog.edj \
-	$(builddir)/item_dialog_add.edj \
+	$(builddir)/item_dialog.edj \
 	$(builddir)/colorclass_editor.edj \
 	$(builddir)/sound_editor.edj \
 	$(builddir)/history.edj \
