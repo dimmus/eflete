@@ -29,7 +29,24 @@
 #define PROJECT_KEY_LICENSE      "edje/license"
 #define PROJECT_KEY_COMMENT      "edje/comment"
 
+#define S3 "   "
+#define TOP_LEVEL_NUMBER 7
+
 static Eet_Compression compess_level = EET_COMPRESSION_HI;
+
+const char *top_levels[] = { "collections",
+                             "styles",
+                             "color_classes",
+                             "fonts",
+                             "images",
+                             "data",
+                             "externals",
+                             NULL};
+
+const char *duplicates[] = { "style ",
+                             "color_class ",
+                             "font ",
+                             NULL};
 
 #define WORKER_CREATE(FUNC_PROGRESS, FUNC_END, DATA, PROJECT, \
                       NAME, PATH, EDJ, EDC, BUILD_OPTIONS) \
@@ -1194,21 +1211,21 @@ pm_project_resource_export(Project *pro, const char* dir_path)
 
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/images", pro->develop_path);
+   dest = eina_stringshare_printf("%s/images", path);
    _image_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    /* export fonts */
    list = edje_edit_fonts_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/fonts", pro->develop_path);
+   dest = eina_stringshare_printf("%s/fonts", path);
    _font_resources_export(list, dest, NULL, pro->dev, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
    /* export sounds */
    list = edje_edit_sound_samples_list_get(edje_edit_obj);
-   dest = eina_stringshare_printf("%s/sounds", pro->develop_path);
+   dest = eina_stringshare_printf("%s/sounds", path);
    _sound_resources_export(list, dest, NULL, edje_edit_obj);
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
@@ -1246,12 +1263,224 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
    return true;
 }
 
+#define  STRING_SPLIT(NAME) \
+for (k = 0; top_levels[k] != NULL; k++) \
+  { \
+     if (k == value) continue; \
+     if (strstr(tmp[i], top_levels[k])) \
+       { \
+          pos = strrchr(tmp[i], '}'); \
+          last = eina_stringshare_nprintf(pos - tmp[i] + 1, "%s", tmp[i]); \
+          if ((prev) && (!duplicate)) \
+            NAME = eina_stringshare_printf("%s%s", NAME, last); \
+          else if (!duplicate) \
+            NAME = eina_stringshare_printf("%s{%s", NAME, last); \
+          eina_stringshare_del(last); \
+          next = false; \
+          prev = true; \
+          duplicate = false; \
+       } \
+  } \
+if (next) \
+  { \
+     if ((prev) && (!duplicate)) \
+       { \
+          NAME = eina_stringshare_printf("%s%s", NAME, tmp[i]); \
+          prev= false; \
+       } \
+     else if (!duplicate) \
+       { \
+          if ((strrchr(NAME, '}') - NAME + 1) == eina_stringshare_strlen(NAME) && (value < 3)) \
+            NAME = eina_stringshare_printf("%s\n"S3"%s{%s", NAME, duplicates[value - 1], tmp[i]); \
+          else \
+            NAME = eina_stringshare_printf("%s{%s", NAME, tmp[i]); \
+          prev= false; \
+       } \
+     duplicate = false; \
+  } \
+for (k = 0; duplicates[k] != NULL; k++) \
+  { \
+     if (strstr(tmp[i], duplicates[k])) \
+       { \
+          sscanf(tmp[i + 1], " name: \"%s\"", str); \
+          EINA_LIST_FOREACH(dp_list, iter, duplicated) \
+            { \
+               if (!strcmp(str, duplicated)) \
+                 { \
+                    duplicate = true; \
+                    pos = strrchr(NAME, '}'); \
+                    last = eina_stringshare_nprintf(pos - NAME + 2, "%s", NAME); \
+                    NAME = eina_stringshare_add(last); \
+                    eina_stringshare_del(last); \
+                    break; \
+                 } \
+            } \
+       } \
+  } \
+if (sscanf(tmp[i], " name: \"%s\"", str)) \
+  { \
+     dp_str = eina_stringshare_add(str); \
+     dp_list = eina_list_append(dp_list, dp_str); \
+  }
+
 Eina_Bool
-pm_project_source_code_export(Project *pro __UNUSED__,
-                              const char *dir_path __UNUSED__)
+pm_project_source_code_export(Project *pro, const char *dir_path)
 {
+   Eina_Stringshare *code = NULL;
+   Eina_Stringshare *group = NULL;
+   Eina_Stringshare *top_level_str[TOP_LEVEL_NUMBER];
+   Eina_Stringshare *last = NULL;
+   Eina_Stringshare *dp_str = NULL;
+
+   Eina_Stringshare *path = NULL;
+   Eina_Stringshare *path_edc_dir = NULL;
+   Eina_Stringshare *path_edc = NULL;
+   Eina_Stringshare *group_edc = NULL;
+   Eina_Stringshare *include = NULL;
+   FILE *f, *fedc, *f_top[TOP_LEVEL_NUMBER];
+   Eina_Inlist *l = NULL, *lw = NULL, *lk = NULL, *ls = NULL, *all_list = NULL;
+   Eina_List *dp_list = NULL, *iter = NULL;
+   Style *style = NULL;
+   Eina_Bool next = true, prev = true, duplicate = false;
+   char **tmp;
+   int value = -1, k = 0;
+   const char *pos = NULL;
+   unsigned int i = 0, tokens_count = 0;
+   Widget *widget;
+   Class *klass;
+   char str[50], *duplicated;
+
+   path = eina_stringshare_printf("%s/%s.edc", dir_path, pro->name);
+   f = fopen(path, "w");
+   if (!f)
+     {
+        ERR("Could't open file '%s'", path);
+        goto exit;
+     }
+
+   path_edc_dir = eina_stringshare_printf("%s/edc", dir_path);
+   if (!ecore_file_exists(path_edc_dir))
+     ecore_file_mkdir(path_edc_dir);
+
+   for (i = 1; i < TOP_LEVEL_NUMBER; i++)
+     {
+        path = eina_stringshare_printf("%s/edc/%s.edc", dir_path, top_levels[i]);
+        f_top[i] = fopen(path, "w");
+        if (!f_top[i]) goto exit;
+        top_level_str[i] = eina_stringshare_printf("/* Automatically generated by Eflete */\n"
+                                                   "%s {\n", top_levels[i]);
+
+        include = eina_stringshare_printf("#include \"edc/%s.edc\"\n", top_levels[i]);
+        fputs(include, f);
+     }
+   fputs("collections {\n", f);
+
+   EINA_INLIST_FOREACH_SAFE(pro->layouts, l, style)
+     all_list = eina_inlist_append(all_list, EINA_INLIST_GET(style));
+
+   EINA_INLIST_FOREACH_SAFE(pro->widgets, lw, widget)
+     {
+        EINA_INLIST_FOREACH_SAFE(widget->classes, lk, klass)
+          {
+             EINA_INLIST_FOREACH_SAFE(klass->styles, ls, style)
+               all_list = eina_inlist_append(all_list, EINA_INLIST_GET(style));
+          }
+     }
+
+   EINA_INLIST_FOREACH_SAFE(all_list, l, style)
+     {
+        if (!style->obj) continue;
+        tmp = eina_str_split_full(style->full_group_name, "/", 0,
+                                  &tokens_count);
+        if (!tmp[0]) continue;
+        group_edc = eina_stringshare_add(tmp[0]);
+        for (i = 1; tokens_count - 1 > 0; i++, tokens_count--)
+          group_edc = eina_stringshare_printf("%s_%s", group_edc, tmp[i]);
+        group_edc = eina_stringshare_printf("%s.edc", group_edc);
+        free(tmp[0]);
+        free(tmp);
+        path_edc = eina_stringshare_printf("%s/%s", path_edc_dir, group_edc);
+        code = edje_edit_source_generate(style->obj);
+        fedc = fopen(path_edc, "w");
+        if ((!fedc) || (!code))
+          {
+             code = NULL;
+             continue;
+          }
+
+        tmp = eina_str_split_full(code, "{", 0,
+                                  &tokens_count);
+        if (!tmp[0]) continue;
+        for (i = 0; tokens_count > 0; i++, tokens_count--)
+          {
+             if (value == 0)
+               {
+                  if (!group)
+                    group = eina_stringshare_add(tmp[i]);
+                  else if (tokens_count != 1)
+                    group = eina_stringshare_printf("%s{%s", group, tmp[i]);
+                  else
+                    {
+                       pos = strrchr(tmp[i], '}');
+                       last = eina_stringshare_nprintf(pos - tmp[i] + 1, "%s", tmp[i]);
+                       group = eina_stringshare_printf("%s{%s", group, last);
+                       eina_stringshare_del(last);
+                    }
+               }
+             else if ((value > 0) && (value < TOP_LEVEL_NUMBER))
+               {
+                  STRING_SPLIT(top_level_str[value]);
+               }
+
+             for (k = 0; top_levels[k] != NULL; k++)
+               {
+                  if ((value != 0) && (strstr(tmp[i], top_levels[k])))
+                    {
+                       value = k;
+                       break;
+                    }
+               }
+             next = true;
+          }
+        free(tmp[0]);
+        free(tmp);
+        value = -1;
+
+        if (group) fputs(group, fedc);
+        fclose(fedc);
+        include = eina_stringshare_printf(S3"#include \"edc/%s\"\n", group_edc);
+        fputs(include, f);
+        eina_stringshare_del(path_edc);
+        eina_stringshare_del(group_edc);
+        eina_stringshare_del(group);
+        group = NULL;
+        eina_stringshare_del(include);
+     }
+   for (i = 1; i < TOP_LEVEL_NUMBER; i++)
+     {
+        if ((f_top[i]) && (top_level_str[i]))
+          {
+             fputs(top_level_str[i], f_top[i]);
+             fputs("}", f_top[i]);
+          }
+        fclose(f_top[i]);
+        eina_stringshare_del(top_level_str[i]);
+     }
+   fputs("}", f);
+   fclose(f);
+   EINA_LIST_FREE(dp_list, dp_str)
+     eina_stringshare_del(dp_str);
+
+   EINA_INLIST_FREE(all_list, style)
+     all_list = eina_inlist_remove(all_list, EINA_INLIST_GET(style));
+
+exit:
+   eina_stringshare_del(path);
    return EINA_TRUE;
 }
+#undef S3
+#undef TOP_LEVEL_NUMBER
+#undef STRING_SPLIT
 
 static void *
 _develop_export(void *data,
