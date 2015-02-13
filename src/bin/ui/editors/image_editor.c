@@ -576,7 +576,6 @@ _on_image_done(void *data,
    const char *selected;
 
    Image_Editor *img_edit = (Image_Editor *)data;
-   elm_gengrid_multi_select_set(img_edit->gengrid, false);
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
    images = elm_fileselector_selected_paths_get(obj);
@@ -617,7 +616,7 @@ _on_button_add_clicked_cb(void *data,
 {
    Evas_Object *win, *bg, *fs;
 
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Add image to library"), _on_image_done, NULL);
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Add image to library"), _on_image_done, data);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bg);
