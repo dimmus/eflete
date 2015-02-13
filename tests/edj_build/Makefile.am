@@ -33,6 +33,7 @@ check: Makefile
 	$(builddir)/workspace_edit_object_visible_set.edj \
 	$(builddir)/workspace_edit_object_part_item_selected_set.edj \
 	$(builddir)/workspace_edit_object_part_item_add.edj \
+	$(builddir)/workspace_edit_object_part_item_del.edj \
 	$(builddir)/workspace_highlight_align_visible_get.edj \
 	$(builddir)/workspace_highlight_align_visible_set.edj \
 	$(builddir)/workspace_object_area_visible_get.edj \
