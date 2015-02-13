@@ -131,11 +131,15 @@ _on_item_add_clicked(void *data,
 }
 
 static void
-_on_item_del_clicked(void *data __UNUSED__,
-                     Evas_Object *obj __UNUSED__,
+_on_item_del_clicked(void *data,
+                     Evas_Object *obj,
                      void *event_info __UNUSED__)
 {
-   /* TODO: not implemented yet */
+   Eina_Stringshare *item_name = (Eina_Stringshare *)data;
+   Evas_Object *gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
+   Evas_Object *tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
+
+   evas_object_smart_callback_call(tabs, "wl,part,item,del", (char *)item_name);
    return;
 }
 
@@ -216,8 +220,6 @@ _item_part_item_content_get(void *data,
         ICON_ADD(button, _icon, true, "icon-remove");
         elm_object_part_content_set(button, NULL, _icon);
         elm_object_style_set(button, "simple");
-        /*Button will disabled until this functionality not implemented */
-        elm_object_disabled_set(button, true);
 
         evas_object_data_set(button, PARTLIST_DATA_KEY, obj);
         evas_object_smart_callback_add(button, "clicked", _on_item_del_clicked, item_name);
@@ -1231,12 +1233,16 @@ ui_widget_list_selected_part_get(Evas_Object *object)
    Evas_Object *gl_parts;
    Part *part;
    Elm_Object_Item *eoi;
+   Elm_Object_Item *parent_item = NULL;
 
    if (!object) return NULL;
    gl_parts = elm_object_item_part_content_get(_widget_list_get(_current_naviframe_get(object)),
                                                "elm.swallow.content");
    eoi = elm_genlist_selected_item_get(gl_parts);
    if (!eoi) return NULL;
+   parent_item = elm_genlist_item_parent_get(eoi);
+   if (parent_item) eoi = parent_item;
+
    part = (Part *) elm_object_item_data_get(eoi);
    if ((!part) || (part->__type != PART)) return NULL;
 

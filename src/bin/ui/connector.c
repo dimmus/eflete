@@ -121,6 +121,38 @@ _del_part(void *data,
 }
 
 static void
+_del_part_item(void *data,
+               Evas_Object *obj __UNUSED__,
+               void *event_info)
+{
+   Eina_Stringshare *item_name = (Eina_Stringshare *)event_info;
+   App_Data *ap = (App_Data *)data;
+   Evas_Object *widget_tabs = ui_block_widget_list_get(ap);
+
+   Part *part = ui_widget_list_selected_part_get(widget_tabs);
+   if (!part)
+     {
+        ERR("Failed to receive parent part for given item");
+        return;
+     }
+
+   if (workspace_edit_object_part_item_del(ap->workspace, part->name, item_name))
+     {
+        edje_edit_string_list_free(part->items);
+        part->items = edje_edit_part_items_list_get(ap->project->current_style->obj, part->name);
+        ui_widget_list_part_items_refresh(widget_tabs, part);
+     }
+   else
+     {
+        ERR("Failed delete item")
+        return;
+     }
+   workspace_edit_object_recalc(ap->workspace);
+   project_changed();
+   live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
+}
+
+static void
 _above_part(void *data,
           Evas_Object *obj __UNUSED__,
           void *event_info __UNUSED__)
@@ -513,6 +545,7 @@ ui_part_back(App_Data *ap)
 
    wl_list = ui_block_widget_list_get(ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,item,del", _del_part_item, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,del", _del_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,above", _above_part, ap);
@@ -668,6 +701,7 @@ ui_style_clicked(App_Data *ap, Style *style)
    evas_object_smart_callback_add(wl_list, "wl,part,moved,down",
                                   _restack_part_below, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,item,del", _del_part_item, ap);
 
    /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);
