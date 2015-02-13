@@ -30,6 +30,8 @@
 #include "main_window.h"
 #endif
 
+#define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
+
 static void
 _add_part_dialog(void *data,
                  Evas_Object *obj __UNUSED__,
@@ -1300,6 +1302,117 @@ project_export_edc_group(void)
    evas_object_show(bg);
    elm_win_resize_object_add(win, bg);
    FILESELECTOR_ADD(fs, win, _on_export_edc_group_done, win);
+   elm_fileselector_is_save_set(fs, false);
+   elm_fileselector_folder_only_set(fs, true);
+   elm_win_resize_object_add(win, fs);
+}
+
+static void
+_on_export_edc_project_done(void *data,
+                            Evas_Object *obj __UNUSED__,
+                            void *event_info)
+{
+   const char *selected;
+   Evas_Object *win;
+   Eina_Stringshare *dir_path = NULL;
+   Eina_Stringshare *build_sh = NULL;
+   Eina_Stringshare *build_str = NULL;
+   Eina_Stringshare *current_dev_path = NULL;
+   Eina_Strbuf *request_str = NULL;
+   Eina_Bool chk = true;
+   FILE *fbuild;
+   App_Data *ap;
+
+   ap = app_data_get();
+   win = (Evas_Object *)data;
+   selected = (const char *)event_info;
+   if (!selected)
+     {
+        evas_object_del(win);
+        ap->modal_editor--;
+        return;
+     }
+   dir_path = eina_stringshare_printf("%s/%s", selected, ap->project->name);
+
+   if (ecore_file_exists(dir_path))
+     {
+        if (ecore_file_is_dir(dir_path))
+          {
+             current_dev_path = eina_stringshare_printf("%s/develop", dir_path);
+             if (!strcmp(ap->project->develop_path, current_dev_path))
+               {
+                  export_warning (win, _("Can not delete current project folder!"));
+                  return;
+               }
+             request_str = eina_strbuf_new();
+             eina_strbuf_append_printf(request_str,
+                                       _("The <path>'%s'</path> directory "
+                                         "already exists.<br>Do you want to "
+                                         "<b><orange>delete all</orange></b>"
+                                         " content of this folder and create "
+                                         "new for project export edc in it?"),
+                                       dir_path);
+
+             chk = export_replace_request(win, eina_strbuf_string_get(request_str));
+             if (chk)
+               {
+                  chk = ecore_file_recursive_rm(dir_path);
+                  if (!chk)
+                    {
+                       NOTIFY_ERROR(_("Can not delete folder %s!"),
+                                    dir_path);
+                    }
+                  else
+                    ecore_file_mkdir(dir_path);
+               }
+          }
+        else
+          {
+             NOTIFY_ERROR(_("The name <path>'%s'</path> is "
+                            "already used at this location."),
+                          dir_path);
+             chk = false;
+          }
+     }
+   else
+     ecore_file_mkdir(dir_path);
+
+   if (request_str)
+     eina_strbuf_free(request_str);
+
+   pm_project_source_code_export(ap->project, dir_path);
+   pm_project_resource_export(ap->project, dir_path);
+   build_sh = eina_stringshare_printf("%s/build.sh", dir_path);
+   fbuild = fopen(build_sh, "w");
+   if (!fbuild)
+     ERR("Could't open file '%s'", build_sh);
+   build_str = eina_stringshare_printf("%s%s.edc", makefile, ap->project->name);
+   fputs(build_str, fbuild);
+   fclose(fbuild);
+   chmod(build_sh, 777);
+
+   eina_stringshare_del(dir_path);
+   eina_stringshare_del(build_sh);
+   eina_stringshare_del(build_str);
+   if (current_dev_path)
+     eina_stringshare_del(current_dev_path);
+   evas_object_del(win);
+   ap->modal_editor--;
+}
+
+void
+project_export_edc_project(void)
+{
+   Evas_Object *win, *bg, *fs;
+   App_Data *ap = app_data_get();
+
+   ap->modal_editor++;
+   MODAL_WINDOW_ADD(win, main_window_get(), _("Export project as edc"), _fs_close, ap);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(bg);
+   elm_win_resize_object_add(win, bg);
+   FILESELECTOR_ADD(fs, win, _on_export_edc_project_done, win);
    elm_fileselector_is_save_set(fs, false);
    elm_fileselector_folder_only_set(fs, true);
    elm_win_resize_object_add(win, fs);

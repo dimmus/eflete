@@ -506,6 +506,15 @@ Eina_Bool
 export_replace_request(Evas_Object *parent, const char *msg);
 
 /**
+ * Export project as edc.
+ *
+ * @ingroup Window
+ */
+void
+project_export_edc_project(void);
+
+
+/**
  * Export group as edc.
  *
  * @ingroup Window

@@ -446,13 +446,14 @@ pm_project_meta_data_set(Project *project,
  * used this data.
  *
  * @param pro The opened project.
+ * @param dir_path export directory path;
  *
  * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager.
  */
 Eina_Bool
-pm_project_resource_export(Project *pro);
+pm_project_resource_export(Project *pro, const char* dir_path);
 
 /**
  * Export the source code of Style (edje object) to file.
@@ -469,6 +470,22 @@ pm_project_resource_export(Project *pro);
  */
 Eina_Bool
 pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
+
+/**
+ * Export the source code of Project (for each style edje objects) to a directory
+ * with general file 'project_name.edc' that includes each 'style.edc', which are
+ * created separately, and top level blocks.
+ * build.sh file is created after.
+ *
+ * @param pro The opened project;
+ * @param dir_path directory path where source code would be exported;
+ *
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
+ *
+ * @ingroup ProjectManager.
+ */
+Eina_Bool
+pm_project_source_code_export(Project *pro, const char *dir_path);
 
 /**
  * Export the edj develop file from current project. The develop edj file

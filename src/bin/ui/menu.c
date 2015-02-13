@@ -31,7 +31,7 @@ static int _menu_delayed_event = 0;
 int MENU_ITEMS_LIST_BASE[] = {
    MENU_FILE_SAVE,
    MENU_FILE_EXPORT_EDC,
-/* MENU_FILE_EXPORT_EDC_PROJECT,*/ /*TODO enable after implementation*/
+   MENU_FILE_EXPORT_EDC_PROJECT,
    MENU_FILE_EXPORT,
    MENU_FILE_EXPORT_DEVELOP,
 /* MENU_FILE_EXPORT_RELEASE,*/
@@ -117,8 +117,8 @@ _menu_cb(void *data __UNUSED__,
          project_export_edc_group();
          break;
       case MENU_FILE_EXPORT_EDC_PROJECT:
-          /* TODO: add implementation here */
-          break;
+         project_export_edc_project();
+         break;
       case MENU_FILE_EXPORT_DEVELOP:
          project_export_develop();
          break;
@@ -334,7 +334,6 @@ ui_menu_add(App_Data *ap)
 
    /*TODO remove both lines after implementation this features*/
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
-   ui_menu_disable_set(menu, MENU_FILE_EXPORT_EDC_PROJECT, true);
 
    menu->window_menu = window_menu;
    menu->toolbar = toolbar;

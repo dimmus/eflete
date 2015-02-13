@@ -393,7 +393,7 @@ _project_import_edj(void *data,
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    WORKER_LOCK_TAKE;
-      pm_project_resource_export(worker->project);
+      pm_project_resource_export(worker->project, NULL);
       _project_linked_images_copy(worker);
    WORKER_LOCK_RELEASE;
 
@@ -436,7 +436,7 @@ _exe_exit(void *data,
    if (e->exit_code)
      END_SEND(PM_PROJECT_ERROR);
 
-   return EINA_TRUE;
+   return true;
 }
 
 static Eina_Bool
@@ -534,7 +534,7 @@ _project_import_edc(void *data,
       worker->project->mmap_file = eina_file_open(worker->project->dev, false);
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
       worker->project->layouts = wm_layouts_list_new(worker->project->dev);
-      pm_project_resource_export(worker->project);
+      pm_project_resource_export(worker->project, NULL);
    WORKER_LOCK_RELEASE;
 
    END_SEND(PM_PROJECT_SUCCESS)
@@ -1171,12 +1171,13 @@ pm_style_resource_export(Project *pro ,
 }
 
 Eina_Bool
-pm_project_resource_export(Project *pro)
+pm_project_resource_export(Project *pro, const char* dir_path)
 {
    Eina_List *list;
    Evas_Object *edje_edit_obj;
    Evas *e;
    Eina_Stringshare *dest;
+   Eina_Stringshare *path = NULL;
 
    Ecore_Evas *ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
@@ -1188,6 +1189,8 @@ pm_project_resource_export(Project *pro)
         return false;
      }
    edje_edit_string_list_free(list);
+   path = (dir_path) ? eina_stringshare_add(dir_path)
+          : eina_stringshare_add(pro->develop_path);
 
    /* export images */
    list = edje_edit_images_list_get(edje_edit_obj);
@@ -1210,6 +1213,7 @@ pm_project_resource_export(Project *pro)
    edje_edit_string_list_free(list);
    eina_stringshare_del(dest);
 
+   eina_stringshare_del(path);
    ecore_evas_free(ee);
 
    return true;
@@ -1240,6 +1244,13 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
    eina_stringshare_del(code);
    eina_stringshare_del(path);
    return true;
+}
+
+Eina_Bool
+pm_project_source_code_export(Project *pro __UNUSED__,
+                              const char *dir_path __UNUSED__)
+{
+   return EINA_TRUE;
 }
 
 static void *
