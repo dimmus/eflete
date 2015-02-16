@@ -26,8 +26,10 @@
 #include "logger.h"
 
 #define BORDER_IMG "border_part"
+#define BORDER_2PX_IMG "2pxborder_part"
 #define SPACER_IMG "part_spacer_bg"
 #define SWALLOW_IMG "part_swallow_bg"
+#define PART_ITEM_IMG "part_container_bg"
 
 typedef struct _Ws_Groupedit_Smart_Data Ws_Groupedit_Smart_Data;
 typedef struct _Groupedit_Part Groupedit_Part;
@@ -150,6 +152,7 @@ struct _Ws_Groupedit_Smart_Data
 struct _Groupedit_Part
 {
    Eina_Stringshare *name;    /**< The part name.  */
+   Evas_Object *bg;           /**< The background, uses for container parts TABLE or BOX */
    Evas_Object *draw;         /**< The evas primitive to be draw in groupedit.
                                    The valid evas object types: image, rectangle,
                                    text and textblock.*/
