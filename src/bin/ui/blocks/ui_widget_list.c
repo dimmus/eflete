@@ -1131,6 +1131,11 @@ ui_widget_list_selected_part_del(Evas_Object *object, Style *style)
         NOTIFY_INFO(3, _("No part selected"));
         return false;
      }
+   if (elm_genlist_item_parent_get(eoi))
+     {
+        eoi = elm_genlist_item_parent_get(eoi);
+        elm_genlist_item_subitems_clear(eoi);
+     }
    part = (Part *)elm_object_item_data_get(eoi);
    wm_part_del(style, part);
 
