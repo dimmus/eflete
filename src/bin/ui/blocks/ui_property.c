@@ -171,6 +171,13 @@ struct _Prop_Data
    } prop_state_fill;
    struct {
       Evas_Object *frame;
+      Evas_Object *layout;
+      Evas_Object *custom_layout;
+      Evas_Object *alt_layout;
+      Evas_Object *custom_alt_layout;
+   } prop_state_box;
+   struct {
+      Evas_Object *frame;
       Evas_Object *name;
       Evas_Object *source;
       Evas_Object *min;
@@ -266,6 +273,19 @@ static const char *edje_middle_type[] = { N_("None"),
                                           N_("Default"),
                                           N_("Solid")};
 
+static const char *edje_box_layouts[] = { N_("None"),
+                                          N_("horizontal"),
+                                          N_("vertical"),
+                                          N_("horizontal_homogeneous"),
+                                          N_("vertical_homogeneous"),
+                                          N_("horizontal_max"),
+                                          N_("vertical_max"),
+                                          N_("horizontal_flow"),
+                                          N_("vertical_flow"),
+                                          N_("stack"),
+                                          N_("Custom Layout"),
+                                          NULL};
+
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property);
 
@@ -301,6 +321,12 @@ ui_property_state_table_set(Evas_Object *property);
 
 static void
 ui_property_state_table_unset(Evas_Object *property);
+
+static Eina_Bool
+ui_property_state_box_set(Evas_Object *property);
+
+static void
+ui_property_state_box_unset(Evas_Object *property);
 
 static void
 prop_item_state_text_update(Evas_Object *item, Prop_Data *pd);
@@ -890,7 +916,7 @@ _on_part_name_change(void *data,
 }
 
 static void
-prop_part_name_update(Prop_Data *pd)
+part_name_update(Prop_Data *pd)
 {
    elm_entry_entry_set(pd->part.name, pd->wm_part->name);
 }
@@ -908,7 +934,7 @@ prop_item_part_name_add(Evas_Object *parent,
    evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
    evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->part.name);
-   prop_part_name_update(pd);
+   part_name_update(pd);
 
    return item;
 }
@@ -1044,7 +1070,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    else
      {
-         prop_part_name_update(pd);
+         part_name_update(pd);
          prop_item_label_update(pd_part.type, wm_part_type_get(type));
          prop_item_part_scale_update(pd_part.scale, pd);
          prop_item_part_mouse_events_update(pd_part.mouse, pd);
@@ -1070,6 +1096,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
               evas_object_del(pd_part.source);
               pd_part.source = NULL;
            }
+
          if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
            {
              box = elm_object_content_get(pd_part.frame);
@@ -1239,8 +1266,8 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_2SPINNER_STATE_UPDATE(SUB, VALUE1, VALUE2) \
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
 
-#define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE, FILTER) \
-   ITEM_STRING_STATE_CALLBACK(SUB, VALUE) \
+#define ITEM_1ENTRY_STATE_CREATE(TEXT, SUB, VALUE, FILTER, TYPE) \
+   ITEM_STRING_STATE_CALLBACK(SUB, VALUE, TYPE) \
    ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
 
@@ -1452,6 +1479,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
      ui_property_state_fill_unset(property);
    if (type == EDJE_PART_TYPE_TABLE) ui_property_state_table_set(property);
    else ui_property_state_table_unset(property);
+   if (type == EDJE_PART_TYPE_BOX) ui_property_state_box_set(property);
+   else ui_property_state_box_unset(property);
 
 #ifndef HAVE_ENVENTOR
    _code_of_group_setup(pd);
@@ -1475,6 +1504,7 @@ ui_property_state_unset(Evas_Object *property)
    ui_property_state_image_unset(property);
    ui_property_state_textblock_unset(property);
    ui_property_state_fill_unset(property);
+   ui_property_state_box_unset(property);
 }
 
 /* FIXME: edje_edit_state_relX_to do not update object properly.
@@ -1680,8 +1710,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
    ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
 
-ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL)
-ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop)
+ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL, const char *)
+ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop, const char *)
 ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
@@ -2542,7 +2572,7 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
      }
 }
 
-ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop)
+ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop, const char *)
 ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
 
@@ -2740,6 +2770,83 @@ ui_property_state_fill_unset(Evas_Object *property)
    evas_object_hide(pd_fill.frame);
 }
 #undef pd_fill
+
+#define pd_box pd->prop_state_box
+#define ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(TEXT, SUB, VALUE) \
+   ITEM_COMBOBOX_STATE_BOX_CALLBACK(SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PART_BOX_UPDATE(SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PART_BOX_ADD(TEXT, SUB, VALUE)
+
+ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(_("layout"), state_box, layout)
+ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(_("alternative layout"), state_box, alt_layout)
+ITEM_1ENTRY_STATE_CREATE(NULL, state_box, layout, &accept_prop, char *)
+ITEM_1ENTRY_STATE_CREATE(NULL, state_box, alt_layout, &accept_prop, char *)
+
+static Eina_Bool
+ui_property_state_box_set(Evas_Object *property)
+{
+   Evas_Object *box_frame, *box, *prop_box;
+   PROP_DATA_GET(EINA_FALSE)
+
+   /* if previos selected part is BOX too, unpack it */
+   ui_property_state_box_unset(property);
+   prop_box = elm_object_content_get(pd->visual);
+   if (!pd_box.frame)
+     {
+        FRAME_PROPERTY_ADD(property, box_frame, true, _("Box"), pd->visual)
+        BOX_ADD(box_frame, box, false, false)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(box_frame, box);
+
+        pd_box.custom_layout = prop_item_state_box_layout_add(box, pd, NULL,
+                               _("Used for typing custom name of "
+                               "main (primary) layout "
+                               "(default horizontal layout would be "
+                               "applied to workspace and live object)."), NULL);
+        pd_box.layout = prop_item_box_state_box_layout_add(box, pd,
+                        _("Used for setting layout for box."),
+                        edje_box_layouts);
+        pd_box.custom_alt_layout = prop_item_state_box_alt_layout_add(box, pd, NULL,
+                                   _("Used for typing custom name of "
+                                   "alternative (fallback) layout "
+                                   "(default horizontal layout would be "
+                                   "applied to workspace and live object)."), NULL);
+        pd_box.alt_layout = prop_item_box_state_box_alt_layout_add(box, pd,
+                            _("Used for setting alternative layout for box."),
+                            edje_box_layouts);
+        elm_box_pack_end(box, pd_box.layout);
+        elm_box_pack_end(box, pd_box.custom_layout);
+        elm_box_pack_end(box, pd_box.alt_layout);
+        elm_box_pack_end(box, pd_box.custom_alt_layout);
+
+        pd_box.frame = box_frame;
+
+        elm_box_pack_after(prop_box, pd_box.frame, pd->part.frame);
+     }
+   else
+     {
+        prop_item_box_state_box_layout_update(pd_box.layout, pd, edje_box_layouts);
+        prop_item_state_box_layout_update(pd_box.custom_layout, pd);
+        prop_item_box_state_box_alt_layout_update(pd_box.alt_layout, pd, edje_box_layouts);
+        prop_item_state_box_alt_layout_update(pd_box.custom_alt_layout, pd);
+
+        elm_box_pack_after(prop_box, pd_box.frame, pd->part.frame);
+     }
+   evas_object_show(pd_box.frame);
+   return true;
+}
+
+static void
+ui_property_state_box_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+   PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_box.frame);
+   evas_object_hide(pd_box.frame);
+}
+#undef pd_box
 
 static void
 _on_state_color_class_change(void *data,
