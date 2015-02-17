@@ -1511,6 +1511,47 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    evas_object_smart_calculate(gp->draw);
 }
 
+/* this is only for finding layout! */
+struct edje_box_layouts {
+   const char *name;
+   Evas_Object_Box_Layout cb;
+};
+
+static Evas_Object_Box_Layout
+_box_layout_function_get(const char *primary, const char *fallback)
+{
+   const struct edje_box_layouts _edje_box_layouts[] = {
+     {"horizontal", evas_object_box_layout_horizontal},
+     {"horizontal_flow", evas_object_box_layout_flow_horizontal},
+     {"horizontal_homogeneous", evas_object_box_layout_homogeneous_horizontal},
+     {"horizontal_max", evas_object_box_layout_homogeneous_max_size_horizontal},
+     {"stack", evas_object_box_layout_stack},
+     {"vertical", evas_object_box_layout_vertical},
+     {"vertical_flow", evas_object_box_layout_flow_vertical},
+     {"vertical_homogeneous", evas_object_box_layout_homogeneous_vertical},
+     {"vertical_max", evas_object_box_layout_homogeneous_max_size_vertical},
+     {NULL, NULL}
+   };
+   const struct edje_box_layouts *base = _edje_box_layouts;
+   const struct edje_box_layouts *base_fallback = _edje_box_layouts;
+
+   if (primary)
+     {
+        for (; base->name; base++)
+          if (strcmp(base->name, primary) == 0)
+            return base->cb;
+     }
+   if (fallback)
+     {
+        for (; base_fallback->name; base_fallback++)
+          if (strcmp(base_fallback->name, fallback) == 0)
+            return base_fallback->cb;
+     }
+
+   return evas_object_box_layout_horizontal;
+}
+
+
 static void
 _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
@@ -1518,6 +1559,8 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    Eina_List *l_items, *l_n_items;
    Eina_Stringshare *part = gp->name;
    Eina_Stringshare *item_source = NULL;
+   Eina_Stringshare *primary_layout = NULL;
+   Eina_Stringshare *fallback_layout = NULL;
 
    int w, h; // Geometry values
    int min_w, max_w, prefer_w, min_h, max_h, prefer_h; // Hints values
@@ -1540,9 +1583,14 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    /* TODO: get items from box and edje_unload them, remove them, destroy them */
    evas_object_box_remove_all(gp->draw, false);
-   /* TODO: Changing layouts here please! After merging layout functions into edje_edit */
-   evas_object_box_layout_set(
-      gp->draw, evas_object_box_layout_horizontal, NULL, NULL);
+
+   /* Changing layout according to edje_edit params! */
+   primary_layout = edje_edit_state_box_layout_get(sd->edit_obj, gp->name, state, value);
+   fallback_layout = edje_edit_state_box_alt_layout_get(sd->edit_obj, gp->name, state, value);
+   evas_object_box_layout_set(gp->draw,
+          _box_layout_function_get(primary_layout, fallback_layout), NULL, NULL);
+   eina_stringshare_del(primary_layout);
+   eina_stringshare_del(fallback_layout);
 
    EINA_LIST_FOREACH_SAFE(gp->items, l_items, l_n_items, ge_item)
      {
