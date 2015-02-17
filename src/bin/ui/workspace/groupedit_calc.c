@@ -1516,7 +1516,6 @@ struct edje_box_layouts {
    const char *name;
    Evas_Object_Box_Layout cb;
 };
-
 static Evas_Object_Box_Layout
 _box_layout_function_get(const char *primary, const char *fallback)
 {
@@ -1597,7 +1596,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         item_source = edje_edit_part_item_source_get(sd->edit_obj, part, ge_item->name);
         edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
 
-        evas_object_box_append(gp->draw, ge_item->draw);
+        Evas_Object_Box_Option *item = evas_object_box_append(gp->draw, ge_item->draw);
 
         min_w = edje_edit_part_item_min_w_get(sd->edit_obj, part, ge_item->name);
         min_h = edje_edit_part_item_min_h_get(sd->edit_obj, part, ge_item->name);
@@ -1653,13 +1652,16 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
            >  proper size of border (showing item's geometry), according to layout
         */
         Evas_Coord x, y;
-        evas_object_geometry_get(ge_item->draw, &x, &y, &w, &h);
+        evas_object_geometry_get(item->obj, &x, &y, &w, &h);
 
         evas_object_move(ge_item->border, x, y);
         evas_object_resize(ge_item->border, w, h);
 
         evas_object_move(ge_item->highlight, x, y);
         evas_object_resize(ge_item->highlight, w, h);
+
+        evas_object_smart_member_add(ge_item->border, ge_item->draw);
+        evas_object_smart_member_add(ge_item->highlight, ge_item->draw);
      }
    evas_object_smart_calculate(gp->draw);
 }
