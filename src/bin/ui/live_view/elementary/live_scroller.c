@@ -21,8 +21,8 @@
 
 static void
 _on_scroller_swallow_check(void *data,
-                        Evas_Object *obj,
-                        void *ei __UNUSED__)
+                           Evas_Object *obj,
+                           void *ei __UNUSED__)
 {
    Evas_Object *content = NULL, *check = NULL, *item, *ch;
    Eina_List *item_list = NULL, *it;
