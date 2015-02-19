@@ -17,21 +17,41 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "live_elementary_widgets.h"
+#include "live_view_prop.h"
 
 static void
 _on_gengrid_swallow_check(void *data,
                           Evas_Object *obj,
                           void *ei __UNUSED__)
 {
-   Evas_Object *object = (Evas_Object *)data;
+   Evas_Object *check = NULL, *item_ch, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
    Eina_List *part_list = evas_object_data_get(object, SWALLOW_LIST);
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_swallow.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj) && (!eina_list_data_find(part_list, part_name)))
-     part_list =  eina_list_append(part_list, part_name);
+     {
+        part_list =  eina_list_append(part_list, part_name);
+        item_list = elm_box_children_get(pd->prop_swallow.swallows);
+        EINA_LIST_FOREACH(item_list, it, item_ch)
+          {
+             ch = elm_object_part_content_get(item_ch, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+     }
    else if (!elm_check_state_get(obj) && (eina_list_data_find(part_list, part_name)))
-     part_list = eina_list_remove(part_list, part_name);
+     {
+        part_list = eina_list_remove(part_list, part_name);
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
+     }
 
    evas_object_data_set(object, SWALLOW_LIST, part_list);
 
@@ -49,14 +69,34 @@ _on_gengrid_text_check(void *data,
                        Evas_Object *obj,
                        void *ei __UNUSED__)
 {
-   Evas_Object *object = (Evas_Object *)data;
+   Evas_Object *check = NULL, *item_ch, *ch;
+   Eina_List *item_list = NULL, *it;
+   Eina_Bool all_checks = true;
+
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *object = pd->live_object;
    Eina_List *part_list = evas_object_data_get(object, TEXT_LIST);
    const char *part_name = evas_object_data_get(obj, PART_NAME);
+   check = elm_object_part_content_get(pd->prop_text.frame, "elm.swallow.check");
 
    if (elm_check_state_get(obj) && (!eina_list_data_find(part_list, part_name)))
-     part_list =  eina_list_append(part_list, part_name);
+     {
+        part_list =  eina_list_append(part_list, part_name);
+        item_list = elm_box_children_get(pd->prop_text.texts);
+        EINA_LIST_FOREACH(item_list, it, item_ch)
+          {
+             ch = elm_object_part_content_get(item_ch, "info");
+             if (elm_check_state_get(ch) == false)
+               all_checks = false;
+          }
+        if (all_checks)
+          elm_check_state_set(check, true);
+     }
    else if (!elm_check_state_get(obj) && (eina_list_data_find(part_list, part_name)))
-     part_list = eina_list_remove(part_list, part_name);
+     {
+        part_list = eina_list_remove(part_list, part_name);
+        if (elm_check_state_get(check)) elm_check_state_set(check, false);
+     }
 
    evas_object_data_set(object, TEXT_LIST, part_list);
 
