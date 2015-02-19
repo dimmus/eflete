@@ -1568,20 +1568,20 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    double align_x = 0, align_y = 0, weight_x = 0, weight_y = 0; // Align object in cell
    int pad_l = 0, pad_r = 0, pad_t = 0, pad_b = 0;
    int r = 0, g = 0, b = 0, a = 0;
+   double box_align_x, box_align_y;
+   int pad_x, pad_y;
 
    /* TODO: get items from box and edje_unload them, remove them, destroy them */
    evas_object_box_remove_all(gp->draw, false);
 
-   /*
-    * TODO: get TABLE attributes from edje object, after implementing functions
-    *  in edje_edit libs. Until that time will be used default values.
-    */
-   evas_object_box_align_set(gp->draw, 0.0, 0.0);
-   evas_object_box_padding_set(gp->draw, 0, 0);
-
    PART_STATE_GET(sd->edit_obj, gp->name)
    edje_edit_state_color_get(sd->edit_obj, gp->name, state, value, &r, &g, &b, &a);
    PART_STATE_FREE
+
+   edje_edit_state_container_align_get(sd->edit_obj, gp->name, state, value, &box_align_x, &box_align_y);
+   evas_object_box_align_set(gp->draw, box_align_x, box_align_y);
+   edje_edit_state_container_padding_get(sd->edit_obj, gp->name, state, value, &pad_x, &pad_y);
+   evas_object_box_padding_set(gp->draw, pad_x, pad_y);
 
    /* Changing layout according to edje_edit params! */
    primary_layout = edje_edit_state_box_layout_get(sd->edit_obj, gp->name, state, value);
