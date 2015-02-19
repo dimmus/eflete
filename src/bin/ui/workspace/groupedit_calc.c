@@ -1569,19 +1569,19 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    int pad_l = 0, pad_r = 0, pad_t = 0, pad_b = 0;
    int r = 0, g = 0, b = 0, a = 0;
 
+   /* TODO: get items from box and edje_unload them, remove them, destroy them */
+   evas_object_box_remove_all(gp->draw, false);
+
    /*
     * TODO: get TABLE attributes from edje object, after implementing functions
     *  in edje_edit libs. Until that time will be used default values.
     */
-   evas_object_box_align_set(gp->draw, 0.5, 0.5);
+   evas_object_box_align_set(gp->draw, 0.0, 0.0);
    evas_object_box_padding_set(gp->draw, 0, 0);
 
    PART_STATE_GET(sd->edit_obj, gp->name)
    edje_edit_state_color_get(sd->edit_obj, gp->name, state, value, &r, &g, &b, &a);
    PART_STATE_FREE
-
-   /* TODO: get items from box and edje_unload them, remove them, destroy them */
-   evas_object_box_remove_all(gp->draw, false);
 
    /* Changing layout according to edje_edit params! */
    primary_layout = edje_edit_state_box_layout_get(sd->edit_obj, gp->name, state, value);
@@ -1593,6 +1593,10 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
    EINA_LIST_FOREACH_SAFE(gp->items, l_items, l_n_items, ge_item)
      {
+        evas_object_del(ge_item->draw);
+        ge_item->draw = edje_object_add(sd->e);
+        evas_object_show(ge_item->draw);
+
         item_source = edje_edit_part_item_source_get(sd->edit_obj, part, ge_item->name);
         edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
 
@@ -1662,6 +1666,8 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
         evas_object_smart_member_add(ge_item->border, ge_item->draw);
         evas_object_smart_member_add(ge_item->highlight, ge_item->draw);
+
+        evas_object_smart_calculate(ge_item->draw);
      }
    evas_object_smart_calculate(gp->draw);
 }
