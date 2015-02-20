@@ -1277,7 +1277,8 @@ _on_export_edc_group_done(void *data,
    if (!ecore_file_exists(dir_path))
      ecore_file_mkdir(dir_path);
    path = eina_stringshare_printf("%s/%s.edc", dir_path, file);
-   pm_project_style_source_code_export(ap->project, style, path);
+   if (!pm_project_style_source_code_export(ap->project, style, path))
+     ERR("Source code of the current style was not exported to edc file %s", path);
    pm_style_resource_export(ap->project, style, dir_path);
 
    eina_stringshare_del(file);

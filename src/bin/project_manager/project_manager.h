@@ -463,11 +463,11 @@ pm_project_resource_export(Project *pro);
  * @param style The style to save the source code;
  * @param file The file for save.
  *
- * @return The source code on success or NULL otherwise.
+ * @return EINA_TRUE on success, otherwise EINA_FALSE.
  *
  * @ingroup ProjectManager.
  */
-Eina_Stringshare *
+Eina_Bool
 pm_project_style_source_code_export(Project *pro, Style *style, const char *file);
 
 /**

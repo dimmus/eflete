@@ -357,6 +357,7 @@ _on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
 {
+   Eina_Bool res;
    App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Prop_Data *pd = (Prop_Data *)data;
@@ -408,9 +409,11 @@ _on_tab_activated(void *data,
              ap->project->enventor.file = eina_stringshare_printf("%s/%s.edc",
                                                                  tmpstr, file);
              ap->project->enventor.path = eina_stringshare_add(tmpstr);
-             eina_stringshare_del(
-                pm_project_style_source_code_export(ap->project, pd->style,
-                                                    ap->project->enventor.file));
+             res = pm_project_style_source_code_export(ap->project, pd->style,
+                                                       ap->project->enventor.file);
+             if (!res)
+               ERR("Source code of the current style was not written to the file"
+                   "%s", ap->project->enventor.file);
              pm_style_resource_export(ap->project, pd->style, tmpstr);
              eina_tmpstr_del(tmpstr);
              eina_stringshare_del(path);
@@ -437,10 +440,10 @@ _code_of_group_setup(Prop_Data *pd)
    char *markup_code;
    const char *colorized_code;
    Eina_Stringshare *code;
-   App_Data *ap;
 
-   ap = app_data_get();
-   code = pm_project_style_source_code_export(ap->project, pd->style, NULL);
+   code = edje_edit_source_generate(pd->style->obj);
+   if (!code)
+     ERR("Something wrong. Can not generate code for style %s", pd->style->name);
    markup_code = elm_entry_utf8_to_markup(code);
    colorized_code = color_apply(pd->color_data, markup_code,
                                 strlen(markup_code), NULL, NULL);
