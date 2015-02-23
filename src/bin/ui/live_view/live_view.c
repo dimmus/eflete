@@ -69,7 +69,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    char **c;
    const char *widget = NULL, *type, *style_name;
    const char *custom_name = NULL;
-   const char *fail_message = NULL;
+   char *fail_message = NULL;
    Eina_Bool ret = true;
    int x, y;
 
@@ -105,25 +105,28 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
         if (!live->object)
           {
-             fail_message = _("Widget isn't implemented yet!");
+             fail_message = _("Widget liveview isn't implemented yet. Using fallback to layout");
              ret = false;
           }
         if (ret)
           {
              const char *version = edje_edit_data_value_get(style->obj, "version");
-             if (!version || strcmp(version, "110"))
+             if ((!version) || (strcmp(version, "110")))
                {
-                  fail_message = _("Outdated version of EDJ file! Should be 110");
+                  fail_message = _("Outdated version of file. Using fallback to layout");
                   ret = false;
                }
           }
         if (!ret)
           {
+             NOTIFY_INFO(3, "%s", fail_message);
              if (live->object)
                live_widget_del(live->object);
-             live->object = elm_label_add(live->layout);
-             elm_object_text_set(live->object, fail_message);
+             live->object = layout_custom_create(live->layout);
+             edje_object_mmap_set(live->object, project->mmap_file,
+                                  style->full_group_name);
              container_content_set(live->live_view, live->object);
+             live_view_property_style_set(live->property, live->object, style, "layout");
           }
         else
           live_view_property_style_set(live->property, live->object, style, widget);
