@@ -732,6 +732,13 @@ _player_units_free(char *str)
 {
    free(str);
 }
+#define INFO_ADD(PARENT, ITEM, TEXT, STYLE) \
+   ITEM = elm_layout_add(PARENT); \
+   evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
+   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
+   elm_layout_theme_set(ITEM, "layout", "sound_editor", STYLE); \
+   elm_object_part_text_set(ITEM, "elm.text", TEXT); \
+   evas_object_show(ITEM);
 
 static void
 _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
@@ -755,7 +762,7 @@ _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.teg",
                                edit->snd_data.teg);
 
-   ITEM_ADD(parent, item, _("Play on select:"), "eflete/sound_editor/item/default");
+   INFO_ADD(parent, item, _("Play on select:"), "item");
    CHECK_ADD(item, edit->check);
    elm_object_part_content_set(item, "swallow.second", edit->check);
    elm_object_part_content_set(edit->player_markup, "eflete.swallow.check", item);
@@ -810,7 +817,7 @@ _sound_info_label_add(Evas_Object *box,
                       const char *label)
 {
    Evas_Object *item;
-   ITEM_ADD(box, item, label, "eflete/sound_editor/item/default");
+   INFO_ADD(box, item, label, "item");
    elm_box_pack_end(box, item);
    return item;
 }
@@ -827,9 +834,7 @@ _sample_info_create(Evas_Object *parent, Sound_Editor *edit)
    edit->snd_data.type = _sound_info_label_add(edit->sample_box, _("type:"));
    edit->snd_data.size = _sound_info_label_add(edit->sample_box, _("size:"));
 
-   // TODO: Add field with file size info.
-
-   ITEM_ADD(edit->sample_box, item, _("compression:"), "eflete/sound_editor/item/default");
+   INFO_ADD(edit->sample_box, item, _("compression:"), "item");
 
    EWE_COMBOBOX_ADD(item, edit->snd_data.comp);
    ewe_combobox_item_add(edit->snd_data.comp, "NONE");
@@ -859,7 +864,7 @@ _tone_info_create(Evas_Object *parent, Sound_Editor *edit)
 
    edit->snd_data.tone_name = _sound_info_label_add(edit->tone_box, _("name:"));
 
-   ITEM_ADD(edit->tone_box, item, "frequency:", "eflete/sound_editor/item/default");
+   INFO_ADD(edit->tone_box, item, "frequency:", "item");
    SPINNER_ADD(edit->tone_box, edit->snd_data.tone_frq, 20, 20000, 10, false);
    elm_object_disabled_set(edit->snd_data.tone_frq, true);
    elm_object_part_content_set(item, "swallow.first", edit->snd_data.tone_frq);
@@ -1412,6 +1417,8 @@ _tone_add_cb(void *data,
    evas_object_show(popup);
    eina_stringshare_del(title);
 }
+
+#undef INFO_ADD
 
 static void
 _on_cmb_sel(void *data,
