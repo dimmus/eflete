@@ -2026,6 +2026,8 @@ group { name: "elm/layout/image_editor/usage_info";
 #undef BTNS_LARGE_SIZE_SET
 #undef BTNS_SMALL_SIZE_SET
 
+#define ITEM_COLOR 223 219 210 255;
+
 #define ITEM_ADD(_name, _label_width) \
    part { name: "padding."#_name"_label_left"; \
       type: SPACER; \
@@ -2062,15 +2064,19 @@ group { name: "elm/layout/image_editor/usage_info";
       } \
    } \
    part { name: "label."#_name; \
-      type: TEXTBLOCK; \
+      type: TEXT; \
       scale: 1; \
       mouse_events: 0; \
       description { state: "default" 0.0; \
          align: 0.0 0.5; \
          fixed: 1 0; \
+         color: ITEM_COLOR; \
          text { \
             text: #_name":"; \
-            style: "prop_item_label"; \
+            font: FN; \
+            size: 12; \
+            ellipsis: -1; \
+            align: 0.0 0.5; \
             min: 0 0; \
             max: 1 1; \
          } \
@@ -2936,6 +2942,8 @@ group { name: "elm/layout/sound_editor/item";
       }
    }
 }
+
+#undef ITEM_COLOR
 
 group { name: "elm/layout/preferences/general";
    parts {
