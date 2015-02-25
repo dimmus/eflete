@@ -1050,7 +1050,7 @@ _font_resources_export(Eina_List *fonts, Eina_Stringshare *destination,
 Eina_Bool
 pm_style_resource_export(Project *pro ,
                          Style *style,
-                         Eina_Stringshare *path __UNUSED__)
+                         Eina_Stringshare *path)
 {
    Eina_List *l, *l_next, *parts, *state_list, *l_states, *tween_list, *l_tween;
    Eina_List *programs;
@@ -1215,15 +1215,14 @@ pm_project_resource_export(Project *pro)
    return true;
 }
 
-Eina_Stringshare *
+Eina_Bool
 pm_project_style_source_code_export(Project *pro, Style *style, const char *file)
 {
    Eina_Stringshare *code = NULL;
    Eina_Stringshare *path = NULL;
    FILE *f;
 
-   if (!style->obj) goto exit;
-   code = edje_edit_source_generate(style->obj);
+   if (!style->obj) return false;
 
    if (file) path = eina_stringshare_add(file);
    else path = eina_stringshare_printf("%s/tmp.edc", pro->develop_path);
@@ -1231,15 +1230,16 @@ pm_project_style_source_code_export(Project *pro, Style *style, const char *file
    if (!f)
      {
         ERR("Could't open file '%s'", path);
-        code = NULL;
-        goto exit;
+        eina_stringshare_del(path);
+        return false;
      }
+   code = edje_edit_source_generate(style->obj);
    fputs(code, f);
    fclose(f);
 
-exit:
+   eina_stringshare_del(code);
    eina_stringshare_del(path);
-   return code;
+   return true;
 }
 
 static void *
