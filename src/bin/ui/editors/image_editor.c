@@ -867,21 +867,6 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
    elm_gengrid_item_class_free(ggic);
 }
 
-static inline Evas_Object *
-_image_info_label_add(Evas_Object *box,
-                      const char *item_label)
-{
-   Evas_Object *item = NULL;
-   Evas_Object *label = NULL;
-
-   ITEM_ADD(box, item, item_label, "eflete/image_editor/item/default");
-   LABEL_ADD(item, label, " - ");
-   elm_object_style_set(label, "editor");
-   elm_object_part_content_set(item, "elm.swallow.content", label);
-   elm_box_pack_end(box, item);
-   return label;
-}
-
 static Evas_Object *
 _image_info_box_create(Image_Editor *img_edit)
 {
