@@ -119,4 +119,26 @@ ui_property_state_set(Evas_Object *property, Part *part);
 void
 ui_property_state_unset(Evas_Object *property);
 
+/**
+ * Set to current 'property' widget a part item view.
+ * If current property has a part item view, then old view will be removed.
+ *
+ * @param property The 'property' widget.
+ * @param item The Item name data which will be displayed.
+ *
+ * @ingroup Property
+ */
+Eina_Bool
+ui_property_item_set(Evas_Object *property, Eina_Stringshare *item);
+
+/**
+ * Unset the part item view content on a given property.
+ *
+ * @param property the 'property' widget.
+ *
+ * @ingroup property
+ */
+void
+ui_property_item_unset(Evas_Object *property);
+
 #endif /* UI_PROPERTY_1_H */

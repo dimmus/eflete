@@ -1794,7 +1794,7 @@ _on_part_item_selected(void *data,
    App_Data *ap = (App_Data *)data;
    Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
    workspace_edit_object_part_item_selected_set(ap->workspace, item_name, true);
-   /*TODO: Add here load part item properties*/
+   ui_property_item_set(ui_block_property_get(ap), item_name);
 }
 
 static void
@@ -1805,7 +1805,7 @@ _on_part_item_unselected(void *data,
    App_Data *ap = (App_Data *)data;
    Eina_Stringshare *item_name = (Eina_Stringshare *) event_data;
    workspace_edit_object_part_item_selected_set(ap->workspace, item_name, false);
-   /*TODO: Add here unset part item properties*/
+   ui_property_item_unset(ui_block_property_get(ap));
 }
 
 Eina_Bool

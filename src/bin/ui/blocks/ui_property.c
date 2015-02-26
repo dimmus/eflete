@@ -58,6 +58,7 @@ struct _Prop_Data
    Ewe_Tabs_Item *visual_tab;
    Evas_Object *visual;
    Evas_Object *code;
+   Eina_Stringshare *item_name;
 #ifndef HAVE_ENVENTOR
    color_data *color_data;
    Eina_Strbuf *strbuf;
@@ -166,6 +167,22 @@ struct _Prop_Data
       Evas_Object *size_relative;
       Evas_Object *size_offset;
    } prop_state_fill;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *name;
+      Evas_Object *source;
+      Evas_Object *min;
+      Evas_Object *max;
+      Evas_Object *spread;
+      Evas_Object *prefer;
+      Evas_Object *padding;
+      Evas_Object *align;
+      Evas_Object *weight;
+      Evas_Object *aspect;
+      Evas_Object *aspect_mode;
+      Evas_Object *position; /* Only for items in part TABLE */
+      Evas_Object *span; /* Only for items in part TABLE */
+   } prop_item;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -2739,6 +2756,53 @@ _on_state_color_class_change(void *data,
    pd->style->isModify = true;
 }
 
+
+
+#define pd_item pd->prop_item
+Eina_Bool
+ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
+{
+   Evas_Object *box, *prop_box;
+   PROP_DATA_GET(false)
+
+   ui_property_item_unset(property);
+   pd->item_name = item;
+   prop_box = elm_object_content_get(pd->visual);
+   if (!pd_item.frame)
+     {
+        FRAME_ADD(property, pd_item.frame, true, _("Item"))
+        BOX_ADD(pd_item.frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(pd_item.frame, box);
+
+        pd_item.name = prop_item_label_add(box, _("name"), pd->item_name);
+
+        elm_box_pack_end(box, pd_item.name);
+        elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
+     }
+   else
+     {
+        prop_item_label_update(pd_item.name, item);
+        elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
+        evas_object_show(pd_item.frame);
+     }
+
+   return true;
+}
+
+void
+ui_property_item_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+   PROP_DATA_GET()
+   if (!pd_item.frame) return;
+
+   pd->item_name = NULL;
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_item.frame);
+   evas_object_hide(pd_item.frame);
+}
+#undef pd_item
 
 #undef PROP_DATA
 #undef PROP_DATA_GET
