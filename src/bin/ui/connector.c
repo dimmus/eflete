@@ -1174,7 +1174,6 @@ export_warning(Evas_Object *parent, const char *msg)
 
    title = eina_stringshare_printf(_("Export project"));
    popup = elm_popup_add(parent);
-   elm_object_style_set(popup, "eflete");
    elm_object_part_text_set(popup, "title,text", title);
    LABEL_ADD(popup, label, msg);
    elm_object_content_set(popup, label);
@@ -1233,19 +1232,21 @@ _on_export_done(void *data,
    if (!selected) goto close;
    if (!strcmp(selected, path))
      {
-        export_warning (win, _("Name feild is empty! Please enter the name of export file."));
+        export_warning(win, _("Name field is empty!"
+                              "Please type a file name to export."));
         return;
      }
-   fprintf(stdout, "selected file: '%s'\n", selected);
    /* check the existing file */
    ef = eet_open(selected, EET_FILE_MODE_READ);
    if (ef)
      {
         eet_close(ef);
-        if (!export_replace_request(win, _("The file already exists.  Replacing it will overwrite its contents.")))
+        if (!export_replace_request(win, _("The file already exists."
+                                           "Replacement will overwrite its contents.")))
           return;
      }
-   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown, NULL, (void *)eina_stringshare_add(selected));
+   ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown,
+                           NULL, (void *)eina_stringshare_add(selected));
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 
