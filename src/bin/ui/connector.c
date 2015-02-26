@@ -1217,8 +1217,7 @@ _on_export_done(void *data,
                 Evas_Object *obj __UNUSED__,
                 void *event_info)
 {
-   const char *selected, *path;
-   Eet_File *ef;
+   Eina_Stringshare *selected, *path, *dest_file;
    Evas_Object *win;
    App_Data *ap;
 
@@ -1226,28 +1225,33 @@ _on_export_done(void *data,
    win = (Evas_Object *)data;
    selected = (const char *)event_info;
    path = elm_fileselector_path_get(obj);
-   if (!selected) goto close;
+   if (!selected)
+     {
+        evas_object_del(win);
+        return;
+     }
+
    if (!strcmp(selected, path))
      {
         export_warning(win, _("Name field is empty!"
                               "Please type a file name to export."));
         return;
      }
-   /* check the existing file */
-   ef = eet_open(selected, EET_FILE_MODE_READ);
-   if (ef)
-     {
-        eet_close(ef);
-        if (!export_replace_request(win, _("The file already exists."
-                                           "Replacement will overwrite its contents.")))
-          return;
-     }
+
+   dest_file = eina_stringshare_add(selected);
+   if (!eina_str_has_extension(selected, ".edj"))
+     dest_file = eina_stringshare_printf("%s.edj", selected);
+   if ((ecore_file_exists(dest_file)) &&
+       (!export_replace_request(win, _("The file already exists."
+                                       "Replacement will overwrite its contents."))))
+     return;
+
    ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown,
                            NULL, (void *)eina_stringshare_add(selected));
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 
-close:
+   eina_stringshare_del(dest_file);
    evas_object_del(win);
 }
 
