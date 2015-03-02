@@ -926,6 +926,8 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    elm_object_part_content_set(item, "elm.swallow.content", box); \
    evas_object_data_set(item, ITEM1, spinner1); \
    evas_object_data_set(item, ITEM2, spinner2); \
+   evas_object_data_set(spinner1, ITEM1, item); \
+   evas_object_data_set(spinner2, ITEM1, item); \
    evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
@@ -1559,4 +1561,46 @@ prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
    evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
 }
+
+#define ITEM_SPINNER_PART_ITEM_2INT_CALLBACK(TYPE, SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Evas_Object *item = evas_object_data_get(obj, ITEM1); \
+   Evas_Object *spinner1 = evas_object_data_get(item, ITEM1); \
+   Evas_Object *spinner2 = evas_object_data_get(item, ITEM2); \
+   TYPE value1 = (unsigned short int)elm_spinner_value_get(spinner1); \
+   TYPE value2 = (unsigned short int)elm_spinner_value_get(spinner2); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name,\
+                                        pd->item_name, value1, value2)) \
+     return; \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->style->isModify = true; \
+}
+
+#define ITEM_2SPINNER_PART_ITEM_2UPDATE(TYPE, SUB, VALUE, SUFFIX) \
+static void \
+prop_item_##SUB##_##VALUE##_##SUFFIX##_update(Evas_Object *item, \
+                                              Prop_Data *pd, \
+                                              Eina_Bool to_percent) \
+{ \
+   Evas_Object *spinner; \
+   TYPE value1, value2; \
+   spinner = evas_object_data_get(item, ITEM1); \
+   edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, pd->item_name, \
+                                   &value1, &value2); \
+   if (to_percent) {value1 *= 100; value2 *= 100;} \
+   elm_spinner_value_set(spinner, value1); \
+   evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   spinner = evas_object_data_get(item, ITEM2); \
+   elm_spinner_value_set(spinner, value2); \
+   evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE##_change, pd); \
+}
+
 

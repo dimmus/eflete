@@ -2767,6 +2767,11 @@ _on_state_color_class_change(void *data,
    ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
 
+#define ITEM_2_SPINNERS_ITEM_2INT_CREATE(TYPE, TEXT, SUB, VALUE, STYLE) \
+   ITEM_SPINNER_PART_ITEM_2INT_CALLBACK(TYPE, SUB, VALUE) \
+   ITEM_2SPINNER_PART_ITEM_2UPDATE(TYPE, SUB, VALUE, suf) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE, suf, STYLE)
+
 #define pd_item pd->prop_item
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
@@ -2775,6 +2780,8 @@ ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("max"), part_item_max, w, h, "eflete/prop
 ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_INT_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
@@ -2825,14 +2832,30 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
                           _("Replicate the item in width, starting from the current position."),
                           _("Replicate the item in height, starting from the current position."),
                           false);
+        pd_item.span = prop_item_part_item_span_suf_add(box, pd,
+                          1.0, 999.0, 1.0, "%.0f",
+                          "col", "", "row", "",
+                          _("Sets how many columns this item will use."),
+                          _("Sets how many rows this item will use."), false);
 
         elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
+        if (pd->part->type == EDJE_PART_TYPE_TABLE)
+          {
+             pd_item.position = prop_item_part_item_position_suf_add(box, pd,
+                                  0.0, 999.0, 1.0, "%.0f",
+                                  "col", "", "row", "",
+                                   _("Sets the column position this item."),
+                                   _("Sets the row position this item."), false);
+             elm_box_pack_end(box, pd_item.position);
+          }
+
         elm_box_pack_end(box, pd_item.min);
         elm_box_pack_end(box, pd_item.max);
         elm_box_pack_end(box, pd_item.prefer);
         elm_box_pack_end(box, pd_item.aspect);
         elm_box_pack_end(box, pd_item.spread);
+        elm_box_pack_end(box, pd_item.span);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
      }
    else
@@ -2844,6 +2867,9 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
         prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
         prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
+        prop_item_part_item_span_suf_update(pd_item.span, pd, false);
+        if (pd->part->type == EDJE_PART_TYPE_TABLE)
+          prop_item_part_item_position_suf_update(pd_item.position, pd, false);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
         evas_object_show(pd_item.frame);
      }
