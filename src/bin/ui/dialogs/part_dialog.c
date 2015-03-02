@@ -74,7 +74,8 @@ _cancel_clicked(void *data,
    ap->popup = NULL; \
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false); \
    live_view_widget_style_set(ap->live_view, ap->project, style); \
-   project_changed();
+   edje_edit_without_source_save(style->obj, true); \
+   pm_project_changed(ap->project);
 
 static void
 _swallow_add_on_click(void *data,

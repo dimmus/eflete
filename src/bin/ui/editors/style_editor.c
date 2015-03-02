@@ -642,7 +642,12 @@ _on_viewer_exit(void *data,
                 void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
-
+   App_Data *ap = app_data_get();
+   Evas_Object *edje_edit_obj = NULL;
+   GET_OBJ(style_edit->pr, edje_edit_obj);
+   edje_edit_without_source_save(edje_edit_obj, true);
+   pm_project_changed(ap->project);
+   workspace_edit_object_recalc(ap->workspace);
    mw_del(style_edit->mwin);
 }
 
@@ -1180,7 +1185,7 @@ _tag_value_get(const char* text_style, char* a_tag)
                {
                   equals_sign++;
                   result = eina_tmpstr_add(equals_sign);
-                  break;
+                  if (!strstr(FONT_DEFAULT, a_tag)) break;
                }
           }
         token = strtok(0, " ");
@@ -1831,7 +1836,6 @@ _on_style_editor_close(void *data,
                         void *event_info __UNUSED__)
 {
    Style_Editor *style_edit = (Style_Editor *)data;
-
    eina_stringshare_del(CURRENT.stvalue);
    free(style_edit);
 }

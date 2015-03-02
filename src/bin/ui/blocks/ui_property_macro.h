@@ -663,7 +663,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
                                         pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
    const char *value = NULL; \
-   if (item->index != 0) \
+   if ((item->index != 0) || (TYPE == TEXT_STYLE)) \
      { \
        edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
                                        pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
@@ -1042,7 +1042,8 @@ prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
      ewe_combobox_text_set(combobox, value); \
    else \
      ewe_combobox_text_set(combobox, _("None")); \
-   ewe_combobox_item_add(combobox, _("None")); \
+   if (TYPE != TEXT_STYLE)\
+     ewe_combobox_item_add(combobox, _("None")); \
    if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
         EINA_INLIST_FOREACH(pd->wm_style->parts, part) \
@@ -1088,7 +1089,8 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
      ewe_combobox_text_set(combobox, value); \
    else \
      ewe_combobox_text_set(combobox, _("None")); \
-   ewe_combobox_item_add(combobox, _("None")); \
+   if (TYPE != TEXT_STYLE)\
+     ewe_combobox_item_add(combobox, _("None")); \
    if ((TYPE != COLOR_CLASS) && (TYPE != TEXT_STYLE)) \
      { \
         EINA_INLIST_FOREACH(pd->wm_style->parts, part) \
