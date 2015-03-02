@@ -272,7 +272,7 @@ _file_to_swap_copy(Eina_Stringshare *path, const char *widget_name)
 static int
 _widgets_dependencies_setup(Widget_Item_Data *item, Eina_Strbuf *dep_message)
 {
-   int ret;
+   int ret  = 0;
    if (item->name)
      ret += _widgets_dependencies_setup(item + 1, dep_message);
    else
