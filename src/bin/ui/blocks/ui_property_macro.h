@@ -101,32 +101,35 @@ prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                                   const char *tooltip1, \
                                                   const char *tooltip2) \
 { \
-   Evas_Object *item, *box, *layout, *spinner1, *spinner2; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   BOX_ADD(item, box, true, false); \
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, "w:", "px"); \
-   SPINNER_ADD(layout, spinner1, min, max, step, true) \
+   Evas_Object *item, *spinner1, *spinner2; \
+   item = elm_layout_add(parent); \
+   elm_layout_theme_set(item, "layout", "property", "2swallow"); \
+   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
+   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
+   elm_object_part_text_set(item, "elm.text", text); \
+   evas_object_show(item); \
+   elm_object_part_text_set(item, "label.swallow1.start", "w:"); \
+   elm_object_part_text_set(item, "label.swallow1.end", "px"); \
+   SPINNER_ADD(item, spinner1, min, max, step, true) \
    elm_spinner_label_format_set(spinner1, "%.0f"); \
    elm_spinner_value_set(spinner1, edje_edit_group_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_object_tooltip_text_set(spinner1, tooltip1); \
-   elm_object_part_content_set(layout, "eflete.content", spinner1); \
-   elm_box_pack_end(box, layout); \
+   elm_object_part_content_set(item, "swallow.content1", spinner1); \
    evas_object_smart_callback_add(spinner1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
    evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
-   ITEM_CONTEINER_2LABEL_ADD(box, layout, "h:", "px"); \
-   SPINNER_ADD(layout, spinner2, min, max, step, true) \
+   elm_object_part_text_set(item, "label.swallow2.start", "h:"); \
+   elm_object_part_text_set(item, "label.swallow2.end", "px"); \
+   SPINNER_ADD(item, spinner2, min, max, step, true) \
    elm_spinner_value_set(spinner2, edje_edit_group_##SUB##_##VALUE2##_get(pd->style->obj)); \
    elm_spinner_label_format_set(spinner2, "%.0f"); \
    elm_object_tooltip_text_set(spinner2, tooltip2); \
-   elm_object_part_content_set(layout, "eflete.content", spinner2); \
-   elm_box_pack_end(box, layout); \
+   elm_object_part_content_set(item, "swallow.content2", spinner2); \
    evas_object_smart_callback_add(spinner2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
    evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
-   elm_object_part_content_set(item, "elm.swallow.content", box); \
    evas_object_data_set(item, ITEM1, spinner1); \
    evas_object_data_set(item, ITEM2, spinner2); \
    return item; \
