@@ -379,6 +379,7 @@ _parts_list_free(Ws_Groupedit_Smart_Data *sd)
 static void
 _groupedit_part_free(Groupedit_Part *gp)
 {
+   Groupedit_Item *ge_item = NULL;
    evas_object_del(gp->draw);
    eina_stringshare_del(gp->name);
    evas_object_smart_member_del(gp->border);
@@ -387,6 +388,15 @@ _groupedit_part_free(Groupedit_Part *gp)
      {
         evas_object_smart_member_del(gp->item);
         evas_object_del(gp->item);
+     }
+
+   EINA_LIST_FREE(gp->items, ge_item)
+     _item_draw_del(ge_item);
+   EINA_LIST_FREE(gp->fake_items, ge_item)
+     {
+        evas_object_del(ge_item->border);
+        evas_object_del(ge_item->highlight);
+        free(ge_item);
      }
 
    free(gp);
@@ -1265,9 +1275,11 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    Eina_Stringshare *part = gp->name;
    Eina_Stringshare *item_source = NULL;
 
+   Evas_Object *child = NULL;
    int w, h; /* Geometry values */
    int min_w, max_w, prefer_w, min_h, max_h, prefer_h; /* Hints values */
    int spread_col, spread_row; /* Position values */
+
    short unsigned int pos_col = 0, pos_row = 0;
    unsigned char span_col = 0, span_row = 0;
    Evas_Aspect_Control aspect = EVAS_ASPECT_CONTROL_NONE;
@@ -1276,6 +1288,14 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    int pad_l = 0, pad_r = 0, pad_t = 0, pad_b = 0;
    int old_spread_row = 0, spread_pos_col = 0, spread_pos_row = 0;
    int r = 0, g = 0, b = 0, a = 0;
+
+   /* fake_init - how much fake items, already created.
+    * fake_count - how much fake items needed for filling empty cells.
+    * fake_diff - deifference beetween fake_count and fake_init
+    */
+   int fake_init = 0, fake_count = 0, fake_diff = 0;
+   Eina_List *fake_l;
+   int i, k, col, row; /* counters for filling empty cells with fake items*/
 
    /*
     * TODO: get TABLE attributes from edje object, after implementing functions
@@ -1289,6 +1309,13 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    edje_edit_state_color_get(sd->edit_obj, gp->name, state, value, &r, &g, &b, &a);
    PART_STATE_FREE
 
+   /* Unpack all fake items, before pack real */
+   fake_init = eina_list_count(gp->fake_items);
+   EINA_LIST_FOREACH(gp->fake_items, fake_l, ge_item)
+     {
+        evas_object_table_unpack(gp->draw, ge_item->border);
+        evas_object_table_unpack(gp->draw, ge_item->highlight);
+     }
 
    EINA_LIST_FOREACH_SAFE(gp->items, l_items, l_n_items, ge_item)
      {
@@ -1342,6 +1369,7 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         aspect_y = edje_edit_part_item_aspect_h_get(sd->edit_obj, part, ge_item->name);
         evas_object_size_hint_aspect_set(ge_item->draw, aspect, aspect_x, aspect_y);
         evas_object_color_set(ge_item->draw, r, g, b, a);
+
         evas_object_table_pack(gp->draw, ge_item->border, pos_col,
                                pos_row, span_col, span_row);
         evas_object_table_pack(gp->draw, ge_item->draw, pos_col, pos_row, span_col, span_row);
@@ -1391,6 +1419,56 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         evas_object_smart_member_add(ge_item->border, gp->draw);
         evas_object_smart_member_add(ge_item->draw, gp->draw);
         evas_object_smart_member_add(ge_item->highlight, gp->draw);
+     }
+
+   /* Fill empty cells with fake items */
+   evas_object_table_col_row_size_get(gp->draw, &col, &row);
+   Eina_List *fake_queue = gp->fake_items;
+   Groupedit_Item *fake = NULL;
+   for (i = 0; i < col; i++)
+     {
+        for (k = 0; k < row; k++)
+          {
+             child = evas_object_table_child_get(gp->draw, i, k);
+             if (!child)
+               {
+                  fake = eina_list_data_get(fake_queue);
+                  fake_queue = eina_list_next(fake_queue);
+                  if (!fake)
+                    {
+                       /* If there are no already created fakes items, then create new */
+                       fake = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
+                       GET_IMAGE(fake->border, sd->e, PART_ITEM_IMG);
+                       evas_object_show(fake->border);
+                       evas_object_size_hint_min_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                       evas_object_size_hint_align_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                       evas_object_size_hint_weight_set(fake->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                       GET_IMAGE(fake->highlight, sd->e, BORDER_IMG);
+                       evas_object_size_hint_min_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                       evas_object_size_hint_align_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                       evas_object_size_hint_weight_set(fake->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+                       evas_object_color_set(fake->highlight, 49, 140, 141, 255);
+                       evas_object_show(fake->highlight);
+                       gp->fake_items = eina_list_append(gp->fake_items, fake);
+                    }
+                  evas_object_table_pack(gp->draw, fake->border, i, k, 1, 1);
+                  evas_object_table_pack(gp->draw, fake->highlight, i, k, 1, 1);
+                  fake_count++;
+               }
+          }
+     }
+   fake_diff = fake_count - fake_init;
+   EINA_LIST_REVERSE_FOREACH(gp->fake_items, fake_l, fake)
+     {
+        if (fake_diff < 0)
+          {
+             evas_object_del(fake->border);
+             evas_object_del(fake->highlight);
+             free(fake);
+             gp->fake_items = eina_list_remove_list(gp->fake_items, fake_l);
+             fake_diff++;
+          }
+        else break;
      }
    evas_object_smart_calculate(gp->draw);
 }
