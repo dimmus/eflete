@@ -44,7 +44,7 @@ static Groupedit_Item *
 _item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part, Eina_Stringshare *item);
 
 static void
-_item_draw_del(Groupedit_Item *ge_item) __UNUSED__;
+_item_draw_del(Groupedit_Item *ge_item);
 
 static Evas_Object *
 _part_spacer_add(Evas *e);
@@ -186,7 +186,27 @@ _edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd __UNUSED__,
                            Eina_Stringshare *part __UNUSED__,
                            Eina_Stringshare *item __UNUSED__)
 {
-   return false;
+   Groupedit_Part *gp;
+   Groupedit_Item *ge_item = NULL;
+   Eina_List *l, *l_next;
+
+   gp = _parts_list_find(sd->parts, part);
+
+   if(!edje_edit_part_item_del(sd->edit_obj, part, item))
+     return false;
+
+   EINA_LIST_FOREACH_SAFE(gp->items, l, l_next, ge_item)
+     {
+        if (ge_item->name == item) break;
+        ge_item = NULL;
+     }
+   if (!ge_item) return false;
+   evas_object_table_unpack(gp->draw, ge_item->draw);
+   gp->items = eina_list_remove(gp->items, ge_item);
+   _item_draw_del(ge_item);
+
+   evas_object_smart_changed(sd->obj);
+   return true;
 }
 
 static void
