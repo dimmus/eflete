@@ -185,6 +185,12 @@ struct _Prop_Data
       Evas_Object *position; /* Only for items in part TABLE */
       Evas_Object *span; /* Only for items in part TABLE */
    } prop_item;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *align;
+      Evas_Object *padding;
+      Evas_Object *min;
+   } prop_state_table;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -289,6 +295,12 @@ ui_property_state_fill_set(Evas_Object *property);
 
 static void
 ui_property_state_fill_unset(Evas_Object *property);
+
+static Eina_Bool
+ui_property_state_table_set(Evas_Object *property);
+
+static void
+ui_property_state_table_unset(Evas_Object *property);
 
 static void
 prop_item_state_text_update(Evas_Object *item, Prop_Data *pd);
@@ -1432,6 +1444,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
      ui_property_state_fill_set(property);
    else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_unset(property);
+   if (type == EDJE_PART_TYPE_TABLE) ui_property_state_table_set(property);
+   else ui_property_state_table_unset(property);
 
 #ifndef HAVE_ENVENTOR
    _code_of_group_setup(pd);
@@ -3069,6 +3083,47 @@ ui_property_item_unset(Evas_Object *property)
    evas_object_hide(pd_item.frame);
 }
 #undef pd_item
+
+
+#define pd_table pd->prop_state_table
+
+static Eina_Bool
+ui_property_state_table_set(Evas_Object *property)
+{
+   Evas_Object *table_frame, *box, *prop_box;
+   PROP_DATA_GET(EINA_FALSE)
+
+   ui_property_state_table_unset(property);
+   prop_box = elm_object_content_get(pd->visual);
+   if (!pd_table.frame)
+     {
+        FRAME_ADD(property, table_frame, true, _("Table"))
+        BOX_ADD(table_frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(table_frame, box);
+
+        elm_box_pack_end(prop_box, table_frame);
+        pd_table.frame = table_frame;
+     }
+   else
+     {
+        elm_box_pack_end(prop_box, pd_table.frame);
+        evas_object_show(pd_table.frame);
+     }
+   return true;
+}
+
+static void
+ui_property_state_table_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+   PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_table.frame);
+   evas_object_hide(pd_table.frame);
+}
+#undef pd_table
 
 #undef PROP_DATA
 #undef PROP_DATA_GET
