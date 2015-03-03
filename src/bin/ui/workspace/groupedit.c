@@ -713,9 +713,15 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
         if (ge_item->name == item_name)
           {
              if (selected)
-               evas_object_show(ge_item->highlight);
+               {
+                  edje_object_file_set(ge_item->highlight, EFLETE_RESOURCES, BORDER_2PX_IMG);
+                  evas_object_color_set(ge_item->highlight, 0, 253, 255, 255);
+               }
              else
-               evas_object_hide(ge_item->highlight);
+               {
+                  edje_object_file_set(ge_item->highlight, EFLETE_RESOURCES, BORDER_IMG);
+                  evas_object_color_set(ge_item->highlight, 49, 140, 141, 255);
+               }
              _parts_recalc(sd);
              return true;
           }

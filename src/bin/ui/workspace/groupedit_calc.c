@@ -166,14 +166,14 @@ _edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd,
      {
         /*Position new item in cell with coords [0;0]*/
         edje_edit_part_item_position_set(sd->edit_obj, part, item, 0, 0);
-        evas_object_table_pack(gp->draw, ge_item->draw, 0, 0, 1, 1);
         evas_object_table_pack(gp->draw, ge_item->border, 0, 0, 1, 1);
+        evas_object_table_pack(gp->draw, ge_item->draw, 0, 0, 1, 1);
         evas_object_table_pack(gp->draw, ge_item->highlight, 0, 0, 1, 1);
      }
 
    gp->items = eina_list_append(gp->items, ge_item);
-   evas_object_smart_member_add(ge_item->draw, gp->draw);
    evas_object_smart_member_add(ge_item->border, gp->draw);
+   evas_object_smart_member_add(ge_item->draw, gp->draw);
    evas_object_smart_member_add(ge_item->highlight, gp->draw);
 
    evas_object_smart_changed(sd->obj);
@@ -219,6 +219,7 @@ _part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
      {
         evas_object_stack_below(sd->bg, ge_part_to->draw);
         evas_object_stack_below(sd->clipper, ge_part_to->draw);
+        evas_object_stack_below(ge_part->bg, ge_part_to->draw);
         evas_object_stack_below(ge_part->draw, ge_part_to->draw);
         evas_object_stack_below(ge_part->border, ge_part_to->draw);
         evas_object_stack_below(ge_part->item, ge_part_to->draw);
@@ -230,6 +231,7 @@ _part_parts_layouts_update(Ws_Groupedit_Smart_Data *sd,
         evas_object_stack_above(ge_part->item, ge_part_to->border);
         evas_object_stack_above(ge_part->border, ge_part_to->border);
         evas_object_stack_above(ge_part->draw, ge_part_to->border);
+        evas_object_stack_above(ge_part->bg, ge_part_to->border);
      }
 }
 
@@ -453,6 +455,7 @@ _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd)
 
    evas_object_raise(sd->bg);
    evas_object_raise(sd->clipper);
+   evas_object_raise(sd->to_select->bg);
    evas_object_raise(sd->to_select->draw);
    evas_object_raise(sd->to_select->border);
    evas_object_raise(sd->to_select->item);
@@ -522,6 +525,12 @@ _part_select(void *data,
 }
 
 #define GP_GEOMETRY_SET \
+   if (gp->bg) \
+     { \
+        evas_object_resize(gp->bg, w * sd->zoom_factor, h * sd->zoom_factor); \
+        evas_object_move(gp->bg, x * sd->zoom_factor + xe + offset_x, \
+                                y * sd->zoom_factor + ye + offset_y); \
+     } \
    evas_object_resize(gp->border, w * sd->zoom_factor, h * sd->zoom_factor); \
    evas_object_move(gp->border, x * sd->zoom_factor + xe + offset_x, \
                                 y * sd->zoom_factor + ye + offset_y); \
@@ -724,11 +733,13 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
           }
         if (gp->visible)
           {
+             evas_object_show(gp->bg);
              evas_object_show(gp->draw);
              evas_object_show(gp->border);
           }
         else
           {
+             evas_object_hide(gp->bg);
              evas_object_hide(gp->draw);
              evas_object_hide(gp->border);
           }
@@ -810,8 +821,11 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          BORDER_ADD(122, 122, 122, 255)
          break;
       case EDJE_PART_TYPE_TABLE:
+         gp->bg = evas_object_rectangle_add(sd->e);
+         evas_object_color_set(gp->bg, 49, 140, 141, 255);
+         evas_object_show(gp->bg);
          gp->draw = _part_table_add(sd, part, &(gp->items));
-         BORDER_ADD(122, 255, 101, 255)
+         BORDER_ADD(49, 180, 180, 255)
          break;
       case EDJE_PART_TYPE_BOX:
       case EDJE_PART_TYPE_EXTERNAL:
@@ -829,6 +843,8 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
    evas_object_event_callback_add(gp->border, EVAS_CALLBACK_MOUSE_DOWN,
                                   _part_select, gp);
 
+   if (gp->bg)
+     evas_object_smart_member_add(gp->bg, sd->obj);
    evas_object_smart_member_add(gp->draw, sd->obj);
    evas_object_smart_member_add(gp->border, sd->obj);
 
@@ -862,22 +878,23 @@ _item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
         ge_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
         ge_item->name = eina_stringshare_add(item);
 
-        ge_item->draw = edje_object_add(sd->e);
-        edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
-        evas_object_show(ge_item->draw);
 
-        GET_IMAGE(ge_item->border, sd->e, BORDER_IMG);
-        evas_object_color_set(ge_item->border, 255, 155, 100, 255);
+        GET_IMAGE(ge_item->border, sd->e, PART_ITEM_IMG);
         evas_object_show(ge_item->border);
         evas_object_size_hint_min_set(ge_item->border,    EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_align_set(ge_item->border,  EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(ge_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-        ge_item->highlight = evas_object_rectangle_add(sd->e);
+        ge_item->draw = edje_object_add(sd->e);
+        edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
+        evas_object_show(ge_item->draw);
+
+        GET_IMAGE(ge_item->highlight, sd->e, BORDER_IMG);
         evas_object_size_hint_min_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_align_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(ge_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-        evas_object_color_set(ge_item->highlight, 64, 64, 128, 160);
+        evas_object_color_set(ge_item->highlight, 49, 140, 141, 255);
+        evas_object_show(ge_item->highlight);
      }
    edje_edit_string_free(item_source);
    return ge_item;
@@ -1280,7 +1297,6 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
         edje_edit_part_item_position_get(sd->edit_obj, part, ge_item->name, &pos_col, &pos_row);
         edje_edit_part_item_span_get(sd->edit_obj, part, ge_item->name, &span_col, &span_row);
-        evas_object_table_pack(gp->draw, ge_item->draw, pos_col, pos_row, span_col, span_row);
 
         min_w = edje_edit_part_item_min_w_get(sd->edit_obj, part, ge_item->name);
         min_h = edje_edit_part_item_min_h_get(sd->edit_obj, part, ge_item->name);
@@ -1328,6 +1344,7 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         evas_object_color_set(ge_item->draw, r, g, b, a);
         evas_object_table_pack(gp->draw, ge_item->border, pos_col,
                                pos_row, span_col, span_row);
+        evas_object_table_pack(gp->draw, ge_item->draw, pos_col, pos_row, span_col, span_row);
         evas_object_table_pack(gp->draw, ge_item->highlight, pos_col,
                                pos_row, span_col, span_row);
 
@@ -1371,8 +1388,8 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_color_set(spread_item, r, g, b, a);
           }
 
-        evas_object_smart_member_add(ge_item->draw, gp->draw);
         evas_object_smart_member_add(ge_item->border, gp->draw);
+        evas_object_smart_member_add(ge_item->draw, gp->draw);
         evas_object_smart_member_add(ge_item->highlight, gp->draw);
      }
    evas_object_smart_calculate(gp->draw);
