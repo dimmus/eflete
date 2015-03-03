@@ -470,5 +470,21 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
                                              Eina_Stringshare *item_name,
                                              Eina_Bool selected);
 
+/**
+ * Add new item into container part.
+ *
+ * @param obj The groupedit object.
+ * @param part The name of the part, that will contain new item.
+ * @param item The name of new item.
+ * @param source The name of the group, that will used as source for item.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
+                                    Eina_Stringshare *item,
+                                    Eina_Stringshare *source);
 
 #endif /* GROUPEDIT_H */

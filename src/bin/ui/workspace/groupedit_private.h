@@ -199,6 +199,10 @@ _select_item_move_to_top(Ws_Groupedit_Smart_Data *sd);
 void
 _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
 
+Eina_Bool
+_edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
+                           Eina_Stringshare *item, Eina_Stringshare *source);
+
 /**
  * Stack part above above in groupedit module.
  * If part_above param is NULL, then part will restack above by one position,
