@@ -42,7 +42,9 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test
+shortcuts_test \
+ui_item_dialog_test
+
 
 check_PROGRAMS = ${TESTS}
 
@@ -628,6 +630,11 @@ test_history/history_module_depth_get.c
 history_test_CFLAGS = ${FLAGS}
 history_test_LDADD = ${LD}
 
+ui_item_dialog_test_SOURCES = \
+test_ui_item_dialog/test_ui_item_dialog.c \
+test_ui_item_dialog/item_dialog_add.c
+ui_item_dialog_test_CFLAGS = ${FLAGS}
+ui_item_dialog_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html
