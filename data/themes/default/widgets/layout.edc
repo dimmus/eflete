@@ -3289,3 +3289,87 @@ group { name: "elm/layout/live_view/toolbar";
       }
    }
 }
+group { name: "elm/layout/dialog/item";
+   images.image: "separator-vertical.png" COMP;
+   parts {
+      part { name: "items.swallow";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "left.padding";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to_x: "preview.padding";
+               to_y: "right.padding";
+            }
+         }
+      }
+      part { name: "origin.swallow";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.to: "preview.swallow";
+            rel2.to: "preview.swallow";
+         }
+      }
+      part { name: "preview.swallow";
+         type: SWALLOW;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            rel1.relative: 0.7 0.0;
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "right.padding";
+            }
+         }
+      }
+      part { name: "preview.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            FIXED_SIZE(5, 5)
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "preview.swallow";
+            }
+         }
+      }
+      part { name: "separator.image";
+         type: IMAGE;
+         scale: 1;
+         description { state: "default" 0.0;
+            min: 2 0;
+            max: 2 -1;
+            rel1.to_x: "preview.padding";
+            rel2 {
+               to_x: "preview.padding";
+               offset: 0 0;
+            }
+            image.normal: "separator-vertical.png";
+         }
+      }
+      part { name: "right.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            FIXED_SIZE(5, 5)
+         }
+      }
+      part { name: "left.padding";
+         type: SPACER;
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            FIXED_SIZE(5, 5)
+         }
+      }
+   }
+}
