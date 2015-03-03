@@ -1240,7 +1240,7 @@ ui_property_part_unset(Evas_Object *property)
 #define ITEM_1COMBOBOX_PART_STATE_CREATE(TEXT, SUB, VALUE, TYPE) \
    ITEM_1COMBOBOX_STATE_PART_CALLBACK(SUB, VALUE, TYPE) \
    ITEM_1COMBOBOX_STATE_PART_UPDATE(TEXT, SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE, TYPE)
+   ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE)
 
 #define ITEM_1COMBOBOX_STATE_PROXY_CREATE(TEXT, SUB, VALUE) \
    ITEM_COMBOBOX_STATE_CALLBACK(-1, TEXT, SUB, VALUE) \
@@ -2899,6 +2899,11 @@ prop_item_part_item_padding_add(Evas_Object *parent,
    ITEM_2SPINNER_PART_ITEM_2UPDATE(TYPE, SUB, VALUE, suf) \
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE, suf, STYLE)
 
+#define ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(TEXT, SUB, VALUE) \
+   ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
+   ITEM_PREDEFINED_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
+   ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE)
+
 #define pd_item pd->prop_item
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
@@ -2911,6 +2916,7 @@ ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, p
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete/property/item/default")
+ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
 
 Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
@@ -2981,6 +2987,9 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         pd_item.padding =  prop_item_part_item_padding_add(box, pd,
                              0.0, 999.0, 1.0, "%.0f",
                             _("left:"), _("right:"), _("top:"), _("bottom:"));
+        pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
+                              _("Sets the aspect control hints for this object."),
+                              edje_aspect_pref);
 
         elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
@@ -3000,6 +3009,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         elm_box_pack_end(box, pd_item.align);
         elm_box_pack_end(box, pd_item.weight);
         elm_box_pack_end(box, pd_item.aspect);
+        elm_box_pack_end(box, pd_item.aspect_mode);
         elm_box_pack_end(box, pd_item.padding);
         elm_box_pack_end(box, pd_item.spread);
         elm_box_pack_end(box, pd_item.span);
@@ -3020,6 +3030,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         if (pd->part->type == EDJE_PART_TYPE_TABLE)
           prop_item_part_item_position_suf_update(pd_item.position, pd, false);
         prop_item_part_item_padding_update(pd_item.padding, pd);
+        prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
+        prop_item_part_item_padding_update(pd_item.min, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->prop_part.frame);
         evas_object_show(pd_item.frame);
      }

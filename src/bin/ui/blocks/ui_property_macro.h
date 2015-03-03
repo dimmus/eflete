@@ -611,7 +611,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->style->isModify = true; \
 }
 
-#define ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE, TYPE) \
+#define ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
@@ -1486,10 +1486,9 @@ _on_##SUB##_##VALUE##_change(void *data, \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   if (item->index) \
-       edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
-                                       pd->item_name, item->title); \
-   else return; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                   pd->item_name, item->title)) \
+      return; \
    workspace_edit_object_recalc(pd->workspace); \
    project_changed(); \
 }
@@ -1519,6 +1518,32 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
      } \
    edje_file_collection_list_free(collections); \
    edje_edit_string_free(value); \
+}
+
+#define ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj __UNUSED__, \
+                             void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->style->obj, pd->part->name, \
+                                   pd->item_name, item->index)) \
+     return; \
+   workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
+}
+
+#define ITEM_PREDEFINED_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
+static void \
+prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
+                                   Prop_Data *pd) \
+{ \
+   Evas_Object *combobox = elm_object_part_content_get(item, "elm.swallow.content"); \
+   unsigned int value = edje_edit_##SUB##_##VALUE##_get(pd->style->obj, pd->part->name, \
+                                                        pd->item_name); \
+   ewe_combobox_select_item_set(combobox, value); \
 }
 
 #define ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE) \
