@@ -1531,6 +1531,7 @@ EFLETE_TEST(history_redo_test_n1)
    ck_assert_msg(!result, "Change was restored with uninitialized history module.");
 
    ecore_evas_free(ee);
+   teardown("./history_redo_test_n1");
    elm_shutdown();
 }
 END_TEST
