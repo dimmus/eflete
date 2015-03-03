@@ -46,7 +46,8 @@ _edje_filter(const char *path,
      return true;
    return false;
 }
-FILESELCTOR_WINDOW(_on_edj_bt, _("Select edj file for import"), false, true, _edje_filter, edj)
+
+FILESELCTOR_INWIN(_on_edj_bt, _("Select edj file for import"), false, true, _edje_filter, edj)
 
 Evas_Object *
 wizard_import_edj_add(App_Data *ap __UNUSED__)
@@ -64,3 +65,4 @@ wizard_import_edj_add(App_Data *ap __UNUSED__)
    return wiew->win;
 }
 
+#undef FILESELCTOR_INWIN

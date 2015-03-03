@@ -151,7 +151,8 @@ _edc_filter(const char *path,
      return true;
    return false;
 }
-FILESELCTOR_WINDOW(_on_edc_bt, _("Select edc file for import"), false, true, _edc_filter, edj)
+
+FILESELCTOR_INWIN(_on_edc_bt, _("Select edc file for import"), false, true, _edc_filter, edj)
 
 static void
 _on_directory_bt_done(void *data,
@@ -524,21 +525,18 @@ _on_directory_bt(void *data,
                  Evas_Object *obj __UNUSED__,
                  void *event_info __UNUSED__)
 {
-   Evas_Object *bg, *fs;
+   Evas_Object *fs;
    const char *path;
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
-   MODAL_WINDOW_ADD(c_data->wiew->fs, main_window_get(),
-                    "Select Directory", _fs_close, NULL);
-   bg = elm_bg_add(c_data->wiew->fs);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(c_data->wiew->fs, bg);
+   c_data->wiew->fs = mw_add(_fs_close, NULL);
+   evas_object_show(c_data->wiew->fs);
+   mw_title_set(c_data->wiew->fs, "Select a directory");
    FILESELECTOR_ADD(fs, c_data->wiew->fs, _on_directory_bt_done, data);
    elm_fileselector_folder_only_set(fs, true);
    path = elm_entry_entry_get(c_data->entry);
    if ((path) && (ecore_file_is_dir(path))) elm_fileselector_path_set(fs, path);
-   elm_win_resize_object_add(c_data->wiew->fs, fs);
+   elm_win_inwin_content_set(c_data->wiew->fs, fs);
 }
 
 static Evas_Object *
@@ -796,4 +794,4 @@ wizard_new_project_add(App_Data *ap __UNUSED__)
    return wiew->win;
 }
 
-#undef FILESELCTOR_WINDOW
+#undef FILESELCTOR_INWIN
