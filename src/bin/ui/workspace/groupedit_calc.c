@@ -1301,11 +1301,14 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
     * TODO: get TABLE attributes from edje object, after implementing functions
     *  in edje_edit libs. Until that time will be used default values.
     */
-   evas_object_table_homogeneous_set(gp->draw, EVAS_OBJECT_TABLE_HOMOGENEOUS_ITEM);
-   evas_object_table_align_set(gp->draw, 0.5, 0.5);
-   evas_object_table_padding_set(gp->draw, 0, 0);
-
    PART_STATE_GET(sd->edit_obj, gp->name)
+   evas_object_table_homogeneous_set(gp->draw, EVAS_OBJECT_TABLE_HOMOGENEOUS_ITEM);
+   edje_edit_state_container_align_get(sd->edit_obj, gp->name, state, value, &align_x, &align_y);
+   evas_object_table_align_set(gp->draw, align_x, align_y);
+
+   edje_edit_state_container_padding_get(sd->edit_obj, gp->name, state, value, &pad_l, &pad_r);
+   evas_object_table_padding_set(gp->draw, pad_l, pad_r);
+
    edje_edit_state_color_get(sd->edit_obj, gp->name, state, value, &r, &g, &b, &a);
    PART_STATE_FREE
 
