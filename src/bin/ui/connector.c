@@ -42,6 +42,16 @@ _add_part_dialog(void *data,
 }
 
 static void
+_add_part_item_dialog(void *data,
+                 Evas_Object *obj __UNUSED__,
+                 void *event_info)
+{
+   Part *part = (Part *)event_info;
+   App_Data *ap = (App_Data *)data;
+   item_dialog_add(ap, part);
+}
+
+static void
 _on_ws_part_unselect(void *data,
                      Evas_Object *obj __UNUSED__,
                      void *event_info)
@@ -502,6 +512,7 @@ ui_part_back(App_Data *ap)
    Evas_Object *wl_list, *groupedit, *st_list, *history_list;
 
    wl_list = ui_block_widget_list_get(ap);
+   evas_object_smart_callback_del_full(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,add", _add_part_dialog, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,del", _del_part, ap);
    evas_object_smart_callback_del_full(wl_list, "wl,part,above", _above_part, ap);
@@ -656,6 +667,7 @@ ui_style_clicked(App_Data *ap, Style *style)
                                   _restack_part_above, ap);
    evas_object_smart_callback_add(wl_list, "wl,part,moved,down",
                                   _restack_part_below, ap);
+   evas_object_smart_callback_add(wl_list, "wl,part,item,add", _add_part_item_dialog, ap);
 
    /* Get signals list of a styles and show them */
    gl_signals = ui_signal_list_add(ap->block.left_bottom);
