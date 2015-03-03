@@ -487,4 +487,19 @@ groupedit_edit_object_part_item_add(Evas_Object *obj, Eina_Stringshare *part,
                                     Eina_Stringshare *item,
                                     Eina_Stringshare *source);
 
+/**
+ * Delete item from container part.
+ *
+ * @param obj The groupedit object.
+ * @param part The name of the part, that contain item.
+ * @param item The name of deleting item.
+ *
+ * @return EINA_FALSE on failure, EINA_TRUE on success.
+ *
+ * @ingroup Groupedit
+ */
+Eina_Bool
+groupedit_edit_object_part_item_del(Evas_Object *obj, Eina_Stringshare *part,
+                                    Eina_Stringshare *item);
+
 #endif /* GROUPEDIT_H */

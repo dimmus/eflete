@@ -202,6 +202,10 @@ _selected_item_return_to_place(Ws_Groupedit_Smart_Data *sd);
 Eina_Bool
 _edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
                            Eina_Stringshare *item, Eina_Stringshare *source);
+Eina_Bool
+_edit_object_part_item_del(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
+                           Eina_Stringshare *item);
+
 
 /**
  * Stack part above above in groupedit module.
