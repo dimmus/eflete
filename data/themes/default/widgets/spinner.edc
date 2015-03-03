@@ -82,7 +82,7 @@
             type: RECT;
             description { state: "default" 0.0;
                color: 255 255 255 0;
-               SET_SIZE(60, 20);
+               SET_SIZE(60, 19);
             }
          }
          part { name: "bg";
@@ -206,14 +206,13 @@
                rel2.to: "disabler";
             }
          }
-         part {
-            name: "downh";
+         part { name: "downh";
             type: IMAGE;
             description {
                state: "default" 0.0;
                image.normal: "spinner-horizontal-down.png";
                align: 0.0 0.5;
-               FIXED_SIZE(9, 18);
+               FIXED_SIZE(10, 17);
                rel1 {
                   to: "bg";
                   offset: 1 0;
@@ -226,14 +225,13 @@
                image.normal: "spinner-horizontal-down-clicked.png";
             }
          }
-         part {
-            name: "uph";
+         part { name: "uph";
             type: IMAGE;
             description {
                state: "default" 0.0;
                image.normal: "spinner-horizontal-up.png";
                align: 1.0 0.5;
-               FIXED_SIZE(9, 18);
+               FIXED_SIZE(10, 17);
                rel1.to: "bg";
                rel2 {
                   to: "bg";
