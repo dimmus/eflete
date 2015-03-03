@@ -77,6 +77,7 @@ EFLETE_TEST (item_dialog_add_test_p1)
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, canvas, app_data->project->mmap_file);
+   app_data->project->current_style = style;
    part = wm_part_by_name_find(style, part_name);
 
    popup = item_dialog_add(app_data, part);
@@ -138,6 +139,7 @@ EFLETE_TEST (item_dialog_add_test_n1)
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, canvas, app_data->project->mmap_file);
+   app_data->project->current_style = style;
    part = wm_part_by_name_find(style, part_name);
 
    popup = item_dialog_add(NULL, part);
@@ -196,6 +198,7 @@ EFLETE_TEST (item_dialog_add_test_n2)
    canvas = evas_object_evas_get(app_data->win);
    style = wm_style_add("test", "layout/table", LAYOUT, NULL);
    wm_style_data_load(style, canvas, app_data->project->mmap_file);
+   app_data->project->current_style = style;
 
    popup = item_dialog_add(app_data, NULL);
    ck_assert_msg(popup == NULL, "Create item dialog without part");
