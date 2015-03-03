@@ -1326,7 +1326,7 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    int spread_col, spread_row; /* Position values */
 
    short unsigned int pos_col = 0, pos_row = 0;
-   unsigned char span_col = 0, span_row = 0;
+   unsigned char span_col = 0, span_row = 0, homogeneous = 0;
    Evas_Aspect_Control aspect = EVAS_ASPECT_CONTROL_NONE;
    int aspect_x, aspect_y;
    double align_x = 0, align_y = 0, weight_x = 0, weight_y = 0; /* Align object in cell */
@@ -1347,7 +1347,9 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
     *  in edje_edit libs. Until that time will be used default values.
     */
    PART_STATE_GET(sd->edit_obj, gp->name)
-   evas_object_table_homogeneous_set(gp->draw, EVAS_OBJECT_TABLE_HOMOGENEOUS_ITEM);
+   homogeneous = edje_edit_state_table_homogeneous_get(sd->edit_obj, gp->name, state, value);
+   evas_object_table_homogeneous_set(gp->draw, homogeneous);
+
    edje_edit_state_container_align_get(sd->edit_obj, gp->name, state, value, &align_x, &align_y);
    evas_object_table_align_set(gp->draw, align_x, align_y);
 

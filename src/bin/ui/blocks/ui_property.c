@@ -197,6 +197,7 @@ struct _Prop_Data
       Evas_Object *align;
       Evas_Object *padding;
       Evas_Object *min;
+      Evas_Object *homogeneous;
    } prop_state_table;
 };
 typedef struct _Prop_Data Prop_Data;
@@ -272,6 +273,11 @@ static const char *edje_text_effect_direction[] = { N_("None"),
 static const char *edje_middle_type[] = { N_("None"),
                                           N_("Default"),
                                           N_("Solid")};
+
+static const char *edje_homogeneous[] = { N_("None"),
+                                          N_("Table"),
+                                          N_("Item"),
+                                          NULL};
 
 static const char *edje_box_layouts[] = { N_("None"),
                                           N_("horizontal"),
@@ -3207,6 +3213,7 @@ ui_property_item_unset(Evas_Object *property)
 
 ITEM_2SPINNER_STATE_2DOUBLE_CREATE(double, _("align"), state_container_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_2DOUBLE_CREATE(int, _("padding"), state_container_padding, h, v, "eflete/property/item/default")
+ITEM_1COMBOBOX_PART_STATE_CREATE(_("homogeneous"), state_table, homogeneous, unsigned char)
 
 static Eina_Bool
 ui_property_state_table_set(Evas_Object *property)
@@ -3234,9 +3241,13 @@ ui_property_state_table_set(Evas_Object *property)
                                  _("Sets the horizontal space between cells in pixels."),
                                  _("Sets the vertcal space between cells in pixels."),
                                  false);
+        pd_table.homogeneous = prop_item_state_table_homogeneous_add(box, pd,
+                             _("Sets the homogeneous mode for the table."),
+                             edje_homogeneous);
 
         elm_box_pack_end(box, pd_table.align);
         elm_box_pack_end(box, pd_table.padding);
+        elm_box_pack_end(box, pd_table.homogeneous);
         elm_box_pack_end(prop_box, table_frame);
         pd_table.frame = table_frame;
      }
@@ -3244,6 +3255,7 @@ ui_property_state_table_set(Evas_Object *property)
      {
         prop_item_state_container_align_x_y_update(pd_table.align, pd, true);
         prop_item_state_container_padding_h_v_update(pd_table.padding, pd, false);
+        prop_item_state_table_homogeneous_update(pd_table.homogeneous, pd);
         elm_box_pack_end(prop_box, pd_table.frame);
         evas_object_show(pd_table.frame);
      }
