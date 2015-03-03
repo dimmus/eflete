@@ -145,12 +145,40 @@ _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
 }
 
 Eina_Bool
-_edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd __UNUSED__,
-                           Eina_Stringshare *part __UNUSED__,
-                           Eina_Stringshare *item __UNUSED__,
-                           Eina_Stringshare *source __UNUSED__)
+_edit_object_part_item_add(Ws_Groupedit_Smart_Data *sd,
+                           Eina_Stringshare *part,
+                           Eina_Stringshare *item,
+                           Eina_Stringshare *source)
 {
-   return false;
+   Groupedit_Part *gp;
+   Groupedit_Item *ge_item = NULL;
+   unsigned char type = EDJE_PART_TYPE_NONE;
+
+   gp = _parts_list_find(sd->parts, part);
+   if(!edje_edit_part_item_append(sd->edit_obj, part, item, source))
+     return false;
+
+   ge_item = _item_draw_add(sd, part, item);
+   if (!ge_item) return false;
+   type = edje_edit_part_type_get(sd->edit_obj, part);
+
+   if (type == EDJE_PART_TYPE_TABLE)
+     {
+        /*Position new item in cell with coords [0;0]*/
+        edje_edit_part_item_position_set(sd->edit_obj, part, item, 0, 0);
+        evas_object_table_pack(gp->draw, ge_item->draw, 0, 0, 1, 1);
+        evas_object_table_pack(gp->draw, ge_item->border, 0, 0, 1, 1);
+        evas_object_table_pack(gp->draw, ge_item->highlight, 0, 0, 1, 1);
+     }
+
+   gp->items = eina_list_append(gp->items, ge_item);
+   evas_object_smart_member_add(ge_item->draw, gp->draw);
+   evas_object_smart_member_add(ge_item->border, gp->draw);
+   evas_object_smart_member_add(ge_item->highlight, gp->draw);
+
+   evas_object_smart_changed(sd->obj);
+
+   return true;
 }
 
 Eina_Bool
