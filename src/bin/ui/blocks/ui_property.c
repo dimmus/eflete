@@ -3207,6 +3207,7 @@ ui_property_item_unset(Evas_Object *property)
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
 
 ITEM_2SPINNER_STATE_2DOUBLE_CREATE(double, _("align"), state_container_align, x, y, "eflete/property/item/default")
+ITEM_2SPINNER_STATE_2DOUBLE_CREATE(int, _("padding"), state_container_padding, h, v, "eflete/property/item/default")
 
 static Eina_Bool
 ui_property_state_table_set(Evas_Object *property)
@@ -3229,14 +3230,21 @@ ui_property_state_table_set(Evas_Object *property)
                           _("Change the position of the point of balance inside the container."),
                           _("Change the position of the point of balance inside the container."),
                           true);
+        pd_table.padding = prop_item_state_container_padding_h_v_add(box, pd, 0.0, 999.0,
+                                 1.0, "%.0f", _("hor:"), _("px"), _("ver:"), _("px"),
+                                 _("Sets the horizontal space between cells in pixels."),
+                                 _("Sets the vertcal space between cells in pixels."),
+                                 false);
 
         elm_box_pack_end(box, pd_table.align);
+        elm_box_pack_end(box, pd_table.padding);
         elm_box_pack_end(prop_box, table_frame);
         pd_table.frame = table_frame;
      }
    else
      {
         prop_item_state_container_align_x_y_update(pd_table.align, pd, true);
+        prop_item_state_container_padding_h_v_update(pd_table.padding, pd, false);
         elm_box_pack_end(prop_box, pd_table.frame);
         evas_object_show(pd_table.frame);
      }
