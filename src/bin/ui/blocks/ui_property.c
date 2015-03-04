@@ -111,6 +111,7 @@ struct _Prop_Data
       Evas_Object *aspect_pref;
       Evas_Object *color_class;
       Evas_Object *color;
+      Evas_Object *minmul;
    } prop_state;
    struct {
       Evas_Object *frame;
@@ -1257,6 +1258,7 @@ ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "ef
 ITEM_STATE_CCL_CREATE(COLOR_CLASS, _("color class"), state, color_class, color_classes)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
+ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("multiplier"), state_minmul, w, h, "eflete/property/item/default")
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
@@ -1327,6 +1329,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
                                    _("Current color class"));
         pd_state.color = prop_item_state_color_add(box, pd,
                             _("Part main color."));
+        pd_state.minmul = prop_item_state_minmul_w_h_add(box, pd,
+                             -100.0, 100.0, 0.1, "%.1f",
+                             "w:", "", "h:", "",
+                             "Set the multiplier width value of a part state",
+                             "Set the multiplier height value of a part state",
+                             false);
 
         elm_box_pack_end(box, pd_state.state);
         elm_box_pack_end(box, pd_state.visible);
@@ -1337,6 +1345,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.aspect_pref);
         elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
+        elm_box_pack_end(box, pd_state.minmul);
 
         evas_object_hide(pd_state.proxy_source);
         elm_box_unpack(box, pd_state.proxy_source);
@@ -1377,6 +1386,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
+        prop_item_state_minmul_w_h_update(pd_state.minmul, pd, false);
 
         evas_object_hide(pd_state.proxy_source);
         prop_item_state_color_update(pd_state.color, pd);
