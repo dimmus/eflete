@@ -711,13 +711,16 @@ EFLETE_TEST(history_undo_test_p9)
    ui_style_clicked(app, style);
    old_value = edje_edit_group_max_h_get(style->obj);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, GROUP, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, GROUP, old_value, new_value,
+                    old_value, new_value, (void *)edje_edit_group_min_h_set,
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
-                    "Min h", NULL, NULL, 0.0);
+                    "Group height", NULL, NULL, 0);
 
    result = history_undo(style->obj, 1);
    ck_assert_msg(result, "Failed to undo diff with GROUP value type.");
    check_value = edje_edit_group_max_h_get(style->obj);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+   check_value = edje_edit_group_min_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
    pm_project_close(app->project);
@@ -1003,13 +1006,16 @@ EFLETE_TEST(history_undo_test_p13)
    history_module_add(style->obj);
    old_value = edje_edit_group_max_h_get(style->obj);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, GROUP, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, GROUP, old_value, new_value,
+                    old_value, new_value, (void *)edje_edit_group_min_h_set,
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
-                    "Min h", NULL, NULL, 0.0);
+                    "Group height", NULL, NULL, 0);
 
    result = history_undo(style->obj, 1);
    ck_assert_msg(result, "Failed to undo diff with GROUP value type.");
    check_value = edje_edit_group_max_h_get(style->obj);
+   ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
+   check_value = edje_edit_group_min_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
    pm_project_close(app->project);

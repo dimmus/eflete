@@ -281,9 +281,10 @@ END_TEST
  * @step 1 Call history_diff_add with correct data for value type GROUP.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, GROUP, (int) 0,
- *     (int) 20, (const char *) "elm/radio/base/def",
- *     (void *)edje_edit_group_min_w_set, "Group min w"</td>
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, GROUP, (int) 0,
+ *     (int) 20, (int) 0, (int)30, (void *)edje_edit_group_min_w_set,
+ *     (const char *) "elm/radio/base/def",
+ *     (void *)edje_edit_group_max_set, "Group min weight", NULL, NULL, (int) 0</td>
  * <td>EINA_TRUE value returned</td>
  * </tr>
  * @}
@@ -306,10 +307,11 @@ EFLETE_TEST(history_diff_add_test_p5)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, GROUP, 0, 20,
-                             "elm/radio/base/def",
+   result = history_diff_add(source, PROPERTY, CONTAINER, GROUP, 0, 20, 0, 30,
                              (void *)edje_edit_group_min_w_set,
-                             "Group min w");
+                             "elm/radio/base/def",
+                             (void *)edje_edit_group_max_w_set,
+                             "Group weight", NULL, NULL, 0);
    ck_assert_msg(result, "Failed to add new diff with type GROUP"
                          " in the history of module.");
 
