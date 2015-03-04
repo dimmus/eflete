@@ -77,7 +77,7 @@ group { name: "elm/button/base/default";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
@@ -401,7 +401,7 @@ group { name: "elm/button/base/simple";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;

@@ -80,7 +80,7 @@ group { name: elm/layout/property/2swallow;
          type: TEXT;
          description { state: default 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             rel1.to: area.text;
             rel2.to: area.text;
             text {
@@ -94,7 +94,7 @@ group { name: elm/layout/property/2swallow;
          type: TEXT;
          description { state: default 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             rel1.to: area.swallow1;
             rel2.to: area.swallow1;
             text {
@@ -124,7 +124,7 @@ group { name: elm/layout/property/2swallow;
          type: TEXT;
          description { state: default 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             rel1 {
                relative: 1.0 0.0;
                to_x: swallow.content1;
@@ -143,7 +143,7 @@ group { name: elm/layout/property/2swallow;
          type: TEXT;
          description { state: default 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             rel1.to: area.swallow2;
             rel2.to: area.swallow2;
             text {
@@ -173,7 +173,7 @@ group { name: elm/layout/property/2swallow;
          type: TEXT;
          description { state: default 0.0;
             align: 0.0 0.5;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             rel1 {
                relative: 1.0 0.0;
                to_x: swallow.content2;
