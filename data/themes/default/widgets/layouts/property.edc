@@ -108,6 +108,7 @@ group { name: elm/layout/property/2swallow;
          type: SWALLOW;
          description { state: default 0.0;
             align: 0.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 1.0 0.0;
                offset: 3 0;
@@ -157,6 +158,7 @@ group { name: elm/layout/property/2swallow;
          type: SWALLOW;
          description { state: default 0.0;
             align: 0.0 0.5;
+            fixed: 1 1;
             rel1 {
                relative: 1.0 0.0;
                offset: 3 0;
