@@ -68,23 +68,33 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    Evas_Object *SUB2##_spinner = evas_object_data_get(pd->prop_group.SUB2, ITEM_SPINNER); \
    int value = (int)elm_spinner_value_get(obj); \
    int value_##SUB2##_##VALUE = edje_edit_group_##SUB2##_##VALUE##_get(pd->style->obj); \
+   int old_value_##SUB2##_##VALUE = value_##SUB2##_##VALUE; \
    int old_value_##SUB1##_##VALUE = edje_edit_group_##SUB1##_##VALUE##_get(pd->style->obj); \
    if (value CHECK value_##SUB2##_##VALUE) \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->style->obj, value)) \
           return; \
-        history_diff_add(pd->style->obj, PROPERTY, MODIFY, GROUP, value_##SUB2##_##VALUE, value, \
-                         pd->style->full_group_name, \
-                         (void*)edje_edit_group_##SUB2##_##VALUE##_set,  "group_"#SUB2"_"#VALUE, \
-                         NULL, NULL, 0); \
         elm_spinner_value_set(SUB2##_spinner, value); \
+        value_##SUB2##_##VALUE = value; \
      } \
    if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->style->obj, value)) \
      return; \
-   history_diff_add(pd->style->obj, PROPERTY, MODIFY, GROUP, old_value_##SUB1##_##VALUE, value, \
-                    pd->style->full_group_name, \
-                    (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#SUB1"_"#VALUE, \
-                    NULL, NULL, 0); \
+   if (!strcmp("min", #SUB1)) \
+     { \
+       history_diff_add(pd->style->obj, PROPERTY, CONTAINER, GROUP, old_value_##SUB1##_##VALUE, value, \
+                        old_value_##SUB2##_##VALUE, value_##SUB2##_##VALUE,  \
+                        (void*)edje_edit_group_##SUB1##_##VALUE##_set, pd->style->full_group_name, \
+                        (void*)edje_edit_group_##SUB2##_##VALUE##_set,  "group_"#VALUE, \
+                        NULL, NULL, 0); \
+     } \
+   else \
+    { \
+       history_diff_add(pd->style->obj, PROPERTY, CONTAINER, GROUP, old_value_##SUB2##_##VALUE,\
+                        value_##SUB2##_##VALUE, old_value_##SUB1##_##VALUE, value,  \
+                        (void*)edje_edit_group_##SUB2##_##VALUE##_set, pd->style->full_group_name, \
+                        (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#VALUE, \
+                        NULL, NULL, 0); \
+    } \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->style->isModify = true; \

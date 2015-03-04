@@ -179,12 +179,6 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
         else
           return false;
      break;
-     case GROUP:
-        if (!change->state)
-           change->func(source, change->integer.new);
-        else
-          return false;
-     break;
      case RENAME:
         if (!change->state)
           {
@@ -231,6 +225,10 @@ _attribute_highlight_redo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
+     case GROUP:
+       change->func_revert(source, change->twice_int.new_1);
+       change->func(source, change->twice_int.new_2);
+     break;
      case INT:
         if (change->state)
           {
@@ -325,12 +323,6 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
         else
            return false;
      break;
-     case GROUP:
-        if (!change->state)
-          change->func(source, change->integer.old);
-        else
-          return false;
-     break;
      case RENAME:
         if (!change->state)
           {
@@ -376,6 +368,10 @@ _attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
+     case GROUP:
+       change->func_revert(source, change->twice_int.old_1);
+       change->func(source, change->twice_int.old_2);
+     break;
      case INT:
         if (change->state)
           {
@@ -460,13 +456,11 @@ static Attribute_Diff *
 _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
-       ((!previous->part && !change->part) || /* if this change for group. */
-        ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
-        (change->param_type == RENAME))))
+       ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
+        (change->param_type == RENAME)))
      {
         switch(previous->param_type)
          {
-          case GROUP:
           case INT:
              previous->integer.new = change->integer.new;
           break;
@@ -504,6 +498,7 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
      {
         switch(previous->param_type)
          {
+          case GROUP:
           case INT:
              previous->twice_int.new_1 = change->twice_int.new_1;
              previous->twice_int.new_2 = change->twice_int.new_2;
@@ -560,7 +555,6 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
  \
    switch(change->param_type) \
      { \
-      case GROUP: \
       case INT: \
          change->integer.old = (int)va_arg(list, int); \
          change->integer.new = (int)va_arg(list, int); \
@@ -642,6 +636,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
 { \
    switch(change->param_type) \
      { \
+      case GROUP: \
       case INT: \
          change->twice_int.old_1 = (int)va_arg(list, int); \
          change->twice_int.new_1 = (int)va_arg(list, int); \
