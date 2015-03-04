@@ -711,12 +711,12 @@ EFLETE_TEST(history_undo_test_p9)
    ui_style_clicked(app, style);
    old_value = edje_edit_group_max_h_get(style->obj);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, ONE, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, GROUP, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
                     "Min h", NULL, NULL, 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with ONE value type.");
+   ck_assert_msg(result, "Failed to undo diff with GROUP value type.");
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -1003,12 +1003,12 @@ EFLETE_TEST(history_undo_test_p13)
    history_module_add(style->obj);
    old_value = edje_edit_group_max_h_get(style->obj);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, ONE, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, GROUP, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
                     "Min h", NULL, NULL, 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with ONE value type.");
+   ck_assert_msg(result, "Failed to undo diff with GROUP value type.");
    check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -1224,13 +1224,13 @@ EFLETE_TEST(history_undo_test_p16)
    old_value_2 = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_max_h_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_max_w_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, HLIGHT, INT, old_value_1, new_value_1,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, INT, old_value_1, new_value_1,
                     old_value_2, new_value_2, (void *)edje_edit_state_max_h_set,
                     "elm/radio/base/def", (void *)edje_edit_state_max_w_set,
                     "max size", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with HLIGHT action and INT value type.");
+   ck_assert_msg(result, "Failed to undo diff with CONTAINER action and INT value type.");
    check_value = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_1, "Max height didn't canceled");
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
@@ -1305,13 +1305,13 @@ EFLETE_TEST(history_undo_test_p17)
    old_value_2 = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_align_x_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_align_y_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, HLIGHT, DOUBLE, old_value_1, new_value_1,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, DOUBLE, old_value_1, new_value_1,
                     old_value_2, new_value_2, (void *)edje_edit_state_align_x_set,
                     "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
                     "align", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with HLIGHT action and DOUBLE value type.");
+   ck_assert_msg(result, "Failed to undo diff with CONTAINER action and DOUBLE value type.");
    check_value = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_1, "Align x didn't canceled");
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);

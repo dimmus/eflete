@@ -278,10 +278,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add with correct data for value type ONE.
+ * @step 1 Call history_diff_add with correct data for value type GROUP.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, ONE, (int) 0,
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, GROUP, (int) 0,
  *     (int) 20, (const char *) "elm/radio/base/def",
  *     (void *)edje_edit_group_min_w_set, "Group min w"</td>
  * <td>EINA_TRUE value returned</td>
@@ -306,11 +306,11 @@ EFLETE_TEST(history_diff_add_test_p5)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, ONE, 0, 20,
+   result = history_diff_add(source, PROPERTY, MODIFY, GROUP, 0, 20,
                              "elm/radio/base/def",
                              (void *)edje_edit_group_min_w_set,
                              "Group min w");
-   ck_assert_msg(result, "Failed to add new diff with type ONE"
+   ck_assert_msg(result, "Failed to add new diff with type GROUP"
                          " in the history of module.");
 
    history_term(app->history);
@@ -579,10 +579,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add  with correct data for action HLIGHT with type INT.
+ * @step 1 Call history_diff_add  with correct data for action CONTAINER with type INT.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, HLIGHT, INT, (int) 5, (int) 10,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, INT, (int) 5, (int) 10,
  *     (int) 20, (int) 8, (void *)edje_edit_state_max_w_set,
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
  *     "max size", "bg", "default", 0.0 </td>
@@ -608,7 +608,7 @@ EFLETE_TEST(history_diff_add_test_p10)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, HLIGHT, INT, 5, 10, 20, 8,
+   result = history_diff_add(source, PROPERTY, CONTAINER, INT, 5, 10, 20, 8,
                             (void *)edje_edit_state_max_w_set, "elm/radio/base/def",
                             (void *)edje_edit_state_max_h_set, "max size", "bg",
                             "default", 0.0);
@@ -638,10 +638,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add  with correct data for action HLIGHT with type INT.
+ * @step 1 Call history_diff_add  with correct data for action CONTAINER with type INT.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, HLIGHT, DOUBLE, (double) 0.2, (double) 1.0,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, DOUBLE, (double) 0.2, (double) 1.0,
  *     (double) 0.7, (double) 0.0, (void *)edje_edit_state_align_x_set,
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
  *     "align", "bg", "default", 0.0 </td>
@@ -667,7 +667,7 @@ EFLETE_TEST(history_diff_add_test_p11)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, HLIGHT, DOUBLE, 0.2, 1.0, 0.7, 0.0,
+   result = history_diff_add(source, PROPERTY, CONTAINER, DOUBLE, 0.2, 1.0, 0.7, 0.0,
                             (void *)edje_edit_state_align_x_set, "elm/radio/base/def",
                             (void *)edje_edit_state_align_y_set, "align", "bg",
                             "default", 0.0);
@@ -1190,7 +1190,7 @@ END_TEST
  * @step 1 Call history_diff_add without function pointer.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, ONE, (int) 10, (int) 15,
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, GROUP, (int) 10, (int) 15,
  *     (const char *) "elm/radio/base/def", NULL, "Group min w", "bg",
  *     "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
@@ -1215,7 +1215,7 @@ EFLETE_TEST(history_diff_add_test_n5)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, ONE, 10, 15,
+   result = history_diff_add(source, PROPERTY, MODIFY, GROUP, 10, 15,
                              "elm/radio/base/def", NULL, "Group min w", "bg",
                              "default", 0.0 );
    ck_assert_msg(!result, "New diff added without function pointer.");
@@ -1424,7 +1424,7 @@ END_TEST
  * @step 1 Call history_diff_add  with first function pointer.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, HLIGHT, INT, (int) 5, (int) 10,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, INT, (int) 5, (int) 10,
  *     (int) 20, (int) 8, NULL,
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
  *     "max size", "bg", "default", 0.0 </td>
@@ -1450,7 +1450,7 @@ EFLETE_TEST(history_diff_add_test_n9)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, HLIGHT, INT, 5, 10, 20, 8,
+   result = history_diff_add(source, PROPERTY, CONTAINER, INT, 5, 10, 20, 8,
                              NULL, "elm/radio/base/def",
                             (void *)edje_edit_state_max_h_set, "max size", "bg",
                             "default", 0.0);

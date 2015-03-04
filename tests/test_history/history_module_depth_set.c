@@ -144,7 +144,7 @@ EFLETE_TEST(history_module_depth_set_test_p2)
    history_module_add(style->obj);
    history_module_depth_set(style->obj, 3);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, ONE, 0, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, GROUP, 0, new_value,
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
                     "Min h", NULL, NULL, 0.0);
    edje_edit_state_color_set(style->obj, "radio", "default", 0.0, 80, 90, 100, 120);
