@@ -160,7 +160,11 @@ Eina_Bool
 _edit_object_part_del(Ws_Groupedit_Smart_Data *sd, const char *part)
 {
    if ((!sd->parts) || (!part)) return false;
-   if (!edje_edit_part_del(sd->edit_obj, part)) return false;
+   if (!edje_edit_part_del(sd->edit_obj, part))
+     {
+        ERR("Failed to delete part from edje edit object");
+        return false;
+     }
 
    _selected_item_return_to_place(sd);
    _part_draw_del(sd, part);
@@ -414,6 +418,8 @@ _groupedit_part_free(Groupedit_Part *gp)
         evas_object_smart_member_del(gp->item);
         evas_object_del(gp->item);
      }
+   if (gp->bg)
+     evas_object_del(gp->bg);
 
    EINA_LIST_FREE(gp->items, ge_item)
      _item_draw_del(ge_item);
@@ -900,7 +906,11 @@ _part_draw_del(Ws_Groupedit_Smart_Data *sd, const char *part)
    Groupedit_Part *gp;
 
    gp = _parts_list_find(sd->parts, part);
-   if (!gp) return;
+   if (!gp)
+     {
+        ERR("Failed to find part in parts list");
+        return;
+     }
    _groupedit_part_free(gp);
    sd->parts = eina_list_remove(sd->parts, gp);
 }
