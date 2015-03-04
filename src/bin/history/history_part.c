@@ -216,6 +216,7 @@ _part_undo(Evas_Object *source, Part_Diff *change)
      {
       case ADD:
          workspace_edit_object_part_del(app->workspace, change->part);
+         workspace_highlight_unset(app->workspace);
          ui_widget_list_part_selected_set(widget_list, change->part, true);
          ui_widget_list_selected_part_del(widget_list, style);
 
