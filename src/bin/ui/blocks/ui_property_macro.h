@@ -73,7 +73,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->style->obj, value)) \
           return; \
-        history_diff_add(pd->style->obj, PROPERTY, MODIFY, ONE, value_##SUB2##_##VALUE, value, \
+        history_diff_add(pd->style->obj, PROPERTY, MODIFY, GROUP, value_##SUB2##_##VALUE, value, \
                          pd->style->full_group_name, \
                          (void*)edje_edit_group_##SUB2##_##VALUE##_set,  "group_"#SUB2"_"#VALUE, \
                          NULL, NULL, 0); \
@@ -81,7 +81,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
      } \
    if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->style->obj, value)) \
      return; \
-   history_diff_add(pd->style->obj, PROPERTY, MODIFY, ONE, old_value_##SUB1##_##VALUE, value, \
+   history_diff_add(pd->style->obj, PROPERTY, MODIFY, GROUP, old_value_##SUB1##_##VALUE, value, \
                     pd->style->full_group_name, \
                     (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#SUB1"_"#VALUE, \
                     NULL, NULL, 0); \

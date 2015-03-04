@@ -179,7 +179,7 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
         else
           return false;
      break;
-     case ONE:
+     case GROUP:
         if (!change->state)
            change->func(source, change->integer.new);
         else
@@ -272,7 +272,7 @@ _attribute_redo(Evas_Object *source, Attribute_Diff *change)
       case ADD:
          redo = _attribute_curd_redo(source, change);
       break;
-      case HLIGHT:
+      case CONTAINER:
          redo = _attribute_highlight_redo(source, change);
       break;
       default:
@@ -325,7 +325,7 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
         else
            return false;
      break;
-     case ONE:
+     case GROUP:
         if (!change->state)
           change->func(source, change->integer.old);
         else
@@ -417,7 +417,7 @@ _attribute_undo(Evas_Object *source, Attribute_Diff *change)
       case ADD:
          undo = _attribute_curd_undo(source, change);
       break;
-      case HLIGHT:
+      case CONTAINER:
          undo = _attribute_highlight_undo(source, change);
       break;
       default:
@@ -466,7 +466,7 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
      {
         switch(previous->param_type)
          {
-          case ONE:
+          case GROUP:
           case INT:
              previous->integer.new = change->integer.new;
           break;
@@ -544,7 +544,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
       case MODIFY:
          return (Diff *)_attribute_modify_merge(previous, change);
       break;
-      case HLIGHT:
+      case CONTAINER:
          return (Diff *)_attribute_highlight_merge(previous, change);
       break;
       default:
@@ -560,7 +560,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
  \
    switch(change->param_type) \
      { \
-      case ONE: \
+      case GROUP: \
       case INT: \
          change->integer.old = (int)va_arg(list, int); \
          change->integer.new = (int)va_arg(list, int); \
@@ -693,7 +693,7 @@ _attribute_change_new(va_list list)
       case ADD:
          _attribute_curd_parse(parse, list, change); /**this parse add and del actions*/
       break;
-      case HLIGHT:
+      case CONTAINER:
          _attribute_highlight_parse(parse, list, change);/* here parse cases like change
                                                             align x and y in one time */
       break;
