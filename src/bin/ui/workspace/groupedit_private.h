@@ -163,6 +163,7 @@ struct _Groupedit_Part
                                    for show the edje part geometry. */
    Evas_Object *item;         /**< The object border in the separete mode */
    Eina_List *items;          /**< The items, for TABLE, BOX part types */
+   Eina_List *fake_items;          /**< The items, for TABLE, BOX part types */
 };
 
 struct _Groupedit_Item
