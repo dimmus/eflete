@@ -147,7 +147,7 @@ enum _Action
    ADD = 0, /**< Adding something new, like adding new state in part. */
    DEL,     /**< Deleting, like delete part from style. */
    MODIFY,  /**< Usaly it indicate that modifing attributes of part or state. */
-   HLIGHT, /**< This action mean, that changed two params, whith using differents
+   CONTAINER, /**< This action mean, that changed two params, whith using differents
                    function. For this case needed special logic to manage changes*/
    RESTACK, /**< This action needed for manage parts restack */
    LAST_ACTION
@@ -185,7 +185,7 @@ enum _Value_Type
    STRING = 0, /**< string values: char *, const char*, Eina_Stringshare * */
    DOUBLE, /**< only double values */
    INT, /**< for int, char, Eina_Bool types*/
-   ONE, /**< use in functions with int param, that describe change. This
+   GROUP, /**< use in functions with int param, that describe change. This
              function usually look like edje_edit_group_max_set(Evas_Object*, int v)*/
    FOUR, /**< for functions like edje_edit_state_color_set. */
    RENAME, /**< Only for function edje_edit_part_name_set. */
@@ -337,7 +337,7 @@ history_module_del(Evas_Object *source);
  *
  *   For actions, that change params with highlight from workspace:
  *
- *   history_diff_add(source, Target, HLIGHT, Value_Type, old_value_1,
+ *   history_diff_add(source, Target, CONTAINER, Value_Type, old_value_1,
  *                    new_value_1, old_value_2, new_value_2
  *                    Func_1 pointer, Style name, Func_2 pointer,
  *                    description, Part name, State name, State value);
@@ -362,7 +362,7 @@ history_module_del(Evas_Object *source);
  *                                       part->curr_state, part->curr_state_value,
  *                                       events->h);
  *  if (result)
- *    history_diff_add(style->obj, PROPERTY, HLIGHT, INT, old_value_1, events->w,
+ *    history_diff_add(style->obj, PROPERTY, CONTAINER, INT, old_value_1, events->w,
  *                     old_value_2, events->h, (void *)edje_edit_state_max_w_set,
  *                     style->full_group_name, (void *)edje_edit_state_max_h_set,
  *                     "max size", part->name, part->curr_state,

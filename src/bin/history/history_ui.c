@@ -83,7 +83,7 @@ _item_state_get(void *data,
 {
    Diff *diff = (Diff *)data;
 
-   if (((diff->action_type == MODIFY) || (diff->action_type == HLIGHT))
+   if (((diff->action_type == MODIFY) || (diff->action_type == CONTAINER))
        && ((!strcmp(part, "modify"))))
        return true;
    if ((diff->action_type == ADD) && ((!strcmp(part, "add"))))
