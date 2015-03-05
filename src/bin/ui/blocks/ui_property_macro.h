@@ -33,6 +33,17 @@ static void
 _on_state_text_style_change(void *data,
                              Evas_Object *obj,
                              void *event_info __UNUSED__);
+
+#define PROPERTY_ITEM_ADD(PARENT, NAME, STYLE) \
+   Evas_Object *item; \
+   item = elm_layout_add(PARENT); \
+   elm_layout_theme_set(item, "layout", "property", STYLE); \
+   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
+   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
+   elm_object_part_text_set(item, "elm.text", NAME); \
+   evas_object_show(item);
+
+
 #define ITEM1 "item1"
 #define ITEM2 "item2"
 #define ITEM3 "item3"
@@ -100,7 +111,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 }
 
 /* group */
-#define ITEM_2SPINNER_GROUP_ADD(text, SUB, VALUE1, VALUE2) \
+#define ITEM_2SPINNER_GROUP_ADD(TEXT, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                              Prop_Data *pd, \
@@ -110,13 +121,7 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                              const char *tooltip1, \
                                              const char *tooltip2) \
 { \
-   Evas_Object *item; \
-   item = elm_layout_add(parent); \
-   elm_layout_theme_set(item, "layout", "property", "2swallow"); \
-   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_object_part_text_set(item, "elm.text", text); \
-   evas_object_show(item); \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    elm_object_part_text_set(item, "label.swallow1.start", "w:"); \
    elm_object_part_text_set(item, "label.swallow1.end", "px"); \
    SPINNER_ADD(item, pd->group.SUB##_##VALUE1, min, max, step, true) \
