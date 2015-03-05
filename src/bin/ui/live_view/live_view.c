@@ -71,6 +71,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
    const char *custom_name = NULL;
    char *fail_message = NULL;
    Eina_Bool ret = true;
+   Eina_Bool first_load = true;
    int x, y;
 
    if ((!live) || (!project)) return false;
@@ -80,6 +81,8 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         WARN("Could'nt apply the style to live view. The style is missing!");
         return false;
      }
+
+   if (live->object) first_load = false;
 
    live_view_widget_style_unset(live);
 
@@ -97,11 +100,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         type = c[2];
         style_name = c[3];
 
-        if (!live->object)
-          {
-             live->object = live_widget_create(widget, type, style_name, live->layout);
-             container_content_set(live->live_view, live->object);
-          }
+        live->object = live_widget_create(widget, type, style_name, live->layout);
 
         if (!live->object)
           {
@@ -119,13 +118,13 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           }
         if (!ret)
           {
-             NOTIFY_INFO(3, "%s", fail_message);
+             if (first_load)
+               NOTIFY_INFO(3, "%s", fail_message);
              if (live->object)
                live_widget_del(live->object);
              live->object = layout_custom_create(live->layout);
              edje_object_mmap_set(live->object, project->mmap_file,
                                   style->full_group_name);
-             container_content_set(live->live_view, live->object);
              live_view_property_style_set(live->property, live->object, style, "layout");
           }
         else
@@ -162,13 +161,13 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
                }
              evas_object_freeze_events_set(live->object, true);
           }
-        container_content_set(live->live_view, live->object);
         live_view_theme_update(live, project);
         live_view_property_style_set(live->property, live->object, style, "layout");
      }
 
    evas_object_show(live->live_view);
    evas_object_show(live->object);
+   container_content_set(live->live_view, live->object);
 
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
 
