@@ -70,10 +70,10 @@ struct _Prop_Data
       Evas_Object *info;
       Evas_Object *shared_check;
       Evas_Object *ctxpopup;
-      Evas_Object *min;
-      Evas_Object *max;
+      Evas_Object *min_w, *min_h;
+      Evas_Object *max_w, *max_h;
       Evas_Object *current;
-   } prop_group;
+   } group;
    struct {
       Evas_Object *frame;
       Evas_Object *name;
@@ -519,10 +519,10 @@ ui_property_add(Evas_Object *parent)
 }
 
 #define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
-   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE1, ITEM1, CHECK) \
-   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE2, ITEM2, CHECK) \
-   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB1, VALUE1, VALUE2) \
-   ITEM_2SPINNER_GROUP_UPDATE(SUB1, VALUE1, VALUE2)
+   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE1, CHECK) \
+   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE2, CHECK) \
+   ITEM_2SPINNER_GROUP_UPDATE(SUB1, VALUE1, VALUE2) \
+   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB1, VALUE1, VALUE2)
 
 /* ! Group property !
 
@@ -558,7 +558,7 @@ ui_property_add(Evas_Object *parent)
 ITEM_2SPINNER_GROUP_CREATE(_("min"), min, max, w, h, >)
 ITEM_2SPINNER_GROUP_CREATE(_("max"), max, min, w, h, <)
 
-#define pd_group pd->prop_group
+#define pd_group pd->group
 
 static void
 _on__dismissed(void *data __UNUSED__,
@@ -647,6 +647,7 @@ Eina_Bool
 ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspace)
 {
    Evas_Object *group_frame, *box, *prop_box, *info_en = NULL;
+   Evas_Object *item;
    Evas_Object *info_image;
    Evas_Object *check, *label_ctx;
    Eina_List *aliases = NULL, *l;
@@ -760,16 +761,16 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
 
-        pd_group.min = prop_item_group_min_w_h_add(box, pd,
+        item = prop_item_group_min_w_h_add(box, pd,
                           0.0, 9999.0, 1.0,
                           _("Minimum group width in pixels."),
                           _("Minimum group height in pixels."));
-        pd_group.max = prop_item_group_max_w_h_add(box, pd,
+        elm_box_pack_end(box, item);
+        item = prop_item_group_max_w_h_add(box, pd,
                           0.0, 9999.0, 1.0,
                           _("Maximum group width in pixels."),
                           _("Maximum group height in pixels."));
-        elm_box_pack_end(box, pd_group.min);
-        elm_box_pack_end(box, pd_group.max);
+        elm_box_pack_end(box, item);
 
         elm_box_pack_start(prop_box, group_frame);
         pd_group.frame = group_frame;
@@ -782,8 +783,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
              evas_object_show(pd_group.info);
           }
         _prop_item_shared_check_update(pd_group.shared_check, aliases_count);
-        prop_item_group_min_w_h_update(pd_group.min, pd);
-        prop_item_group_max_w_h_update(pd_group.max, pd);
+        prop_item_group_min_w_h_update(pd);
+        prop_item_group_max_w_h_update(pd);
         evas_object_show(pd_group.frame);
      }
    if ((aliases_count > 0) || (style->isAlias))
@@ -1018,7 +1019,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
              elm_box_pack_end(box, pd_part.multiline);
           }
 
-        elm_box_pack_after(prop_box, part_frame, pd->prop_group.frame);
+        elm_box_pack_after(prop_box, part_frame, pd->group.frame);
         pd_part.frame = part_frame;
      }
    else

@@ -58,14 +58,13 @@ _on_state_text_style_change(void *data,
    elm_object_part_text_set(ITEM, "eflete.text.end", TEXT2); \
    evas_object_show(ITEM);
 
-#define ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE, ITEM_SPINNER, CHECK) \
+#define ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE, CHECK) \
 static void \
 _on_group_##SUB1##_##VALUE##_change(void *data, \
                                     Evas_Object *obj, \
                                     void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   Evas_Object *SUB2##_spinner = evas_object_data_get(pd->prop_group.SUB2, ITEM_SPINNER); \
    int value = (int)elm_spinner_value_get(obj); \
    int value_##SUB2##_##VALUE = edje_edit_group_##SUB2##_##VALUE##_get(pd->style->obj); \
    int old_value_##SUB2##_##VALUE = value_##SUB2##_##VALUE; \
@@ -74,7 +73,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
      { \
         if (!edje_edit_group_##SUB2##_##VALUE##_set(pd->style->obj, value)) \
           return; \
-        elm_spinner_value_set(SUB2##_spinner, value); \
+        elm_spinner_value_set(pd->group.SUB2##_##VALUE, value); \
         value_##SUB2##_##VALUE = value; \
      } \
    if (!edje_edit_group_##SUB1##_##VALUE##_set(pd->style->obj, value)) \
@@ -111,7 +110,7 @@ prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                                   const char *tooltip1, \
                                                   const char *tooltip2) \
 { \
-   Evas_Object *item, *spinner1, *spinner2; \
+   Evas_Object *item; \
    item = elm_layout_add(parent); \
    elm_layout_theme_set(item, "layout", "property", "2swallow"); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
@@ -120,44 +119,34 @@ prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    evas_object_show(item); \
    elm_object_part_text_set(item, "label.swallow1.start", "w:"); \
    elm_object_part_text_set(item, "label.swallow1.end", "px"); \
-   SPINNER_ADD(item, spinner1, min, max, step, true) \
-   elm_spinner_label_format_set(spinner1, "%.0f"); \
-   elm_spinner_value_set(spinner1, edje_edit_group_##SUB##_##VALUE1##_get(pd->style->obj)); \
-   elm_object_tooltip_text_set(spinner1, tooltip1); \
-   elm_object_part_content_set(item, "swallow.content1", spinner1); \
-   evas_object_smart_callback_add(spinner1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
-   evas_object_event_callback_priority_add(spinner1, EVAS_CALLBACK_MOUSE_WHEEL, \
+   SPINNER_ADD(item, pd->group.SUB##_##VALUE1, min, max, step, true) \
+   elm_spinner_label_format_set(pd->group.SUB##_##VALUE1, "%.0f"); \
+   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE1, tooltip1); \
+   evas_object_smart_callback_add(pd->group.SUB##_##VALUE1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content1", pd->group.SUB##_##VALUE1); \
+   evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
    elm_object_part_text_set(item, "label.swallow2.start", "h:"); \
    elm_object_part_text_set(item, "label.swallow2.end", "px"); \
-   SPINNER_ADD(item, spinner2, min, max, step, true) \
-   elm_spinner_value_set(spinner2, edje_edit_group_##SUB##_##VALUE2##_get(pd->style->obj)); \
-   elm_spinner_label_format_set(spinner2, "%.0f"); \
-   elm_object_tooltip_text_set(spinner2, tooltip2); \
-   elm_object_part_content_set(item, "swallow.content2", spinner2); \
-   evas_object_smart_callback_add(spinner2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
-   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
+   SPINNER_ADD(item, pd->group.SUB##_##VALUE2, min, max, step, true) \
+   elm_spinner_label_format_set(pd->group.SUB##_##VALUE2, "%.0f"); \
+   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE2, tooltip2); \
+   evas_object_smart_callback_add(pd->group.SUB##_##VALUE2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content2", pd->group.SUB##_##VALUE2); \
+   evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
-   evas_object_data_set(item, ITEM1, spinner1); \
-   evas_object_data_set(item, ITEM2, spinner2); \
+   prop_item_group_##SUB##_##VALUE1##_##VALUE2##_update(pd); \
    return item; \
 }
 
 #define ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
-prop_item_group_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, Prop_Data *pd) \
+prop_item_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
 { \
-   Evas_Object *spinner1, *spinner2; \
-   spinner1 = evas_object_data_get(item, ITEM1); \
-   elm_spinner_value_set(spinner1, edje_edit_group_##SUB##_##VALUE1##_get(pd->style->obj)); \
-   evas_object_smart_callback_del_full(spinner1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
-   evas_object_smart_callback_add(spinner1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
-   spinner2 = evas_object_data_get(item, ITEM2); \
-   elm_spinner_value_set(spinner2, edje_edit_group_##SUB##_##VALUE2##_get(pd->style->obj)); \
-   evas_object_smart_callback_del_full(spinner2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
-   evas_object_smart_callback_add(spinner2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
+   elm_spinner_value_set(pd->group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->style->obj)); \
+   elm_spinner_value_set(pd->group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->style->obj)); \
 }
 
 /* part */
