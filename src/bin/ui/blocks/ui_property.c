@@ -761,15 +761,15 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(group_frame, box);
 
-        item = prop_item_group_min_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0,
-                          _("Minimum group width in pixels."),
-                          _("Minimum group height in pixels."));
+        item = prop_group_min_w_h_add(box, pd,
+                                      0.0, 9999.0, 1.0,
+                                      _("Minimum group width in pixels."),
+                                      _("Minimum group height in pixels."));
         elm_box_pack_end(box, item);
-        item = prop_item_group_max_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0,
-                          _("Maximum group width in pixels."),
-                          _("Maximum group height in pixels."));
+        item = prop_group_max_w_h_add(box, pd,
+                                      0.0, 9999.0, 1.0,
+                                      _("Maximum group width in pixels."),
+                                      _("Maximum group height in pixels."));
         elm_box_pack_end(box, item);
 
         elm_box_pack_start(prop_box, group_frame);
@@ -783,8 +783,8 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
              evas_object_show(pd_group.info);
           }
         _prop_item_shared_check_update(pd_group.shared_check, aliases_count);
-        prop_item_group_min_w_h_update(pd);
-        prop_item_group_max_w_h_update(pd);
+        prop_group_min_w_h_update(pd);
+        prop_group_max_w_h_update(pd);
         evas_object_show(pd_group.frame);
      }
    if ((aliases_count > 0) || (style->isAlias))

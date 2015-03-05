@@ -102,13 +102,13 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 /* group */
 #define ITEM_2SPINNER_GROUP_ADD(text, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
-prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
-                                                  Prop_Data *pd, \
-                                                  double min, \
-                                                  double max, \
-                                                  double step, \
-                                                  const char *tooltip1, \
-                                                  const char *tooltip2) \
+prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
+                                             Prop_Data *pd, \
+                                             double min, \
+                                             double max, \
+                                             double step, \
+                                             const char *tooltip1, \
+                                             const char *tooltip2) \
 { \
    Evas_Object *item; \
    item = elm_layout_add(parent); \
@@ -137,13 +137,13 @@ prop_item_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
-   prop_item_group_##SUB##_##VALUE1##_##VALUE2##_update(pd); \
+   prop_group_##SUB##_##VALUE1##_##VALUE2##_update(pd); \
    return item; \
 }
 
 #define ITEM_2SPINNER_GROUP_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
-prop_item_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
+prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
 { \
    elm_spinner_value_set(pd->group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->style->obj)); \
    elm_spinner_value_set(pd->group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->style->obj)); \
