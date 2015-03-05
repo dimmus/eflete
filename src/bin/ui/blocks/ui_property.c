@@ -561,14 +561,14 @@ ITEM_2SPINNER_GROUP_CREATE(_("max"), max, min, w, h, <)
 #define pd_group pd->group
 
 static void
-_on__dismissed(void *data __UNUSED__,
+_on_dismissed(void *data __UNUSED__,
                Evas_Object *obj,
                void *event_info __UNUSED__)
 {
    evas_object_hide(obj);
 }
 static void
-_on__clicked(void *data,
+_on_clicked(void *data,
              Evas *e,
              Evas_Object *obj __UNUSED__,
              void *event_info __UNUSED__)
@@ -576,9 +576,9 @@ _on__clicked(void *data,
    int x, y;
    Prop_Data *pd = (Prop_Data *)data;
    evas_object_smart_callback_del_full(pd_group.ctxpopup, "dismissed",
-                                       _on__dismissed, pd);
+                                       _on_dismissed, pd);
    evas_object_smart_callback_add(pd_group.ctxpopup, "dismissed",
-                                  _on__dismissed, pd);
+                                  _on_dismissed, pd);
    evas_pointer_canvas_xy_get(e, &x, &y);
    evas_object_move(pd_group.ctxpopup, x, y);
    evas_object_show(pd_group.ctxpopup);
@@ -619,9 +619,9 @@ _prop_item_alias_update(Prop_Data *pd, Style *style, int aliases_count)
           }
 
         evas_object_event_callback_del_full(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
-                                       _on__clicked, pd);
+                                       _on_clicked, pd);
         evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
-                                       _on__clicked, pd);
+                                       _on_clicked, pd);
         elm_object_text_set(label_ctx, eina_strbuf_string_get(text_ctx));
         eina_strbuf_free(text_ctx);
         edje_edit_string_list_free(list);
@@ -725,7 +725,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
                   eina_strbuf_append(text_ctx, step);
                }
              evas_object_event_callback_add(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
-                                            _on__clicked, pd);
+                                            _on_clicked, pd);
              LABEL_ADD(property, label_ctx, eina_strbuf_string_get(text_ctx))
              eina_strbuf_free(text_ctx);
              elm_object_style_set(label_ctx, "info");
@@ -811,7 +811,7 @@ ui_property_style_unset(Evas_Object *property)
    elm_box_unpack(prop_box, pd_group.info);
    elm_box_unpack(prop_box, pd_group.shared_check);
    evas_object_event_callback_del_full(pd_group.info, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _on__clicked, pd);
+                                  _on_clicked, pd);
    evas_object_hide(pd_group.frame);
    evas_object_hide(pd_group.shared_check);
    ui_property_part_unset(property);
