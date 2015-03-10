@@ -53,6 +53,7 @@ struct _Image_Editor
 {
    Project *pr;
    Evas_Object *win;
+   Evas_Object *fs_win;
    Evas_Object *gengrid;
    Evas_Object *layout;
    Search_Data image_search_data;
@@ -565,17 +566,35 @@ _image_editor_gengrid_item_data_create(Evas_Object *edje_edit_obj,
 }
 
 static void
+_fs_del(void *data)
+{
+   Elm_Object_Item *it;
+   Image_Editor *edit = (Image_Editor *)data;
+
+   if (edit->fs_win)
+     {
+        evas_object_del(edit->fs_win);
+        edit->fs_win = NULL;
+        it = elm_gengrid_item_prev_get(edit->group_items.linked);
+        elm_gengrid_item_selected_set(it, true);
+     }
+}
+
+static void
 _on_image_done(void *data,
                Evas_Object *obj,
-               void *event_info __UNUSED__)
+               void *event_info)
 {
    Item *it = NULL;
    Elm_Object_Item *item = NULL;
    Evas_Object *edje_edit_obj = NULL;
    const Eina_List *images, *l;
-   const char *selected;
+   const char *selected = event_info;
 
    Image_Editor *img_edit = (Image_Editor *)data;
+
+   if ((!selected) || (!strcmp(selected, "")))
+     goto del;
 
    GET_OBJ(img_edit->pr, edje_edit_obj);
    images = elm_fileselector_selected_paths_get(obj);
@@ -605,8 +624,8 @@ _on_image_done(void *data,
                elm_gengrid_multi_select_set(img_edit->gengrid, true);
           }
      }
-
-   ecore_main_loop_quit();
+del:
+   ecore_job_add(_fs_del, img_edit);
 }
 
 static void
@@ -614,23 +633,18 @@ _on_button_add_clicked_cb(void *data,
                           Evas_Object *obj __UNUSED__,
                           void *event_info __UNUSED__)
 {
-   Evas_Object *win, *bg, *fs;
+   Evas_Object *fs;
+   Image_Editor *edit = data;
 
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Add image to library"), _on_image_done, data);
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(win, bg);
+   edit->fs_win  = mw_add(NULL, NULL);
+   mw_title_set(edit->fs_win, "Add image to the library");
+   evas_object_show(edit->fs_win);
 
-   FILESELECTOR_ADD(fs, win, _on_image_done, data);
+   FILESELECTOR_ADD(fs, edit->fs_win, _on_image_done, data);
    elm_fileselector_multi_select_set(fs, true);
-   elm_win_resize_object_add(win, fs);
+   elm_win_inwin_content_set(edit->fs_win, fs);
 
-   ecore_main_loop_begin();
-
-   evas_object_del(win);
    project_changed();
-   return;
 }
 
 static void

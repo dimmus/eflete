@@ -1355,19 +1355,15 @@ _sample_add_cb(void *data,
                Evas_Object *obj __UNUSED__,
                void *event_info __UNUSED__)
 {
+   Evas_Object *fs;
    Sound_Editor *edit = data;
 
-   Evas_Object *bg, *fs;
-
-   MODAL_WINDOW_ADD(edit->fs_win, main_window_get(), _("Add sound to the library"),
-                    _add_sample_done, data);
-   bg = elm_bg_add(edit->fs_win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(edit->fs_win, bg);
+   edit->fs_win  = mw_add(NULL, NULL);
+   mw_title_set(edit->fs_win, "Add sound to the library");
+   evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
-   elm_win_resize_object_add(edit->fs_win, fs);
+   elm_win_inwin_content_set(edit->fs_win, fs);
 }
 
 static void
