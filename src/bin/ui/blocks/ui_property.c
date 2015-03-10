@@ -98,7 +98,7 @@ struct _Prop_Data
       Evas_Object *drag_y;
       Evas_Object *confine;
       Evas_Object *event;
-   } part_drag;
+   } drag;
    struct {
       Evas_Object *frame;
       Evas_Object *state;
@@ -113,7 +113,7 @@ struct _Prop_Data
       Evas_Object *color_class;
       Evas_Object *color;
       Evas_Object *minmul;
-   } prop_state;
+   } state;
    struct {
       Evas_Object *frame;
       Evas_Object *rel1_relative;
@@ -122,7 +122,7 @@ struct _Prop_Data
       Evas_Object *rel2_relative;
       Evas_Object *rel2_offset;
       Evas_Object *rel2_to;
-   } prop_state_object_area;
+   } state_object_area;
    struct {
       Evas_Object *frame;
       Evas_Object *text;
@@ -138,7 +138,7 @@ struct _Prop_Data
       Evas_Object *color2;
       Evas_Object *color3;
       Evas_Object *effect;
-   } prop_state_text;
+   } state_text;
    struct {
       Evas_Object *frame;
       Evas_Object *text;
@@ -152,14 +152,14 @@ struct _Prop_Data
       Evas_Object *source4;
       Evas_Object *source5;
       Evas_Object *source6;
-   } prop_state_textblock;
+   } state_textblock;
    struct {
       Evas_Object *frame;
       Evas_Object *normal;
       Evas_Object *border;
       Evas_Object *middle;
       Evas_Object *tween;
-   } prop_state_image;
+   } state_image;
    struct {
       Evas_Object *frame;
       Evas_Object *type;
@@ -168,7 +168,7 @@ struct _Prop_Data
       Evas_Object *origin_offset;
       Evas_Object *size_relative;
       Evas_Object *size_offset;
-   } prop_state_fill;
+   } state_fill;
    struct {
       Evas_Object *frame;
       Evas_Object *layout;
@@ -191,7 +191,7 @@ struct _Prop_Data
       Evas_Object *aspect_mode;
       Evas_Object *position; /* Only for items in part TABLE */
       Evas_Object *span; /* Only for items in part TABLE */
-   } prop_item;
+   } part_item;
    struct {
       Evas_Object *frame;
       Evas_Object *align;
@@ -989,7 +989,7 @@ ITEM_1COMBOBOX_PART_CREATE(DRAG_AREA, _("drag area"), part_drag, confine)
 ITEM_1COMBOBOX_PART_CREATE(FORWARD_EVENTS, _("forward events"), part_drag, event)
 
 #define pd_part pd->part
-#define pd_part_drag pd->part_drag
+#define pd_part_drag pd->drag
 Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
@@ -1008,7 +1008,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
    type = edje_edit_part_type_get(pd->wm_style->obj, part->name);
    prop_box = elm_object_content_get(pd->visual);
 
-   elm_box_unpack(prop_box, pd->part_drag.frame);
+   elm_box_unpack(prop_box, pd->drag.frame);
 
    if (!pd_part.frame)
      {
@@ -1247,13 +1247,13 @@ ui_property_part_unset(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
 
    PROP_ITEM_UNSET(prop_box, pd->part.frame)
-   PROP_ITEM_UNSET(prop_box, pd->part_drag.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_object_area.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_text.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_image.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_textblock.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_fill.frame)
+   PROP_ITEM_UNSET(prop_box, pd->drag.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_object_area.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_text.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_image.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_textblock.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_fill.frame)
 }
 
 #undef PROP_ITEM_UNSET
@@ -1330,7 +1330,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    PROP_DATA_GET(EINA_FALSE)
 
    if (pd->wm_part != part) return EINA_FALSE; /* time for panic */
-   #define pd_state pd->prop_state
+   #define pd_state pd->state
 
    type = edje_edit_part_type_get(pd->wm_style->obj, part->name);
    sprintf(state, "%s %.2f", part->curr_state, part->curr_state_value);
@@ -1426,7 +1426,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
           }
 
         prop_box = elm_object_content_get(pd->visual);
-        elm_box_pack_after(prop_box, state_frame, pd->part_drag.frame);
+        elm_box_pack_after(prop_box, state_frame, pd->drag.frame);
         pd_state.frame = state_frame;
      }
    else
@@ -1503,7 +1503,7 @@ ui_property_state_unset(Evas_Object *property)
    if (!property) return;
    PROP_DATA_GET()
 
-   evas_object_hide(pd->prop_state.frame);
+   evas_object_hide(pd->state.frame);
 
    ui_property_state_obj_area_unset(property);
    ui_property_state_text_unset(property);
@@ -1569,7 +1569,7 @@ ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
 ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
-#define pd_obj_area pd->prop_state_object_area
+#define pd_obj_area pd->state_object_area
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property)
 {
@@ -1902,7 +1902,7 @@ prop_item_state_effect_add(Evas_Object *parent, Prop_Data *pd)
 }
 #undef ADD_TEXT_EFFECT_COMBOBOX
 
-#define pd_text pd->prop_state_text
+#define pd_text pd->state_text
 
 
 static void
@@ -2174,7 +2174,7 @@ ui_property_state_text_unset(Evas_Object *property)
 }
 #undef pd_text
 
-#define pd_textblock pd->prop_state_textblock
+#define pd_textblock pd->state_textblock
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source2 (over selected text)"), part, source2)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source4 (over cursor)"), part, source4)
@@ -2295,7 +2295,7 @@ ui_property_state_textblock_unset(Evas_Object *property)
    ITEM_IM_BORDER_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_IM_BORDER_STATE_UPDATE(SUB, VALUE)
 
-#define pd_image pd->prop_state_image
+#define pd_image pd->state_image
 
 static void
 _on_image_editor_done(void *data,
@@ -2395,7 +2395,7 @@ _on_image_editor_tween_done(void *data,
              project_changed();
           }
      }
-   elm_frame_collapse_go(pd->prop_state_image.tween, false);
+   elm_frame_collapse_go(pd->state_image.tween, false);
    edje_edit_string_list_free(selected);
 }
 
@@ -2646,7 +2646,7 @@ ui_property_state_image_unset(Evas_Object *property)
 }
 #undef pd_image
 
-#define pd_fill pd->prop_state_fill
+#define pd_fill pd->state_fill
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
 ITEM_1CHECK_STATE_CREATE(_("smooth"), state_fill, smooth)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_origin_relative, x, y, "eflete/property/item/relative")
@@ -2886,9 +2886,9 @@ _on_state_color_class_change(void *data,
                              pd->wm_part->curr_state, pd->wm_part->curr_state_value,
                              r2, g2, b2, a2);
 
-        prop_item_state_color_update(pd->prop_state.color, pd);
-        prop_item_state_color2_update(pd->prop_state_text.color2, pd);
-        prop_item_state_color3_update(pd->prop_state_text.color3, pd);
+        prop_item_state_color_update(pd->state.color, pd);
+        prop_item_state_color2_update(pd->state_text.color2, pd);
+        prop_item_state_color3_update(pd->state_text.color3, pd);
         value = item->title;
      }
    else edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
@@ -3055,7 +3055,7 @@ prop_item_part_item_padding_add(Evas_Object *parent,
    ITEM_PREDEFINED_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_PART_ADD(TEXT, SUB, VALUE)
 
-#define pd_item pd->prop_item
+#define pd_item pd->part_item
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
 ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
