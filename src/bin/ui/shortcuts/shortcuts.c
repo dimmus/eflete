@@ -20,7 +20,6 @@
 #include "shortcuts.h"
 #include "main_window.h"
 #include "wizard.h"
-#include "save_file_dialog.h"
 #include "style_editor.h"
 #include "image_editor.h"
 #include "sound_editor.h"
@@ -368,20 +367,16 @@ _save_cb(App_Data *app __UNUSED__)
 Eina_Bool
 _save_as_cb(App_Data *app)
 {
-   Evas_Object *nf;
-   if (save_as_edj_file(app))
-     {
-        nf = ui_block_widget_list_get(app);
-        ui_widget_list_title_set(nf, app->project->name);
-        //STATUSBAR_PROJECT_PATH(app, app->project->edj);
-     }
+   if (!app) return false;
+   project_export_develop();
    return true;
 }
 
 Eina_Bool
 _export_cb(App_Data *app)
 {
-   save_as_edc_file(app);
+   if (!app) return false;
+   project_export_edc_project();
    return true;
 }
 
