@@ -75,7 +75,6 @@ check: Makefile
 	$(builddir)/part_dialog.edj \
 	$(builddir)/main_window.edj \
 	$(builddir)/ui_edj_load.edj \
-	$(builddir)/save_file_dialog.edj \
 	$(builddir)/ui_style_clicked.edj \
 	$(builddir)/style_dialog.edj \
 	$(builddir)/state_dialog.edj \

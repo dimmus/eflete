@@ -141,45 +141,6 @@ _on_##VALUE##_change(void *data, \
      } \
 }
 
-/*
-static Eina_Bool
-_autosave_timer_cb()
-{
-   App_Data *ap = app_data_get();
-   if (!ap->project->is_new)
-     save_edj_file(ap);
-
-   save_time_info_update(ap, true);
-   return  ECORE_CALLBACK_RENEW;
-   return false;
-}
-*/
-
-Eina_Bool
-preferences_project_autosave_update(Project *project __UNUSED__)
-{
-   /*
-   Profile *profile = profile_get();
-   if ((!profile) || (!project)) return false;
-
-   if (project->autosave_timer)
-     {
-        ecore_timer_del(project->autosave_timer);
-        project->autosave_timer = NULL;
-     }
-
-   if (profile->general.autosave.autosave)
-     {
-        project->autosave_timer = ecore_timer_add(profile->general.autosave.period,
-                                         _autosave_timer_cb, NULL);
-        return !!project->autosave_timer;
-     }
-
-   return true;
-   */
-   return false;
-}
-
 CHANGE_CALLBACK(autosave_period, 1, SPINNER, double)
 CHANGE_CALLBACK(autosave_autosave, 2, CHECK, Eina_Bool)
 CHANGE_CALLBACK(save_ui, 3, CHECK, Eina_Bool)

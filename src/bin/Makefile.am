@@ -37,7 +37,6 @@ ui/editors/colorclass_editor.c \
 ui/editors/animator.c \
 ui/editors/animator_program_editor.c \
 ui/editors/animator_program_sequence.c \
-ui/dialogs/save_file_dialog.c \
 ui/dialogs/part_dialog.c \
 ui/dialogs/state_dialog.c \
 ui/dialogs/style_dialog.c \

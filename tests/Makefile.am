@@ -11,7 +11,6 @@ ewe_ruler_test \
 ewe_statusbar_test \
 eflete_test \
 part_dialog_test \
-save_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
 sound_editor_test \
@@ -239,13 +238,6 @@ test_part_dialog/test_part_dialog.c \
 test_part_dialog/part_dialog_add.c
 part_dialog_test_CFLAGS = ${FLAGS}
 part_dialog_test_LDADD = ${LD}
-
-save_file_dialog_test_SOURCES = \
-test_save_file_dialog/test_save_file_dialog.c \
-test_save_file_dialog/save_as_edc_file.c \
-test_save_file_dialog/save_as_edj_file.c
-save_file_dialog_test_CFLAGS = ${FLAGS}
-save_file_dialog_test_LDADD = ${LD}
 
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \

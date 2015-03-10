@@ -41,7 +41,7 @@ int main(void) {
    int number_failed;
    Suite *suite = test_suite();
    SRunner *runner = srunner_create(suite);
-   srunner_set_xml(runner, "test_save_file_dialog.xml");
+   srunner_set_xml(runner, "test_ui_state_dialog.xml");
    srunner_run_all(runner, CK_VERBOSE);
    number_failed = srunner_ntests_failed(runner);
    srunner_free(runner);
