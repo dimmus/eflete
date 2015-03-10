@@ -877,22 +877,26 @@ _on_part_name_change(void *data,
    workspace_edit_object_recalc(pd->workspace);
 }
 
+static void
+prop_part_name_update(Prop_Data *pd)
+{
+   elm_entry_entry_set(pd->part.name, pd->wm_part->name);
+}
+
 static Evas_Object *
 prop_item_part_name_add(Evas_Object *parent,
                         Prop_Data *pd,
                         const char *tooltip)
 {
-   Evas_Object *item, *entry;
-
-   ITEM_ADD(parent, item, _("name"), "eflete/property/item/default");
-   EWE_ENTRY_ADD(parent, entry, true);
-   elm_entry_markup_filter_append(entry, elm_entry_filter_accept_set, &accept_prop);
-   ewe_entry_entry_set(entry, pd->wm_part->name);
-   elm_object_tooltip_text_set(entry, tooltip);
-   evas_object_smart_callback_add(entry, "changed,user", _on_part_name_change, pd);
-   evas_object_smart_callback_add(entry, "unfocused", _on_part_name_unfocus, pd);
-   elm_object_part_content_set(item, "elm.swallow.content", entry);
-   evas_object_data_set(item, ITEM1, entry);
+   PROPERTY_ITEM_ADD(parent,  _("name"), "1swallow");
+   EWE_ENTRY_ADD(parent, pd->part.name, true);
+   elm_entry_markup_filter_append(pd->part.name, elm_entry_filter_accept_set, &accept_prop);
+   ewe_entry_entry_set(pd->part.name, pd->wm_part->name);
+   elm_object_tooltip_text_set(pd->part.name, tooltip);
+   evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
+   evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
+   elm_layout_content_set(item, "elm.swallow.content", pd->part.name);
+   prop_part_name_update(pd);
 
    return item;
 }
@@ -945,6 +949,7 @@ ITEM_1COMBOBOX_PART_CREATE(FORWARD_EVENTS, _("forward events"), part_drag, event
 Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
+   Evas_Object *item;
    Evas_Object *part_frame, *part_drag_frame, *box, *prop_box;
    Edje_Part_Type type;
 
@@ -967,7 +972,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_frame, box);
 
-        pd_part.name = prop_item_part_name_add(box, pd, _("Selected part name"));
+        item = prop_item_part_name_add(box, pd, _("Selected part name"));
+        elm_box_pack_end(box, item);
         pd_part.type = prop_item_label_add(box, _("type"), wm_part_type_get(type));
         pd_part.scale = prop_item_part_scale_add(box, pd,
                            _("Specifies whether the part will scale "
@@ -982,7 +988,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
-        elm_box_pack_end(box, pd_part.name);
         elm_box_pack_end(box, pd_part.type);
         elm_box_pack_end(box, pd_part.scale);
         elm_box_pack_end(box, pd_part.mouse);
@@ -1026,7 +1031,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    else
      {
-         prop_item_label_update(pd_part.name, pd->wm_part->name);
+         prop_part_name_update(pd);
          prop_item_label_update(pd_part.type, wm_part_type_get(type));
          prop_item_part_scale_update(pd_part.scale, pd);
          prop_item_part_mouse_events_update(pd_part.mouse, pd);
