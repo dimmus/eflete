@@ -137,14 +137,6 @@
    elm_hoversel_horizontal_set(HOVERSEL, ISHORIZONTAL); \
    evas_object_show(HOVERSEL);
 
-#define MODAL_WINDOW_ADD(WIN, PARENT, TITLE, DEL_CB, CB_DATA) \
-   WIN = elm_win_add(PARENT, NULL, ELM_WIN_DIALOG_BASIC); \
-   elm_win_modal_set(WIN, true); \
-   elm_win_title_set(WIN, TITLE); \
-   evas_object_resize(WIN, 800, 600); \
-   evas_object_smart_callback_add(WIN, "delete,request", DEL_CB, CB_DATA); \
-   evas_object_show(WIN);
-
 #define FILESELECTOR_ADD(FILESELECTOR, PARENT, CALLBACK, DATA) \
    FILESELECTOR = elm_fileselector_add(PARENT); \
    evas_object_size_hint_weight_set(FILESELECTOR, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
