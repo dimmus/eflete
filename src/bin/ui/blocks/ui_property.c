@@ -963,6 +963,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
    Evas_Object *part_frame, *part_drag_frame, *box, *prop_box;
+   int y_reg, h_reg, h_box;
    Edje_Part_Type type;
 
    if ((!property) || (!part)) return EINA_FALSE;
@@ -1184,6 +1185,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_after(prop_box, pd_part_drag.frame, pd_part.frame);
         evas_object_show(pd_part_drag.frame);
      }
+   evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
+   elm_scroller_region_get(pd->visual, NULL, &y_reg, NULL, &h_reg);
+   elm_scroller_region_bring_in(pd->visual, 0.0, y_reg + 1, 0.0, h_reg);
+   if (h_box == h_reg + y_reg)
+     elm_scroller_region_show(pd->visual, 0.0, y_reg + h_box, 0.0, h_reg);
 
    return true;
 }
