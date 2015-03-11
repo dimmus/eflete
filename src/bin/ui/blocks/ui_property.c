@@ -393,26 +393,23 @@ _del_prop_data(void *data,
 
 static Evas_Object *
 prop_item_label_add(Evas_Object *parent,
+                    Evas_Object **label,
                     const char *lab_text,
                     const char *text)
 {
-   Evas_Object *item, *label;
-   ITEM_ADD(parent, item, lab_text, "eflete/property/item/default")
-   LABEL_ADD(parent, label, text)
-   evas_object_size_hint_weight_set(label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(label, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_object_part_content_set(item, "elm.swallow.content", label);
+   PROPERTY_ITEM_ADD(parent, lab_text, "1swallow")
+   LABEL_ADD(item, *label, text)
+   elm_object_part_content_set(item, "elm.swallow.content", *label);
    return item;
 }
 
-static void
-prop_item_label_update(Evas_Object *item,
-                       const char *text)
-{
-   Evas_Object *label;
-   label = elm_object_part_content_get(item, "elm.swallow.content");
-   elm_object_text_set(label, text);
-}
+#define prop_part_type_add(PARENT, NAME, TEXT) prop_item_label_add(PARENT, &pd->part.type, NAME, TEXT)
+#define prop_state_state_add(PARENT, NAME, TEXT) prop_item_label_add(PARENT, &pd->state.state, NAME, TEXT)
+#define prop_part_item_name_add(PARENT, NAME, TEXT) prop_item_label_add(PARENT, &pd->part_item.name, NAME, TEXT)
+
+#define prop_part_type_update(TEXT) elm_object_text_set(pd->part.type, TEXT)
+#define prop_state_state_update(TEXT) elm_object_text_set(pd->state.state, TEXT)
+#define prop_part_item_name_update(TEXT) elm_object_text_set(pd->part_item.name, TEXT)
 
 #ifdef HAVE_ENVENTOR
 static void
@@ -922,7 +919,7 @@ _on_part_name_change(void *data,
 }
 
 static void
-part_name_update(Prop_Data *pd)
+prop_part_name_update(Prop_Data *pd)
 {
    elm_entry_entry_set(pd->part.name, pd->wm_part->name);
 }
@@ -940,7 +937,7 @@ prop_item_part_name_add(Evas_Object *parent,
    evas_object_smart_callback_add(pd->part.name, "changed,user", _on_part_name_change, pd);
    evas_object_smart_callback_add(pd->part.name, "unfocused", _on_part_name_unfocus, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->part.name);
-   part_name_update(pd);
+   prop_part_name_update(pd);
 
    return item;
 }
@@ -1019,7 +1016,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
         item = prop_item_part_name_add(box, pd, _("Selected part name"));
         elm_box_pack_end(box, item);
-        pd_part.type = prop_item_label_add(box, _("type"), wm_part_type_get(type));
+        item = prop_part_type_add(box, _("type"), wm_part_type_get(type));
+        elm_box_pack_end(box, item);
         pd_part.scale = prop_item_part_scale_add(box, pd,
                            _("Specifies whether the part will scale "
                            "its size with an edje scaling factor."));
@@ -1033,7 +1031,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
-        elm_box_pack_end(box, pd_part.type);
         elm_box_pack_end(box, pd_part.scale);
         elm_box_pack_end(box, pd_part.mouse);
         elm_box_pack_end(box, pd_part.repeat);
@@ -1076,8 +1073,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    else
      {
-         part_name_update(pd);
-         prop_item_label_update(pd_part.type, wm_part_type_get(type));
+         prop_part_name_update(pd);
+         prop_part_type_update(wm_part_type_get(type));
          prop_item_part_scale_update(pd_part.scale, pd);
          prop_item_part_mouse_events_update(pd_part.mouse, pd);
          prop_item_part_repeat_events_update(pd_part.repeat, pd);
@@ -1322,6 +1319,7 @@ ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("multiplier"), state_minmul, w, h, "eflete/p
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
 {
+   Evas_Object *item;
    Evas_Object *state_frame, *box, *prop_box;
    int type;
    char state[BUFF_MAX];
@@ -1345,7 +1343,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(state_frame, box);
 
-        pd_state.state = prop_item_label_add(box, _("state"), state);
+        item = prop_state_state_add(box, _("state"), state);
+        elm_box_pack_end(box, item);
         pd_state.visible = prop_item_state_visible_add(box, pd,
                                                        "");
         pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
@@ -1395,7 +1394,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "Set the multiplier height value of a part state",
                              false);
 
-        elm_box_pack_end(box, pd_state.state);
         elm_box_pack_end(box, pd_state.visible);
         elm_box_pack_end(box, pd_state.min);
         elm_box_pack_end(box, pd_state.max);
@@ -1435,7 +1433,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         /* unpack item for part color, because we don't know whether it is necessary */
         elm_box_unpack(box, pd_state.color);
         elm_box_unpack(box, pd_state.proxy_source);
-        prop_item_label_update(pd_state.state, state);
+        prop_state_state_update(state);
         prop_item_state_visible_update(pd_state.visible, pd);
 
         prop_item_state_min_w_h_update(pd_state.min, pd, false);
@@ -3070,13 +3068,14 @@ ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete
 ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
 
 Eina_Bool
-ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
+ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 {
+   Evas_Object *item;
    Evas_Object *box, *prop_box;
    PROP_DATA_GET(false)
 
    ui_property_item_unset(property);
-   pd->item_name = item;
+   pd->item_name = item_name;
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_item.frame)
      {
@@ -3085,7 +3084,8 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(pd_item.frame, box);
 
-        pd_item.name = prop_item_label_add(box, _("name"), pd->item_name);
+        item = prop_part_item_name_add(box, _("name"), pd->item_name);
+        elm_box_pack_end(box, item);
         pd_item.source = prop_item_part_item_source_add(box, pd,
                                _("Sets the group this object will be made from."));
         pd_item.min = prop_item_part_item_min_w_h_add(box, pd,
@@ -3142,7 +3142,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
                               _("Sets the aspect control hints for this object."),
                               edje_aspect_pref);
 
-        elm_box_pack_end(box, pd_item.name);
         elm_box_pack_end(box, pd_item.source);
         if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
           {
@@ -3168,7 +3167,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
      }
    else
      {
-        prop_item_label_update(pd_item.name, item);
+        prop_part_item_name_update(item_name);
         prop_item_part_item_source_update(pd_item.source, pd);
         prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
         prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
