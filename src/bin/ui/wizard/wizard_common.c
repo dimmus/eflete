@@ -47,10 +47,10 @@ _fs_close(void *data __UNUSED__,
           Evas_Object *obj,
           void *event_info __UNUSED__)
 {
-   evas_object_del(obj);
+   mw_del(obj);
 }
 
-FILESELCTOR_WINDOW(_on_path_bt, _("Select path for new project"), true, false, NULL, path)
+FILESELCTOR_INWIN(_on_path_bt, _("Select path for new project"), true, false, NULL, path)
 
 /************************** Project import functions **************************/
 
