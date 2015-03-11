@@ -167,7 +167,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                                          pd->wm_part->name);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, value)) \
      return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, INT, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                      pd->wm_part->name, NULL, 0.0); \
@@ -188,7 +188,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                                    pd->wm_part->name);\
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, drag)) \
      return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, INT, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     drag, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
@@ -427,7 +427,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    int value = item->index; \
    if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, (TYPE)item->index)) \
      return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, INT, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
@@ -610,7 +610,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                               pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
    edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
      pd->wm_part->curr_state, pd->wm_part->curr_state_value, (TYPE)item->index); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, INT, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     (int)item->index, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
@@ -701,7 +701,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state_value, \
                                         value)) \
      return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, INT, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
@@ -727,7 +727,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state_value, \
                                         value)) \
      return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, DOUBLE, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_DOUBLE, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
@@ -828,7 +828,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state_value, \
                                         value)) \
      return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, INT, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \

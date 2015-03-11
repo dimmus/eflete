@@ -160,10 +160,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add  with correct data for value type DOUBLE.
+ * @step 1 Call history_diff_add  with correct data for value type VAL_DOUBLE.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, DOUBLE, (double) 0.0,
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, VAL_DOUBLE, (double) 0.0,
  *     (double) 0.5, (const char *) "elm/radio/base/def",
  *     (void *)edje_edit_state_align_x_set, "align x", "bg",
  *     (const char *) "default", 0.0 </td>
@@ -189,11 +189,11 @@ EFLETE_TEST(history_diff_add_test_p3)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, DOUBLE, 0.0, 0.5,
+   result = history_diff_add(source, PROPERTY, MODIFY, VAL_DOUBLE, 0.0, 0.5,
                              "elm/radio/base/def",
                              (void *)edje_edit_state_align_x_set,
                              "align x", "bg", "default", 0.0 );
-   ck_assert_msg(result, "Failed to add new diff with type DOUBLE"
+   ck_assert_msg(result, "Failed to add new diff with type VAL_DOUBLE"
                          " in the history of module.");
 
    history_term(app->history);
@@ -219,10 +219,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add  with correct data for value type INT.
+ * @step 1 Call history_diff_add  with correct data for value type VAL_INT.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, INT, (int) 0,
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, VAL_INT, (int) 0,
  *     (int) -50, (const char *) "elm/radio/base/def",
  *     (void *)edje_edit_state_rel1_offset_x_set, "Rel1 offset x", "bg",
  *     (const char *) "default", 0.0 </td>
@@ -248,11 +248,11 @@ EFLETE_TEST(history_diff_add_test_p4)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, INT, 0, -50,
+   result = history_diff_add(source, PROPERTY, MODIFY, VAL_INT, 0, -50,
                              "elm/radio/base/def",
                              (void *)edje_edit_state_rel1_offset_x_set,
                              "Rel1 offset x", "bg", "default", 0.0 );
-   ck_assert_msg(result, "Failed to add new diff with type INT"
+   ck_assert_msg(result, "Failed to add new diff with type VAL_INT"
                          " in the history of module.");
 
    history_term(app->history);
@@ -581,10 +581,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add  with correct data for action CONTAINER with type INT.
+ * @step 1 Call history_diff_add  with correct data for action CONTAINER with type VAL_INT.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, CONTAINER, INT, (int) 5, (int) 10,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, VAL_INT, (int) 5, (int) 10,
  *     (int) 20, (int) 8, (void *)edje_edit_state_max_w_set,
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
  *     "max size", "bg", "default", 0.0 </td>
@@ -610,11 +610,11 @@ EFLETE_TEST(history_diff_add_test_p10)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, CONTAINER, INT, 5, 10, 20, 8,
+   result = history_diff_add(source, PROPERTY, CONTAINER, VAL_INT, 5, 10, 20, 8,
                             (void *)edje_edit_state_max_w_set, "elm/radio/base/def",
                             (void *)edje_edit_state_max_h_set, "max size", "bg",
                             "default", 0.0);
-   ck_assert_msg(result, "Failed to add new diff from highlight with INT value"
+   ck_assert_msg(result, "Failed to add new diff from highlight with VAL_INT value"
                          " type in the history of module.");
 
    history_term(app->history);
@@ -640,10 +640,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add  with correct data for action CONTAINER with type INT.
+ * @step 1 Call history_diff_add  with correct data for action CONTAINER with type VAL_INT.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, CONTAINER, DOUBLE, (double) 0.2, (double) 1.0,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, VAL_DOUBLE, (double) 0.2, (double) 1.0,
  *     (double) 0.7, (double) 0.0, (void *)edje_edit_state_align_x_set,
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
  *     "align", "bg", "default", 0.0 </td>
@@ -669,11 +669,11 @@ EFLETE_TEST(history_diff_add_test_p11)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, CONTAINER, DOUBLE, 0.2, 1.0, 0.7, 0.0,
+   result = history_diff_add(source, PROPERTY, CONTAINER, VAL_DOUBLE, 0.2, 1.0, 0.7, 0.0,
                             (void *)edje_edit_state_align_x_set, "elm/radio/base/def",
                             (void *)edje_edit_state_align_y_set, "align", "bg",
                             "default", 0.0);
-   ck_assert_msg(result, "Failed to add new diff from highlight with DOUBLE value"
+   ck_assert_msg(result, "Failed to add new diff from highlight with VAL_DOUBLE value"
                          " type in the history of module.");
 
    history_term(app->history);
@@ -1248,7 +1248,7 @@ END_TEST
  * @step 1 Call history_diff_add with random arguments.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, INT,
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, VAL_INT,
  *     (const char *) "elm/radio/base/def", (int) 10, NULL, 0.0,
  *     (const char *) "elm/radio/base/def", NULL, 11, "bg",
  *     555, 0.0 </td>
@@ -1274,7 +1274,7 @@ EFLETE_TEST(history_diff_add_test_n6)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, INT,
+   result = history_diff_add(source, PROPERTY, MODIFY, VAL_INT,
                              (const char *) "elm/radio/base/def", (int) 10, NULL,
                              0.0, (const char *) "elm/radio/base/def", NULL, 11,
                              "bg", 555, 0.0, source, 0.0 );
@@ -1426,7 +1426,7 @@ END_TEST
  * @step 1 Call history_diff_add  with first function pointer.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, CONTAINER, INT, (int) 5, (int) 10,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, VAL_INT, (int) 5, (int) 10,
  *     (int) 20, (int) 8, NULL,
  *     (const char *) "elm/radio/base/def", (void *)edje_edit_state_max_h_set,
  *     "max size", "bg", "default", 0.0 </td>
@@ -1452,11 +1452,11 @@ EFLETE_TEST(history_diff_add_test_n9)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, CONTAINER, INT, 5, 10, 20, 8,
+   result = history_diff_add(source, PROPERTY, CONTAINER, VAL_INT, 5, 10, 20, 8,
                              NULL, "elm/radio/base/def",
                             (void *)edje_edit_state_max_h_set, "max size", "bg",
                             "default", 0.0);
-   ck_assert_msg(!result, "Added new diff from highlight with INT value type, but"
+   ck_assert_msg(!result, "Added new diff from highlight with VAL_INT value type, but"
                           " without the pointer of function, that change first param");
 
    history_term(app->history);
