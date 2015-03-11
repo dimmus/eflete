@@ -471,35 +471,27 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_select_item_set(combobox, value); \
 }
 
-#define ITEM_1CHEACK_PART_ADD(text, SUB, VALUE) \
+#define ITEM_1CHECK_PART_ADD(text, SUB, VALUE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
                                 Prop_Data *pd, \
                                 const char *tooltip) \
 { \
-   Evas_Object *item, *layout, *check; \
-   ITEM_ADD(parent, item, text, "eflete/property/item/default") \
-   ITEM_CONTEINER_1LABEL_ADD(item, layout, NULL); \
-   CHECK_ADD(layout, check) \
-   elm_check_state_set(check, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
-   elm_object_tooltip_text_set(check, tooltip); \
-   evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(layout, "eflete.content", check); \
-   elm_object_part_content_set(item, "elm.swallow.content", layout); \
-   evas_object_data_set(item, ITEM1, check); \
+   PROPERTY_ITEM_ADD(parent, text, "1swallow") \
+   CHECK_ADD(item, pd->SUB.VALUE) \
+   elm_object_style_set(pd->SUB.VALUE, "toggle"); \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
    return item; \
 }
 
-#define ITEM_1CHEACK_PART_UPDATE(SUB, VALUE) \
+#define ITEM_1CHECK_PART_UPDATE(SUB, VALUE) \
 static void \
-prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
-                                   Prop_Data *pd) \
+prop_item_##SUB##_##VALUE##_update(Prop_Data *pd) \
 { \
-   Evas_Object *check; \
-   check = evas_object_data_get(item, ITEM1); \
-   elm_check_state_set(check, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
-   evas_object_smart_callback_del_full(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   evas_object_smart_callback_add(check, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
 }
 
 #define ITEM_DRAG_PART_ADD(text, SUB, VALUE1, VALUE2) \

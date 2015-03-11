@@ -80,8 +80,8 @@ struct _Prop_Data
       Evas_Object *name;
       Evas_Object *type;
       Evas_Object *scale;
-      Evas_Object *mouse;
-      Evas_Object *repeat;
+      Evas_Object *mouse_events;
+      Evas_Object *repeat_events;
       Evas_Object *clip_to;
       Evas_Object *source;
       int previous_source;
@@ -90,7 +90,7 @@ struct _Prop_Data
       Evas_Object *entry_mode;   //move to textblock
       Evas_Object *pointer_mode; //move to textblock
       Evas_Object *cursor_mode;  //move to textblock
-      Evas_Object *multiline;    //move to textblock
+      Evas_Object *multiline, *item_multiline;    //move to textblock
    } part;
    struct {
       Evas_Object *frame;
@@ -944,8 +944,8 @@ prop_item_part_name_add(Evas_Object *parent,
 
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
-   ITEM_1CHEACK_PART_ADD(TEXT, SUB, VALUE) \
-   ITEM_1CHEACK_PART_UPDATE(SUB, VALUE)
+   ITEM_1CHECK_PART_ADD(TEXT, SUB, VALUE) \
+   ITEM_1CHECK_PART_UPDATE(SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
@@ -1018,22 +1018,22 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(type));
         elm_box_pack_end(box, item);
-        pd_part.scale = prop_item_part_scale_add(box, pd,
+        item = prop_item_part_scale_add(box, pd,
                            _("Specifies whether the part will scale "
                            "its size with an edje scaling factor."));
-        pd_part.mouse = prop_item_part_mouse_events_add(box, pd,
+        elm_box_pack_end(box, item);
+        item = prop_item_part_mouse_events_add(box, pd,
                            _("Enable mouse events in this part."));
-        pd_part.repeat = prop_item_part_repeat_events_add(box, pd,
+        elm_box_pack_end(box, item);
+        item = prop_item_part_repeat_events_add(box, pd,
                             _("Enable repeat mouse events to the parts below."));
-        pd_part.clip_to = prop_item_part_clip_to_add(box, pd,
+        elm_box_pack_end(box, item);
+        item = prop_item_part_clip_to_add(box, pd,
                              _("Show only the area of part that coincides with "
                              "another part's container"));
         pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
-        elm_box_pack_end(box, pd_part.scale);
-        elm_box_pack_end(box, pd_part.mouse);
-        elm_box_pack_end(box, pd_part.repeat);
         elm_box_pack_end(box, pd_part.clip_to);
         elm_box_pack_end(box, pd_part.ignore_flags);
 
@@ -1059,13 +1059,13 @@ ui_property_part_set(Evas_Object *property, Part *part)
              pd_part.cursor_mode = prop_item_part_cursor_mode_add(box, pd,
                              _("Sets the cursor mode for a textblock part"),
                              edje_cursor_mode);
-             pd_part.multiline = prop_item_part_multiline_add(box, pd,
+             pd->part.item_multiline = prop_item_part_multiline_add(box, pd,
                            _("It causes a textblock that is editable to allow multiple lines for editing."));
              elm_box_pack_end(box, pd_part.select_mode);
              elm_box_pack_end(box, pd_part.entry_mode);
              elm_box_pack_end(box, pd_part.pointer_mode);
              elm_box_pack_end(box, pd_part.cursor_mode);
-             elm_box_pack_end(box, pd_part.multiline);
+             elm_box_pack_end(box, pd->part.item_multiline);
           }
 
         elm_box_pack_after(prop_box, part_frame, pd->group.frame);
@@ -1075,9 +1075,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
      {
          prop_part_name_update(pd);
          prop_part_type_update(wm_part_type_get(type));
-         prop_item_part_scale_update(pd_part.scale, pd);
-         prop_item_part_mouse_events_update(pd_part.mouse, pd);
-         prop_item_part_repeat_events_update(pd_part.repeat, pd);
+         prop_item_part_scale_update(pd);
+         prop_item_part_mouse_events_update(pd);
+         prop_item_part_repeat_events_update(pd);
          prop_item_part_clip_to_update(pd_part.clip_to, pd);
          prop_item_part_ignore_flags_update(pd_part.ignore_flags, pd);
          prop_item_part_source_update(pd_part.source, pd);
@@ -1108,7 +1108,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
                    pd_part.select_mode = prop_item_part_select_mode_add(box, pd,
                              _("Sets the selection mode for a textblock part"),
                              edje_select_mode);
-                   elm_box_pack_after(box, pd_part.select_mode, pd_part.clip_to);
+                   elm_box_pack_end(box, pd_part.select_mode);
 
                 }
               else
@@ -1119,7 +1119,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
                    pd_part.entry_mode = prop_item_part_entry_mode_add(box, pd,
                              _("Sets the edit mode for a textblock part."),
                              edje_entry_mode);
-                   elm_box_pack_after(box, pd_part.entry_mode, pd_part.select_mode);
+                   elm_box_pack_end(box, pd_part.entry_mode);
 
                 }
               else
@@ -1130,7 +1130,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
                    pd_part.pointer_mode = prop_item_part_pointer_mode_add(box, pd,
                              _("Sets the mouse pointer behavior for a given part."),
                              edje_pointer_mode);
-                   elm_box_pack_after(box, pd_part.pointer_mode, pd_part.entry_mode);
+                   elm_box_pack_end(box, pd_part.pointer_mode);
 
                 }
               else
@@ -1141,19 +1141,19 @@ ui_property_part_set(Evas_Object *property, Part *part)
                    pd_part.cursor_mode = prop_item_part_cursor_mode_add(box, pd,
                              _(" Sets the cursor mode for a textblock part."),
                              edje_cursor_mode);
-                   elm_box_pack_after(box, pd_part.cursor_mode, pd_part.pointer_mode);
+                   elm_box_pack_end(box, pd_part.cursor_mode);
 
                 }
               else
                 prop_item_part_cursor_mode_update(pd_part.cursor_mode, pd);
-              if (!pd_part.multiline)
+              if (!pd_part.item_multiline)
                 {
-                  pd_part.multiline = prop_item_part_multiline_add(box, pd,
+                  pd_part.item_multiline = prop_item_part_multiline_add(box, pd,
                            _("It causes a textblock that is editable to allow multiple lines for editing."));
-                   elm_box_pack_after(box, pd_part.multiline, pd_part.cursor_mode);
+                   elm_box_pack_end(box, pd_part.item_multiline);
                 }
               else
-                prop_item_part_multiline_update(pd_part.multiline, pd);
+                prop_item_part_multiline_update(pd);
            }
          else
            {
@@ -1162,17 +1162,17 @@ ui_property_part_set(Evas_Object *property, Part *part)
               elm_box_unpack(box, pd_part.entry_mode);
               elm_box_unpack(box, pd_part.pointer_mode);
               elm_box_unpack(box, pd_part.cursor_mode);
-              elm_box_unpack(box, pd_part.multiline);
+              elm_box_unpack(box, pd_part.item_multiline);
               evas_object_del(pd_part.select_mode);
               evas_object_del(pd_part.entry_mode);
               evas_object_del(pd_part.pointer_mode);
               evas_object_del(pd_part.cursor_mode);
-              evas_object_del(pd_part.multiline);
+              evas_object_del(pd_part.item_multiline);
               pd_part.select_mode = NULL;
               pd_part.entry_mode = NULL;
               pd_part.pointer_mode = NULL;
               pd_part.cursor_mode = NULL;
-              pd_part.multiline = NULL;
+              pd_part.item_multiline = NULL;
            }
          evas_object_show(pd_part.frame);
      }
