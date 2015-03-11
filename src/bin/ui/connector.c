@@ -871,25 +871,22 @@ project_close(App_Data *ap)
 void
 project_open(void)
 {
-   Evas_Object *win, *fs, *bg;
-   App_Data *ap;
-
-   ap = app_data_get();
-
+   Evas_Object *win, *fs, *img;
+   App_Data *ap = app_data_get();
    if (!project_close(ap))
      return;
+   win  = mw_add(_fs_close, NULL);
+   evas_object_show(win);
+   mw_title_set(win, "Select a project file");
+   img = elm_image_add(win);
+   elm_image_file_set(img, EFLETE_IMG_PATH"icon-open_project.png", NULL);
+   mw_icon_set(win, img);
 
-   ap->modal_editor++;
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Select a project file"), _fs_close, ap);
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(win, bg);
    FILESELECTOR_ADD(fs, win, _on_open_done, win);
    elm_fileselector_custom_filter_append(fs, _eflete_filter, NULL, "Eflete Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
-   elm_win_resize_object_add(win, fs);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
+   elm_win_inwin_content_set(win, fs);
 }
 
 #undef PROJECT_CLOSE_MSG
@@ -1269,21 +1266,16 @@ _edje_filter(const char *path,
 void
 project_export_develop(void)
 {
-   Evas_Object *win, *bg, *fs;
-   App_Data *ap = app_data_get();
+   Evas_Object *win, *fs;
 
-   ap->modal_editor++;
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edj file (develop)"), _fs_close, ap);
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(win, bg);
+   win  = mw_add(_fs_close, NULL);
+   evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_done, win);
    elm_object_text_set(fs, "Select a file");
    elm_fileselector_is_save_set(fs, true);
    elm_fileselector_custom_filter_append(fs, _edje_filter, NULL, "Edje Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
-   elm_win_resize_object_add(win, fs);
+   elm_win_inwin_content_set(win, fs);
 }
 
 static void
@@ -1339,19 +1331,14 @@ _on_export_edc_group_done(void *data,
 void
 project_export_edc_group(void)
 {
-   Evas_Object *win, *bg, *fs;
-   App_Data *ap = app_data_get();
+   Evas_Object *win, *fs;
 
-   ap->modal_editor++;
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Export edc file (group)"), _fs_close, ap);
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(win, bg);
+   win  = mw_add(_fs_close, NULL);
+   evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_edc_group_done, win);
    elm_fileselector_is_save_set(fs, false);
    elm_fileselector_folder_only_set(fs, true);
-   elm_win_resize_object_add(win, fs);
+   elm_win_inwin_content_set(win, fs);
 }
 
 static void
@@ -1450,19 +1437,14 @@ _on_export_edc_project_done(void *data,
 void
 project_export_edc_project(void)
 {
-   Evas_Object *win, *bg, *fs;
-   App_Data *ap = app_data_get();
+   Evas_Object *win, *fs;
 
-   ap->modal_editor++;
-   MODAL_WINDOW_ADD(win, main_window_get(), _("Export project as edc"), _fs_close, ap);
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(bg);
-   elm_win_resize_object_add(win, bg);
+   win  = mw_add(_fs_close, NULL);
+   evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_edc_project_done, win);
    elm_fileselector_is_save_set(fs, false);
    elm_fileselector_folder_only_set(fs, true);
-   elm_win_resize_object_add(win, fs);
+   elm_win_inwin_content_set(win, fs);
 }
 
 /*************************** Close request popup ******************************/
