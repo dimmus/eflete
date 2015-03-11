@@ -1759,7 +1759,7 @@ _text_effect_value_update(_text_effect_callback_data *effect_data)
                              effect_data->pd->wm_part->name, edje_effect);
 
    workspace_edit_object_recalc(effect_data->pd->workspace);
-   history_diff_add(effect_data->pd->wm_style->obj, PROPERTY, MODIFY, INT,
+   history_diff_add(effect_data->pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT,
                     old_value, edje_effect,
                     effect_data->pd->wm_style->full_group_name,
                     (void*)edje_edit_part_effect_set, "text effect",
@@ -1916,7 +1916,7 @@ _on_state_text_ellipsis_change(void *data,
                                          pd->wm_part->curr_state_value,
                                          value))
      return;
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, DOUBLE, old_value, value,
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_DOUBLE, old_value, value,
                     pd->wm_style->full_group_name,
                     (void*)edje_edit_state_text_elipsis_set, "elipsis",
                     pd->wm_part->name, pd->wm_part->curr_state,
@@ -1955,7 +1955,7 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                     pd->wm_part->curr_state,
                                     pd->wm_part->curr_state_value,
                                     value);
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, DOUBLE, old_value, value,
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_DOUBLE, old_value, value,
                     pd->wm_style->full_group_name,
                     (void*)edje_edit_state_text_elipsis_set, "elipsis",
                     pd->wm_part->name, pd->wm_part->curr_state,

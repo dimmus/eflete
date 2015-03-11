@@ -157,7 +157,7 @@ EFLETE_TEST(history_module_depth_set_test_p2)
                     "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
                     "clip to", "radio", "default", 0.0);
    edje_edit_state_aspect_max_set(style->obj, "bg", "default", 0.0, 0.4);
-   history_diff_add(style->obj, PROPERTY, MODIFY, DOUBLE, 0.0, 0.4,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_DOUBLE, 0.0, 0.4,
                     "elm/radio/base/def", (void *)edje_edit_state_aspect_max_set,
                     "aspect max", "bg", "default", 0.0);
    history_undo(style->obj, 4);

@@ -151,13 +151,13 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
 
    switch(change->param_type)
     {
-     case INT:
+     case VAL_INT:
         change->state ?
            change->func(source, change->part, change->state,
                         change->state_value, change->integer.new) :
            change->func(source, change->part, change->integer.new);
      break;
-     case DOUBLE:
+     case VAL_DOUBLE:
         if (change->state)
            change->func(source, change->part, change->state,
                         change->state_value, change->doubl.new);
@@ -229,7 +229,7 @@ _attribute_highlight_redo(Evas_Object *source, Attribute_Diff *change)
        change->func_revert(source, change->twice_int.new_1);
        change->func(source, change->twice_int.new_2);
      break;
-     case INT:
+     case VAL_INT:
         if (change->state)
           {
              change->func_revert(source, change->part, change->state,
@@ -239,7 +239,7 @@ _attribute_highlight_redo(Evas_Object *source, Attribute_Diff *change)
           }
         else return false;
      break;
-     case DOUBLE:
+     case VAL_DOUBLE:
         if (change->state)
           {
              change->func_revert(source, change->part, change->state,
@@ -295,13 +295,13 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
 
    switch(change->param_type)
     {
-     case INT:
+     case VAL_INT:
         change->state ?
            change->func(source, change->part, change->state,
                         change->state_value, change->integer.old) :
            change->func(source, change->part, change->integer.old);
      break;
-     case DOUBLE:
+     case VAL_DOUBLE:
         if (change->state)
           change->func(source, change->part, change->state,
                        change->state_value, change->doubl.old);
@@ -372,7 +372,7 @@ _attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
        change->func_revert(source, change->twice_int.old_1);
        change->func(source, change->twice_int.old_2);
      break;
-     case INT:
+     case VAL_INT:
         if (change->state)
           {
              change->func_revert(source, change->part, change->state,
@@ -382,7 +382,7 @@ _attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
           }
         else return false;
      break;
-     case DOUBLE:
+     case VAL_DOUBLE:
         if (change->state)
           {
              change->func_revert(source, change->part, change->state,
@@ -461,10 +461,10 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
      {
         switch(previous->param_type)
          {
-          case INT:
+          case VAL_INT:
              previous->integer.new = change->integer.new;
           break;
-          case DOUBLE:
+          case VAL_DOUBLE:
              previous->doubl.new = change->doubl.new;
           break;
           case RENAME:
@@ -499,11 +499,11 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
         switch(previous->param_type)
          {
           case GROUP:
-          case INT:
+          case VAL_INT:
              previous->twice_int.new_1 = change->twice_int.new_1;
              previous->twice_int.new_2 = change->twice_int.new_2;
           break;
-          case DOUBLE:
+          case VAL_DOUBLE:
              previous->twice_double.new_1 = change->twice_double.new_1;
              previous->twice_double.new_2 = change->twice_double.new_2;
           break;
@@ -555,14 +555,14 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
  \
    switch(change->param_type) \
      { \
-      case INT: \
+      case VAL_INT: \
          change->integer.old = (int)va_arg(list, int); \
          change->integer.new = (int)va_arg(list, int); \
          change->diff.new = eina_stringshare_printf("%d", change->integer.new); \
          change->diff.old = eina_stringshare_printf("%d", change->integer.old); \
          ret = true; \
       break; \
-      case DOUBLE: \
+      case VAL_DOUBLE: \
          change->doubl.old = (double)va_arg(list, double); \
          change->doubl.new = (double)va_arg(list, double); \
          change->diff.new = eina_stringshare_printf("%.3f", change->doubl.new); \
@@ -637,7 +637,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
    switch(change->param_type) \
      { \
       case GROUP: \
-      case INT: \
+      case VAL_INT: \
          change->twice_int.old_1 = (int)va_arg(list, int); \
          change->twice_int.new_1 = (int)va_arg(list, int); \
          change->twice_int.old_2 = (int)va_arg(list, int); \
@@ -649,7 +649,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
          change->func_revert = (void *)va_arg(list, void *); \
          ret = true; \
       break; \
-      case DOUBLE: \
+      case VAL_DOUBLE: \
          change->twice_double.old_1 = (double)va_arg(list, double); \
          change->twice_double.new_1 = (double)va_arg(list, double); \
          change->twice_double.old_2 = (double)va_arg(list, double); \

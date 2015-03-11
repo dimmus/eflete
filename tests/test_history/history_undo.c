@@ -86,12 +86,12 @@ EFLETE_TEST(history_undo_test_p1)
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with INT value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_INT value type.");
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -158,12 +158,12 @@ EFLETE_TEST(history_undo_test_p2)
    history_module_add(style->obj);
    old_value = edje_edit_part_drag_x_get(style->obj, "bg");
    edje_edit_part_drag_x_set(style->obj, "bg", new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_x_set,
                     "Drag x", "bg", NULL, 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with INT value type, setted without state");
+   ck_assert_msg(result, "Failed to undo diff with VAL_INT value type, setted without state");
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -238,17 +238,17 @@ EFLETE_TEST(history_undo_test_p3)
    history_module_add(style->obj);
    old_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
    edje_edit_part_drag_y_set(style->obj, "bg", new_value_drag_y);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_drag_y, new_value_drag_y,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_drag_y, new_value_drag_y,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_y_set,
                     "Drag y", "bg", NULL, 0.0);
    old_value_min_w = edje_edit_state_min_w_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_w_set(style->obj, "bg", "default", 0.0, new_value_min_w);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_min_w, new_value_min_w,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_min_w, new_value_min_w,
                     "elm/radio/base/def", (void *)edje_edit_state_min_w_set,
                     "Min h", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with INT value type, setted without state");
+   ck_assert_msg(result, "Failed to undo diff with VAL_INT value type, setted without state");
    check_value_min_w = edje_edit_state_min_w_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value_min_w == old_value_min_w, "Cancel last action doesn't change value");
    check_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
@@ -325,17 +325,17 @@ EFLETE_TEST(history_undo_test_p4)
    history_module_add(style->obj);
    old_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
    edje_edit_part_drag_x_set(style->obj, "bg", new_value_drag_x);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_drag_x, new_value_drag_x,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_drag_x, new_value_drag_x,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_x_set,
                     "Drag x", "bg", NULL, 0.0);
    old_value_min_h = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value_min_h);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_min_h, new_value_min_h,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_min_h, new_value_min_h,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 2);
-   ck_assert_msg(result, "Failed to undo diff with INT value type, setted without state");
+   ck_assert_msg(result, "Failed to undo diff with VAL_INT value type, setted without state");
    check_value_min_h = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value_min_h == old_value_min_h, "Cancel last action doesn't change value");
    check_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
@@ -405,12 +405,12 @@ EFLETE_TEST(history_undo_test_p5)
    history_module_add(style->obj);
    old_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_aspect_max_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, DOUBLE, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_DOUBLE, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_aspect_max_set,
                     "Min h", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with DOUBLE value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_DOUBLE value type.");
    check_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -860,12 +860,12 @@ EFLETE_TEST(history_undo_test_p11)
    history_module_add(style->obj);
    old_value = edje_edit_part_drag_x_get(style->obj, "bg");
    edje_edit_part_drag_x_set(style->obj, "bg", new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_x_set,
                     "Drag x", "bg", NULL, 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with INT value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_INT value type.");
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -933,12 +933,12 @@ EFLETE_TEST(history_undo_test_p12)
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with INT value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_INT value type.");
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
 
@@ -1230,13 +1230,13 @@ EFLETE_TEST(history_undo_test_p16)
    old_value_2 = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_max_h_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_max_w_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, CONTAINER, INT, old_value_1, new_value_1,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_INT, old_value_1, new_value_1,
                     old_value_2, new_value_2, (void *)edje_edit_state_max_h_set,
                     "elm/radio/base/def", (void *)edje_edit_state_max_w_set,
                     "max size", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with CONTAINER action and INT value type.");
+   ck_assert_msg(result, "Failed to undo diff with CONTAINER action and VAL_INT value type.");
    check_value = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_1, "Max height didn't canceled");
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
@@ -1311,13 +1311,13 @@ EFLETE_TEST(history_undo_test_p17)
    old_value_2 = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_align_x_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_align_y_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, CONTAINER, DOUBLE, old_value_1, new_value_1,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_DOUBLE, old_value_1, new_value_1,
                     old_value_2, new_value_2, (void *)edje_edit_state_align_x_set,
                     "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
                     "align", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with CONTAINER action and DOUBLE value type.");
+   ck_assert_msg(result, "Failed to undo diff with CONTAINER action and VAL_DOUBLE value type.");
    check_value = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == old_value_1, "Align x didn't canceled");
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
@@ -1777,7 +1777,7 @@ EFLETE_TEST(history_undo_test_n2)
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
 
