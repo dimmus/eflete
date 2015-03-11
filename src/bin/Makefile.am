@@ -52,6 +52,7 @@ ui/blocks/ui_states_list.c \
 ui/workspace/ui_workspace.c \
 ui/workspace/groupedit_calc.c \
 ui/workspace/groupedit.c \
+ui/workspace/groupedit_box_layouts.c \
 ui/workspace/highlight.c \
 ui/live_view/live_view_prop.c \
 ui/live_view/live_view.c \

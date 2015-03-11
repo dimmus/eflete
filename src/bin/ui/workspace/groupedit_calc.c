@@ -1523,26 +1523,9 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    evas_object_smart_calculate(gp->draw);
 }
 
-/* this is only for finding layout! */
-struct edje_box_layouts {
-   const char *name;
-   Evas_Object_Box_Layout cb;
-};
 static Evas_Object_Box_Layout
 _box_layout_function_get(const char *primary, const char *fallback)
 {
-   const struct edje_box_layouts _edje_box_layouts[] = {
-     {"horizontal", evas_object_box_layout_horizontal},
-     {"horizontal_flow", evas_object_box_layout_flow_horizontal},
-     {"horizontal_homogeneous", evas_object_box_layout_homogeneous_horizontal},
-     {"horizontal_max", evas_object_box_layout_homogeneous_max_size_horizontal},
-     {"stack", evas_object_box_layout_stack},
-     {"vertical", evas_object_box_layout_vertical},
-     {"vertical_flow", evas_object_box_layout_flow_vertical},
-     {"vertical_homogeneous", evas_object_box_layout_homogeneous_vertical},
-     {"vertical_max", evas_object_box_layout_homogeneous_max_size_vertical},
-     {NULL, NULL}
-   };
    const struct edje_box_layouts *base = _edje_box_layouts;
    const struct edje_box_layouts *base_fallback = _edje_box_layouts;
 
@@ -1559,7 +1542,7 @@ _box_layout_function_get(const char *primary, const char *fallback)
             return base_fallback->cb;
      }
 
-   return evas_object_box_layout_horizontal;
+   return _box_layout_horizontal;
 }
 
 
