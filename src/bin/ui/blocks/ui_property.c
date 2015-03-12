@@ -968,6 +968,11 @@ prop_part_clip_to_update(Prop_Data *pd)
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE)
 
+#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE) \
+   PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+   PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
+   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE)
+
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
    ITEM_1CHECK_PART_ADD(TEXT, SUB, VALUE) \
@@ -997,8 +1002,8 @@ ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to)
+PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source"), part, source)
-ITEM_1COMBOBOX_PART_PROPERTY_CREATE(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
@@ -1058,10 +1063,10 @@ ui_property_part_set(Evas_Object *property, Part *part)
                              _("Show only the area of part that coincides with "
                              "another part's container"));
         elm_box_pack_end(box, item);
-        pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
+        item = prop_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
-        elm_box_pack_end(box, pd_part.ignore_flags);
+        elm_box_pack_end(box, item);
 
         if (part->type == EDJE_PART_TYPE_GROUP)
           {
@@ -1105,7 +1110,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_mouse_events_update(pd);
          prop_item_part_repeat_events_update(pd);
          prop_part_clip_to_update(pd);
-         prop_item_part_ignore_flags_update(pd_part.ignore_flags, pd);
+         prop_part_ignore_flags_update(pd);
          prop_item_part_source_update(pd_part.source, pd);
          if (part->type == EDJE_PART_TYPE_GROUP)
            {
