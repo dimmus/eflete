@@ -19,6 +19,7 @@
 
 #include "string_macro.h"
 #include "colorsel.h"
+#include "property_macros.h"
 
 static Elm_Entry_Filter_Accept_Set accept_prop = {
    .accepted = NULL,
@@ -33,15 +34,6 @@ static void
 _on_state_text_style_change(void *data,
                              Evas_Object *obj,
                              void *event_info __UNUSED__);
-
-#define PROPERTY_ITEM_ADD(PARENT, NAME, STYLE) \
-   Evas_Object *item; \
-   item = elm_layout_add(PARENT); \
-   elm_layout_theme_set(item, "layout", "property", STYLE); \
-   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_object_part_text_set(item, "elm.text", NAME); \
-   evas_object_show(item);
 
 
 #define ITEM1 "item1"

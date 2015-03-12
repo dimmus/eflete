@@ -942,6 +942,32 @@ prop_item_part_name_add(Evas_Object *parent,
    return item;
 }
 
+static void
+prop_part_clip_to_update(Prop_Data *pd)
+{
+   Part *part;
+   Eina_Inlist *list_n = NULL;
+   Eina_Stringshare *value;
+
+   ewe_combobox_items_list_free(pd->part.clip_to, true);
+   value = edje_edit_part_clip_to_get(pd->wm_style->obj, pd->wm_part->name);
+   if (value)
+     ewe_combobox_text_set(pd->part.clip_to, value);
+   else
+     ewe_combobox_text_set(pd->part.clip_to, _("None"));
+   ewe_combobox_item_add(pd->part.clip_to, _("None"));
+   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part)
+     {
+        if ((part != pd->wm_part) && (part->type == EDJE_PART_TYPE_RECTANGLE))
+           ewe_combobox_item_add(pd->part.clip_to, part->name);
+     }
+   edje_edit_string_free(value);
+}
+
+#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE) \
+   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE)
+
 #define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
    ITEM_1CHECK_PART_ADD(TEXT, SUB, VALUE) \
@@ -970,7 +996,7 @@ prop_item_part_name_add(Evas_Object *parent,
 ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
 ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
 ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
-ITEM_1COMBOBOX_PART_CREATE(CLIP_TO, _("clip to"), part, clip_to)
+PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source"), part, source)
 ITEM_1COMBOBOX_PART_PROPERTY_CREATE(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
@@ -1028,13 +1054,13 @@ ui_property_part_set(Evas_Object *property, Part *part)
         item = prop_item_part_repeat_events_add(box, pd,
                             _("Enable repeat mouse events to the parts below."));
         elm_box_pack_end(box, item);
-        item = prop_item_part_clip_to_add(box, pd,
+        item = prop_part_clip_to_add(box, pd,
                              _("Show only the area of part that coincides with "
                              "another part's container"));
+        elm_box_pack_end(box, item);
         pd_part.ignore_flags = prop_item_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
-        elm_box_pack_end(box, pd_part.clip_to);
         elm_box_pack_end(box, pd_part.ignore_flags);
 
         if (part->type == EDJE_PART_TYPE_GROUP)
@@ -1078,7 +1104,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
          prop_item_part_scale_update(pd);
          prop_item_part_mouse_events_update(pd);
          prop_item_part_repeat_events_update(pd);
-         prop_item_part_clip_to_update(pd_part.clip_to, pd);
+         prop_part_clip_to_update(pd);
          prop_item_part_ignore_flags_update(pd_part.ignore_flags, pd);
          prop_item_part_source_update(pd_part.source, pd);
          if (part->type == EDJE_PART_TYPE_GROUP)
