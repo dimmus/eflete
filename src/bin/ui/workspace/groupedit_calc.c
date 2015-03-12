@@ -1582,7 +1582,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    primary_layout = edje_edit_state_box_layout_get(sd->edit_obj, gp->name, state, value);
    fallback_layout = edje_edit_state_box_alt_layout_get(sd->edit_obj, gp->name, state, value);
    evas_object_box_layout_set(gp->draw,
-          _box_layout_function_get(primary_layout, fallback_layout), NULL, NULL);
+          _box_layout_function_get(primary_layout, fallback_layout), gp->items, NULL);
    eina_stringshare_del(primary_layout);
    eina_stringshare_del(fallback_layout);
 
@@ -1595,7 +1595,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         item_source = edje_edit_part_item_source_get(sd->edit_obj, part, ge_item->name);
         edje_object_file_set(ge_item->draw, sd->edit_obj_file, item_source);
 
-        Evas_Object_Box_Option *item = evas_object_box_append(gp->draw, ge_item->draw);
+        evas_object_box_append(gp->draw, ge_item->draw);
 
         min_w = edje_edit_part_item_min_w_get(sd->edit_obj, part, ge_item->name);
         min_h = edje_edit_part_item_min_h_get(sd->edit_obj, part, ge_item->name);
@@ -1650,17 +1650,13 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
            >  need to remove them after unloading style from groupedit
            >  proper size of border (showing item's geometry), according to layout
         */
-        Evas_Coord x, y;
-        evas_object_geometry_get(item->obj, &x, &y, &w, &h);
+        evas_object_smart_member_add(ge_item->border, gp->draw);
+        evas_object_smart_member_add(ge_item->draw, gp->draw);
+        evas_object_smart_member_add(ge_item->highlight, gp->draw);
+        evas_object_raise(ge_item->highlight);
 
-        evas_object_move(ge_item->border, x, y);
-        evas_object_resize(ge_item->border, w, h);
-
-        evas_object_move(ge_item->highlight, x, y);
-        evas_object_resize(ge_item->highlight, w, h);
-
-        evas_object_smart_member_add(ge_item->border, ge_item->draw);
-        evas_object_smart_member_add(ge_item->highlight, ge_item->draw);
+        evas_object_show(ge_item->border);
+        evas_object_show(ge_item->highlight);
 
         evas_object_smart_calculate(ge_item->draw);
      }
