@@ -3176,7 +3176,6 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item)
           prop_item_part_item_position_suf_update(pd_item.position, pd, false);
         prop_item_part_item_padding_update(pd_item.padding, pd);
         prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
-        prop_item_part_item_padding_update(pd_item.min, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
         evas_object_show(pd_item.frame);
      }
