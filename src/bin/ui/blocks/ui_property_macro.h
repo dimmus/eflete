@@ -1650,6 +1650,60 @@ prop_item_##SUB##_##VALUE##_##SUFFIX##_update(Evas_Object *item, \
 
 #define BOX_CUSTOM_LAYOUT_ITEM 10
 
+#define ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Evas_Object *item = evas_object_data_get(obj, ITEM1); \
+   Evas_Object *spinner1 = evas_object_data_get(item, ITEM1); \
+   Evas_Object *spinner2 = evas_object_data_get(item, ITEM2); \
+   TYPE value1 = elm_spinner_value_get(spinner1); \
+   TYPE value2 = elm_spinner_value_get(spinner2); \
+   if (!strcmp(#TYPE, "double")) \
+   { \
+      if (!edje_edit_##SUB##_set(pd->wm_style->obj, pd->wm_part->name,\
+                                 pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+                                 (TYPE)(value1 / 100),(TYPE)(value2 / 100))) \
+         return; \
+   }\
+   else if (!strcmp(#TYPE, "int")) \
+   { \
+      if (!edje_edit_##SUB##_set(pd->wm_style->obj, pd->wm_part->name,\
+                                 pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+                                 (TYPE)value1, (TYPE)value2)) \
+        return; \
+   } \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
+#define ITEM_2SPINNER_STATE_VALUE_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
+static void \
+prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
+                                               Prop_Data *pd, \
+                                               Eina_Bool to_percent) \
+{ \
+   Evas_Object *spinner1, *spinner2; \
+   TYPE value1 = 0, value2 = 0; \
+   spinner1 = evas_object_data_get(item, ITEM1); \
+   edje_edit_##SUB##_get(pd->wm_style->obj, pd->wm_part->name, \
+                         pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+                         &value1, &value2); \
+   if (to_percent) value1 *= 100; \
+   elm_spinner_value_set(spinner1, value1); \
+   evas_object_smart_callback_del_full(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   evas_object_smart_callback_add(spinner1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   spinner2 = evas_object_data_get(item, ITEM2); \
+   if (to_percent) value2 *= 100; \
+   elm_spinner_value_set(spinner2, value2); \
+   evas_object_smart_callback_del_full(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   evas_object_smart_callback_add(spinner2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+}
+
 #define ITEM_1COMBOBOX_STATE_PART_BOX_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
 prop_item_box_##SUB##_##VALUE##_add(Evas_Object *parent, \

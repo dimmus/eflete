@@ -3200,6 +3200,14 @@ ui_property_item_unset(Evas_Object *property)
 
 #define pd_table pd->prop_state_table
 
+#define ITEM_2SPINNER_STATE_2DOUBLE_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
+   ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE1) \
+   ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE2) \
+   ITEM_2SPINNER_STATE_VALUE_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
+   ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
+
+ITEM_2SPINNER_STATE_2DOUBLE_CREATE(double, _("align"), state_container_align, x, y, "eflete/property/item/default")
+
 static Eina_Bool
 ui_property_state_table_set(Evas_Object *property)
 {
@@ -3215,11 +3223,20 @@ ui_property_state_table_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(table_frame, box);
 
+        pd_table.align = prop_item_state_container_align_x_y_add(box, pd,
+                          0, 100, 1, NULL,
+                          _("hor:"), "%", _("ver:"), "%",
+                          _("Change the position of the point of balance inside the container."),
+                          _("Change the position of the point of balance inside the container."),
+                          true);
+
+        elm_box_pack_end(box, pd_table.align);
         elm_box_pack_end(prop_box, table_frame);
         pd_table.frame = table_frame;
      }
    else
      {
+        prop_item_state_container_align_x_y_update(pd_table.align, pd, true);
         elm_box_pack_end(prop_box, pd_table.frame);
         evas_object_show(pd_table.frame);
      }
