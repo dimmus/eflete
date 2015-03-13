@@ -70,17 +70,22 @@ _layout_set_offset_and_expand_dimension_space_max_bounded(int dim, int *new_dim,
 }
 
 static void
-_layout_set_offset_and_change_dimension_min_max_cell_bounded(int dim, int *new_dim, int min_dim, int max_dim, int cell_sz, int *offset, double align, int pad_before, int pad_after)
+_layout_set_offset_and_change_dimension_min_max_cell_bounded(int dim, int *new_dim, int min_dim, int max_dim, int cell_sz, int *offset_current, int *offset_top, int *offset_bottom, double align, int pad_before, int pad_after)
 {
    if (align >= 0.0)
      {
         *new_dim = dim;
-        *offset =
+        *offset_current =
            (cell_sz - (dim + pad_before + pad_after)) * align + pad_before;
+        *offset_top = pad_before;
+        *offset_bottom =
+           (cell_sz - (dim + pad_before + pad_after)) + pad_before;
      }
    else
      {
-        *offset = pad_before;
+        *offset_current = pad_before;
+        *offset_top = pad_before;
+        *offset_bottom = pad_before;
         _layout_dimension_change_min_max_cell_bound
            (dim, new_dim, min_dim, max_dim, cell_sz - pad_before - pad_after);
      }
@@ -466,7 +471,7 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 }
 
 void
-_box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__)
+_box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
    int cell_sz, share, inc;
    int sub_pixel = 0;
@@ -474,6 +479,9 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
    int n_children;
    Evas_Object_Box_Option *opt;
    Eina_List *l;
+   Groupedit_Item *ge_item = NULL;
+
+   Eina_List *items = (Eina_List *)data;
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -490,8 +498,10 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
+        ge_item = eina_list_data_get(items);
+
         int child_w, child_h, max_h, min_w, max_w, new_w, new_h;
-        int off_x, off_y_b, off_y_t, off_y;
+        int off_x, off_x_t, off_x_b, off_y_b, off_y_t, off_y;
         int padding_l, padding_r, padding_t, padding_b;
         double align_x, align_y;
 
@@ -511,12 +521,26 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
            (child_h, &new_h, h, max_h, &off_y, &off_y_t, &off_y_b, align_y, padding_t, padding_b);
 
         _layout_set_offset_and_change_dimension_min_max_cell_bounded
-           (child_w, &new_w, min_w, max_w, cell_sz, &off_x, align_x,
+           (child_w, &new_w, min_w, max_w, cell_sz, &off_x, &off_x_t, &off_x_b, align_x,
             padding_l, padding_r);
 
         if ((new_w != child_w) || (new_h != child_h))
           evas_object_resize(opt->obj, new_w, new_h);
         evas_object_move(opt->obj, x + off_x, y + off_y);
+
+        evas_object_resize(ge_item->highlight, new_w, new_h);
+        evas_object_move(ge_item->highlight, x + off_x, y + off_y);
+
+        evas_object_resize(ge_item->border,
+                           new_w + abs(off_x_t - off_x_b),
+                           new_h + abs(off_y_t - off_y_b));
+
+        if (align_x >= 0)
+          off_x = (off_x_t > off_x_b) ? off_x_b : off_x_t;
+        if (align_y >= 0)
+          off_y = (off_y_t > off_y_b) ? off_y_b : off_y_t;
+
+        evas_object_move(ge_item->border, x + off_x, y + off_y);
 
         x += cell_sz + priv->pad.h;
         sub_pixel += inc;
@@ -525,6 +549,7 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
              x++;
              sub_pixel -= 1 << 16;
           }
+        items = eina_list_next(items);
      }
 
    evas_object_size_hint_min_set(o, w, h);
@@ -556,7 +581,7 @@ _box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
         int child_w, child_h, max_w, min_h, max_h, new_w, new_h;
-        int off_x, off_x_t, off_x_b, off_y;
+        int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
         int padding_l, padding_r, padding_t, padding_b;
         double align_x, align_y;
 
@@ -575,7 +600,7 @@ _box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *
            (child_w, &new_w, w, max_w, &off_x, &off_x_t, &off_x_b, align_x, padding_l, padding_r);
 
         _layout_set_offset_and_change_dimension_min_max_cell_bounded
-           (child_h, &new_h, min_h, max_h, cell_sz, &off_y, align_y,
+           (child_h, &new_h, min_h, max_h, cell_sz, &off_y, &off_y_t, &off_y_b, align_y,
             padding_t, padding_b);
 
         if ((new_w != child_w) || (new_h != child_h))
@@ -643,7 +668,7 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
         int child_w, child_h, min_w, max_w, max_h, new_w, new_h;
-        int off_x, off_y, off_y_t, off_y_b;
+        int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
         int padding_l, padding_r, padding_t, padding_b;
         double align_x, align_y;
 
@@ -663,7 +688,7 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
            (child_h, &new_h, h, max_h, &off_y, &off_y_t, &off_y_b, align_y, padding_t, padding_b);
 
         _layout_set_offset_and_change_dimension_min_max_cell_bounded
-           (child_w, &new_w, min_w, max_w, cell_sz, &off_x, align_x,
+           (child_w, &new_w, min_w, max_w, cell_sz, &off_x, &off_x_t, &off_x_b, align_x,
             padding_l, padding_r);
 
         if ((new_w != child_w) || (new_h != child_h))
@@ -731,7 +756,7 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
         int child_w, child_h, max_h, min_h, max_w, new_w, new_h;
-        int off_x, off_x_t, off_x_b, off_y;
+        int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
         int padding_l, padding_r, padding_t, padding_b;
         double align_x, align_y;
 
@@ -751,7 +776,7 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
            (child_w, &new_w, w, max_w, &off_x, &off_x_t, &off_x_b, align_x, padding_l, padding_r);
 
         _layout_set_offset_and_change_dimension_min_max_cell_bounded
-           (child_h, &new_h, min_h, max_h, cell_sz, &off_y, align_y,
+           (child_h, &new_h, min_h, max_h, cell_sz, &off_y, &off_y_t, &off_y_b, align_y,
             padding_t, padding_b);
 
         if ((new_w != child_w) || (new_h != child_h))
@@ -1139,8 +1164,9 @@ _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
         Evas_Object *child = opt->obj;
-        Evas_Coord max_w, max_h, min_w, min_h, pad_l, pad_r, pad_t, pad_b,
-                   child_w, child_h, new_w, new_h, off_x, off_y;
+        Evas_Coord max_w, max_h, min_w, min_h, pad_l, pad_r, pad_t, pad_b;
+        Evas_Coord child_w, child_h, new_w, new_h;
+        Evas_Coord off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
         double align_x, align_y;
 
         evas_object_size_hint_align_get(child, &align_x, &align_y);
@@ -1155,9 +1181,9 @@ _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__
         new_h = child_h;
 
         _layout_set_offset_and_change_dimension_min_max_cell_bounded
-           (child_w, &new_w, min_w, max_w, ow, &off_x, align_x, pad_l, pad_r);
+           (child_w, &new_w, min_w, max_w, ow, &off_x, &off_x_t, &off_x_b, align_x, pad_l, pad_r);
         _layout_set_offset_and_change_dimension_min_max_cell_bounded
-           (child_h, &new_h, min_h, max_h, oh, &off_y, align_y, pad_t, pad_b);
+           (child_h, &new_h, min_h, max_h, oh, &off_y, &off_y_t, &off_y_b, align_y, pad_t, pad_b);
 
         if (new_w > top_w) top_w = new_w;
         if (new_h > top_h) top_h = new_h;
