@@ -875,7 +875,7 @@ project_open(void)
    App_Data *ap = app_data_get();
    if (!project_close(ap))
      return;
-   win  = mw_add(_fs_close, NULL);
+   win  = mw_add(_fs_close, ap);
    evas_object_show(win);
    mw_title_set(win, "Select a project file");
    img = elm_image_add(win);
