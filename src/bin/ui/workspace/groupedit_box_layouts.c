@@ -1211,18 +1211,23 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __
 }
 
 void
-_box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__)
+_box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
    Eina_List *l;
    Evas_Coord ox, oy, ow, oh;
    Evas_Coord top_w = 0, top_h = 0;
    Evas_Object_Box_Option *opt;
    Evas_Object *old_child = NULL;
+   Groupedit_Item *ge_item = NULL;
+
+   Eina_List *items = (Eina_List *)data;
 
    evas_object_geometry_get(o, &ox, &oy, &ow, &oh);
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
+        ge_item = eina_list_data_get(items);
+
         Evas_Object *child = opt->obj;
         Evas_Coord max_w, max_h, min_w, min_h, pad_l, pad_r, pad_t, pad_b;
         Evas_Coord child_w, child_h, new_w, new_h;
@@ -1252,9 +1257,25 @@ _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__
           evas_object_resize(child, new_w, new_h);
         evas_object_move(child, ox + off_x, oy + off_y);
 
+        evas_object_resize(ge_item->highlight, new_w, new_h);
+        evas_object_move(ge_item->highlight, ox + off_x, oy + off_y);
+
+        evas_object_resize(ge_item->border,
+                           new_w + abs(off_x_t - off_x_b),
+                           new_h + abs(off_y_t - off_y_b));
+
+        if (align_x >= 0)
+          off_x = (off_x_t > off_x_b) ? off_x_b : off_x_t;
+        if (align_y >= 0)
+          off_y = (off_y_t > off_y_b) ? off_y_b : off_y_t;
+
+        evas_object_move(ge_item->border, ox + off_x, oy + off_y);
+
         if (old_child)
           evas_object_stack_above(child, old_child);
         old_child = child;
+
+        items = eina_list_next(items);
      }
 
    evas_object_size_hint_min_set(o, top_w, top_h);
