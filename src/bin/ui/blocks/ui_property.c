@@ -22,7 +22,7 @@
    #include "eflete_config.h"
 #endif */
 #include "ui_property.h"
-#include "ui_property_macro.h"
+#include "ui_property_macro_old.h"
 #include "main_window.h"
 
 #ifdef HAVE_ENVENTOR
