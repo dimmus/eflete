@@ -1116,11 +1116,12 @@ _evas_object_box_layout_flow_vertical_col_info_collect(Evas_Object_Box_Data *pri
 }
 
 void
-_box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__)
+_box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
    int n_children;
    int c, col_count;
    int min_w = 0, min_h = 0;
+   int item_w, item_h;
    int max_w, inc_x;
    int remain_x, i;
    int x, y, w, h;
@@ -1129,6 +1130,9 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __
    int *col_break;
    int *col_height;
    int offset_x;
+   Groupedit_Item *ge_item = NULL;
+
+   Eina_List *items = (Eina_List *)data;
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -1185,6 +1189,8 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __
 
         for (; i <= col_break[c]; i++, l = l->next)
           {
+             ge_item = eina_list_data_get(items);
+
              Evas_Object_Box_Option *opt = l->data;
              int off_x, off_y, x_remain;
              int padding_t, padding_b;
@@ -1207,6 +1213,14 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __
 
              evas_object_move(opt->obj, x + off_x, y + off_y);
 
+             evas_object_geometry_get(opt->obj, NULL, NULL, &item_w, &item_h);
+
+             evas_object_resize(ge_item->highlight, item_w, item_h);
+             evas_object_move(ge_item->highlight, x + off_x, y + off_y);
+
+             evas_object_resize(ge_item->border, item_w + x_remain, item_h);
+             evas_object_move(ge_item->border, x, y + off_y);
+
              y += child_h + padding_t + padding_b + col_justify;
 
              sub_pixel += just_inc;
@@ -1215,6 +1229,7 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __
                   y++;
                   sub_pixel -= 1 << 16;
                }
+             items = eina_list_next(items);
           }
 
         evas_object_geometry_get(o, NULL, &y, NULL, NULL);
