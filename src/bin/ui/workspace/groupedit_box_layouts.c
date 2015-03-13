@@ -748,7 +748,7 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
 }
 
 void
-_box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__)
+_box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
    int remaining, global_pad, pad_inc = 0, sub_pixel = 0;
    int cell_sz = 0;
@@ -757,6 +757,9 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
    int n_children;
    Evas_Object_Box_Option *opt;
    Eina_List *l;
+   Groupedit_Item *ge_item = NULL;
+
+   Eina_List *items = (Eina_List *)data;
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -795,6 +798,8 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
+        ge_item = eina_list_data_get(items);
+
         int child_w, child_h, max_h, min_h, max_w, new_w, new_h;
         int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
         int padding_l, padding_r, padding_t, padding_b;
@@ -823,6 +828,20 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
           evas_object_resize(opt->obj, new_w, new_h);
         evas_object_move(opt->obj, x + off_x, y + off_y);
 
+        evas_object_resize(ge_item->highlight, new_w, new_h);
+        evas_object_move(ge_item->highlight, x + off_x, y + off_y);
+
+        evas_object_resize(ge_item->border,
+                           new_w + abs(off_x_t - off_x_b),
+                           new_h + abs(off_y_t - off_y_b));
+
+        if (align_x >= 0)
+          off_x = (off_x_t > off_x_b) ? off_x_b : off_x_t;
+        if (align_y >= 0)
+          off_y = (off_y_t > off_y_b) ? off_y_b : off_y_t;
+
+        evas_object_move(ge_item->border, x + off_x, y + off_y);
+
         y += cell_sz + global_pad;
         sub_pixel += pad_inc;
         if (sub_pixel >= 1 << 16)
@@ -830,6 +849,7 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
              y++;
              sub_pixel -= 1 << 16;
           }
+        items = eina_list_next(items);
      }
 
    evas_object_size_hint_min_set(o, top_w, y);
