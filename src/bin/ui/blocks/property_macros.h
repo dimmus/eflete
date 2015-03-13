@@ -27,6 +27,46 @@
    evas_object_show(item);
 
 /*****************************************************************************/
+/*                         PART 1 CHECK CONTROL                              */
+/*****************************************************************************/
+#define PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE) \
+static Evas_Object * \
+prop_item_part_##VALUE##_add(Evas_Object *parent, \
+                             Prop_Data *pd, \
+                             const char *tooltip) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   CHECK_ADD(item, pd->SUB.VALUE) \
+   elm_object_style_set(pd->SUB.VALUE, "toggle"); \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   elm_object_part_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
+   return item; \
+}
+
+#define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
+static void \
+_on_part_##VALUE##_change(void *data, \
+                          Evas_Object *obj, \
+                          void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, \
+                                                      pd->wm_part->name);\
+   if (!edje_edit_part_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, value)) \
+     return; \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, NULL, 0.0); \
+   workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
+   pd->wm_style->isModify = true; \
+}
+
+/*****************************************************************************/
 /*                       PART 1 COMBOBOX CONTROL                             */
 /*****************************************************************************/
 

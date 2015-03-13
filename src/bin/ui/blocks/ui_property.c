@@ -942,6 +942,9 @@ prop_item_part_name_add(Evas_Object *parent,
    return item;
 }
 
+#define ITEM_ATTR_1CHECK_UPDATE(SUB, VALUE) \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
+
 static void
 prop_part_clip_to_update(Prop_Data *pd)
 {
@@ -964,6 +967,10 @@ prop_part_clip_to_update(Prop_Data *pd)
    edje_edit_string_free(value);
 }
 
+#define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
+   PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
+   PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
+
 #define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE) \
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE)
@@ -972,11 +979,6 @@ prop_part_clip_to_update(Prop_Data *pd)
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE)
-
-#define ITEM_1CHECK_PART_CREATE(TEXT, SUB, VALUE) \
-   ITEM_CHECK_PART_CALLBACK(SUB, VALUE) \
-   ITEM_1CHECK_PART_ADD(TEXT, SUB, VALUE) \
-   ITEM_1CHECK_PART_UPDATE(SUB, VALUE)
 
 #define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
@@ -988,7 +990,6 @@ prop_part_clip_to_update(Prop_Data *pd)
    ITEM_1COMBOBOX_PART_TEXTBLOCK_ADD(TEXT, SUB, VALUE, TYPE) \
    ITEM_1COMBOBOX_PART_TEXTBLOCK_UPDATE(TEXT, SUB, VALUE, TYPE)
 
-
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
    ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
@@ -998,9 +999,9 @@ prop_part_clip_to_update(Prop_Data *pd)
 #define ITEM_1COMBOBOX_PART_PROPERTY_CREATE ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE
 
 /* part property */
-ITEM_1CHECK_PART_CREATE(_("scalable"), part, scale)
-ITEM_1CHECK_PART_CREATE(_("mouse events"), part, mouse_events)
-ITEM_1CHECK_PART_CREATE(_("event propagation"), part, repeat_events)
+PART_ATTR_1CHECK(_("scalable"), part, scale)
+PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
+PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to)
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source"), part, source)
@@ -1008,7 +1009,7 @@ ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_E
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
 ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("cursor mode"), part, cursor_mode, unsigned int)
-ITEM_1CHECK_PART_CREATE(_("multiline"), part, multiline)
+PART_ATTR_1CHECK(_("multiline"), part, multiline)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
@@ -1106,9 +1107,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
      {
          prop_part_name_update(pd);
          prop_part_type_update(wm_part_type_get(type));
-         prop_item_part_scale_update(pd);
-         prop_item_part_mouse_events_update(pd);
-         prop_item_part_repeat_events_update(pd);
+         ITEM_ATTR_1CHECK_UPDATE(part, scale)
+         ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
+         ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
          prop_part_clip_to_update(pd);
          prop_part_ignore_flags_update(pd);
          prop_item_part_source_update(pd_part.source, pd);
@@ -1184,7 +1185,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
                    elm_box_pack_end(box, pd_part.item_multiline);
                 }
               else
-                prop_item_part_multiline_update(pd);
+                ITEM_ATTR_1CHECK_UPDATE(part, multiline);
            }
          else
            {

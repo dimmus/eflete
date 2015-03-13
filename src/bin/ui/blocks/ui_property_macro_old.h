@@ -463,29 +463,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_select_item_set(combobox, value); \
 }
 
-#define ITEM_1CHECK_PART_ADD(text, SUB, VALUE) \
-static Evas_Object * \
-prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                                Prop_Data *pd, \
-                                const char *tooltip) \
-{ \
-   PROPERTY_ITEM_ADD(parent, text, "1swallow") \
-   CHECK_ADD(item, pd->SUB.VALUE) \
-   elm_object_style_set(pd->SUB.VALUE, "toggle"); \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
-   return item; \
-}
-
-#define ITEM_1CHECK_PART_UPDATE(SUB, VALUE) \
-static void \
-prop_item_##SUB##_##VALUE##_update(Prop_Data *pd) \
-{ \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
-}
-
 #define ITEM_DRAG_PART_ADD(text, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
