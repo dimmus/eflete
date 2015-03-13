@@ -923,12 +923,13 @@ _evas_object_box_layout_flow_horizontal_row_info_collect(Evas_Object_Box_Data *p
 }
 
 void
-_box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__)
+_box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
    int n_children;
    int r, row_count = 0;
    int min_w = 0, min_h = 0;
    int max_h, inc_y;
+   int item_w, item_h;
    int remain_y, i;
    int x, y, w, h;
    Eina_List *l;
@@ -936,6 +937,9 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data 
    int *row_break;
    int *row_width;
    int offset_y;
+   Groupedit_Item *ge_item = NULL;
+
+   Eina_List *items = (Eina_List *)data;
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -992,6 +996,8 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data 
 
         for (; i <= row_break[r]; i++, l = l->next)
           {
+             ge_item = eina_list_data_get(items);
+
              Evas_Object_Box_Option *opt = l->data;
              int off_x, off_y, y_remain;
              int padding_l, padding_r;
@@ -1014,6 +1020,14 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data 
 
              evas_object_move(opt->obj, x + off_x, y + off_y);
 
+             evas_object_geometry_get(opt->obj, NULL, NULL, &item_w, &item_h);
+
+             evas_object_resize(ge_item->highlight, item_w, item_h);
+             evas_object_move(ge_item->highlight, x + off_x, y + off_y);
+
+             evas_object_resize(ge_item->border, item_w, item_h + y_remain);
+             evas_object_move(ge_item->border, x + off_x, y);
+
              x += child_w + padding_l + padding_r + row_justify;
 
              sub_pixel += just_inc;
@@ -1022,6 +1036,7 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data 
                   x++;
                   sub_pixel -= 1 << 16;
                }
+             items = eina_list_next(items);
           }
 
         evas_object_geometry_get(o, &x, NULL, NULL, NULL);
