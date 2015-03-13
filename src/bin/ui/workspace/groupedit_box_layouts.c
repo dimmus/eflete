@@ -54,8 +54,9 @@ _layout_set_offset_and_expand_dimension_space_max_bounded(int dim, int *new_dim,
              *new_dim = max_dim;
              *offset_current = (space_sz - (max_dim + pad_before + pad_after)) * 0.5
                 + pad_before;
-             *offset_top = pad_before;
-             *offset_bottom = (space_sz - (max_dim + pad_before + pad_after))
+             *offset_top = (space_sz - (max_dim + pad_before + pad_after)) * 0.5
+                + pad_before;
+             *offset_bottom = (space_sz - (max_dim + pad_before + pad_after)) * 0.5
                 + pad_before;
           }
         else
@@ -338,7 +339,7 @@ _evas_object_box_layout_vertical_weight_apply(Evas_Object_Box_Data *priv, Evas_O
 }
 
 void
-_box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSED__)
+_box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
    int pad_inc = 0, sub_pixel = 0;
    int req_h, global_pad, remaining, top_w = 0;
@@ -349,6 +350,9 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSE
    Evas_Object_Box_Option *opt;
    Evas_Object_Box_Option **objects;
    Eina_List *l;
+   Groupedit_Item *ge_item = NULL;
+
+   Eina_List *items = (Eina_List *)data;
 
    n_children = eina_list_count(priv->children);
    if (!n_children)
@@ -413,6 +417,8 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSE
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
+        ge_item = eina_list_data_get(items);
+
         int child_w, child_h, max_w, new_w, off_x, off_x_t, off_x_b, off_y;
         int padding_l, padding_r, padding_t, padding_b;
         double align_x;
@@ -436,6 +442,16 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSE
           evas_object_resize(opt->obj, new_w, child_h);
         evas_object_move(opt->obj, x + off_x, y + off_y);
 
+        evas_object_resize(ge_item->highlight, new_w, child_h);
+        evas_object_move(ge_item->highlight, x + off_x, y + off_y);
+
+        evas_object_resize(ge_item->border, new_w + abs(off_x_t - off_x_b), child_h);
+
+        if (align_x >= 0)
+          off_x = (off_x_t > off_x_b) ? off_x_b : off_x_t;
+
+        evas_object_move(ge_item->border, x + off_x, y + off_y);
+
         y += child_h + padding_t + padding_b + global_pad;
         sub_pixel += pad_inc;
         if (sub_pixel >= 1 << 16)
@@ -443,6 +459,7 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data __UNUSE
              y++;
              sub_pixel -= 1 << 16;
           }
+        items = eina_list_next(items);
      }
 
    evas_object_size_hint_min_set(o, top_w, req_h);
