@@ -1453,6 +1453,9 @@ group { name: "elm/genlist/item/history/default";
             inherit: "default" 0.0;
             text.text: "add";
          }
+         description { state: "change" 0.0;
+            inherit: "default" 0.0;
+         }
          description { state: "delete" 0.0;
             inherit: "default" 0.0;
             text.text: "delete";
@@ -1491,6 +1494,9 @@ group { name: "elm/genlist/item/history/default";
             inherit: "default" 0.0;
             visible: 0;
          }
+         description { state: "change" 0.0;
+            inherit: "default" 0.0;
+         }
          description { state: "delete" 0.0;
             inherit: "default" 0.0;
             visible: 0;
@@ -1528,6 +1534,9 @@ group { name: "elm/genlist/item/history/default";
          description { state: "restack" 0.0;
             inherit: "default" 0.0;
             visible: 0;
+         }
+         description { state: "change" 0.0;
+            inherit: "default" 0.0;
          }
          description { state: "add" 0.0;
             inherit: "default" 0.0;
@@ -1738,6 +1747,9 @@ group { name: "elm/genlist/item/history/default";
          source: "elm";
          action: STATE_SET "change" 0.0;
          target: "indicator";
+         target: "label.new";
+         target: "label.old";
+         target: "elm.text.old";
       }
       program { name: "ind_restack";
          signal: "elm,state,restack,active";
