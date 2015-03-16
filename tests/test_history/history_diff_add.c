@@ -278,10 +278,10 @@ END_TEST
  * @step 6 Register in history object created at step 5, as module.
  *
  * @procedure
- * @step 1 Call history_diff_add with correct data for value type GROUP.
+ * @step 1 Call history_diff_add with correct data for value type VAL_GROUP.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, CONTAINER, GROUP, (int) 0,
+ * <td>(Evas_Object *) source, PROPERTY, CONTAINER, VAL_GROUP, (int) 0,
  *     (int) 20, (int) 0, (int)30, (void *)edje_edit_group_min_w_set,
  *     (const char *) "elm/radio/base/def",
  *     (void *)edje_edit_group_max_set, "Group min weight", NULL, NULL, (int) 0</td>
@@ -307,12 +307,12 @@ EFLETE_TEST(history_diff_add_test_p5)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, CONTAINER, GROUP, 0, 20, 0, 30,
+   result = history_diff_add(source, PROPERTY, CONTAINER, VAL_GROUP, 0, 20, 0, 30,
                              (void *)edje_edit_group_min_w_set,
                              "elm/radio/base/def",
                              (void *)edje_edit_group_max_w_set,
                              "Group weight", NULL, NULL, 0);
-   ck_assert_msg(result, "Failed to add new diff with type GROUP"
+   ck_assert_msg(result, "Failed to add new diff with type VAL_GROUP"
                          " in the history of module.");
 
    history_term(app->history);
@@ -1192,7 +1192,7 @@ END_TEST
  * @step 1 Call history_diff_add without function pointer.
  * @step 2 Check returned value.
  * </td>
- * <td>(Evas_Object *) source, PROPERTY, MODIFY, GROUP, (int) 10, (int) 15,
+ * <td>(Evas_Object *) source, PROPERTY, MODIFY, VAL_GROUP, (int) 10, (int) 15,
  *     (const char *) "elm/radio/base/def", NULL, "Group min w", "bg",
  *     "default", 0.0 </td>
  * <td>EINA_FALSE value returned</td>
@@ -1217,7 +1217,7 @@ EFLETE_TEST(history_diff_add_test_n5)
    edje_object_file_set(source, path, "elm/radio/base/def");
    history_module_add(source);
 
-   result = history_diff_add(source, PROPERTY, MODIFY, GROUP, 10, 15,
+   result = history_diff_add(source, PROPERTY, MODIFY, VAL_GROUP, 10, 15,
                              "elm/radio/base/def", NULL, "Group min w", "bg",
                              "default", 0.0 );
    ck_assert_msg(!result, "New diff added without function pointer.");

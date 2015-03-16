@@ -744,14 +744,14 @@ EFLETE_TEST(history_redo_test_p9)
    old_value = edje_edit_group_min_h_get(style->obj);
    edje_edit_group_min_h_set(style->obj, new_value);
    edje_edit_group_max_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, CONTAINER, GROUP, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value, new_value,
                     old_value, new_value, (void *)edje_edit_group_min_h_set,
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
                     "Group height", NULL, NULL, 0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to recover diff with GROUP value type.");
+   ck_assert_msg(result, "Failed to recover diff with VAL_GROUP value type.");
    check_value = edje_edit_group_min_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Recovered action doesn't change value");
    check_value = edje_edit_group_max_h_get(style->obj);

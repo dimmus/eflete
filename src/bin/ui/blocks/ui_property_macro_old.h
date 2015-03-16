@@ -83,7 +83,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
      return; \
    if (!strcmp("min", #SUB1)) \
      { \
-       history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, GROUP, old_value_##SUB1##_##VALUE, value, \
+       history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB1##_##VALUE, value, \
                         old_value_##SUB2##_##VALUE, value_##SUB2##_##VALUE,  \
                         (void*)edje_edit_group_##SUB1##_##VALUE##_set, pd->wm_style->full_group_name, \
                         (void*)edje_edit_group_##SUB2##_##VALUE##_set,  "group_"#VALUE, \
@@ -91,7 +91,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
      } \
    else \
     { \
-       history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, GROUP, old_value_##SUB2##_##VALUE,\
+       history_diff_add(pd->wm_style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value_##SUB2##_##VALUE,\
                         value_##SUB2##_##VALUE, old_value_##SUB1##_##VALUE, value,  \
                         (void*)edje_edit_group_##SUB2##_##VALUE##_set, pd->wm_style->full_group_name, \
                         (void*)edje_edit_group_##SUB1##_##VALUE##_set,  "group_"#VALUE, \

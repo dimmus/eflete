@@ -225,7 +225,7 @@ _attribute_highlight_redo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
-     case GROUP:
+     case VAL_GROUP:
        change->func_revert(source, change->twice_int.new_1);
        change->func(source, change->twice_int.new_2);
      break;
@@ -368,7 +368,7 @@ _attribute_highlight_undo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
-     case GROUP:
+     case VAL_GROUP:
        change->func_revert(source, change->twice_int.old_1);
        change->func(source, change->twice_int.old_2);
      break;
@@ -498,7 +498,7 @@ _attribute_highlight_merge(Attribute_Diff *previous, Attribute_Diff *change)
      {
         switch(previous->param_type)
          {
-          case GROUP:
+          case VAL_GROUP:
           case VAL_INT:
              previous->twice_int.new_1 = change->twice_int.new_1;
              previous->twice_int.new_2 = change->twice_int.new_2;
@@ -636,7 +636,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
 { \
    switch(change->param_type) \
      { \
-      case GROUP: \
+      case VAL_GROUP: \
       case VAL_INT: \
          change->twice_int.old_1 = (int)va_arg(list, int); \
          change->twice_int.new_1 = (int)va_arg(list, int); \

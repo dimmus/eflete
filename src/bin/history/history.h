@@ -185,7 +185,7 @@ enum _Value_Type
    STRING = 0, /**< string values: char *, const char*, Eina_Stringshare * */
    VAL_DOUBLE, /**< only double values */
    VAL_INT, /**< for int, char, Eina_Bool types*/
-   GROUP, /**< use in functions with int param, that describe change. This
+   VAL_GROUP, /**< use in functions with int param, that describe change. This
              function usually look like edje_edit_group_max_set(Evas_Object*, int v)*/
    FOUR, /**< for functions like edje_edit_state_color_set. */
    RENAME, /**< Only for function edje_edit_part_name_set. */
