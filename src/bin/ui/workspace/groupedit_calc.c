@@ -1549,18 +1549,19 @@ _box_layout_function_get(const char *primary, const char *fallback)
 static void
 _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
-   Groupedit_Item *ge_item = NULL;
+   Groupedit_Item *ge_item = NULL, *spread_item = NULL;
    Eina_List *l_items, *l_n_items;
    Eina_Stringshare *part = gp->name;
    Eina_Stringshare *item_source = NULL;
    Eina_Stringshare *primary_layout = NULL;
    Eina_Stringshare *fallback_layout = NULL;
 
-   int w, h; // Geometry values
-   int min_w, max_w, prefer_w, min_h, max_h, prefer_h; // Hints values
+   int w, h; /* Geometry values */
+   int min_w, max_w, prefer_w, min_h, max_h, prefer_h; /* Hints values */
+   int spread_col, spread_row, old_spread_row; /* Position values */
    Evas_Aspect_Control aspect = EVAS_ASPECT_CONTROL_NONE;
    int aspect_x, aspect_y;
-   double align_x = 0, align_y = 0, weight_x = 0, weight_y = 0; // Align object in cell
+   double align_x = 0, align_y = 0, weight_x = 0, weight_y = 0; /* Align object in cell */
    int pad_l = 0, pad_r = 0, pad_t = 0, pad_b = 0;
    int r = 0, g = 0, b = 0, a = 0;
    double box_align_x, box_align_y;
@@ -1641,15 +1642,68 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         evas_object_size_hint_aspect_set(ge_item->draw, aspect, aspect_x, aspect_y);
 
        /* TODO: spread object! And apply all possible properties to it. */
+        spread_col = edje_edit_part_item_spread_w_get(sd->edit_obj, part, ge_item->name);
+        spread_row = edje_edit_part_item_spread_h_get(sd->edit_obj, part, ge_item->name);
+
+        EINA_LIST_FREE(ge_item->spread, spread_item)
+          {
+             evas_object_smart_member_del(spread_item->border);
+             evas_object_smart_member_del(spread_item->draw);
+             evas_object_smart_member_del(spread_item->highlight);
+             evas_object_del(spread_item->border);
+             evas_object_del(spread_item->draw);
+             evas_object_del(spread_item->highlight);
+             free(spread_item);
+          }
+        old_spread_row = spread_row;
+
+        while((spread_col > 1) || (spread_row > 1))
+          {
+             spread_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
+
+             GET_IMAGE(spread_item->border, sd->e, PART_ITEM_IMG);
+             evas_object_size_hint_min_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_size_hint_align_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_size_hint_weight_set(spread_item->border, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+             GET_IMAGE(spread_item->highlight, sd->e, BORDER_IMG);
+             evas_object_size_hint_min_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_size_hint_align_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_size_hint_weight_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
+             evas_object_color_set(spread_item->highlight, 49, 140, 141, 255);
+
+             spread_item->draw = edje_object_add(sd->e);
+             edje_object_file_set(spread_item->draw, sd->edit_obj_file, item_source);
+             evas_object_size_hint_max_set(spread_item->draw, max_w, max_h);
+             evas_object_size_hint_request_set(spread_item->draw, prefer_w, prefer_h);
+             evas_object_size_hint_min_set(spread_item->draw, min_w, min_h);
+             evas_object_size_hint_padding_set(spread_item->draw, pad_l, pad_r, pad_t, pad_b);
+             evas_object_size_hint_align_set(spread_item->draw, align_x, align_y);
+             evas_object_size_hint_weight_set(spread_item->draw, weight_x, weight_y);
+             evas_object_size_hint_aspect_set(spread_item->draw, aspect, aspect_x, aspect_y);
+
+             ge_item->spread = eina_list_append(ge_item->spread, spread_item);
+             evas_object_box_append(gp->draw, spread_item->draw);
+
+             evas_object_smart_member_add(spread_item->draw, gp->draw);
+             evas_object_smart_member_add(spread_item->border, gp->draw);
+             evas_object_smart_member_add(spread_item->highlight, gp->draw);
+
+             evas_object_show(spread_item->border);
+             evas_object_show(spread_item->draw);
+             evas_object_show(spread_item->highlight);
+             evas_object_raise(spread_item->draw);
+             evas_object_raise(spread_item->highlight);
+
+
+             if (spread_row > 1) spread_row--;
+             else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
+             else break;
+             evas_object_color_set(spread_item->draw, r, g, b, a);
+          }
 
         evas_object_color_set(ge_item->draw, r, g, b, a);
 
-        /* TODO: bunch of fixes
-           >  make them part of groupedit,
-           >  make them propagate mouse clicking (they are blocking currently)
-           >  need to remove them after unloading style from groupedit
-           >  proper size of border (showing item's geometry), according to layout
-        */
         evas_object_smart_member_add(ge_item->border, gp->draw);
         evas_object_smart_member_add(ge_item->draw, gp->draw);
         evas_object_smart_member_add(ge_item->highlight, gp->draw);

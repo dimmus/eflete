@@ -1125,7 +1125,7 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    int max_w, inc_x;
    int remain_x, i;
    int x, y, w, h;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    int *col_max_w;
    int *col_break;
    int *col_height;
@@ -1189,7 +1189,7 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 
         for (; i <= col_break[c]; i++, l = l->next)
           {
-             ge_item = eina_list_data_get(items);
+             ge_item = eina_list_data_get(spread ? spread : items);
 
              Evas_Object_Box_Option *opt = l->data;
              int off_x, off_y, x_remain;
@@ -1214,7 +1214,6 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
              evas_object_move(opt->obj, x + off_x, y + off_y);
 
              evas_object_geometry_get(opt->obj, NULL, NULL, &item_w, &item_h);
-
              evas_object_resize(ge_item->highlight, item_w, item_h);
              evas_object_move(ge_item->highlight, x + off_x, y + off_y);
 
@@ -1229,7 +1228,23 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
                   y++;
                   sub_pixel -= 1 << 16;
                }
-             items = eina_list_next(items);
+
+             if (!spread)
+               {
+                  if (ge_item->spread)
+                    spread = ge_item->spread;
+                  else
+                    items = eina_list_next(items);
+               }
+             else
+               {
+                  spread = eina_list_next(spread);
+                  if (!spread)
+                    {
+                       ge_item = NULL;
+                       items = eina_list_next(items);
+                    }
+               }
           }
 
         evas_object_geometry_get(o, NULL, &y, NULL, NULL);
