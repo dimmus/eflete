@@ -717,6 +717,14 @@ _on_ok_cb(void *data,
    elm_object_part_content_set(OBJ, NULL, ICON); \
    elm_object_part_content_set(PARENT, "swallow.button."TEXT, OBJ);
 
+#define INFO_ADD(PARENT, ITEM, TEXT, STYLE) \
+   ITEM = elm_layout_add(PARENT); \
+   evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
+   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
+   elm_layout_theme_set(ITEM, "layout", "sound_editor", STYLE); \
+   elm_object_part_text_set(ITEM, "elm.text", TEXT); \
+   evas_object_show(ITEM);
+
 #ifdef HAVE_AUDIO
 static char *
 _player_units_format(double val)
@@ -732,13 +740,6 @@ _player_units_free(char *str)
 {
    free(str);
 }
-#define INFO_ADD(PARENT, ITEM, TEXT, STYLE) \
-   ITEM = elm_layout_add(PARENT); \
-   evas_object_size_hint_weight_set(ITEM, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(ITEM, EVAS_HINT_FILL, 0.0); \
-   elm_layout_theme_set(ITEM, "layout", "sound_editor", STYLE); \
-   elm_object_part_text_set(ITEM, "elm.text", TEXT); \
-   evas_object_show(ITEM);
 
 static void
 _sound_player_create(Evas_Object *parent, Sound_Editor *edit)
