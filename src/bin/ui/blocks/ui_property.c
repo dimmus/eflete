@@ -86,14 +86,14 @@ struct _Prop_Data
       Evas_Object *ignore_flags;
       Evas_Object *source, *source_item;
       unsigned int previous_source;
+      struct {
+         Evas_Object *frame;
+         Evas_Object *drag_x;
+         Evas_Object *drag_y;
+         Evas_Object *confine;
+         Evas_Object *event;
+      } drag;
    } part;
-   struct {
-      Evas_Object *frame;
-      Evas_Object *drag_x;
-      Evas_Object *drag_y;
-      Evas_Object *confine;
-      Evas_Object *event;
-   } drag;
    struct {
       Evas_Object *frame;
       Evas_Object *state;
@@ -1036,7 +1036,7 @@ ITEM_1COMBOBOX_PART_CREATE(DRAG_AREA, _("drag area"), part_drag, confine)
 ITEM_1COMBOBOX_PART_CREATE(FORWARD_EVENTS, _("forward events"), part_drag, event)
 
 #define pd_part pd->part
-#define pd_part_drag pd->drag
+#define pd_part_drag pd->part.drag
 Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
@@ -1054,8 +1054,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    type = edje_edit_part_type_get(pd->wm_style->obj, part->name);
    prop_box = elm_object_content_get(pd->visual);
-
-   elm_box_unpack(prop_box, pd->drag.frame);
 
    if (!pd_part.frame)
      {
@@ -1112,7 +1110,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
               * this item is show and already packed to box  */
              if (!evas_object_visible_get(pd_part.source_item))
                {
-                  elm_box_pack_end(box, pd_part.source_item);
+                  elm_box_pack_before(box, pd_part.source_item, pd_part_drag.frame);
                   evas_object_show(pd->part.source_item);
                }
              prop_part_source_update(pd, pd->part.source);
@@ -1128,6 +1126,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
    if (!pd_part_drag.frame)
      {
         FRAME_PROPERTY_ADD(pd->visual, part_drag_frame, true, _("Part dragable property"), pd->visual)
+        elm_object_style_set(part_drag_frame, "outdent_top");
+        elm_box_pack_end(box, part_drag_frame);
         BOX_ADD(part_drag_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_drag_frame, box);
@@ -1152,7 +1152,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_part_drag.confine);
         elm_box_pack_end(box, pd_part_drag.event);
 
-        elm_box_pack_after(prop_box, part_drag_frame, pd_part.frame);
         pd_part_drag.frame = part_drag_frame;
      }
    else
@@ -1161,7 +1160,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         prop_item_part_drag_y_step_y_update(pd_part_drag.drag_y, pd);
         prop_item_part_drag_confine_update(pd_part_drag.confine, pd);
         prop_item_part_drag_event_update(pd_part_drag.event, pd);
-        elm_box_pack_after(prop_box, pd_part_drag.frame, pd_part.frame);
         evas_object_show(pd_part_drag.frame);
      }
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
@@ -1193,7 +1191,6 @@ ui_property_part_unset(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
 
    PROP_ITEM_UNSET(prop_box, pd->part.frame)
-   PROP_ITEM_UNSET(prop_box, pd->drag.frame)
    PROP_ITEM_UNSET(prop_box, pd->state.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_object_area.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_text.frame)
@@ -1373,7 +1370,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
           }
 
         prop_box = elm_object_content_get(pd->visual);
-        elm_box_pack_after(prop_box, state_frame, pd->drag.frame);
+        elm_box_pack_after(prop_box, state_frame, pd->part.frame);
         pd_state.frame = state_frame;
      }
    else
