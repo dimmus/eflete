@@ -246,12 +246,13 @@ ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index);
  *
  * @param obj A widget list object.
  * @param part A Part object with items, that need reload
+ * @param addition Eina_True if item was added, EINA_FALSE - was deleted
  *
  * @return EINA_TRUE on success, otherwise EINA_FALSE
  *
  * @ingroup WidgetList
  */
 Eina_Bool
-ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part);
+ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part, Eina_Bool additon);
 
 #endif /* UI_WIDGET_LIST_H */
