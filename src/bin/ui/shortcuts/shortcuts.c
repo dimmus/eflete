@@ -164,6 +164,7 @@ PART_ADD(EDJE_PART_TYPE_RECTANGLE, rectangle)
 PART_ADD(EDJE_PART_TYPE_IMAGE, image)
 PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 PART_ADD(EDJE_PART_TYPE_GROUP, group)
+PART_ADD(EDJE_PART_TYPE_BOX, box)
 
 /* this one will delete part or style or layout or state.
    TODO: move this code or some of it's part to Connector,
@@ -584,6 +585,7 @@ static Function_Set _sc_func_set_init[] =
      {"part.add.proxy", _proxy_part_add_cb},
      {"part.add.spacer", _spacer_part_add_cb},
      {"part.add.group", _group_part_add_cb},
+     {"part.add.box", _box_part_add_cb},
      {"item.delete", _item_delete_cb},
      {"separate_mode", _separate_mode_change_cb},
      {"style.create", _new_style_create_cb},
