@@ -174,7 +174,7 @@ _box_layout_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    int n_children;
    Evas_Object_Box_Option *opt;
    Evas_Object_Box_Option **objects;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
@@ -242,7 +242,7 @@ _box_layout_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         int child_w, child_h, max_h, new_h, off_x, off_y, off_y_t, off_y_b;
         int padding_l, padding_r, padding_t, padding_b;
@@ -283,7 +283,22 @@ _box_layout_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
              x++;
              sub_pixel -= 1 << 16;
           }
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, req_w, top_h);
@@ -354,7 +369,7 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    int n_children;
    Evas_Object_Box_Option *opt;
    Evas_Object_Box_Option **objects;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
@@ -422,7 +437,7 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         int child_w, child_h, max_w, new_w, off_x, off_x_t, off_x_b, off_y;
         int padding_l, padding_r, padding_t, padding_b;
@@ -464,7 +479,22 @@ _box_layout_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
              y++;
              sub_pixel -= 1 << 16;
           }
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, top_w, req_h);
@@ -478,7 +508,7 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
    int x, y, w, h;
    int n_children;
    Evas_Object_Box_Option *opt;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
@@ -498,7 +528,7 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         int child_w, child_h, max_h, min_w, max_w, new_w, new_h;
         int off_x, off_x_t, off_x_b, off_y_b, off_y_t, off_y;
@@ -549,7 +579,22 @@ _box_layout_homogeneous_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void
              x++;
              sub_pixel -= 1 << 16;
           }
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, w, h);
@@ -563,7 +608,7 @@ _box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *
    int x, y, w, h;
    int n_children;
    Evas_Object_Box_Option *opt;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
@@ -583,7 +628,7 @@ _box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         int child_w, child_h, max_w, min_h, max_h, new_w, new_h;
         int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
@@ -633,7 +678,22 @@ _box_layout_homogeneous_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *
              y++;
              sub_pixel -= 1 << 16;
           }
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, w, h);
@@ -648,7 +708,7 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
    int top_h = 0;
    int n_children;
    Evas_Object_Box_Option *opt;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
@@ -690,7 +750,7 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         int child_w, child_h, min_w, max_w, max_h, new_w, new_h;
         int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
@@ -741,7 +801,22 @@ _box_layout_homogeneous_max_size_horizontal(Evas_Box *o, Evas_Object_Box_Data *p
              x++;
              sub_pixel -= 1 << 16;
           }
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, x, top_h);
@@ -756,7 +831,7 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
    int top_w = 0;
    int n_children;
    Evas_Object_Box_Option *opt;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Groupedit_Item *ge_item = NULL;
 
    Eina_List *items = (Eina_List *)data;
@@ -798,7 +873,7 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         int child_w, child_h, max_h, min_h, max_w, new_w, new_h;
         int off_x, off_x_t, off_x_b, off_y, off_y_t, off_y_b;
@@ -849,7 +924,22 @@ _box_layout_homogeneous_max_size_vertical(Evas_Box *o, Evas_Object_Box_Data *pri
              y++;
              sub_pixel -= 1 << 16;
           }
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, top_w, y);
@@ -932,7 +1022,7 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
    int item_w, item_h;
    int remain_y, i;
    int x, y, w, h;
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    int *row_max_h;
    int *row_break;
    int *row_width;
@@ -996,7 +1086,7 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 
         for (; i <= row_break[r]; i++, l = l->next)
           {
-             ge_item = eina_list_data_get(items);
+             ge_item = eina_list_data_get(spread ? spread : items);
 
              Evas_Object_Box_Option *opt = l->data;
              int off_x, off_y, y_remain;
@@ -1036,7 +1126,22 @@ _box_layout_flow_horizontal(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
                   x++;
                   sub_pixel -= 1 << 16;
                }
-             items = eina_list_next(items);
+             if (!spread)
+               {
+                  if (ge_item->spread)
+                    spread = ge_item->spread;
+                  else
+                    items = eina_list_next(items);
+               }
+             else
+               {
+                  spread = eina_list_next(spread);
+                  if (!spread)
+                    {
+                       ge_item = NULL;
+                       items = eina_list_next(items);
+                    }
+               }
           }
 
         evas_object_geometry_get(o, &x, NULL, NULL, NULL);
@@ -1258,7 +1363,7 @@ _box_layout_flow_vertical(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 void
 _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 {
-   Eina_List *l;
+   Eina_List *l, *spread = NULL;
    Evas_Coord ox, oy, ow, oh;
    Evas_Coord top_w = 0, top_h = 0;
    Evas_Object_Box_Option *opt;
@@ -1271,7 +1376,7 @@ _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
 
    EINA_LIST_FOREACH(priv->children, l, opt)
      {
-        ge_item = eina_list_data_get(items);
+        ge_item = eina_list_data_get(spread ? spread : items);
 
         Evas_Object *child = opt->obj;
         Evas_Coord max_w, max_h, min_w, min_h, pad_l, pad_r, pad_t, pad_b;
@@ -1320,7 +1425,22 @@ _box_layout_stack(Evas_Box *o, Evas_Object_Box_Data *priv, void *data)
           evas_object_stack_above(child, old_child);
         old_child = child;
 
-        items = eina_list_next(items);
+        if (!spread)
+          {
+             if (ge_item->spread)
+               spread = ge_item->spread;
+             else
+               items = eina_list_next(items);
+          }
+        else
+          {
+             spread = eina_list_next(spread);
+             if (!spread)
+               {
+                  ge_item = NULL;
+                  items = eina_list_next(items);
+               }
+          }
      }
 
    evas_object_size_hint_min_set(o, top_w, top_h);
