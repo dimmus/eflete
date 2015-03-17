@@ -83,14 +83,9 @@ struct _Prop_Data
       Evas_Object *mouse_events;
       Evas_Object *repeat_events;
       Evas_Object *clip_to;
-      Evas_Object *source;
-      int previous_source;
       Evas_Object *ignore_flags;
-      Evas_Object *select_mode;  //move to textblock
-      Evas_Object *entry_mode;   //move to textblock
-      Evas_Object *pointer_mode; //move to textblock
-      Evas_Object *cursor_mode;  //move to textblock
-      Evas_Object *multiline, *item_multiline;    //move to textblock
+      Evas_Object *source, *source_item;
+      unsigned int previous_source;
    } part;
    struct {
       Evas_Object *frame;
@@ -146,6 +141,11 @@ struct _Prop_Data
       Evas_Object *align;
       Evas_Object *min;
       Evas_Object *max;
+      Evas_Object *select_mode;
+      Evas_Object *entry_mode;
+      Evas_Object *pointer_mode;
+      Evas_Object *cursor_mode;
+      Evas_Object *multiline;
       Evas_Object *source;
       Evas_Object *source2;
       Evas_Object *source3;
@@ -946,7 +946,8 @@ prop_item_part_name_add(Evas_Object *parent,
    elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
 
 static void
-prop_part_clip_to_update(Prop_Data *pd)
+prop_part_clip_to_update(Prop_Data *pd,
+                         Evas_Object *combobox __UNUSED__)
 {
    Part *part;
    Eina_Inlist *list_n = NULL;
@@ -967,6 +968,35 @@ prop_part_clip_to_update(Prop_Data *pd)
    edje_edit_string_free(value);
 }
 
+/* avaliable only for SOURCE part type */
+static void
+prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
+{
+   Eina_List *collections, *l;
+   const char *group, *value;
+   App_Data *ap = app_data_get();
+   unsigned int i = 0;
+
+   ewe_combobox_items_list_free(combobox, true);
+   value = edje_edit_part_clip_to_get(pd->wm_style->obj, pd->wm_part->name);
+   if (value)
+     ewe_combobox_text_set(combobox, value);
+   else
+     ewe_combobox_text_set(combobox, _("None"));
+   ewe_combobox_item_add(combobox, _("None"));
+   collections = edje_mmap_collection_list(ap->project->mmap_file);
+   EINA_LIST_FOREACH(collections, l, group)
+     {
+        if (group != pd->wm_style->full_group_name)
+          ewe_combobox_item_add(combobox, group);
+        if (group == value)
+          pd->part.previous_source = i;
+        i++;
+     }
+   edje_edit_string_free(value);
+   edje_mmap_collection_list_free(collections);
+}
+
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
    PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
@@ -985,18 +1015,11 @@ prop_part_clip_to_update(Prop_Data *pd)
    ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_UPDATE(TYPE, TEXT, SUB, VALUE)
 
-#define ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(TEXT, SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_PART_TEXTBLOCK_CALLBACK(SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_PART_TEXTBLOCK_ADD(TEXT, SUB, VALUE, TYPE) \
-   ITEM_1COMBOBOX_PART_TEXTBLOCK_UPDATE(TEXT, SUB, VALUE, TYPE)
-
 #define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
    ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
    ITEM_DRAG_PART_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
-
-#define ITEM_1COMBOBOX_PART_PROPERTY_CREATE ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE
 
 /* part property */
 PART_ATTR_1CHECK(_("scalable"), part, scale)
@@ -1004,12 +1027,7 @@ PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to)
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source"), part, source)
-ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("select mode"), part, select_mode, Edje_Edit_Select_Mode)
-ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("entry mode"), part, entry_mode, Edje_Edit_Entry_Mode)
-ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("pointer mode"), part, pointer_mode, Evas_Object_Pointer_Mode)
-ITEM_1COMBOBOX_PART_TEXTBLOCK_CREATE(_("cursor mode"), part, cursor_mode, unsigned int)
-PART_ATTR_1CHECK(_("multiline"), part, multiline)
+PART_ATTR_1COMBOBOX(_("source"), part, source)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
@@ -1050,14 +1068,14 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_part_type_add(box, _("type"), wm_part_type_get(type));
         elm_box_pack_end(box, item);
-        item = prop_item_part_scale_add(box, pd,
+        item = prop_part_scale_add(box, pd,
                            _("Specifies whether the part will scale "
                            "its size with an edje scaling factor."));
         elm_box_pack_end(box, item);
-        item = prop_item_part_mouse_events_add(box, pd,
+        item = prop_part_mouse_events_add(box, pd,
                            _("Enable mouse events in this part."));
         elm_box_pack_end(box, item);
-        item = prop_item_part_repeat_events_add(box, pd,
+        item = prop_part_repeat_events_add(box, pd,
                             _("Enable repeat mouse events to the parts below."));
         elm_box_pack_end(box, item);
         item = prop_part_clip_to_add(box, pd,
@@ -1068,37 +1086,11 @@ ui_property_part_set(Evas_Object *property, Part *part)
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
         elm_box_pack_end(box, item);
-
-        if (part->type == EDJE_PART_TYPE_GROUP)
-          {
-             pd_part.source = prop_item_part_source_add(box, pd,
-                              _("Used for the group to be loaded and used to "
-                              "display GROUP part."));
-             elm_box_pack_end(box, pd_part.source);
-          }
-
-        if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          {
-             pd_part.select_mode = prop_item_part_select_mode_add(box, pd,
-                             _("Sets the selection mode for a textblock part"),
-                             edje_select_mode);
-             pd_part.entry_mode = prop_item_part_entry_mode_add(box, pd,
-                             _("Sets the edit mode for a textblock part"),
-                             edje_entry_mode);
-             pd_part.pointer_mode = prop_item_part_pointer_mode_add(box, pd,
-                             _("Sets the mouse pointer behavior for a given part."),
-                             edje_pointer_mode);
-             pd_part.cursor_mode = prop_item_part_cursor_mode_add(box, pd,
-                             _("Sets the cursor mode for a textblock part"),
-                             edje_cursor_mode);
-             pd->part.item_multiline = prop_item_part_multiline_add(box, pd,
-                           _("It causes a textblock that is editable to allow multiple lines for editing."));
-             elm_box_pack_end(box, pd_part.select_mode);
-             elm_box_pack_end(box, pd_part.entry_mode);
-             elm_box_pack_end(box, pd_part.pointer_mode);
-             elm_box_pack_end(box, pd_part.cursor_mode);
-             elm_box_pack_end(box, pd->part.item_multiline);
-          }
+        pd->part.source_item = prop_part_source_add(box, pd,
+                                  _("Used for the group to be loaded and used to "
+                                  "display GROUP part."));
+        if (part->type == EDJE_PART_TYPE_GROUP) elm_box_pack_end(box, pd_part.source_item);
+        else evas_object_hide(pd->part.source_item);
 
         elm_box_pack_after(prop_box, part_frame, pd->group.frame);
         pd_part.frame = part_frame;
@@ -1110,101 +1102,26 @@ ui_property_part_set(Evas_Object *property, Part *part)
          ITEM_ATTR_1CHECK_UPDATE(part, scale)
          ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
          ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
-         prop_part_clip_to_update(pd);
+         prop_part_clip_to_update(pd, NULL);
          prop_part_ignore_flags_update(pd);
-         prop_item_part_source_update(pd_part.source, pd);
          if (part->type == EDJE_PART_TYPE_GROUP)
            {
              box = elm_object_content_get(pd_part.frame);
-              if (!pd_part.source)
-                {
-                   pd_part.source = prop_item_part_source_add(box, pd,
-                                    _("Used for the group to be loaded and used to "
-                                    "display GROUP part."));
-                   elm_box_pack_after(box, pd_part.source, pd_part.ignore_flags);
-                }
+             /* pack to box, only in case when the previous selected part
+              * is not GROUP. If previos selected part is GROUP then
+              * this item is show and already packed to box  */
+             if (!evas_object_visible_get(pd_part.source_item))
+               {
+                  elm_box_pack_end(box, pd_part.source_item);
+                  evas_object_show(pd->part.source_item);
+               }
+             prop_part_source_update(pd, pd->part.source);
            }
          else
            {
               box = elm_object_content_get(pd_part.frame);
-              elm_box_unpack(box, pd_part.source);
-              evas_object_del(pd_part.source);
-              pd_part.source = NULL;
-           }
-
-         if (part->type == EDJE_PART_TYPE_TEXTBLOCK)
-           {
-             box = elm_object_content_get(pd_part.frame);
-              if (!pd_part.select_mode)
-                {
-                   pd_part.select_mode = prop_item_part_select_mode_add(box, pd,
-                             _("Sets the selection mode for a textblock part"),
-                             edje_select_mode);
-                   elm_box_pack_end(box, pd_part.select_mode);
-
-                }
-              else
-                prop_item_part_select_mode_update(pd_part.select_mode, pd);
-
-              if (!pd_part.entry_mode)
-                {
-                   pd_part.entry_mode = prop_item_part_entry_mode_add(box, pd,
-                             _("Sets the edit mode for a textblock part."),
-                             edje_entry_mode);
-                   elm_box_pack_end(box, pd_part.entry_mode);
-
-                }
-              else
-                prop_item_part_entry_mode_update(pd_part.entry_mode, pd);
-
-              if (!pd_part.pointer_mode)
-                {
-                   pd_part.pointer_mode = prop_item_part_pointer_mode_add(box, pd,
-                             _("Sets the mouse pointer behavior for a given part."),
-                             edje_pointer_mode);
-                   elm_box_pack_end(box, pd_part.pointer_mode);
-
-                }
-              else
-                prop_item_part_pointer_mode_update(pd_part.pointer_mode, pd);
-
-              if (!pd_part.cursor_mode)
-                {
-                   pd_part.cursor_mode = prop_item_part_cursor_mode_add(box, pd,
-                             _(" Sets the cursor mode for a textblock part."),
-                             edje_cursor_mode);
-                   elm_box_pack_end(box, pd_part.cursor_mode);
-
-                }
-              else
-                prop_item_part_cursor_mode_update(pd_part.cursor_mode, pd);
-              if (!pd_part.item_multiline)
-                {
-                  pd_part.item_multiline = prop_item_part_multiline_add(box, pd,
-                           _("It causes a textblock that is editable to allow multiple lines for editing."));
-                   elm_box_pack_end(box, pd_part.item_multiline);
-                }
-              else
-                ITEM_ATTR_1CHECK_UPDATE(part, multiline);
-           }
-         else
-           {
-              box = elm_object_content_get(pd_part.frame);
-              elm_box_unpack(box, pd_part.select_mode);
-              elm_box_unpack(box, pd_part.entry_mode);
-              elm_box_unpack(box, pd_part.pointer_mode);
-              elm_box_unpack(box, pd_part.cursor_mode);
-              elm_box_unpack(box, pd_part.item_multiline);
-              evas_object_del(pd_part.select_mode);
-              evas_object_del(pd_part.entry_mode);
-              evas_object_del(pd_part.pointer_mode);
-              evas_object_del(pd_part.cursor_mode);
-              evas_object_del(pd_part.item_multiline);
-              pd_part.select_mode = NULL;
-              pd_part.entry_mode = NULL;
-              pd_part.pointer_mode = NULL;
-              pd_part.cursor_mode = NULL;
-              pd_part.item_multiline = NULL;
+              elm_box_unpack(box, pd_part.source_item);
+              evas_object_hide(pd_part.source_item);
            }
          evas_object_show(pd_part.frame);
      }
@@ -2205,6 +2122,12 @@ ui_property_state_text_unset(Evas_Object *property)
 #undef pd_text
 
 #define pd_textblock pd->state_textblock
+PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
+PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode)
+PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
+PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int)
+PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
+PART_ATTR_1COMBOBOX(_("source"), state_textblock, source)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source2 (over selected text)"), part, source2)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source4 (over cursor)"), part, source4)
@@ -2216,6 +2139,7 @@ ITEM_1COMBOBOX_STATE_CREATE(TEXT_STYLE, _("text style"), state, text_style, styl
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *textblock_frame, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
@@ -2231,14 +2155,17 @@ ui_property_state_textblock_set(Evas_Object *property)
 
          pd_textblock.text = prop_item_state_text_add(box, pd, NULL,
                            _("Set the text of part."), NULL);
+         elm_box_pack_end(box, pd_textblock.text);
          pd_textblock.style = prop_item_state_text_style_add(box, pd,
                            _on_state_text_style_change,
                            _("Set the text style of part."));
+         elm_box_pack_end(box, pd_textblock.style);
          pd_textblock.align = prop_item_state_text_align_x_y_add(box, pd,
                              0, 100, 1, NULL, "x:", "%", "y:", "%",
                              _("Text horizontal align. 0 = left  100 = right"),
                              _("Text vertical align. 0 = top  100 = bottom"),
                              true);
+         elm_box_pack_end(box, pd_textblock.align);
          pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -2246,6 +2173,7 @@ ui_property_state_textblock_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
                            "the minimum size of the text."));
+         elm_box_pack_end(box, pd_textblock.min);
          pd_textblock.max = prop_item_state_text_max_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
@@ -2253,37 +2181,52 @@ ui_property_state_textblock_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
-         pd_textblock.source = prop_item_part_source_add(box, pd,
+         elm_box_pack_end(box, pd_textblock.max);
+         item = prop_state_textblock_select_mode_add(box, pd,
+                                    _("Sets the selection mode for a textblock part"),
+                                    edje_select_mode);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_entry_mode_add(box, pd,
+                                   _("Sets the edit mode for a textblock part"),
+                                   edje_entry_mode);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_pointer_mode_add(box, pd,
+                                     _("Sets the mouse pointer behavior for a given part."),
+                                     edje_pointer_mode);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_cursor_mode_add(box, pd,
+                                    _("Sets the cursor mode for a textblock part"),
+                                    edje_cursor_mode);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_multiline_add(box, pd,
+                _("It causes a textblock that is editable to allow multiple lines for editing."));
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source_add(box, pd,
                                _("Used for the group to be loaded and used for selection \t"
                                "display UNDER the selected text the source \t"
                                "of TEXTBLOCK part."));
+         elm_box_pack_end(box, item);
          pd_textblock.source2 = prop_item_part_source2_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "selection display OVER the selected text."));
+         elm_box_pack_end(box, pd_textblock.source2);
          pd_textblock.source3 = prop_item_part_source3_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "cursor display UNDER the cursor position."));
+         elm_box_pack_end(box, pd_textblock.source3);
          pd_textblock.source4 = prop_item_part_source4_add(box, pd,
                                _("It is used for the group to be loaded and used \t"
                                "for cursor display OVER the cursor position."));
+         elm_box_pack_end(box, pd_textblock.source4);
          pd_textblock.source5 = prop_item_part_source5_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "anchors display UNDER the anchor position."));
+         elm_box_pack_end(box, pd_textblock.source5);
          pd_textblock.source6 = prop_item_part_source6_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "anchor display OVER the anchor position."));
-
-         elm_box_pack_end(box, pd_textblock.text);
-         elm_box_pack_end(box, pd_textblock.style);
-         elm_box_pack_end(box, pd_textblock.align);
-         elm_box_pack_end(box, pd_textblock.min);
-         elm_box_pack_end(box, pd_textblock.max);
-         elm_box_pack_end(box, pd_textblock.source);
-         elm_box_pack_end(box, pd_textblock.source2);
-         elm_box_pack_end(box, pd_textblock.source3);
-         elm_box_pack_end(box, pd_textblock.source4);
-         elm_box_pack_end(box, pd_textblock.source5);
          elm_box_pack_end(box, pd_textblock.source6);
+
 
          elm_box_pack_end(prop_box, textblock_frame);
          pd_textblock.frame = textblock_frame;
@@ -2295,7 +2238,12 @@ ui_property_state_textblock_set(Evas_Object *property)
         prop_item_state_text_style_update(pd_textblock.align, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
-        prop_item_part_source_update(pd_textblock.source, pd);
+        prop_state_textblock_select_mode_update(pd);
+        prop_state_textblock_entry_mode_update(pd);
+        prop_state_textblock_pointer_mode_update(pd);
+        prop_state_textblock_cursor_mode_update(pd);
+        ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
+        prop_part_source_update(pd, pd_textblock.source);
         prop_item_part_source2_update(pd_textblock.source2, pd);
         prop_item_part_source3_update(pd_textblock.source3, pd);
         prop_item_part_source4_update(pd_textblock.source4, pd);

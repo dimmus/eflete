@@ -31,25 +31,25 @@
 /*****************************************************************************/
 #define PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
-prop_item_part_##VALUE##_add(Evas_Object *parent, \
-                             Prop_Data *pd, \
-                             const char *tooltip) \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd, \
+                           const char *tooltip) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    CHECK_ADD(item, pd->SUB.VALUE) \
    elm_object_style_set(pd->SUB.VALUE, "toggle"); \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
    elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
    evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   elm_object_part_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
+   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
    return item; \
 }
 
 #define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
 static void \
-_on_part_##VALUE##_change(void *data, \
-                          Evas_Object *obj, \
-                          void *ei __UNUSED__) \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
@@ -59,7 +59,7 @@ _on_part_##VALUE##_change(void *data, \
      return; \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    (void*)edje_edit_part_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
    workspace_edit_object_recalc(pd->workspace); \
    project_changed(); \
@@ -72,22 +72,22 @@ _on_part_##VALUE##_change(void *data, \
 
 #define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
-prop_part_##VALUE##_add(Evas_Object *parent, \
-                        Prop_Data *pd, \
-                        const char *tooltip) \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd, \
+                           const char *tooltip) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(item, pd->SUB.VALUE) \
-   prop_part_##VALUE##_update(pd); \
+   prop_part_##VALUE##_update(pd, pd->SUB.VALUE); \
    elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_part_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
    return item; \
 }
 
 #define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE) \
 static void \
-_on_part_##VALUE##_change(void *data, \
+_on_##SUB##_##VALUE##_change(void *data, \
                           Evas_Object *obj __UNUSED__, \
                           void *ei) \
 { \
@@ -130,7 +130,7 @@ _on_part_##VALUE##_change(void *data, \
 
 #define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE) \
 static Evas_Object * \
-prop_part_##VALUE##_add(Evas_Object *parent, \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                         Prop_Data *pd, \
                         const char *tooltip, \
                         const char **list) \
@@ -143,14 +143,14 @@ prop_part_##VALUE##_add(Evas_Object *parent, \
    for (i = 0; list[i]; ewe_combobox_item_add(pd->SUB.VALUE, list[i]), i++) ; \
    ewe_combobox_select_item_set(pd->SUB.VALUE, value); \
    elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_part_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
    return item; \
 }
 
 #define PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
 static void \
-prop_part_##VALUE##_update(Prop_Data *pd) \
+prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
 { \
    TYPE value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
    ewe_combobox_select_item_set(pd->SUB.VALUE, value); \
@@ -158,7 +158,7 @@ prop_part_##VALUE##_update(Prop_Data *pd) \
 
 #define PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
 static void \
-_on_part_##VALUE##_change(void *data, \
+_on_##SUB##_##VALUE##_change(void *data, \
                           Evas_Object *obj __UNUSED__, \
                           void *ei) \
 { \
