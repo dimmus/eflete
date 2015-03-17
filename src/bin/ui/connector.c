@@ -894,6 +894,8 @@ project_open(void)
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
    ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
    elm_win_inwin_content_set(win, fs);
+
+   ap->modal_editor++;
 }
 
 #undef PROJECT_CLOSE_MSG
