@@ -1027,7 +1027,7 @@ PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to)
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
-PART_ATTR_1COMBOBOX(_("source"), part, source)
+PART_ATTR_1COMBOBOX(_("group source"), part, source)
 
 /* part drag property */
 ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
