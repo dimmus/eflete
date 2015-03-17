@@ -712,6 +712,7 @@ groupedit_edit_object_part_item_selected_set(Evas_Object *obj,
      {
         if (ge_item->name == item_name)
           {
+             ge_item->selected = selected;
              if (selected)
                {
                   edje_object_file_set(ge_item->highlight, EFLETE_RESOURCES, BORDER_2PX_IMG);

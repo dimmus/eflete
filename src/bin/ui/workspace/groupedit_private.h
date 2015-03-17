@@ -172,7 +172,8 @@ struct _Groupedit_Item
    Evas_Object *draw;         /**< The loaded edje object.*/
    Evas_Object *border;       /**< The item border*/
    Evas_Object *highlight;    /**< The item highlight */
-   Eina_List *spread;         /**< The spreaded items, only for TABLE */
+   Eina_List *spread;         /**< The spreaded items */
+   Eina_Bool selected : 1;    /**< Item is selected in widget list or not. */
 };
 
 void

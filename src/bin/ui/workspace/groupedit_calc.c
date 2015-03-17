@@ -1654,7 +1654,6 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
         aspect_y = edje_edit_part_item_aspect_h_get(sd->edit_obj, part, ge_item->name);
         evas_object_size_hint_aspect_set(ge_item->draw, aspect, aspect_x, aspect_y);
 
-       /* TODO: spread object! And apply all possible properties to it. */
         spread_col = edje_edit_part_item_spread_w_get(sd->edit_obj, part, ge_item->name);
         spread_row = edje_edit_part_item_spread_h_get(sd->edit_obj, part, ge_item->name);
 
@@ -1683,7 +1682,17 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_size_hint_min_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_align_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
              evas_object_size_hint_weight_set(spread_item->highlight, EVAS_HINT_FILL, EVAS_HINT_FILL);
-             evas_object_color_set(spread_item->highlight, 49, 140, 141, 255);
+
+             if (ge_item->selected)
+               {
+                  edje_object_file_set(spread_item->highlight, EFLETE_RESOURCES, BORDER_2PX_IMG);
+                  evas_object_color_set(spread_item->highlight, 0, 253, 255, 255);
+               }
+             else
+               {
+                  edje_object_file_set(spread_item->highlight, EFLETE_RESOURCES, BORDER_IMG);
+                  evas_object_color_set(spread_item->highlight, 49, 140, 141, 255);
+               }
 
              spread_item->draw = edje_object_add(sd->e);
              edje_object_file_set(spread_item->draw, sd->edit_obj_file, item_source);
