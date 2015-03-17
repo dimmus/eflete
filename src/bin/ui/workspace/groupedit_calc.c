@@ -953,9 +953,16 @@ _item_draw_add(Ws_Groupedit_Smart_Data *sd, Eina_Stringshare *part,
 static void
 _item_draw_del(Groupedit_Item *ge_item)
 {
-   Evas_Object *spread_item = NULL;
+   Groupedit_Item *spread_item = NULL;
    EINA_LIST_FREE(ge_item->spread, spread_item)
-      evas_object_del(spread_item);
+     {
+        evas_object_del(spread_item->draw);
+        if (spread_item->highlight)
+          evas_object_del(spread_item->highlight);
+        if (spread_item->border)
+          evas_object_del(spread_item->border);
+        free(spread_item);
+     }
    eina_stringshare_del(ge_item->name);
    evas_object_del(ge_item->draw);
    evas_object_del(ge_item->border);
@@ -1314,8 +1321,7 @@ _group_param_update(Groupedit_Part *gp, Evas_Object *edit_obj, const char *file)
 static void
 _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 {
-   Groupedit_Item *ge_item = NULL;
-   Evas_Object *spread_item = NULL;
+   Groupedit_Item *ge_item = NULL, *spread_item = NULL;
    Eina_List *l_items, *l_n_items;
    Eina_Stringshare *part = gp->name;
    Eina_Stringshare *item_source = NULL;
@@ -1431,9 +1437,14 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
         EINA_LIST_FREE(ge_item->spread, spread_item)
           {
-             evas_object_table_unpack(gp->draw, spread_item);
-             evas_object_smart_member_del(spread_item);
-             evas_object_del(spread_item);
+             evas_object_table_unpack(gp->draw, spread_item->draw);
+             evas_object_smart_member_del(spread_item->border);
+             evas_object_smart_member_del(spread_item->draw);
+             evas_object_smart_member_del(spread_item->highlight);
+             evas_object_del(spread_item->border);
+             evas_object_del(spread_item->draw);
+             evas_object_del(spread_item->highlight);
+             free(spread_item);
           }
 
         old_spread_row = spread_row;
@@ -1443,27 +1454,29 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              spread_pos_col = pos_col + spread_col - 1 ;
              spread_pos_row = pos_row + spread_row - 1;
 
-             spread_item = edje_object_add(sd->e);
-             edje_object_file_set(spread_item, sd->edit_obj_file, item_source);
-             ge_item->spread = eina_list_append(ge_item->spread, spread_item);
-             evas_object_size_hint_max_set(spread_item, max_w, max_h);
-             evas_object_size_hint_request_set(spread_item, prefer_w, prefer_h);
-             evas_object_size_hint_min_set(spread_item, min_w, min_h);
-             evas_object_size_hint_padding_set(spread_item, pad_l, pad_r, pad_t, pad_b);
-             evas_object_size_hint_align_set(spread_item, align_x, align_y);
-             evas_object_size_hint_weight_set(spread_item, weight_x, weight_y);
-             evas_object_size_hint_aspect_set(spread_item, aspect, aspect_x, aspect_y);
+             spread_item = (Groupedit_Item *)mem_calloc(1, sizeof(Groupedit_Item));
 
-             evas_object_table_pack(gp->draw, spread_item, spread_pos_col,
+             spread_item->draw = edje_object_add(sd->e);
+             edje_object_file_set(spread_item->draw, sd->edit_obj_file, item_source);
+             ge_item->spread = eina_list_append(ge_item->spread, spread_item);
+             evas_object_size_hint_max_set(spread_item->draw, max_w, max_h);
+             evas_object_size_hint_request_set(spread_item->draw, prefer_w, prefer_h);
+             evas_object_size_hint_min_set(spread_item->draw, min_w, min_h);
+             evas_object_size_hint_padding_set(spread_item->draw, pad_l, pad_r, pad_t, pad_b);
+             evas_object_size_hint_align_set(spread_item->draw, align_x, align_y);
+             evas_object_size_hint_weight_set(spread_item->draw, weight_x, weight_y);
+             evas_object_size_hint_aspect_set(spread_item->draw, aspect, aspect_x, aspect_y);
+
+             evas_object_table_pack(gp->draw, spread_item->draw, spread_pos_col,
                                     spread_pos_row, span_col, span_row);
 
 
-             evas_object_show(spread_item);
-             evas_object_smart_member_add(spread_item, gp->draw);
+             evas_object_show(spread_item->draw);
+             evas_object_smart_member_add(spread_item->draw, gp->draw);
              if (spread_row > 1) spread_row--;
              else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
              else break;
-             evas_object_color_set(spread_item, r, g, b, a);
+             evas_object_color_set(spread_item->draw, r, g, b, a);
           }
 
         evas_object_smart_member_add(ge_item->border, gp->draw);
