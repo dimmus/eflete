@@ -113,7 +113,7 @@ _history_ui_attribute_update(Evas_Object *source, Attribute_Diff *change)
              part->curr_state_value = change->state_value;
              ui_states_list_data_set(state_list, style, part);
           }
-        else if (change->param_type == RENAME)
+        else if (change->param_type == VAL_RENAME)
           evas_object_smart_callback_call(app->workspace, "part,name,changed", part);
         evas_object_smart_callback_call(app->workspace, "part,changed", part);
         evas_object_smart_callback_call(app->workspace, "ws,part,selected",
@@ -164,13 +164,13 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
         else
           return false;
      break;
-     case STRING:
+     case VAL_STRING:
         change->state ?
            change->func(source, change->part, change->state,
                         change->state_value, change->string.new) :
            change->func(source, change->part, change->string.new);
      break;
-     case FOUR:
+     case VAL_FOUR:
         if (change->state)
            change->func(source, change->part, change->state,
                         change->state_value, change->four.new_1,
@@ -179,7 +179,7 @@ _attribute_modify_redo(Evas_Object *source, Attribute_Diff *change)
         else
           return false;
      break;
-     case RENAME:
+     case VAL_RENAME:
         if (!change->state)
           {
              part = wm_part_by_name_find(style, change->part);
@@ -206,7 +206,7 @@ _attribute_curd_redo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
-     case STRING:
+     case VAL_STRING:
         if (change->state)
           change->func(source, change->part, change->state,
                        change->state_value, change->string.old);
@@ -308,13 +308,13 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
         else
            return false;
      break;
-     case STRING:
+     case VAL_STRING:
         change->state ?
            change->func(source, change->part, change->state,
                         change->state_value, change->string.old) :
            change->func(source, change->part, change->string.old);
      break;
-     case FOUR:
+     case VAL_FOUR:
         if (change->state)
           change->func(source, change->part, change->state,
                        change->state_value, change->four.old_1,
@@ -323,7 +323,7 @@ _attribute_modify_undo(Evas_Object *source, Attribute_Diff *change)
         else
            return false;
      break;
-     case RENAME:
+     case VAL_RENAME:
         if (!change->state)
           {
              part =   wm_part_by_name_find(style, change->part);
@@ -349,7 +349,7 @@ _attribute_curd_undo(Evas_Object *source, Attribute_Diff *change)
 {
    switch(change->param_type)
     {
-     case STRING:
+     case VAL_STRING:
         if (change->state)
           change->func_revert(source, change->part, change->state,
                               change->state_value, change->string.old);
@@ -443,7 +443,7 @@ _attribute_change_free(Attribute_Diff *change)
    if (change->diff.ui_item)
      elm_object_item_del(change->diff.ui_item);
 
-   if (change->param_type == STRING)
+   if (change->param_type == VAL_STRING)
      {
         eina_stringshare_del(change->string.old);
         eina_stringshare_del(change->string.new);
@@ -457,7 +457,7 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
 {
    if ((previous->func == change->func) &&
        ((previous->part == change->part) ||  /* or if this and previous change for the same part*/
-        (change->param_type == RENAME)))
+        (change->param_type == VAL_RENAME)))
      {
         switch(previous->param_type)
          {
@@ -467,12 +467,12 @@ _attribute_modify_merge(Attribute_Diff *previous, Attribute_Diff *change)
           case VAL_DOUBLE:
              previous->doubl.new = change->doubl.new;
           break;
-          case RENAME:
+          case VAL_RENAME:
              eina_stringshare_replace(&previous->part, change->string.new);
-          case STRING:
+          case VAL_STRING:
              eina_stringshare_replace(&previous->string.new, change->string.new);
           break;
-          case FOUR:
+          case VAL_FOUR:
              previous->four.new_1 = change->four.new_1;
              previous->four.new_2 = change->four.new_2;
              previous->four.new_3 = change->four.new_3;
@@ -569,8 +569,8 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
          change->diff.old = eina_stringshare_printf("%.3f", change->doubl.old); \
          ret = true; \
       break; \
-      case RENAME: \
-      case STRING: \
+      case VAL_RENAME: \
+      case VAL_STRING: \
          string = (char *)va_arg(list, char *); \
          change->string.old = eina_stringshare_add(string); \
          string = (char *)va_arg(list, char *); \
@@ -585,7 +585,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
            change->diff.old = eina_stringshare_add("None"); \
          ret = true; \
       break; \
-      case FOUR: \
+      case VAL_FOUR: \
          change->four.old_1 = (int)va_arg(list, int); \
          change->four.old_2 = (int)va_arg(list, int); \
          change->four.old_3 = (int)va_arg(list, int); \
@@ -615,7 +615,7 @@ _attribute_change_merge(Attribute_Diff *change, Module *module)
 { \
    switch(change->param_type) \
      { \
-      case STRING: \
+      case VAL_STRING: \
          change->string.old = eina_stringshare_add((char *)va_arg(list, char *)); \
          if (change->string.old) \
            change->diff.new = eina_stringshare_add(change->string.old); \

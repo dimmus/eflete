@@ -148,12 +148,12 @@ EFLETE_TEST(history_module_depth_set_test_p2)
                     "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
                     "Min h", NULL, NULL, 0.0);
    edje_edit_state_color_set(style->obj, "radio", "default", 0.0, 80, 90, 100, 120);
-   history_diff_add(style->obj, PROPERTY, MODIFY, FOUR, 0, 0, 0, 0,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_FOUR, 0, 0, 0, 0,
                     80, 90, 100, 120, "elm/radio/base/def",
                     (void *)edje_edit_state_color_set,
                     "color", "radio", "default", 0.0);
    edje_edit_state_rel1_to_x_set(style->obj, "radio", "default", 0.0, "events");
-   history_diff_add(style->obj, PROPERTY, MODIFY, STRING, "bg", "events",
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_STRING, "bg", "events",
                     "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
                     "clip to", "radio", "default", 0.0);
    edje_edit_state_aspect_max_set(style->obj, "bg", "default", 0.0, 0.4);

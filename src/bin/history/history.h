@@ -182,13 +182,13 @@ enum _Target
  */
 enum _Value_Type
 {
-   STRING = 0, /**< string values: char *, const char*, Eina_Stringshare * */
+   VAL_STRING = 0, /**< string values: char *, const char*, Eina_Stringshare * */
    VAL_DOUBLE, /**< only double values */
    VAL_INT, /**< for int, char, Eina_Bool types*/
    VAL_GROUP, /**< use in functions with int param, that describe change. This
              function usually look like edje_edit_group_max_set(Evas_Object*, int v)*/
-   FOUR, /**< for functions like edje_edit_state_color_set. */
-   RENAME, /**< Only for function edje_edit_part_name_set. */
+   VAL_FOUR, /**< for functions like edje_edit_state_color_set. */
+   VAL_RENAME, /**< Only for function edje_edit_part_name_set. */
    LAST_VALUE_TYPE
 };
 
@@ -304,7 +304,7 @@ history_module_del(Evas_Object *source);
  *   project_changed();
  *   part->name = value;
  *   style->isModify = true;
- *   history_diff_add(style->obj, PROPERTY, MODIFY, RENAME, old_value, value,
+ *   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
  *                    style->full_group_name, (void*)edje_edit_part_name_set,
  *                    "Rename", part->name, NULL, 0);
  *   </pre>
@@ -325,7 +325,7 @@ history_module_del(Evas_Object *source);
  *                                 part->curr_state,
  *                                 part->curr_state_value, name))
  *   {
- *      history_diff_add(style->obj, PROPERTY, ADD, STRING,
+ *      history_diff_add(style->obj, PROPERTY, ADD, VAL_STRING,
  *                       name, edje_edit_state_tween_del,
  *                       style->full_group_name,
  *                       (void*)edje_edit_state_tween_add, "tween image",

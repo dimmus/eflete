@@ -220,7 +220,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
         edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, NULL); \
         pd->part.previous_source = 0; \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
@@ -545,7 +545,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
         return; \
      } \
    pos = elm_entry_cursor_pos_get(obj); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, \
@@ -637,7 +637,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                         NULL); \
    if (TYPE != TEXT_STYLE) \
      prop_item_state_text_update(pd->state_text.text, pd); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
@@ -725,7 +725,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                    pd->wm_part->curr_state_value, NULL); \
    prop_item_state_color_class_update(pd->state.color_class, pd); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
-     history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, FOUR, old_r, old_g, old_b, \
+     history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
                       old_a, r, g, b, a, pd->wm_style->full_group_name, \
                       (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
                       pd->wm_part->name, pd->wm_part->curr_state, \
@@ -821,7 +821,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
         edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
                            pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
                            0, 0, 0, 0); \
-        history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, FOUR, old_lb, old_rb, \
+        history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_lb, old_rb, \
                          old_tb, old_bb, 0, 0, 0, 0, pd->wm_style->full_group_name, \
                          (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
                          pd->wm_part->name, pd->wm_part->curr_state, \
@@ -844,7 +844,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
         free(c[0]); \
         free(c); \
         pos = elm_entry_cursor_pos_get(obj); \
-        history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, FOUR, old_lb, old_rb, \
+        history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_lb, old_rb, \
                          old_tb, old_bb, lb, rb, tb, bb, pd->wm_style->full_group_name, \
                          (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
                          pd->wm_part->name, pd->wm_part->curr_state, \
@@ -1743,7 +1743,7 @@ _on_box_##SUB##_##VALUE##_change(void *data, \
    else edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
                                         pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
                                         NULL); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \

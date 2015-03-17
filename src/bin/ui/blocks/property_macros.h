@@ -115,7 +115,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
         edje_edit_part_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, NULL); \
         pd->part.previous_source = 0; \
      } \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \

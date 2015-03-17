@@ -480,12 +480,12 @@ EFLETE_TEST(history_undo_test_p6)
    tmp = edje_edit_part_clip_to_get(style->obj, "bg");
    old_value = eina_stringshare_add(tmp);
    edje_edit_part_clip_to_set(style->obj, "bg", new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, STRING, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_clip_to_set,
                     "clip to", "bg", NULL, 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with STRING value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_STRING value type.");
    tmp = edje_edit_part_clip_to_get(style->obj, "bg");
    check_value = eina_stringshare_add(tmp);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
@@ -559,12 +559,12 @@ EFLETE_TEST(history_undo_test_p7)
    tmp = edje_edit_state_rel1_to_x_get(style->obj, "radio", "default", 0.0);
    old_value = eina_stringshare_add(tmp);
    edje_edit_state_rel1_to_x_set(style->obj, "radio", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, STRING, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
                     "clip to", "radio", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with STRING value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_STRING value type.");
    tmp = edje_edit_state_rel1_to_x_get(style->obj, "radio", "default", 0.0);
    check_value = eina_stringshare_add(tmp);
    ck_assert_msg(check_value == old_value, "Canceled action doesn't change value");
@@ -637,13 +637,13 @@ EFLETE_TEST(history_undo_test_p8)
                              &oldb, &olda);
    edje_edit_state_color_set(style->obj, "radio", "default", 0.0, newr, newg,
                              newb, newa);
-   history_diff_add(style->obj, PROPERTY, MODIFY, FOUR, oldr, oldg, oldb, olda,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_FOUR, oldr, oldg, oldb, olda,
                     newr, newg, newb, newa, "elm/radio/base/def",
                     (void *)edje_edit_state_color_set,
                     "clip to", "radio", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with FOUR value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_FOUR value type.");
    edje_edit_state_color_get(style->obj, "radio", "default", 0.0, &checkr, &checkg,
                              &checkb, &checka);
    ck_assert_msg(((checkr == oldr) && (checkg == oldg) && (checkb == oldb) &&
@@ -787,12 +787,12 @@ EFLETE_TEST(history_undo_test_p10)
    part = wm_part_by_name_find(style, eina_stringshare_add(old_value));
    edje_edit_part_name_set(style->obj, old_value, new_value);
    part->name = eina_stringshare_add(new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, RENAME, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_name_set,
                     "Rename", new_value, NULL, 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with RENAME value type.");
+   ck_assert_msg(result, "Failed to undo diff with VAL_RENAME value type.");
    result = edje_edit_part_exist(style->obj, old_value);
    ck_assert_msg(result, "Canceled action doesn't change value");
 
@@ -1078,13 +1078,13 @@ EFLETE_TEST(history_undo_test_p14)
    ui_style_clicked(app, style);
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
-   history_diff_add(style->obj, PROPERTY, ADD, STRING, name,
+   history_diff_add(style->obj, PROPERTY, ADD, VAL_STRING, name,
                     (void *)edje_edit_state_tween_del, "elm/radio/base/def",
                     (void *)edje_edit_state_tween_add,
                     "tween add", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with ADD action and STRING value type.");
+   ck_assert_msg(result, "Failed to undo diff with ADD action and VAL_STRING value type.");
    tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Canceled action doesn't change value");
@@ -1150,13 +1150,13 @@ EFLETE_TEST(history_undo_test_p15)
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
    edje_edit_state_tween_del(style->obj, "bg", "default", 0.0, name);
-   history_diff_add(style->obj, PROPERTY, DEL, STRING, name,
+   history_diff_add(style->obj, PROPERTY, DEL, VAL_STRING, name,
                     (void *)edje_edit_state_tween_add, "elm/radio/base/def",
                     (void *)edje_edit_state_tween_del,
                     "tween add", "bg", "default", 0.0);
 
    result = history_undo(style->obj, 1);
-   ck_assert_msg(result, "Failed to undo diff with DEL action and STRING value type.");
+   ck_assert_msg(result, "Failed to undo diff with DEL action and VAL_STRING value type.");
    tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Canceled action doesn't change value");

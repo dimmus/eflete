@@ -909,7 +909,7 @@ _on_part_name_change(void *data,
    pd->wm_style->isModify = true;
    pos = elm_entry_cursor_pos_get(obj);
    evas_object_smart_callback_call(pd->workspace, "part,name,changed", pd->wm_part);
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, RENAME, old_value, value,
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, value,
                       pd->wm_style->full_group_name,
                       (void*)edje_edit_part_name_set, "rename",
                       pd->wm_part->name, NULL, 0.0);
@@ -1492,7 +1492,7 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
                              pd->wm_part->curr_state, \
                              pd->wm_part->curr_state_value, temp); \
    const char *text = eina_stringshare_printf("%s_%s", #SUB, #VALUE); \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, value, \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, value, \
                     pd->wm_style->full_group_name, \
                     (void*)edje_edit_##SUB##_##VALUE##_set, text, \
                     pd->wm_part->name, pd->wm_part->curr_state, \
@@ -2332,7 +2332,7 @@ _del_tween_image(void *data,
      {
         elm_object_item_del(it);
         pd->wm_style->isModify = true;
-        history_diff_add(pd->wm_style->obj, PROPERTY, DEL, STRING,
+        history_diff_add(pd->wm_style->obj, PROPERTY, DEL, VAL_STRING,
                          selected, edje_edit_state_tween_add,
                          pd->wm_style->full_group_name,
                          (void*)edje_edit_state_tween_del, "tween image",
@@ -2364,7 +2364,7 @@ _on_image_editor_tween_done(void *data,
              elm_genlist_item_append(tween_list, _itc_tween, name, NULL,
                                      ELM_GENLIST_ITEM_NONE, NULL, NULL);
              pd->wm_style->isModify = true;
-             history_diff_add(pd->wm_style->obj, PROPERTY, ADD, STRING,
+             history_diff_add(pd->wm_style->obj, PROPERTY, ADD, VAL_STRING,
                               name, edje_edit_state_tween_del,
                               pd->wm_style->full_group_name,
                               (void*)edje_edit_state_tween_add, "tween image",
@@ -2874,7 +2874,7 @@ _on_state_color_class_change(void *data,
                                         pd->wm_part->curr_state_value,
                                         NULL);
 
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, STRING, old_value, value,
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, value,
                       pd->wm_style->full_group_name,
                       (void*)edje_edit_state_color_class_set, "colorclass",
                       pd->wm_part->name, pd->wm_part->curr_state,
