@@ -628,6 +628,29 @@ del:
    ecore_job_add(_fs_del, img_edit);
 }
 
+static Eina_Bool
+_images_filter(const char *path,
+               Eina_Bool dir,
+               void *data __UNUSED__)
+{
+   int i;
+   Eina_Bool res;
+   const char *image_formats[] = { "png", "jpg", "jpeg", "jfif", "xpm", "tif",
+                                   "tiff", "gif", "pbm", "pgm", "ppm", "pnm",
+                                   "bmp", "wbmp", "webp", "psd", "tga", NULL};
+
+   if (dir) return true;
+
+   i = 0;
+   while(image_formats[i])
+     {
+        res = eina_str_has_extension(path, image_formats[i++]);
+        if (res) return true;
+     }
+
+   return false;
+}
+
 static void
 _on_button_add_clicked_cb(void *data,
                           Evas_Object *obj __UNUSED__,
@@ -641,6 +664,8 @@ _on_button_add_clicked_cb(void *data,
    evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _on_image_done, data);
+   elm_fileselector_custom_filter_append(fs, _images_filter, NULL, _("Images files"));
+   elm_fileselector_mime_types_filter_append(fs, "*", _("All files"));
    elm_fileselector_multi_select_set(fs, true);
    elm_win_inwin_content_set(edit->fs_win, fs);
 
