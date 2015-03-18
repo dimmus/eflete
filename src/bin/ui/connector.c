@@ -1254,7 +1254,7 @@ _on_export_done(void *data,
      return;
 
    ap->splash = splash_add(ap->win, _export_splash_setup, _export_splash_teardown,
-                           NULL, (void *)eina_stringshare_add(selected));
+                           NULL, (void *)eina_stringshare_add(dest_file));
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 
