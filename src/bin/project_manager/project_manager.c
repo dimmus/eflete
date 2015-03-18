@@ -483,6 +483,7 @@ _project_import_edc(void *data,
 {
    Project_Thread *worker;
    Eina_Stringshare *path_pro;
+   Eina_Tmpstr *tmp_dirname;
    Ecore_Event_Handler *cb_exit = NULL,
                        *cb_msg_stdout = NULL,
                        *cb_msg_stderr = NULL;
@@ -506,7 +507,8 @@ _project_import_edc(void *data,
            cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
            cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
         }
-      worker->edj = eina_stringshare_printf("/tmp/build_%ld.edj", time(NULL));
+      eina_file_mkdtemp("eflete_build_XXXXXX", &tmp_dirname);
+      worker->edj = eina_stringshare_printf("%s/out.edj", tmp_dirname);
       cmd = eina_stringshare_printf("edje_cc -v %s %s %s",
                                     worker->build_options,
                                     worker->edc,
@@ -545,6 +547,8 @@ _project_import_edc(void *data,
    WORKER_LOCK_RELEASE;
    PROGRESS_SEND("%s", _("Importing..."));
    _project_dev_file_copy(worker);
+   ecore_file_recursive_rm(tmp_dirname);
+   eina_tmpstr_del(tmp_dirname);
    _project_linked_images_copy(worker);
    _copy_meta_data_to_pro(worker);
    WORKER_LOCK_TAKE;
