@@ -577,25 +577,25 @@ _part_select(void *data,
    evas_object_resize(gp->item, sd->con_current_size->w, sd->con_current_size->h); \
    evas_object_move(gp->item, xe + offset_x, ye + offset_y);
 
-#define GP_REAL_GEOMETRY_CALC \
+#define GP_REAL_GEOMETRY_CALC(PART_X, PART_Y, ABS_X, ABS_Y) \
    w *= sd->zoom_factor; h *= sd->zoom_factor; \
-   Evas_Coord part_x = x * sd->zoom_factor + xe + offset_x; \
-   Evas_Coord part_y = y * sd->zoom_factor + ye + offset_y; \
-   Evas_Coord abs_x = abs(sd->real_size->x - part_x); \
-   Evas_Coord abs_y = abs(sd->real_size->y - part_y); \
-   if (part_x > sd->real_size->x) \
-     w += abs_x; \
+   PART_X = x * sd->zoom_factor + xe + offset_x; \
+   PART_Y = y * sd->zoom_factor + ye + offset_y; \
+   ABS_X = abs(sd->real_size->x - PART_X); \
+   ABS_Y = abs(sd->real_size->y - PART_Y); \
+   if (PART_X > sd->real_size->x) \
+     w += ABS_X; \
    else \
      { \
-        sd->real_size->w += abs_x; \
-        sd->real_size->x = part_x; \
+        sd->real_size->w += ABS_X; \
+        sd->real_size->x = PART_X; \
      } \
-   if (part_y > sd->real_size->y) \
-     h += abs_y; \
+   if (PART_Y > sd->real_size->y) \
+     h += ABS_Y; \
    else \
      { \
-        sd->real_size->h += abs_y; \
-        sd->real_size->y = part_y; \
+        sd->real_size->h += ABS_Y; \
+        sd->real_size->y = PART_Y; \
      } \
    if (sd->real_size->w < w) \
      sd->real_size->w = w; \
@@ -628,6 +628,7 @@ _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                         int offset_y)
 {
    Evas_Coord x, y, xe, ye, ro_x, ro_y;
+   Evas_Coord part_x, part_y, abs_x, abs_y;
    int w, h, ro_w, ro_h;
    const Evas_Object *ro;
 
@@ -645,7 +646,7 @@ _part_text_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 
    GP_GEOMETRY_SET
 
-   GP_REAL_GEOMETRY_CALC
+   GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
 
    ZOOM_APPLY(gp->draw)
 }
@@ -656,8 +657,10 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                    int offset_x,
                    int offset_y)
 {
-   Evas_Coord x, y, xe, ye;
-   int w, h;
+   Evas_Coord x, y, xe, ye, w, h;
+   Evas_Coord part_x, part_y, abs_x, abs_y;
+   Eina_List *l, *l_n, *l_sp, *l_sp_n;
+   Groupedit_Item *ge_item = NULL, *sp_item = NULL;
 
    edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
@@ -668,7 +671,38 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 
    GP_GEOMETRY_SET
 
-   GP_REAL_GEOMETRY_CALC
+   GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
+
+   /* We don't need xe or ye for box items */
+   xe = 0;
+   ye = 0;
+
+   if (gp->items)
+     {
+        EINA_LIST_FOREACH_SAFE(gp->items, l, l_n, ge_item)
+          {
+             evas_object_geometry_get(ge_item->border, &x, &y, &w, &h);
+             GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
+
+             if (ge_item->spread)
+               {
+                  EINA_LIST_FOREACH_SAFE(ge_item->spread, l_sp, l_sp_n, sp_item)
+                    {
+                       /* If it is BOX then there are borders are exist.
+                        * If border is not exist then it is TABLE's item
+                        *
+                        * TODO: check parts item by it's type, not by "border"
+                        * existence. */
+                       if (sp_item->border)
+                         evas_object_geometry_get(sp_item->border, &x, &y, &w, &h);
+                       else
+                         evas_object_geometry_get(sp_item->draw, &x, &y, &w, &h);
+
+                       GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
+                    }
+               }
+          }
+     }
 
    ZOOM_APPLY(gp->draw)
 }
