@@ -474,12 +474,41 @@ _on_tab_activated(void *data,
              if (!res)
                ERR("Source code of the current style was not written to the file"
                    "%s", ap->project->enventor.file);
-             pm_style_resource_export(ap->project, pd->wm_style, tmpstr);
+             if (pm_style_resource_export(ap->project, pd->wm_style, tmpstr))
+               {
+                  ap->project->enventor.pathes[ENVENTOR_RES_SOUND] =
+                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_SOUND],
+                                      eina_stringshare_printf("%s/sounds", tmpstr));
+
+                  ap->project->enventor.pathes[ENVENTOR_RES_IMAGE] =
+                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_IMAGE],
+                                      eina_stringshare_printf("%s/images", tmpstr));
+                  ap->project->enventor.pathes[ENVENTOR_RES_FONT] =
+                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_FONT],
+                                      eina_stringshare_printf("%s/fonts", tmpstr));
+                  ap->project->enventor.pathes[ENVENTOR_RES_DATA] =
+                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_DATA],
+                                      eina_stringshare_add(tmpstr));
+                  ap->project->enventor.pathes[ENVENTOR_OUT_EDJ] =
+                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_OUT_EDJ],
+                     eina_stringshare_printf("%s/build.edj", ap->project->enventor.path));
+               }
              eina_tmpstr_del(tmpstr);
              eina_stringshare_del(path);
 
           }
         enventor_object_file_set(pd->code, ap->project->enventor.file);
+
+        enventor_object_path_set(pd->code, ENVENTOR_OUT_EDJ,
+                                 ap->project->enventor.pathes[ENVENTOR_OUT_EDJ]);
+        enventor_object_path_set(pd->code, ENVENTOR_RES_FONT,
+                                 ap->project->enventor.pathes[ENVENTOR_RES_FONT]);
+        enventor_object_path_set(pd->code, ENVENTOR_RES_IMAGE,
+                                 ap->project->enventor.pathes[ENVENTOR_RES_IMAGE]);
+        enventor_object_path_set(pd->code, ENVENTOR_RES_SOUND,
+                                 ap->project->enventor.pathes[ENVENTOR_RES_SOUND]);
+        enventor_object_path_set(pd->code, ENVENTOR_RES_SOUND,
+                                 ap->project->enventor.pathes[ENVENTOR_RES_DATA]);
         enventor_object_focus_set(pd->code, true);
         enventor_object_auto_complete_set(pd->code, true);
 
