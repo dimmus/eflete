@@ -61,6 +61,12 @@ _on_button_add_clicked(void *data,
 
    item = ewe_combobox_select_item_get(combobox);
 
+   if (item->index == 0)
+     {
+        NOTIFY_WARNING(_("Source is not selected! Please select source for item."))
+        return;
+     }
+
    if(workspace_edit_object_part_item_add(ap->workspace, part->name, name, item->title))
      {
        edje_edit_string_list_free(part->items);
