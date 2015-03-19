@@ -19,8 +19,11 @@
 #define _GNU_SOURCE
 #include "project_manager.h"
 #include "alloc.h"
+#ifndef _WIN32
 #include <sys/wait.h>
-
+#else
+#include <win32.h>
+#endif
 #define PROJECT_FILE_KEY      "project"
 
 #define PROJECT_KEY_NAME         "edje/name"
@@ -494,7 +497,7 @@ _project_import_edc(void *data,
    Eina_Stringshare *cmd;
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
-   int edje_cc_res = 0, waitpid_res = 0;
+   int waitpid_res = 0;
 
    sleep(1);
 
@@ -515,14 +518,10 @@ _project_import_edc(void *data,
                                     worker->edj);
       THREAD_TESTCANCEL;
    WORKER_LOCK_RELEASE;
-   DBG("Run command for compile: %s", cmd);
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
-   /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
-    * function what provide wait end of forked process.*/
-   waitpid_res = waitpid(exe_pid, &edje_cc_res, 0);
-
+   waitpid_res = waitpid(exe_pid, NULL, 0);
    ecore_event_handler_del(cb_exit);
    if (worker->func_progress)
      {
@@ -530,8 +529,7 @@ _project_import_edc(void *data,
         ecore_event_handler_del(cb_msg_stderr);
      }
 
-   if ((waitpid_res == -1) ||
-       (WIFEXITED(edje_cc_res) && WEXITSTATUS(edje_cc_res) != 0 ))
+   if ((waitpid_res == -1))
      {
         END_SEND(PM_PROJECT_ERROR);
         return NULL;
@@ -1578,8 +1576,6 @@ _enventor_save(void *data,
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
    exe_pid = ecore_exe_pid_get(exe_cmd);
    THREAD_TESTCANCEL;
-   /* TODO: it's work only in Posix system, need add to Ecore Spawing Functions
-    * function what provide wait end of forked process.*/
    waitpid(exe_pid, NULL, 0);
 
    ecore_event_handler_del(cb_exit);

@@ -19,6 +19,20 @@
 #ifndef WIN32HEAD
 #define WIN32HEAD
 #ifdef _WIN32
+static inline int
+waitpid(DWORD pid, void *unused1 __UNUSED__, int unused2 __UNUSED__)
+{
+   DWORD rez;
+   HANDLE process_handle = OpenProcess(SYNCHRONIZE, FALSE, pid);
+   if (!process_handle) return -1;
+   rez = WaitForSingleObject(process_handle, INFINITE);
+   CloseHandle(process_handle);
+   if (rez == WAIT_FAILED)
+      return -1;
+   else
+      return 1;
+}
+
 static inline char *
 escape_colons(const char *str)
 {
