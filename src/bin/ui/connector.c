@@ -1282,8 +1282,9 @@ void
 project_export_develop(void)
 {
    Evas_Object *win, *fs;
+   App_Data *ap = app_data_get();
 
-   win  = mw_add(_fs_close, NULL);
+   win  = mw_add(_fs_close, ap);
    evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_done, win);
    elm_object_text_set(fs, "Select a file");
@@ -1347,8 +1348,9 @@ void
 project_export_edc_group(void)
 {
    Evas_Object *win, *fs;
+   App_Data *ap = app_data_get();
 
-   win  = mw_add(_fs_close, NULL);
+   win  = mw_add(_fs_close, ap);
    evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_edc_group_done, win);
    elm_fileselector_is_save_set(fs, false);
@@ -1453,8 +1455,9 @@ void
 project_export_edc_project(void)
 {
    Evas_Object *win, *fs;
+   App_Data *ap = app_data_get();
 
-   win  = mw_add(_fs_close, NULL);
+   win  = mw_add(_fs_close, ap);
    evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_edc_project_done, win);
    elm_fileselector_is_save_set(fs, false);
