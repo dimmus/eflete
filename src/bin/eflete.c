@@ -20,6 +20,9 @@
 #include "eflete.h"
 #include "main_window.h"
 #include "shortcuts.h"
+#ifdef _WIN32
+#include "win32.h"
+#endif
 
 #define CHECK_AP(RET) \
 if (!ap) \
@@ -130,7 +133,13 @@ app_init()
      }
 
    ap->theme = elm_theme_new();
-   elm_theme_set(ap->theme, EFLETE_THEME);
+#ifndef _WIN32
+   char *theme = strdup(EFLETE_THEME);
+#else
+   char *theme = escape_colons(EFLETE_THEME);
+#endif
+   elm_theme_set(ap->theme, theme);
+   free(theme);
 
    return true;
 }
