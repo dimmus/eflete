@@ -70,37 +70,37 @@ _on_##SUB##_##VALUE##_change(void *data, \
 /*                       PART 1 COMBOBOX CONTROL                             */
 /*****************************************************************************/
 
-#define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE) \
+#define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER) \
 static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd, \
-                           const char *tooltip) \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
+                              Prop_Data *pd, \
+                              const char *tooltip) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   EWE_COMBOBOX_ADD(item, pd->SUB.VALUE) \
-   prop_part_##VALUE##_update(pd, pd->SUB.VALUE); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
-   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
+   EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE) \
+   prop_##MEMBER##_##VALUE##_update(pd, pd->MEMBER.VALUE); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, tooltip); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE, "selected", _on_##MEMBER##_##VALUE##_change, pd); \
+   elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
    return item; \
 }
 
-#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE) \
+#define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
 static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                          Evas_Object *obj __UNUSED__, \
-                          void *ei) \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Ewe_Combobox_Item *item = ei; \
-   const char *old_value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, \
-                                                        pd->wm_part->name);\
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                           pd->wm_part->name);\
    const char *value = NULL; \
    if (item->index != 0) \
      { \
         value = item->title; \
-        if (!edje_edit_part_##VALUE##_set(pd->wm_style->obj, \
-                                          pd->wm_part->name, item->title)) \
+        if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, \
+                                             pd->wm_part->name, item->title)) \
           { \
              ewe_combobox_select_item_set(obj, pd->part.previous_source); \
              NOTIFY_ERROR(_("This source value will <br>" \
@@ -112,12 +112,12 @@ _on_##SUB##_##VALUE##_change(void *data, \
      } \
    else \
      { \
-        edje_edit_part_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, NULL); \
+        edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, NULL); \
         pd->part.previous_source = 0; \
      } \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_part_##VALUE##_set,  #SUB"_"#VALUE, \
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
                     pd->wm_part->name, NULL, 0.0); \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
@@ -179,4 +179,110 @@ _on_##SUB##_##VALUE##_change(void *data, \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
+}
+
+/*****************************************************************************/
+/*                          PART 1CHECK 1SPINNER                             */
+/*****************************************************************************/
+#define PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2) \
+static Evas_Object * \
+prop_part_drag_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
+                                       Prop_Data *pd, \
+                                       const char *tooltip1, \
+                                       const char *tooltip2 ) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
+   CHECK_ADD(item, pd->SUB.VALUE1) \
+   elm_object_style_set(pd->SUB.VALUE1, "toggle"); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE1, tooltip1); \
+   evas_object_smart_callback_add(pd->SUB.VALUE1, "changed", _on_part_drag_##VALUE1##_change, pd); \
+   elm_layout_content_set(item, "swallow.content1", pd->SUB.VALUE1); \
+   SPINNER_ADD(item, pd->SUB.VALUE2, 0.0, 9999.0, 1.0, true) \
+   elm_spinner_label_format_set(pd->SUB.VALUE2, N_("%.0f")); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE2, tooltip2); \
+   evas_object_smart_callback_add(pd->SUB.VALUE2, "changed", _on_part_drag_##VALUE2##_change, pd); \
+   evas_object_event_callback_priority_add(pd->SUB.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+   elm_layout_text_set(item, "label.swallow2.start", _("step")); \
+   elm_layout_text_set(item, "label.swallow2.end", _("px")); \
+   elm_layout_content_set(item, "swallow.content2", pd->SUB.VALUE2); \
+   prop_##SUB##_##VALUE1##_##VALUE2##_update(pd); \
+   return item; \
+}
+
+#define PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
+static void \
+prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
+{ \
+   Eina_Bool ch_value; int st_value; \
+   ch_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, pd->wm_part->name); \
+   elm_check_state_set(pd->SUB.VALUE1, ch_value); \
+   if (!ch_value) elm_object_disabled_set(pd->SUB.VALUE2, true); \
+   else elm_object_disabled_set(pd->SUB.VALUE2, false); \
+   st_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, pd->wm_part->name); \
+   elm_spinner_value_set(pd->SUB.VALUE2, st_value); \
+}
+
+#define PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
+static void \
+_on_part_drag_##VALUE1##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, \
+                                                            pd->wm_part->name);\
+   edje_edit_part_drag_##VALUE1##_set(pd->wm_style->obj, pd->wm_part->name, value); \
+   if (!value) elm_object_disabled_set(pd->SUB.VALUE2, true); \
+   else elm_object_disabled_set(pd->SUB.VALUE2, false); \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \
+                     pd->wm_part->name, NULL, 0.0); \
+   workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
+   pd->wm_style->isModify = true; \
+} \
+static void \
+_on_part_drag_##VALUE2##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, \
+                                                         pd->wm_part->name);\
+   edje_edit_part_drag_##VALUE2##_set(pd->wm_style->obj, pd->wm_part->name, value); \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_part_drag_##VALUE2##_set, #SUB"_"#VALUE2, \
+                     pd->wm_part->name, NULL, 0.0); \
+   workspace_edit_object_recalc(pd->workspace); \
+   project_changed(); \
+   pd->wm_style->isModify = true; \
+}
+
+/*****************************************************************************/
+/*                     UPDATE THE ATTR WITH LIST OF PARTS                    */
+/*****************************************************************************/
+#define PART_ATTR_PARTS_LIST(SUB, VALUE, MEMBER) \
+static void \
+prop_##MEMBER##_##VALUE##_update(Prop_Data *pd, Evas_Object *obj __UNUSED__) \
+{ \
+   Part *part; \
+   Eina_Inlist *list_n = NULL; \
+   Eina_Stringshare *value; \
+   ewe_combobox_items_list_free(pd->MEMBER.VALUE, true); \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
+   if (value) ewe_combobox_text_set(pd->MEMBER.VALUE, value); \
+   else ewe_combobox_text_set(pd->MEMBER.VALUE, _("None")); \
+   ewe_combobox_item_add(pd->MEMBER.VALUE, _("None")); \
+   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part) \
+     { \
+        if ((part != pd->wm_part) && (part->type != EDJE_PART_TYPE_SPACER)) \
+           ewe_combobox_item_add(pd->MEMBER.VALUE, part->name); \
+     } \
+   edje_edit_string_free(value); \
 }

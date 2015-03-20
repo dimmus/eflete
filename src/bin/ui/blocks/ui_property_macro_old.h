@@ -407,27 +407,6 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
      } \
 }
 
-#define ITEM_1COMBOBOX_PART_TEXTBLOCK_CALLBACK(SUB, VALUE, TYPE) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                              Evas_Object *obj EINA_UNUSED, \
-                              void *ei) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   Ewe_Combobox_Item *item = ei; \
-   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
-   int value = item->index; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, (TYPE)item->index)) \
-     return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
-                    value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, NULL, 0.0); \
-   project_changed(); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
-}
-
 #define ITEM_1COMBOBOX_PART_TEXTBLOCK_ADD(TEXT, SUB, VALUE, TYPE) \
 static Evas_Object * \
 prop_item_##SUB##_##VALUE##_add(Evas_Object *parent, \

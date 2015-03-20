@@ -89,8 +89,8 @@ struct _Prop_Data
    } part;
    struct {
       Evas_Object *frame;
-      Evas_Object *drag_x;
-      Evas_Object *drag_y;
+      Evas_Object *x, *step_x;
+      Evas_Object *y, *step_y;
       Evas_Object *confine;
       Evas_Object *event;
    } part_drag;
@@ -1045,46 +1045,47 @@ prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
    edje_mmap_collection_list_free(collections);
 }
 
+PART_ATTR_PARTS_LIST(part_drag, confine, part_drag)
+PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
+
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
    PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
 
-#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE) \
-   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE) \
-   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE)
+#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER) \
+   PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
 
 #define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE)
 
+#define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
+   PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
+   PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
+   PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2)
+
 #define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
    ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_PART_UPDATE(TYPE, TEXT, SUB, VALUE)
 
-#define ITEM_DRAG_PART_CREATE(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_CHECK_PART_CALLBACK(SUB, VALUE1) \
-   ITEM_INT_PART_CALLBACK(SUB, VALUE2) \
-   ITEM_DRAG_PART_ADD(TEXT, SUB, VALUE1, VALUE2) \
-   ITEM_DRAG_PART_UPDATE(SUB, VALUE1, VALUE2)
-
 /* part property */
 PART_ATTR_1CHECK(_("scalable"), part, scale)
 PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
-PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to)
+PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part)
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
-PART_ATTR_1COMBOBOX(_("group source"), part, source)
-
+PART_ATTR_1COMBOBOX(_("group source"), part, source, part)
 /* part drag property */
-ITEM_DRAG_PART_CREATE(_("x"), part_drag, x, step_x)
-ITEM_DRAG_PART_CREATE(_("y"), part_drag, y, step_y)
-ITEM_1COMBOBOX_PART_CREATE(DRAG_AREA, _("drag area"), part_drag, confine)
-ITEM_1COMBOBOX_PART_CREATE(FORWARD_EVENTS, _("forward events"), part_drag, event)
+PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
+PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
+PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag)
+PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag)
 
 #define pd_part pd->part
-#define pd_part_drag pd->part_drag
+#define pd_drag pd->part_drag
 Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
@@ -1158,7 +1159,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
               * this item is show and already packed to box  */
              if (!evas_object_visible_get(pd_part.source_item))
                {
-                  elm_box_pack_before(box, pd_part.source_item, pd_part_drag.frame);
+                  elm_box_pack_before(box, pd_part.source_item, pd_drag.frame);
                   evas_object_show(pd->part.source_item);
                }
              prop_part_source_update(pd, pd->part.source);
@@ -1171,7 +1172,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
            }
          evas_object_show(pd_part.frame);
      }
-   if (!pd_part_drag.frame)
+   if (!pd_drag.frame)
      {
         FRAME_PROPERTY_ADD(pd->visual, part_drag_frame, true, _("Part dragable property"), pd->visual)
         elm_object_style_set(part_drag_frame, "outdent_top");
@@ -1180,35 +1181,31 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(part_drag_frame, box);
 
-        pd_part_drag.drag_x = prop_item_part_drag_x_step_x_add(box, pd,
-                                 0.0, 9999.0, 1.0, _("%.0f"),
+        item = prop_part_drag_x_step_x_add(box, pd,
                                  _("Enable/Disable draggin along X axis"),
                                  _("Set a drag step value"));
-        pd_part_drag.drag_y = prop_item_part_drag_y_step_y_add(box, pd,
-                                 0.0, 9999.0, 1.0, _("%.0f"),
+        elm_box_pack_end(box, item);
+        item = prop_part_drag_y_step_y_add(box, pd,
                                  _("Enable/Disable draggin along Y axis"),
                                  _("Set a drag step value"));
-        pd_part_drag.confine = prop_item_part_drag_confine_add(box, pd,
+        elm_box_pack_end(box, item);
+        item = prop_part_drag_confine_add(box, pd,
                                  _("Limits the movement of the dragged part to "
                                   "another part's container'"));
-        pd_part_drag.event = prop_item_part_drag_event_add(box, pd,
+        elm_box_pack_end(box, item);
+        item = prop_part_drag_event_add(box, pd,
                                 _("It causes the part to forward the drag events "
                                 "to another part, thus ignoring them for itself."));
+        elm_box_pack_end(box, item);
 
-        elm_box_pack_end(box, pd_part_drag.drag_x);
-        elm_box_pack_end(box, pd_part_drag.drag_y);
-        elm_box_pack_end(box, pd_part_drag.confine);
-        elm_box_pack_end(box, pd_part_drag.event);
-
-        pd_part_drag.frame = part_drag_frame;
+        pd_drag.frame = part_drag_frame;
      }
    else
      {
-        prop_item_part_drag_x_step_x_update(pd_part_drag.drag_x, pd);
-        prop_item_part_drag_y_step_y_update(pd_part_drag.drag_y, pd);
-        prop_item_part_drag_confine_update(pd_part_drag.confine, pd);
-        prop_item_part_drag_event_update(pd_part_drag.event, pd);
-        evas_object_show(pd_part_drag.frame);
+        prop_part_drag_x_step_x_update(pd);
+        prop_part_drag_y_step_y_update(pd);
+        prop_part_drag_confine_update(pd, pd->part_drag.confine);
+        prop_part_drag_event_update(pd, pd->part_drag.event);
      }
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
    elm_scroller_region_get(pd->visual, NULL, &y_reg, NULL, &h_reg);
@@ -1252,7 +1249,7 @@ ui_property_part_unset(Evas_Object *property)
 
 #undef PROP_ITEM_UNSET
 #undef pd_part
-#undef pd_part_drag
+#undef pd_drag
 
 #define ITEM_2SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE1) \
@@ -2169,13 +2166,15 @@ ui_property_state_text_unset(Evas_Object *property)
 }
 #undef pd_text
 
+#define prop_state_textblock_source_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+
 #define pd_textblock pd->state_textblock
 PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int)
 PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
-PART_ATTR_1COMBOBOX(_("source"), state_textblock, source)
+PART_ATTR_1COMBOBOX(_("source"), part, source, state_textblock)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source2 (over selected text)"), part, source2)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source3 (under cursor)"), part, source3)
 ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source4 (over cursor)"), part, source4)
