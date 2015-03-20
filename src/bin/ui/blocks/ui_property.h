@@ -67,7 +67,7 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
  *
  * @param property the 'property' widget.
  *
- * @ingroup property
+ * @ingroup Property
  */
 void
 ui_property_style_unset(Evas_Object *property);
@@ -92,7 +92,7 @@ ui_property_part_set(Evas_Object *property, Part *part);
  *
  * @param property the 'property' widget.
  *
- * @ingroup property
+ * @ingroup Property
  */
 void
 ui_property_part_unset(Evas_Object *property);
@@ -114,7 +114,7 @@ ui_property_state_set(Evas_Object *property, Part *part);
  *
  * @param property the 'property' widget.
  *
- * @ingroup property
+ * @ingroup Property
  */
 void
 ui_property_state_unset(Evas_Object *property);
@@ -136,7 +136,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item);
  *
  * @param property the 'property' widget.
  *
- * @ingroup property
+ * @ingroup Property
  */
 void
 ui_property_item_unset(Evas_Object *property);
