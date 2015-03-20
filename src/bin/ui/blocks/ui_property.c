@@ -1139,40 +1139,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
         if (part->type == EDJE_PART_TYPE_GROUP) elm_box_pack_end(box, pd_part.source_item);
         else evas_object_hide(pd->part.source_item);
 
-        elm_box_pack_after(prop_box, pd_part.frame, pd->group.frame);
-     }
-   else
-     {
-         prop_part_name_update(pd);
-         prop_part_type_update(wm_part_type_get(type));
-         ITEM_ATTR_1CHECK_UPDATE(part, scale)
-         ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
-         ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
-         prop_part_clip_to_update(pd, NULL);
-         prop_part_ignore_flags_update(pd);
-         if (part->type == EDJE_PART_TYPE_GROUP)
-           {
-             box = elm_object_content_get(pd_part.frame);
-             /* pack to box, only in case when the previous selected part
-              * is not GROUP. If previos selected part is GROUP then
-              * this item is show and already packed to box  */
-             if (!evas_object_visible_get(pd_part.source_item))
-               {
-                  elm_box_pack_before(box, pd_part.source_item, pd_drag.frame);
-                  evas_object_show(pd->part.source_item);
-               }
-             prop_part_source_update(pd, pd->part.source);
-           }
-         else
-           {
-              box = elm_object_content_get(pd_part.frame);
-              elm_box_unpack(box, pd_part.source_item);
-              evas_object_hide(pd_part.source_item);
-           }
-         evas_object_show(pd_part.frame);
-     }
-   if (!pd_drag.frame)
-     {
         FRAME_PROPERTY_ADD(pd->visual, pd_drag.frame, true, _("Part dragable property"), pd->visual)
         elm_object_style_set(pd_drag.frame, "outdent_top");
         elm_box_pack_end(box, pd_drag.frame);
@@ -1196,13 +1162,45 @@ ui_property_part_set(Evas_Object *property, Part *part)
                                 _("It causes the part to forward the drag events "
                                 "to another part, thus ignoring them for itself."));
         elm_box_pack_end(box, item);
+
+
+        elm_box_pack_after(prop_box, pd_part.frame, pd->group.frame);
      }
    else
      {
+        prop_part_name_update(pd);
+        prop_part_type_update(wm_part_type_get(type));
+        ITEM_ATTR_1CHECK_UPDATE(part, scale)
+        ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
+        ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
+        prop_part_clip_to_update(pd, NULL);
+        prop_part_ignore_flags_update(pd);
+        if (part->type == EDJE_PART_TYPE_GROUP)
+          {
+            box = elm_object_content_get(pd_part.frame);
+            /* pack to box, only in case when the previous selected part
+             * is not GROUP. If previos selected part is GROUP then
+             * this item is show and already packed to box  */
+            if (!evas_object_visible_get(pd_part.source_item))
+              {
+                 elm_box_pack_before(box, pd_part.source_item, pd_drag.frame);
+                 evas_object_show(pd->part.source_item);
+              }
+            prop_part_source_update(pd, pd->part.source);
+          }
+        else
+          {
+             box = elm_object_content_get(pd_part.frame);
+             elm_box_unpack(box, pd_part.source_item);
+             evas_object_hide(pd_part.source_item);
+          }
+        evas_object_show(pd_part.frame);
+
         prop_part_drag_x_step_x_update(pd);
         prop_part_drag_y_step_y_update(pd);
         prop_part_drag_confine_update(pd, pd->part_drag.confine);
         prop_part_drag_event_update(pd, pd->part_drag.event);
+
      }
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
    elm_scroller_region_get(pd->visual, NULL, &y_reg, NULL, &h_reg);
