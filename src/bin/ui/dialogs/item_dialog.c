@@ -67,7 +67,7 @@ _on_button_add_clicked(void *data,
         return;
      }
 
-   if(workspace_edit_object_part_item_add(ap->workspace, part->name, name, item->title))
+   if (workspace_edit_object_part_item_add(ap->workspace, part->name, name, item->title))
      {
        edje_edit_string_list_free(part->items);
        part->items = edje_edit_part_items_list_get(ap->project->current_style->obj, part->name);
@@ -75,7 +75,8 @@ _on_button_add_clicked(void *data,
      }
    else
      {
-        NOTIFY_ERROR(_("Failed add new item"))
+        NOTIFY_ERROR(_("Item with typed name is already exist. <br>"
+                       "Please type different name for this item."))
         return;
      }
 
