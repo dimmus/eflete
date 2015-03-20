@@ -86,14 +86,14 @@ struct _Prop_Data
       Evas_Object *ignore_flags;
       Evas_Object *source, *source_item;
       unsigned int previous_source;
-      struct {
-         Evas_Object *frame;
-         Evas_Object *drag_x;
-         Evas_Object *drag_y;
-         Evas_Object *confine;
-         Evas_Object *event;
-      } drag;
    } part;
+   struct {
+      Evas_Object *frame;
+      Evas_Object *drag_x;
+      Evas_Object *drag_y;
+      Evas_Object *confine;
+      Evas_Object *event;
+   } part_drag;
    struct {
       Evas_Object *frame;
       Evas_Object *state;
@@ -1086,7 +1086,7 @@ ITEM_1COMBOBOX_PART_CREATE(DRAG_AREA, _("drag area"), part_drag, confine)
 ITEM_1COMBOBOX_PART_CREATE(FORWARD_EVENTS, _("forward events"), part_drag, event)
 
 #define pd_part pd->part
-#define pd_part_drag pd->part.drag
+#define pd_part_drag pd->part_drag
 Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
