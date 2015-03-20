@@ -24,6 +24,11 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
+#ifdef HAVE_ENVENTOR
+   #define ENVENTOR_BETA_API_SUPPORT
+   #include "Enventor.h"
+#endif /* HAVE_ENVENTOR */
+
 /**
  * @defgroup ProjectManager Project Manager
  * @ingroup Eflete
@@ -84,6 +89,7 @@ struct _Project
    {
       Eina_Stringshare *file; /**< exported edc file, which uses for enventor mode*/
       Eina_Stringshare *path; /**< path to exported style project*/
+      Eina_List *pathes[ENVENTOR_PATH_TYPE_LAST]; /**< path to output file and resources for enventor mode*/
    } enventor;
 #endif
 };

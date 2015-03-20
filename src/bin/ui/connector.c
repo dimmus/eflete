@@ -584,8 +584,15 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    workspace_highlight_unset(ap->workspace);
 #ifdef HAVE_ENVENTOR
+   Eina_Stringshare *data = NULL;
+   unsigned char i = 0;
    eina_stringshare_del(ap->project->enventor.file);
    ap->project->enventor.file = NULL;
+   for (; i < ENVENTOR_PATH_TYPE_LAST; i++)
+     {
+        EINA_LIST_FREE(ap->project->enventor.pathes[i], data)
+           eina_stringshare_del(data);
+     }
    if (ap->project->enventor.path)
      {
         ecore_file_recursive_rm(ap->project->enventor.path);
