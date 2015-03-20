@@ -894,7 +894,6 @@ project_open(void)
    FILESELECTOR_ADD(fs, win, _on_open_done, win);
    elm_fileselector_custom_filter_append(fs, _eflete_filter, NULL, "Eflete Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
-   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_BASE, true);
    elm_win_inwin_content_set(win, fs);
 
    ap->modal_editor++;
@@ -1238,6 +1237,7 @@ _on_export_done(void *data,
    path = elm_fileselector_path_get(obj);
    if (!selected)
      {
+        ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
         evas_object_del(win);
         return;
      }
@@ -1262,6 +1262,7 @@ _on_export_done(void *data,
    evas_object_focus_set(ap->splash, true);
    evas_object_show(ap->splash);
 
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    eina_stringshare_del(dest_file);
    evas_object_del(win);
 }
@@ -1292,6 +1293,7 @@ project_export_develop(void)
    elm_fileselector_custom_filter_append(fs, _edje_filter, NULL, "Edje Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
    elm_win_inwin_content_set(win, fs);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 }
 
 static void
