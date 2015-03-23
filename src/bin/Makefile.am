@@ -13,6 +13,7 @@ project_manager/project_manager.c \
 logger/logger.c \
 config/config.c \
 external/syntax_color.c \
+external/enventor_module.c \
 history/history.c \
 history/history_attribute.c \
 history/history_state.c \
