@@ -253,6 +253,7 @@ _default_shortcuts_get()
    ADD_SHORTCUT("p", 33, ALT, "part.add.proxy", false);
    ADD_SHORTCUT("s", 39, ALT, "part.add.spacer", false);
    ADD_SHORTCUT("g", 42, ALT, "part.add.group", false);
+   ADD_SHORTCUT("x", 53, ALT, "part.add.box", false);
 
    /* Ctrl-Shift- */
    ADD_SHORTCUT("o", 32, CTRL + SHIFT, "open_edc", false);
