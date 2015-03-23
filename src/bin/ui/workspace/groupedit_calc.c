@@ -1767,10 +1767,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
 
         evas_object_show(ge_item->border);
         evas_object_show(ge_item->highlight);
-
-        evas_object_smart_calculate(ge_item->draw);
      }
-   evas_object_smart_calculate(gp->draw);
 }
 
 static void
