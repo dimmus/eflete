@@ -248,21 +248,6 @@ _project_files_create(Project_Thread *worker)
 
 #undef MKDIR
 
-static Eina_Bool
-_copy_file_progress_cb(void *data,
-                       unsigned long long done,
-                       unsigned long long total)
-{
-   short int percentage;
-   Project_Thread *worker;
-
-   worker = (Project_Thread *)data;
-   percentage = (short int)((double)done / total) * 100;
-   PROGRESS_SEND(_("Importing... %u"), percentage);
-
-   return true;
-}
-
 static void
 _copy_meta_data_to_pro(Project_Thread *worker)
 {
@@ -302,10 +287,8 @@ _project_dev_file_copy(Project_Thread *worker)
       src = eina_stringshare_ref(worker->edj);
       dst = eina_stringshare_ref(worker->project->dev);
    WORKER_LOCK_RELEASE;
-      result = eina_file_copy(src, dst,
-                              EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
-                              _copy_file_progress_cb, worker);
-
+   PROGRESS_SEND(_("Importing..."));
+      result = ecore_file_cp(src, dst);
    DBG("Copy the .dev file to project folder.");
    eina_stringshare_del(src);
    eina_stringshare_del(dst);
