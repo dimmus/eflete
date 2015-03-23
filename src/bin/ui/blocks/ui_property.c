@@ -1247,6 +1247,9 @@ ui_property_part_unset(Evas_Object *property)
    PROP_ITEM_UNSET(prop_box, pd->state_image.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_textblock.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_fill.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_table.frame)
+   PROP_ITEM_UNSET(prop_box, pd->prop_state_box.frame)
+   PROP_ITEM_UNSET(prop_box, pd->part_item.frame)
 }
 
 #undef PROP_ITEM_UNSET
