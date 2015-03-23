@@ -962,6 +962,13 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
 }
 
 
+Eina_Bool
+wm_style_data_reload(Style *style __UNUSED__, Eina_File *mmap_file __UNUSED__)
+{
+   return false;
+}
+
+
 #undef WM_WIDGET_NAME_GET
 #undef WM_CLASS_NAME_GET
 #undef WM_STYLE_NAME_GET
