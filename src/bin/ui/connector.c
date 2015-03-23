@@ -128,6 +128,7 @@ _del_part_item(void *data,
    Eina_Stringshare *item_name = (Eina_Stringshare *)event_info;
    App_Data *ap = (App_Data *)data;
    Evas_Object *widget_tabs = ui_block_widget_list_get(ap);
+   Style *style = ap->project->current_style;
 
    Part *part = ui_widget_list_selected_part_get(widget_tabs);
    if (!part)
@@ -147,6 +148,7 @@ _del_part_item(void *data,
         ERR("Failed delete item")
         return;
      }
+   style->isModify = true;
    workspace_edit_object_recalc(ap->workspace);
    project_changed();
    live_view_widget_style_set(ap->live_view, ap->project, ap->project->current_style);
