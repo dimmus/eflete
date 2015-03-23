@@ -199,8 +199,9 @@ group { name: elm/layout/property/2swallow;
                to_y: area.swallow1;
             }
             rel2 {
-               to_x: label.swallow1.start;
+               to_x: label.swallow1.end;
                to_y: area.swallow1;
+               relative: 0.0 1.0;
             }
          }
       }
@@ -249,8 +250,9 @@ group { name: elm/layout/property/2swallow;
                to_y: area.swallow2;
             }
             rel2 {
-               to_x: label.swallow2.start;
+               to_x: label.swallow2.end;
                to_y: area.swallow2;
+               relative: 0.0 1.0;
             }
          }
       }
