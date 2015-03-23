@@ -218,8 +218,6 @@ prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
    Eina_Bool ch_value; int st_value; \
    ch_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, pd->wm_part->name); \
    elm_check_state_set(pd->SUB.VALUE1, ch_value); \
-   if (!ch_value) elm_object_disabled_set(pd->SUB.VALUE2, true); \
-   else elm_object_disabled_set(pd->SUB.VALUE2, false); \
    st_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, pd->wm_part->name); \
    elm_spinner_value_set(pd->SUB.VALUE2, st_value); \
 }
@@ -235,8 +233,7 @@ _on_part_drag_##VALUE1##_change(void *data, \
    Eina_Bool old_value = edje_edit_part_drag_##VALUE1##_get(pd->wm_style->obj, \
                                                             pd->wm_part->name);\
    edje_edit_part_drag_##VALUE1##_set(pd->wm_style->obj, pd->wm_part->name, value); \
-   if (!value) elm_object_disabled_set(pd->SUB.VALUE2, true); \
-   else elm_object_disabled_set(pd->SUB.VALUE2, false); \
+   prop_part_drag_control_disable_set(pd, false); \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_part_drag_##VALUE1##_set, #SUB"_"#VALUE1, \

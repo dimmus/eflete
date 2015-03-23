@@ -1045,6 +1045,23 @@ prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
    edje_mmap_collection_list_free(collections);
 }
 
+inline static void
+prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
+{
+   Eina_Bool bx, by;
+
+   bx = edje_edit_part_drag_x_get(pd->wm_style->obj, pd->wm_part->name);
+   by = edje_edit_part_drag_y_get(pd->wm_style->obj, pd->wm_part->name);
+
+   elm_object_disabled_set(pd->part_drag.step_x, !bx);
+   elm_object_disabled_set(pd->part_drag.step_y, !by);
+   elm_object_disabled_set(pd->part_drag.confine, !(bx | by));
+   elm_object_disabled_set(pd->part_drag.event, !(bx | by));
+
+   if (collapse)
+     elm_frame_collapse_set(pd->part_drag.frame, !(bx | by));
+}
+
 PART_ATTR_PARTS_LIST(part_drag, confine, part_drag)
 PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
@@ -1158,7 +1175,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
                                 "to another part, thus ignoring them for itself."));
         elm_box_pack_end(box, item);
 
-
         elm_box_pack_after(prop_box, pd_part.frame, pd->group.frame);
      }
    else
@@ -1197,6 +1213,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         prop_part_drag_event_update(pd, pd->part_drag.event);
 
      }
+   prop_part_drag_control_disable_set(pd, true);
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
    elm_scroller_region_get(pd->visual, NULL, &y_reg, NULL, &h_reg);
    elm_scroller_region_bring_in(pd->visual, 0.0, y_reg + 1, 0.0, h_reg);
