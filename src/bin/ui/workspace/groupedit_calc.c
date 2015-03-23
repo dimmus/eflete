@@ -1694,7 +1694,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
              evas_object_show(spread_item->highlight);
              evas_object_raise(spread_item->draw);
              evas_object_raise(spread_item->highlight);
-
+             evas_object_lower(spread_item->border);
 
              if (spread_row > 1) spread_row--;
              else if (spread_col > 1) {spread_col--; spread_row = old_spread_row; }
