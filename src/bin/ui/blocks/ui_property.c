@@ -1090,7 +1090,7 @@ Eina_Bool
 ui_property_part_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
-   Evas_Object *part_frame, *part_drag_frame, *box, *prop_box;
+   Evas_Object *box, *prop_box;
    int y_reg, h_reg, h_box;
    Edje_Part_Type type;
 
@@ -1106,10 +1106,10 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
    if (!pd_part.frame)
      {
-        FRAME_PROPERTY_ADD(pd->visual, part_frame, true, _("Part property"), pd->visual)
-        BOX_ADD(part_frame, box, EINA_FALSE, EINA_FALSE)
+        FRAME_PROPERTY_ADD(pd->visual, pd_part.frame, true, _("Part property"), pd->visual)
+        BOX_ADD(pd_part.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(part_frame, box);
+        elm_object_content_set(pd_part.frame, box);
 
         item = prop_item_part_name_add(box, pd, _("Selected part name"));
         elm_box_pack_end(box, item);
@@ -1139,8 +1139,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         if (part->type == EDJE_PART_TYPE_GROUP) elm_box_pack_end(box, pd_part.source_item);
         else evas_object_hide(pd->part.source_item);
 
-        elm_box_pack_after(prop_box, part_frame, pd->group.frame);
-        pd_part.frame = part_frame;
+        elm_box_pack_after(prop_box, pd_part.frame, pd->group.frame);
      }
    else
      {
@@ -1174,12 +1173,12 @@ ui_property_part_set(Evas_Object *property, Part *part)
      }
    if (!pd_drag.frame)
      {
-        FRAME_PROPERTY_ADD(pd->visual, part_drag_frame, true, _("Part dragable property"), pd->visual)
-        elm_object_style_set(part_drag_frame, "outdent_top");
-        elm_box_pack_end(box, part_drag_frame);
-        BOX_ADD(part_drag_frame, box, EINA_FALSE, EINA_FALSE)
+        FRAME_PROPERTY_ADD(pd->visual, pd_drag.frame, true, _("Part dragable property"), pd->visual)
+        elm_object_style_set(pd_drag.frame, "outdent_top");
+        elm_box_pack_end(box, pd_drag.frame);
+        BOX_ADD(pd_drag.frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
-        elm_object_content_set(part_drag_frame, box);
+        elm_object_content_set(pd_drag.frame, box);
 
         item = prop_part_drag_x_step_x_add(box, pd,
                                  _("Enable/Disable draggin along X axis"),
@@ -1197,8 +1196,6 @@ ui_property_part_set(Evas_Object *property, Part *part)
                                 _("It causes the part to forward the drag events "
                                 "to another part, thus ignoring them for itself."));
         elm_box_pack_end(box, item);
-
-        pd_drag.frame = part_drag_frame;
      }
    else
      {
