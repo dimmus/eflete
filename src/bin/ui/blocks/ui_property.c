@@ -450,13 +450,11 @@ _on_tab_activated(void *data,
 
    if (!strcmp(item_name, "Code"))
      {
-        if (!pd->code)
+        if (ap->enventor)
           {
              pd->code_bg = elm_bg_add(obj);
              elm_bg_color_set(pd->code_bg, ENVENTOR_CODE_BG_COLOR);
-             pd->code = enventor_object_add(pd->code_bg);
-             ap->enventor = pd->code;
-             elm_object_content_set(pd->code_bg, pd->code);
+             elm_object_content_set(pd->code_bg, ap->enventor);
              ewe_tabs_item_content_set(obj, it, pd->code_bg);
              evas_object_event_callback_add(ap->enventor, EVAS_CALLBACK_MOUSE_WHEEL,
                                             _on_enventor_mouse_wheel, NULL);
@@ -518,20 +516,20 @@ _on_tab_activated(void *data,
              eina_stringshare_del(path);
 
           }
-        enventor_object_file_set(pd->code, ap->project->enventor.file);
+        enventor_object_file_set(ap->enventor, ap->project->enventor.file);
 
-        enventor_object_path_set(pd->code, ENVENTOR_OUT_EDJ,
+        enventor_object_path_set(ap->enventor, ENVENTOR_OUT_EDJ,
                                  ap->project->enventor.pathes[ENVENTOR_OUT_EDJ]);
-        enventor_object_path_set(pd->code, ENVENTOR_RES_FONT,
+        enventor_object_path_set(ap->enventor, ENVENTOR_RES_FONT,
                                  ap->project->enventor.pathes[ENVENTOR_RES_FONT]);
-        enventor_object_path_set(pd->code, ENVENTOR_RES_IMAGE,
+        enventor_object_path_set(ap->enventor, ENVENTOR_RES_IMAGE,
                                  ap->project->enventor.pathes[ENVENTOR_RES_IMAGE]);
-        enventor_object_path_set(pd->code, ENVENTOR_RES_SOUND,
+        enventor_object_path_set(ap->enventor, ENVENTOR_RES_SOUND,
                                  ap->project->enventor.pathes[ENVENTOR_RES_SOUND]);
-        enventor_object_path_set(pd->code, ENVENTOR_RES_SOUND,
+        enventor_object_path_set(ap->enventor, ENVENTOR_RES_SOUND,
                                  ap->project->enventor.pathes[ENVENTOR_RES_DATA]);
-        enventor_object_focus_set(pd->code, true);
-        enventor_object_auto_complete_set(pd->code, true);
+        enventor_object_focus_set(ap->enventor, true);
+        enventor_object_auto_complete_set(ap->enventor, true);
 
         ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
         pm_project_changed(ap->project);
