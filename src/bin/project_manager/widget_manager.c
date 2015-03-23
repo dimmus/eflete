@@ -963,9 +963,31 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
 
 
 Eina_Bool
-wm_style_data_reload(Style *style __UNUSED__, Eina_File *mmap_file __UNUSED__)
+wm_style_data_reload(Style *style, Eina_File *mmap_file)
 {
-   return false;
+   Eina_List *parts_list = NULL, *l = NULL;
+   char *part_name = NULL;
+   Part *part = NULL;
+
+   if ((!style) || (!style->obj) || (!mmap_file)) return false;
+
+   eina_file_map_free(mmap_file, style->obj);
+   edje_object_mmap_set(style->obj, mmap_file, style->full_group_name);
+
+   EINA_INLIST_FREE(style->parts, part)
+     {
+        style->parts = eina_inlist_remove(style->parts, EINA_INLIST_GET(part));
+        _wm_part_free(part);
+     }
+
+   parts_list = edje_edit_parts_list_get(style->obj);
+   EINA_LIST_FOREACH(parts_list, l, part_name)
+     {
+        wm_part_add(style, part_name);
+     }
+   edje_edit_string_list_free(parts_list);
+
+   return true;
 }
 
 
