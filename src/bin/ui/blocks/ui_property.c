@@ -414,24 +414,6 @@ prop_item_label_add(Evas_Object *parent,
 #ifdef HAVE_ENVENTOR
 
 static void
-_on_enventor_mouse_wheel(void *data __UNUSED__,
-                         Evas *evas __UNUSED__,
-                         Evas_Object *enventor,
-                         void *event_info)
-{
-   Evas_Event_Mouse_Wheel *event = (Evas_Event_Mouse_Wheel *)event_info ;
-
-   if (!evas_key_modifier_is_set(event->modifiers, "Control"))  return;
-
-   double scale = enventor_object_font_scale_get(enventor);
-   scale += event->z >= 0 ? -0.1f: +0.1f;
-
-   if ((scale <= 0.5) || (scale >= 3.0)) return;
-
-   enventor_object_font_scale_set(enventor, scale);
-}
-
-static void
 _on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
@@ -456,8 +438,6 @@ _on_tab_activated(void *data,
              elm_bg_color_set(pd->code_bg, ENVENTOR_CODE_BG_COLOR);
              elm_object_content_set(pd->code_bg, ap->enventor);
              ewe_tabs_item_content_set(obj, it, pd->code_bg);
-             evas_object_event_callback_add(ap->enventor, EVAS_CALLBACK_MOUSE_WHEEL,
-                                            _on_enventor_mouse_wheel, NULL);
           }
         code_edit_mode_switch(ap, true);
 

@@ -21,10 +21,37 @@
 
 #ifdef HAVE_ENVENTOR
 
+#define MAX_SCALE 3.0
+#define MIN_SCALE 0.5
+#define STEP_SCALE 0.1f
+
+static void
+_on_enventor_mouse_wheel(void *data __UNUSED__,
+                         Evas *evas __UNUSED__,
+                         Evas_Object *enventor,
+                         void *event_info)
+{
+   Evas_Event_Mouse_Wheel *event = (Evas_Event_Mouse_Wheel *)event_info ;
+
+   if (!evas_key_modifier_is_set(event->modifiers, "Control"))  return;
+
+   double scale = enventor_object_font_scale_get(enventor);
+   scale += event->z >= 0 ? -STEP_SCALE: +STEP_SCALE;
+
+   if ((scale <= MIN_SCALE) || (scale >= MAX_SCALE)) return;
+
+   enventor_object_font_scale_set(enventor, scale);
+}
+
+
 Evas_Object *
 enventor_object_init(Evas_Object *parent)
 {
-  return enventor_object_add(parent);
+  Evas_Object *enventor = NULL;
+  enventor = enventor_object_add(parent);
+  evas_object_event_callback_add(enventor, EVAS_CALLBACK_MOUSE_WHEEL,
+                                 _on_enventor_mouse_wheel, NULL);
+  return enventor;
 }
 
 #endif /* HAVE_ENVENTOR */
