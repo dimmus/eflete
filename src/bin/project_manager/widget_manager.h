@@ -288,6 +288,21 @@ Eina_Bool
 wm_style_data_load(Style *style, Evas *e, Eina_File *mmap_file);
 
 /**
+ * Reload parts data. This function initiate deleting all entities of the
+ * parts for given style, and add new parts from given file and given style.
+ * Style object pointer will be renewed from the given file.
+ *
+ * @param style A @Style object pointer.
+ * @param mmap_file A mmap of edj file, that provide data for style.
+ *
+ * @return EINA_TRUE if successful, EINA_FALSE if not.
+ *
+ * @ingroup WidgetManager
+ */
+Eina_Bool
+wm_style_data_reload(Style *style, Eina_File *mmap_file);
+
+/**
  * Create a new @Style object.
  *
  * @param style_name The style name.
@@ -518,5 +533,6 @@ wm_style_parts_restack(Style *style, Eina_Stringshare *part_name,
 
 Eina_Bool
 wm_widgets_list_objects_del(Eina_Inlist *widget_list);
+
 
 #endif /* WIDGET_MANAGER_B_H*/
