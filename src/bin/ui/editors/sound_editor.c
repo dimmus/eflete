@@ -1351,6 +1351,19 @@ _add_tone_done(void *data,
    ecore_job_add(_popup_close, edit);
 }
 
+static Eina_Bool
+_samples_filter(const char *path,
+                Eina_Bool dir,
+                void *data __UNUSED__)
+{
+   if (dir) return true;
+
+   if (eina_str_has_extension(path, "wav") || eina_str_has_extension(path, "ogg") ||
+       eina_str_has_extension(path, "flac"))
+     return true;
+   return false;
+}
+
 static void
 _sample_add_cb(void *data,
                Evas_Object *obj __UNUSED__,
@@ -1364,6 +1377,8 @@ _sample_add_cb(void *data,
    evas_object_show(edit->fs_win);
 
    FILESELECTOR_ADD(fs, edit->fs_win, _add_sample_done, data);
+   elm_fileselector_custom_filter_append(fs, _samples_filter, NULL, _("Sound files"));
+   elm_fileselector_mime_types_filter_append(fs, "*", _("All files"));
    elm_win_inwin_content_set(edit->fs_win, fs);
 }
 
