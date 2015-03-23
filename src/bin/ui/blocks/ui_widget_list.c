@@ -1379,22 +1379,29 @@ ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part)
    while (iterator)
      {
         item_data = elm_object_item_data_get(iterator);
-        if ((!item_data) || (item_data->__type != PART))
+
+        /* We are searching through parts.
+         * If current item is actually BOX's or TABLE's item (contain parent),
+         * checking need to be skipped. */
+        if (!elm_genlist_item_parent_get(iterator))
           {
-             ERR("Item data isn't presented or data isn't PART");
-             return false;
-          }
-        if (item_data == part)
-          {
-             if (!elm_genlist_item_expanded_get(iterator)) return true;
-             elm_genlist_item_subitems_clear(iterator);
-             EINA_LIST_FOREACH_SAFE(item_data->items, l_items, l_n_items, item_name)
+             if ((!item_data) || (item_data->__type != PART))
                {
-                   elm_genlist_item_append(part_list, _itc_part_item, item_name,
-                                           iterator, ELM_GENLIST_ITEM_NONE,
-                                           _on_part_item_select, nf);
+                  ERR("Item data isn't presented or data isn't PART");
+                  return false;
                }
-             return true;
+             if (item_data == part)
+               {
+                  if (!elm_genlist_item_expanded_get(iterator)) return true;
+                  elm_genlist_item_subitems_clear(iterator);
+                  EINA_LIST_FOREACH_SAFE(item_data->items, l_items, l_n_items, item_name)
+                    {
+                       elm_genlist_item_append(part_list, _itc_part_item, item_name,
+                                               iterator, ELM_GENLIST_ITEM_NONE,
+                                               _on_part_item_select, nf);
+                    }
+                  return true;
+               }
           }
         iterator = elm_genlist_item_next_get(iterator);
      }
