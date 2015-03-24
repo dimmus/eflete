@@ -449,9 +449,14 @@ _on_tab_activated(void *data,
 
         ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
         pm_project_changed(ap->project);
+        evas_object_smart_callback_call(ap->enventor, "enventor,mode,on", NULL);
      }
    else
-     code_edit_mode_switch(app_data_get(), false);
+     {
+        code_edit_mode_switch(ap, false);
+        evas_object_smart_callback_call(ap->enventor, "enventor,mode,off",
+                                        ap->project->current_style);
+     }
 
    ap->enventor_mode = !ap->enventor_mode;
 }

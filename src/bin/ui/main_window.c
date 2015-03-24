@@ -170,6 +170,12 @@ ui_main_window_add(App_Data *ap)
    if (!ap->colorsel)
      MARK_TO_SHUTDOWN("Can't create a colorselector.")
 
+   #ifdef HAVE_ENVENTOR
+     ap->enventor= enventor_object_init(ap->win);
+     if (!ap->enventor)
+       MARK_TO_SHUTDOWN("Can't create a enventor object.")
+   #endif /* HAVE_ENVENTOR */
+
    if (!register_callbacks(ap))
      MARK_TO_SHUTDOWN("Failed to register callbacks");
 
@@ -180,11 +186,6 @@ ui_main_window_add(App_Data *ap)
    ap->history = history_init();
    if (!ap->history)
      MARK_TO_SHUTDOWN("Failed initialize history module.")
-
-#ifdef HAVE_ENVENTOR
-    ap->enventor= enventor_object_init(ap->win);
-#endif /* HAVE_ENVENTOR */
-
 
    return true;
 }

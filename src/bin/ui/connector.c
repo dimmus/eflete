@@ -1740,6 +1740,35 @@ ui_group_delete(App_Data *ap, Type group_type)
    return true;
 }
 
+#ifdef HAVE_ENVENTOR
+static void
+_on_enventor_mode_on(void *data,
+                     Evas_Object *enventor __UNUSED__,
+                     void *event_info __UNUSED__)
+{
+   App_Data *ap = (App_Data *)data;
+
+   workspace_highlight_unset(ap->workspace);
+   ui_property_part_unset(ui_block_property_get(ap));
+   ui_states_list_data_unset(ui_block_state_list_get(ap));
+}
+
+static void
+_on_enventor_mode_off(void *data,
+                      Evas_Object *enventor __UNUSED__,
+                      void *event_info)
+{
+   App_Data *ap = (App_Data *)data;
+   Style *style = (Style *)event_info;
+
+   wm_style_data_reload(style, ap->project->mmap_file);
+   workspace_edit_object_set(ap->workspace, style, ap->project->dev);
+   workspace_edit_object_recalc(ap->workspace);
+   ui_widget_list_style_parts_reload(ui_block_widget_list_get(ap), style);
+   ui_property_style_set(ui_block_property_get(ap), style, ap->workspace);
+}
+#endif /* HAVE_ENVENTOR */
+
 Eina_Bool
 register_callbacks(App_Data *ap)
 {
@@ -1755,6 +1784,12 @@ register_callbacks(App_Data *ap)
    evas_object_smart_callback_add(ap->block.left_top, "wl,layout,del",
                                   _del_layout, ap);
 
+#ifdef HAVE_ENVENTOR
+   evas_object_smart_callback_add(ap->enventor, "enventor,mode,on",
+                                  _on_enventor_mode_on, ap);
+   evas_object_smart_callback_add(ap->enventor, "enventor,mode,off",
+                                  _on_enventor_mode_off, ap);
+#endif /* HAVE_ENVENTOR */
    return true;
 }
 
