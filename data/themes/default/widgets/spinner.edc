@@ -1,73 +1,3 @@
-#define BUTTON(NAME, IMAG, IMAG2, REL, RELTO, MAX) \
-   part { \
-      name: NAME; \
-      type: IMAGE; \
-      description { \
-         state: "default" 0.0; \
-         image.normal: IMAG; \
-         align: 1.0 1.0; \
-         min: MAX; \
-         max: MAX; \
-      rel2 { \
-            relative: REL; \
-            to: RELTO; \
-         } \
-      } \
-      description { \
-         state: "new" 0.0; \
-         inherit: "default" 0.0; \
-         image.normal: IMAG2; \
-      } \
-   }
-#define CLICK(SIG, SOUR, STATE) \
-   program { \
-      signal: SIG; \
-      source: SOUR; \
-      action: STATE_SET STATE 0.0; \
-      target: SOUR; \
-   }
-#define INCDEC(SIG, SOUR, ACT) \
-   program { \
-      signal: SIG; \
-      source: SOUR; \
-      action: SIGNAL_EMIT ACT ""; \
-   }
-#define FOCUS(SIG, TARG, STATE) \
-   program { \
-      signal: SIG; \
-      source: elm; \
-      action: STATE_SET STATE 0.0; \
-      target: TARG; \
-   }
-#define GLOW(NAME) \
-   part { \
-      name: NAME; \
-      type: IMAGE; \
-      description { \
-         state: "default" 0.0; \
-         visible: 0; \
-         image { \
-            normal: "focus-outer-glow.png"; \
-            border: 3 3 4 3; \
-         } \
-         color: 51 153 255 255; \
-         align: 0.0 0.0; \
-         rel1 { \
-            to: "bg"; \
-            offset: -1 -2; \
-         } \
-         rel2 { \
-            to: "bg"; \
-            offset: 0 0; \
-         } \
-      } \
-      description { \
-         state: "new" 0.0; \
-         inherit: "default" 0.0; \
-         visible: 1; \
-      } \
-   }
-
 group { name: "elm/spinner/base/default";
    images {
       image: "input-text-bg.png" COMP;
@@ -699,13 +629,17 @@ group { name: "elm/spinner/base/default";
             target: "elm.swallow.entry";
             target: "elm.text";
          }
-         FOCUS("elm,action,focus", "glow", "new");
-         FOCUS("elm,action,unfocus", "glow", "default");
+         program {
+            signal: "elm,action,focus";
+            source: elm;
+            action: STATE_SET "new" 0.0;
+            target: "glow";
+         }
+         program {
+            signal: "elm,action,unfocus";
+            source: elm;
+            action: STATE_SET "default" 0.0;
+            target: "glow";
+         }
       }
    }
-
-#undef BUTTON
-#undef CLICK
-#undef INCDEC
-#undef FOCUS
-#undef GLOW
