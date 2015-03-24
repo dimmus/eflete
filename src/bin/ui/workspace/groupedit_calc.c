@@ -669,9 +669,12 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    evas_object_move(gp->draw, (x * sd->zoom_factor + xe + offset_x),
                               (y * sd->zoom_factor + ye + offset_y));
 
+
    GP_GEOMETRY_SET
 
    GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
+
+   evas_object_smart_calculate(gp->draw);
 
    /* We don't need xe or ye for box items */
    xe = 0;
@@ -696,7 +699,10 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                        if (sp_item->border)
                          evas_object_geometry_get(sp_item->border, &x, &y, &w, &h);
                        else
-                         evas_object_geometry_get(sp_item->draw, &x, &y, &w, &h);
+                         {
+                            evas_object_geometry_get(sp_item->draw, &x, &y, &w, &h);
+                            evas_object_smart_calculate(sp_item->draw);
+                         }
 
                        GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
                     }
