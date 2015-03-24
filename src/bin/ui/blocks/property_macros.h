@@ -52,6 +52,93 @@
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
+/**
+ * Macro for functions that create the tem with label and 2 spinners for group
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of group attribute
+ *            (example: min for min_x attribute)
+ * @param VALUE1 The first value of group attribute (example: x for min_x attribute)
+ * @param VALUE2 The second value of group attribute (example: y for min_y attribute)
+ *
+ * @ingroup Property_Macro
+ */
+#define GROUP_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2) \
+static Evas_Object * \
+prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
+                                             Prop_Data *pd, \
+                                             const char *tooltip1, \
+                                             const char *tooltip2) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
+   elm_object_part_text_set(item, "label.swallow1.start", "w:"); \
+   elm_object_part_text_set(item, "label.swallow1.end", "px"); \
+   SPINNER_ADD(item, pd->group.SUB##_##VALUE1, 0.0, 9999.0, 1.0, true) \
+   elm_spinner_label_format_set(pd->group.SUB##_##VALUE1, "%.0f"); \
+   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE1, tooltip1); \
+   evas_object_smart_callback_add(pd->group.SUB##_##VALUE1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content1", pd->group.SUB##_##VALUE1); \
+   evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+   elm_object_part_text_set(item, "label.swallow2.start", "h:"); \
+   elm_object_part_text_set(item, "label.swallow2.end", "px"); \
+   SPINNER_ADD(item, pd->group.SUB##_##VALUE2, 0.0, 9999.0, 1.0, true) \
+   elm_spinner_label_format_set(pd->group.SUB##_##VALUE2, "%.0f"); \
+   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE2, tooltip2); \
+   evas_object_smart_callback_add(pd->group.SUB##_##VALUE2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content2", pd->group.SUB##_##VALUE2); \
+   evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                           _on_spinner_mouse_wheel, NULL); \
+   prop_group_##SUB##_##VALUE1##_##VALUE2##_update(pd); \
+   return item; \
+}
+
+/**
+ * Macro for function that update the value of controls of the group attibute.
+ *
+ * @paramram SUB The prefix of main parameter of group attribute
+ *               (example: min for min_x attribute)
+ * @paramram VALUE1 The first value of group attribute (example: x for min_x attribute)
+ * @paramram VALUE2 The second value of group attribute (example: y for min_y attribute)
+ *
+ * @ingroup Property_Macro
+ */
+#define GROUP_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2) \
+static void \
+prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
+{ \
+   elm_spinner_value_set(pd->group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->wm_style->obj)); \
+   elm_spinner_value_set(pd->group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->wm_style->obj)); \
+}
+
+/**
+ * This macro is used to generate callback and static functions for creating,
+ * updating and other stuff of group's attributes called 'min' and 'max'
+ *
+ * The behaviour of these attributes (which are being represented by spinners)
+ * is next: when we change 'min' value and it is becoming higher than 'max' then
+ * value 'max' should be changed also (min can't be higher than max).
+ *
+ * That's why we have to check if 'min' is higher (>) than 'max' in all callbacks
+ * for 'min', for both w and h parameter.
+ * Second macro require to check if 'max' is lower then 'min' (because 'max'
+ * can't be lower than 'min', so we need update is so 'min' would be equal to
+ * 'max').
+ * So we need to check if 'max' is lower (<) than 'min'.
+ *
+ * @param SUB1 The prefix of main parameter of group attribute
+ *             (example: min for min_x attribute)
+ * @param SUB2 The prefix of minor parameter of group attribute
+ *             (example: min for min_x attribute)
+ * @param VALUE1 The value of group attribute (example: x for min_x attribute)
+ * @param CHECK shows the way SUB1.VALUE and SUB2.VALUE argument will be compared.
+ *        If Min compared to Max, then it is >, if Max compared to Min, then it is <
+ *
+ * @ingroup Property_Macro
+ */
 #define GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE, CHECK) \
 static void \
 _on_group_##SUB1##_##VALUE##_change(void *data, \
@@ -91,46 +178,6 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
    project_changed(); \
    workspace_edit_object_recalc(pd->workspace); \
    pd->wm_style->isModify = true; \
-}
-
-#define GROUP_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2) \
-static Evas_Object * \
-prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
-                                             Prop_Data *pd, \
-                                             const char *tooltip1, \
-                                             const char *tooltip2) \
-{ \
-   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   elm_object_part_text_set(item, "label.swallow1.start", "w:"); \
-   elm_object_part_text_set(item, "label.swallow1.end", "px"); \
-   SPINNER_ADD(item, pd->group.SUB##_##VALUE1, 0.0, 9999.0, 1.0, true) \
-   elm_spinner_label_format_set(pd->group.SUB##_##VALUE1, "%.0f"); \
-   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE1, tooltip1); \
-   evas_object_smart_callback_add(pd->group.SUB##_##VALUE1, "changed", _on_group_##SUB##_##VALUE1##_change, pd); \
-   elm_object_part_content_set(item, "swallow.content1", pd->group.SUB##_##VALUE1); \
-   evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                           _on_spinner_mouse_wheel, NULL); \
-   elm_object_part_text_set(item, "label.swallow2.start", "h:"); \
-   elm_object_part_text_set(item, "label.swallow2.end", "px"); \
-   SPINNER_ADD(item, pd->group.SUB##_##VALUE2, 0.0, 9999.0, 1.0, true) \
-   elm_spinner_label_format_set(pd->group.SUB##_##VALUE2, "%.0f"); \
-   elm_object_tooltip_text_set(pd->group.SUB##_##VALUE2, tooltip2); \
-   evas_object_smart_callback_add(pd->group.SUB##_##VALUE2, "changed", _on_group_##SUB##_##VALUE2##_change, pd); \
-   elm_object_part_content_set(item, "swallow.content2", pd->group.SUB##_##VALUE2); \
-   evas_object_event_callback_priority_add(pd->group.SUB##_##VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
-                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
-                                           _on_spinner_mouse_wheel, NULL); \
-   prop_group_##SUB##_##VALUE1##_##VALUE2##_update(pd); \
-   return item; \
-}
-
-#define GROUP_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2) \
-static void \
-prop_group_##SUB##_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
-{ \
-   elm_spinner_value_set(pd->group.SUB##_##VALUE1, edje_edit_group_##SUB##_##VALUE1##_get(pd->wm_style->obj)); \
-   elm_spinner_value_set(pd->group.SUB##_##VALUE2, edje_edit_group_##SUB##_##VALUE2##_get(pd->wm_style->obj)); \
 }
 
 /*****************************************************************************/

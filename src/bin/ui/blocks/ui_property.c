@@ -614,37 +614,6 @@ ui_property_add(Evas_Object *parent)
    GROUP_ATTR_2SPINNER_UPDATE(SUB1, VALUE1, VALUE2) \
    GROUP_ATTR_2SPINNER_ADD(TEXT, SUB1, VALUE1, VALUE2)
 
-/* ! Group property !
-
-   This macro is used to generate callback and static functions for creating,
-   updating and other stuff of group's attributes called 'min' and 'max'
-
-   The behaviour of these attributes (which are being represented by spinners)
-   is next: when we change 'min' value and it is becoming higher than 'max' then
-   value 'max' should be changed also (min can't be higher than max).
-
-   That's why we have to check if 'min' is higher (>) than 'max' in all callbacks
-   for 'min', for both w and h parameter.
-   Second macro require to check if 'max' is lower then 'min' (because 'max'
-   can't be lower than 'min', so we need update is so 'min' would be equal to
-   'max').
-   So we need to check if 'max' is lower (<) than 'min'.
-
-   > First argument of macro - label/name of parameter.
-   > Second argument of macro - main parametr that is being checked
-   > Third argument of macro - parameter that should be checked and updated if
-   second one is getting higher/lower. Inside of callback functions it will be
-   something like:
-   {
-     if second argument {higher/lower} than third -> update third
-   }
-   > Fourth and Fifth argument of macro - made to show different parameters
-   (Width or Height for max or min)
-   > Last argument of macro - shows the way Second and Third argument will be
-   compared.
-   If Min compared to Max, then it is >
-   if Max compared to Min, then it is <
- */
 GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, >)
 GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, <)
 
