@@ -608,11 +608,11 @@ ui_property_add(Evas_Object *parent)
    return tabs;
 }
 
-#define ITEM_2SPINNER_GROUP_CREATE(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
-   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE1, CHECK) \
-   ITEM_2SPINNER_GROUP_CALLBACK(SUB1, SUB2, VALUE2, CHECK) \
-   ITEM_2SPINNER_GROUP_UPDATE(SUB1, VALUE1, VALUE2) \
-   ITEM_2SPINNER_GROUP_ADD(TEXT, SUB1, VALUE1, VALUE2)
+#define GROUP_ATTR_2SPINNER(TEXT, SUB1, SUB2, VALUE1, VALUE2, CHECK) \
+   GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE1, CHECK) \
+   GROUP_ATTR_2SPINNER_CALLBACK(SUB1, SUB2, VALUE2, CHECK) \
+   GROUP_ATTR_2SPINNER_UPDATE(SUB1, VALUE1, VALUE2) \
+   GROUP_ATTR_2SPINNER_ADD(TEXT, SUB1, VALUE1, VALUE2)
 
 /* ! Group property !
 
@@ -645,8 +645,8 @@ ui_property_add(Evas_Object *parent)
    If Min compared to Max, then it is >
    if Max compared to Min, then it is <
  */
-ITEM_2SPINNER_GROUP_CREATE(_("min"), min, max, w, h, >)
-ITEM_2SPINNER_GROUP_CREATE(_("max"), max, min, w, h, <)
+GROUP_ATTR_2SPINNER(_("min"), min, max, w, h, >)
+GROUP_ATTR_2SPINNER(_("max"), max, min, w, h, <)
 
 #define pd_group pd->group
 
@@ -852,12 +852,10 @@ ui_property_style_set(Evas_Object *property, Style *style, Evas_Object *workspac
         elm_object_content_set(group_frame, box);
 
         item = prop_group_min_w_h_add(box, pd,
-                                      0.0, 9999.0, 1.0,
                                       _("Minimum group width in pixels."),
                                       _("Minimum group height in pixels."));
         elm_box_pack_end(box, item);
         item = prop_group_max_w_h_add(box, pd,
-                                      0.0, 9999.0, 1.0,
                                       _("Maximum group width in pixels."),
                                       _("Maximum group height in pixels."));
         elm_box_pack_end(box, item);
