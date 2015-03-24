@@ -110,4 +110,21 @@ enventor_object_project_load(Evas_Object *enventor, Project *project)
   return true;
 }
 
+Eina_Bool
+enventor_object_project_unload(Project *project)
+{
+   if ((!project) || (!project->enventor)) return false;
+
+   if (project->enventor->path)
+     {
+        ecore_file_recursive_rm(project->enventor->path);
+        eina_stringshare_del(project->enventor->path);
+     }
+
+   eina_stringshare_del(project->enventor->file);
+   project->enventor->file = NULL;
+
+   return true;
+}
+
 #endif /* HAVE_ENVENTOR */

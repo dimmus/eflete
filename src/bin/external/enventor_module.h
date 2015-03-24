@@ -69,12 +69,26 @@ enventor_object_init(Evas_Object *parent);
  * @param enventor The enventor object.
  * @param project Loaded project.
  *
- * @return true if temporary peoject successfuly created and loaded into
+ * @return true if temporary project successfuly created and loaded into
  * enventor object, or false in otherwise.
  *
  * @insgroup Enventor
  */
 Eina_Bool
 enventor_object_project_load(Evas_Object *enventor, Project *project);
+
+/**
+ * Free data and directories, which was created as temporary project for enventor
+ * object.
+ *
+ * @param project Loaded project.
+ *
+ * @return true if temporary project freed successfuly, or false in otherwise.
+ *
+ * @insgroup Enventor
+ */
+Eina_Bool
+enventor_object_project_unload(Project *project);
+
 
 #endif /* ENVENTOR_MODULE_H */
