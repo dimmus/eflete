@@ -79,11 +79,11 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *name;
       Evas_Object *type;
-      Evas_Object *scale;
-      Evas_Object *mouse_events;
-      Evas_Object *repeat_events;
-      Evas_Object *clip_to;
-      Evas_Object *ignore_flags;
+      Evas_Object *scale, *scale_item;
+      Evas_Object *mouse_events, *mouse_events_item;
+      Evas_Object *repeat_events, *repeat_events_item;
+      Evas_Object *clip_to, *clip_to_item;
+      Evas_Object *ignore_flags, *ignore_flags_item;
       Evas_Object *source, *source_item;
       unsigned int previous_source;
    } part;
@@ -1104,16 +1104,12 @@ ui_property_part_set(Evas_Object *property, Part *part)
    Evas_Object *item;
    Evas_Object *box, *prop_box;
    int y_reg, h_reg, h_box;
-   Edje_Part_Type type;
 
    if ((!property) || (!part)) return EINA_FALSE;
    PROP_DATA_GET(EINA_FALSE)
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_AUTO);
-
    pd->wm_part = part;
-
-   type = edje_edit_part_type_get(pd->wm_style->obj, part->name);
    prop_box = elm_object_content_get(pd->visual);
 
    if (!pd_part.frame)
@@ -1125,31 +1121,30 @@ ui_property_part_set(Evas_Object *property, Part *part)
 
         item = prop_item_part_name_add(box, pd, _("Selected part name"));
         elm_box_pack_end(box, item);
-        item = prop_part_type_add(box, _("type"), wm_part_type_get(type));
+        item = prop_part_type_add(box, _("type"), wm_part_type_get(pd->wm_part->type));
         elm_box_pack_end(box, item);
-        item = prop_part_scale_add(box, pd,
+        pd->part.scale_item = prop_part_scale_add(box, pd,
                            _("Specifies whether the part will scale "
                            "its size with an edje scaling factor."));
-        elm_box_pack_end(box, item);
-        item = prop_part_mouse_events_add(box, pd,
+        elm_box_pack_end(box, pd->part.scale_item);
+        pd->part.mouse_events_item = prop_part_mouse_events_add(box, pd,
                            _("Enable mouse events in this part."));
-        elm_box_pack_end(box, item);
-        item = prop_part_repeat_events_add(box, pd,
+        elm_box_pack_end(box, pd->part.mouse_events_item);
+        pd->part.repeat_events_item = prop_part_repeat_events_add(box, pd,
                             _("Enable repeat mouse events to the parts below."));
-        elm_box_pack_end(box, item);
-        item = prop_part_clip_to_add(box, pd,
+        elm_box_pack_end(box, pd->part.repeat_events_item);
+        pd->part.clip_to_item = prop_part_clip_to_add(box, pd,
                              _("Show only the area of part that coincides with "
                              "another part's container"));
-        elm_box_pack_end(box, item);
-        item = prop_part_ignore_flags_add(box, pd,
+        elm_box_pack_end(box, pd->part.clip_to_item);
+        pd->part.ignore_flags_item = prop_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
-        elm_box_pack_end(box, item);
+        elm_box_pack_end(box, pd->part.ignore_flags_item);
         pd->part.source_item = prop_part_source_add(box, pd,
                                   _("Used for the group to be loaded and used to "
                                   "display GROUP part."));
-        if (part->type == EDJE_PART_TYPE_GROUP) elm_box_pack_end(box, pd_part.source_item);
-        else evas_object_hide(pd->part.source_item);
+        elm_box_pack_end(box, pd->part.source_item);
 
         FRAME_PROPERTY_ADD(pd->visual, pd_drag.frame, true, _("Part dragable property"), pd->visual)
         elm_object_style_set(pd_drag.frame, "outdent_top");
@@ -1180,39 +1175,75 @@ ui_property_part_set(Evas_Object *property, Part *part)
    else
      {
         prop_part_name_update(pd);
-        prop_part_type_update(wm_part_type_get(type));
+        prop_part_type_update(wm_part_type_get(pd->wm_part->type));
         ITEM_ATTR_1CHECK_UPDATE(part, scale)
         ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
         ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
         prop_part_clip_to_update(pd, NULL);
         prop_part_ignore_flags_update(pd);
-        if (part->type == EDJE_PART_TYPE_GROUP)
-          {
-            box = elm_object_content_get(pd_part.frame);
-            /* pack to box, only in case when the previous selected part
-             * is not GROUP. If previos selected part is GROUP then
-             * this item is show and already packed to box  */
-            if (!evas_object_visible_get(pd_part.source_item))
-              {
-                 elm_box_pack_before(box, pd_part.source_item, pd_drag.frame);
-                 evas_object_show(pd->part.source_item);
-              }
-            prop_part_source_update(pd, pd->part.source);
-          }
-        else
-          {
-             box = elm_object_content_get(pd_part.frame);
-             elm_box_unpack(box, pd_part.source_item);
-             evas_object_hide(pd_part.source_item);
-          }
-        evas_object_show(pd_part.frame);
+        prop_part_source_update(pd, pd->part.source);
 
         prop_part_drag_x_step_x_update(pd);
         prop_part_drag_y_step_y_update(pd);
         prop_part_drag_confine_update(pd, pd->part_drag.confine);
         prop_part_drag_event_update(pd, pd->part_drag.event);
-
      }
+
+   box = elm_object_content_get(pd_part.frame);
+   if (pd->wm_part->type == EDJE_PART_TYPE_SPACER)
+     {
+        /* Unpack from box, if selected part is SPACER and hide.
+         * Check the visibility of 'mouse_events_item', to identify
+         * previous selected part is SPACER or not. For identification
+         * enough to check only one attribute, which not available
+         * for SPACER */
+        if (evas_object_visible_get(pd->part.mouse_events_item))
+          {
+             elm_box_unpack(box, pd->part.mouse_events_item);
+             elm_box_unpack(box, pd->part.repeat_events_item);
+             elm_box_unpack(box, pd->part.clip_to_item);
+             elm_box_unpack(box, pd->part.ignore_flags_item);
+             elm_box_unpack(box, pd->part_drag.frame);
+             evas_object_hide(pd->part.mouse_events_item);
+             evas_object_hide(pd->part.repeat_events_item);
+             evas_object_hide(pd->part.clip_to_item);
+             evas_object_hide(pd->part.ignore_flags_item);
+             evas_object_hide(pd->part_drag.frame);
+          }
+     }
+   else
+     {
+        if (!evas_object_visible_get(pd->part.mouse_events_item))
+          {
+             elm_box_pack_after(box, pd->part.mouse_events_item, pd->part.scale_item);
+             elm_box_pack_after(box, pd->part.repeat_events_item, pd->part.mouse_events_item);
+             elm_box_pack_after(box, pd->part.clip_to_item, pd->part.repeat_events_item);
+             elm_box_pack_after(box, pd->part.ignore_flags_item, pd->part.clip_to_item);
+             elm_box_pack_end(box, pd_drag.frame);
+             evas_object_show(pd->part.mouse_events_item);
+             evas_object_show(pd->part.repeat_events_item);
+             evas_object_show(pd->part.clip_to_item);
+             evas_object_show(pd->part.ignore_flags_item);
+             evas_object_show(pd->part_drag.frame);
+          }
+     }
+     if (pd->wm_part->type == EDJE_PART_TYPE_GROUP)
+       {
+         /* pack to box, only in case when the previous selected part
+          * is not GROUP. If previos selected part is GROUP then
+          * this item is show and already packed to box  */
+         if (!evas_object_visible_get(pd_part.source_item))
+           {
+              elm_box_pack_after(box, pd_part.source_item, pd->part.ignore_flags_item);
+              evas_object_show(pd->part.source_item);
+           }
+       }
+     else
+       {
+          elm_box_unpack(box, pd_part.source_item);
+          evas_object_hide(pd_part.source_item);
+       }
+
    prop_part_drag_control_disable_set(pd, true);
    evas_object_geometry_get(prop_box, NULL, NULL, NULL, &h_box);
    elm_scroller_region_get(pd->visual, NULL, &y_reg, NULL, &h_reg);
