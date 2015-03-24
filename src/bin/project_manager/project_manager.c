@@ -1531,7 +1531,13 @@ _enventor_save(void *data,
 
    THREAD_TESTCANCEL;
 
+   cb_exit = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_exit, worker);
    WORKER_LOCK_TAKE;
+      if (worker->func_progress)
+        {
+           cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
+           cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
+        }
       worker->edj = eina_stringshare_printf("%s/enbuild.edj",
                                             worker->project->enventor->path);
       cmd = eina_stringshare_printf("edje_pick -o %s -a %s -i %s -g %s",
