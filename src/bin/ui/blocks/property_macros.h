@@ -17,13 +17,36 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+/** @privatesection  @{ */
+
+/**
+ * @defgroup Property_Macro Property Macro
+ * @ingroup Property
+ *
+ * This a helper module. Here defined macro-helpers for modules like property.
+ * Wherever necessary list of item with label and controls this module will
+ * be used.
+ */
+
+/**
+ * Create new layout with style "elm/layout/property/STYLE".
+ * Macro develop for property items, can use in simular cases.
+ * Also macro declare the evas object 'item'
+ *
+ * @param PARENT The parent elm widget for property item;
+ * @param NAME This text will be setted to part 'elm.text' of
+ *             created layout;
+ * @param STYLE The layout style.
+ *
+ * @ingroup Property_Macro
+ */
 #define PROPERTY_ITEM_ADD(PARENT, NAME, STYLE) \
    Evas_Object *item; \
    item = elm_layout_add(PARENT); \
    elm_layout_theme_set(item, "layout", "property", STYLE); \
    evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
    evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_object_part_text_set(item, "elm.text", NAME); \
+   elm_layout_text_set(item, NULL, NAME); \
    evas_object_show(item);
 
 /*****************************************************************************/
@@ -367,3 +390,5 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd, Evas_Object *obj __UNUSED__) \
      } \
    edje_edit_string_free(value); \
 }
+
+/** @} privatesection */
