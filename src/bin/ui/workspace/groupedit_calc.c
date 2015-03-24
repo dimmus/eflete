@@ -840,7 +840,7 @@ _parts_recalc(Ws_Groupedit_Smart_Data *sd)
    return true;
 }
 #define BORDER_ADD(R, G, B, A) \
-   GET_IMAGE(gp->border, sd->e, BORDER_IMG); \
+   GET_IMAGE(gp->border, sd->e, BORDER_2PX_IMG); \
    evas_object_color_set(gp->border, R*A/255, G*A/255, B*A/255, A);
 
 #define IMAGE_PART_GROUP "eflete/groupedit/image/default"
@@ -889,7 +889,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
       case EDJE_PART_TYPE_SWALLOW:
          gp->draw = _part_swallow_add(sd->e);
-         BORDER_ADD(150, 143, 158, 255)
+         BORDER_ADD(120, 103, 140, 255)
          break;
       case EDJE_PART_TYPE_TEXTBLOCK:
          gp->draw = evas_object_textblock_add(sd->e);
@@ -906,15 +906,12 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
       case EDJE_PART_TYPE_TABLE:
          gp->bg = evas_object_rectangle_add(sd->e);
          evas_object_color_set(gp->bg, 49, 140, 141, 255);
-         evas_object_show(gp->bg);
          gp->draw = _part_container_add(sd, part, &(gp->items), type);
-         BORDER_ADD(49, 180, 180, 255)
          break;
       case EDJE_PART_TYPE_BOX:
-         gp->draw = _part_container_add(sd, part, &(gp->items), type);
          GET_IMAGE(gp->bg, sd->e, BOX_BG_IMG);
-         GET_IMAGE(gp->border, sd->e, BORDER_2PX_IMG);
-         evas_object_color_set(gp->border, 124, 129, 102, 255);
+         gp->draw = _part_container_add(sd, part, &(gp->items), type);
+         BORDER_ADD(124, 129, 102, 255)
          break;
       case EDJE_PART_TYPE_EXTERNAL:
       default:
