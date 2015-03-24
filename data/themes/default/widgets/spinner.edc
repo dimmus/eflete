@@ -289,10 +289,14 @@ group { name: "elm/spinner/base/default";
          description { state: "default" 0.0;
             color: 0 0 0 0;
             rel1 {
-               to: "base";
+               to_x: "button.down";
+               to_y: "base";
+               relative: 1.0 0.0;
             }
             rel2 {
-               to: "base";
+               to_x: "button.up";
+               to_y: "base";
+               relative: 0.0 1.0;
             }
          }
       }
