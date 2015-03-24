@@ -1408,7 +1408,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "resized to any values independently"),
                             _("Normally width and height can be "
                              "resized to any values independently"),
-                            false);
+                            true);
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd,
                                    _("The aspect control hints for this object."),
                                    edje_aspect_pref);
@@ -1470,7 +1470,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_item_state_max_w_h_update(pd_state.max, pd,false);
         prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
         prop_item_state_align_x_y_update(pd_state.align, pd, true);
-        prop_item_state_aspect_min_max_update(pd_state.aspect, pd, false);
+        prop_item_state_aspect_min_max_update(pd_state.aspect, pd, true);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         prop_item_state_color_class_update(pd_state.color_class, pd);
         prop_item_state_minmul_w_h_update(pd_state.minmul, pd, false);
