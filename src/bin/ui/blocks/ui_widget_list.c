@@ -63,9 +63,15 @@ _genlist_find_item_by_name(Evas_Object *obj, const char *name)
 
    while (item)
      {
-        part = elm_object_item_data_get(item);
-        if (strcmp(part->name, name) == 0)
-          break;
+        /* We are searching through parts.
+         * If current item is actually BOX's or TABLE's item (contain parent),
+         * checking need to be skipped. */
+        if (!elm_genlist_item_parent_get(item))
+          {
+             part = elm_object_item_data_get(item);
+             if (strcmp(part->name, name) == 0)
+               break;
+          }
         item = elm_genlist_item_next_get(item);
      }
    return item;
