@@ -435,11 +435,12 @@ _on_tab_activated(void *data,
 
    if (!strcmp(item_name, "Code"))
      {
-        if (ap->enventor)
+        if (!pd->code_bg)
           {
+             pd->code = ap->enventor;
              pd->code_bg = elm_bg_add(obj);
              elm_bg_color_set(pd->code_bg, ENVENTOR_CODE_BG_COLOR);
-             elm_object_content_set(pd->code_bg, ap->enventor);
+             elm_object_part_content_set(pd->code_bg, "elm.swallow.content", pd->code);
              ewe_tabs_item_content_set(obj, it, pd->code_bg);
           }
         code_edit_mode_switch(ap, true);
@@ -790,8 +791,10 @@ ui_property_style_unset(Evas_Object *property)
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 
 #ifdef HAVE_ENVENTOR
-   evas_object_del(pd->code);
+   elm_object_part_content_unset(pd->code_bg, "elm.swallow.content");
    evas_object_del(pd->code_bg);
+   evas_object_hide(pd->code);
+   pd->code_bg = NULL;
    pd->code = NULL;
 #else
   evas_object_hide(pd->code);
