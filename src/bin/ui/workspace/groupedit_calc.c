@@ -906,7 +906,9 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          break;
       case EDJE_PART_TYPE_BOX:
          gp->draw = _part_container_add(sd, part, &(gp->items), type);
-         BORDER_ADD(122, 255, 101, 255)
+         GET_IMAGE(gp->bg, sd->e, BOX_BG_IMG);
+         GET_IMAGE(gp->border, sd->e, BORDER_2PX_IMG);
+         evas_object_color_set(gp->border, 124, 129, 102, 255);
          break;
       case EDJE_PART_TYPE_EXTERNAL:
       default:
