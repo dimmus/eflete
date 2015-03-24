@@ -141,7 +141,7 @@ _del_part_item(void *data,
      {
         edje_edit_string_list_free(part->items);
         part->items = edje_edit_part_items_list_get(ap->project->current_style->obj, part->name);
-        ui_widget_list_part_items_refresh(widget_tabs, part);
+        ui_widget_list_part_items_refresh(widget_tabs, part, false);
      }
    else
      {

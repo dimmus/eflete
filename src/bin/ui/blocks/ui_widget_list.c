@@ -1108,7 +1108,7 @@ ui_widget_list_part_add(Evas_Object *object, Style *style, const char *name)
      eoi = elm_genlist_item_append(gl_parts, _itc_part, part, NULL,
                                    ELM_GENLIST_ITEM_NONE, _on_part_select, nf);
    elm_object_item_data_set(eoi, part);
-   elm_genlist_item_selected_set(eoi, EINA_TRUE);
+   elm_genlist_item_selected_set(eoi, true);
 
    return true;
 }
@@ -1358,7 +1358,7 @@ ui_widget_list_tab_activate(Evas_Object *object, unsigned int tab_index)
 }
 
 Eina_Bool
-ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part)
+ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part, Eina_Bool addition)
 {
    Elm_Object_Item *iterator = NULL;
    Part *item_data = NULL;
@@ -1366,6 +1366,7 @@ ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part)
    Eina_Stringshare *item_name = NULL;
    Evas_Object *nf = NULL;
    Evas_Object *part_list = NULL;
+   Elm_Object_Item *eoi = NULL;
 
    if ((!obj) || (!part)) return false;
    part_list = elm_object_item_part_content_get(
@@ -1396,10 +1397,15 @@ ui_widget_list_part_items_refresh(Evas_Object *obj, Part *part)
                   elm_genlist_item_subitems_clear(iterator);
                   EINA_LIST_FOREACH_SAFE(item_data->items, l_items, l_n_items, item_name)
                     {
-                       elm_genlist_item_append(part_list, _itc_part_item, item_name,
-                                               iterator, ELM_GENLIST_ITEM_NONE,
-                                               _on_part_item_select, nf);
+
+                       eoi = elm_genlist_item_append(part_list, _itc_part_item, item_name,
+                                                     iterator, ELM_GENLIST_ITEM_NONE,
+                                                     _on_part_item_select, nf);
                     }
+                  if (addition)
+                    elm_genlist_item_selected_set(eoi, true);
+                  else
+                    elm_genlist_item_selected_set(iterator, true);
                   return true;
                }
           }
