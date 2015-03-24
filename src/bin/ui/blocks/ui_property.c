@@ -1066,11 +1066,6 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
    PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2)
 
-#define ITEM_1COMBOBOX_PART_CREATE(TYPE, TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_PART_CALLBACK(SUB, VALUE) \
-   ITEM_1COMBOBOX_PART_ADD(TYPE, TEXT, SUB, VALUE) \
-   ITEM_1COMBOBOX_PART_UPDATE(TYPE, TEXT, SUB, VALUE)
-
 /* part property */
 PART_ATTR_1CHECK(_("scalable"), part, scale)
 PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
@@ -2162,6 +2157,11 @@ ui_property_state_text_unset(Evas_Object *property)
 #undef pd_text
 
 #define prop_state_textblock_source_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+#define prop_state_textblock_source2_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+#define prop_state_textblock_source3_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+#define prop_state_textblock_source4_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+#define prop_state_textblock_source5_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+#define prop_state_textblock_source6_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
 
 #define pd_textblock pd->state_textblock
 PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
@@ -2170,11 +2170,11 @@ PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_
 PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int)
 PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
 PART_ATTR_1COMBOBOX(_("source"), part, source, state_textblock)
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source2 (over selected text)"), part, source2)
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source3 (under cursor)"), part, source3)
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source4 (over cursor)"), part, source4)
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source5 (under anchor)"), part, source5)
-ITEM_1COMBOBOX_PART_CREATE(SOURCE, _("source6 (over anchor)"), part, source6)
+PART_ATTR_1COMBOBOX(_("under selected text"), part, source2, state_textblock)
+PART_ATTR_1COMBOBOX(_("under cursor"), part, source3, state_textblock)
+PART_ATTR_1COMBOBOX(_("over cursor"), part, source4, state_textblock)
+PART_ATTR_1COMBOBOX(_("under anchor"), part, source5, state_textblock)
+PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock)
 
 ITEM_1COMBOBOX_STATE_CREATE(TEXT_STYLE, _("text style"), state, text_style, styles)
 
@@ -2248,27 +2248,26 @@ ui_property_state_textblock_set(Evas_Object *property)
                                "display UNDER the selected text the source \t"
                                "of TEXTBLOCK part."));
          elm_box_pack_end(box, item);
-         pd_textblock.source2 = prop_item_part_source2_add(box, pd,
+         item = prop_state_textblock_source2_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "selection display OVER the selected text."));
-         elm_box_pack_end(box, pd_textblock.source2);
-         pd_textblock.source3 = prop_item_part_source3_add(box, pd,
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source3_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "cursor display UNDER the cursor position."));
-         elm_box_pack_end(box, pd_textblock.source3);
-         pd_textblock.source4 = prop_item_part_source4_add(box, pd,
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source4_add(box, pd,
                                _("It is used for the group to be loaded and used \t"
                                "for cursor display OVER the cursor position."));
-         elm_box_pack_end(box, pd_textblock.source4);
-         pd_textblock.source5 = prop_item_part_source5_add(box, pd,
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source5_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "anchors display UNDER the anchor position."));
-         elm_box_pack_end(box, pd_textblock.source5);
-         pd_textblock.source6 = prop_item_part_source6_add(box, pd,
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_source6_add(box, pd,
                                _("It is used for the group to be loaded and used for \t"
                                "anchor display OVER the anchor position."));
-         elm_box_pack_end(box, pd_textblock.source6);
-
+         elm_box_pack_end(box, item);
 
          elm_box_pack_end(prop_box, textblock_frame);
          pd_textblock.frame = textblock_frame;
@@ -2285,12 +2284,12 @@ ui_property_state_textblock_set(Evas_Object *property)
         prop_state_textblock_pointer_mode_update(pd);
         prop_state_textblock_cursor_mode_update(pd);
         ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
-        prop_part_source_update(pd, pd_textblock.source);
-        prop_item_part_source2_update(pd_textblock.source2, pd);
-        prop_item_part_source3_update(pd_textblock.source3, pd);
-        prop_item_part_source4_update(pd_textblock.source4, pd);
-        prop_item_part_source5_update(pd_textblock.source5, pd);
-        prop_item_part_source6_update(pd_textblock.source6, pd);
+        prop_state_textblock_source_update(pd, pd_textblock.source);
+        prop_state_textblock_source2_update(pd, pd_textblock.source2);
+        prop_state_textblock_source3_update(pd, pd_textblock.source3);
+        prop_state_textblock_source4_update(pd, pd_textblock.source4);
+        prop_state_textblock_source5_update(pd, pd_textblock.source5);
+        prop_state_textblock_source6_update(pd, pd_textblock.source6);
         elm_box_pack_end(prop_box, pd_textblock.frame);
         evas_object_show(pd_textblock.frame);
      }
