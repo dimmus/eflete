@@ -183,6 +183,16 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 /*****************************************************************************/
 /*                         PART 1 CHECK CONTROL                              */
 /*****************************************************************************/
+/**
+ * Macro defines a functions that create a item with label and 1 check for part
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
@@ -199,6 +209,14 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    return item; \
 }
 
+/**
+ * Macro defines a callback for PART_ATTR_1CHECK_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute;
+ * @param VALUE The value of part attribute.
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
