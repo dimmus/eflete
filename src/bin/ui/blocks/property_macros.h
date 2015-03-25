@@ -241,7 +241,17 @@ _on_##SUB##_##VALUE##_change(void *data, \
 /*****************************************************************************/
 /*                       PART 1 COMBOBOX CONTROL                             */
 /*****************************************************************************/
-
+/**
+ * Macro for functions that create the tem with label and 1 combobox for part
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER) \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
@@ -257,6 +267,15 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
    return item; \
 }
 
+/**
+ * Macro define the callback for PART_ATTR_1COMBOBOX_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
 static void \
 _on_##MEMBER##_##VALUE##_change(void *data, \
