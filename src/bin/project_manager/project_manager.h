@@ -81,6 +81,13 @@ struct _Project
 
    Eina_List *added_sounds;
 
+   struct
+   {
+      Eina_List *images;  /**< pathes to the image dirs */
+      Eina_List *sounds;  /**< pathes to the sound dirs */
+      Eina_List *fonts;   /**< pathes to the font dirs */
+   } res;  /**< pathes to resource directories, which needed for opened project */
+
    Eina_Bool changed : 1;
    Eina_Bool close_request : 1;
    //Ecore_Timer *autosave_timer;

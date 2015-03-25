@@ -119,6 +119,9 @@ _project_descriptor_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "dev", dev, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "develop_path", develop_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "release_options", release_options, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "images", res.images);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "sounds", res.sounds);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "fonts", res.fonts);
 }
 
 static void
@@ -180,8 +183,9 @@ _end_send(void *data)
 }
 
 #define MKDIR(NAME) \
-   tmp = eina_stringshare_printf("%s/"NAME, pro->develop_path); \
+   tmp = eina_stringshare_printf("%s/"#NAME, pro->develop_path); \
    ecore_file_mkdir(tmp); \
+   pro->res.NAME = eina_list_append(pro->res.NAME, eina_stringshare_add(tmp)); \
    eina_stringshare_del(tmp)
 
 static Project *
@@ -218,10 +222,9 @@ _project_files_create(Project_Thread *worker)
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
       ecore_file_mkdir(pro->develop_path);
-      MKDIR("images");
-      MKDIR("sounds");
-      MKDIR("fonts");
-      MKDIR("data");
+      MKDIR(images);
+      MKDIR(sounds);
+      MKDIR(fonts);
       eina_stringshare_del(folder_path);
    WORKER_LOCK_RELEASE;
    if (!_pm_project_descriptor_data_write(pro_path, pro))
@@ -775,10 +778,11 @@ pm_project_build(Project *project __UNUSED__, Build build_profile __UNUSED__)
 Eina_Bool
 pm_project_close(Project *project)
 {
-   Eina_Stringshare *backup;
+   Eina_Stringshare *backup, *data;
 
    backup = eina_stringshare_printf("%s.backup", project->dev);
    ecore_file_remove(backup);
+   eina_stringshare_del(backup);
 
    wm_widgets_list_free(project->widgets);
    wm_layouts_list_free(project->layouts);
@@ -789,7 +793,12 @@ pm_project_close(Project *project)
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
 
-   eina_stringshare_del(backup);
+   EINA_LIST_FREE(project->res.images, data)
+      eina_stringshare_del(data);
+   EINA_LIST_FREE(project->res.sounds, data)
+      eina_stringshare_del(data);
+   EINA_LIST_FREE(project->res.fonts, data)
+      eina_stringshare_del(data);
 
 #ifdef HAVE_ENVENTOR
    eina_stringshare_del(project->enventor.file);
@@ -1139,30 +1148,32 @@ pm_style_resource_export(Project *pro ,
      }
    edje_edit_string_list_free(programs);
 
-   source = eina_stringshare_printf("%s/images", pro->develop_path);
    dest = eina_stringshare_printf("%s/images", path);
-
-   if (!_image_resources_export(images, dest, source, pro->dev, style->obj))
-     WARN("Failed export images");
-   eina_stringshare_del(source);
+   EINA_LIST_FOREACH(pro->res.images, l, source)
+     {
+       if (!_image_resources_export(images, dest, source, pro->dev, style->obj))
+         WARN("Failed export images");
+     }
    eina_stringshare_del(dest);
    EINA_LIST_FREE(images, data)
      eina_stringshare_del(data);
 
-   source = eina_stringshare_printf("%s/sounds", pro->develop_path);
    dest = eina_stringshare_printf("%s/sounds", path);
-   if (!_sound_resources_export(sounds, dest, source, style->obj))
-     ERR("Failed export sounds");
-   eina_stringshare_del(source);
+   EINA_LIST_FOREACH(pro->res.sounds, l, source)
+     {
+       if (!_sound_resources_export(sounds, dest, source, style->obj))
+         ERR("Failed export sounds");
+     }
    eina_stringshare_del(dest);
    EINA_LIST_FREE(sounds, data)
      eina_stringshare_del(data);
 
-   source = eina_stringshare_printf("%s/fonts", pro->develop_path);
    dest = eina_stringshare_printf("%s/fonts", path);
-   if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj))
-     WARN("Failed export fonts");
-   eina_stringshare_del(source);
+   EINA_LIST_FOREACH(pro->res.fonts, l, source)
+     {
+        if (!_font_resources_export(fonts, dest, source, pro->dev, style->obj))
+          WARN("Failed export fonts");
+     }
    eina_stringshare_del(dest);
    EINA_LIST_FREE(fonts, data)
      eina_stringshare_del(data);
