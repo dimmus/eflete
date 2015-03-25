@@ -24,6 +24,7 @@
 #ifdef HAVE_ENVENTOR
 #define ENVENTOR_BETA_API_SUPPORT
 #include "Enventor.h"
+#include "enventor_module.h"
 #endif /* HAVE_ENVENTOR */
 
 #include "main_window.h"
@@ -187,7 +188,7 @@ ui_main_window_add(App_Data *ap)
      MARK_TO_SHUTDOWN("Failed initialize history module.")
 
 #ifdef HAVE_ENVENTOR
-    ap->enventor= enventor_object_add(ap->win);
+    ap->enventor= enventor_object_init(ap->win);
 #endif /* HAVE_ENVENTOR */
 
 
