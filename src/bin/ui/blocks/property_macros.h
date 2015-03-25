@@ -318,7 +318,17 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 /*****************************************************************************/
 /*                     PART 1 COMBOBOX LIST CONTROL                          */
 /*****************************************************************************/
-
+/**
+ * Macro defines functions that create a item with label and 1 combobox for part
+ * attribute. A predefined list fill the combobox.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
@@ -339,6 +349,15 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    return item; \
 }
 
+/**
+ * Macro defines a function for update control by PART_ATTR_1COMBOBOX_LIST_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
 static void \
 prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
@@ -347,6 +366,16 @@ prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
    ewe_combobox_select_item_set(pd->SUB.VALUE, value); \
 }
 
+/**
+ * Macro defines a callback for PART_ATTR_1COMBOBOX_ADD.
+ *
+ * @param TEXT The attribute name, for error message
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
