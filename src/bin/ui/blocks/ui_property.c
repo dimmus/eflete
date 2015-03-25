@@ -100,7 +100,7 @@ struct _Prop_Data
       Evas_Object *state;
       Evas_Object *proxy_source;
       Evas_Object *visible;
-      Evas_Object *min;
+      Evas_Object *min_w, *min_h;
       Evas_Object *max;
       Evas_Object *fixed;
       Evas_Object *align;
@@ -1242,10 +1242,20 @@ ui_property_part_unset(Evas_Object *property)
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
    STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
 
+#define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
+                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                            TYPE, HISTORY_TYPE) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
 STATE_ATTR_1CHECK(_("visible"), state, visible)
+STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+                    _("Minimum part width in pixels."), _("Minimum part height in pixels."),
+                    1, int, VAL_INT)
 
 ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
-ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_align, x, y, "eflete/property/item/default")
@@ -1289,12 +1299,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
                                   _("Causes the part to use another part content as"
                                   "the content of this part. Only work with PROXY part."));
-        pd_state.min = prop_item_state_min_w_h_add(box, pd,
-                          0.0, 9999.0, 1.0, "%.0f",
-                          "w:", "px", "h:", "px",
-                          _("Minimum part width in pixels."),
-                          _("Minimum part height in pixels."),
-                          false);
+        item = prop_state_min_w_min_h_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_state.max = prop_item_state_max_w_h_add(box, pd,
                           -1.0, 9999.0, 1.0, "%.0f",
                           "w:", "px", "h:", "px",
@@ -1333,7 +1339,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "Set the multiplier height value of a part state",
                              false);
 
-        elm_box_pack_end(box, pd_state.min);
         elm_box_pack_end(box, pd_state.max);
         elm_box_pack_end(box, pd_state.fixed);
         elm_box_pack_end(box, pd_state.align);
@@ -1374,7 +1379,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_state_state_update(state);
         STATE_ATTR_CHECK_UPDATE(state, visible)
 
-        prop_item_state_min_w_h_update(pd_state.min, pd, false);
+        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, 1)
         prop_item_state_max_w_h_update(pd_state.max, pd,false);
         prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
         prop_item_state_align_x_y_update(pd_state.align, pd, true);

@@ -641,8 +641,8 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                        Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   SPINNER_ADD(item, pd->SUB.VALUE1, min, max, step, true) \
-   elm_spinner_label_format_set(pd->SUB.VALUE1, fmt); \
+   SPINNER_ADD(item, pd->SUB.VALUE1, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->SUB.VALUE1, FMT); \
    elm_layout_content_set(item, "swallow.content1", pd->SUB.VALUE1); \
    elm_layout_text_set(item, "label.swallow1.start", L1_START); \
    elm_layout_text_set(item, "label.swallow1.end", L1_END); \
@@ -651,13 +651,13 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
    evas_object_smart_callback_add(pd->SUB.VALUE1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   SPINNER_ADD(item, pd->SUB.VALUE2, min, max, step, true) \
-   elm_spinner_label_format_set(pd->SUB.VALUE2, fmt); \
+   SPINNER_ADD(item, pd->SUB.VALUE2, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->SUB.VALUE2, FMT); \
    elm_layout_content_set(item, "swallow.content2", pd->SUB.VALUE2); \
    elm_layout_text_set(item, "label.swallow2.start", L2_START); \
    elm_layout_text_set(item, "label.swallow2.end", L2_END); \
    elm_object_tooltip_text_set(pd->SUB.VALUE2, TOOLTIP2); \
-   evas_object_event_callback_priority_add(spinner2, EVAS_CALLBACK_MOUSE_WHEEL, \
+   evas_object_event_callback_priority_add(pd->SUB.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
    evas_object_smart_callback_add(pd->SUB.VALUE2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
