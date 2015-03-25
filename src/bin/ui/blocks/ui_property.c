@@ -25,12 +25,7 @@
 #include "ui_property_macro_old.h"
 #include "main_window.h"
 
-#ifdef HAVE_ENVENTOR
-#define ENVENTOR_BETA_API_SUPPORT
-#include "Enventor.h"
-#include "main_window.h"
-#include "enventor_module.h"
-#else
+#ifndef HAVE_ENVENTOR
 #include "syntax_color.h"
 #endif
 

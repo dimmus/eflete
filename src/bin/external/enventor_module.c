@@ -17,6 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
+#include "project_manager.h"
 #include "enventor_module.h"
 
 #ifdef HAVE_ENVENTOR
@@ -67,7 +68,10 @@ enventor_object_project_load(Evas_Object *enventor, Project *project)
   if ((!enventor) || (!project) || (!project->current_style)) return false;
   style = project->current_style;
 
-  if (!project->enventor.file)
+  if (!project->enventor)
+    project->enventor = (Enventor_Data *)mem_calloc(1, sizeof(Enventor_Data));
+
+  if (!project->enventor->file)
     {
        /* Prepare edc file and resources for using in enventor mode.
         * Project will created in temporary directory (linux: "/tmp";
@@ -86,19 +90,19 @@ enventor_object_project_load(Evas_Object *enventor, Project *project)
        free(tmp[0]);
        free(tmp);
        path = eina_stringshare_printf("%s_XXXXXX", file);
-
        eina_file_mkdtemp(path, &tmpstr);
-       project->enventor.file = eina_stringshare_printf("%s/%s.edc", tmpstr, file);
-       project->enventor.path = eina_stringshare_add(tmpstr);
+       eina_stringshare_del(path);
+
+       project->enventor->file = eina_stringshare_printf("%s/%s.edc", tmpstr, file);
+       project->enventor->path = eina_stringshare_add(tmpstr);
 
        eina_tmpstr_del(tmpstr);
-       eina_stringshare_del(path);
     }
 
-  if (!pm_project_style_source_code_export(project, style, project->enventor.file))
-    ERR("Source code of the current style was not written to the file %s", project->enventor.file);
+  if (!pm_project_style_source_code_export(project, style, project->enventor->file))
+    ERR("Source code of the current style was not written to the file %s", project->enventor->file);
 
-  enventor_object_file_set(enventor, project->enventor.file);
+  enventor_object_file_set(enventor, project->enventor->file);
 
   enventor_object_path_set(enventor, ENVENTOR_RES_FONT, project->res.fonts);
   enventor_object_path_set(enventor, ENVENTOR_RES_IMAGE, project->res.images);

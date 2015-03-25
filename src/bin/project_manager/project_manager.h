@@ -24,10 +24,6 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
-#ifdef HAVE_ENVENTOR
-   #define ENVENTOR_BETA_API_SUPPORT
-   #include "Enventor.h"
-#endif /* HAVE_ENVENTOR */
 
 /**
  * @defgroup ProjectManager Project Manager
@@ -45,6 +41,8 @@
 #include "widget_manager.h"
 #include "logger.h"
 #include <Eet.h>
+
+typedef struct _Enventor_Data Enventor_Data;
 
 /**
  * @struct _Project
@@ -88,16 +86,13 @@ struct _Project
       Eina_List *fonts;   /**< pathes to the font dirs */
    } res;  /**< pathes to resource directories, which needed for opened project */
 
+#ifdef HAVE_ENVENTOR
+   Enventor_Data *enventor;
+#endif
+
    Eina_Bool changed : 1;
    Eina_Bool close_request : 1;
    //Ecore_Timer *autosave_timer;
-#ifdef HAVE_ENVENTOR
-   struct
-   {
-      Eina_Stringshare *file; /**< exported edc file, which uses for enventor mode*/
-      Eina_Stringshare *path; /**< path to exported style project*/
-   } enventor;
-#endif
 };
 
 /**

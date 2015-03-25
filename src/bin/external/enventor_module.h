@@ -20,6 +20,11 @@
 #ifndef ENVENTOR_MODULE_H
 #define ENVENTOR_MODULE_H
 
+#ifdef HAVE_ENVENTOR
+   #define ENVENTOR_BETA_API_SUPPORT
+   #include "Enventor.h"
+#endif /* HAVE_ENVENTOR */
+
 #include "eflete.h"
 
 /**
@@ -28,6 +33,19 @@
  * Function of this submodule provide ability to use enventor object
  * in eflete.
  */
+
+/**
+ * @struct _Enventor_Data
+ *
+ * Structure, which store data, that needed for normal work enventor module.
+ *
+ * @ingroup Enventor
+ */
+struct _Enventor_Data
+{
+    Eina_Stringshare *file; /**< exported edc file, which uses for enventor mode*/
+    Eina_Stringshare *path; /**< path to exported style project*/
+};
 
 /**
  * Function initialize enventor object. Register callbacks for

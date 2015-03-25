@@ -17,6 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 #define _GNU_SOURCE
+#include "enventor_module.h"
 #include "project_manager.h"
 #include "alloc.h"
 #ifndef _WIN32
@@ -801,12 +802,13 @@ pm_project_close(Project *project)
       eina_stringshare_del(data);
 
 #ifdef HAVE_ENVENTOR
-   eina_stringshare_del(project->enventor.file);
-   if (project->enventor.path)
+   eina_stringshare_del(project->enventor->file);
+   if (project->enventor->path)
      {
-        ecore_file_recursive_rm(project->enventor.path);
-        eina_stringshare_del(project->enventor.path);
+        ecore_file_recursive_rm(project->enventor->path);
+        eina_stringshare_del(project->enventor->path);
      }
+   free(project->enventor);
 #endif /* HAVE_ENVENTOR */
 
    free(project);
@@ -1502,14 +1504,14 @@ _enventor_save(void *data,
            cb_msg_stdout = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _exe_data, worker);
            cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
         }
-      edj = eina_stringshare_printf("%s/build.edj", worker->project->enventor.path);
+      edj = eina_stringshare_printf("%s/build.edj", worker->project->enventor->path);
       options = eina_stringshare_printf("-id %s/images -fd %s/fonts -sd %s/sounds -dd %s/data",
-                                        worker->project->enventor.path,
-                                        worker->project->enventor.path,
-                                        worker->project->enventor.path,
-                                        worker->project->enventor.path);
+                                        worker->project->enventor->path,
+                                        worker->project->enventor->path,
+                                        worker->project->enventor->path,
+                                        worker->project->enventor->path);
       cmd = eina_stringshare_printf("edje_cc -v %s %s %s", options,
-                                    worker->project->enventor.file, edj);
+                                    worker->project->enventor->file, edj);
       THREAD_TESTCANCEL;
    WORKER_LOCK_RELEASE;
    DBG("Run command for compile: %s", cmd);
@@ -1531,7 +1533,7 @@ _enventor_save(void *data,
 
    WORKER_LOCK_TAKE;
       worker->edj = eina_stringshare_printf("%s/enbuild.edj",
-                                            worker->project->enventor.path);
+                                            worker->project->enventor->path);
       cmd = eina_stringshare_printf("edje_pick -o %s -a %s -i %s -g %s",
                                     worker->edj,
                                     worker->project->dev, edj,

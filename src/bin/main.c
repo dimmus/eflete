@@ -20,11 +20,6 @@
 #include <Ecore_Getopt.h>
 #include "main_window.h"
 
-#ifdef HAVE_ENVENTOR
-#define ENVENTOR_BETA_API_SUPPORT
-#include "Enventor.h"
-#endif
-
 static const Ecore_Getopt options = {
    PACKAGE_NAME,
    "%prog [options]",

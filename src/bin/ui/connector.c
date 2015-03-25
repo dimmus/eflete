@@ -19,16 +19,6 @@
 
 #include "main_window.h"
 #include "preference.h"
-#ifdef HAVE_ENVENTOR
-   #define ENVENTOR_BETA_API_SUPPORT
-   #include "Enventor.h"
-#endif /* HAVE_ENVENTOR */
-
-#ifdef HAVE_ENVENTOR
-#define ENVENTOR_BETA_API_SUPPORT
-#include "Enventor.h"
-#include "main_window.h"
-#endif
 
 #define makefile "#! bin/sh\nedje_cc -id ./images -fd ./fonts -sd ./sounds  "
 
@@ -586,12 +576,12 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(ap->workspace, "part,changed", _property_change, ap);
    workspace_highlight_unset(ap->workspace);
 #ifdef HAVE_ENVENTOR
-   eina_stringshare_del(ap->project->enventor.file);
-   ap->project->enventor.file = NULL;
-   if (ap->project->enventor.path)
+   eina_stringshare_del(ap->project->enventor->file);
+   ap->project->enventor->file = NULL;
+   if (ap->project->enventor->path)
      {
-        ecore_file_recursive_rm(ap->project->enventor.path);
-        eina_stringshare_del(ap->project->enventor.path);
+        ecore_file_recursive_rm(ap->project->enventor->path);
+        eina_stringshare_del(ap->project->enventor->path);
      }
 #endif /* HAVE_ENVENTOR */
 }
@@ -968,14 +958,14 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
 
    if (ap->enventor_mode)
      {
-        enventor_object_save(ap->enventor, ap->project->enventor.file);
+        enventor_object_save(ap->enventor, ap->project->enventor->file);
 
-        f_size = ecore_file_size(ap->project->enventor.file);
-        f = fopen(ap->project->enventor.file, "r+");
+        f_size = ecore_file_size(ap->project->enventor->file);
+        f = fopen(ap->project->enventor->file, "r+");
         if (!f)
           {
              ERR("Failed set the Elementary version support to '%s'",
-                 ap->project->enventor.file);
+                 ap->project->enventor->file);
              return false;
           }
         code = mem_calloc(1, f_size);
@@ -996,7 +986,7 @@ _setup_save_splash(void *data, Splash_Status status __UNUSED__)
         else
           {
              fclose(f);
-             f = fopen(ap->project->enventor.file, "w");
+             f = fopen(ap->project->enventor->file, "w");
 
              /*Search position where item block ends.*/
              for(search_ptr = version_ptr;

@@ -21,12 +21,6 @@
    #include "eflete_config.h"
 #endif /* include eflete_config.h */
 
-#ifdef HAVE_ENVENTOR
-#define ENVENTOR_BETA_API_SUPPORT
-#include "Enventor.h"
-#include "enventor_module.h"
-#endif /* HAVE_ENVENTOR */
-
 #include "main_window.h"
 #include "shortcuts.h"
 #include "cursor.h"
