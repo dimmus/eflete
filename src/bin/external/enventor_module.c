@@ -52,6 +52,9 @@ enventor_object_init(Evas_Object *parent)
   enventor = enventor_object_add(parent);
   evas_object_event_callback_add(enventor, EVAS_CALLBACK_MOUSE_WHEEL,
                                  _on_enventor_mouse_wheel, NULL);
+  enventor_object_auto_complete_set(enventor, true);
+  enventor_object_auto_indent_set(enventor, true);
+
   return enventor;
 }
 
