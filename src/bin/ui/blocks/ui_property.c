@@ -1272,11 +1272,6 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_COLOR_STATE_ADD(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_UPDATE(SUB, VALUE)
 
-#define ITEM_1CHECK_STATE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_CHECK_STATE_CALLBACK(SUB, VALUE) \
-   ITEM_1CHEACK_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_1CHEACK_STATE_UPDATE(SUB, VALUE)
-
 #define ITEM_2CHECK_STATE_CREATE(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_CHECK_STATE_CALLBACK(SUB, VALUE1) \
    ITEM_CHECK_STATE_CALLBACK(SUB, VALUE2) \
@@ -2694,8 +2689,8 @@ ui_property_state_image_unset(Evas_Object *property)
 #undef pd_image
 
 #define pd_fill pd->state_fill
+STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
-ITEM_1CHECK_STATE_CREATE(_("smooth"), state_fill, smooth)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_origin_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_origin_offset, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_size_relative, x, y, "eflete/property/item/relative")
@@ -2704,6 +2699,7 @@ ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_size_offset, x, y, "eflet
 static Eina_Bool
 ui_property_state_fill_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *fill_frame, *box, *prop_box;
    Evas_Object *icon, *separator;
    PROP_DATA_GET(EINA_FALSE)
@@ -2721,12 +2717,11 @@ ui_property_state_fill_set(Evas_Object *property)
         pd_fill.type = prop_item_state_fill_type_add(box, pd,
                              _("Sets the image fill type."),
                              edje_fill_type);
-
-        pd_fill.smooth = prop_item_state_fill_smooth_add(box, pd,
-                             _("On/off image smooth on scaling"));
-
         elm_box_pack_end(box, pd_fill.type);
-        elm_box_pack_end(box, pd_fill.smooth);
+        item = prop_state_fill_smooth_add(box, pd,
+                             _("On/off image smooth on scaling"));
+        elm_box_pack_end(box, item);
+
 
        /* origin subblock of fill block */
         separator = elm_separator_add(fill_frame);
@@ -2800,7 +2795,7 @@ ui_property_state_fill_set(Evas_Object *property)
    else
      {
         prop_item_state_fill_type_update(pd_fill.type, pd);
-        prop_item_state_fill_smooth_update(pd_fill.smooth, pd);
+        STATE_ATTR_CHECK_UPDATE(state_fill, smooth)
         prop_item_state_fill_origin_relative_x_y_update(pd_fill.origin_relative, pd, true);
         prop_item_state_fill_origin_offset_x_y_update(pd_fill.origin_offset, pd, false);
         prop_item_state_fill_size_relative_x_y_update(pd_fill.size_relative, pd, true);
