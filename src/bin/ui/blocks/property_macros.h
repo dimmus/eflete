@@ -557,19 +557,19 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd, Evas_Object *obj __UNUSED__) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1CHEACK_ADD(TEXT, SUB, VALUE) \
+#define STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                            Prop_Data *pd, \
                            const char *tooltip) \
 { \
-   PROPERTY_ITEM_ADD(parent, TEXT , "1swallow") \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    CHECK_ADD(item, pd->SUB.VALUE) \
    elm_object_style_set(pd->SUB.VALUE, "toggle"); \
    elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
    evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   prop_##SUB##_##VALUE##_update(pd); \
-   elm_layou_content_set(item, NULL, pd->SUB.VALUE); \
+   STATE_ATTR_CHECK_UPDATE(SUB, VALUE) \
+   elm_layout_content_set(item, NULL, pd->SUB.VALUE); \
    return item; \
 }
 

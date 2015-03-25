@@ -1283,8 +1283,19 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE)
 
+#define STATE_ATTR_CHECK_UPDATE(SUB, VALUE) \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                                      pd->wm_part->name, \
+                                                                      pd->wm_part->curr_state, \
+                                                                      pd->wm_part->curr_state_value));
+
+#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
+   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
+
+STATE_ATTR_1CHECK(_("visible"), state, visible)
+
 ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
-ITEM_1CHECK_STATE_CREATE(_("visible"), state, visible)
 ITEM_2SPINNER_STATE_INT_CREATE(_("min"), state_min, w, h, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_INT_CREATE(_("max"), state_max, w, h, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
@@ -1324,8 +1335,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
         item = prop_state_state_add(box, _("state"), state);
         elm_box_pack_end(box, item);
-        pd_state.visible = prop_item_state_visible_add(box, pd,
-                                                       "");
+        item = prop_state_visible_add(box, pd, "Set visibility for part by current state");
+        elm_box_pack_end(box, item);
         pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
                                   _("Causes the part to use another part content as"
                                   "the content of this part. Only work with PROXY part."));
@@ -1373,7 +1384,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "Set the multiplier height value of a part state",
                              false);
 
-        elm_box_pack_end(box, pd_state.visible);
         elm_box_pack_end(box, pd_state.min);
         elm_box_pack_end(box, pd_state.max);
         elm_box_pack_end(box, pd_state.fixed);
@@ -1413,7 +1423,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_unpack(box, pd_state.color);
         elm_box_unpack(box, pd_state.proxy_source);
         prop_state_state_update(state);
-        prop_item_state_visible_update(pd_state.visible, pd);
+        STATE_ATTR_CHECK_UPDATE(state, visible)
 
         prop_item_state_min_w_h_update(pd_state.min, pd, false);
         prop_item_state_max_w_h_update(pd_state.max, pd,false);
