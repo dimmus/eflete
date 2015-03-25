@@ -171,11 +171,17 @@ struct _Prop_Data
    } state_fill;
    struct {
       Evas_Object *frame;
+      Evas_Object *align;
+      Evas_Object *padding;
+      Evas_Object *min;
+   } state_container;
+   struct {
+      Evas_Object *frame;
       Evas_Object *layout;
       Evas_Object *custom_layout;
       Evas_Object *alt_layout;
       Evas_Object *custom_alt_layout;
-   } prop_state_box;
+   } state_box;
    struct {
       Evas_Object *frame;
       Evas_Object *name;
@@ -194,11 +200,8 @@ struct _Prop_Data
    } part_item;
    struct {
       Evas_Object *frame;
-      Evas_Object *align;
-      Evas_Object *padding;
-      Evas_Object *min;
       Evas_Object *homogeneous;
-   } prop_state_table;
+   } state_table;
 };
 typedef struct _Prop_Data Prop_Data;
 
@@ -321,6 +324,12 @@ ui_property_state_fill_set(Evas_Object *property);
 
 static void
 ui_property_state_fill_unset(Evas_Object *property);
+
+static Eina_Bool
+ui_property_state_container_set(Evas_Object *property);
+
+static void
+ui_property_state_container_unset(Evas_Object *property);
 
 static Eina_Bool
 ui_property_state_table_set(Evas_Object *property);
@@ -1227,8 +1236,9 @@ ui_property_part_unset(Evas_Object *property)
    PROP_ITEM_UNSET(prop_box, pd->state_image.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_textblock.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_fill.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_table.frame)
-   PROP_ITEM_UNSET(prop_box, pd->prop_state_box.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_container.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_table.frame)
+   PROP_ITEM_UNSET(prop_box, pd->state_box.frame)
    PROP_ITEM_UNSET(prop_box, pd->part_item.frame)
 }
 
@@ -1470,10 +1480,23 @@ ui_property_state_set(Evas_Object *property, Part *part)
      ui_property_state_fill_set(property);
    else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_unset(property);
-   if (type == EDJE_PART_TYPE_TABLE) ui_property_state_table_set(property);
-   else ui_property_state_table_unset(property);
-   if (type == EDJE_PART_TYPE_BOX) ui_property_state_box_set(property);
-   else ui_property_state_box_unset(property);
+   if (type == EDJE_PART_TYPE_TABLE)
+     {
+        ui_property_state_container_set(property);
+        ui_property_state_table_set(property);
+     }
+   else
+     ui_property_state_table_unset(property);
+   if (type == EDJE_PART_TYPE_BOX)
+     {
+        ui_property_state_container_set(property);
+        ui_property_state_box_set(property);
+     }
+   else
+     ui_property_state_box_unset(property);
+
+   if ((type != EDJE_PART_TYPE_TABLE) && (type != EDJE_PART_TYPE_BOX))
+     ui_property_state_container_unset(property);
 
 #ifndef HAVE_ENVENTOR
    _code_of_group_setup(pd);
@@ -2801,7 +2824,7 @@ ui_property_state_fill_unset(Evas_Object *property)
 }
 #undef pd_fill
 
-#define pd_box pd->prop_state_box
+#define pd_box pd->state_box
 #define ITEM_1COMBOBOX_PART_BOX_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COMBOBOX_STATE_BOX_CALLBACK(SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_PART_BOX_UPDATE(SUB, VALUE) \
@@ -2851,7 +2874,7 @@ ui_property_state_box_set(Evas_Object *property)
 
         pd_box.frame = box_frame;
 
-        elm_box_pack_after(prop_box, pd_box.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_box.frame, pd->state_container.frame);
      }
    else
      {
@@ -2860,7 +2883,7 @@ ui_property_state_box_set(Evas_Object *property)
         prop_item_box_state_box_alt_layout_update(pd_box.alt_layout, pd, edje_box_layouts);
         prop_item_state_box_alt_layout_update(pd_box.custom_alt_layout, pd);
 
-        elm_box_pack_after(prop_box, pd_box.frame, pd->part.frame);
+        elm_box_pack_after(prop_box, pd_box.frame, pd->state_container.frame);
      }
    evas_object_show(pd_box.frame);
    return true;
@@ -2876,7 +2899,6 @@ ui_property_state_box_unset(Evas_Object *property)
    elm_box_unpack(prop_box, pd_box.frame);
    evas_object_hide(pd_box.frame);
 }
-#undef pd_box
 
 static void
 _on_state_color_class_change(void *data,
@@ -3227,8 +3249,7 @@ ui_property_item_unset(Evas_Object *property)
 }
 #undef pd_item
 
-
-#define pd_table pd->prop_state_table
+#define pd_container pd->state_container
 
 #define ITEM_2SPINNER_STATE_2DOUBLE_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_2SPINNER_STATE_VALUE_CALLBACK(TYPE, SUB, VALUE1) \
@@ -3238,7 +3259,6 @@ ui_property_item_unset(Evas_Object *property)
 
 ITEM_2SPINNER_STATE_2DOUBLE_CREATE(double, _("align"), state_container_align, x, y, "eflete/property/item/default")
 ITEM_2SPINNER_STATE_2DOUBLE_CREATE(int, _("padding"), state_container_padding, h, v, "eflete/property/item/default")
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("homogeneous"), state_table, homogeneous, unsigned char)
 
 static void
 _on_container_min_change(void *data,
@@ -3249,9 +3269,9 @@ _on_container_min_change(void *data,
    Eina_Bool min_v, min_h;
    Evas_Object *check1, *check2;
 
-   check1 = evas_object_data_get(pd_table.min, ITEM1);
+   check1 = evas_object_data_get(pd_container.min, ITEM1);
    min_v = elm_check_state_get(check1);
-   check2 = evas_object_data_get(pd_table.min, ITEM2);
+   check2 = evas_object_data_get(pd_container.min, ITEM2);
    min_h = elm_check_state_get(check2);
 
    if (!edje_edit_state_container_min_set(pd->wm_style->obj, pd->wm_part->name,
@@ -3334,6 +3354,69 @@ prop_item_state_container_min_h_v_add(Evas_Object *parent,
 }
 
 static Eina_Bool
+ui_property_state_container_set(Evas_Object *property)
+{
+   Evas_Object *container_frame, *box, *prop_box;
+   PROP_DATA_GET(EINA_FALSE)
+
+   ui_property_state_container_unset(property);
+   prop_box = elm_object_content_get(pd->visual);
+   if (!pd_container.frame)
+     {
+        FRAME_ADD(property, container_frame, true, _("Container"))
+        BOX_ADD(container_frame, box, EINA_FALSE, EINA_FALSE)
+        elm_box_align_set(box, 0.5, 0.0);
+        elm_object_content_set(container_frame, box);
+
+        pd_container.align = prop_item_state_container_align_x_y_add(box, pd,
+                              0, 100, 1, NULL,
+                              _("hor:"), "%", _("ver:"), "%",
+                              _("Change the position of the point of balance inside the container."),
+                              _("Change the position of the point of balance inside the container."),
+                              true);
+        pd_container.padding = prop_item_state_container_padding_h_v_add(box, pd, 0.0, 999.0,
+                                1.0, "%.0f", _("hor:"), _("px"), _("ver:"), _("px"),
+                                _("Sets the horizontal space between cells in pixels."),
+                                _("Sets the vertcal space between cells in pixels."),
+                                false);
+        pd_container.min = prop_item_state_container_min_h_v_add(box, pd,
+                            _("This affects the minimum width calculation."),
+                            _("This affects the minimum height calculation."));
+
+        elm_box_pack_end(box, pd_container.align);
+        elm_box_pack_end(box, pd_container.padding);
+        elm_box_pack_end(box, pd_container.min);
+        pd_container.frame = container_frame;
+        elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
+     }
+   else
+     {
+        prop_item_state_container_align_x_y_update(pd_container.align, pd, true);
+        prop_item_state_container_padding_h_v_update(pd_container.padding, pd, false);
+        prop_item_state_container_min_h_v_update(pd_container.min, pd);
+        elm_box_pack_after(prop_box, pd_container.frame, pd->part.frame);
+        evas_object_show(pd_container.frame);
+     }
+   return true;
+}
+static void
+ui_property_state_container_unset(Evas_Object *property)
+{
+   Evas_Object *prop_box;
+   PROP_DATA_GET()
+
+   prop_box = elm_object_content_get(pd->visual);
+   elm_box_unpack(prop_box, pd_container.frame);
+   evas_object_hide(pd_container.frame);
+}
+
+#undef pd_container
+
+#define pd_table pd->state_table
+
+ITEM_1COMBOBOX_PART_STATE_CREATE(_("homogeneous"), state_table, homogeneous, unsigned char)
+
+static Eina_Bool
 ui_property_state_table_set(Evas_Object *property)
 {
    Evas_Object *table_frame, *box, *prop_box;
@@ -3343,45 +3426,25 @@ ui_property_state_table_set(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    if (!pd_table.frame)
      {
-        FRAME_ADD(property, table_frame, true, _("Table"))
+        FRAME_PROPERTY_ADD(property, table_frame, true, _("Table"), pd->visual)
         BOX_ADD(table_frame, box, EINA_FALSE, EINA_FALSE)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(table_frame, box);
 
-        pd_table.align = prop_item_state_container_align_x_y_add(box, pd,
-                          0, 100, 1, NULL,
-                          _("hor:"), "%", _("ver:"), "%",
-                          _("Change the position of the point of balance inside the container."),
-                          _("Change the position of the point of balance inside the container."),
-                          true);
-        pd_table.padding = prop_item_state_container_padding_h_v_add(box, pd, 0.0, 999.0,
-                                 1.0, "%.0f", _("hor:"), _("px"), _("ver:"), _("px"),
-                                 _("Sets the horizontal space between cells in pixels."),
-                                 _("Sets the vertcal space between cells in pixels."),
-                                 false);
-        pd_table.min = prop_item_state_container_min_h_v_add(box, pd,
-                           _("This affects the minimum width calculation."),
-                           _("This affects the minimum height calculation."));
         pd_table.homogeneous = prop_item_state_table_homogeneous_add(box, pd,
                              _("Sets the homogeneous mode for the table."),
                              edje_homogeneous);
 
-        elm_box_pack_end(box, pd_table.align);
-        elm_box_pack_end(box, pd_table.padding);
-        elm_box_pack_end(box, pd_table.min);
         elm_box_pack_end(box, pd_table.homogeneous);
-        elm_box_pack_end(prop_box, table_frame);
         pd_table.frame = table_frame;
+        elm_box_pack_after(prop_box, pd_table.frame, pd->state_container.frame);
      }
    else
      {
-        prop_item_state_container_align_x_y_update(pd_table.align, pd, true);
-        prop_item_state_container_padding_h_v_update(pd_table.padding, pd, false);
-        prop_item_state_container_min_h_v_update(pd_table.min, pd);
         prop_item_state_table_homogeneous_update(pd_table.homogeneous, pd);
-        elm_box_pack_end(prop_box, pd_table.frame);
-        evas_object_show(pd_table.frame);
+        elm_box_pack_after(prop_box, pd_table.frame, pd->state_container.frame);
      }
+   evas_object_show(pd_table.frame);
    return true;
 }
 
