@@ -1225,6 +1225,19 @@ ui_property_part_unset(Evas_Object *property)
                                                                       pd->wm_part->curr_state, \
                                                                       pd->wm_part->curr_state_value));
 
+#define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MULTIPLIER)\
+   elm_spinner_value_set(pd->SUB.VALUE1, \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj, \
+                                                                       pd->wm_part->name, \
+                                                                       pd->wm_part->curr_state, \
+                                                                       pd->wm_part->curr_state_value)); \
+   elm_spinner_value_set(pd->SUB.VALUE2, \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE2##_get(pd->wm_style->obj, \
+                                                                       pd->wm_part->name, \
+                                                                       pd->wm_part->curr_state, \
+                                                                       pd->wm_part->curr_state_value));
+
+
 #define STATE_ATTR_1CHECK(TEXT, SUB, VALUE) \
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
    STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
