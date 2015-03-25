@@ -544,4 +544,66 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd, Evas_Object *obj __UNUSED__) \
    edje_edit_string_free(value); \
 }
 
+/*****************************************************************************/
+/*                           STATE 1 CHECK CONTROL                           */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 1 check for
+ * state attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE The value of state attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1CHEACK_ADD(TEXT, SUB, VALUE) \
+static Evas_Object * \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd, \
+                           const char *tooltip) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT , "1swallow") \
+   CHECK_ADD(item, pd->SUB.VALUE) \
+   elm_object_style_set(pd->SUB.VALUE, "toggle"); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   prop_##SUB##_##VALUE##_update(pd); \
+   elm_layou_content_set(item, NULL, pd->SUB.VALUE); \
+   return item; \
+}
+
+/**
+ * Macro defines a callback for STATE_ATTR_1CHEACK_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Eina_Bool value = elm_check_state_get(obj); \
+   Eina_Bool old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                             pd->wm_part->name, pd->wm_part->curr_state, \
+                             pd->wm_part->curr_state_value); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+                                        pd->wm_part->curr_state, \
+                                        pd->wm_part->curr_state_value, \
+                                        value)) \
+     return; \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
 /** @} privatesection */
