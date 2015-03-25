@@ -402,8 +402,20 @@ _on_##SUB##_##VALUE##_change(void *data, \
 }
 
 /*****************************************************************************/
-/*                          PART 1CHECK 1SPINNER                             */
+/*                        PART 1CHECK 1SPINNER DRAG                          */
 /*****************************************************************************/
+/**
+ * Macro for dragable part attribute. An item that is created by this defined
+ * function consists a toggle, to turn on/off a drag of the part, and spinner
+ * to set a drag step.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE1 The value of first drag parametr (turn on/off)
+ * @param VALUE2 The value of second drag parametr (drag step)
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
 prop_part_drag_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
@@ -431,6 +443,15 @@ prop_part_drag_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    return item; \
 }
 
+/**
+ * Macro defines a function that updates control by PART_ATTR_DRAG_LIST_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE1 The value of first drag paramenetr (turn on/off)
+ * @param VALUE2 The value of second drag paramenetr (drag step)
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_DRAG_UPDATE(SUB, VALUE1, VALUE2) \
 static void \
 prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
@@ -442,6 +463,15 @@ prop_part_drag_##VALUE1##_##VALUE2##_update(Prop_Data *pd) \
    elm_spinner_value_set(pd->SUB.VALUE2, st_value); \
 }
 
+/**
+ * Macro defines a callbacks for PART_ATTR_DRAG_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE1 The value of first drag paramenetr (turn on/off)
+ * @param VALUE2 The value of second drag paramenetr (drag step)
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
 static void \
 _on_part_drag_##VALUE1##_change(void *data, \
