@@ -44,7 +44,7 @@
      }
 
 /*
- * Callback is added for frames at property box for correct scroller
+ * Callback is added for frames at property box to correct scroller
  * work while each frame would be expanded/collapsed
  */
 #define FRAME_PROPERTY_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \

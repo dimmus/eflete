@@ -53,7 +53,7 @@
 /*                         GROUP 2 CHECK CONTROL                             */
 /*****************************************************************************/
 /**
- * Macro for functions that create the tem with label and 2 spinners for group
+ * Macro for functions that create an item with label and 2 spinners for group
  * attribute.
  *
  * @param TEXT The label text
@@ -97,7 +97,7 @@ prop_group_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 }
 
 /**
- * Macro for function that update the value of controls of the group attibute.
+ * Macro for function that updates a value of controls of the group attibute.
  *
  * @paramram SUB The prefix of main parameter of group attribute
  *               (example: min for min_x attribute)
@@ -184,7 +184,7 @@ _on_group_##SUB1##_##VALUE##_change(void *data, \
 /*                         PART 1 CHECK CONTROL                              */
 /*****************************************************************************/
 /**
- * Macro defines a functions that create a item with label and 1 check for part
+ * Macro defines functions that create an item with label and 1 check for part
  * attribute.
  *
  * @param TEXT The label text
@@ -242,7 +242,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
 /*                       PART 1 COMBOBOX CONTROL                             */
 /*****************************************************************************/
 /**
- * Macro for functions that create the tem with label and 1 combobox for part
+ * Macro for functions that create an item with label and 1 combobox for part
  * attribute.
  *
  * @param TEXT The label text
@@ -268,7 +268,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
 }
 
 /**
- * Macro define the callback for PART_ATTR_1COMBOBOX_ADD.
+ * Macro defines the callback for PART_ATTR_1COMBOBOX_ADD.
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
@@ -319,7 +319,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 /*                     PART 1 COMBOBOX LIST CONTROL                          */
 /*****************************************************************************/
 /**
- * Macro defines functions that create a item with label and 1 combobox for part
+ * Macro defines functions that create an item with label and 1 combobox for part
  * attribute. A predefined list fill the combobox.
  *
  * @param TEXT The label text
@@ -350,7 +350,7 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
 }
 
 /**
- * Macro defines a function for update control by PART_ATTR_1COMBOBOX_LIST_ADD macro.
+ * Macro defines a function that updates control by PART_ATTR_1COMBOBOX_LIST_ADD macro.
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
@@ -515,8 +515,8 @@ _on_part_drag_##VALUE2##_change(void *data, \
 /*                     UPDATE THE ATTR WITH LIST OF PARTS                    */
 /*****************************************************************************/
 /**
- * Macro defines a function that updates combobox list of attibute which
- * depended of parts name
+ * Macro defines a function that updates combobox list of attributes, which
+ * depends on parts name
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
