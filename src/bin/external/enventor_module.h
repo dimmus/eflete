@@ -43,4 +43,20 @@
 Evas_Object *
 enventor_object_init(Evas_Object *parent);
 
+/**
+ * Create temporary edc project, that load into enventor object. Use
+ * current loaded style for create edc file. This file contain currently open
+ * style.
+ *
+ * @param enventor The enventor object.
+ * @param project Loaded project.
+ *
+ * @return true if temporary peoject successfuly created and loaded into
+ * enventor object, or false in otherwise.
+ *
+ * @insgroup Enventor
+ */
+Eina_Bool
+enventor_object_project_load(Evas_Object *enventor, Project *project);
+
 #endif /* ENVENTOR_MODULE_H */

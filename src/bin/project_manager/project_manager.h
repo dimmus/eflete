@@ -96,7 +96,6 @@ struct _Project
    {
       Eina_Stringshare *file; /**< exported edc file, which uses for enventor mode*/
       Eina_Stringshare *path; /**< path to exported style project*/
-      Eina_List *pathes[ENVENTOR_PATH_TYPE_LAST]; /**< path to output file and resources for enventor mode*/
    } enventor;
 #endif
 };

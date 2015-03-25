@@ -29,6 +29,7 @@
 #define ENVENTOR_BETA_API_SUPPORT
 #include "Enventor.h"
 #include "main_window.h"
+#include "enventor_module.h"
 #else
 #include "syntax_color.h"
 #endif
@@ -427,7 +428,6 @@ _on_tab_activated(void *data,
                   Evas_Object *obj,
                   void *event_info)
 {
-   Eina_Bool res;
    App_Data *ap;
    Ewe_Tabs_Item *it = (Ewe_Tabs_Item *) event_info;
    Prop_Data *pd = (Prop_Data *)data;
@@ -435,7 +435,6 @@ _on_tab_activated(void *data,
    ap = app_data_get();
 
    Eina_Stringshare *item_name = ewe_tabs_item_title_get(obj, it);
-   Eina_Stringshare *path;
 
    if (!item_name) return;
 
@@ -450,75 +449,7 @@ _on_tab_activated(void *data,
           }
         code_edit_mode_switch(ap, true);
 
-        if (!ap->project->enventor.file)
-          {
-             /* Prepare edc file and resources for using in enventor mode.
-              * Project will created in temporary directory (linux: "/tmp";
-              * Windows: path of enviroment variables TEMP|TMP|USERPROFILE|WINDIR).
-              * Name of project directory compose by next rule: all terminants "/"
-              * will replaced with "_" and generate unieque id suffix.
-              * For example:
-              * elm/bubble/base/default -> /tmp/elm_bubble_base_default_fGhds1/
-              */
-             Eina_Stringshare *file = NULL;
-             Eina_Tmpstr *tmpstr = NULL;
-             char **tmp;
-             unsigned int i = 0, tokens_count = 0;
-             tmp = eina_str_split_full(pd->wm_style->full_group_name, "/", 0,
-                                       &tokens_count);
-             if (!tmp[0]) return;
-             file = eina_stringshare_add(tmp[0]);
-             for (i = 1; tokens_count - 1 > 0; i++, tokens_count--)
-              file = eina_stringshare_printf("%s_%s", file, tmp[i]);
-             free(tmp[0]);
-             free(tmp);
-             path = eina_stringshare_printf("%s_XXXXXX", file);
-             eina_file_mkdtemp(path, &tmpstr);
-             ap->project->enventor.file = eina_stringshare_printf("%s/%s.edc",
-                                                                 tmpstr, file);
-             ap->project->enventor.path = eina_stringshare_add(tmpstr);
-             res = pm_project_style_source_code_export(ap->project, pd->wm_style,
-                                                       ap->project->enventor.file);
-             if (!res)
-               ERR("Source code of the current style was not written to the file"
-                   "%s", ap->project->enventor.file);
-             if (pm_style_resource_export(ap->project, pd->wm_style, tmpstr))
-               {
-                  ap->project->enventor.pathes[ENVENTOR_RES_SOUND] =
-                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_SOUND],
-                                      eina_stringshare_printf("%s/sounds", tmpstr));
-
-                  ap->project->enventor.pathes[ENVENTOR_RES_IMAGE] =
-                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_IMAGE],
-                                      eina_stringshare_printf("%s/images", tmpstr));
-                  ap->project->enventor.pathes[ENVENTOR_RES_FONT] =
-                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_FONT],
-                                      eina_stringshare_printf("%s/fonts", tmpstr));
-                  ap->project->enventor.pathes[ENVENTOR_RES_DATA] =
-                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_RES_DATA],
-                                      eina_stringshare_add(tmpstr));
-                  ap->project->enventor.pathes[ENVENTOR_OUT_EDJ] =
-                     eina_list_append(ap->project->enventor.pathes[ENVENTOR_OUT_EDJ],
-                     eina_stringshare_printf("%s/build.edj", ap->project->enventor.path));
-               }
-             eina_tmpstr_del(tmpstr);
-             eina_stringshare_del(path);
-
-          }
-        enventor_object_file_set(ap->enventor, ap->project->enventor.file);
-
-        enventor_object_path_set(ap->enventor, ENVENTOR_OUT_EDJ,
-                                 ap->project->enventor.pathes[ENVENTOR_OUT_EDJ]);
-        enventor_object_path_set(ap->enventor, ENVENTOR_RES_FONT,
-                                 ap->project->enventor.pathes[ENVENTOR_RES_FONT]);
-        enventor_object_path_set(ap->enventor, ENVENTOR_RES_IMAGE,
-                                 ap->project->enventor.pathes[ENVENTOR_RES_IMAGE]);
-        enventor_object_path_set(ap->enventor, ENVENTOR_RES_SOUND,
-                                 ap->project->enventor.pathes[ENVENTOR_RES_SOUND]);
-        enventor_object_path_set(ap->enventor, ENVENTOR_RES_SOUND,
-                                 ap->project->enventor.pathes[ENVENTOR_RES_DATA]);
-        enventor_object_focus_set(ap->enventor, true);
-        enventor_object_auto_complete_set(ap->enventor, true);
+        enventor_object_project_load(ap->enventor, ap->project);
 
         ui_menu_disable_set(ap->menu, MENU_FILE_SAVE, false);
         pm_project_changed(ap->project);
