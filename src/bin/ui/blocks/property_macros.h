@@ -514,6 +514,16 @@ _on_part_drag_##VALUE2##_change(void *data, \
 /*****************************************************************************/
 /*                     UPDATE THE ATTR WITH LIST OF PARTS                    */
 /*****************************************************************************/
+/**
+ * Macro defines a function that updates combobox list of attibute which
+ * depended of parts name
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
 #define PART_ATTR_PARTS_LIST(SUB, VALUE, MEMBER) \
 static void \
 prop_##MEMBER##_##VALUE##_update(Prop_Data *pd, Evas_Object *obj __UNUSED__) \
