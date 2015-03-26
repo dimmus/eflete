@@ -61,14 +61,19 @@ _on_frame_click(void *data,
 /* Hack end */
 
 static void
-_on_zoom_change(void *data,
+_on_scale_change(void *data,
                 Evas_Object *obj,
                 void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
    pd->current_scale = elm_spinner_value_get(obj) / 100;
    if (pd->live_object)
-     elm_object_scale_set(pd->live_object, pd->current_scale);
+     {
+        if (!strcmp("edje", pd->widget))
+          edje_object_scale_set(pd->live_object, pd->current_scale);
+        else
+          elm_object_scale_set(pd->live_object, pd->current_scale);
+     }
 }
 
 static void
@@ -152,7 +157,7 @@ live_view_property_style_set(Evas_Object *property,
         SPINNER_ADD(item, spinner, 1, 500, 1, true);
         elm_object_style_set(spinner, "live_view");
         elm_spinner_label_format_set(spinner, "%3.0f%%");
-        evas_object_smart_callback_add(spinner, "changed", _on_zoom_change, pd);
+        evas_object_smart_callback_add(spinner, "changed", _on_scale_change, pd);
         pd->scale_spinner = item;
         elm_object_part_content_set(item, "eflete.content", spinner);
         evas_object_data_set(item, ITEM, spinner);

@@ -125,7 +125,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              live->object = layout_custom_create(live->layout);
              edje_object_mmap_set(live->object, project->mmap_file,
                                   style->full_group_name);
-             live_view_property_style_set(live->property, live->object, style, "layout");
+             live_view_property_style_set(live->property, live->object, style, "edje");
           }
         else
           live_view_property_style_set(live->property, live->object, style, widget);
@@ -162,7 +162,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              evas_object_freeze_events_set(live->object, true);
           }
         live_view_theme_update(live, project);
-        live_view_property_style_set(live->property, live->object, style, "layout");
+        live_view_property_style_set(live->property, live->object, style, "edje");
      }
 
    evas_object_show(live->live_view);
