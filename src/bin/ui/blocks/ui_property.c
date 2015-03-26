@@ -3244,9 +3244,9 @@ prop_item_state_container_min_h_v_update(Evas_Object *item,
                                      &min_h);
 
    check1 = evas_object_data_get(item, ITEM1);
-   elm_spinner_value_set(check1, min_v);
+   elm_check_state_set(check1, min_v);
    check2 = evas_object_data_get(item, ITEM2);
-   elm_spinner_value_set(check2, min_h);
+   elm_check_state_set(check2, min_h);
 
    evas_object_smart_callback_del_full(check1, "changed", _on_container_min_change, pd);
    evas_object_smart_callback_add(check1, "changed", _on_container_min_change, pd);
