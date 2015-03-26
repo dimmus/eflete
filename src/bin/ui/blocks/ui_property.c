@@ -99,7 +99,7 @@ struct _Prop_Data
       Evas_Object *max_w, *max_h;
       Evas_Object *fixed;
       Evas_Object *align_x, *align_y;
-      Evas_Object *aspect;
+      Evas_Object *aspect_min, *aspect_max;
       Evas_Object *aspect_pref;
       Evas_Object *color_class;
       Evas_Object *color;
@@ -1263,10 +1263,13 @@ STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, 0.0, 9999.0, 1.0, "%.0f", "w:
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
+STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, 0, 100, 1, NULL, "x:", "", "y:", "",
+                   _("Normally width and height can be resized to any values independently"),
+                   _("Normally width and height can be resized to any values independently"),
+                   100, double, VAL_DOUBLE)
 
 ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
 ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("aspect ratio"), state_aspect, min, max, "eflete/property/item/default")
 ITEM_STATE_CCL_CREATE(COLOR_CLASS, _("color class"), state, color_class, color_classes)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
@@ -1316,17 +1319,12 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd_state.fixed);
         item = prop_state_align_x_align_y_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.aspect = prop_item_state_aspect_min_max_add(box, pd,
-                             0, 100, 1, NULL,
-                             "x:", "", "y:", "",
-                            _("Normally width and height can be "
-                             "resized to any values independently"),
-                            _("Normally width and height can be "
-                             "resized to any values independently"),
-                            true);
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd,
                                    _("The aspect control hints for this object."),
                                    edje_aspect_pref);
+        elm_box_pack_end(box, pd_state.aspect_pref);
+        item = prop_state_aspect_min_aspect_max_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_state.color_class = prop_item_state_color_class_add(box, pd,
                                    _on_state_color_class_change,
                                    _("Current color class"));
@@ -1339,8 +1337,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
                              "Set the multiplier height value of a part state",
                              false);
 
-        elm_box_pack_end(box, pd_state.aspect_pref);
-        elm_box_pack_end(box, pd_state.aspect);
         elm_box_pack_end(box, pd_state.color_class);
         elm_box_pack_end(box, pd_state.minmul);
 
@@ -1380,8 +1376,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, 1)
         prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
         STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, 100)
-        prop_item_state_aspect_min_max_update(pd_state.aspect, pd, true);
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
+        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, 100)
         prop_item_state_color_class_update(pd_state.color_class, pd);
         prop_item_state_minmul_w_h_update(pd_state.minmul, pd, false);
 
