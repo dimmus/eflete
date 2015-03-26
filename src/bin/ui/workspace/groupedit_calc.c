@@ -907,6 +907,7 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
          gp->bg = evas_object_rectangle_add(sd->e);
          evas_object_color_set(gp->bg, 49, 140, 141, 255);
          gp->draw = _part_container_add(sd, part, &(gp->items), type);
+         BORDER_ADD(138, 125, 109, 255)
          break;
       case EDJE_PART_TYPE_BOX:
          GET_IMAGE(gp->bg, sd->e, BOX_BG_IMG);
