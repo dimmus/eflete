@@ -498,8 +498,8 @@ _on_part_drag_##VALUE2##_change(void *data, \
                                 void *event_info __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
-   Eina_Bool value = elm_check_state_get(obj); \
-   Eina_Bool old_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, \
+   int value = elm_spinner_value_get(obj); \
+   int old_value = edje_edit_part_drag_##VALUE2##_get(pd->wm_style->obj, \
                                                          pd->wm_part->name);\
    edje_edit_part_drag_##VALUE2##_set(pd->wm_style->obj, pd->wm_part->name, value); \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
