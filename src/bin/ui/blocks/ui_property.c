@@ -946,7 +946,6 @@ prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
    elm_object_disabled_set(pd->part_drag.step_x, !bx);
    elm_object_disabled_set(pd->part_drag.step_y, !by);
    elm_object_disabled_set(pd->part_drag.confine, !(bx | by));
-   elm_object_disabled_set(pd->part_drag.event, !(bx | by));
 
    if (collapse)
      elm_frame_collapse_set(pd->part_drag.frame, !(bx | by));
