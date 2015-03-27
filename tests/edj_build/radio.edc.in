@@ -355,4 +355,33 @@ group { name: "load/layout/test";
       }
    }
 }
+group { name: "layout/table";
+   parts {
+     part { name: "table";
+        type: TABLE;
+        mouse_events: 0;
+        scale: 1;
+        table {
+           items {
+              item {
+                 type: GROUP;
+                 name: "first";
+                 source: "load/layout/test";
+                 align: -1.0 -1.0;
+                 position: 0 0;
+              }
+              item {
+                 type: GROUP;
+                 name: "second";
+                 source: "load/layout/test";
+                 align: -1.0 -1.0;
+                 position: 1 1;
+              }
+           }
+        }
+        description { state: "default" 0.0;
+        }
+      }
+   }
+}
 }

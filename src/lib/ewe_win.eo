@@ -1,0 +1,8 @@
+class Ewe_Win (Elm_Win)
+{
+   eo_prefix: ewe_obj_win;
+   legacy_prefix: ewe_win;
+   data: Ewe_Win_Data;
+}
+
+

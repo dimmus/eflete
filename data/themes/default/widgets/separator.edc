@@ -1,4 +1,4 @@
-group { name: "elm/separator/horizontal/eflete/property";
+group { name: "elm/separator/horizontal/default";
    images {
       image: "group-border-bg-upper.png" COMP;
    }

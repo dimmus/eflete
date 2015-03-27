@@ -3,9 +3,14 @@ MAINTAINERCLEANFILES = Makefile.in
 ACLOCAL_AMFLAGS = -I m4
 
 TESTS = \
+ewe_init_test \
+ewe_tabs_test \
+ewe_combobox_test \
+ewe_entry_test \
+ewe_ruler_test \
+ewe_statusbar_test \
 eflete_test \
 part_dialog_test \
-save_file_dialog_test \
 alloc_test \
 colorclass_editor_test \
 sound_editor_test \
@@ -36,49 +41,185 @@ live_widget_test \
 about_window_test \
 history_test \
 colorselector_test \
-shortcuts_test
+shortcuts_test \
+ui_item_dialog_test
+
 
 check_PROGRAMS = ${TESTS}
 
 FLAGS = \
--I${top_srcdir}/src \
--I${top_builddir}/src \
--I${top_srcdir}/src/alloc \
--I${top_srcdir}/src/external \
--I${top_srcdir}/src/common \
--I${top_srcdir}/src/logger \
--I${top_srcdir}/src/loop_manager \
--I${top_srcdir}/src/project_manager \
--I${top_srcdir}/src/config \
--I${top_srcdir}/src/history \
--I${top_srcdir}/src/ui \
--I${top_srcdir}/src/ui/container \
--I${top_srcdir}/src/ui/blocks \
--I${top_srcdir}/src/ui/dialogs \
--I${top_srcdir}/src/ui/editors \
--I${top_srcdir}/src/ui/modal_window \
--I${top_srcdir}/src/ui/notification \
--I${top_srcdir}/src/ui/preference \
--I${top_srcdir}/src/ui/workspace \
--I${top_srcdir}/src/ui/workspace/groupedit \
--I${top_srcdir}/src/ui/live_view \
--I${top_srcdir}/src/ui/live_view/elementary \
--I${top_srcdir}/src/ui/signal_list \
--I${top_srcdir}/src/ui/shortcuts \
+-I${top_srcdir}/src/lib \
+-I${top_srcdir}/src/bin \
+-I${top_srcdir}/src/bin/alloc \
+-I${top_srcdir}/src/bin/external \
+-I${top_srcdir}/src/bin/common \
+-I${top_srcdir}/src/bin/logger \
+-I${top_srcdir}/src/bin/loop_manager \
+-I${top_srcdir}/src/bin/project_manager \
+-I${top_srcdir}/src/bin/config \
+-I${top_srcdir}/src/bin/history \
+-I${top_srcdir}/src/bin/ui \
+-I${top_srcdir}/src/bin/ui/container \
+-I${top_srcdir}/src/bin/ui/blocks \
+-I${top_srcdir}/src/bin/ui/dialogs \
+-I${top_srcdir}/src/bin/ui/editors \
+-I${top_srcdir}/src/bin/ui/modal_window \
+-I${top_srcdir}/src/bin/ui/notification \
+-I${top_srcdir}/src/bin/ui/preference \
+-I${top_srcdir}/src/bin/ui/workspace \
+-I${top_srcdir}/src/bin/ui/workspace/groupedit \
+-I${top_srcdir}/src/bin/ui/live_view \
+-I${top_srcdir}/src/bin/ui/live_view/elementary \
+-I${top_srcdir}/src/bin/ui/signal_list \
+-I${top_srcdir}/src/bin/ui/shortcuts \
 -I${top_srcdir}/tests \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
 @ENVENTOR_CFLAGS@ \
-@EWE_CFLAGS@ \
 @EFLETE_DEFINE@ \
 @CHECK_CFLAGS@
 
-LD = $(top_builddir)/src/libete.a \
+LD = $(top_builddir)/src/bin/libete.a \
 @CHECK_LIBS@ \
 @EFL_LIBS@ \
-@EWE_LIBS@ \
 @ELEMENTARY_LIBS@ \
+${top_srcdir}/src/lib/libewe.la \
 @ENVENTOR_LIBS@
+
+ewe_init_test_SOURCES = \
+utc_common.h \
+test_ewe_init/test_ewe_init.c \
+test_ewe_init/test_ewe_init.h \
+test_ewe_init/ewe_init.c
+ewe_init_test_CFLAGS = ${FLAGS}
+ewe_init_test_LDADD = ${LD}
+
+ewe_entry_test_SOURCES = \
+utc_common.h \
+test_ewe_entry/test_ewe_entry.c \
+test_ewe_entry/test_ewe_entry.h \
+test_ewe_entry/ewe_entry_add.c \
+test_ewe_entry/ewe_entry_regex_check.c \
+test_ewe_entry/ewe_entry_regex_set.c \
+test_ewe_entry/ewe_entry_regex_unset.c \
+test_ewe_entry/ewe_entry_regex_glow.c \
+test_ewe_entry/ewe_entry_regex_error_get.c \
+test_ewe_entry/ewe_entry_regex_autocheck.c
+ewe_entry_test_CFLAGS = ${FLAGS}
+ewe_entry_test_LDADD = ${LD}
+
+ewe_ruler_test_SOURCES = \
+utc_common.h \
+test_ewe_ruler/test_ewe_ruler.c \
+test_ewe_ruler/test_ewe_ruler.h \
+test_ewe_ruler/ewe_ruler_add.c \
+test_ewe_ruler/ewe_ruler_scale_add.c \
+test_ewe_ruler/ewe_ruler_scale_del.c \
+test_ewe_ruler/ewe_ruler_scale_visible_get.c \
+test_ewe_ruler/ewe_ruler_scale_visible_set.c \
+test_ewe_ruler/ewe_ruler_scale_middle_mark_get.c \
+test_ewe_ruler/ewe_ruler_scale_middle_mark_set.c \
+test_ewe_ruler/ewe_ruler_horizontal_get.c \
+test_ewe_ruler/ewe_ruler_horizontal_set.c \
+test_ewe_ruler/ewe_ruler_step_set.c \
+test_ewe_ruler/ewe_ruler_step_get.c \
+test_ewe_ruler/ewe_ruler_value_step_set.c \
+test_ewe_ruler/ewe_ruler_value_step_get.c \
+test_ewe_ruler/ewe_ruler_zero_offset_set.c \
+test_ewe_ruler/ewe_ruler_zero_offset_get.c \
+test_ewe_ruler/ewe_ruler_format_get.c \
+test_ewe_ruler/ewe_ruler_format_set.c \
+test_ewe_ruler/ewe_ruler_style_get.c \
+test_ewe_ruler/ewe_ruler_style_set.c \
+test_ewe_ruler/ewe_ruler_marker_style_get.c \
+test_ewe_ruler/ewe_ruler_marker_style_set.c \
+test_ewe_ruler/ewe_ruler_marker_absolute_get.c \
+test_ewe_ruler/ewe_ruler_marker_absolute_set.c \
+test_ewe_ruler/ewe_ruler_marker_relative_get.c \
+test_ewe_ruler/ewe_ruler_marker_relative_set.c \
+test_ewe_ruler/ewe_ruler_marker_visible_get.c \
+test_ewe_ruler/ewe_ruler_marker_visible_set.c \
+test_ewe_ruler/ewe_ruler_marker_add.c \
+test_ewe_ruler/ewe_ruler_marker_del.c
+
+ewe_ruler_test_CFLAGS = ${FLAGS}
+ewe_ruler_test_LDADD = ${LD}
+
+ewe_combobox_test_SOURCES = \
+utc_common.h \
+test_ewe_combobox/test_ewe_combobox.c \
+test_ewe_combobox/test_ewe_combobox.h \
+test_ewe_combobox/ewe_combobox_add.c \
+test_ewe_combobox/ewe_combobox_item_add.c \
+test_ewe_combobox/ewe_combobox_item_del.c \
+test_ewe_combobox/ewe_combobox_item_title_get.c \
+test_ewe_combobox/ewe_combobox_item_title_set.c \
+test_ewe_combobox/ewe_combobox_items_list_get.c \
+test_ewe_combobox/ewe_combobox_select_item_get.c \
+test_ewe_combobox/ewe_combobox_select_item_set.c
+ewe_combobox_test_CFLAGS = ${FLAGS}
+ewe_combobox_test_LDADD = ${LD}
+
+ewe_tabs_test_SOURCES = \
+utc_common.h \
+test_ewe_tabs/test_ewe_tabs.c \
+test_ewe_tabs/test_ewe_tabs.h \
+test_ewe_tabs/ewe_tabs_item_append.c \
+test_ewe_tabs/ewe_tabs_item_prepend.c \
+test_ewe_tabs/ewe_tabs_items_list_get.c \
+test_ewe_tabs/ewe_tabs_add.c \
+test_ewe_tabs/ewe_tabs_item_content_set.c \
+test_ewe_tabs/ewe_tabs_item_content_unset.c \
+test_ewe_tabs/ewe_tabs_item_content_get.c \
+test_ewe_tabs/ewe_tabs_item_icon_set.c \
+test_ewe_tabs/ewe_tabs_item_icon_unset.c \
+test_ewe_tabs/ewe_tabs_item_button_set.c \
+test_ewe_tabs/ewe_tabs_item_button_unset.c \
+test_ewe_tabs/ewe_tabs_active_item_set.c \
+test_ewe_tabs/ewe_tabs_active_item_get.c \
+test_ewe_tabs/ewe_tabs_item_title_set.c \
+test_ewe_tabs/ewe_tabs_item_title_get.c \
+test_ewe_tabs/ewe_tabs_item_del.c \
+test_ewe_tabs/ewe_tabs_item_disabled_set.c \
+test_ewe_tabs/ewe_tabs_item_disabled_get.c \
+test_ewe_tabs/ewe_tabs_orient_horizontal_set.c \
+test_ewe_tabs/ewe_tabs_orient_horizontal_get.c \
+test_ewe_tabs/ewe_tabs_elm_widget_style_set.c \
+test_ewe_tabs/ewe_tabs_elm_widget_style_get.c
+ewe_tabs_test_CFLAGS = ${FLAGS}
+ewe_tabs_test_LDADD = ${LD}
+
+ewe_statusbar_test_SOURCES = \
+utc_common.h \
+test_ewe_statusbar/test_ewe_statusbar.c \
+test_ewe_statusbar/test_ewe_statusbar.h \
+test_ewe_statusbar/ewe_statusbar_add.c \
+test_ewe_statusbar/ewe_statusbar_clear.c \
+test_ewe_statusbar/ewe_statusbar_item_append.c \
+test_ewe_statusbar/ewe_statusbar_item_content_get.c \
+test_ewe_statusbar/ewe_statusbar_item_content_set.c \
+test_ewe_statusbar/ewe_statusbar_item_content_unset.c \
+test_ewe_statusbar/ewe_statusbar_item_id_get.c \
+test_ewe_statusbar/ewe_statusbar_item_insert_after.c \
+test_ewe_statusbar/ewe_statusbar_item_insert_before.c \
+test_ewe_statusbar/ewe_statusbar_item_label_get.c \
+test_ewe_statusbar/ewe_statusbar_item_label_set.c \
+test_ewe_statusbar/ewe_statusbar_item_prepend.c \
+test_ewe_statusbar/ewe_statusbar_item_remove.c \
+test_ewe_statusbar/ewe_statusbar_item_statusbar_get.c \
+test_ewe_statusbar/ewe_statusbar_item_width_get.c \
+test_ewe_statusbar/ewe_statusbar_item_width_set.c \
+test_ewe_statusbar/ewe_statusbar_items_align_get.c \
+test_ewe_statusbar/ewe_statusbar_items_align_set.c \
+test_ewe_statusbar/ewe_statusbar_items_list_get.c \
+test_ewe_statusbar/ewe_statusbar_items_padding_get.c \
+test_ewe_statusbar/ewe_statusbar_items_padding_set.c \
+test_ewe_statusbar/ewe_statusbar_items_swap.c
+ewe_statusbar_test_CFLAGS = ${FLAGS}
+ewe_statusbar_test_LDADD = ${LD}
+
+
+
 
 eflete_test_SOURCES = \
 test_eflete/test_eflete.c \
@@ -97,13 +238,6 @@ test_part_dialog/test_part_dialog.c \
 test_part_dialog/part_dialog_add.c
 part_dialog_test_CFLAGS = ${FLAGS}
 part_dialog_test_LDADD = ${LD}
-
-save_file_dialog_test_SOURCES = \
-test_save_file_dialog/test_save_file_dialog.c \
-test_save_file_dialog/save_as_edc_file.c \
-test_save_file_dialog/save_as_edj_file.c
-save_file_dialog_test_CFLAGS = ${FLAGS}
-save_file_dialog_test_LDADD = ${LD}
 
 alloc_test_SOURCES = \
 test_alloc/test_alloc.c \
@@ -131,6 +265,7 @@ test_widget_manager/wm_program_signals_list_free.c \
 test_widget_manager/wm_style_add.c \
 test_widget_manager/wm_style_copy.c \
 test_widget_manager/wm_style_free.c \
+test_widget_manager/wm_style_data_reload.c \
 test_widget_manager/wm_style_object_find.c \
 test_widget_manager/wm_widget_add.c \
 test_widget_manager/wm_widget_free.c \
@@ -265,7 +400,6 @@ test_ui_block/ui_block_live_view.c \
 test_ui_block/ui_block_property.c \
 test_ui_block/ui_block_signal_list.c \
 test_ui_block/ui_block_state_list.c \
-test_ui_block/ui_block_title_text.c \
 test_ui_block/ui_block_title_visible.c \
 test_ui_block/ui_block_content_visible.c \
 test_ui_block/ui_block_widget_list.c \
@@ -380,7 +514,10 @@ test_ui_workspace/workspace_edit_object_part_restack.c \
 test_ui_workspace/workspace_highlight_align_visible_get.c \
 test_ui_workspace/workspace_highlight_align_visible_set.c \
 test_ui_workspace/workspace_object_area_visible_get.c \
-test_ui_workspace/workspace_object_area_visible_set.c
+test_ui_workspace/workspace_object_area_visible_set.c \
+test_ui_workspace/workspace_edit_object_part_item_selected_set.c \
+test_ui_workspace/workspace_edit_object_part_item_add.c \
+test_ui_workspace/workspace_edit_object_part_item_del.c
 ui_workspace_test_CFLAGS = ${FLAGS}
 ui_workspace_test_LDADD = ${LD}
 
@@ -488,6 +625,11 @@ test_history/history_module_depth_get.c
 history_test_CFLAGS = ${FLAGS}
 history_test_LDADD = ${LD}
 
+ui_item_dialog_test_SOURCES = \
+test_ui_item_dialog/test_ui_item_dialog.c \
+test_ui_item_dialog/item_dialog_add.c
+ui_item_dialog_test_CFLAGS = ${FLAGS}
+ui_item_dialog_test_LDADD = ${LD}
 
 coverage:
 	echo "<html><body>" > ../coverage.html

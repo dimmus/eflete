@@ -101,4 +101,8 @@ base: "font="FN_B" font_size=13 color=#d6d6d6 wrap=none text_class=label align=c
       base: "font="FN" font_size=16 color=#FFFFFF text_class=label left_margin=2 right_margin=2";
       tag:  "b" "+ font_weight=Bold";
    }
+   style { name: "frame";
+      base: "font="FN" font_size=13 font_style=Normal color=#d6d6d6ff shadow_color=#FFF glow_color=#FFF glow2_color=#FFF backing_color=#FFF align=middle left_margin=6 right_margin=6";
+         }
+
 }

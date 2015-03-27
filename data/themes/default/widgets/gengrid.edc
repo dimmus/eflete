@@ -1,5 +1,5 @@
 #define BORDER_PADDING 5 5
-group { name: "elm/gengrid/item/eflete/default/default";
+group { name: "elm/gengrid/item/default/default";
    data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    images {
@@ -258,7 +258,7 @@ group { name: "elm/gengrid/item/eflete/default/default";
 
 #define SOUND_EDITOR_BG_COLOR 17 70 98 255
 #define SOUND_EDITOR_HIGHLIGHT_COLOR 6 130 134 255
-group { name: "elm/gengrid/item/eflete/sound_editor/default";
+group { name: "elm/gengrid/item/sound_editor/default";
    data.item: "contents" "elm.swallow.icon";
    data.item: "texts" "elm.label.type elm.label";
    images {
@@ -439,7 +439,7 @@ group { name: "elm/gengrid/item/eflete/sound_editor/default";
 #define GROUP_INDEX_COLOR 9 130 194 255
 #define GROUP_INDEX_BG_COLOR 48 48 48 180
 
-group { "elm/gengrid/item/group_index/eflete/default";
+group { "elm/gengrid/item/group_index/default";
    images.image: "group_index_decoration.png" COMP;
    data.item: "texts" "elm.text";
    parts {
@@ -544,7 +544,7 @@ group { "elm/gengrid/item/group_index/eflete/default";
 #undef GROUP_INDEX_COLOR
 #undef GROUP_INDEX_BG_COLOR
 
-group { name: "elm/gengrid/base/eflete/default";
+group { name: "elm/gengrid/base/default";
    images {
       image: "scroll-indicator.png" COMP;
       image: "scroll-area-dark.png" COMP;

@@ -147,6 +147,28 @@ Suite* test_suite (void) {
    tcase_add_test(tcase, workspace_object_area_visible_set_test_p2);
    tcase_add_test(tcase, workspace_object_area_visible_set_test_n);
 
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n3);
+   tcase_add_test(tcase, workspace_edit_object_part_item_selected_set_test_n4);
+
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n3);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n4);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n5);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n6);
+   tcase_add_test(tcase, workspace_edit_object_part_item_add_test_n7);
+
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_p1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n1);
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n2);
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n3);
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n4);
+   tcase_add_test(tcase, workspace_edit_object_part_item_del_test_n5);
+
    suite_add_tcase(suite, tcase);
    return suite;
 }

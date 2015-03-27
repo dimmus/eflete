@@ -87,13 +87,13 @@ EFLETE_TEST(history_redo_test_p1)
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to redo diff with INT value type.");
+   ck_assert_msg(result, "Failed to redo diff with VAL_INT value type.");
    check_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value, "Value didn't restore");
 
@@ -162,13 +162,13 @@ EFLETE_TEST(history_redo_test_p2)
    history_module_add(style->obj);
    old_value = edje_edit_part_drag_x_get(style->obj, "bg");
    edje_edit_part_drag_x_set(style->obj, "bg", new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_x_set,
                     "Drag x", "bg", NULL, 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to redo diff with INT value type, setted without state");
+   ck_assert_msg(result, "Failed to redo diff with VAL_INT value type, setted without state");
    check_value = edje_edit_part_drag_x_get(style->obj, "bg");
    ck_assert_msg(check_value == new_value, "Value didn't restore");
 
@@ -245,20 +245,20 @@ EFLETE_TEST(history_redo_test_p3)
    history_module_add(style->obj);
    old_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
    edje_edit_part_drag_y_set(style->obj, "bg", new_value_drag_y);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_drag_y,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_drag_y,
                     new_value_drag_y,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_y_set,
                     "Drag y", "bg", NULL, 0.0);
    old_value_min_w = edje_edit_state_min_w_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_w_set(style->obj, "bg", "default", 0.0, new_value_min_w);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_min_w,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_min_w,
                     new_value_min_w, "elm/radio/base/def",
                     (void *)edje_edit_state_min_w_set,
                     "Min h", "bg", "default", 0.0);
    history_undo(style->obj, 2);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to redo diff with INT value type");
+   ck_assert_msg(result, "Failed to redo diff with VAL_INT value type");
    check_value_drag_y = edje_edit_part_drag_y_get(style->obj, "bg");
    ck_assert_msg(check_value_drag_y == new_value_drag_y, "Didn't restore value'");
    check_value_min_w = edje_edit_state_min_w_get(style->obj, "bg", "default", 0.0);
@@ -337,12 +337,12 @@ EFLETE_TEST(history_redo_test_p4)
    history_module_add(style->obj);
    old_value_drag_x = edje_edit_part_drag_x_get(style->obj, "bg");
    edje_edit_part_drag_x_set(style->obj, "bg", new_value_drag_x);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_drag_x, new_value_drag_x,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_drag_x, new_value_drag_x,
                     "elm/radio/base/def", (void *)edje_edit_part_drag_x_set,
                     "Drag x", "bg", NULL, 0.0);
    old_value_min_h = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value_min_h);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value_min_h, new_value_min_h,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value_min_h, new_value_min_h,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
    history_undo(style->obj, 2);
@@ -419,13 +419,13 @@ EFLETE_TEST(history_redo_test_p5)
    history_module_add(style->obj);
    old_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_aspect_max_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, DOUBLE, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_DOUBLE, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_aspect_max_set,
                     "Min h", "bg", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to recover diff with DOUBLE value type.");
+   ck_assert_msg(result, "Failed to recover diff with VAL_DOUBLE value type.");
    check_value = edje_edit_state_aspect_max_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value, "Action doesn't change value");
 
@@ -497,13 +497,13 @@ EFLETE_TEST(history_redo_test_p6)
    tmp = edje_edit_part_clip_to_get(style->obj, "bg");
    old_value = eina_stringshare_add(tmp);
    edje_edit_part_clip_to_set(style->obj, "bg", new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, STRING, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_clip_to_set,
                     "clip to", "bg", NULL, 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to restore diff with STRING value type.");
+   ck_assert_msg(result, "Failed to restore diff with VAL_STRING value type.");
    tmp = edje_edit_part_clip_to_get(style->obj, "bg");
    check_value = eina_stringshare_add(tmp);
    ck_assert_msg(check_value == new_value, "Restored action doesn't change value");
@@ -580,13 +580,13 @@ EFLETE_TEST(history_redo_test_p7)
    tmp = edje_edit_state_rel1_to_x_get(style->obj, "radio", "default", 0.0);
    old_value = eina_stringshare_add(tmp);
    edje_edit_state_rel1_to_x_set(style->obj, "radio", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, STRING, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_rel1_to_x_set,
                     "clip to", "radio", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to recover diff with STRING value type.");
+   ck_assert_msg(result, "Failed to recover diff with VAL_STRING value type.");
    tmp = edje_edit_state_rel1_to_x_get(style->obj, "radio", "default", 0.0);
    check_value = eina_stringshare_add(tmp);
    ck_assert_msg(check_value == new_value, "Recover action doesn't change value");
@@ -664,14 +664,14 @@ EFLETE_TEST(history_redo_test_p8)
                              &oldb, &olda);
    edje_edit_state_color_set(style->obj, "radio", "default", 0.0, newr, newg,
                              newb, newa);
-   history_diff_add(style->obj, PROPERTY, MODIFY, FOUR, oldr, oldg, oldb, olda,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_FOUR, oldr, oldg, oldb, olda,
                     newr, newg, newb, newa, "elm/radio/base/def",
                     (void *)edje_edit_state_color_set,
                     "clip to", "radio", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to recover diff with FOUR value type.");
+   ck_assert_msg(result, "Failed to recover diff with VAL_FOUR value type.");
    edje_edit_state_color_get(style->obj, "radio", "default", 0.0, &checkr, &checkg,
                              &checkb, &checka);
    ck_assert_msg(((checkr == newr) && (checkg == newg) && (checkb == newb) &&
@@ -743,14 +743,18 @@ EFLETE_TEST(history_redo_test_p9)
    history_module_add(style->obj);
    old_value = edje_edit_group_min_h_get(style->obj);
    edje_edit_group_min_h_set(style->obj, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, ONE, old_value, new_value,
-                    "elm/radio/base/def", (void *)edje_edit_group_min_h_set,
-                    "Min h", NULL, NULL, 0.0);
+   edje_edit_group_max_h_set(style->obj, new_value);
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_GROUP, old_value, new_value,
+                    old_value, new_value, (void *)edje_edit_group_min_h_set,
+                    "elm/radio/base/def", (void *)edje_edit_group_max_h_set,
+                    "Group height", NULL, NULL, 0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to recover diff with ONE value type.");
+   ck_assert_msg(result, "Failed to recover diff with VAL_GROUP value type.");
    check_value = edje_edit_group_min_h_get(style->obj);
+   ck_assert_msg(check_value == new_value, "Recovered action doesn't change value");
+   check_value = edje_edit_group_max_h_get(style->obj);
    ck_assert_msg(check_value == new_value, "Recovered action doesn't change value");
 
    pm_project_close(app->project);
@@ -818,13 +822,13 @@ EFLETE_TEST(history_redo_test_p10)
    part = wm_part_by_name_find(style, eina_stringshare_add(old_value));
    edje_edit_part_name_set(style->obj, old_value, new_value);
    part->name = eina_stringshare_add(new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, RENAME, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_RENAME, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_part_name_set,
                     "Rename", new_value, NULL, 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to redo diff with RENAME value type.");
+   ck_assert_msg(result, "Failed to redo diff with VAL_RENAME value type.");
    result = edje_edit_part_exist(style->obj, new_value);
    ck_assert_msg(result, "Recover action doesn't change value");
 
@@ -889,14 +893,14 @@ EFLETE_TEST(history_redo_test_p11)
    ui_style_clicked(app, style);
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
-   history_diff_add(style->obj, PROPERTY, ADD, STRING, name,
+   history_diff_add(style->obj, PROPERTY, ADD, VAL_STRING, name,
                     (void *)edje_edit_state_tween_del, "elm/radio/base/def",
                     (void *)edje_edit_state_tween_add,
                     "tween add", "bg", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to restore diff with ADD action and STRING value type.");
+   ck_assert_msg(result, "Failed to restore diff with ADD action and VAL_STRING value type.");
    tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(eina_list_count(tween_list) == 1,
                  "Restored action doesn't change value");
@@ -964,14 +968,14 @@ EFLETE_TEST(history_redo_test_p12)
    history_module_add(style->obj);
    edje_edit_state_tween_add(style->obj, "bg", "default", 0.0, name);
    edje_edit_state_tween_del(style->obj, "bg", "default", 0.0, name);
-   history_diff_add(style->obj, PROPERTY, DEL, STRING, name,
+   history_diff_add(style->obj, PROPERTY, DEL, VAL_STRING, name,
                     (void *)edje_edit_state_tween_add, "elm/radio/base/def",
                     (void *)edje_edit_state_tween_del,
                     "tween del", "bg", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to restore diff with DEL action and STRING value type.");
+   ck_assert_msg(result, "Failed to restore diff with DEL action and VAL_STRING value type.");
    tween_list = edje_edit_state_tweens_list_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(eina_list_count(tween_list) == 0,
                  "Restored action doesn't change value");
@@ -1045,14 +1049,14 @@ EFLETE_TEST(history_redo_test_p13)
    old_value_2 = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_max_h_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_max_w_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, HLIGHT, INT, old_value_1, new_value_1,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_INT, old_value_1, new_value_1,
                     old_value_2, new_value_2, (void *)edje_edit_state_max_h_set,
                     "elm/radio/base/def", (void *)edje_edit_state_max_w_set,
                     "max size", "bg", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to restore diff with HLIGHT action and INT value type.");
+   ck_assert_msg(result, "Failed to restore diff with CONTAINER action and VAL_INT value type.");
    check_value = edje_edit_state_max_h_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value_1, "Max height didn't restored");
    check_value = edje_edit_state_max_w_get(style->obj, "bg", "default", 0.0);
@@ -1127,14 +1131,14 @@ EFLETE_TEST(history_redo_test_p14)
    old_value_2 = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_align_x_set(style->obj, "bg", "default", 0.0, new_value_1);
    edje_edit_state_align_y_set(style->obj, "bg", "default", 0.0, new_value_2);
-   history_diff_add(style->obj, PROPERTY, HLIGHT, DOUBLE, old_value_1, new_value_1,
+   history_diff_add(style->obj, PROPERTY, CONTAINER, VAL_DOUBLE, old_value_1, new_value_1,
                     old_value_2, new_value_2, (void *)edje_edit_state_align_x_set,
                     "elm/radio/base/def", (void *)edje_edit_state_align_y_set,
                     "align", "bg", "default", 0.0);
    history_undo(style->obj, 1);
 
    result = history_redo(style->obj, 1);
-   ck_assert_msg(result, "Failed to restore diff with HLIGHT action, DOUBLE value type.");
+   ck_assert_msg(result, "Failed to restore diff with CONTAINER action, VAL_DOUBLE value type.");
    check_value = edje_edit_state_align_x_get(style->obj, "bg", "default", 0.0);
    ck_assert_msg(check_value == new_value_1, "Align x didn't restored");
    check_value = edje_edit_state_align_y_get(style->obj, "bg", "default", 0.0);
@@ -1531,6 +1535,7 @@ EFLETE_TEST(history_redo_test_n1)
    ck_assert_msg(!result, "Change was restored with uninitialized history module.");
 
    ecore_evas_free(ee);
+   teardown("./history_redo_test_n1");
    elm_shutdown();
 }
 END_TEST
@@ -1589,7 +1594,7 @@ EFLETE_TEST(history_redo_test_n2)
    history_module_add(style->obj);
    old_value = edje_edit_state_min_h_get(style->obj, "bg", "default", 0.0);
    edje_edit_state_min_h_set(style->obj, "bg", "default", 0.0, new_value);
-   history_diff_add(style->obj, PROPERTY, MODIFY, INT, old_value, new_value,
+   history_diff_add(style->obj, PROPERTY, MODIFY, VAL_INT, old_value, new_value,
                     "elm/radio/base/def", (void *)edje_edit_state_min_h_set,
                     "Min h", "bg", "default", 0.0);
 

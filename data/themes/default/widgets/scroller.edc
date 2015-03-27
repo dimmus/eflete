@@ -1,4 +1,4 @@
-group { name: "elm/scroller/base/eflete/default";
+group { name: "elm/scroller/base/default";
    images {
       image: "scroll-bar.png" COMP;
       image: "scroll-runner-vbar.png" COMP;
@@ -379,8 +379,8 @@ group { name: "elm/scroller/base/eflete/default";
    }
 }
 
-group { name: "elm/scroller/base/eflete/workspace";
-   inherit: "elm/scroller/base/eflete/default";
+group { name: "elm/scroller/base/workspace";
+   inherit: "elm/scroller/base/default";
    parts {
       part { name: "base";
          type: SPACER;

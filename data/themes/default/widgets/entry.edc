@@ -412,7 +412,7 @@ group { name: "elm/entry/anchor/style_editor";
    }
 }
 
-group { name: "elm/entry/base/eflete/default";
+group { name: "elm/entry/base/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
@@ -437,9 +437,9 @@ group { name: "elm/entry/base/eflete/default";
          entry_mode: EDITABLE;
          cursor_mode: BEFORE;
          multiline: 1;
-         source: "elm/entry/selection/eflete/default";
-         source4: "elm/entry/cursor/eflete/default";
-         source6: "elm/entry/anchor/eflete/default";
+         source: "elm/entry/selection/default";
+         source4: "elm/entry/cursor/default";
+         source6: "elm/entry/anchor/default";
          description { state: "default" 0.0;
             text {
                style: "eflete_text_style";
@@ -490,9 +490,9 @@ group { name: "elm/entry/base/eflete/default";
    }
 }
 
-group { name: "elm/scroller/entry/eflete/default";
-   alias: "elm/scroller/entry/eflete/search_field";
-   inherit: "elm/scroller/base/eflete/default";
+group { name: "elm/scroller/entry/default";
+   alias: "elm/scroller/entry/search_field";
+   inherit: "elm/scroller/base/default";
    images {
       image: "input-text-bg.png" COMP;
    }
@@ -613,8 +613,8 @@ group { name: "elm/scroller/entry/eflete/default";
    }
 }
 
-group { name: "elm/scroller/entry_single/eflete/default";
-   alias: "elm/scroller/entry_single/eflete/search_field";
+group { name: "elm/scroller/entry_single/default";
+   alias: "elm/scroller/entry_single/search_field";
    images {
       image: "input-text-bg.png" COMP;
    }
@@ -831,8 +831,8 @@ group { name: "elm/scroller/entry_single/eflete/default";
    }
 }
 
-group { name: "elm/scroller/entry_single/eflete/search_field";
-   inherit: "elm/scroller/entry_single/eflete/default";
+group { name: "elm/scroller/entry_single/search_field";
+   inherit: "elm/scroller/entry_single/default";
    parts {
       part { name: "base";
          type: SPACER;
@@ -845,8 +845,8 @@ group { name: "elm/scroller/entry_single/eflete/search_field";
    }
 }
 
-group { name: "elm/entry/base-single/eflete/default";
-   inherit: "elm/entry/base/eflete/default";
+group { name: "elm/entry/base-single/default";
+   inherit: "elm/entry/base/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
@@ -881,8 +881,8 @@ group { name: "elm/entry/base-single/eflete/default";
    }
 }
 
-group { name: "elm/entry/base-single/eflete/search_field";
-   inherit: "elm/entry/base-single/eflete/default";
+group { name: "elm/entry/base-single/search_field";
+   inherit: "elm/entry/base-single/default";
    parts {
       part { name: "elm.guide";
          type: TEXTBLOCK;
@@ -901,7 +901,7 @@ group { name: "elm/entry/base-single/eflete/search_field";
    }
 }
 
-group { name: "elm/entry/selection/eflete/default";
+group { name: "elm/entry/selection/default";
    parts {
       part { name: "bg";
          type: RECT;
@@ -913,7 +913,7 @@ group { name: "elm/entry/selection/eflete/default";
    }
 }
 
-group { name: "elm/entry/anchor/eflete/default";
+group { name: "elm/entry/anchor/default";
    parts {
       part { name: "bg";
          type: RECT;
@@ -925,7 +925,7 @@ group { name: "elm/entry/anchor/eflete/default";
    }
 }
 
-group { name: "elm/entry/cursor/eflete/default";
+group { name: "elm/entry/cursor/default";
    min: 1 0;
    images.image: "white_bar_vert_glow.png" COMP;
    parts {

@@ -31,6 +31,9 @@ check: Makefile
 	$(builddir)/workspace_edit_object_part_del.edj \
 	$(builddir)/workspace_edit_object_part_state_set.edj \
 	$(builddir)/workspace_edit_object_visible_set.edj \
+	$(builddir)/workspace_edit_object_part_item_selected_set.edj \
+	$(builddir)/workspace_edit_object_part_item_add.edj \
+	$(builddir)/workspace_edit_object_part_item_del.edj \
 	$(builddir)/workspace_highlight_align_visible_get.edj \
 	$(builddir)/workspace_highlight_align_visible_set.edj \
 	$(builddir)/workspace_object_area_visible_get.edj \
@@ -63,6 +66,7 @@ check: Makefile
 	$(builddir)/wm_part_current_state_set.edj \
 	$(builddir)/wm_layouts_list_objects_load.edj \
 	$(builddir)/wm_style_free.edj \
+	$(builddir)/wm_style_data_reload.edj \
 	$(builddir)/wm_part_del.edj \
 	$(builddir)/wm_part_add.edj \
 	$(builddir)/widget_list.edj \
@@ -72,10 +76,10 @@ check: Makefile
 	$(builddir)/part_dialog.edj \
 	$(builddir)/main_window.edj \
 	$(builddir)/ui_edj_load.edj \
-	$(builddir)/save_file_dialog.edj \
 	$(builddir)/ui_style_clicked.edj \
 	$(builddir)/style_dialog.edj \
 	$(builddir)/state_dialog.edj \
+	$(builddir)/item_dialog.edj \
 	$(builddir)/colorclass_editor.edj \
 	$(builddir)/sound_editor.edj \
 	$(builddir)/history.edj \

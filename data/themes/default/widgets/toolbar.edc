@@ -1,4 +1,4 @@
-group { name: "elm/toolbar/base/eflete/default";
+group { name: "elm/toolbar/base/default";
    data.item: "icon_size" "16";
    parts {
       part { name: "base";
@@ -36,7 +36,7 @@ group { name: "elm/toolbar/base/eflete/default";
 }
 
 // === default item
-group { name: "elm/toolbar/item/eflete/default";
+group { name: "elm/toolbar/item/default";
    #define ICON     1
    #define LABEL    2
    #define MASK     3

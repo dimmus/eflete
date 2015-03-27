@@ -1,5 +1,5 @@
 #define BUTTON_BORDER 6 6 13 13
-group { name: "elm/button/base/eflete/default";
+group { name: "elm/button/base/default";
    images{
       image: "button-bg.png" COMP;
       image: "button-click-bg.png" COMP;
@@ -30,7 +30,7 @@ group { name: "elm/button/base/eflete/default";
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            fixed: 1 0;
+            fixed: 1 1;
             visible: 0;
             align: 0.0 0.5;
             rel1 {
@@ -44,13 +44,11 @@ group { name: "elm/button/base/eflete/default";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            fixed: 1 0;
             visible: 1;
             aspect: 1.0 1.0;
          }
          description { state: "icononly" 0.0;
             inherit: "default" 0.0;
-            fixed: 0 0;
             visible: 1;
          }
       }
@@ -79,7 +77,7 @@ group { name: "elm/button/base/eflete/default";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
@@ -310,7 +308,7 @@ group { name: "elm/button/base/eflete/default";
    }
 }
 
-group { name: "elm/button/base/eflete/simple";
+group { name: "elm/button/base/simple";
    images{
       image: "button-bg.png" COMP;
       image: "button-click-bg.png" COMP;
@@ -403,7 +401,7 @@ group { name: "elm/button/base/eflete/simple";
          }
          description { state: "visible" 0.0;
             inherit: "default" 0.0;
-            color: 214 214 214 255;
+            color: LIGHT_GREY_FONT_COLOR;
             color2: 0 0 0 0;
             color3: 0 0 0 0;
             visible: 1;
@@ -620,7 +618,7 @@ group { name: "elm/button/base/eflete/simple";
    }
 }
 group { name: "elm/button/base/separate";
-   inherit: "elm/button/base/eflete/simple";
+   inherit: "elm/button/base/simple";
    parts {
       part { name: "bg";
          description { state: "default" 0.0;
@@ -631,7 +629,7 @@ group { name: "elm/button/base/separate";
    }
 }
 
-group { name: "elm/button/base/eflete/elipsis";
+group { name: "elm/button/base/elipsis";
    images {
       image: "input-select-file.png" COMP;
       image: "input-select-file-clicked.png" COMP;
@@ -912,8 +910,8 @@ group { name: "elm/button/base/eflete/elipsis";
    }
 }
 
-group { name: "elm/button/base/eflete/btn";
-   inherit: "elm/button/base/eflete/default";
+group { name: "elm/button/base/btn";
+   inherit: "elm/button/base/default";
    parts {
       part { name: "elm.text";
          description { state: "visible" 0.0;

@@ -17,7 +17,7 @@
 * along with this program; If not, see www.gnu.org/licenses/gpl-2.0.html.
 */
 
-group { name: "elm/ctxpopup/bg/eflete/colorsel";
+group { name: "elm/ctxpopup/bg/colorsel";
    parts {
       part { name: "base";
          type: RECT;
@@ -35,7 +35,7 @@ group { name: "elm/ctxpopup/bg/eflete/colorsel";
    }
 }
 
-group { name: "elm/ctxpopup/base/eflete/colorsel";
+group { name: "elm/ctxpopup/base/colorsel";
    images {
       image: "popup-bg.png" COMP;
    }
@@ -218,7 +218,7 @@ group { name: "elm/ctxpopup/base/eflete/colorsel";
    }
 }
 
-group { name: "elm/ctxpopup/arrow/eflete/colorsel";
+group { name: "elm/ctxpopup/arrow/colorsel";
    parts {
       part { name: "base";
          type: RECT;
@@ -272,7 +272,7 @@ group { name: "elm/ctxpopup/arrow/eflete/colorsel";
    }
 }
 
-group { name: "elm/ctxpopup/bg/eflete/info";
+group { name: "elm/ctxpopup/bg/info";
    parts {
       part { name: "base";
          type: RECT;
@@ -290,7 +290,7 @@ group { name: "elm/ctxpopup/bg/eflete/info";
    }
 }
 
-group { name: "elm/ctxpopup/base/eflete/info";
+group { name: "elm/ctxpopup/base/info";
    images {
       image: "popup-bg.png" COMP;
    }
@@ -472,7 +472,7 @@ group { name: "elm/ctxpopup/base/eflete/info";
    }
 }
 
-group { name: "elm/ctxpopup/arrow/eflete/info";
+group { name: "elm/ctxpopup/arrow/info";
    parts {
       part { name: "base";
          type: RECT;

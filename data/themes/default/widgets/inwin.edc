@@ -1,5 +1,5 @@
 #define BORDER_PADDING 21
-group { name: "elm/win/inwin/eflete/default";
+group { name: "elm/win/inwin/default";
    images {
       image: "popup-bg.png" COMP;
       image: "popup-header-bg.png" COMP;

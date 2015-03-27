@@ -114,5 +114,9 @@ dnl AC_SUBST(EFLETE_LTLIBRARY_FLAGS)dnl
 dnl EFLETE_LTMODULE_FLAGS="-no-undefined -avoid-version"
 dnl AC_SUBST([EFLETE_LTMODULE_FLAGS])dnl
 dnl AC_MSG_NOTICE([Initialized AC_PACKAGE_NAME (AC_PACKAGE_VERSION) development=dev_version v_rel])
+EWE_LTLIBRARY_FLAGS="-no-undefined -version-info lt_cur:lt_rev:lt_age v_rel"
+AC_SUBST(EWE_LTLIBRARY_FLAGS)dnl
+EWE_LTMODULE_FLAGS="-no-undefined -avoid-version"
+AC_SUBST([EWE_LTMODULE_FLAGS])dnl
+AC_MSG_NOTICE([Initialized AC_PACKAGE_NAME (AC_PACKAGE_VERSION) development=dev_version v_rel])
 ])
-

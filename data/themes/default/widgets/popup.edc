@@ -3,7 +3,7 @@
 
 /*popup widget specific notify style style*/
 
-group { name: "elm/notify/block_events/popup/eflete";
+group { name: "elm/notify/block_events/popup/default";
    parts {
       part { name: "block_events";
          type: RECT;
@@ -37,7 +37,7 @@ group { name: "elm/notify/block_events/popup/eflete";
       }
    }
 }
-group { name: "elm/notify/center/popup/eflete";
+group { name: "elm/notify/center/popup/default";
    images {
       image: "popup-bg.png" COMP;
    }
@@ -85,7 +85,7 @@ group { name: "elm/notify/center/popup/eflete";
    }
 }
 
-group { name: "elm/label/base/popup/eflete";
+group { name: "elm/label/base/popup/default";
    parts {
       part { name: "left_top_padding";
          type: SPACER;
@@ -131,7 +131,7 @@ group { name: "elm/label/base/popup/eflete";
    }
 }
 
-group { name: "elm/popup/base/eflete";
+group { name: "elm/popup/base/default";
    images{
          image:"popup-header-bg.png" COMP;
          image:"separator-horizontal.png" COMP;
@@ -425,7 +425,7 @@ group { name: "elm/popup/base/eflete";
    } /* end of programs */
 }
 
-group { name: "elm/popup/content/popup/eflete";
+group { name: "elm/popup/content/popup/default";
    parts{
       part { name: "pad_t";
          type: SPACER;
@@ -499,7 +499,7 @@ group { name: "elm/popup/content/popup/eflete";
    }
 }
 
-group { name: "elm/popup/item/popup/eflete";
+group { name: "elm/popup/item/popup/default";
    script {
       public item_state = POPUP_ITEM_STATE_ENABLED;
    }
@@ -821,7 +821,7 @@ group { name: "elm/popup/item/popup/eflete";
    }
 }
 
-group { name: "elm/popup/buttons1/popup/eflete";
+group { name: "elm/popup/buttons1/popup/default";
    data.item: "action_area_height" "140";
    parts{
       part{ name:"elm.swallow.content.button1";
@@ -838,7 +838,7 @@ group { name: "elm/popup/buttons1/popup/eflete";
    }
 }
 
-group { name: "elm/popup/buttons2/popup/eflete";
+group { name: "elm/popup/buttons2/popup/default";
    data.item: "action_area_height" "140";
    parts{
       part{ name:"elm.swallow.content.button1";
@@ -885,7 +885,7 @@ group { name: "elm/popup/buttons2/popup/eflete";
    }
 }
 
-group { name: "elm/popup/buttons3/popup/eflete";
+group { name: "elm/popup/buttons3/popup/default";
    data.item: "action_area_height" "140";
    parts{
       part{ name:"elm.swallow.content.button1";

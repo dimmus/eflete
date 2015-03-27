@@ -22,12 +22,15 @@ EFLETE_TEST (_func_##_test_##tst) \
 { \
    elm_init(0, 0); \
    Evas_Object *parent, *content; \
-   App_Data apd; \
+   App_Data *apd; \
+   app_init(); \
+   apd = app_data_get(); \
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC); \
-   apd.block.bl = block_obj; \
+   elm_object_theme_set(parent, apd->theme); \
    content = cont; \
-   ck_assert_msg(_func_##_set(&apd, content) == pass_cond, "Function is not working right"); \
-   ck_assert_msg(_func_##_get(&apd) == result,"Content isn't set or returned properly"); \
+   apd->block.bl = block_obj; \
+   ck_assert_msg(_func_##_set(apd, content) == pass_cond, "Function is not working right"); \
+   ck_assert_msg(_func_##_get(apd) == result,"Content isn't set or returned properly"); \
    elm_shutdown(); \
 } \
 END_TEST
