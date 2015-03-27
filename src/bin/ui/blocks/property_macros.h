@@ -702,4 +702,52 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->wm_style->isModify = true; \
 }
 
+/*****************************************************************************/
+/*                          STATE 2 CHECK CONTROLS                           */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 2 check for
+ * state attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param TOOLTIP1 The first spinner tooltip
+ * @param TOOLTIP2 The second spinner tooltip
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2) \
+static Evas_Object * \
+prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
+   CHECK_ADD(item, pd->SUB.VALUE1) \
+   elm_object_style_set(pd->SUB.VALUE1, "toggle"); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE1, TOOLTIP1); \
+   evas_object_smart_callback_add(pd->SUB.VALUE1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   elm_layout_content_set(item, "swallow.content1", pd->SUB.VALUE1); \
+   CHECK_ADD(item, pd->SUB.VALUE2) \
+   elm_object_style_set(pd->SUB.VALUE2, "toggle"); \
+   elm_object_tooltip_text_set(pd->SUB.VALUE2, TOOLTIP2); \
+   evas_object_smart_callback_add(pd->SUB.VALUE2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   elm_layout_content_set(item, "swallow.content2", pd->SUB.VALUE2); \
+   STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2) \
+   return item; \
+}
+
+/**
+ * Macro defines a callback for STATE_ATTR_2CHECK_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE1) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2))
+
 /** @} privatesection */
