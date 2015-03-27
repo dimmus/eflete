@@ -1262,7 +1262,7 @@ STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, 0.0, 9999.0, 1.0, "%.0f", "w:
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
-STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, 0, 100, 1, NULL, "x:", "", "y:", "",
+STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
                    100, double, VAL_DOUBLE)
