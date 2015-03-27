@@ -226,6 +226,17 @@ group { name: "elm/frame/base/default";
                to: "podffing.content.bottom_right";
             }
          }
+         description { state: "collapsed" 0.0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding.content.top_left";
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               to: "podffing.content.bottom_right";
+            }
+         }
       }
       part { name: "padding.content.top_left";
          type: SPACER;
@@ -288,16 +299,18 @@ group { name: "elm/frame/base/default";
       }
       program { name: "collapse";
          action: STATE_SET "collapsed" 0.00;
-         transition: ACCELERATE 0.30000;
+         transition: ACCELERATE 0.50000;
          target: "elm.swallow.content";
          target: "button";
+         target: "clip";
          after: "signal";
       }
       program { name: "expand";
          action: STATE_SET "default" 0.00;
-         transition: DECELERATE 0.30000;
+         transition: DECELERATE 0.50000;
          target: "elm.swallow.content";
          target: "button";
+         target: "clip";
          after: "signal";
       }
       program { name: "signal";
