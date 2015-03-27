@@ -84,8 +84,8 @@ app_free()
 Eina_Bool
 app_init()
 {
-   setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
+   setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALE_DIR);
    textdomain(PACKAGE);
 #endif /* set locale */
