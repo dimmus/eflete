@@ -748,6 +748,6 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  */
 #define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2) \
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE1) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2))
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2)
 
 /** @} privatesection */

@@ -97,7 +97,7 @@ struct _Prop_Data
       Evas_Object *visible;
       Evas_Object *min_w, *min_h;
       Evas_Object *max_w, *max_h;
-      Evas_Object *fixed;
+      Evas_Object *fixed_w, *fixed_h;
       Evas_Object *align_x, *align_y;
       Evas_Object *aspect_min, *aspect_max;
       Evas_Object *aspect_pref;
@@ -1256,6 +1256,10 @@ ui_property_part_unset(Evas_Object *property)
    STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
+#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2) \
+   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2) \
+   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2)
+
 STATE_ATTR_1CHECK(_("visible"), state, visible)
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
@@ -1266,6 +1270,8 @@ STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, 0.0, 9999.0, 1.0, "%.0f", "w:
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
+STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, _("This affects the minimum width calculation."),
+                  _("This affects the minimum height calculation."))
 STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
@@ -1276,7 +1282,6 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1
                     1, double, VAL_DOUBLE)
 
 ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
-ITEM_2CHECK_STATE_CREATE(_("fixed"), state_fixed, w, h)
 ITEM_STATE_CCL_CREATE(COLOR_CLASS, _("color class"), state, color_class, color_classes)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("aspect ratio mode"), state, aspect_pref, unsigned char)
@@ -1319,10 +1324,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_state_max_w_max_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.fixed = prop_item_state_fixed_w_h_add(box, pd,
-                           _("This affects the minimum width calculation."),
-                           _("This affects the minimum height calculation."));
-        elm_box_pack_end(box, pd_state.fixed);
+        item = prop_state_fixed_w_fixed_h_add(box, pd);
+        elm_box_pack_end(box, item);
         item = prop_state_align_x_align_y_add(box, pd);
         elm_box_pack_end(box, item);
         pd_state.aspect_pref = prop_item_state_aspect_pref_add(box, pd,
@@ -1374,7 +1377,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
 
         STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, 1)
         STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, 1)
-        prop_item_state_fixed_w_h_update(pd_state.fixed, pd);
+        STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h)
         STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, 100)
         prop_item_state_aspect_pref_update(pd_state.aspect_pref, pd);
         STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, 100)
