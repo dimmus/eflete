@@ -117,10 +117,18 @@ group { name: "elm/layout/block/default";
       image: "section-header-bg.png" COMP;
    }
    parts {
+      part { name: "padding.header_text";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            min: 8 8;
+            max: 8 8;
+         }
+      }
       part { name: "header_bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            max: -1 22;
+            max: -1 26;
             align: 0.5 0;
             image {
                normal: "section-header-bg.png";
@@ -139,14 +147,17 @@ group { name: "elm/layout/block/default";
             fixed: 1 1;
             align: 0.0 0.5;
             color: 223 219 210 255;
-            rel1.offset: 6 0;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.header_text";
+            }
             rel2 {
                to_y: "header_bg";
                relative: 1.0 1.0;
             }
             text {
                font: FN;
-               size: 13;
+               size: 14;
                max: 1 1;
             }
          }
@@ -231,7 +242,6 @@ group { name: "elm/layout/block/default";
             action: STATE_SET "hide" 0.0;
             target: "elm.swallow.title";
          }
-
       }
    }
 }
