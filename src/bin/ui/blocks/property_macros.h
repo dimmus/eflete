@@ -329,23 +329,21 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE) \
+#define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE) \
 static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                         Prop_Data *pd, \
                         const char *tooltip, \
                         const char **list) \
 { \
-   TYPE value; \
    int i; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(parent, pd->SUB.VALUE) \
-   value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
    for (i = 0; list[i]; ewe_combobox_item_add(pd->SUB.VALUE, list[i]), i++) ; \
-   ewe_combobox_select_item_set(pd->SUB.VALUE, value); \
    elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
    evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
+   PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
    return item; \
 }
 
@@ -358,13 +356,9 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
-static void \
-prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
-{ \
-   TYPE value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
-   ewe_combobox_select_item_set(pd->SUB.VALUE, value); \
-}
+#define PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
+   ewe_combobox_select_item_set(pd->SUB.VALUE, \
+                                edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name)); \
 
 /**
  * Macro defines a callback for PART_ATTR_1COMBOBOX_ADD.

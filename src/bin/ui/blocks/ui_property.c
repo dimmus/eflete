@@ -964,8 +964,7 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
 #define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE, TYPE) \
-   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, TYPE)
+   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE)
 
 #define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
@@ -1069,7 +1068,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
         ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
         prop_part_clip_to_update(pd, NULL);
-        prop_part_ignore_flags_update(pd);
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags)
         prop_part_source_update(pd, pd->part.source);
 
         prop_part_drag_x_step_x_update(pd);
@@ -2247,10 +2246,10 @@ ui_property_state_textblock_set(Evas_Object *property)
         prop_item_state_text_style_update(pd_textblock.align, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
-        prop_state_textblock_select_mode_update(pd);
-        prop_state_textblock_entry_mode_update(pd);
-        prop_state_textblock_pointer_mode_update(pd);
-        prop_state_textblock_cursor_mode_update(pd);
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, select_mode)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, entry_mode)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, pointer_mode)
+        PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, cursor_mode)
         ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
         prop_state_textblock_source_update(pd, pd_textblock.source);
         prop_state_textblock_source2_update(pd, pd_textblock.source2);
