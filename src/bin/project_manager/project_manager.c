@@ -1484,9 +1484,12 @@ _enventor_save(void *data,
                             ECORE_EXE_PIPE_READ_LINE_BUFFERED |
                             ECORE_EXE_PIPE_ERROR |
                             ECORE_EXE_PIPE_ERROR_LINE_BUFFERED;
-   Eina_Stringshare *cmd, *edj, *options;
+   Eina_Stringshare *cmd, *edj, *dir;
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
+   Eina_List *l;
+   Eina_Strbuf *buf = NULL;
+
 
    sleep(1);
 
@@ -1500,14 +1503,24 @@ _enventor_save(void *data,
            cb_msg_stderr = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _exe_data, worker);
         }
       edj = eina_stringshare_printf("%s/build.edj", worker->project->enventor->path);
-      options = eina_stringshare_printf("-id %s/images -fd %s/fonts -sd %s/sounds -dd %s/data",
-                                        worker->project->enventor->path,
-                                        worker->project->enventor->path,
-                                        worker->project->enventor->path,
-                                        worker->project->enventor->path);
-      cmd = eina_stringshare_printf("edje_cc -v %s %s %s", options,
+      buf = eina_strbuf_new();
+
+      EINA_LIST_FOREACH(worker->project->res.images, l, dir)
+        {
+           eina_strbuf_append_printf(buf, " -id %s", dir);
+        }
+      EINA_LIST_FOREACH(worker->project->res.fonts, l, dir)
+        {
+           eina_strbuf_append_printf(buf, " -fd %s", dir);
+        }
+      EINA_LIST_FOREACH(worker->project->res.sounds, l, dir)
+        {
+           eina_strbuf_append_printf(buf, " -sd %s", dir);
+        }
+      cmd = eina_stringshare_printf("edje_cc -v %s %s %s", eina_strbuf_string_get(buf),
                                     worker->project->enventor->file, edj);
-      THREAD_TESTCANCEL;
+      eina_strbuf_free(buf);
+   THREAD_TESTCANCEL;
    WORKER_LOCK_RELEASE;
    DBG("Run command for compile: %s", cmd);
    exe_cmd = ecore_exe_pipe_run(cmd, flags, NULL);
@@ -1522,7 +1535,6 @@ _enventor_save(void *data,
         ecore_event_handler_del(cb_msg_stderr);
      }
    eina_stringshare_del(cmd);
-   eina_stringshare_del(options);
 
    THREAD_TESTCANCEL;
 
