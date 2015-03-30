@@ -744,4 +744,88 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE1) \
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2)
 
+/*****************************************************************************/
+/*                    STATE 1 COMBOBOX LIST CONTROL                          */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 combobox for
+ * state attribute. A predefined list fill the combobox.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param LIST The pointer to array of strings
+ * @param TOOLTIP The tooltip for combobox
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP) \
+static Evas_Object * \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd) \
+{ \
+   int i; \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   EWE_COMBOBOX_ADD(parent, pd->SUB.VALUE) \
+   for (i = 0; LIST[i]; ewe_combobox_item_add(pd->SUB.VALUE, LIST[i]), i++) ; \
+   elm_object_tooltip_text_set(pd->SUB.VALUE, TOOLTIP); \
+   evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
+   elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
+   STATE_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
+   return item; \
+}
+
+/**
+ * Macro defines a function that updates control by STATE_ATTR_1COMBOBOX_LIST_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
+   ewe_combobox_select_item_set(pd->SUB.VALUE, \
+                                edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                                pd->wm_part->name, \
+                                                                pd->wm_part->curr_state, \
+                                                                pd->wm_part->curr_state_value));
+
+/**
+ * Macro defines a callback for STATE_ATTR_1COMBOBOX_ADD.
+ *
+ * @param TEXT The attribute name, for error message
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj __UNUSED__, \
+                             void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   int old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
+                                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   int value = item->index; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+                                        pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+                                        (TYPE)item->index)) \
+     { \
+        NOTIFY_WARNING(_("Cann't apply value '%s' to attribute "#TEXT". Restore previous value"), item->title); \
+        ewe_combobox_select_item_set(obj, old_value); \
+        return; \
+     } \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_INT, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
 /** @} privatesection */
