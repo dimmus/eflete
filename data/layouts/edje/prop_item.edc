@@ -671,8 +671,8 @@ group { name: "eflete/prop/container/live_view_spinner";
       part { name: "eflete.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            min: 0 17;
-            max: 68 17;
+            min: 68 19;
+            max: 68 19;
             rel1 {
                relative: 1.0 0.0;
                to_x: "content_left_padding";

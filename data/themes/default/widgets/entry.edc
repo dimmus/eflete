@@ -881,6 +881,21 @@ group { name: "elm/entry/base-single/default";
    }
 }
 
+group { name: "elm/entry/base-single/spinner/live_view";
+   inherit: "elm/entry/base-single/default";
+   parts {
+      part { name: "elm.text";
+         description { state: "default" 0.0;
+            text.style: "eflete_spinner_live_view_style";
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text.style: "eflete_spinner_live_view_disabled_style";
+         }
+      }
+   }
+}
+
 group { name: "elm/entry/base-single/search_field";
    inherit: "elm/entry/base-single/default";
    parts {
