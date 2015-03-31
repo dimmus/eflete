@@ -57,7 +57,7 @@ struct _Enventor_Data
  * @return Pointer to created enventor object if successful, or NULL
  * in otherwise.
  *
- * @insgroup Enventor
+ * @ingroup Enventor
  */
 Evas_Object *
 enventor_object_init(Evas_Object *parent);
@@ -73,7 +73,7 @@ enventor_object_init(Evas_Object *parent);
  * @return true if temporary project successfuly created and loaded into
  * enventor object, or false in otherwise.
  *
- * @insgroup Enventor
+ * @ingroup Enventor
  */
 Eina_Bool
 enventor_object_project_load(Evas_Object *enventor, Project *project);
@@ -86,7 +86,7 @@ enventor_object_project_load(Evas_Object *enventor, Project *project);
  *
  * @return true if temporary project freed successfuly, or false in otherwise.
  *
- * @insgroup Enventor
+ * @ingroup Enventor
  */
 Eina_Bool
 enventor_object_project_unload(Project *project);
