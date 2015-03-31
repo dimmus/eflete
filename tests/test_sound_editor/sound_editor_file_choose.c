@@ -72,6 +72,9 @@ EFLETE_TEST (sound_editor_file_choose_test_p)
    ck_assert_msg(sound_editor_file_choose(sound_editor, "key-tap") == EINA_TRUE,
                  "failure: cannot select file");
 
+   pm_project_close(app->project);
+   app->project = NULL;
+
    evas_object_del(sound_editor);
    app_shutdown();
    teardown("./sound_editor_file_choose_test_p");
