@@ -26,6 +26,7 @@
 #endif /* HAVE_ENVENTOR */
 
 #include "eflete.h"
+#include "config.h"
 
 /**
  * @defgroup Enventor Enventor library support
@@ -90,5 +91,17 @@ enventor_object_project_load(Evas_Object *enventor, Project *project);
 Eina_Bool
 enventor_object_project_unload(Project *project);
 
+/**
+ * Load enventor settings from given config profile.
+ *
+ * @param enventor The enventor object.
+ * @param profile The filled profile structure.
+ *
+ * @return true if successful, or false in otherwise.
+ *
+ * @ingroup Enventor
+ */
+Eina_Bool
+enventor_object_profile_load(Evas_Object *enventor, Profile *profile);
 
 #endif /* ENVENTOR_MODULE_H */

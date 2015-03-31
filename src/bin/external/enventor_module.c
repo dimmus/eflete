@@ -41,6 +41,8 @@ _on_enventor_mouse_wheel(void *data __UNUSED__,
 
    if ((scale <= MIN_SCALE) || (scale >= MAX_SCALE)) return;
 
+   profile_get()->enventor.scale = scale;
+
    enventor_object_font_scale_set(enventor, scale);
 }
 
@@ -50,6 +52,8 @@ enventor_object_init(Evas_Object *parent)
 {
   Evas_Object *enventor = NULL;
   enventor = enventor_object_add(parent);
+
+  enventor_object_font_scale_set(enventor, profile_get()->enventor.scale);
   evas_object_event_callback_add(enventor, EVAS_CALLBACK_MOUSE_WHEEL,
                                  _on_enventor_mouse_wheel, NULL);
   enventor_object_auto_complete_set(enventor, true);
@@ -127,6 +131,15 @@ enventor_object_project_unload(Project *project)
    eina_stringshare_del(project->enventor->file);
    project->enventor->file = NULL;
 
+   return true;
+}
+
+Eina_Bool
+enventor_object_profile_load(Evas_Object *enventor, Profile *profile)
+{
+   if ((!enventor) || (!profile))
+     return false;
+   enventor_object_font_scale_set(enventor, profile->enventor.scale);
    return true;
 }
 

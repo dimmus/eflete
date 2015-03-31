@@ -19,6 +19,7 @@
 
 #include "config.h"
 #include "shortcuts.h"
+#include "enventor_module.h"
 
 #define CONFIG_FILE        EFLETE_SETT_PATH"eflete.cfg"
 #define CONFIG_FILE_TMP    CONFIG_FILE".tmp"
@@ -137,6 +138,9 @@ config_init(App_Data *ap)
    EET_DATA_DESCRIPTOR_ADD_BASIC
       (edd_profile, Profile, "liveview.auto_fill_content",        liveview.auto_fill_content, EET_T_UCHAR);
 
+   /* enventor */
+   EET_DATA_DESCRIPTOR_ADD_BASIC
+      (edd_profile, Profile, "enventor.scale", enventor.scale, EET_T_DOUBLE);
    /* colors */
    EET_DATA_DESCRIPTOR_ADD_ARRAY
       (edd_profile, Profile, "colors",                            colors, edd_color);
@@ -298,6 +302,7 @@ _profile_default_new(void)
    prof->workspace.groupedit_handler_size    = 7;
    prof->workspace.rulers.visible            = true;
    prof->workspace.rulers.mode               = ABS_REL_SCALE;
+   prof->enventor.scale                      = 1;
 
    prof->colors[WORKSPACE].r           = 255;
    prof->colors[WORKSPACE].g           = 255;
@@ -363,6 +368,9 @@ config_load(App_Data *ap)
 
    shortcuts_profile_load(ap, profile_get());
    shortcuts_main_add(ap);
+#ifdef HAVE_ENVENTOR
+   enventor_object_profile_load(ap->enventor, profile_get());
+#endif /* HAVE_ENVENTOR */
 }
 
 Eina_Bool
