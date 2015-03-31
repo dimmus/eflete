@@ -373,6 +373,8 @@ live_view_property_style_unset(Evas_Object *property)
    elm_box_unpack(prop_box, pd->scale_spinner);
    evas_object_hide(pd->scale_spinner);
 
+   elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
+
    /* Swallows Clear */
    if (pd->prop_swallow.frame)
      {
