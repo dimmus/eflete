@@ -489,7 +489,7 @@ group { name: "ewe/combobox/expander/default";
    }
 }
 
-group {name: "ewe/combobox/item/content/default";
+group {name: "ewe/combobox/item/default";
    parts {
       part { name: "base";
          type: SPACER;
@@ -604,7 +604,6 @@ group {name: "ewe/combobox/item/content/default";
          signal: "mouse,in";
          source: "event";
          action: STATE_SET "focused" 0.00;
-   
          target: "ewe.text";
          target: "highlight";
       }
@@ -617,8 +616,8 @@ group {name: "ewe/combobox/item/content/default";
       }
       program { name: "clicked";
          signal: "mouse,clicked,1";
+         source: "event";
          action: SIGNAL_EMIT "select" "ewe";
-   
       }
    }
 }

@@ -149,7 +149,7 @@ _ewe_combobox_expand(Evas_Object *obj)
           edje_object_file_set(item->content, EWE_THEME, item->style);
         else
           edje_object_file_set(item->content, EWE_THEME,
-                               "ewe/combobox/item/content/default");
+                               "ewe/combobox/item/default");
         evas_object_size_hint_min_set(item->content, combo_width, ITEM_H);
         evas_object_size_hint_weight_set(item->content, EVAS_HINT_EXPAND, 0);
         evas_object_size_hint_align_set(item->content, EVAS_HINT_FILL, 0.5);
