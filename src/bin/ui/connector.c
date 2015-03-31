@@ -922,6 +922,10 @@ _progress_end(void *data, PM_Project_Result result)
         wm_widgets_list_objects_load(ap->project->widgets,
                                      evas_object_evas_get(ap->win),
                                      ap->project->mmap_file);
+        wm_layouts_list_objects_load(ap->project->widgets,
+                                     evas_object_evas_get(ap->win),
+                                     ap->project->mmap_file);
+        enventor_object_focus_set(ap->enventor, true);
         pm_project_changed(ap->project);
      }
 #endif /* HAVE_ENVENTOR */
