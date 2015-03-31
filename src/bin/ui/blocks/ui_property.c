@@ -1267,7 +1267,7 @@ STATE_ATTR_1CHECK(_("visible"), state, visible)
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
                     1, int, VAL_INT)
-STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Maximal size of part width in pixels."), _("Maximal part height in pixels."),
                     1, int, VAL_INT)
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, 0, 100, 1, NULL, "x:", "%", "y:", "%",
