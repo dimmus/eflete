@@ -131,6 +131,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
           live_view_property_style_set(live->property, live->object, style, widget);
 
         live_view_theme_update(live, project);
+
         if ((!strcmp(type, "item")) && (custom_name))
           elm_object_style_set(live->object, custom_name);
         else
