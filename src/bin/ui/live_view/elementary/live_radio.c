@@ -125,7 +125,7 @@ _radio_send_signal(void *data,
 }
 
 Evas_Object *
-widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const char *style)
 {
    Evas_Object *object, *rd, *rdg;
 
@@ -135,12 +135,15 @@ widget_radio_create(Evas_Object *parent, const char *class __UNUSED__, const cha
    RADIO_ADD(parent, rd, 1, NULL);
    elm_box_pack_end(object, rd);
    rdg = rd;
+   elm_object_style_set(rd, style);
    RADIO_ADD(parent, rd, 2, NULL);
    elm_radio_group_add(rd, rdg);
    elm_box_pack_end(object, rd);
+   elm_object_style_set(rd, style);
    RADIO_ADD(parent, rd, 3, NULL);
    elm_radio_group_add(rd, rdg);
    elm_box_pack_end(object, rd);
+   elm_object_style_set(rd, style);
 
    elm_radio_value_set(rdg, 2);
 
