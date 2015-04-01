@@ -8,14 +8,13 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-03-29 20:20+0200\n"
-"PO-Revision-Date: 2015-03-29 12:55+0000\n"
+"PO-Revision-Date: 2015-03-30 11:57+0000\n"
 "Last-Translator: JoanColl <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2015-03-30 05:18+0000\n"
+"X-Launchpad-Export-Date: 2015-03-31 05:34+0000\n"
 "X-Generator: Launchpad (build 17413)\n"
 
 #: src/bin/main.c:29
@@ -68,7 +67,7 @@ msgstr "El grup [%s] existeix"
 #: src/bin/project_manager/widget_manager.c:449
 #, c-format
 msgid "Cannot copy group [%s]"
-msgstr ""
+msgstr "No s'ha pogut copiar el grup [%s]"
 
 #: src/bin/ui/connector.c:77 src/bin/ui/blocks/ui_widget_list.c:1137
 #: src/bin/ui/blocks/ui_widget_list.c:1178
@@ -142,15 +141,16 @@ msgstr "D'acord"
 
 #: src/bin/ui/connector.c:1224
 msgid "Name field is empty!Please type a file name to export."
-msgstr ""
+msgstr "El camp de nom és buit. Escriviu un nom de fitxer per exportar."
 
 #: src/bin/ui/connector.c:1233
 msgid "The file already exists.Replacement will overwrite its contents."
 msgstr ""
+"El fitxer ja existeix. El reemplaçament sobreescriurà el seu contingut."
 
 #: src/bin/ui/connector.c:1374
 msgid "Can not delete current project folder!"
-msgstr ""
+msgstr "No s'ha pogut suprimir la carpeta del projecte actual."
 
 #: src/bin/ui/connector.c:1379
 #, c-format
@@ -159,6 +159,9 @@ msgid ""
 "<b><orange>delete all</orange></b> content of this folder and create new for "
 "project export edc in it?"
 msgstr ""
+"El directori <path>'%s'</path> ja existeix.<br>Voleu <b><orange>esborrar tot "
+"</orange></b> el contingut d'aquesta carpeta i crear-ne de nou per exportar-"
+"hi dins el projecte edc?"
 
 #: src/bin/ui/connector.c:1392 src/bin/ui/wizard/wizard_common.c:200
 #, c-format
@@ -552,51 +555,51 @@ msgstr "Sòlid"
 #: src/bin/ui/blocks/ui_property.c:277 src/bin/ui/blocks/ui_property.c:3369
 #: src/bin/ui/dialogs/part_dialog.c:230
 msgid "Table"
-msgstr ""
+msgstr "Taula"
 
 #: src/bin/ui/blocks/ui_property.c:278 src/bin/ui/blocks/ui_property.c:3070
 msgid "Item"
-msgstr ""
+msgstr "Element"
 
 #: src/bin/ui/blocks/ui_property.c:282
 msgid "horizontal"
-msgstr ""
+msgstr "horitzontal"
 
 #: src/bin/ui/blocks/ui_property.c:283
 msgid "vertical"
-msgstr ""
+msgstr "vertical"
 
 #: src/bin/ui/blocks/ui_property.c:284
 msgid "horizontal_homogeneous"
-msgstr ""
+msgstr "horitzontal_homogeni"
 
 #: src/bin/ui/blocks/ui_property.c:285
 msgid "vertical_homogeneous"
-msgstr ""
+msgstr "vertical_homogeni"
 
 #: src/bin/ui/blocks/ui_property.c:286
 msgid "horizontal_max"
-msgstr ""
+msgstr "max_horitzontal"
 
 #: src/bin/ui/blocks/ui_property.c:287
 msgid "vertical_max"
-msgstr ""
+msgstr "max_vertical"
 
 #: src/bin/ui/blocks/ui_property.c:288
 msgid "horizontal_flow"
-msgstr ""
+msgstr "flux_horitzontal"
 
 #: src/bin/ui/blocks/ui_property.c:289
 msgid "vertical_flow"
-msgstr ""
+msgstr "flux_vertical"
 
 #: src/bin/ui/blocks/ui_property.c:290
 msgid "stack"
-msgstr ""
+msgstr "pila"
 
 #: src/bin/ui/blocks/ui_property.c:291
 msgid "Custom Layout"
-msgstr ""
+msgstr "Disposició personalitzada"
 
 #: src/bin/ui/blocks/ui_property.c:504
 msgid "Visual"
@@ -655,7 +658,7 @@ msgstr "propagació d'esdeveniments"
 
 #: src/bin/ui/blocks/ui_property.c:979
 msgid "clipper"
-msgstr ""
+msgstr "clíper"
 
 #: src/bin/ui/blocks/ui_property.c:980
 msgid "ignore flags"
@@ -663,15 +666,15 @@ msgstr "ignora indicadors"
 
 #: src/bin/ui/blocks/ui_property.c:981
 msgid "group source"
-msgstr ""
+msgstr "font de grup"
 
 #: src/bin/ui/blocks/ui_property.c:983
 msgid "axis X"
-msgstr ""
+msgstr "eix X"
 
 #: src/bin/ui/blocks/ui_property.c:984
 msgid "axis Y"
-msgstr ""
+msgstr "eix Y"
 
 #: src/bin/ui/blocks/ui_property.c:985
 msgid "drag area"
@@ -721,6 +724,7 @@ msgstr "Especifica quan els successos indicats han de ser ignorats"
 #: src/bin/ui/blocks/ui_property.c:1034
 msgid "Used for the group to be loaded and used to display GROUP part."
 msgstr ""
+"Utilitzat pel grup per ser carregat i utilitzat per mostrar la part GRUP."
 
 #: src/bin/ui/blocks/ui_property.c:1038
 msgid "Part dragable property"
@@ -757,19 +761,19 @@ msgstr "visible"
 
 #: src/bin/ui/blocks/ui_property.c:1265
 msgid "Minimal size of part width in pixels."
-msgstr ""
+msgstr "Mida mínima de la part en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:1265
 msgid "Minimal part height in pixels."
-msgstr ""
+msgstr "Alçada mínima de la part en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:1268
 msgid "Maximal size of part width in pixels."
-msgstr ""
+msgstr "Mida màxima de la part en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:1268
 msgid "Maximal part height in pixels."
-msgstr ""
+msgstr "Alçada màxima de la part en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:1270 src/bin/ui/blocks/ui_property.c:1515
 #: src/bin/ui/blocks/ui_property.c:1518 src/bin/ui/blocks/ui_property.c:1672
@@ -780,11 +784,11 @@ msgstr "alinea"
 
 #: src/bin/ui/blocks/ui_property.c:1271
 msgid "Part align horizontally"
-msgstr ""
+msgstr "Alineació horitzontal de la part"
 
 #: src/bin/ui/blocks/ui_property.c:1271
 msgid "Part align vertically"
-msgstr ""
+msgstr "Alineació vertical de la part"
 
 #: src/bin/ui/blocks/ui_property.c:1273
 msgid "fixed"
@@ -810,15 +814,17 @@ msgstr ""
 
 #: src/bin/ui/blocks/ui_property.c:1279
 msgid "multiplier"
-msgstr ""
+msgstr "multiplicador"
 
 #: src/bin/ui/blocks/ui_property.c:1280
 msgid "The minimal part width value multiplier for current state"
 msgstr ""
+"El multiplicador del valor mínim d'amplada de la part per l'estat actual."
 
 #: src/bin/ui/blocks/ui_property.c:1281
 msgid "The minimal part height value multiplier for current state"
 msgstr ""
+"El multiplicador del valor mínim de l'alçada de la part per l'estat actual."
 
 #: src/bin/ui/blocks/ui_property.c:1284
 msgid "proxy source"
@@ -1104,23 +1110,23 @@ msgstr "multilínia"
 
 #: src/bin/ui/blocks/ui_property.c:2141
 msgid "under selected text"
-msgstr ""
+msgstr "sota el text seleccionat"
 
 #: src/bin/ui/blocks/ui_property.c:2142
 msgid "under cursor"
-msgstr ""
+msgstr "sota el cursor"
 
 #: src/bin/ui/blocks/ui_property.c:2143
 msgid "over cursor"
-msgstr ""
+msgstr "sobre el cursor"
 
 #: src/bin/ui/blocks/ui_property.c:2144
 msgid "under anchor"
-msgstr ""
+msgstr "sota l'àncora"
 
 #: src/bin/ui/blocks/ui_property.c:2145
 msgid "over anchor"
-msgstr ""
+msgstr "sobre l'àncora"
 
 #: src/bin/ui/blocks/ui_property.c:2147
 msgid "text style"
@@ -1329,183 +1335,195 @@ msgstr "disposició"
 
 #: src/bin/ui/blocks/ui_property.c:2774
 msgid "alternative layout"
-msgstr ""
+msgstr "Disposició alternativa"
 
 #: src/bin/ui/blocks/ui_property.c:2789 src/bin/ui/dialogs/part_dialog.c:234
 msgid "Box"
-msgstr ""
+msgstr "Caixa"
 
 #: src/bin/ui/blocks/ui_property.c:2795
 msgid ""
 "Used for typing custom name of main (primary) layout (default horizontal "
 "layout would be applied to workspace and live object)."
 msgstr ""
+"Utilitzat per escriure el nom personalitzat de la disposició principal o "
+"primària (la disposició predeterminada horitzontal s'aplicarà a l'espai de "
+"treball i als objectes vius)"
 
 #: src/bin/ui/blocks/ui_property.c:2800
 msgid "Used for setting layout for box."
-msgstr ""
+msgstr "Utilitzat per establir una disposició pel quadre."
 
 #: src/bin/ui/blocks/ui_property.c:2803
 msgid ""
 "Used for typing custom name of alternative (fallback) layout (default "
 "horizontal layout would be applied to workspace and live object)."
 msgstr ""
+"Utilitzat per escriure el nom personalitzat de la disposició alternativa o "
+"de recuperació (la disposició predeterminada horitzontal s'aplicarà a "
+"l'espai de treball i als objectes vius)"
 
 #: src/bin/ui/blocks/ui_property.c:2808
 msgid "Used for setting alternative layout for box."
-msgstr ""
+msgstr "Utilitzat per establir una disposició alternativa pel quadre."
 
 #: src/bin/ui/blocks/ui_property.c:2962
 msgid "Padding: "
-msgstr ""
+msgstr "Separació: "
 
 #: src/bin/ui/blocks/ui_property.c:3049
 msgid "prefer"
-msgstr ""
+msgstr "preferida"
 
 #: src/bin/ui/blocks/ui_property.c:3050
 msgid "spread"
-msgstr ""
+msgstr "dispersa"
 
 #: src/bin/ui/blocks/ui_property.c:3051
 msgid "aspect"
-msgstr ""
+msgstr "aspecte"
 
 #: src/bin/ui/blocks/ui_property.c:3052
 msgid "position"
-msgstr ""
+msgstr "posició"
 
 #: src/bin/ui/blocks/ui_property.c:3053
 msgid "span"
-msgstr ""
+msgstr "interval"
 
 #: src/bin/ui/blocks/ui_property.c:3055
 msgid "weight"
-msgstr ""
+msgstr "pes"
 
 #: src/bin/ui/blocks/ui_property.c:3056
 msgid "aspect mode"
-msgstr ""
+msgstr "mode d'aspecte"
 
 #: src/bin/ui/blocks/ui_property.c:3078
 msgid "Sets the group this object will be made from."
-msgstr ""
+msgstr "Estableix el grup d'on aquest objecte es crearà."
 
 #: src/bin/ui/blocks/ui_property.c:3082
 msgid "Set the item minimum size hint width in pixels."
 msgstr ""
+"Estableix la mida mínima de l'amplada de l'element consells en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3083
 msgid "Set the item minimum size hint height in pixels."
 msgstr ""
+"Estableix la mida d'alçada mínima aconsellada de l'element en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3088
 msgid "Set the item maximum size hint width in pixels."
 msgstr ""
+"Estableix la mida d'amplada màxima aconsellada de l'element en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3089
 msgid "Set the item maximum size hint height in pixels."
 msgstr ""
+"Estableix la mida d'alçada màxima aconsellada de l'element en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3094
 msgid "Set the item prefered size hint width in pixels."
 msgstr ""
+"Estableix la mida d'amplada preferida aconsellada de l'element en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3095
 msgid "Set the item prefered size hint height in pixels."
 msgstr ""
+"Estableix la mida d'alçada preferida aconsellada de l'element en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3100
 msgid "Set the item aspect width hint."
-msgstr ""
+msgstr "Estableix l'aspecte d'amplada aconsellada de l'element."
 
 #: src/bin/ui/blocks/ui_property.c:3101
 msgid "Set the item aspect height hint."
-msgstr ""
+msgstr "Estableix l'aspecte d'alçada aconsellada de l'element."
 
 #: src/bin/ui/blocks/ui_property.c:3106
 msgid "Replicate the item in width, starting from the current position."
-msgstr ""
+msgstr "Replica l'element en amplada, iniciant des de la posició actual."
 
 #: src/bin/ui/blocks/ui_property.c:3107
 msgid "Replicate the item in height, starting from the current position."
-msgstr ""
+msgstr "Replica l'element en alçada, iniciant des de la posició actual."
 
 #: src/bin/ui/blocks/ui_property.c:3112
 msgid "Sets how many columns this item will use."
-msgstr ""
+msgstr "Estableix quantes columnes utilitzarà aquest element."
 
 #: src/bin/ui/blocks/ui_property.c:3113
 msgid "Sets how many rows this item will use."
-msgstr ""
+msgstr "Estableix quantes files utilitzarà aquest element."
 
 #: src/bin/ui/blocks/ui_property.c:3117
 msgid "Sets the alignment hint by x axiss."
-msgstr ""
+msgstr "Estableix l'alineació aconsellada per l'eix x."
 
 #: src/bin/ui/blocks/ui_property.c:3118
 msgid "Sets the alignment hint by y axiss."
-msgstr ""
+msgstr "Estableix l'alineació aconsellada per l'eix y."
 
 #: src/bin/ui/blocks/ui_property.c:3123
 msgid "Sets the weight hint by x axiss."
-msgstr ""
+msgstr "Estableix el pes aconsellat per l'eix x."
 
 #: src/bin/ui/blocks/ui_property.c:3124
 msgid "Sets the weight hint by y axiss."
-msgstr ""
+msgstr "Estableix el pes aconsellat per l'eix y."
 
 #: src/bin/ui/blocks/ui_property.c:3128
 msgid "left:"
-msgstr ""
+msgstr "esquerra:"
 
 #: src/bin/ui/blocks/ui_property.c:3128
 msgid "right:"
-msgstr ""
+msgstr "dreta:"
 
 #: src/bin/ui/blocks/ui_property.c:3128
 msgid "top:"
-msgstr ""
+msgstr "superior:"
 
 #: src/bin/ui/blocks/ui_property.c:3128
 msgid "bottom:"
-msgstr ""
+msgstr "inferior:"
 
 #: src/bin/ui/blocks/ui_property.c:3130
 msgid "Sets the aspect control hints for this object."
-msgstr ""
+msgstr "Estableix l'aspecte de control aconsellat per aquest objecte."
 
 #: src/bin/ui/blocks/ui_property.c:3139
 msgid "Sets the column position this item."
-msgstr ""
+msgstr "Estableix la posició de columna d'aquest element."
 
 #: src/bin/ui/blocks/ui_property.c:3140
 msgid "Sets the row position this item."
-msgstr ""
+msgstr "Estableix la posició de fila d'aquest element."
 
 #: src/bin/ui/blocks/ui_property.c:3201
 msgid "padding"
-msgstr ""
+msgstr "separació"
 
 #: src/bin/ui/blocks/ui_property.c:3269
 msgid "Min: "
-msgstr ""
+msgstr "Mín: "
 
 #: src/bin/ui/blocks/ui_property.c:3306
 msgid "Container"
-msgstr ""
+msgstr "Contenidor"
 
 #: src/bin/ui/blocks/ui_property.c:3313 src/bin/ui/blocks/ui_property.c:3318
 msgid "hor:"
-msgstr ""
+msgstr "hor:"
 
 #: src/bin/ui/blocks/ui_property.c:3313 src/bin/ui/blocks/ui_property.c:3318
 msgid "ver:"
-msgstr ""
+msgstr "ver:"
 
 #: src/bin/ui/blocks/ui_property.c:3314 src/bin/ui/blocks/ui_property.c:3315
 msgid "Change the position of the point of balance inside the container."
-msgstr ""
+msgstr "Canvia la posició del punt de balanç dins del contenidor."
 
 #: src/bin/ui/blocks/ui_property.c:3318 src/bin/ui/editors/style_editor.c:1341
 #: src/bin/ui/editors/style_editor.c:1430
@@ -1518,19 +1536,19 @@ msgstr "px"
 
 #: src/bin/ui/blocks/ui_property.c:3319
 msgid "Sets the horizontal space between cells in pixels."
-msgstr ""
+msgstr "Estableix l'espaiat horitzontal entre cel·les en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3320
 msgid "Sets the vertcal space between cells in pixels."
-msgstr ""
+msgstr "Estableix l'espaiat vertical entre cel·les en píxels."
 
 #: src/bin/ui/blocks/ui_property.c:3357
 msgid "homogeneous"
-msgstr ""
+msgstr "homogeni"
 
 #: src/bin/ui/blocks/ui_property.c:3375
 msgid "Sets the homogeneous mode for the table."
-msgstr ""
+msgstr "Estableix el mode homogeni per la taula."
 
 #: src/bin/ui/blocks/ui_widget_list.c:913
 msgid "Widget list"
@@ -2233,12 +2251,12 @@ msgstr "No s'ha pogut afegir carpeta"
 
 #: src/bin/ui/editors/image_editor.c:667
 msgid "Images files"
-msgstr ""
+msgstr "Fitxer d'imatges"
 
 #: src/bin/ui/editors/image_editor.c:668
 #: src/bin/ui/editors/sound_editor.c:1362
 msgid "All files"
-msgstr ""
+msgstr "Tots els fitxers"
 
 #: src/bin/ui/editors/image_editor.c:726
 #, c-format
@@ -2343,7 +2361,7 @@ msgstr "El valor de la freqüència no és correcte."
 
 #: src/bin/ui/editors/sound_editor.c:1361
 msgid "Sound files"
-msgstr ""
+msgstr "Arxius de so"
 
 #: src/bin/ui/editors/sound_editor.c:1377
 msgid "Add new tone to the project"
@@ -2732,10 +2750,12 @@ msgstr "Comproveu-ho. Això és només text"
 #: src/bin/ui/live_view/live_view.c:107
 msgid "Widget liveview isn't implemented yet. Using fallback to layout"
 msgstr ""
+"El giny Vista en temps real no s'ha implementat encara. Es recupera la "
+"disposició."
 
 #: src/bin/ui/live_view/live_view.c:115
 msgid "Outdated version of file. Using fallback to layout"
-msgstr ""
+msgstr "Versió de fitxer no actualitzada. Es recupera la disposició."
 
 #: src/bin/ui/live_view/live_view.c:158
 msgid "Loading live view object was failed"
@@ -3201,118 +3221,3 @@ msgstr "Mode separat"
 #: src/bin/ui/workspace/ui_workspace.c:327
 msgid "Settings..."
 msgstr "Configuració..."
-
-#~ msgid ""
-#~ "You want to close Eflete, but now you have<br/>opened project. If you dont "
-#~ "save opened project<br/>all your changes will be lost!"
-#~ msgstr ""
-#~ "Voleu tancar Eflete, però teniu<br/>un projecte obert. Si no deseu el "
-#~ "projecte obert<br/>tots els canvis es perdran."
-
-#, c-format
-#~ msgid "%d image in use:"
-#~ msgid_plural "%d images in use:"
-#~ msgstr[0] "%d imatge utilitzada:"
-#~ msgstr[1] "%d imatges utilitzades:"
-
-#~ msgid "Add image to library"
-#~ msgstr "Afegeix una imatge a la llibreria"
-
-#~ msgid "OK"
-#~ msgstr "D'acord"
-
-#~ msgid "The file must have an extension '.edj'"
-#~ msgstr "El fitxer ha de tenir l'extensió '.edj'"
-
-#~ msgid "File is already exist. Wouldyou like to replace it?"
-#~ msgstr "El fitxer ja existeix. Voleu reemplaçar-lo?"
-
-#~ msgid "Save as EDJ file"
-#~ msgstr "Desa com un fitxer EDJ"
-
-#~ msgid "Export to EDC"
-#~ msgstr "Exporta a EDC"
-
-#, c-format
-#~ msgid "Importing... %u"
-#~ msgstr "S'està important... %u"
-
-#, c-format
-#~ msgid "%.0f"
-#~ msgstr "%.0f"
-
-#~ msgid "Select a project file"
-#~ msgstr "Seleccioneu un fitxer de projecte"
-
-#~ msgid "Export edc file (group)"
-#~ msgstr "Exporta fitxer edc (grup)"
-
-#~ msgid "Export edj file (develop)"
-#~ msgstr "Exporta fitxer edj (desenvolupament)"
-
-#~ msgid "The file already exists.  Replacing it will overwrite its contents."
-#~ msgstr ""
-#~ "El fitxer ja existeix.  Si el reemplaceu sobreescriureu el seu contingut."
-
-#~ msgid "clip to"
-#~ msgstr "Retalla a mida"
-
-#~ msgid " Sets the cursor mode for a textblock part."
-#~ msgstr " Estableix mode cursor per a una part de bloc de text."
-
-#~ msgid "Sets the edit mode for a textblock part."
-#~ msgstr "Estableix el mode edició per a una part de bloc de text."
-
-#~ msgid "Minimum part height in pixels."
-#~ msgstr "Alçada mínima de la part en píxels."
-
-#~ msgid "Maximum part height in pixels."
-#~ msgstr "Alçada màxima de la part en píxels."
-
-#~ msgid "Maximum part width in pixels."
-#~ msgstr "Amplada màxima de la part en píxels."
-
-#~ msgid "Minimum part width in pixels."
-#~ msgstr "Amplada mínima de la part en píxels."
-
-#~ msgid "Part vertical align: 0.0 = top  1.0 = bottom"
-#~ msgstr "Alineació vertical de la part: 0.0 = superior  1.0 = inferior"
-
-#~ msgid "Part horizontal align: 0.0 = left  1.0 = right"
-#~ msgstr "Alineació horitzontal de la part: 0.0 = esquerra  1.0 = dreta"
-
-#~ msgid "source5 (under anchor)"
-#~ msgstr "font5 (sota àncora)"
-
-#~ msgid "source4 (over cursor)"
-#~ msgstr "font4 (sobre cursor)"
-
-#~ msgid "source3 (under cursor)"
-#~ msgstr "font3 (sota cursor)"
-
-#~ msgid "source2 (over selected text)"
-#~ msgstr "font2 (sobre text seleccionat)"
-
-#~ msgid "source (under selected text)"
-#~ msgstr "font (sota text seleccionat)"
-
-#~ msgid "source6 (over anchor)"
-#~ msgstr "font6 (sobre àncora)"
-
-#~ msgid "Widget isn't implemented yet!"
-#~ msgstr "El giny no s'ha implementat encara."
-
-#, c-format
-#~ msgid "%d widget included due to dependencies:<br><br>"
-#~ msgid_plural "%d widgets included due to dependencies:<br><br>"
-#~ msgstr[0] "S'ha afegit %d giny degut a dependències :<br><br>"
-#~ msgstr[1] "S'han afegit %d ginys degut a dependències:<br><br>"
-
-#~ msgid "There are supported only files with extensions:<br>*.wav *.ogg *.flac"
-#~ msgstr "Només es permeten fitxers amb les extensions:<br>*.wav *.ogg *.flac"
-
-#~ msgid "Outdated version of EDJ file! Should be 110"
-#~ msgstr "Versió no actualitzada del fitxer EDJ. Hauria de ser 110"
-
-#~ msgid "Add sound to the library"
-#~ msgstr "Afegiu so a la biblioteca"
