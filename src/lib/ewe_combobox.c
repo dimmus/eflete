@@ -410,6 +410,15 @@ _ewe_combobox_style_set(Eo *obj EINA_UNUSED,
    return res;
 }
 
+EOLIAN static Eina_Bool
+_ewe_combobox_content_set(Eo *obj EINA_UNUSED,
+                          Ewe_Combobox_Smart_Data *sd,
+                          Eina_Stringshare *part,
+                          Evas_Object *content)
+{
+   return edje_object_part_swallow(sd->combobox, part, content);
+}
+
 /*------------------------Smart functions ----------------------------*/
 
 EOLIAN static void

@@ -146,6 +146,19 @@ class Ewe_Combobox (Elm_Widget)
             @in Eina_Stringshare *style; /*@New combobox style*/
          }
       }
+      content_set {
+         /*@
+          Set a content to a swallow part.
+
+          @return EINA_TRUE on success, EINA_FALSE otherwise
+
+          @ingroup combobox*/
+         return: Eina_Bool;
+         params {
+            @in Eina_Stringshare *part; /*@Part name*/
+            @in Evas_Object *content; /*@A swallowed content*/
+         }
+      }
    }
 
    implements {
