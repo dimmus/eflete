@@ -160,4 +160,19 @@ EAPI Eina_Bool
 ewe_combobox_style_set(Evas_Object        *obj,
                        Eina_Stringshare   *style);
 
+/**
+ * Set a content to a swallow part.
+ *
+ * @param obj The combobox obj
+ * @param part Part name
+ * @paramq content A swallowed content
+ * @return EINA_TRUE on success, EINA_FALSE otherwise
+ *
+ * @ingroup combobox
+ */
+EAPI Eina_Bool
+ewe_combobox_content_set(Evas_Object        *obj,
+                         Eina_Stringshare   *part,
+                         Evas_Object        *content);
+
 #endif /* EWE_COMBOBOX_LEGACY_H */
