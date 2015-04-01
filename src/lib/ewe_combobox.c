@@ -403,7 +403,7 @@ _ewe_combobox_style_set(Eo *obj EINA_UNUSED,
    if (!style)
      return EINA_FALSE;
 
-   st = eina_stringshare_printf("ewe/combobox/%s", style);
+   st = eina_stringshare_printf("ewe/combobox/base/%s", style);
    res = edje_object_file_set(sd->combobox, EWE_THEME, st);
 
    eina_stringshare_del(st);
