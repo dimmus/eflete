@@ -491,83 +491,134 @@ group { name: "ewe/combobox/expander/default";
 
 group {name: "ewe/combobox/item/content/default";
    parts {
-      part { name: "ewe.bg";
-         type: RECT;
-         mouse_events: 1;
+      part { name: "base";
+         type: SPACER;
+         scale: 1;
          description { state: "default" 0.0;
-            color: TRANSPARENT_COLOR;
-         }
-         description { state: "mousein" 0.0;
-            color: COMBOBOX_ITEM_MOUSEIN_BG;
+            min: 0 19;
+            max: -1 0;
          }
       }
-      part { name: "left.offset";
+      part { name: "padding.right.text";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 0.0 0.0;
-            min:  COMBOBOX_ITEM_PADDING;
-            max:  COMBOBOX_ITEM_PADDING;
+            align: 1.0 0.5;
+            COMBOBOX_ITEM_RIGHT_PADDING
             rel1 {
-               relative: 0.0 0.0;
-               to: "ewe.bg";
+               to: "base";
+            }
+            rel2 {
+               to: "base";
             }
          }
       }
-      part { name: "right.offset";
+      part { name: "padding.left.text";
          type: SPACER;
          description { state: "default" 0.0;
-            align: 1.0 1.0;
-            fixed: 1 1;
-            min:  COMBOBOX_ITEM_RIGHT_PADDING;
-            max:  COMBOBOX_ITEM_RIGHT_PADDING;
+            align: 0.0 0.5;
+            COMBOBOX_ITEM_LEFT_PADDING
             rel1 {
-               relative: 1.0 1.0;
-               to: "ewe.bg";
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+      part { name: "highlight";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: TRANSPARENT_COLOR;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+         description { state: "focused" 0.0;
+            color: COMBOBOX_ITEM_FOCUSED_BG_COLOR;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
             }
          }
       }
       part { name: "ewe.text";
          type: TEXT;
+         scale: 1;
          description { state: "default" 0.0;
-            min: 0 20;
-            max: -1 20;
-            align: 0.0 0.5;
             color: COMBOBOX_ITEM_TEXT_COLOR;
-            text {
-               font: FN;
-               min: 1 0;
-               elipsis: -1;
-               size: 12;
-               align: 0.0 0.5;
-            }
             rel1 {
-               to: "left.offset";
-               relative: 1.0 1.0;
+               relative: 1.0 0.0;
+               to_x: "padding.left.text";
+               to_y: "base";
             }
             rel2 {
-               to: "right.offset";
-               relative: 0.0 0.0;
+               relative: 0.0 1.0;
+               to_x: "padding.right.text";
+               to_y: "base";
+            }
+            text {
+               font: FN;
+               size: FONT_SIZE;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "focused" 0.0;
+            color: COMBOBOX_ITEM_TEXT_FOCUSED_COLOR;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "padding.left.text";
+               to_y: "base";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.right.text";
+               to_y: "base";
+            }
+            text {
+               font: FN;
+               size: FONT_SIZE;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: TRANSPARENT_COLOR;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
             }
          }
       }
    }
    programs {
-      program { name: "mouse.in";
+      program { name: "focused";
          signal: "mouse,in";
-         source: "ewe.*";
-         action: STATE_SET "mousein" 0.0;
-         target: "ewe.bg";
+         source: "event";
+         action: STATE_SET "focused" 0.00;
+   
+         target: "ewe.text";
+         target: "highlight";
       }
-      program { name: "mouse.out";
+      program { name: "unfocused";
          signal: "mouse,out";
-         source: "ewe.*";
-         action: STATE_SET "default" 0.0;
-         target: "ewe.bg";
+         source: "event";
+         action: STATE_SET "default" 0.00;
+         target: "ewe.text";
+         target: "highlight";
       }
       program { name: "clicked";
          signal: "mouse,clicked,1";
-         source: "ewe.*";
          action: SIGNAL_EMIT "select" "ewe";
+   
       }
    }
 }
@@ -581,15 +632,15 @@ group { name: "ewe/combobox/item/color_class/default";
             color: TRANSPARENT_COLOR;
          }
          description { state: "mousein" 0.0;
-            color: COMBOBOX_ITEM_MOUSEIN_BG;
+            color: COMBOBOX_ITEM_FOCUSED_BG_COLOR;
          }
       }
       part { name: "left.offset";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min:  COMBOBOX_ITEM_PADDING;
-            max:  COMBOBOX_ITEM_PADDING;
+            min: 10 0;
+            max: 10 0;
             rel1 {
                relative: 0.0 0.0;
                to: "bg";
