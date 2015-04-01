@@ -25,7 +25,7 @@
  * @{
  * @addtogroup colorclass_viewer_add
  * @{
- * Color Class
+ * Color Class editor
  * <TABLE>
  * @}
  */
@@ -64,7 +64,7 @@ END_TEST
  * @{
  * <tr>
  * <td>colorclass_viewer_add</td>
- * <td>colorclass_viewer_add_test_n</td>
+ * <td>colorclass_viewer_add_test_p</td>
  * <td>
  * @precondition
  * @step 1 initialize elementary library
