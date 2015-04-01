@@ -101,7 +101,7 @@ struct _Prop_Data
       Evas_Object *align_x, *align_y;
       Evas_Object *aspect_min, *aspect_max;
       Evas_Object *aspect_pref;
-      Evas_Object *color_class;
+      Evas_Object *color_class, *color1, *color2, *color3;
       Evas_Object *color;
       Evas_Object *minmul_w, *minmul_h;
    } state;
@@ -1163,6 +1163,9 @@ ui_property_part_unset(Evas_Object *property)
 
    PROP_ITEM_UNSET(prop_box, pd->part.frame)
    PROP_ITEM_UNSET(prop_box, pd->state.frame)
+   evas_object_del(pd->state.color1);
+   evas_object_del(pd->state.color2);
+   evas_object_del(pd->state.color3);
    PROP_ITEM_UNSET(prop_box, pd->state_object_area.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_text.frame)
    PROP_ITEM_UNSET(prop_box, pd->state_image.frame)
@@ -1177,6 +1180,161 @@ ui_property_part_unset(Evas_Object *property)
 #undef PROP_ITEM_UNSET
 #undef pd_part
 #undef pd_drag
+
+/*****************************************************************************/
+/*                          COLOR CLASS COMBOBOX                             */
+/*****************************************************************************/
+static void
+_on_state_color_class_change(void *data,
+                             Evas_Object *obj EINA_UNUSED,
+                             void *event_info)
+{
+   Prop_Data *pd = (Prop_Data *)data;
+   int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
+   Eina_Stringshare *old_value = NULL, *value = NULL;
+   Ewe_Combobox_Item *item = event_info;
+
+   old_value = edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
+                                               pd->wm_part->curr_state,
+                                               pd->wm_part->curr_state_value);
+   value = strcmp(item->title, "None") ? item->title : NULL;
+   edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
+                                   pd->wm_part->curr_state,
+                                   pd->wm_part->curr_state_value,
+                                   value);
+
+   if (edje_edit_color_class_colors_get(pd->wm_style->obj, item->title,
+                                        &r, &g, &b, &a,
+                                        &r2, &g2, &b2, &a2,
+                                        &r3, &g3, &b3, &a3))
+     {
+        evas_object_color_set(pd->state.color1, r * a / 255, g * a / 255, b * a / 255, a);
+        evas_object_color_set(pd->state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a);
+        evas_object_color_set(pd->state.color3, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a);
+     }
+   else
+     {
+        evas_object_color_set(pd->state.color1, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color2, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color3, 0, 0, 0, 0);
+     }
+
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, value,
+                    pd->wm_style->full_group_name,
+                    (void*)edje_edit_state_color_class_set, "color class",
+                    pd->wm_part->name, pd->wm_part->curr_state,
+                    pd->wm_part->curr_state_value);
+
+   edje_edit_string_free(value);
+   edje_edit_string_free(old_value);
+
+   project_changed();
+   workspace_edit_object_recalc(pd->workspace);
+   pd->wm_style->isModify = true;
+}
+
+static void
+_color_class_items_fill(void *data,
+                        Evas_Object *obj,
+                        void *event_info __UNUSED__)
+{
+   int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
+   Eina_List *items, *l;
+   Ewe_Combobox_Item *item;
+   Prop_Data *pd = (Prop_Data *)data;
+   Evas_Object *color;
+   Evas *canvas;
+
+   items = (Eina_List *)ewe_combobox_items_list_get(obj);
+   if (!items) return;
+
+   //get combobbox item from first list item
+   item = eina_list_data_get(items);
+   canvas = evas_object_evas_get(item->content);
+   EINA_LIST_FOREACH(items, l, item)
+     {
+        // this case available if user select 'None'
+        if (!edje_edit_color_class_colors_get(pd->wm_style->obj, item->title,
+                                              &r, &g, &b, &a,
+                                              &r2, &g2, &b2, &a2,
+                                              &r3, &g3, &b3, &a3))
+          continue;
+
+       color = evas_object_rectangle_add(canvas);
+       evas_object_color_set(color, r * a / 255, g * a / 255, b * a / 255, a);
+       edje_object_part_swallow(item->content, "swallow.color1", color);
+       color = evas_object_rectangle_add(canvas);
+       evas_object_color_set(color, r2 * a2 / 255, g2 * a2 /  255, b2 * a2 / 255, a2);
+       edje_object_part_swallow(item->content, "swallow.color2", color);
+       color = evas_object_rectangle_add(canvas);
+       evas_object_color_set(color, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
+       edje_object_part_swallow(item->content, "swallow.color3", color);
+     }
+}
+
+static void
+prop_state_color_class_update(Prop_Data *pd)
+{
+   Ewe_Combobox_Item *it;
+   Eina_List *cclist, *l;
+   const char *ccname;
+   int r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3;
+   Eina_Stringshare *color_c;
+   ewe_combobox_items_list_free(pd->state.color_class, true);
+   ewe_combobox_item_add(pd->state.color_class, _("None"));
+   cclist = edje_edit_color_classes_list_get(pd->wm_style->obj);
+   EINA_LIST_FOREACH(cclist, l, ccname)
+     {
+        it = ewe_combobox_item_add(pd->state.color_class, ccname);
+        ewe_combobox_item_style_set(pd->state.color_class, it, "color_class");
+     }
+   color_c = edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
+                                             pd->wm_part->curr_state,
+                                             pd->wm_part->curr_state_value);
+   ewe_combobox_text_set(pd->state.color_class, color_c ? color_c : _("None"));
+   if (color_c && edje_edit_color_class_colors_get(pd->wm_style->obj, color_c,
+                                                   &r, &g, &b, &a,
+                                                   &r2, &g2, &b2, &a2,
+                                                   &r3, &g3, &b3, &a3))
+     {
+        evas_object_color_set(pd->state.color1, r * a / 255, g * a / 255, b * a / 255, a);
+        evas_object_color_set(pd->state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a2);
+        evas_object_color_set(pd->state.color3, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
+     }
+   else
+     {
+        evas_object_color_set(pd->state.color1, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color2, 0, 0, 0, 0);
+        evas_object_color_set(pd->state.color3, 0, 0, 0, 0);
+     }
+
+   edje_edit_string_list_free(cclist);
+   edje_edit_string_free(color_c);
+}
+
+static Evas_Object *
+prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
+{
+   Evas *canvas;
+
+   canvas = evas_object_evas_get(parent);
+   PROPERTY_ITEM_ADD(parent, _("color class"), "1swallow")
+   EWE_COMBOBOX_ADD(parent, pd->state.color_class)
+   elm_object_tooltip_text_set(pd->state.color_class, "Set the color class");
+   ewe_combobox_style_set(pd->state.color_class, "color_class");
+   evas_object_smart_callback_add(pd->state.color_class, "selected", _on_state_color_class_change, pd);
+   evas_object_smart_callback_add(pd->state.color_class, "expanded", _color_class_items_fill, pd);
+   elm_layout_content_set(item, "elm.swallow.content", pd->state.color_class);
+   pd->state.color1 = evas_object_rectangle_add(canvas);
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color1", pd->state.color1);
+   pd->state.color2 = evas_object_rectangle_add(canvas);
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color2", pd->state.color2);
+   pd->state.color3 = evas_object_rectangle_add(canvas);
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color2);
+
+   prop_state_color_class_update(pd);
+   return item;
+}
 
 #define ITEM_2SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE1) \
@@ -1194,10 +1352,6 @@ ui_property_part_unset(Evas_Object *property)
    ITEM_STRING_STATE_CALLBACK(SUB, VALUE, TYPE) \
    ITEM_1ENTRY_STATE_ADD(TEXT, SUB, VALUE, FILTER) \
    ITEM_1ENTRY_STATE_UPDATE(SUB, VALUE)
-
-#define ITEM_STATE_CCL_CREATE(TYPE, TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
-   ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
 
 #define ITEM_COLOR_STATE_CREATE(TEXT, SUB, VALUE) \
    ITEM_COLOR_STATE_CALLBACK(SUB, VALUE) \
@@ -1287,7 +1441,6 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1
                     1, double, VAL_DOUBLE)
 
 ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
-ITEM_STATE_CCL_CREATE(COLOR_CLASS, _("color class"), state, color_class, color_classes)
 ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
 Eina_Bool
@@ -1336,10 +1489,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_state_aspect_min_aspect_max_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.color_class = prop_item_state_color_class_add(box, pd,
-                                   _on_state_color_class_change,
-                                   _("Current color class"));
-        elm_box_pack_end(box, pd_state.color_class);
+        item = prop_state_color_class_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_state.color = prop_item_state_color_add(box, pd,
                             _("Part main color."));
         item = prop_state_minmul_w_minmul_h_add(box, pd);
@@ -1383,7 +1534,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, 100)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref)
         STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, 100)
-        prop_item_state_color_class_update(pd_state.color_class, pd);
+        prop_state_color_class_update(pd);
         STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, 1)
 
         evas_object_hide(pd_state.proxy_source);
@@ -1456,6 +1607,10 @@ ui_property_state_unset(Evas_Object *property)
    PROP_DATA_GET()
 
    evas_object_hide(pd->state.frame);
+   /* hide the evas rectangles, it need to do, because those objects not a smart */
+   evas_object_hide(pd->state.color1);
+   evas_object_hide(pd->state.color2);
+   evas_object_hide(pd->state.color3);
 
    ui_property_state_obj_area_unset(property);
    ui_property_state_text_unset(property);
@@ -2840,59 +2995,6 @@ ui_property_state_box_unset(Evas_Object *property)
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_box.frame);
    evas_object_hide(pd_box.frame);
-}
-
-static void
-_on_state_color_class_change(void *data,
-                             Evas_Object *obj EINA_UNUSED,
-                             void *event_info)
-{
-   Prop_Data *pd = (Prop_Data *)data;
-   int r, g, b, a, r1, g1, b1, a1, r2, g2, b2, a2;
-   r = g = b = a = r1 = g1 = b1 = a1 = r2 = g2 = b2 = a2 = 0;
-
-   const char *old_value = NULL, *value = NULL;
-   old_value =  edje_edit_state_color_class_get(pd->wm_style->obj, pd->wm_part->name,
-                                                pd->wm_part->curr_state,
-                                                pd->wm_part->curr_state_value);
-   Ewe_Combobox_Item *item = event_info;
-   if (strcmp(item->title, "None"))
-     {
-        edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
-                                     pd->wm_part->curr_state,
-                                     pd->wm_part->curr_state_value,
-                                     item->title);
-        edje_edit_color_class_colors_get(pd->wm_style->obj, item->title, &r, &g, &b, &a,
-                                         &r1, &g1, &b1, &a1, &r2, &g2, &b2, &a2);
-        edje_edit_state_color_set(pd->wm_style->obj, pd->wm_part->name,
-                             pd->wm_part->curr_state, pd->wm_part->curr_state_value,
-                             r, g, b, a);
-        edje_edit_state_color2_set(pd->wm_style->obj, pd->wm_part->name,
-                             pd->wm_part->curr_state, pd->wm_part->curr_state_value,
-                             r1, g1, b1, a1);
-        edje_edit_state_color3_set(pd->wm_style->obj, pd->wm_part->name,
-                             pd->wm_part->curr_state, pd->wm_part->curr_state_value,
-                             r2, g2, b2, a2);
-
-        prop_item_state_color_update(pd->state.color, pd);
-        prop_item_state_color2_update(pd->state_text.color2, pd);
-        prop_item_state_color3_update(pd->state_text.color3, pd);
-        value = item->title;
-     }
-   else edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name,
-                                        pd->wm_part->curr_state,
-                                        pd->wm_part->curr_state_value,
-                                        NULL);
-
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, value,
-                      pd->wm_style->full_group_name,
-                      (void*)edje_edit_state_color_class_set, "colorclass",
-                      pd->wm_part->name, pd->wm_part->curr_state,
-                      pd->wm_part->curr_state_value);
-   project_changed();
-
-   workspace_edit_object_recalc(pd->workspace);
-   pd->wm_style->isModify = true;
 }
 
 #define ITEM_4SPINNER_ITEM_CALLBACK(VALUE) \

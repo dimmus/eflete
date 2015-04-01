@@ -617,7 +617,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
    edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name, \
                                    pd->wm_part->curr_state, \
                                    pd->wm_part->curr_state_value, NULL); \
-   prop_item_state_color_class_update(pd->state.color_class, pd); \
    if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
      history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
                       old_a, r, g, b, a, pd->wm_style->full_group_name, \
