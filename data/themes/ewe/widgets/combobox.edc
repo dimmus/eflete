@@ -572,7 +572,7 @@ group { name: "ewe/combobox/base/color_class";
    }
 }
 
-group { name: "ewe/combobox/small/default";
+group { name: "ewe/combobox/base/small";
    min: 0 21;
    max: 21 21;
    images {
@@ -882,6 +882,7 @@ group {name: "ewe/combobox/item/default";
          scale: 1;
          description { state: "default" 0.0;
             color: COMBOBOX_ITEM_TEXT_COLOR;
+            align: 0.0 0.5;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
@@ -895,11 +896,13 @@ group {name: "ewe/combobox/item/default";
             text {
                font: FN;
                size: FONT_SIZE;
-               align: 0.0 0.5;
+               min: 1 1;
+               ellipsis: -1;
             }
          }
          description { state: "focused" 0.0;
             color: COMBOBOX_ITEM_TEXT_FOCUSED_COLOR;
+            align: 0.0 0.5;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
@@ -913,7 +916,7 @@ group {name: "ewe/combobox/item/default";
             text {
                font: FN;
                size: FONT_SIZE;
-               align: 0.0 0.5;
+               ellipsis: -1;
             }
          }
       }

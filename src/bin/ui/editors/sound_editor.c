@@ -1557,7 +1557,7 @@ _sound_editor_main_markup_create(Sound_Editor *edit)
       case SOUND_EDITOR_EDIT:
         {
            EWE_COMBOBOX_ADD(edit->markup, edit->add_cmb);
-           ewe_combobox_style_set(edit->add_cmb, "small/default");
+           ewe_combobox_style_set(edit->add_cmb, "small");
            ewe_combobox_item_add(edit->add_cmb, _("Sample"));
            ewe_combobox_item_add(edit->add_cmb, _("Tone"));
            evas_object_smart_callback_add(edit->add_cmb, "selected", _on_cmb_sel, edit);

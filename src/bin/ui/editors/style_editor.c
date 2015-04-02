@@ -789,7 +789,7 @@ _form_left_side(Style_Editor *style_edit)
    eina_list_free(styles);
 
    EWE_COMBOBOX_ADD(layout, combobox);
-   ewe_combobox_style_set(combobox, "small/default");
+   ewe_combobox_style_set(combobox, "small");
    ewe_combobox_item_add(combobox, _("New style"));
    ewe_combobox_item_add(combobox, _("New tag"));
    evas_object_smart_callback_add(combobox, "selected", _on_bt_add, style_edit);
