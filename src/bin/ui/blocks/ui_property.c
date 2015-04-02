@@ -1209,8 +1209,8 @@ _on_state_color_class_change(void *data,
                                         &r3, &g3, &b3, &a3))
      {
         evas_object_color_set(pd->state.color1, r * a / 255, g * a / 255, b * a / 255, a);
-        evas_object_color_set(pd->state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a);
-        evas_object_color_set(pd->state.color3, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a);
+        evas_object_color_set(pd->state.color2, r2 * a2 / 255, g2 * a2 / 255, b2 * a2 / 255, a2);
+        evas_object_color_set(pd->state.color3, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
      }
    else
      {
@@ -1330,7 +1330,7 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    pd->state.color2 = evas_object_rectangle_add(canvas);
    ewe_combobox_content_set(pd->state.color_class, "swallow.color2", pd->state.color2);
    pd->state.color3 = evas_object_rectangle_add(canvas);
-   ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color2);
+   ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color3);
 
    prop_state_color_class_update(pd);
    return item;
