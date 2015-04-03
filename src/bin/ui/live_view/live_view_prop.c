@@ -148,17 +148,17 @@ live_view_property_style_set(Evas_Object *property,
 
    if (!pd->scale_spinner)
      {
-        item = elm_layout_add(prop_box);
-        evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0);
-        evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
-        elm_layout_file_set(item, EFLETE_EDJ, "eflete/prop/container/live_view_spinner");
-        elm_object_part_text_set(item, "eflete.text.start", "Scale: ");
+        LAYOUT_PROP_ADD(prop_box,
+                        "Scale: ",
+                        "live_view",
+                        "spinner")
+
         SPINNER_ADD(item, spinner, 1, 500, 1, true);
         elm_object_style_set(spinner, "live_view");
         elm_spinner_label_format_set(spinner, "%3.0f%%");
         evas_object_smart_callback_add(spinner, "changed", _on_scale_change, pd);
         pd->scale_spinner = item;
-        elm_object_part_content_set(item, "eflete.content", spinner);
+        elm_object_part_content_set(item, "elm.swallow.content", spinner);
         evas_object_data_set(item, ITEM, spinner);
      }
    spinner = evas_object_data_get(pd->scale_spinner, ITEM);
