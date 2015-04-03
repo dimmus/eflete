@@ -661,6 +661,7 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
    Evas_Coord part_x, part_y, abs_x, abs_y;
    Eina_List *l, *l_n, *l_sp, *l_sp_n;
    Groupedit_Item *ge_item = NULL, *sp_item = NULL;
+   Edje_Part_Type type;
 
    edje_object_part_geometry_get(sd->edit_obj, gp->name, &x, &y, &w, &h);
    evas_object_geometry_get(sd->edit_obj, &xe, &ye, NULL, NULL);
@@ -674,7 +675,9 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
 
    GP_REAL_GEOMETRY_CALC(part_x, part_y, abs_x, abs_y)
 
-   evas_object_smart_calculate(gp->draw);
+   type = edje_edit_part_type_get(sd->edit_obj, gp->name);
+   if (type == EDJE_PART_TYPE_BOX)
+     evas_object_smart_calculate(gp->draw);
 
    /* We don't need xe or ye for box items */
    xe = 0;
