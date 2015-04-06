@@ -1260,13 +1260,18 @@ _color_class_items_fill(void *data,
                                               &r3, &g3, &b3, &a3))
           continue;
 
-       color = evas_object_rectangle_add(canvas);
+       /* FIXME: this is bad solition, user shoud not use edje object for add contnent to a
+        * combobox item. Need to move combobox from edje ocject to layout. */
+       color = edje_object_add(canvas);
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/combobox/color_class_set");
        evas_object_color_set(color, r * a / 255, g * a / 255, b * a / 255, a);
        edje_object_part_swallow(item->content, "swallow.color1", color);
-       color = evas_object_rectangle_add(canvas);
+       color = edje_object_add(canvas);
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/combobox/color_class_set");
        evas_object_color_set(color, r2 * a2 / 255, g2 * a2 /  255, b2 * a2 / 255, a2);
        edje_object_part_swallow(item->content, "swallow.color2", color);
-       color = evas_object_rectangle_add(canvas);
+       color = edje_object_add(canvas);
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/combobox/color_class_set");
        evas_object_color_set(color, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
        edje_object_part_swallow(item->content, "swallow.color3", color);
      }
