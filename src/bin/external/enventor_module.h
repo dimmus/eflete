@@ -104,4 +104,21 @@ enventor_object_project_unload(Project *project);
 Eina_Bool
 enventor_object_profile_load(Evas_Object *enventor, Profile *profile);
 
+
+/**
+ * If loaded edc code does not contain the data item  "version", then into edc
+ * file will be added string: "version" "version value". Version value is passed
+ * as argument.
+ *
+ * @param enventor The enventor object.
+ * @param project Loaded project.
+ * @param key The version value. Should be like "110".
+ *
+ * @return true if successful, or false in otherwise.
+ *
+ * @ingroup Enventor
+ */
+Eina_Bool
+enventor_object_file_version_update(Evas_Object *enventor, Project *project, const char *key);
+
 #endif /* ENVENTOR_MODULE_H */
