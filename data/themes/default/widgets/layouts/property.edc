@@ -433,45 +433,122 @@ group { name: "elm/layout/live_view/signals";
    }
 }
 
-group { name: "elm/layout/live_view/spinner";
+group { name: "elm/layout/live_view/header";
    parts {
+      part { name: "padding.top";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 0.0;
+            FIXED_SIZE(15, 9);
+         }
+      }
+      part { name: "padding.bottom";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 0.0 1.0;
+            min: 220 6;
+            max: -1 6;
+         }
+      }
       part { name: "elm.text";
          type: TEXT;
          description { state: "default" 0.0;
             align: 0.0 0.0;
             color: LIGHT_GREY_FONT_COLOR;
-            text {
-               font: FN;
-               size: 12;
-               max: 1 1;
-            }
-         }
-      }
-      part { name: "content_left_padding";
-         type: SPACER;
-         description { state: "default" 0.0;
-            align: 0.0 0.5;
-            max: 4 -1;
             rel1 {
-               relative: 1.0 0.0;
-               to_x: "elm.text";
+               relative: 1.0 1.0;
+               to: "padding.top";
             }
             rel2 {
-               relative: 2.0 1.0;
-               to_x: "elm.text";
+               relative: 0.0 0.0;
+               to: "padding.bottom";
+            }
+            text {
+               text: "Scale:";
+               font: FN;
+               size: 12;
+               min: 1 1;
+               max: 1 1;
+               align: 0.0 0.0;
+               ellipsis: -1;
             }
          }
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          description { state: "default" 0.0;
-            min: 0 17;
-            max: 68 17;
+            align: 0.0 0.0;
+            FIXED_SIZE(68, 19);
             rel1 {
                relative: 1.0 0.0;
-               to_x: "content_left_padding";
+               to: "elm.text";
             }
-            align: 0.5 0.5;
+         }
+      }
+      part { name: "elm.swallow.black";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            FIXED_SIZE(22, 22);
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "padding.top";
+            }
+            rel2.to_x: "padding.bottom";
+         }
+      }
+      part { name: "padding.trans_black";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 12 0;
+            max: 12 -1;
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.black";
+            }
+         }
+      }
+      part { name: "elm.swallow.transparent";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            FIXED_SIZE(22, 22);
+            rel1 {
+               relative: 1.0 1.0;
+               to: "padding.top";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.trans_black";
+            }
+         }
+      }
+      part { name: "padding.white_trans";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            min: 12 0;
+            max: 12 -1;
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.transparent";
+            }
+         }
+      }
+      part { name: "elm.swallow.white";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.0;
+            FIXED_SIZE(22, 22);
+            rel1 {
+               relative: 0.0 1.0;
+               to_y: "padding.top";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.white_trans";
+            }
          }
       }
    }
