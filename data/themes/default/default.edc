@@ -26,4 +26,5 @@ collections {
    #include "widgets/separator.edc"
    #include "widgets/cursor.edc"
    #include "widgets/layout.edc"
+   #include "widgets/image.edc"
 }
