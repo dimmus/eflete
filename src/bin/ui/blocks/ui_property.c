@@ -1315,9 +1315,6 @@ prop_state_color_class_update(Prop_Data *pd)
 static Evas_Object *
 prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
 {
-   Evas *canvas;
-
-   canvas = evas_object_evas_get(parent);
    PROPERTY_ITEM_ADD(parent, _("color class"), "1swallow")
    EWE_COMBOBOX_ADD(parent, pd->state.color_class)
    elm_object_tooltip_text_set(pd->state.color_class, "Set the color class");
@@ -1325,11 +1322,14 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    evas_object_smart_callback_add(pd->state.color_class, "selected", _on_state_color_class_change, pd);
    evas_object_smart_callback_add(pd->state.color_class, "expanded", _color_class_items_fill, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->state.color_class);
-   pd->state.color1 = evas_object_rectangle_add(canvas);
+   pd->state.color1 = elm_layout_add(parent);
+   elm_layout_theme_set(pd->state.color1, "image", "combobox", "color_class_set");
    ewe_combobox_content_set(pd->state.color_class, "swallow.color1", pd->state.color1);
-   pd->state.color2 = evas_object_rectangle_add(canvas);
+   pd->state.color2 = elm_layout_add(parent);
+   elm_layout_theme_set(pd->state.color2, "image", "combobox", "color_class_set");
    ewe_combobox_content_set(pd->state.color_class, "swallow.color2", pd->state.color2);
-   pd->state.color3 = evas_object_rectangle_add(canvas);
+   pd->state.color3 = elm_layout_add(parent);
+   elm_layout_theme_set(pd->state.color3, "image", "combobox", "color_class_set");
    ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color3);
 
    prop_state_color_class_update(pd);
