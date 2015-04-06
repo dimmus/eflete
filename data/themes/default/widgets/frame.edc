@@ -558,10 +558,14 @@ group { name: "elm/frame/base/outdent_top";
            if (!strcmp(st, "default")) {
               set_state(PART:"elm.swallow.content", "collapsed", 0.0);
               set_state(PART:"button", "collapsed", 0.0);
+              set_state(PART:"clip", "collapsed", 0.0);
+
            }
            else {
               set_state(PART:"elm.swallow.content", "default", 0.0);
               set_state(PART:"button", "default", 0.0);
+              set_state(PART:"clip", "default", 0.0);
+
            }
         }
       }
