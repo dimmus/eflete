@@ -42,12 +42,7 @@
  */
 #define PROPERTY_ITEM_ADD(PARENT, NAME, STYLE) \
    Evas_Object *item; \
-   item = elm_layout_add(PARENT); \
-   elm_layout_theme_set(item, "layout", "property", STYLE); \
-   evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0); \
-   evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0); \
-   elm_layout_text_set(item, NULL, NAME); \
-   evas_object_show(item);
+   LAYOUT_PROP_ADD(PARENT, NAME, "property", STYLE)
 
 /*****************************************************************************/
 /*                         GROUP 2 CHECK CONTROL                             */
