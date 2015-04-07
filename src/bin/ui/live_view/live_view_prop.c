@@ -120,6 +120,16 @@ _on_all_text_check(void *data,
    eina_list_free(part_list);
 }
 
+
+static void
+_change_bg_cb(void *data,
+              Evas_Object *obj,
+              void *event_info __UNUSED__)
+{
+   Evas_Object *property = (Evas_Object *)data;
+   evas_object_smart_callback_call(property, "bg,changed", obj);
+}
+
 #define _RADIO_ADD(RADIO, VALUE, IMAGE, SWALLOW) \
    RADIO = elm_radio_add(item); \
    elm_object_style_set(RADIO, "style_editor"); \
@@ -127,7 +137,7 @@ _on_all_text_check(void *data,
    evas_object_show(RADIO); \
    IMAGE_ADD(item, image_bg, IMAGE); \
    elm_object_part_content_set(RADIO, "bg", image_bg); \
-   evas_object_smart_callback_add(RADIO, "changed", NULL, NULL); \
+   evas_object_smart_callback_add(RADIO, "changed", _change_bg_cb, property); \
    elm_object_part_content_set(item, SWALLOW, RADIO);
 
 Eina_Bool
