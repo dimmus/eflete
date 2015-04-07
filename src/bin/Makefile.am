@@ -112,7 +112,6 @@ eflete_CPPFLAGS = \
 -I${top_srcdir}/src/bin/ui/wizard \
 @EFL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@ \
-@ENVENTOR_CFLAGS@ \
 @EFLETE_DEFINE@
 
 libete_a_CPPFLAGS = ${eflete_CPPFLAGS} \
@@ -123,5 +122,9 @@ libete.a \
 @EFL_LIBS@ \
 @ELEMENTARY_LIBS@ \
 ${top_builddir}/src/lib/libewe.la \
-@ENVENTOR_LIBS@ \
 @LTLIBINTL@
+
+if HAVE_ENVENTOR
+eflete_CPPFLAGS += @ENVENTOR_CFLAGS@
+eflete_LDADD += @ENVENTOR_LIBS@
+endif

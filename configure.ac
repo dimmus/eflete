@@ -187,6 +187,7 @@ AC_SUBST([EFLETE_DEFINE])
 
 AM_PROG_CC_C_O
 
+AM_CONDITIONAL([HAVE_ENVENTOR], [test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xyes"])
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile]) ])
 AC_CONFIG_FILES([
