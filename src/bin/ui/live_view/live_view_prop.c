@@ -200,10 +200,10 @@ live_view_property_style_set(Evas_Object *property,
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_swallow.frame, true, _("Swallows"), pd->visual);
         elm_object_style_set(pd->prop_swallow.frame, "live_view");
-        elm_layout_signal_emit(pd->prop_swallow.frame, "elm,state,icon,visible", "eflete");
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
         elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
+        elm_object_style_set(pd->prop_swallow.check, "live_view");
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
         elm_box_align_set(pd->prop_swallow.swallows, 0.5, 0.0);
@@ -211,6 +211,7 @@ live_view_property_style_set(Evas_Object *property,
         evas_object_hide(pd->prop_swallow.frame);
 
         evas_object_smart_callback_add(pd->prop_swallow.check, "changed", _on_all_swallow_check, pd);
+        elm_layout_signal_emit(pd->prop_swallow.frame, "elm,state,icon,visible", "eflete");
      }
 
    /* Texts UI setting*/
@@ -218,10 +219,10 @@ live_view_property_style_set(Evas_Object *property,
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Texts"), pd->visual);
         elm_object_style_set(pd->prop_text.frame, "live_view");
-        elm_layout_signal_emit(pd->prop_text.frame, "elm,state,icon,visible", "eflete");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
         elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
+        elm_object_style_set(pd->prop_text.check, "live_view");
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
         elm_box_align_set(pd->prop_text.texts, 0.5, 0.0);
@@ -229,6 +230,7 @@ live_view_property_style_set(Evas_Object *property,
         evas_object_hide(pd->prop_text.frame);
 
         evas_object_smart_callback_add(pd->prop_text.check, "changed", _on_all_text_check, pd);
+        elm_layout_signal_emit(pd->prop_text.frame, "elm,state,icon,visible", "eflete");
      }
 
    /* Signals UI setting*/
@@ -334,15 +336,15 @@ live_view_property_style_set(Evas_Object *property,
      }
    wm_program_signals_list_free(pd->signals);
 
-   if (swallow_parts_exists)
-     elm_object_disabled_set(pd->prop_swallow.check, false);
-   else
+   if (!swallow_parts_exists)
      elm_object_disabled_set(pd->prop_swallow.check, true);
-
-   if (text_parts_exists)
-     elm_object_disabled_set(pd->prop_text.check, false);
    else
+     elm_object_disabled_set(pd->prop_swallow.check, false);
+
+   if (!text_parts_exists)
      elm_object_disabled_set(pd->prop_text.check, true);
+   else
+     elm_object_disabled_set(pd->prop_text.check, false);
 
    return true;
 }
