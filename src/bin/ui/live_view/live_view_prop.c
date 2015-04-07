@@ -321,9 +321,10 @@ live_view_property_style_set(Evas_Object *property,
              LAYOUT_PROP_ADD(pd->prop_signal.signals,
                              sig->name,
                              "live_view",
-                             "signals")
+                             "signal")
 
-             BUTTON_ADD(item, button, "<-");
+             BUTTON_ADD(item, button, NULL);
+             elm_object_style_set(button, "signal_send");
 
              evas_object_smart_callback_add(button, "clicked",
                                             evas_object_data_get(pd->live_object, SIGNAL_FUNC),

@@ -625,3 +625,52 @@ group { name: "elm/layout/property/color";
       }
    }
 }
+
+group { name: "elm/layout/live_view/signal";
+   parts {
+      part { name: "base";
+         type: SPACER;
+         description { state: "default" 0.0;
+            min: 220 26;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         description { state: "default" 0.0;
+            color: LIGHT_GREY_FONT_COLOR;
+            rel1.to: "base";
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "elm.swallow.content";
+               to_y: "base";
+            }
+            text {
+               font: FN;
+               size: 12;
+               align: 0.0 0.5;
+            }
+         }
+      }
+      part { name: "padding.signal_button";
+         type: SPACER;
+         description { state: "default" 0.0;
+            align: 1.0 1.0;
+            min: 15 0;
+            max: 15 -1;
+            rel1.to: "base";
+            rel2.to: "base";
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            align: 1.0 0.5;
+            FIXED_SIZE(45, 19);
+            rel2 {
+               relative: 0.0 1.0;
+               to_x: "padding.signal_button";
+            }
+         }
+      }
+   }
+}
