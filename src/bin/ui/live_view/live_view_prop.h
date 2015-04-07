@@ -46,10 +46,12 @@ struct _Prop_Data
    Style *style;
    struct {
       Evas_Object *frame;
+      Evas_Object *check;
       Evas_Object *swallows;
    } prop_swallow;
    struct {
       Evas_Object *frame;
+      Evas_Object *check;
       Evas_Object *texts;
    } prop_text;
    struct {
