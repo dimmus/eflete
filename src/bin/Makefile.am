@@ -72,6 +72,7 @@ ui/live_view/elementary/live_frame.c \
 ui/live_view/elementary/live_gengrid.c \
 ui/live_view/elementary/live_genlist.c \
 ui/live_view/elementary/live_label.c \
+ui/live_view/elementary/live_layout.c \
 ui/live_view/elementary/live_list.c \
 ui/live_view/elementary/live_notify.c \
 ui/live_view/elementary/live_panel.c \
