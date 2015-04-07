@@ -120,6 +120,16 @@ _on_all_text_check(void *data,
    eina_list_free(part_list);
 }
 
+#define _RADIO_ADD(RADIO, VALUE, IMAGE, SWALLOW) \
+   RADIO = elm_radio_add(item); \
+   elm_object_style_set(RADIO, "style_editor"); \
+   elm_radio_state_value_set(RADIO, VALUE); \
+   evas_object_show(RADIO); \
+   IMAGE_ADD(item, image_bg, IMAGE); \
+   elm_object_part_content_set(RADIO, "bg", image_bg); \
+   evas_object_smart_callback_add(RADIO, "changed", NULL, NULL); \
+   elm_object_part_content_set(item, SWALLOW, RADIO);
+
 Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
@@ -133,6 +143,9 @@ live_view_property_style_set(Evas_Object *property,
    Signal *sig = NULL;
    Edje_Part_Type part_type;
    Eina_Bool swallow_parts_exists = false, text_parts_exists = false;
+   Evas_Object *image_bg = NULL;
+   Evas_Object *radio_group = NULL;
+   Evas_Object *radio = NULL;
 
    if ((!property) || (!object) || (!style) || (!widget) || (!style->obj))
      return false;
@@ -157,6 +170,13 @@ live_view_property_style_set(Evas_Object *property,
         pd->scale_spinner = item;
         elm_object_part_content_set(item, "elm.swallow.content", spinner);
         evas_object_data_set(item, ITEM, spinner);
+
+        _RADIO_ADD(radio_group, 0, "styles-preview-bg-transparent", "elm.swallow.transparent");
+        _RADIO_ADD(radio, 1, "styles-preview-bg-black", "elm.swallow.black");
+        elm_radio_group_add(radio, radio_group);
+        _RADIO_ADD(radio, 2, "styles-preview-bg-white", "elm.swallow.white");
+        elm_radio_group_add(radio, radio_group);
+#undef _RADIO_ADD
      }
    spinner = evas_object_data_get(pd->scale_spinner, ITEM);
    elm_spinner_value_set(spinner, 100);
