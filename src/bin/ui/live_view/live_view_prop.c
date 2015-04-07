@@ -273,7 +273,7 @@ live_view_property_style_set(Evas_Object *property,
              LAYOUT_PROP_ADD(pd->prop_swallow.swallows,
                              part_name,
                              "live_view",
-                             "swallow_text")
+                             "1swallow")
 
              CHECK_ADD(item, check);
 
@@ -293,7 +293,7 @@ live_view_property_style_set(Evas_Object *property,
              LAYOUT_PROP_ADD(pd->prop_text.texts,
                              part_name,
                              "live_view",
-                             "swallow_text")
+                             "1swallow")
 
              CHECK_ADD(item, check);
 
