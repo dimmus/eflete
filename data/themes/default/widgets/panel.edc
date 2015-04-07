@@ -5,7 +5,6 @@ group { name: "elm/panel/right/default";
    images {
       image: "shadow_square_tiny.png" COMP;
       image: "win_glow.png" COMP;
-      image: "bevel_out.png" COMP;
       image: "radio-left-bg.png" COMP;
       image: "radio-left-bg-clicked.png" COMP;
       image: "live-view-arrow-right.png" COMP;
@@ -91,20 +90,6 @@ group { name: "elm/panel/right/default";
             }
          }
       }
-      part { name: "bevel";
-         type: IMAGE;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "base";
-            rel2.to: "base";
-            image {
-               normal: "bevel_out.png";
-               border: 1 1 1 1;
-               middle: NONE;
-            }
-            fill.smooth: 0;
-         }
-      }
       part { name: "elm.swallow.event";
          type: SWALLOW;
          description { state: "default" 0.0;
@@ -123,7 +108,7 @@ group { name: "elm/panel/right/default";
             max: 18 -1;
             color: INVISIBLE_COLOR;
             rel1.relative: 1.0 0.0;
-            rel2.offset: 0 0;
+            rel2.offset: -1 0;
          }
       }
       part { name: "btn";
