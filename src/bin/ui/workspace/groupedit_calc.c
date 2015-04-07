@@ -694,12 +694,10 @@ _part_recalc_apply(Ws_Groupedit_Smart_Data *sd,
                {
                   EINA_LIST_FOREACH_SAFE(ge_item->spread, l_sp, l_sp_n, sp_item)
                     {
-                       /* If it is BOX then there are borders are exist.
-                        * If border is not exist then it is TABLE's item
-                        *
-                        * TODO: check parts item by it's type, not by "border"
-                        * existence. */
-                       if (sp_item->border)
+                       /* If it is BOX then there are borders exists.
+                        * If border is not exist then it is TABLE's item.
+                        */
+                       if (type == EDJE_PART_TYPE_BOX)
                          evas_object_geometry_get(sp_item->border, &x, &y, &w, &h);
                        else
                          {
