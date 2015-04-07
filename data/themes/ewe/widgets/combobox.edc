@@ -361,7 +361,8 @@ group { name: "ewe/combobox/base/color_class";
             }
             rel2 {
                relative: 0.0 1.0;
-               to_x: "right.offset";
+               offset: -7 -1;
+               to_x: "bg.color3";
                to_y: "base";
             }
             text {
@@ -375,13 +376,14 @@ group { name: "ewe/combobox/base/color_class";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 15 15;
-            max: 15 15;
+            min: 16 15;
+            max: 16 15;
             rel1 {
                to: "base";
             }
             rel2 {
                relative: 0.0 1.0;
+               offset: -7 -1;
                to_x: "right.offset";
                to_y: "base";
             }
@@ -395,14 +397,14 @@ group { name: "ewe/combobox/base/color_class";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 15 15;
-            max: 15 15;
+            min: 16 15;
+            max: 16 15;
             rel1 {
                to: "base";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -2 -1;
+               offset: -6 -1;
                to_x: "bg.color3";
                to_y: "base";
             }
@@ -416,14 +418,14 @@ group { name: "ewe/combobox/base/color_class";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 15 15;
-            max: 15 15;
+            min: 16 15;
+            max: 16 15;
             rel1 {
                to: "base";
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: -2 -1;
+               offset: -6 -1;
                to_x: "bg.color2";
                to_y: "base";
             }
