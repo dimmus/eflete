@@ -240,11 +240,10 @@ live_view_property_style_set(Evas_Object *property,
              swallow_parts_exists = true;
              elm_object_content_set(pd->prop_swallow.frame, pd->prop_swallow.swallows);
 
-             item = elm_layout_add(pd->prop_swallow.swallows);
-             elm_layout_theme_set(item, "layout", "live_view", "swallow_text");
-             evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0);
-             evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
-             elm_layout_text_set(item, NULL, eina_stringshare_add(part_name));
+             LAYOUT_PROP_ADD(pd->prop_swallow.swallows,
+                             part_name,
+                             "live_view",
+                             "swallow_text")
 
              CHECK_ADD(item, check);
              elm_object_style_set(check, "live_view");
@@ -256,18 +255,16 @@ live_view_property_style_set(Evas_Object *property,
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_swallow.swallows, item);
-             evas_object_show(item);
           }
         else if ((part_type ==  EDJE_PART_TYPE_TEXT) ||
                  (part_type ==  EDJE_PART_TYPE_TEXTBLOCK))
           {
              text_parts_exists = true;
 
-             item = elm_layout_add(pd->prop_text.texts);
-             elm_layout_theme_set(item, "layout", "live_view", "swallow_text");
-             evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0);
-             evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
-             elm_layout_text_set(item, NULL, eina_stringshare_add(part_name));
+             LAYOUT_PROP_ADD(pd->prop_text.texts,
+                             part_name,
+                             "live_view",
+                             "swallow_text")
 
              CHECK_ADD(item, check);
              elm_object_style_set(check, "live_view");
@@ -279,7 +276,6 @@ live_view_property_style_set(Evas_Object *property,
 
              elm_object_part_content_set(item, "info", check);
              elm_box_pack_end(pd->prop_text.texts, item);
-             evas_object_show(item);
           }
      }
    edje_edit_string_list_free(part_list);
@@ -292,11 +288,10 @@ live_view_property_style_set(Evas_Object *property,
         if ((strcmp(sig->name, "drag") != 0) &&
             (strncmp(sig->name, "mouse", strlen("mouse")) != 0))
           {
-             item = elm_layout_add(pd->prop_signal.signals);
-             elm_layout_theme_set(item, "layout", "live_view", "signals");
-             evas_object_size_hint_weight_set(item, EVAS_HINT_EXPAND, 0.0);
-             evas_object_size_hint_align_set(item, EVAS_HINT_FILL, 0.0);
-             elm_layout_text_set(item, NULL, eina_stringshare_add(sig->name));
+             LAYOUT_PROP_ADD(pd->prop_signal.signals,
+                             sig->name,
+                             "live_view",
+                             "signals")
 
              BUTTON_ADD(item, button, "<-");
 
@@ -308,7 +303,6 @@ live_view_property_style_set(Evas_Object *property,
 
              elm_object_part_content_set(item, "elm.swallow.content", button);
              elm_box_pack_end(pd->prop_signal.signals, item);
-             evas_object_show(item);
           }
      }
    wm_program_signals_list_free(pd->signals);
