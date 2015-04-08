@@ -135,8 +135,12 @@ _list_send_signal(void *data,
 }
 
 Evas_Object *
-widget_list_create(Evas_Object *parent, const char *class, const char *style __UNUSED__)
+widget_list_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    int i = 0;
    Evas_Object *object = elm_list_add(parent);
 
@@ -155,5 +159,9 @@ widget_list_create(Evas_Object *parent, const char *class, const char *style __U
    evas_object_data_set(object, TEXT_FUNC, _on_list_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, _list_send_signal);
 
+   elm_object_style_set(object, style_name);
+
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }

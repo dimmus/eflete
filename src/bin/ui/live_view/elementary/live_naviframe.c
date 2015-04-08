@@ -31,10 +31,11 @@ _next_page_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED
 
 
 Evas_Object *
-widget_naviframe_create(Evas_Object *parent,
-                        const char  *class __UNUSED__,
-                        const char  *style __UNUSED__)
+widget_naviframe_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+
    Evas_Object *bt;
    Elm_Object_Item *it;
 
@@ -56,5 +57,8 @@ widget_naviframe_create(Evas_Object *parent,
    evas_object_data_set(nf, TEXT_FUNC, on_text_check);
    evas_object_data_set(nf, SIGNAL_FUNC, send_signal);
 
+   elm_object_style_set(nf, style_name);
+
+   eina_stringshare_del(style_name);
    return nf;
 }

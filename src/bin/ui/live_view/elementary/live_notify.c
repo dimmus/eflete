@@ -189,8 +189,12 @@ _on_click(void *data,
 }
 
 Evas_Object *
-widget_notify_create(Evas_Object *parent, const char *class, const char *style __UNUSED__)
+widget_notify_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    Evas_Object *content, *noti, *bx, *btn, *object = NULL;
    double horizontal, vertical;
 
@@ -217,5 +221,10 @@ widget_notify_create(Evas_Object *parent, const char *class, const char *style _
    evas_object_data_set(object, TEXT_FUNC, _on_notify_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, _notify_send_signal);
 
+   /* TODO: recheck how it works */
+   elm_object_style_set(noti, style_name);
+
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }
