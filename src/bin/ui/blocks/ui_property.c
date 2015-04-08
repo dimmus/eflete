@@ -101,8 +101,8 @@ struct _Prop_Data
       Evas_Object *align_x, *align_y;
       Evas_Object *aspect_min, *aspect_max;
       Evas_Object *aspect_pref;
-      Evas_Object *color_class, *color1, *color2, *color3;
-      Evas_Object *color;
+      Evas_Object *color_class, *color1, *color2, *color3, *color_class_item;
+      Evas_Object *color, *color_obj, *color_item;
       Evas_Object *minmul_w, *minmul_h;
    } state;
    struct {
@@ -1422,6 +1422,11 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP)
 
+#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, TOOLTIP) \
+   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE) \
+   STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE) \
+   STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, TOOLTIP)
+
 STATE_ATTR_1CHECK(_("visible"), state, visible)
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
@@ -1444,16 +1449,15 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
+STATE_ATTR_COLOR(_("color"), state, color, _("Part main color"))
 
 ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
-ITEM_COLOR_STATE_CREATE(_("color"), state, color)
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
 {
    Evas_Object *item;
    Evas_Object *state_frame, *box, *prop_box;
-   int type;
    char state[BUFF_MAX];
 
    if ((!property) || (!part)) return EINA_FALSE;
@@ -1462,7 +1466,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if (pd->wm_part != part) return EINA_FALSE; /* time for panic */
    #define pd_state pd->state
 
-   type = edje_edit_part_type_get(pd->wm_style->obj, part->name);
    sprintf(state, "%s %.2f", part->curr_state, part->curr_state_value);
 
    prop_box = elm_object_content_get(pd->visual);
@@ -1479,9 +1482,6 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_state_visible_add(box, pd, "Set visibility for part by current state");
         elm_box_pack_end(box, item);
-        pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
-                                  _("Causes the part to use another part content as"
-                                  "the content of this part. Only work with PROXY part."));
         item = prop_state_min_w_min_h_add(box, pd);
         elm_box_pack_end(box, item);
         item = prop_state_max_w_max_h_add(box, pd);
@@ -1494,31 +1494,16 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_state_aspect_min_aspect_max_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_state_color_class_add(box, pd);
-        elm_box_pack_end(box, item);
-        pd_state.color = prop_item_state_color_add(box, pd,
-                            _("Part main color."));
+        pd_state.color_class_item = prop_state_color_class_add(box, pd);
+        elm_box_pack_end(box, pd_state.color_class_item);
+        pd_state.color_item = prop_state_color_add(box, pd);
+        elm_box_pack_after(box, pd_state.color_class_item, pd_state.color_item);
         item = prop_state_minmul_w_minmul_h_add(box, pd);
         elm_box_pack_end(box, item);
-
+        pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
+                                  _("Causes the part to use another part content as"
+                                  "the content of this part. Only work with PROXY part."));
         evas_object_hide(pd_state.proxy_source);
-        elm_box_unpack(box, pd_state.proxy_source);
-        elm_box_pack_end(box, pd_state.color);
-        switch (type)
-          {
-           case EDJE_PART_TYPE_PROXY:
-             {
-                evas_object_show(pd_state.proxy_source);
-                elm_box_pack_end(box, pd_state.proxy_source);
-                break;
-             }
-           case EDJE_PART_TYPE_SPACER:
-           case EDJE_PART_TYPE_TEXTBLOCK:
-             {
-                evas_object_hide(pd_state.color);
-                elm_box_unpack(box, pd_state.color);
-             }
-          }
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_after(prop_box, state_frame, pd->part.frame);
@@ -1527,12 +1512,8 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else
      {
         box = elm_object_content_get(pd_state.frame);
-        /* unpack item for part color, because we don't know whether it is necessary */
-        elm_box_unpack(box, pd_state.color);
-        elm_box_unpack(box, pd_state.proxy_source);
         prop_state_state_update(state);
         STATE_ATTR_CHECK_UPDATE(state, visible)
-
         STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, 1)
         STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, 1)
         STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h)
@@ -1540,27 +1521,9 @@ ui_property_state_set(Evas_Object *property, Part *part)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref)
         STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, 100)
         prop_state_color_class_update(pd);
+        prop_state_color_update(pd);
         STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, 1)
-
-        evas_object_hide(pd_state.proxy_source);
-        prop_item_state_color_update(pd_state.color, pd);
-        evas_object_show(pd_state.color);
-        elm_box_pack_end(box, pd_state.color);
-        switch (type)
-          {
-           case EDJE_PART_TYPE_PROXY:
-             {
-                prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
-                evas_object_show(pd_state.proxy_source);
-                elm_box_pack_end(box, pd_state.proxy_source);
-             }
-           case EDJE_PART_TYPE_SPACER:
-           case EDJE_PART_TYPE_TEXTBLOCK:
-             {
-                evas_object_hide(pd_state.color);
-                elm_box_unpack(box, pd_state.color);
-             }
-          }
+        prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
@@ -1568,24 +1531,24 @@ ui_property_state_set(Evas_Object *property, Part *part)
      }
 
    ui_property_state_obj_area_set(property);
-   if (type == EDJE_PART_TYPE_TEXT) ui_property_state_text_set(property);
+   if (part->type == EDJE_PART_TYPE_TEXT) ui_property_state_text_set(property);
    else ui_property_state_text_unset(property);
-   if (type == EDJE_PART_TYPE_TEXTBLOCK) ui_property_state_textblock_set(property);
+   if (part->type == EDJE_PART_TYPE_TEXTBLOCK) ui_property_state_textblock_set(property);
    else ui_property_state_textblock_unset(property);
-   if (type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property);
+   if (part->type == EDJE_PART_TYPE_IMAGE) ui_property_state_image_set(property);
    else ui_property_state_image_unset(property);
-   if ((type == EDJE_PART_TYPE_IMAGE) || (type == EDJE_PART_TYPE_PROXY))
+   if ((part->type == EDJE_PART_TYPE_IMAGE) || (part->type == EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_set(property);
-   else if ((type != EDJE_PART_TYPE_IMAGE) && (type != EDJE_PART_TYPE_PROXY))
+   else if ((part->type != EDJE_PART_TYPE_IMAGE) && (part->type != EDJE_PART_TYPE_PROXY))
      ui_property_state_fill_unset(property);
-   if (type == EDJE_PART_TYPE_TABLE)
+   if (part->type == EDJE_PART_TYPE_TABLE)
      {
         ui_property_state_container_set(property);
         ui_property_state_table_set(property);
      }
    else
      ui_property_state_table_unset(property);
-   if (type == EDJE_PART_TYPE_BOX)
+   if (part->type == EDJE_PART_TYPE_BOX)
      {
         ui_property_state_container_set(property);
         ui_property_state_box_set(property);
@@ -1593,12 +1556,37 @@ ui_property_state_set(Evas_Object *property, Part *part)
    else
      ui_property_state_box_unset(property);
 
-   if ((type != EDJE_PART_TYPE_TABLE) && (type != EDJE_PART_TYPE_BOX))
+   if ((part->type != EDJE_PART_TYPE_TABLE) && (part->type != EDJE_PART_TYPE_BOX))
      ui_property_state_container_unset(property);
 
 #ifndef HAVE_ENVENTOR
    _code_of_group_setup(pd);
 #endif
+
+   /* hide/show the color attribute control */
+   if (part->type == EDJE_PART_TYPE_TEXTBLOCK ||
+       part->type == EDJE_PART_TYPE_SWALLOW ||
+       part->type == EDJE_PART_TYPE_SPACER)
+     {
+       elm_box_unpack(box, pd_state.color_item);
+       evas_object_hide(pd_state.color_item);
+     }
+   else
+     {
+       elm_box_pack_after(box, pd_state.color_class_item, pd_state.color_item);
+       evas_object_show(pd_state.color_item);
+     }
+
+   if (part->type == EDJE_PART_TYPE_PROXY)
+     {
+        elm_box_pack_end(box, pd_state.proxy_source);
+        evas_object_show(pd_state.proxy_source);
+     }
+   else
+     {
+        elm_box_unpack(box, pd_state.proxy_source);
+        evas_object_hide(pd_state.proxy_source);
+     }
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
    #undef pd_state
