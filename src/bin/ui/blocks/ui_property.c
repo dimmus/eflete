@@ -3134,10 +3134,10 @@ prop_item_part_item_padding_add(Evas_Object *parent,
    ITEM_COMBOBOX_PART_ITEM_UPDATE(SUB, VALUE) \
    ITEM_COMBOBOX_PART_ITEM_ADD(TEXT, SUB, VALUE)
 
-#define ITEM_2_SPINNERS_ITEM_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE) \
-   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE1) \
-   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE2) \
-   ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
+#define ITEM_2_SPINNERS_ITEM_CREATE(TYPE, TEXT, SUB, VALUE1, VALUE2, STYLE, MULTIPLIER) \
+   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE1, MULTIPLIER) \
+   ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE2, MULTIPLIER) \
+   ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2, MULTIPLIER) \
    ITEM_2SPINNER_STATE_ADD(TEXT, SUB, VALUE1, VALUE2, STYLE)
 
 #define ITEM_2_SPINNERS_ITEM_2INT_CREATE(TYPE, TEXT, SUB, VALUE, STYLE) \
@@ -3153,15 +3153,15 @@ prop_item_part_item_padding_add(Evas_Object *parent,
 #define pd_item pd->part_item
 
 ITEM_COMBOBOX_PART_ITEM_CREATE(_("source"), part_item, source);
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("min"), part_item_min, w, h, "eflete/property/item/default", 1)
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("max"), part_item_max, w, h, "eflete/property/item/default", 1)
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("prefer"), part_item_prefer, w, h, "eflete/property/item/default", 1)
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("spread"), part_item_spread, w, h, "eflete/property/item/default", 1)
+ITEM_2_SPINNERS_ITEM_CREATE(int, _("aspect"), part_item_aspect, w, h, "eflete/property/item/default", 1)
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned short int, _("position"), part_item, position, "eflete/property/item/default")
 ITEM_2_SPINNERS_ITEM_2INT_CREATE(unsigned char, _("span"), part_item, span, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default")
-ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete/property/item/default")
+ITEM_2_SPINNERS_ITEM_CREATE(double, _("align"), part_item_align, x, y, "eflete/property/item/default", 100)
+ITEM_2_SPINNERS_ITEM_CREATE(double, _("weight"), part_item_weight, x, y, "eflete/property/item/default", 1)
 ITEM_PREDEFINED_COMBOBOX_PART_ITEM_CREATE(_("aspect mode"), part_item, aspect_mode)
 
 Eina_Bool
@@ -3269,7 +3269,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         prop_item_part_item_min_w_h_update(pd_item.min, pd, false);
         prop_item_part_item_max_w_h_update(pd_item.max, pd, false);
         prop_item_part_item_prefer_w_h_update(pd_item.prefer, pd, false);
-        prop_item_part_item_align_x_y_update(pd_item.align, pd, true);
+        prop_item_part_item_align_x_y_update(pd_item.align, pd, false);
         prop_item_part_item_weight_x_y_update(pd_item.weight, pd, false);
         prop_item_part_item_aspect_w_h_update(pd_item.aspect, pd, false);
         prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);

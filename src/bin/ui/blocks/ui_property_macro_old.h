@@ -1412,7 +1412,7 @@ prop_item_##SUB##_##VALUE##_update(Evas_Object *item, \
    ewe_combobox_select_item_set(combobox, value); \
 }
 
-#define ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE) \
+#define ITEM_SPINNER_PART_ITEM_CALLBACK(TYPE, SUB, VALUE, MULTIPLIER) \
 static void \
 _on_##SUB##_##VALUE##_change(void *data, \
                              Evas_Object *obj, \
@@ -1423,7 +1423,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
    if (!strcmp(#TYPE, "double")) \
      { \
         if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name,\
-                                          pd->item_name, (TYPE)(value / 100))) \
+                                          pd->item_name, (TYPE)(value / MULTIPLIER))) \
           return; \
      }\
    else if (!strcmp(#TYPE, "int")) \
@@ -1437,25 +1437,30 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->wm_style->isModify = true; \
 }
 
-#define ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2) \
+
+/*
+ * parameter "to_percent" left here only for compabilty between UPDATE macro
+ * and ITEM_2_SPINNER_ADD macro.
+ */
+#define ITEM_2SPINNER_PART_ITEM_UPDATE(TYPE, SUB, VALUE1, VALUE2, MULTIPLIER) \
 static void \
 prop_item_##SUB##_##VALUE1##_##VALUE2##_update(Evas_Object *item, \
                                                Prop_Data *pd, \
-                                               Eina_Bool to_percent) \
+                                               Eina_Bool to_percent __UNUSED__) \
 { \
    Evas_Object *spinner; \
    TYPE value; \
    spinner = evas_object_data_get(item, ITEM1); \
    value = (TYPE)edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj, pd->wm_part->name, \
                                                   pd->item_name);\
-   if (to_percent) value *= 100; \
+   value *= MULTIPLIER; \
    elm_spinner_value_set(spinner, value); \
    evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE1##_change, pd); \
    spinner = evas_object_data_get(item, ITEM2); \
    value = (TYPE)edje_edit_##SUB##_##VALUE2##_get(pd->wm_style->obj, pd->wm_part->name, \
                                                   pd->item_name); \
-   if (to_percent) value *= 100; \
+   value *= MULTIPLIER; \
    elm_spinner_value_set(spinner, value); \
    evas_object_smart_callback_del_full(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
    evas_object_smart_callback_add(spinner, "changed", _on_##SUB##_##VALUE2##_change, pd); \
