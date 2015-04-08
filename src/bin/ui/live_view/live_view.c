@@ -77,7 +77,7 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    live->layout = elm_layout_add(parent);
    elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
    bg = elm_bg_add(live->layout);
-   elm_bg_color_set(bg, 203, 207, 209);
+   GET_IMAGE(bg, live->layout, "bg_demo");
    evas_object_show(bg);
 
    live->live_view = container_add(parent);
