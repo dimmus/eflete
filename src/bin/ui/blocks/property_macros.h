@@ -823,4 +823,136 @@ _on_##SUB##_##VALUE##_change(void *data, \
    pd->wm_style->isModify = true; \
 }
 
+/*****************************************************************************/
+/*                          STATE 1 COLOR CONTROL                            */
+/*****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 entry for
+ * state color attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TOOLTIP The tooltip for combobox
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, TOOLTIP) \
+static Evas_Object * \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd) \
+{ \
+   Evas_Object *layout; \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   layout = elm_layout_add(item); \
+   elm_layout_file_set(layout, EFLETE_EDJ, "eflete/prop/color"); \
+   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_tooltip_text_set(layout, TOOLTIP); \
+   pd->SUB.VALUE##_obj = evas_object_rectangle_add(evas_object_evas_get(parent)); \
+   evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN, \
+                                  _on_##SUB##_##VALUE##_clicked, pd); \
+   elm_layout_content_set(layout, NULL, pd->SUB.VALUE##_obj); \
+   elm_layout_content_set(item, NULL, layout); \
+   prop_##SUB##_##VALUE##_update(pd); \
+   return item; \
+}
+
+/**
+ * Macro defines a function that updates control by STATE_ATTR_COLOR_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE) \
+static void \
+prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
+{ \
+   int r, g, b, a; \
+   edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
+                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+                                   &r, &g, &b, &a); \
+   evas_object_color_set(pd->SUB.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
+}
+
+/**
+ * Macro defines a callback for STATE_ATTR_COLOR_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param TYPE The type of given attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_COLOR_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   int r, g, b, a; \
+   int old_r, old_g, old_b, old_a; \
+   Prop_Data *pd = (Prop_Data *)data; \
+   edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
+                                        pd->wm_part->curr_state, \
+                                        pd->wm_part->curr_state_value, \
+                                        &old_r, &old_g, &old_b, &old_a); \
+   colorselector_color_get(obj, &r, &g, &b, &a); \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+                                        pd->wm_part->curr_state, \
+                                        pd->wm_part->curr_state_value, \
+                                        r, g, b, a))\
+     return; \
+   evas_object_color_set(pd->SUB.VALUE##_obj, r*a/255, g*a/255, b*a/255, a); \
+   edje_edit_state_color_class_set(pd->wm_style->obj, pd->wm_part->name, \
+                                   pd->wm_part->curr_state, \
+                                   pd->wm_part->curr_state_value, NULL); \
+   if ((r != old_r) || (g != old_g) || (b != old_b) || (a != old_a)) \
+     history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_r, old_g, old_b, \
+                      old_a, r, g, b, a, pd->wm_style->full_group_name, \
+                      (void*)edje_edit_##SUB##_##VALUE##_set, #SUB"_"#VALUE, \
+                      pd->wm_part->name, pd->wm_part->curr_state, \
+                      pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+} \
+static void \
+_on_##SUB##_##VALUE##_dismissed(void *data, \
+                                Evas_Object *obj, \
+                                void *event_info __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   evas_object_smart_callback_del_full(obj, "color,changed", \
+                                      _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_del_full(obj, "palette,item,selected", \
+                                       _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_hide(obj); \
+} \
+static void \
+_on_##SUB##_##VALUE##_clicked(void *data, \
+                              Evas *e __UNUSED__, \
+                              Evas_Object *obj, \
+                              void *event_info __UNUSED__) \
+{ \
+   int x, y; \
+   int r, g, b, a; \
+   Evas_Object *colorsel; \
+   Prop_Data *pd = (Prop_Data *)data; \
+   colorsel = colorselector_get(); \
+   evas_object_color_get(pd->SUB.VALUE##_obj, &r, &g, &b, &a); \
+   colorselector_color_set(colorsel, r, g, b, a); \
+   evas_object_smart_callback_add(colorsel, "color,changed", \
+                                  _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(colorsel, "palette,item,selected", \
+                                  _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(colorsel, "dismissed", \
+                                  _on_##SUB##_##VALUE##_dismissed, pd); \
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y); \
+   evas_object_move(colorsel, x, y); \
+   evas_object_show(colorsel); \
+}
+
 /** @} privatesection */
