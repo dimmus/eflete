@@ -845,11 +845,12 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    Evas_Object *layout; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    layout = elm_layout_add(item); \
-   elm_layout_file_set(layout, EFLETE_EDJ, "eflete/prop/color"); \
-   evas_object_size_hint_weight_set(layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   elm_layout_theme_set(layout, "layout", "property", "color"); \
+   evas_object_size_hint_weight_set(layout,  EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
    evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL); \
    elm_object_tooltip_text_set(layout, TOOLTIP); \
-   pd->SUB.VALUE##_obj = evas_object_rectangle_add(evas_object_evas_get(parent)); \
+   pd->SUB.VALUE##_obj = elm_layout_add(parent); \
+   elm_layout_theme_set(pd->SUB.VALUE##_obj, "image", "color", "color_set"); \
    evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN, \
                                   _on_##SUB##_##VALUE##_clicked, pd); \
    elm_layout_content_set(layout, NULL, pd->SUB.VALUE##_obj); \
