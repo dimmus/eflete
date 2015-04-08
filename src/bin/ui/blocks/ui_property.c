@@ -1270,15 +1270,15 @@ _color_class_items_fill(void *data,
        /* FIXME: this is bad solition, user shoud not use edje object for add contnent to a
         * combobox item. Need to move combobox from edje ocject to layout. */
        color = edje_object_add(canvas);
-       edje_object_file_set(color, EFLETE_THEME, "elm/image/combobox/color_class_set");
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
        evas_object_color_set(color, r * a / 255, g * a / 255, b * a / 255, a);
        edje_object_part_swallow(item->content, "swallow.color1", color);
        color = edje_object_add(canvas);
-       edje_object_file_set(color, EFLETE_THEME, "elm/image/combobox/color_class_set");
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
        evas_object_color_set(color, r2 * a2 / 255, g2 * a2 /  255, b2 * a2 / 255, a2);
        edje_object_part_swallow(item->content, "swallow.color2", color);
        color = edje_object_add(canvas);
-       edje_object_file_set(color, EFLETE_THEME, "elm/image/combobox/color_class_set");
+       edje_object_file_set(color, EFLETE_THEME, "elm/image/color/color_set");
        evas_object_color_set(color, r3 * a3 / 255, g3 * a3 / 255, b3 * a3 / 255, a3);
        edje_object_part_swallow(item->content, "swallow.color3", color);
      }
@@ -1335,13 +1335,13 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    evas_object_smart_callback_add(pd->state.color_class, "expanded", _color_class_items_fill, pd);
    elm_layout_content_set(item, "elm.swallow.content", pd->state.color_class);
    pd->state.color1 = elm_layout_add(parent);
-   elm_layout_theme_set(pd->state.color1, "image", "combobox", "color_class_set");
+   elm_layout_theme_set(pd->state.color1, "image", "color", "color_set");
    ewe_combobox_content_set(pd->state.color_class, "swallow.color1", pd->state.color1);
    pd->state.color2 = elm_layout_add(parent);
-   elm_layout_theme_set(pd->state.color2, "image", "combobox", "color_class_set");
+   elm_layout_theme_set(pd->state.color2, "image", "color", "color_set");
    ewe_combobox_content_set(pd->state.color_class, "swallow.color2", pd->state.color2);
    pd->state.color3 = elm_layout_add(parent);
-   elm_layout_theme_set(pd->state.color3, "image", "combobox", "color_class_set");
+   elm_layout_theme_set(pd->state.color3, "image", "color", "color_set");
    ewe_combobox_content_set(pd->state.color_class, "swallow.color3", pd->state.color3);
 
    prop_state_color_class_update(pd);

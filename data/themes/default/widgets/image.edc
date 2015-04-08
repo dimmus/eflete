@@ -1,4 +1,4 @@
-group { name: "elm/image/combobox/color_class_set";
+group { name: "elm/image/color/color_set";
    images {
       image: "color-set.png" COMP;
    }
@@ -6,8 +6,6 @@ group { name: "elm/image/combobox/color_class_set";
       part { name: "bg";
          type: IMAGE;
          description { state: "default" 0.0;
-            min: 16 15;
-            max: 16 15;
             image {
                normal: "color-set.png";
                border: 7 7 6 7;
