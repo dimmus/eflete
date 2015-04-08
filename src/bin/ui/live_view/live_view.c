@@ -26,6 +26,42 @@
 #define SWALLOW_CONTENT "eflete.swallow.content"
 #define SWALLOW_MENU "eflete.swallow.menu"
 
+static void
+_change_bg_cb(void *data,
+              Evas_Object *obj __UNUSED__,
+              void *event_info)
+{
+   Evas_Object *live_layout = (Evas_Object *)data;
+   Evas_Object *bg = NULL;
+   int state = elm_radio_state_value_get((Evas_Object *)event_info);
+   switch (state)
+     {
+      case 0:
+        {
+           GET_IMAGE(bg, live_layout, "bg_demo");
+           evas_object_show(bg);
+        }
+      break;
+      case 1:
+        {
+           bg = evas_object_rectangle_add(live_layout);
+           evas_object_color_set(bg, 0, 0, 0, 255);
+           evas_object_show(bg);
+        }
+      break;
+      case 2:
+        {
+           bg = evas_object_rectangle_add(live_layout);
+           evas_object_color_set(bg, 255, 255, 255, 255);
+           evas_object_show(bg);
+        }
+      break;
+      default:
+      break;
+     }
+   elm_object_part_content_set(live_layout, SWALLOW_BG, bg);
+}
+
 Live_View *
 live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 {
@@ -48,6 +84,8 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
    live->panel = elm_panel_add(parent);
    live->property = live_view_property_add(live->panel, in_prog_edit);
    elm_object_content_set(live->panel, live->property);
+   evas_object_smart_callback_add(live->property, "bg,changed", _change_bg_cb,
+                                  live->layout);
    elm_panel_orient_set(live->panel, ELM_PANEL_ORIENT_RIGHT);
    evas_object_size_hint_weight_set(live->panel, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(live->panel, EVAS_HINT_FILL, EVAS_HINT_FILL);
