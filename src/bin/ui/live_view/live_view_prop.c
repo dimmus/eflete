@@ -152,7 +152,7 @@ live_view_property_style_set(Evas_Object *property,
    Eina_List *part_list = NULL, *part = NULL, *l = NULL;
    Signal *sig = NULL;
    Edje_Part_Type part_type;
-   Eina_Bool swallow_parts_exists = false, text_parts_exists = false;
+   Eina_Bool swallow_parts_exists = false, text_parts_exists = false, signal_parts_exists = false;;
    Evas_Object *image_bg = NULL;
    Evas_Object *radio_group = NULL;
    Evas_Object *radio = NULL;
@@ -316,6 +316,7 @@ live_view_property_style_set(Evas_Object *property,
         if ((strcmp(sig->name, "drag") != 0) &&
             (strncmp(sig->name, "mouse", strlen("mouse")) != 0))
           {
+             signal_parts_exists = true;
              LAYOUT_PROP_ADD(pd->prop_signal.signals,
                              sig->name,
                              "live_view",
@@ -337,14 +338,35 @@ live_view_property_style_set(Evas_Object *property,
    wm_program_signals_list_free(pd->signals);
 
    if (!swallow_parts_exists)
-     elm_object_disabled_set(pd->prop_swallow.check, true);
+     {
+        elm_object_disabled_set(pd->prop_swallow.check, true);
+        elm_frame_collapse_go(pd->prop_swallow.frame, false);
+        elm_object_disabled_set(pd->prop_swallow.frame, true);
+     }
    else
-     elm_object_disabled_set(pd->prop_swallow.check, false);
+     {
+        elm_object_disabled_set(pd->prop_swallow.check, false);
+        elm_object_disabled_set(pd->prop_swallow.frame, false);
+     }
 
    if (!text_parts_exists)
-     elm_object_disabled_set(pd->prop_text.check, true);
+     {
+        elm_object_disabled_set(pd->prop_text.check, true);
+        elm_frame_collapse_go(pd->prop_text.frame, false);
+        elm_object_disabled_set(pd->prop_text.frame, true);
+     }
    else
-     elm_object_disabled_set(pd->prop_text.check, false);
+     {
+        elm_object_disabled_set(pd->prop_text.check, false);
+        elm_object_disabled_set(pd->prop_text.frame, false);
+     }
+
+   if (!signal_parts_exists)
+     {
+        elm_frame_collapse_set(pd->prop_signal.frame, false);
+        elm_object_disabled_set(pd->prop_signal.frame, true);
+     }
+   else elm_object_disabled_set(pd->prop_signal.frame, false);
 
    return true;
 }
