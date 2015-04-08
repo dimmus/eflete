@@ -1497,7 +1497,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         pd_state.color_class_item = prop_state_color_class_add(box, pd);
         elm_box_pack_end(box, pd_state.color_class_item);
         pd_state.color_item = prop_state_color_add(box, pd);
-        elm_box_pack_after(box, pd_state.color_class_item, pd_state.color_item);
+        elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
         item = prop_state_minmul_w_minmul_h_add(box, pd);
         elm_box_pack_end(box, item);
         pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
@@ -1568,24 +1568,36 @@ ui_property_state_set(Evas_Object *property, Part *part)
        part->type == EDJE_PART_TYPE_SWALLOW ||
        part->type == EDJE_PART_TYPE_SPACER)
      {
-       elm_box_unpack(box, pd_state.color_item);
-       evas_object_hide(pd_state.color_item);
+        if (evas_object_visible_get(pd_state.color_item))
+          {
+             elm_box_unpack(box, pd_state.color_item);
+             evas_object_hide(pd_state.color_item);
+          }
      }
    else
      {
-       elm_box_pack_after(box, pd_state.color_class_item, pd_state.color_item);
-       evas_object_show(pd_state.color_item);
+        if (!evas_object_visible_get(pd_state.color_item))
+          {
+             elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
+             evas_object_show(pd_state.color_item);
+          }
      }
 
    if (part->type == EDJE_PART_TYPE_PROXY)
      {
-        elm_box_pack_end(box, pd_state.proxy_source);
-        evas_object_show(pd_state.proxy_source);
+        if (!evas_object_visible_get(pd_state.proxy_source))
+          {
+             elm_box_pack_end(box, pd_state.proxy_source);
+             evas_object_show(pd_state.proxy_source);
+          }
      }
    else
      {
-        elm_box_unpack(box, pd_state.proxy_source);
-        evas_object_hide(pd_state.proxy_source);
+        if (evas_object_visible_get(pd_state.proxy_source))
+          {
+             elm_box_unpack(box, pd_state.proxy_source);
+             evas_object_hide(pd_state.proxy_source);
+          }
      }
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_ON);
