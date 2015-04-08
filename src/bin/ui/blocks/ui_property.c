@@ -219,6 +219,13 @@ static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Source"),
                                           NULL};
 
+static const char *edje_item_aspect_pref[] = { N_("None"),
+                                               N_("Neither"),
+                                               N_("Vertical"),
+                                               N_("Horizontal"),
+                                               N_("Both"),
+                                               NULL};
+
 static const char *edje_select_mode[] = { N_("Default"),
                                           N_("Explicit"),
                                           NULL};
@@ -3237,7 +3244,7 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
                             _("left:"), _("right:"), _("top:"), _("bottom:"));
         pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
                               _("Sets the aspect control hints for this object."),
-                              edje_aspect_pref);
+                              edje_item_aspect_pref);
 
         elm_box_pack_end(box, pd_item.source);
         if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
