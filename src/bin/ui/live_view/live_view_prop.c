@@ -203,7 +203,6 @@ live_view_property_style_set(Evas_Object *property,
         elm_layout_signal_emit(pd->prop_swallow.frame, "elm,state,icon,visible", "eflete");
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
-        elm_object_style_set(pd->prop_swallow.check, "live_view");
         elm_object_part_content_set(pd->prop_swallow.frame, "elm.swallow.check", pd->prop_swallow.check);
 
         BOX_ADD(pd->prop_swallow.frame, pd->prop_swallow.swallows, false, false)
@@ -222,7 +221,6 @@ live_view_property_style_set(Evas_Object *property,
         elm_layout_signal_emit(pd->prop_text.frame, "elm,state,icon,visible", "eflete");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
-        elm_object_style_set(pd->prop_text.check, "live_view");
         elm_object_part_content_set(pd->prop_text.frame, "elm.swallow.check", pd->prop_text.check);
 
         BOX_ADD(pd->prop_text.frame, pd->prop_text.texts, false, false)
@@ -276,7 +274,6 @@ live_view_property_style_set(Evas_Object *property,
                              "swallow_text")
 
              CHECK_ADD(item, check);
-             elm_object_style_set(check, "live_view");
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, SWALLOW_FUNC),
@@ -297,7 +294,6 @@ live_view_property_style_set(Evas_Object *property,
                              "swallow_text")
 
              CHECK_ADD(item, check);
-             elm_object_style_set(check, "live_view");
 
              evas_object_smart_callback_add(check, "changed",
                                             evas_object_data_get(pd->live_object, TEXT_FUNC),
