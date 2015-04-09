@@ -97,14 +97,15 @@ widget_scroller_create(Evas_Object *parent, const Style *style)
         object = elm_entry_add(parent);
         evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
         elm_entry_scrollable_set(object, true);
-        /* TODO: set correct entry style to see changes of scroller style */
+        if (strcmp(class, "entry_single") == 0)
+          elm_entry_single_line_set(object, true);
      }
    else
      {
         object = elm_scroller_add(parent);
         evas_object_data_set(object, SWALLOW_FUNC, _on_scroller_swallow_check);
-        elm_object_style_set(object, style_name);
      }
+   elm_object_style_set(object, style_name);
 
    elm_scroller_policy_set(object, ELM_SCROLLER_POLICY_ON,
                            ELM_SCROLLER_POLICY_ON);
