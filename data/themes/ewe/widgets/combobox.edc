@@ -1024,6 +1024,7 @@ group { name: "ewe/combobox/item/color_class";
          scale: 1;
          description { state: "default" 0.0;
             color: COMBOBOX_ITEM_TEXT_COLOR;
+            align: 0.0 0.5;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
@@ -1032,17 +1033,18 @@ group { name: "ewe/combobox/item/color_class";
             rel2 {
                relative: 0.0 1.0;
                offset: -7 -1;
-               to_x: "bg.color3";
+               to_x: "bg.color1";
                to_y: "base";
             }
             text {
                font: FN;
                size: FONT_SIZE;
-               align: 0.0 0.5;
+               max: 1 1;
             }
          }
          description { state: "focused" 0.0;
             color: COMBOBOX_ITEM_TEXT_FOCUSED_COLOR;
+            align: 0.0 0.5;
             rel1 {
                relative: 1.0 0.0;
                to_x: "padding.left.text";
@@ -1051,13 +1053,13 @@ group { name: "ewe/combobox/item/color_class";
             rel2 {
                relative: 0.0 1.0;
                offset: -7 -1;
-               to_x: "bg.color3";
+               to_x: "bg.color1";
                to_y: "base";
             }
             text {
                font: FN;
                size: FONT_SIZE;
-               align: 0.0 0.5;
+               max: 1 1;
             }
          }
       }
