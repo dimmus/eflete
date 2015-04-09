@@ -1348,6 +1348,30 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    return item;
 }
 
+static void
+prop_state_proxy_source_update(Prop_Data *pd,
+                               Evas_Object *combobox __UNUSED__)
+{
+   Part *part;
+   Eina_Inlist *list_n = NULL;
+   Eina_Stringshare *value;
+
+   /* clears the list, because we don't know about changes in the part list */
+   ewe_combobox_items_list_free(pd->state.proxy_source, true);
+   value = edje_edit_state_proxy_source_get(pd->wm_style->obj,
+                                            pd->wm_part->name,
+                                            pd->wm_part->curr_state,
+                                            pd->wm_part->curr_state_value);
+   ewe_combobox_item_add(pd->state.proxy_source, _("None"));
+   ewe_combobox_text_set(pd->state.proxy_source, value ? value : _("None"));
+   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part)
+     {
+        if ((part != pd->wm_part) && (part->type != EDJE_PART_TYPE_SPACER))
+          ewe_combobox_item_add(pd->state.proxy_source, part->name);
+     }
+   edje_edit_string_free(value);
+}
+
 #define ITEM_2SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE1) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE2) \
@@ -1434,6 +1458,10 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, TOOLTIP)
 
+#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
+
 STATE_ATTR_1CHECK(_("visible"), state, visible)
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
@@ -1457,8 +1485,7 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
 STATE_ATTR_COLOR(_("color"), state, color, _("Part main color"))
-
-ITEM_1COMBOBOX_STATE_PROXY_CREATE(_("proxy source"), state, proxy_source)
+STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state)
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
@@ -1507,7 +1534,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
         item = prop_state_minmul_w_minmul_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.proxy_source = prop_item_state_proxy_source_add(box, pd,
+        pd_state.proxy_source = prop_state_proxy_source_add(box, pd,
                                   _("Causes the part to use another part content as"
                                   "the content of this part. Only work with PROXY part."));
         evas_object_hide(pd_state.proxy_source);
@@ -1530,7 +1557,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_state_color_class_update(pd);
         prop_state_color_update(pd);
         STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, 1)
-        prop_item_state_proxy_source_update(pd_state.proxy_source, pd);
+        prop_state_proxy_source_update(pd, NULL);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
