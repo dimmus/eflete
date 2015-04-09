@@ -956,4 +956,55 @@ _on_##SUB##_##VALUE##_clicked(void *data, \
    evas_object_show(colorsel); \
 }
 
+/*****************************************************************************/
+/*                       STATE 1 COMBOBOX CONTROL                            */
+/*****************************************************************************/
+/**
+ * Macro for functions that create an item with label and 1 combobox for state
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE The value of state attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER) \
+PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
+
+/**
+ * Macro defines the callback for STATE_ATTR_1COMBOBOX_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE The value of state attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+static void \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj __UNUSED__, \
+                                void *ei) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   Ewe_Combobox_Item *item = ei; \
+   const char *old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                           pd->wm_part->name, \
+                                                           pd->wm_part->curr_state, \
+                                                           pd->wm_part->curr_state_value);\
+   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
+                                   !strcmp(item->title, _("None")) ? NULL : item->title); \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    item->title, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+   edje_edit_string_free(old_value); \
+}
+
 /** @} privatesection */
