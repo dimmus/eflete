@@ -88,6 +88,7 @@ struct _Prop_Data
       Evas_Object *x, *step_x;
       Evas_Object *y, *step_y;
       Evas_Object *confine;
+      Evas_Object *threshold;
       Evas_Object *event;
    } part_drag;
    struct {
@@ -953,12 +954,14 @@ prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
    elm_object_disabled_set(pd->part_drag.step_x, !bx);
    elm_object_disabled_set(pd->part_drag.step_y, !by);
    elm_object_disabled_set(pd->part_drag.confine, !(bx | by));
+   elm_object_disabled_set(pd->part_drag.threshold, !(bx | by));
 
    if (collapse)
      elm_frame_collapse_set(pd->part_drag.frame, !(bx | by));
 }
 
 PART_ATTR_PARTS_LIST(part_drag, confine, part_drag)
+PART_ATTR_PARTS_LIST(part_drag, threshold, part_drag)
 PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
@@ -992,6 +995,8 @@ PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
 PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
 PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag,
                     _("Limits the movement of the dragged part to another part's container"))
+PART_ATTR_1COMBOBOX(_("threshold"), part_drag, threshold, part_drag,
+                    _("Movement of the dragged part can only start when it get moved enough to be outside of this threshold part"))
 PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag,
                     _("It causes the part to forward the drag events "
                     "to another part, thus ignoring them for itself."))
@@ -1059,6 +1064,8 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, item);
         item = prop_part_drag_confine_add(box, pd);
         elm_box_pack_end(box, item);
+        item = prop_part_drag_threshold_add(box, pd);
+        elm_box_pack_end(box, item);
         item = prop_part_drag_event_add(box, pd);
         elm_box_pack_end(box, item);
 
@@ -1078,6 +1085,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         prop_part_drag_x_step_x_update(pd);
         prop_part_drag_y_step_y_update(pd);
         prop_part_drag_confine_update(pd, pd->part_drag.confine);
+        prop_part_drag_threshold_update(pd, pd->part_drag.threshold);
         prop_part_drag_event_update(pd, pd->part_drag.event);
      }
 
