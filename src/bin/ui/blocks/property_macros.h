@@ -247,16 +247,15 @@ _on_##SUB##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER) \
+#define PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
-                              Prop_Data *pd, \
-                              const char *tooltip) \
+                              Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE) \
    prop_##MEMBER##_##VALUE##_update(pd, pd->MEMBER.VALUE); \
-   elm_object_tooltip_text_set(pd->MEMBER.VALUE, tooltip); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "selected", _on_##MEMBER##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
    return item; \
@@ -970,8 +969,8 @@ _on_##SUB##_##VALUE##_clicked(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER) \
-PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
+#define STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 /**
  * Macro defines the callback for STATE_ATTR_1COMBOBOX_ADD.

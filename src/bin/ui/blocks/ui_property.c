@@ -965,9 +965,9 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
    PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
    PART_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
 
-#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER) \
+#define PART_ATTR_1COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
-   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
+   PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
@@ -982,14 +982,19 @@ PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
 PART_ATTR_1CHECK(_("scalable"), part, scale)
 PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
-PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part)
+PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
+                    _("Show only the area of part that coincides with another part's container"))
 PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
-PART_ATTR_1COMBOBOX(_("group source"), part, source, part)
+PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
+                    _("Used for the group to be loaded and used to display GROUP part."))
 /* part drag property */
 PART_ATTR_DRAG(_("axis X"), part_drag, x, step_x)
 PART_ATTR_DRAG(_("axis Y"), part_drag, y, step_y)
-PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag)
-PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag)
+PART_ATTR_1COMBOBOX(_("drag area"), part_drag, confine, part_drag,
+                    _("Limits the movement of the dragged part to another part's container"))
+PART_ATTR_1COMBOBOX(_("forward events"), part_drag, event, part_drag,
+                    _("It causes the part to forward the drag events "
+                    "to another part, thus ignoring them for itself."))
 
 #define pd_part pd->part
 #define pd_drag pd->part_drag
@@ -1028,17 +1033,13 @@ ui_property_part_set(Evas_Object *property, Part *part)
         pd->part.repeat_events_item = prop_part_repeat_events_add(box, pd,
                             _("Enable repeat mouse events to the parts below."));
         elm_box_pack_end(box, pd->part.repeat_events_item);
-        pd->part.clip_to_item = prop_part_clip_to_add(box, pd,
-                             _("Show only the area of part that coincides with "
-                             "another part's container"));
+        pd->part.clip_to_item = prop_part_clip_to_add(box, pd);
         elm_box_pack_end(box, pd->part.clip_to_item);
         pd->part.ignore_flags_item = prop_part_ignore_flags_add(box, pd,
                                   _("Specifies whether events with the given "
                                   " flags should be ignored"), edje_ignore_flags);
         elm_box_pack_end(box, pd->part.ignore_flags_item);
-        pd->part.source_item = prop_part_source_add(box, pd,
-                                  _("Used for the group to be loaded and used to "
-                                  "display GROUP part."));
+        pd->part.source_item = prop_part_source_add(box, pd);
         elm_box_pack_end(box, pd->part.source_item);
 
         FRAME_PROPERTY_ADD(pd->visual, pd_drag.frame, true, _("Part dragable property"), pd->visual)
@@ -1056,13 +1057,9 @@ ui_property_part_set(Evas_Object *property, Part *part)
                                  _("Enable/Disable draggin along Y axis"),
                                  _("Set a drag step value"));
         elm_box_pack_end(box, item);
-        item = prop_part_drag_confine_add(box, pd,
-                                 _("Limits the movement of the dragged part to "
-                                  "another part's container'"));
+        item = prop_part_drag_confine_add(box, pd);
         elm_box_pack_end(box, item);
-        item = prop_part_drag_event_add(box, pd,
-                                _("It causes the part to forward the drag events "
-                                "to another part, thus ignoring them for itself."));
+        item = prop_part_drag_event_add(box, pd);
         elm_box_pack_end(box, item);
 
         elm_box_pack_after(prop_box, pd_part.frame, pd->group.frame);
@@ -1458,9 +1455,9 @@ prop_state_proxy_source_update(Prop_Data *pd,
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, TOOLTIP)
 
-#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER) \
+#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
-   STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER)
+   STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 STATE_ATTR_1CHECK(_("visible"), state, visible)
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
@@ -1485,7 +1482,9 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
 STATE_ATTR_COLOR(_("color"), state, color, _("Part main color"))
-STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state)
+STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
+                    _("Causes the part to use another part content as"
+                    "the content of this part. Only work with PROXY part."))
 
 Eina_Bool
 ui_property_state_set(Evas_Object *property, Part *part)
@@ -1534,9 +1533,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         elm_box_pack_after(box, pd_state.color_item, pd_state.color_class_item);
         item = prop_state_minmul_w_minmul_h_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_state.proxy_source = prop_state_proxy_source_add(box, pd,
-                                  _("Causes the part to use another part content as"
-                                  "the content of this part. Only work with PROXY part."));
+        pd_state.proxy_source = prop_state_proxy_source_add(box, pd);
         evas_object_hide(pd_state.proxy_source);
 
         prop_box = elm_object_content_get(pd->visual);
@@ -2333,12 +2330,25 @@ PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit
 PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int)
 PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
-PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock)
-PART_ATTR_1COMBOBOX(_("before selected text"), part, source2, state_textblock)
-PART_ATTR_1COMBOBOX(_("under cursor"), part, source3, state_textblock)
-PART_ATTR_1COMBOBOX(_("over cursor"), part, source4, state_textblock)
-PART_ATTR_1COMBOBOX(_("under anchor"), part, source5, state_textblock)
-PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock)
+PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
+                    _("Used for the group to be loaded and used for selection \t"
+                    "display UNDER the selected text the source \t"
+                    "of TEXTBLOCK part."))
+PART_ATTR_1COMBOBOX(_("before selected text"), part, source2, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "selection display OVER the selected text."))
+PART_ATTR_1COMBOBOX(_("under cursor"), part, source3, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "cursor display UNDER the cursor position."))
+PART_ATTR_1COMBOBOX(_("over cursor"), part, source4, state_textblock,
+                    _("It is used for the group to be loaded and used \t"
+                    "for cursor display OVER the cursor position."))
+PART_ATTR_1COMBOBOX(_("under anchor"), part, source5, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "anchors display UNDER the anchor position."))
+PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock,
+                    _("It is used for the group to be loaded and used for \t"
+                    "anchor display OVER the anchor position."))
 
 ITEM_1COMBOBOX_STATE_CREATE(TEXT_STYLE, _("text style"), state, text_style, styles)
 
@@ -2407,30 +2417,17 @@ ui_property_state_textblock_set(Evas_Object *property)
          item = prop_state_textblock_multiline_add(box, pd,
                 _("It causes a textblock that is editable to allow multiple lines for editing."));
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source_add(box, pd,
-                               _("Used for the group to be loaded and used for selection \t"
-                               "display UNDER the selected text the source \t"
-                               "of TEXTBLOCK part."));
+         item = prop_state_textblock_source_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source2_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "selection display OVER the selected text."));
+         item = prop_state_textblock_source2_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source3_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "cursor display UNDER the cursor position."));
+         item = prop_state_textblock_source3_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source4_add(box, pd,
-                               _("It is used for the group to be loaded and used \t"
-                               "for cursor display OVER the cursor position."));
+         item = prop_state_textblock_source4_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source5_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "anchors display UNDER the anchor position."));
+         item = prop_state_textblock_source5_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_source6_add(box, pd,
-                               _("It is used for the group to be loaded and used for \t"
-                               "anchor display OVER the anchor position."));
+         item = prop_state_textblock_source6_add(box, pd);
          elm_box_pack_end(box, item);
 
          elm_box_pack_end(prop_box, textblock_frame);
