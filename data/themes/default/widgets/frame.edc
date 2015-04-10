@@ -840,6 +840,16 @@ group { name: "elm/frame/base/live_view";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
+            min: 0 0;
+            max: 18 19;
+            rel1 {
+               relative: 1.0 0.0;
+               to: "padding.button_area";
+            }
+            rel2.to: "padding.button_area";
+         }
+         description { state: "visible" 0.0;
+            align: 0.0 0.5;
             FIXED_SIZE(18, 19);
             rel1 {
                relative: 1.0 0.0;
@@ -972,6 +982,18 @@ group { name: "elm/frame/base/live_view";
       }
       program { name: "signal";
          action: SIGNAL_EMIT "elm,anim,done" "elm";
+      }
+      program { name: "icon_set";
+         signal: "elm,state,icon,visible";
+         source: "eflete";
+         action: STATE_SET "visible" 0.00;
+         target: "elm.swallow.check";
+      }
+      program { name: "icon_unset";
+         signal: "elm,state,icon,hidden";
+         source: "eflete";
+         action: STATE_SET "default" 0.00;
+         target: "elm.swallow.check";
       }
    }
 }

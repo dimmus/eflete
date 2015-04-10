@@ -200,6 +200,7 @@ live_view_property_style_set(Evas_Object *property,
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_swallow.frame, true, _("Swallows"), pd->visual);
         elm_object_style_set(pd->prop_swallow.frame, "live_view");
+        elm_layout_signal_emit(pd->prop_swallow.frame, "elm,state,icon,visible", "eflete");
 
         CHECK_ADD(prop_box, pd->prop_swallow.check);
         elm_object_style_set(pd->prop_swallow.check, "live_view");
@@ -218,6 +219,7 @@ live_view_property_style_set(Evas_Object *property,
      {
         FRAME_LIVE_VIEW_ADD(property, pd->prop_text.frame, true, _("Texts"), pd->visual);
         elm_object_style_set(pd->prop_text.frame, "live_view");
+        elm_layout_signal_emit(pd->prop_text.frame, "elm,state,icon,visible", "eflete");
 
         CHECK_ADD(prop_box, pd->prop_text.check);
         elm_object_style_set(pd->prop_text.check, "live_view");
