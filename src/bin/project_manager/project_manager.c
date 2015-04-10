@@ -375,8 +375,6 @@ _project_import_edj(void *data,
    Project_Thread *worker;
    Eina_Stringshare *path_pro;
 
-   sleep(1);
-
    worker = (Project_Thread *)data;
 
    THREAD_TESTCANCEL;
@@ -483,8 +481,6 @@ _project_import_edc(void *data,
    Ecore_Exe *exe_cmd;
    pid_t exe_pid;
    int waitpid_res = 0;
-
-   sleep(1);
 
    worker = (Project_Thread *)data;
 
@@ -695,8 +691,6 @@ _project_save(void *data,
    Widget *widget;
    Style *style;
    Class *class_st;
-
-   sleep(1);
 
    worker = (Project_Thread *)data;
 
@@ -1428,8 +1422,6 @@ _develop_export(void *data,
    Project_Thread *worker;
    Evas_Object *edje_edit_obj;
 
-   sleep(1);
-
    worker = (Project_Thread *)data;
 
    PROGRESS_SEND(_("Export edj..."));
@@ -1489,9 +1481,6 @@ _enventor_save(void *data,
    pid_t exe_pid;
    Eina_List *l;
    Eina_Strbuf *buf = NULL;
-
-
-   sleep(1);
 
    worker = (Project_Thread *)data;
 
