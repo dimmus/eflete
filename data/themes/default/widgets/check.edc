@@ -1,7 +1,56 @@
 group { name: "elm/check/base/toggle";
    script {
-      public is_drag;
-      public was_drag;
+      public g_velocity;
+      public g_timer;
+      public move_button(val_on) {
+         new l_timer;
+         new Float:vel;
+         new Float:dx, Float:dy;
+
+         /* getting current velocity and saving increased value */
+         vel = get_float(g_velocity);
+         set_float(g_velocity, vel * 1.1);
+
+         /* getting current position */
+         get_drag(PART:"button", dx, dy);
+
+         if (val_on)
+         {
+            /* changing button picture. this can be accidently skiped with some
+               initial positions and velocity values. so we need to set it again
+               during final step to be sure that it is applied*/
+            if (dx > 0.6)
+            {
+               set_state(PART:"button", "on", 0.0);
+            }
+            /* moving button */
+            if (dx > 1.0 - vel) /* this is last iteration, finalizing state */
+            {
+               set_drag(PART:"button", 1.0, 0.0);
+               set_state(PART:"button", "on", 0.0);
+            }
+            else /* moving and sceduling next step */
+            {
+               set_drag(PART:"button", dx + vel, 0.0);
+               l_timer = timer(0.02, "move_button", val_on);
+            }
+         }
+         else
+         {
+            if (dx < 0.0 + vel)
+            {
+               set_drag(PART:"button", 0.0, 0.0);
+               set_state(PART:"button", "default", 0.0);
+            }
+            else
+            {
+               set_drag(PART:"button", dx - vel, 0.0);
+               l_timer = timer(0.02, "move_button", val_on);
+            }
+         }
+         /* save timer id to stop it later if needed */
+         set_int(g_timer, l_timer);
+      }
    }
 images {
    image: "input-text-bg.png" COMP;
@@ -250,16 +299,30 @@ images {
          signal: "elm,state,check,off";
          source: "elm";
          script {
-           set_state(PART:"button", "default", 0.0);
-           set_drag(PART:"button", 0.0, 0.0);
+            /* stop transition if it's running */
+            new l_timer;
+            l_timer = get_int(g_timer);
+            cancel_timer(l_timer);
+
+            /* set start velocity */
+            set_float(g_velocity, 0.08);
+
+            move_button(false);
          }
       }
       program { name: "on";
          signal: "elm,state,check,on";
          source: "elm";
          script {
-           set_state(PART:"button", "on", 0.0);
-           set_drag(PART:"button", 1.0, 0.0);
+            /* stop transition if it's running */
+            new l_timer;
+            l_timer = get_int(g_timer);
+            cancel_timer(l_timer);
+
+            /* set start velocity */
+            set_float(g_velocity, 0.08);
+
+            move_button(true);
          }
       }
       program { name: "clicked_emit";
@@ -267,37 +330,20 @@ images {
          source: "event.button";
          action: SIGNAL_EMIT "elm,action,check,toggle" "elm";
       }
-      program { name: "drag_start";
-         signal: "mouse,down,1"; source: "button";
-         script {
-            set_int(was_drag, 0);
-            set_int(is_drag, 0);
-         }
-      }
-      program { name: "draging";
-         signal: "drag";
-         source: "button";
-         script {
-            set_int(is_drag, 1);
-         }
-      }
       program { name: "drag_end";
-         signal: "mouse,up,1";
+         signal: "drag,stop";
          source: "button";
          script {
             new Float:dx, Float:dy;
             get_drag(PART:"button", dx, dy);
-            if (get_int(is_drag)) {
-              if (dx > 0.5)
-                {
-                   set_drag(PART:"button", 1.0, 0.0);
-                   emit("elm,action,check,on", "elm");
-                }
-              else
-                {
-                   set_drag(PART:"button", 0.0, 0.0);
-                   emit("elm,action,check,off", "elm");
-                }
+            /* tell c-part in what half button is stopped */
+            if (dx > 0.5)
+            {
+               emit("elm,action,check,on", "elm");
+            }
+            else
+            {
+               emit("elm,action,check,off", "elm");
             }
          }
       }
