@@ -618,7 +618,7 @@ _on_style_clicked_double(void *data,
    evas_object_data_set(gl_parts, TABS_DATA_KEY, tabs);
    elm_object_style_set(gl_parts, "dark");
    elm_genlist_reorder_mode_set(gl_parts, true);
-   elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_genlist_select_mode_set(gl_parts, ELM_OBJECT_SELECT_MODE_DEFAULT);
    pr->current_style = _style;
    evas_object_smart_callback_add(tabs, "wl,part,back", _unset_cur_style, pr);
    evas_object_size_hint_align_set(gl_parts, EVAS_HINT_FILL, EVAS_HINT_FILL);
