@@ -2416,7 +2416,7 @@ group { name: "elm/layout/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            SET_SIZE(320, 220);
+            SET_SIZE(320, 200);
             rel1.to: "area.all_space";
             rel2.to: "area.all_space";
          }
@@ -2458,7 +2458,7 @@ group { name: "elm/layout/sound_editor/default";
          scale: 1;
          description { state: "default" 0.0;
             align: 1.0 0.0;
-            SET_SIZE(320, 220);
+            SET_SIZE(320, 180);
             rel1 {
                relative: 0.0 1.0;
                to_x: "area.all_space";
