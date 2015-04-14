@@ -19,6 +19,38 @@
 
 #include "live_view_prop.h"
 
+Eina_Bool
+standard_widget_name_parse(const char *full_group_name,
+                           Eina_Stringshare **widget,
+                           Eina_Stringshare **class,
+                           Eina_Stringshare **style_name)
+{
+   char **c;
+   unsigned int count;
+   if (!full_group_name) return false;
+
+   c = eina_str_split_full(full_group_name, "/", 4, &count);
+
+   if (count < 4)
+     {
+        if (widget) *widget = NULL;
+        if (class) *class = NULL;
+        if (style_name) *style_name = NULL;
+
+        free(c[0]);
+        free(c);
+        return false;
+     }
+
+   if (widget) *widget = eina_stringshare_add(c[1]);
+   if (class) *class = eina_stringshare_add(c[2]);
+   if (style_name) *style_name = eina_stringshare_add(c[3]);
+
+   free(c[0]);
+   free(c);
+   return true;
+}
+
 void
 on_swallow_check(void *data,
                  Evas_Object *obj,
