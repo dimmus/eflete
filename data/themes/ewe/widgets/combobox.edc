@@ -242,6 +242,16 @@ group { name: "ewe/combobox/base/default";
 }
 
 group { name: "ewe/combobox/base/color_class";
+   images {
+      image: "dropdown-bg.png" COMP;
+      image: "dropdown-focus-bg.png" COMP;
+      image: "dropdown-bg_unactive.png" COMP;
+      image: "icon-slidedown.png" COMP;
+      image: "icon-slideup.png" COMP;
+      image: "color-background-2.png" COMP;
+      image: "color-shadow-2.png" COMP;
+   }
+
    min: 80 19;
    max: 9999 19;
    parts {
@@ -353,7 +363,7 @@ group { name: "ewe/combobox/base/color_class";
          clip_to: "disabler";
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            color: COMBOBOX_TEXT_COLOR;
+            color: 213 213 213 255;
             rel1 {
                relative: 1.0 0.0;
                to_x: "left.offset";
@@ -366,8 +376,8 @@ group { name: "ewe/combobox/base/color_class";
                to_y: "base";
             }
             text {
-               font: FN;
-               size: FONT_SIZE;
+               font: "PT";
+               size: 12;
                max: 1 1;
             }
          }
@@ -376,8 +386,8 @@ group { name: "ewe/combobox/base/color_class";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 16 15;
-            max: 16 15;
+            min: 16 13;
+            max: 16 13;
             rel1 {
                to: "base";
             }
@@ -388,7 +398,7 @@ group { name: "ewe/combobox/base/color_class";
                to_y: "base";
             }
             image {
-               normal: "color-background.png";
+               normal: "color-background-2.png";
                middle: DEFAULT;
             }
          }
@@ -397,8 +407,8 @@ group { name: "ewe/combobox/base/color_class";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 16 15;
-            max: 16 15;
+            min: 16 13;
+            max: 16 13;
             rel1 {
                to: "base";
             }
@@ -409,7 +419,7 @@ group { name: "ewe/combobox/base/color_class";
                to_y: "base";
             }
             image {
-               normal: "color-background.png";
+               normal: "color-background-2.png";
                middle: DEFAULT;
             }
          }
@@ -418,8 +428,8 @@ group { name: "ewe/combobox/base/color_class";
          type: IMAGE;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 16 15;
-            max: 16 15;
+            min: 16 13;
+            max: 16 13;
             rel1 {
                to: "base";
             }
@@ -430,7 +440,7 @@ group { name: "ewe/combobox/base/color_class";
                to_y: "base";
             }
             image {
-               normal: "color-background.png";
+               normal: "color-background-2.png";
                middle: DEFAULT;
             }
          }
@@ -465,6 +475,54 @@ group { name: "ewe/combobox/base/color_class";
             }
             rel2 {
                to: "bg.color3";
+            }
+         }
+      }
+      part { name: "shadow.color1";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color1";
+            }
+            rel2 {
+               to: "bg.color1";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow.color2";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color2";
+            }
+            rel2 {
+               to: "bg.color2";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
+            }
+         }
+      }
+      part { name: "shadow.color3";
+         type: IMAGE;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg.color3";
+            }
+            rel2 {
+               to: "bg.color3";
+            }
+            image {
+               normal: "color-shadow-2.png";
+               border: 3 3 3 3;
+               middle: DEFAULT;
             }
          }
       }
