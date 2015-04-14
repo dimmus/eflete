@@ -105,6 +105,101 @@ Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
    char **c;
+   const char *widget;
+   Eina_Bool ret = true;
+   Eina_Bool first_load;
+   Eina_Bool using_layout = false;
+   int x, y;
+
+   if ((!live) || (!project) || (!style))
+     {
+        WARN("Couldn't apply the style to live view."
+             "Live_View: %p, Project: %p, Style: %p", live, project, style);
+        return false;
+     }
+
+   first_load = live->object == NULL; /* fallback notifications should pop-up only on style load*/
+
+   const char *version = edje_edit_data_value_get(style->obj, "version");
+   if ((!version) || (strcmp(version, "110")))
+     {
+        if (first_load)
+          NOTIFY_INFO(3, _("Outdated version of file. Using fallback to layout"));
+        using_layout = true;
+     }
+
+   using_layout = using_layout || (style->__type == LAYOUT) || live->in_prog_edit;
+
+   /* sadly, but we should delete live object to reapply style */
+   live_view_widget_style_unset(live);
+
+   if (!using_layout)
+     {
+        c = eina_str_split(style->full_group_name, "/", 2);
+
+        widget = c[1];
+
+        /* TODO: uncomment after widget creation refactor
+        live->object = live_widget_create(widget, style, live->layout); */
+        /* TODO: Apply style on creation */
+
+        if (!live->object)
+          {
+             if (first_load)
+               NOTIFY_INFO(3, _("Widget live view isn't implemented yet. Using fallback to layout"));
+             using_layout = true;
+          }
+        else
+          {
+             live_view_property_style_set(live->property, live->object, style, widget);
+          }
+
+        free(c[0]);
+        free(c);
+     }
+   if (using_layout)
+     {
+        if (!live->in_prog_edit)
+          {
+             live->object = layout_custom_create(live->layout);
+          }
+        else
+          {
+             live->object = layout_prog_edit_create(live->layout);
+
+             evas_object_freeze_events_set(live->object, true);
+          }
+        if (!edje_object_mmap_set(live->object, project->mmap_file,
+                                  style->full_group_name))
+          {
+             evas_object_del(live->object);
+             live->object = elm_label_add(live->layout);
+             elm_object_text_set(live->object, _("Failed to load live view object"));
+             ret = false;
+          }
+        live_view_theme_update(live, project);
+        live_view_property_style_set(live->property, live->object, style, "edje");
+     }
+   /* TODO: reapply swallows/texts */
+   evas_object_show(live->live_view);
+   evas_object_show(live->object);
+   /* TODO: reapply comtainer size and position */
+   container_content_set(live->live_view, live->object);
+
+   elm_layout_signal_emit(live->layout, "live_view,show", "eflete");
+
+   evas_object_geometry_get(live->live_view, NULL, NULL, &x, &y);
+   edje_object_part_drag_value_set(elm_layout_edje_get(live->layout),
+                                   "bottom_pad", x, y);
+
+   return ret;
+}
+
+/*
+Eina_Bool
+live_view_widget_style_set(Live_View *live, Project *project, Style *style)
+{
+   char **c;
    const char *widget = NULL, *type, *style_name;
    const char *custom_name = NULL;
    char *fail_message = NULL;
@@ -216,6 +311,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
    return ret;
 }
+*/
 
 Eina_Bool
 live_view_widget_style_unset(Live_View *live)
