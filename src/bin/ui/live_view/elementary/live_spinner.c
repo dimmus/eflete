@@ -20,8 +20,11 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_spinner_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+widget_spinner_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+
    Evas_Object *object = elm_spinner_add(parent);
    elm_spinner_label_format_set(object, _("%1.1f units"));
    elm_spinner_step_set(object, 1.5);
@@ -33,5 +36,8 @@ widget_spinner_create(Evas_Object *parent, const char *class __UNUSED__, const c
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
+   elm_object_style_set(object, style_name);
+
+   eina_stringshare_del(style_name);
    return object;
 }

@@ -203,13 +203,18 @@ _create_gengrid(Evas_Object *obj, const char *style)
 /*********** GEN GRID CREATING FUNCTIONS ****END*********/
 
 Evas_Object *
-widget_gengrid_create(Evas_Object *parent, const char *class, const char *style)
+widget_gengrid_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   /* TODO: deal with items */
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    Evas_Object *object = NULL;
    Eina_List *swallow_list = NULL, *text_list = NULL;
 
    if (strcmp(class, "item") == 0)
-     object = _create_gengrid(parent, style);
+     object = _create_gengrid(parent, style_name);
    else
      object = _create_gengrid(parent, "default");
 
@@ -220,5 +225,7 @@ widget_gengrid_create(Evas_Object *parent, const char *class, const char *style)
    evas_object_data_set(object, SWALLOW_LIST, swallow_list);
    evas_object_data_set(object, TEXT_LIST, text_list);
 
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }

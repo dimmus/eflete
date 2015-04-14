@@ -23,8 +23,7 @@
 struct _live_widget_item {
      const char *name;
      Evas_Object * (*func)(Evas_Object *parent,
-                           const char  *class,
-                           const char  *style);
+                           const Style  *style);
 };
 
 static struct _live_widget_item widgets[] =
@@ -56,24 +55,26 @@ static struct _live_widget_item widgets[] =
 
 Evas_Object *
 live_widget_create(const char  *widget,
-                   const char  *class,
-                   const char  *style,
+                   const Style  *style,
                    Evas_Object *parent)
 {
    Evas_Object *object = NULL;
-   unsigned int i = 0;
+   unsigned int i;
 
-   if ((!widget) || (!class) || (!style) || (!parent))
-     return object;
+   if ((!widget) || (!style) || (!parent))
+     {
+        WARN("Couldn't create live widget: wrong args."
+             "widget: %p, style: %p, parent: %p", widget, style, parent);
+        return NULL;
+     }
 
-   while (widgets[i].name != NULL)
+   for (i = 0; widgets[i].name != NULL; i++)
      {
         if (strcmp(widget, widgets[i].name) == 0)
           {
-             object = widgets[i].func(parent, class, style);
+             object = widgets[i].func(parent, style);
              break;
           }
-        i++;
      }
 
    return object;

@@ -20,13 +20,19 @@
 #include "live_elementary_widgets.h"
 
 Evas_Object *
-widget_check_create(Evas_Object *parent, const char *class __UNUSED__, const char *style __UNUSED__)
+widget_check_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, NULL, &style_name);
+
    Evas_Object *object = elm_check_add(parent);
 
    evas_object_data_set(object, SWALLOW_FUNC, on_swallow_check);
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
+   elm_object_style_set(object, style_name);
+
+   eina_stringshare_del(style_name);
    return object;
 }

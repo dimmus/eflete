@@ -49,7 +49,7 @@
  * @ingroup Live_View_Widget
  */
 Evas_Object *
-live_widget_create(const char *widget, const char *class, const char *style, Evas_Object *parent);
+live_widget_create(const char *widget, const Style *style, Evas_Object *parent);
 
 /**
  * Delete previously created widget object.

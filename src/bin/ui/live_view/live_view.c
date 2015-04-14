@@ -104,8 +104,7 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 Eina_Bool
 live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 {
-   char **c;
-   const char *widget;
+   Eina_Stringshare *widget;
    Eina_Bool ret = true;
    Eina_Bool first_load;
    Eina_Bool using_layout = false;
@@ -135,13 +134,9 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
 
    if (!using_layout)
      {
-        c = eina_str_split(style->full_group_name, "/", 2);
+        standard_widget_name_parse(style->full_group_name, &widget, NULL, NULL);
 
-        widget = c[1];
-
-        /* TODO: uncomment after widget creation refactor
-        live->object = live_widget_create(widget, style, live->layout); */
-        /* TODO: Apply style on creation */
+        live->object = live_widget_create(widget, style, live->layout);
 
         if (!live->object)
           {
@@ -154,8 +149,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              live_view_property_style_set(live->property, live->object, style, widget);
           }
 
-        free(c[0]);
-        free(c);
+        eina_stringshare_del(widget);
      }
    if (using_layout)
      {

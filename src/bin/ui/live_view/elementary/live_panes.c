@@ -33,8 +33,12 @@ _panes_orient_get(const char *class)
 }
 
 Evas_Object *
-widget_panes_create(Evas_Object *parent, const char *class, const char *style __UNUSED__)
+widget_panes_create(Evas_Object *parent, const Style *style)
 {
+   Eina_Stringshare *class;
+   Eina_Stringshare *style_name;
+   standard_widget_name_parse(style->full_group_name, NULL, &class, &style_name);
+
    Evas *e = evas_object_evas_get(parent);
    Evas_Object *test_right = evas_object_rectangle_add(e);
    Evas_Object *test_left = evas_object_rectangle_add(e);
@@ -61,5 +65,9 @@ widget_panes_create(Evas_Object *parent, const char *class, const char *style __
    evas_object_data_set(object, TEXT_FUNC, on_text_check);
    evas_object_data_set(object, SIGNAL_FUNC, send_signal);
 
+   elm_object_style_set(object, style_name);
+
+   eina_stringshare_del(class);
+   eina_stringshare_del(style_name);
    return object;
 }
