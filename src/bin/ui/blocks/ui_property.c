@@ -3207,7 +3207,7 @@ Eina_Bool
 ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 {
    Evas_Object *item;
-   Evas_Object *box, *prop_box;
+   Evas_Object *box, *prop_box, *item_box;
    PROP_DATA_GET(false)
 
    ui_property_item_unset(property);
@@ -3277,16 +3277,18 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         pd_item.aspect_mode = prop_item_part_item_aspect_mode_add(box, pd,
                               _("Sets the aspect control hints for this object."),
                               edje_item_aspect_pref);
+        pd_item.position = prop_item_part_item_position_suf_add(box, pd,
+                           0.0, 999.0, 1.0, "%.0f",
+                           "col", "", "row", "",
+                           _("Sets the column position this item."),
+                           _("Sets the row position this item."), false);
+        evas_object_hide(pd_item.position);
 
         elm_box_pack_end(box, pd_item.source);
         if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
           {
-             pd_item.position = prop_item_part_item_position_suf_add(box, pd,
-                                  0.0, 999.0, 1.0, "%.0f",
-                                  "col", "", "row", "",
-                                   _("Sets the column position this item."),
-                                   _("Sets the row position this item."), false);
              elm_box_pack_end(box, pd_item.position);
+             evas_object_show(pd_item.position);
           }
 
         elm_box_pack_end(box, pd_item.min);
@@ -3314,7 +3316,12 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
         prop_item_part_item_spread_w_h_update(pd_item.spread, pd, false);
         prop_item_part_item_span_suf_update(pd_item.span, pd, false);
         if (pd->wm_part->type == EDJE_PART_TYPE_TABLE)
-          prop_item_part_item_position_suf_update(pd_item.position, pd, false);
+          {
+             prop_item_part_item_position_suf_update(pd_item.position, pd, false);
+             item_box = elm_object_content_get(pd_item.frame);
+             elm_box_pack_before(item_box, pd_item.position, pd_item.min);
+             evas_object_show(pd_item.position);
+          }
         prop_item_part_item_padding_update(pd_item.padding, pd);
         prop_item_part_item_aspect_mode_update(pd_item.aspect_mode, pd);
         elm_box_pack_before(prop_box, pd_item.frame, pd->part.frame);
@@ -3326,14 +3333,19 @@ ui_property_item_set(Evas_Object *property, Eina_Stringshare *item_name)
 void
 ui_property_item_unset(Evas_Object *property)
 {
-   Evas_Object *prop_box;
+   Evas_Object *prop_box, *item_box;
    PROP_DATA_GET()
    if (!pd_item.frame) return;
 
    pd->item_name = NULL;
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_item.frame);
+
+   item_box = elm_object_content_get(pd_item.frame);
+   elm_box_unpack(item_box, pd_item.position);
+
    evas_object_hide(pd_item.frame);
+   evas_object_hide(pd_item.position);
 }
 #undef pd_item
 
