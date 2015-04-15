@@ -241,17 +241,17 @@ ui_menu_add(App_Data *ap)
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_NEW_PROJECT,
                     EFLETE_IMG_PATH"icon-new_project.png", _("New project"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_NEW_PROJECT]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-N");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-N");
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_OPEN_PROJECT,
                     EFLETE_IMG_PATH"icon-open_project.png", _("Open project"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_OPEN_PROJECT]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-O");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-O");
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDJ, NULL, _("Import edj-file"))
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_IMPORT_EDC, NULL, _("Import edc-file"))
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_SAVE]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-S");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-S");
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXPORT_EDC, NULL, _("Export as edc"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_GROUP, NULL, _("Group"))
          ITEM_MENU_ADD(MENU_FILE_EXPORT_EDC, MENU_FILE_EXPORT_EDC_PROJECT, NULL, _("Project"))
@@ -263,7 +263,7 @@ ui_menu_add(App_Data *ap)
       elm_menu_item_separator_add(window_menu, menu->menu_items[MENU_FILE]);
       ITEM_MENU_ADD(MENU_FILE, MENU_FILE_EXIT, NULL, _("Exit"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_FILE_EXIT]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-Q");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-Q");
 /* ITEM_MENU_ADD(NULL, MENU_EDIT, NULL, _("Edit"))
       ITEM_MENU_ADD(MENU_EDIT, MENU_EDIT_PREFERENCE, NULL, _("Preference..."))*/
    ITEM_MENU_ADD(MENU_NULL, MENU_VIEW, NULL, _("View"))
@@ -283,23 +283,23 @@ ui_menu_add(App_Data *ap)
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_ANIMATOR,
                     EFLETE_IMG_PATH"icon-animator.png", _("Animator"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_ANIMATOR]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-1");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-1");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE,
                     EFLETE_IMG_PATH"icon-image.png", _("Images"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-2");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-2");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_SOUND,
                     EFLETE_IMG_PATH"icon-sound.png", _("Sound"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-3");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-3");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS,
                     EFLETE_IMG_PATH"icon-color.png", _("Colorclasses"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-4");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-4");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_TEXT_STYLE,
                     EFLETE_IMG_PATH"icon-text.png", _("Text styles"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
-         elm_object_part_text_set(items_obj, "shortcut", "Ctrl-5");
+         elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-5");
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
       ITEM_MENU_ADD(MENU_HELP, MENU_HELP_ABOUT, NULL, _("About"))
 
