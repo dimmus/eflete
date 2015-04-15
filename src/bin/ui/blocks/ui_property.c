@@ -347,9 +347,6 @@ ui_property_state_box_set(Evas_Object *property);
 static void
 ui_property_state_box_unset(Evas_Object *property);
 
-static void
-prop_item_state_text_update(Evas_Object *item, Prop_Data *pd);
-
 static Elm_Genlist_Item_Class *_itc_tween = NULL;
 
 static void
@@ -1867,7 +1864,13 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    ITEM_1COMBOBOX_STATE_ADD(TYPE, TEXT, SUB, VALUE, LIST) \
    ITEM_1COMBOBOX_STATE_UPDATE(TYPE, TEXT, SUB, VALUE, LIST)
 
-ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL, const char *)
+#define STATE_ATTR_1ENTRY(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+   STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
+   STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+   STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
+
+STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
+//ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL, const char *)
 ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop, const char *)
 ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
@@ -2213,6 +2216,7 @@ prop_item_state_text_ellipsis_update(Evas_Object *item,
 static Eina_Bool
 ui_property_state_text_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *text_frame, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
@@ -2226,8 +2230,8 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(text_frame, box);
 
-         pd_text.text = prop_item_state_text_add(box, pd, NULL,
-                           _("Set the text of part."), NULL);
+         item = prop_state_text_add(box, pd, NULL);
+         elm_box_pack_end(box, item);
          pd_text.font = prop_item_state_font_add(box, pd, NULL,
                            _("Change the text's font"), NULL);
          pd_text.size = prop_item_state_text_size_add(box, pd,
@@ -2274,7 +2278,6 @@ ui_property_state_text_set(Evas_Object *property)
                             _("Text outline color."));
          pd_text.effect = prop_item_state_effect_add(box, pd);
 
-         elm_box_pack_end(box, pd_text.text);
          elm_box_pack_end(box, pd_text.font);
          elm_box_pack_end(box, pd_text.size);
          elm_box_pack_end(box, pd_text.align);
@@ -2293,7 +2296,7 @@ ui_property_state_text_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_text_update(pd_text.text, pd);
+        prop_state_text_update(pd);
         prop_item_state_font_update(pd_text.font, pd);
         prop_item_state_text_size_update(pd_text.size, pd);
         prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
@@ -2377,9 +2380,8 @@ ui_property_state_textblock_set(Evas_Object *property)
          elm_box_align_set(box, 0.5, 0.0);
          elm_object_content_set(textblock_frame, box);
 
-         pd_textblock.text = prop_item_state_text_add(box, pd, NULL,
-                           _("Set the text of part."), NULL);
-         elm_box_pack_end(box, pd_textblock.text);
+         item = prop_state_text_add(box, pd, NULL);
+         elm_box_pack_end(box, item);
          pd_textblock.style = prop_item_state_text_style_add(box, pd,
                            _on_state_text_style_change,
                            _("Set the text style of part."));
@@ -2443,7 +2445,7 @@ ui_property_state_textblock_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_text_update(pd_textblock.text, pd);
+        prop_state_text_update(pd);
         prop_item_state_text_style_update(pd_textblock.style, pd);
         prop_item_state_text_style_update(pd_textblock.align, pd);
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
