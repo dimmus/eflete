@@ -530,7 +530,6 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                         pd->wm_part->curr_state, pd->wm_part->curr_state_value, \
                                         NULL); \
    if (TYPE != TEXT_STYLE) \
-     prop_item_state_text_update(pd->state_text.text, pd); \
    history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
                     value, pd->wm_style->full_group_name,\
                     (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
