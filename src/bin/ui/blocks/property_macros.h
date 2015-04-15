@@ -1006,4 +1006,106 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
    edje_edit_string_free(old_value); \
 }
 
+/*****************************************************************************/
+/*                          STATE 1 ENTRY CONTROL                            */
+/****************************************************************************/
+/**
+ * Macro defines functions that create an item with label and 1 entry for state
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @param MEMBER The entry member from Prop_Data structure
+ * @param REGEX The regex for validation input string
+ * @param TOOLTIP The tooltip for combobox
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP) \
+static Evas_Object * \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd, \
+                           void *btn_func_cb) \
+{ \
+   Evas_Object *btn; \
+   PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
+   EWE_ENTRY_ADD(item, pd->MEMBER.VALUE, true) \
+   if (btn_func_cb) \
+     { \
+        btn = elm_button_add(parent); \
+        elm_object_style_set(btn, "elipsis"); \
+        evas_object_smart_callback_add(btn, "clicked", btn_func_cb, pd); \
+        evas_object_smart_callback_add(pd->MEMBER.VALUE, "clicked", btn_func_cb, pd); \
+        elm_object_part_content_set(pd->MEMBER.VALUE, "elm.swallow.end", btn); \
+        elm_entry_editable_set(pd->MEMBER.VALUE, false); \
+        evas_object_show(btn); \
+     } \
+   else \
+     evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed,user", _on_##SUB##_##VALUE##_change, pd); \
+   ewe_entry_regex_set(pd->MEMBER.VALUE, REGEX, EWE_REG_EXTENDED); \
+   ewe_entry_regex_autocheck_set(pd->MEMBER.VALUE, true); \
+   ewe_entry_regex_glow_set(pd->MEMBER.VALUE, true); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
+   prop_##SUB##_##VALUE##_update(pd); \
+   return item; \
+}
+
+/**
+ * Macro defines a function that updates control by STATE_ATTR_1ENTRY_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ * @paramram MEMBER The entry member from Prop_Data structure
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
+static void \
+prop_##SUB##_##VALUE##_update(Prop_Data *pd) \
+{ \
+   const char *value; \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name, \
+                                           pd->wm_part->curr_state, \
+                                           pd->wm_part->curr_state_value); \
+   ewe_entry_entry_set(pd->MEMBER.VALUE, value); \
+   edje_edit_string_free(value); \
+}
+
+/**
+ * Macro defines a callback for STATE_ATTR_1ENTRY_ADD.
+ *
+ * @param SUB The prefix of main parameter of part attribute
+ * @param VALUE The value of part attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1ENTRY_CALLBACK(SUB, VALUE) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   if (ewe_entry_regex_error_get(obj)) return; \
+   const char *value = elm_entry_entry_get(obj); \
+   const char *old_value =  edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                               pd->wm_part->name, pd->wm_part->curr_state, \
+                               pd->wm_part->curr_state_value); \
+   edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name, \
+                                   pd->wm_part->curr_state, \
+                                   pd->wm_part->curr_state_value, value); \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_STRING, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, \
+                    pd->wm_part->curr_state_value); \
+   elm_object_focus_set(obj, true); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+   eina_stringshare_del(old_value); \
+}
+
 /** @} privatesection */
