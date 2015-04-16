@@ -171,14 +171,14 @@ group { name: "elm/layout/block/default";
          type: SWALLOW;
          description { state: "default" 0.0;
             fixed: 1 1;
+            align: 1.0 0.5;
+            min: 277 0;
+            max: 277 -1;
             rel1 {
-               to: "elm.text";
                relative: 1.0 0.0;
-            }
-            rel2 {
                to_y: "elm.text";
-               relative: 1.0 1.0;
             }
+            rel2.to_y: "elm.text";
          }
          description { state: "hide" 0.0;
             inherit: "default" 0.0;
@@ -3275,7 +3275,8 @@ group { name: "elm/layout/live_view/toolbar";
       part { name: "eflete.swallow.menu";
          type: SWALLOW;
          description { state: "default" 0;
-            min: 300 0;
+            min: 277 0;
+            max: 277 -1;
             align: 1.0 0.5;
             fixed: 1 1;
             rel1 {

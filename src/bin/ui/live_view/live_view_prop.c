@@ -144,7 +144,8 @@ Eina_Bool
 live_view_property_style_set(Evas_Object *property,
                              Evas_Object *object,
                              Style *style,
-                             const char *widget)
+                             const char *widget,
+                             Evas_Object *parent)
 {
    Evas_Object *prop_box, *spinner, *check, *button;
    Evas_Object *item;
@@ -171,7 +172,7 @@ live_view_property_style_set(Evas_Object *property,
 
    if (!pd->header)
      {
-        LAYOUT_PROP_ADD(prop_box, "Scale: ", "live_view", "header")
+        LAYOUT_PROP_ADD(parent, "Scale: ", "live_view", "header")
 
         SPINNER_ADD(item, spinner, 1, 500, 1, true);
         elm_object_style_set(spinner, "live_view");
@@ -192,7 +193,7 @@ live_view_property_style_set(Evas_Object *property,
    elm_spinner_value_set(spinner, 100);
    pd->current_scale = 1.0;
    evas_object_scale_set(pd->live_object, pd->current_scale);
-   elm_box_pack_start(prop_box, pd->header);
+   elm_object_part_content_set(parent, "elm.swallow.title", pd->header);
    evas_object_show(pd->header);
 
    /* Swallows UI setting*/

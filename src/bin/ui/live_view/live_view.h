@@ -49,6 +49,7 @@ struct _Live_View
    Evas_Object *panel; /**< panel for Live View properties */
    Evas_Object *object; /**< current widget for being showed in live view */
    Evas_Object *property; /**< Live View properties */
+   Evas_Object *parent; /**< Live View block */
    Eina_Bool in_prog_edit; /**< Flag is this liveview in program editor */
 };
 typedef struct _Live_View Live_View;

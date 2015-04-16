@@ -74,6 +74,7 @@ live_view_add(Evas_Object *parent, Eina_Bool in_prog_edit)
 
    live->in_prog_edit = in_prog_edit;
 
+   live->parent = parent;
    live->layout = elm_layout_add(parent);
    elm_layout_theme_set(live->layout, "layout", "live_view", "toolbar");
    bg = elm_bg_add(live->layout);
@@ -147,7 +148,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         else
           {
              live_view_theme_update(live, project);
-             live_view_property_style_set(live->property, live->object, style, widget);
+             live_view_property_style_set(live->property, live->object, style, widget, live->parent);
           }
 
         eina_stringshare_del(widget);
@@ -173,7 +174,7 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
              ret = false;
           }
         live_view_theme_update(live, project);
-        live_view_property_style_set(live->property, live->object, style, "edje");
+        live_view_property_style_set(live->property, live->object, style, "edje", live->parent);
      }
    /* TODO: reapply swallows/texts */
    evas_object_show(live->live_view);

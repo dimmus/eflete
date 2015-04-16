@@ -74,7 +74,7 @@ group { name: "elm/layout/live_view/header";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            FIXED_SIZE(15, 9);
+            FIXED_SIZE(27, 0);
          }
       }
       part { name: "padding.bottom";
@@ -124,8 +124,8 @@ group { name: "elm/layout/live_view/header";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 0.5;
-            min: 7 0;
-            max: 7 -1;
+            min: 24 0;
+            max: 24 -1;
             rel2.to: "padding.bottom";
          }
       }
