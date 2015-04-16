@@ -1459,10 +1459,10 @@ prop_state_proxy_source_update(Prop_Data *pd,
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
    STATE_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP)
 
-#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, TOOLTIP) \
-   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE) \
-   STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE) \
-   STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, TOOLTIP)
+#define STATE_ATTR_COLOR(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+   STATE_ATTR_COLOR_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
+   STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 #define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
@@ -1490,7 +1490,7 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
-STATE_ATTR_COLOR(_("color"), state, color, _("Part main color"))
+STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
 STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
                     _("Causes the part to use another part content as"
                     "the content of this part. Only work with PROXY part."))
