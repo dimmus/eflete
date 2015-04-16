@@ -562,6 +562,20 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
 }
 
 /**
+ * Macro defines a function that updates control by STATE_ATTR_1CHECK_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE The first value of state attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_CHECK_UPDATE(SUB, VALUE) \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                                      pd->wm_part->name, \
+                                                                      pd->wm_part->curr_state, \
+                                                                      pd->wm_part->curr_state_value));
+
+/**
  * Macro defines a callback for STATE_ATTR_1CHEACK_ADD.
  *
  * @param SUB The prefix of main parameter of state attribute;
