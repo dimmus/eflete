@@ -619,6 +619,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
  * @param MIN The min value of spinner
  * @param MAX The max value of spinner
  * @param STEP The step to increment or decrement the spinner value
@@ -634,7 +635,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, \
+#define STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
                                 MIN, MAX, STEP, FMT, \
                                 L1_START, L1_END, L2_START, L2_END, \
                                 TOOLTIP1, TOOLTIP2, MULTIPLIER) \
@@ -643,27 +644,27 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                        Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   SPINNER_ADD(item, pd->SUB.VALUE1, MIN, MAX, STEP, true) \
-   elm_spinner_label_format_set(pd->SUB.VALUE1, FMT); \
-   elm_layout_content_set(item, "swallow.content1", pd->SUB.VALUE1); \
+   SPINNER_ADD(item, pd->MEMBER.VALUE1, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->MEMBER.VALUE1, FMT); \
+   elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
    elm_layout_text_set(item, "label.swallow1.start", L1_START); \
    elm_layout_text_set(item, "label.swallow1.end", L1_END); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE1, TOOLTIP1); \
-   evas_object_event_callback_priority_add(pd->SUB.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   evas_object_event_callback_priority_add(pd->MEMBER.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->SUB.VALUE1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   SPINNER_ADD(item, pd->SUB.VALUE2, MIN, MAX, STEP, true) \
-   elm_spinner_label_format_set(pd->SUB.VALUE2, FMT); \
-   elm_layout_content_set(item, "swallow.content2", pd->SUB.VALUE2); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   SPINNER_ADD(item, pd->MEMBER.VALUE2, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->MEMBER.VALUE2, FMT); \
+   elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
    elm_layout_text_set(item, "label.swallow2.start", L2_START); \
    elm_layout_text_set(item, "label.swallow2.end", L2_END); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE2, TOOLTIP2); \
-   evas_object_event_callback_priority_add(pd->SUB.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   evas_object_event_callback_priority_add(pd->MEMBER.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->SUB.VALUE2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MULTIPLIER); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER); \
    return item; \
 }
 
@@ -673,18 +674,19 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  * @param SUB The prefix of main parameter of drag attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
  *        needed set 1
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MULTIPLIER) \
-   elm_spinner_value_set(pd->SUB.VALUE1, \
+#define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER) \
+   elm_spinner_value_set(pd->MEMBER.VALUE1, \
                          MULTIPLIER * edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj, \
                                                                        pd->wm_part->name, \
                                                                        pd->wm_part->curr_state, \
                                                                        pd->wm_part->curr_state_value)); \
-   elm_spinner_value_set(pd->SUB.VALUE2, \
+   elm_spinner_value_set(pd->MEMBER.VALUE2, \
                          MULTIPLIER * edje_edit_##SUB##_##VALUE2##_get(pd->wm_style->obj, \
                                                                        pd->wm_part->name, \
                                                                        pd->wm_part->curr_state, \

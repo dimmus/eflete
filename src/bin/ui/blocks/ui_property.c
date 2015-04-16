@@ -1420,12 +1420,12 @@ prop_state_proxy_source_update(Prop_Data *pd,
    STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
    STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
 
-#define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
+#define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                             L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
                             TYPE, HISTORY_TYPE) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, TYPE, HISTORY_TYPE, MULTIPLIER) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MIN, MAX, STEP, FMT, \
+   STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 #define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2) \
@@ -1446,24 +1446,24 @@ prop_state_proxy_source_update(Prop_Data *pd,
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 STATE_ATTR_1CHECK(_("visible"), state, visible)
-STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
                     1, int, VAL_INT)
-STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
+STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Maximal size of part width in pixels."), _("Maximal part height in pixels."),
                     1, int, VAL_INT)
-STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, 0, 100, 1, NULL, "x:", "%", "y:", "%",
+STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
 STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."))
 STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, edje_aspect_pref,
                           _("The aspect control hints for this object."), unsigned char)
-STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, 0, 100, 1, NULL, "min:", "", "max:", "",
+STATE_ATTR_2SPINNER(_("aspect ratio"), state, aspect_min, aspect_max, state, 0, 100, 1, NULL, "min:", "", "max:", "",
                    _("Normally width and height can be resized to any values independently"),
                    _("Normally width and height can be resized to any values independently"),
                    100, double, VAL_DOUBLE)
-STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, 1.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
+STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 1.0, 9999.0, 0.1, "%.1f", "w:", "", "h:", "",
                     _("The minimal part width value multiplier for current state"),
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
@@ -1531,15 +1531,15 @@ ui_property_state_set(Evas_Object *property, Part *part)
         box = elm_object_content_get(pd_state.frame);
         prop_state_state_update(state);
         STATE_ATTR_CHECK_UPDATE(state, visible)
-        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, 1)
-        STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, state, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, 1)
         STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h)
-        STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, state, 100)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref)
-        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, 100)
+        STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, state, 100)
         prop_state_color_class_update(pd);
         prop_state_color_update(pd);
-        STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, 1)
+        STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, state, 1)
         prop_state_proxy_source_update(pd, NULL);
 
         prop_box = elm_object_content_get(pd->visual);
