@@ -616,7 +616,7 @@ _on_##SUB##_##VALUE##_change(void *data, \
  * @param TOOLTIP1 The first spinner tooltip
  * @param TOOLTIP2 The second spinner tooltip
  * @param MULTIPLIER The multiplier to convert the value to percent. If it not
- *        needed set 1;
+ *        needed set 1
  *
  * @ingroup Property_Macro
  */
@@ -654,7 +654,30 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
 }
 
 /**
- * Macro defines a callback for STATE_ATTR_1CHEACK_ADD.
+ * Macro defines a function that updates control by STATE_ATTR_2SPINNER_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MULTIPLIER) \
+   elm_spinner_value_set(pd->SUB.VALUE1, \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj, \
+                                                                       pd->wm_part->name, \
+                                                                       pd->wm_part->curr_state, \
+                                                                       pd->wm_part->curr_state_value)); \
+   elm_spinner_value_set(pd->SUB.VALUE2, \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE2##_get(pd->wm_style->obj, \
+                                                                       pd->wm_part->name, \
+                                                                       pd->wm_part->curr_state, \
+                                                                       pd->wm_part->curr_state_value));
+
+/**
+ * Macro defines a callback for STATE_ATTR_2SPINNER_ADD.
  *
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
