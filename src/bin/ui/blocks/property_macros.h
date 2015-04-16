@@ -609,6 +609,107 @@ _on_##SUB##_##VALUE##_change(void *data, \
 }
 
 /*****************************************************************************/
+/*                        STATE 1 SPINNER CONTROLS                           */
+/*****************************************************************************/
+/**
+ * Macro defines a functions that create an item with label and 1 spinners for
+ * state attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE The value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
+ * @param MIN The min value of spinner
+ * @param MAX The max value of spinner
+ * @param STEP The step to increment or decrement the spinner value
+ * @param FMT The format string of the displayed label
+ * @param L_START The text of label before first swallow
+ * @param L_END The text of label after first swallow
+ * @param TOOLTIP The first spinner tooltip
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, \
+                                MIN, MAX, STEP, FMT, \
+                                L_START, L_END, \
+                                TOOLTIP, MULTIPLIER) \
+static Evas_Object * \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
+                           Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
+   SPINNER_ADD(item, pd->MEMBER.VALUE, MIN, MAX, STEP, true) \
+   elm_spinner_label_format_set(pd->MEMBER.VALUE, FMT); \
+   elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE); \
+   elm_layout_text_set(item, "label.swallow1.start", L_START); \
+   elm_layout_text_set(item, "label.swallow1.end", L_END); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
+   evas_object_event_callback_priority_add(pd->MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, \
+                                          _on_spinner_mouse_wheel, NULL); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER); \
+   return item; \
+}
+
+/**
+ * Macro defines a function that updates control by STATE_ATTR_1SPINNER_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE The first value of state attribute
+ * @param MEMBER The spinner member from Prop_Data structure
+ * @param MULTIPLIER The multiplier to convert the value to percent. If it not
+ *        needed set 1
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER) \
+   elm_spinner_value_set(pd->MEMBER.VALUE, \
+                         MULTIPLIER * edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                                      pd->wm_part->name, \
+                                                                      pd->wm_part->curr_state, \
+                                                                      pd->wm_part->curr_state_value)); \
+
+/**
+ * Macro defines a callback for STATE_ATTR_1(2)SPINNER_ADD.
+ *
+ * @param SUB The prefix of main parameter of state attribute;
+ * @param VALUE The value of state attribute.
+ * @param TYPE The spinner value type: int, double
+ * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
+ * @param MULTIPLIER The multiplier to convert the value to percent
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, TYPE, HISTORY_TYPE, MULTIPLIER) \
+static void \
+_on_##SUB##_##VALUE##_change(void *data, \
+                             Evas_Object *obj, \
+                             void *ei __UNUSED__) \
+{ \
+   Prop_Data *pd = (Prop_Data *)data; \
+   TYPE value = elm_spinner_value_get(obj); \
+   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name,\
+                                        pd->wm_part->curr_state, \
+                                        pd->wm_part->curr_state_value); \
+   value /= MULTIPLIER; \
+   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name,\
+                                        pd->wm_part->curr_state, \
+                                        pd->wm_part->curr_state_value, \
+                                        value)) \
+     return; \
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
+                    value, pd->wm_style->full_group_name,\
+                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
+                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
+   project_changed(); \
+   workspace_edit_object_recalc(pd->workspace); \
+   pd->wm_style->isModify = true; \
+}
+
+/*****************************************************************************/
 /*                        STATE 2 SPINNER CONTROLS                           */
 /*****************************************************************************/
 /**
@@ -681,53 +782,8 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  * @ingroup Property_Macro
  */
 #define STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER) \
-   elm_spinner_value_set(pd->MEMBER.VALUE1, \
-                         MULTIPLIER * edje_edit_##SUB##_##VALUE1##_get(pd->wm_style->obj, \
-                                                                       pd->wm_part->name, \
-                                                                       pd->wm_part->curr_state, \
-                                                                       pd->wm_part->curr_state_value)); \
-   elm_spinner_value_set(pd->MEMBER.VALUE2, \
-                         MULTIPLIER * edje_edit_##SUB##_##VALUE2##_get(pd->wm_style->obj, \
-                                                                       pd->wm_part->name, \
-                                                                       pd->wm_part->curr_state, \
-                                                                       pd->wm_part->curr_state_value));
-
-/**
- * Macro defines a callback for STATE_ATTR_2SPINNER_ADD.
- *
- * @param SUB The prefix of main parameter of state attribute;
- * @param VALUE The value of state attribute.
- * @param TYPE The spinner value type: int, double
- * @param HISTORY_TYPE The history value type: VAL_INT, VAL_DOUBLE
- * @param MULTIPLIER The multiplier to convert the value to percent
- *
- * @ingroup Property_Macro
- */
-#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, TYPE, HISTORY_TYPE, MULTIPLIER) \
-static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
-{ \
-   Prop_Data *pd = (Prop_Data *)data; \
-   TYPE value = elm_spinner_value_get(obj); \
-   TYPE old_value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name,\
-                                        pd->wm_part->curr_state, \
-                                        pd->wm_part->curr_state_value); \
-   value /= MULTIPLIER; \
-   if (!edje_edit_##SUB##_##VALUE##_set(pd->wm_style->obj, pd->wm_part->name,\
-                                        pd->wm_part->curr_state, \
-                                        pd->wm_part->curr_state_value, \
-                                        value)) \
-     return; \
-   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, HISTORY_TYPE, old_value, \
-                    value, pd->wm_style->full_group_name,\
-                    (void*)edje_edit_##SUB##_##VALUE##_set,  #SUB"_"#VALUE, \
-                    pd->wm_part->name, pd->wm_part->curr_state, pd->wm_part->curr_state_value); \
-   project_changed(); \
-   workspace_edit_object_recalc(pd->workspace); \
-   pd->wm_style->isModify = true; \
-}
+   STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE1, MEMBER, MULTIPLIER) \
+   STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE2, MEMBER, MULTIPLIER)
 
 /*****************************************************************************/
 /*                          STATE 2 CHECK CONTROLS                           */
