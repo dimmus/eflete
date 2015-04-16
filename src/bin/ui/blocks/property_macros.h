@@ -763,6 +763,19 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
 }
 
 /**
+ * Macro defines a function that updates control by STATE_ATTR_2CHECK_ADD macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2) \
+   STATE_ATTR_CHECK_UPDATE(SUB, VALUE1) \
+   STATE_ATTR_CHECK_UPDATE(SUB, VALUE2)
+
+/**
  * Macro defines a callback for STATE_ATTR_2CHECK_ADD.
  *
  * @param SUB The prefix of main parameter of state attribute;
