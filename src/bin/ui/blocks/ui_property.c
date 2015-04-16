@@ -1850,10 +1850,18 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    STATE_ATTR_1ENTRY_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
 
+#define STATE_ATTR_1SPINNER(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                            L_START, L_END, TOOLTIP, MULTIPLIER, \
+                            TYPE, HISTORY_TYPE) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_1SPINNER_ADD(TEXT, SUB, VALUE, MEMBER, MIN, MAX, STEP, FMT, \
+                           L_START, L_END, TOOLTIP, MULTIPLIER)
+
 STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
 STATE_ATTR_1ENTRY(_("font"), state, font, state_text, PROPERTY_REGEX_STATE_FONT,
                   _("The text font, posible set a font style. Ex: Sans:style=italic"))
-ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
+STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
+                    _("The font size"), 1, int, VAL_INT)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
 ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
@@ -2215,10 +2223,8 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_font_add(box, pd, NULL);
          elm_box_pack_end(box, item);
-         pd_text.size = prop_item_state_text_size_add(box, pd,
-                           0.0, 128.0, 1.0, "%.0f pt",
-                           _("Change text font's size.'"));
-         elm_box_pack_end(box, pd_text.size);
+         item = prop_state_text_size_add(box, pd);
+         elm_box_pack_end(box, item);
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
                             0, 100, 1, NULL,
                             "x:", "%", "y:", "%",
@@ -2275,7 +2281,7 @@ ui_property_state_text_set(Evas_Object *property)
      {
         prop_state_text_update(pd);
         prop_state_font_update(pd);
-        prop_item_state_text_size_update(pd_text.size, pd);
+        STATE_ATTR_1SPINNER_UPDATE(state_text, size, state_text, 1)
         prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
