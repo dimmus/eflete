@@ -124,7 +124,7 @@ struct _Prop_Data
       Evas_Object *text;
       Evas_Object *font;
       Evas_Object *size;
-      Evas_Object *align;
+      Evas_Object *align_x, *align_y;
       Evas_Object *source;
       Evas_Object *ellipsis;
       Evas_Object *min;
@@ -139,7 +139,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *text;
       Evas_Object *style; /* not implemented in yet the edje  */
-      Evas_Object *align;
+      Evas_Object *align_x, *align_y;
       Evas_Object *min;
       Evas_Object *max;
       Evas_Object *select_mode;
@@ -1862,7 +1862,11 @@ STATE_ATTR_1ENTRY(_("font"), state, font, state_text, PROPERTY_REGEX_STATE_FONT,
                   _("The text font, posible set a font style. Ex: Sans:style=italic"))
 STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
                     _("The font size"), 1, int, VAL_INT)
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
+//ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
+STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
+                    0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
+                    _("Text horizontal align"), _("Text vertical align"),
+                    100, double, VAL_DOUBLE)
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
 ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
@@ -2225,15 +2229,8 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_text_size_add(box, pd);
          elm_box_pack_end(box, item);
-         pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
-                            0, 100, 1, NULL,
-                            "x:", "%", "y:", "%",
-                            _("Text horizontal align. "
-                            "0.0 = left  1.0 = right"),
-                            _("Text vertical align. "
-                            "0.0 = top  1.0 = bottom"),
-                            true);
-         elm_box_pack_end(box, pd_text.align);
+         item = prop_state_text_align_x_align_y_add(box, pd);
+         elm_box_pack_end(box, item);
          pd_text.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -2282,7 +2279,7 @@ ui_property_state_text_set(Evas_Object *property)
         prop_state_text_update(pd);
         prop_state_font_update(pd);
         STATE_ATTR_1SPINNER_UPDATE(state_text, size, state_text, 1)
-        prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
+        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, 100)
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
         prop_item_state_text_max_x_y_update(pd_text.max, pd);
         prop_item_state_text_source_update(pd_text.source, pd);
@@ -2319,6 +2316,10 @@ ui_property_state_text_unset(Evas_Object *property)
 #define prop_state_textblock_source6_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
 
 #define pd_textblock pd->state_textblock
+STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
+                    0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
+                    _("Text horizontal align"), _("Text vertical align"),
+                    100, double, VAL_DOUBLE)
 PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
@@ -2369,12 +2370,8 @@ ui_property_state_textblock_set(Evas_Object *property)
                            _on_state_text_style_change,
                            _("Set the text style of part."));
          elm_box_pack_end(box, pd_textblock.style);
-         pd_textblock.align = prop_item_state_text_align_x_y_add(box, pd,
-                             0, 100, 1, NULL, "x:", "%", "y:", "%",
-                             _("Text horizontal align. 0 = left  100 = right"),
-                             _("Text vertical align. 0 = top  100 = bottom"),
-                             true);
-         elm_box_pack_end(box, pd_textblock.align);
+         item = prop_state_textblock_align_x_align_y_add(box, pd);
+         elm_box_pack_end(box, item);
          pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -2430,7 +2427,7 @@ ui_property_state_textblock_set(Evas_Object *property)
      {
         prop_state_text_update(pd);
         prop_item_state_text_style_update(pd_textblock.style, pd);
-        prop_item_state_text_style_update(pd_textblock.align, pd);
+        STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, 100)
         prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
         prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
         PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, select_mode)
