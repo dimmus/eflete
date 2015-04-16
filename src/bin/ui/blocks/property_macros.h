@@ -636,8 +636,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                 L_START, L_END, \
                                 TOOLTIP, MULTIPLIER) \
 static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd) \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
+                              Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    SPINNER_ADD(item, pd->MEMBER.VALUE, MIN, MAX, STEP, true) \
@@ -649,7 +649,7 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
    evas_object_event_callback_priority_add(pd->MEMBER.VALUE, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
    STATE_ATTR_1SPINNER_UPDATE(SUB, VALUE, MEMBER, MULTIPLIER); \
    return item; \
 }
@@ -683,11 +683,11 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, TYPE, HISTORY_TYPE, MULTIPLIER) \
+#define STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
 static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    TYPE value = elm_spinner_value_get(obj); \
@@ -741,8 +741,8 @@ _on_##SUB##_##VALUE##_change(void *data, \
                                 L1_START, L1_END, L2_START, L2_END, \
                                 TOOLTIP1, TOOLTIP2, MULTIPLIER) \
 static Evas_Object * \
-prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
-                                       Prop_Data *pd) \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
+                                          Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
    SPINNER_ADD(item, pd->MEMBER.VALUE1, MIN, MAX, STEP, true) \
@@ -754,7 +754,7 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    evas_object_event_callback_priority_add(pd->MEMBER.VALUE1, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                           _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
    SPINNER_ADD(item, pd->MEMBER.VALUE2, MIN, MAX, STEP, true) \
    elm_spinner_label_format_set(pd->MEMBER.VALUE2, FMT); \
    elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
@@ -764,7 +764,7 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
    evas_object_event_callback_priority_add(pd->MEMBER.VALUE2, EVAS_CALLBACK_MOUSE_WHEEL, \
                                            EVAS_CALLBACK_PRIORITY_BEFORE, \
                                            _on_spinner_mouse_wheel, NULL); \
-   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
    STATE_ATTR_2SPINNER_UPDATE(SUB, VALUE1, VALUE2, MEMBER, MULTIPLIER); \
    return item; \
 }
