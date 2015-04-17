@@ -1400,9 +1400,13 @@ prop_state_proxy_source_update(Prop_Data *pd)
    STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
+#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                          L1_START, L1_END, L2_START, L2_END, \
+                          TOOLTIP1, TOOLTIP2) \
    STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
-   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
+   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                        L1_START, L1_END, L2_START, L2_END, \
+                        TOOLTIP1, TOOLTIP2)
 
 #define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, LIST, TOOLTIP, TYPE) \
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
@@ -1427,7 +1431,8 @@ STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
-STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, _("This affects the minimum width calculation."),
+STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, "w:", "", "h:", "",
+                  _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."))
 STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, edje_aspect_pref,
                           _("The aspect control hints for this object."), unsigned char)
@@ -1838,14 +1843,14 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double, VAL_DOUBLE)
-STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text,
+STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
                   "the minimum size of the text."),
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
                   "the minimum size of the text."))
-STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_text,
+STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_text, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
                   "the maximum size of the text."),
@@ -2291,14 +2296,14 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double, VAL_DOUBLE)
-STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock,
+STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
                   "the minimum size of the text."),
                   _("When any of the parameters is enabled it forces \t"
                   "the minimum size of the container to be equal to\t"
                   "the minimum size of the text."))
-STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock,
+STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock, "w:", "", "h:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
                   "the maximum size of the text."),

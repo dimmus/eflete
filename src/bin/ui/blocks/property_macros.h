@@ -844,7 +844,9 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
+#define STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+                              L1_START, L1_END, L2_START, L2_END, \
+                              TOOLTIP1, TOOLTIP2) \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
 { \
@@ -854,11 +856,15 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
    elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
    elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
+   elm_layout_text_set(item, "label.swallow1.start", L1_START); \
+   elm_layout_text_set(item, "label.swallow1.end", L1_END); \
    CHECK_ADD(item, pd->MEMBER.VALUE2) \
    elm_object_style_set(pd->MEMBER.VALUE2, "toggle"); \
    elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
    elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
+   elm_layout_text_set(item, "label.swallow2.start", L2_START); \
+   elm_layout_text_set(item, "label.swallow2.end", L2_END); \
    STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
    return item; \
 }
