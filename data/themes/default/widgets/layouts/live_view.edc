@@ -145,9 +145,9 @@ group { name: "elm/layout/live_view/signal";
             color: LIGHT_GREY_FONT_COLOR;
             rel1.to: "base";
             rel2 {
-               relative: 0.0 1.0;
+               relative: 0.0 0.0;
                to_x: "elm.swallow.content";
-               to_y: "base";
+               to_y: "padding.signal_button";
             }
             text {
                font: FN;
@@ -160,8 +160,8 @@ group { name: "elm/layout/live_view/signal";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            min: 15 0;
-            max: 15 -1;
+            min: 15 7;
+            max: 15 7;
             rel1.to: "base";
             rel2.to: "base";
          }
@@ -171,9 +171,10 @@ group { name: "elm/layout/live_view/signal";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             FIXED_SIZE(45, 19);
+            rel1.to: "base";
             rel2 {
-               relative: 0.0 1.0;
-               to_x: "padding.signal_button";
+               relative: 0.0 0.0;
+               to: "padding.signal_button";
             }
          }
       }
