@@ -128,8 +128,8 @@ struct _Prop_Data
       Evas_Object *align_x, *align_y;
       Evas_Object *source;
       Evas_Object *ellipsis;
-      Evas_Object *min;
-      Evas_Object *max;
+      Evas_Object *min_x, *min_y;
+      Evas_Object *max_x, *max_y;
       Evas_Object *fit;
       Evas_Object *text_source; /* not implemented in yet the edje */
       Evas_Object *color2, *color2_obj;
@@ -141,8 +141,8 @@ struct _Prop_Data
       Evas_Object *text;
       Evas_Object *style; /* not implemented in yet the edje  */
       Evas_Object *align_x, *align_y;
-      Evas_Object *min;
-      Evas_Object *max;
+      Evas_Object *min_x, *min_y;
+      Evas_Object *max_x, *max_y;
       Evas_Object *select_mode;
       Evas_Object *entry_mode;
       Evas_Object *pointer_mode;
@@ -1834,13 +1834,24 @@ STATE_ATTR_1ENTRY(_("font"), state, font, state_text, PROPERTY_REGEX_STATE_FONT,
                   _("The text font, posible set a font style. Ex: Sans:style=italic"))
 STATE_ATTR_1SPINNER(_("size"), state_text, size, state_text, 1, 128, 1, "%.0f", "", "pt",
                     _("The font size"), 1, int, VAL_INT)
-//ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_text,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double, VAL_DOUBLE)
-ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
-ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
+STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_text,
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."))
+STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_text,
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."));
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
 STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
 STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
@@ -2203,22 +2214,10 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_text_align_x_align_y_add(box, pd);
          elm_box_pack_end(box, item);
-         pd_text.min = prop_item_state_text_min_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."));
-         elm_box_pack_end(box, pd_text.min);
-         pd_text.max = prop_item_state_text_max_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."));
-         elm_box_pack_end(box, pd_text.max);
+         item = prop_state_text_min_x_min_y_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_max_x_max_y_add(box, pd);
+         elm_box_pack_end(box, item);
          pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
                             _("Causes the part to use the text properties\t"
                             "(like font and size) of another part\t"
@@ -2252,8 +2251,8 @@ ui_property_state_text_set(Evas_Object *property)
         prop_state_font_update(pd);
         STATE_ATTR_1SPINNER_UPDATE(state_text, size, state_text, 1)
         STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, 100)
-        prop_item_state_text_min_x_y_update(pd_text.min, pd);
-        prop_item_state_text_max_x_y_update(pd_text.max, pd);
+        STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_text)
+        STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)
         prop_item_state_text_source_update(pd_text.source, pd);
         prop_item_state_text_text_source_update(pd_text.text_source, pd);
         prop_item_state_text_ellipsis_update(pd_text.ellipsis, pd);
@@ -2292,6 +2291,20 @@ STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
                     100, double, VAL_DOUBLE)
+STATE_ATTR_2CHECK(_("min"), state_text, min_x, min_y, state_textblock,
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the minimum size of the container to be equal to\t"
+                  "the minimum size of the text."))
+STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock,
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."),
+                  _("When any of the parameters is enabled it forces \t"
+                  "the maximum size of the container to be equal to\t"
+                  "the maximum size of the text."));
 PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode)
 PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
@@ -2344,22 +2357,10 @@ ui_property_state_textblock_set(Evas_Object *property)
          elm_box_pack_end(box, pd_textblock.style);
          item = prop_state_textblock_align_x_align_y_add(box, pd);
          elm_box_pack_end(box, item);
-         pd_textblock.min = prop_item_state_text_min_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the minimum size of the container to be equal to\t"
-                           "the minimum size of the text."));
-         elm_box_pack_end(box, pd_textblock.min);
-         pd_textblock.max = prop_item_state_text_max_x_y_add(box, pd,
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."),
-                           _("When any of the parameters is enabled it forces \t"
-                           "the maximum size of the container to be equal to\t"
-                           "the maximum size of the text."));
-         elm_box_pack_end(box, pd_textblock.max);
+         item = prop_state_textblock_min_x_min_y_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_textblock_max_x_max_y_add(box, pd);
+         elm_box_pack_end(box, item);
          item = prop_state_textblock_select_mode_add(box, pd,
                                     _("Sets the selection mode for a textblock part"),
                                     edje_select_mode);
@@ -2400,8 +2401,8 @@ ui_property_state_textblock_set(Evas_Object *property)
         prop_state_text_update(pd);
         prop_item_state_text_style_update(pd_textblock.style, pd);
         STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, 100)
-        prop_item_state_text_min_x_y_update(pd_textblock.min, pd);
-        prop_item_state_text_max_x_y_update(pd_textblock.max, pd);
+        STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_textblock)
+        STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_textblock)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, select_mode)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, entry_mode)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, pointer_mode)
