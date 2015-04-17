@@ -1785,6 +1785,7 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
    int xg, yg, wg, hg; // groupedit geometry
    int x = 0, w = 0, y = 0, h = 0;
    double relative;
+   int offset;
 
    Groupedit_Part *rel_part = NULL;
 
@@ -1804,46 +1805,52 @@ _part_object_area_calc(Ws_Groupedit_Smart_Data *sd)
         wc = wg;
         rel_to = edje_edit_state_rel1_to_x_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel1_relative_x_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel1_offset_x_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
           }
-        x = (xc + (int)(wc * relative * sd->zoom_factor));
+        x = (xc + (int)(wc * relative * sd->zoom_factor)) + offset;
         edje_edit_string_free(rel_to);
 
         yc = yg;
         hc = hg;
         rel_to = edje_edit_state_rel1_to_y_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel1_relative_y_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel1_offset_y_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
           }
-        y = (yc + (int)(hc * relative * sd->zoom_factor));
+        y = (yc + (int)(hc * relative * sd->zoom_factor)) + offset;
         edje_edit_string_free(rel_to);
 
         xc = xg; wc = sd->con_current_size->w;
         rel_to = edje_edit_state_rel2_to_x_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel2_relative_x_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel2_offset_x_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, &xc, NULL, &wc, NULL);
           }
-        w = ((xc - x) + (int)(wc * relative * sd->zoom_factor));
+        w = ((xc - x) + (int)(wc * relative * sd->zoom_factor)) + offset;
+        if (w < 0) { x += w; w = 0; }
         edje_edit_string_free(rel_to);
 
         yc = yg; hc = sd->con_current_size->h;
         rel_to = edje_edit_state_rel2_to_y_get(sd->edit_obj, name, state, value);
         relative = edje_edit_state_rel2_relative_y_get(sd->edit_obj, name, state, value);
+        offset = edje_edit_state_rel2_offset_y_get(sd->edit_obj, name, state, value);
         if (rel_to)
           {
              rel_part = _parts_list_find(sd->parts, rel_to);
              evas_object_geometry_get(rel_part->draw, NULL, &yc, NULL, &hc);
           }
-        h = ((yc - y) + (int)(hc * relative * sd->zoom_factor));
+        h = ((yc - y) + (int)(hc * relative * sd->zoom_factor)) + offset;
+        if (h < 0) { y += h; h = 0; }
         edje_edit_string_free(rel_to);
 
         evas_object_geometry_get(sd->obj, &xc, &yc, NULL, NULL);
