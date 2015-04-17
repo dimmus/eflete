@@ -249,10 +249,17 @@ _create_genlist(Evas_Object *obj, const char *class, const char *style)
         else
           elm_genlist_mode_set(glist, ELM_LIST_SCROLL);
 
-        style_parsed = eina_str_split_full(style, "/", 0, &count_split);
-        item_style = strdup(style_parsed[0]);
-        genlist_style = strdup(style_parsed[1]);
-
+        style_parsed = eina_str_split_full(style, "/", 2, &count_split);
+        if (count_split == 2)
+          {
+             item_style = strdup(style_parsed[0]);
+             genlist_style = strdup(style_parsed[1]);
+          }
+        else
+          {
+             item_style = strdup("default");
+             genlist_style = strdup(style);
+          }
         free(style_parsed[0]);
         free(style_parsed);
      }
