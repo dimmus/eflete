@@ -169,7 +169,7 @@ live_view_property_style_set(Evas_Object *property,
 
    prop_box = elm_object_content_get(pd->visual);
 
-   if (!pd->scale_spinner)
+   if (!pd->header)
      {
         LAYOUT_PROP_ADD(prop_box, "Scale: ", "live_view", "header")
 
@@ -177,7 +177,7 @@ live_view_property_style_set(Evas_Object *property,
         elm_object_style_set(spinner, "live_view");
         elm_spinner_label_format_set(spinner, "%3.0f%%");
         evas_object_smart_callback_add(spinner, "changed", _on_scale_change, pd);
-        pd->scale_spinner = item;
+        pd->header = item;
         elm_object_part_content_set(item, "elm.swallow.content", spinner);
         evas_object_data_set(item, ITEM, spinner);
 
@@ -188,12 +188,12 @@ live_view_property_style_set(Evas_Object *property,
         elm_radio_group_add(radio, radio_group);
 #undef _RADIO_ADD
      }
-   spinner = evas_object_data_get(pd->scale_spinner, ITEM);
+   spinner = evas_object_data_get(pd->header, ITEM);
    elm_spinner_value_set(spinner, 100);
    pd->current_scale = 1.0;
    evas_object_scale_set(pd->live_object, pd->current_scale);
-   elm_box_pack_start(prop_box, pd->scale_spinner);
-   evas_object_show(pd->scale_spinner);
+   elm_box_pack_start(prop_box, pd->header);
+   evas_object_show(pd->header);
 
    /* Swallows UI setting*/
    if (!pd->prop_swallow.swallows)
@@ -432,7 +432,7 @@ live_view_property_style_unset(Evas_Object *property)
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack_all(prop_box);
-   evas_object_hide(pd->scale_spinner);
+   evas_object_hide(pd->header);
 
    elm_scroller_policy_set(pd->visual, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
 
