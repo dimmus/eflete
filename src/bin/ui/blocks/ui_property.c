@@ -31,6 +31,10 @@
 
 #define PROP_DATA "prop_data"
 
+/* TODO: I dont know why this regex not work properly in the ewe entry.
+ * It test in the elm_entry - works good, in online checkers - work */
+#define PROPERTY_REGEX_STATE_FONT "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?"
+
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
    if (!pd) \
@@ -1870,8 +1874,8 @@ ui_property_state_obj_area_unset(Evas_Object *property)
    STATE_ATTR_1ENTRY_ADD(TEXT, SUB, VALUE, MEMBER, REGEX, TOOLTIP)
 
 STATE_ATTR_1ENTRY(_("text"), state, text, state_text, NULL, _("The dispalyed text"))
-//ITEM_1ENTRY_STATE_CREATE(_("text"), state, text, NULL, const char *)
-ITEM_1ENTRY_STATE_CREATE(_("font"), state, font, &accept_prop, const char *)
+STATE_ATTR_1ENTRY(_("font"), state, font, state_text, PROPERTY_REGEX_STATE_FONT,
+                  _("The text font, posible set a font style. Ex: Sans:style=italic"))
 ITEM_1SPINNER_STATE_INT_CREATE(_("size"), state_text, size)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/property/item/default")
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
@@ -2232,8 +2236,8 @@ ui_property_state_text_set(Evas_Object *property)
 
          item = prop_state_text_add(box, pd, NULL);
          elm_box_pack_end(box, item);
-         pd_text.font = prop_item_state_font_add(box, pd, NULL,
-                           _("Change the text's font"), NULL);
+         item = prop_state_font_add(box, pd, NULL);
+         elm_box_pack_end(box, item);
          pd_text.size = prop_item_state_text_size_add(box, pd,
                            0.0, 128.0, 1.0, "%.0f pt",
                            _("Change text font's size.'"));
@@ -2278,7 +2282,6 @@ ui_property_state_text_set(Evas_Object *property)
                             _("Text outline color."));
          pd_text.effect = prop_item_state_effect_add(box, pd);
 
-         elm_box_pack_end(box, pd_text.font);
          elm_box_pack_end(box, pd_text.size);
          elm_box_pack_end(box, pd_text.align);
          elm_box_pack_end(box, pd_text.min);
@@ -2297,7 +2300,7 @@ ui_property_state_text_set(Evas_Object *property)
    else
      {
         prop_state_text_update(pd);
-        prop_item_state_font_update(pd_text.font, pd);
+        prop_state_font_update(pd);
         prop_item_state_text_size_update(pd_text.size, pd);
         prop_item_state_text_align_x_y_update(pd_text.align, pd, true);
         prop_item_state_text_min_x_y_update(pd_text.min, pd);
