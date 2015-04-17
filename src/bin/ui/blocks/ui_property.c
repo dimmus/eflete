@@ -894,8 +894,7 @@ prop_item_part_name_add(Evas_Object *parent,
    elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
 
 static void
-prop_part_clip_to_update(Prop_Data *pd,
-                         Evas_Object *combobox __UNUSED__)
+prop_part_clip_to_update(Prop_Data *pd)
 {
    Part *part;
    Eina_Inlist *list_n = NULL;
@@ -914,36 +913,6 @@ prop_part_clip_to_update(Prop_Data *pd,
            ewe_combobox_item_add(pd->part.clip_to, part->name);
      }
    edje_edit_string_free(value);
-}
-
-/* avaliable only for SOURCE part type */
-static void
-prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
-{
-   Eina_List *collections, *l;
-   const char *group, *value;
-   App_Data *ap = app_data_get();
-   unsigned int i = 0;
-
-   ewe_combobox_items_list_free(combobox, true);
-   value = edje_edit_part_clip_to_get(pd->wm_style->obj, pd->wm_part->name);
-   if (value)
-     ewe_combobox_text_set(combobox, value);
-   else
-     ewe_combobox_text_set(combobox, _("None"));
-   ewe_combobox_item_add(combobox, _("None"));
-   collections = edje_mmap_collection_list(ap->project->mmap_file);
-   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
-   EINA_LIST_FOREACH(collections, l, group)
-     {
-        if (group != pd->wm_style->full_group_name)
-          ewe_combobox_item_add(combobox, group);
-        if (group == value)
-          pd->part.previous_source = i;
-        i++;
-     }
-   edje_edit_string_free(value);
-   edje_mmap_collection_list_free(collections);
 }
 
 inline static void
@@ -966,6 +935,8 @@ prop_part_drag_control_disable_set(Prop_Data *pd, Eina_Bool collapse)
 PART_ATTR_PARTS_LIST(part_drag, confine, part_drag)
 PART_ATTR_PARTS_LIST(part_drag, threshold, part_drag)
 PART_ATTR_PARTS_LIST(part_drag, event, part_drag)
+
+PART_ATTR_SOURCE_UPDATE(part, source)
 
 #define PART_ATTR_1CHECK(TEXT, SUB, VALUE) \
    PART_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
@@ -1081,15 +1052,15 @@ ui_property_part_set(Evas_Object *property, Part *part)
         ITEM_ATTR_1CHECK_UPDATE(part, scale)
         ITEM_ATTR_1CHECK_UPDATE(part, mouse_events)
         ITEM_ATTR_1CHECK_UPDATE(part, repeat_events)
-        prop_part_clip_to_update(pd, NULL);
+        prop_part_clip_to_update(pd);
         PART_ATTR_1COMBOBOX_LIST_UPDATE(part, ignore_flags)
-        prop_part_source_update(pd, pd->part.source);
+        prop_part_source_update(pd);
 
         prop_part_drag_x_step_x_update(pd);
         prop_part_drag_y_step_y_update(pd);
-        prop_part_drag_confine_update(pd, pd->part_drag.confine);
-        prop_part_drag_threshold_update(pd, pd->part_drag.threshold);
-        prop_part_drag_event_update(pd, pd->part_drag.event);
+        prop_part_drag_confine_update(pd);
+        prop_part_drag_threshold_update(pd);
+        prop_part_drag_event_update(pd);
      }
 
    box = elm_object_content_get(pd_part.frame);
@@ -1357,8 +1328,7 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
 }
 
 static void
-prop_state_proxy_source_update(Prop_Data *pd,
-                               Evas_Object *combobox __UNUSED__)
+prop_state_proxy_source_update(Prop_Data *pd)
 {
    Part *part;
    Eina_Inlist *list_n = NULL;
@@ -1542,7 +1512,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
         prop_state_color_class_update(pd);
         prop_state_color_update(pd);
         STATE_ATTR_2SPINNER_UPDATE(state, minmul_w, minmul_h, state, 1)
-        prop_state_proxy_source_update(pd, NULL);
+        prop_state_proxy_source_update(pd);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_state.frame);
@@ -2310,12 +2280,12 @@ ui_property_state_text_unset(Evas_Object *property)
 }
 #undef pd_text
 
-#define prop_state_textblock_source_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source2_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source3_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source4_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source5_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
-#define prop_state_textblock_source6_update(PD, COMBOBOX) prop_part_source_update(PD, COMBOBOX);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source2);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source3);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source4);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source5);
+PART_ATTR_SOURCE_UPDATE(state_textblock, source6);
 
 #define pd_textblock pd->state_textblock
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
@@ -2437,12 +2407,12 @@ ui_property_state_textblock_set(Evas_Object *property)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, pointer_mode)
         PART_ATTR_1COMBOBOX_LIST_UPDATE(state_textblock, cursor_mode)
         ITEM_ATTR_1CHECK_UPDATE(state_textblock, multiline);
-        prop_state_textblock_source_update(pd, pd_textblock.source);
-        prop_state_textblock_source2_update(pd, pd_textblock.source2);
-        prop_state_textblock_source3_update(pd, pd_textblock.source3);
-        prop_state_textblock_source4_update(pd, pd_textblock.source4);
-        prop_state_textblock_source5_update(pd, pd_textblock.source5);
-        prop_state_textblock_source6_update(pd, pd_textblock.source6);
+        prop_state_textblock_source_update(pd);
+        prop_state_textblock_source2_update(pd);
+        prop_state_textblock_source3_update(pd);
+        prop_state_textblock_source4_update(pd);
+        prop_state_textblock_source5_update(pd);
+        prop_state_textblock_source6_update(pd);
         elm_box_pack_end(prop_box, pd_textblock.frame);
         evas_object_show(pd_textblock.frame);
      }

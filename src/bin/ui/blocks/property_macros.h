@@ -254,7 +254,7 @@ prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE) \
-   prop_##MEMBER##_##VALUE##_update(pd, pd->MEMBER.VALUE); \
+   prop_##MEMBER##_##VALUE##_update(pd); \
    elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    evas_object_smart_callback_add(pd->MEMBER.VALUE, "selected", _on_##MEMBER##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->MEMBER.VALUE); \
@@ -390,6 +390,45 @@ _on_##SUB##_##VALUE##_change(void *data, \
 }
 
 /*****************************************************************************/
+/*                       PART 1COMBOBOX SOURCE UPDATE                        */
+/*****************************************************************************/
+/**
+ * Macro defines a function that updates any 'source' attribute control macro.
+ *
+ * @param SUB The prefix of main parameter of drag attribute
+ * @param VALUE The 'source' value (source, source2 etc)
+ *
+ * @ingroup Property_Macro
+ */
+#define PART_ATTR_SOURCE_UPDATE(MEMBER, VALUE) \
+static void \
+prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
+{ \
+   Eina_List *collections, *l; \
+   const char *group, *value; \
+   App_Data *ap = app_data_get(); \
+   unsigned int i = 0; \
+   ewe_combobox_items_list_free(pd->MEMBER.VALUE, true); \
+   value = edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name); \
+   if (value) ewe_combobox_text_set(pd->MEMBER.VALUE, value); \
+   else ewe_combobox_text_set(pd->MEMBER.VALUE, _("None")); \
+   ewe_combobox_item_add(pd->MEMBER.VALUE, _("None")); \
+   collections = edje_mmap_collection_list(ap->project->mmap_file); \
+   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb); \
+   EINA_LIST_FOREACH(collections, l, group) \
+     { \
+        if (group != pd->wm_style->full_group_name) \
+          ewe_combobox_item_add(pd->MEMBER.VALUE, group); \
+        if (group == value) \
+          pd->part.previous_source = i; \
+        i++; \
+     } \
+   edje_edit_string_free(value); \
+   edje_mmap_collection_list_free(collections); \
+}
+
+
+/*****************************************************************************/
 /*                        PART 1CHECK 1SPINNER DRAG                          */
 /*****************************************************************************/
 /**
@@ -514,7 +553,7 @@ _on_part_drag_##VALUE2##_change(void *data, \
  */
 #define PART_ATTR_PARTS_LIST(SUB, VALUE, MEMBER) \
 static void \
-prop_##MEMBER##_##VALUE##_update(Prop_Data *pd, Evas_Object *obj __UNUSED__) \
+prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 { \
    Part *part; \
    Eina_Inlist *list_n = NULL; \
