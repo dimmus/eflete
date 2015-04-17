@@ -109,10 +109,11 @@ static unsigned int part_types_count = 12;
 int
 _sort_class_cb(const void *data1, const void *data2)
 {
-   const char *str1 = eina_stringshare_add(data1);
-   const char *str2 = eina_stringshare_add(data2);
+   const char *str1 = data1;
+   const char *str2 = data2;
    char *data1_class = NULL;
    char *data2_class = NULL;
+   int ret;
 
    if (!str1) return 1;
    if (!str2) return -1;
@@ -120,12 +121,10 @@ _sort_class_cb(const void *data1, const void *data2)
    WM_CLASS_NAME_GET(data1_class, str1);
    WM_CLASS_NAME_GET(data2_class, str2);
 
-   int cmp = (strcmp(data1_class, data2_class));
+   ret = (strcmp(data1_class, data2_class));
    free(data1_class);
    free(data2_class);
-   eina_stringshare_del(str1);
-   eina_stringshare_del(str2);
-   return cmp;
+   return ret;
 }
 
 static void
