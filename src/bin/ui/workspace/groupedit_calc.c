@@ -1224,10 +1224,10 @@ _text_param_update(Groupedit_Part *gp, Evas_Object *edit_obj)
    edje_edit_state_color_get(edit_obj, gp->name, state, value, &r, &g, &b, &a);
    evas_object_color_set(gp->draw, r*a/255, g*a/255, b*a/255, a);
 
-   edje_edit_state_color2_get(edit_obj, gp->name, state, value, &sr, &sg, &sb, &sa);
+   edje_edit_state_color3_get(edit_obj, gp->name, state, value, &sr, &sg, &sb, &sa);
    evas_object_text_shadow_color_set(gp->draw, sr, sg, sb, sa);
 
-   edje_edit_state_color3_get(edit_obj, gp->name, state, value, &or, &og, &ob, &oa);
+   edje_edit_state_color2_get(edit_obj, gp->name, state, value, &or, &og, &ob, &oa);
    evas_object_text_outline_color_set(gp->draw, or, og, ob, oa);
 
    effect = edje_edit_part_effect_get(edit_obj, gp->name);
