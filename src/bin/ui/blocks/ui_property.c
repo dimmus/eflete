@@ -24,6 +24,7 @@
 #include "ui_property.h"
 #include "ui_property_macro_old.h"
 #include "main_window.h"
+#include "string_common.h"
 
 #ifndef HAVE_ENVENTOR
 #include "syntax_color.h"
@@ -916,18 +917,6 @@ prop_part_clip_to_update(Prop_Data *pd,
 }
 
 /* avaliable only for SOURCE part type */
-
-static int
-_sort_cb(const void *d1, const void *d2)
-{
-   const char *txt = d1;
-   const char *txt2 = d2;
-
-   if (!txt) return 1;
-   if (!txt2) return -1;
-
-   return(strcmp(txt, txt2));
-}
 static void
 prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
 {
@@ -944,7 +933,7 @@ prop_part_source_update(Prop_Data *pd, Evas_Object *combobox)
      ewe_combobox_text_set(combobox, _("None"));
    ewe_combobox_item_add(combobox, _("None"));
    collections = edje_mmap_collection_list(ap->project->mmap_file);
-   collections = eina_list_sort(collections, eina_list_count(collections), _sort_cb);
+   collections = eina_list_sort(collections, eina_list_count(collections), sort_cb);
    EINA_LIST_FOREACH(collections, l, group)
      {
         if (group != pd->wm_style->full_group_name)

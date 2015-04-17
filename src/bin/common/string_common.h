@@ -41,4 +41,7 @@
    EINA_LIST_FREE(EINA_LIST, _data_) \
    eina_stringshare_del(_data_);
 
+int
+sort_cb(const void *data1, const void *data2);
+
 #endif /* STRING_MACRO_H */

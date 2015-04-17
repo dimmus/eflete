@@ -399,18 +399,6 @@ ITEM_1ENTRY_PROG_CREATE(_("signal"), program, signal, EDJE_NAME_REGEX)
 ITEM_1ENTRY_PROG_CREATE(_("source"), program, source, EDJE_NAME_REGEX)
 ITEM_1ENTRY_ADD(_("name"), program, name, EDJE_NAME_REGEX)
 
-static int
-_sort_cb(const void *d1, const void *d2)
-{
-   const char *txt = d1;
-   const char *txt2 = d2;
-
-   if (!txt) return(1);
-   if (!txt2) return(-1);
-
-   return(strcmp(txt, txt2));
-}
-
 static void
 _special_properties_hide(Program_Editor *prog_edit)
 {
@@ -1249,7 +1237,7 @@ _after_item_add(Program_Editor *prog_edit, const char *name)
 
    posible_afters_list = eina_list_sort(posible_afters_list,
                                         eina_list_count(posible_afters_list),
-                                        _sort_cb);
+                                        sort_cb);
    EWE_COMBOBOX_ADD(element_box, combobox);
    EINA_LIST_FOREACH(posible_afters_list, l, after_name)
      ewe_combobox_item_add(combobox, after_name);
@@ -1320,7 +1308,7 @@ _target_item_add(Program_Editor *prog_edit, const char *name)
 
    posible_targets_list = eina_list_sort(posible_targets_list,
                                          eina_list_count(posible_targets_list),
-                                         _sort_cb);
+                                         sort_cb);
    EWE_COMBOBOX_ADD(element_box, combobox);
    EINA_LIST_FOREACH(posible_targets_list, l, target_name)
      ewe_combobox_item_add(combobox, target_name);
@@ -1556,7 +1544,7 @@ _prop_item_program_after_update(Program_Editor *prog_edit)
    entrys_box = eina_list_nth(childs, 0);
    elm_box_clear(entrys_box);
 
-   afters_list = eina_list_sort(afters_list, eina_list_count(afters_list), _sort_cb);
+   afters_list = eina_list_sort(afters_list, eina_list_count(afters_list), sort_cb);
    EINA_LIST_FOREACH(afters_list, l, after_name)
      _after_item_add(prog_edit, after_name);
    eina_list_free(childs);
@@ -1611,7 +1599,7 @@ _prop_item_program_targets_update(Program_Editor *prog_edit)
    entrys_box = eina_list_nth(childs, 0);
    elm_box_clear(entrys_box);
 
-   targets_list = eina_list_sort(targets_list, eina_list_count(targets_list), _sort_cb);
+   targets_list = eina_list_sort(targets_list, eina_list_count(targets_list), sort_cb);
    EINA_LIST_FOREACH(targets_list, l, target_name)
      _target_item_add(prog_edit, target_name);
    eina_list_free(childs);

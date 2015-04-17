@@ -19,6 +19,7 @@
 
 #include "widget_manager.h"
 #include "alloc.h"
+#include "string_common.h"
 
 static char **arr;
 static char tmp[PATH_MAX];
@@ -104,21 +105,6 @@ static unsigned int part_types_count = 12;
    style_name = strdup(tmp); \
    free(arr[0]); \
    free(arr);
-
-int
-_sort_collection_cb(const void *data1, const void *data2)
-{
-   const char *str1 = eina_stringshare_add(data1);
-   const char *str2 = eina_stringshare_add(data2);
-
-   if (!str1) return 1;
-   if (!str2) return -1;
-
-   int cmp = (strcmp(str1, str2));
-   eina_stringshare_del(str1);
-   eina_stringshare_del(str2);
-   return cmp;
-}
 
 int
 _sort_class_cb(const void *data1, const void *data2)
@@ -597,7 +583,7 @@ wm_widgets_list_new(const char *file)
 
    collection = eina_list_sort(collection,
                                eina_list_count(collection),
-                               _sort_collection_cb);
+                               sort_cb);
 
    EINA_LIST_FOREACH_SAFE(collection, l, l_next, group)
      {
@@ -662,7 +648,7 @@ wm_layouts_list_new(const char *file)
 
    collection = eina_list_sort(collection,
                                eina_list_count(collection),
-                               _sort_collection_cb);
+                               sort_cb);
 
    EINA_LIST_FOREACH(collection, l, group)
      {
