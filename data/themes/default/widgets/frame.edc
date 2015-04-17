@@ -902,8 +902,7 @@ group { name: "elm/frame/base/live_view";
             max: 7 12;
             rel1 {
                relative: 0.0 1.0;
-               to_x: "bevel_upper_left";
-               to_y: "elm.swallow.check";
+               to: "bevel_upper_left";
             }
          }
          description { state: "collapsed" 0.0;
