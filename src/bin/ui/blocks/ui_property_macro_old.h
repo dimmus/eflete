@@ -17,7 +17,7 @@
  * along with this program; If not, see www.gnu.org/licenses/lgpl.html.
  */
 
-#include "string_macro.h"
+#include "string_common.h"
 #include "colorsel.h"
 #include "property_macros.h"
 

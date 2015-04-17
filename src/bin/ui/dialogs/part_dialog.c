@@ -18,7 +18,7 @@
  */
 
 #include "part_dialog.h"
-#include "string_macro.h"
+#include "string_common.h"
 
 #define ENTRY_IS_EMPTY \
    const char *str = elm_entry_entry_get(entry); \

@@ -31,7 +31,7 @@
 
 #include "eflete.h"
 #include "common_macro.h"
-#include "string_macro.h"
+#include "string_common.h"
 #include "main_window.h"
 
 /**

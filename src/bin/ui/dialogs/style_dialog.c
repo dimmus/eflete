@@ -19,7 +19,7 @@
 
 #include "style_dialog.h"
 #include "common_macro.h"
-#include "string_macro.h"
+#include "string_common.h"
 
 static Evas_Object *entry_class;
 static Evas_Object *entry_style;

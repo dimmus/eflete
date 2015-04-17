@@ -37,7 +37,7 @@
 #include "ui_signal_list.h"
 #include "ui_block.h"
 #include "notify.h"
-#include "string_macro.h"
+#include "string_common.h"
 
 #include "part_dialog.h"
 #include "state_dialog.h"
