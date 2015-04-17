@@ -1388,9 +1388,9 @@ prop_state_proxy_source_update(Prop_Data *pd)
    ITEM_1COMBOBOX_STATE_PROXY_ADD(TEXT, SUB, VALUE) \
    ITEM_1COMBOBOX_STATE_PROXY_UPDATE(SUB, VALUE)
 
-#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
-   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE)
+#define STATE_ATTR_1CHECK(TEXT, SUB, VALUE, MEMBER) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER)
 
 #define STATE_ATTR_2SPINNER(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                             L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
@@ -1400,9 +1400,9 @@ prop_state_proxy_source_update(Prop_Data *pd)
    STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
-#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2) \
-   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2) \
-   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2)
+#define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
+   STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+   STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
 
 #define STATE_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, LIST, TOOLTIP, TYPE) \
    STATE_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
@@ -1417,7 +1417,7 @@ prop_state_proxy_source_update(Prop_Data *pd)
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-STATE_ATTR_1CHECK(_("visible"), state, visible)
+STATE_ATTR_1CHECK(_("visible"), state, visible, state)
 STATE_ATTR_2SPINNER(_("min"), state, min_w, min_h, state, 0.0, 9999.0, 1.0, "%.0f", "w:", "px", "h:", "px",
                     _("Minimal size of part width in pixels."), _("Minimal part height in pixels."),
                     1, int, VAL_INT)
@@ -1427,7 +1427,7 @@ STATE_ATTR_2SPINNER(_("max"), state, max_w, max_h, state, -1.0, 9999.0, 1.0, "%.
 STATE_ATTR_2SPINNER(_("align"), state, align_x, align_y, state, 0, 100, 1, NULL, "x:", "%", "y:", "%",
                     _("Part align horizontally"), _("Part align vertically"),
                     100, double, VAL_DOUBLE)
-STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, _("This affects the minimum width calculation."),
+STATE_ATTR_2CHECK(_("fixed"), state, fixed_w, fixed_h, state, _("This affects the minimum width calculation."),
                   _("This affects the minimum height calculation."))
 STATE_ATTR_1COMBOBOX_LIST(_("aspect ratio mode"), state, aspect_pref, edje_aspect_pref,
                           _("The aspect control hints for this object."), unsigned char)
@@ -1502,10 +1502,10 @@ ui_property_state_set(Evas_Object *property, Part *part)
      {
         box = elm_object_content_get(pd_state.frame);
         prop_state_state_update(state);
-        STATE_ATTR_CHECK_UPDATE(state, visible)
+        STATE_ATTR_CHECK_UPDATE(state, visible, state)
         STATE_ATTR_2SPINNER_UPDATE(state, min_w, min_h, state, 1)
         STATE_ATTR_2SPINNER_UPDATE(state, max_w, max_h, state, 1)
-        STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h)
+        STATE_ATTR_2CHECK_UPDATE(state, fixed_w, fixed_h, state)
         STATE_ATTR_2SPINNER_UPDATE(state, align_x, align_y, state, 100)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state, aspect_pref)
         STATE_ATTR_2SPINNER_UPDATE(state, aspect_min, aspect_max, state, 100)
@@ -2789,7 +2789,7 @@ ui_property_state_image_unset(Evas_Object *property)
 #undef pd_image
 
 #define pd_fill pd->state_fill
-STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth)
+STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_origin_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_origin_offset, x, y, "eflete/property/item/relative")
@@ -2895,7 +2895,7 @@ ui_property_state_fill_set(Evas_Object *property)
    else
      {
         prop_item_state_fill_type_update(pd_fill.type, pd);
-        STATE_ATTR_CHECK_UPDATE(state_fill, smooth)
+        STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
         prop_item_state_fill_origin_relative_x_y_update(pd_fill.origin_relative, pd, true);
         prop_item_state_fill_origin_offset_x_y_update(pd_fill.origin_offset, pd, false);
         prop_item_state_fill_size_relative_x_y_update(pd_fill.size_relative, pd, true);

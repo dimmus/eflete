@@ -581,22 +581,23 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE The value of state attribute
+ * @param MEMBER The check member from Prop_Data structure
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE) \
+#define STATE_ATTR_1CHECK_ADD(TEXT, SUB, VALUE, MEMBER) \
 static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                           Prop_Data *pd, \
-                           const char *tooltip) \
+prop_##MEMBER##_##VALUE##_add(Evas_Object *parent, \
+                              Prop_Data *pd, \
+                              const char *tooltip) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   CHECK_ADD(item, pd->SUB.VALUE) \
-   elm_object_style_set(pd->SUB.VALUE, "toggle"); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
-   evas_object_smart_callback_add(pd->SUB.VALUE, "changed", _on_##SUB##_##VALUE##_change, pd); \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE) \
-   elm_layout_content_set(item, NULL, pd->SUB.VALUE); \
+   CHECK_ADD(item, pd->MEMBER.VALUE) \
+   elm_object_style_set(pd->MEMBER.VALUE, "toggle"); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, tooltip); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE, "changed", _on_##MEMBER##_##VALUE##_change, pd); \
+   STATE_ATTR_CHECK_UPDATE(SUB, VALUE, MEMBER) \
+   elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
    return item; \
 }
 
@@ -605,28 +606,30 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @param SUB The prefix of main parameter of drag attribute
  * @param VALUE The first value of state attribute
+ * @param MEMBER The check member from Prop_Data structure
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_CHECK_UPDATE(SUB, VALUE) \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
-                                                                      pd->wm_part->name, \
-                                                                      pd->wm_part->curr_state, \
-                                                                      pd->wm_part->curr_state_value));
+#define STATE_ATTR_CHECK_UPDATE(SUB, VALUE, MEMBER) \
+   elm_check_state_set(pd->MEMBER.VALUE, edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                                                         pd->wm_part->name, \
+                                                                         pd->wm_part->curr_state, \
+                                                                         pd->wm_part->curr_state_value));
 
 /**
  * Macro defines a callback for STATE_ATTR_1CHEACK_ADD.
  *
  * @param SUB The prefix of main parameter of state attribute;
  * @param VALUE The value of state attribute.
+ * @param MEMBER The check member from Prop_Data structure
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE) \
+#define STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE, MEMBER) \
 static void \
-_on_##SUB##_##VALUE##_change(void *data, \
-                             Evas_Object *obj, \
-                             void *ei __UNUSED__) \
+_on_##MEMBER##_##VALUE##_change(void *data, \
+                                Evas_Object *obj, \
+                                void *ei __UNUSED__) \
 { \
    Prop_Data *pd = (Prop_Data *)data; \
    Eina_Bool value = elm_check_state_get(obj); \
@@ -835,27 +838,28 @@ prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
  * @param SUB The prefix of main parameter of state attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
+ * @param MEMBER The check member from Prop_Data structure
  * @param TOOLTIP1 The first spinner tooltip
  * @param TOOLTIP2 The second spinner tooltip
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, TOOLTIP1, TOOLTIP2) \
+#define STATE_ATTR_2CHECK_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
 static Evas_Object * \
-prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
 { \
    PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
-   CHECK_ADD(item, pd->SUB.VALUE1) \
-   elm_object_style_set(pd->SUB.VALUE1, "toggle"); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE1, TOOLTIP1); \
-   evas_object_smart_callback_add(pd->SUB.VALUE1, "changed", _on_##SUB##_##VALUE1##_change, pd); \
-   elm_layout_content_set(item, "swallow.content1", pd->SUB.VALUE1); \
-   CHECK_ADD(item, pd->SUB.VALUE2) \
-   elm_object_style_set(pd->SUB.VALUE2, "toggle"); \
-   elm_object_tooltip_text_set(pd->SUB.VALUE2, TOOLTIP2); \
-   evas_object_smart_callback_add(pd->SUB.VALUE2, "changed", _on_##SUB##_##VALUE2##_change, pd); \
-   elm_layout_content_set(item, "swallow.content2", pd->SUB.VALUE2); \
-   STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2) \
+   CHECK_ADD(item, pd->MEMBER.VALUE1) \
+   elm_object_style_set(pd->MEMBER.VALUE1, "toggle"); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "changed", _on_##MEMBER##_##VALUE1##_change, pd); \
+   elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
+   CHECK_ADD(item, pd->MEMBER.VALUE2) \
+   elm_object_style_set(pd->MEMBER.VALUE2, "toggle"); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "changed", _on_##MEMBER##_##VALUE2##_change, pd); \
+   elm_layout_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
+   STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
    return item; \
 }
 
@@ -865,12 +869,13 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  * @param SUB The prefix of main parameter of drag attribute
  * @param VALUE1 The first value of state attribute
  * @param VALUE2 The second value of state attribute
+ * @param MEMBER The check member from Prop_Data structure
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2) \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE1) \
-   STATE_ATTR_CHECK_UPDATE(SUB, VALUE2)
+#define STATE_ATTR_2CHECK_UPDATE(SUB, VALUE1, VALUE2, MEMBER) \
+   STATE_ATTR_CHECK_UPDATE(SUB, VALUE1, MEMBER) \
+   STATE_ATTR_CHECK_UPDATE(SUB, VALUE2, MEMBER)
 
 /**
  * Macro defines a callback for STATE_ATTR_2CHECK_ADD.
@@ -881,9 +886,9 @@ prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE1) \
-   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2)
+#define STATE_ATTR_2CHECK_CALLBACK(SUB, VALUE1, VALUE2, MEMBER) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE1, MEMBER) \
+   STATE_ATTR_1CHECK_CALLBACK(SUB, VALUE2, MEMBER)
 
 /*****************************************************************************/
 /*                    STATE 1 COMBOBOX LIST CONTROL                          */
