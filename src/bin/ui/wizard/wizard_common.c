@@ -97,6 +97,8 @@ _progress_end(void *data, PM_Project_Result result)
 
         STATUSBAR_PROJECT_PATH(ap, eet_file_get(ap->project->pro));
         STATUSBAR_PROJECT_SAVE_TIME_UPDATE(ap);
+
+        NOTIFY_INFO(3, _("Project '%s' is opened."), pro->name);
      }
 
    ecore_file_recursive_rm(wiew->tmp_dir_path);
