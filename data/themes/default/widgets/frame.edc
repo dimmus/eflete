@@ -635,6 +635,7 @@ group { name: "elm/frame/base/live_view";
          scale: 1;
          description { state: "default" 0.0;
             align: 0.0 0.0;
+            fixed: 1 1;
             min: 0 19;
             max: -1 19;
             fixed: 1 1;
@@ -840,7 +841,8 @@ group { name: "elm/frame/base/live_view";
          type: SWALLOW;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 0 0;
+            fixed: 1 1;
+            min: 0 19;
             max: 18 19;
             rel1 {
                relative: 1.0 0.0;
@@ -885,8 +887,8 @@ group { name: "elm/frame/base/live_view";
          type: SPACER;
          description { state: "default" 0.0;
             align: 1.0 1.0;
-            min: 15 7;
-            max: 15 7;
+            min: 15 0;
+            max: 15 0;
             rel1.to: "base";
             rel2 {
                relative: 0.0 0.0;
@@ -902,15 +904,18 @@ group { name: "elm/frame/base/live_view";
             max: 7 12;
             rel1 {
                relative: 0.0 1.0;
-               to: "bevel_upper_left";
+               to_x: "bevel_upper_left";
+               to_y: "elm.swallow.check";
             }
          }
          description { state: "collapsed" 0.0;
             align: 0.0 0.0;
-            FIXED_SIZE(7, 2);
+            min: 7 4;
+            max: 7 4;
             rel1 {
                relative: 0.0 1.0;
-               to: "bevel_upper_left";
+               to_x: "bevel_upper_left";
+               to_y: "elm.swallow.check";
             }
          }
       }
@@ -931,13 +936,13 @@ group { name: "elm/frame/base/live_view";
       part { name: "disabler";
          type: RECT;
          description { state: "default" 0.0;
-            color: 0 0 0 0;
+            color: INVISIBLE_COLOR;
             visible: 0;
             rel1.to: "event";
             rel2.to: "event";
          }
          description { state: "visible" 0.0;
-            color: 0 0 0 0;
+            color: INVISIBLE_COLOR;
             rel1.to: "event";
             rel2.to: "event";
          }
