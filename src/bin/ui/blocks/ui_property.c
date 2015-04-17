@@ -131,8 +131,8 @@ struct _Prop_Data
       Evas_Object *max;
       Evas_Object *fit;
       Evas_Object *text_source; /* not implemented in yet the edje */
-      Evas_Object *color2;
-      Evas_Object *color3;
+      Evas_Object *color2, *color2_obj;
+      Evas_Object *color3, *color3_obj;
       Evas_Object *effect;
    } state_text;
    struct {
@@ -1881,8 +1881,8 @@ ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_text_align, x, y, "eflete/pr
 ITEM_2CHECK_STATE_CREATE(_("max"), state_text_max, x, y)
 ITEM_2CHECK_STATE_CREATE(_("min"), state_text_min, x, y)
 ITEM_2CHECK_STATE_CREATE(_("fit"), state_text_fit, x, y)
-ITEM_COLOR_STATE_CREATE(_("shadow color"), state, color3)
-ITEM_COLOR_STATE_CREATE(_("outline color"), state, color2)
+STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
+STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
 ITEM_1COMBOBOX_STATE_CREATE(SOURCE, _("source"), state_text, source, styles)
 ITEM_1COMBOBOX_STATE_CREATE(TEXT_SOURCE, _("text source"), state_text, text_source, styles)
 
@@ -2241,6 +2241,7 @@ ui_property_state_text_set(Evas_Object *property)
          pd_text.size = prop_item_state_text_size_add(box, pd,
                            0.0, 128.0, 1.0, "%.0f pt",
                            _("Change text font's size.'"));
+         elm_box_pack_end(box, pd_text.size);
          pd_text.align = prop_item_state_text_align_x_y_add(box, pd,
                             0, 100, 1, NULL,
                             "x:", "%", "y:", "%",
@@ -2249,6 +2250,7 @@ ui_property_state_text_set(Evas_Object *property)
                             _("Text vertical align. "
                             "0.0 = top  1.0 = bottom"),
                             true);
+         elm_box_pack_end(box, pd_text.align);
          pd_text.min = prop_item_state_text_min_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
@@ -2256,6 +2258,7 @@ ui_property_state_text_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the minimum size of the container to be equal to\t"
                            "the minimum size of the text."));
+         elm_box_pack_end(box, pd_text.min);
          pd_text.max = prop_item_state_text_max_x_y_add(box, pd,
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
@@ -2263,36 +2266,30 @@ ui_property_state_text_set(Evas_Object *property)
                            _("When any of the parameters is enabled it forces \t"
                            "the maximum size of the container to be equal to\t"
                            "the maximum size of the text."));
+         elm_box_pack_end(box, pd_text.max);
          pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
                             _("Causes the part to use the text properties\t"
                             "(like font and size) of another part\t"
                             "and update them as they change."));
+         elm_box_pack_end(box, pd_text.source);
          pd_text.text_source = prop_item_state_text_text_source_add(box, pd, NULL,
                                _("Causes the part to display the text content of \t"
                                "another part and update them as they change."));
+         elm_box_pack_end(box, pd_text.text_source);
          pd_text.ellipsis = prop_item_state_text_ellipsis_add(box, pd,
                             _("Cut text if biggest then part's area"
                             "0.0 = fix the left side  1.0 = right side"));
+         elm_box_pack_end(box, pd_text.ellipsis);
          pd_text.fit = prop_item_state_text_fit_x_y_add(box, pd,
                           _("Resize the text for it to fit in it's container by X axis"),
                           _("Resize the text for it to fit in it's container by Y axis"));
-         pd_text.color2 = prop_item_state_color2_add(box, pd,
-                            _("Text shadow color."));
-         pd_text.color3 = prop_item_state_color3_add(box, pd,
-                            _("Text outline color."));
-         pd_text.effect = prop_item_state_effect_add(box, pd);
-
-         elm_box_pack_end(box, pd_text.size);
-         elm_box_pack_end(box, pd_text.align);
-         elm_box_pack_end(box, pd_text.min);
-         elm_box_pack_end(box, pd_text.max);
-         elm_box_pack_end(box, pd_text.source);
-         elm_box_pack_end(box, pd_text.text_source);
-         elm_box_pack_end(box, pd_text.ellipsis);
          elm_box_pack_end(box, pd_text.fit);
-         elm_box_pack_end(box, pd_text.color2);
-         elm_box_pack_end(box, pd_text.color3);
+         pd_text.effect = prop_item_state_effect_add(box, pd);
          elm_box_pack_end(box, pd_text.effect);
+         item = prop_state_color3_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_color2_add(box, pd);
+         elm_box_pack_end(box, item);
 
          elm_box_pack_end(prop_box, text_frame);
          pd_text.frame = text_frame;
@@ -2309,8 +2306,8 @@ ui_property_state_text_set(Evas_Object *property)
         prop_item_state_text_text_source_update(pd_text.text_source, pd);
         prop_item_state_text_ellipsis_update(pd_text.ellipsis, pd);
         prop_item_state_text_fit_x_y_update(pd_text.fit, pd);
-        prop_item_state_color2_update(pd_text.color2, pd);
-        prop_item_state_color3_update(pd_text.color3, pd);
+        prop_state_color2_update(pd);
+        prop_state_color3_update(pd);
         prop_item_state_effect_update(pd_text.effect, pd);
         elm_box_pack_end(prop_box, pd_text.frame);
         evas_object_show(pd_text.frame);
