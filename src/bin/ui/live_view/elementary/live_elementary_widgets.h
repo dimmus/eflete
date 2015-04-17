@@ -134,6 +134,9 @@ Evas_Object *
 widget_separator_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
+widget_slider_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
 widget_spinner_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
