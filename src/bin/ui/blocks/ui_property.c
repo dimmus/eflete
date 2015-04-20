@@ -890,9 +890,6 @@ prop_item_part_name_add(Evas_Object *parent,
    return item;
 }
 
-#define ITEM_ATTR_1CHECK_UPDATE(SUB, VALUE) \
-   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
-
 static void
 prop_part_clip_to_update(Prop_Data *pd)
 {

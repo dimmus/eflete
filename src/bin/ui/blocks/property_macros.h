@@ -205,6 +205,17 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
 }
 
 /**
+ * Macro for function that updates a value of controls of the PART_ATTR_1CHECK_ADD macro.
+ *
+ * @paramram SUB The prefix of main name of part attribute
+ * @paramram VALUE The value(name) of part attribute
+ *
+ * @ingroup Property_Macro
+ */
+#define ITEM_ATTR_1CHECK_UPDATE(SUB, VALUE) \
+   elm_check_state_set(pd->SUB.VALUE, edje_edit_part_##VALUE##_get(pd->wm_style->obj, pd->wm_part->name));
+
+/**
  * Macro defines a callback for PART_ATTR_1CHECK_ADD.
  *
  * @param SUB The prefix of main parameter of part attribute;
