@@ -1188,11 +1188,13 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param SUB The prefix of main parameter
  * @param VALUE The 'source' value (ex: text_source)
  * @param MEMBER The entry member from Prop_Data structure
- * @param EXCLUDE_PART The part type that be excluded from dropdown list
+ * @param PART_TYPE The part type that be excluded from dropdown list or
+ *        only includeted to dropdown list, depending on the argument COMPARE
+ * @param COMPARE The compare argument
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_SOURCE_UPDATE(SUB, VALUE, MEMBER, EXCLUDE_PART) \
+#define STATE_ATTR_SOURCE_UPDATE(SUB, VALUE, MEMBER, EXCLUDE_PART, COMPARE) \
 static void \
 prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 { \
@@ -1208,7 +1210,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
    ewe_combobox_text_set(pd->MEMBER.VALUE, value ? value : _("None")); \
    EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part) \
      { \
-        if ((part != pd->wm_part) && (part->type != EXCLUDE_PART)) \
+        if ((part != pd->wm_part) && (part->type COMPARE EXCLUDE_PART)) \
           ewe_combobox_item_add(pd->MEMBER.VALUE, part->name); \
      } \
    edje_edit_string_free(value); \
