@@ -69,7 +69,7 @@ EFLETE_TEST(live_view_property_style_unset_test_p)
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
    live_view_prop = live_view_property_add(parent, false);
-   live_view_property_style_set(live_view_prop, parent, style, "win");
+   live_view_property_style_set(live_view_prop, parent, style, "win", parent);
 
    res = live_view_property_style_unset(live_view_prop);
    ck_assert_msg(res == EINA_TRUE, "Failed to unset style from live view.");
@@ -121,7 +121,7 @@ EFLETE_TEST(live_view_property_style_unset_test_n1)
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
    wm_style_data_load(style, e, mmap_file);
    live_view_prop = elm_bg_add(parent);
-   live_view_property_style_set(live_view_prop, parent, style, "win");
+   live_view_property_style_set(live_view_prop, parent, style, "win", parent);
 
    res = live_view_property_style_unset(parent);
    ck_assert_msg(res == EINA_FALSE, "Style was unset but shouldn't.");
