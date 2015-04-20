@@ -104,6 +104,16 @@ const char *top_levels[] = { "collections",
      } \
 }
 
+static Eina_Bool
+_project_dev_file_create(Project *pro)
+{
+   Eina_Bool result;
+
+   result = ecore_file_cp(pro->saved_edj, pro->dev);
+   DBG("Create the .dev file.");
+   return result;
+}
+
 static Eet_Data_Descriptor *eed_project = NULL;
 
 static void
@@ -117,7 +127,9 @@ _project_descriptor_init(void)
                                              "Project", sizeof(Project));
    eed_project = eet_data_descriptor_stream_new(&eddc);
 
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "version", version, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "dev", dev, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "saved_edj", saved_edj, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "develop_path", develop_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eed_project, Project, "release_options", release_options, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(eed_project, Project, "images", res.images);
@@ -217,8 +229,10 @@ _project_files_create(Project_Thread *worker)
    pro = (Project *)mem_calloc(1, sizeof(Project));
    WORKER_LOCK_TAKE;
       folder_path = eina_stringshare_printf("%s/%s", worker->path, worker->name);
+      pro->version = PROJECT_FILE_VERSION;
       pro->name = eina_stringshare_add(worker->name);
       pro->dev = eina_stringshare_printf("%s/%s.dev", folder_path, worker->name);
+      pro->saved_edj = eina_stringshare_printf("%s/%s.edj", folder_path, worker->name);
       pro->develop_path = eina_stringshare_printf("%s/develop", folder_path);
 
       pro_path = eina_stringshare_printf("%s/%s.pro", folder_path, worker->name);
@@ -241,6 +255,7 @@ _project_files_create(Project_Thread *worker)
         ERR("Could't create a .pro file! ")
         eina_stringshare_del(pro->name);
         eina_stringshare_del(pro->dev);
+        eina_stringshare_del(pro->saved_edj);
         eina_stringshare_del(pro->develop_path);
         free(pro);
         pro = NULL;
@@ -280,18 +295,18 @@ _copy_meta_data_to_pro(Project_Thread *worker)
 }
 
 static Eina_Bool
-_project_dev_file_copy(Project_Thread *worker)
+_project_edj_file_copy(Project_Thread *worker)
 {
    Eina_Stringshare *src, *dst;
    Eina_Bool result;
 
    WORKER_LOCK_TAKE;
       src = eina_stringshare_ref(worker->edj);
-      dst = eina_stringshare_ref(worker->project->dev);
+      dst = eina_stringshare_ref(worker->project->saved_edj);
    WORKER_LOCK_RELEASE;
    PROGRESS_SEND(_("Importing..."));
       result = ecore_file_cp(src, dst);
-   DBG("Copy the .dev file to project folder.");
+   DBG("Copy the .edj file to project folder.");
    eina_stringshare_del(src);
    eina_stringshare_del(dst);
    return result;
@@ -313,9 +328,9 @@ _project_linked_images_copy(Project_Thread *worker)
 
    ee = ecore_evas_buffer_new(0, 0);
    e = ecore_evas_get(ee);
-   list = edje_file_collection_list(worker->project->dev);
+   list = edje_file_collection_list(worker->project->saved_edj);
    edje_edit_obj = edje_edit_object_add(e);
-   if (!edje_object_file_set(edje_edit_obj, worker->project->dev, eina_list_data_get(list)))
+   if (!edje_object_file_set(edje_edit_obj, worker->project->saved_edj, eina_list_data_get(list)))
      {
         evas_object_del(edje_edit_obj);
         return false;
@@ -387,8 +402,9 @@ _project_import_edj(void *data,
    WORKER_LOCK_RELEASE;
    THREAD_TESTCANCEL;
    PROGRESS_SEND("%s", _("Importing..."));
-   _project_dev_file_copy(worker);
+   _project_edj_file_copy(worker);
    _copy_meta_data_to_pro(worker);
+   _project_dev_file_create(worker->project);
    WORKER_LOCK_TAKE;
       worker->project->mmap_file = eina_file_open(worker->project->dev, false);
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
@@ -525,11 +541,12 @@ _project_import_edc(void *data,
       worker->project->pro = eet_open(path_pro, EET_FILE_MODE_READ_WRITE);
    WORKER_LOCK_RELEASE;
    PROGRESS_SEND("%s", _("Importing..."));
-   _project_dev_file_copy(worker);
+   _project_edj_file_copy(worker);
    ecore_file_recursive_rm(tmp_dirname);
    eina_tmpstr_del(tmp_dirname);
    _project_linked_images_copy(worker);
    _copy_meta_data_to_pro(worker);
+   _project_dev_file_create(worker->project);
    WORKER_LOCK_TAKE;
       worker->project->mmap_file = eina_file_open(worker->project->dev, false);
       worker->project->widgets = wm_widgets_list_new(worker->project->dev);
@@ -598,8 +615,8 @@ pm_project_open(const char *path)
 {
    Eet_File *ef;
    Project *pro = NULL;
-   char *dev;
-   int dev_len;
+   char *tmp;
+   int tmp_len;
    struct _Project_Lock
      {
        Project *project;
@@ -620,14 +637,30 @@ pm_project_open(const char *path)
    if (!pro_lock->project) goto error;
 
    /* updating .dev file path */
-   dev = strdup(path);
-   dev_len = strlen(dev);
-   dev[dev_len - 3] = 'd';
-   dev[dev_len - 2] = 'e';
-   dev[dev_len - 1] = 'v';
-   eina_stringshare_replace(&pro_lock->project->dev, dev);
-   free(dev);
+   tmp = strdup(path);
+   tmp_len = strlen(tmp);
+   tmp[tmp_len - 3] = 'd';
+   tmp[tmp_len - 2] = 'e';
+   tmp[tmp_len - 1] = 'v';
+   eina_stringshare_replace(&pro_lock->project->dev, tmp);
+   free(tmp);
+   /* updating .edj file path */
+   tmp = strdup(path);
+   tmp[tmp_len - 3] = 'e';
+   tmp[tmp_len - 2] = 'd';
+   tmp[tmp_len - 1] = 'j';
+   eina_stringshare_replace(&pro_lock->project->saved_edj, tmp);
+   free(tmp);
 
+   /* checking for older project versions and upgrading them version-by-version */
+   if (pro_lock->project->version < 2) /* upgrade to version 2 */
+     {
+        WARN(_("Old project version. Project files were updated."));
+        ecore_file_mv(pro_lock->project->dev, pro_lock->project->saved_edj);
+        pro_lock->project->version = 2;
+     }
+   /* TODO: Add crash recovery prompt here */
+   _project_dev_file_create(pro_lock->project);
    pro_lock->project->mmap_file = eina_file_open(pro_lock->project->dev, false);
    eina_lock_take(&pro_lock->mutex);
 
@@ -646,42 +679,6 @@ error:
    free(pro_lock);
    return pro;
 }
-
-static Eina_Bool
-_backup_progress_cb(void *data,
-                    unsigned long long done,
-                    unsigned long long total)
-{
-   Project_Thread *worker;
-   short int percentage;
-
-   worker = (Project_Thread *)data;
-
-   percentage = (short int)(done / total) * 100;
-   PROGRESS_SEND(_("Backuping... %u"), percentage);
-
-   return true;
-}
-
-static Eina_Bool
-_project_backup(Project_Thread *worker)
-{
-   Eina_Bool result;
-   Eina_Stringshare *src, *dst;
-
-   WORKER_LOCK_TAKE;
-      src = worker->project->dev;
-   WORKER_LOCK_RELEASE;
-   dst = eina_stringshare_printf("%s.backup", worker->project->dev);
-   result = eina_file_copy(src, dst,
-                           EINA_FILE_COPY_PERMISSION | EINA_FILE_COPY_XATTR,
-                           _backup_progress_cb, worker);
-
-   DBG("Make the backup");
-   eina_stringshare_del(dst);
-   return result;
-}
-
 
 static void *
 _project_save(void *data,
@@ -720,6 +717,11 @@ _project_save(void *data,
              }
         }
    eina_file_close(worker->project->mmap_file);
+
+   /* saving */
+   ecore_file_cp(worker->project->dev, worker->project->saved_edj);
+
+   /* reloading dev*/
    worker->project->mmap_file = eina_file_open(worker->project->dev, false);
    if (worker->project->current_style)
      {
@@ -729,9 +731,6 @@ _project_save(void *data,
      }
 
    WORKER_LOCK_RELEASE;
-
-   PROGRESS_SEND("Making the project backup...");
-   _project_backup(worker);
 
    PROGRESS_SEND("Saved.");
    END_SEND(PM_PROJECT_SUCCESS);
@@ -784,6 +783,8 @@ pm_project_close(Project *project)
 
    eet_close(project->pro);
    eina_file_close(project->mmap_file);
+   ecore_file_unlink(project->dev);
+
    eina_stringshare_del(project->name);
    eina_stringshare_del(project->dev);
    eina_stringshare_del(project->develop_path);
@@ -1426,8 +1427,6 @@ _develop_export(void *data,
 
    PROGRESS_SEND(_("Export edj..."));
    WORKER_LOCK_TAKE;
-      if (worker->project->changed)
-        _project_backup(worker);
 
       GET_OBJ(worker->project, edje_edit_obj);
       edje_edit_save_all(edje_edit_obj);
