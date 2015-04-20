@@ -1180,6 +1180,41 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 }
 
 /*****************************************************************************/
+/*                       STATE 1COMBOBOX SOURCE UPDATE                       */
+/*****************************************************************************/
+/**
+ * Macro defines a function that updates any 'source' attribute control macro.
+ *
+ * @param SUB The prefix of main parameter
+ * @param VALUE The 'source' value (ex: text_source)
+ * @param MEMBER The entry member from Prop_Data structure
+ * @param EXCLUDE_PART The part type that be excluded from dropdown list
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_SOURCE_UPDATE(SUB, VALUE, MEMBER, EXCLUDE_PART) \
+static void \
+prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
+{ \
+   Part *part; \
+   Eina_Inlist *list_n = NULL; \
+   Eina_Stringshare *value; \
+   ewe_combobox_items_list_free(pd->MEMBER.VALUE, true); \
+   value = edje_edit_##SUB##_##VALUE##_get(pd->wm_style->obj, \
+                                           pd->wm_part->name, \
+                                           pd->wm_part->curr_state, \
+                                           pd->wm_part->curr_state_value); \
+   ewe_combobox_item_add(pd->MEMBER.VALUE, _("None")); \
+   ewe_combobox_text_set(pd->MEMBER.VALUE, value ? value : _("None")); \
+   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part) \
+     { \
+        if ((part != pd->wm_part) && (part->type != EXCLUDE_PART)) \
+          ewe_combobox_item_add(pd->MEMBER.VALUE, part->name); \
+     } \
+   edje_edit_string_free(value); \
+}
+
+/*****************************************************************************/
 /*                          STATE 1 ENTRY CONTROL                            */
 /****************************************************************************/
 /**
