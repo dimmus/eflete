@@ -258,7 +258,7 @@ _prog_sequence_smart_calculate(Evas_Object *o)
              if (rp->name == name) break;
           }
 
-        /* TODO: simplify after replacing rectangles with secialized objects */
+        TODO("simplify after replacing rectangles with secialized objects")
         evas_object_geometry_set(rp->obj,
                                  x + (rp->start_time + rp->delay) * PIX_PER_SEC + LABELS_W,
                                  y + ((rp->length?0.1:0.25) + line_num) * PIX_PER_LINE + LABELS_H,
@@ -316,7 +316,7 @@ _item_create(Prog_Sequence_Smart_Data *sd, const char* program, double time)
    rp->delay = edje_edit_program_in_from_get(sd->style->obj, program);
    rp->length = edje_edit_program_transition_time_get(sd->style->obj, program);
 
-   /* TODO: replace with special object */
+   TODO("replace with special object")
    rp->obj = evas_object_rectangle_add(sd->e);
    evas_object_smart_member_add(rp->obj, sd->obj);
    evas_object_show(rp->obj);

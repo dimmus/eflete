@@ -31,8 +31,8 @@
 #define FRAME_LIVE_VIEW_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE, SCROLLER) \
 FRAME_ADD(PARENT, FRAME, AUTOCOLLAPSE, TITLE) \
 evas_object_smart_callback_add(FRAME, "clicked", _on_frame_click, SCROLLER);
-
-/* TODO: remove this hack after scroller would be fixed
+TODO("remove this hack after scroller would be fixed")
+/*
  * Hack start
  */
 static void

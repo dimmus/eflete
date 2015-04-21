@@ -67,7 +67,8 @@ _ewe_tabs_evas_object_smart_add(Eo *obj,
    elm_box_align_set(sd->items_box, 0.0, 0.5);
    sd->items = NULL;
 
-   /* TODO: add correct style handling
+   TODO("add correct style handling")
+   /*
    if (!elm_layout_theme_set(obj, "label", "base", elm_widget_style_get(obj)))
      CRI("Failed to set layout!");
    */
@@ -124,7 +125,7 @@ _item_add_internal(Evas_Object           *obj,
    ret->disabled = EINA_FALSE;
    if (!style) style = "default";
    ret->style = style;
-   ret->head = elm_layout_add(obj); /* TODO: find out howto replace this elm_layout with edje_object*/
+   ret->head = elm_layout_add(obj); TODO("find out howto replace this elm_layout with edje_object")
    evas_object_smart_member_add(ret->head, obj);
    if (sd->horizontal)
      eina_strbuf_append_printf(buf, "ewe/tabs/item/head/horizontal/%s", style);

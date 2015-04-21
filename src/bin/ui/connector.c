@@ -54,7 +54,7 @@ _on_ws_part_unselect(void *data,
    ui_widget_list_part_selected_set(ui_block_widget_list_get(ap), part, false);
    ui_states_list_data_unset(ui_block_state_list_get(ap));
    ui_property_part_unset(ui_block_property_get(ap));
-   /*TODO: in future it will be moved to block api. */
+   TODO("in future it will be moved to block api.")
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
 }
 
@@ -563,7 +563,7 @@ ui_part_back(App_Data *ap)
    evas_object_smart_callback_del_full(st_list, "sl,signal,select", _signal_select, ap);
    ui_signal_list_data_unset(ui_block_signal_list_get(ap));
    ui_block_content_visible(ap->block.right_bottom, false);
-   /*TODO: in future it will be moved to block api. */
+   TODO("in future it will be moved to block api.")
    elm_object_signal_emit(ap->block.bottom_left, "title,content,hide", "eflete");
    live_view_widget_style_unset(ap->live_view);
 
@@ -1025,7 +1025,7 @@ project_changed(void)
 
 /******************************************************************************/
 
-/*TODO: I think, this functionality need move to dialogs */
+TODO("I think, this functionality need move to dialogs")
 static void
 _replace_cb(void *data,
             Evas_Object *obj __UNUSED__,
@@ -1371,7 +1371,7 @@ project_export_edc_project(void)
 }
 
 /*************************** Close request popup ******************************/
-/*TODO: I think, this functionality need move to dialogs */
+TODO("I think, this functionality need move to dialogs")
 static void
 _discard_cb(void *data,
             Evas_Object *obj __UNUSED__,

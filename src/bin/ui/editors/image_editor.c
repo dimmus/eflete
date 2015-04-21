@@ -730,7 +730,7 @@ _on_button_delete_clicked_cb(void *data,
              snprintf(buf + symbs, BUFF_MAX - symbs, _("<br>group: %s<br>part: %s<br>state: \"%s\" %2.1f"),
                       item->group, item->part, item->state.name, item->state.value);
              symbs+= strlen(name);
-             break; //TODO: remove this break after warning style remake
+             break; TODO("remove this break after warning style remake")
           }
           edje_edit_image_usage_list_free(used_in);
         NOTIFY_WARNING("%s", buf);
@@ -901,7 +901,7 @@ _image_editor_gengrid_group_items_add(Image_Editor *img_edit)
    img_edit->group_items.linked =
       elm_gengrid_item_append(img_edit->gengrid, ggic,
       eina_stringshare_add(_("<b>Linked</b>")), NULL, NULL);
-   //TODO: Add View group with images that are not included to the edj-file yet.
+   TODO("Add View group with images that are not included to the edj-file yet.")
 
    elm_gengrid_item_class_free(ggic);
 }

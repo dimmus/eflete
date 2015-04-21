@@ -149,7 +149,7 @@ static const char *style_table[][2] = {{"font", NULL},
                                        {NULL, NULL},
                                        {"direction", NULL}};
 
-//TODO: <number>, <number>% for align
+TODO("<number>, <number>% for align")
 static const char *font_horizontal_align[] = { N_("auto"),
                                                N_("center"),
                                                N_("middle"),
@@ -157,7 +157,7 @@ static const char *font_horizontal_align[] = { N_("auto"),
                                                N_("right"),
                                                NULL};
 
-//TODO: <number>, <number>% for align
+TODO("<number>, <number>% for align")
 static const char *font_horizontal_valign[] = { N_("top"),
                                                 N_("bottom"),
                                                 N_("middle"),
@@ -416,8 +416,7 @@ _on_st_add_bt_ok(void *data,
    evas_object_del(POPUP.dialog);
    POPUP.dialog = NULL;
 
-   //TODO: Need refactoring after callback logic for modal window
-   //      implementation
+   TODO("Need refactoring after callback logic for modal window implementation")
 
    elm_genlist_item_selected_set(glit_style, true);
    elm_genlist_item_bring_in(glit_style, ELM_GENLIST_ITEM_SCROLLTO_IN);
@@ -1587,7 +1586,7 @@ _glow_tab_update(Style_Editor *style_edit, Evas_Object *tabs, Ewe_Tabs_Item *it,
         style_copy = mem_malloc(strlen(style) + 1);
         strcpy(style_copy, style);
         token = strtok(style_copy, ",");
-        /* TODO: replace with eina_str_split_full */
+        TODO("replace with eina_str_split_full")
         while (token)
           {
              if (count == 0)

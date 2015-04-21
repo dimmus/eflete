@@ -188,7 +188,7 @@ _on_animator_close(void *data,
    App_Data *ap = app_data_get();
    Animator *animator = (Animator*)data;
 
-   /* TODO: change this after discarding changes would be possible */
+   TODO("change this after discarding changes would be possible")
    _on_animator_save(ap, NULL, NULL);
 
    program_editor_free(animator->program_editor);

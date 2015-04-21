@@ -68,7 +68,7 @@ typedef struct _Geom Groupedit_Geom;
 Evas_Object *
 groupedit_add(Evas_Object *parent);
 
-/*TODO: aspect for groupedit */
+TODO("aspect for groupedit")
 //Eina_Bool
 //ws_groupedit_aspect_set(Evas_Object *obj, double x, double y);
 

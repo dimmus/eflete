@@ -639,7 +639,7 @@ _trans_entries_set(Program_Editor *prog_edit)
            TRANS_VAL_UPDATE(value2, transition.entry3);
            break;
         }
-      case EDJE_TWEEN_MODE_CUBIC_BEZIER: // TODO: implement
+      case EDJE_TWEEN_MODE_CUBIC_BEZIER: TODO("implement")
       case EDJE_TWEEN_MODE_NONE:
       default:
         {

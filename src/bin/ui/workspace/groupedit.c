@@ -291,7 +291,7 @@ groupedit_edit_object_set(Evas_Object *obj,
    /* check input edit_obj, if it not a edje object return false */
    if ((!edit_obj) || (strcmp("edje", evas_object_type_get(edit_obj))))
      {
-        /* TODO: add error message */
+        TODO("add error message")
         return false;
      }
    if ((!file) || (!ecore_file_exists(file))) return false;
@@ -302,7 +302,7 @@ groupedit_edit_object_set(Evas_Object *obj,
     * part state. so set the object opacity 0 - object invisible and calculate
     * geometry. */
    evas_object_color_set(edit_obj, 0, 0, 0, 0);
-   /*TODO: set the state for all parts to default 0.0 */
+   TODO("set the state for all parts to default 0.0")
    sd->edit_obj = edit_obj;
    evas_object_smart_member_add(sd->edit_obj, obj);
    sd->edit_obj_file = file;

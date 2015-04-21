@@ -659,7 +659,7 @@ pm_project_open(const char *path)
         ecore_file_mv(pro_lock->project->dev, pro_lock->project->saved_edj);
         pro_lock->project->version = 2;
      }
-   /* TODO: Add crash recovery prompt here */
+   TODO("Add crash recovery prompt here")
    _project_dev_file_create(pro_lock->project);
    pro_lock->project->mmap_file = eina_file_open(pro_lock->project->dev, false);
    eina_lock_take(&pro_lock->mutex);

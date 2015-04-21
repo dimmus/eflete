@@ -153,7 +153,7 @@ CHANGE_ENTRY_CALLBACK(home, 5)
 #undef CHANGE_ENTRY_CALLBACK
 #undef CHANGE_CALLBACK
 
-/* TODO: add field name into Profile struct  */
+TODO("add field name into Profile struct")
 
 static void
 _general_form(Preferences *preference)

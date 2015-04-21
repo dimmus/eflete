@@ -234,10 +234,10 @@ _del_ok_clicked(void *data,
 
    char **arr = eina_str_split(state, " ", 2);
 
-   /*TODO: need to check the program, some program can use the given state.
-     If given state used in programs - show dialog window with the question:
-     'This state used in the program(s). Are you sure you want to delete
-     %state name%' and delete the programs or some params from the program */
+   TODO("need to check the program, some program can use the given state."
+        "If given state used in programs - show dialog window with the question:"
+        "'This state used in the program(s). Are you sure you want to delete"
+        "%state name%' and delete the programs or some params from the program")
    if (workspace_edit_object_part_state_del(workspace, part->name, arr[0], atof(arr[1])))
      {
         ap->project->current_style->isModify = true;

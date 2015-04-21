@@ -20,14 +20,7 @@
 #include "wizard.h"
 #include "wizard_common.h"
 
-/*
-                          TODO:
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!   This submodule required to be refactored ASAP,  !!
- !!    after theme specification will be released.    !!
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-*/
+TODO(" This submodule required to be refactored ASAP, after theme specification will be released.")
 
 struct _Item_Mod_Callback_Data
 {

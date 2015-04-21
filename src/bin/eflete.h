@@ -44,7 +44,8 @@
    #define NGETTEXT(single, plur, n) (((n)==1)? (single):(plur))
 #endif /* localization */
 
-/* TODO: delete it, and remake all strings to eina_stringshare or eina_strbuff */
+#include "common_macro.h"
+TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #ifndef PATH_MAX
    #define PATH_MAX 4096
 #endif

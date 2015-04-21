@@ -168,10 +168,8 @@ _mw_create(Evas_Object *parent,
    evas_object_focus_set(mw, EINA_TRUE);
 
    BUTTON_ADD(mw, bt_close, "");
-   /*TODO: uncomment it when focus will be adequate
-     evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN,
-                                    _on_key_down, bt_close);
-   */
+   TODO("uncomment it when focus will be adequate"
+        "evas_object_event_callback_add(mw, EVAS_CALLBACK_KEY_DOWN, _on_key_down, bt_close);")
 
    evas_object_data_set(mw, FUNC_CLOSE, func);
    evas_object_data_set(mw, FUNC_DATA, data);

@@ -31,7 +31,7 @@ widget_calendar_create(Evas_Object *parent, const Style *style)
       broken down into its components (see "time.h").
       {sec, min, hour, day of the month, month, year since 1900,
       days since Sunday, days since January 1, Daylight Saving Time flag} */
-   /* TODO: fix warnings on windows */
+   TODO("fix warnings on windows")
    struct tm saturday = {0, 0, 0, 0, 1, 114, 6, -1, 0, 0, NULL};
    elm_calendar_mark_add(object, "checked", &saturday,
                                 ELM_CALENDAR_WEEKLY);

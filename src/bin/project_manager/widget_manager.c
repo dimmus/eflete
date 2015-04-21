@@ -614,7 +614,7 @@ wm_widgets_list_new(const char *file)
              if (widget_name)
                free(widget_name);
 
-             /* TODO: change logic here on refactor to make this check unnecessary!! */
+             TODO("change logic here on refactor to make this check unnecessary!!")
              if (widget_name_next != &empty)
                free(widget_name_next);
           }

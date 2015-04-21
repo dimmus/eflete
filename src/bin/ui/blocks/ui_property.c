@@ -32,8 +32,8 @@
 
 #define PROP_DATA "prop_data"
 
-/* TODO: I dont know why this regex not work properly in the ewe entry.
- * It test in the elm_entry - works good, in online checkers - work */
+TODO("I dont know why this regex not work properly in the ewe entry."
+     "It test in the elm_entry - works good, in online checkers - work")
 #define PROPERTY_REGEX_STATE_FONT "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?"
 
 #define PROP_DATA_GET(ret) \
@@ -364,7 +364,8 @@ _on_spinner_mouse_wheel(void *data __UNUSED__,
    mev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 }
 
-/* TODO: remove this hack after scroller would be fixed
+TODO("remove this hack after scroller would be fixed")
+/*
  * Hack start
  */
 static void

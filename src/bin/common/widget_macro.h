@@ -24,8 +24,8 @@
 
 #define FS_TITLE "fs_title"
 
+TODO("see large comment below")
 /**
- * TODO:
  * ITEM_ADD use old kind of adding items and style that looks like
  * Add layout with name "eflete/property/item/swallow".
  * This is old kind of layout that is commonly used across whole project.

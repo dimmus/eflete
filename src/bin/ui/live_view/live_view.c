@@ -176,10 +176,10 @@ live_view_widget_style_set(Live_View *live, Project *project, Style *style)
         live_view_theme_update(live, project);
         live_view_property_style_set(live->property, live->object, style, "edje", live->parent);
      }
-   /* TODO: reapply swallows/texts */
+   TODO("reapply swallows/texts")
    evas_object_show(live->live_view);
    evas_object_show(live->object);
-   /* TODO: reapply comtainer size and position */
+   TODO("reapply comtainer size and position")
    container_content_set(live->live_view, live->object);
 
    elm_layout_signal_emit(live->layout, "live_view,show", "eflete");

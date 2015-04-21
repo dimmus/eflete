@@ -42,7 +42,7 @@
 #include "logger.h"
 #include <Eet.h>
 
-/* TODO: don't forget to update on major changes */
+/* don't forget to update on major changes */
 #define PROJECT_FILE_VERSION 2
 
 typedef struct _Enventor_Data Enventor_Data;

@@ -111,7 +111,7 @@ _progress_end(void *data, PM_Project_Result result)
      {
         if (wiew->progress_log)
           {
-             // TODO: add new style of notify with align to the left and smth like "IMPORT ERROR" header
+             TODO("add new style of notify with align to the left and smth like \"IMPORT ERROR\" header")
              NOTIFY_ERROR(_("Errors occured on importing: <br><br>%s"),
                           eina_strbuf_string_get(wiew->progress_log));
           }
@@ -243,7 +243,7 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
      }
    if (!ecore_file_is_dir(elm_entry_entry_get(wiew->path)))
      {
-        //TODO: create folder for project if user entered path that does not exist yet
+        TODO("create folder for project if user entered path that does not exist yet")
         NOTIFY_WARNING(_("Wrong path to the project!<br>"
                          "Please path to existing folder."));
         return false;

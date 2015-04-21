@@ -308,7 +308,7 @@ ui_menu_add(App_Data *ap)
 
    toolbar = elm_toolbar_add(ap->win);
    elm_toolbar_shrink_mode_set(toolbar, ELM_TOOLBAR_SHRINK_MENU);
-   /*TODO: for this select mode need new style */
+   TODO("for this select mode need new style")
    elm_toolbar_select_mode_set(toolbar, ELM_OBJECT_SELECT_MODE_NONE);
    elm_toolbar_align_set(toolbar, 0.0);
    evas_object_size_hint_weight_set(toolbar, 0.0, 0.0);
@@ -332,7 +332,7 @@ ui_menu_add(App_Data *ap)
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
 
-   /*TODO remove both lines after implementation this features*/
+   TODO("remove both lines after implementation this features")
    ui_menu_disable_set(menu, MENU_FILE_EXPORT_RELEASE, true);
 
    menu->window_menu = window_menu;

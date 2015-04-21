@@ -33,6 +33,13 @@
 #define false EINA_FALSE
 #define RETURN_VOID
 
+#ifdef SHOW_TODO
+   #define DO_PRAGMA(x) _Pragma (#x)
+   #define TODO(x) DO_PRAGMA(message ("TODO - " #x))
+#else
+   #define TODO(x)
+#endif
+
 #define FLOAT_NUMBER_REGEX "^[0-9]*(\\.[0-9]+)?$"
 #define FLOAT_NUMBER_0_1_REGEX "^(0?(\\.[0-9]+)?|1|1\\.0)?$"
 #define FLOAT_NUMBER_0_1_REGEX_2_SYMBOLS "^(0?(\\.[0-9]{,2})?|1|1\\.0)?$"

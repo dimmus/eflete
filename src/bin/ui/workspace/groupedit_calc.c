@@ -919,8 +919,8 @@ _part_draw_add(Ws_Groupedit_Smart_Data *sd, const char *part, Edje_Part_Type typ
       default:
          /* Temporary solution for type parts, which not implemented yet.
           * Here created transparent rectangle as draw evas primitives.
-          * TODO: add support for all part types.
           */
+         TODO("add support for all part types.")
          gp->draw = evas_object_rectangle_add(sd->e);
          evas_object_color_set(gp->draw, 0, 0, 0, 0);
          break;
@@ -1389,10 +1389,8 @@ _table_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    Eina_List *fake_l;
    int i, k, col, row; /* counters for filling empty cells with fake items*/
 
-   /*
-    * TODO: get TABLE attributes from edje object, after implementing functions
-    *  in edje_edit libs. Until that time will be used default values.
-    */
+   TODO("get TABLE attributes from edje object, after implementing functions"
+        "in edje_edit libs. Until that time will be used default values.")
    PART_STATE_GET(sd->edit_obj, gp->name)
    homogeneous = edje_edit_state_table_homogeneous_get(sd->edit_obj, gp->name, state, value);
    evas_object_table_homogeneous_set(gp->draw, homogeneous);
@@ -1621,7 +1619,7 @@ _box_param_update(Ws_Groupedit_Smart_Data *sd, Groupedit_Part *gp)
    double box_align_x, box_align_y;
    int pad_x, pad_y;
 
-   /* TODO: get items from box and edje_unload them, remove them, destroy them */
+   TODO("get items from box and edje_unload them, remove them, destroy them")
    evas_object_box_remove_all(gp->draw, false);
 
    PART_STATE_GET(sd->edit_obj, gp->name)

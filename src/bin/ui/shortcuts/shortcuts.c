@@ -166,9 +166,8 @@ PART_ADD(EDJE_PART_TYPE_PROXY, proxy)
 PART_ADD(EDJE_PART_TYPE_GROUP, group)
 PART_ADD(EDJE_PART_TYPE_BOX, box)
 
-/* this one will delete part or style or layout or state.
-   TODO: move this code or some of it's part to Connector,
- */
+/* this one will delete part or style or layout or state.  */
+TODO("move this code or some of it's part to Connector")
 Eina_Bool
 _item_delete_cb(App_Data *app)
 {

@@ -957,7 +957,8 @@ ui_widget_list_title_set(Evas_Object *object, const char *title)
    return true;
 }
 
-/* TODO: fix renaming
+TODO("fix renaming")
+/*
 static void
 _wl_key_down_cb(void *data __UNUSED__,
                 Evas *e __UNUSED__,
@@ -1068,8 +1069,8 @@ ui_widget_list_data_set(Evas_Object *object, Project *project)
    evas_object_smart_callback_add(gl_##TYPE, "clicked,double", \
                                   _on_widget_clicked_double, project);
 
-/* TODO: fix renaming
-   evas_object_event_callback_add(gl_##TYPE, EVAS_CALLBACK_KEY_DOWN, \
+TODO("fix renaming")
+/*   evas_object_event_callback_add(gl_##TYPE, EVAS_CALLBACK_KEY_DOWN, \
                                   _wl_key_down_cb, NULL); \ */
    CALLBACKS(widgets);
    CALLBACKS(layouts);

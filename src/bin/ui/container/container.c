@@ -213,7 +213,7 @@ _mouse_move_hTL_cb(void *data,
    if (x1 + dx - sd->pad_left_top.w < bgx)
      {
         nw = w - dx;
-        /*TODO: need do refactoring here */
+        TODO("need do refactoring here")
         if (nw <= sd->con_size_min.w + H_WIGTH)
           {
              nw = sd->con_size_min.w + H_WIGTH + sd->pad_left_top.w + sd->pad_right_bottom.w;
@@ -303,7 +303,7 @@ _mouse_move_hBR_cb(void *data,
    if (!sd->handler_BR_pressed) return;
 
    /* calc wigth and heght */
-   /*TODO: need do refactoring here */
+   TODO("need do refactoring here")
    nw = w + dx;
    if (sd->size->w + H_WIGTH + dx <= sd->con_size_min.w + H_WIGTH)
      nw = sd->con_size_min.w + H_WIGTH + sd->dx + sd->pad_left_top.w + sd->pad_right_bottom.w;

@@ -86,7 +86,7 @@ ui_states_list_add(Evas_Object *parent)
 
    evas_object_smart_callback_add(gl_states, "selected",
                                   _on_state_selected, NULL);
-   /*TODO: add delete data on EVAS_OBJECT_DEL event */
+   TODO("add delete data on EVAS_OBJECT_DEL event")
    return gl_states;
 }
 

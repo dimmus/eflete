@@ -128,6 +128,18 @@ if test "x$want_eflete_debug" = "xyes"; then
    EFLETE_DEBUG_DEF="#define"
 fi
 
+dnl --enable-todo/--disable-todo
+EFLETE_TODO_DEF="#undef"
+want_eflete_todo="no"
+AC_ARG_ENABLE([todo],
+   [AC_HELP_STRING([--enable-todo], [show TODO. @<:@default=disabled@:>@])],
+   [want_eflete_todo=$enableval], [])
+
+if test "x$want_eflete_todo" = "xyes"; then
+   AC_DEFINE(SHOW_TODO, 1, [Eflete TODO.])
+   EFLETE_TODO_DEF="#define"
+fi
+
 dnl --enable-audio/--disable-audio
 EFLETE_AUDIO_DEF="#undef"
 dont_want_eflete_audio="no"
@@ -269,5 +281,22 @@ if test "x$have_enventor" = "xyes" -a "x$want_enventor" = "xno"; then
    echo "            (__)\\       )\\/\\"
    echo "                ||----w |"
    echo "                ||     ||"
+   echo ""
+fi
+
+if test "x$want_eflete_todo" = "xyes"; then
+   echo " _________________________________________  "
+   echo "/To do.                                   \\"
+   echo "|To do.                                   | "
+   echo "\\To do, to do, to do, to do, to doooooo.../"
+   echo " -----------------------------------------  "
+   echo "          (O_/ __ \\_O)  "
+   echo "          / (o)__(o) \\  "
+   echo "         (__.--\\/--.__) "
+   echo "        ====(__/\\__)===="
+   echo "              \`--'      "
+   echo "              _||_      "
+   echo "            /'....'\\    "
+   echo "           | :    : |   "
    echo ""
 fi
