@@ -56,7 +56,7 @@ _on_gengrid_swallow_check(void *data,
    evas_object_data_set(object, SWALLOW_LIST, part_list);
 
    Elm_Object_Item *item = NULL;
-   item = elm_gengrid_first_item_get(data);
+   item = elm_gengrid_first_item_get(object);
    while (item)
      {
         elm_gengrid_item_update(item);
@@ -101,7 +101,7 @@ _on_gengrid_text_check(void *data,
    evas_object_data_set(object, TEXT_LIST, part_list);
 
    Elm_Object_Item *item = NULL;
-   item = elm_gengrid_first_item_get(data);
+   item = elm_gengrid_first_item_get(object);
    while (item)
      {
         elm_gengrid_item_update(item);
