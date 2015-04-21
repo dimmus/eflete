@@ -93,7 +93,7 @@ group { name: "elm/menu/item/default";
                to_y: "base";
             }
             text {
-               font: "PT";
+               font: PT;
                size: 12;
                min: 1 1;
                align: 0.0 0.5;
@@ -131,7 +131,7 @@ group { name: "elm/menu/item/default";
                to_y: "base";
             }
             text {
-               font: "Sans";
+               font: PT;
                size: 12;
                min: 1 1;
                max: 1 0;
@@ -672,7 +672,7 @@ group { name: "elm/menu/main_menu_submenu/default";
                size: 13;
                min: 1 1;
                max: 1 0;
-               elipsis: -1;
+               ellipsis: -1.0;
             }
          }
          description { state: "selected" 0.0;
@@ -691,7 +691,26 @@ group { name: "elm/menu/main_menu_submenu/default";
                size: 13;
                min: 1 1;
                max: 1 0;
-               elipsis: -1;
+               ellipsis: -1.0;
+            }
+         }
+         description { state: "disabled" 0.0;
+            align: 0.0 0.5;
+            color: 118 119 120 255;
+            rel1 {
+               relative: 1.0 0.0;
+               to_x: "area.content";
+               to_y: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+            text {
+               font: PT;
+               size: 13;
+               min: 1 1;
+               max: 1 0;
+               ellipsis: -1.0;
             }
          }
       }
@@ -722,6 +741,16 @@ group { name: "elm/menu/main_menu_submenu/default";
                to: "base";
             }
          }
+         description { state: "disabled" 0.0;
+            visible: 0;
+            color: 0 0 0 0;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
       }
    }
    programs {
@@ -743,6 +772,20 @@ group { name: "elm/menu/main_menu_submenu/default";
          signal: "mouse,up,1";
          source: "event";
          action: SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "disabled";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.00;
+         target: "elm.text";
+         target: "event";
+      }
+      program { name: "enabled";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.00;
+         target: "elm.text";
+         target: "event";
       }
    }
 }
