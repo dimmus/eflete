@@ -52,8 +52,8 @@
  * @step 1 Call live_view_widget_style_set.
  * @step 2 Check returned value.
  * @step 3 Check style name, which was set to object into live view.
- * @step 4 Check object type, which created in live_view. Here type will be Elm_Box,
- *         because 3 radio widgets are packed into elementary box.
+ * @step 4 Check object type, which created in live_view. Here type will be
+ *         elm_box, because 3 radio widgets are packed into elementary box.
  * </tdhutdown();
  *
  * <td>(Live_View *)live, (Project *)project, (Style *)style</td>
@@ -86,12 +86,12 @@ EFLETE_TEST(live_view_widget_style_set_test_p1)
    ck_assert_msg(res == EINA_TRUE, "Failed set style into live view.");
 
    style_set = elm_object_style_get(live->object);
-   ck_assert_msg(strcmp(style_set, "def") == 0, "Style setted for object in "
+   ck_assert_msg(strcmp(style_set, "default") == 0, "Style setted for object in "
                  " live view not equal with style name loaded in project");
 
    style_set = elm_object_widget_type_get(live->object);
-   ck_assert_msg(strcmp(style_set, "Elm_Box") == 0, "Object created into "
-                 " live view not equal Elm_Box");
+   ck_assert_msg(strcmp(style_set, "elm_box") == 0, "Object created into "
+                 " live view not equal elm_box");
 
    live_view_free(live);
    wm_style_free(style);
