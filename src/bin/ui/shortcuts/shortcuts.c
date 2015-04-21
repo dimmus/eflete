@@ -749,11 +749,11 @@ shortcuts_profile_load(App_Data *ap, Profile *profile)
 
    EINA_LIST_FOREACH(profile->shortcuts, l, sc)
      {
-        key = malloc(sizeof(Key_Pair));
+        key = mem_malloc(sizeof(Key_Pair));
         key->keycode = sc->keycode;
         key->modifiers = sc->modifiers;
 
-        sc_func = malloc(sizeof(Shortcut_Function));
+        sc_func = mem_malloc(sizeof(Shortcut_Function));
         sc_func->keyname = sc->keyname;
         sc_func->keycode = sc->keycode;
         sc_func->modifiers = sc->modifiers;
