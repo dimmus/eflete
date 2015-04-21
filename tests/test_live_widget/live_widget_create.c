@@ -38,32 +38,34 @@
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Create parent window.
+ * @step 2 Create style object as Style.
+ * @step 3 Create parent window.
  *
  * @procedure
  * @step 1 Call live_widget_create.
  * @step 2 Check returned pointer.
  * </td>
- * <td>(const char *)widget = "bubble", (const char *)class = "top_left",
- *     (const char *)style = "default", Evas_Object *parent</td>
+ * <td>(const char *)widget = "radio", (Style *) style, Evas_Object *parent</td>
  * <td>Not NULL pointer returned</td>
  * </tr>
  * @}
  */
 EFLETE_TEST(live_widget_create_test_p)
 {
+
+   Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
-   const char *widget = "bubble";
-   const char *class = "top_left";
-   const char *style = "default";
+   const char *widget = "radio";
+   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   live = live_widget_create(widget, class, style, parent);
+   live = live_widget_create(widget, style, parent);
    ck_assert_msg(live != NULL, "Failed to create live object.");
 
+   wm_style_free(style);
    evas_object_del(parent);
    elm_shutdown();
 }
@@ -78,14 +80,14 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Create parent window.
+ * @step 2 Create style object as Style with unexisted name.
+ * @step 3 Create parent window.
  *
  * @procedure
  * @step 1 Call live_widget_create (call for unexisted widget).
  * @step 2 Check returned pointer.
  * </td>
- * <td>(const char *)widget = "fhtagn", (const char *)class = "lets_play",
- *     (const char *)style = "game_with_you", Evas_Object *parent</td>
+ * <td>(const char *)widget = "fhtagn", (Style *) style, Evas_Object *parent</td>
  * <td>NULL pointer returned</td>
  * </tr>
  * @}
@@ -94,14 +96,14 @@ EFLETE_TEST(live_widget_create_test_n1)
 {
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
+   Style *style = NULL;
    const char *widget = "fhtagn";
-   const char *class = "lets_play";
-   const char *style = "game_with_you";
+   style = wm_style_add("game_with_you", "lets_play/game_with_you", STYLE, NULL);
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   live = live_widget_create(widget, class, style, parent);
+   live = live_widget_create(widget, style, parent);
    ck_assert_msg(live == NULL, "Something was created o.o");
 
    evas_object_del(parent);
@@ -118,7 +120,8 @@ END_TEST
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Create parent window.
+ * @step 2 Create style object as Style.
+ * @step 3 Create parent window.
  *
  * @procedure
  * @step 1 Call live_widget_create (call for unexisted widget).
@@ -131,23 +134,21 @@ END_TEST
  */
 EFLETE_TEST(live_widget_create_test_n2)
 {
+   Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
-   const char *widget = "bubble";
-   const char *class = "top_left";
-   const char *style = "default";
+   const char *widget = "radio";
+   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   live = live_widget_create(NULL, class, style, parent);
+   live = live_widget_create(NULL, style, parent);
    ck_assert_msg(live == NULL, "Live object was created with NULL params 1");
-   live = live_widget_create(widget, NULL, style, parent);
+   live = live_widget_create(widget, NULL, parent);
    ck_assert_msg(live == NULL, "Live object was created with NULL params 2");
-   live = live_widget_create(widget, class, NULL, parent);
+   live = live_widget_create(widget, style, NULL);
    ck_assert_msg(live == NULL, "Live object was created with NULL params 3");
-   live = live_widget_create(widget, class, style, NULL);
-   ck_assert_msg(live == NULL, "Live object was created with NULL params 4");
 
    evas_object_del(parent);
    elm_shutdown();

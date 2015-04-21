@@ -38,8 +38,9 @@
  * <td>
  * @precondition
  * @step 1 Initialize elementary library.
- * @step 2 Create parent window.
- * @step 3 Create bubble live_object.
+ * @step 2 Create style object as Style.
+ * @step 3 Create parent window.
+ * @step 4 Create radio live_object.
  *
  * @procedure
  * @step 1 Call live_widget_del.
@@ -52,16 +53,16 @@
  */
 EFLETE_TEST(live_widget_del_test_p)
 {
+   Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
-   const char *widget = "bubble";
-   const char *class = "top_left";
-   const char *style = "default";
+   const char *widget = "radio";
+   style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
 
    elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
 
-   live = live_widget_create(widget, class, style, parent);
+   live = live_widget_create(widget, style, parent);
    ck_assert_msg(live_widget_del(live), "it is not able to delete live object, something is wrong.");
 
    evas_object_del(parent);
