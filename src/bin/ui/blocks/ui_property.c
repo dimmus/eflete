@@ -1324,29 +1324,6 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    return item;
 }
 
-static void
-prop_state_proxy_source_update(Prop_Data *pd)
-{
-   Part *part;
-   Eina_Inlist *list_n = NULL;
-   Eina_Stringshare *value;
-
-   /* clears the list, because we don't know about changes in the part list */
-   ewe_combobox_items_list_free(pd->state.proxy_source, true);
-   value = edje_edit_state_proxy_source_get(pd->wm_style->obj,
-                                            pd->wm_part->name,
-                                            pd->wm_part->curr_state,
-                                            pd->wm_part->curr_state_value);
-   ewe_combobox_item_add(pd->state.proxy_source, _("None"));
-   ewe_combobox_text_set(pd->state.proxy_source, value ? value : _("None"));
-   EINA_INLIST_FOREACH_SAFE(pd->wm_style->parts, list_n, part)
-     {
-        if ((part != pd->wm_part) && (part->type != EDJE_PART_TYPE_SPACER))
-          ewe_combobox_item_add(pd->state.proxy_source, part->name);
-     }
-   edje_edit_string_free(value);
-}
-
 #define ITEM_2SPINNER_STATE_INT_CREATE(TEXT, SUB, VALUE1, VALUE2, STYLE) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE1) \
    ITEM_SPINNER_STATE_INT_CALLBACK(SUB, VALUE2) \
@@ -1414,8 +1391,9 @@ prop_state_proxy_source_update(Prop_Data *pd)
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
+#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, PART_TYPE, COMPARE, TOOLTIP) \
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
+   STATE_ATTR_SOURCE_UPDATE(SUB, VALUE, MEMBER, PART_TYPE, COMPARE) \
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 STATE_ATTR_1CHECK(_("visible"), state, visible, state)
@@ -1442,7 +1420,7 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 1.0, 9999
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
 STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
-STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
+STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=,
                     _("Causes the part to use another part content as"
                     "the content of this part. Only work with PROXY part."))
 
