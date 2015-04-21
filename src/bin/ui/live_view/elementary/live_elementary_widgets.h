@@ -116,6 +116,9 @@ Evas_Object *
 widget_list_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
+widget_multibuttonentry_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
 widget_notify_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *

@@ -235,7 +235,6 @@ live_view_theme_update(Live_View *live, Project *project)
         return true;
      }
 
-
    Elm_Theme *theme = elm_theme_new();
    elm_theme_set(theme, path);
    if (!live->in_prog_edit)
