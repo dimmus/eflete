@@ -42,6 +42,9 @@
 #include "logger.h"
 #include <Eet.h>
 
+/* TODO: don't forget to update on major changes */
+#define PROJECT_FILE_VERSION 2
+
 typedef struct _Enventor_Data Enventor_Data;
 
 /**
@@ -56,12 +59,16 @@ typedef struct _Enventor_Data Enventor_Data;
  */
 struct _Project
 {
+   /* version of project file */
+   int version;
    /** The project name */
    Eina_Stringshare *name;
    /** Eet_File descriptior of specific project file. */
    Eet_File *pro;
    /** this is worrking file, all changes are happened in this file. */
    Eina_Stringshare *dev;
+   /** this is saved file. */
+   Eina_Stringshare *saved_edj;
 
    /** path where will be saved the develop edj file */
    Eina_Stringshare *develop_path;
