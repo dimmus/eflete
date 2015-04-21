@@ -1837,9 +1837,13 @@ STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:"
                   _("Resize the text for it to fit in it's container by Y axis"))
 STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
 STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
-ITEM_1COMBOBOX_STATE_CREATE(SOURCE, _("source"), state_text, source, styles)
-ITEM_1COMBOBOX_STATE_CREATE(TEXT_SOURCE, _("text source"), state_text, text_source, styles)
-
+STATE_ATTR_COMBOBOX(_("proxy source"), state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==,
+                    _("Causes the part to use the text properties "
+                      "(like font and size) of another part "
+                      "and update them as they change."))
+STATE_ATTR_COMBOBOX(_("proxy source"), state_text, text_source, state_text, EDJE_PART_TYPE_TEXT, ==,
+                    _("Causes the part to display the text content of "
+                      "another part and update them as they change."));
 
 static Eina_Bool
 _text_effect_get(Prop_Data *pd, int *type, int *direction)
@@ -2200,15 +2204,10 @@ ui_property_state_text_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_text_max_x_max_y_add(box, pd);
          elm_box_pack_end(box, item);
-         pd_text.source = prop_item_state_text_source_add(box, pd, NULL,
-                            _("Causes the part to use the text properties\t"
-                            "(like font and size) of another part\t"
-                            "and update them as they change."));
-         elm_box_pack_end(box, pd_text.source);
-         pd_text.text_source = prop_item_state_text_text_source_add(box, pd, NULL,
-                               _("Causes the part to display the text content of \t"
-                               "another part and update them as they change."));
-         elm_box_pack_end(box, pd_text.text_source);
+         item = prop_state_text_source_add(box, pd);
+         elm_box_pack_end(box, item);
+         item = prop_state_text_text_source_add(box, pd);
+         elm_box_pack_end(box, item);
          pd_text.ellipsis = prop_item_state_text_ellipsis_add(box, pd,
                             _("Cut text if biggest then part's area"
                             "0.0 = fix the left side  1.0 = right side"));
@@ -2233,8 +2232,8 @@ ui_property_state_text_set(Evas_Object *property)
         STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_text, 100)
         STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_text)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_text)
-        prop_item_state_text_source_update(pd_text.source, pd);
-        prop_item_state_text_text_source_update(pd_text.text_source, pd);
+        prop_state_text_source_update(pd);
+        prop_state_text_text_source_update(pd);
         prop_item_state_text_ellipsis_update(pd_text.ellipsis, pd);
         STATE_ATTR_2CHECK_UPDATE(state_text, fit_x, fit_y, state_text)
         prop_state_color2_update(pd);
