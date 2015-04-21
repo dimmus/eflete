@@ -456,7 +456,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
  */
 #define PART_ATTR_DRAG_ADD(TEXT, SUB, VALUE1, VALUE2) \
 static Evas_Object * \
-prop_part_drag_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
+prop_##SUB##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                        Prop_Data *pd, \
                                        const char *tooltip1, \
                                        const char *tooltip2 ) \
@@ -1218,7 +1218,7 @@ prop_##MEMBER##_##VALUE##_update(Prop_Data *pd) \
 
 /*****************************************************************************/
 /*                          STATE 1 ENTRY CONTROL                            */
-/****************************************************************************/
+/*****************************************************************************/
 /**
  * Macro defines functions that create an item with label and 1 entry for state
  * attribute.
