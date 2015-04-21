@@ -145,6 +145,9 @@ widget_progressbar_create(Evas_Object *parent, const Style *style);
 Evas_Object *
 widget_naviframe_create(Evas_Object *parent, const Style *style);
 
+Evas_Object *
+widget_colorselector_create(Evas_Object *parent, const Style *style);
+
 /*****************************************************
  *****************************************************
  *****************************************************/
