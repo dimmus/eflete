@@ -52,6 +52,10 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 #define BUFF_MAX 512
 
 #include <Ewe.h>
+
+/* do not allow unsafe sprintf. use snprintf instead */
+#pragma GCC poison sprintf
+
 #include "alloc.h"
 #include "logger.h"
 #include "project_manager.h"

@@ -349,11 +349,11 @@ _mouse_move_hBR_cb(void *data,
 static void
 _style_set(Evas_Object *o, const char *style)
 {
-   char group[512]; /* FIXME: change 512 to BUFF_MAX */
+   char group[BUFF_MAX];
    CONTAINER_DATA_GET(o, sd)
 
    #define GROUP_NAME(item, style) \
-      sprintf(group, "eflete/container/%s/%s", item, style);
+      snprintf(group, BUFF_MAX, "eflete/container/%s/%s", item, style);
 
    GROUP_NAME("base", style)
    if (!edje_object_file_set(sd->container, EFLETE_EDJ, group))
@@ -545,7 +545,7 @@ _container_smart_calculate(Evas_Object *o)
    priv->size->w = cw;
    priv->size->h = ch;
 
-   sprintf(buff, "%i %i", priv->size->w, priv->size->h);
+   snprintf(buff, 16, "%i %i", priv->size->w, priv->size->h);
    edje_object_part_text_set(priv->container, TEXT_TOOLTIP, buff);
 
    evas_object_resize(priv->handler_TL.obj, htl_w, htl_h);

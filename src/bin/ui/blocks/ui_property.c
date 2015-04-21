@@ -1438,7 +1438,7 @@ ui_property_state_set(Evas_Object *property, Part *part)
    if (pd->wm_part != part) return EINA_FALSE; /* time for panic */
    #define pd_state pd->state
 
-   sprintf(state, "%s %.2f", part->curr_state, part->curr_state_value);
+   snprintf(state, BUFF_MAX, "%s %.2f", part->curr_state, part->curr_state_value);
 
    prop_box = elm_object_content_get(pd->visual);
    elm_box_unpack(prop_box, pd_state.frame);

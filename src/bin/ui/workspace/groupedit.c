@@ -31,11 +31,11 @@ EVAS_SMART_SUBCLASS_NEW(MY_CLASS_NAME, _groupedit,
 static void
 _style_set(Evas_Object *o, const char *style)
 {
-   char group[512]; /* FIXME: change 512 to BUFF_MAX */
+   char group[BUFF_MAX];
    WS_GROUPEDIT_DATA_GET(o, sd)
 
    #define GROUP_NAME(item, style) \
-      sprintf(group, "eflete/groupedit/%s/%s", item, style);
+      snprintf(group, BUFF_MAX, "eflete/groupedit/%s/%s", item, style);
 
    GROUP_NAME("object_area", style)
    if (!edje_object_file_set(sd->obj_area.obj, EFLETE_EDJ, group))
@@ -208,7 +208,7 @@ _groupedit_smart_calculate(Evas_Object *o)
         priv->con_current_size->y = y;
         priv->con_current_size->w = w;
         priv->con_current_size->h = h;
-        sprintf(buff, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
+        snprintf(buff, 16, "%i %i", priv->con_current_size->w, priv->con_current_size->h);
      }
 
    DBG("Groupedit geometry: x[%i] y[%i] w[%i] h[%i]", x, y, w, h);

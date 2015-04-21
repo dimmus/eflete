@@ -23,6 +23,9 @@
 #include <Eina.h>
 #include <Evas.h>
 
+/* do not allow unsafe sprintf. use snprintf instead */
+#pragma GCC poison sprintf
+
 /**
  * @defgroup History History module
  * @ingroup Eflete
