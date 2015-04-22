@@ -294,9 +294,6 @@ EFLETE_TEST (sound_editor_window_add_test_n3)
 
    app = app_data_get();
    app->project = pm_project_open("./sound_editor_window_add_test_n3/sound_editor_window_add_test_n3.pro");
-   wm_widgets_list_objects_load(app->project->widgets,
-                                evas_object_evas_get(app->win),
-                                app->project->mmap_file);
 
    sounds = sound_editor_window_add(app->project, SINGLE);
    ck_assert_msg(sounds == NULL,
