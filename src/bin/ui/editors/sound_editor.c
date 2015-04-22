@@ -1612,6 +1612,11 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
    edit->mode = mode;
    edit->pr = project;
    edit->win = mw_add(_on_quit_cb, edit);
+   if (!edit->win)
+     {
+        free(edit);
+        return NULL;
+     }
    mw_title_set(edit->win, _("Sound editor"));
    evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
 
