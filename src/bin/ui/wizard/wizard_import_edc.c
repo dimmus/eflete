@@ -523,6 +523,7 @@ _on_directory_bt(void *data,
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
    c_data->wiew->fs = mw_add(_fs_close, NULL);
+   if (!c_data->wiew->fs) return;
    evas_object_show(c_data->wiew->fs);
    mw_title_set(c_data->wiew->fs, "Select a directory");
    FILESELECTOR_ADD(fs, c_data->wiew->fs, _on_directory_bt_done, data);

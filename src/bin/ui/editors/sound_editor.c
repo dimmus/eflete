@@ -1354,6 +1354,7 @@ _sample_add_cb(void *data,
    Sound_Editor *edit = data;
 
    edit->fs_win  = mw_add(NULL, NULL);
+   if (!edit->fs_win) return;
    mw_title_set(edit->fs_win, "Add sound to the library");
    evas_object_show(edit->fs_win);
 

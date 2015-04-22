@@ -533,6 +533,11 @@ animator_window_add(Style *style)
 
    animator->style = style;
    animator->mwin = mw_add(_on_animator_ok, animator);
+   if (!animator->mwin)
+     {
+        free(animator);
+        return NULL;
+     }
    animator->is_cycled = true;
 
    mw_title_set(animator->mwin, _("Program editor"));

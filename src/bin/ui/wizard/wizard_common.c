@@ -319,7 +319,11 @@ wizard_import_common_add(const char *layout_name)
    wiew = (Wizard_Import_Edj_Win *)mem_malloc(sizeof(Wizard_Import_Edj_Win));
 
    mwin = mw_add(_on_cancel, wiew);
-   if (!mwin) return NULL;
+   if (!mwin)
+     {
+        free(wiew);
+        return NULL;
+     }
 
    wiew->win = mwin;
 

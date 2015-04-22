@@ -1880,6 +1880,11 @@ style_editor_window_add(Project *project)
 
    style_edit->pr = project;
    style_edit->mwin = mw_add(_on_viewer_exit, style_edit);
+   if (!style_edit->mwin)
+     {
+        free(style_edit);
+        return NULL;
+     }
    mw_title_set(style_edit->mwin, _("Textblock style editor"));
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);

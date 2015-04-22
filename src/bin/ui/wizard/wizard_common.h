@@ -28,6 +28,7 @@ FUNC(void *data, \
    wiew = (Wizard_Import_Edj_Win *)data; \
 \
    wiew->fs = mw_add(_fs_close, NULL); \
+   if (!wiew->fs) return; \
    evas_object_show(wiew->fs); \
    FILESELECTOR_ADD(fs, wiew->fs, FUNC##_done, data); \
    elm_fileselector_folder_only_set(fs, FOLDER_ONLY); \

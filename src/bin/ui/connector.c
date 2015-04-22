@@ -862,6 +862,8 @@ project_open(void)
    if (!project_close(ap))
      return;
    win  = mw_add(_fs_close, ap);
+   if (!win)
+     return;
    evas_object_show(win);
    mw_title_set(win, "Select a project file");
    img = elm_image_add(win);
@@ -1189,6 +1191,8 @@ project_export_develop(void)
    App_Data *ap = app_data_get();
 
    win  = mw_add(_fs_close, ap);
+   if (!win)
+     return;
    evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_done, win);
    elm_object_text_set(fs, "Select a file");
@@ -1256,6 +1260,8 @@ project_export_edc_group(void)
    App_Data *ap = app_data_get();
 
    win  = mw_add(_fs_close, ap);
+   if (!win)
+     return;
    evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_edc_group_done, win);
    elm_fileselector_is_save_set(fs, false);
@@ -1363,6 +1369,8 @@ project_export_edc_project(void)
    App_Data *ap = app_data_get();
 
    win  = mw_add(_fs_close, ap);
+   if (!win)
+     return;
    evas_object_show(win);
    FILESELECTOR_ADD(fs, win, _on_export_edc_project_done, win);
    elm_fileselector_is_save_set(fs, false);
