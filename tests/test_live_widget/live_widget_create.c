@@ -52,17 +52,15 @@
  */
 EFLETE_TEST(live_widget_create_test_p)
 {
+   elm_init(0, 0);
 
    Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
-   const char *widget = "radio";
+
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-
-   elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
-   live = live_widget_create(widget, style, parent);
+   live = live_widget_create("radio", style, parent);
    ck_assert_msg(live != NULL, "Failed to create live object.");
 
    wm_style_free(style);
@@ -94,16 +92,15 @@ END_TEST
  */
 EFLETE_TEST(live_widget_create_test_n1)
 {
+   elm_init(0, 0);
+
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
    Style *style = NULL;
-   const char *widget = "fhtagn";
+
    style = wm_style_add("game_with_you", "lets_play/game_with_you", STYLE, NULL);
-
-   elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
-   live = live_widget_create(widget, style, parent);
+   live = live_widget_create("fhtagn", style, parent);
    ck_assert_msg(live == NULL, "Something was created o.o");
 
    evas_object_del(parent);
@@ -134,20 +131,19 @@ END_TEST
  */
 EFLETE_TEST(live_widget_create_test_n2)
 {
+   elm_init(0, 0);
+
    Style *style = NULL;
    Evas_Object *parent = NULL;
    Evas_Object *live = NULL;
-   const char *widget = "radio";
+
    style = wm_style_add("def", "elm/radio/base/def", STYLE, NULL);
-
-   elm_init(0, 0);
    parent = elm_win_add(NULL, "test", ELM_WIN_BASIC);
-
    live = live_widget_create(NULL, style, parent);
    ck_assert_msg(live == NULL, "Live object was created with NULL params 1");
-   live = live_widget_create(widget, NULL, parent);
+   live = live_widget_create("radio", NULL, parent);
    ck_assert_msg(live == NULL, "Live object was created with NULL params 2");
-   live = live_widget_create(widget, style, NULL);
+   live = live_widget_create("radio", style, NULL);
    ck_assert_msg(live == NULL, "Live object was created with NULL params 3");
 
    evas_object_del(parent);
