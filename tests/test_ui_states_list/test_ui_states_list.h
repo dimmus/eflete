@@ -33,7 +33,6 @@ void ui_states_list_data_set_test_n2(int);
 void ui_states_list_data_set_test_n3(int);
 void ui_states_list_data_set_test_n4(int);
 void ui_states_list_data_set_test_n5(int);
-void ui_states_list_data_set_test_n6(int);
 void ui_states_list_part_get_test_p1(int);
 void ui_states_list_part_get_test_p2(int);
 void ui_states_list_part_get_test_n1(int);
