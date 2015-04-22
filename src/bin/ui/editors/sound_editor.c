@@ -729,7 +729,7 @@ _on_ok_cb(void *data,
 static char *
 _player_units_format(double val)
 {
-   char *units = malloc(sizeof(char) * 16);
+   char *units = mem_malloc(sizeof(char) * 16);
    int tmp = (int)val;
    snprintf(units, 16, "%02.0f:%02.0f", (double)(tmp / 60), (double)(tmp % 60));
    return units;

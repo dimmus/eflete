@@ -56,7 +56,6 @@ TODO("delete it, and remake all strings to eina_stringshare or eina_strbuff")
 /* do not allow unsafe sprintf. use snprintf instead */
 #pragma GCC poison sprintf
 
-#include "alloc.h"
 #include "logger.h"
 #include "project_manager.h"
 #include "ui_workspace.h"
@@ -215,5 +214,7 @@ history_get(void);
    if (!edje_object_file_set(IMG, EFLETE_RESOURCES, NAME)) \
      ERR("Image with name \"%s\" was not found in resources\n", NAME); \
 }
+
+#include "alloc.h"
 
 #endif /* EFLETE_H */

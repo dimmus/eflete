@@ -4,7 +4,6 @@ src/bin/eflete.c
 src/bin/main.c
 
 # src/*/*.c
-src/bin/alloc/alloc.c
 src/bin/config/config.c
 src/bin/logger/logger.c
 src/bin/project_manager/project_manager.c

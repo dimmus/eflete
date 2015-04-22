@@ -149,7 +149,7 @@ EFLETE_TEST (ui_widget_list_class_data_reload_test_p2)
    widget_list = ui_widget_list_add(parent);
    groups = eina_list_append(groups, "elm/radio/qqqqq/test33");
    groups = eina_list_append(groups, "elm/radio/qqqqq/test55");
-   _widget = (Widget *)malloc(sizeof(Widget));
+   _widget = (Widget *)mem_malloc(sizeof(Widget));
    _widget->name = eina_stringshare_add("radio");
    _widget->__type = WIDGET;
    class = wm_class_add("qqqqq", groups, _widget);

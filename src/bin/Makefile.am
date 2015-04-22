@@ -7,7 +7,6 @@ bin_PROGRAMS = eflete
 noinst_LIBRARIES = libete.a
 libete_a_SOURCES = \
 eflete.c \
-alloc/alloc.c \
 common/string_common.c \
 project_manager/widget_manager.c \
 project_manager/project_manager.c \

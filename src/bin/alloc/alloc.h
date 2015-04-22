@@ -33,6 +33,7 @@
 
 #include "eflete.h"
 
+#define TERM_MESSAGE "Could not allocate memory! Maybe not enough a memory. Application will be terminated!"
 /**
  * Allocates a block of size bytes of memory, returning a pointer to the
  * beginning of the block.
@@ -45,8 +46,18 @@
  *
  * @ingroup Alloc
  */
-void *
-mem_malloc(size_t size);
+static inline void *
+mem_malloc(size_t size)
+{
+   void *mem_block;
+   mem_block = malloc(size);
+   if (!mem_block)
+     {
+        CRIT(TERM_MESSAGE);
+        app_shutdown();
+     }
+   return mem_block;
+}
 
 /**
  * Allocates a block of memory for an array of num elements, each of them size
@@ -60,7 +71,20 @@ mem_malloc(size_t size);
  *
  * @ingroup Alloc
  */
-void *
-mem_calloc(size_t num, size_t size);
+static inline void *
+mem_calloc(size_t num, size_t size)
+{
+   void *mem_block;
+   mem_block = calloc(num, size);
+   if (!mem_block)
+     {
+        CRIT(TERM_MESSAGE);
+        app_shutdown();
+     }
+   return mem_block;
+}
+#undef TERM_MESSAGE
+#pragma GCC poison malloc
+#pragma GCC poison calloc
 
 #endif /* ALLOC_H */
