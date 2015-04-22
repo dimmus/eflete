@@ -334,7 +334,7 @@ wm_style_add(const char* style_name, const char* full_group_name,
 
    if ((!full_group_name) || (!style_name)) return NULL;
    if ((style_type != LAYOUT) && (style_type != STYLE)) return NULL;
-   style_edje = (Style *)mem_calloc(1, sizeof(Style));
+   style_edje = (Style *)mem_malloc(sizeof(Style));
    style_edje->name = eina_stringshare_add(style_name);
    style_edje->full_group_name = eina_stringshare_add(full_group_name);
    style_edje->obj = NULL;
