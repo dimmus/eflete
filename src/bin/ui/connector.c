@@ -807,6 +807,7 @@ _on_open_done(void *data,
    selected = (const char *)event_info;
    ap = app_data_get();
 
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    if (!selected)
      {
         ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_STYLE_ONLY, true);
@@ -874,6 +875,7 @@ project_open(void)
    elm_fileselector_custom_filter_append(fs, _eflete_filter, NULL, "Eflete Files");
    elm_fileselector_mime_types_filter_append(fs, "*", "All Files");
    elm_win_inwin_content_set(win, fs);
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, true);
 
    ap->modal_editor++;
 }
