@@ -532,6 +532,7 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 {
    Evas_Object *box = NULL;
    char *script = NULL;
+   char *script_markup = NULL;
    Evas_Object *entry = NULL;
 
    box = elm_object_part_content_get(prop.script, "elm.swallow.content");
@@ -539,9 +540,10 @@ _prop_item_program_script_update(Program_Editor *prog_edit)
 
    script = edje_edit_script_program_get(prop.style->obj, prop.program);
    entry = eina_list_nth(childs, 0);
-   script = elm_entry_utf8_to_markup(script);
-   ewe_entry_entry_set(entry, script);
+   script_markup = elm_entry_utf8_to_markup(script);
+   ewe_entry_entry_set(entry, script_markup);
    free(script);
+   free(script_markup);
    eina_list_free(childs);
 }
 

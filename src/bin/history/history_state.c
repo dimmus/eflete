@@ -620,6 +620,7 @@ _state_change_free(State_Diff *change)
    eina_stringshare_del(change->diff.description);
    eina_stringshare_del(change->diff.source);
    eina_stringshare_del(change->diff.state);
+   TODO("Clean somehow image.tweens")
 
    if (change->diff.ui_item)
      elm_object_item_del(change->diff.ui_item);

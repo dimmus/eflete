@@ -2567,6 +2567,7 @@ _tween_image_moved(Evas_Object *data,
                                   pd->wm_part->curr_state, pd->wm_part->curr_state_value,
                                   image_name);
      }
+   edje_edit_string_list_free(images_list);
 
    next = elm_genlist_first_item_get(obj);
    while (next)
@@ -2657,6 +2658,7 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
        elm_genlist_item_append(tween_list, _itc_tween, image_name, NULL,
                                ELM_GENLIST_ITEM_NONE, NULL, NULL);
      }
+   edje_edit_string_list_free(images_list);
 }
 
 ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop, const char *)
