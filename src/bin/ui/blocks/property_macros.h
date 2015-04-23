@@ -1011,19 +1011,18 @@ static Evas_Object * \
 prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
                            Prop_Data *pd) \
 { \
-   Evas_Object *layout; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
-   layout = elm_layout_add(item); \
-   elm_layout_theme_set(layout, "layout", "property", "color"); \
-   evas_object_size_hint_weight_set(layout,  EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
-   evas_object_size_hint_align_set(layout, EVAS_HINT_FILL, EVAS_HINT_FILL); \
-   elm_object_tooltip_text_set(layout, TOOLTIP); \
+   pd->MEMBER.VALUE = elm_layout_add(item); \
+   elm_layout_theme_set(pd->MEMBER.VALUE, "layout", "property", "color"); \
+   evas_object_size_hint_weight_set(pd->MEMBER.VALUE,  EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); \
+   evas_object_size_hint_align_set(pd->MEMBER.VALUE, EVAS_HINT_FILL, EVAS_HINT_FILL); \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE, TOOLTIP); \
    pd->MEMBER.VALUE##_obj = elm_layout_add(parent); \
    elm_layout_theme_set(pd->MEMBER.VALUE##_obj, "image", "color", "color_set"); \
-   evas_object_event_callback_add(layout, EVAS_CALLBACK_MOUSE_DOWN, \
+   evas_object_event_callback_add(pd->MEMBER.VALUE, EVAS_CALLBACK_MOUSE_DOWN, \
                                   _on_##MEMBER##_##VALUE##_clicked, pd); \
-   elm_layout_content_set(layout, NULL, pd->MEMBER.VALUE##_obj); \
-   elm_layout_content_set(item, NULL, layout); \
+   elm_layout_content_set(pd->MEMBER.VALUE, NULL, pd->MEMBER.VALUE##_obj); \
+   elm_layout_content_set(item, NULL, pd->MEMBER.VALUE); \
    prop_##SUB##_##VALUE##_update(pd); \
    return item; \
 }
