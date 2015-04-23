@@ -185,6 +185,7 @@ _directories_include_flags_build(Evas_Object *box,
         if (path)
           eina_strbuf_append_printf(str, "-%s \"%s\" ", dir_name, path);
      }
+   eina_list_free(box_items);
 }
 
 static inline Evas_Object *
@@ -596,6 +597,7 @@ _on_button_add_clicked_cb(void *data,
    else
      elm_box_pack_after(c_data->box,
                         _dir_item_add(c_data->box, c_data->wiew), c_data->obj);
+   eina_list_free(box_items);
    return;
 }
 
@@ -607,7 +609,9 @@ _on_button_del_clicked_cb(void *data,
    Item_Mod_Callback_Data *c_data = (Item_Mod_Callback_Data*)data;
 
    Eina_List *box_items = elm_box_children_get(c_data->box);
-   if (eina_list_count(box_items) <= 1)
+   Eina_Bool less_or_eq = eina_list_count(box_items) <= 1;
+   eina_list_free(box_items);
+   if (less_or_eq)
      {
         elm_entry_entry_set(c_data->entry, "");
         return;
