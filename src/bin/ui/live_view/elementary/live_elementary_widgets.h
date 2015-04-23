@@ -134,6 +134,9 @@ Evas_Object *
 widget_scroller_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
+widget_segment_control_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
 widget_separator_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *

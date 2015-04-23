@@ -81,6 +81,7 @@ ui/live_view/elementary/live_panel.c \
 ui/live_view/elementary/live_panes.c \
 ui/live_view/elementary/live_radio.c \
 ui/live_view/elementary/live_scroller.c \
+ui/live_view/elementary/live_segment_control.c \
 ui/live_view/elementary/live_separator.c \
 ui/live_view/elementary/live_slider.c \
 ui/live_view/elementary/live_spinner.c \
