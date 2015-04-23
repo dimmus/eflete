@@ -117,12 +117,11 @@ _frame_send_signal(void *data,
 {
    Evas_Object *frame_obj = NULL;
    Eina_List* frame_list = elm_box_children_get(data);
-   Eina_List *l = NULL;
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
 
-   EINA_LIST_FOREACH(frame_list, l, frame_obj)
+   EINA_LIST_FREE(frame_list, frame_obj)
      elm_layout_signal_emit(frame_obj, name, source);
 }
 

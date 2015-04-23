@@ -115,12 +115,11 @@ _radio_send_signal(void *data,
 {
    Evas_Object *radio_obj = NULL;
    Eina_List* radio_list = elm_box_children_get(data);
-   Eina_List *l = NULL;
 
    const char *name = evas_object_data_get(obj, SIGNAL_NAME);
    const char *source = evas_object_data_get(obj, SIGNAL_SOURCE);
 
-   EINA_LIST_FOREACH(radio_list, l, radio_obj)
+   EINA_LIST_FREE(radio_list, radio_obj)
      elm_layout_signal_emit(radio_obj, name, source);
 }
 

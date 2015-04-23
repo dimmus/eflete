@@ -25,7 +25,7 @@ on_layout_swallow_check(void *data,
                         void *ei __UNUSED__)
 {
    Evas_Object *rect = NULL, *check = NULL, *item, *ch;
-   Eina_List *item_list = NULL, *it;
+   Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
@@ -41,7 +41,7 @@ on_layout_swallow_check(void *data,
         evas_object_color_set(rect, RECT_COLOR);
         edje_object_part_swallow(object, part_name, rect);
         item_list = elm_box_children_get(pd->prop_swallow.swallows);
-        EINA_LIST_FOREACH(item_list, it, item)
+        EINA_LIST_FREE(item_list, item)
           {
              ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)
@@ -66,7 +66,7 @@ on_layout_text_check(void *data,
                      void *ei __UNUSED__)
 {
    Evas_Object *check = NULL, *item, *ch;
-   Eina_List *item_list = NULL, *it;
+   Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
@@ -80,7 +80,7 @@ on_layout_text_check(void *data,
                                   _("Look at it! This is absolutely and totally text"));
         item_list = elm_box_children_get(pd->prop_text.texts);
 
-        EINA_LIST_FOREACH(item_list, it, item)
+        EINA_LIST_FREE(item_list, item)
           {
              ch = elm_object_part_content_get(item, "info");
              if (elm_check_state_get(ch) == false)

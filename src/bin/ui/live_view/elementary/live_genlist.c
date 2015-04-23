@@ -25,7 +25,7 @@ _on_genlist_swallow_check(void *data,
                           void *ei __UNUSED__)
 {
    Evas_Object *check = NULL, *item_ch, *ch;
-   Eina_List *item_list = NULL, *it;
+   Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
@@ -38,7 +38,7 @@ _on_genlist_swallow_check(void *data,
      {
         part_list =  eina_list_append(part_list, part_name);
         item_list = elm_box_children_get(pd->prop_swallow.swallows);
-        EINA_LIST_FOREACH(item_list, it, item_ch)
+        EINA_LIST_FREE(item_list, item_ch)
           {
              ch = elm_object_part_content_get(item_ch, "info");
              if (elm_check_state_get(ch) == false)
@@ -70,7 +70,7 @@ _on_genlist_text_check(void *data,
                        void *ei __UNUSED__)
 {
    Evas_Object *check = NULL, *item_ch, *ch;
-   Eina_List *item_list = NULL, *it;
+   Eina_List *item_list = NULL;
    Eina_Bool all_checks = true;
 
    Prop_Data *pd = (Prop_Data *)data;
@@ -83,7 +83,7 @@ _on_genlist_text_check(void *data,
      {
         part_list =  eina_list_append(part_list, part_name);
         item_list = elm_box_children_get(pd->prop_text.texts);
-        EINA_LIST_FOREACH(item_list, it, item_ch)
+        EINA_LIST_FREE(item_list, item_ch)
           {
              ch = elm_object_part_content_get(item_ch, "info");
              if (elm_check_state_get(ch) == false)
