@@ -2009,14 +2009,13 @@ _on_state_text_ellipsis_toggle_change(void *data,
                                       void *event_info __UNUSED__)
 {
    Prop_Data *pd = (Prop_Data *)data;
-   Eina_Bool state = elm_check_state_get(obj);
-   double value = 0.0;
+   double value;
    double old_value = edje_edit_state_text_elipsis_get(pd->wm_style->obj,
-                                         pd->wm_part->name,
-                                         pd->wm_part->curr_state,
-                                         pd->wm_part->curr_state_value);
+                                                       pd->wm_part->name,
+                                                       pd->wm_part->curr_state,
+                                                       pd->wm_part->curr_state_value);
 
-   if (state)
+   if (elm_check_state_get(obj))
      {
         elm_object_disabled_set(pd->state_text.ellipsis, false);
         value = elm_spinner_value_get(pd->state_text.ellipsis);
@@ -2070,22 +2069,23 @@ prop_state_text_ellipsis_add(Evas_Object *parent, Prop_Data *pd)
    PROPERTY_ITEM_ADD(parent, _("ellipsis"), "2swallow")
    CHECK_ADD(item, pd->state_text.ellipsis_toggle)
    elm_object_style_set(pd->state_text.ellipsis_toggle, "toggle");
-   elm_object_tooltip_text_set(pd->state_text.ellipsis_toggle, _("On/Off the ellipsis"));
+   elm_object_tooltip_text_set(pd->state_text.ellipsis_toggle,
+                               _("Turn on/off the text ellipsis"));
+   elm_layout_content_set(item, "swallow.content1", pd->state_text.ellipsis_toggle);
    evas_object_smart_callback_add(pd->state_text.ellipsis_toggle, "changed",
                                   _on_state_text_ellipsis_toggle_change, pd);
-   elm_layout_content_set(item, "swallow.content1", pd->state_text.ellipsis_toggle);
+
    SPINNER_ADD(item, pd->state_text.ellipsis, 0.0, 1.0, 0.1, true)
-   elm_spinner_label_format_set(pd->state_text.ellipsis, N_("%1.2f"));
+   elm_spinner_label_format_set(pd->state_text.ellipsis, "%1.2f");
    elm_object_tooltip_text_set(pd->state_text.ellipsis,
-                               _("Used to balance the text in a relative point from 0.0 to 1.0, "
-                                 "this point is the last section of the string to be cut out in "
-                                 "case of a resize that is smaller than the text itself"));
+                               _("Cut text if biggest then part's area"
+                                 "0.0 = fix the left side  1.0 = right side"));
+   elm_layout_content_set(item, "swallow.content2", pd->state_text.ellipsis);
    evas_object_smart_callback_add(pd->state_text.ellipsis, "changed",
                                   _on_state_text_ellipsis_change, pd);
    evas_object_event_callback_priority_add(pd->state_text.ellipsis, EVAS_CALLBACK_MOUSE_WHEEL,
-                                           EVAS_CALLBACK_PRIORITY_BEFORE,
-                                           _on_spinner_mouse_wheel, NULL);
-   elm_layout_content_set(item, "swallow.content2", pd->state_text.ellipsis);
+                                           EVAS_CALLBACK_PRIORITY_BEFORE, _on_spinner_mouse_wheel, NULL);
+
    prop_state_text_ellipsis_update(pd);
    return item;
 }
