@@ -791,6 +791,7 @@ _fs_close(void *data,
 {
    App_Data *ap = (App_Data *)data;
    ap->modal_editor--;
+   ui_menu_items_list_disable_set(ap->menu, MENU_ITEMS_LIST_MAIN, false);
    evas_object_del(obj);
 }
 
