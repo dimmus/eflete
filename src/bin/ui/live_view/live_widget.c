@@ -51,6 +51,7 @@ static struct _live_widget_item widgets[] =
      { "separator", widget_separator_create },
      { "slider", widget_slider_create },
      { "spinner", widget_spinner_create },
+     { "toolbar", widget_toolbar_create },
      { "progressbar", widget_progressbar_create },
      { "naviframe", widget_naviframe_create },
      /* do not delete below */

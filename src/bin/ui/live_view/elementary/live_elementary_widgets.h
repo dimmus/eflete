@@ -143,6 +143,9 @@ Evas_Object *
 widget_spinner_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
+widget_toolbar_create(Evas_Object *parent, const Style *style);
+
+Evas_Object *
 widget_progressbar_create(Evas_Object *parent, const Style *style);
 
 Evas_Object *
