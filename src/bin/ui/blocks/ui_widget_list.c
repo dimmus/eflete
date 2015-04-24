@@ -133,7 +133,19 @@ _on_item_add_clicked(void *data,
    Evas_Object *gl_parts = evas_object_data_get(obj, PARTLIST_DATA_KEY);
    Evas_Object *tabs = evas_object_data_get(gl_parts, TABS_DATA_KEY);
 
-   evas_object_smart_callback_call(tabs, "wl,part,item,add", _part);
+   /* Checking number of groups */
+   App_Data *app = app_data_get();
+   Eina_List *groups = edje_file_collection_list(app->project->dev);
+   unsigned int count = eina_list_count(groups);
+   edje_file_collection_list_free(groups);
+   if (count >= 2)
+     evas_object_smart_callback_call(tabs, "wl,part,item,add", _part);
+   else
+     {
+        NOTIFY_WARNING(_("There is only one group. <br>"
+                         "Need more groups for adding items."))
+        return;
+     }
 }
 
 static void
