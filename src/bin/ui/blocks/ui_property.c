@@ -1391,9 +1391,8 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
    STATE_ATTR_COLOR_LIST_UPDATE(SUB, VALUE, MEMBER) \
    STATE_ATTR_COLOR_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, PART_TYPE, COMPARE, TOOLTIP) \
+#define STATE_ATTR_COMBOBOX(TEXT, SUB, VALUE, MEMBER, TOOLTIP) \
    STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
-   STATE_ATTR_SOURCE_UPDATE(SUB, VALUE, MEMBER, PART_TYPE, COMPARE) \
    STATE_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
 STATE_ATTR_1CHECK(_("visible"), state, visible, state)
@@ -1420,7 +1419,9 @@ STATE_ATTR_2SPINNER(_("multiplier"), state, minmul_w, minmul_h, state, 1.0, 9999
                     _("The minimal part height value multiplier for current state"),
                     1, double, VAL_DOUBLE)
 STATE_ATTR_COLOR(_("color"), state, color, state, _("Part main color"))
-STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=,
+
+STATE_ATTR_SOURCE_UPDATE(state, proxy_source, state, EDJE_PART_TYPE_SPACER, !=)
+STATE_ATTR_COMBOBOX(_("proxy source"), state, proxy_source, state,
                     _("Causes the part to use another part content as"
                     "the content of this part. Only work with PROXY part."))
 
@@ -1837,11 +1838,14 @@ STATE_ATTR_2CHECK(_("fit"), state_text, fit_x, fit_y, state_text, "w:", "", "h:"
                   _("Resize the text for it to fit in it's container by Y axis"))
 STATE_ATTR_COLOR(_("shadow color"), state, color3, state_text, NULL)
 STATE_ATTR_COLOR(_("outline color"), state, color2, state_text, NULL)
-STATE_ATTR_COMBOBOX(_("proxy source"), state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==,
+
+STATE_ATTR_SOURCE_UPDATE(state_text, source, state_text, EDJE_PART_TYPE_TEXT, ==)
+STATE_ATTR_COMBOBOX(_("proxy source"), state_text, source, state_text,
                     _("Causes the part to use the text properties "
                       "(like font and size) of another part "
                       "and update them as they change."))
-STATE_ATTR_COMBOBOX(_("proxy source"), state_text, text_source, state_text, EDJE_PART_TYPE_TEXT, ==,
+STATE_ATTR_SOURCE_UPDATE(state_text, text_source, state_text, EDJE_PART_TYPE_TEXT, ==)
+STATE_ATTR_COMBOBOX(_("proxy source"), state_text, text_source, state_text,
                     _("Causes the part to display the text content of "
                       "another part and update them as they change."));
 
@@ -2174,6 +2178,29 @@ ui_property_state_text_unset(Evas_Object *property)
 }
 #undef pd_text
 
+static void
+prop_state_textblock_style_update(Prop_Data *pd)
+{
+   Eina_List *slist, *l;
+   const char *sname;
+
+   ewe_combobox_items_list_free(pd->state_textblock.style, true);
+   ewe_combobox_item_add(pd->state_textblock.style, _("None"));
+   slist = edje_edit_styles_list_get(pd->wm_style->obj);
+   EINA_LIST_FOREACH(slist, l, sname)
+     {
+        ewe_combobox_item_add(pd->state_textblock.style, sname);
+     }
+   sname = edje_edit_state_text_style_get(pd->wm_style->obj,
+                                          pd->wm_part->name,
+                                          pd->wm_part->curr_state,
+                                          pd->wm_part->curr_state_value);
+   ewe_combobox_text_set(pd->state_textblock.style, sname);
+   edje_edit_string_free(sname);
+   edje_edit_string_list_free(slist);
+}
+
+
 PART_ATTR_SOURCE_UPDATE(state_textblock, source);
 PART_ATTR_SOURCE_UPDATE(state_textblock, source2);
 PART_ATTR_SOURCE_UPDATE(state_textblock, source3);
@@ -2182,6 +2209,8 @@ PART_ATTR_SOURCE_UPDATE(state_textblock, source5);
 PART_ATTR_SOURCE_UPDATE(state_textblock, source6);
 
 #define pd_textblock pd->state_textblock
+STATE_ATTR_COMBOBOX(_("style"), state_text, style, state_textblock,
+                    _("Set the text style of part."))
 STATE_ATTR_2SPINNER(_("align"), state_text, align_x, align_y, state_textblock,
                     0.0, 100.0, 1.0, "%.0f", "x:", "%", "y:", "%",
                     _("Text horizontal align"), _("Text vertical align"),
@@ -2225,8 +2254,6 @@ PART_ATTR_1COMBOBOX(_("over anchor"), part, source6, state_textblock,
                     _("It is used for the group to be loaded and used for \t"
                     "anchor display OVER the anchor position."))
 
-ITEM_1COMBOBOX_STATE_CREATE(TEXT_STYLE, _("text style"), state, text_style, styles)
-
 static Eina_Bool
 ui_property_state_textblock_set(Evas_Object *property)
 {
@@ -2246,10 +2273,8 @@ ui_property_state_textblock_set(Evas_Object *property)
 
          item = prop_state_text_add(box, pd, NULL);
          elm_box_pack_end(box, item);
-         pd_textblock.style = prop_item_state_text_style_add(box, pd,
-                           _on_state_text_style_change,
-                           _("Set the text style of part."));
-         elm_box_pack_end(box, pd_textblock.style);
+         item = prop_state_textblock_style_add(box, pd);
+         elm_box_pack_end(box, item);
          item = prop_state_textblock_align_x_align_y_add(box, pd);
          elm_box_pack_end(box, item);
          item = prop_state_textblock_min_x_min_y_add(box, pd);
@@ -2294,7 +2319,7 @@ ui_property_state_textblock_set(Evas_Object *property)
    else
      {
         prop_state_text_update(pd);
-        prop_item_state_text_style_update(pd_textblock.style, pd);
+        prop_state_textblock_style_update(pd);
         STATE_ATTR_2SPINNER_UPDATE(state_text, align_x, align_y, state_textblock, 100)
         STATE_ATTR_2CHECK_UPDATE(state_text, min_x, min_y, state_textblock)
         STATE_ATTR_2CHECK_UPDATE(state_text, max_x, max_y, state_textblock)

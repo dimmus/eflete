@@ -30,11 +30,6 @@ static void
 _on_state_color_class_change(void *data,
                              Evas_Object *obj,
                              void *event_info __UNUSED__);
-static void
-_on_state_text_style_change(void *data,
-                             Evas_Object *obj,
-                             void *event_info __UNUSED__);
-
 
 #define ITEM1 "item1"
 #define ITEM2 "item2"
