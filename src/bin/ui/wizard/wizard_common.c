@@ -228,7 +228,7 @@ _required_fields_check(Wizard_Import_Edj_Win *wiew)
      }
    if ((wiew->edj) && (elm_entry_is_empty(wiew->edj)))
      {
-        NOTIFY_WARNING(_("Please enter the name of the file for exporting"));
+        NOTIFY_WARNING(_("Please enter the path to edj file"));
         return false;
      }
    if (elm_entry_is_empty(wiew->path))
