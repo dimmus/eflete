@@ -280,10 +280,11 @@ _profile_update(Profile *prof)
    if (prof->version > PROFILE_VERSION)
      return;
 
+   char *env_path = getenv("EFLETE_PROJECTS_DIR");
    prof->version                             = PROFILE_VERSION;
-   if (!prof->general.projects_folder)
-     prof->general.projects_folder           = (getenv("EFLETE_PROJECTS_DIR") != NULL) ?
-                                                strdup(getenv("EFLETE_PROJECTS_DIR")):
+   if ((!prof->general.projects_folder) || (env_path))
+     prof->general.projects_folder           =  env_path != NULL ?
+                                                strdup(env_path):
                                                 strdup(getenv("HOME"));
    if (!prof->shortcuts)
      prof->shortcuts                         = _default_shortcuts_get();
