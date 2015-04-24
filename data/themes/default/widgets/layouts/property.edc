@@ -37,7 +37,7 @@ group { name: "elm/layout/property/1swallow";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            max: 144 -1;
+            min: 144 0;
             rel1 {
                to: "area.content";
             }
@@ -59,25 +59,9 @@ group { name: "elm/layout/property/1swallow";
                to: "area.text";
             }
             text {
-               font: FN;
+               font: PT;
                size: 12;
                max: 1 1;
-            }
-         }
-      }
-      part { name: "padding.content";
-         type: SPACER;
-         description { state: "default" 0.0;
-            min: 30 0;
-            max: 30 -1;
-            align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               to_x: "area.text";
-               to_y: "area.content";
-            }
-            rel2 {
-               to: "area.content";
             }
          }
       }
@@ -86,7 +70,8 @@ group { name: "elm/layout/property/1swallow";
          description { state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
-               to_x: "padding.content";
+               offset: 3 0;
+               to_x: "area.text";
                to_y: "area.content";
             }
             rel2 {
