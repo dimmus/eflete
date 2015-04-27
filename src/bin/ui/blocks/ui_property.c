@@ -113,12 +113,12 @@ struct _Prop_Data
    } state;
    struct {
       Evas_Object *frame;
+      Evas_Object *rel1_to_x, *rel1_to_y;
       Evas_Object *rel1_relative;
       Evas_Object *rel1_offset;
-      Evas_Object *rel1_to;
+      Evas_Object *rel2_to;
       Evas_Object *rel2_relative;
       Evas_Object *rel2_offset;
-      Evas_Object *rel2_to;
    } state_object_area;
    struct {
       Evas_Object *frame;
@@ -1644,17 +1644,30 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
    ITEM_2COMBOBOX_STATE_ADD(TEXT, SUB, VALUE1, VALUE2) \
    ITEM_2COMBOBOX_STATE_UPDATE(SUB, VALUE1, VALUE2)
 
+#define STATE_ATTR_2COMBOBOX_V(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE1, MEMBER) \
+   STATE_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE2, MEMBER) \
+   STATE_ATTR_SOURCE_UPDATE(SUB, VALUE1, MEMBER, part->type, ==) \
+   STATE_ATTR_SOURCE_UPDATE(SUB, VALUE2, MEMBER, part->type, ==) \
+   STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
+
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel1_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel1_offset, x, y, "eflete/property/item/relative")
-ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel1_to, x, y)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
 ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
+
+STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_object_area,
+                       _("Causes a corner to be positioned relatively to the X axis of another "
+                         "part. Setting to \"\" will un-set this value"),
+                       _("Causes a corner to be positioned relatively to the Y axis of another "
+                         "part. Setting to \"\" will un-set this value"))
 
 #define pd_obj_area pd->state_object_area
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *obj_area_frame, *box, *prop_box;
    Evas_Object *separator, *icon;
    PROP_DATA_GET(EINA_FALSE)
@@ -1676,12 +1689,10 @@ ui_property_state_obj_area_set(Evas_Object *property)
         ICON_ADD(separator, icon, false, "icon_start-point")
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
+        elm_box_pack_end(box, separator);
 
-        pd_obj_area.rel1_to = prop_item_state_rel1_to_x_y_add(box, pd,
-                        _("Causes a corner to be positioned relatively to the X axis of another "
-                        "part. Setting to \"\" will un-set this value"),
-                        _("Causes a corner to be positioned relatively to the Y axis of another "
-                        "part. Setting to \"\" will un-set this value"));
+        item = prop_state_object_area_rel1_to_x_rel1_to_y_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_obj_area.rel1_relative = prop_item_state_rel1_relative_x_y_add(box, pd,
                               -500, 500, 1, NULL,
                               "x:", "%", "y:", "%",
@@ -1703,8 +1714,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
         ICON_ADD(pd_obj_area.rel1_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
 
-        elm_box_pack_end(box, separator);
-        elm_box_pack_end(box, pd_obj_area.rel1_to);
         elm_box_pack_end(box, pd_obj_area.rel1_relative);
         elm_box_pack_end(box, pd_obj_area.rel1_offset);
 
@@ -1757,7 +1766,8 @@ ui_property_state_obj_area_set(Evas_Object *property)
      {
         prop_item_state_rel1_relative_x_y_update(pd_obj_area.rel1_relative, pd, true);
         prop_item_state_rel1_offset_x_y_update(pd_obj_area.rel1_offset, pd, false);
-        prop_item_state_rel1_to_x_y_update(pd_obj_area.rel1_to, pd);
+        prop_state_object_area_rel1_to_x_update(pd);
+        prop_state_object_area_rel1_to_y_update(pd);
 
         prop_item_state_rel2_relative_x_y_update(pd_obj_area.rel2_relative, pd, true);
         prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd, false);
