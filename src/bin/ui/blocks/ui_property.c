@@ -157,7 +157,7 @@ struct _Prop_Data
    } state_textblock;
    struct {
       Evas_Object *frame;
-      Evas_Object *normal;
+      Evas_Object *image;
       Evas_Object *border;
       Evas_Object *middle;
       Evas_Object *tween;
@@ -2376,19 +2376,18 @@ _on_image_editor_done(void *data,
                       Evas_Object *obj __UNUSED__,
                       void *event_info)
 {
-   Evas_Object *image_entry, * border_entry;
+   Evas_Object * border_entry;
    Prop_Data *pd = (Prop_Data *)data;
    const char *value;
    const char *selected = (const char *)event_info;
 
    if (!selected) return;
-   image_entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
    border_entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
-   value = elm_entry_entry_get(image_entry);
+   value = elm_entry_entry_get(pd->state_image.image);
 
    if (strcmp(value, selected) == 0) return;
-   ewe_entry_entry_set(image_entry, selected);
-   evas_object_smart_callback_call(image_entry, "changed,user", NULL);
+   ewe_entry_entry_set(pd->state_image.image, selected);
+   evas_object_smart_callback_call(pd->state_image.image, "changed,user", NULL);
    ewe_entry_entry_set(border_entry, NULL);
    evas_object_smart_callback_call(border_entry, "changed,user", NULL);
    project_changed();
@@ -2401,8 +2400,7 @@ _on_state_image_choose(void *data,
 {
    Evas_Object *img_edit;
    Prop_Data *pd = (Prop_Data *)data;
-   Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
-   const char *selected = elm_entry_entry_get(entry);
+   const char *selected = elm_entry_entry_get(pd->state_image.image);
 
    App_Data *ap = app_data_get();
 
@@ -2654,13 +2652,16 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
    edje_edit_string_list_free(images_list);
 }
 
-ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop, const char *)
+//ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop, const char *)
 ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
+
+STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
 {
+   Evas_Object *item;
    Evas_Object *image_frame, *box, *prop_box;
    PROP_DATA_GET(EINA_FALSE)
 
@@ -2674,22 +2675,15 @@ ui_property_state_image_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(image_frame, box);
 
-        pd_image.normal = prop_item_state_image_add(box, pd, _on_state_image_choose,
-                             _("Current image name"),
-                             _("Change image"));
-        Evas_Object *entry = elm_object_part_content_get(pd_image.normal, "elm.swallow.content");
+        item = prop_state_image_add(box, pd, _on_state_image_choose);
+        elm_box_pack_end(box, item);
         pd_image.border = prop_item_state_image_border_add(box, pd,
                              _("Image's border value"));
-        entry = elm_object_part_content_get(pd_image.border, "elm.swallow.content");
-        ewe_entry_regex_set(entry, IMAGE_BORDER_REGEX, EWE_REG_EXTENDED);
-        ewe_entry_regex_autocheck_set(entry, true);
-        ewe_entry_regex_glow_set(entry, true);
         pd_image.middle = prop_item_state_image_border_fill_add(box, pd,
                              _("Image's middle value"), edje_middle_type);
 
         pd_image.tween = prop_item_state_image_tween_add(box, pd);
 
-        elm_box_pack_end(box, pd_image.normal);
         elm_box_pack_end(box, pd_image.border);
         elm_box_pack_end(box, pd_image.middle);
         elm_box_pack_end(box, pd_image.tween);
@@ -2699,7 +2693,7 @@ ui_property_state_image_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_image_update(pd_image.normal, pd);
+        prop_state_image_update(pd);
         prop_item_state_image_border_update(pd_image.border, pd);
         prop_item_state_image_border_fill_update(pd_image.middle, pd);
         prop_item_state_image_tween_update(pd_image.tween, pd);
