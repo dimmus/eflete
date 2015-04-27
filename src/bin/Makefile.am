@@ -68,6 +68,7 @@ ui/live_view/elementary/live_button.c \
 ui/live_view/elementary/live_calendar.c \
 ui/live_view/elementary/live_check.c \
 ui/live_view/elementary/live_clock.c \
+ui/live_view/elementary/live_ctxpopup.c \
 ui/live_view/elementary/live_colorselector.c \
 ui/live_view/elementary/live_frame.c \
 ui/live_view/elementary/live_gengrid.c \
