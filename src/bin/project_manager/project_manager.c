@@ -173,7 +173,7 @@ _progress_send(void *data)
       message = eina_stringshare_ref(worker->message);
       udata = worker->data;
    WORKER_LOCK_RELEASE;
-   func(udata, message);
+   if (func) func(udata, message);
    eina_stringshare_del(message);
 }
 
@@ -188,6 +188,7 @@ _end_send(void *data)
    worker = (Project_Thread *)data;
    /** Copy the links to callback and meesage, to fast release worker resource. */
    WORKER_LOCK_TAKE;
+      worker->func_progress = NULL;
       func = worker->func_end;
       result = worker->result;
       udata = worker->data;
