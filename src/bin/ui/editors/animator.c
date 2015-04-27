@@ -277,6 +277,7 @@ _on_bt_prog_del(void *data,
      {
         if (elm_genlist_items_count(animator->gl_progs) == 1)
           {
+             animator->program = NULL;
              elm_layout_signal_emit(animator->program_area_layout, "eflete,content,hide", "eflete");
           }
         else
