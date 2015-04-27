@@ -1179,6 +1179,45 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 }
 
 /*****************************************************************************/
+/*                       STATE 2 COMBOBOX CONTROL                            */
+/*****************************************************************************/
+/**
+ * Macro for functions that create an item with label and 1 combobox for state
+ * attribute.
+ *
+ * @param TEXT The label text
+ * @param SUB The prefix of main parameter of state attribute
+ * @param VALUE1 The first value of state attribute
+ * @param VALUE2 The second value of state attribute
+ * @param MEMEBER The combobox member from Prop_Data structure
+ * @paramram TOOLTIP1 The tooltip for first combobox
+ * @paramram TOOLTIP2 The tooltip for second combobox
+ *
+ * @ingroup Property_Macro
+ */
+#define STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2) \
+static Evas_Object * \
+prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
+{ \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical") \
+   elm_object_part_text_set(item, "label.swallow1.start", _("x:")); \
+   EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE1) \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE1, "selected", \
+                                  _on_##MEMBER##_##VALUE1##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
+   elm_object_part_text_set(item, "label.swallow2.start", _("y:")); \
+   EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE2) \
+   elm_object_tooltip_text_set(pd->MEMBER.VALUE2, TOOLTIP2); \
+   evas_object_smart_callback_add(pd->MEMBER.VALUE2, "selected", \
+                                  _on_##MEMBER##_##VALUE2##_change, pd); \
+   elm_object_part_content_set(item, "swallow.content2", pd->MEMBER.VALUE2); \
+   prop_##MEMBER##_##VALUE1##_update(pd); \
+   prop_##MEMBER##_##VALUE2##_update(pd); \
+   return item; \
+}
+
+/*****************************************************************************/
 /*                       STATE 1COMBOBOX SOURCE UPDATE                       */
 /*****************************************************************************/
 /**
