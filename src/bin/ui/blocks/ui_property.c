@@ -114,7 +114,7 @@ struct _Prop_Data
    struct {
       Evas_Object *frame;
       Evas_Object *rel1_to_x, *rel1_to_y;
-      Evas_Object *rel1_relative;
+      Evas_Object *rel1_relative_x, *rel1_relative_y;
       Evas_Object *rel1_offset;
       Evas_Object *rel2_to;
       Evas_Object *rel2_relative;
@@ -1371,7 +1371,7 @@ prop_state_color_class_add(Evas_Object *parent, Prop_Data *pd)
                             TYPE, HISTORY_TYPE) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
    STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
-   STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
                            L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
 
 #define STATE_ATTR_2CHECK(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
@@ -1651,7 +1651,15 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
    STATE_ATTR_SOURCE_UPDATE(SUB, VALUE2, MEMBER, part->type, ==) \
    STATE_ATTR_2COMBOBOX_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, TOOLTIP1, TOOLTIP2)
 
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel1_relative, x, y, "eflete/property/item/relative")
+#define STATE_ATTR_2SPINNER_ICON(TEXT, SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                                 L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER, \
+                                 TYPE, HISTORY_TYPE) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE1, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_SPINNER_CALLBACK(SUB, VALUE2, MEMBER, TYPE, HISTORY_TYPE, MULTIPLIER) \
+   STATE_ATTR_2SPINNER_ADD(TEXT, "2swallow_pad", SUB, VALUE1, VALUE2, MEMBER, MIN, MAX, STEP, FMT, \
+                           L1_START, L1_END, L2_START, L2_END, TOOLTIP1, TOOLTIP2, MULTIPLIER)
+
+
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel1_offset, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
@@ -1662,6 +1670,15 @@ STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_obje
                          "part. Setting to \"\" will un-set this value"),
                        _("Causes a corner to be positioned relatively to the Y axis of another "
                          "part. Setting to \"\" will un-set this value"))
+STATE_ATTR_2SPINNER_ICON(_("align"), state, rel1_relative_x, rel1_relative_y, state_object_area,
+                         -500, 500, 1, NULL, "x:", "%", "y:", "%",
+                         _("Define the position of left-up corner of the part's container. "
+                           "Moves a corner to a relative position inside the container "
+                           "by X axis."),
+                         _("Define the position of left-up corner of the part's container. "
+                           "Moves a corner to a relative position inside the container "
+                           "by Y axis."),
+                         100, double, VAL_DOUBLE);
 
 #define pd_obj_area pd->state_object_area
 static Eina_Bool
@@ -1693,18 +1710,10 @@ ui_property_state_obj_area_set(Evas_Object *property)
 
         item = prop_state_object_area_rel1_to_x_rel1_to_y_add(box, pd);
         elm_box_pack_end(box, item);
-        pd_obj_area.rel1_relative = prop_item_state_rel1_relative_x_y_add(box, pd,
-                              -500, 500, 1, NULL,
-                              "x:", "%", "y:", "%",
-                              _("Define the position of left-up corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by X axis."),
-                              _("Define the position of left-up corner of the part's container. "
-                              "Moves a corner to a relative position inside the container "
-                              "by Y axis."),
-                              true);
-        ICON_ADD(pd_obj_area.rel1_relative, icon, false, "icon_align");
-        elm_object_part_content_set(pd_obj_area.rel1_relative, "eflete.swallow.icon", icon);
+        item = prop_state_object_area_rel1_relative_x_rel1_relative_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_align");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
         pd_obj_area.rel1_offset = prop_item_state_rel1_offset_x_y_add(box, pd,
                             -9999.0, 9999.0, 1.0, "%.0f",
                             "x:", "px", "y:", "px",
@@ -1714,7 +1723,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
         ICON_ADD(pd_obj_area.rel1_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel1_offset, "eflete.swallow.icon", icon);
 
-        elm_box_pack_end(box, pd_obj_area.rel1_relative);
         elm_box_pack_end(box, pd_obj_area.rel1_offset);
 
         separator = elm_separator_add(obj_area_frame);
@@ -1764,10 +1772,10 @@ ui_property_state_obj_area_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_rel1_relative_x_y_update(pd_obj_area.rel1_relative, pd, true);
         prop_item_state_rel1_offset_x_y_update(pd_obj_area.rel1_offset, pd, false);
         prop_state_object_area_rel1_to_x_update(pd);
         prop_state_object_area_rel1_to_y_update(pd);
+        STATE_ATTR_2SPINNER_UPDATE(state, rel1_relative_x, rel1_relative_y, state_object_area, 100)
 
         prop_item_state_rel2_relative_x_y_update(pd_obj_area.rel2_relative, pd, true);
         prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd, false);

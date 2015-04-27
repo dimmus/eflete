@@ -789,7 +789,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  *
  * @ingroup Property_Macro
  */
-#define STATE_ATTR_2SPINNER_ADD(TEXT, SUB, VALUE1, VALUE2, MEMBER, \
+#define STATE_ATTR_2SPINNER_ADD(TEXT, STYLE, SUB, VALUE1, VALUE2, MEMBER, \
                                 MIN, MAX, STEP, FMT, \
                                 L1_START, L1_END, L2_START, L2_END, \
                                 TOOLTIP1, TOOLTIP2, MULTIPLIER) \
@@ -797,7 +797,7 @@ static Evas_Object * \
 prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, \
                                           Prop_Data *pd) \
 { \
-   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow") \
+   PROPERTY_ITEM_ADD(parent, TEXT, STYLE) \
    SPINNER_ADD(item, pd->MEMBER.VALUE1, MIN, MAX, STEP, true) \
    elm_spinner_label_format_set(pd->MEMBER.VALUE1, FMT); \
    elm_layout_content_set(item, "swallow.content1", pd->MEMBER.VALUE1); \
