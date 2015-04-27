@@ -1702,9 +1702,8 @@ STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel2_offset_x, rel2_offset_y, state
 static Eina_Bool
 ui_property_state_obj_area_set(Evas_Object *property)
 {
-   Evas_Object *item;
+   Evas_Object *item, *icon;
    Evas_Object *obj_area_frame, *box, *prop_box;
-   Evas_Object *separator, *icon;
    PROP_DATA_GET(EINA_FALSE)
 
    prop_box = elm_object_content_get(pd->visual);
@@ -1717,14 +1716,14 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(obj_area_frame, box);
 
-        separator = elm_separator_add(obj_area_frame);
-        elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "icon");
-        elm_object_part_text_set(separator, "eflete.text", _("Start point"));
-        ICON_ADD(separator, icon, false, "icon_start-point")
-        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(separator);
-        elm_box_pack_end(box, separator);
+        item = elm_separator_add(obj_area_frame);
+        elm_separator_horizontal_set(item, true);
+        elm_object_style_set(item, "icon");
+        elm_object_part_text_set(item, "eflete.text", _("Start point"));
+        ICON_ADD(item, icon, false, "icon_start-point")
+        elm_object_part_content_set(item, "eflete.swallow.icon", icon);
+        evas_object_show(item);
+        elm_box_pack_end(box, item);
 
         item = prop_state_object_area_rel1_to_x_rel1_to_y_add(box, pd);
         elm_box_pack_end(box, item);
@@ -1737,14 +1736,14 @@ ui_property_state_obj_area_set(Evas_Object *property)
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
-        separator = elm_separator_add(obj_area_frame);
-        elm_separator_horizontal_set(separator, true);
-        elm_object_style_set(separator, "icon");
-        elm_object_part_text_set(separator, "eflete.text", _("End point"));
-        ICON_ADD(separator, icon, false, "icon_end-point");
-        elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
-        evas_object_show(separator);
-        elm_box_pack_end(box, separator);
+        item = elm_separator_add(obj_area_frame);
+        elm_separator_horizontal_set(item, true);
+        elm_object_style_set(item, "icon");
+        elm_object_part_text_set(item, "eflete.text", _("End point"));
+        ICON_ADD(item, icon, false, "icon_end-point");
+        elm_object_part_content_set(item, "eflete.swallow.icon", icon);
+        evas_object_show(item);
+        elm_box_pack_end(box, item);
 
         item = prop_state_object_area_rel2_to_x_rel2_to_y_add(box, pd);
         elm_box_pack_end(box, item);
