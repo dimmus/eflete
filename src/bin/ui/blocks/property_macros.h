@@ -1199,7 +1199,7 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
 static Evas_Object * \
 prop_##MEMBER##_##VALUE1##_##VALUE2##_add(Evas_Object *parent, Prop_Data *pd) \
 { \
-   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical") \
+   PROPERTY_ITEM_ADD(parent, TEXT, "2swallow_vertical_pad") \
    elm_object_part_text_set(item, "label.swallow1.start", _("x:")); \
    EWE_COMBOBOX_ADD(item, pd->MEMBER.VALUE1) \
    elm_object_tooltip_text_set(pd->MEMBER.VALUE1, TOOLTIP1); \
