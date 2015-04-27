@@ -37,12 +37,11 @@ group { name: "elm/layout/property/1swallow";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 144 0;
             rel1 {
                to: "area.content";
             }
             rel2 {
-               relative: 0.3 1.0;
+               relative: 0.4 1.0;
                to: "area.content";
             }
          }
@@ -121,12 +120,11 @@ group { name: "elm/layout/property/2swallow";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 144 0;
             rel1 {
                to: "area.content";
             }
             rel2 {
-               relative: 0.3 1.0;
+               relative: 0.4 1.0;
                to: "area.content";
             }
          }
@@ -346,12 +344,11 @@ group { name: "elm/layout/property/2swallow_pad";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.5;
-            min: 144 0;
             rel1 {
                to: "area.content";
             }
             rel2 {
-               relative: 0.3 1.0;
+               relative: 0.4 1.0;
                to: "area.content";
             }
          }
@@ -589,13 +586,12 @@ group { name: "elm/layout/property/2swallow_vertical";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min: 144 19;
             max: -1 19;
             rel1 {
                to: "area.content";
             }
             rel2 {
-               relative: 0.3 1.0;
+               relative: 0.4 1.0;
                to: "area.content";
             }
          }
@@ -829,13 +825,12 @@ group { name: "elm/layout/property/2swallow_vertical_pad";
          type: SPACER;
          description { state: "default" 0.0;
             align: 0.0 0.0;
-            min: 144 19;
             max: -1 19;
             rel1 {
                to: "area.content";
             }
             rel2 {
-               relative: 0.3 1.0;
+               relative: 0.4 1.0;
                to: "area.content";
             }
          }
