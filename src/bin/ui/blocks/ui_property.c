@@ -116,7 +116,7 @@ struct _Prop_Data
       Evas_Object *rel1_to_x, *rel1_to_y;
       Evas_Object *rel1_relative_x, *rel1_relative_y;
       Evas_Object *rel1_offset_x, *rel1_offset_y;
-      Evas_Object *rel2_to;
+      Evas_Object *rel2_to_x, *rel2_to_y;
       Evas_Object *rel2_relative;
       Evas_Object *rel2_offset;
    } state_object_area;
@@ -1661,7 +1661,6 @@ _on_combobox_##SUB##_##VALUE##_change(void *data, \
 
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_rel2_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_rel2_offset, x, y, "eflete/property/item/relative")
-ITEM_2COMBOBOX_STATE_CREATE(_("relative to"), state_rel2_to, x, y)
 
 STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel1_to_x, rel1_to_y, state_object_area,
                        _("Causes a corner to be positioned relatively to the X axis of another "
@@ -1682,6 +1681,11 @@ STATE_ATTR_2SPINNER_ICON(_("offset"), state, rel1_offset_x, rel1_offset_y, state
                          _("Left offset from relative position in pixels"),
                          _("Top offset from relative position in pixels"),
                          1, int, VAL_INT);
+STATE_ATTR_2COMBOBOX_V(_("relative to"), state, rel2_to_x, rel2_to_y, state_object_area,
+                       _("Causes a corner to be positioned relatively to the X axis of another "
+                         "part. Setting to \"\" will un-set this value"),
+                       _("Causes a corner to be positioned relatively to the Y axis of another "
+                         "part. Setting to \"\" will un-set this value"))
 
 
 
@@ -1731,12 +1735,10 @@ ui_property_state_obj_area_set(Evas_Object *property)
         ICON_ADD(separator, icon, false, "icon_end-point");
         elm_object_part_content_set(separator, "eflete.swallow.icon", icon);
         evas_object_show(separator);
+        elm_box_pack_end(box, separator);
 
-        pd_obj_area.rel2_to = prop_item_state_rel2_to_x_y_add(box, pd,
-                        _("Causes a corner to be positioned relatively to the X axis of another "
-                        "part. Setting to \"\" will un-set this value"),
-                        _("Causes a corner to be positioned relatively to the Y axis of another "
-                        "part. Setting to \"\" will un-set this value"));
+        item = prop_state_object_area_rel2_to_x_rel2_to_y_add(box, pd);
+        elm_box_pack_end(box, item);
         pd_obj_area.rel2_relative = prop_item_state_rel2_relative_x_y_add(box, pd,
                               -500, 500, 1, NULL,
                               "x:", "%", "y:", "%",
@@ -1758,9 +1760,6 @@ ui_property_state_obj_area_set(Evas_Object *property)
         ICON_ADD(pd_obj_area.rel2_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_obj_area.rel2_offset, "eflete.swallow.icon", icon);
 
-
-        elm_box_pack_end(box, separator);
-        elm_box_pack_end(box, pd_obj_area.rel2_to);
         elm_box_pack_end(box, pd_obj_area.rel2_relative);
         elm_box_pack_end(box, pd_obj_area.rel2_offset);
 
@@ -1776,9 +1775,10 @@ ui_property_state_obj_area_set(Evas_Object *property)
         STATE_ATTR_2SPINNER_UPDATE(state, rel1_relative_x, rel1_relative_y, state_object_area, 100)
         STATE_ATTR_2SPINNER_UPDATE(state, rel1_offset_x, rel1_offset_y, state_object_area, 1)
 
+        prop_state_object_area_rel2_to_x_update(pd);
+        prop_state_object_area_rel2_to_y_update(pd);
         prop_item_state_rel2_relative_x_y_update(pd_obj_area.rel2_relative, pd, true);
         prop_item_state_rel2_offset_x_y_update(pd_obj_area.rel2_offset, pd, false);
-        prop_item_state_rel2_to_x_y_update(pd_obj_area.rel2_to, pd);
 
         prop_box = elm_object_content_get(pd->visual);
         elm_box_pack_end(prop_box, pd_obj_area.frame);
