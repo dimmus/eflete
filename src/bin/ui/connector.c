@@ -818,7 +818,11 @@ _on_open_done(void *data,
      }
 
    ap->project = pm_project_open(selected);
-   if (!ap->project) return;
+   if (!ap->project)
+     {
+        NOTIFY_WARNING(_("Project is not selected."));
+        return;
+     }
 
    wm_widgets_list_objects_load(ap->project->widgets,
                                 evas_object_evas_get(ap->win),
