@@ -35,6 +35,7 @@
 TODO("I dont know why this regex not work properly in the ewe entry."
      "It test in the elm_entry - works good, in online checkers - work")
 #define PROPERTY_REGEX_STATE_FONT "^\\w+(:(style|slant|weight|width|spacing|lang)=\\w+)?"
+#define PROPERTY_REGEX_IMAGE_BORDER "^([0-9]+( [0-9]+){3}){0,1}?"
 
 #define PROP_DATA_GET(ret) \
    Prop_Data *pd = evas_object_data_get(property, PROP_DATA); \
@@ -2364,11 +2365,6 @@ ui_property_state_textblock_unset(Evas_Object *property)
 #undef pd_textblock
 
 
-#define ITEM_IM_BORDER_STATE_CREATE(TEXT, SUB, VALUE) \
-   ITEM_IM_BORDER_STATE_CALLBACK(SUB, VALUE) \
-   ITEM_IM_BORDER_STATE_ADD(TEXT, SUB, VALUE) \
-   ITEM_IM_BORDER_STATE_UPDATE(SUB, VALUE)
-
 #define pd_image pd->state_image
 
 static void
@@ -2652,11 +2648,71 @@ prop_item_state_image_tween_update(Evas_Object *tween, Prop_Data *pd)
    edje_edit_string_list_free(images_list);
 }
 
-//ITEM_1ENTRY_STATE_CREATE(_("image"), state, image, &accept_prop, const char *)
-ITEM_IM_BORDER_STATE_CREATE(_("border"), state_image, border)
+static void
+_on_state_image_border_change(void *data,
+                              Evas_Object *obj,
+                              void *ei __UNUSED__)
+{ \
+   unsigned int tok_elm;
+   char **c = NULL;
+   int lb = 0, rb = 0, tb = 0, bb = 0;
+   int old_lb, old_rb, old_tb, old_bb;
+   Prop_Data *pd = (Prop_Data *)data;
+   const char *value = elm_entry_entry_get(obj);
+   edje_edit_state_image_border_get(pd->wm_style->obj, pd->wm_part->name,
+                                    pd->wm_part->curr_state,
+                                    pd->wm_part->curr_state_value,
+                                    &old_lb, &old_rb, &old_tb, &old_bb);
+   if (!value || !strcmp(value, ""))
+     lb = rb = tb = bb = 0;
+   else
+     {
+        c = eina_str_split_full (value, " ", 4, &tok_elm);
+        if (tok_elm < 4)
+          {
+             free(c[0]);
+             free(c);
+             return;
+          }
+        lb = atoi(c[0]); rb = atoi(c[1]); tb = atoi(c[2]); bb = atoi(c[3]);
+        free(c[0]);
+        free(c);
+     }
+   edje_edit_state_image_border_set(pd->wm_style->obj, pd->wm_part->name,
+                                    pd->wm_part->curr_state, pd->wm_part->curr_state_value,
+                                    lb, rb, tb, bb);
+   history_diff_add(pd->wm_style->obj, PROPERTY, MODIFY, VAL_FOUR, old_lb, old_rb,
+                    old_tb, old_bb, lb, rb, tb, bb, pd->wm_style->full_group_name,
+                    (void*)edje_edit_state_image_border_set, "state image border",
+                    pd->wm_part->name, pd->wm_part->curr_state,
+                    pd->wm_part->curr_state_value);
+
+   project_changed();
+   workspace_edit_object_recalc(pd->workspace);
+   pd->wm_style->isModify = true;
+}
+
+static void
+prop_state_image_border_update(Prop_Data *pd)
+{
+   int l, r, t, b;
+   char buff[strlen("255 255 255 255") + 1];
+   edje_edit_state_image_border_get(pd->wm_style->obj, pd->wm_part->name,
+                                    pd->wm_part->curr_state, pd->wm_part->curr_state_value,
+                                    &l, &r, &t, &b);
+   if (!l && !r && !t && !b)
+     ewe_entry_entry_set(pd->state_image.border, NULL);
+   else
+     {
+        snprintf(buff, strlen("255 255 255 255") + 1, "%i %i %i %i", l, r, t, b);
+        ewe_entry_entry_set(pd->state_image.border, buff);
+     }
+}
+
 ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
 
 STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
+STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image, PROPERTY_REGEX_IMAGE_BORDER, _("Image's border values."))
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -2677,14 +2733,13 @@ ui_property_state_image_set(Evas_Object *property)
 
         item = prop_state_image_add(box, pd, _on_state_image_choose);
         elm_box_pack_end(box, item);
-        pd_image.border = prop_item_state_image_border_add(box, pd,
-                             _("Image's border value"));
+        item = prop_state_image_border_add(box, pd, NULL);
+        elm_box_pack_end(box, item);
         pd_image.middle = prop_item_state_image_border_fill_add(box, pd,
                              _("Image's middle value"), edje_middle_type);
 
         pd_image.tween = prop_item_state_image_tween_add(box, pd);
 
-        elm_box_pack_end(box, pd_image.border);
         elm_box_pack_end(box, pd_image.middle);
         elm_box_pack_end(box, pd_image.tween);
 
@@ -2694,7 +2749,7 @@ ui_property_state_image_set(Evas_Object *property)
    else
      {
         prop_state_image_update(pd);
-        prop_item_state_image_border_update(pd_image.border, pd);
+        prop_state_image_border_update(pd);
         prop_item_state_image_border_fill_update(pd_image.middle, pd);
         prop_item_state_image_tween_update(pd_image.tween, pd);
         elm_box_pack_end(prop_box, pd_image.frame);
