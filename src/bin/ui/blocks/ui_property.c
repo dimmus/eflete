@@ -169,7 +169,7 @@ struct _Prop_Data
       Evas_Object *smooth;
       Evas_Object *origin_relative_x, *origin_relative_y;
       Evas_Object *origin_offset_x, *origin_offset_y;
-      Evas_Object *size_relative;
+      Evas_Object *size_relative_x, *size_relative_y;
       Evas_Object *size_offset;
    } state_fill;
    struct {
@@ -2778,8 +2778,12 @@ STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset
                          _("Affects the starting point a fixed number of pixels along X axis"),
                          _("Affects the starting point a fixed number of pixels along Y axis"),
                          1, int, VAL_INT)
+STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, size_relative_x, size_relative_y, state_fill,
+                         -500, 500, 1, NULL, "x:", "%", "y:", "%",
+                         _("Value that represent the percentual value of the original size of the element by X axis"),
+                         _("Value that represent the percentual value of the original size of the element by Y axis."),
+                         100, double, VAL_DOUBLE)
 
-ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_size_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_size_offset, x, y, "eflete/property/item/relative")
 
 static Eina_Bool
@@ -2836,16 +2840,10 @@ ui_property_state_fill_set(Evas_Object *property)
         evas_object_show(item);
         elm_box_pack_end(box, item);
 
-        pd_fill.size_relative = prop_item_state_fill_size_relative_x_y_add(box,
-                                     pd, -500, 500, 1, NULL,
-                                     "x:", "%", "y:", "%",
-                                     _("Value that represent the percentual value "
-                                       "of the original size of the element by X axis."),
-                                     _("Value that represent the percentual value "
-                                       "of the original size of the element by Y axis."),
-                                      true);
-        ICON_ADD(pd_fill.size_relative, icon, false, "icon_align");
-        elm_object_part_content_set(pd_fill.size_relative, "eflete.swallow.icon", icon);
+        item = prop_state_fill_size_relative_x_size_relative_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_align");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
         pd_fill.size_offset = prop_item_state_fill_size_offset_x_y_add(box,
                                      pd, -9999.0, 9999.0, 1.0, "%.0f",
                                      "x:", "px", "y:", "px",
@@ -2856,8 +2854,6 @@ ui_property_state_fill_set(Evas_Object *property)
                                      false);
         ICON_ADD(pd_fill.size_offset, icon, false, "icon_offset");
         elm_object_part_content_set(pd_fill.size_offset, "eflete.swallow.icon", icon);
-
-        elm_box_pack_end(box, pd_fill.size_relative);
         elm_box_pack_end(box, pd_fill.size_offset);
 
         pd_fill.frame = fill_frame;
@@ -2869,7 +2865,7 @@ ui_property_state_fill_set(Evas_Object *property)
         STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, 100)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, 1)
-        prop_item_state_fill_size_relative_x_y_update(pd_fill.size_relative, pd, true);
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, size_relative_x, size_relative_y, state_fill, 100)
         prop_item_state_fill_size_offset_x_y_update(pd_fill.size_offset, pd, false);
 
         elm_box_pack_end(prop_box, pd_fill.frame);
