@@ -2765,8 +2765,9 @@ ui_property_state_image_unset(Evas_Object *property)
 #undef pd_image
 
 #define pd_fill pd->state_fill
+STATE_ATTR_1COMBOBOX_LIST(_("type"), state_fill, type, edje_fill_type,
+                          _("Set the image fill type"), unsigned char)
 STATE_ATTR_1CHECK(_("smooth"), state_fill, smooth, state_fill)
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("type"), state_fill, type, unsigned char)
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_origin_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_origin_offset, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_size_relative, x, y, "eflete/property/item/relative")
@@ -2790,10 +2791,8 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_box_align_set(box, 0.5, 0.0);
         elm_object_content_set(fill_frame, box);
 
-        pd_fill.type = prop_item_state_fill_type_add(box, pd,
-                             _("Sets the image fill type."),
-                             edje_fill_type);
-        elm_box_pack_end(box, pd_fill.type);
+        item = prop_state_fill_type_add(box, pd);
+        elm_box_pack_end(box, item);
         item = prop_state_fill_smooth_add(box, pd,
                              _("On/off image smooth on scaling"));
         elm_box_pack_end(box, item);
@@ -2872,7 +2871,7 @@ ui_property_state_fill_set(Evas_Object *property)
      }
    else
      {
-        prop_item_state_fill_type_update(pd_fill.type, pd);
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type);
         STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
         prop_item_state_fill_origin_relative_x_y_update(pd_fill.origin_relative, pd, true);
         prop_item_state_fill_origin_offset_x_y_update(pd_fill.origin_offset, pd, false);
