@@ -160,7 +160,7 @@ struct _Prop_Data
       Evas_Object *frame;
       Evas_Object *image;
       Evas_Object *border;
-      Evas_Object *middle;
+      Evas_Object *border_fill;
       Evas_Object *tween;
    } state_image;
    struct {
@@ -2704,10 +2704,10 @@ prop_state_image_border_update(Prop_Data *pd)
      }
 }
 
-ITEM_1COMBOBOX_PART_STATE_CREATE(_("middle"), state_image, border_fill, unsigned char)
-
 STATE_ATTR_1ENTRY(_("image"), state, image, state_image, NULL, NULL)
 STATE_ATTR_1ENTRY_ADD(_("border"), state_image, border, state_image, PROPERTY_REGEX_IMAGE_BORDER, _("Image's border values."))
+STATE_ATTR_1COMBOBOX_LIST(_("border fill"), state_image, border_fill, edje_middle_type,
+                          NULL, unsigned char)
 
 static Eina_Bool
 ui_property_state_image_set(Evas_Object *property)
@@ -2730,12 +2730,10 @@ ui_property_state_image_set(Evas_Object *property)
         elm_box_pack_end(box, item);
         item = prop_state_image_border_add(box, pd, NULL);
         elm_box_pack_end(box, item);
-        pd_image.middle = prop_item_state_image_border_fill_add(box, pd,
-                             _("Image's middle value"), edje_middle_type);
+        item = prop_state_image_border_fill_add(box, pd);
+        elm_box_pack_end(box, item);
 
         pd_image.tween = prop_item_state_image_tween_add(box, pd);
-
-        elm_box_pack_end(box, pd_image.middle);
         elm_box_pack_end(box, pd_image.tween);
 
         elm_box_pack_end(prop_box, image_frame);
@@ -2745,7 +2743,7 @@ ui_property_state_image_set(Evas_Object *property)
      {
         prop_state_image_update(pd);
         prop_state_image_border_update(pd);
-        prop_item_state_image_border_fill_update(pd_image.middle, pd);
+        STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_image, border_fill)
         prop_item_state_image_tween_update(pd_image.tween, pd);
         elm_box_pack_end(prop_box, pd_image.frame);
         evas_object_show(pd_image.frame);
