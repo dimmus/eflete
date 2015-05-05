@@ -330,22 +330,20 @@ _on_##MEMBER##_##VALUE##_change(void *data, \
  * @param TEXT The label text
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param TYPE The type of given attribute
+ * @param LIST The predefined strings list
+ * @param TOOLTIP The combobox tooltip
  *
  * @ingroup Property_Macro
  */
-#define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE) \
+#define PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP) \
 static Evas_Object * \
-prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
-                        Prop_Data *pd, \
-                        const char *tooltip, \
-                        const char **list) \
+prop_##SUB##_##VALUE##_add(Evas_Object *parent, Prop_Data *pd) \
 { \
    int i; \
    PROPERTY_ITEM_ADD(parent, TEXT, "1swallow") \
    EWE_COMBOBOX_ADD(parent, pd->SUB.VALUE) \
-   for (i = 0; list[i]; ewe_combobox_item_add(pd->SUB.VALUE, list[i]), i++) ; \
-   elm_object_tooltip_text_set(pd->SUB.VALUE, tooltip); \
+   for (i = 0; LIST[i]; ewe_combobox_item_add(pd->SUB.VALUE, LIST[i]), i++) ; \
+   elm_object_tooltip_text_set(pd->SUB.VALUE, TOOLTIP); \
    evas_object_smart_callback_add(pd->SUB.VALUE, "selected", _on_##SUB##_##VALUE##_change, pd); \
    elm_layout_content_set(item, "elm.swallow.content", pd->SUB.VALUE); \
    PART_ATTR_1COMBOBOX_LIST_UPDATE(SUB, VALUE) \
@@ -357,7 +355,6 @@ prop_##SUB##_##VALUE##_add(Evas_Object *parent, \
  *
  * @param SUB The prefix of main parameter of part attribute
  * @param VALUE The value of part attribute
- * @param TYPE The type of given attribute
  *
  * @ingroup Property_Macro
  */

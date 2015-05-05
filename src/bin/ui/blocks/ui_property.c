@@ -944,9 +944,9 @@ PART_ATTR_SOURCE_UPDATE(part, source)
    PART_ATTR_1COMBOBOX_CALLBACK(SUB, VALUE, MEMBER) \
    PART_ATTR_1COMBOBOX_ADD(TEXT, SUB, VALUE, MEMBER, TOOLTIP)
 
-#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE) \
+#define PART_ATTR_1COMBOBOX_LIST(TEXT, SUB, VALUE, TYPE, LIST, TOOLTIP) \
    PART_ATTR_1COMBOBOX_LIST_CALLBACK(TEXT, SUB, VALUE, TYPE) \
-   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE)
+   PART_ATTR_1COMBOBOX_LIST_ADD(TEXT, SUB, VALUE, LIST, TOOLTIP)
 
 #define PART_ATTR_DRAG(TEXT, SUB, VALUE1, VALUE2) \
    PART_ATTR_DRAG_CALLBACK(SUB, VALUE1, VALUE2) \
@@ -959,7 +959,8 @@ PART_ATTR_1CHECK(_("mouse events"), part, mouse_events)
 PART_ATTR_1CHECK(_("event propagation"), part, repeat_events)
 PART_ATTR_1COMBOBOX(_("clipper"), part, clip_to, part,
                     _("Show only the area of part that coincides with another part's container"))
-PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags)
+PART_ATTR_1COMBOBOX_LIST(_("ignore flags"), part, ignore_flags, Evas_Event_Flags, edje_ignore_flags,
+                         _("Specifies whether events with the given flags should be ignored"))
 PART_ATTR_1COMBOBOX(_("group source"), part, source, part,
                     _("Used for the group to be loaded and used to display GROUP part."))
 /* part drag property */
@@ -1012,9 +1013,7 @@ ui_property_part_set(Evas_Object *property, Part *part)
         elm_box_pack_end(box, pd->part.repeat_events_item);
         pd->part.clip_to_item = prop_part_clip_to_add(box, pd);
         elm_box_pack_end(box, pd->part.clip_to_item);
-        pd->part.ignore_flags_item = prop_part_ignore_flags_add(box, pd,
-                                  _("Specifies whether events with the given "
-                                  " flags should be ignored"), edje_ignore_flags);
+        pd->part.ignore_flags_item = prop_part_ignore_flags_add(box, pd);
         elm_box_pack_end(box, pd->part.ignore_flags_item);
         pd->part.source_item = prop_part_source_add(box, pd);
         elm_box_pack_end(box, pd->part.source_item);
@@ -2241,10 +2240,14 @@ STATE_ATTR_2CHECK(_("max"), state_text, max_x, max_y, state_textblock, "w:", "",
                   _("When any of the parameters is enabled it forces \t"
                   "the maximum size of the container to be equal to\t"
                   "the maximum size of the text."));
-PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode)
-PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode)
-PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode)
-PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int)
+PART_ATTR_1COMBOBOX_LIST(_("select mode"), state_textblock, select_mode, Edje_Edit_Select_Mode,
+                         edje_select_mode, _("Sets the selection mode for a textblock part"))
+PART_ATTR_1COMBOBOX_LIST(_("entry mode"), state_textblock, entry_mode, Edje_Edit_Entry_Mode,
+                         edje_entry_mode, _("Sets the edit mode for a textblock part"))
+PART_ATTR_1COMBOBOX_LIST(_("pointer mode"), state_textblock, pointer_mode, Evas_Object_Pointer_Mode,
+                         edje_pointer_mode, _("Sets the mouse pointer behavior for a given part"))
+PART_ATTR_1COMBOBOX_LIST(_("cursor mode"), state_textblock, cursor_mode, unsigned int,
+                         edje_cursor_mode, _("Sets the cursor mode for a textblock part"))
 PART_ATTR_1CHECK(_("multiline"), state_textblock, multiline)
 PART_ATTR_1COMBOBOX(_("under selected text"), part, source, state_textblock,
                     _("Used for the group to be loaded and used for selection \t"
@@ -2293,21 +2296,13 @@ ui_property_state_textblock_set(Evas_Object *property)
          elm_box_pack_end(box, item);
          item = prop_state_textblock_max_x_max_y_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_select_mode_add(box, pd,
-                                    _("Sets the selection mode for a textblock part"),
-                                    edje_select_mode);
+         item = prop_state_textblock_select_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_entry_mode_add(box, pd,
-                                   _("Sets the edit mode for a textblock part"),
-                                   edje_entry_mode);
+         item = prop_state_textblock_entry_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_pointer_mode_add(box, pd,
-                                     _("Sets the mouse pointer behavior for a given part."),
-                                     edje_pointer_mode);
+         item = prop_state_textblock_pointer_mode_add(box, pd);
          elm_box_pack_end(box, item);
-         item = prop_state_textblock_cursor_mode_add(box, pd,
-                                    _("Sets the cursor mode for a textblock part"),
-                                    edje_cursor_mode);
+         item = prop_state_textblock_cursor_mode_add(box, pd);
          elm_box_pack_end(box, item);
          item = prop_state_textblock_multiline_add(box, pd,
                 _("It causes a textblock that is editable to allow multiple lines for editing."));
