@@ -208,17 +208,6 @@ struct _Prop_Data
 };
 typedef struct _Prop_Data Prop_Data;
 
-enum Property_Combo
-{
-   CLIP_TO,
-   FORWARD_EVENTS,
-   SOURCE,
-   DRAG_AREA,
-   COLOR_CLASS,
-   TEXT_STYLE,
-   TEXT_SOURCE
-};
-
 static const char *edje_aspect_pref[] = { N_("None"),
                                           N_("Vertical"),
                                           N_("Horizontal"),
