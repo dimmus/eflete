@@ -358,6 +358,17 @@ group { name: "ewe/scroller/entry_single/default";
       item: "focus_highlight" "on";
    }
    parts {
+      part { name: "text_clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            rel1.to: "clipper";
+            rel2 {
+               relative: 0.0 1.0;
+               to: "elm.swallow.end";
+            }
+         }
+      }
       part { name: "sb_vbar_base";
          type: RECT;
          description { state: "default" 0.0;
@@ -487,7 +498,7 @@ group { name: "ewe/scroller/entry_single/default";
       }
       part { name: "elm.swallow.content";
          type: SWALLOW;
-         clip_to: "clipper";
+         clip_to: "text_clipper";
          description { state: "default" 0.0;
             fixed: 1 1;
             rel1 {
