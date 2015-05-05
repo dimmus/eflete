@@ -168,7 +168,7 @@ struct _Prop_Data
       Evas_Object *type;
       Evas_Object *smooth;
       Evas_Object *origin_relative_x, *origin_relative_y;
-      Evas_Object *origin_offset;
+      Evas_Object *origin_offset_x, *origin_offset_y;
       Evas_Object *size_relative;
       Evas_Object *size_offset;
    } state_fill;
@@ -2773,7 +2773,12 @@ STATE_ATTR_2SPINNER_ICON(_("align"), state_fill, origin_relative_x, origin_relat
                          _("Sets the starting point X coordinate relatively to displayed element's content"),
                          _("Sets the starting point Y coordinate relatively to displayed element's content"),
                          100, double, VAL_DOUBLE)
-ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_origin_offset, x, y, "eflete/property/item/relative")
+STATE_ATTR_2SPINNER_ICON(_("offset"), state_fill, origin_offset_x, origin_offset_y, state_fill,
+                         -9999, 9999, 1, NULL, "x:", "px", "y:", "px",
+                         _("Affects the starting point a fixed number of pixels along X axis"),
+                         _("Affects the starting point a fixed number of pixels along Y axis"),
+                         1, int, VAL_INT)
+
 ITEM_2SPINNER_STATE_DOUBLE_CREATE(_("align"), state_fill_size_relative, x, y, "eflete/property/item/relative")
 ITEM_2SPINNER_STATE_INT_CREATE(_("offset"), state_fill_size_offset, x, y, "eflete/property/item/relative")
 
@@ -2816,18 +2821,10 @@ ui_property_state_fill_set(Evas_Object *property)
         elm_layout_content_set(item, NULL, icon);
         elm_box_pack_end(box, item);
 
-        pd_fill.origin_offset = prop_item_state_fill_origin_offset_x_y_add(box,
-                                     pd, -9999.0, 9999.0, 1.0, "%.0f",
-                                     "x:", "px", "y:", "px",
-                                     _("Affects the starting point a fixed "
-                                       "number of pixels along X axis"),
-                                     _("Affects the starting point a fixed "
-                                       "number of pixels along Y axis"),
-                                     false);
-        ICON_ADD(pd_fill.origin_offset, icon, false, "icon_offset");
-        elm_object_part_content_set(pd_fill.origin_offset, "eflete.swallow.icon", icon);
-
-        elm_box_pack_end(box, pd_fill.origin_offset);
+        item = prop_state_fill_origin_offset_x_origin_offset_y_add(box, pd);
+        ICON_ADD(item, icon, false, "icon_offset");
+        elm_layout_content_set(item, NULL, icon);
+        elm_box_pack_end(box, item);
 
         /* size subblock of fill block */
         item = elm_separator_add(fill_frame);
@@ -2871,7 +2868,7 @@ ui_property_state_fill_set(Evas_Object *property)
         STATE_ATTR_1COMBOBOX_LIST_UPDATE(state_fill, type);
         STATE_ATTR_CHECK_UPDATE(state_fill, smooth, state_fill)
         STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_relative_x, origin_relative_y, state_fill, 100)
-        prop_item_state_fill_origin_offset_x_y_update(pd_fill.origin_offset, pd, false);
+        STATE_ATTR_2SPINNER_UPDATE(state_fill, origin_offset_x, origin_offset_y, state_fill, 1)
         prop_item_state_fill_size_relative_x_y_update(pd_fill.size_relative, pd, true);
         prop_item_state_fill_size_offset_x_y_update(pd_fill.size_offset, pd, false);
 
