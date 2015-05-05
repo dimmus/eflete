@@ -20,6 +20,9 @@
 #include "style_editor.h"
 #include "main_window.h"
 #include "alloc.h"
+
+TODO("Rename this file to textblock_style_manager")
+
 #define FONT_DEFAULT "DEFAULT='align=middle font=Sans font_size=24 color=#000000 "
 #define ITEM1 "item1"
 #define ITEM2 "item2"
@@ -1885,7 +1888,7 @@ style_editor_window_add(Project *project)
         free(style_edit);
         return NULL;
      }
-   mw_title_set(style_edit->mwin, _("Textblock style editor"));
+   mw_title_set(style_edit->mwin, _("Textblock style manager"));
    evas_object_event_callback_add(style_edit->mwin, EVAS_CALLBACK_FREE,
                                         _on_style_editor_close, style_edit);
    window_layout = elm_layout_add(style_edit->mwin);

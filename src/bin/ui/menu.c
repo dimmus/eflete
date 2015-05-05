@@ -279,25 +279,25 @@ ui_menu_add(App_Data *ap)
          ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_ABS, NULL, _("Absolute scale"))
          ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_REL, NULL, _("Relative scale"))
          ITEM_MENU_ADD(MENU_VIEW_RULERS, MENU_VIEW_RULERS_BOTH, NULL, _("Both"))
-   ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Editors"))
+   ITEM_MENU_ADD(MENU_NULL, MENU_EDITORS, NULL, _("Edit"))
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_ANIMATOR,
                     EFLETE_IMG_PATH"icon-animator.png", _("Animator"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_ANIMATOR]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-1");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_IMAGE,
-                    EFLETE_IMG_PATH"icon-image.png", _("Images"))
+                    EFLETE_IMG_PATH"icon-image.png", _("Image manager"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_IMAGE]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-2");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_SOUND,
-                    EFLETE_IMG_PATH"icon-sound.png", _("Sound"))
+                    EFLETE_IMG_PATH"icon-sound.png", _("Sound manager"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_SOUND]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-3");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_COLORCLASS,
-                    EFLETE_IMG_PATH"icon-color.png", _("Colorclasses"))
+                    EFLETE_IMG_PATH"icon-color.png", _("Color class manager"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_COLORCLASS]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-4");
       ITEM_MENU_ADD(MENU_EDITORS, MENU_EDITORS_TEXT_STYLE,
-                    EFLETE_IMG_PATH"icon-text.png", _("Text styles"))
+                    EFLETE_IMG_PATH"icon-text.png", _("Textblock styles manager"))
          items_obj = elm_menu_item_object_get(menu->menu_items[MENU_EDITORS_TEXT_STYLE]);
          elm_object_part_text_set(items_obj, "elm.shortcut", "Ctrl-5");
    ITEM_MENU_ADD(MENU_NULL, MENU_HELP, NULL, _("Help"))
@@ -323,10 +323,10 @@ ui_menu_add(App_Data *ap)
    ITEM_TB_ADD(MENU_FILE_OPEN_PROJECT, EFLETE_IMG_PATH"icon-open_project.png", _("Open project"));
    ITEM_TB_ADD(MENU_FILE_SAVE, EFLETE_IMG_PATH"icon-save.png", _("Save project"));
    ITEM_TB_ADD(MENU_EDITORS_ANIMATOR, EFLETE_IMG_PATH"icon-animator.png", _("Animator"));
-   ITEM_TB_ADD(MENU_EDITORS_IMAGE, EFLETE_IMG_PATH"icon-image.png", _("Image editor"));
-   ITEM_TB_ADD(MENU_EDITORS_SOUND, EFLETE_IMG_PATH"icon-sound.png", _("Sound editor"));
-   ITEM_TB_ADD(MENU_EDITORS_COLORCLASS, EFLETE_IMG_PATH"icon-color.png", _("Color class editor"));
-   ITEM_TB_ADD(MENU_EDITORS_TEXT_STYLE, EFLETE_IMG_PATH"icon-text.png", _("Textblock style editor"));
+   ITEM_TB_ADD(MENU_EDITORS_IMAGE, EFLETE_IMG_PATH"icon-image.png", _("Image manager"));
+   ITEM_TB_ADD(MENU_EDITORS_SOUND, EFLETE_IMG_PATH"icon-sound.png", _("Sound manager"));
+   ITEM_TB_ADD(MENU_EDITORS_COLORCLASS, EFLETE_IMG_PATH"icon-color.png", _("Color class manager"));
+   ITEM_TB_ADD(MENU_EDITORS_TEXT_STYLE, EFLETE_IMG_PATH"icon-text.png", _("Textblock style manager"));
 
 #undef ITEM_TB_ADD
    ui_menu_items_list_disable_set(menu, MENU_ITEMS_LIST_BASE, true);

@@ -22,6 +22,8 @@
 #include "sound_editor.h"
 #include "main_window.h"
 
+TODO("Rename this file to sound_manager")
+
 #ifdef HAVE_AUDIO
    #include <Ecore_Audio.h>
 #endif
@@ -1618,7 +1620,7 @@ sound_editor_window_add(Project *project, Sound_Editor_Mode mode)
         free(edit);
         return NULL;
      }
-   mw_title_set(edit->win, _("Sound editor"));
+   mw_title_set(edit->win, _("Sound manager"));
    evas_object_data_set(edit->win, SND_EDIT_KEY, edit);
 
    _sound_editor_main_markup_create(edit);

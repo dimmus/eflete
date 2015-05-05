@@ -20,6 +20,8 @@
 #include "colorclass_editor.h"
 #include "main_window.h"
 
+TODO("Rename this file to colorclass_manager")
+
 typedef struct _Colorclass_Item Colorclass_Item;
 typedef struct _Colorclasses_Editor Colorclasses_Editor;
 
@@ -502,7 +504,7 @@ colorclass_viewer_add(Project *project)
         free(ccl_edit);
         return NULL;
      }
-   mw_title_set(ccl_edit->mwin, _("Color class editor"));
+   mw_title_set(ccl_edit->mwin, _("Color class manager"));
    evas_object_event_callback_add(ccl_edit->mwin, EVAS_CALLBACK_FREE,
                                   _on_ccl_editor_close, ccl_edit);
 

@@ -20,6 +20,8 @@
 #include "image_editor.h"
 #include "main_window.h"
 
+TODO("Rename this file to image_manager")
+
 #define ITEM_WIDTH 100
 #define ITEM_HEIGHT 115
 #define IMG_EDIT_KEY "image_editor_key"
@@ -1087,11 +1089,11 @@ image_editor_window_add(Project *project, Image_Editor_Mode mode)
         return NULL;
      }
    if (mode == SINGLE)
-     mw_title_set(img_edit->win, _("Image editor: choose image"));
+     mw_title_set(img_edit->win, _("Image manager: choose image"));
    else if (mode == TWEENS)
-     mw_title_set(img_edit->win, _("Image editor: select tween images"));
+     mw_title_set(img_edit->win, _("Image manager: select tween images"));
    else if (mode == MULTIPLE)
-     mw_title_set(img_edit->win, _("Image editor"));
+     mw_title_set(img_edit->win, _("Image manager"));
 
    img_edit->layout = elm_layout_add(img_edit->win);
    elm_layout_theme_set(img_edit->layout, "layout", "image_editor", "default");
